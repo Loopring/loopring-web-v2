@@ -19,7 +19,7 @@ const InputCodeStyle = styled(Box)`
   //}
   .code-inputs input {
     border: none;
-    color: var(--text-third);
+    color: var(--text-color-third);
     background-color: var(--field-opacity);
     -webkit-box-shadow: none;
     -moz-box-shadow: none;

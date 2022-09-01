@@ -99,11 +99,11 @@ export const DualTable = withTranslation(["tables", "common"])(
           sortable: true,
           name: t("labelDualSettlement"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            const expireTime = row.expireTime;
+            // const expireTime = row?.expireTime;
 
             return (
               <Box display="flex">
-                {moment(new Date(expireTime), "YYYYMMDDHHMM").toNow()}
+                {/*{moment(new Date(expireTime), "YYYYMMDDHHMM").toNow()}*/}
               </Box>
             );
           },

@@ -26,6 +26,7 @@ const loadingSvg = SoursURL + "svg/loading.svg";
 export const Button = styled(MuButton)<ButtonProps>`
   && {
     line-height: 1em;
+
     &.MuiButton-root.Mui-disabled {
       ${({ loading, theme, loadingbg }) => {
         return loading === "true"
@@ -50,7 +51,15 @@ export const Button = styled(MuButton)<ButtonProps>`
           : "";
       }}
     }
+
+    &.disabledViewOnly {
+      pointer-events: inherit;
+    }
   }
+
+  //&.disabled{
+  //
+  //}
 ` as (props: ButtonProps) => JSX.Element;
 
 export function ScrollTop(props: {

@@ -1,12 +1,16 @@
 import React from "react";
 import { AmmPanel, AmmPanelType, Toast } from "@loopring-web/component-lib";
-import { CoinInfo, WalletMap } from "@loopring-web/common-resources";
+import {
+  CoinInfo,
+  WalletMap,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
 import { useAmmJoin } from "../../../hooks/useractions/hookAmmJoin";
 import { useAmmExit } from "../../../hooks/useractions/hookAmmExit";
 import { useAmmCommon } from "./hookAmmCommon";
 import { Grid } from "@mui/material";
 import { AmmPoolSnapshot, TickerData } from "@loopring-web/loopring-sdk";
-import { TOAST_TIME, initSlippage, store } from "../../../index";
+import { initSlippage, store } from "../../../index";
 import styled from "@emotion/styled";
 import { useDeepCompareEffect } from "react-use";
 import { LoadingBlock } from "@loopring-web/webapp/src/pages/LoadingPage";

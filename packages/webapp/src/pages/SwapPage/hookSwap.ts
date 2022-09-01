@@ -574,7 +574,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       callPairDetailInfoAPIs();
       // marketTradeTableCallback();
     }
-  }, [market, ammMap]);
+  }, [market]);
   /*** table related end ***/
   const getStorageId = React.useCallback(async () => {
     if (
@@ -706,14 +706,15 @@ export const useSwap = <C extends { [key: string]: any }>({
   React.useEffect(() => {
     if (pageTradeLite.depth) {
       refreshAmmPoolSnapshot();
-      if (
-        account.readyState === AccountStatus.ACTIVATED &&
-        amountStatus === SagaStatus.UNSET
-      ) {
-        setIsSwapLoading(false);
-      } else {
-        setIsSwapLoading(false);
-      }
+      setIsSwapLoading(false);
+      // if (
+      //   account.readyState === AccountStatus.ACTIVATED &&
+      //   amountStatus === SagaStatus.UNSET
+      // ) {
+      //   setIsSwapLoading(false);
+      // } else {
+      //
+      // }
     }
   }, [
     pageTradeLite.depth,

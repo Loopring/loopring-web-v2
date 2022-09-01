@@ -28,11 +28,11 @@ import {
   CheckedIcon,
   copyToClipBoard,
   getValuePrecisionThousand,
+  TradeDefi,
   Lang,
   MarkdownStyle,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
-import { TradeDefi } from "@loopring-web/core";
 import BigNumber from "bignumber.js";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";

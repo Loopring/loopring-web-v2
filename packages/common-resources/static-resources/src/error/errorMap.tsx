@@ -247,6 +247,35 @@ export const ErrorMap = {
     messageKey: "errorCollectionSameName",
     options: {},
   },
+  ERROR_COLLECTION_EMPTY: {
+    id: "ERROR_COLLECTION_EMPTY",
+    messageKey: "errorCollectionEmpty",
+    options: {},
+  },
+  ERROR_COLLECTION_NOT_READABLE: {
+    id: "ERROR_COLLECTION_NOT_READABLE",
+    messageKey: "errorCollectionNotReadable",
+    options: {},
+  },
+  ERROR_COLLECTION_INFO: {
+    id: "ERROR_COLLECTION_INFO",
+    messageKey: "errorCollectionInfo",
+    options: {},
+  },
+  ERROR_COLLECTION_NO_SUPPORT: {
+    id: "ERROR_COLLECTION_NO_SUPPORT",
+    messageKey: "errorCollectionNoSupport",
+    options: {},
+  },
+  ERROR_ON_REFRESH: {
+    id: "ERROR_ON_REFRESH",
+    messageKey: "errorOnRefresh",
+    options: {},
+  },
+  IPFS_TIME_OUT: {
+    id: "IPFS_TIME_OUT",
+    messageKey: "errorIpfsTimeout",
+  },
   ERROR_RAMP_NO_INSTANCE: {
     id: "ERROR_RAMP_NO_INSTANCE",
     messageKey: "errorRampNoInstance",
@@ -270,6 +299,11 @@ export enum UIERROR_CODE {
   ERROR_COLLECTION_METADATA_NO_TILEURI = 700014,
   ERROR_COLLECTION_NO_NAME = 700015,
   ERROR_RAMP_NO_INSTANCE = 700100,
+  ERROR_COLLECTION_INFO = 700016,
+  ERROR_COLLECTION_EMPTY = 700017,
+  ERROR_COLLECTION_NO_SUPPORT = 700018,
+  ERROR_COLLECTION_NOT_READABLE = 700019,
+  IPFS_TIME_OUT = 700020,
 }
 export type ErrorObject = {
   from?: string;
@@ -291,7 +325,13 @@ export const SDK_ERROR_MAP_TO_UI = {
   700011: ErrorMap.IPFS_CID_TO_NFTID_ERROR,
   700012: ErrorMap.TIME_OUT,
   700013: ErrorMap.ERROR_JSON_STRINGIFY,
-  700014: ErrorMap.ERROR_COLLECTION_NO_NAME,
+  700014: ErrorMap.ERROR_COLLECTION_METADATA_NO_TILEURI,
+  700015: ErrorMap.ERROR_COLLECTION_NO_NAME,
+  700016: ErrorMap.ERROR_COLLECTION_INFO,
+  700017: ErrorMap.ERROR_COLLECTION_EMPTY,
+  700018: ErrorMap.ERROR_COLLECTION_NO_SUPPORT,
+  700019: ErrorMap.ERROR_COLLECTION_NOT_READABLE,
+  700020: ErrorMap.IPFS_TIME_OUT,
   700100: ErrorMap.ERROR_RAMP_NO_INSTANCE,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
@@ -341,6 +381,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   108001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Unsupported depth level
   114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
+  122001: ErrorMap.ERROR_ON_REFRESH,
 };
 export const TransErrorHelp = ({
   error,

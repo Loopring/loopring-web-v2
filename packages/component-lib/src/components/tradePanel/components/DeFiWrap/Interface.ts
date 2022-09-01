@@ -2,17 +2,12 @@ import { BtnInfo, InputButtonProps } from "../../../basic-lib";
 import {
   AccountStatus,
   CoinInfo,
+  DeFiChgType,
   MarketType,
 } from "@loopring-web/common-resources";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../../Interface";
 import React from "react";
-
-export enum DeFiChgType {
-  coinSell = "coinSell",
-  coinBuy = "coinBuy",
-  exchange = "exchange",
-}
 
 export type DeFiChgData<T> = {
   type: DeFiChgType;

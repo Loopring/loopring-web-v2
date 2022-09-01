@@ -136,9 +136,11 @@ import {
   useVendor,
   useWalletLayer2,
   useWithdraw,
+  useCollectionAdvanceMeta,
+  useToast,
+  useNFTMintAdvance,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useNFTMintAdvance } from "../../hooks/useractions/useNFTMintAdvance";
 
 export function useAccountModalForUI({
   t,
@@ -198,9 +200,18 @@ export function useAccountModalForUI({
     exportAccountToastOpen,
     setExportAccountToastOpen,
   } = useExportAccount();
+  const vendorProps = useVendor();
+  const {
+    toastOpen: collectionToastOpen,
+    setToastOpen: setCollectionToastOpen,
+    closeToast: collectionToastClose,
+  } = useToast();
+
+  const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance();
+  const { collectionAdvanceProps } = useCollectionAdvanceMeta({
+    setCollectionToastOpen,
+  });
   const { vendorListBuy } = useVendor();
-  const { nftMintAdvanceProps, retryBtn: nftMintAdvanceRetryBtn } =
-    useNFTMintAdvance();
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
   const { transferProps, retryBtn: transferRetry } = useTransfer();
@@ -681,13 +692,7 @@ export function useAccountModalForUI({
         ),
       },
       [AccountStep.PayWithCard]: {
-        view: (
-          <VendorMenu
-            vendorList={vendorListBuy}
-            type={TradeTypes.Buy}
-            vendorForce={undefined}
-          />
-        ),
+        view: <VendorMenu {...{ ...vendorProps }} />,
         onBack: onBackReceive,
       },
       [AccountStep.NoAccount]: {
@@ -1341,7 +1346,7 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: "labelTryAnother",
               callback: () => {
-                transferRetry(true);
+                transferProps.onTransferClick(transferValue as any, false);
               },
             }}
             {...{
@@ -1394,114 +1399,6 @@ export function useAccountModalForUI({
         ),
       },
       [AccountStep.Transfer_Failed]: {
-        view: (
-          <Transfer_Failed
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
-              account,
-              error: isShowAccount.error,
-              t,
-            }}
-          />
-        ),
-      },
-
-      // transferRamp
-      [AccountStep.Transfer_RAMP_WaitForAuth]: {
-        view: (
-          <Transfer_WaitForAuth
-            providerName={account.connectName as ConnectProviders}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.Transfer_RAMP_First_Method_Denied]: {
-        view: (
-          <Transfer_First_Method_Denied
-            btnInfo={{
-              btnTxt: "labelTryAnother",
-              callback: () => {
-                const { __request__ } =
-                  store.getState()._router_modalData.transferRampValue;
-                if (__request__) {
-                  processRequestRampTransfer(__request__, false);
-                } else {
-                  setShowAccount({
-                    isShow: true,
-                    step: AccountStep.Transfer_RAMP_Failed,
-                  });
-                }
-              },
-            }}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.Transfer_RAMP_User_Denied]: {
-        view: (
-          <Transfer_User_Denied
-            btnInfo={{
-              btnTxt: "labelRetry",
-              callback: () => {
-                const { __request__ } =
-                  store.getState()._router_modalData.transferRampValue;
-                if (__request__) {
-                  processRequestRampTransfer(__request__, true);
-                } else {
-                  setShowAccount({
-                    isShow: true,
-                    step: AccountStep.Transfer_RAMP_Failed,
-                  });
-                }
-              },
-            }}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.Transfer_RAMP_In_Progress]: {
-        view: (
-          <Transfer_In_Progress
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.Transfer_RAMP_Success]: {
-        view: (
-          <Transfer_Success
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
-              account,
-              link: isShowAccount?.info?.hash
-                ? {
-                    name: "Txn Hash",
-                    url: isShowAccount?.info?.hash,
-                  }
-                : undefined,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.Transfer_RAMP_Failed]: {
         view: (
           <Transfer_Failed
             btnInfo={closeBtnInfo}
@@ -2204,7 +2101,7 @@ export function useAccountModalForUI({
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,
     sendAssetList,
-    // vendorProps,
+    vendorProps,
     onBackReceive,
     chainInfos,
     isLayer1Only,
@@ -2256,13 +2153,13 @@ export function useAccountModalForUI({
 
   return {
     nftDeployProps,
-    nftMintAdvanceProps,
     nftTransferProps,
     nftWithdrawProps,
     transferProps,
     withdrawProps,
     depositProps,
     resetProps,
+    collectionAdvanceProps,
     activeAccountProps,
     exportAccountProps,
     exportAccountAlertText,
@@ -2270,6 +2167,7 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
     copyToastOpen,
     setCopyToastOpen,
+    setCollectionToastOpen,
     openQRCode,
     setOpenQRCode,
     isShowAccount,
@@ -2279,6 +2177,8 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
+    collectionToastOpen,
+    collectionToastClose,
     // cancelNFTTransfer,
     // cancelNFTWithdraw,
     // vendorProps,

@@ -7,11 +7,9 @@ import {
   FeeInfo,
   getShortAddr,
   IPFS_LOOPRING_SITE,
-  IPFS_HEAD_URL,
   LinkIcon,
   MetaProperty,
   MintTradeNFT,
-  myLog,
   NFTMETA,
   RefreshIcon,
   RowConfig,
@@ -52,7 +50,7 @@ const TableStyle = styled(Table)`
   }
 ` as typeof Table;
 
-export const MintNFTConfirm = <// T extends NFT_MINT_VALUE<I>,
+export const MintNFTConfirm = <
   ME extends Partial<NFTMETA>,
   MI extends Partial<MintTradeNFT<any>>,
   I,
@@ -67,22 +65,22 @@ export const MintNFTConfirm = <// T extends NFT_MINT_VALUE<I>,
   handleFeeChange,
   chargeFeeTokenList,
   feeInfo,
+  baseURL,
   onNFTMintClick,
   mintService,
+  getIPFSString,
 }: NFTMintViewProps<ME, MI, I, C>) => {
-  const {t, ...rest} = useTranslation(["common"]);
-  const {isMobile} = useSettings();
+  const { t, ...rest } = useTranslation(["common"]);
+  const { isMobile } = useSettings();
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
   const getDisabled = React.useMemo(() => {
     return disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, nftMintBtnStatus]);
   const [error, setError] = React.useState(false);
-  const [src, setSrc] = React.useState(
-    metaData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
-  );
+  const [src, setSrc] = React.useState(getIPFSString(metaData?.image, baseURL));
   React.useEffect(() => {
-    setSrc(metaData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE));
+    setSrc(getIPFSString(metaData?.image ?? "", baseURL));
   }, [metaData?.image]);
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {
@@ -98,7 +96,7 @@ export const MintNFTConfirm = <// T extends NFT_MINT_VALUE<I>,
       }
     }, [] as Array<MetaProperty>) ?? [];
 
-  myLog("mint nftMintData", nftMintData);
+  // myLog("mint nftMintData", nftMintData);
 
   // @ts-ignore
   return (
@@ -163,12 +161,7 @@ export const MintNFTConfirm = <// T extends NFT_MINT_VALUE<I>,
                             onClick={async (event) => {
                               event.stopPropagation();
                               setError(false);
-                              setSrc(
-                                metaData?.image?.replace(
-                                  IPFS_HEAD_URL,
-                                  IPFS_LOOPRING_SITE
-                                )
-                              );
+                              setSrc(getIPFSString(metaData?.image, baseURL));
                             }}
                           >
                             <RefreshIcon style={{ height: 36, width: 36 }} />
@@ -345,7 +338,9 @@ export const MintNFTConfirm = <// T extends NFT_MINT_VALUE<I>,
                     }}
                     display={"inline-flex"}
                     title={nftMintData.nftId}
-                    href={`${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
+                    href={`
+                     ()
+                    ${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -517,7 +512,7 @@ export const MintNFTConfirm = <// T extends NFT_MINT_VALUE<I>,
                     mintService.backMetaDataSetup();
                   }}
                 >
-                  {t("labelCancel")}
+                  {t("labelMintPreview")}
                 </Button>
               </Grid>
               <Grid item xs={8} alignSelf={"stretch"}>

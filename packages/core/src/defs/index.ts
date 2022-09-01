@@ -22,8 +22,6 @@ export const LAYOUT = {
 
 export const REFRESH_RATE = 1000;
 
-export const TOAST_TIME = 3000;
-
 export const DAYS = 30;
 
 export const BIGO = sdk.toBig(0);

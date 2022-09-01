@@ -26,13 +26,16 @@
           {
             "label": "ETH-USDC",
             "value": "state.tokenMap.tokenMap[`LP-ETH-USDC`].address"
-        },{
-          "label": "MANA-USDC",
-          "value": "state.tokenMap.tokenMap[`LP-MANA-USDC`].address"
-        },{
-          "label": "SAND-USDC",
-          "value": "state.tokenMap.tokenMap[`LP-SAND-USDC`].address"
-        }]
+          },
+          {
+            "label": "MANA-USDC",
+            "value": "state.tokenMap.tokenMap[`LP-MANA-USDC`].address"
+          },
+          {
+            "label": "SAND-USDC",
+            "value": "state.tokenMap.tokenMap[`LP-SAND-USDC`].address"
+          }
+        ]
       },
       "column":[
         {

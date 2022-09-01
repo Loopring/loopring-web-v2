@@ -31,6 +31,7 @@ import {
   LoopringAPI,
   store,
   useBtnStatus,
+  getIPFSString,
 } from "../../index";
 
 import { connectProvides } from "@loopring-web/web3-provider";
@@ -39,12 +40,12 @@ import Web3 from "web3";
 import _ from "lodash";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
 
-export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
+export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   nftDepositProps: NFTDepositProps<T, I>;
 } => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
-  const { exchangeInfo, chainId, gasPrice } = useSystem();
+  const { exchangeInfo, chainId, gasPrice, baseURL } = useSystem();
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const { nftDepositValue, updateNFTDepositData, resetNFTDepositData } =
     useModalData();
@@ -410,12 +411,14 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
 
   const nftDepositProps: NFTDepositProps<T, I> = {
     handleOnNFTDataChange,
+    getIPFSString,
     onNFTDepositClick,
     walletMap: walletLayer1 as WalletMap<any>,
     coinMap: totalCoinMap as CoinMap<any>,
     tradeData: nftDepositValue as T,
     nftDepositBtnStatus: btnStatus,
     isNFTCheckLoading,
+    baseURL,
     btnInfo,
   };
 

@@ -38,7 +38,8 @@ export const HeaderMenu = styled(Container)`
 const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
   &:not(.layer-0) {
     display: flex;
-    height: var(--header-submenu-item-height);
+    min-height: var(--header-submenu-item-height);
+    height: fit-content;
     width: var(--header-submenu-item-weight);
     align-items: flex-start;
   }
@@ -249,6 +250,7 @@ Layer2Item = React.memo(
         <Typography
           lineHeight={"20px"}
           component={"p"}
+          whiteSpace={"pre-line"}
           variant={"body2"}
           color={"inherit"}
         >

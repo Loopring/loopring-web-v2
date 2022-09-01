@@ -12,24 +12,19 @@ import {
   WithdrawProps,
   ActiveAccountPanel,
   modalContentBaseStyle,
-  // SwitchPanelStyled,
-  // DepositNFTWrap,
-  // MintNFTConfirm,
-  // NFTMintProps,
-  // NFTDepositProps,
   InformationForAccountFrozen,
   DepositPanel,
   DepositProps,
   useSettings,
-  NFTMintAdvanceProps,
-  MintAdvanceNFTWrap,
   LayerswapNotice,
   DeployNFTWrap,
   NFTDeployProps,
   AccountStep,
+  CollectionAdvanceProps,
 } from "../..";
 import {
   Account,
+  CollectionMeta,
   FeeInfo,
   IBData,
   TradeNFT,
@@ -37,6 +32,8 @@ import {
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
+import { CollectionAdvanceWrap } from "./components/CollectionAdvanceWrap";
+
 const BoxStyle = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
 >`
@@ -46,9 +43,11 @@ const BoxStyle = styled(Box)<
   justify-content: center;
   ${({ theme }) => modalContentBaseStyle({ theme: theme })}
   background: ${({ theme }) => theme.colorBase.box};
+
   .trade-wrap {
     margin-top: -26px;
   }
+
   .trade-panel {
     position: relative;
     height: ${({ _height }) =>
@@ -125,7 +124,8 @@ const Modal = withTranslation("common")(
 
 export const ModalPanel = <
   T extends IBData<I>,
-  N extends IBData<I> & TradeNFT<I>,
+  N extends IBData<I> & TradeNFT<I, any>,
+  C extends CollectionMeta,
   I,
   F = FeeInfo
 >({
@@ -136,24 +136,27 @@ export const ModalPanel = <
   nftWithdrawProps,
   nftDeployProps,
   resetProps,
-  nftMintAdvanceProps,
+  // nftMintAdvanceProps,
   activeAccountProps,
+  collectionAdvanceProps,
   assetsData,
   account,
+  baseURL,
   ...rest
 }: {
   _width?: number | string;
   _height?: number | string;
   transferProps: TransferProps<T, I>;
   withdrawProps: WithdrawProps<T, I>;
-
+  baseURL: string;
   nftTransferProps: TransferProps<N, I>;
   nftWithdrawProps: WithdrawProps<N, I>;
   nftDeployProps: NFTDeployProps<N & { broker: string }, I, F>;
   depositProps: DepositProps<T, I>;
   // depositGroupProps: DepositGroupProps<T, I>;
   // nftDepositProps: NFTDepositProps<T, I>;
-  nftMintAdvanceProps: NFTMintAdvanceProps<T, I>;
+  collectionAdvanceProps: CollectionAdvanceProps<C>;
+  // nftMintAdvanceProps: NFTMintAdvanceProps<T, I>;
   resetProps: ResetProps<F>;
   activeAccountProps: ResetProps<F>;
   assetsData: any[];
@@ -162,7 +165,6 @@ export const ModalPanel = <
   setExportAccountToastOpen: any;
 }) => {
   const { isMobile } = useSettings();
-  // const { t } = useTranslation();
   const {
     modals,
     // setShowAmm,
@@ -170,15 +172,14 @@ export const ModalPanel = <
     setShowTransfer,
     setShowDeposit,
     setShowWithdraw,
-    // setShowNFTDeposit,
     setShowResetAccount,
     setShowActiveAccount,
     setShowExportAccount,
-    setShowNFTMintAdvance,
     setShowNFTTransfer,
     setShowNFTWithdraw,
     setShowNFTDeploy,
     setShowAccount,
+    setShowCollectionAdvance,
   } = useOpenModals();
   const {
     isShowTransfer,
@@ -187,13 +188,11 @@ export const ModalPanel = <
     isShowNFTTransfer,
     isShowNFTWithdraw,
     isShowNFTDeploy,
-    // isShowNFTDeposit,
     isShowResetAccount,
     isShowExportAccount,
     isShowTradeIsFrozen,
     isShowActiveAccount,
-    isShowNFTMintAdvance,
-    // isShowNFTMint,
+    isShowCollectionAdvance,
     isShowLayerSwapNotice,
   } = modals;
   const theme = useTheme();
@@ -256,6 +255,7 @@ export const ModalPanel = <
               _height: isMobile ? "auto" : 540,
               isThumb: false,
               type: "NFT",
+              baseURL,
               assetsData,
             }}
             onBack={() => {
@@ -283,6 +283,7 @@ export const ModalPanel = <
               isThumb: false,
               ...nftWithdrawProps,
               type: "NFT",
+              baseURL,
               assetsData,
             }}
             onBack={() => {
@@ -405,16 +406,30 @@ export const ModalPanel = <
         type={isShowTradeIsFrozen.type ?? "Action"}
       />
       <LayerswapNotice open={isShowLayerSwapNotice.isShow} account={account} />
+      {/*<Modal*/}
+      {/*  open={isShowNFTMintAdvance.isShow}*/}
+      {/*  onClose={() => setShowNFTMintAdvance({ isShow: false })}*/}
+      {/*  content={*/}
+      {/*    <MintAdvanceNFTWrap*/}
+      {/*      {...{*/}
+      {/*        ...rest,*/}
+      {/*        // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,*/}
+      {/*        // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,*/}
+      {/*        ...nftMintAdvanceProps,*/}
+      {/*      }}*/}
+      {/*    />*/}
+      {/*  }*/}
+      {/*/>*/}
       <Modal
-        open={isShowNFTMintAdvance.isShow}
-        onClose={() => setShowNFTMintAdvance({ isShow: false })}
+        open={isShowCollectionAdvance.isShow}
+        onClose={() => setShowCollectionAdvance({ isShow: false })}
         content={
-          <MintAdvanceNFTWrap
+          <CollectionAdvanceWrap
             {...{
               ...rest,
               // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
-              ...nftMintAdvanceProps,
+              ...collectionAdvanceProps,
             }}
           />
         }

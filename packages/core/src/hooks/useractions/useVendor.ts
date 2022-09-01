@@ -11,6 +11,7 @@ import {
   VendorList,
   WALLET_TYPE,
   WalletMap,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {
   checkErrorInfo,
@@ -20,7 +21,6 @@ import {
   LoopringAPI,
   makeWalletLayer2,
   store,
-  TOAST_TIME,
   useAccount,
   useBtnStatus,
   useChargeFees,

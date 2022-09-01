@@ -1,6 +1,6 @@
 import {
   AssetsIcon,
-  L2HistoryIcon,
+  ImageIcon,
   L2MyLiquidityIcon,
   MintIcon,
   ProfileIcon,
@@ -23,6 +23,8 @@ export const SoursURL = "https://static.loopring.io/assets/";
 export const LoopringIPFSSite = "d1vjs0p75nt8te.cloudfront.net";
 export const LoopringIPFSSiteProtocol = "https";
 export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`;
+export const IPFS_HEAD_URL = "ipfs://";
+export const IPFS_HEAD_URL_REG = /^ipfs:\/\/(ipfs\/)?/i;
 export const IPFS_LOOPRING_SITE = "https://ipfs.io/ipfs/"; // sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;
 
 export const profile = {
@@ -241,7 +243,7 @@ export const subMenuNFT = {
     },
     {
       icon: MintIcon,
-      router: { path: "/nft/mintNFT" },
+      router: { path: "/nft/mintNFTLanding" },
       label: {
         id: "mintNFT",
         i18nKey: "labelMintNFT",
@@ -249,12 +251,12 @@ export const subMenuNFT = {
       },
     },
     {
-      icon: L2HistoryIcon,
-      router: { path: "/nft/transactionNFT" },
+      icon: ImageIcon,
+      router: { path: "/nft/myCollection" },
       label: {
-        id: "transactionNFT",
-        i18nKey: "labelTransactionNFT",
-        description: "labelTransactionNFTDes",
+        id: "collection",
+        i18nKey: "labelMyCollection",
+        description: "labelMyCollectionDes",
       },
     },
   ],

@@ -24,6 +24,7 @@ import {
   WalletMap,
   AddressError,
   WALLET_TYPE,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 
 import {
@@ -32,7 +33,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   makeWalletLayer2,
-  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   useWalletLayer2Socket,

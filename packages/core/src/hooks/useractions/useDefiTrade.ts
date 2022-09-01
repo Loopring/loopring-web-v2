@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  DeFiChgType,
   DeFiWrapProps,
   TradeBtnStatus,
   useOpenModals,
@@ -16,13 +15,14 @@ import {
   MarketType,
   myLog,
   SDK_ERROR_MAP_TO_UI,
+  DeFiChgType,
+  TradeDefi,
 } from "@loopring-web/common-resources";
 
 import {
   useSubmitBtn,
   makeWalletLayer2,
   useWalletLayer2Socket,
-  TradeDefi,
 } from "@loopring-web/core";
 import _ from "lodash";
 

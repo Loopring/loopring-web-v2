@@ -24,6 +24,7 @@ import {
   walletLayer2Service,
   useSystem,
   useWalletLayer2NFT,
+  getIPFSString,
 } from "../../index";
 
 import {
@@ -74,7 +75,7 @@ export function useNFTMint<
   const subject = React.useMemo(() => mintService.onSocket(), []);
   const history = useHistory();
   const { tokenMap, totalCoinMap } = useTokenMap();
-  const { exchangeInfo, chainId } = useSystem();
+  const { exchangeInfo, chainId, baseURL } = useSystem();
   const { account } = useAccount();
   const { updateNFTMintData } = useModalData();
   const {
@@ -149,7 +150,10 @@ export function useNFTMint<
 
   const handleMintDataChange = React.useCallback(
     async (data: Partial<MintReadTradeNFT<I>>) => {
-      const { nftMETA, mintData } = nftMintValue;
+      const { nftMETA, mintData, collection } = nftMintValue;
+      // const {
+      //   nftMintValue: { nftMETA, mintData, collection },
+      // } = store.getState()._router_modalData;
       const buildNFTMeta = { ...nftMETA };
       const buildMint = { ...mintData };
       Reflect.ownKeys(data).map((key) => {
@@ -160,23 +164,23 @@ export function useNFTMint<
           case "fee":
             buildMint.fee = data.fee;
             break;
-          // case "tokenAddress":
-          //   buildMint.tokenAddress = data.tokenAddress;
-          //   break;
         }
       });
       updateNFTMintData({
         mintData: buildMint,
         nftMETA: buildNFTMeta,
+        collection,
       });
     },
     [nftMintValue]
   );
   const resetNFTMINT = () => {
-    checkFeeIsEnough();
-    handleMintDataChange({
-      fee: feeInfo,
-    });
+    if (nftMintValue.mintData.tokenAddress) {
+      checkFeeIsEnough();
+      handleMintDataChange({
+        fee: feeInfo,
+      });
+    }
   };
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
@@ -242,7 +246,9 @@ export function useNFTMint<
               updateHW({ wallet: account.accAddress, isHWAddr });
             }
             walletLayer2Service.sendUserUpdate();
-            updateWalletLayer2NFT({ page });
+            history.push({
+              pathname: `/NFT/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}|${nftMintValue.collection?.id}`,
+            });
             mintService.emptyData();
             history.push("/nft/");
             // checkFeeIsEnough();
@@ -319,6 +325,7 @@ export function useNFTMint<
         LoopringAPI.userAPI &&
         LoopringAPI.nftAPI &&
         exchangeInfo &&
+        nftMintValue.collection &&
         nftMintValue.mintData &&
         nftMintValue.mintData.fee &&
         checkAvailable({ nftMintValue, isFeeNotEnough })
@@ -363,8 +370,10 @@ export function useNFTMint<
             },
             counterFactualNftInfo: {
               nftOwner: account.accAddress,
-              nftFactory: sdk.NFTFactory[chainId],
-              nftBaseUri: "",
+              nftFactory:
+                nftMintValue.collection.nftFactory ??
+                sdk.NFTFactory_Collection[chainId],
+              nftBaseUri: nftMintValue.collection.baseUri ?? "",
             },
             royaltyPercentage: nftMintValue.nftMETA.royaltyPercentage ?? 0,
             forceToMint: false,
@@ -414,7 +423,8 @@ export function useNFTMint<
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
-    // metaData: nftMintValue.nftMETA as Me,
+    baseURL,
+    getIPFSString,
     handleMintDataChange,
     onNFTMintClick,
     walletMap: {} as any,
@@ -452,7 +462,7 @@ export function useNFTMint<
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [subject]);
 
   return {
     nftMintProps,
