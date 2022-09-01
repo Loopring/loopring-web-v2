@@ -2,7 +2,9 @@ import React from "react";
 import {
   DeFiChgType,
   DeFiWrapProps,
-  TradeBtnStatus, useOpenModals, useToggle,
+  TradeBtnStatus,
+  useOpenModals,
+  useToggle,
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
@@ -72,24 +74,26 @@ export const useDefiTrade = <
   const [confirmShowLimitBalance, setConfirmShowLimitBalance] =
     React.useState<boolean>(false);
 
-  const {tokenMap} = useTokenMap();
-  const {account} = useAccount();
+  const { tokenMap } = useTokenMap();
+  const { account } = useAccount();
   // const { status: walletLayer2Status } = useWalletLayer2();
-  const {exchangeInfo, allowTrade} = useSystem();
-  const {tradeDefi, updateTradeDefi, resetTradeDefi} = useTradeDefi();
-  const {setShowSupport, setShowTradeIsFrozen} = useOpenModals();
-  const [serverUpdate, setServerUpdate] = React.useState(false)
+  const { exchangeInfo, allowTrade } = useSystem();
+  const { tradeDefi, updateTradeDefi, resetTradeDefi } = useTradeDefi();
+  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
+  const [serverUpdate, setServerUpdate] = React.useState(false);
 
-  const {toggle: {defiInvest}} = useToggle();
-  const [{coinSellSymbol, coinBuySymbol}, setSymbol] = React.useState(() => {
+  const {
+    toggle: { defiInvest },
+  } = useToggle();
+  const [{ coinSellSymbol, coinBuySymbol }, setSymbol] = React.useState(() => {
     if (isJoin) {
       const [, coinBuySymbol, coinSellSymbol] =
-      market.match(/(\w+)-(\w+)/i) ?? [];
-      return {coinBuySymbol, coinSellSymbol};
+        market.match(/(\w+)-(\w+)/i) ?? [];
+      return { coinBuySymbol, coinSellSymbol };
     } else {
       const [, coinSellSymbol, coinBuySymbol] =
-      market.match(/(\w+)-(\w+)/i) ?? [];
-      return {coinBuySymbol, coinSellSymbol};
+        market.match(/(\w+)-(\w+)/i) ?? [];
+      return { coinBuySymbol, coinSellSymbol };
     }
   });
 
@@ -282,17 +286,20 @@ export const useDefiTrade = <
           label: "labelEnterAmount",
         };
       } else if (
-        sdk.toBig(tradeDefi?.sellVol).minus(tradeDefi?.miniSellVol ?? 0).lt(0)
+        sdk
+          .toBig(tradeDefi?.sellVol)
+          .minus(tradeDefi?.miniSellVol ?? 0)
+          .lt(0)
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDefiMin| ${getValuePrecisionThousand(
             sdk
               .toBig(tradeDefi?.miniSellVol ?? 0)
-              .div("1e" + tokenMap[coinSellSymbol]?.decimals),
-            tokenMap[coinSellSymbol].precision,
-            tokenMap[coinSellSymbol].precision,
-            tokenMap[coinSellSymbol].precision,
+              .div("1e" + tokenMap[ coinSellSymbol ]?.decimals),
+            tokenMap[ coinSellSymbol ].precision,
+            tokenMap[ coinSellSymbol ].precision,
+            tokenMap[ coinSellSymbol ].precision,
             false,
             { floor: false, isAbbreviate: true }
           )} ${coinSellSymbol}`,
@@ -323,14 +330,18 @@ export const useDefiTrade = <
         coinSell: {
           belong: coinSellSymbol,
           balance: undefined,
-          tradeValue:tradeDefi.deFiCalcData?.coinSell?.belong === coinSellSymbol
-          ? tradeDefi.deFiCalcData?.coinSell?.tradeValue: undefined,
+          tradeValue:
+            tradeDefi.deFiCalcData?.coinSell?.belong === coinSellSymbol
+              ? tradeDefi.deFiCalcData?.coinSell?.tradeValue
+              : undefined,
         },
         coinBuy: {
           belong: coinBuySymbol,
           balance: undefined,
-          tradeValue:tradeDefi.deFiCalcData?.coinBuy?.belong === coinBuySymbol
-          ? tradeDefi.deFiCalcData?.coinBuy?.tradeValue: undefined,
+          tradeValue:
+            tradeDefi.deFiCalcData?.coinBuy?.belong === coinBuySymbol
+              ? tradeDefi.deFiCalcData?.coinBuy?.tradeValue
+              : undefined,
         },
       };
       let _feeInfo = feeInfo
@@ -338,15 +349,15 @@ export const useDefiTrade = <
         : {
             fee: tradeDefi.fee,
             feeRaw: tradeDefi.feeRaw,
-        };
+          };
 
       if (account.readyState === AccountStatus.ACTIVATED) {
         if (clearTrade === true) {
           walletLayer2Service.sendUserUpdate();
         }
         walletMap = makeWalletLayer2(true).walletMap;
-        deFiCalcDataInit.coinSell.balance = walletMap[ coinSellSymbol ]?.count;
-        deFiCalcDataInit.coinBuy.balance = walletMap[ coinBuySymbol ]?.count;
+        deFiCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count;
+        deFiCalcDataInit.coinBuy.balance = walletMap[coinBuySymbol]?.count;
       }
 
       myLog(
@@ -441,7 +452,7 @@ export const useDefiTrade = <
         setIsLoading(true);
       }
       Promise.all([
-        LoopringAPI.defiAPI?.getDefiMarkets(),
+        LoopringAPI.defiAPI?.getDefiMarkets({}),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(
               isJoin
@@ -450,13 +461,19 @@ export const useDefiTrade = <
             )
           : Promise.resolve(undefined),
       ]).then(([defiMapInfo, _feeInfo]) => {
-        if ((defiMapInfo as sdk.RESULT_INFO).code ||
-          (defiMapInfo as sdk.RESULT_INFO).message) {
+        if (
+          (defiMapInfo as sdk.RESULT_INFO).code ||
+          (defiMapInfo as sdk.RESULT_INFO).message
+        ) {
           setServerUpdate(true);
         } else {
-          let status: any = defiMapInfo.markets[ market ]?.status ?? 0;
-          status = ("00000000" + (status).toString(2)).split('');
-          if (!(isJoin ? status[ status.length - 2 ] === "1" : status[ status.length - 4 ] === "1")) {
+          let status: any = defiMapInfo.markets[market]?.status ?? 0;
+          status = ("00000000" + status.toString(2)).split("");
+          if (
+            !(isJoin
+              ? status[status.length - 2] === "1"
+              : status[status.length - 4] === "1")
+          ) {
             setServerUpdate(true);
           } else {
             updateDefiSyncMap({
@@ -467,7 +484,6 @@ export const useDefiTrade = <
               },
             });
           }
-
         }
         resetDefault(clearTrade, {
           fee: tradeDefi.fee,
@@ -616,7 +632,7 @@ export const useDefiTrade = <
       setToastOpen({
         open: true,
         type: "error",
-        content: t("labelInvestFailed"),//+ ` error: ${(reason as any)?.message}`,
+        content: t("labelInvestFailed"), //+ ` error: ${(reason as any)?.message}`,
       });
     } finally {
       setConfirmShowLimitBalance(false);
@@ -653,13 +669,12 @@ export const useDefiTrade = <
       tradeDefi.buyVol)
     ) {
       if (!allowTrade.defiInvest.enable) {
-        setShowSupport({isShow: true});
+        setShowSupport({ isShow: true });
       } else if (!defiInvest.enable) {
-        setShowTradeIsFrozen({isShow: true, type: "DefiInvest"})
+        setShowTradeIsFrozen({ isShow: true, type: "DefiInvest" });
       } else {
         sendRequest();
       }
-
     } else {
       return false;
     }
@@ -789,7 +804,9 @@ export const useDefiTrade = <
       deFiCalcData: {
         ...tradeDefi.deFiCalcData,
       },
-      maxBuyVol: tradeDefi.defiBalances? tradeDefi.defiBalances[coinBuySymbol]: undefined,
+      maxBuyVol: tradeDefi.defiBalances
+        ? tradeDefi.defiBalances[coinBuySymbol]
+        : undefined,
       maxSellVol: tradeDefi.maxSellVol,
       confirmShowLimitBalance,
       tokenSell: tokenMap[coinSellSymbol],
