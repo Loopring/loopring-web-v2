@@ -417,7 +417,7 @@ export type TradeDefi<C> = {
   maxFeeBips?: number;
   miniSellVol?: string;
   request?: sdk.DefiOrderRequest;
-  defiBalances?: { [ key: string ]: string };
+  defiBalances?: { [key: string]: string };
   lastInput?: DeFiChgType;
 };
 
