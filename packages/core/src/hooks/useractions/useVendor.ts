@@ -384,6 +384,8 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   const [balanceNotEnough, setBalanceNotEnough] = React.useState(false);
   const { offRampValue } = useModalData();
   const { processRequestRampTransfer: processRequest } = useRampTransPost();
+  // const [_isFeeNotEnough, setIsFeeEnough] = React.useState();
+
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>)
   );
@@ -403,7 +405,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
-    setIsFeeNotEnough,
+    // setIsFeeNotEnough,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
     updateData: ({ fee }) => {
@@ -411,6 +413,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       updateTransferRampData({ ...transferRampValue, fee });
     },
   });
+
   React.useEffect(() => {
     if (
       info?.transferRamp === AccountStep.Transfer_RAMP_Failed &&
@@ -458,12 +461,15 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         return;
       } else {
         disableBtn();
-        if (isExceedBalance && feeToken.tokenId === sellToken.tokenId) {
-          setIsFeeNotEnough({
-            isFeeNotEnough: true,
-            isOnLoading: false,
-          });
-        } else if (isExceedBalance) {
+        // if (isExceedBalance && feeToken.tokenId === sellToken.tokenId) {
+        //   // setIsFeeEnough(isFeeNotEnoughtrue);
+        //   // setIsFeeNotEnough({
+        //   //   isFeeNotEnough: true,
+        //   //   isOnLoading: false,
+        //   // });
+        //   setBalanceNotEnough(true);
+        // } else
+        if (isExceedBalance) {
           setBalanceNotEnough(true);
         }
         // else {
