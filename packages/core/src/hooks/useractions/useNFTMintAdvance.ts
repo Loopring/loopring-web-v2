@@ -14,6 +14,7 @@ import {
   ErrorType,
   Explorer,
   IPFS_HEAD_URL,
+  LIVE_FEE_TIMES,
   MINT_LIMIT,
   myLog,
   TOAST_TIME,
@@ -86,6 +87,7 @@ export const useNFTMintAdvance = <
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
+    resetIntervalTime,
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
@@ -181,7 +183,7 @@ export const useNFTMintAdvance = <
   ]);
 
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     resetNFTMintAdvanceData();
   }, [checkFeeIsEnough, updateNFTMintAdvanceData]);
   const processRequest = React.useCallback(
@@ -254,7 +256,7 @@ export const useNFTMintAdvance = <
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough(true);
+                  checkFeeIsEnough({ isRequiredAPI: true });
                 }
 
                 setShowAccount({
@@ -675,6 +677,7 @@ export const useNFTMintAdvance = <
   return {
     nftMintAdvanceProps,
     retryBtn,
+    resetIntervalTime,
     resetDefault,
   };
 };

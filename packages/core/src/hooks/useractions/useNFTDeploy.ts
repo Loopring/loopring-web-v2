@@ -28,6 +28,7 @@ import {
   TradeNFT,
   UIERROR_CODE,
   TOAST_TIME,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 import { useBtnStatus } from "../common/useBtnStatus";
 
@@ -52,8 +53,12 @@ export function useNFTDeploy<
   const { nftDeployValue, updateNFTDeployData, resetNFTDeployData } =
     useModalData();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-  const { setShowAccount, setShowNFTDetail, setShowNFTDeploy } =
-    useOpenModals();
+  const {
+    setShowAccount,
+    setShowNFTDetail,
+    setShowNFTDeploy,
+    modals: { isShowNFTDeploy },
+  } = useOpenModals();
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
   const history = useHistory();
@@ -66,6 +71,7 @@ export function useNFTDeploy<
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
+    resetIntervalTime,
   } = useChargeFees({
     tokenAddress: nftDeployValue.tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
@@ -131,7 +137,7 @@ export function useNFTDeploy<
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough(true);
+                  checkFeeIsEnough({ isRequiredAPI: true });
                 }
                 setShowAccount({
                   isShow: true,
@@ -244,6 +250,16 @@ export function useNFTDeploy<
       updateHW,
     ]
   );
+  React.useEffect(() => {
+    if (isShowNFTDeploy.isShow) {
+      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
+    } else {
+      resetIntervalTime();
+    }
+    return () => {
+      resetIntervalTime();
+    };
+  }, [isShowNFTDeploy]);
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && !isFeeNotEnough.isFeeNotEnough) {

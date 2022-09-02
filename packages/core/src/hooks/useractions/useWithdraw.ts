@@ -24,6 +24,7 @@ import {
   AddressError,
   EXCHANGE_TYPE,
   TOAST_TIME,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -79,6 +80,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
+    resetIntervalTime,
   } = useChargeFees({
     requestType: withdrawType,
     tokenSymbol: withdrawValue.belong,
@@ -249,7 +251,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       checkFeeIsEnough();
       return;
     }
-    checkFeeIsEnough(true);
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     if (symbol) {
       if (walletMap2) {
         updateWithdrawData({
@@ -321,7 +323,12 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       account.readyState === AccountStatus.ACTIVATED
     ) {
       resetDefault();
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [isShow, accountStatus, account.readyState]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
@@ -387,7 +394,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough(true);
+                  checkFeeIsEnough({ isRequiredAPI: true });
                 }
                 setShowAccount({
                   isShow: true,

@@ -430,3 +430,5 @@ export type L2CollectionFilter = {
   tokenAddress?: string;
   owner?: string;
 };
+
+export const LIVE_FEE_TIMES = 60000; // todo
