@@ -9,7 +9,6 @@ import {
   FeeChargeOrderUATDefault,
   FeeInfo,
   globalSetup,
-  myLog,
   WalletMap,
 } from "@loopring-web/common-resources";
 import {
@@ -369,21 +368,9 @@ export function useChargeFees({
   const checkFeeIsEnough = (
     props: undefined | { isRequiredAPI: true; intervalTime?: number }
   ) => {
-    //{
-    //     isRequiredAPI = false,
-    //     intervalTime = INTERVAL_TIME,
-    //   }
     if (props?.isRequiredAPI) {
-      // myLog("checkFeeIsEnough setIntervalTime", props.intervalTime);
       const intervalTime = props.intervalTime;
       setIntervalTime((state) => {
-        myLog(
-          "checkFeeIsEnough setIntervalTime",
-          requestType,
-          intervalTime,
-          state
-        );
-
         return intervalTime ? intervalTime : state;
       });
       getFeeList();
