@@ -66,7 +66,11 @@ export function useNFTMint<
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
   };
-  checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
+  // resetIntervalTime: () => void;
+  checkFeeIsEnough: (props?: {
+    isRequiredAPI: true;
+    intervalTime?: number;
+  }) => void;
   handleFeeChange: (value: FeeInfo) => void;
   feeInfo: FeeInfo;
   handleTabChange: (value: 0 | 1) => void;
@@ -176,7 +180,7 @@ export function useNFTMint<
   );
   const resetNFTMINT = () => {
     if (nftMintValue.mintData.tokenAddress) {
-      checkFeeIsEnough();
+      checkFeeIsEnough({ isRequiredAPI: true });
       handleMintDataChange({
         fee: feeInfo,
       });
@@ -251,7 +255,6 @@ export function useNFTMint<
             });
             mintService.emptyData();
             history.push("/nft/");
-            // checkFeeIsEnough();
           }
         }
       } catch (reason: any) {
@@ -282,7 +285,7 @@ export function useNFTMint<
               (reason as sdk.RESULT_INFO)?.code || 0
             )
           ) {
-            checkFeeIsEnough(true);
+            checkFeeIsEnough({ isRequiredAPI: true });
           }
 
           setShowAccount({

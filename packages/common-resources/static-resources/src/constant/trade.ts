@@ -417,7 +417,7 @@ export type TradeDefi<C> = {
   maxFeeBips?: number;
   miniSellVol?: string;
   request?: sdk.DefiOrderRequest;
-  defiBalances?: { [key: string]: string };
+  defiBalances?: { [ key: string ]: string };
   lastInput?: DeFiChgType;
 };
 
@@ -426,3 +426,5 @@ export type L2CollectionFilter = {
   tokenAddress?: string;
   owner?: string;
 };
+
+export const LIVE_FEE_TIMES = 60000; // todo

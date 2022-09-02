@@ -22,6 +22,7 @@ import {
   useWalletLayer2,
 } from "../../index";
 
+const INTERVAL_TIME = (() => 90000)();
 export function useChargeFees({
   tokenSymbol,
   requestType,
@@ -30,11 +31,13 @@ export function useChargeFees({
   updateData,
   isActiveAccount = false,
   deployInWithdraw = undefined,
+  intervalTime = INTERVAL_TIME,
 }: {
   tokenAddress?: string | undefined;
   tokenSymbol?: string | undefined;
   requestType: sdk.OffchainFeeReqType | sdk.OffchainNFTFeeReqType;
   amount?: number;
+  intervalTime?: number;
   updateData?:
     | undefined
     | ((props: {
@@ -54,9 +57,13 @@ export function useChargeFees({
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
   };
-  checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
+  checkFeeIsEnough: (props?: {
+    isRequiredAPI: true;
+    intervalTime?: number;
+  }) => void;
   handleFeeChange: (value: FeeInfo) => void;
   feeInfo: FeeInfo;
+  resetIntervalTime: () => void;
 } {
   const [feeInfo, setFeeInfo] = React.useState<FeeInfo>({
     belong: "ETH",
@@ -82,6 +89,7 @@ export function useChargeFees({
   });
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
+  const [_intervalTime, setIntervalTime] = React.useState<number>(intervalTime);
   const { status: walletLayer2Status } = useWalletLayer2();
   const handleFeeChange = (_value: FeeInfo): void => {
     const walletMap =
@@ -221,10 +229,13 @@ export function useChargeFees({
               fees = response.fees;
             }
           }
-
-          nodeTimer.current = setTimeout(() => {
-            getFeeList();
-          }, 900000); //15*60*1000 //900000
+          setIntervalTime((state) => {
+            // myLog("_intervalTime", request.requestType, state);
+            nodeTimer.current = setTimeout(() => {
+              getFeeList();
+            }, state);
+            return state;
+          });
           let _feeInfo: any = undefined;
           if (fees && feeChargeOrder) {
             const _chargeFeeTokenList = feeChargeOrder?.reduce((pre, item) => {
@@ -341,7 +352,7 @@ export function useChargeFees({
             setChargeFeeTokenList(_chargeFeeTokenList ?? []);
           }
         } catch (reason: any) {
-          myLog("chargeFeeTokenList, error", reason);
+          // myLog("chargeFeeTokenList, error", reason);
           if ((reason as sdk.RESULT_INFO).code) {
           }
         }
@@ -349,14 +360,32 @@ export function useChargeFees({
       } else {
         nodeTimer.current = setTimeout(() => {
           getFeeList();
-        }, 1000); //15*60*1000 //900000
+        }, 1000);
       }
     },
     globalSetup.wait,
     { trailing: true }
   );
-  const checkFeeIsEnough = (isRequiredAPI?: boolean) => {
-    if (isRequiredAPI) {
+  const checkFeeIsEnough = (
+    props: undefined | { isRequiredAPI: true; intervalTime?: number }
+  ) => {
+    //{
+    //     isRequiredAPI = false,
+    //     intervalTime = INTERVAL_TIME,
+    //   }
+    if (props?.isRequiredAPI) {
+      // myLog("checkFeeIsEnough setIntervalTime", props.intervalTime);
+      const intervalTime = props.intervalTime;
+      setIntervalTime((state) => {
+        myLog(
+          "checkFeeIsEnough setIntervalTime",
+          requestType,
+          intervalTime,
+          state
+        );
+
+        return intervalTime ? intervalTime : state;
+      });
       getFeeList();
     } else {
       const walletMap =
@@ -447,6 +476,9 @@ export function useChargeFees({
   return {
     chargeFeeTokenList,
     isFeeNotEnough,
+    resetIntervalTime: () => {
+      setIntervalTime(INTERVAL_TIME);
+    },
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,

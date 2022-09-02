@@ -14,12 +14,8 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import {
   BackIcon,
   CollectionMeta,
-  FeeInfo,
-  Info2Icon,
   TradeNFT,
 } from "@loopring-web/common-resources";
-import { bindHover } from "material-ui-popup-state/es";
-import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
   LoopringAPI,
   makeMeta,
@@ -131,15 +127,23 @@ export const MintNFTAdvancePanel = <
   Co extends CollectionMeta,
   I
 >() => {
-  const { resetDefault: resetNFTMint, nftMintAdvanceProps } =
-    useNFTMintAdvance();
+  const {
+    resetDefault: resetNFTMint,
+    nftMintAdvanceProps,
+    resetIntervalTime,
+  } = useNFTMintAdvance();
 
   const history = useHistory();
   const match: any = useRouteMatch("/nft/:type");
   React.useEffect(() => {
     if (match.params?.type === "mintNFTAdvance") {
       resetNFTMint();
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [match.params?.type]);
   const { t } = useTranslation("common");
 

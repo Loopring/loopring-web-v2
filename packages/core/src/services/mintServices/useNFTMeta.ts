@@ -7,6 +7,7 @@ import {
   NFTMETA,
   UIERROR_CODE,
   CollectionMeta,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 import { IpfsFile, NFTMetaProps } from "@loopring-web/component-lib";
 import {
@@ -176,6 +177,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
+    resetIntervalTime,
   } = useChargeFees({
     tokenAddress: nftMintValue?.mintData?.tokenAddress?.toLowerCase(),
     requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
@@ -295,6 +297,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
 
   const resetMETADAT = (_nftMintValue?: NFT_MINT_VALUE<any>) => {
     onDelete();
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
   };
   const onMetaClick = React.useCallback(() => {
     const uniqueId = (nftMintValue.nftMETA as T).name + Date.now();
@@ -333,7 +336,6 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
     [handleTabChange]
   );
   React.useEffect(() => {
-    checkFeeIsEnough();
     const subscription = subject.subscribe((props) => {
       commonSwitch(props);
     });
@@ -353,6 +355,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
+    resetIntervalTime,
     // tokenAddress,
     // resetMETADAT,
     errorOnMeta,

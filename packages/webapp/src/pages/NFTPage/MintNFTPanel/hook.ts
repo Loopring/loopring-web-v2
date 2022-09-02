@@ -44,6 +44,7 @@ export const useMintNFTPanel = <
     isFeeNotEnough,
     checkFeeIsEnough,
     handleFeeChange,
+    resetIntervalTime,
     feeInfo,
     errorOnMeta,
   } = useNFTMeta<Me, Co>({ handleTabChange, nftMintValue });
@@ -56,6 +57,7 @@ export const useMintNFTPanel = <
     feeInfo,
     handleTabChange,
     nftMintValue,
+    // resetIntervalTime,
   });
 
   React.useEffect(() => {
@@ -65,7 +67,12 @@ export const useMintNFTPanel = <
       match?.params?.item === "mintNFT"
     ) {
       mintService.emptyData(match?.params?.contract ?? "");
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [accountStatus, account.readyState, match?.params?.item]);
 
   return {

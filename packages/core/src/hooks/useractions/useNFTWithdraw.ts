@@ -19,6 +19,7 @@ import {
   AddressError,
   EXCHANGE_TYPE,
   TOAST_TIME,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -71,6 +72,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
+    resetIntervalTime,
     checkFeeIsEnough,
   } = useChargeFees({
     requestType: sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
@@ -175,7 +177,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
       checkFeeIsEnough();
       return;
     }
-    checkFeeIsEnough(true);
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     if (nftWithdrawValue.nftData) {
       updateNFTWithdrawData({
         // ...nftWithdrawValue,
@@ -216,7 +218,12 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   React.useEffect(() => {
     if (isShow || info?.isShowLocal) {
       resetDefault();
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [isShow, info?.isShowLocal]);
 
   const processRequest = React.useCallback(
@@ -279,7 +286,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough(true);
+                  checkFeeIsEnough({ isRequiredAPI: true });
                 }
 
                 setShowAccount({
