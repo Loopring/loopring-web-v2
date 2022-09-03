@@ -1,9 +1,3 @@
-// import * as sdk from "@loopring-web/loopring-sdk";
+import { DualViewInfo } from "@loopring-web/common-resources";
 
-export type RawDataDualsItem = {
-  apy: string;
-  settlementDate: string;
-  term: string;
-  targetPrice: string;
-  ratio: string;
-};
+export type RawDataDualsItem = DualViewInfo;

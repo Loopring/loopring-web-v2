@@ -4,6 +4,7 @@ import {
   confirmation,
   findDualMarket,
   LoopringAPI,
+  store,
   useDualMap,
   useSystem,
   useTokenPrices,
@@ -11,6 +12,68 @@ import {
 import React from "react";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { DualPrice } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
+import { toBig } from "@loopring-web/loopring-sdk";
+import {
+  AccountStatus,
+  DualViewInfo,
+  getValuePrecisionThousand,
+  myLog,
+  SagaStatus,
+} from "@loopring-web/common-resources";
+import moment from "moment";
+
+export const makeDualViewItem = (
+  info: sdk.DualProductAndPrice,
+  index: sdk.DualIndex,
+  rule: sdk.DualRulesCoinsInfo
+  // balance: sdk.DualBalance
+): DualViewInfo => {
+  const { tokenPrices } = store.getState().tokenPrices;
+
+  const { expireTime, base, createTime, strike } = info;
+
+  const { baseProfitStep } = rule;
+  const settleRatio = toBig(strike).times(0.54);
+  const _baseProfitStep = Number(baseProfitStep);
+  const apy = settleRatio.div((expireTime - Date.now()) / 86400000).times(365); //
+
+  const term = moment(new Date(expireTime)).from(new Date(createTime), true);
+  myLog("dual", {
+    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
+    settleRatio: getValuePrecisionThousand(
+      settleRatio,
+      _baseProfitStep,
+      _baseProfitStep,
+      _baseProfitStep,
+      false
+    ), //targetPrice
+    term,
+    // targetPrice,
+    // subscribeData,
+    productId: info.productId,
+    expireTime,
+    currentPrice: tokenPrices[base],
+    // balance,
+  });
+  // const apr =  info.dualPrice.ba
+  return {
+    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
+    settleRatio: getValuePrecisionThousand(
+      settleRatio,
+      _baseProfitStep,
+      _baseProfitStep,
+      _baseProfitStep,
+      false
+    ), //targetPrice
+    term,
+    // targetPrice,
+    // subscribeData,
+    productId: info.productId,
+    expireTime,
+    currentPrice: tokenPrices[base],
+  };
+};
 
 export const useDualHook = ({
   setConfirmDualInvest,
@@ -19,7 +82,7 @@ export const useDualHook = ({
 }) => {
   const { t } = useTranslation("common");
   const match: any = useRouteMatch("/invest/dual/:market?");
-  const { marketArray, tradeMap } = useDualMap();
+  const { marketArray, tradeMap, status: dualStatus } = useDualMap();
 
   const { tokenPrices } = useTokenPrices();
   const [priceObj, setPriceObj] = React.useState<{
@@ -51,6 +114,8 @@ export const useDualHook = ({
   const [market, setMarket] = React.useState(() =>
     findDualMarket(marketArray, pairASymbol, pairBSymbol)
   );
+  const [pair, setPair] = React.useState(`${pairASymbol}-${pairBSymbol}`);
+
   const [[marketBase, marketQuote], setMarketPair] = React.useState(() => {
     // @ts-ignore
     const [, , coinA, coinB] = market
@@ -68,20 +133,22 @@ export const useDualHook = ({
         | { pairB: string }
     ) => {
       let market: any;
+      let _pairBSymbol: string = "";
+      let _pairASymbol = pairASymbol;
       if (prosp.hasOwnProperty("pairA")) {
-        const pairASymbol = (prosp as any).pairA;
-        const pairBSymbol = tradeMap[pairASymbol]?.tokenList[0];
-        setPairASymbol(pairASymbol);
-        setPairBSymbol(pairBSymbol);
-        market = findDualMarket(marketArray, pairASymbol, pairBSymbol);
+        _pairASymbol = (prosp as any).pairA;
+        _pairBSymbol = tradeMap[_pairASymbol]?.tokenList[0];
+        setPairASymbol(_pairASymbol);
+        setPairBSymbol(_pairBSymbol);
+        market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol);
       } else if (prosp.hasOwnProperty("pairB")) {
-        const pairBSymbol = (prosp as any).pairB;
-        market = findDualMarket(marketArray, pairASymbol, pairBSymbol);
+        _pairBSymbol = (prosp as any).pairB;
+        setPairBSymbol(_pairBSymbol);
+        market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol);
       }
-      const [, , coinA, coinB] = market
-        ? market
-        : "DUAL-LRC-USDC".match(/(dual-)?(\w+)-(\w+)/i);
+      const [, , coinA, coinB] = market ?? "".match(/(dual-)?(\w+)-(\w+)/i);
       setMarket(market);
+      setPair(`${_pairASymbol}-${_pairBSymbol}`);
       setMarketPair([coinA, coinB]);
       setPriceObj({
         symbol: coinA,
@@ -91,16 +158,16 @@ export const useDualHook = ({
     [marketArray, pairASymbol, tradeMap]
   );
 
-  const [dualProducts, setDualProducts] = React.useState([]);
+  const [dualProducts, setDualProducts] = React.useState<DualViewInfo[]>([]);
   // const [productRawData,setProductRawData] = React.useState([])
-
   const getProduct = _.debounce(async () => {
     setIsLoading(true);
-    // @ts-ignore
-    const [, , marketSymbolA, marketSymbolB] = (market ?? "").match(
-      /(dual-)?(\w+)-(\w+)/i
-    );
-    if (marketSymbolA && marketSymbolB && pairASymbol && pairBSymbol) {
+
+    if (pairASymbol && pairBSymbol && market) {
+      // @ts-ignore
+      const [, , marketSymbolA, marketSymbolB] = (market ?? "").match(
+        /(dual-)?(\w+)-(\w+)/i
+      );
       const dualType =
         marketSymbolA === pairASymbol
           ? sdk.DUAL_TYPE.DUAL_BASE
@@ -124,8 +191,9 @@ export const useDualHook = ({
         const {
           // totalNum,
           dualInfo: { infos, index, balance },
-          raw_data: { rule },
+          raw_data: { rules },
         } = response as any;
+
         // : {
         //   dualInfo: {
         //     infos: sdk.DualProductAndPrice[];
@@ -134,21 +202,23 @@ export const useDualHook = ({
         //   };
         //   raw_data: { rule: sdk.DualRulesCoinsInfo[] };
         // }
+        const rule = rules[0];
         const rawData = infos.reduce(
-          (item: sdk.DualProductAndPrice, prev: any[]) => {
+          (prev: any[], item: sdk.DualProductAndPrice) => {
             if (
-              (dualType === sdk.DUAL_TYPE.DUAL_BASE &&
+              item?.dualPrice?.dualBid[0] &&
+              ((dualType === sdk.DUAL_TYPE.DUAL_BASE &&
                 sdk
                   .toBig(item.dualPrice.dualBid[0].baseQty)
                   .lt(rule.baseMin)) ||
-              (dualType == sdk.DUAL_TYPE.DUAL_CURRENCY &&
-                sdk
-                  .toBig(item.dualPrice.dualBid[0].baseQty)
-                  .times(item.strike)
-                  .lt(rule.currencyMax))
+                (dualType == sdk.DUAL_TYPE.DUAL_CURRENCY &&
+                  sdk
+                    .toBig(item.dualPrice.dualBid[0].baseQty)
+                    .times(item.strike)
+                    .lt(rule.currencyMax)))
             ) {
-              let obj = {};
-              return prev.push(obj);
+              prev.push(makeDualViewItem(item, index, rule));
+              return prev;
             }
             return prev;
             //price.dualBid空数组，过滤；
@@ -157,24 +227,30 @@ export const useDualHook = ({
           },
           [] as any[]
         );
-        // totalNum:number,
-        //   dualInfo:{
-        //   infos : loopring_defs.DualProductAndPrice[],
-        //     index : loopring_defs.DualIndex,
-        //     balance : loopring_defs.DualBalance[],
-        // }
-        setDualProducts(infos);
+        myLog("setDualProducts", rawData);
+        setDualProducts(rawData);
       }
     }
     setIsLoading(false);
   }, 100);
   React.useEffect(() => {
-    if (market) {
+    if (
+      dualStatus === SagaStatus.UNSET &&
+      pairBSymbol &&
+      marketArray !== undefined
+    ) {
+      handleOnPairChange({ pairB: pairBSymbol });
+      // setMarket(findDualMarket(marketArray, pairASymbol, pairBSymbol);
+    }
+  }, [dualStatus]);
+  React.useEffect(() => {
+    if (pair) {
       getProduct.cancel();
       getProduct();
     }
     return () => getProduct.cancel();
-  }, [market]);
+  }, [pair]);
+
   //   [...(marketArray ? marketArray : [])].find(
   //   (_item) => {
   //     const value = match?.params?.market
@@ -216,4 +292,4 @@ export const useDualHook = ({
     // serverUpdate,
     // setServerUpdate,
   };
-};
+};;;

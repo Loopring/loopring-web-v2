@@ -1235,68 +1235,66 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
       >
         <DialogTitle> {t("labelDualRiskTitle")}</DialogTitle>
 
-        <DialogContent>
-          {input ? (
-            <MarkdownStyle maxHeight={"50vh"}>
-              <DialogContentText id="alert-dialog-slide-description">
-                <Box
-                  flex={1}
-                  padding={3}
-                  boxSizing={"border-box"}
-                  className={`${theme.mode}  ${theme.mode}-scheme markdown-body`}
-                >
-                  <ReactMarkdown
-                    remarkPlugins={[gfm]}
-                    children={input}
-                    // escapeHtml={false}
-                  />
-                </Box>
+        {input ? (
+          <MarkdownStyle maxHeight={"50vh"}>
+            <DialogContentText id="alert-dialog-slide-description">
+              <Box
+                flex={1}
+                padding={3}
+                boxSizing={"border-box"}
+                className={`${theme.mode}  ${theme.mode}-scheme markdown-body`}
+              >
+                <ReactMarkdown
+                  remarkPlugins={[gfm]}
+                  children={input}
+                  // escapeHtml={false}
+                />
+              </Box>
 
-                {/*<Trans i18nKey={"labelDualRisk"}>*/}
-                {/*  <Typography*/}
-                {/*    whiteSpace={"pre-line"}*/}
-                {/*    component={"span"}*/}
-                {/*    variant={"body1"}*/}
-                {/*    display={"block"}*/}
-                {/*    color={"textSecondary"}*/}
-                {/*  >*/}
-                {/*    Lido is a liquid staking solution for ETH 2.0 backed by*/}
-                {/*    industry-leading staking providers. Lido lets users stake their*/}
-                {/*    ETH - without locking assets or maintaining infrastructure.*/}
-                {/*  </Typography>*/}
-                {/*  <Typography*/}
-                {/*    whiteSpace={"pre-line"}*/}
-                {/*    component={"span"}*/}
-                {/*    variant={"body1"}*/}
-                {/*    marginTop={2}*/}
-                {/*    display={"block"}*/}
-                {/*    color={"textSecondary"}*/}
-                {/*  >*/}
-                {/*    When using Lido to stake your ETH on the Ethereum beacon chain,*/}
-                {/*    users will receive a token (stETH), which represents their ETH*/}
-                {/*    on the Ethereum beacon chain on a 1:1 basis. It effectively acts*/}
-                {/*    as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.*/}
-                {/*  </Typography>*/}
-                {/*  <Typography*/}
-                {/*    whiteSpace={"pre-line"}*/}
-                {/*    component={"span"}*/}
-                {/*    variant={"body1"}*/}
-                {/*    marginTop={2}*/}
-                {/*    display={"block"}*/}
-                {/*    color={"textSecondary"}*/}
-                {/*  >*/}
-                {/*    wstETH is the wrapped version of stETH. The total amount of*/}
-                {/*    wstETH doesn’t change after users receive the token. Instead,*/}
-                {/*    the token’s value increase over time to reflect ETH staking*/}
-                {/*    rewards earned.*/}
-                {/*  </Typography>*/}
-                {/*</Trans>*/}
-              </DialogContentText>
-            </MarkdownStyle>
-          ) : (
-            <LoadingBlock />
-          )}
-        </DialogContent>
+              {/*<Trans i18nKey={"labelDualRisk"}>*/}
+              {/*  <Typography*/}
+              {/*    whiteSpace={"pre-line"}*/}
+              {/*    component={"span"}*/}
+              {/*    variant={"body1"}*/}
+              {/*    display={"block"}*/}
+              {/*    color={"textSecondary"}*/}
+              {/*  >*/}
+              {/*    Lido is a liquid staking solution for ETH 2.0 backed by*/}
+              {/*    industry-leading staking providers. Lido lets users stake their*/}
+              {/*    ETH - without locking assets or maintaining infrastructure.*/}
+              {/*  </Typography>*/}
+              {/*  <Typography*/}
+              {/*    whiteSpace={"pre-line"}*/}
+              {/*    component={"span"}*/}
+              {/*    variant={"body1"}*/}
+              {/*    marginTop={2}*/}
+              {/*    display={"block"}*/}
+              {/*    color={"textSecondary"}*/}
+              {/*  >*/}
+              {/*    When using Lido to stake your ETH on the Ethereum beacon chain,*/}
+              {/*    users will receive a token (stETH), which represents their ETH*/}
+              {/*    on the Ethereum beacon chain on a 1:1 basis. It effectively acts*/}
+              {/*    as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.*/}
+              {/*  </Typography>*/}
+              {/*  <Typography*/}
+              {/*    whiteSpace={"pre-line"}*/}
+              {/*    component={"span"}*/}
+              {/*    variant={"body1"}*/}
+              {/*    marginTop={2}*/}
+              {/*    display={"block"}*/}
+              {/*    color={"textSecondary"}*/}
+              {/*  >*/}
+              {/*    wstETH is the wrapped version of stETH. The total amount of*/}
+              {/*    wstETH doesn’t change after users receive the token. Instead,*/}
+              {/*    the token’s value increase over time to reflect ETH staking*/}
+              {/*    rewards earned.*/}
+              {/*  </Typography>*/}
+              {/*</Trans>*/}
+            </DialogContentText>
+          </MarkdownStyle>
+        ) : (
+          <LoadingBlock />
+        )}
 
         <DialogContent>
           <MuiFormControlLabel

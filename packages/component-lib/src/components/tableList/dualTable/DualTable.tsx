@@ -1,68 +1,83 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
-import { Column, Table } from "../../basic-lib";
-import { Box, BoxProps } from "@mui/material";
+import { Button, Column, Table } from "../../basic-lib";
+import { Box, BoxProps, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
 import { RawDataDualsItem } from "./Interface";
-import {
-  EmptyValueTag,
-  getValuePrecisionThousand,
-} from "@loopring-web/common-resources";
-import { DualRulesCoinsInfo } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
+import { EmptyValueTag, RowConfig } from "@loopring-web/common-resources";
+import { useHistory } from "react-router-dom";
 import moment from "moment/moment";
 
-const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
+const TableWrapperStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   flex: 1;
+  height: 100%;
+  ${({ theme }) =>
+    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+`;
+const TableStyled = styled(Table)`
+  &.rdg {
+    height: ${(props: any) => {
+      if (props.ispro === "pro") {
+        return "620px";
+      }
+      if (props.currentheight && props.currentheight > 350) {
+        return props.currentheight + "px";
+      } else {
+        return "100%";
+      }
+    }};
 
-  .rdg {
-    ${({ isMobile }) =>
-      !isMobile
-        ? `--template-columns: auto 20% 180px !important;`
-        : `--template-columns: 100% !important;`}
-    .rdgCellCenter {
-      height: 100%;
+    .rdg-cell.action {
+      display: flex;
       justify-content: center;
       align-items: center;
     }
+  }
 
-    .textAlignRight {
-      text-align: right;
-    }
+  .textAlignRight {
+    text-align: right;
 
-    .textAlignCenter {
-      text-align: center;
-    }
-
-    .textAlignLeft {
-      text-align: left;
+    .rdg-header-sort-cell {
+      justify-content: flex-end;
     }
   }
 
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
+  .textAlignCenter {
+    text-align: center;
+  }
+` as any;
 
-export interface DualsTableProps<R = RawDataDualsItem> {
+export interface DualsTableProps<R> {
   rawData: R[];
-  dualRulesCoinsInfo: DualRulesCoinsInfo;
   showloading: boolean;
 }
 
 export const DualTable = withTranslation(["tables", "common"])(
   <R extends RawDataDualsItem>(props: DualsTableProps<R> & WithTranslation) => {
-    const {
-      rawData,
-      showloading,
-      dualRulesCoinsInfo: { baseProfitStep },
-      t,
-    } = props;
+    const { rawData, showloading, t } = props;
     const { isMobile } = useSettings();
-
+    const history = useHistory();
+    // const [tableHeight, setTableHeight] = React.useState(0);
+    // const resetTableData = React.useCallback(
+    //   (tableData) => {
+    //     setFilteredData(tableData);
+    //     setTableHeight(
+    //
+    //     );
+    //   },
+    //   [setFilteredData, setTableHeight]
+    // );
+    // React.useEffect(() => {
+    //   window.addEventListener("scroll", currentScroll);
+    //   return () => {
+    //     window.removeEventListener("scroll", currentScroll);
+    //   };
+    // }, [currentScroll]);
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -75,45 +90,62 @@ export const DualTable = withTranslation(["tables", "common"])(
             return <Box display={"flex"}>{row?.apy ?? EmptyValueTag}</Box>;
           },
         },
-        // {
-        //   key: "Term",
-        //   sortable: true,
-        //   name: t("labelDualTerm"),
-        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
-        //     const {baseProfit,baseQty} = row.dualPrice.dualBid;
-        //     const settleRatio = getValuePrecisionThousand((baseProfit*0.54), baseProfitStep,baseProfitStep,baseProfitStep,false,{ floor: true})
-        //     const apy = settleRatio / ((expire_time-current_time)/(total millisecond per day)) * 365
-        //     return <Box display="flex">{row.dualPrice}</Box>;
-        //   },
-        // },
-        // {
-        //   key: "Price",
-        //   sortable: true,
-        //   name: t("labelDualPrice"),
-        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
-        //     return <Box display="flex"></Box>;
-        //   },
-        // },
+        {
+          key: "targetPrice",
+          sortable: true,
+          name: t("labelDualPrice"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <Box display="flex">{row.settleRatio}</Box>;
+          },
+        },
+        {
+          key: "Term",
+          sortable: true,
+          name: t("labelDualTerm"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <Box display="flex">{row.term}</Box>;
+          },
+        },
         {
           key: "Settlement",
           sortable: true,
           name: t("labelDualSettlement"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            // const expireTime = row?.expireTime;
-
             return (
               <Box display="flex">
-                {/*{moment(new Date(expireTime), "YYYYMMDDHHMM").toNow()}*/}
+                {moment(new Date(row?.expireTime)).format("YYYY/MM/DD")}
               </Box>
             );
           },
         },
         {
           key: "Action",
-          sortable: true,
+          sortable: false,
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
           name: t("labelDualAction"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex"></Box>;
+            return (
+              <Typography
+                variant={"inherit"}
+                color={"textPrimary"}
+                display={"inline-flex"}
+                flexDirection={"column"}
+                className={"textAlignRight"}
+                component={"span"}
+              >
+                <Button
+                  variant={"contained"}
+                  color={"primary"}
+                  size={"small"}
+                  onClick={(_e) => {
+                    history.push(`/invest/dual/${row.productId}`);
+                  }}
+                >
+                  {t("labelInvestBtn", { ns: "common" })}
+                </Button>
+              </Typography>
+            );
           },
         },
       ],
@@ -145,17 +177,26 @@ export const DualTable = withTranslation(["tables", "common"])(
     };
 
     return (
-      <TableStyled isMobile={isMobile}>
-        <Table
+      <TableWrapperStyled>
+        <TableStyled
+          currentheight={
+            RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
+          }
+          rowHeight={RowConfig.rowHeight}
+          headerRowHeight={RowConfig.rowHeaderHeight}
+          onRowClick={(_, row: R) => {
+            history.push(`/invest/dual/${row?.productId}`);
+          }}
           {...{
             ...defaultArgs,
             // rowRenderer: RowRenderer,
             ...props,
+
             rawData,
             showloading,
           }}
         />
-      </TableStyled>
+      </TableWrapperStyled>
     );
   }
 );

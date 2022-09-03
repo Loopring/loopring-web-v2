@@ -298,7 +298,7 @@ export const DualPanel: any = withTranslation("common")(
               </Box>
             )}
             <Box flex={1}>
-              {/*<DualTable rawData={dualProducts ?? []} showloading={isLoading} />*/}
+              <DualTable rawData={dualProducts ?? []} showloading={isLoading} />
             </Box>
             {/*{isLoading ? (*/}
             {/*  <Box*/}

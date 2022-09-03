@@ -433,3 +433,15 @@ export type L2CollectionFilter = {
 };
 
 export const LIVE_FEE_TIMES = 60000;
+
+export type DualViewInfo = {
+  apy: string;
+  settleRatio: string; //targetPrice
+  term: string;
+  // targetPrice,
+  // subscribeData,
+  expireTime: number;
+  currentPrice: string;
+  productId: string;
+  // balance,
+};
