@@ -18,24 +18,13 @@ import {
   CoinIcon,
   CoinIcons,
   DualTable,
-  Toast,
   useSettings,
 } from "@loopring-web/component-lib";
-import {
-  confirmation,
-  useDefiMap,
-  useDualMap,
-  useSystem,
-  useTicker,
-  useTokenPrices,
-} from "@loopring-web/core";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useDualMap, useSystem, useTokenMap } from "@loopring-web/core";
+import { useHistory } from "react-router-dom";
 import {
   BackIcon,
-  CurrencyToTag,
   getValuePrecisionThousand,
-  PriceTag,
-  TOAST_TIME,
 } from "@loopring-web/common-resources";
 
 const StyleDual = styled(Box)`
@@ -56,10 +45,28 @@ const StyleDual = styled(Box)`
     align-items: center;
     justify-content: center;
     padding: ${({ theme }) => (3 / 2) * theme.unit}px 0;
-    border-radius: ${({ theme }) => theme.unit}px;
+    box-shadow: none;
+    transition: none;
+    ${({ theme }) =>
+      theme.border.defaultFrame({
+        c_key: "var(--field-opacity)",
+        d_R: 0.5,
+      })};
 
     &.selected {
-      background: var(--color-success);
+      ${({ theme }) =>
+        theme.border.defaultFrame({
+          c_key: "var(--color-border)",
+          d_R: 0.5,
+        })};
+    }
+
+    &:hover {
+      ${({ theme }) =>
+        theme.border.defaultFrame({
+          c_key: "var(--color-border-hover)",
+          d_R: 0.5,
+        })};
     }
   }
 ` as typeof Box;
@@ -83,15 +90,18 @@ export const DualPanel: any = withTranslation("common")(
     setConfirmDualInvest: (state: any) => void;
   }) => {
     const { coinJson } = useSettings();
-    const { currency } = useSettings();
     const { forexMap } = useSystem();
+    const { tradeMap } = useDualMap();
+    const { tokenMap } = useTokenMap();
 
     const {
       pairASymbol,
       pairBSymbol,
-      market,
       isLoading,
       dualProducts,
+      currentPrice,
+      pair,
+      market,
       marketBase,
       marketQuote,
       priceObj,
@@ -112,7 +122,6 @@ export const DualPanel: any = withTranslation("common")(
 
     // const [mainTab, setMainTab] = React.useState(pairASymbol);
     // const [secondTab, setSecondTab] = React.useState(pairBSymbol);
-    const { tradeMap } = useDualMap();
 
     // const { marketArray } = useDefiMap();
     // const {
@@ -268,37 +277,43 @@ export const DualPanel: any = withTranslation("common")(
                   variant={"body2"}
                   alignItems={"center"}
                 >
-                  <Trans
-                    i18nKey={"labelDualCurrentPrice"}
-                    tOptions={{
-                      price:
-                        PriceTag[CurrencyToTag[currency]] +
-                        getValuePrecisionThousand(
-                          (priceObj.price || 0) * (forexMap[currency] ?? 0),
-                          undefined,
-                          undefined,
-                          2,
-                          true,
-                          { isFait: true }
-                        ),
-                      symbol: priceObj.symbol,
-                    }}
-                  >
-                    LRC Current price:
-                    <Typography
-                      component={"span"}
-                      display={"inline-flex"}
-                      color={"textPrimary"}
-                      paddingLeft={1}
+                  {currentPrice && (
+                    <Trans
+                      i18nKey={"labelDualCurrentPrice"}
+                      tOptions={{
+                        price:
+                          // PriceTag[CurrencyToTag[currency]] +
+                          getValuePrecisionThousand(
+                            currentPrice.currentPrice,
+                            tokenMap[currentPrice.symbol]?.precision,
+                            tokenMap[currentPrice.symbol]?.precision,
+                            tokenMap[currentPrice.symbol]?.precision,
+                            true,
+                            { isFait: true }
+                          ),
+                        symbol: currentPrice.symbol,
+                      }}
                     >
-                      price
-                    </Typography>
-                  </Trans>
+                      LRC Current price:
+                      <Typography
+                        component={"span"}
+                        display={"inline-flex"}
+                        color={"textPrimary"}
+                        paddingLeft={1}
+                      >
+                        price
+                      </Typography>
+                    </Trans>
+                  )}
                 </Typography>
               </Box>
             )}
             <Box flex={1}>
-              <DualTable rawData={dualProducts ?? []} showloading={isLoading} />
+              <DualTable
+                rawData={dualProducts ?? []}
+                showloading={isLoading}
+                forexMap={forexMap as any}
+              />
             </Box>
             {/*{isLoading ? (*/}
             {/*  <Box*/}

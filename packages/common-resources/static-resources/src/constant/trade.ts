@@ -438,10 +438,15 @@ export type DualViewInfo = {
   apy: string;
   settleRatio: string; //targetPrice
   term: string;
+  strike: string;
+  isUp: boolean;
   // targetPrice,
   // subscribeData,
   expireTime: number;
-  currentPrice: string;
+  currentPrice: {
+    symbol: string;
+    currentPrice: number;
+  };
   productId: string;
   // balance,
 };

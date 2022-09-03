@@ -7,13 +7,14 @@ import {
   store,
   useDualMap,
   useSystem,
+  useTicker,
   useTokenPrices,
 } from "@loopring-web/core";
 import React from "react";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DualPrice } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
-import { toBig } from "@loopring-web/loopring-sdk";
+import { getExistedMarket, toBig } from "@loopring-web/loopring-sdk";
 import {
   AccountStatus,
   DualViewInfo,
@@ -23,22 +24,50 @@ import {
 } from "@loopring-web/common-resources";
 import moment from "moment";
 
+export const dualCurrentPrice = (
+  pairASymbol: string,
+  pairBSymbol: string,
+  dualMarket: `${string}-${string}-${string}`
+): {
+  symbol: string;
+  currentPrice: number;
+} => {
+  const { tokenPrices } = store.getState().tokenPrices;
+  const { tickerMap } = store.getState().tickerMap;
+  const { marketArray } = store.getState().tokenMap;
+  const { market } = getExistedMarket(marketArray, pairASymbol, pairBSymbol);
+  const [, _base, quote] = market.match(/(\w+)-(\w+)/i);
+  const [, , baseDual, quoteDual] =
+    dualMarket.match(/(dual-)?(\w+)-(\w+)/i) ?? [];
+
+  let currentPrice = tickerMap[market].close ?? tokenPrices[baseDual];
+  currentPrice =
+    (quote === quoteDual ? currentPrice : 1 / currentPrice) *
+    tokenPrices[quote];
+  return {
+    currentPrice,
+    symbol: baseDual,
+  };
+};
 export const makeDualViewItem = (
   info: sdk.DualProductAndPrice,
   index: sdk.DualIndex,
-  rule: sdk.DualRulesCoinsInfo
+  rule: sdk.DualRulesCoinsInfo,
+  currentPrice: {
+    symbol: string;
+    currentPrice: number;
+  }
   // balance: sdk.DualBalance
 ): DualViewInfo => {
-  const { tokenPrices } = store.getState().tokenPrices;
-
-  const { expireTime, base, createTime, strike } = info;
+  const { expireTime, base, quote, createTime, strike } = info;
 
   const { baseProfitStep } = rule;
   const settleRatio = toBig(strike).times(0.54);
   const _baseProfitStep = Number(baseProfitStep);
   const apy = settleRatio.div((expireTime - Date.now()) / 86400000).times(365); //
-
   const term = moment(new Date(expireTime)).from(new Date(createTime), true);
+
+  // const currentPrice tickerMap[market];
   myLog("dual", {
     apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
     settleRatio: getValuePrecisionThousand(
@@ -53,7 +82,7 @@ export const makeDualViewItem = (
     // subscribeData,
     productId: info.productId,
     expireTime,
-    currentPrice: tokenPrices[base],
+    currentPrice,
     // balance,
   });
   // const apr =  info.dualPrice.ba
@@ -67,11 +96,13 @@ export const makeDualViewItem = (
       false
     ), //targetPrice
     term,
+    strike,
+    isUp: sdk.toBig(settleRatio).gt(currentPrice.currentPrice) ? true : false,
     // targetPrice,
     // subscribeData,
     productId: info.productId,
     expireTime,
-    currentPrice: tokenPrices[base],
+    currentPrice,
   };
 };
 
@@ -97,6 +128,14 @@ export const useDualHook = ({
   } = confirmation.useConfirmation();
   setConfirmDualInvest(!confirmedDualInvest);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [currentPrice, setCurrentPrice] =
+    React.useState<
+      | {
+          currentPrice: number;
+          symbol: string;
+        }
+      | undefined
+    >(undefined);
   const [, , coinA, coinB] = (
     match?.params?.market ? match.params.market : "DUAL-LRC-USDC"
   ).match(/(dual-)?(\w+)-(\w+)/i);
@@ -146,14 +185,16 @@ export const useDualHook = ({
         setPairBSymbol(_pairBSymbol);
         market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol);
       }
-      const [, , coinA, coinB] = market ?? "".match(/(dual-)?(\w+)-(\w+)/i);
-      setMarket(market);
-      setPair(`${_pairASymbol}-${_pairBSymbol}`);
-      setMarketPair([coinA, coinB]);
-      setPriceObj({
-        symbol: coinA,
-        price: tokenPrices[coinA],
-      });
+      if (market) {
+        const [, , coinA, coinB] = market ?? "".match(/(dual-)?(\w+)-(\w+)/i);
+        setMarket(market);
+        setPair(`${_pairASymbol}-${_pairBSymbol}`);
+        setMarketPair([coinA, coinB]);
+        setPriceObj({
+          symbol: coinA,
+          price: tokenPrices[coinA],
+        });
+      }
     },
     [marketArray, pairASymbol, tradeMap]
   );
@@ -172,6 +213,12 @@ export const useDualHook = ({
         marketSymbolA === pairASymbol
           ? sdk.DUAL_TYPE.DUAL_BASE
           : sdk.DUAL_TYPE.DUAL_CURRENCY;
+      const currentPrice = dualCurrentPrice(
+        pairASymbol,
+        pairBSymbol,
+        market as any
+      );
+      setCurrentPrice(currentPrice);
       const response = await LoopringAPI.defiAPI?.getDualInfos({
         baseSymbol: marketSymbolA,
         quoteSymbol: marketSymbolB,
@@ -217,7 +264,7 @@ export const useDualHook = ({
                     .times(item.strike)
                     .lt(rule.currencyMax)))
             ) {
-              prev.push(makeDualViewItem(item, index, rule));
+              prev.push(makeDualViewItem(item, index, rule, currentPrice));
               return prev;
             }
             return prev;
@@ -278,6 +325,7 @@ export const useDualHook = ({
 
   return {
     // dualWrapProps: undefined,
+    currentPrice,
     pairASymbol,
     pairBSymbol,
     market,
@@ -287,6 +335,7 @@ export const useDualHook = ({
     marketBase,
     marketQuote,
     priceObj,
+    pair,
     // confirmShowNoBalance,
     // setConfirmShowNoBalance,
     // serverUpdate,

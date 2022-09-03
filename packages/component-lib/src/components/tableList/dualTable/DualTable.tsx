@@ -2,14 +2,21 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
 import { Button, Column, Table } from "../../basic-lib";
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
 import { RawDataDualsItem } from "./Interface";
-import { EmptyValueTag, RowConfig } from "@loopring-web/common-resources";
+import {
+  EmptyValueTag,
+  ForexMap,
+  RowConfig,
+  UpColor,
+  UpIcon,
+} from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import moment from "moment/moment";
+import { Currency } from "@loopring-web/loopring-sdk";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -52,16 +59,18 @@ const TableStyled = styled(Table)`
   }
 ` as any;
 
-export interface DualsTableProps<R> {
+export interface DualsTableProps<R, C = Currency> {
   rawData: R[];
   showloading: boolean;
+  forexMap: ForexMap<C>;
 }
 
 export const DualTable = withTranslation(["tables", "common"])(
   <R extends RawDataDualsItem>(props: DualsTableProps<R> & WithTranslation) => {
     const { rawData, showloading, t } = props;
-    const { isMobile } = useSettings();
+    const { isMobile, upColor } = useSettings();
     const history = useHistory();
+
     // const [tableHeight, setTableHeight] = React.useState(0);
     // const resetTableData = React.useCallback(
     //   (tableData) => {
@@ -95,7 +104,25 @@ export const DualTable = withTranslation(["tables", "common"])(
           sortable: true,
           name: t("labelDualPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex">{row.settleRatio}</Box>;
+            const [_upColor, _downColor] =
+              upColor == UpColor.green
+                ? ["var(--color-success)", "var(--color-error)"]
+                : ["var(--color-error)", "var(--color-success)"];
+            return (
+              <Box display="flex">
+                <Typography component={"span"}> {row.settleRatio}</Typography>
+                <Typography component={"span"}>
+                  <UpIcon
+                    fontSize={"small"}
+                    htmlColor={row.isUp ? _upColor : _downColor}
+                    style={{
+                      transform: row.isUp ? "" : "rotate(-180deg)",
+                    }}
+                  />
+                  {row.strike}
+                </Typography>
+              </Box>
+            );
           },
         },
         {
@@ -113,7 +140,7 @@ export const DualTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <Box display="flex">
-                {moment(new Date(row?.expireTime)).format("YYYY/MM/DD")}
+                {moment(new Date(row.expireTime)).format("YYYY/MM/DD")}
               </Box>
             );
           },
@@ -149,7 +176,7 @@ export const DualTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      []
+      [history, upColor, t]
     );
 
     const getColumnMobileTransaction = React.useCallback(
@@ -184,7 +211,7 @@ export const DualTable = withTranslation(["tables", "common"])(
           }
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
-          onRowClick={(_, row: R) => {
+          onRowClick={(_index: number, row: R) => {
             history.push(`/invest/dual/${row?.productId}`);
           }}
           {...{
