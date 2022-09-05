@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { MarketInfo } from "@loopring-web/loopring-sdk";
+import { MarketInfo } from "@loopring-web/loopring-sdk/dist";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { DepthViewData, MarketRowHeight } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";

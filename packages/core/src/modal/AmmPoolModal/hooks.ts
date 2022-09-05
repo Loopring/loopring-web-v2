@@ -334,8 +334,6 @@ export const useCoinPair = <C extends { [key: string]: any }>({
           throw Error;
         });
     }
-
-    return () => {};
   }, [selectedMarket]);
 
   const walletLayer2Callback = React.useCallback(async () => {

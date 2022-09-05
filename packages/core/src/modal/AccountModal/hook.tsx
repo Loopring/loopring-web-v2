@@ -135,11 +135,9 @@ import {
   goActiveAccount,
   useCheckActiveStatus,
   useForceWithdraw,
-  useCollectionAdvanceMeta,
-  useToast,
-  useNFTMintAdvance,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { useNFTMintAdvance } from "../../hooks/useractions/useNFTMintAdvance";
 
 export function useAccountModalForUI({
   t,
@@ -198,16 +196,9 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
   } = useExportAccount();
   const vendorProps = useVendor();
-  const {
-    toastOpen: collectionToastOpen,
-    setToastOpen: setCollectionToastOpen,
-    closeToast: collectionToastClose,
-  } = useToast();
-
-  const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance();
-  const { collectionAdvanceProps } = useCollectionAdvanceMeta({
-    setCollectionToastOpen,
-  });
+  const { nftMintAdvanceProps, retryBtn: nftMintAdvanceRetryBtn } =
+    useNFTMintAdvance();
+  // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
   const { nftWithdrawProps } = useNFTWithdraw();
@@ -2155,13 +2146,13 @@ export function useAccountModalForUI({
 
   return {
     nftDeployProps,
+    nftMintAdvanceProps,
     nftTransferProps,
     nftWithdrawProps,
     transferProps,
     withdrawProps,
     depositProps,
     resetProps,
-    collectionAdvanceProps,
     activeAccountProps,
     exportAccountProps,
     exportAccountAlertText,
@@ -2169,7 +2160,6 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
     copyToastOpen,
     setCopyToastOpen,
-    setCollectionToastOpen,
     openQRCode,
     setOpenQRCode,
     isShowAccount,
@@ -2179,8 +2169,6 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    collectionToastOpen,
-    collectionToastClose,
     // cancelNFTTransfer,
     // cancelNFTWithdraw,
     // vendorProps,

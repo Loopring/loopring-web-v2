@@ -7,11 +7,7 @@ import {
 } from "../../index";
 import {
   AccountStatus,
-  // AccountStatus,
   AttributesProperty,
-  CollectionMeta,
-  CustomError,
-  ErrorMap,
   MetaDataProperty,
   myLog,
   UIERROR_CODE,
@@ -20,8 +16,6 @@ import { IpfsProvides, ipfsService } from "../ipfs";
 import { BigNumber } from "bignumber.js";
 import { AddResult } from "ipfs-core-types/types/src/root";
 import * as sdk from "@loopring-web/loopring-sdk";
-
-// import * as sdk from "@loopring-web/loopring-sdk";
 
 export enum MintCommands {
   MetaDataSetup,
@@ -38,42 +32,47 @@ const subject = new Subject<{
 }>();
 
 export const mintService = {
-  emptyData: async (contractAddress?: string) => {
+  emptyData: () => {
     const {
       account,
-      // system: { chainId },
+      system: { chainId },
     } = store.getState();
-    let tokenAddress = contractAddress,
-      collection: undefined | CollectionMeta = undefined;
-    if (
-      tokenAddress &&
-      account.readyState === AccountStatus.ACTIVATED &&
-      account.accAddress
-    ) {
-      const response = await LoopringAPI.userAPI?.getUserOwenCollection(
-        {
-          owner: account.accAddress,
-          tokenAddress: contractAddress,
-        },
-        account.apiKey
-      );
-      if (
-        response &&
-        ((response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message)
-      ) {
-        throw new CustomError(ErrorMap.ERROR_UNKNOWN);
-      }
-      collection = (response as any).collections[0];
+    let tokenAddress;
+    if (account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
+      tokenAddress =
+        LoopringAPI.nftAPI
+          ?.computeNFTAddress({
+            nftOwner: account.accAddress,
+            nftFactory: sdk.NFTFactory[chainId],
+            nftBaseUri: "",
+          })
+          .tokenAddress?.toLowerCase() || undefined;
     }
-    store.dispatch(resetNFTMintData({ tokenAddress, collection }));
+    store.dispatch(resetNFTMintData({ tokenAddress }));
     subject.next({
       status: MintCommands.MetaDataSetup,
       data: {
         emptyData: true,
-        collection,
       },
     });
+  },
+  backMetaDataSetup: () => {
+    subject.next({
+      status: MintCommands.MetaDataSetup,
+    });
+    const {
+      nftMintValue: { nftMETA, mintData },
+    } = store.getState()._router_modalData;
+    store.dispatch(
+      updateNFTMintData({
+        nftMETA: nftMETA,
+        mintData: {
+          ...mintData,
+          nftIdView: undefined,
+          nftId: undefined,
+        },
+      })
+    );
   },
   processingIPFS: ({
     ipfsProvides,
@@ -91,7 +90,7 @@ export const mintService = {
       name: nftMETA.name,
       royalty_percentage: nftMETA.royaltyPercentage, // 0 - 10 for UI
       description: nftMETA.description,
-      collect_metadata: nftMETA.collection_metadata,
+      collection: nftMETA.collection,
       mint_channel: "Loopring",
     };
     // const attributes = [];
@@ -126,7 +125,7 @@ export const mintService = {
   },
   completedIPFSCallMint: ({ ipfsResult }: { ipfsResult: AddResult }) => {
     const {
-      nftMintValue: { nftMETA, mintData, collection },
+      nftMintValue: { nftMETA, mintData },
     } = store.getState()._router_modalData;
     try {
       const cid = ipfsResult.cid.toString();
@@ -141,7 +140,6 @@ export const mintService = {
             nftIdView,
             nftId,
           },
-          collection,
         })
       );
       subject.next({
@@ -166,14 +164,6 @@ export const mintService = {
       status: MintCommands.MintConfirm,
     });
   },
-  backMetaDataSetup: () => {
-    subject.next({
-      status: MintCommands.MetaDataSetup,
-      data: {
-        emptyData: false,
-      },
-    });
-  },
   signatureMint: (isHardware?: boolean) => {
     subject.next({
       status: MintCommands.SignatureMint,
@@ -182,5 +172,16 @@ export const mintService = {
       },
     });
   },
+  // signatureHardware: () => {
+  //   subject.next({
+  //     status: MintCommands.SignatureHardware,
+  //     data: {
+  //       isHardware: true,
+  //     },
+  //   });
+  //   // subject.next({
+  //   //   status: MintCommands.HardwareSignature,
+  //   // });
+  // },
   onSocket: () => subject.asObservable(),
 };

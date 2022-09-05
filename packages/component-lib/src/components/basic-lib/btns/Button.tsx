@@ -26,7 +26,6 @@ const loadingSvg = SoursURL + "svg/loading.svg";
 export const Button = styled(MuButton)<ButtonProps>`
   && {
     line-height: 1em;
-
     &.MuiButton-root.Mui-disabled {
       ${({ loading, theme, loadingbg }) => {
         return loading === "true"
@@ -51,15 +50,7 @@ export const Button = styled(MuButton)<ButtonProps>`
           : "";
       }}
     }
-
-    &.disabledViewOnly {
-      pointer-events: inherit;
-    }
   }
-
-  //&.disabled{
-  //
-  //}
 ` as (props: ButtonProps) => JSX.Element;
 
 export function ScrollTop(props: {
@@ -114,7 +105,6 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
       box-shadow: var(--shadow3);
   `
       : ``};
-
   .MuiToggleButton-sizeSmall {
     background: var(--color-box);
     height: 2.4rem;
@@ -123,7 +113,6 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
     border: ${({ theme }) =>
       theme.border.borderConfig({ c_key: "var(--color-border)" })};
     color: var(--color-text-secondary);
-
     &:not(:first-of-type),
     &:not(:last-child) {
       border-color: var(--color-border);

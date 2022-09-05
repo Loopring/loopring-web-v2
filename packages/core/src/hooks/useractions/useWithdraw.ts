@@ -23,8 +23,6 @@ import {
   WithdrawTypes,
   AddressError,
   EXCHANGE_TYPE,
-  TOAST_TIME,
-  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -35,6 +33,7 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   makeWalletLayer2,
+  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   useTokenMap,
@@ -80,7 +79,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
-    resetIntervalTime,
   } = useChargeFees({
     requestType: withdrawType,
     tokenSymbol: withdrawValue.belong,
@@ -198,6 +196,28 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setWithdrawTypes({
         [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
       });
+      // TODO： remove first withdraw
+      // const tokenInfo = tokenMap[withdrawValue.belong];
+      //
+      // const req: sdk.GetWithdrawalAgentsRequest = {
+      //   tokenId: tokenInfo.tokenId,
+      //   amount: sdk.toBig("1e" + tokenInfo.decimals).toString(),
+      // };
+      //
+      // const agent = await LoopringAPI.exchangeAPI.getWithdrawalAgents(req);
+      //
+      // if (agent.supportTokenMap[withdrawValue.belong]) {
+      //   myLog("------- have agent!");
+      //   setWithdrawTypes({
+      //     [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast",
+      //     [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
+      //   });
+      // } else {
+      //   myLog("------- have NO agent!");
+      //   setWithdrawTypes({
+      //     [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
+      //   });
+      // }
     }
   }, [withdrawValue, tokenMap]);
 
@@ -229,7 +249,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       checkFeeIsEnough();
       return;
     }
-    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
+    checkFeeIsEnough(true);
     if (symbol) {
       if (walletMap2) {
         updateWithdrawData({
@@ -301,12 +321,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       account.readyState === AccountStatus.ACTIVATED
     ) {
       resetDefault();
-    } else {
-      resetIntervalTime();
     }
-    return () => {
-      resetIntervalTime();
-    };
   }, [isShow, accountStatus, account.readyState]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
@@ -372,7 +387,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough({ isRequiredAPI: true });
+                  checkFeeIsEnough(true);
                 }
                 setShowAccount({
                   isShow: true,

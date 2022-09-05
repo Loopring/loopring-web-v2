@@ -44,7 +44,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
       type,
       walletMap,
       coinMap,
-    } as any);
+    });
     // myLog("DepositProps", rest);
     const getFilteredWalletMap = React.useCallback(() => {
       if (walletMap) {

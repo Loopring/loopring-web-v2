@@ -3,8 +3,6 @@ import {
   PriceTag,
   TradeFloat,
   ForexMap,
-  NFTWholeINFO,
-  GET_IPFS_STRING,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../tradePanel";
 import { Currency } from "@loopring-web/loopring-sdk";
@@ -49,14 +47,4 @@ export type AssetTitleMobileProps = AssetTitleProps & {
   // onShowNFTMINT: () => void;
   btnShowNFTDepositStatus?: keyof typeof TradeBtnStatus;
   btnShowNFTMINTStatus?: keyof typeof TradeBtnStatus;
-};
-
-export type NFTMedaProps = {
-  item: Partial<NFTWholeINFO>;
-  index?: number;
-  onNFTError: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
-  isOrigin?: boolean;
-  shouldPlay?: boolean;
-  getIPFSString: GET_IPFS_STRING;
-  baseURL: string;
 };

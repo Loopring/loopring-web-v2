@@ -20,10 +20,7 @@ import React from "react";
 
 export const useActiveAccount = <T>(): {
   activeAccountProps: ResetProps<T>;
-  activeAccountCheckFeeIsEnough: (props?: {
-    isRequiredAPI: true;
-    intervalTime?: number;
-  }) => void;
+  activeAccountCheckFeeIsEnough: (isRequiredAPI?: boolean) => void;
 } => {
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const {

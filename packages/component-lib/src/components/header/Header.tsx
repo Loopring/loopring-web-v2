@@ -38,6 +38,7 @@ import {
   headerMenuLandingData,
   toolBarAvailableItem,
   toolBarMobileAvailableItem,
+  myLog,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -229,8 +230,8 @@ const NodeMenuItem = React.memo(
   }
 );
 export const LAYERMAP = {
-	"1": "l1",
-	"2": "l2",
+  "1": "l1",
+  "2": "l2",
 };
 
 export const Header = withTranslation(["layout", "common"], { withRef: true })(

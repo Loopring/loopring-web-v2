@@ -7,8 +7,6 @@ import {
   useUserRewards,
   useConnect,
   useWalletLayer2NFT,
-  useWalletL2NFTCollection,
-  useWalletL2Collection,
 } from "@loopring-web/core";
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -33,17 +31,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer2Status,
     statusUnset: wallet2statusUnset,
   } = useWalletLayer2();
-  const {
-    updateWalletL2Collection,
-    status: walletL2CollectionStatus,
-    statusUnset: walletL2CollectionstatusUnset,
-  } = useWalletL2Collection();
-
-  const {
-    updateWalletL2NFTCollection,
-    status: walletL2NFTCollectionStatus,
-    statusUnset: walletL2NFTCollectionstatusUnset,
-  } = useWalletL2NFTCollection();
   const { account, status: accountStatus } = useAccount();
 
   React.useEffect(() => {
@@ -71,9 +58,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2();
-            updateWalletLayer2NFT({ page: 1, collection: undefined });
-            updateWalletL2NFTCollection({ page: 1 });
-            updateWalletL2Collection({ page: 1 });
+            updateWalletLayer2NFT({ page: 1 });
           }
           break;
       }
@@ -98,35 +83,12 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break;
       case SagaStatus.DONE:
         wallet2statusUnset();
+        //setWalletMap1(walletLayer1State.walletLayer1);
         break;
       default:
         break;
     }
   }, [walletLayer2Status]);
-  React.useEffect(() => {
-    switch (walletL2CollectionStatus) {
-      case SagaStatus.ERROR:
-        walletL2CollectionstatusUnset();
-        break;
-      case SagaStatus.DONE:
-        walletL2CollectionstatusUnset();
-        break;
-      default:
-        break;
-    }
-  }, [walletL2CollectionStatus]);
-  React.useEffect(() => {
-    switch (walletL2NFTCollectionStatus) {
-      case SagaStatus.ERROR:
-        walletL2NFTCollectionstatusUnset();
-        break;
-      case SagaStatus.DONE:
-        walletL2NFTCollectionstatusUnset();
-        break;
-      default:
-        break;
-    }
-  }, [walletL2NFTCollectionStatus]);
   React.useEffect(() => {
     switch (wallet2statusNFTStatus) {
       case SagaStatus.ERROR:

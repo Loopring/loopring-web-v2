@@ -24,8 +24,6 @@ import {
   WalletMap,
   AddressError,
   WALLET_TYPE,
-  TOAST_TIME,
-  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 
 import {
@@ -34,6 +32,7 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   makeWalletLayer2,
+  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   useWalletLayer2Socket,
@@ -78,7 +77,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
-    resetIntervalTime,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
     updateData: ({ fee }) => {
@@ -168,8 +166,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       checkFeeIsEnough();
       return;
     }
-    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
-
+    checkFeeIsEnough(true);
     if (symbol && walletMap) {
       myLog("resetDefault symbol:", symbol);
       updateTransferData({
@@ -234,12 +231,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       account.readyState === AccountStatus.ACTIVATED
     ) {
       resetDefault();
-    } else {
-      resetIntervalTime();
     }
-    return () => {
-      resetIntervalTime();
-    };
   }, [isShow, accountStatus, account.readyState]);
 
   const { checkHWAddr, updateHW } = useWalletInfo();
@@ -304,7 +296,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
                   (response as sdk.RESULT_INFO)?.code || 0
                 )
               ) {
-                checkFeeIsEnough({ isRequiredAPI: true });
+                checkFeeIsEnough(true);
               }
               setShowAccount({
                 isShow: true,

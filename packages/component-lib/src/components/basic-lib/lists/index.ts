@@ -89,5 +89,5 @@ export * from "./CoinList";
 export * from "./HeadToolbar";
 export * from "./SubMenuList";
 export * from "./Notification";
-export * from "./CollectionItem";
+
 // export * from './SimpleSelectItem'

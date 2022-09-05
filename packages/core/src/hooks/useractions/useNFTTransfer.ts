@@ -23,8 +23,6 @@ import {
   UIERROR_CODE,
   AddressError,
   WALLET_TYPE,
-  TOAST_TIME,
-  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 
 import {
@@ -35,6 +33,7 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
+  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   checkErrorInfo,
@@ -45,12 +44,10 @@ import {
   useWalletLayer2Socket,
   walletLayer2Service,
   useSystem,
-  getIPFSString,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useHistory, useLocation } from "react-router-dom";
 
-export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
+export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   const [memo, setMemo] = React.useState("");
   const {
     setShowAccount,
@@ -63,13 +60,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
-  const { exchangeInfo, chainId, baseURL } = useSystem();
+  const { exchangeInfo, chainId } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
-  const history = useHistory();
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
 
   const [sureItsLayer2, setSureItsLayer2] =
     React.useState<WALLET_TYPE | undefined>(undefined);
@@ -78,7 +72,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
-    resetIntervalTime,
     checkFeeIsEnough,
   } = useChargeFees({
     tokenAddress: nftTransferValue.tokenAddress,
@@ -172,7 +165,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       checkFeeIsEnough();
       return;
     }
-    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
+    checkFeeIsEnough(true);
     if (nftTransferValue.nftData) {
       updateNFTTransferData({
         balance: sdk
@@ -205,12 +198,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   React.useEffect(() => {
     if (isShow || info?.isShowLocal) {
       resetDefault();
-    } else {
-      resetIntervalTime();
     }
-    return () => {
-      resetIntervalTime();
-    };
   }, [isShow, info?.isShowLocal]);
 
   React.useEffect(() => {
@@ -292,7 +280,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough({ isRequiredAPI: true });
+                  checkFeeIsEnough(true);
                 }
 
                 setShowAccount({
@@ -329,25 +317,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              if (nftTransferValue.collectionMeta) {
-                history.push({
-                  pathname: `/NFT/assetsNFT/byCollection/${nftTransferValue.collectionMeta?.contractAddress}|${nftTransferValue.collectionMeta?.id}`,
-                  search,
-                });
-                updateWalletLayer2NFT({
-                  page: Number(searchParams.get("collectionPage")) ?? 1,
-                  collection: nftTransferValue.collectionMeta?.contractAddress,
-                });
-              } else {
-                history.push({
-                  pathname: `/NFT/assetsNFT/byList`,
-                  search,
-                });
-                updateWalletLayer2NFT({
-                  page,
-                  collection: undefined,
-                });
-              }
+              updateWalletLayer2NFT({ page });
               setShowNFTDetail({ isShow: false });
               resetNFTTransferData();
             }
@@ -561,8 +531,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     isFeeNotEnough,
     handlePanelEvent,
     isLoopringAddress,
-    baseURL,
-    getIPFSString,
     isSameAddress,
     isAddressCheckLoading,
   };

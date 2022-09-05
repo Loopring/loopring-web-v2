@@ -27,13 +27,11 @@ export interface ModalState {
   isShowTransfer: ModalStatePlayLoad & Transaction;
   isShowWithdraw: ModalStatePlayLoad & Transaction;
   isShowDeposit: ModalStatePlayLoad & Transaction & { partner?: boolean };
-  isShowNFTDetail: ModalStatePlayLoad & Partial<NFTWholeINFO>;
-  isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-  isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-  isShowNFTDeploy: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-  isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-  isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-  isShowCollectionAdvance: ModalStatePlayLoad;
+  isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowNFTDeploy: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowResetAccount: ModalStatePlayLoad;
   isShowActiveAccount: ModalStatePlayLoad;
   isShowExportAccount: ModalStatePlayLoad;
@@ -47,6 +45,7 @@ export interface ModalState {
     error?: RESULT_INFO;
     // info?: { [key: string]: any };
   };
+  isShowNFTDetail: ModalStatePlayLoad & Partial<NFTWholeINFO>;
   isShowFeeSetting: ModalStatePlayLoad;
   isShowIFrame: ModalStatePlayLoad & { url: string };
 }

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { ResetProps, useOpenModals } from "@loopring-web/component-lib";
-import { FeeInfo, LIVE_FEE_TIMES } from "@loopring-web/common-resources";
+import { FeeInfo } from "@loopring-web/common-resources";
 import { useBtnStatus, useChargeFees } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useUpdateAccount } from "./useUpdateAccount";
@@ -23,7 +23,6 @@ export const useReset = <T extends FeeInfo>(): {
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
-    resetIntervalTime,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
     updateData: undefined,
@@ -38,14 +37,8 @@ export const useReset = <T extends FeeInfo>(): {
 
   React.useEffect(() => {
     if (isShow) {
-      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
-      return;
-    } else {
-      resetIntervalTime();
+	    checkFeeIsEnough(true);
     }
-    return () => {
-      resetIntervalTime();
-    };
   }, [isShow]);
 
   const { goUpdateAccount } = useUpdateAccount();

@@ -12,14 +12,10 @@ import {
   Toast,
   useSettings,
 } from "@loopring-web/component-lib";
-import { confirmation, useDefiMap } from "@loopring-web/core";
+import { confirmation, TOAST_TIME, useDefiMap } from "@loopring-web/core";
 import { LoadingBlock } from "../../LoadingPage";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import {
-  BackIcon,
-  MarketType,
-  TOAST_TIME,
-} from "@loopring-web/common-resources";
+import { BackIcon, MarketType } from "@loopring-web/common-resources";
 
 const StyleWrapper = styled(Box)`
   position: relative;

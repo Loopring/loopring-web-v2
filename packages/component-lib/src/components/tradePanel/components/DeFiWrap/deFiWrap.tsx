@@ -7,9 +7,8 @@ import {
   myLog,
   OrderListIcon,
   ReverseIcon,
-  DeFiChgType,
 } from "@loopring-web/common-resources";
-import { DeFiWrapProps } from "./Interface";
+import { DeFiChgType, DeFiWrapProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";

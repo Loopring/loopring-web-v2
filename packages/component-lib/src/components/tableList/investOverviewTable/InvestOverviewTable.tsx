@@ -61,7 +61,6 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
       background-color: var(--color-pop-bg);
     }
   }
-
   .textAlignRight {
     text-align: right;
 
@@ -272,7 +271,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
                     }
                   }}
                 >
-                  {t("labelInvestBtn", {ns: "common"})}
+                  {t("labelInvestBtn", { ns: "common" })}
                 </Button>
               </Typography>
             );

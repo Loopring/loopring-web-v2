@@ -43,7 +43,6 @@ export const TransferWrap = <
   disabled,
   walletMap,
   tradeData,
-  // @ts-ignore
   coinMap,
   transferI18nKey,
   type,
@@ -69,7 +68,6 @@ export const TransferWrap = <
   handleOnMemoChange,
   isAddressCheckLoading,
   isSameAddress,
-  baseURL,
   ...rest
 }: TransferViewProps<T, I, C> &
   WithTranslation & {
@@ -185,8 +183,6 @@ export const TransferWrap = <
               type,
               onCopy,
               t,
-              baseURL: baseURL ?? "",
-              getIPFSString: rest.getIPFSString ?? (() => "" as any),
               disabled,
               walletMap,
               tradeData,

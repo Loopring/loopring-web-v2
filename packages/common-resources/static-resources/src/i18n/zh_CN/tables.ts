@@ -215,6 +215,5 @@ export default {
   labelTradeNFTSide: "Trade",
   labelFrom: "from",
   labelTo: "to",
-  labelUPrice: "unit price: ",
-  labelTradeNFTUnitPrice: "Unit Price",
+  labelPrice: "unit price: ",
 };

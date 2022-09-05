@@ -39,10 +39,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     isOnLoading: boolean;
   };
   chargeFeeTokenList: C[];
-  checkFeeIsEnough: (props?: {
-    isRequiredAPI: true;
-    intervalTime?: number;
-  }) => void;
+  checkFeeIsEnough: () => void;
 }): { checkActiveStatusProps: CheckActiveStatusProps<C> } => {
   const { account } = useAccount();
   const { status: walletLayer2Status, updateWalletLayer2 } = useWalletLayer2();

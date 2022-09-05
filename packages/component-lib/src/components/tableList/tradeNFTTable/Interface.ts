@@ -26,8 +26,8 @@ export type NFTTradeProps<Row> = NFTTradeFilter & {
     total: number;
     page: number;
   };
-  idIndex: { [ key: string ]: string },
-  tokenMap: any,
+  idIndex: { [key: string]: string };
+  tokenMap: any;
   getTradeList: (filter: NFTTradeFilter) => Promise<void>;
   showFilter?: boolean;
   showLoading: boolean;

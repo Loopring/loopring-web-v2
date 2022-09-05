@@ -46,7 +46,7 @@ const WrapperStyled = styled(Box)`
 
 export const OverviewPanel = withTranslation("common")(
   ({ t }: WithTranslation & {}) => {
-	  const {
+    const {
       filteredData,
       filterValue,
       getFilteredData,

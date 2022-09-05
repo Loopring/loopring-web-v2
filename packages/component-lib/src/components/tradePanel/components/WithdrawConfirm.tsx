@@ -83,11 +83,7 @@ export const WithdrawConfirm = <
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {tradeData?.tradeValue + " "}
-          <Typography component={"span"} color={"textSecondary"}>
-            {type === "NFT"
-              ? " \u2A09 " + tradeData?.name ?? "NFT"
-              : tradeData?.belong}
-          </Typography>
+          {type === "NFT" ? tradeData?.name ?? "NFT" : tradeData?.belong}
         </Typography>
       </Grid>
       <Grid item xs={12}>

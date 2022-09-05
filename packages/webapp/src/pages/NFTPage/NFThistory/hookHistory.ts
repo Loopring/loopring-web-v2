@@ -113,7 +113,7 @@ export const useHistoryNFT = <
                   LimitNFTHistory,
                 total: totalNum,
               },
-              rawData: (userNFTTxs ?? []).map((item) => {
+              rawData: userNFTTxs.map((item) => {
                 return {
                   ...item,
                   amount: item.amount.toString(),

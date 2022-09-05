@@ -82,7 +82,7 @@ export const IPFSSourceUpload = ({
   typographyProps,
   buttonProps,
   disabled,
-  maxSize = 10485760,
+  maxSize,
   onDelete,
   types = ["jpeg", "jpg", "gif", "png"],
   ...options
@@ -270,10 +270,7 @@ export const IPFSSourceUpload = ({
                   paddingBottom={1}
                   {...typographyProps}
                 >
-                  {t(title, {
-                    types: types?.join(", "),
-                    size: (maxSize / 1000000).toFixed(0),
-                  })}
+                  {t(title, { types: types?.join(", ") })}
                 </Typography>
                 <FormHelperText>
                   {fileRejections[0]?.errors[0]?.message}

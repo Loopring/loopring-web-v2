@@ -31,6 +31,7 @@ export const TradeMenuList = <T extends IBData<I>, I>({
     selected: "",
     panelRender: () => <></>,
   };
+  //TODO: for error and when empty
   const PanelEmptyRender = () => {
     return (
       <>

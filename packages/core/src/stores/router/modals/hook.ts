@@ -5,8 +5,6 @@ import {
   resetNFTDeployData,
   resetNFTDepositData,
   resetNFTMintAdvanceData,
-  resetCollectionAdvanceData,
-  resetCollectionData,
   resetNFTMintData,
   resetNFTTransferData,
   resetNFTWithdrawData,
@@ -18,8 +16,6 @@ import {
   updateNFTDeployData,
   updateNFTDepositData,
   updateNFTMintAdvanceData,
-  updateCollectionAdvanceData,
-  updateCollectionData,
   updateNFTMintData,
   updateNFTTransferData,
   updateNFTWithdrawData,
@@ -32,6 +28,7 @@ import {
   DepositData,
   ForceWithdrawData,
   LAST_STEP,
+  MintData,
   ModalDataStatus,
   NFT_MINT_VALUE,
   TransferData,
@@ -39,7 +36,6 @@ import {
 } from "./interface";
 import React from "react";
 import {
-  CollectionMeta,
   NFTWholeINFO,
   RequireOne,
   TradeNFT,
@@ -49,67 +45,53 @@ import * as sdk from "@loopring-web/loopring-sdk";
 
 export function useModalData(): {
   lastStep: LAST_STEP;
-  updateWithdrawData: (withdrawData: RequireOne<WithdrawData, never>) => void;
-  updateNFTTransferData: (
-    nftTransferData: RequireOne<
-      TransferData &
-        Partial<sdk.NFTTokenInfo & sdk.UserNFTBalanceInfo & NFTWholeINFO>,
-      never
-    >
-  ) => void;
-  resetTransferData: () => void;
-  nftWithdrawValue: WithdrawData &
-    Partial<sdk.NFTTokenInfo & sdk.UserNFTBalanceInfo & NFTWholeINFO>;
-  collectionAdvanceValue: Partial<CollectionMeta>;
-  resetNFTMintData: (tokenAddress?: string) => void;
-  resetCollectionAdvanceData: () => void;
-  resetNFTDeployData: () => void;
-  nftTransferValue: TransferData &
-    Partial<sdk.NFTTokenInfo & sdk.UserNFTBalanceInfo & NFTWholeINFO>;
-  nftDeployValue: TradeNFT<any, any> & { broker: string };
-  updateNFTMintAdvanceData: (nftMintData: TradeNFT<any, any>) => void;
-  updateDepositData: (depositData: RequireOne<DepositData, never>) => void;
-  resetNFTMintAdvanceData: () => void;
-  updateCollectionAdvanceData: (
-    collectionAdvanceDate: Partial<CollectionMeta>
-  ) => void;
-  updateTransferData: (transferData: RequireOne<TransferData, never>) => void;
-  resetWithdrawData: () => void;
-  updateForceWithdrawData: (
-    forceWithdrawData: Partial<ForceWithdrawData>
-  ) => void;
-  resetDepositData: () => void;
-  updateNFTWithdrawData: (
-    nftWithdrawData: RequireOne<
-      WithdrawData &
-        Partial<sdk.NFTTokenInfo & sdk.UserNFTBalanceInfo & NFTWholeINFO>,
-      never
-    >
-  ) => void;
-  resetActiveAccountData: () => void;
-  updateCollectionData: (collectionDate: Partial<CollectionMeta>) => void;
-  collectionValue: Partial<CollectionMeta>;
-  nftDepositValue: TradeNFT<any, any>;
+  activeAccountValue: ActiveAccountData;
+  forceWithdrawValue: ForceWithdrawData;
   updateActiveAccountData: (
     activeAccountData: RequireOne<ActiveAccountData, never>
   ) => void;
-  updateNFTDeployData: (
-    nftDeployData: Partial<TradeNFT<any, any> & { broker: string }>
+  resetActiveAccountData: () => void;
+  nftDepositValue: TradeNFT<any>;
+  updateWithdrawData: (withdrawData: RequireOne<WithdrawData, never>) => void;
+  updateNFTTransferData: (
+    nftTransferData: RequireOne<TransferData & TradeNFT<any>, never>
   ) => void;
-  activeAccountValue: ActiveAccountData;
-  nftMintValue: NFT_MINT_VALUE<any>;
+  resetTransferData: () => void;
+  nftWithdrawValue: WithdrawData & Partial<TradeNFT<any>>;
   transferValue: TransferData;
-  resetForceWithdrawData: () => void;
-  resetCollectionData: () => void;
-  updateNFTDepositData: (nftDepositData: TradeNFT<any, any>) => void;
+  updateNFTDepositData: (
+    nftDepositData: RequireOne<TradeNFT<any>, never>
+  ) => void;
+  nftTransferValue: TransferData & Partial<TradeNFT<any>>;
   depositValue: DepositData;
+  updateDepositData: (depositData: RequireOne<DepositData, never>) => void;
   resetNFTTransferData: () => void;
-  nftMintAdvanceValue: TradeNFT<any, any>;
+  updateTransferData: (transferData: RequireOne<TransferData, never>) => void;
+  resetWithdrawData: () => void;
   withdrawValue: WithdrawData;
   resetNFTDepositData: () => void;
-  forceWithdrawValue: ForceWithdrawData;
+  resetDepositData: () => void;
+  updateNFTWithdrawData: (
+    nftWithdrawData: RequireOne<WithdrawData & TradeNFT<any>, never>
+  ) => void;
   resetNFTWithdrawData: () => void;
+  nftMintAdvanceValue: TradeNFT<any>;
+  updateNFTMintAdvanceData: (
+    nftMintData: RequireOne<MintData & NFTWholeINFO, never>
+  ) => void;
+  resetNFTMintAdvanceData: () => void;
+  nftMintValue: NFT_MINT_VALUE<any>;
   updateNFTMintData: (nftMintData: NFT_MINT_VALUE<any>) => void;
+  resetNFTMintData: () => void;
+  nftDeployValue: TradeNFT<any> & { broker: string };
+  updateNFTDeployData: (
+    nftDeployData: Partial<TradeNFT<any> & { broker: string }>
+  ) => void;
+  resetNFTDeployData: () => void;
+  updateForceWithdrawData: (
+    forceWithdrawData: Partial<ForceWithdrawData>
+  ) => void;
+  resetForceWithdrawData: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData
@@ -175,13 +157,13 @@ export function useModalData(): {
       [dispatch]
     ),
     updateNFTDepositData: React.useCallback(
-      (nftDepositData: TradeNFT<any, any>) => {
+      (nftDepositData: TradeNFT<any>) => {
         dispatch(updateNFTDepositData(nftDepositData));
       },
       [dispatch]
     ),
     updateNFTDeployData: React.useCallback(
-      (nftDeployData: Partial<TradeNFT<any, any> & { broker: string }>) => {
+      (nftDeployData: Partial<TradeNFT<any> & { broker: string }>) => {
         dispatch(updateNFTDeployData(nftDeployData));
       },
       [dispatch]
@@ -192,20 +174,8 @@ export function useModalData(): {
       },
       [dispatch]
     ),
-    updateCollectionAdvanceData: React.useCallback(
-      (collectionAdvanceDate: Partial<CollectionMeta>) => {
-        dispatch(updateCollectionAdvanceData(collectionAdvanceDate));
-      },
-      [dispatch]
-    ),
-    updateCollectionData: React.useCallback(
-      (collectionDate: Partial<CollectionMeta>) => {
-        dispatch(updateCollectionData(collectionDate));
-      },
-      [dispatch]
-    ),
     updateNFTMintAdvanceData: React.useCallback(
-      (nftMintData: TradeNFT<any, any>) => {
+      (nftMintData: TradeNFT<any>) => {
         dispatch(updateNFTMintAdvanceData(nftMintData));
       },
       [dispatch]
@@ -242,12 +212,6 @@ export function useModalData(): {
     }, [dispatch]),
     resetNFTMintAdvanceData: React.useCallback(() => {
       dispatch(resetNFTMintAdvanceData(undefined));
-    }, [dispatch]),
-    resetCollectionAdvanceData: React.useCallback(() => {
-      dispatch(resetCollectionAdvanceData(undefined));
-    }, [dispatch]),
-    resetCollectionData: React.useCallback(() => {
-      dispatch(resetCollectionData(undefined));
     }, [dispatch]),
     resetNFTMintData: React.useCallback(
       (tokenAddress?: string) => {

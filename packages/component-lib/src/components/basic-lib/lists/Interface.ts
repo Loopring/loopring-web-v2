@@ -8,9 +8,6 @@ import {
   CoinInfo,
   CoinKey,
   CoinMap,
-  GET_IPFS_STRING,
-  L2CollectionFilter,
-  MakeMeta,
   WalletCoin,
   WalletMap,
 } from "@loopring-web/common-resources";
@@ -93,19 +90,4 @@ export type CoinMenuProps<R, I> = {
     | WalletMap<R, I extends CoinInfo<R> ? WalletCoin<R> : WalletCoin<R>>
     | {};
   handleSelect?: (event: React.MouseEvent, selected: CoinKey<R>) => void;
-};
-
-export type CollectionListProps<Co> = {
-  onPageChange: (page: number, filter?: L2CollectionFilter | undefined) => void;
-  collectionList: Co[];
-  total: number;
-  domain: string;
-  makeMeta: MakeMeta;
-  page: number;
-  copyToastOpen: { isShow: boolean; type: string };
-  setCopyToastOpen: (props: { isShow: boolean; type: string }) => void;
-  isLoading: boolean;
-  etherscanBaseUrl: string;
-  baseURL: string;
-  getIPFSString: GET_IPFS_STRING;
 };
