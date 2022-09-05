@@ -8,6 +8,7 @@ import {
 import {
   AccountStatus,
   CalDualResult,
+  CustomErrorWithCode,
   DualCalcData,
   DualViewInfo,
   getValuePrecisionThousand,
@@ -195,10 +196,10 @@ export const useDualTrade = <
   // });
   const [isLoading, setIsLoading] = React.useState(false);
   const [productInfo, setProductInfo] = React.useState<R>(undefined as any);
-  const {
-    marketMap: defiMarketMap,
-    // status: defiMarketStatus,
-  } = useDualMap();
+  // const {
+  //   marketMap: defiMarketMap,
+  //   // status: defiMarketStatus,
+  // } = useDualMap();
 
   const refreshDual = React.useCallback(
     async ({
@@ -351,6 +352,20 @@ export const useDualTrade = <
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDualNoEnough| ${coinSellSymbol}`,
         };
+      } else if (
+        tradeDual?.maxSellVol &&
+        tradeDual?.sellVol &&
+        tradeDual.sellToken &&
+        sdk.toBig(tradeDual.sellVol).gte(tradeDual?.maxSellVol)
+      ) {
+        const sellMaxVal = sdk
+          .toBig(tradeDual?.maxSellVol)
+          .div("1e" + tradeDual.sellToken?.decimals);
+        const maxOrderSize = sellMaxVal + " " + tradeDual.sellToken.symbol;
+        return {
+          tradeBtnStatus: TradeBtnStatus.DISABLED,
+          label: `labelLimitMax| ${maxOrderSize}`,
+        };
       } else {
         return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
       }
@@ -466,6 +481,7 @@ export const useDualTrade = <
         } = tradeDual.dualViewInfo.__raw__.info;
         myLog("fee", tradeDual.feeVol);
         const request: sdk.DualOrderRequest = {
+          clientOrderId: "",
           exchange: exchangeInfo.exchangeAddress,
           storageId: storageId.orderId,
           accountId: account.accountId,
@@ -514,10 +530,7 @@ export const useDualTrade = <
           setToastOpen({
             open: true,
             type: "success",
-            content: t("labelInvestSuccess", {
-              type: isJoin
-                ? t("labelInvestDefDeposit")
-                : t("labelInvestDefWithdraw"),
+            content: t("labelDualSuccess", {
               symbol: coinBuySymbol,
             }),
           });
@@ -526,13 +539,12 @@ export const useDualTrade = <
         throw new Error("api not ready");
       }
     } catch (reason) {
-      // setToastOpen({
-      //   open: true,
-      //   type: "error",
-      //   content: t("labelInvestFailed"), //+ ` error: ${(reason as any)?.message}`,
-      // });
+      setToastOpen({
+        open: true,
+        type: "error",
+        content: t("labelDualFailed"), //+ ` error: ${(reason as any)?.message}`,
+      });
     } finally {
-      setConfirmShowLimitBalance(false);
       should15sRefresh(true);
     }
   }, [
@@ -541,19 +553,24 @@ export const useDualTrade = <
     account.eddsaKey.sk,
     coinBuySymbol,
     exchangeInfo,
+    setToastOpen,
     should15sRefresh,
     t,
     tradeDual.buyToken?.tokenId,
-    tradeDual.buyVol,
-    tradeDual.feeRaw,
+    tradeDual.dualViewInfo.__raw__.info,
+    tradeDual.dualViewInfo.expireTime,
+    tradeDual.dualViewInfo.settleRatio,
+    tradeDual.feeVol,
+    tradeDual.greaterEarnVol,
+    tradeDual.lessEarnVol,
     tradeDual.maxFeeBips,
     tradeDual.sellToken?.symbol,
     tradeDual.sellToken?.tokenId,
     tradeDual.sellVol,
-    tradeDual.type,
   ]);
 
-  const handleSubmit = React.useCallback(async () => {
+  // const isNoBalance = ;
+  const onSubmitBtnClick = React.useCallback(async () => {
     const { tradeDual } = store.getState()._router_tradeDual;
 
     if (
@@ -561,7 +578,7 @@ export const useDualTrade = <
         tokenMap &&
         exchangeInfo &&
         account.eddsaKey?.sk,
-      tradeDual.buyVol)
+      tradeDual.sellVol)
     ) {
       if (!allowTrade.defiInvest.enable) {
         setShowSupport({ isShow: true });
@@ -573,57 +590,7 @@ export const useDualTrade = <
     } else {
       return false;
     }
-  }, [
-    account.readyState,
-    account.eddsaKey?.sk,
-    tokenMap,
-    exchangeInfo,
-    sendRequest,
-    setToastOpen,
-    t,
-  ]);
-  // const isNoBalance = ;
-  const onSubmitBtnClick = React.useCallback(async () => {
-    const tradeDual = store.getState()._router_tradeDual.tradeDual;
-    if (
-      tradeDual?.maxSellVol &&
-      tradeDual?.sellVol &&
-      sdk.toBig(tradeDual.sellVol).gte(tradeDual?.maxSellVol)
-    ) {
-      if (
-        sdk
-          .toBig(tradeDual?.maxSellVol ?? 0)
-          .minus(tradeDual.miniSellVol ?? 0)
-          .toString()
-          .startsWith("-")
-      ) {
-        setConfirmShowNoBalance(true);
-      } else {
-        setConfirmShowLimitBalance(true);
-        const tradeValue = getValuePrecisionThousand(
-          sdk
-            .toBig(tradeDual?.maxSellVol)
-            .div("1e" + tokenMap[coinSellSymbol]?.decimals),
-          tokenMap[coinSellSymbol].precision,
-          tokenMap[coinSellSymbol].precision,
-          tokenMap[coinSellSymbol].precision,
-          false,
-          { floor: true }
-        ).replace(",", "");
-        // @ts-ignore
-        const oldTrade = (tradeDual?.dualCalcData[type] ?? {}) as unknown as T;
-        handleOnchange({
-          tradeData: {
-            ...oldTrade,
-            tradeValue,
-          },
-        });
-        // handleOnchange()
-      }
-    } else {
-      handleSubmit();
-    }
-  }, [tokenMap, coinSellSymbol, handleOnchange, handleSubmit]);
+  }, [tokenMap, coinSellSymbol, handleOnchange]);
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET && coinSellSymbol && coinBuySymbol) {
@@ -664,11 +631,8 @@ export const useDualTrade = <
       onSubmitClick: onBtnClick as () => void,
       onChangeEvent: handleOnchange,
       tokenSellProps: {},
-      dualCalcData: {
-        ...tradeDual.dualCalcData,
-      },
+      dualCalcData: tradeDual,
       maxSellVol: tradeDual.maxSellVol,
-      confirmShowLimitBalance,
       tokenSell: tokenMap[coinSellSymbol],
       btnStatus,
       accStatus: account.readyState,
@@ -684,4 +648,4 @@ export const useDualTrade = <
     // setDualTostOpen: setToastOpen,
     closeDualToast: closeToast,
   };
-};
+};;

@@ -987,4 +987,6 @@ export default {
   labelDualInvestDes:
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
   labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
+  labelDualSuccess: "Successfully invest {{symbol}}",
+  labelDualFailed: "Subscribe Failed",
 };
