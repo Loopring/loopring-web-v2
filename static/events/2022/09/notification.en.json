@@ -1,0 +1,44 @@
+{
+  "activities": [
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "-1",
+      "name": "NFT Collection",
+      "title": "NFT Collection Live now on loopring.io",
+      "description1": "NFT creation with collection support.",
+      "description2": "",
+      "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
+      "startShow": 1662336000000,
+      "endShow": 1665187200000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+      "webRouter": "[self]//nft/myCollection"
+    }
+  ],
+  "activitiesHome": [
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "-1",
+      "name": "NFT Collection",
+      "title": "NFT Collection Live now on loopring.io",
+      "description1": "NFT creation with collection support.",
+      "description2": "",
+      "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
+      "startShow": 1662336000000,
+      "endShow": 1665187200000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+      "webRouter": "[self]//nft/myCollection"
+    }
+  ],
+  "activitiesInvest": [],
+  "notifications": [],
+  "invest": [],
+  "prev": {
+    "endDate": 1665187200000
+  }
+}
