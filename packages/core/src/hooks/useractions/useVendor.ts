@@ -138,11 +138,11 @@ export const useVendor = () => {
                 userAddress: account.accAddress,
                 defaultFlow: "OFFRAMP",
                 enabledFlows: ["OFFRAMP"],
-                url: "https://ri-widget-dev-5.web.app", //"https://ri-widget-dev-5.firebaseapp.com",
+                url: "https://ramp.network/sell-beta",
               };
               config = {
                 ...config,
-                hostApiKey: "3qncr4yvxfpro6endeaeu6npkh8qc23e9uadtazq",
+                hostApiKey: "qjkymvqp2q7uvvrf7x6fb93pxn4aqc5tb7xheg8u",
               };
               window.rampInstance = new RampInstantSDK({
                 ...config,
