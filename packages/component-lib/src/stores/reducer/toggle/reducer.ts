@@ -18,7 +18,6 @@ const initialState: ToggleState = {
   collectionNFT: { enable: true },
   defiInvest: { enable: true },
   dualInvest: { enable: true },
-  dualInvest: { enable: true },
 };
 
 export const toggleSlice: Slice<ToggleState> = createSlice<

@@ -1,5 +1,6 @@
 import {
   DualCalcData,
+  DualViewInfo,
   EmptyValueTag,
   ExchangeIcon,
   getValuePrecisionThousand,
@@ -18,7 +19,12 @@ import { CountDownIcon } from "../tool/Refresh";
 import { useHistory } from "react-router-dom";
 import BigNumber from "bignumber.js";
 
-export const DualWrap = <T extends IBData<I>, I, DUAL extends DualCalcData>({
+export const DualWrap = <
+  T extends IBData<I>,
+  I,
+  DUAL extends DualCalcData<R>,
+  R extends DualViewInfo
+>({
   disabled,
   isJoin,
   isStoB,
@@ -184,58 +190,32 @@ export const DualWrap = <T extends IBData<I>, I, DUAL extends DualCalcData>({
             coinPrecision: tokenSell.precision,
           }}
         />
-        <Box alignSelf={"center"} marginY={1}>
-          <IconButtonStyled
-            size={"large"}
-            onClick={covertOnClick}
-            disabled={true}
-            aria-label={t("tokenExchange")}
-          >
-            <ExchangeIcon
-              fontSize={"large"}
-              htmlColor={"var(--color-text-disable)"}
-            />
-          </IconButtonStyled>
-        </Box>
-        <InputCoin<any, I, any>
-          ref={coinBuyRef}
-          disabled={getDisabled}
-          {...{
-            ...propsBuy,
-            name: "coinBuy",
-            isHideError: true,
-            order: "right",
-            inputData: dualCalcData ? dualCalcData.coinBuy : ({} as any),
-            coinMap: {},
-            coinPrecision: tokenBuy.precision,
-          }}
-        />
       </Grid>
 
       <Grid item alignSelf={"stretch"}>
         <Grid container direction={"column"} spacing={1} alignItems={"stretch"}>
-          <Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>
-            <Grid
-              container
-              justifyContent={"space-between"}
-              direction={"row"}
-              alignItems={"center"}
-              marginTop={1 / 2}
-            >
-              <Typography
-                component={"p"}
-                variant="body2"
-                color={"textSecondary"}
-              >
-                {t("labelDualFee")}
-              </Typography>
-              <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {dualCalcData?.fee
-                  ? dualCalcData.fee + ` ${tokenBuy.symbol}`
-                  : EmptyValueTag}
-              </Typography>
-            </Grid>
-          </Grid>
+          {/*<Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>*/}
+          {/*  <Grid*/}
+          {/*    container*/}
+          {/*    justifyContent={"space-between"}*/}
+          {/*    direction={"row"}*/}
+          {/*    alignItems={"center"}*/}
+          {/*    marginTop={1 / 2}*/}
+          {/*  >*/}
+          {/*    <Typography*/}
+          {/*      component={"p"}*/}
+          {/*      variant="body2"*/}
+          {/*      color={"textSecondary"}*/}
+          {/*    >*/}
+          {/*      {t("labelDualFee")}*/}
+          {/*    </Typography>*/}
+          {/*    <Typography component={"p"} variant="body2" color={"textPrimary"}>*/}
+          {/*      {dualCalcData?.feeVol*/}
+          {/*        ? dualCalcData.feeVol + ` ${tokenBuy.symbol}`*/}
+          {/*        : EmptyValueTag}*/}
+          {/*    </Typography>*/}
+          {/*  </Grid>*/}
+          {/*</Grid>*/}
           <Grid item>
             <ButtonStyle
               fullWidth

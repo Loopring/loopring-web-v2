@@ -989,4 +989,8 @@ export default {
   labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
   labelDualSuccess: "Successfully invest {{symbol}}",
   labelDualFailed: "Subscribe Failed",
+  labelDualFee: "Fee",
+  labelDualMin: "Minimum of {{arg}}",
+  labelDualMax: "Maximum of {{arg}}",
+  labelDualNoEnough: "Not enough {{arg}}",
 };

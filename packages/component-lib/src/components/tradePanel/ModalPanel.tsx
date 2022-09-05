@@ -27,6 +27,7 @@ import {
   Account,
   CollectionMeta,
   DualCalcData,
+  DualViewInfo,
   FeeInfo,
   IBData,
   TradeNFT,
@@ -129,9 +130,10 @@ export const ModalPanel = <
   T extends IBData<I>,
   N extends IBData<I> & TradeNFT<I, any>,
   C extends CollectionMeta,
-  DUAL extends DualCalcData,
+  DUAL extends DualCalcData<R>,
   I,
-  F = FeeInfo
+  F = FeeInfo,
+  R = DualViewInfo
 >({
   transferProps,
   withdrawProps,
