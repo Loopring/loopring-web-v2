@@ -134,6 +134,7 @@ export type DeFiCalcData<T> = {
   fee: string;
 };
 export type CalDualResult<R> = {
+  sellVol: string;
   lessEarnVol: string;
   lessEarnTokenSymbol: string;
   greaterEarnVol: string;
@@ -141,7 +142,7 @@ export type CalDualResult<R> = {
   maxSellVol: string;
   miniSellVol: string;
   dualViewInfo: R;
-  feeVol?: string;
+  feeVol: string | undefined;
   feeTokenSymbol?: string;
   maxFeeBips: number;
 };

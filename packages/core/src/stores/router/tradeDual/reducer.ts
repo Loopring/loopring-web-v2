@@ -45,12 +45,6 @@ const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
       }
       if (coinSell) {
         state.tradeDual.coinSell = coinSell;
-      } else {
-        state.tradeDual.coinSell = {
-          balance: 0,
-          belong: state.t
-          ...state.tradeDual.coinSell
-        }
       }
       if (buyToken !== undefined) {
         state.tradeDual.buyToken = buyToken;
