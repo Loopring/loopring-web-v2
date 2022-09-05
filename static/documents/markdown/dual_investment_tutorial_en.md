@@ -41,9 +41,9 @@ Investment due in the week.
 ###### At 21-AUG-2022
 
 - Scenario 1
-  - `If the Settlement Price of LRC on that day is lower than the Target Price of 0.48 USDT, the user will get 0.6% of LRC, that is, 1000 * (1 + 0.6%) LRC = 1006 LRC.`
+    - `If the Settlement Price of LRC on that day is lower than the Target Price of 0.48 USDT, the user will get 0.6% of LRC, that is, 1000 * (1 + 0.6%) LRC = 1006 LRC.`
 - Scenario 2
-  - `If the Settlement Price of LRC is higher than the Target Price of 0.48 USDT, the end user will get 0.6% of USDT, that is, 1000 * 0.48 * (1 + 0.6%) USDT = 482.88 USDT.`
+    - `If the Settlement Price of LRC is higher than the Target Price of 0.48 USDT, the end user will get 0.6% of USDT, that is, 1000 * 0.48 * (1 + 0.6%) USDT = 482.88 USDT.`
 
 After the order expires, the user will get 0.6% of the income. The only uncertainty is the currency of the return, which
 depends on the LRC/USDT settlement price at the time of expiration.
@@ -66,9 +66,9 @@ Investment due in one week.
 ###### At 21-AUG-2022
 
 - Scenario 1
-  - `the Settlement Price of LRC on that day is lower than the Target Price of 0.38 USDT, the user will get 0.6% of LRC, that is, (1000/0.38) * (1 + 0.6%) LRC = 2647.368 LRC.`
+    - `the Settlement Price of LRC on that day is lower than the Target Price of 0.38 USDT, the user will get 0.6% of LRC, that is, (1000/0.38) * (1 + 0.6%) LRC = 2647.368 LRC.`
 - Scenario 2
-  - `If the settlement price of LRC is higher than the Target Price of 0.38 USDT, the end user will receive 0.6% of USDT, that is, 1000 * (1 + 0.6%) USDT = 1006 USDT.`
+    - `If the settlement price of LRC is higher than the Target Price of 0.38 USDT, the end user will receive 0.6% of USDT, that is, 1000 * (1 + 0.6%) USDT = 1006 USDT.`
 
 After the order expires, the user will get 0.6% of the income. The only uncertainty is the currency of the return, which
 depends on the LRC/USDT settlement price at the time of expiration.

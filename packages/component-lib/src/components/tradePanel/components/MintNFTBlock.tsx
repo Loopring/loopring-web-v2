@@ -390,4 +390,5 @@ export const MintNFTBlock = <
       </GridStyle>
     </Box>
   );
-};;;
+};;
+;

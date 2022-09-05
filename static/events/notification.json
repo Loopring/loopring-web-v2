@@ -5,24 +5,20 @@
         "type": "ACTIVITY",
         "place": "HOME",
         "version": "-1",
-        "name": "lido",
-        "title": "ETH staking via Loopring L2 is live!",
-        "description1": "Participate into ETH staking to own rewards.",
+        "name": "NFT Collection",
+        "title": "NFT Collection Live now on loopring.io",
+        "description1": "NFT creation with collection support.",
         "description2": "",
-        "link": "https://loopring.io/#/document/eth_stacking.en.md?noheader&nofooter",
-        "startShow": 1660039200000,
-        "endShow": 1662631200000,
+        "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
+        "startShow": 1662336000000,
+        "endShow": 1665187200000,
         "color": "default",
-        "banner": "https://static.loopring.io/events/2022/08/activities/ETHstacking.en.webp",
-        "bannerWeb": "https://static.loopring.io/events/2022/08/activities/ETHstacking.en.webp",
-        "webRouter": "[self]/invest/defi"
-      }
-    ],
-    "notifications": [],
-    "activitiesHome": [
+        "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "webRouter": "[self]//nft/myCollection"
+      },
       {
         "type": "ACTIVITY",
-        "place": "HOME",
         "version": "-1",
         "name": "lido",
         "title": "ETH staking via Loopring L2 is live!",
@@ -33,15 +29,33 @@
         "endShow": 1662631200000,
         "color": "default",
         "banner": "https://static.loopring.io/events/2022/08/activities/ETHstacking.en.webp",
-        "bannerWeb": "https://static.loopring.io/events/2022/08/activities/ETHstacking.en.webp",
         "webRouter": "[self]/invest/defi"
+      }
+    ],
+    "notifications": [],
+    "activitiesHome": [
+      {
+        "type": "ACTIVITY",
+        "place": "HOME",
+        "version": "-1",
+        "name": "NFT Collection",
+        "title": "NFT Collection Live now on loopring.io",
+        "description1": "NFT creation with collection support.",
+        "description2": "",
+        "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
+        "startShow": 1662336000000,
+        "endShow": 1665187200000,
+        "color": "default",
+        "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "webRouter": "[self]//nft/myCollection"
       }
     ],
     "activitiesInvest": [],
     "invest": []
   },
   "prev": {
-    "endDate": 1662631200000
+    "endDate": 1665187200000
   },
   "invest": {
     "banner": {
@@ -63,14 +77,6 @@
         "banner": "https://static.loopring.io/assets/images/icon-lido.png",
         "titleI18n": "labelInvestDefi",
         "desI18n": "labelInvestDefiDes",
-        "enable": true
-      },
-      {
-        "type": "DUAL",
-        "router": "/invest/dual",
-        "banner": "https://static.loopring.io/assets/images/icon-lido.png",
-        "titleI18n": "labelInvestDual",
-        "desI18n": "labelInvestDualDes",
         "enable": true
       }
     ]

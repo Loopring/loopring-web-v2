@@ -1,0 +1,2 @@
+type,place,version,name,title,description1,description2,link,startShow,endShow,color,banner,banner-web,web-link
+ACTIVITY,HOME,-1,NFT Collection,NFT Collection Live now on loopring.io,NFT creation with collection support.,,https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter,09/05/2022 0:00:00,10/08/2022 0:00:00,default,https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp,https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp,[self]//nft/myCollection

@@ -38,7 +38,6 @@ export const sortMethod = (
 
   switch (sortColumn) {
     case InvestColumnKey.TYPE:
-      // TODO:
       _rawData = sortedRows.sort((a, b) => {
         const valueA = a.token.symbol;
         const valueB = b.token.symbol;
