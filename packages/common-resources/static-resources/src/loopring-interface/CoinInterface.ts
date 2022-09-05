@@ -1,5 +1,6 @@
 import {
   Account,
+  DualViewInfo,
   FloatTag,
   ForexMap,
   TradeStatus,
@@ -7,6 +8,7 @@ import {
 } from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
+import { TokenInfo } from "@loopring-web/loopring-sdk";
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -130,6 +132,25 @@ export type DeFiCalcData<T> = {
   AtoB: string;
   BtoA: string;
   fee: string;
+};
+export type CalDualResult<R> = {
+  lessEarnVol: string;
+  lessEarnTokenSymbol: string;
+  greaterEarnVol: string;
+  greaterEarnTokenSymbol: string;
+  maxSellVol: string;
+  miniSellVol: string;
+  dualViewInfo: R;
+  feeVol?: string;
+  feeTokenSymbol?: string;
+  maxFeeBips: number;
+};
+export type DualCalcData<R, B = IBData<any>> = CalDualResult<R> & {
+  sellToken?: TokenInfo;
+  buyToken?: TokenInfo;
+  coinSell: B;
+  balance: { [key: string]: sdk.DualBalance };
+  request?: sdk.DualOrderRequest;
 };
 
 export type AmmInData<T> = {
@@ -311,7 +332,7 @@ export enum EXPLORE_TYPE {
  *
  */
 export type CollectionMeta = sdk.CollectionMeta & {
-  extends: { [ key: string ]: any };
+  extends: { [key: string]: any };
 };
 export type CollectionMetaJSON = {
   contract: string;
@@ -321,7 +342,7 @@ export type CollectionMetaJSON = {
   tile_uri: string;
   name: string;
   description: string;
-  [ key: string ]: any;
+  [key: string]: any;
 };
 
 export enum CollectionMetaKey {
@@ -349,5 +370,3 @@ export type GET_IPFS_STRING = (
   url: string | undefined,
   basicURl: string
 ) => string;
-
-export type DualCalcData<_T> = {};

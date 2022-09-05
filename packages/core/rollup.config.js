@@ -11,7 +11,7 @@ import json from "rollup-plugin-json";
 // import pkg from './package.json'
 
 export default {
-  input: "./src/index.tsx",
+  input: "./src/DualListPanel.tsx",
   output: [
     {
       file: "./dist/bundle.cjs", //pkg.main,

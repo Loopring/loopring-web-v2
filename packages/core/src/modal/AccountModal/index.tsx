@@ -65,6 +65,7 @@ export const ModalAccountInfo = withTranslation("common")(
       resetProps,
       activeAccountProps,
       exportAccountProps,
+      dualTradeProps,
       copyToastOpen,
       openQRCode,
       closeBtnInfo,
@@ -74,6 +75,8 @@ export const ModalAccountInfo = withTranslation("common")(
       onBackSend,
       collectionToastOpen,
       collectionToastClose,
+      dualToastOpen,
+      closeDualToast,
     } = useAccountModalForUI({
       t,
       depositProps,
@@ -129,6 +132,7 @@ export const ModalAccountInfo = withTranslation("common")(
           nftTransferProps={nftTransferProps as any}
           nftWithdrawProps={nftWithdrawProps as any}
           nftDeployProps={nftDeployProps as any}
+          dualTradeProps={dualTradeProps as any}
           // nftMintAdvanceProps={nftMintAdvanceProps as any}
           // nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
@@ -148,6 +152,13 @@ export const ModalAccountInfo = withTranslation("common")(
             setCopyToastOpen(false);
           }}
           severity={"success"}
+        />
+        <Toast
+          alertText={dualToastOpen?.content ?? ""}
+          severity={dualToastOpen?.type ?? "success"}
+          open={dualToastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={closeDualToast}
         />
         <ModalQRCode
           open={openQRCode}

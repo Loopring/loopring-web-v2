@@ -448,5 +448,10 @@ export type DualViewInfo = {
     currentPrice: number;
   };
   productId: string;
+  __raw__: {
+    info: sdk.DualProductAndPrice;
+    index: sdk.DualIndex;
+    rule: sdk.DualRulesCoinsInfo;
+  };
   // balance,
 };

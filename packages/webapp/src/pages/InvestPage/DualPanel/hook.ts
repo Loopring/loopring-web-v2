@@ -2,109 +2,21 @@ import { useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   confirmation,
+  dualCurrentPrice,
   findDualMarket,
   LoopringAPI,
-  store,
+  makeDualViewItem,
   useDualMap,
-  useSystem,
-  useTicker,
   useTokenPrices,
 } from "@loopring-web/core";
 import React from "react";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { DualPrice } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
-import { getExistedMarket, toBig } from "@loopring-web/loopring-sdk";
 import {
-  AccountStatus,
   DualViewInfo,
-  getValuePrecisionThousand,
   myLog,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import moment from "moment";
-
-export const dualCurrentPrice = (
-  pairASymbol: string,
-  pairBSymbol: string,
-  dualMarket: `${string}-${string}-${string}`
-): {
-  symbol: string;
-  currentPrice: number;
-} => {
-  const { tokenPrices } = store.getState().tokenPrices;
-  const { tickerMap } = store.getState().tickerMap;
-  const { marketArray } = store.getState().tokenMap;
-  const { market } = getExistedMarket(marketArray, pairASymbol, pairBSymbol);
-  const [, _base, quote] = market.match(/(\w+)-(\w+)/i);
-  const [, , baseDual, quoteDual] =
-    dualMarket.match(/(dual-)?(\w+)-(\w+)/i) ?? [];
-
-  let currentPrice = tickerMap[market].close ?? tokenPrices[baseDual];
-  currentPrice =
-    (quote === quoteDual ? currentPrice : 1 / currentPrice) *
-    tokenPrices[quote];
-  return {
-    currentPrice,
-    symbol: baseDual,
-  };
-};
-export const makeDualViewItem = (
-  info: sdk.DualProductAndPrice,
-  index: sdk.DualIndex,
-  rule: sdk.DualRulesCoinsInfo,
-  currentPrice: {
-    symbol: string;
-    currentPrice: number;
-  }
-  // balance: sdk.DualBalance
-): DualViewInfo => {
-  const { expireTime, base, quote, createTime, strike } = info;
-
-  const { baseProfitStep } = rule;
-  const settleRatio = toBig(strike).times(0.54);
-  const _baseProfitStep = Number(baseProfitStep);
-  const apy = settleRatio.div((expireTime - Date.now()) / 86400000).times(365); //
-  const term = moment(new Date(expireTime)).from(new Date(createTime), true);
-
-  // const currentPrice tickerMap[market];
-  myLog("dual", {
-    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
-    settleRatio: getValuePrecisionThousand(
-      settleRatio,
-      _baseProfitStep,
-      _baseProfitStep,
-      _baseProfitStep,
-      false
-    ), //targetPrice
-    term,
-    // targetPrice,
-    // subscribeData,
-    productId: info.productId,
-    expireTime,
-    currentPrice,
-    // balance,
-  });
-  // const apr =  info.dualPrice.ba
-  return {
-    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
-    settleRatio: getValuePrecisionThousand(
-      settleRatio,
-      _baseProfitStep,
-      _baseProfitStep,
-      _baseProfitStep,
-      false
-    ), //targetPrice
-    term,
-    strike,
-    isUp: sdk.toBig(settleRatio).gt(currentPrice.currentPrice) ? true : false,
-    // targetPrice,
-    // subscribeData,
-    productId: info.productId,
-    expireTime,
-    currentPrice,
-  };
-};
 
 export const useDualHook = ({
   setConfirmDualInvest,
@@ -114,7 +26,6 @@ export const useDualHook = ({
   const { t } = useTranslation("common");
   const match: any = useRouteMatch("/invest/dual/:market?");
   const { marketArray, tradeMap, status: dualStatus } = useDualMap();
-
   const { tokenPrices } = useTokenPrices();
   const [priceObj, setPriceObj] = React.useState<{
     symbol: any;
@@ -214,8 +125,8 @@ export const useDualHook = ({
           ? sdk.DUAL_TYPE.DUAL_BASE
           : sdk.DUAL_TYPE.DUAL_CURRENCY;
       const currentPrice = dualCurrentPrice(
-        pairASymbol,
-        pairBSymbol,
+        // pairASymbol,
+        // pairBSymbol,
         market as any
       );
       setCurrentPrice(currentPrice);

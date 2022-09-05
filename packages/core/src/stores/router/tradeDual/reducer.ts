@@ -1,115 +1,95 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { TradeDual, TradeDualStatus } from "./interface";
-import { IBData, RequireOne } from "@loopring-web/common-resources";
-import { TokenInfo } from "@loopring-web/loopring-sdk";
+import { DualViewInfo } from "@loopring-web/common-resources";
 
-const initState: TradeDual<any> = {
-  type: "Dual",
-  isStoB: true,
-  sellToken: {} as any,
-  buyToken: {} as any,
-  depositPrice: "0",
-  withdrawPrice: "0",
-  sellVol: "0",
-  buyVol: "0",
-  dualCalcData: {
-    coinSell: {},
-    coinBuy: {},
-    AtoB: undefined as any,
-    BtoA: undefined as any,
-    fee: undefined as any,
-  },
-  fee: "0",
-  feeRaw: "0",
-};
-type R = { [key: string]: any };
-const initialState: TradeDualStatus<IBData<R>> = {
-  tradeDual: initState,
+const initialState: TradeDualStatus<DualViewInfo> = {
+  tradeDual: {} as any,
   __DAYS__: 30,
   // __API_REFRESH__: 15000,
   __SUBMIT_LOCK_TIMER__: 1000,
   __TOAST_AUTO_CLOSE_TIMER__: 3000,
 };
-const tradeDualSlice: Slice<TradeDualStatus<IBData<R>>> = createSlice({
+const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
   name: "_router_tradeDual",
   initialState,
   reducers: {
     resetTradeDual(state) {
-      state.tradeDual = initState;
+      state.tradeDual = {} as any;
     },
     updateTradeDual(
       state,
-      action: PayloadAction<RequireOne<TradeDual<IBData<any>>, "market">>
+      action: PayloadAction<Partial<TradeDual<DualViewInfo>>>
     ) {
       const {
-        type,
-        market,
-        isStoB,
+        lessEarnVol,
+        lessEarnTokenSymbol,
+        greaterEarnVol,
+        greaterEarnTokenSymbol,
+        maxSellVol,
+        miniSellVol,
+        dualViewInfo,
+        feeVol,
+        feeTokenSymbol,
+        maxFeeBips,
         sellToken,
         buyToken,
-        sellVol,
-        buyVol,
-        dualCalcData,
-        fee,
-        DualBalances,
-        depositPrice,
-        withdrawPrice,
+        balance,
         request,
-        feeRaw,
-        maxSellVol,
-        maxFeeBips,
-        miniSellVol,
+        coinSell,
       } = action.payload;
-      if (market !== undefined && market !== state.tradeDual.market) {
-        // @ts-ignore
-        state.tradeDual = {
-          ...initState,
-          type: type ?? "LIDO",
-          market,
-          sellToken: sellToken as TokenInfo,
-          buyToken: buyToken as TokenInfo,
-        };
+      if (dualViewInfo !== undefined) {
+        state.tradeDual.dualViewInfo = dualViewInfo;
+      }
+      if (sellToken !== undefined) {
+        state.tradeDual.sellToken = sellToken;
+      }
+      if (coinSell) {
+        state.tradeDual.coinSell = coinSell;
+      } else {
+        state.tradeDual.coinSell = {
+          balance: 0,
+          belong: state.t
+          ...state.tradeDual.coinSell
+        }
+      }
+      if (buyToken !== undefined) {
+        state.tradeDual.buyToken = buyToken;
       }
 
       if (request) {
         state.tradeDual.request = request;
       }
 
-      if (dualCalcData) {
-        state.tradeDual.dualCalcData = dualCalcData;
-      }
-      if (isStoB) {
-        state.tradeDual.isStoB = isStoB;
-      }
-      if (DualBalances) {
-        state.tradeDual.DualBalances = DualBalances;
-      }
       if (maxSellVol) {
         state.tradeDual.maxSellVol = maxSellVol;
       }
-      if (maxFeeBips) {
-        state.tradeDual.maxFeeBips = maxFeeBips;
-      }
+
       if (miniSellVol) {
         state.tradeDual.miniSellVol = miniSellVol;
       }
-      if (sellVol !== undefined) {
-        state.tradeDual.sellVol = sellVol;
+      if (maxFeeBips !== undefined) {
+        state.tradeDual.maxFeeBips = maxFeeBips;
       }
-      if (buyVol !== undefined) {
-        state.tradeDual.buyVol = buyVol;
+      if (lessEarnVol) {
+        state.tradeDual.lessEarnVol = lessEarnVol;
       }
-      if (fee) {
-        state.tradeDual.fee = fee;
+      if (lessEarnTokenSymbol) {
+        state.tradeDual.lessEarnTokenSymbol = lessEarnTokenSymbol;
       }
-      if (feeRaw) {
-        state.tradeDual.feeRaw = feeRaw;
+      if (greaterEarnVol) {
+        state.tradeDual.greaterEarnVol = greaterEarnVol;
       }
-      if (depositPrice) {
-        state.tradeDual.depositPrice = depositPrice;
+      if (greaterEarnTokenSymbol) {
+        state.tradeDual.greaterEarnTokenSymbol = greaterEarnTokenSymbol;
       }
-      if (withdrawPrice) {
-        state.tradeDual.withdrawPrice = withdrawPrice;
+      if (feeVol) {
+        state.tradeDual.feeVol = feeVol;
+      }
+      if (feeTokenSymbol) {
+        state.tradeDual.feeTokenSymbol = feeTokenSymbol;
+      }
+      if (balance) {
+        state.tradeDual.balance = balance;
       }
     },
   },

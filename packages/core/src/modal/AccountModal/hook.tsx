@@ -139,6 +139,7 @@ import {
   useCollectionAdvanceMeta,
   useToast,
   useNFTMintAdvance,
+  useDualTrade,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -221,6 +222,13 @@ export function useAccountModalForUI({
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
+  const {
+    dualToastOpen,
+    // setDualTostOpen,
+    closeDualToast,
+    dualTradeProps,
+  } = useDualTrade();
+
   // const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount();
 
@@ -2270,6 +2278,7 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     transferProps,
     withdrawProps,
+    dualTradeProps,
     depositProps,
     resetProps,
     collectionAdvanceProps,
@@ -2292,8 +2301,7 @@ export function useAccountModalForUI({
     onBackSend,
     collectionToastOpen,
     collectionToastClose,
-    // cancelNFTTransfer,
-    // cancelNFTWithdraw,
-    // vendorProps,
+    dualToastOpen,
+    closeDualToast,
   };
 }

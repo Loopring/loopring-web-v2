@@ -51,6 +51,10 @@
     "enable": true,
     "reason": null
   },
+  "dualInvest": {
+    "enable": true,
+    "reason": null
+  },
   "collectionNFT": {
     "enable": true,
     "reason": null

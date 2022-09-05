@@ -109,9 +109,18 @@ export const DualTable = withTranslation(["tables", "common"])(
                 ? ["var(--color-success)", "var(--color-error)"]
                 : ["var(--color-error)", "var(--color-success)"];
             return (
-              <Box display="flex">
+              <Box
+                display="flex"
+                justifyContent={"stretch"}
+                height={"100%"}
+                alignItems={"center"}
+              >
                 <Typography component={"span"}> {row.settleRatio}</Typography>
-                <Typography component={"span"}>
+                <Typography
+                  component={"span"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
                   <UpIcon
                     fontSize={"small"}
                     htmlColor={row.isUp ? _upColor : _downColor}

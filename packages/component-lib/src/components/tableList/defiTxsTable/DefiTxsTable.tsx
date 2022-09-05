@@ -93,11 +93,9 @@ export const DefiTxsTable = withTranslation(["tables", "common"])(
         currPage?: number;
         pageSize?: number;
       }) => {
-      
         getDefiTxList({
           limit: pageSize,
           offset: (currPage - 1) * pageSize,
-      
         });
       },
       globalSetup.wait

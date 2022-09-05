@@ -613,19 +613,6 @@ export const useSwap = <C extends { [key: string]: any }>({
     tradeCalcData?.coinBuy,
   ]);
 
-  /*** account related function ***/
-  // React.useEffect(() => {
-  //   if (
-  //     account.readyState === AccountStatus.ACTIVATED &&
-  //     amountStatus === SagaStatus.UNSET
-  //   ) {
-  //     const amountMap = store.getState().amountMap;
-  //     if (amountMap[market]) {
-  //       setIsSwapLoading(false);
-  //     }
-  //   }
-  // }, [account.readyState, amountStatus, market]);
-
   const walletLayer2Callback = React.useCallback(async () => {
     let walletMap: WalletMap<any> | undefined = undefined;
     if (account.readyState === AccountStatus.ACTIVATED) {
@@ -707,14 +694,6 @@ export const useSwap = <C extends { [key: string]: any }>({
     if (pageTradeLite.depth) {
       refreshAmmPoolSnapshot();
       setIsSwapLoading(false);
-      // if (
-      //   account.readyState === AccountStatus.ACTIVATED &&
-      //   amountStatus === SagaStatus.UNSET
-      // ) {
-      //   setIsSwapLoading(false);
-      // } else {
-      //
-      // }
     }
   }, [
     pageTradeLite.depth,

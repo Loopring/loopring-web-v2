@@ -15,7 +15,7 @@ import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
-import { DualPanel } from "./DualPanel";
+import { DualPanel } from "./DualPanel/index";
 
 export enum InvestType {
   MyBalance = 0,
@@ -244,7 +244,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           <DeFiPanel setConfirmDefiInvest={setConfirmDefiInvest} />
         )}
         {tabIndex === InvestType.Dual && (
-          <DualPanel setConfirmDualInvest={setConfirmDualInvest} />
+          <DualListPanel setConfirmDualInvest={setConfirmDualInvest} />
         )}
         {tabIndex === InvestType.MyBalance && (
           <Box
