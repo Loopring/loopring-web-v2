@@ -14,7 +14,7 @@
       "color": "default",
       "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
       "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
-      "webRouter": "[self]//nft/myCollection"
+      "webRouter": "[self]/nft/myCollection"
     }
   ],
   "activitiesHome": [
@@ -32,7 +32,7 @@
       "color": "default",
       "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
       "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
-      "webRouter": "[self]//nft/myCollection"
+      "webRouter": "[self]/nft/myCollection"
     }
   ],
   "activitiesInvest": [],
