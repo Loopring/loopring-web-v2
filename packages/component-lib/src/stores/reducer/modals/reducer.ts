@@ -221,18 +221,20 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state.isShowResetAccount.isShow = isShow;
     },
     setShowActiveAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const {isShow} = action.payload;
+      const { isShow } = action.payload;
       state.isShowActiveAccount.isShow = isShow;
     },
     setShowExportAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const {isShow} = action.payload;
+      const { isShow } = action.payload;
       state.isShowExportAccount.isShow = isShow;
     },
     setShowDual(
       state,
-      action: PayloadAction<ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }>
+      action: PayloadAction<
+        ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }
+      >
     ) {
-      const {isShow, dualInfo} = action.payload;
+      const { isShow, dualInfo } = action.payload;
       if (isShow && dualInfo) {
         state.isShowDual = {
           isShow,
@@ -250,7 +252,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         error?: RESULT_INFO;
       }>
     ) {
-      const {isShow, step, error} = action.payload;
+      const { isShow, step, error } = action.payload;
       state.isShowConnect = {
         isShow,
         step: step ? step : 0,
