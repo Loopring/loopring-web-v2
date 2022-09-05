@@ -427,4 +427,4 @@ export type L2CollectionFilter = {
   owner?: string;
 };
 
-export const LIVE_FEE_TIMES = 10000; // todo
+export const LIVE_FEE_TIMES = 60000;
