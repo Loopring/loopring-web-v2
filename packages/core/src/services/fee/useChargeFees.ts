@@ -21,7 +21,7 @@ import {
   useWalletLayer2,
 } from "../../index";
 
-const INTERVAL_TIME = (() => 90000)();
+const INTERVAL_TIME = (() => 900000)();
 export function useChargeFees({
   tokenSymbol,
   requestType,
@@ -230,13 +230,6 @@ export function useChargeFees({
               fees = response.fees;
             }
           }
-          setIntervalTime((state) => {
-            // myLog("_intervalTime", request.requestType, state);
-            nodeTimer.current = setTimeout(() => {
-              getFeeList();
-            }, state);
-            return state;
-          });
           let _feeInfo: any = undefined;
           if (fees && feeChargeOrder) {
             const _chargeFeeTokenList = feeChargeOrder?.reduce((pre, item) => {
@@ -357,6 +350,13 @@ export function useChargeFees({
           if ((reason as sdk.RESULT_INFO).code) {
           }
         }
+        setIntervalTime((state) => {
+          // myLog("_intervalTime", request.requestType, state);
+          nodeTimer.current = setTimeout(() => {
+            getFeeList();
+          }, state);
+          return state;
+        });
         return;
       } else {
         nodeTimer.current = setTimeout(() => {
