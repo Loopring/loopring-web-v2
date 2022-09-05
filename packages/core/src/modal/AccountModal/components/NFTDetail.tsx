@@ -14,15 +14,15 @@ import {
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
-	Button,
-	InformationForNoMetaNFT,
-	TextareaAutosizeStyled,
-	useOpenModals,
-	useSettings,
-	useToggle,
-	NFTMedia,
-	AccountStep,
-	Toast,
+  Button,
+  InformationForNoMetaNFT,
+  TextareaAutosizeStyled,
+  useOpenModals,
+  useSettings,
+  useToggle,
+  NFTMedia,
+  AccountStep,
+  Toast,
 } from "@loopring-web/component-lib";
 import { nftRefresh, store, useAccount, useSystem } from "../../../stores";
 import React from "react";

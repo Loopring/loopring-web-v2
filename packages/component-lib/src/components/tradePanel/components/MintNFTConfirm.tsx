@@ -544,4 +544,4 @@ export const MintNFTConfirm = <
       </GridStyle>
     </Box>
   );
-};;
+};
