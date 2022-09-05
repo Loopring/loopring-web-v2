@@ -648,4 +648,4 @@ export const useDualTrade = <
     // setDualTostOpen: setToastOpen,
     closeDualToast: closeToast,
   };
-};;
+};
