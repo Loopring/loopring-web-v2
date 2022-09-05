@@ -19,5 +19,13 @@ exports.investJson = {
       desI18n: "labelInvestDefiDes",
       enable: true,
     },
+    // {
+    //   type: "DUAL",
+    //   router: "/invest/dual",
+    //   banner: "https://static.loopring.io/assets/images/icon-lido.png",
+    //   titleI18n: "labelInvestDual",
+    //   desI18n: "labelInvestDualDes",
+    //   enable: true,
+    // },
   ],
 };
