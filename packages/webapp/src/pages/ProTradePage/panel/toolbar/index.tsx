@@ -178,7 +178,7 @@ export const Toolbar = withTranslation("common")(
         });
       }
     }, [coinMap, tickerMap, tokenPrices, market]);
-    React.useEffect(() => {
+	  React.useEffect(() => {
       if (tickerStatus === SagaStatus.UNSET && market !== undefined) {
         setDefaultData();
       }

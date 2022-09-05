@@ -198,28 +198,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setWithdrawTypes({
         [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
       });
-      // TODO： remove first withdraw
-      // const tokenInfo = tokenMap[withdrawValue.belong];
-      //
-      // const req: sdk.GetWithdrawalAgentsRequest = {
-      //   tokenId: tokenInfo.tokenId,
-      //   amount: sdk.toBig("1e" + tokenInfo.decimals).toString(),
-      // };
-      //
-      // const agent = await LoopringAPI.exchangeAPI.getWithdrawalAgents(req);
-      //
-      // if (agent.supportTokenMap[withdrawValue.belong]) {
-      //   myLog("------- have agent!");
-      //   setWithdrawTypes({
-      //     [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast",
-      //     [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
-      //   });
-      // } else {
-      //   myLog("------- have NO agent!");
-      //   setWithdrawTypes({
-      //     [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
-      //   });
-      // }
     }
   }, [withdrawValue, tokenMap]);
 

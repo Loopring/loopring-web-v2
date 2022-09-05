@@ -391,3 +391,4 @@ export const MintNFTBlock = <
     </Box>
   );
 };;
+;

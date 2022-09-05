@@ -216,6 +216,5 @@ export default {
   labelFrom: "from",
   labelTo: "to",
   labelUPrice: "unit price: ",
-  labelTradeNFTUnitPrice: "Unit Price"
-
+  labelTradeNFTUnitPrice: "Unit Price",
 };

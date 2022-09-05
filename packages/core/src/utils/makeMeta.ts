@@ -12,7 +12,7 @@ export const makeMeta: MakeMeta = ({
     description: "`${NFT_DESCRIPTION}`",
     image: "ipfs://`${CID}`",
     animation_url: "ipfs://`${CID}`",
-    collection_metadata: `${domain}/${collection.contractAddress}`, //TODO: makesure from backend
+    collection_metadata: `${domain}/${collection.contractAddress}`,
     royalty_percentage: "`[0..10] (int 0-10)`",
     attributes: [
       {
