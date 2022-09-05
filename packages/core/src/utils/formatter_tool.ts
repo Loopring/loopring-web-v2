@@ -113,10 +113,11 @@ export function tradeItemToTableDataItem(tradeItem: any) {
 
   const feeKey = isBuy ? base : quote;
   const feeKeyPrecision = tokenMap ? tokenMap[feeKey].precision : undefined;
+
   const feeValue = getValuePrecisionThousand(
     volumeToCountAsBigNumber(feeKey, tradeItem.fee),
     feeKeyPrecision,
-    2,
+    feeKeyPrecision,
     undefined,
     false,
     {
