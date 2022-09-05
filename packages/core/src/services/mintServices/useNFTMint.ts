@@ -90,7 +90,6 @@ export function useNFTMint<
     setLabelAndParams,
     resetBtnInfo,
   } = useBtnStatus();
-  const [lastRequest, setLastRequest] = React.useState<any>({});
   const { checkHWAddr, updateHW } = useWalletInfo();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const { setShowAccount, setShowNFTMintAdvance } = useOpenModals();
@@ -196,7 +195,6 @@ export function useNFTMint<
           if (!isHWAddr && !isNotHardwareWallet) {
             isHWAddr = true;
           }
-          setLastRequest({ request });
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_In_Progress,
@@ -416,9 +414,15 @@ export function useNFTMint<
           value: nftMintValue.mintData?.tradeValue,
         },
       });
-      processRequest(lastRequest, !isHardwareRetry);
+      onNFTMintClick(!isHardwareRetry);
+      // processRequest(lastRequest, !isHardwareRetry);
     },
-    [lastRequest, processRequest, setShowAccount]
+    [
+      nftMintValue.mintData?.tradeValue,
+      nftMintValue.nftMETA?.name,
+      onNFTMintClick,
+      setShowAccount,
+    ]
   );
 
   const nftMintProps: NFTMintProps<Me, Mi, I> = {
