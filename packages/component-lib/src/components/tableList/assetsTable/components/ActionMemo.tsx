@@ -253,7 +253,6 @@ const ActionMemo = React.memo((props: ActionProps) => {
               </>
             ) : (
               <>
-                {" "}
                 <Grid item>
                   <Button
                     variant={"text"}
@@ -276,26 +275,13 @@ const ActionMemo = React.memo((props: ActionProps) => {
                 </Grid>
               </>
             )}
-
-            {/*{isToL1 && (*/}
-            {/*  <Grid item>*/}
-            {/*    <Button*/}
-            {/*      variant={"text"}*/}
-            {/*      size={"medium"}*/}
-            {/*      color={"primary"}*/}
-            {/*      onClick={() => onShowWithdraw(tokenValue)}*/}
-            {/*    >*/}
-            {/*      {t("labelL2toL1Action")}*/}
-            {/*    </Button>*/}
-            {/*  </Grid>*/}
-            {/*)}*/}
           </Box>
-          {!isLp && allowTrade?.order?.enable && (
+          {!isLp && !isInvest && allowTrade?.order?.enable && (
             <Grid item marginTop={1}>
               <Popover {...{ ...popoverProps }} />
             </Grid>
           )}
-          {(isLp || isDefi) && (
+          {(isLp || isInvest) && (
             <Grid item marginTop={1}>
               <Popover {...{ ...popoverProps }} />
             </Grid>

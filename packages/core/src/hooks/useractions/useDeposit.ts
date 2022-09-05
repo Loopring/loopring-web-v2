@@ -215,7 +215,7 @@ export const useDeposit = <
       }
       if (data.to === "button") {
         if (walletLayer1 && data?.tradeData?.belong) {
-          const walletInfo = walletLayer1[ data.tradeData.belong ];
+          const walletInfo = walletLayer1[data.tradeData.belong];
           newValue = {
             ...newValue,
             ...data.tradeData,

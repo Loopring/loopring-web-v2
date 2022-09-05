@@ -39,7 +39,9 @@ export const InvestMarkdownPage = () => {
         const [year, month] = match?.params.path.split("-");
         const type = searchParams.get("type");
         const index =
-          notifyMap?.invest.investAdvice.findIndex((invest) => invest.type === type) ?? -1;
+          notifyMap?.invest.investAdvice.findIndex(
+            (invest) => invest.type === type
+          ) ?? -1;
         let filePath = "";
         if (notifyMap?.invest && index >= 0) {
           filePath = notifyMap.invest[index].linkRule;

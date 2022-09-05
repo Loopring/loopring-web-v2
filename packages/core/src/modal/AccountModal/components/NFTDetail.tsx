@@ -1,48 +1,57 @@
 import styled from "@emotion/styled";
-import { Box, BoxProps, Link, Typography } from "@mui/material";
+import { Box, BoxProps, Link, Tooltip, Typography } from "@mui/material";
 import {
   AssetsRawDataItem,
   EmptyValueTag,
   Explorer,
   getShortAddr,
-  IPFS_LOOPRING_SITE,
-  IPFS_META_URL,
   LinkIcon,
+  myLog,
+  NFT_TYPE_STRING,
   NFTWholeINFO,
+  RefreshIPFSIcon,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
-  Button,
-  InformationForNoMetaNFT,
-  TextareaAutosizeStyled,
-  useOpenModals,
-  useSettings,
-  useToggle,
-  NFTMedia,
-  AccountStep,
+	Button,
+	InformationForNoMetaNFT,
+	TextareaAutosizeStyled,
+	useOpenModals,
+	useSettings,
+	useToggle,
+	NFTMedia,
+	AccountStep,
+	Toast,
 } from "@loopring-web/component-lib";
-import { useAccount } from "../../../stores";
+import { nftRefresh, store, useAccount, useSystem } from "../../../stores";
 import React from "react";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
 import { useTheme } from "@emotion/react";
+import { getIPFSString } from "../../../utils";
+import { LoopringAPI } from "../../../api_wrapper";
+import { useToast } from "../../../hooks";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
+
   img {
     object-fit: contain;
   }
 ` as typeof Box;
 
 const BoxStyle = styled(Box)<
-  { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
+  { isMobile: boolean; baseURL: string } & BoxProps & Partial<NFTWholeINFO>
 >`
   &.nft-detail {
     margin-top: -26px;
+
     .detail-info {
       max-height: 520px;
       overflow-y: scroll;
       scrollbar-width: none; /* Firefox */
       -ms-overflow-style: none; /* Internet Explorer 10+ */
+
       &::-webkit-scrollbar {
         /* WebKit */
         width: 0;
@@ -61,23 +70,27 @@ const BoxStyle = styled(Box)<
       padding-left: 0;
       padding-right: 0;
     }
+
     .nft-trade {
       max-height: 520px;
+
       .container {
         width: 320px;
       }
     }
+
     .MuiToolbar-root {
       .back-btn {
         margin-left: ${({ theme }) => -4 * theme.unit}px;
       }
     }
   }
+
   &.nft-detail {
-    ${({ isMobile, image }) => `
-     ${
-       isMobile &&
-       `
+    ${({ isMobile, image, baseURL }) => `
+      ${
+        isMobile &&
+        `
        .detail-info{
           max-height:  initial;
         }
@@ -95,10 +108,9 @@ const BoxStyle = styled(Box)<
          z-index:1;
          position:absolute;
          filter: blur(3px);
-         background:url(${
-           image ? image.replace(IPFS_META_URL, IPFS_LOOPRING_SITE) : ""
-         }) no-repeat 50% 10px;
-          background-size: contain;
+         background:url(${getIPFSString(image, baseURL)});
+         no-repeat 50% 10px;
+         background-size: contain;
          opacity: 0.08;
          content:'';
          height: 100vh;
@@ -115,31 +127,73 @@ const BoxStyle = styled(Box)<
        } 
        
      `
-     }
-  `}
+      }
+    `}
+  }
+
+  .MuiSnackbar-root {
+    top: ${({ theme }) => 4 * theme.unit}px !important;
   }
 ` as (
-  props: { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
+  props: { isMobile: boolean; baseURL: string } & BoxProps &
+    Partial<NFTWholeINFO>
 ) => JSX.Element;
 
 export const NFTDetail = withTranslation("common")(
   ({
     popItem,
     etherscanBaseUrl,
+    baseURL,
     t,
   }: {
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
+    baseURL: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
     const { isMobile } = useSettings();
+    const { chainId } = useSystem();
     const { account } = useAccount();
+    const {
+      nftDataHashes: { nftDataHashes },
+      updateNFTRefreshHash,
+    } = nftRefresh.useNFTRefresh();
+    const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+    const { toastOpen, setToastOpen, closeToast } = useToast();
     const {
       toggle: { deployNFT },
     } = useToggle();
     const { setShowAccount, setShowNFTDeploy, setShowTradeIsFrozen } =
       useOpenModals();
+    const [showFresh, setShowFresh] = React.useState(
+      popItem?.nftData && nftDataHashes[popItem.nftData?.toLowerCase()]
+        ? "loading"
+        : "click"
+    );
+    myLog("showFresh", showFresh);
 
+    const handleRefresh = React.useCallback(async () => {
+      setShowFresh("loading");
+      setToastOpen({
+        open: true,
+        type: "success",
+        content: t("labelNFTServerRefreshSubmit"),
+      });
+      if (popItem && popItem.nftData) {
+        updateNFTRefreshHash(popItem.nftData);
+        await LoopringAPI.nftAPI?.callRefreshNFT({
+          network: "ETHEREUM",
+          tokenAddress: popItem.tokenAddress ?? "",
+          nftId: popItem?.nftId?.toString() ?? "", //new BigNumber(?? "0", 16).toString(),
+          nftType: (popItem?.nftType?.toString() ?? "") as NFT_TYPE_STRING,
+        });
+        setToastOpen({
+          open: true,
+          type: "success",
+          content: t("labelNFTServerRefreshSubmit"),
+        });
+      }
+    }, []);
     const [showDialog, setShowDialog] =
       React.useState<string | undefined>(undefined);
     const [isKnowNFTNoMeta, setIsKnowNFTNoMeta] = React.useState<boolean>(
@@ -157,6 +211,34 @@ export const NFTDetail = withTranslation("common")(
       });
     }, [popItem.name, popItem.image]);
 
+    const updateNFTStatus = React.useCallback(async () => {
+      const nftDataHashes =
+        store.getState().localStore.nftHashInfos[chainId]?.nftDataHashes;
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      if (
+        popItem.nftData &&
+        nftDataHashes &&
+        nftDataHashes[popItem.nftData.toLowerCase()]
+      ) {
+        updateNFTRefreshHash(popItem.nftData);
+        nodeTimer.current = setTimeout(() => {
+          updateNFTStatus();
+          // updateNFTRefreshHash(popItem.nftData);
+        }, 180000);
+      } else {
+        setShowFresh("click");
+      }
+      return () => {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      };
+    }, [nodeTimer]);
+
+    React.useEffect(() => {
+      if (popItem?.nftData && nftDataHashes[popItem.nftData]) {
+        updateNFTStatus();
+      }
+    }, [nftDataHashes, popItem.nftData]);
+
     const detailView = React.useMemo(() => {
       return (
         <Box
@@ -165,23 +247,52 @@ export const NFTDetail = withTranslation("common")(
           className={"detail-info"}
           maxWidth={isMobile ? "var(--mobile-full-panel-width)" : 550}
         >
-          <InformationForNoMetaNFT
-            open={!!showDialog}
-            method={showDialog}
-            handleClose={(_e, isAgress) => {
-              setShowDialog(undefined);
-              if (isAgress && showDialog) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.SendNFTGateway,
-                });
-              }
-            }}
-          />
-          <Box marginBottom={3} display={"flex"} alignItems={"center"}>
-            <Typography color={"text.primary"} variant={"h2"} marginBottom={1}>
+          <Box marginBottom={2} display={"flex"} alignItems={"center"}>
+            <Typography
+              component={"h4"}
+              color={"text.primar"}
+              variant={"body1"}
+              marginBottom={1}
+            >
+              {/*{popItem?.collectionMeta*/}
+              {/*  ? popItem?.collectionMeta?.name*/}
+              {/*    ? popItem?.collectionMeta?.name*/}
+              {/*    : t("labelUnknown") +*/}
+              {/*      " - " +*/}
+              {/*      getShortAddr(popItem?.collectionMeta?.contractAddress ?? "")*/}
+              {/*  : EmptyValueTag}*/}
+            </Typography>
+          </Box>
+          <Box marginBottom={2} display={"flex"} alignItems={"center"}>
+            <Typography color={"text.primary"} variant={"h2"}>
               {popItem?.name ?? EmptyValueTag}
             </Typography>
+          </Box>
+          <Box
+            display={"flex"}
+            justifyContent={"flex-end"}
+            alignItems={"center"}
+            marginBottom={2}
+            paddingRight={3}
+          >
+            <Tooltip
+              title={t("labelNFTServerRefresh").toString()}
+              placement={"top"}
+            >
+              <Button
+                size={"small"}
+                aria-label={t("labelRefresh")}
+                disabled={showFresh !== "click"}
+                // sx={{ backgroundColor: "var(--field-opacity)" }}
+                variant={"outlined"}
+                onClick={(_event) => {
+                  handleRefresh();
+                }}
+                sx={{ minWidth: "initial", padding: "4px" }}
+              >
+                <RefreshIPFSIcon color={"inherit"} fontSize={"medium"} />
+              </Button>
+            </Tooltip>
           </Box>
 
           <Box
@@ -197,11 +308,13 @@ export const NFTDetail = withTranslation("common")(
                 size={"small"}
                 fullWidth
                 onClick={() =>
-                  setShowAccount({
-                    isShow: true,
-                    step: AccountStep.SendNFTGateway,
-                    info: { ...popItem },
-                  })
+                  isKnowNFTNoMeta
+                    ? setShowAccount({
+                        isShow: true,
+                        step: AccountStep.SendNFTGateway,
+                        info: { ...popItem },
+                      })
+                    : setShowDialog("Send")
                 }
               >
                 {t("labelNFTSendBtn")}
@@ -486,19 +599,42 @@ export const NFTDetail = withTranslation("common")(
                 minRows={2}
                 maxRows={5}
                 disabled={true}
+                style={{ padding: 0 }}
                 value={`${popItem.description}` ?? EmptyValueTag}
               />
             </Box>
           </Box>
 
-          {/*<Box marginBottom={3} display={"flex"} alignItems={"center"}>*/}
-          {/*  <Typography color={"text.primary"} variant={"h2"} marginBottom={1}>*/}
-          {/*    # {" " + getShortAddr(popItem?.nftId ?? "")}*/}
-          {/*  </Typography>*/}
-          {/*</Box>*/}
+          <InformationForNoMetaNFT
+            open={!!showDialog}
+            method={showDialog}
+            handleClose={(_e, isAgree) => {
+              setShowDialog(undefined);
+              if (isAgree && showDialog) {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.SendNFTGateway,
+                });
+              }
+            }}
+          />
         </Box>
       );
-    }, [showDialog, popItem, t, isKnowNFTNoMeta, etherscanBaseUrl]);
+    }, [
+      isMobile,
+      popItem,
+      t,
+      showFresh,
+      account.accAddress,
+      etherscanBaseUrl,
+      properties,
+      showDialog,
+      handleRefresh,
+      setShowAccount,
+      deployNFT.enable,
+      setShowNFTDeploy,
+      setShowTradeIsFrozen,
+    ]);
     const theme = useTheme();
     const style = isMobile
       ? {
@@ -532,10 +668,13 @@ export const NFTDetail = withTranslation("common")(
               shouldPlay={true}
               onNFTError={() => undefined}
               isOrigin={true}
+              getIPFSString={getIPFSString}
+              baseURL={baseURL}
             />
           </BoxNFT>
         )}
         <BoxStyle
+          baseURL={baseURL}
           isMobile={isMobile}
           image={popItem.image}
           marginLeft={2}
@@ -549,6 +688,17 @@ export const NFTDetail = withTranslation("common")(
         >
           {/*{viewPage === 0 && detailView}*/}
           {detailView}
+          <Toast
+            // snackbarOrigin={{
+            //   vertical: "top",
+            //   horizontal: "left",
+            // }}
+            alertText={toastOpen?.content ?? ""}
+            severity={toastOpen?.type ?? "success"}
+            open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={closeToast}
+          />
         </BoxStyle>
       </>
     );

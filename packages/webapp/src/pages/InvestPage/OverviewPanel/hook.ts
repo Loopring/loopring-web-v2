@@ -32,7 +32,7 @@ export function useOverview<R extends RowInvest>() {
         const _rawData = [...filterData(rawData, value)];
         setFilteredData(_rawData);
       } else {
-        setFilteredData(rawData);    
+        setFilteredData(rawData);
       }
     },
     [filterData, myRawData, rawData, walletLayer2]

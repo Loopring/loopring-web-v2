@@ -35,6 +35,7 @@ export const DepositWrap = <
   tradeData,
   coinMap,
   title,
+  isHideDes,
   description,
   btnInfo,
   depositBtnStatus,
@@ -60,7 +61,7 @@ export const DepositWrap = <
   ...rest
 }: DepositViewProps<T, I> & WithTranslation) => {
   const inputBtnRef = React.useRef();
-  let {feeChargeOrder, isMobile} = useSettings();
+  let { feeChargeOrder, isMobile } = useSettings();
   const [_toAddress, setToAddress] = React.useState(tradeData.toAddress);
   const getDisabled = React.useMemo(() => {
     return disabled || depositBtnStatus === TradeBtnStatus.DISABLED;
@@ -142,7 +143,10 @@ export const DepositWrap = <
       height={"100%"}
       minWidth={"220px"}
     >
-      <DepositTitle title={title ? t(title) : undefined} />
+      <DepositTitle
+        title={title ? t(title) : undefined}
+        isHideDes={isHideDes}
+      />
       <Grid item marginTop={2} alignSelf={"stretch"}>
         <BasicACoinTrade
           {...{
@@ -246,17 +250,16 @@ export const DepositWrap = <
                   const toAddress = _event.target.value;
                   setToAddress(() => {
                     return toAddress;
-                  })
+                  });
                   onChangeEvent(0, {
-                    tradeData: {toAddress} as T,
+                    tradeData: { toAddress } as T,
                     to: "button",
                   });
                 }
-
               }}
               fullWidth={true}
             />
-            {tradeData.toAddress !== "" ? (
+            {!!tradeData.toAddress ? (
               toIsAddressCheckLoading ? (
                 <LoadingIcon
                   width={24}
@@ -267,14 +270,14 @@ export const DepositWrap = <
                   <IconClearStyled
                     color={"inherit"}
                     size={"small"}
-                    style={{top: "30px"}}
+                    style={{ top: "30px" }}
                     aria-label="Clear"
                     onClick={() => {
-                      setToAddress('')
-                      handleClear()
+                      setToAddress("");
+                      handleClear();
                     }}
                   >
-                    <CloseIcon/>
+                    <CloseIcon />
                   </IconClearStyled>
                 )
               )

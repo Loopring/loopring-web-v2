@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { LoopringAPI } from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
 import {
@@ -6,24 +6,28 @@ import {
   NFTTableProps,
   TxnDetailProps,
   useSettings,
-  NFTTradeProps, NFTTradeFilter,
+  NFTTradeProps,
+  NFTTradeFilter,
 } from "@loopring-web/component-lib";
 import { useSystem } from "@loopring-web/core";
 import { useAccount } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { TxNFTType } from "@loopring-web/loopring-sdk";
 import { volumeToCountAsBigNumber } from "@loopring-web/core";
 import { RowConfig } from "@loopring-web/common-resources";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 const LimitNFTHistory = 20;
 
-export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.UserNFTTradeHistory>() => {
-  const {etherscanBaseUrl} = useSystem();
-  const {account} = useAccount();
-  const {isMobile} = useSettings();
+export const useHistoryNFT = <
+  Row extends TxnDetailProps,
+  TradeRow extends sdk.UserNFTTradeHistory
+>() => {
+  const { etherscanBaseUrl } = useSystem();
+  const { account } = useAccount();
+  const { isMobile } = useSettings();
   const [tabIndex, setTabIndex] = React.useState(0);
   const container = React.useRef(null);
+  // const [showLoading, setShowLoading] = useState(false);
 
   const [nftHistory, setNftHistory] = React.useState<{
     userNFTTxs: Partial<NFTTableProps<Row>>;
@@ -35,14 +39,13 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
         pageSize: LimitNFTHistory,
         total: 0,
       },
-      txType: sdk.UserNFTTxTypes[ sdk.TxNFTType.ALL ],
+      txType: sdk.UserNFTTxTypes[sdk.TxNFTType.ALL],
       showloading: false,
     },
   });
 
-
   const [nftTrades, setTrades] = React.useState<{
-    nftTrades: NFTTradeProps<TradeRow>
+    nftTrades: NFTTradeProps<TradeRow>;
   }>({
     nftTrades: {
       etherscanBaseUrl,
@@ -50,29 +53,29 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
       pagination: {
         pageSize: LimitNFTHistory,
         total: 0,
-        page: 1
+        page: 1,
       },
       showLoading: false,
       // getTxnList: (filter: NFTTradeFilter) => Promise<void>;
       showFilter: true,
       accAddress: account.accAddress,
-      accountId: account.accountId
+      accountId: account.accountId,
     } as unknown as NFTTradeProps<TradeRow>,
   });
 
   const getTxnList = React.useCallback(
     async ({
-             page = 1,
-             limit,
-             txType = sdk.UserNFTTxTypes[ TxNFTType.ALL ],
-             duration = [null, null],
-           }: NFTTableFilter) => {
+      page = 1,
+      limit,
+      txType = sdk.UserNFTTxTypes[sdk.TxNFTType.ALL],
+      duration = [null, null],
+    }: NFTTableFilter) => {
       if (LoopringAPI.userAPI) {
         const _limit = limit
           ? limit
           : nftHistory.userNFTTxs.pagination?.pageSize ?? LimitNFTHistory;
 
-        const {totalNum, userNFTTxs} =
+        const { totalNum, userNFTTxs } =
           await LoopringAPI.userAPI.getUserNFTTransactionHistory(
             {
               accountId: account.accountId,
@@ -82,7 +85,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
               types: txType ? ([txType] as any[]) : undefined,
               // start: (page - 1) * limit,
               start:
-                duration && duration[ 0 ]
+                duration && duration[0]
                   ? (duration[0] as any)?.format("x") ?? undefined
                   : undefined,
               end:
@@ -110,7 +113,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
                   LimitNFTHistory,
                 total: totalNum,
               },
-              rawData: userNFTTxs.map((item) => {
+              rawData: (userNFTTxs ?? []).map((item) => {
                 return {
                   ...item,
                   amount: item.amount.toString(),
@@ -137,34 +140,38 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
 
   const getTradeList = React.useCallback(
     async ({
-             page = 1,
-             limit,
-             start,
-             end,
-             side = undefined,
-
-             // duration = [null, null],
-           }: NFTTradeFilter) => {
+      page = 1,
+      limit,
+      start,
+      end,
+      side = undefined,
+    }: // duration = [null, null],
+    NFTTradeFilter) => {
       if (LoopringAPI.userAPI) {
+        setTrades((state) => ({
+          ...state,
+          nftTrades: {
+            ...state.nftTrades,
+            showLoading: true,
+          },
+        }));
         const _limit = limit
           ? limit
           : nftHistory.userNFTTxs.pagination?.pageSize ?? LimitNFTHistory;
 
-        const result =
-          await LoopringAPI.userAPI.getUserNFTTradeHistory(
-            {
-              accountId: account.accountId,
-              offset: (page - 1) * _limit,
-              limit: _limit,
-              start,
-              end,
-              // @ts-ignore
-              metadata: true,
-              side,
-            },
-            account.apiKey
-          );
-        const {totalNum, trades} = result as any;
+        const result = await LoopringAPI.userAPI.getUserNFTTradeHistory(
+          {
+            accountId: account.accountId,
+            offset: (page - 1) * _limit,
+            limit: _limit,
+            start,
+            end,
+            metadata: true,
+            side: side as sdk.NFT_TRADE,
+          },
+          account.apiKey
+        );
+        const { totalNum, trades } = result as any;
         setTrades((state) => {
           return {
             ...state,
@@ -179,6 +186,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
                 total: totalNum,
                 page,
               },
+              showLoading: false,
               rawData: trades as TradeRow[],
             },
           };
@@ -222,9 +230,9 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
 
           limit: pageSize,
           side: undefined,
-        })
+        });
         return state;
-      })
+      });
     }
   }, [container]);
 

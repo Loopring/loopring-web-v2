@@ -24,6 +24,8 @@ import {
   WalletMap,
   AddressError,
   WALLET_TYPE,
+  TOAST_TIME,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 
 import {
@@ -32,7 +34,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   makeWalletLayer2,
-  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   useWalletLayer2Socket,
@@ -44,6 +45,7 @@ import {
   checkErrorInfo,
   useModalData,
   isAccActivated,
+  store,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
@@ -76,14 +78,13 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
+    resetIntervalTime,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
-    updateData: React.useCallback(
-      ({ fee }) => {
-        updateTransferData({ ...transferValue, fee });
-      },
-      [transferValue]
-    ),
+    updateData: ({ fee }) => {
+      const transferValue = store.getState()._router_modalData.transferValue;
+      updateTransferData({ ...transferValue, fee });
+    },
   });
   const handleOnMemoChange = React.useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -163,10 +164,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   useWalletLayer2Socket({ walletLayer2Callback });
 
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
     if (info?.isRetry) {
+      checkFeeIsEnough();
       return;
     }
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
 
     if (symbol && walletMap) {
       myLog("resetDefault symbol:", symbol);
@@ -232,7 +234,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       account.readyState === AccountStatus.ACTIVATED
     ) {
       resetDefault();
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [isShow, accountStatus, account.readyState]);
 
   const { checkHWAddr, updateHW } = useWalletInfo();
@@ -297,7 +304,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
                   (response as sdk.RESULT_INFO)?.code || 0
                 )
               ) {
-                checkFeeIsEnough(true);
+                checkFeeIsEnough({ isRequiredAPI: true });
               }
               setShowAccount({
                 isShow: true,

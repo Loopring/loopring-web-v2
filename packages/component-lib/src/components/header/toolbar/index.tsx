@@ -1,7 +1,8 @@
-import { Box, IconButton } from "@mui/material";
+import { Badge, Box, IconButton } from "@mui/material";
 import {
   Account,
   AccountStatus,
+  CircleIcon,
   DownloadIcon,
   NotificationIcon,
   Notify,
@@ -14,6 +15,7 @@ import { bindPopper } from "material-ui-popup-state/es";
 import { PopoverPure, SubMenu, SubMenuList } from "../../basic-lib";
 import { SettingPanel } from "../../block/SettingPanel";
 import { NotificationPanel } from "../../block/NotificationPanel";
+import React from "react";
 
 export const BtnDownload = ({
   t,
@@ -50,11 +52,29 @@ export const BtnNotification = ({
     variant: "popover",
     popupId: "notificationPop",
   });
+  const [content] = React.useState(0);
   return (
-    <Box>
+    <Box position={"relative"}>
       <IconButton aria-label={"notification"} {...bindHover(popupState)}>
-        <NotificationIcon />
+        <Badge badgeContent={content}>
+          <NotificationIcon />
+        </Badge>
       </IconButton>
+      {(notification?.activities?.length ??
+        0 + notification?.notifications?.length ??
+        0) > 0 && (
+        <CircleIcon
+          sx={{
+            position: "absolute",
+            top: -6,
+            right: -6,
+            pointerEvents: "none" as any,
+          }}
+          className={"noteit"}
+          fontSize={"large"}
+          htmlColor={"var(--color-error)"}
+        />
+      )}
       <PopoverPure
         {...bindPopper(popupState)}
         anchorOrigin={{

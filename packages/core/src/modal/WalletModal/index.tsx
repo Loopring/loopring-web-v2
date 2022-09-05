@@ -28,6 +28,7 @@ import {
   globalSetup,
   myLog,
   SagaStatus,
+  TOAST_TIME,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { ConnectProviders } from "@loopring-web/web3-provider";
@@ -35,7 +36,6 @@ import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 import {
   accountReducer,
   useAccount,
-  TOAST_TIME,
   RootState,
   store,
 } from "@loopring-web/core";

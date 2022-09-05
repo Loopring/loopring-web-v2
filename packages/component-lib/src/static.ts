@@ -196,7 +196,7 @@ export const ammCalcData: AmmInData<CoinType> = {
 export const layer2ItemData = List<HeaderMenuItemInterface>([
   {
     label: {
-      id: "classic",
+      id: "lite",
       i18nKey: "labelClassic",
       description: "Simple and easy-to-user interface",
     },
@@ -204,7 +204,7 @@ export const layer2ItemData = List<HeaderMenuItemInterface>([
   },
   {
     label: {
-      id: "advanced",
+      id: "pro",
       i18nKey: "labelAdvanced",
       description: "Full access to all trading tools",
     },

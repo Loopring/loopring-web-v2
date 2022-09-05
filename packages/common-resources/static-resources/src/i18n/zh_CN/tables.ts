@@ -210,10 +210,11 @@ export default {
   labelDefiAmount: "Amount",
   labelFilterTradeNFTAll: "All",
   labelFilterTradeNFTSell: "Sell",
+  labelFilterTradeNFTSelf: "Self Trade",
   labelFilterTradeNFTBuy: "Buy",
   labelTradeNFTSide: "Trade",
   labelFrom: "from",
   labelTo: "to",
-  labelPrice: "unit price: "
-
+  labelUPrice: "unit price: ",
+  labelTradeNFTUnitPrice: "Unit Price",
 };

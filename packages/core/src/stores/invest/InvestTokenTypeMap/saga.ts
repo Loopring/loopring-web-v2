@@ -28,14 +28,14 @@ function calcDefiApr(
 ): [start: number, end: number] {
   let [start, end] = investItem.apr;
   const apr = Number(defiinfo.apy);
-  if(start === 0 && apr!==0){
+  if (start === 0 && apr !== 0) {
     start = apr;
-  }else if(apr!==0 && apr < start){
+  } else if (apr !== 0 && apr < start) {
     start = apr;
   }
-  if(end === 0 && apr!==0){
+  if (end === 0 && apr !== 0) {
     end = apr;
-  }else if(apr!==0 && apr > end){
+  } else if (apr !== 0 && apr > end) {
     end = apr;
   }
   return [start, end];
@@ -144,11 +144,11 @@ const getInvestMapApi = async () => {
     const [, _, coinB] = key.match(/(\w+)-(\w+)/i);
     const defiInfo = marketMap[key];
     if (prev[coinB] && prev[coinB]) {
-      let investItem = prev[ coinB ][ InvestMapType.STAKE ];
+      let investItem = prev[coinB][InvestMapType.STAKE];
       if (investItem) {
         investItem.apr = calcDefiApr(defiInfo, investItem);
       } else {
-        prev[ coinB ][ InvestMapType.STAKE ] = {
+        prev[coinB][InvestMapType.STAKE] = {
           type: InvestMapType.STAKE,
           // token: tokenMap[coinB],
           i18nKey: `labelInvestType_${InvestMapType.STAKE}`,
@@ -160,12 +160,12 @@ const getInvestMapApi = async () => {
     } else {
       prev[coinB] = {
         detail: {
-          token: tokenMap[ coinB ],
+          token: tokenMap[coinB],
           apr: [defiInfo.apr ?? 0, defiInfo.apr ?? 0],
           durationType: InvestDuration.Flexible,
           duration: "",
         },
-        [ InvestMapType.STAKE ]: {
+        [InvestMapType.STAKE]: {
           type: InvestMapType.STAKE,
           // token: tokenMap[coinB],
           i18nKey: `labelInvestType_${InvestMapType.STAKE}`,

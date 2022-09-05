@@ -102,16 +102,13 @@ export type NFTMintProps<ME, MI, I, C = FeeInfo> = Omit<
   NFTMintViewProps<ME, MI, I, C>,
   "metaData"
 >;
-export type NFTMetaProps<T, C = FeeInfo> = Omit<
-  NFTMetaViewProps<T, C>,
+export type NFTMetaProps<T, Co, C = FeeInfo> = Omit<
+  NFTMetaViewProps<T, Co, C>,
   "nftMeta"
 >;
 
-export type NFTMintAdvanceProps<T, I, C = FeeInfo> = NFTMintAdvanceViewProps<
-  T,
-  I,
-  C
->;
+export type NFTMintAdvanceProps<T, Co, I, C = FeeInfo> =
+  NFTMintAdvanceViewProps<T, Co, I, C>;
 
 export type NFTDeployProps<T, I, C = FeeInfo> = NFTDeployViewProps<T, I, C>;
 export type ForceWithdrawProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<

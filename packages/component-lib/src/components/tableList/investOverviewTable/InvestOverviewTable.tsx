@@ -24,17 +24,18 @@ import { Filter } from "./components/Filter";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
 import { InvestColumnKey } from "./index";
-const TableStyled = styled(Box) <{ isMobile?: boolean } & BoxProps>`
+const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   & .rdg.rdg {
     min-height: initial;
   }
+
   .rdg {
     border-radius: ${({ theme }) => theme.unit}px;
 
     ${({ isMobile }) =>
-    !isMobile
-            ? `--template-columns: 320px auto auto 124px !important;`
-            : ` --template-columns: 46% auto auto !important;
+      !isMobile
+        ? `--template-columns: 320px auto auto 124px !important;`
+        : ` --template-columns: 46% auto auto !important;
 `}
     .rdg-cell.action {
       display: flex;
@@ -60,6 +61,7 @@ const TableStyled = styled(Box) <{ isMobile?: boolean } & BoxProps>`
       background-color: var(--color-pop-bg);
     }
   }
+
   .textAlignRight {
     text-align: right;
 
@@ -176,14 +178,14 @@ export const InvestOverviewTable = <R extends RowInvest>({
               {end === 0 && start === 0
                 ? EmptyValueTag
                 : start === end
-                  ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
-                  : end === 0 || start === 0
-                    ? getValuePrecisionThousand(end ? end : start, 2, 2, 2, true) +
-                    "%"
-                    : getValuePrecisionThousand(start, 2, 2, 2, true) +
-                    "% - " +
-                    getValuePrecisionThousand(end, 2, 2, 2, true) +
-                    "%"}
+                ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
+                : end === 0 || start === 0
+                ? getValuePrecisionThousand(end ? end : start, 2, 2, 2, true) +
+                  "%"
+                : getValuePrecisionThousand(start, 2, 2, 2, true) +
+                  "% - " +
+                  getValuePrecisionThousand(end, 2, 2, 2, true) +
+                  "%"}
             </Typography>
           </Box>
         );
@@ -229,9 +231,12 @@ export const InvestOverviewTable = <R extends RowInvest>({
                 width={"100%"}
                 sx={{ cursor: "pointer" }}
               >
-                <Typography display={"inline-flex"} marginRight={1} component={"span"} color={"inherit"}>{`${t(
-                  "labelSelect"
-                )}`}</Typography>
+                <Typography
+                  display={"inline-flex"}
+                  marginRight={1}
+                  component={"span"}
+                  color={"inherit"}
+                >{`${t("labelSelect")}`}</Typography>
                 <DropdownIconStyled
                   status={row.isExpanded ? "up" : "down"}
                   fontSize={"medium"}
@@ -280,7 +285,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
       key: ColumnKey.TYPE,
       sortable: false,
       name: t("labelToken"),
-      formatter: ({row}) => {
+      formatter: ({ row }) => {
         switch (row.type) {
           case InvestMapType.Token:
             const token: TokenInfo = row.token;
@@ -291,7 +296,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
                 alignItems={"center"}
                 height={"100%"}
               >
-                {token?.symbol && <CoinIcon symbol={token?.symbol}/>}
+                {token?.symbol && <CoinIcon symbol={token?.symbol} />}
                 <Typography component={"span"} className={"next-coin"}>
                   {token?.symbol}
                 </Typography>
@@ -317,7 +322,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
                 paddingRight={1}
               >
                 <Typography component={"span"} className={"next-type"}>
-                  {t(row.i18nKey, {ns: "common"})}
+                  {t(row.i18nKey, { ns: "common" })}
                 </Typography>
               </Typography>
             );
@@ -332,7 +337,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
       maxWidth: 80,
       cellClass: "textAlignLeft",
       headerCellClass: "textAlignLeftSortable",
-      formatter: ({row}) => {
+      formatter: ({ row }) => {
         const [start, end] = row.apr;
         // myLog("end", end);
         return (
@@ -341,14 +346,14 @@ export const InvestOverviewTable = <R extends RowInvest>({
               {end === 0 && start === 0
                 ? EmptyValueTag
                 : start === end
-                  ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
-                  : end === 0 || start === 0
-                    ? getValuePrecisionThousand(end ? end : start, 2, 2, 2, true) +
-                    "%"
-                    : getValuePrecisionThousand(start, 2, 2, 2, true) +
-                    "% - " +
-                    getValuePrecisionThousand(end, 2, 2, 2, true) +
-                    "%"}
+                ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
+                : end === 0 || start === 0
+                ? getValuePrecisionThousand(end ? end : start, 2, 2, 2, true) +
+                  "%"
+                : getValuePrecisionThousand(start, 2, 2, 2, true) +
+                  "% - " +
+                  getValuePrecisionThousand(end, 2, 2, 2, true) +
+                  "%"}
             </Typography>
           </Box>
         );
@@ -361,7 +366,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
       cellClass: "textAlignCenter",
       headerCellClass: "textAlignCenter",
       name: t("labelDuration"),
-      formatter: ({row}) => {
+      formatter: ({ row }) => {
         return (
           <Box
             height={"100%"}
@@ -370,33 +375,33 @@ export const InvestOverviewTable = <R extends RowInvest>({
             alignItems={"center"}
           >
             <Typography component={"span"}>
-              {t("labelInvest" + row.durationType, {ns: "common"})}
+              {t("labelInvest" + row.durationType, { ns: "common" })}
             </Typography>
           </Box>
         );
       },
-    }
+    },
   ];
 
-  const {isMobile} = useSettings();
+  const { isMobile } = useSettings();
 
   return (
     <TableStyled isMobile={isMobile} marginX={2}>
       {showFilter &&
-      (isMobile && isDropDown ? (
-        <Link
-          variant={"body1"}
-          display={"inline-flex"}
-          width={"100%"}
-          justifyContent={"flex-end"}
-          paddingRight={2}
-          onClick={() => setIsDropDown(false)}
-        >
-          {t("labelShowFilter")}
-        </Link>
-      ) : (
-        <Box
-          display={"flex"}
+        (isMobile && isDropDown ? (
+          <Link
+            variant={"body1"}
+            display={"inline-flex"}
+            width={"100%"}
+            justifyContent={"flex-end"}
+            paddingRight={2}
+            onClick={() => setIsDropDown(false)}
+          >
+            {t("labelShowFilter")}
+          </Link>
+        ) : (
+          <Box
+            display={"flex"}
             flexDirection={"row"}
             justifyContent={"space-between"}
             marginLeft={3}

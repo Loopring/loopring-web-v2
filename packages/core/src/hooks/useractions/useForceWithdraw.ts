@@ -16,6 +16,8 @@ import {
   myLog,
   UIERROR_CODE,
   WalletMap,
+  TOAST_TIME,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 import { updateForceWithdrawData as updateForceWithdrawDataStore } from "@loopring-web/core";
 
@@ -29,7 +31,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   walletLayer2Service,
@@ -61,6 +62,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
+    resetIntervalTime,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.FORCE_WITHDRAWAL,
     updateData: ({ fee }) => {
@@ -218,7 +220,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
   }, [isLoopringAddress, isActiveAccount, checkAddAccountId, realAddr]);
   // useWalletLayer2Socket({ walletLayer2Callback });
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     resetForceWithdrawData();
     setWalletItsMap({});
     setAddress("");
@@ -228,7 +230,12 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     // @ts-ignore
     if (match?.params?.forcewithdraw?.toLowerCase() === "forcewithdraw") {
       resetDefault();
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [match?.params]);
 
   const processRequest = React.useCallback(
@@ -294,7 +301,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough(true);
+                  checkFeeIsEnough({ isRequiredAPI: true });
                 }
 
                 setShowAccount({

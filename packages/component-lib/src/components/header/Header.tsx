@@ -36,7 +36,6 @@ import {
   LoopringLogoIcon,
   subMenuLayer2,
   headerMenuLandingData,
-  AccountStatus,
   toolBarAvailableItem,
   toolBarMobileAvailableItem,
 } from "@loopring-web/common-resources";
@@ -150,12 +149,17 @@ const ToolBarItem = ({
   account,
   ...props
 }: any) => {
-  const match = useRouteMatch("/layer2/:item");
+  const match = useRouteMatch("/:l1/:l2?");
   const render = React.useMemo(() => {
     switch (buttonComponent) {
       case ButtonComponentsMap.ProfileMenu:
         // @ts-ignore
-        return <ProfileMenu rounter={match?.params?.item as any} {...props} />;
+        return (
+          <ProfileMenu
+            rounter={match?.params[LAYERMAP["2"]] as any}
+            {...props}
+          />
+        );
       case ButtonComponentsMap.Notification:
         return (
           <BtnNotification
@@ -224,6 +228,10 @@ const NodeMenuItem = React.memo(
     );
   }
 );
+export const LAYERMAP = {
+	"1": "l1",
+	"2": "l2",
+};
 
 export const Header = withTranslation(["layout", "common"], { withRef: true })(
   React.forwardRef(
@@ -247,7 +255,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const history = useHistory();
       const theme = useTheme();
       const location = useLocation();
-      const match = useRouteMatch("/trade/:item/:pair");
+      const match = useRouteMatch("/:l1/:l2?/:pair?");
       const _headerToolBarData = isLandPage
         ? Reflect.ownKeys(headerToolBarData).reduce((prev, key) => {
             if (
@@ -279,58 +287,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         },
         [account, isMobile, notification]
       );
-      const memoized: any = React.useCallback(
-        ({
-          label,
-          router,
-          child,
-          layer,
-          ref,
-          handleListKeyDown: _handleListKeyDown,
-          ...rest
-        }: any) => (
-          <HeaderMenuSub
-            key={layer + "_" + label.id}
-            {...{
-              ...rest,
-              label,
-              router,
-              allowTrade,
-              child,
-              layer,
-              anchorOrigin: isMobile
-                ? {
-                    vertical: "right",
-                    horizontal: "right",
-                  }
-                : { vertical: "bottom", horizontal: "left" },
-              selected: new RegExp(label.id, "ig").test(
-                selected.split("/")[1] ? selected.split("/")[1] : selected
-              ),
-              renderList: ({
-                handleListKeyDown,
-              }: {
-                handleListKeyDown: ({ ...rest }) => any;
-              }) => {
-                return getDrawerChoices({
-                  menuList: child,
-                  layer: layer + 1,
-                  handleListKeyDown: () => {
-                    if (_handleListKeyDown) {
-                      _handleListKeyDown();
-                    }
-                    if (handleListKeyDown) {
-                      handleListKeyDown({ ...rest });
-                    }
-                  },
-                  ...rest,
-                });
-              },
-            }}
-          />
-        ),
-        [allowTrade, isMobile, selected]
-      );
+
       const getDrawerChoices: any = React.useCallback(
         ({
           menuList,
@@ -365,19 +322,15 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       l2Index: number
                     ) => {
                       const { label, child, status } = props;
-                      const selectedFlag = new RegExp(label.id, "ig").test(
-                        selected.split("/")[1]
-                          ? selected.split("/")[1]
-                          : selected
-                      );
+                      // const selectedFlag = new RegExp(label.id, "ig").test(
+                      //   selected.split("/")[1]
+                      //     ? selected.split("/")[1]
+                      //     : selected
+                      // );
                       if (status === HeaderMenuTabStatus.hidden) {
                         return prev;
                       } else {
-                        if (
-                          child &&
-                          (account?.readyState === AccountStatus.ACTIVATED ||
-                            label.id !== "Layer2")
-                        ) {
+                        if (child) {
                           return [
                             ...prev,
                             memoized({
@@ -389,10 +342,23 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                             }),
                           ];
                         }
+
+                        const selectFlag =
+                          match?.params[LAYERMAP[layer + 1]] &&
+                          new RegExp(label.id?.toLowerCase(), "ig").test(
+                            match?.params[LAYERMAP[layer + 1]]
+                          );
+                        // myLog(
+                        //   "match?.params[LAYERMAP[layer + 1]]",
+                        //   match?.params[LAYERMAP[layer + 1]],
+                        //   layer,
+                        //   label.id,
+                        //   selectFlag
+                        // );
                         return [
                           ...prev,
                           <HeadMenuItem
-                            selected={selectedFlag}
+                            selected={selectFlag}
                             {...{
                               ...props,
                               allowTrade,
@@ -426,7 +392,66 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             );
           });
         },
-        [isMobile, selected, account?.readyState, allowTrade, memoized]
+        [isMobile, selected, account?.readyState, allowTrade]
+      );
+
+      const memoized: any = React.useCallback(
+        ({
+          label,
+          router,
+          child,
+          layer,
+          ref,
+          handleListKeyDown: _handleListKeyDown,
+          ...rest
+        }: any) => (
+          <HeaderMenuSub
+            key={layer + "_" + label.id}
+            {...{
+              ...rest,
+              label,
+              router,
+              allowTrade,
+              child,
+              layer,
+              anchorOrigin: isMobile
+                ? {
+                    vertical: "right",
+                    horizontal: "right",
+                  }
+                : { vertical: "bottom", horizontal: "left" },
+              selected:
+                match?.params[LAYERMAP[layer + 1]] &&
+                new RegExp(`^${label.id?.toLowerCase()}`, "ig").test(
+                  match?.params[LAYERMAP[layer + 1]]
+                ),
+              //match?.params.item,
+              //   new RegExp(label.id, "ig").test(
+              //   selected.split("/")[1] ? selected.split("/")[1] : selected
+              // ),
+              renderList: ({
+                handleListKeyDown,
+              }: {
+                handleListKeyDown: ({ ...rest }) => any;
+              }) => {
+                return getDrawerChoices({
+                  menuList: child,
+                  layer: layer + 1,
+                  handleListKeyDown: () => {
+                    if (_handleListKeyDown) {
+                      _handleListKeyDown();
+                    }
+                    if (handleListKeyDown) {
+                      handleListKeyDown({ ...rest });
+                    }
+                  },
+                  ...rest,
+                });
+              },
+            }}
+          />
+        ),
+        [allowTrade, getDrawerChoices, isMobile, match?.params]
       );
 
       // const handleThemeClick = React.useCallback(() => {
@@ -506,7 +531,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         const _headerMenuData: HeaderMenuItemInterface[] =
           headerMenuData.reduce((prev, _item) => {
             const item = _.cloneDeep(_item);
-            if (item.label.id === "Layer2") {
+            if (item.label.id === "L2Assets") {
               item.child = { ...subMenuLayer2 };
             }
             return [...prev, item];

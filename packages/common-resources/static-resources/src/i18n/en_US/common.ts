@@ -47,8 +47,8 @@ export default {
     "Once your deposit is confirmed on Ethereum, \n it will be added to your balance within 2 minutes.",
   depositAndActiveDescription:
     "Make a deposit to activate your Loopring L2 account. Once your deposit is <1>confirmed on Ethereum</1>, it will be added to your balance within <3>2 minutes</3>.",
-  depositLabelRefer: "Referral address, account id or ENS. (Optional)",
-  depositLabelPlaceholder: "address, account id or ENS",
+  depositLabelRefer: "Referral address, Account ID or ENS. (Optional)",
+  depositLabelPlaceholder: "address, Account ID or ENS",
   withdrawDescription:
     "Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
   withdrawTypeLabelFast: "Fast (15 seconds at the earliest)",
@@ -95,8 +95,8 @@ export default {
   currencySetting: "Currency",
   labelColors: "Colors",
   labelTheme: "Dark Theme",
-  labelthemeLight: "light theme",
-  labelthemeDark: "dark theme",
+  labelthemeLight: "Light theme",
+  labelthemeDark: "Dark theme",
   labelgreen: "green",
   labelred: "red",
   langZH: "Chinese",
@@ -151,7 +151,7 @@ export default {
   labelMiningRewards: "Mining Rewards",
   labelLiquidityValue: "Liquidity Value",
   labelCopyAddClip: "Address Copied to Clipboard!",
-  labelPleaseInputWalletAddress: "Please input address / ens / account id",
+  labelPleaseInputWalletAddress: "Please input address / ENS / Account ID",
   labelEmptyDefault: "No data to display",
   labelUnlockAccount: "Unlock Account",
   labelLockWallet: "Lock Wallet",
@@ -405,12 +405,12 @@ export default {
   labelNFTSend: "Send:",
   labelNFTDeploy: "Deploy:",
   labelNFTDeploying: "Deploying",
-  labelNFTMyNFT: "My NFTs",
+  labelNFTMyNFT: "My NFTs - Collection: {{collection}}",
   labelNFTTokenID: "ID:",
   labelNFTTYPE: "Token Standard:",
   labelNFTID: "ID:",
   labelNFTMinter: "Minter:",
-  labelNFTMint: "Mint NFT",
+  labelNFTMint: "Create NFT",
   labelNFTTitleMyNFT: "My NFTs",
   labelNFTTOTAL: "Amount:",
   labelInformation: "Notification",
@@ -420,7 +420,7 @@ export default {
   labelYes: "Yes",
   labelNo: "No",
   labelNoticeForNoMetaNFT:
-    "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
+    "Your NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelInvalidCID:
     "Invalid CID. CIDv0 is start with `Qm`, CIDv1 only works for dag-pb",
@@ -462,8 +462,7 @@ export default {
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "Amount:",
   labelNFTTId: "NFT Token ID:",
-  labelNFTCid:
-    "IPFS CIDv0 or dag-pb CIDv1:(Store Metadata Information) <1>Follow this Guide </1>",
+  labelNFTCid: "IPFS CIDv0 or dag-pb CIDv1:(Store Metadata Information)",
   labelNFTType: "Token Standard:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelDeployDenied: "Signature request was rejected",
@@ -472,17 +471,17 @@ export default {
   labelDeploySubmit: "Deploy of {{symbol}} has been submitted!",
   labelMint: "Mint",
   labelMintDenied: "Signature request was rejected",
-  labelNFTTokenMintWaitForAuth: "Allow Loopring to mint {{symbol}}?",
-  labelMintFailed: "Mint of {{symbol}} has failed!",
-  labelMintSuccess: "Mint of {{symbol}} has been submitted!",
-  labelNFTMintBtn: "Mint My NFT",
+  labelNFTTokenMintWaitForAuth: "Allow Loopring to Create {{symbol}}?",
+  labelMintFailed: "Create of {{symbol}} has failed!",
+  labelMintSuccess: "Create of {{symbol}} has been submitted!",
+  labelNFTMintBtn: "Create NFT",
   labelNFTMintNoMetaBtn: "Wrong Metadata",
   labelNFTMintNoMetaDetail:
     "Your NFT metadata should identify <1>name, image, and royalty_percentage (integer from 0 to 10)</1>.",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
-  nftMintTitle: "Mint NFT",
-  nftMintBtn: "Mint NFT",
+  nftMintTitle: "Create NFT",
+  nftMintBtn: "Create NFT",
   labelMintInProgress: "Processing...",
   labelNFTDeployBtn: "Deploy NFT",
   labelNFTDeployBroker: "Deploy Broker:",
@@ -576,7 +575,7 @@ export default {
     "Send assets to any valid Ethereum address instantly.\n Please make sure the recipient address accepts \n Loopring L2 payments before you proceed.",
   labelL2toL2Btn: "Send",
   labelL2toL2Address: "Recipient",
-  labelL2toL2AddressInput: "Please input address / ens / account id",
+  labelL2toL2AddressInput: "Please input address / ENS / Account ID",
   labelL2toL2Memo: "Memo (Optional)",
   labelL2toL2MemoPlaceholder: "Please input the memo",
   labelL2toL2FeeChoose: "Select payment token",
@@ -649,11 +648,12 @@ export default {
   labelNFTMintInputTitle: "Amount <1>\uFE61</1>",
   labelL1toL2Vendor:
     "Use a Loopring partner to deposit funds.\nOnce your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
-  depositLabelTo: "To address, account id or ENS.",
+  depositLabelTo: "To address, Account ID or ENS.",
   labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
-  labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
-  labelLoadDes: "Drag or click to upload files ({{types}}, max size: 10MB)",
+  labelIPFSUploadTitle: "Upload Image (Dimensions: 1:1) <1>\uFE61</1> ",
+  labelLoadDes:
+    "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelUpload: "upload",
   labelMintNoImageBtn: "Please upload image",
   labelMintUserAgree: "Please agree to the terms of service",
@@ -661,9 +661,9 @@ export default {
   labelMintNoRoyaltyPercentageBtn: "Please input Royalty",
   labelMintWrongRoyaltyBtn: "Royalty should be (0 - 10)",
   labelMintNoNameBtn: "Please input name",
-  labelNFTMetaBtn: "Upload metadata & mint",
+  labelNFTMetaBtn: "Upload metadata & create",
   labelMintName: "Name <1>\uFE61</1>",
-  labelMintCollection: "Collection (coming soon) <1>\u2139</1>",
+  labelMintCollection: "Choose Collection <1>{{required}}</1><2></2>",
   labelMintCollectionTooltips:
     "This is the collection where your NFT will appear.",
   labelMintRoyaltyPercentage: "Royalty (%) <1>\u2139</1>",
@@ -673,7 +673,7 @@ export default {
   labelMintDescription: "Description <1>\u2139</1>",
   labelMintDescriptionTooltips:
     "The description will be included on the NFT's detail page beneath it's image.",
-  labelMintProperty: "Properties (Limit 5) <1>\u2139</1>",
+  labelMintProperty: "Properties (Limit 64) <1>\u2139</1>",
   labelMintPropertyTooltips:
     "Tags can be added to the NFT for easy searchability and distinction",
   labelPropertyAdd: "Add property",
@@ -688,6 +688,8 @@ export default {
   labelUseIpfsMintAgree:
     "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to hide inappropriate content if an NFT is discovered to be harmful.",
   labelL1toL2TitleBridge: "Add Loopring L2 Assets",
+  labelL1toL2TitleBridgeNoConnect:
+    "Connect your Ethereum L1 Wallet to transfer assets to any Loopring L2 account",
   labelPayer: "My Wallet:",
   labelL1toL2TokenAmount: "Token Amount",
   labelL1toL2From: "From",
@@ -740,7 +742,7 @@ export default {
   labelBalanceActiveAccountFee:
     "{{symbol}}: <2>Fee {{fee}};</2><3>My Loopring L2 balance: {{count}}</3>",
   labelToAddressShouldLoopring: "To address is no Loopring L2",
-  labelBridgeSendTo: "Send to (address, account id or ENS)",
+  labelBridgeSendTo: "Send to (address, Account ID or ENS)",
   labelInvalidAddressClick:
     "Invalid Wallet Address, {{way}} of {{token}} is disabled! <1>Click to input another receive address </1>",
   labelENSShouldConnect:
@@ -750,7 +752,7 @@ export default {
   labelAvailability: "Availability",
   labelWhatProvider: "Which provider would you like to use?",
   labelMemo: "Memo",
-  labelAdvanceMint: "Advance Create",
+  labelAdvanceMint: "Advance Create NFT",
   labelWalletTypeDes:
     "Please confirm the address origin again to ensure the assets are not mistakenly sent to the exchange address. ",
   labelWalletTypeOptions: "{{type}} Wallet",
@@ -785,7 +787,7 @@ export default {
     "<1>L2 to L1 withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>" +
     "<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>",
   labelCEXUnderstand: "I understand and acknowledge the risk",
-  labelMintFee: "Mint Fee",
+  labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
   labelMintFeeChoose: "Select payment token",
   labelLayerSwapUnderstand: "Acknowledge and understand the risk",
@@ -844,10 +846,13 @@ export default {
   labelDefiNoBalance:
     "<0>It is not possible for the Loopring pool to fulfil your complete request at the moment.</0>" +
     "<1>You can choose one of the following approaches for the remaining amount:</1>",
-  labelDefiNoBalanceList: "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
+  labelDefiNoBalanceList:
+    "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
     "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
-  labelDefiMaxBalanceJoin: "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
-  labelDefiNoBalanceJoin: "Loopring will set up the pool soon. Please come back later to subscribe.",
+  labelDefiMaxBalanceJoin:
+    "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
+  labelDefiNoBalanceJoin:
+    "Loopring will set up the pool soon. Please come back later to subscribe.",
   labelInvestBtn: "Subscribe",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",
@@ -874,8 +879,9 @@ export default {
     "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
   labelDefiAgree: "I have read risk warning",
   labelDefiInvest: "Defi Earn",
-  labelDefiClose: "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
-  labelCreateCollection: "New My Collection",
+  labelDefiClose:
+    "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
+  labelCreateCollection: "Create Collection",
   labelCollectionCreateName: "Contract address for your collection",
   labelCollectionCreateERC1155: "Collection ERC-1155",
   labelCollectionCreateWaiting: "Waiting for create Collection token Address",
@@ -890,10 +896,81 @@ export default {
   labelCopyDemo: "Click to copy the demo",
   labelCollectionCreatBtn: "Create Collection",
   labelEnterMeta: "Enter Collection Metadata",
-  labelMintGuid: "Fill up content in GUI and let Loopring to generate necessary metadata and upload to IPFS for you, then use \"Mint\" to create your NFT.",
-  labelAdMintGuid: "Generate all the required metadata and upload to IPFS by yourself first, then use \"Advanced Mint\" to create your NFT.",
+  labelMintGuid:
+    'Fill up content in GUI and let Loopring to generate necessary metadata and upload to IPFS for you, then use "Mint" to create your NFT.',
+  labelAdMintGuid:
+    'Generate all the required metadata and upload to IPFS by yourself first, then use "Advanced Create NFT" to create your NFT.',
   labelFilterTradeNFTSell: "Sell",
+  labelFilterTradeNFTSelf: "Self Trade",
   labelFilterTradeNFTBuy: "Buy",
-
-  labelInvestDualTitle: "Dual Investment"
+  labelAdMintTitle: "Advance Create NFT",
+  labelCopyNFTDemo: "Copy NFT Demo",
+  labelSelectCollection: "Choose or Create a Collection to Create Your Own NFT",
+  labelSelectCollectionDes:
+    "A NFT Collection can help you manage and group your NFTs",
+  labelChooseCollectionBtn: "Choose a Collection to Create NFT",
+  labelNFTMint721Btn: "ERC721 will coming soon",
+  labelADMint1: "Prepare NFT metadata",
+  labelADMint2: "Fill in the IPFS CID",
+  labelADMint3: "Preview & Create NFT",
+  labelADMintSelect:
+    "Prepare NFT metadata with proper collection_metadata value",
+  labelHasData: "Has generated metadata with collection_metadata field",
+  labelNoData: "Hasn’t generated metadata with collection_metadata field",
+  labelChooseCollection: "Choose a collection",
+  labelBanner: "Banner (Dimensions: 3:1)",
+  labelBannerDes:
+    "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
+  labelAvatar: "Avatar (Dimensions: 1:1)",
+  labelAvatarDes: "Max size: {{size}}MB)",
+  labelTileUri: "Tile (Dimensions: 5:7) <1>\uFE61</1>",
+  labelTileUriDes:
+    "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
+  labelCollectionDescription: "Description <1>\u2139</1>",
+  labelCollectionDescriptionTooltips:
+    "You can describe your collection here. 0 of 1000 characters used",
+  labelCollectionName: "Collection Name <1>\uFE61</1>",
+  labelCollectionCreateBtn: "Create Collection",
+  labelCollectionRequiredName: "Please input Name",
+  labelCollectionRequiredTileUri: "Please input tile",
+  labelCollectionIsUploading: "Source is loading",
+  labelMintNext: "Next",
+  labelMintCollectionInput: "Please input contract address",
+  labelMintCid: "Please input IPFS CID",
+  labelMintBack: "Preview",
+  labelTokenAdMintBtn: "Enter Amount",
+  labelMintSubmitBtn: "Create Your NFT",
+  labelMintIPFSCIDDes: "Fill in the IPFS CID for NFT metadata",
+  labelNFTMintSimpleBtn: "Create NFT",
+  labelCollectionEditBtn: "Edit",
+  labelCopyMetaClip: "Metadata Copied to Clipboard",
+  labelCollectionMetaNoNameORTileUri:
+    "Your Collection metadata is not setup {{type}}, please go to collection panel edit!",
+  labelCollectionMetaMiss: "Your NFT metadata is no not setup {{type}}.",
+  labelCollectionMetaError:
+    "Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site",
+  labelCollectionMetaErrorType: "correct `royalty_percentage` from 0 to 10",
+  labelNFTServerRefresh:
+    "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",
+  labelNFTServerRefreshSubmit: "Refresh command submitted",
+  labelNFTCollection: "Collection",
+  labelNFTCollectionName: "Collection Name:",
+  labelMyCollection: "My Collections",
+  labelCounterFactualNFT: "L2 NFT:",
+  labelCopyUrlClip: "URL Copied to Clipboard!",
+  labelCollectionMetaData: "Collection MetaData",
+  labelViewEtherscan: "Etherscan",
+  labelNFTMyNFTCollection: "View by Collection",
+  labelNFTMyNFTList: "View by item",
+  labelNoCollectionCover: "No Cover Media",
+  labelNoNFTCover: "No Media Resource",
+  labelNFTAmountValue: "Amount: {{value}}",
+  labelCollectionItemValue: "Item: {{value}}",
+  labelMyCollectionsDes:
+    "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information Until it happens, the previous NFTs will be categorized to collection named by their associated contract address. ",
+  labelNFTGuid:
+    "Please fill in the appropriate collection metadata field value in your NFT metadata with this string first, then upload it to IPFS to retrieve the CID to continue. <1>view more </1>",
+  labelChooseCollectionTooltips:
+    "This is the collection where your NFT will appear.NFT minted under collection will be bound with different contract address than previous created one. If you have incomplete work to finish and would like them created under previous contract address, you can still use the legacy created method under https://… ",
+  labelMintPreview: "Preview",
 };

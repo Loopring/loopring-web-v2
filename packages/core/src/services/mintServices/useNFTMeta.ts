@@ -1,12 +1,13 @@
 import React from "react";
 import {
   ErrorType,
-  IPFS_LOOPRING_SITE,
-  IPFS_META_URL,
+  IPFS_HEAD_URL,
   MINT_LIMIT,
   myLog,
   NFTMETA,
   UIERROR_CODE,
+  CollectionMeta,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 import { IpfsFile, NFTMetaProps } from "@loopring-web/component-lib";
 import {
@@ -17,12 +18,15 @@ import {
   useModalData,
   MintCommands,
   mintService,
+  LoopringAPI,
+  useSystem,
+  getIPFSString,
 } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ipfsService, useIPFS } from "../ipfs";
 import { AddResult } from "ipfs-core-types/types/src/root";
 
-export function useNFTMeta<T extends NFTMETA>({
+export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   handleTabChange,
   nftMintValue,
 }: {
@@ -30,7 +34,7 @@ export function useNFTMeta<T extends NFTMETA>({
   handleTabChange: (value: 0 | 1) => void;
 }) {
   const subject = React.useMemo(() => mintService.onSocket(), []);
-  const { updateNFTMintData } = useModalData();
+  const { updateNFTMintData, resetNFTMintData } = useModalData();
   const [errorOnMeta, setErrorOnMeta] =
     React.useState<sdk.RESULT_INFO | undefined>(undefined);
   const [_cidUniqueID, setCIDUniqueId] =
@@ -38,13 +42,16 @@ export function useNFTMeta<T extends NFTMETA>({
   const [ipfsMediaSources, setIpfsMediaSources] =
     React.useState<IpfsFile | undefined>(undefined);
   const [userAgree, setUserAgree] = React.useState(false);
+  const { baseURL } = useSystem();
+  const domain = LoopringAPI.delegate?.getCollectionDomain() ?? "";
 
   const handleOnMetaChange = React.useCallback(
-    (_newnftMeta: Partial<T>) => {
-      const { nftMETA, mintData } =
+    (_newnftMeta: Partial<T> & { collection?: CollectionMeta }) => {
+      const { nftMETA, mintData, collection } =
         store.getState()._router_modalData.nftMintValue;
       const buildNFTMeta = { ...nftMETA };
       const buildMint = { ...mintData };
+      let buildCollection = { ...collection };
       Reflect.ownKeys(_newnftMeta).map((key) => {
         switch (key) {
           case "image":
@@ -69,14 +76,22 @@ export function useNFTMeta<T extends NFTMETA>({
             buildNFTMeta.description = _newnftMeta.description;
             break;
           case "collection":
-            buildNFTMeta.collection = _newnftMeta.collection;
+            buildMint.tokenAddress = _newnftMeta.collection?.contractAddress;
+            buildNFTMeta.collection_metadata = `${domain}/${_newnftMeta.collection?.contractAddress}`;
+            buildCollection = _newnftMeta.collection
+              ? _newnftMeta.collection
+              : buildCollection;
             break;
           case "properties":
             buildNFTMeta.properties = _newnftMeta.properties;
             break;
         }
       });
-      updateNFTMintData({ mintData: buildMint, nftMETA: buildNFTMeta });
+      updateNFTMintData({
+        mintData: buildMint,
+        nftMETA: buildNFTMeta,
+        collection: buildCollection,
+      });
       myLog("updateNFTMintData buildNFTMeta", buildNFTMeta);
     },
     [updateNFTMintData]
@@ -115,11 +130,11 @@ export function useNFTMeta<T extends NFTMETA>({
           _value = {
             ..._value,
             cid: cid,
-            fullSrc: `${IPFS_LOOPRING_SITE}${data.path}`,
+            fullSrc: getIPFSString(`${IPFS_HEAD_URL}${data.path}`, baseURL),
             isProcessing: false,
           };
           handleOnMetaChange({
-            image: `${IPFS_META_URL}${data.path}`,
+            image: `${IPFS_HEAD_URL}${data.path}`,
           } as T);
         }
         return _value;
@@ -162,16 +177,21 @@ export function useNFTMeta<T extends NFTMETA>({
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
+    resetIntervalTime,
   } = useChargeFees({
-    tokenAddress: nftMintValue.mintData.tokenAddress?.toLowerCase(),
+    tokenAddress: nftMintValue?.mintData?.tokenAddress?.toLowerCase(),
     requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
     updateData: ({ fee }) => {
-      const { nftMETA, mintData } =
+      const { nftMETA, mintData, collection } =
         store.getState()._router_modalData.nftMintValue;
-      updateNFTMintData({
-        nftMETA: nftMETA,
-        mintData: { ...mintData, fee },
-      });
+      if (mintData?.tokenAddress === collection?.contractAddress) {
+        // myLog("fee", fee);
+        updateNFTMintData({
+          nftMETA: nftMETA,
+          mintData: { ...mintData, fee },
+          collection,
+        });
+      }
     },
   });
   const {
@@ -185,12 +205,12 @@ export function useNFTMeta<T extends NFTMETA>({
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
-      // myLog(
-      //   "nftMetaBtnStatus nftMintValue",
-      //   nftMintValue.mintData,
-      //   nftMintValue.nftMETA,
-      //   nftMintValue.mintData.fee
-      // );
+      myLog(
+        "nftMetaBtnStatus nftMintValue",
+        nftMintValue.mintData,
+        nftMintValue.nftMETA,
+        nftMintValue.mintData.fee
+      );
       if (
         !error &&
         nftMintValue &&
@@ -209,7 +229,8 @@ export function useNFTMeta<T extends NFTMETA>({
         !!nftMintValue.nftMETA.image &&
         nftMintValue.mintData.fee &&
         nftMintValue.mintData.fee.belong &&
-        nftMintValue.mintData.fee.__raw__
+        nftMintValue.mintData.fee.__raw__ &&
+        nftMintValue.collection
         // && !isFeeNotEnough.isFeeNotEnough
       ) {
         enableBtn();
@@ -224,6 +245,9 @@ export function useNFTMeta<T extends NFTMETA>({
         nftMintValue.nftMETA.image.trim() == ""
       ) {
         setLabelAndParams("labelMintNoImageBtn", {});
+      }
+      if (!nftMintValue.collection) {
+        setLabelAndParams("labelCollectionSelect", {});
       }
       if (
         !nftMintValue.nftMETA.name ||
@@ -269,17 +293,11 @@ export function useNFTMeta<T extends NFTMETA>({
 
   React.useEffect(() => {
     updateBtnStatus();
-  }, [
-    // isFeeNotEnough,
-    nftMintValue.mintData,
-    nftMintValue.nftMETA,
-    // feeInfo,
-    userAgree,
-    updateBtnStatus,
-  ]);
+  }, [nftMintValue.mintData, nftMintValue.nftMETA, userAgree, updateBtnStatus]);
 
   const resetMETADAT = (_nftMintValue?: NFT_MINT_VALUE<any>) => {
     onDelete();
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
   };
   const onMetaClick = React.useCallback(() => {
     const uniqueId = (nftMintValue.nftMETA as T).name + Date.now();
@@ -289,9 +307,10 @@ export function useNFTMeta<T extends NFTMETA>({
   const handleUserAgree = (value: boolean) => {
     setUserAgree(value);
   };
-  const nftMetaProps: NFTMetaProps<T> = {
+  const nftMetaProps: Omit<NFTMetaProps<T, Co>, "collectionInputProps"> = {
     handleOnMetaChange,
     isFeeNotEnough,
+    baseURL,
     handleFeeChange,
     userAgree,
     handleUserAgree,
@@ -300,6 +319,7 @@ export function useNFTMeta<T extends NFTMETA>({
     nftMetaBtnStatus: btnStatus,
     btnInfo,
     onMetaClick,
+    domain,
   };
   const commonSwitch = React.useCallback(
     async ({ data, status }: { status: MintCommands; data?: any }) => {
@@ -316,14 +336,14 @@ export function useNFTMeta<T extends NFTMETA>({
     [handleTabChange]
   );
   React.useEffect(() => {
-    checkFeeIsEnough();
     const subscription = subject.subscribe((props) => {
       commonSwitch(props);
     });
     return () => {
+      resetNFTMintData();
       subscription.unsubscribe();
     };
-  }, [commonSwitch, subject]);
+  }, [subject]);
   return {
     onFilesLoad,
     onDelete,
@@ -335,6 +355,7 @@ export function useNFTMeta<T extends NFTMETA>({
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
+    resetIntervalTime,
     // tokenAddress,
     // resetMETADAT,
     errorOnMeta,

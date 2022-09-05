@@ -1,6 +1,7 @@
 import * as sdk from "@loopring-web/loopring-sdk";
 import { NFTTokenInfo, UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
 import {
+  CollectionMeta,
   FeeInfo,
   MintTradeNFT,
   NFTMETA,
@@ -61,6 +62,7 @@ export type ActiveAccountData = {
 export type NFT_MINT_VALUE<I> = {
   mintData: Partial<MintTradeNFT<I>>;
   nftMETA: Partial<NFTMETA>;
+  collection?: Partial<CollectionMeta>;
   error?: undefined | sdk.RESULT_INFO;
 };
 
@@ -76,10 +78,12 @@ export type ModalDataStatus = {
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
   nftTransferValue: TransferData &
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
-  nftDepositValue: TradeNFT<any>;
-  nftMintAdvanceValue: TradeNFT<any>;
+  nftDepositValue: TradeNFT<any, any>;
+  nftMintAdvanceValue: TradeNFT<any, any>;
+  collectionAdvanceValue: Partial<CollectionMeta>;
+  collectionValue: Partial<CollectionMeta>;
   nftMintValue: NFT_MINT_VALUE<any>;
-  nftDeployValue: TradeNFT<any> & { broker: string };
+  nftDeployValue: TradeNFT<any, any> & { broker: string };
 };
 
 export enum LAST_STEP {
@@ -91,5 +95,6 @@ export enum LAST_STEP {
   nftDeposit = "nftDeposit",
   nftDeploy = "nftDeploy",
   nftMint = "nftMint",
+  collecionAdv = "collecionAdv",
   default = "default",
 }

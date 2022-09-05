@@ -1,11 +1,10 @@
-import styled from '@emotion/styled';
-import { Box, Card } from '@mui/material';
+import styled from "@emotion/styled";
+import { Box, Card } from "@mui/material";
 
 export * from "./SwitchPanel";
 export * from "./SubMenu";
 export * from "./Interface";
 export * from "./IPFSSourceUpload";
-
 
 export const CardNFTStyled = styled(Card)`
   display: flex;
@@ -24,6 +23,10 @@ export const CardStyleItem = styled(Card)`
   padding: 0 0 calc(100% + 80px);
   position: relative;
 
+  &.collection {
+    padding: 0 0 calc(140%);
+  }
+
   img {
     object-fit: contain;
   }
@@ -33,7 +36,7 @@ export const ImageUploadWrapper = styled(Box)`
   position: relative;
   width: 100%;
   background: var(--color-box);
-  border-radius: ${({theme}) => theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
 
   .MuiFormControlLabel-root {
     align-items: flex-start;

@@ -3792,10 +3792,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@2.0.22":
-  version "2.0.22"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.22.tgz#551ee15dba156fd8b20ab792d39645492371ccd2"
-  integrity sha512-edb5iZ6d53Y497S7kaj1EWkaG8+0GgHCg88Zft0ID7TKwH/sqrLemjzCk+DvS7YNupOojUlA/PeAV8sbB0Rgmw==
+"@loopring-web/loopring-sdk@2.0.27":
+  version "2.0.27"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.27.tgz#77fd013d15bbfcc411a50bd7461a70d7acdf263a"
+  integrity sha512-BvaMoQBICKnKPwwTRxXJBg1X85Gf9OJq/84NkZtfYBHlva/dDyE6+D2Utmfd/nyGWQHyl9vACuENRL/Dv7k+WQ==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -4377,11 +4377,11 @@
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
 "@ramp-network/ramp-instant-sdk@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@ramp-network/ramp-instant-sdk/-/ramp-instant-sdk-3.0.0.tgz#b4553d80563f98952ef28df42d266ca2d3fe53a9"
-  integrity sha512-wkP87bkTabPs6VPeuRe4tVB1M4NF5NdhgkglExC38LYZXOmyfw0UF5MVpLiIAezUDiDqOhzgBnJxX3QvbeS2kA==
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@ramp-network/ramp-instant-sdk/-/ramp-instant-sdk-3.2.0.tgz#7d146319bde7ed9ca52bbf7efba377a755628f15"
+  integrity sha512-WXpUCic3oduFbAivRxhjSyAZOz2vK5yiuHYqFTooLCXBZIKRS4ff7X5M2MZQDkruTKwWcbyIvGLEYm991XgDpA==
   dependencies:
-    body-scroll-lock "^2.6.4"
+    body-scroll-lock "^3.1.5"
 
 "@react-financial-charts/annotations@^1.3.1":
   version "1.3.1"
@@ -9237,10 +9237,10 @@ body-parser@1.19.2, body-parser@^1.16.0:
     raw-body "2.4.3"
     type-is "~1.6.18"
 
-body-scroll-lock@^2.6.4:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/body-scroll-lock/-/body-scroll-lock-2.7.1.tgz#caf3f9c91773af1ffb684cd66ed9137b5b737014"
-  integrity sha512-hS53SQ8RhM0e4DsQ3PKz6Gr2O7Kpdh59TWU98GHjaQznL7y4dFycEPk7pFQAikqBaUSCArkc5E3pe7CWIt2fZA==
+body-scroll-lock@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/body-scroll-lock/-/body-scroll-lock-3.1.5.tgz#c1392d9217ed2c3e237fee1e910f6cdd80b7aaec"
+  integrity sha512-Yi1Xaml0EvNA0OYWxXiYNqY24AfWkbA6w5vxE7GWxtKfzIbZM+Qw+aSmkgsbWzbHiy/RCSkUZBplVxTA+E4jJg==
 
 bonjour@^3.5.0:
   version "3.5.0"

@@ -2,10 +2,8 @@ import {
   CloseIcon,
   TradeNFT,
   LoadingIcon,
-  IPFS_META_URL,
   myLog,
   SoursURL,
-  IPFS_LOOPRING_SITE,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { useTranslation } from "react-i18next";
@@ -24,6 +22,7 @@ import { NFTDepositViewProps } from "./Interface";
 import { NFTInput } from "./BasicANFTTrade";
 import { NFTType } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
+
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
     .input-wrap {
@@ -32,6 +31,7 @@ const GridStyle = styled(Grid)`
       border: 1px solid var(--color-border);
     }
   }
+
   .MuiInputLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.body2};
   }
@@ -51,11 +51,13 @@ const NFT_TYPE: TGItemData[] = [
   },
 ];
 
-export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
+export const DepositNFTWrap = <T extends TradeNFT<I, any>, I>({
   disabled,
   walletMap,
   tradeData,
+  getIPFSString,
   btnInfo,
+  baseURL = `https://${process.env.REACT_APP_API_URL}`,
   handleOnNFTDataChange,
   nftDepositBtnStatus,
   isNFTCheckLoading,
@@ -142,10 +144,7 @@ NFTDepositViewProps<T, I>) => {
                   <img
                     alt={"NFT"}
                     width={"100%"}
-                    src={tradeData?.image?.replace(
-                      IPFS_META_URL,
-                      IPFS_LOOPRING_SITE
-                    )}
+                    src={getIPFSString(tradeData?.image, baseURL)}
                   />
                 </Box>
               ) : isNFTCheckLoading ? (
@@ -353,6 +352,7 @@ NFTDepositViewProps<T, I>) => {
                               tradeData.balance !== undefined
                             )
                           }
+                          baseURL={baseURL}
                           type={"NFT"}
                           inputNFTRef={inputBtnRef}
                           onChangeEvent={(_index, data) =>

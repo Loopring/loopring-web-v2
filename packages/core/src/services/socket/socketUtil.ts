@@ -159,19 +159,18 @@ export class LoopringSocket {
         } as any,
       });
     },
-    [sdk.WsTopicType.candlestick]: (_e: any) => {
-      //TODO
+    [ sdk.WsTopicType.candlestick ]: (_e: any) => {
     },
     // [ sdk.WsTopicType.candlestick ]: (data: string) => {
     //
     // },
-    [sdk.WsTopicType.ammpool]: (
+    [ sdk.WsTopicType.ammpool ]: (
       data: [[string, string], string],
       topic: any
     ) => {
       if (data.length) {
         ammPoolService.sendAmmPool({
-          [topic.poolAddress]: { pooled: data[0], lp: data[1] },
+          [ topic.poolAddress ]: {pooled: data[ 0 ], lp: data[ 1 ]},
         });
       }
     },
