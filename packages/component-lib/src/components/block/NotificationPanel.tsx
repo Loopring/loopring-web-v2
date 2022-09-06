@@ -32,6 +32,8 @@ export const NotificationPanel = ({
   // myLog("notifications", notification.notifications);
   notification.notifications = notification.notifications?.reduce(
     (prev, item) => {
+  notification.notifications =
+    notification.notifications?.reduce((prev, item) => {
       if (item.endShow >= Date.now() && item.startShow <= Date.now()) {
         prev.push(item);
       }
@@ -45,6 +47,14 @@ export const NotificationPanel = ({
     }
     return prev;
   }, [] as ACTIVITY[]);
+    }, [] as NOTIFICATION_ITEM[]) ?? [];
+  notification.activities =
+    notification.activities?.reduce((prev, item) => {
+      if (item.endShow >= Date.now() && item.startShow <= Date.now()) {
+        prev.push(item);
+      }
+      return prev;
+    }, [] as ACTIVITY[]) ?? [];
 
   const hasActivities =
     notification.activities && notification.activities?.length;

@@ -21,10 +21,13 @@ import {
   NFTDeployProps,
   AccountStep,
   CollectionAdvanceProps,
+  DualWrapProps,
 } from "../..";
 import {
   Account,
   CollectionMeta,
+  DualCalcData,
+  DualViewInfo,
   FeeInfo,
   IBData,
   TradeNFT,
@@ -33,6 +36,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { CollectionAdvanceWrap } from "./components/CollectionAdvanceWrap";
+import { DualWrap } from "./components/DualWrap/dualWrap";
 
 const BoxStyle = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
@@ -126,8 +130,10 @@ export const ModalPanel = <
   T extends IBData<I>,
   N extends IBData<I> & TradeNFT<I, any>,
   C extends CollectionMeta,
+  DUAL extends DualCalcData<R>,
   I,
-  F = FeeInfo
+  F = FeeInfo,
+  R = DualViewInfo
 >({
   transferProps,
   withdrawProps,
@@ -139,6 +145,7 @@ export const ModalPanel = <
   // nftMintAdvanceProps,
   activeAccountProps,
   collectionAdvanceProps,
+  dualTradeProps,
   assetsData,
   account,
   baseURL,
@@ -156,6 +163,7 @@ export const ModalPanel = <
   // depositGroupProps: DepositGroupProps<T, I>;
   // nftDepositProps: NFTDepositProps<T, I>;
   collectionAdvanceProps: CollectionAdvanceProps<C>;
+  dualTradeProps: DualWrapProps<T, I, DUAL>;
   // nftMintAdvanceProps: NFTMintAdvanceProps<T, I>;
   resetProps: ResetProps<F>;
   activeAccountProps: ResetProps<F>;
@@ -180,6 +188,7 @@ export const ModalPanel = <
     setShowNFTDeploy,
     setShowAccount,
     setShowCollectionAdvance,
+    setShowDual,
   } = useOpenModals();
   const {
     isShowTransfer,
@@ -194,6 +203,7 @@ export const ModalPanel = <
     isShowActiveAccount,
     isShowCollectionAdvance,
     isShowLayerSwapNotice,
+    isShowDual,
   } = modals;
   const theme = useTheme();
   return (
@@ -430,6 +440,20 @@ export const ModalPanel = <
               // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
               ...collectionAdvanceProps,
+            }}
+          />
+        }
+      />
+      <Modal
+        open={isShowDual.isShow}
+        onClose={() => setShowDual({ isShow: false, dualInfo: undefined })}
+        content={
+          <DualWrap
+            {...{
+              ...rest,
+              // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
+              ...(dualTradeProps as any),
             }}
           />
         }

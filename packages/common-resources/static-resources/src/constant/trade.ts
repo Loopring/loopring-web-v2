@@ -363,9 +363,14 @@ export const enum InvestMapType {
   Token = "Token",
   AMM = "AMM",
   STAKE = "STAKE",
+  DUAL = "DUAL",
 }
 
-export const InvestOpenType = [InvestMapType.AMM, InvestMapType.STAKE];
+export const InvestOpenType = [
+  InvestMapType.AMM,
+  InvestMapType.STAKE,
+  InvestMapType.DUAL,
+];
 
 export const enum InvestDuration {
   Flexible = "Flexible",
@@ -427,3 +432,25 @@ export type L2CollectionFilter = {
 };
 
 export const LIVE_FEE_TIMES = 60000;
+
+export type DualViewInfo = {
+  apy: string;
+  settleRatio: string; //targetPrice
+  term: string;
+  strike: string;
+  isUp: boolean;
+  // targetPrice,
+  // subscribeData,
+  expireTime: number;
+  currentPrice: {
+    symbol: string;
+    currentPrice: number;
+  };
+  productId: string;
+  __raw__: {
+    info: sdk.DualProductAndPrice;
+    index: sdk.DualIndex;
+    rule: sdk.DualRulesCoinsInfo;
+  };
+  // balance,
+};

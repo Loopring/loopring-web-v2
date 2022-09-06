@@ -4376,10 +4376,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@ramp-network/ramp-instant-sdk@^3.0.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@ramp-network/ramp-instant-sdk/-/ramp-instant-sdk-3.2.0.tgz#7d146319bde7ed9ca52bbf7efba377a755628f15"
-  integrity sha512-WXpUCic3oduFbAivRxhjSyAZOz2vK5yiuHYqFTooLCXBZIKRS4ff7X5M2MZQDkruTKwWcbyIvGLEYm991XgDpA==
+"@ramp-network/ramp-instant-sdk@^3.2.1-rc1":
+  version "3.2.1-rc1"
+  resolved "https://registry.yarnpkg.com/@ramp-network/ramp-instant-sdk/-/ramp-instant-sdk-3.2.1-rc1.tgz#2e7ccf2380be0f4a1ec785496685a125db9c9f33"
+  integrity sha512-4s35N/Kjqrx3jr6vLI2/jdlnZu0D1j/maf0HCrIZyJbrZ6lDAKNqyX5z32ujNO5SgkMdgkd2aICIT/pZ1qrniQ==
   dependencies:
     body-scroll-lock "^3.1.5"
 

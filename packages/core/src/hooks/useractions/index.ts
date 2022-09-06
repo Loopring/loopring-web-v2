@@ -17,3 +17,4 @@ export * from "./useForceWithdraw";
 export * from "./useDefiTrade";
 export * from "./useCollectionAdvanceMeta";
 export * from "./useNFTMintAdvance";
+export * from "./useDualTrade";

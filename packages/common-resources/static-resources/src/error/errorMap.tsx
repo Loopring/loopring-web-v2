@@ -276,6 +276,11 @@ export const ErrorMap = {
     id: "IPFS_TIME_OUT",
     messageKey: "errorIpfsTimeout",
   },
+  ERROR_RAMP_NO_INSTANCE: {
+    id: "ERROR_RAMP_NO_INSTANCE",
+    messageKey: "errorRampNoInstance",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -293,6 +298,7 @@ export enum UIERROR_CODE {
   ERROR_JSON_STRINGIFY = 700013,
   ERROR_COLLECTION_METADATA_NO_TILEURI = 700014,
   ERROR_COLLECTION_NO_NAME = 700015,
+  ERROR_RAMP_NO_INSTANCE = 700100,
   ERROR_COLLECTION_INFO = 700016,
   ERROR_COLLECTION_EMPTY = 700017,
   ERROR_COLLECTION_NO_SUPPORT = 700018,
@@ -326,6 +332,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   700018: ErrorMap.ERROR_COLLECTION_NO_SUPPORT,
   700019: ErrorMap.ERROR_COLLECTION_NOT_READABLE,
   700020: ErrorMap.IPFS_TIME_OUT,
+  700100: ErrorMap.ERROR_RAMP_NO_INSTANCE,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found

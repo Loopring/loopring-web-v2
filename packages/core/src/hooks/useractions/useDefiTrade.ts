@@ -14,8 +14,8 @@ import {
   IBData,
   MarketType,
   myLog,
-  DeFiChgType,
   SDK_ERROR_MAP_TO_UI,
+  DeFiChgType,
   TradeDefi,
 } from "@loopring-web/common-resources";
 
@@ -452,7 +452,7 @@ export const useDefiTrade = <
         setIsLoading(true);
       }
       Promise.all([
-        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: undefined }),
+        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "" }),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(
               isJoin

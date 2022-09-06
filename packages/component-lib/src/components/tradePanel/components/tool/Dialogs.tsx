@@ -1,4 +1,5 @@
 import {
+  Box,
   Checkbox,
   Dialog,
   DialogActions,
@@ -18,7 +19,7 @@ import { Button } from "../../../basic-lib";
 import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
-import { useOpenModals } from "../../../../stores";
+import { useOpenModals, useSettings } from "../../../../stores";
 
 import {
   Account,
@@ -28,14 +29,21 @@ import {
   copyToClipBoard,
   getValuePrecisionThousand,
   TradeDefi,
+  Lang,
+  MarkdownStyle,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
+import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
+import { LoadingBlock } from "@loopring-web/webapp/src/pages/LoadingPage";
+import { useTheme } from "@emotion/react";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
     z-index: 1900;
   }
+
   .MuiList-root {
     list-style: inside;
 
@@ -1162,6 +1170,106 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
               </Typography>
             </Trans>
           </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+export const ConfirmInvestDualRisk = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  }) => {
+    const [agree, setAgree] = React.useState(false);
+    const { language } = useSettings();
+    const theme = useTheme();
+    const [input, setInput] = React.useState<string>("");
+    React.useEffect(() => {
+      // if (path) {
+      try {
+        const lng = Lang[language] ?? "en";
+        Promise.all([
+          fetch(
+            `https://static.loopring.io/documents/markdown/dual_investment_tutorial_en.md`
+          ),
+          fetch(
+            `https://static.loopring.io/documents/markdown/dual_investment_tutorial_${lng}.md`
+          ),
+        ])
+          .then(([response1, response2]) => {
+            if (response2) {
+              return response2.text();
+            } else {
+              return response1.text();
+            }
+          })
+          .then((input) => {
+            setInput(input);
+          })
+          .catch(() => {});
+      } catch (e: any) {}
+    }, []);
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelDualRiskTitle")}</DialogTitle>
+
+        {input ? (
+          <MarkdownStyle maxHeight={"50vh"} sx={{ overflowY: "scroll" }}>
+            <Box
+              flex={1}
+              padding={3}
+              boxSizing={"border-box"}
+              className={`${theme.mode}  ${theme.mode}-scheme markdown-body`}
+            >
+              <ReactMarkdown
+                remarkPlugins={[gfm]}
+                children={input}
+                // escapeHtml={false}
+              />
+            </Box>
+          </MarkdownStyle>
+        ) : (
+          <LoadingBlock />
+        )}
+
+        <DialogContent>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                disabled={!input}
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelDualAgree")}
+          />
         </DialogContent>
         <DialogActions>
           <Button

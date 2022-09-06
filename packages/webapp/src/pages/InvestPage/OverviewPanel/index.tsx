@@ -50,7 +50,6 @@ export const OverviewPanel = withTranslation("common")(
       filteredData,
       filterValue,
       getFilteredData,
-      // myFilteredData,
       rawData,
       myMapLoading,
       myRawData,

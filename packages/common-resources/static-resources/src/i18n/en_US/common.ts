@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-
 export default {
   labelErrorTitle: "Error Detail: ",
   labelNoContent: "No Content",
@@ -629,7 +628,7 @@ export default {
   labelL2toL2OriginBtnWallet: "Wallet",
   labelL2toL2Confirm: "Confirm",
   labelL2toL2TokenAmount: "Token Amount",
-  labelL1toL2ThirdPart: "Buy Crypto with",
+  labelL1toL2ThirdPart: "{{type}} Crypto with",
   labelActiveAccountFeeNotEnough: "Insufficient balance <1>Add assets</1>",
   labelNFTTransferTX: "L2 \u2192 L2",
   labelNFTWithdrawTX: "L2 \u2192 L1",
@@ -862,6 +861,8 @@ export default {
   labelTitleOverviewToken: "Total Investment Tokens",
   labelInvestType_AMM: "AMM Pool",
   labelInvestType_STAKE: "ETH Staking",
+  labelInvestType_DUAL: "DUAL",
+  labelInvestAll: "Mixed",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
   labelDefiOrderTable: "ETH Staking",
@@ -973,4 +974,23 @@ export default {
   labelChooseCollectionTooltips:
     "This is the collection where your NFT will appear.NFT minted under collection will be bound with different contract address than previous created one. If you have incomplete work to finish and would like them created under previous contract address, you can still use the legacy created method under <1>https://legacy-nft.loopring.io/</1>",
   labelMintPreview: "Preview",
+  labelInvestDualTitle: "Dual Investment",
+  labelBuy: "Buy",
+  labelSell: "Sell",
+  labelRampNoBalance: "Insufficient {{belong}} balance",
+  labelL2toRampTitle: "Send to Ramp",
+  labelDualInvest: "Invest {{symbol}}",
+  labelDualBase: "Base on {{symbol}}",
+  labelDualAgree: "I have read risk warning",
+  labelDualRiskTitle: "Dual Investment",
+  labelDualInvestTitle: "Invest {{symbolA}} (Based on {{symbolB}})",
+  labelDualInvestDes:
+    "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
+  labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
+  labelDualSuccess: "Successfully invest {{symbol}}",
+  labelDualFailed: "Subscribe Failed",
+  labelDualFee: "Fee",
+  labelDualMin: "Minimum of {{arg}}",
+  labelDualMax: "Maximum of {{arg}}",
+  labelDualNoEnough: "Not enough {{arg}}",
 };

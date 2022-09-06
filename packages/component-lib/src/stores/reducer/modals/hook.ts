@@ -25,10 +25,15 @@ import {
   setShowNFTDetail,
   setShowLayerSwapNotice,
   setShowNFTDeploy,
+  setShowDual,
 } from "./reducer";
 
 import React from "react";
-import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
+import {
+  DualViewInfo,
+  NFTWholeINFO,
+  TradeNFT,
+} from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { ToggleState } from "../toggle";
 import { AmmPanelType } from "../../../components";
@@ -192,6 +197,11 @@ export const useOpenModals = () => {
           info?: { [key: string]: any };
         }
       ) => dispatch(setShowAccount(state)),
+      [dispatch]
+    ),
+    setShowDual: React.useCallback(
+      (state: ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }) =>
+        dispatch(setShowDual(state)),
       [dispatch]
     ),
     setShowConnect: React.useCallback(

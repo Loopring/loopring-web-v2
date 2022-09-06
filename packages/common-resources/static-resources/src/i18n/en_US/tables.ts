@@ -217,4 +217,9 @@ export default {
   labelTo: "to",
   labelUPrice: "unit price: ",
   labelTradeNFTUnitPrice: "Unit Price",
+  labelDualApy: "APY",
+  labelDualTerm: "Term",
+  labelDualPrice: "Target Price",
+  labelDualSettlement: "Settlement Date",
+  labelDualAction: "Action",
 };

@@ -3,6 +3,7 @@ import {
   Account,
   FeeInfo,
   NFTWholeINFO,
+  TradeTypes,
   VendorItem,
   VendorProviders,
   WalletMap,
@@ -79,6 +80,13 @@ export enum AccountStep {
   Transfer_Success,
   Transfer_Failed,
 
+  Transfer_RAMP_WaitForAuth,
+  Transfer_RAMP_First_Method_Denied,
+  Transfer_RAMP_User_Denied,
+  Transfer_RAMP_In_Progress,
+  Transfer_RAMP_Success,
+  Transfer_RAMP_Failed,
+
   Withdraw_WaitForAuth,
   Withdraw_First_Method_Denied,
   Withdraw_User_Denied,
@@ -138,6 +146,7 @@ export enum AccountStep {
  */
 export interface VendorMenuProps {
   // termUrl: string;
+  type?: TradeTypes;
   vendorList: VendorItem[];
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;

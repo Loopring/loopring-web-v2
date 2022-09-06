@@ -121,6 +121,14 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
     },
     router: { path: "/trade/pro/${pair}" },
   },
+  {
+    label: {
+      id: "fiat",
+      i18nKey: "labelFiat",
+      description: "labelFiatDescription",
+    },
+    router: { path: "/trade/fiat" },
+  },
 ];
 
 export const orderDisableList = ["Liquidity", "Markets", "Trading", "Mining"];
@@ -209,6 +217,15 @@ export const subMenuInvest = [
       id: "defi",
       i18nKey: "labelInvestDefi",
       description: "labelInvestDefiDes",
+    },
+  },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: "/invest/dual" },
+    label: {
+      id: "dual",
+      i18nKey: "labelInvestDual",
+      description: "labelInvestDualDes",
     },
   },
 ];

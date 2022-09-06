@@ -15,6 +15,8 @@ export * from "./components/MintNFTBlock";
 export * from "./Deposit";
 export * from "./components/tool/FeeList";
 export * from "./components/DeFiWrap";
+export * from "./components/DualWrap";
 export * from "./components/CollectionAdvanceWrap";
 export * from "../basic-lib/form/input/CollectionInput";
 export * from "./components/CreateCollectionWrap";
+export * from "./components/RampConfirm";

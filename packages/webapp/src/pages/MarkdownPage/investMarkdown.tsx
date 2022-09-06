@@ -1,5 +1,5 @@
 import { Box, Grid } from "@mui/material";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useLocation, useRouteMatch } from "react-router-dom";
 import React from "react";
 import { EmptyDefault } from "@loopring-web/component-lib";
 import gfm from "remark-gfm";
@@ -7,16 +7,9 @@ import ReactMarkdown from "react-markdown";
 import { useTheme } from "@emotion/react";
 
 import { LoadingBlock } from "../LoadingPage";
-import { MarkdownStyle } from "./style";
-import { languageMap, myLog } from "@loopring-web/common-resources";
+import { MarkdownStyle } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
-import {
-  Config_INFO_URL,
-  EventData,
-  url_test_path,
-} from "../TradeRacePage/interface";
-import moment from "moment";
-import { EVENT_STATUS } from "../TradeRacePage/hook";
+import { url_test_path } from "../TradeRacePage/interface";
 import { useNotify, useSystem } from "@loopring-web/core";
 
 const url_path = "https://static.loopring.io/documents/notification";

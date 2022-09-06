@@ -79,6 +79,8 @@ export type TransferExtendProps<T, I, C> = {
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
   TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;
 
+export type RampViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C>;
+
 /**
  * private props
  */

@@ -64,6 +64,8 @@ import {
 } from "react-redux-firebase";
 import firebase from "firebase/compat/app";
 import { tradeDefiSlice } from "./router/tradeDefi";
+import { tradeDualSlice } from "./router/tradeDual";
+
 import { investReducer } from "./invest";
 import { walletL2CollectionSlice } from "./walletL2Collection/reducer";
 import { walletL2NFTCollectionSlice } from "./walletL2NFTCollection/reducer";
@@ -149,10 +151,8 @@ const reducer = combineReducers({
   amountMap: amountMapSlice.reducer,
   notifyMap: notifyMapSlice.reducer,
   firebase: firebaseReducer,
-  // feeMap:feeMapSlice.reducer,
-  // layer1ActionHistory: layer1ActionHistorySlice.reducer,
-  // router redux
   _router_tradeDefi: tradeDefiSlice.reducer,
+  _router_tradeDual: tradeDualSlice.reducer,
   _router_pageTradeLite: pageTradeLiteSlice.reducer,
   _router_pageTradePro: pageTradeProSlice.reducer,
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
