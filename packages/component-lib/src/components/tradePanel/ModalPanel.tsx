@@ -453,7 +453,7 @@ export const ModalPanel = <
               ...rest,
               // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
-              ...dualTradeProps,
+              ...(dualTradeProps as any),
             }}
           />
         }

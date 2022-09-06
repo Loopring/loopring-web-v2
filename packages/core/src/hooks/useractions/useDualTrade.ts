@@ -290,16 +290,9 @@ export const useDualTrade = <
     ]
   );
 
-  const handleOnchange = _.debounce(
-    ({}: // tradeData,
-    // _tradeDual = {},
-    {
-      tradeData: T;
-    }) => {
-      refreshDual({ tradeData });
-    },
-    globalSetup.wait
-  );
+  const handleOnchange = _.debounce(({ tradeData }: { tradeData: T }) => {
+    refreshDual({ tradeData });
+  }, globalSetup.wait);
 
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus;
