@@ -11,6 +11,7 @@ import {
   getValuePrecisionThousand,
   globalSetup,
   myLog,
+  UNIX_TIMESTAMP_FORMAT,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { Row } from "../poolsTable/Interface";
@@ -283,7 +284,7 @@ const getColumnModeMobileAssets = (
     key: "lpTokenAmmTime",
     name: t("labelAmmTime"),
     headerCellClass: "textAlignRight",
-    formatter: ({row}) => {
+    formatter: ({ row }) => {
       // const amount = row["lpTokenAmount"];
       // const renderValue =
       //   row["side"] === AmmSideTypes.Join
@@ -364,10 +365,10 @@ export const AmmTable = withTranslation("tables")(
         pair,
       }: any) => {
         const start = date
-          ? date[0] && Number(moment(date[0]).format("x"))
+          ? date[0] && Number(moment(date[0]).format(UNIX_TIMESTAMP_FORMAT))
           : undefined;
         const end = date
-          ? date[1] && Number(moment(date[1]).format("x"))
+          ? date[1] && Number(moment(date[1]).format(UNIX_TIMESTAMP_FORMAT))
           : undefined;
 
         await getAmmpoolList({

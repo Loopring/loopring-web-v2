@@ -13,6 +13,7 @@ import {
   RowConfig,
   UpColor,
   UpIcon,
+  YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import moment from "moment/moment";
@@ -63,11 +64,12 @@ export interface DualsTableProps<R, C = Currency> {
   rawData: R[];
   showloading: boolean;
   forexMap: ForexMap<C>;
+  onItemClick: (item: R) => void;
 }
 
 export const DualTable = withTranslation(["tables", "common"])(
   <R extends RawDataDualsItem>(props: DualsTableProps<R> & WithTranslation) => {
-    const { rawData, showloading, t } = props;
+    const { rawData, showloading, onItemClick, t } = props;
     const { isMobile, upColor } = useSettings();
     const history = useHistory();
 
@@ -149,7 +151,7 @@ export const DualTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <Box display="flex">
-                {moment(new Date(row.expireTime)).format("YYYY/MM/DD")}
+                {moment(new Date(row.expireTime)).format(YEAR_DAY_FORMAT)}
               </Box>
             );
           },
@@ -175,7 +177,8 @@ export const DualTable = withTranslation(["tables", "common"])(
                   color={"primary"}
                   size={"small"}
                   onClick={(_e) => {
-                    history.push(`/invest/dual/${row.productId}`);
+                    onItemClick(row);
+                    // history.push(`/invest/dual/${row.productId}`);
                   }}
                 >
                   {t("labelInvestBtn", { ns: "common" })}

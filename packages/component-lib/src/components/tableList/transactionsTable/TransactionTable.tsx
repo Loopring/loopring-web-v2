@@ -15,6 +15,7 @@ import {
   globalSetup,
   TableType,
   TransferIcon,
+  UNIX_TIMESTAMP_FORMAT,
   WaitingIcon,
   WarningIcon,
   WithdrawIcon,
@@ -197,8 +198,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               TransactionTradeViews.forceWithdraw
             ? TransactionTradeTypes.forceWithdraw
             : TransactionTradeTypes.allTypes;
-        const start = Number(moment(currFilterDate[0]).format("x"));
-        const end = Number(moment(currFilterDate[1]).format("x"));
+        const start = Number(
+          moment(currFilterDate[0]).format(UNIX_TIMESTAMP_FORMAT)
+        );
+        const end = Number(
+          moment(currFilterDate[1]).format(UNIX_TIMESTAMP_FORMAT)
+        );
         getTxnList({
           limit: pageSize,
           offset: (currPage - 1) * pageSize,

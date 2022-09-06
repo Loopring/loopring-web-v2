@@ -3,6 +3,7 @@ const nodePath = "../../";
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath);
 const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
     return false;
@@ -25,7 +26,9 @@ module.exports = {
   typescript: {
     reactDocgen: "none",
   },
-  webpackFinal: async (config) => {
+  webpackFinal: async (config, { configType }) => {
+    const isProd = configType.toLowerCase() === "production";
+
     const modules = [
       ...config.resolve.modules,
       path.resolve(__dirname, "..", "src"),
@@ -97,18 +100,26 @@ module.exports = {
         compact: "auto",
       },
     });
+    config.module.rules.push({
+      test: /\.s(a|c)ss$/,
+      use: [
+        {
+          loader: MiniCssExtractPlugin.loader,
+          options: { emit: false, esModule: false, hmr: false },
+        },
+        "css-loader",
+      ],
+    });
+    config.plugins.push(
+      new MiniCssExtractPlugin({
+        filename: isProd ? "[name].[contenthash].css" : "[name].css",
+        chunkFilename: isProd ? "[id].[contenthash].css" : "[id].css",
+        ignoreOrder: true,
+      })
+    );
     return {
       ...config,
-      plugins: [
-        ...config.plugins,
-        // new CopyWebpackPlugin({
-        //   patterns: [{
-        //     from: path.resolve(__dirname, '..', '..', 'common-resources', "assets"),
-        //     to: './static',
-        //     toType: "dir"
-        //   }],
-        // })
-      ],
+      plugins: [...config.plugins],
       resolve: {
         ...config.resolve,
         modules,

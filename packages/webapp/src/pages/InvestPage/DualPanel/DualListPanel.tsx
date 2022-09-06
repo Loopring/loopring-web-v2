@@ -18,6 +18,7 @@ import {
   CoinIcon,
   CoinIcons,
   DualTable,
+  useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
 import { useDualMap, useSystem, useTokenMap } from "@loopring-web/core";
@@ -93,7 +94,7 @@ export const DualListPanel: any = withTranslation("common")(
     const { forexMap } = useSystem();
     const { tradeMap } = useDualMap();
     const { tokenMap } = useTokenMap();
-
+    const { setShowDual } = useOpenModals();
     const {
       pairASymbol,
       pairBSymbol,
@@ -107,44 +108,6 @@ export const DualListPanel: any = withTranslation("common")(
       priceObj,
       handleOnPairChange,
     } = useDualHook({ setConfirmDualInvest });
-
-    // if (token.type === "lp" && middle && tail) {
-    //   tokenIcon =
-    //     [middle] && coinJson[tail]
-    //       ? [coinJson[middle], coinJson[tail]]
-    //       : [undefined, undefined];
-    // }
-    // if (token.type !== "lp" && head && head !== "lp") {
-    //   tokenIcon = coinJson[head]
-    //     ? [coinJson[head], undefined]
-    //     : [undefined, undefined];
-    // }
-
-    // const [mainTab, setMainTab] = React.useState(pairASymbol);
-    // const [secondTab, setSecondTab] = React.useState(pairBSymbol);
-
-    // const { marketArray } = useDefiMap();
-    // const {
-    //   confirmation: { confirmedDefiInvest },
-    // } = confirmation.useConfirmation();
-    // setConfirmDefiInvest(!confirmedDefiInvest);
-    // const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
-    // const history = useHistory();
-    // const _market: MarketType = [...(marketArray ? marketArray : [])].find(
-    //   (_item) => {
-    //     const value = match?.params?.market
-    //       ?.replace(/null|-/gi, "")
-    //       ?.toUpperCase();
-    //     return new RegExp(value, "ig").test(_item);
-    //   }
-    // ) as MarketType;
-
-    // const isJoin =
-    //   match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
-    // {
-    //   market: _market ?? ("WSTETH-ETH" as MarketType),
-    //     isJoin,
-    // }
 
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
@@ -313,6 +276,9 @@ export const DualListPanel: any = withTranslation("common")(
                 rawData={dualProducts ?? []}
                 showloading={isLoading}
                 forexMap={forexMap as any}
+                onItemClick={(item) => {
+                  setShowDual({ isShow: true, dualInfo: item });
+                }}
               />
             </Box>
             {/*{isLoading ? (*/}

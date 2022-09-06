@@ -219,7 +219,7 @@ export const useDualTrade = <
       let _updateInfo: Partial<TradeDual<R>> = {
         dualViewInfo: dualInfo,
       };
-      if (productInfo.productId === dualInfo.productId) {
+      if (productInfo?.productId === dualInfo.productId) {
         _updateInfo = {
           ...(tradeDual as TradeDual<R>),
           ..._updateInfo,
@@ -634,7 +634,7 @@ export const useDualTrade = <
       onChangeEvent: handleOnchange,
       tokenSellProps: {},
       dualCalcData: tradeDual,
-      maxSellVol: tradeDual.maxSellVol,
+      // maxSellVol: tradeDual.maxSellVol,
       tokenSell: tokenMap[coinSellSymbol ?? ""],
       btnStatus,
       accStatus: account.readyState,

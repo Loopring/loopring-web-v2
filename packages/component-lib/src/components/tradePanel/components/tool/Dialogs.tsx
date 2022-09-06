@@ -31,12 +31,12 @@ import {
   TradeDefi,
   Lang,
   MarkdownStyle,
+  LoadingBlock,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
-import { LoadingBlock } from "@loopring-web/webapp/src/pages/LoadingPage";
 import { useTheme } from "@emotion/react";
 
 const DialogStyle = styled(Dialog)`

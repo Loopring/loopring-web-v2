@@ -18,8 +18,9 @@ import {
   EmptyValueTag,
   GoTopIcon,
   MarkdownStyle,
+  YEAR_DAY_SECOND_FORMAT,
+  LoadingBlock,
 } from "@loopring-web/common-resources";
-import { LoadingBlock } from "../LoadingPage";
 
 import { RankRaw } from "./rank";
 import moment from "moment";
@@ -302,7 +303,7 @@ export const TradeRacePage = withTranslation("common")(
                 >
                   {moment(eventData.duration.startDate)
                     .utc()
-                    .format(`YYYY-MM-DD HH:mm:ss`)}
+                    .format(YEAR_DAY_SECOND_FORMAT)}
                 </Typography>
                 <Typography component={"span"} variant={"h5"}>
                   {eventData?.duration?.middle}
@@ -315,7 +316,7 @@ export const TradeRacePage = withTranslation("common")(
                 >
                   {moment(eventData.duration.endDate)
                     .utc()
-                    .format(`YYYY-MM-DD HH:mm:ss`)}
+                    .format(YEAR_DAY_SECOND_FORMAT)}
                 </Typography>
                 {eventData?.duration?.timeZone &&
                   `(${eventData?.duration?.timeZone})`}{" "}
@@ -440,7 +441,7 @@ export const TradeRacePage = withTranslation("common")(
                               >
                                 {moment(item.duration.startDate)
                                   .utc()
-                                  .format(`YYYY-MM-DD HH:mm:ss`)}
+                                  .format(YEAR_DAY_SECOND_FORMAT)}
                               </Typography>
                               <Typography
                                 component={"span"}
@@ -456,7 +457,7 @@ export const TradeRacePage = withTranslation("common")(
                               >
                                 {moment(item.duration.endDate)
                                   .utc()
-                                  .format(`YYYY-MM-DD HH:mm:ss`)}
+                                  .format(YEAR_DAY_SECOND_FORMAT)}
                               </Typography>
                               {item?.duration?.timeZone &&
                                 `(${item?.duration?.timeZone})`}{" "}

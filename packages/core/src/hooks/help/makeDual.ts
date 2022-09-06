@@ -48,7 +48,7 @@ export const makeDualViewItem = (
   const settleRatio = toBig(strike).times(ratio);
   const _baseProfitStep = Number(baseProfitStep);
   const apy = settleRatio.div((expireTime - Date.now()) / 86400000).times(365); //
-  const term = moment(new Date(expireTime)).from(new Date(createTime), true);
+  const term = moment().from(new Date(createTime), true);
 
   // const currentPrice tickerMap[market];
   myLog("dual", {

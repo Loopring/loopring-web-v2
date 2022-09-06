@@ -1,21 +1,23 @@
+import React from "react";
+import moment from "moment";
 import {
+  YEAR_DAY_MINUTE_FORMAT,
   DualCalcData,
   DualViewInfo,
-  getValuePrecisionThousand,
   IBData,
   myLog,
   OrderListIcon,
 } from "@loopring-web/common-resources";
 import { DualWrapProps } from "./Interface";
-import { Trans, useTranslation } from "react-i18next";
-import React from "react";
+import { useTranslation } from "react-i18next";
+
 import { Box, Grid, Typography } from "@mui/material";
 import { InputCoin } from "../../../basic-lib";
 import { ButtonStyle, IconButtonStyled } from "../Styled";
 import { TradeBtnStatus } from "../../Interface";
 import { CountDownIcon } from "../tool/Refresh";
 import { useHistory } from "react-router-dom";
-import BigNumber from "bignumber.js";
+import { useSettings } from "../../../../stores";
 
 export const DualWrap = <
   T extends IBData<I>,
@@ -23,35 +25,25 @@ export const DualWrap = <
   DUAL extends DualCalcData<R>,
   R extends DualViewInfo
 >({
-  disabled,
-  isJoin,
-  isStoB,
-  btnInfo,
   refreshRef,
+  disabled,
+  btnInfo,
+  isLoading,
   onRefreshData,
   onSubmitClick,
-  onConfirm,
-  confirmShowLimitBalance,
-  switchStobEvent,
   onChangeEvent,
-  handleError,
-  dualCalcData,
-  accStatus,
-  tokenSell,
-  tokenBuy,
-  isLoading,
-  btnStatus,
   tokenSellProps,
-  tokenBuyProps,
-  maxSellVol,
-  maxBuyVol,
-  market,
+  dualCalcData,
+  handleError,
+  tokenSell,
+  btnStatus,
+  accStatus,
   ...rest
 }: DualWrapProps<T, I, DUAL>) => {
   const coinSellRef = React.useRef();
-  const coinBuyRef = React.useRef();
   const { t } = useTranslation();
   const history = useHistory();
+  const { isMobile } = useSettings();
 
   const getDisabled = React.useMemo(() => {
     return disabled || dualCalcData === undefined;
@@ -74,11 +66,11 @@ export const DualWrap = <
     },
     [dualCalcData, onChangeEvent]
   );
-  const covertOnClick = React.useCallback(() => {
-    onChangeEvent({
-      tradeData: undefined,
-    });
-  }, [onChangeEvent]);
+  // const covertOnClick = React.useCallback(() => {
+  //   onChangeEvent({
+  //     tradeData: undefined,
+  //   });
+  // }, [onChangeEvent]);
   const propsSell = {
     label: t("tokenEnterPaymentToken"),
     subLabel: t("tokenMax"),
@@ -90,37 +82,26 @@ export const DualWrap = <
     handleCountChange,
     ...rest,
   };
-  const propsBuy = {
-    label: t("tokenEnterReceiveToken"),
-    // subLabel: t('tokenHave'),
-    emptyText: t("tokenSelectToken"),
-    placeholderText: "0.00",
-    maxAllow: false,
-    ...tokenBuyProps,
-    // handleError,
-    handleCountChange,
-    ...rest,
-  };
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split("|");
       return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
     } else {
-      return isJoin ? t(`labelInvestBtn`) : t(`labelRedeemBtn`);
+      return t(`labelInvestBtn`);
     }
-  }, [isJoin, t, btnInfo]);
+  }, [t, btnInfo]);
 
-  const maxValue =
-    tokenBuy.symbol &&
-    maxBuyVol &&
-    `${getValuePrecisionThousand(
-      new BigNumber(maxBuyVol ?? 0).div("1e" + tokenBuy.decimals),
-      tokenBuy.precision,
-      tokenBuy.precision,
-      tokenBuy.precision,
-      false,
-      { floor: true }
-    )} ${tokenBuy.symbol}`;
+  // const maxValue =
+  //   tokenBuy.symbol &&
+  //   maxBuyVol &&
+  //   `${getValuePrecisionThousand(
+  //     new BigNumber(maxBuyVol ?? 0).div("1e" + tokenBuy.decimals),
+  //     tokenBuy.precision,
+  //     tokenBuy.precision,
+  //     tokenBuy.precision,
+  //     false,
+  //     { floor: true }
+  //   )} ${tokenBuy.symbol}`;
 
   return (
     <Grid
@@ -132,6 +113,71 @@ export const DualWrap = <
       flex={1}
       height={"100%"}
     >
+      <Grid
+        item
+        xs={12}
+        md={6}
+        order={isMobile ? 1 : 0}
+        flexDirection={"column"}
+        alignItems={"stretch"}
+        justifyContent={"space-between"}
+      >
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"stretch"}
+          justifyContent={"space-between"}
+        >
+          <Typography
+            variant={"body1"}
+            display={"inline-flexl"}
+            justifyContent={"space-between"}
+          >
+            <Typography
+              component={"span"}
+              variant={"inherit"}
+              color={"textSecondary"}
+            >
+              {t("labelDualSubDate")}
+              {/*labelDualSubDate:Subscription Date*/}
+            </Typography>
+            <Typography
+              component={"span"}
+              variant={"inherit"}
+              color={"textSecondary"}
+            >
+              {moment().format(YEAR_DAY_MINUTE_FORMAT)}
+            </Typography>
+          </Typography>
+          <Typography
+            variant={"body1"}
+            display={"inline-flexl"}
+            justifyContent={"space-between"}
+          >
+            <Typography
+              component={"span"}
+              variant={"inherit"}
+              color={"textSecondary"}
+            >
+              {t("labelDualSettlDate")}
+              {/*labelDualSettlDate:Settlement Date*/}
+            </Typography>
+            <Typography
+              component={"span"}
+              variant={"inherit"}
+              color={"textSecondary"}
+            >
+              {moment(new Date(dualCalcData.dualViewInfo.expireTime)).format(
+                YEAR_DAY_MINUTE_FORMAT
+              )}
+            </Typography>
+          </Typography>
+        </Box>
+        <Box></Box>
+      </Grid>
+      2022-06-16 15:56 2022-06-17 16:00 Current BTC Price 22,000.87 APR 175.87%
+      Target Price 19,500
+      <Grid item xs={12} md={6}></Grid>
       <Grid
         item
         display={"flex"}
@@ -155,7 +201,7 @@ export const DualWrap = <
           <Typography display={"inline-block"} marginLeft={2}>
             <IconButtonStyled
               onClick={() => {
-                history.push(`/l2assets/history/dualRecords?market=${market}`);
+                history.push(`/l2assets/history/dualRecords`);
               }}
               sx={{ backgroundColor: "var(--field-opacity)" }}
               className={"switch outlined"}
@@ -189,31 +235,8 @@ export const DualWrap = <
           }}
         />
       </Grid>
-
       <Grid item alignSelf={"stretch"}>
         <Grid container direction={"column"} spacing={1} alignItems={"stretch"}>
-          {/*<Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>*/}
-          {/*  <Grid*/}
-          {/*    container*/}
-          {/*    justifyContent={"space-between"}*/}
-          {/*    direction={"row"}*/}
-          {/*    alignItems={"center"}*/}
-          {/*    marginTop={1 / 2}*/}
-          {/*  >*/}
-          {/*    <Typography*/}
-          {/*      component={"p"}*/}
-          {/*      variant="body2"*/}
-          {/*      color={"textSecondary"}*/}
-          {/*    >*/}
-          {/*      {t("labelDualFee")}*/}
-          {/*    </Typography>*/}
-          {/*    <Typography component={"p"} variant="body2" color={"textPrimary"}>*/}
-          {/*      {dualCalcData?.feeVol*/}
-          {/*        ? dualCalcData.feeVol + ` ${tokenBuy.symbol}`*/}
-          {/*        : EmptyValueTag}*/}
-          {/*    </Typography>*/}
-          {/*  </Grid>*/}
-          {/*</Grid>*/}
           <Grid item>
             <ButtonStyle
               fullWidth
@@ -237,70 +260,6 @@ export const DualWrap = <
               {label}
             </ButtonStyle>
           </Grid>
-          {confirmShowLimitBalance && (
-            <Grid item>
-              {isJoin ? (
-                <Typography
-                  variant={"body1"}
-                  component={"p"}
-                  display={"flex"}
-                  marginTop={1}
-                  flexDirection={"column"}
-                  color={"var(--color-warning)"}
-                >
-                  <Trans
-                    i18nKey={"labelDualMaxBalanceJoin"}
-                    tOptions={{ maxValue }}
-                  >
-                    The quota is almost sold out and can't fulfil your complete
-                    order. You can only subscribe {{ maxValue }} now. Loopring
-                    will setup the pool soon, please revisit for subscription
-                    later.
-                  </Trans>
-                </Typography>
-              ) : (
-                <Typography
-                  variant={"body1"}
-                  component={"p"}
-                  display={"flex"}
-                  marginTop={1}
-                  flexDirection={"column"}
-                  color={"var(--color-warning)"}
-                >
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"inherit"}
-                  >
-                    <Trans
-                      i18nKey={"labelDualMaxBalance"}
-                      tOptions={{ maxValue }}
-                    >
-                      Loopring rebalance pool can't satisfy your complete
-                      request. You can only redeem {{ maxValue }} now. For the
-                      remaining investment, you can choose one of the approaches
-                    </Trans>
-                  </Typography>
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"inherit"}
-                    marginTop={1}
-                  >
-                    <Trans i18nKey={"labelDualMaxBalance1"}>
-                      <ul>
-                        <li>
-                          Withdraw wstETH to L1 and trade through CRV or LIDO
-                          directly
-                        </li>
-                        <li>Wait some time for Loopring to seto for redeem</li>
-                      </ul>
-                    </Trans>
-                  </Typography>
-                </Typography>
-              )}
-            </Grid>
-          )}
         </Grid>
       </Grid>
     </Grid>

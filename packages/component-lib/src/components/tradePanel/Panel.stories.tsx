@@ -4,9 +4,10 @@ import { Meta, Story } from "@storybook/react/types-6-0";
 import { MemoryRouter } from "react-router-dom";
 import { Box, Grid } from "@mui/material";
 import {
-  AmmJoinData,
-  AmmInData,
+  AccountStatus,
   AmmExitData,
+  AmmInData,
+  AmmJoinData,
   IBData,
   SlippageTolerance,
 } from "@loopring-web/common-resources";
@@ -14,6 +15,8 @@ import {
   ammCalcData,
   coinMap,
   CoinType,
+  DUALCALCDATA,
+  TOKEN_INFO,
   tradeCalcData,
   walletMap,
 } from "../../static";
@@ -25,6 +28,8 @@ import {
   AmmPanelType,
   AmmProps,
   DepositProps,
+  DualWrap,
+  DualWrapProps,
   ModalPanel,
   ResetProps,
   SwapProps,
@@ -366,6 +371,30 @@ const WrapSwapPanel = (rest: any) => {
     </>
   );
 };
+const WrapDualPanel = (rest: any) => {
+  const dualWrapProps: DualWrapProps<any, any, any> = {
+    refreshRef: React.createRef(),
+    disabled: false,
+    btnInfo: undefined,
+    isLoading: false,
+    onRefreshData: () => undefined,
+    onSubmitClick: () => undefined,
+    onChangeEvent: (item) => {
+      console.log(item);
+    },
+    dualCalcData: DUALCALCDATA,
+    tokenSell: TOKEN_INFO.tokenMap["LRC"],
+    btnStatus: TradeBtnStatus.AVAILABLE,
+    accStatus: AccountStatus.ACTIVATED,
+  };
+  return (
+    <>
+      <Grid item sm={6}>
+        <DualWrap {...dualWrapProps} {...rest} />
+      </Grid>
+    </>
+  );
+};
 const WrapAmmPanel = (rest: any) => {
   // let tradeData: any = {
   //     coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
@@ -454,6 +483,9 @@ const ModalPanelWrap = () => {
       // nftMintAdvanceProps={{} as any}
       nftDeployProps={{} as any}
       account={{} as any}
+      baseURL={""}
+      collectionAdvanceProps={{} as any}
+      dualTradeProps={{} as any}
     />
   );
 };
@@ -490,6 +522,16 @@ const Template: Story<any> = () => {
           >
             <WrapSwapPanel />
           </Grid>
+          <h4>DualPanel</h4>
+          <Grid
+            container
+            spacing={2}
+            alignContent={"center"}
+            justifyContent={"space-around"}
+          >
+            <WrapDualPanel />
+          </Grid>
+
           <h4>DepositPanel</h4>
           <Grid
             container

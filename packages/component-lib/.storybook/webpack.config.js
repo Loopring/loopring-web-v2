@@ -91,9 +91,22 @@ module.exports = function ({ config, mode = "DEV" }) {
     },
   });
   config.module.rules.push({
-    test: /\.css$/,
-    use: [MiniCssExtractPlugin.loader, "css-loader"],
+    test: /\.s(a|c)ss$/,
+    use: [
+      {
+        loader: MiniCssExtractPlugin.loader,
+        options: { emit: false, esModule: false, hmr: false },
+      },
+      "css-loader",
+    ],
   });
+  // config.module.rules
+  //   .map(({ oneOf, ...rule }) =>
+  //     oneOf ? oneOf.find(isCssRule) : isCssRule(rule)
+  //   )
+  //   .filter(Boolean)
+  //   // Here we exclude *.vanilla.css files which will be taken up by the vanilla-extract
+  //   .forEach((match) => match.exclude.push(/\.vanilla\.css$/));
   config.plugins.push(
     new MiniCssExtractPlugin({
       filename: isProd ? "[name].[contenthash].css" : "[name].css",

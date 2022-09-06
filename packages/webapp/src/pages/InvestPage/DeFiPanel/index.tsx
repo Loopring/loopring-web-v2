@@ -11,9 +11,9 @@ import {
   DeFiWrap,
   Toast,
   useSettings,
+  LoadingBlock,
 } from "@loopring-web/component-lib";
 import { confirmation, useDefiMap } from "@loopring-web/core";
-import { LoadingBlock } from "../../LoadingPage";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import {
   BackIcon,
