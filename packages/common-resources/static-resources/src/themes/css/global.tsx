@@ -46,6 +46,8 @@ export const colorBase = ({ theme }: any) => css`
     --color-border-disable2: ${theme.colorBase.borderDisable2};
     --color-tag: ${theme.colorBase.tag};
     --color-box: ${theme.colorBase.box};
+    --color-box-nft-label: ${theme.colorBase.boxNFTLabel};
+    --color-box: ${theme.colorBase.box};
     --color-box-hover: ${theme.colorBase.boxHover};
     --color-pop-bg: ${theme.colorBase.popBg};
 
@@ -208,7 +210,7 @@ export const globalCss = ({ theme }: any) => css`
     --desktop-min-width: 1024px;
     --btn-Input-height: 48px;
     --btn-Input-small-height: 32px;
-
+    --btn-medium-height: 40px;
     //--btn-max-width: 160px;
     --btn-min-width: 100px;
     --coin-min-width: 80px;
@@ -230,6 +232,7 @@ export const globalCss = ({ theme }: any) => css`
     --svg-size-medium: 16px;
     --svg-size-cover: 32px;
     --svg-size-large: 24px;
+    --svg-size-huge2: 40px;
     --svg-size-huge: 48px;
     --swap-box-height: 580px; /** js used also **/
     --panel-setting-height: 680px;

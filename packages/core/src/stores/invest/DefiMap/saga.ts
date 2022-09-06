@@ -13,7 +13,7 @@ const getDefiMapApi = async () => {
     markets: marketMap,
     tokenArr: marketCoins,
     marketArr: marketArray,
-  } = await LoopringAPI.defiAPI?.getDefiMarkets({});
+  } = await LoopringAPI.defiAPI?.getDefiMarkets({ defiType: undefined });
 
   let { __timer__ } = store.getState().invest.defiMap;
   __timer__ = (() => {

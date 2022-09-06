@@ -27,9 +27,9 @@ import {
   CheckedIcon,
   copyToClipBoard,
   getValuePrecisionThousand,
+  TradeDefi,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
-import { TradeDefi } from "@loopring-web/core";
 import BigNumber from "bignumber.js";
 
 const DialogStyle = styled(Dialog)`

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { TradeDefi, TradeDefiStatus } from "./interface";
-import { IBData, RequireOne } from "@loopring-web/common-resources";
+import { TradeDefiStatus } from "./interface";
+import { IBData, TradeDefi, RequireOne } from "@loopring-web/common-resources";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
 
 const initState: TradeDefi<any> = {

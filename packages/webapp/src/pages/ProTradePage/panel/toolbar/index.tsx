@@ -53,6 +53,7 @@ import {
 import { useToolbar } from "./hook";
 import { useHistory } from "react-router-dom";
 import { useTickList } from "../../../QuotePage/hook";
+import { InputSearchWrapperStyled } from "@loopring-web/component-lib";
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);
@@ -63,10 +64,7 @@ const PriceValueStyled = styled(Typography)`
   font-size: 1.2rem;
 `;
 
-const InputSearchWrapperStyled = styled(Box)`
-  padding: ${({ theme }) => theme.unit * 2}px;
-  padding-bottom: 0;
-`;
+
 
 export enum TableFilterParams {
   all = "all",
@@ -180,11 +178,11 @@ export const Toolbar = withTranslation("common")(
         });
       }
     }, [coinMap, tickerMap, tokenPrices, market]);
-    React.useEffect(() => {
+	  React.useEffect(() => {
       if (tickerStatus === SagaStatus.UNSET && market !== undefined) {
         setDefaultData();
       }
-    }, [tickerStatus, market]);
+    }, [tickerStatus, market, setDefaultData]);
     const getFilteredTickList = React.useCallback(() => {
       if (!!ammPoolBalances.length && tickList && !!tickList.length) {
         return tickList.filter((o: any) => {

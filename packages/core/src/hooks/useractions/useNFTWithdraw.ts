@@ -18,6 +18,8 @@ import {
   UIERROR_CODE,
   AddressError,
   EXCHANGE_TYPE,
+  TOAST_TIME,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -30,7 +32,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   useWalletLayer2Socket,
@@ -41,10 +42,12 @@ import {
   useChargeFees,
   useWalletLayer2NFT,
   useSystem,
+  getIPFSString,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import { useHistory, useLocation } from "react-router-dom";
 
-export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
+export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
     modals: {
       isShowNFTWithdraw: { isShow, info },
@@ -56,8 +59,11 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
 
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account } = useAccount();
-  const { exchangeInfo, chainId } = useSystem();
+  const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
+  const history = useHistory();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
     useModalData();
@@ -66,6 +72,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
+    resetIntervalTime,
     checkFeeIsEnough,
   } = useChargeFees({
     requestType: sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
@@ -170,7 +177,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
       checkFeeIsEnough();
       return;
     }
-    checkFeeIsEnough(true);
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     if (nftWithdrawValue.nftData) {
       updateNFTWithdrawData({
         // ...nftWithdrawValue,
@@ -211,7 +218,12 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   React.useEffect(() => {
     if (isShow || info?.isShowLocal) {
       resetDefault();
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [isShow, info?.isShowLocal]);
 
   const processRequest = React.useCallback(
@@ -274,7 +286,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough(true);
+                  checkFeeIsEnough({ isRequiredAPI: true });
                 }
 
                 setShowAccount({
@@ -309,7 +321,25 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              updateWalletLayer2NFT({ page });
+              if (nftWithdrawValue.collectionMeta) {
+                history.push({
+                  pathname: `/NFT/assetsNFT/byCollection/${nftWithdrawValue.collectionMeta?.contractAddress}|${nftWithdrawValue.collectionMeta?.id}`,
+                  search,
+                });
+                updateWalletLayer2NFT({
+                  page: Number(searchParams.get("collectionPage")) ?? 1,
+                  collection: nftWithdrawValue.collectionMeta?.contractAddress,
+                });
+              } else {
+                history.push({
+                  pathname: `/NFT/assetsNFT/byList`,
+                  search,
+                });
+                updateWalletLayer2NFT({
+                  page,
+                  collection: undefined,
+                });
+              }
               setShowNFTDetail({ isShow: false });
               resetNFTWithdrawData();
             }
@@ -495,6 +525,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     isCFAddress,
+    getIPFSString,
+    baseURL,
     isContractAddress: isContract1XAddress,
     isAddressCheckLoading,
     addrStatus,

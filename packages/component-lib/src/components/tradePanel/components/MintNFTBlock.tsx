@@ -12,6 +12,7 @@ import {
 import {
   CoinInfo,
   CoinMap,
+  CollectionMeta,
   FeeInfo,
   Info2Icon,
   MintTradeNFT,
@@ -31,6 +32,7 @@ import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { NFTInput } from "./BasicANFTTrade";
 import { Properties } from "./tool/Property";
+import { CollectionInput } from "./tool";
 
 const GridStyle = styled(Grid)<GridProps>`
   .coinInput-wrap {
@@ -44,12 +46,13 @@ const GridStyle = styled(Grid)<GridProps>`
   .main-label,
   .sub-label {
     color: var(--color-text-secondary);
-    font-size: ${({ theme }) => theme.fontDefault.body2};
+    font-size: ${({ theme }) => theme.fontDefault.body1};
   }
 ` as (props: GridProps) => JSX.Element;
 
 export const MintNFTBlock = <
   T extends Partial<NFTMETA>,
+  Co extends CollectionMeta,
   I extends Partial<MintTradeNFT<any>>,
   C extends FeeInfo
 >({
@@ -57,19 +60,28 @@ export const MintNFTBlock = <
   nftMeta,
   mintData,
   btnInfo,
+  // collection,
   nftMetaBtnStatus,
   handleOnMetaChange,
   handleMintDataChange,
+  baseURL,
+  domain,
+  collectionInputProps,
   onMetaClick,
-}: NFTMetaBlockProps<T, I, C>) => {
+}: NFTMetaBlockProps<T, Co, I, C>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const inputBtnRef = React.useRef();
-
+  const [_collection, setCollection] = React.useState<Co | undefined>(
+    collectionInputProps?.collection ?? undefined
+  );
+  React.useEffect(() => {
+    setCollection(collectionInputProps.collection);
+  }, [collectionInputProps?.collection?.contractAddress]);
   const getDisabled = React.useMemo(() => {
     return disabled || nftMetaBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, nftMetaBtnStatus]);
-  myLog("mint nftMeta", nftMeta);
+  myLog("mint nftMeta", nftMeta, mintData);
 
   const _handleMintDataChange = React.useCallback(
     (_mintData: Partial<I>) => {
@@ -99,16 +111,22 @@ export const MintNFTBlock = <
             fullWidth
             inputProps={{ maxLength: 32 }}
             label={
-              <Trans i18nKey={"labelMintName"}>
-                Name
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"error"}
-                >
-                  {"\uFE61"}
-                </Typography>
-              </Trans>
+              <Typography
+                component={"span"}
+                variant={"body1"}
+                color={"textSecondary"}
+              >
+                <Trans i18nKey={"labelMintName"}>
+                  Name
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"error"}
+                  >
+                    {"\uFE61"}
+                  </Typography>
+                </Trans>
+              </Typography>
             }
             type={"text"}
             onChange={(event) =>
@@ -117,38 +135,21 @@ export const MintNFTBlock = <
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
-            value={nftMeta.collection ?? ""}
-            fullWidth
-            select
-            disabled={true}
-            label={
-              <Tooltip
-                title={t("labelMintCollectionTooltips").toString()}
-                placement={"top"}
-              >
-                <Typography
-                  variant={"inherit"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                >
-                  <Trans i18nKey={"labelMintCollection"}>
-                    Collection( "coming soon")
-                    <Info2Icon
-                      fontSize={"small"}
-                      color={"inherit"}
-                      sx={{ marginX: 1 / 2 }}
-                    />
-                  </Trans>
-                </Typography>
-              </Tooltip>
-            }
-            type={"text"}
-          >
-            {[].map((_item, index) => (
-              <Box key={index} />
-            ))}
-          </TextField>
+          <CollectionInput
+            {...{
+              ...collectionInputProps,
+              collection: _collection,
+              domain,
+              isRequired: true,
+              onSelected: (item: Co) => {
+                setCollection(item);
+                handleOnMetaChange({
+                  collection: item,
+                } as any);
+              },
+            }}
+            fullWidth={true}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <InputCoin
@@ -217,6 +218,7 @@ export const MintNFTBlock = <
           <NFTInput
             {...({ t } as any)}
             isThumb={false}
+            baseURL={baseURL}
             isBalanceLimit={true}
             inputNFTDefaultProps={{
               subLabel: t("tokenNFTMaxMINT"),
@@ -281,6 +283,7 @@ export const MintNFTBlock = <
                 lineHeight={"20px"}
                 display={"inline-flex"}
                 alignItems={"center"}
+                className={"main-label"}
               >
                 <Trans i18nKey={"labelMintDescription"}>
                   Description
@@ -322,6 +325,7 @@ export const MintNFTBlock = <
                 lineHeight={"20px"}
                 display={"inline-flex"}
                 alignItems={"center"}
+                className={"main-label"}
               >
                 <Trans i18nKey={"labelMintProperty"}>
                   Properties
@@ -386,4 +390,6 @@ export const MintNFTBlock = <
       </GridStyle>
     </Box>
   );
-};
+};;
+;
+;

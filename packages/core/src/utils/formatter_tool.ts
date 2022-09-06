@@ -2,7 +2,11 @@ import { store } from "../index";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
+  GET_IPFS_STRING,
   getValuePrecisionThousand,
+  IPFS_HEAD_URL,
+  IPFS_HEAD_URL_REG,
+  IPFS_LOOPRING_SITE,
   TradeTypes,
 } from "@loopring-web/common-resources";
 import { volumeToCountAsBigNumber } from "../hooks/help";
@@ -109,10 +113,11 @@ export function tradeItemToTableDataItem(tradeItem: any) {
 
   const feeKey = isBuy ? base : quote;
   const feeKeyPrecision = tokenMap ? tokenMap[feeKey].precision : undefined;
+
   const feeValue = getValuePrecisionThousand(
     volumeToCountAsBigNumber(feeKey, tradeItem.fee),
     feeKeyPrecision,
-    2,
+    feeKeyPrecision,
     undefined,
     false,
     {
@@ -177,3 +182,21 @@ export function isPosIntNum(val: any) {
   var regPos = /^\d+$/;
   return regPos.test(val);
 }
+
+export const getIPFSString: GET_IPFS_STRING = (
+  url: string | undefined,
+  _baseURL: string
+) => {
+  if (url === undefined) {
+    return "";
+  } else if (url.startsWith("http")) {
+    return url;
+  } else if (url.startsWith(IPFS_HEAD_URL)) {
+    const _url = url.replace(IPFS_HEAD_URL_REG, IPFS_LOOPRING_SITE);
+    return _url;
+    // myLog(_url, url);
+    // return baseURL + "/api/v3/delegator/ipfs" + `?path=` + _url;
+  } else {
+    return url;
+  }
+};
