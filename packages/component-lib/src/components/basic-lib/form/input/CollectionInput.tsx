@@ -116,8 +116,29 @@ export const CollectionInput = <Co extends CollectionMeta>({
     >
       <Box width={"100%"}>
         <Tooltip
-          title={t("labelChooseCollectionTooltips").toString()}
-          placement={"left-end"}
+          title={
+            <Trans i18nKey="labelChooseCollectionTooltips">
+              This is the collection where your NFT will appear.NFT minted under
+              collection will be bound with different contract address than
+              previous created one. If you have incomplete work to finish and
+              would like them created under previous contract address, you can
+              still use the legacy created method under
+              <Link
+                style={{
+                  cursor: "pointer",
+                  color: "var(--color-primary)",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                }}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={"https://legacy-nft.loopring.io"}
+              >
+                legacy-nft.loopring.io
+              </Link>
+            </Trans>
+          }
+          placement={"top-start"}
         >
           <Typography
             variant={"body1"}
