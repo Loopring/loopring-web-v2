@@ -311,7 +311,7 @@ export const useDualTrade = <
     if (
       account.readyState === AccountStatus.ACTIVATED &&
       coinSellSymbol &&
-      tradeDual
+      tradeDual?.sellToken
     ) {
       const sellExceed = sdk
         .toBig(tradeDual.coinSell?.tradeValue ?? 0)
@@ -379,7 +379,7 @@ export const useDualTrade = <
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  };, [coinSellSymbol]);
+  }, [coinSellSymbol]);
 
   React.useEffect(() => {
     if (isShowDual.isShow && isShowDual.dualInfo?.__raw__) {
@@ -453,13 +453,13 @@ export const useDualTrade = <
 
   const walletLayer2Callback = React.useCallback(async () => {
     const {
-      tradeDual: {coinSell},
+      tradeDual: { coinSell },
     } = store.getState()._router_tradeDual;
     if (coinSell) {
       if (account.readyState === AccountStatus.ACTIVATED) {
-        refreshDual({tradeData: {...coinSell} as T});
+        refreshDual({ tradeData: { ...coinSell } as T });
       } else {
-        refreshDual({tradeData: {...coinSell, tradeValue: undefined} as T});
+        refreshDual({ tradeData: { ...coinSell, tradeValue: undefined } as T });
       }
     }
   }, [account.readyState, refreshDual]);
@@ -642,7 +642,7 @@ export const useDualTrade = <
       tokenSellProps: {},
       dualCalcData: tradeDual,
       maxSellVol: tradeDual.maxSellVol,
-      tokenSell: tokenMap[ coinSellSymbol ?? "" ],
+      tokenSell: tokenMap[coinSellSymbol ?? ""],
       btnStatus,
       accStatus: account.readyState,
     };

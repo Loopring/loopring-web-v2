@@ -1,8 +1,6 @@
 import {
   DualCalcData,
   DualViewInfo,
-  EmptyValueTag,
-  ExchangeIcon,
   getValuePrecisionThousand,
   IBData,
   myLog,
