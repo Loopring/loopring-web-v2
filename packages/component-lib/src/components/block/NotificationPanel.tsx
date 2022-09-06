@@ -54,7 +54,7 @@ export const NotificationPanel = ({
   //   return Date.now() > startShow;
   // }) !== -1;
   const hasNotifications =
-    notification.notifications && notification.notifications.length;
+    notification.notifications && notification.notifications?.length;
   // &&
   // notification.notifications.findIndex(
   //   ({ startShow }) => Date.now() > startShow
