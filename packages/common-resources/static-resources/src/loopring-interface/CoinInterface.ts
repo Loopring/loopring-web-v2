@@ -1,6 +1,5 @@
 import {
   Account,
-  DualViewInfo,
   FloatTag,
   ForexMap,
   TradeStatus,
