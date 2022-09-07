@@ -206,7 +206,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
-      console.log(
+      myLog(
         "nftMetaBtnStatus nftMintValue:",
         "mintData",
         nftMintValue.mintData,
@@ -247,6 +247,9 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
       }
       if (!userAgree) {
         setLabelAndParams("labelMintUserAgree", {});
+      }
+      if (nftMintValue.collection) {
+        setLabelAndParams("labelMintNoCollectionBtn", {});
       }
 
       if (
