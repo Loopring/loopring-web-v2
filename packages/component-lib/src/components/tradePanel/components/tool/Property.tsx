@@ -12,7 +12,9 @@ import React, { ForwardedRef } from "react";
 export const Properties = ({
   properties = [],
   handleChange,
+  disabled = false,
 }: {
+  disabled?: boolean;
   properties: MetaProperty[];
   handleChange: (properties: Array<Partial<MetaProperty>>) => void;
 }) => {
@@ -52,6 +54,7 @@ export const Properties = ({
       {properties.map((property, index) => (
         <Grid container key={index} spacing={2} marginBottom={1.5}>
           <Property
+            disabled={disabled}
             property={property}
             index={index}
             handleChange={_handleChange}
@@ -64,6 +67,7 @@ export const Properties = ({
           <Button
             startIcon={<AddIcon />}
             size={"small"}
+            disabled={disabled}
             variant={"outlined"}
             // variant={"contained"}
             onClick={addItem}
@@ -84,7 +88,9 @@ export const Property = React.memo(
         index,
         handleChange,
         onDelete,
+        disabled = false,
       }: {
+        disabled?: boolean;
         property: MetaProperty;
         index: number;
         handleChange: (property: Partial<MetaProperty>, index: number) => void;
@@ -104,6 +110,7 @@ export const Property = React.memo(
         <>
           <Grid item xs={5} ref={ref}>
             <TextField
+              disabled={disabled}
               value={property.key}
               inputProps={{ maxLength: 10 }}
               fullWidth
@@ -114,6 +121,7 @@ export const Property = React.memo(
           </Grid>
           <Grid item xs={6}>
             <TextField
+              disabled={disabled}
               value={property.value}
               inputProps={{ maxLength: 20 }}
               fullWidth
@@ -134,6 +142,7 @@ export const Property = React.memo(
                 sx={{ marginTop: 3 }}
                 edge={"end"}
                 size={"large"}
+                disabled={disabled}
                 // disabled={properties.length === 1 ? true : false}
                 onClick={() => onDelete(index)}
               >

@@ -103,6 +103,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
         if (value && value?.uniqueId === data.uniqueId) {
           _value = {
             ..._value,
+            isProcessing: false,
             ...{
               error: data.error
                 ? data.error
@@ -205,11 +206,16 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
-      myLog(
-        "nftMetaBtnStatus nftMintValue",
+      console.log(
+        "nftMetaBtnStatus nftMintValue:",
+        "mintData",
         nftMintValue.mintData,
+        "nftMETA",
         nftMintValue.nftMETA,
-        nftMintValue.mintData.fee
+        "userAgree",
+        userAgree,
+        "error",
+        error
       );
       if (
         !error &&
@@ -235,6 +241,9 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
       ) {
         enableBtn();
         return;
+      }
+      if (error) {
+        setLabelAndParams(error.messageKey ?? "", { ...error.options });
       }
       if (!userAgree) {
         setLabelAndParams("labelMintUserAgree", {});

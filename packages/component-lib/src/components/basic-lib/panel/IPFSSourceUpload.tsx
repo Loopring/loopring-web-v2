@@ -216,7 +216,10 @@ export const IPFSSourceUpload = ({
                 height={"100%"}
                 justifyContent={"center"}
               >
-                <ErrorIcon style={{ height: 36, width: 36 }} />
+                <ErrorIcon style={{ height: 60, width: 60 }} color={"error"} />
+                <Typography variant={"body1"} component={"span"}>
+                  {t(value.error.message)}
+                </Typography>
                 {close}
               </Box>
             ) : (

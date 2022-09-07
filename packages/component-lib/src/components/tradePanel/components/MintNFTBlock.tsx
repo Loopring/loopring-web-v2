@@ -109,6 +109,7 @@ export const MintNFTBlock = <
           <TextField
             value={nftMeta.name}
             fullWidth
+            disabled={disabled}
             inputProps={{ maxLength: 32 }}
             label={
               <Typography
@@ -209,7 +210,7 @@ export const MintNFTBlock = <
                 tradeValue: nftMeta.royaltyPercentage ?? 0,
                 belong: "royaltyPercentage" as any,
               },
-
+              disabled,
               coinMap: {} as CoinMap<I, CoinInfo<I>>,
             }}
           />
@@ -268,6 +269,7 @@ export const MintNFTBlock = <
                 balance: mintData.nftBalance,
               } as any
             }
+            disabled={disabled}
             walletMap={{}}
           />
         </Grid>
@@ -300,6 +302,7 @@ export const MintNFTBlock = <
             aria-label="NFT Description"
             minRows={2}
             maxRows={5}
+            disabled={disabled}
             style={{
               overflowX: "hidden",
               resize: "vertical",
@@ -340,6 +343,7 @@ export const MintNFTBlock = <
           </FormLabel>
           <Box marginTop={1}>
             <Properties
+              disabled={disabled}
               handleChange={(properties) =>
                 handleOnMetaChange({
                   properties: properties,
@@ -390,5 +394,4 @@ export const MintNFTBlock = <
       </GridStyle>
     </Box>
   );
-};;
-;
+};
