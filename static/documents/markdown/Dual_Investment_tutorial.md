@@ -81,8 +81,8 @@ depends on the LRC/USDT settlement price at the time of expiration.
 | ROI  | The income return on investment. It is expressed in percentages and is used to calculate the settlement amount.  |
 | APR  | Annualized Yield is calculated as the equivalent annual return. If continue purchasing with the given yield for a whole year. Annualized Yield = Yield &#47; (Expiry Date – Today) &#42;365 <br/>*The holding period is actuarial to milliseconds.</br> |
 | Target Price  | Target Price is a benchmark price. On Expiry Day, the Settlement Price will be compared against this benchmark price.  |
-| Settlement Price  | The average of the Settlement Index in the last 30 minutes before 16:00 (UTC+8) on the Expiry date.  |
-| Settlement Index  | Settlement Index is derived from some leading exchanges, including Bittrex, Bitstamp, Coinbase Pro, Gemini, Kraken, Itbit, and LMAX Digital.  |
+| Settlement Price  | The arithmetical average of the Settlement Index sampled every 4 seconds in the last 30 minutes before 16:00 (UTC+8) on the Expiry date.  |
+| Settlement Index  | Settlement Index is derived from some leading exchanges. For ETH, it includes Bittrex, Bitstamp, Coinbase Pro, Gemini, Kraken, Itbit, and LMAX Digital; for LRC, it includes  Huobi, Binance, OKEx, KuCoin,  FTX. The index is calculated as the equally-weighted average of these values.  |
 
 ### FAQ
 
