@@ -30,7 +30,6 @@ import {
   DepositProps,
   DualWrap,
   DualWrapProps,
-  ModalPanel,
   ResetProps,
   SwapProps,
   SwapTradeData,
@@ -54,12 +53,18 @@ import {
 import { SlippagePanel } from "./components";
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { boxLiner } from "../styled";
 
 const Style = styled.div`
   background: var(--color-global-bg);
 
   height: 100%;
   flex: 1;
+`;
+const BoxLinear = styled(Box)`
+  && {
+    ${({ theme }) => boxLiner({ theme })};
+  }
 `;
 let tradeData: any = {};
 // @ts-ignore
@@ -374,12 +379,14 @@ const WrapDualPanel = (rest: any) => {
     refreshRef: React.createRef(),
     disabled: false,
     btnInfo: undefined,
+    tokenMap: TOKEN_INFO.tokenMap as any,
     isLoading: false,
     onRefreshData: () => undefined,
     onSubmitClick: () => undefined,
     onChangeEvent: (item) => {
       console.log(item);
     },
+
     dualCalcData: DUALCALCDATA,
     tokenSell: TOKEN_INFO.tokenMap["LRC"],
     btnStatus: TradeBtnStatus.AVAILABLE,
@@ -387,9 +394,13 @@ const WrapDualPanel = (rest: any) => {
   };
   return (
     <>
-      <Box width={"80%"} background={"var(--color-box)"}>
+      <BoxLinear
+        width={"80%"}
+        padding={3}
+        sx={{ background: "var(--color-box-linear)" }}
+      >
         <DualWrap {...dualWrapProps} {...rest} />
-      </Box>
+      </BoxLinear>
     </>
   );
 };

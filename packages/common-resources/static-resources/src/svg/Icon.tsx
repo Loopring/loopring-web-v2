@@ -1338,3 +1338,10 @@ export const ViewMoreIcon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
+export const PointIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon {...props} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 15L8.5359 11.25L15.4641 11.25L12 15Z" />
+    </SvgIcon>
+  );
+};

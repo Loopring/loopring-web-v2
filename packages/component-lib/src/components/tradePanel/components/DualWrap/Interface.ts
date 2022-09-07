@@ -13,6 +13,7 @@ export type DualWrapProps<T, I, DUAL> = {
   refreshRef: React.Ref<any>;
   onRefreshData?: (shouldFeeUpdate?: boolean, clearTrade?: boolean) => void;
   isLoading: boolean;
+  tokenMap: { [key: string]: TokenInfo };
   // maxSellVol?: string;
   onSubmitClick: () => void;
   onChangeEvent: (data: DualChgData<T>) => void;

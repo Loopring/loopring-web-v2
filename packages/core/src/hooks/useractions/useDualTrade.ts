@@ -629,6 +629,7 @@ export const useDualTrade = <
         params: {},
       },
       isLoading,
+      tokenMap: tokenMap as any,
       onRefreshData: should15sRefresh,
       onSubmitClick: onSubmitBtnClick,
       onChangeEvent: handleOnchange,

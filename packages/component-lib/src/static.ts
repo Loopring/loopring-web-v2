@@ -558,7 +558,11 @@ export const DUALVIEWINFO: DualViewInfo = {
 };
 export const DUALCALCDATA: DualCalcData<DualViewInfo> = {
   balance: {},
-  coinSell: coinMap["USDC"] as any,
+  coinSell: {
+    balance: 100,
+    belong: "USDC",
+    tradeValue: undefined,
+  },
   feeTokenSymbol: "LRC",
   feeVol: undefined,
   greaterEarnTokenSymbol: "",

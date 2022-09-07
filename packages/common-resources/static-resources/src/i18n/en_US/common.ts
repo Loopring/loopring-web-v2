@@ -1003,4 +1003,7 @@ export default {
   labelDualTargetPrice2: "Target Price",
   labelDualTargetPriceDes:
     "Target Price is a benchmark price. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
+  labelDualRiskDes:
+    "Your investment will be locked up until settlement date after investing and cannot be redeemed before settlement. \n As we make profit ratio a top priority, the total opened position might vary with your initial investment.",
+  labelDualReturn: "Return {{symbol}}",
 };

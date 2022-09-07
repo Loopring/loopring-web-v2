@@ -7,39 +7,98 @@ import {
   IBData,
   myLog,
   OrderListIcon,
+  UpColor,
+  getValuePrecisionThousand,
+  AvatarCoinStyled,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import { DualWrapProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 
-import { Box, Grid, Tooltip, Typography } from "@mui/material";
-import { InputCoin } from "../../../basic-lib";
-import { ButtonStyle, IconButtonStyled } from "../Styled";
-import { TradeBtnStatus } from "../../Interface";
-import { CountDownIcon } from "../tool/Refresh";
+import { Avatar, Box, Divider, Grid, Tooltip, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { useSettings } from "../../../../stores";
 import styled from "@emotion/styled";
+import { CountDownIcon } from "../tool/Refresh";
+import { IconButtonStyled, ButtonStyle } from "../Styled";
+import { InputCoin } from "components/basic-lib";
+import { TradeBtnStatus } from "../../Interface";
 
-const BoxChartStyle = styled(Box)`
-  height: 1px;
-  left: 0;
-  right: 0;
-  bottom: 30px;
-  position: absolute;
-  background-color: var(--color-primary);
-
-  &:before {
-    content: "";
-    display: block;
-    height: 14px;
-    width: 14px;
-    border-radius: 50%;
-    background-color: var(--color-primary);
-    bottom: -7px;
-    left: calc(50% - 7px);
-    position: absolute;
-  }
+const BoxChartStyle = styled(Box)(({ theme }: any) => {
+  const fillColor: string = theme.colorBase.textThird;
+  const svg = encodeURIComponent(
+    `<svg viewBox="0 0 24 24" fill="${fillColor}" height="24" width="24"  xmlns="http://www.w3.org/2000/svg"><path d="M12 15L8.5359 11.25L15.4641 11.25L12 15Z" /></svg>`
+  );
+  return `
+   .backView{
+      height: 1px;
+      left: 0;
+      right: 0;
+      bottom: 30px;
+      position: absolute;
+      background-color: var(--color-primary);
+    
+      &:before {
+        content: "";
+        display: block;
+        height: 14px;
+        width: 14px;
+        border-radius: 50%;
+        background-color: var(--color-primary);
+        bottom: -7px;
+        left: calc(50% - 7px);
+        position: absolute;
+      }
+      &:after {
+        content: "";
+        display: block;
+        height: 7px;
+        width: calc(25% - 7px);
+        background-color: var(--color-warning);
+        bottom: -3px;
+        left: 0;
+        position: absolute;
+      }
+    }
+    .point {
+      position: absolute;
+      display:flex;
+      flex-direction:column;
+      align-items: center;
+      top: 0px;
+      &:after {
+        content: "";
+        display: block;
+        height: 24px;
+        width:24px;
+        background-image: url("data:image/svg+xml, ${svg}");
+        left: calc(50% - 12px);
+        bottom: -20px;
+        position: absolute;
+      }
+    }
+    .point1 {
+      left: 50%;
+      transform: translateX(-50%);  
+    }
+    .point2 {
+       left: 25%;
+       transform: translateX(-50%);  
+    }
+    .returnV1{
+      position: absolute;
+      right: 25%;
+      transform: translateX(50%);
+      bottom:0
+    }
+    .returnV2{
+      position: absolute;
+      left: 25%;
+      transform: translateX(-50%);
+      bottom:0
+    }
 `;
+});
 
 export const DualWrap = <
   T extends IBData<I>,
@@ -59,14 +118,15 @@ export const DualWrap = <
   handleError,
   tokenSell,
   btnStatus,
+  tokenMap,
   accStatus,
   ...rest
 }: DualWrapProps<T, I, DUAL>) => {
   const coinSellRef = React.useRef();
   const { t } = useTranslation();
   const history = useHistory();
-  const { isMobile } = useSettings();
-
+  const { isMobile, upColor } = useSettings();
+  const priceSymbol = dualCalcData?.dualViewInfo?.currentPrice?.symbol;
   const getDisabled = React.useMemo(() => {
     return disabled || dualCalcData === undefined;
   }, [btnStatus, dualCalcData, disabled]);
@@ -130,11 +190,11 @@ export const DualWrap = <
       className={dualCalcData.dualViewInfo ? "" : "loading"}
       container
       justifyContent={"space-between"}
-      alignItems={"center"}
+      alignItems={"stretch"}
       flex={1}
       height={"100%"}
     >
-      {dualCalcData.dualViewInfo && (
+      {dualCalcData.dualViewInfo && priceSymbol && (
         <>
           <Grid
             item
@@ -208,7 +268,7 @@ export const DualWrap = <
                   color={"textSecondary"}
                 >
                   {t("labelDualCurrentPrice2", {
-                    symbol: dualCalcData.dualViewInfo?.currentPrice.symbol,
+                    symbol: priceSymbol,
                   })}
                 </Typography>
                 <Typography
@@ -238,7 +298,11 @@ export const DualWrap = <
                 <Typography
                   component={"span"}
                   variant={"inherit"}
-                  color={"textPrimary"}
+                  color={
+                    upColor == UpColor.green
+                      ? "var(--color-success)"
+                      : "var(--color-error)"
+                  }
                 >
                   {dualCalcData.dualViewInfo?.apy}
                 </Typography>
@@ -269,29 +333,91 @@ export const DualWrap = <
               </Typography>
             </Box>
             <Box paddingX={2}>
-              <Box height={96} width={"100%"} position={"relative"}>
-                <BoxChartStyle />
+              <BoxChartStyle height={96} width={"100%"} position={"relative"}>
+                <Box className={"backView"} />
+                <Box className={"point1 point"}>
+                  <Typography>{t("labelDualTargetPrice2")}</Typography>
+                  <Typography>
+                    {getValuePrecisionThousand(
+                      dualCalcData.dualViewInfo?.strike,
+                      tokenMap[priceSymbol].precision,
+                      tokenMap[priceSymbol].precision,
+                      tokenMap[priceSymbol].precision,
+                      false,
+                      { floor: true }
+                    )}
+                  </Typography>
+                </Box>
+                <Box className={"point2 point"}>
+                  <Typography>
+                    {t("labelDualCurrentPrice2", {
+                      symbol: priceSymbol,
+                    })}
+                  </Typography>
+                  <Typography
+                    color={
+                      upColor == UpColor.green
+                        ? "var(--color-error)"
+                        : "var(--color-success)"
+                    }
+                  >
+                    {getValuePrecisionThousand(
+                      dualCalcData.dualViewInfo.currentPrice.currentPrice,
+                      tokenMap[priceSymbol].precision,
+                      tokenMap[priceSymbol].precision,
+                      tokenMap[priceSymbol].precision,
+                      false,
+                      { floor: true }
+                    )}
+                  </Typography>
+                </Box>
+                <Box className={"returnV1"}>
+                  <Typography>
+                    {t("labelDualReturn", {
+                      symbol: dualCalcData.dualViewInfo.sellSymbol,
+                    })}
+                  </Typography>
+                </Box>
+                <Box className={"returnV2"}>
+                  <Typography>
+                    {t("labelDualReturn", {
+                      symbol: dualCalcData.dualViewInfo.buySymbol,
+                    })}
+                  </Typography>
+                </Box>
+              </BoxChartStyle>
+
+              <Box marginTop={1}>
+                <Typography
+                  color={"textSecondary"}
+                  whiteSpace={"pre-line"}
+                  variant={"body1"}
+                >
+                  {t("labelDualRiskDes")}
+                </Typography>
               </Box>
             </Box>
           </Grid>
 
-          <Grid item xs={12} md={6} display={"flex"}>
-            <Box paddingX={2} flex={1}>
-              <Box alignSelf={"flex-end"} display={"flex"}>
+          <Grid
+            item
+            xs={12}
+            md={6}
+            flexDirection={"column"}
+            alignItems={"stretch"}
+            justifyContent={"space-between"}
+            display={"flex"}
+          >
+            <Box
+              paddingX={2}
+              flex={1}
+              display={"flex"}
+              alignItems={"stretch"}
+              justifyContent={"space-between"}
+              flexDirection={"column"}
+            >
+              <Box alignSelf={"flex-end"}>
                 <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
-                <Typography display={"inline-block"} marginLeft={2}>
-                  <IconButtonStyled
-                    onClick={() => {
-                      history.push(`/l2assets/history/dualRecords`);
-                    }}
-                    sx={{ backgroundColor: "var(--field-opacity)" }}
-                    className={"switch outlined"}
-                    aria-label="to Transaction"
-                    size={"large"}
-                  >
-                    <OrderListIcon color={"primary"} fontSize={"large"} />
-                  </IconButtonStyled>
-                </Typography>
               </Box>
               <InputCoin<any, I, any>
                 ref={coinSellRef}
@@ -306,6 +432,90 @@ export const DualWrap = <
                   coinPrecision: tokenSell.precision,
                 }}
               />
+              <Typography
+                variant={"body1"}
+                display={"inline-flex"}
+                justifyContent={"space-between"}
+                paddingBottom={1}
+              >
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textSecondary"}
+                >
+                  {t("labelDualSubDate")}
+                </Typography>
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textPrimary"}
+                >
+                  {moment().format(YEAR_DAY_MINUTE_FORMAT)}
+                </Typography>
+              </Typography>
+            </Box>
+            <Box paddingX={2}>
+              <Box
+                borderRadius={1}
+                marginBottom={2}
+                style={{ background: "var(--color-table-header-bg)" }}
+                alignItems={"stretch"}
+                display={"flex"}
+                paddingY={1}
+                paddingX={2}
+                flexDirection={"column"}
+              >
+                <Typography
+                  variant={"body1"}
+                  color={"textSecondary"}
+                  alignSelf={"flex-start"}
+                >
+                  {t("labelDualReceive")}
+                </Typography>
+                <Divider />
+                <Typography
+                  variant={"body1"}
+                  display={"inline-flex"}
+                  justifyContent={"space-between"}
+                  paddingBottom={1}
+                >
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"textSecondary"}
+                  >
+                    {t("labelDualSubDate")}
+                  </Typography>
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"textPrimary"}
+                  >
+                    {moment().format(YEAR_DAY_MINUTE_FORMAT)}
+                  </Typography>
+                </Typography>
+                <Typography
+                  variant={"body1"}
+                  display={"inline-flex"}
+                  justifyContent={"space-between"}
+                  paddingBottom={1}
+                >
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"textSecondary"}
+                  >
+                    {t("labelDualSubDate")}
+                  </Typography>
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"textPrimary"}
+                  >
+                    {moment().format(YEAR_DAY_MINUTE_FORMAT)}
+                  </Typography>
+                </Typography>
+              </Box>
               <ButtonStyle
                 fullWidth
                 variant={"contained"}
