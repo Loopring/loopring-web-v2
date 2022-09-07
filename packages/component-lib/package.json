@@ -32,7 +32,7 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "sb": "yarn storybook",
-    "build": "build-storybook -c .storybook --quiet --debug-webpack"
+    "build": "build-storybook -c .storybook --quiet "
   },
   "eslintConfig": {
     "extends": [

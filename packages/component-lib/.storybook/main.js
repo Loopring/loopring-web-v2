@@ -110,13 +110,29 @@ module.exports = {
         "css-loader",
       ],
     });
-    config.plugins.push(
+    config.plugins = config.plugins.concat([
       new MiniCssExtractPlugin({
         filename: isProd ? "[name].[contenthash].css" : "[name].css",
         chunkFilename: isProd ? "[id].[contenthash].css" : "[id].css",
         ignoreOrder: true,
-      })
-    );
+      }),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: path.resolve(
+              __dirname,
+              "..",
+              "..",
+              "common-resources",
+              "assets"
+            ),
+            to: "./static",
+            toType: "dir",
+          },
+        ],
+      }),
+    ]);
+
     return {
       ...config,
       plugins: [...config.plugins],
@@ -128,6 +144,9 @@ module.exports = {
           "@emotion/core": toPath("node_modules/@emotion/react"),
           "emotion-theming": toPath("node_modules/@emotion/react"),
           "@emotion/styled": toPath("node_modules/@emotion/styled"),
+          "@material-ui/core/Menu": "@mui/material/Menu",
+          "@material-ui/core": "@mui/material",
+          "@material-ui/core/Popover": "@mui/material/Popover",
         },
       },
     };
