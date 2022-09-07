@@ -938,7 +938,7 @@ export default {
   labelMintNext: "Next",
   labelMintCollectionInput: "Please input contract address",
   labelMintCid: "Please input IPFS CID",
-  labelMintBack: "Preview",
+  labelMintBack: "Back",
   labelTokenAdMintBtn: "Enter Amount",
   labelMintSubmitBtn: "Create Your NFT",
   labelMintIPFSCIDDes: "Fill in the IPFS CID for NFT metadata",
@@ -973,7 +973,8 @@ export default {
     "Please fill in the appropriate collection metadata field value in your NFT metadata with this string first, then upload it to IPFS to retrieve the CID to continue. <1>view more </1>",
   labelChooseCollectionTooltips:
     "This is the collection where your NFT will appear.NFT minted under collection will be bound with different contract address than previous created one. If you have incomplete work to finish and would like them created under previous contract address, you can still use the legacy created method under <1>https://legacy-nft.loopring.io/</1>",
-  labelMintPreview: "Preview",
+  labelMintPreview: "Back",
+  labelMintNoCollectionBtn: "Please Choose Collection",
   labelInvestDualTitle: "Dual Investment",
   labelBuy: "Buy",
   labelSell: "Sell",
