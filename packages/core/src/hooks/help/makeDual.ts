@@ -1,6 +1,6 @@
 import { store } from "../../stores";
-import { getExistedMarket, toBig } from "@loopring-web/loopring-sdk";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE, getExistedMarket, toBig } from "@loopring-web/loopring-sdk";
 import {
   DualViewInfo,
   getValuePrecisionThousand,
@@ -42,13 +42,16 @@ export const makeDualViewItem = (
   }
   // balance: sdk.DualBalance
 ): DualViewInfo => {
-  const { expireTime, createTime, strike, ratio } = info;
-
+  const { expireTime, strike, ratio, base, quote, dualType } = info;
+  const [sellSymbol, buySymbol] =
+    dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
+      ? [base, quote]
+      : [quote, base];
   const { baseProfitStep } = rule;
   const settleRatio = toBig(strike).times(ratio);
   const _baseProfitStep = Number(baseProfitStep);
   const apy = settleRatio.div((expireTime - Date.now()) / 86400000).times(365); //
-  const term = moment().from(new Date(createTime), true);
+  const term = moment().to(new Date(expireTime), true);
 
   // const currentPrice tickerMap[market];
   myLog("dual", {
@@ -66,6 +69,8 @@ export const makeDualViewItem = (
     productId: info.productId,
     expireTime,
     currentPrice,
+    sellSymbol,
+    buySymbol,
     // __raw__: {
     //   info,
     //   index,
@@ -91,6 +96,8 @@ export const makeDualViewItem = (
     productId: info.productId,
     expireTime,
     currentPrice,
+    sellSymbol,
+    buySymbol,
     __raw__: {
       info,
       index,

@@ -11,13 +11,35 @@ import {
 import { DualWrapProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import { InputCoin } from "../../../basic-lib";
 import { ButtonStyle, IconButtonStyled } from "../Styled";
 import { TradeBtnStatus } from "../../Interface";
 import { CountDownIcon } from "../tool/Refresh";
 import { useHistory } from "react-router-dom";
 import { useSettings } from "../../../../stores";
+import styled from "@emotion/styled";
+
+const BoxChartStyle = styled(Box)`
+  height: 1px;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  position: absolute;
+  background-color: var(--color-primary);
+
+  &:before {
+    content: "";
+    display: block;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    bottom: -7px;
+    left: calc(50% - 7px);
+    position: absolute;
+  }
+`;
 
 export const DualWrap = <
   T extends IBData<I>,
@@ -105,163 +127,210 @@ export const DualWrap = <
 
   return (
     <Grid
-      className={dualCalcData ? "" : "loading"}
+      className={dualCalcData.dualViewInfo ? "" : "loading"}
       container
-      direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}
       flex={1}
       height={"100%"}
     >
-      <Grid
-        item
-        xs={12}
-        md={6}
-        order={isMobile ? 1 : 0}
-        flexDirection={"column"}
-        alignItems={"stretch"}
-        justifyContent={"space-between"}
-      >
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"stretch"}
-          justifyContent={"space-between"}
-        >
-          <Typography
-            variant={"body1"}
-            display={"inline-flexl"}
+      {dualCalcData.dualViewInfo && (
+        <>
+          <Grid
+            item
+            xs={12}
+            md={6}
+            order={isMobile ? 1 : 0}
+            flexDirection={"column"}
+            alignItems={"stretch"}
             justifyContent={"space-between"}
           >
-            <Typography
-              component={"span"}
-              variant={"inherit"}
-              color={"textSecondary"}
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"stretch"}
+              justifyContent={"space-between"}
+              paddingX={2}
             >
-              {t("labelDualSubDate")}
-              {/*labelDualSubDate:Subscription Date*/}
-            </Typography>
-            <Typography
-              component={"span"}
-              variant={"inherit"}
-              color={"textSecondary"}
-            >
-              {moment().format(YEAR_DAY_MINUTE_FORMAT)}
-            </Typography>
-          </Typography>
-          <Typography
-            variant={"body1"}
-            display={"inline-flexl"}
-            justifyContent={"space-between"}
-          >
-            <Typography
-              component={"span"}
-              variant={"inherit"}
-              color={"textSecondary"}
-            >
-              {t("labelDualSettlDate")}
-              {/*labelDualSettlDate:Settlement Date*/}
-            </Typography>
-            <Typography
-              component={"span"}
-              variant={"inherit"}
-              color={"textSecondary"}
-            >
-              {moment(new Date(dualCalcData.dualViewInfo.expireTime)).format(
-                YEAR_DAY_MINUTE_FORMAT
-              )}
-            </Typography>
-          </Typography>
-        </Box>
-        <Box></Box>
-      </Grid>
-      2022-06-16 15:56 2022-06-17 16:00 Current BTC Price 22,000.87 APR 175.87%
-      Target Price 19,500
-      <Grid item xs={12} md={6}></Grid>
-      <Grid
-        item
-        display={"flex"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        flexDirection={"row"}
-        width={"100%"}
-        className={"MuiToolbar-root"}
-      >
-        <Typography
-          height={"100%"}
-          display={"inline-flex"}
-          variant={"h5"}
-          alignItems={"center"}
-          alignSelf={"self-start"}
-        >
-          {t("labelInvestdualTitle")}
-        </Typography>
-        <Box alignSelf={"flex-end"} display={"flex"}>
-          <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
-          <Typography display={"inline-block"} marginLeft={2}>
-            <IconButtonStyled
-              onClick={() => {
-                history.push(`/l2assets/history/dualRecords`);
-              }}
-              sx={{ backgroundColor: "var(--field-opacity)" }}
-              className={"switch outlined"}
-              aria-label="to Transaction"
-              size={"large"}
-            >
-              <OrderListIcon color={"primary"} fontSize={"large"} />
-            </IconButtonStyled>
-          </Typography>
-        </Box>
-      </Grid>
-      <Grid
-        item
-        marginTop={3}
-        flexDirection={"column"}
-        display={"flex"}
-        alignSelf={"stretch"}
-        alignItems={"stretch"}
-      >
-        <InputCoin<any, I, any>
-          ref={coinSellRef}
-          disabled={getDisabled}
-          {...{
-            ...propsSell,
-            name: "coinSell",
-            isHideError: true,
-            order: "right",
-            inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
-            coinMap: {},
-            coinPrecision: tokenSell.precision,
-          }}
-        />
-      </Grid>
-      <Grid item alignSelf={"stretch"}>
-        <Grid container direction={"column"} spacing={1} alignItems={"stretch"}>
-          <Grid item>
-            <ButtonStyle
-              fullWidth
-              variant={"contained"}
-              size={"medium"}
-              color={"primary"}
-              onClick={() => {
-                onSubmitClick();
-              }}
-              loading={
-                !getDisabled && btnStatus === TradeBtnStatus.LOADING
-                  ? "true"
-                  : "false"
-              }
-              disabled={
-                getDisabled ||
-                btnStatus === TradeBtnStatus.LOADING ||
-                btnStatus === TradeBtnStatus.DISABLED
-              }
-            >
-              {label}
-            </ButtonStyle>
+              <Typography
+                variant={"body1"}
+                display={"inline-flex"}
+                justifyContent={"space-between"}
+                paddingBottom={1}
+              >
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textSecondary"}
+                >
+                  {t("labelDualSubDate")}
+                </Typography>
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textPrimary"}
+                >
+                  {moment().format(YEAR_DAY_MINUTE_FORMAT)}
+                </Typography>
+              </Typography>
+              <Typography
+                variant={"body1"}
+                display={"inline-flex"}
+                justifyContent={"space-between"}
+                paddingBottom={1}
+              >
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textSecondary"}
+                >
+                  {t("labelDualSettleDate")}
+                </Typography>
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textPrimary"}
+                >
+                  {moment(
+                    new Date(dualCalcData.dualViewInfo.expireTime)
+                  ).format(YEAR_DAY_MINUTE_FORMAT)}
+                </Typography>
+              </Typography>
+              <Typography
+                variant={"body1"}
+                display={"inline-flex"}
+                justifyContent={"space-between"}
+                paddingBottom={1}
+              >
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textSecondary"}
+                >
+                  {t("labelDualCurrentPrice2", {
+                    symbol: dualCalcData.dualViewInfo?.currentPrice.symbol,
+                  })}
+                </Typography>
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textPrimary"}
+                >
+                  {dualCalcData.dualViewInfo?.currentPrice.currentPrice}
+                </Typography>
+              </Typography>
+
+              <Typography
+                variant={"body1"}
+                display={"inline-flex"}
+                justifyContent={"space-between"}
+                paddingBottom={1}
+              >
+                <Tooltip title={t("labelDualCurrentAPRDes").toString()}>
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"textSecondary"}
+                  >
+                    {t("labelDualCurrentAPR")}
+                  </Typography>
+                </Tooltip>
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textPrimary"}
+                >
+                  {dualCalcData.dualViewInfo?.apy}
+                </Typography>
+              </Typography>
+
+              <Typography
+                variant={"body1"}
+                display={"inline-flex"}
+                justifyContent={"space-between"}
+                paddingBottom={1}
+              >
+                <Tooltip title={t("labelDualTargetPriceDes").toString()}>
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"textSecondary"}
+                  >
+                    {t("labelDualTargetPrice2")}
+                  </Typography>
+                </Tooltip>
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textPrimary"}
+                >
+                  {dualCalcData.dualViewInfo?.strike}
+                </Typography>
+              </Typography>
+            </Box>
+            <Box paddingX={2}>
+              <Box height={96} width={"100%"} position={"relative"}>
+                <BoxChartStyle />
+              </Box>
+            </Box>
           </Grid>
-        </Grid>
-      </Grid>
+
+          <Grid item xs={12} md={6} display={"flex"}>
+            <Box paddingX={2} flex={1}>
+              <Box alignSelf={"flex-end"} display={"flex"}>
+                <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
+                <Typography display={"inline-block"} marginLeft={2}>
+                  <IconButtonStyled
+                    onClick={() => {
+                      history.push(`/l2assets/history/dualRecords`);
+                    }}
+                    sx={{ backgroundColor: "var(--field-opacity)" }}
+                    className={"switch outlined"}
+                    aria-label="to Transaction"
+                    size={"large"}
+                  >
+                    <OrderListIcon color={"primary"} fontSize={"large"} />
+                  </IconButtonStyled>
+                </Typography>
+              </Box>
+              <InputCoin<any, I, any>
+                ref={coinSellRef}
+                disabled={getDisabled}
+                {...{
+                  ...propsSell,
+                  name: "coinSell",
+                  isHideError: true,
+                  order: "right",
+                  inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
+                  coinMap: {},
+                  coinPrecision: tokenSell.precision,
+                }}
+              />
+              <ButtonStyle
+                fullWidth
+                variant={"contained"}
+                size={"medium"}
+                color={"primary"}
+                onClick={() => {
+                  onSubmitClick();
+                }}
+                loading={
+                  !getDisabled && btnStatus === TradeBtnStatus.LOADING
+                    ? "true"
+                    : "false"
+                }
+                disabled={
+                  getDisabled ||
+                  btnStatus === TradeBtnStatus.LOADING ||
+                  btnStatus === TradeBtnStatus.DISABLED
+                }
+              >
+                {label}
+              </ButtonStyle>
+            </Box>
+          </Grid>
+        </>
+      )}
     </Grid>
   );
 };

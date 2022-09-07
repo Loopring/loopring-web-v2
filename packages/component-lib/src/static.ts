@@ -4,6 +4,8 @@ import {
   AmmInData,
   CoinInfo,
   CoinMap,
+  DualCalcData,
+  DualViewInfo,
   HeaderMenuItemInterface,
   TradeCalcData,
   WalletCoin,
@@ -11,6 +13,7 @@ import {
 } from "@loopring-web/common-resources";
 import { List } from "immutable";
 import { ConnectProviders } from "@loopring-web/web3-provider";
+import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 export const account: Account = {
   __timer__: -1,
   frozen: false,
@@ -494,8 +497,7 @@ export const TOKEN_INFO = {
 };
 
 export type CoinType = typeof coinType;
-
-export const DUALCALCDATA = {
+export const DUALVIEWINFO: DualViewInfo = {
   apy: "57.49%",
   settleRatio: "0.1656",
   term: "a day",
@@ -515,7 +517,7 @@ export const DUALCALCDATA = {
       expireTime: 1662537600000,
       strike: "0.36",
       expired: false,
-      dualType: "DUAL_CURRENCY",
+      dualType: "DUAL_CURRENCY" as DUAL_TYPE,
       ratio: 0.46,
       dualPrice: {
         productId: "LRC-USDT-220907-0.36-P-USDT",
@@ -546,7 +548,27 @@ export const DUALCALCDATA = {
       baseMax: "200000",
       currencyMax: "200000",
       granulation: 10,
-      baseProfitStep: "4",
+      baseProfitStep: 4,
     },
   },
+  strike: "0.36",
+  isUp: false,
+  sellSymbol: "USDC",
+  buySymbol: "LRC",
+};
+export const DUALCALCDATA: DualCalcData<DualViewInfo> = {
+  balance: {},
+  coinSell: coinMap["USDC"] as any,
+  feeTokenSymbol: "LRC",
+  feeVol: undefined,
+  greaterEarnTokenSymbol: "",
+  greaterEarnVol: "",
+  lessEarnTokenSymbol: "",
+  lessEarnVol: "",
+  maxFeeBips: 0,
+  maxSellVol: "",
+  miniSellVol: "",
+  sellToken: undefined,
+  sellVol: "",
+  dualViewInfo: DUALVIEWINFO,
 };

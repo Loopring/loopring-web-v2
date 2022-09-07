@@ -993,4 +993,13 @@ export default {
   labelDualMin: "Minimum of {{arg}}",
   labelDualMax: "Maximum of {{arg}}",
   labelDualNoEnough: "Not enough {{arg}}",
+  labelDualSettleDate: "Settlement Date",
+  labelDualSubDate: "Subscription Date",
+  labelDualCurrentPrice2: "Current {{symbol}} Price",
+  labelDualCurrentAPR: "APR",
+  labelDualCurrentAPRDes:
+    "APR is refreshed in real time. We will use the lastest APR at the time you complete the subscription successfully.",
+  labelDualTargetPrice2: "Target Price",
+  labelDualTargetPriceDes:
+    "Target Price is a benchmark price. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
 };

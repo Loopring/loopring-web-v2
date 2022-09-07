@@ -40,7 +40,7 @@ import {
   WithdrawProps,
 } from "./index";
 
-import { DepositGroup, TransferPanel, WithdrawPanel } from "../modal";
+import { DepositPanel, TransferPanel, WithdrawPanel } from "../modal";
 
 import { useDispatch } from "react-redux";
 import {
@@ -301,10 +301,10 @@ const WrapDepositPanel = (rest: any) => {
   return (
     <>
       <Grid item sm={6}>
-        <DepositGroup {...{ ...rest, ...depositProps, ...{ v: true } }} />
+        <DepositPanel {...{ ...rest, ...depositProps }} />
       </Grid>
       <Grid item sm={6}>
-        <DepositGroup
+        <DepositPanel
           {...{
             ...rest,
             ...depositProps,
@@ -343,6 +343,7 @@ const WrapSwapPanel = (rest: any) => {
   let swapProps: SwapProps<IBData<string>, string, any> = {
     refreshRef: React.createRef(),
     tradeData: tradeData,
+    isStob: true,
     tradeCalcData,
     onSwapClick: (tradeData) => {
       console.log("Swap button click", tradeData);
@@ -365,9 +366,6 @@ const WrapSwapPanel = (rest: any) => {
       <Grid item sm={6}>
         <SwapPanel {...swapProps} {...rest} />
       </Grid>
-      <Grid item sm={6}>
-        <SwapPanel {...rest}> </SwapPanel>
-      </Grid>
     </>
   );
 };
@@ -389,9 +387,9 @@ const WrapDualPanel = (rest: any) => {
   };
   return (
     <>
-      <Grid item sm={6}>
+      <Box width={"80%"} background={"var(--color-box)"}>
         <DualWrap {...dualWrapProps} {...rest} />
-      </Grid>
+      </Box>
     </>
   );
 };
@@ -462,31 +460,25 @@ const WrapAmmPanel = (rest: any) => {
 
 const ModalPanelWrap = () => {
   return (
-    <ModalPanel
-      // depositGroupProps={{
-      //   depositProps,
-      //   vendorMenuProps: {
-      //     vendorList: [],
-      //     vendorForce: undefined,
-      //   },
-      // }}
-      depositProps={depositProps as DepositProps<any, any>}
-      transferProps={transferProps as TransferProps<any, any>}
-      withdrawProps={withdrawProps as WithdrawProps<any, any>}
-      nftTransferProps={transferProps as TransferProps<any, any>}
-      nftWithdrawProps={withdrawProps as WithdrawProps<any, any>}
-      resetProps={resetProps}
-      assetsData={{} as any}
-      exportAccountProps={{} as any}
-      setExportAccountToastOpen={{} as any}
-      activeAccountProps={{} as any}
-      // nftMintAdvanceProps={{} as any}
-      nftDeployProps={{} as any}
-      account={{} as any}
-      baseURL={""}
-      collectionAdvanceProps={{} as any}
-      dualTradeProps={{} as any}
-    />
+    <></>
+    // <ModalPanel
+    //   depositProps={depositProps as DepositProps<any, any>}
+    //   transferProps={transferProps as TransferProps<any, any>}
+    //   withdrawProps={withdrawProps as WithdrawProps<any, any>}
+    //   nftTransferProps={transferProps as TransferProps<any, any>}
+    //   nftWithdrawProps={withdrawProps as WithdrawProps<any, any>}
+    //   resetProps={resetProps}
+    //   assetsData={{} as any}
+    //   exportAccountProps={{} as any}
+    //   setExportAccountToastOpen={{} as any}
+    //   activeAccountProps={{} as any}
+    //   // nftMintAdvanceProps={{} as any}
+    //   nftDeployProps={{} as any}
+    //   account={{} as any}
+    //   baseURL={""}
+    //   collectionAdvanceProps={{} as any}
+    //   dualTradeProps={{} as any}
+    // />
   );
 };
 

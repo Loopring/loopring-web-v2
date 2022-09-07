@@ -448,6 +448,8 @@ export type DualViewInfo = {
     currentPrice: number;
   };
   productId: string;
+  sellSymbol: string;
+  buySymbol: string;
   __raw__: {
     info: sdk.DualProductAndPrice;
     index: sdk.DualIndex;

@@ -21,6 +21,7 @@ import {
   Deposit_Submit,
   Deposit_WaitForAuth,
   DepositProps,
+  DualWrap,
   ExportAccount_Approve_WaitForAuth,
   ExportAccount_Failed,
   ExportAccount_Success,
@@ -222,12 +223,6 @@ export function useAccountModalForUI({
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
-  const {
-    dualToastOpen,
-    // setDualTostOpen,
-    closeDualToast,
-    dualTradeProps,
-  } = useDualTrade();
 
   // const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount();
@@ -2278,7 +2273,6 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     transferProps,
     withdrawProps,
-    dualTradeProps,
     depositProps,
     resetProps,
     collectionAdvanceProps,
@@ -2301,7 +2295,6 @@ export function useAccountModalForUI({
     onBackSend,
     collectionToastOpen,
     collectionToastClose,
-    dualToastOpen,
-    closeDualToast,
+    // dualToastOpen,
   };
 }
