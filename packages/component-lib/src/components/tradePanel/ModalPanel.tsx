@@ -421,7 +421,7 @@ export const ModalPanel = <
       {/*  }*/}
       {/*/>*/}
       <Modal
-        open={isShowCollectionAdvance.isShow}
+        open={isShowCollectionAdvance?.isShow}
         onClose={() => setShowCollectionAdvance({ isShow: false })}
         content={
           <CollectionAdvanceWrap

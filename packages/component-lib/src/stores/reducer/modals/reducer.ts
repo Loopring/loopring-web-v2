@@ -27,7 +27,6 @@ const initialState: ModalState = {
   isShowNFTDeposit: { isShow: false },
   isShowNFTMintAdvance: { isShow: false },
   isShowCollectionAdvance: { isShow: false },
-
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
 };
