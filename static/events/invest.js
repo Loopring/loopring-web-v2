@@ -6,7 +6,7 @@ exports.investJson = {
     {
       type: "AMM",
       router: "/invest/ammpool",
-      banner: "https://static.loopring.io/assets/images/icon-amm.png",
+      banner: "https://static.loopring.io/assets/images/icon-amm.svg",
       titleI18n: "labelInvestAmm",
       desI18n: "labelInvestAmmDes",
       enable: true,
