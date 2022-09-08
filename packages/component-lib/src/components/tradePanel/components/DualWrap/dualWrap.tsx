@@ -232,6 +232,22 @@ export const DualWrap = <
         : EmptyValueTag,
     [dualCalcData.dualViewInfo?.strike, priceSymbol, tokenMap]
   );
+  const sellMaxVal = React.useMemo(
+    () =>
+      dualCalcData.maxSellVol && dualCalcData.sellToken
+        ? getValuePrecisionThousand(
+            sdk
+              .toBig(dualCalcData.maxSellVol)
+              .div("1e" + dualCalcData.sellToken.decimals),
+            dualCalcData.sellToken.precision,
+            dualCalcData.sellToken.precision,
+            dualCalcData.sellToken.precision,
+            false,
+            { floor: false, isAbbreviate: true }
+          )
+        : EmptyValueTag,
+    []
+  );
 
   const currentView = React.useMemo(
     () =>
@@ -520,14 +536,14 @@ export const DualWrap = <
                   variant={"inherit"}
                   color={"textSecondary"}
                 >
-                  {t("labelDualSubDate")}
+                  {t("labelDualQuota")}
                 </Typography>
                 <Typography
                   component={"span"}
                   variant={"inherit"}
                   color={"textPrimary"}
                 >
-                  {moment().format(YEAR_DAY_MINUTE_FORMAT)}
+                  {sellMaxVal + " " + dualCalcData.sellToken?.symbol}
                 </Typography>
               </Typography>
             </Box>

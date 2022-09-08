@@ -1010,4 +1010,5 @@ export default {
   labelDualReceive: "Settlement Calculator",
   labelDualCalcLabel: "If {{symbol}} {{tag}} {{target}}",
   labelDualReturnValue: "Return {{value}} {{symbol}}",
+  labelDualQuota: "Total Quota",
 };
