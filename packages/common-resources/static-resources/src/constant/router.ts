@@ -121,6 +121,14 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
     },
     router: { path: "/trade/pro/${pair}" },
   },
+  // {
+  //   label: {
+  //     id: "fiat",
+  //     i18nKey: "labelFiat",
+  //     description: "labelFiatDescription",
+  //   },
+  //   router: { path: "/trade/fiat" },
+  // },
 ];
 
 export const orderDisableList = ["Liquidity", "Markets", "Trading", "Mining"];
@@ -211,6 +219,15 @@ export const subMenuInvest = [
       description: "labelInvestDefiDes",
     },
   },
+  // {
+  //   icon: L2MyLiquidityIcon,
+  //   router: { path: "/invest/dual" },
+  //   label: {
+  //     id: "dual",
+  //     i18nKey: "labelInvestDual",
+  //     description: "labelInvestDualDes",
+  //   },
+  // },
 ];
 
 export const subMenuNFT = {
@@ -416,7 +433,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
 export const ammAdvice: InvestAdvice = {
   type: InvestMapType.AMM,
   router: "/invest/ammpool",
-  banner: SoursURL + "images/icon-amm.png",
+  banner: SoursURL + "images/icon-amm.svg",
   titleI18n: "labelInvestAmm",
   desI18n: "labelInvestAmmDes",
   notification: "",
@@ -426,8 +443,17 @@ export const defiAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
   router: "/invest/defi",
   notification: "",
-  banner: SoursURL + "images/icon-lido.png",
+  banner: SoursURL + "images/icon-lido.svg",
   titleI18n: "labelInvestDefi",
   desI18n: "labelInvestDefiDes",
+  enable: true,
+};
+export const dualAdvice: InvestAdvice = {
+  type: InvestMapType.DUAL,
+  router: "/invest/dual",
+  notification: "",
+  banner: "https://static.loopring.io/assets/images/icon-lido.svg",
+  titleI18n: "labelInvestDual",
+  desI18n: "labelInvestDualDes",
   enable: true,
 };
