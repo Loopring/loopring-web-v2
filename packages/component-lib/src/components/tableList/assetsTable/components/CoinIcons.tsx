@@ -1,6 +1,12 @@
 import React from "react";
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box, styled } from "@mui/material";
 import { AvatarCoinStyled, SoursURL } from "@loopring-web/common-resources";
+
+const BoxStyle = styled(Box)`
+  .logo-icon.dual:last-child {
+    transform: scale(0.6) translate(6px, 6px);
+  }
+`;
 
 export const CoinIcons = React.memo(
   ({
@@ -14,7 +20,7 @@ export const CoinIcons = React.memo(
   }) => {
     const [coinAInfo, coinBInfo] = tokenIcon;
     return (
-      <>
+      <BoxStyle display={"flex"} justifyContent={"center"}>
         <Box
           className={`logo-icon ${type}`}
           display={"flex"}
@@ -96,7 +102,7 @@ export const CoinIcons = React.memo(
         ) : (
           <></>
         )}
-      </>
+      </BoxStyle>
     );
   }
 );

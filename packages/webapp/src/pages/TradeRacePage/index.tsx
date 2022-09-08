@@ -12,14 +12,13 @@ import {
   Typography,
 } from "@mui/material";
 import styled from "@emotion/styled";
-import { ScrollTop } from "@loopring-web/component-lib";
+import { ScrollTop, LoadingBlock } from "@loopring-web/component-lib";
 import { EVENT_STATUS, useTradeRace } from "./hook";
 import {
   EmptyValueTag,
   GoTopIcon,
   MarkdownStyle,
   YEAR_DAY_SECOND_FORMAT,
-  LoadingBlock,
 } from "@loopring-web/common-resources";
 
 import { RankRaw } from "./rank";

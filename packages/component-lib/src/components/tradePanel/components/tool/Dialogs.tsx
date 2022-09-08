@@ -31,13 +31,13 @@ import {
   TradeDefi,
   Lang,
   MarkdownStyle,
-  LoadingBlock,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 import { useTheme } from "@emotion/react";
+import { LoadingBlock } from "../../../block";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {

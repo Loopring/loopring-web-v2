@@ -3,7 +3,6 @@ import {
   boxLiner,
   CoinIcons,
   DualWrap,
-  ModalBackButton,
   ModalCloseButton,
   SwitchPanelStyled,
   Toast,
@@ -15,8 +14,6 @@ import { TOAST_TIME } from "@loopring-web/common-resources";
 import { Box, Modal as MuiModal, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { useDualTrade } from "../../index";
-
-import { useTheme } from "@emotion/react";
 
 // background: var(--color-box);
 // border-radius: ${({ theme }) => theme.unit}px;
@@ -56,11 +53,10 @@ const BoxLinear = styled(SwitchPanelStyled)`
 export const ModalDualPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const {
-      modals: {
-        isShowDual: { isShow, dualInfo },
-      },
-      setShowAmm,
+      modals: { isShowDual },
+      setShowDual,
     } = useOpenModals();
+    const { isShow, dualInfo } = isShowDual ?? {};
     const {
       dualToastOpen,
       // setDualTostOpen,
@@ -75,7 +71,7 @@ export const ModalDualPanel = withTranslation("common")(
         // open={true}
         open={isShow}
         onClose={() => {
-          setShowAmm({ isShow: false });
+          setShowDual({ isShow: false, dualInfo: undefined });
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -133,7 +129,7 @@ export const ModalDualPanel = withTranslation("common")(
             </Box>
             <ModalCloseButton
               onClose={() => {
-                setShowAmm({ isShow: false });
+                setShowDual({ isShow: false, dualInfo: undefined });
               }}
               t={t}
               {...rest}

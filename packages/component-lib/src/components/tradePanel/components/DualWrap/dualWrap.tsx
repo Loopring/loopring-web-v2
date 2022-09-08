@@ -6,23 +6,21 @@ import {
   DualViewInfo,
   IBData,
   myLog,
-  OrderListIcon,
   UpColor,
   getValuePrecisionThousand,
-  AvatarCoinStyled,
-  SoursURL,
+  EmptyValueTag,
 } from "@loopring-web/common-resources";
 import { DualWrapProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 
-import { Avatar, Box, Divider, Grid, Tooltip, Typography } from "@mui/material";
-import { useHistory } from "react-router-dom";
+import { Box, Divider, Grid, Tooltip, Typography } from "@mui/material";
 import { useSettings } from "../../../../stores";
 import styled from "@emotion/styled";
 import { CountDownIcon } from "../tool/Refresh";
-import { IconButtonStyled, ButtonStyle } from "../Styled";
-import { InputCoin } from "components/basic-lib";
+import { ButtonStyle } from "../Styled";
+import { InputCoin } from "../../../basic-lib";
 import { TradeBtnStatus } from "../../Interface";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const BoxChartStyle = styled(Box)(({ theme }: any) => {
   const fillColor: string = theme.colorBase.textThird;
@@ -124,9 +122,11 @@ export const DualWrap = <
 }: DualWrapProps<T, I, DUAL>) => {
   const coinSellRef = React.useRef();
   const { t } = useTranslation();
-  const history = useHistory();
+  // const history = useHistory();
   const { isMobile, upColor } = useSettings();
-  const priceSymbol = dualCalcData?.dualViewInfo?.currentPrice?.symbol;
+  const priceSymbol = dualCalcData?.dualViewInfo?.currentPrice?.quote;
+  const priceBase = dualCalcData?.dualViewInfo?.currentPrice?.base;
+
   const getDisabled = React.useMemo(() => {
     return disabled || dualCalcData === undefined;
   }, [btnStatus, dualCalcData, disabled]);
@@ -172,6 +172,35 @@ export const DualWrap = <
       return t(`labelInvestBtn`);
     }
   }, [t, btnInfo]);
+  const targetView = React.useMemo(
+    () =>
+      priceSymbol
+        ? getValuePrecisionThousand(
+            dualCalcData.dualViewInfo?.strike,
+            tokenMap[priceSymbol].precision,
+            tokenMap[priceSymbol].precision,
+            tokenMap[priceSymbol].precision,
+            false,
+            { floor: true }
+          )
+        : EmptyValueTag,
+    [dualCalcData.dualViewInfo?.strike, priceSymbol, tokenMap]
+  );
+
+  const currentView = React.useMemo(
+    () =>
+      priceSymbol
+        ? getValuePrecisionThousand(
+            dualCalcData.dualViewInfo.currentPrice.currentPrice,
+            tokenMap[priceSymbol].precision,
+            tokenMap[priceSymbol].precision,
+            tokenMap[priceSymbol].precision,
+            false,
+            { floor: true }
+          )
+        : EmptyValueTag,
+    [dualCalcData.dualViewInfo.currentPrice.currentPrice, priceSymbol, tokenMap]
+  );
 
   // const maxValue =
   //   tokenBuy.symbol &&
@@ -268,7 +297,7 @@ export const DualWrap = <
                   color={"textSecondary"}
                 >
                   {t("labelDualCurrentPrice2", {
-                    symbol: priceSymbol,
+                    symbol: priceBase,
                   })}
                 </Typography>
                 <Typography
@@ -276,7 +305,7 @@ export const DualWrap = <
                   variant={"inherit"}
                   color={"textPrimary"}
                 >
-                  {dualCalcData.dualViewInfo?.currentPrice.currentPrice}
+                  {currentView}
                 </Typography>
               </Typography>
 
@@ -328,7 +357,7 @@ export const DualWrap = <
                   variant={"inherit"}
                   color={"textPrimary"}
                 >
-                  {dualCalcData.dualViewInfo?.strike}
+                  {targetView}
                 </Typography>
               </Typography>
             </Box>
@@ -337,21 +366,12 @@ export const DualWrap = <
                 <Box className={"backView"} />
                 <Box className={"point1 point"}>
                   <Typography>{t("labelDualTargetPrice2")}</Typography>
-                  <Typography>
-                    {getValuePrecisionThousand(
-                      dualCalcData.dualViewInfo?.strike,
-                      tokenMap[priceSymbol].precision,
-                      tokenMap[priceSymbol].precision,
-                      tokenMap[priceSymbol].precision,
-                      false,
-                      { floor: true }
-                    )}
-                  </Typography>
+                  <Typography>{targetView}</Typography>
                 </Box>
                 <Box className={"point2 point"}>
                   <Typography>
                     {t("labelDualCurrentPrice2", {
-                      symbol: priceSymbol,
+                      symbol: priceBase,
                     })}
                   </Typography>
                   <Typography
@@ -361,14 +381,7 @@ export const DualWrap = <
                         : "var(--color-success)"
                     }
                   >
-                    {getValuePrecisionThousand(
-                      dualCalcData.dualViewInfo.currentPrice.currentPrice,
-                      tokenMap[priceSymbol].precision,
-                      tokenMap[priceSymbol].precision,
-                      tokenMap[priceSymbol].precision,
-                      false,
-                      { floor: true }
-                    )}
+                    {currentView}
                   </Typography>
                 </Box>
                 <Box className={"returnV1"}>
@@ -416,7 +429,7 @@ export const DualWrap = <
               justifyContent={"space-between"}
               flexDirection={"column"}
             >
-              <Box alignSelf={"flex-end"}>
+              <Box alignSelf={"flex-end"} sx={{ display: "none" }}>
                 <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
               </Box>
               <InputCoin<any, I, any>
@@ -466,9 +479,10 @@ export const DualWrap = <
                 flexDirection={"column"}
               >
                 <Typography
-                  variant={"body1"}
+                  variant={"subtitle2"}
                   color={"textSecondary"}
                   alignSelf={"flex-start"}
+                  marginBottom={1}
                 >
                   {t("labelDualReceive")}
                 </Typography>
@@ -478,20 +492,48 @@ export const DualWrap = <
                   display={"inline-flex"}
                   justifyContent={"space-between"}
                   paddingBottom={1}
+                  marginTop={1}
                 >
                   <Typography
                     component={"span"}
                     variant={"inherit"}
                     color={"textSecondary"}
                   >
-                    {t("labelDualSubDate")}
+                    {t("labelDualCalcLabel", {
+                      symbol: priceSymbol,
+                      tag: "<",
+                      target: targetView,
+                    })}
                   </Typography>
                   <Typography
                     component={"span"}
                     variant={"inherit"}
                     color={"textPrimary"}
                   >
-                    {moment().format(YEAR_DAY_MINUTE_FORMAT)}
+                    {t("labelDualReturnValue", {
+                      symbol: dualCalcData.lessEarnTokenSymbol,
+                      value:
+                        dualCalcData.lessEarnVol &&
+                        tokenMap[dualCalcData.lessEarnTokenSymbol]
+                          ? getValuePrecisionThousand(
+                              sdk
+                                .toBig(dualCalcData.lessEarnVol)
+                                .div(
+                                  "1e" +
+                                    tokenMap[dualCalcData.lessEarnTokenSymbol]
+                                      .decimals
+                                ),
+                              tokenMap[dualCalcData.lessEarnTokenSymbol]
+                                .precision,
+                              tokenMap[dualCalcData.lessEarnTokenSymbol]
+                                .precision,
+                              tokenMap[dualCalcData.lessEarnTokenSymbol]
+                                .precision,
+                              false,
+                              { floor: true }
+                            )
+                          : EmptyValueTag,
+                    })}
                   </Typography>
                 </Typography>
                 <Typography
@@ -505,14 +547,42 @@ export const DualWrap = <
                     variant={"inherit"}
                     color={"textSecondary"}
                   >
-                    {t("labelDualSubDate")}
+                    {t("labelDualCalcLabel", {
+                      symbol: priceSymbol,
+                      tag: ">",
+                      target: targetView,
+                    })}
                   </Typography>
                   <Typography
                     component={"span"}
                     variant={"inherit"}
                     color={"textPrimary"}
                   >
-                    {moment().format(YEAR_DAY_MINUTE_FORMAT)}
+                    {t("labelDualReturnValue", {
+                      symbol: dualCalcData.greaterEarnTokenSymbol,
+                      value:
+                        dualCalcData.greaterEarnVol &&
+                        tokenMap[dualCalcData.greaterEarnTokenSymbol]
+                          ? getValuePrecisionThousand(
+                              sdk
+                                .toBig(dualCalcData.greaterEarnVol)
+                                .div(
+                                  "1e" +
+                                    tokenMap[
+                                      dualCalcData.greaterEarnTokenSymbol
+                                    ].decimals
+                                ),
+                              tokenMap[dualCalcData.greaterEarnTokenSymbol]
+                                .precision,
+                              tokenMap[dualCalcData.greaterEarnTokenSymbol]
+                                .precision,
+                              tokenMap[dualCalcData.greaterEarnTokenSymbol]
+                                .precision,
+                              false,
+                              { floor: true }
+                            )
+                          : EmptyValueTag,
+                    })}
                   </Typography>
                 </Typography>
               </Box>
@@ -543,4 +613,4 @@ export const DualWrap = <
       )}
     </Grid>
   );
-};
+};;

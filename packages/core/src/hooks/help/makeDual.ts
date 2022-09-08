@@ -2,6 +2,7 @@ import { store } from "../../stores";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE, getExistedMarket, toBig } from "@loopring-web/loopring-sdk";
 import {
+  DualCurrentPrice,
   DualViewInfo,
   getValuePrecisionThousand,
   myLog,
@@ -12,10 +13,7 @@ export const dualCurrentPrice = (
   // pairASymbol: string,
   // pairBSymbol: string,
   dualMarket: `${string}-${string}-${string}`
-): {
-  symbol: string;
-  currentPrice: number;
-} => {
+): DualCurrentPrice => {
   const { tokenPrices } = store.getState().tokenPrices;
   const { tickerMap } = store.getState().tickerMap;
   const { marketArray } = store.getState().tokenMap;
@@ -29,17 +27,15 @@ export const dualCurrentPrice = (
     tokenPrices[quote];
   return {
     currentPrice,
-    symbol: baseDual,
+    quote: quoteDual,
+    base: baseDual,
   };
 };
 export const makeDualViewItem = (
   info: sdk.DualProductAndPrice,
   index: sdk.DualIndex,
   rule: sdk.DualRulesCoinsInfo,
-  currentPrice: {
-    symbol: string;
-    currentPrice: number;
-  }
+  currentPrice: DualCurrentPrice
   // balance: sdk.DualBalance
 ): DualViewInfo => {
   const { expireTime, strike, ratio, base, quote, dualType } = info;
@@ -64,19 +60,11 @@ export const makeDualViewItem = (
       false
     ), //targetPrice
     term,
-    // targetPrice,
-    // subscribeData,
     productId: info.productId,
     expireTime,
     currentPrice,
     sellSymbol,
     buySymbol,
-    // __raw__: {
-    //   info,
-    //   index,
-    //   rule,
-    // },
-    // balance,
   });
   // const apr =  info.dualPrice.ba
   return {

@@ -10,6 +10,7 @@ import {
   CalDualResult,
   CustomErrorWithCode,
   DualCalcData,
+  DualCurrentPrice,
   DualViewInfo,
   getValuePrecisionThousand,
   globalSetup,
@@ -78,10 +79,7 @@ export function calDual<R = DualViewInfo>({
   sellToken: TokenInfo;
   buyToken: TokenInfo;
   feeVol: string | undefined;
-  currentPrice: {
-    symbol: string;
-    currentPrice: number;
-  };
+  currentPrice: DualCurrentPrice;
 }): CalDualResult<R> {
   const sellVol = sdk
     .toBig(sellAmount ? sellAmount : 0)
@@ -375,7 +373,7 @@ export const useDualTrade = <
   }, [coinSellSymbol]);
 
   React.useEffect(() => {
-    if (isShowDual.isShow && isShowDual.dualInfo?.__raw__) {
+    if (isShowDual?.isShow && isShowDual?.dualInfo?.__raw__) {
       setProductInfo(isShowDual.dualInfo as R);
       refreshDual({ dualInfo: isShowDual.dualInfo as R });
     } else {

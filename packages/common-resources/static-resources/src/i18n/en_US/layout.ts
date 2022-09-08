@@ -100,7 +100,7 @@ export default {
   labelInvestBalanceDes: "The deposition you hold",
   labelInvestAmm: "AMM Pool",
   labelInvestOverview: "Overview",
-  labelInvestOverviewDes: "Select Defi Investment",
+  labelInvestOverviewDes: "Select DeFi Investment",
   labelInvestAmmDes: "Add liquidity and earn fees",
   labelInvestDefi: "ETH Staking",
   labelInvestDefiDes: "Earn ETH staking rewards",

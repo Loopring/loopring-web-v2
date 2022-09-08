@@ -504,8 +504,9 @@ export const DUALVIEWINFO: DualViewInfo = {
   productId: "LRC-USDT-220907-0.36-P-USDT",
   expireTime: 1662537600000,
   currentPrice: {
+    quote: "USDC",
+    base: "LRC",
     currentPrice: 0.4482078,
-    symbol: "LRC",
   },
   __raw__: {
     info: {

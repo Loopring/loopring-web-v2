@@ -13,6 +13,7 @@ import React from "react";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
+  DualCurrentPrice,
   DualViewInfo,
   myLog,
   SagaStatus,
@@ -40,13 +41,7 @@ export const useDualHook = ({
   setConfirmDualInvest(!confirmedDualInvest);
   const [isLoading, setIsLoading] = React.useState(true);
   const [currentPrice, setCurrentPrice] =
-    React.useState<
-      | {
-          currentPrice: number;
-          symbol: string;
-        }
-      | undefined
-    >(undefined);
+    React.useState<DualCurrentPrice | undefined>(undefined);
   const [, , coinA, coinB] = (
     match?.params?.market ? match.params.market : "DUAL-LRC-USDC"
   ).match(/(dual-)?(\w+)-(\w+)/i);

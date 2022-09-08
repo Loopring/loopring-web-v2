@@ -434,6 +434,11 @@ export type L2CollectionFilter = {
 
 export const LIVE_FEE_TIMES = 60000;
 
+export type DualCurrentPrice = {
+  quote: string;
+  base: string;
+  currentPrice: number;
+};
 export type DualViewInfo = {
   apy: string;
   settleRatio: string; //targetPrice
@@ -443,10 +448,7 @@ export type DualViewInfo = {
   // targetPrice,
   // subscribeData,
   expireTime: number;
-  currentPrice: {
-    symbol: string;
-    currentPrice: number;
-  };
+  currentPrice: DualCurrentPrice;
   productId: string;
   sellSymbol: string;
   buySymbol: string;

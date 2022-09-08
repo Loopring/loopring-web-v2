@@ -77,10 +77,6 @@ const WrapperStyled = styled(Box)`
   flex-direction: column;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
-
-  .logo-icon.dual:last-child {
-    transform: scale(0.6) translate(6px, 6px);
-  }
 `;
 
 export const DualListPanel: any = withTranslation("common")(
@@ -248,13 +244,13 @@ export const DualListPanel: any = withTranslation("common")(
                           // PriceTag[CurrencyToTag[currency]] +
                           getValuePrecisionThousand(
                             currentPrice.currentPrice,
-                            tokenMap[currentPrice.symbol]?.precision,
-                            tokenMap[currentPrice.symbol]?.precision,
-                            tokenMap[currentPrice.symbol]?.precision,
+                            tokenMap[currentPrice.quote]?.precision,
+                            tokenMap[currentPrice.quote]?.precision,
+                            tokenMap[currentPrice.quote]?.precision,
                             true,
                             { isFait: true }
                           ),
-                        symbol: currentPrice.symbol,
+                        symbol: currentPrice.base,
                       }}
                     >
                       LRC Current price:
