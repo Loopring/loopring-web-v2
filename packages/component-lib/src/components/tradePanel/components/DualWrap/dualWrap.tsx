@@ -220,17 +220,17 @@ export const DualWrap = <
   );
   const targetView = React.useMemo(
     () =>
-      priceSymbol
+      priceBase
         ? getValuePrecisionThousand(
             dualCalcData.dualViewInfo?.strike,
-            tokenMap[priceSymbol].precision,
-            tokenMap[priceSymbol].precision,
-            tokenMap[priceSymbol].precision,
-            false,
+            tokenMap[priceBase].precision,
+            tokenMap[priceBase].precision,
+            tokenMap[priceBase].precision,
+            true,
             { floor: true }
           )
         : EmptyValueTag,
-    [dualCalcData.dualViewInfo?.strike, priceSymbol, tokenMap]
+    [dualCalcData.dualViewInfo?.strike, priceBase, tokenMap]
   );
   const sellMaxVal = React.useMemo(
     () =>
@@ -251,18 +251,18 @@ export const DualWrap = <
 
   const currentView = React.useMemo(
     () =>
-      priceSymbol
+      priceBase
         ? getValuePrecisionThousand(
             // dualCalcData.dualViewInfo.currentPrice.currentPrice,
             dualCalcData.dualViewInfo.__raw__.index.index,
-            tokenMap[priceSymbol].precision,
-            tokenMap[priceSymbol].precision,
-            tokenMap[priceSymbol].precision,
-            false,
+            tokenMap[priceBase].precision,
+            tokenMap[priceBase].precision,
+            tokenMap[priceBase].precision,
+            true,
             { floor: true }
           )
         : EmptyValueTag,
-    [dualCalcData.dualViewInfo.currentPrice.currentPrice, priceSymbol, tokenMap]
+    [dualCalcData.dualViewInfo.currentPrice.currentPrice, priceBase, tokenMap]
   );
 
   return (
@@ -419,11 +419,18 @@ export const DualWrap = <
             <Box paddingX={2}>
               <BoxChartStyle height={96} width={"100%"} position={"relative"}>
                 <Box className={"point1 point"}>
-                  <Typography>{t("labelDualTargetPrice2")}</Typography>
+                  <Typography
+                    variant={"body2"}
+                    whiteSpace={"pre"}
+                    color={"textPrimary"}
+                  >
+                    {t("labelDualTargetPrice2")}
+                  </Typography>
                   <Typography>{targetView}</Typography>
                 </Box>
                 <Box
                   className={"point2 point"}
+                  whiteSpace={"pre"}
                   sx={{
                     left:
                       Number(dualCalcData.dualViewInfo.__raw__.index.index) >
@@ -432,7 +439,7 @@ export const DualWrap = <
                         : "25%",
                   }}
                 >
-                  <Typography>
+                  <Typography variant={"body2"} color={"textPrimary"}>
                     {t("labelDualCurrentPrice3", {
                       symbol: priceBase,
                     })}
@@ -448,7 +455,7 @@ export const DualWrap = <
                   </Typography>
                 </Box>
                 <Box className={"returnV1 returnV"}>
-                  <Typography variant={"body2"}>
+                  <Typography variant={"body2"} color={"textPrimary"}>
                     {t("labelDualReturn", {
                       symbol:
                         lessEarnView +
@@ -458,7 +465,7 @@ export const DualWrap = <
                   </Typography>
                 </Box>
                 <Box className={"returnV2 returnV"}>
-                  <Typography variant={"body2"}>
+                  <Typography variant={"body2"} color={"textPrimary"}>
                     {t("labelDualReturn", {
                       symbol:
                         greaterEarnView +
@@ -543,7 +550,7 @@ export const DualWrap = <
                   variant={"inherit"}
                   color={"textPrimary"}
                 >
-                  {sellMaxVal + " " + dualCalcData.sellToken?.symbol}
+                  {sellMaxVal + " " + dualCalcData.coinSell.belong}
                 </Typography>
               </Typography>
             </Box>
