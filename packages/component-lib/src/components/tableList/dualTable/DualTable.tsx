@@ -178,7 +178,6 @@ export const DualTable = withTranslation(["tables", "common"])(
                   size={"small"}
                   onClick={(_e) => {
                     onItemClick(row);
-                    // history.push(`/invest/dual/${row.productId}`);
                   }}
                 >
                   {t("labelInvestBtn", { ns: "common" })}
@@ -224,7 +223,7 @@ export const DualTable = withTranslation(["tables", "common"])(
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
           onRowClick={(_index: number, row: R) => {
-            history.push(`/invest/dual/${row?.productId}`);
+            onItemClick(row);
           }}
           {...{
             ...defaultArgs,

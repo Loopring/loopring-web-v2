@@ -452,7 +452,7 @@ export const dualAdvice: InvestAdvice = {
   type: InvestMapType.DUAL,
   router: "/invest/dual",
   notification: "",
-  banner: "https://static.loopring.io/assets/images/icon-lido.svg",
+  banner: SoursURL + "images/icon-dual.svg",
   titleI18n: "labelInvestDual",
   desI18n: "labelInvestDualDes",
   enable: true,

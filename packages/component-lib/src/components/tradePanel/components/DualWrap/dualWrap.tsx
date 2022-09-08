@@ -1,14 +1,15 @@
 import React from "react";
 import moment from "moment";
 import {
-  YEAR_DAY_MINUTE_FORMAT,
   DualCalcData,
   DualViewInfo,
+  EmptyValueTag,
+  getValuePrecisionThousand,
+  hexToRGB,
   IBData,
   myLog,
   UpColor,
-  getValuePrecisionThousand,
-  EmptyValueTag,
+  YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { DualWrapProps } from "./Interface";
 import { useTranslation } from "react-i18next";
@@ -21,6 +22,7 @@ import { ButtonStyle } from "../Styled";
 import { InputCoin } from "../../../basic-lib";
 import { TradeBtnStatus } from "../../Interface";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
 const BoxChartStyle = styled(Box)(({ theme }: any) => {
   const fillColor: string = theme.colorBase.textThird;
@@ -46,17 +48,17 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
         bottom: -7px;
         left: calc(50% - 7px);
         position: absolute;
+        z-index:99;
       }
-      &:after {
-        content: "";
+      .line {
         display: block;
         height: 7px;
-        width: calc(25% - 7px);
         background-color: var(--color-warning);
         bottom: -3px;
         left: 0;
         position: absolute;
-      }
+        z-index:20;
+    }
     }
     .point {
       position: absolute;
@@ -80,20 +82,29 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
       transform: translateX(-50%);  
     }
     .point2 {
-       left: 25%;
        transform: translateX(-50%);  
     }
-    .returnV1{
+   
+    .returnV{
       position: absolute;
+      bottom:0;
+      height: 30px;
+      width:50%;
+      display:flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .returnV1{
       right: 25%;
-      transform: translateX(50%);
-      bottom:0
+      transform: translateX(50%);  
+      background-color: ${hexToRGB(theme.colorBase.success, 0.3)};
     }
     .returnV2{
-      position: absolute;
       left: 25%;
       transform: translateX(-50%);
-      bottom:0
+      background-color: ${hexToRGB(theme.colorBase.warning, 0.3)};
+
+     
     }
 `;
 });
@@ -172,6 +183,41 @@ export const DualWrap = <
       return t(`labelInvestBtn`);
     }
   }, [t, btnInfo]);
+  const lessEarnView = React.useMemo(
+    () =>
+      dualCalcData.lessEarnVol && tokenMap[dualCalcData.lessEarnTokenSymbol]
+        ? getValuePrecisionThousand(
+            sdk
+              .toBig(dualCalcData.lessEarnVol)
+              .div("1e" + tokenMap[dualCalcData.lessEarnTokenSymbol].decimals),
+            tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
+            tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
+            tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
+            false,
+            { floor: true }
+          )
+        : EmptyValueTag,
+    [dualCalcData.lessEarnTokenSymbol, dualCalcData.lessEarnVol, tokenMap]
+  );
+  const greaterEarnView = React.useMemo(
+    () =>
+      dualCalcData.greaterEarnVol &&
+      tokenMap[dualCalcData.greaterEarnTokenSymbol]
+        ? getValuePrecisionThousand(
+            sdk
+              .toBig(dualCalcData.greaterEarnVol)
+              .div(
+                "1e" + tokenMap[dualCalcData.greaterEarnTokenSymbol].decimals
+              ),
+            tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
+            tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
+            tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
+            false,
+            { floor: true }
+          )
+        : EmptyValueTag,
+    [dualCalcData.greaterEarnTokenSymbol, dualCalcData.greaterEarnVol, tokenMap]
+  );
   const targetView = React.useMemo(
     () =>
       priceSymbol
@@ -191,7 +237,8 @@ export const DualWrap = <
     () =>
       priceSymbol
         ? getValuePrecisionThousand(
-            dualCalcData.dualViewInfo.currentPrice.currentPrice,
+            // dualCalcData.dualViewInfo.currentPrice.currentPrice,
+            dualCalcData.dualViewInfo.__raw__.index.index,
             tokenMap[priceSymbol].precision,
             tokenMap[priceSymbol].precision,
             tokenMap[priceSymbol].precision,
@@ -201,18 +248,6 @@ export const DualWrap = <
         : EmptyValueTag,
     [dualCalcData.dualViewInfo.currentPrice.currentPrice, priceSymbol, tokenMap]
   );
-
-  // const maxValue =
-  //   tokenBuy.symbol &&
-  //   maxBuyVol &&
-  //   `${getValuePrecisionThousand(
-  //     new BigNumber(maxBuyVol ?? 0).div("1e" + tokenBuy.decimals),
-  //     tokenBuy.precision,
-  //     tokenBuy.precision,
-  //     tokenBuy.precision,
-  //     false,
-  //     { floor: true }
-  //   )} ${tokenBuy.symbol}`;
 
   return (
     <Grid
@@ -367,14 +402,22 @@ export const DualWrap = <
             </Box>
             <Box paddingX={2}>
               <BoxChartStyle height={96} width={"100%"} position={"relative"}>
-                <Box className={"backView"} />
                 <Box className={"point1 point"}>
                   <Typography>{t("labelDualTargetPrice2")}</Typography>
                   <Typography>{targetView}</Typography>
                 </Box>
-                <Box className={"point2 point"}>
+                <Box
+                  className={"point2 point"}
+                  sx={{
+                    left:
+                      Number(dualCalcData.dualViewInfo.__raw__.index.index) >
+                      Number(dualCalcData.dualViewInfo?.strike)
+                        ? "75%"
+                        : "25%",
+                  }}
+                >
                   <Typography>
-                    {t("labelDualCurrentPrice2", {
+                    {t("labelDualCurrentPrice3", {
                       symbol: priceBase,
                     })}
                   </Typography>
@@ -388,19 +431,36 @@ export const DualWrap = <
                     {currentView}
                   </Typography>
                 </Box>
-                <Box className={"returnV1"}>
-                  <Typography>
+                <Box className={"returnV1 returnV"}>
+                  <Typography variant={"body2"}>
                     {t("labelDualReturn", {
-                      symbol: dualCalcData.dualViewInfo.sellSymbol,
+                      symbol:
+                        lessEarnView +
+                        " " +
+                        dualCalcData.dualViewInfo.sellSymbol,
                     })}
                   </Typography>
                 </Box>
-                <Box className={"returnV2"}>
-                  <Typography>
+                <Box className={"returnV2 returnV"}>
+                  <Typography variant={"body2"}>
                     {t("labelDualReturn", {
-                      symbol: dualCalcData.dualViewInfo.buySymbol,
+                      symbol:
+                        greaterEarnView +
+                        " " +
+                        dualCalcData.dualViewInfo.buySymbol,
                     })}
                   </Typography>
+                </Box>
+                <Box className={"backView"}>
+                  <Box
+                    className={"line"}
+                    width={
+                      Number(dualCalcData.dualViewInfo.__raw__.index.index) >
+                      Number(dualCalcData.dualViewInfo.strike)
+                        ? "75%"
+                        : "25%"
+                    }
+                  />
                 </Box>
               </BoxChartStyle>
 
@@ -505,8 +565,12 @@ export const DualWrap = <
                     color={"textSecondary"}
                   >
                     {t("labelDualCalcLabel", {
-                      symbol: priceSymbol,
-                      tag: "<".toString(),
+                      symbol: priceBase,
+                      tag:
+                        dualCalcData.dualViewInfo.__raw__.info.dualType ===
+                        DUAL_TYPE.DUAL_CURRENCY
+                          ? "≤"
+                          : "<",
                       target: targetView,
                       interpolation: {
                         escapeValue: false,
@@ -521,27 +585,7 @@ export const DualWrap = <
                   >
                     {t("labelDualReturnValue", {
                       symbol: dualCalcData.lessEarnTokenSymbol,
-                      value:
-                        dualCalcData.lessEarnVol &&
-                        tokenMap[dualCalcData.lessEarnTokenSymbol]
-                          ? getValuePrecisionThousand(
-                              sdk
-                                .toBig(dualCalcData.lessEarnVol)
-                                .div(
-                                  "1e" +
-                                    tokenMap[dualCalcData.lessEarnTokenSymbol]
-                                      .decimals
-                                ),
-                              tokenMap[dualCalcData.lessEarnTokenSymbol]
-                                .precision,
-                              tokenMap[dualCalcData.lessEarnTokenSymbol]
-                                .precision,
-                              tokenMap[dualCalcData.lessEarnTokenSymbol]
-                                .precision,
-                              false,
-                              { floor: true }
-                            )
-                          : EmptyValueTag,
+                      value: lessEarnView,
                     })}
                   </Typography>
                 </Typography>
@@ -559,8 +603,12 @@ export const DualWrap = <
                     whiteSpace={"pre-line"}
                   >
                     {t("labelDualCalcLabel", {
-                      symbol: priceSymbol,
-                      tag: ">",
+                      symbol: priceBase,
+                      tag:
+                        dualCalcData.dualViewInfo.__raw__.info.dualType ===
+                        DUAL_TYPE.DUAL_BASE
+                          ? "≥"
+                          : ">",
                       target: targetView,
                       interpolation: {
                         escapeValue: false,
@@ -574,28 +622,7 @@ export const DualWrap = <
                   >
                     {t("labelDualReturnValue", {
                       symbol: dualCalcData.greaterEarnTokenSymbol,
-                      value:
-                        dualCalcData.greaterEarnVol &&
-                        tokenMap[dualCalcData.greaterEarnTokenSymbol]
-                          ? getValuePrecisionThousand(
-                              sdk
-                                .toBig(dualCalcData.greaterEarnVol)
-                                .div(
-                                  "1e" +
-                                    tokenMap[
-                                      dualCalcData.greaterEarnTokenSymbol
-                                    ].decimals
-                                ),
-                              tokenMap[dualCalcData.greaterEarnTokenSymbol]
-                                .precision,
-                              tokenMap[dualCalcData.greaterEarnTokenSymbol]
-                                .precision,
-                              tokenMap[dualCalcData.greaterEarnTokenSymbol]
-                                .precision,
-                              false,
-                              { floor: true }
-                            )
-                          : EmptyValueTag,
+                      value: greaterEarnView,
                     })}
                   </Typography>
                 </Typography>

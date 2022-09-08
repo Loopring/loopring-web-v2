@@ -105,7 +105,7 @@ export default {
   labelInvestDefi: "ETH Staking",
   labelInvestDefiDes: "Earn ETH staking rewards",
   labelInvestDual: "Dual Earn",
-  labelInvestDualDes: "Earn Dual rewards",
+  labelInvestDualDes: "Buy the Dips, Sell the Rallies",
   labelDepositNFT: "Receive NFT",
   labelMyCollection: "My Collections",
   labelMyCollectionDes: "Create, curate, and \n manage my NFT collections",

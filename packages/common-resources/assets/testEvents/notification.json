@@ -29,6 +29,36 @@
         "webRouter": "[self]/invest/defi"
       }
     ],
+    "activitiesHome": [
+      {
+        "type": "ACTIVITY",
+        "version": "0",
+        "title": "ramp_event",
+        "name": "🅾️ Zero Fees Promo!",
+        "description1": "Deposit via Banxa for free!",
+        "description2": "Duration: April 11 0:00 - April 25 0:00 (UTC)",
+        "link": "https://loopring.io/#/layer2",
+        "startShow": 1654819200000,
+        "endShow": 1657497600000,
+        "color": "default",
+        "banner": ""
+      },
+      {
+        "type": "ACTIVITY",
+        "version": "-1",
+        "name": "lido",
+        "title": "ETH staking via Loopring L2 is live!",
+        "description1": "Participate into ETH staking to own rewards without lock-in",
+        "description2": "",
+        "link": "",
+        "startShow": 1660039200000,
+        "endShow": 1662631200000,
+        "color": "default",
+        "banner": "",
+        "webRouter": "[self]/invest/defi"
+      }
+    ],
+    "activitiesInvest": [],
     "notifications": [
       {
         "type": "NOTIFICATION",
@@ -72,7 +102,7 @@
       {
         "type": "AMM",
         "router": "/invest/ammpool",
-        "banner": "https://static.loopring.io/assets/images/icon-amm.png",
+        "banner": "https://static.loopring.io/assets/images/icon-amm.svg",
         "titleI18n": "labelInvestAmm",
         "desI18n": "labelInvestAmmDes",
         "enable": true
@@ -80,9 +110,17 @@
       {
         "type": "STAKE",
         "router": "/invest/defi",
-        "banner": "https://static.loopring.io/assets/images/icon-lido.png",
+        "banner": "https://static.loopring.io/assets/images/icon-lido.svg",
         "titleI18n": "labelInvestDefi",
         "desI18n": "labelInvestDefiDes",
+        "enable": true
+      },
+      {
+        "type": "DUAL",
+        "router": "/invest/dual",
+        "banner": "https://static.loopring.io/assets/images/icon-dual.svg",
+        "titleI18n": "labelInvestDual",
+        "desI18n": "labelInvestDualDes",
         "enable": true
       }
     ]

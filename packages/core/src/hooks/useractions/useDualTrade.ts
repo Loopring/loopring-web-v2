@@ -10,7 +10,6 @@ import {
   CalDualResult,
   CustomErrorWithCode,
   DualCalcData,
-  DualCurrentPrice,
   DualViewInfo,
   getValuePrecisionThousand,
   globalSetup,
@@ -22,7 +21,6 @@ import {
 
 import {
   DAYS,
-  dualCurrentPrice,
   getTimestampDaysLater,
   makeDualViewItem,
   makeWalletLayer2,
@@ -69,7 +67,6 @@ export function calDual<R = DualViewInfo>({
   sellToken,
   buyToken,
   sellAmount,
-  currentPrice,
 }: {
   sellAmount: string | undefined;
   info: sdk.DualProductAndPrice;
@@ -79,12 +76,11 @@ export function calDual<R = DualViewInfo>({
   sellToken: TokenInfo;
   buyToken: TokenInfo;
   feeVol: string | undefined;
-  currentPrice: DualCurrentPrice;
 }): CalDualResult<R> {
   const sellVol = sdk
     .toBig(sellAmount ? sellAmount : 0)
     .times("1e" + sellToken.decimals);
-  const dualViewInfo = makeDualViewItem(info, index, rule, currentPrice);
+  const dualViewInfo = makeDualViewItem(info, index, rule);
   // const lessBuyUnit = sdk.toBig(strike).div(10000).plus(1);//.times(targetPrice);
   // dualViewInfo.settleRatio
   let lessEarnVol,
@@ -95,14 +91,16 @@ export function calDual<R = DualViewInfo>({
     miniSellVol,
     feeTokenSymbol,
     maxFeeBips;
-  myLog("settleRatio", dualViewInfo.settleRatio, dualViewInfo);
+  myLog("settleRatio", dualViewInfo.settleRatio, dualViewInfo, index);
   if (info.dualType === DUAL_TYPE.DUAL_BASE) {
     lessEarnVol = sellVol
       .times(1 + dualViewInfo.settleRatio)
+      .times(index.index); //dualViewInfo.strike);
+    lessEarnTokenSymbol = sellToken.symbol;
+    greaterEarnVol = sellVol
+      .times(1 + dualViewInfo.settleRatio)
       .times(dualViewInfo.strike);
-    lessEarnTokenSymbol = buyToken.symbol;
-    greaterEarnVol = sellVol.times(1 + dualViewInfo.settleRatio);
-    greaterEarnTokenSymbol = sellToken.symbol;
+    greaterEarnTokenSymbol = buyToken.symbol;
     miniSellVol = rule.baseMin;
     maxSellVol = BigNumber.max(
       rule.baseMax,
@@ -127,12 +125,13 @@ export function calDual<R = DualViewInfo>({
     // 	sdk.toBig(feeVol).times(10000).div(lessEarnVol).toNumber()
     // );
   } else {
-    lessEarnVol = sellVol.times(1 + dualViewInfo.settleRatio);
-    lessEarnTokenSymbol = sellToken.symbol;
-    greaterEarnVol = sellVol
+    lessEarnVol = sellVol
       .times(1 + dualViewInfo.settleRatio)
-      .div(dualViewInfo.strike);
-    greaterEarnTokenSymbol = buyToken.symbol;
+      .div(dualViewInfo.strike); //.times(1 + dualViewInfo.settleRatio);
+    lessEarnTokenSymbol = buyToken.symbol;
+    greaterEarnVol = sellVol.times(1 + dualViewInfo.settleRatio);
+    //.div(dualViewInfo.strike);
+    greaterEarnTokenSymbol = sellToken.symbol;
     miniSellVol = rule.currencyMin;
     maxSellVol = BigNumber.max(
       rule.currencyMax,
@@ -267,7 +266,6 @@ export const useDualTrade = <
           sellToken: tokenMap[baseSymbol],
           buyToken: tokenMap[quoteSymbol],
           sellAmount: coinSell.tradeValue?.toString() ?? undefined,
-          currentPrice: dualCurrentPrice(`dual-${info.base}-${info.quote}`),
         });
         _updateInfo = {
           ..._updateInfo,
