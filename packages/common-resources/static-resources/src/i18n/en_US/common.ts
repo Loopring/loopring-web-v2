@@ -974,4 +974,6 @@ export default {
     "This is the collection where your NFT will appear.NFT minted under collection will be bound with different contract address than previous created one. If you have incomplete work to finish and would like them created under previous contract address, you can still use the legacy created method under <1>https://legacy-nft.loopring.io/</1>",
   labelMintPreview: "Back",
   labelMintNoCollectionBtn: "Please Choose Collection",
+  labelInvestDual: "Dual Investment",
+  labelInvestDualDes: "APY 20% ~ 1000%",
 };
