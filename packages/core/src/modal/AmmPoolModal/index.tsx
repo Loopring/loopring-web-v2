@@ -13,7 +13,7 @@ import {
   getValuePrecisionThousand,
   PriceTag,
 } from "@loopring-web/common-resources";
-import { Box, Link, Modal as MuiModal } from "@mui/material";
+import { Box, Divider, Link, Modal as MuiModal } from "@mui/material";
 import styled from "@emotion/styled";
 import { makeTickView, useSystem } from "../../index";
 import { AmmPanelView } from "./components/ammPanel";
@@ -185,6 +185,7 @@ export const ModalCoinPairPanel = withTranslation("common")(
               {...rest}
             />
           </Box>
+
           <SwipeableViews
             animateTransitions={false}
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}

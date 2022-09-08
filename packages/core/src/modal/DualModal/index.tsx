@@ -11,7 +11,7 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/common-resources";
-import { Box, Modal as MuiModal, Typography } from "@mui/material";
+import { Box, Divider, Modal as MuiModal, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { useDualTrade } from "../../index";
 
@@ -83,11 +83,20 @@ export const ModalDualPanel = withTranslation("common")(
           position={"relative"}
           style={{ alignItems: "stretch" }}
         >
+          <ModalCloseButton
+            onClose={() => {
+              setShowDual({ isShow: false, dualInfo: undefined });
+            }}
+            t={t}
+            {...rest}
+          />
           <Box
-            display={"flex"}
             width={"100%"}
-            flexDirection={"row"}
-            justifyContent={"space-between"}
+            display={"flex"}
+            position={"relative"}
+            marginTop={"var(--toolbar-row-padding-minus)"}
+            height={"var(--toolbar-row-height)"}
+            paddingX={3}
           >
             <Box
               component={"h3"}
@@ -127,21 +136,17 @@ export const ModalDualPanel = withTranslation("common")(
                 </>
               )}
             </Box>
-            <ModalCloseButton
-              onClose={() => {
-                setShowDual({ isShow: false, dualInfo: undefined });
-              }}
-              t={t}
-              {...rest}
-            />
           </Box>
-
+          <Divider sx={{ marginX: 2 }} />
           <Box
             flex={1}
-            flexDirection={!isMobile ? "row" : "column"}
+            // flexDirection={!isMobile ? "row" : "column"}
             alignItems={!isMobile ? "flex-start" : "center"}
             position={"relative"}
             display={"flex"}
+            paddingTop={2}
+            paddingBottom={3}
+            paddingX={1}
           >
             <DualWrap {...{ ...rest, ...dualTradeProps }} />
           </Box>

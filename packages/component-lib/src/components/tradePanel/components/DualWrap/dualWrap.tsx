@@ -241,30 +241,31 @@ export const DualWrap = <
               justifyContent={"space-between"}
               paddingX={2}
             >
+              {/*<Typography*/}
+              {/*  variant={"body1"}*/}
+              {/*  display={"inline-flex"}*/}
+              {/*  justifyContent={"space-between"}*/}
+              {/*  paddingBottom={1}*/}
+              {/*>*/}
+              {/*  <Typography*/}
+              {/*    component={"span"}*/}
+              {/*    variant={"inherit"}*/}
+              {/*    color={"textSecondary"}*/}
+              {/*  >*/}
+              {/*    {t("labelDualSubDate")}*/}
+              {/*  </Typography>*/}
+              {/*  <Typography*/}
+              {/*    component={"span"}*/}
+              {/*    variant={"inherit"}*/}
+              {/*    color={"textPrimary"}*/}
+              {/*  >*/}
+              {/*    {moment().format(YEAR_DAY_MINUTE_FORMAT)}*/}
+              {/*  </Typography>*/}
+              {/*</Typography>*/}
               <Typography
                 variant={"body1"}
                 display={"inline-flex"}
-                justifyContent={"space-between"}
-                paddingBottom={1}
-              >
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"textSecondary"}
-                >
-                  {t("labelDualSubDate")}
-                </Typography>
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"textPrimary"}
-                >
-                  {moment().format(YEAR_DAY_MINUTE_FORMAT)}
-                </Typography>
-              </Typography>
-              <Typography
-                variant={"body1"}
-                display={"inline-flex"}
+                alignItems={"center"}
                 justifyContent={"space-between"}
                 paddingBottom={1}
               >
@@ -288,6 +289,7 @@ export const DualWrap = <
               <Typography
                 variant={"body1"}
                 display={"inline-flex"}
+                alignItems={"center"}
                 justifyContent={"space-between"}
                 paddingBottom={1}
               >
@@ -312,6 +314,7 @@ export const DualWrap = <
               <Typography
                 variant={"body1"}
                 display={"inline-flex"}
+                alignItems={"center"}
                 justifyContent={"space-between"}
                 paddingBottom={1}
               >
@@ -340,6 +343,7 @@ export const DualWrap = <
               <Typography
                 variant={"body1"}
                 display={"inline-flex"}
+                alignItems={"center"}
                 justifyContent={"space-between"}
                 paddingBottom={1}
               >
@@ -423,7 +427,6 @@ export const DualWrap = <
           >
             <Box
               paddingX={2}
-              flex={1}
               display={"flex"}
               alignItems={"stretch"}
               justifyContent={"space-between"}
@@ -448,8 +451,9 @@ export const DualWrap = <
               <Typography
                 variant={"body1"}
                 display={"inline-flex"}
+                alignItems={"center"}
                 justifyContent={"space-between"}
-                paddingBottom={1}
+                paddingTop={1}
               >
                 <Typography
                   component={"span"}
@@ -479,7 +483,7 @@ export const DualWrap = <
                 flexDirection={"column"}
               >
                 <Typography
-                  variant={"subtitle2"}
+                  variant={"subtitle1"}
                   color={"textSecondary"}
                   alignSelf={"flex-start"}
                   marginBottom={1}
@@ -490,6 +494,7 @@ export const DualWrap = <
                 <Typography
                   variant={"body1"}
                   display={"inline-flex"}
+                  alignItems={"center"}
                   justifyContent={"space-between"}
                   paddingBottom={1}
                   marginTop={1}
@@ -501,14 +506,18 @@ export const DualWrap = <
                   >
                     {t("labelDualCalcLabel", {
                       symbol: priceSymbol,
-                      tag: "<",
+                      tag: "<".toString(),
                       target: targetView,
+                      interpolation: {
+                        escapeValue: false,
+                      },
                     })}
                   </Typography>
                   <Typography
                     component={"span"}
                     variant={"inherit"}
                     color={"textPrimary"}
+                    whiteSpace={"pre-line"}
                   >
                     {t("labelDualReturnValue", {
                       symbol: dualCalcData.lessEarnTokenSymbol,
@@ -539,6 +548,7 @@ export const DualWrap = <
                 <Typography
                   variant={"body1"}
                   display={"inline-flex"}
+                  alignItems={"center"}
                   justifyContent={"space-between"}
                   paddingBottom={1}
                 >
@@ -546,11 +556,15 @@ export const DualWrap = <
                     component={"span"}
                     variant={"inherit"}
                     color={"textSecondary"}
+                    whiteSpace={"pre-line"}
                   >
                     {t("labelDualCalcLabel", {
                       symbol: priceSymbol,
                       tag: ">",
                       target: targetView,
+                      interpolation: {
+                        escapeValue: false,
+                      },
                     })}
                   </Typography>
                   <Typography
