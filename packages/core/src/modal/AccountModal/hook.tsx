@@ -21,7 +21,6 @@ import {
   Deposit_Submit,
   Deposit_WaitForAuth,
   DepositProps,
-  DualWrap,
   ExportAccount_Approve_WaitForAuth,
   ExportAccount_Failed,
   ExportAccount_Success,
@@ -140,7 +139,6 @@ import {
   useCollectionAdvanceMeta,
   useToast,
   useNFTMintAdvance,
-  useDualTrade,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 

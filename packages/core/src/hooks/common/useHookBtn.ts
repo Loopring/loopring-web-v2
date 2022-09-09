@@ -67,6 +67,7 @@ export const useSubmitBtn = ({
   });
   const onBtnClick = React.useCallback(
     (props: any) => {
+      myLog("onBtnClick", props);
       accountStaticCallBack(btnClickCallbackArray, [props]);
     },
     [btnClickCallbackArray]

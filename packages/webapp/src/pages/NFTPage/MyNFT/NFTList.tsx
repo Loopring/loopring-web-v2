@@ -141,9 +141,10 @@ export const MyNFTList = withTranslation("common")(
                             whiteSpace={"pre"}
                             overflow={"hidden"}
                             textOverflow={"ellipsis"}
-                          >
-                            {item?.name ?? EmptyValueTag}
-                          </Typography>
+                            dangerouslySetInnerHTML={{
+                              __html: item?.name ?? EmptyValueTag,
+                            }}
+                          />
                           <Typography
                             color={"textSecondary"}
                             component={"p"}

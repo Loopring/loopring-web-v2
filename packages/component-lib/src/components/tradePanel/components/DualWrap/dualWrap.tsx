@@ -133,6 +133,7 @@ export const DualWrap = <
 }: DualWrapProps<T, I, DUAL>) => {
   const coinSellRef = React.useRef();
   const { t } = useTranslation();
+  myLog("refreshRef", refreshRef);
   // const history = useHistory();
   const { isMobile, upColor } = useSettings();
   const priceSymbol = dualCalcData?.dualViewInfo?.currentPrice?.quote;
@@ -515,7 +516,8 @@ export const DualWrap = <
               justifyContent={"space-between"}
               flexDirection={"column"}
             >
-              <Box alignSelf={"flex-end"} sx={{ display: "none" }}>
+              <Box alignSelf={"flex-end"}>
+                {/*sx={{ display: "none" }}*/}
                 <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
               </Box>
               <InputCoin<any, I, any>
@@ -537,6 +539,7 @@ export const DualWrap = <
                 alignItems={"center"}
                 justifyContent={"space-between"}
                 paddingTop={1}
+                paddingBottom={2}
               >
                 <Typography
                   component={"span"}

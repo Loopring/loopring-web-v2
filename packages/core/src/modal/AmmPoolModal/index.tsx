@@ -13,7 +13,7 @@ import {
   getValuePrecisionThousand,
   PriceTag,
 } from "@loopring-web/common-resources";
-import { Box, Divider, Link, Modal as MuiModal } from "@mui/material";
+import { Box, Link, Modal as MuiModal } from "@mui/material";
 import styled from "@emotion/styled";
 import { makeTickView, useSystem } from "../../index";
 import { AmmPanelView } from "./components/ammPanel";
