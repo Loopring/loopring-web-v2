@@ -364,6 +364,7 @@ export const enum InvestMapType {
   Token = "Token",
   AMM = "AMM",
   STAKE = "STAKE",
+  DUAL = "DUAL",
 }
 
 export const InvestOpenType = [InvestMapType.AMM, InvestMapType.STAKE];
