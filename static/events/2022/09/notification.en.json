@@ -15,6 +15,22 @@
       "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
       "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
       "webRouter": "[self]/nft/myCollection"
+    },
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "7",
+      "name": "NFT Trading Competition",
+      "title": "Trade NFTs via Loopring L2",
+      "description1": "1900 Loopheads up for grabs!",
+      "description2": "",
+      "link": "https://loopring.io/#/race-event/2022-09?type=nft_trading_competition_7",
+      "startShow": 1663459200000,
+      "endShow": 1669334400000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_banner.en.webp",
+      "webRouter": ""
     }
   ],
   "activitiesHome": [
@@ -33,12 +49,28 @@
       "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
       "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
       "webRouter": "[self]/nft/myCollection"
+    },
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "7",
+      "name": "NFT Trading Competition",
+      "title": "Trade NFTs via Loopring L2",
+      "description1": "1900 Loopheads up for grabs!",
+      "description2": "",
+      "link": "https://loopring.io/#/race-event/2022-09?type=nft_trading_competition_7",
+      "startShow": 1663459200000,
+      "endShow": 1669334400000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_banner.en.webp",
+      "webRouter": ""
     }
   ],
   "activitiesInvest": [],
   "notifications": [],
   "invest": [],
   "prev": {
-    "endDate": 1665187200000
+    "endDate": 1669334400000
   }
 }
