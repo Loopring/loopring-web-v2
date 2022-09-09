@@ -52,7 +52,7 @@ export const useTradeRace = () => {
           /uat/gi.test(baseURL) ? url_test_path : url_path
         }/${year}/${month}/`;
         if (year && month && type) {
-          fetch(`${path}/activities.${languageMap[i18n.language]}.json`)
+          fetch(`${path}activities.${languageMap[i18n.language]}.json`)
             .then((response) => {
               if (response.ok) {
                 return response.json();
@@ -157,7 +157,7 @@ export const useTradeRace = () => {
               window.location.reload();
             });
         } else if (year && month && !type) {
-          fetch(`${path}/activities.${languageMap[i18n.language]}.json`)
+          fetch(`${path}activities.${languageMap[i18n.language]}.json`)
             .then((response) => {
               if (response.ok) {
                 return response.json();
