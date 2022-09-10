@@ -571,9 +571,9 @@ export const DUALCALCDATA: DualCalcData<DualViewInfo> = {
   lessEarnTokenSymbol: "",
   lessEarnVol: "",
   maxFeeBips: 0,
-  maxSellVol: "",
+  maxSellAmount: "",
   miniSellVol: "",
-  sellToken: undefined,
+  sellToken: TOKEN_INFO.tokenMap["USDC"],
   sellVol: "",
   dualViewInfo: DUALVIEWINFO,
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  DualChgData,
   DualWrapProps,
   TradeBtnStatus,
   useOpenModals,
@@ -25,7 +26,7 @@ import {
   makeDualViewItem,
   makeWalletLayer2,
   TradeDual,
-  useAmount,
+  useDualMap,
   useSubmitBtn,
   useToast,
   useWalletLayer2Socket,
@@ -33,7 +34,11 @@ import {
 import _ from "lodash";
 
 import * as sdk from "@loopring-web/loopring-sdk";
-import { DUAL_TYPE, TokenInfo } from "@loopring-web/loopring-sdk";
+import {
+  DefiMarketInfo,
+  DUAL_TYPE,
+  TokenInfo,
+} from "@loopring-web/loopring-sdk";
 
 import {
   LoopringAPI,
@@ -67,6 +72,7 @@ export function calDual<R = DualViewInfo>({
   sellToken,
   buyToken,
   sellAmount,
+  dualMarket,
 }: {
   sellAmount: string | undefined;
   info: sdk.DualProductAndPrice;
@@ -76,6 +82,7 @@ export function calDual<R = DualViewInfo>({
   sellToken: TokenInfo;
   buyToken: TokenInfo;
   feeVol?: string | undefined;
+  dualMarket: DefiMarketInfo;
 }): CalDualResult<R> {
   const sellVol = sdk
     .toBig(sellAmount ? sellAmount : 0)
@@ -85,38 +92,44 @@ export function calDual<R = DualViewInfo>({
     lessEarnTokenSymbol,
     greaterEarnVol,
     greaterEarnTokenSymbol,
-    maxSellVol,
+    maxSellAmount,
     miniSellVol,
     feeTokenSymbol,
     maxFeeBips;
   myLog("settleRatio", dualViewInfo.settleRatio, dualViewInfo, index);
   if (info.dualType === DUAL_TYPE.DUAL_BASE) {
-    lessEarnVol = sellVol
-      .times(1 + dualViewInfo.settleRatio)
-      .times(index.index); //dualViewInfo.strike);
+    lessEarnVol = sellVol.times(1 + info.ratio); //dualViewInfo.strike);
     lessEarnTokenSymbol = sellToken.symbol;
-    greaterEarnVol = sellVol
-      .times(1 + dualViewInfo.settleRatio)
-      .times(dualViewInfo.strike);
+    greaterEarnVol = sdk
+      .toBig(sellAmount ?? 0)
+      .times(1 + info.ratio)
+      .times(dualViewInfo.strike)
+      .times("1e" + buyToken.decimals);
     greaterEarnTokenSymbol = buyToken.symbol;
-    miniSellVol = rule.baseMin;
-    maxSellVol = BigNumber.max(
-      rule.baseMax,
+    // @ts-ignore
+    miniSellVol = dualMarket.baseLimitAmount; // rule.baseMin;
+    maxSellAmount = BigNumber.max(
+      rule.baseMax ?? 0,
       info.dualPrice.dualBid[0].baseQty,
-      balance[sellToken.symbol].free
+      balance ? balance[sellToken.symbol]?.free ?? 0 : 0
     );
     feeTokenSymbol = buyToken.symbol;
     maxFeeBips = 5;
   } else {
-    lessEarnVol = sellVol
-      .times(1 + dualViewInfo.settleRatio)
-      .div(dualViewInfo.strike); //.times(1 + dualViewInfo.settleRatio);
+    lessEarnVol = sdk
+      .toBig(sellAmount ?? 0)
+      .times(1 + info.ratio)
+      .div(dualViewInfo.strike)
+      .times("1e" + buyToken.decimals);
+
+    // sellVol.times(1 + info.ratio).div(dualViewInfo.strike); //.times(1 + dualViewInfo.settleRatio);
     lessEarnTokenSymbol = buyToken.symbol;
-    greaterEarnVol = sellVol.times(1 + dualViewInfo.settleRatio);
+    greaterEarnVol = sellVol.times(1 + info.ratio);
     //.div(dualViewInfo.strike);
     greaterEarnTokenSymbol = sellToken.symbol;
-    miniSellVol = rule.currencyMin;
-    maxSellVol = BigNumber.max(
+    // @ts-ignore
+    miniSellVol = dualMarket.quoteLimitAmount; // rule.baseMin;
+    maxSellAmount = BigNumber.max(
       rule.currencyMax,
       sdk.toBig(info.dualPrice.dualBid[0].baseQty).times(dualViewInfo.strike),
       balance[sellToken.symbol].free
@@ -133,6 +146,7 @@ export function calDual<R = DualViewInfo>({
     //
     // );
   }
+
   return {
     sellVol: sellVol.toString(),
     lessEarnVol: lessEarnVol.toString(),
@@ -140,7 +154,8 @@ export function calDual<R = DualViewInfo>({
     greaterEarnVol: greaterEarnVol.toString(),
     greaterEarnTokenSymbol,
     miniSellVol,
-    maxSellVol: maxSellVol.toString(),
+    sellToken,
+    maxSellAmount: maxSellAmount?.toString() ?? "",
     maxFeeBips: maxFeeBips,
     dualViewInfo: dualViewInfo as unknown as R,
     feeVol,
@@ -154,10 +169,12 @@ export const useDualTrade = <
   ACD extends DualCalcData<R>,
   R extends DualViewInfo
 >() => {
-  const refreshRef = React.createRef();
+  const refreshRef = React.useRef();
   const { exchangeInfo, allowTrade } = useSystem();
   const { tokenMap, marketArray } = useTokenMap();
-  const { amountMap, getAmount, status: amountStatus } = useAmount();
+  // const { amountMap, getAmount, status: amountStatus } = useAmount();
+  const { marketMap: dualMarketMap } = useDualMap();
+
   const { account, status: accountStatus } = useAccount();
 
   const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -193,11 +210,9 @@ export const useDualTrade = <
       tradeData?: T;
       balance?: { [key: string]: sdk.DualBalance };
     }) => {
-      myLog("refreshDual", dualInfo, tradeData, balance);
-
       let walletMap: any = {};
       // feeVol: string | undefined = undefined;
-      const { info } = dualInfo.__raw__;
+      let { info } = dualInfo.__raw__;
 
       let _updateInfo: Partial<TradeDual<R>> = {
         dualViewInfo: dualInfo,
@@ -208,17 +223,20 @@ export const useDualTrade = <
           ..._updateInfo,
         };
       } else {
-        resetTradeDual();
+        // resetTradeDual();
+        // info = _updateInfo.dualViewInfo.__raw__.info;
       }
       if (balance) {
         _updateInfo.balance = balance;
       }
 
-      const [baseSymbol, quoteSymbol] = DUAL_TYPE.DUAL_BASE
-        ? [info.base, info.quote]
-        : [info.quote, info.base];
+      const [baseSymbol, quoteSymbol] =
+        DUAL_TYPE.DUAL_BASE === info.dualType
+          ? [info.base, info.quote]
+          : [info.quote, info.base];
       setSellBuySymbol([baseSymbol, quoteSymbol]);
 
+      // debugger;
       let coinSell: T =
         tradeData && tradeData.belong
           ? tradeData
@@ -232,11 +250,7 @@ export const useDualTrade = <
         baseSymbol,
         quoteSymbol
       );
-      if (
-        account.readyState == AccountStatus.ACTIVATED &&
-        amountMap &&
-        existedMarket
-      ) {
+      if (account.readyState == AccountStatus.ACTIVATED && existedMarket) {
         walletMap = makeWalletLayer2(true).walletMap;
         // const amountMarket = amountMap[existedMarket.market];
         coinSell.balance = walletMap[baseSymbol]?.count;
@@ -252,6 +266,7 @@ export const useDualTrade = <
           sellToken: tokenMap[baseSymbol],
           buyToken: tokenMap[quoteSymbol],
           sellAmount: coinSell.tradeValue?.toString() ?? undefined,
+          dualMarket: dualMarketMap[`DUAL-${info.base}-${info.quote}`],
         });
         _updateInfo = {
           ..._updateInfo,
@@ -262,7 +277,7 @@ export const useDualTrade = <
     },
     [
       account.readyState,
-      amountMap,
+      dualMarketMap,
       marketArray,
       productInfo,
       resetTradeDual,
@@ -272,9 +287,9 @@ export const useDualTrade = <
     ]
   );
 
-  const handleOnchange = _.debounce(({ tradeData }: { tradeData: T }) => {
+  const handleOnchange = ({ tradeData }: DualChgData<T>) => {
     refreshDual({ tradeData });
-  }, globalSetup.wait);
+  };
 
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus;
@@ -304,7 +319,7 @@ export const useDualTrade = <
         };
       } else if (
         sdk
-          .toBig(tradeDual?.sellVol)
+          .toBig(tradeDual?.coinSell?.tradeValue ?? 0)
           .minus(tradeDual?.miniSellVol ?? 0)
           .lt(0)
       ) {
@@ -329,15 +344,19 @@ export const useDualTrade = <
           label: `labelDualNoEnough| ${coinSellSymbol}`,
         };
       } else if (
-        tradeDual?.maxSellVol &&
+        tradeDual?.maxSellAmount &&
         tradeDual?.sellVol &&
         tradeDual.sellToken &&
-        sdk.toBig(tradeDual.sellVol).gte(tradeDual?.maxSellVol)
+        sdk
+          .toBig(tradeDual?.coinSell?.tradeValue ?? 0)
+          .gte(tradeDual?.maxSellAmount)
       ) {
+        // baseLimitAmount / quoteLimitAmount;
         const sellMaxVal = getValuePrecisionThousand(
-          sdk
-            .toBig(tradeDual?.maxSellVol)
-            .div("1e" + tradeDual.sellToken?.decimals),
+          tradeDual?.maxSellAmount,
+          // sdk
+          //   .toBig(tradeDual?.maxSellVol)
+          //   .div("1e" + tradeDual.sellToken?.decimals),
           tradeDual.sellToken.precision,
           tradeDual.sellToken.precision,
           tradeDual.sellToken.precision,
@@ -356,37 +375,28 @@ export const useDualTrade = <
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
   }, [coinSellSymbol]);
 
+  const refreshClick = React.useCallback(() => {
+    if (refreshRef.current && tradeDual) {
+      //@ts-ignore
+      refreshRef.current.firstElementChild.click();
+      myLog("should15sRefresh refreshRef.current click only");
+      should15sRefresh(true);
+    }
+  }, [refreshRef, tradeDual]);
   React.useEffect(() => {
     if (isShowDual?.isShow && isShowDual?.dualInfo?.__raw__) {
       setProductInfo(isShowDual.dualInfo as R);
       refreshDual({ dualInfo: isShowDual.dualInfo as R });
-      if (refreshRef.current) {
-        // @ts-ignore
-        refreshRef.current.firstElementChild.click();
-        myLog("should15sRefresh refreshRef.current click only");
-        should15sRefresh(true);
-      } else {
-        should15sRefresh(true);
-      }
     } else {
       resetTradeDual();
     }
-
+    refreshClick();
     return () => {
       myLog("should15sRefresh cancel");
       resetTradeDual();
       should15sRefresh.cancel();
-      handleOnchange.cancel();
     };
-  }, [isShowDual]);
-  React.useEffect(() => {
-    if (
-      account.readyState === AccountStatus.ACTIVATED &&
-      amountStatus === SagaStatus.UNSET
-    ) {
-      refreshDual({});
-    }
-  }, [account.readyState, amountStatus]);
+  }, [isShowDual, refreshRef.current]);
 
   const should15sRefresh = _.debounce(async (clearTrade: boolean = false) => {
     if (productInfo && coinSellSymbol && coinBuySymbol && LoopringAPI.defiAPI) {
@@ -395,19 +405,19 @@ export const useDualTrade = <
       if (clearTrade) {
         setIsLoading(true);
       }
-      if (
-        account.readyState === AccountStatus.ACTIVATED &&
-        coinSellSymbol &&
-        coinBuySymbol
-      ) {
-        let { market } = sdk.getExistedMarket(
-          marketArray,
-          coinSellSymbol,
-          coinBuySymbol
-        );
-        getAmount({ market });
-      }
-      myLog("should15sRefresh", clearTrade, coinSellSymbol);
+      // if (
+      //   account.readyState === AccountStatus.ACTIVATED &&
+      //   coinSellSymbol &&
+      //   coinBuySymbol
+      // ) {
+      //   let { market } = sdk.getExistedMarket(
+      //     marketArray,
+      //     coinSellSymbol,
+      //     coinBuySymbol
+      //   );
+      //   getAmount({ market });
+      // }
+      // myLog("should15sRefresh", clearTrade, coinSellSymbol);
 
       Promise.all([
         LoopringAPI.defiAPI?.getDualPrices({
@@ -415,34 +425,43 @@ export const useDualTrade = <
           productIds: productInfo.productId,
         }),
         LoopringAPI.defiAPI?.getDualBalance(),
-      ]).then(([dualPrices, dualBalanceMap]) => {
-        const {
-          tradeDual: { dualViewInfo },
-        } = store.getState()._router_tradeDual;
-        let dualInfo: R = {
-          ...dualViewInfo,
-        } as R;
-        let balance = undefined;
-        if (
-          (dualPrices as sdk.RESULT_INFO).code ||
-          (dualPrices as sdk.RESULT_INFO).message
-        ) {
-        }
-        if (dualInfo.__raw__?.info) {
-          dualInfo.__raw__.info.dualPrice = {
-            ...dualPrices,
-          };
-        }
-        if (
-          (dualBalanceMap as sdk.RESULT_INFO).code ||
-          (dualBalanceMap as sdk.RESULT_INFO).message
-        ) {
-        } else {
-          balance = dualBalanceMap;
-        }
-        refreshDual({ dualInfo, balance });
-        setIsLoading(false);
-      });
+      ])
+        .then(([dualPriceResponse, dualBalanceResponse]) => {
+          const {
+            tradeDual: { dualViewInfo },
+          } = store.getState()._router_tradeDual;
+          let dualInfo: R = _.cloneDeep(dualViewInfo) as R;
+          let balance = undefined;
+          if (
+            (dualPriceResponse as sdk.RESULT_INFO).code ||
+            (dualPriceResponse as sdk.RESULT_INFO).message
+          ) {
+          }
+          if (dualInfo?.__raw__?.info) {
+            dualInfo.__raw__.info = {
+              ...dualInfo.__raw__.info,
+              ...dualPriceResponse.infos[0],
+            };
+          }
+          if (
+            (dualBalanceResponse as sdk.RESULT_INFO).code ||
+            (dualBalanceResponse as sdk.RESULT_INFO).message
+          ) {
+          } else {
+            balance = dualBalanceResponse.raw_data.reduce(
+              (prev: any, item: any) => {
+                prev[item.coin] = item;
+                return prev;
+              },
+              {} as any
+            );
+          }
+          refreshDual({ dualInfo, balance });
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }, globalSetup.wait);
 
@@ -598,18 +617,11 @@ export const useDualTrade = <
   }, [tokenMap, coinSellSymbol, handleOnchange]);
 
   React.useEffect(() => {
-    if (accountStatus === SagaStatus.UNSET && coinSellSymbol && coinBuySymbol) {
+    if (accountStatus === SagaStatus.UNSET) {
       walletLayer2Callback();
-      if (account.readyState === AccountStatus.ACTIVATED) {
-        let { market } = sdk.getExistedMarket(
-          marketArray,
-          coinSellSymbol,
-          coinBuySymbol
-        );
-        getAmount({ market });
-      }
+      //
     }
-  }, [coinSellSymbol, coinBuySymbol, account.readyState, accountStatus]);
+  }, [accountStatus]);
 
   const {
     btnStatus,
@@ -622,48 +634,30 @@ export const useDualTrade = <
   });
   myLog("isLoading", isLoading);
 
-  const dualTradeProps = React.useMemo(() => {
-    return {
-      refreshRef,
-      disabled: false,
-      btnInfo: {
-        label: tradeMarketI18nKey,
-        params: {},
-      },
-      isLoading,
-      tokenMap: tokenMap as any,
-      onRefreshData: should15sRefresh,
-      onSubmitClick: onSubmitBtnClick,
-      onChangeEvent: handleOnchange,
-      tokenSellProps: {},
-      dualCalcData: tradeDual,
-      // maxSellVol: tradeDual.maxSellVol,
-      tokenSell: tokenMap[coinSellSymbol ?? ""],
-      btnStatus,
-      accStatus: account.readyState,
-    };
-  }, [
-    account.readyState,
-    btnStatus,
-    coinSellSymbol,
-    handleOnchange,
-    isLoading,
-    onBtnClick,
+  const dualTradeProps: DualWrapProps<T, I, ACD> = {
     refreshRef,
-    sendRequest,
-    should15sRefresh,
-    tokenMap,
-    tradeDual,
-    tradeMarketI18nKey,
-  ]); // as ForceWithdrawProps<any, any>;
+    disabled: false,
+    btnInfo: {
+      label: tradeMarketI18nKey,
+      params: {},
+    },
+    isLoading,
+    tokenMap: tokenMap as any,
+    onRefreshData: should15sRefresh,
+    onSubmitClick: onBtnClick as () => void,
+    onChangeEvent: handleOnchange,
+    tokenSellProps: {},
+    dualCalcData: tradeDual as ACD,
+    // maxSellVol: tradeDual.maxSellVol,
+    tokenSell: tokenMap[coinSellSymbol ?? ""],
+    btnStatus,
+    accStatus: account.readyState as AccountStatus,
+  }; // as ForceWithdrawProps<any, any>;
   return {
-    dualTradeProps: dualTradeProps as unknown as DualWrapProps<T, I, ACD>,
-    // confirmShowNoBalance,
-    // setConfirmShowNoBalance,
+    dualTradeProps,
     serverUpdate,
     setServerUpdate,
     dualToastOpen: toastOpen,
-    // setDualTostOpen: setToastOpen,
     closeDualToast: closeToast,
   };
 };

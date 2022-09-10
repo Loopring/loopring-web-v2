@@ -21,11 +21,18 @@ import {
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-import { useDualMap, useSystem, useTokenMap } from "@loopring-web/core";
+import {
+  ModalDualPanel,
+  useDualMap,
+  useDualTrade,
+  useSystem,
+  useTokenMap,
+} from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
 import {
   BackIcon,
   getValuePrecisionThousand,
+  myLog,
 } from "@loopring-web/common-resources";
 
 const StyleDual = styled(Box)`
@@ -105,6 +112,7 @@ export const DualListPanel: any = withTranslation("common")(
       handleOnPairChange,
     } = useDualHook({ setConfirmDualInvest });
 
+    const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade();
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     const history = useHistory();
@@ -296,6 +304,7 @@ export const DualListPanel: any = withTranslation("common")(
             {/*)}*/}
           </WrapperStyled>
         </StyleDual>
+        <ModalDualPanel dualTradeProps={dualTradeProps} />
       </Box>
     );
   }

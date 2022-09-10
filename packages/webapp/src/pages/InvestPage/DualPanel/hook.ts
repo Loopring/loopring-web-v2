@@ -58,10 +58,10 @@ export const useDualHook = ({
         : tradeMap[pairASymbol].tokenList[0]
       : "USDT"
   );
+  const [pair, setPair] = React.useState(`${pairASymbol}-${pairBSymbol}`);
   const [market, setMarket] = React.useState(() =>
     findDualMarket(marketArray, pairASymbol, pairBSymbol)
   );
-  const [pair, setPair] = React.useState(`${pairASymbol}-${pairBSymbol}`);
   const [[marketBase, marketQuote], setMarketPair] = React.useState(() => {
     // @ts-ignore
     const [, , coinA, coinB] = market
@@ -112,7 +112,7 @@ export const useDualHook = ({
   // const [productRawData,setProductRawData] = React.useState([])
   const getProduct = _.debounce(async () => {
     setIsLoading(true);
-
+    const market = findDualMarket(marketArray, pairASymbol, pairBSymbol);
     if (pairASymbol && pairBSymbol && market) {
       // @ts-ignore
       const [, , marketSymbolA, marketSymbolB] = (market ?? "").match(
@@ -203,41 +203,16 @@ export const useDualHook = ({
       marketArray !== undefined
     ) {
       handleOnPairChange({ pairB: pairBSymbol });
-      // setMarket(findDualMarket(marketArray, pairASymbol, pairBSymbol);
     }
   }, [dualStatus]);
   React.useEffect(() => {
-    if (pair) {
+    if (dualStatus === SagaStatus.UNSET && pair) {
       getProduct.cancel();
+      myLog("update pair", pair);
       getProduct();
     }
     return () => getProduct.cancel();
-  }, [pair]);
-
-  //   [...(marketArray ? marketArray : [])].find(
-  //   (_item) => {
-  //     const value = match?.params?.market
-  //       ?.replace(/null|-/gi, "")
-  //       ?.toUpperCase();
-  // const {
-  //   confirmation: { confirmedDualInvest },
-  // } = confirmation.useConfirmation();
-  // setConfirmDualInvest(!confirmedDualInvest);
-  // const { toastOpen, setToastOpen, closeToast } = useToast();
-  // const { marketArray } = useDualMap();
-  // myLog("isJoin", isJoin, "market", market);
-
-  // const {
-  //   dualWrapProps,
-  //   confirmShowNoBalance,
-  //   setConfirmShowNoBalance,
-  //   serverUpdate,
-  //   setServerUpdate,
-  // } = useDefiTrade({
-  //   isJoin,
-  //   setToastOpen: setToastOpen as any,
-  //   market: market ? market : marketArray[0], // marketArray[1] as MarketType,
-  // });
+  }, [pair, dualStatus]);
 
   return {
     // dualWrapProps: undefined,

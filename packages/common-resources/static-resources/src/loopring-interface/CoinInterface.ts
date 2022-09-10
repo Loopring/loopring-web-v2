@@ -138,13 +138,15 @@ export type CalDualResult<R> = {
   lessEarnTokenSymbol: string;
   greaterEarnVol: string;
   greaterEarnTokenSymbol: string;
-  maxSellVol: string;
+  maxSellAmount: string;
   miniSellVol: string;
   dualViewInfo: R;
   feeVol: string | undefined;
   feeTokenSymbol?: string;
   maxFeeBips: number;
+  sellToken: TokenInfo;
 };
+
 export type DualCalcData<R, B = IBData<any>> = CalDualResult<R> & {
   sellToken?: TokenInfo;
   buyToken?: TokenInfo;

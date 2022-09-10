@@ -15,7 +15,6 @@ import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
-import { DualPanel } from "./DualPanel/index";
 import { DualListPanel } from "./DualPanel/DualListPanel";
 
 export enum InvestType {

@@ -2,18 +2,18 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import {
   boxLiner,
   CoinIcons,
+  CountDownIcon,
   DualWrap,
+  DualWrapProps,
   ModalCloseButton,
   SwitchPanelStyled,
-  Toast,
   // TradeTitle,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-import { TOAST_TIME } from "@loopring-web/common-resources";
 import { Box, Divider, Modal as MuiModal, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { useDualTrade } from "../../index";
+import { myLog } from "@loopring-web/common-resources";
 
 // background: var(--color-box);
 // border-radius: ${({ theme }) => theme.unit}px;
@@ -51,18 +51,17 @@ const BoxLinear = styled(SwitchPanelStyled)`
 `;
 
 export const ModalDualPanel = withTranslation("common")(
-  ({ t, ...rest }: WithTranslation) => {
+  ({
+    t,
+    dualTradeProps,
+    ...rest
+  }: WithTranslation & { dualTradeProps: DualWrapProps<any, any, any> }) => {
     const {
       modals: { isShowDual },
       setShowDual,
     } = useOpenModals();
     const { isShow, dualInfo } = isShowDual ?? {};
-    const {
-      dualToastOpen,
-      // setDualTostOpen,
-      closeDualToast,
-      dualTradeProps,
-    } = useDualTrade();
+    myLog("isShowDual", isShowDual);
     const { isMobile, coinJson } = useSettings();
     // const theme = useTheme();
 
@@ -136,6 +135,13 @@ export const ModalDualPanel = withTranslation("common")(
                 </>
               )}
             </Box>
+            <Box alignSelf={"flex-end"} sx={{ display: "none" }}>
+              {/*sx={{ display: "none" }}*/}
+              <CountDownIcon
+                onRefreshData={dualTradeProps.onRefreshData}
+                ref={dualTradeProps.refreshRef}
+              />
+            </Box>
           </Box>
           <Divider sx={{ marginX: 2 }} />
           <Box
@@ -150,13 +156,6 @@ export const ModalDualPanel = withTranslation("common")(
           >
             <DualWrap {...{ ...rest, ...dualTradeProps }} />
           </Box>
-          <Toast
-            alertText={dualToastOpen?.content ?? ""}
-            severity={dualToastOpen?.type ?? "success"}
-            open={dualToastOpen?.open ?? false}
-            autoHideDuration={TOAST_TIME}
-            onClose={closeDualToast}
-          />
         </BoxLinear>
       </MuiModal>
     );

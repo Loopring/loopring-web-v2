@@ -22,7 +22,7 @@ export const useSubmitBtn = ({
   // let {calcTradeParams} = usePageTradePro();
   let { account } = useAccount();
 
-  const btnStatus = React.useMemo((): string | undefined => {
+  const btnStatus = React.useMemo((): TradeBtnStatus | undefined => {
     if (account.readyState === AccountStatus.ACTIVATED) {
       if (isLoading) {
         myLog("tradeBtnStatus", TradeBtnStatus.LOADING);
