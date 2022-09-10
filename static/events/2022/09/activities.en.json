@@ -7,8 +7,8 @@
     "rehypeRaw": "0",
     "banner": {
       "laptop": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_banner.en.webp",
-      "mobile": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_banner.en.webp",
-      "pad": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_banner.en.webp"
+      "mobile": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_banner.en.app.webp",
+      "pad": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_banner.en.app.webp"
     },
     "showBannerOrTitle": "1",
     "local": "en-us",
