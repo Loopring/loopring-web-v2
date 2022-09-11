@@ -247,11 +247,7 @@ export const useDualTrade = <
       );
       if (account.readyState == AccountStatus.ACTIVATED && existedMarket) {
         walletMap = makeWalletLayer2(true).walletMap;
-        // const amountMarket = amountMap[existedMarket.market];
         coinSell.balance = walletMap[baseSymbol]?.count;
-        // dualCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count;
-        // dualCalcDataInit.coinBuy.balance = walletMap[coinBuySymbol]?.count;
-        // feeVol = amountMarket[quoteSymbol].tradeCost;
       }
       if (_updateInfo.balance) {
         const calDualValue: CalDualResult<R> = calDual({
@@ -346,12 +342,8 @@ export const useDualTrade = <
           .toBig(tradeDual?.coinSell?.tradeValue ?? 0)
           .gte(tradeDual?.maxSellAmount)
       ) {
-        // baseLimitAmount / quoteLimitAmount;
         const sellMaxVal = getValuePrecisionThousand(
           tradeDual?.maxSellAmount,
-          // sdk
-          //   .toBig(tradeDual?.maxSellVol)
-          //   .div("1e" + tradeDual.sellToken?.decimals),
           tradeDual.sellToken.precision,
           tradeDual.sellToken.precision,
           tradeDual.sellToken.precision,
