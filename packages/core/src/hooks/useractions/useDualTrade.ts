@@ -137,14 +137,6 @@ export function calDual<R = DualViewInfo>({
     /** calc current maxFeeBips **/
     feeTokenSymbol = buyToken.symbol;
     maxFeeBips = 5;
-    //   BigNumber.max(
-    //   sdk
-    //     .toBig(feeVol ?? 0)
-    //     .times(10000)
-    //     .div(greaterEarnVol)
-    //     .toNumber(),
-    //
-    // );
   }
 
   return {
@@ -242,7 +234,7 @@ export const useDualTrade = <
         tradeData && tradeData.belong === baseSymbol
           ? tradeData
           : _coinSell?.belong === baseSymbol
-          ? (_coinSell as T)
+          ? ({ ..._coinSell } as T)
           : ({
               balance: _updateInfo?.coinSell?.balance ?? 0,
               tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
@@ -262,7 +254,7 @@ export const useDualTrade = <
         // feeVol = amountMarket[quoteSymbol].tradeCost;
       }
       if (_updateInfo.balance) {
-        const calDualValue = calDual({
+        const calDualValue: CalDualResult<R> = calDual({
           ...dualInfo.__raw__,
           balance: _updateInfo.balance,
           // feeVol,
@@ -309,7 +301,7 @@ export const useDualTrade = <
       const sellExceed = sdk
         .toBig(tradeDual.coinSell?.tradeValue ?? 0)
         .gt(tradeDual?.coinSell?.balance ?? 0);
-      myLog("sellExceed", sellExceed, "sellVol", tradeDual.sellVol, tradeDual);
+      myLog("sellExceed", sellExceed, tradeDual.sellVol, tradeDual);
       if (
         tradeDual?.sellVol === undefined ||
         sdk.toBig(tradeDual?.sellVol).lte(0) ||
@@ -322,7 +314,7 @@ export const useDualTrade = <
         };
       } else if (
         sdk
-          .toBig(tradeDual?.coinSell?.tradeValue ?? 0)
+          .toBig(tradeDual?.sellVol ?? 0)
           .minus(tradeDual?.miniSellVol ?? 0)
           .lt(0)
       ) {
@@ -403,24 +395,9 @@ export const useDualTrade = <
 
   const should15sRefresh = _.debounce(async (clearTrade: boolean = false) => {
     if (productInfo && coinSellSymbol && coinBuySymbol && LoopringAPI.defiAPI) {
-      // updateDepth()
-      // getDualMap();
       if (clearTrade) {
         setIsLoading(true);
       }
-      // if (
-      //   account.readyState === AccountStatus.ACTIVATED &&
-      //   coinSellSymbol &&
-      //   coinBuySymbol
-      // ) {
-      //   let { market } = sdk.getExistedMarket(
-      //     marketArray,
-      //     coinSellSymbol,
-      //     coinBuySymbol
-      //   );
-      //   getAmount({ market });
-      // }
-      // myLog("should15sRefresh", clearTrade, coinSellSymbol);
 
       Promise.all([
         LoopringAPI.defiAPI?.getDualPrices({

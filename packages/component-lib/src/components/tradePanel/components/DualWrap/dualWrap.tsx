@@ -589,4 +589,4 @@ export const DualWrap = <
       )}
     </Grid>
   );
-};;
+};

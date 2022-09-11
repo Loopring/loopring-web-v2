@@ -36,6 +36,7 @@ const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
         balance,
         request,
         coinSell,
+        sellVol,
       } = action.payload;
       if (dualViewInfo !== undefined) {
         state.tradeDual.dualViewInfo = dualViewInfo;
@@ -84,6 +85,9 @@ const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
       }
       if (balance) {
         state.tradeDual.balance = balance;
+      }
+      if (sellVol) {
+        state.tradeDual.sellVol = sellVol;
       }
     },
   },
