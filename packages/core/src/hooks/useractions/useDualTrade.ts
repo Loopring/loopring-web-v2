@@ -213,7 +213,9 @@ export const useDualTrade = <
       let walletMap: any = {};
       // feeVol: string | undefined = undefined;
       let { info } = dualInfo.__raw__;
-
+      const {
+        tradeDual: { coinSell: _coinSell },
+      } = store.getState()._router_tradeDual;
       let _updateInfo: Partial<TradeDual<R>> = {
         dualViewInfo: dualInfo,
       };
@@ -235,11 +237,12 @@ export const useDualTrade = <
           ? [info.base, info.quote]
           : [info.quote, info.base];
       setSellBuySymbol([baseSymbol, quoteSymbol]);
-
       // debugger;
       let coinSell: T =
-        tradeData && tradeData.belong
+        tradeData && tradeData.belong === baseSymbol
           ? tradeData
+          : _coinSell?.belong === baseSymbol
+          ? (_coinSell as T)
           : ({
               balance: _updateInfo?.coinSell?.balance ?? 0,
               tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,

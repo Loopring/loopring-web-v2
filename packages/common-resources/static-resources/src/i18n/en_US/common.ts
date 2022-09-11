@@ -997,16 +997,18 @@ export default {
   labelDualSettleDate: "Settlement Date",
   labelDualSubDate: "Subscription Date",
   labelDualCurrentPrice2: "Current {{symbol}} Price",
-  labelDualCurrentPrice3: "Current {{symbol}} Price",
-  labelDualCurrentAPR: "APR",
+  labelDualCurrentPrice3: "Current  Price",
+  labelDualCurrentAPR: "APR <1>\u2139</1>",
   labelDualCurrentAPRDes:
     "APR is refreshed in real time. We will use the lastest APR at the time you complete the subscription successfully.",
-  labelDualTargetPrice2: "Target Price",
+  labelDualTargetPrice2: "Target Price <1>\u2139</1>",
+  labelDualTargetPrice3: "Target Price",
+
   labelDualTargetPriceDes:
     "Target Price is a benchmark price. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
   labelDualRiskDes:
     "Your investment will be locked up until settlement date after investing and cannot be redeemed before settlement. \n As we make profit ratio a top priority, the total opened position might vary with your initial investment.",
-  labelDualReturn: "Return {{symbol}}",
+  labelDualReturn: "Return \n {{symbol}}",
   labelDualReceive: "Settlement Calculator",
   labelDualCalcLabel: "If {{symbol}} {{tag}} {{target}}",
   labelDualReturnValue: "Return {{value}} {{symbol}}",

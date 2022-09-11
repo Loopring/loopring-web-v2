@@ -76,9 +76,10 @@ export const ModalDualPanel = withTranslation("common")(
         aria-describedby="modal-modal-description"
       >
         <BoxLinear
-          width={"80%"}
-          minWidth={isMobile ? "initial" : 720}
-          maxWidth={isMobile ? "initial" : 1000}
+          width={isMobile ? "initial" : "var(--modal-width)"}
+          // width={"80%"}
+          // minWidth={isMobile ? "initial" : 720}
+          // maxWidth={isMobile ? "initial" : 1000}
           position={"relative"}
           style={{ alignItems: "stretch" }}
         >

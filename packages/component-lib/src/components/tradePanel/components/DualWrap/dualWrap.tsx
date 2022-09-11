@@ -8,53 +8,62 @@ import {
   getValuePrecisionThousand,
   hexToRGB,
   IBData,
+  Info2Icon,
   myLog,
   UpColor,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { DualWrapProps } from "./Interface";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
-import { Box, Divider, Grid, Tooltip, Typography } from "@mui/material";
+import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import { useSettings } from "../../../../stores";
 import styled from "@emotion/styled";
 import { ButtonStyle } from "../Styled";
 import { InputCoin } from "../../../basic-lib";
 import { TradeBtnStatus } from "../../Interface";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
 const BoxChartStyle = styled(Box)(({ theme }: any) => {
   const fillColor: string = theme.colorBase.textThird;
+  const whiteColor: string = theme.colorBase.white;
   const svg = encodeURIComponent(
     `<svg viewBox="0 0 24 24" fill="${fillColor}" height="24" width="24"  xmlns="http://www.w3.org/2000/svg"><path d="M12 15L8.5359 11.25L15.4641 11.25L12 15Z" /></svg>`
   );
+  const svgStar = encodeURIComponent(
+    `<svg viewBox="0 0 24 24" fill="${whiteColor}" height="24" width="24"  xmlns="http://www.w3.org/2000/svg"><path d="M11.6085 5L13.4046 10.5279H19.2169L14.5146 13.9443L16.3107 19.4721L11.6085 16.0557L6.90617 19.4721L8.70228 13.9443L4 10.5279H9.81234L11.6085 5Z" /></svg>`
+  );
   return `
-   .backView{
+   border-radius: ${theme.unit / 2}px;
+   overflow:hidden;
+   background: var(--color-table-header-bg);
+  .backView{
+      
       height: 1px;
       left: 0;
       right: 0;
-      bottom: 30px;
+      bottom: 48px;
       position: absolute;
       background-color: var(--color-primary);
-    
       &:before {
         content: "";
         display: block;
-        height: 14px;
-        width: 14px;
+        height: 24px;
+        width: 24px;
+        transform: scale(${14 / 24});
         border-radius: 50%;
+        background-image: url("data:image/svg+xml, ${svgStar}");
         background-color: var(--color-primary);
-        bottom: -7px;
-        left: calc(50% - 7px);
+        bottom: -12px;
+        left: calc(50% - 12px);
         position: absolute;
         z-index:99;
       }
       .line {
         display: block;
-        height: 7px;
-        background-color: var(--color-warning);
-        bottom: -3px;
+        height: 5px;
+        background-color: var(--color-primary);
+        bottom: -2px;
         left: 0;
         position: absolute;
         z-index:20;
@@ -65,7 +74,7 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
       display:flex;
       flex-direction:column;
       align-items: center;
-      top: 0px;
+      top: ${theme.unit}px;
       &:after {
         content: "";
         display: block;
@@ -88,7 +97,7 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
     .returnV{
       position: absolute;
       bottom:0;
-      height: 30px;
+      height: 48px;
       width:50%;
       display:flex;
       align-items: center;
@@ -132,7 +141,6 @@ export const DualDetail = ({
     () =>
       priceBase
         ? getValuePrecisionThousand(
-            // dualCalcData.dualViewInfo.currentPrice.currentPrice,
             dualViewInfo.__raw__.index.index,
             tokenMap[priceBase].precision,
             tokenMap[priceBase].precision,
@@ -161,14 +169,14 @@ export const DualDetail = ({
   return (
     <Box>
       <Box paddingX={2} paddingBottom={1}>
-        <BoxChartStyle height={96} width={"100%"} position={"relative"}>
+        <BoxChartStyle height={128} width={"100%"} position={"relative"}>
           <Box className={"point1 point"}>
             <Typography
               variant={"body2"}
               whiteSpace={"pre"}
               color={"textPrimary"}
             >
-              {t("labelDualTargetPrice2")}
+              {t("labelDualTargetPrice3")}
             </Typography>
             <Typography>{targetView}</Typography>
           </Box>
@@ -199,23 +207,35 @@ export const DualDetail = ({
             </Typography>
           </Box>
           <Box className={"returnV1 returnV"}>
-            <Typography variant={"body2"} color={"textPrimary"}>
-              {t("labelDualReturn", {
-                symbol:
-                  (greaterEarnView === "0" ? EmptyValueTag : greaterEarnView) +
-                  " " +
-                  greaterEarnTokenSymbol,
-              })}
+            <Typography
+              variant={"body2"}
+              color={"var(--color-success)"}
+              whiteSpace={"pre-line"}
+            >
+              {greaterEarnTokenSymbol &&
+                t("labelDualReturn", {
+                  symbol:
+                    (greaterEarnView === "0"
+                      ? EmptyValueTag
+                      : greaterEarnView) +
+                    " " +
+                    greaterEarnTokenSymbol,
+                })}
             </Typography>
           </Box>
           <Box className={"returnV2 returnV"}>
-            <Typography variant={"body2"} color={"textPrimary"}>
-              {t("labelDualReturn", {
-                symbol:
-                  (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
-                    " " +
-                    lessEarnTokenSymbol ?? dualViewInfo.__raw__.info.base,
-              })}
+            <Typography
+              variant={"body2"}
+              color={"var(--color-warning)"}
+              whiteSpace={"pre-line"}
+            >
+              {lessEarnTokenSymbol &&
+                t("labelDualReturn", {
+                  symbol:
+                    (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
+                      " " +
+                      lessEarnTokenSymbol ?? dualViewInfo.__raw__.info.base,
+                })}
             </Typography>
           </Box>
           <Box className={"backView"}>
@@ -230,16 +250,6 @@ export const DualDetail = ({
             />
           </Box>
         </BoxChartStyle>
-
-        {/*<Box marginTop={1}>*/}
-        {/*  <Typography*/}
-        {/*    color={"textSecondary"}*/}
-        {/*    whiteSpace={"pre-line"}*/}
-        {/*    variant={"body1"}*/}
-        {/*  >*/}
-        {/*    {t("labelDualRiskDes")}*/}
-        {/*  </Typography>*/}
-        {/*</Box>*/}
       </Box>
       <Box
         display={"flex"}
@@ -255,62 +265,22 @@ export const DualDetail = ({
           justifyContent={"space-between"}
           paddingBottom={1}
         >
-          <Typography
-            component={"span"}
-            variant={"inherit"}
-            color={"textSecondary"}
-          >
-            {t("labelDualSettleDate")}
-          </Typography>
-          <Typography
-            component={"span"}
-            variant={"inherit"}
-            color={"textPrimary"}
-          >
-            {moment(new Date(dualViewInfo.expireTime)).format(
-              YEAR_DAY_MINUTE_FORMAT
-            )}
-          </Typography>
-        </Typography>
-        <Typography
-          variant={"body1"}
-          display={"inline-flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-          paddingBottom={1}
-        >
-          <Typography
-            component={"span"}
-            variant={"inherit"}
-            color={"textSecondary"}
-          >
-            {t("labelDualCurrentPrice2", {
-              symbol: priceBase,
-            })}
-          </Typography>
-          <Typography
-            component={"span"}
-            variant={"inherit"}
-            color={"textPrimary"}
-          >
-            {currentView}
-          </Typography>
-        </Typography>
-
-        <Typography
-          variant={"body1"}
-          display={"inline-flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-          paddingBottom={1}
-        >
           <Tooltip title={t("labelDualCurrentAPRDes").toString()}>
             <Typography
               component={"span"}
               variant={"inherit"}
               color={"textSecondary"}
+              display={"inline-flex"}
+              alignItems={"center"}
             >
-              {t("labelDualCurrentAPR")}
+              <Trans i18nKey={"labelDualCurrentAPR"}>
+                APR
+                <Info2Icon
+                  fontSize={"small"}
+                  color={"inherit"}
+                  sx={{ marginX: 1 / 2 }}
+                />
+              </Trans>
             </Typography>
           </Tooltip>
           <Typography
@@ -338,8 +308,17 @@ export const DualDetail = ({
               component={"span"}
               variant={"inherit"}
               color={"textSecondary"}
+              display={"inline-flex"}
+              alignItems={"center"}
             >
-              {t("labelDualTargetPrice2")}
+              <Trans i18nKey={"labelDualTargetPrice2"}>
+                Target Price
+                <Info2Icon
+                  fontSize={"small"}
+                  color={"inherit"}
+                  sx={{ marginX: 1 / 2 }}
+                />
+              </Trans>
             </Typography>
           </Tooltip>
           <Typography
@@ -348,6 +327,33 @@ export const DualDetail = ({
             color={"textPrimary"}
           >
             {targetView}
+          </Typography>
+        </Typography>
+
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={1}
+        >
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textSecondary"}
+            display={"inline-flex"}
+            alignItems={"center"}
+          >
+            {t("labelDualSettleDate")}
+          </Typography>
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textPrimary"}
+          >
+            {moment(new Date(dualViewInfo.expireTime)).format(
+              YEAR_DAY_MINUTE_FORMAT
+            )}
           </Typography>
         </Typography>
       </Box>
@@ -382,7 +388,7 @@ export const DualWrap = <
   // myLog("refreshRef", refreshRef);
   // const history = useHistory();
   const priceSymbol = dualCalcData?.dualViewInfo?.currentPrice?.quote;
-  const priceBase = dualCalcData?.dualViewInfo?.currentPrice?.base;
+  // const priceBase = dualCalcData?.dualViewInfo?.currentPrice?.base;
 
   const getDisabled = React.useMemo(() => {
     return disabled || dualCalcData === undefined;
@@ -390,11 +396,6 @@ export const DualWrap = <
 
   const handleCountChange = React.useCallback(
     (ibData: T, _name: string, _ref: any) => {
-      // const focus: DualChgType =
-      //   _ref?.current === coinSellRef.current
-      //     ? DualChgType.coinSell
-      //     : DualChgType.coinBuy;
-
       if (dualCalcData["coinSell"].tradeValue !== ibData.tradeValue) {
         myLog("dual handleCountChange", _name, ibData);
 
@@ -460,28 +461,12 @@ export const DualWrap = <
         : EmptyValueTag,
     [dualCalcData.greaterEarnTokenSymbol, dualCalcData.greaterEarnVol, tokenMap]
   );
-  const targetView = React.useMemo(
-    () =>
-      priceBase
-        ? getValuePrecisionThousand(
-            dualCalcData.dualViewInfo?.strike,
-            tokenMap[priceBase].precision,
-            tokenMap[priceBase].precision,
-            tokenMap[priceBase].precision,
-            true,
-            { floor: true }
-          )
-        : EmptyValueTag,
-    [dualCalcData.dualViewInfo?.strike, priceBase, tokenMap]
-  );
+
   const maxSellAmount = React.useMemo(
     () =>
       dualCalcData.maxSellAmount && dualCalcData.sellToken
         ? getValuePrecisionThousand(
             dualCalcData.maxSellAmount,
-            // sdk
-            //   .toBig(dualCalcData.maxSellVol)
-            //   .div("1e" + dualCalcData.sellToken.decimals),decimals
             dualCalcData.sellToken.precision,
             dualCalcData.sellToken.precision,
             dualCalcData.sellToken.precision,
@@ -556,107 +541,6 @@ export const DualWrap = <
                 </Typography>
               </Typography>
             </Box>
-            <Box paddingX={2}>
-              <Box
-                borderRadius={1}
-                marginBottom={2}
-                style={{ background: "var(--color-table-header-bg)" }}
-                alignItems={"stretch"}
-                display={"flex"}
-                paddingY={1}
-                paddingX={2}
-                flexDirection={"column"}
-              >
-                <Typography
-                  variant={"subtitle1"}
-                  color={"textSecondary"}
-                  alignSelf={"flex-start"}
-                  marginBottom={1}
-                >
-                  {t("labelDualReceive")}
-                </Typography>
-                <Divider />
-                <Typography
-                  variant={"body1"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  justifyContent={"space-between"}
-                  paddingBottom={1}
-                  marginTop={1}
-                >
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"textSecondary"}
-                  >
-                    {t("labelDualCalcLabel", {
-                      symbol: priceBase,
-                      tag:
-                        dualCalcData.dualViewInfo.__raw__.info.dualType ===
-                        DUAL_TYPE.DUAL_CURRENCY
-                          ? "≤"
-                          : "<",
-                      target: targetView,
-                      interpolation: {
-                        escapeValue: false,
-                      },
-                    })}
-                  </Typography>
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"textPrimary"}
-                    whiteSpace={"pre-line"}
-                  >
-                    {t("labelDualReturnValue", {
-                      symbol: dualCalcData.lessEarnTokenSymbol,
-                      value:
-                        lessEarnView === "0" ? EmptyValueTag : lessEarnView,
-                    })}
-                  </Typography>
-                </Typography>
-                <Typography
-                  variant={"body1"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  justifyContent={"space-between"}
-                  paddingBottom={1}
-                >
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"textSecondary"}
-                    whiteSpace={"pre-line"}
-                  >
-                    {t("labelDualCalcLabel", {
-                      symbol: priceBase,
-                      tag:
-                        dualCalcData.dualViewInfo.__raw__.info.dualType ===
-                        DUAL_TYPE.DUAL_BASE
-                          ? "≥"
-                          : ">",
-                      target: targetView,
-                      interpolation: {
-                        escapeValue: false,
-                      },
-                    })}
-                  </Typography>
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"textPrimary"}
-                  >
-                    {t("labelDualReturnValue", {
-                      symbol: dualCalcData.greaterEarnTokenSymbol,
-                      value:
-                        greaterEarnView === "0"
-                          ? EmptyValueTag
-                          : greaterEarnView,
-                    })}
-                  </Typography>
-                </Typography>
-              </Box>
-            </Box>
           </Grid>
           <Grid
             item
@@ -677,7 +561,7 @@ export const DualWrap = <
             />
           </Grid>
           <Grid item xs={12}>
-            <Box paddingX={2}>
+            <Box paddingX={2} marginTop={2}>
               <ButtonStyle
                 fullWidth
                 variant={"contained"}
@@ -705,4 +589,4 @@ export const DualWrap = <
       )}
     </Grid>
   );
-};
+};;

@@ -109,6 +109,7 @@ import {
   RefreshIPFSIcon,
   ViewMoreIcon,
   PointIcon,
+  PointStarIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -228,6 +229,7 @@ const listIcon = [
   <RefreshIPFSIcon />,
   <ViewMoreIcon />,
   <PointIcon />,
+  <PointStarIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(
