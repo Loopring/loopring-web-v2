@@ -12,7 +12,7 @@
     },
    
     "api": {
-      "url": "https://api.loopring.io/api/v3/user/gaveawayNft2/getAccount",
+      "url": "https://api3.loopring.io/api/v3/user/gaveawayNft2/getAccount",
       "params": null,
       "column": [
         {
