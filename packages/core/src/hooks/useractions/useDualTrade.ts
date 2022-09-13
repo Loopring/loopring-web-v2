@@ -8,7 +8,6 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
-  CalDualResult,
   CustomErrorWithCode,
   DualCalcData,
   DualViewInfo,
@@ -34,11 +33,6 @@ import {
 import _ from "lodash";
 
 import * as sdk from "@loopring-web/loopring-sdk";
-import {
-  DefiMarketInfo,
-  DUAL_TYPE,
-  TokenInfo,
-} from "@loopring-web/loopring-sdk";
 
 import {
   LoopringAPI,
@@ -49,111 +43,6 @@ import {
 } from "../../index";
 import { useTranslation } from "react-i18next";
 import { useTradeDual } from "../../stores";
-import { BigNumber } from "bignumber.js";
-
-/**
- *
- * @param info
- * @param index
- * @param rule
- * @param balance
- * @param feeVol
- * @param sellToken
- * @param buyToken
- * @param sellAmount
- * @param currentPrice
- */
-export function calDual<R = DualViewInfo>({
-  info,
-  index,
-  rule,
-  balance,
-  feeVol,
-  sellToken,
-  buyToken,
-  sellAmount,
-  dualMarket,
-}: {
-  sellAmount: string | undefined;
-  info: sdk.DualProductAndPrice;
-  index: sdk.DualIndex;
-  rule: sdk.DualRulesCoinsInfo;
-  balance: { [key: string]: sdk.DualBalance };
-  sellToken: TokenInfo;
-  buyToken: TokenInfo;
-  feeVol?: string | undefined;
-  dualMarket: DefiMarketInfo;
-}): CalDualResult<R> {
-  const sellVol = sdk
-    .toBig(sellAmount ? sellAmount : 0)
-    .times("1e" + sellToken.decimals);
-  const dualViewInfo = makeDualViewItem(info, index, rule);
-  let lessEarnVol,
-    lessEarnTokenSymbol,
-    greaterEarnVol,
-    greaterEarnTokenSymbol,
-    maxSellAmount,
-    miniSellVol,
-    feeTokenSymbol,
-    maxFeeBips;
-  myLog("settleRatio", dualViewInfo.settleRatio, dualViewInfo, index);
-  if (info.dualType === DUAL_TYPE.DUAL_BASE) {
-    lessEarnVol = sellVol.times(1 + info.ratio); //dualViewInfo.strike);
-    lessEarnTokenSymbol = sellToken.symbol;
-    greaterEarnVol = sdk
-      .toBig(sellAmount ?? 0)
-      .times(1 + info.ratio)
-      .times(dualViewInfo.strike)
-      .times("1e" + buyToken.decimals);
-    greaterEarnTokenSymbol = buyToken.symbol;
-    // @ts-ignore
-    miniSellVol = dualMarket.baseLimitAmount; // rule.baseMin;
-    maxSellAmount = BigNumber.max(
-      rule.baseMax ?? 0,
-      info.dualPrice.dualBid[0].baseQty,
-      balance ? balance[sellToken.symbol]?.free ?? 0 : 0
-    );
-    feeTokenSymbol = buyToken.symbol;
-    maxFeeBips = 5;
-  } else {
-    lessEarnVol = sdk
-      .toBig(sellAmount ?? 0)
-      .times(1 + info.ratio)
-      .div(dualViewInfo.strike)
-      .times("1e" + buyToken.decimals);
-
-    // sellVol.times(1 + info.ratio).div(dualViewInfo.strike); //.times(1 + dualViewInfo.settleRatio);
-    lessEarnTokenSymbol = buyToken.symbol;
-    greaterEarnVol = sellVol.times(1 + info.ratio);
-    //.div(dualViewInfo.strike);
-    greaterEarnTokenSymbol = sellToken.symbol;
-    // @ts-ignore
-    miniSellVol = dualMarket.quoteLimitAmount; // rule.baseMin;
-    maxSellAmount = BigNumber.max(
-      rule.currencyMax,
-      sdk.toBig(info.dualPrice.dualBid[0].baseQty).times(dualViewInfo.strike),
-      balance[sellToken.symbol].free
-    );
-    /** calc current maxFeeBips **/
-    feeTokenSymbol = buyToken.symbol;
-    maxFeeBips = 5;
-  }
-
-  return {
-    sellVol: sellVol.toString(),
-    lessEarnVol: lessEarnVol.toString(),
-    lessEarnTokenSymbol,
-    greaterEarnVol: greaterEarnVol.toString(),
-    greaterEarnTokenSymbol,
-    miniSellVol,
-    sellToken,
-    maxSellAmount: maxSellAmount?.toString() ?? "",
-    maxFeeBips: maxFeeBips,
-    dualViewInfo: dualViewInfo as unknown as R,
-    feeVol,
-    feeTokenSymbol,
-  };
-}
 
 export const useDualTrade = <
   T extends IBData<I>,
@@ -225,7 +114,7 @@ export const useDualTrade = <
       }
 
       const [baseSymbol, quoteSymbol] =
-        DUAL_TYPE.DUAL_BASE === info.dualType
+        sdk.DUAL_TYPE.DUAL_BASE === info.dualType
           ? [info.base, info.quote]
           : [info.quote, info.base];
       setSellBuySymbol([baseSymbol, quoteSymbol]);
@@ -249,8 +138,14 @@ export const useDualTrade = <
         walletMap = makeWalletLayer2(true).walletMap;
         coinSell.balance = walletMap[baseSymbol]?.count;
       }
+      const dualViewInfo = makeDualViewItem(
+        info,
+        dualInfo.__raw__.index,
+        dualInfo.__raw__.rule
+      );
+
       if (_updateInfo.balance) {
-        const calDualValue: CalDualResult<R> = calDual({
+        const calDualValue: sdk.CalDualResult = sdk.calcDual({
           ...dualInfo.__raw__,
           balance: _updateInfo.balance,
           // feeVol,
@@ -264,7 +159,7 @@ export const useDualTrade = <
           ...(calDualValue as TradeDual<R>),
         };
       }
-      updateTradeDual({ ..._updateInfo, coinSell });
+      updateTradeDual({ ..._updateInfo, dualViewInfo, coinSell });
     },
     [
       account.readyState,
@@ -486,7 +381,7 @@ export const useDualTrade = <
             volume: tradeDual.sellVol,
           },
           buyToken:
-            dualType === DUAL_TYPE.DUAL_BASE
+            dualType === sdk.DUAL_TYPE.DUAL_BASE
               ? {
                   tokenId: tradeDual.buyToken?.tokenId ?? 0,
                   volume: tradeDual.lessEarnVol,

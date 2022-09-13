@@ -222,4 +222,7 @@ export default {
   labelDualPrice: "Target Price",
   labelDualSettlement: "Settlement Date",
   labelDualAction: "Action",
+  labelInvestmentStatusSettled: "Settled",
+  labelInvestmentStatusDelivering: "Delivering",
+  labelInvestmentStatusSubscribe: "Subscribe",
 };

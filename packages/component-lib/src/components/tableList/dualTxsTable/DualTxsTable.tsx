@@ -2,14 +2,22 @@ import _ from "lodash";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
-import { EmptyValueTag, globalSetup } from "@loopring-web/common-resources";
+import {
+  DirectionTag,
+  globalSetup,
+  YEAR_DAY_MINUTE_FORMAT,
+} from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import { Box, BoxProps, Typography } from "@mui/material";
 import moment from "moment";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
-import { RawDataDualTxsItem } from "./Interface";
+import {
+  LABEL_INVESTMENT_STATUS_MAP,
+  RawDataDualTxsItem,
+  SETTLEMENT_STATUS,
+} from "./Interface";
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -108,112 +116,139 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
-          key: "style",
           sortable: false,
           width: "auto",
-          minWidth: 240,
-          name: t("labelDualType") + " " + t("labelDualAmount"),
-          formatter: ({ row: _row }: FormatterProps<R, unknown>) => {
-            // const { action, sellToken, buyToken } = row;
-            // const isJoin = !new RegExp(sdk.DualAction.Withdraw, "ig").test(
-            //   action ?? " "
-            // );
-            // const sellTokenInfo =
-            //   sellToken?.tokenId !== undefined &&
-            //   tokenMap[idIndex[sellToken?.tokenId]];
-            // const sellVolume = sdk
-            //   .toBig(sellToken?.volume ?? 0)
-            //   .div("1e" + sellTokenInfo.decimals);
-            // const buyTokenInfo =
-            //   buyToken?.tokenId !== undefined &&
-            //   tokenMap[idIndex[buyToken?.tokenId]];
-            // const buyVolume = sdk
-            //   .toBig(buyToken?.volume ?? 0)
-            //   .div("1e" + buyTokenInfo.decimals);
-            // const side = isJoin ? t("labelDualJoin") : t("labelDualExit");
+          key: "DualTxsSide",
+          name: t("labelDualTxsSide"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const { settlementStatus, expireTime, sellSymbol, buySymbol } = row;
+            const side =
+              expireTime - Date.now() < 0
+                ? settlementStatus === SETTLEMENT_STATUS.SETTLED
+                  ? LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED
+                  : LABEL_INVESTMENT_STATUS_MAP.DELIVERING
+                : LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE;
+            const statusColor =
+              expireTime - Date.now() < 0
+                ? settlementStatus === SETTLEMENT_STATUS.SETTLED
+                  ? "var(--color-success)"
+                  : "var(--color-warning)"
+                : "var(--color-error)";
+            const sentense =
+              expireTime - Date.now() < 0
+                ? settlementStatus === SETTLEMENT_STATUS.SETTLED
+                  ? ` ${sellSymbol} ${DirectionTag} ${buySymbol}`
+                  : `${sellSymbol}`
+                : `${sellSymbol}`;
             return (
               <Box display={"flex"} alignItems={"center"}>
-                {/*<Typography*/}
-                {/*  color={isJoin ? "var(--color-success)" : "var(--color-error)"}*/}
-                {/*>*/}
-                {/*  {side}*/}
-                {/*</Typography>*/}
-                {/*&nbsp;&nbsp;*/}
-                {/*<Typography component={"span"}>*/}
-                {/*  {`${getValuePrecisionThousand(*/}
-                {/*    sellVolume,*/}
-                {/*    sellTokenInfo?.precision,*/}
-                {/*    sellTokenInfo?.precision,*/}
-                {/*    sellTokenInfo?.precision,*/}
-                {/*    false,*/}
-                {/*    { isTrade: true, floor: false }*/}
-                {/*  )} ${sellTokenInfo.symbol}`}*/}
-                {/*</Typography>*/}
-                {/*&nbsp;{DirectionTag} &nbsp;*/}
-                {/*<Typography component={"span"}>*/}
-                {/*  {`${getValuePrecisionThousand(*/}
-                {/*    buyVolume,*/}
-                {/*    buyTokenInfo?.precision,*/}
-                {/*    buyTokenInfo?.precision,*/}
-                {/*    buyTokenInfo?.precision,*/}
-                {/*    false,*/}
-                {/*    { isTrade: true, floor: false }*/}
-                {/*  )} ${buyTokenInfo.symbol}`}*/}
-                {/*</Typography>*/}
+                <Typography color={statusColor}>{side}</Typography>
+                &nbsp;&nbsp;
+                <Typography component={"span"}>{sentense}</Typography>
               </Box>
             );
           },
         },
         {
-          key: "fee",
-          name: t("labelDualTerm"),
-          headerCellClass: "textAlignRight",
-          formatter: ({ row: _row }) => {
-            // const { fee } = row;
-            // const feeTokenInfo = tokenMap[idIndex[fee?.tokenId ?? ""]];
-            // const feeVolume = sdk
-            //   .toBig(fee?.volume ?? 0)
-            //   .div("1e" + feeTokenInfo.decimals)
-            //   .toNumber();
-            // const renderValue =
-            //   feeVolume === 0 || feeVolume === undefined
-            //     ? EmptyValueTag
-            //     : `${getValuePrecisionThousand(
-            //         feeVolume,
-            //         feeTokenInfo?.precision,
-            //         feeTokenInfo?.precision,
-            //         feeTokenInfo?.precision,
-            //         false,
-            //         { isTrade: false, floor: false }
-            //       )} ${feeTokenInfo.symbol}`;
-            // renderValue
-            return <Box className="rdg-cell-value textAlignRight">{}</Box>;
-          },
-        },
-        {
-          key: "time",
           sortable: false,
           width: "auto",
-          headerCellClass: "textAlignRight",
-          cellClass: "textAlignRight",
-          name: t("labelDualTime"),
-          formatter: ({ row }) => {
-            const { updatedAt: time } = row;
-            let timeString;
-            if (typeof time === "undefined") {
-              timeString = EmptyValueTag;
-            } else {
-              timeString = moment(new Date(time), "YYYYMMDDHHMM").fromNow();
-            }
+          key: "Product",
+          name: t("labelDualTxsProduct"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <Typography component={"span"} textAlign={"right"}>
-                {timeString}
+              <Typography
+                height={"100%"}
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+              >
+                {row?.productId}
               </Typography>
             );
           },
         },
+        {
+          sortable: false,
+          width: "auto",
+          key: "APR",
+          name: t("labelDualAssetAPR"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <Typography>{row?.apy}</Typography>;
+          },
+        },
+        {
+          sortable: false,
+          width: "auto",
+          key: "TargetPrice",
+          name: t("labelDualTxsTargetPrice"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <Typography
+                height={"100%"}
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+              >
+                {row?.strike + " " + row.buySymbol}
+              </Typography>
+            );
+          },
+        },
+        {
+          sortable: false,
+          width: "auto",
+          key: "Price",
+          name: t("labelDualTxsSellPrice"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <Typography
+                height={"100%"}
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+              >
+                {row?.deliveryPrice}
+              </Typography>
+            );
+          },
+        },
+        {
+          sortable: false,
+          width: "auto",
+          key: "Settlement_Date",
+          name: t("labelDualAssetSettlement_Date"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <Typography
+                height={"100%"}
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+              >
+                {moment(new Date(row.expireTime)).format(
+                  YEAR_DAY_MINUTE_FORMAT
+                )}
+              </Typography>
+            );
+          },
+        },
+        {
+          key: "time",
+          name: t("labelTxTime"),
+          headerCellClass: "textAlignRight",
+          formatter: ({ row }) => {
+            return (
+              <Box className="rdg-cell-value textAlignRight">
+                {moment(
+                  new Date(row.timeOrigin?.updateTime),
+                  "YYYYMMDDHHMM"
+                ).fromNow()}
+              </Box>
+            );
+          },
+        },
       ],
-      [t, tokenMap, idIndex]
+      []
     );
 
     const getColumnMobileTransaction = React.useCallback(

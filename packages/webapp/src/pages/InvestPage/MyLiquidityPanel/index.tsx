@@ -77,11 +77,9 @@ const MyLiquidity: any = withTranslation("common")(
           title2: "body1",
           count2: "h5",
         };
-    const lidoAssets= assetsRawData.filter(
-      (o) =>
-        o.token.type !== TokenType.single &&
-        o.token.type !== TokenType.lp
-    )    
+    const lidoAssets = assetsRawData.filter(
+      (o) => o.token.type !== TokenType.single && o.token.type !== TokenType.lp
+    );
     return (
       <>
         <StyleWrapper
@@ -166,7 +164,9 @@ const MyLiquidity: any = withTranslation("common")(
           </Link>
         </StyleWrapper>
         <TableWrapStyled
-          className={`table-divide-short MuiPaper-elevation2 ${myPoolRow?.length?"min-height":""}`}
+          className={`table-divide-short MuiPaper-elevation2 ${
+            myPoolRow?.length ? "min-height" : ""
+          }`}
           marginTop={2}
           paddingY={2}
           paddingX={0}
@@ -216,7 +216,43 @@ const MyLiquidity: any = withTranslation("common")(
         </TableWrapStyled>
 
         <TableWrapStyled
-          className={`table-divide-short MuiPaper-elevation2 ${lidoAssets?.length?"min-height":""}`}
+          className={`table-divide-short MuiPaper-elevation2 ${
+            lidoAssets?.length ? "min-height" : ""
+          }`}
+          marginTop={2}
+          marginBottom={3}
+          paddingY={2}
+          paddingX={0}
+          flex={1}
+        >
+          <Grid item xs={12}>
+            <Typography variant={"h5"} marginBottom={1} marginX={3}>
+              {t("labelInvestType_DUAL")}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
+            {/*<AssetsTable*/}
+            {/*  {...{*/}
+            {/*    disableWithdrawList,*/}
+            {/*    rawData: lidoAssets,*/}
+            {/*    showFilter: false,*/}
+            {/*    allowTrade,*/}
+            {/*    onSend,*/}
+            {/*    onReceive,*/}
+            {/*    getMarketArrayListCallback: getTokenRelatedMarketArray,*/}
+            {/*    rowConfig: RowInvestConfig,*/}
+            {/*    forexMap: forexMap as any,*/}
+            {/*    isInvest: true,*/}
+            {/*    ...rest,*/}
+            {/*  }}*/}
+            {/*/>*/}
+          </Grid>
+        </TableWrapStyled>
+
+        <TableWrapStyled
+          className={`table-divide-short MuiPaper-elevation2 ${
+            lidoAssets?.length ? "min-height" : ""
+          }`}
           marginTop={2}
           marginBottom={3}
           paddingY={2}
@@ -232,7 +268,7 @@ const MyLiquidity: any = withTranslation("common")(
             <AssetsTable
               {...{
                 disableWithdrawList,
-                rawData:lidoAssets,
+                rawData: lidoAssets,
                 showFilter: false,
                 allowTrade,
                 onSend,

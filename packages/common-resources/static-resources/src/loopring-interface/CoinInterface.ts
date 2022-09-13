@@ -1,5 +1,6 @@
 import {
   Account,
+  DualCurrentPrice,
   FloatTag,
   ForexMap,
   TradeStatus,
@@ -132,25 +133,12 @@ export type DeFiCalcData<T> = {
   BtoA: string;
   fee: string;
 };
-export type CalDualResult<R> = {
-  sellVol: string;
-  lessEarnVol: string;
-  lessEarnTokenSymbol: string;
-  greaterEarnVol: string;
-  greaterEarnTokenSymbol: string;
-  maxSellAmount: string;
-  miniSellVol: string;
-  dualViewInfo: R;
-  feeVol: string | undefined;
-  feeTokenSymbol?: string;
-  maxFeeBips: number;
-  sellToken: TokenInfo;
-};
 
-export type DualCalcData<R, B = IBData<any>> = CalDualResult<R> & {
+export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {
   sellToken?: TokenInfo;
   buyToken?: TokenInfo;
   coinSell: B;
+  dualViewInfo: R;
   balance: { [key: string]: sdk.DualBalance };
   request?: sdk.DualOrderRequest;
 };
@@ -372,3 +360,21 @@ export type GET_IPFS_STRING = (
   url: string | undefined,
   basicURl: string
 ) => string;
+
+export type DualViewInfo = {
+  apy: string;
+  settleRatio: string;
+  term: string;
+  strike: string;
+  isUp: boolean;
+  expireTime: number;
+  currentPrice: DualCurrentPrice;
+  productId: string;
+  sellSymbol: string;
+  buySymbol: string;
+  __raw__: {
+    info: sdk.DualProductAndPrice;
+    index: sdk.DualIndex;
+    rule: sdk.DualRulesCoinsInfo;
+  };
+};

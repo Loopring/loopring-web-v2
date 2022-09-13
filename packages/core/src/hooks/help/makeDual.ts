@@ -7,28 +7,6 @@ import {
 } from "@loopring-web/common-resources";
 import moment from "moment";
 
-// export const dualCurrentPrice = (
-//   // pairASymbol: string,
-//   // pairBSymbol: string,
-//   dualMarket: `${string}-${string}-${string}`
-// ): DualCurrentPrice => {
-//   // const { tokenPrices } = store.getState().tokenPrices;
-//   // const { tickerMap } = store.getState().tickerMap;
-//   // const { marketArray } = store.getState().tokenMap;
-//   const [, , baseDual, quoteDual] =
-//     dualMarket.match(/(dual-)?(\w+)-(\w+)/i) ?? [];
-//   // const { market } = getExistedMarket(marketArray, baseDual, quoteDual);
-//   // const [, _base, quote] = market.match(/(\w+)-(\w+)/i);
-//   // let currentPrice = tickerMap[market].close ?? tokenPrices[baseDual];
-//   // currentPrice =
-//   //   (quote === quoteDual ? currentPrice : 1 / currentPrice) *
-//   //   tokenPrices[quote];
-//   return {
-//     currentPrice:dualCalcData.dualViewInfo.__raw__.index.index,
-//     quote: quoteDual,
-//     base: baseDual,
-//   };
-// };
 export const makeDualViewItem = (
   info: sdk.DualProductAndPrice,
   index: sdk.DualIndex,

@@ -132,7 +132,7 @@ export const ModalDualPanel = withTranslation("common")(
                         symbolB: dualInfo.buySymbol,
                       })}
                     </Typography>
-                  </Typography>{" "}
+                  </Typography>
                 </>
               )}
             </Box>
