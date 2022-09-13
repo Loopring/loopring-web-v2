@@ -11,7 +11,7 @@
       "middle":"to"
     },
     "api":{
-      "url": "https://api.loopring.io/api/v3/datacenter/gaveawayNft3/getAccountByTokenAddress",
+      "url": "https://api3.loopring.io/api/v3/datacenter/gaveawayNft3/getAccountByTokenAddress",
       "params": {
         "key": "tokenAddress",
         "values": [
