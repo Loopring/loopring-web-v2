@@ -133,7 +133,7 @@ export const useDualHook = ({
         currency: marketSymbolB,
         dualType,
         startTime: Date.now() + 1000 * 60 * 60,
-        timeSpan: 1000 * 60 * 60 * 24 * 5,
+        timeSpan: 1000 * 60 * 60 * 24 * 9,
         limit: 100,
         // limit: number;
       });
