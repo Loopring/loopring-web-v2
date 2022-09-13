@@ -32,6 +32,7 @@ import { useHistory } from "react-router-dom";
 import {
   BackIcon,
   getValuePrecisionThousand,
+  HelpIcon,
   myLog,
 } from "@loopring-web/common-resources";
 
@@ -118,7 +119,12 @@ export const DualListPanel: any = withTranslation("common")(
     const history = useHistory();
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
-        <Box marginBottom={2}>
+        <Box
+          marginBottom={2}
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
           <Button
             startIcon={<BackIcon fontSize={"small"} />}
             variant={"text"}
@@ -128,7 +134,20 @@ export const DualListPanel: any = withTranslation("common")(
             onClick={history.goBack}
           >
             {t("labelInvestDualTitle")}
-            {/*<Typography color={"textPrimary"}></Typography>*/}
+          </Button>
+          <Button
+            startIcon={<HelpIcon fontSize={"large"} />}
+            variant={"text"}
+            onClick={() => {
+              window.open(
+                `https://loopring.io/#/document/dual_investment_tutorial_en.md`,
+                "_blank"
+              );
+              window.opener = null;
+            }}
+            sx={{ color: "var(--color-text-secondary)" }}
+          >
+            {t("labelInvestDualTutorial")}
           </Button>
         </Box>
         <StyleDual flexDirection={"column"} display={"flex"} flex={1}>

@@ -17,7 +17,7 @@ import {
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import moment from "moment/moment";
-import { Currency } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -60,7 +60,7 @@ const TableStyled = styled(Table)`
   }
 ` as any;
 
-export interface DualsTableProps<R, C = Currency> {
+export interface DualsTableProps<R, C = sdk.Currency> {
   rawData: R[];
   showloading: boolean;
   forexMap: ForexMap<C>;
@@ -72,23 +72,6 @@ export const DualTable = withTranslation(["tables", "common"])(
     const { rawData, showloading, onItemClick, t } = props;
     const { isMobile, upColor } = useSettings();
     const history = useHistory();
-
-    // const [tableHeight, setTableHeight] = React.useState(0);
-    // const resetTableData = React.useCallback(
-    //   (tableData) => {
-    //     setFilteredData(tableData);
-    //     setTableHeight(
-    //
-    //     );
-    //   },
-    //   [setFilteredData, setTableHeight]
-    // );
-    // React.useEffect(() => {
-    //   window.addEventListener("scroll", currentScroll);
-    //   return () => {
-    //     window.removeEventListener("scroll", currentScroll);
-    //   };
-    // }, [currentScroll]);
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -214,6 +197,38 @@ export const DualTable = withTranslation(["tables", "common"])(
         columnsRaw as Column<any, unknown>[],
     };
 
+    const sortMethod = React.useCallback((_sortedRows, sortColumn) => {
+      let _rawData: R[] = [];
+      switch (sortColumn) {
+        case "Apy":
+          _rawData = rawData.sort((a, b) => {
+            const replaced = new RegExp(`[\\${sdk.SEP},%]`);
+            const valueA = a.apy?.replace(replaced, "") ?? 0;
+            const valueB = b.apy?.replace(replaced, "") ?? 0;
+            return Number(valueB) - Number(valueA); //.localeCompare(valueA);
+          });
+          break;
+        case "targetPrice":
+          _rawData = rawData.sort((a, b) => {
+            const replaced = new RegExp(`\\${sdk.SEP}`);
+            const valueA = a.strike?.replace(replaced, "") ?? 0;
+            const valueB = b.strike?.replace(replaced, "") ?? 0;
+            return Number(valueB) - Number(valueA); //.loc
+          });
+          break;
+        case "Settlement":
+        case "Term":
+          _rawData = rawData.sort((a, b) => {
+            return b.expireTime - a.expireTime;
+          });
+          break;
+        default:
+          _rawData = rawData;
+      }
+      // resetTableData(_rawData)
+      return _rawData;
+    }, []);
+
     return (
       <TableWrapperStyled>
         <TableStyled
@@ -225,6 +240,7 @@ export const DualTable = withTranslation(["tables", "common"])(
           onRowClick={(_index: number, row: R) => {
             onItemClick(row);
           }}
+          sortMethod={sortMethod}
           {...{
             ...defaultArgs,
             // rowRenderer: RowRenderer,

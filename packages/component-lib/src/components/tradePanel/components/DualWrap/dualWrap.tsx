@@ -102,6 +102,7 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
       display:flex;
       align-items: center;
       justify-content: center;
+      text-align:center;
     }
     .returnV1{
       right: 25%;
@@ -122,8 +123,8 @@ export const DualDetail = ({
   currentPrice,
   tokenMap,
   lessEarnView,
-  lessEarnTokenSymbol,
-  greaterEarnTokenSymbol,
+  // lessEarnTokenSymbol,
+  // greaterEarnTokenSymbol,
   greaterEarnView,
 }: {
   dualViewInfo: DualViewInfo;
@@ -136,35 +137,35 @@ export const DualDetail = ({
 }) => {
   const { t } = useTranslation();
   const { upColor } = useSettings();
-  const { base: priceBase } = currentPrice;
+  const { base, quote } = currentPrice;
   const currentView = React.useMemo(
     () =>
-      priceBase
+      base
         ? getValuePrecisionThousand(
             dualViewInfo.__raw__.index.index,
-            tokenMap[priceBase].precision,
-            tokenMap[priceBase].precision,
-            tokenMap[priceBase].precision,
+            tokenMap[base].precision,
+            tokenMap[base].precision,
+            tokenMap[base].precision,
             true,
             { floor: true }
           )
         : EmptyValueTag,
-    [dualViewInfo.currentPrice.currentPrice, priceBase, tokenMap]
+    [dualViewInfo.currentPrice.currentPrice, base, tokenMap]
   );
 
   const targetView = React.useMemo(
     () =>
-      priceBase
+      base
         ? getValuePrecisionThousand(
             dualViewInfo?.strike,
-            tokenMap[priceBase].precision,
-            tokenMap[priceBase].precision,
-            tokenMap[priceBase].precision,
+            tokenMap[base].precision,
+            tokenMap[base].precision,
+            tokenMap[base].precision,
             true,
             { floor: true }
           )
         : EmptyValueTag,
-    [dualViewInfo?.strike, priceBase, tokenMap]
+    [dualViewInfo?.strike, base, tokenMap]
   );
   return (
     <Box>
@@ -193,7 +194,7 @@ export const DualDetail = ({
           >
             <Typography variant={"body2"} color={"textPrimary"}>
               {t("labelDualCurrentPrice3", {
-                symbol: priceBase,
+                symbol: base,
               })}
             </Typography>
             <Typography
@@ -212,14 +213,14 @@ export const DualDetail = ({
               color={"var(--color-success)"}
               whiteSpace={"pre-line"}
             >
-              {greaterEarnTokenSymbol &&
+              {quote &&
                 t("labelDualReturn", {
                   symbol:
                     (greaterEarnView === "0"
                       ? EmptyValueTag
                       : greaterEarnView) +
                     " " +
-                    greaterEarnTokenSymbol,
+                    quote,
                 })}
             </Typography>
           </Box>
@@ -229,12 +230,12 @@ export const DualDetail = ({
               color={"var(--color-warning)"}
               whiteSpace={"pre-line"}
             >
-              {lessEarnTokenSymbol &&
+              {base &&
                 t("labelDualReturn", {
                   symbol:
                     (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
-                      " " +
-                      lessEarnTokenSymbol ?? dualViewInfo.__raw__.info.base,
+                    " " +
+                    base,
                 })}
             </Typography>
           </Box>

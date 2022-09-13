@@ -1265,7 +1265,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             // @ts-ignore
             const [, _coinA] = market.match(/(\w+)-(\w+)/i);
             let _btos = getValuePrecisionThousand(
-              1 / Number(close.replace(",", "")),
+              1 / Number(close.replace(sdk.SEP, "")),
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
@@ -1370,7 +1370,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           // @ts-ignore
           const [, _coinA] = market.match(/(\w+)-(\w+)/i);
           btos = getValuePrecisionThousand(
-            1 / Number(close.replace(",", "")),
+            1 / Number(close.replace(sdk.SEP, "")),
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,

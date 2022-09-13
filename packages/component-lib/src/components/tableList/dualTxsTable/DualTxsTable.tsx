@@ -13,11 +13,8 @@ import moment from "moment";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
-import {
-  LABEL_INVESTMENT_STATUS_MAP,
-  RawDataDualTxsItem,
-  SETTLEMENT_STATUS,
-} from "./Interface";
+import { LABEL_INVESTMENT_STATUS_MAP, RawDataDualTxsItem } from "./Interface";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -121,22 +118,29 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           key: "DualTxsSide",
           name: t("labelDualTxsSide"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            const { settlementStatus, expireTime, sellSymbol, buySymbol } = row;
+            const {
+              __raw__: {
+                order: { settlementStatus },
+              },
+              expireTime,
+              sellSymbol,
+              buySymbol,
+            } = row;
             const side =
               expireTime - Date.now() < 0
-                ? settlementStatus === SETTLEMENT_STATUS.SETTLED
+                ? settlementStatus === sdk.SETTLEMENT_STATUS.SETTLED
                   ? LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED
                   : LABEL_INVESTMENT_STATUS_MAP.DELIVERING
                 : LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE;
             const statusColor =
               expireTime - Date.now() < 0
-                ? settlementStatus === SETTLEMENT_STATUS.SETTLED
+                ? settlementStatus === sdk.SETTLEMENT_STATUS.SETTLED
                   ? "var(--color-success)"
                   : "var(--color-warning)"
                 : "var(--color-error)";
             const sentense =
               expireTime - Date.now() < 0
-                ? settlementStatus === SETTLEMENT_STATUS.SETTLED
+                ? settlementStatus === sdk.SETTLEMENT_STATUS.SETTLED
                   ? ` ${sellSymbol} ${DirectionTag} ${buySymbol}`
                   : `${sellSymbol}`
                 : `${sellSymbol}`;
@@ -200,6 +204,11 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           key: "Price",
           name: t("labelDualTxsSellPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const {
+              __raw__: {
+                order: { deliveryPrice },
+              },
+            } = row;
             return (
               <Typography
                 height={"100%"}
@@ -207,7 +216,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 flexDirection={"row"}
                 alignItems={"center"}
               >
-                {row?.deliveryPrice}
+                {deliveryPrice}
               </Typography>
             );
           },
@@ -240,7 +249,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
             return (
               <Box className="rdg-cell-value textAlignRight">
                 {moment(
-                  new Date(row.timeOrigin?.updateTime),
+                  new Date(row.__raw__.order?.timeOrigin?.updateTime),
                   "YYYYMMDDHHMM"
                 ).fromNow()}
               </Box>

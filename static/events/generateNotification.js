@@ -202,21 +202,22 @@ async function createNotifyJSON(lng) {
             const endShow = moment
               .utc(item[TYPE_ITEM.endShow], "MM/DD/YYYY HH:mm:ss")
               .valueOf();
+
             const _item = {
-              type: item[TYPE_ITEM.type],
-              place: item[TYPE_ITEM.place],
-              version: item[TYPE_ITEM.version], //localStore for visited should be unique
-              name: item[TYPE_ITEM.name],
-              title: item[TYPE_ITEM.title],
-              description1: item[TYPE_ITEM.description1],
-              description2: item[TYPE_ITEM.description2],
-              link: item[TYPE_ITEM.link],
+              type: item[TYPE_ITEM.type]?.trim(),
+              place: item[TYPE_ITEM.place]?.trim(),
+              version: item[TYPE_ITEM.version]?.trim(), //localStore for visited should be unique
+              name: item[TYPE_ITEM.name]?.trim(),
+              title: item[TYPE_ITEM.title]?.trim(),
+              description1: item[TYPE_ITEM.description1]?.trim(),
+              description2: item[TYPE_ITEM.description2]?.trim(),
+              link: item[TYPE_ITEM.link]?.trim(),
               startShow,
               endShow,
-              color: item[TYPE_ITEM.color],
-              banner: item[TYPE_ITEM.banner],
-              bannerWeb: item[TYPE_ITEM.bannerWeb],
-              webRouter: item[TYPE_ITEM.webRouter],
+              color: item[TYPE_ITEM.color]?.trim(),
+              banner: item[TYPE_ITEM.banner]?.trim(),
+              bannerWeb: item[TYPE_ITEM.bannerWeb]?.trim(),
+              webRouter: item[TYPE_ITEM.webRouter]?.trim(),
             };
 
             if (_item.type === TYPE.ACTIVITY) {

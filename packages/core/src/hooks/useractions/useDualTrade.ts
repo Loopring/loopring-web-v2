@@ -43,6 +43,7 @@ import {
 } from "../../index";
 import { useTranslation } from "react-i18next";
 import { useTradeDual } from "../../stores";
+import { useHistory } from "react-router-dom";
 
 export const useDualTrade = <
   T extends IBData<I>,
@@ -53,9 +54,9 @@ export const useDualTrade = <
   const refreshRef = React.useRef();
   const { exchangeInfo, allowTrade } = useSystem();
   const { tokenMap, marketArray } = useTokenMap();
+  const history = useHistory();
   // const { amountMap, getAmount, status: amountStatus } = useAmount();
   const { marketMap: dualMarketMap } = useDualMap();
-
   const { account, status: accountStatus } = useAccount();
 
   const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -192,7 +193,7 @@ export const useDualTrade = <
       const sellExceed = sdk
         .toBig(tradeDual.coinSell?.tradeValue ?? 0)
         .gt(tradeDual?.coinSell?.balance ?? 0);
-      myLog("sellExceed", sellExceed, tradeDual.sellVol, tradeDual);
+      // myLog("sellExceed", sellExceed, tradeDual.sellVol, tradeDual);
       if (
         tradeDual?.sellVol === undefined ||
         sdk.toBig(tradeDual?.sellVol).lte(0) ||
@@ -354,7 +355,6 @@ export const useDualTrade = <
         LoopringAPI.defiAPI &&
         tradeDual.sellToken?.symbol &&
         tradeDual.maxFeeBips &&
-        tradeDual.feeVol &&
         exchangeInfo
       ) {
         const req: sdk.GetNextStorageIdRequest = {
@@ -370,6 +370,7 @@ export const useDualTrade = <
           productId,
           dualPrice: { dualBid },
         } = tradeDual.dualViewInfo.__raw__.info;
+
         myLog("fee", tradeDual.feeVol);
         const request: sdk.DualOrderRequest = {
           clientOrderId: "",
@@ -383,20 +384,22 @@ export const useDualTrade = <
           buyToken:
             dualType === sdk.DUAL_TYPE.DUAL_BASE
               ? {
-                  tokenId: tradeDual.buyToken?.tokenId ?? 0,
-                  volume: tradeDual.lessEarnVol,
+                  tokenId:
+                    tokenMap[tradeDual.greaterEarnTokenSymbol]?.tokenId ?? 0,
+                  volume: tradeDual.greaterEarnVol,
                 }
               : {
-                  tokenId: tradeDual.buyToken?.tokenId ?? 0,
-                  volume: tradeDual.greaterEarnVol,
+                  tokenId:
+                    tokenMap[tradeDual.lessEarnTokenSymbol]?.tokenId ?? 0,
+                  volume: tradeDual.lessEarnVol,
                 },
           validUntil: getTimestampDaysLater(DAYS),
-          maxFeeBips: tradeDual.maxFeeBips <= 5 ? 5 : tradeDual.maxFeeBips,
+          maxFeeBips: tradeDual.maxFeeBips,
           fillAmountBOrS: false,
-          fee: tradeDual.feeVol,
+          fee: tradeDual.feeVol ?? "0",
           baseProfit: dualBid[0].baseProfit,
           productId,
-          settleRatio: tradeDual.dualViewInfo.settleRatio,
+          settleRatio: tradeDual.dualViewInfo.settleRatio.replace(sdk.SEP, ""), //sdk.toBig(tradeDual.dualViewInfo.settleRatio).f,
           expireTime: tradeDual.dualViewInfo.expireTime,
         };
         myLog("DualTrade request:", request);
@@ -425,6 +428,7 @@ export const useDualTrade = <
               symbol: coinBuySymbol,
             }),
           });
+          history.push("/invest/");
         }
       } else {
         throw new Error("api not ready");
@@ -499,7 +503,6 @@ export const useDualTrade = <
     isLoading,
     submitCallback: onSubmitBtnClick,
   });
-  myLog("isLoading", isLoading);
 
   const dualTradeProps: DualWrapProps<T, I, ACD> = {
     refreshRef,

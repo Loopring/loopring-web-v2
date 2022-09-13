@@ -52,7 +52,7 @@ export const useDualHook = ({
     tradeMap[coinA] ? coinA : "LRC"
   );
   const [pairBSymbol, setPairBSymbol] = React.useState(
-    coinB && tradeMap[pairASymbol]?.tokenList
+    coinB && tradeMap && tradeMap[pairASymbol]?.tokenList
       ? tradeMap[pairASymbol].tokenList.includes(coinB)
         ? coinB
         : tradeMap[pairASymbol].tokenList[0]

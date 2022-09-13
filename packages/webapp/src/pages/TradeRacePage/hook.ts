@@ -52,7 +52,7 @@ export const useTradeRace = () => {
           /uat/gi.test(baseURL) ? url_test_path : url_path
         }/${year}/${month}/`;
         if (year && month && type) {
-          fetch(`${path}/activities.${languageMap[i18n.language]}.json`)
+          fetch(`${path}activities.${languageMap[i18n.language]}.json`)
             .then((response) => {
               if (response.ok) {
                 return response.json();
@@ -77,7 +77,7 @@ export const useTradeRace = () => {
                       }
                     }),
                     fetch(
-                      `${path}/activities/${eventData.rule?.split("/").pop()}`
+                      `${path}activities/${eventData.rule?.split("/").pop()}`
                     )
                       .then((response) => response.text())
                       .then((input) => {
@@ -103,21 +103,21 @@ export const useTradeRace = () => {
                   banner: {
                     pad: eventData.banner?.pad
                       ? /uat/gi.test(baseURL)
-                        ? `${path}/activities/${eventData.banner?.pad
+                        ? `${path}activities/${eventData.banner?.pad
                             ?.split("/")
                             .pop()}`
                         : eventData.banner.pad //`${path}/`
                       : undefined,
                     laptop: eventData.banner?.laptop
                       ? /uat/gi.test(baseURL)
-                        ? `${path}/activities/${eventData.banner?.laptop
+                        ? `${path}activities/${eventData.banner?.laptop
                             ?.split("/")
                             .pop()}`
                         : eventData.banner.laptop //`${path}/`
                       : undefined,
                     mobile: eventData.banner?.mobile
                       ? /uat/gi.test(baseURL)
-                        ? `${path}/activities/${eventData.banner?.mobile
+                        ? `${path}activities/${eventData.banner?.mobile
                             ?.split("/")
                             .pop()}`
                         : eventData.banner.mobile
@@ -157,7 +157,7 @@ export const useTradeRace = () => {
               window.location.reload();
             });
         } else if (year && month && !type) {
-          fetch(`${path}/activities.${languageMap[i18n.language]}.json`)
+          fetch(`${path}activities.${languageMap[i18n.language]}.json`)
             .then((response) => {
               if (response.ok) {
                 return response.json();

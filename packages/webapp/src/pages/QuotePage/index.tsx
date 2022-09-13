@@ -48,6 +48,7 @@ export const QuotePage = withTranslation("common")(
       tickList,
       handleRowClick,
     } = useQuotePage({ tableRef });
+    const showLoading = tickList && !tickList.length;
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1}>
         <TableWrapStyled
@@ -71,6 +72,7 @@ export const QuotePage = withTranslation("common")(
                 <Tabs
                   value={tableTabValue}
                   onChange={handleTabChange}
+                  disabled={showLoading}
                   aria-label="disabled tabs example"
                 >
                   <Tab label={t("labelQuotePageFavourite")} value="favourite" />
@@ -99,7 +101,8 @@ export const QuotePage = withTranslation("common")(
               rowHeight={RowConfig.rowHeight}
               headerRowHeight={RowConfig.rowHeaderHeight}
               activityInProgressRules={activityInProgressRules}
-              {...{ showLoading: tickList && !tickList.length, ...rest }}
+              showLoading={showLoading}
+              {...{ ...rest }}
             />
           </Box>
         </TableWrapStyled>

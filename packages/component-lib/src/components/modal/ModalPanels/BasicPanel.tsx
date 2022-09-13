@@ -9,7 +9,6 @@ import {
   SoursURL,
   TransErrorHelp,
   Account,
-  EmptyValueTag,
 } from "@loopring-web/common-resources";
 import React from "react";
 
@@ -19,7 +18,6 @@ import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
-import { sanitize } from "dompurify";
 
 export enum IconType {
   LoadingIcon,
@@ -228,10 +226,9 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   alignSelf={"flex-center"}
                   paddingX={2}
                   sx={{ wordBreak: "break-all" }}
-                  dangerouslySetInnerHTML={{
-                    __html: sanitize(describe1 ?? EmptyValueTag) ?? "",
-                  }}
-                />
+                >
+                  {describe1}
+                </Typography>
                 {txCheck && (
                   <Link
                     target="_blank"

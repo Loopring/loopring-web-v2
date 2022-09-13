@@ -1018,5 +1018,15 @@ export default {
   labelDualAssetPrice: "Price",
   labelDualAssetSettlement_Date: "SettlementDate",
   labelDualAssetAPR: "APR",
-  labelDualAssetAction: "Action",
+  labelDualAssetAction: "Detail",
+  labelInvestDualTutorial: "Tutorial",
+  labelInvestDualTutorialContent:
+    "Dual Investment offers you a chance to sell cryptocurrency high or buy cryptocurrency low at your desired price on your desired date. Once subscribed, users are not able to cancel or redeem the subscription until the Settlement Date.\n You may be better off holding your cryptocurrency, and may be required to trade your cryptocurrency at a less favorable rate of exchange than the market rate on Settlement Date. Cryptocurrency trading is subject to high market risk. Please make your trades cautiously. There may be no recourse for any losses.",
+  labelInvestDualTutorialCheck1:
+    "I understand that Dual Investment is NOT a principal-guaranteed products.",
+  labelInvestDualTutorialCheck2:
+    "I understand that subscribed assets are locked and users aren’t able to cancel or redeem before the Settlement Date.",
+  labelInvestDualTutorialCheck3:
+    "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
+  labelInvestDualTutorialCheck4: "I have read the risk warning.",
 };

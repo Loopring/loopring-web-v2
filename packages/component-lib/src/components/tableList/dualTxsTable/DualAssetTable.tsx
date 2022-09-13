@@ -3,6 +3,7 @@ import { useSettings } from "../../../stores";
 import React from "react";
 import {
   globalSetup,
+  RowConfig,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
@@ -14,39 +15,48 @@ import { FormatterProps } from "react-data-grid";
 import { DualAssetTableProps, RawDataDualAssetItem } from "./Interface";
 import { CoinIcons } from "../assetsTable";
 import _ from "lodash";
+import * as sdk from "@loopring-web/loopring-sdk";
 
-const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
+const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
+  height: 100%;
+  ${({ theme }) =>
+    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+` as (prosp: BoxProps & { isMobile: boolean }) => JSX.Element;
+const TableStyled = styled(Table)`
+  &.rdg {
+    height: ${(props: any) => {
+      if (props.ispro === "pro") {
+        return "620px";
+      }
+      if (props.currentheight && props.currentheight > 350) {
+        return props.currentheight + "px";
+      } else {
+        return "100%";
+      }
+    }};
 
-  .rdg {
-    ${({ isMobile }) =>
-      !isMobile
-        ? `--template-columns: auto 20% 180px !important;`
-        : `--template-columns: 100% !important;`}
-    .rdgCellCenter {
-      height: 100%;
+    .rdg-cell.action {
+      display: flex;
       justify-content: center;
       align-items: center;
     }
+  }
 
-    .textAlignRight {
-      text-align: right;
-    }
+  .textAlignRight {
+    text-align: right;
 
-    .textAlignCenter {
-      text-align: center;
-    }
-
-    .textAlignLeft {
-      text-align: left;
+    .rdg-header-sort-cell {
+      justify-content: flex-end;
     }
   }
 
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
+  .textAlignCenter {
+    text-align: center;
+  }
+` as any;
 
 export const DualAssetTable = withTranslation(["tables", "common"])(
   <R extends RawDataDualAssetItem>(
@@ -61,6 +71,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       showloading,
       t,
     } = props;
+
     const { isMobile, coinJson } = useSettings();
     const [page, setPage] = React.useState(1);
 
@@ -139,9 +150,9 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           },
         },
         {
+          key: "Price",
           sortable: false,
           width: "auto",
-          key: "Price",
           name: t("labelDualAssetPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
@@ -151,15 +162,15 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 flexDirection={"row"}
                 alignItems={"center"}
               >
-                {row?.order + " " + row.buySymbol}
+                {row?.strike}
               </Typography>
             );
           },
         },
         {
-          sortable: false,
-          width: "auto",
           key: "Settlement_Date",
+          sortable: true,
+          width: "auto",
           name: t("labelDualAssetSettlement_Date"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
@@ -177,9 +188,9 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           },
         },
         {
-          sortable: false,
-          width: "auto",
           key: "APR",
+          sortable: true,
+          width: "auto",
           name: t("labelDualAssetAPR"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return <Typography>{row?.apy}</Typography>;
@@ -270,7 +281,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 flexDirection={"row"}
                 alignItems={"center"}
               >
-                {row?.order + " " + row.buySymbol}
+                {row?.strike}
               </Typography>
             );
           },
@@ -317,8 +328,32 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       [t, tokenMap, idIndex]
     );
 
-    // const [isDropDown, setIsDropDown] = React.useState(true);
+    const sortMethod = React.useCallback(
+      (_sortedRows, sortColumn) => {
+        let _dualList: R[] = [];
+        switch (sortColumn) {
+          case "Settlement_Date":
+            _dualList = rawData.sort((a, b) => {
+              return b.expireTime - a.expireTime;
+            });
+            break;
 
+          case "APR":
+            _dualList = rawData.sort((a, b) => {
+              const replaced = new RegExp(`[\\${sdk.SEP},%]`);
+              const valueA = a.apy?.replace(replaced, "") ?? 0;
+              const valueB = b.apy?.replace(replaced, "") ?? 0;
+              return Number(valueB) - Number(valueA);
+            });
+            break;
+          default:
+            _dualList = rawData;
+        }
+        // resetTableData(_dualList)
+        return _dualList;
+      },
+      [rawData]
+    );
     const defaultArgs: any = {
       columnMode: isMobile ? getColumnMode() : getColumnMobile(),
       generateRows: (rawData: any) => rawData,
@@ -338,10 +373,13 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         updateData.cancel();
       };
     }, [pagination?.pageSize]);
-
     return (
-      <TableStyled isMobile={isMobile}>
-        <Table
+      <TableWrapperStyled isMobile={isMobile}>
+        <TableStyled
+          currentheight={
+            RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
+          }
+          sortMethod={sortMethod}
           {...{
             ...defaultArgs,
             // rowRenderer: RowRenderer,
@@ -358,7 +396,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             onPageChange={handlePageChange}
           />
         )}
-      </TableStyled>
+      </TableWrapperStyled>
     );
   }
 );

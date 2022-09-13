@@ -439,7 +439,7 @@ export type DualCurrentPrice = {
   base: string;
   currentPrice: number;
 };
-export type DualViewInfo = {
+export type DualViewBase = {
   apy: string;
   settleRatio: string; //targetPrice
   term: string;
@@ -452,10 +452,19 @@ export type DualViewInfo = {
   productId: string;
   sellSymbol: string;
   buySymbol: string;
+
+  // balance,
+};
+
+export type DualViewInfo = DualViewBase & {
   __raw__: {
     info: sdk.DualProductAndPrice;
     index: sdk.DualIndex;
     rule: sdk.DualRulesCoinsInfo;
   };
-  // balance,
+};
+export type DualViewOrder = DualViewBase & {
+  __raw__: {
+    order: sdk.UserDualTxsHistory;
+  };
 };

@@ -5,6 +5,7 @@ import {
   AmmTable,
   Button,
   DefiTxsTable,
+  DualTxsTable,
   OrderHistoryTable,
   Toast,
   TradeTable,
@@ -12,6 +13,7 @@ import {
 } from "@loopring-web/component-lib";
 import { StylePaper, useGetOrderHistorys } from "@loopring-web/core";
 import {
+  useDualTransaction,
   useGetAmmRecord,
   useGetDefiRecord,
   useGetTrades,
@@ -41,6 +43,7 @@ enum TabIndex {
   // orderOpenTable = "orderOpenTable",
   // orderHistoryTable = "orderHistoryTable",
   defiRecords = "defiRecords",
+  dualRecords = "dualRecords",
 }
 
 enum TabOrderIndex {
@@ -101,7 +104,14 @@ const HistoryPanel = withTranslation("common")(
       showLoading,
       marketArray: orderRaw,
       cancelOrder,
-    } = useOrderList();
+    } = useOrderList(setToastOpen);
+    const {
+      dualList,
+      showLoading: showDualLoading,
+      getDualTxList,
+      pagination,
+    } = useDualTransaction(setToastOpen);
+
     const { userOrderDetailList, getUserOrderDetailTradeList } =
       useGetOrderHistorys();
     const { etherscanBaseUrl } = useSystem();
@@ -190,6 +200,10 @@ const HistoryPanel = withTranslation("common")(
                 label={t("labelDefiOrderTable")}
                 value={TabIndex.defiRecords}
               />
+              <Tab
+                label={t("labelDualOrderTable")}
+                value={TabIndex.dualRecords}
+              />
             </Tabs>
           </Box>
           <div className="tableWrapper table-divide-short">
@@ -264,6 +278,18 @@ const HistoryPanel = withTranslation("common")(
                 }}
                 tokenMap={tokenMap}
                 idIndex={idIndex}
+              />
+            ) : currentTab === TabIndex.dualRecords ? (
+              <DualTxsTable
+                rawData={dualList}
+                getDualTxList={getDualTxList}
+                pagination={pagination}
+                showloading={showDualLoading}
+                tokenMap={tokenMap}
+                idIndex={idIndex}
+                {...{
+                  ...rest,
+                }}
               />
             ) : (
               <Box

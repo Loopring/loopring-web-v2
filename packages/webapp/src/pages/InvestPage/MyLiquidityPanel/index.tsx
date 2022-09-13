@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import {
   AmmPanelType,
   AssetsTable,
+  DualAssetTable,
   MyPoolTable,
   TokenType,
   useOpenModals,
@@ -29,6 +30,7 @@ import {
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
+import { useDualAsset } from "../../AssetPage/HistoryPanel/useDualAsset";
 const StyleWrapper = styled(Grid)`
   position: relative;
   width: 100%;
@@ -45,7 +47,7 @@ const MyLiquidity: any = withTranslation("common")(
   }) => {
     const { ammActivityMap } = useAmmActivityMap();
     const { forexMap } = useSystem();
-    const { tokenMap, disableWithdrawList } = useTokenMap();
+    const { tokenMap, disableWithdrawList, idIndex } = useTokenMap();
     const {
       assetsRawData,
       onSend,
@@ -57,7 +59,12 @@ const MyLiquidity: any = withTranslation("common")(
     const history = useHistory();
     const { currency, hideSmallBalances, setHideSmallBalances } = useSettings();
     const { setShowAmm } = useOpenModals();
-
+    const {
+      dualList,
+      getDualTxList,
+      pagination,
+      showLoading: dualLoading,
+    } = useDualAsset();
     const { summaryMyInvest, myPoolRow, showLoading } = useOverview({
       ammActivityMap,
     });
@@ -227,40 +234,6 @@ const MyLiquidity: any = withTranslation("common")(
         >
           <Grid item xs={12}>
             <Typography variant={"h5"} marginBottom={1} marginX={3}>
-              {t("labelInvestType_DUAL")}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
-            {/*<AssetsTable*/}
-            {/*  {...{*/}
-            {/*    disableWithdrawList,*/}
-            {/*    rawData: lidoAssets,*/}
-            {/*    showFilter: false,*/}
-            {/*    allowTrade,*/}
-            {/*    onSend,*/}
-            {/*    onReceive,*/}
-            {/*    getMarketArrayListCallback: getTokenRelatedMarketArray,*/}
-            {/*    rowConfig: RowInvestConfig,*/}
-            {/*    forexMap: forexMap as any,*/}
-            {/*    isInvest: true,*/}
-            {/*    ...rest,*/}
-            {/*  }}*/}
-            {/*/>*/}
-          </Grid>
-        </TableWrapStyled>
-
-        <TableWrapStyled
-          className={`table-divide-short MuiPaper-elevation2 ${
-            lidoAssets?.length ? "min-height" : ""
-          }`}
-          marginTop={2}
-          marginBottom={3}
-          paddingY={2}
-          paddingX={0}
-          flex={1}
-        >
-          <Grid item xs={12}>
-            <Typography variant={"h5"} marginBottom={1} marginX={3}>
               {t("labelInvestType_STAKE")}
             </Typography>
           </Grid>
@@ -279,6 +252,33 @@ const MyLiquidity: any = withTranslation("common")(
                 isInvest: true,
                 ...rest,
               }}
+            />
+          </Grid>
+        </TableWrapStyled>
+
+        <TableWrapStyled
+          className={`table-divide-short MuiPaper-elevation2 ${
+            lidoAssets?.length ? "min-height" : ""
+          }`}
+          marginTop={2}
+          marginBottom={3}
+          paddingY={2}
+          paddingX={0}
+          flex={1}
+        >
+          <Grid item xs={12}>
+            <Typography variant={"h5"} marginBottom={1} marginX={3}>
+              {t("labelInvestType_DUAL")}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
+            <DualAssetTable
+              rawData={dualList}
+              idIndex={idIndex}
+              tokenMap={tokenMap}
+              showloading={dualLoading}
+              pagination={pagination}
+              getDualAssetList={getDualTxList}
             />
           </Grid>
         </TableWrapStyled>

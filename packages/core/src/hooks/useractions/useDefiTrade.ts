@@ -208,7 +208,7 @@ export const useDefiTrade = <
                 tokenMap[coinSellSymbol].precision,
                 false,
                 { floor: false }
-              ).replace(",", "");
+              ).replace(sdk.SEP, "");
         const buyAmount =
           tradeData?.tradeValue === undefined
             ? undefined
@@ -221,7 +221,7 @@ export const useDefiTrade = <
                 tokenMap[coinBuySymbol].precision,
                 true,
                 { floor: true }
-              ).replace(",", "");
+              ).replace(sdk.SEP, "");
 
         // @ts-ignore
         _deFiCalcData = {
@@ -715,7 +715,7 @@ export const useDefiTrade = <
           tokenMap[coinSellSymbol].precision,
           false,
           { floor: true }
-        ).replace(",", "");
+        ).replace(sdk.SEP, "");
         // @ts-ignore
         const oldTrade = (tradeDefi?.deFiCalcData[type] ?? {}) as unknown as T;
         handleOnchange({

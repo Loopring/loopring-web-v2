@@ -1,11 +1,11 @@
-import * as sdk from "@loopring-web/loopring-sdk";
-import { DualViewInfo } from "@loopring-web/common-resources";
+import { DualViewOrder } from "@loopring-web/common-resources";
 
-export type RawDataDualTxsItem = Partial<sdk.UserDualTxsHistory> & DualViewInfo;
-
-export type RawDataDualAssetItem = DualViewInfo & {
+export type RawDataDualTxsItem = DualViewOrder & {
   amount: string;
-  order: string;
+};
+
+export type RawDataDualAssetItem = DualViewOrder & {
+  amount: string;
 };
 
 export interface DualAssetTableProps<R> {
@@ -18,18 +18,6 @@ export interface DualAssetTableProps<R> {
     pageSize: number;
     total: number;
   };
-}
-
-export enum LABEL_INVESTMENT_STATUS {
-  INVESTMENT_SUCCEEDED = "INVESTMENT_SUCCEEDED",
-  INVESTMENT_FAILED = "INVESTMENT_FAILED",
-  INVESTMENT_RECEIVED = "INVESTMENT_RECEIVED",
-}
-
-export enum SETTLEMENT_STATUS {
-  UNSETTLED = "UNSETTLED",
-  SETTLED = "SETTLED",
-  PAID = "PAID",
 }
 
 export enum LABEL_INVESTMENT_STATUS_MAP {
