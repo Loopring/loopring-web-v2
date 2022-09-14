@@ -104,7 +104,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             return (
               <Typography
                 component={"span"}
-                flexDirection={"column"}
+                flexDirection={"row"}
                 display={"flex"}
                 height={"100%"}
               >
@@ -220,12 +220,17 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           name: t("labelDualAssetProduct"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <>
+              <Typography
+                component={"span"}
+                flexDirection={"row"}
+                display={"flex"}
+                height={"100%"}
+              >
                 <Typography component={"span"} display={"inline-flex"}>
                   {/* eslint-disable-next-line react/jsx-no-undef */}
                   <CoinIcons
                     type={"dual"}
-                    size={32}
+                    size={24}
                     tokenIcon={[
                       coinJson[row.sellSymbol],
                       coinJson[row.buySymbol],
@@ -248,7 +253,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                     })}
                   </Typography>
                 </Typography>
-              </>
+              </Typography>
             );
           },
         },

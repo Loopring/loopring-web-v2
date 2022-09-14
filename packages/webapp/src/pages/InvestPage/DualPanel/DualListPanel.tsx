@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
@@ -13,7 +12,6 @@ import {
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useDualHook } from "./hook";
 import {
-  boxLiner,
   Button,
   CoinIcon,
   CoinIcons,
@@ -33,8 +31,9 @@ import {
   BackIcon,
   getValuePrecisionThousand,
   HelpIcon,
-  myLog,
 } from "@loopring-web/common-resources";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
 const StyleDual = styled(Box)`
   position: relative;
@@ -96,7 +95,7 @@ export const DualListPanel: any = withTranslation("common")(
   }) => {
     const { coinJson } = useSettings();
     const { forexMap } = useSystem();
-    const { tradeMap } = useDualMap();
+    const { tradeMap, marketArray } = useDualMap();
     const { tokenMap } = useTokenMap();
     const { setShowDual } = useOpenModals();
     const {
@@ -117,6 +116,10 @@ export const DualListPanel: any = withTranslation("common")(
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     const history = useHistory();
+    const dualType = new RegExp(pair).test(market ?? "")
+      ? sdk.DUAL_TYPE.DUAL_BASE
+      : sdk.DUAL_TYPE.DUAL_CURRENCY;
+
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
         <Box
@@ -193,9 +196,18 @@ export const DualListPanel: any = withTranslation("common")(
             >
               {pairASymbol &&
                 tradeMap[pairASymbol]?.tokenList?.map((item, index) => {
+                  const _index = marketArray.findIndex((_item) =>
+                    new RegExp(pairASymbol + "-" + item.toString(), "ig").test(
+                      _item
+                    )
+                  );
                   return (
                     <Tab
-                      label={t("labelDualBase", { symbol: item.toString() })}
+                      label={
+                        _index !== -1
+                          ? t("labelDualBase", { symbol: item.toString() })
+                          : t("labelDualQuote", { symbol: item.toString() })
+                      }
                       value={item.toString()}
                       key={item.toString() + index.toString()}
                     />
@@ -205,7 +217,7 @@ export const DualListPanel: any = withTranslation("common")(
           </Box>
 
           <WrapperStyled marginTop={1} flex={1} flexDirection={"column"}>
-            {pairASymbol && pairBSymbol && (
+            {pairASymbol && pairBSymbol && market && (
               <Box
                 display={"flex"}
                 flexDirection={"row"}
@@ -238,10 +250,15 @@ export const DualListPanel: any = withTranslation("common")(
                       display={"inline-flex"}
                       color={"textPrimary"}
                     >
-                      {t("labelDualInvestTitle", {
-                        symbolA: pairASymbol,
-                        symbolB: pairBSymbol,
-                      })}
+                      {dualType === DUAL_TYPE.DUAL_BASE
+                        ? t("labelDualInvestBaseTitle", {
+                            symbolA: pairASymbol,
+                            symbolB: pairBSymbol,
+                          })
+                        : t("labelDualInvestQuoteTitle", {
+                            symbolA: pairASymbol,
+                            symbolB: pairBSymbol,
+                          })}
                     </Typography>
                     <Typography
                       component={"span"}

@@ -6,7 +6,10 @@ import {
   useTokenMap,
 } from "@loopring-web/core";
 import React from "react";
-import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
+import {
+  getValuePrecisionThousand,
+  SDK_ERROR_MAP_TO_UI,
+} from "@loopring-web/common-resources";
 import { RawDataDualAssetItem } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -21,7 +24,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   const {
     account: { accountId, apiKey },
   } = useAccount();
-
+  const { tokenMap, idIndex } = useTokenMap();
   const [dualList, setDualList] = React.useState<R[]>([]);
   const [pagination, setDualPagination] = React.useState<{
     pageSize: number;
@@ -68,9 +71,17 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           // @ts-ignore
           let result = (response as any)?.userDualTxs.reduce(
             (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
+              const format = makeDualOrderedItem(item);
+              const amount = getValuePrecisionThousand(
+                item.tokenInfoOrigin.amountIn,
+                tokenMap[format.sellSymbol].precision,
+                tokenMap[format.sellSymbol].precision,
+                tokenMap[format.sellSymbol].precision,
+                true
+              );
               prev.push({
-                ...makeDualOrderedItem(item),
-                amount: item.tokenInfoOrigin.amountIn,
+                ...format,
+                amount,
               });
               return prev;
             },
