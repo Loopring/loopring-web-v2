@@ -13,7 +13,6 @@ import {
 import { RawDataDualAssetItem } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { toBig } from "@loopring-web/loopring-sdk";
 
 export const Limit = 14;
 

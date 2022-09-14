@@ -95,7 +95,7 @@ export const makeDualOrderedItem = (
     deliveryPrice,
     productId,
     tokenInfoOrigin: { base, quote },
-    timeOrigin: { expireTime },
+    timeOrigin: { expireTime, settlementTime },
   } = props;
   // myLog("makeDualViewItem", expireTime, strike, ratio, base, quote, dualType);
   const [sellSymbol, buySymbol] =
@@ -115,9 +115,8 @@ export const makeDualOrderedItem = (
     strike: strike.toString(),
     isUp: sdk.toBig(strike).gt(deliveryPrice) ? true : false,
     // targetPrice,
-
     productId,
-    expireTime,
+    expireTime: settlementTime,
     currentPrice: {
       base,
       quote,
