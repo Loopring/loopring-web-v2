@@ -447,11 +447,14 @@ export type DualViewBase = {
   isUp: boolean;
   // targetPrice,
   // subscribeData,
+
   expireTime: number;
   currentPrice: DualCurrentPrice;
   productId: string;
   sellSymbol: string;
   buySymbol: string;
+  amount?: string;
+  enterTime?: number;
 
   // balance,
 };

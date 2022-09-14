@@ -3,6 +3,7 @@ import moment from "moment";
 import {
   DualCalcData,
   DualCurrentPrice,
+  DualViewBase,
   DualViewInfo,
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -16,7 +17,7 @@ import {
 import { DualWrapProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 
-import { Box, Grid, Tooltip, Typography } from "@mui/material";
+import { Box, Divider, Grid, Tooltip, Typography } from "@mui/material";
 import { useSettings } from "../../../../stores";
 import styled from "@emotion/styled";
 import { ButtonStyle } from "../Styled";
@@ -126,14 +127,16 @@ export const DualDetail = ({
   // lessEarnTokenSymbol,
   // greaterEarnTokenSymbol,
   greaterEarnView,
+  isOrder = false,
 }: {
-  dualViewInfo: DualViewInfo;
+  dualViewInfo: DualViewBase;
   currentPrice: DualCurrentPrice;
   tokenMap: any;
   lessEarnView: string;
   greaterEarnView: string;
   lessEarnTokenSymbol: string;
   greaterEarnTokenSymbol: string;
+  isOrder?: boolean;
 }) => {
   const { t } = useTranslation();
   const { upColor } = useSettings();
@@ -142,7 +145,7 @@ export const DualDetail = ({
     () =>
       base
         ? getValuePrecisionThousand(
-            dualViewInfo.__raw__.index.index,
+            currentPrice.currentPrice,
             tokenMap[base].precision,
             tokenMap[base].precision,
             tokenMap[base].precision,
@@ -185,11 +188,7 @@ export const DualDetail = ({
             className={"point2 point"}
             whiteSpace={"pre"}
             sx={{
-              left:
-                Number(dualViewInfo.__raw__.index.index) >
-                Number(dualViewInfo?.strike)
-                  ? "75%"
-                  : "25%",
+              left: Number(dualViewInfo.isUp) ? "75%" : "25%",
             }}
           >
             <Typography variant={"body2"} color={"textPrimary"}>
@@ -242,22 +241,23 @@ export const DualDetail = ({
           <Box className={"backView"}>
             <Box
               className={"line"}
-              width={
-                Number(dualViewInfo.__raw__.index.index) >
-                Number(dualViewInfo.strike)
-                  ? "75%"
-                  : "25%"
-              }
+              width={Number(dualViewInfo.isUp) ? "75%" : "25%"}
             />
           </Box>
         </BoxChartStyle>
       </Box>
+      {isOrder && (
+        <Box padding={2}>
+          <Divider />
+        </Box>
+      )}
       <Box
         display={"flex"}
         flexDirection={"column"}
         alignItems={"stretch"}
         justifyContent={"space-between"}
         paddingX={2}
+        marginTop={2}
       >
         <Typography
           variant={"body1"}
@@ -265,6 +265,7 @@ export const DualDetail = ({
           alignItems={"center"}
           justifyContent={"space-between"}
           paddingBottom={1}
+          order={isOrder ? 2 : 0}
         >
           <Tooltip title={t("labelDualCurrentAPRDes").toString()}>
             <Typography
@@ -303,6 +304,7 @@ export const DualDetail = ({
           alignItems={"center"}
           justifyContent={"space-between"}
           paddingBottom={1}
+          order={isOrder ? 3 : 1}
         >
           <Tooltip title={t("labelDualTargetPriceDes").toString()}>
             <Typography
@@ -330,13 +332,69 @@ export const DualDetail = ({
             {targetView}
           </Typography>
         </Typography>
-
+        {isOrder && dualViewInfo.enterTime && (
+          <>
+            <Typography
+              variant={"body1"}
+              display={"inline-flex"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              paddingBottom={1}
+              order={0}
+            >
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                color={"textSecondary"}
+                display={"inline-flex"}
+                alignItems={"center"}
+              >
+                {t("labelDualSubDate")}
+              </Typography>
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                color={"textPrimary"}
+              >
+                {moment(new Date(dualViewInfo.enterTime)).format(
+                  YEAR_DAY_MINUTE_FORMAT
+                )}
+              </Typography>
+            </Typography>
+            <Typography
+              variant={"body1"}
+              display={"inline-flex"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              paddingBottom={1}
+              order={4}
+            >
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                color={"textSecondary"}
+                display={"inline-flex"}
+                alignItems={"center"}
+              >
+                {t("labelDualAmount")}
+              </Typography>
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                color={"textPrimary"}
+              >
+                {dualViewInfo?.amount}
+              </Typography>
+            </Typography>
+          </>
+        )}
         <Typography
           variant={"body1"}
           display={"inline-flex"}
           alignItems={"center"}
           justifyContent={"space-between"}
           paddingBottom={1}
+          order={isOrder ? 1 : 2}
         >
           <Typography
             component={"span"}
@@ -552,7 +610,7 @@ export const DualWrap = <
             justifyContent={"space-between"}
           >
             <DualDetail
-              dualViewInfo={dualCalcData.dualViewInfo}
+              dualViewInfo={dualCalcData.dualViewInfo as DualViewBase}
               currentPrice={dualCalcData.dualViewInfo.currentPrice}
               tokenMap={tokenMap}
               lessEarnTokenSymbol={dualCalcData.lessEarnTokenSymbol}

@@ -231,4 +231,5 @@ export default {
   labelDualAssetSettlement_Date: "Settlement Date",
   labelDualAssetAPR: "APR",
   labelDualAssetAction: "Detail",
+  labelDualAssetDetail: "Detail",
 };

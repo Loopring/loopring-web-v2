@@ -1031,4 +1031,6 @@ export default {
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
   labelInvestDualTutorialCheck4: "I have read the risk warning.",
+  labelDualAmount: "Amount",
+  labelDuaInvestmentDetails: "Dual Investment Details",
 };

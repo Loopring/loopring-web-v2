@@ -2,20 +2,30 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
 import {
+  DualViewBase,
+  EmptyValueTag,
+  getValuePrecisionThousand,
   globalSetup,
   RowConfig,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
-import { Column, Table, TablePagination } from "../../basic-lib";
-import { Box, BoxProps, Typography } from "@mui/material";
+import {
+  Column,
+  ModalCloseButton,
+  Table,
+  TablePagination,
+} from "../../basic-lib";
+import { Box, BoxProps, Link, Modal, Typography } from "@mui/material";
 import moment from "moment";
-import { TablePaddingX } from "../../styled";
+import { TablePaddingX, SwitchPanelStyled } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
 import { DualAssetTableProps, RawDataDualAssetItem } from "./Interface";
 import { CoinIcons } from "../assetsTable";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { DualDetail } from "../../tradePanel";
+import BigNumber from "bignumber.js";
 
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   display: flex;
@@ -63,10 +73,111 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       showloading,
       t,
     } = props;
+    const [open, setOpen] = React.useState<boolean>(false);
+    const [detail, setDetail] =
+      React.useState<
+        | {
+            dualViewInfo: R;
+            lessEarnTokenSymbol: string;
+            greaterEarnTokenSymbol: string;
+            lessEarnView: string;
+            greaterEarnView: string;
+          }
+        | undefined
+      >(undefined);
 
     const { isMobile, coinJson } = useSettings();
     const [page, setPage] = React.useState(1);
+    const showDetail = (item: R) => {
+      const {
+        sellSymbol,
+        buySymbol,
+        settleRatio,
+        strike,
+        __raw__: {
+          order: {
+            dualType,
+            tokenInfoOrigin: { base, quote, amountIn, amountOut },
+            timeOrigin: { settlementTime },
+          },
+        },
+      } = item;
+      const lessEarnTokenSymbol = base; //isUp ? sellSymbol : buySymbol;
+      const greaterEarnTokenSymbol = quote; //isUp ? buySymbol : sellSymbol;
+      let lessEarnVol, greaterEarnVol;
+      const sellAmount = sdk
+        .toBig(amountIn ? amountIn : 0)
+        .div("1e" + tokenMap[sellSymbol].decimals);
+      if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
+        lessEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn); //dualViewInfo.strike);
+        greaterEarnVol = sdk
+          .toBig(
+            sdk
+              .toBig(settleRatio)
+              .plus(1)
+              .times(sellAmount ? sellAmount : 0)
+              .times(strike)
+              .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL)
+          )
+          .times("1e" + tokenMap[buySymbol].decimals);
+      } else {
+        lessEarnVol = sdk
+          .toBig(
+            sdk
+              .toBig(settleRatio)
+              .plus(1)
+              .times(sellAmount ? sellAmount : 0)
+              // .times(1 + info.ratio)
+              .div(strike)
+              .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL)
+          )
+          .times("1e" + tokenMap[buySymbol].decimals);
 
+        // sellVol.times(1 + info.ratio).div(dualViewInfo.strike); //.times(1 + dualViewInfo.settleRatio);
+        greaterEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn);
+      }
+      const lessEarnView =
+        amountIn && amountOut
+          ? getValuePrecisionThousand(
+              sdk.toBig(lessEarnVol).div("1e" + tokenMap[base].decimals),
+              tokenMap[base].precision,
+              tokenMap[base].precision,
+              tokenMap[base].precision,
+              false,
+              { floor: true }
+            )
+          : EmptyValueTag;
+      const greaterEarnView =
+        amountIn && amountOut
+          ? getValuePrecisionThousand(
+              sdk.toBig(greaterEarnVol).div("1e" + tokenMap[base].decimals),
+              tokenMap[base].precision,
+              tokenMap[base].precision,
+              tokenMap[base].precision,
+              false,
+              { floor: true }
+            )
+          : EmptyValueTag;
+      setOpen(true);
+      const amount = getValuePrecisionThousand(
+        sellAmount,
+        tokenMap[sellSymbol].precision,
+        tokenMap[sellSymbol].precision,
+        tokenMap[sellSymbol].precision,
+        false
+      );
+      setDetail({
+        dualViewInfo: {
+          ...item,
+          amount: amount + " " + sellSymbol,
+          enterTime: settlementTime,
+        },
+        lessEarnTokenSymbol,
+        greaterEarnTokenSymbol,
+        lessEarnView,
+        greaterEarnView,
+      });
+    };
     const updateData = _.debounce(
       ({
         // tableType,
@@ -100,6 +211,8 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           width: "auto",
           key: "Frozen_Target",
           name: t("labelDualAssetProduct"),
+          cellClass: "textAlignLeft",
+          headerCellClass: "textAlignLeft",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <Typography
@@ -107,6 +220,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 flexDirection={"row"}
                 display={"flex"}
                 height={"100%"}
+                alignItems={"center"}
               >
                 <Typography component={"span"} display={"inline-flex"}>
                   {/* eslint-disable-next-line react/jsx-no-undef */}
@@ -121,13 +235,16 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 </Typography>
                 <Typography
                   component={"span"}
-                  display={"inline-flex"}
-                  color={"textPrimary"}
+                  flexDirection={"column"}
+                  display={"flex"}
                 >
-                  {t("labelDualInvestTitle", {
-                    symbolA: row.sellSymbol,
-                    symbolB: row.buySymbol,
-                  })}
+                  <Typography
+                    component={"span"}
+                    display={"inline-flex"}
+                    color={"textPrimary"}
+                  >
+                    {`${row.sellSymbol}/${row.buySymbol}`}
+                  </Typography>
                 </Typography>
               </Typography>
             );
@@ -136,19 +253,12 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         {
           sortable: false,
           width: "auto",
-          key: "Price",
+          key: "Frozen",
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           name: t("labelDualFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Typography
-                height={"100%"}
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-              >
-                {row?.amount + " " + row.buySymbol}
-              </Typography>
-            );
+            return <>{row?.amount + " " + row.buySymbol}</>;
           },
         },
         {
@@ -156,17 +266,10 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           name: t("labelDualAssetPrice"),
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Typography
-                height={"100%"}
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-              >
-                {row?.strike}
-              </Typography>
-            );
+            return <>{row?.strike}</>;
           },
         },
         {
@@ -174,18 +277,15 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           sortable: true,
           width: "auto",
           name: t("labelDualAssetSettlement_Date"),
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <Typography
-                height={"100%"}
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-              >
+              <>
                 {moment(new Date(row.expireTime)).format(
                   YEAR_DAY_MINUTE_FORMAT
                 )}
-              </Typography>
+              </>
             );
           },
         },
@@ -193,18 +293,24 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           key: "APR",
           sortable: true,
           width: "auto",
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           name: t("labelDualAssetAPR"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Typography>{row?.apy}</Typography>;
+            return <>{row?.apy}</>;
           },
         },
         {
           sortable: false,
           width: "auto",
           key: "Action",
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
           name: t("labelDualAssetAction"),
-          formatter: ({ row: _row }: FormatterProps<R, unknown>) => {
-            return <Typography>{t("labelDetail")}</Typography>;
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <Link onClick={(_e) => showDetail(row)}>{t("labelDetail")}</Link>
+            );
           },
         },
       ],
@@ -224,6 +330,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 component={"span"}
                 flexDirection={"row"}
                 display={"flex"}
+                alignItems={"center"}
                 height={"100%"}
               >
                 <Typography component={"span"} display={"inline-flex"}>
@@ -247,10 +354,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                     display={"inline-flex"}
                     color={"textPrimary"}
                   >
-                    {t("labelDualInvestTitle", {
-                      symbolA: row.sellSymbol,
-                      symbolB: row.buySymbol,
-                    })}
+                    {`${row.sellSymbol}/${row.buySymbol}`}
                   </Typography>
                 </Typography>
               </Typography>
@@ -260,19 +364,10 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         {
           sortable: false,
           width: "auto",
-          key: "Price",
+          key: "Frozen",
           name: t("labelDualAssetFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Typography
-                height={"100%"}
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-              >
-                {row?.amount + " " + row.buySymbol}
-              </Typography>
-            );
+            return <>{row?.amount + " " + row.buySymbol}</>;
           },
         },
         {
@@ -297,19 +392,16 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           key: "Settlement_Date",
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           name: t("labelDualAssetSettlement_Date"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <Typography
-                height={"100%"}
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-              >
+              <>
                 {moment(new Date(row.expireTime)).format(
                   YEAR_DAY_MINUTE_FORMAT
                 )}
-              </Typography>
+              </>
             );
           },
         },
@@ -318,17 +410,25 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           width: "auto",
           key: "APR",
           name: t("labelDualAssetAPR"),
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Typography>{row?.apy}</Typography>;
+            return <>{row?.apy ?? ""}</>;
           },
         },
         {
           sortable: false,
           width: "auto",
           key: "Action",
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
           name: t("labelDualAssetAction"),
-          formatter: ({ row: _row }: FormatterProps<R, unknown>) => {
-            return <Typography>{t("labelDetail")}</Typography>;
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <Link onClick={(_e) => showDetail(row)}>
+                {t("labelDualAssetDetail")}
+              </Link>
+            );
           },
         },
       ],
@@ -403,6 +503,44 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             onPageChange={handlePageChange}
           />
         )}
+        <Modal
+          open={open}
+          onClose={(_e: any) => setOpen(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <SwitchPanelStyled width={"var(--modal-width)"}>
+            <ModalCloseButton onClose={(_e: any) => setOpen(false)} t={t} />
+            {detail && (
+              <Box
+                flex={1}
+                paddingY={2}
+                width={"100%"}
+                display={"flex"}
+                flexDirection={"column"}
+              >
+                <Typography
+                  variant={isMobile ? "h5" : "h4"}
+                  marginTop={-4}
+                  textAlign={"center"}
+                  paddingBottom={2}
+                >
+                  {t("labelDuaInvestmentDetails", { ns: "common" })}
+                </Typography>
+                <DualDetail
+                  isOrder={true}
+                  dualViewInfo={detail.dualViewInfo as DualViewBase}
+                  currentPrice={detail.dualViewInfo.currentPrice}
+                  tokenMap={tokenMap}
+                  lessEarnTokenSymbol={detail.lessEarnTokenSymbol}
+                  greaterEarnTokenSymbol={detail.greaterEarnTokenSymbol}
+                  lessEarnView={detail.lessEarnView}
+                  greaterEarnView={detail.greaterEarnView}
+                />
+              </Box>
+            )}
+          </SwitchPanelStyled>
+        </Modal>
       </TableWrapperStyled>
     );
   }

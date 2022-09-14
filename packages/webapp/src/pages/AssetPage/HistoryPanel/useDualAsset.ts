@@ -13,6 +13,7 @@ import {
 import { RawDataDualAssetItem } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 export const Limit = 14;
 
@@ -73,7 +74,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
               const format = makeDualOrderedItem(item);
               const amount = getValuePrecisionThousand(
-                item.tokenInfoOrigin.amountIn,
+                sdk
+                  .toBig(item.tokenInfoOrigin.amountIn)
+                  .div("1e" + tokenMap[format.sellSymbol].decimals),
                 tokenMap[format.sellSymbol].precision,
                 tokenMap[format.sellSymbol].precision,
                 tokenMap[format.sellSymbol].precision,
