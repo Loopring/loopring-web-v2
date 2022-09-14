@@ -175,7 +175,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           key: "APR",
-          name: t("labelDualAssetAPR"),
+          name: t("labelDualTxAPR"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return <Typography>{row?.apy}</Typography>;
           },
@@ -202,7 +202,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           key: "Price",
-          name: t("labelDualTxsSellPrice"),
+          name: t("labelDualTxsSettlementPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const {
               __raw__: {
@@ -225,7 +225,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           key: "Settlement_Date",
-          name: t("labelDualAssetSettlement_Date"),
+          name: t("labelDualTxsSettlement_Date"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <Typography
@@ -243,7 +243,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
         },
         {
           key: "time",
-          name: t("labelTxTime"),
+          name: t("labelDualTxsTime"),
           headerCellClass: "textAlignRight",
           formatter: ({ row }) => {
             return (

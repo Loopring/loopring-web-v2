@@ -232,4 +232,11 @@ export default {
   labelDualAssetAPR: "APR",
   labelDualAssetAction: "Detail",
   labelDualAssetDetail: "Detail",
+  labelDualTxsSide: "Type",
+  labelDualTxsProduct: "Product",
+  labelDualTxAPR: "APR",
+  labelDualTxsTargetPrice: "Target Price",
+  labelDualTxsSettlement_Date: "Settlement Date",
+  labelDualTxsSettlementPrice: "Settlement Date",
+  labelDualTxsTime: "Time",
 };

@@ -1033,4 +1033,5 @@ export default {
   labelInvestDualTutorialCheck4: "I have read the risk warning.",
   labelDualAmount: "Amount",
   labelDuaInvestmentDetails: "Dual Investment Details",
+  labelDualOrderTable: "Dual Investments",
 };
