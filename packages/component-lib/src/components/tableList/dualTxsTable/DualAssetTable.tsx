@@ -96,9 +96,10 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         strike,
         __raw__: {
           order: {
+            createdAt,
             dualType,
             tokenInfoOrigin: { base, quote, amountIn, amountOut },
-            timeOrigin: { settlementTime },
+            // timeOrigin: { settlementTime },
           },
         },
       } = item;
@@ -170,7 +171,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         dualViewInfo: {
           ...item,
           amount: amount + " " + sellSymbol,
-          enterTime: settlementTime,
+          enterTime: createdAt,
         },
         lessEarnTokenSymbol,
         greaterEarnTokenSymbol,
