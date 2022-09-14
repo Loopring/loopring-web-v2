@@ -452,7 +452,7 @@ export const useDefiTrade = <
         setIsLoading(true);
       }
       Promise.all([
-        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "" }),
+        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "LIDO" }),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(
               isJoin

@@ -28,16 +28,8 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
 const TableStyled = styled(Table)`
   &.rdg {
     height: ${(props: any) => {
-      if (props.ispro === "pro") {
-        return "620px";
-      }
-      if (props.currentheight && props.currentheight > 350) {
-        return props.currentheight + "px";
-      } else {
-        return "100%";
-      }
+      return props.currentheight + "px";
     }};
-
     .rdg-cell.action {
       display: flex;
       justify-content: center;
@@ -107,27 +99,37 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           key: "Frozen_Target",
-          name: t("labelDualAssetFrozen_Target"),
+          name: t("labelDualAssetProduct"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <>
+              <Typography
+                component={"span"}
+                flexDirection={"column"}
+                display={"flex"}
+                height={"100%"}
+              >
+                <Typography component={"span"} display={"inline-flex"}>
+                  {/* eslint-disable-next-line react/jsx-no-undef */}
+                  <CoinIcons
+                    type={"dual"}
+                    size={24}
+                    tokenIcon={[
+                      coinJson[row.sellSymbol],
+                      coinJson[row.buySymbol],
+                    ]}
+                  />
+                </Typography>
                 <Typography
                   component={"span"}
-                  flexDirection={"column"}
-                  display={"flex"}
+                  display={"inline-flex"}
+                  color={"textPrimary"}
                 >
-                  <Typography
-                    component={"span"}
-                    display={"inline-flex"}
-                    color={"textPrimary"}
-                  >
-                    {t("labelDualInvestTitle", {
-                      symbolA: row.sellSymbol,
-                      symbolB: row.buySymbol,
-                    })}
-                  </Typography>
+                  {t("labelDualInvestTitle", {
+                    symbolA: row.sellSymbol,
+                    symbolB: row.buySymbol,
+                  })}
                 </Typography>
-              </>
+              </Typography>
             );
           },
         },
@@ -135,7 +137,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           key: "Price",
-          name: t("labelDualAssetAmount"),
+          name: t("labelDualFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <Typography
@@ -215,7 +217,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           key: "Frozen_Target",
-          name: t("labelDualAssetFrozen_Target"),
+          name: t("labelDualAssetProduct"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <>
@@ -254,7 +256,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           key: "Price",
-          name: t("labelDualAssetAmount"),
+          name: t("labelDualAssetFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <Typography
@@ -388,7 +390,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             showloading,
           }}
         />
-        {pagination && (
+        {pagination && pagination.total > pagination.pageSize && (
           <TablePagination
             page={page}
             pageSize={pagination.pageSize}

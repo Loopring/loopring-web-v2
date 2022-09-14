@@ -225,4 +225,10 @@ export default {
   labelInvestmentStatusSettled: "Settled",
   labelInvestmentStatusDelivering: "Delivering",
   labelInvestmentStatusSubscribe: "Subscribe",
+  labelDualAssetProduct: "Product",
+  labelDualAssetFrozen: "Frozen",
+  labelDualAssetPrice: "Target Price",
+  labelDualAssetSettlement_Date: "Settlement Date",
+  labelDualAssetAPR: "APR",
+  labelDualAssetAction: "Detail",
 };

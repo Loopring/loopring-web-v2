@@ -31,6 +31,7 @@ import {
 import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
 import { useDualAsset } from "../../AssetPage/HistoryPanel/useDualAsset";
+import React from "react";
 const StyleWrapper = styled(Grid)`
   position: relative;
   width: 100%;
@@ -65,6 +66,9 @@ const MyLiquidity: any = withTranslation("common")(
       pagination,
       showLoading: dualLoading,
     } = useDualAsset();
+    React.useEffect(() => {
+      getDualTxList({});
+    }, []);
     const { summaryMyInvest, myPoolRow, showLoading } = useOverview({
       ammActivityMap,
     });
@@ -172,7 +176,7 @@ const MyLiquidity: any = withTranslation("common")(
         </StyleWrapper>
         <TableWrapStyled
           className={`table-divide-short MuiPaper-elevation2 ${
-            myPoolRow?.length ? "min-height" : ""
+            myPoolRow?.length > 0 ? "min-height" : ""
           }`}
           marginTop={2}
           paddingY={2}
@@ -224,7 +228,7 @@ const MyLiquidity: any = withTranslation("common")(
 
         <TableWrapStyled
           className={`table-divide-short MuiPaper-elevation2 ${
-            lidoAssets?.length ? "min-height" : ""
+            lidoAssets?.length > 0 ? "min-height" : ""
           }`}
           marginTop={2}
           marginBottom={3}

@@ -23,7 +23,6 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   } = useAccount();
 
   const [dualList, setDualList] = React.useState<R[]>([]);
-  const { tokenMap } = useTokenMap();
   const [pagination, setDualPagination] = React.useState<{
     pageSize: number;
     total: number;
