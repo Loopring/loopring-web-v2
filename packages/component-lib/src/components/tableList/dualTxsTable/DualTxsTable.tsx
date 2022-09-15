@@ -4,6 +4,8 @@ import { useSettings } from "../../../stores";
 import React from "react";
 import {
   DirectionTag,
+  EmptyValueTag,
+  getValuePrecisionThousand,
   globalSetup,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
@@ -15,6 +17,7 @@ import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
 import { LABEL_INVESTMENT_STATUS_MAP, RawDataDualTxsItem } from "./Interface";
 import * as sdk from "@loopring-web/loopring-sdk";
+import BigNumber from "bignumber.js";
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -24,7 +27,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: auto 20% 180px !important;`
+        ? `--template-columns: auto auto 80px  100px 160px 160px 120px !important;`
         : `--template-columns: 100% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -117,38 +120,124 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           width: "auto",
           key: "DualTxsSide",
           name: t("labelDualTxsSide"),
+          cellClass: "textAlignLeft",
+          headerCellClass: "textAlignLeft",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const {
               __raw__: {
-                order: { settlementStatus },
+                order: {
+                  deliveryPrice,
+                  dualType,
+                  settlementStatus,
+                  tokenInfoOrigin: { amountIn, base, quote, amountOut },
+                  settleRatio,
+                  strike,
+                },
               },
+
               expireTime,
               sellSymbol,
               buySymbol,
             } = row;
+            let lessEarnVol, greaterEarnVol;
+            const sellAmount = sdk
+              .toBig(amountIn ? amountIn : 0)
+              .div("1e" + tokenMap[sellSymbol].decimals);
+            if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
+              lessEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn); //dualViewInfo.strike);
+              greaterEarnVol = sdk
+                .toBig(
+                  sdk
+                    .toBig(settleRatio)
+                    .plus(1)
+                    .times(sellAmount ? sellAmount : 0)
+                    .times(strike)
+                    .toFixed(
+                      tokenMap[buySymbol].precision,
+                      BigNumber.ROUND_CEIL
+                    )
+                )
+                .times("1e" + tokenMap[buySymbol].decimals);
+            } else {
+              lessEarnVol = sdk
+                .toBig(
+                  sdk
+                    .toBig(settleRatio)
+                    .plus(1)
+                    .times(sellAmount ? sellAmount : 0)
+                    // .times(1 + info.ratio)
+                    .div(strike)
+                    .toFixed(
+                      tokenMap[buySymbol].precision,
+                      BigNumber.ROUND_CEIL
+                    )
+                )
+                .times("1e" + tokenMap[buySymbol].decimals);
+
+              // sellVol.times(1 + info.ratio).div(dualViewInfo.strike); //.times(1 + dualViewInfo.settleRatio);
+              greaterEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn);
+            }
+            const lessEarnView =
+              amountIn && amountOut
+                ? getValuePrecisionThousand(
+                    sdk.toBig(lessEarnVol).div("1e" + tokenMap[base].decimals),
+                    tokenMap[base].precision,
+                    tokenMap[base].precision,
+                    tokenMap[base].precision,
+                    false,
+                    { floor: true }
+                  )
+                : EmptyValueTag;
+            const greaterEarnView =
+              amountIn && amountOut
+                ? getValuePrecisionThousand(
+                    sdk
+                      .toBig(greaterEarnVol)
+                      .div("1e" + tokenMap[quote].decimals),
+                    tokenMap[quote].precision,
+                    tokenMap[quote].precision,
+                    tokenMap[quote].precision,
+                    false,
+                    { floor: true }
+                  )
+                : EmptyValueTag;
+
+            const amount = getValuePrecisionThousand(
+              sellAmount,
+              tokenMap[sellSymbol].precision,
+              tokenMap[sellSymbol].precision,
+              tokenMap[sellSymbol].precision,
+              false
+            );
             const side =
-              expireTime - Date.now() < 0
-                ? settlementStatus === sdk.SETTLEMENT_STATUS.SETTLED
-                  ? LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED
-                  : LABEL_INVESTMENT_STATUS_MAP.DELIVERING
-                : LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE;
+              settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+                ? t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED)
+                : Date.now() - expireTime >= 0
+                ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
+                : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
             const statusColor =
-              expireTime - Date.now() < 0
-                ? settlementStatus === sdk.SETTLEMENT_STATUS.SETTLED
-                  ? "var(--color-success)"
-                  : "var(--color-warning)"
+              settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+                ? "var(--color-success)"
+                : Date.now() - expireTime >= 0
+                ? "var(--color-warning)"
                 : "var(--color-error)";
-            const sentense =
-              expireTime - Date.now() < 0
-                ? settlementStatus === sdk.SETTLEMENT_STATUS.SETTLED
-                  ? ` ${sellSymbol} ${DirectionTag} ${buySymbol}`
-                  : `${sellSymbol}`
-                : `${sellSymbol}`;
+
+            let buyAmount, sentence;
+            buyAmount =
+              deliveryPrice - strike >= 0
+                ? `${greaterEarnView} ${quote}`
+                : `${lessEarnView} ${base}`;
+            sentence =
+              settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+                ? `${amount} ${sellSymbol} ${DirectionTag} ${buyAmount} ${buySymbol}`
+                : Date.now() - expireTime >= 0
+                ? `${amount} ${sellSymbol}`
+                : `${amount} ${sellSymbol}`;
             return (
-              <Box display={"flex"} alignItems={"center"}>
+              <Box display={"flex"} alignItems={"center"} flexDirection={"row"}>
                 <Typography color={statusColor}>{side}</Typography>
                 &nbsp;&nbsp;
-                <Typography component={"span"}>{sentense}</Typography>
+                <Typography component={"span"}>{sentence}</Typography>
               </Box>
             );
           },
@@ -158,17 +247,10 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           width: "auto",
           key: "Product",
           name: t("labelDualTxsProduct"),
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Typography
-                height={"100%"}
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-              >
-                {row?.productId}
-              </Typography>
-            );
+            return <>{row?.sellSymbol + "/" + row?.buySymbol}</>;
           },
         },
         {
@@ -176,8 +258,10 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           width: "auto",
           key: "APR",
           name: t("labelDualTxAPR"),
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Typography>{row?.apy}</Typography>;
+            return <>{row?.apy}</>;
           },
         },
         {
@@ -186,38 +270,39 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           key: "TargetPrice",
           name: t("labelDualTxsTargetPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Typography
-                height={"100%"}
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-              >
-                {row?.strike + " " + row.buySymbol}
-              </Typography>
-            );
+            return <>{row?.strike + " " + row.buySymbol}</>;
           },
         },
         {
           sortable: false,
           width: "auto",
           key: "Price",
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           name: t("labelDualTxsSettlementPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const {
               __raw__: {
-                order: { deliveryPrice },
+                order: {
+                  deliveryPrice,
+                  tokenInfoOrigin: { quote },
+                },
               },
+              // currentPrice: { currentPrice, quote },
             } = row;
             return (
-              <Typography
-                height={"100%"}
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-              >
-                {deliveryPrice}
-              </Typography>
+              <>
+                {deliveryPrice
+                  ? getValuePrecisionThousand(
+                      deliveryPrice,
+                      tokenMap[quote]?.precision,
+                      tokenMap[quote]?.precision,
+                      tokenMap[quote]?.precision,
+                      true,
+                      { isFait: true }
+                    )
+                  : EmptyValueTag}
+              </>
             );
           },
         },

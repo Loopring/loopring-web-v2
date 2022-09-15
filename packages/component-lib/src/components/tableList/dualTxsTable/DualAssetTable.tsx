@@ -26,6 +26,7 @@ import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DualDetail } from "../../tradePanel";
 import BigNumber from "bignumber.js";
+import { LoopringAPI } from "@loopring-web/core";
 
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   display: flex;
@@ -88,7 +89,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
 
     const { isMobile, coinJson } = useSettings();
     const [page, setPage] = React.useState(1);
-    const showDetail = (item: R) => {
+    const showDetail = async (item: R) => {
       const {
         sellSymbol,
         buySymbol,
@@ -96,13 +97,19 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         strike,
         __raw__: {
           order: {
-            createdAt,
             dualType,
             tokenInfoOrigin: { base, quote, amountIn, amountOut },
             // timeOrigin: { settlementTime },
           },
         },
       } = item;
+      const {
+        dualPrice: { index },
+      } = await LoopringAPI.defiAPI?.getDualIndex({
+        baseSymbol: base,
+        quoteSymbol: quote,
+      });
+      item.currentPrice.currentPrice = index;
       const lessEarnTokenSymbol = base; //isUp ? sellSymbol : buySymbol;
       const greaterEarnTokenSymbol = quote; //isUp ? buySymbol : sellSymbol;
       let lessEarnVol, greaterEarnVol;
@@ -151,15 +158,15 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       const greaterEarnView =
         amountIn && amountOut
           ? getValuePrecisionThousand(
-              sdk.toBig(greaterEarnVol).div("1e" + tokenMap[base].decimals),
-              tokenMap[base].precision,
-              tokenMap[base].precision,
-              tokenMap[base].precision,
+              sdk.toBig(greaterEarnVol).div("1e" + tokenMap[quote].decimals),
+              tokenMap[quote].precision,
+              tokenMap[quote].precision,
+              tokenMap[quote].precision,
               false,
               { floor: true }
             )
           : EmptyValueTag;
-      setOpen(true);
+
       const amount = getValuePrecisionThousand(
         sellAmount,
         tokenMap[sellSymbol].precision,
@@ -167,11 +174,12 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         tokenMap[sellSymbol].precision,
         false
       );
+      setOpen(true);
+
       setDetail({
         dualViewInfo: {
           ...item,
           amount: amount + " " + sellSymbol,
-          enterTime: createdAt,
         },
         lessEarnTokenSymbol,
         greaterEarnTokenSymbol,
@@ -208,9 +216,9 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
     const getColumnMode = React.useCallback(
       (): Column<R, unknown>[] => [
         {
+          key: "Product",
           sortable: false,
           width: "auto",
-          key: "Frozen_Target",
           name: t("labelDualAssetProduct"),
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
@@ -252,9 +260,125 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           },
         },
         {
+          key: "Frozen",
           sortable: false,
           width: "auto",
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
+          name: t("labelDualAssetFrozen"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <>{row?.amount + " " + row.buySymbol}</>;
+          },
+        },
+        {
+          key: "Price",
+          sortable: false,
+          width: "auto",
+          name: t("labelDualAssetPrice"),
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <>{row?.strike}</>;
+          },
+        },
+        {
+          key: "Settlement_Date",
+          sortable: true,
+          width: "auto",
+          name: t("labelDualAssetSettlement_Date"),
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <>
+                {moment(new Date(row.expireTime)).format(
+                  YEAR_DAY_MINUTE_FORMAT
+                )}
+              </>
+            );
+          },
+        },
+        {
+          key: "APR",
+          sortable: true,
+          width: "auto",
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
+          name: t("labelDualAssetAPR"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <>{row?.apy}</>;
+          },
+        },
+        {
+          key: "Action",
+          sortable: false,
+          width: "auto",
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
+          name: t("labelDualAssetAction"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <Link onClick={(_e) => showDetail(row)}>
+                {t("labelDualAssetDetail")}
+              </Link>
+            );
+          },
+        },
+      ],
+      [coinJson, t]
+    );
+
+    const getColumnMobile = React.useCallback(
+      (): Column<R, unknown>[] => [
+        {
+          key: "Product",
+          sortable: false,
+          width: "auto",
+          name: t("labelDualAssetProduct"),
+          cellClass: "textAlignLeft",
+          headerCellClass: "textAlignLeft",
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <Typography
+                component={"span"}
+                flexDirection={"row"}
+                display={"flex"}
+                height={"100%"}
+                alignItems={"center"}
+              >
+                <Typography component={"span"} display={"inline-flex"}>
+                  {/* eslint-disable-next-line react/jsx-no-undef */}
+                  <CoinIcons
+                    type={"dual"}
+                    size={24}
+                    tokenIcon={[
+                      coinJson[row.sellSymbol],
+                      coinJson[row.buySymbol],
+                    ]}
+                  />
+                </Typography>
+                <Typography
+                  component={"span"}
+                  flexDirection={"column"}
+                  display={"flex"}
+                >
+                  <Typography
+                    component={"span"}
+                    display={"inline-flex"}
+                    color={"textPrimary"}
+                  >
+                    {`${row.sellSymbol}/${row.buySymbol}`}
+                  </Typography>
+                </Typography>
+              </Typography>
+            );
+          },
+        },
+        {
           key: "Frozen",
+
+          sortable: false,
+          width: "auto",
           cellClass: "textAlignCenter",
           headerCellClass: "textAlignCenter",
           name: t("labelDualFrozen"),
@@ -302,125 +426,9 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           },
         },
         {
-          sortable: false,
-          width: "auto",
           key: "Action",
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelDualAssetAction"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Link onClick={(_e) => showDetail(row)}>{t("labelDetail")}</Link>
-            );
-          },
-        },
-      ],
-      [coinJson, t]
-    );
-
-    const getColumnMobile = React.useCallback(
-      (): Column<R, unknown>[] => [
-        {
           sortable: false,
           width: "auto",
-          key: "Frozen_Target",
-          name: t("labelDualAssetProduct"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Typography
-                component={"span"}
-                flexDirection={"row"}
-                display={"flex"}
-                alignItems={"center"}
-                height={"100%"}
-              >
-                <Typography component={"span"} display={"inline-flex"}>
-                  {/* eslint-disable-next-line react/jsx-no-undef */}
-                  <CoinIcons
-                    type={"dual"}
-                    size={24}
-                    tokenIcon={[
-                      coinJson[row.sellSymbol],
-                      coinJson[row.buySymbol],
-                    ]}
-                  />
-                </Typography>
-                <Typography
-                  component={"span"}
-                  flexDirection={"column"}
-                  display={"flex"}
-                >
-                  <Typography
-                    component={"span"}
-                    display={"inline-flex"}
-                    color={"textPrimary"}
-                  >
-                    {`${row.sellSymbol}/${row.buySymbol}`}
-                  </Typography>
-                </Typography>
-              </Typography>
-            );
-          },
-        },
-        {
-          sortable: false,
-          width: "auto",
-          key: "Frozen",
-          name: t("labelDualAssetFrozen"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.amount + " " + row.buySymbol}</>;
-          },
-        },
-        {
-          sortable: false,
-          width: "auto",
-          key: "Price",
-          name: t("labelDualAssetPrice"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Typography
-                height={"100%"}
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-              >
-                {row?.strike}
-              </Typography>
-            );
-          },
-        },
-        {
-          sortable: false,
-          width: "auto",
-          key: "Settlement_Date",
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          name: t("labelDualAssetSettlement_Date"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <>
-                {moment(new Date(row.expireTime)).format(
-                  YEAR_DAY_MINUTE_FORMAT
-                )}
-              </>
-            );
-          },
-        },
-        {
-          sortable: false,
-          width: "auto",
-          key: "APR",
-          name: t("labelDualAssetAPR"),
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.apy ?? ""}</>;
-          },
-        },
-        {
-          sortable: false,
-          width: "auto",
-          key: "Action",
           cellClass: "textAlignRight",
           headerCellClass: "textAlignRight",
           name: t("labelDualAssetAction"),
@@ -463,7 +471,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       [rawData]
     );
     const defaultArgs: any = {
-      columnMode: isMobile ? getColumnMode() : getColumnMobile(),
+      columnMode: isMobile ? getColumnMobile() : getColumnMode(),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],

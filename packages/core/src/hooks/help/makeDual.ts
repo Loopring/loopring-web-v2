@@ -64,7 +64,7 @@ export const makeDualViewItem = (
     settleRatio, // quote Interest
     term,
     strike,
-    isUp: sdk.toBig(strike).gt(index.index) ? true : false,
+    isUp: dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE ? true : false, //sdk.toBig(strike).gt(index.index) ? true : false,
     // targetPrice,
     // subscribeData,
     productId: info.productId,
@@ -85,26 +85,27 @@ export const makeDualViewItem = (
 };
 
 export const makeDualOrderedItem = (
-  props: sdk.UserDualTxsHistory
+  props: sdk.UserDualTxsHistory,
+  currentPrice?: number
   // balance: sdk.DualBalance
 ): DualViewOrder => {
   const {
     settleRatio,
     dualType,
     strike,
-    deliveryPrice,
+    // deliveryPrice,
     productId,
+    createdAt,
     tokenInfoOrigin: { base, quote },
     timeOrigin: { expireTime, settlementTime },
   } = props;
-  // myLog("makeDualViewItem", expireTime, strike, ratio, base, quote, dualType);
   const [sellSymbol, buySymbol] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
       ? [base, quote]
       : [quote, base];
 
   const apy = toBig(settleRatio)
-    .div((expireTime - Date.now()) / 86400000)
+    .div((expireTime - createdAt) / 86400000)
     .times(365); // year APY
   const term = moment().to(new Date(expireTime), true);
 
@@ -113,14 +114,15 @@ export const makeDualOrderedItem = (
     settleRatio: settleRatio.toString(), // quote Interest
     term,
     strike: strike.toString(),
-    isUp: sdk.toBig(strike).gt(deliveryPrice) ? true : false,
+    isUp: dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE ? true : false,
     // targetPrice,
     productId,
+    enterTime: createdAt,
     expireTime: settlementTime,
     currentPrice: {
       base,
       quote,
-      currentPrice: Number(deliveryPrice),
+      currentPrice,
     },
     sellSymbol,
     buySymbol,

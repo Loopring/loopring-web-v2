@@ -470,7 +470,10 @@ export const MyPoolTable = withTranslation("tables")(
     }, []);
 
     return (
-      <TableStyled isMobile={isMobile}>
+      <TableStyled
+        isMobile={isMobile}
+        className={`${viewData?.length > 0 ? "min-height" : ""}`}
+      >
         {
           // (isMobile && isDropDown ? (
           //   <Link

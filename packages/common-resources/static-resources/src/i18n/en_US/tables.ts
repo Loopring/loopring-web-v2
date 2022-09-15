@@ -237,6 +237,6 @@ export default {
   labelDualTxAPR: "APR",
   labelDualTxsTargetPrice: "Target Price",
   labelDualTxsSettlement_Date: "Settlement Date",
-  labelDualTxsSettlementPrice: "Settlement Date",
+  labelDualTxsSettlementPrice: "Settlement Price",
   labelDualTxsTime: "Time",
 };

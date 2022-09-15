@@ -109,7 +109,7 @@ const HistoryPanel = withTranslation("common")(
       dualList,
       showLoading: showDualLoading,
       getDualTxList,
-      pagination,
+      dualTotal,
     } = useDualTransaction(setToastOpen);
 
     const { userOrderDetailList, getUserOrderDetailTradeList } =
@@ -283,7 +283,10 @@ const HistoryPanel = withTranslation("common")(
               <DualTxsTable
                 rawData={dualList}
                 getDualTxList={getDualTxList}
-                pagination={pagination}
+                pagination={{
+                  pageSize: pageSize,
+                  total: dualTotal,
+                }}
                 showloading={showDualLoading}
                 tokenMap={tokenMap}
                 idIndex={idIndex}

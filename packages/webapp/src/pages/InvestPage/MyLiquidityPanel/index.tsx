@@ -175,9 +175,7 @@ const MyLiquidity: any = withTranslation("common")(
           </Link>
         </StyleWrapper>
         <TableWrapStyled
-          className={`table-divide-short MuiPaper-elevation2 ${
-            myPoolRow?.length > 0 ? "min-height" : ""
-          }`}
+          className={`table-divide-short MuiPaper-elevation2`}
           marginTop={2}
           paddingY={2}
           paddingX={0}
@@ -225,7 +223,6 @@ const MyLiquidity: any = withTranslation("common")(
             />
           </Grid>
         </TableWrapStyled>
-
         <TableWrapStyled
           className={`table-divide-short MuiPaper-elevation2 ${
             lidoAssets?.length > 0 ? "min-height" : ""
@@ -259,10 +256,9 @@ const MyLiquidity: any = withTranslation("common")(
             />
           </Grid>
         </TableWrapStyled>
-
         <TableWrapStyled
           className={`table-divide-short MuiPaper-elevation2 ${
-            lidoAssets?.length ? "min-height" : ""
+            lidoAssets?.length > 0 ? "min-height" : ""
           }`}
           marginTop={2}
           marginBottom={3}

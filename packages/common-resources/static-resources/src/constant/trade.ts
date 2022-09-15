@@ -437,7 +437,7 @@ export const LIVE_FEE_TIMES = 60000;
 export type DualCurrentPrice = {
   quote: string;
   base: string;
-  currentPrice: number;
+  currentPrice?: number;
 };
 export type DualViewBase = {
   apy: string;

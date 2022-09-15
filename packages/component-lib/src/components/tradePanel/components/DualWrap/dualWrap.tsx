@@ -188,7 +188,12 @@ export const DualDetail = ({
             className={"point2 point"}
             whiteSpace={"pre"}
             sx={{
-              left: Number(dualViewInfo.isUp) ? "75%" : "25%",
+              left: sdk
+                .toBig(dualViewInfo.currentPrice?.currentPrice ?? 0)
+                .minus(dualViewInfo.strike)
+                .gte(0)
+                ? "75%"
+                : "25%",
             }}
           >
             <Typography variant={"body2"} color={"textPrimary"}>
@@ -241,7 +246,14 @@ export const DualDetail = ({
           <Box className={"backView"}>
             <Box
               className={"line"}
-              width={Number(dualViewInfo.isUp) ? "75%" : "25%"}
+              width={
+                sdk
+                  .toBig(dualViewInfo.currentPrice?.currentPrice ?? 0)
+                  .minus(dualViewInfo.strike)
+                  .gte(0)
+                  ? "75%"
+                  : "25%"
+              }
             />
           </Box>
         </BoxChartStyle>

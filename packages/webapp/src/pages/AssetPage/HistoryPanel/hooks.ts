@@ -359,7 +359,6 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
   const [defiTotal, setDefiTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
   const { accountId, apiKey } = store.getState().account;
-
   const getDefiTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true);
@@ -618,13 +617,15 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
 
   const [dualList, setDualList] = React.useState<R[]>([]);
   const { tokenMap } = useTokenMap();
-  const [pagination, setDualPagination] = React.useState<{
-    pageSize: number;
-    total: number;
-  }>({
-    pageSize: Limit,
-    total: 0,
-  });
+  const [dualTotal, setDualTotal] = React.useState(0);
+
+  // const [pagination, setDualPagination] = React.useState<{
+  //   pageSize: number;
+  //   total: number;
+  // }>({
+  //   pageSize: Limit,
+  //   total: 0,
+  // });
   const [showLoading, setShowLoading] = React.useState(true);
 
   const getDualTxList = React.useCallback(
@@ -634,13 +635,14 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
       offset,
       settlementStatus,
       investmentStatus,
-      limit = Limit,
+      dualTypes,
+      limit,
     }: any) => {
       setShowLoading(true);
       if (LoopringAPI.defiAPI && accountId && apiKey) {
         const response = await LoopringAPI.defiAPI.getDualTransactions(
           {
-            dualTypes: sdk.DUAL_TYPE,
+            dualTypes,
             accountId,
             settlementStatus,
             investmentStatus,
@@ -682,10 +684,11 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
 
           setDualList(result);
           setShowLoading(false);
-          setDualPagination({
-            pageSize: limit,
-            total: (response as any).totalNum,
-          });
+          setDualTotal((response as any).totalNum);
+          // setDualPagination({
+          //   pageSize: limit,
+          //   total: (response as any).totalNum,
+          // });
         }
       }
       setShowLoading(false);
@@ -698,7 +701,8 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
     dualList,
     showLoading,
     getDualTxList,
-    pagination,
+    dualTotal,
+    // pagination,
     // updateTickersUI,
   };
 };
