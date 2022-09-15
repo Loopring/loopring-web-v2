@@ -44,6 +44,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useTradeDual } from "../../stores";
 import { useHistory } from "react-router-dom";
+import { sleep } from "@loopring-web/loopring-sdk";
 
 export const useDualTrade = <
   T extends IBData<I>,
@@ -116,8 +117,8 @@ export const useDualTrade = <
 
       const [baseSymbol, quoteSymbol] =
         sdk.DUAL_TYPE.DUAL_BASE === info.dualType
-          ? [info.base, info.quote]
-          : [info.quote, info.base];
+          ? [info.base, info.currency]
+          : [info.currency, info.base];
       setSellBuySymbol([baseSymbol, quoteSymbol]);
       // debugger;
       let coinSell: T =
@@ -153,7 +154,7 @@ export const useDualTrade = <
           sellToken: tokenMap[baseSymbol],
           buyToken: tokenMap[quoteSymbol],
           sellAmount: coinSell.tradeValue?.toString() ?? undefined,
-          dualMarket: dualMarketMap[`DUAL-${info.base}-${info.quote}`],
+          dualMarket: dualMarketMap[`DUAL-${info.base}-${info.currency}`],
         });
         _updateInfo = {
           ..._updateInfo,
@@ -428,7 +429,8 @@ export const useDualTrade = <
               symbol: coinBuySymbol,
             }),
           });
-          history.push("/invest/");
+          await sleep(2000);
+          history.push("/invest/balance");
         }
       } else {
         throw new Error("api not ready");

@@ -129,13 +129,18 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                   deliveryPrice,
                   dualType,
                   settlementStatus,
-                  tokenInfoOrigin: { amountIn, base, quote, amountOut },
+                  tokenInfoOrigin: {
+                    amountIn,
+                    base,
+                    currency: quote,
+                    amountOut,
+                  },
+                  timeOrigin: { expireTime },
                   settleRatio,
                   strike,
                 },
               },
-
-              expireTime,
+              // expireTime,
               sellSymbol,
               buySymbol,
             } = row;
@@ -319,9 +324,9 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 flexDirection={"row"}
                 alignItems={"center"}
               >
-                {moment(new Date(row.expireTime)).format(
-                  YEAR_DAY_MINUTE_FORMAT
-                )}
+                {moment(
+                  new Date(row.__raw__.order.timeOrigin.expireTime)
+                ).format(YEAR_DAY_MINUTE_FORMAT)}
               </Typography>
             );
           },
@@ -334,7 +339,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
             return (
               <Box className="rdg-cell-value textAlignRight">
                 {moment(
-                  new Date(row.__raw__.order?.timeOrigin?.updateTime),
+                  new Date(row.__raw__.order?.createdAt),
                   "YYYYMMDDHHMM"
                 ).fromNow()}
               </Box>

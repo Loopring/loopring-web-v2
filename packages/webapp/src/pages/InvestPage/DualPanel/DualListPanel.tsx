@@ -340,7 +340,11 @@ export const DualListPanel: any = withTranslation("common")(
             {/*)}*/}
           </WrapperStyled>
         </StyleDual>
-        <ModalDualPanel dualTradeProps={dualTradeProps} />
+        <ModalDualPanel
+          dualTradeProps={dualTradeProps}
+          dualToastOpen={dualToastOpen}
+          closeDualToast={closeDualToast}
+        />
       </Box>
     );
   }

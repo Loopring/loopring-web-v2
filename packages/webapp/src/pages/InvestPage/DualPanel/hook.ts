@@ -25,7 +25,7 @@ export const useDualHook = ({
 }) => {
   const { t } = useTranslation("common");
   const match: any = useRouteMatch("/invest/dual/:market?");
-  const { marketArray, tradeMap, status: dualStatus } = useDualMap();
+  const { marketArray, marketMap, tradeMap, status: dualStatus } = useDualMap();
   const { tokenPrices } = useTokenPrices();
   const [priceObj, setPriceObj] = React.useState<{
     symbol: any;
@@ -122,14 +122,12 @@ export const useDualHook = ({
         marketSymbolA === pairASymbol
           ? sdk.DUAL_TYPE.DUAL_BASE
           : sdk.DUAL_TYPE.DUAL_CURRENCY;
-      // const currentPrice = dualCurrentPrice(
-      //   // pairASymbol,
-      //   // pairBSymbol,
-      //   market as any
-      // );
+
+      const { quoteAlias } = marketMap[market];
+
       const response = await LoopringAPI.defiAPI?.getDualInfos({
         baseSymbol: marketSymbolA,
-        quoteSymbol: marketSymbolB,
+        quoteSymbol: quoteAlias ?? marketSymbolB,
         currency: marketSymbolB,
         dualType,
         startTime: Date.now() + 1000 * 60 * 60,

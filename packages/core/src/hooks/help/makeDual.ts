@@ -22,7 +22,8 @@ export const makeDualViewItem = (
     strike,
     ratio,
     base,
-    quote,
+    // currency: base,
+    currency: quote,
     dualType,
     dualPrice: { dualBid },
   } = info;
@@ -32,7 +33,7 @@ export const makeDualViewItem = (
       ? [base, quote]
       : [quote, base];
   // const { baseProfitStep } = rule;
-  //baseProfit*ratio
+  // baseProfit*ratio
   const settleRatio = toBig(dualBid[0].baseProfit)
     .times(ratio)
     .toFixed(Number(rule.baseProfitStep), BigNumber.ROUND_DOWN);
@@ -96,7 +97,7 @@ export const makeDualOrderedItem = (
     // deliveryPrice,
     productId,
     createdAt,
-    tokenInfoOrigin: { base, quote },
+    tokenInfoOrigin: { base, currency: quote },
     timeOrigin: { expireTime, settlementTime },
   } = props;
   const [sellSymbol, buySymbol] =
@@ -118,7 +119,7 @@ export const makeDualOrderedItem = (
     // targetPrice,
     productId,
     enterTime: createdAt,
-    expireTime: settlementTime,
+    expireTime,
     currentPrice: {
       base,
       quote,

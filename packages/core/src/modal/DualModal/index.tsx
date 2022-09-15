@@ -7,26 +7,15 @@ import {
   DualWrapProps,
   ModalCloseButton,
   SwitchPanelStyled,
+  Toast,
   // TradeTitle,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
 import { Box, Divider, Modal as MuiModal, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { myLog } from "@loopring-web/common-resources";
+import { myLog, TOAST_TIME } from "@loopring-web/common-resources";
 
-// background: var(--color-box);
-// border-radius: ${({ theme }) => theme.unit}px;
-// padding: ${({ theme }) => theme.unit * 2}px;
-// width: var(--swap-box-width);
-// box-sizing: border-box;
-// const BoxStyle = styled(Box)`
-//   .rdg {
-//     background: var(--color-box);
-//     border-bottom-left-radius: ${({ theme }) => theme.unit}px;
-//     border-bottom-right-radius: ${({ theme }) => theme.unit}px;
-//   }
-// `;
 const BoxLinear = styled(SwitchPanelStyled)`
   && {
     ${({ theme }) => boxLiner({ theme })};
@@ -54,8 +43,14 @@ export const ModalDualPanel = withTranslation("common")(
   ({
     t,
     dualTradeProps,
+    dualToastOpen,
+    closeDualToast,
     ...rest
-  }: WithTranslation & { dualTradeProps: DualWrapProps<any, any, any> }) => {
+  }: WithTranslation & {
+    dualTradeProps: DualWrapProps<any, any, any>;
+    dualToastOpen: { open?: boolean; type: any; content: string };
+    closeDualToast: (state: boolean) => void;
+  }) => {
     const {
       modals: { isShowDual },
       setShowDual,
@@ -157,6 +152,15 @@ export const ModalDualPanel = withTranslation("common")(
           >
             <DualWrap {...{ ...rest, ...dualTradeProps }} />
           </Box>
+          <Toast
+            alertText={dualToastOpen?.content ?? ""}
+            severity={dualToastOpen?.type ?? "success"}
+            open={dualToastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={() => {
+              closeDualToast(false);
+            }}
+          />
         </BoxLinear>
       </MuiModal>
     );

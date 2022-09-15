@@ -41,10 +41,15 @@ const TableStyled = styled(Table)`
     height: ${(props: any) => {
       return props.currentheight + "px";
     }};
+
     .rdg-cell.action {
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    .logo-icon.dual:last-child {
+      transform: scale(0.6) translate(0, 4px);
     }
   }
 
@@ -98,7 +103,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         __raw__: {
           order: {
             dualType,
-            tokenInfoOrigin: { base, quote, amountIn, amountOut },
+            tokenInfoOrigin: { base, currency: quote, amountIn, amountOut },
             // timeOrigin: { settlementTime },
           },
         },
