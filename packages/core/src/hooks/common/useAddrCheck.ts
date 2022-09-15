@@ -60,7 +60,9 @@ export const useAddressCheck = () => {
 
             setRealAddr(realAddr);
             setAddrStatus(addressErr);
-            isContract && setIsContractAddress(true);
+            if (isContract) {
+              setIsContractAddress(true);
+            }
             //realAddr !== "" || (address !== "" && address.startsWith("0x"))
             if (addressErr === AddressError.NoError) {
               const [{ walletType }, response] = await Promise.all([

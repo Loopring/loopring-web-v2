@@ -254,7 +254,6 @@ export async function checkAddr(
         (response as sdk.RESULT_INFO).message)
     ) {
       addressErr = AddressError.IsNotLoopringContract;
-      realAddr = realAddr;
     }
   }
 
