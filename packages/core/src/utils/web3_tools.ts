@@ -239,8 +239,7 @@ export async function checkAddr(
   } else {
     addressErr = AddressError.EmptyAddr;
   }
-  let isContract = undefined,
-    response = undefined;
+  let isContract: undefined | boolean, response: any;
   if (realAddr && LoopringAPI.exchangeAPI && web3) {
     [isContract, response] = await Promise.all([
       sdk.isContract(web3, realAddr),

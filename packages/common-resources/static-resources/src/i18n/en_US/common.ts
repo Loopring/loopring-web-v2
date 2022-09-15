@@ -618,7 +618,8 @@ export default {
   labelNFTDeploySendAnotherL1: "To another L1 & Deploy Contract",
   labelGuid: "Go to Guide",
   labelOK: "Ok",
-  labelL2toL2InvalidAddress: "Invalid address or ENS",
+  labelL2toL2InvalidAddr: "Invalid address or ENS",
+  labelL2toL2IsNotLoopringContract: "Is not Loopring Contract wallet address",
   labelL2toL2AddressNotLoopring:
     "This address has not yet activated Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelL2toL2AddressType: "Address Type",

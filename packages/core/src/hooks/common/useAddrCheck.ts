@@ -61,7 +61,7 @@ export const useAddressCheck = () => {
             setRealAddr(realAddr);
             setAddrStatus(addressErr);
             if (isContract) {
-              setIsContractAddress(true);
+              setIsContractAddress(isContract);
             }
             //realAddr !== "" || (address !== "" && address.startsWith("0x"))
             if (addressErr === AddressError.NoError) {

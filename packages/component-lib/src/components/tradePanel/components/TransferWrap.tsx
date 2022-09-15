@@ -111,7 +111,9 @@ export const TransferWrap = <
   const isInvalidAddressOrENS =
     !isAddressCheckLoading &&
     addressDefault &&
-    addrStatus === AddressError.InvalidAddr;
+    [AddressError.InvalidAddr, AddressError.IsNotLoopringContract].includes(
+      addrStatus
+    );
 
   return (
     <Grid
@@ -254,7 +256,7 @@ export const TransferWrap = <
               alignSelf={"stretch"}
               position={"relative"}
             >
-              {t("labelL2toL2InvalidAddress")}
+              {t(`labelL2toL2${addrStatus}`)}
             </Typography>
           ) : isSameAddress ? (
             <Typography
