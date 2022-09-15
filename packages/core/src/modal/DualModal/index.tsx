@@ -48,8 +48,8 @@ export const ModalDualPanel = withTranslation("common")(
     ...rest
   }: WithTranslation & {
     dualTradeProps: DualWrapProps<any, any, any>;
-    dualToastOpen: { open?: boolean; type: any; content: string };
-    closeDualToast: (state: boolean) => void;
+    dualToastOpen?: { open?: boolean; type: any; content: string };
+    closeDualToast?: (state: boolean) => void;
   }) => {
     const {
       modals: { isShowDual },
@@ -158,7 +158,9 @@ export const ModalDualPanel = withTranslation("common")(
             open={dualToastOpen?.open ?? false}
             autoHideDuration={TOAST_TIME}
             onClose={() => {
-              closeDualToast(false);
+              if (closeDualToast) {
+                closeDualToast(false);
+              }
             }}
           />
         </BoxLinear>

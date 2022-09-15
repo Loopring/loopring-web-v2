@@ -415,12 +415,7 @@ export const useDualTrade = <
         ) {
           const errorItem =
             SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
-          throw new CustomErrorWithCode({
-            id: ((response as sdk.RESULT_INFO)?.code ?? 700001).toString(),
-            code: (response as sdk.RESULT_INFO)?.code ?? 700001,
-            message:
-              (response as sdk.RESULT_INFO)?.message ?? errorItem.message,
-          });
+          throw new CustomErrorWithCode(errorItem);
         } else {
           setToastOpen({
             open: true,
@@ -439,7 +434,9 @@ export const useDualTrade = <
       setToastOpen({
         open: true,
         type: "error",
-        content: t("labelDualFailed"), //+ ` error: ${(reason as any)?.message}`,
+        content:
+          t("labelDualFailed") + (reason as CustomErrorWithCode)?.messageKey ??
+          ` error: ${t((reason as CustomErrorWithCode)?.messageKey)}`,
       });
     } finally {
       should15sRefresh(true);

@@ -607,12 +607,7 @@ export const useDefiTrade = <
         ) {
           const errorItem =
             SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
-          throw new CustomErrorWithCode({
-            id: ((response as sdk.RESULT_INFO)?.code ?? 700001).toString(),
-            code: (response as sdk.RESULT_INFO)?.code ?? 700001,
-            message:
-              (response as sdk.RESULT_INFO)?.message ?? errorItem.message,
-          });
+          throw new CustomErrorWithCode(errorItem);
         } else {
           setToastOpen({
             open: true,
@@ -632,7 +627,10 @@ export const useDefiTrade = <
       setToastOpen({
         open: true,
         type: "error",
-        content: t("labelInvestFailed"), //+ ` error: ${(reason as any)?.message}`,
+        content:
+          t("labelInvestFailed") +
+            (reason as CustomErrorWithCode)?.messageKey ??
+          ` error: ${t((reason as CustomErrorWithCode)?.messageKey)}`,
       });
     } finally {
       setConfirmShowLimitBalance(false);

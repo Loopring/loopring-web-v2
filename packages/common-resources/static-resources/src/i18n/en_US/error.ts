@@ -49,4 +49,5 @@ export default {
   errorCollectionNotReadable: "Read Collection Info Failed",
   errorIpfsTimeout: "IPFS Gateway timeout, please try again",
   errorRampNoInstance: "Ramp Widget had out-off service, please re-order it.",
+  errorDualExpired: "The order has expired.",
 };

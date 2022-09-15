@@ -47,7 +47,10 @@ export const useAddressCheck = () => {
               clearTimeout(nodeTimer.current);
             }
             setIsAddressCheckLoading(true);
-            const {realAddr, addressErr} = await checkAddr(address, web3);
+            const { realAddr, addressErr, isContract } = await checkAddr(
+              address,
+              web3
+            );
             nodeTimer.current = setTimeout(() => {
               _address.current = "";
               setAddrStatus(AddressError.TimeOut);
@@ -57,6 +60,7 @@ export const useAddressCheck = () => {
 
             setRealAddr(realAddr);
             setAddrStatus(addressErr);
+            isContract && setIsContractAddress(true);
             //realAddr !== "" || (address !== "" && address.startsWith("0x"))
             if (addressErr === AddressError.NoError) {
               const [{ walletType }, response] = await Promise.all([
