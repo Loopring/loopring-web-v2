@@ -413,9 +413,12 @@ export const useDualTrade = <
           (response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message
         ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
-          throw new CustomErrorWithCode(errorItem);
+          const errorItem = /DUAL_PRODUCT_STOPPED/gi.test(
+            (response as sdk.RESULT_INFO).message ?? ""
+          )
+            ? SDK_ERROR_MAP_TO_UI[115003]
+            : SDK_ERROR_MAP_TO_UI[700001];
+          throw new CustomErrorWithCode({ ...response, ...errorItem } as any);
         } else {
           setToastOpen({
             open: true,
