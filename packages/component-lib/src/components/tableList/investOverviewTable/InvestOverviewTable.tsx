@@ -211,11 +211,14 @@ export const InvestOverviewTable = <R extends RowInvest>({
           >
             <Typography component={"span"}>
               {row.durationType === InvestDuration.Duration
-                ? `${row.duration} ${t("labelDay", { ns: "common" })}`
+                ? `${t(row.duration, { ns: "common" })}`
                 : t("labelInvest" + row.durationType, { ns: "common" })}
             </Typography>
           </Box>
         );
+        // ${t("labelDay", {
+        //             ns: "common",
+        //           })}
       },
     },
     {
@@ -274,7 +277,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
                           `/invest/defi/${row.token.symbol}-null/invest`
                         );
                         return;
-                      case InvestMapType.STAKE:
+                      case InvestMapType.DUAL:
                         history.push(`/invest/dual/${row.token.symbol}-null`);
                         return;
                     }

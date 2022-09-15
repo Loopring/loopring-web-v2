@@ -55,15 +55,15 @@ export const CoinIcons = React.memo(
               variant="circular"
               alt={coinAInfo?.simpleName as string}
               style={{
-                height: "var(--list-menu-coin-size)",
-                width: "var(--list-menu-coin-size)",
+                height: size ?? "var(--list-menu-coin-size)",
+                width: size ?? "var(--list-menu-coin-size)",
               }}
               // src={sellData?.icon}
               src={SoursURL + "images/icon-default.png"}
             />
           )}
         </Box>
-        {coinBInfo ? (
+        {coinBInfo || ["dual", "lp"].includes(type) ? (
           <Box
             className={`logo-icon ${type}`}
             display={"flex"}
@@ -75,7 +75,7 @@ export const CoinIcons = React.memo(
             alignItems={"center"}
             justifyContent={"center"}
           >
-            {coinBInfo.w ? (
+            {coinBInfo ? (
               <AvatarCoinStyled
                 imgx={coinBInfo.x}
                 imgy={coinBInfo.y}
@@ -95,8 +95,8 @@ export const CoinIcons = React.memo(
                 variant="circular"
                 alt={coinBInfo?.simpleName as string}
                 style={{
-                  height: "var(--list-menu-coin-size)",
-                  width: "var(--list-menu-coin-size)",
+                  height: size ?? "var(--list-menu-coin-size)",
+                  width: size ?? "var(--list-menu-coin-size)",
                 }}
                 // src={sellData?.icon}
                 src={SoursURL + "images/icon-default.png"}

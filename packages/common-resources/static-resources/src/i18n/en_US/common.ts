@@ -862,7 +862,7 @@ export default {
   labelTitleOverviewToken: "Total Investment Tokens",
   labelInvestType_AMM: "AMM Pool",
   labelInvestType_STAKE: "ETH Staking",
-  labelInvestType_DUAL: "DUAL Investment",
+  labelInvestType_DUAL: "Dual Investment",
   labelInvestAll: "Mixed",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",

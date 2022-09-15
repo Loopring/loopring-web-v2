@@ -59,6 +59,7 @@ export const useDualTrade = <
   // const { amountMap, getAmount, status: amountStatus } = useAmount();
   const { marketMap: dualMarketMap } = useDualMap();
   const { account, status: accountStatus } = useAccount();
+  const { setShowDual } = useOpenModals();
 
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const {
@@ -94,6 +95,7 @@ export const useDualTrade = <
       balance?: { [key: string]: sdk.DualBalance };
     }) => {
       let walletMap: any = {};
+      let { sellSymbol, buySymbol } = isShowDual.dualInfo as R;
       // feeVol: string | undefined = undefined;
       let { info } = dualInfo.__raw__;
       const {
@@ -115,12 +117,12 @@ export const useDualTrade = <
         _updateInfo.balance = balance;
       }
 
-      const [baseSymbol, quoteSymbol] =
+      const [baseSymbol, quoteSymbol] = [sellSymbol, buySymbol];
+      const [calcSellSymbol, calcBuySymbol] =
         sdk.DUAL_TYPE.DUAL_BASE === info.dualType
           ? [info.base, info.currency]
           : [info.currency, info.base];
       setSellBuySymbol([baseSymbol, quoteSymbol]);
-      // debugger;
       let coinSell: T =
         tradeData && tradeData.belong === baseSymbol
           ? tradeData
@@ -151,8 +153,8 @@ export const useDualTrade = <
           ...dualInfo.__raw__,
           balance: _updateInfo.balance,
           // feeVol,
-          sellToken: tokenMap[baseSymbol],
-          buyToken: tokenMap[quoteSymbol],
+          sellToken: tokenMap[calcSellSymbol],
+          buyToken: tokenMap[calcBuySymbol],
           sellAmount: coinSell.tradeValue?.toString() ?? undefined,
           dualMarket: dualMarketMap[`DUAL-${info.base}-${info.currency}`],
         });
@@ -166,9 +168,9 @@ export const useDualTrade = <
     [
       account.readyState,
       dualMarketMap,
+      isShowDual.dualInfo,
       marketArray,
       productInfo,
-      resetTradeDual,
       tokenMap,
       tradeDual,
       updateTradeDual,
@@ -189,8 +191,9 @@ export const useDualTrade = <
     if (
       account.readyState === AccountStatus.ACTIVATED &&
       coinSellSymbol &&
-      tradeDual?.sellToken
+      tradeDual?.coinSell
     ) {
+      const sellToken = tokenMap[tradeDual?.coinSell.belong];
       const sellExceed = sdk
         .toBig(tradeDual.coinSell?.tradeValue ?? 0)
         .gt(tradeDual?.coinSell?.balance ?? 0);
@@ -212,16 +215,14 @@ export const useDualTrade = <
           .lt(0)
       ) {
         const sellMinVal = getValuePrecisionThousand(
-          sdk
-            .toBig(tradeDual?.miniSellVol)
-            .div("1e" + tradeDual.sellToken?.decimals),
-          tradeDual.sellToken.precision,
-          tradeDual.sellToken.precision,
-          tradeDual.sellToken.precision,
+          sdk.toBig(tradeDual?.miniSellVol).div("1e" + sellToken?.decimals),
+          sellToken.precision,
+          sellToken.precision,
+          sellToken.precision,
           false,
           { floor: false, isAbbreviate: true }
         );
-        const mimOrderSize = sellMinVal + " " + tradeDual.sellToken.symbol;
+        const mimOrderSize = sellMinVal + " " + sellToken.symbol;
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDualMin| ${mimOrderSize}`,
@@ -234,20 +235,20 @@ export const useDualTrade = <
       } else if (
         tradeDual?.maxSellAmount &&
         tradeDual?.sellVol &&
-        tradeDual.sellToken &&
+        sellToken &&
         sdk
           .toBig(tradeDual?.coinSell?.tradeValue ?? 0)
           .gte(tradeDual?.maxSellAmount)
       ) {
         const sellMaxVal = getValuePrecisionThousand(
           tradeDual?.maxSellAmount,
-          tradeDual.sellToken.precision,
-          tradeDual.sellToken.precision,
-          tradeDual.sellToken.precision,
+          sellToken.precision,
+          sellToken.precision,
+          sellToken.precision,
           false,
           { floor: false, isAbbreviate: true }
         );
-        const maxOrderSize = sellMaxVal + " " + tradeDual.sellToken.symbol;
+        const maxOrderSize = sellMaxVal + " " + sellToken.symbol;
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDualMax| ${maxOrderSize}`,
@@ -354,13 +355,14 @@ export const useDualTrade = <
       if (
         LoopringAPI.userAPI &&
         LoopringAPI.defiAPI &&
-        tradeDual.sellToken?.symbol &&
+        tradeDual.coinSell?.belong &&
         tradeDual.maxFeeBips &&
         exchangeInfo
       ) {
+        const sellToken = tokenMap[tradeDual.coinSell?.belong];
         const req: sdk.GetNextStorageIdRequest = {
           accountId: account.accountId,
-          sellTokenId: tradeDual.sellToken?.tokenId ?? 0,
+          sellTokenId: sellToken?.tokenId ?? 0,
         };
         const storageId = await LoopringAPI.userAPI.getNextStorageId(
           req,
@@ -379,7 +381,7 @@ export const useDualTrade = <
           storageId: storageId.orderId,
           accountId: account.accountId,
           sellToken: {
-            tokenId: tradeDual.sellToken?.tokenId ?? 0,
+            tokenId: sellToken?.tokenId ?? 0,
             volume: tradeDual.sellVol,
           },
           buyToken:
@@ -428,6 +430,7 @@ export const useDualTrade = <
             }),
           });
           await sleep(2000);
+          setShowDual({ isShow: false, dualInfo: undefined });
           history.push("/invest/balance");
         }
       } else {

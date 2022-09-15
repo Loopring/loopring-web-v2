@@ -235,7 +235,7 @@ export const AssetsTable = withTranslation("tables")(
           }
           return (
             <>
-              <CoinIcons tokenIcon={tokenIcon} />
+              <CoinIcons type={token.type} tokenIcon={tokenIcon} />
               <Typography
                 variant={"inherit"}
                 color={"textPrimary"}
@@ -382,7 +382,7 @@ export const AssetsTable = withTranslation("tables")(
           return (
             <>
               <Typography width={"56px"} display={"flex"}>
-                <CoinIcons tokenIcon={tokenIcon} />
+                <CoinIcons type={token.type} tokenIcon={tokenIcon} />
               </Typography>
               <Typography
                 variant={"body1"}

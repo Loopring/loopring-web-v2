@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Grid, Link, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import {
   AmmPanelType,
   AssetsTable,
@@ -46,6 +46,11 @@ const MyLiquidity: any = withTranslation("common")(
   }: WithTranslation & {
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
+    let match: any = useRouteMatch("/invest/balance/:type");
+    const ammPoolRef = React.useRef(null);
+    const stackingRef = React.useRef(null);
+    const dualRef = React.useRef(null);
+
     const { ammActivityMap } = useAmmActivityMap();
     const { forexMap } = useSystem();
     const { tokenMap, disableWithdrawList, idIndex } = useTokenMap();
@@ -66,6 +71,26 @@ const MyLiquidity: any = withTranslation("common")(
       pagination,
       showLoading: dualLoading,
     } = useDualAsset();
+
+    React.useEffect(() => {
+      if (match?.params?.type) {
+        switch (match?.params?.type) {
+          case "dual":
+            // @ts-ignore
+            window.scrollTo(0, dualRef?.current?.offsetTop);
+            break;
+          case "stack":
+            // @ts-ignore
+            window.scrollTo(0, stackingRef?.current?.offsetTop);
+            break;
+          case "amm":
+            // @ts-ignore
+            window.scrollTo(0, ammPoolRef?.current?.offsetTop);
+            break;
+        }
+      }
+    }, [match?.params?.type]);
+
     React.useEffect(() => {
       getDualTxList({});
     }, []);
@@ -175,6 +200,7 @@ const MyLiquidity: any = withTranslation("common")(
           </Link>
         </StyleWrapper>
         <TableWrapStyled
+          ref={ammPoolRef}
           className={`table-divide-short MuiPaper-elevation2`}
           marginTop={2}
           paddingY={2}
@@ -224,6 +250,7 @@ const MyLiquidity: any = withTranslation("common")(
           </Grid>
         </TableWrapStyled>
         <TableWrapStyled
+          ref={stackingRef}
           className={`table-divide-short MuiPaper-elevation2 ${
             lidoAssets?.length > 0 ? "min-height" : ""
           }`}
@@ -257,6 +284,7 @@ const MyLiquidity: any = withTranslation("common")(
           </Grid>
         </TableWrapStyled>
         <TableWrapStyled
+          ref={dualRef}
           className={`table-divide-short MuiPaper-elevation2 ${
             lidoAssets?.length > 0 ? "min-height" : ""
           }`}

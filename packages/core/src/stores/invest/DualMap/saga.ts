@@ -11,10 +11,10 @@ const getDualMapApi = async () => {
   const {
     markets: marketMap,
     tokenArr: marketCoins,
-    marketArr: marketArray,
+    marketArr,
     pairs: tradeMap,
   } = await LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "DUAL" });
-
+  const marketArray = marketArr.sort((b, a) => a.localeCompare(b));
   let { __timer__ } = store.getState().invest.dualMap;
   __timer__ = (() => {
     if (__timer__ && __timer__ !== -1) {

@@ -113,6 +113,8 @@ export const useDualHook = ({
   const getProduct = _.debounce(async () => {
     setIsLoading(true);
     const market = findDualMarket(marketArray, pairASymbol, pairBSymbol);
+    // @ts-ignore
+    const currency = marketMap[market ?? ""]?.currency;
     if (pairASymbol && pairBSymbol && market) {
       // @ts-ignore
       const [, , marketSymbolA, marketSymbolB] = (market ?? "").match(
@@ -128,7 +130,7 @@ export const useDualHook = ({
       const response = await LoopringAPI.defiAPI?.getDualInfos({
         baseSymbol: marketSymbolA,
         quoteSymbol: quoteAlias ?? marketSymbolB,
-        currency: marketSymbolB,
+        currency,
         dualType,
         startTime: Date.now() + 1000 * 60 * 60,
         timeSpan: 1000 * 60 * 60 * 24 * 9,
@@ -163,7 +165,7 @@ export const useDualHook = ({
         const rule = rules[0];
         const rawData = infos.reduce(
           (prev: any[], item: sdk.DualProductAndPrice) => {
-            //如果dualType == dual_base,price.dualBid.baseQty < rule.baseMin,过滤；
+            // 如果dualType == dual_base,price.dualBid.baseQty < rule.baseMin,过滤；
             // 如果dualType == dual_currency,price.dualBid.baseQty*strike < rule.currencyMax,过滤；
             myLog("filer Dual", item.strike, item?.dualPrice?.dualBid[0], rule);
             if (
@@ -182,7 +184,7 @@ export const useDualHook = ({
               return prev;
             }
             return prev;
-            //price.dualBid空数组，过滤；
+            // price.dualBid空数组，过滤；
             // 如果dualType == dual_base,price.dualBid.baseQty < rule.baseMin,过滤；
             // 如果dualType == dual_currency,price.dualBid.baseQty*strike < rule.currencyMax,过滤；
           },

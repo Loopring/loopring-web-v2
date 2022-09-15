@@ -134,7 +134,7 @@ export const DualListPanel: any = withTranslation("common")(
             size={"medium"}
             sx={{ color: "var(--color-text-secondary)" }}
             color={"inherit"}
-            onClick={history.goBack}
+            onClick={() => history.push("/invest/overview")}
           >
             {t("labelInvestDualTitle")}
           </Button>
@@ -155,36 +155,41 @@ export const DualListPanel: any = withTranslation("common")(
         </Box>
         <StyleDual flexDirection={"column"} display={"flex"} flex={1}>
           <Grid container spacing={2}>
-            {Reflect.ownKeys(tradeMap).map((item, index) => {
-              return (
-                <Grid
-                  item
-                  xs={6}
-                  md={3}
-                  lg={2}
-                  key={item.toString() + index.toString()}
-                >
-                  <Card
-                    className={
-                      item.toString().toLowerCase() ===
-                      pairASymbol.toLowerCase()
-                        ? "dualInvestCard selected"
-                        : "dualInvestCard "
-                    }
-                    onClick={() =>
-                      handleOnPairChange({ pairA: item.toString() })
-                    }
-                  >
-                    <CardContent>
-                      <CoinIcon symbol={item.toString()} size={24} />
-                      <Typography variant={"h5"} paddingLeft={1}>
-                        {t("labelDualInvest", { symbol: item.toString() })}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
+            {tradeMap &&
+              Reflect.ownKeys(tradeMap)
+                .sort((a, b) => a.toString().localeCompare(b.toString()))
+                .map((item, index) => {
+                  // const item = tradeMap[key.toString()];
+                  return (
+                    <Grid
+                      item
+                      xs={6}
+                      md={3}
+                      lg={2}
+                      key={item.toString() + index.toString()}
+                    >
+                      <Card
+                        className={
+                          item.toString().toLowerCase() ===
+                          pairASymbol.toLowerCase()
+                            ? "dualInvestCard selected"
+                            : "dualInvestCard "
+                        }
+                        sx={{ height: "100%" }}
+                        onClick={() =>
+                          handleOnPairChange({ pairA: item.toString() })
+                        }
+                      >
+                        <CardContent>
+                          <CoinIcon symbol={item.toString()} size={24} />
+                          <Typography variant={"h5"} paddingLeft={1}>
+                            {t("labelDualInvest", { symbol: item.toString() })}
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  );
+                })}
           </Grid>
 
           <Box marginTop={1}>
@@ -250,15 +255,15 @@ export const DualListPanel: any = withTranslation("common")(
                       display={"inline-flex"}
                       color={"textPrimary"}
                     >
-                      {dualType === DUAL_TYPE.DUAL_BASE
-                        ? t("labelDualInvestBaseTitle", {
-                            symbolA: pairASymbol,
-                            symbolB: pairBSymbol,
-                          })
-                        : t("labelDualInvestQuoteTitle", {
-                            symbolA: pairASymbol,
-                            symbolB: pairBSymbol,
-                          })}
+                      {t(
+                        dualType === DUAL_TYPE.DUAL_BASE
+                          ? "labelDualInvestBaseTitle"
+                          : "labelDualInvestQuoteTitle",
+                        {
+                          symbolA: pairASymbol,
+                          symbolB: pairBSymbol,
+                        }
+                      )}
                     </Typography>
                     <Typography
                       component={"span"}
@@ -317,7 +322,14 @@ export const DualListPanel: any = withTranslation("common")(
                 showloading={isLoading}
                 forexMap={forexMap as any}
                 onItemClick={(item) => {
-                  setShowDual({ isShow: true, dualInfo: item });
+                  setShowDual({
+                    isShow: true,
+                    dualInfo: {
+                      ...item,
+                      sellSymbol: pairASymbol,
+                      buySymbol: pairBSymbol,
+                    },
+                  });
                 }}
               />
             </Box>

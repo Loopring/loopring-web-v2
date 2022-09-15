@@ -15,6 +15,7 @@ import {
 import { Box, Divider, Modal as MuiModal, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { myLog, TOAST_TIME } from "@loopring-web/common-resources";
+import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
 const BoxLinear = styled(SwitchPanelStyled)`
   && {
@@ -122,10 +123,15 @@ export const ModalDualPanel = withTranslation("common")(
                       display={"inline-flex"}
                       color={"textPrimary"}
                     >
-                      {t("labelDualInvestTitle", {
-                        symbolA: dualInfo.sellSymbol,
-                        symbolB: dualInfo.buySymbol,
-                      })}
+                      {t(
+                        dualInfo.__raw__.info.dualType === DUAL_TYPE.DUAL_BASE
+                          ? "labelDualInvestBaseTitle"
+                          : "labelDualInvestQuoteTitle",
+                        {
+                          symbolA: dualInfo.sellSymbol,
+                          symbolB: dualInfo.buySymbol,
+                        }
+                      )}
                     </Typography>
                   </Typography>
                 </>

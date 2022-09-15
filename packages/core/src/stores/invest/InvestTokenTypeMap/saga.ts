@@ -156,16 +156,19 @@ const getInvestMapApi = async () => {
             // token: tokenMap[coinA],
             type: InvestMapType.DUAL,
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
-            apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
+            //@ts-ignore
+            apr: [dualInfo?.baseTokenApy?.min, dualInfo?.baseTokenApy?.max], // [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
             durationType: InvestDuration.Duration,
-            duration: "0 - 5",
+            duration: "labelInvestFlexible",
           };
         }
       } else {
         prev[coinA] = {
           detail: {
             token: tokenMap[coinA],
-            apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
+            // apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
+            //@ts-ignore
+            apr: [dualInfo?.baseTokenApy?.min, dualInfo?.baseTokenApy?.max],
             durationType: InvestDuration.All,
             duration: "",
           },
@@ -175,7 +178,7 @@ const getInvestMapApi = async () => {
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
             durationType: InvestDuration.Duration,
-            duration: "0 - 5",
+            duration: "labelInvestFlexible",
           },
         };
       }
@@ -188,18 +191,18 @@ const getInvestMapApi = async () => {
         } else {
           prev[coinB][InvestMapType.DUAL] = {
             type: InvestMapType.DUAL,
-            // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
-            apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
+            //@ts-ignore
+            apr: [dualInfo?.quoteTokenApy?.min, dualInfo?.quoteTokenApy?.max],
             durationType: InvestDuration.Duration,
-            duration: "0 - 5",
+            duration: "labelInvestFlexible",
           };
         }
       } else {
         prev[coinB] = {
           detail: {
             token: tokenMap[coinB],
-            apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
+            apr: [dualInfo?.quoteTokenApy?.min, dualInfo?.quoteTokenApy?.max],
             durationType: InvestDuration.All,
             duration: "",
           },
@@ -207,9 +210,9 @@ const getInvestMapApi = async () => {
             type: InvestMapType.DUAL,
             // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
-            apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
+            apr: [dualInfo?.quoteTokenApy?.min, dualInfo?.quoteTokenApy?.max],
             durationType: InvestDuration.Duration,
-            duration: "0 - 5",
+            duration: "labelInvestFlexible",
           },
         };
       }
@@ -217,7 +220,7 @@ const getInvestMapApi = async () => {
       if (prev[coinA]?.detail && dualInfo.apy) {
         prev[coinA].detail.apr = [
           prev[coinA]?.detail?.apr[0] === 0
-            ? dualInfo.apy
+            ? dualInfo?.baseTokenApy?.min
             : Math.min(dualInfo.apy, prev[coinA]?.detail?.apr[0]),
           Math.max(dualInfo.apy, prev[coinA]?.detail?.apr[1]),
         ];
@@ -226,13 +229,12 @@ const getInvestMapApi = async () => {
       if (prev[coinB]?.detail && dualInfo.apy) {
         prev[coinB].detail.apr = [
           prev[coinB]?.detail?.apr[0] === 0
-            ? dualInfo.apy
+            ? dualInfo?.quoteTokenApy?.min
             : Math.min(dualInfo.apy, prev[coinB]?.detail?.apr[0]),
           Math.max(dualInfo.apy, prev[coinB]?.detail?.apr[1]),
         ];
       }
 
-      return prev;
       return prev;
     }, investTokenTypeMap);
   }
