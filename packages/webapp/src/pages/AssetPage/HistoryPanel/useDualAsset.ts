@@ -43,7 +43,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           {
             // dualTypes: sdk.DUAL_TYPE,
             accountId,
-            settlementStatus: sdk.SETTLEMENT_STATUS.UNSETTLED,
+            settlementStatuses: sdk.SETTLEMENT_STATUS.UNSETTLED,
             offset,
             limit,
             start,
