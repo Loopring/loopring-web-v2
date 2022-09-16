@@ -2,16 +2,31 @@
 
 Dual Investment is a non-principal protected structured product. Upon purchasing, you can select the underlying asset,
 investment currency, investment amount, and delivery date. Your return will be denominated in the investment currency or
-alternate currency, depending on the below conditions. The Settlement Price is below/above the Target Price at the
-delivery date.
+alternate currency, depending on the below conditions.
 
-- The target is reached if Settlement Price > Target Price;
-- The target is not reached if Settlement Price ≤ Target Price;
+There are two types of Dual Investment products:“Buy Low” and “Sell High”.
 
-Your token for investment is just locked but still in your account as Loopring is a DEX. When the transaction expires,
-if the settlement price is greater than the Target price, you will get a profit and the frozen token will also be
-unlocked; if the settlement price reaches or is lower than the Target price, your investment and interest income will be
-converted into the target token at the Target price.
+Buy Low products gives you a chance to buy your desired crypto (such as LRC) at a lower price in the future with
+stablecoins (USDT).
+
+- Target Reached:On the Settlement Date, if the Market Price is at or below the Target Price, the target currency (LRC)
+will be bought;  
+- Target Not Reached:On the Settlement Date, if the Market Price is above the Target Price, then you will keep your
+stablecoins;  
+In both scenarios, you will first earn interest in stablecoins. Once the Target Price is reached, your subscription
+amount and interest income will be used to buy LRC.
+
+Sell High products gives you a chance to sell your existing crypto (such as LRC) at a higher price in the future (for
+USDT).
+
+- Target Reached:On the Settlement Date, the Market Price is at or above the Target Price, your LRC will be sold for
+USDT.  
+- Target Not Reached:On the Settlement Date, the Market Price is below the Target Price, then you will keep your LRC.  
+In both scenarios, you will first earn interest in your existing currency (LRC). Once the Target Price is reached, your
+subscription amount and interest income will be sold for USDT.
+
+Your token for investment is just locked but still in your account as Loopring is a DEX.
+
 Each purchased product has a settlement date. We will take an average of the market price in the last 30 minutes before
 16:00 (UTC+8) on the delivery date as the settlement price.
 
@@ -50,7 +65,7 @@ depends on the LRC/USDT settlement price at the time of expiration.
 
 ### Example 2:
 
-###### Invest USDT for USDT-LRC Dual Investment
+###### Invest USDT for LRC-USDT Dual Investment
 
 ```text 
 Target Price: 0.38  
@@ -102,6 +117,12 @@ to your trade account.
 Q： What’s the risk of dual investment?  
 A： According to the rule of dual investment, uncertainty is the settlement currency. The settlement currency will depend
 on whether the settlement price has reached the target price at the delivery date.
+
+Q： What are the benefits of using Dual Investment on Loopring?
+A：Your token for investment is just locked but still in your account as Loopring is a DEX. When the transaction expires,
+if the settlement price is not reached, you will get a profit and the frozen token will also be unlocked; if the
+settlement price is reached, your investment and interest income will be converted into the target token at the Target
+price.
 
 *The risk of investing in LRC, if there is rising sharply, holding LRC will be sold into USDT at the target price.  
 The risk of investing in USDT, if there is a slump, holding USDT will be converted into LRC at the target price. (Even
