@@ -285,7 +285,7 @@ const MyLiquidity: any = withTranslation("common")(
         <TableWrapStyled
           ref={dualRef}
           className={`table-divide-short MuiPaper-elevation2 ${
-            lidoAssets?.length > 0 ? "min-height" : ""
+            dualList?.length > 0 ? "min-height" : ""
           }`}
           marginTop={2}
           marginBottom={3}
