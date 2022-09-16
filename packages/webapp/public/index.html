@@ -72,7 +72,6 @@
 		</script>
 		<title>Loopring - Ethereum Layer2</title>
 		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://sdk.banxa.com/js/banxa-sdk-latest.js"/>
   </head>
 
   <body ondragstart="return false;" ondrop="return false;" draggable="false">
@@ -94,14 +93,18 @@
 			<!--      <a href="https://www.iubenda.com/terms-and-conditions/74969935"-->
 			<!--         class="iubenda-black iubenda-embed iubenda-pure iubenda-noiframe"></a>-->
 		</div>
-		<div id="iframeTarget">
-			<!-- Where the iframe will be loaded  -->
-		</div>
+
 		<script type="text/javascript">(function (w, d) {
       var loader = function () {
         var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0];
         s.src = "https://cdn.iubenda.com/iubenda.js";
         tag.parentNode.insertBefore(s, tag);
+
+        var b = document.createElement('script');
+        b.type = "text/javascript", b.async = !0,
+          b.src = "https://sdk.banxa.com/js/banxa-sdk-latest.js";
+        var x = document.getElementsByTagName('script')[0];
+        x.parentNode.insertBefore(b, x);
       };
       if (w.addEventListener) {
         w.addEventListener("load", loader, false);
@@ -110,7 +113,15 @@
       } else {
         w.onload = loader;
       }
-    })(window, document);</script>
+    })(window, document);
+		</script>
+		<div id="iframeBanax">
+			<div id="iframeBanaxTarget">
+				<!-- Where the iframe will be loaded  -->
+			</div>
+		</div>
+
+
 		<script src='https://d17nz991552y2g.cloudfront.net/app/js/jqueryandencoder.ffa5afd5124fbedceea9.js'></script>
 		<script src="./mail.js" type="text/javascript"></script>
 	</body>
