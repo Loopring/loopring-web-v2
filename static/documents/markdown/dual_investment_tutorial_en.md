@@ -8,14 +8,14 @@ There are two types of Dual Investment products: “Buy Low” and “Sell Hi
 
 Buy Low products gives you a chance to buy your desired crypto (such as LRC) at a lower price in the future with stablecoins (USDT).
 
-  - Target Reached: On the Settlement Date, if the Market Price is at or below the Target Price, the target currency (LRC) will be bought;
-  - Target Not Reached: On the Settlement Date, if the Market Price is above the Target Price, then you will keep your stablecoins;
+  - Target Reached: On the Settlement Date, if the Market Price is at or below the Target Price, the target currency (LRC) will be bought;  
+  - Target Not Reached: On the Settlement Date, if the Market Price is above the Target Price, then you will keep your stablecoins;  
   In both scenarios, you will first earn interest in stablecoins. Once the Target Price is reached, your subscription amount and interest income will be used to buy LRC.
 
 Sell High products gives you a chance to sell your existing crypto (such as LRC) at a higher price in the future (for USDT).
 
-  - Target Reached: On the Settlement Date, the Market Price is at or above the Target Price, your LRC will be sold for USDT.
-  - Target Not Reached: On the Settlement Date, the Market Price is below the Target Price, then you will keep your LRC.
+  - Target Reached: On the Settlement Date, the Market Price is at or above the Target Price, your LRC will be sold for USDT.  
+  - Target Not Reached: On the Settlement Date, the Market Price is below the Target Price, then you will keep your LRC.  
   In both scenarios, you will first earn interest in your existing currency (LRC). Once the Target Price is reached, your subscription amount and interest income will be sold for USDT.
 
 Your token for investment is just locked but still in your account as Loopring is a DEX. 
