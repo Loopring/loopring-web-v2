@@ -255,7 +255,6 @@ const MyLiquidity: any = withTranslation("common")(
             lidoAssets?.length > 0 ? "min-height" : ""
           }`}
           marginTop={2}
-          marginBottom={3}
           paddingY={2}
           paddingX={0}
           flex={1}
