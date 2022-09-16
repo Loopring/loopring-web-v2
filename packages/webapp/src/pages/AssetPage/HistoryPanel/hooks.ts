@@ -26,7 +26,7 @@ import {
   TradeTypes,
 } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
-import { GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE, GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
 import BigNumber from "bignumber.js";
 import { Limit } from "./useDualAsset";
 
@@ -616,7 +616,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
   } = useAccount();
 
   const [dualList, setDualList] = React.useState<R[]>([]);
-  const { tokenMap } = useTokenMap();
+  const { idIndex } = useTokenMap();
   const [dualTotal, setDualTotal] = React.useState(0);
 
   // const [pagination, setDualPagination] = React.useState<{
@@ -673,8 +673,23 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
           // @ts-ignore
           let result = (response as any)?.userDualTxs.reduce(
             (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
+              const [, , coinA, coinB] =
+                (item.tokenInfoOrigin.market ?? "dual-").match(
+                  /(dual-)?(\w+)-(\w+)/i
+                ) ?? [];
+
+              let [sellTokenSymbol, buyTokenSymbol] =
+                item.dualType == DUAL_TYPE.DUAL_BASE
+                  ? [
+                      coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
+                      coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
+                    ]
+                  : [
+                      coinB ?? idIndex[item.tokenInfoOrigin.tokenIn],
+                      coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
+                    ];
               prev.push({
-                ...makeDualOrderedItem(item),
+                ...makeDualOrderedItem(item, sellTokenSymbol, buyTokenSymbol),
                 amount: item.tokenInfoOrigin.amountIn,
               });
               return prev;

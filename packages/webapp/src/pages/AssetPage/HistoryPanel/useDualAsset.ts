@@ -1,7 +1,6 @@
 import {
   LoopringAPI,
   makeDualOrderedItem,
-  makeDualViewItem,
   useAccount,
   useTokenMap,
 } from "@loopring-web/core";
@@ -13,6 +12,7 @@ import {
 import { RawDataDualAssetItem } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
 export const Limit = 14;
 
@@ -71,7 +71,27 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           // @ts-ignore
           let result = (response as any)?.userDualTxs.reduce(
             (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
-              const format = makeDualOrderedItem(item);
+              const {} = item.tokenInfoOrigin.market;
+              const [, , coinA, coinB] =
+                (item.tokenInfoOrigin.market ?? "dual-").match(
+                  /(dual-)?(\w+)-(\w+)/i
+                ) ?? [];
+
+              let [sellTokenSymbol, buyTokenSymbol] =
+                item.dualType == DUAL_TYPE.DUAL_BASE
+                  ? [
+                      coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
+                      coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
+                    ]
+                  : [
+                      coinB ?? idIndex[item.tokenInfoOrigin.tokenIn],
+                      coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
+                    ];
+              const format = makeDualOrderedItem(
+                item,
+                sellTokenSymbol,
+                buyTokenSymbol
+              );
               const amount = getValuePrecisionThousand(
                 sdk
                   .toBig(item.tokenInfoOrigin.amountIn)

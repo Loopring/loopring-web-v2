@@ -118,10 +118,14 @@ export const useDualTrade = <
       }
 
       const [baseSymbol, quoteSymbol] = [sellSymbol, buySymbol];
-      const [calcSellSymbol, calcBuySymbol] =
-        sdk.DUAL_TYPE.DUAL_BASE === info.dualType
-          ? [info.base, info.currency]
-          : [info.currency, info.base];
+
+      const dualMarket =
+        dualMarketMap[`DUAL-${sellSymbol}-${buySymbol}`] ??
+        dualMarketMap[`DUAL-${buySymbol}-${sellSymbol}`];
+      // const [calcSellSymbol, calcBuySymbol] =
+      //   sdk.DUAL_TYPE.DUAL_BASE === info.dualType
+      //     ? [info.base, info.currency]
+      //     : [info.currency, info.base];
       setSellBuySymbol([baseSymbol, quoteSymbol]);
       let coinSell: T =
         tradeData && tradeData.belong === baseSymbol
@@ -145,7 +149,9 @@ export const useDualTrade = <
       const dualViewInfo = makeDualViewItem(
         info,
         dualInfo.__raw__.index,
-        dualInfo.__raw__.rule
+        dualInfo.__raw__.rule,
+        sellSymbol,
+        buySymbol
       );
 
       if (_updateInfo.balance) {
@@ -153,10 +159,10 @@ export const useDualTrade = <
           ...dualInfo.__raw__,
           balance: _updateInfo.balance,
           // feeVol,
-          sellToken: tokenMap[calcSellSymbol],
-          buyToken: tokenMap[calcBuySymbol],
+          sellToken: tokenMap[baseSymbol],
+          buyToken: tokenMap[quoteSymbol],
           sellAmount: coinSell.tradeValue?.toString() ?? undefined,
-          dualMarket: dualMarketMap[`DUAL-${info.base}-${info.currency}`],
+          dualMarket,
         });
         _updateInfo = {
           ..._updateInfo,

@@ -180,7 +180,9 @@ export const useDualHook = ({
                     .times(item.strike)
                     .gte(rule.currencyMin)))
             ) {
-              prev.push(makeDualViewItem(item, index, rule));
+              prev.push(
+                makeDualViewItem(item, index, rule, pairASymbol, pairBSymbol)
+              );
               return prev;
             }
             return prev;

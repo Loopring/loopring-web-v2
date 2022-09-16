@@ -12,7 +12,9 @@ import { BigNumber } from "bignumber.js";
 export const makeDualViewItem = (
   info: sdk.DualProductAndPrice,
   index: sdk.DualIndex,
-  rule: sdk.DualRulesCoinsInfo
+  rule: sdk.DualRulesCoinsInfo,
+  sellSymbol: string,
+  buySymbol: string
   // balance: sdk.DualBalance
 ): DualViewInfo => {
   // strike is targetPrice
@@ -21,17 +23,17 @@ export const makeDualViewItem = (
     expireTime,
     strike,
     ratio,
-    base,
-    // currency: base,
-    currency: quote,
+    // base,
+    // // currency: base,
+    // currency: quote,
     dualType,
     dualPrice: { dualBid },
   } = info;
-  myLog("makeDualViewItem", expireTime, strike, ratio, base, quote, dualType);
-  const [sellSymbol, buySymbol] =
+  myLog("makeDualViewItem", expireTime, strike, ratio, dualType);
+  const [base, quote] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
-      ? [base, quote]
-      : [quote, base];
+      ? [sellSymbol, buySymbol]
+      : [buySymbol, sellSymbol];
   // const { baseProfitStep } = rule;
   // baseProfit*ratio
   const settleRatio = toBig(dualBid[0].baseProfit)
@@ -83,10 +85,12 @@ export const makeDualViewItem = (
       rule,
     },
   };
-};
+};;
 
 export const makeDualOrderedItem = (
   props: sdk.UserDualTxsHistory,
+  sellSymbol: string,
+  buySymbol: string,
   currentPrice?: number
   // balance: sdk.DualBalance
 ): DualViewOrder => {
@@ -97,13 +101,13 @@ export const makeDualOrderedItem = (
     // deliveryPrice,
     productId,
     createdAt,
-    tokenInfoOrigin: { base, currency: quote },
-    timeOrigin: { expireTime, settlementTime },
+    // tokenInfoOrigin,
+    timeOrigin: { expireTime },
   } = props;
-  const [sellSymbol, buySymbol] =
+  const [base, quote] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
-      ? [base, quote]
-      : [quote, base];
+      ? [sellSymbol, buySymbol]
+      : [buySymbol, sellSymbol];
 
   const apy = toBig(settleRatio)
     .div((expireTime - createdAt) / 86400000)
