@@ -5,6 +5,7 @@ declare global {
   interface Window {
     loopringSocket: InstanceType<LoopringSocket>;
     __renderReportCall__: () => void;
+    Banxa: any;
     rampInstance: RampInstantSDK | undefined;
     rampTransPromise: Promise<{ txHash: string }> | undefined;
   }

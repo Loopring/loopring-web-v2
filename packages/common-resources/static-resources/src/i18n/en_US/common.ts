@@ -1035,4 +1035,7 @@ export default {
   labelDualAmount: "Amount",
   labelDuaInvestmentDetails: "Dual Investment Details",
   labelDualOrderTable: "Dual Investments",
+  labelInvestMyAmm: "My Investment AMM",
+  labelInvestMyDual: "My Investment Dual",
+  labelInvestMyDefi: "My Investment Staking",
 };

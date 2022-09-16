@@ -124,7 +124,7 @@ export const useDualHook = ({
         marketSymbolA === pairASymbol
           ? sdk.DUAL_TYPE.DUAL_BASE
           : sdk.DUAL_TYPE.DUAL_CURRENCY;
-
+      // @ts-ignore
       const { quoteAlias } = marketMap[market];
 
       const response = await LoopringAPI.defiAPI?.getDualInfos({

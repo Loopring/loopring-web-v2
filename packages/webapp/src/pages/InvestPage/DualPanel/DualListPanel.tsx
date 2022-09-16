@@ -34,6 +34,7 @@ import {
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
+import { useTheme } from "@emotion/react";
 
 const StyleDual = styled(Box)`
   position: relative;
@@ -95,6 +96,7 @@ export const DualListPanel: any = withTranslation("common")(
   }) => {
     const { coinJson } = useSettings();
     const { forexMap } = useSystem();
+    const theme = useTheme();
     const { tradeMap, marketArray } = useDualMap();
     const { tokenMap } = useTokenMap();
     const { setShowDual } = useOpenModals();
@@ -138,20 +140,29 @@ export const DualListPanel: any = withTranslation("common")(
           >
             {t("labelInvestDualTitle")}
           </Button>
-          <Button
-            startIcon={<HelpIcon fontSize={"large"} />}
-            variant={"text"}
-            onClick={() => {
-              window.open(
-                `https://loopring.io/#/document/dual_investment_tutorial_en.md`,
-                "_blank"
-              );
-              window.opener = null;
-            }}
-            sx={{ color: "var(--color-text-secondary)" }}
-          >
-            {t("labelInvestDualTutorial")}
-          </Button>
+          <Box display={"flex"} flexDirection={"row"}>
+            <Button
+              startIcon={<HelpIcon fontSize={"large"} />}
+              variant={"text"}
+              onClick={() => {
+                window.open(
+                  `https://loopring.io/#/document/dual_investment_tutorial_en.md`,
+                  "_blank"
+                );
+                window.opener = null;
+              }}
+              sx={{ color: "var(--color-text-secondary)" }}
+            >
+              {t("labelInvestDualTutorial")}
+            </Button>
+            <Button
+              variant={"outlined"}
+              sx={{ marginLeft: 2 }}
+              onClick={() => history.push("/invest/balance/dual")}
+            >
+              {t("labelInvestMyDual")}
+            </Button>
+          </Box>
         </Box>
         <StyleDual flexDirection={"column"} display={"flex"} flex={1}>
           <Grid container spacing={2}>
