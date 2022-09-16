@@ -85,7 +85,7 @@ export const makeDualViewItem = (
       rule,
     },
   };
-};;
+};
 
 export const makeDualOrderedItem = (
   props: sdk.UserDualTxsHistory,
