@@ -1,14 +1,12 @@
 import { Box, Grid } from "@mui/material";
 import { useRouteMatch } from "react-router-dom";
 import React from "react";
-import { EmptyDefault } from "@loopring-web/component-lib";
+import { EmptyDefault, LoadingBlock } from "@loopring-web/component-lib";
 import gfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import { useTheme } from "@emotion/react";
 
-import { LoadingBlock } from "../LoadingPage";
-import { MarkdownStyle } from "./style";
-import { languageMap } from "@loopring-web/common-resources";
+import { languageMap, MarkdownStyle } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 
 const url_path = "https://static.loopring.io/documents/notification";

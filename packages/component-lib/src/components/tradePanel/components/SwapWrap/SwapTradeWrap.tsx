@@ -201,8 +201,6 @@ export const SwapTradeWrap = <
   const showVal =
     tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB;
 
-  // const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${stob} ${tradeData.buy?.belong}`
-  //     : `1${tradeData.buy?.belong} \u2248 ${btos} ${tradeData.sell?.belong}`
   const convertStr = _isStoB
     ? `1${tradeData.sell?.belong} \u2248 ${
         tradeCalcData.StoB && tradeCalcData.StoB != "NaN"

@@ -33,6 +33,7 @@ export type TransferData = {
   address: string | undefined;
   memo: string | undefined;
   fee: FeeInfo | undefined;
+  __request__: sdk.OriginTransferRequestV3 | undefined;
 };
 
 export type DepositData = {
@@ -70,10 +71,10 @@ export type ModalDataStatus = {
   lastStep: LAST_STEP;
   withdrawValue: WithdrawData;
   transferValue: TransferData;
+  transferRampValue: TransferData;
   depositValue: DepositData;
   activeAccountValue: ActiveAccountData;
   forceWithdrawValue: ForceWithdrawData;
-
   nftWithdrawValue: WithdrawData &
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
   nftTransferValue: TransferData &
@@ -84,6 +85,16 @@ export type ModalDataStatus = {
   collectionValue: Partial<CollectionMeta>;
   nftMintValue: NFT_MINT_VALUE<any>;
   nftDeployValue: TradeNFT<any, any> & { broker: string };
+  offRampValue:
+    | Partial<{
+        offRampPurchase?: undefined;
+        send?: {
+          assetSymbol: string;
+          amount: string;
+          destinationAddress: string;
+        };
+      }>
+    | undefined;
 };
 
 export enum LAST_STEP {
@@ -96,5 +107,7 @@ export enum LAST_STEP {
   nftDeploy = "nftDeploy",
   nftMint = "nftMint",
   collecionAdv = "collecionAdv",
+  offRamp = "offRamp",
+  offRampTrans = "offRampTrans",
   default = "default",
 }

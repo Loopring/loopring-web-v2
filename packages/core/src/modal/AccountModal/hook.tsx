@@ -1,7 +1,10 @@
 /* eslint-disable react/jsx-pascal-case */
 import {
   AccountStep,
+  AddAsset,
+  AddAssetItem,
   Button,
+  CheckActiveStatus,
   CreateAccount_Approve_Denied,
   CreateAccount_Approve_Submit,
   CreateAccount_Approve_WaitForAuth,
@@ -14,8 +17,27 @@ import {
   Deposit_Approve_WaitForAuth,
   Deposit_Denied,
   Deposit_Failed,
+  Deposit_Sign_WaitForRefer,
   Deposit_Submit,
   Deposit_WaitForAuth,
+  DepositProps,
+  ExportAccount_Approve_WaitForAuth,
+  ExportAccount_Failed,
+  ExportAccount_Success,
+  ExportAccount_User_Denied,
+  ForceWithdraw_Denied,
+  ForceWithdraw_Failed,
+  ForceWithdraw_First_Method_Denied,
+  ForceWithdraw_In_Progress,
+  ForceWithdraw_Submit,
+  ForceWithdraw_WaitForAuth,
+  HadAccount,
+  NFTDeploy_Denied,
+  NFTDeploy_Failed,
+  NFTDeploy_First_Method_Denied,
+  NFTDeploy_In_Progress,
+  NFTDeploy_Submit,
+  NFTDeploy_WaitForAuth,
   NFTDeposit_Approve_Denied,
   NFTDeposit_Approve_Submit,
   NFTDeposit_Approve_WaitForAuth,
@@ -23,36 +45,12 @@ import {
   NFTDeposit_Failed,
   NFTDeposit_Submit,
   NFTDeposit_WaitForAuth,
-  ExportAccount_Approve_WaitForAuth,
-  ExportAccount_Failed,
-  ExportAccount_Success,
-  ExportAccount_User_Denied,
-  HadAccount,
-  NoAccount,
-  QRAddressPanel,
-  UnlockAccount_Failed,
-  UnlockAccount_Success,
-  UnlockAccount_User_Denied,
-  UnlockAccount_WaitForAuth,
-  UpdateAccount,
-  UpdateAccount_Approve_WaitForAuth,
-  UpdateAccount_Failed,
-  UpdateAccount_First_Method_Denied,
-  UpdateAccount_Success,
-  UpdateAccount_User_Denied,
-  useOpenModals,
-  Transfer_Failed,
-  Transfer_First_Method_Denied,
-  Transfer_In_Progress,
-  Transfer_Success,
-  Transfer_User_Denied,
-  Transfer_WaitForAuth,
-  Withdraw_Failed,
-  Withdraw_First_Method_Denied,
-  Withdraw_In_Progress,
-  Withdraw_Success,
-  Withdraw_User_Denied,
-  Withdraw_WaitForAuth,
+  NFTMint_Denied,
+  NFTMint_Failed,
+  NFTMint_First_Method_Denied,
+  NFTMint_In_Progress,
+  NFTMint_Success,
+  NFTMint_WaitForAuth,
   NFTTransfer_Failed,
   NFTTransfer_First_Method_Denied,
   NFTTransfer_In_Progress,
@@ -65,33 +63,35 @@ import {
   NFTWithdraw_Success,
   NFTWithdraw_User_Denied,
   NFTWithdraw_WaitForAuth,
-  NFTMint_WaitForAuth,
-  NFTMint_Denied,
-  NFTMint_Failed,
-  NFTMint_Success,
-  NFTDeploy_WaitForAuth,
-  NFTDeploy_Denied,
-  NFTDeploy_Failed,
-  NFTDeploy_Submit,
-  NFTDeploy_First_Method_Denied,
-  NFTDeploy_In_Progress,
-  ForceWithdraw_WaitForAuth,
-  ForceWithdraw_Denied,
-  ForceWithdraw_Failed,
-  ForceWithdraw_Submit,
-  ForceWithdraw_First_Method_Denied,
-  ForceWithdraw_In_Progress,
-  NFTMint_First_Method_Denied,
-  NFTMint_In_Progress,
-  Deposit_Sign_WaitForRefer,
-  VendorMenu,
-  AddAsset,
+  NoAccount,
+  QRAddressPanel,
   SendAsset,
-  CheckActiveStatus,
-  AddAssetItem,
   SendAssetItem,
-  DepositProps,
   SendNFTAsset,
+  Transfer_Failed,
+  Transfer_First_Method_Denied,
+  Transfer_In_Progress,
+  Transfer_Success,
+  Transfer_User_Denied,
+  Transfer_WaitForAuth,
+  UnlockAccount_Failed,
+  UnlockAccount_Success,
+  UnlockAccount_User_Denied,
+  UnlockAccount_WaitForAuth,
+  UpdateAccount,
+  UpdateAccount_Approve_WaitForAuth,
+  UpdateAccount_Failed,
+  UpdateAccount_First_Method_Denied,
+  UpdateAccount_Success,
+  UpdateAccount_User_Denied,
+  useOpenModals,
+  VendorMenu,
+  Withdraw_Failed,
+  Withdraw_First_Method_Denied,
+  Withdraw_In_Progress,
+  Withdraw_Success,
+  Withdraw_User_Denied,
+  Withdraw_WaitForAuth,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -110,31 +110,32 @@ import {
   NFTWholeINFO,
   SendAssetList,
   SendNFTAssetList,
+  TradeTypes,
 } from "@loopring-web/common-resources";
 import {
-  useAccount,
+  goActiveAccount,
   lockAccount,
-  unlockAccount,
-  useTransfer,
-  useWithdraw,
-  useUpdateAccount,
-  useReset,
-  useExportAccount,
-  useSystem,
-  // isContract,
-  useNFTWithdraw,
-  useNFTTransfer,
+  mintService,
   onchainHashInfo,
+  store,
+  unlockAccount,
+  useAccount,
   useActiveAccount,
-  useWalletLayer2,
-  useVendor,
+  useCheckActiveStatus,
+  useExportAccount,
+  useForceWithdraw,
   useModalData,
   useNFTDeploy,
-  store,
-  mintService,
-  goActiveAccount,
-  useCheckActiveStatus,
-  useForceWithdraw,
+  useNFTTransfer,
+  useNFTWithdraw,
+  useRampTransPost,
+  useReset,
+  useSystem,
+  useTransfer,
+  useUpdateAccount,
+  useVendor,
+  useWalletLayer2,
+  useWithdraw,
   useCollectionAdvanceMeta,
   useToast,
   useNFTMintAdvance,
@@ -159,6 +160,8 @@ export function useAccountModalForUI({
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
+  const { processRequestRampTransfer } = useRampTransPost();
+
   const {
     modals: {
       isShowAccount,
@@ -197,7 +200,6 @@ export function useAccountModalForUI({
     exportAccountToastOpen,
     setExportAccountToastOpen,
   } = useExportAccount();
-  const vendorProps = useVendor();
   const {
     toastOpen: collectionToastOpen,
     setToastOpen: setCollectionToastOpen,
@@ -208,8 +210,10 @@ export function useAccountModalForUI({
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({
     setCollectionToastOpen,
   });
+  const { vendorListBuy } = useVendor();
+  // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
-  const { transferProps } = useTransfer();
+  const { transferProps, retryBtn: transferRetry } = useTransfer();
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
@@ -217,6 +221,7 @@ export function useAccountModalForUI({
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
+
   // const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount();
 
@@ -348,14 +353,7 @@ export function useAccountModalForUI({
     return {
       btnTxt: "labelRetry",
       callback: () => {
-        setShowAccount({ isShow: false });
-        setShowTransfer({
-          isShow: true,
-          info: {
-            ...isShowTransfer.info,
-            isRetry: true,
-          },
-        });
+        transferRetry(false);
       },
     };
   }, [isShowTransfer.info, setShowAccount, setShowTransfer]);
@@ -694,7 +692,13 @@ export function useAccountModalForUI({
         ),
       },
       [AccountStep.PayWithCard]: {
-        view: <VendorMenu {...{ ...vendorProps }} />,
+        view: (
+          <VendorMenu
+            vendorList={vendorListBuy}
+            type={TradeTypes.Buy}
+            vendorForce={undefined}
+          />
+        ),
         onBack: onBackReceive,
       },
       [AccountStep.NoAccount]: {
@@ -1414,6 +1418,114 @@ export function useAccountModalForUI({
         ),
       },
 
+      // transferRamp
+      [AccountStep.Transfer_RAMP_WaitForAuth]: {
+        view: (
+          <Transfer_WaitForAuth
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_First_Method_Denied]: {
+        view: (
+          <Transfer_First_Method_Denied
+            btnInfo={{
+              btnTxt: "labelTryAnother",
+              callback: () => {
+                const { __request__ } =
+                  store.getState()._router_modalData.transferRampValue;
+                if (__request__) {
+                  processRequestRampTransfer(__request__, false);
+                } else {
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.Transfer_RAMP_Failed,
+                  });
+                }
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_User_Denied]: {
+        view: (
+          <Transfer_User_Denied
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                const { __request__ } =
+                  store.getState()._router_modalData.transferRampValue;
+                if (__request__) {
+                  processRequestRampTransfer(__request__, true);
+                } else {
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.Transfer_RAMP_Failed,
+                  });
+                }
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_In_Progress]: {
+        view: (
+          <Transfer_In_Progress
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_Success]: {
+        view: (
+          <Transfer_Success
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_Failed]: {
+        view: (
+          <Transfer_Failed
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+
       // withdraw
       [AccountStep.Withdraw_WaitForAuth]: {
         view: (
@@ -2103,7 +2215,7 @@ export function useAccountModalForUI({
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,
     sendAssetList,
-    vendorProps,
+    vendorListBuy,
     onBackReceive,
     chainInfos,
     isLayer1Only,
@@ -2181,8 +2293,6 @@ export function useAccountModalForUI({
     onBackSend,
     collectionToastOpen,
     collectionToastClose,
-    // cancelNFTTransfer,
-    // cancelNFTWithdraw,
-    // vendorProps,
+    // dualToastOpen,
   };
 }

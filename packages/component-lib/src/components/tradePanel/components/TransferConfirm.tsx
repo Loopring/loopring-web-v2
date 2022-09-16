@@ -12,6 +12,7 @@ import { Button, Toast } from "../../index";
 import { TransferViewProps } from "./Interface";
 import { useSettings } from "../../../stores";
 import React from "react";
+import { sanitize } from "dompurify";
 
 export const TransferConfirm = <
   T extends IBData<I> & Partial<NFTWholeINFO>,
@@ -70,11 +71,18 @@ export const TransferConfirm = <
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {tradeData?.tradeValue}
-          <Typography component={"span"} color={"textSecondary"}>
-            {type === "NFT"
-              ? " \u2A09 " + tradeData?.name ?? "NFT"
-              : tradeData?.belong}
-          </Typography>
+          <Typography
+            component={"span"}
+            color={"textSecondary"}
+            dangerouslySetInnerHTML={{
+              __html:
+                sanitize(
+                  type === "NFT"
+                    ? " \u2A09 " + tradeData?.name ?? "NFT"
+                    : tradeData?.belong ?? EmptyValueTag
+                ) ?? "",
+            }}
+          />
         </Typography>
       </Grid>
       <Grid item xs={12}>

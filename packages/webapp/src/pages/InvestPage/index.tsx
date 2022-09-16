@@ -1,17 +1,11 @@
 import { useHistory, useRouteMatch } from "react-router-dom";
 
-import {
-  Box,
-  fabClasses,
-  formControlLabelClasses,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 
 import { useTranslation, withTranslation } from "react-i18next";
 import {
   ConfirmInvestDefiRisk,
+  ConfirmInvestDualRisk,
   useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -21,23 +15,24 @@ import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
+import { DualListPanel } from "./DualPanel/DualListPanel";
 
 export enum InvestType {
   MyBalance = 0,
   AmmPool = 1,
   DeFi = 2,
   Overview = 3,
+  Dual = 4,
 }
 
-export const InvestRouter = ["balance", "ammpool", "defi", "overview"];
+export const InvestRouter = ["balance", "ammpool", "defi", "overview", "dual"];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
-  const { isMobile } = useSettings();
   return (
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={isMobile ? "h5" : "h5"}
+        variant={"h5"}
         whiteSpace={"pre"}
         marginRight={1}
         className={"invest-Balance-Title"}
@@ -49,12 +44,11 @@ export const BalanceTitle = () => {
 };
 export const OverviewTitle = () => {
   const { t } = useTranslation();
-  const { isMobile } = useSettings();
   return (
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={isMobile ? "h5" : "h5"}
+        variant={"h5"}
         whiteSpace={"pre"}
         marginRight={1}
         className={"invest-Overview-Title"}
@@ -75,7 +69,7 @@ export const AmmTitle = () => {
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={isMobile ? "h5" : "h5"}
+        variant={"h5"}
         whiteSpace={"pre"}
         marginRight={1}
         className={"invest-Amm-Title"}
@@ -129,7 +123,7 @@ export const DefiTitle = () => {
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={isMobile ? "h5" : "h5"}
+        variant={"h5"}
         whiteSpace={"pre"}
         marginRight={1}
         className={"invest-defi-Title"}
@@ -173,13 +167,19 @@ export const DefiTitle = () => {
 };
 
 export const InvestPage = withTranslation("common", { withRef: true })(() => {
-  let match: any = useRouteMatch(["/invest/:item?", ":subItem"]);
+  let match: any = useRouteMatch("/invest/:item?");
   const history = useHistory();
-  const { confirmDefiInvest: confirmDefiInvestFun } =
-    confirmation.useConfirmation();
+  const {
+    confirmDefiInvest: confirmDefiInvestFun,
+    confirmDualInvest: confirmDualInvestFun,
+  } = confirmation.useConfirmation();
   const [confirmDefiInvest, setConfirmDefiInvest] = React.useState(false);
+  const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
-    InvestType.Overview
+    (InvestRouter.includes(match?.params?.item)
+      ? InvestType[match?.params?.item]
+      : InvestType.Overview) as any
+    // InvestType.Overview
   );
   const [isShowTab, setIsShowTab] = React.useState<Boolean>(false);
   React.useEffect(() => {
@@ -195,6 +195,10 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         return;
       case InvestRouter[InvestType.DeFi]:
         setTabIndex(InvestType.DeFi);
+        setIsShowTab(false);
+        return;
+      case InvestRouter[InvestType.Dual]:
+        setTabIndex(InvestType.Dual);
         setIsShowTab(false);
         return;
       case InvestRouter[InvestType.Overview]:
@@ -239,6 +243,9 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         {tabIndex === InvestType.DeFi && (
           <DeFiPanel setConfirmDefiInvest={setConfirmDefiInvest} />
         )}
+        {tabIndex === InvestType.Dual && (
+          <DualListPanel setConfirmDualInvest={setConfirmDualInvest} />
+        )}
         {tabIndex === InvestType.MyBalance && (
           <Box
             flex={1}
@@ -253,11 +260,21 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       <ConfirmInvestDefiRisk
         open={confirmDefiInvest}
         handleClose={(_e, isAgree) => {
-          setConfirmDefiInvest(false);
+          // confirmDefiInvestFun(false);
           if (!isAgree) {
             history.goBack();
           } else {
             confirmDefiInvestFun();
+          }
+        }}
+      />
+      <ConfirmInvestDualRisk
+        open={confirmDualInvest}
+        handleClose={(_e, isAgree) => {
+          if (!isAgree) {
+            history.goBack();
+          } else {
+            confirmDualInvestFun();
           }
         }}
       />

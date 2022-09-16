@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
-import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
+import {
+  DualViewInfo,
+  NFTWholeINFO,
+  TradeNFT,
+} from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { AmmPanelType } from "../../../components";
 
@@ -26,13 +30,14 @@ const initialState: ModalState = {
   isShowNFTWithdraw: { isShow: false },
   isShowNFTDeposit: { isShow: false },
   isShowNFTMintAdvance: { isShow: false },
+  isShowDual: { isShow: false, dualInfo: undefined },
   isShowCollectionAdvance: { isShow: false },
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
-  name: "settings",
+  name: "modals",
   initialState,
   reducers: {
     setShowIFrame(
@@ -223,6 +228,23 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       const { isShow } = action.payload;
       state.isShowExportAccount.isShow = isShow;
     },
+    setShowDual(
+      state,
+      action: PayloadAction<
+        ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }
+      >
+    ) {
+      const { isShow, dualInfo } = action.payload;
+      if (dualInfo) {
+        state.isShowDual = {
+          isShow,
+          dualInfo,
+        };
+      } else {
+        state.isShowDual.isShow = false;
+        state.isShowDual.dualInfo = undefined;
+      }
+    },
     setShowConnect(
       state,
       action: PayloadAction<{
@@ -292,6 +314,7 @@ export const {
   setShowDeposit,
   setShowResetAccount,
   setShowExportAccount,
+  setShowDual,
   setShowSwap,
   setShowAmm,
   setShowConnect,

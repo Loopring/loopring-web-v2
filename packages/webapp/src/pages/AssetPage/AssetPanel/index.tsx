@@ -27,23 +27,18 @@ const AssetPanel = withTranslation("common")(
     const { isMobile } = useSettings();
 
     const {
-      marketArray,
       assetsRawData,
-      // userAssets,
       assetTitleProps,
-      // onShowTransfer,
-      // onShowWithdraw,
-      // onShowDeposit,
       getTokenRelatedMarketArray,
       onSend,
       onReceive,
-      // total,
       hideInvestToken,
       hideSmallBalances,
       allowTrade,
       setHideLpToken,
       setHideSmallBalances,
     } = useGetAssets();
+
     return (
       <>
         {!isMobile && (

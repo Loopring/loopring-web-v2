@@ -1,10 +1,11 @@
 import styled from "@emotion/styled";
 import { Grid, Link, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import {
   AmmPanelType,
   AssetsTable,
+  DualAssetTable,
   MyPoolTable,
   TokenType,
   useOpenModals,
@@ -29,6 +30,8 @@ import {
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
+import { useDualAsset } from "../../AssetPage/HistoryPanel/useDualAsset";
+import React from "react";
 const StyleWrapper = styled(Grid)`
   position: relative;
   width: 100%;
@@ -43,9 +46,14 @@ const MyLiquidity: any = withTranslation("common")(
   }: WithTranslation & {
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
+    let match: any = useRouteMatch("/invest/balance/:type");
+    const ammPoolRef = React.useRef(null);
+    const stackingRef = React.useRef(null);
+    const dualRef = React.useRef(null);
+
     const { ammActivityMap } = useAmmActivityMap();
     const { forexMap } = useSystem();
-    const { tokenMap, disableWithdrawList } = useTokenMap();
+    const { tokenMap, disableWithdrawList, idIndex } = useTokenMap();
     const {
       assetsRawData,
       onSend,
@@ -57,7 +65,35 @@ const MyLiquidity: any = withTranslation("common")(
     const history = useHistory();
     const { currency, hideSmallBalances, setHideSmallBalances } = useSettings();
     const { setShowAmm } = useOpenModals();
+    const {
+      dualList,
+      getDualTxList,
+      pagination,
+      showLoading: dualLoading,
+    } = useDualAsset();
 
+    React.useEffect(() => {
+      if (match?.params?.type) {
+        switch (match?.params?.type) {
+          case "dual":
+            // @ts-ignore
+            window.scrollTo(0, dualRef?.current?.offsetTop);
+            break;
+          case "stack":
+            // @ts-ignore
+            window.scrollTo(0, stackingRef?.current?.offsetTop);
+            break;
+          case "amm":
+            // @ts-ignore
+            window.scrollTo(0, ammPoolRef?.current?.offsetTop);
+            break;
+        }
+      }
+    }, [match?.params?.type]);
+
+    React.useEffect(() => {
+      getDualTxList({});
+    }, []);
     const { summaryMyInvest, myPoolRow, showLoading } = useOverview({
       ammActivityMap,
     });
@@ -77,11 +113,9 @@ const MyLiquidity: any = withTranslation("common")(
           title2: "body1",
           count2: "h5",
         };
-    const lidoAssets= assetsRawData.filter(
-      (o) =>
-        o.token.type !== TokenType.single &&
-        o.token.type !== TokenType.lp
-    )    
+    const lidoAssets = assetsRawData.filter(
+      (o) => o.token.type !== TokenType.single && o.token.type !== TokenType.lp
+    );
     return (
       <>
         <StyleWrapper
@@ -166,7 +200,8 @@ const MyLiquidity: any = withTranslation("common")(
           </Link>
         </StyleWrapper>
         <TableWrapStyled
-          className={`table-divide-short MuiPaper-elevation2 ${myPoolRow?.length?"min-height":""}`}
+          ref={ammPoolRef}
+          className={`table-divide-short MuiPaper-elevation2`}
           marginTop={2}
           paddingY={2}
           paddingX={0}
@@ -214,9 +249,11 @@ const MyLiquidity: any = withTranslation("common")(
             />
           </Grid>
         </TableWrapStyled>
-
         <TableWrapStyled
-          className={`table-divide-short MuiPaper-elevation2 ${lidoAssets?.length?"min-height":""}`}
+          ref={stackingRef}
+          className={`table-divide-short MuiPaper-elevation2 ${
+            lidoAssets?.length > 0 ? "min-height" : ""
+          }`}
           marginTop={2}
           marginBottom={3}
           paddingY={2}
@@ -232,7 +269,7 @@ const MyLiquidity: any = withTranslation("common")(
             <AssetsTable
               {...{
                 disableWithdrawList,
-                rawData:lidoAssets,
+                rawData: lidoAssets,
                 showFilter: false,
                 allowTrade,
                 onSend,
@@ -243,6 +280,33 @@ const MyLiquidity: any = withTranslation("common")(
                 isInvest: true,
                 ...rest,
               }}
+            />
+          </Grid>
+        </TableWrapStyled>
+        <TableWrapStyled
+          ref={dualRef}
+          className={`table-divide-short MuiPaper-elevation2 ${
+            lidoAssets?.length > 0 ? "min-height" : ""
+          }`}
+          marginTop={2}
+          marginBottom={3}
+          paddingY={2}
+          paddingX={0}
+          flex={1}
+        >
+          <Grid item xs={12}>
+            <Typography variant={"h5"} marginBottom={1} marginX={3}>
+              {t("labelInvestType_DUAL")}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
+            <DualAssetTable
+              rawData={dualList}
+              idIndex={idIndex}
+              tokenMap={tokenMap}
+              showloading={dualLoading}
+              pagination={pagination}
+              getDualAssetList={getDualTxList}
             />
           </Grid>
         </TableWrapStyled>

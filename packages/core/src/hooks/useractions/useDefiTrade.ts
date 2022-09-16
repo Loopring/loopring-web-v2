@@ -14,8 +14,8 @@ import {
   IBData,
   MarketType,
   myLog,
-  DeFiChgType,
   SDK_ERROR_MAP_TO_UI,
+  DeFiChgType,
   TradeDefi,
 } from "@loopring-web/common-resources";
 
@@ -208,7 +208,7 @@ export const useDefiTrade = <
                 tokenMap[coinSellSymbol].precision,
                 false,
                 { floor: false }
-              ).replace(",", "");
+              ).replace(sdk.SEP, "");
         const buyAmount =
           tradeData?.tradeValue === undefined
             ? undefined
@@ -221,7 +221,7 @@ export const useDefiTrade = <
                 tokenMap[coinBuySymbol].precision,
                 true,
                 { floor: true }
-              ).replace(",", "");
+              ).replace(sdk.SEP, "");
 
         // @ts-ignore
         _deFiCalcData = {
@@ -452,7 +452,7 @@ export const useDefiTrade = <
         setIsLoading(true);
       }
       Promise.all([
-        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: undefined }),
+        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "LIDO" }),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(
               isJoin
@@ -607,12 +607,7 @@ export const useDefiTrade = <
         ) {
           const errorItem =
             SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
-          throw new CustomErrorWithCode({
-            id: ((response as sdk.RESULT_INFO)?.code ?? 700001).toString(),
-            code: (response as sdk.RESULT_INFO)?.code ?? 700001,
-            message:
-              (response as sdk.RESULT_INFO)?.message ?? errorItem.message,
-          });
+          throw new CustomErrorWithCode(errorItem);
         } else {
           setToastOpen({
             open: true,
@@ -632,7 +627,10 @@ export const useDefiTrade = <
       setToastOpen({
         open: true,
         type: "error",
-        content: t("labelInvestFailed"), //+ ` error: ${(reason as any)?.message}`,
+        content:
+          t("labelInvestFailed") +
+            (reason as CustomErrorWithCode)?.messageKey ??
+          ` error: ${t((reason as CustomErrorWithCode)?.messageKey)}`,
       });
     } finally {
       setConfirmShowLimitBalance(false);
@@ -715,7 +713,7 @@ export const useDefiTrade = <
           tokenMap[coinSellSymbol].precision,
           false,
           { floor: true }
-        ).replace(",", "");
+        ).replace(sdk.SEP, "");
         // @ts-ignore
         const oldTrade = (tradeDefi?.deFiCalcData[type] ?? {}) as unknown as T;
         handleOnchange({

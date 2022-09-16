@@ -33,7 +33,7 @@ export const ForceWithdraw_First_Method_Denied = (
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelFirstSignDenied", {
-      symbol: props.symbol ?? "NFT",
+      symbol: props.symbol,
       value: props.value,
     }),
   };
@@ -46,7 +46,7 @@ export const ForceWithdraw_In_Progress = (
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelForceWithdrawInProgress", {
-      symbol: props.symbol ?? "NFT",
+      symbol: props.symbol,
       value: props.value,
     }),
   };
@@ -59,7 +59,7 @@ export const ForceWithdraw_Failed = (
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelForceWithdrawFailed", {
-      symbol: props.symbol ?? "NFT",
+      symbol: props.symbol,
       value: props.value,
     }),
   };
@@ -72,7 +72,7 @@ export const ForceWithdraw_Submit = (
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelForceWithdrawSubmit", {
-      symbol: props.symbol ?? "NFT",
+      symbol: props.symbol,
       value: props.value,
     }),
   };

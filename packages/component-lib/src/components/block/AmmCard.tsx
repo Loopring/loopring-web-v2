@@ -16,11 +16,13 @@ import {
   AmmCardProps,
   AvatarCoinStyled,
   CurrencyToTag,
+  DAY_FORMAT,
   EmptyValueTag,
   getValuePrecisionThousand,
   myLog,
   PriceTag,
   SoursURL,
+  YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { PopoverPure } from "../basic-lib";
@@ -382,8 +384,8 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                   variant={"h6"}
                   fontWeight={400}
                 >
-                  {" " + moment(duration.from).format("YYYY/MM/DD")} -{" "}
-                  {moment(duration.to).format("MM/DD")}
+                  {" " + moment(duration.from).format(YEAR_DAY_FORMAT) + " - "}
+                  {moment(duration.to).format(DAY_FORMAT)}
                 </Typography>
               </DetailWrapperStyled>
 

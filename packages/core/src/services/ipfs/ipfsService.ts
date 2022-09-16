@@ -183,13 +183,13 @@ export const ipfsService = {
           uniqueId,
           error: {
             code: UIERROR_CODE.NO_IPFS_INSTANCE,
-            message: "IPFSHTTPClient is undefined",
+	          message: "IPFSHTTPClient is undefined",
           },
         },
       });
     }
   },
 
-  // clearMessages: () => subject.next(),
-  onSocket: () => subject.asObservable(),
+	// clearMessages: () => subject.next(),
+	onSocket: () => subject.asObservable(),
 };

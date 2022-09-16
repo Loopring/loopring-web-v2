@@ -635,10 +635,8 @@ export const useNFTMintAdvance = <
         },
       });
       onNFTMintAdvanceClick({}, isHardwareRetry);
-      // processRequest(lastRequest, !isHardwareRetry);
     },
     [
-      // lastRequest,
       nftMintAdvanceValue.name,
       nftMintAdvanceValue.tradeValue,
       processRequest,

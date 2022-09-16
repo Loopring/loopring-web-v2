@@ -139,7 +139,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           undefined,
           basePrecision,
           true
-        ).replace(",", "");
+        ).replace(sdk.SEP, "");
         onChangeLimitEvent(
           {
             ...limitTradeData,

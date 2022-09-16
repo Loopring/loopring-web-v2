@@ -139,6 +139,7 @@ export const ModalPanel = <
   // nftMintAdvanceProps,
   activeAccountProps,
   collectionAdvanceProps,
+  // dualTradeProps,
   assetsData,
   account,
   baseURL,
@@ -156,6 +157,7 @@ export const ModalPanel = <
   // depositGroupProps: DepositGroupProps<T, I>;
   // nftDepositProps: NFTDepositProps<T, I>;
   collectionAdvanceProps: CollectionAdvanceProps<C>;
+  // dualTradeProps: DualWrapProps<T, I, DUAL>;
   // nftMintAdvanceProps: NFTMintAdvanceProps<T, I>;
   resetProps: ResetProps<F>;
   activeAccountProps: ResetProps<F>;
@@ -180,6 +182,7 @@ export const ModalPanel = <
     setShowNFTDeploy,
     setShowAccount,
     setShowCollectionAdvance,
+    // setShowDual,
   } = useOpenModals();
   const {
     isShowTransfer,
@@ -194,6 +197,7 @@ export const ModalPanel = <
     isShowActiveAccount,
     isShowCollectionAdvance,
     isShowLayerSwapNotice,
+    // isShowDual,
   } = modals;
   const theme = useTheme();
   return (

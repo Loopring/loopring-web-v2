@@ -144,6 +144,13 @@ export const WithdrawWrap = <
     !isAddressCheckLoading &&
     addressDefault &&
     addrStatus === AddressError.InvalidAddr;
+  const allowToClickIsSure = React.useMemo(() => {
+    return (
+      isAddressCheckLoading ||
+      addrStatus === AddressError.InvalidAddr ||
+      !realAddr
+    );
+  }, [addrStatus, isAddressCheckLoading, realAddr]);
 
   return (
     <Grid
@@ -346,11 +353,7 @@ export const WithdrawWrap = <
           <WithdrawAddressType
             selectedValue={sureIsAllowAddress}
             handleSelected={handleSureIsAllowAddress}
-            disabled={
-              isAddressCheckLoading ||
-              addrStatus !== AddressError.NoError ||
-              !realAddr
-            }
+            disabled={allowToClickIsSure}
           />
         </Grid>
       )}

@@ -10,10 +10,12 @@ import {
   resetNFTMintData,
   resetNFTTransferData,
   resetNFTWithdrawData,
+  resetOffRampData,
   resetTransferData,
   resetWithdrawData,
   resetForceWithdrawData,
   updateActiveAccountData,
+  updateOffRampData,
   updateDepositData,
   updateNFTDeployData,
   updateNFTDepositData,
@@ -26,6 +28,8 @@ import {
   updateTransferData,
   updateWithdrawData,
   updateForceWithdrawData,
+  updateTransferRampData,
+  resetTransferRampData,
 } from "./reducer";
 import {
   ActiveAccountData,
@@ -110,6 +114,32 @@ export function useModalData(): {
   forceWithdrawValue: ForceWithdrawData;
   resetNFTWithdrawData: () => void;
   updateNFTMintData: (nftMintData: NFT_MINT_VALUE<any>) => void;
+  offRampValue:
+    | Partial<{
+        offRampPurchase?: undefined;
+        send?: {
+          assetSymbol: string;
+          amount: string;
+          destinationAddress: string;
+        };
+      }>
+    | undefined;
+  updateOffRampData: (
+    offRamp: Partial<{
+      offRampPurchase?: undefined;
+      send?: {
+        assetSymbol: string;
+        amount: string;
+        destinationAddress: string;
+      };
+    }>
+  ) => void;
+  resetOffRampData: () => void;
+  transferRampValue: TransferData;
+  resetTransferRampData: () => void;
+  updateTransferRampData: (
+    transferData: RequireOne<TransferData, never>
+  ) => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData
@@ -133,6 +163,12 @@ export function useModalData(): {
     updateTransferData: React.useCallback(
       (transferData: RequireOne<TransferData, never>) => {
         dispatch(updateTransferData(transferData));
+      },
+      [dispatch]
+    ),
+    updateTransferRampData: React.useCallback(
+      (transferData: RequireOne<TransferData, never>) => {
+        dispatch(updateTransferRampData(transferData));
       },
       [dispatch]
     ),
@@ -216,6 +252,21 @@ export function useModalData(): {
       },
       [dispatch]
     ),
+    updateOffRampData: React.useCallback(
+      (
+        offRamp: Partial<{
+          offRampPurchase?: undefined;
+          send?: {
+            assetSymbol: string;
+            amount: string;
+            destinationAddress: string;
+          };
+        }>
+      ) => {
+        dispatch(updateOffRampData(offRamp));
+      },
+      [dispatch]
+    ),
     resetForceWithdrawData: React.useCallback(() => {
       dispatch(resetForceWithdrawData(undefined));
     }, [dispatch]),
@@ -224,6 +275,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetTransferData: React.useCallback(() => {
       dispatch(resetTransferData(undefined));
+    }, [dispatch]),
+    resetTransferRampData: React.useCallback(() => {
+      dispatch(resetTransferRampData(undefined));
     }, [dispatch]),
     resetDepositData: React.useCallback(() => {
       dispatch(resetDepositData(undefined));
@@ -257,6 +311,9 @@ export function useModalData(): {
     ),
     resetNFTDeployData: React.useCallback(() => {
       dispatch(resetNFTDeployData(undefined));
+    }, [dispatch]),
+    resetOffRampData: React.useCallback(() => {
+      dispatch(resetOffRampData(undefined));
     }, [dispatch]),
   };
 }

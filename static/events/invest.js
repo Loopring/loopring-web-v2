@@ -22,7 +22,7 @@ exports.investJson = {
     {
       type: "DUAL",
       router: "/invest/dual",
-      banner: "https://static.loopring.io/assets/images/icon-lido.svg",
+      banner: "https://static.loopring.io/assets/images/icon-dual.svg",
       titleI18n: "labelInvestDual",
       desI18n: "labelInvestDualDes",
       enable: true,

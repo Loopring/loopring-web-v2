@@ -166,6 +166,7 @@ export async function isContract(web3: any, address: string) {
 export interface AddrCheckResult {
   realAddr: string;
   addressErr: AddressError;
+  isContract?: boolean;
 }
 
 export async function checkAddr(
@@ -238,9 +239,9 @@ export async function checkAddr(
   } else {
     addressErr = AddressError.EmptyAddr;
   }
-
+  let isContract: undefined | boolean, response: any;
   if (realAddr && LoopringAPI.exchangeAPI && web3) {
-    const [isContract, response] = await Promise.all([
+    [isContract, response] = await Promise.all([
       sdk.isContract(web3, realAddr),
       LoopringAPI.exchangeAPI.getAccount({
         owner: realAddr,
@@ -252,12 +253,12 @@ export async function checkAddr(
         (response as sdk.RESULT_INFO).message)
     ) {
       addressErr = AddressError.IsNotLoopringContract;
-      realAddr = "";
     }
   }
 
   return {
     realAddr,
     addressErr,
+    isContract,
   };
 }

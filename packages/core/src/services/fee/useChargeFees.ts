@@ -107,7 +107,7 @@ export function useChargeFees({
       sdk
         // @ts-ignore
         .toBig(walletMap[value.belong].count)
-        .gte(sdk.toBig(value.fee.toString().replace(",", "")))
+        .gte(sdk.toBig(value.fee.toString().replace(sdk.SEP, "")))
     ) {
       isFeeNotEnough = {
         isFeeNotEnough: false,
@@ -176,8 +176,10 @@ export function useChargeFees({
           if (isActiveAccount) {
             const response = await LoopringAPI.globalAPI.getActiveFeeInfo({
               accountId:
-                account._accountIdNotActive &&
-                account._accountIdNotActive !== -1
+                account.accountId && account.accountId !== -1
+                  ? account.accountId
+                  : account._accountIdNotActive &&
+                    account._accountIdNotActive !== -1
                   ? account._accountIdNotActive
                   : undefined,
             });
@@ -254,7 +256,7 @@ export function useChargeFees({
                   if (
                     sdk
                       .toBig(count)
-                      .gte(sdk.toBig(fee.toString().replace(",", "")))
+                      .gte(sdk.toBig(fee.toString().replace(sdk.SEP, "")))
                   ) {
                     _feeInfo = _.cloneDeep(feeInfoTemplate);
                   }
@@ -326,7 +328,7 @@ export function useChargeFees({
                       isFeeNotEnough: sdk
                         .toBig(walletMap[state.belong]?.count ?? 0)
                         .gte(
-                          sdk.toBig(feeInfo.fee.toString().replace(",", ""))
+                          sdk.toBig(feeInfo.fee.toString().replace(sdk.SEP, ""))
                         ),
                       isOnLoading: false,
                     };
@@ -391,7 +393,7 @@ export function useChargeFees({
         if (
           sdk
             .toBig(count)
-            .gte(sdk.toBig(feeInfo.fee.toString().replace(",", "")))
+            .gte(sdk.toBig(feeInfo.fee.toString().replace(sdk.SEP, "")))
         ) {
           setIsFeeNotEnough({ isFeeNotEnough: false, isOnLoading: false });
           return;

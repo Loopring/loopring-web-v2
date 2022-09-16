@@ -79,6 +79,8 @@ export type TransferExtendProps<T, I, C> = {
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
   TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;
 
+export type RampViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C>;
+
 /**
  * private props
  */
@@ -245,9 +247,7 @@ export type DefaultProps<T, I> = {
 
 type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 
-export type BasicACoinTradeViewProps<T, I> = Required<
-  DefaultWithMethodProps<T, I>
-> & {
+export type BasicACoinTradeViewProps<T, I> = Required<DefaultWithMethodProps<T, I>> & {
   baseURL?: string;
   getIPFSString?: (url: string | undefined, basicUrl: string) => string;
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void;

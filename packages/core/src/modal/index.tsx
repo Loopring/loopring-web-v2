@@ -132,3 +132,4 @@ export const ModalGroup = withTranslation("common")(
     );
   }
 );
+export * from "./DualModal";

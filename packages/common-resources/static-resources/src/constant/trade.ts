@@ -285,8 +285,7 @@ export type AddressItemType<T> = {
   maxWidth?: string | number;
 };
 
-export const useAddressTypeLists = <
-  T extends WALLET_TYPE | EXCHANGE_TYPE
+export const useAddressTypeLists = <T extends WALLET_TYPE | EXCHANGE_TYPE
 >() => {
   const { t } = useTranslation("common");
   const walletList: AddressItemType<T>[] = [
@@ -367,7 +366,11 @@ export const enum InvestMapType {
   DUAL = "DUAL",
 }
 
-export const InvestOpenType = [InvestMapType.AMM, InvestMapType.STAKE];
+export const InvestOpenType = [
+  InvestMapType.AMM,
+  InvestMapType.STAKE,
+  InvestMapType.DUAL,
+];
 
 export const enum InvestDuration {
   Flexible = "Flexible",
@@ -429,3 +432,41 @@ export type L2CollectionFilter = {
 };
 
 export const LIVE_FEE_TIMES = 60000;
+
+export type DualCurrentPrice = {
+  quote: string;
+  base: string;
+  currentPrice?: number;
+};
+export type DualViewBase = {
+  apy: string;
+  settleRatio: string; //targetPrice
+  term: string;
+  strike: string;
+  isUp: boolean;
+  // targetPrice,
+  // subscribeData,
+
+  expireTime: number;
+  currentPrice: DualCurrentPrice;
+  productId: string;
+  sellSymbol: string;
+  buySymbol: string;
+  amount?: string;
+  enterTime?: number;
+
+  // balance,
+};
+
+export type DualViewInfo = DualViewBase & {
+  __raw__: {
+    info: sdk.DualProductAndPrice;
+    index: sdk.DualIndex;
+    rule: sdk.DualRulesCoinsInfo;
+  };
+};
+export type DualViewOrder = DualViewBase & {
+  __raw__: {
+    order: sdk.UserDualTxsHistory;
+  };
+};

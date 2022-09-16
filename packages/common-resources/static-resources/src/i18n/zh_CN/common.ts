@@ -851,6 +851,7 @@ export default {
   labelTitleOverviewToken: "Total Investment Tokens",
   labelInvestType_AMM: "AMM Pool",
   labelInvestType_STAKE: "ETH Staking",
+  labelInvestAll: "Mixed",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
   labelDefiOrderTable: "ETH Staking",
@@ -961,4 +962,5 @@ export default {
   labelChooseCollectionTooltips:
     "This is the collection where your NFT will appear.NFT minted under collection will be bound with different contract address than previous created one. If you have incomplete work to finish and would like them created under previous contract address, you can still use the legacy created method under https://… ",
   labelMintPreview: "Preview",
+  labelDualRiskTitle: "",
 };
