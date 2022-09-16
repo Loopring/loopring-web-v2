@@ -27,7 +27,6 @@ import {
   useSystem,
 } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
-import { TableFilterParams } from "./index";
 
 export function useTickList<C extends { [key: string]: string }>() {
   const [tickList, setTickList] = React.useState<any>([]);
@@ -141,11 +140,18 @@ export function useQuote<C extends { [key: string]: string }>() {
     tickList,
   };
 }
-
+export enum TableFilterParams {
+  all = "all",
+  favourite = "favourite",
+  ranking = "ranking",
+}
 export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   const { status: tickerStatus } = useTicker();
   const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([]);
-  const [tableTabValue, setTableTabValue] = React.useState("all");
+  const [tableTabValue, setTableTabValue] = React.useState(
+    TableFilterParams.all
+  );
+  // const [showLoading,setShowLoading]  = React.useState(false);
   const [searchValue, setSearchValue] = React.useState<string>("");
   const [swapRankingList, setSwapRankingList] = React.useState<
     AmmPoolActivityRule[]
@@ -262,15 +268,15 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       ammPoolBalances.length &&
       tickList.length
     ) {
-      const data = getFilteredTickList();
-      resetTableData(data);
+      // const data = getFilteredTickList();
+      handleTableFilterChange({});
     }
   }, [ammPoolBalances, tickerStatus, tickList]);
 
-  const handleTableFilterChange = useCallback(
+  const handleTableFilterChange = React.useCallback(
     ({
-      type = TableFilterParams.all,
-      keyword = "",
+      type = tableTabValue,
+      keyword = searchValue,
     }: {
       type?: TableFilterParams;
       keyword?: string;
@@ -306,6 +312,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     },
     [
       tickList,
+      tableTabValue,
       resetTableData,
       favoriteMarket,
       swapRankingList,
@@ -326,17 +333,14 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   );
 
   const handleTabChange = useCallback(
-    (_event: any, newValue: string) => {
+    (_event: any, newValue: TableFilterParams) => {
+      // if (tickList?.length) {
       setTableTabValue(newValue);
       handleTableFilterChange({
-        type:
-          newValue === "favourite"
-            ? TableFilterParams.favourite
-            : newValue === "tradeRanking"
-            ? TableFilterParams.ranking
-            : TableFilterParams.all,
         keyword: searchValue,
+        type: newValue,
       });
+      // }
     },
     [handleTableFilterChange, searchValue]
   );
@@ -344,13 +348,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   const handleSearchChange = React.useCallback(
     (value) => {
       setSearchValue(value);
-      const type =
-        tableTabValue === "favourite"
-          ? TableFilterParams.favourite
-          : tableTabValue === "tradeRanking"
-          ? TableFilterParams.ranking
-          : TableFilterParams.all;
-      handleTableFilterChange({ keyword: value, type: type });
+      handleTableFilterChange({ keyword: value, type: tableTabValue });
     },
     [handleTableFilterChange, tableTabValue]
   );
@@ -364,6 +362,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     activityInProgressRules,
     handleSearchChange,
     addMarket,
+    showLoading: !tickList?.length,
     tickList,
     filteredData,
     tableHeight,

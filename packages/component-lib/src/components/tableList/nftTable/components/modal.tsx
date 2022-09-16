@@ -2,7 +2,10 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { Box, Grid, Typography } from "@mui/material";
 import moment from "moment";
-import { EmptyValueTag } from "@loopring-web/common-resources";
+import {
+  YEAR_DAY_MINUTE_FORMAT,
+  EmptyValueTag,
+} from "@loopring-web/common-resources";
 import { TxType } from "@loopring-web/loopring-sdk";
 import React from "react";
 import { TxnDetailProps } from "../Interface";
@@ -155,7 +158,7 @@ export const TxnDetailPanel = withTranslation("common", { withRef: true })(
             <GridItemStyled item>
               <TypographyStyled>{t("labelTxnDetailTime")}</TypographyStyled>
               <InfoValueStyled>
-                {moment(time).format("YYYY-MM-DD HH:mm:ss")}
+                {moment(time).format(YEAR_DAY_MINUTE_FORMAT)}
               </InfoValueStyled>
             </GridItemStyled>
             <GridItemStyled item>

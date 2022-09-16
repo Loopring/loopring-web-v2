@@ -25,7 +25,7 @@ const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
         lessEarnTokenSymbol,
         greaterEarnVol,
         greaterEarnTokenSymbol,
-        maxSellVol,
+        maxSellAmount,
         miniSellVol,
         dualViewInfo,
         feeVol,
@@ -36,6 +36,7 @@ const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
         balance,
         request,
         coinSell,
+        sellVol,
       } = action.payload;
       if (dualViewInfo !== undefined) {
         state.tradeDual.dualViewInfo = dualViewInfo;
@@ -54,8 +55,8 @@ const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
         state.tradeDual.request = request;
       }
 
-      if (maxSellVol) {
-        state.tradeDual.maxSellVol = maxSellVol;
+      if (maxSellAmount) {
+        state.tradeDual.maxSellAmount = maxSellAmount;
       }
 
       if (miniSellVol) {
@@ -84,6 +85,9 @@ const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
       }
       if (balance) {
         state.tradeDual.balance = balance;
+      }
+      if (sellVol) {
+        state.tradeDual.sellVol = sellVol;
       }
     },
   },

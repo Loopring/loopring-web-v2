@@ -50,7 +50,12 @@ export const TableWrapStyled = styled(Box)`
       }
     }
   }
+
   &.min-height .rdg {
+    min-height: initial;
+  }
+
+  & .min-height .rdg {
     min-height: initial;
   }
 

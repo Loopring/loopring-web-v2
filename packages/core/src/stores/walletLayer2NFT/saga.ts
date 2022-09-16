@@ -28,6 +28,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
           tokenAddrs: collection,
           limit: NFTLimit,
           offset,
+          nonZero: true,
           metadata: true, // close metadata
         },
         apiKey

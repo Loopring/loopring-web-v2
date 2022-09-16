@@ -30,14 +30,14 @@ const initialState: ModalState = {
   isShowNFTWithdraw: { isShow: false },
   isShowNFTDeposit: { isShow: false },
   isShowNFTMintAdvance: { isShow: false },
+  isShowDual: { isShow: false, dualInfo: undefined },
   isShowCollectionAdvance: { isShow: false },
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
-  isShowDual: { isShow: false, dualInfo: undefined },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
-  name: "settings",
+  name: "modals",
   initialState,
   reducers: {
     setShowIFrame(
@@ -235,13 +235,14 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       >
     ) {
       const { isShow, dualInfo } = action.payload;
-      if (isShow && dualInfo) {
+      if (dualInfo) {
         state.isShowDual = {
           isShow,
           dualInfo,
         };
       } else {
         state.isShowDual.isShow = false;
+        state.isShowDual.dualInfo = undefined;
       }
     },
     setShowConnect(

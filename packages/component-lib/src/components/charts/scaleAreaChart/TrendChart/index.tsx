@@ -15,7 +15,11 @@ import { getRenderData } from "../data";
 import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { useSettings } from "@loopring-web/component-lib/src/stores";
-import { EmptyValueTag } from "@loopring-web/common-resources";
+import {
+  DAT_STRING_FORMAT,
+  EmptyValueTag,
+  MINT_STRING_FORMAT,
+} from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
 // import { getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 
@@ -118,7 +122,7 @@ const TrendChart = ({
                         <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
                     )} */}
             <Typography component={"div"} variant={"body1"}>
-              {moment(timeStamp).format("MMM DD [UTC]Z")}
+              {moment(timeStamp).format(DAT_STRING_FORMAT)}
             </Typography>
             <Box display={"flex"}>
               <Typography component={"span"} variant={"body1"}>
@@ -166,7 +170,7 @@ const TrendChart = ({
               </Box>
             )}
             <Typography component={"div"} fontSize={12}>
-              {moment(timeStamp).format("HH:mm MMM DD [UTC]Z")}
+              {moment(timeStamp).format(MINT_STRING_FORMAT)}
             </Typography>
           </TooltipStyled>
         );
@@ -213,7 +217,7 @@ const TrendChart = ({
           fill="#A1A7BB"
         >
           {isDailyTrend
-            ? moment(payload.value).format("MMM DD")
+            ? moment(payload.value).format(DAT_STRING_FORMAT)
             : payload.value}
         </text>
       </g>

@@ -19,6 +19,7 @@ export * from "./Connect";
 export * from "../../tradePanel/Deposit/DepositGroup";
 export * from "./TransferPanel";
 export * from "./WithdrawPanel";
+export * from "./DepositPanel";
 export * from "./MintNFT";
 export * from "./DeployNFT";
 export * from "./AddAsset";

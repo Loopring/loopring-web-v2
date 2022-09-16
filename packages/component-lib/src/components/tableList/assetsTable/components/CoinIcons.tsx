@@ -1,6 +1,16 @@
 import React from "react";
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box, BoxProps, styled } from "@mui/material";
 import { AvatarCoinStyled, SoursURL } from "@loopring-web/common-resources";
+
+const BoxStyle = styled(Box)<BoxProps & { size: number }>`
+  ${({ size }) => {
+    return `
+    .logo-icon.dual:last-child {
+      transform: scale(0.6) translate(${size / 6}px, ${size / 6}px);
+    }
+    `;
+  }}
+`;
 
 export const CoinIcons = React.memo(
   ({
@@ -14,7 +24,7 @@ export const CoinIcons = React.memo(
   }) => {
     const [coinAInfo, coinBInfo] = tokenIcon;
     return (
-      <>
+      <BoxStyle display={"flex"} justifyContent={"center"} size={size}>
         <Box
           className={`logo-icon ${type}`}
           display={"flex"}
@@ -45,15 +55,15 @@ export const CoinIcons = React.memo(
               variant="circular"
               alt={coinAInfo?.simpleName as string}
               style={{
-                height: "var(--list-menu-coin-size)",
-                width: "var(--list-menu-coin-size)",
+                height: size ?? "var(--list-menu-coin-size)",
+                width: size ?? "var(--list-menu-coin-size)",
               }}
               // src={sellData?.icon}
               src={SoursURL + "images/icon-default.png"}
             />
           )}
         </Box>
-        {coinBInfo ? (
+        {coinBInfo || ["dual", "lp"].includes(type) ? (
           <Box
             className={`logo-icon ${type}`}
             display={"flex"}
@@ -65,7 +75,7 @@ export const CoinIcons = React.memo(
             alignItems={"center"}
             justifyContent={"center"}
           >
-            {coinBInfo.w ? (
+            {coinBInfo ? (
               <AvatarCoinStyled
                 imgx={coinBInfo.x}
                 imgy={coinBInfo.y}
@@ -85,8 +95,8 @@ export const CoinIcons = React.memo(
                 variant="circular"
                 alt={coinBInfo?.simpleName as string}
                 style={{
-                  height: "var(--list-menu-coin-size)",
-                  width: "var(--list-menu-coin-size)",
+                  height: size ?? "var(--list-menu-coin-size)",
+                  width: size ?? "var(--list-menu-coin-size)",
                 }}
                 // src={sellData?.icon}
                 src={SoursURL + "images/icon-default.png"}
@@ -96,7 +106,7 @@ export const CoinIcons = React.memo(
         ) : (
           <></>
         )}
-      </>
+      </BoxStyle>
     );
   }
 );

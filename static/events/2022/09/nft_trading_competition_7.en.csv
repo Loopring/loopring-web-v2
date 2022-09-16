@@ -1,0 +1,19 @@
+name,nft_trading_competition_7,
+eventTitle,Trade NFTs via Loopring L2,
+subTitle,1900 Loopheads up for grabs!,
+rule,nft_trading_competition_7_rule.en.md,
+rehypeRaw,0,
+banner,laptop,https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_banner.en.webp
+banner,mobile,https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_banner.en.app.webp
+banner,pad,https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_banner.en.app.webp
+showBannerOrTitle,1,
+local,en-us,
+duration,prev,Activity Period:
+duration,startDate,09/19/2022 00:00:00
+duration,endDate,11/20/2022 23:59:59
+duration,timeZone,UTC
+duration,middle,to
+api,version,7
+api,column,rank:Rank
+api,column,address:Address
+api,column,volume:Volume(USD)

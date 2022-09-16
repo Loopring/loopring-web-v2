@@ -158,7 +158,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>({
         let _metaDataJSON: CollectionMetaJSON = JSON.parse(
           _data.replaceAll(/\n|\s/gi, "")
         );
-        const _metaData: sdk.CollectionMeta = {
+        const _metaData: sdk.CollectionBasicMeta = {
           owner: account.accAddress,
           tileUri: _metaDataJSON?.tile_uri.trim() ?? undefined,
           name: _metaDataJSON?.name?.trim() ?? undefined,

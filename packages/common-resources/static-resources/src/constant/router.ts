@@ -433,7 +433,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
 export const ammAdvice: InvestAdvice = {
   type: InvestMapType.AMM,
   router: "/invest/ammpool",
-  banner: SoursURL + "images/icon-amm.png",
+  banner: SoursURL + "images/icon-amm.svg",
   titleI18n: "labelInvestAmm",
   desI18n: "labelInvestAmmDes",
   notification: "",
@@ -443,8 +443,17 @@ export const defiAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
   router: "/invest/defi",
   notification: "",
-  banner: SoursURL + "images/icon-lido.png",
+  banner: SoursURL + "images/icon-lido.svg",
   titleI18n: "labelInvestDefi",
   desI18n: "labelInvestDefiDes",
+  enable: true,
+};
+export const dualAdvice: InvestAdvice = {
+  type: InvestMapType.DUAL,
+  router: "/invest/dual",
+  notification: "",
+  banner: SoursURL + "images/icon-dual.svg",
+  titleI18n: "labelInvestDual",
+  desI18n: "labelInvestDualDes",
   enable: true,
 };

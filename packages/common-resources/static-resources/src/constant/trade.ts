@@ -433,7 +433,12 @@ export type L2CollectionFilter = {
 
 export const LIVE_FEE_TIMES = 60000;
 
-export type DualViewInfo = {
+export type DualCurrentPrice = {
+  quote: string;
+  base: string;
+  currentPrice?: number;
+};
+export type DualViewBase = {
   apy: string;
   settleRatio: string; //targetPrice
   term: string;
@@ -441,16 +446,27 @@ export type DualViewInfo = {
   isUp: boolean;
   // targetPrice,
   // subscribeData,
+
   expireTime: number;
-  currentPrice: {
-    symbol: string;
-    currentPrice: number;
-  };
+  currentPrice: DualCurrentPrice;
   productId: string;
+  sellSymbol: string;
+  buySymbol: string;
+  amount?: string;
+  enterTime?: number;
+
+  // balance,
+};
+
+export type DualViewInfo = DualViewBase & {
   __raw__: {
     info: sdk.DualProductAndPrice;
     index: sdk.DualIndex;
     rule: sdk.DualRulesCoinsInfo;
   };
-  // balance,
+};
+export type DualViewOrder = DualViewBase & {
+  __raw__: {
+    order: sdk.UserDualTxsHistory;
+  };
 };

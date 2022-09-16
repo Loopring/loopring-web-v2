@@ -27,6 +27,7 @@ import {
   EmptyValueTag,
   myLog,
   PriceTag,
+  YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 
 import { WsTopicType } from "@loopring-web/loopring-sdk";
@@ -119,7 +120,7 @@ export const useGetAssets = () => {
         myLog((response as sdk.RESULT_INFO).message);
       } else if (response.vipAsset && response.vipAsset.length) {
         const ethValueList = response.vipAsset.map((o: any) => ({
-          timeStamp: moment(o.createdAt).format("YYYY-MM-DD"),
+          timeStamp: moment(o.createdAt).format(YEAR_DAY_FORMAT),
           close: o.ethValue,
         }));
         setUserAssets(ethValueList);

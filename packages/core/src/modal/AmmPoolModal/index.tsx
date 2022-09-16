@@ -185,6 +185,7 @@ export const ModalCoinPairPanel = withTranslation("common")(
               {...rest}
             />
           </Box>
+
           <SwipeableViews
             animateTransitions={false}
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}

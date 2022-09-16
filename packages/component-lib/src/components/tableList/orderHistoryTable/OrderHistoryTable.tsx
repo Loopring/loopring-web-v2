@@ -30,6 +30,7 @@ import {
   DirectionTag,
   globalSetup,
   RowConfig,
+  UNIX_TIMESTAMP_FORMAT,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import { Filter, FilterOrderTypes } from "./components/Filter";
@@ -259,8 +260,12 @@ export const OrderHistoryTable = withTranslation("tables")(
             : currFilterType === FilterOrderTypes.sell
             ? "SELL"
             : "";
-        const start = Number(moment(currFilterDate[0]).format("x"));
-        const end = Number(moment(currFilterDate[1]).format("x"));
+        const start = Number(
+          moment(currFilterDate[0]).format(UNIX_TIMESTAMP_FORMAT)
+        );
+        const end = Number(
+          moment(currFilterDate[1]).format(UNIX_TIMESTAMP_FORMAT)
+        );
         await getOrderList({
           limit: pagination?.pageSize ?? 10,
           offset: (currPage - 1) * (pagination?.pageSize ?? 10),

@@ -1,5 +1,10 @@
 import React from "react";
-import { AmmPanel, AmmPanelType, Toast } from "@loopring-web/component-lib";
+import {
+  AmmPanel,
+  AmmPanelType,
+  LoadingBlock,
+  Toast,
+} from "@loopring-web/component-lib";
 import {
   CoinInfo,
   WalletMap,
@@ -13,7 +18,6 @@ import { AmmPoolSnapshot, TickerData } from "@loopring-web/loopring-sdk";
 import { initSlippage, store } from "../../../index";
 import styled from "@emotion/styled";
 import { useDeepCompareEffect } from "react-use";
-import { LoadingBlock } from "@loopring-web/webapp/src/pages/LoadingPage";
 
 export const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);

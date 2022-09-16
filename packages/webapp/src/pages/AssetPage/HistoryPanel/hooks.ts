@@ -6,11 +6,14 @@ import {
   store,
   LoopringAPI,
   useWalletLayer2,
+  makeDualOrderedItem,
 } from "@loopring-web/core";
 import {
   AmmSideTypes,
   OrderHistoryRawDataItem,
   RawDataAmmItem,
+  RawDataDualAssetItem,
+  RawDataDualTxsItem,
   RawDataTradeItem,
   RawDataTransactionItem,
   TransactionStatus,
@@ -23,8 +26,9 @@ import {
   TradeTypes,
 } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
-import { GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE, GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
 import BigNumber from "bignumber.js";
+import { Limit } from "./useDualAsset";
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -355,7 +359,6 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
   const [defiTotal, setDefiTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
   const { accountId, apiKey } = store.getState().account;
-
   const getDefiTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true);
@@ -405,7 +408,9 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
   };
 }
 
-export const useOrderList = () => {
+export const useOrderList = (setToastOpen?: (props: any) => void) => {
+  const { t } = useTranslation(["error"]);
+
   const [orderOriginalData, setOrderOriginalData] = React.useState<
     OrderHistoryRawDataItem[]
   >([]);
@@ -438,91 +443,117 @@ export const useOrderList = () => {
           },
           apiKey
         );
-        if (userOrders && Array.isArray(userOrders.orders)) {
-          setTotalNum(userOrders.totalNum);
-          const data = userOrders.orders.map((o) => {
-            const { baseAmount, quoteAmount, baseFilled, quoteFilled } =
-              o.volumes;
+        if (
+          (userOrders as sdk.RESULT_INFO).code ||
+          (userOrders as sdk.RESULT_INFO).message
+        ) {
+          const errorItem =
+            SDK_ERROR_MAP_TO_UI[
+              (userOrders as sdk.RESULT_INFO)?.code ?? 700001
+            ];
+          if (setToastOpen) {
+            setToastOpen({
+              open: true,
+              type: "error",
+              content:
+                "error : " + errorItem
+                  ? t(errorItem.messageKey)
+                  : (userOrders as sdk.RESULT_INFO).message,
+            });
+          }
+        } else {
+          if (userOrders && Array.isArray(userOrders.orders)) {
+            setTotalNum(userOrders.totalNum);
+            const data = userOrders.orders.map((o) => {
+              const { baseAmount, quoteAmount, baseFilled, quoteFilled } =
+                o.volumes;
 
-            const marketList = o.market.split("-");
-            if (marketList.length === 3) {
-              marketList.shift();
-            }
-            const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
-            const isBuy = side === TradeTypes.Buy;
-            const [tokenFirst, tokenLast] = marketList;
-            const baseToken = isBuy ? tokenLast : tokenFirst;
-            const quoteToken = isBuy ? tokenFirst : tokenLast;
-            const actualBaseFilled = (isBuy ? quoteFilled : baseFilled) as any;
-            const actualQuoteFilled = (isBuy ? baseFilled : quoteFilled) as any;
-            const baseValue = isBuy
-              ? volumeToCount(baseToken, quoteAmount)
-              : volumeToCount(baseToken, baseAmount);
-            const quoteValue = isBuy
-              ? volumeToCount(quoteToken, baseAmount)
-              : (volumeToCount(baseToken, baseAmount) || 0) *
-                Number(o.price || 0);
-            const baseVolume = volumeToCountAsBigNumber(
-              baseToken,
-              actualBaseFilled
-            );
-            const quoteVolume = volumeToCountAsBigNumber(
-              quoteToken,
-              actualQuoteFilled
-            );
-            const quoteFilledValue = volumeToCount(
-              quoteToken,
-              actualQuoteFilled
-            );
+              const marketList = o.market.split("-");
+              if (marketList.length === 3) {
+                marketList.shift();
+              }
+              const side =
+                o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
+              const isBuy = side === TradeTypes.Buy;
+              const [tokenFirst, tokenLast] = marketList;
+              const baseToken = isBuy ? tokenLast : tokenFirst;
+              const quoteToken = isBuy ? tokenFirst : tokenLast;
+              const actualBaseFilled = (
+                isBuy ? quoteFilled : baseFilled
+              ) as any;
+              const actualQuoteFilled = (
+                isBuy ? baseFilled : quoteFilled
+              ) as any;
+              const baseValue = isBuy
+                ? volumeToCount(baseToken, quoteAmount)
+                : volumeToCount(baseToken, baseAmount);
+              const quoteValue = isBuy
+                ? volumeToCount(quoteToken, baseAmount)
+                : (volumeToCount(baseToken, baseAmount) || 0) *
+                  Number(o.price || 0);
+              const baseVolume = volumeToCountAsBigNumber(
+                baseToken,
+                actualBaseFilled
+              );
+              const quoteVolume = volumeToCountAsBigNumber(
+                quoteToken,
+                actualQuoteFilled
+              );
+              const quoteFilledValue = volumeToCount(
+                quoteToken,
+                actualQuoteFilled
+              );
 
-            const average = isBuy
-              ? baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
-              : quoteVolume?.div(baseVolume || new BigNumber(1)).toNumber() ||
-                0;
-            const completion = (quoteFilledValue || 0) / (quoteValue || 1);
+              const average = isBuy
+                ? baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() ||
+                  0
+                : quoteVolume?.div(baseVolume || new BigNumber(1)).toNumber() ||
+                  0;
+              const completion = (quoteFilledValue || 0) / (quoteValue || 1);
 
-            const precisionFrom = tokenMap
-              ? (tokenMap as any)[baseToken]?.precisionForOrder
-              : undefined;
-            const precisionTo = tokenMap
-              ? (tokenMap as any)[quoteToken]?.precisionForOrder
-              : undefined;
-            const precisionMarket = marketMap
-              ? marketMap[o.market]?.precisionForPrice
-              : undefined;
-            return {
-              market: o.market,
-              side: o.side === "BUY" ? TradeTypes.Buy : TradeTypes.Sell,
-              orderType: o.orderType,
-              amount: {
-                from: {
-                  key: baseToken,
-                  value: baseValue as any,
-                  precision: precisionFrom,
+              const precisionFrom = tokenMap
+                ? (tokenMap as any)[baseToken]?.precisionForOrder
+                : undefined;
+              const precisionTo = tokenMap
+                ? (tokenMap as any)[quoteToken]?.precisionForOrder
+                : undefined;
+              const precisionMarket = marketMap
+                ? marketMap[o.market]?.precisionForPrice
+                : undefined;
+              return {
+                market: o.market,
+                side: o.side === "BUY" ? TradeTypes.Buy : TradeTypes.Sell,
+                orderType: o.orderType,
+                amount: {
+                  from: {
+                    key: baseToken,
+                    value: baseValue as any,
+                    precision: precisionFrom,
+                  },
+                  to: {
+                    key: quoteToken,
+                    value: quoteValue as any,
+                    precision: precisionTo,
+                  },
                 },
-                to: {
+                average: average,
+
+                price: {
                   key: quoteToken,
-                  value: quoteValue as any,
-                  precision: precisionTo,
+                  value: Number(o.price),
                 },
-              },
-              average: average,
+                time: o.validity.start * 1000,
+                status: o.status as unknown as TradeStatus,
+                hash: o.hash,
+                orderId: o.clientOrderId,
+                tradeChannel: o.tradeChannel,
+                completion: completion,
+                precisionMarket: precisionMarket,
+              };
+            });
 
-              price: {
-                key: quoteToken,
-                value: Number(o.price),
-              },
-              time: o.validity.start * 1000,
-              status: o.status as unknown as TradeStatus,
-              hash: o.hash,
-              orderId: o.clientOrderId,
-              tradeChannel: o.tradeChannel,
-              completion: completion,
-              precisionMarket: precisionMarket,
-            };
-          });
-
-          setOrderOriginalData(data);
+            setOrderOriginalData(data);
+          }
         }
         setShowLoading(false);
       }
@@ -572,5 +603,121 @@ export const useOrderList = () => {
     totalNum,
     showLoading,
     cancelOrder,
+  };
+};
+
+export const useDualTransaction = <R extends RawDataDualTxsItem>(
+  setToastOpen: (props: any) => void
+) => {
+  const { t } = useTranslation(["error"]);
+
+  const {
+    account: { accountId, apiKey },
+  } = useAccount();
+
+  const [dualList, setDualList] = React.useState<R[]>([]);
+  const { idIndex } = useTokenMap();
+  const [dualTotal, setDualTotal] = React.useState(0);
+
+  // const [pagination, setDualPagination] = React.useState<{
+  //   pageSize: number;
+  //   total: number;
+  // }>({
+  //   pageSize: Limit,
+  //   total: 0,
+  // });
+  const [showLoading, setShowLoading] = React.useState(true);
+
+  const getDualTxList = React.useCallback(
+    async ({
+      start,
+      end,
+      offset,
+      settlementStatus,
+      investmentStatus,
+      dualTypes,
+      limit,
+    }: any) => {
+      setShowLoading(true);
+      if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const response = await LoopringAPI.defiAPI.getDualTransactions(
+          {
+            dualTypes,
+            accountId,
+            settlementStatus,
+            investmentStatus,
+            offset,
+            limit,
+            start,
+            end,
+          } as any,
+          apiKey
+        );
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          const errorItem =
+            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          if (setToastOpen) {
+            setToastOpen({
+              open: true,
+              type: "error",
+              content:
+                "error : " + errorItem
+                  ? t(errorItem.messageKey)
+                  : (response as sdk.RESULT_INFO).message,
+            });
+          }
+        } else {
+          // @ts-ignore
+          let result = (response as any)?.userDualTxs.reduce(
+            (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
+              const [, , coinA, coinB] =
+                (item.tokenInfoOrigin.market ?? "dual-").match(
+                  /(dual-)?(\w+)-(\w+)/i
+                ) ?? [];
+
+              let [sellTokenSymbol, buyTokenSymbol] =
+                item.dualType == DUAL_TYPE.DUAL_BASE
+                  ? [
+                      coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
+                      coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
+                    ]
+                  : [
+                      coinB ?? idIndex[item.tokenInfoOrigin.tokenIn],
+                      coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
+                    ];
+              prev.push({
+                ...makeDualOrderedItem(item, sellTokenSymbol, buyTokenSymbol),
+                amount: item.tokenInfoOrigin.amountIn,
+              });
+              return prev;
+            },
+            [] as RawDataDualAssetItem[]
+          );
+
+          setDualList(result);
+          setShowLoading(false);
+          setDualTotal((response as any).totalNum);
+          // setDualPagination({
+          //   pageSize: limit,
+          //   total: (response as any).totalNum,
+          // });
+        }
+      }
+      setShowLoading(false);
+    },
+    [accountId, apiKey, setToastOpen, t]
+  );
+
+  return {
+    // page,
+    dualList,
+    showLoading,
+    getDualTxList,
+    dualTotal,
+    // pagination,
+    // updateTickersUI,
   };
 };

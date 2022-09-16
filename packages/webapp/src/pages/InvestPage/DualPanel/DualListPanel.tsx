@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
@@ -13,19 +12,28 @@ import {
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useDualHook } from "./hook";
 import {
-  boxLiner,
   Button,
   CoinIcon,
   CoinIcons,
   DualTable,
+  useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-import { useDualMap, useSystem, useTokenMap } from "@loopring-web/core";
+import {
+  ModalDualPanel,
+  useDualMap,
+  useDualTrade,
+  useSystem,
+  useTokenMap,
+} from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
 import {
   BackIcon,
   getValuePrecisionThousand,
+  HelpIcon,
 } from "@loopring-web/common-resources";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
 const StyleDual = styled(Box)`
   position: relative;
@@ -76,10 +84,6 @@ const WrapperStyled = styled(Box)`
   flex-direction: column;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
-
-  .logo-icon.dual:last-child {
-    transform: scale(0.6) translate(6px, 6px);
-  }
 `;
 
 export const DualListPanel: any = withTranslation("common")(
@@ -91,9 +95,9 @@ export const DualListPanel: any = withTranslation("common")(
   }) => {
     const { coinJson } = useSettings();
     const { forexMap } = useSystem();
-    const { tradeMap } = useDualMap();
+    const { tradeMap, marketArray } = useDualMap();
     const { tokenMap } = useTokenMap();
-
+    const { setShowDual } = useOpenModals();
     const {
       pairASymbol,
       pairBSymbol,
@@ -108,94 +112,84 @@ export const DualListPanel: any = withTranslation("common")(
       handleOnPairChange,
     } = useDualHook({ setConfirmDualInvest });
 
-    // if (token.type === "lp" && middle && tail) {
-    //   tokenIcon =
-    //     [middle] && coinJson[tail]
-    //       ? [coinJson[middle], coinJson[tail]]
-    //       : [undefined, undefined];
-    // }
-    // if (token.type !== "lp" && head && head !== "lp") {
-    //   tokenIcon = coinJson[head]
-    //     ? [coinJson[head], undefined]
-    //     : [undefined, undefined];
-    // }
-
-    // const [mainTab, setMainTab] = React.useState(pairASymbol);
-    // const [secondTab, setSecondTab] = React.useState(pairBSymbol);
-
-    // const { marketArray } = useDefiMap();
-    // const {
-    //   confirmation: { confirmedDefiInvest },
-    // } = confirmation.useConfirmation();
-    // setConfirmDefiInvest(!confirmedDefiInvest);
-    // const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
-    // const history = useHistory();
-    // const _market: MarketType = [...(marketArray ? marketArray : [])].find(
-    //   (_item) => {
-    //     const value = match?.params?.market
-    //       ?.replace(/null|-/gi, "")
-    //       ?.toUpperCase();
-    //     return new RegExp(value, "ig").test(_item);
-    //   }
-    // ) as MarketType;
-
-    // const isJoin =
-    //   match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
-    // {
-    //   market: _market ?? ("WSTETH-ETH" as MarketType),
-    //     isJoin,
-    // }
-
+    const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade();
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     const history = useHistory();
+    const dualType = new RegExp(pair).test(market ?? "")
+      ? sdk.DUAL_TYPE.DUAL_BASE
+      : sdk.DUAL_TYPE.DUAL_CURRENCY;
+
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
-        <Box marginBottom={2}>
+        <Box
+          marginBottom={2}
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
           <Button
             startIcon={<BackIcon fontSize={"small"} />}
             variant={"text"}
             size={"medium"}
             sx={{ color: "var(--color-text-secondary)" }}
             color={"inherit"}
-            onClick={history.goBack}
+            onClick={() => history.push("/invest/overview")}
           >
             {t("labelInvestDualTitle")}
-            {/*<Typography color={"textPrimary"}></Typography>*/}
+          </Button>
+          <Button
+            startIcon={<HelpIcon fontSize={"large"} />}
+            variant={"text"}
+            onClick={() => {
+              window.open(
+                `https://loopring.io/#/document/dual_investment_tutorial_en.md`,
+                "_blank"
+              );
+              window.opener = null;
+            }}
+            sx={{ color: "var(--color-text-secondary)" }}
+          >
+            {t("labelInvestDualTutorial")}
           </Button>
         </Box>
         <StyleDual flexDirection={"column"} display={"flex"} flex={1}>
           <Grid container spacing={2}>
-            {Reflect.ownKeys(tradeMap).map((item, index) => {
-              return (
-                <Grid
-                  item
-                  xs={6}
-                  md={3}
-                  lg={2}
-                  key={item.toString() + index.toString()}
-                >
-                  <Card
-                    className={
-                      item.toString().toLowerCase() ===
-                      pairASymbol.toLowerCase()
-                        ? "dualInvestCard selected"
-                        : "dualInvestCard "
-                    }
-                    onClick={() =>
-                      handleOnPairChange({ pairA: item.toString() })
-                    }
-                  >
-                    <CardContent>
-                      <CoinIcon symbol={item.toString()} size={24} />
-                      <Typography variant={"h5"} paddingLeft={1}>
-                        {t("labelDualInvest", { symbol: item.toString() })}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
+            {tradeMap &&
+              Reflect.ownKeys(tradeMap)
+                .sort((a, b) => a.toString().localeCompare(b.toString()))
+                .map((item, index) => {
+                  // const item = tradeMap[key.toString()];
+                  return (
+                    <Grid
+                      item
+                      xs={6}
+                      md={3}
+                      lg={2}
+                      key={item.toString() + index.toString()}
+                    >
+                      <Card
+                        className={
+                          item.toString().toLowerCase() ===
+                          pairASymbol.toLowerCase()
+                            ? "dualInvestCard selected"
+                            : "dualInvestCard "
+                        }
+                        sx={{ height: "100%" }}
+                        onClick={() =>
+                          handleOnPairChange({ pairA: item.toString() })
+                        }
+                      >
+                        <CardContent>
+                          <CoinIcon symbol={item.toString()} size={24} />
+                          <Typography variant={"h5"} paddingLeft={1}>
+                            {t("labelDualInvest", { symbol: item.toString() })}
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  );
+                })}
           </Grid>
 
           <Box marginTop={1}>
@@ -207,9 +201,18 @@ export const DualListPanel: any = withTranslation("common")(
             >
               {pairASymbol &&
                 tradeMap[pairASymbol]?.tokenList?.map((item, index) => {
+                  const _index = marketArray.findIndex((_item) =>
+                    new RegExp(pairASymbol + "-" + item.toString(), "ig").test(
+                      _item
+                    )
+                  );
                   return (
                     <Tab
-                      label={t("labelDualBase", { symbol: item.toString() })}
+                      label={
+                        _index !== -1
+                          ? t("labelDualBase", { symbol: item.toString() })
+                          : t("labelDualQuote", { symbol: item.toString() })
+                      }
                       value={item.toString()}
                       key={item.toString() + index.toString()}
                     />
@@ -219,7 +222,7 @@ export const DualListPanel: any = withTranslation("common")(
           </Box>
 
           <WrapperStyled marginTop={1} flex={1} flexDirection={"column"}>
-            {pairASymbol && pairBSymbol && (
+            {pairASymbol && pairBSymbol && market && (
               <Box
                 display={"flex"}
                 flexDirection={"row"}
@@ -252,10 +255,15 @@ export const DualListPanel: any = withTranslation("common")(
                       display={"inline-flex"}
                       color={"textPrimary"}
                     >
-                      {t("labelDualInvestTitle", {
-                        symbolA: pairASymbol,
-                        symbolB: pairBSymbol,
-                      })}
+                      {t(
+                        dualType === DUAL_TYPE.DUAL_BASE
+                          ? "labelDualInvestBaseTitle"
+                          : "labelDualInvestQuoteTitle",
+                        {
+                          symbolA: pairASymbol,
+                          symbolB: pairBSymbol,
+                        }
+                      )}
                     </Typography>
                     <Typography
                       component={"span"}
@@ -285,13 +293,13 @@ export const DualListPanel: any = withTranslation("common")(
                           // PriceTag[CurrencyToTag[currency]] +
                           getValuePrecisionThousand(
                             currentPrice.currentPrice,
-                            tokenMap[currentPrice.symbol]?.precision,
-                            tokenMap[currentPrice.symbol]?.precision,
-                            tokenMap[currentPrice.symbol]?.precision,
+                            tokenMap[currentPrice.quote]?.precision,
+                            tokenMap[currentPrice.quote]?.precision,
+                            tokenMap[currentPrice.quote]?.precision,
                             true,
                             { isFait: true }
                           ),
-                        symbol: currentPrice.symbol,
+                        symbol: currentPrice.base,
                       }}
                     >
                       LRC Current price:
@@ -313,6 +321,16 @@ export const DualListPanel: any = withTranslation("common")(
                 rawData={dualProducts ?? []}
                 showloading={isLoading}
                 forexMap={forexMap as any}
+                onItemClick={(item) => {
+                  setShowDual({
+                    isShow: true,
+                    dualInfo: {
+                      ...item,
+                      sellSymbol: pairASymbol,
+                      buySymbol: pairBSymbol,
+                    },
+                  });
+                }}
               />
             </Box>
             {/*{isLoading ? (*/}
@@ -334,6 +352,11 @@ export const DualListPanel: any = withTranslation("common")(
             {/*)}*/}
           </WrapperStyled>
         </StyleDual>
+        <ModalDualPanel
+          dualTradeProps={dualTradeProps}
+          dualToastOpen={dualToastOpen}
+          closeDualToast={closeDualToast}
+        />
       </Box>
     );
   }

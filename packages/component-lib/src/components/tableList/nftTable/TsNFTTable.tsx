@@ -3,7 +3,13 @@ import styled from "@emotion/styled";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
-import { Column, TablePagination, Table, NftImage, BoxNFT } from "../../basic-lib";
+import {
+  Column,
+  TablePagination,
+  Table,
+  NftImage,
+  BoxNFT,
+} from "../../basic-lib";
 import {
   CompleteIcon,
   DepositIcon,
@@ -30,12 +36,9 @@ import {
   TxnDetailProps,
 } from "./Interface";
 import { Filter } from "./components/Filter";
-import {
-  NFT_IMAGE_SIZES,
-  TxNFTType,
-} from "@loopring-web/loopring-sdk";
+import { NFT_IMAGE_SIZES, TxNFTType } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
-
+import { sanitize } from "dompurify";
 
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
@@ -156,7 +159,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   >
                     {row.metadata?.imageSize && (
                       <NftImage
-                        alt={row.metadata.name}
+                        alt={sanitize(row.metadata?.name ?? EmptyValueTag)}
                         onError={() => undefined}
                         src={row.metadata?.imageSize[NFT_IMAGE_SIZES.small]}
                       />
@@ -306,9 +309,13 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxMemo"),
           headerCellClass: "textAlignCenter",
           formatter: ({ row }) => (
-            <Box title={row.memo} className="rdg-cell-value textAlignCenter">
-              {row["memo"] || EmptyValueTag}
-            </Box>
+            <Box
+              title={row.memo}
+              className="rdg-cell-value textAlignCenter"
+              dangerouslySetInnerHTML={{
+                __html: sanitize(row?.memo ?? EmptyValueTag) ?? "",
+              }}
+            />
           ),
         },
         {

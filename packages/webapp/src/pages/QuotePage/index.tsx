@@ -8,7 +8,7 @@ import {
   QuoteTable,
 } from "@loopring-web/component-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { RowConfig } from "@loopring-web/common-resources";
+import { myLog, RowConfig } from "@loopring-web/common-resources";
 import { Box, Container, Divider, Grid, Tab, Tabs } from "@mui/material";
 import { useQuotePage } from "./hook";
 import { useAccount, TableWrapStyled, useSystem } from "@loopring-web/core";
@@ -18,12 +18,6 @@ const RowStyled = styled(Grid)`
     // margin-right: ${({ theme }) => theme.unit * 2}px;
   }
 ` as typeof Grid;
-
-export enum TableFilterParams {
-  all = "all",
-  favourite = "favourite",
-  ranking = "ranking",
-}
 
 export const QuotePage = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
@@ -45,9 +39,12 @@ export const QuotePage = withTranslation("common")(
       addMarket,
       tableHeight,
       filteredData,
+      showLoading,
       tickList,
       handleRowClick,
     } = useQuotePage({ tableRef });
+    // const showLoading = !tickList?.length;
+    // myLog("showLoading", showLoading);
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1}>
         <TableWrapStyled
@@ -71,6 +68,7 @@ export const QuotePage = withTranslation("common")(
                 <Tabs
                   value={tableTabValue}
                   onChange={handleTabChange}
+                  disabled={showLoading}
                   aria-label="disabled tabs example"
                 >
                   <Tab label={t("labelQuotePageFavourite")} value="favourite" />
@@ -99,7 +97,8 @@ export const QuotePage = withTranslation("common")(
               rowHeight={RowConfig.rowHeight}
               headerRowHeight={RowConfig.rowHeaderHeight}
               activityInProgressRules={activityInProgressRules}
-              {...{ showLoading: tickList && !tickList.length, ...rest }}
+              showLoading={showLoading}
+              {...{ ...rest }}
             />
           </Box>
         </TableWrapStyled>

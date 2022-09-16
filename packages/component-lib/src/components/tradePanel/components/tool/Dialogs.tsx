@@ -1,5 +1,4 @@
 import {
-  Box,
   Checkbox,
   Dialog,
   DialogActions,
@@ -19,7 +18,7 @@ import { Button } from "../../../basic-lib";
 import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
-import { useOpenModals, useSettings } from "../../../../stores";
+import { useOpenModals } from "../../../../stores";
 
 import {
   Account,
@@ -29,15 +28,15 @@ import {
   copyToClipBoard,
   getValuePrecisionThousand,
   TradeDefi,
-  Lang,
-  MarkdownStyle,
+  // Lang,
+  // MarkdownStyle,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
-import ReactMarkdown from "react-markdown";
-import gfm from "remark-gfm";
-import { LoadingBlock } from "@loopring-web/webapp/src/pages/LoadingPage";
-import { useTheme } from "@emotion/react";
+// import ReactMarkdown from "react-markdown";
+// import gfm from "remark-gfm";
+// import { useTheme } from "@emotion/react";
+// import { LoadingBlock } from "../../../block";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
@@ -1197,35 +1196,14 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
     open: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
-    const [agree, setAgree] = React.useState(false);
-    const { language } = useSettings();
-    const theme = useTheme();
-    const [input, setInput] = React.useState<string>("");
-    React.useEffect(() => {
-      // if (path) {
-      try {
-        const lng = Lang[language] ?? "en";
-        Promise.all([
-          fetch(
-            `https://static.loopring.io/documents/markdown/dual_investment_tutorial_en.md`
-          ),
-          fetch(
-            `https://static.loopring.io/documents/markdown/dual_investment_tutorial_${lng}.md`
-          ),
-        ])
-          .then(([response1, response2]) => {
-            if (response2) {
-              return response2.text();
-            } else {
-              return response1.text();
-            }
-          })
-          .then((input) => {
-            setInput(input);
-          })
-          .catch(() => {});
-      } catch (e: any) {}
-    }, []);
+    const [{ agree1, agree2, agree3, agree4 }, setAgree] = React.useState({
+      agree1: false,
+      agree2: false,
+      agree3: false,
+      agree4: false,
+    });
+    // const { language } = useSettings();
+
     return (
       <Dialog
         open={open}
@@ -1234,48 +1212,103 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("labelDualRiskTitle")}</DialogTitle>
-
-        {input ? (
-          <MarkdownStyle maxHeight={"50vh"} sx={{ overflowY: "scroll" }}>
-            <Box
-              flex={1}
-              padding={3}
-              boxSizing={"border-box"}
-              className={`${theme.mode}  ${theme.mode}-scheme markdown-body`}
-            >
-              <ReactMarkdown
-                remarkPlugins={[gfm]}
-                children={input}
-                // escapeHtml={false}
-              />
-            </Box>
-          </MarkdownStyle>
-        ) : (
-          <LoadingBlock />
-        )}
-
         <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans i18nKey={"labelInvestDualTutorialContent"}>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                color={"textPrimary"}
+              >
+                Dual Investment offers you a chance to sell cryptocurrency high
+                or buy cryptocurrency low at your desired price on your desired
+                date. Once subscribed, users are not able to cancel or redeem
+                the subscription until the Settlement Date.\n You may be better
+                off holding your cryptocurrency, and may be required to trade
+                your cryptocurrency at a less favorable rate of exchange than
+                the market rate on Settlement Date. Cryptocurrency trading is
+                subject to high market risk. Please make your trades cautiously.
+                There may be no recourse for any losses.
+              </Typography>
+            </Trans>
+          </DialogContentText>
           <MuiFormControlLabel
             control={
               <Checkbox
-                disabled={!input}
-                checked={agree}
+                checked={agree1}
                 onChange={(_event: any, state: boolean) => {
-                  setAgree(state);
+                  setAgree((_state) => ({
+                    ..._state,
+                    agree1: state,
+                  }));
                 }}
                 checkedIcon={<CheckedIcon />}
                 icon={<CheckBoxIcon />}
                 color="default"
               />
             }
-            label={t("labelDualAgree")}
+            label={t("labelInvestDualTutorialCheck1")}
+          />
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree2}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree((_state) => ({
+                    ..._state,
+                    agree2: state,
+                  }));
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelInvestDualTutorialCheck2")}
+          />
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree3}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree((_state) => ({
+                    ..._state,
+                    agree3: state,
+                  }));
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelInvestDualTutorialCheck3")}
+          />
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree4}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree((_state) => ({
+                    ..._state,
+                    agree4: state,
+                  }));
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelInvestDualTutorialCheck4")}
           />
         </DialogContent>
+
         <DialogActions>
           <Button
             variant={"contained"}
             size={"small"}
-            disabled={!agree}
+            disabled={!agree1 || !agree2 || !agree3 || !agree4}
             onClick={(e) => {
               handleClose(e as any, true);
             }}
@@ -1288,3 +1321,49 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
     );
   }
 );
+
+// const theme = useTheme();
+// const [input, setInput] = React.useState<string>("");
+// React.useEffect(() => {
+//   // if (path) {
+//   try {
+//     const lng = Lang[language] ?? "en";
+//     Promise.all([
+//       fetch(
+//         `https://static.loopring.io/documents/markdown/dual_investment_tutorial_en.md`
+//       ),
+//       fetch(
+//         `https://static.loopring.io/documents/markdown/dual_investment_tutorial_${lng}.md`
+//       ),
+//     ])
+//       .then(([response1, response2]) => {
+//         if (response2) {
+//           return response2.text();
+//         } else {
+//           return response1.text();
+//         }
+//       })
+//       .then((input) => {
+//         setInput(input);
+//       })
+//       .catch(() => {});
+//   } catch (e: any) {}
+// }, []);
+// {input ? (
+//   <MarkdownStyle maxHeight={"50vh"} sx={{ overflowY: "scroll" }}>
+//     <Box
+//       flex={1}
+//       padding={3}
+//       boxSizing={"border-box"}
+//       className={`${theme.mode}  ${theme.mode}-scheme markdown-body`}
+//     >
+//       <ReactMarkdown
+//         remarkPlugins={[gfm]}
+//         children={input}
+//         // escapeHtml={false}
+//       />
+//     </Box>
+//   </MarkdownStyle>
+// ) : (
+//   <LoadingBlock />
+// )}

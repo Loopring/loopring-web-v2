@@ -8,7 +8,7 @@ import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
 import { useTicker, ModalGroup, useDeposit } from "@loopring-web/core";
-import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
+import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
@@ -17,7 +17,11 @@ import {
   ThemeType,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
-import { useOpenModals, useSettings } from "@loopring-web/component-lib";
+import {
+  useOpenModals,
+  useSettings,
+  LoadingBlock,
+} from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
   MarkdownPage,

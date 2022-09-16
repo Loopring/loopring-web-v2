@@ -6,7 +6,7 @@ exports.investJson = {
     {
       type: "AMM",
       router: "/invest/ammpool",
-      banner: "https://static.loopring.io/assets/images/icon-amm.png",
+      banner: "https://static.loopring.io/assets/images/icon-amm.svg",
       titleI18n: "labelInvestAmm",
       desI18n: "labelInvestAmmDes",
       enable: true,
@@ -14,18 +14,18 @@ exports.investJson = {
     {
       type: "STAKE",
       router: "/invest/defi",
-      banner: "https://static.loopring.io/assets/images/icon-lido.png",
+      banner: "https://static.loopring.io/assets/images/icon-lido.svg",
       titleI18n: "labelInvestDefi",
       desI18n: "labelInvestDefiDes",
       enable: true,
     },
-    // {
-    //   type: "DUAL",
-    //   router: "/invest/dual",
-    //   banner: "https://static.loopring.io/assets/images/icon-lido.png",
-    //   titleI18n: "labelInvestDual",
-    //   desI18n: "labelInvestDualDes",
-    //   enable: true,
-    // },
+    {
+      type: "DUAL",
+      router: "/invest/dual",
+      banner: "https://static.loopring.io/assets/images/icon-dual.svg",
+      titleI18n: "labelInvestDual",
+      desI18n: "labelInvestDualDes",
+      enable: true,
+    },
   ],
 };

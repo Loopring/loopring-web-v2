@@ -22,6 +22,8 @@ import {
   defiAdvice,
   AccountStatus,
   RowInvestConfig,
+  dualAdvice,
+  myLog,
 } from "@loopring-web/common-resources";
 import { useAccount, useNotify } from "@loopring-web/core";
 
@@ -46,7 +48,7 @@ const WrapperStyled = styled(Box)`
 
 export const OverviewPanel = withTranslation("common")(
   ({ t }: WithTranslation & {}) => {
-	  const {
+    const {
       filteredData,
       filterValue,
       getFilteredData,
@@ -62,7 +64,9 @@ export const OverviewPanel = withTranslation("common")(
     const investAdviceList = [
       { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0] },
       { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1] },
+      { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
     ];
+    // myLog(investAdviceList[1].banner);
     return (
       <>
         <WrapperStyled marginBottom={3}>

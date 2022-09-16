@@ -1,12 +1,11 @@
 import { Box, Grid } from "@mui/material";
 import { useLocation, useRouteMatch } from "react-router-dom";
 import React from "react";
-import { EmptyDefault } from "@loopring-web/component-lib";
+import { EmptyDefault, LoadingBlock } from "@loopring-web/component-lib";
 import gfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import { useTheme } from "@emotion/react";
 
-import { LoadingBlock } from "../LoadingPage";
 import { MarkdownStyle } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 import { url_test_path } from "../TradeRacePage/interface";

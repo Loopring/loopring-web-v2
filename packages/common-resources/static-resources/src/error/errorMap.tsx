@@ -281,6 +281,11 @@ export const ErrorMap = {
     messageKey: "errorRampNoInstance",
     options: {},
   },
+  ERROR_DUAL_EXPIRED: {
+    id: "ERROR_DUAL_EXPIRED",
+    messageKey: "errorDualExpired",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -304,6 +309,7 @@ export enum UIERROR_CODE {
   ERROR_COLLECTION_NO_SUPPORT = 700018,
   ERROR_COLLECTION_NOT_READABLE = 700019,
   IPFS_TIME_OUT = 700020,
+  ERROR_DUAL_EXPIRED = 115003,
 }
 export type ErrorObject = {
   from?: string;
@@ -382,6 +388,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
   122001: ErrorMap.ERROR_ON_REFRESH,
+  115003: ErrorMap.ERROR_DUAL_EXPIRED,
 };
 export const TransErrorHelp = ({
   error,

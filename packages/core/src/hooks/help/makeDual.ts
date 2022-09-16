@@ -1,100 +1,138 @@
-import { store } from "../../stores";
-import { getExistedMarket, toBig } from "@loopring-web/loopring-sdk";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE, toBig } from "@loopring-web/loopring-sdk";
 import {
   DualViewInfo,
+  DualViewOrder,
   getValuePrecisionThousand,
   myLog,
 } from "@loopring-web/common-resources";
 import moment from "moment";
+import { BigNumber } from "bignumber.js";
 
-export const dualCurrentPrice = (
-  // pairASymbol: string,
-  // pairBSymbol: string,
-  dualMarket: `${string}-${string}-${string}`
-): {
-  symbol: string;
-  currentPrice: number;
-} => {
-  const { tokenPrices } = store.getState().tokenPrices;
-  const { tickerMap } = store.getState().tickerMap;
-  const { marketArray } = store.getState().tokenMap;
-  const [, , baseDual, quoteDual] =
-    dualMarket.match(/(dual-)?(\w+)-(\w+)/i) ?? [];
-  const { market } = getExistedMarket(marketArray, baseDual, quoteDual);
-  const [, _base, quote] = market.match(/(\w+)-(\w+)/i);
-  let currentPrice = tickerMap[market].close ?? tokenPrices[baseDual];
-  currentPrice =
-    (quote === quoteDual ? currentPrice : 1 / currentPrice) *
-    tokenPrices[quote];
-  return {
-    currentPrice,
-    symbol: baseDual,
-  };
-};
 export const makeDualViewItem = (
   info: sdk.DualProductAndPrice,
   index: sdk.DualIndex,
   rule: sdk.DualRulesCoinsInfo,
-  currentPrice: {
-    symbol: string;
-    currentPrice: number;
-  }
+  sellSymbol: string,
+  buySymbol: string
   // balance: sdk.DualBalance
 ): DualViewInfo => {
-  const { expireTime, createTime, strike, ratio } = info;
-
-  const { baseProfitStep } = rule;
-  const settleRatio = toBig(strike).times(ratio);
-  const _baseProfitStep = Number(baseProfitStep);
-  const apy = settleRatio.div((expireTime - Date.now()) / 86400000).times(365); //
-  const term = moment(new Date(expireTime)).from(new Date(createTime), true);
+  // strike is targetPrice
+  // ratio is  Interest
+  const {
+    expireTime,
+    strike,
+    ratio,
+    // base,
+    // // currency: base,
+    // currency: quote,
+    dualType,
+    dualPrice: { dualBid },
+  } = info;
+  myLog("makeDualViewItem", expireTime, strike, ratio, dualType);
+  const [base, quote] =
+    dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
+      ? [sellSymbol, buySymbol]
+      : [buySymbol, sellSymbol];
+  // const { baseProfitStep } = rule;
+  // baseProfit*ratio
+  const settleRatio = toBig(dualBid[0].baseProfit)
+    .times(ratio)
+    .toFixed(Number(rule.baseProfitStep), BigNumber.ROUND_DOWN);
+  // myLog(settleRatio, settleRatio);
+  // const _baseProfitStep = Number(baseProfitStep);
+  const apy = toBig(settleRatio)
+    .div((expireTime - Date.now()) / 86400000)
+    .times(365); // year APY
+  const term = moment().to(new Date(expireTime), true);
 
   // const currentPrice tickerMap[market];
   myLog("dual", {
     apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
-    settleRatio: getValuePrecisionThousand(
-      settleRatio,
-      _baseProfitStep,
-      _baseProfitStep,
-      _baseProfitStep,
-      false
-    ), //targetPrice
+    settleRatio, //targetPrice
     term,
-    // targetPrice,
-    // subscribeData,
     productId: info.productId,
     expireTime,
-    currentPrice,
-    // __raw__: {
-    //   info,
-    //   index,
-    //   rule,
-    // },
-    // balance,
+    currentPrice: {
+      base,
+      quote,
+      currentPrice: index.index,
+    },
+    sellSymbol,
+    buySymbol,
   });
   // const apr =  info.dualPrice.ba
   return {
     apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
-    settleRatio: getValuePrecisionThousand(
-      settleRatio,
-      _baseProfitStep,
-      _baseProfitStep,
-      _baseProfitStep,
-      false
-    ), //targetPrice
+    settleRatio, // quote Interest
     term,
     strike,
-    isUp: sdk.toBig(settleRatio).gt(currentPrice.currentPrice) ? true : false,
+    isUp: dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE ? true : false, //sdk.toBig(strike).gt(index.index) ? true : false,
     // targetPrice,
     // subscribeData,
     productId: info.productId,
     expireTime,
-    currentPrice,
+    currentPrice: {
+      base,
+      quote,
+      currentPrice: Number(index.index),
+    },
+    sellSymbol,
+    buySymbol,
     __raw__: {
       info,
       index,
       rule,
+    },
+  };
+};
+
+export const makeDualOrderedItem = (
+  props: sdk.UserDualTxsHistory,
+  sellSymbol: string,
+  buySymbol: string,
+  currentPrice?: number
+  // balance: sdk.DualBalance
+): DualViewOrder => {
+  const {
+    settleRatio,
+    dualType,
+    strike,
+    // deliveryPrice,
+    productId,
+    createdAt,
+    // tokenInfoOrigin,
+    timeOrigin: { expireTime },
+  } = props;
+  const [base, quote] =
+    dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
+      ? [sellSymbol, buySymbol]
+      : [buySymbol, sellSymbol];
+
+  const apy = toBig(settleRatio)
+    .div((expireTime - createdAt) / 86400000)
+    .times(365); // year APY
+  const term = moment().to(new Date(expireTime), true);
+
+  return {
+    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
+    settleRatio: settleRatio.toString(), // quote Interest
+    term,
+    strike: strike.toString(),
+    isUp: dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE ? true : false,
+    // targetPrice,
+    productId,
+    enterTime: createdAt,
+    expireTime,
+    currentPrice: {
+      base,
+      quote,
+      currentPrice,
+    },
+    sellSymbol,
+    buySymbol,
+    __raw__: {
+      order: props,
     },
   };
 };

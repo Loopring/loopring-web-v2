@@ -126,6 +126,7 @@ Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
             baseURL={baseURL}
             domain={domain}
             handleMintDataChange={nftMintProps.handleMintDataChange}
+            disabled={ipfsMediaSources?.isProcessing}
             nftMeta={nftMintValue.nftMETA as Me}
             mintData={nftMintValue.mintData as Mi}
             feeInfo={nftMintProps.feeInfo}
