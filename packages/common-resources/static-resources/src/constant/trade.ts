@@ -429,3 +429,4 @@ export type L2CollectionFilter = {
 };
 
 export const LIVE_FEE_TIMES = 60000;
+export const L1_UPDATE = 15000;
