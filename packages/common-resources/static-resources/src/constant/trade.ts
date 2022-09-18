@@ -285,7 +285,8 @@ export type AddressItemType<T> = {
   maxWidth?: string | number;
 };
 
-export const useAddressTypeLists = <T extends WALLET_TYPE | EXCHANGE_TYPE
+export const useAddressTypeLists = <
+  T extends WALLET_TYPE | EXCHANGE_TYPE
 >() => {
   const { t } = useTranslation("common");
   const walletList: AddressItemType<T>[] = [
@@ -432,6 +433,7 @@ export type L2CollectionFilter = {
 };
 
 export const LIVE_FEE_TIMES = 60000;
+export const L1_UPDATE = 15000;
 
 export type DualCurrentPrice = {
   quote: string;

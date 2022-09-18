@@ -14,6 +14,8 @@ import {
   UIERROR_CODE,
   WalletMap,
   AddressError,
+  SagaStatus,
+  L1_UPDATE,
 } from "@loopring-web/common-resources";
 import {
   connectProvides,
@@ -53,6 +55,7 @@ export const useDeposit = <
 ) => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false);
   const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL } = useSystem();
 
@@ -257,6 +260,12 @@ export const useDeposit = <
         : depositValue.belong;
       const tradeValue = isClean ? undefined : depositValue.tradeValue;
       let updateData = {};
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current);
+      }
+      nodeTimer.current = setTimeout(() => {
+        updateWalletLayer1();
+      }, L1_UPDATE);
       if (_symbol && walletLayer1) {
         // updateDepositData();
         updateData = {
@@ -323,12 +332,19 @@ export const useDeposit = <
   );
 
   React.useEffect(() => {
-    walletLayer1Callback();
+    if (walletLayer1Status == SagaStatus.UNSET) {
+      walletLayer1Callback();
+    }
+    return () => {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current);
+      }
+    };
   }, [walletLayer1Status]);
 
   React.useEffect(() => {
     if (isShow || isAllowInputToAddress) {
-      walletLayer1Callback(true);
+      updateWalletLayer1();
     }
   }, [isShow, isAllowInputToAddress]);
 
