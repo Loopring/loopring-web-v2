@@ -99,11 +99,14 @@ export const RankRaw = <R extends object>({
       history.push(pathname + "?" + searchParams.toString());
     }
   };
-
-  React.useEffect(() => {
-    if (searchValue !== "" && rank?.data?.length) {
+  const resetRankTable = React.useCallback((data) => {
+    if (searchValue !== "" && data.length) {
+      // const data = rank?.data.map((item) => {
+      //   return item;
+      // });
+      myLog("rank?.version", data);
       setRankTableData((state) =>
-        rank?.data?.filter((item: any) => {
+        data.filter((item: any) => {
           if (searchValue.startsWith("0x")) {
             const regx = new RegExp(searchValue.toLowerCase(), "ig");
             return regx.test(item?.address);
@@ -113,12 +116,16 @@ export const RankRaw = <R extends object>({
           }
         })
       );
-    } else if (rank?.data?.length) {
-      setRankTableData([...rank?.data]);
+    } else if (data.length) {
+      setRankTableData([...data]);
     } else {
       setRankTableData([]);
     }
-  }, [rank?.data, searchValue]);
+  }, []);
+
+  // React.useEffect(() => {
+  //  if()
+  // }, [searchValue]);
 
   const defaultArgs: any = {
     columnMode: column.length
@@ -139,39 +146,37 @@ export const RankRaw = <R extends object>({
               ? "rdg-cell-value textAlignRight"
               : "rdg-cell-value textAlignCenter",
           formatter: ({ row }: any) => {
-            if (/address/gi.test(item.key.toLowerCase())) {
-              return getShortAddr(row[item.key]);
-            } else if (/rank/gi.test(item.key.toLowerCase())) {
-              const value = row?.rank;
-              const formattedValue =
-                value === "1" ? (
-                  <FirstPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
-                ) : value === "2" ? (
-                  <SecondPlaceIcon
-                    style={{ marginTop: 8 }}
-                    fontSize={"large"}
-                  />
-                ) : value === "3" ? (
-                  <ThirdPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
-                ) : (
-                  <Box paddingLeft={1}>{value}</Box>
-                );
-              return <Box className="rdg-cell-value">{formattedValue}</Box>;
-            } else {
-              return row[item.key];
-            }
+            // if (/address/gi.test(item.key.toLowerCase())) {
+            //   return getShortAddr(row[item.key]);
+            // } else if (/rank/gi.test(item.key.toLowerCase())) {
+            //   const value = row?.rank;
+            //   const formattedValue =
+            //     value === "1" ? (
+            //       <FirstPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
+            //     ) : value === "2" ? (
+            //       <SecondPlaceIcon
+            //         style={{ marginTop: 8 }}
+            //         fontSize={"large"}
+            //       />
+            //     ) : value === "3" ? (
+            //       <ThirdPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
+            //     ) : (
+            //       <Box paddingLeft={1}>{value}</Box>
+            //     );
+            //   return <Box className="rdg-cell-value">{formattedValue}</Box>;
+            // } else {
+            //   return row[item.key];
+            // }
+            return row[item.key];
           },
         }))
       : [],
     generateRows: (rawData: R) => {
-      myLog("rankData", rawData);
-      return rawData;
+      // myLog("rankData", rawData);
+      return rawData; //[]; //;
     },
     generateColumns: ({ columnsRaw }: any) => columnsRaw,
   };
-  React.useEffect(() => {
-    getTableValues();
-  }, [selected]);
   const getTableValues = React.useCallback(async () => {
     const l2account =
       searchParams.get("l2account") || searchParams.get("owner");
@@ -183,11 +188,12 @@ export const RankRaw = <R extends object>({
         ? `&l2account=${l2account}`
         : ""
     }&version=${version}`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => {
-        setRank(() => {
-          return {
+
+    const result = await fetch(url).then((response) => response.json());
+
+    setRank(
+      result
+        ? {
             selected: "",
             owner: {
               rank: "",
@@ -195,15 +201,17 @@ export const RankRaw = <R extends object>({
               address: "",
               usdtValue: "",
             },
-            ...json,
-          } as API_DATA<R>;
-        });
-        setShowLoading(false);
-      })
-      .catch(() => {
-        return [];
-      });
+            ...result,
+          }
+        : undefined
+    );
+    resetRankTable(result.data);
+    setShowLoading(false);
   }, [chainId, selected]);
+
+  React.useEffect(() => {
+    getTableValues();
+  }, [selected]);
 
   return (
     <Box
@@ -260,19 +268,30 @@ export const RankRaw = <R extends object>({
         <TableStyled
           minHeight={120}
           height={
-            (((rankTableData && rankTableData?.length) ?? 0) + 1) *
-            RowConfig.rowHeight
+            "inherit"
+            // (((rankTableData && rankTableData?.length) ?? 0) + 1) *
+            // RowConfig.rowHeight
           }
         >
+          {/*  <Table*/}
+          {/*    className={"scrollable"}*/}
+          {/*    {...{*/}
+          {/*      ...defaultArgs,*/}
+          {/*      rawData: rankTableData, //*/}
+          {/*      showloading: showLoading,*/}
+          {/*    }}*/}
+          {/*  />*/}
           {rank?.data?.length && rankTableData ? (
-            <Table
-              className={"scrollable"}
-              {...{
-                ...defaultArgs,
-                rawData: rankTableData, //
-                showloading: showLoading,
-              }}
-            />
+            <Typography
+              flex={1}
+              height={"100%"}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              {" "}
+              {t("labelComingSoon")}
+            </Typography>
           ) : (
             <Box
               flex={1}
