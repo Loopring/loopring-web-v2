@@ -3,12 +3,10 @@ import {
   TradeStatus,
   TradeTypes,
   AccountStatus,
-  MarketType,
 } from "@loopring-web/common-resources";
 import {
   OrderHistoryRawDataItem,
   OrderHistoryTableDetailItem,
-  QuoteTableRawDataItem,
 } from "@loopring-web/component-lib";
 import { useAccount } from "@loopring-web/core";
 import { useWalletLayer2 } from "@loopring-web/core";
