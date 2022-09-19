@@ -4,6 +4,7 @@ import {
   EmptyValueTag,
   FirstPlaceIcon,
   getShortAddr,
+  myLog,
   RowConfig,
   SecondPlaceIcon,
   SoursURL,
@@ -141,7 +142,7 @@ export const RankRaw = <R extends object>({
             if (/address/gi.test(item.key.toLowerCase())) {
               return getShortAddr(row[item.key]);
             } else if (/rank/gi.test(item.key.toLowerCase())) {
-              const value = row.rank;
+              const value = row?.rank;
               const formattedValue =
                 value === "1" ? (
                   <FirstPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
@@ -162,7 +163,10 @@ export const RankRaw = <R extends object>({
           },
         }))
       : [],
-    generateRows: (rawData: R) => rawData,
+    generateRows: (rawData: R) => {
+      myLog("rankData", rawData);
+      return rawData;
+    },
     generateColumns: ({ columnsRaw }: any) => columnsRaw,
   };
   React.useEffect(() => {
@@ -183,7 +187,16 @@ export const RankRaw = <R extends object>({
       .then((response) => response.json())
       .then((json) => {
         setRank(() => {
-          return { ...json } as API_DATA<R>;
+          return {
+            selected: "",
+            owner: {
+              rank: "",
+              accountId: "",
+              address: "",
+              usdtValue: "",
+            },
+            ...json,
+          } as API_DATA<R>;
         });
         setShowLoading(false);
       })
@@ -251,12 +264,12 @@ export const RankRaw = <R extends object>({
             RowConfig.rowHeight
           }
         >
-          {rank?.data?.length ? (
+          {rank?.data?.length && rankTableData ? (
             <Table
               className={"scrollable"}
               {...{
                 ...defaultArgs,
-                rawData: rankTableData,
+                rawData: rankTableData, //
                 showloading: showLoading,
               }}
             />
