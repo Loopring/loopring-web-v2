@@ -16,4 +16,4 @@ duration,middle,to
 api,version,7
 api,column,rank:Rank
 api,column,address:Address
-api,column,volume:Volume(USD)
+api,column,usdtValue:Volume(USD)
