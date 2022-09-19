@@ -71,9 +71,9 @@ Within this metadata.json file copy the following – **it is case sensitive:**
 
 Save the .json file.
 
-If you will select a collection in the mint GUI, skip to [section 1.5](https://desk.zoho.com/portal/loopring/en/kb/articles/nft-minting-on-l2#15_Upload_NFT_Metadata_file).
+If you will select a collection in the mint GUI, skip to [section 1.5](https://github.com/Loopring/loopring-web-v2/blob/released/static/documents/markdown/mint_nft.md#15-upload-nft-metadata-file).
 
-If you wish to manually specify an IPFS CID of the NFT's collection_metadata file, proceed to [section 1.4](https://desk.zoho.com/portal/loopring/en/kb/articles/nft-minting-on-l2#14_Manual_collection_metadata_specification).
+If you wish to manually specify an IPFS CID of the NFT's collection_metadata file, proceed to [section 1.4](https://github.com/Loopring/loopring-web-v2/blob/released/static/documents/markdown/mint_nft.md#14-manual-collection_metadata-specification).
 
 ### 1.4: Manual collection_metadata specification
 
@@ -105,17 +105,17 @@ Similarly, as the NFT file was uploaded above, upload the NFT metadata .json fil
 **Using IPFS Desktop**
 ![Img1!](https://desk.zoho.com/galleryDocuments/edbsna6ea24b97e6367efdf50a7d1d69b96de35c0ecb836fd5c45d433ca1b1d33dc3d154bca807386dbb6b3930024058774d3?inline=true)
 
-If NFT's metadata **does not** contain a "collection_metadata" key/value pair, proceed to [Part 2 - Method A](https://desk.zoho.com/portal/loopring/en/kb/articles/nft-minting-on-l2#Part_2_-_Method_A_NFT_metadata_without_collection_metadata_keyvalue_pair).
+If NFT's metadata **does not** contain a "collection_metadata" key/value pair, proceed to [Part 2 - Method A](https://github.com/Loopring/loopring-web-v2/blob/released/static/documents/markdown/mint_nft.md#part-2---method-a-nft-metadata-without-collection_metadata-keyvalue-pair).
 
-If NFT's metadata **does** contain a "collection_metadata" key/value pair, proceed to [Part 2 - Method B](https://desk.zoho.com/portal/loopring/en/kb/articles/nft-minting-on-l2#Part_2_-_Method_B_NFT_metadata_with_collection_metadata_keyvalue).
+If NFT's metadata **does** contain a "collection_metadata" key/value pair, proceed to [Part 2 - Method B](https://github.com/Loopring/loopring-web-v2/blob/released/static/documents/markdown/mint_nft.md#part-2---method-b-nft-metadata-with-collection_metadata-keyvalue).
 
-If NFT will not be a member of any collection, proceed to [Part 2 - Method C](https://desk.zoho.com/portal/loopring/en/kb/articles/nft-minting-on-l2#Part_2_-_Method_C_Legacy_NFT_minting_no_collection).
+If NFT will not be a member of any collection, proceed to [Part 2 - Method C](https://github.com/Loopring/loopring-web-v2/blob/released/static/documents/markdown/mint_nft.md#part-2---method-c-legacy-nft-minting-no-collection).
 
 ## Part 2 - Method A: NFT metadata without collection_metadata key/value pair
 
 If the NFT being minted **does not** have a "collection_metadata" key/value pair in its metadata json file, a collection will be selected from the mint GUI.
 
-If you've already created a collection you wish to use for this NFT, skip to [section 2A.9](https://desk.zoho.com/portal/loopring/en/kb/articles/nft-minting-on-l2#2A9_Navigate_to_the_Create_NFT_Landing_page). Otherwise, proceed to the next section to create a collection.
+If you've already created a collection you wish to use for this NFT, skip to [section 2A.9](https://github.com/Loopring/loopring-web-v2/blob/released/static/documents/markdown/mint_nft.md#2a9-navigate-to-the-create-nft-landing-page). Otherwise, proceed to the next section to create a collection.
 
 ### 2A.1: Navigate to the My Collections page
 

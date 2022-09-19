@@ -321,7 +321,6 @@ export const Table = <R, SR>(
       margin: 0 5px;
     }
   `;
-
   /*** sort handle end ***/
   return (
     <TableWrapperStyled showloading={!!showloading ? "true" : "false"}>

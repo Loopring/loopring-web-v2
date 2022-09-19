@@ -1,1 +1,2 @@
-export { TradeRaceTable } from './TradeRaceTable'
+export { TradeRaceTable } from "./TradeRaceTable";
+export { TradeRaceTableConfig } from "./TradeRaceTableCofig";

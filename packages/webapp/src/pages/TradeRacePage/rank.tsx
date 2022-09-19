@@ -4,6 +4,7 @@ import {
   EmptyValueTag,
   FirstPlaceIcon,
   getShortAddr,
+  myLog,
   RowConfig,
   SecondPlaceIcon,
   SoursURL,
@@ -15,6 +16,7 @@ import {
   Table,
   TablePaddingX,
   TextField,
+  TradeRaceTableConfig,
   useSettings,
 } from "@loopring-web/component-lib";
 import styled from "@emotion/styled";
@@ -27,6 +29,7 @@ import {
   EventAPIExtender,
 } from "./interface";
 import { useTranslation } from "react-i18next";
+import _ from "lodash";
 
 const WrapperStyled = styled(Box)`
   background-color: var(--color-box);
@@ -43,34 +46,47 @@ const StyledTextFiled = styled(TextField)`
   }
 `;
 
-const TableStyled = styled(Box)<{ height: number | undefined | string }>`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-
-  .rdg {
-    height: ${({ height }) => height}px;
-    height: auto;
-
-    .rdgCellCenter {
-      height: 100%;
-      // display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .textAlignRight {
-      text-align: right;
-    }
-    .textAlignCenter {
-      text-align: center;
-    }
-    .textAlignLeft {
-      text-align: left;
-    }
+const TableStyled = styled(Table)`
+  &.rdg {
+    height: ${(props: any) => {
+      if (props.currentheight && props.currentheight > 350) {
+        return props.currentheight + "px";
+      } else {
+        return "100%";
+      }
+    }};
+    width: 100%;
   }
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as typeof Box;
+` as any;
+// ${({ theme }) =>
+// TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+// const TableStyled = styled(Box)<{ height: number | undefined | string }>`
+//   display: flex;
+//   flex-direction: column;
+//   flex: 1;
+//
+//   .rdg {
+//     height: ${({ height }) => height}px;
+//     height: auto;
+//
+//     .rdgCellCenter {
+//       height: 100%;
+//       // display: flex;
+//       justify-content: center;
+//       align-items: center;
+//     }
+//     .textAlignRight {
+//       text-align: right;
+//     }
+//     .textAlignCenter {
+//       text-align: center;
+//     }
+//     .textAlignLeft {
+//       text-align: left;
+//     }
+//   }
+//
+// ` as typeof Box;
 
 export const RankRaw = <R extends object>({
   column,
@@ -98,77 +114,38 @@ export const RankRaw = <R extends object>({
       history.push(pathname + "?" + searchParams.toString());
     }
   };
-
-  React.useEffect(() => {
-    if (searchValue !== "" && rank?.data?.length) {
-      setRankTableData((state) =>
-        rank?.data?.filter((item: any) => {
-          if (searchValue.startsWith("0x")) {
-            const regx = new RegExp(searchValue.toLowerCase(), "ig");
-            return regx.test(item?.address);
-          } else {
-            const regx = new RegExp(searchValue.toLowerCase(), "ig");
-            return regx.test(item?.address) || regx.test(item?.accountId);
-          }
-        })
-      );
-    } else if (rank?.data?.length) {
-      setRankTableData([...rank?.data]);
-    } else {
-      setRankTableData([]);
-    }
-  }, [rank?.data, searchValue]);
-
-  const defaultArgs: any = {
-    columnMode: column.length
-      ? column.map((item, index) => ({
-          key: item.key,
-          name: item.label,
-          width: "auto",
-          headerCellClass:
-            index == 0
-              ? "textAlignLeft"
-              : column.length == index + 1
-              ? "textAlignRight"
-              : `textAlignCenter`,
-          cellClass:
-            index == 0
-              ? "textAlignLeft"
-              : column.length == index + 1
-              ? "rdg-cell-value textAlignRight"
-              : "rdg-cell-value textAlignCenter",
-          formatter: ({ row }: any) => {
-            if (/address/gi.test(item.key.toLowerCase())) {
-              return getShortAddr(row[item.key]);
-            } else if (/rank/gi.test(item.key.toLowerCase())) {
-              const value = row.rank;
-              const formattedValue =
-                value === "1" ? (
-                  <FirstPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
-                ) : value === "2" ? (
-                  <SecondPlaceIcon
-                    style={{ marginTop: 8 }}
-                    fontSize={"large"}
-                  />
-                ) : value === "3" ? (
-                  <ThirdPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
-                ) : (
-                  <Box paddingLeft={1}>{value}</Box>
-                );
-              return <Box className="rdg-cell-value">{formattedValue}</Box>;
+  const resetRankTable = React.useCallback(
+    (data) => {
+      // const data = rank?.data.map((item) => {
+      //   return item;
+      // });
+      setRankTableData((state) => {
+        if (searchValue !== "" && data.length) {
+          return data.filter((item: any) => {
+            if (searchValue.startsWith("0x")) {
+              const regx = new RegExp(searchValue.toLowerCase(), "ig");
+              return regx.test(item?.address);
             } else {
-              return row[item.key];
+              const regx = new RegExp(searchValue.toLowerCase(), "ig");
+              return regx.test(item?.address) || regx.test(item?.accountId);
             }
-          },
-        }))
-      : [],
-    generateRows: (rawData: R) => rawData,
-    generateColumns: ({ columnsRaw }: any) => columnsRaw,
-  };
-  React.useEffect(() => {
-    getTableValues();
-  }, [selected]);
-  const getTableValues = React.useCallback(async () => {
+          });
+        } else if (data.length) {
+          return [...data];
+        } else {
+          return [];
+        }
+        setShowLoading(false);
+      });
+    },
+    [searchValue]
+  );
+
+  // React.useEffect(() => {
+  //  if()
+  // }, [searchValue]);
+
+  const getTableValues = _.debounce(async () => {
     const l2account =
       searchParams.get("l2account") || searchParams.get("owner");
     const _selected = filters?.find((item) => selected === item);
@@ -179,19 +156,35 @@ export const RankRaw = <R extends object>({
         ? `&l2account=${l2account}`
         : ""
     }&version=${version}`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => {
-        setRank(() => {
-          return { ...json } as API_DATA<R>;
-        });
-        setShowLoading(false);
-      })
-      .catch(() => {
-        return [];
-      });
-  }, [chainId, selected]);
 
+    const result = await fetch(url).then((response) => response.json());
+
+    setRank(
+      result
+        ? {
+            selected: "",
+            owner: {
+              rank: "",
+              accountId: "",
+              address: "",
+              usdtValue: "",
+            },
+            ...result,
+          }
+        : undefined
+    );
+
+    resetRankTable(result.data);
+    return;
+  }, 100);
+
+  React.useEffect(() => {
+    getTableValues();
+    return () => {
+      getTableValues.cancel();
+    };
+  }, [selected]);
+  // myLog("result.data", rankTableData);
   return (
     <Box
       flex={1}
@@ -244,21 +237,12 @@ export const RankRaw = <R extends object>({
             {rank?.owner?.rank || EmptyValueTag}
           </Typography>
         </Box>
-        <TableStyled
-          minHeight={120}
-          height={
-            (((rankTableData && rankTableData?.length) ?? 0) + 1) *
-            RowConfig.rowHeight
-          }
-        >
+        <Box minHeight={120} width={"100%"}>
           {rank?.data?.length ? (
-            <Table
-              className={"scrollable"}
-              {...{
-                ...defaultArgs,
-                rawData: rankTableData,
-                showloading: showLoading,
-              }}
+            <TradeRaceTableConfig
+              column={column}
+              rawData={rankTableData}
+              showloading={showLoading}
             />
           ) : (
             <Box
@@ -276,7 +260,7 @@ export const RankRaw = <R extends object>({
               />
             </Box>
           )}
-        </TableStyled>
+        </Box>
       </WrapperStyled>
     </Box>
   );
