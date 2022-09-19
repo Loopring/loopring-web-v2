@@ -123,7 +123,7 @@
       ]
     },
     {
-      "name": "OFF event",
+      "name": "Offramp event",
       "startShow": 1662768000000,
       "endShow": 1664582400000,
       "iconSource": "https://static.loopring.io/assets/svg/hot.svg",
@@ -131,7 +131,7 @@
         "Ramp-off"
       ],
       "scenario": [
-        "Fail"
+        "Fiat"
       ]
     }
   ]
