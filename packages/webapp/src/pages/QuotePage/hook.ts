@@ -143,7 +143,7 @@ export function useQuote<C extends { [key: string]: string }>() {
 export enum TableFilterParams {
   all = "all",
   favourite = "favourite",
-  ranking = "ranking",
+  // ranking = "ranking",
 }
 export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   const { status: tickerStatus } = useTicker();
@@ -153,9 +153,9 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   );
   // const [showLoading,setShowLoading]  = React.useState(false);
   const [searchValue, setSearchValue] = React.useState<string>("");
-  const [swapRankingList, setSwapRankingList] = React.useState<
-    AmmPoolActivityRule[]
-  >([]);
+  // const [swapRankingList, setSwapRankingList] = React.useState<
+  //   AmmPoolActivityRule[]
+  // >([]);
   const [filteredData, setFilteredData] = React.useState<
     QuoteTableRawDataItem[]
   >([]);
@@ -165,19 +165,19 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     favoriteMarketReducer.useFavoriteMarket();
   const { activityInProgressRules } = useAmmActivityMap();
 
-  const getSwapRankingList = React.useCallback(async () => {
-    if (LoopringAPI.ammpoolAPI) {
-      const res = await LoopringAPI.ammpoolAPI.getAmmPoolActivityRules();
-      if (
-        res &&
-        res.groupByRuleType &&
-        res.groupByRuleType.SWAP_VOLUME_RANKING &&
-        !!res.groupByRuleType.SWAP_VOLUME_RANKING.length
-      ) {
-        setSwapRankingList(res.groupByRuleType.SWAP_VOLUME_RANKING);
-      }
-    }
-  }, []);
+  // const getSwapRankingList = React.useCallback(async () => {
+  //   if (LoopringAPI.ammpoolAPI) {
+  //     const res = await LoopringAPI.ammpoolAPI.getAmmPoolActivityRules();
+  //     if (
+  //       res &&
+  //       res.groupByRuleType &&
+  //       res.groupByRuleType.SWAP_VOLUME_RANKING &&
+  //       !!res.groupByRuleType.SWAP_VOLUME_RANKING.length
+  //     ) {
+  //       setSwapRankingList(res.groupByRuleType.SWAP_VOLUME_RANKING);
+  //     }
+  //   }
+  // }, []);
 
   const { tickList } = useQuote();
   const handleCurrentScroll = React.useCallback((currentTarget, tableRef) => {
@@ -242,9 +242,9 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     getAmmPoolBalances();
   }, []);
 
-  React.useEffect(() => {
-    getSwapRankingList();
-  }, []);
+  // React.useEffect(() => {
+  //   getSwapRankingList();
+  // }, []);
 
   let history = useHistory();
 
@@ -288,12 +288,12 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
           return favoriteMarket?.includes(pair);
         });
       }
-      if (type === TableFilterParams.ranking) {
-        data = data.filter((o: any) => {
-          const pair = `${o.pair.coinA}-${o.pair.coinB}`;
-          return swapRankingList.find((o) => o.market === pair);
-        });
-      }
+      // if (type === TableFilterParams.ranking) {
+      //   data = data.filter((o: any) => {
+      //     const pair = `${o.pair.coinA}-${o.pair.coinB}`;
+      //     return swapRankingList.find((o) => o.market === pair);
+      //   });
+      // }
       data = data.filter((o: any) => {
         const formattedKeyword = keyword?.toLocaleLowerCase();
         const coinA = o.pair.coinA.toLowerCase();
@@ -315,7 +315,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       tableTabValue,
       resetTableData,
       favoriteMarket,
-      swapRankingList,
+      // swapRankingList,
       getFilteredTickList,
     ]
   );
