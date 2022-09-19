@@ -3,95 +3,77 @@
     "activities": [
       {
         "type": "ACTIVITY",
-        "version": "0",
-        "title": "ramp_event",
-        "name": "🅾️ Zero Fees Promo!",
-        "description1": "Deposit via Banxa for free!",
-        "description2": "Duration: April 11 0:00 - April 25 0:00 (UTC)",
-        "link": "https://loopring.io/#/layer2",
-        "startShow": 1654819200000,
-        "endShow": 1657497600000,
+        "place": "HOME",
+        "version": "-1",
+        "name": "NFT Collection",
+        "title": "NFT Collection Live now on loopring.io",
+        "description1": "NFT creation with collection support.",
+        "description2": "",
+        "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
+        "startShow": 1662336000000,
+        "endShow": 1665187200000,
         "color": "default",
-        "banner": ""
+        "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "webRouter": "[self]/nft/myCollection"
       },
       {
         "type": "ACTIVITY",
-        "version": "-1",
-        "name": "lido",
-        "title": "ETH staking via Loopring L2 is live!",
-        "description1": "Participate into ETH staking to own rewards without lock-in",
+        "place": "HOME",
+        "version": "7",
+        "name": "NFT Trading Competition",
+        "title": "Trade NFTs via Loopring L2",
+        "description1": "1900 Loopheads up for grabs!",
         "description2": "",
-        "link": "",
-        "startShow": 1660039200000,
-        "endShow": 1662631200000,
+        "link": "https://loopring.io/#/race-event/2022-09?type=nft_trading_competition_7",
+        "startShow": 1663545600000,
+        "endShow": 1669334400000,
         "color": "default",
-        "banner": "",
-        "webRouter": "[self]/invest/defi"
+        "banner": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
+        "bannerWeb": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
+        "webRouter": ""
       }
     ],
+    "notifications": [],
     "activitiesHome": [
       {
         "type": "ACTIVITY",
-        "version": "0",
-        "title": "ramp_event",
-        "name": "🅾️ Zero Fees Promo!",
-        "description1": "Deposit via Banxa for free!",
-        "description2": "Duration: April 11 0:00 - April 25 0:00 (UTC)",
-        "link": "https://loopring.io/#/layer2",
-        "startShow": 1654819200000,
-        "endShow": 1657497600000,
+        "place": "HOME",
+        "version": "-1",
+        "name": "NFT Collection",
+        "title": "NFT Collection Live now on loopring.io",
+        "description1": "NFT creation with collection support.",
+        "description2": "",
+        "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
+        "startShow": 1662336000000,
+        "endShow": 1665187200000,
         "color": "default",
-        "banner": ""
+        "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "webRouter": "[self]/nft/myCollection"
       },
       {
         "type": "ACTIVITY",
-        "version": "-1",
-        "name": "lido",
-        "title": "ETH staking via Loopring L2 is live!",
-        "description1": "Participate into ETH staking to own rewards without lock-in",
+        "place": "HOME",
+        "version": "7",
+        "name": "NFT Trading Competition",
+        "title": "Trade NFTs via Loopring L2",
+        "description1": "1900 Loopheads up for grabs!",
         "description2": "",
-        "link": "",
-        "startShow": 1660039200000,
-        "endShow": 1662631200000,
+        "link": "https://loopring.io/#/race-event/2022-09?type=nft_trading_competition_7",
+        "startShow": 1663545600000,
+        "endShow": 1669334400000,
         "color": "default",
-        "banner": "",
-        "webRouter": "[self]/invest/defi"
+        "banner": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
+        "bannerWeb": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
+        "webRouter": ""
       }
     ],
     "activitiesInvest": [],
-    "notifications": [
-      {
-        "type": "NOTIFICATION",
-        "version": "0",
-        "title": "ramp_event",
-        "name": "🅾️ Zero Fees Promo!",
-        "description1": "Deposit via Banxa for free!",
-        "description2": "Duration: April 11 0:00 - April 25 0:00 (UTC)",
-        "link": "https://loopring.io/#/layer2",
-        "startShow": 1654819200000,
-        "endShow": 1657497600000,
-        "color": "default",
-        "banner": ""
-      },
-      {
-        "type": "NOTIFICATION",
-        "version": "-1",
-        "name": "lido",
-        "title": "ETH staking via Loopring L2 is live!",
-        "description1": "Participate into ETH staking to own rewards without lock-in",
-        "description2": "",
-        "link": "",
-        "startShow": 1660039200000,
-        "endShow": 1662631200000,
-        "color": "default",
-        "banner": "",
-        "webRouter": "[self]/invest/defi"
-      }
-    ],
     "invest": []
   },
   "prev": {
-    "endDate": 1662631200000
+    "endDate": 1669334400000
   },
   "invest": {
     "banner": {
