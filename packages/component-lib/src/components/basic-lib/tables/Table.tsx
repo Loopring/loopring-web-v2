@@ -155,6 +155,7 @@ export const DataGridStyled = styled(DataGrid)`
       &.textAlignLeft {
         text-align: left;
       }
+
       &.textAlignCenter {
         text-align: center;
       }
@@ -163,8 +164,9 @@ export const DataGridStyled = styled(DataGrid)`
     .rdg-cell[aria-selected="true"] {
       box-shadow: none;
     }
-    .rdg-cell.action{
-      text-overflow:initial;
+
+    .rdg-cell.action {
+      text-overflow: initial;
     }
 
     .rdg-cell.success {
@@ -304,7 +306,6 @@ export const Table = <R, SR>(
       margin: 0 5px;
     }
   `;
-
   /*** sort handle end ***/
   return (
     <TableWrapperStyled showloading={!!showloading ? "true" : "false"}>
