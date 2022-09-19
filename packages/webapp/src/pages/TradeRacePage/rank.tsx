@@ -265,5 +265,3 @@ export const RankRaw = <R extends object>({
     </Box>
   );
 };
-;
-;
