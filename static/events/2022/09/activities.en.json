@@ -31,7 +31,7 @@
           "label": "Address"
         },
         {
-          "key": "volume",
+          "key": "usdtValue",
           "label": "Volume(USD)"
         }
       ]
