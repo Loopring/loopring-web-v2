@@ -21,6 +21,7 @@ import {
   PopoverPure,
   QuoteTable,
   QuoteTableRawDataItem,
+  TagIconList,
   useSettings,
 } from "@loopring-web/component-lib";
 
@@ -98,7 +99,6 @@ export const Toolbar = withTranslation("common")(
     const { campaignTagConfig } = useNotify().notifyMap ?? {};
     const { ammPoolBalances } = useToolbar();
     const { tickList } = useTickList();
-    const { activityInProgressRules } = useAmmActivityMap();
     const { account } = useAccount();
     const [filteredData, setFilteredData] = React.useState<
       QuoteTableRawDataItem[]
@@ -106,6 +106,7 @@ export const Toolbar = withTranslation("common")(
     const [searchValue, setSearchValue] = React.useState<string>("");
     const [tableTabValue, setTableTabValue] = React.useState("all");
     const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
     const [marketTicker, setMarketTicker] = React.useState<
       (MarketBlockProps<C> & any) | undefined
     >({
@@ -385,58 +386,12 @@ export const Toolbar = withTranslation("common")(
               </Box>
             </ClickAwayListener>
           </PopoverPure>
-          {activityInProgressRules &&
-            activityInProgressRules[market] &&
-            activityInProgressRules[market].ruleType.map(
-              (ruleType: any, index: number) => (
-                <Box
-                  key={ruleType.toString() + index}
-                  style={{ cursor: "pointer", paddingTop: 4 }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    const date = new Date(
-                      activityInProgressRules[market].rangeFrom
-                    );
-                    const year = date.getFullYear();
-                    const month = (
-                      "0" + (date.getMonth() + 1).toString()
-                    ).slice(-2);
-                    const day = ("0" + date.getDate().toString()).slice(-2);
-                    const current_event_date = `${year}-${month}`;
-
-                    history.push(
-                      `/race-event/${current_event_date}?selected=${market}&type=${ruleType}&l2account=${account?.accAddress}`
-                    );
-                  }}
-                >
-                  <TrophyIcon />
-                </Box>
-              )
-            )}
-          {activityInProgressRules && activityInProgressRules[`AMM-${market}`] && (
-            <Box
-              marginLeft={1 / 2}
-              style={{ cursor: "pointer", paddingTop: 4 }}
-              onClick={(event) => {
-                event.stopPropagation();
-                const date = new Date(
-                  activityInProgressRules[`AMM-${market}`].rangeFrom
-                );
-                const year = date.getFullYear();
-                const month = ("0" + (date.getMonth() + 1).toString()).slice(
-                  -2
-                );
-                const day = ("0" + date.getDate().toString()).slice(-2);
-                const current_event_date = `${year}-${month}`;
-                history.push(
-                  `/race-event/${current_event_date}?selected=${market}&type=${
-                    activityInProgressRules[`AMM-${market}`].ruleType[0]
-                  }&l2account=${account?.accAddress}`
-                );
-              }}
-            >
-              <AmmRankIcon style={{ marginBottom: 5 }} />
-            </Box>
+          {campaignTagConfig && (
+            <TagIconList
+              scenario={"orderbook"}
+              campaignTagConfig={campaignTagConfig}
+              symbol={market}
+            />
           )}
           <Grid
             container

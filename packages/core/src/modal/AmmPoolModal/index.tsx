@@ -77,7 +77,6 @@ export const ModalCoinPairPanel = withTranslation("common")(
       setPageSize,
       pageSize,
       getRecentAmmPoolTxs,
-      // activityInProgressRules,
       isMobile,
       tokenPrices,
       currency,

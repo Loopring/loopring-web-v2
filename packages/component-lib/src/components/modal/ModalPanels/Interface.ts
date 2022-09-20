@@ -1,6 +1,7 @@
 import { ButtonProps } from "../../basic-lib";
 import {
   Account,
+  CAMPAIGN_TAG,
   FeeInfo,
   NFTWholeINFO,
   TradeTypes,
@@ -150,6 +151,7 @@ export interface VendorMenuProps {
   vendorList: VendorItem[];
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;
+  campaignTagConfig?: CAMPAIGN_TAG[];
 }
 interface InferfaceAssetItem {
   key: string;

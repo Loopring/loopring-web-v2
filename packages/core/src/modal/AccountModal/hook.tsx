@@ -139,6 +139,7 @@ import {
   useCollectionAdvanceMeta,
   useToast,
   useNFTMintAdvance,
+  useNotify,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -161,6 +162,7 @@ export function useAccountModalForUI({
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
   const { processRequestRampTransfer } = useRampTransPost();
+  const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
   const {
     modals: {
@@ -655,6 +657,7 @@ export function useAccountModalForUI({
     checkFeeIsEnough: activeAccountCheckFeeIsEnough,
     isFeeNotEnough: activeAccountProps.isFeeNotEnough,
   });
+
   const accountList = React.useMemo(() => {
     return Object.values({
       [AccountStep.CheckingActive]: {
@@ -697,6 +700,7 @@ export function useAccountModalForUI({
             vendorList={vendorListBuy}
             type={TradeTypes.Buy}
             vendorForce={undefined}
+            campaignTagConfig={campaignTagConfig}
           />
         ),
         onBack: onBackReceive,

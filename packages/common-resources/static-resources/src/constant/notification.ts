@@ -52,8 +52,8 @@ export type CAMPAIGN_TAG = {
   startShow: number;
   endShow: number;
   iconSource: string;
-  symbol: Array<string>;
-  scenario: Array<"market" | "AMM" | "orderbook" | "Fiat">;
+  symbols: Array<string>;
+  scenarios: Array<"market" | "AMM" | "orderbook" | "Fiat">;
 };
 export type NOTIFICATION = {
   activities: ACTIVITY[];
@@ -70,7 +70,7 @@ export type NOTIFICATION = {
     endDate: number;
     // prevMonth: string;
   };
-  campaignTagConfig: CAMPAIGN_TAG[];
+  campaignTagConfig?: CAMPAIGN_TAG[];
 };
 
 export type Notify = Omit<NOTIFICATION, "prev">;

@@ -25,6 +25,7 @@ export const NotificationPanel = ({
     activities: [],
     notifications: [],
     invest: {} as any,
+    campaignTagConfig: [],
   },
 }: {
   notification: NOTIFICATION;
