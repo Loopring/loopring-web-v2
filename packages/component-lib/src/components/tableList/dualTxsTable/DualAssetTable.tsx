@@ -103,7 +103,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         __raw__: {
           order: {
             dualType,
-            tokenInfoOrigin: { base, currency: quote, amountIn, amountOut },
+            tokenInfoOrigin: { base, currency: quote, amountIn },
             // timeOrigin: { settlementTime },
           },
         },
@@ -115,13 +115,16 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         quoteSymbol: quote,
       });
       item.currentPrice.currentPrice = index;
-      const lessEarnTokenSymbol = base; //isUp ? sellSymbol : buySymbol;
-      const greaterEarnTokenSymbol = quote; //isUp ? buySymbol : sellSymbol;
-      let lessEarnVol, greaterEarnVol;
+      let lessEarnTokenSymbol,
+        greaterEarnTokenSymbol,
+        lessEarnVol,
+        greaterEarnVol;
       const sellAmount = sdk
         .toBig(amountIn ? amountIn : 0)
         .div("1e" + tokenMap[sellSymbol].decimals);
       if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
+        lessEarnTokenSymbol = sellSymbol;
+        greaterEarnTokenSymbol = buySymbol;
         lessEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn); //dualViewInfo.strike);
         greaterEarnVol = sdk
           .toBig(
@@ -134,6 +137,8 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           )
           .times("1e" + tokenMap[buySymbol].decimals);
       } else {
+        lessEarnTokenSymbol = buySymbol;
+        greaterEarnTokenSymbol = sellSymbol;
         lessEarnVol = sdk
           .toBig(
             sdk
@@ -149,28 +154,30 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         // sellVol.times(1 + info.ratio).div(dualViewInfo.strike); //.times(1 + dualViewInfo.settleRatio);
         greaterEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn);
       }
-      const lessEarnView =
-        amountIn && amountOut
-          ? getValuePrecisionThousand(
-              sdk.toBig(lessEarnVol).div("1e" + tokenMap[base].decimals),
-              tokenMap[base].precision,
-              tokenMap[base].precision,
-              tokenMap[base].precision,
-              false,
-              { floor: true }
-            )
-          : EmptyValueTag;
-      const greaterEarnView =
-        amountIn && amountOut
-          ? getValuePrecisionThousand(
-              sdk.toBig(greaterEarnVol).div("1e" + tokenMap[quote].decimals),
-              tokenMap[quote].precision,
-              tokenMap[quote].precision,
-              tokenMap[quote].precision,
-              false,
-              { floor: true }
-            )
-          : EmptyValueTag;
+      const lessEarnView = amountIn
+        ? getValuePrecisionThousand(
+            sdk
+              .toBig(lessEarnVol)
+              .div("1e" + tokenMap[lessEarnTokenSymbol].decimals),
+            tokenMap[lessEarnTokenSymbol].precision,
+            tokenMap[lessEarnTokenSymbol].precision,
+            tokenMap[lessEarnTokenSymbol].precision,
+            false,
+            { floor: true }
+          )
+        : EmptyValueTag;
+      const greaterEarnView = amountIn
+        ? getValuePrecisionThousand(
+            sdk
+              .toBig(greaterEarnVol)
+              .div("1e" + tokenMap[greaterEarnTokenSymbol].decimals),
+            tokenMap[greaterEarnTokenSymbol].precision,
+            tokenMap[greaterEarnTokenSymbol].precision,
+            tokenMap[greaterEarnTokenSymbol].precision,
+            false,
+            { floor: true }
+          )
+        : EmptyValueTag;
 
       const amount = getValuePrecisionThousand(
         sellAmount,
@@ -272,7 +279,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignCenter",
           name: t("labelDualAssetFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.amount + " " + row.buySymbol}</>;
+            return <>{row?.amount + " " + row.sellSymbol}</>;
           },
         },
         {
