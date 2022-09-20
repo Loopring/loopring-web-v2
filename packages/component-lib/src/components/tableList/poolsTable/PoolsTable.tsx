@@ -205,34 +205,34 @@ export const IconColumn = React.memo(
         {isNew && <NewTagIcon />}
       </BoxStyled>
     );
-  };
+  }
 ) as unknown as <R extends AmmDetail<T>, T>(
   props: IconColumnProps<R>
 ) => JSX.Element;
 
 export const PoolsTable = withTranslation(["tables", "common"])(
   <T extends { [key: string]: any }>({
-                                       t,
-                                       i18n,
-                                       tReady,
-                                       campaignTagConfig,
-                                       showFilter = true,
-                                       rawData,
-                                       sortMethod,
-                                       wait = globalSetup.wait,
-                                       tableHeight = 350,
-                                       coinJson,
-                                       account,
-                                       tokenPrices,
-                                       showLoading,
-                                       handleWithdraw,
-                                       handleDeposit,
-                                       tokenMap,
-                                       forexMap,
-                                       allowTrade,
-                                       rowConfig = RowConfig,
-                                       ...rest
-                                     }: WithTranslation & PoolTableProps<T>) => {
+    t,
+    i18n,
+    tReady,
+    campaignTagConfig,
+    showFilter = true,
+    rawData,
+    sortMethod,
+    wait = globalSetup.wait,
+    tableHeight = 350,
+    coinJson,
+    account,
+    tokenPrices,
+    showLoading,
+    handleWithdraw,
+    handleDeposit,
+    tokenMap,
+    forexMap,
+    allowTrade,
+    rowConfig = RowConfig,
+    ...rest
+  }: WithTranslation & PoolTableProps<T>) => {
     const { currency, isMobile } = useSettings();
 
     const getPopoverState = React.useCallback((label: string) => {
@@ -618,5 +618,5 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         />
       </TableStyled>
     );
-  }
+  };
 );
