@@ -106,5 +106,33 @@
         "enable": true
       }
     ]
-  }
+  },
+  "campaignTagConfig": [
+    {
+      "name": "Orderbook mining event",
+      "startShow": 1662768000000,
+      "endShow": 1664582400000,
+      "iconSource": "https://static.loopring.io/assets/svg/rank.svg",
+      "symbol": [
+        "LRC-ETH",
+        "LRC-USDT"
+      ],
+      "scenario": [
+        "market",
+        "orderbook"
+      ]
+    },
+    {
+      "name": "Offramp event",
+      "startShow": 1662768000000,
+      "endShow": 1664582400000,
+      "iconSource": "https://static.loopring.io/assets/svg/hot.svg",
+      "symbol": [
+        "Ramp-off"
+      ],
+      "scenario": [
+        "Fiat"
+      ]
+    }
+  ]
 }

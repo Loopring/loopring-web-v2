@@ -27,6 +27,10 @@ export const Button = styled(MuButton)<ButtonProps>`
   && {
     line-height: 1em;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     &.MuiButton-root.Mui-disabled {
       ${({ loading, theme, loadingbg }) => {
         return loading === "true"

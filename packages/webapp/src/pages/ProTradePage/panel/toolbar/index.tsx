@@ -49,6 +49,7 @@ import {
   useAmmActivityMap,
   useAccount,
   TableProWrapStyled,
+  useNotify,
 } from "@loopring-web/core";
 import { useToolbar } from "./hook";
 import { useHistory } from "react-router-dom";
@@ -63,8 +64,6 @@ const PriceTitleStyled = styled(Typography)`
 const PriceValueStyled = styled(Typography)`
   font-size: 1.2rem;
 `;
-
-
 
 export enum TableFilterParams {
   all = "all",
@@ -96,6 +95,7 @@ export const Toolbar = withTranslation("common")(
     const { tickerMap, status: tickerStatus } = useTicker();
     const { favoriteMarket, removeMarket, addMarket } =
       favoriteMarketRD.useFavoriteMarket();
+    const { campaignTagConfig } = useNotify().notifyMap ?? {};
     const { ammPoolBalances } = useToolbar();
     const { tickList } = useTickList();
     const { activityInProgressRules } = useAmmActivityMap();
@@ -178,7 +178,7 @@ export const Toolbar = withTranslation("common")(
         });
       }
     }, [coinMap, tickerMap, tokenPrices, market]);
-	  React.useEffect(() => {
+    React.useEffect(() => {
       if (tickerStatus === SagaStatus.UNSET && market !== undefined) {
         setDefaultData();
       }
@@ -366,12 +366,12 @@ export const Toolbar = withTranslation("common")(
                   <QuoteTable
                     isPro
                     forexMap={forexMap as any}
+                    campaignTagConfig={campaignTagConfig}
                     account={account}
                     rawData={filteredData}
                     favoriteMarket={favoriteMarket}
                     addFavoriteMarket={addMarket}
                     removeFavoriteMarket={removeMarket}
-                    activityInProgressRules={activityInProgressRules}
                     onRowClick={(_: any, row: any) => {
                       handleOnMarketChange(
                         `${row.pair.coinA}-${row.pair.coinB}` as MarketType
