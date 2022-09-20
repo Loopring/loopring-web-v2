@@ -139,32 +139,5 @@
       }
     ]
   },
-  "campaignTagConfig": [
-    {
-      "name": "Orderbook mining event",
-      "startShow": 1662768000000,
-      "endShow": 1664582400000,
-      "iconSource": "https://static.loopring.io/assets/svg/rank.svg",
-      "symbols": [
-        "LRC-ETH",
-        "LRC-USDT"
-      ],
-      "scenarios": [
-        "market",
-        "orderbook"
-      ]
-    },
-    {
-      "name": "OFF event",
-      "startShow": 1662768000000,
-      "endShow": 1664582400000,
-      "iconSource": "https://static.loopring.io/assets/svg/hot.svg",
-      "symbols": [
-        "Ramp-off"
-      ],
-      "scenarios": [
-        "Fail"
-      ]
-    }
-  ]
+  "campaignTagConfig": []
 }

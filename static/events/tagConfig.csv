@@ -1,3 +1,1 @@
 name                  ,startTime          ,endTime            ,iconSource                                    ,symbols           ,scenarios
-Orderbook mining event,09/10/2022 00:00:00,10/01/2022 00:00:00,https://static.loopring.io/assets/svg/rank.svg,"LRC-ETH,LRC-USDT","market,orderbook"
-OFF event             ,09/10/2022 00:00:00,10/01/2022 00:00:00,https://static.loopring.io/assets/svg/hot.svg ,Ramp-off          ,Fail
