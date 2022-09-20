@@ -28,7 +28,6 @@ import gfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { useTheme } from "@emotion/react";
 import { EventData } from "./interface";
-import { useHistory } from "react-router-dom";
 
 const CardStyled = styled(Card)`
   // min-height: ${({ theme }) => theme.unit * 61.5}px;
@@ -72,7 +71,6 @@ const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
           }`;
     }
   }}
-
   ol,
   ul {
     list-style: dismal;
@@ -141,7 +139,7 @@ export const TradeRacePage = withTranslation("common")(
               flex={1}
               id={"tradeRaceTop"}
             >
-              <ScrollTop anchorId={"#tradeRaceTop"}>
+              <ScrollTop>
                 <Fab
                   color="primary"
                   size={"large"}
