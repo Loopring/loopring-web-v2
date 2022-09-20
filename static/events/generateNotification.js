@@ -180,8 +180,8 @@ const TAGP_CONFIF_ITEM = {
   startShow: 1,
   endShow: 2,
   iconSource: 3,
-  symbol: 4,
-  scenario: 5,
+  symbols: 4,
+  scenarios: 5,
 };
 const PLACE = {
   HOME: "HOME",
@@ -328,12 +328,12 @@ async function createTagJson() {
               .valueOf();
 
             const _item = {
-              name: item[TAGP_CONFIF_ITEM.name],
+              name: item[TAGP_CONFIF_ITEM.name].trim(),
               startShow,
               endShow,
-              iconSource: item[TAGP_CONFIF_ITEM.iconSource],
-              symbol: item[TAGP_CONFIF_ITEM.symbol]?.split(","),
-              scenario: item[TAGP_CONFIF_ITEM.scenario]?.split(","),
+              iconSource: item[TAGP_CONFIF_ITEM.iconSource].trim(),
+              symbols: item[TAGP_CONFIF_ITEM.symbols]?.trim()?.split(","),
+              scenarios: item[TAGP_CONFIF_ITEM.scenarios]?.trim()?.split(","),
             };
             json.campaignTagConfig = json.campaignTagConfig.concat(_item);
           }, undefined);

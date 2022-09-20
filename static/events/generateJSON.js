@@ -3,12 +3,16 @@ var fs = require("fs");
 var { parse } = require("csv-parse");
 var filePath = args[0];
 var path = require("path");
+const { investJson } = require("./invest");
+
+//TODO lng
 
 // let csvTable = [];
 let json = {},
   column = [],
   duration = {},
   api = {};
+oldJson = {};
 banner = {};
 fs.createReadStream(filePath)
   .pipe(parse({ delimiter: ",", from_line: 1 }))
@@ -42,12 +46,35 @@ fs.createReadStream(filePath)
       ...obj,
     };
   })
-  .on("end", () => {
+  .on("end", async () => {
     console.log(json);
     console.log("-----------");
     // console.log(`\"${path.basename(filePath).replace(/\..*/, "")}\":`);
     console.log(`\"${json.name}\":`);
     console.log(JSON.stringify(json));
+    writePath = path.resolve(filePath, "..", "activities.en.json");
+    try {
+      if (fs.exists(writePath)) {
+        oldJson = JSON.parse(fs.readFileSync(writePath));
+      }
+      await fs.unlink(writePath);
+      console.log(`Deleted ${totalNotifyPath}`);
+    } catch (error) {
+      // console.error(`Got an error trying to delete the file: ${error.message}`);
+    }
+    oldJson[json.name] = {
+      ...json,
+    };
+    fs.writeFileSync(
+      writePath,
+      JSON.stringify({
+        ...oldJson,
+        // ...jsonNotify,
+        // invest: { ...investJson },
+        // campaignTagConfig: json.campaignTagConfig,
+        // prev: json.prev,
+      })
+    );
     // csvTable.reduce((prev, item) => {
     //   Object.keys(item)[0];
     // }, json);
