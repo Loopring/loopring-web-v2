@@ -70,7 +70,7 @@ export type NOTIFICATION = {
     endDate: number;
     // prevMonth: string;
   };
-  campaignTagConfig: CAMPAIGN_TAG[];
+  campaignTagConfig?: CAMPAIGN_TAG[];
 };
 
 export type Notify = Omit<NOTIFICATION, "prev">;
