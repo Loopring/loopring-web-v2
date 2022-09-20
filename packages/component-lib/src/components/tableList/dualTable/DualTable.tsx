@@ -10,7 +10,7 @@ import { RawDataDualsItem } from "./Interface";
 import {
   EmptyValueTag,
   ForexMap,
-  RowConfig,
+  RowInvestConfig,
   UpColor,
   UpIcon,
   YEAR_DAY_FORMAT,
@@ -233,10 +233,11 @@ export const DualTable = withTranslation(["tables", "common"])(
       <TableWrapperStyled>
         <TableStyled
           currentheight={
-            RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
+            RowInvestConfig.rowHeaderHeight +
+            rawData.length * RowInvestConfig.rowHeight
           }
-          rowHeight={RowConfig.rowHeight}
-          headerRowHeight={RowConfig.rowHeaderHeight}
+          rowHeight={RowInvestConfig.rowHeight}
+          headerRowHeight={RowInvestConfig.rowHeaderHeight}
           onRowClick={(_index: number, row: R) => {
             onItemClick(row);
           }}

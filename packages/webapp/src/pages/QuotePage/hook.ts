@@ -4,13 +4,9 @@ import {
   MarketBlockProps,
   QuoteTableRawDataItem,
 } from "@loopring-web/component-lib";
-import {
-  AmmPoolActivityRule,
-  TradingInterval,
-  WsTopicType,
-} from "@loopring-web/loopring-sdk";
+import { WsTopicType } from "@loopring-web/loopring-sdk";
 
-import { myError, RowConfig, SagaStatus } from "@loopring-web/common-resources";
+import { RowConfig, SagaStatus } from "@loopring-web/common-resources";
 import _ from "lodash";
 import {
   store,
@@ -19,12 +15,12 @@ import {
   favoriteMarket as favoriteMarketReducer,
   useAmmActivityMap,
   LAYOUT,
-  TickerMap,
   useTicker,
   useSocket,
   useTokenPrices,
   useTokenMap,
   useSystem,
+  useNotify,
 } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
 
@@ -151,11 +147,9 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   const [tableTabValue, setTableTabValue] = React.useState(
     TableFilterParams.all
   );
-  // const [showLoading,setShowLoading]  = React.useState(false);
+  const { campaignTagConfig } = useNotify().notifyMap ?? {};
   const [searchValue, setSearchValue] = React.useState<string>("");
-  // const [swapRankingList, setSwapRankingList] = React.useState<
-  //   AmmPoolActivityRule[]
-  // >([]);
+
   const [filteredData, setFilteredData] = React.useState<
     QuoteTableRawDataItem[]
   >([]);
@@ -163,7 +157,6 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
 
   const { favoriteMarket, removeMarket, addMarket } =
     favoriteMarketReducer.useFavoriteMarket();
-  const { activityInProgressRules } = useAmmActivityMap();
 
   // const getSwapRankingList = React.useCallback(async () => {
   //   if (LoopringAPI.ammpoolAPI) {
@@ -354,12 +347,12 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   );
 
   return {
+    campaignTagConfig,
     tableTabValue,
     handleTabChange,
     searchValue,
     removeMarket,
     favoriteMarket,
-    activityInProgressRules,
     handleSearchChange,
     addMarket,
     showLoading: !tickList?.length,

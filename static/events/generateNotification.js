@@ -328,12 +328,12 @@ async function createTagJson() {
               .valueOf();
 
             const _item = {
-              name: item[TAGP_CONFIF_ITEM.name],
+              name: item[TAGP_CONFIF_ITEM.name].trim(),
               startShow,
               endShow,
-              iconSource: item[TAGP_CONFIF_ITEM.iconSource],
-              symbol: item[TAGP_CONFIF_ITEM.symbol]?.split(","),
-              scenario: item[TAGP_CONFIF_ITEM.scenario]?.split(","),
+              iconSource: item[TAGP_CONFIF_ITEM.iconSource].trim(),
+              symbol: item[TAGP_CONFIF_ITEM.symbol]?.trim()?.split(","),
+              scenario: item[TAGP_CONFIF_ITEM.scenario]?.trim()?.split(","),
             };
             json.campaignTagConfig = json.campaignTagConfig.concat(_item);
           }, undefined);
