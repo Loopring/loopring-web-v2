@@ -25,7 +25,6 @@ import rehypeRaw from "rehype-raw";
 import { MarkdownStyle } from "pages/MarkdownPage/style";
 import { useTheme } from "@emotion/react";
 import { EventData } from "./interface";
-import { useHistory } from "react-router-dom";
 
 const CardStyled = styled(Card)`
   // min-height: ${({ theme }) => theme.unit * 61.5}px;
@@ -69,7 +68,6 @@ const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
           }`;
     }
   }}
-
   ol,
   ul {
     list-style: dismal;
@@ -115,7 +113,9 @@ export const TradeRacePage = withTranslation("common")(
     } = useTradeRace();
     const theme = useTheme();
     const anchorRef = React.useRef();
-    const history = useHistory();
+    const anchorTopRef = React.createRef();
+
+    // const history = useHistory();
 
     // myLog("activityRule", eventStatus, activityRule);
     /*remove: holiday only end
@@ -127,246 +127,258 @@ export const TradeRacePage = withTranslation("common")(
     */
     return (
       <>
-        <ScrollTop>
-          <Fab color="primary" size={"large"} aria-label="scroll back to top">
-            <GoTopIcon htmlColor={"var(--color-text-button)"} />
-          </Fab>
-        </ScrollTop>
         {eventData ? (
-          <LayoutStyled marginY={4} eventData={eventData} flex={1}>
-            <Box className={"title-banner"} marginBottom={4}>
-              <Typography
-                // sx={{
-                //   textIndent:
-                //     eventData.banner && eventData.showBannerOrTitle == "1"
-                //       ? "-99999em"
-                //       : "in",
-                // }}
-                marginY={1}
-                component={"h1"}
-                variant={"h1"}
-                whiteSpace={"pre-line"}
-                textAlign={"center"}
-                dangerouslySetInnerHTML={{ __html: eventData.eventTitle }}
-              />
+          <>
+            <LayoutStyled
+              ref={anchorTopRef}
+              marginY={4}
+              eventData={eventData}
+              flex={1}
+              id={"tradeRaceTop"}
+            >
+              <ScrollTop anchorRef={anchorTopRef as any}>
+                <Fab
+                  color="primary"
+                  size={"large"}
+                  aria-label="scroll back to top"
+                >
+                  <GoTopIcon htmlColor={"var(--color-text-button)"} />
+                </Fab>
+              </ScrollTop>
+              <Box className={"title-banner"} marginBottom={4}>
+                <Typography
+                  // sx={{
+                  //   textIndent:
+                  //     eventData.banner && eventData.showBannerOrTitle == "1"
+                  //       ? "-99999em"
+                  //       : "in",
+                  // }}
+                  marginY={1}
+                  component={"h1"}
+                  variant={"h1"}
+                  whiteSpace={"pre-line"}
+                  textAlign={"center"}
+                  dangerouslySetInnerHTML={{ __html: eventData.eventTitle }}
+                />
 
-              <Typography
-                component={"h2"}
-                variant={"h2"}
-                whiteSpace={"pre-line"}
-                textAlign={"center"}
-                dangerouslySetInnerHTML={{ __html: eventData.subTitle }}
-              />
-            </Box>
-
-            {eventStatus && (
-              <Box
-                component={"section"}
-                paddingX={3}
-                marginBottom={4}
-                textAlign={"center"}
-              >
                 <Typography
                   component={"h2"}
-                  variant={"h4"}
-                  marginBottom={2}
-                  color={"var(--color-text-secondary)"}
+                  variant={"h2"}
+                  whiteSpace={"pre-line"}
+                  textAlign={"center"}
+                  dangerouslySetInnerHTML={{ __html: eventData.subTitle }}
+                />
+              </Box>
+
+              {eventStatus && (
+                <Box
+                  component={"section"}
+                  paddingX={3}
+                  marginBottom={4}
+                  textAlign={"center"}
                 >
-                  {t(eventStatus)}
+                  <Typography
+                    component={"h2"}
+                    variant={"h4"}
+                    marginBottom={2}
+                    color={"var(--color-text-secondary)"}
+                  >
+                    {t(eventStatus)}
+                  </Typography>
+                  {eventStatus !== EVENT_STATUS.EVENT_END && (
+                    <Box
+                      display={"flex"}
+                      flexDirection={"row"}
+                      alignItems={"center"}
+                    >
+                      <Box
+                        className={"day"}
+                        display={"flex"}
+                        flexDirection={"column"}
+                        minWidth={86}
+                        alignItems={"center"}
+                        marginRight={2}
+                      >
+                        <Typography
+                          variant={"h2"}
+                          component={"span"}
+                          color={"var(--color-text-primary)"}
+                        >
+                          {Number(countDown?.days) >= 0
+                            ? countDown?.days
+                            : EmptyValueTag}
+                        </Typography>
+                        <Typography
+                          variant={"h4"}
+                          color={"var(--color-text-secondary)"}
+                          marginTop={1}
+                          style={{ textTransform: "uppercase" }}
+                        >
+                          {t("labelDay")}
+                        </Typography>
+                      </Box>
+                      <Box
+                        className={"hours"}
+                        display={"flex"}
+                        minWidth={86}
+                        flexDirection={"column"}
+                        alignItems={"center"}
+                        marginRight={2}
+                      >
+                        <Typography
+                          variant={"h2"}
+                          component={"span"}
+                          color={"var(--color-text-primary)"}
+                        >
+                          {Number(countDown?.hours) >= 0
+                            ? countDown?.hours
+                            : EmptyValueTag}
+                        </Typography>
+                        <Typography
+                          variant={"h4"}
+                          color={"var(--color-text-secondary)"}
+                          marginTop={1}
+                          style={{ textTransform: "uppercase" }}
+                        >
+                          {t("labelHours")}
+                        </Typography>
+                      </Box>
+                      <Box
+                        className={"minutes"}
+                        display={"flex"}
+                        minWidth={86}
+                        flexDirection={"column"}
+                        alignItems={"center"}
+                        marginRight={2}
+                      >
+                        <Typography
+                          variant={"h2"}
+                          component={"span"}
+                          color={"var(--color-text-primary)"}
+                        >
+                          {Number(countDown?.minutes) >= 0
+                            ? countDown?.minutes
+                            : EmptyValueTag}
+                        </Typography>
+                        <Typography
+                          variant={"h4"}
+                          color={"var(--color-text-secondary)"}
+                          marginTop={1}
+                          style={{ textTransform: "uppercase" }}
+                        >
+                          {t("labelMinutes")}
+                        </Typography>
+                      </Box>
+                      <Box
+                        className={"secondary"}
+                        display={"flex"}
+                        minWidth={86}
+                        flexDirection={"column"}
+                        alignItems={"center"}
+                        marginRight={2}
+                      >
+                        <Typography
+                          variant={"h2"}
+                          component={"span"}
+                          color={"var(--color-text-primary)"}
+                        >
+                          {Number(countDown?.seconds) >= 0
+                            ? countDown?.seconds
+                            : EmptyValueTag}
+                        </Typography>
+                        <Typography
+                          variant={"h4"}
+                          color={"var(--color-text-secondary)"}
+                          marginTop={1}
+                          style={{ textTransform: "uppercase" }}
+                        >
+                          {t("labelSeconds")}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+              )}
+              {eventData.duration && (
+                <Typography marginBottom={2} paddingX={3} variant={"body1"}>
+                  {eventData?.duration?.prev}
+                  <Typography
+                    component={"time"}
+                    paddingX={1}
+                    variant={"h5"}
+                    dateTime={eventData.duration.startDate.toFixed()}
+                  >
+                    {moment(eventData.duration.startDate)
+                      .utc()
+                      .format(`YYYY-MM-DD HH:mm:ss`)}
+                  </Typography>
+                  <Typography component={"span"} variant={"h5"}>
+                    {eventData?.duration?.middle}
+                  </Typography>
+                  <Typography
+                    component={"time"}
+                    paddingX={1}
+                    variant={"h5"}
+                    dateTime={eventData.duration.endDate.toFixed()}
+                  >
+                    {moment(eventData.duration.endDate)
+                      .utc()
+                      .format(`YYYY-MM-DD HH:mm:ss`)}
+                  </Typography>
+                  {eventData?.duration?.timeZone &&
+                    `(${eventData?.duration?.timeZone})`}{" "}
+                  {eventData?.duration?.end}
+                  <Typography marginLeft={1} component={"span"}>
+                    <Link onClick={(e) => scrollToRule(e)}>
+                      {t("labelTradeReadRule")}
+                    </Link>
+                  </Typography>
                 </Typography>
-                {eventStatus !== EVENT_STATUS.EVENT_END && (
-                  <Box
-                    display={"flex"}
-                    flexDirection={"row"}
-                    alignItems={"center"}
+              )}
+              {!!(
+                !searchParams.has("rule") &&
+                eventData.api &&
+                eventData.api.version &&
+                eventStatus !== EVENT_STATUS.EVENT_READY
+              ) && <RankRaw {...eventData.api} />}
+
+              <Box
+                ref={anchorRef}
+                maxWidth={1200}
+                width={"100%"}
+                paddingX={3}
+                marginTop={3}
+                id={"event-rule"}
+              >
+                {eventData.ruleMarkdown ? (
+                  <MarkdownStyle
+                    container
+                    minHeight={"calc(100% - 260px)"}
+                    flex={1}
+                    marginTop={3}
+                    marginBottom={2}
                   >
                     <Box
-                      className={"day"}
-                      display={"flex"}
-                      flexDirection={"column"}
-                      minWidth={86}
-                      alignItems={"center"}
-                      marginRight={2}
+                      flex={1}
+                      padding={3}
+                      boxSizing={"border-box"}
+                      className={`${theme.mode}  ${theme.mode}-scheme markdown-body MuiPaper-elevation2 no-bg`}
                     >
-                      <Typography
-                        variant={"h2"}
-                        component={"span"}
-                        color={"var(--color-text-primary)"}
-                      >
-                        {Number(countDown?.days) >= 0
-                          ? countDown?.days
-                          : EmptyValueTag}
-                      </Typography>
-                      <Typography
-                        variant={"h4"}
-                        color={"var(--color-text-secondary)"}
-                        marginTop={1}
-                        style={{ textTransform: "uppercase" }}
-                      >
-                        {t("labelDay")}
-                      </Typography>
+                      <ReactMarkdown
+                        remarkPlugins={[
+                          gfm,
+                          ...(eventData.rehypeRaw == "1" ? [rehypeRaw] : []),
+                        ]}
+                        children={eventData.ruleMarkdown}
+                      />
                     </Box>
-                    <Box
-                      className={"hours"}
-                      display={"flex"}
-                      minWidth={86}
-                      flexDirection={"column"}
-                      alignItems={"center"}
-                      marginRight={2}
-                    >
-                      <Typography
-                        variant={"h2"}
-                        component={"span"}
-                        color={"var(--color-text-primary)"}
-                      >
-                        {Number(countDown?.hours) >= 0
-                          ? countDown?.hours
-                          : EmptyValueTag}
-                      </Typography>
-                      <Typography
-                        variant={"h4"}
-                        color={"var(--color-text-secondary)"}
-                        marginTop={1}
-                        style={{ textTransform: "uppercase" }}
-                      >
-                        {t("labelHours")}
-                      </Typography>
-                    </Box>
-                    <Box
-                      className={"minutes"}
-                      display={"flex"}
-                      minWidth={86}
-                      flexDirection={"column"}
-                      alignItems={"center"}
-                      marginRight={2}
-                    >
-                      <Typography
-                        variant={"h2"}
-                        component={"span"}
-                        color={"var(--color-text-primary)"}
-                      >
-                        {Number(countDown?.minutes) >= 0
-                          ? countDown?.minutes
-                          : EmptyValueTag}
-                      </Typography>
-                      <Typography
-                        variant={"h4"}
-                        color={"var(--color-text-secondary)"}
-                        marginTop={1}
-                        style={{ textTransform: "uppercase" }}
-                      >
-                        {t("labelMinutes")}
-                      </Typography>
-                    </Box>
-                    <Box
-                      className={"secondary"}
-                      display={"flex"}
-                      minWidth={86}
-                      flexDirection={"column"}
-                      alignItems={"center"}
-                      marginRight={2}
-                    >
-                      <Typography
-                        variant={"h2"}
-                        component={"span"}
-                        color={"var(--color-text-primary)"}
-                      >
-                        {Number(countDown?.seconds) >= 0
-                          ? countDown?.seconds
-                          : EmptyValueTag}
-                      </Typography>
-                      <Typography
-                        variant={"h4"}
-                        color={"var(--color-text-secondary)"}
-                        marginTop={1}
-                        style={{ textTransform: "uppercase" }}
-                      >
-                        {t("labelSeconds")}
-                      </Typography>
-                    </Box>
-                  </Box>
+                  </MarkdownStyle>
+                ) : (
+                  <LoadingBlock />
                 )}
               </Box>
-            )}
-            {eventData.duration && (
-              <Typography marginBottom={2} paddingX={3} variant={"body1"}>
-                {eventData?.duration?.prev}
-                <Typography
-                  component={"time"}
-                  paddingX={1}
-                  variant={"h5"}
-                  dateTime={eventData.duration.startDate.toFixed()}
-                >
-                  {moment(eventData.duration.startDate)
-                    .utc()
-                    .format(`YYYY-MM-DD HH:mm:ss`)}
-                </Typography>
-                <Typography component={"span"} variant={"h5"}>
-                  {eventData?.duration?.middle}
-                </Typography>
-                <Typography
-                  component={"time"}
-                  paddingX={1}
-                  variant={"h5"}
-                  dateTime={eventData.duration.endDate.toFixed()}
-                >
-                  {moment(eventData.duration.endDate)
-                    .utc()
-                    .format(`YYYY-MM-DD HH:mm:ss`)}
-                </Typography>
-                {eventData?.duration?.timeZone &&
-                  `(${eventData?.duration?.timeZone})`}{" "}
-                {eventData?.duration?.end}
-                <Typography marginLeft={1} component={"span"}>
-                  <Link onClick={(e) => scrollToRule(e)}>
-                    {t("labelTradeReadRule")}
-                  </Link>
-                </Typography>
-              </Typography>
-            )}
-            {!!(
-              !searchParams.has("rule") &&
-              eventData.api &&
-              eventData.api.version &&
-              eventStatus !== EVENT_STATUS.EVENT_READY
-            ) && <RankRaw {...eventData.api} />}
-
-            <Box
-              ref={anchorRef}
-              maxWidth={1200}
-              width={"100%"}
-              paddingX={3}
-              marginTop={3}
-              id={"event-rule"}
-            >
-              {eventData.ruleMarkdown ? (
-                <MarkdownStyle
-                  container
-                  minHeight={"calc(100% - 260px)"}
-                  flex={1}
-                  marginTop={3}
-                  marginBottom={2}
-                >
-                  <Box
-                    flex={1}
-                    padding={3}
-                    boxSizing={"border-box"}
-                    className={`${theme.mode}  ${theme.mode}-scheme markdown-body MuiPaper-elevation2 no-bg`}
-                  >
-                    <ReactMarkdown
-                      remarkPlugins={[
-                        gfm,
-                        ...(eventData.rehypeRaw == "1" ? [rehypeRaw] : []),
-                      ]}
-                      children={eventData.ruleMarkdown}
-                    />
-                  </Box>
-                </MarkdownStyle>
-              ) : (
-                <LoadingBlock />
-              )}
-            </Box>
-          </LayoutStyled>
+            </LayoutStyled>
+          </>
         ) : eventsList.length ? (
           <Container
             maxWidth="lg"
