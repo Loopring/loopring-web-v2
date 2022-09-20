@@ -136,7 +136,7 @@ export const TradeRacePage = withTranslation("common")(
               flex={1}
               id={"tradeRaceTop"}
             >
-              <ScrollTop anchorRef={anchorTopRef as any}>
+              <ScrollTop>
                 <Fab
                   color="primary"
                   size={"large"}
