@@ -63,7 +63,7 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 export const IconColumn = React.memo(
-	<R extends AmmDetail<T>, T>({
+  <R extends AmmDetail<T>, T>({
     row,
     size = 24,
     campaignTagConfig,
@@ -207,32 +207,32 @@ export const IconColumn = React.memo(
     );
   };
 ) as unknown as <R extends AmmDetail<T>, T>(
-	props: IconColumnProps<R>
+  props: IconColumnProps<R>
 ) => JSX.Element;
 
 export const PoolsTable = withTranslation(["tables", "common"])(
   <T extends { [key: string]: any }>({
-	                                     t,
-	                                     i18n,
-	                                     tReady,
-	                                     campaignTagConfig,
-	                                     showFilter = true,
-	                                     rawData,
-	                                     sortMethod,
-	                                     wait = globalSetup.wait,
-	                                     tableHeight = 350,
-	                                     coinJson,
-	                                     account,
-	                                     tokenPrices,
-	                                     showLoading,
-	                                     handleWithdraw,
-    handleDeposit,
-    tokenMap,
-    forexMap,
-    allowTrade,
-    rowConfig = RowConfig,
-    ...rest
-  }: WithTranslation & PoolTableProps<T>) => {
+                                       t,
+                                       i18n,
+                                       tReady,
+                                       campaignTagConfig,
+                                       showFilter = true,
+                                       rawData,
+                                       sortMethod,
+                                       wait = globalSetup.wait,
+                                       tableHeight = 350,
+                                       coinJson,
+                                       account,
+                                       tokenPrices,
+                                       showLoading,
+                                       handleWithdraw,
+                                       handleDeposit,
+                                       tokenMap,
+                                       forexMap,
+                                       allowTrade,
+                                       rowConfig = RowConfig,
+                                       ...rest
+                                     }: WithTranslation & PoolTableProps<T>) => {
     const { currency, isMobile } = useSettings();
 
     const getPopoverState = React.useCallback((label: string) => {
@@ -257,9 +257,9 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               display={"flex"}
             >
               <IconColumn
-	              row={row as any}
-	              account={account}
-	              campaignTagConfig={campaignTagConfig}
+                row={row as any}
+                account={account}
+                campaignTagConfig={campaignTagConfig}
               />
             </Box>
           );
@@ -436,10 +436,10 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               display={"flex"}
             >
               <IconColumn
-	              account={account}
-	              row={row as any}
-	              size={20}
-	              campaignTagConfig={campaignTagConfig}
+                account={account}
+                row={row as any}
+                size={20}
+                campaignTagConfig={campaignTagConfig}
               />
             </Box>
           );
