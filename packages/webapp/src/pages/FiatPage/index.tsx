@@ -9,6 +9,7 @@ import React from "react";
 import {
   RAMP_SELL_PANEL,
   useModalData,
+  useNotify,
   useRampConfirm,
   useVendor,
   ViewAccountTemplate,
@@ -29,10 +30,10 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
     useVendor();
   const { resetTransferRampData } = useModalData();
+  const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
-  // debugger;
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
     match?.params?.tab?.toLowerCase() === "Sell".toLowerCase()
       ? TradeTypes.Sell
@@ -115,6 +116,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                 type={TradeTypes.Buy}
                 vendorList={vendorListBuy}
                 vendorForce={undefined}
+                campaignTagConfig={campaignTagConfig}
               />
             )}
             {tabIndex === TradeTypes.Sell && (
@@ -124,6 +126,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                     type={TradeTypes.Sell}
                     vendorList={vendorListSell}
                     vendorForce={undefined}
+                    campaignTagConfig={campaignTagConfig}
                   />
                 )}
                 {sellPanel === RAMP_SELL_PANEL.CONFIRM && (

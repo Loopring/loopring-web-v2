@@ -66,9 +66,13 @@ export const Button = styled(MuButton)<ButtonProps>`
   //}
 ` as (props: ButtonProps) => JSX.Element;
 
-export function ScrollTop(props: {
+export function ScrollTop({
+  anchorId = "#back-to-top-anchor",
+  ...props
+}: {
   window?: () => Window;
   children: React.ReactElement;
+  anchorId?: string;
 }) {
   const { children, window } = props;
 
@@ -81,8 +85,7 @@ export function ScrollTop(props: {
   const scrollToTop = (event: React.MouseEvent<HTMLDivElement>) => {
     const anchor = (
       (event.target as HTMLDivElement).ownerDocument || document
-    ).querySelector("#back-to-top-anchor");
-
+    ).querySelector(anchorId);
     if (anchor) {
       anchor.scrollIntoView({ behavior: "smooth", block: "center" });
     }

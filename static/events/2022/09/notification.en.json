@@ -31,6 +31,22 @@
       "banner": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
       "bannerWeb": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
       "webRouter": ""
+    },
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "-1",
+      "name": "Dual Investment",
+      "title": "Buy crypto low or sell it high",
+      "description1": "earn remarkable incentive in a trustless mode.",
+      "description2": "",
+      "link": "https://loopring.io/#/document/dual_investment_landing_en.md",
+      "startShow": 1664150400000,
+      "endShow": 1666742400000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/dual_investment_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/dual_investment_banner.en.webp",
+      "webRouter": "[self]/invest/dual"
     }
   ],
   "activitiesHome": [
@@ -65,6 +81,22 @@
       "banner": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
       "bannerWeb": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
       "webRouter": ""
+    },
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "-1",
+      "name": "Dual Investment",
+      "title": "Buy crypto low or sell it high",
+      "description1": "earn remarkable incentive in a trustless mode.",
+      "description2": "",
+      "link": "https://loopring.io/#/document/dual_investment_landing_en.md",
+      "startShow": 1664150400000,
+      "endShow": 1666742400000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/dual_investment_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/dual_investment_banner.en.webp",
+      "webRouter": "[self]/invest/dual"
     }
   ],
   "activitiesInvest": [],

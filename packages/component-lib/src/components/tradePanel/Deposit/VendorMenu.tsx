@@ -9,6 +9,7 @@ import {
 } from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
 import { useSettings } from "../../../stores";
+import { TagIconList } from "../../block";
 
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   const theme = useTheme();
@@ -39,6 +40,7 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
 export const VendorMenu = ({
   vendorList,
   // handleSelect,
+  campaignTagConfig,
   type = TradeTypes.Buy,
   vendorForce,
 }: VendorMenuProps) => {
@@ -89,6 +91,7 @@ export const VendorMenu = ({
                   Date.now() < item.flag.endDate
                     ? 56
                     : "",
+                flexDirection: "row",
               }}
               startIcon={IconItem({ svgIcon: item.svgIcon })}
               onClick={(e) => {
@@ -104,22 +107,32 @@ export const VendorMenu = ({
               >
                 {t(item.key)}
               </Typography>
-              {item.flag &&
-                item.flag.startDate < Date.now() &&
-                Date.now() < item.flag.endDate && (
-                  <>
-                    <Typography
-                      component={"span"}
-                      variant={"body2"}
-                      color={"var(--color-warning)"}
-                    >
-                      {t(item.flag.highLight ?? "")}
-                    </Typography>
-                    <Typography position={"absolute"} right={8} top={4}>
-                      {item.flag.tag}
-                    </Typography>
-                  </>
-                )}
+              {campaignTagConfig && (
+                <TagIconList
+                  scenario={"Fiat"}
+                  size={"var(--svg-size-large)"}
+                  campaignTagConfig={campaignTagConfig}
+                  symbol={`${item.key}-${
+                    type == TradeTypes.Buy ? "on" : "off"
+                  }`}
+                />
+              )}
+              {/*{item.flag &&*/}
+              {/*  item.flag.startDate < Date.now() &&*/}
+              {/*  Date.now() < item.flag.endDate && (*/}
+              {/*    <>*/}
+              {/*      <Typography*/}
+              {/*        component={"span"}*/}
+              {/*        variant={"body2"}*/}
+              {/*        color={"var(--color-warning)"}*/}
+              {/*      >*/}
+              {/*        {t(item.flag.highLight ?? "")}*/}
+              {/*      </Typography>*/}
+              {/*      /!*<Typography position={"absolute"} right={8} top={4}>*!/*/}
+              {/*      /!*  {item.flag.tag}*!/*/}
+              {/*      /!*</Typography>*!/*/}
+              {/*    </>*/}
+              {/*  )}*/}
             </MenuBtnStyled>
           </Box>
         ))}

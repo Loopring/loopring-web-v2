@@ -14,9 +14,7 @@ import {
   TableProps,
 } from "../../basic-lib";
 import {
-  Account,
   AmmDetail,
-  AmmRankIcon,
   AvatarCoinStyled,
   CurrencyToTag,
   EmptyValueTag,
@@ -28,17 +26,13 @@ import {
   SoursURL,
 } from "@loopring-web/common-resources";
 import { Avatar, Box, BoxProps, Grid, Typography } from "@mui/material";
-import { PoolTableProps, Row } from "./Interface";
+import { IconColumnProps, PoolTableProps, Row } from "./Interface";
 import styled from "@emotion/styled";
-import { useHistory } from "react-router-dom";
 import { FormatterProps } from "react-data-grid";
-import {
-  AmmPoolInProgressActivityRule,
-  LoopringMap,
-} from "@loopring-web/loopring-sdk";
+
 import { useSettings } from "../../../stores";
 import { TablePaddingX } from "../../styled";
-import { AmmPairDetail } from "../../block";
+import { AmmPairDetail, TagIconList } from "../../block";
 import { ActionPopContent } from "../myPoolTable/components/ActionPop";
 const BoxStyled = styled(Box)`` as typeof Box;
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
@@ -69,18 +63,11 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 export const IconColumn = React.memo(
-  <R extends AmmDetail<T>, T>({
+	<R extends AmmDetail<T>, T>({
     row,
-    account,
-    activityInProgressRules,
     size = 24,
-  }: {
-    row: R;
-    account: Account;
-    size?: number;
-    activityInProgressRules?: LoopringMap<AmmPoolInProgressActivityRule>;
-  }) => {
-    const history = useHistory();
+    campaignTagConfig,
+  }: IconColumnProps<R>) => {
     const { coinJson, isMobile } = useSettings();
     if (!row || !row.coinAInfo || !row.coinBInfo) {
       return <BoxStyled />;
@@ -208,60 +195,37 @@ export const IconColumn = React.memo(
             </Typography>
           </Typography>
         )}
-        <>
-          {activityInProgressRules && activityInProgressRules[`AMM-${pair}`] && (
-            <Box
-              style={{ cursor: "pointer", paddingTop: 4 }}
-              onClick={(event) => {
-                event.stopPropagation();
-                const date = new Date(
-                  activityInProgressRules[`AMM-${pair}`].rangeFrom
-                );
-                const year = date.getFullYear();
-                const month = ("0" + (date.getMonth() + 1).toString()).slice(
-                  -2
-                );
-                // const day = ("0" + date.getDate().toString()).slice(-2);
-                const current_event_date = `${year}-${month}`;
-
-                history.push(
-                  `/race-event/${current_event_date}?selected=${pair}&type=${
-                    activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                  }&l2account=${account?.accAddress}`
-                );
-              }}
-            >
-              <AmmRankIcon fontSize={"medium"} />
-            </Box>
-          )}
-          {isNew && <NewTagIcon />}
-        </>
+        {campaignTagConfig && (
+          <TagIconList
+            scenario={"AMM"}
+            campaignTagConfig={campaignTagConfig}
+            symbol={pair}
+          />
+        )}
+        {isNew && <NewTagIcon />}
       </BoxStyled>
     );
-  }
-) as unknown as <R extends AmmDetail<T>, T>(props: {
-  row: R;
-  account: Account;
-  size?: number;
-  activityInProgressRules?: LoopringMap<AmmPoolInProgressActivityRule>;
-}) => JSX.Element;
+  };
+) as unknown as <R extends AmmDetail<T>, T>(
+	props: IconColumnProps<R>
+) => JSX.Element;
 
 export const PoolsTable = withTranslation(["tables", "common"])(
   <T extends { [key: string]: any }>({
-    t,
-    i18n,
-    tReady,
-    activityInProgressRules,
-    showFilter = true,
-    rawData,
-    sortMethod,
-    wait = globalSetup.wait,
-    tableHeight = 350,
-    coinJson,
-    account,
-    tokenPrices,
-    showLoading,
-    handleWithdraw,
+	                                     t,
+	                                     i18n,
+	                                     tReady,
+	                                     campaignTagConfig,
+	                                     showFilter = true,
+	                                     rawData,
+	                                     sortMethod,
+	                                     wait = globalSetup.wait,
+	                                     tableHeight = 350,
+	                                     coinJson,
+	                                     account,
+	                                     tokenPrices,
+	                                     showLoading,
+	                                     handleWithdraw,
     handleDeposit,
     tokenMap,
     forexMap,
@@ -293,9 +257,9 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               display={"flex"}
             >
               <IconColumn
-                row={row as any}
-                account={account}
-                activityInProgressRules={activityInProgressRules}
+	              row={row as any}
+	              account={account}
+	              campaignTagConfig={campaignTagConfig}
               />
             </Box>
           );
@@ -472,10 +436,10 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               display={"flex"}
             >
               <IconColumn
-                account={account}
-                row={row as any}
-                size={20}
-                activityInProgressRules={activityInProgressRules}
+	              account={account}
+	              row={row as any}
+	              size={20}
+	              campaignTagConfig={campaignTagConfig}
               />
             </Box>
           );

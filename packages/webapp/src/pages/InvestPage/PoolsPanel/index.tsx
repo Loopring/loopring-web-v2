@@ -20,6 +20,7 @@ import {
   useSystem,
   useAmmActivityMap,
   useTokenMap,
+  useNotify,
 } from "@loopring-web/core";
 import { BackIcon, RowInvestConfig } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
@@ -65,7 +66,7 @@ export const PoolsPanel = withTranslation("common")(
     const { tokenMap } = useTokenMap();
     const { tokenPrices } = store.getState().tokenPrices;
     const showLoading = rawData && !rawData.length;
-    const { activityInProgressRules } = useAmmActivityMap();
+    const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1}>
@@ -129,7 +130,7 @@ export const PoolsPanel = withTranslation("common")(
                 showLoading,
                 tableHeight,
                 sortMethod,
-                activityInProgressRules,
+                campaignTagConfig,
                 coinJson,
                 account,
                 tokenPrices,
