@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Avatar, Box, Button, IconButton, Typography } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Account,
-  AmmRankIcon,
+  CAMPAIGN_TAG,
   CurrencyToTag,
   EmptyValueTag,
   FloatTag,
@@ -14,17 +14,12 @@ import {
   RowConfig,
   StarHollowIcon,
   StarSolidIcon,
-  TrophyIcon,
 } from "@loopring-web/common-resources";
 import { Column, Table } from "../../basic-lib";
 import { TablePaddingX } from "../../styled";
 import { useSettings } from "@loopring-web/component-lib/src/stores";
 import { useDispatch } from "react-redux";
-import {
-  AmmPoolInProgressActivityRule,
-  Currency,
-  LoopringMap,
-} from "@loopring-web/loopring-sdk";
+import { Currency } from "@loopring-web/loopring-sdk";
 import React from "react";
 
 const TableWrapperStyled = styled(Box)`
@@ -126,6 +121,7 @@ type IGetColumnModePros = {
 export interface QuoteTableProps {
   rawData: QuoteTableRawDataItem[];
   rowHeight?: number;
+  campaignTagConfig: CAMPAIGN_TAG[] | undefined;
   headerRowHeight?: number;
   onVisibleRowsChange?: (startIndex: number) => void;
   onRowClick?: (
@@ -141,7 +137,6 @@ export interface QuoteTableProps {
   showLoading?: boolean;
   isPro?: boolean;
   forexMap: ForexMap<Currency>;
-  activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
 }
 
 export type VisibleDataItem = {
@@ -157,6 +152,7 @@ export const QuoteTable = withTranslation("tables")(
       rowHeight = RowConfig.rowHeight,
       headerRowHeight = RowConfig.rowHeaderHeight,
       onVisibleRowsChange,
+      campaignTagConfig,
       rawData,
       history,
       onRowClick,
@@ -167,7 +163,7 @@ export const QuoteTable = withTranslation("tables")(
       account,
       forexMap,
       isPro = false,
-      activityInProgressRules,
+      // activityInProgressRules,
       ...rest
     }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
       let userSettings = useSettings();
@@ -176,7 +172,6 @@ export const QuoteTable = withTranslation("tables")(
       const getColumnMode = (
         props: IGetColumnModePros & {
           currency: Currency;
-          activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
         }
       ): Column<QuoteTableRawDataItem, unknown>[] => {
         const {
@@ -187,7 +182,7 @@ export const QuoteTable = withTranslation("tables")(
           favoriteMarket,
           currency,
           isPro,
-          activityInProgressRules,
+          // activityInProgressRules,
         } = props;
 
         const basicRender = [
@@ -228,64 +223,83 @@ export const QuoteTable = withTranslation("tables")(
                     </Typography>
                   </Typography>
                   &nbsp;
-                  {activityInProgressRules &&
-                    activityInProgressRules[pair] &&
-                    activityInProgressRules[pair].ruleType.map(
-                      (ruleType, index) => (
-                        <Box
-                          key={ruleType.toString() + index}
-                          style={{ cursor: "pointer", paddingTop: 4 }}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            const date = new Date(
-                              activityInProgressRules[pair].rangeFrom
-                            );
-                            const year = date.getFullYear();
-                            const month = (
-                              "0" + (date.getMonth() + 1).toString()
-                            ).slice(-2);
-                            // const day = ("0" + date.getDate().toString()).slice(
-                            //   -2
-                            // );
-                            const current_event_date = `${year}-${month}`;
-
-                            history.push(
-                              `/race-event/${current_event_date}?selected=${pair}&type=${ruleType}&l2account=${account?.accAddress}`
-                            );
-                          }}
-                        >
-                          <TrophyIcon />
-                        </Box>
-                      )
-                    )}
-                  {activityInProgressRules &&
-                    activityInProgressRules[`AMM-${pair}`] && (
-                      <Box
-                        style={{ cursor: "pointer", paddingTop: 4 }}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          const date = new Date(
-                            activityInProgressRules[`AMM-${pair}`].rangeFrom
-                          );
-                          const year = date.getFullYear();
-                          const month = (
-                            "0" + (date.getMonth() + 1).toString()
-                          ).slice(-2);
-                          // const day = ("0" + date.getDate().toString()).slice(
-                          //   -2
-                          // );
-                          const current_event_date = `${year}-${month}`;
-
-                          history.push(
-                            `/race-event/${current_event_date}?pair=${pair}&type=${
-                              activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                            }&l2account=${account?.accAddress}`
-                          );
-                        }}
-                      >
-                        <AmmRankIcon />
-                      </Box>
-                    )}
+                  {campaignTagConfig &&
+                    campaignTagConfig.map((item) => {
+                      if (
+                        item.scenario.includes("market") &&
+                        item.endShow >= Date.now() &&
+                        item.startShow <= Date.now()
+                      ) {
+                        return (
+                          <Avatar
+                            alt={item.name}
+                            style={{
+                              width: "var(--svg-size-medium)",
+                              height: "var(--svg-size-medium)",
+                            }}
+                            src={item.iconSource}
+                          />
+                        );
+                      } else {
+                        return <></>;
+                      }
+                    })}
+                  {/*{activityInProgressRules &&*/}
+                  {/*  activityInProgressRules[pair] &&*/}
+                  {/*  activityInProgressRules[pair].ruleType.map(*/}
+                  {/*    (ruleType, index) => (*/}
+                  {/*      <Box*/}
+                  {/*        key={ruleType.toString() + index}*/}
+                  {/*        style={{ cursor: "pointer", paddingTop: 4 }}*/}
+                  {/*        onClick={(event) => {*/}
+                  {/*          event.stopPropagation();*/}
+                  {/*          const date = new Date(*/}
+                  {/*            activityInProgressRules[pair].rangeFrom*/}
+                  {/*          );*/}
+                  {/*          const year = date.getFullYear();*/}
+                  {/*          const month = (*/}
+                  {/*            "0" + (date.getMonth() + 1).toString()*/}
+                  {/*          ).slice(-2);*/}
+                  {/*          // const day = ("0" + date.getDate().toString()).slice(*/}
+                  {/*          //   -2*/}
+                  {/*          // );*/}
+                  {/*          const current_event_date = `${year}-${month}`;*/}
+                  {/*          history.push(*/}
+                  {/*            `/race-event/${current_event_date}?selected=${pair}&type=${ruleType}&l2account=${account?.accAddress}`*/}
+                  {/*          );*/}
+                  {/*        }}*/}
+                  {/*      >*/}
+                  {/*        <TrophyIcon />*/}
+                  {/*      </Box>*/}
+                  {/*    )*/}
+                  {/*  )}*/}
+                  {/*{activityInProgressRules &&*/}
+                  {/*  activityInProgressRules[`AMM-${pair}`] && (*/}
+                  {/*    <Box*/}
+                  {/*      style={{ cursor: "pointer", paddingTop: 4 }}*/}
+                  {/*      onClick={(event) => {*/}
+                  {/*        event.stopPropagation();*/}
+                  {/*        const date = new Date(*/}
+                  {/*          activityInProgressRules[`AMM-${pair}`].rangeFrom*/}
+                  {/*        );*/}
+                  {/*        const year = date.getFullYear();*/}
+                  {/*        const month = (*/}
+                  {/*          "0" + (date.getMonth() + 1).toString()*/}
+                  {/*        ).slice(-2);*/}
+                  {/*        // const day = ("0" + date.getDate().toString()).slice(*/}
+                  {/*        //   -2*/}
+                  {/*        // );*/}
+                  {/*        const current_event_date = `${year}-${month}`;*/}
+                  {/*        history.push(*/}
+                  {/*          `/race-event/${current_event_date}?pair=${pair}&type=${*/}
+                  {/*            activityInProgressRules[`AMM-${pair}`].ruleType[0]*/}
+                  {/*          }&l2account=${account?.accAddress}`*/}
+                  {/*        );*/}
+                  {/*      }}*/}
+                  {/*    >*/}
+                  {/*      <AmmRankIcon />*/}
+                  {/*    </Box>*/}
+                  {/*  )}*/}
                 </Box>
               );
             },
@@ -505,7 +519,6 @@ export const QuoteTable = withTranslation("tables")(
           favoriteMarket,
           currency,
           isPro,
-          activityInProgressRules,
         }),
         generateRows: (rawData: any) => rawData,
         onRowClick: onRowClick,

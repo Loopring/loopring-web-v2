@@ -118,7 +118,7 @@ Q： What’s the risk of dual investment?
 A： According to the rule of dual investment, uncertainty is the settlement currency. The settlement currency will depend
 on whether the settlement price has reached the target price at the delivery date.
 
-Q： What are the benefits of using Dual Investment on Loopring?
+Q： What are the benefits of using Dual Investment on Loopring?  
 A：Your token for investment is just locked but still in your account as Loopring is a DEX. When the transaction expires,
 if the settlement price is not reached, you will get a profit and the frozen token will also be unlocked; if the
 settlement price is reached, your investment and interest income will be converted into the target token at the Target

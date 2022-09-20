@@ -147,6 +147,7 @@ let json = {
   activitiesInvest: [],
   notifications: [],
   invest: [],
+  campaignTagConfig: [],
   prev: {
     endDate: Date.now(),
   },
@@ -173,6 +174,14 @@ const TYPE_ITEM = {
   banner: 11,
   bannerWeb: 12,
   webRouter: 13,
+};
+const TAGP_CONFIF_ITEM = {
+  name: 0,
+  startShow: 1,
+  endShow: 2,
+  iconSource: 3,
+  symbol: 4,
+  scenario: 5,
 };
 const PLACE = {
   HOME: "HOME",
@@ -299,6 +308,46 @@ async function createNotifyJSON(lng) {
   fs.writeFileSync(storeFilePath, JSON.stringify(json));
 }
 
+async function createTagJson() {
+  const tagPath = `${_router}/tagConfig.csv`;
+  if (fs.existsSync(tagPath)) {
+    await new Promise((resolve, reject) => {
+      const list = [];
+      fs.createReadStream(tagPath)
+        .pipe(parse({ delimiter: ",", from_line: 2 }))
+        .on("data", (data) => {
+          list.push(data);
+        })
+        .on("end", () => {
+          list.map((item) => {
+            const startShow = moment
+              .utc(item[TAGP_CONFIF_ITEM.startShow], "MM/DD/YYYY HH:mm:ss")
+              .valueOf();
+            const endShow = moment
+              .utc(item[TAGP_CONFIF_ITEM.endShow], "MM/DD/YYYY HH:mm:ss")
+              .valueOf();
+
+            const _item = {
+              name: item[TAGP_CONFIF_ITEM.name].trim(),
+              startShow,
+              endShow,
+              iconSource: item[TAGP_CONFIF_ITEM.iconSource].trim(),
+              symbol: item[TAGP_CONFIF_ITEM.symbol]?.trim()?.split(","),
+              scenario: item[TAGP_CONFIF_ITEM.scenario]?.trim()?.split(","),
+            };
+            json.campaignTagConfig = json.campaignTagConfig.concat(_item);
+          }, undefined);
+          console.log(json.campaignTagConfig);
+          resolve(json);
+        })
+        .on("error", function (error) {
+          console.log(error.message);
+          reject(error);
+        });
+    });
+  }
+}
+
 async function start() {
   const notifyHistory = await new Promise((resolve, reject) => {
     fs.createReadStream("./notification.json")
@@ -320,6 +369,7 @@ async function start() {
   for (const lng of lngs) {
     await createNotifyJSON(lng);
   }
+  await createTagJson();
   const jsonNotify = await getNotification();
   const totalNotifyPath = _router + `/notification.json`;
   try {
@@ -334,6 +384,7 @@ async function start() {
     JSON.stringify({
       ...jsonNotify,
       invest: { ...investJson },
+      campaignTagConfig: json.campaignTagConfig,
       prev: json.prev,
     })
   );

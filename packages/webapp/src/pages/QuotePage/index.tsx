@@ -34,13 +34,13 @@ export const QuotePage = withTranslation("common")(
       searchValue,
       removeMarket,
       favoriteMarket,
-      activityInProgressRules,
       handleSearchChange,
       addMarket,
       tableHeight,
       filteredData,
       showLoading,
-      tickList,
+      // tickList,
+      campaignTagConfig,
       handleRowClick,
     } = useQuotePage({ tableRef });
     // const showLoading = !tickList?.length;
@@ -87,6 +87,7 @@ export const QuotePage = withTranslation("common")(
               onRowClick={(index: any, row: any, col: any) =>
                 handleRowClick(row)
               }
+              campaignTagConfig={campaignTagConfig}
               forexMap={forexMap as any}
               account={account}
               rawData={filteredData}
@@ -96,7 +97,6 @@ export const QuotePage = withTranslation("common")(
               currentheight={tableHeight}
               rowHeight={RowConfig.rowHeight}
               headerRowHeight={RowConfig.rowHeaderHeight}
-              activityInProgressRules={activityInProgressRules}
               showLoading={showLoading}
               {...{ ...rest }}
             />

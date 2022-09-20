@@ -33,6 +33,7 @@ const getNotifyApi = async <_R extends { [key: string]: any }>(): Promise<{
       ...notify["en"],
       ...notify[Lang[lng]],
       invest: notify.invest,
+      campaignTagConfig: notify.campaignTagConfig,
       prev: { ...notify?.prev },
     },
   };
