@@ -618,5 +618,5 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         />
       </TableStyled>
     );
-  };
+  }
 );
