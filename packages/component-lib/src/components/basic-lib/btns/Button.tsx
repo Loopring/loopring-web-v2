@@ -67,29 +67,31 @@ export const Button = styled(MuButton)<ButtonProps>`
 ` as (props: ButtonProps) => JSX.Element;
 
 export function ScrollTop({
-  anchorId = "#back-to-top-anchor",
+  // anchorTopRef,
   ...props
 }: {
-  window?: () => Window;
   children: React.ReactElement;
-  anchorId?: string;
+  // anchorTopRef?: React.Ref<any>;
 }) {
-  const { children, window } = props;
+  const { children } = props;
 
   const trigger = useScrollTrigger({
-    target: window ? window() : undefined,
+    target: window ? window : undefined,
     disableHysteresis: true,
     threshold: 100,
   });
 
-  const scrollToTop = (event: React.MouseEvent<HTMLDivElement>) => {
-    const anchor = (
-      (event.target as HTMLDivElement).ownerDocument || document
-    ).querySelector(anchorId);
-    if (anchor) {
-      anchor.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  };
+  const scrollToTop = React.useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const anchor =
+        (event.currentTarget as HTMLDivElement).parentElement || //.ownerDocument || document
+        document.querySelector("#back-to-top-anchor");
+      if (anchor) {
+        window.scrollTo(0, anchor?.offsetTop);
+      }
+    },
+    []
+  );
 
   return (
     <Zoom in={trigger}>
