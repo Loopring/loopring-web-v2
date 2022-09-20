@@ -226,7 +226,8 @@ export const QuoteTable = withTranslation("tables")(
                   {campaignTagConfig &&
                     campaignTagConfig.map((item) => {
                       if (
-                        item.scenario.includes("market") &&
+                        item.scenarios.includes("market") &&
+                        item.symbols
                         item.endShow >= Date.now() &&
                         item.startShow <= Date.now()
                       ) {
