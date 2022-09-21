@@ -344,23 +344,6 @@ export const DualListPanel: any = withTranslation("common")(
                 }}
               />
             </Box>
-            {/*{isLoading ? (*/}
-            {/*  <Box*/}
-            {/*    flex={1}*/}
-            {/*    height={"100%"}*/}
-            {/*    display={"flex"}*/}
-            {/*    alignItems={"center"}*/}
-            {/*    justifyContent={"center"}*/}
-            {/*  >*/}
-            {/*    <img*/}
-            {/*      className="loading-gif"*/}
-            {/*      width="36"*/}
-            {/*      src={`${SoursURL}images/loading-line.gif`}*/}
-            {/*    />*/}
-            {/*  </Box>*/}
-            {/*) : (*/}
-            {/*  */}
-            {/*)}*/}
           </WrapperStyled>
         </StyleDual>
         <ModalDualPanel
