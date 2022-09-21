@@ -468,7 +468,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
 
           case "APR":
             _dualList = rawData.sort((a, b) => {
-              const replaced = new RegExp(`[\\${sdk.SEP},%]`);
+              const replaced = new RegExp(`[\\${sdk.SEP},%]`, "ig");
               const valueA = a.apy?.replace(replaced, "") ?? 0;
               const valueB = b.apy?.replace(replaced, "") ?? 0;
               return Number(valueB) - Number(valueA);

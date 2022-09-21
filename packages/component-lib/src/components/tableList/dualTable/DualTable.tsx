@@ -217,15 +217,16 @@ export const DualTable = withTranslation(["tables", "common"])(
       switch (sortColumn) {
         case "Apy":
           _rawData = rawData.sort((a, b) => {
-            const replaced = new RegExp(`[\\${sdk.SEP},%]`);
+            const replaced = new RegExp(`[\\${sdk.SEP},%]`, "ig");
             const valueA = a.apy?.replace(replaced, "") ?? 0;
             const valueB = b.apy?.replace(replaced, "") ?? 0;
             return Number(valueB) - Number(valueA); //.localeCompare(valueA);
           });
+          // default;
           break;
         case "targetPrice":
           _rawData = rawData.sort((a, b) => {
-            const replaced = new RegExp(`\\${sdk.SEP}`);
+            const replaced = new RegExp(`\\${sdk.SEP}`, "ig");
             const valueA = a.strike?.replace(replaced, "") ?? 0;
             const valueB = b.strike?.replace(replaced, "") ?? 0;
             return Number(valueB) - Number(valueA); //.loc
@@ -240,6 +241,7 @@ export const DualTable = withTranslation(["tables", "common"])(
         default:
           _rawData = rawData;
       }
+
       // resetTableData(_rawData)
       return _rawData;
     }, []);
