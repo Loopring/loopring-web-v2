@@ -44,7 +44,6 @@ the conversion rate.
 ```text 
 Target Price: 0.48   
 Settlement Date: 21-AUG-2022   
-ROI: 0.6%  
 APR: 73%  
 Investment Currency: LRC  
 ```
@@ -55,9 +54,9 @@ Investment due in the week.
 ###### At 21-AUG-2022
 
 - Scenario 1
-    - `If the Settlement Price of LRC on that day is lower than the Target Price of 0.48 USDT, the user will get 0.6% of LRC, that is, 1000 * (1 + 0.6%) LRC = 1006 LRC.`
+    - `If the Settlement Price of LRC on that day is lower than the Target Price of 0.48 USDT, the user will get 0.6% of LRC, that is, 1000 * (1 + 73% / 365 * 3) LRC = 1006 LRC.`
 - Scenario 2
-    - `If the Settlement Price of LRC is higher than the Target Price of 0.48 USDT, the end user will get 0.6% of USDT, that is, 1000 * 0.48 * (1 + 0.6%) USDT = 482.88 USDT.`
+    - `If the Settlement Price of LRC is higher than the Target Price of 0.48 USDT, the end user will get 0.6% of USDT, that is, 1000 * 0.48 * (1 + 73% / 365 * 3) USDT = 482.88 USDT.`
 
 After the order expires, the user will get 0.6% of the income. The only uncertainty is the currency of the return, which
 depends on the LRC/USDT settlement price at the time of expiration.
@@ -68,8 +67,7 @@ depends on the LRC/USDT settlement price at the time of expiration.
 
 ```text 
 Target Price: 0.38  
-Settlement Date: 21-AUG-2022  
-ROI: 0.6%  
+Settlement Date: 21-AUG-2022   
 APR: 73%  
 Investment Currency: USDT  
 ```
@@ -80,9 +78,9 @@ Investment due in one week.
 ###### At 21-AUG-2022
 
 - Scenario 1
-    - `the Settlement Price of LRC on that day is lower than the Target Price of 0.38 USDT, the user will get 0.6% of LRC, that is, (1000/0.38) * (1 + 0.6%) LRC = 2647.368 LRC.`
+    - `the Settlement Price of LRC on that day is lower than the Target Price of 0.38 USDT, the user will get 0.6% of LRC, that is, (1000/0.38) * (1 + 73% / 365 * 3) LRC = 2647.368 LRC.`
 - Scenario 2
-    - `If the settlement price of LRC is higher than the Target Price of 0.38 USDT, the end user will receive 0.6% of USDT, that is, 1000 * (1 + 0.6%) USDT = 1006 USDT.`
+    - `If the settlement price of LRC is higher than the Target Price of 0.38 USDT, the end user will receive 0.6% of USDT, that is, 1000 * (1 + 73% / 365 * 3) USDT = 1006 USDT.`
 
 After the order expires, the user will get 0.6% of the income. The only uncertainty is the currency of the return, which
 depends on the LRC/USDT settlement price at the time of expiration.
@@ -94,7 +92,6 @@ depends on the LRC/USDT settlement price at the time of expiration.
 | Investment Currency  | The currency in which you have purchased the dual investment.  |
 | Settlement Currency  | The currency you will receive when the order expires. It will be either the target currency or USDT. Each product is settled depending on whether reaching the target price.  |
 | Settlement Date  | The date when the order is settled. Return from the order will be automatically credited into your account on this day after 16:00 (UTC+8) |
-| ROI  | The income return on investment. It is expressed in percentages and is used to calculate the settlement amount.  |
 | APR  | Annualized Yield is calculated as the equivalent annual return. If continue purchasing with the given yield for a whole year. Annualized Yield = Yield &#47; (Expiry Date – Today) &#42;365.  *Tips: The holding period is actuarial to milliseconds.* |
 | Target Price  | Target Price is a benchmark price. On Expiry Day, the Settlement Price will be compared against this benchmark price.  |
 | Settlement Price  | The arithmetical average of the Settlement Index sampled every 4 seconds in the last 30 minutes before 16:00 (UTC+8) on the Expiry date.  |
