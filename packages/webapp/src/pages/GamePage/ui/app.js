@@ -1,8 +1,3 @@
-// Third party dependencies
-import {
-  html,
-  Component,
-} from "../web_modules/htm/preact/standalone.module.js";
 import gsap from "./animations.js";
 // @ts-ignore
 import { Flip } from "../web_modules/gsap/Flip.js";
@@ -251,14 +246,14 @@ stw.dealCards()`);
         <Overlay>
           <p center>You are dead.</p>
           <DungeonStats state={state} />
-          <button onclick={() => props.onLoose()}>Try again?</button>
+          <button onclick={() => onLoose()}>Try again?</button>
         </Overlay>
       )}
 
       {didWinEntireGame && (
         <Overlay>
           <p center>
-            <button onclick={() => props.onWin()}>You win!</button>
+            <button onclick={() => onWin()}>You win!</button>
           </p>
           <DungeonStats state={state} />
         </Overlay>
