@@ -1,7 +1,7 @@
 import gsap from "../web_modules/gsap.js";
 import { useEffect, useState } from "react";
 
-export const SplashScreen = (onNewGame, onContinue) => {
+export const SplashScreen = (onNewGame) => {
   const [showTutorial, setShowTutorial] = useState(false);
   useEffect(() => {
     gsap.from(".Splash--fadein", { duration: 0.5, autoAlpha: 0, scale: 0.95 });
@@ -27,19 +27,19 @@ export const SplashScreen = (onNewGame, onContinue) => {
         {location.hash ? (
           <>
             <li>
-              <button autofocus onClick={() => onNewGame}>
+              <button autofocus onClick={() => onNewGame.onNewGame()}>
                 Continue Game
               </button>
             </li>
             <li>
-              <button autofocus onClick={() => onNewGame}>
+              <button autofocus onClick={() => onNewGame.onNewGame()}>
                 New Game
               </button>
             </li>
           </>
         ) : (
           <li>
-            <button autofocus onClick={() => onNewGame}>
+            <button autofocus onClick={() => onNewGame.onNewGame()}>
               Play
             </button>
           </li>

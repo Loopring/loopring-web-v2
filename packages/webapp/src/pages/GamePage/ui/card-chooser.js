@@ -1,6 +1,6 @@
 import { Card } from "./cards.js";
 
-export default CardChooser = () => {
+export const CardChooser = () => {
   const clickedCard = (card) => {
     didSelectCard(card);
   };

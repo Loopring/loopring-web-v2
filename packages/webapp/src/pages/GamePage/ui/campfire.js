@@ -1,7 +1,7 @@
 import { useState } from "react";
-import CardChooser from "./card-chooser.js";
+import { CardChooser } from "./card-chooser.js";
 
-export default CampfireRoom = () => {
+export const CampfireRoom = () => {
   const [state, setState] = useState();
   const rest = () => {
     onChoose("rest");

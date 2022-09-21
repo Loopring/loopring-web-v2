@@ -19,9 +19,11 @@ export const SlayTheWeb = () => {
     gameMode: GameModes.splash || "splash",
   });
   const handleNewGame = () => {
+    console.log("clikced new game");
     setState({ gameMode: GameModes.gameplay });
     // Clear any previous saved game.
     window.history.pushState("", document.title, window.location.pathname);
+    localStorage.removeItem("saveGame");
   };
   const handleWin = () => {
     setState({ gameMode: GameModes.win });
@@ -32,16 +34,13 @@ export const SlayTheWeb = () => {
   return (
     <>
       {state.gameMode === GameModes.splash && (
-        <SplashScreen
-          onNewGame={handleNewGame()}
-          onContinue={handleNewGame()}
-        />
+        <SplashScreen onNewGame={handleNewGame} />
       )}
       {state.gameMode === GameModes.gameplay && (
-        <App onWin={handleWin()} onLoose={handleLoose()} />
+        <App onWin={() => handleWin()} onLoose={() => handleLoose()} />
       )}
       {state.gameMode === GameModes.win && (
-        <WinScreen onNewGame={handleNewGame()} />
+        <WinScreen onNewGame={() => handleNewGame()} />
       )}
     </>
   );

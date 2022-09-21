@@ -1,6 +1,6 @@
 import { canPlay } from "../game/conditions.js";
 
-export default Cards = () => {
+export const Cards = () => {
   // props = {gameState: {}, type ''}
   const cards = props.gameState[props.type];
   return (

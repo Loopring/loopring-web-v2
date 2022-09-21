@@ -15,16 +15,16 @@ import {
 import * as backend from "../game/backend.js";
 
 // UI Components
-import Cards from "./cards.js";
-import Map from "./map.js";
+import { Cards } from "./cards.js";
+import { Map } from "./map.js";
 import { Overlay, OverlayWithButton } from "./overlays.js";
 import { Player, Monster } from "./player.js";
-import CardChooser from "./card-chooser.js";
-import CampfireRoom from "./campfire.js";
-import Menu from "./menu.js";
-import StartRoom from "./start-room.js";
-import DungeonStats from "./dungeon-stats.js";
-import enableDragDrop from "./dragdrop.js";
+import { CardChooser } from "./card-chooser.js";
+import { CampfireRoom } from "./campfire.js";
+import { Menu } from "./menu.js";
+import { StartRoom } from "./start-room.js";
+import { DungeonStats } from "./dungeon-stats.js";
+import { enableDragDrop } from "./dragdrop.js";
 
 // Temporary hack to disabled sounds without touching game code.
 import realSfx from "./sounds.js";
@@ -37,7 +37,7 @@ Object.keys(realSfx).forEach((key) => {
 const load = () =>
   JSON.parse(decodeURIComponent(window.location.hash.split("#")[1]));
 
-export const App = () => {
+export const App = (onWin, onLoose) => {
   const base = undefined;
   const [state, setState] = useState({});
   const game = {};
@@ -58,7 +58,7 @@ export const App = () => {
     }
 
     enableConsole();
-  });
+  }, []);
 
   const enableConsole = () => {
     // Enable a "console" in the browser.
@@ -219,14 +219,19 @@ stw.dealCards()`);
     game.enqueue({ type: "move", move });
     update(dealCards);
   };
-
+  if (Object.keys(state).length === 0) {
+    console.log("NEW");
+    const game = createNewGame();
+    setState(game.state, dealCards);
+  }
+  console.log({ state });
   if (!state.player) return;
   const isDead = state.player.currentHealth < 1;
   const didWin = isCurrRoomCompleted(state);
   const didWinEntireGame = isDungeonCompleted(state);
   const room = getCurrRoom(state);
   const noEnergy = !state.player.currentEnergy;
-
+  console.log("ola!");
   // There's a lot here because I did not want to split into too many files.
   return (
     <>
