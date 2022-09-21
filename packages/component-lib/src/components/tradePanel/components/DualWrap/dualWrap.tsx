@@ -146,14 +146,14 @@ export const DualDetail = ({
       base
         ? getValuePrecisionThousand(
             currentPrice.currentPrice,
-            tokenMap[quote].precision,
-            tokenMap[quote].precision,
-            tokenMap[quote].precision,
+            tokenMap[base].precision,
+            tokenMap[base].precision,
+            tokenMap[base].precision,
             true,
             { floor: true }
           )
         : EmptyValueTag,
-    [dualViewInfo.currentPrice.currentPrice, quote, tokenMap]
+    [dualViewInfo.currentPrice.currentPrice, base, tokenMap]
   );
 
   const targetView = React.useMemo(

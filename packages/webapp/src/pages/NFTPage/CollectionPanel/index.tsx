@@ -90,10 +90,14 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             setCreateOpen(true);
             history.push(`/nft/mintNFT/${item.contractAddress}`);
           }}
+          setShowTradeIsFrozen={() => {
+            setShowTradeIsFrozen({ isShow: true });
+          }}
           setShowDeploy={(item: Co) => {
             const _deployItem: TradeNFT<any, any> = {
               tokenAddress: item?.contractAddress,
-              nftType: NFTType[item.nftType ?? 0],
+              nftType: item.nftType,
+              collectionMeta: item,
             };
             LoopringAPI.userAPI
               ?.getAvailableBroker({ type: 0 })

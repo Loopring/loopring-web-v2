@@ -983,7 +983,7 @@ export default {
   labelL2toRampTitle: "Send to Ramp",
   labelDualInvest: "Invest {{symbol}}",
   labelDualBase: "Sell High for {{symbol}}",
-  labelDualQuote: "Base {{symbol}} Low",
+  labelDualQuote: "Buy {{symbol}} Low",
   labelDualAgree: "I have read risk warning",
   labelDualRiskTitle: "Dual Investment",
   labelDualInvestBaseTitle: "Invest {{symbolA}} (Sell High for {{symbolB}})",

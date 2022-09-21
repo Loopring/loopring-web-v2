@@ -5,6 +5,7 @@ import {
   MenuItemProps as muMenuItemProps,
 } from "@mui/material";
 import {
+  Account,
   CoinInfo,
   CoinKey,
   CoinMap,
@@ -108,4 +109,24 @@ export type CollectionListProps<Co> = {
   etherscanBaseUrl: string;
   baseURL: string;
   getIPFSString: GET_IPFS_STRING;
+};
+export type CollectionItemProps<Co> = {
+  item: Co;
+  index: number;
+  setCopyToastOpen: (prosp: { isShow: boolean; type: string }) => void;
+  setShowDeploy?: (item: Co) => void;
+  setShowEdit?: (item: Co) => void;
+  setShowTradeIsFrozen?: (item: Co) => void;
+  setShowMintNFT?: (item: Co) => void;
+  onItemClick?: (item: Co) => void;
+  account?: Account;
+  toggle: any;
+  isSelectOnly?: boolean;
+  noEdit?: boolean;
+  selectCollection?: Co;
+  domain: string;
+  makeMeta: MakeMeta;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
+  etherscanBaseUrl: string;
 };
