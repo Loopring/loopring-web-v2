@@ -15,7 +15,7 @@ export type AmmDetailStore<T> = AmmDetailBase<T> & {
   address: string;
   tradeFloat: Partial<TradeFloat>;
   __rawConfig__: AmmPoolInfoV3;
-};
+} & AmmPoolInfoV3;
 export type AmmMap<
   R extends { [key: string]: any },
   I extends { [key: string]: any }

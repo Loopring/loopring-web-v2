@@ -1,7 +1,9 @@
 import React from "react";
 import {
+  AccountStep,
   DualChgData,
   DualWrapProps,
+  setShowAccount,
   TradeBtnStatus,
   useOpenModals,
   useToggle,
@@ -43,8 +45,6 @@ import {
 } from "../../index";
 import { useTranslation } from "react-i18next";
 import { useTradeDual } from "../../stores";
-import { useHistory } from "react-router-dom";
-import { sleep } from "@loopring-web/loopring-sdk";
 
 export const useDualTrade = <
   T extends IBData<I>,
@@ -55,7 +55,6 @@ export const useDualTrade = <
   const refreshRef = React.useRef();
   const { exchangeInfo, allowTrade } = useSystem();
   const { tokenMap, marketArray } = useTokenMap();
-  const history = useHistory();
   // const { amountMap, getAmount, status: amountStatus } = useAmount();
   const { marketMap: dualMarketMap } = useDualMap();
   const { account, status: accountStatus } = useAccount();
@@ -380,7 +379,7 @@ export const useDualTrade = <
           dualPrice: { dualBid },
         } = tradeDual.dualViewInfo.__raw__.info;
 
-        myLog("fee", tradeDual.feeVol);
+        // myLog("fee", tradeDual.feeVol);
         const request: sdk.DualOrderRequest = {
           clientOrderId: "",
           exchange: exchangeInfo.exchangeAddress,
@@ -426,29 +425,32 @@ export const useDualTrade = <
           )
             ? SDK_ERROR_MAP_TO_UI[115003]
             : SDK_ERROR_MAP_TO_UI[700001];
-          throw new CustomErrorWithCode({ ...response, ...errorItem } as any);
+          throw new CustomErrorWithCode({
+            ...response,
+            ...errorItem,
+          } as any);
         } else {
-          setToastOpen({
-            open: true,
-            type: "success",
-            content: t("labelDualSuccess", {
-              symbol: coinBuySymbol,
-            }),
-          });
-          await sleep(2000);
           setShowDual({ isShow: false, dualInfo: undefined });
-          history.push("/invest/balance");
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Dual_Success,
+            info: {
+              symbol: sellToken.symbol,
+              value: tradeDual.coinSell.tradeValue,
+            },
+          });
         }
       } else {
         throw new Error("api not ready");
       }
     } catch (reason) {
-      setToastOpen({
-        open: true,
-        type: "error",
-        content:
-          t("labelDualFailed") + (reason as CustomErrorWithCode)?.messageKey ??
-          ` error: ${t((reason as CustomErrorWithCode)?.messageKey)}`,
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.Dual_Failed,
+        error: reason,
+        info: {
+          symbol: tradeDual?.coinSell?.belong,
+        },
       });
     } finally {
       should15sRefresh(true);

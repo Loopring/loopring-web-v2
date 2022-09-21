@@ -991,7 +991,7 @@ export default {
   labelDualInvestDes:
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
   labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
-  labelDualSuccess: "Successfully invest {{symbol}}",
+  labelDualSuccess: "Subscription {{symbol}} Successfully",
   labelDualFailed: "Subscribe Failed",
   labelDualFee: "Fee",
   labelDualMin: "Minimum of {{arg}}",
@@ -1038,4 +1038,8 @@ export default {
   labelInvestMyAmm: "My Investment AMM",
   labelInvestMyDual: "My Investment Dual",
   labelInvestMyDefi: "My Investment Staking",
+  labelInvestMaxDual: "Max {{value}}",
+  labelDualTitle: "Dual Investment",
+  labelDualDesSuccess:
+    "Your token for investment is just locked but still in your account as Loopring is a DEX. \n When the transaction expires, if the settlement price is not reached, you will get a profit and the frozen token will also be unlocked; if the settlement price is reached, your investment and interest income will be converted into the target token at the Target price.",
 };

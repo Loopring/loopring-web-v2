@@ -21,6 +21,8 @@ import {
   Deposit_Submit,
   Deposit_WaitForAuth,
   DepositProps,
+  Dual_Failed,
+  Dual_Success,
   ExportAccount_Approve_WaitForAuth,
   ExportAccount_Failed,
   ExportAccount_Success,
@@ -142,6 +144,7 @@ import {
   useNotify,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { useHistory } from "react-router-dom";
 
 export function useAccountModalForUI({
   t,
@@ -163,7 +166,7 @@ export function useAccountModalForUI({
   const { updateWalletLayer2 } = useWalletLayer2();
   const { processRequestRampTransfer } = useRampTransPost();
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
-
+  const history = useHistory();
   const {
     modals: {
       isShowAccount,
@@ -2198,6 +2201,48 @@ export function useAccountModalForUI({
           <ExportAccount_Failed
             patch={{ isReset: true }}
             btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Dual_Success]: {
+        view: (
+          <Dual_Success
+            btnInfo={{
+              btnTxt: "labelClose",
+              callback: (e: any) => {
+                setShouldShow(false);
+                history.push("/invest/balance");
+                if (onClose) {
+                  onClose(e);
+                }
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Dual_Failed]: {
+        view: (
+          <Dual_Failed
+            btnInfo={{
+              btnTxt: "labelClose",
+              callback: (e: any) => {
+                setShouldShow(false);
+                if (onClose) {
+                  onClose(e);
+                }
+              },
+            }}
             {...{
               ...rest,
               account,

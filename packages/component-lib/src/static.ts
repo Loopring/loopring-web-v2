@@ -564,6 +564,7 @@ export const DUALCALCDATA: DualCalcData<DualViewInfo> = {
     belong: "USDC",
     tradeValue: undefined,
   },
+  quota: "1000",
   feeTokenSymbol: "LRC",
   feeVol: undefined,
   greaterEarnTokenSymbol: "",

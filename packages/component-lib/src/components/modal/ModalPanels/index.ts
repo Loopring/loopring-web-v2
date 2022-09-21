@@ -6,6 +6,8 @@ export * from "./Deposit";
 export * from "./DepositNFT";
 export * from "./Transfer";
 export * from "./Withdraw";
+export * from "./Dual";
+
 export * from "./UpdateAccount";
 export * from "./UnlockAccount";
 export * from "./ExportAccount";

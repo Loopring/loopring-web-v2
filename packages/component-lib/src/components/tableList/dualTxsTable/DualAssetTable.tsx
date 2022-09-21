@@ -27,6 +27,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { DualDetail } from "../../tradePanel";
 import BigNumber from "bignumber.js";
 import { LoopringAPI } from "@loopring-web/core";
+import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   display: flex;
@@ -235,6 +236,18 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const {
+              sellSymbol,
+              buySymbol,
+              __raw__: {
+                order: { dualType },
+              },
+            } = row;
+            const [base, quote] =
+              dualType === DUAL_TYPE.DUAL_BASE
+                ? [sellSymbol, buySymbol]
+                : [buySymbol, sellSymbol];
+            //${row.sellSymbol}/${row.buySymbol}
             return (
               <Typography
                 component={"span"}
@@ -264,7 +277,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                     display={"inline-flex"}
                     color={"textPrimary"}
                   >
-                    {`${row.sellSymbol}/${row.buySymbol}`}
+                    {`${base}/${quote}`}
                   </Typography>
                 </Typography>
               </Typography>

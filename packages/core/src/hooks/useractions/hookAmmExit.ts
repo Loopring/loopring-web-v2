@@ -437,7 +437,7 @@ export const useAmmExit = ({
           eddsaKey: account.eddsaKey.sk,
         };
 
-        const burnedReq: sdk.GetNextStorageIdRequest = {
+	      const burnedReq: sdk.GetNextStorageIdRequest = {
           accountId: account.accountId,
           sellTokenId: req.exitTokens.burned.tokenId as number,
         };
@@ -447,6 +447,9 @@ export const useAmmExit = ({
         );
 
         req.storageId = storageId0.offchainId;
+        if (ammInfo.domainSeparator) {
+          req.domainSeparator = ammInfo.domainSeparator;
+        }
 
         try {
           myLog("---- try to exit req:", req);

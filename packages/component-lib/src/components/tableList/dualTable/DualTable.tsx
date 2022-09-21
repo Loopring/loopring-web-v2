@@ -201,8 +201,6 @@ export const DualTable = withTranslation(["tables", "common"])(
       [t]
     );
 
-    // const [isDropDown, setIsDropDown] = React.useState(true);
-
     const defaultArgs: any = {
       columnMode: isMobile
         ? getColumnMobileTransaction()

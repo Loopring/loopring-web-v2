@@ -108,12 +108,13 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
     .returnV1{
       right: 25%;
       transform: translateX(50%);  
-      background-color: ${hexToRGB(theme.colorBase.success, 0.3)};
+      background-color: ${hexToRGB(theme.colorBase.warning, 0.3)};
+
     }
     .returnV2{
       left: 25%;
       transform: translateX(-50%);
-      background-color: ${hexToRGB(theme.colorBase.warning, 0.3)};
+      background-color: ${hexToRGB(theme.colorBase.success, 0.3)};
 
      
     }
@@ -214,7 +215,7 @@ export const DualDetail = ({
           <Box className={"returnV1 returnV"}>
             <Typography
               variant={"body2"}
-              color={"var(--color-success)"}
+              color={"var(--color-warning)"}
               whiteSpace={"pre-line"}
             >
               {quote &&
@@ -231,7 +232,7 @@ export const DualDetail = ({
           <Box className={"returnV2 returnV"}>
             <Typography
               variant={"body2"}
-              color={"var(--color-warning)"}
+              color={"var(--color-success)"}
               whiteSpace={"pre-line"}
             >
               {base &&
@@ -482,7 +483,18 @@ export const DualWrap = <
     label: t("tokenEnterPaymentToken"),
     subLabel: t("tokenMax"),
     emptyText: t("tokenSelectToken"),
-    placeholderText: "0.00",
+    placeholderText: dualCalcData.maxSellAmount
+      ? t("labelInvestMaxDual", {
+          value: getValuePrecisionThousand(
+            dualCalcData.maxSellAmount,
+            dualCalcData.sellToken.precision,
+            dualCalcData.sellToken.precision,
+            dualCalcData.sellToken.precision,
+            false,
+            { floor: false, isAbbreviate: true }
+          ),
+        })
+      : "0.00",
     maxAllow: true,
     ...tokenSellProps,
     handleError: handleError as any,
@@ -533,11 +545,11 @@ export const DualWrap = <
     [dualCalcData.greaterEarnTokenSymbol, dualCalcData.greaterEarnVol, tokenMap]
   );
 
-  const maxSellAmount = React.useMemo(
+  const totalQuota = React.useMemo(
     () =>
-      dualCalcData.maxSellAmount && dualCalcData.sellToken
+      dualCalcData.quota && dualCalcData.sellToken
         ? getValuePrecisionThousand(
-            dualCalcData.maxSellAmount,
+            dualCalcData.quota,
             dualCalcData.sellToken.precision,
             dualCalcData.sellToken.precision,
             dualCalcData.sellToken.precision,
@@ -547,7 +559,6 @@ export const DualWrap = <
         : EmptyValueTag,
     [dualCalcData]
   );
-  myLog("maxSellAmount", dualCalcData.maxSellAmount, maxSellAmount);
 
   return (
     <Grid
@@ -608,7 +619,7 @@ export const DualWrap = <
                   variant={"inherit"}
                   color={"textPrimary"}
                 >
-                  {maxSellAmount + " " + dualCalcData.coinSell.belong}
+                  {totalQuota + " " + dualCalcData.coinSell.belong}
                 </Typography>
               </Typography>
             </Box>

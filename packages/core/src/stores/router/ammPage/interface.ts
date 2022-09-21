@@ -9,7 +9,7 @@ import {
 
 export type PageAmmCommon = {
   ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined;
-  ammInfo: any;
+  ammInfo: sdk.AmmPoolInfoV3 & { __rawConfig__: any };
 };
 
 type PageAmmBase = {

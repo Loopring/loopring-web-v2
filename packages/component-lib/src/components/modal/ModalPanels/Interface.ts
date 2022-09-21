@@ -140,6 +140,9 @@ export enum AccountStep {
   ExportAccount_User_Denied,
   ExportAccount_Success,
   ExportAccount_Failed,
+
+  Dual_Success,
+  Dual_Failed,
 }
 
 /**

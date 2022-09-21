@@ -491,6 +491,9 @@ export const useAmmJoin = ({
           req.storageIds = [storageId0.offchainId, storageId1.offchainId];
 
           req.validUntil = getTimestampDaysLater(DAYS);
+          if (ammInfo.domainSeparator) {
+            req.domainSeparator = ammInfo.domainSeparator;
+          }
 
           myLog("join ammpool req:", req);
 
