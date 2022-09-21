@@ -10,6 +10,7 @@ import { RawDataDualsItem } from "./Interface";
 import {
   EmptyValueTag,
   ForexMap,
+  getValuePrecisionThousand,
   RowInvestConfig,
   UpColor,
   UpIcon,
@@ -100,7 +101,7 @@ export const DualTable = withTranslation(["tables", "common"])(
                 height={"100%"}
                 alignItems={"center"}
               >
-                <Typography component={"span"}> {row.settleRatio}</Typography>
+                <Typography component={"span"}> {row.strike}</Typography>
                 <Typography
                   component={"span"}
                   display={"inline-flex"}
@@ -113,7 +114,13 @@ export const DualTable = withTranslation(["tables", "common"])(
                       transform: row.isUp ? "" : "rotate(-180deg)",
                     }}
                   />
-                  {row.strike}
+                  {getValuePrecisionThousand(
+                    Number(row.settleRatio) * 100,
+                    2,
+                    2,
+                    2,
+                    true
+                  ) + "%" || EmptyValueTag}
                 </Typography>
               </Box>
             );
