@@ -106,6 +106,8 @@ export const DualTable = withTranslation(["tables", "common"])(
                   component={"span"}
                   display={"inline-flex"}
                   alignItems={"center"}
+                  color={"textSecondary"}
+                  variant={"body2"}
                 >
                   <UpIcon
                     fontSize={"small"}
@@ -114,13 +116,19 @@ export const DualTable = withTranslation(["tables", "common"])(
                       transform: row.isUp ? "" : "rotate(-180deg)",
                     }}
                   />
-                  {getValuePrecisionThousand(
-                    Number(row.settleRatio) * 100,
-                    2,
-                    2,
-                    2,
-                    true
-                  ) + "%" || EmptyValueTag}
+                  {row.settleRatio
+                    ? getValuePrecisionThousand(
+                        sdk
+                          .toBig(row.strike ?? 0)
+                          .minus(row.currentPrice?.currentPrice ?? 0)
+                          .div(row.currentPrice?.currentPrice ?? 1)
+                          .times(100),
+                        2,
+                        2,
+                        2,
+                        true
+                      ) + "%"
+                    : EmptyValueTag}
                 </Typography>
               </Box>
             );

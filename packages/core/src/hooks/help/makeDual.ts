@@ -43,7 +43,7 @@ export const makeDualViewItem = (
   // const _baseProfitStep = Number(baseProfitStep);
   const apy = toBig(settleRatio)
     .div((expireTime - Date.now()) / 86400000)
-    .times(365); // year APY
+    .times(36500); // year APY
   const term = moment().to(new Date(expireTime), true);
 
   // const currentPrice tickerMap[market];
@@ -111,7 +111,7 @@ export const makeDualOrderedItem = (
 
   const apy = toBig(settleRatio)
     .div((expireTime - createdAt) / 86400000)
-    .times(365); // year APY
+    .times(36500); // year APY
   const term = moment().to(new Date(expireTime), true);
 
   return {

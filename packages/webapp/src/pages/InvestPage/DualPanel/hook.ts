@@ -17,7 +17,7 @@ import {
   myLog,
   SagaStatus,
 } from "@loopring-web/common-resources";
-
+const DUALLimit = 20;
 export const useDualHook = ({
   setConfirmDualInvest,
 }: {
@@ -134,7 +134,7 @@ export const useDualHook = ({
         dualType,
         startTime: Date.now() + 1000 * 60 * 60,
         timeSpan: 1000 * 60 * 60 * 24 * 9,
-        limit: 100,
+        limit: DUALLimit,
         // limit: number;
       });
 
