@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "gsap": "./gsap.js",
+    "gsap/Draggable.js": "./gsap/Draggable.js",
+    "htm/preact/standalone.module.js": "./htm/preact/standalone.module.js",
+    "immer": "./immer.js",
+    "tone": "./tone.js"
+  }
+}

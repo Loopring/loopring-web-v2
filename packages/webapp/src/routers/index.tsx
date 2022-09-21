@@ -30,6 +30,7 @@ import {
 import { TradeRacePage } from "../pages/TradeRacePage";
 import { GuardianPage } from "../pages/WalletPage";
 import { NFTPage } from "../pages/NFTPage";
+import { Game } from "../pages/GamePage";
 import { useGetAssets } from "../pages/AssetPage/AssetPanel/hook";
 import { Footer } from "../layouts/footer";
 import { InvestPage } from "../pages/InvestPage";
@@ -293,6 +294,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={["/nft", "/nft/*"]}>
           <ContentWrap state={state}>
             <NFTPage />
+          </ContentWrap>
+        </Route>
+        <Route exact path={["/game", "/game/*"]}>
+          <ContentWrap state={state}>
+            <Game />
           </ContentWrap>
         </Route>
         <Route exact path={["/invest", "/invest/*"]}>
