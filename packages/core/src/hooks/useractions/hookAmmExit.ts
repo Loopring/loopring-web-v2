@@ -437,7 +437,7 @@ export const useAmmExit = ({
           eddsaKey: account.eddsaKey.sk,
         };
 
-	      const burnedReq: sdk.GetNextStorageIdRequest = {
+        const burnedReq: sdk.GetNextStorageIdRequest = {
           accountId: account.accountId,
           sellTokenId: req.exitTokens.burned.tokenId as number,
         };
