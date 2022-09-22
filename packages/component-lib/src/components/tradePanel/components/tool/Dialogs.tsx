@@ -657,12 +657,16 @@ export const InformationForAccountFrozen = withTranslation("common", {
         <DialogTitle> {t("labelInformation")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans
-              i18nKey={messageKey}
-              tOptions={{ type: t("label" + type).toLowerCase() }}
-            >
-              please waiting a while, {{ type }} is on updating.
-            </Trans>
+            {messageKey === "labelNoticeForForAccountFrozen" ? (
+              <Trans
+                i18nKey={messageKey}
+                tOptions={{ type: t("label" + type).toLowerCase() }}
+              >
+                please waiting a while, {{ type }} is on updating.
+              </Trans>
+            ) : (
+              t(messageKey, { type })
+            )}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

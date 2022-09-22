@@ -157,9 +157,12 @@ const getInvestMapApi = async () => {
             type: InvestMapType.DUAL,
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             //@ts-ignore
-            apr: [dualInfo?.baseTokenApy?.min, dualInfo?.baseTokenApy?.max], // [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
+            apr: [
+              dualInfo?.baseTokenApy?.min ?? 0,
+              dualInfo?.baseTokenApy?.max ?? 0,
+            ], // [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
             durationType: InvestDuration.Duration,
-            duration: "labelInvestFlexible",
+            duration: `labelInvestRangeDay|1 - 9`,
           };
         }
       } else {
@@ -168,7 +171,10 @@ const getInvestMapApi = async () => {
             token: tokenMap[coinA],
             // apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
             //@ts-ignore
-            apr: [dualInfo?.baseTokenApy?.min, dualInfo?.baseTokenApy?.max],
+            apr: [
+              dualInfo?.baseTokenApy?.min ?? 0,
+              dualInfo?.baseTokenApy?.max ?? 0,
+            ],
             durationType: InvestDuration.All,
             duration: "",
           },
@@ -176,13 +182,15 @@ const getInvestMapApi = async () => {
             type: InvestMapType.DUAL,
             // token: tokenMap[coinA],
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
-            apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
+            apr: [
+              dualInfo?.baseTokenApy?.min ?? 0,
+              dualInfo?.baseTokenApy?.max ?? 0,
+            ],
             durationType: InvestDuration.Duration,
-            duration: "labelInvestFlexible",
+            duration: `labelInvestRangeDay|1 - 9`,
           },
         };
       }
-
       if (prev[coinB] && prev[coinB]) {
         let investItem = prev[coinB][InvestMapType.DUAL];
         // prev[coinB].detail.durationType = InvestDuration.All;
@@ -193,16 +201,22 @@ const getInvestMapApi = async () => {
             type: InvestMapType.DUAL,
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             //@ts-ignore
-            apr: [dualInfo?.quoteTokenApy?.min, dualInfo?.quoteTokenApy?.max],
+            apr: [
+              dualInfo?.quoteTokenApy?.min ?? 0,
+              dualInfo?.quoteTokenApy?.max ?? 0,
+            ],
             durationType: InvestDuration.Duration,
-            duration: "labelInvestFlexible",
+            duration: `labelInvestRangeDay|1 - 9`,
           };
         }
       } else {
         prev[coinB] = {
           detail: {
             token: tokenMap[coinB],
-            apr: [dualInfo?.quoteTokenApy?.min, dualInfo?.quoteTokenApy?.max],
+            apr: [
+              dualInfo?.quoteTokenApy?.min ?? 0,
+              dualInfo?.quoteTokenApy?.max ?? 0,
+            ],
             durationType: InvestDuration.All,
             duration: "",
           },
@@ -210,9 +224,12 @@ const getInvestMapApi = async () => {
             type: InvestMapType.DUAL,
             // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
-            apr: [dualInfo?.quoteTokenApy?.min, dualInfo?.quoteTokenApy?.max],
+            apr: [
+              dualInfo?.quoteTokenApy?.min ?? 0,
+              dualInfo?.quoteTokenApy?.max ?? 0,
+            ],
             durationType: InvestDuration.Duration,
-            duration: "labelInvestFlexible",
+            duration: `labelInvestRangeDay|1 - 9`,
           },
         };
       }

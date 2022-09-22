@@ -23,11 +23,11 @@ const ammMapSlice: Slice = createSlice({
       ).reduce((prev, key) => {
         let status: any = ammpools[key.toString()].status ?? 0;
         status = ("00000" + status.toString(2)).split("");
-        let exitDisable = status[status.length] === "0";
-        let joinDisable = status[status.length - 1] === "0";
-        let swapDisable = status[status.length - 2] === "0";
-        let showDisable = status[status.length - 3] === "0";
-        let isRiskyMarket = status[status.length - 4] === "1";
+        let exitDisable = status[status.length - 1] === "0";
+        let joinDisable = status[status.length - 2] === "0";
+        let swapDisable = status[status.length - 3] === "0";
+        let showDisable = status[status.length - 4] === "0";
+        let isRiskyMarket = status[status.length - 5] === "1";
         return {
           ...prev,
           [key]: {
