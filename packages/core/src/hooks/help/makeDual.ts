@@ -14,7 +14,8 @@ export const makeDualViewItem = (
   index: sdk.DualIndex,
   rule: sdk.DualRulesCoinsInfo,
   sellSymbol: string,
-  buySymbol: string
+  buySymbol: string,
+  market: sdk.DefiMarketInfo
   // balance: sdk.DualBalance
 ): DualViewInfo => {
   // strike is targetPrice
@@ -29,6 +30,7 @@ export const makeDualViewItem = (
     dualType,
     dualPrice: { dualBid },
   } = info;
+  const { precisionForPrice } = market;
   myLog("makeDualViewItem", expireTime, strike, ratio, dualType);
   const [base, quote] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
@@ -56,6 +58,7 @@ export const makeDualViewItem = (
     currentPrice: {
       base,
       quote,
+      precisionForPrice,
       currentPrice: index.index,
     },
     sellSymbol,
@@ -75,6 +78,7 @@ export const makeDualViewItem = (
     currentPrice: {
       base,
       quote,
+      precisionForPrice,
       currentPrice: Number(index.index),
     },
     sellSymbol,
@@ -91,7 +95,8 @@ export const makeDualOrderedItem = (
   props: sdk.UserDualTxsHistory,
   sellSymbol: string,
   buySymbol: string,
-  currentPrice?: number
+  currentPrice: number,
+  market: sdk.DefiMarketInfo
   // balance: sdk.DualBalance
 ): DualViewOrder => {
   const {
@@ -113,6 +118,7 @@ export const makeDualOrderedItem = (
     .div((expireTime - createdAt) / 86400000)
     .times(36500); // year APY
   const term = moment().to(new Date(expireTime), true);
+  const { precisionForPrice } = market;
 
   return {
     apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + "%") as any,
@@ -125,9 +131,10 @@ export const makeDualOrderedItem = (
     enterTime: createdAt,
     expireTime,
     currentPrice: {
+      precisionForPrice,
       base,
       quote,
-      currentPrice,
+      currentPrice: currentPrice ?? 0,
     },
     sellSymbol,
     buySymbol,

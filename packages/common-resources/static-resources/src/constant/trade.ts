@@ -438,6 +438,7 @@ export const L1_UPDATE = 15000;
 export type DualCurrentPrice = {
   quote: string;
   base: string;
+  precisionForPrice: number;
   currentPrice?: number;
 };
 export type DualViewBase = {

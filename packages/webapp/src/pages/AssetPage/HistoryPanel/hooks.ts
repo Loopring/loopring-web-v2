@@ -7,6 +7,7 @@ import {
   LoopringAPI,
   useWalletLayer2,
   makeDualOrderedItem,
+  useDualMap,
 } from "@loopring-web/core";
 import {
   AmmSideTypes,
@@ -618,7 +619,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
   const [dualList, setDualList] = React.useState<R[]>([]);
   const { idIndex } = useTokenMap();
   const [dualTotal, setDualTotal] = React.useState(0);
-
+  const { marketMap: dualMarketMap } = useDualMap();
   // const [pagination, setDualPagination] = React.useState<{
   //   pageSize: number;
   //   total: number;
@@ -689,7 +690,13 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
                     ];
               prev.push({
-                ...makeDualOrderedItem(item, sellTokenSymbol, buyTokenSymbol),
+                ...makeDualOrderedItem(
+                  item,
+                  sellTokenSymbol,
+                  buyTokenSymbol,
+                  0,
+                  dualMarketMap[item.tokenInfoOrigin.market]
+                ),
                 amount: item.tokenInfoOrigin.amountIn,
               });
               return prev;

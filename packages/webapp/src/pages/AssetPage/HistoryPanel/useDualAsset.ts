@@ -2,6 +2,7 @@ import {
   LoopringAPI,
   makeDualOrderedItem,
   useAccount,
+  useDualMap,
   useTokenMap,
 } from "@loopring-web/core";
 import React from "react";
@@ -14,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
-export const Limit = 14;
+export const Limit = 5;
 
 export const useDualAsset = <R extends RawDataDualAssetItem>(
   setToastOpen?: (props: any) => void
@@ -25,6 +26,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     account: { accountId, apiKey },
   } = useAccount();
   const { tokenMap, idIndex } = useTokenMap();
+  const { marketMap: dualMarketMap } = useDualMap();
   const [dualList, setDualList] = React.useState<R[]>([]);
   const [pagination, setDualPagination] = React.useState<{
     pageSize: number;
@@ -71,7 +73,6 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           // @ts-ignore
           let result = (response as any)?.userDualTxs.reduce(
             (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
-              const {} = item.tokenInfoOrigin.market;
               const [, , coinA, coinB] =
                 (item.tokenInfoOrigin.market ?? "dual-").match(
                   /(dual-)?(\w+)-(\w+)/i
@@ -90,7 +91,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
               const format = makeDualOrderedItem(
                 item,
                 sellTokenSymbol,
-                buyTokenSymbol
+                buyTokenSymbol,
+                0,
+                dualMarketMap[item.tokenInfoOrigin.market]
               );
               const amount = getValuePrecisionThousand(
                 sdk

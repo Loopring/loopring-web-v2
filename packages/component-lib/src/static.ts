@@ -506,6 +506,7 @@ export const DUALVIEWINFO: DualViewInfo = {
   currentPrice: {
     quote: "USDC",
     base: "LRC",
+    precisionForPrice: 3,
     currentPrice: 0.4482078,
   },
   __raw__: {

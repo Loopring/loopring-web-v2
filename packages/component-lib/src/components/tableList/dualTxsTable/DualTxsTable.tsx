@@ -18,6 +18,7 @@ import { FormatterProps } from "react-data-grid";
 import { LABEL_INVESTMENT_STATUS_MAP, RawDataDualTxsItem } from "./Interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 import BigNumber from "bignumber.js";
+import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -255,7 +256,18 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignCenter",
           headerCellClass: "textAlignCenter",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.sellSymbol + "/" + row?.buySymbol}</>;
+            const {
+              sellSymbol,
+              buySymbol,
+              __raw__: {
+                order: { dualType },
+              },
+            } = row;
+            const [base, quote] =
+              dualType === DUAL_TYPE.DUAL_BASE
+                ? [sellSymbol, buySymbol]
+                : [buySymbol, sellSymbol];
+            return <>{base + "/" + quote}</>;
           },
         },
         {

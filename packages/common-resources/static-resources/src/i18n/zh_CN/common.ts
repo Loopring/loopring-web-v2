@@ -938,7 +938,7 @@ export default {
     "Your Collection metadata is not setup {{type}}, please go to collection panel edit!",
   labelCollectionMetaMiss: "Your NFT metadata is no not setup {{type}}.",
   labelCollectionMetaError:
-    "Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site",
+    "Your metadata is not setup correctly Your NFT metadata is no not setup {{type}}, Please check and make corrections on the IPFS site.",
   labelCollectionMetaErrorType: "correct `royalty_percentage` from 0 to 10",
   labelNFTServerRefresh:
     "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",

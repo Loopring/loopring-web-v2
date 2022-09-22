@@ -150,7 +150,8 @@ export const useDualTrade = <
         dualInfo.__raw__.index,
         dualInfo.__raw__.rule,
         sellSymbol,
-        buySymbol
+        buySymbol,
+        dualMarket
       );
 
       if (_updateInfo.balance) {

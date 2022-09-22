@@ -141,35 +141,25 @@ export const DualDetail = ({
 }) => {
   const { t } = useTranslation();
   const { upColor } = useSettings();
-  const { base, quote } = currentPrice;
+  const { base, quote, precisionForPrice } = currentPrice;
   const currentView = React.useMemo(
     () =>
       base
         ? getValuePrecisionThousand(
             currentPrice.currentPrice,
-            tokenMap[base].precision,
-            tokenMap[base].precision,
-            tokenMap[base].precision,
+            precisionForPrice ?? tokenMap[quote].precisionForOrder,
+            precisionForPrice ?? tokenMap[quote].precisionForOrder,
+            precisionForPrice ?? tokenMap[quote].precisionForOrder,
             true,
             { floor: true }
           )
         : EmptyValueTag,
-    [dualViewInfo.currentPrice.currentPrice, base, tokenMap]
+    [dualViewInfo.currentPrice.currentPrice, precisionForPrice, tokenMap]
   );
 
   const targetView = React.useMemo(
-    () =>
-      quote
-        ? getValuePrecisionThousand(
-            dualViewInfo?.strike,
-            tokenMap[quote].precision,
-            tokenMap[quote].precision,
-            tokenMap[quote].precision,
-            true,
-            { floor: true }
-          )
-        : EmptyValueTag,
-    [dualViewInfo?.strike, quote, tokenMap]
+    () => dualViewInfo?.strike ?? EmptyValueTag,
+    [dualViewInfo?.strike]
   );
 
   return (
@@ -497,6 +487,13 @@ export const DualWrap = <
         })
       : "0.00",
     maxAllow: true,
+    name: "coinSell",
+    isHideError: true,
+    order: "right" as any,
+    decimalsLimit: tokenSell.precision,
+    coinPrecision: tokenSell.precision,
+    inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
+    coinMap: {},
     ...tokenSellProps,
     handleError: handleError as any,
     handleCountChange,
@@ -592,12 +589,6 @@ export const DualWrap = <
                 disabled={getDisabled}
                 {...{
                   ...propsSell,
-                  name: "coinSell",
-                  isHideError: true,
-                  order: "right",
-                  inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
-                  coinMap: {},
-                  coinPrecision: tokenSell.precision,
                 }}
               />
               <Typography
