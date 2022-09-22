@@ -235,7 +235,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 : `${lessEarnView} ${base}`;
             sentence =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
-                ? `${amount} ${sellSymbol} ${DirectionTag} ${buyAmount} ${buySymbol}`
+                ? `${amount} ${sellSymbol} ${DirectionTag} ${buyAmount} ${buySymbol} `
                 : Date.now() - expireTime >= 0
                 ? `${amount} ${sellSymbol}`
                 : `${amount} ${sellSymbol}`;
@@ -287,7 +287,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           key: "TargetPrice",
           name: t("labelDualTxsTargetPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.strike + " " + row.buySymbol}</>;
+            return <>{row?.strike}</>;
           },
         },
         {

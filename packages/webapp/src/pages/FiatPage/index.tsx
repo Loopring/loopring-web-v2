@@ -30,7 +30,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
     useVendor();
   const { resetTransferRampData } = useModalData();
-	const { campaignTagConfig } = useNotify().notifyMap ?? {};
+  const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");

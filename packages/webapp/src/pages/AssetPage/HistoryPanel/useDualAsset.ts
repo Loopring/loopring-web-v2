@@ -95,13 +95,14 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 0,
                 dualMarketMap[item.tokenInfoOrigin.market]
               );
+
               const amount = getValuePrecisionThousand(
                 sdk
                   .toBig(item.tokenInfoOrigin.amountIn)
-                  .div("1e" + tokenMap[format.sellSymbol].decimals),
-                tokenMap[format.sellSymbol].precision,
-                tokenMap[format.sellSymbol].precision,
-                tokenMap[format.sellSymbol].precision,
+                  .div("1e" + tokenMap[sellTokenSymbol].decimals),
+                tokenMap[sellTokenSymbol].precision,
+                tokenMap[sellTokenSymbol].precision,
+                tokenMap[sellTokenSymbol].precision,
                 true
               );
               prev.push({

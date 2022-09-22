@@ -19,9 +19,9 @@ export const Dual_Success = (props: PanelProps) => {
         minWidth={340}
         justifyContent={"center"}
         marginTop={2}
-        paddingX={isMobile ? 5 : 1}
+        paddingX={isMobile ? 1 : 5}
         whiteSpace={"pre-line"}
-        color={"var(--text-secondary)"}
+        color={"textSecondary"}
       >
         {props.t("labelDualDesSuccess")}
       </Typography>

@@ -3,7 +3,6 @@ import {
   AccountStep,
   DualChgData,
   DualWrapProps,
-  setShowAccount,
   TradeBtnStatus,
   useOpenModals,
   useToggle,
@@ -56,6 +55,7 @@ export const useDualTrade = <
   const refreshRef = React.useRef();
   const { exchangeInfo, allowTrade } = useSystem();
   const { tokenMap, marketArray } = useTokenMap();
+  const { setShowAccount } = useOpenModals();
   // const { amountMap, getAmount, status: amountStatus } = useAmount();
   const { marketMap: dualMarketMap } = useDualMap();
   const { account, status: accountStatus } = useAccount();
@@ -176,7 +176,7 @@ export const useDualTrade = <
         };
       }
       updateTradeDual({ ..._updateInfo, dualViewInfo, coinSell });
-    };,
+    },
     [
       account.readyState,
       dualMarketMap,
@@ -314,7 +314,7 @@ export const useDualTrade = <
       ])
         .then(([dualIndexResponse, dualPriceResponse, dualBalanceResponse]) => {
           const {
-            tradeDual: {dualViewInfo},
+            tradeDual: { dualViewInfo },
           } = store.getState()._router_tradeDual;
           let dualInfo: R = _.cloneDeep(dualViewInfo) as R;
           let balance = undefined,
@@ -334,7 +334,7 @@ export const useDualTrade = <
           if (dualInfo?.__raw__?.info) {
             dualInfo.__raw__.info = {
               ...dualInfo.__raw__.info,
-              ...dualPriceResponse.infos[ 0 ],
+              ...dualPriceResponse.infos[0],
             };
           }
           if (
@@ -350,7 +350,7 @@ export const useDualTrade = <
               {} as any
             );
           }
-          refreshDual({dualInfo, balance, index});
+          refreshDual({ dualInfo, balance, index });
           setIsLoading(false);
         })
         .catch((error) => {
@@ -467,7 +467,7 @@ export const useDualTrade = <
       setShowAccount({
         isShow: true,
         step: AccountStep.Dual_Failed,
-        error: reason,
+        error: reason as sdk.RESULT_INFO,
         info: {
           symbol: tradeDual?.coinSell?.belong,
         },
