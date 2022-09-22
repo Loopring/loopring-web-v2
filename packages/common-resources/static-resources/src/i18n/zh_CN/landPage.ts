@@ -33,7 +33,7 @@ export default {
   labelWalletSecureH1: "SECURE, at its core",
   labelWalletSecureH2: "With social-recovery and guardians",
   labelWalletSecureDetail:
-    "Completely self-custodial, only you control your assets. You can choose people, \n institutions, and hardware that you trust as the guardians of your wallet.  You can \n also set quota for daily transfers, and lock it down if ever needed.",
+    "Completely self-custodial, only you control your assets. You can choose people, institutions, and hardware that you trust to be the guardians of your wallet.  You can also set quota for daily transfers, and lock it down if ever needed.",
   labelWalletIdentityH1: "OWN YOUR IDENTITY",
   labelWalletIdentityH2: "Your wallet is your continuous Web3 identity.",
   labelWalletIdentityDetail:
@@ -45,7 +45,7 @@ export default {
   labelWalletFutureH1: "FORWARD LOOKING",
   labelWalletFutureH2: "Easily upgradable to adapt future scenarios",
   labelWalletFutureDetail:
-    "Based on smart contracts, Loopring Wallet adopts a pluggable,\n modular design, which can be continuously upgraded under your\n authorization to use future standards and new technologies.",
+    "Based on smart contracts, the Loopring Wallet adopts a pluggable, modular design which can be continuously upgraded under your authorization to use future standards and new technologies.",
   labelWalletUnleashed: "ETHEREUM UNLEASHED",
   labelWalletUnleashedDetail:
     "Your mobile gateway to Ethereum DeFi, collectables, and more.",

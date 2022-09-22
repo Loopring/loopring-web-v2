@@ -88,7 +88,7 @@ export default {
   labelWalletHistory: "History",
   labelNFT: "L2 NFT",
   labelMyAssetsNFT: "My NFTs",
-  labelMyAssetsNFTDes: "Receive, send NFTs ",
+  labelMyAssetsNFTDes: "Receive/Send NFTs",
   labelInvest: "Earn",
   labelMintNFT: "Create NFT",
   labelMintNFTDes: "Create your own NFTs",
@@ -99,14 +99,15 @@ export default {
   labelInvestBalanceDes: "The deposition you hold",
   labelInvestAmm: "AMM Pool",
   labelInvestOverview: "Overview",
-  labelInvestOverviewDes: "Select Defi Investment",
+  labelInvestOverviewDes: "Select DeFi Investment",
   labelInvestAmmDes: "Add liquidity and earn fees",
   labelInvestDefi: "ETH Staking",
   labelInvestDefiDes: "Earn ETH staking rewards",
+  labelInvestDual: "Dual Investment",
+  labelInvestDualDes: "Buy the Dips, Sell the Rallies",
   labelDepositNFT: "Receive NFT",
   labelMyCollection: "My Collections",
-  labelMyCollectionDes:
-    "Receive/Send NFTs \n Create, curate, and manage my NFT collections",
+  labelMyCollectionDes: "Create, curate, and \n manage my NFT collections",
 
   // labelDepositNFTDes:"Receive NFT"
 };
