@@ -47,7 +47,6 @@ export const setAmmState = ({
         ? idIndex[ammPoolState.rewards[1].tokenId as number]
         : undefined,
     };
-
     const feeA = volumeToCountAsBigNumber(coinA, ammPoolState.fees[0]);
     const feeB = volumeToCountAsBigNumber(coinB, ammPoolState.fees[1]);
     const feeDollar =
@@ -107,6 +106,13 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({
     if (item.market === key && item.tokens.pooled && idIndex) {
       const coinA = idIndex[item.tokens.pooled[0] as any];
       const coinB = idIndex[item.tokens.pooled[1] as any];
+      let status: any = ammpools[key.toString()].status ?? 0;
+      status = ("00000" + status.toString(2)).split("");
+      let exitDisable = status[status.length] === 0;
+      let joinDisable = status[status.length - 1] === 0;
+      let swapDisable = status[status.length - 2] === 0;
+      let showDisable = status[status.length - 3] === 0;
+      let isRiskyMarket = status[status.length - 4] === 1;
       const dataItem: AmmDetailStore<R> = {
         ...item,
         coinA: coinA,
@@ -118,6 +124,11 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({
           ammPoolState: ammPoolStats[key],
           keyPair: `${coinA}-${coinB}`,
         }),
+        exitDisable,
+        joinDisable,
+        swapDisable,
+        showDisable,
+        isRiskyMarket,
         __rawConfig__: item,
       } as AmmDetailStore<R>;
       // @ts-ignore

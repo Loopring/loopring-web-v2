@@ -432,8 +432,8 @@ export const useAmmExit = ({
 
         const patch: sdk.AmmPoolRequestPatch = {
           chainId: store.getState().system.chainId as sdk.ChainId,
-          ammName: ammInfo.__rawConfig__.name,
-          poolAddress: ammInfo.address,
+          ammName: ammInfo?.__rawConfig__.name ?? "",
+          poolAddress: ammInfo?.address ?? "",
           eddsaKey: account.eddsaKey.sk,
         };
 
@@ -447,7 +447,7 @@ export const useAmmExit = ({
         );
 
         req.storageId = storageId0.offchainId;
-        if (ammInfo.domainSeparator) {
+        if (ammInfo?.domainSeparator) {
           req.domainSeparator = ammInfo.domainSeparator;
         }
 

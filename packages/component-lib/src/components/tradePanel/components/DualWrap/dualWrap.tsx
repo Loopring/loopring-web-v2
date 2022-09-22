@@ -171,6 +171,7 @@ export const DualDetail = ({
         : EmptyValueTag,
     [dualViewInfo?.strike, quote, tokenMap]
   );
+
   return (
     <Box>
       <Box paddingX={2} paddingBottom={1}>

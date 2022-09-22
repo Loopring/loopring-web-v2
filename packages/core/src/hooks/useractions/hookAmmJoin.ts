@@ -462,8 +462,8 @@ export const useAmmJoin = ({
 
         const patch: sdk.AmmPoolRequestPatch = {
           chainId: store.getState().system.chainId as sdk.ChainId,
-          ammName: ammInfo.__rawConfig__.name,
-          poolAddress: ammInfo.address,
+          ammName: ammInfo?.__rawConfig__.name ?? "",
+          poolAddress: ammInfo?.address ?? "",
           eddsaKey: account.eddsaKey.sk,
         };
 
@@ -491,8 +491,8 @@ export const useAmmJoin = ({
           req.storageIds = [storageId0.offchainId, storageId1.offchainId];
 
           req.validUntil = getTimestampDaysLater(DAYS);
-          if (ammInfo.domainSeparator) {
-            req.domainSeparator = ammInfo.domainSeparator;
+          if (ammInfo?.domainSeparator) {
+            req.domainSeparator = ammInfo?.domainSeparator;
           }
 
           myLog("join ammpool req:", req);

@@ -6,10 +6,11 @@ import {
   AmmJoinData,
   IBData,
 } from "@loopring-web/common-resources";
+import { AmmDetailStore } from "../../Amm";
 
 export type PageAmmCommon = {
   ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined;
-  ammInfo: sdk.AmmPoolInfoV3 & { __rawConfig__: any };
+  ammInfo: AmmDetailStore<any> | undefined;
 };
 
 type PageAmmBase = {
