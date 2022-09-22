@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
-export const Limit = 5;
+export const Limit = 15;
 
 export const useDualAsset = <R extends RawDataDualAssetItem>(
   setToastOpen?: (props: any) => void
