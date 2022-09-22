@@ -1,6 +1,10 @@
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import React from "react";
-import { AmmRecordRow, MyPoolRow } from "@loopring-web/component-lib";
+import {
+  AmmRecordRow,
+  MyPoolRow,
+  RawDataDualAssetItem,
+} from "@loopring-web/component-lib";
 import {
   makeWalletLayer2,
   useAmmMap,
@@ -17,14 +21,17 @@ import {
   useDefiMap,
   makeDefiInvestReward,
 } from "@loopring-web/core";
-import { SagaStatus } from "@loopring-web/common-resources";
+import {
+  getValuePrecisionThousand,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-export const useOverview = <
-  R extends { [key: string]: any },
-  I extends { [key: string]: any }
->(_: {
+export const useOverview = <R extends { [key: string]: any }, I extends { [key: string]: any }>({
+  dualList,
+}: {
   ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
+  dualList: RawDataDualAssetItem[];
 }): {
   myAmmMarketArray: AmmRecordRow<R>[];
   summaryMyInvest: Partial<SummaryMyInvest>;
@@ -116,6 +123,12 @@ export const useOverview = <
               tokenPrices[defiCoinKey] ?? 0
           );
         }, []);
+        dualList.forEach((item) => {
+          const { sellSymbol, amount } = item;
+          amount.replace(",", "");
+          totalCurrentInvest.investDollar +=
+            Number(amount ?? 0) * tokenPrices[sellSymbol] ?? 0;
+        }, []);
 
         setSummaryMyInvest((state) => {
           return {
@@ -127,7 +140,7 @@ export const useOverview = <
       }
       return [];
     },
-    [ammMap, userRewardsMap, tokenPrices, tokenMap]
+    [ammMap, userRewardsMap, tokenPrices, tokenMap, dualList]
   );
 
   const walletLayer2Callback = React.useCallback(async () => {
@@ -184,4 +197,4 @@ export const useOverview = <
     myPoolRow,
     showLoading,
   };
-};
+};;

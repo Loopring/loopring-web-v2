@@ -30,27 +30,28 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
     useVendor();
   const { resetTransferRampData } = useModalData();
-  const { campaignTagConfig } = useNotify().notifyMap ?? {};
+	const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
-    match?.params?.tab?.toLowerCase() === "Sell".toLowerCase()
-      ? TradeTypes.Sell
-      : TradeTypes.Buy
+    TradeTypes.Buy
+    // match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
+    //   ? TradeTypes.Buy
+    //   : TradeTypes.Sell
   );
-  React.useEffect(() => {
-    switch (match?.params.tab) {
-      case InvestRouter[TradeTypes.Sell]:
-        setTabIndex(TradeTypes.Sell);
-        return;
-      // return ;
-      case InvestRouter[TradeTypes.Buy]:
-      default:
-        setTabIndex(TradeTypes.Buy);
-        return;
-    }
-  }, [match?.params.item]);
+  // React.useEffect(() => {
+  //   switch (match?.params.tab) {
+  //     case InvestRouter[TradeTypes.Sell]:
+  //       setTabIndex(TradeTypes.Sell);
+  //       return;
+  //     // return ;
+  //     case InvestRouter[TradeTypes.Buy]:
+  //     default:
+  //       setTabIndex(TradeTypes.Buy);
+  //       return;
+  //   }
+  // }, [match?.params.item]);
   const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
   const fiatView = React.useMemo(() => {
     return (
@@ -121,13 +122,16 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
             )}
             {tabIndex === TradeTypes.Sell && (
               <>
-                {sellPanel === RAMP_SELL_PANEL.LIST && (
+                {sellPanel === RAMP_SELL_PANEL.LIST &&
+                vendorListSell?.length ? (
                   <VendorMenu
                     type={TradeTypes.Sell}
                     vendorList={vendorListSell}
                     vendorForce={undefined}
                     campaignTagConfig={campaignTagConfig}
                   />
+                ) : (
+                  <></>
                 )}
                 {sellPanel === RAMP_SELL_PANEL.CONFIRM && (
                   <Box flex={1} display={"flex"} flexDirection={"column"}>

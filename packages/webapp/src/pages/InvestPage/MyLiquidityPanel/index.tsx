@@ -96,6 +96,7 @@ const MyLiquidity: any = withTranslation("common")(
     }, []);
     const { summaryMyInvest, myPoolRow, showLoading } = useOverview({
       ammActivityMap,
+      dualList,
     });
 
     const theme = useTheme();

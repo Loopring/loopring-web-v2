@@ -31,6 +31,7 @@ import {
   useSubmitBtn,
   useToast,
   useWalletLayer2Socket,
+  walletLayer2Service,
 } from "@loopring-web/core";
 import _ from "lodash";
 
@@ -88,10 +89,12 @@ export const useDualTrade = <
       dualInfo = productInfo,
       tradeData,
       balance,
+      index,
     }: {
       dualInfo?: R;
       tradeData?: T;
       balance?: { [key: string]: sdk.DualBalance };
+      index?: sdk.DualIndex;
     }) => {
       let walletMap: any = {};
       let { sellSymbol, buySymbol } = isShowDual.dualInfo as R;
@@ -111,6 +114,9 @@ export const useDualTrade = <
       } else {
         // resetTradeDual();
         // info = _updateInfo.dualViewInfo.__raw__.info;
+      }
+      if (index && _updateInfo.dualViewInfo) {
+        _updateInfo.dualViewInfo.__raw__.index = index;
       }
       if (balance) {
         _updateInfo.balance = balance;
@@ -170,7 +176,7 @@ export const useDualTrade = <
         };
       }
       updateTradeDual({ ..._updateInfo, dualViewInfo, coinSell });
-    },
+    };,
     [
       account.readyState,
       dualMarketMap,
@@ -296,18 +302,30 @@ export const useDualTrade = <
       }
 
       Promise.all([
+        LoopringAPI.defiAPI?.getDualIndex({
+          baseSymbol: productInfo.__raw__.info.base,
+          quoteSymbol: productInfo.__raw__.info.currency,
+        }),
         LoopringAPI.defiAPI?.getDualPrices({
           baseSymbol: productInfo.__raw__.info.base,
           productIds: productInfo.productId,
         }),
         LoopringAPI.defiAPI?.getDualBalance(),
       ])
-        .then(([dualPriceResponse, dualBalanceResponse]) => {
+        .then(([dualIndexResponse, dualPriceResponse, dualBalanceResponse]) => {
           const {
-            tradeDual: { dualViewInfo },
+            tradeDual: {dualViewInfo},
           } = store.getState()._router_tradeDual;
           let dualInfo: R = _.cloneDeep(dualViewInfo) as R;
-          let balance = undefined;
+          let balance = undefined,
+            index = undefined;
+          if (
+            (dualIndexResponse as sdk.RESULT_INFO).code ||
+            (dualIndexResponse as sdk.RESULT_INFO).message
+          ) {
+          } else {
+            index = dualPriceResponse.index;
+          }
           if (
             (dualPriceResponse as sdk.RESULT_INFO).code ||
             (dualPriceResponse as sdk.RESULT_INFO).message
@@ -316,7 +334,7 @@ export const useDualTrade = <
           if (dualInfo?.__raw__?.info) {
             dualInfo.__raw__.info = {
               ...dualInfo.__raw__.info,
-              ...dualPriceResponse.infos[0],
+              ...dualPriceResponse.infos[ 0 ],
             };
           }
           if (
@@ -332,7 +350,7 @@ export const useDualTrade = <
               {} as any
             );
           }
-          refreshDual({ dualInfo, balance });
+          refreshDual({dualInfo, balance, index});
           setIsLoading(false);
         })
         .catch((error) => {
@@ -444,6 +462,7 @@ export const useDualTrade = <
       } else {
         throw new Error("api not ready");
       }
+      walletLayer2Service.sendUserUpdate();
     } catch (reason) {
       setShowAccount({
         isShow: true,
