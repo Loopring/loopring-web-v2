@@ -65,7 +65,7 @@ const StyleDual = styled(Box)`
     &.selected {
       ${({ theme }) =>
         theme.border.defaultFrame({
-          c_key: "var(--color-border)",
+          c_key: "var(--color-border-select)",
           d_R: 0.5,
         })};
     }

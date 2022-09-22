@@ -401,8 +401,18 @@ export const useAmmExit = ({
     async function (props) {
       setIsLoading(true);
       updatePageAmmExitBtn({ btnStatus: TradeBtnStatus.LOADING });
-      if (!exitAmm.enable) {
-        setShowTradeIsFrozen({ isShow: true });
+      if (ammInfo?.exitDisable) {
+        setShowTradeIsFrozen({
+          isShow: true,
+          messageKey: "labelNoticeForMarketFrozen",
+          type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
+        });
+        setIsLoading(false);
+      } else if (!exitAmm.enable) {
+        setShowTradeIsFrozen({
+          isShow: true,
+          type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
+        });
         setIsLoading(false);
       } else {
         if (

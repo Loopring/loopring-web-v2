@@ -441,7 +441,7 @@ export type DualCurrentPrice = {
   currentPrice?: number;
 };
 export type DualViewBase = {
-  apy: string;
+  apy: `${string}%`;
   settleRatio: string; //targetPrice
   term: string;
   strike: string;

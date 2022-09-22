@@ -90,8 +90,11 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             setCreateOpen(true);
             history.push(`/nft/mintNFT/${item.contractAddress}`);
           }}
-          setShowTradeIsFrozen={() => {
-            setShowTradeIsFrozen({ isShow: true });
+          setShowTradeIsFrozen={(item, typeKey) => {
+            setShowTradeIsFrozen({
+              isShow: true,
+              type: typeKey,
+            });
           }}
           setShowDeploy={(item: Co) => {
             const _deployItem: TradeNFT<any, any> = {
@@ -110,7 +113,10 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
                   isShow: true,
                   info: { ...{ _deployItem } },
                 })
-              : setShowTradeIsFrozen({ isShow: true });
+              : setShowTradeIsFrozen({
+                  isShow: true,
+                  type: t("nftDeployDescription"),
+                });
           }}
         />
       </Box>

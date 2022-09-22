@@ -429,12 +429,21 @@ export const useAmmJoin = ({
       setIsLoading(true);
 
       updatePageAmmJoinBtn({ btnStatus: TradeBtnStatus.LOADING });
-
       if (!allowTrade.order.enable) {
         setShowSupport({ isShow: true });
         setIsLoading(false);
+      } else if (ammInfo?.joinDisable) {
+        setShowTradeIsFrozen({
+          isShow: true,
+          messageKey: "labelNoticeForMarketFrozen",
+          type: t("labelAmmJoin") + ` ${ammInfo?.__rawConfig__.name}`,
+        });
+        setIsLoading(false);
       } else if (!joinAmm.enable) {
-        setShowTradeIsFrozen({ isShow: true });
+        setShowTradeIsFrozen({
+          isShow: true,
+          type: t("labelAmmJoin") + ` ${ammInfo?.__rawConfig__.name}`,
+        });
         setIsLoading(false);
       } else {
         if (

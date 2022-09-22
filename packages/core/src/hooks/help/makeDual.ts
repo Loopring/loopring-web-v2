@@ -63,7 +63,7 @@ export const makeDualViewItem = (
   });
   // const apr =  info.dualPrice.ba
   return {
-    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
+    apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + "%") as any,
     settleRatio, // quote Interest
     term,
     strike,
@@ -115,7 +115,7 @@ export const makeDualOrderedItem = (
   const term = moment().to(new Date(expireTime), true);
 
   return {
-    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
+    apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + "%") as any,
     settleRatio: settleRatio.toString(), // quote Interest
     term,
     strike: strike.toString(),

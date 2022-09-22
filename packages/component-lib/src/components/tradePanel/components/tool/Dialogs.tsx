@@ -639,10 +639,12 @@ export const InformationForAccountFrozen = withTranslation("common", {
     t,
     open,
     type,
+    messageKey = "labelNoticeForForAccountFrozen",
   }: // handleClose,
   WithTranslation & {
     open: boolean;
     type: string;
+    messageKey?: string;
     // handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
     const { setShowTradeIsFrozen } = useOpenModals();
@@ -656,7 +658,7 @@ export const InformationForAccountFrozen = withTranslation("common", {
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Trans
-              i18nKey={"labelNoticeForForAccountFrozen"}
+              i18nKey={messageKey}
               tOptions={{ type: t("label" + type).toLowerCase() }}
             >
               please waiting a while, {{ type }} is on updating.

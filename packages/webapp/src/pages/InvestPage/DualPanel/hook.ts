@@ -180,9 +180,16 @@ export const useDualHook = ({
                     .times(item.strike)
                     .gte(rule.currencyMin)))
             ) {
-              prev.push(
-                makeDualViewItem(item, index, rule, pairASymbol, pairBSymbol)
+              const result = makeDualViewItem(
+                item,
+                index,
+                rule,
+                pairASymbol,
+                pairBSymbol
               );
+              if (Number(result.apy.replace("%", "")) > 0) {
+                prev.push(result);
+              }
               return prev;
             }
             return prev;

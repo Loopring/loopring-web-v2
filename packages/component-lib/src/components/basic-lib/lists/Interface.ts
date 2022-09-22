@@ -116,7 +116,7 @@ export type CollectionItemProps<Co> = {
   setCopyToastOpen: (prosp: { isShow: boolean; type: string }) => void;
   setShowDeploy?: (item: Co) => void;
   setShowEdit?: (item: Co) => void;
-  setShowTradeIsFrozen?: (item: Co) => void;
+  setShowTradeIsFrozen?: (item: Co, type: string) => void;
   setShowMintNFT?: (item: Co) => void;
   onItemClick?: (item: Co) => void;
   account?: Account;

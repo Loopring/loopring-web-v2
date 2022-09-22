@@ -4,7 +4,6 @@ import {
   CollectionListProps,
   CollectionMedia,
   EmptyDefault,
-  useToggle,
 } from "../../../index";
 import {
   Avatar,
@@ -84,7 +83,7 @@ const IconButtonStyle = styled(IconButton)`
 const ActionMemo = React.memo(
   <Co extends CollectionMeta>({
     setShowDeploy,
-    setShowTradeIsFrozen,
+    // setShowTradeIsFrozen,
     // setShowEdit,
     item,
     account,
@@ -92,9 +91,9 @@ const ActionMemo = React.memo(
     setShowMintNFT,
   }: CollectionItemProps<Co>) => {
     const { t } = useTranslation("common");
-    const {
-      toggle: { deployNFT },
-    } = useToggle();
+    // const {
+    //   toggle: { deployNFT },
+    // } = useToggle();
 
     const popupState = usePopupState({
       variant: "popover",
@@ -130,11 +129,7 @@ const ActionMemo = React.memo(
             ) ? (
               <MenuItem
                 onClick={(_e) => {
-                  if (setShowDeploy && setShowTradeIsFrozen) {
-                    deployNFT.enable
-                      ? setShowDeploy(item)
-                      : setShowTradeIsFrozen(item);
-                  }
+                  setShowDeploy && setShowDeploy(item);
                 }}
               >
                 {t("labelNFTDeployContract")}

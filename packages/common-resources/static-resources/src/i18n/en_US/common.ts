@@ -1042,4 +1042,6 @@ export default {
   labelDualTitle: "Dual Investment",
   labelDualDesSuccess:
     "Your token for investment is just locked but still in your account as Loopring is a DEX. \n When the transaction expires, if the settlement price is not reached, you will get a profit and the frozen token will also be unlocked; if the settlement price is reached, your investment and interest income will be converted into the target token at the Target price.",
+  labelNoticeForMarketFrozen:
+    "{{ type }} is not supported, If you believe this is indeed a bug, please contact us.",
 };

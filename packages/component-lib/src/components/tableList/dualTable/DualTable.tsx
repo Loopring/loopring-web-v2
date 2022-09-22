@@ -122,7 +122,8 @@ export const DualTable = withTranslation(["tables", "common"])(
                           .toBig(row.strike ?? 0)
                           .minus(row.currentPrice?.currentPrice ?? 0)
                           .div(row.currentPrice?.currentPrice ?? 1)
-                          .times(100),
+                          .times(100)
+                          .abs(),
                         2,
                         2,
                         2,
@@ -210,39 +211,42 @@ export const DualTable = withTranslation(["tables", "common"])(
         columnsRaw as Column<any, unknown>[],
     };
 
-    const sortMethod = React.useCallback((_sortedRows, sortColumn) => {
-      let _rawData: R[] = [];
-      switch (sortColumn) {
-        case "Apy":
-          _rawData = rawData.sort((a, b) => {
-            const replaced = new RegExp(`[\\${sdk.SEP},%]`, "ig");
-            const valueA = a.apy?.replace(replaced, "") ?? 0;
-            const valueB = b.apy?.replace(replaced, "") ?? 0;
-            return Number(valueB) - Number(valueA); //.localeCompare(valueA);
-          });
-          // default;
-          break;
-        case "targetPrice":
-          _rawData = rawData.sort((a, b) => {
-            const replaced = new RegExp(`\\${sdk.SEP}`, "ig");
-            const valueA = a.strike?.replace(replaced, "") ?? 0;
-            const valueB = b.strike?.replace(replaced, "") ?? 0;
-            return Number(valueB) - Number(valueA); //.loc
-          });
-          break;
-        case "Settlement":
-        case "Term":
-          _rawData = rawData.sort((a, b) => {
-            return b.expireTime - a.expireTime;
-          });
-          break;
-        default:
-          _rawData = rawData;
-      }
+    const sortMethod = React.useCallback(
+      (_sortedRows, sortColumn) => {
+        let _rawData: R[] = [];
+        switch (sortColumn) {
+          case "Apy":
+            _rawData = rawData.sort((a, b) => {
+              const replaced = new RegExp(`[\\${sdk.SEP},%]`, "ig");
+              const valueA = a.apy?.replace(replaced, "") ?? 0;
+              const valueB = b.apy?.replace(replaced, "") ?? 0;
+              return Number(valueB) - Number(valueA); //.localeCompare(valueA);
+            });
+            // default;
+            break;
+          case "targetPrice":
+            _rawData = rawData.sort((a, b) => {
+              const replaced = new RegExp(`\\${sdk.SEP}`, "ig");
+              const valueA = a.strike?.replace(replaced, "") ?? 0;
+              const valueB = b.strike?.replace(replaced, "") ?? 0;
+              return Number(valueB) - Number(valueA); //.loc
+            });
+            break;
+          case "Settlement":
+          case "Term":
+            _rawData = rawData.sort((a, b) => {
+              return b.expireTime - a.expireTime;
+            });
+            break;
+          default:
+            _rawData = rawData;
+        }
 
-      // resetTableData(_rawData)
-      return _rawData;
-    }, []);
+        // resetTableData(_rawData)
+        return _rawData;
+      },
+      [rawData]
+    );
 
     return (
       <TableWrapperStyled>

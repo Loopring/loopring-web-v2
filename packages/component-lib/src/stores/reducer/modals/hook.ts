@@ -227,7 +227,7 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowTradeIsFrozen: React.useCallback(
-      (state: ModalStatePlayLoad & { type?: string }) =>
+      (state: ModalStatePlayLoad & { type?: string; messageKey?: string }) =>
         dispatch(setShowTradeIsFrozen(state)),
       [dispatch]
     ),

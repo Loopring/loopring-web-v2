@@ -1,6 +1,5 @@
 import {
   Account,
-  DualCurrentPrice,
   FloatTag,
   ForexMap,
   TradeStatus,
@@ -360,21 +359,3 @@ export type GET_IPFS_STRING = (
   url: string | undefined,
   basicURl: string
 ) => string;
-
-export type DualViewInfo = {
-  apy: string;
-  settleRatio: string;
-  term: string;
-  strike: string;
-  isUp: boolean;
-  expireTime: number;
-  currentPrice: DualCurrentPrice;
-  productId: string;
-  sellSymbol: string;
-  buySymbol: string;
-  __raw__: {
-    info: sdk.DualProductAndPrice;
-    index: sdk.DualIndex;
-    rule: sdk.DualRulesCoinsInfo;
-  };
-};
