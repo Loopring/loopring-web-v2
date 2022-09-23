@@ -21,9 +21,7 @@ import {
   useDefiMap,
   makeDefiInvestReward,
 } from "@loopring-web/core";
-import {
-  SagaStatus,
-} from "@loopring-web/common-resources";
+import { SagaStatus } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export const useOverview = <
