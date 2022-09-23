@@ -3,6 +3,7 @@ import { useSettings } from "../../../stores";
 import React from "react";
 import {
   globalSetup,
+  MoreIcon,
   RowConfig,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
@@ -23,6 +24,12 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   flex-direction: column;
   flex: 1;
   height: 100%;
+
+  .rdg {
+    ${({ isMobile }) =>
+      !isMobile ? `` : `--template-columns: 16% 30% 44% 10% !important;`}
+  }
+
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (prosp: BoxProps & { isMobile: boolean }) => JSX.Element;
@@ -64,8 +71,8 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       rawData,
       pagination,
       getDualAssetList,
-      idIndex,
-      tokenMap,
+      // idIndex,
+      // tokenMap,
       showloading,
       showDetail,
       t,
@@ -255,91 +262,94 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                     ]}
                   />
                 </Typography>
-                <Typography
-                  component={"span"}
-                  flexDirection={"column"}
-                  display={"flex"}
-                >
-                  <Typography
-                    component={"span"}
-                    display={"inline-flex"}
-                    color={"textPrimary"}
-                  >
-                    {`${row.sellSymbol}/${row.buySymbol}`}
-                  </Typography>
-                </Typography>
               </Typography>
             );
           },
         },
-        {
-          key: "Frozen",
-
-          sortable: false,
-          width: "auto",
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          name: t("labelDualFrozen"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.amount + " " + row.buySymbol}</>;
-          },
-        },
+        // {
+        //   key: "Frozen",
+        //   sortable: false,
+        //   width: "auto",
+        //   cellClass: "textAlignCenter",
+        //   headerCellClass: "textAlignCenter",
+        //   name: t("labelDualAssetFrozen"),
+        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
+        //     return <>{}</>;
+        //   },
+        // },
         {
           key: "Price",
           sortable: false,
           width: "auto",
-          name: t("labelDualAssetPrice"),
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.strike}</>;
-          },
-        },
-        {
-          key: "Settlement_Date",
-          sortable: true,
-          width: "auto",
-          name: t("labelDualAssetSettlement_Date"),
+          name:
+            t("labelDualAssetPrice") + "/" + t("labelDualAssetSettlement_Date"),
           cellClass: "textAlignCenter",
           headerCellClass: "textAlignCenter",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <>
-                {moment(new Date(row.expireTime)).format(
-                  YEAR_DAY_MINUTE_FORMAT
-                )}
-              </>
+              <Box
+                className={"textAlignRight"}
+                display={"flex"}
+                flexDirection={"column"}
+                height={"100%"}
+                justifyContent={"center"}
+              >
+                <Typography component={"span"}>{row?.strike}</Typography>
+                <Typography
+                  component={"span"}
+                  variant={"body2"}
+                  color={"textSecondary"}
+                >
+                  {moment(new Date(row.expireTime)).format(
+                    YEAR_DAY_MINUTE_FORMAT
+                  )}
+                </Typography>
+              </Box>
             );
           },
         },
         {
           key: "APR",
-          sortable: true,
+          sortable: false,
           width: "auto",
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          name: t("labelDualAssetAPR"),
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
+          name: t("labelDualAssetAPR") + "/" + t("labelDualAssetFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.apy}</>;
+            return (
+              <>
+                <Box
+                  className={"textAlignRight"}
+                  display={"flex"}
+                  flexDirection={"column"}
+                  height={"100%"}
+                  justifyContent={"center"}
+                >
+                  <Typography component={"span"}>{row?.apy}</Typography>
+                  <Typography
+                    component={"span"}
+                    variant={"body2"}
+                    color={"textSecondary"}
+                  >
+                    {row?.amount + " " + row.sellSymbol}
+                  </Typography>
+                </Box>
+              </>
+            );
           },
         },
         {
           key: "Action",
           sortable: false,
-          width: "auto",
           cellClass: "textAlignRight",
           headerCellClass: "textAlignRight",
-          name: t("labelDualAssetAction"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Link onClick={(_e) => showDetail(row)}>
-                {t("labelDualAssetDetail")}
-              </Link>
-            );
+          name: "",
+          formatter: () => {
+            return <MoreIcon cursor={"pointer"} />;
           },
         },
       ],
-      [t, tokenMap, idIndex]
+      [coinJson, t]
     );
 
     const sortMethod = React.useCallback(
@@ -393,6 +403,9 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
+          onRowClick={(_index: number, row: R) => {
+            showDetail(row);
+          }}
           sortMethod={sortMethod}
           {...{
             ...defaultArgs,

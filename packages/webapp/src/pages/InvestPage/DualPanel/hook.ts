@@ -44,7 +44,7 @@ export const useDualHook = ({
   const [currentPrice, setCurrentPrice] =
     React.useState<DualCurrentPrice | undefined>(undefined);
   const [, , coinA, coinB] =
-    (match?.params?.market ? match.params.market : "LRC-USDC").match(
+    (match?.params?.market ? match.params.market : "ETH-USDC").match(
       /(dual-)?(\w+)-(\w+)/i
     ) ?? [];
 

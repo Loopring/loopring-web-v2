@@ -128,7 +128,7 @@ export const DualListPanel: any = withTranslation("common")(
           marginBottom={2}
           display={"flex"}
           justifyContent={"space-between"}
-          alignItems={"center"}
+          alignItems={isMobile ? "left" : "center"}
           flexDirection={isMobile ? "column" : "row"}
         >
           <Button
