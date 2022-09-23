@@ -176,15 +176,11 @@ export const DefiTxsTable = withTranslation(["tables", "common"])(
           formatter: ({ row }) => {
             const { fee } = row;
             const feeTokenInfo = tokenMap[idIndex[fee?.tokenId ?? ""]];
-            const feeVolume = sdk
-              .toBig(fee?.volume ?? 0)
-              .div("1e" + feeTokenInfo.decimals)
-              .toNumber();
             const renderValue =
-              feeVolume === 0 || feeVolume === undefined
+              fee?.volume == 0 || fee?.volume === undefined
                 ? EmptyValueTag
                 : `${getValuePrecisionThousand(
-                    feeVolume,
+                    sdk.toBig(fee?.volume).div("1e" + feeTokenInfo.decimals),
                     feeTokenInfo?.precision,
                     feeTokenInfo?.precision,
                     feeTokenInfo?.precision,
