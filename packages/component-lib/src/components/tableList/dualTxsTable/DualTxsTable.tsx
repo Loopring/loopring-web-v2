@@ -231,8 +231,8 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
             let buyAmount, sentence;
             buyAmount =
               deliveryPrice - strike >= 0
-                ? `${greaterEarnView} ${quote}`
-                : `${lessEarnView} ${base}`;
+                ? `${greaterEarnView}`
+                : `${lessEarnView}`;
             sentence =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? `${amount} ${sellSymbol} ${DirectionTag} ${buyAmount} ${buySymbol} `
