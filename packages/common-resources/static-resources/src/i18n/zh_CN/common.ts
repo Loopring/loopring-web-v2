@@ -1036,4 +1036,5 @@ export default {
   labelInvestRangeDay: "{{arg}} Days",
   labelAmmExit: "Redeem",
   labelAmmJoin: "Subscribe",
+  labelDualPanelClose: "Go to My Investment",
 };

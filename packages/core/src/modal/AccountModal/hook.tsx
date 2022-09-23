@@ -2214,7 +2214,7 @@ export function useAccountModalForUI({
         view: (
           <Dual_Success
             btnInfo={{
-              btnTxt: "labelClose",
+              btnTxt: "labelDualPanelClose",
               callback: (e: any) => {
                 setShouldShow(false);
                 history.push("/invest/balance");
