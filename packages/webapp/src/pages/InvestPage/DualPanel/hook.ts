@@ -37,6 +37,7 @@ export const useDualHook = ({
     confirmation: { confirmedDualInvest },
   } = confirmation.useConfirmation();
   const history = useHistory();
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 
   setConfirmDualInvest(!confirmedDualInvest);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -112,6 +113,9 @@ export const useDualHook = ({
   const getProduct = _.debounce(async () => {
     setIsLoading(true);
     const market = findDualMarket(marketArray, pairASymbol, pairBSymbol);
+    if (nodeTimer.current !== -1) {
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
+    }
     // @ts-ignore
     const currency = marketMap[market ?? ""]?.currency;
     if (pairASymbol && pairBSymbol && market) {
@@ -196,6 +200,9 @@ export const useDualHook = ({
       }
     }
     setIsLoading(false);
+    nodeTimer.current = setTimeout(() => {
+      getProduct();
+    }, 60000);
   }, 100);
   React.useEffect(() => {
     if (
@@ -212,7 +219,12 @@ export const useDualHook = ({
       myLog("update pair", pair);
       getProduct();
     }
-    return () => getProduct.cancel();
+    return () => {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      }
+      getProduct.cancel();
+    };
   }, [pair, dualStatus]);
 
   return {

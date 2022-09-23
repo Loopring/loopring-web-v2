@@ -225,7 +225,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
             const statusColor =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
-                ? "var(--color-error)"
+                ? "var(--color-tag)"
                 : Date.now() - expireTime >= 0
                 ? "var(--color-warning)"
                 : "var(--color-success)";

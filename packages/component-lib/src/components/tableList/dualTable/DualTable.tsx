@@ -111,7 +111,7 @@ export const DualTable = withTranslation(["tables", "common"])(
                 >
                   <UpIcon
                     fontSize={"small"}
-                    htmlColor={row.isUp ? _upColor : _downColor}
+                    // htmlColor={row.isUp ? _upColor : _downColor}
                     style={{
                       transform: row.isUp ? "" : "rotate(-180deg)",
                     }}
