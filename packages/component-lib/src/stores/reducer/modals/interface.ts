@@ -1,4 +1,8 @@
-import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
+import {
+  DualViewInfo,
+  NFTWholeINFO,
+  TradeNFT,
+} from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { AmmPanelType } from "../../../components";
 
@@ -34,6 +38,7 @@ export interface ModalState {
   isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
   isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
   isShowCollectionAdvance: ModalStatePlayLoad;
+  isShowDual: ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined };
   isShowResetAccount: ModalStatePlayLoad;
   isShowActiveAccount: ModalStatePlayLoad;
   isShowExportAccount: ModalStatePlayLoad;

@@ -13,7 +13,10 @@ import { useSystem } from "@loopring-web/core";
 import { useAccount } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { volumeToCountAsBigNumber } from "@loopring-web/core";
-import { RowConfig } from "@loopring-web/common-resources";
+import {
+  RowConfig,
+  UNIX_TIMESTAMP_FORMAT,
+} from "@loopring-web/common-resources";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 const LimitNFTHistory = 20;
@@ -86,11 +89,13 @@ export const useHistoryNFT = <
               // start: (page - 1) * limit,
               start:
                 duration && duration[0]
-                  ? (duration[0] as any)?.format("x") ?? undefined
+                  ? (duration[0] as any)?.format(UNIX_TIMESTAMP_FORMAT) ??
+                    undefined
                   : undefined,
               end:
                 duration && duration[1]
-                  ? (duration[1] as any)?.format("x") ?? undefined
+                  ? (duration[1] as any)?.format(UNIX_TIMESTAMP_FORMAT) ??
+                    undefined
                   : undefined,
               limit: _limit,
             },

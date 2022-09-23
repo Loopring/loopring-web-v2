@@ -27,6 +27,7 @@ import {
   globalSetup,
   RowConfig,
   TableType,
+  UNIX_TIMESTAMP_FORMAT,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { Currency, NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
@@ -565,10 +566,10 @@ export const TradeNFTTable = withTranslation("tables")(
         }
 
         const start = currFilterDate[0]
-          ? Number(moment(currFilterDate[0]).format("x"))
+          ? Number(moment(currFilterDate[0]).format(UNIX_TIMESTAMP_FORMAT))
           : undefined;
         const end = currFilterDate[1]
-          ? Number(moment(currFilterDate[1]).format("x"))
+          ? Number(moment(currFilterDate[1]).format(UNIX_TIMESTAMP_FORMAT))
           : undefined;
         // const market =
         //   currFilterPair === "all" ? "" : currFilterPair.replace(/\s+/g, "");

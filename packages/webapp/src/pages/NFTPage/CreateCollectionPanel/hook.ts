@@ -99,10 +99,10 @@ export const useCollectionPanel = <T extends CollectionMeta>({
         enableBtn();
         return;
       }
-      if (!collectionValue.name) {
+      if (!collectionValue?.name) {
         setLabelAndParams("labelCollectionRequiredName", {});
       }
-      if (!collectionValue.tileUri) {
+      if (!collectionValue?.tileUri) {
         setLabelAndParams("labelCollectionRequiredTileUri", {});
       }
 

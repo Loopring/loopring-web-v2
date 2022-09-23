@@ -25,10 +25,15 @@ import {
   setShowNFTDetail,
   setShowLayerSwapNotice,
   setShowNFTDeploy,
+  setShowDual,
 } from "./reducer";
 
 import React from "react";
-import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
+import {
+  DualViewInfo,
+  NFTWholeINFO,
+  TradeNFT,
+} from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { ToggleState } from "../toggle";
 import { AmmPanelType } from "../../../components";
@@ -106,38 +111,38 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: "Transfer" }));
         }
       },
-	    [dispatch]
+      [dispatch]
     ),
-	  setShowNFTDeposit: React.useCallback(
-		  (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
-			  if (toggle.depositNFT.enable) {
-				  dispatch(setShowNFTDeposit(state));
-			  } else {
-				  dispatch(setShowTradeIsFrozen({isShow: true, type: "Deposit"}));
-			  }
-		  },
-		  [dispatch]
-	  ),
-	  setShowCollectionAdvance: React.useCallback(
-		  (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
-			  if (toggle.collectionNFT.enable) {
-				  dispatch(setShowCollectionAdvance(state));
-			  } else {
-				  dispatch(
-					  setShowCollectionAdvance({isShow: true, type: "Collection"})
-				  );
-			  }
-		  },
-		  [dispatch]
-	  ),
-	  setShowNFTMintAdvance: React.useCallback(
-		  (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
-			  if (toggle.mintNFT.enable) {
-				  dispatch(setShowNFTMintAdvance(state));
-			  } else {
-				  dispatch(setShowTradeIsFrozen({isShow: true, type: "Mint"}));
-			  }
-		  },
+    setShowNFTDeposit: React.useCallback(
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
+        if (toggle.depositNFT.enable) {
+          dispatch(setShowNFTDeposit(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Deposit" }));
+        }
+      },
+      [dispatch]
+    ),
+    setShowCollectionAdvance: React.useCallback(
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
+        if (toggle.collectionNFT.enable) {
+          dispatch(setShowCollectionAdvance(state));
+        } else {
+          dispatch(
+            setShowCollectionAdvance({ isShow: true, type: "Collection" })
+          );
+        }
+      },
+      [dispatch]
+    ),
+    setShowNFTMintAdvance: React.useCallback(
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
+        if (toggle.mintNFT.enable) {
+          dispatch(setShowNFTMintAdvance(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Mint" }));
+        }
+      },
       [dispatch]
     ),
     setShowNFTWithdraw: React.useCallback(
@@ -192,6 +197,11 @@ export const useOpenModals = () => {
           info?: { [key: string]: any };
         }
       ) => dispatch(setShowAccount(state)),
+      [dispatch]
+    ),
+    setShowDual: React.useCallback(
+      (state: ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }) =>
+        dispatch(setShowDual(state)),
       [dispatch]
     ),
     setShowConnect: React.useCallback(

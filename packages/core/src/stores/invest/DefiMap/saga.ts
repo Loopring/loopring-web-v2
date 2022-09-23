@@ -13,7 +13,7 @@ const getDefiMapApi = async () => {
     markets: marketMap,
     tokenArr: marketCoins,
     marketArr: marketArray,
-  } = await LoopringAPI.defiAPI?.getDefiMarkets({ defiType: undefined });
+  } = await LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "LIDO" });
 
   let { __timer__ } = store.getState().invest.defiMap;
   __timer__ = (() => {
@@ -54,7 +54,7 @@ export function* getDefiSyncSaga({
 }: PayloadAction<{ defiMap: DefiMap }>) {
   try {
     if (payload.defiMap) {
-      yield put(getDefiMapStatus({ defiMap: payload.defiMap }));
+	    yield put(getDefiMapStatus({ ...payload.defiMap }));
     }
   } catch (err) {
     yield put(getDefiMapStatus(err));
@@ -65,7 +65,7 @@ export function* defiMapInitSaga() {
   yield all([takeLatest(getDefiMap, getPostsSaga)]);
 }
 export function* defiMapSyncSaga() {
-  yield all([takeLatest(updateDefiSyncMap, getPostsSaga)]);
+  yield all([takeLatest(updateDefiSyncMap, getDefiSyncSaga)]);
 }
 
-export const defiMapFork = [fork(defiMapInitSaga), fork];
+export const defiMapFork = [fork(defiMapInitSaga), fork(defiMapSyncSaga)];

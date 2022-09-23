@@ -33,6 +33,7 @@ import {
   chartFearturesList,
 } from "./klineConfig";
 import { cloneDeepWith } from "lodash";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const ChartItemStyled = styled(Typography)`
   //font-size: 1.2em;
@@ -127,11 +128,11 @@ export const ChartView = withTranslation("common")(
       const formattedData = {
         bidsPrices: originalData.bids.map((o) => o.price).reverse(),
         bidsAmtTotals: originalData.bids
-          .map((o) => Number(o.amtTotalForShow.replace(",", "")))
+          .map((o) => Number(o.amtTotalForShow.replace(sdk.SEP, "")))
           .reverse(),
         asksPrices: originalData.asks.map((o) => o.price).reverse(),
         asksAmtTotals: originalData.asks
-          .map((o) => Number(o.amtTotalForShow.replace(",", "")))
+          .map((o) => Number(o.amtTotalForShow.replace(sdk.SEP, "")))
           .reverse(),
       };
       return formattedData;

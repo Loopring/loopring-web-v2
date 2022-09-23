@@ -92,31 +92,6 @@ export const DataGridStyled = styled(DataGrid)`
       flex-grow: initial;
     }
 
-    .rdg-header-sort-cell {
-      .rdg-header-sort-name + span {
-        display: none;
-      }
-
-      .rdg-header-sort-name {
-        .sort-icon svg {
-          display: inline-block;
-          transform-origin: center;
-        }
-
-        .DESC svg {
-          transform: rotate(0deg) translateX(-3px) scale(1.2);
-        }
-
-        .ASC svg {
-          transform: rotate(180deg) translateX(-3px) scale(1.2);
-        }
-
-        .NONE svg {
-          transform: rotate(90deg) translateX(-3px) scale(1.2);
-        }
-      }
-    }
-
     .rdg-cell-selected {
       box-shadow: inherit;
     }
@@ -145,19 +120,59 @@ export const DataGridStyled = styled(DataGrid)`
       box-sizing: border-box;
       height: 100%;
       padding: 0 ${({ theme }) => theme.unit}px;
+
       & > span,
       div {
         user-select: text;
       }
+
       &.textAlignRight {
         text-align: right;
+
+        .rdg-header-sort-cell {
+          justify-content: right;
+        }
       }
+
       &.textAlignLeft {
         text-align: left;
+
+        .rdg-header-sort-cell {
+          justify-content: left;
+        }
       }
 
       &.textAlignCenter {
         text-align: center;
+
+        .rdg-header-sort-cell {
+          justify-content: center;
+        }
+      }
+    }
+
+    .rdg-header-sort-cell {
+      .rdg-header-sort-name + span {
+        display: none;
+      }
+
+      .rdg-header-sort-name {
+        .sort-icon svg {
+          display: inline-block;
+          transform-origin: center;
+        }
+
+        .DESC svg {
+          transform: rotate(0deg) translateX(-3px) scale(1.2);
+        }
+
+        .ASC svg {
+          transform: rotate(180deg) translateX(-3px) scale(1.2);
+        }
+
+        .NONE svg {
+          transform: rotate(90deg) translateX(-3px) scale(1.2);
+        }
       }
     }
 

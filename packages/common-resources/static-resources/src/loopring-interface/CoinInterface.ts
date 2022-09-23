@@ -7,6 +7,7 @@ import {
 } from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
+import { TokenInfo } from "@loopring-web/loopring-sdk";
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -130,6 +131,15 @@ export type DeFiCalcData<T> = {
   AtoB: string;
   BtoA: string;
   fee: string;
+};
+
+export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {
+  sellToken?: TokenInfo;
+  buyToken?: TokenInfo;
+  coinSell: B;
+  dualViewInfo: R;
+  balance: { [key: string]: sdk.DualBalance };
+  request?: sdk.DualOrderRequest;
 };
 
 export type AmmInData<T> = {
@@ -311,7 +321,7 @@ export enum EXPLORE_TYPE {
  *
  */
 export type CollectionMeta = sdk.CollectionMeta & {
-  extends: { [ key: string ]: any };
+  extends: { [key: string]: any };
 };
 export type CollectionMetaJSON = {
   contract: string;
@@ -321,7 +331,7 @@ export type CollectionMetaJSON = {
   tile_uri: string;
   name: string;
   description: string;
-  [ key: string ]: any;
+  [key: string]: any;
 };
 
 export enum CollectionMetaKey {

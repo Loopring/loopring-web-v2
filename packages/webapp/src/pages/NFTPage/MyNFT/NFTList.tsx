@@ -16,6 +16,7 @@ import React from "react";
 import { useMyNFT } from "./useMyNFT";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
+import { sanitize } from "dompurify";
 
 const _StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -141,9 +142,11 @@ export const MyNFTList = withTranslation("common")(
                             whiteSpace={"pre"}
                             overflow={"hidden"}
                             textOverflow={"ellipsis"}
-                          >
-                            {item?.name ?? EmptyValueTag}
-                          </Typography>
+                            dangerouslySetInnerHTML={{
+                              __html:
+                                sanitize(item?.name ?? EmptyValueTag) ?? "",
+                            }}
+                          />
                           <Typography
                             color={"textSecondary"}
                             component={"p"}

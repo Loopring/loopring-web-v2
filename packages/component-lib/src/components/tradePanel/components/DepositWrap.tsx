@@ -20,6 +20,7 @@ import {
 } from "../../../index";
 import { DepositViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export const DepositWrap = <
   T extends {
@@ -90,8 +91,9 @@ export const DepositWrap = <
           </Typography>
         );
       }
-      const Max: number =
-        Number(chargeFeeTokenList[index].fee.toString().replace(",", "")) * 4;
+	    const Max: number =
+        Number(chargeFeeTokenList[index].fee.toString().replace(sdk.SEP, "")) *
+        4;
       if (Max > (tradeData.tradeValue ?? 0)) {
         return (
           <Typography

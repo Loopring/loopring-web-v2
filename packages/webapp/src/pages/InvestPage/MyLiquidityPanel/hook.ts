@@ -119,7 +119,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
         });
         defiCoinArray.forEach((defiCoinKey) => {
           totalCurrentInvest.investDollar += Number(
-            (_walletMap[defiCoinKey]?.count.replace(",", "") ?? 0) *
+            (_walletMap[defiCoinKey]?.count.replace(sdk.SEP, "") ?? 0) *
               tokenPrices[defiCoinKey] ?? 0
           );
         }, []);
@@ -174,10 +174,10 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
 
   React.useEffect(() => {
     if (userRewardsStatus === SagaStatus.UNSET) {
-      let summaryReward: any = makeSummaryMyAmm({ userRewardsMap });
+      let summaryReward: any = makeSummaryMyAmm({ userRewardsMap }) ?? {};
       makeDefiInvestReward().then((summaryDefiReward) => {
         summaryReward.rewardDollar = sdk
-          .toBig(summaryReward.rewardDollar)
+          .toBig(summaryReward?.rewardDollar ?? 0)
           .plus(summaryDefiReward ?? 0)
           .toString();
         setSummaryMyInvest((state) => {

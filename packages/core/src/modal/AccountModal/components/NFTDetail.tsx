@@ -31,6 +31,7 @@ import { useTheme } from "@emotion/react";
 import { getIPFSString } from "../../../utils";
 import { LoopringAPI } from "../../../api_wrapper";
 import { useToast } from "../../../hooks";
+import { sanitize } from "dompurify";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -264,9 +265,13 @@ export const NFTDetail = withTranslation("common")(
             </Typography>
           </Box>
           <Box marginBottom={2} display={"flex"} alignItems={"center"}>
-            <Typography color={"text.primary"} variant={"h2"}>
-              {popItem?.name ?? EmptyValueTag}
-            </Typography>
+            <Typography
+              color={"text.primary"}
+              variant={"h2"}
+              dangerouslySetInnerHTML={{
+                __html: sanitize(popItem?.name ?? EmptyValueTag) ?? "",
+              }}
+            />
           </Box>
           <Box
             display={"flex"}
@@ -603,7 +608,7 @@ export const NFTDetail = withTranslation("common")(
                 maxRows={5}
                 disabled={true}
                 style={{ padding: 0 }}
-                value={`${popItem.description}` ?? EmptyValueTag}
+                value={`${sanitize(popItem?.description ?? EmptyValueTag)}`}
               />
             </Box>
           </Box>

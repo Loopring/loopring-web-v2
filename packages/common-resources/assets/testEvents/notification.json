@@ -123,12 +123,25 @@
       ]
     },
     {
+      "name": "Amm ",
+      "startShow": 1662768000000,
+      "endShow": 1664582400000,
+      "iconSource": "https://static.loopring.io/assets/svg/amm.svg",
+      "symbols": [
+        "LRC-ETH"
+      ],
+      "scenarios": [
+        "AMM",
+        "market"
+      ]
+    },
+    {
       "name": "Offramp event",
       "startShow": 1662768000000,
       "endShow": 1664582400000,
       "iconSource": "https://static.loopring.io/assets/svg/hot.svg",
       "symbols": [
-        "Ramp-off"
+        "Ramp-on"
       ],
       "scenarios": [
         "Fiat"

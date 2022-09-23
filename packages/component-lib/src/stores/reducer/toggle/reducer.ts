@@ -3,20 +3,21 @@ import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
 import { ToggleState } from "./interface";
 
 const initialState: ToggleState = {
-  order: {enable: true},
-  joinAmm: {enable: true},
-  exitAmm: {enable: true},
-  transfer: {enable: true},
-  transferNFT: {enable: true},
-  deposit: {enable: true},
-  depositNFT: {enable: true},
-  withdraw: {enable: true},
-  withdrawNFT: {enable: true},
-  mintNFT: {enable: true},
-  deployNFT: {enable: true},
-  updateAccount: {enable: true},
-  collectionNFT: {enable: true},
-  defiInvest: {enable: true},
+  order: { enable: true },
+  joinAmm: { enable: true },
+  exitAmm: { enable: true },
+  transfer: { enable: true },
+  transferNFT: { enable: true },
+  deposit: { enable: true },
+  depositNFT: { enable: true },
+  withdraw: { enable: true },
+  withdrawNFT: { enable: true },
+  mintNFT: { enable: true },
+  deployNFT: { enable: true },
+  updateAccount: { enable: true },
+  collectionNFT: { enable: true },
+  defiInvest: { enable: true },
+  dualInvest: { enable: true },
 };
 
 export const toggleSlice: Slice<ToggleState> = createSlice<
@@ -86,7 +87,6 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       if (collectionNFT !== undefined) {
         state.collectionNFT = collectionNFT;
       }
-
     },
   },
 });

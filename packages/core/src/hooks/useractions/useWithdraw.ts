@@ -150,7 +150,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         tradeValue.gt(BIGO) &&
         realAddr &&
         (info?.isToMyself || sureIsAllowAddress) &&
-        (addrStatus as AddressError) === AddressError.NoError
+        [AddressError.NoError, AddressError.IsNotLoopringContract].includes(
+          addrStatus
+        )
       ) {
         enableBtn();
         return;

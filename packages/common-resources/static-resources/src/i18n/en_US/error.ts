@@ -48,4 +48,6 @@ export default {
   errorCollectionNoSupport: "Only L2 collection is allow to mint",
   errorCollectionNotReadable: "Read Collection Info Failed",
   errorIpfsTimeout: "IPFS Gateway timeout, please try again",
+  errorRampNoInstance: "Ramp Widget had out-off service, please re-order it.",
+  errorDualExpired: "The order has expired.",
 };

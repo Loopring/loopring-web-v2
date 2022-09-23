@@ -613,19 +613,6 @@ export const useSwap = <C extends { [key: string]: any }>({
     tradeCalcData?.coinBuy,
   ]);
 
-  /*** account related function ***/
-  // React.useEffect(() => {
-  //   if (
-  //     account.readyState === AccountStatus.ACTIVATED &&
-  //     amountStatus === SagaStatus.UNSET
-  //   ) {
-  //     const amountMap = store.getState().amountMap;
-  //     if (amountMap[market]) {
-  //       setIsSwapLoading(false);
-  //     }
-  //   }
-  // }, [account.readyState, amountStatus, market]);
-
   const walletLayer2Callback = React.useCallback(async () => {
     let walletMap: WalletMap<any> | undefined = undefined;
     if (account.readyState === AccountStatus.ACTIVATED) {
@@ -707,14 +694,6 @@ export const useSwap = <C extends { [key: string]: any }>({
     if (pageTradeLite.depth) {
       refreshAmmPoolSnapshot();
       setIsSwapLoading(false);
-      // if (
-      //   account.readyState === AccountStatus.ACTIVATED &&
-      //   amountStatus === SagaStatus.UNSET
-      // ) {
-      //   setIsSwapLoading(false);
-      // } else {
-      //
-      // }
     }
   }, [
     pageTradeLite.depth,
@@ -1286,7 +1265,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             // @ts-ignore
             const [, _coinA] = market.match(/(\w+)-(\w+)/i);
             let _btos = getValuePrecisionThousand(
-              1 / Number(close.replace(",", "")),
+              1 / Number(close.replace(sdk.SEP, "")),
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
@@ -1391,7 +1370,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           // @ts-ignore
           const [, _coinA] = market.match(/(\w+)-(\w+)/i);
           btos = getValuePrecisionThousand(
-            1 / Number(close.replace(",", "")),
+            1 / Number(close.replace(sdk.SEP, "")),
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,

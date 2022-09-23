@@ -13,12 +13,12 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   SwipeableViewsProps & {
     _height?: number | string;
     _width?: number | string;
-    isMobile?: boolean | undefined;
+    ismobile?: boolean | undefined;
   }
 >`
   position: relative;
   flex: 1;
-  ${({ _height, _width, isMobile }) => ` 
+  ${({ _height, _width, ismobile }) => ` 
     height: ${
       typeof _height === "string"
         ? _height
@@ -27,7 +27,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
         : `var(--swap-box-height)`
     };     
     ${
-      isMobile
+      ismobile
         ? ``
         : `   
       width: ${
@@ -90,7 +90,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   props: SwipeableViewsProps & {
     _height?: number | string;
     _width?: number | string;
-    isMobile?: boolean | undefined;
+    ismobile?: boolean | undefined;
   }
 ) => JSX.Element;
 
@@ -121,7 +121,7 @@ function _SwitchPanel<T extends string>(
       index={index}
       _height={rest._height}
       _width={rest._width}
-      isMobile={isMobile}
+      ismobile={isMobile}
     >
       {panelList.map((panel: PanelContent<T>) => {
         return (

@@ -57,7 +57,7 @@ export const useDeposit = <
   const { account } = useAccount();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false);
-  const { exchangeInfo, chainId, gasPrice, allowTrade } = useSystem();
+  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL } = useSystem();
 
   const {
     realAddr: realToAddress,
@@ -150,7 +150,7 @@ export const useDeposit = <
         ) ?? -1;
       if (
         isAllowInputToAddress ||
-        (isNewAccount && index !== -1) ||
+        (isNewAccount && (index !== -1 || /dev/gi.test(baseURL))) ||
         !isNewAccount
       ) {
         enableBtn();

@@ -23,6 +23,7 @@ import {
   AccountStatus,
   RowInvestConfig,
   dualAdvice,
+  myLog,
 } from "@loopring-web/common-resources";
 import { useAccount, useNotify } from "@loopring-web/core";
 
@@ -51,7 +52,6 @@ export const OverviewPanel = withTranslation("common")(
       filteredData,
       filterValue,
       getFilteredData,
-      // myFilteredData,
       rawData,
       myMapLoading,
       myRawData,
@@ -64,8 +64,9 @@ export const OverviewPanel = withTranslation("common")(
     const investAdviceList = [
       { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0] },
       { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1] },
-      // { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
+      { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
     ];
+    // myLog(investAdviceList[1].banner);
     return (
       <>
         <WrapperStyled marginBottom={3}>
@@ -173,5 +174,5 @@ export const OverviewPanel = withTranslation("common")(
         </WrapperStyled>
       </>
     );
-  }
+  };
 );
