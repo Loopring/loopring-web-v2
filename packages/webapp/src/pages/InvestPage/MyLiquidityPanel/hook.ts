@@ -22,7 +22,6 @@ import {
   makeDefiInvestReward,
 } from "@loopring-web/core";
 import {
-  getValuePrecisionThousand,
   SagaStatus,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
