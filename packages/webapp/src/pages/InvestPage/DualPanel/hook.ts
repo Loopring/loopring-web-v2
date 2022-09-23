@@ -44,12 +44,12 @@ export const useDualHook = ({
   const [currentPrice, setCurrentPrice] =
     React.useState<DualCurrentPrice | undefined>(undefined);
   const [, , coinA, coinB] =
-    (match?.params?.market ? match.params.market : "ETH-USDC").match(
+    (match?.params?.market ? match.params.market : "ETH-USDT").match(
       /(dual-)?(\w+)-(\w+)/i
     ) ?? [];
 
   const [pairASymbol, setPairASymbol] = React.useState(() =>
-    tradeMap[coinA] ? coinA : "LRC"
+    tradeMap[coinA] ? coinA : "ETH"
   );
   const [pairBSymbol, setPairBSymbol] = React.useState(
     coinB && tradeMap && tradeMap[pairASymbol]?.tokenList
@@ -66,7 +66,7 @@ export const useDualHook = ({
     // @ts-ignore
     const [, , coinA, coinB] = market
       ? market
-      : "LRC-USDC".match(/(dual-)?(\w+)-(\w+)/i) ?? [];
+      : "ETH-USDT".match(/(dual-)?(\w+)-(\w+)/i) ?? [];
     return [coinA, coinB];
   });
 
