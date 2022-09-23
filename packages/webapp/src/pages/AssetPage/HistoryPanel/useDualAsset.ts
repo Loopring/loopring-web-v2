@@ -243,7 +243,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       }
       setShowLoading(false);
     },
-    [accountId, apiKey, setToastOpen, t]
+    [accountId, apiKey, setToastOpen, t, dualMarketMap]
   );
 
   return {

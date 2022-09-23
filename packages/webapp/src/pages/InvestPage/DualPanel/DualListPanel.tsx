@@ -135,7 +135,14 @@ export const DualListPanel: any = withTranslation("common")(
             startIcon={<BackIcon fontSize={"small"} />}
             variant={"text"}
             size={"medium"}
-            sx={{ color: "var(--color-text-secondary)" }}
+            sx={
+              isMobile
+                ? {
+                    color: "var(--color-text-secondary)",
+                    justifyContent: "left",
+                  }
+                : { color: "var(--color-text-secondary)" }
+            }
             color={"inherit"}
             onClick={() => history.push("/invest/overview")}
           >

@@ -73,6 +73,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       getDualAssetList,
       // idIndex,
       // tokenMap,
+      dualMarketMap,
       showloading,
       showDetail,
       t,
@@ -385,9 +386,11 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         columnsRaw as Column<any, unknown>[],
     };
     React.useEffect(() => {
+      if (dualMarketMap) {
+        updateData.cancel();
+        updateData({ currPage: 1 });
+      }
       // let filters: any = {};
-      updateData.cancel();
-      updateData({ currPage: 1 });
       // handlePageChange(1);
       // if (searchParams.get("types")) {
       //   filters.type = searchParams.get("types");
@@ -396,7 +399,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize]);
+    }, [pagination?.pageSize, dualMarketMap]);
     return (
       <TableWrapperStyled isMobile={isMobile}>
         <TableStyled

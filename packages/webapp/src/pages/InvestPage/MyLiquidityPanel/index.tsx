@@ -31,6 +31,7 @@ import {
   useAccount,
   TableWrapStyled,
   useTokenMap,
+  useDualMap,
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
@@ -54,10 +55,10 @@ const MyLiquidity: any = withTranslation("common")(
     const ammPoolRef = React.useRef(null);
     const stackingRef = React.useRef(null);
     const dualRef = React.useRef(null);
-
     const { ammActivityMap } = useAmmActivityMap();
     const { forexMap } = useSystem();
     const { tokenMap, disableWithdrawList, idIndex } = useTokenMap();
+    const { marketMap: dualMarketMap } = useDualMap();
     const {
       assetsRawData,
       onSend,
@@ -311,6 +312,7 @@ const MyLiquidity: any = withTranslation("common")(
             <DualAssetTable
               rawData={dualList}
               idIndex={idIndex}
+              dualMarketMap={dualMarketMap}
               tokenMap={tokenMap}
               showloading={dualLoading}
               pagination={pagination}

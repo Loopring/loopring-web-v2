@@ -10,6 +10,7 @@ export type RawDataDualAssetItem = DualViewOrder & {
 
 export interface DualAssetTableProps<R> {
   rawData: R[];
+  dualMarketMap: any;
   idIndex: { [key: string]: string };
   tokenMap: { [key: string]: any };
   showloading: boolean;
