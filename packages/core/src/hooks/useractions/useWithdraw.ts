@@ -92,9 +92,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
   const [withdrawTypes, setWithdrawTypes] = React.useState<
     Partial<WithdrawTypes>
-  >({
-    // [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast",
-    [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
+  >(() => {
+    return {
+      // [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast",
+      [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
+    };
   });
   const { checkHWAddr, updateHW } = useWalletInfo();
 

@@ -20,9 +20,11 @@ import {
   useSystem,
   useAmmActivityMap,
   useTokenMap,
+  useNotify,
 } from "@loopring-web/core";
 import { BackIcon, RowInvestConfig } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
+import { useTheme } from "@emotion/react";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -49,6 +51,7 @@ export const PoolsPanel = withTranslation("common")(
     const container = React.useRef(null);
     const { account } = useAccount();
     const history = useHistory();
+    const theme = useTheme();
     const {
       filteredData,
       sortMethod,
@@ -63,11 +66,16 @@ export const PoolsPanel = withTranslation("common")(
     const { tokenMap } = useTokenMap();
     const { tokenPrices } = store.getState().tokenPrices;
     const showLoading = rawData && !rawData.length;
-    const { activityInProgressRules } = useAmmActivityMap();
+    const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
     return (
-      <Box display={'flex'} flexDirection={"column"} flex={1}>
-       <Box marginBottom={2}>
+      <Box display={"flex"} flexDirection={"column"} flex={1}>
+        <Box
+          marginBottom={2}
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
           <Button
             startIcon={<BackIcon fontSize={"small"} />}
             variant={"text"}
@@ -78,6 +86,13 @@ export const PoolsPanel = withTranslation("common")(
           >
             {t("labelLiquidityPageTitle")}
             {/*<Typography color={"textPrimary"}></Typography>*/}
+          </Button>
+          <Button
+            variant={"outlined"}
+            sx={{ marginLeft: 2 }}
+            onClick={() => history.push("/invest/balance/amm")}
+          >
+            {t("labelInvestMyAmm")}
           </Button>
         </Box>
         <WrapperStyled flex={1} marginBottom={3}>
@@ -115,7 +130,7 @@ export const PoolsPanel = withTranslation("common")(
                 showLoading,
                 tableHeight,
                 sortMethod,
-                activityInProgressRules,
+                campaignTagConfig,
                 coinJson,
                 account,
                 tokenPrices,

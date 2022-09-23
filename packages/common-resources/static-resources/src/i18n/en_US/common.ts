@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-
 export default {
   labelErrorTitle: "Error Detail: ",
   labelNoContent: "No Content",
@@ -619,7 +618,8 @@ export default {
   labelNFTDeploySendAnotherL1: "To another L1 & Deploy Contract",
   labelGuid: "Go to Guide",
   labelOK: "Ok",
-  labelL2toL2InvalidAddress: "Invalid address or ENS",
+  labelL2toL2InvalidAddr: "Invalid address or ENS",
+  labelL2toL2IsNotLoopringContract: "Is not Loopring Contract wallet address",
   labelL2toL2AddressNotLoopring:
     "This address has not yet activated Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelL2toL2AddressType: "Address Type",
@@ -629,7 +629,7 @@ export default {
   labelL2toL2OriginBtnWallet: "Wallet",
   labelL2toL2Confirm: "Confirm",
   labelL2toL2TokenAmount: "Token Amount",
-  labelL1toL2ThirdPart: "Buy Crypto with",
+  labelL1toL2ThirdPart: "{{type}} Crypto with",
   labelActiveAccountFeeNotEnough: "Insufficient balance <1>Add assets</1>",
   labelNFTTransferTX: "L2 \u2192 L2",
   labelNFTWithdrawTX: "L2 \u2192 L1",
@@ -834,7 +834,7 @@ export default {
   labelNFTDepositLabel: "Receive NFT",
   labelDefiFee: "Fee",
   labelDefiMin: "Minimum of {{arg}}",
-  labelDefiNoEnough: "Not enough {{arg}}",
+  labelDefiNoEnough: "Insufficient balance",
   labelDefiMaxBalance:
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n" +
     "You can choose one of the following approaches for the remaining amount:",
@@ -862,6 +862,8 @@ export default {
   labelTitleOverviewToken: "Total Investment Tokens",
   labelInvestType_AMM: "AMM Pool",
   labelInvestType_STAKE: "ETH Staking",
+  labelInvestType_DUAL: "Dual Investment",
+  labelInvestAll: "Mixed",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
   labelDefiOrderTable: "ETH Staking",
@@ -967,13 +969,84 @@ export default {
   labelNFTAmountValue: "Amount: {{value}}",
   labelCollectionItemValue: "Item: {{value}}",
   labelMyCollectionsDes:
-    "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information Until it happens, the previous NFTs will be categorized to collection named by their associated contract address. ",
+    "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information. Until it happens, the previous NFTs will be categorized to collection named by their associated contract address.",
   labelNFTGuid:
     "Please fill in the appropriate collection metadata field value in your NFT metadata with this string first, then upload it to IPFS to retrieve the CID to continue. <1>view more </1>",
   labelChooseCollectionTooltips:
-    "This is the collection where your NFT will appear.NFT minted under collection will be bound with different contract address than previous created one. If you have incomplete work to finish and would like them created under previous contract address, you can still use the legacy created method under <1>https://legacy-nft.loopring.io/</1>",
+    "This is the collection where your NFT will appear. \n Note: NFT minted under collection will be bound with different contract address than previous created one. If you have incomplete work to finish and would like them created under previous contract address, you can still use the legacy creation method under <1>https://legacy-nft.loopring.io/</1>.",
   labelMintPreview: "Back",
   labelMintNoCollectionBtn: "Please Choose Collection",
-  labelInvestDual: "Dual Investment",
-  labelInvestDualDes: "APY 20% ~ 1000%",
+  labelInvestDualTitle: "Dual Investment",
+  labelBuy: "Buy",
+  labelSell: "Sell",
+  labelRampNoBalance: "Insufficient {{belong}} balance",
+  labelL2toRampTitle: "Send to Ramp",
+  labelDualInvest: "Invest {{symbol}}",
+  labelDualBase: "Sell High for {{symbol}}",
+  labelDualQuote: "Buy {{symbol}} Low",
+  labelDualAgree: "I have read risk warning",
+  labelDualRiskTitle: "Dual Investment",
+  labelDualInvestBaseTitle: "Invest {{symbolA}} (Sell High for {{symbolB}})",
+  labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
+  labelDualInvestDes:
+    "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
+  labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
+  labelDualSuccess: "Subscription {{symbol}} Successfully",
+  labelDualFailed: "Subscribe Failed",
+  labelDualFee: "Fee",
+  labelDualMin: "Minimum of {{arg}}",
+  labelDualMax: "Maximum of {{arg}}",
+  labelDualNoEnough: "Insufficient balance",
+  labelDualSettleDate: "Settlement Date",
+  labelDualSubDate: "Subscription Date",
+  labelDualCurrentPrice2: "Current {{symbol}} Price",
+  labelDualCurrentPrice3: "Current  Price",
+  labelDualCurrentAPR: "APR <1>\u2139</1>",
+  labelDualCurrentAPRDes:
+    "APR is refreshed in real time. We will use the lastest APR at the time you complete the subscription successfully.",
+  labelDualTargetPrice2: "Target Price <1>\u2139</1>",
+  labelDualTargetPrice3: "Target Price",
+
+  labelDualTargetPriceDes:
+    "Target Price is a benchmark price. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
+  labelDualRiskDes:
+    "Your investment will be locked up until settlement date after investing and cannot be redeemed before settlement. \n As we make profit ratio a top priority, the total opened position might vary with your initial investment.",
+  labelDualReturn: "Return \n {{symbol}}",
+  labelDualReceive: "Settlement Calculator",
+  labelDualCalcLabel: "If {{symbol}} {{tag}} {{target}}",
+  labelDualReturnValue: "Return {{value}} {{symbol}}",
+  labelDualQuota: "Total Quota",
+  labelProduct: "Product",
+  labelDualAssetFrozen_Target: "Frozen Target",
+  labelDualAssetPrice: "Price",
+  labelDualAssetSettlement_Date: "SettlementDate",
+  labelDualAssetAPR: "APR",
+  labelDualAssetAction: "Detail",
+  labelInvestDualTutorial: "Tutorial",
+  labelInvestDualTutorialContent:
+    "Dual Investment offers you a chance to sell cryptocurrency high or buy cryptocurrency low at your desired price on your desired date. Once subscribed, users are not able to cancel or redeem the subscription until the Settlement Date.\n You may be better off holding your cryptocurrency, and may be required to trade your cryptocurrency at a less favorable rate of exchange than the market rate on Settlement Date. Cryptocurrency trading is subject to high market risk. Please make your trades cautiously. There may be no recourse for any losses.",
+  labelInvestDualTutorialCheck1:
+    "I understand that Dual Investment is NOT a principal-guaranteed products.",
+  labelInvestDualTutorialCheck2:
+    "I understand that subscribed assets are locked and users aren’t able to cancel or redeem before the Settlement Date.",
+  labelInvestDualTutorialCheck3:
+    "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
+  labelInvestDualTutorialCheck4: "I have read the risk warning.",
+  labelDualAmount: "Amount",
+  labelDuaInvestmentDetails: "Dual Investment Details",
+  labelDualOrderTable: "Dual Investments",
+  labelInvestMyAmm: "My Investment",
+  labelInvestMyDual: "My Investment",
+  labelInvestMyDefi: "My Investment",
+  labelInvestMaxDual: "Max {{value}}",
+  labelDualTitle: "Dual Investment",
+  labelDualDesSuccess:
+    "Your token for investment is just locked but still in your account as Loopring is a DEX. \n When the transaction expires, if the settlement price is not reached, you will get a profit and the frozen token will also be unlocked; if the settlement price is reached, your investment and interest income will be converted into the target token at the Target price.",
+  labelNoticeForMarketFrozen:
+    "{{ type }} is not supported, If you believe this is indeed a bug, please contact us.",
+  labelInvestRangeDay: "{{arg}} Days",
+  labelAmmExit: "Redeem",
+  labelAmmJoin: "Subscribe",
+  labelDualPanelClose: "Go to My Investment",
+  labelDualMobilePrice: "{{symbol}} price:",
 };

@@ -5,7 +5,8 @@ import {
   CustomError,
   ErrorMap,
   SagaStatus,
-  TradeFloat, RowInvestConfig,
+  TradeFloat,
+  RowInvestConfig,
 } from "@loopring-web/common-resources";
 
 import {
@@ -26,21 +27,21 @@ export function useAmmMapUI<
   R extends { [key: string]: any },
   I extends { [key: string]: any }
 >() {
-  const {search} = useLocation();
+  const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
 
   const [rawData, setRawData] = React.useState<Array<Row<R>> | []>([]);
   const [filteredData, setFilteredData] = React.useState<Array<Row<R>> | []>(
     []
   );
-  const {coinMap, marketArray, status: tokenMapStatus} = useTokenMap();
+  const { coinMap, marketArray, status: tokenMapStatus } = useTokenMap();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [filterValue, setFilterValue] = React.useState("");
   const [tableHeight, setTableHeight] = React.useState(0);
-  const {ammMap, status: ammStatus} = useAmmMap();
-  const {tokenPrices} = useTokenPrices();
-  const {tickerMap, status: tickerStatus} = useTicker();
-  const {sendSocketTopic, socketEnd} = useSocket();
+  const { ammMap, status: ammStatus } = useAmmMap();
+  const { tokenPrices } = useTokenPrices();
+  const { tickerMap, status: tickerStatus } = useTicker();
+  const { sendSocketTopic, socketEnd } = useSocket();
 
   React.useEffect(() => {
     socketSendTicker();
@@ -57,7 +58,8 @@ export function useAmmMapUI<
       if (tokenPrices) {
         setFilteredData(tableData);
         setTableHeight(
-          RowInvestConfig.rowHeaderHeight + tableData.length * RowInvestConfig.rowHeight
+          RowInvestConfig.rowHeaderHeight +
+            tableData.length * RowInvestConfig.rowHeight
         );
       }
     },
@@ -76,24 +78,26 @@ export function useAmmMapUI<
             };
           }
         }
-        const rawData = Object.keys(_ammMap).map((ammKey: string) => {
+        const rawData = Object.keys(_ammMap).reduce((prev, ammKey: string) => {
           const [_, coinA, coinB] = ammKey.split("-");
           const realMarket = `${coinA}-${coinB}`;
           const _tickerMap = tickerMap[realMarket]?.__rawTicker__;
           const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {});
-
           if (coinMap) {
             _ammMap[ammKey]["coinAInfo"] = coinMap[_ammMap[ammKey]["coinA"]];
             _ammMap[ammKey]["coinBInfo"] = coinMap[_ammMap[ammKey]["coinB"]];
           }
-          return {
-            ..._ammMap[ammKey],
-            tradeFloat: {
-              ..._ammMap[ammKey].tradtradeFloat,
-              volume: tickerFloat?.volume || 0,
-            },
-          };
-        });
+          if (!_ammMap[ammKey].showDisable) {
+            prev.push({
+              ..._ammMap[ammKey],
+              tradeFloat: {
+                ..._ammMap[ammKey].tradtradeFloat,
+                volume: tickerFloat?.volume || 0,
+              },
+            });
+          }
+          return prev;
+        }, [] as Array<Row<R>>);
         setRawData(rawData);
         resetTableData(rawData);
       }

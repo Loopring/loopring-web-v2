@@ -1,11 +1,9 @@
 import {
   CardStyleItem,
+  CollectionItemProps,
   CollectionListProps,
   CollectionMedia,
   EmptyDefault,
-  Popover,
-  PopoverType,
-  PopoverWrapProps,
 } from "../../../index";
 import {
   Avatar,
@@ -17,26 +15,30 @@ import {
   Pagination,
   Radio,
   Typography,
+  Popover,
 } from "@mui/material";
 import {
-  Account,
   CollectionMeta,
   CopyIcon,
   copyToClipBoard,
-  GET_IPFS_STRING,
   getShortAddr,
   ImageIcon,
   // LinkIcon,
-  MakeMeta,
   NFT_TYPE_STRING,
   SoursURL,
   ViewMoreIcon,
+  // LinkIcon,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { CollectionLimit, NFTLimit } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
+import {
+  bindMenu,
+  bindTrigger,
+  usePopupState,
+} from "material-ui-popup-state/hooks";
 
 const BoxStyle = styled(Box)`
   .MuiRadio-root {
@@ -78,29 +80,10 @@ const IconButtonStyle = styled(IconButton)`
 
 }`;
 
-export type CollectionItemProps<Co> = {
-  item: Co;
-  index: number;
-  setCopyToastOpen: (prosp: { isShow: boolean; type: string }) => void;
-  setShowDeploy?: (item: Co) => void;
-  setShowEdit?: (item: Co) => void;
-  setShowMintNFT?: (item: Co) => void;
-  onItemClick?: (item: Co) => void;
-  account?: Account;
-  toggle: any;
-  isSelectOnly?: boolean;
-  noEdit?: boolean;
-  selectCollection?: Co;
-  domain: string;
-  makeMeta: MakeMeta;
-  baseURL: string;
-  getIPFSString: GET_IPFS_STRING;
-  etherscanBaseUrl: string;
-};
-
 const ActionMemo = React.memo(
   <Co extends CollectionMeta>({
-    // setShowDeploy,
+    setShowDeploy,
+    // setShowTradeIsFrozen,
     // setShowEdit,
     item,
     account,
@@ -108,72 +91,87 @@ const ActionMemo = React.memo(
     setShowMintNFT,
   }: CollectionItemProps<Co>) => {
     const { t } = useTranslation("common");
-    // const theme = useTheme();
-    const popoverProps: PopoverWrapProps = {
-      type: PopoverType.click,
-      popupId: "testPopup",
-      className: "arrow-none",
-      children: (
-        <IconButtonStyle size={"large"} edge={"end"}>
-          <ViewMoreIcon />
-        </IconButtonStyle>
-      ),
-      popoverContent: (
-        <Box borderRadius={"inherit"} minWidth={110}>
-          {!!(
-            item.isCounterFactualNFT &&
-            item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
-            item.owner?.toLowerCase() === account?.accAddress?.toLowerCase()
-          ) ? (
-            <></>
-          ) : (
-            <></>
-            // <MenuItem
-            //   onClick={(e) => {
-            //     e.stopPropagation();
-            //     window.open(`${etherscanBaseUrl}address/${item?.contractAddress}`);
-            //     window.opener = null;
-            //   }}
-            // >
-            //   {t("labelViewEtherscan")}
-            //   <LinkIcon
-            //     color={"inherit"}
-            //     fontSize={"small"}
-            //     style={{
-            //       verticalAlign: "middle",
-            //       marginLeft: theme.unit,
-            //     }}
-            //   />
-            // </MenuItem>
-          )}
-          {!!(
-            item.isCounterFactualNFT && item?.nftType !== NFT_TYPE_STRING.ERC721
-          ) && (
-            <MenuItem
-              onClick={() => {
-                if (setShowMintNFT) {
-                  setShowMintNFT(item);
-                }
-              }}
-            >
-              {t("labelNFTMintSimpleBtn")}
-            </MenuItem>
-          )}
-        </Box>
-      ),
-      anchorOrigin: {
-        vertical: "bottom",
-        horizontal: "right",
-      },
-      transformOrigin: {
-        vertical: "top",
-        horizontal: "right",
-      },
-    } as PopoverWrapProps;
+    // const {
+    //   toggle: { deployNFT },
+    // } = useToggle();
 
+    const popupState = usePopupState({
+      variant: "popover",
+      popupId: "collection-action",
+    });
+    // const { isOpen } = popupState;
+    const bindContent = bindMenu(popupState);
+    const bindAction = bindTrigger(popupState);
+
+    // const theme = useTheme();
     return (
       <Grid item marginTop={1}>
-        <Popover {...{ ...popoverProps }} />
+        <IconButtonStyle size={"large"} edge={"end"} {...{ ...bindAction }}>
+          <ViewMoreIcon />
+        </IconButtonStyle>
+        <Popover
+          {...bindContent}
+          anchorReference="anchorEl"
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <Box borderRadius={"inherit"} minWidth={110}>
+            {!!(
+              item.isCounterFactualNFT &&
+              item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+              item.owner?.toLowerCase() === account?.accAddress?.toLowerCase()
+            ) ? (
+              <MenuItem
+                onClick={(_e) => {
+                  setShowDeploy && setShowDeploy(item);
+                }}
+              >
+                {t("labelNFTDeployContract")}
+              </MenuItem>
+            ) : (
+              <></>
+              //   <MenuItem
+              //   onClick={(e) => {
+              //   e.stopPropagation();
+              //   window.open(
+              //   `${etherscanBaseUrl}address/${item?.contractAddress}`
+              //   );
+              //   window.opener = null;
+              // }}
+              //   >
+              // {t("labelViewEtherscan")}
+              //   <LinkIcon
+              //   color={"inherit"}
+              //   fontSize={"small"}
+              //   style={{
+              //   verticalAlign: "middle",
+              //   marginLeft: 2,
+              // }}
+              //   />
+              //   </MenuItem>
+            )}
+            {!!(
+              item.isCounterFactualNFT &&
+              item?.nftType !== NFT_TYPE_STRING.ERC721
+            ) && (
+              <MenuItem
+                onClick={() => {
+                  if (setShowMintNFT) {
+                    setShowMintNFT(item);
+                  }
+                }}
+              >
+                {t("labelNFTMintSimpleBtn")}
+              </MenuItem>
+            )}
+          </Box>
+        </Popover>
       </Grid>
     );
   }
@@ -362,6 +360,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
   setShowDeploy,
   setShowEdit,
   setShowMintNFT,
+  setShowTradeIsFrozen,
   toggle,
   account,
   onSelectItem,
@@ -448,6 +447,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
                     selectCollection={selectCollection}
                     isSelectOnly={isSelectOnly}
                     noEdit={noEdit}
+                    setShowTradeIsFrozen={setShowTradeIsFrozen as any}
                     account={account}
                     toggle={toggle}
                     setShowDeploy={setShowDeploy as any}

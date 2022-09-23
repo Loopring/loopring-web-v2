@@ -1,6 +1,7 @@
 import { ButtonProps } from "../../basic-lib";
 import {
   Account,
+  CAMPAIGN_TAG,
   FeeInfo,
   NFTWholeINFO,
   VendorItem,
@@ -131,6 +132,9 @@ export enum AccountStep {
   ExportAccount_User_Denied,
   ExportAccount_Success,
   ExportAccount_Failed,
+
+  Dual_Success,
+  Dual_Failed,
 }
 
 /**
@@ -141,6 +145,7 @@ export interface VendorMenuProps {
   vendorList: VendorItem[];
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;
+  campaignTagConfig?: CAMPAIGN_TAG[];
 }
 interface InferfaceAssetItem {
   key: string;

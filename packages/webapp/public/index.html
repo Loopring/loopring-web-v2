@@ -30,44 +30,48 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <style type="text/css">
-      body {
-          height: 100vh;
-          background: linear-gradient(194.79deg, #322C53 17.96%, #262B50 44.29%, #32314F 96.93%);
-          color: #fff;
-          flex-direction: column;
-      }
+        body {
+            height: 100vh;
+            background: linear-gradient(194.79deg, #322C53 17.96%, #262B50 44.29%, #32314F 96.93%);
+            color: #fff;
+            flex-direction: column;
+        }
 
-      .iubenda-pure {
-          height: 0;
-      !important;
-          width: 0;
-      !important;
-          line-height: 0;
-      !important;
-          overflow: hidden;
-      !important;
-          padding: 0;
-          margin: 0;
-          display: none;
-      !important;
+        .iubenda-pure {
+            height: 0;
+        !important;
+            width: 0;
+        !important;
+            line-height: 0;
+        !important;
+            overflow: hidden;
+        !important;
+            padding: 0;
+            margin: 0;
+            display: none;
+        !important;
 
-      }
+        }
 
-      #iubenda-pp iframe {
-          display: block;
-      }
+        #iubenda-pp iframe {
+            display: block;
+        }
 		</style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-224502206-1">
-    </script>
-    <script>
+		</script>
+		<script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
       gtag('js', new Date());
       gtag('config', 'UA-224502206-1');
-    </script>
-    <title>Loopring - Ethereum Layer2</title>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
 
+		</script>
+		<title>Loopring - Ethereum Layer2</title>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
   </head>
 
   <body ondragstart="return false;" ondrop="return false;" draggable="false">
@@ -83,14 +87,42 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <div hidden>
-      <a href="https://www.iubenda.com/terms-and-conditions/74969935" data-index="0"
-         class="iubenda-white iubenda-embed iubenda-pure iubenda-noiframe"></a>
-<!--      <a href="https://www.iubenda.com/terms-and-conditions/74969935"-->
-<!--         class="iubenda-black iubenda-embed iubenda-pure iubenda-noiframe"></a>-->
-    </div>
-    <script type="text/javascript">(function (w,d) {var loader = function () {var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0]; s.src="https://cdn.iubenda.com/iubenda.js"; tag.parentNode.insertBefore(s,tag);}; if(w.addEventListener){w.addEventListener("load", loader, false);}else if(w.attachEvent){w.attachEvent("onload", loader);}else{w.onload = loader;}})(window, document);</script>
-    <script src='https://d17nz991552y2g.cloudfront.net/app/js/jqueryandencoder.ffa5afd5124fbedceea9.js'></script>
-    <script src="./mail.js" type="text/javascript"></script>
-  </body>
+		<div hidden>
+			<a href="https://www.iubenda.com/terms-and-conditions/74969935" data-index="0"
+				 class="iubenda-white iubenda-embed iubenda-pure iubenda-noiframe"></a>
+			<!--      <a href="https://www.iubenda.com/terms-and-conditions/74969935"-->
+			<!--         class="iubenda-black iubenda-embed iubenda-pure iubenda-noiframe"></a>-->
+		</div>
+
+		<script type="text/javascript">(function (w, d) {
+      var loader = function () {
+        var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0];
+        s.src = "https://cdn.iubenda.com/iubenda.js";
+        tag.parentNode.insertBefore(s, tag);
+
+        var b = document.createElement('script');
+        b.type = "text/javascript", b.async = !0,
+          b.src = "https://sdk.banxa.com/js/banxa-sdk-latest.js";
+        var x = document.getElementsByTagName('script')[0];
+        x.parentNode.insertBefore(b, x);
+      };
+      if (w.addEventListener) {
+        w.addEventListener("load", loader, false);
+      } else if (w.attachEvent) {
+        w.attachEvent("onload", loader);
+      } else {
+        w.onload = loader;
+      }
+    })(window, document);
+		</script>
+		<div id="iframeBanax">
+			<div id="iframeBanaxTarget">
+				<!-- Where the iframe will be loaded  -->
+			</div>
+		</div>
+
+
+		<script src='https://d17nz991552y2g.cloudfront.net/app/js/jqueryandencoder.ffa5afd5124fbedceea9.js'></script>
+		<script src="./mail.js" type="text/javascript"></script>
+	</body>
 </html>

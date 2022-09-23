@@ -447,3 +447,10 @@ export const WithdrawBase = (props: PanelProps) => {
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };
+
+export const DualBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelDualTitle",
+  };
+  return <BasicPanel {...propsPatch} {...props} />;
+};

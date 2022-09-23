@@ -4,7 +4,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Account,
-  AmmRankIcon,
+  CAMPAIGN_TAG,
   CurrencyToTag,
   EmptyValueTag,
   FloatTag,
@@ -14,18 +14,14 @@ import {
   RowConfig,
   StarHollowIcon,
   StarSolidIcon,
-  TrophyIcon,
 } from "@loopring-web/common-resources";
 import { Column, Table } from "../../basic-lib";
 import { TablePaddingX } from "../../styled";
 import { useSettings } from "@loopring-web/component-lib/src/stores";
 import { useDispatch } from "react-redux";
-import {
-  AmmPoolInProgressActivityRule,
-  Currency,
-  LoopringMap,
-} from "@loopring-web/loopring-sdk";
+import { Currency } from "@loopring-web/loopring-sdk";
 import React from "react";
+import { TagIconList } from "../../block";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -110,22 +106,10 @@ const QuoteTableChangedCell: any = styled.span`
   }};
 `;
 
-type IGetColumnModePros = {
-  t: any;
-  history: any;
-  upColor: "green" | "red";
-  handleStartClick: (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    isFavourite: boolean,
-    pair: string
-  ) => void;
-  favoriteMarket: string[];
-  isPro: boolean;
-};
-
 export interface QuoteTableProps {
   rawData: QuoteTableRawDataItem[];
   rowHeight?: number;
+  campaignTagConfig: CAMPAIGN_TAG[] | undefined;
   headerRowHeight?: number;
   onVisibleRowsChange?: (startIndex: number) => void;
   onRowClick?: (
@@ -141,7 +125,6 @@ export interface QuoteTableProps {
   showLoading?: boolean;
   isPro?: boolean;
   forexMap: ForexMap<Currency>;
-  activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
 }
 
 export type VisibleDataItem = {
@@ -157,6 +140,7 @@ export const QuoteTable = withTranslation("tables")(
       rowHeight = RowConfig.rowHeight,
       headerRowHeight = RowConfig.rowHeaderHeight,
       onVisibleRowsChange,
+      campaignTagConfig,
       rawData,
       history,
       onRowClick,
@@ -167,29 +151,27 @@ export const QuoteTable = withTranslation("tables")(
       account,
       forexMap,
       isPro = false,
-      activityInProgressRules,
       ...rest
     }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
       let userSettings = useSettings();
       const upColor = userSettings?.upColor;
       const { currency, isMobile } = userSettings;
-      const getColumnMode = (
-        props: IGetColumnModePros & {
-          currency: Currency;
-          activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
+      const handleStartClick = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+        isFavourite: boolean,
+        pair: string
+      ): void => {
+        event.stopPropagation();
+        if (isFavourite) {
+          dispatch(removeFavoriteMarket(pair));
+        } else {
+          dispatch(addFavoriteMarket(pair));
         }
-      ): Column<QuoteTableRawDataItem, unknown>[] => {
-        const {
-          t: { t },
-          history,
-          upColor,
-          handleStartClick,
-          favoriteMarket,
-          currency,
-          isPro,
-          activityInProgressRules,
-        } = props;
-
+      };
+      const getColumnMode = React.useCallback((): Column<
+        QuoteTableRawDataItem,
+        unknown
+      >[] => {
         const basicRender = [
           {
             key: "pair",
@@ -228,64 +210,13 @@ export const QuoteTable = withTranslation("tables")(
                     </Typography>
                   </Typography>
                   &nbsp;
-                  {activityInProgressRules &&
-                    activityInProgressRules[pair] &&
-                    activityInProgressRules[pair].ruleType.map(
-                      (ruleType, index) => (
-                        <Box
-                          key={ruleType.toString() + index}
-                          style={{ cursor: "pointer", paddingTop: 4 }}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            const date = new Date(
-                              activityInProgressRules[pair].rangeFrom
-                            );
-                            const year = date.getFullYear();
-                            const month = (
-                              "0" + (date.getMonth() + 1).toString()
-                            ).slice(-2);
-                            // const day = ("0" + date.getDate().toString()).slice(
-                            //   -2
-                            // );
-                            const current_event_date = `${year}-${month}`;
-
-                            history.push(
-                              `/race-event/${current_event_date}?selected=${pair}&type=${ruleType}&l2account=${account?.accAddress}`
-                            );
-                          }}
-                        >
-                          <TrophyIcon />
-                        </Box>
-                      )
-                    )}
-                  {activityInProgressRules &&
-                    activityInProgressRules[`AMM-${pair}`] && (
-                      <Box
-                        style={{ cursor: "pointer", paddingTop: 4 }}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          const date = new Date(
-                            activityInProgressRules[`AMM-${pair}`].rangeFrom
-                          );
-                          const year = date.getFullYear();
-                          const month = (
-                            "0" + (date.getMonth() + 1).toString()
-                          ).slice(-2);
-                          // const day = ("0" + date.getDate().toString()).slice(
-                          //   -2
-                          // );
-                          const current_event_date = `${year}-${month}`;
-
-                          history.push(
-                            `/race-event/${current_event_date}?pair=${pair}&type=${
-                              activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                            }&l2account=${account?.accAddress}`
-                          );
-                        }}
-                      >
-                        <AmmRankIcon />
-                      </Box>
-                    )}
+                  {campaignTagConfig && (
+                    <TagIconList
+                      campaignTagConfig={campaignTagConfig}
+                      symbol={pair}
+                      scenario={"market"}
+                    />
+                  )}
                 </Box>
               );
             },
@@ -478,35 +409,24 @@ export const QuoteTable = withTranslation("tables")(
         }
 
         return [...basicRender, ...extraRender];
-      };
+      }, [
+        campaignTagConfig,
+        currency,
+        favoriteMarket,
+        forexMap,
+        handleStartClick,
+        history,
+        isMobile,
+        isPro,
+        t,
+        upColor,
+      ]);
 
       const dispatch = useDispatch();
 
-      const handleStartClick = (
-        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-        isFavourite: boolean,
-        pair: string
-      ): void => {
-        event.stopPropagation();
-        if (isFavourite) {
-          dispatch(removeFavoriteMarket(pair));
-        } else {
-          dispatch(addFavoriteMarket(pair));
-        }
-      };
-
       const defaultArgs: any = {
         rawData: [],
-        columnMode: getColumnMode({
-          t: { t },
-          history,
-          upColor,
-          handleStartClick,
-          favoriteMarket,
-          currency,
-          isPro,
-          activityInProgressRules,
-        }),
+        columnMode: getColumnMode(),
         generateRows: (rawData: any) => rawData,
         onRowClick: onRowClick,
         generateColumns: ({ columnsRaw }: any) =>

@@ -13,4 +13,5 @@ export * from "./TradeRace";
 export * from "./nftMedia";
 export * from "./AmmPairDetail";
 export * from "./CollectionMedia";
-
+export * from "./LoadingBlock";
+export * from "./TagIconList";

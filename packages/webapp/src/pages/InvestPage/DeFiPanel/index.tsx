@@ -20,6 +20,7 @@ import {
   MarketType,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
+import { useTheme } from "@emotion/react";
 
 const StyleWrapper = styled(Box)`
   position: relative;
@@ -73,12 +74,19 @@ export const DeFiPanel: any = withTranslation("common")(
       market: _market ?? ("WSTETH-ETH" as MarketType),
       isJoin,
     });
+    const theme = useTheme();
+
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
 
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
-        <Box marginBottom={2}>
+        <Box
+          marginBottom={2}
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
           <Button
             startIcon={<BackIcon fontSize={"small"} />}
             variant={"text"}
@@ -89,6 +97,13 @@ export const DeFiPanel: any = withTranslation("common")(
           >
             {t("labelInvestDefiTitle")}
             {/*<Typography color={"textPrimary"}></Typography>*/}
+          </Button>
+          <Button
+            variant={"outlined"}
+            sx={{ marginLeft: 2 }}
+            onClick={() => history.push("/invest/balance/stack")}
+          >
+            {t("labelInvestMyDefi")}
           </Button>
         </Box>
         <StyleWrapper

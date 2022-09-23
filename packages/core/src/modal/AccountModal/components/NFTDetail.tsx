@@ -336,7 +336,10 @@ export const NFTDetail = withTranslation("common")(
                           isShow: true,
                           info: { ...popItem },
                         })
-                      : setShowTradeIsFrozen({ isShow: true })
+                      : setShowTradeIsFrozen({
+                          isShow: true,
+                          type: t("nftDeployDescription"),
+                        })
                   }
                 >
                   {t("labelNFTDeployContract")}

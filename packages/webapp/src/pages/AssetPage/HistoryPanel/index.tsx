@@ -5,13 +5,16 @@ import {
   AmmTable,
   Button,
   DefiTxsTable,
+  DualTxsTable,
   OrderHistoryTable,
   Toast,
   TradeTable,
   TransactionTable,
+  useSettings,
 } from "@loopring-web/component-lib";
 import { StylePaper, useGetOrderHistorys } from "@loopring-web/core";
 import {
+  useDualTransaction,
   useGetAmmRecord,
   useGetDefiRecord,
   useGetTrades,
@@ -41,6 +44,7 @@ enum TabIndex {
   // orderOpenTable = "orderOpenTable",
   // orderHistoryTable = "orderHistoryTable",
   defiRecords = "defiRecords",
+  dualRecords = "dualRecords",
 }
 
 enum TabOrderIndex {
@@ -52,6 +56,7 @@ const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const history = useHistory();
     const { search } = useLocation();
+    const { isMobile } = useSettings();
     const match: any = useRouteMatch("/l2assets/:history/:tab/:orderTab?");
     // const orderTabMatch: any = useRouteMatch(
     //   "/l2assets/:history/:tab/:orderTab"
@@ -101,7 +106,15 @@ const HistoryPanel = withTranslation("common")(
       showLoading,
       marketArray: orderRaw,
       cancelOrder,
-    } = useOrderList();
+    } = useOrderList(setToastOpen);
+    const {
+      dualList,
+      showLoading: showDualLoading,
+      getDualTxList,
+      dualMarketMap,
+      dualTotal,
+    } = useDualTransaction(setToastOpen);
+
     const { userOrderDetailList, getUserOrderDetailTradeList } =
       useGetOrderHistorys();
     const { etherscanBaseUrl } = useSystem();
@@ -158,7 +171,7 @@ const HistoryPanel = withTranslation("common")(
         {/*>*/}
         {/*  <BackIcon />*/}
         {/*</IconButton>*/}
-        <StylePaper ref={container}>
+        <StylePaper ref={container} flex={1}>
           <Toast
             alertText={toastOpen?.content ?? ""}
             severity={toastOpen?.type ?? "success"}
@@ -166,7 +179,12 @@ const HistoryPanel = withTranslation("common")(
             autoHideDuration={TOAST_TIME}
             onClose={closeToast}
           />
-          <Box marginTop={2} marginLeft={2}>
+          <Box
+            marginTop={2}
+            marginLeft={2}
+            display={"flex"}
+            sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
+          >
             <Tabs
               value={currentTab}
               onChange={(_event, value) => handleTabChange(value)}
@@ -190,9 +208,18 @@ const HistoryPanel = withTranslation("common")(
                 label={t("labelDefiOrderTable")}
                 value={TabIndex.defiRecords}
               />
+              <Tab
+                label={t("labelDualOrderTable")}
+                value={TabIndex.dualRecords}
+              />
             </Tabs>
           </Box>
-          <div className="tableWrapper table-divide-short">
+          <Box
+            className="tableWrapper table-divide-short"
+            display={"flex"}
+            flex={1}
+            overflow={"scroll"}
+          >
             {currentTab === TabIndex.transactions ? (
               <TransactionTable
                 {...{
@@ -265,6 +292,22 @@ const HistoryPanel = withTranslation("common")(
                 tokenMap={tokenMap}
                 idIndex={idIndex}
               />
+            ) : currentTab === TabIndex.dualRecords ? (
+              <DualTxsTable
+                rawData={dualList}
+                getDualTxList={getDualTxList}
+                pagination={{
+                  pageSize: pageSize + 2,
+                  total: dualTotal,
+                }}
+                dualMarketMap={dualMarketMap}
+                showloading={showDualLoading}
+                tokenMap={tokenMap}
+                idIndex={idIndex}
+                {...{
+                  ...rest,
+                }}
+              />
             ) : (
               <Box
                 flex={1}
@@ -323,7 +366,7 @@ const HistoryPanel = withTranslation("common")(
                 />
               </Box>
             )}
-          </div>
+          </Box>
         </StylePaper>
       </Box>
     );

@@ -401,8 +401,18 @@ export const useAmmExit = ({
     async function (props) {
       setIsLoading(true);
       updatePageAmmExitBtn({ btnStatus: TradeBtnStatus.LOADING });
-      if (!exitAmm.enable) {
-        setShowTradeIsFrozen({ isShow: true });
+      if (ammInfo?.exitDisable) {
+        setShowTradeIsFrozen({
+          isShow: true,
+          messageKey: "labelNoticeForMarketFrozen",
+          type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
+        });
+        setIsLoading(false);
+      } else if (!exitAmm.enable) {
+        setShowTradeIsFrozen({
+          isShow: true,
+          type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
+        });
         setIsLoading(false);
       } else {
         if (
@@ -432,8 +442,8 @@ export const useAmmExit = ({
 
         const patch: sdk.AmmPoolRequestPatch = {
           chainId: store.getState().system.chainId as sdk.ChainId,
-          ammName: ammInfo.__rawConfig__.name,
-          poolAddress: ammInfo.address,
+          ammName: ammInfo?.__rawConfig__.name ?? "",
+          poolAddress: ammInfo?.address ?? "",
           eddsaKey: account.eddsaKey.sk,
         };
 
@@ -447,6 +457,9 @@ export const useAmmExit = ({
         );
 
         req.storageId = storageId0.offchainId;
+        if (ammInfo?.domainSeparator) {
+          req.domainSeparator = ammInfo.domainSeparator;
+        }
 
         try {
           myLog("---- try to exit req:", req);

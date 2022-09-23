@@ -405,7 +405,7 @@ export const useAmmPool = <
   const { account, status: accountStatus } = useAccount();
   const { tokenPrices } = useTokenPrices();
   const { currency, coinJson, isMobile } = useSettings();
-  const { ammActivityMap, activityInProgressRules } = useAmmActivityMap();
+  const { ammActivityMap } = useAmmActivityMap();
 
   const { status: walletLayer2Status, walletLayer2 } = useWalletLayer2();
   const { ammMap, getAmmMap } = useAmmMap();
@@ -554,7 +554,6 @@ export const useAmmPool = <
     isMobile,
     myAmmMarketArray,
     ammUserTotal,
-    activityInProgressRules,
     getUserAmmPoolTxs, //handle page change used
     getRecentAmmPoolTxs,
     tokenPrices,

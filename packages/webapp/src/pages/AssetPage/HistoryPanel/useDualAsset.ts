@@ -1,0 +1,261 @@
+import {
+  LoopringAPI,
+  makeDualOrderedItem,
+  useAccount,
+  useDualMap,
+  useTokenMap,
+} from "@loopring-web/core";
+import React from "react";
+import {
+  EmptyValueTag,
+  getValuePrecisionThousand,
+  SDK_ERROR_MAP_TO_UI,
+} from "@loopring-web/common-resources";
+import { RawDataDualAssetItem } from "@loopring-web/component-lib";
+import { useTranslation } from "react-i18next";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
+import BigNumber from "bignumber.js";
+
+export const Limit = 15;
+
+export const useDualAsset = <R extends RawDataDualAssetItem>(
+  setToastOpen?: (props: any) => void
+) => {
+  const { t } = useTranslation(["error"]);
+
+  const {
+    account: { accountId, apiKey },
+  } = useAccount();
+  const { tokenMap, idIndex } = useTokenMap();
+  const { marketMap: dualMarketMap } = useDualMap();
+  const [dualList, setDualList] = React.useState<R[]>([]);
+  const [pagination, setDualPagination] = React.useState<{
+    pageSize: number;
+    total: number;
+  }>({
+    pageSize: Limit,
+    total: 0,
+  });
+  const [showLoading, setShowLoading] = React.useState(true);
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [detail, setDetail] =
+    React.useState<
+      | {
+          dualViewInfo: R;
+          lessEarnTokenSymbol: string;
+          greaterEarnTokenSymbol: string;
+          lessEarnView: string;
+          greaterEarnView: string;
+        }
+      | undefined
+    >(undefined);
+  const showDetail = async (item: R) => {
+    const {
+      sellSymbol,
+      buySymbol,
+      settleRatio,
+      strike,
+      __raw__: {
+        order: {
+          dualType,
+          tokenInfoOrigin: { base, currency: quote, amountIn, market },
+          // timeOrigin: { settlementTime },
+        },
+      },
+    } = item;
+    const {
+      dualPrice: { index },
+    } = await LoopringAPI.defiAPI?.getDualIndex({
+      baseSymbol: base,
+      quoteSymbol: dualMarketMap[market].quoteAlias,
+    });
+    item.currentPrice.currentPrice = index;
+    let lessEarnTokenSymbol,
+      greaterEarnTokenSymbol,
+      lessEarnVol,
+      greaterEarnVol;
+    const sellAmount = sdk
+      .toBig(amountIn ? amountIn : 0)
+      .div("1e" + tokenMap[sellSymbol].decimals);
+    if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
+      lessEarnTokenSymbol = sellSymbol;
+      greaterEarnTokenSymbol = buySymbol;
+      lessEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn); //dualViewInfo.strike);
+      greaterEarnVol = sdk
+        .toBig(
+          sdk
+            .toBig(settleRatio)
+            .plus(1)
+            .times(sellAmount ? sellAmount : 0)
+            .times(strike)
+            .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL)
+        )
+        .times("1e" + tokenMap[buySymbol].decimals);
+    } else {
+      lessEarnTokenSymbol = buySymbol;
+      greaterEarnTokenSymbol = sellSymbol;
+      lessEarnVol = sdk
+        .toBig(
+          sdk
+            .toBig(settleRatio)
+            .plus(1)
+            .times(sellAmount ? sellAmount : 0)
+            // .times(1 + info.ratio)
+            .div(strike)
+            .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL)
+        )
+        .times("1e" + tokenMap[buySymbol].decimals);
+
+      // sellVol.times(1 + info.ratio).div(dualViewInfo.strike); //.times(1 + dualViewInfo.settleRatio);
+      greaterEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn);
+    }
+    const lessEarnView = amountIn
+      ? getValuePrecisionThousand(
+          sdk
+            .toBig(lessEarnVol)
+            .div("1e" + tokenMap[lessEarnTokenSymbol].decimals),
+          tokenMap[lessEarnTokenSymbol].precision,
+          tokenMap[lessEarnTokenSymbol].precision,
+          tokenMap[lessEarnTokenSymbol].precision,
+          false,
+          { floor: true }
+        )
+      : EmptyValueTag;
+    const greaterEarnView = amountIn
+      ? getValuePrecisionThousand(
+          sdk
+            .toBig(greaterEarnVol)
+            .div("1e" + tokenMap[greaterEarnTokenSymbol].decimals),
+          tokenMap[greaterEarnTokenSymbol].precision,
+          tokenMap[greaterEarnTokenSymbol].precision,
+          tokenMap[greaterEarnTokenSymbol].precision,
+          false,
+          { floor: true }
+        )
+      : EmptyValueTag;
+
+    const amount = getValuePrecisionThousand(
+      sellAmount,
+      tokenMap[sellSymbol].precision,
+      tokenMap[sellSymbol].precision,
+      tokenMap[sellSymbol].precision,
+      false
+    );
+    setOpen(true);
+
+    setDetail({
+      dualViewInfo: {
+        ...item,
+        amount: amount + " " + sellSymbol,
+      },
+      lessEarnTokenSymbol,
+      greaterEarnTokenSymbol,
+      lessEarnView,
+      greaterEarnView,
+    });
+  };
+
+  const getDualTxList = React.useCallback(
+    async ({ start, end, offset, limit = Limit }: any) => {
+      setShowLoading(true);
+      if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const response = await LoopringAPI.defiAPI.getDualTransactions(
+          {
+            // dualTypes: sdk.DUAL_TYPE,
+            accountId,
+            settlementStatuses: sdk.SETTLEMENT_STATUS.UNSETTLED,
+            offset,
+            limit,
+            start,
+            end,
+          } as any,
+          apiKey
+        );
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          const errorItem =
+            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          if (setToastOpen) {
+            setToastOpen({
+              open: true,
+              type: "error",
+              content:
+                "error : " + errorItem
+                  ? t(errorItem.messageKey)
+                  : (response as sdk.RESULT_INFO).message,
+            });
+          }
+        } else {
+          // @ts-ignore
+          let result = (response as any)?.userDualTxs.reduce(
+            (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
+              const [, , coinA, coinB] =
+                (item.tokenInfoOrigin.market ?? "dual-").match(
+                  /(dual-)?(\w+)-(\w+)/i
+                ) ?? [];
+
+              let [sellTokenSymbol, buyTokenSymbol] =
+                item.dualType == DUAL_TYPE.DUAL_BASE
+                  ? [
+                      coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
+                      coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
+                    ]
+                  : [
+                      coinB ?? idIndex[item.tokenInfoOrigin.tokenIn],
+                      coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
+                    ];
+              const format = makeDualOrderedItem(
+                item,
+                sellTokenSymbol,
+                buyTokenSymbol,
+                0,
+                dualMarketMap[item.tokenInfoOrigin.market]
+              );
+
+              const amount = getValuePrecisionThousand(
+                sdk
+                  .toBig(item.tokenInfoOrigin.amountIn)
+                  .div("1e" + tokenMap[sellTokenSymbol].decimals),
+                tokenMap[sellTokenSymbol].precision,
+                tokenMap[sellTokenSymbol].precision,
+                tokenMap[sellTokenSymbol].precision,
+                true
+              );
+              prev.push({
+                ...format,
+                amount,
+              });
+              return prev;
+            },
+            [] as RawDataDualAssetItem[]
+          );
+
+          setDualList(result);
+          setShowLoading(false);
+          setDualPagination({
+            pageSize: limit,
+            total: (response as any).totalNum,
+          });
+        }
+      }
+      setShowLoading(false);
+    },
+    [accountId, apiKey, setToastOpen, t, dualMarketMap]
+  );
+
+  return {
+    // page,
+    showDetail,
+    dualList,
+    showLoading,
+    getDualTxList,
+    pagination,
+    open,
+    detail,
+    setOpen,
+    // updateTickersUI,
+  };
+};

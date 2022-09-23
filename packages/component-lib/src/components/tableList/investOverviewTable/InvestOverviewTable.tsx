@@ -5,6 +5,7 @@ import { Button, CoinIcon, Column, Table } from "../../basic-lib";
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  InvestDuration,
   InvestMapType,
   RowConfig,
 } from "@loopring-web/common-resources";
@@ -24,12 +25,12 @@ import { Filter } from "./components/Filter";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
 import { InvestColumnKey } from "./index";
-const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
-  & .rdg.rdg {
-    min-height: initial;
-  }
 
-  .rdg {
+const TableStyled = styled(Box)<
+  { isMobile?: boolean; hasContent?: boolean } & BoxProps
+>`
+  & .rdg.rdg {
+    ${({ hasContent }) => (hasContent ? `min-height:initial;` : ``)}
     border-radius: ${({ theme }) => theme.unit}px;
 
     ${({ isMobile }) =>
@@ -72,7 +73,9 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
+` as (
+  props: { isMobile?: boolean; hasContent?: boolean } & BoxProps
+) => JSX.Element;
 
 export const InvestOverviewTable = <R extends RowInvest>({
   rawData,
@@ -199,6 +202,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
       headerCellClass: "textAlignCenter",
       name: t("labelDuration"),
       formatter: ({ row }) => {
+        const label = (row.duration ?? "").split("|");
         return (
           <Box
             height={"100%"}
@@ -207,10 +211,15 @@ export const InvestOverviewTable = <R extends RowInvest>({
             alignItems={"center"}
           >
             <Typography component={"span"}>
-              {t("labelInvest" + row.durationType, { ns: "common" })}
+              {row.durationType === InvestDuration.Duration
+                ? `${t(label[0], { ns: "common", arg: label[1] })}`
+                : t("labelInvest" + row.durationType, { ns: "common" })}
             </Typography>
           </Box>
         );
+        // ${t("labelDay", {
+        //             ns: "common",
+        //           })}
       },
     },
     {
@@ -269,10 +278,13 @@ export const InvestOverviewTable = <R extends RowInvest>({
                           `/invest/defi/${row.token.symbol}-null/invest`
                         );
                         return;
+                      case InvestMapType.DUAL:
+                        history.push(`/invest/dual/${row.token.symbol}-null`);
+                        return;
                     }
                   }}
                 >
-                  {t("labelInvestBtn", {ns: "common"})}
+                  {t("labelInvestBtn", { ns: "common" })}
                 </Button>
               </Typography>
             );
@@ -367,6 +379,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
       headerCellClass: "textAlignCenter",
       name: t("labelDuration"),
       formatter: ({ row }) => {
+        const label = (row.duration ?? "").split("|");
         return (
           <Box
             height={"100%"}
@@ -375,18 +388,26 @@ export const InvestOverviewTable = <R extends RowInvest>({
             alignItems={"center"}
           >
             <Typography component={"span"}>
-              {t("labelInvest" + row.durationType, { ns: "common" })}
+              {row.durationType === InvestDuration.Duration
+                ? `${t(label[0], { ns: "common", arg: label[1] })}`
+                : t("labelInvest" + row.durationType, { ns: "common" })}
             </Typography>
           </Box>
         );
+        // ${t("labelDay", {
+        //             ns: "common",
+        //           })}
       },
     },
   ];
-
   const { isMobile } = useSettings();
 
   return (
-    <TableStyled isMobile={isMobile} marginX={2}>
+    <TableStyled
+      isMobile={isMobile}
+      marginX={2}
+      hasContent={rows?.length > 0 ? true : false}
+    >
       {showFilter &&
         (isMobile && isDropDown ? (
           <Link
@@ -429,8 +450,9 @@ export const InvestOverviewTable = <R extends RowInvest>({
         // rowGrouper={_.groupBy}
         rowClassFn={(row) => {
           if (
-            row.type === InvestMapType.STAKE ||
-            row.type === InvestMapType.AMM
+            row.type !== InvestMapType.Token
+            // row.type === InvestMapType.STAKE ||
+            // row.type === InvestMapType.AMM  || row.type === InvestMapType.AMM
           ) {
             return "child_row";
           }

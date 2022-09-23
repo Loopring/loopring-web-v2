@@ -84,6 +84,7 @@ export const colorBase = ({ theme }: any) => css`
     --auto-refresh-color: ${theme.colorBase.primary};
     --opacity: ${theme.colorBase.opacity};
     --color-white: white;
+    --color-settlet: ${theme.colorBase.opacity};
   }
 `;
 export const scrollbarDefault = ({ theme }: any) => css`

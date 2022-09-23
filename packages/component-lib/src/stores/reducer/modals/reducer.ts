@@ -269,12 +269,17 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowTradeIsFrozen(
       state,
-      action: PayloadAction<{ isShow: boolean; type: string }>
+      action: PayloadAction<{
+        isShow: boolean;
+        type: string;
+        messageKey?: string;
+      }>
     ) {
-      const { isShow, type } = action.payload;
+      const { isShow, type, messageKey } = action.payload;
       state.isShowTradeIsFrozen = {
         isShow,
         type,
+        messageKey,
       };
     },
   },
