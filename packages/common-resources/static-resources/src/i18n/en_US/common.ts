@@ -1048,4 +1048,5 @@ export default {
   labelAmmExit: "Redeem",
   labelAmmJoin: "Subscribe",
   labelDualPanelClose: "Go to My Investment",
+  labelDualMobilePrice: "{{symbol}} price:",
 };

@@ -129,6 +129,7 @@ export const DualListPanel: any = withTranslation("common")(
           display={"flex"}
           justifyContent={"space-between"}
           alignItems={"center"}
+          flexDirection={isMobile ? "column" : "row"}
         >
           <Button
             startIcon={<BackIcon fontSize={"small"} />}
@@ -140,7 +141,13 @@ export const DualListPanel: any = withTranslation("common")(
           >
             {t("labelInvestDualTitle")}
           </Button>
-          <Box display={"flex"} flexDirection={"row"}>
+          <Box
+            display={"flex"}
+            flexDirection={"row"}
+            marginTop={isMobile ? 2 : "inherit"}
+            width={isMobile ? "100%" : "initial"}
+            justifyContent={"space-between"}
+          >
             <Button
               startIcon={<HelpIcon fontSize={"large"} />}
               variant={"text"}
@@ -291,18 +298,70 @@ export const DualListPanel: any = withTranslation("common")(
                 </Box>
                 <Typography
                   component={"span"}
-                  display={"inline-flex"}
+                  display={isMobile ? "flex" : "inline-flex"}
                   color={"textSecondary"}
                   variant={"body2"}
+                  flexDirection={isMobile ? "column" : "row"}
                   alignItems={"center"}
                 >
-                  {currentPrice && (
-                    <Trans
-                      i18nKey={"labelDualCurrentPrice"}
-                      tOptions={{
-                        price:
-                          // PriceTag[CurrencyToTag[currency]] +
-                          getValuePrecisionThousand(
+                  {currentPrice &&
+                    (!isMobile ? (
+                      <Trans
+                        i18nKey={"labelDualCurrentPrice"}
+                        tOptions={{
+                          price:
+                            // PriceTag[CurrencyToTag[currency]] +
+                            getValuePrecisionThousand(
+                              currentPrice.currentPrice,
+                              currentPrice.precisionForPrice
+                                ? currentPrice.precisionForPrice
+                                : tokenMap[currentPrice.quote]
+                                    .precisionForOrder,
+                              currentPrice.precisionForPrice
+                                ? currentPrice.precisionForPrice
+                                : tokenMap[currentPrice.quote]
+                                    .precisionForOrder,
+                              currentPrice.precisionForPrice
+                                ? currentPrice.precisionForPrice
+                                : tokenMap[currentPrice.quote]
+                                    .precisionForOrder,
+                              true,
+                              { floor: true }
+                            ),
+                          symbol: currentPrice.base,
+                        }}
+                      >
+                        LRC Current price:
+                        <Typography
+                          component={"span"}
+                          display={"inline-flex"}
+                          color={"textPrimary"}
+                          paddingLeft={1}
+                        >
+                          price
+                        </Typography>{" "}
+                        :
+                      </Trans>
+                    ) : (
+                      <>
+                        <Typography
+                          component={"span"}
+                          color={"textSecondary"}
+                          variant={"body2"}
+                          textAlign={"right"}
+                        >
+                          {t("labelDualMobilePrice", {
+                            symbol: currentPrice.base,
+                          })}
+                        </Typography>
+                        <Typography
+                          textAlign={"right"}
+                          component={"span"}
+                          display={"inline-flex"}
+                          color={"textPrimary"}
+                          paddingLeft={1}
+                        >
+                          {getValuePrecisionThousand(
                             currentPrice.currentPrice,
                             currentPrice.precisionForPrice
                               ? currentPrice.precisionForPrice
@@ -315,21 +374,10 @@ export const DualListPanel: any = withTranslation("common")(
                               : tokenMap[currentPrice.quote].precisionForOrder,
                             true,
                             { floor: true }
-                          ),
-                        symbol: currentPrice.base,
-                      }}
-                    >
-                      LRC Current price:
-                      <Typography
-                        component={"span"}
-                        display={"inline-flex"}
-                        color={"textPrimary"}
-                        paddingLeft={1}
-                      >
-                        price
-                      </Typography>
-                    </Trans>
-                  )}
+                          )}
+                        </Typography>
+                      </>
+                    ))}
                 </Typography>
               </Box>
             )}

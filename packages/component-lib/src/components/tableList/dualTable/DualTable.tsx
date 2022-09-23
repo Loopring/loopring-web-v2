@@ -192,11 +192,76 @@ export const DualTable = withTranslation(["tables", "common"])(
     const getColumnMobileTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
-          key: "apy",
-          name: t("labelDualApy"),
+          key: "Apy",
           sortable: true,
-          headerCellClass: "textAlignLeft",
           cellClass: "textAlignLeft",
+          headerCellClass: "textAlignLeft",
+          name: t("labelDualApy"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <Box display={"flex"}>{row?.apy ?? EmptyValueTag}</Box>;
+          },
+        },
+        {
+          key: "targetPrice",
+          sortable: true,
+          name: t("labelDualPrice"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const [_upColor, _downColor] =
+              upColor == UpColor.green
+                ? ["var(--color-success)", "var(--color-error)"]
+                : ["var(--color-error)", "var(--color-success)"];
+            return (
+              <Box
+                display="flex"
+                justifyContent={"stretch"}
+                height={"100%"}
+                alignItems={"center"}
+              >
+                <Typography component={"span"}> {row.strike}</Typography>
+                <Typography
+                  component={"span"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  color={"textSecondary"}
+                  variant={"body2"}
+                >
+                  <UpIcon
+                    fontSize={"small"}
+                    // htmlColor={row.isUp ? _upColor : _downColor}
+                    style={{
+                      transform: row.isUp ? "" : "rotate(-180deg)",
+                    }}
+                  />
+                  {row.settleRatio
+                    ? getValuePrecisionThousand(
+                        sdk
+                          .toBig(row.strike ?? 0)
+                          .minus(row.currentPrice?.currentPrice ?? 0)
+                          .div(row.currentPrice?.currentPrice ?? 1)
+                          .times(100)
+                          .abs(),
+                        2,
+                        2,
+                        2,
+                        true
+                      ) + "%"
+                    : EmptyValueTag}
+                </Typography>
+              </Box>
+            );
+          },
+        },
+        {
+          key: "Settlement",
+          sortable: true,
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
+          name: t("labelDualSettlement"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <>{moment(new Date(row.expireTime)).format(YEAR_DAY_FORMAT)}</>
+            );
+          },
         },
       ],
       [t]
