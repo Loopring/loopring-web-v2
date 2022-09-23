@@ -304,12 +304,15 @@ export const DualListPanel: any = withTranslation("common")(
                           // PriceTag[CurrencyToTag[currency]] +
                           getValuePrecisionThousand(
                             currentPrice.currentPrice,
-                            currentPrice.precisionForPrice ??
-                              tokenMap[currentPrice.quote].precisionForOrder,
-                            currentPrice.precisionForPrice ??
-                              tokenMap[currentPrice.quote].precisionForOrder,
-                            currentPrice.precisionForPrice ??
-                              tokenMap[currentPrice.quote].precisionForOrder,
+                            currentPrice.precisionForPrice
+                              ? currentPrice.precisionForPrice
+                              : tokenMap[currentPrice.quote].precisionForOrder,
+                            currentPrice.precisionForPrice
+                              ? currentPrice.precisionForPrice
+                              : tokenMap[currentPrice.quote].precisionForOrder,
+                            currentPrice.precisionForPrice
+                              ? currentPrice.precisionForPrice
+                              : tokenMap[currentPrice.quote].precisionForOrder,
                             true,
                             { floor: true }
                           ),

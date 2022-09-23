@@ -147,9 +147,15 @@ export const DualDetail = ({
       base
         ? getValuePrecisionThousand(
             currentPrice.currentPrice,
-            precisionForPrice ?? tokenMap[quote].precisionForOrder,
-            precisionForPrice ?? tokenMap[quote].precisionForOrder,
-            precisionForPrice ?? tokenMap[quote].precisionForOrder,
+            precisionForPrice
+              ? precisionForPrice
+              : tokenMap[quote].precisionForOrder,
+            precisionForPrice
+              ? precisionForPrice
+              : tokenMap[quote].precisionForOrder,
+            precisionForPrice
+              ? precisionForPrice
+              : tokenMap[quote].precisionForOrder,
             true,
             { floor: true }
           )
@@ -158,7 +164,7 @@ export const DualDetail = ({
   );
 
   const targetView = React.useMemo(
-    () => dualViewInfo?.strike ?? EmptyValueTag,
+    () => Number(dualViewInfo?.strike).toLocaleString("en-US") ?? EmptyValueTag,
     [dualViewInfo?.strike]
   );
 
