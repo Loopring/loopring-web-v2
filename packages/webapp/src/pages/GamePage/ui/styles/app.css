@@ -3,9 +3,10 @@
 *::before {
   box-sizing: border-box;
 }
-
 #game-root {
   width: 100%;
+}
+html {
   font-size: 2.2vw;
   line-height: 1.4;
   color: var(--text);
@@ -21,7 +22,7 @@
 
 /* Minimum font size */
 @media (max-width: 900px) {
-  #game-root {
+  html {
     font-size: 14px;
   }
 }
@@ -33,7 +34,7 @@
   }
 }
 
-#game-root,
+html,
 button {
   font-family: "heliotrope_4", serif;
   font-feature-settings: "kern" 1;

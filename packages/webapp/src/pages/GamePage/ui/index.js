@@ -1,8 +1,12 @@
-import { App } from "./app.js";
-import { SplashScreen } from "./splash-screen.js";
-import { WinScreen } from "./win-screen.js";
-import { useState } from "react";
-import "./index.css";
+import {
+  html,
+  render,
+  Component,
+} from "../web_modules/htm/preact/standalone.module.js";
+import App from "./app.js";
+import SplashScreen from "./splash-screen.js";
+import WinScreen from "./win-screen.js";
+
 /** @enum {string} */
 const GameModes = {
   splash: "splash",
@@ -14,34 +18,39 @@ const GameModes = {
  * Our root component for the game.
  * Controls what to render.
  */
-export const SlayTheWeb = () => {
-  const [state, setState] = useState({
-    gameMode: GameModes.splash || "splash",
-  });
-  const handleNewGame = () => {
-    console.log("clikced new game");
-    setState({ gameMode: GameModes.gameplay });
+export class SlayTheWeb extends Component {
+  constructor() {
+    super();
+    this.state = {
+      // The game mode to start in.
+      gameMode: GameModes.splash,
+    };
+    this.handleWin = this.handleWin.bind(this);
+    this.handleNewGame = this.handleNewGame.bind(this);
+    this.handleLoose = this.handleLoose.bind(this);
+  }
+  handleNewGame() {
+    this.setState({ gameMode: GameModes.gameplay });
     // Clear any previous saved game.
     window.history.pushState("", document.title, window.location.pathname);
-    localStorage.removeItem("saveGame");
-  };
-  const handleWin = () => {
-    setState({ gameMode: GameModes.win });
-  };
-  const handleLoose = () => {
-    setState({ gameMode: GameModes.splash });
-  };
-  return (
-    <>
-      {state.gameMode === GameModes.splash && (
-        <SplashScreen onNewGame={handleNewGame} />
-      )}
-      {state.gameMode === GameModes.gameplay && (
-        <App onWin={() => handleWin()} onLoose={() => handleLoose()} />
-      )}
-      {state.gameMode === GameModes.win && (
-        <WinScreen onNewGame={() => handleNewGame()} />
-      )}
-    </>
-  );
-};
+  }
+  handleWin() {
+    this.setState({ gameMode: GameModes.win });
+  }
+  handleLoose() {
+    this.setState({ gameMode: GameModes.splash });
+  }
+  render(props, { gameMode }) {
+    if (gameMode === GameModes.splash)
+      return html`<${SplashScreen}
+        onNewGame=${this.handleNewGame}
+        onContinue=${this.handleNewGame}
+      />`;
+    if (gameMode === GameModes.gameplay)
+      return html`
+        <${App} onWin=${this.handleWin} onLoose=${this.handleLoose} />
+      `;
+    if (gameMode === GameModes.win)
+      return html` <${WinScreen} onNewGame=${this.handleNewGame} /> `;
+  }
+}

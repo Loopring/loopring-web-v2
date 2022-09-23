@@ -1,7 +1,11 @@
+// Third party dependencies
+import {
+  html,
+  Component,
+} from "../web_modules/htm/preact/standalone.module.js";
 import gsap from "./animations.js";
-// @ts-ignore
 import { Flip } from "../web_modules/gsap/Flip.js";
-
+// @ts-ignore
 //import Flip from 'https://slaytheweb-assets.netlify.app/gsap/Flip.js'
 
 // Game logic
@@ -15,20 +19,19 @@ import {
 import * as backend from "../game/backend.js";
 
 // UI Components
-import { Cards } from "./cards.js";
-import { Map } from "./map.js";
+import Cards from "./cards.js";
+import Map from "./map.js";
 import { Overlay, OverlayWithButton } from "./overlays.js";
 import { Player, Monster } from "./player.js";
-import { CardChooser } from "./card-chooser.js";
-import { CampfireRoom } from "./campfire.js";
-import { Menu } from "./menu.js";
-import { StartRoom } from "./start-room.js";
-import { DungeonStats } from "./dungeon-stats.js";
-import { enableDragDrop } from "./dragdrop.js";
+import CardChooser from "./card-chooser.js";
+import CampfireRoom from "./campfire.js";
+import Menu from "./menu.js";
+import StartRoom from "./start-room.js";
+import DungeonStats from "./dungeon-stats.js";
+import enableDragDrop from "./dragdrop.js";
 
 // Temporary hack to disabled sounds without touching game code.
 import realSfx from "./sounds.js";
-import { useEffect, useState } from "react";
 const sfx = {};
 Object.keys(realSfx).forEach((key) => {
   sfx[key] = () => null;
@@ -37,30 +40,41 @@ Object.keys(realSfx).forEach((key) => {
 const load = () =>
   JSON.parse(decodeURIComponent(window.location.hash.split("#")[1]));
 
-export const App = (onWin, onLoose) => {
-  const base = undefined;
-  const [state, setState] = useState({});
-  const game = {};
-  const overlayIndex = 11;
+export default class App extends Component {
+  constructor() {
+    super();
+    // Props
+    this.base = undefined;
+    this.state = {};
+    this.game = {};
+    this.overlayIndex = 11;
 
-  useEffect(() => {
+    // Scope methods
+    this.playCard = this.playCard.bind(this);
+    this.handlePlayerReward = this.handlePlayerReward.bind(this);
+    this.handleCampfireChoice = this.handleCampfireChoice.bind(this);
+    this.goToNextRoom = this.goToNextRoom.bind(this);
+    this.toggleOverlay = this.toggleOverlay.bind(this);
+    this.handleMapMove = this.handleMapMove.bind(this);
+  }
+  componentDidMount() {
     // Set up a new game
     const game = createNewGame();
-    setState(game.state, dealCards);
+    this.game = game;
+    this.setState(game.state, this.dealCards);
 
     sfx.startGame();
 
     // If there is a saved game state, use it.
     const savedGameState = window.location.hash && load();
     if (savedGameState) {
-      game.state = savedGameState;
-      setState(savedGameState, dealCards);
+      this.game.state = savedGameState;
+      this.setState(savedGameState, this.dealCards);
     }
 
-    enableConsole();
-  }, []);
-
-  const enableConsole = () => {
+    this.enableConsole();
+  }
+  enableConsole() {
     // Enable a "console" in the browser.
     console.log(`Welcome to the Slay The Web Console. Some examples:
 stw.game.state.player.maxHealth = 999; stw.update()
@@ -69,43 +83,43 @@ stw.update()
 stw.dealCards()`);
     // @ts-ignore
     window.stw = {
-      game: game,
-      update: update.bind(this),
+      game: this.game,
+      update: this.update.bind(this),
       createCard,
-      dealCards: dealCards.bind(this),
+      dealCards: this.dealCards.bind(this),
       iddqd() {
-        // console.log(game.state)
-        game.enqueue({ type: "iddqd" });
-        update(() => {
-          // console.log(game.state)
+        // console.log(this.game.state)
+        this.game.enqueue({ type: "iddqd" });
+        this.update(() => {
+          // console.log(this.game.state)
         });
       },
       getRuns() {
         return backend.getRuns();
       },
       postRun() {
-        return backend.postRun(game);
+        return backend.postRun(this.game);
       },
     };
-  };
-  const update = (callback) => {
-    game.dequeue();
-    setState(game.state, callback);
-  };
-  const undo = () => {
-    game.undo();
-    setState(game.state, dealCards);
-  };
+  }
+  update(callback) {
+    this.game.dequeue();
+    this.setState(this.game.state, callback);
+  }
+  undo() {
+    this.game.undo();
+    this.setState(this.game.state, this.dealCards);
+  }
   /**
    * Plays a card while juggling DOM animations and set state.
    * @param {string} cardId
    * @param {string} target
    * @param {HTMLElement} cardElement
    */
-  const playCard = (cardId, target, cardElement) => {
+  playCard(cardId, target, cardElement) {
     // Play the card.
-    const card = state.hand.find((c) => c.id === cardId);
-    game.enqueue({ type: "playCard", card, target });
+    const card = this.state.hand.find((c) => c.id === cardId);
+    this.game.enqueue({ type: "playCard", card, target });
 
     const supportsFlip = typeof Flip !== "undefined";
     let flip;
@@ -115,12 +129,12 @@ stw.dealCards()`);
 
     // Create a clone on top of the card to animate.
     const clone = cardElement.cloneNode(true);
-    base.appendChild(clone);
+    this.base.appendChild(clone);
     if (supportsFlip) Flip.fit(clone, cardElement, { absolute: true });
 
     // Update state and re-enable dragdrop
-    update(() => {
-      enableDragDrop(base, playCard);
+    this.update(() => {
+      enableDragDrop(this.base, this.playCard);
 
       sfx.playCard({ card, target });
 
@@ -138,255 +152,249 @@ stw.dealCards()`);
         });
       }
     });
-  };
-  const endTurn = () => {
+  }
+  endTurn() {
     sfx.endTurn();
     gsap.effects.discardHand(".Hand .Card", {
       onComplete: reallyEndTurn.bind(this),
     });
     function reallyEndTurn() {
-      game.enqueue({ type: "endTurn" });
-      update(dealCards);
+      this.game.enqueue({ type: "endTurn" });
+      this.update(this.dealCards);
     }
-  };
+  }
   // Animate the cards in and make sure any new cards are draggable.
-  const dealCards = () => {
+  dealCards() {
     gsap.effects.dealCards(".Hand .Card");
     sfx.startTurn();
-    enableDragDrop(base, playCard);
-  };
-  const toggleOverlay = (el) => {
-    if (typeof el === "string") el = base.querySelector(el);
+    enableDragDrop(this.base, this.playCard);
+  }
+  toggleOverlay(el) {
+    if (typeof el === "string") el = this.base.querySelector(el);
     el.toggleAttribute("open");
-    el.style.zIndex = overlayIndex;
-    overlayIndex++;
-  };
-  const handleShortcuts = (event) => {
+    el.style.zIndex = this.overlayIndex;
+    this.overlayIndex++;
+  }
+  handleShortcuts(event) {
     const { key } = event;
     const keymap = {
-      e: () => endTurn(),
-      u: () => undo(),
+      e: () => this.endTurn(),
+      u: () => this.undo(),
       Escape: () => {
-        // let openOverlays = base.querySelectorAll('.Overlay:not(#Menu)[open]')
-        let openOverlays = base.querySelectorAll(
+        // let openOverlays = this.base.querySelectorAll('.Overlay:not(#Menu)[open]')
+        let openOverlays = this.base.querySelectorAll(
           "#Deck[open], #DrawPile[open], #DiscardPile[open], #Map[open]"
         );
         openOverlays.forEach((el) => el.removeAttribute("open"));
-        toggleOverlay("#Menu");
+        this.toggleOverlay("#Menu");
       },
-      d: () => toggleOverlay("#Deck"),
-      a: () => toggleOverlay("#DrawPile"),
-      s: () => toggleOverlay("#DiscardPile"),
-      m: () => toggleOverlay("#Map"),
+      d: () => this.toggleOverlay("#Deck"),
+      a: () => this.toggleOverlay("#DrawPile"),
+      s: () => this.toggleOverlay("#DiscardPile"),
+      m: () => this.toggleOverlay("#Map"),
     };
     keymap[key] && keymap[key]();
-  };
-  const handlePlayerReward = (choice, card) => {
-    game.enqueue({ type: "addCardToDeck", card });
-    setState({ didPickCard: card });
-    update();
-  };
-  const handleCampfireChoice = (choice, reward) => {
+  }
+  handlePlayerReward(choice, card) {
+    this.game.enqueue({ type: "addCardToDeck", card });
+    this.setState({ didPickCard: card });
+    this.update();
+  }
+  handleCampfireChoice(choice, reward) {
     // Depending on the choice, run an action.
     if (choice === "rest") {
-      reward = Math.floor(game.state.player.maxHealth * 0.3);
-      game.enqueue({
+      reward = Math.floor(this.game.state.player.maxHealth * 0.3);
+      this.game.enqueue({
         type: "addHealth",
         target: "player",
         amount: reward,
       });
     }
     if (choice === "upgradeCard") {
-      game.enqueue({ type: "upgradeCard", card: reward });
+      this.game.enqueue({ type: "upgradeCard", card: reward });
     }
     if (choice === "removeCard") {
-      game.enqueue({ type: "removeCard", card: reward });
+      this.game.enqueue({ type: "removeCard", card: reward });
     }
     // Store the result.
-    game.enqueue({ type: "makeCampfireChoice", choice, reward });
+    this.game.enqueue({ type: "makeCampfireChoice", choice, reward });
     // Update twice (because two actions were enqueued)
-    update(update);
-    goToNextRoom();
-  };
-  const goToNextRoom = () => {
-    console.log("Go to next room, toggling map");
-    toggleOverlay("#Map");
-  };
-  const handleMapMove = (move) => {
-    console.log("Made a move");
-    toggleOverlay("#Map");
-    setState({ didPickCard: false });
-    game.enqueue({ type: "move", move });
-    update(dealCards);
-  };
-  if (Object.keys(state).length === 0) {
-    console.log("NEW");
-    const game = createNewGame();
-    setState(game.state, dealCards);
+    this.update(this.update);
+    this.goToNextRoom();
   }
-  console.log({ state });
-  if (!state.player) return;
-  const isDead = state.player.currentHealth < 1;
-  const didWin = isCurrRoomCompleted(state);
-  const didWinEntireGame = isDungeonCompleted(state);
-  const room = getCurrRoom(state);
-  const noEnergy = !state.player.currentEnergy;
-  console.log("ola!");
-  // There's a lot here because I did not want to split into too many files.
-  return (
-    <>
-      <div classname="App" tabindex="0" onKeyDown={(e) => handleShortcuts(e)}>
-        <figure classname="App-background" data-room-index={state.dungeon.y} />
-      </div>
+  goToNextRoom() {
+    console.log("Go to next room, toggling map");
+    this.toggleOverlay("#Map");
+  }
+  handleMapMove(move) {
+    console.log("Made a move");
+    this.toggleOverlay("#Map");
+    this.setState({ didPickCard: false });
+    this.game.enqueue({ type: "move", move });
+    this.update(this.dealCards);
+  }
+  render(props, state) {
+    if (!state.player) return;
+    const isDead = state.player.currentHealth < 1;
+    const didWin = isCurrRoomCompleted(state);
+    const didWinEntireGame = isDungeonCompleted(state);
+    const room = getCurrRoom(state);
+    const noEnergy = !state.player.currentEnergy;
 
-      {room.type === "start DISABLED" && (
-        <>
-          <Overlay>
-            <StartRoom onContinue={goToNextRoom} />
-          </Overlay>
-        </>
-      )}
+    // There's a lot here because I did not want to split into too many files.
+    return html`
+			<div class="App" tabindex="0" onKeyDown=${(e) => this.handleShortcuts(e)}>
+				<figure class="App-background" data-room-index=${state.dungeon.y}></div>
 
-      {isDead && (
-        <Overlay>
-          <p center>You are dead.</p>
-          <DungeonStats state={state} />
-          <button onclick={() => onLoose()}>Try again?</button>
-        </Overlay>
-      )}
+				${
+          room.type === "start DISABLED" &&
+          html`<${Overlay}><${StartRoom} onContinue=${this.goToNextRoom} /><//>`
+        }
 
-      {didWinEntireGame && (
-        <Overlay>
-          <p center>
-            <button onclick={() => onWin()}>You win!</button>
-          </p>
-          <DungeonStats state={state} />
-        </Overlay>
-      )}
+				${
+          isDead &&
+          html`<${Overlay}>
+            <p center>You are dead.</p>
+            <${DungeonStats} state=${state}><//>
+            <button onclick=${() => this.props.onLoose()}>Try again?</button>
+          <//> `
+        }
 
-      {!didWinEntireGame && didWin && room.type === "monster" && (
-        <Overlay>
-          <h1 center medium>
-            Victory. Onwards!
-          </h1>
-          {!state.didPickCard ? (
-            <>
-              <p center>
-                Here is your reward. Pick a card to add to your deck.
-              </p>
-              <CardChooser
-                cards={getCardRewards(3)}
-                didSelectCard={(card) => handlePlayerReward("addCard", card)}
-              />
-            </>
-          ) : (
+				${
+          didWinEntireGame &&
+          html`<${Overlay}>
             <p center>
-              Added <strong>{state.didPickCard.name}</strong> to your deck.
+              <button onclick=${() => this.props.onWin()}>You win!</button>
             </p>
-          )}
-          <p center>
-            <button onclick={() => goToNextRoom()}>Go to next room</button>
-          </p>
-        </Overlay>
-      )}
+            <${DungeonStats} state=${state}><//>
+          <//> `
+        }
 
-      {room.type === "campfire" && (
-        <Overlay>
-          <CampfireRoom
-            gameState={state}
-            onChoose={handleCampfireChoice}
-            onContinue={goToNextRoom}
-          />
-        </Overlay>
-      )}
+				${
+          !didWinEntireGame &&
+          didWin &&
+          room.type === "monster" &&
+          html`<${Overlay}>
+            <h1 center medium>Victory. Onwards!</h1>
+            ${!state.didPickCard
+              ? html`
+                  <p center>
+                    Here is your reward. Pick a card to add to your deck.
+                  </p>
 
-      <div classname="Targets Split">
-        <div classname="Targets-group">
-          <Player model={state.player} name="Player" />
-        </div>
-        <div classname="Targets-group">
-          {room.monsters &&
-            room.monsters.map((monster) => (
-              <Monster model={monster} gameState={state} />
-            ))}
-        </div>
-      </div>
+                  <${CardChooser}
+                    cards=${getCardRewards(3)}
+                    didSelectCard=${(card) =>
+                      this.handlePlayerReward("addCard", card)}
+                  />
+                `
+              : html`<p center>
+                  Added <strong>${state.didPickCard.name}</strong> to your deck.
+                </p>`}
+            <p center>
+              <button onclick=${() => this.goToNextRoom()}>
+                Go to next room
+              </button>
+            </p>
+          <//> `
+        }
 
-      <div classname='Split {noEnergy ? "no-energy" : ""}'>
-        <div classname="EnergyBadge">
-          <span
-            classname="tooltipped tooltipped-e tooltipped-multiline"
-            aria-label="Cards costs energy and this badge shows how much you have left this turn. Next turn your energy is refilled."
-          >
-            {state.player.currentEnergy}/{state.player.maxEnergy}
-          </span>
-        </div>
-        <p classname="Actions">
-          <button classname="EndTurn" onclick={() => endTurn()}>
-            <u>E</u>nd turn
-          </button>
-        </p>
-      </div>
+				${
+          room.type === "campfire" &&
+          html`<${Overlay}>
+            <${CampfireRoom}
+              gameState=${state}
+              onChoose=${this.handleCampfireChoice}
+              onContinue=${this.goToNextRoom}
+            />
+          <//>`
+        }
 
-      <div classname="Hand">
-        <Cards gameState={state} type="hand" />
-      </div>
+				<div class="Targets Split">
+					<div class="Targets-group">
+						<${Player} model=${state.player} name="Player" />
+					</div>
+					<div class="Targets-group">
+						${
+              room.monsters &&
+              room.monsters.map(
+                (monster) =>
+                  html`<${Monster} model=${monster} gameState=${state} />`
+              )
+            }
+					</div>
+				</div>
 
-      <OverlayWithButton id="Menu" topleft>
-        <button onClick={() => toggleOverlay("#Menu")}>
-          <u>Esc</u>ape
-        </button>
-        <div classname="Overlay-content">
-          <Menu gameState={state} game={game} onUndo={() => undo()} />
-        </div>
-      </OverlayWithButton>
+				<div class="Split ${noEnergy ? "no-energy" : ""}">
+					<div class="EnergyBadge">
+							<span class="tooltipped tooltipped-e tooltipped-multiline" aria-label="Cards costs energy and this badge shows how much you have left this turn. Next turn your energy is refilled.">${
+                state.player.currentEnergy
+              }/${state.player.maxEnergy}</span>
+					</div>
+					<p class="Actions">
+						<button class="EndTurn" onclick=${() => this.endTurn()}>
+							<u>E</u>nd turn
+						</button>
+					</p>
+				</div>
 
-      <OverlayWithButton id="Map" open topright key={1}>
-        {room.type !== "start" && (
-          <button align-right onClick={() => toggleOverlay("#Map")}>
-            <u>M</u>ap
-          </button>
-        )}
-        <div classname="Overlay-content">
-          <Map dungeon={state.dungeon} onMove={handleMapMove} />
-        </div>
-      </OverlayWithButton>
+				<div class="Hand">
+					<${Cards} gameState=${state} type="hand" />
+				</div>
 
-      <OverlayWithButton id="Deck" topright topright2>
-        <button onClick={() => toggleOverlay("#Deck")}>
-          <u>D</u>eck {state.deck.length}
-        </button>
-        <div classname="Overlay-content">
-          <Cards gameState={state} type="deck" />
-        </div>
-      </OverlayWithButton>
+				<${OverlayWithButton} id="Menu" topleft>
+					<button onClick=${() => this.toggleOverlay("#Menu")}><u>Esc</u>ape</button>
+					<div class="Overlay-content">
+							<${Menu} gameState=${state} game=${this.game} onUndo=${() => this.undo()} />
+					</div>
+				<//>
 
-      <OverlayWithButton id="DrawPile" bottomleft>
-        <button
-          classname="tooltipped tooltipped-ne"
-          aria-label="The cards you'll draw next in random order"
-          onClick={() => toggleOverlay("#DrawPile")}
-        >
-          Dr<u>a</u>w pile {state.drawPile.length}
-        </button>
-        <div classname="Overlay-content">
-          <Cards gameState={state} type="drawPile" />
-        </div>
-      </OverlayWithButton>
+				<${OverlayWithButton} id="Map" open topright key=${1}>
+					${
+            room.type !== "start" &&
+            html`<button
+              align-right
+              onClick=${() => this.toggleOverlay("#Map")}
+            >
+              <u>M</u>ap
+            </button>`
+          }
+					<div class="Overlay-content">
+						<${Map} dungeon=${state.dungeon} onMove=${this.handleMapMove} />
+					</div>
+				<//>
 
-      <OverlayWithButton id="DiscardPile" bottomright>
-        <button
-          onClick={() => toggleOverlay("#DiscardPile")}
-          align-right
-          classname="tooltipped tooltipped-nw tooltipped-multiline"
-          aria-label="Cards you've already played. Once the draw pile is empty, these cards are shuffled into your draw pile."
-        >
-          Di<u>s</u>card pile {state.discardPile.length}
-        </button>
-        <div classname="Overlay-content">
-          <Cards gameState={state} type="discardPile" />
-        </div>
-      </OverlayWithButton>
-    </>
-  );
-};
+				<${OverlayWithButton} id="Deck" topright topright2>
+					<button onClick=${() => this.toggleOverlay("#Deck")}><u>D</u>eck ${
+      state.deck.length
+    }</button>
+					<div class="Overlay-content">
+						<${Cards} gameState=${state} type="deck" />
+					</div>
+				<//>
+
+				<${OverlayWithButton} id="DrawPile" bottomleft>
+					<button class="tooltipped tooltipped-ne" aria-label="The cards you'll draw next in random order" onClick=${() =>
+            this.toggleOverlay("#DrawPile")}>Dr<u>a</u>w pile ${
+      state.drawPile.length
+    }</button>
+					<div class="Overlay-content">
+						<${Cards} gameState=${state} type="drawPile" />
+					</div>
+				<//>
+
+				<${OverlayWithButton} id="DiscardPile" bottomright>
+					<button onClick=${() =>
+            this.toggleOverlay(
+              "#DiscardPile"
+            )} align-right class="tooltipped tooltipped-nw tooltipped-multiline" aria-label="Cards you've already played. Once the draw pile is empty, these cards are shuffled into your draw pile.">Di<u>s</u>card pile ${
+      state.discardPile.length
+    }</button>
+					<div class="Overlay-content">
+						<${Cards} gameState=${state} type="discardPile" />
+					</div>
+				<//>
+		</div>
+		`;
+  }
+}
