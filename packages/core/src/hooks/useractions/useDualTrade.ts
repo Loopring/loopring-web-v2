@@ -302,7 +302,6 @@ export const useDualTrade = <
           ) {
           }
           if (dualInfo?.__raw__?.info) {
-            debugger;
             dualInfo.__raw__.info = {
               ...dualInfo.__raw__.info,
               dualPrice: {
