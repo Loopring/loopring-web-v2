@@ -294,7 +294,7 @@ export const useDualTrade = <
             (dualIndexResponse as sdk.RESULT_INFO).message
           ) {
           } else {
-            index = dualPriceResponse.index;
+            index = dualIndexResponse.dualPrice;
           }
           if (
             (dualPriceResponse as sdk.RESULT_INFO).code ||
