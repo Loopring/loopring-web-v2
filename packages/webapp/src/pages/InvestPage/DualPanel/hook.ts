@@ -23,7 +23,6 @@ export const useDualHook = ({
 }: {
   setConfirmDualInvest: (state: any) => void;
 }) => {
-  const { t } = useTranslation("common");
   const match: any = useRouteMatch("/invest/dual/:market?");
   const { marketArray, marketMap, tradeMap, status: dualStatus } = useDualMap();
   const { tokenPrices } = useTokenPrices();
@@ -134,7 +133,6 @@ export const useDualHook = ({
         startTime: Date.now() + 1000 * 60 * 60,
         timeSpan: 1000 * 60 * 60 * 24 * 9,
         limit: DUALLimit,
-        // limit: number;
       });
 
       if (
@@ -154,14 +152,7 @@ export const useDualHook = ({
           currentPrice: index.index,
           precisionForPrice: marketMap[market].precisionForPrice,
         });
-        // : {
-        //   dualInfo: {
-        //     infos: sdk.DualProductAndPrice[];
-        //     index: sdk.DualIndex;
-        //     balance: sdk.DualBalance[];
-        //   };
-        //   raw_data: { rule: sdk.DualRulesCoinsInfo[] };
-        // }
+
         const rule = rules[0];
         const rawData = infos.reduce(
           (prev: any[], item: sdk.DualProductAndPrice) => {

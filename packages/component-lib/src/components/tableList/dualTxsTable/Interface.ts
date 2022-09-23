@@ -14,6 +14,7 @@ export interface DualAssetTableProps<R> {
   tokenMap: { [key: string]: any };
   showloading: boolean;
   getDualAssetList: (props: any) => Promise<void>;
+  showDetail: (item: R) => void;
   pagination?: {
     pageSize: number;
     total: number;

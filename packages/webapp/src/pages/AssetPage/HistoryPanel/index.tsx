@@ -109,6 +109,7 @@ const HistoryPanel = withTranslation("common")(
       dualList,
       showLoading: showDualLoading,
       getDualTxList,
+      dualMarketMap,
       dualTotal,
     } = useDualTransaction(setToastOpen);
 
@@ -287,6 +288,7 @@ const HistoryPanel = withTranslation("common")(
                   pageSize: pageSize,
                   total: dualTotal,
                 }}
+                dualMarketMap={dualMarketMap}
                 showloading={showDualLoading}
                 tokenMap={tokenMap}
                 idIndex={idIndex}

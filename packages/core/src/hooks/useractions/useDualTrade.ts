@@ -192,7 +192,6 @@ export const useDualTrade = <
   } => {
     const account = store.getState().account;
     const tradeDual = store.getState()._router_tradeDual.tradeDual;
-
     if (
       account.readyState === AccountStatus.ACTIVATED &&
       coinSellSymbol &&
@@ -269,11 +268,13 @@ export const useDualTrade = <
       if (clearTrade) {
         setIsLoading(true);
       }
-
+      const dualMarket =
+        dualMarketMap[`DUAL-${coinSellSymbol}-${coinBuySymbol}`] ??
+        dualMarketMap[`DUAL-${coinBuySymbol}-${coinSellSymbol}`];
       Promise.all([
         LoopringAPI.defiAPI?.getDualIndex({
           baseSymbol: productInfo.__raw__.info.base,
-          quoteSymbol: productInfo.__raw__.info.currency,
+          quoteSymbol: dualMarket.quoteAlias,
         }),
         LoopringAPI.defiAPI?.getDualPrices({
           baseSymbol: productInfo.__raw__.info.base,

@@ -62,6 +62,7 @@ export interface DualTxsTableProps<R = RawDataDualTxsItem> {
   };
   idIndex: { [key: string]: string };
   tokenMap: { [key: string]: any };
+  dualMarketMap: any;
 
   getDualTxList: (props: any) => Promise<void>;
   // filterTokens: string[];
@@ -82,6 +83,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
       tokenMap,
       getDualTxList,
       showloading,
+      dualMarketMap,
       t,
     } = props;
     const { isMobile } = useSettings();
@@ -223,10 +225,10 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
             const statusColor =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
-                ? "var(--color-success)"
+                ? "var(--color-star)"
                 : Date.now() - expireTime >= 0
                 ? "var(--color-warning)"
-                : "var(--color-error)";
+                : "var(--color-success)";
 
             let buyAmount, sentence;
             buyAmount =
@@ -511,9 +513,12 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
         columnsRaw as Column<any, unknown>[],
     };
     React.useEffect(() => {
+      if (dualMarketMap) {
+        updateData.cancel();
+        updateData({ currPage: 1 });
+      }
       // let filters: any = {};
-      updateData.cancel();
-      updateData({ currPage: 1 });
+
       // handlePageChange(1);
       // if (searchParams.get("types")) {
       //   filters.type = searchParams.get("types");
@@ -522,7 +527,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize]);
+    }, [pagination?.pageSize, dualMarketMap]);
 
     return (
       <TableStyled isMobile={isMobile}>

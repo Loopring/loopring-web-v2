@@ -559,7 +559,7 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
         setShowLoading(false);
       }
     },
-    [accountId, apiKey]
+    [accountId, apiKey, marketMap, setToastOpen, t, tokenMap]
   );
 
   const cancelOrder = React.useCallback(
@@ -589,7 +589,7 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
         updateWalletLayer2();
       }
     },
-    [accountId, apiKey, privateKey]
+    [accountId, apiKey, getOrderList, privateKey, updateWalletLayer2]
   );
 
   const clearData = React.useCallback(() => {
@@ -715,7 +715,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
       }
       setShowLoading(false);
     },
-    [accountId, apiKey, setToastOpen, t]
+    [accountId, apiKey, setToastOpen, t, idIndex, dualMarketMap]
   );
 
   return {
@@ -724,6 +724,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
     showLoading,
     getDualTxList,
     dualTotal,
+    dualMarketMap,
     // pagination,
     // updateTickersUI,
   };
