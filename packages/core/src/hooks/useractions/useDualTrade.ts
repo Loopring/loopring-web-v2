@@ -43,7 +43,6 @@ import {
   useSystem,
   useTokenMap,
 } from "../../index";
-import { useTranslation } from "react-i18next";
 import { useTradeDual } from "../../stores";
 
 export const useDualTrade = <
@@ -56,12 +55,11 @@ export const useDualTrade = <
   const { exchangeInfo, allowTrade } = useSystem();
   const { tokenMap, marketArray } = useTokenMap();
   const { setShowAccount } = useOpenModals();
-  // const { amountMap, getAmount, status: amountStatus } = useAmount();
   const { marketMap: dualMarketMap } = useDualMap();
   const { account, status: accountStatus } = useAccount();
   const { setShowDual } = useOpenModals();
 
-  const { toastOpen, setToastOpen, closeToast } = useToast();
+  const { toastOpen, closeToast } = useToast();
   const {
     modals: { isShowDual },
     setShowSupport,
@@ -69,7 +67,6 @@ export const useDualTrade = <
   } = useOpenModals();
   const { tradeDual, updateTradeDual, resetTradeDual } = useTradeDual();
   const [serverUpdate, setServerUpdate] = React.useState(false);
-  const { t } = useTranslation(["common"]);
   const {
     toggle: { dualInvest },
   } = useToggle();
@@ -79,17 +76,13 @@ export const useDualTrade = <
   // });
   const [isLoading, setIsLoading] = React.useState(false);
   const [productInfo, setProductInfo] = React.useState<R>(undefined as any);
-  // const {
-  //   marketMap: defiMarketMap,
-  //   // status: defiMarketStatus,
-  // } = useDualMap();
 
   const refreshDual = React.useCallback(
     ({
       dualInfo = productInfo,
       tradeData,
       balance,
-      index,
+      index = productInfo?.__raw__.index,
     }: {
       dualInfo?: R;
       tradeData?: T;
@@ -104,7 +97,7 @@ export const useDualTrade = <
         tradeDual: { coinSell: _coinSell },
       } = store.getState()._router_tradeDual;
       let _updateInfo: Partial<TradeDual<R>> = {
-        dualViewInfo: dualInfo,
+        dualViewInfo: _.cloneDeep(dualInfo),
       };
       if (productInfo?.productId === dualInfo.productId) {
         _updateInfo = {
@@ -151,15 +144,15 @@ export const useDualTrade = <
         walletMap = makeWalletLayer2(true).walletMap;
         coinSell.balance = walletMap[baseSymbol]?.count;
       }
+
       const dualViewInfo = makeDualViewItem(
         info,
-        dualInfo.__raw__.index,
+        index ?? ({} as any),
         dualInfo.__raw__.rule,
         sellSymbol,
         buySymbol,
         dualMarket
       );
-
       if (_updateInfo.balance) {
         const calDualValue: sdk.CalDualResult = sdk.calcDual({
           ...dualInfo.__raw__,
@@ -270,31 +263,7 @@ export const useDualTrade = <
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [coinSellSymbol]);
-
-  const refreshClick = React.useCallback(() => {
-    if (refreshRef.current && tradeDual) {
-      //@ts-ignore
-      refreshRef.current.firstElementChild.click();
-      myLog("should15sRefresh refreshRef.current click only");
-      should15sRefresh(true);
-    }
-  }, [refreshRef, tradeDual]);
-  React.useEffect(() => {
-    if (isShowDual?.isShow && isShowDual?.dualInfo?.__raw__) {
-      setProductInfo(isShowDual.dualInfo as R);
-      refreshDual({ dualInfo: isShowDual.dualInfo as R });
-    } else {
-      resetTradeDual();
-    }
-    refreshClick();
-    return () => {
-      myLog("should15sRefresh cancel");
-      resetTradeDual();
-      should15sRefresh.cancel();
-    };
-  }, [isShowDual, refreshRef.current]);
-
+  }, [coinSellSymbol, tokenMap]);
   const should15sRefresh = _.debounce(async (clearTrade: boolean = false) => {
     if (productInfo && coinSellSymbol && coinBuySymbol && LoopringAPI.defiAPI) {
       if (clearTrade) {
@@ -359,6 +328,29 @@ export const useDualTrade = <
     }
   }, globalSetup.wait);
 
+  const refreshClick = React.useCallback(() => {
+    if (refreshRef.current && tradeDual) {
+      //@ts-ignore
+      refreshRef.current.firstElementChild.click();
+      myLog("should15sRefresh refreshRef.current click only");
+      should15sRefresh(true);
+    }
+  }, [tradeDual]);
+  React.useEffect(() => {
+    if (isShowDual?.isShow && isShowDual?.dualInfo?.__raw__) {
+      setProductInfo(isShowDual.dualInfo as R);
+      refreshDual({ dualInfo: isShowDual.dualInfo as R });
+    } else {
+      resetTradeDual();
+    }
+    refreshClick();
+    return () => {
+      myLog("should15sRefresh cancel");
+      resetTradeDual();
+      should15sRefresh.cancel();
+    };
+  }, [isShowDual, refreshRef.current]);
+
   const walletLayer2Callback = React.useCallback(async () => {
     const {
       tradeDual: { coinSell },
@@ -379,6 +371,7 @@ export const useDualTrade = <
       if (
         LoopringAPI.userAPI &&
         LoopringAPI.defiAPI &&
+        tradeDual &&
         tradeDual.coinSell?.belong &&
         tradeDual.maxFeeBips &&
         exchangeInfo
@@ -479,22 +472,11 @@ export const useDualTrade = <
     account.accountId,
     account.apiKey,
     account.eddsaKey.sk,
-    coinBuySymbol,
     exchangeInfo,
-    setToastOpen,
-    should15sRefresh,
-    t,
-    tradeDual?.buyToken?.tokenId,
-    tradeDual?.dualViewInfo?.__raw__.info,
-    tradeDual?.dualViewInfo?.expireTime,
-    tradeDual?.dualViewInfo?.settleRatio,
-    tradeDual?.feeVol,
-    tradeDual?.greaterEarnVol,
-    tradeDual?.lessEarnVol,
-    tradeDual?.maxFeeBips,
-    tradeDual?.sellToken?.symbol,
-    tradeDual?.sellToken?.tokenId,
-    tradeDual?.sellVol,
+    setShowAccount,
+    setShowDual,
+    tokenMap,
+    tradeDual,
   ]);
 
   // const isNoBalance = ;

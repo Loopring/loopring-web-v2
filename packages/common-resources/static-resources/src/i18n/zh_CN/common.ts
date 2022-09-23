@@ -823,7 +823,7 @@ export default {
   labelNFTDepositLabel: "Receive NFT",
   labelDefiFee: "Fee",
   labelDefiMin: "Minimum of {{arg}}",
-  labelDefiNoEnough: "Not enough {{arg}}",
+  labelDefiNoEnough: "Insufficient balance",
   labelDefiMaxBalance:
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n" +
     "You can choose one of the following approaches for the remaining amount:",
@@ -985,7 +985,7 @@ export default {
   labelDualFee: "Fee",
   labelDualMin: "Minimum of {{arg}}",
   labelDualMax: "Maximum of {{arg}}",
-  labelDualNoEnough: "Not enough {{arg}}",
+  labelDualNoEnough: "Insufficient balance",
   labelDualSettleDate: "Settlement Date",
   labelDualSubDate: "Subscription Date",
   labelDualCurrentPrice2: "Current {{symbol}} Price",
