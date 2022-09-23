@@ -27,7 +27,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: auto auto 80px  100px 160px 160px 120px !important;`
+        ? `--template-columns: 30% auto 76px  120px 120px 160px 120px !important;`
         : `--template-columns: 100% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -229,6 +229,8 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           key: "TargetPrice",
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           name: t("labelDualTxsTargetPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return <>{row?.strike}</>;
@@ -317,9 +319,14 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignLeft",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const {
+              sellSymbol,
+              apy,
+              buySymbol: _marketBuy,
               __raw__: {
                 order: {
                   settlementStatus,
+                  dualType,
+                  deliveryPrice,
                   tokenInfoOrigin: {
                     amountIn,
                     tokenOut,
@@ -329,8 +336,6 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                   timeOrigin: { expireTime },
                 },
               },
-              // expireTime,
-              sellSymbol,
             } = row;
             const sellAmount = sdk
               .toBig(amountIn ? amountIn : 0)
@@ -354,133 +359,117 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 : Date.now() - expireTime >= 0
                 ? "var(--color-warning)"
                 : "var(--color-success)";
+            let buySymbol, buyAmount;
+            if (tokenOut !== undefined) {
+              buySymbol = tokenMap[idIndex[tokenOut]].symbol;
+              buyAmount = getValuePrecisionThousand(
+                sdk
+                  .toBig(amountOut ? amountOut : 0)
+                  .div("1e" + tokenMap[buySymbol].decimals),
+                tokenMap[buySymbol].precision,
+                tokenMap[buySymbol].precision,
+                tokenMap[buySymbol].precision,
+                false
+              );
+            }
 
-            let buyAmount, sentence;
-            buyAmount = sdk
-              .toBig(amountOut ? amountOut : 0)
-              .div("1e" + tokenMap[tokenOut].decimals);
-
-            sentence =
+            const sentence =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
-                ? `${amount} ${sellSymbol} ${DirectionTag} ${buyAmount} ${tokenMap[tokenOut].symbol} `
+                ? `${amount} ${sellSymbol} ${DirectionTag} ${buyAmount} ${buySymbol} `
                 : Date.now() - expireTime >= 0
                 ? `${amount} ${sellSymbol}`
                 : `${amount} ${sellSymbol}`;
-            return (
-              <Box display={"flex"} alignItems={"center"} flexDirection={"row"}>
-                <Typography color={statusColor}>{side}</Typography>
-                &nbsp;&nbsp;
-                <Typography component={"span"}>{sentence}</Typography>
-              </Box>
-            );
-          },
-        },
-        {
-          sortable: false,
-          width: "auto",
-          key: "Product",
-          name: t("labelDualTxsProduct"),
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            const {
-              sellSymbol,
-              buySymbol,
-              __raw__: {
-                order: { dualType },
-              },
-            } = row;
             const [base, quote] =
               dualType === DUAL_TYPE.DUAL_BASE
-                ? [sellSymbol, buySymbol]
-                : [buySymbol, sellSymbol];
-            return <>{base + "/" + quote}</>;
-          },
-        },
-        {
-          sortable: false,
-          width: "auto",
-          key: "APR",
-          name: t("labelDualTxAPR"),
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.apy}</>;
-          },
-        },
-        {
-          sortable: false,
-          width: "auto",
-          key: "TargetPrice",
-          name: t("labelDualTxsTargetPrice"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.strike}</>;
-          },
-        },
-        {
-          sortable: false,
-          width: "auto",
-          key: "Price",
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          name: t("labelDualTxsSettlementPrice"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            const {
-              __raw__: {
-                order: {
-                  deliveryPrice,
-                  tokenInfoOrigin: { quote },
-                },
-              },
-              // currentPrice: { currentPrice, quote },
-            } = row;
+                ? [sellSymbol, _marketBuy]
+                : [_marketBuy, sellSymbol];
             return (
-              <>
-                {deliveryPrice
-                  ? getValuePrecisionThousand(
-                      deliveryPrice,
-                      tokenMap[quote]?.precision,
-                      tokenMap[quote]?.precision,
-                      tokenMap[quote]?.precision,
-                      true,
-                      { isFait: true }
-                    )
-                  : EmptyValueTag}
-              </>
-            );
-          },
-        },
-        {
-          sortable: false,
-          width: "auto",
-          key: "Settlement_Date",
-          name: t("labelDualTxsSettlement_Date"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Typography
-                height={"100%"}
+              <Box
                 display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
+                alignItems={"stretch"}
+                flexDirection={"column"}
               >
-                {moment(
-                  new Date(row.__raw__.order.timeOrigin.expireTime)
-                ).format(YEAR_DAY_MINUTE_FORMAT)}
-              </Typography>
-            );
-          },
-        },
-        {
-          key: "time",
-          name: t("labelDualTxsTime"),
-          headerCellClass: "textAlignRight",
-          formatter: ({ row }) => {
-            return (
-              <Box className="rdg-cell-value textAlignRight">
-                {moment(
-                  new Date(row.__raw__.order?.createdAt),
-                  "YYYYMMDDHHMM"
-                ).fromNow()}
+                <Typography
+                  display={"flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  variant={"body2"}
+                >
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Typography
+                      component={"span"}
+                      variant={"inherit"}
+                      color={statusColor}
+                    >
+                      {side}
+                    </Typography>
+                    &nbsp;&nbsp;
+                    <Typography
+                      component={"span"}
+                      color={"textPrimary"}
+                      variant={"inherit"}
+                    >
+                      {sentence}
+                    </Typography>
+                  </Typography>
+                  <Typography component={"span"}>
+                    <Typography
+                      component={"span"}
+                      color={"textPrimary"}
+                      paddingLeft={1}
+                      variant={"body2"}
+                    >
+                      {apy}
+                    </Typography>
+                    <Typography
+                      component={"span"}
+                      color={"textSecondary"}
+                      paddingLeft={1}
+                      variant={"body2"}
+                    >
+                      {base + "/" + quote}
+                    </Typography>
+                  </Typography>
+                </Typography>
+                {/* " - " +*/}
+                {/*&nbsp;&nbsp;*/}
+
+                <Typography
+                  display={"flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  variant={"body2"}
+                >
+                  <Typography component={"span"} variant={"body2"}>
+                    <Typography component={"span"} variant={"inherit"}>
+                      {t("labelDualPrice") + ": " + row?.strike}
+                    </Typography>
+                  </Typography>
+                  <Typography component={"span"} variant={"body2"}>
+                    {` ${t("labelDualTxsSettlement")}: 
+                    ${
+                      deliveryPrice
+                        ? getValuePrecisionThousand(
+                            deliveryPrice,
+                            tokenMap[quote]?.precision,
+                            tokenMap[quote]?.precision,
+                            tokenMap[quote]?.precision,
+                            true,
+                            { isFait: true }
+                          )
+                        : EmptyValueTag
+                    }
+                    ${moment(
+                      new Date(row.__raw__.order.timeOrigin.expireTime)
+                    ).format(YEAR_DAY_MINUTE_FORMAT)}
+                    `}
+                  </Typography>
+                </Typography>
               </Box>
             );
           },
