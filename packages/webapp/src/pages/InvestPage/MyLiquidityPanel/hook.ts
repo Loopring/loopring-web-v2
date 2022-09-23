@@ -27,7 +27,10 @@ import {
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-export const useOverview = <R extends { [key: string]: any }, I extends { [key: string]: any }>({
+export const useOverview = <
+  R extends { [key: string]: any },
+  I extends { [key: string]: any }
+>({
   dualList,
 }: {
   ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
@@ -197,4 +200,4 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     myPoolRow,
     showLoading,
   };
-};;
+};

@@ -123,30 +123,30 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
 
     resetWithdrawData(state) {
       state.lastStep = LAST_STEP.default;
-	    state.withdrawValue = initialWithdrawState;
+      state.withdrawValue = initialWithdrawState;
     },
-	  resetActiveAccountData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.activeAccountValue = initialActiveAccountState;
-	  },
-	  resetTransferData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.transferValue = initialTransferState;
-	  },
-	  resetTransferRampData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.transferRampValue = initialTransferState;
-	  },
-	  resetDepositData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.depositValue = initialDepositState;
-	  },
-	  resetNFTWithdrawData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.nftWithdrawValue = initialWithdrawState;
-	  },
-	  resetNFTTransferData(state) {
-		  state.lastStep = LAST_STEP.default;
+    resetActiveAccountData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.activeAccountValue = initialActiveAccountState;
+    },
+    resetTransferData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.transferValue = initialTransferState;
+    },
+    resetTransferRampData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.transferRampValue = initialTransferState;
+    },
+    resetDepositData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.depositValue = initialDepositState;
+    },
+    resetNFTWithdrawData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.nftWithdrawValue = initialWithdrawState;
+    },
+    resetNFTTransferData(state) {
+      state.lastStep = LAST_STEP.default;
       state.nftTransferValue = initialTransferState;
     },
     resetNFTDepositData(state) {
@@ -187,30 +187,30 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     resetCollectionAdvanceData(state) {
       state.lastStep = LAST_STEP.default;
-	    state.collectionAdvanceValue = {};
+      state.collectionAdvanceValue = {};
     },
-	  resetCollectionData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.collectionValue = {};
-	  },
-	  resetNFTDeployData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.nftDeployValue = {...initialTradeNFT, broker: ""};
-	  },
-	  resetOffRampData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.offRampValue = undefined;
-	  },
-	  updateActiveAccountData(
-		  state,
-		  action: PayloadAction<Partial<ActiveAccountData>>
-	  ) {
-		  const {chargeFeeList, walletLayer2, isFeeNotEnough, ...rest} =
-			  action.payload;
-		  state.lastStep = LAST_STEP.default;
-		  if (chargeFeeList) {
-			  state.activeAccountValue.chargeFeeList = chargeFeeList;
-			  state.activeAccountValue.walletLayer2 = walletLayer2;
+    resetCollectionData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.collectionValue = {};
+    },
+    resetNFTDeployData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.nftDeployValue = { ...initialTradeNFT, broker: "" };
+    },
+    resetOffRampData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.offRampValue = undefined;
+    },
+    updateActiveAccountData(
+      state,
+      action: PayloadAction<Partial<ActiveAccountData>>
+    ) {
+      const { chargeFeeList, walletLayer2, isFeeNotEnough, ...rest } =
+        action.payload;
+      state.lastStep = LAST_STEP.default;
+      if (chargeFeeList) {
+        state.activeAccountValue.chargeFeeList = chargeFeeList;
+        state.activeAccountValue.walletLayer2 = walletLayer2;
         state.activeAccountValue.isFeeNotEnough = isFeeNotEnough;
       }
       state.activeAccountValue = {
@@ -260,49 +260,49 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       const { belong, balance, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.transfer;
 
-	    state.transferValue = {
-		    ...state.transferValue,
-		    balance:
-			    balance === undefined || balance >= 0
-				    ? balance
-				    : state.transferValue.balance,
-		    belong,
-		    tradeValue,
-		    address: address !== "*" ? address : undefined,
-		    ...rest,
-	    };
+      state.transferValue = {
+        ...state.transferValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.transferValue.balance,
+        belong,
+        tradeValue,
+        address: address !== "*" ? address : undefined,
+        ...rest,
+      };
     },
-	  updateTransferRampData(
-		  state,
-		  action: PayloadAction<Partial<TransferData>>
-	  ) {
-		  const {belong, balance, tradeValue, address, __request__, ...rest} =
-			  action.payload;
-		  state.lastStep = LAST_STEP.offRampTrans;
-		  if (__request__) {
-			  state.transferRampValue.__request__ = __request__;
-			  return state;
-		  }
-		  state.transferRampValue = {
-			  ...state.transferRampValue,
-			  balance:
-				  balance === undefined || balance >= 0
-					  ? balance
-					  : state.transferValue.balance,
-			  belong,
-			  tradeValue,
-			  address: address !== "*" ? address : undefined,
-			  ...rest,
-		  };
-	  },
-	  updateDepositData(state, action: PayloadAction<Partial<DepositData>>) {
-		  const {
-			  belong,
-			  balance,
-			  tradeValue,
-			  referAddress,
-			  toAddress,
-			  addressError,
+    updateTransferRampData(
+      state,
+      action: PayloadAction<Partial<TransferData>>
+    ) {
+      const { belong, balance, tradeValue, address, __request__, ...rest } =
+        action.payload;
+      state.lastStep = LAST_STEP.offRampTrans;
+      if (__request__) {
+        state.transferRampValue.__request__ = __request__;
+        return state;
+      }
+      state.transferRampValue = {
+        ...state.transferRampValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.transferValue.balance,
+        belong,
+        tradeValue,
+        address: address !== "*" ? address : undefined,
+        ...rest,
+      };
+    },
+    updateDepositData(state, action: PayloadAction<Partial<DepositData>>) {
+      const {
+        belong,
+        balance,
+        tradeValue,
+        referAddress,
+        toAddress,
+        addressError,
       } = action.payload;
       state.lastStep = LAST_STEP.nftDeposit;
       if (belong) {
@@ -464,40 +464,42 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         state.nftDeployValue.broker = broker;
       }
 
-	    // if (tradeValue === undefined || tradeValue >= 0) {
-	    //   state.nftDeployValue.tradeValue = tradeValue;
-	    // }
+      // if (tradeValue === undefined || tradeValue >= 0) {
+      //   state.nftDeployValue.tradeValue = tradeValue;
+      // }
 
-	    state.nftDeployValue = {
-		    ...state.nftDeployValue,
-		    ...rest,
-	    };
+      state.nftDeployValue = {
+        ...state.nftDeployValue,
+        ...rest,
+      };
     },
-	  updateOffRampData(
-		  state,
-		  action: PayloadAction<Partial<{
-			  offRampPurchase?: undefined;
-			  send?: {
-				  assetSymbol: string;
-				  amount: string;
-				  destinationAddress: string;
-			  };
-		  }>>
-	  ) {
-		  state.lastStep = LAST_STEP.offRamp;
-		  const {send} = action.payload;
-		  if (send) {
-			  state.offRampValue = {
-				  ...state.offRampValue,
-				  send,
-			  };
-		  }
-		  // if()
-		  // state.offRampValue = {
-		  //   ...state.offRampValue,
-		  //   ...action.payload,
-		  // };
-	  },
+    updateOffRampData(
+      state,
+      action: PayloadAction<
+        Partial<{
+          offRampPurchase?: undefined;
+          send?: {
+            assetSymbol: string;
+            amount: string;
+            destinationAddress: string;
+          };
+        }>
+      >
+    ) {
+      state.lastStep = LAST_STEP.offRamp;
+      const { send } = action.payload;
+      if (send) {
+        state.offRampValue = {
+          ...state.offRampValue,
+          send,
+        };
+      }
+      // if()
+      // state.offRampValue = {
+      //   ...state.offRampValue,
+      //   ...action.payload,
+      // };
+    },
   },
 });
 

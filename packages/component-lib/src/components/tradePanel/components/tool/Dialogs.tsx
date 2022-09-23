@@ -1195,14 +1195,14 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
 );
 export const ConfirmInvestDualRisk = withTranslation("common")(
   ({
-     t,
-     open,
-     handleClose,
-   }: WithTranslation & {
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
     open: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
-    const [{agree1, agree2, agree3, agree4}, setAgree] = React.useState({
+    const [{ agree1, agree2, agree3, agree4 }, setAgree] = React.useState({
       agree1: false,
       agree2: false,
       agree3: false,
@@ -1250,8 +1250,8 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
                     agree1: state,
                   }));
                 }}
-                checkedIcon={<CheckedIcon/>}
-                icon={<CheckBoxIcon/>}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
                 color="default"
               />
             }
@@ -1267,8 +1267,8 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
                     agree2: state,
                   }));
                 }}
-                checkedIcon={<CheckedIcon/>}
-                icon={<CheckBoxIcon/>}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
                 color="default"
               />
             }
@@ -1284,8 +1284,8 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
                     agree3: state,
                   }));
                 }}
-                checkedIcon={<CheckedIcon/>}
-                icon={<CheckBoxIcon/>}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
                 color="default"
               />
             }
@@ -1301,8 +1301,8 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
                     agree4: state,
                   }));
                 }}
-                checkedIcon={<CheckedIcon/>}
-                icon={<CheckBoxIcon/>}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
                 color="default"
               />
             }

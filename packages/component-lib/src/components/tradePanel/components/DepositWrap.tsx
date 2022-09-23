@@ -91,7 +91,7 @@ export const DepositWrap = <
           </Typography>
         );
       }
-	    const Max: number =
+      const Max: number =
         Number(chargeFeeTokenList[index].fee.toString().replace(sdk.SEP, "")) *
         4;
       if (Max > (tradeData.tradeValue ?? 0)) {

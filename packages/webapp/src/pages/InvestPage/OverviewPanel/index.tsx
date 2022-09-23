@@ -174,5 +174,5 @@ export const OverviewPanel = withTranslation("common")(
         </WrapperStyled>
       </>
     );
-  };
+  }
 );
