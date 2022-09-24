@@ -154,7 +154,7 @@ export const RampConfirm = <
               >
                 {feeInfo && feeInfo.belong && feeInfo.fee
                   ? feeInfo.fee + " " + feeInfo.belong
-                  : EmptyValueTag + " " + feeInfo?.belong}
+                  : EmptyValueTag + " " + feeInfo?.belong ?? EmptyValueTag}
                 <DropdownIconStyled
                   status={dropdownStatus}
                   fontSize={"medium"}

@@ -22,7 +22,7 @@ export const CreateCollectionPanel = () => {
     collectionToastOpen,
     collectionToastClose,
     ...createCollectionViewProps
-  } = useCollectionPanel({ isEdit: false });
+  } = useCollectionPanel();
   const history = useHistory();
 
   return (

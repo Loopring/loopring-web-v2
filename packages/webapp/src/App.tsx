@@ -60,16 +60,18 @@ const App = () => {
           `
             : ``
         }
+
+
       }
 
-      body:before {
-        ${
-          theme.mode === "dark"
-            ? `
+          body:before {
+            ${
+              theme.mode === "dark"
+                ? `
             background: var(--color-global-bg);
        `
-            : ""
-        }
+                : ""
+            }
       }
     }`}
       />

@@ -40,6 +40,7 @@ export const NFTPage = () => {
       case "myCollection":
         return <NFTCollectPanel />;
       case "addCollection":
+      case "editCollection":
         return <CreateCollectionPanel />;
       case "assetsNFT":
       default:

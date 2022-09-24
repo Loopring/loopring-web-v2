@@ -74,7 +74,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
   coinMap,
   withdrawI18nKey,
   addressDefault,
-  isNotAvaiableAddress,
+  isNotAvailableAddress,
   isActiveAccount,
   isLoopringAddress = false,
   chargeFeeTokenList = [],
@@ -209,7 +209,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             value={addressDefault}
             error={
               realAddr !== "" &&
-              isNotAvaiableAddress &&
+              isNotAvailableAddress &&
               (walletMap != {} || walletMap !== undefined)
             }
             placeholder={t("labelPleaseForceWithdrawAddress")}
@@ -242,7 +242,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
           {addressDefault !== "" &&
             !isAddressCheckLoading &&
             (walletMap === undefined || !Object.keys(walletMap).length) &&
-            (isNotAvaiableAddress && realAddr === "" ? (
+            (isNotAvailableAddress && realAddr === "" ? (
               <Typography
                 color={"var(--color-error)"}
                 variant={"body2"}
@@ -277,7 +277,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
       </Grid>
 
       {!isAddressCheckLoading &&
-        !isNotAvaiableAddress &&
+        !isNotAvailableAddress &&
         walletMap !== undefined &&
         !!Object.keys(walletMap).length && (
           <Grid item alignSelf={"stretch"} position={"relative"}>
@@ -330,7 +330,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
               >
                 {feeInfo && feeInfo.belong && feeInfo.fee
                   ? feeInfo.fee + " " + feeInfo.belong
-                  : EmptyValueTag + " " + feeInfo?.belong}
+                  : EmptyValueTag + " " + feeInfo?.belong ?? EmptyValueTag}
                 <DropdownIconStyled
                   status={dropdownStatus}
                   fontSize={"medium"}
