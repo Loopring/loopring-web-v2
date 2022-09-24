@@ -506,6 +506,7 @@ export const DUALVIEWINFO: DualViewInfo = {
   currentPrice: {
     quote: "USDC",
     base: "LRC",
+    precisionForPrice: 3,
     currentPrice: 0.4482078,
   },
   __raw__: {
@@ -564,6 +565,7 @@ export const DUALCALCDATA: DualCalcData<DualViewInfo> = {
     belong: "USDC",
     tradeValue: undefined,
   },
+  quota: "1000",
   feeTokenSymbol: "LRC",
   feeVol: undefined,
   greaterEarnTokenSymbol: "",

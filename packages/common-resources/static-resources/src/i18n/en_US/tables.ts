@@ -238,5 +238,6 @@ export default {
   labelDualTxsTargetPrice: "Target Price",
   labelDualTxsSettlement_Date: "Settlement Date",
   labelDualTxsSettlementPrice: "Settlement Price",
+  labelDualTxsSettlement: "Settlement",
   labelDualTxsTime: "Time",
 };

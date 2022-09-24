@@ -17,7 +17,7 @@ import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
 import { LABEL_INVESTMENT_STATUS_MAP, RawDataDualTxsItem } from "./Interface";
 import * as sdk from "@loopring-web/loopring-sdk";
-import BigNumber from "bignumber.js";
+import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -27,7 +27,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: auto auto 80px  100px 160px 160px 120px !important;`
+        ? `--template-columns: 30% auto 76px  120px 120px 160px 120px !important;`
         : `--template-columns: 100% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -61,6 +61,7 @@ export interface DualTxsTableProps<R = RawDataDualTxsItem> {
   };
   idIndex: { [key: string]: string };
   tokenMap: { [key: string]: any };
+  dualMarketMap: any;
 
   getDualTxList: (props: any) => Promise<void>;
   // filterTokens: string[];
@@ -81,6 +82,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
       tokenMap,
       getDualTxList,
       showloading,
+      dualMarketMap,
       t,
     } = props;
     const { isMobile } = useSettings();
@@ -126,87 +128,22 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
             const {
               __raw__: {
                 order: {
-                  deliveryPrice,
-                  dualType,
                   settlementStatus,
                   tokenInfoOrigin: {
                     amountIn,
-                    base,
-                    currency: quote,
+                    tokenOut,
+
                     amountOut,
                   },
                   timeOrigin: { expireTime },
-                  settleRatio,
-                  strike,
                 },
               },
               // expireTime,
               sellSymbol,
-              buySymbol,
             } = row;
-            let lessEarnVol, greaterEarnVol;
             const sellAmount = sdk
               .toBig(amountIn ? amountIn : 0)
               .div("1e" + tokenMap[sellSymbol].decimals);
-            if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
-              lessEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn); //dualViewInfo.strike);
-              greaterEarnVol = sdk
-                .toBig(
-                  sdk
-                    .toBig(settleRatio)
-                    .plus(1)
-                    .times(sellAmount ? sellAmount : 0)
-                    .times(strike)
-                    .toFixed(
-                      tokenMap[buySymbol].precision,
-                      BigNumber.ROUND_CEIL
-                    )
-                )
-                .times("1e" + tokenMap[buySymbol].decimals);
-            } else {
-              lessEarnVol = sdk
-                .toBig(
-                  sdk
-                    .toBig(settleRatio)
-                    .plus(1)
-                    .times(sellAmount ? sellAmount : 0)
-                    // .times(1 + info.ratio)
-                    .div(strike)
-                    .toFixed(
-                      tokenMap[buySymbol].precision,
-                      BigNumber.ROUND_CEIL
-                    )
-                )
-                .times("1e" + tokenMap[buySymbol].decimals);
-
-              // sellVol.times(1 + info.ratio).div(dualViewInfo.strike); //.times(1 + dualViewInfo.settleRatio);
-              greaterEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn);
-            }
-            const lessEarnView =
-              amountIn && amountOut
-                ? getValuePrecisionThousand(
-                    sdk.toBig(lessEarnVol).div("1e" + tokenMap[base].decimals),
-                    tokenMap[base].precision,
-                    tokenMap[base].precision,
-                    tokenMap[base].precision,
-                    false,
-                    { floor: true }
-                  )
-                : EmptyValueTag;
-            const greaterEarnView =
-              amountIn && amountOut
-                ? getValuePrecisionThousand(
-                    sdk
-                      .toBig(greaterEarnVol)
-                      .div("1e" + tokenMap[quote].decimals),
-                    tokenMap[quote].precision,
-                    tokenMap[quote].precision,
-                    tokenMap[quote].precision,
-                    false,
-                    { floor: true }
-                  )
-                : EmptyValueTag;
-
             const amount = getValuePrecisionThousand(
               sellAmount,
               tokenMap[sellSymbol].precision,
@@ -222,19 +159,27 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
             const statusColor =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
-                ? "var(--color-success)"
+                ? "var(--color-tag)"
                 : Date.now() - expireTime >= 0
                 ? "var(--color-warning)"
-                : "var(--color-error)";
+                : "var(--color-success)";
+            let buySymbol, buyAmount;
+            if (tokenOut !== undefined) {
+              buySymbol = tokenMap[idIndex[tokenOut]].symbol;
+              buyAmount = getValuePrecisionThousand(
+                sdk
+                  .toBig(amountOut ? amountOut : 0)
+                  .div("1e" + tokenMap[buySymbol].decimals),
+                tokenMap[buySymbol].precision,
+                tokenMap[buySymbol].precision,
+                tokenMap[buySymbol].precision,
+                false
+              );
+            }
 
-            let buyAmount, sentence;
-            buyAmount =
-              deliveryPrice - strike >= 0
-                ? `${greaterEarnView} ${quote}`
-                : `${lessEarnView} ${base}`;
-            sentence =
+            const sentence =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
-                ? `${amount} ${sellSymbol} ${DirectionTag} ${buyAmount} ${buySymbol}`
+                ? `${amount} ${sellSymbol} ${DirectionTag} ${buyAmount} ${buySymbol} `
                 : Date.now() - expireTime >= 0
                 ? `${amount} ${sellSymbol}`
                 : `${amount} ${sellSymbol}`;
@@ -255,7 +200,18 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignCenter",
           headerCellClass: "textAlignCenter",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.sellSymbol + "/" + row?.buySymbol}</>;
+            const {
+              sellSymbol,
+              buySymbol,
+              __raw__: {
+                order: { dualType },
+              },
+            } = row;
+            const [base, quote] =
+              dualType === DUAL_TYPE.DUAL_BASE
+                ? [sellSymbol, buySymbol]
+                : [buySymbol, sellSymbol];
+            return <>{base + "/" + quote}</>;
           },
         },
         {
@@ -273,9 +229,11 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           key: "TargetPrice",
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           name: t("labelDualTxsTargetPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.strike + " " + row.buySymbol}</>;
+            return <>{row?.strike}</>;
           },
         },
         {
@@ -353,133 +311,165 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
     const getColumnMobileTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
-          key: "side",
-          name: (
-            <Typography
-              height={"100%"}
-              display={"flex"}
-              justifyContent={"space-between"}
-              variant={"inherit"}
-              color={"inherit"}
-              alignItems={"center"}
-            >
-              <span>{t("labelDualType")}</span>
-              <span>{t("labelDualTime") + "/" + t("labelDualFee")}</span>
-            </Typography>
-          ),
-          headerCellClass: "textAlignRight",
-          formatter: ({ row: _row }: FormatterProps<R, unknown>) => {
-            // const { action, sellToken, buyToken } = row;
-            // const isJoin = !new RegExp(sdk.DualAction.Withdraw, "ig").test(
-            //   action ?? " "
-            // );
-            // const sellTokenInfo =
-            //   sellToken?.tokenId !== undefined &&
-            //   tokenMap[idIndex[sellToken?.tokenId]];
-            // const sellVolume = sdk
-            //   .toBig(sellToken?.volume ?? 0)
-            //   .div("1e" + sellTokenInfo.decimals);
-            // const buyTokenInfo =
-            //   buyToken?.tokenId !== undefined &&
-            //   tokenMap[idIndex[buyToken?.tokenId]];
-            // const buyVolume = sdk
-            //   .toBig(buyToken?.volume ?? 0)
-            //   .div("1e" + buyTokenInfo.decimals);
-            // const side = isJoin ? t("labelDualJoin") : t("labelDualExit");
-            // const { fee } = row;
-            // const feeTokenInfo = tokenMap[idIndex[fee?.tokenId ?? ""]];
-            // const feeVolume = sdk
-            //   .toBig(fee?.volume ?? 0)
-            //   .div("1e" + feeTokenInfo.decimals)
-            //   .toNumber();
-            // const renderFee =
-            //   feeVolume === 0 || feeVolume === undefined
-            //     ? EmptyValueTag
-            //     : `${getValuePrecisionThousand(
-            //         feeVolume,
-            //         feeTokenInfo?.precision,
-            //         feeTokenInfo?.precision,
-            //         feeTokenInfo?.precision,
-            //         false,
-            //         { isTrade: false, floor: false }
-            //       )} ${feeTokenInfo.symbol}`;
-            // const { updatedAt: time } = row;
-            // let timeString;
-            // if (typeof time === "undefined") {
-            //   timeString = EmptyValueTag;
-            // } else {
-            //   timeString = moment(new Date(time), "YYYYMMDDHHMM").fromNow();
-            // }
+          sortable: false,
+          width: "auto",
+          key: "DualTxsSide",
+          name: t("labelDualTxsSide"),
+          cellClass: "textAlignLeft",
+          headerCellClass: "textAlignLeft",
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const {
+              sellSymbol,
+              apy,
+              buySymbol: _marketBuy,
+              __raw__: {
+                order: {
+                  settlementStatus,
+                  dualType,
+                  deliveryPrice,
+                  tokenInfoOrigin: {
+                    amountIn,
+                    tokenOut,
+
+                    amountOut,
+                  },
+                  timeOrigin: { expireTime },
+                },
+              },
+            } = row;
+            const sellAmount = sdk
+              .toBig(amountIn ? amountIn : 0)
+              .div("1e" + tokenMap[sellSymbol].decimals);
+            const amount = getValuePrecisionThousand(
+              sellAmount,
+              tokenMap[sellSymbol].precision,
+              tokenMap[sellSymbol].precision,
+              tokenMap[sellSymbol].precision,
+              false
+            );
+            const side =
+              settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+                ? t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED)
+                : Date.now() - expireTime >= 0
+                ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
+                : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
+            const statusColor =
+              settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+                ? "var(--color-tag)"
+                : Date.now() - expireTime >= 0
+                ? "var(--color-warning)"
+                : "var(--color-success)";
+            let buySymbol, buyAmount;
+            if (tokenOut !== undefined) {
+              buySymbol = tokenMap[idIndex[tokenOut]].symbol;
+              buyAmount = getValuePrecisionThousand(
+                sdk
+                  .toBig(amountOut ? amountOut : 0)
+                  .div("1e" + tokenMap[buySymbol].decimals),
+                tokenMap[buySymbol].precision,
+                tokenMap[buySymbol].precision,
+                tokenMap[buySymbol].precision,
+                false
+              );
+            }
+
+            const sentence =
+              settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+                ? `${amount} ${sellSymbol} ${DirectionTag} ${buyAmount} ${buySymbol} `
+                : Date.now() - expireTime >= 0
+                ? `${amount} ${sellSymbol}`
+                : `${amount} ${sellSymbol}`;
+            const [base, quote] =
+              dualType === DUAL_TYPE.DUAL_BASE
+                ? [sellSymbol, _marketBuy]
+                : [_marketBuy, sellSymbol];
             return (
               <Box
                 display={"flex"}
                 alignItems={"stretch"}
-                justifyContent={"center"}
                 flexDirection={"column"}
-                height={"100%"}
               >
-                {/*<Typography*/}
-                {/*  component={"span"}*/}
-                {/*  display={"flex"}*/}
-                {/*  flexDirection={"row"}*/}
-                {/*  variant={"body2"}*/}
-                {/*  justifyContent={"space-between"}*/}
-                {/*>*/}
-                {/*  <Typography*/}
-                {/*    color={*/}
-                {/*      isJoin ? "var(--color-success)" : "var(--color-error)"*/}
-                {/*    }*/}
-                {/*  >*/}
-                {/*    {side}*/}
-                {/*  </Typography>*/}
-                {/*  &nbsp;*/}
-                {/*  <Typography component={"span"}>*/}
-                {/*    <Typography component={"span"}>*/}
-                {/*      {`${getValuePrecisionThousand(*/}
-                {/*        sellVolume,*/}
-                {/*        sellTokenInfo?.precision,*/}
-                {/*        sellTokenInfo?.precision,*/}
-                {/*        sellTokenInfo?.precision,*/}
-                {/*        false,*/}
-                {/*        { isTrade: false, floor: false }*/}
-                {/*      )} ${sellTokenInfo.symbol}`}*/}
-                {/*    </Typography>*/}
-                {/*    &nbsp;{DirectionTag} &nbsp;*/}
-                {/*    <Typography component={"span"}>*/}
-                {/*      {`${getValuePrecisionThousand(*/}
-                {/*        buyVolume,*/}
-                {/*        buyTokenInfo?.precision,*/}
-                {/*        buyTokenInfo?.precision,*/}
-                {/*        buyTokenInfo?.precision,*/}
-                {/*        false,*/}
-                {/*        { isTrade: false, floor: false }*/}
-                {/*      )} ${buyTokenInfo.symbol}`}*/}
-                {/*    </Typography>*/}
-                {/*  </Typography>*/}
-                {/*</Typography>*/}
-                {/*<Typography*/}
-                {/*  component={"span"}*/}
-                {/*  display={"flex"}*/}
-                {/*  flexDirection={"row"}*/}
-                {/*  variant={"body2"}*/}
-                {/*  justifyContent={"space-between"}*/}
-                {/*>*/}
-                {/*  <Typography*/}
-                {/*    variant={"inherit"}*/}
-                {/*    component={"span"}*/}
-                {/*    color={"textSecondary"}*/}
-                {/*    alignSelf={"flex-end"}*/}
-                {/*  >*/}
-                {/*    {`Fee: ${renderFee}`}*/}
-                {/*  </Typography>*/}
-                {/*  <Typography*/}
-                {/*    component={"span"}*/}
-                {/*    textAlign={"right"}*/}
-                {/*    variant={"inherit"}*/}
-                {/*  >*/}
-                {/*    {timeString}*/}
-                {/*  </Typography>*/}
-                {/*</Typography>*/}
+                <Typography
+                  display={"flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  variant={"body2"}
+                >
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Typography
+                      component={"span"}
+                      variant={"inherit"}
+                      color={statusColor}
+                    >
+                      {side}
+                    </Typography>
+                    &nbsp;&nbsp;
+                    <Typography
+                      component={"span"}
+                      color={"textPrimary"}
+                      variant={"inherit"}
+                    >
+                      {sentence}
+                    </Typography>
+                  </Typography>
+                  <Typography component={"span"}>
+                    <Typography
+                      component={"span"}
+                      color={"textPrimary"}
+                      paddingLeft={1}
+                      variant={"body2"}
+                    >
+                      {apy}
+                    </Typography>
+                    <Typography
+                      component={"span"}
+                      color={"textSecondary"}
+                      paddingLeft={1}
+                      variant={"body2"}
+                    >
+                      {base + "/" + quote}
+                    </Typography>
+                  </Typography>
+                </Typography>
+                {/* " - " +*/}
+                {/*&nbsp;&nbsp;*/}
+
+                <Typography
+                  display={"flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  variant={"body2"}
+                >
+                  <Typography component={"span"} variant={"body2"}>
+                    <Typography component={"span"} variant={"inherit"}>
+                      {t("labelDualPrice") + ": " + row?.strike}
+                    </Typography>
+                  </Typography>
+                  <Typography component={"span"} variant={"body2"}>
+                    {` ${t("labelDualTxsSettlement")}: 
+                    ${
+                      deliveryPrice
+                        ? getValuePrecisionThousand(
+                            deliveryPrice,
+                            tokenMap[quote]?.precision,
+                            tokenMap[quote]?.precision,
+                            tokenMap[quote]?.precision,
+                            true,
+                            { isFait: true }
+                          )
+                        : EmptyValueTag
+                    }
+                    ${moment(
+                      new Date(row.__raw__.order.timeOrigin.expireTime)
+                    ).format(YEAR_DAY_MINUTE_FORMAT)}
+                    `}
+                  </Typography>
+                </Typography>
               </Box>
             );
           },
@@ -499,9 +489,12 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
         columnsRaw as Column<any, unknown>[],
     };
     React.useEffect(() => {
+      if (dualMarketMap) {
+        updateData.cancel();
+        updateData({ currPage: 1 });
+      }
       // let filters: any = {};
-      updateData.cancel();
-      updateData({ currPage: 1 });
+
       // handlePageChange(1);
       // if (searchParams.get("types")) {
       //   filters.type = searchParams.get("types");
@@ -510,7 +503,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize]);
+    }, [pagination?.pageSize, dualMarketMap]);
 
     return (
       <TableStyled isMobile={isMobile}>

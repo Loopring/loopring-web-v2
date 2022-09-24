@@ -21,6 +21,7 @@ const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
       action: PayloadAction<Partial<TradeDual<DualViewInfo>>>
     ) {
       const {
+        quota,
         lessEarnVol,
         lessEarnTokenSymbol,
         greaterEarnVol,
@@ -43,6 +44,9 @@ const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
       }
       if (sellToken !== undefined) {
         state.tradeDual.sellToken = sellToken;
+      }
+      if (quota !== undefined) {
+        state.tradeDual.quota = quota;
       }
       if (coinSell) {
         state.tradeDual.coinSell = coinSell;

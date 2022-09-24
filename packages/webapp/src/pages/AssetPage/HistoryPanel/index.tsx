@@ -10,6 +10,7 @@ import {
   Toast,
   TradeTable,
   TransactionTable,
+  useSettings,
 } from "@loopring-web/component-lib";
 import { StylePaper, useGetOrderHistorys } from "@loopring-web/core";
 import {
@@ -55,6 +56,7 @@ const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const history = useHistory();
     const { search } = useLocation();
+    const { isMobile } = useSettings();
     const match: any = useRouteMatch("/l2assets/:history/:tab/:orderTab?");
     // const orderTabMatch: any = useRouteMatch(
     //   "/l2assets/:history/:tab/:orderTab"
@@ -109,6 +111,7 @@ const HistoryPanel = withTranslation("common")(
       dualList,
       showLoading: showDualLoading,
       getDualTxList,
+      dualMarketMap,
       dualTotal,
     } = useDualTransaction(setToastOpen);
 
@@ -168,7 +171,7 @@ const HistoryPanel = withTranslation("common")(
         {/*>*/}
         {/*  <BackIcon />*/}
         {/*</IconButton>*/}
-        <StylePaper ref={container}>
+        <StylePaper ref={container} flex={1}>
           <Toast
             alertText={toastOpen?.content ?? ""}
             severity={toastOpen?.type ?? "success"}
@@ -176,7 +179,12 @@ const HistoryPanel = withTranslation("common")(
             autoHideDuration={TOAST_TIME}
             onClose={closeToast}
           />
-          <Box marginTop={2} marginLeft={2}>
+          <Box
+            marginTop={2}
+            marginLeft={2}
+            display={"flex"}
+            sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
+          >
             <Tabs
               value={currentTab}
               onChange={(_event, value) => handleTabChange(value)}
@@ -206,7 +214,12 @@ const HistoryPanel = withTranslation("common")(
               />
             </Tabs>
           </Box>
-          <div className="tableWrapper table-divide-short">
+          <Box
+            className="tableWrapper table-divide-short"
+            display={"flex"}
+            flex={1}
+            overflow={"scroll"}
+          >
             {currentTab === TabIndex.transactions ? (
               <TransactionTable
                 {...{
@@ -284,9 +297,10 @@ const HistoryPanel = withTranslation("common")(
                 rawData={dualList}
                 getDualTxList={getDualTxList}
                 pagination={{
-                  pageSize: pageSize,
+                  pageSize: pageSize + 2,
                   total: dualTotal,
                 }}
+                dualMarketMap={dualMarketMap}
                 showloading={showDualLoading}
                 tokenMap={tokenMap}
                 idIndex={idIndex}
@@ -352,7 +366,7 @@ const HistoryPanel = withTranslation("common")(
                 />
               </Box>
             )}
-          </div>
+          </Box>
         </StylePaper>
       </Box>
     );

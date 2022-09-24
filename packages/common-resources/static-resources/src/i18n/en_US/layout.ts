@@ -12,7 +12,7 @@ export default {
   labelClassicDescription: "Intuitive trading interface",
   labelAdvanced: "Order Book",
   labelFiat: "Fiat",
-  labelFiatDescription: "Buy / Sell crypto with card",
+  labelFiatDescription: "Buy crypto with card", /// Sell
   labelAdvancedDescription: "Full access to all trading tools",
   labelDownloadApp: "Download Loopring Wallet Mobile Application",
   labelDownloadAppTitle: "Download Loopring Wallet",

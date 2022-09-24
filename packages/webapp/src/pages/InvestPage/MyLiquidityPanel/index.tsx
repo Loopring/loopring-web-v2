@@ -1,18 +1,22 @@
 import styled from "@emotion/styled";
-import { Grid, Link, Typography } from "@mui/material";
+import { Box, Grid, Link, Modal, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import {
   AmmPanelType,
   AssetsTable,
   DualAssetTable,
+  DualDetail,
+  ModalCloseButton,
   MyPoolTable,
+  SwitchPanelStyled,
   TokenType,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
 import {
   CurrencyToTag,
+  DualViewBase,
   EmptyValueTag,
   getValuePrecisionThousand,
   PriceTag,
@@ -27,6 +31,7 @@ import {
   useAccount,
   TableWrapStyled,
   useTokenMap,
+  useDualMap,
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
@@ -50,10 +55,10 @@ const MyLiquidity: any = withTranslation("common")(
     const ammPoolRef = React.useRef(null);
     const stackingRef = React.useRef(null);
     const dualRef = React.useRef(null);
-
     const { ammActivityMap } = useAmmActivityMap();
     const { forexMap } = useSystem();
     const { tokenMap, disableWithdrawList, idIndex } = useTokenMap();
+    const { marketMap: dualMarketMap } = useDualMap();
     const {
       assetsRawData,
       onSend,
@@ -69,7 +74,11 @@ const MyLiquidity: any = withTranslation("common")(
       dualList,
       getDualTxList,
       pagination,
+      showDetail,
       showLoading: dualLoading,
+      open,
+      detail,
+      setOpen,
     } = useDualAsset();
 
     React.useEffect(() => {
@@ -96,6 +105,7 @@ const MyLiquidity: any = withTranslation("common")(
     }, []);
     const { summaryMyInvest, myPoolRow, showLoading } = useOverview({
       ammActivityMap,
+      dualList,
     });
 
     const theme = useTheme();
@@ -302,11 +312,51 @@ const MyLiquidity: any = withTranslation("common")(
             <DualAssetTable
               rawData={dualList}
               idIndex={idIndex}
+              dualMarketMap={dualMarketMap}
               tokenMap={tokenMap}
               showloading={dualLoading}
               pagination={pagination}
               getDualAssetList={getDualTxList}
+              showDetail={showDetail}
             />
+            <Modal
+              open={open}
+              onClose={(_e: any) => setOpen(false)}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <SwitchPanelStyled width={"var(--modal-width)"}>
+                <ModalCloseButton onClose={(_e: any) => setOpen(false)} t={t} />
+                {detail && (
+                  <Box
+                    flex={1}
+                    paddingY={2}
+                    width={"100%"}
+                    display={"flex"}
+                    flexDirection={"column"}
+                  >
+                    <Typography
+                      variant={isMobile ? "h5" : "h4"}
+                      marginTop={-4}
+                      textAlign={"center"}
+                      paddingBottom={2}
+                    >
+                      {t("labelDuaInvestmentDetails", { ns: "common" })}
+                    </Typography>
+                    <DualDetail
+                      isOrder={true}
+                      dualViewInfo={detail.dualViewInfo as DualViewBase}
+                      currentPrice={detail.dualViewInfo.currentPrice}
+                      tokenMap={tokenMap}
+                      lessEarnTokenSymbol={detail.lessEarnTokenSymbol}
+                      greaterEarnTokenSymbol={detail.greaterEarnTokenSymbol}
+                      lessEarnView={detail.lessEarnView}
+                      greaterEarnView={detail.greaterEarnView}
+                    />
+                  </Box>
+                )}
+              </SwitchPanelStyled>
+            </Modal>
           </Grid>
         </TableWrapStyled>
       </>

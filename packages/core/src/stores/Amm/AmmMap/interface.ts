@@ -9,13 +9,17 @@ import { AmmPoolInfoV3, LoopringMap } from "@loopring-web/loopring-sdk";
 export type GetAmmMapParams = { ammpools: LoopringMap<AmmPoolInfoV3> };
 
 export type AmmDetailStore<T> = AmmDetailBase<T> & {
-  // name?: string,
+  exitDisable: boolean;
+  joinDisable: boolean;
+  swapDisable: boolean;
+  showDisable: boolean;
+  isRiskyMarket: boolean;
   coinA: CoinKey<T> | undefined;
   coinB: CoinKey<T> | undefined;
   address: string;
   tradeFloat: Partial<TradeFloat>;
   __rawConfig__: AmmPoolInfoV3;
-};
+} & AmmPoolInfoV3;
 export type AmmMap<
   R extends { [key: string]: any },
   I extends { [key: string]: any }

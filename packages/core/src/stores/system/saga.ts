@@ -5,7 +5,6 @@ import {
   put,
   take,
   takeLatest,
-  race,
   delay,
 } from "redux-saga/effects";
 import { getSystemStatus, updateRealTimeObj, updateSystem } from "./reducer";

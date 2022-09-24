@@ -7,6 +7,7 @@ import {
   LoopringAPI,
   useWalletLayer2,
   makeDualOrderedItem,
+  useDualMap,
 } from "@loopring-web/core";
 import {
   AmmSideTypes,
@@ -558,7 +559,7 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
         setShowLoading(false);
       }
     },
-    [accountId, apiKey]
+    [accountId, apiKey, marketMap, setToastOpen, t, tokenMap]
   );
 
   const cancelOrder = React.useCallback(
@@ -588,7 +589,7 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
         updateWalletLayer2();
       }
     },
-    [accountId, apiKey, privateKey]
+    [accountId, apiKey, getOrderList, privateKey, updateWalletLayer2]
   );
 
   const clearData = React.useCallback(() => {
@@ -618,7 +619,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
   const [dualList, setDualList] = React.useState<R[]>([]);
   const { idIndex } = useTokenMap();
   const [dualTotal, setDualTotal] = React.useState(0);
-
+  const { marketMap: dualMarketMap } = useDualMap();
   // const [pagination, setDualPagination] = React.useState<{
   //   pageSize: number;
   //   total: number;
@@ -689,7 +690,13 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
                     ];
               prev.push({
-                ...makeDualOrderedItem(item, sellTokenSymbol, buyTokenSymbol),
+                ...makeDualOrderedItem(
+                  item,
+                  sellTokenSymbol,
+                  buyTokenSymbol,
+                  0,
+                  dualMarketMap[item.tokenInfoOrigin.market]
+                ),
                 amount: item.tokenInfoOrigin.amountIn,
               });
               return prev;
@@ -708,7 +715,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
       }
       setShowLoading(false);
     },
-    [accountId, apiKey, setToastOpen, t]
+    [accountId, apiKey, setToastOpen, t, idIndex, dualMarketMap]
   );
 
   return {
@@ -717,6 +724,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
     showLoading,
     getDualTxList,
     dualTotal,
+    dualMarketMap,
     // pagination,
     // updateTickersUI,
   };

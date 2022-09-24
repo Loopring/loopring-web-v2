@@ -408,22 +408,11 @@ export const ModalPanel = <
       <InformationForAccountFrozen
         open={isShowTradeIsFrozen.isShow}
         type={isShowTradeIsFrozen.type ?? "Action"}
+        messageKey={
+          isShowTradeIsFrozen.messageKey ?? "labelNoticeForForAccountFrozen"
+        }
       />
       <LayerswapNotice open={isShowLayerSwapNotice.isShow} account={account} />
-      {/*<Modal*/}
-      {/*  open={isShowNFTMintAdvance.isShow}*/}
-      {/*  onClose={() => setShowNFTMintAdvance({ isShow: false })}*/}
-      {/*  content={*/}
-      {/*    <MintAdvanceNFTWrap*/}
-      {/*      {...{*/}
-      {/*        ...rest,*/}
-      {/*        // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,*/}
-      {/*        // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,*/}
-      {/*        ...nftMintAdvanceProps,*/}
-      {/*      }}*/}
-      {/*    />*/}
-      {/*  }*/}
-      {/*/>*/}
       <Modal
         open={isShowCollectionAdvance?.isShow}
         onClose={() => setShowCollectionAdvance({ isShow: false })}

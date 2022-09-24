@@ -45,7 +45,10 @@ export interface ModalState {
   isShowLayerSwapNotice: ModalStatePlayLoad;
   isShowSwap: ModalStatePlayLoad;
   isShowAmm: ModalStatePlayLoad & Transaction & { type?: AmmPanelType };
-  isShowTradeIsFrozen: ModalStatePlayLoad & { type?: string };
+  isShowTradeIsFrozen: ModalStatePlayLoad & {
+    type?: string;
+    messageKey?: string;
+  };
   isShowConnect: ModalStatePlayLoad & { step: number; error?: RESULT_INFO };
   isShowAccount: ModalStatePlayLoad & {
     step: number;

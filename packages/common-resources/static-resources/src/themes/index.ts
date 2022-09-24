@@ -135,9 +135,11 @@ export const MarkdownStyle = styled(Grid)`
   ul {
     list-style: inherit;
   }
+
   ol {
     list-style: decimal;
   }
+
   ${style}
   .markdown-body.no-bg {
     background-color: initial;

@@ -17,13 +17,12 @@ import {
   myLog,
   SagaStatus,
 } from "@loopring-web/common-resources";
-
+const DUALLimit = 20;
 export const useDualHook = ({
   setConfirmDualInvest,
 }: {
   setConfirmDualInvest: (state: any) => void;
 }) => {
-  const { t } = useTranslation("common");
   const match: any = useRouteMatch("/invest/dual/:market?");
   const { marketArray, marketMap, tradeMap, status: dualStatus } = useDualMap();
   const { tokenPrices } = useTokenPrices();
@@ -38,18 +37,19 @@ export const useDualHook = ({
     confirmation: { confirmedDualInvest },
   } = confirmation.useConfirmation();
   const history = useHistory();
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 
   setConfirmDualInvest(!confirmedDualInvest);
   const [isLoading, setIsLoading] = React.useState(true);
   const [currentPrice, setCurrentPrice] =
     React.useState<DualCurrentPrice | undefined>(undefined);
   const [, , coinA, coinB] =
-    (match?.params?.market ? match.params.market : "LRC-USDC").match(
+    (match?.params?.market ? match.params.market : "ETH-USDT").match(
       /(dual-)?(\w+)-(\w+)/i
     ) ?? [];
 
   const [pairASymbol, setPairASymbol] = React.useState(() =>
-    tradeMap[coinA] ? coinA : "LRC"
+    tradeMap[coinA] ? coinA : "ETH"
   );
   const [pairBSymbol, setPairBSymbol] = React.useState(
     coinB && tradeMap && tradeMap[pairASymbol]?.tokenList
@@ -66,7 +66,7 @@ export const useDualHook = ({
     // @ts-ignore
     const [, , coinA, coinB] = market
       ? market
-      : "LRC-USDC".match(/(dual-)?(\w+)-(\w+)/i) ?? [];
+      : "ETH-USDT".match(/(dual-)?(\w+)-(\w+)/i) ?? [];
     return [coinA, coinB];
   });
 
@@ -113,6 +113,9 @@ export const useDualHook = ({
   const getProduct = _.debounce(async () => {
     setIsLoading(true);
     const market = findDualMarket(marketArray, pairASymbol, pairBSymbol);
+    if (nodeTimer.current !== -1) {
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
+    }
     // @ts-ignore
     const currency = marketMap[market ?? ""]?.currency;
     if (pairASymbol && pairBSymbol && market) {
@@ -124,7 +127,6 @@ export const useDualHook = ({
         marketSymbolA === pairASymbol
           ? sdk.DUAL_TYPE.DUAL_BASE
           : sdk.DUAL_TYPE.DUAL_CURRENCY;
-      // @ts-ignore
       const { quoteAlias } = marketMap[market];
 
       const response = await LoopringAPI.defiAPI?.getDualInfos({
@@ -134,8 +136,7 @@ export const useDualHook = ({
         dualType,
         startTime: Date.now() + 1000 * 60 * 60,
         timeSpan: 1000 * 60 * 60 * 24 * 9,
-        limit: 100,
-        // limit: number;
+        limit: DUALLimit,
       });
 
       if (
@@ -153,15 +154,9 @@ export const useDualHook = ({
           base: marketSymbolA,
           quote: marketSymbolB,
           currentPrice: index.index,
+          precisionForPrice: marketMap[market].precisionForPrice,
         });
-        // : {
-        //   dualInfo: {
-        //     infos: sdk.DualProductAndPrice[];
-        //     index: sdk.DualIndex;
-        //     balance: sdk.DualBalance[];
-        //   };
-        //   raw_data: { rule: sdk.DualRulesCoinsInfo[] };
-        // }
+
         const rule = rules[0];
         const rawData = infos.reduce(
           (prev: any[], item: sdk.DualProductAndPrice) => {
@@ -180,9 +175,17 @@ export const useDualHook = ({
                     .times(item.strike)
                     .gte(rule.currencyMin)))
             ) {
-              prev.push(
-                makeDualViewItem(item, index, rule, pairASymbol, pairBSymbol)
+              const result = makeDualViewItem(
+                item,
+                index,
+                rule,
+                pairASymbol,
+                pairBSymbol,
+                marketMap[market]
               );
+              if (Number(result.apy.replace("%", "")) > 0) {
+                prev.push(result);
+              }
               return prev;
             }
             return prev;
@@ -197,6 +200,9 @@ export const useDualHook = ({
       }
     }
     setIsLoading(false);
+    nodeTimer.current = setTimeout(() => {
+      getProduct();
+    }, 60000);
   }, 100);
   React.useEffect(() => {
     if (
@@ -213,7 +219,12 @@ export const useDualHook = ({
       myLog("update pair", pair);
       getProduct();
     }
-    return () => getProduct.cancel();
+    return () => {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      }
+      getProduct.cancel();
+    };
   }, [pair, dualStatus]);
 
   return {

@@ -108,12 +108,13 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
     .returnV1{
       right: 25%;
       transform: translateX(50%);  
-      background-color: ${hexToRGB(theme.colorBase.success, 0.3)};
+      background-color: ${hexToRGB(theme.colorBase.warning, 0.3)};
+
     }
     .returnV2{
       left: 25%;
       transform: translateX(-50%);
-      background-color: ${hexToRGB(theme.colorBase.warning, 0.3)};
+      background-color: ${hexToRGB(theme.colorBase.success, 0.3)};
 
      
     }
@@ -140,36 +141,33 @@ export const DualDetail = ({
 }) => {
   const { t } = useTranslation();
   const { upColor } = useSettings();
-  const { base, quote } = currentPrice;
+  const { base, quote, precisionForPrice } = currentPrice;
   const currentView = React.useMemo(
     () =>
       base
         ? getValuePrecisionThousand(
             currentPrice.currentPrice,
-            tokenMap[quote].precision,
-            tokenMap[quote].precision,
-            tokenMap[quote].precision,
+            precisionForPrice
+              ? precisionForPrice
+              : tokenMap[quote].precisionForOrder,
+            precisionForPrice
+              ? precisionForPrice
+              : tokenMap[quote].precisionForOrder,
+            precisionForPrice
+              ? precisionForPrice
+              : tokenMap[quote].precisionForOrder,
             true,
             { floor: true }
           )
         : EmptyValueTag,
-    [dualViewInfo.currentPrice.currentPrice, quote, tokenMap]
+    [dualViewInfo.currentPrice.currentPrice, precisionForPrice, tokenMap]
   );
 
   const targetView = React.useMemo(
-    () =>
-      quote
-        ? getValuePrecisionThousand(
-            dualViewInfo?.strike,
-            tokenMap[quote].precision,
-            tokenMap[quote].precision,
-            tokenMap[quote].precision,
-            true,
-            { floor: true }
-          )
-        : EmptyValueTag,
-    [dualViewInfo?.strike, quote, tokenMap]
+    () => Number(dualViewInfo?.strike).toLocaleString("en-US") ?? EmptyValueTag,
+    [dualViewInfo?.strike]
   );
+
   return (
     <Box>
       <Box paddingX={2} paddingBottom={1}>
@@ -214,7 +212,7 @@ export const DualDetail = ({
           <Box className={"returnV1 returnV"}>
             <Typography
               variant={"body2"}
-              color={"var(--color-success)"}
+              color={"var(--color-warning)"}
               whiteSpace={"pre-line"}
             >
               {quote &&
@@ -231,7 +229,7 @@ export const DualDetail = ({
           <Box className={"returnV2 returnV"}>
             <Typography
               variant={"body2"}
-              color={"var(--color-warning)"}
+              color={"var(--color-success)"}
               whiteSpace={"pre-line"}
             >
               {base &&
@@ -482,8 +480,26 @@ export const DualWrap = <
     label: t("tokenEnterPaymentToken"),
     subLabel: t("tokenMax"),
     emptyText: t("tokenSelectToken"),
-    placeholderText: "0.00",
+    placeholderText: dualCalcData.maxSellAmount
+      ? t("labelInvestMaxDual", {
+          value: getValuePrecisionThousand(
+            dualCalcData.maxSellAmount,
+            dualCalcData.sellToken.precision,
+            dualCalcData.sellToken.precision,
+            dualCalcData.sellToken.precision,
+            false,
+            { floor: false, isAbbreviate: true }
+          ),
+        })
+      : "0.00",
     maxAllow: true,
+    name: "coinSell",
+    isHideError: true,
+    order: "right" as any,
+    decimalsLimit: tokenSell.precision,
+    coinPrecision: tokenSell.precision,
+    inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
+    coinMap: {},
     ...tokenSellProps,
     handleError: handleError as any,
     handleCountChange,
@@ -533,11 +549,11 @@ export const DualWrap = <
     [dualCalcData.greaterEarnTokenSymbol, dualCalcData.greaterEarnVol, tokenMap]
   );
 
-  const maxSellAmount = React.useMemo(
+  const totalQuota = React.useMemo(
     () =>
-      dualCalcData.maxSellAmount && dualCalcData.sellToken
+      dualCalcData.quota && dualCalcData.sellToken
         ? getValuePrecisionThousand(
-            dualCalcData.maxSellAmount,
+            dualCalcData.quota,
             dualCalcData.sellToken.precision,
             dualCalcData.sellToken.precision,
             dualCalcData.sellToken.precision,
@@ -547,7 +563,6 @@ export const DualWrap = <
         : EmptyValueTag,
     [dualCalcData]
   );
-  myLog("maxSellAmount", dualCalcData.maxSellAmount, maxSellAmount);
 
   return (
     <Grid
@@ -580,12 +595,6 @@ export const DualWrap = <
                 disabled={getDisabled}
                 {...{
                   ...propsSell,
-                  name: "coinSell",
-                  isHideError: true,
-                  order: "right",
-                  inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
-                  coinMap: {},
-                  coinPrecision: tokenSell.precision,
                 }}
               />
               <Typography
@@ -608,7 +617,7 @@ export const DualWrap = <
                   variant={"inherit"}
                   color={"textPrimary"}
                 >
-                  {maxSellAmount + " " + dualCalcData.coinSell.belong}
+                  {totalQuota + " " + dualCalcData.coinSell.belong}
                 </Typography>
               </Typography>
             </Box>

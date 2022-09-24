@@ -149,28 +149,27 @@ export class LoopringSocket {
           change,
           base_fee_amt: undefined,
           quote_fee_amt: undefined,
-	        open,
-	        high,
-	        low,
-	        close,
-	        count,
-	        bid,
-	        ask,
+          open,
+          high,
+          low,
+          close,
+          count,
+          bid,
+          ask,
         } as any,
       });
     },
-	  [ sdk.WsTopicType.candlestick ]: (_e: any) => {
-	  },
-	  // [ sdk.WsTopicType.candlestick ]: (data: string) => {
-	  //
-	  // },
-	  [ sdk.WsTopicType.ammpool ]: (
-		  data: [[string, string], string],
-		  topic: any
-	  ) => {
-		  if (data.length) {
-			  ammPoolService.sendAmmPool({
-				  [ topic.poolAddress ]: {pooled: data[ 0 ], lp: data[ 1 ]},
+    [sdk.WsTopicType.candlestick]: (_e: any) => {},
+    // [ sdk.WsTopicType.candlestick ]: (data: string) => {
+    //
+    // },
+    [sdk.WsTopicType.ammpool]: (
+      data: [[string, string], string],
+      topic: any
+    ) => {
+      if (data.length) {
+        ammPoolService.sendAmmPool({
+          [topic.poolAddress]: { pooled: data[0], lp: data[1] },
         });
       }
     },

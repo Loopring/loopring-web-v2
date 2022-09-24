@@ -202,6 +202,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
       headerCellClass: "textAlignCenter",
       name: t("labelDuration"),
       formatter: ({ row }) => {
+        const label = (row.duration ?? "").split("|");
         return (
           <Box
             height={"100%"}
@@ -211,7 +212,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
           >
             <Typography component={"span"}>
               {row.durationType === InvestDuration.Duration
-                ? `${t(row.duration, { ns: "common" })}`
+                ? `${t(label[0], { ns: "common", arg: label[1] })}`
                 : t("labelInvest" + row.durationType, { ns: "common" })}
             </Typography>
           </Box>
@@ -378,6 +379,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
       headerCellClass: "textAlignCenter",
       name: t("labelDuration"),
       formatter: ({ row }) => {
+        const label = (row.duration ?? "").split("|");
         return (
           <Box
             height={"100%"}
@@ -386,14 +388,18 @@ export const InvestOverviewTable = <R extends RowInvest>({
             alignItems={"center"}
           >
             <Typography component={"span"}>
-              {t("labelInvest" + row.durationType, { ns: "common" })}
+              {row.durationType === InvestDuration.Duration
+                ? `${t(label[0], { ns: "common", arg: label[1] })}`
+                : t("labelInvest" + row.durationType, { ns: "common" })}
             </Typography>
           </Box>
         );
+        // ${t("labelDay", {
+        //             ns: "common",
+        //           })}
       },
     },
   ];
-
   const { isMobile } = useSettings();
 
   return (
