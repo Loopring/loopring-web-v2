@@ -42,6 +42,7 @@ import {
   connectProvides,
 } from "@loopring-web/web3-provider";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import Web3 from "web3";
 
 export enum RAMP_SELL_PANEL {
   LIST,
@@ -261,7 +262,7 @@ export const useRampTransPost = () => {
           const response = await LoopringAPI.userAPI.submitInternalTransfer(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProvidersSignMap[connectName] ??

@@ -41,6 +41,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useHistory, useLocation } from "react-router-dom";
+import Web3 from "web3";
 
 export function useNFTDeploy<
   T extends TradeNFT<I, any> & { broker: string },
@@ -97,7 +98,7 @@ export function useNFTDeploy<
             response = await LoopringAPI.userAPI?.submitDeployNFT(
               {
                 request: request as sdk.OriginDeployNFTRequestV3,
-                web3: connectProvides.usedWeb3,
+                web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId:
                   chainId !== sdk.ChainId.GOERLI
                     ? sdk.ChainId.MAINNET
@@ -117,7 +118,7 @@ export function useNFTDeploy<
             response = await LoopringAPI.userAPI?.submitDeployCollection(
               {
                 request: request as sdk.OriginDeployCollectionRequestV3,
-                web3: connectProvides.usedWeb3,
+                web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId:
                   chainId !== sdk.ChainId.GOERLI
                     ? sdk.ChainId.MAINNET

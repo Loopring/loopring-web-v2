@@ -96,7 +96,7 @@ async function getNotification() {
     notification.notifications = notification.notifications.reduce(
       (prev, item) => {
         if (item.endShow > date.getTime()) {
-          prev.push(item);
+          prev = [item, ...prev];
         }
         return prev;
       },
@@ -104,7 +104,8 @@ async function getNotification() {
     );
     notification.activities = notification.activities.reduce((prev, item) => {
       if (item.endShow > date.getTime()) {
-        prev.push(item);
+        // prev.push(item);
+        prev = [item, ...prev];
       }
       return prev;
     }, []);
@@ -112,7 +113,7 @@ async function getNotification() {
     notification.activitiesHome = notification.activitiesHome.reduce(
       (prev, item) => {
         if (item.endShow > date.getTime()) {
-          prev.push(item);
+          prev = [item, ...prev];
         }
         return prev;
       },
@@ -121,7 +122,7 @@ async function getNotification() {
     notification.activitiesInvest = notification.activitiesInvest.reduce(
       (prev, item) => {
         if (item.endShow > date.getTime()) {
-          prev.push(item);
+          prev = [item, ...prev];
         }
         return prev;
       },
@@ -129,7 +130,7 @@ async function getNotification() {
     );
     notification.invest = notification.invest.reduce((prev, item) => {
       if (item.endShow > date.getTime()) {
-        prev.push(item);
+        prev = [item, ...prev];
       }
       return prev;
     }, []);

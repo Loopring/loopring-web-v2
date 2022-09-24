@@ -27,6 +27,7 @@ export const CollectionMedia = React.memo(
         index,
         baseURL,
         getIPFSString,
+        onClick,
       }: {
         item: Partial<CollectionMeta>;
         index?: number;
@@ -36,6 +37,7 @@ export const CollectionMedia = React.memo(
         ) => void;
         baseURL: string;
         getIPFSString: GET_IPFS_STRING;
+        onClick?: (e: any) => void;
         // isOrigin?: boolean;
         // shouldPlay?: boolean;
       },
@@ -61,6 +63,7 @@ export const CollectionMedia = React.memo(
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
+          onClick={onClick}
         >
           {!hasLoaded ? (
             <Box

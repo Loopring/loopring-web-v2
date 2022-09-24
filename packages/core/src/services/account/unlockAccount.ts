@@ -6,6 +6,7 @@ import { checkErrorInfo, LoopringAPI, store } from "../../index";
 import { accountServices } from "./accountServices";
 import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
+import Web3 from "web3";
 
 export async function unlockAccount() {
   myLog("unlockAccount starts");
@@ -55,7 +56,7 @@ export async function unlockAccount() {
 
       myLog("generateKeyPair:", msg, chainId, isMobile);
       const eddsaKey = await sdk.generateKeyPair({
-        web3: connectProvides.usedWeb3,
+        web3: connectProvides.usedWeb3 as unknown as Web3,
         address: account.owner,
         keySeed: msg,
         walletType: connectName,
