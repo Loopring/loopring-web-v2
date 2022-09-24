@@ -68,7 +68,7 @@ export function useExportAccountInfo() {
         // const connectName = account.connectName as sdk.ConnectorNames;
 
         const eddsaKey = await sdk.generateKeyPair({
-          web3: connectProvides.usedWeb3,
+          web3: connectProvides.usedWeb3 as unknown as Web3,
           address: account.accAddress,
           chainId: chainId as any,
           keySeed:

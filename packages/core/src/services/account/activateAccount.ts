@@ -73,7 +73,7 @@ export async function activateAccount({
     const fee = feeInfo.feeRaw;
     try {
       eddsaKey = await sdk.generateKeyPair({
-        web3: connectProvides.usedWeb3,
+        web3: connectProvides.usedWeb3 as unknown as Web3,
         address: accInfo.owner,
         keySeed,
         walletType: (ConnectProvidersSignMap[connectName] ??

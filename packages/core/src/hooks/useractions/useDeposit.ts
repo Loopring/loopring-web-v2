@@ -374,7 +374,7 @@ export const useDeposit = <
           exchangeInfo.exchangeAddress
         ).replace("${nonce}", "0");
         const eddsaKey = await sdk.generateKeyPair({
-          web3: connectProvides.usedWeb3,
+          web3: connectProvides.usedWeb3 as unknown as Web3,
           address: account.accAddress,
           keySeed,
           walletType: (ConnectProvidersSignMap[account.connectName] ??

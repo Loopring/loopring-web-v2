@@ -46,6 +46,7 @@ import {
 } from "@loopring-web/web3-provider";
 import { useHistory } from "react-router-dom";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import Web3 from "web3";
 
 export function useNFTMint<
   Me extends NFTMETA,
@@ -206,7 +207,7 @@ export function useNFTMint<
           const response = await LoopringAPI.userAPI?.submitNFTMint(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProvidersSignMap[connectName] ??

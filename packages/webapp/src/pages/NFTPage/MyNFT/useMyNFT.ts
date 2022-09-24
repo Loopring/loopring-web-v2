@@ -24,6 +24,7 @@ import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import * as sdk from "@loopring-web/loopring-sdk";
+import Web3 from "web3";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = ({
@@ -83,7 +84,7 @@ export const useMyNFT = ({
           _id: _id.toString(),
           // @ts-ignore
           nftId,
-          web3: connectProvides.usedWeb3,
+          web3: connectProvides.usedWeb3 as unknown as Web3,
           tokenAddress,
         })
         .then((response) => {
