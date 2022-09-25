@@ -44,8 +44,8 @@
       "startShow": 1663941600000,
       "endShow": 1666742400000,
       "color": "default",
-      "banner": "https://static.loopring.io/events/2022/09/activities/dual_investment_banner.en.webp",
-      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/dual_investment_banner.en.webp",
+      "banner": "https://static.loopring.io/events/2022/09/activities/dual_invest_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/dual_invest_banner.en.webp",
       "webRouter": "[self]/invest/dual"
     }
   ],
@@ -94,8 +94,8 @@
       "startShow": 1663941600000,
       "endShow": 1666742400000,
       "color": "default",
-      "banner": "https://static.loopring.io/events/2022/09/activities/dual_investment_banner.en.webp",
-      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/dual_investment_banner.en.webp",
+      "banner": "https://static.loopring.io/events/2022/09/activities/dual_invest_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/dual_invest_banner.en.webp",
       "webRouter": "[self]/invest/dual"
     }
   ],
