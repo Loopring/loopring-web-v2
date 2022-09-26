@@ -21,11 +21,12 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../../api_wrapper";
 
 const initialWithdrawState: WithdrawData = {
-  belong: undefined,
+  belong: undefined as any,
   tradeValue: 0,
   balance: 0,
   address: undefined,
   fee: undefined,
+  withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
 };
 const initialForceWithdrawState: ForceWithdrawData = {
   belong: undefined,
@@ -219,12 +220,16 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       };
     },
     updateWithdrawData(state, action: PayloadAction<Partial<WithdrawData>>) {
-      const { belong, balance, tradeValue, address, ...rest } = action.payload;
+      const { belong, balance, tradeValue, address, withdrawType, ...rest } =
+        action.payload;
       state.lastStep = LAST_STEP.withdraw;
       state.withdrawValue = {
         ...state.withdrawValue,
-        balance,
-        belong,
+        withdrawType: withdrawType
+          ? withdrawType
+          : state.withdrawValue.withdrawType,
+        balance: balance as any,
+        belong: belong as any,
         tradeValue,
         address: address !== "*" ? address : undefined,
         ...rest,
@@ -327,15 +332,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state.lastStep = LAST_STEP.nftWithdraw;
       state.nftWithdrawValue = {
         ...state.nftWithdrawValue,
-        belong,
-        // balance: balance
-        //   ? balance
-        //   : rest.total !== undefined
-        //   ? sdk
-        //       .toBig(rest.total ?? 0)
-        //       .minus(rest.locked ?? 0)
-        //       .toNumber()
-        //   : state.nftWithdrawValue.balance,
+        belong: belong as any,
         tradeValue:
           tradeValue === undefined || tradeValue >= 0 ? tradeValue : undefined,
         address: address !== "*" ? address : undefined,

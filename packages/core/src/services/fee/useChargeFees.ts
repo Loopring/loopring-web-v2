@@ -282,9 +282,9 @@ export function useChargeFees({
                   if (updateData && _feeInfo) {
                     updateData({
                       fee: {
-                        ...feeInfo,
+                        ..._feeInfo,
                         __raw__: {
-                          ...feeInfo?.__raw__,
+                          ..._feeInfo.__raw__,
                           tokenId:
                             tokenMap[_feeInfo?.belong.toString()].tokenId,
                         },
@@ -310,6 +310,7 @@ export function useChargeFees({
                         ..._feeInfo,
                         __raw__: {
                           ...feeInfo?.__raw__,
+                          ..._feeInfo?.__raw__,
                           tokenId:
                             tokenMap[_feeInfo?.belong.toString()].tokenId,
                         },
@@ -458,6 +459,7 @@ export function useChargeFees({
     tokenAddress,
     tokenSymbol,
     requestType,
+    amount,
     account.readyState,
     walletLayer2Status,
   ]);

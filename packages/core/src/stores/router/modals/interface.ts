@@ -3,19 +3,22 @@ import { NFTTokenInfo, UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
 import {
   CollectionMeta,
   FeeInfo,
+  IBData,
   MintTradeNFT,
   NFTMETA,
   NFTWholeINFO,
   TradeNFT,
+  WithdrawType,
 } from "@loopring-web/common-resources";
 import { WalletLayer2Map } from "../../walletLayer2";
 
-export type WithdrawData = {
-  belong: string | undefined;
-  tradeValue: number | undefined;
-  balance: number | undefined;
+export type WithdrawData<T = any> = IBData<T> & {
+  // belong: string | undefined;
+  // tradeValue: number | undefined;
+  // balance: number | undefined;
   address: string | undefined;
   fee: FeeInfo | undefined;
+  withdrawType: WithdrawType;
 };
 export type ForceWithdrawData = {
   belong: string | undefined;
