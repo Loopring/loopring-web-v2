@@ -11,6 +11,7 @@ import {
   LoopringAPI,
   useTokenPrices,
   useDefiMap,
+  useWalletLayer2,
 } from "@loopring-web/core";
 import {
   AccountStep,
@@ -42,6 +43,7 @@ export const useGetAssets = () => {
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>(
     []
   );
+  const { updateWalletLayer2 } = useWalletLayer2();
 
   const [userAssets, setUserAssets] = React.useState<any[]>([]);
   // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
@@ -69,6 +71,7 @@ export const useGetAssets = () => {
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
       sendSocketTopic({ [WsTopicType.account]: true });
+      updateWalletLayer2();
     } else {
       socketEnd();
     }

@@ -17,6 +17,7 @@ import {
 } from "@loopring-web/web3-provider";
 
 import { checkErrorInfo } from "@loopring-web/core";
+import Web3 from "web3";
 
 export function useResetAccount() {
   const { setShowResetAccount } = useOpenModals();
@@ -68,7 +69,7 @@ export function useExportAccountInfo() {
         // const connectName = account.connectName as sdk.ConnectorNames;
 
         const eddsaKey = await sdk.generateKeyPair({
-          web3: connectProvides.usedWeb3,
+          web3: connectProvides.usedWeb3 as unknown as Web3,
           address: account.accAddress,
           chainId: chainId as any,
           keySeed:

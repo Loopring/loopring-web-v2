@@ -44,6 +44,7 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRouteMatch } from "react-router-dom";
+import Web3 from "web3";
 
 export const useForceWithdraw = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap, idIndex } = useTokenMap();
@@ -257,7 +258,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
           const response = await LoopringAPI.userAPI.submitForceWithdrawals(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId === "unknown" ? 1 : chainId,
               walletType: (ConnectProvidersSignMap[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
@@ -513,7 +514,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
         });
       },
       isActiveAccount,
-      isNotAvaiableAddress: !(isLoopringAddress && !isActiveAccount),
+      isNotAvailableAddress: !(isLoopringAddress && !isActiveAccount),
       realAddr,
       isAddressCheckLoading,
       isLoopringAddress,

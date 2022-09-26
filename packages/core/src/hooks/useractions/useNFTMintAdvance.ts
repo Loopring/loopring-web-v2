@@ -48,6 +48,7 @@ import { useTranslation } from "react-i18next";
 import { getIPFSString, getTimestampDaysLater, makeMeta } from "../../utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs";
 import { useHistory } from "react-router-dom";
+import Web3 from "web3";
 
 const CID = require("cids");
 
@@ -203,7 +204,7 @@ export const useNFTMintAdvance = <
           const response = await LoopringAPI.userAPI?.submitNFTMint(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProvidersSignMap[connectName] ??

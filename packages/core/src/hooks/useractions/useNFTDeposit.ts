@@ -105,7 +105,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   const debounceCheck = _.debounce(
     async (data) => {
       if (LoopringAPI.nftAPI && exchangeInfo) {
-        const web3: Web3 = connectProvides.usedWeb3 as Web3;
+        const web3: Web3 = connectProvides.usedWeb3 as unknown as Web3;
         setIsNFTCheckLoading(true);
 
         let [balance, meta, isApproved] = await Promise.all([
@@ -156,7 +156,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   );
 
   const handleOnNFTDataChange = async (data: T) => {
-    const web3: Web3 = connectProvides.usedWeb3 as Web3;
+    const web3: Web3 = connectProvides.usedWeb3 as unknown as Web3;
     const nftDepositValue = store.getState()._router_modalData.nftDepositValue;
     let shouldUpdate: any = {
       nftType: nftDepositValue.nftType ?? 0,
@@ -263,11 +263,14 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
       LoopringAPI.nftAPI
     ) {
       setShowNFTDeposit({ isShow: false });
-      const web3: Web3 = connectProvides.usedWeb3 as Web3;
+      const web3: Web3 = connectProvides.usedWeb3 as unknown as Web3;
       const gasLimit = undefined; //parseInt(NFTGasAmounts.deposit) ?? undefined;
       const realGasPrice = gasPrice ?? 30;
       let nonce =
-        (await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)) ?? 0;
+        (await sdk.getNonce(
+          connectProvides.usedWeb3 as unknown as Web3,
+          account.accAddress
+        )) ?? 0;
       if (!nftDepositValue.isApproved) {
         setShowAccount({
           isShow: true,

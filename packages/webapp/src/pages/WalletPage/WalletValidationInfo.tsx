@@ -223,7 +223,7 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
           {
             request: request,
             guardian: selected,
-            web3: connectProvides.usedWeb3 as Web3,
+            web3: connectProvides.usedWeb3 as unknown as Web3,
             chainId: chainId as any,
             eddsaKey: "",
             apiKey: "",
@@ -284,7 +284,7 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
       LoopringAPI.walletAPI
         .rejectHebao({
           request,
-          web3: connectProvides.usedWeb3 as Web3,
+          web3: connectProvides.usedWeb3 as unknown as Web3,
           address: account.accAddress,
           chainId: chainId as any,
           guardiaContractAddress: guardian.address,
