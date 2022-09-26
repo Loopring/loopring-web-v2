@@ -144,13 +144,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         tradeValue.gt(0) &&
         withdrawT.fastWithdrawLimit &&
         tradeValue.gte(withdrawT.fastWithdrawLimit);
-      // myLog(
-      //   "exceedPoolLimit",
-      //   sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
-      //   withdrawType,
-      //   withdrawT.fastWithdrawLimit,
-      //   tradeValue.gte(withdrawT.fastWithdrawLimit)
-      // );
+      const isEnough = tradeValue.lte(
+        sdk.toBig(withdrawValue.balance ?? 0).times("1e" + withdrawT.decimals)
+      );
       if (
         tradeValue &&
         !exceedPoolLimit &&
@@ -160,8 +156,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         withdrawValue.fee?.belong &&
         withdrawValue.fee?.feeRaw &&
         tradeValue.gt(BIGO) &&
-        tradeValue.lte(sdk.toBig(withdrawValue.balance ?? 0)) &&
+        withdrawValue.tradeValue &&
         realAddr &&
+        isEnough &&
         (info?.isToMyself || sureIsAllowAddress) &&
         [AddressError.NoError, AddressError.IsNotLoopringContract].includes(
           addrStatus
