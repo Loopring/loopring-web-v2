@@ -25,6 +25,7 @@ import {
   EXCHANGE_TYPE,
   TOAST_TIME,
   LIVE_FEE_TIMES,
+  getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -74,6 +75,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const [withdrawType, setWithdrawType] = React.useState<WithdrawType>(
     sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
   );
+  const [isFastWithdrawAmountLimit, setIsFastWithdrawAmountLimit] =
+    React.useState<boolean>(false);
 
   const {
     chargeFeeTokenList,
@@ -119,7 +122,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     setSureIsAllowAddress(undefined);
   }, [realAddr]);
 
-  const isNotAvaiableAddress =
+  const isNotAvailableAddress =
     // isCFAddress
     // ? "isCFAddress"
     // :
@@ -137,18 +140,27 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         .toBig(withdrawValue.tradeValue ?? 0)
         .times("1e" + withdrawT.decimals);
       const exceedPoolLimit =
-        withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
+        withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
         tradeValue.gt(0) &&
-        tradeValue.gte(sdk.toBig(withdrawT.fastWithdrawLimit));
+        withdrawT.fastWithdrawLimit &&
+        tradeValue.gte(withdrawT.fastWithdrawLimit);
+      // myLog(
+      //   "exceedPoolLimit",
+      //   sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
+      //   withdrawType,
+      //   withdrawT.fastWithdrawLimit,
+      //   tradeValue.gte(withdrawT.fastWithdrawLimit)
+      // );
       if (
         tradeValue &&
         !exceedPoolLimit &&
-        !isNotAvaiableAddress &&
+        !isNotAvailableAddress &&
         chargeFeeTokenList.length &&
         !isFeeNotEnough.isFeeNotEnough &&
         withdrawValue.fee?.belong &&
         withdrawValue.fee?.feeRaw &&
         tradeValue.gt(BIGO) &&
+        tradeValue.lte(sdk.toBig(withdrawValue.balance ?? 0)) &&
         realAddr &&
         (info?.isToMyself || sureIsAllowAddress) &&
         [AddressError.NoError, AddressError.IsNotLoopringContract].includes(
@@ -156,12 +168,26 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         )
       ) {
         enableBtn();
+        setIsFastWithdrawAmountLimit(false);
         return;
       }
       if (exceedPoolLimit) {
-        setWithdrawI18nKey("labelL2toL1BtnExceed");
+        const amt = getValuePrecisionThousand(
+          sdk
+            .toBig(withdrawT.fastWithdrawLimit ?? 0)
+            .div("1e" + withdrawT.decimals),
+          withdrawT.precision,
+          withdrawT.precision,
+          withdrawT.precision,
+          false,
+          { floor: true }
+        ).toString();
+
+        setWithdrawI18nKey(`labelL2toL1BtnExceed|${amt}`);
+        setIsFastWithdrawAmountLimit(true);
       } else {
         setWithdrawI18nKey(undefined);
+        setIsFastWithdrawAmountLimit(false);
       }
     }
     disableBtn();
@@ -174,7 +200,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     disableBtn,
     address,
     withdrawType,
-    isNotAvaiableAddress,
+    isNotAvailableAddress,
     chargeFeeTokenList.length,
     isFeeNotEnough,
     realAddr,
@@ -195,32 +221,39 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     withdrawValue?.fee,
     withdrawValue?.belong,
     withdrawValue?.tradeValue,
-    isNotAvaiableAddress,
+    isNotAvailableAddress,
   ]);
 
-  const updateWithdrawTypes = React.useCallback(async () => {
+  React.useEffect(() => {
+    // updateWithdrawTypes();
+    // debugger;
+    // debugger;
     if (withdrawValue.belong && LoopringAPI.exchangeAPI && tokenMap) {
-      setWithdrawTypes({
-        [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
-      });
-    }
-  }, [withdrawValue, tokenMap]);
-
-  const updateWithdrawType = React.useCallback(() => {
-    // myLog('withdrawTypes:', withdrawTypes, ' withdrawType2:', withdrawType2)
-    if (!withdrawTypes[sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]) {
-      // myLog('try to reset setWithdrawType!')
+      const tokenInfo = tokenMap[withdrawValue.belong];
       setWithdrawType(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL);
-      // updateWithdrawData({...withdrawValue, fee: feeInfo})
+      LoopringAPI.exchangeAPI
+        .getWithdrawalAgents({
+          tokenId: tokenInfo.tokenId,
+          amount: sdk.toBig(tokenInfo.orderAmounts.dust).toString(),
+        })
+        .then((respons) => {
+          if (
+            withdrawValue.belong &&
+            respons?.supportTokenMap[withdrawValue.belong]
+          ) {
+            setWithdrawTypes({
+              [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast",
+              [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
+            });
+          } else {
+            setWithdrawTypes({
+              [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
+            });
+          }
+        });
+
+      // const agent = await ;
     }
-  }, [withdrawTypes, setWithdrawType]);
-
-  React.useEffect(() => {
-    updateWithdrawType();
-  }, [withdrawTypes]);
-
-  React.useEffect(() => {
-    updateWithdrawTypes();
   }, [withdrawValue.belong]);
 
   const walletLayer2Callback = () => {
@@ -580,7 +613,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isContractAddress,
     withdrawI18nKey,
     accAddr: account.accAddress,
-    isNotAvaiableAddress,
+    isNotAvailableAddress,
     addressDefault: address,
     realAddr,
     disableWithdrawList,
@@ -589,6 +622,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     walletMap: walletMap2 as WalletMap<any>,
     withdrawBtnStatus: btnStatus,
     withdrawType,
+    isFastWithdrawAmountLimit,
     withdrawTypes,
     sureIsAllowAddress,
     handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => {
@@ -601,7 +635,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setShowWithdraw({ isShow: false, info });
     },
     handleWithdrawTypeChange: (value) => {
-      // myLog('handleWithdrawTypeChange', value)
       setWithdrawType(value);
     },
     handlePanelEvent: async (

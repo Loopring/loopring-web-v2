@@ -115,7 +115,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     setSureIsAllowAddress(undefined);
   }, [realAddr]);
 
-  const isNotAvaiableAddress =
+  const isNotAvailableAddress =
     // isCFAddress
     //   ? "isCFAddress"
     //   :
@@ -135,7 +135,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
         .lte(Number(nftWithdrawValue.balance) ?? 0) &&
       (addrStatus as AddressError) === AddressError.NoError &&
       !isFeeNotEnough.isFeeNotEnough &&
-      !isNotAvaiableAddress &&
+      !isNotAvailableAddress &&
       (info?.isToMyself || sureIsAllowAddress) &&
       realAddr
     ) {
@@ -152,7 +152,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     nftWithdrawValue.balance,
     addrStatus,
     isFeeNotEnough,
-    isNotAvaiableAddress,
+    isNotAvailableAddress,
     info?.isToMyself,
     sureIsAllowAddress,
     realAddr,
@@ -168,7 +168,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isFeeNotEnough.isFeeNotEnough,
     nftWithdrawValue.fee,
     nftWithdrawValue.tradeValue,
-    isNotAvaiableAddress,
+    isNotAvailableAddress,
     sureIsAllowAddress,
   ]);
 
@@ -518,7 +518,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     type: "NFT",
     addressDefault: address,
     accAddr: account.accAddress,
-    isNotAvaiableAddress,
+    isNotAvailableAddress,
     realAddr,
     isToMyself: info?.isToMyself,
     disableWithdrawList,

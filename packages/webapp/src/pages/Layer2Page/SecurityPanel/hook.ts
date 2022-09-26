@@ -17,6 +17,7 @@ import {
 } from "@loopring-web/web3-provider";
 
 import { checkErrorInfo } from "@loopring-web/core";
+import Web3 from "web3";
 
 export function useResetAccount() {
   const { setShowResetAccount } = useOpenModals();

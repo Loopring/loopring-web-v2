@@ -514,7 +514,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
         });
       },
       isActiveAccount,
-      isNotAvaiableAddress: !(isLoopringAddress && !isActiveAccount),
+      isNotAvailableAddress: !(isLoopringAddress && !isActiveAccount),
       realAddr,
       isAddressCheckLoading,
       isLoopringAddress,

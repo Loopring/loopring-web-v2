@@ -170,7 +170,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isThumb?: boolean;
   addressDefault: string;
   accAddr: string;
-  isNotAvaiableAddress:
+  isNotAvailableAddress:
     | "isCFAddress"
     | "isContract1XAddress"
     | "isContractAddress"
@@ -183,6 +183,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;
   isContractAddress: boolean;
+  isFastWithdrawAmountLimit?: boolean;
   addrStatus: AddressError;
   disableWithdrawList?: string[];
   onWithdrawClick: (data: T, isFirstTime?: boolean) => void;
@@ -204,7 +205,7 @@ export type ForceWithdrawExtendProps<T, I, C> = {
   // accAddr: string;
   realAddr: string;
   isActiveAccount: boolean;
-  isNotAvaiableAddress: boolean;
+  isNotAvailableAddress: boolean;
   isAddressCheckLoading: boolean;
   isLoopringAddress: boolean;
   addrStatus: AddressError;
