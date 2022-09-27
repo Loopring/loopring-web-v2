@@ -10,7 +10,11 @@ import styled from "@emotion/styled";
 import { Avatar, Box, BoxProps, Link, Typography } from "@mui/material";
 import React from "react";
 import { useTheme } from "@emotion/react";
-import { useSettings } from "@loopring-web/component-lib";
+import {
+  Button,
+  TradeBtnStatus,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 
 const StyledPaper = styled(Box)`
@@ -25,6 +29,7 @@ const HeaderBannerStyle = styled(Box)<BoxProps & { url: string }>`
   background-size: cover;
   width: 100%;
   height: 100%;
+  border-radius: ${({ theme }) => theme.unit}px;
 ` as (props: BoxProps & { url: string }) => JSX.Element;
 
 export const CollectionDetailView = ({
@@ -61,6 +66,7 @@ export const CollectionDetailView = ({
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
+          borderRadius={1}
           sx={{ background: "var(--field-opacity)" }}
         >
           {getIPFSString(collectionDate?.banner ?? "", baseURL).startsWith(
@@ -79,11 +85,16 @@ export const CollectionDetailView = ({
           )}
         </Box>
 
-        <Box padding={3} position={"relative"}>
+        <Box
+          paddingLeft={5}
+          paddingRight={3}
+          position={"relative"}
+          display={"flex"}
+        >
           <Box
-            position={"absolute"}
+            position={"relative"}
             top={-lageSize.move}
-            left={lageSize.move}
+            // left={lageSize.move}
             display={"flex"}
             alignItems={"center"}
             justifyContent={"center"}
@@ -102,75 +113,90 @@ export const CollectionDetailView = ({
               />
             ) : (
               <ImageIcon fontSize={"large"} />
-              // <Avatar
-              //   sx={{ bgcolor: "var(--color-border-disable2)" }}
-              //   variant={"circular"}
-              //   src={collectionDate?.avatar}
-              // >
-              //   <ImageIcon fontSize={"large"} />
-              // </Avatar>
             )}
           </Box>
           <Box
-            left={`calc(${lageSize.width} + ${lageSize.move}px)`}
-            paddingLeft={2}
+            flex={1}
+            paddingY={3}
+            paddingLeft={3}
             position={"relative"}
+            display={"flex"}
+            justifyContent={"space-between"}
           >
-            <Typography
-              variant={"h4"}
-              component={"span"}
-              whiteSpace={"pre"}
-              overflow={"hidden"}
+            <Box>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                whiteSpace={"pre"}
+                overflow={"hidden"}
+                display={"flex"}
+                textOverflow={"ellipsis"}
+              >
+                {collectionDate.name}
+              </Typography>
+              <Link
+                color={"textPrimary"}
+                paddingTop={1}
+                variant={"body1"}
+                component={"span"}
+                whiteSpace={"pre"}
+                overflow={"hidden"}
+                display={"flex"}
+                alignItems={"center"}
+                textOverflow={"ellipsis"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  copyToClipBoard(collectionDate?.contractAddress ?? "");
+                  setCopyToastOpen({ isShow: true, type: "address" });
+                }}
+              >
+                {getShortAddr(collectionDate?.contractAddress ?? "")}
+                <CopyIcon color={"inherit"} sx={{ marginLeft: 1 }} />
+              </Link>
+              <Typography
+                color={"textPrimary"}
+                paddingTop={1}
+                variant={"body1"}
+                component={"span"}
+                whiteSpace={"pre"}
+                overflow={"hidden"}
+                display={"flex"}
+                textOverflow={"ellipsis"}
+              >
+                {t("labelCollectionItemValue", {
+                  value: collectionDate?.extends.count,
+                })}
+              </Typography>
+            </Box>
+            <Box
               display={"flex"}
-              textOverflow={"ellipsis"}
+              flexDirection={"column"}
+              alignItems={"flex-end"}
             >
-              {collectionDate.name}
-            </Typography>
-            <Link
-              color={"textPrimary"}
-              paddingTop={1}
-              variant={"body1"}
-              component={"span"}
-              whiteSpace={"pre"}
-              overflow={"hidden"}
-              display={"flex"}
-              textOverflow={"ellipsis"}
-              onClick={(e) => {
-                e.stopPropagation();
-                copyToClipBoard(collectionDate?.contractAddress ?? "");
-                setCopyToastOpen({ isShow: true, type: "address" });
-              }}
-            >
-              {getShortAddr(collectionDate?.contractAddress ?? "")}
-              <CopyIcon color={"inherit"} />
-            </Link>
-            <Typography
-              color={"textPrimary"}
-              paddingTop={1}
-              variant={"body1"}
-              component={"span"}
-              whiteSpace={"pre"}
-              overflow={"hidden"}
-              display={"flex"}
-              textOverflow={"ellipsis"}
-            >
-              {t("labelCollectionItemValue", {
-                value: collectionDate?.extends.count,
-              })}
-            </Typography>
-            <Typography
-              color={"textPrimary"}
-              paddingTop={1}
-              variant={"body1"}
-              component={"span"}
-              whiteSpace={"pre"}
-              overflow={"hidden"}
-              display={"flex"}
-              textOverflow={"ellipsis"}
-              title={collectionDate?.nftType}
-            >
-              {collectionDate?.nftType}
-            </Typography>
+              <Typography
+                color={"textPrimary"}
+                variant={"body1"}
+                component={"span"}
+                whiteSpace={"pre"}
+                overflow={"hidden"}
+                display={"flex"}
+                textOverflow={"ellipsis"}
+                title={collectionDate?.nftType}
+              >
+                {collectionDate?.nftType}
+              </Typography>
+
+              <Button
+                fullWidth
+                variant={"outlined"}
+                size={"medium"}
+                color={"primary"}
+                onClick={() => {}}
+                sx={{ marginTop: 1 }}
+              >
+                {t(`labelCollectionEditBtn`)}
+              </Button>
+            </Box>
           </Box>
         </Box>
       </StyledPaper>
