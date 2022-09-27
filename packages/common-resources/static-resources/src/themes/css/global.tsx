@@ -261,6 +261,8 @@ export const globalCss = ({ theme }: any) => css`
     --chart-height: 396px;
     --nft-height: 396px;
     --nft-card: 320px;
+    --nft-large-avatar: 160px;
+    --nft-small-avatar: 80px;
     --notification-activited-heigth: 80px;
     @media only screen and (max-width: 768px) {
       --modal-width: 320px;

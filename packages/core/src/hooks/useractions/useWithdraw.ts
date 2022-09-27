@@ -25,6 +25,7 @@ import {
   TOAST_TIME,
   LIVE_FEE_TIMES,
   getValuePrecisionThousand,
+  globalSetup,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -50,6 +51,7 @@ import {
   store,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import _ from "lodash";
 
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
@@ -85,17 +87,29 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   } = useChargeFees({
     requestType: withdrawValue.withdrawType,
     amount: withdrawValue.tradeValue,
+    needAmountRefresh:
+      withdrawValue.withdrawType ==
+      sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
     tokenSymbol: withdrawValue.belong,
-    updateData: ({ fee }) => {
+    updateData: ({ fee, amount }) => {
       const _withdrawValue = store.getState()._router_modalData.withdrawValue;
-      if (withdrawValue.withdrawType == _withdrawValue.withdrawType) {
-        if (
+      myLog(
+        withdrawValue.withdrawType,
+        _withdrawValue.withdrawType,
+        withdrawValue.belong,
+        _withdrawValue.belong,
+        amount,
+        _withdrawValue.tradeValue
+      );
+      if (
+        withdrawValue.withdrawType == _withdrawValue.withdrawType &&
+        withdrawValue.belong == _withdrawValue.belong &&
+        ((withdrawValue.withdrawType ==
+          sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
+          amount == _withdrawValue.tradeValue) ||
           withdrawValue.withdrawType ==
-            sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
-          withdrawValue.tradeValue != _withdrawValue.tradeValue
-        ) {
-          return;
-        }
+            sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
+      ) {
         updateWithdrawData({ ..._withdrawValue, fee });
       }
     },
@@ -141,6 +155,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
   const checkBtnStatus = React.useCallback(() => {
+    const withdrawValue = store.getState()._router_modalData.withdrawValue;
     if (tokenMap && withdrawValue.belong && tokenMap[withdrawValue.belong]) {
       const withdrawT = tokenMap[withdrawValue.belong];
       const tradeValue = sdk
@@ -152,9 +167,19 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         tradeValue.gt(0) &&
         withdrawT.fastWithdrawLimit &&
         tradeValue.gte(withdrawT.fastWithdrawLimit);
+      const isFeeSame = withdrawValue.fee?.belong === withdrawValue.belong;
       const isEnough = tradeValue.lte(
         sdk.toBig(withdrawValue.balance ?? 0).times("1e" + withdrawT.decimals)
       );
+      const withFeeEnough = isFeeSame
+        ? tradeValue
+            .plus(withdrawValue.fee?.feeRaw ?? 0)
+            .lte(
+              sdk
+                .toBig(withdrawValue.balance ?? 0)
+                .times("1e" + withdrawT.decimals)
+            )
+        : isEnough;
       if (
         tradeValue &&
         !exceedPoolLimit &&
@@ -167,7 +192,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         !isFeeNotEnough.isOnLoading &&
         withdrawValue.tradeValue &&
         realAddr &&
-        isEnough &&
+        withFeeEnough &&
         (info?.isToMyself || sureIsAllowAddress) &&
         [AddressError.NoError, AddressError.IsNotLoopringContract].includes(
           addrStatus
@@ -191,10 +216,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
         setWithdrawI18nKey(`labelL2toL1BtnExceed|${amt}`);
         setIsFastWithdrawAmountLimit(true);
-      } else {
-        setWithdrawI18nKey(undefined);
-        setIsFastWithdrawAmountLimit(false);
+        return;
+      } else if (isFeeSame && !withFeeEnough) {
+        setWithdrawI18nKey(`labelL2toL1BtnExceedWithFee`);
       }
+      setIsFastWithdrawAmountLimit(false);
     }
     disableBtn();
   }, [
@@ -217,6 +243,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   ]);
 
   React.useEffect(() => {
+    setWithdrawI18nKey(undefined);
     checkBtnStatus();
   }, [
     addrStatus,
@@ -232,9 +259,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   ]);
 
   React.useEffect(() => {
-    // updateWithdrawTypes();
-    // debugger;
-    // debugger;
     if (withdrawValue.belong && LoopringAPI.exchangeAPI && tokenMap) {
       const tokenInfo = tokenMap[withdrawValue.belong];
       LoopringAPI.exchangeAPI
@@ -273,7 +297,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       checkFeeIsEnough();
       return;
     }
-    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
+
     if (symbol) {
       if (walletMap2) {
         updateWithdrawData({
@@ -354,8 +378,19 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
     return () => {
       resetIntervalTime();
+      _checkFeeIsEnough.cancel();
     };
   }, [isShow, accountStatus, account.readyState]);
+
+  const _checkFeeIsEnough = _.debounce(() => {
+    const { tradeValue: amount } =
+      store.getState()._router_modalData.withdrawValue;
+    checkFeeIsEnough({
+      isRequiredAPI: true,
+      intervalTime: LIVE_FEE_TIMES,
+      amount,
+    });
+  }, globalSetup.wait);
 
   useWalletLayer2Socket({ walletLayer2Callback });
 
@@ -651,6 +686,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         ..._withdrawValue,
         withdrawType: value,
       });
+      _checkFeeIsEnough();
     },
     handlePanelEvent: async (
       data: SwitchData<R>,
@@ -667,6 +703,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               balance: walletInfo?.count,
               address: "*",
             });
+            _checkFeeIsEnough.cancel();
+            _checkFeeIsEnough();
           } else {
             updateWithdrawData({
               withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
@@ -677,7 +715,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             });
           }
         }
-
         res();
       });
     },

@@ -265,7 +265,6 @@ export const CollectionItem = React.memo(
                   <Avatar
                     sx={{ bgcolor: "var(--color-border-disable2)" }}
                     variant={"circular"}
-                    src={item?.avatar}
                   >
                     <ImageIcon />
                   </Avatar>
