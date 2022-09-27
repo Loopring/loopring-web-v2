@@ -5,9 +5,8 @@ import {
   CollectionCardList,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
-import { Box, Button, Grid, Pagination, Typography } from "@mui/material";
-import React, { useState } from "react";
-import styled from "@emotion/styled/";
+import { Box, Button, Typography } from "@mui/material";
+import React from "react";
 import {
   CollectionMeta,
   CreateCollectionStep,
@@ -16,29 +15,45 @@ import {
   AddIcon,
 } from "@loopring-web/common-resources";
 import {
+  getIPFSString,
   LoopringAPI,
   useAccount,
   useModalData,
   useMyCollection,
+  useSystem,
 } from "@loopring-web/core";
 import { CreateUrlPanel } from "../components/landingPanel";
-import { useHistory } from "react-router-dom";
-import { NFTType } from "@loopring-web/loopring-sdk";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import { CollectionDetailView } from "../components/CollectionDetailView";
 
-const StyledPaper = styled(Box)`
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-`;
+enum MyCollectionView {
+  List = "List",
+  Item = "Item",
+}
 
-const CommonPanel = () => {
-  return <></>;
-};
 export const NFTCollectPanel = <Co extends CollectionMeta>() => {
   const { t } = useTranslation(["common"]);
+  const { baseURL } = useSystem();
   const { copyToastOpen, ...collectionListProps } = useMyCollection();
   const [showCreateOpen, setCreateOpen] = React.useState(false);
-  const [step, setStep] = React.useState(CreateCollectionStep.ChooseMethod);
+  const [view, setView] = React.useState<MyCollectionView>(
+    MyCollectionView.List
+  );
+  const [detail, setDetail] =
+    React.useState<CollectionMeta | undefined>(undefined);
   const history = useHistory();
+  const match: any = useRouteMatch("/nft/myCollection/:id");
+  React.useEffect(() => {
+    if (match?.params?.id) {
+      const loopringId = match.params.id.split("-")[0];
+      if (loopringId && detail) {
+        setView(MyCollectionView.Item);
+      } else {
+        setView(MyCollectionView.List);
+      }
+    }
+  }, [match?.params?.id]);
+
   const { account } = useAccount();
   const {
     toggle: { deployNFT },
@@ -53,76 +68,96 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
       display={"flex"}
       flexDirection={"column"}
     >
-      <Box
-        display={"flex"}
-        flexDirection={"row"}
-        alignItems={"center"}
-        justifyContent={"space-between"}
-      >
-        <Typography component={"h3"} variant={"h4"} paddingBottom={2}>
-          {t("labelMyCollection")}
-        </Typography>
-        <Box display={"flex"} flexDirection={"row"}>
-          <Button
-            onClick={() => {
-              history.push("/nft/addCollection");
-              // setStep(CreateCollectionStep.ChooseMethod);
-              // setCreateOpen(true);
-            }}
-            startIcon={<AddIcon />}
-            variant={"outlined"}
-            color={"primary"}
+      {view === MyCollectionView.List && (
+        <>
+          <Box
+            display={"flex"}
+            flexDirection={"row"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
           >
-            {t("labelCreateCollection")}
-          </Button>
-        </Box>
-      </Box>
-      <Box flex={1} paddingBottom={2} display={"flex"}>
-        <CollectionCardList
-          {...{ ...(collectionListProps as any) }}
-          account={account}
-          toggle={deployNFT}
-          setShowEdit={(item) => {
-            // history.push("/nft/addCollection");
-            // setCreateOpen(true)
-          }}
-          setShowMintNFT={(item) => {
-            setCreateOpen(true);
-            history.push(`/nft/mintNFT/${item.contractAddress}`);
-          }}
-          setShowTradeIsFrozen={(item, typeKey) => {
-            setShowTradeIsFrozen({
-              isShow: true,
-              type: typeKey,
-            });
-          }}
-          setShowDeploy={(item: Co) => {
-            const _deployItem: TradeNFT<any, any> = {
-              tokenAddress: item?.contractAddress,
-              nftType: item.nftType,
-              collectionMeta: item,
-            };
-            LoopringAPI.userAPI
-              ?.getAvailableBroker({ type: 0 })
-              .then(({ broker }) => {
-                updateNFTDeployData({ broker });
-              });
-            updateNFTDeployData(_deployItem);
-            deployNFT.enable
-              ? setShowNFTDeploy({
+            <Typography component={"h3"} variant={"h4"} paddingBottom={2}>
+              {t("labelMyCollection")}
+            </Typography>
+            <Box display={"flex"} flexDirection={"row"}>
+              <Button
+                onClick={() => {
+                  history.push("/nft/addCollection");
+                  // setStep(CreateCollectionStep.ChooseMethod);
+                  // setCreateOpen(true);
+                }}
+                startIcon={<AddIcon />}
+                variant={"outlined"}
+                color={"primary"}
+              >
+                {t("labelCreateCollection")}
+              </Button>
+            </Box>
+          </Box>
+          <Box flex={1} paddingBottom={2} display={"flex"}>
+            <CollectionCardList
+              {...{ ...(collectionListProps as any) }}
+              account={account}
+              toggle={deployNFT}
+              setShowEdit={(item) => {
+                // history.push("/nft/addCollection");
+                // setCreateOpen(true)
+              }}
+              onItemClick={(item) => {
+                history.push(
+                  `/nft/myCollection/${item.id}-${item.contractAddress}`
+                );
+                setDetail(item);
+              }}
+              setShowMintNFT={(item) => {
+                setCreateOpen(true);
+                history.push(`/nft/mintNFT/${item.contractAddress}`);
+              }}
+              setShowTradeIsFrozen={(item, typeKey) => {
+                setShowTradeIsFrozen({
                   isShow: true,
-                  info: { ...{ _deployItem } },
-                })
-              : setShowTradeIsFrozen({
-                  isShow: true,
-                  type: t("nftDeployDescription"),
+                  type: typeKey,
                 });
-          }}
-        />
-      </Box>
+              }}
+              setShowDeploy={(item: Co) => {
+                const _deployItem: TradeNFT<any, any> = {
+                  tokenAddress: item?.contractAddress,
+                  nftType: item.nftType,
+                  collectionMeta: item,
+                };
+                LoopringAPI.userAPI
+                  ?.getAvailableBroker({ type: 0 })
+                  .then(({ broker }) => {
+                    updateNFTDeployData({ broker });
+                  });
+                updateNFTDeployData(_deployItem);
+                deployNFT.enable
+                  ? setShowNFTDeploy({
+                      isShow: true,
+                      info: { ...{ _deployItem } },
+                    })
+                  : setShowTradeIsFrozen({
+                      isShow: true,
+                      type: t("nftDeployDescription"),
+                    });
+              }}
+            />
+          </Box>
+        </>
+      )}
+      {view === MyCollectionView.Item && detail && (
+        <Box flex={1} display={"flex"}>
+          <CollectionDetailView
+            collectionDate={detail}
+            getIPFSString={getIPFSString}
+            baseURL={baseURL}
+            setCopyToastOpen={collectionListProps.setCopyToastOpen}
+          />
+        </Box>
+      )}
       <CreateUrlPanel
         open={showCreateOpen}
-        step={step}
+        step={CreateCollectionStep.ChooseMethod}
         onClose={() => {
           setCreateOpen(false);
         }}
