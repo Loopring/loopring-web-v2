@@ -58,7 +58,7 @@ const AssetPanel = withTranslation("common")(
         )}
 
         <StylePaper
-          marginTop={2}
+          marginY={2}
           ref={container}
           className={"MuiPaper-elevation2"}
         >

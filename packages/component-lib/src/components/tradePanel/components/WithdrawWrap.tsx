@@ -70,7 +70,7 @@ export const WithdrawWrap = <
   accAddr,
   isNotAvailableAddress,
   withdrawTypes = { [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard" },
-  withdrawType = sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+  withdrawType,
   chargeFeeTokenList = [],
   feeInfo,
   handleConfirm,
@@ -460,7 +460,7 @@ export const WithdrawWrap = <
                   <RadioGroup
                     aria-label="withdraw"
                     name="withdraw"
-                    value={withdrawType.toString()}
+                    value={withdrawType}
                     onChange={(e) => {
                       _handleWithdrawTypeChange(e);
                     }}
@@ -469,6 +469,7 @@ export const WithdrawWrap = <
                       return (
                         <FormControlLabel
                           key={key}
+                          disabled={isFeeNotEnough.isOnLoading}
                           value={key.toString()}
                           control={<Radio />}
                           label={`${t(

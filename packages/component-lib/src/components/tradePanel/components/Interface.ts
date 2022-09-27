@@ -177,7 +177,7 @@ export type WithdrawExtendProps<T, I, C> = {
     | "isLoopringAddress"
     | "isSameAddress"
     | undefined;
-  withdrawType?: WithdrawType;
+  withdrawType: WithdrawType;
   withdrawTypes?: Partial<WithdrawTypes>;
   realAddr?: string;
   isAddressCheckLoading: boolean;
