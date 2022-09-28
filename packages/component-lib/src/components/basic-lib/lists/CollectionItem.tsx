@@ -84,7 +84,7 @@ const ActionMemo = React.memo(
   <Co extends CollectionMeta>({
     setShowDeploy,
     // setShowTradeIsFrozen,
-    // setShowEdit,
+    setShowEdit,
     item,
     account,
     // etherscanBaseUrl,
@@ -158,6 +158,8 @@ const ActionMemo = React.memo(
             )}
             {!!(
               item.isCounterFactualNFT &&
+              item.owner?.toLowerCase() ===
+                account?.accAddress?.toLowerCase() &&
               item?.nftType !== NFT_TYPE_STRING.ERC721
             ) && (
               <MenuItem
@@ -168,6 +170,21 @@ const ActionMemo = React.memo(
                 }}
               >
                 {t("labelNFTMintSimpleBtn")}
+              </MenuItem>
+            )}
+
+            {!!(
+              item.isCounterFactualNFT &&
+              item?.nftType !== NFT_TYPE_STRING.ERC721
+            ) && (
+              <MenuItem
+                onClick={() => {
+                  if (setShowEdit) {
+                    setShowEdit(item);
+                  }
+                }}
+              >
+                {t("labelCollectionEditBtn")}
               </MenuItem>
             )}
           </Box>
@@ -198,15 +215,7 @@ export const CollectionItem = React.memo(
 
       // const { metaDemo } = makeMeta({ collection: item, domain });
       return (
-        <CardStyleItem
-          ref={_ref}
-          className={"collection"}
-          onClick={() => {
-            if (onItemClick) {
-              onItemClick(item);
-            }
-          }}
-        >
+        <CardStyleItem ref={_ref} className={"collection"}>
           <Box
             position={"absolute"}
             width={"100%"}
@@ -222,6 +231,12 @@ export const CollectionItem = React.memo(
               baseURL={baseURL}
               // onNFTReload={onNFTReload}
               onRenderError={() => undefined}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onItemClick) {
+                  onItemClick(item);
+                }
+              }}
             />
             {!!isSelectOnly && (
               <Radio
