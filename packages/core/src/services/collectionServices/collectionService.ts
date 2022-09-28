@@ -49,7 +49,6 @@ export const collectionService = {
     //   },
     // });
   },
-
   // generateCollectionTokenAddress: async ({cid}: { cid: CID }) => {
   //    // const {
   //    //   account,

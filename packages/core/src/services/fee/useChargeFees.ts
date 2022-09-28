@@ -92,7 +92,7 @@ export function useChargeFees({
   });
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
-  const [_amount, setAmount] = React.useState(amount);
+  const [_amount, setAmount] = React.useState({ amount, needAmountRefresh });
   const [_intervalTime, setIntervalTime] = React.useState<number>(intervalTime);
   const { status: walletLayer2Status } = useWalletLayer2();
   const handleFeeChange = (_value: FeeInfo): void => {
@@ -132,7 +132,7 @@ export function useChargeFees({
           },
         },
         isFeeNotEnough: isFeeNotEnough,
-        amount: needAmountRefresh ? _amount : undefined,
+        amount: _amount.needAmountRefresh ? _amount.amount : undefined,
       });
     }
     setFeeInfo(value);
@@ -176,9 +176,9 @@ export function useChargeFees({
             tokenAddress,
             requestType,
             amount:
-              tokenInfo && _amount && needAmountRefresh
+              tokenInfo && _amount.amount && _amount.needAmountRefresh
                 ? sdk
-                    .toBig(_amount)
+                    .toBig(_amount.amount)
                     .times("1e" + tokenInfo.decimals)
                     .toFixed(0, 0)
                 : "0",
@@ -246,9 +246,9 @@ export function useChargeFees({
             }
           }
 
-          if (needAmountRefresh) {
+          if (_amount?.needAmountRefresh) {
             setAmount((state) => {
-              isSame = _amount === state;
+              isSame = _amount.amount === state.amount;
               return state;
             });
           }
@@ -312,7 +312,9 @@ export function useChargeFees({
                       },
                       chargeFeeTokenList: _chargeFeeTokenList,
                       isFeeNotEnough: _isFeeNotEnough,
-                      amount: needAmountRefresh ? _amount : undefined,
+                      amount: _amount.needAmountRefresh
+                        ? _amount.amount
+                        : undefined,
                     });
                   }
                   return _feeInfo;
@@ -343,7 +345,9 @@ export function useChargeFees({
                       },
                       chargeFeeTokenList: _chargeFeeTokenList,
                       isFeeNotEnough: _isFeeNotEnough,
-                      amount: needAmountRefresh ? _amount : undefined,
+                      amount: _amount.needAmountRefresh
+                        ? _amount.amount
+                        : undefined,
                     });
                   }
                   return _feeInfo;
@@ -365,7 +369,9 @@ export function useChargeFees({
                       fee: { ...feeInfo },
                       chargeFeeTokenList: _chargeFeeTokenList,
                       isFeeNotEnough: _isFeeNotEnough,
-                      amount: needAmountRefresh ? _amount : undefined,
+                      amount: _amount.needAmountRefresh
+                        ? _amount.amount
+                        : undefined,
                     });
                   }
                   return feeInfo ?? state;
@@ -394,9 +400,7 @@ export function useChargeFees({
     globalSetup.wait,
     { trailing: true }
   );
-  // React.useEffect(() => {
-  //   getFeeList();
-  // }, []);
+
   const checkFeeIsEnough = async (
     props: undefined | ({ isRequiredAPI: true; intervalTime?: number } & any)
   ) => {
@@ -405,8 +409,11 @@ export function useChargeFees({
       setIntervalTime((state) => {
         return intervalTime ? intervalTime : state;
       });
-      if (props.amount && needAmountRefresh) {
-        setAmount(() => props.amount);
+      if (props.amount && props.needAmountRefresh) {
+        setAmount(() => ({
+          amount: props.amount,
+          needAmountRefresh: props.needAmountRefresh,
+        }));
       }
       getFeeList.cancel();
       //   getFeeList();

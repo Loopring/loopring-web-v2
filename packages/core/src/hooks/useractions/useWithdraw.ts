@@ -167,19 +167,19 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         tradeValue.gt(0) &&
         withdrawT.fastWithdrawLimit &&
         tradeValue.gte(withdrawT.fastWithdrawLimit);
-      const isFeeSame = withdrawValue.fee?.belong === withdrawValue.belong;
+      // const isFeeSame = withdrawValue.fee?.belong === withdrawValue.belong;
       const isEnough = tradeValue.lte(
         sdk.toBig(withdrawValue.balance ?? 0).times("1e" + withdrawT.decimals)
       );
-      const withFeeEnough = isFeeSame
-        ? tradeValue
-            .plus(withdrawValue.fee?.feeRaw ?? 0)
-            .lte(
-              sdk
-                .toBig(withdrawValue.balance ?? 0)
-                .times("1e" + withdrawT.decimals)
-            )
-        : isEnough;
+      // const withFeeEnough = isFeeSame
+      //   ? tradeValue
+      //       .plus(withdrawValue.fee?.feeRaw ?? 0)
+      //       .lte(
+      //         sdk
+      //           .toBig(withdrawValue.balance ?? 0)
+      //           .times("1e" + withdrawT.decimals)
+      //       )
+      //   : isEnough;
       if (
         tradeValue &&
         !exceedPoolLimit &&
@@ -192,7 +192,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         !isFeeNotEnough.isOnLoading &&
         withdrawValue.tradeValue &&
         realAddr &&
-        withFeeEnough &&
+        isEnough &&
         (info?.isToMyself || sureIsAllowAddress) &&
         [AddressError.NoError, AddressError.IsNotLoopringContract].includes(
           addrStatus
@@ -217,9 +217,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         setWithdrawI18nKey(`labelL2toL1BtnExceed|${amt}`);
         setIsFastWithdrawAmountLimit(true);
         return;
-      } else if (isFeeSame && !withFeeEnough) {
-        setWithdrawI18nKey(`labelL2toL1BtnExceedWithFee`);
       }
+      // else if (isFeeSame && !withFeeEnough) {
+      //   setWithdrawI18nKey(`labelL2toL1BtnExceedWithFee`);
+      // }
       setIsFastWithdrawAmountLimit(false);
     }
     disableBtn();
@@ -383,12 +384,14 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   }, [isShow, accountStatus, account.readyState]);
 
   const _checkFeeIsEnough = _.debounce(() => {
-    const { tradeValue: amount } =
+    const { tradeValue: amount, withdrawType } =
       store.getState()._router_modalData.withdrawValue;
     checkFeeIsEnough({
       isRequiredAPI: true,
       intervalTime: LIVE_FEE_TIMES,
       amount,
+      needAmountRefresh:
+        withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
     });
   }, globalSetup.wait);
 
