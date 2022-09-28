@@ -33,68 +33,75 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
   }: SwapProps<T, I, TCD> & WithTranslation) => {
     // useSettings()
     let history = useHistory();
-    let swapTradeData: SwapTradeData<T>;
-    if (tradeCalcData && tradeCalcData.coinInfoMap) {
-      swapTradeData = {
-        // @ts-ignore
-        sell: {
-          belong: tradeCalcData.coinInfoMap
-            ? tradeCalcData.coinInfoMap[tradeCalcData.coinSell]?.simpleName
-            : undefined,
-          balance: tradeCalcData.walletMap
-            ? tradeCalcData.walletMap[tradeCalcData.coinSell]?.count
-            : 0,
-        },
-        // @ts-ignore
-        buy: {
-          belong: tradeCalcData.coinInfoMap
-            ? tradeCalcData.coinInfoMap[tradeCalcData.coinBuy]?.simpleName
-            : undefined,
-          balance: tradeCalcData.walletMap
-            ? tradeCalcData.walletMap[tradeCalcData.coinBuy]?.count
-            : 0,
-        },
-        slippage: tradeCalcData.slippage,
-      };
-    } else {
-      swapTradeData = {
-        // @ts-ignore
-        sell: {
-          belong: undefined,
-          balance: 0,
-        },
-        // @ts-ignore
-        buy: {
-          belong: undefined,
-          balance: 0,
-        },
-      };
-    }
+
     const [index, setIndex] = React.useState(0);
-    const [swapData, setSwapData] = React.useState<SwapData<SwapTradeData<T>>>({
-      to: "button",
-      type: "buy",
-      tradeData: {
-        ...swapTradeData,
-      },
-    });
+    const [swapData, setSwapData] = React.useState<SwapData<SwapTradeData<T>>>(
+      () => {
+        let swapTradeData: SwapTradeData<T>;
+        if (tradeCalcData && tradeCalcData.coinInfoMap) {
+          swapTradeData = {
+            // @ts-ignore
+            sell: {
+              belong: tradeCalcData.coinInfoMap
+                ? tradeCalcData.coinInfoMap[tradeCalcData.coinSell]?.simpleName
+                : undefined,
+              balance: tradeCalcData.walletMap
+                ? tradeCalcData.walletMap[tradeCalcData.coinSell]?.count
+                : 0,
+            },
+            // @ts-ignore
+            buy: {
+              belong: tradeCalcData.coinInfoMap
+                ? tradeCalcData.coinInfoMap[tradeCalcData.coinBuy]?.simpleName
+                : undefined,
+              balance: tradeCalcData.walletMap
+                ? tradeCalcData.walletMap[tradeCalcData.coinBuy]?.count
+                : 0,
+            },
+            slippage: tradeCalcData.slippage,
+          };
+        } else {
+          swapTradeData = {
+            // @ts-ignore
+            sell: {
+              belong: undefined,
+              balance: 0,
+            },
+            // @ts-ignore
+            buy: {
+              belong: undefined,
+              balance: 0,
+            },
+          };
+        }
+        return {
+          to: "button",
+          type: "buy",
+          tradeData: {
+            ...swapTradeData,
+          },
+        };
+      }
+    );
 
     React.useEffect(() => {
-      if (
-        rest.tradeData &&
-        (rest.tradeData.sell !== swapData.tradeData.sell ||
-          rest.tradeData.buy !== swapData.tradeData.buy)
-      ) {
-        if (!_.isEqual(rest.tradeData.sell, swapData.tradeData.sell)) {
-          // myLog('swap sell useEffect',rest.tradeData.sell,swapData.tradeData.sell)
-          swapData.tradeData.sell = rest.tradeData.sell;
+      setSwapData((state) => {
+        if (
+          rest.tradeData &&
+          (rest.tradeData.sell !== swapData.tradeData.sell ||
+            rest.tradeData.buy !== swapData.tradeData.buy)
+        ) {
+          if (!_.isEqual(rest.tradeData.sell, swapData.tradeData.sell)) {
+            // myLog('swap sell useEffect',rest.tradeData.sell,swapData.tradeData.sell)
+            state.tradeData.sell = rest.tradeData.sell;
+          }
+          if (!_.isEqual(rest.tradeData.buy, swapData.tradeData.buy)) {
+            state.tradeData.buy = rest.tradeData.buy;
+          }
         }
-        if (!_.isEqual(rest.tradeData.buy, swapData.tradeData.buy)) {
-          swapData.tradeData.buy = rest.tradeData.buy;
-        }
-        setSwapData(swapData);
-      }
-    }, [rest.tradeData, swapData]);
+        return state;
+      });
+    }, [rest.tradeData]);
     const panelEventSubject = new Subject<
       { _index: 0 | 1; swapData: SwapData<SwapTradeData<T>> } | undefined
     >();

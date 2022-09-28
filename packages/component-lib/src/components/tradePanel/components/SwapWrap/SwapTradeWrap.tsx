@@ -49,6 +49,7 @@ export const SwapTradeWrap = <
   const buyRef = React.useRef();
   const { slippage } = useSettings();
   let tradeData = swapData.tradeData;
+
   const slippageArray: Array<number | string> = SlippageTolerance.concat(
     `slippage:${slippage}`
   ) as Array<number | string>;

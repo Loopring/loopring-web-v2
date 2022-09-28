@@ -373,19 +373,18 @@ export const useSwap = <C extends { [key: string]: any }>({
       exchangeInfo,
       account.readyState,
       account.accountId,
-      account.eddsaKey.sk,
       account.apiKey,
-      tradeData?.sell.belong,
-      tradeData?.buy.belong,
+      account.eddsaKey.sk,
+      tradeData?.sell?.belong,
+      tradeData?.buy?.belong,
       __SUBMIT_LOCK_TIMER__,
       setToastOpen,
       t,
-      storageId.orderId,
       __DAYS__,
       getAmount,
       market,
-      clearData,
       __TOAST_AUTO_CLOSE_TIMER__,
+      updatePageTradeLite,
     ]
   );
 
@@ -394,7 +393,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       setSwapBtnStatus(TradeBtnStatus.DISABLED);
       return;
     }
-
+    const account = store.getState().account;
     const sellToken = tokenMap[tradeData?.sell.belong as string];
     const buyToken = tokenMap[tradeData?.buy.belong as string];
 
@@ -404,6 +403,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       setSwapBtnStatus(TradeBtnStatus.DISABLED);
       return;
     }
+    const walletMap = makeWalletLayer2(true).walletMap ?? {};
 
     let validAmt = !!(
       calcTradeParams?.amountS &&
@@ -424,8 +424,8 @@ export const useSwap = <C extends { [key: string]: any }>({
     }
 
     const notEnough = sdk
-      .toBig(tradeData?.sell?.balance ?? 0)
-      .lt(calcTradeParams?.sellAmt ?? 0);
+      .toBig(walletMap[sellToken.symbol]?.count ?? 0)
+      .lt(calcTradeParams.sellAmt ?? 0);
 
     const sellMaxVal = sdk
       .toBig(sellToken?.orderAmounts?.maximum)
@@ -499,13 +499,10 @@ export const useSwap = <C extends { [key: string]: any }>({
   }, [
     tokenMap,
     tradeData?.sell.belong,
-    tradeData?.sell.balance,
-    tradeData?.sell.tradeValue,
     tradeData?.buy.belong,
     pageTradeLite,
     sellMinAmt,
     isSwapLoading,
-    account.readyState,
   ]);
 
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
@@ -567,10 +564,12 @@ export const useSwap = <C extends { [key: string]: any }>({
   }, [
     accountStatus,
     isSwapLoading,
-    pageTradeLite.calcTradeParams?.amountS,
+    pageTradeLite.calcTradeParams?.amountBOut,
     sellMinAmt,
+    tradeData?.sell.tradeValue,
     // pageTradeLite.calcTradeParams?.isAtoB,
   ]);
+
   /*** Btn related end ***/
   const toPro = React.useCallback(() => {
     history.push({
@@ -603,7 +602,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       );
       setStorageId(storageId);
     }
-  }, [account.accountId, account.apiKey, tokenMap, tradeCalcData.coinSell]);
+  }, [tradeCalcData?.coinSell, account, tokenMap]);
   React.useEffect(() => {
     if (
       accountStatus === SagaStatus.UNSET &&
@@ -662,6 +661,7 @@ export const useSwap = <C extends { [key: string]: any }>({
         feeBips: 0,
         totalFee: 0,
         takerRate: 0,
+        calcTradeParams: {},
         priceImpactObj: undefined,
       });
       // setFeeBips('0')
@@ -670,6 +670,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       setTradeCalcData((state) => {
         return {
           ...state,
+          walletMap: {},
           minimumReceived: undefined,
           priceImpact: undefined,
           fee: undefined,
@@ -677,12 +678,12 @@ export const useSwap = <C extends { [key: string]: any }>({
       });
     }
   }, [
-    account.readyState,
     tradeData,
-    tradeCalcData.coinSell,
-    tradeCalcData.coinBuy,
-    updatePageTradeLite,
     market,
+    tradeCalcData,
+    marketArray,
+    ammMap,
+    account.readyState,
   ]);
 
   useSwapSocket();
@@ -777,13 +778,7 @@ export const useSwap = <C extends { [key: string]: any }>({
     ) {
       reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
     }
-  }, [
-    pageTradeLite,
-    tradeCalcData?.coinSell,
-    tradeCalcData?.coinBuy,
-    tradeData,
-    updatePageTradeLite,
-  ]);
+  }, [market, pageTradeLite, tradeData, tradeCalcData, setTradeCalcData]);
 
   const resetTradeCalcData = React.useCallback(
     (_tradeData, _market?, type?: "sell" | "buy") => {
@@ -864,16 +859,16 @@ export const useSwap = <C extends { [key: string]: any }>({
       }
     },
     [
+      tradeCalcData,
+      tradeData,
       coinMap,
       tokenMap,
       marketMap,
       marketArray,
-      account.readyState,
-      walletLayer2Status,
-      history,
-      updatePageTradeLite,
-      tradeCalcData?.walletMap,
-      getAmount,
+      setTradeCalcData,
+      setTradeData,
+      setMarket,
+      setPair,
     ]
   );
 
@@ -894,10 +889,11 @@ export const useSwap = <C extends { [key: string]: any }>({
         resetTradeCalcData(undefined, market);
       }
     }
-  }, [market, ammMap, updatePageTradeLite, resetTradeCalcData]);
+  }, [market, ammMap, tickerMap]);
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
-      const { ammPoolSnapshot, depth, tradePair, close } = pageTradeLite;
+      const { ammPoolSnapshot, depth, tradePair, close } =
+        store.getState()._router_pageTradeLite.pageTradeLite;
       const { amountMap } = store.getState().amountMap;
       let calcForMinAmt, calcForMinCost, calcForPriceImpact;
 
@@ -951,7 +947,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           takerRate = buyMinAmtInfo ? buyMinAmtInfo.userOrderInfo.takerRate : 0;
           feeBips = ammMap[ammMarket]
             ? ammMap[ammMarket].__rawConfig__.feeBips
-            : 1;
+            : DefaultFeeBips;
 
           feeTakerRate =
             amountMarket[_tradeData["buy"].belong as string] &&
@@ -1297,7 +1293,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             }
           }
         }
-        myLog("updatePageTradeLite feeBips:", feeBips);
+        myLog("updatePageTradeLite feeBips:", feeBips, _tradeCalcData);
 
         updatePageTradeLite({
           market,
@@ -1327,16 +1323,15 @@ export const useSwap = <C extends { [key: string]: any }>({
       }
     },
     [
-      pageTradeLite,
-      market,
-      tokenMap,
-      ammMap,
-      marketArray,
-      marketMap,
       account.readyState,
-      updatePageTradeLite,
+      amountMap,
+      pageTradeLite,
       tradeCalcData,
       tradeData,
+      coinMap,
+      tokenMap,
+      marketMap,
+      marketArray,
     ]
   );
 
@@ -1349,7 +1344,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       case SwapType.BUY_CLICK:
         return;
       case SwapType.SELL_SELECTED:
-        //type = 'sell'
+        myLog(_tradeData);
         if (_tradeData?.sell.belong !== tradeData?.sell.belong) {
           resetTradeCalcData(
             _tradeData,
@@ -1449,7 +1444,6 @@ export const useSwap = <C extends { [key: string]: any }>({
         break;
     }
   };
-
   return {
     toastOpen,
     closeToast,
