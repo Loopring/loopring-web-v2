@@ -1,5 +1,5 @@
 import React from "react";
-import { useToast } from "@loopring-web/core";
+import { useAccount, useToast } from "@loopring-web/core";
 import {
   AccountStatus,
   getValuePrecisionThousand,
@@ -47,6 +47,7 @@ export const useLimit = <C extends { [key: string]: any }>({
   const { marketMap, tokenMap } = useTokenMap();
   const { tokenPrices } = useTokenPrices();
   const { forexMap, allowTrade } = useSystem();
+  const { account } = useAccount();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const {
     toggle: { order },
@@ -537,6 +538,7 @@ export const useLimit = <C extends { [key: string]: any }>({
     const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
     const { priceLevel } = getPriceImpactInfo(
       pageTradePro.limitCalcTradeParams,
+      account.readyState,
       false
     );
     if (!allowTrade?.order?.enable) {
@@ -556,6 +558,7 @@ export const useLimit = <C extends { [key: string]: any }>({
       }
     }
   }, [
+    account.readyState,
     allowTrade.order.enable,
     limitSubmit,
     order.enable,

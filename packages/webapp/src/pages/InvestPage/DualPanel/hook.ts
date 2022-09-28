@@ -205,12 +205,12 @@ export const useDualHook = ({
     }, 60000);
   }, 100);
   React.useEffect(() => {
-    if (
-      dualStatus === SagaStatus.UNSET &&
-      pairBSymbol &&
-      marketArray !== undefined
-    ) {
-      handleOnPairChange({ pairB: pairBSymbol });
+    if (dualStatus === SagaStatus.UNSET && pairBSymbol) {
+      if (marketArray !== undefined && marketArray.length) {
+        handleOnPairChange({ pairB: pairBSymbol });
+      } else if (marketArray?.length == 0) {
+        history.push("/invest");
+      }
     }
   }, [dualStatus]);
   React.useEffect(() => {
