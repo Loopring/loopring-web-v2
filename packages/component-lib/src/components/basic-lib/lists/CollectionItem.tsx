@@ -83,27 +83,20 @@ const IconButtonStyle = styled(IconButton)`
 const ActionMemo = React.memo(
   <Co extends CollectionMeta>({
     setShowDeploy,
-    // setShowTradeIsFrozen,
-    // setShowEdit,
+    setShowEdit,
     item,
     account,
-    // etherscanBaseUrl,
     setShowMintNFT,
   }: CollectionItemProps<Co>) => {
     const { t } = useTranslation("common");
-    // const {
-    //   toggle: { deployNFT },
-    // } = useToggle();
 
     const popupState = usePopupState({
       variant: "popover",
       popupId: "collection-action",
     });
-    // const { isOpen } = popupState;
     const bindContent = bindMenu(popupState);
     const bindAction = bindTrigger(popupState);
 
-    // const theme = useTheme();
     return (
       <Grid item marginTop={1}>
         <IconButtonStyle size={"large"} edge={"end"} {...{ ...bindAction }}>
@@ -173,20 +166,20 @@ const ActionMemo = React.memo(
               </MenuItem>
             )}
 
-            {/*{!!(*/}
-            {/*  item.isCounterFactualNFT &&*/}
-            {/*  item?.nftType !== NFT_TYPE_STRING.ERC721*/}
-            {/*) && (*/}
-            {/*  <MenuItem*/}
-            {/*    onClick={() => {*/}
-            {/*      if (setShowEdit) {*/}
-            {/*        setShowEdit(item);*/}
-            {/*      }*/}
-            {/*    }}*/}
-            {/*  >*/}
-            {/*    {t("labelCollectionEditBtn")}*/}
-            {/*  </MenuItem>*/}
-            {/*)}*/}
+            {!!(
+              item.isCounterFactualNFT &&
+              item?.nftType !== NFT_TYPE_STRING.ERC721
+            ) && (
+              <MenuItem
+                onClick={() => {
+                  if (setShowEdit) {
+                    setShowEdit(item);
+                  }
+                }}
+              >
+                {t("labelCollectionEditBtn")}
+              </MenuItem>
+            )}
           </Box>
         </Popover>
       </Grid>
@@ -213,7 +206,6 @@ export const CollectionItem = React.memo(
       } = props;
       const { t } = useTranslation("common");
 
-      // const { metaDemo } = makeMeta({ collection: item, domain });
       return (
         <CardStyleItem ref={_ref} className={"collection"}>
           <Box

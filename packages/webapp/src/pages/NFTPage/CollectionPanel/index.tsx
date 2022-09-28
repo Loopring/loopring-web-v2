@@ -39,6 +39,8 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
   const [view, setView] = React.useState<MyCollectionView>(
     MyCollectionView.List
   );
+  const { updateCollectionData } = useModalData();
+
   const [detail, setDetail] =
     React.useState<CollectionMeta | undefined>(undefined);
   const history = useHistory();
@@ -100,8 +102,10 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               account={account}
               toggle={deployNFT}
               setShowEdit={(item) => {
-                // history.push("/nft/addCollection");
-                // setCreateOpen(true)
+                updateCollectionData({ ...item });
+                history.push(
+                  `/nft/editCollection/${item.id}-${item.contractAddress}`
+                );
               }}
               onItemClick={(item) => {
                 history.push(
