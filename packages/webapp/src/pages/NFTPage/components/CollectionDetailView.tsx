@@ -144,7 +144,10 @@ export const CollectionDetailView = ({
                         ? collectionDate.name
                         : t("labelUnknown") +
                             "-" +
-                            getShortAddr(item?.contractAddress ?? "", true)
+                            getShortAddr(
+                              collectionDate?.contractAddress ?? "",
+                              true
+                            )
                     ) ?? "",
                 }}
               />
