@@ -1,7 +1,6 @@
 import { WithTranslation } from "react-i18next";
 import {
   Account,
-  AvatarCoinStyled,
   CAMPAIGN_TAG,
   CoinInfo,
   CurrencyToTag,
@@ -17,7 +16,12 @@ import {
 import { Box, Grid } from "@mui/material";
 import { Avatar, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { baseTitleCss, TagIconList, useSettings } from "../../index";
+import {
+  AvatarCoin,
+  baseTitleCss,
+  TagIconList,
+  useSettings,
+} from "../../index";
 import { NewTagIcon } from "../basic-lib";
 import { Currency } from "@loopring-web/loopring-sdk";
 
@@ -114,7 +118,7 @@ export const TradeTitle = <I extends object>({
                 justifyContent={"center"}
               >
                 {sellCoinIcon ? (
-                  <AvatarCoinStyled
+                  <AvatarCoin
                     imgx={sellCoinIcon.x}
                     imgy={sellCoinIcon.y}
                     imgheight={sellCoinIcon.height}
@@ -154,7 +158,7 @@ export const TradeTitle = <I extends object>({
                 justifyContent={"center"}
               >
                 {buyCoinIcon ? (
-                  <AvatarCoinStyled
+                  <AvatarCoin
                     imgx={buyCoinIcon.x}
                     imgy={buyCoinIcon.y}
                     imgheight={buyCoinIcon.height}

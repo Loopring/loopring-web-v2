@@ -7,14 +7,13 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import { Button } from "../";
+import { AvatarCoin, Button } from "../";
 import React from "react";
 import moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import {
   AmmCardProps,
-  AvatarCoinStyled,
   CurrencyToTag,
   DAY_FORMAT,
   EmptyValueTag,
@@ -256,7 +255,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                     justifyContent={"center"}
                   >
                     {coinAIcon ? (
-                      <AvatarCoinStyled
+                      <AvatarCoin
                         imgx={coinAIcon.x}
                         imgy={coinAIcon.y}
                         imgheight={coinAIcon.h}
@@ -296,7 +295,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                     justifyContent={"center"}
                   >
                     {coinBIcon ? (
-                      <AvatarCoinStyled
+                      <AvatarCoin
                         imgx={coinBIcon.x}
                         imgy={coinBIcon.y}
                         imgheight={coinBIcon.h}
@@ -455,7 +454,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             justifyContent={"flex-start"}
                           >
                             {coinAIcon ? (
-                              <AvatarCoinStyled
+                              <AvatarCoin
                                 imgx={coinAIcon.x}
                                 imgy={coinAIcon.y}
                                 imgheight={coinAIcon.h}
@@ -529,7 +528,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             justifyContent={"flex-start"}
                           >
                             {coinBIcon ? (
-                              <AvatarCoinStyled
+                              <AvatarCoin
                                 style={{ marginTop: 2 }}
                                 imgx={coinBIcon.x}
                                 imgy={coinBIcon.y}
@@ -714,7 +713,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             justifyContent={"flex-start"}
                           >
                             {coinBIcon ? (
-                              <AvatarCoinStyled
+                              <AvatarCoin
                                 style={{ marginTop: 2 }}
                                 imgx={coinBIcon.x}
                                 imgy={coinBIcon.y}
@@ -847,7 +846,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                           justifyContent={"flex-start"}
                         >
                           {coinAIcon ? (
-                            <AvatarCoinStyled
+                            <AvatarCoin
                               imgx={coinAIcon.x}
                               imgy={coinAIcon.y}
                               imgheight={coinAIcon.h}
@@ -921,7 +920,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                           justifyContent={"flex-start"}
                         >
                           {coinBIcon ? (
-                            <AvatarCoinStyled
+                            <AvatarCoin
                               style={{ marginTop: 2 }}
                               imgx={coinBIcon.x}
                               imgy={coinBIcon.y}

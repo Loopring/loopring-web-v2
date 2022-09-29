@@ -1,7 +1,6 @@
 import {
   AmmExitData,
   AmmInData,
-  AvatarCoinStyled,
   CoinInfo,
   defalutSlipage,
   EmptyValueTag,
@@ -18,6 +17,7 @@ import React from "react";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import { Avatar, Box, Grid, Link, Typography } from "@mui/material";
 import {
+  AvatarCoin,
   BtnPercentage,
   ButtonStyle,
   InputCoin,
@@ -359,7 +359,7 @@ export const AmmWithdrawWrap = <
               marginRight={1 / 2}
             >
               {tokenAIcon ? (
-                <AvatarCoinStyled
+                <AvatarCoin
                   imgx={tokenAIcon.x}
                   imgy={tokenAIcon.y}
                   imgheight={tokenAIcon.h}
@@ -409,7 +409,7 @@ export const AmmWithdrawWrap = <
               marginRight={1 / 2}
             >
               {tokenBIcon ? (
-                <AvatarCoinStyled
+                <AvatarCoin
                   imgx={tokenBIcon.x}
                   imgy={tokenBIcon.y}
                   imgheight={tokenBIcon.h}

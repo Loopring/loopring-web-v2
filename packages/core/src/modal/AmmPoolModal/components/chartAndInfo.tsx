@@ -14,9 +14,9 @@ import {
   StyledProps,
   useSettings,
   AmmPairDetail,
+  AvatarCoin,
 } from "@loopring-web/component-lib";
 import {
-  AvatarCoinStyled,
   CurrencyToTag,
   EmptyValueTag,
   FloatTag,
@@ -157,7 +157,7 @@ export const ChartAndInfoPanel = ({
                 justifyContent={"center"}
               >
                 {coinAIcon ? (
-                  <AvatarCoinStyled
+                  <AvatarCoin
                     imgx={coinAIcon.x}
                     imgy={coinAIcon.y}
                     imgheight={coinAIcon.h}
@@ -235,7 +235,7 @@ export const ChartAndInfoPanel = ({
                 justifyContent={"center"}
               >
                 {coinBIcon ? (
-                  <AvatarCoinStyled
+                  <AvatarCoin
                     style={{ marginTop: 2 }}
                     imgx={coinBIcon.x}
                     imgy={coinBIcon.y}

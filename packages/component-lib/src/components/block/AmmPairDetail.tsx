@@ -1,10 +1,10 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import {
-  AvatarCoinStyled,
   getValuePrecisionThousand,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { CoinSource, useSettings } from "../../stores";
+import { AvatarCoin } from "../basic-lib";
 
 export const AmmPairDetail = ({
   coinA,
@@ -45,7 +45,7 @@ export const AmmPairDetail = ({
           justifyContent={"flex-start"}
         >
           {coinAIcon ? (
-            <AvatarCoinStyled
+            <AvatarCoin
               imgx={coinAIcon.x}
               imgy={coinAIcon.y}
               imgheight={coinAIcon.h}
@@ -112,7 +112,7 @@ export const AmmPairDetail = ({
           justifyContent={"flex-start"}
         >
           {coinBIcon ? (
-            <AvatarCoinStyled
+            <AvatarCoin
               style={{ marginTop: 2 }}
               imgx={coinBIcon.x}
               imgy={coinBIcon.y}

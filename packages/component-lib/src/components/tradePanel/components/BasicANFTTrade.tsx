@@ -102,7 +102,9 @@ export const BasicANFTTrade = <
       disabled={getDisabled()}
       {...{
         ...inputCoinProps,
-        inputData: tradeData ? tradeData : ({} as T),
+        inputData: tradeData
+          ? { belong: tradeData.belong ?? "NFT", ...tradeData }
+          : ({} as T),
         coinMap: {} as CoinMap<I, CoinInfo<I>>,
       }}
     />

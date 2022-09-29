@@ -6,6 +6,7 @@ import {
   TextField as MuTextField,
 } from "@mui/material";
 import {
+  AvatarCoinProps,
   AvatarCoinStyled,
   LPTokenType,
   MarketType,
@@ -48,6 +49,21 @@ export const TextField = styled(MuTextField)`
     outline: transparent;
   }
 ` as typeof MuTextField;
+export const AvatarCoin = (props: AvatarCoinProps) => {
+  const size = props.size ?? 36;
+  return (
+    <Box
+      display={"inline-flex"}
+      alignItems={"center"}
+      justifyContent={"center"}
+      height={36}
+      width={36}
+      sx={{ transform: `scale(${size / (36 * 2)})` }}
+    >
+      <AvatarCoinStyled {...props} />
+    </Box>
+  );
+};
 
 export const CoinIcon = <R extends MarketType | string | LPTokenType>({
   symbol,
@@ -77,7 +93,7 @@ export const CoinIcon = <R extends MarketType | string | LPTokenType>({
           justifyContent={"center"}
         >
           {coinAIcon ? (
-            <AvatarCoinStyled
+            <AvatarCoin
               imgx={coinAIcon.x}
               imgy={coinAIcon.y}
               imgheight={coinAIcon.h}
@@ -114,7 +130,7 @@ export const CoinIcon = <R extends MarketType | string | LPTokenType>({
           justifyContent={"center"}
         >
           {coinBIcon ? (
-            <AvatarCoinStyled
+            <AvatarCoin
               imgx={coinBIcon.x}
               imgy={coinBIcon.y}
               imgheight={coinBIcon.h}
@@ -146,7 +162,7 @@ export const CoinIcon = <R extends MarketType | string | LPTokenType>({
     return (
       <>
         {coinIcon ? (
-          <AvatarCoinStyled
+          <AvatarCoin
             imgx={coinIcon.x}
             imgy={coinIcon.y}
             imgheight={coinIcon.h}
