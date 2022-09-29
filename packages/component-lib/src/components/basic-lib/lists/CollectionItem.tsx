@@ -39,6 +39,7 @@ import {
   bindTrigger,
   usePopupState,
 } from "material-ui-popup-state/hooks";
+import { sanitize } from "dompurify";
 
 const BoxStyle = styled(Box)`
   .MuiRadio-root {
@@ -299,13 +300,17 @@ export const CollectionItem = React.memo(
                     textOverflow={"ellipsis"}
                     variant={"body1"}
                     component={"span"}
-                  >
-                    {item?.name
-                      ? item?.name
-                      : t("labelUnknown") +
-                        "-" +
-                        getShortAddr(item?.contractAddress ?? "", true)}
-                  </Typography>
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        sanitize(
+                          item?.name
+                            ? item.name
+                            : t("labelUnknown") +
+                                "-" +
+                                getShortAddr(item?.contractAddress ?? "", true)
+                        ) ?? "",
+                    }}
+                  ></Typography>
                   <Link
                     variant={"body2"}
                     display={"inline-flex"}
