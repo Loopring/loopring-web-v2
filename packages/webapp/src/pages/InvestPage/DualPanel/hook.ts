@@ -49,7 +49,7 @@ export const useDualHook = ({
     ) ?? [];
 
   const [pairASymbol, setPairASymbol] = React.useState(() =>
-    tradeMap[coinA] ? coinA : "ETH"
+    tradeMap && tradeMap[coinA] ? coinA : "ETH"
   );
   const [pairBSymbol, setPairBSymbol] = React.useState(
     coinB && tradeMap && tradeMap[pairASymbol]?.tokenList
@@ -60,7 +60,9 @@ export const useDualHook = ({
   );
   const [pair, setPair] = React.useState(`${pairASymbol}-${pairBSymbol}`);
   const [market, setMarket] = React.useState(() =>
-    findDualMarket(marketArray, pairASymbol, pairBSymbol)
+    marketArray?.length
+      ? findDualMarket(marketArray, pairASymbol, pairBSymbol)
+      : ""
   );
   const [[marketBase, marketQuote], setMarketPair] = React.useState(() => {
     // @ts-ignore

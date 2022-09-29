@@ -3,6 +3,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { bindHover } from "material-ui-popup-state/es";
 import {
+  AvatarCoin,
   Button,
   Column,
   NewTagIcon,
@@ -15,7 +16,6 @@ import {
 } from "../../basic-lib";
 import {
   AmmDetail,
-  AvatarCoinStyled,
   CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -95,7 +95,7 @@ export const IconColumn = React.memo(
             justifyContent={"center"}
           >
             {coinAIcon ? (
-              <AvatarCoinStyled
+              <AvatarCoin
                 imgx={coinAIcon.x}
                 imgy={coinAIcon.y}
                 imgheight={coinAIcon.h}
@@ -134,7 +134,7 @@ export const IconColumn = React.memo(
             justifyContent={"center"}
           >
             {coinBIcon ? (
-              <AvatarCoinStyled
+              <AvatarCoin
                 imgx={coinBIcon.x}
                 imgy={coinBIcon.y}
                 imgheight={coinBIcon.h}
