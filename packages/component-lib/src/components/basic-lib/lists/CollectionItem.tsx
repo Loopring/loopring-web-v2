@@ -151,6 +151,8 @@ const ActionMemo = React.memo(
             )}
             {!!(
               item.isCounterFactualNFT &&
+              // @ts-ignore
+              item.isMintable &&
               item.owner?.toLowerCase() ===
                 account?.accAddress?.toLowerCase() &&
               item?.nftType !== NFT_TYPE_STRING.ERC721

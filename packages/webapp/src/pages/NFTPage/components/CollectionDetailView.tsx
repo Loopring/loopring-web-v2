@@ -107,7 +107,12 @@ export const CollectionDetailView = ({
               "http"
             ) ? (
               <Avatar
-                sx={{ bgcolor: "var(--color-border-disable2)" }}
+                sx={{
+                  bgcolor: "var(--color-border-disable2)",
+                  borderRadius: `${theme.unit}px`,
+                  height: "100%",
+                  width: "100%",
+                }}
                 variant={"rounded"}
                 src={getIPFSString(collectionDate?.avatar ?? "", baseURL)}
               />
