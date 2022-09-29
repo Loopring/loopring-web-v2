@@ -16,6 +16,7 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
+import { sanitize } from "dompurify";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -136,9 +137,17 @@ export const CollectionDetailView = ({
                 overflow={"hidden"}
                 display={"flex"}
                 textOverflow={"ellipsis"}
-              >
-                {collectionDate.name}
-              </Typography>
+                dangerouslySetInnerHTML={{
+                  __html:
+                    sanitize(
+                      collectionDate?.name
+                        ? collectionDate.name
+                        : t("labelUnknown") +
+                            "-" +
+                            getShortAddr(item?.contractAddress ?? "", true)
+                    ) ?? "",
+                }}
+              />
               <Link
                 color={"textPrimary"}
                 paddingTop={1}
