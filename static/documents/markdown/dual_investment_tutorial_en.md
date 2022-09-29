@@ -103,10 +103,6 @@ depends on the LRC/USDC settlement price at the time of expiration.
 Q： What is the purchase deadline for the dual investment？  
 A： Please complete the purchase before 15:00 (UTC+8) on the settlement day.
 
-Q： What’s the difference between Dual investment and Covered Gain？  
-A： Covered Gain cannot invest in stable coins. (e.g. USDC) Dual investment can purchase with both stable coins or target
-crypto.
-
 Q： Could dual investment redeem or withdraw before being settled？  
 A： After purchasing the order, it cannot be canceled or redeemed until the settlement date. After settled, will return
 to your trade account.

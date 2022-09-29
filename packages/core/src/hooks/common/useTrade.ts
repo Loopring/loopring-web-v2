@@ -1,8 +1,10 @@
 import React from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 import {
+  AccountStatus,
   defalutSlipage,
   getValuePrecisionThousand,
   myError,
@@ -12,16 +14,15 @@ import {
   DAYS,
   getTimestampDaysLater,
   MAPFEEBIPS,
-  store,
-  useAmmMap,
   OrderInfoPatch,
+  store,
   useAccount,
-  useTokenMap,
+  useAmmMap,
   useSystem,
+  useTokenMap,
 } from "../../index";
 import * as _ from "lodash";
 import BigNumber from "bignumber.js";
-import { toBig } from "@loopring-web/loopring-sdk";
 
 export const DefaultFeeBips = "1";
 
@@ -813,6 +814,7 @@ export function usePlaceOrder() {
 
 export const getPriceImpactInfo = (
   calcTradeParams: any,
+  accountStatus: keyof typeof AccountStatus | "unknown",
   isMarket: boolean = true
 ) => {
   let priceImpact: any = calcTradeParams?.priceImpact
@@ -849,7 +851,10 @@ export const getPriceImpactInfo = (
 
   return {
     value: priceImpact,
-    priceImpactColor,
+    priceImpactColor:
+      accountStatus === AccountStatus.ACTIVATED
+        ? priceImpactColor
+        : "var(--color-text-primary)",
     priceLevel,
   };
 };

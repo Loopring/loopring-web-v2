@@ -8,6 +8,7 @@ import {
   getValuePrecisionThousand,
   IBData,
   Info2Icon,
+  myLog,
   ReverseIcon,
   SlippageTolerance,
   TradeCalcData,
@@ -48,16 +49,11 @@ export const SwapTradeWrap = <
   const buyRef = React.useRef();
   const { slippage } = useSettings();
   let tradeData = swapData.tradeData;
+
   const slippageArray: Array<number | string> = SlippageTolerance.concat(
     `slippage:${slippage}`
   ) as Array<number | string>;
-  const [error, setError] = React.useState<{
-    error: boolean;
-    message?: string | JSX.Element;
-  }>({
-    error: false,
-    message: "",
-  });
+
   const [_isStoB, setIsStoB] = React.useState(
     typeof isStob !== "undefined" ? isStob : true
   );
@@ -146,10 +142,8 @@ export const SwapTradeWrap = <
           error: true,
           message: t("tokenNotEnough", { belong: belong }),
         };
-        setError(_error);
         return _error;
       }
-      setError({ error: false, message: "" });
       return { error: false, message: "" };
     };
   }
@@ -182,22 +176,27 @@ export const SwapTradeWrap = <
     popupId: "slippagePop",
   });
   const label = React.useMemo(() => {
-    if (error.error) {
-      if (typeof error.message === "string") {
-        return t(error.message);
-      } else if (error.message !== undefined) {
-        return error.message;
-      } else {
-        return t("labelError");
-      }
-    }
+    myLog(swapBtnI18nKey, "swapBtnI18nKey useMemo");
     if (swapBtnI18nKey) {
       const key = swapBtnI18nKey.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      if (key) {
+        return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      } else {
+        return t(swapBtnI18nKey);
+      }
     } else {
       return t(`swapBtn`);
     }
-  }, [error, t, swapBtnI18nKey]);
+    // if (error.error) {
+    //   if (typeof error.message === "string") {
+    //     return t(error.message);
+    //   } else if (error.message !== undefined) {
+    //     return error.message;
+    //   } else {
+    //     return t("labelError");
+    //   }
+    // }
+  }, [t, swapBtnI18nKey]);
   const showVal =
     tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB;
 
@@ -533,8 +532,7 @@ export const SwapTradeWrap = <
               disabled={
                 getDisabled() ||
                 swapBtnStatus === TradeBtnStatus.DISABLED ||
-                swapBtnStatus === TradeBtnStatus.LOADING ||
-                error.error
+                swapBtnStatus === TradeBtnStatus.LOADING
               }
               fullWidth={true}
             >
