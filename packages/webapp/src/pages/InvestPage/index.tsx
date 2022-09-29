@@ -9,7 +9,11 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
-import { confirmation, ViewAccountTemplate } from "@loopring-web/core";
+import {
+  confirmation,
+  useDualMap,
+  ViewAccountTemplate,
+} from "@loopring-web/core";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
@@ -173,6 +177,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
     confirmDefiInvest: confirmDefiInvestFun,
     confirmDualInvest: confirmDualInvestFun,
   } = confirmation.useConfirmation();
+  const { marketArray } = useDualMap();
   const [confirmDefiInvest, setConfirmDefiInvest] = React.useState(false);
   const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
@@ -194,8 +199,13 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         setIsShowTab(false);
         return;
       case InvestRouter[InvestType.DeFi]:
-        setTabIndex(InvestType.DeFi);
-        setIsShowTab(false);
+        if (marketArray?.length) {
+          setTabIndex(InvestType.DeFi);
+          setIsShowTab(false);
+        } else {
+          setTabIndex(InvestType.Overview);
+          setIsShowTab(true);
+        }
         return;
       case InvestRouter[InvestType.Dual]:
         setTabIndex(InvestType.Dual);

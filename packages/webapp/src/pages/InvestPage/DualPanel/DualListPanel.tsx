@@ -207,8 +207,13 @@ export const DualListPanel: any = withTranslation("common")(
                               handleOnPairChange({ pairA: item.toString() })
                             }
                           >
-                            <CardContent>
-                              <CoinIcon symbol={item.toString()} size={24} />
+                            <CardContent sx={{ alignItems: "center" }}>
+                              <Typography
+                                component={"span"}
+                                display={"inline-flex"}
+                              >
+                                <CoinIcon symbol={item.toString()} size={28} />
+                              </Typography>
                               <Typography variant={"h5"} paddingLeft={1}>
                                 {t("labelDualInvest", {
                                   symbol: item.toString(),
