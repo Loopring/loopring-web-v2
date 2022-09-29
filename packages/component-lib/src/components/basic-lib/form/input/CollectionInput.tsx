@@ -337,6 +337,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
           <CollectionCardList
             {...{ ...(collectionListProps as any) }}
             isSelectOnly={true}
+            filter={{ isMintable: true }}
             selectCollection={collection}
             onSelectItem={(item) => {
               onSelected(item as Co);

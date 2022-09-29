@@ -378,6 +378,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
   etherscanBaseUrl,
   isLoading,
   noEdit = false,
+  filter,
   ...rest
 }: CollectionListProps<Co> &
   Partial<CollectionItemProps<Co>> & { onSelectItem?: (item: Co) => void }) => {
@@ -485,7 +486,10 @@ export const CollectionCardList = <Co extends CollectionMeta>({
                 }
                 page={page}
                 onChange={(_event, value) => {
-                  onPageChange(Number(value));
+                  onPageChange(
+                    Number(value),
+                    filter ? { ...filter } : undefined
+                  );
                 }}
               />
             </Box>
