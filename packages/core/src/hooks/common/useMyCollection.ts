@@ -54,9 +54,7 @@ export const useMyCollection = <C extends CollectionMeta>(
   React.useEffect(() => {
     onPageChange(1, filter);
   }, [filter]);
-  // React.useEffect(() => {
-  //   updateWalletL2Collection({page});
-  // }, [page]);
+
   React.useEffect(() => {
     if (walletL2CollectionStatus === SagaStatus.UNSET && page_reudex === page) {
       renderCollection();
