@@ -3,6 +3,7 @@ import {
   CoinMap,
   getFormattedHash,
   IBData,
+  myLog,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
@@ -95,6 +96,7 @@ export const BasicANFTTrade = <
     ...inputNFTProps,
     ...rest,
   };
+  myLog("tradeData?.belong", tradeData);
   return (
     // @ts-ignore
     <InputCoin<T, I, CoinInfo<I>>
@@ -103,7 +105,10 @@ export const BasicANFTTrade = <
       {...{
         ...inputCoinProps,
         inputData: tradeData
-          ? { belong: tradeData.belong ?? "NFT", ...tradeData }
+          ? {
+              ...tradeData,
+              belong: tradeData?.belong ? tradeData?.belong : "NFT",
+            }
           : ({} as T),
         coinMap: {} as CoinMap<I, CoinInfo<I>>,
       }}
