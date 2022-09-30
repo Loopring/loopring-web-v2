@@ -20,8 +20,9 @@ import {
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { MyNFTCollectionList } from "./MyNFTCollectionList";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { Button, useSettings } from "@loopring-web/component-lib";
+import { sanitize } from "dompurify";
 
 enum MY_NFT_VIEW {
   LIST_COLLECTION = "byCollection",
@@ -128,15 +129,23 @@ export const MyNFTPanel = withTranslation("common")(
                   })
                 }
               >
-                {t("labelNFTMyNFT", {
-                  collection: collectionMeta
-                    ? collectionMeta.name
-                      ? collectionMeta?.name
-                      : t("labelUnknown") +
-                        " - " +
-                        getShortAddr(collectionMeta.contractAddress ?? "")
-                    : EmptyValueTag,
-                })}
+                <Typography
+                  component={"span"}
+                  color={"inherit"}
+                  dangerouslySetInnerHTML={{
+                    __html: sanitize(
+                      t("labelNFTMyNFT", {
+                        collection: collectionMeta
+                          ? collectionMeta.name
+                            ? collectionMeta?.name
+                            : t("labelUnknown") +
+                              " - " +
+                              getShortAddr(collectionMeta.contractAddress ?? "")
+                          : EmptyValueTag,
+                      })
+                    ),
+                  }}
+                />
               </Button>
             </Box>
             {collectionMeta ? (
