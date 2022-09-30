@@ -109,7 +109,7 @@ export type CollectionListProps<Co> = {
   etherscanBaseUrl: string;
   baseURL: string;
   getIPFSString: GET_IPFS_STRING;
-  filter: Partial<L2CollectionFilter>;
+  filter?: Partial<L2CollectionFilter>;
 };
 export type CollectionItemProps<Co> = {
   item: Co;
