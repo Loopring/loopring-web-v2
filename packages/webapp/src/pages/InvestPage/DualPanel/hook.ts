@@ -1,5 +1,4 @@
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import {
   confirmation,
   findDualMarket,
@@ -44,7 +43,7 @@ export const useDualHook = ({
   const [currentPrice, setCurrentPrice] =
     React.useState<DualCurrentPrice | undefined>(undefined);
   const [, , coinA, coinB] =
-    (match?.params?.market ? match.params.market : "ETH-USDT").match(
+    (match?.params?.market ? match.params.market : "ETH-USDC").match(
       /(dual-)?(\w+)-(\w+)/i
     ) ?? [];
 
@@ -56,7 +55,7 @@ export const useDualHook = ({
       ? tradeMap[pairASymbol].tokenList.includes(coinB)
         ? coinB
         : tradeMap[pairASymbol].tokenList[0]
-      : "USDT"
+      : "USDC"
   );
   const [pair, setPair] = React.useState(`${pairASymbol}-${pairBSymbol}`);
   const [market, setMarket] = React.useState(() =>
@@ -68,7 +67,7 @@ export const useDualHook = ({
     // @ts-ignore
     const [, , coinA, coinB] = market
       ? market
-      : "ETH-USDT".match(/(dual-)?(\w+)-(\w+)/i) ?? [];
+      : "ETH-USDC".match(/(dual-)?(\w+)-(\w+)/i) ?? [];
     return [coinA, coinB];
   });
 
