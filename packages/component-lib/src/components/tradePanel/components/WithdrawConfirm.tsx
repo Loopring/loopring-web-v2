@@ -84,7 +84,7 @@ export const WithdrawConfirm = <
           {t("labelL2toL2TokenAmount")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {tradeData?.tradeValue + " "}
+          {tradeData?.tradeValue}
           <Typography
             component={"span"}
             color={"textSecondary"}
@@ -93,7 +93,7 @@ export const WithdrawConfirm = <
                 sanitize(
                   type === "NFT"
                     ? " \u2A09 " + tradeData?.name ?? "NFT"
-                    : tradeData?.belong ?? EmptyValueTag
+                    : ` ${tradeData?.belong}` ?? EmptyValueTag
                 ) ?? "",
             }}
           />
