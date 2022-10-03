@@ -103,7 +103,9 @@ const MyLiquidity: any = withTranslation("common")(
     }, [match?.params?.type]);
 
     React.useEffect(() => {
-      getDualTxList({});
+      if (account.accountId) {
+        getDualTxList({});
+      }
     }, [account.accountId]);
     const { summaryMyInvest, myPoolRow, showLoading } = useOverview({
       ammActivityMap,

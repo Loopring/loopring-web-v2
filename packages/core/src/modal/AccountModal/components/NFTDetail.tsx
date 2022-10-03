@@ -30,7 +30,7 @@ import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
 import { useTheme } from "@emotion/react";
 import { getIPFSString } from "../../../utils";
 import { LoopringAPI } from "../../../api_wrapper";
-import { useToast } from "../../../hooks";
+import { htmlDecode, useToast } from "../../../hooks";
 import { sanitize } from "dompurify";
 
 const BoxNFT = styled(Box)`
@@ -550,9 +550,13 @@ export const NFTDetail = withTranslation("common")(
                         flexDirection={isMobile ? "column" : "row"}
                         variant={"body1"}
                         marginTop={1}
-                      >
-                        {JSON.stringify(key)}
-                      </Typography>
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            sanitize(
+                              JSON.stringify(key.toString()) ?? EmptyValueTag
+                            ) ?? "",
+                        }}
+                      />
                     ) : (
                       <Typography
                         key={key.toString() + index}
@@ -565,19 +569,24 @@ export const NFTDetail = withTranslation("common")(
                           component={"span"}
                           color={"var(--color-text-third)"}
                           width={150}
-                        >
-                          {key.toString()}
-                        </Typography>
+                          dangerouslySetInnerHTML={{
+                            __html:
+                              sanitize(
+                                JSON.stringify(key.toString()) ?? EmptyValueTag
+                              ) ?? "",
+                          }}
+                        />
                         <Typography
                           component={"span"}
                           color={"var(--color-text-secondary)"}
                           title={key.toString()}
-                        >
-                          {
-                            // @ts-ignore
-                            properties[key.toString()] ?? EmptyValueTag
-                          }
-                        </Typography>
+                          dangerouslySetInnerHTML={{
+                            __html:
+                              sanitize(
+                                properties[key.toString()] ?? EmptyValueTag
+                              ) ?? "",
+                          }}
+                        />
                       </Typography>
                     );
                   })
@@ -608,7 +617,11 @@ export const NFTDetail = withTranslation("common")(
                 maxRows={5}
                 disabled={true}
                 style={{ padding: 0 }}
-                value={`${sanitize(popItem?.description ?? EmptyValueTag)}`}
+                value={
+                  popItem?.description
+                    ? htmlDecode(popItem.description ?? "").toString()
+                    : EmptyValueTag
+                }
               />
             </Box>
           </Box>

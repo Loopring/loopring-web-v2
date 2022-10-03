@@ -20,8 +20,12 @@ import {
   SummaryMyInvest,
   useDefiMap,
   makeDefiInvestReward,
+  volumeToCountAsBigNumber,
 } from "@loopring-web/core";
-import { SagaStatus } from "@loopring-web/common-resources";
+import {
+  getValuePrecisionThousand,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export const useOverview = <
@@ -40,7 +44,7 @@ export const useOverview = <
 } => {
   const { status: walletLayer2Status } = useWalletLayer2();
   const { status: userRewardsStatus, userRewardsMap } = useUserRewards();
-  const { tokenMap } = useTokenMap();
+  const { tokenMap, idIndex } = useTokenMap();
   const { marketCoins: defiCoinArray } = useDefiMap();
 
   const { status: ammMapStatus, ammMap } = useAmmMap();
@@ -124,10 +128,14 @@ export const useOverview = <
           );
         }, []);
         if (dualOnInvestAsset) {
-          debugger;
-          Reflect.ownKeys(dualOnInvestAsset).forEach((key) => {
+          Object.keys(dualOnInvestAsset).forEach((key) => {
             const item = dualOnInvestAsset[key];
-            const { amount } = item;
+            const { amount, tokenId } = item;
+            const tokenInfo = tokenMap[idIndex[tokenId]];
+            totalCurrentInvest.investDollar +=
+              volumeToCountAsBigNumber(tokenInfo.symbol, amount)
+                ?.times(tokenPrices[tokenInfo.symbol] ?? 0)
+                .toNumber() ?? 0;
           });
         }
         // dualList.forEach((item) => {
@@ -169,7 +177,7 @@ export const useOverview = <
     ) {
       walletLayer2Callback();
     }
-  }, [ammMapStatus, userRewardsStatus, walletLayer2Status]);
+  }, [ammMapStatus, userRewardsStatus, walletLayer2Status, dualOnInvestAsset]);
 
   React.useEffect(() => {
     mountedRef.current = true;

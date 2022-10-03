@@ -28,7 +28,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     account: { accountId, apiKey },
   } = useAccount();
   const { tokenMap, idIndex } = useTokenMap();
-  const { marketMap: dualMarketMap } = useDualMap();
+  const { marketMap: dualMarketMap, marketArray } = useDualMap();
   const [dualList, setDualList] = React.useState<R[]>([]);
   const [dualOnInvestAsset, setDualOnInvestAsset] =
     React.useState<any>(undefined);
@@ -161,7 +161,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   const getDualTxList = React.useCallback(
     async ({ start, end, offset, limit = Limit }: any) => {
       setShowLoading(true);
-      if (LoopringAPI.defiAPI && accountId && apiKey) {
+      if (LoopringAPI.defiAPI && accountId && apiKey && marketArray?.length) {
         const [response, responseTotal] = await Promise.all([
           LoopringAPI.defiAPI.getDualTransactions(
             {
