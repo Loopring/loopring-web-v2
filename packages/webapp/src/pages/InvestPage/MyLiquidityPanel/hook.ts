@@ -28,10 +28,10 @@ export const useOverview = <
   R extends { [key: string]: any },
   I extends { [key: string]: any }
 >({
-  dualList,
+  dualOnInvestAsset,
 }: {
   ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
-  dualList: RawDataDualAssetItem[];
+  dualOnInvestAsset: any; //RawDataDualAssetItem[];
 }): {
   myAmmMarketArray: AmmRecordRow<R>[];
   summaryMyInvest: Partial<SummaryMyInvest>;
@@ -123,12 +123,19 @@ export const useOverview = <
               tokenPrices[defiCoinKey] ?? 0
           );
         }, []);
-        dualList.forEach((item) => {
-          const { sellSymbol, amount } = item;
-          amount.replace(",", "");
-          totalCurrentInvest.investDollar +=
-            Number(amount ?? 0) * tokenPrices[sellSymbol] ?? 0;
-        }, []);
+        if (dualOnInvestAsset) {
+          debugger;
+          Reflect.ownKeys(dualOnInvestAsset).forEach((key) => {
+            const item = dualOnInvestAsset[key];
+            const { amount } = item;
+          });
+        }
+        // dualList.forEach((item) => {
+        //   const { sellSymbol, amount } = item;
+        //   amount.replace(",", "");
+        //   totalCurrentInvest.investDollar +=
+        //     Number(amount ?? 0) * tokenPrices[sellSymbol] ?? 0;
+        // }, []);
 
         setSummaryMyInvest((state) => {
           return {
@@ -140,7 +147,7 @@ export const useOverview = <
       }
       return [];
     },
-    [ammMap, userRewardsMap, tokenPrices, tokenMap, dualList]
+    [ammMap, userRewardsMap, tokenPrices, tokenMap, dualOnInvestAsset]
   );
 
   const walletLayer2Callback = React.useCallback(async () => {

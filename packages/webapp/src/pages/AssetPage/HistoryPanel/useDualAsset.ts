@@ -30,6 +30,8 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   const { tokenMap, idIndex } = useTokenMap();
   const { marketMap: dualMarketMap } = useDualMap();
   const [dualList, setDualList] = React.useState<R[]>([]);
+  const [dualOnInvestAsset, setDualOnInvestAsset] =
+    React.useState<any>(undefined);
   const [pagination, setDualPagination] = React.useState<{
     pageSize: number;
     total: number;
@@ -160,18 +162,35 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     async ({ start, end, offset, limit = Limit }: any) => {
       setShowLoading(true);
       if (LoopringAPI.defiAPI && accountId && apiKey) {
-        const response = await LoopringAPI.defiAPI.getDualTransactions(
-          {
-            // dualTypes: sdk.DUAL_TYPE,
-            accountId,
-            settlementStatuses: sdk.SETTLEMENT_STATUS.UNSETTLED,
-            offset,
-            limit,
-            start,
-            end,
-          } as any,
-          apiKey
-        );
+        const [response, responseTotal] = await Promise.all([
+          LoopringAPI.defiAPI.getDualTransactions(
+            {
+              // dualTypes: sdk.DUAL_TYPE,
+              accountId,
+              settlementStatuses: sdk.SETTLEMENT_STATUS.UNSETTLED,
+              offset,
+              limit,
+              start,
+              end,
+            } as any,
+            apiKey
+          ),
+          LoopringAPI.defiAPI.getDualUserLocked(
+            {
+              accountId: accountId,
+              lockTag: [DUAL_TYPE.DUAL_BASE, DUAL_TYPE.DUAL_CURRENCY],
+            },
+            apiKey
+          ),
+        ]);
+        if (
+          (responseTotal as sdk.RESULT_INFO).code ||
+          (responseTotal as sdk.RESULT_INFO).message
+        ) {
+          setDualOnInvestAsset(undefined);
+        } else {
+          setDualOnInvestAsset(responseTotal.lockRecord);
+        }
         if (
           (response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message
@@ -256,6 +275,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     open,
     detail,
     setOpen,
+    dualOnInvestAsset,
     // updateTickersUI,
   };
 };
