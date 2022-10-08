@@ -155,6 +155,12 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             collectionDate={detail}
             getIPFSString={getIPFSString}
             baseURL={baseURL}
+            setShowEdit={(item) => {
+              updateCollectionData({ ...item });
+              history.push(
+                `/nft/editCollection/${item.id}-${item.contractAddress}`
+              );
+            }}
             setCopyToastOpen={collectionListProps.setCopyToastOpen}
           />
         </Box>

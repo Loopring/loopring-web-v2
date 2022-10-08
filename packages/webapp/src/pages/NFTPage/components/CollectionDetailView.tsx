@@ -12,7 +12,7 @@ import React from "react";
 import { useTheme } from "@emotion/react";
 import {
   Button,
-  TradeBtnStatus,
+  CollectionMedia,
   useSettings,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
@@ -33,15 +33,17 @@ const HeaderBannerStyle = styled(Box)<BoxProps & { url: string }>`
   border-radius: ${({ theme }) => theme.unit}px;
 ` as (props: BoxProps & { url: string }) => JSX.Element;
 
-export const CollectionDetailView = ({
+export const CollectionDetailView = <Co extends CollectionMeta>({
   collectionDate,
   getIPFSString,
   baseURL,
   setCopyToastOpen,
+  setShowEdit,
 }: {
-  collectionDate: CollectionMeta;
+  collectionDate: Co;
   getIPFSString: GET_IPFS_STRING;
   baseURL: string;
+  setShowEdit: (item: Co) => void;
   setCopyToastOpen: (props: { isShow: boolean; type: string }) => void;
 }) => {
   const theme = useTheme();
@@ -202,13 +204,15 @@ export const CollectionDetailView = ({
               >
                 {collectionDate?.nftType}
               </Typography>
-
+              {/*{collectionDate.isEditAble}*/}
               <Button
                 fullWidth
                 variant={"outlined"}
                 size={"medium"}
                 color={"primary"}
-                onClick={() => {}}
+                onClick={() => {
+                  setShowEdit(collectionDate);
+                }}
                 sx={{ marginTop: 1 }}
               >
                 {t(`labelCollectionEditBtn`)}
