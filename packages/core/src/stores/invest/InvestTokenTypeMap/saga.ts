@@ -158,8 +158,8 @@ const getInvestMapApi = async () => {
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             //@ts-ignore
             apr: [
-              dualInfo?.baseTokenApy?.min ?? 0,
-              dualInfo?.baseTokenApy?.max ?? 0,
+              (dualInfo?.baseTokenApy?.min ?? 0) * 100,
+              (dualInfo?.baseTokenApy?.max ?? 0) * 100,
             ], // [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
             durationType: InvestDuration.Duration,
             duration: `labelInvestRangeDay|1 - 9`,
@@ -172,8 +172,8 @@ const getInvestMapApi = async () => {
             // apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
             //@ts-ignore
             apr: [
-              dualInfo?.baseTokenApy?.min ?? 0,
-              dualInfo?.baseTokenApy?.max ?? 0,
+              (dualInfo?.baseTokenApy?.min ?? 0) * 100,
+              (dualInfo?.baseTokenApy?.max ?? 0) * 100,
             ],
             durationType: InvestDuration.All,
             duration: "",
@@ -183,8 +183,8 @@ const getInvestMapApi = async () => {
             // token: tokenMap[coinA],
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             apr: [
-              dualInfo?.baseTokenApy?.min ?? 0,
-              dualInfo?.baseTokenApy?.max ?? 0,
+              (dualInfo?.baseTokenApy?.min ?? 0) * 100,
+              (dualInfo?.baseTokenApy?.max ?? 0) * 100,
             ],
             durationType: InvestDuration.Duration,
             duration: `labelInvestRangeDay|1 - 9`,
@@ -202,8 +202,8 @@ const getInvestMapApi = async () => {
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             //@ts-ignore
             apr: [
-              dualInfo?.quoteTokenApy?.min ?? 0,
-              dualInfo?.quoteTokenApy?.max ?? 0,
+              (dualInfo?.quoteTokenApy?.min ?? 0) * 100,
+              (dualInfo?.quoteTokenApy?.max ?? 0) * 100,
             ],
             durationType: InvestDuration.Duration,
             duration: `labelInvestRangeDay|1 - 9`,
@@ -214,8 +214,8 @@ const getInvestMapApi = async () => {
           detail: {
             token: tokenMap[coinB],
             apr: [
-              dualInfo?.quoteTokenApy?.min ?? 0,
-              dualInfo?.quoteTokenApy?.max ?? 0,
+              (dualInfo?.quoteTokenApy?.min ?? 0) * 100,
+              (dualInfo?.quoteTokenApy?.max ?? 0) * 100,
             ],
             durationType: InvestDuration.All,
             duration: "",
@@ -225,8 +225,8 @@ const getInvestMapApi = async () => {
             // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             apr: [
-              dualInfo?.quoteTokenApy?.min ?? 0,
-              dualInfo?.quoteTokenApy?.max ?? 0,
+              (dualInfo?.quoteTokenApy?.min ?? 0) * 100,
+              (dualInfo?.quoteTokenApy?.max ?? 0) * 100,
             ],
             durationType: InvestDuration.Duration,
             duration: `labelInvestRangeDay|1 - 9`,
@@ -234,21 +234,33 @@ const getInvestMapApi = async () => {
         };
       }
 
-      if (prev[coinA]?.detail && dualInfo.apy) {
+      if (prev[coinA]?.detail && dualInfo.baseTokenApy) {
         prev[coinA].detail.apr = [
           prev[coinA]?.detail?.apr[0] === 0
-            ? dualInfo?.baseTokenApy?.min
-            : Math.min(dualInfo.apy, prev[coinA]?.detail?.apr[0]),
-          Math.max(dualInfo.apy, prev[coinA]?.detail?.apr[1]),
+            ? (dualInfo?.baseTokenApy?.min ?? 0) * 100
+            : Math.min(
+                (dualInfo?.baseTokenApy?.min ?? 0) * 100,
+                prev[coinA]?.detail?.apr[0]
+              ),
+          Math.max(
+            (dualInfo?.baseTokenApy?.max ?? 0) * 100,
+            prev[coinA]?.detail?.apr[1]
+          ),
         ];
       }
 
-      if (prev[coinB]?.detail && dualInfo.apy) {
+      if (prev[coinB]?.detail && dualInfo.quoteTokenApy) {
         prev[coinB].detail.apr = [
           prev[coinB]?.detail?.apr[0] === 0
-            ? dualInfo?.quoteTokenApy?.min
-            : Math.min(dualInfo.apy, prev[coinB]?.detail?.apr[0]),
-          Math.max(dualInfo.apy, prev[coinB]?.detail?.apr[1]),
+            ? (dualInfo?.quoteTokenApy?.min ?? 0) * 100
+            : Math.min(
+                (dualInfo?.quoteTokenApy?.min ?? 0) * 100,
+                prev[coinB]?.detail?.apr[0]
+              ),
+          Math.max(
+            (dualInfo?.quoteTokenApy?.max ?? 0) * 100,
+            prev[coinB]?.detail?.apr[1]
+          ),
         ];
       }
 
