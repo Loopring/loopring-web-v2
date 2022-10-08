@@ -20,18 +20,22 @@ import {
   SummaryMyInvest,
   useDefiMap,
   makeDefiInvestReward,
+  volumeToCountAsBigNumber,
 } from "@loopring-web/core";
-import { SagaStatus } from "@loopring-web/common-resources";
+import {
+  getValuePrecisionThousand,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export const useOverview = <
   R extends { [key: string]: any },
   I extends { [key: string]: any }
 >({
-  dualList,
+  dualOnInvestAsset,
 }: {
   ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
-  dualList: RawDataDualAssetItem[];
+  dualOnInvestAsset: any; //RawDataDualAssetItem[];
 }): {
   myAmmMarketArray: AmmRecordRow<R>[];
   summaryMyInvest: Partial<SummaryMyInvest>;
@@ -40,7 +44,7 @@ export const useOverview = <
 } => {
   const { status: walletLayer2Status } = useWalletLayer2();
   const { status: userRewardsStatus, userRewardsMap } = useUserRewards();
-  const { tokenMap } = useTokenMap();
+  const { tokenMap, idIndex } = useTokenMap();
   const { marketCoins: defiCoinArray } = useDefiMap();
 
   const { status: ammMapStatus, ammMap } = useAmmMap();
@@ -123,12 +127,23 @@ export const useOverview = <
               tokenPrices[defiCoinKey] ?? 0
           );
         }, []);
-        dualList.forEach((item) => {
-          const { sellSymbol, amount } = item;
-          amount.replace(",", "");
-          totalCurrentInvest.investDollar +=
-            Number(amount ?? 0) * tokenPrices[sellSymbol] ?? 0;
-        }, []);
+        if (dualOnInvestAsset) {
+          Object.keys(dualOnInvestAsset).forEach((key) => {
+            const item = dualOnInvestAsset[key];
+            const { amount, tokenId } = item;
+            const tokenInfo = tokenMap[idIndex[tokenId]];
+            totalCurrentInvest.investDollar +=
+              volumeToCountAsBigNumber(tokenInfo.symbol, amount)
+                ?.times(tokenPrices[tokenInfo.symbol] ?? 0)
+                .toNumber() ?? 0;
+          });
+        }
+        // dualList.forEach((item) => {
+        //   const { sellSymbol, amount } = item;
+        //   amount.replace(",", "");
+        //   totalCurrentInvest.investDollar +=
+        //     Number(amount ?? 0) * tokenPrices[sellSymbol] ?? 0;
+        // }, []);
 
         setSummaryMyInvest((state) => {
           return {
@@ -140,7 +155,7 @@ export const useOverview = <
       }
       return [];
     },
-    [ammMap, userRewardsMap, tokenPrices, tokenMap, dualList]
+    [ammMap, userRewardsMap, tokenPrices, tokenMap, dualOnInvestAsset]
   );
 
   const walletLayer2Callback = React.useCallback(async () => {
@@ -162,7 +177,7 @@ export const useOverview = <
     ) {
       walletLayer2Callback();
     }
-  }, [ammMapStatus, userRewardsStatus, walletLayer2Status]);
+  }, [ammMapStatus, userRewardsStatus, walletLayer2Status, dualOnInvestAsset]);
 
   React.useEffect(() => {
     mountedRef.current = true;

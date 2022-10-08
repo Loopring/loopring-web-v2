@@ -79,7 +79,7 @@ export const TransferConfirm = <
                 sanitize(
                   type === "NFT"
                     ? " \u2A09 " + tradeData?.name ?? "NFT"
-                    : tradeData?.belong ?? EmptyValueTag
+                    : ` ${tradeData?.belong}` ?? EmptyValueTag
                 ) ?? "",
             }}
           />

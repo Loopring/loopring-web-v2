@@ -22,7 +22,7 @@ import {
   PriceTag,
   RowInvestConfig,
 } from "@loopring-web/common-resources";
-
+import * as sdk from "@loopring-web/loopring-sdk";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { useOverview } from "./hook";
 import {
@@ -32,6 +32,7 @@ import {
   TableWrapStyled,
   useTokenMap,
   useDualMap,
+  LoopringAPI,
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
@@ -72,6 +73,7 @@ const MyLiquidity: any = withTranslation("common")(
     const { setShowAmm } = useOpenModals();
     const {
       dualList,
+      dualOnInvestAsset,
       getDualTxList,
       pagination,
       showDetail,
@@ -101,11 +103,14 @@ const MyLiquidity: any = withTranslation("common")(
     }, [match?.params?.type]);
 
     React.useEffect(() => {
-      getDualTxList({});
-    }, []);
+      if (account.accountId) {
+        getDualTxList({});
+      }
+    }, [account.accountId]);
     const { summaryMyInvest, myPoolRow, showLoading } = useOverview({
       ammActivityMap,
-      dualList,
+      dualOnInvestAsset,
+      // dualList,
     });
 
     const theme = useTheme();

@@ -35,7 +35,7 @@ export const ErrorPage = ({ messageKey }: ErrorObject) => {
         >
           {/*<StyleBox>*/}
           <Box textAlign={"center"} position={"relative"} left={128} top={-64}>
-            <Typography component={"h2"} variant={"h3"}>
+            <Typography component={"h2"} variant={"h3"} whiteSpace={"pre-line"}>
               {t(messageKey)}
             </Typography>
             <Typography
@@ -43,13 +43,18 @@ export const ErrorPage = ({ messageKey }: ErrorObject) => {
               component={"p"}
               variant={"body1"}
               color={"textSecondary"}
+              whiteSpace={"pre-line"}
             >
-              <Trans i18nKey={message}>
+              <Trans i18nKey={message} ns={"common"}>
                 If you believe this is indeed a bug, please
                 <Link
                   component={"a"}
+                  marginLeft={1}
+                  display={"inline-flex"}
+                  sx={{ textIndent: ".5em" }}
                   onClick={(e) => {
-                    window.location.href = getContactInfo();
+                    window.open(getContactInfo(), "_blank");
+                    window.opener = null;
                     e.preventDefault();
                   }}
                 >
