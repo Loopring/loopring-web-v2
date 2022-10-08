@@ -1,28 +1,22 @@
 import { useRouteMatch } from "react-router-dom";
 
 import { Box } from "@mui/material";
-import { Toast, useSettings } from "@loopring-web/component-lib";
-import { subMenuNFT, TOAST_TIME } from "@loopring-web/common-resources";
+import { useSettings } from "@loopring-web/component-lib";
+import { subMenuNFT } from "@loopring-web/common-resources";
 import React from "react";
-import {
-  useMyCollection,
-  useNFTMintAdvance,
-  ViewAccountTemplate,
-} from "@loopring-web/core";
+import { ViewAccountTemplate } from "@loopring-web/core";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
 import { MintNFTAdvancePanel, MintNFTPanel } from "./MintNFTPanel";
 import { DepositNFTPanel } from "./NFTDeposit";
 import { NFTCollectPanel } from "./CollectionPanel";
-import { CreateCollectionPanel } from "./CreateCollectionPanel";
+import { EditCollectionPanel } from "./EditCollectionPanel";
 import { MintLandingPage } from "./components/landingPanel";
-import { useTranslation } from "react-i18next";
 
 export const subMenu = subMenuNFT;
 
 export const NFTPage = () => {
   let match: any = useRouteMatch("/NFT/:item");
-  const { t } = useTranslation(["common"]);
   const selected = match?.params?.item ?? "assetsNFT";
 
   const routerNFT = React.useMemo(() => {
@@ -41,14 +35,12 @@ export const NFTPage = () => {
         return <NFTCollectPanel />;
       case "addCollection":
       case "editCollection":
-        return <CreateCollectionPanel />;
+        return <EditCollectionPanel />;
       case "assetsNFT":
       default:
         return <MyNFTPanel />;
     }
   }, [selected]);
-
-  const { isMobile } = useSettings();
 
   const activeViewTemplate = React.useMemo(
     () => (
@@ -74,4 +66,3 @@ export const NFTPage = () => {
     </>
   );
 };
-// {!!isMobile && <TitleNFTMobile />}

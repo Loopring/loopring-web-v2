@@ -6,31 +6,32 @@ import {
   SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
+
+import { BigNumber } from "bignumber.js";
+import React from "react";
 import {
   getIPFSString,
   ipfsService,
   LoopringAPI,
   store,
+  useAccount,
   useBtnStatus,
   useIPFS,
   useModalData,
   useSystem,
   useToast,
   useWalletL2Collection,
-} from "@loopring-web/core";
-import { BigNumber } from "bignumber.js";
-import React from "react";
-import { useAccount } from "@loopring-web/core";
+} from "../../index";
 import { IpfsFile, useToggle } from "@loopring-web/component-lib";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { AddResult } from "ipfs-core-types/src/root";
 import { useTranslation } from "react-i18next";
 
-const enum MINT_VIEW_STEP {
-  METADATA,
-  MINT_CONFIRM,
-}
+// const enum MINT_VIEW_STEP {
+//   METADATA,
+//   MINT_CONFIRM,
+// }
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useEditCollection = <T extends CollectionMeta>({
@@ -49,6 +50,14 @@ export const useEditCollection = <T extends CollectionMeta>({
   const { t } = useTranslation("common");
   const [disabled, _setDisabled] = React.useState(!collectionNFT.enable);
   const { collectionValue, updateCollectionData } = useModalData();
+  const [collectionOldValue] = React.useState<T | undefined>(
+    isEdit
+      ? ({
+          ...collectionValue,
+        } as T)
+      : undefined
+  );
+
   const { baseURL, chainId } = useSystem();
   const { updateWalletL2Collection } = useWalletL2Collection();
   const history = useHistory();
@@ -124,7 +133,7 @@ export const useEditCollection = <T extends CollectionMeta>({
         collectionValue &&
         collectionValue.name &&
         collectionValue.tileUri &&
-        ipfsProcessing == undefined
+        ipfsProcessing === undefined
       ) {
         enableBtn();
         return;
@@ -145,12 +154,13 @@ export const useEditCollection = <T extends CollectionMeta>({
       myLog("try to disable nftMint btn!");
     },
     [
-      keys,
       resetBtnInfo,
+      keys,
       collectionValue,
       disableBtn,
       enableBtn,
       setLabelAndParams,
+      setLoadingBtn,
     ]
   );
 
@@ -164,72 +174,153 @@ export const useEditCollection = <T extends CollectionMeta>({
       LoopringAPI.userAPI
     ) {
       setLoadingBtn();
-      try {
-        const response = await LoopringAPI.userAPI.submitNFTCollection(
-          {
-            ...collectionValue,
-            name: collectionValue.name?.trim(),
-            tileUri: collectionValue.tileUri?.trim(),
-            owner: account.accAddress,
-            nftFactory: sdk.NFTFactory_Collection[chainId],
-          } as sdk.CollectionMeta,
-          chainId as any,
-          account.apiKey,
-          account.eddsaKey.sk
-        );
-        if (
-          response &&
-          ((response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message)
-        ) {
-          const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO;
-          throw new Error(
-            t(
-              _response.code && SDK_ERROR_MAP_TO_UI[_response.code]
-                ? SDK_ERROR_MAP_TO_UI[_response.code].messageKey
-                : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
-              { ns: "error", name: collectionValue.name?.trim() }
-            )
+
+      if (isEdit) {
+        try {
+          const response = await LoopringAPI.userAPI.submitEditNFTCollection(
+            {
+              name: collectionValue.name?.trim(),
+              tileUri: collectionValue.tileUri?.trim(),
+              owner: account.accAddress,
+              banner: collectionValue.banner?.trim(),
+              avatar: collectionValue.avatar?.trim(),
+              description: collectionValue.description?.trim(),
+              collectionId: collectionValue.id ?? "",
+            },
+            chainId as any,
+            account.apiKey,
+            account.eddsaKey.sk
           );
-        } else {
+          if (
+            response &&
+            ((response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message)
+          ) {
+            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO;
+            throw new Error(
+              t(
+                _response.code && SDK_ERROR_MAP_TO_UI[_response.code]
+                  ? SDK_ERROR_MAP_TO_UI[_response.code].messageKey
+                  : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
+                { ns: "error", name: collectionValue.name?.trim() }
+              )
+            );
+          } else {
+            setCollectionToastOpen({
+              open: true,
+              type: "success",
+              content: t("labelEditCollectionSuccess"),
+            });
+            updateWalletL2Collection({ page: 1 });
+            history.push("/nft/myCollection");
+          }
+          updateCollectionData({ ...collectionOldValue });
+          setKeys({
+            banner: undefined,
+            name: undefined,
+            tileUri: undefined,
+            avatar: undefined,
+            thumbnail: undefined,
+          });
+        } catch (error) {
           setCollectionToastOpen({
             open: true,
-            type: "success",
-            content: t("labelCreateCollectionSuccess"),
+            type: "error",
+            content:
+              t("labelEditCollectionFailed") +
+              `: ${
+                (error as any)?.message
+                  ? (error as any).message
+                  : t("errorUnknown")
+              }`,
           });
-          updateWalletL2Collection({ page: 1 });
-          history.push("/nft/myCollection");
+          resetBtnInfo();
         }
-        updateCollectionData({});
-        setKeys({
-          banner: undefined,
-          name: undefined,
-          tileUri: undefined,
-          avatar: undefined,
-          thumbnail: undefined,
-        });
-      } catch (error) {
-        setCollectionToastOpen({
-          open: true,
-          type: "error",
-          content:
-            t("labelCreateCollectionFailed") +
-            `: ${
-              (error as any)?.message
-                ? (error as any).message
-                : t("errorUnknown")
-            }`,
-        });
-        resetBtnInfo();
+      } else {
+        try {
+          const response = await LoopringAPI.userAPI.submitNFTCollection(
+            {
+              ...collectionValue,
+              name: collectionValue.name?.trim(),
+              tileUri: collectionValue.tileUri?.trim(),
+              owner: account.accAddress,
+              nftFactory: sdk.NFTFactory_Collection[chainId],
+            } as sdk.CollectionMeta,
+            chainId as any,
+            account.apiKey,
+            account.eddsaKey.sk
+          );
+          if (
+            response &&
+            ((response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message)
+          ) {
+            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO;
+            throw new Error(
+              t(
+                _response.code && SDK_ERROR_MAP_TO_UI[_response.code]
+                  ? SDK_ERROR_MAP_TO_UI[_response.code].messageKey
+                  : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
+                { ns: "error", name: collectionValue.name?.trim() }
+              )
+            );
+          } else {
+            setCollectionToastOpen({
+              open: true,
+              type: "success",
+              content: t("labelCreateCollectionSuccess"),
+            });
+            updateWalletL2Collection({ page: 1 });
+            history.push("/nft/myCollection");
+          }
+          updateCollectionData({});
+          setKeys({
+            banner: undefined,
+            name: undefined,
+            tileUri: undefined,
+            avatar: undefined,
+            thumbnail: undefined,
+          });
+        } catch (error) {
+          setCollectionToastOpen({
+            open: true,
+            type: "error",
+            content:
+              t("labelCreateCollectionFailed") +
+              `: ${
+                (error as any)?.message
+                  ? (error as any).message
+                  : t("errorUnknown")
+              }`,
+          });
+          resetBtnInfo();
+        }
       }
     }
-  }, [collectionValue, disableBtn, resetBtnInfo]);
+  }, [
+    account,
+    chainId,
+    collectionOldValue,
+    collectionValue,
+    history,
+    isEdit,
+    resetBtnInfo,
+    setCollectionToastOpen,
+    setLoadingBtn,
+    t,
+    updateCollectionData,
+    updateWalletL2Collection,
+  ]);
 
-  const handleOnDataChange = React.useCallback((key: string, value: any) => {
-    const collectionValue = store.getState()._router_modalData.collectionValue;
-    myLog("collectionValue", collectionValue);
-    updateCollectionData({ ...collectionValue, [key]: value });
-  }, []);
+  const handleOnDataChange = React.useCallback(
+    (key: string, value: any) => {
+      const collectionValue =
+        store.getState()._router_modalData.collectionValue;
+      myLog("collectionValue", collectionValue);
+      updateCollectionData({ ...collectionValue, [key]: value });
+    },
+    [updateCollectionData]
+  );
 
   const onDelete = React.useCallback(
     (key: string) => {
@@ -299,7 +390,7 @@ export const useEditCollection = <T extends CollectionMeta>({
         }
       });
     },
-    [handleOnDataChange]
+    [baseURL, handleOnDataChange]
   );
 
   const { ipfsProvides } = useIPFS({
@@ -343,6 +434,11 @@ export const useEditCollection = <T extends CollectionMeta>({
     disabled,
     handleOnDataChange,
     collectionValue,
+    resetEdit: isEdit
+      ? () => {
+          updateCollectionData({ ...collectionOldValue });
+        }
+      : undefined,
     onSubmitClick,
   };
 };

@@ -16,7 +16,7 @@ const StyledPaper = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 
-export const CreateCollectionPanel = () => {
+export const EditCollectionPanel = () => {
   const { t } = useTranslation("common");
   const {
     collectionToastOpen,

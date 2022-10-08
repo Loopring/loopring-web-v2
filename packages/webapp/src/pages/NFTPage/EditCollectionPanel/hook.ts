@@ -3,17 +3,15 @@ import {
   CollectionMeta,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import { collectionService } from "@loopring-web/core";
+import { collectionService, useEditCollection } from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
 import React from "react";
 import { useAccount } from "@loopring-web/core";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
-import { useEditCollection } from "./useEditCollection";
-
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useCollectionPanel = <T extends CollectionMeta>() => {
-  let match: any = useRouteMatch("/NFT/:item?/:id");
+  const match: any = useRouteMatch("/NFT/:item?/:id");
   const isEdit = match?.params?.item === "editCollection";
   const history = useHistory();
   const {
@@ -28,6 +26,7 @@ export const useCollectionPanel = <T extends CollectionMeta>() => {
     handleOnDataChange,
     collectionValue,
     onSubmitClick,
+    resetEdit,
   } = useEditCollection({ isEdit });
   const { account, status: accountStatus } = useAccount();
 
@@ -58,6 +57,8 @@ export const useCollectionPanel = <T extends CollectionMeta>() => {
     disabled,
     handleOnDataChange,
     collectionValue,
+    resetEdit,
+    isEdit,
     onSubmitClick,
   };
 };

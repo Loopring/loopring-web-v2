@@ -25,7 +25,9 @@ export type CreateCollectionViewProps<Co> = {
   onFilesLoad: (key: string, value: IpfsFile) => void;
   onDelete: (key: string) => void;
   btnStatus: TradeBtnStatus;
+  resetEdit?: () => void;
   btnInfo?: BtnInfo;
+  isEdit?: boolean;
   disabled?: boolean;
   onSubmitClick: () => Promise<void>;
   handleOnDataChange: (key: string, value: any) => void;
@@ -38,6 +40,8 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
   onDelete,
   btnStatus,
   btnInfo,
+  isEdit,
+  resetEdit,
   disabled,
   handleOnDataChange,
   collectionValue,
@@ -268,7 +272,27 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
           </Box>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+        >
+          {isEdit && resetEdit && (
+            <Box width={"50%"} marginRight={1}>
+              <Button
+                variant={"outlined"}
+                size={"large"}
+                fullWidth
+                onClick={resetEdit}
+                // sx={{ marginRight: 1 }}
+                className={"MuiContained-sizeMedium"}
+              >
+                {t("labelEditRestCollectionBtn")}
+              </Button>
+            </Box>
+          )}
           <Button
             variant={"contained"}
             size={"medium"}
@@ -287,6 +311,8 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
           >
             {btnInfo
               ? t(btnInfo.label, btnInfo.params)
+              : isEdit
+              ? t(`labelEditCollectionBtn`)
               : t(`labelCollectionCreateBtn`)}
           </Button>
         </Grid>

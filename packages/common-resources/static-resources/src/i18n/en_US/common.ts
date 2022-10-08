@@ -1051,4 +1051,8 @@ export default {
   labelAmmJoin: "Subscribe",
   labelDualPanelClose: "Go to My Investment",
   labelDualMobilePrice: "{{symbol}} price:",
+  labelEditCollectionSuccess: "Collection edit was successful",
+  labelEditCollectionFailed: "Collection edit has failed",
+  labelEditCollectionBtn: "Edit Collection",
+  labelEditRestCollectionBtn: "Reset",
 };
