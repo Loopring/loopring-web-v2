@@ -1,7 +1,7 @@
 export default {
   labelConnectUsSimple: "Please <1>contact us</1>.",
   labelConnectUs:
-    "If you believe this is indeed a bug, please <1>contact us</1>. We would appreciate your feedback.",
+    "If you believe this is indeed a bug, please <1>&nbsp; contact us</1>. We would appreciate your feedback.",
   errorBase: "Oops! Something went wrong.",
   errorTimeout: "Oops! Something went wrong at network.",
   errorLoading: "Loading! Please wait...",
