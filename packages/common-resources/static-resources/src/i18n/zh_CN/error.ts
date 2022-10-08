@@ -1,6 +1,6 @@
 export default {
   labelConnectUsSimple: "Please <1>contact us</1>.",
-  labelConnectUs: "这有可能时候一个错误,<2/> 如需帮助请<1>联系我们</1>~",
+  labelConnectUs: "这有可能时候一个错误, 如需帮助请<1>联系我们</1>~",
   errorBase: "奥哦! 遇到了一些问题",
   errorTimeout: "Oops! Something went wrong at network.",
   errorLoading: "不要着急, 不要着急马上就好",
