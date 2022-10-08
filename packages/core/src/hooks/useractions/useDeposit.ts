@@ -14,6 +14,8 @@ import {
   UIERROR_CODE,
   WalletMap,
   AddressError,
+  SagaStatus,
+  L1_UPDATE,
 } from "@loopring-web/common-resources";
 import {
   connectProvides,
@@ -39,6 +41,7 @@ import {
 } from "../../index";
 import { useTranslation } from "react-i18next";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
+import Web3 from "web3";
 
 export const useDeposit = <
   T extends {
@@ -53,8 +56,9 @@ export const useDeposit = <
 ) => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false);
-  const { exchangeInfo, chainId, gasPrice, allowTrade } = useSystem();
+  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL } = useSystem();
 
   const {
     realAddr: realToAddress,
@@ -147,7 +151,7 @@ export const useDeposit = <
         ) ?? -1;
       if (
         isAllowInputToAddress ||
-        (isNewAccount && index !== -1) ||
+        (isNewAccount && (index !== -1 || /dev/gi.test(baseURL))) ||
         !isNewAccount
       ) {
         enableBtn();
@@ -207,27 +211,29 @@ export const useDeposit = <
         setReferAddress(newValue.referAddress ?? "");
       }
       if (data?.tradeData.hasOwnProperty("toAddress")) {
-        // myLog("toAddress", toAddress);
         newValue.toAddress = data?.tradeData.toAddress;
         setToAddress(newValue.toAddress ?? "");
       }
       if (data?.tradeData.hasOwnProperty("addressError")) {
         newValue.addressError = data?.tradeData.addressError;
       }
-      return new Promise<void>((resolve) => {
-        if (data.to === "button") {
-          if (walletLayer1 && data?.tradeData?.belong) {
-            const walletInfo = walletLayer1[data.tradeData.belong];
-            newValue = {
-              ...newValue,
-              ...data.tradeData,
-              balance: walletInfo?.count,
-            };
-          }
+      if (data.to === "button") {
+        if (walletLayer1 && data?.tradeData?.belong) {
+          const walletInfo = walletLayer1[data.tradeData.belong];
+          newValue = {
+            ...newValue,
+            ...data.tradeData,
+            balance: walletInfo?.count,
+          };
         }
-        updateDepositData(newValue);
-        resolve();
-      });
+      }
+      updateDepositData(newValue);
+      return Promise.resolve();
+
+      // return new Promise<void>((resolve) => {
+      //
+      //   resolve();
+      // });
     },
     [setReferAddress, setToAddress, updateDepositData, walletLayer1]
   );
@@ -255,6 +261,12 @@ export const useDeposit = <
         : depositValue.belong;
       const tradeValue = isClean ? undefined : depositValue.tradeValue;
       let updateData = {};
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current);
+      }
+      nodeTimer.current = setTimeout(() => {
+        updateWalletLayer1();
+      }, L1_UPDATE);
       if (_symbol && walletLayer1) {
         // updateDepositData();
         updateData = {
@@ -321,12 +333,19 @@ export const useDeposit = <
   );
 
   React.useEffect(() => {
-    walletLayer1Callback();
+    if (walletLayer1Status == SagaStatus.UNSET) {
+      walletLayer1Callback();
+    }
+    return () => {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current);
+      }
+    };
   }, [walletLayer1Status]);
 
   React.useEffect(() => {
     if (isShow || isAllowInputToAddress) {
-      walletLayer1Callback(true);
+      updateWalletLayer1();
     }
   }, [isShow, isAllowInputToAddress]);
 
@@ -356,7 +375,7 @@ export const useDeposit = <
           exchangeInfo.exchangeAddress
         ).replace("${nonce}", "0");
         const eddsaKey = await sdk.generateKeyPair({
-          web3: connectProvides.usedWeb3,
+          web3: connectProvides.usedWeb3 as unknown as Web3,
           address: account.accAddress,
           keySeed,
           walletType: (ConnectProvidersSignMap[account.connectName] ??
@@ -449,7 +468,7 @@ export const useDeposit = <
               });
 
               nonce = await sdk.getNonce(
-                connectProvides.usedWeb3,
+                connectProvides.usedWeb3 as any,
                 account.accAddress
               );
 
@@ -497,7 +516,7 @@ export const useDeposit = <
 
           if (!nonceInit) {
             nonce = await sdk.getNonce(
-              connectProvides.usedWeb3,
+              connectProvides.usedWeb3 as any,
               account.accAddress
             );
           }

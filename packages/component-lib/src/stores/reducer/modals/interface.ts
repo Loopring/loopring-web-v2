@@ -1,4 +1,8 @@
-import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
+import {
+  DualViewInfo,
+  NFTWholeINFO,
+  TradeNFT,
+} from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { AmmPanelType } from "../../../components";
 
@@ -27,25 +31,30 @@ export interface ModalState {
   isShowTransfer: ModalStatePlayLoad & Transaction;
   isShowWithdraw: ModalStatePlayLoad & Transaction;
   isShowDeposit: ModalStatePlayLoad & Transaction & { partner?: boolean };
-  isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any>>;
-  isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any>>;
-  isShowNFTDeploy: ModalStatePlayLoad & Partial<TradeNFT<any>>;
-  isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any>>;
-  isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowNFTDetail: ModalStatePlayLoad & Partial<NFTWholeINFO>;
+  isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowNFTDeploy: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowCollectionAdvance: ModalStatePlayLoad;
+  isShowDual: ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined };
   isShowResetAccount: ModalStatePlayLoad;
   isShowActiveAccount: ModalStatePlayLoad;
   isShowExportAccount: ModalStatePlayLoad;
   isShowLayerSwapNotice: ModalStatePlayLoad;
   isShowSwap: ModalStatePlayLoad;
   isShowAmm: ModalStatePlayLoad & Transaction & { type?: AmmPanelType };
-  isShowTradeIsFrozen: ModalStatePlayLoad & { type?: string };
+  isShowTradeIsFrozen: ModalStatePlayLoad & {
+    type?: string;
+    messageKey?: string;
+  };
   isShowConnect: ModalStatePlayLoad & { step: number; error?: RESULT_INFO };
   isShowAccount: ModalStatePlayLoad & {
     step: number;
     error?: RESULT_INFO;
     // info?: { [key: string]: any };
   };
-  isShowNFTDetail: ModalStatePlayLoad & Partial<NFTWholeINFO>;
   isShowFeeSetting: ModalStatePlayLoad;
   isShowIFrame: ModalStatePlayLoad & { url: string };
 }

@@ -1,12 +1,24 @@
+// import {
+//   ChainId,
+//   NFTTokenInfo,
+//   TokenInfo,
+//   UserNFTBalanceInfo,
+// } from "@loopring-web/loopring-sdk";
 import {
-  ChainId,
-  NFTTokenInfo,
-  UserNFTBalanceInfo,
-} from "@loopring-web/loopring-sdk";
-import { FeeInfo, IBData } from "../loopring-interface";
+  CollectionMeta,
+  DeFiCalcData,
+  FeeInfo,
+  IBData,
+} from "../loopring-interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
+import { MarketType } from "./market";
 
+export enum DeFiChgType {
+  coinSell = "coinSell",
+  coinBuy = "coinBuy",
+  exchange = "exchange",
+}
 export type WithdrawType =
   | sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
   | sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
@@ -52,14 +64,21 @@ export type TxInfo = {
   status?: "pending" | "success" | "failed" | undefined;
   [key: string]: any;
 };
+
 export interface AccountHashInfo {
   depositHashes: { [key: string]: TxInfo[] };
 }
+
+export interface NFTHashInfo {
+  nftDataHashes: { [key: string]: Required<TxInfo> };
+}
+
 // export type GuardianLock
 export enum Layer1Action {
   GuardianLock = "GuardianLock",
   NFTDeploy = "NFTDeploy",
 }
+
 // GuardianLock
 export type Layer1ActionHistory = {
   [key: string]: {
@@ -69,10 +88,14 @@ export type Layer1ActionHistory = {
 };
 
 export type ChainHashInfos = {
-  [key in ChainId extends string ? string : string]: AccountHashInfo;
+  [key in sdk.ChainId extends string ? string : string]: AccountHashInfo;
+};
+
+export type NFTHashInfos = {
+  [key in sdk.ChainId extends string ? string : string]: NFTHashInfo;
 };
 export type LAYER1_ACTION_HISTORY = {
-  [key in ChainId extends string ? string : string]: Layer1ActionHistory;
+  [key in sdk.ChainId extends string ? string : string]: Layer1ActionHistory;
 } & { __timer__: -1 | NodeJS.Timeout };
 
 export type MetaProperty = {
@@ -90,7 +113,7 @@ export type NFTMETA = {
   name: string;
   royaltyPercentage: number; // 0 - 10 for UI
   description: string;
-  collection?: string;
+  collection_metadata: string;
   properties?: Array<MetaProperty>;
   animationUrl?: string;
   attributes?: AttributesProperty[];
@@ -101,8 +124,8 @@ export enum Media {
   Video = "Video",
 }
 
-export type NFTWholeINFO = NFTTokenInfo &
-  UserNFTBalanceInfo &
+export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
+  sdk.UserNFTBalanceInfo &
   NFTMETA & {
     nftBalance?: number;
     nftIdView?: string;
@@ -110,6 +133,7 @@ export type NFTWholeINFO = NFTTokenInfo &
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
     __mediaType__?: Media;
+    collectionMeta?: Partial<Co>;
   };
 
 export type MintTradeNFT<I> = {
@@ -120,8 +144,9 @@ export type MintTradeNFT<I> = {
   nftBalance?: number;
   nftIdView?: string;
   royaltyPercentage?: number;
+  // tokenAddress?:string;
 } & Partial<IBData<I>> &
-  Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
+  Partial<Omit<sdk.NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 export type MintReadTradeNFT<I> = {
   balance?: number;
   fee?: FeeInfo;
@@ -131,19 +156,23 @@ export type MintReadTradeNFT<I> = {
   readonly nftBalance?: number;
   readonly royaltyPercentage?: number;
 } & Partial<IBData<I>> &
-  Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
+  Partial<Omit<sdk.NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 
-export type TradeNFT<I> = MintTradeNFT<I> &
-  Partial<NFTWholeINFO> & { isApproved?: boolean };
+export type TradeNFT<I, Co> = MintTradeNFT<I> &
+  Partial<NFTWholeINFO<Co>> & { isApproved?: boolean };
 
 export const TOAST_TIME = 3000;
+
+export enum NFT_TYPE_STRING {
+  ERC721 = "ERC721",
+  ERC1155 = "ERC1155",
+}
 
 export const EmptyValueTag = "--";
 export const DEAULT_NFTID_STRING =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
-export const IPFS_META_URL = "ipfs://";
 export const MINT_LIMIT = 100000;
-export const PROPERTY_LIMIT = 5;
+export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;
 export const PROPERTY_Value_LIMIT = 40;
 export const LOOPRING_TAKE_NFT_META_KET = {
@@ -157,7 +186,8 @@ export type LOOPRING_NFT_METADATA = {
   [key in keyof typeof LOOPRING_TAKE_NFT_META_KET]?: string | undefined;
 };
 
-export const NFTLimit = 12;
+export const NFTLimit = 12,
+  CollectionLimit = 12;
 
 export const AddAssetList = {
   FromMyL1: {
@@ -329,3 +359,117 @@ export const useAddressTypeLists = <
 
 export const defalutSlipage = 0.1;
 export type ForexMap<C> = { [k in keyof C]?: number };
+
+export const enum InvestMapType {
+  Token = "Token",
+  AMM = "AMM",
+  STAKE = "STAKE",
+  DUAL = "DUAL",
+}
+
+export const InvestOpenType = [
+  InvestMapType.AMM,
+  InvestMapType.STAKE,
+  InvestMapType.DUAL,
+];
+
+export const enum InvestDuration {
+  Flexible = "Flexible",
+  Duration = "Duration",
+  All = "All",
+}
+
+export type InvestItem = {
+  type: InvestMapType;
+  i18nKey: `labelInvestType_${InvestMapType}` | "";
+  apr: [start: number, end: number];
+  durationType: InvestDuration;
+  duration: string;
+};
+export type InvestDetail = {
+  token: sdk.TokenInfo;
+  apr: [start: number, end: number];
+  durationType: InvestDuration;
+  duration: string;
+};
+
+export enum CreateCollectionStep {
+  // CreateTokenAddress,
+  // Loading,
+  // CreateTokenAddressFailed,
+  ChooseMethod,
+  ChooseMintMethod,
+  ChooseCollectionEdit,
+  // AdvancePanel,
+  // CommonPanel,
+}
+
+export type TradeDefi<C> = {
+  type: string;
+  market?: MarketType; // eg: ETH-LRC, Pair from loopring market
+  isStoB: boolean;
+  sellVol: string;
+  buyVol: string;
+  sellToken: sdk.TokenInfo;
+  buyToken: sdk.TokenInfo;
+  deFiCalcData?: DeFiCalcData<C>;
+  fee: string;
+  feeRaw: string;
+  depositPrice?: string;
+  withdrawPrice?: string;
+  maxSellVol?: string;
+  maxBuyVol?: string;
+  maxFeeBips?: number;
+  miniSellVol?: string;
+  request?: sdk.DefiOrderRequest;
+  defiBalances?: { [key: string]: string };
+  lastInput?: DeFiChgType;
+};
+
+export type L2CollectionFilter = {
+  isMintable?: boolean;
+  tokenAddress?: string;
+  owner?: string;
+};
+
+export const LIVE_FEE_TIMES = 60000;
+export const L1_UPDATE = 15000;
+
+export type DualCurrentPrice = {
+  quote: string;
+  base: string;
+  precisionForPrice: number;
+  currentPrice?: number;
+};
+export type DualViewBase = {
+  apy: `${string}%`;
+  settleRatio: string; //targetPrice
+  term: string;
+  strike: string;
+  isUp: boolean;
+  // targetPrice,
+  // subscribeData,
+
+  expireTime: number;
+  currentPrice: DualCurrentPrice;
+  productId: string;
+  sellSymbol: string;
+  buySymbol: string;
+  amount?: string;
+  enterTime?: number;
+
+  // balance,
+};
+
+export type DualViewInfo = DualViewBase & {
+  __raw__: {
+    info: sdk.DualProductAndPrice;
+    index: sdk.DualIndex;
+    rule: sdk.DualRulesCoinsInfo;
+  };
+};
+export type DualViewOrder = DualViewBase & {
+  __raw__: {
+    order: sdk.UserDualTxsHistory;
+  };
+};

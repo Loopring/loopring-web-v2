@@ -2,13 +2,15 @@ import {
   DeFiCalcData,
   EmptyValueTag,
   ExchangeIcon,
+  getValuePrecisionThousand,
   IBData,
   myLog,
   OrderListIcon,
   ReverseIcon,
+  DeFiChgType,
 } from "@loopring-web/common-resources";
-import { DeFiChgType, DeFiWrapProps } from "./Interface";
-import { useTranslation } from "react-i18next";
+import { DeFiWrapProps } from "./Interface";
+import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { InputCoin } from "../../../basic-lib";
@@ -16,6 +18,7 @@ import { ButtonStyle, IconButtonStyled } from "../Styled";
 import { TradeBtnStatus } from "../../Interface";
 import { CountDownIcon } from "../tool/Refresh";
 import { useHistory } from "react-router-dom";
+import BigNumber from "bignumber.js";
 
 export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   disabled,
@@ -26,7 +29,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   onRefreshData,
   onSubmitClick,
   onConfirm,
-  // covertOnClick,
+  confirmShowLimitBalance,
   switchStobEvent,
   onChangeEvent,
   handleError,
@@ -38,6 +41,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   btnStatus,
   tokenSellProps,
   tokenBuyProps,
+  maxSellVol,
+  maxBuyVol,
   market,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
@@ -45,21 +50,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const coinBuyRef = React.useRef();
   const { t } = useTranslation();
   const history = useHistory();
-  // const [errorA, setErrorA] = React.useState<{
-  //   error: boolean;
-  //   message?: string | JSX.Element;
-  // }>({
-  //   error: false,
-  //   message: "",
-  // });
-  // const [errorB, setErrorB] = React.useState<{
-  //   error: boolean;
-  //   message?: string | JSX.Element;
-  // }>({
-  //   error: false,
-  //   message: "",
-  // });
-
   const _onSwitchStob = React.useCallback(
     (_event: any) => {
       if (typeof switchStobEvent === "function") {
@@ -81,13 +71,27 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             // @ts-ignore
             // eslint-disable-next-line eqeqeq
             deFiCalcData?.AtoB && deFiCalcData?.AtoB !== "NaN"
-              ? deFiCalcData?.AtoB
+              ? getValuePrecisionThousand(
+                  deFiCalcData?.AtoB,
+                  tokenBuy.precision,
+                  tokenBuy.precision,
+                  tokenBuy.precision,
+                  false,
+                  { floor: true }
+                )
               : EmptyValueTag
           } ${deFiCalcData.coinBuy.belong}`
         : `1${deFiCalcData.coinBuy.belong}  \u2248 ${
             // @ts-ignore
             deFiCalcData.BtoA && deFiCalcData?.BtoA !== "NaN"
-              ? deFiCalcData.BtoA
+              ? getValuePrecisionThousand(
+                  deFiCalcData?.AtoB,
+                  tokenSell.precision,
+                  tokenSell.precision,
+                  tokenSell.precision,
+                  false,
+                  { floor: true }
+                )
               : EmptyValueTag
           } ${deFiCalcData.coinSell.belong}`
       : t("labelCalculating");
@@ -109,14 +113,10 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   // };
   const getDisabled = React.useMemo(() => {
     return (
-      disabled ||
-      isLoading ||
-      deFiCalcData === undefined ||
-      btnStatus === TradeBtnStatus.DISABLED
+      disabled || deFiCalcData === undefined || deFiCalcData.AtoB === undefined
     );
-  }, [btnStatus, deFiCalcData, disabled, isLoading]);
-
-  myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
+  }, [btnStatus, deFiCalcData, disabled]);
+  // myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
 
   const handleCountChange = React.useCallback(
     (ibData: T, _name: string, _ref: any) => {
@@ -124,7 +124,10 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         _ref?.current === coinSellRef.current
           ? DeFiChgType.coinSell
           : DeFiChgType.coinBuy;
+
       if (deFiCalcData[focus].tradeValue !== ibData.tradeValue) {
+        myLog("defi handleCountChange", _name, ibData);
+
         onChangeEvent({
           tradeData: { ...ibData },
           type: focus,
@@ -161,26 +164,27 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     handleCountChange,
     ...rest,
   };
-  // const propsA: any = {
-  //   label: t("labelTokenAmount"),
-  //   subLabel: t("labelAvailable"),
-  //   placeholderText: "0.00",
-  //   maxAllow: true,
-  //   ...tokenBuyProps,
-  //   handleError,
-  //   handleCountChange,
-  //   ...rest,
-  // };
-  // const propsB: any = {
-  //   label: t("labelTokenAmount"),
-  //   subLabel: t("labelAvailable"),
-  //   placeholderText: "0.00",
-  //   maxAllow: true,
-  //   ...tokenBProps,
-  //   // handleError,
-  //   handleCountChange,
-  //   ...rest,
-  // };
+  const label = React.useMemo(() => {
+    if (btnInfo?.label) {
+      const key = btnInfo?.label.split("|");
+      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+    } else {
+      return isJoin ? t(`labelInvestBtn`) : t(`labelRedeemBtn`);
+    }
+  }, [isJoin, t, btnInfo]);
+
+  const maxValue =
+    tokenBuy.symbol &&
+    maxBuyVol &&
+    `${getValuePrecisionThousand(
+      new BigNumber(maxBuyVol ?? 0).div("1e" + tokenBuy.decimals),
+      tokenBuy.precision,
+      tokenBuy.precision,
+      tokenBuy.precision,
+      false,
+      { floor: true }
+    )} ${tokenBuy.symbol}`;
+
   return (
     <Grid
       className={deFiCalcData ? "" : "loading"}
@@ -214,7 +218,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           <Typography display={"inline-block"} marginLeft={2}>
             <IconButtonStyled
               onClick={() => {
-                history.push(`/l2assets/history/ammRecords?market=${market}`);
+                history.push(`/l2assets/history/defiRecords?market=${market}`);
               }}
               sx={{ backgroundColor: "var(--field-opacity)" }}
               className={"switch outlined"}
@@ -337,15 +341,80 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                   ? "true"
                   : "false"
               }
-              disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
+              disabled={
+                getDisabled ||
+                btnStatus === TradeBtnStatus.LOADING ||
+                btnStatus === TradeBtnStatus.DISABLED
+              }
             >
-              {btnInfo?.label
-                ? t(btnInfo.label, btnInfo.params)
-                : isJoin
-                ? t(`labelInvestBtn`)
-                : t(`labelRedeemBtn`)}
+              {label}
             </ButtonStyle>
           </Grid>
+          {confirmShowLimitBalance && (
+            <Grid item>
+              {isJoin ? (
+                <Typography
+                  variant={"body1"}
+                  component={"p"}
+                  display={"flex"}
+                  marginTop={1}
+                  flexDirection={"column"}
+                  color={"var(--color-warning)"}
+                >
+                  <Trans
+                    i18nKey={"labelDefiMaxBalanceJoin"}
+                    tOptions={{ maxValue }}
+                  >
+                    {" "}
+                    The quota is almost sold out and can't fulfil your complete
+                    order. You can only subscribe {{ maxValue }} now. Loopring
+                    will setup the pool soon, please revisit for subscription
+                    later.
+                  </Trans>
+                </Typography>
+              ) : (
+                <Typography
+                  variant={"body1"}
+                  component={"p"}
+                  display={"flex"}
+                  marginTop={1}
+                  flexDirection={"column"}
+                  color={"var(--color-warning)"}
+                >
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"inherit"}
+                  >
+                    <Trans
+                      i18nKey={"labelDefiMaxBalance"}
+                      tOptions={{ maxValue }}
+                    >
+                      Loopring rebalance pool can't satisfy your complete
+                      request. You can only redeem {{ maxValue }} now. For the
+                      remaining investment, you can choose one of the approaches
+                    </Trans>
+                  </Typography>
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"inherit"}
+                    marginTop={1}
+                  >
+                    <Trans i18nKey={"labelDefiMaxBalance1"}>
+                      <ul>
+                        <li>
+                          Withdraw wstETH to L1 and trade through CRV or LIDO
+                          directly
+                        </li>
+                        <li>Wait some time for Loopring to seto for redeem</li>
+                      </ul>
+                    </Trans>
+                  </Typography>
+                </Typography>
+              )}
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </Grid>

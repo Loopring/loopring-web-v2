@@ -4,43 +4,74 @@ import { Box, Tab, Tabs } from "@mui/material";
 import {
   AmmTable,
   Button,
+  DefiTxsTable,
+  DualTxsTable,
   OrderHistoryTable,
   Toast,
   TradeTable,
   TransactionTable,
+  useSettings,
 } from "@loopring-web/component-lib";
 import { StylePaper, useGetOrderHistorys } from "@loopring-web/core";
-import { useGetAmmRecord, useGetTrades, useGetTxs } from "./hooks";
+import {
+  useDualTransaction,
+  useGetAmmRecord,
+  useGetDefiRecord,
+  useGetTrades,
+  useGetTxs,
+  useOrderList,
+} from "./hooks";
 
 import {
-  TOAST_TIME,
   useSystem,
   useAccount,
   useToast,
   useTokenMap,
   useAmmMap,
 } from "@loopring-web/core";
-import { BackIcon, RowConfig } from "@loopring-web/common-resources";
+import {
+  BackIcon,
+  RowConfig,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-import { useOrderList } from "../../Layer2Page/OrderPanel/hook";
 
 enum TabIndex {
   transactions = "transactions",
   trades = "trades",
   ammRecords = "ammRecords",
+  orders = "orders",
+  // orderOpenTable = "orderOpenTable",
+  // orderHistoryTable = "orderHistoryTable",
+  defiRecords = "defiRecords",
+  dualRecords = "dualRecords",
+}
+
+enum TabOrderIndex {
   orderOpenTable = "orderOpenTable",
   orderHistoryTable = "orderHistoryTable",
 }
+
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const history = useHistory();
     const { search } = useLocation();
-    const match: any = useRouteMatch("/l2assets/:item/:tab");
-    const tab = match?.params.tab ?? TabIndex.transactions;
+    const { isMobile } = useSettings();
+    const match: any = useRouteMatch("/l2assets/:history/:tab/:orderTab?");
+    // const orderTabMatch: any = useRouteMatch(
+    //   "/l2assets/:history/:tab/:orderTab"
+    // );
+
     const [pageSize, setPageSize] = React.useState(0);
-    const [currentTab, setCurrentTab] = React.useState(tab);
+    const [currentTab, setCurrentTab] = React.useState(() => {
+      return match?.params.tab ?? TabIndex.transactions;
+    });
+    const [currentOrderTab, setCurrentOrderTab] = React.useState(() => {
+      return match?.params?.orderTab ?? TabOrderIndex.orderOpenTable;
+    });
+
     const { toastOpen, setToastOpen, closeToast } = useToast();
-    const { totalCoinMap, tokenMap, marketArray } = useTokenMap();
+    const { totalCoinMap, tokenMap, idIndex, marketArray } = useTokenMap();
     const { ammMap } = useAmmMap();
 
     const {
@@ -57,6 +88,12 @@ const HistoryPanel = withTranslation("common")(
       showLoading: showTradeLoading,
     } = useGetTrades(setToastOpen);
     const {
+      defiList,
+      showLoading: showDefiLoading,
+      getDefiTxList,
+      defiTotal,
+    } = useGetDefiRecord(setToastOpen);
+    const {
       ammRecordList,
       showLoading: showAmmloading,
       ammRecordTotal,
@@ -69,8 +106,15 @@ const HistoryPanel = withTranslation("common")(
       showLoading,
       marketArray: orderRaw,
       cancelOrder,
-      clearRawData,
-    } = useOrderList();
+    } = useOrderList(setToastOpen);
+    const {
+      dualList,
+      showLoading: showDualLoading,
+      getDualTxList,
+      dualMarketMap,
+      dualTotal,
+    } = useDualTransaction(setToastOpen);
+
     const { userOrderDetailList, getUserOrderDetailTradeList } =
       useGetOrderHistorys();
     const { etherscanBaseUrl } = useSystem();
@@ -89,7 +133,7 @@ const HistoryPanel = withTranslation("common")(
           `/l2assets/history/${value}?${search.replace("?", "")}`
         );
       },
-      [clearRawData, getAmmpoolList, getUserTradeList, pageSize]
+      [history, search]
     );
 
     React.useEffect(() => {
@@ -100,6 +144,7 @@ const HistoryPanel = withTranslation("common")(
         handleTabChange(currentTab, pageSize);
       }
     }, [container?.current?.offsetHeight]);
+    // React.useEffect(()=>{},[])
     return (
       <Box flex={1} display={"flex"} flexDirection={"column"}>
         <Box marginBottom={2}>
@@ -126,7 +171,7 @@ const HistoryPanel = withTranslation("common")(
         {/*>*/}
         {/*  <BackIcon />*/}
         {/*</IconButton>*/}
-        <StylePaper ref={container}>
+        <StylePaper ref={container} flex={1}>
           <Toast
             alertText={toastOpen?.content ?? ""}
             severity={toastOpen?.type ?? "success"}
@@ -134,32 +179,47 @@ const HistoryPanel = withTranslation("common")(
             autoHideDuration={TOAST_TIME}
             onClose={closeToast}
           />
-          <Box marginTop={2} marginLeft={2}>
+          <Box
+            marginTop={2}
+            marginLeft={2}
+            display={"flex"}
+            sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
+          >
             <Tabs
               value={currentTab}
               onChange={(_event, value) => handleTabChange(value)}
               aria-label="l2-history-tabs"
+              variant="scrollable"
             >
               <Tab
                 label={t("labelLayer2HistoryTransactions")}
                 value={TabIndex.transactions}
               />
-              <Tab label={t("labelLayer2HistoryTrades")} value="trades" />
+              <Tab
+                label={t("labelLayer2HistoryTrades")}
+                value={TabIndex.trades}
+              />
+              <Tab label={t("labelOrderGroup")} value={TabIndex.orders} />
               <Tab
                 label={t("labelLayer2HistoryAmmRecords")}
                 value={TabIndex.ammRecords}
               />
               <Tab
-                label={t("labelOrderTableOpenOrder")}
-                value={TabIndex.orderOpenTable}
+                label={t("labelDefiOrderTable")}
+                value={TabIndex.defiRecords}
               />
               <Tab
-                label={t("labelOrderTableOrderHistory")}
-                value={TabIndex.orderHistoryTable}
+                label={t("labelDualOrderTable")}
+                value={TabIndex.dualRecords}
               />
             </Tabs>
           </Box>
-          <div className="tableWrapper table-divide-short">
+          <Box
+            className="tableWrapper table-divide-short"
+            display={"flex"}
+            flex={1}
+            overflow={"scroll"}
+          >
             {currentTab === TabIndex.transactions ? (
               <TransactionTable
                 {...{
@@ -217,31 +277,96 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : (
-              <OrderHistoryTable
+            ) : currentTab === TabIndex.defiRecords ? (
+              <DefiTxsTable
                 {...{
-                  pagination:
-                    currentTab === TabIndex.orderOpenTable
-                      ? undefined
-                      : {
-                          pageSize: pageSize,
-                          total: totalNum,
-                        },
-                  rawData: rawData,
-                  showFilter: true,
-                  getOrderList,
-                  marketArray: orderRaw,
-                  showDetailLoading: false,
-                  userOrderDetailList,
-                  getUserOrderDetailTradeList,
+                  rawData: defiList,
+                  pagination: {
+                    pageSize: pageSize,
+                    total: defiTotal,
+                  },
+                  getDefiTxList,
+                  showloading: showDefiLoading,
                   ...rest,
-                  showLoading,
-                  isOpenOrder: currentTab === TabIndex.orderOpenTable,
-                  cancelOrder,
+                }}
+                tokenMap={tokenMap}
+                idIndex={idIndex}
+              />
+            ) : currentTab === TabIndex.dualRecords ? (
+              <DualTxsTable
+                rawData={dualList}
+                getDualTxList={getDualTxList}
+                pagination={{
+                  pageSize: pageSize + 2,
+                  total: dualTotal,
+                }}
+                dualMarketMap={dualMarketMap}
+                showloading={showDualLoading}
+                tokenMap={tokenMap}
+                idIndex={idIndex}
+                {...{
+                  ...rest,
                 }}
               />
+            ) : (
+              <Box
+                flex={1}
+                display={"flex"}
+                flexDirection={"column"}
+                marginTop={-2}
+              >
+                <Box marginBottom={2} marginLeft={3}>
+                  <Tabs
+                    value={currentOrderTab}
+                    onChange={(_event, value) => {
+                      setCurrentOrderTab(value);
+                      history.replace(
+                        `/l2assets/history/orders/${value}?${search.replace(
+                          "?",
+                          ""
+                        )}`
+                      );
+                    }}
+                    aria-label="l2-history-tabs"
+                    variant="scrollable"
+                  >
+                    <Tab
+                      label={t("labelOrderTableOpenOrder")}
+                      value={TabOrderIndex.orderOpenTable}
+                    />
+                    <Tab
+                      label={t("labelOrderTableOrderHistory")}
+                      value={TabOrderIndex.orderHistoryTable}
+                    />
+                  </Tabs>
+                </Box>
+
+                <OrderHistoryTable
+                  {...{
+                    pagination:
+                      currentOrderTab === TabOrderIndex.orderOpenTable
+                        ? undefined
+                        : {
+                            pageSize: pageSize - 1,
+                            total: totalNum,
+                          },
+                    rawData,
+                    showFilter: true,
+                    getOrderList,
+                    marketArray: orderRaw,
+                    showDetailLoading: false,
+                    userOrderDetailList,
+                    getUserOrderDetailTradeList,
+                    ...rest,
+                    showLoading,
+                    isOpenOrder:
+                      currentOrderTab === TabOrderIndex.orderOpenTable,
+                    cancelOrder,
+                  }}
+                />
+              </Box>
             )}
-          </div>
+          </Box>
         </StylePaper>
       </Box>
     );

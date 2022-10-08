@@ -429,12 +429,21 @@ export const useAmmJoin = ({
       setIsLoading(true);
 
       updatePageAmmJoinBtn({ btnStatus: TradeBtnStatus.LOADING });
-
       if (!allowTrade.order.enable) {
         setShowSupport({ isShow: true });
         setIsLoading(false);
+      } else if (ammInfo?.joinDisable) {
+        setShowTradeIsFrozen({
+          isShow: true,
+          messageKey: "labelNoticeForMarketFrozen",
+          type: t("labelAmmJoin") + ` ${ammInfo?.__rawConfig__.name}`,
+        });
+        setIsLoading(false);
       } else if (!joinAmm.enable) {
-        setShowTradeIsFrozen({ isShow: true });
+        setShowTradeIsFrozen({
+          isShow: true,
+          type: t("labelAmmJoin") + ` ${ammInfo?.__rawConfig__.name}`,
+        });
         setIsLoading(false);
       } else {
         if (
@@ -462,8 +471,8 @@ export const useAmmJoin = ({
 
         const patch: sdk.AmmPoolRequestPatch = {
           chainId: store.getState().system.chainId as sdk.ChainId,
-          ammName: ammInfo.__rawConfig__.name,
-          poolAddress: ammInfo.address,
+          ammName: ammInfo?.__rawConfig__.name ?? "",
+          poolAddress: ammInfo?.address ?? "",
           eddsaKey: account.eddsaKey.sk,
         };
 
@@ -491,6 +500,9 @@ export const useAmmJoin = ({
           req.storageIds = [storageId0.offchainId, storageId1.offchainId];
 
           req.validUntil = getTimestampDaysLater(DAYS);
+          if (ammInfo?.domainSeparator) {
+            req.domainSeparator = ammInfo?.domainSeparator;
+          }
 
           myLog("join ammpool req:", req);
 

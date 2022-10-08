@@ -21,6 +21,7 @@ import {
   PopoverPure,
   QuoteTable,
   QuoteTableRawDataItem,
+  TagIconList,
   useSettings,
 } from "@loopring-web/component-lib";
 
@@ -49,10 +50,12 @@ import {
   useAmmActivityMap,
   useAccount,
   TableProWrapStyled,
+  useNotify,
 } from "@loopring-web/core";
 import { useToolbar } from "./hook";
 import { useHistory } from "react-router-dom";
 import { useTickList } from "../../../QuotePage/hook";
+import { InputSearchWrapperStyled } from "@loopring-web/component-lib";
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);
@@ -61,11 +64,6 @@ const PriceTitleStyled = styled(Typography)`
 
 const PriceValueStyled = styled(Typography)`
   font-size: 1.2rem;
-`;
-
-const InputSearchWrapperStyled = styled(Box)`
-  padding: ${({ theme }) => theme.unit * 2}px;
-  padding-bottom: 0;
 `;
 
 export enum TableFilterParams {
@@ -98,9 +96,9 @@ export const Toolbar = withTranslation("common")(
     const { tickerMap, status: tickerStatus } = useTicker();
     const { favoriteMarket, removeMarket, addMarket } =
       favoriteMarketRD.useFavoriteMarket();
+    const { campaignTagConfig } = useNotify().notifyMap ?? {};
     const { ammPoolBalances } = useToolbar();
     const { tickList } = useTickList();
-    const { activityInProgressRules } = useAmmActivityMap();
     const { account } = useAccount();
     const [filteredData, setFilteredData] = React.useState<
       QuoteTableRawDataItem[]
@@ -108,6 +106,7 @@ export const Toolbar = withTranslation("common")(
     const [searchValue, setSearchValue] = React.useState<string>("");
     const [tableTabValue, setTableTabValue] = React.useState("all");
     const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
     const [marketTicker, setMarketTicker] = React.useState<
       (MarketBlockProps<C> & any) | undefined
     >({
@@ -184,7 +183,7 @@ export const Toolbar = withTranslation("common")(
       if (tickerStatus === SagaStatus.UNSET && market !== undefined) {
         setDefaultData();
       }
-    }, [tickerStatus, market]);
+    }, [tickerStatus, market, setDefaultData]);
     const getFilteredTickList = React.useCallback(() => {
       if (!!ammPoolBalances.length && tickList && !!tickList.length) {
         return tickList.filter((o: any) => {
@@ -368,12 +367,12 @@ export const Toolbar = withTranslation("common")(
                   <QuoteTable
                     isPro
                     forexMap={forexMap as any}
+                    campaignTagConfig={campaignTagConfig}
                     account={account}
                     rawData={filteredData}
                     favoriteMarket={favoriteMarket}
                     addFavoriteMarket={addMarket}
                     removeFavoriteMarket={removeMarket}
-                    activityInProgressRules={activityInProgressRules}
                     onRowClick={(_: any, row: any) => {
                       handleOnMarketChange(
                         `${row.pair.coinA}-${row.pair.coinB}` as MarketType
@@ -387,58 +386,12 @@ export const Toolbar = withTranslation("common")(
               </Box>
             </ClickAwayListener>
           </PopoverPure>
-          {activityInProgressRules &&
-            activityInProgressRules[market] &&
-            activityInProgressRules[market].ruleType.map(
-              (ruleType: any, index: number) => (
-                <Box
-                  key={ruleType.toString() + index}
-                  style={{ cursor: "pointer", paddingTop: 4 }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    const date = new Date(
-                      activityInProgressRules[market].rangeFrom
-                    );
-                    const year = date.getFullYear();
-                    const month = (
-                      "0" + (date.getMonth() + 1).toString()
-                    ).slice(-2);
-                    const day = ("0" + date.getDate().toString()).slice(-2);
-                    const current_event_date = `${year}-${month}`;
-
-                    history.push(
-                      `/race-event/${current_event_date}?selected=${market}&type=${ruleType}&l2account=${account?.accAddress}`
-                    );
-                  }}
-                >
-                  <TrophyIcon />
-                </Box>
-              )
-            )}
-          {activityInProgressRules && activityInProgressRules[`AMM-${market}`] && (
-            <Box
-              marginLeft={1 / 2}
-              style={{ cursor: "pointer", paddingTop: 4 }}
-              onClick={(event) => {
-                event.stopPropagation();
-                const date = new Date(
-                  activityInProgressRules[`AMM-${market}`].rangeFrom
-                );
-                const year = date.getFullYear();
-                const month = ("0" + (date.getMonth() + 1).toString()).slice(
-                  -2
-                );
-                const day = ("0" + date.getDate().toString()).slice(-2);
-                const current_event_date = `${year}-${month}`;
-                history.push(
-                  `/race-event/${current_event_date}?selected=${market}&type=${
-                    activityInProgressRules[`AMM-${market}`].ruleType[0]
-                  }&l2account=${account?.accAddress}`
-                );
-              }}
-            >
-              <AmmRankIcon style={{ marginBottom: 5 }} />
-            </Box>
+          {campaignTagConfig && (
+            <TagIconList
+              scenario={"orderbook"}
+              campaignTagConfig={campaignTagConfig}
+              symbol={market}
+            />
           )}
           <Grid
             container

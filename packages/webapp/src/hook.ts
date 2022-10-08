@@ -12,6 +12,8 @@ import {
   useNotify,
   layer1Store,
   useDefiMap,
+  useInvestTokenTypeMap,
+  useDualMap,
 } from "@loopring-web/core";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { SagaStatus, ThemeType } from "@loopring-web/common-resources";
@@ -64,6 +66,12 @@ export function useInit() {
     useTokenPrices();
   const { status: defiMapStatus, statusUnset: defiMapStatusUnset } =
     useDefiMap();
+  const { status: dualMapStatus, statusUnset: dualMapStatusUnset } =
+    useDualMap();
+  const {
+    status: investTokenTypeMapStatus,
+    statusUnset: investTokenTypeMapStatusUnset,
+  } = useInvestTokenTypeMap();
 
   const {
     updateSystem,
@@ -285,6 +293,7 @@ export function useInit() {
         break;
     }
   }, [notifyStatus]);
+
   React.useEffect(() => {
     switch (defiMapStatus) {
       case SagaStatus.ERROR:
@@ -298,6 +307,34 @@ export function useInit() {
         break;
     }
   }, [defiMapStatus]);
+
+  React.useEffect(() => {
+    switch (dualMapStatus) {
+      case SagaStatus.ERROR:
+        dualMapStatusUnset();
+        // setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        dualMapStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [dualMapStatus]);
+
+  React.useEffect(() => {
+    switch (investTokenTypeMapStatus) {
+      case SagaStatus.ERROR:
+        investTokenTypeMapStatusUnset();
+        // setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        investTokenTypeMapStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [investTokenTypeMapStatus]);
 
   useAccountInit({ state });
   return {

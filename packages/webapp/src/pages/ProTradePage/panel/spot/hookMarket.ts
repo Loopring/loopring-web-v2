@@ -9,6 +9,7 @@ import {
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
+  account,
   MarketTradeData,
   TradeBaseType,
   TradeBtnStatus,
@@ -210,7 +211,10 @@ export const useMarket = <C extends { [key: string]: any }>({
         false,
         { floor: true }
       );
-      const priceImpactObj = getPriceImpactInfo(calcTradeParams);
+      const priceImpactObj = getPriceImpactInfo(
+        calcTradeParams,
+        account.readyState
+      );
       updatePageTradePro({
         market,
         sellUserOrderInfo,
@@ -266,7 +270,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         };
       });
     },
-    [autoRecalc]
+    [autoRecalc, account.readyState]
   );
 
   const resetTradeData = React.useCallback(
@@ -560,7 +564,10 @@ export const useMarket = <C extends { [key: string]: any }>({
   const onSubmitBtnClick = React.useCallback(async () => {
     setIsMarketLoading(true);
     const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-    const { priceLevel } = getPriceImpactInfo(pageTradePro.calcTradeParams);
+    const { priceLevel } = getPriceImpactInfo(
+      pageTradePro.calcTradeParams,
+      account.readyState
+    );
     // const isIpValid = true
     if (!allowTrade.order.enable) {
       setShowSupport({ isShow: true });
@@ -581,7 +588,7 @@ export const useMarket = <C extends { [key: string]: any }>({
           break;
       }
     }
-  }, [allowTrade]);
+  }, [allowTrade, account.readyState]);
 
   const {
     btnStatus: tradeMarketBtnStatus,

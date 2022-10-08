@@ -77,7 +77,6 @@ export const ModalCoinPairPanel = withTranslation("common")(
       setPageSize,
       pageSize,
       getRecentAmmPoolTxs,
-      // activityInProgressRules,
       isMobile,
       tokenPrices,
       currency,
@@ -185,6 +184,7 @@ export const ModalCoinPairPanel = withTranslation("common")(
               {...rest}
             />
           </Box>
+
           <SwipeableViews
             animateTransitions={false}
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}

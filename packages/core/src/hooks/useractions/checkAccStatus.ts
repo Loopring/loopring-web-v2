@@ -39,7 +39,10 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     isOnLoading: boolean;
   };
   chargeFeeTokenList: C[];
-  checkFeeIsEnough: () => void;
+  checkFeeIsEnough: (props?: {
+    isRequiredAPI: true;
+    intervalTime?: number;
+  }) => void;
 }): { checkActiveStatusProps: CheckActiveStatusProps<C> } => {
   const { account } = useAccount();
   const { status: walletLayer2Status, updateWalletLayer2 } = useWalletLayer2();
@@ -83,7 +86,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
             if (walletMap[item.belong] && walletMap[item.belong]?.count) {
               return sdk
                 .toBig(walletMap[item.belong]?.count ?? 0)
-                .gte(sdk.toBig(item.fee.toString().replace(",", "")));
+                .gte(sdk.toBig(item.fee.toString().replace(sdk.SEP, "")));
             }
             return;
           }) === -1

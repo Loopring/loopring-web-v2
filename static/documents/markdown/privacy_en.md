@@ -12,13 +12,23 @@ The applications provided by Loopring are decentralized wallets and non-custodia
 2.1. In order to provide you with the wallet service, we need to collect the following basic user information (“**User Information**”) that must be collected to provide you with the service:
 
 
-- (a) Account information: When you create and restore a Wallet, we need your email address or mobile phone number. This information will be used when performing guardian-related operations and will also be used by us for user modeling to provide better services.
+- (a) Account information: When you create and restore a Wallet, we need your email address or mobile phone number. This
+  information will be used when performing guardian-related operations and will also be used by us for user modeling to
+  provide better services.
 
-- (b) Wallet information: When you use the Wallet service, we will automatically collect the version information of your Wallet.
+- (b) Wallet information: When you use the Wallet service, we will automatically collect the version information of your
+  Wallet.
 
-- (c) Device information: We will collect the relevant information of your device using our services, including device ID, version information of the mobile device operating system, mobile device platform type (iOS or Android), phone language, channel information (e.g., GooglePlay, Xiaomi App Store, Baidu App Store, Apple App Store); our product integrator Umeng + SDK needs to collect your device Mac address, unique device identification code (IMEI/android ID/IDFA/OPENUDID/GUID, SIM card IMSI information) in order to provide statistical analysis services, and calibrate the accuracy of report data through geographic location to provide basic anti-fraud function.
+- (c) Device information: We will collect the relevant information of your device using our services, including device
+  ID, version information of the mobile device operating system, mobile device platform type (iOS or Android), phone
+  language, channel information (e.g., GooglePlay, Apple App Store), IP address in order to provide statistical analysis
+  services, and calibrate the accuracy of report data through geographic location to provide basic anti-fraud function.
 
-- (d) KYC (Know Your Customer) information: Loopring may provide some centralized services in the future. At that time, your identity, address and other information will be collected. This information is only used for compliance purposes.
+- (d) KYC (Know Your Customer) information: Loopring may provide some centralized services in the future. At that time,
+  your identity, address and other information will be collected. Also loopring integrates services from 3rd party
+  vendors (e.g., Ramp, BanXa) for fiat on-ramp and off-ramp solution, which will redirect user to 3rd party website. And
+  user will need to fill in the KYC information in those web sites to receive services. This information is only used
+  for compliance purposes.
 
 2.2. Loopring uses a second layer account based on the Ethereum blockchain.  When you use the Loopring account, the wallet address, ENS name, and all first-level transaction records related to the address (ENS name) (including but not limited to transfer, transaction, deposit, and withdrawal, etc.) will be stored on the Ethereum blockchain. You and we have no control over the disclosure, modification and deletion of your transaction records on the Ethereum blockchain.
 
@@ -97,17 +107,22 @@ Derivative Data should consist of anonymized data and must not contain data that
 
 We reserve the right to update and revise this Privacy Policy at any time.  We occasionally review this Privacy Policy to make sure it complies with Applicable Laws and conforms to the changes in our business. Without your consent, we will not reduce your right under this Privacy Policy.  If we do revise this Privacy Policy, we will notify you the change of this Privacy Policy via Wallet.  Regarding major changes, we will also provide more noticeable notices, including page prompts and other methods, to explain the specific changes to this Privacy Policy.  The major changes of this Privacy Policy include, without limitation:
 
-- (a) A major change in our service model, such as the purpose of processing user information, the type of personal information processed, and the way in which personal information is used.
-- (b) Significant changes have taken place in our ownership structure and organizational structure, such as changes of ownership via business adjustments, bankruptcy mergers, etc.
+- (a) A major change in our service model, such as the purpose of processing user information, the type of personal
+  information processed, and the way in which personal information is used.
+- (b) Significant changes have taken place in our ownership structure and organizational structure, such as changes of
+  ownership via business adjustments, bankruptcy mergers, etc.
 - (c) The main objects of personal information sharing, transfer or public disclosure have changed.
-- (d) Your right to participate in the processing of personal information and how to exercise it has undergone major changes.
-- (e) When our department responsible for handling user information security, contact information and complaint channels change.
+- (d) Your right to participate in the processing of personal information and how to exercise it has undergone major
+  changes.
+- (e) When our department responsible for handling user information security, contact information and complaint channels
+  change.
 - (f) When the information security impact assessment report shows that there is a high risk.
 
-Please review this Privacy Policy regularly to ensure that you are aware of its terms.  Any use of Loopring Service after an amendment to our Privacy Policy constitutes your acceptance to the revised Privacy Policy.
+Please review this Privacy Policy regularly to ensure that you are aware of its terms. Any use of Loopring Service after
+an amendment to our Privacy Policy constitutes your acceptance to the revised Privacy Policy.
 
 
 ---
 
 
-Last Updated: January 16, 2021.
+Last Updated: August 4, 2022.

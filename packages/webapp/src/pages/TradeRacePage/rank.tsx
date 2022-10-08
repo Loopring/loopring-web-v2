@@ -54,20 +54,24 @@ const TableStyled = styled(Box)<{ height: number | undefined | string }>`
 
     .rdgCellCenter {
       height: 100%;
-      // display: flex;
+      //   display: flex;
       justify-content: center;
       align-items: center;
     }
+
     .textAlignRight {
       text-align: right;
     }
+
     .textAlignCenter {
       text-align: center;
     }
+
     .textAlignLeft {
       text-align: left;
     }
   }
+
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as typeof Box;
@@ -82,11 +86,11 @@ export const RankRaw = <R extends object>({
   const { isMobile } = useSettings();
   const { chainId, baseURL } = useSystem();
   const { search, pathname } = useLocation();
+  const searchParams = new URLSearchParams(search);
   const [rank, setRank] = React.useState<API_DATA<R> | undefined>(undefined);
   const [rankTableData, setRankTableData] = React.useState<R[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>("");
   const [showLoading, setShowLoading] = React.useState(true);
-  const searchParams = new URLSearchParams(search);
   const [selected, setSelected] = React.useState<string>(
     searchParams.get("selected") ?? filters[0]
   );
@@ -157,7 +161,7 @@ export const RankRaw = <R extends object>({
                 );
               return <Box className="rdg-cell-value">{formattedValue}</Box>;
             } else {
-              return row[item.key];
+              return row[item.key] ?? "";
             }
           },
         }))

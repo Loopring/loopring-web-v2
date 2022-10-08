@@ -50,6 +50,15 @@ export const TableWrapStyled = styled(Box)`
       }
     }
   }
+
+  &.min-height .rdg {
+    min-height: initial;
+  }
+
+  & .min-height .rdg {
+    min-height: initial;
+  }
+
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })};
   &.fixed {

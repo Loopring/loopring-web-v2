@@ -23,6 +23,8 @@ import {
   UIERROR_CODE,
   AddressError,
   WALLET_TYPE,
+  TOAST_TIME,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 
 import {
@@ -33,7 +35,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   checkErrorInfo,
@@ -44,10 +45,13 @@ import {
   useWalletLayer2Socket,
   walletLayer2Service,
   useSystem,
+  getIPFSString,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import { useHistory, useLocation } from "react-router-dom";
+import Web3 from "web3";
 
-export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
+export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const [memo, setMemo] = React.useState("");
   const {
     setShowAccount,
@@ -60,10 +64,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
 
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
-  const { exchangeInfo, chainId } = useSystem();
+  const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
+  const history = useHistory();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const [sureItsLayer2, setSureItsLayer2] =
     React.useState<WALLET_TYPE | undefined>(undefined);
@@ -72,19 +79,23 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
+    resetIntervalTime,
     checkFeeIsEnough,
   } = useChargeFees({
     tokenAddress: nftTransferValue.tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    updateData: React.useCallback(
-      ({ fee }) => {
-        updateNFTTransferData({
-          ...nftTransferValue,
-          fee,
-        });
-      },
-      [nftTransferValue, updateNFTTransferData]
-    ),
+    updateData: ({ fee }) => {
+      const nftTransferValue =
+        store.getState()._router_modalData.nftTransferValue;
+      updateNFTTransferData({
+        ...nftTransferValue,
+        balance: sdk
+          .toBig(nftTransferValue.total ?? 0)
+          .minus(nftTransferValue.locked ?? 0)
+          .toNumber(),
+        fee,
+      });
+    },
   });
 
   const {
@@ -158,10 +169,11 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   useWalletLayer2Socket({});
 
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
     if (info?.isRetry) {
+      checkFeeIsEnough();
       return;
     }
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     if (nftTransferValue.nftData) {
       updateNFTTransferData({
         balance: sdk
@@ -194,7 +206,12 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   React.useEffect(() => {
     if (isShow || info?.isShowLocal) {
       resetDefault();
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [isShow, info?.isShowLocal]);
 
   React.useEffect(() => {
@@ -231,7 +248,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
           const response = await LoopringAPI.userAPI?.submitNFTInTransfer(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProvidersSignMap[connectName] ??
@@ -276,7 +293,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough(true);
+                  checkFeeIsEnough({ isRequiredAPI: true });
                 }
 
                 setShowAccount({
@@ -313,7 +330,25 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              updateWalletLayer2NFT({ page });
+              if (nftTransferValue.collectionMeta) {
+                history.push({
+                  pathname: `/NFT/assetsNFT/byCollection/${nftTransferValue.collectionMeta?.contractAddress}|${nftTransferValue.collectionMeta?.id}`,
+                  search,
+                });
+                updateWalletLayer2NFT({
+                  page: Number(searchParams.get("collectionPage")) ?? 1,
+                  collection: nftTransferValue.collectionMeta?.contractAddress,
+                });
+              } else {
+                history.push({
+                  pathname: `/NFT/assetsNFT/byList`,
+                  search,
+                });
+                updateWalletLayer2NFT({
+                  page,
+                  collection: undefined,
+                });
+              }
               setShowNFTDetail({ isShow: false });
               resetNFTTransferData();
             }
@@ -527,6 +562,8 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     isFeeNotEnough,
     handlePanelEvent,
     isLoopringAddress,
+    baseURL,
+    getIPFSString,
     isSameAddress,
     isAddressCheckLoading,
   };

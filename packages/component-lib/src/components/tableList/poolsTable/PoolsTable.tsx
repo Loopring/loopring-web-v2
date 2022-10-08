@@ -3,6 +3,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { bindHover } from "material-ui-popup-state/es";
 import {
+  AvatarCoin,
   Button,
   Column,
   NewTagIcon,
@@ -14,30 +15,24 @@ import {
   TableProps,
 } from "../../basic-lib";
 import {
-  Account,
   AmmDetail,
-  AmmRankIcon,
-  AvatarCoinStyled,
   CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
   MoreIcon,
   PriceTag,
+  RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { Avatar, Box, BoxProps, Grid, Typography } from "@mui/material";
-import { PoolTableProps, Row } from "./Interface";
+import { IconColumnProps, PoolTableProps, Row } from "./Interface";
 import styled from "@emotion/styled";
-import { useHistory } from "react-router-dom";
 import { FormatterProps } from "react-data-grid";
-import {
-  AmmPoolInProgressActivityRule,
-  LoopringMap,
-} from "@loopring-web/loopring-sdk";
+
 import { useSettings } from "../../../stores";
 import { TablePaddingX } from "../../styled";
-import { AmmPairDetail } from "../../block";
+import { AmmPairDetail, TagIconList } from "../../block";
 import { ActionPopContent } from "../myPoolTable/components/ActionPop";
 const BoxStyled = styled(Box)`` as typeof Box;
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
@@ -70,16 +65,9 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
 export const IconColumn = React.memo(
   <R extends AmmDetail<T>, T>({
     row,
-    account,
-    activityInProgressRules,
     size = 24,
-  }: {
-    row: R;
-    account: Account;
-    size?: number;
-    activityInProgressRules?: LoopringMap<AmmPoolInProgressActivityRule>;
-  }) => {
-    const history = useHistory();
+    campaignTagConfig,
+  }: IconColumnProps<R>) => {
     const { coinJson, isMobile } = useSettings();
     if (!row || !row.coinAInfo || !row.coinBInfo) {
       return <BoxStyled />;
@@ -107,7 +95,7 @@ export const IconColumn = React.memo(
             justifyContent={"center"}
           >
             {coinAIcon ? (
-              <AvatarCoinStyled
+              <AvatarCoin
                 imgx={coinAIcon.x}
                 imgy={coinAIcon.y}
                 imgheight={coinAIcon.h}
@@ -146,7 +134,7 @@ export const IconColumn = React.memo(
             justifyContent={"center"}
           >
             {coinBIcon ? (
-              <AvatarCoinStyled
+              <AvatarCoin
                 imgx={coinBIcon.x}
                 imgy={coinBIcon.y}
                 imgheight={coinBIcon.h}
@@ -207,50 +195,27 @@ export const IconColumn = React.memo(
             </Typography>
           </Typography>
         )}
-        <>
-          {activityInProgressRules && activityInProgressRules[`AMM-${pair}`] && (
-            <Box
-              style={{ cursor: "pointer", paddingTop: 4 }}
-              onClick={(event) => {
-                event.stopPropagation();
-                const date = new Date(
-                  activityInProgressRules[`AMM-${pair}`].rangeFrom
-                );
-                const year = date.getFullYear();
-                const month = ("0" + (date.getMonth() + 1).toString()).slice(
-                  -2
-                );
-                // const day = ("0" + date.getDate().toString()).slice(-2);
-                const current_event_date = `${year}-${month}`;
-
-                history.push(
-                  `/race-event/${current_event_date}?selected=${pair}&type=${
-                    activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                  }&l2account=${account?.accAddress}`
-                );
-              }}
-            >
-              <AmmRankIcon fontSize={"medium"} />
-            </Box>
-          )}
-          {isNew && <NewTagIcon />}
-        </>
+        {campaignTagConfig && (
+          <TagIconList
+            scenario={"AMM"}
+            campaignTagConfig={campaignTagConfig}
+            symbol={pair}
+          />
+        )}
+        {isNew && <NewTagIcon />}
       </BoxStyled>
     );
   }
-) as unknown as <R extends AmmDetail<T>, T>(props: {
-  row: R;
-  account: Account;
-  size?: number;
-  activityInProgressRules?: LoopringMap<AmmPoolInProgressActivityRule>;
-}) => JSX.Element;
+) as unknown as <R extends AmmDetail<T>, T>(
+  props: IconColumnProps<R>
+) => JSX.Element;
 
 export const PoolsTable = withTranslation(["tables", "common"])(
   <T extends { [key: string]: any }>({
     t,
     i18n,
     tReady,
-    activityInProgressRules,
+    campaignTagConfig,
     showFilter = true,
     rawData,
     sortMethod,
@@ -265,10 +230,10 @@ export const PoolsTable = withTranslation(["tables", "common"])(
     tokenMap,
     forexMap,
     allowTrade,
+    rowConfig = RowConfig,
     ...rest
   }: WithTranslation & PoolTableProps<T>) => {
     const { currency, isMobile } = useSettings();
-    // const history = useHistory();
 
     const getPopoverState = React.useCallback((label: string) => {
       return usePopupState({
@@ -294,7 +259,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               <IconColumn
                 row={row as any}
                 account={account}
-                activityInProgressRules={activityInProgressRules}
+                campaignTagConfig={campaignTagConfig}
               />
             </Box>
           );
@@ -474,7 +439,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                 account={account}
                 row={row as any}
                 size={20}
-                activityInProgressRules={activityInProgressRules}
+                campaignTagConfig={campaignTagConfig}
               />
             </Box>
           );
@@ -626,19 +591,6 @@ export const PoolsTable = withTranslation(["tables", "common"])(
       generateColumns: ({ columnsRaw }) =>
         columnsRaw as Column<Row<any>, unknown>[],
     };
-    // const onRowClick = React.useCallback(
-    //   (_rowIdx: any, row: any) => {
-    //     const pathname = `/liquidity/pools/coinPair/${
-    //       row?.coinAInfo?.simpleName + "-" + row?.coinBInfo?.simpleName
-    //     }`;
-    //
-    //     history &&
-    //       history.push({
-    //         pathname,
-    //       });
-    //   },
-    //   [history]
-    // );
 
     return (
       <TableStyled
@@ -656,9 +608,8 @@ export const PoolsTable = withTranslation(["tables", "common"])(
             tReady,
             ...rest,
             rawData: rawData,
-            // onRowClick: (index, row) => {
-            //   onRowClick(index, row);
-            // },
+            rowHeight: rowConfig.rowHeight,
+            rowHeaderHeight: rowConfig.rowHeaderHeight,
             showloading: showLoading,
             sortMethod: (sortedRows: any[], sortColumn: string) =>
               sortMethod(sortedRows, sortColumn),

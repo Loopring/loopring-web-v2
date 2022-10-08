@@ -1,0 +1,34 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="24.0001" r="24" fill="url(#paint0_linear_6629_423)"/>
+    <mask id="mask0_6629_423" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">
+        <circle cx="24" cy="24" r="24" fill="url(#paint1_linear_6629_423)"/>
+    </mask>
+    <g mask="url(#mask0_6629_423)">
+        <rect opacity="0.4" x="23.3553" y="-12.0001" width="12" height="50" transform="rotate(45 23.3553 -12.0001)"
+              fill="white"/>
+        <rect opacity="0.3" x="31.8406" y="-3.51483" width="12" height="50" transform="rotate(45 31.8406 -3.51483)"
+              fill="white"/>
+        <rect opacity="0.2" x="40.3259" y="4.97046" width="12" height="50" transform="rotate(45 40.3259 4.97046)"
+              fill="white"/>
+    </g>
+    <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M24 38.0001C31.732 38.0001 38 31.7321 38 24.0001C38 16.2681 31.732 10.0001 24 10.0001C16.268 10.0001 10 16.2681 10 24.0001C10 31.7321 16.268 38.0001 24 38.0001ZM24 40.0001C32.8366 40.0001 40 32.8367 40 24.0001C40 15.1636 32.8366 8.00012 24 8.00012C15.1634 8.00012 8 15.1636 8 24.0001C8 32.8367 15.1634 40.0001 24 40.0001Z"
+          fill="white"/>
+    <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M24.5 13.2291L32.2117 24.5L24.5 35.7709L16.7883 24.5L24.5 13.2291ZM19.2117 24.5L24.5 32.2291L29.7883 24.5L24.5 16.7709L19.2117 24.5Z"
+          fill="white"/>
+    <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M17.476 24.8517L18.5241 23.1483L24.5 26.8258L30.476 23.1483L31.5241 24.8517L24.5 29.1742L17.476 24.8517Z"
+          fill="white"/>
+    <defs>
+        <linearGradient id="paint0_linear_6629_423" x1="13" y1="46.0001" x2="36" y2="4.50011"
+                        gradientUnits="userSpaceOnUse">
+            <stop stop-color="#80D0C7"/>
+            <stop offset="1" stop-color="#005BEA"/>
+        </linearGradient>
+        <linearGradient id="paint1_linear_6629_423" x1="13" y1="46" x2="36" y2="4.5" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#80D0C7"/>
+            <stop offset="1" stop-color="#005BEA"/>
+        </linearGradient>
+    </defs>
+</svg>

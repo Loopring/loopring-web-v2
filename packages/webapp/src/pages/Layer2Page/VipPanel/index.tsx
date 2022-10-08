@@ -10,13 +10,23 @@ import {
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import { LoopringAPI, useAccount } from "@loopring-web/core";
+import {
+  LoopringAPI,
+  useAccount,
+  useTokenMap,
+  useWalletLayer2,
+} from "@loopring-web/core";
 import {
   SoursURL,
   getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
-import { useSettings, VipPanel as VipView } from "@loopring-web/component-lib";
+import {
+  useSettings,
+  VipPanel as VipView,
+  walletMap,
+} from "@loopring-web/component-lib";
 import { useGetVIPInfo } from "./hooks";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const StyledPaper = styled(Grid)`
   width: 100%;
@@ -95,6 +105,12 @@ export const VipPanel = withTranslation(["common", "layout"])(
     const history = useHistory();
     const { isMobile } = useSettings();
     const [setVipTable] = React.useState<string[][]>([]);
+    const { tokenMap } = useTokenMap();
+    const { walletLayer2 } = useWalletLayer2();
+    const currentBalanceLRC = sdk
+      .toBig(walletLayer2?.LRC?.total ?? 0)
+      .div("1e" + tokenMap?.LRC?.decimals ?? 0)
+      .toNumber();
     const {
       getUserTradeAmount,
       tradeAmountInfo,
@@ -150,13 +166,6 @@ export const VipPanel = withTranslation(["common", "layout"])(
       return 0;
     }, [tradeAmountInfo]);
 
-    const getCurrentBalanceLRC = React.useCallback(() => {
-      if (userAssets && userAssets.length) {
-        return Number(userAssets[userAssets.length - 1].lrcValue).toFixed(3);
-      }
-      return 0;
-    }, [userAssets]);
-
     // const [vipTable, setVipTable] = React.useState<string[][]>(vipDefault);
     const [userFee, setUserFee] = React.useState<{
       maker: string;
@@ -180,13 +189,11 @@ export const VipPanel = withTranslation(["common", "layout"])(
         const isLrc = type === "lrc";
         const amount = Math.round(
           feeRate[`vip${currLevel}`][type] -
-            (isLrc
-              ? Number(getCurrentBalanceLRC())
-              : Number(getCurrentETHTradeAmount()))
+            (isLrc ? currentBalanceLRC : Number(getCurrentETHTradeAmount()))
         );
         return amount < 0 ? 0 : amount;
       },
-      [getCurrentBalanceLRC, getCurrentETHTradeAmount]
+      [currentBalanceLRC, getCurrentETHTradeAmount]
     );
 
     const getImagePath = React.useMemo(() => {
@@ -235,7 +242,7 @@ export const VipPanel = withTranslation(["common", "layout"])(
       }
     }, [history]);
 
-    const getTradeVolETH = React.useCallback(() => {
+    const getTradeVolETHLinear = React.useMemo(() => {
       if (isSVIP) {
         return 0;
       }
@@ -249,7 +256,7 @@ export const VipPanel = withTranslation(["common", "layout"])(
       return rate > 100 ? 100 : rate;
     }, [isVIP4, isSVIP, getCurrentETHTradeAmount, getNextVIPlevel]);
 
-    const getBalanceLRC = React.useCallback(() => {
+    const balanceLinearLRC = React.useMemo(() => {
       if (isSVIP) {
         return 0;
       }
@@ -257,11 +264,9 @@ export const VipPanel = withTranslation(["common", "layout"])(
         return 100;
       }
       const rate =
-        (Number(getCurrentBalanceLRC()) /
-          feeRate[`vip${getNextVIPlevel()}`]["lrc"]) *
-        100;
+        (currentBalanceLRC / feeRate[`vip${getNextVIPlevel()}`]["lrc"]) * 100;
       return rate > 100 ? 100 : rate;
-    }, [getCurrentBalanceLRC, getNextVIPlevel, isSVIP, isVIP4]);
+    }, [currentBalanceLRC, getNextVIPlevel, isSVIP, isVIP4]);
 
     const getCurrVIPLevel = React.useCallback(
       (direction: "left" | "right") => {
@@ -403,7 +408,10 @@ export const VipPanel = withTranslation(["common", "layout"])(
               )}
             </Typography>
             <Box width={"100%"} paddingRight={2} marginY={1.5}>
-              <LinearProgress variant="determinate" value={getTradeVolETH()} />
+              <LinearProgress
+                variant="determinate"
+                value={getTradeVolETHLinear}
+              />
               <Box
                 marginTop={1}
                 display={"flex"}
@@ -459,7 +467,14 @@ export const VipPanel = withTranslation(["common", "layout"])(
             >
               <Typography variant={isMobile ? "h5" : "h4"} marginTop={0.5}>
                 {t("labelCurrentlyLevel", {
-                  value: getValuePrecisionThousand(getCurrentBalanceLRC()),
+                  value: getValuePrecisionThousand(
+                    currentBalanceLRC,
+                    tokenMap?.LRC.precision,
+                    tokenMap?.LRC.precision,
+                    tokenMap?.LRC.precision,
+                    false,
+                    { floor: true }
+                  ),
                   token: "LRC",
                 })}
               </Typography>
@@ -477,7 +492,7 @@ export const VipPanel = withTranslation(["common", "layout"])(
               )}
             </Typography>
             <Box width={"100%"} paddingRight={2} marginY={1.5}>
-              <LinearProgress variant="determinate" value={getBalanceLRC()} />
+              <LinearProgress variant="determinate" value={balanceLinearLRC} />
               <Box
                 marginTop={1}
                 display={"flex"}

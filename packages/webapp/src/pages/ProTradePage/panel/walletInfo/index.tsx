@@ -3,7 +3,6 @@ import React from "react";
 
 import {
   AccountStatus,
-  AvatarCoinStyled,
   EmptyValueTag,
   fnType,
   getValuePrecisionThousand,
@@ -16,6 +15,7 @@ import {
 import { Avatar, Box, Divider, Typography } from "@mui/material";
 import {
   AccountStep,
+  AvatarCoin,
   Button,
   useOpenModals,
   useSettings,
@@ -351,7 +351,7 @@ const UnLookView = React.memo(
               marginRight={1 / 2}
             >
               {tokenAIcon ? (
-                <AvatarCoinStyled
+                <AvatarCoin
                   imgx={tokenAIcon.x}
                   imgy={tokenAIcon.y}
                   imgheight={tokenAIcon.height}
@@ -399,7 +399,7 @@ const UnLookView = React.memo(
               marginRight={1 / 2}
             >
               {tokenBIcon ? (
-                <AvatarCoinStyled
+                <AvatarCoin
                   imgx={tokenBIcon.x}
                   imgy={tokenBIcon.y}
                   imgheight={tokenBIcon.height}

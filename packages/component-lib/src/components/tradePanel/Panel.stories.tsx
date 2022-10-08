@@ -4,9 +4,10 @@ import { Meta, Story } from "@storybook/react/types-6-0";
 import { MemoryRouter } from "react-router-dom";
 import { Box, Grid } from "@mui/material";
 import {
-  AmmJoinData,
-  AmmInData,
+  AccountStatus,
   AmmExitData,
+  AmmInData,
+  AmmJoinData,
   IBData,
   SlippageTolerance,
 } from "@loopring-web/common-resources";
@@ -14,6 +15,8 @@ import {
   ammCalcData,
   coinMap,
   CoinType,
+  DUALCALCDATA,
+  TOKEN_INFO,
   tradeCalcData,
   walletMap,
 } from "../../static";
@@ -25,7 +28,8 @@ import {
   AmmPanelType,
   AmmProps,
   DepositProps,
-  ModalPanel,
+  DualWrap,
+  DualWrapProps,
   ResetProps,
   SwapProps,
   SwapTradeData,
@@ -35,7 +39,7 @@ import {
   WithdrawProps,
 } from "./index";
 
-import { DepositGroup, TransferPanel, WithdrawPanel } from "../modal";
+import { DepositPanel, TransferPanel, WithdrawPanel } from "../modal";
 
 import { useDispatch } from "react-redux";
 import {
@@ -49,12 +53,18 @@ import {
 import { SlippagePanel } from "./components";
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { boxLiner } from "../styled";
 
 const Style = styled.div`
   background: var(--color-global-bg);
 
   height: 100%;
   flex: 1;
+`;
+const BoxLinear = styled(Box)`
+  && {
+    ${({ theme }) => boxLiner({ theme })};
+  }
 `;
 let tradeData: any = {};
 // @ts-ignore
@@ -296,10 +306,10 @@ const WrapDepositPanel = (rest: any) => {
   return (
     <>
       <Grid item sm={6}>
-        <DepositGroup {...{ ...rest, ...depositProps, ...{ v: true } }} />
+        <DepositPanel {...{ ...rest, ...depositProps }} />
       </Grid>
       <Grid item sm={6}>
-        <DepositGroup
+        <DepositPanel
           {...{
             ...rest,
             ...depositProps,
@@ -338,6 +348,7 @@ const WrapSwapPanel = (rest: any) => {
   let swapProps: SwapProps<IBData<string>, string, any> = {
     refreshRef: React.createRef(),
     tradeData: tradeData,
+    isStob: true,
     tradeCalcData,
     onSwapClick: (tradeData) => {
       console.log("Swap button click", tradeData);
@@ -360,9 +371,36 @@ const WrapSwapPanel = (rest: any) => {
       <Grid item sm={6}>
         <SwapPanel {...swapProps} {...rest} />
       </Grid>
-      <Grid item sm={6}>
-        <SwapPanel {...rest}> </SwapPanel>
-      </Grid>
+    </>
+  );
+};
+const WrapDualPanel = (rest: any) => {
+  const dualWrapProps: DualWrapProps<any, any, any> = {
+    refreshRef: React.createRef(),
+    disabled: false,
+    btnInfo: undefined,
+    tokenMap: TOKEN_INFO.tokenMap as any,
+    isLoading: false,
+    onRefreshData: () => undefined,
+    onSubmitClick: () => undefined,
+    onChangeEvent: (item) => {
+      console.log(item);
+    },
+
+    dualCalcData: DUALCALCDATA,
+    tokenSell: TOKEN_INFO.tokenMap["LRC"],
+    btnStatus: TradeBtnStatus.AVAILABLE,
+    accStatus: AccountStatus.ACTIVATED,
+  };
+  return (
+    <>
+      <BoxLinear
+        width={"80%"}
+        padding={3}
+        sx={{ background: "var(--color-box-linear)" }}
+      >
+        <DualWrap {...dualWrapProps} {...rest} />
+      </BoxLinear>
     </>
   );
 };
@@ -433,28 +471,25 @@ const WrapAmmPanel = (rest: any) => {
 
 const ModalPanelWrap = () => {
   return (
-    <ModalPanel
-      // depositGroupProps={{
-      //   depositProps,
-      //   vendorMenuProps: {
-      //     vendorList: [],
-      //     vendorForce: undefined,
-      //   },
-      // }}
-      depositProps={depositProps as DepositProps<any, any>}
-      transferProps={transferProps as TransferProps<any, any>}
-      withdrawProps={withdrawProps as WithdrawProps<any, any>}
-      nftTransferProps={transferProps as TransferProps<any, any>}
-      nftWithdrawProps={withdrawProps as WithdrawProps<any, any>}
-      resetProps={resetProps}
-      assetsData={{} as any}
-      exportAccountProps={{} as any}
-      setExportAccountToastOpen={{} as any}
-      activeAccountProps={{} as any}
-      nftMintAdvanceProps={{} as any}
-      nftDeployProps={{} as any}
-      account={{} as any}
-    />
+    <></>
+    // <ModalPanel
+    //   depositProps={depositProps as DepositProps<any, any>}
+    //   transferProps={transferProps as TransferProps<any, any>}
+    //   withdrawProps={withdrawProps as WithdrawProps<any, any>}
+    //   nftTransferProps={transferProps as TransferProps<any, any>}
+    //   nftWithdrawProps={withdrawProps as WithdrawProps<any, any>}
+    //   resetProps={resetProps}
+    //   assetsData={{} as any}
+    //   exportAccountProps={{} as any}
+    //   setExportAccountToastOpen={{} as any}
+    //   activeAccountProps={{} as any}
+    //   // nftMintAdvanceProps={{} as any}
+    //   nftDeployProps={{} as any}
+    //   account={{} as any}
+    //   baseURL={""}
+    //   collectionAdvanceProps={{} as any}
+    //   dualTradeProps={{} as any}
+    // />
   );
 };
 
@@ -490,6 +525,16 @@ const Template: Story<any> = () => {
           >
             <WrapSwapPanel />
           </Grid>
+          <h4>DualPanel</h4>
+          <Grid
+            container
+            spacing={2}
+            alignContent={"center"}
+            justifyContent={"space-around"}
+          >
+            <WrapDualPanel />
+          </Grid>
+
           <h4>DepositPanel</h4>
           <Grid
             container

@@ -6,6 +6,7 @@ export type WalletLayer2NFTMap<R extends { [key: string]: any }> = {
 };
 
 export type WalletLayer2NFTStates = {
+  collection: string;
   walletLayer2NFT: loopring_defs.UserNFTBalanceInfo[];
   total: number;
   page: number;

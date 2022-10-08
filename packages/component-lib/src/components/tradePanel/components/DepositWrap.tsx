@@ -20,6 +20,7 @@ import {
 } from "../../../index";
 import { DepositViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export const DepositWrap = <
   T extends {
@@ -35,6 +36,7 @@ export const DepositWrap = <
   tradeData,
   coinMap,
   title,
+  isHideDes,
   description,
   btnInfo,
   depositBtnStatus,
@@ -61,7 +63,7 @@ export const DepositWrap = <
 }: DepositViewProps<T, I> & WithTranslation) => {
   const inputBtnRef = React.useRef();
   let { feeChargeOrder, isMobile } = useSettings();
-
+  const [_toAddress, setToAddress] = React.useState(tradeData.toAddress);
   const getDisabled = React.useMemo(() => {
     return disabled || depositBtnStatus === TradeBtnStatus.DISABLED;
   }, [depositBtnStatus, disabled]);
@@ -90,7 +92,8 @@ export const DepositWrap = <
         );
       }
       const Max: number =
-        Number(chargeFeeTokenList[index].fee.toString().replace(",", "")) * 4;
+        Number(chargeFeeTokenList[index].fee.toString().replace(sdk.SEP, "")) *
+        4;
       if (Max > (tradeData.tradeValue ?? 0)) {
         return (
           <Typography
@@ -142,7 +145,10 @@ export const DepositWrap = <
       height={"100%"}
       minWidth={"220px"}
     >
-      <DepositTitle title={title ? t(title) : undefined} />
+      <DepositTitle
+        title={title ? t(title) : undefined}
+        isHideDes={isHideDes}
+      />
       <Grid item marginTop={2} alignSelf={"stretch"}>
         <BasicACoinTrade
           {...{
@@ -236,22 +242,26 @@ export const DepositWrap = <
           <Box display={isToAddressEditable ? "inherit" : "none"}>
             <TextField
               className={"text-address"}
-              value={tradeData.toAddress ? tradeData.toAddress : ""}
+              value={_toAddress ? _toAddress : ""}
               error={toAddressStatus !== AddressError.NoError}
               label={t("depositLabelTo")}
               disabled={!isToAddressEditable}
               placeholder={t("depositLabelPlaceholder")}
               onChange={(_event) => {
-                const toAddress = _event.target.value;
-                //...tradeData,
-                onChangeEvent(0, {
-                  tradeData: { toAddress } as T,
-                  to: "button",
-                });
+                if (_event.target.value !== _toAddress) {
+                  const toAddress = _event.target.value;
+                  setToAddress(() => {
+                    return toAddress;
+                  });
+                  onChangeEvent(0, {
+                    tradeData: { toAddress } as T,
+                    to: "button",
+                  });
+                }
               }}
               fullWidth={true}
             />
-            {tradeData.toAddress !== "" ? (
+            {!!tradeData.toAddress ? (
               toIsAddressCheckLoading ? (
                 <LoadingIcon
                   width={24}
@@ -264,7 +274,10 @@ export const DepositWrap = <
                     size={"small"}
                     style={{ top: "30px" }}
                     aria-label="Clear"
-                    onClick={handleClear}
+                    onClick={() => {
+                      setToAddress("");
+                      handleClear();
+                    }}
                   >
                     <CloseIcon />
                   </IconClearStyled>

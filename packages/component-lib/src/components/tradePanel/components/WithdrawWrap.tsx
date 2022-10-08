@@ -68,9 +68,9 @@ export const WithdrawWrap = <
   withdrawI18nKey,
   addressDefault,
   accAddr,
-  isNotAvaiableAddress,
+  isNotAvailableAddress,
   withdrawTypes = { [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard" },
-  withdrawType = sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+  withdrawType,
   chargeFeeTokenList = [],
   feeInfo,
   handleConfirm,
@@ -83,12 +83,14 @@ export const WithdrawWrap = <
   isAddressCheckLoading,
   isCFAddress,
   isContractAddress,
+  isFastWithdrawAmountLimit,
   addrStatus,
   disableWithdrawList = [],
   wait = globalSetup.wait,
   assetsData = [],
   realAddr,
   isThumb,
+  baseURL,
   isToMyself = false,
   sureIsAllowAddress,
   handleSureIsAllowAddress,
@@ -143,6 +145,27 @@ export const WithdrawWrap = <
     !isAddressCheckLoading &&
     addressDefault &&
     addrStatus === AddressError.InvalidAddr;
+  const allowToClickIsSure = React.useMemo(() => {
+    return (
+      isAddressCheckLoading ||
+      addrStatus === AddressError.InvalidAddr ||
+      !realAddr
+    );
+  }, [addrStatus, isAddressCheckLoading, realAddr]);
+
+  const label = React.useMemo(() => {
+    if (withdrawI18nKey) {
+      const key = withdrawI18nKey.split("|");
+      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+    } else {
+      return t(
+        (tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
+          (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
+          ? `labelSendL1DeployBtn`
+          : `labelSendL1Btn`
+      );
+    }
+  }, [t, tradeData, withdrawI18nKey]);
 
   return (
     <Grid
@@ -221,6 +244,8 @@ export const WithdrawWrap = <
               type,
               onCopy,
               t,
+              baseURL: baseURL ?? "",
+              getIPFSString: rest.getIPFSString ?? (() => "" as any),
               disabled,
               walletMap,
               tradeData,
@@ -252,7 +277,7 @@ export const WithdrawWrap = <
             <TextField
               className={"text-address"}
               value={addressDefault}
-              error={!!(isNotAvaiableAddress || isInvalidAddressOrENS)}
+              error={!!(isNotAvailableAddress || isInvalidAddressOrENS)}
               placeholder={t("labelPleaseInputWalletAddress")}
               onChange={(event) => handleOnAddressChange(event?.target?.value)}
               label={t("labelL2toL1Address")}
@@ -308,7 +333,7 @@ export const WithdrawWrap = <
             >
               {t("labelInvalidAddress")}
             </Typography>
-          ) : isNotAvaiableAddress ? (
+          ) : isNotAvailableAddress ? (
             <Typography
               color={"var(--color-error)"}
               variant={"body2"}
@@ -316,7 +341,7 @@ export const WithdrawWrap = <
               alignSelf={"stretch"}
               position={"relative"}
             >
-              {t(`labelInvalid${isNotAvaiableAddress}`, {
+              {t(`labelInvalid${isNotAvailableAddress}`, {
                 token: type === "NFT" ? "NFT" : tradeData.belong,
                 way: t(`labelL2toL1`),
               })}
@@ -343,11 +368,7 @@ export const WithdrawWrap = <
           <WithdrawAddressType
             selectedValue={sureIsAllowAddress}
             handleSelected={handleSureIsAllowAddress}
-            disabled={
-              isAddressCheckLoading ||
-              addrStatus !== AddressError.NoError ||
-              !realAddr
-            }
+            disabled={allowToClickIsSure}
           />
         </Grid>
       )}
@@ -381,7 +402,7 @@ export const WithdrawWrap = <
               >
                 {feeInfo && feeInfo.belong && feeInfo.fee
                   ? feeInfo.fee + " " + feeInfo.belong
-                  : EmptyValueTag + " " + feeInfo?.belong}
+                  : EmptyValueTag + " " + feeInfo?.belong ?? EmptyValueTag}
                 <Typography
                   marginLeft={1}
                   color={"var(--color-text-secondary)"}
@@ -400,14 +421,22 @@ export const WithdrawWrap = <
                   >
                     {t("labelFeeCalculating")}
                   </Typography>
+                ) : isFeeNotEnough.isFeeNotEnough ? (
+                  <Typography
+                    marginLeft={1}
+                    component={"span"}
+                    color={"var(--color-error)"}
+                  >
+                    {t("labelL2toL2FeeNotEnough")}
+                  </Typography>
                 ) : (
-                  isFeeNotEnough.isFeeNotEnough && (
+                  isFastWithdrawAmountLimit && (
                     <Typography
                       marginLeft={1}
                       component={"span"}
                       color={"var(--color-error)"}
                     >
-                      {t("labelL2toL2FeeNotEnough")}
+                      {t("labelL2toL2FeeFastNotAllowEnough")}
                     </Typography>
                   )
                 )}
@@ -431,7 +460,7 @@ export const WithdrawWrap = <
                   <RadioGroup
                     aria-label="withdraw"
                     name="withdraw"
-                    value={withdrawType.toString()}
+                    value={withdrawType}
                     onChange={(e) => {
                       _handleWithdrawTypeChange(e);
                     }}
@@ -440,6 +469,7 @@ export const WithdrawWrap = <
                       return (
                         <FormControlLabel
                           key={key}
+                          disabled={isFeeNotEnough.isOnLoading}
                           value={key.toString()}
                           control={<Radio />}
                           label={`${t(
@@ -473,14 +503,7 @@ export const WithdrawWrap = <
           }
           disabled={getDisabled || withdrawBtnStatus === TradeBtnStatus.LOADING}
         >
-          {t(
-            withdrawI18nKey ??
-              ((tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
-                (tradeData as NFTWholeINFO)?.deploymentStatus ===
-                  "NOT_DEPLOYED")
-              ? `labelSendL1DeployBtn`
-              : `labelSendL1Btn`
-          )}
+          {label}
         </Button>
       </Grid>
 

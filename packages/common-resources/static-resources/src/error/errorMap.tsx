@@ -227,6 +227,65 @@ export const ErrorMap = {
     messageKey: "errorMintOverlap",
     options: {},
   },
+  ERROR_JSON_STRINGIFY: {
+    id: "ERROR_JSON_STRINGIFY",
+    messageKey: "errorJSONStringify",
+    options: {},
+  },
+  ERROR_COLLECTION_METADATA_NO_TILEURI: {
+    id: "ERROR_COLLECTION_METADATA_NO_TILEURI",
+    messageKey: "errorCollectionMetadataNoTileUri",
+    options: {},
+  },
+  ERROR_COLLECTION_NO_NAME: {
+    id: "ERROR_COLLECTION_NO_NAME",
+    messageKey: "errorCollectionNoName",
+    options: {},
+  },
+  ERROR_COLLECTION_SAME_NAME: {
+    id: "ERROR_COLLECTION_SAME_NAME",
+    messageKey: "errorCollectionSameName",
+    options: {},
+  },
+  ERROR_COLLECTION_EMPTY: {
+    id: "ERROR_COLLECTION_EMPTY",
+    messageKey: "errorCollectionEmpty",
+    options: {},
+  },
+  ERROR_COLLECTION_NOT_READABLE: {
+    id: "ERROR_COLLECTION_NOT_READABLE",
+    messageKey: "errorCollectionNotReadable",
+    options: {},
+  },
+  ERROR_COLLECTION_INFO: {
+    id: "ERROR_COLLECTION_INFO",
+    messageKey: "errorCollectionInfo",
+    options: {},
+  },
+  ERROR_COLLECTION_NO_SUPPORT: {
+    id: "ERROR_COLLECTION_NO_SUPPORT",
+    messageKey: "errorCollectionNoSupport",
+    options: {},
+  },
+  ERROR_ON_REFRESH: {
+    id: "ERROR_ON_REFRESH",
+    messageKey: "errorOnRefresh",
+    options: {},
+  },
+  IPFS_TIME_OUT: {
+    id: "IPFS_TIME_OUT",
+    messageKey: "errorIpfsTimeout",
+  },
+  ERROR_RAMP_NO_INSTANCE: {
+    id: "ERROR_RAMP_NO_INSTANCE",
+    messageKey: "errorRampNoInstance",
+    options: {},
+  },
+  ERROR_DUAL_EXPIRED: {
+    id: "ERROR_DUAL_EXPIRED",
+    messageKey: "errorDualExpired",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -240,6 +299,17 @@ export enum UIERROR_CODE {
   CREATE_IPFS_ERROR = 700009,
   NOT_SAME_IPFS_RESOURCE = 700010,
   IPFS_CID_TO_NFTID_ERROR = 700011,
+  TIME_OUT = 700012,
+  ERROR_JSON_STRINGIFY = 700013,
+  ERROR_COLLECTION_METADATA_NO_TILEURI = 700014,
+  ERROR_COLLECTION_NO_NAME = 700015,
+  ERROR_RAMP_NO_INSTANCE = 700100,
+  ERROR_COLLECTION_INFO = 700016,
+  ERROR_COLLECTION_EMPTY = 700017,
+  ERROR_COLLECTION_NO_SUPPORT = 700018,
+  ERROR_COLLECTION_NOT_READABLE = 700019,
+  IPFS_TIME_OUT = 700020,
+  ERROR_DUAL_EXPIRED = 115003,
 }
 export type ErrorObject = {
   from?: string;
@@ -260,6 +330,15 @@ export const SDK_ERROR_MAP_TO_UI = {
   700010: ErrorMap.NOT_SAME_IPFS_RESOURCE,
   700011: ErrorMap.IPFS_CID_TO_NFTID_ERROR,
   700012: ErrorMap.TIME_OUT,
+  700013: ErrorMap.ERROR_JSON_STRINGIFY,
+  700014: ErrorMap.ERROR_COLLECTION_METADATA_NO_TILEURI,
+  700015: ErrorMap.ERROR_COLLECTION_NO_NAME,
+  700016: ErrorMap.ERROR_COLLECTION_INFO,
+  700017: ErrorMap.ERROR_COLLECTION_EMPTY,
+  700018: ErrorMap.ERROR_COLLECTION_NO_SUPPORT,
+  700019: ErrorMap.ERROR_COLLECTION_NOT_READABLE,
+  700020: ErrorMap.IPFS_TIME_OUT,
+  700100: ErrorMap.ERROR_RAMP_NO_INSTANCE,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found
@@ -304,9 +383,12 @@ export const SDK_ERROR_MAP_TO_UI = {
   107002: ErrorMap.ERROR_INVALID_HASH, //Order Hash cannot be empty
   107003: ErrorMap.ERROR_ON_FROM_SUBMIT, //Order does not exist
   108000: ErrorMap.ERROR_NO_MARKET, //Unsupported market
+  102127: ErrorMap.ERROR_COLLECTION_SAME_NAME,
   108001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Unsupported depth level
   114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
+  122001: ErrorMap.ERROR_ON_REFRESH,
+  115003: ErrorMap.ERROR_DUAL_EXPIRED,
 };
 export const TransErrorHelp = ({
   error,

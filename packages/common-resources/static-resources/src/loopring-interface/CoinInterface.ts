@@ -1,8 +1,13 @@
-import { Account, FloatTag, TradeStatus, TradeTypes } from "../constant";
+import {
+  Account,
+  FloatTag,
+  ForexMap,
+  TradeStatus,
+  TradeTypes,
+} from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
-import { ForexMap } from "@loopring-web/common-resources";
-import { Currency } from "@loopring-web/loopring-sdk";
+import { TokenInfo } from "@loopring-web/loopring-sdk";
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -128,6 +133,15 @@ export type DeFiCalcData<T> = {
   fee: string;
 };
 
+export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {
+  sellToken?: TokenInfo;
+  buyToken?: TokenInfo;
+  coinSell: B;
+  dualViewInfo: R;
+  balance: { [key: string]: sdk.DualBalance };
+  request?: sdk.DualOrderRequest;
+};
+
 export type AmmInData<T> = {
   myCoinA: IBData<T>;
   myCoinB: IBData<T>;
@@ -173,7 +187,7 @@ export type AmmCardProps<T> = AmmDetail<T> & {
   tradeFloat: TradeFloat;
   handleClick: () => void;
   account: Account;
-  forexMap: ForexMap<Currency>;
+  forexMap: ForexMap<sdk.Currency>;
   popoverIdx: number;
   precisionA?: number;
   precisionB?: number;
@@ -289,3 +303,59 @@ export enum EXPLORE_TYPE {
   NFTWITHDRAW = "nftWithdraw",
   NFTTRANSFER = "nftTransfer",
 }
+
+/**
+ * CollectionMeta
+ * @property name string useToCreate Collection
+ * @property name string
+ * @property tileUri string option
+ * @property owner? string option
+ * @property nftFactory? string option
+ * @property baseUri? string option
+ * @property collectionTitle? string option
+ * @property description? string option
+ * @property avatar? string option
+ * @property banner? string option
+ * @property thumbnail? string option
+ * @property cid? string option
+ *
+ */
+export type CollectionMeta = sdk.CollectionMeta & {
+  extends: { [key: string]: any };
+};
+export type CollectionMetaJSON = {
+  contract: string;
+  thumbnail_uri: string;
+  banner_uri: string;
+  avatar_uri: string;
+  tile_uri: string;
+  name: string;
+  description: string;
+  [key: string]: any;
+};
+
+export enum CollectionMetaKey {
+  name = "name",
+  tileUri = "tileUri",
+  owner = "owner",
+  nftFactory = "nftFactory",
+  baseUri = "baseUri",
+  collectionTitle = "collectionTitle",
+  description = "description",
+  avatar = "avatar",
+  banner = "banner",
+  thumbnail = "thumbnail",
+  cid = "cid",
+}
+
+export type MakeMeta<Co = CollectionMeta> = (props: {
+  collection: Co;
+  domain: string;
+}) => {
+  metaDemo: any;
+};
+
+export type GET_IPFS_STRING = (
+  url: string | undefined,
+  basicURl: string
+) => string;

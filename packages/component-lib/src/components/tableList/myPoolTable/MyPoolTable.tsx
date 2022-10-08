@@ -67,7 +67,6 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 const PoolStyle = styled(Box)`
-  height: calc(${RowConfig.rowHeight}px);
   &.MuiTypography-body1 {
     font-size: ${({ theme }) => theme.fontDefault.body1};
   }
@@ -97,6 +96,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
           flexDirection={"column"}
           alignContent={"flex-start"}
           justifyContent={"center"}
+          height={"100%"}
         >
           <IconColumn account={account} row={row.ammDetail as any} />
         </PoolStyle>
@@ -116,7 +116,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
           ? row.ammDetail.APR
           : EmptyValueTag;
       return (
-        <Box className={"textAlignRight"}>
+        <Box className={"textAlignRight"} height={"100%"}>
           <Typography component={"span"}>
             {APR === EmptyValueTag || typeof APR === "undefined"
               ? EmptyValueTag
@@ -213,6 +213,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
           flexDirection={"column"}
           alignItems={"flex-end"}
           justifyContent={"center"}
+          height={"100%"}
         >
           <Box display={"flex"} marginRight={-1}>
             <Button
@@ -260,6 +261,7 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
           flexDirection={"column"}
           alignContent={"flex-start"}
           justifyContent={"center"}
+          height={"100%"}
         >
           <IconColumn account={account} row={row.ammDetail as any} size={20} />
         </PoolStyle>
@@ -394,7 +396,7 @@ export const MyPoolTable = withTranslation("tables")(
     i18n,
     tReady,
     allowTrade,
-    handlePageChange,
+    // handlePageChange,
     pagination,
     showFilter = true,
     rawData,
@@ -409,6 +411,7 @@ export const MyPoolTable = withTranslation("tables")(
     showloading,
     tokenMap,
     forexMap,
+    rowConfig = RowConfig,
     ...rest
   }: MyPoolTableProps<R> & WithTranslation) => {
     const { isMobile } = useSettings();
@@ -422,7 +425,7 @@ export const MyPoolTable = withTranslation("tables")(
       (viewData) => {
         setViewData(viewData);
         setTableHeight(
-          RowConfig.rowHeaderHeight + viewData.length * RowConfig.rowHeight
+          rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
         );
       },
       [setViewData, setTableHeight]
@@ -467,7 +470,10 @@ export const MyPoolTable = withTranslation("tables")(
     }, []);
 
     return (
-      <TableStyled isMobile={isMobile}>
+      <TableStyled
+        isMobile={isMobile}
+        className={`${viewData?.length > 0 ? "min-height" : ""}`}
+      >
         {
           // (isMobile && isDropDown ? (
           //   <Link
@@ -503,8 +509,8 @@ export const MyPoolTable = withTranslation("tables")(
         }
 
         <Table
-          rowHeight={RowConfig.rowHeight}
-          headerRowHeight={44}
+          rowHeight={rowConfig.rowHeight}
+          headerRowHeight={rowConfig.rowHeaderHeight}
           style={{ height: tableHeight }}
           rawData={viewData}
           showloading={showloading}

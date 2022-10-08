@@ -5,9 +5,13 @@ import {
   MenuItemProps as muMenuItemProps,
 } from "@mui/material";
 import {
+  Account,
   CoinInfo,
   CoinKey,
   CoinMap,
+  GET_IPFS_STRING,
+  L2CollectionFilter,
+  MakeMeta,
   WalletCoin,
   WalletMap,
 } from "@loopring-web/common-resources";
@@ -90,4 +94,40 @@ export type CoinMenuProps<R, I> = {
     | WalletMap<R, I extends CoinInfo<R> ? WalletCoin<R> : WalletCoin<R>>
     | {};
   handleSelect?: (event: React.MouseEvent, selected: CoinKey<R>) => void;
+};
+
+export type CollectionListProps<Co> = {
+  onPageChange: (page: number, filter?: L2CollectionFilter | undefined) => void;
+  collectionList: Co[];
+  total: number;
+  domain: string;
+  makeMeta: MakeMeta;
+  page: number;
+  copyToastOpen: { isShow: boolean; type: string };
+  setCopyToastOpen: (props: { isShow: boolean; type: string }) => void;
+  isLoading: boolean;
+  etherscanBaseUrl: string;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
+  filter?: Partial<L2CollectionFilter>;
+};
+export type CollectionItemProps<Co> = {
+  item: Co;
+  index: number;
+  setCopyToastOpen: (prosp: { isShow: boolean; type: string }) => void;
+  setShowDeploy?: (item: Co) => void;
+  setShowEdit?: (item: Co) => void;
+  setShowTradeIsFrozen?: (item: Co, type: string) => void;
+  setShowMintNFT?: (item: Co) => void;
+  onItemClick?: (item: Co) => void;
+  account?: Account;
+  toggle: any;
+  isSelectOnly?: boolean;
+  noEdit?: boolean;
+  selectCollection?: Co;
+  domain: string;
+  makeMeta: MakeMeta;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
+  etherscanBaseUrl: string;
 };

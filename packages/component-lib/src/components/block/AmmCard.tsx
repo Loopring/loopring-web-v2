@@ -7,20 +7,21 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import { Button } from "../";
+import { AvatarCoin, Button } from "../";
 import React from "react";
 import moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import {
   AmmCardProps,
-  AvatarCoinStyled,
   CurrencyToTag,
+  DAY_FORMAT,
   EmptyValueTag,
   getValuePrecisionThousand,
   myLog,
   PriceTag,
   SoursURL,
+  YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { PopoverPure } from "../basic-lib";
@@ -254,7 +255,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                     justifyContent={"center"}
                   >
                     {coinAIcon ? (
-                      <AvatarCoinStyled
+                      <AvatarCoin
                         imgx={coinAIcon.x}
                         imgy={coinAIcon.y}
                         imgheight={coinAIcon.h}
@@ -294,7 +295,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                     justifyContent={"center"}
                   >
                     {coinBIcon ? (
-                      <AvatarCoinStyled
+                      <AvatarCoin
                         imgx={coinBIcon.x}
                         imgy={coinBIcon.y}
                         imgheight={coinBIcon.h}
@@ -382,8 +383,8 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                   variant={"h6"}
                   fontWeight={400}
                 >
-                  {" " + moment(duration.from).format("YYYY/MM/DD")} -{" "}
-                  {moment(duration.to).format("MM/DD")}
+                  {" " + moment(duration.from).format(YEAR_DAY_FORMAT) + " - "}
+                  {moment(duration.to).format(DAY_FORMAT)}
                 </Typography>
               </DetailWrapperStyled>
 
@@ -453,7 +454,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             justifyContent={"flex-start"}
                           >
                             {coinAIcon ? (
-                              <AvatarCoinStyled
+                              <AvatarCoin
                                 imgx={coinAIcon.x}
                                 imgy={coinAIcon.y}
                                 imgheight={coinAIcon.h}
@@ -527,7 +528,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             justifyContent={"flex-start"}
                           >
                             {coinBIcon ? (
-                              <AvatarCoinStyled
+                              <AvatarCoin
                                 style={{ marginTop: 2 }}
                                 imgx={coinBIcon.x}
                                 imgy={coinBIcon.y}
@@ -712,7 +713,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             justifyContent={"flex-start"}
                           >
                             {coinBIcon ? (
-                              <AvatarCoinStyled
+                              <AvatarCoin
                                 style={{ marginTop: 2 }}
                                 imgx={coinBIcon.x}
                                 imgy={coinBIcon.y}
@@ -845,7 +846,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                           justifyContent={"flex-start"}
                         >
                           {coinAIcon ? (
-                            <AvatarCoinStyled
+                            <AvatarCoin
                               imgx={coinAIcon.x}
                               imgy={coinAIcon.y}
                               imgheight={coinAIcon.h}
@@ -919,7 +920,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                           justifyContent={"flex-start"}
                         >
                           {coinBIcon ? (
-                            <AvatarCoinStyled
+                            <AvatarCoin
                               style={{ marginTop: 2 }}
                               imgx={coinBIcon.x}
                               imgy={coinBIcon.y}

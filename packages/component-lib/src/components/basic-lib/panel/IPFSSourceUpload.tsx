@@ -82,15 +82,15 @@ export const IPFSSourceUpload = ({
   typographyProps,
   buttonProps,
   disabled,
-  maxSize,
+  maxSize = 10485760,
   onDelete,
   types = ["jpeg", "jpg", "gif", "png"],
   ...options
 }: Omit<DropzoneOptions, "onDrop" | "onDropAccepted"> & {
   // sx?: SxProps<Theme>;
   fullSize?: boolean;
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
   typographyProps?: TypographyProps;
   buttonProps?: Omit<ButtonProps, "onClick">;
   title?: string;
@@ -216,7 +216,10 @@ export const IPFSSourceUpload = ({
                 height={"100%"}
                 justifyContent={"center"}
               >
-                <ErrorIcon style={{ height: 36, width: 36 }} />
+                <ErrorIcon style={{ height: 60, width: 60 }} color={"error"} />
+                <Typography variant={"body1"} component={"span"}>
+                  {t(value.error.message)}
+                </Typography>
                 {close}
               </Box>
             ) : (
@@ -270,7 +273,10 @@ export const IPFSSourceUpload = ({
                   paddingBottom={1}
                   {...typographyProps}
                 >
-                  {t(title, { types: types?.join(", ") })}
+                  {t(title, {
+                    types: types?.join(", "),
+                    size: (maxSize / 1000000).toFixed(0),
+                  })}
                 </Typography>
                 <FormHelperText>
                   {fileRejections[0]?.errors[0]?.message}

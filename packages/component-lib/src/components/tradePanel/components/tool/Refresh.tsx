@@ -19,9 +19,6 @@ export const CountDownIcon = React.memo(
       const [refreshCount, setRefreshCount] = React.useState(0);
       const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
       const logoTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-      // const [triggerRefresh,setTriggerRefresh]  = React.useState(false);
-      // const refresh = () => {_refresh()}
-
       React.useEffect(() => {
         if (refreshCount === 0 && onRefreshData) {
           onRefreshData();

@@ -4,6 +4,7 @@ import {
   BoxProps,
   Button,
   ButtonProps,
+  RadioGroup,
   TextareaAutosize,
 } from "@mui/material";
 import CurrencyInput from "react-currency-input-field";
@@ -304,3 +305,24 @@ export const TextareaAutosizeStyled = styled(TextareaAutosize)`
       })};
   }
 ` as typeof TextareaAutosize;
+
+export const InputSearchWrapperStyled = styled(Box)`
+  padding: ${({ theme }) => theme.unit * 2}px;
+  padding-bottom: 0;
+` as typeof Box;
+
+export const RadioGroupStyle = styled(RadioGroup)`
+  margin: 0;
+
+  .MuiFormControlLabel-root {
+    margin-right: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: row;
+  }
+
+  .MuiFormControlLabel-label {
+    line-height: var(--svg-size-cover);
+  }
+` as typeof RadioGroup;

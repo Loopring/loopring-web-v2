@@ -7,13 +7,13 @@ import {
   MarketRowHeight,
   TradeTypes,
   getValuePrecisionThousand,
+  SECOND_FORMAT,
 } from "@loopring-web/common-resources";
 import { RawDataTradeItem } from "../tradeTable";
 import { useSettings } from "../../../stores";
 import styled from "@emotion/styled";
 import { TablePaddingX } from "../../styled";
-import { MarketInfo } from "@loopring-web/loopring-sdk/dist";
-import { Currency } from "@loopring-web/loopring-sdk";
+import { Currency, MarketInfo } from "@loopring-web/loopring-sdk";
 
 export type TradeProTableProps = {
   rawData: RawDataTradeItem[];
@@ -148,7 +148,9 @@ export const TradePro = withTranslation("tables")(
               headerCellClass: "text-align-right",
               // @ts-ignore
               formatter: ({ row }) => {
-                const time = moment(new Date(row["time"])).format("HH:mm:ss"); //,M-DD
+                const time = moment(new Date(row["time"])).format(
+                  SECOND_FORMAT
+                ); //,M-DD
                 return (
                   <Box className="rdg-cell-value">
                     <Typography

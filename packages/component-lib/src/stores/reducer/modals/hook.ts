@@ -20,14 +20,20 @@ import {
   setShowTradeIsFrozen,
   setShowWrongNetworkGuide,
   setShowNFTMintAdvance,
+  setShowCollectionAdvance,
   setShowOtherExchange,
   setShowNFTDetail,
   setShowLayerSwapNotice,
   setShowNFTDeploy,
+  setShowDual,
 } from "./reducer";
 
 import React from "react";
-import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
+import {
+  DualViewInfo,
+  NFTWholeINFO,
+  TradeNFT,
+} from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { ToggleState } from "../toggle";
 import { AmmPanelType } from "../../../components";
@@ -108,7 +114,7 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowNFTDeposit: React.useCallback(
-      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) => {
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
         if (toggle.depositNFT.enable) {
           dispatch(setShowNFTDeposit(state));
         } else {
@@ -117,8 +123,20 @@ export const useOpenModals = () => {
       },
       [dispatch]
     ),
+    setShowCollectionAdvance: React.useCallback(
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
+        if (toggle.collectionNFT.enable) {
+          dispatch(setShowCollectionAdvance(state));
+        } else {
+          dispatch(
+            setShowCollectionAdvance({ isShow: true, type: "Collection" })
+          );
+        }
+      },
+      [dispatch]
+    ),
     setShowNFTMintAdvance: React.useCallback(
-      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) => {
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
         if (toggle.mintNFT.enable) {
           dispatch(setShowNFTMintAdvance(state));
         } else {
@@ -181,6 +199,11 @@ export const useOpenModals = () => {
       ) => dispatch(setShowAccount(state)),
       [dispatch]
     ),
+    setShowDual: React.useCallback(
+      (state: ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }) =>
+        dispatch(setShowDual(state)),
+      [dispatch]
+    ),
     setShowConnect: React.useCallback(
       (state: ModalStatePlayLoad & { step?: number; error?: RESULT_INFO }) =>
         dispatch(setShowConnect(state)),
@@ -204,7 +227,7 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowTradeIsFrozen: React.useCallback(
-      (state: ModalStatePlayLoad & { type?: string }) =>
+      (state: ModalStatePlayLoad & { type?: string; messageKey?: string }) =>
         dispatch(setShowTradeIsFrozen(state)),
       [dispatch]
     ),

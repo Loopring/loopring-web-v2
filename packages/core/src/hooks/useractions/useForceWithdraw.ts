@@ -16,6 +16,8 @@ import {
   myLog,
   UIERROR_CODE,
   WalletMap,
+  TOAST_TIME,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
 import { updateForceWithdrawData as updateForceWithdrawDataStore } from "@loopring-web/core";
 
@@ -29,7 +31,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   walletLayer2Service,
@@ -43,6 +44,7 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRouteMatch } from "react-router-dom";
+import Web3 from "web3";
 
 export const useForceWithdraw = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap, idIndex } = useTokenMap();
@@ -61,6 +63,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
+    resetIntervalTime,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.FORCE_WITHDRAWAL,
     updateData: ({ fee }) => {
@@ -218,7 +221,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
   }, [isLoopringAddress, isActiveAccount, checkAddAccountId, realAddr]);
   // useWalletLayer2Socket({ walletLayer2Callback });
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     resetForceWithdrawData();
     setWalletItsMap({});
     setAddress("");
@@ -228,7 +231,12 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     // @ts-ignore
     if (match?.params?.forcewithdraw?.toLowerCase() === "forcewithdraw") {
       resetDefault();
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [match?.params]);
 
   const processRequest = React.useCallback(
@@ -250,7 +258,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
           const response = await LoopringAPI.userAPI.submitForceWithdrawals(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId === "unknown" ? 1 : chainId,
               walletType: (ConnectProvidersSignMap[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
@@ -294,7 +302,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough(true);
+                  checkFeeIsEnough({ isRequiredAPI: true });
                 }
 
                 setShowAccount({
@@ -506,7 +514,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
         });
       },
       isActiveAccount,
-      isNotAvaiableAddress: !(isLoopringAddress && !isActiveAccount),
+      isNotAvailableAddress: !(isLoopringAddress && !isActiveAccount),
       realAddr,
       isAddressCheckLoading,
       isLoopringAddress,

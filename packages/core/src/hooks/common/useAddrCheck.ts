@@ -17,17 +17,14 @@ export const useAddressCheck = () => {
   const [addrStatus, setAddrStatus] = React.useState<AddressError>(
     AddressError.NoError
   );
-
-  const [isAddressCheckLoading, setIsAddressCheckLoading] =
-    React.useState(false);
-
-  const [isLoopringAddress, setIsLoopringAddress] = React.useState(false);
-  const [isActiveAccount, setIsActiveAccount] = React.useState(false);
   const [checkAddAccountId, setCheckAddaccountId] =
     React.useState<number | undefined>();
 
+  const [isAddressCheckLoading, setIsAddressCheckLoading] =
+    React.useState(false);
+  const [isLoopringAddress, setIsLoopringAddress] = React.useState(false);
+  const [isActiveAccount, setIsActiveAccount] = React.useState(false);
   const [isSameAddress, setIsSameAddress] = React.useState(false);
-
   const [isCFAddress, setIsCFAddress] = React.useState(false);
   const [isContractAddress, setIsContractAddress] = React.useState(false);
   const [isContract1XAddress, setIsContract1XAddress] = React.useState(false);
@@ -50,17 +47,22 @@ export const useAddressCheck = () => {
               clearTimeout(nodeTimer.current);
             }
             setIsAddressCheckLoading(true);
+            const { realAddr, addressErr, isContract } = await checkAddr(
+              address,
+              web3
+            );
             nodeTimer.current = setTimeout(() => {
               _address.current = "";
               setAddrStatus(AddressError.TimeOut);
               setRealAddr("");
               setIsAddressCheckLoading(false);
-            }, 3000);
-
-            const { realAddr, addressErr } = await checkAddr(address, web3);
+            }, 6000);
 
             setRealAddr(realAddr);
             setAddrStatus(addressErr);
+            if (isContract) {
+              setIsContractAddress(isContract);
+            }
             //realAddr !== "" || (address !== "" && address.startsWith("0x"))
             if (addressErr === AddressError.NoError) {
               const [{ walletType }, response] = await Promise.all([

@@ -40,14 +40,6 @@ export const DepositToPage = withTranslation(["common"])(
     depositProps,
   }: { depositProps: DepositProps<any, any> } & WithTranslation) => {
     const { isMobile } = useSettings();
-    /** TODO: fix for IO bug  **/
-    const { search } = useLocation();
-    React.useEffect(() => {
-      if (/WalletIOS/gi.test(search)) {
-        window.location.replace(`${window.location.origin}/#/404`);
-      }
-    }, [search]);
-    /** fix for IO bug End **/
 
     const [_depositBtnI18nKey, setDepositBtnI18nKey] =
       React.useState<BtnInfo | undefined>(undefined);
@@ -147,14 +139,26 @@ export const DepositToPage = withTranslation(["common"])(
               paddingY={isMobile ? 2 : undefined}
               paddingTop={5 / 2}
             >
-              <DepositPanel
-                {...restProps}
-                title={t("labelL1toL2TitleBridge")}
-                btnInfo={_depositBtnI18nKey}
-                depositBtnStatus={_depositBtnStatus}
-                onDepositClick={_onDepositClick}
-                isNewAccount={false}
-              />
+              <Box
+                marginTop={-4}
+                display={"flex"}
+                flex={1}
+                flexDirection={"column"}
+              >
+                <DepositPanel
+                  {...restProps}
+                  isHideDes={account.readyState === AccountStatus.UN_CONNECT}
+                  title={t(
+                    account.readyState === AccountStatus.UN_CONNECT
+                      ? "labelL1toL2TitleBridgeNoConnect"
+                      : "labelL1toL2TitleBridge"
+                  )}
+                  btnInfo={_depositBtnI18nKey}
+                  depositBtnStatus={_depositBtnStatus}
+                  onDepositClick={_onDepositClick}
+                  isNewAccount={false}
+                />
+              </Box>
             </BoxStyle>
           </Box>
         }

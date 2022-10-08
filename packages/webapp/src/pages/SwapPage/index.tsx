@@ -6,9 +6,12 @@ import {
   SwapPanel,
   Toast,
 } from "@loopring-web/component-lib";
-import { TOAST_TIME } from "@loopring-web/core";
 import { useSwap } from "./hookSwap";
-import { getValuePrecisionThousand } from "@loopring-web/common-resources";
+import {
+  getValuePrecisionThousand,
+  myLog,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
 
 export const SwapPage = withTranslation("common")(
   ({ ...rest }: WithTranslation) => {
@@ -33,6 +36,7 @@ export const SwapPage = withTranslation("common")(
       isMobile,
     } = useSwap({ path: "/trade/lite" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
+
     return (
       <Box
         display={"flex"}

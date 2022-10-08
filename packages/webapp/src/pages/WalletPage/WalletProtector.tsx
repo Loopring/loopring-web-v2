@@ -11,7 +11,6 @@ import {
   ButtonListRightStyled,
   EmptyDefault,
   Button,
-  ModalQRCode,
   GuardianStep,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -90,13 +89,14 @@ export const useHebaoProtector = <T extends sdk.Protector>({
   const { setOneItem } = layer1Store.useLayer1Store();
   const onLock = React.useCallback(
     async (item: T) => {
-      // const [isContract1XAddress, setIsContract1XAddress] = React.useState(false);
+      //
       const config = guardianConfig.actionGasSettings.find(
         (item: any) => item.action === "META_TX_LOCK_WALLET_WA"
       );
       const guardianModule = guardianConfig.supportContracts.find(
         (ele: any) => ele.contractName.toUpperCase() === "GUARDIAN_MODULE"
       ).contractAddress;
+
       if (LoopringAPI?.walletAPI) {
         const [isVersion1, nonce] = await Promise.all([
           LoopringAPI.walletAPI
@@ -297,12 +297,14 @@ export const WalletProtector = <T extends sdk.Protector>({
   protectList,
   guardianConfig,
   handleOpenModal,
+  isContractAddress,
   loadData,
   onOpenAdd,
 }: {
   protectList: T[];
   onOpenAdd: () => void;
   guardianConfig: any;
+  isContractAddress: boolean;
   loadData: () => Promise<void>;
   handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
 }) => {
@@ -335,23 +337,27 @@ export const WalletProtector = <T extends sdk.Protector>({
             onClick={loadData}
           />
         </Typography>
-        <ButtonListRightStyled
-          item
-          xs={5}
-          display={"flex"}
-          flexDirection={"row"}
-          justifyContent={"flex-end"}
-        >
-          <Button
-            variant={"contained"}
-            size={"small"}
-            color={"primary"}
-            startIcon={<SecurityIcon htmlColor={"var(--color-text-button)"} />}
-            onClick={() => onOpenAdd()}
+        {isContractAddress && (
+          <ButtonListRightStyled
+            item
+            xs={5}
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"flex-end"}
           >
-            {t("labelAddProtector")}
-          </Button>
-        </ButtonListRightStyled>
+            <Button
+              variant={"contained"}
+              size={"small"}
+              color={"primary"}
+              startIcon={
+                <SecurityIcon htmlColor={"var(--color-text-button)"} />
+              }
+              onClick={() => onOpenAdd()}
+            >
+              {t("labelAddProtector")}
+            </Button>
+          </ButtonListRightStyled>
+        )}
       </Box>
 
       {

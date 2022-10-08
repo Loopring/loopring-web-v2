@@ -26,6 +26,11 @@ const loadingSvg = SoursURL + "svg/loading.svg";
 export const Button = styled(MuButton)<ButtonProps>`
   && {
     line-height: 1em;
+
+    &:hover {
+      cursor: pointer;
+    }
+
     &.MuiButton-root.Mui-disabled {
       ${({ loading, theme, loadingbg }) => {
         return loading === "true"
@@ -50,30 +55,43 @@ export const Button = styled(MuButton)<ButtonProps>`
           : "";
       }}
     }
+
+    &.disabledViewOnly {
+      pointer-events: inherit;
+    }
   }
+
+  //&.disabled{
+  //
+  //}
 ` as (props: ButtonProps) => JSX.Element;
 
-export function ScrollTop(props: {
-  window?: () => Window;
+export function ScrollTop({
+  // anchorTopRef,
+  ...props
+}: {
   children: React.ReactElement;
+  // anchorTopRef?: React.Ref<any>;
 }) {
-  const { children, window } = props;
+  const { children } = props;
 
   const trigger = useScrollTrigger({
-    target: window ? window() : undefined,
+    target: window ? window : undefined,
     disableHysteresis: true,
     threshold: 100,
   });
 
-  const scrollToTop = (event: React.MouseEvent<HTMLDivElement>) => {
-    const anchor = (
-      (event.target as HTMLDivElement).ownerDocument || document
-    ).querySelector("#back-to-top-anchor");
-
-    if (anchor) {
-      anchor.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  };
+  const scrollToTop = React.useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const anchor =
+        (event.currentTarget as HTMLDivElement).parentElement || //.ownerDocument || document
+        document.querySelector("#back-to-top-anchor");
+      if (anchor) {
+        window.scrollTo(0, anchor?.offsetTop);
+      }
+    },
+    []
+  );
 
   return (
     <Zoom in={trigger}>
@@ -105,6 +123,7 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
       box-shadow: var(--shadow3);
   `
       : ``};
+
   .MuiToggleButton-sizeSmall {
     background: var(--color-box);
     height: 2.4rem;
@@ -113,6 +132,7 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
     border: ${({ theme }) =>
       theme.border.borderConfig({ c_key: "var(--color-border)" })};
     color: var(--color-text-secondary);
+
     &:not(:first-of-type),
     &:not(:last-child) {
       border-color: var(--color-border);

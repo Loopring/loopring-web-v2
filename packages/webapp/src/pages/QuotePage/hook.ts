@@ -4,13 +4,9 @@ import {
   MarketBlockProps,
   QuoteTableRawDataItem,
 } from "@loopring-web/component-lib";
-import {
-  AmmPoolActivityRule,
-  TradingInterval,
-  WsTopicType,
-} from "@loopring-web/loopring-sdk";
+import { WsTopicType } from "@loopring-web/loopring-sdk";
 
-import { myError, RowConfig, SagaStatus } from "@loopring-web/common-resources";
+import { RowConfig, SagaStatus } from "@loopring-web/common-resources";
 import _ from "lodash";
 import {
   store,
@@ -19,15 +15,14 @@ import {
   favoriteMarket as favoriteMarketReducer,
   useAmmActivityMap,
   LAYOUT,
-  TickerMap,
   useTicker,
   useSocket,
   useTokenPrices,
   useTokenMap,
   useSystem,
+  useNotify,
 } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
-import { TableFilterParams } from "./index";
 
 export function useTickList<C extends { [key: string]: string }>() {
   const [tickList, setTickList] = React.useState<any>([]);
@@ -141,15 +136,20 @@ export function useQuote<C extends { [key: string]: string }>() {
     tickList,
   };
 }
-
+export enum TableFilterParams {
+  all = "all",
+  favourite = "favourite",
+  // ranking = "ranking",
+}
 export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   const { status: tickerStatus } = useTicker();
   const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([]);
-  const [tableTabValue, setTableTabValue] = React.useState("all");
+  const [tableTabValue, setTableTabValue] = React.useState(
+    TableFilterParams.all
+  );
+  const { campaignTagConfig } = useNotify().notifyMap ?? {};
   const [searchValue, setSearchValue] = React.useState<string>("");
-  const [swapRankingList, setSwapRankingList] = React.useState<
-    AmmPoolActivityRule[]
-  >([]);
+
   const [filteredData, setFilteredData] = React.useState<
     QuoteTableRawDataItem[]
   >([]);
@@ -157,21 +157,20 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
 
   const { favoriteMarket, removeMarket, addMarket } =
     favoriteMarketReducer.useFavoriteMarket();
-  const { activityInProgressRules } = useAmmActivityMap();
 
-  const getSwapRankingList = React.useCallback(async () => {
-    if (LoopringAPI.ammpoolAPI) {
-      const res = await LoopringAPI.ammpoolAPI.getAmmPoolActivityRules();
-      if (
-        res &&
-        res.groupByRuleType &&
-        res.groupByRuleType.SWAP_VOLUME_RANKING &&
-        !!res.groupByRuleType.SWAP_VOLUME_RANKING.length
-      ) {
-        setSwapRankingList(res.groupByRuleType.SWAP_VOLUME_RANKING);
-      }
-    }
-  }, []);
+  // const getSwapRankingList = React.useCallback(async () => {
+  //   if (LoopringAPI.ammpoolAPI) {
+  //     const res = await LoopringAPI.ammpoolAPI.getAmmPoolActivityRules();
+  //     if (
+  //       res &&
+  //       res.groupByRuleType &&
+  //       res.groupByRuleType.SWAP_VOLUME_RANKING &&
+  //       !!res.groupByRuleType.SWAP_VOLUME_RANKING.length
+  //     ) {
+  //       setSwapRankingList(res.groupByRuleType.SWAP_VOLUME_RANKING);
+  //     }
+  //   }
+  // }, []);
 
   const { tickList } = useQuote();
   const handleCurrentScroll = React.useCallback((currentTarget, tableRef) => {
@@ -236,9 +235,9 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     getAmmPoolBalances();
   }, []);
 
-  React.useEffect(() => {
-    getSwapRankingList();
-  }, []);
+  // React.useEffect(() => {
+  //   getSwapRankingList();
+  // }, []);
 
   let history = useHistory();
 
@@ -262,15 +261,15 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       ammPoolBalances.length &&
       tickList.length
     ) {
-      const data = getFilteredTickList();
-      resetTableData(data);
+      // const data = getFilteredTickList();
+      handleTableFilterChange({});
     }
   }, [ammPoolBalances, tickerStatus, tickList]);
 
-  const handleTableFilterChange = useCallback(
+  const handleTableFilterChange = React.useCallback(
     ({
-      type = TableFilterParams.all,
-      keyword = "",
+      type = tableTabValue,
+      keyword = searchValue,
     }: {
       type?: TableFilterParams;
       keyword?: string;
@@ -282,12 +281,12 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
           return favoriteMarket?.includes(pair);
         });
       }
-      if (type === TableFilterParams.ranking) {
-        data = data.filter((o: any) => {
-          const pair = `${o.pair.coinA}-${o.pair.coinB}`;
-          return swapRankingList.find((o) => o.market === pair);
-        });
-      }
+      // if (type === TableFilterParams.ranking) {
+      //   data = data.filter((o: any) => {
+      //     const pair = `${o.pair.coinA}-${o.pair.coinB}`;
+      //     return swapRankingList.find((o) => o.market === pair);
+      //   });
+      // }
       data = data.filter((o: any) => {
         const formattedKeyword = keyword?.toLocaleLowerCase();
         const coinA = o.pair.coinA.toLowerCase();
@@ -306,9 +305,10 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     },
     [
       tickList,
+      tableTabValue,
       resetTableData,
       favoriteMarket,
-      swapRankingList,
+      // swapRankingList,
       getFilteredTickList,
     ]
   );
@@ -326,17 +326,14 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   );
 
   const handleTabChange = useCallback(
-    (_event: any, newValue: string) => {
+    (_event: any, newValue: TableFilterParams) => {
+      // if (tickList?.length) {
       setTableTabValue(newValue);
       handleTableFilterChange({
-        type:
-          newValue === "favourite"
-            ? TableFilterParams.favourite
-            : newValue === "tradeRanking"
-            ? TableFilterParams.ranking
-            : TableFilterParams.all,
         keyword: searchValue,
+        type: newValue,
       });
+      // }
     },
     [handleTableFilterChange, searchValue]
   );
@@ -344,26 +341,21 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   const handleSearchChange = React.useCallback(
     (value) => {
       setSearchValue(value);
-      const type =
-        tableTabValue === "favourite"
-          ? TableFilterParams.favourite
-          : tableTabValue === "tradeRanking"
-          ? TableFilterParams.ranking
-          : TableFilterParams.all;
-      handleTableFilterChange({ keyword: value, type: type });
+      handleTableFilterChange({ keyword: value, type: tableTabValue });
     },
     [handleTableFilterChange, tableTabValue]
   );
 
   return {
+    campaignTagConfig,
     tableTabValue,
     handleTabChange,
     searchValue,
     removeMarket,
     favoriteMarket,
-    activityInProgressRules,
     handleSearchChange,
     addMarket,
+    showLoading: !tickList?.length,
     tickList,
     filteredData,
     tableHeight,

@@ -111,7 +111,7 @@ export const Deposit_Submit = (props: PanelProps) => {
         minWidth={340}
         justifyContent={"center"}
         marginTop={2}
-        paddingX={isMobile ? 5 : 1}
+        paddingX={isMobile ? 1 : 5}
       >
         <Typography
           display={"inline-flex"}

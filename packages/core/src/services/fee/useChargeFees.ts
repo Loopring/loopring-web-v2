@@ -9,7 +9,6 @@ import {
   FeeChargeOrderUATDefault,
   FeeInfo,
   globalSetup,
-  myLog,
   WalletMap,
 } from "@loopring-web/common-resources";
 import {
@@ -22,19 +21,23 @@ import {
   useWalletLayer2,
 } from "../../index";
 
+const INTERVAL_TIME = (() => 900000)();
 export function useChargeFees({
   tokenSymbol,
   requestType,
   amount,
   tokenAddress,
   updateData,
+  needAmountRefresh,
   isActiveAccount = false,
   deployInWithdraw = undefined,
+  intervalTime = INTERVAL_TIME,
 }: {
   tokenAddress?: string | undefined;
   tokenSymbol?: string | undefined;
   requestType: sdk.OffchainFeeReqType | sdk.OffchainNFTFeeReqType;
   amount?: number;
+  intervalTime?: number;
   updateData?:
     | undefined
     | ((props: {
@@ -44,6 +47,7 @@ export function useChargeFees({
           isFeeNotEnough: boolean;
           isOnLoading: boolean;
         };
+        [key: string]: any;
       }) => void);
   isActiveAccount?: boolean;
   needAmountRefresh?: boolean;
@@ -54,9 +58,15 @@ export function useChargeFees({
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
   };
-  checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
+  checkFeeIsEnough: (
+    props?: {
+      isRequiredAPI: true;
+      intervalTime?: number;
+    } & any
+  ) => void;
   handleFeeChange: (value: FeeInfo) => void;
   feeInfo: FeeInfo;
+  resetIntervalTime: () => void;
 } {
   const [feeInfo, setFeeInfo] = React.useState<FeeInfo>({
     belong: "ETH",
@@ -82,6 +92,8 @@ export function useChargeFees({
   });
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
+  const [_amount, setAmount] = React.useState({ amount, needAmountRefresh });
+  const [_intervalTime, setIntervalTime] = React.useState<number>(intervalTime);
   const { status: walletLayer2Status } = useWalletLayer2();
   const handleFeeChange = (_value: FeeInfo): void => {
     const walletMap =
@@ -100,7 +112,7 @@ export function useChargeFees({
       sdk
         // @ts-ignore
         .toBig(walletMap[value.belong].count)
-        .gte(sdk.toBig(value.fee.toString().replace(",", "")))
+        .gte(sdk.toBig(value.fee.toString().replace(sdk.SEP, "")))
     ) {
       isFeeNotEnough = {
         isFeeNotEnough: false,
@@ -120,6 +132,7 @@ export function useChargeFees({
           },
         },
         isFeeNotEnough: isFeeNotEnough,
+        amount: _amount.needAmountRefresh ? _amount.amount : undefined,
       });
     }
     setFeeInfo(value);
@@ -127,14 +140,24 @@ export function useChargeFees({
 
   const getFeeList = _.debounce(
     async () => {
-      setIsFeeNotEnough((state) => ({ ...state, isOnLoading: true }));
+      let isFeeNotEnough = {
+        isFeeNotEnough: true,
+        isOnLoading: false,
+      };
+      let _feeInfo: any = undefined,
+        isSame = true;
+      let tokenInfo;
+      setIsFeeNotEnough((state) => {
+        isFeeNotEnough = { ...state };
+        return { ...state, isOnLoading: true };
+      });
       const { tokenMap } = store.getState().tokenMap;
       const walletMap =
         makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
       if (nodeTimer.current !== -1) {
         clearTimeout(nodeTimer.current as NodeJS.Timeout);
       }
-      let tokenInfo;
+
       if (tokenSymbol && tokenMap) {
         tokenInfo = tokenMap[tokenSymbol];
       }
@@ -149,14 +172,13 @@ export function useChargeFees({
             | sdk.GetOffchainFeeAmtRequest
             | sdk.GetNFTOffchainFeeAmtRequest = {
             accountId: account.accountId,
-            //@ts-ignore
             tokenSymbol,
             tokenAddress,
             requestType,
             amount:
-              tokenInfo && amount
+              tokenInfo && _amount.amount && _amount.needAmountRefresh
                 ? sdk
-                    .toBig(amount)
+                    .toBig(_amount.amount)
                     .times("1e" + tokenInfo.decimals)
                     .toFixed(0, 0)
                 : "0",
@@ -169,8 +191,10 @@ export function useChargeFees({
           if (isActiveAccount) {
             const response = await LoopringAPI.globalAPI.getActiveFeeInfo({
               accountId:
-                account._accountIdNotActive &&
-                account._accountIdNotActive !== -1
+                account.accountId && account.accountId !== -1
+                  ? account.accountId
+                  : account._accountIdNotActive &&
+                    account._accountIdNotActive !== -1
                   ? account._accountIdNotActive
                   : undefined,
             });
@@ -222,11 +246,13 @@ export function useChargeFees({
             }
           }
 
-          nodeTimer.current = setTimeout(() => {
-            getFeeList();
-          }, 900000); //15*60*1000 //900000
-          let _feeInfo: any = undefined;
-          if (fees && feeChargeOrder) {
+          if (_amount?.needAmountRefresh) {
+            setAmount((state) => {
+              isSame = _amount.amount === state.amount;
+              return state;
+            });
+          }
+          if (isSame && fees && feeChargeOrder) {
             const _chargeFeeTokenList = feeChargeOrder?.reduce((pre, item) => {
               let { fee, token } = fees[item] ?? {};
               if (fee && token) {
@@ -251,7 +277,7 @@ export function useChargeFees({
                   if (
                     sdk
                       .toBig(count)
-                      .gte(sdk.toBig(fee.toString().replace(",", "")))
+                      .gte(sdk.toBig(fee.toString().replace(sdk.SEP, "")))
                   ) {
                     _feeInfo = _.cloneDeep(feeInfoTemplate);
                   }
@@ -277,15 +303,18 @@ export function useChargeFees({
                   if (updateData && _feeInfo) {
                     updateData({
                       fee: {
-                        ...feeInfo,
+                        ..._feeInfo,
                         __raw__: {
-                          ...feeInfo?.__raw__,
+                          ..._feeInfo.__raw__,
                           tokenId:
                             tokenMap[_feeInfo?.belong.toString()].tokenId,
                         },
                       },
                       chargeFeeTokenList: _chargeFeeTokenList,
                       isFeeNotEnough: _isFeeNotEnough,
+                      amount: _amount.needAmountRefresh
+                        ? _amount.amount
+                        : undefined,
                     });
                   }
                   return _feeInfo;
@@ -293,7 +322,11 @@ export function useChargeFees({
                   return state;
                 }
               } else {
-                if (isFeeNotEnough || !state || state?.feeRaw === undefined) {
+                if (
+                  isFeeNotEnough.isFeeNotEnough ||
+                  !state ||
+                  state?.feeRaw === undefined
+                ) {
                   _isFeeNotEnough = {
                     isFeeNotEnough: false,
                     isOnLoading: false,
@@ -305,12 +338,16 @@ export function useChargeFees({
                         ..._feeInfo,
                         __raw__: {
                           ...feeInfo?.__raw__,
+                          ..._feeInfo?.__raw__,
                           tokenId:
                             tokenMap[_feeInfo?.belong.toString()].tokenId,
                         },
                       },
                       chargeFeeTokenList: _chargeFeeTokenList,
                       isFeeNotEnough: _isFeeNotEnough,
+                      amount: _amount.needAmountRefresh
+                        ? _amount.amount
+                        : undefined,
                     });
                   }
                   return _feeInfo;
@@ -322,8 +359,8 @@ export function useChargeFees({
                     _isFeeNotEnough = {
                       isFeeNotEnough: sdk
                         .toBig(walletMap[state.belong]?.count ?? 0)
-                        .gte(
-                          sdk.toBig(feeInfo.fee.toString().replace(",", ""))
+                        .lt(
+                          sdk.toBig(feeInfo.fee.toString().replace(sdk.SEP, ""))
                         ),
                       isOnLoading: false,
                     };
@@ -332,6 +369,9 @@ export function useChargeFees({
                       fee: { ...feeInfo },
                       chargeFeeTokenList: _chargeFeeTokenList,
                       isFeeNotEnough: _isFeeNotEnough,
+                      amount: _amount.needAmountRefresh
+                        ? _amount.amount
+                        : undefined,
                     });
                   }
                   return feeInfo ?? state;
@@ -341,23 +381,46 @@ export function useChargeFees({
             setChargeFeeTokenList(_chargeFeeTokenList ?? []);
           }
         } catch (reason: any) {
-          myLog("chargeFeeTokenList, error", reason);
+          // myLog("chargeFeeTokenList, error", reason);
           if ((reason as sdk.RESULT_INFO).code) {
           }
+        }
+        if (isSame) {
+          nodeTimer.current = setTimeout(() => {
+            getFeeList();
+          }, _intervalTime);
         }
         return;
       } else {
         nodeTimer.current = setTimeout(() => {
           getFeeList();
-        }, 1000); //15*60*1000 //900000
+        }, 1000);
       }
     },
     globalSetup.wait,
     { trailing: true }
   );
-  const checkFeeIsEnough = (isRequiredAPI?: boolean) => {
-    if (isRequiredAPI) {
-      getFeeList();
+
+  const checkFeeIsEnough = async (
+    props: undefined | ({ isRequiredAPI: true; intervalTime?: number } & any)
+  ) => {
+    if (props?.isRequiredAPI) {
+      const intervalTime = props.intervalTime;
+      setIntervalTime((state) => {
+        return intervalTime ? intervalTime : state;
+      });
+      if (props.amount && props.needAmountRefresh) {
+        setAmount(() => ({
+          amount: props.amount,
+          needAmountRefresh: props.needAmountRefresh,
+        }));
+      }
+      getFeeList.cancel();
+      //   getFeeList();
+      //
+      // } else {
+      //   getFeeList();
+      // }
     } else {
       const walletMap =
         makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
@@ -375,7 +438,7 @@ export function useChargeFees({
         if (
           sdk
             .toBig(count)
-            .gte(sdk.toBig(feeInfo.fee.toString().replace(",", "")))
+            .gte(sdk.toBig(feeInfo.fee.toString().replace(sdk.SEP, "")))
         ) {
           setIsFeeNotEnough({ isFeeNotEnough: false, isOnLoading: false });
           return;
@@ -385,10 +448,22 @@ export function useChargeFees({
     }
   };
 
+  // React.useEffect(() => {
+  //   if (needAmountRefresh) {
+  //     setAmount(amount);
+  //   }
+  // }, [amount]);React.useEffect(() => {
+  //   if (needAmountRefresh) {
+  //     setAmount(amount);
+  //   }
+  // }, [amount]);
+
   React.useEffect(() => {
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      getFeeList.cancel();
     }
+    // myLog('tokenAddress', tokenAddress, requestType, account.readyState)
     if (
       (isActiveAccount &&
         [
@@ -420,6 +495,17 @@ export function useChargeFees({
           sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
           sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
         ].includes(Number(requestType))) ||
+      //   [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL].includes(
+      //     Number(requestType)
+      //   )) ||
+      // (!isActiveAccount &&
+      //   tokenSymbol &&
+      //   amount &&
+      //   AccountStatus.ACTIVATED === account.readyState &&
+      //   walletLayer2Status === "UNSET" &&
+      //   [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL].includes(
+      //     Number(requestType)
+      //   )) ||
       (!isActiveAccount &&
         tokenAddress &&
         AccountStatus.ACTIVATED === account.readyState &&
@@ -439,6 +525,8 @@ export function useChargeFees({
     tokenAddress,
     tokenSymbol,
     requestType,
+    _intervalTime,
+    _amount,
     account.readyState,
     walletLayer2Status,
   ]);
@@ -446,6 +534,9 @@ export function useChargeFees({
   return {
     chargeFeeTokenList,
     isFeeNotEnough,
+    resetIntervalTime: () => {
+      setIntervalTime(INTERVAL_TIME);
+    },
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,

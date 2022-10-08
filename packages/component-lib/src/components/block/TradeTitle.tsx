@@ -1,8 +1,7 @@
 import { WithTranslation } from "react-i18next";
 import {
   Account,
-  AmmRankIcon,
-  AvatarCoinStyled,
+  CAMPAIGN_TAG,
   CoinInfo,
   CurrencyToTag,
   EmptyValueTag,
@@ -12,20 +11,19 @@ import {
   PriceTag,
   SoursURL,
   TradeFloat,
-  TrophyIcon,
   UpColor,
 } from "@loopring-web/common-resources";
 import { Box, Grid } from "@mui/material";
 import { Avatar, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { baseTitleCss, useSettings } from "../../index";
-import { NewTagIcon } from "../basic-lib";
 import {
-  AmmPoolInProgressActivityRule,
-  Currency,
-  LoopringMap,
-} from "@loopring-web/loopring-sdk";
-import { useHistory } from "react-router-dom";
+  AvatarCoin,
+  baseTitleCss,
+  TagIconList,
+  useSettings,
+} from "../../index";
+import { NewTagIcon } from "../basic-lib";
+import { Currency } from "@loopring-web/loopring-sdk";
 
 export type StyledProps = {
   custom: { chg: UpColor };
@@ -51,7 +49,7 @@ export const TradeTitle = <I extends object>({
   },
   isNew,
   forexMap,
-  activityInProgressRules,
+  campaignTagConfig,
 }: WithTranslation & {
   account: Account;
   baseShow: string;
@@ -61,10 +59,9 @@ export const TradeTitle = <I extends object>({
   tradeFloat: TradeFloat;
   isNew: boolean;
   forexMap: ForexMap<Currency>;
-  activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
+  campaignTagConfig: CAMPAIGN_TAG[];
 }) => {
   const { coinJson } = useSettings();
-  const history = useHistory();
   const sellCoinIcon: any = coinJson[coinAInfo?.simpleName];
   const buyCoinIcon: any = coinJson[coinBInfo?.simpleName];
 
@@ -121,7 +118,7 @@ export const TradeTitle = <I extends object>({
                 justifyContent={"center"}
               >
                 {sellCoinIcon ? (
-                  <AvatarCoinStyled
+                  <AvatarCoin
                     imgx={sellCoinIcon.x}
                     imgy={sellCoinIcon.y}
                     imgheight={sellCoinIcon.height}
@@ -161,7 +158,7 @@ export const TradeTitle = <I extends object>({
                 justifyContent={"center"}
               >
                 {buyCoinIcon ? (
-                  <AvatarCoinStyled
+                  <AvatarCoin
                     imgx={buyCoinIcon.x}
                     imgy={buyCoinIcon.y}
                     imgheight={buyCoinIcon.height}
@@ -201,61 +198,13 @@ export const TradeTitle = <I extends object>({
                   {quoteShow}
                 </Typography>
               </Typography>
-
-              {activityInProgressRules &&
-                activityInProgressRules[pair] &&
-                activityInProgressRules[pair].ruleType.map(
-                  (ruleType, index) => (
-                    <Box
-                      key={ruleType.toString() + index}
-                      style={{ cursor: "pointer", paddingTop: 4 }}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        const date = new Date(
-                          activityInProgressRules[pair].rangeFrom
-                        );
-                        const year = date.getFullYear();
-                        const month = (
-                          "0" + (date.getMonth() + 1).toString()
-                        ).slice(-2);
-                        // const day = ("0" + date.getDate().toString()).slice(-2);
-                        const current_event_date = `${year}-${month}`;
-
-                        history.push(
-                          `/race-event/${current_event_date}?selected=${pair}&type=${ruleType}&l2account=${account?.accAddress}`
-                        );
-                      }}
-                    >
-                      <TrophyIcon />
-                    </Box>
-                  )
-                )}
-              {activityInProgressRules &&
-                activityInProgressRules[`AMM-${pair}`] && (
-                  <Box
-                    style={{ cursor: "pointer", paddingTop: 4 }}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      const date = new Date(
-                        activityInProgressRules[`AMM-${pair}`].rangeFrom
-                      );
-                      const year = date.getFullYear();
-                      const month = (
-                        "0" + (date.getMonth() + 1).toString()
-                      ).slice(-2);
-                      // const day = ("0" + date.getDate().toString()).slice(-2);
-                      const current_event_date = `${year}-${month}`;
-
-                      history.push(
-                        `/race-event/${current_event_date}?selected=${pair}&type=${
-                          activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                        }&l2account=${account?.accAddress}`
-                      );
-                    }}
-                  >
-                    <AmmRankIcon />
-                  </Box>
-                )}
+              {campaignTagConfig && (
+                <TagIconList
+                  scenario={"market"}
+                  campaignTagConfig={campaignTagConfig}
+                  symbol={pair}
+                />
+              )}
               {isNew ? <NewTagIcon /> : undefined}
             </Box>
           </Grid>

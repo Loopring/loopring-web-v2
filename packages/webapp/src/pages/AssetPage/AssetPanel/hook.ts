@@ -11,6 +11,7 @@ import {
   LoopringAPI,
   useTokenPrices,
   useDefiMap,
+  useWalletLayer2,
 } from "@loopring-web/core";
 import {
   AccountStep,
@@ -27,6 +28,7 @@ import {
   EmptyValueTag,
   myLog,
   PriceTag,
+  YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 
 import { WsTopicType } from "@loopring-web/loopring-sdk";
@@ -41,6 +43,7 @@ export const useGetAssets = () => {
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>(
     []
   );
+  const { updateWalletLayer2 } = useWalletLayer2();
 
   const [userAssets, setUserAssets] = React.useState<any[]>([]);
   // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
@@ -68,6 +71,7 @@ export const useGetAssets = () => {
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
       sendSocketTopic({ [WsTopicType.account]: true });
+      updateWalletLayer2();
     } else {
       socketEnd();
     }
@@ -119,7 +123,7 @@ export const useGetAssets = () => {
         myLog((response as sdk.RESULT_INFO).message);
       } else if (response.vipAsset && response.vipAsset.length) {
         const ethValueList = response.vipAsset.map((o: any) => ({
-          timeStamp: moment(o.createdAt).format("YYYY-MM-DD"),
+          timeStamp: moment(o.createdAt).format(YEAR_DAY_FORMAT),
           close: o.ethValue,
         }));
         setUserAssets(ethValueList);
@@ -128,7 +132,16 @@ export const useGetAssets = () => {
     }
     setUserAssets([]);
   }, [account, tokenMap]);
-
+  const getTokenRelatedMarketArray = React.useCallback(
+    (token: string) => {
+      if (!marketArray) return [];
+      return marketArray.filter((market) => {
+        const [coinA, coinB] = market.split("-");
+        return token === coinA || token === coinB;
+      });
+    },
+    [marketArray]
+  );
   const getAssetsRawData = React.useCallback(() => {
     if (
       tokenMap &&
@@ -362,6 +375,7 @@ export const useGetAssets = () => {
     setHideLpToken,
     setHideSmallBalances,
     themeMode,
+    getTokenRelatedMarketArray,
     hideSmallBalances,
   };
 };

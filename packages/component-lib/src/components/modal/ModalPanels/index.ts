@@ -6,6 +6,8 @@ export * from "./Deposit";
 export * from "./DepositNFT";
 export * from "./Transfer";
 export * from "./Withdraw";
+export * from "./Dual";
+
 export * from "./UpdateAccount";
 export * from "./UnlockAccount";
 export * from "./ExportAccount";
@@ -19,6 +21,7 @@ export * from "./Connect";
 export * from "../../tradePanel/Deposit/DepositGroup";
 export * from "./TransferPanel";
 export * from "./WithdrawPanel";
+export * from "./DepositPanel";
 export * from "./MintNFT";
 export * from "./DeployNFT";
 export * from "./AddAsset";

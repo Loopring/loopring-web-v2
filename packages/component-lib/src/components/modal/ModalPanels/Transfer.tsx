@@ -1,4 +1,5 @@
 import { IconType, PanelProps, TransferBase } from "./BasicPanel";
+import { sanitize } from "dompurify";
 
 // value symbol
 export const Transfer_WaitForAuth = (props: PanelProps) => {
@@ -96,7 +97,7 @@ export const NFTTransfer_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: props.t("labelL2toL2Success", {
-      symbol: props.symbol ?? "NFT",
+      symbol: sanitize(props.symbol ?? "NFT"),
       value: props.value,
     }),
   };
@@ -107,7 +108,7 @@ export const NFTTransfer_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL2toL2Failed", {
-      symbol: props.symbol ?? "NFT",
+      symbol: sanitize(props.symbol ?? "NFT"),
       value: props.value,
     }),
   };

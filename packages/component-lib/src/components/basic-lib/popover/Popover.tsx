@@ -53,6 +53,8 @@ export const Popover: React.FC<PopoverWrapProps> = ({
 
   const PopoverStyled = styled(CustomPopover)<PopoverProps>`
     &.MuiModal-root {
+      z-index: 200;
+
       &.arrow-center,
       &.arrow-right,
       &.arrow-left,

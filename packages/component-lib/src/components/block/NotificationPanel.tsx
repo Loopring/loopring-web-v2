@@ -1,5 +1,9 @@
 import { Trans } from "react-i18next";
-import { myLog, NOTIFICATION } from "@loopring-web/common-resources";
+import {
+  ACTIVITY,
+  NOTIFICATION,
+  NOTIFICATION_ITEM,
+} from "@loopring-web/common-resources";
 import { Box, Divider } from "@mui/material";
 import {
   EmptyDefault,
@@ -20,25 +24,42 @@ export const NotificationPanel = ({
   notification = {
     activities: [],
     notifications: [],
-    invest: [],
+    invest: {} as any,
+    campaignTagConfig: [],
   },
 }: {
   notification: NOTIFICATION;
 }) => {
   // myLog("notifications", notification.notifications);
+  notification.notifications = notification.notifications?.reduce(
+    (prev, item) => {
+      if (item.endShow >= Date.now() && item.startShow <= Date.now()) {
+        prev.push(item);
+      }
+      return prev;
+    },
+    [] as NOTIFICATION_ITEM[]
+  );
+  notification.activities = notification.activities?.reduce((prev, item) => {
+    if (item.endShow >= Date.now() && item.startShow <= Date.now()) {
+      prev.push(item);
+    }
+    return prev;
+  }, [] as ACTIVITY[]);
+
   const hasActivities =
-    notification.activities &&
-    notification.activities?.length &&
-    notification.activities.findIndex(({ startShow }) => {
-      myLog("NotificationPanel", Date.now() > startShow);
-      return Date.now() > startShow;
-    }) !== -1;
+    notification.activities && notification.activities?.length;
+  // &&
+  // notification.activities.findIndex(({ startShow }) => {
+  //   myLog("NotificationPanel", Date.now() > startShow);
+  //   return Date.now() > startShow;
+  // }) !== -1;
   const hasNotifications =
-    notification.notifications &&
-    notification.notifications.length &&
-    notification.notifications.findIndex(
-      ({ startShow }) => Date.now() > startShow
-    ) !== -1;
+    notification.notifications && notification.notifications?.length;
+  // &&
+  // notification.notifications.findIndex(
+  //   ({ startShow }) => Date.now() > startShow
+  // ) !== -1;
   return (
     <BoxStyle
       display={"flex"}
@@ -70,7 +91,7 @@ export const NotificationPanel = ({
           </Box>
           {!!hasNotifications && (
             <>
-              {hasActivities && <Divider />}
+              {!!hasActivities && <Divider />}
               <Box
                 component={"section"}
                 display={"flex"}

@@ -18,7 +18,10 @@ import {
   UIERROR_CODE,
   AddressError,
   EXCHANGE_TYPE,
+  TOAST_TIME,
+  LIVE_FEE_TIMES,
 } from "@loopring-web/common-resources";
+import Web3 from "web3";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -30,7 +33,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   useWalletLayer2Socket,
@@ -41,10 +43,12 @@ import {
   useChargeFees,
   useWalletLayer2NFT,
   useSystem,
+  getIPFSString,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import { useHistory, useLocation } from "react-router-dom";
 
-export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
+export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
     modals: {
       isShowNFTWithdraw: { isShow, info },
@@ -56,8 +60,11 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
 
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account } = useAccount();
-  const { exchangeInfo, chainId } = useSystem();
+  const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
+  const history = useHistory();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
     useModalData();
@@ -66,6 +73,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
+    resetIntervalTime,
     checkFeeIsEnough,
   } = useChargeFees({
     requestType: sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
@@ -73,12 +81,18 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     deployInWithdraw:
       nftWithdrawValue.isCounterFactualNFT &&
       nftWithdrawValue.deploymentStatus === "NOT_DEPLOYED",
-    updateData: React.useCallback(
-      ({ fee }) => {
-        updateNFTWithdrawData({ ...nftWithdrawValue, fee });
-      },
-      [nftWithdrawValue]
-    ),
+    updateData: ({ fee }) => {
+      const nftWithdrawValue =
+        store.getState()._router_modalData.nftWithdrawValue;
+      updateNFTWithdrawData({
+        ...nftWithdrawValue,
+        balance: sdk
+          .toBig(nftWithdrawValue.total ?? 0)
+          .minus(nftWithdrawValue.locked ?? 0)
+          .toNumber(),
+        fee,
+      });
+    },
   });
 
   const { checkHWAddr, updateHW } = useWalletInfo();
@@ -101,7 +115,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     setSureIsAllowAddress(undefined);
   }, [realAddr]);
 
-  const isNotAvaiableAddress =
+  const isNotAvailableAddress =
     // isCFAddress
     //   ? "isCFAddress"
     //   :
@@ -121,7 +135,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
         .lte(Number(nftWithdrawValue.balance) ?? 0) &&
       (addrStatus as AddressError) === AddressError.NoError &&
       !isFeeNotEnough.isFeeNotEnough &&
-      !isNotAvaiableAddress &&
+      !isNotAvailableAddress &&
       (info?.isToMyself || sureIsAllowAddress) &&
       realAddr
     ) {
@@ -138,7 +152,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     nftWithdrawValue.balance,
     addrStatus,
     isFeeNotEnough,
-    isNotAvaiableAddress,
+    isNotAvailableAddress,
     info?.isToMyself,
     sureIsAllowAddress,
     realAddr,
@@ -154,17 +168,17 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     isFeeNotEnough.isFeeNotEnough,
     nftWithdrawValue.fee,
     nftWithdrawValue.tradeValue,
-    isNotAvaiableAddress,
+    isNotAvailableAddress,
     sureIsAllowAddress,
   ]);
 
   useWalletLayer2Socket({});
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
     if (info?.isRetry) {
+      checkFeeIsEnough();
       return;
     }
-
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     if (nftWithdrawValue.nftData) {
       updateNFTWithdrawData({
         // ...nftWithdrawValue,
@@ -205,7 +219,12 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   React.useEffect(() => {
     if (isShow || info?.isShowLocal) {
       resetDefault();
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [isShow, info?.isShowLocal]);
 
   const processRequest = React.useCallback(
@@ -224,7 +243,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
           const response = await LoopringAPI.userAPI.submitNFTWithdraw(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId === "unknown" ? 1 : chainId,
               walletType: (ConnectProvidersSignMap[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
@@ -268,7 +287,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
                     (response as sdk.RESULT_INFO)?.code || 0
                   )
                 ) {
-                  checkFeeIsEnough(true);
+                  checkFeeIsEnough({ isRequiredAPI: true });
                 }
 
                 setShowAccount({
@@ -303,7 +322,25 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              updateWalletLayer2NFT({ page });
+              if (nftWithdrawValue.collectionMeta) {
+                history.push({
+                  pathname: `/NFT/assetsNFT/byCollection/${nftWithdrawValue.collectionMeta?.contractAddress}|${nftWithdrawValue.collectionMeta?.id}`,
+                  search,
+                });
+                updateWalletLayer2NFT({
+                  page: Number(searchParams.get("collectionPage")) ?? 1,
+                  collection: nftWithdrawValue.collectionMeta?.contractAddress,
+                });
+              } else {
+                history.push({
+                  pathname: `/NFT/assetsNFT/byList`,
+                  search,
+                });
+                updateWalletLayer2NFT({
+                  page,
+                  collection: undefined,
+                });
+              }
               setShowNFTDetail({ isShow: false });
               resetNFTWithdrawData();
             }
@@ -481,7 +518,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     type: "NFT",
     addressDefault: address,
     accAddr: account.accAddress,
-    isNotAvaiableAddress,
+    isNotAvailableAddress,
     realAddr,
     isToMyself: info?.isToMyself,
     disableWithdrawList,
@@ -489,6 +526,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     isCFAddress,
+    getIPFSString,
+    baseURL,
     isContractAddress: isContract1XAddress,
     isAddressCheckLoading,
     addrStatus,

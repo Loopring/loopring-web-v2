@@ -93,31 +93,31 @@ export const GuardianPage = withTranslation(["common"])(
                 src={`${SoursURL}images/loading-line.gif`}
               />
             </Box>
-          ) : !isContractAddress ? (
+          ) :  !isContractAddress ? (
             <WalletValidationInfo
-              onOpenAdd={onOpenAdd}
-              // isLoading={isLoading}
-              {...{ guardiansList, guardianConfig, setOpenHebao }}
-              handleOpenModal={handleOpenModal}
-              loadData={loadData}
-            />
-          ) : (
-            <Box
-              flex={1}
-              display={"flex"}
-              justifyContent={"center"}
-              flexDirection={"column"}
-              alignItems={"center"}
+            onOpenAdd={onOpenAdd}
+            isContractAddress={isContractAddress}
+            // isLoading={isLoading}
+            {...{ guardiansList, guardianConfig, setOpenHebao }}
+            handleOpenModal={handleOpenModal}
+            loadData={loadData}
+          />
+        ) : (
+          <Box
+            flex={1}
+            display={"flex"}
+            justifyContent={"center"}
+            flexDirection={"column"}
+            alignItems={"center"}
+          >
+            <Typography
+              margin={3}
+              variant={isMobile ? "h4" : "h1"}
+              textAlign={"center"}
             >
-              <Typography
-                margin={3}
-                variant={isMobile ? "h4" : "h1"}
-                textAlign={"center"}
-              >
-                {t("labelWalletToWallet")}
-              </Typography>
-            </Box>
-          );
+              {t("labelWalletToWallet")}
+            </Typography>
+          </Box> ) ;
         case "guardian-history":
           return (
             <WalletHistory
@@ -147,6 +147,7 @@ export const GuardianPage = withTranslation(["common"])(
               protectList={protectList}
               guardianConfig={guardianConfig}
               loadData={loadData}
+              isContractAddress={isContractAddress}
               // isContractAddress={isContractAddress}
               handleOpenModal={handleOpenModal}
             />

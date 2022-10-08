@@ -46,6 +46,8 @@ export const colorBase = ({ theme }: any) => css`
     --color-border-disable2: ${theme.colorBase.borderDisable2};
     --color-tag: ${theme.colorBase.tag};
     --color-box: ${theme.colorBase.box};
+    --color-box-nft-label: ${theme.colorBase.boxNFTLabel};
+    --color-box: ${theme.colorBase.box};
     --color-box-hover: ${theme.colorBase.boxHover};
     --color-pop-bg: ${theme.colorBase.popBg};
 
@@ -82,6 +84,7 @@ export const colorBase = ({ theme }: any) => css`
     --auto-refresh-color: ${theme.colorBase.primary};
     --opacity: ${theme.colorBase.opacity};
     --color-white: white;
+    --color-settlet: ${theme.colorBase.opacity};
   }
 `;
 export const scrollbarDefault = ({ theme }: any) => css`
@@ -208,7 +211,7 @@ export const globalCss = ({ theme }: any) => css`
     --desktop-min-width: 1024px;
     --btn-Input-height: 48px;
     --btn-Input-small-height: 32px;
-
+    --btn-medium-height: 40px;
     //--btn-max-width: 160px;
     --btn-min-width: 100px;
     --coin-min-width: 80px;
@@ -230,6 +233,8 @@ export const globalCss = ({ theme }: any) => css`
     --svg-size-medium: 16px;
     --svg-size-cover: 32px;
     --svg-size-large: 24px;
+    --svg-size-huge2: 40px;
+    --svg-size-huge: 48px;
     --swap-box-height: 580px; /** js used also **/
     --panel-setting-height: 680px;
     --panel-setting-width: 800px;
@@ -255,6 +260,9 @@ export const globalCss = ({ theme }: any) => css`
     --row-header-height: 44px;
     --chart-height: 396px;
     --nft-height: 396px;
+    --nft-card: 320px;
+    --nft-large-avatar: 160px;
+    --nft-small-avatar: 80px;
     --notification-activited-heigth: 80px;
     @media only screen and (max-width: 768px) {
       --modal-width: 320px;
@@ -265,13 +273,14 @@ export const globalCss = ({ theme }: any) => css`
 
   select {
     appearance: none;
-    -moz-appearance: none;                 v
+    -moz-appearance: none;
     -webkit-appearance: none;
 
     &::-ms-expand {
       display: none;
     }
   }
+
   .rdg.rdg {
     --background-color: inherit;
   }

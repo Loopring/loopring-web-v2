@@ -4,6 +4,7 @@ import { AMMMarketType, MarketType } from "./market";
 // import { CoinKey } from "../loopring-interface";
 
 import { Account } from "./account";
+import { InvestAdvice } from "../loopring-interface";
 
 /**
  * export enum RuleType {
@@ -43,17 +44,33 @@ export type NOTIFICATION_ITEM = {
   endShow: number;
   color: NOTIFY_COLOR;
   banner?: string;
+  webRouter?: string;
 };
 export type ACTIVITY = NOTIFICATION_ITEM;
+export type CAMPAIGN_TAG = {
+  name: string;
+  startShow: number;
+  endShow: number;
+  iconSource: string;
+  symbols: Array<string>;
+  scenarios: Array<"market" | "AMM" | "orderbook" | "Fiat">;
+};
 export type NOTIFICATION = {
   activities: ACTIVITY[];
   notifications: NOTIFICATION_ITEM[];
-  invest: INVEST_ITEM[];
+  invest: {
+    banner: {
+      mobile: string;
+      laptop: string;
+    };
+    investAdvice: InvestAdvice[];
+  };
   account?: Account;
   prev?: {
     endDate: number;
     // prevMonth: string;
   };
+  campaignTagConfig?: CAMPAIGN_TAG[];
 };
 
 export type Notify = Omit<NOTIFICATION, "prev">;

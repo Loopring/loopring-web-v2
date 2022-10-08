@@ -17,10 +17,12 @@ import {
   WithdrawTypes,
   WALLET_TYPE,
   EXCHANGE_TYPE,
+  GET_IPFS_STRING,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
+import { CollectionInputProps } from "./tool";
 
 /**
  * private props
@@ -75,7 +77,9 @@ export type TransferExtendProps<T, I, C> = {
 } & TransferInfoProps<C>;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
-  BasicACoinTradeViewProps<T, I> & TransferExtendProps<T, I, C>;
+  TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;
+
+export type RampViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C>;
 
 /**
  * private props
@@ -131,6 +135,7 @@ export type DepositInfoProps = {
 export type DepositExtendProps<T> = {
   isThumb?: boolean;
   title?: string;
+  isHideDes?: boolean;
   allowTrade?: any;
   toAddressStatus: AddressError;
   referStatus: AddressError;
@@ -165,19 +170,20 @@ export type WithdrawExtendProps<T, I, C> = {
   isThumb?: boolean;
   addressDefault: string;
   accAddr: string;
-  isNotAvaiableAddress:
+  isNotAvailableAddress:
     | "isCFAddress"
     | "isContract1XAddress"
     | "isContractAddress"
     | "isLoopringAddress"
     | "isSameAddress"
     | undefined;
-  withdrawType?: WithdrawType;
+  withdrawType: WithdrawType;
   withdrawTypes?: Partial<WithdrawTypes>;
   realAddr?: string;
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;
   isContractAddress: boolean;
+  isFastWithdrawAmountLimit?: boolean;
   addrStatus: AddressError;
   disableWithdrawList?: string[];
   onWithdrawClick: (data: T, isFirstTime?: boolean) => void;
@@ -199,7 +205,7 @@ export type ForceWithdrawExtendProps<T, I, C> = {
   // accAddr: string;
   realAddr: string;
   isActiveAccount: boolean;
-  isNotAvaiableAddress: boolean;
+  isNotAvailableAddress: boolean;
   isAddressCheckLoading: boolean;
   isLoopringAddress: boolean;
   addrStatus: AddressError;
@@ -235,6 +241,8 @@ export type DefaultProps<T, I> = {
       type: "NFT";
       coinMap?: CoinMap<I, CoinInfo<I>>;
       walletMap?: WalletMap<I, WalletCoin<I>>;
+      baseURL?: string;
+      getIPFSString?: GET_IPFS_STRING;
     }
 );
 
@@ -243,6 +251,8 @@ type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 export type BasicACoinTradeViewProps<T, I> = Required<
   DefaultWithMethodProps<T, I>
 > & {
+  baseURL?: string;
+  getIPFSString?: (url: string | undefined, basicUrl: string) => string;
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void;
 } & Pick<InputButtonProps<T, I, CoinInfo<I>>, "handleError">;
 
@@ -257,6 +267,8 @@ export type BasicANFTTradeProps<T, I> = Omit<
   "coinMap"
 > & {
   type?: "NFT";
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
   isThumb?: boolean;
   isBalanceLimit?: boolean;
   inputNFTRef: React.Ref<any>;
@@ -289,6 +301,8 @@ export type NFTDepositInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
 export type NFTDepositViewProps<T, I> = NFTDepositExtendProps<T, I>;
 export type NFTDepositExtendProps<T, I> = {
   isThumb?: boolean;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
   isNFTCheckLoading?: boolean;
   handleOnNFTDataChange: (data: T) => void;
   onNFTDepositClick: (data: T) => void;
@@ -301,7 +315,7 @@ export type NFTMintInfoProps<C> = {
   description?: string;
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
-  // isAvaiableId?: boolean;
+  // isAvailableId?: boolean;
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
@@ -317,7 +331,7 @@ export type NFTMetaInfoProps<C> = {
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
   // isNFTCheckLoading?: boolean;
-  // isAvaiableId?: boolean;
+  // isAvailableId?: boolean;
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
@@ -352,12 +366,18 @@ export type NFTMintViewProps<ME, MI, I, C> = {
   coinMap?: CoinMap<I, CoinInfo<I>>;
   walletMap?: WalletMap<I, WalletCoin<I>>;
   mintService: any;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
 } & NFTMintExtendProps<MI, C>;
-export type NFTMetaViewProps<T, C> = {
+export type NFTMetaViewProps<T, Co, C> = {
   nftMeta: T;
+  domain: string;
+  baseURL: string;
+  collection?: Co | undefined;
+  collectionInputProps: CollectionInputProps<Co>;
   disabled?: boolean;
 } & NFTMetaExtendProps<T, C>;
-export type NFTMetaBlockProps<T, I, C> = NFTMetaViewProps<T, C> & {
+export type NFTMetaBlockProps<T, Co, I, C> = NFTMetaViewProps<T, Co, C> & {
   mintData: Partial<I>;
   handleMintDataChange: (data: Partial<I>) => void;
   amountHandleError?: (
@@ -402,7 +422,8 @@ export type NFTMintAdvanceInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
   isNFTCheckLoading?: boolean;
-  isAvaiableId?: boolean;
+  isNotAvailableTokenAddress?: undefined | { reason: string };
+  isNotAvailableCID?: undefined | { reason: string };
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
@@ -411,14 +432,29 @@ export type NFTMintAdvanceInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   wait?: number;
 } & BtnInfoProps;
 
-export type NFTMintAdvanceExtendProps<T, I, C = FeeInfo> = {
+export type NFTMintAdvanceExtendProps<T, Co, I, C = FeeInfo> = {
   isThumb?: boolean;
-  handleOnNFTDataChange: (data: T) => void;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
+  collectionInputProps: CollectionInputProps<Co>;
+  handleOnNFTDataChange: (data: Partial<T>) => void;
   onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
   allowTrade?: any;
+  etherscanBaseUrl: string;
 } & NFTMintAdvanceInfoProps<T, I, C>;
-export type NFTMintAdvanceViewProps<T, I, C> = NFTMintAdvanceExtendProps<
+export type NFTMintAdvanceViewProps<T, Co, I, C> = NFTMintAdvanceExtendProps<
   T,
+  Co,
   I,
   C
 >;
+
+export type CollectionAdvanceProps<_T> = {
+  handleDataChange: (data: string) => void;
+  onSubmitClick: () => Promise<void>;
+  allowTrade?: any;
+  disabled?: boolean;
+  btnStatus: TradeBtnStatus;
+  // handleError: (error: { code: number; message: string }) => void;
+  metaData: string;
+} & BtnInfoProps;

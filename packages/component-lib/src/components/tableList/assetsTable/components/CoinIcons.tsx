@@ -1,14 +1,33 @@
 import React from "react";
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box, BoxProps, styled } from "@mui/material";
 import { AvatarCoinStyled, SoursURL } from "@loopring-web/common-resources";
+import { AvatarCoin } from "../../../basic-lib";
+
+const BoxStyle = styled(Box)<BoxProps & { size: number }>`
+  ${({ size }) => {
+    return `
+    .logo-icon.dual:last-child {
+      transform: scale(0.6) translate(${size / 6}px, ${size / 6}px);
+    }
+    `;
+  }}
+`;
 
 export const CoinIcons = React.memo(
-  ({ tokenIcon, size = 24 }: { tokenIcon: [any, any?]; size?: number }) => {
+  ({
+    tokenIcon,
+    size = 24,
+    type = "token",
+  }: {
+    tokenIcon: [any, any?];
+    size?: number;
+    type?: string;
+  }) => {
     const [coinAInfo, coinBInfo] = tokenIcon;
     return (
-      <>
+      <BoxStyle display={"flex"} justifyContent={"center"} size={size}>
         <Box
-          className={"logo-icon"}
+          className={`logo-icon ${type}`}
           display={"flex"}
           height={"var(--list-menu-coin-size)"}
           position={"relative"}
@@ -18,7 +37,7 @@ export const CoinIcons = React.memo(
           justifyContent={"center"}
         >
           {coinAInfo ? (
-            <AvatarCoinStyled
+            <AvatarCoin
               imgx={coinAInfo.x}
               imgy={coinAInfo.y}
               imgheight={coinAInfo.height}
@@ -37,17 +56,17 @@ export const CoinIcons = React.memo(
               variant="circular"
               alt={coinAInfo?.simpleName as string}
               style={{
-                height: "var(--list-menu-coin-size)",
-                width: "var(--list-menu-coin-size)",
+                height: size ?? "var(--list-menu-coin-size)",
+                width: size ?? "var(--list-menu-coin-size)",
               }}
               // src={sellData?.icon}
               src={SoursURL + "images/icon-default.png"}
             />
           )}
         </Box>
-        {coinBInfo ? (
+        {coinBInfo || ["dual", "lp"].includes(type) ? (
           <Box
-            className={"logo-icon"}
+            className={`logo-icon ${type}`}
             display={"flex"}
             height={"var(--list-menu-coin-size)"}
             position={"relative"}
@@ -57,8 +76,8 @@ export const CoinIcons = React.memo(
             alignItems={"center"}
             justifyContent={"center"}
           >
-            {coinBInfo.w ? (
-              <AvatarCoinStyled
+            {coinBInfo ? (
+              <AvatarCoin
                 imgx={coinBInfo.x}
                 imgy={coinBInfo.y}
                 imgheight={coinBInfo.h}
@@ -77,8 +96,8 @@ export const CoinIcons = React.memo(
                 variant="circular"
                 alt={coinBInfo?.simpleName as string}
                 style={{
-                  height: "var(--list-menu-coin-size)",
-                  width: "var(--list-menu-coin-size)",
+                  height: size ?? "var(--list-menu-coin-size)",
+                  width: size ?? "var(--list-menu-coin-size)",
                 }}
                 // src={sellData?.icon}
                 src={SoursURL + "images/icon-default.png"}
@@ -88,7 +107,7 @@ export const CoinIcons = React.memo(
         ) : (
           <></>
         )}
-      </>
+      </BoxStyle>
     );
   }
 );

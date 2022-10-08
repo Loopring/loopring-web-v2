@@ -25,23 +25,6 @@ const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
   display: flex;
   position: relative;
   flex: 1;
-
-  // &::after {
-  //   visibility: ${({ showloading }) =>
-    showloading === "true" ? "visible" : "hidden"};
-  //   position: absolute;
-  //   z-index: 20;
-  //   top: 0;
-  //   right: 0;
-  //   bottom: 0;
-  //   left: 0;
-  //   width: 100%;
-  //   height: 100%;
-  //   opacity: 0.2;
-  //   background-color: var(--color-global-bg);
-  //   content: '';
-  //   pointer-events: auto;
-  // }
 ` as any;
 const hr = ({ theme }: any) => css`
   border-radius: ${theme.unit / 2}px;
@@ -62,7 +45,6 @@ const hrShort = ({ theme }: any) => css`
   display: block;
   height: 1px;
   width: calc(100% - ${theme.unit * 6}px);
-  //margin-bottom: -2px;
   background: var(--color-divide);
   position: absolute;
   left: ${theme.unit * 3}px;
@@ -110,31 +92,6 @@ export const DataGridStyled = styled(DataGrid)`
       flex-grow: initial;
     }
 
-    .rdg-header-sort-cell {
-      .rdg-header-sort-name + span {
-        display: none;
-      }
-
-      .rdg-header-sort-name {
-        .sort-icon svg {
-          display: inline-block;
-          transform-origin: center;
-        }
-
-        .DESC svg {
-          transform: rotate(0deg) translateX(-3px) scale(1.2);
-        }
-
-        .ASC svg {
-          transform: rotate(180deg) translateX(-3px) scale(1.2);
-        }
-
-        .NONE svg {
-          transform: rotate(90deg) translateX(-3px) scale(1.2);
-        }
-      }
-    }
-
     .rdg-cell-selected {
       box-shadow: inherit;
     }
@@ -163,23 +120,68 @@ export const DataGridStyled = styled(DataGrid)`
       box-sizing: border-box;
       height: 100%;
       padding: 0 ${({ theme }) => theme.unit}px;
+
       & > span,
       div {
         user-select: text;
       }
+
       &.textAlignRight {
         text-align: right;
+
+        .rdg-header-sort-cell {
+          justify-content: right;
+        }
       }
+
       &.textAlignLeft {
         text-align: left;
+
+        .rdg-header-sort-cell {
+          justify-content: left;
+        }
       }
+
       &.textAlignCenter {
         text-align: center;
+
+        .rdg-header-sort-cell {
+          justify-content: center;
+        }
+      }
+    }
+
+    .rdg-header-sort-cell {
+      .rdg-header-sort-name + span {
+        display: none;
+      }
+
+      .rdg-header-sort-name {
+        .sort-icon svg {
+          display: inline-block;
+          transform-origin: center;
+        }
+
+        .DESC svg {
+          transform: rotate(0deg) translateX(-3px) scale(1.2);
+        }
+
+        .ASC svg {
+          transform: rotate(180deg) translateX(-3px) scale(1.2);
+        }
+
+        .NONE svg {
+          transform: rotate(90deg) translateX(-3px) scale(1.2);
+        }
       }
     }
 
     .rdg-cell[aria-selected="true"] {
       box-shadow: none;
+    }
+
+    .rdg-cell.action {
+      text-overflow: initial;
     }
 
     .rdg-cell.success {
@@ -211,6 +213,7 @@ export const generateColumns = <Row, SR>({
     (prev: RdgColumn<Row, SR>[], column: Column<Row, SR>) => {
       const { name, isHidden } = column;
       if (typeof name === "string" && !isHidden) {
+        //@ts-ignore
         column.name = t(name);
         prev.push(column);
       }
@@ -243,8 +246,6 @@ export type ExtraTableProps = {
   showloading?: boolean;
 };
 
-//TODO:
-// {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>
 export const Table = <R, SR>(
   props: DataGridProps<R, SR> & WithTranslation & ExtraTableProps
 ) => {
@@ -286,8 +287,6 @@ export const Table = <R, SR>(
     },
   ]);
 
-  // const [[sortColumn, sortDirection], setSort] = React.useState<[string | undefined, SortDirection]>([sortDefaultKey, sortInitDirection ? sortInitDirection : undefined]);
-
   const sortedRows: readonly R[] = React.useMemo(() => {
     if (sortColumns.length === 0) return rows;
     const { columnKey, direction } = sortColumns[0];
@@ -297,7 +296,6 @@ export const Table = <R, SR>(
       : rows;
     return direction === "DESC" ? sortedRows.reverse() : sortedRows;
   }, [rows, sortColumns, sortMethod]);
-  // const [sortColumns, setSortColumns] = React.useState<readonly Readonly<SortColumn>[]>([]);
   const onSortColumnsChange = React.useCallback((sortColumns: SortColumn[]) => {
     setSortColumns(sortColumns.slice(-1));
   }, []);
@@ -323,9 +321,7 @@ export const Table = <R, SR>(
       margin: 0 5px;
     }
   `;
-
   /*** sort handle end ***/
-
   return (
     <TableWrapperStyled showloading={!!showloading ? "true" : "false"}>
       <DataGridStyled

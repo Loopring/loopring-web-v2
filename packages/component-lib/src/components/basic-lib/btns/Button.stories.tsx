@@ -180,7 +180,7 @@ export const LButton: Story<ButtonProps> = withTranslation()(
               <Grid item>
                 <Grid container direction={"column"} spacing={2}>
                   <Grid item>
-                    {" "}
+              
                     <Button
                       variant={"contained"}
                       size={"medium"}
@@ -190,7 +190,7 @@ export const LButton: Story<ButtonProps> = withTranslation()(
                     </Button>
                   </Grid>
                   <Grid item>
-                    {" "}
+                  
                     <Button
                       variant={"contained"}
                       size={"medium"}

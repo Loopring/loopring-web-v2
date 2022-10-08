@@ -43,6 +43,7 @@ export const TransferWrap = <
   disabled,
   walletMap,
   tradeData,
+  // @ts-ignore
   coinMap,
   transferI18nKey,
   type,
@@ -68,6 +69,7 @@ export const TransferWrap = <
   handleOnMemoChange,
   isAddressCheckLoading,
   isSameAddress,
+  baseURL,
   ...rest
 }: TransferViewProps<T, I, C> &
   WithTranslation & {
@@ -109,7 +111,9 @@ export const TransferWrap = <
   const isInvalidAddressOrENS =
     !isAddressCheckLoading &&
     addressDefault &&
-    addrStatus === AddressError.InvalidAddr;
+    [AddressError.InvalidAddr, AddressError.IsNotLoopringContract].includes(
+      addrStatus
+    );
 
   return (
     <Grid
@@ -183,6 +187,8 @@ export const TransferWrap = <
               type,
               onCopy,
               t,
+              baseURL: baseURL ?? "",
+              getIPFSString: rest.getIPFSString ?? (() => "" as any),
               disabled,
               walletMap,
               tradeData,
@@ -250,7 +256,7 @@ export const TransferWrap = <
               alignSelf={"stretch"}
               position={"relative"}
             >
-              {t("labelL2toL2InvalidAddress")}
+              {t(`labelL2toL2${addrStatus}`)}
             </Typography>
           ) : isSameAddress ? (
             <Typography
@@ -347,7 +353,7 @@ export const TransferWrap = <
               >
                 {feeInfo && feeInfo.belong && feeInfo.fee
                   ? feeInfo.fee + " " + feeInfo.belong
-                  : EmptyValueTag + " " + feeInfo?.belong}
+                  : EmptyValueTag + " " + feeInfo?.belong ?? EmptyValueTag}
                 <DropdownIconStyled
                   status={dropdownStatus}
                   fontSize={"medium"}

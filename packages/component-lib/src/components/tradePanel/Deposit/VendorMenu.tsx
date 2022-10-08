@@ -2,9 +2,14 @@ import { Box, Typography } from "@mui/material";
 import { MenuBtnStyled } from "../../styled";
 import { VendorMenuProps } from "../../modal/ModalPanels/Interface";
 import { useTranslation } from "react-i18next";
-import { BanxaIcon, RampIcon } from "@loopring-web/common-resources";
+import {
+  BanxaIcon,
+  RampIcon,
+  TradeTypes,
+} from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
 import { useSettings } from "../../../stores";
+import { TagIconList } from "../../block";
 
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   const theme = useTheme();
@@ -35,6 +40,8 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
 export const VendorMenu = ({
   vendorList,
   // handleSelect,
+  campaignTagConfig,
+  type = TradeTypes.Buy,
   vendorForce,
 }: VendorMenuProps) => {
   const { t } = useTranslation();
@@ -52,7 +59,7 @@ export const VendorMenu = ({
         whiteSpace={"pre"}
         component={"h4"}
       >
-        {t("labelL1toL2ThirdPart")}
+        {t("labelL1toL2ThirdPart", { type: t(`label${type}`) })}
       </Typography>
       <Box
         display={"flex"}
@@ -62,7 +69,8 @@ export const VendorMenu = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={isMobile ? 7 : 10}
+        paddingX={3}
+        paddingTop={1}
       >
         <Typography color={"textSecondary"} variant={"body1"} marginBottom={1}>
           {t("labelWhatProvider")}
@@ -83,6 +91,7 @@ export const VendorMenu = ({
                   Date.now() < item.flag.endDate
                     ? 56
                     : "",
+                flexDirection: "row",
               }}
               startIcon={IconItem({ svgIcon: item.svgIcon })}
               onClick={(e) => {
@@ -98,22 +107,32 @@ export const VendorMenu = ({
               >
                 {t(item.key)}
               </Typography>
-              {item.flag &&
-                item.flag.startDate < Date.now() &&
-                Date.now() < item.flag.endDate && (
-                  <>
-                    <Typography
-                      component={"span"}
-                      variant={"body2"}
-                      color={"var(--color-warning)"}
-                    >
-                      {t(item.flag.highLight ?? "")}
-                    </Typography>
-                    <Typography position={"absolute"} right={8} top={4}>
-                      {item.flag.tag}
-                    </Typography>
-                  </>
-                )}
+              {campaignTagConfig && (
+                <TagIconList
+                  scenario={"Fiat"}
+                  size={"var(--svg-size-large)"}
+                  campaignTagConfig={campaignTagConfig}
+                  symbol={`${item.key}-${
+                    type == TradeTypes.Buy ? "on" : "off"
+                  }`}
+                />
+              )}
+              {/*{item.flag &&*/}
+              {/*  item.flag.startDate < Date.now() &&*/}
+              {/*  Date.now() < item.flag.endDate && (*/}
+              {/*    <>*/}
+              {/*      <Typography*/}
+              {/*        component={"span"}*/}
+              {/*        variant={"body2"}*/}
+              {/*        color={"var(--color-warning)"}*/}
+              {/*      >*/}
+              {/*        {t(item.flag.highLight ?? "")}*/}
+              {/*      </Typography>*/}
+              {/*      /!*<Typography position={"absolute"} right={8} top={4}>*!/*/}
+              {/*      /!*  {item.flag.tag}*!/*/}
+              {/*      /!*</Typography>*!/*/}
+              {/*    </>*/}
+              {/*  )}*/}
             </MenuBtnStyled>
           </Box>
         ))}

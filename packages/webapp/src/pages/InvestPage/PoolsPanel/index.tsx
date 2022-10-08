@@ -11,6 +11,7 @@ import {
   useSettings,
   useOpenModals,
   AmmPanelType,
+  Button,
 } from "@loopring-web/component-lib";
 
 import {
@@ -19,7 +20,11 @@ import {
   useSystem,
   useAmmActivityMap,
   useTokenMap,
+  useNotify,
 } from "@loopring-web/core";
+import { BackIcon, RowInvestConfig } from "@loopring-web/common-resources";
+import { useHistory } from "react-router-dom";
+import { useTheme } from "@emotion/react";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -45,6 +50,8 @@ export const PoolsPanel = withTranslation("common")(
   }: WithTranslation & {}) => {
     const container = React.useRef(null);
     const { account } = useAccount();
+    const history = useHistory();
+    const theme = useTheme();
     const {
       filteredData,
       sortMethod,
@@ -59,10 +66,35 @@ export const PoolsPanel = withTranslation("common")(
     const { tokenMap } = useTokenMap();
     const { tokenPrices } = store.getState().tokenPrices;
     const showLoading = rawData && !rawData.length;
-    const { activityInProgressRules } = useAmmActivityMap();
+    const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
     return (
-      <>
+      <Box display={"flex"} flexDirection={"column"} flex={1}>
+        <Box
+          marginBottom={2}
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
+          <Button
+            startIcon={<BackIcon fontSize={"small"} />}
+            variant={"text"}
+            size={"medium"}
+            sx={{ color: "var(--color-text-secondary)" }}
+            color={"inherit"}
+            onClick={history.goBack}
+          >
+            {t("labelLiquidityPageTitle")}
+            {/*<Typography color={"textPrimary"}></Typography>*/}
+          </Button>
+          <Button
+            variant={"outlined"}
+            sx={{ marginLeft: 2 }}
+            onClick={() => history.push("/invest/balance/amm")}
+          >
+            {t("labelInvestMyAmm")}
+          </Button>
+        </Box>
         <WrapperStyled flex={1} marginBottom={3}>
           <Box
             marginBottom={3}
@@ -74,7 +106,7 @@ export const PoolsPanel = withTranslation("common")(
             alignItems={"center"}
           >
             <Typography variant={"h5"} color={"textSecondary"} component={"h2"}>
-              {t("labelLiquidityPageTitle")}
+              {/* {t("labelLiquidityPageTitle")} */}
             </Typography>
             <InputSearch
               key={"search"}
@@ -98,12 +130,13 @@ export const PoolsPanel = withTranslation("common")(
                 showLoading,
                 tableHeight,
                 sortMethod,
-                activityInProgressRules,
+                campaignTagConfig,
                 coinJson,
                 account,
                 tokenPrices,
                 allowTrade,
                 forexMap: forexMap as any,
+                rowConfig: RowInvestConfig,
                 handleWithdraw: (row) => {
                   // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                   const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;
@@ -127,7 +160,7 @@ export const PoolsPanel = withTranslation("common")(
             />
           </StylePaper>
         </WrapperStyled>
-      </>
+      </Box>
     );
   }
 );

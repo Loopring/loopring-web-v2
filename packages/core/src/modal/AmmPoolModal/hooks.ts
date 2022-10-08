@@ -7,6 +7,7 @@ import {
   SagaStatus,
   TradeFloat,
   myLog,
+  YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 import moment from "moment";
 
@@ -190,8 +191,8 @@ export const useCoinPair = <C extends { [key: string]: any }>({
           });
         if (result && result.userMiningInfos) {
           const formattedList = result.userMiningInfos.map((o) => ({
-            start: moment(o.start).format("YYYY/MM/DD"),
-            end: moment(o.end).format("YYYY/MM/DD"),
+            start: moment(o.start).format(YEAR_DAY_FORMAT),
+            end: moment(o.end).format(YEAR_DAY_FORMAT),
             market: o.market,
             accountId: o.account_id,
             awardList: o.awards.map((item) => {
@@ -334,6 +335,8 @@ export const useCoinPair = <C extends { [key: string]: any }>({
           throw Error;
         });
     }
+
+    return () => {};
   }, [selectedMarket]);
 
   const walletLayer2Callback = React.useCallback(async () => {
@@ -403,7 +406,7 @@ export const useAmmPool = <
   const { account, status: accountStatus } = useAccount();
   const { tokenPrices } = useTokenPrices();
   const { currency, coinJson, isMobile } = useSettings();
-  const { ammActivityMap, activityInProgressRules } = useAmmActivityMap();
+  const { ammActivityMap } = useAmmActivityMap();
 
   const { status: walletLayer2Status, walletLayer2 } = useWalletLayer2();
   const { ammMap, getAmmMap } = useAmmMap();
@@ -552,7 +555,6 @@ export const useAmmPool = <
     isMobile,
     myAmmMarketArray,
     ammUserTotal,
-    activityInProgressRules,
     getUserAmmPoolTxs, //handle page change used
     getRecentAmmPoolTxs,
     tokenPrices,

@@ -28,7 +28,6 @@ import {
   MAPFEEBIPS,
   MarketCalcParams,
   calcPriceByAmmTickMapDepth,
-  Limit,
   marketInitCheck,
   reCalcStoB,
   swapDependAsync,
@@ -47,12 +46,10 @@ import {
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   TradeCalcData,
-  TradeFloat,
   WalletMap,
   myLog,
 } from "@loopring-web/common-resources";
 import {
-  RawDataTradeItem,
   SwapData,
   SwapTradeData,
   SwapType,
@@ -136,6 +133,11 @@ export const useSwap = <C extends { [key: string]: any }>({
       return { ...prev, [item]: coinMap ? coinMap[item] : {} };
     }, {} as CoinMap<C>),
   });
+  const [storageId, setStorageId] = React.useState<{
+    orderId: number;
+    offchainId: number;
+  }>({} as any);
+
   // const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
   // const [myTradeArray, setMyTradeArray] = React.useState<{
   //   data: RawDataTradeItem[];
@@ -148,6 +150,7 @@ export const useSwap = <C extends { [key: string]: any }>({
   // });
   // const [tradeFloat, setTradeFloat] =
   //   React.useState<TradeFloat | undefined>(undefined);
+
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
 
@@ -219,16 +222,6 @@ export const useSwap = <C extends { [key: string]: any }>({
         const sellToken = tokenMap[sell];
         const buyToken = tokenMap[buy];
 
-        const request: sdk.GetNextStorageIdRequest = {
-          accountId: account.accountId,
-          sellTokenId: sellToken.tokenId,
-        };
-
-        const storageId = await LoopringAPI.userAPI.getNextStorageId(
-          request,
-          account.apiKey
-        );
-
         try {
           const request: sdk.SubmitOrderRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
@@ -284,8 +277,8 @@ export const useSwap = <C extends { [key: string]: any }>({
                   : (response as sdk.RESULT_INFO).message),
             });
           } else {
+            getStorageId();
             await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__);
-
             const resp = await LoopringAPI.userAPI.getOrderDetails(
               {
                 accountId: account.accountId,
@@ -400,7 +393,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       setSwapBtnStatus(TradeBtnStatus.DISABLED);
       return;
     }
-
+    const account = store.getState().account;
     const sellToken = tokenMap[tradeData?.sell.belong as string];
     const buyToken = tokenMap[tradeData?.buy.belong as string];
 
@@ -410,6 +403,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       setSwapBtnStatus(TradeBtnStatus.DISABLED);
       return;
     }
+    const walletMap = makeWalletLayer2(true).walletMap ?? {};
 
     let validAmt = !!(
       calcTradeParams?.amountS &&
@@ -428,6 +422,10 @@ export const useSwap = <C extends { [key: string]: any }>({
     if (sellExceed || buyExceed) {
       validAmt = false;
     }
+
+    const notEnough = sdk
+      .toBig(walletMap[sellToken.symbol]?.count ?? 0)
+      .lt(calcTradeParams.sellAmt ?? 0);
 
     const sellMaxVal = sdk
       .toBig(sellToken?.orderAmounts?.maximum)
@@ -454,6 +452,9 @@ export const useSwap = <C extends { [key: string]: any }>({
           );
           setSwapBtnStatus(TradeBtnStatus.DISABLED);
           return "labelEnterAmount";
+        } else if (notEnough) {
+          setSwapBtnStatus(TradeBtnStatus.DISABLED);
+          return `tokenNotEnough`;
         } else if (sellExceed) {
           const maxOrderSize = sellMaxVal + " " + tradeData?.sell.belong;
           // myLog('sell maxOrderSize:', maxOrderSize)
@@ -502,14 +503,16 @@ export const useSwap = <C extends { [key: string]: any }>({
     pageTradeLite,
     sellMinAmt,
     isSwapLoading,
-    account.readyState,
   ]);
 
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
     [fnType.ACTIVATED]: [btnLabelAccountActive],
   });
   const swapCalculatorCallback = React.useCallback(async () => {
-    const { priceLevel } = getPriceImpactInfo(pageTradeLite.calcTradeParams);
+    const { priceLevel } = getPriceImpactInfo(
+      pageTradeLite.calcTradeParams,
+      account.readyState
+    );
     setIsSwapLoading(true);
 
     myLog("---- swapCalculatorCallback priceLevel:", priceLevel);
@@ -535,7 +538,8 @@ export const useSwap = <C extends { [key: string]: any }>({
     }
   }, [
     pageTradeLite.calcTradeParams,
-    allowTrade?.order.enable,
+    account.readyState,
+    allowTrade.order.enable,
     order.enable,
     setShowSupport,
     setShowTradeIsFrozen,
@@ -560,10 +564,12 @@ export const useSwap = <C extends { [key: string]: any }>({
   }, [
     accountStatus,
     isSwapLoading,
-    pageTradeLite.calcTradeParams?.amountS,
+    pageTradeLite.calcTradeParams?.amountBOut,
     sellMinAmt,
+    tradeData?.sell.tradeValue,
     // pageTradeLite.calcTradeParams?.isAtoB,
   ]);
+
   /*** Btn related end ***/
   const toPro = React.useCallback(() => {
     history.push({
@@ -578,9 +584,25 @@ export const useSwap = <C extends { [key: string]: any }>({
       callPairDetailInfoAPIs();
       // marketTradeTableCallback();
     }
-  }, [market, ammMap]);
+  }, [market]);
   /*** table related end ***/
-
+  const getStorageId = React.useCallback(async () => {
+    if (
+      tradeCalcData?.coinSell &&
+      tokenMap &&
+      tokenMap[tradeCalcData?.coinSell] &&
+      LoopringAPI.userAPI
+    ) {
+      const storageId = await LoopringAPI.userAPI.getNextStorageId(
+        {
+          accountId: account.accountId,
+          sellTokenId: tokenMap[tradeCalcData?.coinSell].tokenId,
+        },
+        account.apiKey
+      );
+      setStorageId(storageId);
+    }
+  }, [tradeCalcData?.coinSell, account, tokenMap]);
   React.useEffect(() => {
     if (
       accountStatus === SagaStatus.UNSET &&
@@ -590,6 +612,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       walletLayer2Callback();
       if (account.readyState === AccountStatus.ACTIVATED) {
         getAmount({ market });
+        getStorageId();
       }
     }
   }, [
@@ -599,19 +622,6 @@ export const useSwap = <C extends { [key: string]: any }>({
     tradeCalcData?.coinSell,
     tradeCalcData?.coinBuy,
   ]);
-
-  /*** account related function ***/
-  // React.useEffect(() => {
-  //   if (
-  //     account.readyState === AccountStatus.ACTIVATED &&
-  //     amountStatus === SagaStatus.UNSET
-  //   ) {
-  //     const amountMap = store.getState().amountMap;
-  //     if (amountMap[market]) {
-  //       setIsSwapLoading(false);
-  //     }
-  //   }
-  // }, [account.readyState, amountStatus, market]);
 
   const walletLayer2Callback = React.useCallback(async () => {
     let walletMap: WalletMap<any> | undefined = undefined;
@@ -651,6 +661,7 @@ export const useSwap = <C extends { [key: string]: any }>({
         feeBips: 0,
         totalFee: 0,
         takerRate: 0,
+        calcTradeParams: {},
         priceImpactObj: undefined,
       });
       // setFeeBips('0')
@@ -659,6 +670,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       setTradeCalcData((state) => {
         return {
           ...state,
+          walletMap: {},
           minimumReceived: undefined,
           priceImpact: undefined,
           fee: undefined,
@@ -693,14 +705,7 @@ export const useSwap = <C extends { [key: string]: any }>({
   React.useEffect(() => {
     if (pageTradeLite.depth) {
       refreshAmmPoolSnapshot();
-      if (
-        account.readyState === AccountStatus.ACTIVATED &&
-        amountStatus === SagaStatus.UNSET
-      ) {
-        setIsSwapLoading(false);
-      } else {
-        setIsSwapLoading(false);
-      }
+      setIsSwapLoading(false);
     }
   }, [
     pageTradeLite.depth,
@@ -840,11 +845,7 @@ export const useSwap = <C extends { [key: string]: any }>({
         });
         setTradeData({ ...tradeDataTmp });
 
-        let { market: market } = sdk.getExistedMarket(
-          marketArray,
-          coinA,
-          coinB
-        );
+        let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
         setMarket(market);
         history.push("/trade/lite/" + _market);
         updatePageTradeLite({ market, tradePair });
@@ -891,7 +892,8 @@ export const useSwap = <C extends { [key: string]: any }>({
   }, [market, ammMap, tickerMap]);
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
-      const { ammPoolSnapshot, depth, tradePair, close } = pageTradeLite;
+      const { ammPoolSnapshot, depth, tradePair, close } =
+        store.getState()._router_pageTradeLite.pageTradeLite;
       const { amountMap } = store.getState().amountMap;
       let calcForMinAmt, calcForMinCost, calcForPriceImpact;
 
@@ -945,7 +947,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           takerRate = buyMinAmtInfo ? buyMinAmtInfo.userOrderInfo.takerRate : 0;
           feeBips = ammMap[ammMarket]
             ? ammMap[ammMarket].__rawConfig__.feeBips
-            : 1;
+            : DefaultFeeBips;
 
           feeTakerRate =
             amountMarket[_tradeData["buy"].belong as string] &&
@@ -1242,7 +1244,10 @@ export const useSwap = <C extends { [key: string]: any }>({
           { floor: true }
         );
 
-        const priceImpactObj = getPriceImpactInfo(calcTradeParams);
+        const priceImpactObj = getPriceImpactInfo(
+          calcTradeParams,
+          account.readyState
+        );
         const _tradeCalcData: Partial<TradeCalcData<C>> = {
           priceImpact: priceImpactObj.value.toString(),
           priceImpactColor: priceImpactObj.priceImpactColor,
@@ -1272,7 +1277,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             // @ts-ignore
             const [, _coinA] = market.match(/(\w+)-(\w+)/i);
             let _btos = getValuePrecisionThousand(
-              1 / Number(close.replace(",", "")),
+              1 / Number(close.replace(sdk.SEP, "")),
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
@@ -1288,13 +1293,13 @@ export const useSwap = <C extends { [key: string]: any }>({
             }
           }
         }
-        myLog("updatePageTradeLite feeBips:", feeBips);
+        myLog("updatePageTradeLite feeBips:", feeBips, _tradeCalcData);
 
         updatePageTradeLite({
           market,
           calcTradeParams: {
             ...calcTradeParams,
-            feeBips: feeBips ? feeBips : 1,
+            feeBips: feeBips ? feeBips : DefaultFeeBips,
             takerRate: takerRate ? takerRate : 0,
           } as any,
           priceImpactObj,
@@ -1309,11 +1314,16 @@ export const useSwap = <C extends { [key: string]: any }>({
           tradeCost,
         });
         //setOutput(calcTradeParams)
+        if (account.readyState !== AccountStatus.ACTIVATED) {
+          _tradeCalcData.priceImpact = undefined;
+          _tradeCalcData.minimumReceived = undefined;
+        }
         setTradeCalcData({ ...tradeCalcData, ..._tradeCalcData });
         setTradeData({ ...tradeData, ..._tradeData });
       }
     },
     [
+      account.readyState,
       amountMap,
       pageTradeLite,
       tradeCalcData,
@@ -1334,7 +1344,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       case SwapType.BUY_CLICK:
         return;
       case SwapType.SELL_SELECTED:
-        //type = 'sell'
+        myLog(_tradeData);
         if (_tradeData?.sell.belong !== tradeData?.sell.belong) {
           resetTradeCalcData(
             _tradeData,
@@ -1377,7 +1387,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           // @ts-ignore
           const [, _coinA] = market.match(/(\w+)-(\w+)/i);
           btos = getValuePrecisionThousand(
-            1 / Number(close.replace(",", "")),
+            1 / Number(close.replace(sdk.SEP, "")),
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
@@ -1434,7 +1444,6 @@ export const useSwap = <C extends { [key: string]: any }>({
         break;
     }
   };
-
   return {
     toastOpen,
     closeToast,

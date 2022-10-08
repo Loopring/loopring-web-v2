@@ -26,6 +26,7 @@ import {
   LinkedIcon,
   MyAmmLP,
   PriceTag,
+  YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 
 import { account, ammCalcData, coinMap, tradeCalcData } from "../../static";
@@ -592,9 +593,13 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                     {t("labelDate")}:
                     {typeof titleInfo.activity === "undefined"
                       ? EmptyValueTag
-                      : moment(titleInfo.activity.duration.from).format("L") +
+                      : moment(titleInfo.activity.duration.from).format(
+                          YEAR_DAY_FORMAT
+                        ) +
                         " - " +
-                        moment(titleInfo.activity.duration.to).format("L")}
+                        moment(titleInfo.activity.duration.to).format(
+                          YEAR_DAY_FORMAT
+                        )}
                   </Typography>
                 </BoxStyled>
               </Grid>

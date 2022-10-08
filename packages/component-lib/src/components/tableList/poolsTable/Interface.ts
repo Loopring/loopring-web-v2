@@ -3,12 +3,10 @@ import {
   AmmDetail,
   TradeFloat,
   ForexMap,
+  RowConfig,
+  CAMPAIGN_TAG,
 } from "@loopring-web/common-resources";
-import {
-  LoopringMap,
-  AmmPoolInProgressActivityRule,
-  Currency,
-} from "@loopring-web/loopring-sdk";
+import { Currency } from "@loopring-web/loopring-sdk";
 
 export type Row<T> = AmmDetail<T> & {
   tradeFloat?: TradeFloat;
@@ -17,7 +15,7 @@ export type PoolTableProps<T, R = Row<T>> = {
   rawData: R[];
   handleWithdraw: (row: R) => void;
   handleDeposit: (row: R) => void;
-  activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
+  campaignTagConfig?: CAMPAIGN_TAG[];
   showFilter?: boolean;
   wait?: number;
   tableHeight?: number;
@@ -29,4 +27,12 @@ export type PoolTableProps<T, R = Row<T>> = {
   tokenMap: { [key: string]: any };
   forexMap: ForexMap<Currency>;
   sortMethod: (sortedRows: any[], sortColumn: string) => any[];
+  rowConfig?: typeof RowConfig;
+};
+
+export type IconColumnProps<R> = {
+  row: R;
+  account: Account;
+  size?: number;
+  campaignTagConfig?: CAMPAIGN_TAG[];
 };

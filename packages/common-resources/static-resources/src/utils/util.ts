@@ -1,5 +1,6 @@
 import { BigNumber } from "bignumber.js";
 import { toBig } from "@loopring-web/loopring-sdk";
+export const DOT = ".";
 
 export function abbreviateNumber(value: number, precision?: number) {
   let newValue = value,
@@ -99,11 +100,11 @@ const getFloatCeil = (
 };
 
 const addZeroAfterDot = (value: string) => {
-  let [_init, _dot] = value.split(".");
+  let [_init, _dot] = value.split(DOT);
   if (_dot) {
     _dot = _dot.replace(/0+?$/, "");
     if (_dot) {
-      value = _init + "." + _dot;
+      value = _init + DOT + _dot;
     } else {
       value = _init;
     }
@@ -157,7 +158,7 @@ export const getValuePrecisionThousand = (
 
   // integer part exceed 6 digits abbreaviate, otherwise toLocaleString
   if (isAbbreviate === true) {
-    let [_init, _dot] = result.toString().split(".");
+    let [_init, _dot] = result.toString().split(DOT);
     const integerPartLength = _init.length;
     if (integerPartLength > abbreviate) {
       // return getAbbreviateNumber(result)
@@ -233,9 +234,13 @@ export const getValuePrecisionThousand = (
       .toNumber()
       .toLocaleString("en-US", { minimumFractionDigits: fixed || minDigit });
   } else if (result.isLessThanOrEqualTo(1)) {
-    result = fixed
-      ? result.toFixed(fixed)
-      : toBig(result).toPrecision(precision);
+    if (floor === false) {
+      result = getFloatCeil(result, fixed || precision).toString();
+    } else {
+      result = fixed
+        ? result.toFixed(fixed)
+        : toBig(result).toPrecision(precision);
+    }
   }
 
   if (result && !notRemoveEndZero) {

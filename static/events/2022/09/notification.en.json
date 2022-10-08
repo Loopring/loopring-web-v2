@@ -1,0 +1,109 @@
+{
+  "activities": [
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "-1",
+      "name": "NFT Collection",
+      "title": "NFT Collection Live now on loopring.io",
+      "description1": "NFT creation with collection support.",
+      "description2": "",
+      "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
+      "startShow": 1662336000000,
+      "endShow": 1665187200000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+      "webRouter": "[self]/nft/myCollection"
+    },
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "7",
+      "name": "NFT Trading Competition",
+      "title": "Trade NFTs via Loopring L2",
+      "description1": "1900 Loopheads up for grabs!",
+      "description2": "",
+      "link": "https://loopring.io/#/race-event/2022-09?type=nft_trading_competition_7",
+      "startShow": 1663545600000,
+      "endShow": 1669334400000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
+      "webRouter": ""
+    },
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "-1",
+      "name": "Dual Investment",
+      "title": "A new way to earn on L2.",
+      "description1": "Buy low or sell high and enjoy a high yield.",
+      "description2": "",
+      "link": "https://loopring.io/#/document/dual_investment_landing_en.md",
+      "startShow": 1663941600000,
+      "endShow": 1666742400000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/dual_invest_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/dual_invest_banner.en.webp",
+      "webRouter": "[self]/invest/dual"
+    }
+  ],
+  "activitiesHome": [
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "-1",
+      "name": "NFT Collection",
+      "title": "NFT Collection Live now on loopring.io",
+      "description1": "NFT creation with collection support.",
+      "description2": "",
+      "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
+      "startShow": 1662336000000,
+      "endShow": 1665187200000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+      "webRouter": "[self]/nft/myCollection"
+    },
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "7",
+      "name": "NFT Trading Competition",
+      "title": "Trade NFTs via Loopring L2",
+      "description1": "1900 Loopheads up for grabs!",
+      "description2": "",
+      "link": "https://loopring.io/#/race-event/2022-09?type=nft_trading_competition_7",
+      "startShow": 1663545600000,
+      "endShow": 1669334400000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
+      "webRouter": ""
+    },
+    {
+      "type": "ACTIVITY",
+      "place": "HOME",
+      "version": "-1",
+      "name": "Dual Investment",
+      "title": "A new way to earn on L2.",
+      "description1": "Buy low or sell high and enjoy a high yield.",
+      "description2": "",
+      "link": "https://loopring.io/#/document/dual_investment_landing_en.md",
+      "startShow": 1663941600000,
+      "endShow": 1666742400000,
+      "color": "default",
+      "banner": "https://static.loopring.io/events/2022/09/activities/dual_invest_banner.en.webp",
+      "bannerWeb": "https://static.loopring.io/events/2022/09/activities/dual_invest_banner.en.webp",
+      "webRouter": "[self]/invest/dual"
+    }
+  ],
+  "activitiesInvest": [],
+  "notifications": [],
+  "invest": [],
+  "campaignTagConfig": [],
+  "prev": {
+    "endDate": 1669334400000
+  }
+}

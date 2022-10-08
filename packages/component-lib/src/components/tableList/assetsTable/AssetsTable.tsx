@@ -16,7 +16,7 @@ import {
 import { useSettings } from "../../../stores";
 import { CoinIcons } from "./components/CoinIcons";
 import ActionMemo from "./components/ActionMemo";
-import { Currency } from "@loopring-web/loopring-sdk";
+import { Currency, XOR } from "@loopring-web/loopring-sdk";
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -29,7 +29,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
     ${({ isMobile, lan }) =>
       !isMobile
         ? `--template-columns: 200px 150px auto auto ${
-            lan === "en_US" ? "186px" : "186px"
+            lan === "en_US" ? "184px" : "184px"
           } !important;`
         : `--template-columns: 54% 40% 6% !important;`}
 
@@ -50,6 +50,13 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
     }
   }
 
+  .investAsset.rdg {
+    ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: 200px 150px auto auto 205px !important;`
+        : `--template-columns: 54% 40% 6% !important;`}
+    }
+  }
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean; lan: string } & BoxProps) => JSX.Element;
@@ -101,8 +108,9 @@ export type RawDataAssetsItem = {
   tokenValueDollar: number;
 };
 
-export interface AssetsTableProps {
+export type AssetsTableProps = {
   rawData: RawDataAssetsItem[];
+  isInvest?: boolean;
   pagination?: {
     pageSize: number;
   };
@@ -116,24 +124,24 @@ export interface AssetsTableProps {
   // onShowTransfer: (token: string) => void;
   // onShowWithdraw: (token: string) => void;
   getMarketArrayListCallback: (token: string) => string[];
-  hideInvestToken: boolean;
-  hideSmallBalances: boolean;
+  rowConfig?: typeof RowConfig;
   disableWithdrawList: string[];
-  setHideLpToken: (value: boolean) => void;
-  setHideSmallBalances: (value: boolean) => void;
   forexMap: ForexMap<Currency>;
-}
-
-// const RowConfig = {
-//   rowHeight: 44,
-//   headerRowHeight: 44,
-// };
+} & XOR<
+  {
+    hideInvestToken: boolean;
+    hideSmallBalances: boolean;
+    setHideLpToken: (value: boolean) => void;
+    setHideSmallBalances: (value: boolean) => void;
+  },
+  {}
+>;
 
 export const AssetsTable = withTranslation("tables")(
   (props: WithTranslation & AssetsTableProps) => {
     const {
       t,
-
+      isInvest = false,
       rawData,
       allowTrade,
       showFilter,
@@ -146,6 +154,7 @@ export const AssetsTable = withTranslation("tables")(
       setHideLpToken,
       setHideSmallBalances,
       forexMap,
+      rowConfig = RowConfig,
       ...rest
     } = props;
 
@@ -163,10 +172,10 @@ export const AssetsTable = withTranslation("tables")(
       (viewData) => {
         setViewData(viewData);
         setTableHeight(
-          RowConfig.rowHeaderHeight + viewData.length * RowConfig.rowHeight
+          rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
         );
       },
-      [setViewData, setTableHeight]
+      [setViewData, setTableHeight, rowConfig]
     );
     const updateData = React.useCallback(() => {
       let resultData = totalData && !!totalData.length ? totalData : [];
@@ -180,11 +189,6 @@ export const AssetsTable = withTranslation("tables")(
           (o) => o.token.type === TokenType.single
         );
       }
-      // if (hideIToken) {
-      //   resultData = resultData.filter(
-      //     (o) => o.token.type === TokenType.single
-      //   );
-      // }
       if (filter.searchValue) {
         resultData = resultData.filter((o) =>
           o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase())
@@ -231,7 +235,7 @@ export const AssetsTable = withTranslation("tables")(
           }
           return (
             <>
-              <CoinIcons tokenIcon={tokenIcon} />
+              <CoinIcons type={token.type} tokenIcon={tokenIcon} />
               <Typography
                 variant={"inherit"}
                 color={"textPrimary"}
@@ -334,6 +338,7 @@ export const AssetsTable = withTranslation("tables")(
             <ActionMemo
               {...{
                 t,
+                isInvest,
                 tokenValue,
                 getMarketArrayListCallback,
                 disableWithdrawList,
@@ -377,7 +382,7 @@ export const AssetsTable = withTranslation("tables")(
           return (
             <>
               <Typography width={"56px"} display={"flex"}>
-                <CoinIcons tokenIcon={tokenIcon} />
+                <CoinIcons type={token.type} tokenIcon={tokenIcon} />
               </Typography>
               <Typography
                 variant={"body1"}
@@ -455,6 +460,7 @@ export const AssetsTable = withTranslation("tables")(
                 disableWithdrawList,
                 isLp,
                 isDefi,
+                isInvest,
                 allowTrade,
                 market: renderMarket,
                 onReceive,
@@ -469,18 +475,6 @@ export const AssetsTable = withTranslation("tables")(
     return (
       <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
-          // (isMobile && isDropDown ? (
-          //   <Link
-          //     variant={"body1"}
-          //     display={"inline-flex"}
-          //     width={"100%"}
-          //     justifyContent={"flex-end"}
-          //     paddingRight={2}
-          //     onClick={() => setIsDropDown(false)}
-          //   >
-          //     Show Filter
-          //   </Link>
-          // ) :
           <TableFilterStyled>
             <Filter
               {...{
@@ -496,10 +490,11 @@ export const AssetsTable = withTranslation("tables")(
         )}
 
         <Table
+          className={isInvest ? "investAsset" : ""}
           {...{ ...rest, t }}
           style={{ height: tableHeight }}
-          rowHeight={RowConfig.rowHeight}
-          headerRowHeight={RowConfig.rowHeaderHeight}
+          rowHeight={rowConfig.rowHeight}
+          headerRowHeight={rowConfig.rowHeaderHeight}
           rawData={viewData}
           generateRows={(rowData: any) => rowData}
           generateColumns={({ columnsRaw }: any) =>

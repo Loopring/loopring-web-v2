@@ -8,7 +8,7 @@ import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
 import { useTicker, ModalGroup, useDeposit } from "@loopring-web/core";
-import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
+import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
@@ -17,7 +17,11 @@ import {
   ThemeType,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
-import { useOpenModals, useSettings } from "@loopring-web/component-lib";
+import {
+  useOpenModals,
+  useSettings,
+  LoadingBlock,
+} from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
   MarkdownPage,
@@ -29,10 +33,9 @@ import { NFTPage } from "../pages/NFTPage";
 import { useGetAssets } from "../pages/AssetPage/AssetPanel/hook";
 import { Footer } from "../layouts/footer";
 import { InvestPage } from "../pages/InvestPage";
-import { ExtendedFirebaseInstance, useFirebase } from "react-redux-firebase";
 import { getAnalytics, logEvent } from "firebase/analytics";
-import { FirebaseApp } from "@firebase/app";
 import { AssetPage } from "../pages/AssetPage";
+import { FiatPage } from "../pages/FiatPage";
 
 const ContentWrap = ({
   children,
@@ -261,6 +264,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <SwapPage />
           </ContentWrap>
         </Route>
+        <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
+          <ContentWrap state={state}>
+            <FiatPage />
+          </ContentWrap>
+        </Route>
         <Route exact path="/markets">
           <ContentWrap state={state}>
             <QuotePage />
@@ -287,16 +295,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <NFTPage />
           </ContentWrap>
         </Route>
-        <Route
-          exact
-          path={[
-            "/invest",
-            "/invest/balance",
-            "/invest/ammpool",
-            "/invest/defi/",
-            "/invest/defi/*",
-          ]}
-        >
+        <Route exact path={["/invest", "/invest/*"]}>
           <ContentWrap state={state}>
             <InvestPage />
           </ContentWrap>

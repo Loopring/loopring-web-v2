@@ -3,6 +3,7 @@ var args = process.argv.slice(2);
 var fs = require("fs");
 var { parse } = require("csv-parse");
 var path = require("path");
+var { investJson } = require("./invest");
 var moment = require("moment");
 const lngs = ["en"];
 const _moment = moment(new Date());
@@ -53,6 +54,14 @@ async function getNotification() {
           ...(notification.activities ?? []),
           ...(myNotification.activities ?? []),
         ];
+        notification.activitiesHome = [
+          ...(notification.activitiesHome ?? []),
+          ...(myNotification.activitiesHome ?? []),
+        ];
+        notification.activitiesInvest = [
+          ...(notification.activitiesInvest ?? []),
+          ...(myNotification.activitiesInvest ?? []),
+        ];
         notification.notifications = [
           ...(notification.notifications ?? []),
           ...(myNotification.notifications ?? []),
@@ -87,7 +96,7 @@ async function getNotification() {
     notification.notifications = notification.notifications.reduce(
       (prev, item) => {
         if (item.endShow > date.getTime()) {
-          prev.push(item);
+          prev = [item, ...prev];
         }
         return prev;
       },
@@ -95,13 +104,33 @@ async function getNotification() {
     );
     notification.activities = notification.activities.reduce((prev, item) => {
       if (item.endShow > date.getTime()) {
-        prev.push(item);
+        // prev.push(item);
+        prev = [item, ...prev];
       }
       return prev;
     }, []);
+
+    notification.activitiesHome = notification.activitiesHome.reduce(
+      (prev, item) => {
+        if (item.endShow > date.getTime()) {
+          prev = [item, ...prev];
+        }
+        return prev;
+      },
+      []
+    );
+    notification.activitiesInvest = notification.activitiesInvest.reduce(
+      (prev, item) => {
+        if (item.endShow > date.getTime()) {
+          prev = [item, ...prev];
+        }
+        return prev;
+      },
+      []
+    );
     notification.invest = notification.invest.reduce((prev, item) => {
       if (item.endShow > date.getTime()) {
-        prev.push(item);
+        prev = [item, ...prev];
       }
       return prev;
     }, []);
@@ -115,8 +144,11 @@ async function getNotification() {
 }
 let json = {
   activities: [],
+  activitiesHome: [],
+  activitiesInvest: [],
   notifications: [],
   invest: [],
+  campaignTagConfig: [],
   prev: {
     endDate: Date.now(),
   },
@@ -128,7 +160,36 @@ let TYPE = {
 /*
 var notifyPath = args[0];
 */
+const TYPE_ITEM = {
+  type: 0,
+  place: 1,
+  version: 2,
+  name: 3,
+  title: 4,
+  description1: 5,
+  description2: 6,
+  link: 7,
+  startShow: 8,
+  endShow: 9,
+  color: 10,
+  banner: 11,
+  bannerWeb: 12,
+  webRouter: 13,
+};
+const TAGP_CONFIF_ITEM = {
+  name: 0,
+  startShow: 1,
+  endShow: 2,
+  iconSource: 3,
+  symbols: 4,
+  scenarios: 5,
+};
+const PLACE = {
+  HOME: "HOME",
+  INVEST: "INVEST",
+};
 const _router = path.resolve(__dirname);
+
 async function createNotifyJSON(lng) {
   const notificationPath = `${_router}/${notifyPath}/notification.${lng}.csv`;
   const investPath = `${_router}/${notifyPath}/invest.${lng}.csv`;
@@ -146,28 +207,37 @@ async function createNotifyJSON(lng) {
         .on("end", () => {
           list.map((item) => {
             const startShow = moment
-              .utc(item[7], "MM/DD/YYYY HH:mm:ss")
+              .utc(item[TYPE_ITEM.startShow], "MM/DD/YYYY HH:mm:ss")
               .valueOf();
             const endShow = moment
-              .utc(item[8], "MM/DD/YYYY HH:mm:ss")
+              .utc(item[TYPE_ITEM.endShow], "MM/DD/YYYY HH:mm:ss")
               .valueOf();
+
             const _item = {
-              type: item[0],
-              version: item[1], //localStore for visited should be unique
-              name: item[2],
-              title: item[3],
-              description1: item[4],
-              description2: item[5],
-              link: item[6],
+              type: item[TYPE_ITEM.type]?.trim(),
+              place: item[TYPE_ITEM.place]?.trim(),
+              version: item[TYPE_ITEM.version]?.trim(), //localStore for visited should be unique
+              name: item[TYPE_ITEM.name]?.trim(),
+              title: item[TYPE_ITEM.title]?.trim(),
+              description1: item[TYPE_ITEM.description1]?.trim(),
+              description2: item[TYPE_ITEM.description2]?.trim(),
+              link: item[TYPE_ITEM.link]?.trim(),
               startShow,
               endShow,
-              color: item[9],
-              banner: item[10],
+              color: item[TYPE_ITEM.color]?.trim(),
+              banner: item[TYPE_ITEM.banner]?.trim(),
+              bannerWeb: item[TYPE_ITEM.bannerWeb]?.trim(),
+              webRouter: item[TYPE_ITEM.webRouter]?.trim(),
             };
-            if (item[0] === TYPE.ACTIVITY) {
-              json.activities = json.activities.concat(_item);
-            }
-            if (item[0] === TYPE.NOTIFICATION) {
+
+            if (_item.type === TYPE.ACTIVITY) {
+              if (_item.place === PLACE.INVEST) {
+                json.activitiesInvest = json.activitiesInvest.concat(_item);
+              } else {
+                json.activities = json.activities.concat(_item);
+                json.activitiesHome = json.activitiesHome.concat(_item);
+              }
+            } else if (_item.type === TYPE.NOTIFICATION) {
               json.notifications = json.notifications.concat(_item);
             }
             if (json.prev.endDate <= endShow) {
@@ -184,47 +254,47 @@ async function createNotifyJSON(lng) {
   }
 
   /****create invest json****/
-  if (fs.existsSync(investPath)) {
-    await new Promise((resolve, reject) => {
-      const list = [];
-      fs.createReadStream(investPath)
-        .pipe(parse({ delimiter: ",", from_line: 2 }))
-        .on("data", (data) => {
-          list.push(data);
-        })
-        .on("end", () => {
-          list.map((item) => {
-            const startShow = moment
-              .utc(item[6], "MM/DD/YYYY HH:mm:ss")
-              .valueOf();
-            const endShow = moment
-              .utc(item[7], "MM/DD/YYYY HH:mm:ss")
-              .valueOf();
-
-            const _item = {
-              name: item[0],
-              version: item[1], //localStore for visited should be unique
-              type: item[2],
-              bannerMobile: item[3],
-              bannerLaptop: item[4],
-              linkRule: item[5],
-              startShow: startShow,
-              endShow: endShow,
-              link: item[8],
-            };
-            json.invest = json.invest.concat(_item);
-            if (json.prev.endDate <= endShow) {
-              json.prev.endDate = endShow;
-            }
-          }, undefined);
-          resolve(json);
-        })
-        .on("error", function (error) {
-          console.log(error.message);
-          reject(error);
-        });
-    });
-  }
+  // if (fs.existsSync(investPath)) {
+  //   await new Promise((resolve, reject) => {
+  //     const list = [];
+  //     fs.createReadStream(investPath)
+  //       .pipe(parse({ delimiter: ",", from_line: 2 }))
+  //       .on("data", (data) => {
+  //         list.push(data);
+  //       })
+  //       .on("end", () => {
+  //         list.map((item) => {
+  //           const startShow = moment
+  //             .utc(item[6], "MM/DD/YYYY HH:mm:ss")
+  //             .valueOf();
+  //           const endShow = moment
+  //             .utc(item[7], "MM/DD/YYYY HH:mm:ss")
+  //             .valueOf();
+  //
+  //           const _item = {
+  //             name: item[0],
+  //             version: item[1], //localStore for visited should be unique
+  //             type: item[2],
+  //             bannerMobile: item[3],
+  //             bannerLaptop: item[4],
+  //             linkRule: item[5],
+  //             startShow: startShow,
+  //             endShow: endShow,
+  //             link: item[8],
+  //           };
+  //           json.invest = json.invest.concat(_item);
+  //           if (json.prev.endDate <= endShow) {
+  //             json.prev.endDate = endShow;
+  //           }
+  //         }, undefined);
+  //         resolve(json);
+  //       })
+  //       .on("error", function (error) {
+  //         console.log(error.message);
+  //         reject(error);
+  //       });
+  //   });
+  // }
   const storeFilePath = `${_router}/${notifyPath}/notification.${lng}.json`;
   try {
     await fs.unlink(storeFilePath);
@@ -237,6 +307,46 @@ async function createNotifyJSON(lng) {
   console.log(`\"${path.basename(storeFilePath).replace(/\..*/, "")}\":`);
   console.log(JSON.stringify(json));
   fs.writeFileSync(storeFilePath, JSON.stringify(json));
+}
+
+async function createTagJson() {
+  const tagPath = `${_router}/tagConfig.csv`;
+  if (fs.existsSync(tagPath)) {
+    await new Promise((resolve, reject) => {
+      const list = [];
+      fs.createReadStream(tagPath)
+        .pipe(parse({ delimiter: ",", from_line: 2 }))
+        .on("data", (data) => {
+          list.push(data);
+        })
+        .on("end", () => {
+          list.map((item) => {
+            const startShow = moment
+              .utc(item[TAGP_CONFIF_ITEM.startShow], "MM/DD/YYYY HH:mm:ss")
+              .valueOf();
+            const endShow = moment
+              .utc(item[TAGP_CONFIF_ITEM.endShow], "MM/DD/YYYY HH:mm:ss")
+              .valueOf();
+
+            const _item = {
+              name: item[TAGP_CONFIF_ITEM.name].trim(),
+              startShow,
+              endShow,
+              iconSource: item[TAGP_CONFIF_ITEM.iconSource].trim(),
+              symbols: item[TAGP_CONFIF_ITEM.symbols]?.trim()?.split(","),
+              scenarios: item[TAGP_CONFIF_ITEM.scenarios]?.trim()?.split(","),
+            };
+            json.campaignTagConfig = json.campaignTagConfig.concat(_item);
+          }, undefined);
+          console.log(json.campaignTagConfig);
+          resolve(json);
+        })
+        .on("error", function (error) {
+          console.log(error.message);
+          reject(error);
+        });
+    });
+  }
 }
 
 async function start() {
@@ -260,6 +370,7 @@ async function start() {
   for (const lng of lngs) {
     await createNotifyJSON(lng);
   }
+  await createTagJson();
   const jsonNotify = await getNotification();
   const totalNotifyPath = _router + `/notification.json`;
   try {
@@ -268,9 +379,15 @@ async function start() {
   } catch (error) {
     // console.error(`Got an error trying to delete the file: ${error.message}`);
   }
+  // console.log("investJson", investJson);
   fs.writeFileSync(
     totalNotifyPath,
-    JSON.stringify({ ...jsonNotify, prev: json.prev })
+    JSON.stringify({
+      ...jsonNotify,
+      invest: { ...investJson },
+      campaignTagConfig: json.campaignTagConfig,
+      prev: json.prev,
+    })
   );
   // const storeFilePath = `${path.basename(filePath).replace(".csv", ".json")}`;
 }
