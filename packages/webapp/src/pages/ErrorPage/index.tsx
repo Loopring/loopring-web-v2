@@ -49,13 +49,16 @@ export const ErrorPage = ({ messageKey }: ErrorObject) => {
                 If you believe this is indeed a bug, please
                 <Link
                   component={"a"}
+                  sx={{
+                    display: "inline-flex",
+                  }}
                   onClick={(e) => {
                     window.open(getContactInfo(), "_blank");
                     window.opener = null;
                     e.preventDefault();
                   }}
                 >
-                  contact us
+                  &nbsp; contact us
                 </Link>
                 <br /> We would appreciate your feedback
               </Trans>
