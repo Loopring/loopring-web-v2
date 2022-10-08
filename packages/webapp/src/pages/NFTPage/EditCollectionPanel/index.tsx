@@ -21,7 +21,7 @@ export const EditCollectionPanel = () => {
   const {
     collectionToastOpen,
     collectionToastClose,
-    ...createCollectionViewProps
+    ...editCollectionViewProps
   } = useCollectionPanel();
   const history = useHistory();
 
@@ -41,11 +41,13 @@ export const EditCollectionPanel = () => {
           color={"inherit"}
           onClick={history.goBack}
         >
-          {t("labelCollectionCreateERC1155")}
+          {editCollectionViewProps.isEdit
+            ? t("labelEditCollectionERC1155")
+            : t("labelCollectionCreateERC1155")}
         </Button>
       </Box>
       <StyledPaper flex={1} display={"flex"} justifyContent={"center"}>
-        <CreateCollectionWrap {...{ ...createCollectionViewProps }} />
+        <CreateCollectionWrap {...{ ...editCollectionViewProps }} />
       </StyledPaper>
       <Toast
         alertText={collectionToastOpen?.content ?? ""}

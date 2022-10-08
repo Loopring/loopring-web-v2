@@ -1055,4 +1055,5 @@ export default {
   labelEditCollectionFailed: "Collection edit has failed",
   labelEditCollectionBtn: "Edit Collection",
   labelEditRestCollectionBtn: "Reset",
+  labelEditCollectionERC1155: "Edit My Collection",
 };

@@ -19,6 +19,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { CollectionMeta, Info2Icon } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { TradeBtnStatus } from "../Interface";
+import { htmlDecode } from "@loopring-web/core";
 
 export type CreateCollectionViewProps<Co> = {
   keys: { [key: string]: undefined | IpfsFile };
@@ -191,7 +192,11 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
             marginBottom={2}
           >
             <TextField
-              value={collectionValue?.name ?? ""}
+              value={
+                collectionValue?.name
+                  ? htmlDecode(collectionValue.name ?? "").toString()
+                  : ""
+              }
               inputProps={{ maxLength: 28 }}
               fullWidth
               label={
@@ -257,6 +262,11 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
             <TextareaAutosizeStyled
               aria-label="Description"
               minRows={5}
+              value={
+                collectionValue?.description
+                  ? htmlDecode(collectionValue.description ?? "").toString()
+                  : ""
+              }
               style={{
                 overflowX: "hidden",
                 resize: "vertical",
