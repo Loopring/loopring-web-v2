@@ -61,45 +61,48 @@ export const useEditCollection = <T extends CollectionMeta>({
   const { baseURL, chainId } = useSystem();
   const { updateWalletL2Collection } = useWalletL2Collection();
   const history = useHistory();
+  const keysEditInit = (collection: Partial<CollectionMeta> = {}) => {
+    return {
+      banner: collection.banner
+        ? ({
+            error: undefined,
+            file: undefined,
+            fullSrc: getIPFSString(collection.banner, baseURL),
+            localSrc: getIPFSString(collection.banner, baseURL),
+            isProcessing: false,
+            isUpdateIPFS: false,
+            uniqueId: "",
+          } as unknown as IpfsFile)
+        : undefined,
+      tileUri: collection.tileUri
+        ? ({
+            error: undefined,
+            file: undefined,
+            fullSrc: getIPFSString(collection.tileUri, baseURL),
+            localSrc: getIPFSString(collection.tileUri, baseURL),
+            isProcessing: false,
+            isUpdateIPFS: false,
+            uniqueId: "",
+          } as unknown as IpfsFile)
+        : undefined,
+      avatar: collection.avatar
+        ? ({
+            error: undefined,
+            file: undefined,
+            fullSrc: getIPFSString(collection.avatar, baseURL),
+            localSrc: getIPFSString(collection.avatar, baseURL),
+            isProcessing: false,
+            isUpdateIPFS: false,
+            uniqueId: "",
+          } as unknown as IpfsFile)
+        : undefined,
+    };
+  };
   const [keys, setKeys] = React.useState<{
     [key: string]: undefined | IpfsFile;
   }>(() => {
     return isEdit
-      ? {
-          banner: collectionValue.banner
-            ? ({
-                error: undefined,
-                file: undefined,
-                fullSrc: getIPFSString(collectionValue.banner, baseURL),
-                localSrc: getIPFSString(collectionValue.banner, baseURL),
-                isProcessing: false,
-                isUpdateIPFS: false,
-                uniqueId: "",
-              } as unknown as IpfsFile)
-            : undefined,
-          tileUri: collectionValue.tileUri
-            ? ({
-                error: undefined,
-                file: undefined,
-                fullSrc: getIPFSString(collectionValue.tileUri, baseURL),
-                localSrc: getIPFSString(collectionValue.tileUri, baseURL),
-                isProcessing: false,
-                isUpdateIPFS: false,
-                uniqueId: "",
-              } as unknown as IpfsFile)
-            : undefined,
-          avatar: collectionValue.avatar
-            ? ({
-                error: undefined,
-                file: undefined,
-                fullSrc: getIPFSString(collectionValue.avatar, baseURL),
-                localSrc: getIPFSString(collectionValue.avatar, baseURL),
-                isProcessing: false,
-                isUpdateIPFS: false,
-                uniqueId: "",
-              } as unknown as IpfsFile)
-            : undefined,
-        }
+      ? keysEditInit(collectionOldValue)
       : {
           banner: undefined,
           // name: undefined,
@@ -175,18 +178,19 @@ export const useEditCollection = <T extends CollectionMeta>({
     ) {
       setLoadingBtn();
 
-      if (isEdit) {
+      if (isEdit && collectionOldValue?.id) {
         try {
           const response = await LoopringAPI.userAPI.submitEditNFTCollection(
             {
               name: collectionValue.name?.trim(),
-              tileUri: collectionValue.tileUri?.trim(),
-              owner: account.accAddress,
+              tile: collectionValue.tileUri?.trim(),
+              accountId: account.accountId,
               banner: collectionValue.banner?.trim(),
               avatar: collectionValue.avatar?.trim(),
               description: collectionValue.description?.trim(),
-              collectionId: collectionValue.id ?? "",
-            },
+              collectionId: collectionOldValue.id ?? "",
+              thumbnail: "",
+            } as any,
             chainId as any,
             account.apiKey,
             account.eddsaKey.sk
@@ -437,6 +441,7 @@ export const useEditCollection = <T extends CollectionMeta>({
     resetEdit: isEdit
       ? () => {
           updateCollectionData({ ...collectionOldValue });
+          setKeys(keysEditInit(collectionOldValue));
         }
       : undefined,
     onSubmitClick,
