@@ -3,10 +3,12 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
 import {
+  DAY_FORMAT,
   DirectionTag,
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
+  MINUTE_FORMAT,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
@@ -408,7 +410,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                     >
                       {side}
                     </Typography>
-                    &nbsp;&nbsp;
+                    &nbsp;
                     <Typography
                       component={"span"}
                       color={"textPrimary"}
@@ -417,23 +419,13 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                       {sentence}
                     </Typography>
                   </Typography>
-                  <Typography component={"span"}>
-                    <Typography
-                      component={"span"}
-                      color={"textPrimary"}
-                      paddingLeft={1}
-                      variant={"body2"}
-                    >
-                      {apy}
-                    </Typography>
-                    <Typography
-                      component={"span"}
-                      color={"textSecondary"}
-                      paddingLeft={1}
-                      variant={"body2"}
-                    >
-                      {base + "/" + quote}
-                    </Typography>
+                  <Typography
+                    component={"span"}
+                    color={"textPrimary"}
+                    paddingLeft={1}
+                    variant={"body2"}
+                  >
+                    APY: {apy}
                   </Typography>
                 </Typography>
                 {/* " - " +*/}
@@ -445,13 +437,19 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                   justifyContent={"space-between"}
                   variant={"body2"}
                 >
-                  <Typography component={"span"} variant={"body2"}>
-                    <Typography component={"span"} variant={"inherit"}>
-                      {t("labelDualPrice") + ": " + row?.strike}
-                    </Typography>
+                  <Typography
+                    component={"span"}
+                    color={"textSecondary"}
+                    variant={"body2"}
+                  >
+                    {base + "/" + quote}
                   </Typography>
-                  <Typography component={"span"} variant={"body2"}>
-                    {` ${t("labelDualTxsSettlement")}: 
+                  <Typography
+                    component={"span"}
+                    variant={"body2"}
+                    paddingLeft={1}
+                  >
+                    {` ${t("labelDualTxsSettlement")}:                  
                     ${
                       deliveryPrice
                         ? getValuePrecisionThousand(
@@ -464,9 +462,10 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                           )
                         : EmptyValueTag
                     }
+                    (${t("labelDualTPrice")} : ${row?.strike})
                     ${moment(
                       new Date(row.__raw__.order.timeOrigin.expireTime)
-                    ).format(YEAR_DAY_MINUTE_FORMAT)}
+                    ).format(`${DAY_FORMAT} ${MINUTE_FORMAT}`)}
                     `}
                   </Typography>
                 </Typography>

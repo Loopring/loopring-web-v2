@@ -183,7 +183,7 @@ export const useEditCollection = <T extends CollectionMeta>({
           const response = await LoopringAPI.userAPI.submitEditNFTCollection(
             {
               name: collectionValue.name?.trim(),
-              tile: collectionValue.tileUri?.trim(),
+              tileUri: collectionValue.tileUri?.trim(),
               accountId: account.accountId,
               banner: collectionValue.banner?.trim(),
               avatar: collectionValue.avatar?.trim(),

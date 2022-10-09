@@ -220,6 +220,7 @@ export default {
   labelDualApy: "APY",
   labelDualTerm: "Term",
   labelDualPrice: "Target Price",
+  labelDualTPrice: "Target",
   labelDualSettlement: "Settlement Date",
   labelDualAction: "Action",
   labelInvestmentStatusSettled: "Settled",

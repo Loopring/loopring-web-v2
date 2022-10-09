@@ -46,7 +46,12 @@ export const EditCollectionPanel = () => {
             : t("labelCollectionCreateERC1155")}
         </Button>
       </Box>
-      <StyledPaper flex={1} display={"flex"} justifyContent={"center"}>
+      <StyledPaper
+        flex={1}
+        display={"flex"}
+        justifyContent={"center"}
+        marginBottom={2}
+      >
         <CreateCollectionWrap {...{ ...editCollectionViewProps }} />
       </StyledPaper>
       <Toast

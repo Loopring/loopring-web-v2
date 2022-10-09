@@ -576,8 +576,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                     justifyContent={"flex-end"}
                     alignItems={"center"}
                   >
-                    {hasSymbol}
-                    `${renderValue} ${unit}`
+                    {hasSymbol + renderValue + " " + unit}
                   </Typography>
                   <Typography color={"textSecondary"} variant={"body2"}>
                     {renderFee}

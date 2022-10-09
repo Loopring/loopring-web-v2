@@ -4,8 +4,11 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { MyNFTList } from "./NFTList";
 import {
+  getIPFSString,
   LoopringAPI,
   useAccount,
+  useSystem,
+  useToast,
   useWalletL2NFTCollection,
 } from "@loopring-web/core";
 import {
@@ -17,12 +20,14 @@ import {
   getShortAddr,
   SoursURL,
   CollectionMeta,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { MyNFTCollectionList } from "./MyNFTCollectionList";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
-import { Button, useSettings } from "@loopring-web/component-lib";
+import { Button, Toast, useSettings } from "@loopring-web/component-lib";
 import { sanitize } from "dompurify";
+import { CollectionDetailView } from "../components/CollectionDetailView";
 
 enum MY_NFT_VIEW {
   LIST_COLLECTION = "byCollection",
@@ -38,8 +43,9 @@ export const MyNFTPanel = withTranslation("common")(
         ? MY_NFT_VIEW.LIST_COLLECTION
         : MY_NFT_VIEW.LIST_NFT;
     });
+    const { toastOpen, setToastOpen, closeToast } = useToast();
     const { isMobile } = useSettings();
-
+    const { baseURL } = useSystem();
     const history = useHistory();
     const { search } = useLocation();
     const {
@@ -149,7 +155,21 @@ export const MyNFTPanel = withTranslation("common")(
               </Button>
             </Box>
             {collectionMeta ? (
-              <MyNFTList collectionMeta={collectionMeta} />
+              <Box
+                flex={1}
+                display={"flex"}
+                flexDirection={"column"}
+                justifyContent={""}
+                alignItems={"stretch"}
+              >
+                {/*<CollectionDetailView*/}
+                {/*  collectionDate={collectionMeta}*/}
+                {/*  getIPFSString={getIPFSString}*/}
+                {/*  baseURL={baseURL}*/}
+                {/*  setCopyToastOpen={setToastOpen as any}*/}
+                {/*/>*/}
+                <MyNFTList collectionMeta={collectionMeta} />
+              </Box>
             ) : (
               <Box
                 flex={1}
@@ -236,6 +256,13 @@ export const MyNFTPanel = withTranslation("common")(
             </Box>
           </>
         )}
+        <Toast
+          alertText={toastOpen?.content ?? ""}
+          severity={toastOpen?.type ?? "success"}
+          open={toastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={closeToast}
+        />
       </Box>
     );
   }

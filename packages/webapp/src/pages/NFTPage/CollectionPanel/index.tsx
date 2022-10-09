@@ -50,10 +50,10 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
       const loopringId = match.params.id.split("-")[0];
       if (loopringId && detail) {
         setView(MyCollectionView.Item);
-      } else {
-        setView(MyCollectionView.List);
+        return;
       }
     }
+    setView(MyCollectionView.List);
   }, [match?.params?.id]);
 
   const { account } = useAccount();
@@ -150,7 +150,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         </>
       )}
       {view === MyCollectionView.Item && detail && (
-        <Box flex={1} display={"flex"}>
+        <Box flex={1} display={"flex"} flexDirection={"column"}>
           <CollectionDetailView
             collectionDate={detail}
             getIPFSString={getIPFSString}
