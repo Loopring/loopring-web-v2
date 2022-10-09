@@ -32,6 +32,7 @@ import { getTokenPrices } from "../tokenPrices/reducer";
 import { getDefiMap } from "../invest/DefiMap/reducer";
 import { getInvestTokenTypeMap } from "../invest/InvestTokenTypeMap/reducer";
 import { getDualMap } from "../invest/DualMap/reducer";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
@@ -194,6 +195,14 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
       LoopringAPI.delegate?.setBaseUrl(baseURL);
       LoopringAPI.defiAPI?.setBaseUrl(baseURL);
       let allowTrade, exchangeInfo, gasPrice, forexMap;
+      if (
+        /dev\.loopring\.io/.test(baseURL) &&
+        ChainId.MAINNET !== chainId &&
+        process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION
+      ) {
+        sdk.NFTFactory_Collection[ChainId.GOERLI] =
+          process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION;
+      }
       try {
         [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
           await Promise.all([

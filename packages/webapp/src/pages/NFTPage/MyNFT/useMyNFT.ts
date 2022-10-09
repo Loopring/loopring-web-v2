@@ -1,5 +1,4 @@
 import {
-  CollectionLimit,
   CollectionMeta,
   CustomError,
   ErrorMap,
@@ -35,8 +34,6 @@ export const useMyNFT = ({
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const { account } = useAccount();
-  // const [popItem, setPopItem] =
-  //   React.useState<Partial<NFTWholeINFO> | undefined>(undefined);
   const {
     status: walletLayer2NFTStatus,
     walletLayer2NFT,
@@ -332,9 +329,9 @@ export const useMyNFT = ({
   React.useEffect(() => {
     updateWalletLayer2NFT({
       page,
-      collection: collectionMeta?.contractAddress,
+      collection: collectionMeta ?? undefined,
     });
-  }, [page, collectionMeta?.contractAddress]);
+  }, [page, collectionMeta?.id]);
   React.useEffect(() => {
     if (walletLayer2NFTStatus === SagaStatus.UNSET && page_reudex === page) {
       renderNFT();

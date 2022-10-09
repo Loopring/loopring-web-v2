@@ -23,11 +23,9 @@ import {
   copyToClipBoard,
   getShortAddr,
   ImageIcon,
-  // LinkIcon,
   NFT_TYPE_STRING,
   SoursURL,
   ViewMoreIcon,
-  // LinkIcon,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";

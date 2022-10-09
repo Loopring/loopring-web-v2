@@ -185,12 +185,13 @@ export const useEditCollection = <T extends CollectionMeta>({
               name: collectionValue.name?.trim(),
               tileUri: collectionValue.tileUri?.trim(),
               accountId: account.accountId,
-              banner: collectionValue.banner?.trim(),
-              avatar: collectionValue.avatar?.trim(),
-              description: collectionValue.description?.trim(),
+              banner: collectionValue.banner?.trim() ?? "",
+              avatar: collectionValue.avatar?.trim() ?? "",
+              description: collectionValue.description?.trim() ?? "",
               collectionId: collectionOldValue.id ?? "",
+              // @ts-ignore
               thumbnail: "",
-            } as any,
+            },
             chainId as any,
             account.apiKey,
             account.eddsaKey.sk
