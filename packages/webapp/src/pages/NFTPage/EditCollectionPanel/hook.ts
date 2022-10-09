@@ -38,7 +38,7 @@ export const useCollectionPanel = <T extends CollectionMeta>() => {
     ) {
       collectionService.emptyData();
     } else if (match?.params.item === "editCollection" && match?.params?.id) {
-      const loopringId = match?.params?.id.split("-")[0];
+      const loopringId = match?.params?.id.split("--")[0];
       if (collectionValue?.id?.toString() === loopringId.toString()) {
       } else {
         history.push("/nft/myCollection");

@@ -1,4 +1,4 @@
-import { StateBase } from "@loopring-web/common-resources";
+import { CollectionMeta, StateBase } from "@loopring-web/common-resources";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 
 export type WalletLayer2NFTMap<R extends { [key: string]: any }> = {
@@ -6,7 +6,7 @@ export type WalletLayer2NFTMap<R extends { [key: string]: any }> = {
 };
 
 export type WalletLayer2NFTStates = {
-  collection: string;
+  collection: CollectionMeta | undefined;
   walletLayer2NFT: loopring_defs.UserNFTBalanceInfo[];
   total: number;
   page: number;

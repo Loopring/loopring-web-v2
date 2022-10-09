@@ -25,18 +25,16 @@ const _StyledPaper = styled(Box)`
 export const MyNFTList = withTranslation("common")(
   ({
     collectionMeta,
+    collectionPage,
+    myNFTPage,
     t,
   }: {
     collectionMeta: CollectionMeta | undefined;
+    collectionPage?: number;
+    myNFTPage?: number;
   } & WithTranslation) => {
-    const {
-      onDetail,
-      nftList,
-      isLoading,
-      page,
-      total,
-      onPageChange: collectionPageChange,
-    } = useMyNFT({ collectionMeta });
+    const { onDetail, nftList, isLoading, page, total, onPageChange } =
+      useMyNFT({ collectionMeta, collectionPage, myNFTPage });
     const { baseURL } = useSystem();
 
     return (
@@ -98,7 +96,6 @@ export const MyNFTList = withTranslation("common")(
                   flex={"1 1 120%"}
                 >
                   <CardStyleItem
-                    // sx={{ maxWidth: 345 }}
                     onClick={() => {
                       onDetail(item);
                     }}
@@ -115,7 +112,6 @@ export const MyNFTList = withTranslation("common")(
                         item={item}
                         index={index}
                         shouldPlay={false}
-                        // onNFTReload={onNFTReload}
                         onNFTError={() => undefined}
                         isOrigin={false}
                         getIPFSString={getIPFSString}
@@ -226,7 +222,7 @@ export const MyNFTList = withTranslation("common")(
                   }
                   page={page}
                   onChange={(_event, value) => {
-                    collectionPageChange(Number(value));
+                    onPageChange(Number(value));
                   }}
                 />
               </Box>

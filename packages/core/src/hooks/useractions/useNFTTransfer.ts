@@ -48,8 +48,8 @@ import {
   getIPFSString,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useHistory, useLocation } from "react-router-dom";
 import Web3 from "web3";
+import { useHistory } from "react-router-dom";
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const [memo, setMemo] = React.useState("");
@@ -69,8 +69,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
   const history = useHistory();
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
+  // const { search, ...restLocation } = useLocation();
 
   const [sureItsLayer2, setSureItsLayer2] =
     React.useState<WALLET_TYPE | undefined>(undefined);
@@ -330,25 +329,30 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              if (nftTransferValue.collectionMeta) {
-                history.push({
-                  pathname: `/NFT/assetsNFT/byCollection/${nftTransferValue.collectionMeta?.contractAddress}|${nftTransferValue.collectionMeta?.id}`,
-                  search,
-                });
-                updateWalletLayer2NFT({
-                  page: Number(searchParams.get("collectionPage")) ?? 1,
-                  collection: nftTransferValue.collectionMeta?.contractAddress,
-                });
-              } else {
-                history.push({
-                  pathname: `/NFT/assetsNFT/byList`,
-                  search,
-                });
-                updateWalletLayer2NFT({
-                  page,
-                  collection: undefined,
-                });
-              }
+              // history.push({
+              //   search,
+              //   ...restLocation,
+              // });
+              history.go(0);
+              // if (nftTransferValue.collectionMeta) {
+              //   history.push({
+              //     pathname: `/NFT/assetsNFT/byCollection/${nftTransferValue.collectionMeta?.id}-${nftTransferValue.collectionMeta?.contractAddress}`,
+              //     search,
+              //   });
+              //   // updateWalletLayer2NFT({
+              //   //   page: Number(searchParams.get("collectionPage")) ?? 1,
+              //   //   collection: nftTransferValue.collectionMeta?.contractAddress,
+              //   // });
+              // } else {
+              //   history.push({
+              //     pathname: `/NFT/assetsNFT/byList`,
+              //     search,
+              //   });
+              //   // updateWalletLayer2NFT({
+              //   //   page,
+              //   //   collection: undefined,
+              //   // });
+              // }
               setShowNFTDetail({ isShow: false });
               resetNFTTransferData();
             }

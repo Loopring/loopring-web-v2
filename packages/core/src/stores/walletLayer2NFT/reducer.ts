@@ -4,7 +4,7 @@ import { CollectionMeta, SagaStatus } from "@loopring-web/common-resources";
 
 const initialState: WalletLayer2NFTStates = {
   walletLayer2NFT: [],
-  collection: "",
+  collection: undefined,
   total: 0,
   status: "DONE",
   errorMessage: null,

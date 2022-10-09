@@ -47,7 +47,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
   const match: any = useRouteMatch("/nft/myCollection/:id");
   React.useEffect(() => {
     if (match?.params?.id) {
-      const loopringId = match.params.id.split("-")[0];
+      const loopringId = match.params.id.split("--")[0];
       if (loopringId && detail) {
         setView(MyCollectionView.Item);
         return;
@@ -104,12 +104,12 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               setShowEdit={(item) => {
                 updateCollectionData({ ...item });
                 history.push(
-                  `/nft/editCollection/${item.id}-${item.contractAddress}`
+                  `/nft/editCollection/${item.id}--${item.contractAddress}`
                 );
               }}
               onItemClick={(item) => {
                 history.push(
-                  `/nft/myCollection/${item.id}-${item.contractAddress}`
+                  `/nft/myCollection/${item.id}--${item.contractAddress}`
                 );
                 setDetail(item);
               }}
@@ -158,7 +158,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             setShowEdit={(item) => {
               updateCollectionData({ ...item });
               history.push(
-                `/nft/editCollection/${item.id}-${item.contractAddress}`
+                `/nft/editCollection/${item.id}--${item.contractAddress}`
               );
             }}
             setCopyToastOpen={collectionListProps.setCopyToastOpen}

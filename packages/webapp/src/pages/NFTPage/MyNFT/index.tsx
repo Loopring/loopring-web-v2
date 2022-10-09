@@ -36,26 +36,26 @@ enum MY_NFT_VIEW {
 
 export const MyNFTPanel = withTranslation("common")(
   ({ t }: WithTranslation) => {
-    let match: any = useRouteMatch("/NFT/assetsNFT/:tab?/:contract?");
+    const match: any = useRouteMatch("/NFT/assetsNFT/:tab?/:contract?");
     const { walletL2NFTCollection } = useWalletL2NFTCollection();
     const [currentTab, setCurrentTab] = React.useState(() => {
       return match?.params.tab === MY_NFT_VIEW.LIST_COLLECTION
         ? MY_NFT_VIEW.LIST_COLLECTION
         : MY_NFT_VIEW.LIST_NFT;
     });
-    const { toastOpen, setToastOpen, closeToast } = useToast();
+    const { toastOpen, closeToast } = useToast();
     const { isMobile } = useSettings();
-    const { baseURL } = useSystem();
     const history = useHistory();
     const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
     const {
       account: { accountId, apiKey },
     } = useAccount();
     const [collectionMeta, setCollectionMeta] =
       React.useState<undefined | CollectionMeta>(undefined);
     const checkCollection = async () => {
-      const [contract, id] = !!match?.params?.contract
-        ? match?.params?.contract.split("|")
+      const [id, contract] = !!match?.params?.contract
+        ? match?.params?.contract.split("--")
         : [null, null];
       if (contract !== undefined && id !== undefined && LoopringAPI.userAPI) {
         const collectionMeta = walletL2NFTCollection.find((item) => {
@@ -68,6 +68,7 @@ export const MyNFTPanel = withTranslation("common")(
           setCollectionMeta(collectionMeta);
           return;
         } else {
+          //TODO: getNFTCOllection By NFTID
           const response = await LoopringAPI.userAPI
             .getUserNFTCollection(
               {
@@ -106,7 +107,10 @@ export const MyNFTPanel = withTranslation("common")(
       }
     };
     React.useEffect(() => {
-      if (match?.params?.contract?.startsWith("0x")) {
+      const [id, contract] = !!match?.params?.contract
+        ? match?.params?.contract.split("--")
+        : [null, null];
+      if (contract && id && contract.startsWith("0x")) {
         checkCollection();
       }
     }, [match?.params?.contract]);
@@ -162,13 +166,19 @@ export const MyNFTPanel = withTranslation("common")(
                 justifyContent={""}
                 alignItems={"stretch"}
               >
-                {/*<CollectionDetailView*/}
-                {/*  collectionDate={collectionMeta}*/}
-                {/*  getIPFSString={getIPFSString}*/}
-                {/*  baseURL={baseURL}*/}
-                {/*  setCopyToastOpen={setToastOpen as any}*/}
-                {/*/>*/}
-                <MyNFTList collectionMeta={collectionMeta} />
+                <MyNFTList
+                  collectionMeta={collectionMeta}
+                  collectionPage={
+                    searchParams?.get("collectionPage")
+                      ? Number(searchParams?.get("collectionPage"))
+                      : 1
+                  }
+                  myNFTPage={
+                    searchParams?.get("nftPage")
+                      ? Number(searchParams?.get("nftPage"))
+                      : 1
+                  }
+                />
               </Box>
             ) : (
               <Box

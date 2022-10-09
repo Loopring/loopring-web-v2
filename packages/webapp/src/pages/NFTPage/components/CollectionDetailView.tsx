@@ -10,11 +10,7 @@ import styled from "@emotion/styled";
 import { Avatar, Box, BoxProps, Link, Typography } from "@mui/material";
 import React from "react";
 import { useTheme } from "@emotion/react";
-import {
-  Button,
-  CollectionMedia,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { Button, useSettings } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { sanitize } from "dompurify";
 
@@ -213,21 +209,23 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
             >
               {collectionDate?.nftType}
             </Typography>
-            {/*{collectionDate.isEditAble}*/}
-            {setShowEdit && (
-              <Button
-                fullWidth
-                variant={"outlined"}
-                size={"medium"}
-                color={"primary"}
-                onClick={() => {
-                  setShowEdit(collectionDate);
-                }}
-                sx={{ marginTop: 1 }}
-              >
-                {t(`labelCollectionEditBtn`)}
-              </Button>
-            )}
+
+            {setShowEdit &&
+              // @ts-ignore
+              collectionDate?.isEditable && (
+                <Button
+                  fullWidth
+                  variant={"outlined"}
+                  size={"medium"}
+                  color={"primary"}
+                  onClick={() => {
+                    setShowEdit(collectionDate);
+                  }}
+                  sx={{ marginTop: 1 }}
+                >
+                  {t(`labelCollectionEditBtn`)}
+                </Button>
+              )}
           </Box>
         </Box>
       </Box>

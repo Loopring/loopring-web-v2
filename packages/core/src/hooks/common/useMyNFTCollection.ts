@@ -7,11 +7,12 @@ import {
   useSystem,
   useWalletL2NFTCollection,
 } from "../../index";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 export const useMyNFTCollection = <C extends CollectionMeta>() => {
   const { etherscanBaseUrl, baseURL } = useSystem();
-  const { search } = useLocation();
+  const history = useHistory();
+  const { search, ...rest } = useLocation();
   const searchParams = new URLSearchParams(search);
   const defaultPage = Number(searchParams.get("collectionPage")) ?? 1;
   const [page, setPage] = React.useState(defaultPage ? defaultPage : -1);
@@ -34,6 +35,8 @@ export const useMyNFTCollection = <C extends CollectionMeta>() => {
   const onPageChange = (page: number) => {
     setPage(page);
     setIsLoading(true);
+    searchParams.set("collectionPage", page.toString());
+    history.replace({ ...rest, search: searchParams.toString() });
     updateWalletL2NFTCollection({ page });
   };
 

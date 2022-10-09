@@ -114,11 +114,9 @@ const ActionMemo = React.memo(
           }}
         >
           <Box borderRadius={"inherit"} minWidth={110}>
-            {!!(
-              item.isCounterFactualNFT &&
-              item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
-              item.owner?.toLowerCase() === account?.accAddress?.toLowerCase()
-            ) ? (
+            {item.isCounterFactualNFT &&
+            item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+            item.owner?.toLowerCase() === account?.accAddress?.toLowerCase() ? (
               <MenuItem
                 onClick={(_e) => {
                   setShowDeploy && setShowDeploy(item);
@@ -150,7 +148,6 @@ const ActionMemo = React.memo(
             )}
             {!!(
               item.isCounterFactualNFT &&
-              // @ts-ignore
               item.isMintable &&
               item.owner?.toLowerCase() ===
                 account?.accAddress?.toLowerCase() &&
@@ -169,6 +166,10 @@ const ActionMemo = React.memo(
 
             {!!(
               item.isCounterFactualNFT &&
+              // @ts-ignore
+              item.isEditable &&
+              item.owner?.toLowerCase() ===
+                account?.accAddress?.toLowerCase() &&
               item?.nftType !== NFT_TYPE_STRING.ERC721
             ) && (
               <MenuItem
@@ -231,7 +232,7 @@ export const CollectionItem = React.memo(
                 }
               }}
             />
-            {!!isSelectOnly && (
+            {isSelectOnly && (
               <Radio
                 size={"medium"}
                 checked={

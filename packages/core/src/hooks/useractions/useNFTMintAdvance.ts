@@ -299,7 +299,7 @@ export const useNFTMintAdvance = <
               }
               walletLayer2Service.sendUserUpdate();
               history.push({
-                pathname: `/NFT/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.contractAddress}|${nftMintAdvanceValue?.collectionMeta?.id}`,
+                pathname: `/NFT/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.id}--${nftMintAdvanceValue?.collectionMeta?.contractAddress}`,
               });
               resetDefault();
               // checkFeeIsEnough();

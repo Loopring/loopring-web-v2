@@ -24,13 +24,22 @@ import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import * as sdk from "@loopring-web/loopring-sdk";
 import Web3 from "web3";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = ({
   collectionMeta,
+  collectionPage,
+  myNFTPage,
 }: {
   collectionMeta: CollectionMeta | undefined;
+  collectionPage?: number;
+  myNFTPage?: number;
 }) => {
+  // const match: any = useRouteMatch("/NFT/assetsNFT/:tab?/:contract?");
+  const { search, ...rest } = useLocation();
+  const history = useHistory();
+  const searchParams = new URLSearchParams(search);
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const { account } = useAccount();
@@ -38,7 +47,8 @@ export const useMyNFT = ({
     status: walletLayer2NFTStatus,
     walletLayer2NFT,
     total,
-    page: page_reudex,
+    page: page_redux,
+    collection: collection_redux,
     updateWalletLayer2NFT,
   } = useWalletLayer2NFT();
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
@@ -47,11 +57,20 @@ export const useMyNFT = ({
   const { setShowNFTDetail } = useOpenModals();
   const { etherscanBaseUrl, baseURL } = useSystem();
   const [page, setPage] = useState(-1);
+
   // const onDetailClose = React.useCallback(() => setIsShow(false), []);
 
-  const onPageChange = (page: number) => {
+  const onPageChange = (page: number = 1) => {
     setPage(page);
     setIsLoading(true);
+    if (page !== -1) {
+      updateWalletLayer2NFT({
+        page,
+        collection: collectionMeta ?? undefined,
+      });
+    }
+    searchParams.set("myNFTPage", page.toString());
+    history.replace({ ...rest, search: searchParams.toString() });
   };
 
   const getMetaFromContractORIpfs = ({
@@ -218,22 +237,12 @@ export const useMyNFT = ({
         ) {
           throw new CustomError(ErrorMap.ERROR_UNKNOWN);
         }
-        // collections = (response as any).collections?.map((item: any) => {
-        //   return {
-        //     ...item.collection,
-        //     count: item.count,
-        //   };
-        // });
         const collectionMeta = response.collections?.find((_item: any) => {
           return (
             _item?.contractAddress?.toLowerCase() ===
             item?.tokenAddress?.toLowerCase()
           );
         });
-        // const collectionMeta = {
-        //   ...collection?.collection,
-        //   count: collection?.count,
-        // };
         setShowNFTDetail({ isShow: true, ...item, collectionMeta });
         updateNFTWithdrawData({ ...item, collectionMeta });
         updateNFTTransferData({ ...item, collectionMeta });
@@ -324,19 +333,26 @@ export const useMyNFT = ({
     });
   }, [etherscanBaseUrl, infoDetail, page, walletLayer2NFT]);
   React.useEffect(() => {
-    onPageChange(1);
-  }, []);
+    onPageChange(myNFTPage);
+  }, [myNFTPage, collectionMeta?.id, collectionMeta?.contractAddress]);
+
   React.useEffect(() => {
-    updateWalletLayer2NFT({
-      page,
-      collection: collectionMeta ?? undefined,
-    });
-  }, [page, collectionMeta?.id]);
-  React.useEffect(() => {
-    if (walletLayer2NFTStatus === SagaStatus.UNSET && page_reudex === page) {
+    if (
+      walletLayer2NFTStatus === SagaStatus.UNSET &&
+      page_redux === page &&
+      ((collectionMeta === undefined && collection_redux === undefined) ||
+        (collection_redux?.id == collectionMeta?.id &&
+          collection_redux?.contractAddress == collectionMeta?.contractAddress))
+    ) {
       renderNFT();
     }
-  }, [walletLayer2NFTStatus, page, page_reudex]);
+  }, [
+    walletLayer2NFTStatus,
+    page,
+    collectionMeta,
+    page_redux,
+    collection_redux,
+  ]);
 
   return {
     nftList,
