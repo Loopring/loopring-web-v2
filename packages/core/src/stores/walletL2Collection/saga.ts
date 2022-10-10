@@ -32,7 +32,6 @@ const getWalletL2CollectionBalance = async <_R extends { [key: string]: any }>({
           limit: CollectionLimit,
           offset,
           ...filter,
-          // metadata: true, // close metadata
         },
         apiKey
       )

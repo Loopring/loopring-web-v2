@@ -18,11 +18,14 @@ import {
   WALLET_TYPE,
   EXCHANGE_TYPE,
   GET_IPFS_STRING,
+  CollectionMeta,
+  Account,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
 import { CollectionInputProps } from "./tool";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 /**
  * private props
@@ -458,3 +461,35 @@ export type CollectionAdvanceProps<_T> = {
   // handleError: (error: { code: number; message: string }) => void;
   metaData: string;
 } & BtnInfoProps;
+
+export enum ImportCollectionStep {
+  SELECTCONTRACT = 0,
+  SELECTCOLLECTION = 1,
+  SELECTNFT = 2,
+}
+
+export type ImportCollectionViewProps<
+  Co extends CollectionMeta,
+  NFT extends sdk.UserNFTBalanceInfo
+> = {
+  account: Account;
+  onContractChange: (item: string) => void;
+  onContractNext: (item: string) => void;
+  onCollectionChange: (item: string) => void;
+  onCollectionNext: (item: string) => void;
+  onNFTSelected: (item: NFT[]) => void;
+  onNFTSelectedMethod: (item: NFT[], method: string) => void;
+  data: {
+    contractList: string[];
+    selectContract: string;
+    collectionList: Co[];
+    selectCollection: Co;
+    listNFT: NFT[];
+    selectNFTList: NFT[];
+  };
+  step: ImportCollectionStep;
+  btnStatus: TradeBtnStatus;
+  disabled?: boolean;
+  onLoading?: boolean;
+  onClick: (item: string) => void;
+};

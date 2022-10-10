@@ -3,6 +3,7 @@ import {
   reset,
   socketUpdateBalance,
   statusUnset,
+  updateLegacyCollection,
   updateWalletL2Collection,
 } from "./reducer";
 import { WalletL2CollectionStates } from "./interface";
@@ -12,10 +13,14 @@ import {
   CollectionMeta,
   L2CollectionFilter,
 } from "@loopring-web/common-resources";
+import { LoopringAPI } from "../../api_wrapper";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { store } from "../index";
 
 export function useWalletL2Collection<
   C extends CollectionMeta
 >(): WalletL2CollectionStates<C> & {
+  updateLegacyCollection: () => void;
   updateWalletL2Collection: (props: {
     page?: number;
     filter?: L2CollectionFilter | undefined;
@@ -29,6 +34,7 @@ export function useWalletL2Collection<
   const walletL2Collection: WalletL2CollectionStates<C> = useSelector(
     (state: any) => state.walletL2Collection
   );
+
   const dispatch = useDispatch();
 
   return {
@@ -40,6 +46,23 @@ export function useWalletL2Collection<
       () => dispatch(statusUnset(undefined)),
       [dispatch]
     ),
+    updateLegacyCollection: React.useCallback(async () => {
+      const account = store.getState().account;
+      const { chainId } = store.getState().system;
+      if (account.accountId && LoopringAPI.nftAPI) {
+        //TODO: forUI
+        const tokenAddress1 =
+          LoopringAPI.nftAPI.computeNFTAddress({
+            nftOwner: account.accAddress,
+            nftFactory: sdk.NFTFactory[chainId],
+            nftBaseUri: "",
+          }).tokenAddress || undefined;
+        const { legacyCollections } = {
+          legacyCollections: [tokenAddress1, "0xxxxxxxx"],
+        };
+        dispatch(updateLegacyCollection({ legacyCollections }));
+      }
+    }, [dispatch]),
     updateWalletL2Collection: React.useCallback(
       ({
         page,

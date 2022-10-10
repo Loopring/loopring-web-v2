@@ -9,6 +9,7 @@ import {
 const initialState: WalletL2CollectionStates<CollectionMeta> = {
   walletL2Collection: [],
   total: 0,
+  legacyCollections: [],
   status: "DONE",
   errorMessage: null,
   page: -1,
@@ -18,17 +19,23 @@ const walletL2CollectionSlice: Slice<WalletL2CollectionStates<CollectionMeta>> =
     name: "walletL2Collection",
     initialState,
     reducers: {
-      updateWalletL2Collection(
-        state,
-        _action: PayloadAction<{ page?: number; filter?: L2CollectionFilter }>
-      ) {
-        state.status = SagaStatus.PENDING;
-      },
       reset(state) {
         state = {
           ...initialState,
         };
         state.status = SagaStatus.UNSET;
+      },
+      updateLegacyCollection(
+        state,
+        action: PayloadAction<{ legacyCollection: string[] }>
+      ) {
+        state.legacyCollections = action.payload?.legacyCollection ?? [];
+      },
+      updateWalletL2Collection(
+        state,
+        _action: PayloadAction<{ page?: number; filter?: L2CollectionFilter }>
+      ) {
+        state.status = SagaStatus.PENDING;
       },
       socketUpdateBalance(state) {
         state.status = SagaStatus.PENDING;
@@ -57,6 +64,7 @@ const walletL2CollectionSlice: Slice<WalletL2CollectionStates<CollectionMeta>> =
   });
 export { walletL2CollectionSlice };
 export const {
+  updateLegacyCollection,
   updateWalletL2Collection,
   socketUpdateBalance,
   getWalletL2CollectionStatus,

@@ -13,6 +13,7 @@ import {
   TradeNFT,
   TOAST_TIME,
   AddIcon,
+  DownloadIcon,
 } from "@loopring-web/common-resources";
 import {
   getIPFSString,
@@ -81,7 +82,19 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             <Typography component={"h3"} variant={"h4"} paddingBottom={2}>
               {t("labelMyCollection")}
             </Typography>
+
             <Box display={"flex"} flexDirection={"row"}>
+              <Button
+                onClick={() => {
+                  // history.push("/nft/addCollection");
+                }}
+                sx={{ marginRight: 1 }}
+                // startIcon={<DownloadIcon />}
+                variant={"outlined"}
+                color={"primary"}
+              >
+                {t("labelImportCollection")}
+              </Button>
               <Button
                 onClick={() => {
                   history.push("/nft/addCollection");
@@ -89,7 +102,8 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
                   // setCreateOpen(true);
                 }}
                 startIcon={<AddIcon />}
-                variant={"outlined"}
+                variant={"contained"}
+                size={"small"}
                 color={"primary"}
               >
                 {t("labelCreateCollection")}

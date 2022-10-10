@@ -35,6 +35,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   } = useWalletLayer2();
   const {
     updateWalletL2Collection,
+    updateLegacyCollection,
     status: walletL2CollectionStatus,
     statusUnset: walletL2CollectionstatusUnset,
   } = useWalletL2Collection();
@@ -74,6 +75,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             updateWalletLayer2NFT({ page: 1, collection: undefined });
             updateWalletL2NFTCollection({ page: 1 });
             updateWalletL2Collection({ page: 1 });
+            updateLegacyCollection();
           }
           break;
       }

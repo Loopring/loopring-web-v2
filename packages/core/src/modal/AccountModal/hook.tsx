@@ -5,6 +5,7 @@ import {
   AddAssetItem,
   Button,
   CheckActiveStatus,
+  // CheckImportCollection,
   CreateAccount_Approve_Denied,
   CreateAccount_Approve_Submit,
   CreateAccount_Approve_WaitForAuth,
@@ -142,6 +143,7 @@ import {
   useToast,
   useNFTMintAdvance,
   useNotify,
+  useWalletL2Collection,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
@@ -164,6 +166,7 @@ export function useAccountModalForUI({
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
+
   const { processRequestRampTransfer } = useRampTransPost();
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
   const history = useHistory();
@@ -171,7 +174,7 @@ export function useAccountModalForUI({
     modals: {
       isShowAccount,
       isShowWithdraw,
-      isShowTransfer,
+      // isShowTransfer,
       // isShowNFTTransfer,
       // isShowNFTWithdraw,
     },
@@ -361,7 +364,7 @@ export function useAccountModalForUI({
         transferRetry(false);
       },
     };
-  }, [isShowTransfer.info, setShowAccount, setShowTransfer]);
+  }, [transferRetry]);
 
   const backToWithdrawBtnInfo = React.useMemo(() => {
     return {
@@ -501,7 +504,7 @@ export function useAccountModalForUI({
     return () => {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
-  }, [account.accAddress, chainInfos?.depositHashes]);
+  }, [account.accAddress, chainInfos?.depositHashes, updateDepositStatus]);
   const { setShowLayerSwapNotice } = useOpenModals();
 
   const addAssetList: AddAssetItem[] = React.useMemo(
@@ -553,6 +556,7 @@ export function useAccountModalForUI({
       isShowAccount?.info?.symbol,
       setShowAccount,
       setShowDeposit,
+      setShowLayerSwapNotice,
     ]
   );
   const sendAssetList: SendAssetItem[] = React.useMemo(
@@ -631,12 +635,7 @@ export function useAccountModalForUI({
         },
       },
     ],
-    [
-      isShowAccount?.info?.symbol,
-      setShowAccount,
-      setShowTransfer,
-      setShowWithdraw,
-    ]
+    [setShowAccount, setShowNFTTransfer, setShowNFTWithdraw]
   );
   const onBackReceive = React.useCallback(() => {
     setShowAccount({
@@ -667,6 +666,21 @@ export function useAccountModalForUI({
         view: <CheckActiveStatus {...checkActiveStatusProps} />,
         height: "auto",
       },
+      // [AccountStep.ImportLegacyCollection]: {
+      //   view: (
+      //     <CheckImportCollection
+      //       account={account}
+      //       value={legacyCollections[0]}
+      //       contractList={legacyCollections}
+      //       onChange={() => {}}
+      //       onClick={(value: string) => {
+      //         history.push(`/nft/myCollection/legacyCreate/${value}`);
+      //       }}
+      //       disabled={!!legacyCollections?.length}
+      //     />
+      //   ),
+      //   height: "auto",
+      // },
       [AccountStep.AddAssetGateway]: {
         view: (
           <AddAsset
@@ -2255,6 +2269,7 @@ export function useAccountModalForUI({
     });
   }, [
     checkActiveStatusProps,
+    account,
     isShowAccount.info,
     isShowAccount.error,
     addAssetList,
@@ -2264,14 +2279,15 @@ export function useAccountModalForUI({
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,
     sendAssetList,
+    sendNFTAssetList,
     vendorListBuy,
+    campaignTagConfig,
     onBackReceive,
     chainInfos,
     isLayer1Only,
     onClose,
     updateDepositHash,
     clearDeposit,
-    account,
     rest,
     onSwitch,
     onCopy,
@@ -2283,7 +2299,6 @@ export function useAccountModalForUI({
     unlockBtn,
     t,
     onQRBack,
-    forceWithdrawRetry,
     backToDepositBtnInfo,
     closeBtnInfo,
     nftDepositValue,
@@ -2291,6 +2306,7 @@ export function useAccountModalForUI({
     backToMintBtnInfo,
     nftDeployValue,
     backToDeployBtnInfo,
+    forceWithdrawValue,
     backToTransferBtnInfo,
     backToWithdrawBtnInfo,
     backToUpdateAccountBtnInfo,
@@ -2300,8 +2316,10 @@ export function useAccountModalForUI({
     setShowDeposit,
     nftMintAdvanceRetryBtn,
     nftDeployProps,
+    forceWithdrawRetry,
     transferProps,
     transferValue,
+    processRequestRampTransfer,
     withdrawProps,
     withdrawValue,
     nftTransferProps,
@@ -2310,6 +2328,8 @@ export function useAccountModalForUI({
     nftWithdrawValue,
     setShowActiveAccount,
     goUpdateAccount,
+    setShouldShow,
+    history,
   ]);
 
   const currentModal = accountList[isShowAccount.step];

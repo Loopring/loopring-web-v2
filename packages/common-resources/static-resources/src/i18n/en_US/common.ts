@@ -1056,4 +1056,8 @@ export default {
   labelEditCollectionBtn: "Edit Collection",
   labelEditRestCollectionBtn: "Reset",
   labelEditCollectionERC1155: "Edit My Collection",
+  labelImportCollection: "Import Collection for Legacy NFT",
+  labelCheckImportCollectionTitle:
+    "Import legacy NFTs under contract address to proceed",
+  labelContinue: "Next",
 };
