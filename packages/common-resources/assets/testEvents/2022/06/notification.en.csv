@@ -1,3 +1,0 @@
-type,version,name,title,description1,description2,link,startShow,endShow,color
-ACTIVITY,1,test_1,TETT_1 TITLE,TETT_1 SUB TITLE,Duration: April 15 0:00 - May 15 0:00 (UTC),#/race-event/2022-06?type=test_1,06/01/2022 00:00:00,07/20/2022 00:00:00,primary
-NOTIFICATION,0,ramp_event,🅾️ Zero Fees Promo!,Deposit via Banxa for free!,Duration: April 11 0:00 - April 25 0:00 (UTC),https://loopring.io/#/layer2,06/10/2022 00:00:00,06/11/2022 00:00:00,default

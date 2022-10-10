@@ -14,7 +14,6 @@
     "polished": "^4.1.1",
     "react-scripts-rewired": "3.1.1",
     "react-currency-input-field": "^3.3.1",
-    "react-data-grid": "^7.0.0-canary.49",
     "react-i18next": "^11.8.12",
     "react-redux": "^7.2.3",
     "react-scripts": "^4.0.3",
@@ -32,7 +31,7 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "sb": "yarn storybook",
-    "build": "build-storybook -c .storybook --quiet "
+    "build": "NODE_ENV=production build-storybook -c .storybook -o ./storybook-static -s public  "
   },
   "eslintConfig": {
     "extends": [

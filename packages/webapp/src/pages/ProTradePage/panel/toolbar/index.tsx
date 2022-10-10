@@ -2,7 +2,6 @@ import React from "react";
 import { TFunction, withTranslation } from "react-i18next";
 import * as _ from "lodash";
 import {
-  AmmRankIcon,
   CoinInfo,
   CurrencyToTag,
   DropDownIcon,
@@ -12,7 +11,7 @@ import {
   MarketType,
   PriceTag,
   SagaStatus,
-  TrophyIcon,
+  SCENARIO,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -353,7 +352,7 @@ export const Toolbar = withTranslation("common")(
                   <Tabs
                     value={tableTabValue}
                     onChange={handleTabChange}
-                    aria-label="disabled tabs example"
+                    aria-label="Market Switch Tab"
                   >
                     <Tab
                       label={t("labelQuotePageFavourite")}
@@ -367,7 +366,7 @@ export const Toolbar = withTranslation("common")(
                   <QuoteTable
                     isPro
                     forexMap={forexMap as any}
-                    campaignTagConfig={campaignTagConfig}
+                    campaignTagConfig={campaignTagConfig ?? ({} as any)}
                     account={account}
                     rawData={filteredData}
                     favoriteMarket={favoriteMarket}
@@ -388,7 +387,7 @@ export const Toolbar = withTranslation("common")(
           </PopoverPure>
           {campaignTagConfig && (
             <TagIconList
-              scenario={"orderbook"}
+              scenario={SCENARIO.orderbook}
               campaignTagConfig={campaignTagConfig}
               symbol={market}
             />

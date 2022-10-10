@@ -1,12 +1,21 @@
 import styled from "@emotion/styled";
-import { Box, Grid, Link, Modal, Typography } from "@mui/material";
-import { WithTranslation, withTranslation } from "react-i18next";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Link,
+  Modal,
+  Typography,
+} from "@mui/material";
+import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import {
   AmmPanelType,
   AssetsTable,
   DualAssetTable,
   DualDetail,
+  EmptyDefault,
   ModalCloseButton,
   MyPoolTable,
   SwitchPanelStyled,
@@ -15,6 +24,8 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import {
+  CheckBoxIcon,
+  CheckedIcon,
   CurrencyToTag,
   DualViewBase,
   EmptyValueTag,
@@ -22,7 +33,6 @@ import {
   PriceTag,
   RowInvestConfig,
 } from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { useOverview } from "./hook";
 import {
@@ -32,7 +42,8 @@ import {
   TableWrapStyled,
   useTokenMap,
   useDualMap,
-  LoopringAPI,
+  store,
+  useTokenPrices,
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
@@ -48,8 +59,10 @@ const StyleWrapper = styled(Grid)`
 const MyLiquidity: any = withTranslation("common")(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
+    isHideTotal,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
+    isHideTotal?: boolean;
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
     let match: any = useRouteMatch("/invest/balance/:type");
@@ -59,6 +72,8 @@ const MyLiquidity: any = withTranslation("common")(
     const { ammActivityMap } = useAmmActivityMap();
     const { forexMap } = useSystem();
     const { tokenMap, disableWithdrawList, idIndex } = useTokenMap();
+    const { tokenPrices } = useTokenPrices();
+
     const { marketMap: dualMarketMap } = useDualMap();
     const {
       assetsRawData,
@@ -81,6 +96,7 @@ const MyLiquidity: any = withTranslation("common")(
       open,
       detail,
       setOpen,
+      getDetail,
     } = useDualAsset();
 
     React.useEffect(() => {
@@ -107,9 +123,17 @@ const MyLiquidity: any = withTranslation("common")(
         getDualTxList({});
       }
     }, [account.accountId]);
-    const { summaryMyInvest, myPoolRow, showLoading } = useOverview({
+    const {
+      summaryMyInvest,
+      myPoolRow,
+      showLoading,
+      filter,
+      tableHeight,
+      handleFilterChange,
+    } = useOverview({
       ammActivityMap,
       dualOnInvestAsset,
+      hideSmallBalances,
       // dualList,
     });
 
@@ -128,19 +152,77 @@ const MyLiquidity: any = withTranslation("common")(
           title2: "body1",
           count2: "h5",
         };
-    const lidoAssets = assetsRawData.filter(
-      (o) => o.token.type !== TokenType.single && o.token.type !== TokenType.lp
-    );
+    const lidoAssets = assetsRawData.filter((o) => {
+      return (
+        o.token.type !== TokenType.single &&
+        o.token.type !== TokenType.lp &&
+        (hideSmallBalances ? !o.smallBalance : true)
+      );
+    });
     return (
-      <>
+      <Box
+        display={"flex"}
+        flex={1}
+        position={"relative"}
+        flexDirection={"column"}
+      >
+        <Box
+          position={"absolute"}
+          display={"flex"}
+          alignItems={"center"}
+          sx={
+            isHideTotal
+              ? {
+                  right: 2 * theme.unit,
+                  top: -42,
+                  zIndex: 99,
+                }
+              : {
+                  right: 2 * theme.unit,
+                  top: 2 * theme.unit,
+                  zIndex: 99,
+                }
+          }
+        >
+          <FormControlLabel
+            sx={{
+              marginRight: 2,
+              paddingRight: 0,
+              fontSize: isMobile
+                ? theme.fontDefault.body2
+                : theme.fontDefault.body1,
+            }}
+            control={
+              <Checkbox
+                checked={hideSmallBalances}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+                onChange={(event) => {
+                  setHideSmallBalances(event.target.checked);
+                }}
+              />
+            }
+            label={t("labelHideSmallBalances", { ns: "tables" })}
+          />
+          <Link
+            variant={"body1"}
+            target="_self"
+            rel="noopener noreferrer"
+            //?tokenSymbol=${market}
+            onClick={() => history.push(`/l2assets/history/ammRecords`)}
+            // href={"./#/layer2/history/ammRecords"}
+          >
+            {t("labelTransactionsLink")}
+          </Link>
+        </Box>
         <StyleWrapper
           container
           className={"MuiPaper-elevation2"}
           paddingY={3}
           paddingX={4}
           margin={0}
-          display={"flex"}
-          position={"relative"}
+          display={isHideTotal ? "none" : "flex"}
         >
           <Grid container spacing={2} alignItems={"flex-end"}>
             <Grid item display={"flex"} flexDirection={"column"} sm={6} md={5}>
@@ -169,202 +251,245 @@ const MyLiquidity: any = withTranslation("common")(
             {/*<Grid item marginRight={6}>*/}
             {/*  <Divider orientation={"vertical"} />*/}
             {/*</Grid>*/}
-            <Grid item display={"flex"} flexDirection={"column"} sm={3} md={4}>
-              <Typography
-                variant={fontSize.title2}
-                component={"h3"}
-                fontFamily={"Roboto"}
-                color={"textSecondary"}
-              >
-                {t("labelFeeRewards")}
-              </Typography>
-              <Typography
-                variant={fontSize.count2}
-                marginTop={1}
-                fontFamily={"Roboto"}
-              >
-                {summaryMyInvest?.feeDollar
-                  ? PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
-                      (summaryMyInvest.feeDollar || 0) *
-                        (forexMap[currency] ?? 0),
-                      undefined,
-                      undefined,
-                      2,
-                      true,
-                      { isFait: true, floor: true }
-                    )
-                  : EmptyValueTag}
-              </Typography>
-            </Grid>
+            {/*<Grid item display={"flex"} flexDirection={"column"} sm={3} md={4}>*/}
+            {/*  <Typography*/}
+            {/*    variant={fontSize.title2}*/}
+            {/*    component={"h3"}*/}
+            {/*    fontFamily={"Roboto"}*/}
+            {/*    color={"textSecondary"}*/}
+            {/*  >*/}
+            {/*    {t("labelFeeRewards")}*/}
+            {/*  </Typography>*/}
+            {/*  <Typography*/}
+            {/*    variant={fontSize.count2}*/}
+            {/*    marginTop={1}*/}
+            {/*    fontFamily={"Roboto"}*/}
+            {/*  >*/}
+            {/*    {summaryMyInvest?.feeDollar*/}
+            {/*      ? PriceTag[CurrencyToTag[currency]] +*/}
+            {/*        getValuePrecisionThousand(*/}
+            {/*          (summaryMyInvest.feeDollar || 0) **/}
+            {/*            (forexMap[currency] ?? 0),*/}
+            {/*          undefined,*/}
+            {/*          undefined,*/}
+            {/*          2,*/}
+            {/*          true,*/}
+            {/*          { isFait: true, floor: true }*/}
+            {/*        )*/}
+            {/*      : EmptyValueTag}*/}
+            {/*  </Typography>*/}
+            {/*</Grid>*/}
           </Grid>
-          <Link
-            position={"absolute"}
-            variant={"body1"}
-            sx={{
-              right: 2 * theme.unit,
-              top: 2 * theme.unit,
-            }}
-            target="_self"
-            rel="noopener noreferrer"
-            //?tokenSymbol=${market}
-            onClick={() => history.push(`/l2assets/history/ammRecords`)}
-            // href={"./#/layer2/history/ammRecords"}
-          >
-            {t("labelTransactionsLink")}
-          </Link>
         </StyleWrapper>
-        <TableWrapStyled
-          ref={ammPoolRef}
-          className={`table-divide-short MuiPaper-elevation2`}
-          marginTop={2}
-          paddingY={2}
-          paddingX={0}
-          flex={1}
-        >
-          <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
-            <MyPoolTable
-              forexMap={forexMap as any}
-              title={
-                <Typography
-                  variant={"h5"}
-                  marginBottom={isMobile ? 3 : 0}
-                  // paddingLeft={3}
-                >
-                  {t("labelMyAmm")}
-                </Typography>
-              }
-              hideSmallBalances={hideSmallBalances}
-              setHideSmallBalances={setHideSmallBalances}
-              allowTrade={allowTrade}
-              rawData={myPoolRow}
-              showFilter={true}
-              account={account}
-              pagination={{ pageSize: 10 }}
-              showloading={showLoading}
-              currency={currency}
-              tokenMap={tokenMap as any}
-              handleWithdraw={(row) => {
-                const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
-                setShowAmm({
-                  isShow: true,
-                  type: AmmPanelType.Exit,
-                  symbol: pair,
-                });
-              }}
-              handleDeposit={(row) => {
-                const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
-                setShowAmm({
-                  isShow: true,
-                  type: AmmPanelType.Join,
-                  symbol: pair,
-                });
-              }}
-              rowConfig={RowInvestConfig}
-            />
-          </Grid>
-        </TableWrapStyled>
-        <TableWrapStyled
-          ref={stackingRef}
-          className={`table-divide-short MuiPaper-elevation2 ${
-            lidoAssets?.length > 0 ? "min-height" : ""
-          }`}
-          marginTop={2}
-          paddingY={2}
-          paddingX={0}
-          flex={1}
-        >
-          <Grid item xs={12}>
-            <Typography variant={"h5"} marginBottom={1} marginX={3}>
-              {t("labelInvestType_STAKE")}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
-            <AssetsTable
-              {...{
-                disableWithdrawList,
-                rawData: lidoAssets,
-                showFilter: false,
-                allowTrade,
-                onSend,
-                onReceive,
-                getMarketArrayListCallback: getTokenRelatedMarketArray,
-                rowConfig: RowInvestConfig,
-                forexMap: forexMap as any,
-                isInvest: true,
-                ...rest,
-              }}
-            />
-          </Grid>
-        </TableWrapStyled>
-        <TableWrapStyled
-          ref={dualRef}
-          className={`table-divide-short MuiPaper-elevation2 ${
-            dualList?.length > 0 ? "min-height" : ""
-          }`}
-          marginTop={2}
-          marginBottom={3}
-          paddingY={2}
-          paddingX={0}
-          flex={1}
-        >
-          <Grid item xs={12}>
-            <Typography variant={"h5"} marginBottom={1} marginX={3}>
-              {t("labelInvestType_DUAL")}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
-            <DualAssetTable
-              rawData={dualList}
-              idIndex={idIndex}
-              dualMarketMap={dualMarketMap}
-              tokenMap={tokenMap}
-              showloading={dualLoading}
-              pagination={pagination}
-              getDualAssetList={getDualTxList}
-              showDetail={showDetail}
-            />
-            <Modal
-              open={open}
-              onClose={(_e: any) => setOpen(false)}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
+        <Box marginBottom={3} flex={1}>
+          {!(myPoolRow?.length > 0) &&
+          !(lidoAssets?.length > 0) &&
+          !(dualList?.length > 0) ? (
+            <TableWrapStyled
+              flex={1}
+              marginTop={isHideTotal ? 1 : 2}
+              height={"100%"}
+              display={"flex"}
+              width={"100%"}
             >
-              <SwitchPanelStyled width={"var(--modal-width)"}>
-                <ModalCloseButton onClose={(_e: any) => setOpen(false)} t={t} />
-                {detail && (
-                  <Box
-                    flex={1}
-                    paddingY={2}
-                    width={"100%"}
+              <EmptyDefault
+                sx={{ flex: 1 }}
+                message={() => {
+                  return (
+                    <Trans i18nKey="labelNoInvestContent">
+                      You have no investment assets, invest AMM, ETH Stacking,
+                      DUAL earn your rewards
+                    </Trans>
+                  );
+                }}
+              />
+            </TableWrapStyled>
+          ) : (
+            <>
+              {!!(myPoolRow?.length > 0) && (
+                <TableWrapStyled
+                  ref={ammPoolRef}
+                  className={`table-divide-short MuiPaper-elevation2`}
+                  marginTop={2}
+                  paddingY={2}
+                  paddingX={0}
+                  flex={1}
+                >
+                  <Grid
+                    item
+                    xs={12}
                     display={"flex"}
                     flexDirection={"column"}
+                    flex={1}
                   >
-                    <Typography
-                      variant={isMobile ? "h5" : "h4"}
-                      marginTop={-4}
-                      textAlign={"center"}
-                      paddingBottom={2}
-                    >
-                      {t("labelDuaInvestmentDetails", { ns: "common" })}
-                    </Typography>
-                    <DualDetail
-                      isOrder={true}
-                      dualViewInfo={detail.dualViewInfo as DualViewBase}
-                      currentPrice={detail.dualViewInfo.currentPrice}
-                      tokenMap={tokenMap}
-                      lessEarnTokenSymbol={detail.lessEarnTokenSymbol}
-                      greaterEarnTokenSymbol={detail.greaterEarnTokenSymbol}
-                      lessEarnView={detail.lessEarnView}
-                      greaterEarnView={detail.greaterEarnView}
+                    <MyPoolTable
+                      forexMap={forexMap as any}
+                      title={
+                        <Typography
+                          variant={"h5"}
+                          marginBottom={isMobile ? 3 : 0}
+                          // paddingLeft={3}
+                        >
+                          {t("labelMyAmm")}
+                        </Typography>
+                      }
+                      tableHeight={tableHeight}
+                      filter={filter}
+                      handleFilterChange={handleFilterChange}
+                      hideSmallBalances={hideSmallBalances}
+                      allowTrade={allowTrade}
+                      rawData={myPoolRow}
+                      showFilter={true}
+                      account={account}
+                      showloading={showLoading}
+                      currency={currency}
+                      tokenMap={tokenMap as any}
+                      idIndex={idIndex}
+                      tokenPrices={tokenPrices as any}
+                      handleWithdraw={(row) => {
+                        const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                        setShowAmm({
+                          isShow: true,
+                          type: AmmPanelType.Exit,
+                          symbol: pair,
+                        });
+                      }}
+                      handleDeposit={(row) => {
+                        const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                        setShowAmm({
+                          isShow: true,
+                          type: AmmPanelType.Join,
+                          symbol: pair,
+                        });
+                      }}
+                      rowConfig={RowInvestConfig}
                     />
-                  </Box>
-                )}
-              </SwitchPanelStyled>
-            </Modal>
-          </Grid>
-        </TableWrapStyled>
-      </>
+                  </Grid>
+                </TableWrapStyled>
+              )}
+              {!!(lidoAssets?.length > 0) && (
+                <TableWrapStyled
+                  ref={stackingRef}
+                  className={`table-divide-short MuiPaper-elevation2 ${
+                    lidoAssets?.length > 0 ? "min-height" : ""
+                  }`}
+                  marginTop={2}
+                  paddingY={2}
+                  paddingX={0}
+                  flex={1}
+                >
+                  <Grid item xs={12}>
+                    <Typography variant={"h5"} marginBottom={1} marginX={3}>
+                      {t("labelInvestType_STAKE")}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    display={"flex"}
+                    flexDirection={"column"}
+                    flex={1}
+                  >
+                    <AssetsTable
+                      {...{
+                        disableWithdrawList,
+                        rawData: lidoAssets,
+                        showFilter: false,
+                        allowTrade,
+                        onSend,
+                        onReceive,
+                        getMarketArrayListCallback: getTokenRelatedMarketArray,
+                        rowConfig: RowInvestConfig,
+                        forexMap: forexMap as any,
+                        isInvest: true,
+                        ...rest,
+                      }}
+                    />
+                  </Grid>
+                </TableWrapStyled>
+              )}
+              {!!(dualList?.length > 0) && (
+                <TableWrapStyled
+                  ref={dualRef}
+                  className={`table-divide-short MuiPaper-elevation2 min-height`}
+                  marginTop={2}
+                  paddingY={2}
+                  paddingX={0}
+                  flex={1}
+                >
+                  <Grid item xs={12}>
+                    <Typography variant={"h5"} marginBottom={1} marginX={3}>
+                      {t("labelInvestType_DUAL")}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    display={"flex"}
+                    flexDirection={"column"}
+                    flex={1}
+                  >
+                    <DualAssetTable
+                      rawData={dualList}
+                      getDetail={getDetail}
+                      idIndex={idIndex}
+                      dualMarketMap={dualMarketMap}
+                      tokenMap={tokenMap}
+                      showloading={dualLoading}
+                      pagination={pagination}
+                      getDualAssetList={getDualTxList}
+                      showDetail={showDetail}
+                    />
+                    <Modal
+                      open={open}
+                      onClose={(_e: any) => setOpen(false)}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
+                    >
+                      <SwitchPanelStyled width={"var(--modal-width)"}>
+                        <ModalCloseButton
+                          onClose={(_e: any) => setOpen(false)}
+                          t={t}
+                        />
+                        {detail && (
+                          <Box
+                            flex={1}
+                            paddingY={2}
+                            width={"100%"}
+                            display={"flex"}
+                            flexDirection={"column"}
+                          >
+                            <Typography
+                              variant={isMobile ? "h5" : "h4"}
+                              marginTop={-4}
+                              textAlign={"center"}
+                              paddingBottom={2}
+                            >
+                              {t("labelDuaInvestmentDetails", { ns: "common" })}
+                            </Typography>
+                            <DualDetail
+                              isOrder={true}
+                              dualViewInfo={detail.dualViewInfo as DualViewBase}
+                              currentPrice={detail.dualViewInfo.currentPrice}
+                              tokenMap={tokenMap}
+                              lessEarnTokenSymbol={detail.lessEarnTokenSymbol}
+                              greaterEarnTokenSymbol={
+                                detail.greaterEarnTokenSymbol
+                              }
+                              lessEarnView={detail.lessEarnView}
+                              greaterEarnView={detail.greaterEarnView}
+                            />
+                          </Box>
+                        )}
+                      </SwitchPanelStyled>
+                    </Modal>
+                  </Grid>
+                </TableWrapStyled>
+              )}
+            </>
+          )}
+        </Box>
+      </Box>
     );
   }
 );

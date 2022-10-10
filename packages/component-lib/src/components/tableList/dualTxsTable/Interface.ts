@@ -1,4 +1,5 @@
 import { DualViewOrder } from "@loopring-web/common-resources";
+import { DualDetailType } from "../../tradePanel";
 
 export type RawDataDualTxsItem = DualViewOrder & {
   amount: string;
@@ -10,6 +11,7 @@ export type RawDataDualAssetItem = DualViewOrder & {
 
 export interface DualAssetTableProps<R> {
   rawData: R[];
+  getDetail: (item: R) => DualDetailType;
   dualMarketMap: any;
   idIndex: { [key: string]: string };
   tokenMap: { [key: string]: any };

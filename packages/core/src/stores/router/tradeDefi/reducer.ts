@@ -61,11 +61,11 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
         miniSellVol,
         lastInput,
       } = action.payload;
-      if (market !== undefined && market !== state.tradeDefi.market) {
+      if (market !== undefined && market !== state.tradeDefi.market && type) {
         // @ts-ignore
         state.tradeDefi = {
           ...initState,
-          type: type ?? "LIDO",
+          type,
           market,
           sellToken: sellToken as TokenInfo,
           buyToken: buyToken as TokenInfo,

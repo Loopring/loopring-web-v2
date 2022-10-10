@@ -106,7 +106,7 @@ const should15MinutesUpdateDataGroup = async (
   gasPrice: number | undefined;
   forexMap: ForexMap<Currency>;
 }> => {
-  myLog("loop get getFiatPrice getGasPrice");
+  // myLog("loop get getFiatPrice getGasPrice");
   if (LoopringAPI.exchangeAPI) {
     let indexUSD = 0;
     const tokenId =

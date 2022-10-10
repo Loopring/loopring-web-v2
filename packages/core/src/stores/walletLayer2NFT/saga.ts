@@ -20,11 +20,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   const { accountId, apiKey } = store.getState().account;
   if (apiKey && accountId && LoopringAPI.userAPI) {
     let userNFTBalances, totalNum;
-    if (
-      collection !== undefined &&
-      collection.id &&
-      Number(collection.id) !== -1
-    ) {
+    if (collection !== undefined && collection.id) {
       ({ userNFTBalances, totalNum } = await LoopringAPI.userAPI
         .getUserNFTBalancesByCollection(
           {
@@ -46,7 +42,8 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
         .getUserNFTBalances(
           {
             accountId,
-            tokenAddrs: collection?.contractAddress ?? undefined,
+            // @ts-ignore
+            tokenAddress: collection?.contractAddress ?? undefined,
             limit: NFTLimit,
             offset,
             nonZero: true,

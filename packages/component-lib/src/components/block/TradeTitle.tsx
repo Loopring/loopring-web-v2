@@ -1,7 +1,7 @@
 import { WithTranslation } from "react-i18next";
 import {
   Account,
-  CAMPAIGN_TAG,
+  CAMPAIGNTAGCONFIG,
   CoinInfo,
   CurrencyToTag,
   EmptyValueTag,
@@ -9,6 +9,7 @@ import {
   ForexMap,
   getValuePrecisionThousand,
   PriceTag,
+  SCENARIO,
   SoursURL,
   TradeFloat,
   UpColor,
@@ -34,7 +35,6 @@ const TradeTitleStyled = styled(Box)<StyledProps>`
 
 export const TradeTitle = <I extends object>({
   baseShow,
-  account,
   quoteShow,
   coinAInfo,
   coinBInfo,
@@ -59,7 +59,7 @@ export const TradeTitle = <I extends object>({
   tradeFloat: TradeFloat;
   isNew: boolean;
   forexMap: ForexMap<Currency>;
-  campaignTagConfig: CAMPAIGN_TAG[];
+  campaignTagConfig: CAMPAIGNTAGCONFIG;
 }) => {
   const { coinJson } = useSettings();
   const sellCoinIcon: any = coinJson[coinAInfo?.simpleName];
@@ -200,7 +200,7 @@ export const TradeTitle = <I extends object>({
               </Typography>
               {campaignTagConfig && (
                 <TagIconList
-                  scenario={"market"}
+                  scenario={SCENARIO.market}
                   campaignTagConfig={campaignTagConfig}
                   symbol={pair}
                 />

@@ -12,4 +12,3 @@ export * from "./useAmmTotalValue";
 export * from "./marketPairHelp";
 export * from "./makeInvest";
 export * from "./makeDual";
-export * from "./makeDom";

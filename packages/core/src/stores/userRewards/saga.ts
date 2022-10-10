@@ -6,7 +6,8 @@ import {
 } from "./reducer";
 
 import { store, LoopringAPI } from "../../index";
-import { myLog } from "@loopring-web/common-resources";
+import { CustomError, ErrorMap, myLog } from "@loopring-web/common-resources";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const getUserRewardsApi = async <R extends { [key: string]: any }>(
   _list: Array<keyof R>
@@ -15,17 +16,30 @@ const getUserRewardsApi = async <R extends { [key: string]: any }>(
   let { __timer__ } = store.getState().userRewardsMap;
   if (LoopringAPI.ammpoolAPI && accountId) {
     myLog("loop get getAmmPoolUserRewards");
-
-    const { ammUserRewardMap } =
-      await LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({ owner: accountId });
-    __timer__ = ((__timer__) => {
-      if (__timer__ && __timer__ !== -1) {
-        clearInterval(__timer__);
+    let ammUserRewardMap = {};
+    try {
+      const response = await LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({
+        owner: accountId,
+      });
+      if (
+        response &&
+        ((response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message)
+      ) {
+        throw new CustomError(ErrorMap.ERROR_UNKNOWN);
       }
-      return setInterval(async () => {
-        store.dispatch(getUserRewards(undefined));
-      }, 300000 * 4);
-    })(__timer__);
+      ammUserRewardMap = response.ammUserRewardMap;
+      __timer__ = ((__timer__) => {
+        if (__timer__ && __timer__ !== -1) {
+          clearInterval(__timer__);
+        }
+        return setInterval(async () => {
+          store.dispatch(getUserRewards(undefined));
+        }, 300000 * 4);
+      })(__timer__);
+    } catch (e) {
+      ammUserRewardMap = {};
+    }
 
     return { data: ammUserRewardMap, __timer__ };
   } else {

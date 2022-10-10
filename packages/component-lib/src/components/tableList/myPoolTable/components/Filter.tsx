@@ -1,20 +1,13 @@
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  ListItemText,
-  MenuItem,
-} from "@mui/material";
+import { Box, Checkbox, FormControlLabel } from "@mui/material";
 import { InputSearch } from "../../../basic-lib";
 import { CheckBoxIcon, CheckedIcon } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../../stores";
 import { useTheme } from "@emotion/react";
-import React from "react";
 
 export interface FilterProps {
   hideSmallBalances: boolean;
-  setHideSmallBalances: (value: boolean) => void;
+  setHideSmallBalances?: (value: boolean) => void;
   filter: {
     searchValue: string;
   };
@@ -38,27 +31,29 @@ export const Filter = withTranslation("tables", { withRef: true })(
         justifyContent={"space-between"}
       >
         <Box>
-          <FormControlLabel
-            style={{
-              marginRight: 0,
-              paddingRight: 0,
-              fontSize: isMobile
-                ? theme.fontDefault.body2
-                : theme.fontDefault.body1,
-            }}
-            control={
-              <Checkbox
-                checked={hideSmallBalances}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color="default"
-                onChange={(event) => {
-                  setHideSmallBalances(event.target.checked);
-                }}
-              />
-            }
-            label={t("labelHideSmallBalances")}
-          />
+          {setHideSmallBalances && (
+            <FormControlLabel
+              style={{
+                marginRight: 0,
+                paddingRight: 0,
+                fontSize: isMobile
+                  ? theme.fontDefault.body2
+                  : theme.fontDefault.body1,
+              }}
+              control={
+                <Checkbox
+                  checked={hideSmallBalances}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color="default"
+                  onChange={(event) => {
+                    setHideSmallBalances(event.target.checked);
+                  }}
+                />
+              }
+              label={t("labelHideSmallBalances")}
+            />
+          )}
         </Box>
 
         <Box marginLeft={2} width={isMobile ? "40%" : "initial"}>

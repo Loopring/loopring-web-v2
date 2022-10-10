@@ -1,10 +1,6 @@
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import React from "react";
-import {
-  AmmRecordRow,
-  MyPoolRow,
-  RawDataDualAssetItem,
-} from "@loopring-web/component-lib";
+import { AmmRecordRow, MyPoolRow } from "@loopring-web/component-lib";
 import {
   makeWalletLayer2,
   useAmmMap,
@@ -22,10 +18,7 @@ import {
   makeDefiInvestReward,
   volumeToCountAsBigNumber,
 } from "@loopring-web/core";
-import {
-  getValuePrecisionThousand,
-  SagaStatus,
-} from "@loopring-web/common-resources";
+import { RowInvestConfig, SagaStatus } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export const useOverview = <
@@ -33,28 +26,77 @@ export const useOverview = <
   I extends { [key: string]: any }
 >({
   dualOnInvestAsset,
+  rowConfig = RowInvestConfig,
+  hideSmallBalances,
 }: {
   ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   dualOnInvestAsset: any; //RawDataDualAssetItem[];
+  rowConfig?: any;
+  hideSmallBalances: boolean;
 }): {
   myAmmMarketArray: AmmRecordRow<R>[];
   summaryMyInvest: Partial<SummaryMyInvest>;
   myPoolRow: MyPoolRow<R>[];
   showLoading: boolean;
+  filter: { searchValue: string };
+  tableHeight: number;
+  handleFilterChange: (props: { searchValue: string }) => void;
 } => {
   const { status: walletLayer2Status } = useWalletLayer2();
   const { status: userRewardsStatus, userRewardsMap } = useUserRewards();
   const { tokenMap, idIndex } = useTokenMap();
   const { marketCoins: defiCoinArray } = useDefiMap();
-
   const { status: ammMapStatus, ammMap } = useAmmMap();
   const { tokenPrices } = useTokenPrices();
 
   const [summaryMyInvest, setSummaryMyInvest] = React.useState<
     Partial<SummaryMyInvest>
   >({});
-
+  const [filter, setFilter] = React.useState({
+    searchValue: "",
+  });
+  const [totalData, setTotalData] = React.useState<MyPoolRow<R>[]>([]);
   const [myPoolRow, setMyPoolRow] = React.useState<MyPoolRow<R>[]>([]);
+  const [tableHeight, setTableHeight] = React.useState(0);
+  const resetTableData = React.useCallback(
+    (viewData) => {
+      setMyPoolRow(viewData);
+      setTableHeight(
+        rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
+      );
+    },
+    [rowConfig.rowHeaderHeight, rowConfig.rowHeight]
+  );
+  const updateData = React.useCallback(() => {
+    let resultData: MyPoolRow<R>[] =
+      totalData && !!totalData.length ? totalData : [];
+    // if (filter.hideSmallBalance) {
+    if (hideSmallBalances) {
+      resultData = resultData.filter((o) => !o.smallBalance);
+    }
+    if (filter.searchValue) {
+      resultData = resultData.filter(
+        (o) =>
+          o.ammDetail.coinAInfo.name
+            .toLowerCase()
+            .includes(filter.searchValue.toLowerCase()) ||
+          o.ammDetail.coinBInfo.name
+            .toLowerCase()
+            .includes(filter.searchValue.toLowerCase())
+      );
+    }
+    resetTableData(resultData);
+  }, [totalData, filter, hideSmallBalances, resetTableData]);
+  const handleFilterChange = React.useCallback(
+    (filter) => {
+      setFilter(filter);
+    },
+    [setFilter]
+  );
+  React.useEffect(() => {
+    updateData();
+  }, [totalData, filter, hideSmallBalances]);
+
   const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<
     AmmRecordRow<R>[]
   >([]);
@@ -121,7 +163,7 @@ export const useOverview = <
             precisionB,
           };
         });
-        defiCoinArray.forEach((defiCoinKey) => {
+        defiCoinArray?.forEach((defiCoinKey) => {
           totalCurrentInvest.investDollar += Number(
             (_walletMap[defiCoinKey]?.count.replace(sdk.SEP, "") ?? 0) *
               tokenPrices[defiCoinKey] ?? 0
@@ -138,12 +180,6 @@ export const useOverview = <
                 .toNumber() ?? 0;
           });
         }
-        // dualList.forEach((item) => {
-        //   const { sellSymbol, amount } = item;
-        //   amount.replace(",", "");
-        //   totalCurrentInvest.investDollar +=
-        //     Number(amount ?? 0) * tokenPrices[sellSymbol] ?? 0;
-        // }, []);
 
         setSummaryMyInvest((state) => {
           return {
@@ -163,7 +199,7 @@ export const useOverview = <
       setShowLoading(true);
       const _walletMap = await walletLayer2DoIt();
       const _myPoolRow = await makeMyPoolRow(_walletMap);
-      setMyPoolRow(_myPoolRow);
+      setTotalData(_myPoolRow);
       setShowLoading(false);
     }
   }, [ammMap, tokenPrices, userRewardsMap, walletLayer2DoIt, makeMyPoolRow]);
@@ -211,5 +247,8 @@ export const useOverview = <
     summaryMyInvest,
     myPoolRow,
     showLoading,
+    filter,
+    tableHeight,
+    handleFilterChange,
   };
 };

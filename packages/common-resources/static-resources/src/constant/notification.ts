@@ -53,24 +53,44 @@ export type CAMPAIGN_TAG = {
   endShow: number;
   iconSource: string;
   symbols: Array<string>;
-  scenarios: Array<"market" | "AMM" | "orderbook" | "Fiat">;
+  behavior: "tooltips" | "link";
+  content: string;
+};
+export enum SCENARIO {
+  orderbook = "orderbook",
+  market = "market",
+  Amm = "Amm",
+  Fiat = "Fiat",
+  swap = "swap",
+}
+export type CAMPAIGNTAGCONFIG = {
+  [key in SCENARIO]: CAMPAIGN_TAG[];
 };
 export type NOTIFICATION = {
   activities: ACTIVITY[];
   notifications: NOTIFICATION_ITEM[];
   invest: {
-    banner: {
-      mobile: string;
-      laptop: string;
-    };
     investAdvice: InvestAdvice[];
+    STAKE: InvestAdvice[];
   };
   account?: Account;
   prev?: {
     endDate: number;
     // prevMonth: string;
   };
-  campaignTagConfig?: CAMPAIGN_TAG[];
+  campaignTagConfig?: CAMPAIGNTAGCONFIG;
 };
 
 export type Notify = Omit<NOTIFICATION, "prev">;
+
+// export enum SCENARIO {
+//   orderbook = "orderbook",
+//   market = "market",
+//   Amm = "Amm",
+//   Fiat = "Fiat",
+//   swap = "swap",
+// }
+
+// export  type  CAMPAIGNTAGCONFIG  ={
+//   [key in SCENARIO]: CAMPAIGN_TAG[];
+// }

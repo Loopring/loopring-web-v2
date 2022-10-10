@@ -106,7 +106,7 @@ const ActionPopContent = React.memo(
                 // )
               }
             >
-              <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
+              <ListItemText>{t("labelPoolTableAddLiquidity")}</ListItemText>
             </MenuItem>
             <MenuItem
               onClick={
@@ -122,7 +122,7 @@ const ActionPopContent = React.memo(
                 // )
               }
             >
-              <ListItemText>{t("labelPoolTableRemoveLiqudity")}</ListItemText>
+              <ListItemText>{t("labelPoolTableRemoveLiquidity")}</ListItemText>
             </MenuItem>
           </>
         ) : isDefi ? (
@@ -135,7 +135,7 @@ const ActionPopContent = React.memo(
           ) : (
             <>
               <MenuItem
-                disabled={!_allowTrade?.defiInvest?.enable}
+                disabled={!_allowTrade?.[`${tokenValue}Invest`]?.enable}
                 onClick={() => {
                   history.push(`/invest/defi/${tokenValue}-null/invest`);
                 }}
@@ -143,7 +143,7 @@ const ActionPopContent = React.memo(
                 <ListItemText>{t("labelDefiInvest")}</ListItemText>
               </MenuItem>
               <MenuItem
-                disabled={!_allowTrade?.defiInvest?.enable}
+                disabled={!_allowTrade?.[`${tokenValue}Invest`]?.enable}
                 onClick={() => {
                   history.push(`/invest/defi/${tokenValue}-null/redeem`);
                 }}

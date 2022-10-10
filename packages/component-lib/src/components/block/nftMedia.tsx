@@ -1,20 +1,25 @@
 import {
   AudioIcon,
+  GET_IPFS_STRING,
   hexToRGB,
   ImageIcon,
   Media,
   myLog,
+  NFTWholeINFO,
   PlayIcon,
   RefreshIcon,
   SoursURL,
+  SyncIcon,
   VideoIcon,
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
-import { Box, BoxProps } from "@mui/material";
+import { Box, BoxProps, Modal, Tooltip, Typography } from "@mui/material";
 import {
   cssBackground,
   EmptyDefault,
+  MediaLabelStyled,
+  ModalCloseButton,
   NftImage,
   NFTMedaProps,
   useImage,
@@ -22,13 +27,22 @@ import {
 } from "../../index";
 import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
   width: 100%;
-  //height: 100vw;
   position: relative;
   overflow: hidden;
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-global-bg-opacity) 0%,
+    var(--color-global-bg-opacity) 100%
+  );
 ` as (prosp: BoxProps & { theme: Theme }) => JSX.Element;
 const PlayIconStyle = styled(PlayIcon)`
   color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".8")};
@@ -51,7 +65,7 @@ export const NFTMedia = React.memo(
       const vidRef = React.useRef<HTMLVideoElement>(null);
       const aidRef = React.useRef<HTMLAudioElement>(null);
       const theme = useTheme();
-
+      const { t } = useTranslation();
       const {
         modals: {
           isShowNFTDetail: { isShow },
@@ -301,8 +315,120 @@ export const NFTMedia = React.memo(
               )}
             </>
           )}
+
+          {item?.pendingOnSync ? (
+            <Tooltip
+              title={t("labelMintInSyncTooltips").toString()}
+              placement={"top"}
+            >
+              <MediaLabelStyled
+                position={"absolute"}
+                left={0}
+                top={0}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <SyncIcon color={"inherit"} />
+                <Typography
+                  color={"inherit"}
+                  component={"span"}
+                  paddingLeft={1}
+                >
+                  {t("labelSync")}
+                </Typography>
+              </MediaLabelStyled>
+            </Tooltip>
+          ) : (
+            ""
+          )}
         </BoxStyle>
       );
     }
   )
+);
+const ModalFullStyled = styled(Box)`
+  & > div {
+    background: var(--color-global-bg-opacity);
+    position: absolute;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .close-button {
+    margin-top: 0;
+  }
+` as typeof Box;
+
+export const ZoomMedia = withTranslation("common")(
+  ({
+    t,
+    open,
+    onClose,
+    getIPFSString,
+    baseURL,
+    nftItem,
+    className = "",
+    ...rest
+  }: WithTranslation & {
+    open: boolean;
+    nftItem: Partial<NFTWholeINFO>;
+    onClose: (event: any) => void;
+    className?: string;
+    getIPFSString: GET_IPFS_STRING;
+    baseURL: string;
+  }) => {
+    const ref = React.useRef();
+    // const { language } = useSettings();
+    return (
+      <Modal
+        open={open}
+        onClose={onClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <ModalFullStyled
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          className={className ?? ""}
+        >
+          <Box
+            className={"content"}
+            paddingTop={3}
+            paddingBottom={3}
+            display={"flex"}
+            flexDirection={"column"}
+          >
+            <ModalCloseButton
+              className="full-btn-close"
+              onClose={onClose}
+              {...{ ...rest, t }}
+            />
+            <Box
+              position={"absolute"}
+              top={0}
+              right={0}
+              bottom={0}
+              left={0}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <NFTMedia
+                ref={ref}
+                item={nftItem as Partial<NFTWholeINFO>}
+                shouldPlay={true}
+                onNFTError={() => undefined}
+                isOrigin={true}
+                getIPFSString={getIPFSString}
+                baseURL={baseURL}
+              />
+            </Box>
+          </Box>
+        </ModalFullStyled>
+      </Modal>
+    );
+  }
 );

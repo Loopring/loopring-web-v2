@@ -138,6 +138,14 @@ export const useCoinPair = <C extends { [key: string]: any }>({
     balanceA: 0,
     balanceB: 0,
     balanceDollar: 0,
+    feeA24: 0,
+    feeB24: 0,
+    feeDollar24: 0,
+    reward24: 0,
+    reward224: 0,
+    rewardDollar24: 0,
+    extraRewards24: [],
+    extraDollar24: 0,
   });
 
   const [coinPairInfo, setCoinPairInfo] = React.useState<PgAmmDetail<C>>({
@@ -348,7 +356,7 @@ export const useCoinPair = <C extends { [key: string]: any }>({
         _walletMap,
         userRewardsMap,
         ammData
-      );
+      ) as MyAmmLP<C>;
       setMyAmm(_myAmm);
     }
   }, [ammMap, userRewardsMap, selectedMarket, walletLayer2DoIt]);

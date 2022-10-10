@@ -1,7 +1,6 @@
-import { useDeepCompareEffect } from "react-use";
 import { WithTranslation, withTranslation } from "react-i18next";
 
-import { Box } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import styled from "@emotion/styled";
 import {
   AssetsTable,
@@ -12,6 +11,13 @@ import {
 import { useTokenMap, StylePaper, useSystem } from "@loopring-web/core";
 import { useGetAssets } from "./hook";
 import React from "react";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
+
+enum TabIndex {
+  Tokens = "Tokens",
+  Invests = "Invests",
+}
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
@@ -25,7 +31,28 @@ const AssetPanel = withTranslation("common")(
     const { disableWithdrawList } = useTokenMap();
     const { forexMap } = useSystem();
     const { isMobile } = useSettings();
+    const match: any = useRouteMatch("/l2assets/:assets?/:item?");
 
+    const [currentTab, setCurrentTab] = React.useState<TabIndex>(
+      TabIndex.Tokens
+    );
+    const history = useHistory();
+    const handleTabChange = (value: TabIndex) => {
+      switch (value) {
+        case TabIndex.Invests:
+          history.replace("/l2assets/assets/Invests");
+          setCurrentTab(TabIndex.Invests);
+          break;
+        case TabIndex.Tokens:
+        default:
+          history.replace("/l2assets/assets/Tokens");
+          setCurrentTab(TabIndex.Tokens);
+          break;
+      }
+    };
+    React.useEffect(() => {
+      handleTabChange(match?.params.item ?? TabIndex.Tokens);
+    }, [match?.params.item]);
     const {
       assetsRawData,
       assetTitleProps,
@@ -57,31 +84,44 @@ const AssetPanel = withTranslation("common")(
           </StyleTitlePaper>
         )}
 
-        <StylePaper
-          marginY={2}
-          ref={container}
-          className={"MuiPaper-elevation2"}
+        <Tabs
+          value={currentTab}
+          onChange={(_event, value) => handleTabChange(value)}
+          aria-label="l2-history-tabs"
+          variant="scrollable"
         >
-          <Box className="tableWrapper table-divide-short">
-            <AssetsTable
-              {...{
-                rawData: assetsRawData,
-                disableWithdrawList,
-                showFilter: true,
-                allowTrade,
-                onSend,
-                onReceive,
-                getMarketArrayListCallback: getTokenRelatedMarketArray,
-                hideInvestToken,
-                forexMap: forexMap as any,
-                hideSmallBalances,
-                setHideLpToken,
-                setHideSmallBalances,
-                ...rest,
-              }}
-            />
-          </Box>
-        </StylePaper>
+          <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
+          <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
+        </Tabs>
+        {currentTab === TabIndex.Tokens && (
+          <StylePaper
+            marginTop={1}
+            marginBottom={2}
+            ref={container}
+            className={"MuiPaper-elevation2"}
+          >
+            <Box className="tableWrapper table-divide-short">
+              <AssetsTable
+                {...{
+                  rawData: assetsRawData,
+                  disableWithdrawList,
+                  showFilter: true,
+                  allowTrade,
+                  onSend,
+                  onReceive,
+                  getMarketArrayListCallback: getTokenRelatedMarketArray,
+                  hideInvestToken,
+                  forexMap: forexMap as any,
+                  hideSmallBalances,
+                  setHideLpToken,
+                  setHideSmallBalances,
+                  ...rest,
+                }}
+              />
+            </Box>
+          </StylePaper>
+        )}
+        {currentTab === TabIndex.Invests && <MyLiquidity isHideTotal={true} />}
       </>
     );
   }

@@ -4,10 +4,16 @@ import {
   Box,
   Card,
   CardContent,
+  FormControlLabel,
   Grid,
+  Switch,
   Tab,
   Tabs,
   Typography,
+  Tooltip,
+  TooltipProps,
+  tooltipClasses,
+  IconButton
 } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useDualHook } from "./hook";
@@ -29,12 +35,22 @@ import {
 import { useHistory } from "react-router-dom";
 import {
   BackIcon,
+  CloseIcon,
   getValuePrecisionThousand,
   HelpIcon,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 import { useTheme } from "@emotion/react";
+import { BeginnerMode } from "./BeginnerMode";
+
+const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: 'none',
+  },
+});
 
 const StyleDual = styled(Box)`
   position: relative;
@@ -87,12 +103,22 @@ const WrapperStyled = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 
+const TopRightButton = styled(IconButton)`
+  position: absolute;
+  top: ${({theme}) => theme.unit * 0.5}px;
+  right: ${({theme}) => theme.unit * 0.5}px;
+`;
+
 export const DualListPanel: any = withTranslation("common")(
   ({
     t,
     setConfirmDualInvest,
+    showBeginnerModeHelp,
+    onShowBeginnerModeHelp,
   }: WithTranslation & {
     setConfirmDualInvest: (state: any) => void;
+    showBeginnerModeHelp: boolean;
+    onShowBeginnerModeHelp: (show: boolean) => void;
   }) => {
     const { coinJson } = useSettings();
     const { forexMap } = useSystem();
@@ -111,7 +137,9 @@ export const DualListPanel: any = withTranslation("common")(
       marketBase,
       marketQuote,
       priceObj,
+      beginnerMode,
       handleOnPairChange,
+      onToggleBeginnerMode,
     } = useDualHook({ setConfirmDualInvest });
 
     const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade();
@@ -155,6 +183,34 @@ export const DualListPanel: any = withTranslation("common")(
             width={isMobile ? "100%" : "initial"}
             justifyContent={"space-between"}
           >
+            {!isMobile && <NoMaxWidthTooltip 
+              open={showBeginnerModeHelp}
+              componentsProps={{arrow: {style: {color: theme.colorBase.popBg}}}}
+              title={<Box marginX={4} marginY={2.5} display={"flex"} alignItems={"center"}>
+                <Box marginRight={2.5}>
+                  <HelpIcon fontSize={"large"}/>
+                </Box>
+                <Box>
+                  <Typography color={theme.colorBase.textSecondary}>{t("labelInvestDualBeginerModeDesLine1")}</Typography>
+                  <Typography color={theme.colorBase.textSecondary}>{t("labelInvestDualBeginerModeDesLine2")}</Typography>
+                </Box>
+                <TopRightButton
+                  size={"large"}
+                  aria-label={t("labelClose")}
+                  color={"inherit"}
+                  onClick={() => {
+                    onShowBeginnerModeHelp(false)
+                  }}
+                >
+                  <CloseIcon />
+                </TopRightButton>
+              </Box>} 
+              arrow>
+              <FormControlLabel
+                control={<Switch checked={beginnerMode} onChange={onToggleBeginnerMode} />}
+                label={  <Typography variant={"h6"} marginLeft={1}>{t("labelInvestDualBeginerMode")}</Typography> }
+              />
+            </NoMaxWidthTooltip>}
             <Button
               startIcon={<HelpIcon fontSize={"large"} />}
               variant={"text"}
@@ -178,7 +234,8 @@ export const DualListPanel: any = withTranslation("common")(
             </Button>
           </Box>
         </Box>
-        {!!marketArray?.length && (
+        {beginnerMode ? <BeginnerMode setConfirmDualInvest={setConfirmDualInvest}/>
+          : !!marketArray?.length && (
           <>
             <StyleDual flexDirection={"column"} display={"flex"} flex={1}>
               <Grid container spacing={2}>
@@ -230,7 +287,7 @@ export const DualListPanel: any = withTranslation("common")(
                 <Tabs
                   value={pairBSymbol}
                   onChange={(_e, value) => handleOnPairChange({ pairB: value })}
-                  aria-label="disabled tabs example"
+                  aria-label="Dual Quote Tab"
                   variant={"scrollable"}
                 >
                   {pairASymbol &&
@@ -424,13 +481,14 @@ export const DualListPanel: any = withTranslation("common")(
               </WrapperStyled>
             </StyleDual>
 
-            <ModalDualPanel
-              dualTradeProps={dualTradeProps}
-              dualToastOpen={dualToastOpen}
-              closeDualToast={closeDualToast}
-            />
           </>
         )}
+        <ModalDualPanel
+          dualTradeProps={dualTradeProps}
+          dualToastOpen={dualToastOpen}
+          closeDualToast={closeDualToast}
+          isBeginnerMode={beginnerMode}
+        />
       </Box>
     );
   }

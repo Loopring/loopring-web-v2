@@ -4,7 +4,6 @@ import { Meta, Story } from "@storybook/react/types-6-0";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { MemoryRouter } from "react-router-dom";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { gatewayList } from "@loopring-web/common-resources";
 import { ModalWalletConnect } from "./WalletConnect";
 
 import {
@@ -51,6 +50,7 @@ import {
 } from "./ModalPanels";
 import { account } from "../../static";
 import { ConnectProviders } from "@loopring-web/web3-provider";
+import { gatewayList } from "@loopring-web/common-resources";
 
 const Style = styled.div`
   flex: 1;

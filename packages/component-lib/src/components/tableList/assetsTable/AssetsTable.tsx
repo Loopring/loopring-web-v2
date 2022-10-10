@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import { Column, Table } from "../../basic-lib";
 import { Filter } from "./components/Filter";
-import { TableFilterStyled, TablePaddingX } from "../../styled";
+import { TablePaddingX } from "../../styled";
 import {
   CurrencyToTag,
   ForexMap,
@@ -475,7 +475,7 @@ export const AssetsTable = withTranslation("tables")(
     return (
       <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
-          <TableFilterStyled>
+          <Box marginX={2}>
             <Filter
               {...{
                 handleFilterChange,
@@ -486,7 +486,7 @@ export const AssetsTable = withTranslation("tables")(
                 setHideSmallBalances,
               }}
             />
-          </TableFilterStyled>
+          </Box>
         )}
 
         <Table

@@ -11,11 +11,15 @@ import {
   getValuePrecisionThousand,
   SDK_ERROR_MAP_TO_UI,
 } from "@loopring-web/common-resources";
-import { RawDataDualAssetItem } from "@loopring-web/component-lib";
+import {
+  DualDetailType,
+  RawDataDualAssetItem,
+} from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 import BigNumber from "bignumber.js";
+import _ from "lodash";
 
 export const Limit = 15;
 
@@ -42,17 +46,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   const [showLoading, setShowLoading] = React.useState(true);
   const [open, setOpen] = React.useState<boolean>(false);
   const [detail, setDetail] =
-    React.useState<
-      | {
-          dualViewInfo: R;
-          lessEarnTokenSymbol: string;
-          greaterEarnTokenSymbol: string;
-          lessEarnView: string;
-          greaterEarnView: string;
-        }
-      | undefined
-    >(undefined);
-  const showDetail = async (item: R) => {
+    React.useState<DualDetailType | undefined>(undefined);
+
+  const getDetail = (item: R, index?: number) => {
     const {
       sellSymbol,
       buySymbol,
@@ -66,13 +62,10 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         },
       },
     } = item;
-    const {
-      dualPrice: { index },
-    } = await LoopringAPI.defiAPI?.getDualIndex({
-      baseSymbol: base,
-      quoteSymbol: dualMarketMap[market].quoteAlias,
-    });
-    item.currentPrice.currentPrice = index;
+    const currentPrice = _.cloneDeep(item.currentPrice);
+    if (index) {
+      currentPrice.currentPrice = index;
+    }
     let lessEarnTokenSymbol,
       greaterEarnTokenSymbol,
       lessEarnVol,
@@ -144,20 +137,38 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       tokenMap[sellSymbol].precision,
       false
     );
-    setOpen(true);
-
-    setDetail({
+    return {
       dualViewInfo: {
         ...item,
         amount: amount + " " + sellSymbol,
+        currentPrice,
       },
       lessEarnTokenSymbol,
       greaterEarnTokenSymbol,
       lessEarnView,
       greaterEarnView,
-    });
+      currentPrice,
+    } as DualDetailType;
   };
-
+  const showDetail = async (item: R) => {
+    const {
+      __raw__: {
+        order: {
+          tokenInfoOrigin: { base, market },
+        },
+      },
+    } = item;
+    const {
+      dualPrice: { index },
+    } = await LoopringAPI.defiAPI?.getDualIndex({
+      baseSymbol: base,
+      quoteSymbol: dualMarketMap[market].quoteAlias,
+    });
+    if (index) {
+      setDetail(getDetail(item, index));
+      setOpen(true);
+    }
+  };
   const getDualTxList = React.useCallback(
     async ({ start, end, offset, limit = Limit }: any) => {
       setShowLoading(true);
@@ -179,6 +190,8 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             {
               accountId: accountId,
               lockTag: [DUAL_TYPE.DUAL_BASE, DUAL_TYPE.DUAL_CURRENCY],
+              //@ts-ignore
+              status: "LOCKED",
             },
             apiKey
           ),
@@ -267,6 +280,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
 
   return {
     // page,
+    getDetail,
     showDetail,
     dualList,
     showLoading,

@@ -20,12 +20,12 @@ import { InvestMapType } from "./trade";
 export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
 export const headerRoot = "Landing-page";
 export const SoursURL = "https://static.loopring.io/assets/";
-export const LoopringIPFSSite = "d1vjs0p75nt8te.cloudfront.net";
+export const LoopringIPFSSite = "ipfs.loopring.io";
 export const LoopringIPFSSiteProtocol = "https";
 export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`;
 export const IPFS_HEAD_URL = "ipfs://";
 export const IPFS_HEAD_URL_REG = /^ipfs:\/\/(ipfs\/)?/i;
-export const IPFS_LOOPRING_SITE = "https://ipfs.io/ipfs/"; // sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;
+export const IPFS_LOOPRING_SITE = "https://ipfs.loopring.io/ipfs/"; // sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;
 
 export const profile = {
   security: [
@@ -74,7 +74,7 @@ export let headerToolBarData: Array<{
   {
     buttonComponent: ButtonComponentsMap.Download,
     url: "https://loopring.io/#/wallet",
-    i18nTitle: "labelDownloadAppTitle",
+    // i18nTitle: "labelDownloadAppTitle",
     // handleClick: undefined,
     // i18nDescription: "labelDownloadBtn",
   },
@@ -447,6 +447,32 @@ export const defiAdvice: InvestAdvice = {
   titleI18n: "labelInvestDefi",
   desI18n: "labelInvestDefiDes",
   enable: true,
+};
+export const defiWSTETHAdvice: InvestAdvice = {
+  type: InvestMapType.STAKE,
+  router: "/invest/defi/WSTETH",
+  notification: "",
+  banner: SoursURL + "images/icon-lido2.svg",
+  titleI18n: "labelInvestWSTETH",
+  desI18n: "labelInvestWSTETHDes",
+  enable: true,
+  project: "Lido",
+  market: "WSTETH-ETH",
+};
+export const defiRETHAdvice: InvestAdvice = {
+  type: InvestMapType.STAKE,
+  router: "/invest/defi/RETH",
+  notification: "",
+  banner: SoursURL + "images/icon-pocket.svg",
+  titleI18n: "labelInvestRETH",
+  desI18n: "labelInvestRETHDes",
+  enable: true,
+  project: "Rocket Pool",
+  market: "RETH-ETH",
+};
+export const DEFI_ADVICE_MAP = {
+  WSTETH: defiWSTETHAdvice,
+  RETH: defiRETHAdvice,
 };
 export const dualAdvice: InvestAdvice = {
   type: InvestMapType.DUAL,

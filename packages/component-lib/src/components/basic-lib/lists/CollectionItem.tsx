@@ -24,6 +24,7 @@ import {
   getShortAddr,
   ImageIcon,
   NFT_TYPE_STRING,
+  sizeNFTConfig,
   SoursURL,
   ViewMoreIcon,
 } from "@loopring-web/common-resources";
@@ -58,7 +59,7 @@ const BoxStyle = styled(Box)`
     }
   }
 ` as typeof Box;
-const BoxLable = styled(Box)`
+const BoxLabel = styled(Box)`
   background: var(--color-box-nft-label);
   color: var(--color-text-button);
   border-radius: ${({ theme }) => theme.unit}px;
@@ -83,6 +84,7 @@ const ActionMemo = React.memo(
   <Co extends CollectionMeta>({
     setShowDeploy,
     setShowEdit,
+    setShowManageLegacy,
     item,
     account,
     setShowMintNFT,
@@ -114,7 +116,45 @@ const ActionMemo = React.memo(
           }}
         >
           <Box borderRadius={"inherit"} minWidth={110}>
+            {!!(
+              item.isCounterFactualNFT &&
+              // @ts-ignore
+              item.isEditable &&
+              item.owner?.toLowerCase() ===
+                account?.accAddress?.toLowerCase() &&
+              item?.nftType !== NFT_TYPE_STRING.ERC721
+            ) && (
+              <MenuItem
+                onClick={() => {
+                  if (setShowEdit) {
+                    setShowEdit(item);
+                  }
+                }}
+              >
+                {t("labelCollectionEditBtn")}
+              </MenuItem>
+            )}
+            {!!(
+              item.isCounterFactualNFT &&
+              // @ts-ignore
+              item.isEditable &&
+              item.baseUri === "" &&
+              item.owner?.toLowerCase() ===
+                account?.accAddress?.toLowerCase() &&
+              item?.nftType !== NFT_TYPE_STRING.ERC721
+            ) && (
+              <MenuItem
+                onClick={() => {
+                  if (setShowManageLegacy) {
+                    setShowManageLegacy(item);
+                  }
+                }}
+              >
+                {t("labelCollectionImportNFTBtn")}
+              </MenuItem>
+            )}
             {item.isCounterFactualNFT &&
+            item.baseUri !== "" &&
             item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
             item.owner?.toLowerCase() === account?.accAddress?.toLowerCase() ? (
               <MenuItem
@@ -163,25 +203,6 @@ const ActionMemo = React.memo(
                 {t("labelNFTMintSimpleBtn")}
               </MenuItem>
             )}
-
-            {!!(
-              item.isCounterFactualNFT &&
-              // @ts-ignore
-              item.isEditable &&
-              item.owner?.toLowerCase() ===
-                account?.accAddress?.toLowerCase() &&
-              item?.nftType !== NFT_TYPE_STRING.ERC721
-            ) && (
-              <MenuItem
-                onClick={() => {
-                  if (setShowEdit) {
-                    setShowEdit(item);
-                  }
-                }}
-              >
-                {t("labelCollectionEditBtn")}
-              </MenuItem>
-            )}
           </Box>
         </Popover>
       </Grid>
@@ -205,11 +226,18 @@ export const CollectionItem = React.memo(
         onItemClick,
         getIPFSString,
         baseURL,
+        size,
       } = props;
       const { t } = useTranslation("common");
+      const sizeConfig = sizeNFTConfig(size ?? "large");
 
       return (
-        <CardStyleItem ref={_ref} className={"collection"}>
+        <CardStyleItem
+          ref={_ref}
+          className={"collection"}
+          size={size as any}
+          contentheight={sizeConfig.contentHeight}
+        >
           <Box
             position={"absolute"}
             width={"100%"}
@@ -237,7 +265,8 @@ export const CollectionItem = React.memo(
                 size={"medium"}
                 checked={
                   selectCollection?.contractAddress?.toLowerCase() ===
-                  item?.contractAddress?.toLowerCase()
+                    item?.contractAddress?.toLowerCase() &&
+                  selectCollection?.id === item.id
                 }
                 value={item.contractAddress}
                 name="radio-collection"
@@ -249,93 +278,105 @@ export const CollectionItem = React.memo(
                 <ActionMemo {...{ ...(props as any) }} />
               </BoxBtnGroup>
             )}
-            <BoxLable
-              padding={2}
-              margin={2}
+            <BoxLabel
+              className={"boxLabel"}
               display={"flex"}
-              height={80}
+              height={sizeConfig.contentHeight}
               flexDirection={"row"}
               justifyContent={"space-between"}
+              alignItems={"center"}
               position={"absolute"}
               bottom={0}
               left={0}
               right={0}
             >
-              <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-                {getIPFSString(item?.avatar ?? "", baseURL).startsWith(
-                  "http"
-                ) ? (
-                  <Avatar
-                    sx={{ bgcolor: "var(--color-border-disable2)" }}
-                    variant={"circular"}
-                    src={getIPFSString(item?.avatar ?? "", baseURL)}
-                  />
-                ) : (
-                  <Avatar
-                    sx={{ bgcolor: "var(--color-border-disable2)" }}
-                    variant={"circular"}
-                  >
-                    <ImageIcon />
-                  </Avatar>
-                )}
-
-                <Typography
-                  marginLeft={1}
-                  color={"var(--color-text-button)"}
-                  whiteSpace={"pre"}
-                  overflow={"hidden"}
-                  display={"flex"}
-                  flexDirection={"column"}
-                  textOverflow={"ellipsis"}
-                  variant={"h5"}
-                  alignItems={"flex-start"}
-                  justifyContent={"space-evenly"}
-                  alignSelf={"stretch"}
+              {getIPFSString(item?.avatar ?? "", baseURL).startsWith("http") ? (
+                <Avatar
+                  sx={{
+                    bgcolor: "var(--color-border-disable2)",
+                    width: sizeConfig.avatar,
+                    height: sizeConfig.avatar,
+                    ...(size === "small" ? { display: "none" } : {}),
+                  }}
+                  variant={"circular"}
+                  src={getIPFSString(item?.avatar ?? "", baseURL)}
+                />
+              ) : (
+                <Avatar
+                  sx={{
+                    bgcolor: "var(--color-border-disable2)",
+                    width: sizeConfig.avatar,
+                    height: sizeConfig.avatar,
+                    ...(size === "small" ? { display: "none" } : {}),
+                  }}
+                  variant={"circular"}
                 >
-                  <Typography
-                    color={"textPrimary"}
-                    width={"60%"}
-                    overflow={"hidden"}
-                    textOverflow={"ellipsis"}
-                    variant={"body1"}
-                    component={"span"}
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        sanitize(
-                          item?.name
-                            ? item.name
-                            : t("labelUnknown") +
-                                "-" +
-                                getShortAddr(item?.contractAddress ?? "", true)
-                        ) ?? "",
-                    }}
-                  ></Typography>
-                  <Link
-                    variant={"body2"}
-                    display={"inline-flex"}
-                    style={{ color: "var(--color-text-third)" }}
-                    alignItems={"center"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      copyToClipBoard(item?.contractAddress ?? "");
-                      setCopyToastOpen({ isShow: true, type: "address" });
-                    }}
-                  >
-                    {getShortAddr(item?.contractAddress ?? "")}
-                    <CopyIcon color={"inherit"} />
-                  </Link>
-                </Typography>
-              </Box>
+                  <ImageIcon />
+                </Avatar>
+              )}
+
               <Typography
+                className={"content"}
+                component={"span"}
+                marginLeft={1}
+                color={"var(--color-text-button)"}
                 whiteSpace={"pre"}
                 overflow={"hidden"}
                 display={"flex"}
+                flexDirection={"column"}
+                textOverflow={"ellipsis"}
+                variant={"h5"}
+                alignItems={"flex-start"}
+                justifyContent={"space-evenly"}
+                alignSelf={"stretch"}
+              >
+                <Typography
+                  color={"textPrimary"}
+                  overflow={"hidden"}
+                  textOverflow={"ellipsis"}
+                  variant={size == "small" ? "body2" : "body1"}
+                  component={"span"}
+                  paddingRight={1}
+                  width={"100%"}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      sanitize(
+                        item?.name
+                          ? item.name
+                          : t("labelUnknown") +
+                              "-" +
+                              getShortAddr(item?.contractAddress ?? "", true)
+                      ) ?? "",
+                  }}
+                />
+                <Link
+                  variant={"body2"}
+                  display={"inline-flex"}
+                  style={{ color: "var(--color-text-primary)" }}
+                  alignItems={"center"}
+                  paddingTop={1}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyToClipBoard(item?.contractAddress ?? "");
+                    setCopyToastOpen({ isShow: true, type: "address" });
+                  }}
+                >
+                  {getShortAddr(item?.contractAddress ?? "")}
+                  <CopyIcon color={"inherit"} />
+                </Link>
+              </Typography>
+              <Typography
+                component={"span"}
+                whiteSpace={"pre"}
+                overflow={"hidden"}
+                display={"flex"}
+                paddingLeft={1}
                 flexDirection={"column"}
                 alignItems={"center"}
                 textOverflow={"ellipsis"}
                 justifyContent={"space-evenly"}
               >
-                {item?.extends.count && (
+                {item?.extends?.count && (
                   <Typography
                     color={"textPrimary"}
                     component={"span"}
@@ -343,19 +384,26 @@ export const CollectionItem = React.memo(
                     overflow={"hidden"}
                     textOverflow={"ellipsis"}
                   >
-                    {t("labelCollectionItemValue", {
-                      value: item?.extends.count,
-                    })}
+                    {t(
+                      size == "small"
+                        ? "labelCollectionItemSimpleValue"
+                        : "labelCollectionItemValue",
+                      {
+                        value: item?.extends?.count,
+                      }
+                    )}
                   </Typography>
                 )}
                 <Typography
-                  color={"var(--color-text-third)"}
+                  component={"span"}
+                  color={"textPrimary"}
                   title={item?.nftType}
+                  sx={size === "small" ? { display: "none" } : {}}
                 >
                   {item?.nftType}
                 </Typography>
               </Typography>
-            </BoxLable>
+            </BoxLabel>
           </Box>
         </CardStyleItem>
       );
@@ -370,6 +418,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
   onPageChange,
   setCopyToastOpen,
   setShowDeploy,
+  setShowManageLegacy,
   setShowEdit,
   setShowMintNFT,
   setShowTradeIsFrozen,
@@ -383,10 +432,13 @@ export const CollectionCardList = <Co extends CollectionMeta>({
   isLoading,
   noEdit = false,
   filter,
+  size = "large",
   ...rest
 }: CollectionListProps<Co> &
   Partial<CollectionItemProps<Co>> & { onSelectItem?: (item: Co) => void }) => {
   const { t } = useTranslation("common");
+  const sizeConfig = sizeNFTConfig(size);
+
   return (
     <BoxStyle
       flex={1}
@@ -439,12 +491,11 @@ export const CollectionCardList = <Co extends CollectionMeta>({
             {collectionList.map((item, index) => {
               return (
                 <Grid
-                  // @ts-ignore
+                  xs={sizeConfig.wrap_xs}
+                  md={sizeConfig.wrap_md}
+                  lg={sizeConfig.wrap_lg}
                   key={index.toString() + (item?.name ?? "")}
                   item
-                  xs={12}
-                  md={6}
-                  lg={4}
                   flex={"1 1 120%"}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -455,6 +506,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
                 >
                   <CollectionItem
                     {...{ ...rest }}
+                    size={size}
                     onItemClick={onItemClick as any}
                     etherscanBaseUrl={etherscanBaseUrl}
                     selectCollection={selectCollection}
@@ -465,6 +517,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
                     toggle={toggle}
                     setShowDeploy={setShowDeploy as any}
                     setShowEdit={setShowEdit as any}
+                    setShowManageLegacy={setShowManageLegacy as any}
                     setShowMintNFT={setShowMintNFT as any}
                     setCopyToastOpen={setCopyToastOpen as any}
                     item={item as any}

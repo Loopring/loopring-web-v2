@@ -1,14 +1,13 @@
-import { Trans, useTranslation } from "react-i18next";
-import { Box, Button, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { Box, Button } from "@mui/material";
 import {
   MintAdvanceNFTWrap,
   MintNFTConfirm,
   PanelContent,
-  PopoverPure,
+  StyledPaperBg,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { MetaNFTPanel } from "./metaNFTPanel";
-import styled from "@emotion/styled";
 import { useMintNFTPanel } from "./hook";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import {
@@ -22,11 +21,6 @@ import {
   useMyCollection,
   useNFTMintAdvance,
 } from "@loopring-web/core";
-
-const StyledPaper = styled(Box)`
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-`;
 
 export const MintNFTPanel = <Co extends CollectionMeta>() => {
   const history = useHistory();
@@ -47,7 +41,10 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
               ...mintWholeProps.nftMetaProps,
               collectionInputProps: {
                 collection: mintWholeProps.nftMintValue.collection,
-                collectionListProps,
+                collectionListProps: {
+                  ...collectionListProps,
+                  size: "small",
+                },
                 domain: LoopringAPI.delegate?.getCollectionDomain(),
                 makeMeta,
               } as any,
@@ -91,7 +88,7 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
           {/*<Typography color={"textPrimary"}></Typography>*/}
         </Button>
       </Box>
-      <StyledPaper
+      <StyledPaperBg
         flex={1}
         className={"MuiPaper-elevation2"}
         marginTop={0}
@@ -118,7 +115,7 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
             // panelList[currentTab].element
           }
         </Box>
-      </StyledPaper>
+      </StyledPaperBg>
     </>
   );
 };
@@ -161,7 +158,7 @@ export const MintNFTAdvancePanel = <
           {t("labelAdMintTitle")}
         </Button>
       </Box>
-      <StyledPaper
+      <StyledPaperBg
         flex={1}
         className={"MuiPaper-elevation2"}
         marginTop={0}
@@ -171,7 +168,7 @@ export const MintNFTAdvancePanel = <
         alignItems={"stretch"}
       >
         <MintAdvanceNFTWrap {...{ ...nftMintAdvanceProps }} />
-      </StyledPaper>
+      </StyledPaperBg>
     </>
   );
 };

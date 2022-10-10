@@ -193,6 +193,7 @@ export const useDeposit = <
     toAddressStatus,
     realToAddress,
     toIsAddressCheckLoading,
+    walletLayer1?.ETH?.count,
     // toIsLoopringAddress,
   ]);
 
@@ -345,6 +346,7 @@ export const useDeposit = <
 
   React.useEffect(() => {
     if (isShow || isAllowInputToAddress) {
+      walletLayer1Callback(true);
       updateWalletLayer1();
     }
   }, [isShow, isAllowInputToAddress]);
@@ -468,7 +470,7 @@ export const useDeposit = <
               });
 
               nonce = await sdk.getNonce(
-                connectProvides.usedWeb3 as any,
+                connectProvides.usedWeb3 as unknown as Web3,
                 account.accAddress
               );
 
@@ -516,7 +518,7 @@ export const useDeposit = <
 
           if (!nonceInit) {
             nonce = await sdk.getNonce(
-              connectProvides.usedWeb3 as any,
+              connectProvides.usedWeb3 as unknown as Web3,
               account.accAddress
             );
           }

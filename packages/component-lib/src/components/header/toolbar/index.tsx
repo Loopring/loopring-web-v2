@@ -16,6 +16,7 @@ import { PopoverPure, SubMenu, SubMenuList } from "../../basic-lib";
 import { SettingPanel } from "../../block/SettingPanel";
 import { NotificationPanel } from "../../block/NotificationPanel";
 import React from "react";
+import { DownloadPanel } from "../../block/DownloadPanel";
 
 export const BtnDownload = ({
   t,
@@ -26,6 +27,10 @@ export const BtnDownload = ({
   i18nDescription: string;
   url: string;
 } & WithTranslation) => {
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: "downloadPop",
+  });
   return (
     <Box>
       <IconButton
@@ -34,9 +39,25 @@ export const BtnDownload = ({
         rel="noopener noreferrer"
         target="_blank"
         href={url}
+        {...bindHover(popupState)}
       >
         <DownloadIcon />
       </IconButton>
+      <PopoverPure
+        {...bindPopper(popupState)}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <Box minWidth={160}>
+          <DownloadPanel viewMoreUrl={url} />
+        </Box>
+      </PopoverPure>
     </Box>
   );
 };
