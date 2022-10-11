@@ -1060,4 +1060,8 @@ export default {
   labelCheckImportCollectionTitle:
     "Import legacy NFTs under contract address to proceed",
   labelContinue: "Next",
+  labelImportCollection1: "Choose NFT contract address",
+  labelImportCollection2: "Create/Choose  a collection",
+  labelImportCollection3: "Select NFTs to move into/out of collection",
+  labelSelectContractAddress: "Contract address",
 };

@@ -1,4 +1,4 @@
-import { NFTMintAdvanceViewProps } from "./Interface";
+import { ImportCollectionStep, ImportCollectionViewProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
@@ -9,19 +9,16 @@ import {
   Stepper,
   StepLabel,
   Step,
-  FormControlLabel,
-  Radio,
   Checkbox,
   FormControlLabel as MuiFormControlLabel,
+  MenuItem,
+  ListItemText,
 } from "@mui/material";
 import {
   CloseIcon,
   EmptyValueTag,
-  FeeInfo,
-  Info2Icon,
   LoadingIcon,
   myLog,
-  TradeNFT,
   SoursURL,
   RefreshIcon,
   getShortAddr,
@@ -29,6 +26,7 @@ import {
   CheckBoxIcon,
   BackIcon,
   TOAST_TIME,
+  DropDownIcon,
 } from "@loopring-web/common-resources";
 import {
   EmptyDefault,
@@ -36,10 +34,8 @@ import {
   NftImage,
   TextField,
   TGItemData,
-  RadioGroupStyle,
   Button,
   BtnInfo,
-  CollectionInput,
 } from "../../basic-lib";
 import {
   DropdownIconStyled,
@@ -57,11 +53,7 @@ import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
 import { Toast } from "../../toast";
-
-export enum AdMethod {
-  HasData = "HasData",
-  NoData = "NoData",
-}
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const BoxStyle = styled(Grid)`
   .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
@@ -108,20 +100,16 @@ const steps = [
 ];
 
 export function HorizontalLabelPositionBelowStepper({
-  activeStep,
-}: // handleSubmit
-{
-  // handleReset:()=>void,
-  // handleNext:(currStep:number)=>void,
-  activeStep: number;
-  // setActiveStep: (step: number) => void
+  step,
+}: {
+  step: ImportCollectionStep;
 }) {
   const { t } = useTranslation("common");
   const { isMobile } = useSettings();
   return (
     <>
       <BoxStyle sx={{ width: "100%" }} marginTop={isMobile ? 3 : 0}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper activeStep={step} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>{t(label)}</StepLabel>
@@ -134,111 +122,35 @@ export function HorizontalLabelPositionBelowStepper({
 }
 
 export const ImportCollectionWrap = <
-  T extends TradeNFT<I, Co>,
   Co extends CollectionMeta,
-  I extends any,
-  C extends FeeInfo
->({}: ImportCollectionViewProps<T, Co, I, C>) => {
+  NFT extends sdk.UserNFTBalanceInfo
+>({
+  // account,
+  onContractChange,
+  onContractNext,
+  setStep,
+  onCollectionChange,
+  onCollectionNext,
+  onNFTSelected,
+  onNFTSelectedMethod,
+  step,
+  data,
+  // btnStatus,
+  disabled,
+  onLoading,
+  onClick,
+}: ImportCollectionViewProps<Co, NFT>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
-  const [activeStep, setActiveStep] = React.useState(MintStep.SELECTWAY);
-  const [address, setAddress] = React.useState(tradeData?.tokenAddress);
-  const [cid, setCid] = React.useState(tradeData?.nftIdView);
-  const [metaDataMissDataInfo, setMetaDataMissDataInfo] = React.useState<
-    string[]
-  >([]);
-  const [metaDataErrorDataInfo, setMetaDataErrorDataInfo] = React.useState<
-    string[]
-  >([]);
-  const [checked, setChecked] = React.useState(true);
   const {
-    collectionListProps: { copyToastOpen },
-  } = collectionInputProps;
-  const inputBtnRef = React.useRef();
-  const [dropdownStatus, setDropdownStatus] =
-    React.useState<"up" | "down">("down");
-  React.useEffect(() => {
-    if (address !== tradeData?.tokenAddress && tradeData?.tokenAddress !== "") {
-      setAddress(tradeData?.tokenAddress);
-      if (!tradeData?.tokenAddress) {
-        setActiveStep(MintStep.SELECTWAY);
-      }
-    }
-  }, [tradeData?.tokenAddress]);
-  React.useEffect(() => {
-    if (cid !== tradeData?.nftIdView && tradeData?.nftIdView !== "") {
-      setCid(tradeData?.nftIdView);
-      if (!tradeData.tokenAddress) {
-        setActiveStep(MintStep.SELECTWAY);
-      } else if (!tradeData?.nftIdView) {
-        setActiveStep(MintStep.INPUTCID);
-      }
-    }
-  }, [tradeData?.nftIdView]);
-  const checkMeta = React.useCallback(() => {
-    const checkResult = ["collection_metadata"].reduce((prev, item) => {
-      if (!tradeData[item]) {
-        prev.push(item);
-      }
-      return prev;
-    }, [] as string[]);
-
-    const checkErrorResult = ["name", "image", "royaltyPercentage"].reduce(
-      (prev, item) => {
-        if (!tradeData[item]) {
-          prev.push(item === "royaltyPercentage" ? "royalty_percentage" : item);
-        }
-        return prev;
-      },
-      [] as string[]
-    );
-
-    if (
-      tradeData.nftId &&
-      (checkErrorResult.length ||
-        !(
-          tradeData.royaltyPercentage &&
-          Number.isInteger(tradeData.royaltyPercentage) &&
-          tradeData.royaltyPercentage >= 0 &&
-          tradeData.royaltyPercentage <= 10
-        ))
-    ) {
-      setMetaDataErrorDataInfo(checkErrorResult);
-      setChecked(false);
-    } else {
-      setMetaDataErrorDataInfo([]);
-    }
-    if (tradeData.nftId && checkResult.length) {
-      setMetaDataMissDataInfo(checkResult);
-      setChecked(false);
-    } else {
-      setMetaDataMissDataInfo([]);
-      setChecked(true);
-    }
-  }, [tradeData]);
-  React.useEffect(() => {
-    if (tradeData?.nftId) {
-      checkMeta();
-    }
-  }, [tradeData?.nftId]);
-
-  const handleToggleChange = React.useCallback(
-    (value: C) => {
-      if (handleFeeChange) {
-        handleFeeChange(value);
-      }
-    },
-    [handleFeeChange]
-  );
-
-  // const _handleOnNFTDataChange = (_tradeData: Partial<T>) => {
-  //   if (handleOnNFTDataChange) {
-  //     handleOnNFTDataChange({ ...tradeData, ..._tradeData });
-  //   }
-  // };
-
-  // const tradeData
-  myLog("mint tradeData", tradeData);
+    contractList,
+    selectContract,
+    collectionList,
+    selectCollection,
+    listNFT,
+    selectNFTList,
+  } = data;
+  myLog("ImportCollectionWrap", contractList);
   const methodLabel = React.useCallback(
     ({ key }: { key: string }) => {
       return (
@@ -255,50 +167,38 @@ export const ImportCollectionWrap = <
     },
     [t]
   );
-  const [method, setMethod] = React.useState(AdMethod.NoData);
-  const handleMethodChange = React.useCallback((_e: any, value: any) => {
-    setMethod(value);
-  }, []);
-  const [src, setSrc] = React.useState<string>("");
 
-  const btnMain = React.useCallback(
-    ({
-      defaultLabel = "labelMintNext",
-      btnInfo,
-      disabled,
-      onClick,
-      fullWidth,
-    }: {
-      defaultLabel?: string;
-      btnInfo?: BtnInfo;
-      disabled: () => boolean;
-      onClick: () => void;
-      fullWidth?: boolean;
-    }) => {
-      return (
-        <Button
-          variant={"contained"}
-          size={"medium"}
-          color={"primary"}
-          fullWidth={fullWidth}
-          className={"step"}
-          endIcon={
-            <BackIcon fontSize={"small"} sx={{ transform: "rotate(180deg)" }} />
-          }
-          loading={
-            !disabled() && nftMintBtnStatus === TradeBtnStatus.LOADING
-              ? "true"
-              : "false"
-          }
-          disabled={disabled() || nftMintBtnStatus === TradeBtnStatus.LOADING}
-          onClick={onClick}
-        >
-          {btnInfo ? t(btnInfo.label, btnInfo.params) : t(defaultLabel)}
-        </Button>
-      );
-    },
-    [nftMintBtnStatus, t]
-  );
+  const btnMain = ({
+    defaultLabel = "labelMintNext",
+    btnInfo,
+    disabled,
+    onClick,
+    fullWidth,
+  }: {
+    defaultLabel?: string;
+    btnInfo?: BtnInfo;
+    disabled: () => boolean;
+    onClick: () => void;
+    fullWidth?: boolean;
+  }) => {
+    return (
+      <Button
+        variant={"contained"}
+        size={"medium"}
+        color={"primary"}
+        fullWidth={fullWidth}
+        className={"step"}
+        endIcon={
+          <BackIcon fontSize={"small"} sx={{ transform: "rotate(180deg)" }} />
+        }
+        loading={!disabled() && onLoading ? "true" : "false"}
+        disabled={disabled()}
+        onClick={onClick}
+      >
+        {btnInfo ? t(btnInfo.label, btnInfo.params) : t(defaultLabel)}
+      </Button>
+    );
+  };
   const [error, setError] = React.useState(false);
 
   const panelList: Array<{
@@ -320,7 +220,7 @@ export const ImportCollectionWrap = <
             maxWidth={"760px"}
           >
             <Typography component={"h4"} variant={"h5"} marginBottom={2}>
-              {t("labelADMintSelect")}
+              {t("labelCheckImportCollectionTitle")}
             </Typography>
             <Box
               display={"flex"}
@@ -328,152 +228,73 @@ export const ImportCollectionWrap = <
               flexDirection={isMobile ? "column" : "row"}
               justifyContent={"stretch"}
             >
-              <RadioGroupStyle
-                row={false}
-                aria-label="withdraw"
-                name="withdraw"
-                value={method}
-                onChange={handleMethodChange}
+              <Typography
+                component={"span"}
+                display={"flex"}
+                alignItems={"flex-start"}
+                alignSelf={"flex-start"}
+                marginBottom={1}
+                color={"textSecondary"}
+                variant={"body2"}
               >
-                {Object.keys(AdMethod).map((key) => {
+                <Trans i18nKey={"labelSelectContractAddress"}>
+                  Contract address
+                </Trans>
+              </Typography>
+              <TextField
+                id="ContractAddress"
+                select
+                label={"label"}
+                value={selectContract ?? ""}
+                onChange={(event: React.ChangeEvent<any>) => {
+                  onContractChange(event.target?.value);
+                }}
+                inputProps={{ IconComponent: DropDownIcon }}
+                fullWidth={true}
+              >
+                {contractList.map((item, index) => {
                   return (
-                    <React.Fragment key={key}>
-                      <FormControlLabel
-                        value={key}
-                        control={<Radio />}
-                        label={methodLabel({ key })}
+                    <MenuItem
+                      component={"div"}
+                      key={item.toString() + index}
+                      value={item}
+                      selected={item === selectContract}
+                      withnocheckicon={"true"}
+                    >
+                      <ListItemText
+                        primary={
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                            variant="body1"
+                            color="text.primary"
+                          >
+                            {getShortAddr(item)}
+                          </Typography>
+                        }
                       />
-                    </React.Fragment>
+                    </MenuItem>
                   );
                 })}
-              </RadioGroupStyle>
+              </TextField>
             </Box>
-            {method === AdMethod.HasData && (
-              <Box
-                width={"100%"}
-                paddingTop={2}
-                paddingX={isMobile ? 2 : 0}
-                position={"relative"}
-              >
-                <TextField
-                  value={address}
-                  label={t("labelNFTContractAddress")}
-                  error={!!isNotAvailableTokenAddress}
-                  disabled={isNFTCheckLoading}
-                  placeholder={t("depositNFTAddressLabelPlaceholder")}
-                  onChange={
-                    (event) => {
-                      const tokenAddress = event.target.value;
-                      setAddress(tokenAddress);
-                      if (/^0x[a-fA-F0-9]{40}$/g.test(tokenAddress)) {
-                        handleOnNFTDataChange({
-                          tokenAddress,
-                        } as T);
-                      } else {
-                        handleOnNFTDataChange({
-                          tokenAddress: "",
-                        } as T);
-                      }
-                    }
-
-                    // handleOnNFTDataChange({
-                    //   tokenAddress: event.target?.value,
-                    // } as T)
-                  }
-                  fullWidth={true}
-                />
-                {address &&
-                  (isNFTCheckLoading ? (
-                    <LoadingIcon
-                      width={24}
-                      style={{ top: 48, right: "8px", position: "absolute" }}
-                    />
-                  ) : (
-                    <IconClearStyled
-                      color={"inherit"}
-                      size={"small"}
-                      style={{ top: 46 }}
-                      aria-label="Clear"
-                      onClick={() => {
-                        setAddress("");
-                        handleOnNFTDataChange({
-                          tokenAddress: "",
-                        } as T);
-                      }}
-                    >
-                      <CloseIcon />
-                    </IconClearStyled>
-                  ))}
-
-                {isNotAvailableTokenAddress && (
-                  <Typography
-                    color={"var(--color-error)"}
-                    variant={"body2"}
-                    marginTop={1 / 4}
-                    alignSelf={"stretch"}
-                    position={"relative"}
-                  >
-                    {t(isNotAvailableTokenAddress.reason, {
-                      ns: ["error", "common"],
-                    })}
-                  </Typography>
-                )}
-              </Box>
-            )}
-            {method === AdMethod.NoData && (
-              <Box width={"100%"} paddingTop={2} paddingX={isMobile ? 2 : 0}>
-                <CollectionInput
-                  {...{
-                    ...(collectionInputProps as any),
-                    collection: tradeData.collectionMeta as any,
-                    onSelected: (item: Co) => {
-                      collectionInputProps.onSelected(item);
-                      handleOnNFTDataChange({
-                        tokenAddress: item.contractAddress ?? "",
-                      } as T);
-                    },
-                  }}
-                  fullWidth={true}
-                  size={"large"}
-                  showCopy={true}
-                />
-              </Box>
-            )}
-            <Typography display={"inline-block"} marginTop={4}>
-              <Trans i18nKey={"labelNFTGuid"}>
-                Please fill in the appropriate collection metadata field value
-                in your NFT metadata with this string first, then upload it to
-                IPFS to retrieve the CID to continue.
-                <Link
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={
-                    "https://desk.zoho.com/portal/loopring/en/kb/articles/collection-implementation-in-loopring-l2"
-                  }
-                  paddingLeft={1}
-                >
-                  Follow this Guide
-                  <Info2Icon
-                    style={{ cursor: "pointer", marginLeft: "4px" }}
-                    fontSize={"medium"}
-                    htmlColor={"var(--color-text-third)"}
-                  />
-                </Link>
-              </Trans>
-            </Typography>
-            <Box width={"100%"} paddingX={isMobile ? 2 : 0} marginTop={2}>
+            <Box
+              width={"100%"}
+              paddingX={isMobile ? 2 : 0}
+              marginTop={2}
+              flexDirection={"row"}
+              display={"flex"}
+              justifyContent={"space-between"}
+            >
               {btnMain({
-                defaultLabel: "labelMintNext",
+                defaultLabel: "labelContinue",
                 fullWidth: true,
                 disabled: () => {
-                  return (
-                    gDisabled ||
-                    !tradeData.tokenAddress ||
-                    !tradeData.collectionMeta
-                  );
+                  return disabled || !selectContract;
                 },
                 onClick: () => {
-                  setActiveStep(MintStep.INPUTCID);
+                  setStep(ImportCollectionStep.SELECTCOLLECTION);
+                  onContractNext(selectContract);
                 },
               })}
             </Box>
@@ -709,13 +530,7 @@ export const ImportCollectionWrap = <
                 sx={{ height: "var(--btn-medium-height)" }}
                 startIcon={<BackIcon fontSize={"small"} />}
                 onClick={() => {
-                  setActiveStep(MintStep.SELECTWAY);
-                  setCid("");
-                  handleOnNFTDataChange({
-                    nftIdView: "",
-                    nftId: "",
-                    tradeValue: undefined,
-                  } as T);
+                  onCollectionNext(selectContract);
                 }}
               >
                 {t(`labelMintBack`)}

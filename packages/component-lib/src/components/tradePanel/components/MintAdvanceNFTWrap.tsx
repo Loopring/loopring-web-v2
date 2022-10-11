@@ -115,12 +115,8 @@ export enum MintStep {
 
 export function HorizontalLabelPositionBelowStepper({
   activeStep,
-}: // handleSubmit
-{
-  // handleReset:()=>void,
-  // handleNext:(currStep:number)=>void,
+}: {
   activeStep: number;
-  // setActiveStep: (step: number) => void
 }) {
   const { t } = useTranslation("common");
   const { isMobile } = useSettings();

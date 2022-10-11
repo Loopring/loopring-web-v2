@@ -18,14 +18,12 @@ import {
   WALLET_TYPE,
   EXCHANGE_TYPE,
   GET_IPFS_STRING,
-  CollectionMeta,
   Account,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
 import { CollectionInputProps } from "./tool";
-import * as sdk from "@loopring-web/loopring-sdk";
 
 /**
  * private props
@@ -468,10 +466,7 @@ export enum ImportCollectionStep {
   SELECTNFT = 2,
 }
 
-export type ImportCollectionViewProps<
-  Co extends CollectionMeta,
-  NFT extends sdk.UserNFTBalanceInfo
-> = {
+export type ImportCollectionViewProps<Co, NFT> = {
   account: Account;
   onContractChange: (item: string) => void;
   onContractNext: (item: string) => void;
@@ -488,7 +483,8 @@ export type ImportCollectionViewProps<
     selectNFTList: NFT[];
   };
   step: ImportCollectionStep;
-  btnStatus: TradeBtnStatus;
+  // btnStatus: TradeBtnStatus;
+  setStep: (step: ImportCollectionStep) => void;
   disabled?: boolean;
   onLoading?: boolean;
   onClick: (item: string) => void;
