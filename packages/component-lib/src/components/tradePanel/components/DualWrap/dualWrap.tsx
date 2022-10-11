@@ -120,6 +120,15 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
     }
 `;
 });
+export type DualDetailType = {
+  dualViewInfo: DualViewBase;
+  currentPrice: DualCurrentPrice;
+  lessEarnView: string;
+  greaterEarnView: string;
+  lessEarnTokenSymbol: string;
+  greaterEarnTokenSymbol: string;
+  isOrder?: boolean;
+};
 export const DualDetail = ({
   dualViewInfo,
   currentPrice,
@@ -129,16 +138,7 @@ export const DualDetail = ({
   // greaterEarnTokenSymbol,
   greaterEarnView,
   isOrder = false,
-}: {
-  dualViewInfo: DualViewBase;
-  currentPrice: DualCurrentPrice;
-  tokenMap: any;
-  lessEarnView: string;
-  greaterEarnView: string;
-  lessEarnTokenSymbol: string;
-  greaterEarnTokenSymbol: string;
-  isOrder?: boolean;
-}) => {
+}: DualDetailType & { tokenMap: any }) => {
   const { t } = useTranslation();
   const { upColor } = useSettings();
   const { base, quote, precisionForPrice } = currentPrice;
@@ -256,11 +256,7 @@ export const DualDetail = ({
           </Box>
         </BoxChartStyle>
       </Box>
-      {isOrder && (
-        <Box padding={2}>
-          <Divider />
-        </Box>
-      )}
+
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -275,7 +271,79 @@ export const DualDetail = ({
           alignItems={"center"}
           justifyContent={"space-between"}
           paddingBottom={1}
-          order={isOrder ? 2 : 0}
+        >
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textSecondary"}
+          >
+            {t("labelDualCalcLabel", {
+              symbol: base,
+              tag: dualViewInfo.isUp ? "≤" : "<",
+              target: targetView,
+              interpolation: {
+                escapeValue: false,
+              },
+            })}
+          </Typography>
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textPrimary"}
+            whiteSpace={"pre-line"}
+          >
+            {t("labelDualReturnValue", {
+              symbol: base,
+              value: lessEarnView === "0" ? EmptyValueTag : lessEarnView,
+            })}
+          </Typography>
+        </Typography>
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={3}
+        >
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textSecondary"}
+            whiteSpace={"pre-line"}
+          >
+            {t("labelDualCalcLabel", {
+              symbol: base,
+              tag: dualViewInfo.isUp ? "≥" : ">",
+              target: targetView,
+              interpolation: {
+                escapeValue: false,
+              },
+            })}
+          </Typography>
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textPrimary"}
+          >
+            {t("labelDualReturnValue", {
+              symbol: quote,
+              value: greaterEarnView === "0" ? EmptyValueTag : greaterEarnView,
+            })}
+          </Typography>
+        </Typography>
+
+        {isOrder && (
+          <Box paddingBottom={1}>
+            <Divider />
+          </Box>
+        )}
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={1}
+          order={isOrder ? 4 : 0}
         >
           <Tooltip title={t("labelDualCurrentAPRDes").toString()}>
             <Typography
@@ -314,7 +382,7 @@ export const DualDetail = ({
           alignItems={"center"}
           justifyContent={"space-between"}
           paddingBottom={1}
-          order={isOrder ? 3 : 1}
+          order={isOrder ? 5 : 1}
         >
           <Tooltip title={t("labelDualTargetPriceDes").toString()}>
             <Typography
@@ -350,7 +418,7 @@ export const DualDetail = ({
               alignItems={"center"}
               justifyContent={"space-between"}
               paddingBottom={1}
-              order={0}
+              order={1}
             >
               <Typography
                 component={"span"}
@@ -377,7 +445,7 @@ export const DualDetail = ({
               alignItems={"center"}
               justifyContent={"space-between"}
               paddingBottom={1}
-              order={4}
+              order={0}
             >
               <Typography
                 component={"span"}
@@ -404,7 +472,7 @@ export const DualDetail = ({
           alignItems={"center"}
           justifyContent={"space-between"}
           paddingBottom={1}
-          order={isOrder ? 1 : 2}
+          order={isOrder ? 2 : 2}
         >
           <Typography
             component={"span"}
@@ -422,6 +490,42 @@ export const DualDetail = ({
           >
             {moment(new Date(dualViewInfo.expireTime)).format(
               YEAR_DAY_MINUTE_FORMAT
+            )}
+          </Typography>
+        </Typography>
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={1}
+          order={isOrder ? 3 : 3}
+        >
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textSecondary"}
+            display={"inline-flex"}
+            alignItems={"center"}
+          >
+            {t("labelDualSettleDateDur")}
+          </Typography>
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textPrimary"}
+          >
+            {getValuePrecisionThousand(
+              (dualViewInfo.expireTime -
+                (isOrder && dualViewInfo.enterTime
+                  ? dualViewInfo.enterTime
+                  : Date.now())) /
+                (1000 * 60 * 60 * 24),
+              1,
+              1,
+              1,
+              true,
+              { floor: true }
             )}
           </Typography>
         </Typography>
@@ -454,10 +558,7 @@ export const DualWrap = <
 }: DualWrapProps<T, I, DUAL>) => {
   const coinSellRef = React.useRef();
   const { t } = useTranslation();
-  // myLog("refreshRef", refreshRef);
-  // const history = useHistory();
   const priceSymbol = dualCalcData?.dualViewInfo?.currentPrice?.quote;
-  // const priceBase = dualCalcData?.dualViewInfo?.currentPrice?.base;
 
   const getDisabled = React.useMemo(() => {
     return disabled || dualCalcData === undefined;
@@ -630,6 +731,15 @@ export const DualWrap = <
             alignItems={"stretch"}
             justifyContent={"space-between"}
           >
+            <Typography
+              variant={"body1"}
+              component={"h6"}
+              color={"textSecondary"}
+              paddingX={2}
+              paddingY={1}
+            >
+              {t("labelDualSettlementCalculator")}
+            </Typography>
             <DualDetail
               dualViewInfo={dualCalcData.dualViewInfo as DualViewBase}
               currentPrice={dualCalcData.dualViewInfo.currentPrice}

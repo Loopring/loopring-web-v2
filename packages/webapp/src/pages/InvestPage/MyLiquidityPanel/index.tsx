@@ -81,6 +81,7 @@ const MyLiquidity: any = withTranslation("common")(
       open,
       detail,
       setOpen,
+      getDetail,
     } = useDualAsset();
 
     React.useEffect(() => {
@@ -316,6 +317,7 @@ const MyLiquidity: any = withTranslation("common")(
           <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
             <DualAssetTable
               rawData={dualList}
+              getDetail={getDetail}
               idIndex={idIndex}
               dualMarketMap={dualMarketMap}
               tokenMap={tokenMap}

@@ -113,12 +113,13 @@ export const useDualHook = ({
   // const [productRawData,setProductRawData] = React.useState([])
   const getProduct = _.debounce(async () => {
     setIsLoading(true);
-    const market = findDualMarket(marketArray, pairASymbol, pairBSymbol);
+    const market =
+      marketArray && findDualMarket(marketArray, pairASymbol, pairBSymbol);
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
     // @ts-ignore
-    const currency = marketMap[market ?? ""]?.currency;
+    const currency = market ? marketMap[market]?.currency : undefined;
     if (pairASymbol && pairBSymbol && market) {
       // @ts-ignore
       const [, , marketSymbolA, marketSymbolB] = (market ?? "").match(
