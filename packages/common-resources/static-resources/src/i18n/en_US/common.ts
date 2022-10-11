@@ -434,7 +434,6 @@ export default {
     "This address does not yet have an active Loopring L2, {{way}} of {{token}} is disabled!",
   labelInvalidisSameAddress: "Cannot {{way}} to your own address.",
   labelTradeRaceRanking: "Trading Leaderboard",
-  labelTradeRaceYourVolume: "Your trading volume",
   labelTradeRaceYourRanking: "Your ranking",
   labelTradeRaceGoTrading: "Go to trade",
   labelTradeReadRule: "Read Rules",
