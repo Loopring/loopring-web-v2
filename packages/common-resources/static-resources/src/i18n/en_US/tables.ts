@@ -240,4 +240,5 @@ export default {
   labelDualTxsSettlementPrice: "Settlement Price",
   labelDualTxsSettlement: "Settlement",
   labelDualTxsTime: "Time",
+  labelDualAssetReturn: "Return",
 };

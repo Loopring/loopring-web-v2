@@ -1050,4 +1050,6 @@ export default {
   labelAmmJoin: "Subscribe",
   labelDualPanelClose: "Go to My Investment",
   labelDualMobilePrice: "{{symbol}} price:",
+  labelDualSettlementCalculator: "Settlement Calculator",
+  labelDualSettleDateDur: "Days Till Settlement",
 };
