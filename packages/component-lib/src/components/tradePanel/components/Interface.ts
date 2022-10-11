@@ -468,16 +468,16 @@ export enum ImportCollectionStep {
 
 export type ImportCollectionViewProps<Co, NFT> = {
   account: Account;
-  onContractChange: (item: string) => void;
+  onContractChange: (item: string | undefined) => void;
   onContractNext: (item: string) => void;
-  onCollectionChange: (item: string) => void;
-  onCollectionNext: (item: string) => void;
+  onCollectionChange: (item: Co | undefined) => void;
+  onCollectionNext: (item: Co) => void;
   onNFTSelected: (item: NFT[]) => void;
   onNFTSelectedMethod: (item: NFT[], method: string) => void;
   data: {
     contractList: string[];
     selectContract: string;
-    collectionList: Co[];
+    collectionInputProps: CollectionInputProps<any>;
     selectCollection: Co;
     listNFT: NFT[];
     selectNFTList: NFT[];

@@ -1061,7 +1061,9 @@ export default {
     "Import legacy NFTs under contract address to proceed",
   labelContinue: "Next",
   labelImportCollection1: "Choose NFT contract address",
-  labelImportCollection2: "Create/Choose  a collection",
+  labelImportCollection2: "Create/Choose a collection",
   labelImportCollection3: "Select NFTs to move into/out of collection",
   labelSelectContractAddress: "Contract address",
+  labelImportChooseCollection:
+    "The created collection here can only be used to categorize the Legacy NFT minted without collection_metadata field.\n You can freely move those NFTs into any collection you created here.",
 };
