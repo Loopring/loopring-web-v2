@@ -479,10 +479,18 @@ export type ImportCollectionViewProps<Co, NFT> = {
     selectContract: string;
     collectionInputProps: CollectionInputProps<any>;
     selectCollection: Co;
-    listNFT: NFT[];
+    nftProps: {
+      listNFT: NFT[];
+      page: number;
+      total: number;
+      onFilterNFT: (filter: { [key: string]: any }) => void;
+      isLoading: boolean;
+      filter: { [key: string]: any };
+    };
     selectNFTList: NFT[];
   };
   step: ImportCollectionStep;
+  baseURL: string;
   // btnStatus: TradeBtnStatus;
   setStep: (step: ImportCollectionStep) => void;
   disabled?: boolean;

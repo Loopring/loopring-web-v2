@@ -11,7 +11,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useCollectionPanel = <T extends CollectionMeta>() => {
-  const match: any = useRouteMatch("/NFT/:item?/:id");
+  const match: any = useRouteMatch("/NFT/:item?/:id?");
   const isEdit = match?.params?.item === "editCollection";
   const history = useHistory();
   const {
@@ -44,7 +44,7 @@ export const useCollectionPanel = <T extends CollectionMeta>() => {
         history.push("/nft/myCollection");
       }
     }
-  }, [accountStatus, account.readyState]);
+  }, [accountStatus, account.readyState, match?.params?.item]);
 
   return {
     keys,

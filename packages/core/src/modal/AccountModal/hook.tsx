@@ -143,7 +143,6 @@ import {
   useToast,
   useNFTMintAdvance,
   useNotify,
-  useWalletL2Collection,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";

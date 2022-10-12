@@ -15,19 +15,19 @@ import {
   getShortAddr,
   BackIcon,
   DropDownIcon,
+  NFTWholeINFO,
+  CollectionMeta,
 } from "@loopring-web/common-resources";
 import {
   TextField,
-  TGItemData,
   Button,
   BtnInfo,
   MenuItem,
   CollectionInput,
 } from "../../basic-lib";
-import { CollectionMeta, NFTType } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
-import * as sdk from "@loopring-web/loopring-sdk";
+import { CollectionManageWrap } from "./CollectionManageWrap";
 
 const BoxStyle = styled(Grid)`
   .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
@@ -57,8 +57,6 @@ const MintAdStyle = styled(Box)`
     padding-right: ${({ theme }) => theme.unit * 4}px;
   }
 `;
-
-
 
 const steps = [
   "labelImportCollection1", //Prepare NFT metadata
@@ -90,7 +88,7 @@ function HorizontalLabelPositionBelowStepper({
 
 export const ImportCollectionWrap = <
   Co extends CollectionMeta,
-  NFT extends sdk.UserNFTBalanceInfo
+  NFT extends Partial<NFTWholeINFO>
 >({
   // account,
   onContractChange,
@@ -102,10 +100,10 @@ export const ImportCollectionWrap = <
   onNFTSelectedMethod,
   step,
   data,
+  baseURL,
   // btnStatus,
   disabled,
   onLoading,
-  onClick,
 }: ImportCollectionViewProps<Co, NFT>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
@@ -114,26 +112,10 @@ export const ImportCollectionWrap = <
     selectContract,
     collectionInputProps,
     selectCollection,
-    listNFT,
+    nftProps,
     selectNFTList,
   } = data;
   myLog("ImportCollectionWrap", contractList);
-  const methodLabel = React.useCallback(
-    ({ key }: { key: string }) => {
-      return (
-        <>
-          <Typography
-            component={"span"}
-            variant={"body1"}
-            color={"textPrimary"}
-          >
-            {t(`label${key}`)}
-          </Typography>
-        </>
-      );
-    },
-    [t]
-  );
 
   const btnMain = ({
     defaultLabel = "labelMintNext",
@@ -166,7 +148,6 @@ export const ImportCollectionWrap = <
       </Button>
     );
   };
-  const [error, setError] = React.useState(false);
 
   const panelList: Array<{
     view: JSX.Element;
@@ -346,6 +327,18 @@ export const ImportCollectionWrap = <
               paddingX={isMobile ? 0 : 4}
               flexDirection={isMobile ? "column" : "row"}
             >
+              <Box width={"100%"} paddingTop={2} paddingX={isMobile ? 2 : 0}>
+                {selectCollection && (
+                  <CollectionManageWrap
+                    baseURL={baseURL}
+                    collection={selectCollection}
+                    selectedNFTS={selectNFTList}
+                    onNFTSelected={onNFTSelected as any}
+                    onNFTSelectedMethod={onNFTSelectedMethod as any}
+                    {...nftProps}
+                  />
+                )}
+              </Box>
               <Box
                 width={"100%"}
                 paddingX={isMobile ? 2 : 0}
@@ -369,14 +362,14 @@ export const ImportCollectionWrap = <
                   {t(`labelMintBack`)}
                 </Button>
                 {btnMain({
-                  defaultLabel: t("labelMintSubmitBtn"),
+                  defaultLabel: t("labelCloseBtn"),
                   btnInfo: undefined,
                   disabled: () => {
                     return disabled || !selectCollection;
                   },
                   onClick: () => {
-                    setStep(ImportCollectionStep.SELECTNFT);
-                    onCollectionNext(selectCollection);
+                    // setStep(ImportCollectionStep.SELECTNFT);
+                    // onNFTSelectedMethod(selectCollection);
                   },
                 })}
               </Box>
@@ -385,7 +378,26 @@ export const ImportCollectionWrap = <
         ),
       },
     ];
-  }, [t, isMobile, collectionInputProps, btnMain, error, methodLabel]);
+  }, [
+    t,
+    isMobile,
+    selectContract,
+    contractList,
+    btnMain,
+    collectionInputProps,
+    selectCollection,
+    baseURL,
+    selectNFTList,
+    onNFTSelected,
+    onNFTSelectedMethod,
+    nftProps,
+    onContractChange,
+    disabled,
+    setStep,
+    onContractNext,
+    onCollectionChange,
+    onCollectionNext,
+  ]);
 
   // @ts-ignore
   return (

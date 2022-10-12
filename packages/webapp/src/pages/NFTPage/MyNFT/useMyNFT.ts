@@ -356,7 +356,6 @@ export const useMyNFT = ({
 
   return {
     nftList,
-    // popItem,
     onDetail,
     etherscanBaseUrl,
     onNFTReload,

@@ -1,42 +1,43 @@
-import { Box, Grid, Pagination, Typography } from "@mui/material";
+import { Box, Checkbox, Grid, Pagination, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   getShortAddr,
   NFTLimit,
   SoursURL,
-  CollectionMeta,
 } from "@loopring-web/common-resources";
-import {
-  CardStyleItem,
-  EmptyDefault,
-  NFTMedia,
-} from "@loopring-web/component-lib";
-import { getIPFSString, useSystem } from "@loopring-web/core";
-import React from "react";
-import { useMyNFT } from "./useMyNFT";
+import { CardStyleItem, EmptyDefault, NFTMedia } from "../../index";
+import { getIPFSString } from "@loopring-web/core";
 import { WithTranslation, withTranslation } from "react-i18next";
-import styled from "@emotion/styled";
 import { sanitize } from "dompurify";
+import { NFTWholeINFO } from "@loopring-web/common-resources";
 
-const _StyledPaper = styled(Box)`
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-`;
-export const MyNFTList = withTranslation("common")(
-  ({
-    collectionMeta,
-    collectionPage,
-    myNFTPage,
+export const NFTList = withTranslation("common")(
+  <NFT extends NFTWholeINFO>({
+    baseURL,
+    nftList,
+    onPageChange,
+    total,
+    page,
+    isLoading,
+    onClick,
+    selected = [],
+    isSelectOnly = false,
     t,
   }: {
-    collectionMeta: CollectionMeta | undefined;
-    collectionPage?: number;
-    myNFTPage?: number;
+    baseURL: string;
+    nftList: Partial<NFT>[];
+    etherscanBaseUrl?: string;
+    // onDetail?: (item: Partial<NFT>) => Promise<void>;
+    onClick?: (item: Partial<NFT>) => Promise<void>;
+    onNFTReload?: (item: Partial<NFT>, index: number) => Promise<void>;
+    onPageChange: (page: number) => void;
+    total: number;
+    page: number;
+    isLoading: boolean;
+    isSelectOnly?: boolean;
+    selected?: Partial<NFT>[];
+    // onSelected: (item: Partial<NFT>) => void;
   } & WithTranslation) => {
-    const { onDetail, nftList, isLoading, page, total, onPageChange } =
-      useMyNFT({ collectionMeta, collectionPage, myNFTPage });
-    const { baseURL } = useSystem();
-
     return (
       <Box
         flex={1}
@@ -97,7 +98,7 @@ export const MyNFTList = withTranslation("common")(
                 >
                   <CardStyleItem
                     onClick={() => {
-                      onDetail(item);
+                      onClick && onClick(item);
                     }}
                   >
                     <Box
@@ -117,6 +118,19 @@ export const MyNFTList = withTranslation("common")(
                         getIPFSString={getIPFSString}
                         baseURL={baseURL}
                       />
+                      {isSelectOnly && (
+                        <Checkbox
+                          size={"medium"}
+                          checked={
+                            !!selected.find(
+                              (_item) => item.tokenId === _item.tokenId
+                            )
+                          }
+                          value={item.tokenId}
+                          name="radio-nft"
+                          inputProps={{ "aria-label": "selectNFT" }}
+                        />
+                      )}
                       <Box
                         padding={2}
                         height={80}

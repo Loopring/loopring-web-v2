@@ -2,12 +2,10 @@ import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-import { MyNFTList } from "./NFTList";
+import { MyNFTList } from "./MyNFTList";
 import {
-  getIPFSString,
   LoopringAPI,
   useAccount,
-  useSystem,
   useToast,
   useWalletL2NFTCollection,
 } from "@loopring-web/core";
@@ -27,7 +25,6 @@ import { MyNFTCollectionList } from "./MyNFTCollectionList";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { Button, Toast, useSettings } from "@loopring-web/component-lib";
 import { sanitize } from "dompurify";
-import { CollectionDetailView } from "../components/CollectionDetailView";
 
 enum MY_NFT_VIEW {
   LIST_COLLECTION = "byCollection",

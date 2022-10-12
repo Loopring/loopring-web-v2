@@ -1,35 +1,10 @@
-import { ImportCollectionStep, ImportCollectionViewProps } from "./Interface";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import React from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  Stepper,
-  StepLabel,
-  Step,
-  ListItemText,
-  Tab,
-  Tabs,
-} from "@mui/material";
-import {
-  myLog,
-  getShortAddr,
-  BackIcon,
-  DropDownIcon,
-} from "@loopring-web/common-resources";
-import {
-  TextField,
-  TGItemData,
-  Button,
-  BtnInfo,
-  MenuItem,
-  CollectionInput,
-} from "../../basic-lib";
-import { CollectionMeta, NFTType } from "@loopring-web/loopring-sdk";
-import styled from "@emotion/styled";
+import { Box, Typography, Tab, Tabs } from "@mui/material";
+
 import { useSettings } from "../../../stores";
-import * as sdk from "@loopring-web/loopring-sdk";
+import { CollectionMeta, NFTWholeINFO } from "@loopring-web/common-resources";
+import { NFTList, Button } from "../../basic-lib";
 
 export enum TabNFTManage {
   Undecided = "Undecided",
@@ -39,29 +14,37 @@ export enum TabNFTManage {
 }
 export const CollectionManageWrap = <
   Co extends CollectionMeta,
-  NFT extends sdk.UserNFTBalanceInfo
+  NFT extends Partial<NFTWholeINFO>
 >({
   onNFTSelected,
-  onNFTSelectedMethod,
   onFilterNFT,
+  collection,
   filter,
+  baseURL,
+  listNFT,
+  total,
+  page,
+  isLoading,
+  selectedNFTS = [],
+  onNFTSelectedMethod,
 }: // btnMain,
 {
+  collection: Partial<Co>;
+  selectedNFTS: NFT[];
   onNFTSelected: (item: NFT[]) => void;
+  total: number;
+  page: number;
+  listNFT: NFT[];
+  baseURL: string;
   onNFTSelectedMethod: (item: NFT[], method: string) => void;
-  onFilterNFTL: (filter: any) => void;
+  onFilterNFT: (filter: { [key: string]: any }) => void;
+  isLoading: boolean;
   filter: any;
-  // btnMain:(props:{
-  //   defaultLabel?: string;
-  //   btnInfo?: BtnInfo;
-  //   disabled: () => boolean;
-  //   onClick: () => void;
-  //   fullWidth?: boolean;
-  // })=>void
 }) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const [tab, setTab] = React.useState<TabNFTManage>(TabNFTManage.Undecided);
+
   const handleTabChange = React.useCallback(
     (_e, value) => {
       let _filter = { ...filter };
@@ -70,15 +53,60 @@ export const CollectionManageWrap = <
         case TabNFTManage.Undecided:
           //filter.
           break;
-        case TabNFTManage.Undecided:
+        case TabNFTManage.All:
           break;
-        case TabNFTManage.Undecided:
-        case TabNFTManage.Undecided:
+        case TabNFTManage.Others:
+        case TabNFTManage.Current:
       }
-      onFilterNFT({ ...filter });
+      onFilterNFT({ ..._filter });
     },
-    [onFilterNFT]
+    [filter, onFilterNFT]
   );
+  const Btn = React.useMemo(() => {
+    switch (tab) {
+      case TabNFTManage.Undecided:
+        return (
+          <Button
+            onClick={() => {
+              onNFTSelectedMethod(selectedNFTS, "moveIn");
+            }}
+            variant={"contained"}
+            size={"small"}
+            sx={{ marginLeft: 1 }}
+          >
+            {t("labelMoveIn")}
+          </Button>
+        );
+      case TabNFTManage.Others:
+        return (
+          <Button
+            onClick={() => {
+              onNFTSelectedMethod(selectedNFTS, "moveOut");
+            }}
+            variant={"contained"}
+            size={"small"}
+            sx={{ marginLeft: 1 }}
+          >
+            {t("labelMoveOut")}
+          </Button>
+        );
+      case TabNFTManage.Current:
+        return (
+          <Button
+            onClick={() => {
+              onNFTSelectedMethod(selectedNFTS, "moveOut");
+            }}
+            variant={"contained"}
+            size={"small"}
+            sx={{ marginLeft: 1 }}
+          >
+            {t("labelMoveOut")}
+          </Button>
+        );
+      case TabNFTManage.All:
+        return <></>;
+    }
+  }, [onNFTSelectedMethod, selectedNFTS, t, tab]);
   // @ts-ignore
   return (
     <Box
@@ -104,13 +132,59 @@ export const CollectionManageWrap = <
               <Tab
                 key={item.toString()}
                 value={item.toString()}
-                label={t(`label${item}`)}
+                label={t(`labelImportCollection${item}`)}
               />
             );
           })}
-          <Box display={"flex"}></Box>
-          {/*<Tab label={t("labelLiquidityDeposit")} value={0} />*/}
-          {/*<Tab label={t("labelLiquidityWithdraw")} value={1} />*/}
+          <Box display={"flex"} flex={1} flexDirection={"column"}>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              justifyContent={"space-between"}
+            >
+              <Typography variant={"body1"}>{collection.name}</Typography>
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                justifyContent={"flex-end"}
+              >
+                <Button
+                  variant={"outlined"}
+                  size={"small"}
+                  sx={{ marginLeft: 1 }}
+                >
+                  {t("labelSelectAll")}
+                </Button>
+                {Btn}
+                <Button
+                  variant={"outlined"}
+                  size={"small"}
+                  sx={{ marginLeft: 1 }}
+                >
+                  {t("labelSelectCancel")}
+                </Button>
+              </Box>
+            </Box>
+            <Box flex={1}>
+              <NFTList
+                onPageChange={(page: number) => {
+                  onFilterNFT({ ...filter, page });
+                }}
+                baseURL={baseURL}
+                nftList={listNFT}
+                isLoading={isLoading}
+                total={total}
+                page={page}
+                selected={selectedNFTS}
+                onClick={async (_item) => {
+                  // TODO:
+                  // @ts-ignore
+                  onNFTSelected();
+                  return;
+                }}
+              />
+            </Box>
+          </Box>
         </Tabs>
       )}
     </Box>

@@ -114,6 +114,24 @@ const ActionMemo = React.memo(
           }}
         >
           <Box borderRadius={"inherit"} minWidth={110}>
+            {!!(
+              item.isCounterFactualNFT &&
+              // @ts-ignore
+              item.isEditable &&
+              item.owner?.toLowerCase() ===
+                account?.accAddress?.toLowerCase() &&
+              item?.nftType !== NFT_TYPE_STRING.ERC721
+            ) && (
+              <MenuItem
+                onClick={() => {
+                  if (setShowEdit) {
+                    setShowEdit(item);
+                  }
+                }}
+              >
+                {t("labelCollectionEditBtn")}
+              </MenuItem>
+            )}
             {item.isCounterFactualNFT &&
             item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
             item.owner?.toLowerCase() === account?.accAddress?.toLowerCase() ? (
@@ -161,25 +179,6 @@ const ActionMemo = React.memo(
                 }}
               >
                 {t("labelNFTMintSimpleBtn")}
-              </MenuItem>
-            )}
-
-            {!!(
-              item.isCounterFactualNFT &&
-              // @ts-ignore
-              item.isEditable &&
-              item.owner?.toLowerCase() ===
-                account?.accAddress?.toLowerCase() &&
-              item?.nftType !== NFT_TYPE_STRING.ERC721
-            ) && (
-              <MenuItem
-                onClick={() => {
-                  if (setShowEdit) {
-                    setShowEdit(item);
-                  }
-                }}
-              >
-                {t("labelCollectionEditBtn")}
               </MenuItem>
             )}
           </Box>
