@@ -180,7 +180,7 @@ export const RankRaw = <R extends object>({
       _selected ? `&selected=${_selected}` : ""
     }${
       l2account && l2account !== "undefined" && l2account !== "null"
-        ? `&l2account=${l2account}`
+        ? `&owner=${l2account}`
         : ""
     }&version=${version}`;
     fetch(url)
@@ -243,10 +243,48 @@ export const RankRaw = <R extends object>({
           alignItems={"center"}
           flexDirection={isMobile ? "column" : "row"}
         >
-          <Typography variant={"h5"}>
-            {t("labelTradeRaceYourRanking")}:{" "}
-            {rank?.owner?.rank || EmptyValueTag}
+          <Typography
+            variant={"h5"}
+            display={"inline-flex"}
+            alignItems={"center"}
+            paddingRight={3}
+            component={"p"}
+          >
+            {t("labelTradeRaceYourRanking")}
           </Typography>
+          {column.map((item, index) => (
+            <Typography
+              variant={"body1"}
+              key={item.key}
+              component={"span"}
+              display={"inline-flex"}
+              alignItems={"center"}
+              color={"textSecondary"}
+              whiteSpace={"pre-line"}
+              sx={{ wordBreak: "break-all" }}
+              paddingRight={2}
+            >
+              {`${item.label}: `}
+              <Typography
+                paddingLeft={1}
+                component={"span"}
+                color={"textPrimary"}
+              >
+                {rank?.owner &&
+                rank?.owner[item.key] &&
+                rank?.owner[item.key] != "0"
+                  ? /address/gi.test(item.key.toLowerCase())
+                    ? getShortAddr(rank?.owner[item.key])
+                    : rank?.owner[item.key]
+                  : EmptyValueTag}
+              </Typography>
+              {index + 1 !== column.length ? ", " : ""}
+            </Typography>
+          ))}
+
+          {/*<Typography variant={"h5"}>*/}
+          {/*  {`${t("labelTradeRaceYourRanking")}: ${rank?.owner?.rank || EmptyValueTag}, ${t("labelTradeRaceYourVolume",key:{})}: ${rank?.owner?. || EmptyValueTag}`}*/}
+          {/*</Typography>*/}
         </Box>
         <TableStyled
           minHeight={120}

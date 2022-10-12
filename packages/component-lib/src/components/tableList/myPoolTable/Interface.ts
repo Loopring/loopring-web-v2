@@ -25,10 +25,11 @@ export type MyPoolTableProps<R> = {
   pagination?: {
     pageSize: number;
   };
+  filter: { searchValue: string };
+  handleFilterChange: (props: { searchValue: string }) => void;
   forexMap: ForexMap<Currency>;
   tokenMap: LoopringMap<TokenInfo & { tradePairs: Array<CoinKey<R>> }>;
   allowTrade?: any;
-  page?: number;
   tableHeight?: number;
   showFilter?: boolean;
   hideSmallBalances?: boolean;
@@ -36,5 +37,5 @@ export type MyPoolTableProps<R> = {
   showloading?: boolean;
   currency?: Currency;
   rowConfig?: typeof RowConfig;
-  setHideSmallBalances: (value: boolean) => void;
+  setHideSmallBalances?: (value: boolean) => void;
 } & Method<R>;
