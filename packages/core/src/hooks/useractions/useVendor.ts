@@ -193,37 +193,29 @@ export const useVendor = () => {
         //     }
         //   },
         // },
-        // {
-        //   ...VendorList.Banxa,
-        //   handleSelect: () => {
-        //     setShowAccount({ isShow: false });
-        //     // @ts-ignore
-        //     const banax: any = new window.Banxa("loopring");
-        //     banax.iframe(
-        //       "#iframeBanax",
-        //       "#iframeBanaxTarget",
-        //       {
-        //         // 'fiatType': 'AUD',
-        //         // 'coinType': 'BTC',
-        //         sellMode: true,
-        //         walletAddress: account.accAddress,
-        //         // fiatAmount: 200,
-        //         // coinAmount: 0.5,
-        //         // mo,
-        //       },
-        //       "800px",
-        //       "3Hiy7HuFcqwkgERyfRSwEHqrwSwTirm8zb"
-        //     );
-        //     // if (legalEnable) {
-        //     //   window.open(
-        //     //     "https://loopring.banxa.com/iframe?code=1fe263e17175561954c6&buyMode&walletAddress=" +
-        //     //     account.accAddress,
-        //     //     "_blank"
-        //     //   );
-        //     //   window.opener = null;
-        //     // }
-        //   },
-        // },
+        {
+          ...VendorList.Banxa,
+          handleSelect: () => {
+            setShowAccount({ isShow: false });
+            // @ts-ignore
+            const banax: any = new window.Banxa("loopring");
+            banax.iframe(
+              "#iframeBanax",
+              "#iframeBanaxTarget",
+              {
+                // 'fiatType': 'AUD',
+                // 'coinType': 'BTC',
+                sellMode: true,
+                walletAddress: account.accAddress,
+                // fiatAmount: 200,
+                // coinAmount: 0.5,
+                // mo,
+              },
+              "800px",
+              "3Hiy7HuFcqwkgERyfRSwEHqrwSwTirm8zb"
+            );
+          },
+        },
       ]
     : [];
   return {

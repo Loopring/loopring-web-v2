@@ -5,26 +5,18 @@ import {
   Box,
   Grid,
   Typography,
-  Link,
   Stepper,
   StepLabel,
   Step,
   ListItemText,
 } from "@mui/material";
 import {
-  EmptyValueTag,
   myLog,
-  SoursURL,
-  RefreshIcon,
   getShortAddr,
   BackIcon,
-  TOAST_TIME,
   DropDownIcon,
 } from "@loopring-web/common-resources";
 import {
-  EmptyDefault,
-  InputSize,
-  NftImage,
   TextField,
   TGItemData,
   Button,
@@ -32,20 +24,10 @@ import {
   MenuItem,
   CollectionInput,
 } from "../../basic-lib";
-import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
-import { NFTInput } from "./BasicANFTTrade";
-import {
-  CollectionMeta,
-  DEPLOYMENT_STATUS,
-  NFTType,
-} from "@loopring-web/loopring-sdk";
-import { TradeBtnStatus } from "../Interface";
+import { CollectionMeta, NFTType } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
-import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
-import { Toast } from "../../toast";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { MintStep } from "./MintAdvanceNFTWrap";
 
 const BoxStyle = styled(Grid)`
   .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
@@ -91,7 +73,7 @@ const steps = [
   "labelImportCollection3", //Preview & Mint NFT
 ];
 
-export function HorizontalLabelPositionBelowStepper({
+function HorizontalLabelPositionBelowStepper({
   step,
 }: {
   step: ImportCollectionStep;
@@ -410,53 +392,19 @@ export const ImportCollectionWrap = <
         ),
       },
     ];
-  }, [
-    t,
-    isMobile,
-    method,
-    handleMethodChange,
-    address,
-    isNotAvailableTokenAddress,
-    isNFTCheckLoading,
-    collectionInputProps,
-    tradeData,
-    btnMain,
-    cid,
-    isNotAvailableCID,
-    metaDataErrorDataInfo,
-    metaDataMissDataInfo,
-    checked,
-    error,
-    src,
-    etherscanBaseUrl,
-    baseURL,
-    walletMap,
-    chargeFeeTokenList,
-    feeInfo,
-    dropdownStatus,
-    isFeeNotEnough.isOnLoading,
-    isFeeNotEnough.isFeeNotEnough,
-    handleToggleChange,
-    btnInfo,
-    methodLabel,
-    handleOnNFTDataChange,
-    gDisabled,
-    getIPFSString,
-    nftMintBtnStatus,
-    onNFTMintClick,
-  ]);
+  }, [t, isMobile, collectionInputProps, btnMain, error, methodLabel]);
 
   // @ts-ignore
   return (
     <Box
-      className={walletMap ? "" : "loading"}
+      // className={walletMap ? "" : "loading"}
       display={"flex"}
       flex={1}
       flexDirection={"column"}
       padding={5 / 2}
       alignItems={"center"}
     >
-      <HorizontalLabelPositionBelowStepper activeStep={activeStep} />
+      <HorizontalLabelPositionBelowStepper step={step} />
       <MintAdStyle
         flex={1}
         marginTop={2}
@@ -469,31 +417,31 @@ export const ImportCollectionWrap = <
         {panelList.map((panel, index) => {
           return (
             <React.Fragment key={index}>
-              {activeStep === index ? panel.view : <></>}
+              {step === index ? panel.view : <></>}
             </React.Fragment>
           );
         })}
       </MintAdStyle>
-      {copyToastOpen && (
-        <Toast
-          alertText={
-            copyToastOpen?.type === "json"
-              ? t("labelCopyMetaClip")
-              : copyToastOpen.type === "url"
-              ? t("labelCopyUrlClip")
-              : t("labelCopyAddClip")
-          }
-          open={copyToastOpen?.isShow}
-          autoHideDuration={TOAST_TIME}
-          onClose={() => {
-            collectionInputProps?.collectionListProps?.setCopyToastOpen({
-              isShow: false,
-              type: "",
-            });
-          }}
-          severity={"success"}
-        />
-      )}
+      {/*{copyToastOpen && (*/}
+      {/*  <Toast*/}
+      {/*    alertText={*/}
+      {/*      copyToastOpen?.type === "json"*/}
+      {/*        ? t("labelCopyMetaClip")*/}
+      {/*        : copyToastOpen.type === "url"*/}
+      {/*        ? t("labelCopyUrlClip")*/}
+      {/*        : t("labelCopyAddClip")*/}
+      {/*    }*/}
+      {/*    open={copyToastOpen?.isShow}*/}
+      {/*    autoHideDuration={TOAST_TIME}*/}
+      {/*    onClose={() => {*/}
+      {/*      collectionInputProps?.collectionListProps?.setCopyToastOpen({*/}
+      {/*        isShow: false,*/}
+      {/*        type: "",*/}
+      {/*      });*/}
+      {/*    }}*/}
+      {/*    severity={"success"}*/}
+      {/*  />*/}
+      {/*)}*/}
     </Box>
   );
 };
