@@ -400,7 +400,7 @@ export default {
   labelNFTTokenMinted: "Token Minted:",
   labelNFTDescription: "Description:",
   labelNFTDate: "Date:",
-  labelNFTDeployContract: "Deploy",
+  labelNFTDeployContract: "Deploy Contract",
   labelNFTSend: "Send:",
   labelNFTDeploy: "Deploy:",
   labelNFTDeploying: "Deploying",
@@ -946,7 +946,7 @@ export default {
   labelMintSubmitBtn: "Create Your NFT",
   labelMintIPFSCIDDes: "Fill in the IPFS CID for NFT metadata",
   labelNFTMintSimpleBtn: "Create NFT",
-  labelCollectionEditBtn: "Edit",
+  labelCollectionEditBtn: "Edit Collection",
   labelCopyMetaClip: "Metadata Copied to Clipboard",
   labelCollectionMetaNoNameORTileUri:
     "Your Collection metadata is not setup {{type}}, please go to collection panel edit!",
@@ -1053,7 +1053,7 @@ export default {
   labelDualMobilePrice: "{{symbol}} price:",
   labelEditCollectionSuccess: "Collection edit was successful",
   labelEditCollectionFailed: "Collection edit has failed",
-  labelEditCollectionBtn: "Edit Collection",
+  labelEditCollectionBtn: "Edit",
   labelEditRestCollectionBtn: "Reset",
   labelEditCollectionERC1155: "Edit My Collection",
 };
