@@ -29,7 +29,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 16% 18% 32% 16% 10% 8% !important`
+        ? `--template-columns: 16% 16% 28% 6% 14% 10% 8% !important`
         : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
@@ -204,17 +204,17 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             );
           },
         },
-        // {
-        //   key: "Price",
-        //   sortable: false,
-        //   width: "auto",
-        //   name: t("labelDualAssetPrice"),
-        //   cellClass: "textAlignCenter",
-        //   headerCellClass: "textAlignCenter",
-        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
-        //     return <>{row?.strike}</>;
-        //   },
-        // },
+        {
+          key: "Price",
+          sortable: false,
+          width: "auto",
+          name: t("labelDualAssetPrice"),
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <>{row?.strike}</>;
+          },
+        },
         {
           key: "Settlement_Date",
           sortable: true,

@@ -15,7 +15,6 @@ import {
   EmptyValueTag,
   ForexMap,
   getValuePrecisionThousand,
-  globalSetup,
   MoreIcon,
   PriceTag,
   RowConfig,
@@ -396,8 +395,8 @@ export const MyPoolTable = withTranslation("tables")(
     i18n,
     tReady,
     allowTrade,
-    // handlePageChange,
-    pagination,
+    handleFilterChange,
+    filter,
     showFilter = true,
     rawData,
     account,
@@ -406,62 +405,16 @@ export const MyPoolTable = withTranslation("tables")(
     handleDeposit,
     hideSmallBalances = false,
     setHideSmallBalances,
-    wait = globalSetup.wait,
+    // wait = globalSetup.wait,
     currency = Currency.usd,
     showloading,
+    tableHeight,
     tokenMap,
     forexMap,
     rowConfig = RowConfig,
-    ...rest
   }: MyPoolTableProps<R> & WithTranslation) => {
     const { isMobile } = useSettings();
-    const [filter, setFilter] = React.useState({
-      searchValue: "",
-    });
-    const [totalData, setTotalData] = React.useState<R[]>(rawData);
-    const [viewData, setViewData] = React.useState<R[]>(rawData);
-    const [tableHeight, setTableHeight] = React.useState(rest.tableHeight);
-    const resetTableData = React.useCallback(
-      (viewData) => {
-        setViewData(viewData);
-        setTableHeight(
-          rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
-        );
-      },
-      [setViewData, setTableHeight]
-    );
-    const updateData = React.useCallback(() => {
-      let resultData: R[] = totalData && !!totalData.length ? totalData : [];
-      // if (filter.hideSmallBalance) {
-      if (hideSmallBalances) {
-        resultData = resultData.filter((o) => !o.smallBalance);
-      }
-      if (filter.searchValue) {
-        resultData = resultData.filter(
-          (o) =>
-            o.ammDetail.coinAInfo.name
-              .toLowerCase()
-              .includes(filter.searchValue.toLowerCase()) ||
-            o.ammDetail.coinBInfo.name
-              .toLowerCase()
-              .includes(filter.searchValue.toLowerCase())
-        );
-      }
-      resetTableData(resultData);
-    }, [totalData, filter, hideSmallBalances, resetTableData]);
 
-    React.useEffect(() => {
-      setTotalData(rawData);
-    }, [rawData]);
-    React.useEffect(() => {
-      updateData();
-    }, [totalData, filter, hideSmallBalances]);
-    const handleFilterChange = React.useCallback(
-      (filter) => {
-        setFilter(filter);
-      },
-      [setFilter]
-    );
     const getPopoverState = React.useCallback((label: string) => {
       return usePopupState({
         variant: "popover",
@@ -472,7 +425,7 @@ export const MyPoolTable = withTranslation("tables")(
     return (
       <TableStyled
         isMobile={isMobile}
-        className={`${viewData?.length > 0 ? "min-height" : ""}`}
+        className={`${rawData?.length > 0 ? "min-height" : ""}`}
       >
         {
           // (isMobile && isDropDown ? (
@@ -512,7 +465,7 @@ export const MyPoolTable = withTranslation("tables")(
           rowHeight={rowConfig.rowHeight}
           headerRowHeight={rowConfig.rowHeaderHeight}
           style={{ height: tableHeight }}
-          rawData={viewData}
+          rawData={rawData}
           showloading={showloading}
           columnMode={
             isMobile
