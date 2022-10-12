@@ -345,6 +345,7 @@ export const useDeposit = <
 
   React.useEffect(() => {
     if (isShow || isAllowInputToAddress) {
+      walletLayer1Callback(true);
       updateWalletLayer1();
     }
   }, [isShow, isAllowInputToAddress]);
