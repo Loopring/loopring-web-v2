@@ -44,11 +44,13 @@ export const CollectionManageWrap = <
   onNFTSelected,
   onNFTSelectedMethod,
   onFilterNFT,
+  filter,
 }: // btnMain,
 {
   onNFTSelected: (item: NFT[]) => void;
   onNFTSelectedMethod: (item: NFT[], method: string) => void;
   onFilterNFTL: (filter: any) => void;
+  filter: any;
   // btnMain:(props:{
   //   defaultLabel?: string;
   //   btnInfo?: BtnInfo;
@@ -60,9 +62,23 @@ export const CollectionManageWrap = <
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const [tab, setTab] = React.useState<TabNFTManage>(TabNFTManage.Undecided);
-  const handleTabChange = React.useCallback((_e, value) => {
-    setTab(value);
-  }, []);
+  const handleTabChange = React.useCallback(
+    (_e, value) => {
+      let _filter = { ...filter };
+      setTab(value);
+      switch (value) {
+        case TabNFTManage.Undecided:
+          //filter.
+          break;
+        case TabNFTManage.Undecided:
+          break;
+        case TabNFTManage.Undecided:
+        case TabNFTManage.Undecided:
+      }
+      onFilterNFT({ ...filter });
+    },
+    [onFilterNFT]
+  );
   // @ts-ignore
   return (
     <Box
@@ -73,17 +89,30 @@ export const CollectionManageWrap = <
       padding={5 / 2}
       alignItems={"center"}
     >
-      <Tabs
-        value={tab}
-        onChange={handleTabChange}
-        aria-label="disabled tabs example"
-      >
-        {Object.keys(TabNFTManage).map((item) => {
-          return <Tab key={item.toString()} value={item.toString()}></Tab>;
-        })}
-        {/*<Tab label={t("labelLiquidityDeposit")} value={0} />*/}
-        {/*<Tab label={t("labelLiquidityWithdraw")} value={1} />*/}
-      </Tabs>
+      {isMobile ? (
+        <Typography>
+          Sorry Mobile web is not support this feature, Please try it on website
+        </Typography>
+      ) : (
+        <Tabs
+          value={tab}
+          onChange={handleTabChange}
+          aria-label="disabled tabs example"
+        >
+          {Object.keys(TabNFTManage).map((item) => {
+            return (
+              <Tab
+                key={item.toString()}
+                value={item.toString()}
+                label={t(`label${item}`)}
+              />
+            );
+          })}
+          <Box display={"flex"}></Box>
+          {/*<Tab label={t("labelLiquidityDeposit")} value={0} />*/}
+          {/*<Tab label={t("labelLiquidityWithdraw")} value={1} />*/}
+        </Tabs>
+      )}
     </Box>
   );
   // Undecided  12

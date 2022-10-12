@@ -1070,4 +1070,8 @@ export default {
   labelSelectContractAddress: "Contract address",
   labelImportChooseCollection:
     "The created collection here can only be used to categorize the Legacy NFT minted without collection_metadata field.\n You can freely move those NFTs into any collection you created here.",
+  labelUndecided: "Undecided",
+  labelOthers: "Others",
+  labelCurrent: "Current",
+  labelAll: "All",
 };
