@@ -19,14 +19,7 @@ export const CheckImportCollection = ({
   onClick,
 }: CheckImportCollectionProps) => {
   const { t } = useTranslation("common");
-  // const {
-  //   btnStatus,
-  //   btnInfo,
-  //   enableBtn,
-  //   disableBtn,
-  //   setLabelAndParams,
-  //   resetBtnInfo,
-  // } = useBtnStatus();
+
   const { isMobile } = useSettings();
   // const disabled = () => {
   //   return gDisabled || !tradeData.tokenAddress || !tradeData.collectionMeta;

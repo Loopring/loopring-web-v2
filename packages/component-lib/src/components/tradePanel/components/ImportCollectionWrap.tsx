@@ -58,14 +58,7 @@ const MintAdStyle = styled(Box)`
   }
 `;
 
-const NFT_TYPE: TGItemData[] = [
-  {
-    value: NFTType.ERC1155,
-    key: "ERC1155",
-    label: "ERC1155",
-    disabled: false,
-  },
-];
+
 
 const steps = [
   "labelImportCollection1", //Prepare NFT metadata

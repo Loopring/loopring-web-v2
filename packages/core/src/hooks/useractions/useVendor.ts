@@ -58,7 +58,10 @@ export const useVendor = () => {
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
   // const { isMobile } = useSettings();
-  const { updateOffRampData, resetOffRampData } = useModalData();
+  const {
+    // updateOffRampData,
+    resetOffRampData,
+  } = useModalData();
 
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
     RAMP_SELL_PANEL.LIST
@@ -380,7 +383,15 @@ export const useRampTransPost = () => {
         }
       }
     },
-    []
+    [
+      account,
+      chainId,
+      checkHWAddr,
+      resetTransferRampData,
+      setShowAccount,
+      updateHW,
+      updateTransferRampData,
+    ]
   );
   return { processRequestRampTransfer };
 };
@@ -508,6 +519,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     enableBtn,
     isFeeNotEnough.isFeeNotEnough,
     tokenMap,
+    transferRampValue.address,
     transferRampValue.balance,
     transferRampValue.belong,
     transferRampValue.fee,

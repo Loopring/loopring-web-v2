@@ -27,7 +27,7 @@ export type AccountBaseProps = {
 
 export enum AccountStep {
   CheckingActive,
-  ImportLegacyCollection,
+  // ImportLegacyCollection,
   AddAssetGateway,
   SendAssetGateway,
   SendNFTGateway,
