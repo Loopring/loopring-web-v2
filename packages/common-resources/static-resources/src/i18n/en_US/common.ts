@@ -1052,6 +1052,5 @@ export default {
   labelDualMobilePrice: "{{symbol}} price:",
   labelDualSettlementCalculator: "Settlement Calculator",
   labelDualSettleDateDur: "Days Till Settlement",
-  labelNoInvestContent:
-    "You have no investment assets, invest in AMM, ETH Staking, DUAL to earn your rewards",
+  labelNoInvestContent: "You can track active investments here",
 };
