@@ -13,6 +13,7 @@ import {
   LoadingBlock,
 } from "@loopring-web/component-lib";
 import { CollectionManage } from "./CollectionManage";
+import { ImportCollection } from "./ImportCollection";
 
 enum CollectionImportView {
   Guide = "Guide",
@@ -83,9 +84,13 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>({
         </Button>
       </Box>
       <Box flex={1} display={"flex"}>
-        {view === CollectionImportView.Guide && <ImportCollectionWrap />}
+        {view === CollectionImportView.Guide && <ImportCollection />}
         {view === CollectionImportView.Item &&
-          (_collection?.owner ? <CollectionManage /> : <LoadingBlock />)}
+          (_collection?.owner ? (
+            <CollectionManage collection={_collection} />
+          ) : (
+            <LoadingBlock />
+          ))}
       </Box>
     </Box>
   );
