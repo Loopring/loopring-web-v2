@@ -3,8 +3,9 @@ import {
   useOpenModals,
   useToggle,
   CollectionCardList,
+  EmptyDefault,
 } from "@loopring-web/component-lib";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 import {
@@ -25,6 +26,7 @@ import {
 import { CreateUrlPanel } from "../components/landingPanel";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { CollectionDetailView } from "../components/CollectionDetailView";
+import { useTheme } from "@emotion/react";
 
 enum MyCollectionView {
   List = "List",
@@ -34,6 +36,7 @@ enum MyCollectionView {
 export const NFTCollectPanel = <Co extends CollectionMeta>() => {
   const { t } = useTranslation(["common"]);
   const { baseURL } = useSystem();
+  const theme = useTheme();
   const { copyToastOpen, ...collectionListProps } = useMyCollection();
   const [showCreateOpen, setCreateOpen] = React.useState(false);
   const [view, setView] = React.useState<MyCollectionView>(
@@ -163,6 +166,24 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             }}
             setCopyToastOpen={collectionListProps.setCopyToastOpen}
           />
+          <Box
+            flex={1}
+            marginTop={2}
+            marginX={2}
+            height={"100%"}
+            display={"flex"}
+            sx={{
+              background: "var(--color-box)",
+              borderRadius: `${theme.unit}px`,
+            }}
+          >
+            <EmptyDefault
+              sx={{ flex: 1 }}
+              message={() => {
+                return <Trans i18nKey="labelComingSoon">Coming Soon</Trans>;
+              }}
+            />
+          </Box>
         </Box>
       )}
       <CreateUrlPanel
