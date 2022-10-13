@@ -968,7 +968,9 @@ export default {
   labelNoCollectionCover: "No Cover Media",
   labelNoNFTCover: "No Media Resource",
   labelNFTAmountValue: "Amount: {{value}}",
+  labelNFTAmountSimpleValue: " \u2A09 {{value}}",
   labelCollectionItemValue: "Item: {{value}}",
+  labelCollectionItemSimpleValue: " \u2A09 {{value}}",
   labelMyCollectionsDes:
     "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information. Until it happens, the previous NFTs will be categorized to collection named by their associated contract address.",
   labelNFTGuid:
@@ -1057,7 +1059,8 @@ export default {
   labelEditCollectionERC1155: "Edit My Collection",
   labelDualSettlementCalculator: "Settlement Calculator",
   labelDualSettleDateDur: "Days Till Settlement",
-  labelNoInvestContent: "You currently have no investment assets. Start earning now with AMM, ETH Staking, or Dual Investments",
+  labelNoInvestContent:
+    "You currently have no investment assets. Start earning now with AMM, ETH Staking, or Dual Investments",
   labelImportCollection: "Import Collection for Legacy NFT",
   labelCheckImportCollectionTitle:
     "Import legacy NFTs under contract address to proceed",
@@ -1072,4 +1075,5 @@ export default {
   labelImportCollectionOthers: "Others",
   labelImportCollectionCurrent: "Current",
   labelImportCollectionAll: "All",
+  labelImportCollectionTitel: "Import your legacy nft Generate collection ",
 };

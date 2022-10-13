@@ -86,10 +86,10 @@ export const CollectionInput = <Co extends CollectionMeta>({
   collectionListProps,
   fullWidth = false,
   width = "content-fit",
-  size = "medium",
   showCopy = false,
   onSelected,
   domain,
+  size = "large",
   // makeMeta,
   isRequired = false,
 }: CollectionInputProps<Co> & {
@@ -337,6 +337,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
           <CollectionCardList
             {...{ ...(collectionListProps as any) }}
             isSelectOnly={true}
+            size={size}
             filter={{ isMintable: true }}
             selectCollection={collection}
             onSelectItem={(item) => {

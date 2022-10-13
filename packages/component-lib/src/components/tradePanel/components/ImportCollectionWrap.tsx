@@ -90,7 +90,6 @@ export const ImportCollectionWrap = <
   Co extends CollectionMeta,
   NFT extends Partial<NFTWholeINFO>
 >({
-  // account,
   onContractChange,
   onContractNext,
   setStep,
@@ -101,7 +100,6 @@ export const ImportCollectionWrap = <
   step,
   data,
   baseURL,
-  // btnStatus,
   disabled,
   onLoading,
 }: ImportCollectionViewProps<Co, NFT>) => {
@@ -274,7 +272,7 @@ export const ImportCollectionWrap = <
                   },
                 }}
                 fullWidth={true}
-                size={"large"}
+                size={isMobile ? "small" : "large"}
                 showCopy={true}
               />
             </Box>

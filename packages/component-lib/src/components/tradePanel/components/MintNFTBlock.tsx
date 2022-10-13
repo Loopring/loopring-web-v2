@@ -149,6 +149,7 @@ export const MintNFTBlock = <
                 } as any);
               },
             }}
+            size={isMobile ? "small" : "large"}
             fullWidth={true}
           />
         </Grid>

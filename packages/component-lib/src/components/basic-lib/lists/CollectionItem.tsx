@@ -24,6 +24,7 @@ import {
   getShortAddr,
   ImageIcon,
   NFT_TYPE_STRING,
+  sizeNFTConfig,
   SoursURL,
   ViewMoreIcon,
 } from "@loopring-web/common-resources";
@@ -204,8 +205,10 @@ export const CollectionItem = React.memo(
         onItemClick,
         getIPFSString,
         baseURL,
+        size,
       } = props;
       const { t } = useTranslation("common");
+      const sizeConfig = sizeNFTConfig(size ?? "large");
 
       return (
         <CardStyleItem ref={_ref} className={"collection"}>
@@ -252,7 +255,7 @@ export const CollectionItem = React.memo(
               padding={2}
               margin={2}
               display={"flex"}
-              height={80}
+              height={sizeConfig.contentHeight}
               flexDirection={"row"}
               justifyContent={"space-between"}
               position={"absolute"}
@@ -265,13 +268,23 @@ export const CollectionItem = React.memo(
                   "http"
                 ) ? (
                   <Avatar
-                    sx={{ bgcolor: "var(--color-border-disable2)" }}
+                    sx={{
+                      bgcolor: "var(--color-border-disable2)",
+                      width: sizeConfig.avatar,
+                      height: sizeConfig.avatar,
+                      ...(size === "small" ? { display: "none" } : {}),
+                    }}
                     variant={"circular"}
                     src={getIPFSString(item?.avatar ?? "", baseURL)}
                   />
                 ) : (
                   <Avatar
-                    sx={{ bgcolor: "var(--color-border-disable2)" }}
+                    sx={{
+                      bgcolor: "var(--color-border-disable2)",
+                      width: sizeConfig.avatar,
+                      height: sizeConfig.avatar,
+                      ...(size === "small" ? { display: "none" } : {}),
+                    }}
                     variant={"circular"}
                   >
                     <ImageIcon />
@@ -296,7 +309,7 @@ export const CollectionItem = React.memo(
                     width={"60%"}
                     overflow={"hidden"}
                     textOverflow={"ellipsis"}
-                    variant={"body1"}
+                    variant={size == "small" ? "body2" : "body1"}
                     component={"span"}
                     dangerouslySetInnerHTML={{
                       __html:
@@ -308,7 +321,7 @@ export const CollectionItem = React.memo(
                                 getShortAddr(item?.contractAddress ?? "", true)
                         ) ?? "",
                     }}
-                  ></Typography>
+                  />
                   <Link
                     variant={"body2"}
                     display={"inline-flex"}
@@ -342,14 +355,20 @@ export const CollectionItem = React.memo(
                     overflow={"hidden"}
                     textOverflow={"ellipsis"}
                   >
-                    {t("labelCollectionItemValue", {
-                      value: item?.extends.count,
-                    })}
+                    {t(
+                      size == "small"
+                        ? "labelCollectionItemSimpleValue"
+                        : "labelCollectionItemValue",
+                      {
+                        value: item?.extends.count,
+                      }
+                    )}
                   </Typography>
                 )}
                 <Typography
                   color={"var(--color-text-third)"}
                   title={item?.nftType}
+                  sx={size === "small" ? { display: "none" } : {}}
                 >
                   {item?.nftType}
                 </Typography>
@@ -382,10 +401,13 @@ export const CollectionCardList = <Co extends CollectionMeta>({
   isLoading,
   noEdit = false,
   filter,
+  size = "large",
   ...rest
 }: CollectionListProps<Co> &
   Partial<CollectionItemProps<Co>> & { onSelectItem?: (item: Co) => void }) => {
   const { t } = useTranslation("common");
+  const sizeConfig = sizeNFTConfig(size);
+
   return (
     <BoxStyle
       flex={1}
@@ -438,12 +460,11 @@ export const CollectionCardList = <Co extends CollectionMeta>({
             {collectionList.map((item, index) => {
               return (
                 <Grid
-                  // @ts-ignore
+                  xs={sizeConfig.wrap_xs}
+                  md={sizeConfig.wrap_md}
+                  lg={sizeConfig.wrap_lg}
                   key={index.toString() + (item?.name ?? "")}
                   item
-                  xs={12}
-                  md={6}
-                  lg={4}
                   flex={"1 1 120%"}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -454,6 +475,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
                 >
                   <CollectionItem
                     {...{ ...rest }}
+                    size={size}
                     onItemClick={onItemClick as any}
                     etherscanBaseUrl={etherscanBaseUrl}
                     selectCollection={selectCollection}

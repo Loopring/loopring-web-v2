@@ -20,5 +20,6 @@ export * from "./components/CollectionAdvanceWrap";
 export * from "./components/ImportCollectionWrap";
 export * from "../basic-lib/form/input/CollectionInput";
 export * from "./components/CreateCollectionWrap";
+export * from "./components/CollectionManageWrap";
 export * from "./components/RampConfirm";
 export * from "./components/tool/Refresh";

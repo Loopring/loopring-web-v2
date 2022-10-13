@@ -5,6 +5,7 @@ import { Box, Typography, Tab, Tabs } from "@mui/material";
 import { useSettings } from "../../../stores";
 import { CollectionMeta, NFTWholeINFO } from "@loopring-web/common-resources";
 import { NFTList, Button } from "../../basic-lib";
+import { CollectionManageProps } from "./Interface";
 
 export enum TabNFTManage {
   Undecided = "Undecided",
@@ -27,20 +28,7 @@ export const CollectionManageWrap = <
   isLoading,
   selectedNFTS = [],
   onNFTSelectedMethod,
-}: // btnMain,
-{
-  collection: Partial<Co>;
-  selectedNFTS: NFT[];
-  onNFTSelected: (item: NFT[]) => void;
-  total: number;
-  page: number;
-  listNFT: NFT[];
-  baseURL: string;
-  onNFTSelectedMethod: (item: NFT[], method: string) => void;
-  onFilterNFT: (filter: { [key: string]: any }) => void;
-  isLoading: boolean;
-  filter: any;
-}) => {
+}: CollectionManageProps<Co, NFT>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const [tab, setTab] = React.useState<TabNFTManage>(TabNFTManage.Undecided);

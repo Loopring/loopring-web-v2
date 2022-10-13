@@ -99,6 +99,7 @@ export type CoinMenuProps<R, I> = {
 export type CollectionListProps<Co> = {
   onPageChange: (page: number, filter?: L2CollectionFilter | undefined) => void;
   collectionList: Co[];
+  size?: "large" | "medium" | "small";
   total: number;
   domain: string;
   makeMeta: MakeMeta;
@@ -114,6 +115,7 @@ export type CollectionListProps<Co> = {
 export type CollectionItemProps<Co> = {
   item: Co;
   index: number;
+  size?: "large" | "medium" | "small";
   setCopyToastOpen: (prosp: { isShow: boolean; type: string }) => void;
   setShowDeploy?: (item: Co) => void;
   setShowEdit?: (item: Co) => void;

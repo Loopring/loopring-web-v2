@@ -455,7 +455,7 @@ export const MintAdvanceNFTWrap = <
                     },
                   }}
                   fullWidth={true}
-                  size={"large"}
+                  size={isMobile ? "small" : "large"}
                   showCopy={true}
                 />
               </Box>

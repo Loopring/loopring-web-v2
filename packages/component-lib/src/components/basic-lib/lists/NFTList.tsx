@@ -3,6 +3,7 @@ import {
   EmptyValueTag,
   getShortAddr,
   NFTLimit,
+  sizeNFTConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { CardStyleItem, EmptyDefault, NFTMedia } from "../../index";
@@ -10,11 +11,13 @@ import { getIPFSString } from "@loopring-web/core";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { sanitize } from "dompurify";
 import { NFTWholeINFO } from "@loopring-web/common-resources";
+import { useSettings } from "../../../stores";
 
 export const NFTList = withTranslation("common")(
   <NFT extends NFTWholeINFO>({
     baseURL,
     nftList,
+    size = "large",
     onPageChange,
     total,
     page,
@@ -27,6 +30,7 @@ export const NFTList = withTranslation("common")(
     baseURL: string;
     nftList: Partial<NFT>[];
     etherscanBaseUrl?: string;
+    size?: "large" | "medium" | "small";
     // onDetail?: (item: Partial<NFT>) => Promise<void>;
     onClick?: (item: Partial<NFT>) => Promise<void>;
     onNFTReload?: (item: Partial<NFT>, index: number) => Promise<void>;
@@ -38,13 +42,15 @@ export const NFTList = withTranslation("common")(
     selected?: Partial<NFT>[];
     // onSelected: (item: Partial<NFT>) => void;
   } & WithTranslation) => {
+    const sizeConfig = sizeNFTConfig(size);
+    const { isMobile } = useSettings();
     return (
       <Box
         flex={1}
         // className={"MuiPaper-elevation2"}
         marginTop={2}
         marginBottom={2}
-        paddingX={2}
+        paddingX={isMobile ? 0 : 2}
         display={"flex"}
         flexDirection={"column"}
       >
@@ -89,11 +95,11 @@ export const NFTList = withTranslation("common")(
             <Grid container spacing={2}>
               {nftList.map((item, index) => (
                 <Grid
+                  xs={sizeConfig.wrap_xs}
+                  md={sizeConfig.wrap_md}
+                  lg={sizeConfig.wrap_lg}
                   key={(item?.nftId ?? "") + index.toString()}
                   item
-                  xs={12}
-                  md={6}
-                  lg={4}
                   flex={"1 1 120%"}
                 >
                   <CardStyleItem
@@ -133,7 +139,7 @@ export const NFTList = withTranslation("common")(
                       )}
                       <Box
                         padding={2}
-                        height={80}
+                        height={sizeConfig.contentHeight}
                         display={"flex"}
                         flexDirection={"row"}
                         alignItems={"center"}
@@ -161,6 +167,7 @@ export const NFTList = withTranslation("common")(
                             color={"textSecondary"}
                             component={"p"}
                             paddingTop={1}
+                            variant={size == "small" ? "body2" : "body1"}
                             minWidth={164}
                             textOverflow={"ellipsis"}
                             title={item?.nftId?.toString()}
@@ -182,8 +189,12 @@ export const NFTList = withTranslation("common")(
                             overflow={"hidden"}
                             textOverflow={"ellipsis"}
                           >
-                            {t("labelNFTAmountValue", { value: item.total })}
-                            {/*{item?.name ?? EmptyValueTag}*/}
+                            {t(
+                              size == "small"
+                                ? "labelNFTAmountSimpleValue"
+                                : "labelNFTAmountValue",
+                              { value: item.total }
+                            )}
                           </Typography>
                           <Typography
                             color={"--color-text-primary"}

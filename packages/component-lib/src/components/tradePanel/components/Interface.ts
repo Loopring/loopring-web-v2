@@ -466,6 +466,14 @@ export enum ImportCollectionStep {
   SELECTNFT = 2,
 }
 
+export type CollectionManageData<NFT> = {
+  listNFT: NFT[];
+  page: number;
+  total: number;
+  onFilterNFT: (filter: { [key: string]: any }) => void;
+  isLoading: boolean;
+  filter: any;
+};
 export type ImportCollectionViewProps<Co, NFT> = {
   account: Account;
   onContractChange: (item: string | undefined) => void;
@@ -474,26 +482,26 @@ export type ImportCollectionViewProps<Co, NFT> = {
   onCollectionNext: (item: Co) => void;
   onNFTSelected: (item: NFT[]) => void;
   onNFTSelectedMethod: (item: NFT[], method: string) => void;
-  data: {
-    contractList: string[];
-    selectContract: string;
-    collectionInputProps: CollectionInputProps<any>;
-    selectCollection: Co;
-    nftProps: {
-      listNFT: NFT[];
-      page: number;
-      total: number;
-      onFilterNFT: (filter: { [key: string]: any }) => void;
-      isLoading: boolean;
-      filter: { [key: string]: any };
-    };
-    selectNFTList: NFT[];
-  };
   step: ImportCollectionStep;
   baseURL: string;
-  // btnStatus: TradeBtnStatus;
   setStep: (step: ImportCollectionStep) => void;
   disabled?: boolean;
   onLoading?: boolean;
   onClick: (item: string) => void;
+  data: {
+    contractList: string[];
+    selectContract: string;
+    selectCollection: Co | undefined;
+    selectNFTList: NFT[];
+    collectionInputProps: CollectionInputProps<any>;
+    nftProps: CollectionManageData<NFT>;
+  };
 };
+
+export type CollectionManageProps<Co, NFT> = {
+  collection: Partial<Co>;
+  selectedNFTS: NFT[];
+  onNFTSelected: (item: NFT[]) => void;
+  baseURL: string;
+  onNFTSelectedMethod: (item: NFT[], method: string) => void;
+} & CollectionManageData<NFT>;

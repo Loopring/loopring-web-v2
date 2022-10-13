@@ -1,4 +1,5 @@
 import { IsMobile } from "../utils";
+import React from "react";
 
 export enum UpColor {
   green = "green",
@@ -43,3 +44,34 @@ export const YEAR_DAY_MINUTE_FORMAT = `${YEAR_DAY_FORMAT} ${MINUTE_FORMAT}`;
 export const YEAR_DAY_SECOND_FORMAT = `${YEAR_DAY_FORMAT} ${SECOND_FORMAT}`;
 export const MINT_STRING_FORMAT = `${MINUTE_FORMAT} ${DAT_STRING_FORMAT}`;
 export const UNIX_TIMESTAMP_FORMAT = "x";
+export const sizeNFTConfig = (size: "large" | "medium" | "small") => {
+  switch (size) {
+    case "large":
+      return {
+        wrap_xs: 12,
+        wrap_md: 4,
+        wrap_lg: 3,
+        avatar: 40,
+        contentHeight: 80,
+      };
+      break;
+    case "small":
+      return {
+        wrap_xs: 6,
+        wrap_md: 3,
+        wrap_lg: 2,
+        avatar: 28,
+        contentHeight: 60,
+      };
+      break;
+    case "medium":
+      return {
+        wrap_xs: 6,
+        wrap_md: 3,
+        wrap_lg: 2,
+        avatar: 38,
+        contentHeight: 72,
+      };
+      break;
+  }
+};

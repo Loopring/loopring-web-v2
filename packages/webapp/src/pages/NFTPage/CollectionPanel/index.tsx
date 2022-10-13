@@ -4,6 +4,8 @@ import {
   useToggle,
   CollectionCardList,
   EmptyDefault,
+  useSettings,
+  ImportCollectionWrap,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
@@ -44,6 +46,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
     MyCollectionView.List
   );
   const { updateCollectionData } = useModalData();
+  const { isMobile } = useSettings();
 
   const [detail, setDetail] =
     React.useState<CollectionMeta | undefined>(undefined);
@@ -78,20 +81,20 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         <>
           <Box
             display={"flex"}
-            flexDirection={"row"}
-            alignItems={"center"}
+            flexDirection={isMobile ? "column" : "row"}
+            alignItems={isMobile ? "flex-start" : "center"}
             justifyContent={"space-between"}
           >
             <Typography component={"h3"} variant={"h4"} paddingBottom={2}>
               {t("labelMyCollection")}
             </Typography>
 
-            <Box display={"flex"} flexDirection={"row"}>
+            <Box display={"flex"} flexDirection={isMobile ? "column" : "row"}>
               <Button
                 onClick={() => {
-                  // history.push("/nft/addCollection");
+                  history.push("/nft/importLegacyCollection");
                 }}
-                sx={{ marginRight: 1 }}
+                sx={isMobile ? { marginBottom: 2 } : { marginRight: 1 }}
                 // startIcon={<DownloadIcon />}
                 variant={"outlined"}
                 color={"primary"}
@@ -118,6 +121,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               {...{ ...(collectionListProps as any) }}
               account={account}
               toggle={deployNFT}
+              size={isMobile ? "small" : "large"}
               setShowEdit={(item) => {
                 updateCollectionData({ ...item });
                 history.push(
@@ -200,6 +204,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
           </Box>
         </Box>
       )}
+
       <CreateUrlPanel
         open={showCreateOpen}
         step={CreateCollectionStep.ChooseMethod}

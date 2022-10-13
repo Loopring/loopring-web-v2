@@ -1,5 +1,5 @@
 import { CollectionMeta } from "@loopring-web/common-resources";
-import { NFTList } from "@loopring-web/component-lib";
+import { NFTList, useSettings } from "@loopring-web/component-lib";
 import { useSystem } from "@loopring-web/core";
 import React from "react";
 import { useMyNFT } from "./useMyNFT";
@@ -18,8 +18,12 @@ export const MyNFTList = withTranslation("common")(
   } & WithTranslation) => {
     const nftProps = useMyNFT({ collectionMeta, collectionPage, myNFTPage });
     const { baseURL } = useSystem();
+    const { isMobile } = useSettings();
     return (
-      <NFTList {...{ ...nftProps, baseURL, onClick: nftProps.onDetail }} />
+      <NFTList
+        {...{ ...nftProps, baseURL, onClick: nftProps.onDetail }}
+        size={isMobile ? "small" : "large"}
+      />
     );
   }
 );
