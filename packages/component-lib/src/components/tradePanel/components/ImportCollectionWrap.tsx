@@ -307,7 +307,7 @@ export const ImportCollectionWrap = <
                 },
                 onClick: () => {
                   setStep(ImportCollectionStep.SELECTNFT);
-                  onCollectionNext(selectCollection);
+                  selectCollection && onCollectionNext(selectCollection);
                 },
               })}
             </Box>
@@ -354,7 +354,7 @@ export const ImportCollectionWrap = <
                   sx={{ height: "var(--btn-medium-height)" }}
                   onClick={() => {
                     setStep(ImportCollectionStep.SELECTNFT);
-                    onCollectionNext(selectCollection);
+                    selectCollection && onCollectionNext(selectCollection);
                   }}
                 >
                   {t(`labelMintBack`)}
