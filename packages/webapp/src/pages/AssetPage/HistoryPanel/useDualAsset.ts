@@ -190,6 +190,8 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             {
               accountId: accountId,
               lockTag: [DUAL_TYPE.DUAL_BASE, DUAL_TYPE.DUAL_CURRENCY],
+              //@ts-ignore
+              status: "LOCKED",
             },
             apiKey
           ),
