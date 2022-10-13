@@ -1,5 +1,4 @@
 import { IsMobile } from "../utils";
-import React from "react";
 
 export enum UpColor {
   green = "green",

@@ -6,6 +6,7 @@ import {
   EmptyDefault,
   useSettings,
   ImportCollectionWrap,
+  StyledPaperBg,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
@@ -184,16 +185,12 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             }}
             setCopyToastOpen={collectionListProps.setCopyToastOpen}
           />
-          <Box
+          <StyledPaperBg
             flex={1}
             marginTop={2}
             marginX={2}
             height={"100%"}
             display={"flex"}
-            sx={{
-              background: "var(--color-box)",
-              borderRadius: `${theme.unit}px`,
-            }}
           >
             <EmptyDefault
               sx={{ flex: 1 }}
@@ -201,7 +198,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
                 return <Trans i18nKey="labelComingSoon">Coming Soon</Trans>;
               }}
             />
-          </Box>
+          </StyledPaperBg>
         </Box>
       )}
 

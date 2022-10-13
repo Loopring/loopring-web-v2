@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import {
   ImportCollectionWrap,
   LoadingBlock,
+  StyledPaperBg,
 } from "@loopring-web/component-lib";
 import { CollectionManage } from "./CollectionManage";
 import { ImportCollection } from "./ImportCollection";
@@ -65,7 +66,7 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>({
     }
   }, [match?.params?.id, account.readyState]);
   return (
-    <Box flex={1} display={"flex"} flexDirection={"column"}>
+    <Box flex={1} display={"flex"} flexDirection={"column"} marginBottom={2}>
       <Box
         display={"flex"}
         justifyContent={"space-between"}
@@ -83,7 +84,7 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>({
           {t("labelImportCollectionTitel")}
         </Button>
       </Box>
-      <Box flex={1} display={"flex"}>
+      <StyledPaperBg flex={1} display={"flex"}>
         {view === CollectionImportView.Guide && <ImportCollection />}
         {view === CollectionImportView.Item &&
           (_collection?.owner ? (
@@ -91,7 +92,7 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>({
           ) : (
             <LoadingBlock />
           ))}
-      </Box>
+      </StyledPaperBg>
     </Box>
   );
 };
