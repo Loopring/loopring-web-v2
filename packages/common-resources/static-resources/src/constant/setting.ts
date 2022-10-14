@@ -49,7 +49,7 @@ export const sizeNFTConfig = (size: "large" | "medium" | "small") => {
       return {
         wrap_xs: 12,
         wrap_md: 4,
-        wrap_lg: 3,
+        wrap_lg: 4,
         avatar: 40,
         contentHeight: 80,
       };

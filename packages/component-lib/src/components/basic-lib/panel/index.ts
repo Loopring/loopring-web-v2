@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, Card } from "@mui/material";
+import { Box, Card, CardProps } from "@mui/material";
 
 export * from "./SwitchPanel";
 export * from "./SubMenu";
@@ -15,12 +15,17 @@ export const CardNFTStyled = styled(Card)`
   width: var(--nft-card);
 `;
 
-export const CardStyleItem = styled(Card)`
+export const CardStyleItem = styled(Card)<
+  CardProps & { contentHeight?: number }
+>`
   background: var(--color-global-bg);
   width: 100%;
   cursor: pointer;
   height: 0;
-  padding: 0 0 calc(100% + 80px);
+  padding: 0 0
+    calc(
+      100% + ${({ contentHeight }) => `${contentHeight ? contentHeight : 80}px`}
+    );
   position: relative;
 
   &.collection {
@@ -30,7 +35,7 @@ export const CardStyleItem = styled(Card)`
   img {
     object-fit: contain;
   }
-` as typeof Card;
+` as (props: CardProps & { contentHeight?: number }) => JSX.Element;
 
 export const ImageUploadWrapper = styled(Box)`
   position: relative;

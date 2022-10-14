@@ -1,5 +1,5 @@
 import { ImportCollectionStep, ImportCollectionViewProps } from "./Interface";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import React from "react";
 import {
   Box,
@@ -17,6 +17,7 @@ import {
   DropDownIcon,
   NFTWholeINFO,
   CollectionMeta,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import {
   TextField,
@@ -24,10 +25,13 @@ import {
   BtnInfo,
   MenuItem,
   CollectionInput,
+  EmptyDefault,
 } from "../../basic-lib";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { CollectionManageWrap } from "./CollectionManageWrap";
+import { getIPFSString } from "@loopring-web/core";
+import { NFTMedia } from "../../block";
 
 const BoxStyle = styled(Grid)`
   .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
@@ -114,7 +118,6 @@ export const ImportCollectionWrap = <
     selectNFTList,
   } = data;
   myLog("ImportCollectionWrap", contractList);
-
   const btnMain = ({
     defaultLabel = "labelMintNext",
     btnInfo,
@@ -146,7 +149,14 @@ export const ImportCollectionWrap = <
       </Button>
     );
   };
-
+  React.useEffect(() => {
+    if (selectContract && step === ImportCollectionStep.SELECTCONTRACT) {
+      // nftProps.isLoading;
+      //TODO:
+      let _filter = { contractAddress: selectContract, page: 1 };
+      nftProps.onFilterNFT({ _filter });
+    }
+  }, [selectContract, step]);
   const panelList: Array<{
     view: JSX.Element;
     onBack?: undefined | (() => void);
@@ -159,38 +169,25 @@ export const ImportCollectionWrap = <
           <Box
             marginTop={3}
             display={"flex"}
-            justifyContent={"flex-start"}
+            justifyContent={"space-around"}
             flexDirection={"column"}
-            alignItems={"flex-start"}
+            alignItems={"stretch"}
             width={"100%"}
             maxWidth={"760px"}
           >
-            <Typography component={"h4"} variant={"h5"} marginBottom={2}>
-              {t("labelCheckImportCollectionTitle")}
-            </Typography>
             <Box
               display={"flex"}
               alignItems={"flex-start"}
-              flexDirection={isMobile ? "column" : "row"}
+              flexDirection={"column"}
               justifyContent={"stretch"}
             >
-              <Typography
-                component={"span"}
-                display={"flex"}
-                alignItems={"flex-start"}
-                alignSelf={"flex-start"}
-                marginBottom={1}
-                color={"textSecondary"}
-                variant={"body2"}
-              >
-                <Trans i18nKey={"labelSelectContractAddress"}>
-                  Contract address
-                </Trans>
+              <Typography component={"h4"} variant={"h5"} marginBottom={2}>
+                {t("labelCheckImportCollectionTitle")}
               </Typography>
               <TextField
                 id="ContractAddress"
                 select
-                label={"label"}
+                label={t("labelSelectContractAddress")}
                 value={selectContract ?? ""}
                 onChange={(event: React.ChangeEvent<any>) => {
                   onContractChange(event.target?.value);
@@ -222,6 +219,64 @@ export const ImportCollectionWrap = <
                   );
                 })}
               </TextField>
+              {selectContract && (
+                <Box display={"flex"} flexDirection={"row"}>
+                  {nftProps.isLoading ? (
+                    nftProps.total ? (
+                      nftProps.listNFT.splice(0, 3).map((item, index) => {
+                        return (
+                          <Box
+                            marginRight={2}
+                            width={60}
+                            height={60}
+                            borderRadius={"30"}
+                            overflow={"hidden"}
+                          >
+                            <NFTMedia
+                              item={item}
+                              index={index}
+                              shouldPlay={false}
+                              onNFTError={() => undefined}
+                              isOrigin={false}
+                              getIPFSString={getIPFSString}
+                              baseURL={baseURL}
+                            />
+                          </Box>
+                        );
+                      })
+                    ) : (
+                      <Box flex={1} alignItems={"center"}>
+                        <EmptyDefault
+                          message={() => (
+                            <Box
+                              flex={1}
+                              display={"flex"}
+                              alignItems={"center"}
+                              justifyContent={"center"}
+                            >
+                              No NFT
+                            </Box>
+                          )}
+                        />
+                      </Box>
+                    )
+                  ) : (
+                    <Box
+                      flex={1}
+                      display={"flex"}
+                      alignItems={"center"}
+                      height={"90%"}
+                    >
+                      <img
+                        className="loading-gif"
+                        alt={"loading"}
+                        width="36"
+                        src={`${SoursURL}images/loading-line.gif`}
+                      />
+                    </Box>
+                  )}
+                </Box>
+              )}
             </Box>
             <Box
               width={"100%"}
@@ -235,7 +290,7 @@ export const ImportCollectionWrap = <
                 defaultLabel: "labelContinue",
                 fullWidth: true,
                 disabled: () => {
-                  return disabled || !selectContract;
+                  return disabled || !selectContract || !(nftProps.total > 0);
                 },
                 onClick: () => {
                   setStep(ImportCollectionStep.SELECTCOLLECTION);

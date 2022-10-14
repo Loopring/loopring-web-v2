@@ -211,7 +211,11 @@ export const CollectionItem = React.memo(
       const sizeConfig = sizeNFTConfig(size ?? "large");
 
       return (
-        <CardStyleItem ref={_ref} className={"collection"}>
+        <CardStyleItem
+          ref={_ref}
+          className={"collection"}
+          contentHeight={sizeConfig.contentHeight}
+        >
           <Box
             position={"absolute"}
             width={"100%"}
