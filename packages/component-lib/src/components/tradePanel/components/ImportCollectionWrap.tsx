@@ -174,6 +174,7 @@ export const ImportCollectionWrap = <
             alignItems={"stretch"}
             width={"100%"}
             maxWidth={"760px"}
+            flex={1}
           >
             <Box
               display={"flex"}
@@ -469,7 +470,7 @@ export const ImportCollectionWrap = <
         paddingX={isMobile ? 2 : 5}
         display={"flex"}
         justifyContent={"center"}
-        alignItems={"flex-start"}
+        alignItems={"stretch"}
         width={"100%"}
       >
         {panelList.map((panel, index) => {
