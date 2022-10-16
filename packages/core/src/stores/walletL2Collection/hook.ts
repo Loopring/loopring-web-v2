@@ -3,7 +3,7 @@ import {
   reset,
   socketUpdateBalance,
   statusUnset,
-  updateLegacyCollection,
+  updateLegacyContracts,
   updateWalletL2Collection,
 } from "./reducer";
 import { WalletL2CollectionStates } from "./interface";
@@ -20,7 +20,7 @@ import { store } from "../index";
 export function useWalletL2Collection<
   C extends CollectionMeta
 >(): WalletL2CollectionStates<C> & {
-  updateLegacyCollection: () => void;
+  updateLegacyContracts: () => void;
   updateWalletL2Collection: (props: {
     page?: number;
     filter?: L2CollectionFilter | undefined;
@@ -46,7 +46,7 @@ export function useWalletL2Collection<
       () => dispatch(statusUnset(undefined)),
       [dispatch]
     ),
-    updateLegacyCollection: React.useCallback(async () => {
+    updateLegacyContracts: React.useCallback(async () => {
       const account = store.getState().account;
       const { chainId } = store.getState().system;
       if (account.accountId && LoopringAPI.nftAPI) {
@@ -57,10 +57,10 @@ export function useWalletL2Collection<
             nftFactory: sdk.NFTFactory[chainId],
             nftBaseUri: "",
           }).tokenAddress || undefined;
-        const { legacyCollections } = {
-          legacyCollections: [tokenAddress1, "0xxxxxxxx"],
+        const { legacyContract } = {
+          legacyContract: [tokenAddress1, "0xxxxxxxx"],
         };
-        dispatch(updateLegacyCollection({ legacyCollections }));
+        dispatch(updateLegacyContracts({ legacyContract }));
       }
     }, [dispatch]),
     updateWalletL2Collection: React.useCallback(

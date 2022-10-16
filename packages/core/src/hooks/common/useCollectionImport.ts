@@ -3,14 +3,18 @@ import React from "react";
 import {
   Account,
   CollectionMeta,
+  CustomError,
+  ErrorMap,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
+import * as sdk from "@loopring-web/loopring-sdk";
 import {
   LoopringAPI,
   makeMeta,
   useAccount,
   useCollectionManage,
   useMyCollection,
+  useWalletL2Collection,
 } from "../../index";
 import {
   ImportCollectionStep,
@@ -31,18 +35,65 @@ export const useCollectionImport = <
   const [step, setStep] = React.useState<ImportCollectionStep>(
     ImportCollectionStep.SELECTCONTRACT
   );
-  const [onLoading, setOnLoading] = React.useState<boolean>(true);
+  const { legacyContract } = useWalletL2Collection();
+
+  const [onLoading, setOnLoading] = React.useState<boolean>(false);
   // const { baseURL } = useSystem();
-  const [contractList, setContractList] = React.useState<string[]>([]);
-  const [selectContract, setSelectContract] = React.useState<string>("");
+  // const [contractList, setContractList] = React.useState<string[]>([""]);
+  const [selectContract, setSelectContract] =
+    React.useState<
+      | { value: string; total?: number; list?: sdk.UserNFTBalanceInfo[] }
+      | undefined
+    >();
+  const [filter, setFilter] = React.useState({
+    isLegacy: true,
+    contractAddress: selectContract,
+  });
+  const collectionListProps = useMyCollection<Co>(filter as any);
   const [selectCollection, setSelectCollection] =
     React.useState<Co | undefined>(undefined);
-  // collectionInputProps
+  const onContractChange = React.useCallback(
+    async (item) => {
+      setSelectContract({ value: item });
+      setOnLoading(true);
+      let _filter = { offset: 0 };
+      if (LoopringAPI.userAPI) {
+        //TODO: wait api
+        const { userNFTBalances, totalNum } = await LoopringAPI.userAPI
+          .getUserNFTBalances(
+            {
+              accountId: account.accountId,
+              tokenAddrs: item,
+              limit: 3,
+              ..._filter,
+              nonZero: true,
+              metadata: true, // close metadata
+            },
+            account.apiKey
+          )
+          .catch((_error) => {
+            throw new CustomError(ErrorMap.TIME_OUT);
+          });
+        setSelectContract((state) => ({
+          ...state,
+          value: item,
+          list: userNFTBalances,
+          total: totalNum,
+        }));
+      }
+      setOnLoading(false);
+    },
+    [selectContract]
+  );
+  React.useEffect(() => {
+    if (
+      legacyContract?.length &&
+      step === ImportCollectionStep.SELECTCONTRACT
+    ) {
+      onContractChange(legacyContract[0]);
+    }
+  }, [legacyContract, step]);
 
-  const collectionListProps = useMyCollection<Co>({
-    contractAddress: selectContract,
-    isLegacy: true,
-  } as any);
   const {
     collection,
     selectedNFTS,
@@ -51,13 +102,18 @@ export const useCollectionImport = <
     onNFTSelectedMethod,
     ...nftProps
   } = useCollectionManage<Co, NFT>({ collection: selectCollection });
-  const onContractChange = React.useCallback(() => {}, []);
-  const onContractNext = React.useCallback(() => {}, []);
   const onCollectionChange = React.useCallback(() => {}, []);
+  const onContractNext = React.useCallback(() => {}, []);
+
   const onCollectionNext = React.useCallback(() => {}, []);
   // const onNFTSelected = React.useCallback(() => {}, []);
   // const onNFTSelectedMethod = React.useCallback(() => {}, []);
   const onClick = React.useCallback(() => {}, []);
+
+  // React.useEffect(() => {
+  //   updateLegacyCollection();
+  // }, []);
+
   return {
     account: account as Account,
     onContractChange,
@@ -73,7 +129,7 @@ export const useCollectionImport = <
     onLoading,
     onClick,
     data: {
-      contractList,
+      contractList: legacyContract,
       selectContract,
       selectNFTList: selectedNFTS as NFT[],
       selectCollection,

@@ -18,6 +18,7 @@ import {
   NFTWholeINFO,
   CollectionMeta,
   SoursURL,
+  ViewMoreIcon,
 } from "@loopring-web/common-resources";
 import {
   TextField,
@@ -32,6 +33,7 @@ import { useSettings } from "../../../stores";
 import { CollectionManageWrap } from "./CollectionManageWrap";
 import { getIPFSString } from "@loopring-web/core";
 import { NFTMedia } from "../../block";
+import { useTheme } from "@emotion/react";
 
 const BoxStyle = styled(Grid)`
   .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
@@ -109,6 +111,7 @@ export const ImportCollectionWrap = <
 }: ImportCollectionViewProps<Co, NFT>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
+  const theme = useTheme();
   const {
     contractList,
     selectContract,
@@ -149,14 +152,7 @@ export const ImportCollectionWrap = <
       </Button>
     );
   };
-  React.useEffect(() => {
-    if (selectContract && step === ImportCollectionStep.SELECTCONTRACT) {
-      // nftProps.isLoading;
-      //TODO:
-      let _filter = { contractAddress: selectContract, page: 1 };
-      nftProps.onFilterNFT({ _filter });
-    }
-  }, [selectContract, step]);
+
   const panelList: Array<{
     view: JSX.Element;
     onBack?: undefined | (() => void);
@@ -181,6 +177,7 @@ export const ImportCollectionWrap = <
               alignItems={"flex-start"}
               flexDirection={"column"}
               justifyContent={"stretch"}
+              // flex={1}
             >
               <Typography component={"h4"} variant={"h5"} marginBottom={2}>
                 {t("labelCheckImportCollectionTitle")}
@@ -189,7 +186,7 @@ export const ImportCollectionWrap = <
                 id="ContractAddress"
                 select
                 label={t("labelSelectContractAddress")}
-                value={selectContract ?? ""}
+                value={selectContract?.value ?? ""}
                 onChange={(event: React.ChangeEvent<any>) => {
                   onContractChange(event.target?.value);
                 }}
@@ -201,7 +198,7 @@ export const ImportCollectionWrap = <
                     <MenuItem
                       key={item.toString() + index}
                       value={item}
-                      selected={item === selectContract}
+                      selected={item === selectContract?.value ?? "'"}
                       withnocheckicon={"true"}
                     >
                       <ListItemText
@@ -221,30 +218,55 @@ export const ImportCollectionWrap = <
                 })}
               </TextField>
               {selectContract && (
-                <Box display={"flex"} flexDirection={"row"}>
-                  {nftProps.isLoading ? (
-                    nftProps.total ? (
-                      nftProps.listNFT.splice(0, 3).map((item, index) => {
-                        return (
-                          <Box
-                            marginRight={2}
-                            width={60}
-                            height={60}
-                            borderRadius={"30"}
-                            overflow={"hidden"}
-                          >
-                            <NFTMedia
-                              item={item}
-                              index={index}
-                              shouldPlay={false}
-                              onNFTError={() => undefined}
-                              isOrigin={false}
-                              getIPFSString={getIPFSString}
-                              baseURL={baseURL}
-                            />
-                          </Box>
-                        );
-                      })
+                <Box
+                  display={"flex"}
+                  flexDirection={"row"}
+                  marginTop={2}
+                  width={"100%"}
+                  justifyContent={"center"}
+                >
+                  {!onLoading ? (
+                    selectContract.total ? (
+                      <>
+                        {selectContract?.list?.map((item, index) => {
+                          return (
+                            <Box
+                              marginRight={2}
+                              width={60}
+                              height={60}
+                              borderRadius={1}
+                              display={"flex"}
+                              overflow={"hidden"}
+                            >
+                              <NFTMedia
+                                item={item}
+                                index={index}
+                                shouldPlay={false}
+                                onNFTError={() => undefined}
+                                isOrigin={false}
+                                getIPFSString={getIPFSString}
+                                baseURL={baseURL}
+                              />
+                            </Box>
+                          );
+                        })}
+                        <Box
+                          marginRight={2}
+                          width={60}
+                          height={60}
+                          borderRadius={1}
+                          display={"flex"}
+                          overflow={"hidden"}
+                          alignItems={"center"}
+                          justifyContent={"center"}
+                          border={"1px var(--color-border-disable) solid"}
+                        >
+                          <ViewMoreIcon
+                            fontSize={"large"}
+                            htmlColor={"var(--color-text-secondary)"}
+                          />
+                        </Box>
+                      </>
                     ) : (
                       <Box flex={1} alignItems={"center"}>
                         <EmptyDefault
@@ -267,6 +289,8 @@ export const ImportCollectionWrap = <
                       display={"flex"}
                       alignItems={"center"}
                       height={"90%"}
+                      width={"100%"}
+                      justifyContent={"center"}
                     >
                       <img
                         className="loading-gif"
@@ -295,7 +319,7 @@ export const ImportCollectionWrap = <
                 },
                 onClick: () => {
                   setStep(ImportCollectionStep.SELECTCOLLECTION);
-                  onContractNext(selectContract);
+                  onContractNext(selectContract?.value ?? "");
                 },
               })}
             </Box>
@@ -434,9 +458,10 @@ export const ImportCollectionWrap = <
     ];
   }, [
     t,
-    isMobile,
     selectContract,
     contractList,
+    onLoading,
+    isMobile,
     btnMain,
     collectionInputProps,
     selectCollection,

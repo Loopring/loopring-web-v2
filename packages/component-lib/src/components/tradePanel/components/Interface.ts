@@ -24,6 +24,7 @@ import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
 import { CollectionInputProps } from "./tool";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 /**
  * private props
@@ -490,7 +491,13 @@ export type ImportCollectionViewProps<Co, NFT> = {
   onClick: (item: string) => void;
   data: {
     contractList: string[];
-    selectContract: string;
+    selectContract:
+      | {
+          value: string;
+          total?: number;
+          list?: sdk.UserNFTBalanceInfo[];
+        }
+      | undefined;
     selectCollection: Co | undefined;
     selectNFTList: NFT[];
     collectionInputProps: CollectionInputProps<any>;

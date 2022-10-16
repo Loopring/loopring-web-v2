@@ -20,6 +20,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   } = useWalletLayer1();
   const {
     updateWalletLayer2NFT,
+    resetLayer2NFT,
     status: wallet2statusNFTStatus,
     statusUnset: wallet2statusNFTUnset,
   } = useWalletLayer2NFT();
@@ -35,13 +36,15 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   } = useWalletLayer2();
   const {
     updateWalletL2Collection,
-    updateLegacyCollection,
+    updateLegacyContracts,
+    resetL2Collection,
     status: walletL2CollectionStatus,
     statusUnset: walletL2CollectionstatusUnset,
   } = useWalletL2Collection();
 
   const {
     updateWalletL2NFTCollection,
+    resetL2NFTCollection,
     status: walletL2NFTCollectionStatus,
     statusUnset: walletL2NFTCollectionstatusUnset,
   } = useWalletL2NFTCollection();
@@ -62,6 +65,9 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2();
+            resetLayer2NFT();
+            resetL2NFTCollection();
+            resetL2Collection();
           }
           break;
         case AccountStatus.ACTIVATED:
@@ -75,7 +81,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             updateWalletLayer2NFT({ page: 1, collection: undefined });
             updateWalletL2NFTCollection({ page: 1 });
             updateWalletL2Collection({ page: 1 });
-            updateLegacyCollection();
+            updateLegacyContracts();
           }
           break;
       }

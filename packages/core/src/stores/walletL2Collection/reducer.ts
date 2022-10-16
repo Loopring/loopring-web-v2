@@ -9,7 +9,7 @@ import {
 const initialState: WalletL2CollectionStates<CollectionMeta> = {
   walletL2Collection: [],
   total: 0,
-  legacyCollections: [],
+  legacyContract: [],
   status: "DONE",
   errorMessage: null,
   page: -1,
@@ -25,11 +25,11 @@ const walletL2CollectionSlice: Slice<WalletL2CollectionStates<CollectionMeta>> =
         };
         state.status = SagaStatus.UNSET;
       },
-      updateLegacyCollection(
+      updateLegacyContracts(
         state,
-        action: PayloadAction<{ legacyCollection: string[] }>
+        action: PayloadAction<{ legacyContract: string[] }>
       ) {
-        state.legacyCollections = action.payload?.legacyCollection ?? [];
+        state.legacyContract = action.payload?.legacyContract ?? [];
       },
       updateWalletL2Collection(
         state,
@@ -64,7 +64,7 @@ const walletL2CollectionSlice: Slice<WalletL2CollectionStates<CollectionMeta>> =
   });
 export { walletL2CollectionSlice };
 export const {
-  updateLegacyCollection,
+  updateLegacyContracts,
   updateWalletL2Collection,
   socketUpdateBalance,
   getWalletL2CollectionStatus,
