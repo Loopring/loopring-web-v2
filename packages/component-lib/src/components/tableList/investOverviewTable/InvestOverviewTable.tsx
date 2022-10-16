@@ -31,7 +31,7 @@ const TableStyled = styled(Box)<
 >`
   & .rdg.rdg {
     ${({ hasContent }) => (hasContent ? `min-height:initial;` : ``)}
-    border-radius: ${({ theme }) => theme.unit}px;
+    // border-radius: ${({ theme }) => theme.unit}px;
 
     ${({ isMobile }) =>
       !isMobile
@@ -405,7 +405,6 @@ export const InvestOverviewTable = <R extends RowInvest>({
   return (
     <TableStyled
       isMobile={isMobile}
-      marginX={2}
       hasContent={rows?.length > 0 ? true : false}
     >
       {showFilter &&
