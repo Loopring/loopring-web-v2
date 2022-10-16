@@ -125,7 +125,7 @@ export const OverviewPanel = withTranslation("common")(
           {!!(account.readyState === AccountStatus.ACTIVATED) && (
             <>
               <Box display={"flex"} flexDirection={"column"}>
-                <Typography variant={"h5"} marginBottom={1} marginX={5}>
+                <Typography variant={"h5"} marginBottom={1} marginX={3}>
                   {t("labelTitleMyInvestAvailable", { ns: "common" })}
                 </Typography>
                 <InvestOverviewTable
