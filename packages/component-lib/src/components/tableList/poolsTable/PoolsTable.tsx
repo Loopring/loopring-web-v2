@@ -32,8 +32,9 @@ import { FormatterProps } from "react-data-grid";
 
 import { useSettings } from "../../../stores";
 import { TablePaddingX } from "../../styled";
-import { AmmPairDetail, TagIconList } from "../../block";
+import { AmmAPRDetail, AmmPairDetail, TagIconList } from "../../block";
 import { ActionPopContent } from "../myPoolTable/components/ActionPop";
+
 const BoxStyled = styled(Box)`` as typeof Box;
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   .rdg {
@@ -241,6 +242,13 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         popupId: `popup-poolsTable-${label}`,
       });
     }, []);
+
+    const getPopoverAprState = React.useCallback((label: string) => {
+      return usePopupState({
+        variant: "popover",
+        popupId: `popup-poolsTable-${label}`,
+      });
+    }, []);
     const columnMode = <R extends Row<T>, T>(): Column<R, unknown>[] => [
       {
         key: "pools",
@@ -368,16 +376,50 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         width: "auto",
         maxWidth: 68,
         headerCellClass: "textAlignRight",
-        formatter: ({ row }) => {
+        formatter: ({ row, rowIdx }) => {
           const APR =
             typeof row.APR !== undefined && row.APR ? row?.APR : EmptyValueTag;
+          const popoverState = getPopoverAprState(rowIdx.toString());
           return (
             <Box className={"textAlignRight"}>
-              <Typography component={"span"}>
-                {APR === EmptyValueTag || typeof APR === "undefined"
+              <Typography
+                component={"span"}
+                style={
+                  APR === 0 ||
+                  typeof APR === "undefined" ||
+                  APR == EmptyValueTag
+                    ? {}
+                    : {
+                        cursor: "pointer",
+                        textDecoration: "underline dotted",
+                      }
+                }
+                {...bindHover(popoverState)}
+              >
+                {APR === 0 || typeof APR === "undefined" || APR == EmptyValueTag
                   ? EmptyValueTag
                   : getValuePrecisionThousand(APR, 2, 2, 2, true) + "%"}
               </Typography>
+              {!(
+                APR === 0 ||
+                typeof APR === "undefined" ||
+                APR == EmptyValueTag
+              ) && (
+                <PopoverPure
+                  className={"arrow-top-center"}
+                  {...bindPopper(popoverState)}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                  transformOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                  }}
+                >
+                  <AmmAPRDetail {...row.APRs} />
+                </PopoverPure>
+              )}
             </Box>
           );
         },
@@ -414,7 +456,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                   handleWithdraw(row as any);
                 }}
               >
-                {t("labelPoolTableRemoveLiqudity")}
+                {t("labelPoolTableRemoveLiquidity")}
               </Button>
             </Box>
           );

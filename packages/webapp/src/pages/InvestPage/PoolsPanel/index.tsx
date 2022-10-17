@@ -18,7 +18,6 @@ import {
   store,
   useAccount,
   useSystem,
-  useAmmActivityMap,
   useTokenMap,
   useNotify,
 } from "@loopring-web/core";
@@ -51,7 +50,6 @@ export const PoolsPanel = withTranslation("common")(
     const container = React.useRef(null);
     const { account } = useAccount();
     const history = useHistory();
-    const theme = useTheme();
     const {
       filteredData,
       sortMethod,

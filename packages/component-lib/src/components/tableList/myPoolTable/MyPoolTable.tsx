@@ -28,7 +28,7 @@ import { bindHover } from "material-ui-popup-state/es";
 import { useSettings } from "../../../stores";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Filter } from "./components/Filter";
-import { AmmPairDetail } from "../../block";
+import { AmmAPRDetail, AmmPairDetail } from "../../block";
 import { ActionPopContent } from "./components/ActionPop";
 
 export enum PoolTradeType {
@@ -41,7 +41,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 200px 80px auto auto !important;`
+        ? `--template-columns: 200px 80px auto auto 200px !important;`
         : `--template-columns: 16% 60% auto 8% !important;`}
     height: calc(86px * 5 + var(--header-row-height));
 
@@ -78,6 +78,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
   { t, handleWithdraw, handleDeposit, allowTrade }: WithTranslation & Method<R>,
   currency: Currency,
   getPopoverState: any,
+  getPopoverAprState: any,
   account: Account,
   tokenMap: { [key: string]: any },
   forexMap: ForexMap<Currency>
@@ -109,18 +110,50 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
     width: "auto",
     maxWidth: 80,
     headerCellClass: "textAlignRightSortable",
-    formatter: ({ row }) => {
+    formatter: ({ row, rowIdx }) => {
       const APR =
         typeof row?.ammDetail?.APR !== undefined && row.ammDetail.APR
           ? row.ammDetail.APR
           : EmptyValueTag;
+      const popoverState = getPopoverAprState(rowIdx.toString());
       return (
-        <Box className={"textAlignRight"} height={"100%"}>
-          <Typography component={"span"}>
-            {APR === EmptyValueTag || typeof APR === "undefined"
+        <Box className={"textAlignRight"}>
+          <Typography
+            component={"span"}
+            style={
+              APR === 0 || typeof APR === "undefined" || APR == EmptyValueTag
+                ? {}
+                : {
+                    cursor: "pointer",
+                    textDecoration: "underline dotted",
+                  }
+            }
+            {...bindHover(popoverState)}
+          >
+            {APR === 0 || typeof APR === "undefined" || APR == EmptyValueTag
               ? EmptyValueTag
               : getValuePrecisionThousand(APR, 2, 2, 2, true) + "%"}
           </Typography>
+          {!(
+            APR === 0 ||
+            typeof APR === "undefined" ||
+            APR == EmptyValueTag
+          ) && (
+            <PopoverPure
+              className={"arrow-top-center"}
+              {...bindPopper(popoverState)}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+            >
+              <AmmAPRDetail {...row?.ammDetail?.APRs} />
+            </PopoverPure>
+          )}
         </Box>
       );
     },
@@ -202,6 +235,31 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
     },
   },
   {
+    key: "rewards",
+    name: t("label24Rewards"),
+    headerCellClass: "textAlignRight",
+    formatter: ({ row }) => {
+      return (
+        <Box className={"textAlignRight"} height={"100%"}>
+          <Typography component={"span"}>
+            {typeof row.rewardDollar24 === "undefined" ||
+            row.rewardDollar24 === 0
+              ? EmptyValueTag
+              : PriceTag[CurrencyToTag[currency]] +
+                getValuePrecisionThousand(
+                  (row.rewardDollar24 || 0) * (forexMap[currency] ?? 0),
+                  undefined,
+                  undefined,
+                  2,
+                  true,
+                  { isFait: true, floor: true }
+                )}
+          </Typography>
+        </Box>
+      );
+    },
+  },
+  {
     key: "action",
     name: t("labelActions"),
     headerCellClass: "textAlignRight",
@@ -223,7 +281,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
                 handleDeposit(row);
               }}
             >
-              {t("labelPoolTableAddLiqudity")}
+              {t("labelPoolTableAddLiquidity")}
             </Button>
             <Button
               variant={"text"}
@@ -232,7 +290,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
                 handleWithdraw(row);
               }}
             >
-              {t("labelPoolTableRemoveLiqudity")}
+              {t("labelPoolTableRemoveLiquidity")}
             </Button>
           </Box>
         </PoolStyle>
@@ -244,150 +302,157 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
   { t, handleWithdraw, handleDeposit, allowTrade }: WithTranslation & Method<R>,
   currency: Currency,
   _getPopoverState: any,
+  _getPopoverAprState: any,
   account: Account,
   _tokenMap: { [key: string]: any },
   forexMap: ForexMap<Currency>
-): Column<R, unknown>[] => [
-  {
-    key: "pools",
-    sortable: false,
-    width: "auto",
-    name: t("labelPool"),
-    formatter: ({ row }) => {
-      return (
-        <PoolStyle
-          display={"flex"}
-          flexDirection={"column"}
-          alignContent={"flex-start"}
-          justifyContent={"center"}
-          height={"100%"}
-        >
-          <IconColumn account={account} row={row.ammDetail as any} size={20} />
-        </PoolStyle>
-      );
+): Column<R, unknown>[] => {
+  return [
+    {
+      key: "pools",
+      sortable: false,
+      width: "auto",
+      name: t("labelPool"),
+      formatter: ({ row }) => {
+        return (
+          <PoolStyle
+            display={"flex"}
+            flexDirection={"column"}
+            alignContent={"flex-start"}
+            justifyContent={"center"}
+            height={"100%"}
+          >
+            <IconColumn
+              account={account}
+              row={row.ammDetail as any}
+              size={20}
+            />
+          </PoolStyle>
+        );
+      },
     },
-  },
-  {
-    key: "liquidity",
-    sortable: true,
-    headerCellClass: "textAlignRightSortable",
-    name: t("labelMyLiquidity"), //+ "/" + t("labelFeeEarned")
-    formatter: ({ row }) => {
-      if (!row || !row.ammDetail) {
+    {
+      key: "liquidity",
+      sortable: true,
+      headerCellClass: "textAlignRightSortable",
+      name: t("labelMyLiquidity"), //+ "/" + t("labelFeeEarned")
+      formatter: ({ row }) => {
+        if (!row || !row.ammDetail) {
+          return (
+            <Box
+              display={"flex"}
+              justifyContent={"flex-end"}
+              alignItems={"center"}
+            />
+          );
+        }
+        const {
+          balanceDollar,
+          balanceA,
+          balanceB,
+          ammDetail: { coinAInfo, coinBInfo },
+        } = row as any;
+
         return (
           <Box
+            className={"textAlignRight"}
             display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
-          />
-        );
-      }
-      const {
-        balanceDollar,
-        balanceA,
-        balanceB,
-        ammDetail: { coinAInfo, coinBInfo },
-      } = row as any;
-
-      return (
-        <Box
-          className={"textAlignRight"}
-          display={"flex"}
-          flexDirection={"column"}
-          height={"100%"}
-          justifyContent={"center"}
-        >
-          <Typography component={"span"}>
-            {typeof balanceDollar === "undefined"
-              ? EmptyValueTag
-              : PriceTag[CurrencyToTag[currency]] +
-                getValuePrecisionThousand(
-                  (balanceDollar || 0) * (forexMap[currency] ?? 0),
-                  undefined,
-                  undefined,
-                  2,
-                  true,
-                  { isFait: true, floor: true }
-                )}
-          </Typography>
-          <Typography
-            component={"span"}
-            variant={"body2"}
-            color={"textSecondary"}
+            flexDirection={"column"}
+            height={"100%"}
+            justifyContent={"center"}
           >
-            {getValuePrecisionThousand(balanceA, undefined, 2, 2, true, {
-              isAbbreviate: true,
-              abbreviate: 3,
-            }) +
-              " " +
-              coinAInfo.simpleName +
-              `  +  ` +
-              getValuePrecisionThousand(balanceB, undefined, 2, 2, true, {
+            <Typography component={"span"}>
+              {typeof balanceDollar === "undefined"
+                ? EmptyValueTag
+                : PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    (balanceDollar || 0) * (forexMap[currency] ?? 0),
+                    undefined,
+                    undefined,
+                    2,
+                    true,
+                    { isFait: true, floor: true }
+                  )}
+            </Typography>
+            <Typography
+              component={"span"}
+              variant={"body2"}
+              color={"textSecondary"}
+            >
+              {getValuePrecisionThousand(balanceA, undefined, 2, 2, true, {
                 isAbbreviate: true,
                 abbreviate: 3,
               }) +
-              " " +
-              coinBInfo.simpleName}
-          </Typography>
-        </Box>
-      );
+                " " +
+                coinAInfo.simpleName +
+                `  +  ` +
+                getValuePrecisionThousand(balanceB, undefined, 2, 2, true, {
+                  isAbbreviate: true,
+                  abbreviate: 3,
+                }) +
+                " " +
+                coinBInfo.simpleName}
+            </Typography>
+          </Box>
+        );
+      },
     },
-  },
-  {
-    key: "APR",
-    sortable: true,
-    name: t("labelAPR"),
-    width: "auto",
-    maxWidth: 80,
-    headerCellClass: "textAlignRightSortable",
-    formatter: ({ row }) => {
-      const APR =
-        typeof row?.ammDetail?.APR !== undefined && row.ammDetail.APR
-          ? row.ammDetail.APR
-          : EmptyValueTag;
-      return (
-        <Box className={"textAlignRight"}>
-          <Typography component={"span"}>
-            {APR === EmptyValueTag || typeof APR === "undefined"
-              ? EmptyValueTag
-              : getValuePrecisionThousand(APR, 2, 2, 2, true) + "%"}
-          </Typography>
-        </Box>
-      );
+    {
+      key: "APR",
+      sortable: true,
+      name: t("labelAPR"),
+      width: "auto",
+      maxWidth: 80,
+      headerCellClass: "textAlignRightSortable",
+      formatter: ({ row }) => {
+        const APR =
+          typeof row?.ammDetail?.APR !== undefined && row.ammDetail.APR
+            ? row.ammDetail.APR
+            : EmptyValueTag;
+        return (
+          <Box className={"textAlignRight"}>
+            <Typography component={"span"}>
+              {APR === EmptyValueTag || typeof APR === "undefined"
+                ? EmptyValueTag
+                : getValuePrecisionThousand(APR, 2, 2, 2, true) + "%"}
+            </Typography>
+          </Box>
+        );
+      },
     },
-  },
-  {
-    key: "action",
-    name: "",
-    headerCellClass: "textAlignRight",
-    formatter: ({ row }) => {
-      const popoverProps: PopoverWrapProps = {
-        type: PopoverType.click,
-        popupId: "testPopup",
-        className: "arrow-none",
-        children: <MoreIcon cursor={"pointer"} />,
-        popoverContent: (
-          <ActionPopContent
-            {...{ row, allowTrade, handleWithdraw, handleDeposit, t }}
-          />
-        ),
-        anchorOrigin: {
-          vertical: "bottom",
-          horizontal: "right",
-        },
-        transformOrigin: {
-          vertical: "top",
-          horizontal: "right",
-        },
-      } as PopoverWrapProps;
-      return (
-        <Grid item marginTop={1}>
-          <Popover {...{ ...popoverProps }} />
-        </Grid>
-      );
+    {
+      key: "action",
+      name: "",
+      headerCellClass: "textAlignRight",
+      formatter: ({ row }) => {
+        const popoverProps: PopoverWrapProps = {
+          type: PopoverType.click,
+          popupId: "testPopup",
+          className: "arrow-none",
+          children: <MoreIcon cursor={"pointer"} />,
+          popoverContent: (
+            <ActionPopContent
+              {...{ row, allowTrade, handleWithdraw, handleDeposit, t }}
+            />
+          ),
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "right",
+          },
+          transformOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+        } as PopoverWrapProps;
+        return (
+          <Grid item marginTop={1}>
+            <Popover {...{ ...popoverProps }} />
+          </Grid>
+        );
+      },
     },
-  },
-];
+  ];
+};
 
 export const MyPoolTable = withTranslation("tables")(
   <R extends MyPoolRow<{ [key: string]: any }>>({
@@ -421,6 +486,12 @@ export const MyPoolTable = withTranslation("tables")(
         popupId: `popup-poolsTable-${label}`,
       });
     }, []);
+    const getPopoverAprState = React.useCallback((label: string) => {
+      return usePopupState({
+        variant: "popover",
+        popupId: `popup-poolsTable-${label}`,
+      });
+    }, []);
 
     return (
       <TableStyled
@@ -428,19 +499,6 @@ export const MyPoolTable = withTranslation("tables")(
         className={`${rawData?.length > 0 ? "min-height" : ""}`}
       >
         {
-          // (isMobile && isDropDown ? (
-          //   <Link
-          //     variant={"body1"}
-          //     display={"inline-flex"}
-          //     width={"100%"}
-          //     justifyContent={"flex-end"}
-          //     paddingRight={2}
-          //     onClick={() => setIsDropDown(false)}
-          //   >
-          //     Show Filter
-          //   </Link>
-          // ) :
-
           <TableFilterStyled
             display={"flex"}
             justifyContent={"space-between"}
@@ -480,6 +538,7 @@ export const MyPoolTable = withTranslation("tables")(
                   },
                   currency,
                   getPopoverState,
+                  getPopoverAprState,
                   account,
                   tokenMap,
                   forexMap
@@ -496,6 +555,7 @@ export const MyPoolTable = withTranslation("tables")(
                   },
                   currency,
                   getPopoverState,
+                  getPopoverAprState,
                   account,
                   tokenMap,
                   forexMap

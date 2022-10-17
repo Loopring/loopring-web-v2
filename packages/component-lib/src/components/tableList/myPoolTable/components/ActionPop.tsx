@@ -7,11 +7,11 @@ export const ActionPopContent = React.memo(
       <Box borderRadius={"inherit"} minWidth={110}>
         {allowTrade?.joinAmm?.enable && (
           <MenuItem onClick={() => handleDeposit(row)}>
-            <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
+            <ListItemText>{t("labelPoolTableAddLiquidity")}</ListItemText>
           </MenuItem>
         )}
         <MenuItem onClick={() => handleWithdraw(row)}>
-          <ListItemText>{t("labelPoolTableRemoveLiqudity")}</ListItemText>
+          <ListItemText>{t("labelPoolTableRemoveLiquidity")}</ListItemText>
         </MenuItem>
       </Box>
     );

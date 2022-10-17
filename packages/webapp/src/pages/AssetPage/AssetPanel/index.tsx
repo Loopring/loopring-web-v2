@@ -1,9 +1,4 @@
-import { useDeepCompareEffect } from "react-use";
-import {
-  useTranslation,
-  WithTranslation,
-  withTranslation,
-} from "react-i18next";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 import { Box, Tab, Tabs } from "@mui/material";
 import styled from "@emotion/styled";

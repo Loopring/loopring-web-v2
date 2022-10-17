@@ -15,7 +15,7 @@ export const setAmmState = ({
   ammPoolState,
   keyPair,
 }: {
-  ammPoolState: AmmPoolStat;
+  ammPoolState: AmmPoolStat & { apysBips?: string[] };
   keyPair: string;
 }) => {
   const { idIndex } = store.getState().tokenMap;
@@ -55,7 +55,20 @@ export const setAmmState = ({
             .times(tokenPrices[coinA])
             .plus(toBig(feeB || 0).times(tokenPrices[coinB]))
         : undefined;
-
+    const APRs = {
+      self:
+        (parseInt(ammPoolState?.apysBips ? ammPoolState.apysBips[0] : "0") *
+          1.0) /
+        100,
+      event:
+        (parseInt(ammPoolState?.apysBips ? ammPoolState?.apysBips[1] : "0") *
+          1.0) /
+        100,
+      fee:
+        (parseInt(ammPoolState?.apysBips ? ammPoolState?.apysBips[2] : "0") *
+          1.0) /
+        100,
+    };
     return {
       ...result,
       feeA: feeA?.toNumber(),
@@ -65,7 +78,8 @@ export const setAmmState = ({
         change: undefined,
         timeUnit: "24h",
       },
-      APR: (parseInt(ammPoolState.apyBips) * 1.0) / 100,
+      APR: APRs.self + APRs.event + APRs.fee, // (parseInt(ammPoolState.apyBips) * 1.0) / 100,
+      APRs,
     };
   }
 };

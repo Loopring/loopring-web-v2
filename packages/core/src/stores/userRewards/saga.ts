@@ -18,6 +18,7 @@ const getUserRewardsApi = async <R extends { [key: string]: any }>(
 
     const { ammUserRewardMap } =
       await LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({ owner: accountId });
+
     __timer__ = ((__timer__) => {
       if (__timer__ && __timer__ !== -1) {
         clearInterval(__timer__);

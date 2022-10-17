@@ -2,7 +2,6 @@ import {
   AmmPoolActivityRule,
   AmmPoolActivityStatus,
   AmmPoolSnapshot,
-  AmmUserReward,
   AmmUserRewardMap,
   LoopringMap,
   TickerData,
@@ -46,7 +45,6 @@ export const makeUIAmmActivityMap = <
   const { coinMap, tokenMap, idIndex } = store.getState().tokenMap;
 
   let ammActivityViewMap: AmmActivityViewMap<R, I> = {};
-
   if (ammActivityMap) {
     const genView = (ammActivityMapItem: any) => {
       let ammActivityViewMapTmp: AmmActivityViewMap<R, I> = {};
@@ -64,19 +62,17 @@ export const makeUIAmmActivityMap = <
                 idIndex &&
                 tokenMap
               ) {
+                const { current } = myReward
+                  ? myReward[ammPoolActivityRule.market]
+                  : { current: undefined };
+
                 const symbol =
                   idIndex[ammPoolActivityRule.awardRules[0].tokenId as any];
                 const totalRewards = VolToNumberWithPrecision(
                   ammPoolActivityRule.awardRules[0].volume,
                   symbol
                 );
-                // @ts-ignore
-                const myRewardVol =
-                  myReward &&
-                  myReward[ammPoolActivityRule.market]?.currentRewards[0]
-                    ? myReward[ammPoolActivityRule.market]?.currentRewards[0]
-                        .volume
-                    : 0;
+                const myRewardVol = current?.currentRewards[0]?.volume ?? 0;
 
                 const item = {
                   // @ts-ignore
@@ -220,7 +216,7 @@ export type SummaryMyInvest = {
 export const makeSummaryMyAmm = <_C extends { [key: string]: any }>({
   userRewardsMap,
 }: {
-  userRewardsMap: LoopringMap<AmmUserReward> | undefined;
+  userRewardsMap: AmmUserRewardMap | undefined;
 }): SummaryMyInvest | undefined => {
   const { coinMap, idIndex, tokenMap } = store.getState().tokenMap;
   const { tokenPrices } = store.getState().tokenPrices;
@@ -256,6 +252,102 @@ export const makeSummaryMyAmm = <_C extends { [key: string]: any }>({
   }
   return undefined;
 };
+const getRewardCalc = ({
+  coinA,
+  coinB,
+  ammUserReward,
+  idIndex,
+  tokenPrices,
+}: any) => {
+  let rewardToken,
+    rewardToken2,
+    feeA,
+    feeB,
+    feeDollar,
+    reward,
+    reward2,
+    rewardDollar,
+    feeA24,
+    feeB24,
+    feeDollar24,
+    reward24,
+    reward224,
+    rewardDollar24;
+  const { current, lastDay } = ammUserReward ?? {};
+  if (current) {
+    rewardToken = current.currentRewards[0]
+      ? idIndex[current.currentRewards[0].tokenId as number]
+      : undefined;
+    rewardToken2 = current.currentRewards[1]
+      ? idIndex[current.currentRewards[1].tokenId as number]
+      : undefined;
+    feeA =
+      volumeToCountAsBigNumber(coinA, current?.feeRewards[0] ?? 0) ?? toBig(0);
+    feeB =
+      volumeToCountAsBigNumber(coinB, current?.feeRewards[1] ?? 0) ?? toBig(0);
+    feeDollar = feeA
+      .times(tokenPrices[coinA] ? tokenPrices[coinA] : 0)
+      .plus(feeB.times(tokenPrices[coinB] ? tokenPrices[coinB] : 0));
+    reward = rewardToken
+      ? (volumeToCountAsBigNumber(
+          rewardToken,
+          current.currentRewards[0].volume
+        ) as BigNumber)
+      : toBig(0);
+    reward2 = rewardToken2
+      ? (volumeToCountAsBigNumber(
+          rewardToken2,
+          current.currentRewards[1].volume
+        ) as BigNumber)
+      : toBig(0);
+    reward = reward ? reward : toBig(0);
+    reward2 = reward2 ? reward2 : toBig(0);
+    rewardDollar = reward
+      .times(rewardToken ? tokenPrices[rewardToken] : 1)
+      .plus(reward2.times(rewardToken2 ? tokenPrices[rewardToken2] : 1));
+    if (lastDay) {
+      feeA24 =
+        volumeToCountAsBigNumber(coinA, lastDay?.feeRewards[0] ?? 0) ??
+        toBig(0);
+      feeB24 =
+        volumeToCountAsBigNumber(coinB, lastDay.feeRewards[1] ?? 0) ?? toBig(0);
+      feeDollar24 = feeA24
+        .times(tokenPrices[coinA] ? tokenPrices[coinA] : 0)
+        .plus(feeB24.times(tokenPrices[coinB] ? tokenPrices[coinB] : 0));
+      reward24 = rewardToken
+        ? (volumeToCountAsBigNumber(
+            rewardToken,
+            lastDay?.currentRewards[0]?.volume ?? 0
+          ) as BigNumber)
+        : toBig(0);
+      reward224 = rewardToken2
+        ? (volumeToCountAsBigNumber(
+            rewardToken2,
+            lastDay?.currentRewards[1]?.volume ?? 0
+          ) as BigNumber)
+        : toBig(0);
+      rewardDollar24 = reward24
+        .times(rewardToken ? tokenPrices[rewardToken] : 1)
+        .plus(reward24.times(rewardToken2 ? tokenPrices[rewardToken2] : 1));
+    }
+  }
+  return {
+    rewardToken: rewardToken ? coinMap[rewardToken] : undefined,
+    rewardToken2: rewardToken2 ? coinMap[rewardToken2] : undefined,
+    feeA: feeA ? feeA.toNumber() : undefined,
+    feeB: feeB ? feeB.toNumber() : undefined,
+    reward: reward ? reward.toNumber() : undefined,
+    reward2: reward2 ? reward2.toNumber() : undefined,
+    rewardDollar: rewardDollar ? rewardDollar.toNumber() : undefined,
+    feeDollar: feeDollar ? feeDollar.toNumber() : undefined,
+    feeA24: feeA24 ? feeA24.toNumber() : undefined,
+    feeB24: feeB24 ? feeB24.toNumber() : undefined,
+    feeDollar24: feeDollar24 ? feeDollar24.toNumber() : undefined,
+    reward24: reward24 ? reward24.toNumber() : undefined,
+    reward224: reward224 ? reward224.toNumber() : undefined,
+    rewardDollar24: rewardDollar24 ? rewardDollar24.toNumber() : undefined,
+  };
+};
 const getOneRewardInfo = <C>({
   coinA,
   coinB,
@@ -265,50 +357,13 @@ const getOneRewardInfo = <C>({
   walletMap,
   snapShotData,
 }: any) => {
-  let rewardToken,
-    rewardToken2,
-    feeA,
-    feeB,
-    feeDollar,
-    reward,
-    reward2,
-    rewardDollar;
-  if (ammUserReward) {
-    rewardToken = ammUserReward.currentRewards[0]
-      ? idIndex[ammUserReward.currentRewards[0].tokenId as number]
-      : undefined;
-    rewardToken2 = ammUserReward.currentRewards[1]
-      ? idIndex[ammUserReward.currentRewards[1].tokenId as number]
-      : undefined;
-    feeA = ammUserReward
-      ? volumeToCountAsBigNumber(coinA, ammUserReward.feeRewards[0])
-      : toBig(0);
-    feeB = ammUserReward
-      ? volumeToCountAsBigNumber(coinB, ammUserReward.feeRewards[1])
-      : toBig(0);
-    feeA = feeA ? feeA : toBig(0);
-    feeB = feeB ? feeB : toBig(0);
-    feeDollar = feeA
-      .times(tokenPrices[coinA] ? tokenPrices[coinA] : 0)
-      .plus(feeB.times(tokenPrices[coinB] ? tokenPrices[coinB] : 0));
-    reward = rewardToken
-      ? (volumeToCountAsBigNumber(
-          rewardToken,
-          ammUserReward.currentRewards[0].volume
-        ) as BigNumber)
-      : toBig(0);
-    reward2 = rewardToken2
-      ? (volumeToCountAsBigNumber(
-          rewardToken2,
-          ammUserReward.currentRewards[1].volume
-        ) as BigNumber)
-      : toBig(0);
-    reward = reward ? reward : toBig(0);
-    reward2 = reward2 ? reward2 : toBig(0);
-    rewardDollar = reward
-      .times(rewardToken ? tokenPrices[rewardToken] : 1)
-      .plus(reward2.times(rewardToken2 ? tokenPrices[rewardToken2] : 1));
-  }
+  const result = getRewardCalc({
+    coinA,
+    coinB,
+    ammUserReward,
+    idIndex,
+    tokenPrices,
+  });
   let balanceA, balanceB, balanceDollar;
   if (walletMap && walletMap["LP-" + coinA + "-" + coinB] && snapShotData) {
     // @ts-ignore
@@ -334,14 +389,7 @@ const getOneRewardInfo = <C>({
   }
 
   return {
-    feeA: feeA ? feeA.toNumber() : undefined,
-    feeB: feeB ? feeB.toNumber() : undefined,
-    reward: reward ? reward.toNumber() : undefined,
-    rewardToken: rewardToken ? coinMap[rewardToken] : undefined,
-    reward2: reward2 ? reward2.toNumber() : undefined,
-    rewardToken2: rewardToken2 ? coinMap[rewardToken2] : undefined,
-    rewardDollar: rewardDollar ? rewardDollar.toNumber() : undefined,
-    feeDollar: feeDollar ? feeDollar.toNumber() : undefined,
+    ...result,
     ammDetail: {
       coinAInfo: coinMap[coinA],
       coinBInfo: coinMap[coinB],
@@ -355,7 +403,7 @@ const getOneRewardInfo = <C>({
 export const makeMyAmmWithSnapshot = <C extends { [key: string]: any }>(
   market: any,
   _walletMap: WalletMapExtend<C> | undefined,
-  ammUserRewardMap: LoopringMap<AmmUserReward> | undefined,
+  ammUserRewardMap: AmmUserRewardMap | undefined,
   snapShotData?:
     | {
         tickerData?: TickerData | undefined;
@@ -373,7 +421,7 @@ export const makeMyAmmWithSnapshot = <C extends { [key: string]: any }>(
     snapShotData &&
     snapShotData.ammPoolSnapshot
   ) {
-    const ammUserReward: AmmUserReward = ammUserRewardMap["AMM-" + market];
+    const ammUserReward = ammUserRewardMap["AMM-" + market];
     if (coinMap && tokenMap && idIndex) {
       _myAmm = getOneRewardInfo({
         coinA,
@@ -402,14 +450,27 @@ export const makeMyAmmWithSnapshot = <C extends { [key: string]: any }>(
 export const makeMyAmmWithStat = <C extends { [key: string]: any }>(
   market: any,
   _walletMap: WalletMapExtend<C> | undefined,
-  ammUserRewardMap: LoopringMap<AmmUserReward> | undefined,
+  ammUserRewardMap: AmmUserRewardMap | undefined,
   ammDetail: AmmDetailStore<C>
 ) => {
   const { coinMap, idIndex } = store.getState().tokenMap;
   const { tokenPrices } = store.getState().tokenPrices;
   const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
-  let _myAmm = {};
+  let _myAmm = {},
+    result = {};
+  if (ammUserRewardMap) {
+    const ammUserReward = ammUserRewardMap["AMM-" + market];
+    result = getRewardCalc({
+      coinA,
+      coinB,
+      ammUserReward,
+      idIndex,
+      tokenPrices,
+    });
+  }
+
   let balanceA, balanceB, balanceDollar;
+
   if (_walletMap && _walletMap["LP-" + coinA + "-" + coinB] && coinMap) {
     // @ts-ignore
     const totalLpAmount = _walletMap["LP-" + coinA + "-" + coinB].count || 0;
@@ -429,7 +490,6 @@ export const makeMyAmmWithStat = <C extends { [key: string]: any }>(
     const isSmallBalance = balanceDollar < 1;
 
     _myAmm = {
-      // ...ammDetail,
       balanceA: balanceA,
       balanceB: balanceB,
       balanceDollar: balanceDollar,
@@ -437,86 +497,13 @@ export const makeMyAmmWithStat = <C extends { [key: string]: any }>(
       smallBalance: isSmallBalance,
       ammDetail: {
         ...ammDetail,
-        // @ts-ignore
         coinAInfo: coinA ? coinMap[coinA] : undefined,
-        // @ts-ignore
         coinBInfo: coinB ? coinMap[coinB] : undefined,
       },
     };
   }
-  if (
-    ammDetail &&
-    tokenPrices &&
-    ammUserRewardMap &&
-    ammUserRewardMap["AMM-" + market] &&
-    ammUserRewardMap["AMM-" + market].currentRewards
-  ) {
-    let rewardToken,
-      rewardToken2,
-      feeA,
-      feeB,
-      feeDollar,
-      reward,
-      reward2,
-      rewardDollar;
-    const ammUserReward: AmmUserReward = ammUserRewardMap["AMM-" + market];
-    rewardToken = ammUserReward.currentRewards[0]
-      ? idIndex[ammUserReward.currentRewards[0].tokenId as number]
-      : undefined;
-    rewardToken2 = ammUserReward.currentRewards[1]
-      ? idIndex[ammUserReward.currentRewards[1].tokenId as number]
-      : undefined;
-    feeA = ammUserReward
-      ? volumeToCountAsBigNumber(coinA, ammUserReward.feeRewards[0])
-      : toBig(0);
-    feeB = ammUserReward
-      ? volumeToCountAsBigNumber(coinB, ammUserReward.feeRewards[1])
-      : toBig(0);
-    feeA = feeA ? feeA : toBig(0);
-    feeB = feeB ? feeB : toBig(0);
-    feeDollar = feeA
-      .times(tokenPrices[coinA] ? tokenPrices[coinA] : 0)
-      .plus(feeB.times(tokenPrices[coinB] ? tokenPrices[coinB] : 0));
-    reward = rewardToken
-      ? (volumeToCountAsBigNumber(
-          rewardToken,
-          ammUserReward.currentRewards[0].volume
-        ) as BigNumber)
-      : toBig(0);
-    reward2 = rewardToken2
-      ? (volumeToCountAsBigNumber(
-          rewardToken2,
-          ammUserReward.currentRewards[1].volume
-        ) as BigNumber)
-      : toBig(0);
-    reward = reward ? reward : toBig(0);
-    reward2 = reward2 ? reward2 : toBig(0);
-    rewardDollar = reward
-      .times(rewardToken ? tokenPrices[rewardToken] : 1)
-      .plus(reward2.times(rewardToken2 ? tokenPrices[rewardToken2] : 1));
-    _myAmm = {
-      ..._myAmm,
-      feeA: feeA ? feeA.toNumber() : undefined,
-      feeB: feeB ? feeB.toNumber() : undefined,
-      reward: reward ? reward.toNumber() : undefined,
-      // @ts-ignore
-      rewardToken: rewardToken ? coinMap[rewardToken] : undefined,
-      reward2: reward2 ? reward2.toNumber() : undefined,
-      // @ts-ignore
-      rewardToken2: rewardToken2 ? coinMap[rewardToken2] : undefined,
-      rewardDollar: rewardDollar ? rewardDollar.toNumber() : undefined,
-      feeDollar: feeDollar ? feeDollar.toNumber() : undefined,
-    };
-  }
   return {
-    feeA: undefined,
-    feeB: undefined,
-    feeDollar: undefined,
-    reward: undefined,
-    rewardToken: undefined as any,
-    balanceA: undefined,
-    balanceB: undefined,
-    balanceDollar: undefined,
+    ...result,
     ..._myAmm,
   };
 };
