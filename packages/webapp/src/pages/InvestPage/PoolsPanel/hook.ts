@@ -218,13 +218,11 @@ export function useAmmMapUI<
   }, [search, rawData]);
 
   return {
-    // page,
     rawData,
     filterValue,
     tableHeight,
     getFilteredData,
     filteredData,
-    // updateTickersUI,
     sortMethod,
   };
 }

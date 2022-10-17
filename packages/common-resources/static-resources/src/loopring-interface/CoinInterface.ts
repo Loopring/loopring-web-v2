@@ -175,6 +175,11 @@ export type AmmDetailBase<T> = {
   isNew?: boolean;
   isActivity?: boolean;
   APR?: number;
+  APRs?: {
+    self: number;
+    event: number;
+    fee: number;
+  };
 };
 
 export type AmmDetail<T> = AmmDetailBase<T> & {
@@ -276,6 +281,13 @@ export type MyAmmLP<T> = {
   rewardToken2?: CoinInfo<T> | undefined;
   rewardDollar?: number | undefined;
   totalLpAmount?: number | undefined;
+
+  feeA24: number | undefined;
+  feeB24: number | undefined;
+  feeDollar24: number | undefined;
+  reward24: number | undefined;
+  reward224: number | undefined;
+  rewardDollar24: number | undefined;
 };
 
 export type TradeFloat = {

@@ -1,10 +1,12 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import {
+  EmptyValueTag,
   getValuePrecisionThousand,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { CoinSource, useSettings } from "../../stores";
 import { AvatarCoin } from "../basic-lib";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 export const AmmPairDetail = ({
   coinA,
@@ -165,3 +167,119 @@ export const AmmPairDetail = ({
     </Box>
   );
 };
+
+export const AmmAPRDetail = withTranslation("tables")(
+  ({
+    self = 0,
+    event = 0,
+    fee = 0,
+    t,
+  }: {
+    self?: number;
+    event?: number;
+    fee?: number;
+  } & WithTranslation) => {
+    return (
+      <Box padding={1.5} paddingLeft={1}>
+        <Typography
+          component={"span"}
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          style={{ textTransform: "capitalize" }}
+          color={"textPrimary"}
+        >
+          <Typography
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            marginLeft={1 / 2}
+            height={20}
+            lineHeight={"20px"}
+          >
+            {t("labelAprPool")}
+          </Typography>
+
+          <Typography
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            height={20}
+            marginLeft={10}
+            lineHeight={"20px"}
+          >
+            {self === 0 || typeof self === "undefined"
+              ? EmptyValueTag
+              : getValuePrecisionThousand(self, 2, 2, 2, true) + "%"}
+          </Typography>
+        </Typography>
+        <Typography
+          component={"span"}
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          style={{ textTransform: "capitalize" }}
+          color={"textPrimary"}
+        >
+          <Typography
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            marginLeft={1 / 2}
+            height={20}
+            lineHeight={"20px"}
+          >
+            {t("labelAprFee")}
+          </Typography>
+          <Typography
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            height={20}
+            marginLeft={10}
+            lineHeight={"20px"}
+          >
+            {fee === 0 || typeof fee === "undefined"
+              ? EmptyValueTag
+              : getValuePrecisionThousand(fee, 2, 2, 2, true) + "%"}
+          </Typography>
+        </Typography>
+        <Typography
+          component={"span"}
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          style={{ textTransform: "capitalize" }}
+          color={"textPrimary"}
+        >
+          <Typography
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            marginLeft={1 / 2}
+            height={20}
+            lineHeight={"20px"}
+          >
+            {t("labelAprEvent")}
+          </Typography>
+
+          <Typography
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            height={20}
+            marginLeft={10}
+            lineHeight={"20px"}
+          >
+            {event === 0 || typeof event === "undefined"
+              ? EmptyValueTag
+              : getValuePrecisionThousand(event, 2, 2, 2, true) + "%"}
+          </Typography>
+        </Typography>
+      </Box>
+    );
+  }
+) as (props: { self?: number; event?: number; fee?: number }) => JSX.Element;

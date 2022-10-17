@@ -1,7 +1,6 @@
-import { useDeepCompareEffect } from "react-use";
 import { WithTranslation, withTranslation } from "react-i18next";
 
-import { Box } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import styled from "@emotion/styled";
 import {
   AssetsTable,
@@ -12,6 +11,12 @@ import {
 import { useTokenMap, StylePaper, useSystem } from "@loopring-web/core";
 import { useGetAssets } from "./hook";
 import React from "react";
+import { useHistory } from "react-router-dom";
+
+enum TabIndex {
+  Tokens = "Tokens",
+  Invests = "Invests",
+}
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
@@ -26,6 +31,19 @@ const AssetPanel = withTranslation("common")(
     const { forexMap } = useSystem();
     const { isMobile } = useSettings();
 
+    const [currentTab] = React.useState<TabIndex>(TabIndex.Tokens);
+    const history = useHistory();
+    const handleTabChange = (value: TabIndex) => {
+      switch (value) {
+        case TabIndex.Invests:
+          history.push("/invest/balance");
+          break;
+        //   return <AssetPanel />;
+        // case "history":
+        //   return <HistoryPanel />;
+        // default:
+      }
+    };
     const {
       assetsRawData,
       assetTitleProps,
@@ -62,6 +80,15 @@ const AssetPanel = withTranslation("common")(
           ref={container}
           className={"MuiPaper-elevation2"}
         >
+          <Tabs
+            value={currentTab}
+            onChange={(_event, value) => handleTabChange(value)}
+            aria-label="l2-history-tabs"
+            variant="scrollable"
+          >
+            <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
+            <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
+          </Tabs>
           <Box className="tableWrapper table-divide-short">
             <AssetsTable
               {...{

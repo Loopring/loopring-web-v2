@@ -134,7 +134,7 @@ export const useDualHook = ({
       const response = await LoopringAPI.defiAPI?.getDualInfos({
         baseSymbol: marketSymbolA,
         quoteSymbol: quoteAlias ?? marketSymbolB,
-        currency,
+        currency: currency ?? "",
         dualType,
         startTime: Date.now() + 1000 * 60 * 60,
         timeSpan: 1000 * 60 * 60 * 24 * 9,

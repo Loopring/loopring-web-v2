@@ -106,7 +106,7 @@ const ActionPopContent = React.memo(
                 // )
               }
             >
-              <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
+              <ListItemText>{t("labelPoolTableAddLiquidity")}</ListItemText>
             </MenuItem>
             <MenuItem
               onClick={
@@ -122,7 +122,7 @@ const ActionPopContent = React.memo(
                 // )
               }
             >
-              <ListItemText>{t("labelPoolTableRemoveLiqudity")}</ListItemText>
+              <ListItemText>{t("labelPoolTableRemoveLiquidity")}</ListItemText>
             </MenuItem>
           </>
         ) : isDefi ? (

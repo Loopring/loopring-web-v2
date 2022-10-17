@@ -41,7 +41,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 200px 80px auto auto !important;`
+        ? `--template-columns: 200px 80px auto auto 200px !important;`
         : `--template-columns: 16% 60% auto 8% !important;`}
     height: calc(86px * 5 + var(--header-row-height));
 
@@ -202,6 +202,31 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
     },
   },
   {
+    key: "rewards",
+    name: t("label24Rewards"),
+    headerCellClass: "textAlignRight",
+    formatter: ({ row }) => {
+      return (
+        <Box className={"textAlignRight"} height={"100%"}>
+          <Typography component={"span"}>
+            {typeof row.rewardDollar24 === "undefined" ||
+            row.rewardDollar24 === 0
+              ? EmptyValueTag
+              : PriceTag[CurrencyToTag[currency]] +
+                getValuePrecisionThousand(
+                  (row.rewardDollar24 || 0) * (forexMap[currency] ?? 0),
+                  undefined,
+                  undefined,
+                  2,
+                  true,
+                  { isFait: true, floor: true }
+                )}
+          </Typography>
+        </Box>
+      );
+    },
+  },
+  {
     key: "action",
     name: t("labelActions"),
     headerCellClass: "textAlignRight",
@@ -223,7 +248,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
                 handleDeposit(row);
               }}
             >
-              {t("labelPoolTableAddLiqudity")}
+              {t("labelPoolTableAddLiquidity")}
             </Button>
             <Button
               variant={"text"}
@@ -232,7 +257,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
                 handleWithdraw(row);
               }}
             >
-              {t("labelPoolTableRemoveLiqudity")}
+              {t("labelPoolTableRemoveLiquidity")}
             </Button>
           </Box>
         </PoolStyle>
@@ -428,19 +453,6 @@ export const MyPoolTable = withTranslation("tables")(
         className={`${rawData?.length > 0 ? "min-height" : ""}`}
       >
         {
-          // (isMobile && isDropDown ? (
-          //   <Link
-          //     variant={"body1"}
-          //     display={"inline-flex"}
-          //     width={"100%"}
-          //     justifyContent={"flex-end"}
-          //     paddingRight={2}
-          //     onClick={() => setIsDropDown(false)}
-          //   >
-          //     Show Filter
-          //   </Link>
-          // ) :
-
           <TableFilterStyled
             display={"flex"}
             justifyContent={"space-between"}
