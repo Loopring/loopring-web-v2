@@ -53,7 +53,7 @@ export const useCollectionPanel = <T extends CollectionMeta>() => {
     } else if (match?.params.item === "editCollection") {
       history.push("/nft/myCollection");
     } else if (match?.params?.item === "addLegacyCollection") {
-      history.push("/nft/importLegacyCollection");
+      history.push(`/nft/importLegacyCollection/${match?.params?.id}`);
     }
   }, [
     account.readyState,

@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import React from "react";
 import {
   CollectionMeta,
@@ -6,9 +6,13 @@ import {
   AccountStatus,
 } from "@loopring-web/common-resources";
 import { useAccount } from "@loopring-web/core";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { LoadingBlock, StyledPaperBg } from "@loopring-web/component-lib";
+import {
+  LoadingBlock,
+  StyledPaperBg,
+  Button,
+} from "@loopring-web/component-lib";
 import { CollectionManage } from "./CollectionManage";
 import { ImportCollection } from "./ImportCollection";
 
@@ -24,16 +28,25 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>({
 }) => {
   const { t } = useTranslation();
   const match: any = useRouteMatch("/nft/importLegacyCollection/:id?");
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
   const history = useHistory();
   const { account, status: accountStatus } = useAccount();
   const [_collection, setCollection] =
     React.useState<undefined | Co>(undefined);
   const [view, setView] = React.useState<CollectionImportView>(
-    match?.params?.id ? CollectionImportView.Item : CollectionImportView.Guide
+    searchParams.get("isEdit")
+      ? CollectionImportView.Item
+      : CollectionImportView.Guide
+    // match?.params?.id ? CollectionImportView.Item : CollectionImportView.Guide
   );
 
   React.useEffect(() => {
-    if (match?.params?.id && account.readyState === AccountStatus.ACTIVATED) {
+    if (
+      searchParams.get("isEdit") &&
+      match?.params?.id &&
+      account.readyState === AccountStatus.ACTIVATED
+    ) {
       if (
         collection?.owner?.toLowerCase() === account.accAddress.toLowerCase()
       ) {
@@ -50,17 +63,11 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>({
         setView(CollectionImportView.Guide);
         history.replace("/nft/importLegacyCollection");
       }
-
-      // const loopringId = match.params.id.split("--")[0];
-      // if (loopringId && detail) {
-      //   setView(MyCollectionView.Item);
-      //   return;
-      // }
     } else {
       setView(CollectionImportView.Guide);
-      history.replace("/nft/importLegacyCollection");
+      // history.replace("/nft/importLegacyCollection");
     }
-  }, [match?.params?.id, account.readyState]);
+  }, [searchParams.get("isEdit"), account.readyState]);
   return (
     <Box flex={1} display={"flex"} flexDirection={"column"} marginBottom={2}>
       <Box
@@ -75,9 +82,9 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>({
           size={"medium"}
           sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
-          onClick={history.goBack}
+          onClick={() => history.push("/nft/myCollection")}
         >
-          {t("labelImportCollectionTitel")}
+          {t("labelImportCollectionTitle")}
         </Button>
       </Box>
       <StyledPaperBg flex={1} display={"flex"}>

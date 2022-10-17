@@ -1075,7 +1075,7 @@ export default {
   labelImportCollectionOthers: "Others",
   labelImportCollectionCurrent: "Current",
   labelImportCollectionAll: "All",
-  labelImportCollectionTitel: "Import your legacy nft Generate collection ",
+  labelImportCollectionTitle: "Import your legacy nft Generate collection ",
   labelAssetTokens: "Tokens",
   labelAssetMyInvest: "My Investments",
   labelORCreateCollection: "Or <1>Create Collection</1>",
