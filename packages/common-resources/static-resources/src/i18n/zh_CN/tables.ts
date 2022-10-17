@@ -244,6 +244,6 @@ export default {
   labelDualAssetReturn: "Return",
   labelAprPool: "Amm Pool APR:",
   labelAprFee: "Protocol APR:",
-  labelAprEvent: "Event APR:",
+  labelAprEvent: "Activity APR:",
   label24Rewards: "24h Rewards",
 };
