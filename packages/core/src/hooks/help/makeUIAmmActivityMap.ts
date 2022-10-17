@@ -273,7 +273,7 @@ const getRewardCalc = ({
     reward24,
     reward224,
     rewardDollar24;
-  const { current, lastDay } = ammUserReward;
+  const { current, lastDay } = ammUserReward ?? {};
   if (current) {
     rewardToken = current.currentRewards[0]
       ? idIndex[current.currentRewards[0].tokenId as number]
