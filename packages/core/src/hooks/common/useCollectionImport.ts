@@ -20,6 +20,7 @@ import {
   ImportCollectionStep,
   ImportCollectionViewProps,
 } from "@loopring-web/component-lib";
+import { useRouteMatch } from "react-router-dom";
 
 // const enum MINT_VIEW_STEP {
 //   METADATA,
@@ -32,22 +33,39 @@ export const useCollectionImport = <
   NFT extends Partial<NFTWholeINFO>
 >(): ImportCollectionViewProps<Co, NFT> => {
   const { account } = useAccount();
-  const [step, setStep] = React.useState<ImportCollectionStep>(
-    ImportCollectionStep.SELECTCONTRACT
-  );
+  let match: any = useRouteMatch("/nft/importLegacyCollection/:id?");
+  const stepList = match?.id?.split("--");
+  const contract = stepList && stepList[0].startsWith("0x");
+  const contractId = stepList && stepList[1];
+  const [step, setStep] = React.useState<ImportCollectionStep>(() => {
+    if (stepList && contract) {
+      return ImportCollectionStep.SELECTCOLLECTION;
+    } else if (stepList && contractId) {
+      return ImportCollectionStep.SELECTNFT;
+    } else {
+      return ImportCollectionStep.SELECTCONTRACT;
+    }
+  });
   const { legacyContract } = useWalletL2Collection();
 
   const [onLoading, setOnLoading] = React.useState<boolean>(false);
   // const { baseURL } = useSystem();
   // const [contractList, setContractList] = React.useState<string[]>([""]);
-  const [selectContract, setSelectContract] =
-    React.useState<
-      | { value: string; total?: number; list?: sdk.UserNFTBalanceInfo[] }
-      | undefined
-    >();
-  const [filter, setFilter] = React.useState({
+  const [selectContract, setSelectContract] = React.useState<
+    | { value: string; total?: number; list?: sdk.UserNFTBalanceInfo[] }
+    | undefined
+  >(() => {
+    if (stepList && contract) {
+      onContractChange(contract);
+      return { value: contract };
+    }
+  });
+  const [filter, setFilter] = React.useState<{
+    isLegacy: boolean;
+    tokenAddress: string;
+  }>({
     isLegacy: true,
-    contractAddress: selectContract,
+    tokenAddress: selectContract?.value ?? "",
   });
   const collectionListProps = useMyCollection<Co>(filter as any);
   const [selectCollection, setSelectCollection] =
@@ -102,12 +120,22 @@ export const useCollectionImport = <
     onNFTSelectedMethod,
     ...nftProps
   } = useCollectionManage<Co, NFT>({ collection: selectCollection });
-  const onCollectionChange = React.useCallback(() => {}, []);
-  const onContractNext = React.useCallback(() => {}, []);
+  const onCollectionChange = React.useCallback((item: Co | undefined) => {
+    setSelectCollection(item);
+  }, []);
+
+  const onContractNext = React.useCallback(async (value: string) => {
+    const _filter = {
+      isLegacy: true,
+      tokenAddress: value,
+    };
+    setFilter(_filter);
+    collectionListProps.onPageChange(1, _filter);
+    setOnLoading(collectionListProps.isLoading);
+  }, []);
 
   const onCollectionNext = React.useCallback(() => {}, []);
-  // const onNFTSelected = React.useCallback(() => {}, []);
-  // const onNFTSelectedMethod = React.useCallback(() => {}, []);
+
   const onClick = React.useCallback(() => {}, []);
 
   // React.useEffect(() => {

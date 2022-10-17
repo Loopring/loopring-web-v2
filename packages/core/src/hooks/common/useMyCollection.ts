@@ -53,7 +53,7 @@ export const useMyCollection = <C extends CollectionMeta>(
   }, [etherscanBaseUrl, page, walletL2Collection]);
   React.useEffect(() => {
     onPageChange(1, filter);
-  }, [filter?.tokenAddress]);
+  }, []);
 
   React.useEffect(() => {
     if (walletL2CollectionStatus === SagaStatus.UNSET && page_reudex === page) {

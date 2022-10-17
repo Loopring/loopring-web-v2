@@ -8,11 +8,7 @@ import {
 import { useAccount } from "@loopring-web/core";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import {
-  ImportCollectionWrap,
-  LoadingBlock,
-  StyledPaperBg,
-} from "@loopring-web/component-lib";
+import { LoadingBlock, StyledPaperBg } from "@loopring-web/component-lib";
 import { CollectionManage } from "./CollectionManage";
 import { ImportCollection } from "./ImportCollection";
 

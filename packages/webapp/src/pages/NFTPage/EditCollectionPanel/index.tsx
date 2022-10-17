@@ -17,13 +17,13 @@ const StyledPaper = styled(Box)`
 `;
 
 export const EditCollectionPanel = () => {
-  const { t } = useTranslation("common");
   const {
+    goBack,
+    title,
     collectionToastOpen,
     collectionToastClose,
     ...editCollectionViewProps
   } = useCollectionPanel();
-  const history = useHistory();
 
   return (
     <>
@@ -39,11 +39,9 @@ export const EditCollectionPanel = () => {
           size={"medium"}
           sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
-          onClick={history.goBack}
+          onClick={goBack}
         >
-          {editCollectionViewProps.isEdit
-            ? t("labelEditCollectionERC1155")
-            : t("labelCollectionCreateERC1155")}
+          {title}
         </Button>
       </Box>
       <StyledPaper

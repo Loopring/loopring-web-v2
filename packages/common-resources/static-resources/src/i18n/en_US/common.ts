@@ -1078,4 +1078,8 @@ export default {
   labelImportCollectionTitel: "Import your legacy nft Generate collection ",
   labelAssetTokens: "Tokens",
   labelAssetMyInvest: "My Investments",
+  labelORCreateCollection: "Or <1>Create Collection</1>",
+  labelCreateLegacyCollection: "Create Legacy Collection",
+  labelNoLegacyCollection: "You have no Legacy Collection, please",
+  labelLegacyCollectionTitle: "Create Legacy Collection",
 };

@@ -35,7 +35,7 @@ export const NFTPage = () => {
         return <NFTCollectPanel />;
       case "addCollection":
       case "editCollection":
-      case "editCollection":
+      case "addLegacyCollection":
         return <EditCollectionPanel />;
       case "importLegacyCollection":
         return <ImportCollectionPanel />;

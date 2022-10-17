@@ -1,5 +1,5 @@
 import { ImportCollectionStep, ImportCollectionViewProps } from "./Interface";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
   Box,
@@ -9,6 +9,7 @@ import {
   StepLabel,
   Step,
   ListItemText,
+  Link,
 } from "@mui/material";
 import {
   myLog,
@@ -19,6 +20,7 @@ import {
   CollectionMeta,
   SoursURL,
   ViewMoreIcon,
+  AddIcon,
 } from "@loopring-web/common-resources";
 import {
   TextField,
@@ -33,7 +35,6 @@ import { useSettings } from "../../../stores";
 import { CollectionManageWrap } from "./CollectionManageWrap";
 import { getIPFSString } from "@loopring-web/core";
 import { NFTMedia } from "../../block";
-import { useTheme } from "@emotion/react";
 
 const BoxStyle = styled(Grid)`
   .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
@@ -111,7 +112,6 @@ export const ImportCollectionWrap = <
 }: ImportCollectionViewProps<Co, NFT>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
-  const theme = useTheme();
   const {
     contractList,
     selectContract,
@@ -315,7 +315,7 @@ export const ImportCollectionWrap = <
                 defaultLabel: "labelContinue",
                 fullWidth: true,
                 disabled: () => {
-                  return disabled || !selectContract || !(nftProps.total > 0);
+                  return disabled || !selectContract || !selectContract?.total;
                 },
                 onClick: () => {
                   setStep(ImportCollectionStep.SELECTCOLLECTION);
@@ -338,59 +338,130 @@ export const ImportCollectionWrap = <
             width={"100%"}
             maxWidth={"760px"}
           >
-            <Typography variant={"body1"} marginBottom={2}>
+            <Typography
+              variant={"body1"}
+              color={"textSecondary"}
+              marginBottom={2}
+              textAlign={"center"}
+              whiteSpace={"pre-line"}
+            >
               {t("labelImportChooseCollection")}
             </Typography>
-            <Box width={"100%"} paddingTop={2} paddingX={isMobile ? 2 : 0}>
-              <CollectionInput
-                {...{
-                  ...(collectionInputProps as any),
-                  collection: selectCollection,
-                  onSelected: (item: Co) => {
-                    collectionInputProps.onSelected(item);
-                    onCollectionChange(item);
-                  },
-                }}
-                fullWidth={true}
-                size={isMobile ? "small" : "large"}
-                showCopy={true}
-              />
-            </Box>
-            <Box
-              width={"100%"}
-              paddingX={isMobile ? 2 : 0}
-              marginTop={2}
-              flexDirection={"row"}
-              display={"flex"}
-              justifyContent={"space-between"}
-            >
-              <Button
-                variant={"outlined"}
-                size={"medium"}
-                color={"primary"}
-                className={"step"}
-                sx={{ height: "var(--btn-medium-height)" }}
-                startIcon={<BackIcon fontSize={"small"} />}
-                onClick={() => {
-                  onCollectionChange(undefined);
-                  setStep(ImportCollectionStep.SELECTCONTRACT);
-                }}
-              >
-                {t(`labelMintBack`)}
-              </Button>
 
-              {btnMain({
-                defaultLabel: "labelMintNext",
-                btnInfo: undefined, //btnInfo,
-                disabled: () => {
-                  return disabled || !selectCollection;
-                },
-                onClick: () => {
-                  setStep(ImportCollectionStep.SELECTNFT);
-                  selectCollection && onCollectionNext(selectCollection);
-                },
-              })}
-            </Box>
+            {!collectionInputProps.collectionListProps?.isLoading &&
+            collectionInputProps.collectionListProps?.total ? (
+              <>
+                <Box
+                  width={"100%"}
+                  paddingTop={2}
+                  paddingX={isMobile ? 2 : 0}
+                  alignItems={"center"}
+                >
+                  <CollectionInput
+                    {...{
+                      ...(collectionInputProps as any),
+                      collection: selectCollection,
+                      onSelected: (item: Co) => {
+                        collectionInputProps.onSelected(item);
+                        onCollectionChange(item);
+                      },
+                    }}
+                    fullWidth={true}
+                    size={isMobile ? "small" : "large"}
+                    showCopy={true}
+                  />
+                  <Typography component={"p"} variant={"body1"} marginTop={1}>
+                    <Trans i18nKey={"labelORCreateCollection"}>
+                      or
+                      <Link
+                        href={`./#/NFT/addLegacyCollection/${selectContract?.value}`}
+                        variant={"body1"}
+                        target={"_self"}
+                      >
+                        Create Collection
+                      </Link>
+                    </Trans>
+                  </Typography>
+                </Box>
+                <Box
+                  width={"100%"}
+                  paddingX={isMobile ? 2 : 0}
+                  marginTop={2}
+                  flexDirection={"row"}
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                >
+                  <Button
+                    variant={"outlined"}
+                    size={"medium"}
+                    color={"primary"}
+                    className={"step"}
+                    sx={{ height: "var(--btn-medium-height)" }}
+                    startIcon={<BackIcon fontSize={"small"} />}
+                    onClick={() => {
+                      onCollectionChange(undefined);
+                      setStep(ImportCollectionStep.SELECTCONTRACT);
+                    }}
+                  >
+                    {t(`labelMintBack`)}
+                  </Button>
+
+                  {btnMain({
+                    defaultLabel: "labelMintNext",
+                    btnInfo: undefined, //btnInfo,
+                    disabled: () => {
+                      return disabled || !selectCollection;
+                    },
+                    onClick: () => {
+                      setStep(ImportCollectionStep.SELECTNFT);
+                      selectCollection && onCollectionNext(selectCollection);
+                    },
+                  })}
+                </Box>
+              </>
+            ) : (
+              <>
+                <Typography component={"p"} variant={"body1"} marginBottom={1}>
+                  {t("labelNoLegacyCollection")}
+                </Typography>
+
+                <Box
+                  width={"100%"}
+                  paddingX={isMobile ? 2 : 0}
+                  marginTop={2}
+                  flexDirection={"row"}
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                >
+                  <Button
+                    variant={"outlined"}
+                    size={"medium"}
+                    color={"primary"}
+                    className={"step"}
+                    sx={{ height: "var(--btn-medium-height)" }}
+                    startIcon={<BackIcon fontSize={"small"} />}
+                    onClick={() => {
+                      onCollectionChange(undefined);
+                      setStep(ImportCollectionStep.SELECTCONTRACT);
+                    }}
+                  >
+                    {t(`labelMintBack`)}
+                  </Button>
+                  <Button
+                    variant={"contained"}
+                    size={"medium"}
+                    sx={{ height: "var(--btn-medium-height)", marginLeft: 2 }}
+                    color={"primary"}
+                    className={"step"}
+                    fullWidth={true}
+                    startIcon={<AddIcon fontSize={"large"} />}
+                    href={`./#/NFT/addLegacyCollection/${selectContract?.value}`}
+                  >
+                    {t(`labelCreateLegacyCollection`)}
+                  </Button>
+                </Box>
+              </>
+            )}
           </Box>
         ),
       },

@@ -428,6 +428,7 @@ export type TradeDefi<C> = {
 
 export type L2CollectionFilter = {
   isMintable?: boolean;
+  isLegacy?: boolean;
   tokenAddress?: string;
   owner?: string;
 };
