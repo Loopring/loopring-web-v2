@@ -152,6 +152,7 @@ export enum AccountStep {
 export interface VendorMenuProps {
   // termUrl: string;
   type?: TradeTypes;
+  banxaRef?: React.Ref<any>;
   vendorList: VendorItem[];
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;

@@ -217,7 +217,7 @@ export function useAccountModalForUI({
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({
     setCollectionToastOpen,
   });
-  const { vendorListBuy } = useVendor();
+  const { vendorListBuy, banxaRef } = useVendor();
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
   const { transferProps, retryBtn: transferRetry } = useTransfer();
@@ -714,6 +714,7 @@ export function useAccountModalForUI({
         view: (
           <VendorMenu
             vendorList={vendorListBuy}
+            banxaRef={banxaRef}
             type={TradeTypes.Buy}
             vendorForce={undefined}
             campaignTagConfig={campaignTagConfig}

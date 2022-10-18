@@ -35,7 +35,7 @@ import {
   RampInstantSDK,
 } from "@ramp-network/ramp-instant-sdk";
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
-import React, { useCallback } from "react";
+import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   ConnectProvidersSignMap,
@@ -51,6 +51,7 @@ export enum RAMP_SELL_PANEL {
 
 export const useVendor = () => {
   const { account } = useAccount();
+  const banxaRef = React.useRef();
   const {
     allowTrade: { raw_data },
   } = useSystem();
@@ -201,27 +202,30 @@ export const useVendor = () => {
           handleSelect: () => {
             setShowAccount({ isShow: false });
             // @ts-ignore
-            const banax: any = new window.Banxa("loopring");
-            banax.iframe(
-              "#iframeBanax",
-              "#iframeBanaxTarget",
-              {
-                // 'fiatType': 'AUD',
-                // 'coinType': 'BTC',
-                sellMode: true,
-                walletAddress: account.accAddress,
-                // fiatAmount: 200,
-                // coinAmount: 0.5,
-                // mo,
-              },
-              "800px",
-              "3Hiy7HuFcqwkgERyfRSwEHqrwSwTirm8zb"
-            );
+            const banxa: any = new window.Banxa("loopring");
+            if (banxaRef) {
+              // debugger;
+              banxa.generateIframe(
+                "#iframeBanxaTarget",
+                banxa.generateUrl({
+                  fiatType: "AUD",
+                  coinType: "BTC",
+                  fiatAmount: 200,
+                  coinAmount: 0.5,
+                  walletAddress: "3Hiy7HuFcqwkgERyfRSwEHqrwSwTirm8zb",
+                }),
+                false,
+                false
+                // "800px", //Optional width parameter – Pass false if not needed.
+                // "400px" //Optional height parameter – Pass false if not needed.
+              );
+            }
           },
         },
       ]
     : [];
   return {
+    banxaRef,
     vendorListBuy,
     vendorListSell,
     vendorForce: undefined,
@@ -530,7 +534,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     checkBtnStatus();
   }, [chargeFeeTokenList, isFeeNotEnough.isFeeNotEnough, transferRampValue]);
 
-  const onTransferClick = useCallback(
+  const onTransferClick = React.useCallback(
     async (transferRampValue, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
 
