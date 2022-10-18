@@ -164,6 +164,8 @@ const MyLiquidity: any = withTranslation("common")(
       >
         <Box
           position={"absolute"}
+          display={"flex"}
+          alignItems={"center"}
           sx={
             isHideTotal
               ? {
