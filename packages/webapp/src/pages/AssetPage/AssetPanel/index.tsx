@@ -11,7 +11,8 @@ import {
 import { useTokenMap, StylePaper, useSystem } from "@loopring-web/core";
 import { useGetAssets } from "./hook";
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
 
 enum TabIndex {
   Tokens = "Tokens",
@@ -30,20 +31,28 @@ const AssetPanel = withTranslation("common")(
     const { disableWithdrawList } = useTokenMap();
     const { forexMap } = useSystem();
     const { isMobile } = useSettings();
+    const match: any = useRouteMatch("/l2assets/:assets?/:item?");
 
-    const [currentTab] = React.useState<TabIndex>(TabIndex.Tokens);
+    const [currentTab, setCurrentTab] = React.useState<TabIndex>(
+      TabIndex.Tokens
+    );
     const history = useHistory();
     const handleTabChange = (value: TabIndex) => {
       switch (value) {
         case TabIndex.Invests:
-          history.push("/invest/balance");
+          history.replace("/l2assets/assets/Invests");
+          setCurrentTab(TabIndex.Invests);
           break;
-        //   return <AssetPanel />;
-        // case "history":
-        //   return <HistoryPanel />;
-        // default:
+        case TabIndex.Tokens:
+        default:
+          history.replace("/l2assets/assets/Tokens");
+          setCurrentTab(TabIndex.Tokens);
+          break;
       }
     };
+    React.useEffect(() => {
+      handleTabChange(match?.params.item ?? TabIndex.Tokens);
+    }, [match?.params.item]);
     const {
       assetsRawData,
       assetTitleProps,
@@ -75,40 +84,46 @@ const AssetPanel = withTranslation("common")(
           </StyleTitlePaper>
         )}
 
-        <StylePaper
-          marginY={2}
-          ref={container}
-          className={"MuiPaper-elevation2"}
+        <Tabs
+          value={currentTab}
+          onChange={(_event, value) => handleTabChange(value)}
+          aria-label="l2-history-tabs"
+          variant="scrollable"
         >
-          <Tabs
-            value={currentTab}
-            onChange={(_event, value) => handleTabChange(value)}
-            aria-label="l2-history-tabs"
-            variant="scrollable"
+          <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
+          <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
+        </Tabs>
+        {currentTab === TabIndex.Tokens && (
+          <StylePaper
+            marginTop={1}
+            marginBottom={2}
+            ref={container}
+            className={"MuiPaper-elevation2"}
           >
-            <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
-            <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
-          </Tabs>
-          <Box className="tableWrapper table-divide-short">
-            <AssetsTable
-              {...{
-                rawData: assetsRawData,
-                disableWithdrawList,
-                showFilter: true,
-                allowTrade,
-                onSend,
-                onReceive,
-                getMarketArrayListCallback: getTokenRelatedMarketArray,
-                hideInvestToken,
-                forexMap: forexMap as any,
-                hideSmallBalances,
-                setHideLpToken,
-                setHideSmallBalances,
-                ...rest,
-              }}
-            />
-          </Box>
-        </StylePaper>
+            <Box className="tableWrapper table-divide-short">
+              <AssetsTable
+                {...{
+                  rawData: assetsRawData,
+                  disableWithdrawList,
+                  showFilter: true,
+                  allowTrade,
+                  onSend,
+                  onReceive,
+                  getMarketArrayListCallback: getTokenRelatedMarketArray,
+                  hideInvestToken,
+                  forexMap: forexMap as any,
+                  hideSmallBalances,
+                  setHideLpToken,
+                  setHideSmallBalances,
+                  ...rest,
+                }}
+              />
+            </Box>
+          </StylePaper>
+        )}
+        {currentTab === TabIndex.Invests && (
+          <MyLiquidity marginTop={1} isHideTotal={true} />
+        )}
       </>
     );
   }

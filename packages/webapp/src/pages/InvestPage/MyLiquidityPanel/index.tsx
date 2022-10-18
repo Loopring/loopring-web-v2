@@ -33,7 +33,6 @@ import {
   PriceTag,
   RowInvestConfig,
 } from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { useOverview } from "./hook";
 import {
@@ -43,7 +42,6 @@ import {
   TableWrapStyled,
   useTokenMap,
   useDualMap,
-  LoopringAPI,
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
@@ -59,8 +57,10 @@ const StyleWrapper = styled(Grid)`
 const MyLiquidity: any = withTranslation("common")(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
+    isHideTotal,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
+    isHideTotal?: boolean;
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
     let match: any = useRouteMatch("/invest/balance/:type");
@@ -156,15 +156,67 @@ const MyLiquidity: any = withTranslation("common")(
       );
     });
     return (
-      <>
+      <Box
+        display={"flex"}
+        flex={1}
+        position={"relative"}
+        flexDirection={"column"}
+      >
+        <Box
+          position={"absolute"}
+          sx={
+            isHideTotal
+              ? {
+                  right: 2 * theme.unit,
+                  top: -42,
+                  zIndex: 99,
+                }
+              : {
+                  right: 2 * theme.unit,
+                  top: 2 * theme.unit,
+                  zIndex: 99,
+                }
+          }
+        >
+          <FormControlLabel
+            sx={{
+              marginRight: 2,
+              paddingRight: 0,
+              fontSize: isMobile
+                ? theme.fontDefault.body2
+                : theme.fontDefault.body1,
+            }}
+            control={
+              <Checkbox
+                checked={hideSmallBalances}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+                onChange={(event) => {
+                  setHideSmallBalances(event.target.checked);
+                }}
+              />
+            }
+            label={t("labelHideSmallBalances", { ns: "tables" })}
+          />
+          <Link
+            variant={"body1"}
+            target="_self"
+            rel="noopener noreferrer"
+            //?tokenSymbol=${market}
+            onClick={() => history.push(`/l2assets/history/ammRecords`)}
+            // href={"./#/layer2/history/ammRecords"}
+          >
+            {t("labelTransactionsLink")}
+          </Link>
+        </Box>
         <StyleWrapper
           container
           className={"MuiPaper-elevation2"}
           paddingY={3}
           paddingX={4}
           margin={0}
-          display={"flex"}
-          position={"relative"}
+          display={isHideTotal ? "none" : "flex"}
         >
           <Grid container spacing={2} alignItems={"flex-end"}>
             <Grid item display={"flex"} flexDirection={"column"} sm={6} md={5}>
@@ -222,45 +274,6 @@ const MyLiquidity: any = withTranslation("common")(
             {/*  </Typography>*/}
             {/*</Grid>*/}
           </Grid>
-          <Box
-            position={"absolute"}
-            sx={{
-              right: 2 * theme.unit,
-              top: 2 * theme.unit,
-            }}
-          >
-            <FormControlLabel
-              sx={{
-                marginRight: 2,
-                paddingRight: 0,
-                fontSize: isMobile
-                  ? theme.fontDefault.body2
-                  : theme.fontDefault.body1,
-              }}
-              control={
-                <Checkbox
-                  checked={hideSmallBalances}
-                  checkedIcon={<CheckedIcon />}
-                  icon={<CheckBoxIcon />}
-                  color="default"
-                  onChange={(event) => {
-                    setHideSmallBalances(event.target.checked);
-                  }}
-                />
-              }
-              label={t("labelHideSmallBalances", { ns: "tables" })}
-            />
-            <Link
-              variant={"body1"}
-              target="_self"
-              rel="noopener noreferrer"
-              //?tokenSymbol=${market}
-              onClick={() => history.push(`/l2assets/history/ammRecords`)}
-              // href={"./#/layer2/history/ammRecords"}
-            >
-              {t("labelTransactionsLink")}
-            </Link>
-          </Box>
         </StyleWrapper>
         <Box marginBottom={3} flex={1}>
           {!(myPoolRow?.length > 0) &&
@@ -468,7 +481,7 @@ const MyLiquidity: any = withTranslation("common")(
             </>
           )}
         </Box>
-      </>
+      </Box>
     );
   }
 );

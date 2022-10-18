@@ -1048,4 +1048,22 @@ export default {
   labelDualSettleDateDur: "Days Till Settlement",
   labelNoInvestContent:
     "You currently have no investment assets. Start earning now with AMM, ETH Staking, or Dual Investments",
+  labelImportCollection: "Import Collection for Legacy NFT",
+  labelCheckImportCollectionTitle:
+    "Import legacy NFTs under contract address to proceed",
+  labelContinue: "Next",
+  labelImportCollection1: "Choose NFT contract address",
+  labelImportCollection2: "Create/Choose a collection",
+  labelImportCollection3: "Select NFTs to move into/out of collection",
+  labelSelectContractAddress: "Contract address",
+  labelImportChooseCollection:
+    "The created collection here can only be used to categorize the Legacy NFT minted without collection_metadata field.\n You can freely move those NFTs into any collection you created here.",
+  labelImportCollectionUndecided: "Undecided",
+  labelImportCollectionOthers: "Others",
+  labelImportCollectionCurrent: "Current",
+  labelImportCollectionAll: "All",
+  labelImportCollectionTitle: "Import your legacy nft Generate collection ",
+  labelAssetTokens: "Tokens",
+  labelAssetMyInvest: "My Investments",
+  labelORCreateCollection: "Or <1>Create Collection</1>",
 };
