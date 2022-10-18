@@ -51,20 +51,20 @@ async function getNotification() {
       console.log(myNotification);
       if (myNotification !== undefined) {
         notification.activities = [
-          ...(notification.activities ?? []),
           ...(myNotification.activities ?? []),
+          ...(notification.activities ?? []),
         ];
         notification.activitiesHome = [
-          ...(notification.activitiesHome ?? []),
           ...(myNotification.activitiesHome ?? []),
+          ...(notification.activitiesHome ?? []),
         ];
         notification.activitiesInvest = [
-          ...(notification.activitiesInvest ?? []),
           ...(myNotification.activitiesInvest ?? []),
+          ...(notification.activitiesInvest ?? []),
         ];
         notification.notifications = [
-          ...(notification.notifications ?? []),
           ...(myNotification.notifications ?? []),
+          ...(notification.notifications ?? []),
         ];
         notification.invest = [
           ...(notification.invest ?? []),
@@ -148,7 +148,13 @@ let json = {
   activitiesInvest: [],
   notifications: [],
   invest: [],
-  campaignTagConfig: [],
+  campaignTagConfig: {
+    orderbook: [],
+    market: [],
+    Amm: [],
+    Fiat: [],
+    swap: [],
+  },
   prev: {
     endDate: Date.now(),
   },
@@ -177,12 +183,13 @@ const TYPE_ITEM = {
   webRouter: 13,
 };
 const TAGP_CONFIF_ITEM = {
-  name: 0,
-  startShow: 1,
-  endShow: 2,
-  iconSource: 3,
-  symbols: 4,
-  scenarios: 5,
+  scenario: 0,
+  name: 1,
+  startShow: 2,
+  endShow: 3,
+  iconSource: 4,
+  symbols: 5,
+  scenarios: 6,
 };
 const PLACE = {
   HOME: "HOME",
@@ -327,7 +334,7 @@ async function createTagJson() {
             const endShow = moment
               .utc(item[TAGP_CONFIF_ITEM.endShow], "MM/DD/YYYY HH:mm:ss")
               .valueOf();
-
+            const key = item[TAGP_CONFIF_ITEM.scenario];
             const _item = {
               name: item[TAGP_CONFIF_ITEM.name].trim(),
               startShow,
@@ -336,7 +343,12 @@ async function createTagJson() {
               symbols: item[TAGP_CONFIF_ITEM.symbols]?.trim()?.split(","),
               scenarios: item[TAGP_CONFIF_ITEM.scenarios]?.trim()?.split(","),
             };
-            json.campaignTagConfig = json.campaignTagConfig.concat(_item);
+            json.campaignTagConfig[key] = [
+              ...(json.campaignTagConfig[key] ?? []),
+              _item,
+            ];
+
+            // json.campaignTagConfig = json.campaignTagConfig.concat(_item);
           }, undefined);
           console.log(json.campaignTagConfig);
           resolve(json);
