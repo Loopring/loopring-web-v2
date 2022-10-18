@@ -56,6 +56,7 @@ export const useCollectionImport = <
     tokenAddress: string;
   }>({
     isLegacy: true,
+    //TODO: wait api
     tokenAddress: selectContract?.value ?? "",
   });
   const collectionListProps = useMyCollection<Co>(filter as any);
@@ -112,11 +113,13 @@ export const useCollectionImport = <
       const _filter = {
         isLegacy: true,
         //TODO: not working now
-        tokenAddress: value,
+        tokenAddress: "0x0ff5893340990c9e98cb74868951d569ea63c43b", //value,
       };
       setFilter(_filter);
+      setOnLoading(true);
+      collectionListProps.collectionList = [];
+      collectionListProps.total = 0;
       collectionListProps.onPageChange(1, _filter);
-      setOnLoading(collectionListProps.isLoading);
     },
     [collectionListProps]
   );
@@ -138,6 +141,9 @@ export const useCollectionImport = <
       setStep(ImportCollectionStep.SELECTCONTRACT);
     }
   }, [legacyContract]);
+  React.useEffect(() => {
+    setOnLoading(false);
+  }, [collectionListProps.total]);
 
   return {
     account: account as Account,

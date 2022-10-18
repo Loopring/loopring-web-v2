@@ -348,8 +348,23 @@ export const ImportCollectionWrap = <
               {t("labelImportChooseCollection")}
             </Typography>
 
-            {!collectionInputProps.collectionListProps?.isLoading &&
-            collectionInputProps.collectionListProps?.total ? (
+            {onLoading ? (
+              <Box
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                height={"90%"}
+                width={"100%"}
+                justifyContent={"center"}
+              >
+                <img
+                  className="loading-gif"
+                  alt={"loading"}
+                  width="36"
+                  src={`${SoursURL}images/loading-line.gif`}
+                />
+              </Box>
+            ) : collectionInputProps?.collectionListProps?.total ? (
               <>
                 <Box
                   width={"100%"}
@@ -362,7 +377,8 @@ export const ImportCollectionWrap = <
                       ...(collectionInputProps as any),
                       collection: selectCollection,
                       onSelected: (item: Co) => {
-                        collectionInputProps.onSelected(item);
+                        collectionInputProps?.onSelected &&
+                          collectionInputProps.onSelected(item);
                         onCollectionChange(item);
                       },
                     }}
@@ -467,63 +483,60 @@ export const ImportCollectionWrap = <
       },
       {
         view: (
-          <>
+          <Box
+            marginTop={3}
+            display={"flex"}
+            justifyContent={"flex-start"}
+            flexDirection={"column"}
+            alignItems={"stretch"}
+            width={"100%"}
+            maxWidth={"760px"}
+          >
+            {selectCollection && (
+              <CollectionManageWrap
+                baseURL={baseURL}
+                collection={selectCollection}
+                selectedNFTS={selectNFTList}
+                onNFTSelected={onNFTSelected as any}
+                onNFTSelectedMethod={onNFTSelectedMethod as any}
+                {...nftProps}
+              />
+            )}
             <Box
+              width={"100%"}
+              paddingX={isMobile ? 2 : 0}
               marginTop={2}
-              flex={1}
-              alignSelf={"stretch"}
+              flexDirection={"row"}
               display={"flex"}
-              paddingX={isMobile ? 0 : 4}
-              flexDirection={isMobile ? "column" : "row"}
+              justifyContent={"space-between"}
             >
-              <Box width={"100%"} paddingTop={2} paddingX={isMobile ? 2 : 0}>
-                {selectCollection && (
-                  <CollectionManageWrap
-                    baseURL={baseURL}
-                    collection={selectCollection}
-                    selectedNFTS={selectNFTList}
-                    onNFTSelected={onNFTSelected as any}
-                    onNFTSelectedMethod={onNFTSelectedMethod as any}
-                    {...nftProps}
-                  />
-                )}
-              </Box>
-              <Box
-                width={"100%"}
-                paddingX={isMobile ? 2 : 0}
-                marginTop={2}
-                flexDirection={"row"}
-                display={"flex"}
-                justifyContent={"space-between"}
+              <Button
+                variant={"outlined"}
+                size={"medium"}
+                className={"step"}
+                startIcon={<BackIcon fontSize={"small"} />}
+                color={"primary"}
+                sx={{ height: "var(--btn-medium-height)" }}
+                onClick={() => {
+                  setStep(ImportCollectionStep.SELECTNFT);
+                  selectCollection && onCollectionNext(selectCollection);
+                }}
               >
-                <Button
-                  variant={"outlined"}
-                  size={"medium"}
-                  className={"step"}
-                  startIcon={<BackIcon fontSize={"small"} />}
-                  color={"primary"}
-                  sx={{ height: "var(--btn-medium-height)" }}
-                  onClick={() => {
-                    setStep(ImportCollectionStep.SELECTNFT);
-                    selectCollection && onCollectionNext(selectCollection);
-                  }}
-                >
-                  {t(`labelMintBack`)}
-                </Button>
-                {btnMain({
-                  defaultLabel: t("labelCloseBtn"),
-                  btnInfo: undefined,
-                  disabled: () => {
-                    return disabled || !selectCollection;
-                  },
-                  onClick: () => {
-                    // setStep(ImportCollectionStep.SELECTNFT);
-                    // onNFTSelectedMethod(selectCollection);
-                  },
-                })}
-              </Box>
+                {t(`labelMintBack`)}
+              </Button>
+              {btnMain({
+                defaultLabel: t("labelDoneBtn"),
+                btnInfo: undefined,
+                disabled: () => {
+                  return disabled || !selectCollection;
+                },
+                onClick: () => {
+                  // setStep(ImportCollectionStep.SELECTNFT);
+                  // onNFTSelectedMethod(selectCollection);
+                },
+              })}
             </Box>
-          </>
+          </Box>
         ),
       },
     ];

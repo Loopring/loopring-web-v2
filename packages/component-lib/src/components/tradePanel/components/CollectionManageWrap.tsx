@@ -60,9 +60,9 @@ export const CollectionManageWrap = <
             }}
             variant={"contained"}
             size={"small"}
-            sx={{ marginLeft: 1 }}
+            sx={{ marginLeft: 1, height: 24, fontSize: "1.2rem" }}
           >
-            {t("labelMoveIn")}
+            {t("labelMoveIn", { symbol: t("labelMoveInCollection") })}
           </Button>
         );
       case TabNFTManage.Others:
@@ -73,9 +73,9 @@ export const CollectionManageWrap = <
             }}
             variant={"contained"}
             size={"small"}
-            sx={{ marginLeft: 1 }}
+            sx={{ marginLeft: 1, height: 24, fontSize: "1.2rem" }}
           >
-            {t("labelMoveOut")}
+            {t("labelMoveIn", { symbol: t("labelImportCollectionUndecided") })}
           </Button>
         );
       case TabNFTManage.Current:
@@ -86,9 +86,9 @@ export const CollectionManageWrap = <
             }}
             variant={"contained"}
             size={"small"}
-            sx={{ marginLeft: 1 }}
+            sx={{ marginLeft: 1, height: 24, fontSize: "1.2rem" }}
           >
-            {t("labelMoveOut")}
+            {t("labelMoveIn", { symbol: t("labelImportCollectionUndecided") })}
           </Button>
         );
       case TabNFTManage.All:
@@ -102,78 +102,86 @@ export const CollectionManageWrap = <
       display={"flex"}
       flex={1}
       flexDirection={"column"}
-      padding={5 / 2}
-      alignItems={"center"}
+      alignItems={"stretch"}
+      width={"100%"}
     >
       {isMobile ? (
         <Typography>
           Sorry Mobile web is not support this feature, Please try it on website
         </Typography>
       ) : (
-        <Tabs
-          value={tab}
-          onChange={handleTabChange}
-          aria-label="disabled tabs example"
+        <Box
+          display={"flex"}
+          flex={1}
+          flexDirection={"column"}
+          alignItems={"stretch"}
         >
-          {Object.keys(TabNFTManage).map((item) => {
-            return (
-              <Tab
-                key={item.toString()}
-                value={item.toString()}
-                label={t(`labelImportCollection${item}`)}
-              />
-            );
-          })}
-          <Box display={"flex"} flex={1} flexDirection={"column"}>
+          <Tabs
+            value={tab}
+            onChange={handleTabChange}
+            aria-label="disabled tabs example"
+            sx={{ marginLeft: -2 }}
+          >
+            {Object.keys(TabNFTManage).map((item) => {
+              return (
+                <Tab
+                  key={item.toString()}
+                  value={item.toString()}
+                  label={t(`labelImportCollection${item}`)}
+                />
+              );
+            })}
+          </Tabs>
+          <Box
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"space-between"}
+            marginTop={1}
+            alignItems={"center"}
+          >
+            <Typography variant={"body1"}>{collection.name}</Typography>
             <Box
               display={"flex"}
               flexDirection={"row"}
-              justifyContent={"space-between"}
+              justifyContent={"flex-end"}
             >
-              <Typography variant={"body1"}>{collection.name}</Typography>
-              <Box
-                display={"flex"}
-                flexDirection={"row"}
-                justifyContent={"flex-end"}
+              <Button
+                variant={"outlined"}
+                size={"small"}
+                sx={{ marginLeft: 1 }}
               >
-                <Button
-                  variant={"outlined"}
-                  size={"small"}
-                  sx={{ marginLeft: 1 }}
-                >
-                  {t("labelSelectAll")}
-                </Button>
-                {Btn}
-                <Button
-                  variant={"outlined"}
-                  size={"small"}
-                  sx={{ marginLeft: 1 }}
-                >
-                  {t("labelSelectCancel")}
-                </Button>
-              </Box>
-            </Box>
-            <Box flex={1}>
-              <NFTList
-                onPageChange={(page: number) => {
-                  onFilterNFT({ ...filter, page });
-                }}
-                baseURL={baseURL}
-                nftList={listNFT}
-                isLoading={isLoading}
-                total={total}
-                page={page}
-                selected={selectedNFTS}
-                onClick={async (_item) => {
-                  // TODO:
-                  // @ts-ignore
-                  onNFTSelected();
-                  return;
-                }}
-              />
+                {t("labelSelectAll")}
+              </Button>
+              {Btn}
+              <Button
+                variant={"outlined"}
+                size={"small"}
+                sx={{ marginLeft: 1 }}
+              >
+                {t("labelCancelAll")}
+              </Button>
             </Box>
           </Box>
-        </Tabs>
+          <Box flex={1}>
+            <NFTList
+              onPageChange={(page: number) => {
+                onFilterNFT({ ...filter, page });
+              }}
+              baseURL={baseURL}
+              nftList={listNFT}
+              isLoading={isLoading}
+              total={total}
+              page={page}
+              selected={selectedNFTS}
+              onClick={async (_item) => {
+                // TODO:
+                // @ts-ignore
+                onNFTSelected();
+                return;
+              }}
+            />
+          </Box>
+        </Box>
       )}
     </Box>
   );
