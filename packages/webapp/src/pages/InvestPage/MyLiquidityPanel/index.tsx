@@ -283,7 +283,7 @@ const MyLiquidity: any = withTranslation("common")(
           !(dualList?.length > 0) ? (
             <TableWrapStyled
               flex={1}
-              marginTop={2}
+              marginTop={isHideTotal ? 1 : 2}
               height={"100%"}
               display={"flex"}
               width={"100%"}
