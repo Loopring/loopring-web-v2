@@ -141,7 +141,18 @@
         ]
       }
     ],
-    "Amm": [],
+    "Amm": [
+      {
+        "name": "Orderbook mining event",
+        "startShow": 1664582400000,
+        "endShow": 1668038400000,
+        "iconSource": "https://static.loopring.io/assets/svg/rank.svg",
+        "symbols": [
+          "LRC-ETH",
+          "LRC-USDT"
+        ]
+      }
+    ],
     "Fiat": [
       {
         "name": "Offramp event",
@@ -149,7 +160,7 @@
         "endShow": 1668038400000,
         "iconSource": "https://static.loopring.io/assets/svg/hot.svg",
         "symbols": [
-          "Ramp-off"
+          "Ramp-on"
         ]
       }
     ],
