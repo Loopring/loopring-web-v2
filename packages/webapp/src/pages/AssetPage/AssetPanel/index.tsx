@@ -121,9 +121,7 @@ const AssetPanel = withTranslation("common")(
             </Box>
           </StylePaper>
         )}
-        {currentTab === TabIndex.Invests && (
-          <MyLiquidity marginTop={1} isHideTotal={true} />
-        )}
+        {currentTab === TabIndex.Invests && <MyLiquidity isHideTotal={true} />}
       </>
     );
   }
