@@ -140,27 +140,29 @@ export const CollectionManageWrap = <
             alignItems={"center"}
           >
             <Typography variant={"body1"}>{collection.name}</Typography>
-            <Box
-              display={"flex"}
-              flexDirection={"row"}
-              justifyContent={"flex-end"}
-            >
-              <Button
-                variant={"outlined"}
-                size={"small"}
-                sx={{ marginLeft: 1 }}
+            {tab !== TabNFTManage.All && (
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                justifyContent={"flex-end"}
               >
-                {t("labelSelectAll")}
-              </Button>
-              {Btn}
-              <Button
-                variant={"outlined"}
-                size={"small"}
-                sx={{ marginLeft: 1 }}
-              >
-                {t("labelCancelAll")}
-              </Button>
-            </Box>
+                <Button
+                  variant={"outlined"}
+                  size={"small"}
+                  sx={{ marginLeft: 1 }}
+                >
+                  {t("labelSelectAll")}
+                </Button>
+                {Btn}
+                <Button
+                  variant={"outlined"}
+                  size={"small"}
+                  sx={{ marginLeft: 1 }}
+                >
+                  {t("labelCancelAll")}
+                </Button>
+              </Box>
+            )}
           </Box>
           <Box flex={1}>
             <NFTList

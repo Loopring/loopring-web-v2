@@ -518,8 +518,8 @@ export const ImportCollectionWrap = <
                 color={"primary"}
                 sx={{ height: "var(--btn-medium-height)" }}
                 onClick={() => {
-                  setStep(ImportCollectionStep.SELECTNFT);
-                  selectCollection && onCollectionNext(selectCollection);
+                  setStep(ImportCollectionStep.SELECTCOLLECTION);
+                  selectCollection && onCollectionChange(undefined);
                 }}
               >
                 {t(`labelMintBack`)}

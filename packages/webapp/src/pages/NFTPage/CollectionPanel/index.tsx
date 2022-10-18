@@ -5,7 +5,6 @@ import {
   CollectionCardList,
   EmptyDefault,
   useSettings,
-  ImportCollectionWrap,
   StyledPaperBg,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
@@ -17,7 +16,6 @@ import {
   TradeNFT,
   TOAST_TIME,
   AddIcon,
-  DownloadIcon,
 } from "@loopring-web/common-resources";
 import {
   getIPFSString,
