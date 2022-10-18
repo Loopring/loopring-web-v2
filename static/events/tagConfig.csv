@@ -1,1 +1,6 @@
-name,startTime,endTime,iconSource,symbols,scenarios
+scenario,name,startShow,endShow,iconSource,symbols
+orderbook,Orderbook mining event,10/01/2022 00:00:00,11/10/2022 00:00:00,https://static.loopring.io/assets/svg/rank.svg,"LRC-ETH,LRC-USDT"
+market,Orderbook mining event,10/01/2022 00:00:00,11/10/2022 00:00:00,https://static.loopring.io/assets/svg/rank.svg,"LRC-ETH,LRC-USDT"
+Fiat,Offramp event,10/01/2022 00:00:00,11/10/2022 0:00:00,https://static.loopring.io/assets/svg/hot.svg,Ramp-off
+orderbook,Orderbook mining event2,10/10/2022 00:00:00,11/10/2022 0:00:00,https://static.loopring.io/assets/svg/rank.svg,LRC-ETH
+swap,Trade,10/10/2022 00:00:00,11/10/2022 0:00:00,https://static.loopring.io/assets/svg/hot.svg,LRC-ETH

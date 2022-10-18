@@ -139,5 +139,73 @@
       }
     ]
   },
-  "campaignTagConfig": []
+  "campaignTagConfig": {
+    "orderbook": [
+      {
+        "name": "Orderbook mining event",
+        "startShow": 1664582400000,
+        "endShow": 1668038400000,
+        "iconSource": "https://static.loopring.io/assets/svg/rank.svg",
+        "symbols": [
+          "LRC-ETH",
+          "LRC-USDT"
+        ]
+      },
+      {
+        "name": "Orderbook mining event2",
+        "startShow": 1665360000000,
+        "endShow": 1668038400000,
+        "iconSource": "https://static.loopring.io/assets/svg/rank.svg",
+        "symbols": [
+          "LRC-ETH"
+        ]
+      }
+    ],
+    "market": [
+      {
+        "name": "Orderbook mining event",
+        "startShow": 1664582400000,
+        "endShow": 1668038400000,
+        "iconSource": "https://static.loopring.io/assets/svg/rank.svg",
+        "symbols": [
+          "LRC-ETH",
+          "LRC-USDT"
+        ]
+      }
+    ],
+    "Amm": [
+      {
+        "name": "Orderbook mining event",
+        "startShow": 1664582400000,
+        "endShow": 1668038400000,
+        "iconSource": "https://static.loopring.io/assets/svg/rank.svg",
+        "symbols": [
+          "LRC-ETH",
+          "LRC-USDT"
+        ]
+      }
+    ],
+    "Fiat": [
+      {
+        "name": "Offramp event",
+        "startShow": 1664582400000,
+        "endShow": 1668038400000,
+        "iconSource": "https://static.loopring.io/assets/svg/hot.svg",
+        "symbols": [
+          "Ramp-off"
+        ]
+      }
+    ],
+    "swap": [
+      {
+        "name": "Trade",
+        "startShow": 1665360000000,
+        "endShow": 1668038400000,
+        "iconSource": "https://static.loopring.io/assets/svg/hot.svg",
+        "symbols": [
+          "LRC-ETH"
+        ]
+      }
+    ]
+  }
 }
