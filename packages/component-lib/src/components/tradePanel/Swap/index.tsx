@@ -6,6 +6,7 @@ import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
 import {
   IBData,
   OrderListIcon,
+  SCENARIO,
   TradeCalcData,
 } from "@loopring-web/common-resources";
 import { SwapData, SwapMenuList, SwapTradeWrap } from "../components";
@@ -14,6 +15,7 @@ import * as _ from "lodash";
 import { IconButtonStyled } from "../components/Styled";
 import { debounceTime, Subject } from "rxjs";
 import { useHistory } from "react-router-dom";
+import { TagIconList } from "../../block";
 
 export const SwapPanel = withTranslation("common", { withRef: true })(
   <T extends IBData<I>, I, TCD extends TradeCalcData<I>>({
@@ -28,6 +30,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
     toPro,
     market,
     onRefreshData,
+    campaignTagConfig,
     refreshRef,
     ...rest
   }: SwapProps<T, I, TCD> & WithTranslation) => {
@@ -241,6 +244,18 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   alignSelf={"self-start"}
                 >
                   {rest.t("swapTitle")}
+                  <Typography
+                    component={"span"}
+                    paddingLeft={1}
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
+                    <TagIconList
+                      scenario={SCENARIO.swap}
+                      campaignTagConfig={campaignTagConfig}
+                      symbol={market as string}
+                    />
+                  </Typography>
                 </Typography>
                 <Box alignSelf={"flex-end"} display={"flex"}>
                   <CountDownIcon

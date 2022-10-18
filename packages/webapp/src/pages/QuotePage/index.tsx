@@ -87,7 +87,7 @@ export const QuotePage = withTranslation("common")(
               onRowClick={(index: any, row: any, col: any) =>
                 handleRowClick(row)
               }
-              campaignTagConfig={campaignTagConfig}
+              campaignTagConfig={campaignTagConfig ?? ({} as any)}
               forexMap={forexMap as any}
               account={account}
               rawData={filteredData}

@@ -13,7 +13,9 @@ const getDefiMapApi = async () => {
     markets: marketMap,
     tokenArr: marketCoins,
     marketArr: marketArray,
-  } = await LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "LIDO" });
+  } = await LoopringAPI.defiAPI?.getDefiMarkets({
+    defiType: "LIDO,ROCKETPOOL",
+  });
 
   let { __timer__ } = store.getState().invest.defiMap;
   __timer__ = (() => {

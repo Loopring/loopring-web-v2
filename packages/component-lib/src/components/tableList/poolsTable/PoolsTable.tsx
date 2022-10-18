@@ -23,6 +23,7 @@ import {
   MoreIcon,
   PriceTag,
   RowConfig,
+  SCENARIO,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { Avatar, Box, BoxProps, Grid, Typography } from "@mui/material";
@@ -198,7 +199,7 @@ export const IconColumn = React.memo(
         )}
         {campaignTagConfig && (
           <TagIconList
-            scenario={"AMM"}
+            scenario={SCENARIO.Amm}
             campaignTagConfig={campaignTagConfig}
             symbol={pair}
           />
