@@ -4,7 +4,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Account,
-  CAMPAIGN_TAG,
+  CAMPAIGNTAGCONFIG,
   CurrencyToTag,
   EmptyValueTag,
   FloatTag,
@@ -12,6 +12,7 @@ import {
   getValuePrecisionThousand,
   PriceTag,
   RowConfig,
+  SCENARIO,
   StarHollowIcon,
   StarSolidIcon,
 } from "@loopring-web/common-resources";
@@ -109,7 +110,7 @@ const QuoteTableChangedCell: any = styled.span`
 export interface QuoteTableProps {
   rawData: QuoteTableRawDataItem[];
   rowHeight?: number;
-  campaignTagConfig: CAMPAIGN_TAG[] | undefined;
+  campaignTagConfig: CAMPAIGNTAGCONFIG;
   headerRowHeight?: number;
   onVisibleRowsChange?: (startIndex: number) => void;
   onRowClick?: (
@@ -214,7 +215,7 @@ export const QuoteTable = withTranslation("tables")(
                     <TagIconList
                       campaignTagConfig={campaignTagConfig}
                       symbol={pair}
-                      scenario={"market"}
+                      scenario={SCENARIO.market}
                     />
                   )}
                 </Box>

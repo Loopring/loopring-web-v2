@@ -260,48 +260,6 @@ async function createNotifyJSON(lng) {
     });
   }
 
-  /****create invest json****/
-  // if (fs.existsSync(investPath)) {
-  //   await new Promise((resolve, reject) => {
-  //     const list = [];
-  //     fs.createReadStream(investPath)
-  //       .pipe(parse({ delimiter: ",", from_line: 2 }))
-  //       .on("data", (data) => {
-  //         list.push(data);
-  //       })
-  //       .on("end", () => {
-  //         list.map((item) => {
-  //           const startShow = moment
-  //             .utc(item[6], "MM/DD/YYYY HH:mm:ss")
-  //             .valueOf();
-  //           const endShow = moment
-  //             .utc(item[7], "MM/DD/YYYY HH:mm:ss")
-  //             .valueOf();
-  //
-  //           const _item = {
-  //             name: item[0],
-  //             version: item[1], //localStore for visited should be unique
-  //             type: item[2],
-  //             bannerMobile: item[3],
-  //             bannerLaptop: item[4],
-  //             linkRule: item[5],
-  //             startShow: startShow,
-  //             endShow: endShow,
-  //             link: item[8],
-  //           };
-  //           json.invest = json.invest.concat(_item);
-  //           if (json.prev.endDate <= endShow) {
-  //             json.prev.endDate = endShow;
-  //           }
-  //         }, undefined);
-  //         resolve(json);
-  //       })
-  //       .on("error", function (error) {
-  //         console.log(error.message);
-  //         reject(error);
-  //       });
-  //   });
-  // }
   const storeFilePath = `${_router}/${notifyPath}/notification.${lng}.json`;
   try {
     await fs.unlink(storeFilePath);

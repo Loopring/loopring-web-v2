@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import {
   BanxaIcon,
   RampIcon,
+  SCENARIO,
   TradeTypes,
 } from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
@@ -109,7 +110,7 @@ export const VendorMenu = ({
               </Typography>
               {campaignTagConfig && (
                 <TagIconList
-                  scenario={"Fiat"}
+                  scenario={SCENARIO.Fiat}
                   size={"var(--svg-size-large)"}
                   campaignTagConfig={campaignTagConfig}
                   symbol={`${item.key}-${

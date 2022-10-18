@@ -12,6 +12,7 @@ import {
   MarketType,
   PriceTag,
   SagaStatus,
+  SCENARIO,
   TrophyIcon,
 } from "@loopring-web/common-resources";
 import {
@@ -367,7 +368,7 @@ export const Toolbar = withTranslation("common")(
                   <QuoteTable
                     isPro
                     forexMap={forexMap as any}
-                    campaignTagConfig={campaignTagConfig}
+                    campaignTagConfig={campaignTagConfig ?? ({} as any)}
                     account={account}
                     rawData={filteredData}
                     favoriteMarket={favoriteMarket}
@@ -388,7 +389,7 @@ export const Toolbar = withTranslation("common")(
           </PopoverPure>
           {campaignTagConfig && (
             <TagIconList
-              scenario={"orderbook"}
+              scenario={SCENARIO.orderbook}
               campaignTagConfig={campaignTagConfig}
               symbol={market}
             />
