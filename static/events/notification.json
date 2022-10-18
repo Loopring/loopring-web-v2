@@ -5,6 +5,22 @@
         "type": "ACTIVITY",
         "place": "HOME",
         "version": "-1",
+        "name": "Dual Investment (WBTC)",
+        "title": "Unleash the utility of BTC on L2!",
+        "description1": "Buy the dip or sell the covered gain while earning a high yield.",
+        "description2": "",
+        "link": "https://loopring.io/#/document/dual_investment_wbtc_landing_en.md",
+        "startShow": 1666065600000,
+        "endShow": 1669766400000,
+        "color": "default",
+        "banner": "https://static.loopring.io/events/2022/10/activities/dual_investment_wbtc_banner.en.webp",
+        "bannerWeb": "https://static.loopring.io/events/2022/10/activities/dual_investment_wbtc_banner.en.webp",
+        "webRouter": "[self]/invest/dual/WBTC-USDC"
+      },
+      {
+        "type": "ACTIVITY",
+        "place": "HOME",
+        "version": "-1",
         "name": "Dual Investment",
         "title": "A new way to earn on L2.",
         "description1": "Buy low or sell high and enjoy a high yield.",
@@ -32,22 +48,6 @@
         "banner": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
         "bannerWeb": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
         "webRouter": ""
-      },
-      {
-        "type": "ACTIVITY",
-        "place": "HOME",
-        "version": "-1",
-        "name": "NFT Collection",
-        "title": "NFT Collection Live now on loopring.io",
-        "description1": "NFT creation with collection support.",
-        "description2": "",
-        "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
-        "startShow": 1662336000000,
-        "endShow": 1665187200000,
-        "color": "default",
-        "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
-        "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
-        "webRouter": "[self]/nft/myCollection"
       }
     ],
     "notifications": [],
@@ -56,6 +56,22 @@
         "type": "ACTIVITY",
         "place": "HOME",
         "version": "-1",
+        "name": "Dual Investment (WBTC)",
+        "title": "Unleash the utility of BTC on L2!",
+        "description1": "Buy the dip or sell the covered gain while earning a high yield.",
+        "description2": "",
+        "link": "https://loopring.io/#/document/dual_investment_wbtc_landing_en.md",
+        "startShow": 1666065600000,
+        "endShow": 1669766400000,
+        "color": "default",
+        "banner": "https://static.loopring.io/events/2022/10/activities/dual_investment_wbtc_banner.en.webp",
+        "bannerWeb": "https://static.loopring.io/events/2022/10/activities/dual_investment_wbtc_banner.en.webp",
+        "webRouter": "[self]/invest/dual/WBTC-USDC"
+      },
+      {
+        "type": "ACTIVITY",
+        "place": "HOME",
+        "version": "-1",
         "name": "Dual Investment",
         "title": "A new way to earn on L2.",
         "description1": "Buy low or sell high and enjoy a high yield.",
@@ -83,29 +99,13 @@
         "banner": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
         "bannerWeb": "https://static.loopring.io/events/2022/09/activities/nft_trading_competition_7_notification_banner.en.webp",
         "webRouter": ""
-      },
-      {
-        "type": "ACTIVITY",
-        "place": "HOME",
-        "version": "-1",
-        "name": "NFT Collection",
-        "title": "NFT Collection Live now on loopring.io",
-        "description1": "NFT creation with collection support.",
-        "description2": "",
-        "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
-        "startShow": 1662336000000,
-        "endShow": 1665187200000,
-        "color": "default",
-        "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
-        "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
-        "webRouter": "[self]/nft/myCollection"
       }
     ],
     "activitiesInvest": [],
     "invest": []
   },
   "prev": {
-    "endDate": 1669334400000
+    "endDate": 1669766400000
   },
   "invest": {
     "banner": {
@@ -139,5 +139,11 @@
       }
     ]
   },
-  "campaignTagConfig": []
+  "campaignTagConfig": {
+    "orderbook": [],
+    "market": [],
+    "Amm": [],
+    "Fiat": [],
+    "swap": []
+  }
 }
