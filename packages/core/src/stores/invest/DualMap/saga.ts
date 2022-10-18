@@ -13,7 +13,7 @@ const getDualMapApi = async () => {
     tokenArr: marketCoins,
     marketArr,
     pairs,
-  } = await LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "DUAL" });
+  } = await LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "PIONEX" });
   const marketArray = marketArr?.sort((b, a) => a.localeCompare(b));
   const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
     const tokenList = pairs[key as string]?.tokenList?.sort();
