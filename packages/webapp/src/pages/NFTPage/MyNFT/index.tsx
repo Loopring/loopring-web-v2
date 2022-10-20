@@ -166,13 +166,7 @@ export const MyNFTPanel = withTranslation("common")(
                       search,
                     });
                     setShowNFTDetail({ isShow: false });
-                    // href={`#/NFT/assetsNFT/${
-                    //   match?.params?.tab ?? "byList"
-                    // }?${searchParams.toString()}`}
                   }}
-                  // href={`/NFT/assetsNFT/${
-                  //   MY_NFT_VIEW.LIST_COLLECTION
-                  // }?${searchParams.toString()}`}
                 >
                   <Typography
                     component={"span"}

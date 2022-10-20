@@ -262,8 +262,7 @@ export const NFTDetail = withTranslation("common")(
                 >
                   <Button
                     size={"small"}
-                    aria-label={t("labelRefresh")}
-                    disabled={showFresh !== "click"}
+                    aria-label={t("labelLinkMetaData")}
                     variant={"outlined"}
                     onClick={() => {
                       const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(
