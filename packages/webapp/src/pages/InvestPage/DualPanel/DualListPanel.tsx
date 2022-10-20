@@ -230,7 +230,7 @@ export const DualListPanel: any = withTranslation("common")(
                 <Tabs
                   value={pairBSymbol}
                   onChange={(_e, value) => handleOnPairChange({ pairB: value })}
-                  aria-label="disabled tabs example"
+                  aria-label="Dual Quote Tab"
                   variant={"scrollable"}
                 >
                   {pairASymbol &&
