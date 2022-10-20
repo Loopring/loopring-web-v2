@@ -33,10 +33,6 @@ import {
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
-// import ReactMarkdown from "react-markdown";
-// import gfm from "remark-gfm";
-// import { useTheme } from "@emotion/react";
-// import { LoadingBlock } from "../../../block";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
@@ -1327,49 +1323,3 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
     );
   }
 );
-
-// const theme = useTheme();
-// const [input, setInput] = React.useState<string>("");
-// React.useEffect(() => {
-//   // if (path) {
-//   try {
-//     const lng = Lang[language] ?? "en";
-//     Promise.all([
-//       fetch(
-//         `https://static.loopring.io/documents/markdown/dual_investment_tutorial_en.md`
-//       ),
-//       fetch(
-//         `https://static.loopring.io/documents/markdown/dual_investment_tutorial_${lng}.md`
-//       ),
-//     ])
-//       .then(([response1, response2]) => {
-//         if (response2) {
-//           return response2.text();
-//         } else {
-//           return response1.text();
-//         }
-//       })
-//       .then((input) => {
-//         setInput(input);
-//       })
-//       .catch(() => {});
-//   } catch (e: any) {}
-// }, []);
-// {input ? (
-//   <MarkdownStyle maxHeight={"50vh"} sx={{ overflowY: "scroll" }}>
-//     <Box
-//       flex={1}
-//       padding={3}
-//       boxSizing={"border-box"}
-//       className={`${theme.mode}  ${theme.mode}-scheme markdown-body`}
-//     >
-//       <ReactMarkdown
-//         remarkPlugins={[gfm]}
-//         children={input}
-//         // escapeHtml={false}
-//       />
-//     </Box>
-//   </MarkdownStyle>
-// ) : (
-//   <LoadingBlock />
-// )}

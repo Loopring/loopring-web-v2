@@ -247,15 +247,17 @@ export const ToggleButtonGroup = withTranslation("common")(
 
 export const ModalCloseButton = ({
   onClose,
+  className = "",
   t,
 }: {
+  className?: string;
   onClose?: {
     bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
   }["bivarianceHack"];
 } & { t: TFunction }) => {
   return (
     <Box
-      className={"close-button"}
+      className={`close-button ${className}`}
       alignSelf={"flex-end"}
       position={"absolute"}
       zIndex={99}

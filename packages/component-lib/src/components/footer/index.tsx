@@ -95,28 +95,28 @@ export const Footer = withTranslation(["layout"])(
             return (
               <DiscordIcon
                 fontSize={"large"}
-                htmlColor={"var(--text-color-third)"}
+                htmlColor={"var(--color-text-third)"}
               />
             );
           case "Twitter":
             return (
               <TwitterIcon
                 fontSize={"large"}
-                htmlColor={"var(--text-color-third)"}
+                htmlColor={"var(--color-text-third)"}
               />
             );
           case "Youtube":
             return (
               <YoutubeIcon
                 fontSize={"large"}
-                htmlColor={"var(--text-color-third)"}
+                htmlColor={"var(--color-text-third)"}
               />
             );
           case "Medium":
             return (
               <MediumIcon
                 fontSize={"large"}
-                htmlColor={"var(--text-color-third)"}
+                htmlColor={"var(--color-text-third)"}
               />
             );
         }

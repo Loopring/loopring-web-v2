@@ -18,6 +18,8 @@ const StyledBox = styled(Box)`
     transform: translateY(-50%);
     margin-top: 0;
   }
+  .full-btn-close {
+  }
 ` as typeof Box;
 export interface PopperProps {
   isShow: boolean;
