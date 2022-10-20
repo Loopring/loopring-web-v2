@@ -1088,7 +1088,7 @@ export default {
   labelDoneBtn: "Done",
   labelDetail: "Detail",
   labelNFTMyCollection: "Collection: {{collection}}",
-  labelZoom: "Zoom Resource",
+  labelZoom: "Zoom Media",
   labelRefresh: "Refresh NFT cache",
   labelNFTDetailTab: "Details",
   labelNFTPropertiesTab: "Properties",
