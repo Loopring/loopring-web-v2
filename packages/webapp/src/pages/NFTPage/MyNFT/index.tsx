@@ -138,14 +138,12 @@ export const MyNFTPanel = withTranslation("common")(
           key="1"
           color="inherit"
           onClick={() => {
-            history.replace({
-              pathname: `/NFT/assetsNFT/${match?.params?.tab ?? "byList"}`,
-              search,
-            });
+            history.replace(
+              `/NFT/assetsNFT/${
+                match?.params?.tab ?? "byList"
+              }?${searchParams.toString()}`
+            );
             setShowNFTDetail({ isShow: false });
-            // href={`#/NFT/assetsNFT/${
-            //   match?.params?.tab ?? "byList"
-            // }?${searchParams.toString()}`}
           }}
         >
           {t("labelNFTTitleMyNFT")}
@@ -161,10 +159,11 @@ export const MyNFTPanel = withTranslation("common")(
                   key="2"
                   color="inherit"
                   onClick={() => {
-                    history.replace({
-                      pathname: `/NFT/assetsNFT/${MY_NFT_VIEW.LIST_COLLECTION}`,
-                      search,
-                    });
+                    history.replace(
+                      `/NFT/assetsNFT/${
+                        MY_NFT_VIEW.LIST_COLLECTION
+                      }?${searchParams.toString()}`
+                    );
                     setShowNFTDetail({ isShow: false });
                   }}
                 >
@@ -195,7 +194,12 @@ export const MyNFTPanel = withTranslation("common")(
           {t("labelDetail")}
         </Typography>,
       ];
-    }, [match?.params?.contract, match?.params?.tab, collectionMeta, search]);
+    }, [
+      match?.params?.contract,
+      match?.params?.tab,
+      collectionMeta,
+      searchParams,
+    ]);
     return (
       <Box flex={1} display={"flex"} flexDirection={"column"}>
         {match?.params?.contract && !isShowNFTDetail?.isShow ? (
@@ -255,8 +259,8 @@ export const MyNFTPanel = withTranslation("common")(
                       : 1
                   }
                   myNFTPage={
-                    searchParams?.get("nftPage")
-                      ? Number(searchParams?.get("nftPage"))
+                    searchParams?.get("myNFTPage")
+                      ? Number(searchParams?.get("myNFTPage"))
                       : 1
                   }
                 />
@@ -360,7 +364,14 @@ export const MyNFTPanel = withTranslation("common")(
             </Box>
             <Box display={"flex"} flex={1}>
               {currentTab === MY_NFT_VIEW.LIST_NFT && (
-                <MyNFTList collectionMeta={undefined} />
+                <MyNFTList
+                  collectionMeta={undefined}
+                  myNFTPage={
+                    searchParams?.get("myNFTPage")
+                      ? Number(searchParams?.get("myNFTPage"))
+                      : 1
+                  }
+                />
               )}
               {currentTab === MY_NFT_VIEW.LIST_COLLECTION && (
                 <MyNFTCollectionList />
