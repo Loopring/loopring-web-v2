@@ -260,7 +260,12 @@ export const CollectionItem = React.memo(
               left={0}
               right={0}
             >
-              <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+                flex={1}
+              >
                 {getIPFSString(item?.avatar ?? "", baseURL).startsWith(
                   "http"
                 ) ? (
@@ -290,10 +295,10 @@ export const CollectionItem = React.memo(
                   alignItems={"flex-start"}
                   justifyContent={"space-evenly"}
                   alignSelf={"stretch"}
+                  flex={1}
                 >
                   <Typography
                     color={"textPrimary"}
-                    width={"60%"}
                     overflow={"hidden"}
                     textOverflow={"ellipsis"}
                     variant={"body1"}
