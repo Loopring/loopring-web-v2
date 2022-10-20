@@ -107,6 +107,9 @@ Q： Could dual investment redeem or withdraw before being settled？
 A： After purchasing the order, it cannot be canceled or redeemed until the settlement date. After settled, will return
 to your trade account.
 
+Q： When will I get my returns？  
+A： We will calculate your investment return on the Settlement Date at 08:00 UTC based on the Settlement Price and the Target Price. You will receive your returns within 6 hours.
+
 Q： What’s the risk of dual investment?  
 A： According to the rule of dual investment, uncertainty is the settlement currency. The settlement currency will depend
 on whether the settlement price has reached the target price at the delivery date.
