@@ -1086,4 +1086,11 @@ export default {
   labelSelectAll: "Select All",
   labelCancelAll: "Cancel All",
   labelDoneBtn: "Done",
+  labelDetail: "Detail",
+  labelNFTMyCollection: "Collection: {{collection}}",
+  labelZoom: "Zoom Resource",
+  labelRefresh: "Refresh NFT cache",
+  labelNFTDetailTab: "Details",
+  labelNFTPropertiesTab: "Properties",
+  labelLinkMetaData: "NFT metadata Resource link",
 };

@@ -110,6 +110,9 @@ import {
   ViewMoreIcon,
   PointIcon,
   PointStarIcon,
+  LikeIcon,
+  ZoomIcon,
+  UnlikeIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -230,6 +233,9 @@ const listIcon = [
   <ViewMoreIcon />,
   <PointIcon />,
   <PointStarIcon />,
+  <LikeIcon />,
+  <ZoomIcon />,
+  <UnlikeIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

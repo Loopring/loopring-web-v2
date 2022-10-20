@@ -133,3 +133,4 @@ export const ModalGroup = withTranslation("common")(
   }
 );
 export * from "./DualModal";
+export * from "./AccountModal/components/NFTDetail";

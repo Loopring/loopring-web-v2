@@ -2,7 +2,6 @@ import React from "react";
 import { TFunction, withTranslation } from "react-i18next";
 import * as _ from "lodash";
 import {
-  AmmRankIcon,
   CoinInfo,
   CurrencyToTag,
   DropDownIcon,
@@ -13,7 +12,6 @@ import {
   PriceTag,
   SagaStatus,
   SCENARIO,
-  TrophyIcon,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -354,7 +352,7 @@ export const Toolbar = withTranslation("common")(
                   <Tabs
                     value={tableTabValue}
                     onChange={handleTabChange}
-                    aria-label="disabled tabs example"
+                    aria-label="Market Switch Tab"
                   >
                     <Tab
                       label={t("labelQuotePageFavourite")}
