@@ -89,6 +89,7 @@ export const useDefiTrade = <
         market.match(/(\w+)-(\w+)/i) ?? [];
       return { coinBuySymbol, coinSellSymbol };
     } else {
+      debugger;
       const [, coinSellSymbol, coinBuySymbol] =
         market.match(/(\w+)-(\w+)/i) ?? [];
       return { coinBuySymbol, coinSellSymbol };
@@ -238,6 +239,7 @@ export const useDefiTrade = <
         market:
           _oldTradeDefi.market !== market ? (market as MarketType) : undefined,
         ..._oldTradeDefi,
+        type: marketInfo.type,
         ...calcValue,
         deFiCalcData: {
           ..._deFiCalcData,
@@ -380,6 +382,7 @@ export const useDefiTrade = <
         updateTradeDefi({
           market:
             tradeDefi.market !== market ? (market as MarketType) : undefined,
+          type: marketInfo.type,
           isStoB,
           sellVol: "0",
           buyVol: "0",
