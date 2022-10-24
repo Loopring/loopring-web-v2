@@ -6,6 +6,7 @@ import {
   CoinMap,
   DualCalcData,
   DualViewInfo,
+  ForexMap,
   HeaderMenuItemInterface,
   TradeCalcData,
   WalletCoin,
@@ -13,7 +14,7 @@ import {
 } from "@loopring-web/common-resources";
 import { List } from "immutable";
 import { ConnectProviders } from "@loopring-web/web3-provider";
-import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
+import { Currency, DUAL_TYPE } from "@loopring-web/loopring-sdk";
 export const account: Account = {
   __timer__: -1,
   frozen: false,
@@ -578,4 +579,9 @@ export const DUALCALCDATA: DualCalcData<DualViewInfo> = {
   sellToken: TOKEN_INFO.tokenMap["USDC"],
   sellVol: "",
   dualViewInfo: DUALVIEWINFO,
+};
+
+export const FOREXMAP: ForexMap<Currency> = {
+  usd: 1,
+  cny: 6.7,
 };

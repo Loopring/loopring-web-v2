@@ -53,6 +53,7 @@ export const DeFiPanel: any = withTranslation("common")(
     const history = useHistory();
     const _market: MarketType = [...(marketArray ? marketArray : [])].find(
       (_item) => {
+        debugger;
         const value = match?.params?.market
           ?.replace(/null|-/gi, "")
           ?.toUpperCase();

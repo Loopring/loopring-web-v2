@@ -3814,10 +3814,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@2.1.11-1":
-  version "2.1.11-1"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.1.11-1.tgz#9c4e068fbc298f01d7d22065460930f68e653245"
-  integrity sha512-X+nhLqONudQS9/5P7bQR+86iY8WZFJ2zbOB25dXD/B2NkaMtjqV52es8E0Ax4E9OFUPrf2P8vzzBjrotVuAH1w==
+"@loopring-web/loopring-sdk@2.1.13":
+  version "2.1.13"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.1.13.tgz#d0d45dd3ba9d4e65572329a2c8d31b6fcc030c0c"
+  integrity sha512-LC9JI1huMCEU0trd+82cJc52fWZ5+I6CjEIiPoTNuFpwLIzDKGptuyrqZK2gzUyv0BKHMwp1dGJIws5XPQPLjw==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -18101,6 +18101,11 @@ jsprim@^1.2.2:
     extsprintf "1.3.0"
     json-schema "0.4.0"
     verror "1.10.0"
+
+jsqr@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/jsqr/-/jsqr-1.4.0.tgz#8efb8d0a7cc6863cb6d95116b9069123ce9eb2d1"
+  integrity sha512-dxLob7q65Xg2DvstYkRpkYtmKm2sPJ9oFhrhmudT1dZvNFFTlroai3AWSpLey/w5vMcLBXRgOJsbXpdN9HzU/A==
 
 jsx-ast-utils@^2.1.0, jsx-ast-utils@^2.2.1:
   version "2.4.1"

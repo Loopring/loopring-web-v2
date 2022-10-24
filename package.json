@@ -33,6 +33,7 @@
     "github-markdown-css": "^5.0.0",
     "i18next": "^20.1.0",
     "ipfs-http-client": "^56.0.2",
+    "jsqr": "^1.4.0",
     "lottie-react": "^2.1.0",
     "material-ui-popup-state": "^1.9.3",
     "qrcode.react": "^1.0.1",

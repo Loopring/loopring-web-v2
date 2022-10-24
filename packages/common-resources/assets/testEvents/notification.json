@@ -91,10 +91,18 @@
       },
       {
         "type": "STAKE",
-        "router": "/invest/defi",
+        "router": "/invest/defi/WSTETH",
         "banner": "https://static.loopring.io/assets/images/icon-lido.svg",
-        "titleI18n": "labelInvestDefi",
-        "desI18n": "labelInvestDefiDes",
+        "titleI18n": "labelInvestWSTETH",
+        "desI18n": "labelInvestWSTETHDes",
+        "enable": true
+      },
+      {
+        "type": "STAKE",
+        "router": "/invest/defi/RETH",
+        "banner": "https://static.loopring.io/assets/images/icon-lido.svg",
+        "titleI18n": "labelInvestRETH",
+        "desI18n": "labelInvestRETHDes",
         "enable": true
       },
       {

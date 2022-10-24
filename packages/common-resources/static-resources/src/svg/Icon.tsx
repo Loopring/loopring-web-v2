@@ -1338,20 +1338,7 @@ export const ViewMoreIcon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
-export const PointIcon = (props: SvgIconProps) => {
-  return (
-    <SvgIcon {...props} viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 15L8.5359 11.25L15.4641 11.25L12 15Z" />
-    </SvgIcon>
-  );
-};
-export const PointStarIcon = (props: SvgIconProps) => {
-  return (
-    <SvgIcon {...props} viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M11.6085 5L13.4046 10.5279H19.2169L14.5146 13.9443L16.3107 19.4721L11.6085 16.0557L6.90617 19.4721L8.70228 13.9443L4 10.5279H9.81234L11.6085 5Z" />
-    </SvgIcon>
-  );
-};
+
 export const UnlikeIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props} viewBox="0 0 24 24" aria-hidden="true">
