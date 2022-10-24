@@ -89,7 +89,6 @@ export const useDefiTrade = <
         market.match(/(\w+)-(\w+)/i) ?? [];
       return { coinBuySymbol, coinSellSymbol };
     } else {
-      debugger;
       const [, coinSellSymbol, coinBuySymbol] =
         market.match(/(\w+)-(\w+)/i) ?? [];
       return { coinBuySymbol, coinSellSymbol };
@@ -355,7 +354,8 @@ export const useDefiTrade = <
         if (clearTrade === true) {
           walletLayer2Service.sendUserUpdate();
         }
-        walletMap = makeWalletLayer2(true).walletMap;
+        walletMap = makeWalletLayer2(true).walletMap ?? {};
+
         deFiCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count;
         deFiCalcDataInit.coinBuy.balance = walletMap[coinBuySymbol]?.count;
       }
