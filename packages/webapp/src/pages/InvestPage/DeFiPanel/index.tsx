@@ -51,9 +51,9 @@ export const DeFiPanel: any = withTranslation("common")(
     setConfirmDefiInvest(!confirmedDefiInvest);
     const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
     const history = useHistory();
+    debugger;
     const _market: MarketType = [...(marketArray ? marketArray : [])].find(
       (_item) => {
-        debugger;
         const value = match?.params?.market
           ?.replace(/null|-/gi, "")
           ?.toUpperCase();
@@ -94,7 +94,7 @@ export const DeFiPanel: any = withTranslation("common")(
             size={"medium"}
             sx={{ color: "var(--color-text-secondary)" }}
             color={"inherit"}
-            onClick={history.goBack}
+            onClick={() => history.push("/invest/overview")}
           >
             {t("labelInvestDefiTitle")}
             {/*<Typography color={"textPrimary"}></Typography>*/}

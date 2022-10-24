@@ -92,7 +92,7 @@
       {
         "type": "STAKE",
         "router": "/invest/defi/WSTETH",
-        "banner": "https://static.loopring.io/assets/images/icon-lido.svg",
+        "banner": "https://static.loopring.io/assets/images/icon-lido2.svg",
         "titleI18n": "labelInvestWSTETH",
         "desI18n": "labelInvestWSTETHDes",
         "enable": true
@@ -108,7 +108,7 @@
       {
         "type": "STAKE",
         "router": "/invest/defi/RETH",
-        "banner": "https://static.loopring.io/assets/images/icon-lido.svg",
+        "banner": "https://static.loopring.io/assets/images/icon-pocket.svg",
         "titleI18n": "labelInvestRETH",
         "desI18n": "labelInvestRETHDes",
         "enable": true
