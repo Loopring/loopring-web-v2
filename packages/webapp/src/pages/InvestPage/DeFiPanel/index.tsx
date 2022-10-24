@@ -51,7 +51,6 @@ export const DeFiPanel: any = withTranslation("common")(
     setConfirmDefiInvest(!confirmedDefiInvest);
     const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
     const history = useHistory();
-    debugger;
     const _market: MarketType = [...(marketArray ? marketArray : [])].find(
       (_item) => {
         const value = match?.params?.market

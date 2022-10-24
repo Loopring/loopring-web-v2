@@ -82,9 +82,7 @@ export const useDefiTrade = <
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const [serverUpdate, setServerUpdate] = React.useState(false);
 
-  const {
-    toggle: { defiInvest },
-  } = useToggle();
+  const { toggle } = useToggle();
   const [{ coinSellSymbol, coinBuySymbol }, setSymbol] = React.useState(() => {
     if (isJoin) {
       const [, coinBuySymbol, coinSellSymbol] =
@@ -452,7 +450,7 @@ export const useDefiTrade = <
         setIsLoading(true);
       }
       Promise.all([
-        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "LIDO" }),
+        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "LIDO,ROCKETPOOL" }),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(
               isJoin
@@ -658,6 +656,7 @@ export const useDefiTrade = <
 
   const handleSubmit = React.useCallback(async () => {
     const { tradeDefi } = store.getState()._router_tradeDefi;
+    // const marketInfo = defiMarketMap[market];
 
     if (
       (account.readyState === AccountStatus.ACTIVATED &&
@@ -666,9 +665,11 @@ export const useDefiTrade = <
         account.eddsaKey?.sk,
       tradeDefi.buyVol)
     ) {
-      if (!allowTrade.defiInvest.enable) {
+      const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? [];
+
+      if (allowTrade && !allowTrade.defiInvest.enable) {
         setShowSupport({ isShow: true });
-      } else if (!defiInvest.enable) {
+      } else if (toggle && !toggle[`${tokenBase}Invest`].enable) {
         setShowTradeIsFrozen({ isShow: true, type: "DefiInvest" });
       } else {
         sendRequest();
@@ -677,6 +678,8 @@ export const useDefiTrade = <
       return false;
     }
   }, [
+    market,
+    defiMarketMap,
     account.readyState,
     account.eddsaKey?.sk,
     tokenMap,
