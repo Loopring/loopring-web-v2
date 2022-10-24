@@ -65,8 +65,8 @@ export const OverviewPanel = withTranslation("common")(
     const investAdviceList = [
       { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0] },
       { ...defiWSTETHAdvice, ...notifyMap?.invest?.investAdvice[1] },
-      { ...defiRETHAdvice, ...notifyMap?.invest?.investAdvice[2] },
-      { ...dualAdvice, ...notifyMap?.invest?.investAdvice[3] },
+      { ...defiRETHAdvice, ...notifyMap?.invest?.investAdvice[3] },
+      { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
     ];
     // myLog(investAdviceList[1].banner);
     return (

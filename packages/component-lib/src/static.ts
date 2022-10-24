@@ -582,6 +582,6 @@ export const DUALCALCDATA: DualCalcData<DualViewInfo> = {
 };
 
 export const FOREXMAP: ForexMap<Currency> = {
-  usd: 1,
-  cny: 6.7,
-};
+  [Currency.usd]: 1,
+  [Currency.cny]: 6.7,
+} as any;

@@ -453,17 +453,17 @@ export const defiWSTETHAdvice: InvestAdvice = {
   router: "/invest/defi/WSTETH",
   notification: "",
   banner: SoursURL + "images/icon-lido.svg",
-  titleI18n: "labelInvestDefi",
-  desI18n: "labelInvestDefiDes",
+  titleI18n: "labelInvestWSTETH",
+  desI18n: "labelInvestWSTETHDes",
   enable: true,
 };
 export const defiRETHAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
-  router: "/invest/defi/WSTETH",
+  router: "/invest/defi/RETH",
   notification: "",
   banner: SoursURL + "images/icon-lido.svg",
-  titleI18n: "labelInvestDefi",
-  desI18n: "labelInvestDefiDes",
+  titleI18n: "labelInvestRETH",
+  desI18n: "labelInvestRETHes",
   enable: true,
 };
 export const dualAdvice: InvestAdvice = {

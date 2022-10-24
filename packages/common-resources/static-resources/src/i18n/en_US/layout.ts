@@ -106,7 +106,7 @@ export default {
   labelInvestDefiDes: "Earn ETH staking rewards",
   labelInvestWSTETH: "Via Lido",
   labelInvestWSTETHDes: "ETH staking get WSTETH",
-  labelInvestRETH: "RETH Staking",
+  labelInvestRETH: "Via Rocket Pool",
   labelInvestRETHDes: "ETH staking get RETH",
   labelInvestDual: "Dual Investment",
   labelInvestDualDes: "Buy the Dips, Sell the Rallies",

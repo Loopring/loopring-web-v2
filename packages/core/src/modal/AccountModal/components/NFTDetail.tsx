@@ -26,6 +26,7 @@ import {
   type,
   ZoomIcon,
   TOAST_TIME,
+  htmlDecode,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -45,7 +46,7 @@ import { nftRefresh, store, useAccount, useSystem } from "../../../stores";
 import React from "react";
 import { getIPFSString } from "../../../utils";
 import { LoopringAPI } from "../../../api_wrapper";
-import { htmlDecode, useToast } from "../../../hooks";
+import { useToast } from "../../../hooks";
 import { sanitize } from "dompurify";
 import { StylePaper } from "../../../component/styled";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
