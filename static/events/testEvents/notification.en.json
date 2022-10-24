@@ -4,6 +4,22 @@
       {
         "type": "ACTIVITY",
         "place": "HOME",
+        "version": "-1",
+        "name": "NFT Collection",
+        "title": "NFT Collection Live now on loopring.io",
+        "description1": "NFT creation with collection support.",
+        "description2": "",
+        "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
+        "startShow": 1662336000000,
+        "endShow": 1665187200000,
+        "color": "default",
+        "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "webRouter": "[self]/nft/myCollection"
+      },
+      {
+        "type": "ACTIVITY",
+        "place": "HOME",
         "version": "7",
         "name": "NFT Trading Competition",
         "title": "Trade NFTs via Loopring L2",
@@ -23,6 +39,22 @@
       {
         "type": "ACTIVITY",
         "place": "HOME",
+        "version": "-1",
+        "name": "NFT Collection",
+        "title": "NFT Collection Live now on loopring.io",
+        "description1": "NFT creation with collection support.",
+        "description2": "",
+        "link": "https://loopring.io/#/document/collection_landing_en.md?noheader&nofooter",
+        "startShow": 1662336000000,
+        "endShow": 1665187200000,
+        "color": "default",
+        "banner": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "bannerWeb": "https://static.loopring.io/events/2022/09/activities/collection_banner.en.webp",
+        "webRouter": "[self]/nft/myCollection"
+      },
+      {
+        "type": "ACTIVITY",
+        "place": "HOME",
         "version": "7",
         "name": "NFT Trading Competition",
         "title": "Trade NFTs via Loopring L2",
@@ -37,7 +69,8 @@
         "webRouter": ""
       }
     ],
-    "activitiesInvest": []
+    "activitiesInvest": [],
+    "invest": []
   },
   "prev": {
     "endDate": 1669334400000
@@ -58,10 +91,10 @@
       },
       {
         "type": "STAKE",
-        "router": "/invest/defi",
-        "banner": "https://static.loopring.io/assets/images/icon-lido.svg",
-        "titleI18n": "labelInvestDefi",
-        "desI18n": "labelInvestDefiDes",
+        "router": "/invest/defi/WSTETH",
+        "banner": "https://static.loopring.io/assets/images/icon-lido2.svg",
+        "titleI18n": "labelInvestWSTETH",
+        "desI18n": "labelInvestWSTETHDes",
         "enable": true
       },
       {
@@ -70,6 +103,14 @@
         "banner": "https://static.loopring.io/assets/images/icon-dual.svg",
         "titleI18n": "labelInvestDual",
         "desI18n": "labelInvestDualDes",
+        "enable": true
+      } ,
+      {
+        "type": "STAKE",
+        "router": "/invest/defi/RETH",
+        "banner": "https://static.loopring.io/assets/images/icon-pocket.svg",
+        "titleI18n": "labelInvestRETH",
+        "desI18n": "labelInvestRETHDes",
         "enable": true
       }
     ]
@@ -108,18 +149,7 @@
         ]
       }
     ],
-    "Amm": [
-      {
-        "name": "Orderbook mining event",
-        "startShow": 1664582400000,
-        "endShow": 1668038400000,
-        "iconSource": "https://static.loopring.io/assets/svg/rank.svg",
-        "symbols": [
-          "LRC-ETH",
-          "LRC-USDT"
-        ]
-      }
-    ],
+    "Amm": [],
     "Fiat": [
       {
         "name": "Offramp event",
@@ -127,7 +157,7 @@
         "endShow": 1668038400000,
         "iconSource": "https://static.loopring.io/assets/svg/hot.svg",
         "symbols": [
-          "Ramp-on"
+          "Ramp-off"
         ]
       }
     ],

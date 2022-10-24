@@ -12,10 +12,10 @@ const userRewardsMapSlice: Slice<UserRewardsStates> = createSlice({
   name: "userRewardsMap",
   initialState,
   reducers: {
-    getUserRewards(state, action: PayloadAction<undefined>) {
+    getUserRewards(state, _action: PayloadAction<undefined>) {
       state.status = SagaStatus.PENDING;
     },
-    resetUserRewards(state, action: PayloadAction<undefined>) {
+    resetUserRewards(state, _action: PayloadAction<undefined>) {
       state.status = SagaStatus.PENDING;
     },
     getUserRewardsStatus(state, action: PayloadAction<UserRewardsStates>) {

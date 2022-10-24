@@ -78,7 +78,10 @@ export const setAmmState = ({
         change: undefined,
         timeUnit: "24h",
       },
-      APR: APRs.self + APRs.event + APRs.fee, // (parseInt(ammPoolState.apyBips) * 1.0) / 100,
+      // @ts-ignore
+      APR: ammPoolState?.apysBips
+        ? APRs.self + APRs.event + APRs.fee
+        : (parseInt(ammPoolState.apyBips) * 1.0) / 100,
       APRs,
     };
   }
