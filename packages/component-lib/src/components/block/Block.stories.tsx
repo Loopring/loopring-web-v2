@@ -13,6 +13,7 @@ import { withTranslation } from "react-i18next";
 import {
   AssetTitle,
   AssetTitleProps,
+  RedPockClock,
   RedPockOpen,
   TradeTitle,
   VipPanel,
@@ -296,7 +297,10 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
           marginY={2}
         >
           <Grid item>
-            <RedPockOpen />
+            <RedPockOpen onClose={() => {}} />
+          </Grid>
+          <Grid item>
+            <RedPockClock onClose={() => {}} />
           </Grid>
         </Grid>
 

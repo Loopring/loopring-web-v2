@@ -30,10 +30,7 @@
     "release:version": "lerna version --exact --no-changelog --no-push --no-git-tag-version",
     "release:build": "lerna run --parallel --scope \"@loopring-web/*\" build",
     "test": "react-scripts-rewired test",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
-    "sb": "yarn storybook",
-    "build": "NODE_ENV=production build-storybook --quiet"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -78,14 +75,6 @@
     "@rollup/plugin-node-resolve": "^11.2.1",
     "@rollup/plugin-typescript": "^8.2.1",
     "@rollup/plugin-url": "^6.0.0",
-    "@storybook/addon-actions": "^6.4.19",
-    "@storybook/addon-controls": "^6.4.19",
-    "@storybook/addon-essentials": "^6.4.19",
-    "@storybook/addon-links": "^6.4.19",
-    "@storybook/addon-storyshots": "^6.4.19",
-    "@storybook/node-logger": "^6.4.19",
-    "@storybook/react": "^6.4.19",
-    "@storybook/preset-create-react-app": "^3.2.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
