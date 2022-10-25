@@ -68,11 +68,8 @@ export type NOTIFICATION = {
   activities: ACTIVITY[];
   notifications: NOTIFICATION_ITEM[];
   invest: {
-    banner: {
-      mobile: string;
-      laptop: string;
-    };
     investAdvice: InvestAdvice[];
+    STAKE: InvestAdvice[];
   };
   account?: Account;
   prev?: {

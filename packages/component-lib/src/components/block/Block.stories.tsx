@@ -7,6 +7,7 @@ import {
   CoinInfo,
   FloatTag,
   PriceTag,
+  RedPockSvg,
 } from "@loopring-web/common-resources";
 import { coinMap, CoinType, FOREXMAP } from "../../static";
 import { withTranslation } from "react-i18next";
@@ -301,6 +302,9 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
           </Grid>
           <Grid item>
             <RedPockClock onClose={() => {}} />
+          </Grid>
+          <Grid item>
+            <RedPockSvg />
           </Grid>
         </Grid>
 
