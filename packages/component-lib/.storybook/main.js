@@ -27,7 +27,7 @@ module.exports = {
     reactDocgen: "none",
   },
   webpackFinal: async (config, { configType }) => {
-    const isProd = configType.toLowerCase() === "production";
+    const isProd = configType.toLowerCase() === "PRODUCTION";
 
     const modules = [
       ...config.resolve.modules,
@@ -89,7 +89,7 @@ module.exports = {
               },
             },
           ],
-          "production" && require.resolve("react-refresh/babel"),
+          isProd && require.resolve("react-refresh/babel"),
         ].filter(Boolean),
         // This is a feature of `babel-loader` for webpack (not Babel itself).
         // It enables caching results in ./node_modules/.cache/babel-loader/

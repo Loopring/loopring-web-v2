@@ -8,9 +8,16 @@ import {
   FloatTag,
   PriceTag,
 } from "@loopring-web/common-resources";
-import { coinMap, CoinType } from "../../static";
+import { coinMap, CoinType, FOREXMAP } from "../../static";
 import { withTranslation } from "react-i18next";
-import { AssetTitle, AssetTitleProps, TradeTitle, VipPanel } from "./";
+import {
+  AssetTitle,
+  AssetTitleProps,
+  RedPockClock,
+  RedPockOpen,
+  TradeTitle,
+  VipPanel,
+} from "./";
 import { SettingPanel } from "./SettingPanel";
 import { MarketBlock } from "./MarketBlock";
 // import { PoolDetailTitle } from './PoolDetailTitle';
@@ -87,6 +94,7 @@ const AmmCardWrap = () => {
   const ammInfo: AmmCardProps<CoinType> = {
     handleClick(): void {},
     // ammCalcData,
+    forexMap: FOREXMAP,
     coinAInfo: coinMap.ETH as CoinInfo<CoinType>,
     coinBInfo: coinMap.LRC as CoinInfo<CoinType>,
     // @ts-ignore
@@ -125,6 +133,7 @@ const AmmCardWrap = () => {
 const MarketWrap = withTranslation("common")((rest) => {
   let props: any = {
     ...rest,
+    forexMap: FOREXMAP,
     coinAInfo: coinMap.ETH,
     coinBInfo: coinMap.LRC,
     tradeFloat: {
@@ -279,8 +288,23 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
             <SettingPanelWrap />
           </Grid>
         </Grid>
+        <h4>Red Pock</h4>
+        <Grid
+          container
+          spacing={2}
+          alignContent={"stretch"}
+          justifyContent={"stretch"}
+          marginY={2}
+        >
+          <Grid item>
+            <RedPockOpen onClose={() => {}} />
+          </Grid>
+          <Grid item>
+            <RedPockClock onClose={() => {}} />
+          </Grid>
+        </Grid>
 
-        <h5>Vip Panel</h5>
+        <h4>Vip Panel</h4>
         <Grid container spacing={2}>
           <Grid item>
             <VipPanel {...{ ...rest }} currentLevel={1} rawData={vipData} />

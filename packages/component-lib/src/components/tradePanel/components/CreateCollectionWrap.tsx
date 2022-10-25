@@ -16,10 +16,13 @@ import {
   TextareaAutosizeStyled,
 } from "../../basic-lib";
 import { Trans, useTranslation } from "react-i18next";
-import { CollectionMeta, Info2Icon } from "@loopring-web/common-resources";
+import {
+  CollectionMeta,
+  Info2Icon,
+  htmlDecode,
+} from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { TradeBtnStatus } from "../Interface";
-import { htmlDecode } from "@loopring-web/core";
 
 export type CreateCollectionViewProps<Co> = {
   keys: { [key: string]: undefined | IpfsFile };

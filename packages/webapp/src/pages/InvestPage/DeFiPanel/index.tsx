@@ -51,6 +51,9 @@ export const DeFiPanel: any = withTranslation("common")(
     setConfirmDefiInvest(!confirmedDefiInvest);
     const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
     const history = useHistory();
+    // React.useEffect(()=>{
+    //
+    // },[])
     const _market: MarketType = [...(marketArray ? marketArray : [])].find(
       (_item) => {
         const value = match?.params?.market
@@ -74,7 +77,6 @@ export const DeFiPanel: any = withTranslation("common")(
       market: _market ?? ("WSTETH-ETH" as MarketType),
       isJoin,
     });
-    const theme = useTheme();
 
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
@@ -93,7 +95,7 @@ export const DeFiPanel: any = withTranslation("common")(
             size={"medium"}
             sx={{ color: "var(--color-text-secondary)" }}
             color={"inherit"}
-            onClick={history.goBack}
+            onClick={() => history.push("/invest/overview")}
           >
             {t("labelInvestDefiTitle")}
             {/*<Typography color={"textPrimary"}></Typography>*/}
@@ -113,7 +115,7 @@ export const DeFiPanel: any = withTranslation("common")(
           alignItems={"center"}
           flex={1}
         >
-          {deFiWrapProps.deFiCalcData ? (
+          {marketArray.length && deFiWrapProps.deFiCalcData ? (
             <Box
               className={"hasLinerBg"}
               display={"flex"}

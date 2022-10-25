@@ -47,7 +47,11 @@
     "enable": true,
     "reason": null
   },
-  "defiInvest": {
+  "WSETHInvest": {
+    "enable": true,
+    "reason": null
+  },
+  "RETHInvest" : {
     "enable": true,
     "reason": null
   },

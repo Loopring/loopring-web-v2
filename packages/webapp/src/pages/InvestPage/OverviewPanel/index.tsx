@@ -19,7 +19,8 @@ import { useHistory } from "react-router-dom";
 import {
   BackIcon,
   ammAdvice,
-  defiAdvice,
+  defiWSTETHAdvice,
+  defiRETHAdvice,
   AccountStatus,
   RowInvestConfig,
   dualAdvice,
@@ -63,7 +64,8 @@ export const OverviewPanel = withTranslation("common")(
     const history = useHistory();
     const investAdviceList = [
       { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0] },
-      { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1] },
+      { ...defiWSTETHAdvice, ...notifyMap?.invest?.investAdvice[1] },
+      { ...defiRETHAdvice, ...notifyMap?.invest?.investAdvice[3] },
       { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
     ];
     // myLog(investAdviceList[1].banner);

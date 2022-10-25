@@ -20,6 +20,7 @@ import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
 import { DualListPanel } from "./DualPanel/DualListPanel";
+import { myLog } from "@loopring-web/common-resources";
 
 export enum InvestType {
   MyBalance = 0,
@@ -188,6 +189,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
   );
   const [isShowTab, setIsShowTab] = React.useState<Boolean>(false);
   React.useEffect(() => {
+    // myLog(match?.params.item);
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
         setTabIndex(InvestType.MyBalance);
@@ -199,13 +201,14 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         setIsShowTab(false);
         return;
       case InvestRouter[InvestType.DeFi]:
-        if (marketArray?.length) {
-          setTabIndex(InvestType.DeFi);
-          setIsShowTab(false);
-        } else {
-          setTabIndex(InvestType.Overview);
-          setIsShowTab(true);
-        }
+        setTabIndex(InvestType.DeFi);
+        setIsShowTab(false);
+        // if (marketArray?.length) {
+        //
+        // } else {
+        //   setTabIndex(InvestType.Overview);
+        //   setIsShowTab(true);
+        // }
         return;
       case InvestRouter[InvestType.Dual]:
         setTabIndex(InvestType.Dual);
@@ -247,6 +250,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           </Tabs>
         </Box>
       )}
+
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}

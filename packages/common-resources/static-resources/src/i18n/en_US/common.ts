@@ -1095,4 +1095,5 @@ export default {
   labelNFTDetailTab: "Details",
   labelNFTPropertiesTab: "Properties",
   labelLinkMetaData: "NFT metadata Resource link",
+  labelCountDown: "Count Down",
 };
