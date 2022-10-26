@@ -80,8 +80,8 @@ Emrin süresi dolduktan sonra, kullanıcı 0.6% oranında getiri elde eder. Tek 
 | Anlaşma Birimi  | Emrinizin süresi bittiğinde elinize geçecek olan birim. Bu ya hedef birim olur ya da seçtiğiniz stablecoin. Her emir, hedef fiyatın ulaşılıp ulaşılmamasına göre sonuçlanır.  |
 | Anlaşma Tarihi  | Emrin gerçekleşeceği tarihtir. Emir sonrası oluşan getiri aynı gün içinde 16.00 (UTC+8) saatinden sonra hesabınıza ulaşır. |
 | APR  | APR, bir yatırımın yıllık getirisini ifade eder. Eğer yatırımcı yıl boyunca aynı oranı kullanarak yatırım yapmaya devam ederse APR oranında kazanç elde eder. APR = Getiri / (Bitiş tarihi – bugün) *365. *Bilgi: Tutma süresi milisaniye oranında isabetlidir.* |
+| Hedef Fiyat  | Hedef fiyat karşılaştırma fiyatıdır. Anlaşma tarihinde anlaşma fiyatı bu fiyata göre değerlendirilir.  |
 | Anlaşma Fiyatı  | Anlaşma tarihinde 16.00 (UTC+8) saatinin 30 dakika öncesinden itibaren her 4 saniyede bir anlaşma indeksi verisi toplanır ve aritmetik ortalaması alınır. Böylece anlaşma fiyatı belirlenir.  |
-| Settlement Price  | The arithmetical average of the Settlement Index sampled every 4 seconds in the last 30 minutes before 16:00 (UTC+8) on the Expiry date.  |
 | Anlaşma İndeksi  | Anlaşma indeksi önde gelen borsalardan veriler toplar. ETH için Bittrex, Bitstamp, Coinbase Pro, Gemini, Kraken, Itbit, and LMAX Digital; LRC için Huobi, Binance, OKEx, KuCoin, FTX veri kaynaklarıdır. İndeks bu kaynaklardan gelen verileri eşit ağırlıkta değerlendirir.  |
 
 ### SSS
