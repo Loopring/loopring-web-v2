@@ -91,7 +91,7 @@ depends on the LRC/USDC settlement price at the time of expiration.
 | Noun | Description |
 | :------------ | :------------ |
 | Investment Currency  | The currency in which you have purchased the dual investment.  |
-| Settlement Currency  | The currency you will receive when the order expires. It will be either the target currency or USDC. Each product is settled depending on whether reaching the target price.  |
+| Settlement Currency  | The currency you will receive when the order expires. It will be either the target currency or USDC. Each product is settled depending on whether or not the target price was reached.  |
 | Settlement Date  | The date when the order is settled. Return from the order will be automatically credited into your account on this day after 16:00 (UTC+8) |
 | APR  | Annualized Yield is calculated as the equivalent annual return. If continue purchasing with the given yield for a whole year. Annualized Yield = Yield &#47; (Expiry Date – Today) &#42;365.  *Tips: The holding period is actuarial to milliseconds.* |
 | Target Price  | Target Price is a benchmark price. On Expiry Day, the Settlement Price will be compared against this benchmark price.  |
@@ -104,8 +104,7 @@ Q： What is the purchase deadline for the dual investment？
 A： Please complete the purchase before 15:00 (UTC+8) on the settlement day.
 
 Q： Could dual investment redeem or withdraw before being settled？  
-A： After purchasing the order, it cannot be canceled or redeemed until the settlement date. After settled, will return
-to your trade account.
+A： After purchasing the order, it cannot be canceled or redeemed until the settlement date. Once settled, the token will return to your trade account.
 
 Q： When will I get my returns？  
 A： We will calculate your investment return on the Settlement Date at 08:00 UTC based on the Settlement Price and the Target Price. You will receive your returns within 6 hours.
