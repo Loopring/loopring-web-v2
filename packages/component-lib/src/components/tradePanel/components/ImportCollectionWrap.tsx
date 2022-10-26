@@ -33,7 +33,6 @@ import {
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { CollectionManageWrap } from "./CollectionManageWrap";
-import { getIPFSString } from "@loopring-web/core";
 import { NFTMedia } from "../../block";
 
 const BoxStyle = styled(Grid)`
@@ -107,6 +106,7 @@ export const ImportCollectionWrap = <
   step,
   data,
   baseURL,
+  getIPFSString,
   disabled,
   onLoading,
 }: ImportCollectionViewProps<Co, NFT>) => {
@@ -495,6 +495,7 @@ export const ImportCollectionWrap = <
             {selectCollection && (
               <CollectionManageWrap
                 baseURL={baseURL}
+                getIPFSString={getIPFSString}
                 collection={selectCollection}
                 selectedNFTS={selectNFTList}
                 onNFTSelected={onNFTSelected as any}

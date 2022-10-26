@@ -27,6 +27,7 @@ export const CollectionManageWrap = <
   page,
   isLoading,
   selectedNFTS = [],
+  getIPFSString,
   onNFTSelectedMethod,
 }: CollectionManageProps<Co, NFT>) => {
   const { t } = useTranslation(["common"]);
@@ -169,6 +170,7 @@ export const CollectionManageWrap = <
               onPageChange={(page: number) => {
                 onFilterNFT({ ...filter, page });
               }}
+              getIPFSString={getIPFSString}
               baseURL={baseURL}
               nftList={listNFT}
               isLoading={isLoading}

@@ -1,13 +1,13 @@
 import { Box, Checkbox, Grid, Pagination, Typography } from "@mui/material";
 import {
   EmptyValueTag,
+  GET_IPFS_STRING,
   getShortAddr,
   NFTLimit,
   sizeNFTConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { CardStyleItem, EmptyDefault, NFTMedia } from "../../index";
-import { getIPFSString } from "@loopring-web/core";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { sanitize } from "dompurify";
 import { NFTWholeINFO } from "@loopring-web/common-resources";
@@ -17,6 +17,7 @@ export const NFTList = withTranslation("common")(
   <NFT extends NFTWholeINFO>({
     baseURL,
     nftList,
+    getIPFSString,
     size = "large",
     onPageChange,
     total,
@@ -31,6 +32,8 @@ export const NFTList = withTranslation("common")(
     nftList: Partial<NFT>[];
     etherscanBaseUrl?: string;
     size?: "large" | "medium" | "small";
+    getIPFSString: GET_IPFS_STRING;
+
     // onDetail?: (item: Partial<NFT>) => Promise<void>;
     onClick?: (item: Partial<NFT>) => Promise<void>;
     onNFTReload?: (item: Partial<NFT>, index: number) => Promise<void>;

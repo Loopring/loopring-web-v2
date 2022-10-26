@@ -5,10 +5,12 @@ import {
   CollectionMeta,
   CustomError,
   ErrorMap,
+  GET_IPFS_STRING,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
+  getIPFSString,
   LoopringAPI,
   makeMeta,
   useAccount,
@@ -155,6 +157,7 @@ export const useCollectionImport = <
     onNFTSelectedMethod,
     step,
     baseURL,
+    getIPFSString,
     setStep: (item) => {
       switch (item) {
         case ImportCollectionStep.SELECTCOLLECTION:

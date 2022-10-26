@@ -286,7 +286,11 @@ export type MyAmmLP<T> = {
   reward24: number | undefined;
   reward224: number | undefined;
   rewardDollar24: number | undefined;
-  extraRewards24: Array<sdk.TokenVolumeV3> | undefined;
+  extraDollar24: number | undefined;
+  extraRewards24: {
+    tokenSymbol: string;
+    amount: number;
+  }[];
 };
 
 export type TradeFloat = {

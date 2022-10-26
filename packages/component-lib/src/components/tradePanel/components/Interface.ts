@@ -487,6 +487,7 @@ export type ImportCollectionViewProps<Co, NFT> = {
   baseURL: string;
   setStep: (step: ImportCollectionStep) => void;
   disabled?: boolean;
+  getIPFSString: GET_IPFS_STRING;
   onLoading?: boolean;
   onClick: (item: string) => void;
   data: {
@@ -510,5 +511,6 @@ export type CollectionManageProps<Co, NFT> = {
   selectedNFTS: NFT[];
   onNFTSelected: (item: NFT[]) => void;
   baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
   onNFTSelectedMethod: (item: NFT[], method: string) => void;
 } & CollectionManageData<NFT>;
