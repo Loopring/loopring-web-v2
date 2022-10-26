@@ -208,7 +208,9 @@ export default css`
       top: 20px;
       right: 20px;
       cursor: pointer;
-      padding: 8px;
+      padding: 4px;
+      border-bottom-left-radius: 80%;
+      background: rgba(255, 255, 255, 0.6);
     }
     position: absolute;
     top: 0;
