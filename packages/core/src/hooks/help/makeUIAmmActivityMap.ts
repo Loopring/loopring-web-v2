@@ -346,6 +346,7 @@ const getRewardCalc = ({
     reward24: reward24 ? reward24.toNumber() : undefined,
     reward224: reward224 ? reward224.toNumber() : undefined,
     rewardDollar24: rewardDollar24 ? rewardDollar24.toNumber() : undefined,
+    extraRewards24: lastDay?.currentRewards,
   };
 };
 const getOneRewardInfo = <C>({

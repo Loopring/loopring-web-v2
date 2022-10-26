@@ -1,12 +1,16 @@
 import { Avatar, Box, Typography } from "@mui/material";
+import React from "react";
+
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  myLog,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { CoinSource, useSettings } from "../../stores";
 import { AvatarCoin } from "../basic-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
+import styled from "@emotion/styled";
 
 export const AmmPairDetail = ({
   coinA,
@@ -283,3 +287,204 @@ export const AmmAPRDetail = withTranslation("tables")(
     );
   }
 ) as (props: { self?: number; event?: number; fee?: number }) => JSX.Element;
+
+const TypographyStyle = styled(Typography)`
+  .rewardItem:not(:last-child) {
+    &:after {
+      display: inline-flex;
+      content: "+";
+      padding: 0 ${({ theme }) => theme.unit + "px"};
+    }
+  }
+` as typeof Typography;
+type AmmPairDetailProps = {
+  feeA: number | undefined;
+  feeB: number | undefined;
+  rewards: Array<{ tokenSymbol: string; amount: number | undefined }>;
+  extraRewards: Array<{ tokenSymbol: string; amount: number | undefined }>;
+  tokenMap: { [key: string]: any };
+  coinA: string;
+  coinB: string;
+};
+export const AmmRewardsDetail = withTranslation("tables")(
+  ({
+    feeA,
+    feeB,
+    rewards,
+    extraRewards,
+    tokenMap,
+    coinA,
+    coinB,
+    t,
+  }: AmmPairDetailProps & WithTranslation) => {
+    // labelRewardFee
+    // labelRewardReward
+    // labelRewardExtra
+    myLog("coinB", coinB);
+    return (
+      <Box padding={1.5} paddingLeft={1}>
+        <Typography
+          component={"span"}
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          style={{ textTransform: "capitalize" }}
+          color={"textPrimary"}
+        >
+          <Typography
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            marginLeft={1 / 2}
+            height={20}
+            lineHeight={"20px"}
+          >
+            {t("labelRewardFee")}
+          </Typography>
+
+          <TypographyStyle
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            height={20}
+            marginLeft={10}
+            lineHeight={"20px"}
+          >
+            <Typography component={"span"} className={"rewardItem"}>
+              {(feeA
+                ? getValuePrecisionThousand(
+                    feeA,
+                    tokenMap[coinA].precision,
+                    tokenMap[coinA].precision,
+                    tokenMap[coinA].precision,
+                    true
+                  )
+                : EmptyValueTag) + ` ${coinA}`}
+            </Typography>
+            <Typography component={"span"} className={"rewardItem"}>
+              {(feeB
+                ? getValuePrecisionThousand(
+                    feeB,
+                    tokenMap[coinB].precision,
+                    tokenMap[coinB].precision,
+                    tokenMap[coinB].precision,
+                    true
+                  )
+                : EmptyValueTag) + ` ${coinB}`}
+            </Typography>
+          </TypographyStyle>
+        </Typography>
+        <Typography
+          component={"span"}
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          style={{ textTransform: "capitalize" }}
+          color={"textPrimary"}
+        >
+          <Typography
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            marginLeft={1 / 2}
+            height={20}
+            lineHeight={"20px"}
+          >
+            {t("labelRewardReward")}
+          </Typography>
+          <TypographyStyle
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            height={20}
+            marginLeft={10}
+            lineHeight={"20px"}
+          >
+            {rewards.length ? (
+              <>
+                {rewards.map((item: any, index: number) => {
+                  return (
+                    <React.Fragment key={item.id + index}>
+                      {item?.amount ? (
+                        <Typography component={"span"} className={"rewardItem"}>
+                          {getValuePrecisionThousand(
+                            item.amount,
+                            tokenMap[item.symbol].precision,
+                            tokenMap[item.symbol].precision,
+                            tokenMap[item.symbol].precision,
+                            true
+                          )` ${coinA}`}{" "}
+                        </Typography>
+                      ) : (
+                        <></>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </>
+            ) : (
+              EmptyValueTag
+            )}
+          </TypographyStyle>
+        </Typography>
+        <Typography
+          component={"span"}
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          style={{ textTransform: "capitalize" }}
+          color={"textPrimary"}
+        >
+          <Typography
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            marginLeft={1 / 2}
+            height={20}
+            lineHeight={"20px"}
+          >
+            {t("labelRewardExtra")}
+          </Typography>
+
+          <TypographyStyle
+            component={"span"}
+            color={"var(--color-text-primary)"}
+            variant={"body2"}
+            height={20}
+            marginLeft={10}
+            lineHeight={"20px"}
+          >
+            {extraRewards.length ? (
+              <>
+                {extraRewards.map((item: any, index: number) => {
+                  return (
+                    <React.Fragment key={item.id + index}>
+                      {item?.amount ? (
+                        <Typography component={"span"} className={"rewardItem"}>
+                          {getValuePrecisionThousand(
+                            item.amount,
+                            tokenMap[item.symbol].precision,
+                            tokenMap[item.symbol].precision,
+                            tokenMap[item.symbol].precision,
+                            true
+                          )` ${coinA}`}{" "}
+                        </Typography>
+                      ) : (
+                        <></>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </>
+            ) : (
+              EmptyValueTag
+            )}
+          </TypographyStyle>
+        </Typography>
+      </Box>
+    );
+  }
+) as (props: AmmPairDetailProps) => JSX.Element;
