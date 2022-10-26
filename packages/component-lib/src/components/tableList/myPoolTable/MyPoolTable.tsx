@@ -16,7 +16,6 @@ import {
   ForexMap,
   getValuePrecisionThousand,
   MoreIcon,
-  myLog,
   PriceTag,
   RowConfig,
 } from "@loopring-web/common-resources";

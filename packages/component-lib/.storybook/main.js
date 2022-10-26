@@ -25,6 +25,7 @@ module.exports = {
   ],
   typescript: {
     reactDocgen: "none",
+    check: false,
   },
   webpackFinal: async (config, { configType }) => {
     const isProd = configType.toLowerCase() === "PRODUCTION";

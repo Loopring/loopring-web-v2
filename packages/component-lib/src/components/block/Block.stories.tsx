@@ -301,7 +301,15 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
             <RedPockOpen onClose={() => {}} />
           </Grid>
           <Grid item>
-            <RedPockClock onClose={() => {}} />
+            <RedPockClock
+              onClose={() => {}}
+              countDown={{
+                days: undefined,
+                hours: undefined,
+                seconds: undefined,
+                minutes: undefined,
+              }}
+            />
           </Grid>
           <Grid item>
             <RedPockSvg />
