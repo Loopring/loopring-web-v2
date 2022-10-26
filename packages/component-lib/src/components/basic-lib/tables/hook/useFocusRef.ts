@@ -1,10 +1,10 @@
-import { useLayoutEffect, useRef } from "react";
+import React from "react";
 
 export function useFocusRef<T extends HTMLOrSVGElement>(
   isCellSelected: boolean | undefined
 ) {
-  const ref = useRef<T>(null);
-  useLayoutEffect(() => {
+  const ref = React.useRef<T>(null);
+  React.useLayoutEffect(() => {
     if (!isCellSelected) return;
     ref.current?.focus({ preventScroll: true });
   }, [isCellSelected]);

@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import React from "react";
 import { CollectionMeta, NFTWholeINFO } from "@loopring-web/common-resources";
-import { useSystem } from "../../index";
+import { getIPFSString, useSystem } from "../../index";
 import { CollectionManageProps } from "@loopring-web/component-lib";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
@@ -43,6 +43,7 @@ export const useCollectionManage = <
     page,
     listNFT,
     baseURL,
+    getIPFSString,
     onNFTSelectedMethod,
     onFilterNFT,
     isLoading,
