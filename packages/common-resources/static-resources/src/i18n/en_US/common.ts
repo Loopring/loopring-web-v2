@@ -1096,4 +1096,5 @@ export default {
   labelNFTPropertiesTab: "Properties",
   labelLinkMetaData: "NFT metadata Resource link",
   labelCountDown: "Count Down",
+  labelStackingSelect: "Choose Staking Product",
 };

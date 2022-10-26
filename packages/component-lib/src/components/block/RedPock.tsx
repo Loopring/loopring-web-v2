@@ -288,117 +288,34 @@ export const RedPockClock = ({
   );
 };
 
-export const RedPockShared = ({
-  onClose,
-  countDown,
-}: {
-  onClose: (e: MouseEvent) => void;
-  countDown: {
-    days: undefined | string;
-    hours: undefined | string;
-    seconds: undefined | string;
-    minutes: undefined | string;
-  };
-}) => {
-  const { t } = useTranslation("common");
-  const content = React.useMemo(() => {
-    return <></>;
-  }, []);
-  const betweenContent = React.useMemo(() => {
-    return (
-      <>
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          position={"absolute"}
-          className={"clock"}
-        >
-          <Typography
-            display={"inline-flex"}
-            component={"span"}
-            variant={"body1"}
-            marginBottom={1}
-          >
-            {t("labelCountDown")}
-          </Typography>
-          <Box display={"flex"} flexDirection={"row"} flex={1}>
-            <Box
-              className={"hours"}
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-              marginRight={2}
-            >
-              <Typography variant={"h2"} component={"span"} color={"inherit"}>
-                {Number(countDown?.hours) >= 0
-                  ? countDown?.hours
-                  : EmptyValueTag}
-              </Typography>
-              <Typography
-                variant={"h4"}
-                color={"var(--color-text-secondary)"}
-                marginTop={1}
-                style={{ textTransform: "uppercase" }}
-              >
-                {t("labelHours")}
-              </Typography>
-            </Box>
-            <Box
-              className={"minutes"}
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-              marginRight={2}
-            >
-              <Typography variant={"h2"} component={"span"} color={"inherit"}>
-                {Number(countDown?.minutes) >= 0
-                  ? countDown?.minutes
-                  : EmptyValueTag}
-              </Typography>
-              <Typography
-                variant={"h4"}
-                color={"var(--color-text-secondary)"}
-                marginTop={1}
-                style={{ textTransform: "uppercase" }}
-              >
-                {t("labelMinutes")}
-              </Typography>
-            </Box>
-            <Box
-              className={"seconds"}
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-              marginRight={2}
-            >
-              <Typography variant={"h2"} component={"span"} color={"inherit"}>
-                {Number(countDown?.seconds) >= 0
-                  ? countDown?.seconds
-                  : EmptyValueTag}
-              </Typography>
-              <Typography
-                variant={"h4"}
-                color={"var(--color-text-secondary)"}
-                marginTop={1}
-                style={{ textTransform: "uppercase" }}
-              >
-                {t("labelSeconds")}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-      </>
-    );
-  }, []);
-  const desContent = React.useMemo(() => {
-    return <></>;
-  }, []);
-  return (
-    <RedPock
-      onClose={onClose}
-      content={content}
-      desContent={desContent}
-      betweenContent={betweenContent}
-    />
-  );
-};
+// export const RedPockQRCode = ({
+//   onClose,
+//   countDown,
+// }: {
+//   onClose: (e: MouseEvent) => void;
+//   countDown: {
+//     days: undefined | string;
+//     hours: undefined | string;
+//     seconds: undefined | string;
+//     minutes: undefined | string;
+//   };
+// }) => {
+//   const { t } = useTranslation("common");
+//   const content = React.useMemo(() => {
+//     return <></>;
+//   }, []);
+//   const betweenContent = React.useMemo(() => {
+//     return <></>;
+//   }, []);
+//   const desContent = React.useMemo(() => {
+//     return <></>;
+//   }, []);
+//   return (
+//     <RedPock
+//       onClose={onClose}
+//       content={content}
+//       desContent={desContent}
+//       betweenContent={betweenContent}
+//     />
+//   );
+// };

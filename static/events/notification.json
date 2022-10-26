@@ -108,10 +108,6 @@
     "endDate": 1669766400000
   },
   "invest": {
-    "banner": {
-      "mobile": "",
-      "laptop": ""
-    },
     "investAdvice": [
       {
         "type": "AMM",
@@ -123,10 +119,10 @@
       },
       {
         "type": "STAKE",
-        "router": "/invest/defi/WSTETH",
-        "banner": "https://static.loopring.io/assets/images/icon-lido2.svg",
-        "titleI18n": "labelInvestWSTETH",
-        "desI18n": "labelInvestWSTETHDes",
+        "router": "/invest/defi",
+        "banner": "https://static.loopring.io/assets/images/icon-lido.svg",
+        "titleI18n": "labelInvestDefi",
+        "desI18n": "labelInvestDefiDes",
         "enable": true
       },
       {
@@ -136,7 +132,17 @@
         "titleI18n": "labelInvestDual",
         "desI18n": "labelInvestDualDes",
         "enable": true
-      } ,
+      }
+    ],
+    "STAKE":[
+      {
+        "type": "STAKE",
+        "router": "/invest/defi/WSTETH",
+        "banner": "https://static.loopring.io/assets/images/icon-lido2.svg",
+        "titleI18n": "labelInvestWSTETH",
+        "desI18n": "labelInvestWSTETHDes",
+        "enable": true
+      },
       {
         "type": "STAKE",
         "router": "/invest/defi/RETH",

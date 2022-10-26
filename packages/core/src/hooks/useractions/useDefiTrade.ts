@@ -47,11 +47,19 @@ export const useDefiTrade = <
   ACD extends DeFiCalcData<T>
 >({
   isJoin = true,
+  market,
   setToastOpen,
-  market = "",
+  setServerUpdate,
+  setConfirmShowNoBalance,
+  confirmShowLimitBalance,
+  setConfirmShowLimitBalance,
 }: {
   market: string;
   isJoin: boolean;
+  setServerUpdate: (state: any) => void;
+  setConfirmShowLimitBalance: (state: boolean) => void;
+  setConfirmShowNoBalance: (state: boolean) => void;
+  confirmShowLimitBalance: boolean;
   setToastOpen: (props: {
     open: boolean;
     content: JSX.Element | string;
@@ -69,10 +77,6 @@ export const useDefiTrade = <
   } = useDefiMap();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isStoB, setIsStoB] = React.useState(true);
-  const [confirmShowNoBalance, setConfirmShowNoBalance] =
-    React.useState<boolean>(false);
-  const [confirmShowLimitBalance, setConfirmShowLimitBalance] =
-    React.useState<boolean>(false);
 
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
@@ -80,7 +84,6 @@ export const useDefiTrade = <
   const { exchangeInfo, allowTrade } = useSystem();
   const { tradeDefi, updateTradeDefi, resetTradeDefi } = useTradeDefi();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
-  const [serverUpdate, setServerUpdate] = React.useState(false);
 
   const { toggle } = useToggle();
   const [{ coinSellSymbol, coinBuySymbol }, setSymbol] = React.useState(() => {
@@ -840,9 +843,9 @@ export const useDefiTrade = <
   ]); // as ForceWithdrawProps<any, any>;
   return {
     deFiWrapProps: deFiWrapProps as unknown as DeFiWrapProps<T, I, ACD>,
-    confirmShowNoBalance,
-    setConfirmShowNoBalance,
-    serverUpdate,
-    setServerUpdate,
+    // confirmShowNoBalance,
+    // setConfirmShowNoBalance,
+    // serverUpdate,
+    // setServerUpdate,
   };
 };

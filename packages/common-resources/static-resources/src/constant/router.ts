@@ -212,20 +212,11 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: "/invest/defi/WSTETH" },
+    router: { path: "/invest/defi" },
     label: {
-      id: "defi-WSTETH",
-      i18nKey: "labelInvestWSTETH",
-      description: "labelInvestWSTETHDes",
-    },
-  },
-  {
-    icon: L2MyLiquidityIcon,
-    router: { path: "/invest/defi/RETH" },
-    label: {
-      id: "defi-RETH",
-      i18nKey: "labelInvestRETH",
-      description: "labelInvestRETHDes",
+      id: "defi",
+      i18nKey: "labelInvestDefi",
+      description: "labelInvestDefiDes",
     },
   },
   {
@@ -448,11 +439,20 @@ export const ammAdvice: InvestAdvice = {
   notification: "",
   enable: true,
 };
+export const defiAdvice: InvestAdvice = {
+  type: InvestMapType.STAKE,
+  router: "/invest/defi",
+  notification: "",
+  banner: SoursURL + "images/icon-lido.svg",
+  titleI18n: "labelInvestDefi",
+  desI18n: "labelInvestDefiDes",
+  enable: true,
+};
 export const defiWSTETHAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
   router: "/invest/defi/WSTETH",
   notification: "",
-  banner: SoursURL + "images/icon-lido.svg",
+  banner: SoursURL + "images/icon-lido2.svg",
   titleI18n: "labelInvestWSTETH",
   desI18n: "labelInvestWSTETHDes",
   enable: true,
@@ -461,7 +461,7 @@ export const defiRETHAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
   router: "/invest/defi/RETH",
   notification: "",
-  banner: SoursURL + "images/icon-lido.svg",
+  banner: SoursURL + "images/icon-pocket.svg",
   titleI18n: "labelInvestRETH",
   desI18n: "labelInvestRETHes",
   enable: true,
