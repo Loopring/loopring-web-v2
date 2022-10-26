@@ -23820,26 +23820,12 @@ react-docgen-typescript-plugin@^1.0.0:
     tslib "^2.0.0"
     webpack-sources "^2.2.0"
 
-react-docgen-typescript-plugin@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-docgen-typescript-plugin/-/react-docgen-typescript-plugin-1.0.2.tgz#79ad8eadb1b63e43575a1c75429dfdabbfd0d35d"
-  integrity sha512-/8OKrPRDTAGDnOkumGvDWixfrNPrRWhEMGLZnJr1NiJtRwdvNRGqGA2J/SeSvWerawqSPxNyXK+EfERCir6mMw==
-  dependencies:
-    debug "^4.1.1"
-    endent "^2.0.1"
-    find-cache-dir "^3.3.1"
-    flat-cache "^3.0.4"
-    micromatch "^4.0.2"
-    react-docgen-typescript "^2.2.2"
-    tslib "^2.0.0"
-    webpack-sources "^2.2.0"
-
 react-docgen-typescript@^1.15.0, react-docgen-typescript@^1.22.0:
   version "1.22.0"
   resolved "https://registry.yarnpkg.com/react-docgen-typescript/-/react-docgen-typescript-1.22.0.tgz#00232c8e8e47f4437cac133b879b3e9437284bee"
   integrity sha512-MPLbF8vzRwAG3GcjdL+OHQlhgtWsLTXs+7uJiHfEeT3Ur7IsZaNYqRTLQ9sj2nB6M6jylcPCeCmH7qbszJmecg==
 
-react-docgen-typescript@^2.1.1, react-docgen-typescript@^2.2.2:
+react-docgen-typescript@^2.1.1:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/react-docgen-typescript/-/react-docgen-typescript-2.2.2.tgz#4611055e569edc071204aadb20e1c93e1ab1659c"
   integrity sha512-tvg2ZtOpOi6QDwsb3GZhOjDkkX0h8Z2gipvTg6OVMUyoYoURhEiRNePT8NZItTVCDh39JJHnLdfCOkzoLbFnTg==

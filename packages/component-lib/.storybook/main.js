@@ -24,12 +24,10 @@ module.exports = {
     "@storybook/preset-create-react-app",
   ],
   typescript: {
-    check: false,
-    checkOptions: {},
     reactDocgen: "none",
   },
   webpackFinal: async (config, { configType }) => {
-    const isProd = configType.toLowerCase() === "PRODUCTION";
+    const isProd = configType.toLowerCase() === "production";
 
     const modules = [
       ...config.resolve.modules,
