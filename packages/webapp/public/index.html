@@ -121,7 +121,10 @@
         const close = document.querySelector('#iframeBanxaClose')
         const parentsNode =  document.querySelector("#iframeBanxaTarget");
 				function closeBanax (){
-          parentsNode.removeChild(parentsNode.getElementsByTagName('iframe')[0])
+          const items = parentsNode.getElementsByTagName('iframe')
+					if(items){
+            parentsNode.removeChild(items[0])
+          }
           parentsNode.style.display = "none";
         }
         if(close && parentsNode){
