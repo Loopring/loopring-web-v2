@@ -96,6 +96,16 @@
 			<!--         class="iubenda-black iubenda-embed iubenda-pure iubenda-noiframe"></a>-->
 		</div>
 
+
+		<!--<button id="iframeButton">Launch iframe</button>-->
+		<div id="iframeBanxaTarget">
+			<div id="iframeBanxaClose" >
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="#000">
+					<path d="M17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41L17.59 5Z" />
+				</svg>
+			</div>
+			<!-- Where the iframe will be loaded  -->
+		</div>
 		<script type="text/javascript">(function (w, d) {
       var loader = function () {
         var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0];
@@ -107,10 +117,20 @@
           b.src = "https://sdk.banxa.com/js/banxa-sdk-latest.js";
         tag.parentNode.insertBefore(b, tag);
 
-        var banaxDom = d.createElement("div");
-        banaxDom.id = "iframeBanaxTarget";
-        var body = document.body;
-        body.append(banaxDom);
+
+        const close = document.querySelector('#iframeBanxaClose')
+        const parentsNode =  document.querySelector("#iframeBanxaTarget");
+				function closeBanax (){
+          parentsNode.removeChild(parentsNode.getElementsByTagName('iframe')[0])
+          parentsNode.style.display = "none";
+        }
+        if(close && parentsNode){
+          parentsNode.addEventListener('click',closeBanax)
+        }
+        // var banaxDom = d.createElement("div");
+        // banaxDom.id = "iframeBanaxTarget";
+        // var body = document.body;
+        // body.append(banaxDom);
         // tag.parentNode.insertBefore(banaxDom, x);
       };
       if (w.addEventListener) {
@@ -120,12 +140,9 @@
       } else {
         w.onload = loader;
       }
+
     })(window, document);
 		</script>
-		<!--<button id="iframeButton">Launch iframe</button>-->
-		<div id="iframeBanxaTarget">
-			<!-- Where the iframe will be loaded  -->
-		</div>
 		<script src='https://d17nz991552y2g.cloudfront.net/app/js/jqueryandencoder.ffa5afd5124fbedceea9.js'></script>
 		<script src="./mail.js" type="text/javascript"></script>
 	</body>

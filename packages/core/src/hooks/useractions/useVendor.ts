@@ -199,12 +199,17 @@ export const useVendor = () => {
         // },
         {
           ...VendorList.Banxa,
-          handleSelect: () => {
+          handleSelect: (event) => {
             setShowAccount({ isShow: false });
             // @ts-ignore
             const banxa: any = new window.Banxa("loopring");
-            if (banxaRef) {
+            // @ts-ignore
+            const anchor: HTMLElement = (
+              (event?.target as HTMLElement).ownerDocument || document
+            ).querySelector("#iframeBanxaTarget");
+            if (banxaRef && anchor) {
               // debugger;
+              anchor.style.display = "flex";
               banxa.generateIframe(
                 "#iframeBanxaTarget",
                 banxa.generateUrl({

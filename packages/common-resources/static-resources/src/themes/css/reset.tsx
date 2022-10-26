@@ -194,9 +194,30 @@ export default css`
   iframe {
     display: none;
   }
-  #iubenda-pp {
+  #iubenda-pp,
+  #iframeBanxaTarget {
     iframe {
       display: initial;
     }
+  }
+  #iframeBanxaTarget {
+    z-index: 9999;
+    #iframeBanxaClose {
+      transform: scale(2);
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      padding: 8px;
+    }
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(166, 174, 185, 0.7);
   }
 `;
