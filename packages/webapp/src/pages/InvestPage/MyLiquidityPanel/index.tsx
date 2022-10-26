@@ -345,7 +345,7 @@ const MyLiquidity: any = withTranslation("common")(
                       currency={currency}
                       tokenMap={tokenMap as any}
                       idIndex={idIndex}
-                      tokenPrices={tokenPrices}
+                      tokenPrices={tokenPrices as any}
                       handleWithdraw={(row) => {
                         const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                         setShowAmm({
