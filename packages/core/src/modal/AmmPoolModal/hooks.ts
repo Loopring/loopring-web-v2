@@ -145,6 +145,7 @@ export const useCoinPair = <C extends { [key: string]: any }>({
     reward224: 0,
     rewardDollar24: 0,
     extraRewards24: [],
+    extraDollar24: 0,
   });
 
   const [coinPairInfo, setCoinPairInfo] = React.useState<PgAmmDetail<C>>({
