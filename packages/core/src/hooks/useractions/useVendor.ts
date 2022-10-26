@@ -233,7 +233,6 @@ export const useVendor = () => {
     setSellPanel,
   };
 };
-
 export const useRampTransPost = () => {
   const { account } = useAccount();
   const { chainId } = useSystem();
@@ -423,8 +422,6 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   const [balanceNotEnough, setBalanceNotEnough] = React.useState(false);
   const { offRampValue } = useModalData();
   const { processRequestRampTransfer: processRequest } = useRampTransPost();
-  // const [_isFeeNotEnough, setIsFeeEnough] = React.useState();
-
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>)
   );
