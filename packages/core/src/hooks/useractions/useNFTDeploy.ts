@@ -42,6 +42,7 @@ import { useLayer1Store } from "../../stores/localStore/layer1Store";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import {
   useHistory,
+  useLocation,
   // useLocation
 } from "react-router-dom";
 import Web3 from "web3";
@@ -66,7 +67,8 @@ export function useNFTDeploy<
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
   const history = useHistory();
-  // const { search, ...restLocation } = useLocation();
+  const { search, pathname } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const {
     chargeFeeTokenList,
@@ -201,11 +203,13 @@ export function useNFTDeploy<
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
+              searchParams.delete("detail");
+              history.push(pathname + "?" + searchParams.toString());
               // history.push({
               //   search,
               //   ...restLocation,
               // });
-              history.go(0);
+
               // if (nftDeployValue.collectionMeta) {
               //   history.push({
               //     pathname: `/NFT/assetsNFT/byCollection/${nftDeployValue.collectionMeta.id}-${nftDeployValue.collectionMeta.contractAddress}`,

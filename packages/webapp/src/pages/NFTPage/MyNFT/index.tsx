@@ -52,7 +52,7 @@ export const MyNFTPanel = withTranslation("common")(
     const { isMobile } = useSettings();
     const { baseURL, etherscanBaseUrl } = useSystem();
     const history = useHistory();
-    const { search } = useLocation();
+    const { search, pathname } = useLocation();
     const searchParams = new URLSearchParams(search);
     const {
       account: { accountId, apiKey },
@@ -124,10 +124,18 @@ export const MyNFTPanel = withTranslation("common")(
       if (contract && id && contract.startsWith("0x")) {
         checkCollection();
       }
-      return () => {
-        setShowNFTDetail({ isShow: false });
-      };
     }, [match?.params?.contract]);
+    React.useEffect(() => {
+      if (isShowNFTDetail.isShow) {
+        searchParams.set("detail", "true");
+      } else {
+        searchParams.delete("detail");
+      }
+      history.replace(pathname + "?" + searchParams.toString());
+      // return () => {
+      //   setShowNFTDetail({ isShow: false });
+      // };
+    }, [isShowNFTDetail.isShow]);
     const breadcrumbs = React.useMemo(() => {
       const [id, contract] = !!match?.params?.contract
         ? match?.params?.contract.split("--")
