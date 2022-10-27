@@ -5,7 +5,6 @@ import {
   CollectionMeta,
   CustomError,
   ErrorMap,
-  GET_IPFS_STRING,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
