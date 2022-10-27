@@ -30,7 +30,7 @@
     "release:build": "lerna run --parallel --scope \"@loopring-web/*\" build",
     "test": "react-scripts-rewired test",
     "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s dev",
+    "storybook": "start-storybook -p 6006 -s public",
     "sb": "yarn storybook",
     "build": "NODE_ENV=production build-storybook -c .storybook -o ./storybook-static -s public  "
   },
