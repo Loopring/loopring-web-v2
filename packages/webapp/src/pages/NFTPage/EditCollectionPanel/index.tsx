@@ -16,14 +16,19 @@ const StyledPaper = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 
-export const EditCollectionPanel = () => {
+export const EditCollectionPanel = ({
+  type,
+}: {
+  type: "addCollection" | "editCollection" | "addLegacyCollection";
+}) => {
+  // 0x47a6884c9f2e5627ad82bfa94c999a59e0310906
   const {
     goBack,
     title,
     collectionToastOpen,
     collectionToastClose,
     ...editCollectionViewProps
-  } = useCollectionPanel();
+  } = useCollectionPanel({ type });
 
   return (
     <>

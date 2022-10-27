@@ -113,13 +113,11 @@ export const useCollectionImport = <
     async (value: string) => {
       const _filter = {
         isLegacy: true,
-        //TODO: not working now
-        tokenAddress: "0x0ff5893340990c9e98cb74868951d569ea63c43b", //value,
+        tokenAddress: value,
       };
       setFilter(_filter);
       setOnLoading(true);
       collectionListProps.collectionList = [];
-      collectionListProps.total = 0;
       collectionListProps.onPageChange(1, _filter);
     },
     [collectionListProps]
@@ -143,8 +141,10 @@ export const useCollectionImport = <
     }
   }, [legacyContract]);
   React.useEffect(() => {
-    setOnLoading(false);
-  }, [collectionListProps.total]);
+    if (!collectionListProps.isLoading && onLoading === true) {
+      setOnLoading(false);
+    }
+  }, [collectionListProps.isLoading]);
 
   return {
     account: account as Account,

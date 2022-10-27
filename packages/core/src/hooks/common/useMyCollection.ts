@@ -60,7 +60,6 @@ export const useMyCollection = <C extends CollectionMeta>(
       renderCollection();
     }
   }, [walletL2CollectionStatus, page, page_reudex]);
-
   return {
     setCopyToastOpen,
     collectionList,

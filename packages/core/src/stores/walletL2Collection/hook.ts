@@ -48,21 +48,29 @@ export function useWalletL2Collection<
     ),
     updateLegacyContracts: React.useCallback(async () => {
       const account = store.getState().account;
-      const { chainId } = store.getState().system;
-      if (account.accountId && LoopringAPI.nftAPI) {
-        //TODO: forUI
-        const tokenAddress1 =
-          LoopringAPI.nftAPI.computeNFTAddress({
-            nftOwner: account.accAddress,
-            nftFactory: sdk.NFTFactory[chainId],
-            nftBaseUri: "",
-          }).tokenAddress || undefined;
-        const { legacyContract } = {
-          legacyContract: [tokenAddress1, "0xxxxxxxx"],
-        };
-        dispatch(updateLegacyContracts({ legacyContract }));
+      // const { chainId } = store.getState().system;
+
+      if (account.accountId && LoopringAPI.userAPI) {
+        const response = await LoopringAPI.userAPI.getUserNFTLegacyTokenAddress(
+          {
+            accountId: account.accountId,
+          },
+          account.apiKey
+        );
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          dispatch(updateLegacyContracts({ legacyContract: [] }));
+        }
+        dispatch(
+          updateLegacyContracts({
+            legacyContract: [...response?.raw_data?.addresses],
+          })
+        );
       }
     }, [dispatch]),
+
     updateWalletL2Collection: React.useCallback(
       ({
         page,

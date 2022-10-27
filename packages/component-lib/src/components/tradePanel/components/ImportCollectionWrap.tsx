@@ -231,6 +231,7 @@ export const ImportCollectionWrap = <
                         {selectContract?.list?.map((item, index) => {
                           return (
                             <Box
+                              key={item?.tokenId + index.toString()}
                               marginRight={2}
                               width={60}
                               height={60}
@@ -364,7 +365,7 @@ export const ImportCollectionWrap = <
                   src={`${SoursURL}images/loading-line.gif`}
                 />
               </Box>
-            ) : collectionInputProps?.collectionListProps?.total ? (
+            ) : collectionInputProps?.collectionListProps?.total > 0 ? (
               <>
                 <Box
                   width={"100%"}

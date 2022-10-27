@@ -11,7 +11,11 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
-export const useCollectionPanel = <T extends CollectionMeta>() => {
+export const useCollectionPanel = <T extends CollectionMeta>({
+  type,
+}: {
+  type: "addCollection" | "editCollection" | "addLegacyCollection";
+}) => {
   const match: any = useRouteMatch("/NFT/:item?/:id?");
   const { t } = useTranslation("common");
   const isEdit = match?.params?.item === "editCollection";
@@ -29,7 +33,7 @@ export const useCollectionPanel = <T extends CollectionMeta>() => {
     collectionValue,
     onSubmitClick,
     resetEdit,
-  } = useEditCollection({ isEdit });
+  } = useEditCollection({ isEdit, type });
   const { account, status: accountStatus } = useAccount();
   const title = React.useMemo(() => {
     if (match?.params.item === "addCollection") {

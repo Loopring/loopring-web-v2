@@ -31,6 +31,12 @@ const walletL2CollectionSlice: Slice<WalletL2CollectionStates<CollectionMeta>> =
       ) {
         state.legacyContract = action.payload?.legacyContract ?? [];
       },
+      updateWalletL2LegacyContract(
+        state,
+        action: PayloadAction<{ legacyContract: string[] }>
+      ) {
+        state.legacyContract = action.payload?.legacyContract ?? [];
+      },
       updateWalletL2Collection(
         state,
         _action: PayloadAction<{ page?: number; filter?: L2CollectionFilter }>

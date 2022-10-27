@@ -202,7 +202,7 @@ export const useVendor = () => {
           handleSelect: (event) => {
             setShowAccount({ isShow: false });
             // @ts-ignore
-            const banxa: any = new window.Banxa("loopring");
+            const banxa: any = new window.Banxa("loopring", "sandbox");
             // @ts-ignore
             const anchor: HTMLElement = (
               (event?.target as HTMLElement).ownerDocument || document
@@ -213,11 +213,13 @@ export const useVendor = () => {
               banxa.generateIframe(
                 "#iframeBanxaTarget",
                 banxa.generateUrl({
+                  sellMode: true,
+                  blockchain: "LRC",
                   fiatType: "AUD",
                   coinType: "BTC",
                   fiatAmount: 200,
                   coinAmount: 0.5,
-                  walletAddress: "3Hiy7HuFcqwkgERyfRSwEHqrwSwTirm8zb",
+                  walletAddress: account.accAddress,
                 }),
                 false,
                 false
