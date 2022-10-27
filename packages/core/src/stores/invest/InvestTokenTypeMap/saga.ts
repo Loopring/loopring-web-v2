@@ -41,6 +41,26 @@ function calcDefiApr(
   return [start, end];
 }
 
+function calcDualApr(
+  apr: [number, number],
+  investItem: InvestItem
+): [start: number, end: number] {
+  let [start, end] = investItem.apr;
+  let [_start, _end] = apr;
+  // const apr = Number(defiinfo.apy);
+  if (start === 0 && _start !== 0) {
+    start = _start;
+  } else if (_start !== 0 && _start < start) {
+    start = _start;
+  }
+  if (end === 0 && _end !== 0) {
+    end = _end;
+  } else if (_end !== 0 && _end > end) {
+    end = _end;
+  }
+  return [start, end];
+}
+
 const getInvestMapApi = async () => {
   const { ammMap } = store.getState().amm.ammMap;
   const { marketMap } = store.getState().invest.defiMap;
@@ -150,7 +170,13 @@ const getInvestMapApi = async () => {
         let investItem = prev[coinA][InvestMapType.DUAL];
         prev[coinA].detail.durationType = InvestDuration.All;
         if (investItem) {
-          investItem.apr = calcDefiApr(dualInfo, investItem);
+          investItem.apr = calcDualApr(
+            [
+              (dualInfo?.baseTokenApy?.min ?? 0) * 100,
+              (dualInfo?.baseTokenApy?.max ?? 0) * 100,
+            ],
+            investItem
+          );
         } else {
           prev[coinA][InvestMapType.DUAL] = {
             // token: tokenMap[coinA],
@@ -195,7 +221,13 @@ const getInvestMapApi = async () => {
         let investItem = prev[coinB][InvestMapType.DUAL];
         // prev[coinB].detail.durationType = InvestDuration.All;
         if (investItem) {
-          investItem.apr = calcDefiApr(dualInfo, investItem);
+          investItem.apr = calcDualApr(
+            [
+              (dualInfo?.quoteTokenApy?.min ?? 0) * 100,
+              (dualInfo?.quoteTokenApy?.max ?? 0) * 100,
+            ],
+            investItem
+          );
         } else {
           prev[coinB][InvestMapType.DUAL] = {
             type: InvestMapType.DUAL,
