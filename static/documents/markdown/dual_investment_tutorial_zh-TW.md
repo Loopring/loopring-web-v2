@@ -85,7 +85,7 @@ APR: 73%
 | 目標價  | 目標價為基準價。在到期日，結算價格將與該基準價格進行比較。|
 | 結算價  | 在到期日 16:00 (UTC+8) 前的最後 30 分鐘內每 4 秒採樣一次結算指數的算術平均值。 |
 | 結算指數  | 結算指數來源於一些領先的交易所。對於 ETH，包括 Bittrex、Bitstamp、Coinbase Pro、Gemini、Kraken、Itbit 和 LMAX Digital； LRC包括火幣、幣安、OKEx、KuCoin、FTX。該指數計算為這些值的加權平均值。 |
-
+d
 ### 常見問題
 
 Q：雙幣理財的購買期限是什麼時候？  
