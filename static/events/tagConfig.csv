@@ -1,1 +1,2 @@
 scenario,name,startShow,endShow,iconSource,symbols
+AMM,Protocol,10/01/2022 00:00:00,12/31/2022 00:00:00,https://static.loopring.io/assets/svg/protocol.svg,"LRC-ETH,LRC-USDT,RETH-ETH,LRC-USDC,ETH-USDC,MATIC-ETH,ETH-DAI"
