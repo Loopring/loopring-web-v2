@@ -39,16 +39,15 @@ module.exports = {
     );
     const modules = [
       ...config.resolve.modules,
-      "node_modules/@loopring-web/common-resources",
-      // path.resolve(
-      //   __dirname,
-      //   "..",
-      //   "..",
-      //   "common-resources",
-      //   "static-resources"
-      // ),
-      // path.resolve(__dirname, "..", "src"),
+      "node_modules",
       // "node_modules/@loopring-web/common-resources",
+      path.resolve(
+        __dirname,
+        "..",
+        "..",
+        "common-resources",
+        "static-resources"
+      ),
       //static-resources/src/loopring-interface/CoinInterface.ts
       // path.resolve(__dirname, '..', '..', 'common-resources', "static-resources"),
       // path.resolve(__dirname,'./'),
@@ -58,13 +57,13 @@ module.exports = {
       test: /\.(mjs|js|jsx|tsx|ts)$/,
       // exclude: [/node_modules/, /dist/],
       include: [
-        // path.resolve(
-        //   __dirname,
-        //   "..",
-        //   "..",
-        //   "common-resources",
-        //   "static-resources"
-        // ),
+        path.resolve(
+          __dirname,
+          "..",
+          "..",
+          "common-resources",
+          "static-resources"
+        ),
       ],
 
       // resolve: { fullySpecified: false },
