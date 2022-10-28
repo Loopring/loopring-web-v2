@@ -26,7 +26,7 @@ import {
   ConnectSuccess,
   ConnectFailed,
   CommonConnectInProgress,
-} from "index";
+} from "../index";
 
 const Style = styled.div`
   flex: 1;

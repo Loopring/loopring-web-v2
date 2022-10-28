@@ -28,15 +28,6 @@ module.exports = {
   },
   webpackFinal: async (config, { configType }) => {
     const isProd = configType.toLowerCase() === "production";
-
-    const modules = [
-      ...config.resolve.modules,
-      path.resolve(__dirname, "..", "src"),
-      "node_modules/@loopring-web/common-resources",
-      //static-resources/src/loopring-interface/CoinInterface.ts
-      // path.resolve(__dirname, '..', '..', 'common-resources', "static-resources"),
-      // path.resolve(__dirname,'./'),
-    ];
     console.log(
       path.resolve(
         __dirname,
@@ -46,17 +37,34 @@ module.exports = {
         "static-resources"
       )
     );
+    const modules = [
+      ...config.resolve.modules,
+      "node_modules/@loopring-web/common-resources",
+      // path.resolve(
+      //   __dirname,
+      //   "..",
+      //   "..",
+      //   "common-resources",
+      //   "static-resources"
+      // ),
+      // path.resolve(__dirname, "..", "src"),
+      // "node_modules/@loopring-web/common-resources",
+      //static-resources/src/loopring-interface/CoinInterface.ts
+      // path.resolve(__dirname, '..', '..', 'common-resources', "static-resources"),
+      // path.resolve(__dirname,'./'),
+    ];
+
     config.module.rules.push({
       test: /\.(mjs|js|jsx|tsx|ts)$/,
       // exclude: [/node_modules/, /dist/],
       include: [
-        path.resolve(
-          __dirname,
-          "..",
-          "..",
-          "common-resources",
-          "static-resources"
-        ),
+        // path.resolve(
+        //   __dirname,
+        //   "..",
+        //   "..",
+        //   "common-resources",
+        //   "static-resources"
+        // ),
       ],
 
       // resolve: { fullySpecified: false },
