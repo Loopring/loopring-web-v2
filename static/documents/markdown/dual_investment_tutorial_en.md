@@ -104,7 +104,7 @@ Q： What is the purchase deadline for the dual investment？
 A： Please complete the purchase before 15:00 (UTC+8) on the settlement day.
 
 Q： Could dual investment redeem or withdraw before being settled？  
-A： After purchasing the order, it cannot be canceled or redeemed until the settlement date. Once settled, the token will return to your trade account.
+A： After purchasing the order, it cannot be canceled or redeemed until the settlement date. Once settled, the token will return to your trade account.  
 
 Q： When will I get my returns？  
 A： We will calculate your investment return on the Settlement Date at 08:00 UTC based on the Settlement Price and the Target Price. You will receive your returns within 6 hours.
