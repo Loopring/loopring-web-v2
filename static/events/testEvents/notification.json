@@ -100,17 +100,7 @@
         "titleI18n": "labelInvestDual",
         "desI18n": "labelInvestDualDes",
         "enable": true
-      }
-    ],
-    "STAKE":[
-      {
-        "type": "STAKE",
-        "router": "/invest/defi/WSTETH",
-        "banner": "https://static.loopring.io/assets/images/icon-lido2.svg",
-        "titleI18n": "labelInvestWSTETH",
-        "desI18n": "labelInvestWSTETHDes",
-        "enable": true
-      },
+      } ,
       {
         "type": "STAKE",
         "router": "/invest/defi/RETH",
@@ -155,23 +145,6 @@
         ]
       }
     ],
-    "Amm": [
-    	{
-        "name": "Protocol",
-        "startShow": 1664582400000,
-        "endShow": 1666958400000,
-        "iconSource": "https://static.loopring.io/assets/svg/protocol.svg",
-        "symbols": [
-          "LRC-ETH",
-          "LRC-USDT",
-          "RETH-ETH",
-          "LRC-USDC",
-          "ETH-USDC",
-          "MATIC-ETH",
-          "ETH-DAI"
-        ]
-      }
-    ],
     "Fiat": [
       {
         "name": "Offramp event",
@@ -194,7 +167,7 @@
         ]
       }
     ],
-    "amm": [
+    "Amm": [
       {
         "name": "Amm event",
         "startShow": 1664582400000,
