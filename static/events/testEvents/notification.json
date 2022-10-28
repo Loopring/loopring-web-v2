@@ -145,7 +145,6 @@
         ]
       }
     ],
-    "Amm": [],
     "Fiat": [
       {
         "name": "Offramp event",
@@ -168,7 +167,7 @@
         ]
       }
     ],
-    "amm": [
+    "Amm": [
       {
         "name": "Amm event",
         "startShow": 1664582400000,
