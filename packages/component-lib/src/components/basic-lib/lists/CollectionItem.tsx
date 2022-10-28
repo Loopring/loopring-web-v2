@@ -243,7 +243,8 @@ export const CollectionItem = React.memo(
                 size={"medium"}
                 checked={
                   selectCollection?.contractAddress?.toLowerCase() ===
-                  item?.contractAddress?.toLowerCase()
+                    item?.contractAddress?.toLowerCase() &&
+                  selectCollection?.id === item.id
                 }
                 value={item.contractAddress}
                 name="radio-collection"
@@ -356,7 +357,7 @@ export const CollectionItem = React.memo(
                 textOverflow={"ellipsis"}
                 justifyContent={"space-evenly"}
               >
-                {item?.extends.count && (
+                {item?.extends?.count && (
                   <Typography
                     color={"textPrimary"}
                     component={"span"}
@@ -369,7 +370,7 @@ export const CollectionItem = React.memo(
                         ? "labelCollectionItemSimpleValue"
                         : "labelCollectionItemValue",
                       {
-                        value: item?.extends.count,
+                        value: item?.extends?.count,
                       }
                     )}
                   </Typography>

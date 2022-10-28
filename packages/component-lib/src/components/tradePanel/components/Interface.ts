@@ -471,7 +471,11 @@ export type CollectionManageData<NFT> = {
   listNFT: NFT[];
   page: number;
   total: number;
-  onFilterNFT: (filter: { [key: string]: any }) => void;
+  onFilterNFT: (filter: {
+    legacyFilter: sdk.LegacyNFT | "all";
+    limit: number;
+    page: number;
+  }) => Promise<void>;
   isLoading: boolean;
   filter: any;
 };

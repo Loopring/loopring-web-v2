@@ -1,7 +1,6 @@
 "use strict";
 var exports = module.exports;
 exports.investJson = {
-  banner: { mobile: "", laptop: "" },
   investAdvice: [
     {
       type: "AMM",
@@ -25,6 +24,24 @@ exports.investJson = {
       banner: "https://static.loopring.io/assets/images/icon-dual.svg",
       titleI18n: "labelInvestDual",
       desI18n: "labelInvestDualDes",
+      enable: true,
+    },
+  ],
+  STAKE: [
+    {
+      type: "STAKE",
+      router: "/invest/defi/WSTETH",
+      banner: "https://static.loopring.io/assets/images/icon-lido2.svg",
+      titleI18n: "labelInvestWSTETH",
+      desI18n: "labelInvestWSTETHDes",
+      enable: true,
+    },
+    {
+      type: "STAKE",
+      router: "/invest/defi/RETH",
+      banner: "https://static.loopring.io/assets/images/icon-pocket.svg",
+      titleI18n: "labelInvestRETH",
+      desI18n: "labelInvestRETHDes",
       enable: true,
     },
   ],

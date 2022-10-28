@@ -22,7 +22,6 @@ const getWalletL2CollectionBalance = async <_R extends { [key: string]: any }>({
 }) => {
   const offset = (page - 1) * CollectionLimit;
   const { accountId, apiKey, accAddress } = store.getState().account;
-  myLog("getWalletL2CollectionBalance", filter);
   let response;
   if (
     filter?.isLegacy &&
@@ -42,23 +41,10 @@ const getWalletL2CollectionBalance = async <_R extends { [key: string]: any }>({
         },
         apiKey
       )
-      .then((result = {}) => {
-        if (!result?.raw_data?.collections) {
-          result.collections = result.raw_data;
-          result.totalNum = result.raw_data.length;
-          return result;
-        } else {
-          return result;
-        }
-      })
       .catch((_error) => {
-        new CustomError(ErrorMap.TIME_OUT);
-        return {
-          collections: [],
-          totalNum: 0,
-        };
+        throw new CustomError(ErrorMap.TIME_OUT);
       });
-  } else if (apiKey && accountId && LoopringAPI.userAPI) {
+  } else if (!filter?.isLegacy && apiKey && accountId && LoopringAPI.userAPI) {
     response = await LoopringAPI.userAPI
       .getUserOwenCollection(
         {
@@ -85,6 +71,8 @@ const getWalletL2CollectionBalance = async <_R extends { [key: string]: any }>({
   }
   collections = (response as any)?.collections;
   totalNum = (response as any).totalNum;
+  myLog("legacy", collections, totalNum);
+
   return {
     walletL2Collection: collections ?? [],
     total: totalNum,

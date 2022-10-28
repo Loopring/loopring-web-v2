@@ -249,7 +249,6 @@ export const useEditCollection = <T extends CollectionMeta>({
         match.params.tokenAddress
       ) {
         try {
-          debugger;
           const response = await LoopringAPI.userAPI.submitNFTLegacyCollection(
             {
               ...collectionValue,
@@ -283,7 +282,9 @@ export const useEditCollection = <T extends CollectionMeta>({
               content: t("labelCreateCollectionSuccess"),
             });
             updateWalletL2Collection({ page: 1 });
-            history.push("/nft/myCollection");
+            history.push(
+              `/nft/importLegacyCollection/${match.params.tokenAddress}`
+            );
           }
           updateCollectionData({});
           setKeys({

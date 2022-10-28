@@ -12,7 +12,6 @@ import {
   Link,
 } from "@mui/material";
 import {
-  myLog,
   getShortAddr,
   BackIcon,
   DropDownIcon,
@@ -120,7 +119,7 @@ export const ImportCollectionWrap = <
     nftProps,
     selectNFTList,
   } = data;
-  myLog("ImportCollectionWrap", contractList);
+  // myLog("ImportCollectionWrap", contractList);
   const btnMain = ({
     defaultLabel = "labelMintNext",
     btnInfo,
@@ -377,6 +376,7 @@ export const ImportCollectionWrap = <
                     {...{
                       ...(collectionInputProps as any),
                       collection: selectCollection,
+
                       onSelected: (item: Co) => {
                         collectionInputProps?.onSelected &&
                           collectionInputProps.onSelected(item);
@@ -491,7 +491,7 @@ export const ImportCollectionWrap = <
             flexDirection={"column"}
             alignItems={"stretch"}
             width={"100%"}
-            maxWidth={"760px"}
+            // maxWidth={"760px"}
           >
             {selectCollection && (
               <CollectionManageWrap

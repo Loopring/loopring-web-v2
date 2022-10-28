@@ -53,6 +53,7 @@ export const NFTList = withTranslation("common")(
         // className={"MuiPaper-elevation2"}
         marginTop={2}
         marginBottom={2}
+        className={"nft-list-wrap"}
         paddingX={isMobile ? 0 : 2}
         display={"flex"}
         flexDirection={"column"}

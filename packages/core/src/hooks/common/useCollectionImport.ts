@@ -5,6 +5,7 @@ import {
   CollectionMeta,
   CustomError,
   ErrorMap,
+  L2CollectionFilter,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -37,7 +38,7 @@ export const useCollectionImport = <
   const history = useHistory();
   let match: any = useRouteMatch("/nft/importLegacyCollection/:id?");
   const stepList = match?.params?.id?.split("--");
-  const contract = stepList && stepList[0].startsWith("0x");
+  const contract = stepList && stepList[0].startsWith("0x") && stepList[0];
   const contractId = stepList && stepList[1];
   const [step, setStep] = React.useState<ImportCollectionStep>(
     ImportCollectionStep.SELECTCONTRACT
@@ -60,7 +61,8 @@ export const useCollectionImport = <
     //TODO: wait api
     tokenAddress: selectContract?.value ?? "",
   });
-  const collectionListProps = useMyCollection<Co>(filter as any);
+  const { onPageChange: onCollectionPageChange, ...collectionListProps } =
+    useMyCollection<Co>(filter as any);
   const [selectCollection, setSelectCollection] =
     React.useState<Co | undefined>(undefined);
   const onContractChange = React.useCallback(
@@ -118,7 +120,7 @@ export const useCollectionImport = <
       setFilter(_filter);
       setOnLoading(true);
       collectionListProps.collectionList = [];
-      collectionListProps.onPageChange(1, _filter);
+      onCollectionPageChange(1, _filter);
     },
     [collectionListProps]
   );
@@ -128,8 +130,8 @@ export const useCollectionImport = <
   const onClick = React.useCallback(() => {}, []);
   React.useEffect(() => {
     if (stepList && contract) {
-      onContractChange(stepList[0]);
-      onContractNext(stepList[0]);
+      onContractChange(contract);
+      onContractNext(contract);
       setStep(ImportCollectionStep.SELECTCOLLECTION);
     } else if (stepList && contractId) {
       setStep(ImportCollectionStep.SELECTNFT);
@@ -186,7 +188,15 @@ export const useCollectionImport = <
       selectCollection,
       collectionInputProps: {
         collection: selectCollection,
-        collectionListProps,
+        collectionListProps: {
+          onPageChange: React.useCallback(
+            (page: number, _filter?: L2CollectionFilter | undefined) => {
+              onCollectionPageChange(page, { ...filter, ..._filter });
+            },
+            [filter]
+          ),
+          ...collectionListProps,
+        },
         domain: LoopringAPI.delegate?.getCollectionDomain(),
         makeMeta,
       } as any,

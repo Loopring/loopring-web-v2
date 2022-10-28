@@ -6,6 +6,7 @@ import { useSettings } from "../../../stores";
 import { CollectionMeta, NFTWholeINFO } from "@loopring-web/common-resources";
 import { NFTList, Button } from "../../basic-lib";
 import { CollectionManageProps } from "./Interface";
+import styled from "@emotion/styled";
 
 export enum TabNFTManage {
   Undecided = "Undecided",
@@ -13,6 +14,11 @@ export enum TabNFTManage {
   Current = "Current",
   All = "All",
 }
+const BoxStyle = styled(Box)`
+  .nft-list-wrap {
+    padding: 0 0;
+  }
+`;
 export const CollectionManageWrap = <
   Co extends CollectionMeta,
   NFT extends Partial<NFTWholeINFO>
@@ -165,7 +171,7 @@ export const CollectionManageWrap = <
               </Box>
             )}
           </Box>
-          <Box flex={1}>
+          <BoxStyle flex={1}>
             <NFTList
               onPageChange={(page: number) => {
                 onFilterNFT({ ...filter, page });
@@ -176,6 +182,7 @@ export const CollectionManageWrap = <
               isLoading={isLoading}
               total={total}
               page={page}
+              size={"small"}
               selected={selectedNFTS}
               onClick={async (_item) => {
                 // TODO:
@@ -184,7 +191,7 @@ export const CollectionManageWrap = <
                 return;
               }}
             />
-          </Box>
+          </BoxStyle>
         </Box>
       )}
     </Box>
