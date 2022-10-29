@@ -42,7 +42,7 @@ export const MyNFTCollectionList = withTranslation("common")(
           onItemClick={(item) => {
             searchParams.set("myNFTPage", "1");
             history.push({
-              pathname: `/NFT/assetsNFT/byCollection/${item.id}--${item.contractAddress}`,
+              pathname: `/NFT/assetsNFT/byCollection/${item.contractAddress}--${item.id}`,
               search: searchParams.toString(),
             });
           }}

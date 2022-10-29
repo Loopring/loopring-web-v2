@@ -4,6 +4,7 @@ import {
   CollectionMeta,
   BackIcon,
   AccountStatus,
+  myLog,
 } from "@loopring-web/common-resources";
 import { useAccount, useModalData } from "@loopring-web/core";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
@@ -29,30 +30,31 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>() => {
   const searchParams = new URLSearchParams(search);
   const history = useHistory();
   const { account, status: accountStatus } = useAccount();
-  const [_collection, setCollection] =
-    React.useState<undefined | Co>(undefined);
+  const [_collection, setCollection] = React.useState<undefined | Co>(
+    searchParams.get("isEdit") ? (collectionValue as Co) : undefined
+  );
   const [view, setView] = React.useState<CollectionImportView>(
-    searchParams.get("isEdit")
-      ? CollectionImportView.Item
-      : CollectionImportView.Guide
-    // match?.params?.id ? CollectionImportView.Item : CollectionImportView.Guide
+    CollectionImportView.Guide
   );
 
   React.useEffect(() => {
-    if (
-      searchParams.get("isEdit") &&
-      match?.params?.id &&
-      collectionValue.id === match?.params?.id &&
-      account.readyState === AccountStatus.ACTIVATED &&
-      collectionValue?.owner?.toLowerCase() === account.accAddress.toLowerCase()
-    ) {
-      setView(CollectionImportView.Item);
-      setCollection(collectionValue as Co);
-    } else {
-      setView(CollectionImportView.Guide);
-      // history.replace("/nft/importLegacyCollection");
+    const stepList = match?.params?.id?.split("--");
+    const contractId = stepList && stepList[1];
+    if (searchParams.has("isEdit")) {
+      if (
+        collectionValue?.id?.toString() === contractId.toString() &&
+        account.readyState === AccountStatus.ACTIVATED &&
+        collectionValue?.owner?.toLowerCase() ===
+          account.accAddress.toLowerCase()
+      ) {
+        setCollection(collectionValue as Co);
+        setView(CollectionImportView.Item);
+      } else {
+        setView(CollectionImportView.Guide);
+        history.replace("/nft/importLegacyCollection");
+      }
     }
-  }, [searchParams.get("isEdit"), account.readyState]);
+  }, [search, account.readyState]);
   return (
     <Box flex={1} display={"flex"} flexDirection={"column"} marginBottom={2}>
       <Box
@@ -76,7 +78,9 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>() => {
         {view === CollectionImportView.Guide && <ImportCollection />}
         {view === CollectionImportView.Item &&
           (_collection?.owner ? (
-            <CollectionManage collection={_collection} />
+            <Box flex={1} display={"flex"} paddingX={2}>
+              <CollectionManage collection={_collection} />
+            </Box>
           ) : (
             <LoadingBlock />
           ))}

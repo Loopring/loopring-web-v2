@@ -60,7 +60,7 @@ export const MyNFTPanel = withTranslation("common")(
     const [collectionMeta, setCollectionMeta] =
       React.useState<undefined | CollectionMeta>(undefined);
     const checkCollection = async () => {
-      const [id, contract] = !!match?.params?.contract
+      const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("--")
         : [null, null];
       if (contract !== undefined && id !== undefined && LoopringAPI.userAPI) {
@@ -120,7 +120,7 @@ export const MyNFTPanel = withTranslation("common")(
       setShowNFTDetail,
     } = useOpenModals();
     React.useEffect(() => {
-      const [id, contract] = !!match?.params?.contract
+      const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("--")
         : [null, null];
       if (contract && id && contract.startsWith("0x")) {
@@ -139,7 +139,7 @@ export const MyNFTPanel = withTranslation("common")(
       // };
     }, [isShowNFTDetail.isShow]);
     const breadcrumbs = React.useMemo(() => {
-      const [id, contract] = !!match?.params?.contract
+      const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("--")
         : [null, null];
       return [

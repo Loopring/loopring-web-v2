@@ -250,7 +250,7 @@ export function useNFTMint<
             }
             walletLayer2Service.sendUserUpdate();
             history.push({
-              pathname: `/NFT/assetsNFT/byCollection/${nftMintValue.collection?.id}--${nftMintValue.collection?.contractAddress}`,
+              pathname: `/NFT/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`,
             });
             mintService.emptyData();
             history.push("/nft/");

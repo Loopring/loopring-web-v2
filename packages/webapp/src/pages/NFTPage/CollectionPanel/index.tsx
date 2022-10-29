@@ -53,7 +53,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
   const match: any = useRouteMatch("/nft/myCollection/:id");
   React.useEffect(() => {
     if (match?.params?.id) {
-      const loopringId = match.params.id.split("--")[0];
+      const loopringId = match.params.id.split("--")[1];
       if (loopringId && detail) {
         setView(MyCollectionView.Item);
         return;
@@ -124,18 +124,18 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               setShowEdit={(item) => {
                 updateCollectionData({ ...item });
                 history.push(
-                  `/nft/editCollection/${item.id}--${item.contractAddress}`
+                  `/nft/editCollection/${item.contractAddress}--${item.id}`
                 );
               }}
               setShowManageLegacy={(item) => {
                 updateCollectionData({ ...item });
                 history.push(
-                  `/nft/importLegacyCollection/${item.id}--${item.contractAddress}?isEdit=true`
+                  `/nft/importLegacyCollection/${item.contractAddress}--${item.id}?isEdit=true`
                 );
               }}
               onItemClick={(item) => {
                 history.push(
-                  `/nft/myCollection/${item.id}--${item.contractAddress}`
+                  `/nft/myCollection/${item.contractAddress}--${item.id}`
                 );
                 setDetail(item);
               }}
@@ -184,13 +184,13 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             setShowEdit={(item) => {
               updateCollectionData({ ...item });
               history.push(
-                `/nft/editCollection/${item.id}--${item.contractAddress}`
+                `/nft/editCollection/${item.contractAddress}--${item.id}`
               );
             }}
             setShowManageLegacy={(item) => {
               updateCollectionData({ ...item });
               history.push(
-                `/nft/importLegacyCollection/${item.id}--${item.contractAddress}?isEdit=true`
+                `/nft/importLegacyCollection/${item.contractAddress}--${item.id}?isEdit=true`
               );
             }}
             setCopyToastOpen={collectionListProps.setCopyToastOpen}
