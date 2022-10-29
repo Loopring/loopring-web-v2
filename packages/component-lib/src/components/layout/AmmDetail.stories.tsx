@@ -97,7 +97,6 @@ const myAmm: MyAmmLP<any> = {
   balanceDollar: 232,
 };
 const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
-  //TODO: checkRouter
   const ammProps: AmmProps<any, any, any, any> = {
     ammCalcDataDeposit: ammCalcData,
     ammCalcDataWithDraw: ammCalcData,

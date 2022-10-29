@@ -58,7 +58,6 @@ export const useCollectionImport = <
     tokenAddress: string;
   }>({
     isLegacy: true,
-    //TODO: wait api
     tokenAddress: selectContract?.value ?? "",
   });
   const { onPageChange: onCollectionPageChange, ...collectionListProps } =
@@ -71,15 +70,14 @@ export const useCollectionImport = <
       setOnLoading(true);
       let _filter = { offset: 0 };
       if (LoopringAPI.userAPI) {
-        //TODO: wait api
         const { userNFTBalances, totalNum } = await LoopringAPI.userAPI
-          .getUserNFTBalances(
+          .getUserNFTLegacyBalance(
             {
               accountId: account.accountId,
+              // @ts-ignore
               tokenAddrs: item,
               limit: 3,
               ..._filter,
-              nonZero: true,
               metadata: true, // close metadata
             },
             account.apiKey

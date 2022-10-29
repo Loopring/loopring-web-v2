@@ -80,6 +80,8 @@ export const MyNFTPanel = withTranslation("common")(
               {
                 // @ts-ignore
                 tokenAddress: contract,
+                // @ts-ignore
+                collectionId: id,
                 accountId: accountId.toString(),
                 limit: CollectionLimit,
               },

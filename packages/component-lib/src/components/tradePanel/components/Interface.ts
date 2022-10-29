@@ -485,8 +485,8 @@ export type ImportCollectionViewProps<Co, NFT> = {
   onContractNext: (item: string) => void;
   onCollectionChange: (item: Co | undefined) => void;
   onCollectionNext: (item: Co) => void;
-  onNFTSelected: (item: NFT[]) => void;
-  onNFTSelectedMethod: (item: NFT[], method: string) => void;
+  onNFTSelected: (item: NFT) => void;
+  onNFTSelectedMethod: (item: NFT[], method: CollectionMethod) => void;
   step: ImportCollectionStep;
   baseURL: string;
   setStep: (step: ImportCollectionStep) => void;
@@ -509,12 +509,15 @@ export type ImportCollectionViewProps<Co, NFT> = {
     nftProps: CollectionManageData<NFT>;
   };
 };
-
+export enum CollectionMethod {
+  moveOut = "moveOut",
+  moveIn = "moveIn",
+}
 export type CollectionManageProps<Co, NFT> = {
   collection: Partial<Co>;
   selectedNFTS: NFT[];
-  onNFTSelected: (item: NFT[]) => void;
+  onNFTSelected: (item: NFT | "addAll" | "removeAll") => void;
   baseURL: string;
   getIPFSString: GET_IPFS_STRING;
-  onNFTSelectedMethod: (item: NFT[], method: string) => void;
+  onNFTSelectedMethod: (item: NFT[], method: CollectionMethod) => void;
 } & CollectionManageData<NFT>;

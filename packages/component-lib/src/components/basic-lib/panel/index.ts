@@ -31,6 +31,22 @@ export const CardStyleItem = styled(Card)<
   &.collection {
     padding: 0 0 calc(140%);
   }
+  &.nft-item {
+    .MuiRadio-root,
+    .MuiCheckbox-root {
+      &:hover {
+        background-color: rgba(65, 105, 255, 0.05);
+        color: var(--color-text-secondary);
+      }
+      &.Mui-checked {
+        box-shadow: inset 0px 0px 60px var(--color-global-bg-opacity);
+      }
+      position: absolute;
+      right: ${({ theme }) => theme.unit}px;
+      top: ${({ theme }) => theme.unit}px;
+      transform: scale(1.5);
+    }
+  }
 
   img {
     object-fit: contain;

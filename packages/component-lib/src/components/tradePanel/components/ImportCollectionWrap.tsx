@@ -500,7 +500,7 @@ export const ImportCollectionWrap = <
                 collection={selectCollection}
                 selectedNFTS={selectNFTList}
                 onNFTSelected={onNFTSelected as any}
-                onNFTSelectedMethod={onNFTSelectedMethod as any}
+                onNFTSelectedMethod={onNFTSelectedMethod}
                 {...nftProps}
               />
             )}

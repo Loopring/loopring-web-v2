@@ -1,4 +1,11 @@
-import { Box, Checkbox, Grid, Pagination, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  Grid,
+  Pagination,
+  Radio,
+  Typography,
+} from "@mui/material";
 import {
   EmptyValueTag,
   GET_IPFS_STRING,
@@ -12,6 +19,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { sanitize } from "dompurify";
 import { NFTWholeINFO } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
+import { XOR } from "../../../types/lib";
 
 export const NFTList = withTranslation("common")(
   <NFT extends NFTWholeINFO>({
@@ -24,8 +32,9 @@ export const NFTList = withTranslation("common")(
     page,
     isLoading,
     onClick,
-    selected = [],
+    selected = undefined,
     isSelectOnly = false,
+    isMultipleSelect = false,
     t,
   }: {
     baseURL: string;
@@ -33,18 +42,20 @@ export const NFTList = withTranslation("common")(
     etherscanBaseUrl?: string;
     size?: "large" | "medium" | "small";
     getIPFSString: GET_IPFS_STRING;
-
-    // onDetail?: (item: Partial<NFT>) => Promise<void>;
     onClick?: (item: Partial<NFT>) => Promise<void>;
     onNFTReload?: (item: Partial<NFT>, index: number) => Promise<void>;
     onPageChange: (page: number) => void;
     total: number;
     page: number;
     isLoading: boolean;
-    isSelectOnly?: boolean;
     selected?: Partial<NFT>[];
     // onSelected: (item: Partial<NFT>) => void;
-  } & WithTranslation) => {
+  } & XOR<
+    { isSelectOnly: true; isMultipleSelect: true; selected: Partial<NFT>[] },
+    | { isSelectOnly: true; isMultipleSelect?: false; selected: NFT }
+    | { isSelectOnly?: false; isMultipleSelect?: false }
+  > &
+    WithTranslation) => {
     const sizeConfig = sizeNFTConfig(size);
     const { isMobile } = useSettings();
     return (
@@ -75,27 +86,6 @@ export const NFTList = withTranslation("common")(
           </Box>
         ) : nftList && nftList.length ? (
           <>
-            {/*{total > NFTLimit && (*/}
-            {/*  <Box*/}
-            {/*    display={"flex"}*/}
-            {/*    alignItems={"center"}*/}
-            {/*    justifyContent={"right"}*/}
-            {/*    marginRight={3}*/}
-            {/*    marginBottom={2}*/}
-            {/*  >*/}
-            {/*    <Pagination*/}
-            {/*      color={"primary"}*/}
-            {/*      count={*/}
-            {/*        parseInt(String(total / NFTLimit)) +*/}
-            {/*        (total % NFTLimit > 0 ? 1 : 0)*/}
-            {/*      }*/}
-            {/*      page={page}*/}
-            {/*      onChange={(_event, value) => {*/}
-            {/*        collectionPageChange(Number(value));*/}
-            {/*      }}*/}
-            {/*    />*/}
-            {/*  </Box>*/}
-            {/*)}*/}
             <Grid container spacing={2}>
               {nftList.map((item, index) => (
                 <Grid
@@ -111,6 +101,7 @@ export const NFTList = withTranslation("common")(
                     onClick={() => {
                       onClick && onClick(item);
                     }}
+                    className={"nft-item"}
                   >
                     <Box
                       position={"absolute"}
@@ -129,19 +120,30 @@ export const NFTList = withTranslation("common")(
                         getIPFSString={getIPFSString}
                         baseURL={baseURL}
                       />
-                      {isSelectOnly && (
-                        <Checkbox
-                          size={"medium"}
-                          checked={
-                            !!selected.find(
-                              (_item) => item.tokenId === _item.tokenId
-                            )
-                          }
-                          value={item.tokenId}
-                          name="radio-nft"
-                          inputProps={{ "aria-label": "selectNFT" }}
-                        />
-                      )}
+                      {isSelectOnly &&
+                        (isMultipleSelect ? (
+                          <Checkbox
+                            size={"medium"}
+                            checked={
+                              !!selected?.find((_item) => {
+                                return item.nftData === _item.nftData;
+                              })
+                            }
+                            // color={"default"}
+                            value={item.nftData}
+                            name="radio-nft"
+                            inputProps={{ "aria-label": "selectNFT" }}
+                          />
+                        ) : (
+                          <Radio
+                            size={"medium"}
+                            // @ts-ignore
+                            checked={selected?.nftData === item.nftData}
+                            value={item.nftData}
+                            name="radio-nft"
+                            inputProps={{ "aria-label": "selectNFT" }}
+                          />
+                        ))}
                       <Box
                         padding={2}
                         height={sizeConfig.contentHeight}

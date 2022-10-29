@@ -2,7 +2,10 @@ import { BigNumber } from "bignumber.js";
 import React from "react";
 import { CollectionMeta, NFTWholeINFO } from "@loopring-web/common-resources";
 import { getIPFSString, LoopringAPI, useAccount, useSystem } from "../../index";
-import { CollectionManageProps } from "@loopring-web/component-lib";
+import {
+  CollectionManageProps,
+  CollectionMethod,
+} from "@loopring-web/component-lib";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
@@ -18,6 +21,7 @@ export const useCollectionManage = <
   pageSize?: number;
 }): CollectionManageProps<Co, NFT> => {
   const { account } = useAccount();
+  const { chainId } = useSystem();
   const [filter, setFilter] = React.useState({});
   const [selectedNFTS, setSelectedNFTS] = React.useState<NFT[]>([]);
   const [{ listNFT, total, page }, setListNFTValue] = React.useState<{
@@ -31,17 +35,19 @@ export const useCollectionManage = <
   });
   const [isLoading, setIsLoading] = React.useState(false);
   const onFilterNFT = React.useCallback(
-    async ({
-      legacyFilter = sdk.LegacyNFT.undecided,
-      limit = pageSize,
-      page = 1,
-    }: {
+    async (props: {
       legacyFilter?: sdk.LegacyNFT | "all";
       limit?: number;
       page?: number;
     }) => {
       if (collection && LoopringAPI.userAPI) {
-        debugger;
+        onNFTSelected("removeAll");
+        setFilter(props);
+        const {
+          legacyFilter = sdk.LegacyNFT.undecided,
+          limit = pageSize,
+          page: _page = 1,
+        } = props;
         const response = await LoopringAPI.userAPI.getUserNFTLegacyBalance(
           {
             accountId: account.accountId,
@@ -49,7 +55,7 @@ export const useCollectionManage = <
             // @ts-ignore
             collectionId: legacyFilter !== "all" ? collection?.id : undefined,
             filter: legacyFilter !== "all" ? legacyFilter : undefined,
-            offset: (page - 1) * limit,
+            offset: (_page - 1) * limit,
             limit,
             metadata: true,
           },
@@ -63,7 +69,7 @@ export const useCollectionManage = <
           setListNFTValue({
             listNFT: response.userNFTBalances as NFT[],
             total: response.totalNum,
-            page,
+            page: _page,
           });
         }
         setIsLoading(false);
@@ -72,16 +78,64 @@ export const useCollectionManage = <
     [collection]
   );
   const { baseURL } = useSystem();
-  const onNFTSelected = React.useCallback((item: NFT[]) => {
-    debugger;
-  }, []);
+  const onNFTSelected = React.useCallback(
+    (_item: NFT | "addAll" | "removeAll") => {
+      if (_item === "addAll") {
+        setSelectedNFTS(listNFT);
+      } else if (_item === "removeAll") {
+        setSelectedNFTS([]);
+      } else {
+        setSelectedNFTS((state) => {
+          let has = false;
+          const previewList = (state ?? []).reduce((prev, item) => {
+            if (_item.nftData === item.nftData) {
+              has = true;
+              return prev;
+            } else {
+              return [...prev, item];
+            }
+          }, [] as NFT[]);
+          return has ? previewList : [_item, ...selectedNFTS];
+        });
+      }
+    },
+    [selectedNFTS, listNFT]
+  );
   const onNFTSelectedMethod = React.useCallback(
-    (item: NFT[], method: string) => {},
+    async (items: NFT[], method: CollectionMethod) => {
+      switch (method) {
+        case CollectionMethod.moveIn:
+          setIsLoading(true);
+          const hashList: string[] = items.reduce((prev, item) => {
+            return [...prev, item.nftData ?? ""];
+          }, [] as string[]);
+          if (hashList?.length && collection?.id) {
+            await LoopringAPI.userAPI?.submitUpdateNFTLegacyCollection(
+              {
+                accountId: account.accountId,
+                nftHashes: hashList,
+                collectionId: Number(collection.id),
+              },
+              chainId as any,
+              account.apiKey,
+              account.eddsaKey.sk
+            );
+          }
+
+          break;
+        case CollectionMethod.moveOut:
+          //TODO
+          break;
+      }
+      // setIsLoading(false)
+      onFilterNFT(filter);
+    },
     []
   );
   React.useEffect(() => {
     if (collection?.id && account.accountId) {
       setIsLoading(true);
+      onNFTSelected("removeAll");
       onFilterNFT({});
     }
   }, [collection?.id]);
