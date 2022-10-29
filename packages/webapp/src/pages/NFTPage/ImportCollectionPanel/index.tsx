@@ -5,7 +5,7 @@ import {
   BackIcon,
   AccountStatus,
 } from "@loopring-web/common-resources";
-import { useAccount } from "@loopring-web/core";
+import { useAccount, useModalData } from "@loopring-web/core";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -21,13 +21,10 @@ enum CollectionImportView {
   Item = "Item",
 }
 
-export const ImportCollectionPanel = <Co extends CollectionMeta>({
-  collection,
-}: {
-  collection?: undefined | Co;
-}) => {
+export const ImportCollectionPanel = <Co extends CollectionMeta>() => {
   const { t } = useTranslation();
   const match: any = useRouteMatch("/nft/importLegacyCollection/:id?");
+  const { collectionValue } = useModalData();
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const history = useHistory();
@@ -45,24 +42,12 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>({
     if (
       searchParams.get("isEdit") &&
       match?.params?.id &&
-      account.readyState === AccountStatus.ACTIVATED
+      collectionValue.id === match?.params?.id &&
+      account.readyState === AccountStatus.ACTIVATED &&
+      collectionValue?.owner?.toLowerCase() === account.accAddress.toLowerCase()
     ) {
-      if (
-        collection?.owner?.toLowerCase() === account.accAddress.toLowerCase()
-      ) {
-        setView(CollectionImportView.Item);
-        setCollection(collection);
-      } else if (
-        collection?.owner.toLowerCase() !== account.accAddress.toLowerCase()
-      ) {
-        setView(CollectionImportView.Guide);
-        history.replace("/nft/importLegacyCollection");
-      } else {
-        // TODO await do....getCollectionByID check is Legacy else
-        // setCollection()
-        setView(CollectionImportView.Guide);
-        history.replace("/nft/importLegacyCollection");
-      }
+      setView(CollectionImportView.Item);
+      setCollection(collectionValue as Co);
     } else {
       setView(CollectionImportView.Guide);
       // history.replace("/nft/importLegacyCollection");

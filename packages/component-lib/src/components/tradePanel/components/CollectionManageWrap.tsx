@@ -87,7 +87,7 @@ export const CollectionManageWrap = <
             size={"small"}
             sx={{ marginLeft: 1, height: 24, fontSize: "1.2rem" }}
           >
-            {t("labelMoveIn", { symbol: t("labelMoveInCollection") })}
+            {t("labelMoveIn", { symbol: t("labelImportCollectionMove") })}
           </Button>
         );
       case sdk.LegacyNFT.outside:
@@ -100,7 +100,7 @@ export const CollectionManageWrap = <
             size={"small"}
             sx={{ marginLeft: 1, height: 24, fontSize: "1.2rem" }}
           >
-            {t("labelMoveIn", { symbol: t("labelImportCollectionUndecided") })}
+            {t("labelMoveIn", { symbol: t("labelImportCollectionMove") })}
           </Button>
         );
       case sdk.LegacyNFT.inside:

@@ -84,6 +84,7 @@ const ActionMemo = React.memo(
   <Co extends CollectionMeta>({
     setShowDeploy,
     setShowEdit,
+    setShowManageLegacy,
     item,
     account,
     setShowMintNFT,
@@ -131,6 +132,25 @@ const ActionMemo = React.memo(
                 }}
               >
                 {t("labelCollectionEditBtn")}
+              </MenuItem>
+            )}
+            {!!(
+              item.isCounterFactualNFT &&
+              // @ts-ignore
+              item.isEditable &&
+              item.baseUri === "" &&
+              item.owner?.toLowerCase() ===
+                account?.accAddress?.toLowerCase() &&
+              item?.nftType !== NFT_TYPE_STRING.ERC721
+            ) && (
+              <MenuItem
+                onClick={() => {
+                  if (setShowManageLegacy) {
+                    setShowManageLegacy(item);
+                  }
+                }}
+              >
+                {t("labelCollectionImportNFTBtn")}
               </MenuItem>
             )}
             {item.isCounterFactualNFT &&
@@ -398,6 +418,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
   onPageChange,
   setCopyToastOpen,
   setShowDeploy,
+  setShowManageLegacy,
   setShowEdit,
   setShowMintNFT,
   setShowTradeIsFrozen,
@@ -496,6 +517,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
                     toggle={toggle}
                     setShowDeploy={setShowDeploy as any}
                     setShowEdit={setShowEdit as any}
+                    setShowManageLegacy={setShowManageLegacy as any}
                     setShowMintNFT={setShowMintNFT as any}
                     setCopyToastOpen={setCopyToastOpen as any}
                     item={item as any}

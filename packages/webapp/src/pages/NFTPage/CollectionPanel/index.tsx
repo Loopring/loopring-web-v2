@@ -127,6 +127,12 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
                   `/nft/editCollection/${item.id}--${item.contractAddress}`
                 );
               }}
+              setShowManageLegacy={(item) => {
+                updateCollectionData({ ...item });
+                history.push(
+                  `/nft/importLegacyCollection/${item.id}--${item.contractAddress}?isEdit=true`
+                );
+              }}
               onItemClick={(item) => {
                 history.push(
                   `/nft/myCollection/${item.id}--${item.contractAddress}`
@@ -179,6 +185,12 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               updateCollectionData({ ...item });
               history.push(
                 `/nft/editCollection/${item.id}--${item.contractAddress}`
+              );
+            }}
+            setShowManageLegacy={(item) => {
+              updateCollectionData({ ...item });
+              history.push(
+                `/nft/importLegacyCollection/${item.id}--${item.contractAddress}?isEdit=true`
               );
             }}
             setCopyToastOpen={collectionListProps.setCopyToastOpen}

@@ -5,14 +5,23 @@ import {
   GET_IPFS_STRING,
   getShortAddr,
   ImageIcon,
+  NFT_TYPE_STRING,
 } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
-import { Avatar, Box, BoxProps, Link, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  BoxProps,
+  Link,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { useTheme } from "@emotion/react";
 import { Button, useSettings } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { sanitize } from "dompurify";
+import { useAccount } from "@loopring-web/core";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -33,16 +42,19 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
   baseURL,
   setCopyToastOpen,
   setShowEdit,
+  setShowManageLegacy,
 }: {
   collectionDate: Co;
   getIPFSString: GET_IPFS_STRING;
   baseURL: string;
+  setShowManageLegacy?: (item: Co) => void;
   setShowEdit?: (item: Co) => void;
   setCopyToastOpen: (props: { isShow: boolean; type: string }) => void;
 }) => {
   const theme = useTheme();
   const { isMobile } = useSettings();
   const { t } = useTranslation();
+  const { account } = useAccount();
   const lageSize = isMobile
     ? {
         icon: 36,
@@ -209,23 +221,42 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
             >
               {collectionDate?.nftType}
             </Typography>
-
-            {setShowEdit &&
-              // @ts-ignore
-              collectionDate?.isEditable && (
-                <Button
-                  fullWidth
-                  variant={"outlined"}
-                  size={"medium"}
-                  color={"primary"}
-                  onClick={() => {
-                    setShowEdit(collectionDate);
-                  }}
-                  sx={{ marginTop: 1 }}
-                >
-                  {t(`labelCollectionEditBtn`)}
-                </Button>
-              )}
+            {account.accAddress === collectionDate.owner ? (
+              <>
+                {setShowEdit && collectionDate?.isEditable && (
+                  <Button
+                    fullWidth
+                    variant={"outlined"}
+                    size={"medium"}
+                    color={"primary"}
+                    onClick={() => {
+                      setShowEdit(collectionDate);
+                    }}
+                    sx={{ marginTop: 1 }}
+                  >
+                    {t(`labelCollectionEditBtn`)}
+                  </Button>
+                )}
+                {setShowManageLegacy &&
+                  collectionDate?.isEditable &&
+                  collectionDate.baseUri === "" && (
+                    <Button
+                      fullWidth
+                      variant={"outlined"}
+                      size={"medium"}
+                      color={"primary"}
+                      onClick={() => {
+                        setShowManageLegacy(collectionDate);
+                      }}
+                      sx={{ marginTop: 1 }}
+                    >
+                      {t(`labelCollectionImportNFTBtn`)}
+                    </Button>
+                  )}
+              </>
+            ) : (
+              <></>
+            )}
           </Box>
         </Box>
       </Box>

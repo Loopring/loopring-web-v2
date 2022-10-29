@@ -42,7 +42,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
         .getUserNFTBalances(
           {
             accountId,
-            tokenAddrs: collection?.contractAddress ?? undefined,
+            tokenAddress: collection?.contractAddress ?? undefined,
             limit: NFTLimit,
             offset,
             nonZero: true,

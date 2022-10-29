@@ -73,9 +73,9 @@ export const useCollectionImport = <
         const { userNFTBalances, totalNum } = await LoopringAPI.userAPI
           .getUserNFTLegacyBalance(
             {
+              collectionId: -1,
               accountId: account.accountId,
-              // @ts-ignore
-              tokenAddrs: item,
+              tokenAddress: item,
               limit: 3,
               ..._filter,
               metadata: true, // close metadata

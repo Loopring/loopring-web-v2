@@ -1097,4 +1097,6 @@ export default {
   labelLinkMetaData: "NFT metadata Resource link",
   labelCountDown: "Count Down",
   labelStackingSelect: "Choose Staking Product",
+  labelImportCollectionMove: "Collection",
+  labelCollectionImportNFTBtn: "Manage Legacy NFT",
 };
