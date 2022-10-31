@@ -841,7 +841,7 @@ export default {
     "You can choose one of the following approaches for the remaining amount:",
   labelDefiMaxBalance1:
     "<0>" +
-    "<1>Withdraw WSTETH to L1 and trade trade through Uniswap, 1Inch or Lido.</1>" +
+    "<1>Withdraw WSTETH to L1 and trade trade through Uniswap, 1Inch, Lido or .</1>" +
     "<2>The Loopring pool will rebalance soon. Please come back later to redeem.</2>" +
     "</0>",
   labelDefiNoBalance:
