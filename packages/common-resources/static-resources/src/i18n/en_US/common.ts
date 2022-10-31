@@ -1082,7 +1082,7 @@ export default {
   labelCreateLegacyCollection: "Create Legacy Collection",
   labelNoLegacyCollection: "You have no Legacy Collection, please",
   labelLegacyCollectionTitle: "Create Legacy Collection",
-  labelMoveOut: "Move out {{symbol}}",
+  labelMoveOut: "Move out of {{symbol}}",
   labelMoveIn: "Move into {{symbol}}",
   labelMoveInCollection: "Collection",
   labelSelectAll: "Select All",

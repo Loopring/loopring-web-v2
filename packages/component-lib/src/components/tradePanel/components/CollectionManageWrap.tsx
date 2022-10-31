@@ -113,7 +113,7 @@ export const CollectionManageWrap = <
             size={"small"}
             sx={{ marginLeft: 1, height: 24, fontSize: "1.2rem" }}
           >
-            {t("labelMoveIn", { symbol: t("labelImportCollectionUndecided") })}
+            {t("labelMoveOut", { symbol: t("labelImportCollectionMove") })}
           </Button>
         );
       case "all":
@@ -147,7 +147,12 @@ export const CollectionManageWrap = <
             aria-label="disabled tabs example"
             sx={{ marginLeft: -2 }}
           >
-            {[...Object.keys(sdk.LegacyNFT), "all"].map((item) => {
+            {[
+              sdk.LegacyNFT.undecided,
+              sdk.LegacyNFT.outside,
+              sdk.LegacyNFT.inside,
+              "all",
+            ].map((item) => {
               return (
                 <Tab
                   key={item.toString()}
