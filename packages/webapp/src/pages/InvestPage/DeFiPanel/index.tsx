@@ -315,7 +315,7 @@ export const DeFiPanel: any = withTranslation("common")(
           />
           <ConfirmInvestDefiRisk
             open={_confirmedDefiInvest.isShow}
-            type={_confirmedDefiInvest.type}
+            type={_confirmedDefiInvest.type as any}
             handleClose={(_e, isAgree) => {
               // confirmDefiInvestFun(false);
               if (!isAgree) {
