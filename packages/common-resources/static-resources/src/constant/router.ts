@@ -463,7 +463,7 @@ export const defiRETHAdvice: InvestAdvice = {
   notification: "",
   banner: SoursURL + "images/icon-pocket.svg",
   titleI18n: "labelInvestRETH",
-  desI18n: "labelInvestRETHes",
+  desI18n: "labelInvestRETHDes",
   enable: true,
 };
 export const dualAdvice: InvestAdvice = {

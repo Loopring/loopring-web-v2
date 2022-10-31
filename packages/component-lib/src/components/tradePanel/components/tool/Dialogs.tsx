@@ -1069,9 +1069,11 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
   ({
     t,
     open,
+    type,
     handleClose,
   }: WithTranslation & {
     open: boolean;
+    type: "WSETH" | "RETH";
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
     const [agree, setAgree] = React.useState(false);
@@ -1082,10 +1084,10 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
         onClose={(e: MouseEvent) => handleClose(e)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("labelDefiRiskTitle")}</DialogTitle>
+        <DialogTitle> {t(`label${type}DefiRiskTitle`)}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelDefiRisk"}>
+            <Trans i18nKey={`label${type}DefiRisk`}>
               <Typography
                 whiteSpace={"pre-line"}
                 component={"span"}

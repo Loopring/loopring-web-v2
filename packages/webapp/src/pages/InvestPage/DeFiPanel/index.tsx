@@ -18,12 +18,10 @@ import {
   boxLiner,
   Button,
   ConfirmInvestDefiServiceUpdate,
-  DeFiWrap,
   Toast,
   useSettings,
   LoadingBlock,
-  CardNFTStyled,
-  NftImage,
+  ConfirmInvestDefiRisk,
 } from "@loopring-web/component-lib";
 import {
   confirmation,
@@ -34,12 +32,9 @@ import {
 import { useHistory, useRouteMatch } from "react-router-dom";
 import {
   BackIcon,
-  defiAdvice,
   defiRETHAdvice,
   defiWSTETHAdvice,
-  dualAdvice,
   MarketType,
-  SoursURL,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 
@@ -57,113 +52,182 @@ const StyleWrapper = styled(Box)`
 
   border-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Grid;
-const LandDefiInvest = () => {
+const StyleCardContent = styled(CardContent)`
+  display: flex;
+  &.tableLap {
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    .content {
+      flex-direction: column;
+      align-items: center;
+      padding-top: ${({ theme }) => 4 * theme.unit}px;
+      .des {
+        align-items: center;
+        margin: ${({ theme }) => 3 * theme.unit}px 0;
+      }
+      .backIcon {
+        display: none;
+      }
+    }
+  }
+
+  padding: 0;
+  &:last-child {
+    padding: 0;
+  }
+
+  &.isMobile {
+    flex: 1;
+    .content {
+      flex-direction: row;
+      width: 100%;
+      .des {
+        margin-left: ${({ theme }) => 2 * theme.unit}px;
+        align-items: flex-start;
+      }
+    }
+  }
+` as typeof CardContent;
+
+const LandDefiInvest = ({
+  setConfirmedDefiInvest,
+}: {
+  setConfirmedDefiInvest: (props: {
+    isShow: boolean;
+    type: "RETH" | "WSETH";
+  }) => void;
+}) => {
   const history = useHistory();
   const { notifyMap } = useNotify();
   const { t } = useTranslation("common");
   const { isMobile } = useSettings();
+  const {
+    confirmation: { confirmedRETHDefiInvest, confirmedWSETHDefiInvest },
+  } = confirmation.useConfirmation();
+  // const {
+  //   confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
+  //   confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
+  // } = confirmation.useConfirmation();
 
   const investAdviceList = [
     {
       ...defiWSTETHAdvice,
       ...(notifyMap?.invest?.STAKE ? notifyMap?.invest?.STAKE[0] : {}),
+      click: () => {
+        if (!confirmedWSETHDefiInvest) {
+          setConfirmedDefiInvest({ isShow: true, type: "WSETH" });
+        } else {
+          history.push(defiWSTETHAdvice.router);
+        }
+      },
     },
     {
       ...defiRETHAdvice,
       ...(notifyMap?.invest?.STAKE ? notifyMap?.invest?.STAKE[1] : {}),
+      click: () => {
+        if (!confirmedRETHDefiInvest) {
+          setConfirmedDefiInvest({ isShow: true, type: "RETH" });
+        } else {
+          history.push(defiWSTETHAdvice.router);
+        }
+      },
     },
   ];
 
   return (
-    <Box
-      flex={1}
-      display={"flex"}
-      justifyContent={"stretch"}
-      flexDirection={"column"}
-    >
-      <Box marginBottom={2}>
-        <Typography component={"h3"} variant={"h4"} marginBottom={1}>
-          {t("labelStackingSelect")}
-        </Typography>
-        {/*<Typography component={"h3"} variant={"body1"} color={"textSecondary"}>*/}
-        {/*  {t("labelMintSelectDes")}*/}
-        {/*</Typography>*/}
-      </Box>
-      <Box
+    <Box flex={1} display={"flex"} alignItems={"center"} alignSelf={"stretch"}>
+      <Grid
+        container
+        spacing={isMobile ? 2 : 4}
+        padding={3}
         flex={1}
-        alignItems={"center"}
-        display={"flex"}
-        flexDirection={isMobile ? "column" : "row"}
         justifyContent={"center"}
       >
-        <Grid container spacing={2} padding={3}>
-          {investAdviceList.map((item, index) => {
-            return (
-              <Grid item xs={12} md={4} lg={3} key={item.type + index}>
-                <Card onClick={() => history.push(item.router)}>
-                  <CardContent>
+        {investAdviceList.map((item, index) => {
+          return (
+            <Grid item xs={12} md={4} lg={3} key={item.type + index}>
+              <Card sx={{ display: "flex" }} onClick={item.click}>
+                <StyleCardContent
+                  className={isMobile ? "isMobile" : "tableLap"}
+                >
+                  <Box
+                    className={"content"}
+                    display={"flex"}
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                  >
+                    <Avatar
+                      variant="circular"
+                      style={{
+                        height: "var(--svg-size-huge)",
+                        width: "var(--svg-size-huge)",
+                      }}
+                      src={item.banner}
+                    />
                     <Box
+                      flex={1}
                       display={"flex"}
-                      flexDirection={"row"}
-                      alignItems={"center"}
+                      flexDirection={"column"}
+                      paddingLeft={1}
+                      className={"des"}
                     >
-                      <Avatar
-                        variant="circular"
-                        style={{
-                          height: "var(--svg-size-huge)",
-                          width: "var(--svg-size-huge)",
-                        }}
-                        src={item.banner}
-                      />
-                      <Box
-                        flex={1}
-                        display={"flex"}
-                        flexDirection={"column"}
-                        paddingLeft={1}
+                      <Typography variant={"h5"}>
+                        {t(item.titleI18n, { ns: "layout" })}
+                      </Typography>
+                      <Typography
+                        variant={"body2"}
+                        textOverflow={"ellipsis"}
+                        whiteSpace={"pre"}
+                        overflow={"hidden"}
+                        color={"var(--color-text-third)"}
                       >
-                        <Typography variant={"h5"}>
-                          {t(item.titleI18n, { ns: "layout" })}
-                        </Typography>
-                        <Typography
-                          variant={"body2"}
-                          textOverflow={"ellipsis"}
-                          whiteSpace={"pre"}
-                          overflow={"hidden"}
-                          color={"var(--color-text-third)"}
-                        >
-                          {t(item.desI18n, { ns: "layout" })}
-                        </Typography>
-                      </Box>
+                        {t(item.desI18n, { ns: "layout" })}
+                      </Typography>
+                    </Box>
+                    {isMobile ? (
                       <BackIcon
+                        className={"backIcon"}
                         fontSize={"small"}
                         htmlColor={"var(--color-text-third)"}
                         sx={{
                           transform: "rotate(180deg)",
                         }}
                       />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Box>
+                    ) : (
+                      <Button
+                        variant={"contained"}
+                        fullWidth={true}
+                        size={"medium"}
+                      >
+                        {t("labelInvestBtn")}
+                      </Button>
+                    )}
+                  </Box>
+                </StyleCardContent>
+              </Card>
+            </Grid>
+          );
+        })}
+      </Grid>
     </Box>
   );
 };
 export const DeFiPanel: any = withTranslation("common")(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
-    setConfirmDefiInvest,
-  }: WithTranslation & {
-    setConfirmDefiInvest: (state: any) => void;
-  }) => {
+  }: WithTranslation & {}) => {
     const { marketArray } = useDefiMap();
+
     const {
-      confirmation: { confirmedDefiInvest },
+      confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
+      confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
     } = confirmation.useConfirmation();
-    setConfirmDefiInvest(!confirmedDefiInvest);
+    const [_confirmedDefiInvest, setConfirmedDefiInvest] = React.useState<{
+      isShow: boolean;
+      type?: "RETH" | "WSETH" | undefined;
+    }>({ isShow: false, type: "WSETH" });
+
     const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
     const [serverUpdate, setServerUpdate] = React.useState(false);
     const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -223,7 +287,7 @@ export const DeFiPanel: any = withTranslation("common")(
           alignItems={"center"}
           flex={1}
         >
-          {marketArray.length ? (
+          {marketArray?.length ? (
             match?.params?.market && _market ? (
               <DeFiTradePanel
                 market={_market}
@@ -232,7 +296,7 @@ export const DeFiPanel: any = withTranslation("common")(
                 setToastOpen={setToastOpen}
               />
             ) : (
-              <LandDefiInvest />
+              <LandDefiInvest setConfirmedDefiInvest={setConfirmedDefiInvest} />
             )
           ) : (
             <LoadingBlock />
@@ -248,6 +312,26 @@ export const DeFiPanel: any = withTranslation("common")(
           <ConfirmInvestDefiServiceUpdate
             open={serverUpdate}
             handleClose={() => setServerUpdate(false)}
+          />
+          <ConfirmInvestDefiRisk
+            open={_confirmedDefiInvest.isShow}
+            type={_confirmedDefiInvest.type}
+            handleClose={(_e, isAgree) => {
+              // confirmDefiInvestFun(false);
+              if (!isAgree) {
+                history.goBack();
+              } else {
+                if (_confirmedDefiInvest.type === "RETH") {
+                  confirmedRETHDefiInvestFun();
+                  history.push(defiRETHAdvice.router);
+                }
+                if (_confirmedDefiInvest.type === "WSETH") {
+                  confirmedWSETHDefiInvestFun();
+                  history.push(defiWSTETHAdvice.router);
+                }
+              }
+              setConfirmedDefiInvest({ isShow: false });
+            }}
           />
         </StyleWrapper>
       </Box>
