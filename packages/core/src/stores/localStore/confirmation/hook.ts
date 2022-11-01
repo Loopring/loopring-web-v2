@@ -2,12 +2,18 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../index";
 import { Confirmation } from "./interface";
-import { confirm, confirmDefiInvest, confirmDualInvest } from "./reducer";
+import {
+  confirm,
+  confirmedRETHDefiInvest,
+  confirmedWSETHDefiInvest,
+  confirmDualInvest,
+} from "./reducer";
 
 export const useConfirmation = (): {
   confirmation: Confirmation;
   confirmWrapper: () => void;
-  confirmDefiInvest: () => void;
+  confirmedRETHDefiInvest: () => void;
+  confirmedWSETHDefiInvest: () => void;
   confirmDualInvest: () => void;
 } => {
   const confirmation: Confirmation = useSelector(
@@ -23,8 +29,11 @@ export const useConfirmation = (): {
     confirmDualInvest: React.useCallback(() => {
       dispatch(confirmDualInvest(undefined));
     }, [dispatch]),
-    confirmDefiInvest: React.useCallback(() => {
-      dispatch(confirmDefiInvest(undefined));
+    confirmedRETHDefiInvest: React.useCallback(() => {
+      dispatch(confirmedRETHDefiInvest(undefined));
+    }, [dispatch]),
+    confirmedWSETHDefiInvest: React.useCallback(() => {
+      dispatch(confirmedWSETHDefiInvest(undefined));
     }, [dispatch]),
   };
 };

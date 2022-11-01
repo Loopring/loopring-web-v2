@@ -4,7 +4,8 @@ import { Confirmation } from "./interface";
 
 const initialState: Confirmation = {
   confirmed: false,
-  confirmedDefiInvest: false,
+  confirmedRETHDefiInvest: false,
+  confirmedWSETHDefiInvest: false,
   confirmedDualInvest: false,
 };
 
@@ -19,8 +20,17 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     confirm(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmed = true;
     },
-    confirmDefiInvest(state: Confirmation, _action: PayloadAction<string>) {
-      state.confirmedDefiInvest = true;
+    confirmedRETHDefiInvest(
+      state: Confirmation,
+      _action: PayloadAction<string>
+    ) {
+      state.confirmedRETHDefiInvest = true;
+    },
+    confirmedWSETHDefiInvest(
+      state: Confirmation,
+      _action: PayloadAction<string>
+    ) {
+      state.confirmedWSETHDefiInvest = true;
     },
     confirmDualInvest(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmedDualInvest = true;
@@ -29,5 +39,9 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
 });
 
 export { confirmationSlice };
-export const { confirm, confirmDefiInvest, confirmDualInvest } =
-  confirmationSlice.actions;
+export const {
+  confirm,
+  confirmedRETHDefiInvest,
+  confirmedWSETHDefiInvest,
+  confirmDualInvest,
+} = confirmationSlice.actions;
