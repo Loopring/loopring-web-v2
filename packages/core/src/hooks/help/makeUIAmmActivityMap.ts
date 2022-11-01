@@ -272,7 +272,9 @@ const getRewardCalc = ({
     feeDollar24,
     reward24,
     reward224,
-    rewardDollar24;
+    rewardDollar24,
+    extraRewards24 = [],
+    extraDollar24 = 0;
   const { current, lastDay } = ammUserReward ?? {};
   if (current) {
     rewardToken = current.currentRewards[0]
@@ -329,6 +331,21 @@ const getRewardCalc = ({
       rewardDollar24 = reward24
         .times(rewardToken ? tokenPrices[rewardToken] : 1)
         .plus(reward24.times(rewardToken2 ? tokenPrices[rewardToken2] : 1));
+      extraDollar24 = 0;
+      extraRewards24 = lastDay?.extraRewards?.map((item: any) => {
+        const tokenSymbol = idIndex[item.tokenId as number];
+        const extraItem = volumeToCountAsBigNumber(
+          tokenSymbol,
+          item.volume ?? 0
+        );
+        extraDollar24 += (extraItem ?? toBig(0))
+          .times(tokenPrices[tokenSymbol] ?? 1)
+          .toNumber();
+        return {
+          tokenSymbol,
+          amount: extraItem?.toNumber(),
+        };
+      });
     }
   }
   return {
@@ -346,6 +363,8 @@ const getRewardCalc = ({
     reward24: reward24 ? reward24.toNumber() : undefined,
     reward224: reward224 ? reward224.toNumber() : undefined,
     rewardDollar24: rewardDollar24 ? rewardDollar24.toNumber() : undefined,
+    extraRewards24: extraRewards24,
+    extraDollar24: extraDollar24 ? extraDollar24 : undefined,
   };
 };
 const getOneRewardInfo = <C>({

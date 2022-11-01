@@ -841,14 +841,14 @@ export default {
     "You can choose one of the following approaches for the remaining amount:",
   labelDefiMaxBalance1:
     "<0>" +
-    "<1>Withdraw WSTETH to L1 and trade trade through Uniswap, 1Inch, Lido or .</1>" +
+    "<1>Withdraw {{symbol}} to L1 and trade trade through Uniswap, 1Inch, Lido or Pocket Pool.</1>" +
     "<2>The Loopring pool will rebalance soon. Please come back later to redeem.</2>" +
     "</0>",
   labelDefiNoBalance:
     "<0>It is not possible for the Loopring pool to fulfil your complete request at the moment.</0>" +
     "<1>You can choose one of the following approaches for the remaining amount:</1>",
   labelDefiNoBalanceList:
-    "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
+    "<0>Withdraw {{symbol}} to L1 and trade trade through Uniswap, 1Inch, Lido or Pocket Pool.</0>" +
     "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
@@ -872,14 +872,22 @@ export default {
   labelViewMore: "View more",
   labelInvestSuccess: "Successfully {{type}} {{symbol}}",
   labelInvestFailed: "Subscribe Failed",
-  labelDefiRiskTitle: "What is ETH Staking via Lido?",
-  labelDefiRisk:
+  labelWSETHDefiRiskTitle: "What is ETH Staking via Lido?",
+  labelRETHDefiRiskTitle: "What is ETH Staking Rocket Pool?",
+  labelWSETHDefiRisk:
     "<0>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</0>\n" +
-    "<1>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</1>\n" +
+    "<1>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</1>" +
     "<2>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</2>\n",
-  labelDefiRisk2:
+  labelWSETHDefiRisk2:
     "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</0>" +
     "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
+  labelRETHDefiRisk:
+    "<0>Rocket Pool is the first truly decentralized Ethereum staking pool. </0>" +
+    "<1>All of the Ethereum validator node operator's creation, withdrawals,\n and rewards delegation is handled by Rocket Pool's smart contracts on the Execution layer. This makes it completely decentralized.<1>" +
+    "<2>After staking ETH via Rocket Pool, you will receive rETH. The rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</2>",
+  labelRETHDefiRisk2:
+    "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
+    "<1></1>",
   labelDefiAgree: "I have read risk warning",
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
@@ -968,7 +976,9 @@ export default {
   labelNoCollectionCover: "No Cover Media",
   labelNoNFTCover: "No Media Resource",
   labelNFTAmountValue: "Amount: {{value}}",
+  labelNFTAmountSimpleValue: " \u2A09 {{value}}",
   labelCollectionItemValue: "Item: {{value}}",
+  labelCollectionItemSimpleValue: " \u2A09 {{value}}",
   labelMyCollectionsDes:
     "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information. Until it happens, the previous NFTs will be categorized to collection named by their associated contract address.",
   labelNFTGuid:
@@ -1069,18 +1079,18 @@ export default {
   labelSelectContractAddress: "Contract address",
   labelImportChooseCollection:
     "The created collection here can only be used to categorize the Legacy NFT minted without collection_metadata field.\n You can freely move those NFTs into any collection you created here.",
-  labelImportCollectionUndecided: "Undecided",
-  labelImportCollectionOthers: "Others",
-  labelImportCollectionCurrent: "Current",
-  labelImportCollectionAll: "All",
-  labelImportCollectionTitle: "Import your legacy nft Generate collection ",
+  labelImportCollectionundecided: "Undecided",
+  labelImportCollectionoutside: "Others",
+  labelImportCollectioninside: "Current",
+  labelImportCollectionall: "All",
+  labelImportCollectionTitle: "Import your legacy NFT Generate collection ",
   labelAssetTokens: "Tokens",
   labelAssetMyInvest: "My Investments",
   labelORCreateCollection: "Or <1>Create Collection</1>",
   labelCreateLegacyCollection: "Create Legacy Collection",
   labelNoLegacyCollection: "You have no Legacy Collection, please",
   labelLegacyCollectionTitle: "Create Legacy Collection",
-  labelMoveOut: "Move out {{symbol}}",
+  labelMoveOut: "Move out of {{symbol}}",
   labelMoveIn: "Move into {{symbol}}",
   labelMoveInCollection: "Collection",
   labelSelectAll: "Select All",
@@ -1095,4 +1105,8 @@ export default {
   labelLinkMetaData: "NFT metadata Resource link",
   labelCountDown: "Count Down",
   labelStackingSelect: "Choose Staking Product",
+  labelImportCollectionMove: "Collection",
+  labelCollectionImportNFTBtn: "Manage Legacy NFT",
+  labelNFTMoveFailed: "NFT move failed!",
+  labelNFTMoveSuccess: "NFT moved successful",
 };

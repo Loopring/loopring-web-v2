@@ -28,7 +28,9 @@ export type MyPoolTableProps<R> = {
   filter: { searchValue: string };
   handleFilterChange: (props: { searchValue: string }) => void;
   forexMap: ForexMap<Currency>;
+  idIndex: { [key: string]: string };
   tokenMap: LoopringMap<TokenInfo & { tradePairs: Array<CoinKey<R>> }>;
+  tokenPrices: { [key in keyof R]: number };
   allowTrade?: any;
   tableHeight?: number;
   showFilter?: boolean;

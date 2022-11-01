@@ -42,6 +42,8 @@ import {
   TableWrapStyled,
   useTokenMap,
   useDualMap,
+  store,
+  useTokenPrices,
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
@@ -70,6 +72,8 @@ const MyLiquidity: any = withTranslation("common")(
     const { ammActivityMap } = useAmmActivityMap();
     const { forexMap } = useSystem();
     const { tokenMap, disableWithdrawList, idIndex } = useTokenMap();
+    const { tokenPrices } = useTokenPrices();
+
     const { marketMap: dualMarketMap } = useDualMap();
     const {
       assetsRawData,
@@ -340,6 +344,8 @@ const MyLiquidity: any = withTranslation("common")(
                       showloading={showLoading}
                       currency={currency}
                       tokenMap={tokenMap as any}
+                      idIndex={idIndex}
+                      tokenPrices={tokenPrices as any}
                       handleWithdraw={(row) => {
                         const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                         setShowAmm({

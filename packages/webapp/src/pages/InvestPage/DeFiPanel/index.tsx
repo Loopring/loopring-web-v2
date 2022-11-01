@@ -129,7 +129,7 @@ const LandDefiInvest = ({
         if (!confirmedRETHDefiInvest) {
           setConfirmedDefiInvest({ isShow: true, type: "RETH" });
         } else {
-          history.push(defiWSTETHAdvice.router);
+          history.push(defiRETHAdvice.router);
         }
       },
     },

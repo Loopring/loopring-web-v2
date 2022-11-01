@@ -60,6 +60,7 @@ export const DeFiTradePanel = ({
       )}
       <ConfirmDefiNOBalance
         isJoin={isJoin}
+        market={market}
         handleClose={(_e) => {
           setConfirmShowNoBalance(false);
           if (deFiWrapProps?.onRefreshData) {
