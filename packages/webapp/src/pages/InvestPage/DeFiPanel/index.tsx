@@ -317,9 +317,8 @@ export const DeFiPanel: any = withTranslation("common")(
             open={_confirmedDefiInvest.isShow}
             type={_confirmedDefiInvest.type as any}
             handleClose={(_e, isAgree) => {
-              // confirmDefiInvestFun(false);
               if (!isAgree) {
-                history.goBack();
+                setConfirmedDefiInvest({ isShow: false });
               } else {
                 if (_confirmedDefiInvest.type === "RETH") {
                   confirmedRETHDefiInvestFun();
