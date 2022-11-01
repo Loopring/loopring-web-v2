@@ -7,7 +7,12 @@ import {
   store,
   NETWORKEXTEND,
 } from "../../index";
-import { FeeInfo, myLog, UIERROR_CODE } from "@loopring-web/common-resources";
+import {
+  FeeInfo,
+  myLog,
+  type,
+  UIERROR_CODE,
+} from "@loopring-web/common-resources";
 import {
   ConnectProviders,
   ConnectProvidersSignMap,
@@ -88,9 +93,15 @@ export async function activateAccount({
               code: UIERROR_CODE.GENERATE_EDDSA,
               message: error,
             }
+          : type(error) === "error"
+          ? {
+              code: UIERROR_CODE.GENERATE_EDDSA,
+              message: error.message,
+              stack: error.stack,
+            }
           : {
               code: UIERROR_CODE.GENERATE_EDDSA,
-              ...error,
+              message: error.toString(),
             };
 
       return {

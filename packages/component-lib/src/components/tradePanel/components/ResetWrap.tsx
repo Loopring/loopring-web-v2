@@ -206,7 +206,7 @@ export const ResetWrap = <T extends FeeInfo>({
           color={"primary"}
           onClick={() => {
             if (onResetClick) {
-              onResetClick();
+              onResetClick({});
             }
           }}
           loading={

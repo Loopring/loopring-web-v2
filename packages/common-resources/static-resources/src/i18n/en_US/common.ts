@@ -841,14 +841,14 @@ export default {
     "You can choose one of the following approaches for the remaining amount:",
   labelDefiMaxBalance1:
     "<0>" +
-    "<1>Withdraw WSTETH to L1 and trade trade through Uniswap, 1Inch or Lido.</1>" +
+    "<1>Withdraw {{symbol}} to L1 and trade trade through Uniswap, 1Inch, Lido or Pocket Pool.</1>" +
     "<2>The Loopring pool will rebalance soon. Please come back later to redeem.</2>" +
     "</0>",
   labelDefiNoBalance:
     "<0>It is not possible for the Loopring pool to fulfil your complete request at the moment.</0>" +
     "<1>You can choose one of the following approaches for the remaining amount:</1>",
   labelDefiNoBalanceList:
-    "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
+    "<0>Withdraw {{symbol}} to L1 and trade trade through Uniswap, 1Inch, Lido or Pocket Pool.</0>" +
     "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",

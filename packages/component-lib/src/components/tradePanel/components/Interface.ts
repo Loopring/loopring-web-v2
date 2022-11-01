@@ -108,7 +108,7 @@ export type ResetInfoProps<C> = {
 >;
 
 export type ResetExtendProps<C> = {
-  onResetClick: () => void;
+  onResetClick: (props: { isFirstTime?: boolean; isReset?: boolean }) => void;
 } & ResetInfoProps<C>;
 
 export type ResetViewProps<C extends FeeInfo> = ResetExtendProps<C>;

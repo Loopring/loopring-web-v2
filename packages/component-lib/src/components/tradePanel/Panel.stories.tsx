@@ -204,7 +204,7 @@ let resetProps: ResetProps<any> = {
   }): void {
     console.log("handleWithdrawFee", value);
   },
-  onResetClick(): void {},
+  onResetClick({}): void {},
 };
 // resetBtnStatus: TradeBtnStatus.AVAILABLE,
 //   handlePanelEvent: async (

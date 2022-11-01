@@ -945,12 +945,16 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
     t,
     isJoin,
     open,
+    market,
     handleClose,
   }: WithTranslation & {
     open: boolean;
+    market: `${string}-${string}`;
     isJoin: boolean;
     handleClose: (event: any) => void;
   }) => {
+    // @ts-ignore
+    const [, baseSymbol, _quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     return (
       <DialogStyle
         open={open}
@@ -985,9 +989,12 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
                   </Typography>
                 </Trans>
                 <List sx={{ marginTop: 1 }}>
-                  <Trans i18nKey={"labelDefiNoBalanceList"}>
+                  <Trans
+                    i18nKey={"labelDefiNoBalanceList"}
+                    tOptions={{ symbol: baseSymbol }}
+                  >
                     <ListItem style={{ marginBottom: 0 }}>
-                      Withdraw wSTETH to L1 and trade through CRV or LIDO
+                      Withdraw WSTETH to L1 and trade through CRV or LIDO
                       directly
                     </ListItem>
                     <ListItem style={{ marginBottom: 0 }}>

@@ -46,6 +46,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   market,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
+  // @ts-ignore
+  const [, baseSymbol, _quoteSymbol] = market.match(/(\w+)-(\w+)/i);
   const coinSellRef = React.useRef();
   const coinBuyRef = React.useRef();
   const { t } = useTranslation();
@@ -401,7 +403,10 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                     color={"inherit"}
                     marginTop={1}
                   >
-                    <Trans i18nKey={"labelDefiMaxBalance1"}>
+                    <Trans
+                      i18nKey={"labelDefiMaxBalance1"}
+                      tOptions={{ symbol: baseSymbol }}
+                    >
                       <ul>
                         <li>
                           Withdraw wstETH to L1 and trade through CRV or LIDO
