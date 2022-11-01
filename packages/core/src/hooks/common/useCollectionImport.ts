@@ -38,8 +38,8 @@ export const useCollectionImport = <
   const history = useHistory();
   let match: any = useRouteMatch("/nft/importLegacyCollection/:id?");
   const stepList = match?.params?.id?.split("--");
-  const contractId = stepList && stepList[0];
-  const contract = stepList && stepList[1].startsWith("0x") && stepList[1];
+  const contract = stepList && stepList[0]?.startsWith("0x") && stepList[0];
+  const contractId = stepList && stepList[1];
   const [step, setStep] = React.useState<ImportCollectionStep>(
     ImportCollectionStep.SELECTCONTRACT
   );
