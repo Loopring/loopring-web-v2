@@ -14,6 +14,17 @@ import {
 import styled from "@emotion/styled";
 import { withTranslation, WithTranslation } from "react-i18next";
 
+export type TOASTOPEN = {
+  open: boolean;
+  content: JSX.Element | string;
+  type: "success" | "error" | "warning" | "info";
+};
+export type TOSTOBJECT = {
+  toastOpen: TOASTOPEN;
+  setToastOpen: (state: TOASTOPEN) => void;
+  closeToast: () => void;
+};
+
 export interface ToastProps {
   open: boolean;
   severity?: "success" | "error" | "warning" | "info";

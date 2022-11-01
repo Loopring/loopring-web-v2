@@ -3,11 +3,16 @@ import React from "react";
 import { Box, Typography, Tab, Tabs } from "@mui/material";
 
 import { useSettings } from "../../../stores";
-import { CollectionMeta, NFTWholeINFO } from "@loopring-web/common-resources";
+import {
+  CollectionMeta,
+  NFTWholeINFO,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
 import { NFTList, Button } from "../../basic-lib";
 import { CollectionManageProps, CollectionMethod } from "./Interface";
 import styled from "@emotion/styled";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { Toast } from "../../toast";
 
 const BoxStyle = styled(Box)`
   .nft-list-wrap {
@@ -25,6 +30,7 @@ export const CollectionManageWrap = <
   baseURL,
   listNFT,
   total,
+  toastObj,
   page,
   isLoading,
   selectedNFTS = [],
@@ -186,7 +192,6 @@ export const CollectionManageWrap = <
                 >
                   {t("labelSelectAll")}
                 </Button>
-                {Btn}
                 <Button
                   variant={"outlined"}
                   size={"small"}
@@ -197,10 +202,11 @@ export const CollectionManageWrap = <
                 >
                   {t("labelCancelAll")}
                 </Button>
+                {Btn}
               </Box>
             )}
           </Box>
-          <BoxStyle flex={1}>
+          <BoxStyle flex={1} display={"flex"}>
             <NFTList
               onPageChange={(page: number) => {
                 onFilterNFT({ ...filter, page });
@@ -222,6 +228,13 @@ export const CollectionManageWrap = <
           </BoxStyle>
         </Box>
       )}
+      <Toast
+        alertText={(toastObj.toastOpen?.content ?? "") as any}
+        severity={toastObj.toastOpen?.type ?? "success"}
+        open={toastObj.toastOpen?.open ?? false}
+        autoHideDuration={TOAST_TIME}
+        onClose={toastObj.closeToast}
+      />
     </Box>
   );
   // Undecided  12

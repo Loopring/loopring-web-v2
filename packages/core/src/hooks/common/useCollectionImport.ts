@@ -30,7 +30,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 // }
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 
-export const useCollectionImport = <
+export const zzuseCollectionImport = <
   Co extends CollectionMeta,
   NFT extends Partial<NFTWholeINFO>
 >(): ImportCollectionViewProps<Co, NFT> => {

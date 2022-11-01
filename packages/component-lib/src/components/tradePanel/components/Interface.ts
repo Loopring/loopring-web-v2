@@ -25,6 +25,7 @@ import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
 import { CollectionInputProps } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { TOSTOBJECT } from "../../toast";
 
 /**
  * private props
@@ -471,6 +472,7 @@ export type CollectionManageData<NFT> = {
   listNFT: NFT[];
   page: number;
   total: number;
+  toastObj: TOSTOBJECT;
   onFilterNFT: (filter: {
     legacyFilter: sdk.LegacyNFT | "all";
     limit: number;

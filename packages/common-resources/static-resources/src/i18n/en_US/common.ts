@@ -1107,4 +1107,6 @@ export default {
   labelStackingSelect: "Choose Staking Product",
   labelImportCollectionMove: "Collection",
   labelCollectionImportNFTBtn: "Manage Legacy NFT",
+  labelNFTMoveFailed: "NFT move failed!",
+  labelNFTMoveSuccess: "NFT moved successful",
 };

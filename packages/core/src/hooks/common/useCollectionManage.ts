@@ -1,12 +1,23 @@
 import { BigNumber } from "bignumber.js";
 import React from "react";
-import { CollectionMeta, NFTWholeINFO } from "@loopring-web/common-resources";
-import { getIPFSString, LoopringAPI, useAccount, useSystem } from "../../index";
+import {
+  CollectionMeta,
+  NFTLimit,
+  NFTWholeINFO,
+} from "@loopring-web/common-resources";
+import {
+  getIPFSString,
+  LoopringAPI,
+  useAccount,
+  useSystem,
+  useToast,
+} from "../../index";
 import {
   CollectionManageProps,
   CollectionMethod,
 } from "@loopring-web/component-lib";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { useTranslation } from "react-i18next";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 
@@ -15,14 +26,16 @@ export const useCollectionManage = <
   NFT extends Partial<NFTWholeINFO>
 >({
   collection,
-  pageSize = 24,
+  pageSize = NFTLimit,
 }: {
   collection?: CollectionMeta | undefined;
   pageSize?: number;
 }): CollectionManageProps<Co, NFT> => {
   const { account } = useAccount();
   const { chainId } = useSystem();
+  const { t } = useTranslation();
   const [filter, setFilter] = React.useState({});
+  const toastObj = useToast();
   const [selectedNFTS, setSelectedNFTS] = React.useState<NFT[]>([]);
   const [{ listNFT, total, page }, setListNFTValue] = React.useState<{
     listNFT: NFT[];
@@ -103,34 +116,55 @@ export const useCollectionManage = <
   );
   const onNFTSelectedMethod = React.useCallback(
     async (items: NFT[], method: CollectionMethod) => {
-      switch (method) {
-        case CollectionMethod.moveIn:
-          setIsLoading(true);
-          const hashList: string[] = items.reduce((prev, item) => {
-            return [...prev, item.nftData ?? ""];
-          }, [] as string[]);
-          if (hashList?.length && collection?.id) {
-            await LoopringAPI.userAPI?.submitUpdateNFTLegacyCollection(
-              {
-                accountId: account.accountId,
-                nftHashes: hashList,
-                collectionId: Number(collection.id),
-              },
-              chainId as any,
-              account.apiKey,
-              account.eddsaKey.sk
-            );
-          }
-
-          break;
-        case CollectionMethod.moveOut:
-          //TODO
-          break;
+      let hashList: string[] = [];
+      if (collection && items.length && collection?.id) {
+        let collectionId: number = 0;
+        hashList = items.reduce((prev, item) => {
+          return [...prev, item.nftData ?? ""];
+        }, [] as string[]);
+        setIsLoading(true);
+        switch (method) {
+          case CollectionMethod.moveOut:
+            collectionId = 0;
+            break;
+          case CollectionMethod.moveIn:
+            collectionId = Number(collection?.id);
+            break;
+          default:
+            break;
+        }
+        const response =
+          await LoopringAPI.userAPI?.submitUpdateNFTLegacyCollection(
+            {
+              accountId: account.accountId,
+              nftHashes: hashList,
+              collectionId,
+            },
+            chainId as any,
+            account.apiKey,
+            account.eddsaKey.sk
+          );
+        if (
+          response &&
+          ((response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message)
+        ) {
+          toastObj.setToastOpen({
+            open: true,
+            type: "error",
+            content: t("labelNFTMoveFailed"),
+          });
+        } else {
+          toastObj.setToastOpen({
+            open: true,
+            type: "success",
+            content: t("labelNFTMoveSuccess"),
+          });
+        }
+        onFilterNFT({ ...filter });
       }
-      // setIsLoading(false)
-      onFilterNFT(filter);
     },
-    []
+    [filter]
   );
   React.useEffect(() => {
     if (collection?.id && account.accountId) {
@@ -144,6 +178,7 @@ export const useCollectionManage = <
     selectedNFTS,
     onNFTSelected,
     total,
+    toastObj,
     page,
     listNFT,
     baseURL,
