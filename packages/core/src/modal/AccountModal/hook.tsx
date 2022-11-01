@@ -159,7 +159,6 @@ export function useAccountModalForUI({
   account: Account;
   onClose?: any;
 }) {
-  const { goUpdateAccount } = useUpdateAccount();
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
@@ -632,9 +631,6 @@ export function useAccountModalForUI({
       [AccountStep.NoAccount]: {
         view: (
           <NoAccount
-            // className={
-            //   /(guardian)|(depositto)/gi.test(pathname ?? "") ? "guardian" : ""
-            // }
             {...{
               goActiveAccount,
               chainInfos,
@@ -659,9 +655,6 @@ export function useAccountModalForUI({
       [AccountStep.HadAccount]: {
         view: (
           <HadAccount
-            // className={
-            //   /(guardian)|(depositto)/gi.test(pathname ?? "") ? "guardian" : ""
-            // }
             {...{
               ...account,
               clearDepositHash: clearDeposit,
