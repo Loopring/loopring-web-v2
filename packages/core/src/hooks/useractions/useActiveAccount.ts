@@ -89,19 +89,23 @@ export const useActiveAccount = <T>(): {
     }
   }, [isShow]);
 
-  const onActiveAccountClick = () => {
-    if (activeAccountValue?.fee?.belong && activeAccountValue?.fee?.__raw__) {
-      setShowActiveAccount({ isShow: false });
-      goUpdateAccount({
-        isFirstTime: true,
-        isReset: false,
-        feeInfo: activeAccountValue.fee,
-      });
-    }
-  };
-
   const activeAccountProps: ResetProps<any> = {
-    onResetClick: onActiveAccountClick,
+    onResetClick: ({
+      isFirstTime = false,
+      isReset = false,
+    }: {
+      isFirstTime?: boolean;
+      isReset?: boolean;
+    }) => {
+      if (activeAccountValue?.fee?.belong && activeAccountValue?.fee?.__raw__) {
+        setShowActiveAccount({ isShow: false });
+        goUpdateAccount({
+          isFirstTime,
+          isReset,
+          feeInfo: activeAccountValue.fee,
+        });
+      }
+    },
     isNewAccount: true,
     resetBtnStatus: btnStatus,
     goToDeposit: () => {

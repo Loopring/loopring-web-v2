@@ -16,6 +16,7 @@ import {
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import { ConnectorError } from "@loopring-web/loopring-sdk";
 
 export function useUpdateAccount() {
   const { updateHW, checkHWAddr } = useWalletInfo();
@@ -97,10 +98,18 @@ export function useUpdateAccount() {
           break;
         case ActionResultCode.UpdateAccountError:
         case ActionResultCode.GenEddsaKeyError:
-          const errMsg = checkErrorInfo(
+          let errMsg = checkErrorInfo(
             response?.data as sdk.RESULT_INFO,
             isFirstTime as boolean
           );
+          if (
+            (response?.data as sdk.RESULT_INFO)?.message?.startsWith(
+              ConnectorError.USER_DENIED_2
+            )
+          ) {
+            errMsg = sdk.ConnectorError.USER_DENIED;
+          }
+
           switch (errMsg) {
             case sdk.ConnectorError.NOT_SUPPORT_ERROR:
               myLog("activateAccount UpdateAccount: NOT_SUPPORT_ERROR");
