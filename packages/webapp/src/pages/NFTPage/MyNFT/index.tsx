@@ -134,9 +134,12 @@ export const MyNFTPanel = withTranslation("common")(
         searchParams.delete("detail");
       }
       history.replace(pathname + "?" + searchParams.toString());
-      // return () => {
-      //   setShowNFTDetail({ isShow: false });
-      // };
+
+      return () => {
+        if (isShowNFTDetail.isShow) {
+          setShowNFTDetail({ isShow: false });
+        }
+      };
     }, [isShowNFTDetail.isShow]);
     const breadcrumbs = React.useMemo(() => {
       const [contract, id] = !!match?.params?.contract

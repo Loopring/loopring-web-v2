@@ -3814,10 +3814,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@2.1.13-1":
-  version "2.1.13-1"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.1.13-1.tgz#2d52177e196610ca361af00dc573e4806ad67208"
-  integrity sha512-SDQt/f4yf7DaZYKCjQGuYWVD6wXCF2nSQQms4IKR+YL5hw+MCE40q2sOnbp25DHEucC9ppYV99sZoHrYBe6SYA==
+"@loopring-web/loopring-sdk@2.1.13-2":
+  version "2.1.13-2"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.1.13-2.tgz#36ac70b2467a737f27355430741e128e6e785321"
+  integrity sha512-SPBE/CEIMzsq25mDIRtLtAMBxCiCNdVnpgsMy46Jd2jWurSJ3wMhboPcyoYIoHzmphQvanSrgNyd6wNKfejRtw==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -22306,6 +22306,11 @@ qr.js@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/qr.js/-/qr.js-0.0.0.tgz#cace86386f59a0db8050fa90d9b6b0e88a1e364f"
   integrity sha1-ys6GOG9ZoNuAUPqQ2baw6IoeNk8=
+
+qrcode-svg@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/qrcode-svg/-/qrcode-svg-1.1.0.tgz#2087549843dc5d0a3f8e8aa046cd9bcf23708cc3"
+  integrity sha512-XyQCIXux1zEIA3NPb0AeR8UMYvXZzWEhgdBgBjH9gO7M48H9uoHzviNz8pXw3UzrAcxRRRn9gxHewAVK7bn9qw==
 
 qrcode.react@^1.0.1:
   version "1.0.1"

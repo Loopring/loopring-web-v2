@@ -33,6 +33,7 @@ import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { CollectionManageWrap } from "./CollectionManageWrap";
 import { NFTMedia } from "../../block";
+import { useHistory } from "react-router-dom";
 
 const BoxStyle = styled(Grid)`
   .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
@@ -111,6 +112,7 @@ export const ImportCollectionWrap = <
 }: ImportCollectionViewProps<Co, NFT>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
+  const history = useHistory();
   const {
     contractList,
     selectContract,
@@ -533,8 +535,7 @@ export const ImportCollectionWrap = <
                   return disabled || !selectCollection;
                 },
                 onClick: () => {
-                  // setStep(ImportCollectionStep.SELECTNFT);
-                  // onNFTSelectedMethod(selectCollection);
+                  history.push("/nft/myCollection");
                 },
               })}
             </Box>

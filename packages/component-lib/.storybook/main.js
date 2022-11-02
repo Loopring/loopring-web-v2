@@ -28,6 +28,7 @@ module.exports = {
   },
   webpackFinal: async (config, { configType }) => {
     const isProd = configType.toLowerCase() === "production";
+    // mode: isDevelopment ? 'development' : 'production',
     console.log(
       path.resolve(
         __dirname,
@@ -40,7 +41,6 @@ module.exports = {
     const modules = [
       ...config.resolve.modules,
       "node_modules",
-      // "node_modules/@loopring-web/common-resources",
       path.resolve(
         __dirname,
         "..",
@@ -48,9 +48,6 @@ module.exports = {
         "common-resources",
         "static-resources"
       ),
-      //static-resources/src/loopring-interface/CoinInterface.ts
-      // path.resolve(__dirname, '..', '..', 'common-resources', "static-resources"),
-      // path.resolve(__dirname,'./'),
     ];
 
     config.module.rules.push({
@@ -64,6 +61,7 @@ module.exports = {
           "common-resources",
           "static-resources"
         ),
+        // ...(isProd ? [path.resolve(__dirname, "..", "src")] : []),
       ],
 
       // resolve: { fullySpecified: false },
@@ -151,6 +149,7 @@ module.exports = {
 
     return {
       ...config,
+      mode: isProd ? "development" : "production",
       plugins: [...config.plugins],
       resolve: {
         ...config.resolve,

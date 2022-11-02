@@ -85,6 +85,13 @@ export const colorBase = ({ theme }: any) => css`
     --opacity: ${theme.colorBase.opacity};
     --color-white: white;
     --color-settlet: ${theme.colorBase.opacity};
+
+    --color-redPock0: ${theme.colorBase.redPock0};
+    --color-redPock1: ${theme.colorBase.redPock1};
+    --color-redPock1Disabled: ${theme.colorBase.redPock1Disabled};
+    --color-redPock-text0: ${theme.colorBase.redPockText0};
+    --color-redPock-text1: ${theme.colorBase.redPockText1};
+    --color-redPock-Border: "1px dashed rgba(255, 255, 255, 0.2)";
   }
 `;
 export const scrollbarDefault = ({ theme }: any) => css`

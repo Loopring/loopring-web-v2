@@ -229,7 +229,7 @@ export const CollectionManageWrap = <
         </Box>
       )}
       <Toast
-        alertText={(toastObj.toastOpen?.content ?? "") as any}
+        alertText={toastObj.toastOpen?.content ?? ""}
         severity={toastObj.toastOpen?.type ?? "success"}
         open={toastObj.toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}

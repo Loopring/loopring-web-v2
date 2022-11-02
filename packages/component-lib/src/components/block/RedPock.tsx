@@ -4,6 +4,7 @@ import React from "react";
 import { ModalCloseButton } from "../basic-lib";
 import { useTranslation } from "react-i18next";
 import { EmptyValueTag } from "@loopring-web/common-resources";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export const RedPockBg = styled(Box)<BoxProps & { imageSrc?: string }>`
   background: #ff5136;
@@ -319,3 +320,33 @@ export const RedPockClock = ({
 //     />
 //   );
 // };
+
+export const RedPockCard = ({
+  luckyTokenItem: {
+    hash,
+    sender,
+    champion,
+    tokenId,
+    tokenAmount,
+    type,
+    status,
+    validSince,
+    validUntil,
+    info,
+    templateNo,
+    createdAt,
+  },
+  idIndex,
+  tokenMap,
+}: {
+  luckyTokenItem: sdk.LuckyTokenItemForReceive;
+  idIndex: { [key: string]: string };
+  tokenMap: { [key: string]: any };
+}) => {
+  const textColor = `var(--color-redPock-text${type.scope})`;
+  return (
+    <Box display={"flex"} borderRadius={1 / 2}>
+      <Typography variant={"h5"} color={textColor}></Typography>
+    </Box>
+  );
+};
