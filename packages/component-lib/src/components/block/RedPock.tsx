@@ -1,10 +1,21 @@
 import styled from "@emotion/styled";
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, BoxProps, Divider, Typography } from "@mui/material";
 import React from "react";
 import { ModalCloseButton } from "../basic-lib";
-import { useTranslation } from "react-i18next";
-import { EmptyValueTag } from "@loopring-web/common-resources";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
+import {
+  DAY_FORMAT,
+  EmptyValueTag,
+  getShortAddr,
+  getValuePrecisionThousand,
+  MINUTE_FORMAT,
+} from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
+import moment from "moment";
 
 export const RedPockBg = styled(Box)<BoxProps & { imageSrc?: string }>`
   background: #ff5136;
@@ -321,32 +332,100 @@ export const RedPockClock = ({
 //   );
 // };
 
-export const RedPockCard = ({
-  luckyTokenItem: {
-    hash,
-    sender,
-    champion,
-    tokenId,
-    tokenAmount,
-    type,
-    status,
-    validSince,
-    validUntil,
-    info,
-    templateNo,
-    createdAt,
-  },
-  idIndex,
-  tokenMap,
-}: {
-  luckyTokenItem: sdk.LuckyTokenItemForReceive;
-  idIndex: { [key: string]: string };
-  tokenMap: { [key: string]: any };
-}) => {
-  const textColor = `var(--color-redPock-text${type.scope})`;
-  return (
-    <Box display={"flex"} borderRadius={1 / 2}>
-      <Typography variant={"h5"} color={textColor}></Typography>
-    </Box>
-  );
-};
+export const RedPockCard = withTranslation()(
+  ({
+    t,
+    luckyTokenItem: {
+      hash,
+      sender,
+      champion,
+      tokenId,
+      tokenAmount,
+      type,
+      status,
+      validSince,
+      validUntil,
+      info,
+      templateNo,
+      createdAt,
+    },
+    idIndex,
+    tokenMap,
+  }: {
+    luckyTokenItem: sdk.LuckyTokenItemForReceive;
+    idIndex: { [key: string]: string };
+    tokenMap: { [key: string]: any };
+  } & WithTranslation) => {
+    const color = {
+      textColor: `var(--color-redPock-text${type.scope})`,
+      background: `var(--color-redPock${type.scope})`,
+    };
+    const luckToken = tokenMap[idIndex[tokenId]];
+    return (
+      <Box
+        display={"flex"}
+        borderRadius={1}
+        height={114}
+        paddingX={1}
+        paddingY={1}
+        flexDirection={"column"}
+        width={"100%"}
+        sx={{ background: color.background }}
+      >
+        <Typography
+          paddingX={1}
+          paddingTop={1}
+          variant={"h4"}
+          fontWeight={"900"}
+          color={color.textColor}
+        >
+          {`${getValuePrecisionThousand(
+            // @ts-ignore
+            sdk.toBig(tokenAmount.totalAmount).div("1e" + luckToken.decimals),
+            luckToken.decimals,
+            luckToken.decimals,
+            luckToken.decimals,
+            false
+          )} ${luckToken.symbol}`}
+        </Typography>
+        <Typography
+          paddingX={1}
+          textOverflow={"ellipsis"}
+          sx={{
+            overflow: "hidden",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            wordBreak: "break-all",
+          }}
+          whiteSpace={"pre-line"}
+          variant={"body1"}
+          display={"-webkit-box"}
+          color={color.textColor}
+          height={"3em"}
+        >
+          {info?.memo ?? t("labelLuckTokenDefaultTitle")}
+        </Typography>
+        <Divider
+          sx={{ border: "var(--color-redPock-Border)" }}
+          orientation={"horizontal"}
+        />
+        <Typography
+          variant={"body2"}
+          paddingX={1}
+          display={"flex"}
+          flexDirection={"row"}
+          color={color.textColor}
+          sx={{ opacity: 0.7 }}
+          justifyContent={"space-between"}
+        >
+          <Typography variant={"inherit"} color={"inherit"}>
+            {moment(validSince).format(`${DAY_FORMAT} ${MINUTE_FORMAT}`)}
+          </Typography>
+          <Typography variant={"inherit"} color={"inherit"}>
+            {sender.ens ? sender.ens : getShortAddr(sender.address)}
+          </Typography>
+        </Typography>
+      </Box>
+    );
+  }
+);
