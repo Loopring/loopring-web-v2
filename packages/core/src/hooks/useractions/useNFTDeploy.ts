@@ -297,7 +297,6 @@ export function useNFTDeploy<
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && !isFeeNotEnough.isFeeNotEnough) {
       enableBtn();
-      myLog("enableBtn");
       return;
     }
     disableBtn();

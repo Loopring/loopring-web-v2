@@ -1092,6 +1092,11 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
     const [agree, setAgree] = React.useState(false);
+    React.useEffect(() => {
+      if (!open) {
+        setAgree(false);
+      }
+    }, [open]);
     return (
       <Dialog
         open={open}
