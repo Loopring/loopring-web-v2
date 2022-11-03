@@ -1112,5 +1112,5 @@ export default {
   labelLuckTokenDefaultTitle: "Good Luck!",
   labelSync: "in Sync",
   labelMintInSyncTooltips:
-    "Once your NFT is confirmed on Ethereum, your NFT & Collection information will update which usually takes 30 minutes.",
+    "The NFT and collection information may not be synced up timely after minting due to onChain operation. Please stay tuned and refresh the page later.",
 };
