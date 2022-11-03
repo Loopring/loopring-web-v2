@@ -843,8 +843,8 @@ export default {
     "<li>Withdraw {{symbol}} to L1 and trade through Uniswap, 1Inch or {{type}} .</li>" +
     "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiNoBalance:
-    "<li>It is not possible for the Loopring pool to fulfil your complete request at the moment.</li>" +
-    "<li>You can choose one of the following approaches for the remaining amount:</li>",
+    "<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>" +
+    "<span>You can choose one of the following approaches for the remaining amount:</span>",
   labelDefiNoBalanceList:
     "<li>Withdraw {{symbol}} to L1 and trade through Uniswap, 1Inch or {{type}}.</li>" +
     "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",

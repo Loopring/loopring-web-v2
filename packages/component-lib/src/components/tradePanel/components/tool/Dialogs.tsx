@@ -984,7 +984,7 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
               >
                 <Trans
                   i18nKey={"labelDefiNoBalance"}
-                  components={{ li: <li /> }}
+                  components={{ span: <span /> }}
                 >
                   <Typography component={"span"} marginBottom={3}>
                     Loopring rebalance pool can't satisfy your complete request
