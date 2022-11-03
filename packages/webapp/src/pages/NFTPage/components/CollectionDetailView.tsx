@@ -34,6 +34,8 @@ const HeaderBannerStyle = styled(Box)<BoxProps & { url: string }>`
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: ${({ theme }) => theme.unit}px;
+  height: 100%;
+  width: 100%;
 ` as (props: BoxProps & { url: string }) => JSX.Element;
 
 export const CollectionDetailView = <Co extends CollectionMeta>({
