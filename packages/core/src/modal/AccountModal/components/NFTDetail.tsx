@@ -569,7 +569,12 @@ export const NFTDetail = withTranslation("common")(
                     style={{ wordBreak: "break-all" }}
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`}
+                    href={
+                      popItem.deploymentStatus ===
+                      DEPLOYMENT_STATUS.NOT_DEPLOYED
+                        ? `${Explorer}collections/${popItem.tokenAddress}?a=${popItem.nftId}`
+                        : `${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`
+                    }
                   >
                     {popItem.tokenAddress}
                   </Link>

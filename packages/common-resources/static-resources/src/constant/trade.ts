@@ -129,6 +129,7 @@ export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
   NFTMETA & {
     nftBalance?: number;
     nftIdView?: string;
+    pendingOnSync: boolean;
     fee?: FeeInfo;
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;

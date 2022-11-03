@@ -49,7 +49,7 @@ export default {
   depositLabelRefer: "Referral address, Account ID or ENS. (Optional)",
   depositLabelPlaceholder: "address, Account ID or ENS",
   withdrawDescription:
-    "Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
+    "Your withdrawal will be processed in the next batch,\n which usually 30 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
   withdrawTypeLabelFast: "Fast (15 seconds at the earliest)",
   withdrawTypeLabelStandard: "Standard (about 25 minutes)",
   labelConnectWallet: "Connect wallet",
@@ -962,7 +962,7 @@ export default {
     "Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site",
   labelCollectionMetaErrorType: "correct `royalty_percentage` from 0 to 10",
   labelNFTServerRefresh:
-    "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",
+    "Click to refresh loopring cache resource, this is an delay command usually takes 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
   labelNFTCollectionName: "Collection Name:",
@@ -1109,4 +1109,8 @@ export default {
   labelCollectionImportNFTBtn: "Manage Legacy NFT",
   labelNFTMoveFailed: "NFT move failed!",
   labelNFTMoveSuccess: "NFT moved successful",
+  labelLuckTokenDefaultTitle: "Good Luck!",
+  labelSync: "in Sync",
+  labelMintInSyncTooltips:
+    "Once your NFT is confirmed on Ethereum, your NFT & Collection information will update which usually takes 30 minutes.",
 };

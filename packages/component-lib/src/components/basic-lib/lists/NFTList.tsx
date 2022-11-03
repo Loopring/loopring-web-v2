@@ -120,6 +120,7 @@ export const NFTList = withTranslation("common")(
                         getIPFSString={getIPFSString}
                         baseURL={baseURL}
                       />
+
                       {isSelectOnly &&
                         (isMultipleSelect ? (
                           <Checkbox

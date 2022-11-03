@@ -149,6 +149,10 @@ export const useMyNFT = ({
       ...item,
       ...item.metadata?.base,
       ...item.metadata?.extra,
+      pendingOnSync:
+        item.metadata?.base && Object.keys(item.metadata?.base)?.length > 0
+          ? false
+          : true,
       ...nftToken,
     } as NFTWholeINFO;
     tokenInfo = {

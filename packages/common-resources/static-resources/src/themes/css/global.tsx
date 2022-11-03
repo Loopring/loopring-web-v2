@@ -91,7 +91,7 @@ export const colorBase = ({ theme }: any) => css`
     --color-redPock1Disabled: ${theme.colorBase.redPock1Disabled};
     --color-redPock-text0: ${theme.colorBase.redPockText0};
     --color-redPock-text1: ${theme.colorBase.redPockText1};
-    --color-redPock-Border: "1px dashed rgba(255, 255, 255, 0.2)";
+    --color-redPock-Border: ${theme.colorBase.redPockBorder};
   }
 `;
 export const scrollbarDefault = ({ theme }: any) => css`
