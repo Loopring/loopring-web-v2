@@ -618,6 +618,7 @@ export const REDPOCKMOCK: LuckyTokenItemForReceive = {
     scope: 0,
     mode: 0,
   },
+  //@ts-ignore
   status: "RANDOM",
   validSince: 1662669827,
   validUntil: 1662769827,
