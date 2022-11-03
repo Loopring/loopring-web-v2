@@ -127,7 +127,7 @@ export const NFTDetail = withTranslation("common")(
         await LoopringAPI.nftAPI?.callRefreshNFT({
           network: "ETHEREUM",
           tokenAddress: popItem.tokenAddress ?? "",
-          nftId: popItem?.nftId?.toString() ?? "", //new BigNumber(?? "0", 16).toString(),
+          nftId: popItem?.nftId?.toString() ?? "",
           nftType: (popItem?.nftType?.toString() ?? "") as NFT_TYPE_STRING,
         });
         setToastOpen({
@@ -473,7 +473,6 @@ export const NFTDetail = withTranslation("common")(
                 value={NFTDetailTab.Property}
               />
             </Tabs>
-            {/*<InputSearch value={searchValue} onChange={handleSearchChange} />*/}
           </Box>
           <Divider style={{ marginTop: "-1px" }} />
           <Box
@@ -570,7 +569,12 @@ export const NFTDetail = withTranslation("common")(
                     style={{ wordBreak: "break-all" }}
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`}
+                    href={
+                      popItem.deploymentStatus ===
+                      DEPLOYMENT_STATUS.NOT_DEPLOYED
+                        ? `${Explorer}collections/${popItem.tokenAddress}?a=${popItem.nftId}`
+                        : `${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`
+                    }
                   >
                     {popItem.tokenAddress}
                   </Link>
@@ -743,35 +747,6 @@ export const NFTDetail = withTranslation("common")(
           onClose={closeToast}
         />
       </>
-
-      //   <BoxStyle
-      //     baseURL={baseURL}
-      //     isMobile={isMobile}
-      //     image={popItem.image}
-      //     marginLeft={2}
-      //     display={"flex"}
-      //     flex={1}
-      //     flexDirection={"column"}
-      //     alignItems={"center"}
-      //     className={"nft-detail"}
-      //     whiteSpace={"break-spaces"}
-      //     style={{ wordBreak: "break-all" }}
-      //   >
-      //     {/*{viewPage === 0 && detailView}*/}
-      //     {detailView}
-      //     <Toast
-      //       // snackbarOrigin={{
-      //       //   vertical: "top",
-      //       //   horizontal: "left",
-      //       // }}
-      //       alertText={toastOpen?.content ?? ""}
-      //       severity={toastOpen?.type ?? "success"}
-      //       open={toastOpen?.open ?? false}
-      //       autoHideDuration={TOAST_TIME}
-      //       onClose={closeToast}
-      //     />
-      //   </BoxStyle>
-      // </StylePaper>
     );
   }
 );

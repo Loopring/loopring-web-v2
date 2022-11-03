@@ -159,8 +159,6 @@ export function useAccountModalForUI({
   account: Account;
   onClose?: any;
 }) {
-  // const { goUpdateAccount } = useUpdateAccount();
-
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
@@ -209,7 +207,7 @@ export function useAccountModalForUI({
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({
     setCollectionToastOpen,
   });
-  const { vendorListBuy } = useVendor();
+  const { vendorListBuy, banxaRef } = useVendor();
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
@@ -426,7 +424,7 @@ export function useAccountModalForUI({
     return () => {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
-  }, [account.accAddress, chainInfos?.depositHashes]);
+  }, [account.accAddress, chainInfos?.depositHashes, updateDepositStatus]);
   const { setShowLayerSwapNotice } = useOpenModals();
 
   const addAssetList: AddAssetItem[] = React.useMemo(
@@ -478,6 +476,7 @@ export function useAccountModalForUI({
       isShowAccount?.info?.symbol,
       setShowAccount,
       setShowDeposit,
+      setShowLayerSwapNotice,
     ]
   );
   const sendAssetList: SendAssetItem[] = React.useMemo(
@@ -556,12 +555,7 @@ export function useAccountModalForUI({
         },
       },
     ],
-    [
-      isShowAccount?.info?.symbol,
-      setShowAccount,
-      setShowTransfer,
-      setShowWithdraw,
-    ]
+    [setShowAccount, setShowNFTTransfer, setShowNFTWithdraw]
   );
   const onBackReceive = React.useCallback(() => {
     setShowAccount({
@@ -626,6 +620,7 @@ export function useAccountModalForUI({
         view: (
           <VendorMenu
             vendorList={vendorListBuy}
+            banxaRef={banxaRef}
             type={TradeTypes.Buy}
             vendorForce={undefined}
             campaignTagConfig={campaignTagConfig}
@@ -636,9 +631,6 @@ export function useAccountModalForUI({
       [AccountStep.NoAccount]: {
         view: (
           <NoAccount
-            // className={
-            //   /(guardian)|(depositto)/gi.test(pathname ?? "") ? "guardian" : ""
-            // }
             {...{
               goActiveAccount,
               chainInfos,
@@ -663,9 +655,6 @@ export function useAccountModalForUI({
       [AccountStep.HadAccount]: {
         view: (
           <HadAccount
-            // className={
-            //   /(guardian)|(depositto)/gi.test(pathname ?? "") ? "guardian" : ""
-            // }
             {...{
               ...account,
               clearDepositHash: clearDeposit,
@@ -1953,7 +1942,6 @@ export function useAccountModalForUI({
           />
         ),
       },
-
       [AccountStep.UpdateAccount_Failed]: {
         view: (
           <UpdateAccount_Failed
@@ -1979,7 +1967,6 @@ export function useAccountModalForUI({
           />
         ),
       },
-
       [AccountStep.UnlockAccount_User_Denied]: {
         view: (
           <UnlockAccount_User_Denied
@@ -2223,6 +2210,7 @@ export function useAccountModalForUI({
     });
   }, [
     checkActiveStatusProps,
+    account,
     isShowAccount.info,
     isShowAccount.error,
     addAssetList,
@@ -2232,14 +2220,15 @@ export function useAccountModalForUI({
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,
     sendAssetList,
+    sendNFTAssetList,
     vendorListBuy,
+    campaignTagConfig,
     onBackReceive,
     chainInfos,
     isLayer1Only,
     onClose,
     updateDepositHash,
     clearDeposit,
-    account,
     rest,
     onSwitch,
     onCopy,
@@ -2251,7 +2240,6 @@ export function useAccountModalForUI({
     unlockBtn,
     t,
     onQRBack,
-    forceWithdrawRetry,
     backToDepositBtnInfo,
     closeBtnInfo,
     nftDepositValue,
@@ -2260,8 +2248,10 @@ export function useAccountModalForUI({
     setShowDeposit,
     nftMintAdvanceRetryBtn,
     nftDeployProps,
+    forceWithdrawRetry,
     transferProps,
     transferValue,
+    processRequestRampTransfer,
     withdrawProps,
     withdrawValue,
     nftTransferProps,

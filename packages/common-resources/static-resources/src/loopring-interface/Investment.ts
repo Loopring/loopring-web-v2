@@ -8,4 +8,5 @@ export type InvestAdvice = {
   router: string;
   notification: string;
   enable: boolean;
+  project?: string;
 };

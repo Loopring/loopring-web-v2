@@ -861,10 +861,12 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
   ({
     t,
     open,
+    type,
     defiData,
     handleClose,
   }: WithTranslation & {
     open: boolean;
+    type: string;
     defiData: TradeDefi<any>;
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
@@ -902,7 +904,7 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
               </Typography>
             )}
             <Typography>
-              <Trans i18nKey={"labelDefiMaxBalance1"}>
+              <Trans i18nKey={"labelDefiMaxBalance1"} tOptions={{ type }}>
                 or you can
                 <List sx={{ marginTop: 2 }}>
                   <ListItem>
@@ -946,9 +948,11 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
     isJoin,
     open,
     market,
+    type,
     handleClose,
   }: WithTranslation & {
     open: boolean;
+    type: symbol;
     market: `${string}-${string}`;
     isJoin: boolean;
     handleClose: (event: any) => void;
@@ -978,7 +982,10 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
                 display={"flex"}
                 flexDirection={"column"}
               >
-                <Trans i18nKey={"labelDefiNoBalance"}>
+                <Trans
+                  i18nKey={"labelDefiNoBalance"}
+                  components={{ li: <li /> }}
+                >
                   <Typography component={"span"} marginBottom={3}>
                     Loopring rebalance pool can't satisfy your complete request
                     now.
@@ -991,7 +998,8 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
                 <List sx={{ marginTop: 1 }}>
                   <Trans
                     i18nKey={"labelDefiNoBalanceList"}
-                    tOptions={{ symbol: baseSymbol }}
+                    components={{ li: <li /> }}
+                    tOptions={{ symbol: baseSymbol, type }}
                   >
                     <ListItem style={{ marginBottom: 0 }}>
                       Withdraw WSTETH to L1 and trade through CRV or LIDO
@@ -1151,7 +1159,7 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
         </DialogContent>
         <DialogContent>
           <DialogContentText id="alert-dialog-defiRisk2">
-            <Trans i18nKey={"labelDefiRisk2"}>
+            <Trans i18nKey={`label${type}DefiRisk2`}>
               <Typography
                 whiteSpace={"pre-line"}
                 component={"span"}

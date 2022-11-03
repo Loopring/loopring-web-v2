@@ -456,6 +456,7 @@ export const defiWSTETHAdvice: InvestAdvice = {
   titleI18n: "labelInvestWSTETH",
   desI18n: "labelInvestWSTETHDes",
   enable: true,
+  project: "Lido",
 };
 export const defiRETHAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
@@ -465,6 +466,11 @@ export const defiRETHAdvice: InvestAdvice = {
   titleI18n: "labelInvestRETH",
   desI18n: "labelInvestRETHDes",
   enable: true,
+  project: "Rocket Pool",
+};
+export const DEFI_ADVICE_MAP = {
+  WSTETH: defiWSTETHAdvice,
+  RETH: defiRETHAdvice,
 };
 export const dualAdvice: InvestAdvice = {
   type: InvestMapType.DUAL,

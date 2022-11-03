@@ -49,7 +49,7 @@ export default {
   depositLabelRefer: "Referral address, Account ID or ENS. (Optional)",
   depositLabelPlaceholder: "address, Account ID or ENS",
   withdrawDescription:
-    "Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
+    "Your withdrawal will be processed in the next batch,\n which usually 30 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
   withdrawTypeLabelFast: "Fast (15 seconds at the earliest)",
   withdrawTypeLabelStandard: "Standard (about 25 minutes)",
   labelConnectWallet: "Connect wallet",
@@ -840,16 +840,14 @@ export default {
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n" +
     "You can choose one of the following approaches for the remaining amount:",
   labelDefiMaxBalance1:
-    "<0>" +
-    "<1>Withdraw {{symbol}} to L1 and trade trade through Uniswap, 1Inch, Lido or Pocket Pool.</1>" +
-    "<2>The Loopring pool will rebalance soon. Please come back later to redeem.</2>" +
-    "</0>",
+    "<li>Withdraw {{symbol}} to L1 and trade through Uniswap, 1Inch or {{type}} .</li>" +
+    "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiNoBalance:
-    "<0>It is not possible for the Loopring pool to fulfil your complete request at the moment.</0>" +
-    "<1>You can choose one of the following approaches for the remaining amount:</1>",
+    "<li>It is not possible for the Loopring pool to fulfil your complete request at the moment.</li>" +
+    "<li>You can choose one of the following approaches for the remaining amount:</li>",
   labelDefiNoBalanceList:
-    "<0>Withdraw {{symbol}} to L1 and trade trade through Uniswap, 1Inch, Lido or Pocket Pool.</0>" +
-    "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
+    "<li>Withdraw {{symbol}} to L1 and trade through Uniswap, 1Inch or {{type}}.</li>" +
+    "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
   labelDefiNoBalanceJoin:
@@ -873,7 +871,7 @@ export default {
   labelInvestSuccess: "Successfully {{type}} {{symbol}}",
   labelInvestFailed: "Subscribe Failed",
   labelWSETHDefiRiskTitle: "What is ETH Staking via Lido?",
-  labelRETHDefiRiskTitle: "What is ETH Staking Rocket Pool?",
+  labelRETHDefiRiskTitle: "What is ETH Staking via Rocket Pool?",
   labelWSETHDefiRisk:
     "<0>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</0>\n" +
     "<1>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</1>" +
@@ -962,7 +960,7 @@ export default {
     "Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site",
   labelCollectionMetaErrorType: "correct `royalty_percentage` from 0 to 10",
   labelNFTServerRefresh:
-    "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",
+    "Click to refresh loopring cache resource, this is an delay command usually takes 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
   labelNFTCollectionName: "Collection Name:",
@@ -1109,4 +1107,8 @@ export default {
   labelCollectionImportNFTBtn: "Manage Legacy NFT",
   labelNFTMoveFailed: "NFT move failed!",
   labelNFTMoveSuccess: "NFT moved successful",
+  labelLuckTokenDefaultTitle: "Good Luck!",
+  labelSync: "in Sync",
+  labelMintInSyncTooltips:
+    "The NFT and collection information may not be synced up timely after minting due to onChain operation. Please stay tuned and refresh the page later.",
 };

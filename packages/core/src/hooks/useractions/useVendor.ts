@@ -35,7 +35,7 @@ import {
   RampInstantSDK,
 } from "@ramp-network/ramp-instant-sdk";
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
-import React, { useCallback } from "react";
+import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   ConnectProvidersSignMap,
@@ -51,6 +51,7 @@ export enum RAMP_SELL_PANEL {
 
 export const useVendor = () => {
   const { account } = useAccount();
+  const banxaRef = React.useRef();
   const {
     allowTrade: { raw_data },
   } = useSystem();
@@ -58,7 +59,10 @@ export const useVendor = () => {
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
   // const { isMobile } = useSettings();
-  const { updateOffRampData, resetOffRampData } = useModalData();
+  const {
+    // updateOffRampData,
+    resetOffRampData,
+  } = useModalData();
 
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
     RAMP_SELL_PANEL.LIST
@@ -227,6 +231,7 @@ export const useVendor = () => {
       ]
     : [];
   return {
+    banxaRef,
     vendorListBuy,
     vendorListSell,
     vendorForce: undefined,
@@ -234,7 +239,6 @@ export const useVendor = () => {
     setSellPanel,
   };
 };
-
 export const useRampTransPost = () => {
   const { account } = useAccount();
   const { chainId } = useSystem();
@@ -416,8 +420,6 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   const [balanceNotEnough, setBalanceNotEnough] = React.useState(false);
   const { offRampValue } = useModalData();
   const { processRequestRampTransfer: processRequest } = useRampTransPost();
-  // const [_isFeeNotEnough, setIsFeeEnough] = React.useState();
-
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>)
   );
@@ -516,6 +518,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     enableBtn,
     isFeeNotEnough.isFeeNotEnough,
     tokenMap,
+    transferRampValue.address,
     transferRampValue.balance,
     transferRampValue.belong,
     transferRampValue.fee,
@@ -526,7 +529,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     checkBtnStatus();
   }, [chargeFeeTokenList, isFeeNotEnough.isFeeNotEnough, transferRampValue]);
 
-  const onTransferClick = useCallback(
+  const onTransferClick = React.useCallback(
     async (transferRampValue, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
 

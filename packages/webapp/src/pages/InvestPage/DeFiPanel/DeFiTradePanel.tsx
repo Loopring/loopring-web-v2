@@ -1,5 +1,10 @@
-import { useDefiMap, useDefiTrade, useToast } from "@loopring-web/core";
-import { MarketType, myLog } from "@loopring-web/common-resources";
+import { useDefiMap, useDefiTrade } from "@loopring-web/core";
+import {
+  DEFI_ADVICE_MAP,
+  defiWSTETHAdvice,
+  MarketType,
+  myLog,
+} from "@loopring-web/common-resources";
 import {
   ConfirmDefiNOBalance,
   DeFiWrap,
@@ -8,6 +13,7 @@ import {
 } from "@loopring-web/component-lib";
 import { Box } from "@mui/material";
 import React from "react";
+
 export const DeFiTradePanel = ({
   isJoin,
   market,
@@ -19,7 +25,7 @@ export const DeFiTradePanel = ({
   setServerUpdate: (state: any) => void;
   setToastOpen: (state: any) => void;
 }) => {
-  const { marketArray } = useDefiMap();
+  const { marketArray, marketMap } = useDefiMap();
   myLog("isJoin", isJoin, "market", market);
   const [confirmShowLimitBalance, setConfirmShowLimitBalance] =
     React.useState<boolean>(false);
@@ -36,6 +42,7 @@ export const DeFiTradePanel = ({
   });
 
   const { isMobile } = useSettings();
+  const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? [];
 
   const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
 
@@ -52,6 +59,7 @@ export const DeFiTradePanel = ({
           <DeFiWrap
             market={market}
             isJoin={isJoin}
+            type={DEFI_ADVICE_MAP[tokenBase].project}
             {...(deFiWrapProps as any)}
           />
         </Box>
@@ -61,6 +69,7 @@ export const DeFiTradePanel = ({
       <ConfirmDefiNOBalance
         isJoin={isJoin}
         market={market}
+        type={DEFI_ADVICE_MAP[tokenBase].project}
         handleClose={(_e) => {
           setConfirmShowNoBalance(false);
           if (deFiWrapProps?.onRefreshData) {

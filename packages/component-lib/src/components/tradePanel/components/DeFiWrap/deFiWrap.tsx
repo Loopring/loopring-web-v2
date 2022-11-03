@@ -19,6 +19,14 @@ import { TradeBtnStatus } from "../../Interface";
 import { CountDownIcon } from "../tool/Refresh";
 import { useHistory } from "react-router-dom";
 import BigNumber from "bignumber.js";
+import styled from "@emotion/styled";
+
+const GridStyle = styled(Grid)`
+  ul {
+    list-style: disc;
+    padding-left: ${({ theme }) => theme.unit}px;
+  }
+`;
 
 export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   disabled,
@@ -29,6 +37,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   onRefreshData,
   onSubmitClick,
   onConfirm,
+  type,
   confirmShowLimitBalance,
   switchStobEvent,
   onChangeEvent,
@@ -353,7 +362,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             </ButtonStyle>
           </Grid>
           {confirmShowLimitBalance && (
-            <Grid item>
+            <GridStyle item>
               {isJoin ? (
                 <Typography
                   variant={"body1"}
@@ -367,7 +376,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                     i18nKey={"labelDefiMaxBalanceJoin"}
                     tOptions={{ maxValue }}
                   >
-                    {" "}
                     The quota is almost sold out and can't fulfil your complete
                     order. You can only subscribe {{ maxValue }} now. Loopring
                     will setup the pool soon, please revisit for subscription
@@ -403,22 +411,23 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                     color={"inherit"}
                     marginTop={1}
                   >
-                    <Trans
-                      i18nKey={"labelDefiMaxBalance1"}
-                      tOptions={{ symbol: baseSymbol }}
-                    >
-                      <ul>
+                    <ul>
+                      <Trans
+                        i18nKey={"labelDefiMaxBalance1"}
+                        components={{ li: <li /> }}
+                        tOptions={{ symbol: baseSymbol, type }}
+                      >
                         <li>
                           Withdraw wstETH to L1 and trade through CRV or LIDO
                           directly
                         </li>
                         <li>Wait some time for Loopring to seto for redeem</li>
-                      </ul>
-                    </Trans>
+                      </Trans>
+                    </ul>
                   </Typography>
                 </Typography>
               )}
-            </Grid>
+            </GridStyle>
           )}
         </Grid>
       </Grid>
