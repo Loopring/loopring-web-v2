@@ -1,4 +1,3 @@
-import moment from "moment";
 import { IsMobile } from "../utils";
 
 export enum UpColor {
@@ -75,21 +74,3 @@ export const sizeNFTConfig = (size: "large" | "medium" | "small") => {
       break;
   }
 };
-moment.defineLocale("en-gb", {
-  relativeTime: {
-    future: "in %s",
-    past: "%s ago",
-    s: "Just now",
-    ss: "%d seconds",
-    m: "a minute",
-    mm: "%d minutes",
-    h: "an hour",
-    hh: "%d hours",
-    d: "a day",
-    dd: "%d days",
-    M: "a month",
-    MM: "%d months",
-    y: "a year",
-    yy: "%d years",
-  },
-});
