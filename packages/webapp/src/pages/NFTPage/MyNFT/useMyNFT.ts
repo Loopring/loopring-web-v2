@@ -219,53 +219,53 @@ export const useMyNFT = ({
 
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
-      if (collectionMeta === undefined && LoopringAPI.userAPI) {
-        let _collectionMeta;
-
-        const response = await LoopringAPI.userAPI
-          .getUserNFTCollection(
-            {
-              accountId: account.accountId.toString(),
-              //@ts-ignore
-              tokenAddress: item.tokenAddress,
-            },
-            account.apiKey
-          )
-          .catch((_error) => {
-            throw new CustomError(ErrorMap.TIME_OUT);
+      if (item.hasOwnProperty("pendingOnSync")) {
+        if (collectionMeta === undefined && LoopringAPI.userAPI) {
+          const response = await LoopringAPI.userAPI
+            .getUserNFTCollection(
+              {
+                accountId: account.accountId.toString(),
+                //@ts-ignore
+                tokenAddress: item.tokenAddress,
+              },
+              account.apiKey
+            )
+            .catch((_error) => {
+              throw new CustomError(ErrorMap.TIME_OUT);
+            });
+          if (
+            response &&
+            ((response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message)
+          ) {
+            throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+          }
+          const collectionMeta = response.collections?.find((_item: any) => {
+            return (
+              _item?.contractAddress?.toLowerCase() ===
+              item?.tokenAddress?.toLowerCase()
+            );
           });
-        if (
-          response &&
-          ((response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message)
-        ) {
-          throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+          setShowNFTDetail({ isShow: true, ...item, collectionMeta });
+          updateNFTWithdrawData({ ...item, collectionMeta });
+          updateNFTTransferData({ ...item, collectionMeta });
+        } else {
+          setShowNFTDetail({ isShow: true, ...item, collectionMeta });
+          updateNFTWithdrawData({ ...item, collectionMeta });
+          updateNFTTransferData({ ...item, collectionMeta });
         }
-        const collectionMeta = response.collections?.find((_item: any) => {
-          return (
-            _item?.contractAddress?.toLowerCase() ===
-            item?.tokenAddress?.toLowerCase()
-          );
-        });
-        setShowNFTDetail({ isShow: true, ...item, collectionMeta });
-        updateNFTWithdrawData({ ...item, collectionMeta });
-        updateNFTTransferData({ ...item, collectionMeta });
-      } else {
-        setShowNFTDetail({ isShow: true, ...item, collectionMeta });
-        updateNFTWithdrawData({ ...item, collectionMeta });
-        updateNFTTransferData({ ...item, collectionMeta });
-      }
-      // setPopItem({ ...item, collectionMeta });
-      if (
-        item.isCounterFactualNFT &&
-        item.deploymentStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
-      ) {
-        await LoopringAPI.userAPI
-          ?.getAvailableBroker({ type: 0 })
-          .then(({ broker }) => {
-            updateNFTDeployData({ broker });
-          });
-        updateNFTDeployData({ ...item, collectionMeta });
+        // setPopItem({ ...item, collectionMeta });
+        if (
+          item.isCounterFactualNFT &&
+          item.deploymentStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
+        ) {
+          await LoopringAPI.userAPI
+            ?.getAvailableBroker({ type: 0 })
+            .then(({ broker }) => {
+              updateNFTDeployData({ broker });
+            });
+          updateNFTDeployData({ ...item, collectionMeta });
+        }
       }
     },
     [
