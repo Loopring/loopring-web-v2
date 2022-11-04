@@ -276,7 +276,7 @@ const getInvestMapApi = async () => {
               (dualInfo?.baseTokenApy?.max ?? 0) * 100,
             ], // [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
             durationType: InvestDuration.Duration,
-            duration: `labelInvestRangeDay|1 - 9`,
+            duration: `labelInvestRangeDay|1 - 10`,
           };
         }
       } else {
@@ -301,7 +301,7 @@ const getInvestMapApi = async () => {
               (dualInfo?.baseTokenApy?.max ?? 0) * 100,
             ],
             durationType: InvestDuration.Duration,
-            duration: `labelInvestRangeDay|1 - 9`,
+            duration: `labelInvestRangeDay|1 - 10`,
           },
         };
       }
@@ -326,7 +326,7 @@ const getInvestMapApi = async () => {
               (dualInfo?.quoteTokenApy?.max ?? 0) * 100,
             ],
             durationType: InvestDuration.Duration,
-            duration: `labelInvestRangeDay|1 - 9`,
+            duration: `labelInvestRangeDay|1 - 10`,
           };
         }
       } else {
@@ -349,7 +349,7 @@ const getInvestMapApi = async () => {
               (dualInfo?.quoteTokenApy?.max ?? 0) * 100,
             ],
             durationType: InvestDuration.Duration,
-            duration: `labelInvestRangeDay|1 - 9`,
+            duration: `labelInvestRangeDay|1 - 10`,
           },
         };
       }

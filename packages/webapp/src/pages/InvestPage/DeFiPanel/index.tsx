@@ -214,9 +214,7 @@ const LandDefiInvest = ({
   );
 };
 export const DeFiPanel: any = withTranslation("common")(
-  <R extends { [key: string]: any }, I extends { [key: string]: any }>({
-    t,
-  }: WithTranslation & {}) => {
+  ({ t }: WithTranslation & {}) => {
     const { marketArray } = useDefiMap();
 
     const {
@@ -235,13 +233,15 @@ export const DeFiPanel: any = withTranslation("common")(
 
     const _market: MarketType = [...(marketArray ? marketArray : [])].find(
       (_item) => {
-        const value = match?.params?.market
-          ?.replace(/null|-/gi, "")
-          ?.toUpperCase();
-        return new RegExp(value, "ig").test(_item);
+        if (match?.params?.market) {
+          //@ts-ignore
+          const [, , base] = _item.match(/(defi-)?(\w+)(-\w+)?/i);
+          //@ts-ignore
+          const [_base] = match?.params?.market?.split("-");
+          return base.toUpperCase() == _base.toUpperCase();
+        }
       }
     ) as MarketType;
-
     const isJoin =
       match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
 
