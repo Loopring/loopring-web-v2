@@ -840,7 +840,7 @@ export default {
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n" +
     "You can choose one of the following approaches for the remaining amount:",
   labelDefiMaxBalance1:
-    "<li>Withdraw {{symbol}} to L1 and trade through Uniswap, 1Inch or {{type}} .</li>" +
+    "<li>Withdraw {{symbol}} to L1 and trade through 1Inch or {{type}} etc...</li>" +
     "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiNoBalance:
     "<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>" +
