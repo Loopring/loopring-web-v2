@@ -261,7 +261,7 @@ export const DeFiPanel: any = withTranslation("common")(
             color={"inherit"}
             onClick={() =>
               history.push(
-                !match?.params?.market
+                !_market
                   ? "/invest/overview"
                   : match?.params?.isJoin
                   ? "/invest/balance"
