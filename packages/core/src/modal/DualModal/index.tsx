@@ -8,7 +8,7 @@ import {
   ModalCloseButton,
   SwitchPanelStyled,
   Toast,
-  TOSTOBJECT,
+  TOASTOPEN,
   // TradeTitle,
   useOpenModals,
   useSettings,
@@ -50,7 +50,7 @@ export const ModalDualPanel = withTranslation("common")(
     ...rest
   }: WithTranslation & {
     dualTradeProps: DualWrapProps<any, any, any>;
-    dualToastOpen?: TOSTOBJECT;
+    dualToastOpen?: TOASTOPEN;
     closeDualToast?: (state: boolean) => void;
   }) => {
     const {
