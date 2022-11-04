@@ -1,6 +1,11 @@
-import { headerRoot, myLog } from "@loopring-web/common-resources";
+import {
+  CloseIcon,
+  headerRoot,
+  hexToRGB,
+  myLog,
+} from "@loopring-web/common-resources";
 
-import { Toolbar } from "@mui/material";
+import { Box, IconButton, Toolbar, Typography } from "@mui/material";
 
 import { useHeader } from "./hook";
 import { confirmation, useSystem, useAccount } from "@loopring-web/core";
@@ -36,6 +41,7 @@ const Header = withTranslation("common")(
       const { confirmWrapper } = confirmation.useConfirmation();
       const { allowTrade } = useSystem();
       const { account } = useAccount();
+      const [view, setView] = React.useState(true);
       // myLog("headerToolBarData", headerToolBarData);
       return (
         <>
@@ -86,6 +92,35 @@ const Header = withTranslation("common")(
             btnTxt={t("labelCookiesAgree")}
             clickToConfirm={() => confirmWrapper()}
           />
+
+          <Box
+            display={view ? "flex" : "none"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            position={"fixed"}
+            top={58}
+            right={0}
+            left={0}
+            sx={{ background: hexToRGB("#FBA95C", "0.8") }}
+            width={"100%"}
+          >
+            <Typography color={"white"} padding={2}>
+              We are currently experiencing a DDOS attack. The external services
+              are temporarily unstable, while it won't impact the blockchain
+              security. Our engineers are working hard to resolve this issue. We
+              will keep you updated. As always your assets are safe on Loopring
+            </Typography>
+            <IconButton
+              size={"large"}
+              aria-label={t("labelClose")}
+              color={"inherit"}
+              onClick={(event) => {
+                setView(false);
+              }}
+            >
+              <CloseIcon htmlColor={"white"} />
+            </IconButton>
+          </Box>
         </>
       );
     }
