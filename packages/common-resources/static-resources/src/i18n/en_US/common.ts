@@ -873,16 +873,16 @@ export default {
   labelWSETHDefiRiskTitle: "What is ETH Staking via Lido?",
   labelRETHDefiRiskTitle: "What is ETH Staking via Rocket Pool?",
   labelWSETHDefiRisk:
-    "<0>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</0>\n" +
-    "<1>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</1>" +
-    "<2>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</2>\n",
-  labelWSETHDefiRisk2:
-    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</0>" +
-    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
+    "<p>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</p>" +
+    "<p>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</p>" +
+    "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>\n",
   labelRETHDefiRisk:
-    "<0>Rocket Pool is the first truly decentralized Ethereum staking pool. </0>" +
-    "<1>All of the Ethereum validator node operator's creation, withdrawals,\n and rewards delegation is handled by Rocket Pool's smart contracts on the Execution layer. This makes it completely decentralized.<1>" +
-    "<2>After staking ETH via Rocket Pool, you will receive rETH. The rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</2>",
+    "<p>Rocket Pool is the first truly decentralized Ethereum staking pool. </0>" +
+    "<p>All of the Ethereum validator node operator's creation, withdrawals,\n and rewards delegation is handled by Rocket Pool's smart contracts on the Execution layer. This makes it completely decentralized.</p>" +
+    "<p>After staking ETH via Rocket Pool, you will receive rETH. The rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</p>",
+  labelWSETHDefiRisk2:
+    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</p>" +
+    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</p>",
   labelRETHDefiRisk2:
     "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
     "<1></1>",

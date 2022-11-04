@@ -1107,12 +1107,27 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
         <DialogTitle> {t(`label${type}DefiRiskTitle`)}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={`label${type}DefiRisk`}>
+            <Trans
+              i18nKey={`label${type}DefiRisk`}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"span"}
+                    variant={"body1"}
+                    display={"block"}
+                    marginBottom={1}
+                    color={"textSecondary"}
+                  />
+                ),
+              }}
+            >
               <Typography
                 whiteSpace={"pre-line"}
                 component={"span"}
                 variant={"body1"}
                 display={"block"}
+                marginBottom={1}
                 color={"textSecondary"}
               >
                 Lido is a liquid staking solution for ETH 2.0 backed by
@@ -1123,7 +1138,7 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
                 whiteSpace={"pre-line"}
                 component={"span"}
                 variant={"body1"}
-                marginTop={2}
+                marginBottom={1}
                 display={"block"}
                 color={"textSecondary"}
               >
@@ -1136,7 +1151,7 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
                 whiteSpace={"pre-line"}
                 component={"span"}
                 variant={"body1"}
-                marginTop={2}
+                marginBottom={1}
                 display={"block"}
                 color={"textSecondary"}
               >
