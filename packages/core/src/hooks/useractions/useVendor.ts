@@ -197,37 +197,38 @@ export const useVendor = () => {
         //     }
         //   },
         // },
-        // {
-        //   ...VendorList.Banxa,
-        //   handleSelect: () => {
-        //     setShowAccount({ isShow: false });
-        //     // @ts-ignore
-        //     const banax: any = new window.Banxa("loopring");
-        //     banax.iframe(
-        //       "#iframeBanax",
-        //       "#iframeBanaxTarget",
-        //       {
-        //         // 'fiatType': 'AUD',
-        //         // 'coinType': 'BTC',
-        //         sellMode: true,
-        //         walletAddress: account.accAddress,
-        //         // fiatAmount: 200,
-        //         // coinAmount: 0.5,
-        //         // mo,
-        //       },
-        //       "800px",
-        //       "3Hiy7HuFcqwkgERyfRSwEHqrwSwTirm8zb"
-        //     );
-        //     // if (legalEnable) {
-        //     //   window.open(
-        //     //     "https://loopring.banxa.com/iframe?code=1fe263e17175561954c6&buyMode&walletAddress=" +
-        //     //     account.accAddress,
-        //     //     "_blank"
-        //     //   );
-        //     //   window.opener = null;
-        //     // }
-        //   },
-        // },
+        {
+          ...VendorList.Banxa,
+          handleSelect: (event) => {
+            setShowAccount({ isShow: false });
+            // @ts-ignore
+            const banxa: any = new window.Banxa("loopring", "sandbox");
+            // @ts-ignore
+            const anchor: HTMLElement = (
+              (event?.target as HTMLElement).ownerDocument || document
+            ).querySelector("#iframeBanxaTarget");
+            if (banxaRef && anchor) {
+              // debugger;
+              anchor.style.display = "flex";
+              banxa.generateIframe(
+                "#iframeBanxaTarget",
+                banxa.generateUrl({
+                  sellMode: true,
+                  blockchain: "LRC",
+                  fiatType: "AUD",
+                  coinType: "BTC",
+                  fiatAmount: 200,
+                  coinAmount: 0.5,
+                  walletAddress: account.accAddress,
+                }),
+                false,
+                false
+                // "800px", //Optional width parameter – Pass false if not needed.
+                // "400px" //Optional height parameter – Pass false if not needed.
+              );
+            }
+          },
+        },
       ]
     : [];
   return {
@@ -392,7 +393,15 @@ export const useRampTransPost = () => {
         }
       }
     },
-    []
+    [
+      account,
+      chainId,
+      checkHWAddr,
+      resetTransferRampData,
+      setShowAccount,
+      updateHW,
+      updateTransferRampData,
+    ]
   );
   return { processRequestRampTransfer };
 };

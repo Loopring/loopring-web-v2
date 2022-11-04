@@ -46,7 +46,7 @@ export const RedPockSvg = () => {
         fill="#FFF7B1"
       />
       <g>
-        <rect x="52.5" y="162.5" width="205" height="205" fill="url(#qrcode)" />
+        <rect x="52.5" y="178" width="205" height="205" fill="url(#qrcode)" />
       </g>
 
       <g>
@@ -99,7 +99,7 @@ export const RedPockSvg = () => {
           {"text Send By/"}
         </text>
       </g>
-      <g transform={"translate(160 96)"}>
+      <g transform={"translate(160 86)"}>
         <rect x="15.5" y="74.5" width="280" height="34" />
         <text
           id={"textSendBy"}
@@ -116,23 +116,41 @@ export const RedPockSvg = () => {
           {"xxxx,xxxxx LRC"}
         </text>
       </g>
-      <g transform={"translate(160 132)"}>
-        <text
-          id={"textDuration"}
-          stroke-width="0"
-          fill="#fff"
+      <g transform={"translate(20, 110)"}>
+        <foreignObject
+          id={"textContent"}
+          width="280"
+          height="48"
           x="1"
           y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
+          requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"
         >
-          {"2011/22/01/00:00:00 - 2011/22/01/00:00:00"}
-        </text>
+          <code
+            style={{
+              fontSize: "12px",
+              color: "#FFF7B1",
+              textAlign: "center",
+              overflow: "hidden",
+              lineHeight: "16px",
+            }}
+          >
+            Text goes here ccccc sss qwweeqx sdasdasd Text /n goes here ccccc
+            sss qwweeqx sdasdasd Text goes here ccccc sss qwweeqx sdasdasd
+          </code>
+        </foreignObject>
+        {/*<text*/}
+        {/*  stroke-width="0"*/}
+        {/*  fill="#FFF7B1"*/}
+        {/*  x="1"*/}
+        {/*  y="1"*/}
+        {/*  style={{*/}
+        {/*    dominantBaseline: "central",*/}
+        {/*    textAnchor: "middle",*/}
+        {/*    fontSize: "14px",*/}
+        {/*  }}*/}
+        {/*></text>*/}
       </g>
-      <g transform={"translate(160 392)"}>
+      <g transform={"translate(160 400)"}>
         <text
           id={"textGuide"}
           stroke-width="0"
@@ -150,9 +168,9 @@ export const RedPockSvg = () => {
       </g>
       <g transform={"translate(160 454)"}>
         <text
-          id={"textContent"}
+          id={"textDuration"}
           stroke-width="0"
-          fill="#FFF7B1"
+          fill="#fff"
           x="1"
           y="1"
           style={{
@@ -161,9 +179,25 @@ export const RedPockSvg = () => {
             fontSize: "14px",
           }}
         >
-          {
-            "xxxx content xx content xxx FFF7B1 \n xxxx content xx content xxx FFF7B1"
-          }
+          {"2011/22/01/00:00:00 - 2011/22/01/00:00:00"}
+        </text>
+      </g>
+
+      <g transform={"translate(280 484)"}>
+        <text
+          id={"idNumber"}
+          stroke-width="0"
+          fill="#B42214"
+          width={"100%"}
+          x="1"
+          y="1"
+          style={{
+            dominantBaseline: "central",
+            textAnchor: "end",
+            fontSize: "14px",
+          }}
+        >
+          {"No.112121218921"}
         </text>
       </g>
       <path

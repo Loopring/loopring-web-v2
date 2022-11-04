@@ -27,16 +27,29 @@ module.exports = {
     reactDocgen: "none",
   },
   webpackFinal: async (config, { configType }) => {
-    const isProd = configType.toLowerCase() === "PRODUCTION";
-
+    const isProd = configType.toLowerCase() === "production";
+    // mode: isDevelopment ? 'development' : 'production',
+    console.log(
+      path.resolve(
+        __dirname,
+        "..",
+        "..",
+        "common-resources",
+        "static-resources"
+      )
+    );
     const modules = [
       ...config.resolve.modules,
-      path.resolve(__dirname, "..", "src"),
-      "node_modules/@loopring-web/common-resources",
-      //static-resources/src/loopring-interface/CoinInterface.ts
-      // path.resolve(__dirname, '..', '..', 'common-resources', "static-resources"),
-      // path.resolve(__dirname,'./'),
+      "node_modules",
+      path.resolve(
+        __dirname,
+        "..",
+        "..",
+        "common-resources",
+        "static-resources"
+      ),
     ];
+
     config.module.rules.push({
       test: /\.(mjs|js|jsx|tsx|ts)$/,
       // exclude: [/node_modules/, /dist/],
@@ -48,6 +61,7 @@ module.exports = {
           "common-resources",
           "static-resources"
         ),
+        // ...(isProd ? [path.resolve(__dirname, "..", "src")] : []),
       ],
 
       // resolve: { fullySpecified: false },
@@ -89,7 +103,7 @@ module.exports = {
               },
             },
           ],
-          isProd && require.resolve("react-refresh/babel"),
+          require.resolve("react-refresh/babel"),
         ].filter(Boolean),
         // This is a feature of `babel-loader` for webpack (not Babel itself).
         // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -135,6 +149,7 @@ module.exports = {
 
     return {
       ...config,
+      mode: isProd ? "development" : "production",
       plugins: [...config.plugins],
       resolve: {
         ...config.resolve,

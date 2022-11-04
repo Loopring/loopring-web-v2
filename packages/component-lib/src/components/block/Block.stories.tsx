@@ -9,11 +9,18 @@ import {
   PriceTag,
   RedPockSvg,
 } from "@loopring-web/common-resources";
-import { coinMap, CoinType, FOREXMAP } from "../../static";
+import {
+  coinMap,
+  CoinType,
+  FOREXMAP,
+  REDPOCKMOCK,
+  TOKEN_INFO,
+} from "../../static";
 import { withTranslation } from "react-i18next";
 import {
   AssetTitle,
   AssetTitleProps,
+  RedPockCard,
   RedPockClock,
   RedPockOpen,
   TradeTitle,
@@ -301,10 +308,25 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
             <RedPockOpen onClose={() => {}} />
           </Grid>
           <Grid item>
-            <RedPockClock onClose={() => {}} />
+            <RedPockClock
+              onClose={() => {}}
+              countDown={{
+                days: undefined,
+                hours: undefined,
+                seconds: undefined,
+                minutes: undefined,
+              }}
+            />
           </Grid>
           <Grid item>
             <RedPockSvg />
+          </Grid>
+          <Grid item xs={4}>
+            <RedPockCard
+              luckyTokenItem={REDPOCKMOCK}
+              idIndex={TOKEN_INFO.idIndex}
+              tokenMap={TOKEN_INFO.tokenMap}
+            />
           </Grid>
         </Grid>
 

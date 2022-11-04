@@ -41,6 +41,7 @@ export const MintLandingPanel = () => {
         justifyContent={"center"}
       >
         <CardNFTStyled
+          sx={{ marginBottom: isMobile ? 4 : 0 }}
           onClick={() => {
             history.push("/nft/mintNFT");
           }}
@@ -80,7 +81,7 @@ export const MintLandingPanel = () => {
           </Typography>
         </CardNFTStyled>
         <CardNFTStyled
-          sx={{ marginLeft: isMobile ? 0 : 4 }}
+          sx={{ marginLeft: isMobile ? 0 : 4, marginBottom: isMobile ? 4 : 0 }}
           onClick={() => {
             history.push("/nft/mintNFTAdvance");
             // setShowNFTMintAdvance({isShow: true});

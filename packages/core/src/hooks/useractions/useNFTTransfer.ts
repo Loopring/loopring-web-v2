@@ -50,6 +50,7 @@ import {
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
 import { useHistory } from "react-router-dom";
+import { useLocation } from "react-use";
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const [memo, setMemo] = React.useState("");
@@ -69,7 +70,8 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
   const history = useHistory();
-  // const { search, ...restLocation } = useLocation();
+  const { search, pathname } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const [sureItsLayer2, setSureItsLayer2] =
     React.useState<WALLET_TYPE | undefined>(undefined);
@@ -329,11 +331,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              // history.push({
-              //   search,
-              //   ...restLocation,
-              // });
-              history.go(0);
+              searchParams.delete("detail");
+              history.push(pathname + "?" + searchParams.toString());
+
               // if (nftTransferValue.collectionMeta) {
               //   history.push({
               //     pathname: `/NFT/assetsNFT/byCollection/${nftTransferValue.collectionMeta?.id}-${nftTransferValue.collectionMeta?.contractAddress}`,

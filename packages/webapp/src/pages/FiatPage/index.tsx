@@ -35,23 +35,22 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
-    TradeTypes.Buy
-    // match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
-    //   ? TradeTypes.Buy
-    //   : TradeTypes.Sell
+    match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
+      ? TradeTypes.Buy
+      : TradeTypes.Sell
   );
-  // React.useEffect(() => {
-  //   switch (match?.params.tab) {
-  //     case InvestRouter[TradeTypes.Sell]:
-  //       setTabIndex(TradeTypes.Sell);
-  //       return;
-  //     // return ;
-  //     case InvestRouter[TradeTypes.Buy]:
-  //     default:
-  //       setTabIndex(TradeTypes.Buy);
-  //       return;
-  //   }
-  // }, [match?.params.item]);
+  React.useEffect(() => {
+    switch (match?.params.tab) {
+      case InvestRouter[TradeTypes.Sell]:
+        setTabIndex(TradeTypes.Sell);
+        return;
+      // return ;
+      case InvestRouter[TradeTypes.Buy]:
+      default:
+        setTabIndex(TradeTypes.Buy);
+        return;
+    }
+  }, [match?.params.item]);
   const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
   const fiatView = React.useMemo(() => {
     return (
@@ -81,22 +80,22 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                 </Typography>
               }
             />
-            {/*<Tab*/}
-            {/*  value={TradeTypes.Sell}*/}
-            {/*  label={*/}
-            {/*    <Typography*/}
-            {/*      display={"inline-flex"}*/}
-            {/*      alignItems={"center"}*/}
-            {/*      component={"span"}*/}
-            {/*      variant={"h5"}*/}
-            {/*      whiteSpace={"pre"}*/}
-            {/*      marginRight={1}*/}
-            {/*      className={"fiat-Title"}*/}
-            {/*    >*/}
-            {/*      {t("labelSell")}*/}
-            {/*    </Typography>*/}
-            {/*  }*/}
-            {/*/>*/}
+            <Tab
+              value={TradeTypes.Sell}
+              label={
+                <Typography
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  component={"span"}
+                  variant={"h5"}
+                  whiteSpace={"pre"}
+                  marginRight={1}
+                  className={"fiat-Title"}
+                >
+                  {t("labelSell")}
+                </Typography>
+              }
+            />
           </Tabs>
         </Box>
         <Box

@@ -2,7 +2,7 @@ import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-import { MyNFTList } from "./NFTList";
+import { MyNFTList } from "./MyNFTList";
 import {
   LoopringAPI,
   NFTDetail,
@@ -52,7 +52,7 @@ export const MyNFTPanel = withTranslation("common")(
     const { isMobile } = useSettings();
     const { baseURL, etherscanBaseUrl } = useSystem();
     const history = useHistory();
-    const { search } = useLocation();
+    const { search, pathname } = useLocation();
     const searchParams = new URLSearchParams(search);
     const {
       account: { accountId, apiKey },
@@ -60,7 +60,7 @@ export const MyNFTPanel = withTranslation("common")(
     const [collectionMeta, setCollectionMeta] =
       React.useState<undefined | CollectionMeta>(undefined);
     const checkCollection = async () => {
-      const [id, contract] = !!match?.params?.contract
+      const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("--")
         : [null, null];
       if (contract !== undefined && id !== undefined && LoopringAPI.userAPI) {
@@ -80,6 +80,8 @@ export const MyNFTPanel = withTranslation("common")(
               {
                 // @ts-ignore
                 tokenAddress: contract,
+                // @ts-ignore
+                collectionId: id,
                 accountId: accountId.toString(),
                 limit: CollectionLimit,
               },
@@ -118,18 +120,29 @@ export const MyNFTPanel = withTranslation("common")(
       setShowNFTDetail,
     } = useOpenModals();
     React.useEffect(() => {
-      const [id, contract] = !!match?.params?.contract
+      const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("--")
         : [null, null];
       if (contract && id && contract.startsWith("0x")) {
         checkCollection();
       }
-      return () => {
-        setShowNFTDetail({ isShow: false });
-      };
     }, [match?.params?.contract]);
+    React.useEffect(() => {
+      if (isShowNFTDetail.isShow) {
+        searchParams.set("detail", "true");
+      } else {
+        searchParams.delete("detail");
+      }
+      history.replace(pathname + "?" + searchParams.toString());
+
+      return () => {
+        if (isShowNFTDetail.isShow) {
+          setShowNFTDetail({ isShow: false });
+        }
+      };
+    }, [isShowNFTDetail.isShow]);
     const breadcrumbs = React.useMemo(() => {
-      const [id, contract] = !!match?.params?.contract
+      const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("--")
         : [null, null];
       return [

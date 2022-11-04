@@ -18,11 +18,14 @@ import {
   WALLET_TYPE,
   EXCHANGE_TYPE,
   GET_IPFS_STRING,
+  Account,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
 import { CollectionInputProps } from "./tool";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { TOSTOBJECT } from "../../toast";
 
 /**
  * private props
@@ -458,3 +461,65 @@ export type CollectionAdvanceProps<_T> = {
   // handleError: (error: { code: number; message: string }) => void;
   metaData: string;
 } & BtnInfoProps;
+
+export enum ImportCollectionStep {
+  SELECTCONTRACT = 0,
+  SELECTCOLLECTION = 1,
+  SELECTNFT = 2,
+}
+
+export type CollectionManageData<NFT> = {
+  listNFT: NFT[];
+  page: number;
+  total: number;
+  toastObj: TOSTOBJECT;
+  onFilterNFT: (filter: {
+    legacyFilter: sdk.LegacyNFT | "all";
+    limit: number;
+    page: number;
+  }) => Promise<void>;
+  isLoading: boolean;
+  filter: any;
+};
+export type ImportCollectionViewProps<Co, NFT> = {
+  account: Account;
+  onContractChange: (item: string | undefined) => void;
+  onContractNext: (item: string) => void;
+  onCollectionChange: (item: Co | undefined) => void;
+  onCollectionNext: (item: Co) => void;
+  onNFTSelected: (item: NFT) => void;
+  onNFTSelectedMethod: (item: NFT[], method: CollectionMethod) => void;
+  step: ImportCollectionStep;
+  baseURL: string;
+  setStep: (step: ImportCollectionStep) => void;
+  disabled?: boolean;
+  getIPFSString: GET_IPFS_STRING;
+  onLoading?: boolean;
+  onClick: (item: string) => void;
+  data: {
+    contractList: string[];
+    selectContract:
+      | {
+          value: string;
+          total?: number;
+          list?: sdk.UserNFTBalanceInfo[];
+        }
+      | undefined;
+    selectCollection: Co | undefined;
+    selectNFTList: NFT[];
+    collectionInputProps: CollectionInputProps<any>;
+    nftProps: CollectionManageData<NFT>;
+  };
+};
+export enum CollectionMethod {
+  moveOut = "moveOut",
+  moveIn = "moveIn",
+}
+export type CollectionManageProps<Co, NFT> = {
+  collection: Partial<Co>;
+  selectedNFTS: NFT[];
+  onNFTSelected: (item: NFT | "addAll" | "removeAll") => void;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
+  onNFTSelectedMethod: (item: NFT[], method: CollectionMethod) => void;
+} & CollectionManageData<NFT>;

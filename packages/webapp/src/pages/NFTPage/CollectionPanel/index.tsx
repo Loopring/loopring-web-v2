@@ -4,6 +4,8 @@ import {
   useToggle,
   CollectionCardList,
   EmptyDefault,
+  useSettings,
+  StyledPaperBg,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
@@ -43,6 +45,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
     MyCollectionView.List
   );
   const { updateCollectionData } = useModalData();
+  const { isMobile } = useSettings();
 
   const [detail, setDetail] =
     React.useState<CollectionMeta | undefined>(undefined);
@@ -50,7 +53,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
   const match: any = useRouteMatch("/nft/myCollection/:id");
   React.useEffect(() => {
     if (match?.params?.id) {
-      const loopringId = match.params.id.split("--")[0];
+      const loopringId = match.params.id.split("--")[1];
       if (loopringId && detail) {
         setView(MyCollectionView.Item);
         return;
@@ -77,14 +80,26 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         <>
           <Box
             display={"flex"}
-            flexDirection={"row"}
-            alignItems={"center"}
+            flexDirection={isMobile ? "column" : "row"}
+            alignItems={isMobile ? "flex-start" : "center"}
             justifyContent={"space-between"}
           >
             <Typography component={"h3"} variant={"h4"} paddingBottom={2}>
               {t("labelMyCollection")}
             </Typography>
-            <Box display={"flex"} flexDirection={"row"}>
+
+            <Box display={"flex"} flexDirection={isMobile ? "column" : "row"}>
+              <Button
+                onClick={() => {
+                  history.push("/nft/importLegacyCollection");
+                }}
+                sx={isMobile ? { marginBottom: 2 } : { marginRight: 1 }}
+                // startIcon={<DownloadIcon />}
+                variant={"outlined"}
+                color={"primary"}
+              >
+                {t("labelImportCollection")}
+              </Button>
               <Button
                 onClick={() => {
                   history.push("/nft/addCollection");
@@ -92,7 +107,8 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
                   // setCreateOpen(true);
                 }}
                 startIcon={<AddIcon />}
-                variant={"outlined"}
+                variant={"contained"}
+                size={"small"}
                 color={"primary"}
               >
                 {t("labelCreateCollection")}
@@ -104,15 +120,22 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               {...{ ...(collectionListProps as any) }}
               account={account}
               toggle={deployNFT}
+              size={isMobile ? "small" : "large"}
               setShowEdit={(item) => {
                 updateCollectionData({ ...item });
                 history.push(
-                  `/nft/editCollection/${item.id}--${item.contractAddress}`
+                  `/nft/editCollection/${item.contractAddress}--${item.id}`
+                );
+              }}
+              setShowManageLegacy={(item) => {
+                updateCollectionData({ ...item });
+                history.push(
+                  `/nft/importLegacyCollection/${item.contractAddress}--${item.id}?isEdit=true`
                 );
               }}
               onItemClick={(item) => {
                 history.push(
-                  `/nft/myCollection/${item.id}--${item.contractAddress}`
+                  `/nft/myCollection/${item.contractAddress}--${item.id}`
                 );
                 setDetail(item);
               }}
@@ -161,21 +184,23 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             setShowEdit={(item) => {
               updateCollectionData({ ...item });
               history.push(
-                `/nft/editCollection/${item.id}--${item.contractAddress}`
+                `/nft/editCollection/${item.contractAddress}--${item.id}`
+              );
+            }}
+            setShowManageLegacy={(item) => {
+              updateCollectionData({ ...item });
+              history.push(
+                `/nft/importLegacyCollection/${item.contractAddress}--${item.id}?isEdit=true`
               );
             }}
             setCopyToastOpen={collectionListProps.setCopyToastOpen}
           />
-          <Box
+          <StyledPaperBg
             flex={1}
             marginTop={2}
             marginX={2}
             height={"100%"}
             display={"flex"}
-            sx={{
-              background: "var(--color-box)",
-              borderRadius: `${theme.unit}px`,
-            }}
           >
             <EmptyDefault
               sx={{ flex: 1 }}
@@ -183,9 +208,10 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
                 return <Trans i18nKey="labelComingSoon">Coming Soon</Trans>;
               }}
             />
-          </Box>
+          </StyledPaperBg>
         </Box>
       )}
+
       <CreateUrlPanel
         open={showCreateOpen}
         step={CreateCollectionStep.ChooseMethod}

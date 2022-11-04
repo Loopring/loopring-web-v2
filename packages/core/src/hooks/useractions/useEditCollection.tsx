@@ -23,7 +23,7 @@ import {
   useWalletL2Collection,
 } from "../../index";
 import { IpfsFile, useToggle } from "@loopring-web/component-lib";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { AddResult } from "ipfs-core-types/src/root";
 import { useTranslation } from "react-i18next";
@@ -36,8 +36,10 @@ import { useTranslation } from "react-i18next";
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useEditCollection = <T extends CollectionMeta>({
   isEdit = false,
+  type,
 }: {
   isEdit?: boolean;
+  type: "addCollection" | "editCollection" | "addLegacyCollection";
 }) => {
   const {
     toggle: { collectionNFT },
@@ -47,6 +49,7 @@ export const useEditCollection = <T extends CollectionMeta>({
     setToastOpen: setCollectionToastOpen,
     closeToast: collectionToastClose,
   } = useToast();
+  let match: any = useRouteMatch("/nft/:type?/:tokenAddress?");
   const { t } = useTranslation("common");
   const [disabled, _setDisabled] = React.useState(!collectionNFT.enable);
   const { collectionValue, updateCollectionData } = useModalData();
@@ -177,8 +180,7 @@ export const useEditCollection = <T extends CollectionMeta>({
       LoopringAPI.userAPI
     ) {
       setLoadingBtn();
-
-      if (isEdit && collectionOldValue?.id) {
+      if (isEdit && type === "editCollection" && collectionOldValue?.id) {
         try {
           const response = await LoopringAPI.userAPI.submitEditNFTCollection(
             {
@@ -233,6 +235,71 @@ export const useEditCollection = <T extends CollectionMeta>({
             type: "error",
             content:
               t("labelEditCollectionFailed") +
+              `: ${
+                (error as any)?.message
+                  ? (error as any).message
+                  : t("errorUnknown")
+              }`,
+          });
+          resetBtnInfo();
+        }
+      } else if (
+        type === "addLegacyCollection" &&
+        account.accountId &&
+        match.params.tokenAddress
+      ) {
+        try {
+          const response = await LoopringAPI.userAPI.submitNFTLegacyCollection(
+            {
+              ...collectionValue,
+              tokenAddress: match.params.tokenAddress,
+              accountId: account.accountId,
+              name: collectionValue.name?.trim(),
+              tileUri: collectionValue.tileUri?.trim(),
+            },
+            chainId as any,
+            account.apiKey,
+            account.eddsaKey.sk
+          );
+          if (
+            response &&
+            ((response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message)
+          ) {
+            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO;
+            throw new Error(
+              t(
+                _response.code && SDK_ERROR_MAP_TO_UI[_response.code]
+                  ? SDK_ERROR_MAP_TO_UI[_response.code].messageKey
+                  : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
+                { ns: "error", name: collectionValue.name?.trim() }
+              )
+            );
+          } else {
+            setCollectionToastOpen({
+              open: true,
+              type: "success",
+              content: t("labelCreateCollectionSuccess"),
+            });
+            updateWalletL2Collection({ page: 1 });
+            history.push(
+              `/nft/importLegacyCollection/${match.params.tokenAddress}`
+            );
+          }
+          updateCollectionData({});
+          setKeys({
+            banner: undefined,
+            name: undefined,
+            tileUri: undefined,
+            avatar: undefined,
+            thumbnail: undefined,
+          });
+        } catch (error) {
+          setCollectionToastOpen({
+            open: true,
+            type: "error",
+            content:
+              t("labelCreateCollectionFailed") +
               `: ${
                 (error as any)?.message
                   ? (error as any).message
@@ -315,6 +382,7 @@ export const useEditCollection = <T extends CollectionMeta>({
     t,
     updateCollectionData,
     updateWalletL2Collection,
+    match.params.tokenAddress,
   ]);
 
   const handleOnDataChange = React.useCallback(

@@ -28,7 +28,7 @@ export type TOSTOBJECT = {
 export interface ToastProps {
   open: boolean;
   severity?: "success" | "error" | "warning" | "info";
-  alertText: string;
+  alertText: string | JSX.Element;
   autoHideDuration?: number;
   onClose: () => void;
   snackbarOrigin?: SnackbarOrigin;

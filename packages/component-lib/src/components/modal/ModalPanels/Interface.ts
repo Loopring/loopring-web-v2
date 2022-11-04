@@ -27,6 +27,7 @@ export type AccountBaseProps = {
 
 export enum AccountStep {
   CheckingActive,
+  // ImportLegacyCollection,
   AddAssetGateway,
   SendAssetGateway,
   SendNFTGateway,
@@ -207,4 +208,13 @@ export interface CheckActiveStatusProps<C = FeeInfo> {
   onIKnowClick: () => void;
   knowDisable: boolean;
   know: boolean;
+}
+export interface CheckImportCollectionProps {
+  account: Account;
+  value: string;
+  onChange: (item: string) => void;
+  contractList: string[];
+  disabled?: boolean;
+  loading?: boolean;
+  onClick: (item: string) => void;
 }
