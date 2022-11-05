@@ -12,6 +12,7 @@ import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
+  hexToRGB,
   SagaStatus,
   setMyLog,
   ThemeType,
