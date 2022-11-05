@@ -22,7 +22,6 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import {
   useModalData,
   useSystem,
-  checkErrorInfo,
   useTokenMap,
   useAccount,
   useWalletLayer1,
@@ -354,7 +353,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
         resetNFTDepositData();
       } catch (reason: any) {
         //deposit failed
-        const err = checkErrorInfo(reason, true);
+        const err = sdk.checkErrorInfo(reason, true);
 
         myLog(
           "---- deposit NFT ERROR reason:",

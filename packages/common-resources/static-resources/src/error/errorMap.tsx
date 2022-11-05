@@ -286,6 +286,11 @@ export const ErrorMap = {
     messageKey: "errorDualExpired",
     options: {},
   },
+  ERROR_PRIVATE_KEY: {
+    id: "ERROR_PRIVATE_KEY",
+    messageKey: "errorPrivateKey",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -310,6 +315,7 @@ export enum UIERROR_CODE {
   ERROR_COLLECTION_NOT_READABLE = 700019,
   IPFS_TIME_OUT = 700020,
   ERROR_DUAL_EXPIRED = 115003,
+  ERROR_PRIVATE_KEY = 700021,
 }
 export type ErrorObject = {
   from?: string;
@@ -338,6 +344,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   700018: ErrorMap.ERROR_COLLECTION_NO_SUPPORT,
   700019: ErrorMap.ERROR_COLLECTION_NOT_READABLE,
   700020: ErrorMap.IPFS_TIME_OUT,
+  700021: ErrorMap.ERROR_PRIVATE_KEY,
   700100: ErrorMap.ERROR_RAMP_NO_INSTANCE,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument

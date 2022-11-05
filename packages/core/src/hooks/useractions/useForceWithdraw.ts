@@ -34,7 +34,6 @@ import {
   useAddressCheck,
   useBtnStatus,
   walletLayer2Service,
-  checkErrorInfo,
   useModalData,
   isAccActivated,
   useChargeFees,
@@ -278,7 +277,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
               (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
-              const code = checkErrorInfo(
+              const code = sdk.checkErrorInfo(
                 response as sdk.RESULT_INFO,
                 isNotHardwareWallet
               );
@@ -340,7 +339,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
         }
       } catch (reason: any) {
         sdk.dumpError400(reason);
-        const code = checkErrorInfo(reason, isNotHardwareWallet);
+        const code = sdk.checkErrorInfo(reason, isNotHardwareWallet);
         myLog("code:", code);
 
         if (isAccActivated()) {

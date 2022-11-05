@@ -31,7 +31,7 @@ export class LoopringAPI {
     LoopringAPI.wsAPI = new WsAPI({ chainId }, 6000);
     LoopringAPI.nftAPI = new NFTAPI({ chainId }, 6000);
     LoopringAPI.delegate = new DelegateAPI({ chainId }, 6000);
-    LoopringAPI.defiAPI = new DefiAPI({ chainId });
+    LoopringAPI.defiAPI = new DefiAPI({ chainId }, 6000);
     LoopringAPI.__chainId__ = chainId;
   };
 }

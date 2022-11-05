@@ -8,7 +8,6 @@ import {
   useAccount,
   ActionResult,
   ActionResultCode,
-  checkErrorInfo,
   EddsaKey,
   LoopringAPI,
   accountServices,
@@ -65,40 +64,66 @@ export function useUpdateAccount() {
           if (!isFirstTime && isHWAddr) {
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
-          const [{ apiKey }, { walletType }] = await Promise.all([
-            LoopringAPI.userAPI && accInfo && accInfo?.accountId !== -1
-              ? LoopringAPI.userAPI.getUserApiKey(
+          if (
+            !(
+              LoopringAPI.userAPI &&
+              LoopringAPI.walletAPI &&
+              accInfo &&
+              accInfo?.accountId !== -1
+            )
+          ) {
+            //TODO;
+            setShowAccount({
+              isShow: true,
+              step: isReset
+                ? AccountStep.ResetAccount_Failed
+                : AccountStep.UpdateAccount_Failed,
+              error: response?.data as sdk.RESULT_INFO,
+            });
+          } else {
+            try {
+              const [{ apiKey }, { walletType }] = await Promise.all([
+                LoopringAPI.userAPI.getUserApiKey(
                   {
                     accountId: accInfo.accountId,
                   },
                   eddsaKey.sk
-                )
-              : Promise.resolve({ apiKey: undefined } as any),
-            LoopringAPI.walletAPI
-              ? LoopringAPI.walletAPI.getWalletType({
+                ),
+                LoopringAPI.walletAPI.getWalletType({
                   wallet: account.accAddress,
-                })
-              : Promise.resolve({ walletType: undefined } as any),
-          ]);
-          accountServices.sendAccountSigned({
-            apiKey,
-            eddsaKey,
-            isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
-            isContract: walletType?.isContract,
-          });
-
-          setShowAccount({
-            isShow: true,
-            step: isReset
-              ? AccountStep.UpdateAccount_Success
-              : AccountStep.ResetAccount_Success,
-          });
-          await sdk.sleep(1000);
-          setShowAccount({ isShow: false });
+                }),
+              ]);
+              accountServices.sendAccountSigned({
+                apiKey,
+                eddsaKey,
+                isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
+                isContract: walletType?.isContract,
+              });
+              setShowAccount({
+                isShow: true,
+                step: isReset
+                  ? AccountStep.UpdateAccount_Success
+                  : AccountStep.ResetAccount_Success,
+              });
+              await sdk.sleep(1000);
+              setShowAccount({ isShow: false });
+            } catch (error) {
+              if (error) {
+                //TODO:
+                setShowAccount({
+                  isShow: true,
+                  step: isReset
+                    ? AccountStep.ResetAccount_Failed
+                    : AccountStep.UpdateAccount_Failed,
+                  error: response?.data as sdk.RESULT_INFO,
+                });
+              }
+            }
+          }
           break;
         case ActionResultCode.UpdateAccountError:
         case ActionResultCode.GenEddsaKeyError:
-          let errMsg = checkErrorInfo(
+          let errMsg = sdk.checkErrorInfo(
             response?.data as sdk.RESULT_INFO,
             isFirstTime as boolean
           );

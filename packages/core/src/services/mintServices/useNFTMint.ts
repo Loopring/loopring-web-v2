@@ -14,7 +14,6 @@ import {
   useAccount,
   ActionResult,
   ActionResultCode,
-  checkErrorInfo,
   DAYS,
   getTimestampDaysLater,
   LoopringAPI,
@@ -257,7 +256,7 @@ export function useNFTMint<
           }
         }
       } catch (reason: any) {
-        const code = checkErrorInfo(reason, isNotHardwareWallet);
+        const code = sdk.checkErrorInfo(reason, isNotHardwareWallet);
         if (code === sdk.ConnectorError.USER_DENIED) {
           setShowAccount({
             isShow: true,

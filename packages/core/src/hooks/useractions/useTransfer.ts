@@ -42,7 +42,6 @@ import {
   useTokenMap,
   useAccount,
   useChargeFees,
-  checkErrorInfo,
   useModalData,
   isAccActivated,
   store,
@@ -284,7 +283,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
           ) {
-            const code = checkErrorInfo(
+            const code = sdk.checkErrorInfo(
               response as sdk.RESULT_INFO,
               isNotHardwareWallet
             );
@@ -341,7 +340,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           }
         }
       } catch (reason: any) {
-        const code = checkErrorInfo(reason, isNotHardwareWallet);
+        const code = sdk.checkErrorInfo(reason, isNotHardwareWallet);
 
         if (isAccActivated()) {
           if (code === sdk.ConnectorError.USER_DENIED) {

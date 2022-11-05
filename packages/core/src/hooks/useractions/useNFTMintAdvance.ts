@@ -36,7 +36,6 @@ import {
 } from "../../stores";
 import { useBtnStatus, useMyCollection } from "../common";
 import { LoopringAPI } from "../../api_wrapper";
-import { checkErrorInfo } from "./utils";
 import { isAccActivated } from "./checkAccStatus";
 import {
   useChargeFees,
@@ -227,7 +226,7 @@ export const useNFTMintAdvance = <
               (response as sdk.RESULT_INFO).message
             ) {
               // Withdraw failed
-              const code = checkErrorInfo(
+              const code = sdk.checkErrorInfo(
                 response as sdk.RESULT_INFO,
                 isNotHardwareWallet
               );
@@ -309,7 +308,7 @@ export const useNFTMintAdvance = <
           }
         }
       } catch (reason: any) {
-        const code = checkErrorInfo(reason, isNotHardwareWallet);
+        const code = sdk.checkErrorInfo(reason, isNotHardwareWallet);
 
         if (isAccActivated()) {
           if (code === sdk.ConnectorError.USER_DENIED) {

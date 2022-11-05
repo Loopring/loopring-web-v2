@@ -282,6 +282,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   <TextareaAutosizeStyled
                     aria-label="NFT Description"
                     minRows={5}
+                    style={{ maxHeight: "90px", overflow: "scroll" }}
                     disabled={true}
                     value={`${JSON.stringify(error)}}`}
                   />

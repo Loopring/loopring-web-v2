@@ -10,7 +10,6 @@ import {
   store,
   useSystem,
   isAccActivated,
-  checkErrorInfo,
   useChargeFees,
   useWalletLayer2NFT,
 } from "../../index";
@@ -145,7 +144,7 @@ export function useNFTDeploy<
               (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
-              const code = checkErrorInfo(
+              const code = sdk.checkErrorInfo(
                 response as sdk.RESULT_INFO,
                 isFirstTime
               );
@@ -238,7 +237,7 @@ export function useNFTDeploy<
           }
         }
       } catch (reason: any) {
-        const code = checkErrorInfo(reason as sdk.RESULT_INFO, isFirstTime);
+        const code = sdk.checkErrorInfo(reason as sdk.RESULT_INFO, isFirstTime);
 
         if (isAccActivated()) {
           if (code === sdk.ConnectorError.USER_DENIED) {

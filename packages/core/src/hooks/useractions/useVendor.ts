@@ -14,7 +14,6 @@ import {
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {
-  checkErrorInfo,
   DAYS,
   getTimestampDaysLater,
   isAccActivated,
@@ -287,7 +286,7 @@ export const useRampTransPost = () => {
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
           ) {
-            const code = checkErrorInfo(
+            const code = sdk.checkErrorInfo(
               response as sdk.RESULT_INFO,
               isNotHardwareWallet
             );
@@ -367,7 +366,7 @@ export const useRampTransPost = () => {
           });
         }
       } catch (reason: any) {
-        const code = checkErrorInfo(reason, isNotHardwareWallet);
+        const code = sdk.checkErrorInfo(reason, isNotHardwareWallet);
 
         if (isAccActivated()) {
           if (code === sdk.ConnectorError.USER_DENIED) {

@@ -24,7 +24,6 @@ import {
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
-  checkErrorInfo,
   useAddressCheck,
   useAllowances,
   useBtnStatus,
@@ -579,7 +578,7 @@ export const useDeposit = <
           updateWalletLayer1();
           resetDepositData();
         } catch (reason: any) {
-          const err = checkErrorInfo(reason, true);
+          const err = sdk.checkErrorInfo(reason, true);
           myLog(
             "---- deposit reason:",
             reason?.message.indexOf("User denied transaction")

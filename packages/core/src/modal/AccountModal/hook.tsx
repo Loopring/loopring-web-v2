@@ -321,15 +321,6 @@ export function useAccountModalForUI({
     };
   }, [setShowAccount]);
 
-  const backToUnlockAccountBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: true, step: AccountStep.HadAccount });
-      },
-    };
-  }, [setShowAccount]);
-
   const closeBtnInfo = React.useMemo(() => {
     return {
       btnTxt: "labelClose",
@@ -1970,7 +1961,16 @@ export function useAccountModalForUI({
       [AccountStep.UnlockAccount_User_Denied]: {
         view: (
           <UnlockAccount_User_Denied
-            btnInfo={backToUnlockAccountBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                unlockAccount();
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.UnlockAccount_WaitForAuth,
+                });
+              },
+            }}
             {...{
               ...rest,
               account,

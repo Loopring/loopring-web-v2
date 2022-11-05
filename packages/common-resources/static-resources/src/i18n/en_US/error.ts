@@ -50,4 +50,5 @@ export default {
   errorIpfsTimeout: "IPFS Gateway timeout, please try again",
   errorRampNoInstance: "Ramp Widget had out-off service, please re-order it.",
   errorDualExpired: "The order has expired.",
+  errorPrivateKey: "Signature Wrong private key",
 };
