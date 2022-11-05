@@ -41,8 +41,7 @@ const Header = withTranslation("common")(
       const { confirmWrapper } = confirmation.useConfirmation();
       const { allowTrade } = useSystem();
       const { account } = useAccount();
-      const [view, setView] = React.useState(true);
-      // myLog("headerToolBarData", headerToolBarData);
+      const [view, setView] = React.useState(false);
       return (
         <>
           {isHideOnScroll ? (
@@ -104,12 +103,7 @@ const Header = withTranslation("common")(
             sx={{ background: hexToRGB("#FBA95C", "0.8") }}
             width={"100%"}
           >
-            <Typography color={"white"} padding={2}>
-              We are currently experiencing a DDOS attack. The external services
-              are temporarily unstable, while it won't impact the blockchain
-              security. Our engineers are working hard to resolve this issue. We
-              will keep you updated. As always your assets are safe on Loopring
-            </Typography>
+            <Typography color={"white"} padding={2}></Typography>
             <IconButton
               size={"large"}
               aria-label={t("labelClose")}
