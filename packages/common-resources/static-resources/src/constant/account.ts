@@ -57,11 +57,6 @@ export type AccountFull = {
   updateAccount: (account: Partial<Account>) => void;
 } & StateBase;
 
-// export  enum StorageCommands {
-//     CLEAN= 'CLEAN',
-//     UPDATE='UPDATE'
-// }
-
 export type AssetsRawDataItem = {
   token: {
     type: TokenType;
