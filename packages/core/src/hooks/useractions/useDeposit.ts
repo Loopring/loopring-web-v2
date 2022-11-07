@@ -31,7 +31,6 @@ import {
   useTokenMap,
   useAccount,
   useSystem,
-  ActionResult,
   ActionResultCode,
   BIGO,
   LoopringAPI,
@@ -426,7 +425,7 @@ export const useDeposit = <
         await signRefer();
       }
       const { readyState, connectName } = account;
-      let result: ActionResult = { code: ActionResultCode.NoError };
+      let result = { code: ActionResultCode.NoError };
       if (
         readyState !== AccountStatus.UN_CONNECT &&
         inputValue.tradeValue &&

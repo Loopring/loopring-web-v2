@@ -124,23 +124,23 @@ import {
   useAccount,
   useActiveAccount,
   useCheckActiveStatus,
+  useCollectionAdvanceMeta,
   useExportAccount,
   useForceWithdraw,
   useModalData,
   useNFTDeploy,
+  useNFTMintAdvance,
   useNFTTransfer,
   useNFTWithdraw,
+  useNotify,
   useRampTransPost,
   useReset,
   useSystem,
+  useToast,
   useTransfer,
   useVendor,
   useWalletLayer2,
   useWithdraw,
-  useCollectionAdvanceMeta,
-  useToast,
-  useNFTMintAdvance,
-  useNotify,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
@@ -1820,133 +1820,6 @@ export function useAccountModalForUI({
         ),
       },
 
-      //update account
-
-      [AccountStep.UpdateAccount]: {
-        view: (
-          <UpdateAccount
-            {...{
-              ...account,
-              clearDepositHash: clearDeposit,
-              chainInfos,
-              etherscanUrl: rest.etherscanBaseUrl,
-              onSwitch,
-              onCopy,
-              onViewQRCode,
-              onDisconnect,
-              addressShort,
-            }}
-            goUpdateAccount={() => {
-              setShowAccount({ isShow: false });
-              setShowActiveAccount({ isShow: true });
-              // goUpdateAccount({});
-            }}
-            {...{ ...rest, account, t }}
-          />
-        ),
-        onQRClick,
-      },
-      [AccountStep.UpdateAccount_Approve_WaitForAuth]: {
-        view: (
-          <UpdateAccount_Approve_WaitForAuth
-            providerName={account.connectName as ConnectProviders}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.UpdateAccount_First_Method_Denied]: {
-        view: (
-          <UpdateAccount_First_Method_Denied
-            btnInfo={{
-              btnTxt: t("labelTryAnother"),
-              callback: (_e?: any) => {
-                activeAccountProps.onResetClick({ isFirstTime: false });
-                // goUpdateAccount({ isFirstTime: false });
-              },
-            }}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-        onBack: () => {
-          setShowAccount({ isShow: true, step: AccountStep.CheckingActive });
-          // backToUpdateAccountBtnInfo.callback();
-        },
-      },
-      [AccountStep.UpdateAccount_User_Denied]: {
-        view: (
-          <UpdateAccount_User_Denied
-            btnInfo={{
-              btnTxt: t("labelRetry"),
-              callback: (_e?: any) => {
-                activeAccountProps.onResetClick({});
-              },
-            }}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.UpdateAccount_Success]: {
-        view: (
-          <UpdateAccount_Success
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
-              account,
-              link: isShowAccount?.info?.hash
-                ? {
-                    name: "Txn Hash",
-                    url: isShowAccount?.info?.hash,
-                  }
-                : undefined,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.UpdateAccount_Success]: {
-        view: (
-          <UpdateAccount_Success
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
-              account,
-              link: isShowAccount?.info?.hash
-                ? {
-                    name: "Txn Hash",
-                    url: isShowAccount?.info?.hash,
-                  }
-                : undefined,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.UpdateAccount_Failed]: {
-        view: (
-          <UpdateAccount_Failed
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
-              account,
-              error: isShowAccount.error,
-              t,
-            }}
-          />
-        ),
-      },
-
       [AccountStep.UnlockAccount_WaitForAuth]: {
         view: (
           <UnlockAccount_WaitForAuth
@@ -2102,7 +1975,133 @@ export function useAccountModalForUI({
         view: (
           <UpdateAccount_Failed
             patch={{ isReset: true }}
+            btnInfo={{
+              btnTxt: "labelClose",
+              callback: () => {
+                setShouldShow(false);
+                setShowTransfer({ isShow: false });
+                setShowWithdraw({ isShow: false });
+                setShowAccount({ isShow: false });
+                setShowResetAccount({ isShow: true });
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+
+      //update account
+      [AccountStep.UpdateAccount]: {
+        view: (
+          <UpdateAccount
+            {...{
+              ...account,
+              clearDepositHash: clearDeposit,
+              chainInfos,
+              etherscanUrl: rest.etherscanBaseUrl,
+              onSwitch,
+              onCopy,
+              onViewQRCode,
+              onDisconnect,
+              addressShort,
+            }}
+            goUpdateAccount={() => {
+              setShowAccount({ isShow: false });
+              setShowActiveAccount({ isShow: true });
+              // goUpdateAccount({});
+            }}
+            {...{ ...rest, account, t }}
+          />
+        ),
+        onQRClick,
+      },
+      [AccountStep.UpdateAccount_Approve_WaitForAuth]: {
+        view: (
+          <UpdateAccount_Approve_WaitForAuth
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.UpdateAccount_First_Method_Denied]: {
+        view: (
+          <UpdateAccount_First_Method_Denied
+            btnInfo={{
+              btnTxt: t("labelTryAnother"),
+              callback: (_e?: any) => {
+                activeAccountProps.onResetClick({ isFirstTime: false });
+                // goUpdateAccount({ isFirstTime: false });
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: true, step: AccountStep.CheckingActive });
+          // backToUpdateAccountBtnInfo.callback();
+        },
+      },
+      [AccountStep.UpdateAccount_User_Denied]: {
+        view: (
+          <UpdateAccount_User_Denied
+            btnInfo={{
+              btnTxt: t("labelRetry"),
+              callback: (_e?: any) => {
+                activeAccountProps.onResetClick({});
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.UpdateAccount_Success]: {
+        view: (
+          <UpdateAccount_Success
             btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.UpdateAccount_Failed]: {
+        view: (
+          <UpdateAccount_Failed
+            btnInfo={{
+              btnTxt: "labelClose",
+              callback: () => {
+                setShouldShow(false);
+                setShowTransfer({ isShow: false });
+                setShowWithdraw({ isShow: false });
+                setShowAccount({ isShow: false });
+                setShowActiveAccount({ isShow: true });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -2209,6 +2208,8 @@ export function useAccountModalForUI({
       },
     });
   }, [
+    activeAccountProps,
+    resetProps,
     checkActiveStatusProps,
     account,
     isShowAccount.info,

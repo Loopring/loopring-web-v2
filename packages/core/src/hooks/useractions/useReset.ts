@@ -26,7 +26,7 @@ export const useReset = <T extends FeeInfo>(): {
     resetIntervalTime,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
-    updateData: undefined,
+    updateData: () => {},
   });
   React.useEffect(() => {
     if (isFeeNotEnough.isFeeNotEnough) {

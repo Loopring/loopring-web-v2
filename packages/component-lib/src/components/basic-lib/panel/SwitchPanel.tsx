@@ -121,7 +121,7 @@ function _SwitchPanel<T extends string>(
       index={index}
       _height={rest._height}
       _width={rest._width}
-      ismobile={isMobile}
+      ismobile={isMobile ? "true" : "false"}
     >
       {panelList.map((panel: PanelContent<T>) => {
         return (

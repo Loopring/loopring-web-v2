@@ -45,7 +45,7 @@ export async function unlockAccount() {
           if ((response[0] as sdk.RESULT_INFO)?.code) {
             throw response[0];
           }
-          return response;
+          return response as any;
         })
         .catch((error) => {
           throw error;
