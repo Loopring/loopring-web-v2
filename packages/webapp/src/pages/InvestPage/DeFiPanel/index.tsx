@@ -36,6 +36,7 @@ import {
   defiWSTETHAdvice,
   MarketType,
   TOAST_TIME,
+  UpColor,
 } from "@loopring-web/common-resources";
 
 const StyleWrapper = styled(Box)`
@@ -100,8 +101,9 @@ const LandDefiInvest = ({
 }) => {
   const history = useHistory();
   const { notifyMap } = useNotify();
+  const { marketMap: defiMarketMap } = useDefiMap();
   const { t } = useTranslation("common");
-  const { isMobile } = useSettings();
+  const { isMobile, upColor } = useSettings();
   const {
     confirmation: { confirmedRETHDefiInvest, confirmedWSETHDefiInvest },
   } = confirmation.useConfirmation();
@@ -121,6 +123,7 @@ const LandDefiInvest = ({
           history.push(defiWSTETHAdvice.router);
         }
       },
+      apy: defiMarketMap[defiWSTETHAdvice.market]?.apy,
     },
     {
       ...defiRETHAdvice,
@@ -132,6 +135,7 @@ const LandDefiInvest = ({
           history.push(defiRETHAdvice.router);
         }
       },
+      apy: defiMarketMap[defiWSTETHAdvice.market]?.apy,
     },
   ];
 
@@ -174,7 +178,7 @@ const LandDefiInvest = ({
                           paddingLeft={1}
                           className={"des"}
                         >
-                          <Typography variant={"h5"}>
+                          <Typography variant={"h4"}>
                             {t(item.titleI18n, { ns: "layout" })}
                           </Typography>
                           <Typography
@@ -182,10 +186,50 @@ const LandDefiInvest = ({
                             textOverflow={"ellipsis"}
                             whiteSpace={"pre"}
                             overflow={"hidden"}
-                            color={"var(--color-text-third)"}
+                            color={"textSecondary"}
                           >
                             {t(item.desI18n, { ns: "layout" })}
                           </Typography>
+                          {isMobile ? (
+                            <Typography
+                              variant={"body1"}
+                              textOverflow={"ellipsis"}
+                              whiteSpace={"pre"}
+                              overflow={"hidden"}
+                              paddingTop={1}
+                              color={
+                                upColor === UpColor.green
+                                  ? "var(--color-success)"
+                                  : "var(--color-error)"
+                              }
+                            >
+                              {"APR: " + item.apy + "%"}
+                            </Typography>
+                          ) : (
+                            <Typography
+                              display={"flex"}
+                              flexDirection={"column"}
+                              alignItems={"center"}
+                              marginTop={2}
+                            >
+                              <Typography
+                                variant={"h3"}
+                                color={
+                                  upColor === UpColor.green
+                                    ? "var(--color-success)"
+                                    : "var(--color-error)"
+                                }
+                              >
+                                {item.apy + "%"}
+                              </Typography>
+                              <Typography
+                                variant={"body2"}
+                                color={"var(--color-text-third)"}
+                              >
+                                {t("labelEstRateApr")}
+                              </Typography>
+                            </Typography>
+                          )}
                         </Box>
                         {isMobile ? (
                           <BackIcon

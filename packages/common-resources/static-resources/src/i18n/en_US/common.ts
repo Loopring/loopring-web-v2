@@ -1111,4 +1111,5 @@ export default {
   labelSync: "in Sync",
   labelMintInSyncTooltips:
     "The NFT and collection information may not be synced up timely after minting due to onChain operation. Please stay tuned and refresh the page later.",
+  labelEstRateApr: "Est.rate (APR)",
 };

@@ -9,4 +9,5 @@ export type InvestAdvice = {
   notification: string;
   enable: boolean;
   project?: string;
+  market?: string;
 };

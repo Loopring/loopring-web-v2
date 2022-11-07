@@ -457,6 +457,7 @@ export const defiWSTETHAdvice: InvestAdvice = {
   desI18n: "labelInvestWSTETHDes",
   enable: true,
   project: "Lido",
+  market: "WSTETH-ETH",
 };
 export const defiRETHAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
@@ -467,6 +468,7 @@ export const defiRETHAdvice: InvestAdvice = {
   desI18n: "labelInvestRETHDes",
   enable: true,
   project: "Rocket Pool",
+  market: "RETH-ETH",
 };
 export const DEFI_ADVICE_MAP = {
   WSTETH: defiWSTETHAdvice,
