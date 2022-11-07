@@ -15,12 +15,23 @@ const getWalletLayer1Balance = async <R extends { [key: string]: any }>() => {
     const { ethBalance } = await LoopringAPI.exchangeAPI.getEthBalances({
       owner: accAddress,
     });
-    const { tokenBalances } = await LoopringAPI.exchangeAPI.getTokenBalances({
-      owner: accAddress,
-      token: Reflect.ownKeys(tokenMap).map(
-        (ele) => tokenMap[ele as string].address
-      ), // marketCoins.join(),
-    });
+    const tokenArray2 = Reflect.ownKeys(tokenMap);
+    const tokenArray1 = tokenArray2.splice(0, tokenArray2.length / 2);
+    const [
+      { tokenBalances: tokenBalances1 },
+      { tokenBalances: tokenBalances2 },
+    ] = await Promise.all([
+      LoopringAPI.exchangeAPI.getTokenBalances({
+        owner: accAddress,
+        token: tokenArray1.map((ele) => tokenMap[ele as string].address), // marketCoins.join(),
+      }),
+      LoopringAPI.exchangeAPI.getTokenBalances({
+        owner: accAddress,
+        token: tokenArray2.map((ele) => tokenMap[ele as string].address), // marketCoins.join(),
+      }),
+    ]);
+    var tokenBalances = new Map([...tokenBalances1, ...tokenBalances2]);
+
     tokenBalances.set(
       tokenMap["ETH"].address as unknown as sdk.TokenAddress,
       ethBalance
