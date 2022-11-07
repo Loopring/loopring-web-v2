@@ -146,67 +146,73 @@ const LandDefiInvest = ({
       >
         {investAdviceList.map((item, index) => {
           return (
-            <Grid item xs={12} md={4} lg={3} key={item.type + index}>
-              <Card sx={{ display: "flex" }} onClick={item.click}>
-                <StyleCardContent
-                  className={isMobile ? "isMobile" : "tableLap"}
-                >
-                  <Box
-                    className={"content"}
-                    display={"flex"}
-                    flexDirection={"row"}
-                    alignItems={"center"}
-                  >
-                    <Avatar
-                      variant="circular"
-                      style={{
-                        height: "var(--svg-size-huge)",
-                        width: "var(--svg-size-huge)",
-                      }}
-                      src={item.banner}
-                    />
-                    <Box
-                      flex={1}
-                      display={"flex"}
-                      flexDirection={"column"}
-                      paddingLeft={1}
-                      className={"des"}
+            <React.Fragment key={item.type + index}>
+              {item.enable ? (
+                <Grid item xs={12} md={4} lg={3}>
+                  <Card sx={{ display: "flex" }} onClick={item.click}>
+                    <StyleCardContent
+                      className={isMobile ? "isMobile" : "tableLap"}
                     >
-                      <Typography variant={"h5"}>
-                        {t(item.titleI18n, { ns: "layout" })}
-                      </Typography>
-                      <Typography
-                        variant={"body2"}
-                        textOverflow={"ellipsis"}
-                        whiteSpace={"pre"}
-                        overflow={"hidden"}
-                        color={"var(--color-text-third)"}
+                      <Box
+                        className={"content"}
+                        display={"flex"}
+                        flexDirection={"row"}
+                        alignItems={"center"}
                       >
-                        {t(item.desI18n, { ns: "layout" })}
-                      </Typography>
-                    </Box>
-                    {isMobile ? (
-                      <BackIcon
-                        className={"backIcon"}
-                        fontSize={"small"}
-                        htmlColor={"var(--color-text-third)"}
-                        sx={{
-                          transform: "rotate(180deg)",
-                        }}
-                      />
-                    ) : (
-                      <Button
-                        variant={"contained"}
-                        fullWidth={true}
-                        size={"medium"}
-                      >
-                        {t("labelInvestBtn")}
-                      </Button>
-                    )}
-                  </Box>
-                </StyleCardContent>
-              </Card>
-            </Grid>
+                        <Avatar
+                          variant="circular"
+                          style={{
+                            height: "var(--svg-size-huge)",
+                            width: "var(--svg-size-huge)",
+                          }}
+                          src={item.banner}
+                        />
+                        <Box
+                          flex={1}
+                          display={"flex"}
+                          flexDirection={"column"}
+                          paddingLeft={1}
+                          className={"des"}
+                        >
+                          <Typography variant={"h5"}>
+                            {t(item.titleI18n, { ns: "layout" })}
+                          </Typography>
+                          <Typography
+                            variant={"body2"}
+                            textOverflow={"ellipsis"}
+                            whiteSpace={"pre"}
+                            overflow={"hidden"}
+                            color={"var(--color-text-third)"}
+                          >
+                            {t(item.desI18n, { ns: "layout" })}
+                          </Typography>
+                        </Box>
+                        {isMobile ? (
+                          <BackIcon
+                            className={"backIcon"}
+                            fontSize={"small"}
+                            htmlColor={"var(--color-text-third)"}
+                            sx={{
+                              transform: "rotate(180deg)",
+                            }}
+                          />
+                        ) : (
+                          <Button
+                            variant={"contained"}
+                            fullWidth={true}
+                            size={"medium"}
+                          >
+                            {t("labelInvestBtn")}
+                          </Button>
+                        )}
+                      </Box>
+                    </StyleCardContent>
+                  </Card>
+                </Grid>
+              ) : (
+                ""
+              )}
+            </React.Fragment>
           );
         })}
       </Grid>

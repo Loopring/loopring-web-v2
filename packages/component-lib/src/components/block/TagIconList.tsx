@@ -1,4 +1,4 @@
-import { Avatar, Typography } from "@mui/material";
+import { Avatar, Tooltip, Typography } from "@mui/material";
 import React from "react";
 import { CAMPAIGNTAGCONFIG, SCENARIO } from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
@@ -30,15 +30,17 @@ export const TagIconList = React.memo(
             item.startShow <= Date.now()
           ) {
             return (
-              <Avatar
-                alt={item.name}
-                style={{
-                  width: size ? size : "var(--svg-size-medium)",
-                  height: size ? size : "var(--svg-size-medium)",
-                  marginRight: theme.unit / 2,
-                }}
-                src={item.iconSource}
-              />
+              <Tooltip title={item.toolTips ?? scenario}>
+                <Avatar
+                  alt={item.name}
+                  style={{
+                    width: size ? size : "var(--svg-size-medium)",
+                    height: size ? size : "var(--svg-size-medium)",
+                    marginRight: theme.unit / 2,
+                  }}
+                  src={item.iconSource}
+                />
+              </Tooltip>
             );
           } else {
             return <></>;
