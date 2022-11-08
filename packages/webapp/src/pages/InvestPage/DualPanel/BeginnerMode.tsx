@@ -39,6 +39,7 @@ const SelectBox = styled(Card) <{ selected: boolean }>`
   padding: ${({ theme }) => `${1.5 * theme.unit}px ${2 * theme.unit}px`};
   border-color: ${({ selected, theme }: ({ selected: boolean, theme: any })) => selected ? theme.colorBase.borderSelect : theme.colorBase.fieldOpacity};
   margin-right: ${({ theme }) => 2.5 * theme.unit}px;
+  box-shadow: none;
   :hover {
     border-color: ${({ theme }) => theme.colorBase.borderHover};
   } 
@@ -206,10 +207,10 @@ export const BeginnerMode: any = withTranslation("common")(
                 <SelectBox onClick={() => onSelectStep1Token(tokenName.toString())} selected={selected}>
                   <CoinIcon size={32} symbol={(typeof tokenName === 'string') ? tokenName : ''} />
                   <Box marginLeft={1.5}>
-                    <Typography color={selected ? theme.colorBase.textPrimary : theme.colorBase.textThird}>
+                    <Typography color={selected ? theme.colorBase.textPrimary : theme.colorBase.textSecondary}>
                       {tokenName}
                     </Typography>
-                    <Typography variant={"body2"} color={theme.colorBase.textThird}>
+                    <Typography variant={"body2"} color={theme.colorBase.textSecondary}>
                       {t("labelDualBeginnerAPRRange", {
                         minAPY: `${getValuePrecisionThousand(Number(minAPY) * 100, 2, 2, 2, true)}%`,
                         maxAPY: `${getValuePrecisionThousand(Number(maxAPY) * 100, 2, 2, 2, true)}%`,
@@ -232,12 +233,12 @@ export const BeginnerMode: any = withTranslation("common")(
             <SelectBox onClick={() => onSelectStep2BuyOrSell('Sell')} selected={step2BuyOrSell === "Sell"}>
               <Avatar alt={"sell-high"} src={ SoursURL + '/svg/sell-high.svg'} />
               <Box marginLeft={1.5}>
-                <Typography color={step2BuyOrSell === "Sell" ? theme.colorBase.textPrimary : theme.colorBase.textThird}>
+                <Typography color={step2BuyOrSell === "Sell" ? theme.colorBase.textPrimary : theme.colorBase.textSecondary}>
                   {t("labelDualBeginnerSellHigh", {
                     token: step1SelectedToken
                   })}
                 </Typography>
-                <Typography variant={"body2"} color={theme.colorBase.textThird}>
+                <Typography variant={"body2"} color={theme.colorBase.textSecondary}>
                   {t("labelDualBeginnerRecieveStable")}
                 </Typography>
               </Box>
@@ -245,12 +246,12 @@ export const BeginnerMode: any = withTranslation("common")(
             <SelectBox onClick={() => onSelectStep2BuyOrSell('Buy')}  selected={step2BuyOrSell === "Buy"}>
               <Avatar alt={"buy-low"} src={SoursURL + '/svg/buy-low.svg'} />
               <Box marginLeft={1.5}>
-                <Typography color={step2BuyOrSell === "Buy" ? theme.colorBase.textPrimary : theme.colorBase.textThird} >
+                <Typography color={step2BuyOrSell === "Buy" ? theme.colorBase.textPrimary : theme.colorBase.textSecondary} >
                   {t("labelDualBeginnerBuyLow", {
                     token: step1SelectedToken
                   })}
                 </Typography>
-                <Typography variant={"body2"} color={theme.colorBase.textThird}>
+                <Typography variant={"body2"} color={theme.colorBase.textSecondary}>
                   {t("labelDualBeginnerInvestStable")}
                 </Typography>
               </Box>
