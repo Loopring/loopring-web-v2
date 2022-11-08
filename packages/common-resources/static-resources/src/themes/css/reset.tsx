@@ -194,9 +194,40 @@ export default css`
   iframe {
     display: none;
   }
-  #iubenda-pp {
+  #iubenda-pp,
+  #iframeBanxaTarget {
     iframe {
-      display: initial;
+      display: initial;csss
+    }
+  }
+  #iframeBanxaTarget {
+    z-index: 9999;
+    #iframeBanxaClose {
+      transform: scale(2);
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      padding: 4px;
+      border-bottom-left-radius: 80%;
+      background: rgba(255, 255, 255, 0.6);
+    }
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(166, 174, 185, 0.7);
+  }
+  #walletconnect-qrcode-modal {
+    font-size: 16px;
+    .walletconnect-modal__mobile__toggle {
+      a {
+        color: rgb(76, 130, 251);
+      }
     }
   }
 `;
