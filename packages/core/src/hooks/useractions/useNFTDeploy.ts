@@ -13,6 +13,7 @@ import {
   checkErrorInfo,
   useChargeFees,
   useWalletLayer2NFT,
+  useWalletL2Collection,
 } from "../../index";
 import {
   AccountStep,
@@ -42,6 +43,7 @@ import { useLayer1Store } from "../../stores/localStore/layer1Store";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import {
   useHistory,
+  useLocation,
   // useLocation
 } from "react-router-dom";
 import Web3 from "web3";
@@ -57,6 +59,9 @@ export function useNFTDeploy<
   const { nftDeployValue, updateNFTDeployData, resetNFTDeployData } =
     useModalData();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
+  const { page: collectionPage, updateWalletL2Collection } =
+    useWalletL2Collection();
+
   const {
     setShowAccount,
     setShowNFTDetail,
@@ -66,7 +71,8 @@ export function useNFTDeploy<
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
   const history = useHistory();
-  // const { search, ...restLocation } = useLocation();
+  const { search, ...location } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const {
     chargeFeeTokenList,
@@ -201,30 +207,22 @@ export function useNFTDeploy<
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              // history.push({
-              //   search,
-              //   ...restLocation,
-              // });
-              history.go(0);
-              // if (nftDeployValue.collectionMeta) {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byCollection/${nftDeployValue.collectionMeta.id}-${nftDeployValue.collectionMeta.contractAddress}`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page: Number(searchParams.get("collectionPage")) ?? 1,
-              //   //   collection: nftDeployValue.collectionMeta,
-              //   // });
-              // } else {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byList`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page,
-              //   //   collection: undefined,
-              //   // });
-              // }
+              searchParams.delete("detail");
+              history.push({
+                ...location,
+                search: searchParams.toString(),
+              });
+              if (nftDeployValue.nftData) {
+                updateWalletLayer2NFT({
+                  page: Number(searchParams.get("collectionPage")) ?? 1,
+                  collection:
+                    (nftDeployValue?.collectionMeta as any) ?? undefined,
+                });
+              } else {
+                updateWalletL2Collection({
+                  page: collectionPage,
+                });
+              }
               setShowNFTDeploy({ isShow: false });
               setShowNFTDetail({ isShow: false });
               resetNFTDeployData();
@@ -297,7 +295,6 @@ export function useNFTDeploy<
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && !isFeeNotEnough.isFeeNotEnough) {
       enableBtn();
-      myLog("enableBtn");
       return;
     }
     disableBtn();

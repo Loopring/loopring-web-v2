@@ -469,7 +469,7 @@ export const useDeposit = <
               });
 
               nonce = await sdk.getNonce(
-                connectProvides.usedWeb3 as any,
+                connectProvides.usedWeb3 as unknown as Web3,
                 account.accAddress
               );
 
@@ -517,7 +517,7 @@ export const useDeposit = <
 
           if (!nonceInit) {
             nonce = await sdk.getNonce(
-              connectProvides.usedWeb3 as any,
+              connectProvides.usedWeb3 as unknown as Web3,
               account.accAddress
             );
           }

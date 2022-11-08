@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import { Column, Table } from "../../basic-lib";
 import { Filter } from "./components/Filter";
-import { TableFilterStyled, TablePaddingX } from "../../styled";
+import { TablePaddingX } from "../../styled";
 import {
   CurrencyToTag,
   ForexMap,

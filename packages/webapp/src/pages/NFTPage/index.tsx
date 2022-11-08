@@ -11,6 +11,7 @@ import { DepositNFTPanel } from "./NFTDeposit";
 import { NFTCollectPanel } from "./CollectionPanel";
 import { EditCollectionPanel } from "./EditCollectionPanel";
 import { MintLandingPage } from "./components/landingPanel";
+import { ImportCollectionPanel } from "./ImportCollectionPanel";
 
 export const subMenu = subMenuNFT;
 
@@ -34,8 +35,10 @@ export const NFTPage = () => {
         return <NFTCollectPanel />;
       case "addCollection":
       case "editCollection":
-        return <EditCollectionPanel />;
-      case "assetsNFT":
+      case "addLegacyCollection":
+        return <EditCollectionPanel type={selected} />;
+      case "importLegacyCollection":
+        return <ImportCollectionPanel />;
       default:
         return <MyNFTPanel />;
     }

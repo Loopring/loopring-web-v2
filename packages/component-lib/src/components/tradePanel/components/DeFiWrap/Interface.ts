@@ -38,4 +38,5 @@ export type DeFiWrapProps<T, I, ACD> = {
   tokenBuy: TokenInfo;
   btnStatus?: keyof typeof TradeBtnStatus | undefined;
   accStatus?: AccountStatus;
+  type: string;
 };

@@ -439,3 +439,8 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     }
   }
 ` as (props: ButtonProps) => JSX.Element;
+
+export const StyledPaperBg = styled(Box)`
+  background: var(--color-box);
+  border-radius: ${({ theme }) => theme.unit}px;
+`;

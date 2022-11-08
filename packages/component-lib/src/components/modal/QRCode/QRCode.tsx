@@ -1,5 +1,5 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import QRCode from "qrcode.react";
+import QRCode, { BaseQRCodeProps } from "qrcode.react";
 import styled from "@emotion/styled";
 import { Box, Modal, Typography } from "@mui/material";
 import { ModalQRCodeProps, QRCodeProps } from "./Interface";
@@ -24,9 +24,11 @@ export const QRCodePanel = ({
   size = 160,
   title,
   description,
+  fgColor = "#4169FF",
+  bgColor = "#fff",
   url = "https://exchange.loopring.io/",
 }: // handleClick
-QRCodeProps) => {
+QRCodeProps & Partial<BaseQRCodeProps>) => {
   if (url === undefined) {
     url = "";
   }
@@ -50,7 +52,9 @@ QRCodeProps) => {
       <QRCode
         value={url}
         size={size}
-        style={{ padding: 8, backgroundColor: "#fff" }}
+        fgColor={fgColor}
+        bgColor={bgColor}
+        style={{ padding: 8 }}
         aria-label={`link:${url}`}
       />
       {description && (

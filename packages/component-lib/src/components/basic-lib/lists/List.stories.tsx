@@ -22,13 +22,7 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import {
-  account,
-  coinMap,
-  CoinType,
-  layer2ItemData,
-  walletMap,
-} from "../../../static";
+import { coinMap, CoinType, layer2ItemData, walletMap } from "../../../static";
 import { CoinMenu } from "./CoinList";
 import {
   ACTIVITY,
@@ -248,7 +242,6 @@ const TabPanelBtn = () => {
 const Template: Story<any> = withTranslation()(({ t }: any) => {
   const theme = useTheme();
   const activity: ACTIVITY = {
-    id: "unique1",
     type: "",
     link: `2021/12/2021-12-23`,
     title: "🎄 Loopring Holiday Trading Giveaway",
@@ -261,7 +254,6 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
     // giftIcon?: string;
   };
   const notify: NOTIFICATION_ITEM = {
-    color: undefined,
     name: "",
     type: "",
     version: "",

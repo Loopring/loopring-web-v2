@@ -47,11 +47,19 @@ export const useDefiTrade = <
   ACD extends DeFiCalcData<T>
 >({
   isJoin = true,
+  market,
   setToastOpen,
-  market = "",
+  setServerUpdate,
+  setConfirmShowNoBalance,
+  confirmShowLimitBalance,
+  setConfirmShowLimitBalance,
 }: {
   market: string;
   isJoin: boolean;
+  setServerUpdate: (state: any) => void;
+  setConfirmShowLimitBalance: (state: boolean) => void;
+  setConfirmShowNoBalance: (state: boolean) => void;
+  confirmShowLimitBalance: boolean;
   setToastOpen: (props: {
     open: boolean;
     content: JSX.Element | string;
@@ -69,10 +77,6 @@ export const useDefiTrade = <
   } = useDefiMap();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isStoB, setIsStoB] = React.useState(true);
-  const [confirmShowNoBalance, setConfirmShowNoBalance] =
-    React.useState<boolean>(false);
-  const [confirmShowLimitBalance, setConfirmShowLimitBalance] =
-    React.useState<boolean>(false);
 
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
@@ -80,11 +84,8 @@ export const useDefiTrade = <
   const { exchangeInfo, allowTrade } = useSystem();
   const { tradeDefi, updateTradeDefi, resetTradeDefi } = useTradeDefi();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
-  const [serverUpdate, setServerUpdate] = React.useState(false);
 
-  const {
-    toggle: { defiInvest },
-  } = useToggle();
+  const { toggle } = useToggle();
   const [{ coinSellSymbol, coinBuySymbol }, setSymbol] = React.useState(() => {
     if (isJoin) {
       const [, coinBuySymbol, coinSellSymbol] =
@@ -240,6 +241,7 @@ export const useDefiTrade = <
         market:
           _oldTradeDefi.market !== market ? (market as MarketType) : undefined,
         ..._oldTradeDefi,
+        type: marketInfo.type,
         ...calcValue,
         deFiCalcData: {
           ..._deFiCalcData,
@@ -355,7 +357,8 @@ export const useDefiTrade = <
         if (clearTrade === true) {
           walletLayer2Service.sendUserUpdate();
         }
-        walletMap = makeWalletLayer2(true).walletMap;
+        walletMap = makeWalletLayer2(true).walletMap ?? {};
+
         deFiCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count;
         deFiCalcDataInit.coinBuy.balance = walletMap[coinBuySymbol]?.count;
       }
@@ -382,6 +385,7 @@ export const useDefiTrade = <
         updateTradeDefi({
           market:
             tradeDefi.market !== market ? (market as MarketType) : undefined,
+          type: marketInfo.type,
           isStoB,
           sellVol: "0",
           buyVol: "0",
@@ -452,7 +456,7 @@ export const useDefiTrade = <
         setIsLoading(true);
       }
       Promise.all([
-        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "LIDO" }),
+        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "LIDO,ROCKETPOOL" }),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(
               isJoin
@@ -658,6 +662,7 @@ export const useDefiTrade = <
 
   const handleSubmit = React.useCallback(async () => {
     const { tradeDefi } = store.getState()._router_tradeDefi;
+    // const marketInfo = defiMarketMap[market];
 
     if (
       (account.readyState === AccountStatus.ACTIVATED &&
@@ -666,9 +671,11 @@ export const useDefiTrade = <
         account.eddsaKey?.sk,
       tradeDefi.buyVol)
     ) {
-      if (!allowTrade.defiInvest.enable) {
+      const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? [];
+
+      if (allowTrade && !allowTrade.defiInvest.enable) {
         setShowSupport({ isShow: true });
-      } else if (!defiInvest.enable) {
+      } else if (toggle && !toggle[`${tokenBase}Invest`].enable) {
         setShowTradeIsFrozen({ isShow: true, type: "DefiInvest" });
       } else {
         sendRequest();
@@ -677,6 +684,8 @@ export const useDefiTrade = <
       return false;
     }
   }, [
+    market,
+    defiMarketMap,
     account.readyState,
     account.eddsaKey?.sk,
     tokenMap,
@@ -834,9 +843,9 @@ export const useDefiTrade = <
   ]); // as ForceWithdrawProps<any, any>;
   return {
     deFiWrapProps: deFiWrapProps as unknown as DeFiWrapProps<T, I, ACD>,
-    confirmShowNoBalance,
-    setConfirmShowNoBalance,
-    serverUpdate,
-    setServerUpdate,
+    // confirmShowNoBalance,
+    // setConfirmShowNoBalance,
+    // serverUpdate,
+    // setServerUpdate,
   };
 };

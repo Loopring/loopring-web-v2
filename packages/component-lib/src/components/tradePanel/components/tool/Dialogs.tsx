@@ -861,10 +861,12 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
   ({
     t,
     open,
+    type,
     defiData,
     handleClose,
   }: WithTranslation & {
     open: boolean;
+    type: string;
     defiData: TradeDefi<any>;
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
@@ -902,7 +904,7 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
               </Typography>
             )}
             <Typography>
-              <Trans i18nKey={"labelDefiMaxBalance1"}>
+              <Trans i18nKey={"labelDefiMaxBalance1"} tOptions={{ type }}>
                 or you can
                 <List sx={{ marginTop: 2 }}>
                   <ListItem>
@@ -945,12 +947,18 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
     t,
     isJoin,
     open,
+    market,
+    type,
     handleClose,
   }: WithTranslation & {
     open: boolean;
+    type: symbol;
+    market: `${string}-${string}`;
     isJoin: boolean;
     handleClose: (event: any) => void;
   }) => {
+    // @ts-ignore
+    const [, baseSymbol, _quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     return (
       <DialogStyle
         open={open}
@@ -974,7 +982,10 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
                 display={"flex"}
                 flexDirection={"column"}
               >
-                <Trans i18nKey={"labelDefiNoBalance"}>
+                <Trans
+                  i18nKey={"labelDefiNoBalance"}
+                  components={{ span: <span /> }}
+                >
                   <Typography component={"span"} marginBottom={3}>
                     Loopring rebalance pool can't satisfy your complete request
                     now.
@@ -985,9 +996,13 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
                   </Typography>
                 </Trans>
                 <List sx={{ marginTop: 1 }}>
-                  <Trans i18nKey={"labelDefiNoBalanceList"}>
+                  <Trans
+                    i18nKey={"labelDefiNoBalanceList"}
+                    components={{ li: <li /> }}
+                    tOptions={{ symbol: baseSymbol, type }}
+                  >
                     <ListItem style={{ marginBottom: 0 }}>
-                      Withdraw wSTETH to L1 and trade through CRV or LIDO
+                      Withdraw WSTETH to L1 and trade through CRV or LIDO
                       directly
                     </ListItem>
                     <ListItem style={{ marginBottom: 0 }}>
@@ -1069,12 +1084,19 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
   ({
     t,
     open,
+    type,
     handleClose,
   }: WithTranslation & {
     open: boolean;
+    type: "WSETH" | "RETH";
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
     const [agree, setAgree] = React.useState(false);
+    React.useEffect(() => {
+      if (!open) {
+        setAgree(false);
+      }
+    }, [open]);
     return (
       <Dialog
         open={open}
@@ -1082,15 +1104,30 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
         onClose={(e: MouseEvent) => handleClose(e)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("labelDefiRiskTitle")}</DialogTitle>
+        <DialogTitle> {t(`label${type}DefiRiskTitle`)}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelDefiRisk"}>
+            <Trans
+              i18nKey={`label${type}DefiRisk`}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"span"}
+                    variant={"body1"}
+                    display={"block"}
+                    marginBottom={1}
+                    color={"textSecondary"}
+                  />
+                ),
+              }}
+            >
               <Typography
                 whiteSpace={"pre-line"}
                 component={"span"}
                 variant={"body1"}
                 display={"block"}
+                marginBottom={1}
                 color={"textSecondary"}
               >
                 Lido is a liquid staking solution for ETH 2.0 backed by
@@ -1101,7 +1138,7 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
                 whiteSpace={"pre-line"}
                 component={"span"}
                 variant={"body1"}
-                marginTop={2}
+                marginBottom={1}
                 display={"block"}
                 color={"textSecondary"}
               >
@@ -1114,7 +1151,7 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
                 whiteSpace={"pre-line"}
                 component={"span"}
                 variant={"body1"}
-                marginTop={2}
+                marginBottom={1}
                 display={"block"}
                 color={"textSecondary"}
               >
@@ -1142,7 +1179,7 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
         </DialogContent>
         <DialogContent>
           <DialogContentText id="alert-dialog-defiRisk2">
-            <Trans i18nKey={"labelDefiRisk2"}>
+            <Trans i18nKey={`label${type}DefiRisk2`}>
               <Typography
                 whiteSpace={"pre-line"}
                 component={"span"}

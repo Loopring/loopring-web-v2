@@ -9,11 +9,12 @@ import {
   PlayIcon,
   RefreshIcon,
   SoursURL,
+  SyncIcon,
   VideoIcon,
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
-import { Box, BoxProps, Modal } from "@mui/material";
+import { Box, BoxProps, Modal, Tooltip, Typography } from "@mui/material";
 import {
   cssBackground,
   EmptyDefault,
@@ -25,7 +26,11 @@ import {
 } from "../../index";
 import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
-import { WithTranslation, withTranslation } from "react-i18next";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -41,6 +46,14 @@ const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
 const PlayIconStyle = styled(PlayIcon)`
   color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".8")};
 `;
+const LabelStyled = styled(Box)`
+  border-radius: 0 0 ${({ theme }) => theme.unit}px 0;
+  padding: ${({ theme }) => theme.unit / 2}px ${({ theme }) => theme.unit}px;
+  color: var(--color-box);
+  font-size: 1.4rem;
+  background: var(--color-tag);
+  cursor: help;
+` as any;
 
 export const NFTMedia = React.memo(
   React.forwardRef(
@@ -59,7 +72,7 @@ export const NFTMedia = React.memo(
       const vidRef = React.useRef<HTMLVideoElement>(null);
       const aidRef = React.useRef<HTMLAudioElement>(null);
       const theme = useTheme();
-
+      const { t } = useTranslation();
       const {
         modals: {
           isShowNFTDetail: { isShow },
@@ -308,6 +321,33 @@ export const NFTMedia = React.memo(
                 </>
               )}
             </>
+          )}
+
+          {item?.pendingOnSync ? (
+            <Tooltip
+              title={t("labelMintInSyncTooltips").toString()}
+              placement={"top"}
+            >
+              <LabelStyled
+                position={"absolute"}
+                left={0}
+                top={0}
+                display={"flex"}
+                justfyContent={"center"}
+                alignItems={"center"}
+              >
+                <SyncIcon color={"inherit"} />
+                <Typography
+                  color={"inherit"}
+                  component={"span"}
+                  paddingLeft={1}
+                >
+                  {t("labelSync")}
+                </Typography>
+              </LabelStyled>
+            </Tooltip>
+          ) : (
+            ""
           )}
         </BoxStyle>
       );

@@ -1,6 +1,10 @@
 import { Box, Typography } from "@mui/material";
 import { TOAST_TIME } from "@loopring-web/common-resources";
-import { CollectionCardList, Toast } from "@loopring-web/component-lib";
+import {
+  CollectionCardList,
+  Toast,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { useAccount, useMyNFTCollection } from "@loopring-web/core";
 import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
@@ -17,6 +21,7 @@ export const MyNFTCollectionList = withTranslation("common")(
     const { search } = useLocation();
     const searchParams = new URLSearchParams(search);
     const { account } = useAccount();
+    const { isMobile } = useSettings();
     const { copyToastOpen, ...collectionListProps } = useMyNFTCollection();
     return (
       <Box
@@ -33,10 +38,11 @@ export const MyNFTCollectionList = withTranslation("common")(
         <CollectionCardList
           noEdit={true}
           account={account}
+          size={isMobile ? "small" : "large"}
           onItemClick={(item) => {
             searchParams.set("myNFTPage", "1");
             history.push({
-              pathname: `/NFT/assetsNFT/byCollection/${item.id}--${item.contractAddress}`,
+              pathname: `/NFT/assetsNFT/byCollection/${item.contractAddress}--${item.id}`,
               search: searchParams.toString(),
             });
           }}

@@ -3,6 +3,7 @@ import {
   reset,
   socketUpdateBalance,
   statusUnset,
+  updateLegacyContracts,
   updateWalletL2Collection,
 } from "./reducer";
 import { WalletL2CollectionStates } from "./interface";
@@ -12,10 +13,14 @@ import {
   CollectionMeta,
   L2CollectionFilter,
 } from "@loopring-web/common-resources";
+import { LoopringAPI } from "../../api_wrapper";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { store } from "../index";
 
 export function useWalletL2Collection<
   C extends CollectionMeta
 >(): WalletL2CollectionStates<C> & {
+  updateLegacyContracts: () => void;
   updateWalletL2Collection: (props: {
     page?: number;
     filter?: L2CollectionFilter | undefined;
@@ -29,6 +34,7 @@ export function useWalletL2Collection<
   const walletL2Collection: WalletL2CollectionStates<C> = useSelector(
     (state: any) => state.walletL2Collection
   );
+
   const dispatch = useDispatch();
 
   return {
@@ -40,6 +46,31 @@ export function useWalletL2Collection<
       () => dispatch(statusUnset(undefined)),
       [dispatch]
     ),
+    updateLegacyContracts: React.useCallback(async () => {
+      const account = store.getState().account;
+      // const { chainId } = store.getState().system;
+
+      if (account.accountId && LoopringAPI.userAPI) {
+        const response = await LoopringAPI.userAPI.getUserNFTLegacyTokenAddress(
+          {
+            accountId: account.accountId,
+          },
+          account.apiKey
+        );
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          dispatch(updateLegacyContracts({ legacyContract: [] }));
+        }
+        dispatch(
+          updateLegacyContracts({
+            legacyContract: [...response?.raw_data?.addresses],
+          })
+        );
+      }
+    }, [dispatch]),
+
     updateWalletL2Collection: React.useCallback(
       ({
         page,

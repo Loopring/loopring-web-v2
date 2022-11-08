@@ -16,14 +16,19 @@ const StyledPaper = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 
-export const EditCollectionPanel = () => {
-  const { t } = useTranslation("common");
+export const EditCollectionPanel = ({
+  type,
+}: {
+  type: "addCollection" | "editCollection" | "addLegacyCollection";
+}) => {
+  // 0x47a6884c9f2e5627ad82bfa94c999a59e0310906
   const {
+    goBack,
+    title,
     collectionToastOpen,
     collectionToastClose,
     ...editCollectionViewProps
-  } = useCollectionPanel();
-  const history = useHistory();
+  } = useCollectionPanel({ type });
 
   return (
     <>
@@ -39,11 +44,9 @@ export const EditCollectionPanel = () => {
           size={"medium"}
           sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
-          onClick={history.goBack}
+          onClick={goBack}
         >
-          {editCollectionViewProps.isEdit
-            ? t("labelEditCollectionERC1155")
-            : t("labelCollectionCreateERC1155")}
+          {title}
         </Button>
       </Box>
       <StyledPaper

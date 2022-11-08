@@ -16,7 +16,6 @@ import {
   ForexMap,
   getValuePrecisionThousand,
   MoreIcon,
-  myLog,
   PriceTag,
   RowConfig,
 } from "@loopring-web/common-resources";
@@ -27,11 +26,10 @@ import { IconColumn } from "../poolsTable";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { bindHover } from "material-ui-popup-state/es";
 import { useSettings } from "../../../stores";
-import { Currency, toBig } from "@loopring-web/loopring-sdk";
+import { Currency } from "@loopring-web/loopring-sdk";
 import { Filter } from "./components/Filter";
 import { AmmAPRDetail, AmmPairDetail, AmmRewardsDetail } from "../../block";
 import { ActionPopContent } from "./components/ActionPop";
-import { volumeToCountAsBigNumber } from "@loopring-web/core";
 
 export enum PoolTradeType {
   add = "add",
@@ -84,8 +82,8 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
   getPopoverRewardState: any,
   account: Account,
   tokenMap: { [key: string]: any },
-  idIndex: { [key: string]: string },
-  tokenPrices: { [key in keyof R]: number },
+  _idIndex: { [key: string]: string },
+  _tokenPrices: { [key in keyof R]: number },
   forexMap: ForexMap<Currency>
 ): Column<R, unknown>[] => {
   return [
@@ -253,13 +251,10 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
           rewardToken2,
           reward24,
           reward224,
+          extraRewards24,
           ammDetail: { coinAInfo, coinBInfo },
         } = row;
-        let dollarReward24 = 0,
-          extraRewards24: Array<{
-            tokenSymbol: string;
-            amount: number | undefined;
-          }> = [];
+        let dollarReward24 = 0;
         const popState = getPopoverRewardState(rowIdx);
         if (
           !(
@@ -275,26 +270,9 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
           dollarReward24 += row.feeDollar24;
         }
         if (
-          !(
-            typeof row.extraRewards24 === "undefined" ||
-            row.extraRewards24.length === 0
-          ) &&
-          tokenPrices
+          !(typeof row.extraDollar24 === "undefined" || row.extraDollar24 === 0)
         ) {
-          extraRewards24 = row.extraRewards24.map((item) => {
-            const tokenSymbol = idIndex[item.tokenId as number];
-            const extraItem = volumeToCountAsBigNumber(
-              tokenSymbol,
-              item.volume ?? 0
-            );
-            dollarReward24 += (extraItem ?? toBig(0))
-              .times(tokenPrices[tokenSymbol] ?? 1)
-              .toNumber();
-            return {
-              tokenSymbol,
-              amount: extraItem?.toNumber(),
-            };
-          });
+          dollarReward24 += row.extraDollar24;
           // dollarReward24 += row.feeDollar24;
         }
         return (

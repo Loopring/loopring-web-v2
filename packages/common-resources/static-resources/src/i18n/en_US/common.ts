@@ -49,7 +49,7 @@ export default {
   depositLabelRefer: "Referral address, Account ID or ENS. (Optional)",
   depositLabelPlaceholder: "address, Account ID or ENS",
   withdrawDescription:
-    "Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
+    "Your withdrawal will be processed in the next batch,\n which usually 30 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
   withdrawTypeLabelFast: "Fast (15 seconds at the earliest)",
   withdrawTypeLabelStandard: "Standard (about 25 minutes)",
   labelConnectWallet: "Connect wallet",
@@ -407,6 +407,7 @@ export default {
   labelNFTMyNFT: "My NFTs - Collection: {{collection}}",
   labelNFTTokenID: "ID:",
   labelNFTTYPE: "Token Standard:",
+  labelNFTRoyaltyPercentage: "Royalty (%):",
   labelNFTID: "ID:",
   labelNFTMinter: "Minter:",
   labelNFTMint: "Create NFT",
@@ -840,16 +841,14 @@ export default {
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n" +
     "You can choose one of the following approaches for the remaining amount:",
   labelDefiMaxBalance1:
-    "<0>" +
-    "<1>Withdraw WSTETH to L1 and trade trade through Uniswap, 1Inch or Lido.</1>" +
-    "<2>The Loopring pool will rebalance soon. Please come back later to redeem.</2>" +
-    "</0>",
+    "<li>Withdraw {{symbol}} to L1 and trade through 1Inch or {{type}}, etc...</li>" +
+    "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiNoBalance:
-    "<0>It is not possible for the Loopring pool to fulfil your complete request at the moment.</0>" +
-    "<1>You can choose one of the following approaches for the remaining amount:</1>",
+    "<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>" +
+    "<span>You can choose one of the following approaches for the remaining amount:</span>",
   labelDefiNoBalanceList:
-    "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
-    "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
+    "<li>Withdraw {{symbol}} to L1 and trade through 1Inch or {{type}}, etc...</li>" +
+    "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
   labelDefiNoBalanceJoin:
@@ -872,14 +871,22 @@ export default {
   labelViewMore: "View more",
   labelInvestSuccess: "Successfully {{type}} {{symbol}}",
   labelInvestFailed: "Subscribe Failed",
-  labelDefiRiskTitle: "What is ETH Staking via Lido?",
-  labelDefiRisk:
-    "<0>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</0>\n" +
-    "<1>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</1>\n" +
-    "<2>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</2>\n",
-  labelDefiRisk2:
-    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</0>" +
-    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
+  labelWSETHDefiRiskTitle: "What is ETH Staking via Lido?",
+  labelRETHDefiRiskTitle: "What is ETH Staking via Rocket Pool?",
+  labelWSETHDefiRisk:
+    "<p>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</p>" +
+    "<p>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</p>" +
+    "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>\n",
+  labelRETHDefiRisk:
+    "<p>Rocket Pool is the first truly decentralized Ethereum staking pool. </0>" +
+    "<p>All of the Ethereum validator node operator's creation, withdrawals,\n and rewards delegation is handled by Rocket Pool's smart contracts on the Execution layer. This makes it completely decentralized.</p>" +
+    "<p>After staking ETH via Rocket Pool, you will receive rETH. The rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</p>",
+  labelWSETHDefiRisk2:
+    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</p>" +
+    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</p>",
+  labelRETHDefiRisk2:
+    "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
+    "<1></1>",
   labelDefiAgree: "I have read risk warning",
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
@@ -954,7 +961,7 @@ export default {
     "Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site",
   labelCollectionMetaErrorType: "correct `royalty_percentage` from 0 to 10",
   labelNFTServerRefresh:
-    "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",
+    "Click to refresh loopring cache resource, this is an delay command usually takes 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
   labelNFTCollectionName: "Collection Name:",
@@ -968,7 +975,9 @@ export default {
   labelNoCollectionCover: "No Cover Media",
   labelNoNFTCover: "No Media Resource",
   labelNFTAmountValue: "Amount: {{value}}",
+  labelNFTAmountSimpleValue: " \u2A09 {{value}}",
   labelCollectionItemValue: "Item: {{value}}",
+  labelCollectionItemSimpleValue: " \u2A09 {{value}}",
   labelMyCollectionsDes:
     "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information. Until it happens, the previous NFTs will be categorized to collection named by their associated contract address.",
   labelNFTGuid:
@@ -1087,18 +1096,18 @@ export default {
   labelSelectContractAddress: "Contract address",
   labelImportChooseCollection:
     "The created collection here can only be used to categorize the Legacy NFT minted without collection_metadata field.\n You can freely move those NFTs into any collection you created here.",
-  labelImportCollectionUndecided: "Undecided",
-  labelImportCollectionOthers: "Others",
-  labelImportCollectionCurrent: "Current",
-  labelImportCollectionAll: "All",
-  labelImportCollectionTitle: "Import your legacy nft Generate collection ",
+  labelImportCollectionundecided: "Undecided",
+  labelImportCollectionoutside: "Others",
+  labelImportCollectioninside: "Current",
+  labelImportCollectionall: "All",
+  labelImportCollectionTitle: "Import your legacy NFT Generate collection ",
   labelAssetTokens: "Tokens",
   labelAssetMyInvest: "My Investments",
   labelORCreateCollection: "Or <1>Create Collection</1>",
   labelCreateLegacyCollection: "Create Legacy Collection",
   labelNoLegacyCollection: "You have no Legacy Collection, please",
   labelLegacyCollectionTitle: "Create Legacy Collection",
-  labelMoveOut: "Move out {{symbol}}",
+  labelMoveOut: "Move out of {{symbol}}",
   labelMoveIn: "Move into {{symbol}}",
   labelMoveInCollection: "Collection",
   labelSelectAll: "Select All",
@@ -1111,4 +1120,17 @@ export default {
   labelNFTDetailTab: "Details",
   labelNFTPropertiesTab: "Properties",
   labelLinkMetaData: "NFT metadata Resource link",
+  labelCountDown: "Count Down",
+  labelStackingSelect: "Choose Staking Product",
+  labelImportCollectionMove: "Collection",
+  labelCollectionImportNFTBtn: "Manage Legacy NFT",
+  labelNFTMoveFailed: "NFT move failed!",
+  labelNFTMoveSuccess: "NFT moved successful",
+  labelLuckTokenDefaultTitle: "Good Luck!",
+  labelSync: "in Sync",
+  labelMintInSyncTooltips:
+    "The NFT and collection information may not be synced up timely after minting due to onChain operation. Please stay tuned and refresh the page later.",
+  labelEstRateApr: "Est.rate (APR)",
+  labelManageCollectionTitle: "Manage Legacy NFT",
+  labelLegacy: "legacy",
 };

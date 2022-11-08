@@ -53,6 +53,7 @@ export type CAMPAIGN_TAG = {
   endShow: number;
   iconSource: string;
   symbols: Array<string>;
+  toolTips: string;
 };
 export enum SCENARIO {
   orderbook = "orderbook",
@@ -68,11 +69,8 @@ export type NOTIFICATION = {
   activities: ACTIVITY[];
   notifications: NOTIFICATION_ITEM[];
   invest: {
-    banner: {
-      mobile: string;
-      laptop: string;
-    };
     investAdvice: InvestAdvice[];
+    STAKE: InvestAdvice[];
   };
   account?: Account;
   prev?: {

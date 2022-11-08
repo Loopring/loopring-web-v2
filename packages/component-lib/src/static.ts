@@ -6,6 +6,7 @@ import {
   CoinMap,
   DualCalcData,
   DualViewInfo,
+  ForexMap,
   HeaderMenuItemInterface,
   TradeCalcData,
   WalletCoin,
@@ -13,7 +14,15 @@ import {
 } from "@loopring-web/common-resources";
 import { List } from "immutable";
 import { ConnectProviders } from "@loopring-web/web3-provider";
-import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
+import {
+  Currency,
+  DUAL_TYPE,
+  LuckyTokenAmountType,
+  LuckyTokenClaimType,
+  LuckyTokenItemForReceive,
+  LuckyTokenViewType,
+  LuckyTokenItemStatus,
+} from "@loopring-web/loopring-sdk";
 export const account: Account = {
   __timer__: -1,
   frozen: false,
@@ -578,4 +587,47 @@ export const DUALCALCDATA: DualCalcData<DualViewInfo> = {
   sellToken: TOKEN_INFO.tokenMap["USDC"],
   sellVol: "",
   dualViewInfo: DUALVIEWINFO,
+};
+
+export const FOREXMAP: ForexMap<Currency> = {
+  [Currency.usd]: 1,
+  [Currency.cny]: 6.7,
+} as any;
+export const REDPOCKMOCK: LuckyTokenItemForReceive = {
+  hash: "",
+  sender: {
+    accountId: 10008,
+    address: "0xxxxxxxx",
+    ens: "",
+  },
+  champion: {
+    accountId: 10008,
+    address: "0xxxxxxxx",
+    ens: "",
+    amount: 100000,
+  },
+  tokenId: 1,
+  tokenAmount: {
+    totalCount: 10,
+    remainCount: 0,
+    totalAmount: "100000000000000000",
+    remainAmount: "0",
+  } as any,
+  type: {
+    partition: 0,
+    scope: 0,
+    mode: 0,
+  },
+  //@ts-ignore
+  status: "RANDOM",
+  validSince: 1662669827,
+  validUntil: 1662769827,
+  info: {
+    memo: "Best wishes Best wishes Best  wishes wishes Best wishes Best wishes Best wishes Best wishes Best wishes",
+    signer: "",
+    signerUrl: "",
+    logoUrl: "",
+  },
+  templateNo: 0,
+  createdAt: 1662769827,
 };

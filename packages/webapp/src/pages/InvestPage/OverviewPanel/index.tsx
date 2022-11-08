@@ -1,4 +1,4 @@
-import { Trans, WithTranslation, withTranslation } from "react-i18next";
+import { WithTranslation, withTranslation } from "react-i18next";
 import {
   Avatar,
   Box,
