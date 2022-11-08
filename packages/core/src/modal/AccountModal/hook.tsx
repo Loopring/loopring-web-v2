@@ -300,18 +300,6 @@ export function useAccountModalForUI({
     }
   }, [account.readyState, isShowAccount, setShowAccount]);
 
-  const backToDepositBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: false });
-        if (!depositProps.isAllowInputToAddress) {
-          setShowDeposit({ isShow: true });
-        }
-      },
-    };
-  }, [setShowAccount, depositProps.isAllowInputToAddress, setShowDeposit]);
-
   const backToNFTDepositBtnInfo = React.useMemo(() => {
     return {
       btnTxt: "labelRetry",
@@ -715,7 +703,12 @@ export function useAccountModalForUI({
       [AccountStep.Deposit_Approve_Denied]: {
         view: (
           <Deposit_Approve_Denied
-            btnInfo={backToDepositBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                setShowAccount({ isShow: false });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -723,12 +716,9 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: !depositProps.isAllowInputToAddress
-          ? () => {
-              setShowAccount({ isShow: false });
-              setShowDeposit({ isShow: true });
-            }
-          : undefined,
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
       },
       [AccountStep.Deposit_Approve_Submit]: {
         view: (
@@ -741,12 +731,9 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: !depositProps.isAllowInputToAddress
-          ? () => {
-              setShowAccount({ isShow: false });
-              setShowDeposit({ isShow: true });
-            }
-          : undefined,
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
       },
       [AccountStep.Deposit_WaitForAuth]: {
         view: (
@@ -763,17 +750,19 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: !depositProps.isAllowInputToAddress
-          ? () => {
-              setShowAccount({ isShow: false });
-              setShowDeposit({ isShow: true });
-            }
-          : undefined,
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
       },
       [AccountStep.Deposit_Denied]: {
         view: (
           <Deposit_Denied
-            btnInfo={backToDepositBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                setShowAccount({ isShow: false });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -781,17 +770,22 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: !depositProps.isAllowInputToAddress
-          ? () => {
-              setShowAccount({ isShow: false });
-              setShowDeposit({ isShow: true });
-            }
-          : undefined,
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
       },
       [AccountStep.Deposit_Failed]: {
         view: (
           <Deposit_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={{
+              btnTxt: "labelClose",
+              callback: (e: any) => {
+                setShouldShow(false);
+                if (onClose) {
+                  onClose(e);
+                }
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -2241,7 +2235,6 @@ export function useAccountModalForUI({
     unlockBtn,
     t,
     onQRBack,
-    backToDepositBtnInfo,
     closeBtnInfo,
     nftDepositValue,
     nftDeployValue,
