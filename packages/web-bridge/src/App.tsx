@@ -1,3 +1,5 @@
+// import { ModalProvider } from 'styled-react-modal'
+import RouterView from "./routers";
 import { GlobalStyles } from "@mui/material";
 import { css, Theme, useTheme } from "@emotion/react";
 import { globalCss, SagaStatus } from "@loopring-web/common-resources";
@@ -8,7 +10,6 @@ import { useTranslation } from "react-i18next";
 
 import { HashRouter as Router, useLocation } from "react-router-dom";
 import { store } from "@loopring-web/core";
-import RouterView from "./routers";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -30,11 +31,11 @@ const App = () => {
     if (storeLan !== language) {
       store.dispatch(setLanguage(language));
     }
-  }, [language, storeLan]);
+  }, [storeLan, language]);
 
   React.useEffect(() => {
     if (window.location.protocol !== "https:") {
-      console.log("Contract NFTMeta error::", window.location.protocol);
+      console.log("Current PROTOCOL::", window.location.protocol);
       window.location.replace(
         `https:${window.location.href.substring(
           window.location.protocol.length
@@ -59,16 +60,18 @@ const App = () => {
           `
             : ``
         }
+
+
       }
 
-      body:before {
-        ${
-          theme.mode === "dark"
-            ? `
+          body:before {
+            ${
+              theme.mode === "dark"
+                ? `
             background: var(--color-global-bg);
        `
-            : ""
-        }
+                : ""
+            }
       }
     }`}
       />
@@ -76,7 +79,6 @@ const App = () => {
       <Router>
         <ScrollToTop />
         <RouterView state={state as SagaStatus} />
-        {/*<RouterView state={state} />*/}
       </Router>
     </>
   );

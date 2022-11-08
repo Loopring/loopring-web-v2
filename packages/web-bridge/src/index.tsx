@@ -44,7 +44,6 @@ const ProviderThen = React.memo(({ children }: { children: JSX.Element }) => {
   const providers: Array<[TProvider<any>, any]> = [
     provider(MuThemeProvider as any, { theme: getTheme(themeMode, isMobile) }),
     provider(ThemeProvider as any, { theme: getTheme(themeMode, isMobile) }),
-    provider(ReactReduxFirebaseProvider as any, { ...firebaseProps }),
     provider(PersistGate as any, { persistor, loading: null }),
     provider(TimeoutCheckProvider as any),
   ] as any;
@@ -53,9 +52,11 @@ const ProviderThen = React.memo(({ children }: { children: JSX.Element }) => {
 
 ReactDOM.render(
   <ProviderApp>
-    <ProviderThen>
-      <App />
-    </ProviderThen>
+    <ReactReduxFirebaseProvider {...firebaseProps}>
+      <ProviderThen>
+        <App />
+      </ProviderThen>
+    </ReactReduxFirebaseProvider>
   </ProviderApp>,
   document.getElementById("root")
 );
