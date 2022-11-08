@@ -322,7 +322,8 @@ export const NFTMedia = React.memo(
               )}
             </>
           )}
-          {item?.pendingOnSync && (
+
+          {item?.pendingOnSync ? (
             <Tooltip
               title={t("labelMintInSyncTooltips").toString()}
               placement={"top"}
@@ -345,10 +346,8 @@ export const NFTMedia = React.memo(
                 </Typography>
               </LabelStyled>
             </Tooltip>
-
-            // <Box position={"absolute"} left={0}>
-            //   <SyncIcon />
-            // </Box>
+          ) : (
+            ""
           )}
         </BoxStyle>
       );

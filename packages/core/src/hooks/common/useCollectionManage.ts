@@ -9,6 +9,7 @@ import {
   getIPFSString,
   LoopringAPI,
   useAccount,
+  useNFTListDeep,
   useSystem,
   useToast,
 } from "../../index";
@@ -36,6 +37,8 @@ export const useCollectionManage = <
   const { t } = useTranslation();
   const [filter, setFilter] = React.useState({});
   const toastObj = useToast();
+  const { renderNFTPromise, nftListReduce } = useNFTListDeep();
+
   const [selectedNFTS, setSelectedNFTS] = React.useState<NFT[]>([]);
   const [{ listNFT, total, page }, setListNFTValue] = React.useState<{
     listNFT: NFT[];
@@ -56,6 +59,7 @@ export const useCollectionManage = <
       if (collection && LoopringAPI.userAPI) {
         onNFTSelected("removeAll");
         setFilter(props);
+        setIsLoading(true);
         const {
           legacyFilter = sdk.LegacyNFT.undecided,
           limit = pageSize,
@@ -80,10 +84,30 @@ export const useCollectionManage = <
         ) {
         } else {
           setListNFTValue({
-            listNFT: response.userNFTBalances as NFT[],
             total: response.totalNum,
             page: _page,
+            listNFT: nftListReduce(response.userNFTBalances),
           });
+          setIsLoading(false);
+          renderNFTPromise({ nftLists: response.userNFTBalances }).then(
+            (meta: any[]) => {
+              if (page === _page) {
+                setListNFTValue((state) => {
+                  return {
+                    ...state,
+                    listNFT: state.listNFT?.map((item, index) => {
+                      return {
+                        ...item,
+                        ...meta[index],
+                        tokenAddress: item.tokenAddress?.toLowerCase(),
+                        // etherscanBaseUrl,
+                      };
+                    }),
+                  };
+                });
+              }
+            }
+          );
         }
         setIsLoading(false);
       }
@@ -168,7 +192,6 @@ export const useCollectionManage = <
   );
   React.useEffect(() => {
     if (collection?.id && account.accountId) {
-      setIsLoading(true);
       onNFTSelected("removeAll");
       onFilterNFT({});
     }

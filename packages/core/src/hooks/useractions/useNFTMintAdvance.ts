@@ -653,7 +653,10 @@ export const useNFTMintAdvance = <
     isNotAvailableTokenAddress,
     isNotAvailableCID,
     collectionInputProps: {
-      collectionListProps,
+      collectionListProps: {
+        ...collectionListProps,
+        size: "small",
+      },
       collection: nftMintAdvanceValue.collectionMeta as Co,
       onSelected: (item) => {
         handleOnNFTDataChange({ collectionMeta: item } as unknown as T);

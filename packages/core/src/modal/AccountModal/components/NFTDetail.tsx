@@ -591,6 +591,28 @@ export const NFTDetail = withTranslation("common")(
                     color={"var(--color-text-third)"}
                     width={150}
                   >
+                    {t("labelNFTRoyaltyPercentage")}
+                  </Typography>
+                  <Typography
+                    component={"span"}
+                    color={"var(--color-text-secondary)"}
+                    // title={popItem?.royaltyPercentage}
+                  >
+                    {popItem?.royaltyPercentage ?? EmptyValueTag + "%"}
+                  </Typography>
+                </Typography>
+                <Typography
+                  display={"inline-flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  variant={"body1"}
+                  marginTop={1}
+                >
+                  <Typography
+                    component={"span"}
+                    color={"var(--color-text-third)"}
+                    width={150}
+                  >
                     {t("labelNFTTYPE")}
                   </Typography>
                   <Typography

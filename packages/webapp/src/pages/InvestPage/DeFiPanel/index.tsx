@@ -123,7 +123,7 @@ const LandDefiInvest = ({
           history.push(defiWSTETHAdvice.router);
         }
       },
-      apy: defiMarketMap[defiWSTETHAdvice.market]?.apy,
+      apy: defiMarketMap[defiWSTETHAdvice?.market ?? ""]?.apy,
     },
     {
       ...defiRETHAdvice,
@@ -135,7 +135,7 @@ const LandDefiInvest = ({
           history.push(defiRETHAdvice.router);
         }
       },
-      apy: defiMarketMap[defiWSTETHAdvice.market]?.apy,
+      apy: defiMarketMap[defiWSTETHAdvice?.market ?? ""]?.apy,
     },
   ];
 

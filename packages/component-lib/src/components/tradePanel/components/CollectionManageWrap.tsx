@@ -5,6 +5,7 @@ import { Box, Typography, Tab, Tabs } from "@mui/material";
 import { useSettings } from "../../../stores";
 import {
   CollectionMeta,
+  EmptyValueTag,
   NFTWholeINFO,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
@@ -13,6 +14,7 @@ import { CollectionManageProps, CollectionMethod } from "./Interface";
 import styled from "@emotion/styled";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { Toast } from "../../toast";
+import { sanitize } from "dompurify";
 
 const BoxStyle = styled(Box)`
   .nft-list-wrap {
@@ -86,6 +88,7 @@ export const CollectionManageWrap = <
       case sdk.LegacyNFT.undecided:
         return (
           <Button
+            disabled={!selectedNFTS?.length}
             onClick={() => {
               onNFTSelectedMethod(selectedNFTS, CollectionMethod.moveIn);
             }}
@@ -99,6 +102,7 @@ export const CollectionManageWrap = <
       case sdk.LegacyNFT.outside:
         return (
           <Button
+            disabled={!selectedNFTS?.length}
             onClick={() => {
               onNFTSelectedMethod(selectedNFTS, CollectionMethod.moveOut);
             }}
@@ -106,12 +110,13 @@ export const CollectionManageWrap = <
             size={"small"}
             sx={{ marginLeft: 1, height: 24, fontSize: "1.2rem" }}
           >
-            {t("labelMoveIn", { symbol: t("labelImportCollectionMove") })}
+            {t("moveOut", { symbol: t("labelImportCollectionMove") })}
           </Button>
         );
       case sdk.LegacyNFT.inside:
         return (
           <Button
+            disabled={!selectedNFTS?.length}
             onClick={() => {
               onNFTSelectedMethod(selectedNFTS, CollectionMethod.moveOut);
             }}
@@ -144,38 +149,56 @@ export const CollectionManageWrap = <
         <Box
           display={"flex"}
           flex={1}
+          marginTop={2}
           flexDirection={"column"}
           alignItems={"stretch"}
         >
-          <Tabs
-            value={tab}
-            onChange={handleTabChange}
-            aria-label="disabled tabs example"
-            sx={{ marginLeft: -2 }}
-          >
-            {[
-              sdk.LegacyNFT.undecided,
-              sdk.LegacyNFT.outside,
-              sdk.LegacyNFT.inside,
-              "all",
-            ].map((item) => {
-              return (
-                <Tab
-                  key={item.toString()}
-                  value={item.toString()}
-                  label={t(`labelImportCollection${item}`)}
-                />
-              );
-            })}
-          </Tabs>
+          <Typography display={"inline-flex"}>
+            <Typography color={"var(--color-text-third)"}>
+              {t("labelNFTCollectionName")}
+            </Typography>
+            <Typography
+              component={"pre"}
+              paddingLeft={1}
+              color={"var(--color-text-primary)"}
+              width={150}
+              overflow={"hidden"}
+              textOverflow={"ellipsis"}
+              dangerouslySetInnerHTML={{
+                __html:
+                  sanitize(collection?.name?.toString() ?? EmptyValueTag) ?? "",
+              }}
+            />
+          </Typography>
+
           <Box
             display={"flex"}
             flexDirection={"row"}
             justifyContent={"space-between"}
-            marginTop={1}
             alignItems={"center"}
+            marginTop={1}
           >
-            <Typography variant={"body1"}>{collection.name}</Typography>
+            <Tabs
+              value={tab}
+              onChange={handleTabChange}
+              aria-label="disabled tabs example"
+              sx={{ marginLeft: -2 }}
+            >
+              {[
+                sdk.LegacyNFT.undecided,
+                sdk.LegacyNFT.outside,
+                sdk.LegacyNFT.inside,
+                "all",
+              ].map((item) => {
+                return (
+                  <Tab
+                    key={item.toString()}
+                    value={item.toString()}
+                    label={t(`labelImportCollection${item}`)}
+                  />
+                );
+              })}
+            </Tabs>
             {tab !== "all" && (
               <Box
                 display={"flex"}
@@ -211,8 +234,8 @@ export const CollectionManageWrap = <
               onPageChange={(page: number) => {
                 onFilterNFT({ ...filter, page });
               }}
-              isSelectOnly={true}
-              isMultipleSelect={true}
+              isSelectOnly={tab !== "all"}
+              isMultipleSelect={tab !== "all"}
               getIPFSString={getIPFSString}
               baseURL={baseURL}
               nftList={listNFT}
@@ -222,7 +245,9 @@ export const CollectionManageWrap = <
               size={"small"}
               selected={selectedNFTS}
               onClick={async (_item) => {
-                onNFTSelected(_item as NFT);
+                if (tab !== "all") {
+                  onNFTSelected(_item as NFT);
+                }
               }}
             />
           </BoxStyle>
