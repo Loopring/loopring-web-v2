@@ -62,6 +62,7 @@ export const makeUIAmmActivityMap = <
                 idIndex &&
                 tokenMap
               ) {
+                // @ts-ignore
                 const { current } = myReward
                   ? myReward[ammPoolActivityRule.market]
                   : { current: undefined };
