@@ -1093,7 +1093,7 @@ export default {
   labelMoveIn: "Move into {{symbol}}",
   labelMoveInCollection: "Collection",
   labelSelectAll: "Select All",
-  labelCancelAll: "Cancel All",
+  labelCancelAll: "Cancel",
   labelDoneBtn: "Done",
   labelDetail: "Detail",
   labelNFTMyCollection: "Collection: {{collection}}",

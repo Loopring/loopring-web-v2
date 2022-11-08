@@ -288,7 +288,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
             alignItems={"center"}
             sx={{
               marginLeft: 0,
-              paddingLeft: 0,
+              paddingLeft: 1,
               justifyContent: "flex-start",
             }}
             onClick={(e) => {
@@ -304,7 +304,8 @@ export const CollectionInput = <Co extends CollectionMeta>({
               }
             }}
           >
-            "https://xxxxxxxx" <CopyIcon color={"inherit"} />
+            {domain}/{collection.contractAddress}
+            <CopyIcon color={"inherit"} />
           </Link>
         </Typography>
       )}
