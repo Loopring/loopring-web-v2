@@ -66,7 +66,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const history = useHistory();
-  const { search, pathname } = useLocation();
+  const { search, ...location } = useLocation();
   const searchParams = new URLSearchParams(search);
 
   const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
@@ -326,8 +326,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
               }
               walletLayer2Service.sendUserUpdate();
               searchParams.delete("detail");
-              history.push(pathname + "?" + searchParams.toString());
-
+              history.push({
+                ...location,
+                search: searchParams.toString(),
+              });
               // if (nftWithdrawValue.collectionMeta) {
               //   history.push({
               //     pathname: `/NFT/assetsNFT/byCollection/${nftWithdrawValue.collectionMeta?.id}-${nftWithdrawValue.collectionMeta?.contractAddress}`,

@@ -17,13 +17,11 @@ import {
   store,
   useAccount,
 } from "@loopring-web/core";
-import { connectProvides } from "@loopring-web/web3-provider";
-import { useSystem } from "@loopring-web/core";
+import { useSystem, useNFTListDeep } from "@loopring-web/core";
 import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import * as sdk from "@loopring-web/loopring-sdk";
-import Web3 from "web3";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
@@ -38,6 +36,7 @@ export const useMyNFT = ({
 }) => {
   // const match: any = useRouteMatch("/NFT/assetsNFT/:tab?/:contract?");
   const { search, ...rest } = useLocation();
+  const { renderNFTPromise, infoDetail, nftListReduce } = useNFTListDeep();
   const history = useHistory();
   const searchParams = new URLSearchParams(search);
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
@@ -55,7 +54,7 @@ export const useMyNFT = ({
     useModalData();
 
   const { setShowNFTDetail } = useOpenModals();
-  const { etherscanBaseUrl, baseURL } = useSystem();
+  const { etherscanBaseUrl } = useSystem();
   const [page, setPage] = useState(-1);
 
   // const onDetailClose = React.useCallback(() => setIsShow(false), []);
@@ -73,149 +72,149 @@ export const useMyNFT = ({
     history.replace({ ...rest, search: searchParams.toString() });
   };
 
-  const getMetaFromContractORIpfs = ({
-    tokenAddress,
-    nftId,
-    isCounterFactualNFT,
-    deploymentStatus,
-    metadata,
-  }: sdk.UserNFTBalanceInfo): Promise<LOOPRING_NFT_METADATA | {}> => {
-    if (!!metadata?.imageSize?.original) {
-      return Promise.resolve({});
-    } else if (
-      LoopringAPI.nftAPI &&
-      tokenAddress &&
-      (!metadata?.uri ||
-        tokenAddress.toLowerCase() ===
-          "0x1cACC96e5F01e2849E6036F25531A9A064D2FB5f".toLowerCase()) &&
-      nftId &&
-      (!isCounterFactualNFT ||
-        (isCounterFactualNFT &&
-          deploymentStatus !== sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED))
-    ) {
-      const _id = new BigNumber(nftId ?? "", 16);
-      myLog("nftId", _id, _id.toString());
-      return LoopringAPI?.nftAPI
-        ?.getContractNFTMeta({
-          _id: _id.toString(),
-          // @ts-ignore
-          nftId,
-          web3: connectProvides.usedWeb3 as unknown as Web3,
-          tokenAddress,
-        })
-        .then((response) => {
-          if ((response as sdk.RESULT_INFO).code) {
-            console.log("Contract NFTMeta error:", response);
-            return {};
-          } else {
-            return Reflect.ownKeys(LOOPRING_TAKE_NFT_META_KET).reduce(
-              (prev, key) => {
-                return { ...prev, [key]: response[key] };
-              },
-              {} as LOOPRING_NFT_METADATA
-            );
-          }
-        })
-        .catch((error) => {
-          return {};
-        });
-    } else {
-      try {
-        const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(nftId ?? "");
-        const uri = IPFS_LOOPRING_SITE + cid;
-        return fetch(uri)
-          .then((response) => response.json())
-          .catch((error) => {
-            return {};
-          });
-      } catch (e) {
-        return Promise.resolve({});
-      }
-    }
-  };
+  // const getMetaFromContractORIpfs = ({
+  //   tokenAddress,
+  //   nftId,
+  //   isCounterFactualNFT,
+  //   deploymentStatus,
+  //   metadata,
+  // }: sdk.UserNFTBalanceInfo): Promise<LOOPRING_NFT_METADATA | {}> => {
+  //   if (!!metadata?.imageSize?.original) {
+  //     return Promise.resolve({});
+  //   } else if (
+  //     LoopringAPI.nftAPI &&
+  //     tokenAddress &&
+  //     (!metadata?.uri ||
+  //       tokenAddress.toLowerCase() ===
+  //         "0x1cACC96e5F01e2849E6036F25531A9A064D2FB5f".toLowerCase()) &&
+  //     nftId &&
+  //     (!isCounterFactualNFT ||
+  //       (isCounterFactualNFT &&
+  //         deploymentStatus !== sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED))
+  //   ) {
+  //     const _id = new BigNumber(nftId ?? "", 16);
+  //     myLog("nftId", _id, _id.toString());
+  //     return LoopringAPI?.nftAPI
+  //       ?.getContractNFTMeta({
+  //         _id: _id.toString(),
+  //         // @ts-ignore
+  //         nftId,
+  //         web3: connectProvides.usedWeb3 as unknown as Web3,
+  //         tokenAddress,
+  //       })
+  //       .then((response) => {
+  //         if ((response as sdk.RESULT_INFO).code) {
+  //           console.log("Contract NFTMeta error:", response);
+  //           return {};
+  //         } else {
+  //           return Reflect.ownKeys(LOOPRING_TAKE_NFT_META_KET).reduce(
+  //             (prev, key) => {
+  //               return { ...prev, [key]: response[key] };
+  //             },
+  //             {} as LOOPRING_NFT_METADATA
+  //           );
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         return {};
+  //       });
+  //   } else {
+  //     try {
+  //       const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(nftId ?? "");
+  //       const uri = IPFS_LOOPRING_SITE + cid;
+  //       return fetch(uri)
+  //         .then((response) => response.json())
+  //         .catch((error) => {
+  //           return {};
+  //         });
+  //     } catch (e) {
+  //       return Promise.resolve({});
+  //     }
+  //   }
+  // };
 
-  const infoDetail = React.useCallback(async (item: Partial<NFTWholeINFO>) => {
-    const nftData: sdk.NftData = item.nftData as sdk.NftData;
-    let [nftMap] = await Promise.all([
-      LoopringAPI.nftAPI?.getInfoForNFTTokens({
-        nftDatas: [nftData],
-      }),
-    ]);
-    const nftToken: Partial<sdk.NFTTokenInfo> =
-      nftMap && nftMap[nftData as sdk.NftData]
-        ? nftMap[nftData as sdk.NftData]
-        : {};
-    let tokenInfo: NFTWholeINFO = {
-      ...item,
-      ...item.metadata?.base,
-      ...item.metadata?.extra,
-      pendingOnSync:
-        item.metadata?.base && Object.keys(item.metadata?.base)?.length > 0
-          ? false
-          : true,
-      ...nftToken,
-    } as NFTWholeINFO;
-    tokenInfo = {
-      ...tokenInfo,
-      nftIdView: new BigNumber(tokenInfo.nftId ?? "0", 16).toString(),
-      nftBalance: tokenInfo.total
-        ? Number(tokenInfo.total) - Number(tokenInfo.locked ?? 0)
-        : 0,
-    };
-    if (!tokenInfo.name) {
-      const meta = (await getMetaFromContractORIpfs(
-        tokenInfo
-      )) as LOOPRING_NFT_METADATA;
-      let metadata_tokenId: number | undefined = undefined;
-      if (meta.hasOwnProperty("tokenId")) {
-        metadata_tokenId = meta["tokenId"];
-        delete meta["tokenId"];
-      }
-
-      if (meta && meta !== {} && (meta.name || meta.image)) {
-        tokenInfo = Object.assign(
-          metadata_tokenId !== undefined ? { metadata_tokenId } : {},
-          {
-            ...tokenInfo,
-            ...(meta as any),
-            isFailedLoadMeta: false,
-          }
-        );
-      } else {
-        tokenInfo = {
-          ...tokenInfo,
-          isFailedLoadMeta: true,
-        };
-      }
-    } else {
-      tokenInfo = {
-        ...tokenInfo,
-        isFailedLoadMeta: false,
-      };
-    }
-    if (
-      tokenInfo.hasOwnProperty("animationUrl") &&
-      tokenInfo.animationUrl &&
-      tokenInfo?.animationUrl !== ""
-    ) {
-      const req = await fetch(getIPFSString(tokenInfo?.animationUrl, baseURL), {
-        method: "HEAD",
-      });
-      // myLog("animationUrl", "content-type", req.headers.get("content-type"));
-
-      if (/audio/gi.test(req?.headers?.get("content-type") ?? "")) {
-        tokenInfo.__mediaType__ = Media.Audio;
-      }
-      if (/video/gi.test(req?.headers?.get("content-type") ?? "")) {
-        tokenInfo.__mediaType__ = Media.Video;
-      }
-      if (/image/gi.test(req?.headers?.get("content-type") ?? "")) {
-        tokenInfo.__mediaType__ = Media.Image;
-      }
-    }
-
-    return tokenInfo;
-  }, []);
+  // const infoDetail = React.useCallback(async (item: Partial<NFTWholeINFO>) => {
+  //   const nftData: sdk.NftData = item.nftData as sdk.NftData;
+  //   let [nftMap] = await Promise.all([
+  //     LoopringAPI.nftAPI?.getInfoForNFTTokens({
+  //       nftDatas: [nftData],
+  //     }),
+  //   ]);
+  //   const nftToken: Partial<sdk.NFTTokenInfo> =
+  //     nftMap && nftMap[nftData as sdk.NftData]
+  //       ? nftMap[nftData as sdk.NftData]
+  //       : {};
+  //   let tokenInfo: NFTWholeINFO = {
+  //     ...item,
+  //     ...item.metadata?.base,
+  //     ...item.metadata?.extra,
+  //     pendingOnSync:
+  //       item.metadata?.base && Object.keys(item.metadata?.base)?.length > 0
+  //         ? false
+  //         : true,
+  //     ...nftToken,
+  //   } as NFTWholeINFO;
+  //   tokenInfo = {
+  //     ...tokenInfo,
+  //     nftIdView: new BigNumber(tokenInfo.nftId ?? "0", 16).toString(),
+  //     nftBalance: tokenInfo.total
+  //       ? Number(tokenInfo.total) - Number(tokenInfo.locked ?? 0)
+  //       : 0,
+  //   };
+  //   if (!tokenInfo.name) {
+  //     const meta = (await getMetaFromContractORIpfs(
+  //       tokenInfo
+  //     )) as LOOPRING_NFT_METADATA;
+  //     let metadata_tokenId: number | undefined = undefined;
+  //     if (meta.hasOwnProperty("tokenId")) {
+  //       metadata_tokenId = meta["tokenId"];
+  //       delete meta["tokenId"];
+  //     }
+  //
+  //     if (meta && meta !== {} && (meta.name || meta.image)) {
+  //       tokenInfo = Object.assign(
+  //         metadata_tokenId !== undefined ? { metadata_tokenId } : {},
+  //         {
+  //           ...tokenInfo,
+  //           ...(meta as any),
+  //           isFailedLoadMeta: false,
+  //         }
+  //       );
+  //     } else {
+  //       tokenInfo = {
+  //         ...tokenInfo,
+  //         isFailedLoadMeta: true,
+  //       };
+  //     }
+  //   } else {
+  //     tokenInfo = {
+  //       ...tokenInfo,
+  //       isFailedLoadMeta: false,
+  //     };
+  //   }
+  //   if (
+  //     tokenInfo.hasOwnProperty("animationUrl") &&
+  //     tokenInfo.animationUrl &&
+  //     tokenInfo?.animationUrl !== ""
+  //   ) {
+  //     const req = await fetch(getIPFSString(tokenInfo?.animationUrl, baseURL), {
+  //       method: "HEAD",
+  //     });
+  //     // myLog("animationUrl", "content-type", req.headers.get("content-type"));
+  //
+  //     if (/audio/gi.test(req?.headers?.get("content-type") ?? "")) {
+  //       tokenInfo.__mediaType__ = Media.Audio;
+  //     }
+  //     if (/video/gi.test(req?.headers?.get("content-type") ?? "")) {
+  //       tokenInfo.__mediaType__ = Media.Video;
+  //     }
+  //     if (/image/gi.test(req?.headers?.get("content-type") ?? "")) {
+  //       tokenInfo.__mediaType__ = Media.Image;
+  //     }
+  //   }
+  //
+  //   return tokenInfo;
+  // }, []);
 
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
@@ -301,24 +300,9 @@ export const useMyNFT = ({
   };
 
   const renderNFT = React.useCallback(async () => {
-    let mediaPromise: any[] = [];
-    setNFTList(() => {
-      return walletLayer2NFT.map((item) => {
-        return {
-          ...item,
-          nftIdView: new BigNumber(item?.nftId ?? "0", 16).toString(),
-          image: item.metadata?.uri,
-          ...item.metadata?.base,
-          ...item.metadata?.extra,
-        };
-      }) as any;
-    });
+    setNFTList(nftListReduce(walletLayer2NFT));
     setIsLoading(false);
-    for (const nftBalanceItem of walletLayer2NFT) {
-      mediaPromise.push(infoDetail(nftBalanceItem));
-    }
-
-    Promise.all(mediaPromise).then((meta: any[]) => {
+    renderNFTPromise({ nftLists: walletLayer2NFT }).then((meta: any[]) => {
       const { walletLayer2NFT, page: page_reudex } =
         store.getState().walletLayer2NFT;
       myLog("walletLayer2NFT  async media render", page, page_reudex);
@@ -335,7 +319,7 @@ export const useMyNFT = ({
         });
       }
     });
-  }, [etherscanBaseUrl, infoDetail, page, walletLayer2NFT]);
+  }, [etherscanBaseUrl, page, walletLayer2NFT]);
   React.useEffect(() => {
     onPageChange(myNFTPage);
   }, [myNFTPage, collectionMeta?.id, collectionMeta?.contractAddress]);

@@ -69,7 +69,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
   const history = useHistory();
-  const { search, pathname } = useLocation();
+  const { search, ...location } = useLocation();
   const searchParams = new URLSearchParams(search);
 
   const [sureItsLayer2, setSureItsLayer2] =
@@ -331,27 +331,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
               }
               walletLayer2Service.sendUserUpdate();
               searchParams.delete("detail");
-              history.push(pathname + "?" + searchParams.toString());
-
-              // if (nftTransferValue.collectionMeta) {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byCollection/${nftTransferValue.collectionMeta?.id}-${nftTransferValue.collectionMeta?.contractAddress}`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page: Number(searchParams.get("collectionPage")) ?? 1,
-              //   //   collection: nftTransferValue.collectionMeta?.contractAddress,
-              //   // });
-              // } else {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byList`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page,
-              //   //   collection: undefined,
-              //   // });
-              // }
+              history.push({
+                ...location,
+                search: searchParams.toString(),
+              });
               setShowNFTDetail({ isShow: false });
               resetNFTTransferData();
             }

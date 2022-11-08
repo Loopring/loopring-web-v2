@@ -252,22 +252,24 @@ export const ImportCollectionWrap = <
                             </Box>
                           );
                         })}
-                        <Box
-                          marginRight={2}
-                          width={60}
-                          height={60}
-                          borderRadius={1}
-                          display={"flex"}
-                          overflow={"hidden"}
-                          alignItems={"center"}
-                          justifyContent={"center"}
-                          border={"1px var(--color-border-disable) solid"}
-                        >
-                          <ViewMoreIcon
-                            fontSize={"large"}
-                            htmlColor={"var(--color-text-secondary)"}
-                          />
-                        </Box>
+                        {selectContract.total > 3 && (
+                          <Box
+                            marginRight={2}
+                            width={60}
+                            height={60}
+                            borderRadius={1}
+                            display={"flex"}
+                            overflow={"hidden"}
+                            alignItems={"center"}
+                            justifyContent={"center"}
+                            border={"1px var(--color-border-disable) solid"}
+                          >
+                            <ViewMoreIcon
+                              fontSize={"large"}
+                              htmlColor={"var(--color-text-secondary)"}
+                            />
+                          </Box>
+                        )}
                       </>
                     ) : (
                       <Box flex={1} alignItems={"center"}>
@@ -386,6 +388,10 @@ export const ImportCollectionWrap = <
                       },
                     }}
                     fullWidth={true}
+                    collectionListProps={{
+                      ...collectionInputProps.collectionListProps,
+                      size: "small",
+                    }}
                     size={isMobile ? "small" : "large"}
                     showCopy={true}
                   />

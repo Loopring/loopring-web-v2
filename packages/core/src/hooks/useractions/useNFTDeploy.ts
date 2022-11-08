@@ -12,6 +12,7 @@ import {
   isAccActivated,
   useChargeFees,
   useWalletLayer2NFT,
+  useWalletL2Collection,
 } from "../../index";
 import {
   AccountStep,
@@ -57,6 +58,9 @@ export function useNFTDeploy<
   const { nftDeployValue, updateNFTDeployData, resetNFTDeployData } =
     useModalData();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
+  const { page: collectionPage, updateWalletL2Collection } =
+    useWalletL2Collection();
+
   const {
     setShowAccount,
     setShowNFTDetail,
@@ -66,7 +70,7 @@ export function useNFTDeploy<
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
   const history = useHistory();
-  const { search, pathname } = useLocation();
+  const { search, ...location } = useLocation();
   const searchParams = new URLSearchParams(search);
 
   const {
@@ -203,31 +207,21 @@ export function useNFTDeploy<
               }
               walletLayer2Service.sendUserUpdate();
               searchParams.delete("detail");
-              history.push(pathname + "?" + searchParams.toString());
-              // history.push({
-              //   search,
-              //   ...restLocation,
-              // });
-
-              // if (nftDeployValue.collectionMeta) {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byCollection/${nftDeployValue.collectionMeta.id}-${nftDeployValue.collectionMeta.contractAddress}`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page: Number(searchParams.get("collectionPage")) ?? 1,
-              //   //   collection: nftDeployValue.collectionMeta,
-              //   // });
-              // } else {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byList`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page,
-              //   //   collection: undefined,
-              //   // });
-              // }
+              history.push({
+                ...location,
+                search: searchParams.toString(),
+              });
+              if (nftDeployValue.nftData) {
+                updateWalletLayer2NFT({
+                  page: Number(searchParams.get("collectionPage")) ?? 1,
+                  collection:
+                    (nftDeployValue?.collectionMeta as any) ?? undefined,
+                });
+              } else {
+                updateWalletL2Collection({
+                  page: collectionPage,
+                });
+              }
               setShowNFTDeploy({ isShow: false });
               setShowNFTDetail({ isShow: false });
               resetNFTDeployData();

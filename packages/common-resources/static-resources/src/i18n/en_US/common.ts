@@ -407,6 +407,7 @@ export default {
   labelNFTMyNFT: "My NFTs - Collection: {{collection}}",
   labelNFTTokenID: "ID:",
   labelNFTTYPE: "Token Standard:",
+  labelNFTRoyaltyPercentage: "Royalty (%):",
   labelNFTID: "ID:",
   labelNFTMinter: "Minter:",
   labelNFTMint: "Create NFT",
@@ -1092,7 +1093,7 @@ export default {
   labelMoveIn: "Move into {{symbol}}",
   labelMoveInCollection: "Collection",
   labelSelectAll: "Select All",
-  labelCancelAll: "Cancel All",
+  labelCancelAll: "Cancel",
   labelDoneBtn: "Done",
   labelDetail: "Detail",
   labelNFTMyCollection: "Collection: {{collection}}",
@@ -1111,4 +1112,7 @@ export default {
   labelSync: "in Sync",
   labelMintInSyncTooltips:
     "The NFT and collection information may not be synced up timely after minting due to onChain operation. Please stay tuned and refresh the page later.",
+  labelEstRateApr: "Est.rate (APR)",
+  labelManageCollectionTitle: "Manage Legacy NFT",
+  labelLegacy: "legacy",
 };

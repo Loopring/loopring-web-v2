@@ -154,6 +154,7 @@ const ActionMemo = React.memo(
               </MenuItem>
             )}
             {item.isCounterFactualNFT &&
+            item.baseUri !== "" &&
             item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
             item.owner?.toLowerCase() === account?.accAddress?.toLowerCase() ? (
               <MenuItem

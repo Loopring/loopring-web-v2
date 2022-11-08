@@ -161,48 +161,48 @@ const getInvestMapApi = async () => {
   );
   if (defiMarketMap) {
     investTokenTypeMap = Object.keys(defiMarketMap).reduce((prev, key) => {
-      const [, coinA, coinB] = key.match(/(\w+)-(\w+)/i);
+      const [, _coinA, coinB] = key.match(/(\w+)-(\w+)/i);
       const defiInfo = defiMarketMap[key];
-      if (prev[coinA] && prev[coinA]) {
-        let investItem = prev[coinA][InvestMapType.STAKE];
-        if (investItem) {
-          investItem.apr = calcDefiApr(defiInfo, investItem);
-        } else {
-          prev[coinA][InvestMapType.STAKE] = {
-            type: InvestMapType.STAKE,
-            // token: tokenMap[coinB],
-            i18nKey: `labelInvestType_${InvestMapType.STAKE}`,
-            apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
-            durationType: InvestDuration.Flexible,
-            duration: "",
-          };
-        }
-      } else {
-        prev[coinA] = {
-          detail: {
-            token: tokenMap[coinA],
-            apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
-            durationType: InvestDuration.All,
-            duration: "",
-          },
-          [InvestMapType.STAKE]: {
-            type: InvestMapType.STAKE,
-            // token: tokenMap[coinB],
-            i18nKey: `labelInvestType_${InvestMapType.STAKE}`,
-            apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
-            durationType: InvestDuration.Flexible,
-            duration: "",
-          },
-        };
-      }
-      if (prev[coinA]?.detail && defiInfo.apy) {
-        prev[coinA].detail.apr = [
-          prev[coinA]?.detail?.apr[0] === 0
-            ? defiInfo.apy
-            : Math.min(defiInfo.apy, prev[coinA]?.detail?.apr[0]),
-          Math.max(defiInfo.apy, prev[coinA]?.detail?.apr[1]),
-        ];
-      }
+      // if (prev[coinA] && prev[coinA]) {
+      //   let investItem = prev[coinA][InvestMapType.STAKE];
+      //   if (investItem) {
+      //     investItem.apr = calcDefiApr(defiInfo, investItem);
+      //   } else {
+      //     prev[coinA][InvestMapType.STAKE] = {
+      //       type: InvestMapType.STAKE,
+      //       // token: tokenMap[coinB],
+      //       i18nKey: `labelInvestType_${InvestMapType.STAKE}`,
+      //       apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
+      //       durationType: InvestDuration.Flexible,
+      //       duration: "",
+      //     };
+      //   }
+      // } else {
+      //   prev[coinA] = {
+      //     detail: {
+      //       token: tokenMap[coinA],
+      //       apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
+      //       durationType: InvestDuration.All,
+      //       duration: "",
+      //     },
+      //     [InvestMapType.STAKE]: {
+      //       type: InvestMapType.STAKE,
+      //       // token: tokenMap[coinB],
+      //       i18nKey: `labelInvestType_${InvestMapType.STAKE}`,
+      //       apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
+      //       durationType: InvestDuration.Flexible,
+      //       duration: "",
+      //     },
+      //   };
+      // }
+      // if (prev[coinA]?.detail && defiInfo.apy) {
+      //   prev[coinA].detail.apr = [
+      //     prev[coinA]?.detail?.apr[0] === 0
+      //       ? defiInfo.apy
+      //       : Math.min(defiInfo.apy, prev[coinA]?.detail?.apr[0]),
+      //     Math.max(defiInfo.apy, prev[coinA]?.detail?.apr[1]),
+      //   ];
+      // }
       if (prev[coinB] && prev[coinB]) {
         let investItem = prev[coinB][InvestMapType.STAKE];
         if (investItem) {

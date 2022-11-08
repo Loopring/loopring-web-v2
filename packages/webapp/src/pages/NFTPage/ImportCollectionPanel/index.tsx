@@ -71,7 +71,9 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>() => {
           color={"inherit"}
           onClick={() => history.push("/nft/myCollection")}
         >
-          {t("labelImportCollectionTitle")}
+          {searchParams.get("isEdit")
+            ? t("labelManageCollectionTitle")
+            : t("labelImportCollectionTitle")}
         </Button>
       </Box>
       <StyledPaperBg flex={1} display={"flex"}>
