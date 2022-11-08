@@ -315,7 +315,7 @@ export const DualDetail = ({
         paddingX={2}
         marginTop={2}
       >
-        { true && <>
+        { displayMode === "nonBeginnerMode" && <>
         <Typography
           variant={"body1"}
           display={"inline-flex"}
