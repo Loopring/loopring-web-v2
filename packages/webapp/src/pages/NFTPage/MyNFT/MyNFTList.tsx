@@ -9,12 +9,13 @@ export const MyNFTList = withTranslation("common")(
     collectionMeta,
     collectionPage,
     myNFTPage,
-
+    size,
     t,
   }: {
     collectionMeta: CollectionMeta | undefined;
     collectionPage?: number;
     myNFTPage?: number;
+    size?: string;
   } & WithTranslation) => {
     const nftProps = useMyNFT({ collectionMeta, collectionPage, myNFTPage });
     const { baseURL } = useSystem();
@@ -22,7 +23,7 @@ export const MyNFTList = withTranslation("common")(
     return (
       <NFTList
         {...{ ...nftProps, baseURL, onClick: nftProps.onDetail, getIPFSString }}
-        size={isMobile ? "small" : "large"}
+        size={size ?? isMobile ? "small" : "large"}
       />
     );
   }

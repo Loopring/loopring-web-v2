@@ -1115,4 +1115,6 @@ export default {
   labelEstRateApr: "Est.rate (APR)",
   labelManageCollectionTitle: "Manage Legacy NFT",
   labelLegacy: "legacy",
+  labelTitleMyNFTSAvailable: "My Holding NFTs",
+  labelTitleTotalAvailable: "Total NFTs",
 };

@@ -6,6 +6,7 @@ import {
   EmptyDefault,
   useSettings,
   StyledPaperBg,
+  CollectionDetailView,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
@@ -16,6 +17,7 @@ import {
   TradeNFT,
   TOAST_TIME,
   AddIcon,
+  Account,
 } from "@loopring-web/common-resources";
 import {
   getIPFSString,
@@ -27,8 +29,8 @@ import {
 } from "@loopring-web/core";
 import { CreateUrlPanel } from "../components/landingPanel";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { CollectionDetailView } from "../components/CollectionDetailView";
 import { useTheme } from "@emotion/react";
+import { CollectionItemPanel } from "../components/CollectionItemPanel";
 
 enum MyCollectionView {
   List = "List",
@@ -181,6 +183,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             collectionDate={detail}
             getIPFSString={getIPFSString}
             baseURL={baseURL}
+            account={account}
             setShowEdit={(item) => {
               updateCollectionData({ ...item });
               history.push(
@@ -202,12 +205,17 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             height={"100%"}
             display={"flex"}
           >
-            <EmptyDefault
-              sx={{ flex: 1 }}
-              message={() => {
-                return <Trans i18nKey="labelComingSoon">Coming Soon</Trans>;
-              }}
+            <CollectionItemPanel
+              collectionDate={detail}
+              getIPFSString={getIPFSString}
+              baseURL={baseURL}
             />
+            {/*<EmptyDefault*/}
+            {/*  sx={{ flex: 1 }}*/}
+            {/*  message={() => {*/}
+            {/*    return <Trans i18nKey="labelComingSoon">Coming Soon</Trans>;*/}
+            {/*  }}*/}
+            {/*/>*/}
           </StyledPaperBg>
         </Box>
       )}

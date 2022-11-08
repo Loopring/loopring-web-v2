@@ -16,3 +16,4 @@ export * from "./CollectionMedia";
 export * from "./LoadingBlock";
 export * from "./TagIconList";
 export * from "./RedPock";
+export * from "./CollectionDetailView";
