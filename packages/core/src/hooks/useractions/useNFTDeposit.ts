@@ -32,6 +32,7 @@ import {
   getIPFSString,
   depositServices,
   DepositCommands,
+  BIGO,
 } from "../../index";
 
 import { connectProvides } from "@loopring-web/web3-provider";
@@ -51,7 +52,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const { nftDepositValue, updateNFTDepositData, resetNFTDepositData } =
     useModalData();
-  const { walletLayer1 } = useWalletLayer1();
+  const { walletLayer1, updateWalletLayer1 } = useWalletLayer1();
   const { updateDepositHash } = useOnChainInfo();
   const {
     btnStatus,
@@ -64,53 +65,13 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   } = useBtnStatus();
 
   const { setShowAccount, setShowNFTDeposit } = useOpenModals();
-  const updateBtnStatus = React.useCallback(
-    (error?: ErrorType & any) => {
-      resetBtnInfo();
-      myLog("updateBtnStatus", nftDepositValue);
-      if (
-        !error &&
-        walletLayer1 &&
-        nftDepositValue &&
-        nftDepositValue.balance &&
-        nftDepositValue.tradeValue &&
-        sdk.toBig(nftDepositValue.tradeValue).gt(sdk.toBig(0)) &&
-        sdk
-          .toBig(nftDepositValue.tradeValue)
-          .lte(sdk.toBig(nftDepositValue?.balance ?? ""))
-      ) {
-        myLog("try to enable nftDeposit btn!");
-        enableBtn();
-        if (!nftDepositValue.isApproved) {
-          myLog(
-            "!!---> set labelNFTDepositNeedApprove!!!! belong:",
-            nftDepositValue.tokenAddress
-          );
-          setLabelAndParams("labelNFTDepositNeedApprove", {
-            symbol: nftDepositValue.name ?? "unknown NFT",
-          });
-        }
-      } else {
-        myLog("try to disable nftDeposit btn!");
-        disableBtn();
-      }
-    },
-    [
-      resetBtnInfo,
-      nftDepositValue,
-      walletLayer1,
-      enableBtn,
-      setLabelAndParams,
-      disableBtn,
-    ]
-  );
 
   const debounceCheck = _.debounce(
     async (data) => {
       if (LoopringAPI.nftAPI && exchangeInfo) {
         const web3: Web3 = connectProvides.usedWeb3 as unknown as Web3;
         setIsNFTCheckLoading(true);
-
+        updateWalletLayer1();
         let [balance, meta, isApproved] = await Promise.all([
           LoopringAPI.nftAPI.getNFTBalance({
             account: account.accAddress,
@@ -462,6 +423,50 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
     btnInfo,
   };
 
+  const updateBtnStatus = React.useCallback(
+    (error?: ErrorType & any) => {
+      resetBtnInfo();
+      myLog("updateBtnStatus", nftDepositValue);
+      if (
+        !error &&
+        walletLayer1 &&
+        nftDepositValue &&
+        nftDepositValue.balance &&
+        nftDepositValue.tradeValue &&
+        sdk.toBig(walletLayer1?.ETH?.count ?? 0).gt(BIGO) &&
+        sdk.toBig(nftDepositValue.tradeValue).gt(sdk.toBig(0)) &&
+        sdk
+          .toBig(nftDepositValue.tradeValue)
+          .lte(sdk.toBig(nftDepositValue?.balance ?? ""))
+      ) {
+        myLog("try to enable nftDeposit btn!", walletLayer1?.ETH?.count);
+        enableBtn();
+        if (!nftDepositValue.isApproved) {
+          myLog(
+            "!!---> set labelNFTDepositNeedApprove!!!! belong:",
+            nftDepositValue.tokenAddress
+          );
+          setLabelAndParams("labelNFTDepositNeedApprove", {
+            symbol: nftDepositValue.name ?? "unknown NFT",
+          });
+        }
+      } else {
+        if (sdk.toBig(walletLayer1?.ETH?.count ?? 0).eq(BIGO)) {
+          setLabelAndParams("labelNOETH", {});
+        }
+        myLog("try to disable nftDeposit btn!");
+        disableBtn();
+      }
+    },
+    [
+      resetBtnInfo,
+      nftDepositValue,
+      walletLayer1,
+      enableBtn,
+      setLabelAndParams,
+      disableBtn,
+    ]
+  );
   React.useEffect(() => {
     updateBtnStatus();
   }, [
@@ -470,6 +475,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
     nftDepositValue?.nftType,
     nftDepositValue?.tradeValue,
     nftDepositValue?.balance,
+    walletLayer1?.ETH?.count,
   ]);
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {

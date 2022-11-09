@@ -13,7 +13,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   SwipeableViewsProps & {
     _height?: number | string;
     _width?: number | string;
-    ismobile?: boolean | undefined;
+    ismobile?: "true" | "false";
   }
 >`
   position: relative;
@@ -27,7 +27,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
         : `var(--swap-box-height)`
     };     
     ${
-      ismobile
+      ismobile === "true"
         ? ``
         : `   
       width: ${
