@@ -52,7 +52,8 @@ export const useEditCollection = <T extends CollectionMeta>({
   let match: any = useRouteMatch("/nft/:type?/:tokenAddress?");
   const { t } = useTranslation("common");
   const [disabled, _setDisabled] = React.useState(!collectionNFT.enable);
-  const { collectionValue, updateCollectionData } = useModalData();
+  const { collectionValue, updateCollectionData, resetCollectionData } =
+    useModalData();
   const [collectionOldValue] = React.useState<T | undefined>(
     isEdit
       ? ({
@@ -173,6 +174,11 @@ export const useEditCollection = <T extends CollectionMeta>({
   React.useEffect(() => {
     updateBtnStatus();
   }, [collectionValue, updateBtnStatus, keys]);
+  React.useEffect(() => {
+    return () => {
+      resetCollectionData();
+    };
+  }, []);
   const onSubmitClick = React.useCallback(async () => {
     if (
       collectionValue.name?.trim() &&
