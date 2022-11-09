@@ -294,9 +294,10 @@ export const CollectionInput = <Co extends CollectionMeta>({
             onClick={(e) => {
               e.stopPropagation();
               if (collection) {
-                copyToClipBoard(`${domain}/${collection.contractAddress}`);
-                // const { metaDemo } = makeMeta({ collection, domain });
-                // // copyToClipBoard(JSON.stringify(metaDemo));
+                // @ts-ignore
+                copyToClipBoard(
+                  `${domain}/${(collection as any).collectionAddress}`
+                );
                 collectionListProps.setCopyToastOpen({
                   isShow: true,
                   type: "url",
@@ -304,7 +305,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
               }
             }}
           >
-            {domain}/{collection.contractAddress}
+            {domain}/{(collection as any).collectionAddress}
             <CopyIcon color={"inherit"} />
           </Link>
         </Typography>
