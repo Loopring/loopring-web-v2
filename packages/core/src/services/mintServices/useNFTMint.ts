@@ -12,7 +12,6 @@ import {
   useModalData,
   useTokenMap,
   useAccount,
-  ActionResult,
   ActionResultCode,
   DAYS,
   getTimestampDaysLater,
@@ -319,7 +318,7 @@ export function useNFTMint<
 
   const onNFTMintClick = React.useCallback(
     async (isFirstTime: boolean = true) => {
-      let result: ActionResult = { code: ActionResultCode.NoError };
+      let result = { code: ActionResultCode.NoError };
       const nftMintValue = store.getState()._router_modalData.nftMintValue;
       if (
         account.readyState === AccountStatus.ACTIVATED &&

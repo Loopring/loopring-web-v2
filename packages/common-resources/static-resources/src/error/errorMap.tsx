@@ -290,6 +290,11 @@ export const ErrorMap = {
     messageKey: "errorPrivateKey",
     options: {},
   },
+  ERROR_NO_RESPONSE: {
+    id: "ERROR_NO_RESPONSE",
+    messageKey: "errorNoResponse",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -315,6 +320,7 @@ export enum UIERROR_CODE {
   IPFS_TIME_OUT = 700020,
   ERROR_ON_FEE_UI = 700021,
   ERROR_PRIVATE_KEY = 700022,
+  ERROR_NO_RESPONSE = 700023,
   ERROR_DUAL_EXPIRED = 115003,
 }
 export type ErrorObject = {
@@ -346,6 +352,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   700020: ErrorMap.IPFS_TIME_OUT,
   700021: ErrorMap.ERROR_ON_FEE,
   700022: ErrorMap.ERROR_PRIVATE_KEY,
+  700023: ErrorMap.ERROR_NO_RESPONSE,
   700100: ErrorMap.ERROR_RAMP_NO_INSTANCE,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument

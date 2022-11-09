@@ -45,7 +45,7 @@ import {
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useTranslation } from "react-i18next";
 import { getIPFSString, getTimestampDaysLater, makeMeta } from "../../utils";
-import { ActionResult, ActionResultCode, DAYS } from "../../defs";
+import { ActionResultCode, DAYS } from "../../defs";
 import { useHistory } from "react-router-dom";
 import Web3 from "web3";
 
@@ -521,7 +521,7 @@ export const useNFTMintAdvance = <
 
   const onNFTMintAdvanceClick = React.useCallback(
     async (_nftMintAdvanceValue, isFirstTime: boolean = true) => {
-      let result: ActionResult = { code: ActionResultCode.NoError };
+      let result = { code: ActionResultCode.NoError };
       // pattern="^Qm[a-zA-Z0-9]{44}$"
       if (
         LoopringAPI.userAPI &&

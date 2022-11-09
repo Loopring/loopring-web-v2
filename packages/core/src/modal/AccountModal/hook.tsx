@@ -115,6 +115,7 @@ import {
   TradeTypes,
 } from "@loopring-web/common-resources";
 import {
+  depositServices,
   goActiveAccount,
   lockAccount,
   mintService,
@@ -299,15 +300,6 @@ export function useAccountModalForUI({
       }
     }
   }, [account.readyState, isShowAccount, setShowAccount]);
-
-  const backToNFTDepositBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: false });
-      },
-    };
-  }, [setShowAccount]);
 
   const closeBtnInfo = React.useMemo(() => {
     return {
@@ -706,7 +698,7 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: "labelRetry",
               callback: () => {
-                setShowAccount({ isShow: false });
+                depositServices.depositERC20();
               },
             }}
             {...{
@@ -760,7 +752,7 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: "labelRetry",
               callback: () => {
-                setShowAccount({ isShow: false });
+                depositServices.depositERC20();
               },
             }}
             {...{
@@ -829,7 +821,13 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeposit_Approve_Denied]: {
         view: (
           <NFTDeposit_Approve_Denied
-            btnInfo={backToNFTDepositBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                depositServices.depositNFT();
+                // setShowAccount({ isShow: false });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -881,7 +879,12 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeposit_Denied]: {
         view: (
           <NFTDeposit_Denied
-            btnInfo={backToNFTDepositBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                depositServices.depositNFT();
+              },
+            }}
             {...{
               ...rest,
               account,

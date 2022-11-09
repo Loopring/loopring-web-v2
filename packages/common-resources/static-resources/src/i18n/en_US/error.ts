@@ -51,4 +51,5 @@ export default {
   errorRampNoInstance: "Ramp Widget had out-off service, please re-order it.",
   errorDualExpired: "The order has expired.",
   errorPrivateKey: "Signature Wrong private key",
+  errorNoResponse: "No response!",
 };

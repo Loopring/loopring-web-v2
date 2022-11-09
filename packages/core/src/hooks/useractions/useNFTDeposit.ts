@@ -30,6 +30,8 @@ import {
   store,
   useBtnStatus,
   getIPFSString,
+  depositServices,
+  DepositCommands,
 } from "../../index";
 
 import { connectProvides } from "@loopring-web/web3-provider";
@@ -41,6 +43,8 @@ import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
 export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   nftDepositProps: NFTDepositProps<T, I>;
 } => {
+  const subject = React.useMemo(() => depositServices.onSocket(), []);
+
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
   const { exchangeInfo, chainId, gasPrice, baseURL } = useSystem();
@@ -54,6 +58,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
     btnInfo,
     enableBtn,
     disableBtn,
+    setLoadingBtn,
     setLabelAndParams,
     resetBtnInfo,
   } = useBtnStatus();
@@ -152,7 +157,8 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
     globalSetup.wait,
     { trailing: true }
   );
-
+  {
+  }
   const handleOnNFTDataChange = async (data: T) => {
     const web3: Web3 = connectProvides.usedWeb3 as unknown as Web3;
     const nftDepositValue = store.getState()._router_modalData.nftDepositValue;
@@ -250,22 +256,28 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
 
   const onNFTDepositClick = React.useCallback(async () => {
     let result = { code: ActionResultCode.NoError };
+    const nftDepositValue = store.getState()._router_modalData.nftDepositValue;
+    setLoadingBtn();
 
-    if (
-      account.readyState !== AccountStatus.UN_CONNECT &&
-      nftDepositValue.tradeValue &&
-      nftDepositValue.tokenAddress &&
-      nftDepositValue.nftId &&
-      tokenMap &&
-      exchangeInfo?.exchangeAddress &&
-      connectProvides.usedWeb3 &&
-      LoopringAPI.nftAPI
-    ) {
-      setShowNFTDeposit({ isShow: false });
-      const web3: Web3 = connectProvides.usedWeb3 as unknown as Web3;
-      const gasLimit = undefined; //parseInt(NFTGasAmounts.deposit) ?? undefined;
-      const realGasPrice = gasPrice ?? 30;
-      try {
+    try {
+      if (
+        account.readyState !== AccountStatus.UN_CONNECT &&
+        nftDepositValue.tradeValue &&
+        nftDepositValue.tokenAddress &&
+        nftDepositValue.nftId &&
+        tokenMap &&
+        exchangeInfo?.exchangeAddress &&
+        connectProvides.usedWeb3 &&
+        LoopringAPI.nftAPI
+      ) {
+        const web3: Web3 = connectProvides.usedWeb3 as unknown as Web3;
+        const gasLimit = undefined; //parseInt(NFTGasAmounts.deposit) ?? undefined;
+        const realGasPrice = gasPrice ?? 30;
+        enableBtn();
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.NFTDeposit_WaitForAuth,
+        });
         let nonce =
           (await sdk.getNonce(
             connectProvides.usedWeb3 as unknown as Web3,
@@ -291,7 +303,21 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
               sendByMetaMask: true,
             });
           } catch (error: any) {
-            throw { ...error, type: "ApproveToken" };
+            if (error instanceof Error) {
+              throw {
+                // Pull all enumerable properties, supporting properties on custom Errors
+                ...error,
+                // Explicitly pull Error's non-enumerable properties
+                message: error.message,
+                stack: error.stack,
+                type: "ApproveToken",
+              };
+            } else {
+              throw {
+                ...(error as any),
+                type: "ApproveToken",
+              };
+            }
           }
           nonce += 1;
         } else {
@@ -301,9 +327,9 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
           isShow: true,
           step: AccountStep.NFTDeposit_WaitForAuth,
         });
-        let response;
+
         try {
-          response = await LoopringAPI.nftAPI.depositNFT({
+          const response = await LoopringAPI.nftAPI.depositNFT({
             web3,
             from: account.accAddress,
             exchangeAddress: exchangeInfo?.exchangeAddress,
@@ -317,17 +343,6 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
             nftType: nftDepositValue.nftType as unknown as sdk.NFTType,
             sendByMetaMask: true,
           });
-        } catch (error) {
-          throw {
-            ...(error as any),
-            type: "Deposit",
-          };
-        }
-        myLog("response:", response);
-        // updateDepositHash({response.result})
-        // result.data = response
-
-        if (response) {
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTDeposit_Submit,
@@ -340,8 +355,64 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
             type: "Deposit NFT",
             value: nftDepositValue.tradeValue,
           });
-        } else {
-          // deposit failed
+          myLog("response:", response);
+          handleOnNFTDataChange({ nftIdView: "", tokenAddress: "" } as T);
+          resetNFTDepositData();
+        } catch (error) {
+          if (error instanceof Error) {
+            throw {
+              // Pull all enumerable properties, supporting properties on custom Errors
+              ...error,
+              // Explicitly pull Error's non-enumerable properties
+              message: error.message,
+              stack: error.stack,
+              type: "Deposit",
+            };
+          } else {
+            throw {
+              ...(error as any),
+              type: "Deposit",
+            };
+          }
+        }
+      } else {
+        throw { code: UIERROR_CODE.DATA_NOT_READY };
+      }
+    } catch (e) {
+      //deposit failed
+      enableBtn();
+      const { type, ..._error } = (e as any).message
+        ? (e as any)
+        : { type: "" };
+      const error = LoopringAPI?.exchangeAPI?.genErr(_error as any) ?? {
+        code: UIERROR_CODE.DATA_NOT_READY,
+      };
+      const code = sdk.checkErrorInfo(error, true);
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.NFTDeposit_Approve_Denied,
+      });
+      myLog("---- deposit NFT ERROR reason:", _error?.message, code);
+
+      switch (code) {
+        case sdk.ConnectorError.USER_DENIED:
+        case sdk.ConnectorError.USER_DENIED_2:
+          if (type === "ApproveToken") {
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTDeposit_Approve_Denied,
+            });
+          } else {
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTDeposit_Denied,
+              info: {
+                symbol: nftDepositValue?.name,
+              },
+            });
+          }
+          break;
+        default:
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTDeposit_Failed,
@@ -349,63 +420,15 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
               symbol: nftDepositValue?.name,
             },
             error: {
-              code: UIERROR_CODE.UNKNOWN,
-              msg: "No Response",
+              ..._error,
+              ...error,
+              code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
             },
           });
-        }
-        resetNFTDepositData();
-      } catch (e) {
-        //deposit failed
-        const { type, ..._error } = (e as any)?.message ?? { type: "" };
-        const error = LoopringAPI?.exchangeAPI?.genErr(_error as any) ?? {
-          code: UIERROR_CODE.DATA_NOT_READY,
-        };
-        const code = sdk.checkErrorInfo(error, true);
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.NFTDeposit_Approve_Denied,
-        });
-        myLog("---- deposit NFT ERROR reason:", _error?.message, code);
-
-        switch (code) {
-          case sdk.ConnectorError.USER_DENIED:
-          case sdk.ConnectorError.USER_DENIED_2:
-            if (type === "ApproveToken") {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTDeposit_Approve_Denied,
-              });
-            } else {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTDeposit_Denied,
-                info: {
-                  symbol: nftDepositValue?.name,
-                },
-              });
-            }
-            break;
-          default:
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.NFTDeposit_Failed,
-              info: {
-                symbol: nftDepositValue?.name,
-              },
-              error: {
-                ..._error,
-                error,
-                code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
-              },
-            });
-            resetNFTDepositData();
-            break;
-        }
+          break;
       }
-    } else {
-      result.code = ActionResultCode.DataNotReady;
     }
+
     return result;
   }, [
     account.accAddress,
@@ -448,6 +471,21 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
     nftDepositValue?.tradeValue,
     nftDepositValue?.balance,
   ]);
+  React.useEffect(() => {
+    const subscription = subject.subscribe((props) => {
+      myLog("subscription Deposit DepsitNFT");
+      switch (props.status) {
+        case DepositCommands.DepsitNFT:
+          onNFTDepositClick();
+          break;
+        default:
+          break;
+      }
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [subject]);
   return {
     nftDepositProps,
   };
