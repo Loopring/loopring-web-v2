@@ -193,6 +193,7 @@ export const useDeposit = <
     toAddressStatus,
     realToAddress,
     toIsAddressCheckLoading,
+    walletLayer1?.ETH?.count,
     // toIsLoopringAddress,
   ]);
 
