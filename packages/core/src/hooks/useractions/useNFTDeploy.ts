@@ -70,7 +70,7 @@ export function useNFTDeploy<
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
   const history = useHistory();
-  const { search, ...location } = useLocation();
+  const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
 
   const {
@@ -207,10 +207,6 @@ export function useNFTDeploy<
               }
               walletLayer2Service.sendUserUpdate();
               searchParams.delete("detail");
-              history.push({
-                ...location,
-                search: searchParams.toString(),
-              });
               if (nftDeployValue.nftData) {
                 updateWalletLayer2NFT({
                   page: Number(searchParams.get("collectionPage")) ?? 1,
@@ -225,6 +221,7 @@ export function useNFTDeploy<
               setShowNFTDeploy({ isShow: false });
               setShowNFTDetail({ isShow: false });
               resetNFTDeployData();
+              history.push(pathname + "?" + searchParams.toString());
             }
           } else {
             resetNFTDeployData();

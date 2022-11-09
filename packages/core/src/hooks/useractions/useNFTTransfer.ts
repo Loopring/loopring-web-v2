@@ -48,8 +48,7 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
-import { useHistory } from "react-router-dom";
-import { useLocation } from "react-use";
+import { useHistory, useLocation } from "react-router-dom";
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const [memo, setMemo] = React.useState("");
@@ -69,7 +68,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
   const history = useHistory();
-  const { search, ...location } = useLocation();
+  const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
 
   const [sureItsLayer2, setSureItsLayer2] =
@@ -234,7 +233,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       isNotHardwareWallet: boolean
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
-
       try {
         if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
           let isHWAddr = checkHWAddr(account.accAddress);
@@ -331,11 +329,8 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
               }
               walletLayer2Service.sendUserUpdate();
               searchParams.delete("detail");
-              history.push({
-                ...location,
-                search: searchParams.toString(),
-              });
               setShowNFTDetail({ isShow: false });
+              history.push(pathname + "?" + searchParams.toString());
               resetNFTTransferData();
             }
           } else {

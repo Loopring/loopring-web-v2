@@ -41,7 +41,7 @@ enum MY_NFT_VIEW {
 
 export const MyNFTPanel = withTranslation("common")(
   ({ t }: WithTranslation) => {
-    const match: any = useRouteMatch("/NFT/assetsNFT/:tab?/:contract?");
+    const match: any = useRouteMatch("/nft/assetsNFT/:tab?/:contract?");
     const { walletL2NFTCollection } = useWalletL2NFTCollection();
     const [currentTab, setCurrentTab] = React.useState(() => {
       return match?.params.tab === MY_NFT_VIEW.LIST_COLLECTION
@@ -109,7 +109,9 @@ export const MyNFTPanel = withTranslation("common")(
             setCollectionMeta(collectionMeta);
             return;
           } else {
-            history.push({ pathname: "/NFT/assetsNFT/byCollection", search });
+            history.push(
+              "/nft/assetsNFT/byCollection" + "?" + searchParams.toString()
+            );
           }
         }
       }
@@ -152,7 +154,7 @@ export const MyNFTPanel = withTranslation("common")(
           color="inherit"
           onClick={() => {
             history.replace(
-              `/NFT/assetsNFT/${
+              `/nft/assetsNFT/${
                 match?.params?.tab ?? "byList"
               }?${searchParams.toString()}`
             );
@@ -173,7 +175,7 @@ export const MyNFTPanel = withTranslation("common")(
                   color="inherit"
                   onClick={() => {
                     history.replace(
-                      `/NFT/assetsNFT/${
+                      `/nft/assetsNFT/${
                         MY_NFT_VIEW.LIST_COLLECTION
                       }?${searchParams.toString()}`
                     );
@@ -231,10 +233,9 @@ export const MyNFTPanel = withTranslation("common")(
                 sx={{ color: "var(--color-text-secondary)" }}
                 color={"inherit"}
                 onClick={() =>
-                  history.push({
-                    pathname: "/NFT/assetsNFT/byCollection",
-                    search,
-                  })
+                  history.push(
+                    `/nft/assetsNFT/byCollection?${searchParams.toString()}`
+                  )
                 }
               >
                 <Typography
@@ -328,10 +329,7 @@ export const MyNFTPanel = withTranslation("common")(
               <Tabs
                 value={currentTab}
                 onChange={(_event, value) => {
-                  history.replace({
-                    pathname: `/NFT/assetsNFT/${value}`,
-                    search: "",
-                  });
+                  history.replace(`/nft/assetsNFT/${value}`);
                   setCurrentTab(value);
                 }}
                 aria-label="my-nft-tabs"
