@@ -323,6 +323,7 @@ export const CollectionItem = React.memo(
                 )}
 
                 <Typography
+                  component={"span"}
                   marginLeft={1}
                   color={"var(--color-text-button)"}
                   whiteSpace={"pre"}
@@ -370,6 +371,7 @@ export const CollectionItem = React.memo(
                 </Typography>
               </Box>
               <Typography
+                component={"span"}
                 whiteSpace={"pre"}
                 overflow={"hidden"}
                 display={"flex"}
@@ -397,6 +399,7 @@ export const CollectionItem = React.memo(
                   </Typography>
                 )}
                 <Typography
+                  component={"span"}
                   color={"var(--color-text-third)"}
                   title={item?.nftType}
                   sx={size === "small" ? { display: "none" } : {}}
