@@ -444,3 +444,12 @@ export const StyledPaperBg = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `;
+
+export const MediaLabelStyled = styled(Box)`
+  border-radius: 0 0 ${({ theme }) => theme.unit}px 0;
+  padding: ${({ theme }) => theme.unit / 2}px ${({ theme }) => theme.unit}px;
+  color: var(--color-box);
+  font-size: 1.4rem;
+  background: var(--color-tag);
+  cursor: help;
+` as any;
