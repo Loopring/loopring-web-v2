@@ -90,7 +90,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   props: SwipeableViewsProps & {
     _height?: number | string;
     _width?: number | string;
-    ismobile?: boolean | undefined;
+    ismobile?: boolean | undefined | string;
   }
 ) => JSX.Element;
 
