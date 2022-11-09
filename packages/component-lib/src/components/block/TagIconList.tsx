@@ -30,17 +30,37 @@ export const TagIconList = React.memo(
             item.startShow <= Date.now()
           ) {
             return (
-              <Tooltip title={item.toolTips ?? scenario}>
-                <Avatar
-                  alt={item.name}
-                  style={{
-                    width: size ? size : "var(--svg-size-medium)",
-                    height: size ? size : "var(--svg-size-medium)",
-                    marginRight: theme.unit / 2,
-                  }}
-                  src={item.iconSource}
-                />
-              </Tooltip>
+              <>
+                {item?.behavior === "tooltips" ? (
+                  <Tooltip title={item.content ?? scenario}>
+                    <Avatar
+                      alt={item.name}
+                      style={{
+                        width: size ? size : "var(--svg-size-medium)",
+                        height: size ? size : "var(--svg-size-medium)",
+                        marginRight: theme.unit / 2,
+                      }}
+                      src={item.iconSource}
+                    />
+                  </Tooltip>
+                ) : (
+                  <Avatar
+                    onClick={() => {
+                      if (item?.behavior === "link") {
+                        window.open(item.content, "_blank");
+                        window.opener = null;
+                      }
+                    }}
+                    alt={item.name}
+                    style={{
+                      width: size ? size : "var(--svg-size-medium)",
+                      height: size ? size : "var(--svg-size-medium)",
+                      marginRight: theme.unit / 2,
+                    }}
+                    src={item.iconSource}
+                  />
+                )}
+              </>
             );
           } else {
             return <></>;

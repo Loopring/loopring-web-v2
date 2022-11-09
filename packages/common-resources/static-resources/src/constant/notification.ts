@@ -53,7 +53,8 @@ export type CAMPAIGN_TAG = {
   endShow: number;
   iconSource: string;
   symbols: Array<string>;
-  toolTips: string;
+  behavior: "tooltips" | "link";
+  content: string;
 };
 export enum SCENARIO {
   orderbook = "orderbook",
