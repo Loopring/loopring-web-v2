@@ -10,15 +10,7 @@ const {
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin"); //installed via npm
-const cspHtmlWebpackPlugin = require("csp-html-webpack-plugin");
-const cspConfigPolicy = {
-  "default-src": "'none'",
-  "base-uri": "'self'",
-  "object-src": "'none'",
-  "script-src": ["'self'"],
-  "style-src": ["'self'"],
-  "frame-src": ["'self'", "*.banxa.com"],
-};
+
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 // const rewireLess = require('react-app-rewire-less')
@@ -71,10 +63,6 @@ module.exports = override(
       ],
     })
   ),
-  addWebpackPlugin(new cspHtmlWebpackPlugin(cspConfigPolicy)),
-  // if(process.env.NODE_ENV === 'production') {
-  //   config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy));
-  // }
   addWebpackPlugin(
     new webpack.DefinePlugin({
       "process.env.COMMITHASH": JSON.stringify(getCommitHash()),
@@ -121,7 +109,7 @@ module.exports = override(
     config.output.publicPath = ASSET_PATH;
     // 增加处理less module配置 customize-cra 不提供 less.module 只提供css.module
     console.log(path.resolve(__dirname, "..", "assets/"));
-    console.log("-----> enter config!!!!!!!", config.devServer);
+    console.log("-----> enter config!!!!!!!");
 
     const setConfig = (index) => {
       console.log("-----> enter setConfig!!!!!!! index:", index);

@@ -67,7 +67,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const history = useHistory();
-  const { search, ...location } = useLocation();
+  const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
 
   const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
@@ -327,31 +327,9 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
               }
               walletLayer2Service.sendUserUpdate();
               searchParams.delete("detail");
-              history.push({
-                ...location,
-                search: searchParams.toString(),
-              });
-              // if (nftWithdrawValue.collectionMeta) {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byCollection/${nftWithdrawValue.collectionMeta?.id}-${nftWithdrawValue.collectionMeta?.contractAddress}`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page: Number(searchParams.get("collectionPage")) ?? 1,
-              //   //   collection: nftWithdrawValue.collectionMeta,
-              //   // });
-              // } else {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byList`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page,
-              //   //   collection: undefined,
-              //   // });
-              // }
               setShowNFTDetail({ isShow: false });
               resetNFTWithdrawData();
+              history.push(pathname + "?" + searchParams.toString());
             }
           } else {
             resetNFTWithdrawData();
