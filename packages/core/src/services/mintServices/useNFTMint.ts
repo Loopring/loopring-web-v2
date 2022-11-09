@@ -12,7 +12,6 @@ import {
   useModalData,
   useTokenMap,
   useAccount,
-  ActionResultCode,
   DAYS,
   getTimestampDaysLater,
   LoopringAPI,
@@ -318,7 +317,6 @@ export function useNFTMint<
 
   const onNFTMintClick = React.useCallback(
     async (isFirstTime: boolean = true) => {
-      let result = { code: ActionResultCode.NoError };
       const nftMintValue = store.getState()._router_modalData.nftMintValue;
       if (
         account.readyState === AccountStatus.ACTIVATED &&
@@ -393,12 +391,13 @@ export function useNFTMint<
               symbol: nftMintValue.nftMETA?.name,
               value: nftMintValue.mintData?.tradeValue,
             },
-            error: { code: 400, message: e.message } as sdk.RESULT_INFO,
+            error: {
+              code: e?.code ?? UIERROR_CODE.UNKNOWN,
+              message: e.message,
+            } as sdk.RESULT_INFO,
           });
         }
         return;
-      } else {
-        result.code = ActionResultCode.DataNotReady;
       }
     },
     []
