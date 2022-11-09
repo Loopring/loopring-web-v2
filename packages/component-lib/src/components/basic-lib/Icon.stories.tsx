@@ -111,6 +111,8 @@ import {
   LikeIcon,
   ZoomIcon,
   UnlikeIcon,
+  LegacyIcon,
+  SyncIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -232,6 +234,8 @@ const listIcon = [
   <LikeIcon />,
   <ZoomIcon />,
   <UnlikeIcon />,
+  <LegacyIcon />,
+  <SyncIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

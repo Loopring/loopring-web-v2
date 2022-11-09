@@ -18,6 +18,7 @@ import { Box, BoxProps, Modal, Tooltip, Typography } from "@mui/material";
 import {
   cssBackground,
   EmptyDefault,
+  MediaLabelStyled,
   ModalCloseButton,
   NftImage,
   NFTMedaProps,
@@ -46,14 +47,6 @@ const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
 const PlayIconStyle = styled(PlayIcon)`
   color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".8")};
 `;
-const LabelStyled = styled(Box)`
-  border-radius: 0 0 ${({ theme }) => theme.unit}px 0;
-  padding: ${({ theme }) => theme.unit / 2}px ${({ theme }) => theme.unit}px;
-  color: var(--color-box);
-  font-size: 1.4rem;
-  background: var(--color-tag);
-  cursor: help;
-` as any;
 
 export const NFTMedia = React.memo(
   React.forwardRef(
@@ -328,7 +321,7 @@ export const NFTMedia = React.memo(
               title={t("labelMintInSyncTooltips").toString()}
               placement={"top"}
             >
-              <LabelStyled
+              <MediaLabelStyled
                 position={"absolute"}
                 left={0}
                 top={0}
@@ -344,7 +337,7 @@ export const NFTMedia = React.memo(
                 >
                   {t("labelSync")}
                 </Typography>
-              </LabelStyled>
+              </MediaLabelStyled>
             </Tooltip>
           ) : (
             ""
