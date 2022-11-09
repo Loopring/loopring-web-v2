@@ -187,6 +187,7 @@ export const useDeposit = <
 
   React.useEffect(() => {
     updateBtnStatus();
+    myLog("walletLayer1?.ETH?.count", walletLayer1?.ETH?.count);
   }, [
     depositValue?.belong,
     depositValue?.tradeValue,
@@ -196,7 +197,7 @@ export const useDeposit = <
     toAddressStatus,
     realToAddress,
     toIsAddressCheckLoading,
-    // toIsLoopringAddress,
+    walletLayer1?.ETH?.count,
   ]);
 
   const handlePanelEvent = React.useCallback(
