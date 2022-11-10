@@ -59,7 +59,7 @@ const BoxStyle = styled(Box)`
     }
   }
 ` as typeof Box;
-const BoxLable = styled(Box)`
+const BoxLabel = styled(Box)`
   background: var(--color-box-nft-label);
   color: var(--color-text-button);
   border-radius: ${({ theme }) => theme.unit}px;
@@ -235,7 +235,8 @@ export const CollectionItem = React.memo(
         <CardStyleItem
           ref={_ref}
           className={"collection"}
-          contentHeight={sizeConfig.contentHeight}
+          size={size as any}
+          contentheight={sizeConfig.contentHeight}
         >
           <Box
             position={"absolute"}
@@ -277,104 +278,98 @@ export const CollectionItem = React.memo(
                 <ActionMemo {...{ ...(props as any) }} />
               </BoxBtnGroup>
             )}
-            <BoxLable
-              padding={2}
-              margin={2}
+            <BoxLabel
+              className={"boxLabel"}
               display={"flex"}
               height={sizeConfig.contentHeight}
               flexDirection={"row"}
               justifyContent={"space-between"}
+              alignItems={"center"}
               position={"absolute"}
               bottom={0}
               left={0}
               right={0}
             >
-              <Box
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-                flex={1}
-              >
-                {getIPFSString(item?.avatar ?? "", baseURL).startsWith(
-                  "http"
-                ) ? (
-                  <Avatar
-                    sx={{
-                      bgcolor: "var(--color-border-disable2)",
-                      width: sizeConfig.avatar,
-                      height: sizeConfig.avatar,
-                      ...(size === "small" ? { display: "none" } : {}),
-                    }}
-                    variant={"circular"}
-                    src={getIPFSString(item?.avatar ?? "", baseURL)}
-                  />
-                ) : (
-                  <Avatar
-                    sx={{
-                      bgcolor: "var(--color-border-disable2)",
-                      width: sizeConfig.avatar,
-                      height: sizeConfig.avatar,
-                      ...(size === "small" ? { display: "none" } : {}),
-                    }}
-                    variant={"circular"}
-                  >
-                    <ImageIcon />
-                  </Avatar>
-                )}
-
-                <Typography
-                  component={"span"}
-                  marginLeft={1}
-                  color={"var(--color-text-button)"}
-                  whiteSpace={"pre"}
-                  overflow={"hidden"}
-                  display={"flex"}
-                  flexDirection={"column"}
-                  textOverflow={"ellipsis"}
-                  variant={"h5"}
-                  alignItems={"flex-start"}
-                  justifyContent={"space-evenly"}
-                  alignSelf={"stretch"}
-                  flex={1}
+              {getIPFSString(item?.avatar ?? "", baseURL).startsWith("http") ? (
+                <Avatar
+                  sx={{
+                    bgcolor: "var(--color-border-disable2)",
+                    width: sizeConfig.avatar,
+                    height: sizeConfig.avatar,
+                    ...(size === "small" ? { display: "none" } : {}),
+                  }}
+                  variant={"circular"}
+                  src={getIPFSString(item?.avatar ?? "", baseURL)}
+                />
+              ) : (
+                <Avatar
+                  sx={{
+                    bgcolor: "var(--color-border-disable2)",
+                    width: sizeConfig.avatar,
+                    height: sizeConfig.avatar,
+                    ...(size === "small" ? { display: "none" } : {}),
+                  }}
+                  variant={"circular"}
                 >
-                  <Typography
-                    color={"textPrimary"}
-                    overflow={"hidden"}
-                    textOverflow={"ellipsis"}
-                    variant={size == "small" ? "body2" : "body1"}
-                    component={"span"}
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        sanitize(
-                          item?.name
-                            ? item.name
-                            : t("labelUnknown") +
-                                "-" +
-                                getShortAddr(item?.contractAddress ?? "", true)
-                        ) ?? "",
-                    }}
-                  />
-                  <Link
-                    variant={"body2"}
-                    display={"inline-flex"}
-                    style={{ color: "var(--color-text-third)" }}
-                    alignItems={"center"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      copyToClipBoard(item?.contractAddress ?? "");
-                      setCopyToastOpen({ isShow: true, type: "address" });
-                    }}
-                  >
-                    {getShortAddr(item?.contractAddress ?? "")}
-                    <CopyIcon color={"inherit"} />
-                  </Link>
-                </Typography>
-              </Box>
+                  <ImageIcon />
+                </Avatar>
+              )}
+
+              <Typography
+                className={"content"}
+                component={"span"}
+                marginLeft={1}
+                color={"var(--color-text-button)"}
+                whiteSpace={"pre"}
+                overflow={"hidden"}
+                display={"flex"}
+                flexDirection={"column"}
+                textOverflow={"ellipsis"}
+                variant={"h5"}
+                alignItems={"flex-start"}
+                justifyContent={"space-evenly"}
+                alignSelf={"stretch"}
+              >
+                <Typography
+                  color={"textPrimary"}
+                  overflow={"hidden"}
+                  textOverflow={"ellipsis"}
+                  variant={size == "small" ? "body2" : "body1"}
+                  component={"span"}
+                  paddingRight={1}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      sanitize(
+                        item?.name
+                          ? item.name
+                          : t("labelUnknown") +
+                              "-" +
+                              getShortAddr(item?.contractAddress ?? "", true)
+                      ) ?? "",
+                  }}
+                />
+                <Link
+                  variant={"body2"}
+                  display={"inline-flex"}
+                  style={{ color: "var(--color-text-primary)" }}
+                  alignItems={"center"}
+                  paddingTop={1}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyToClipBoard(item?.contractAddress ?? "");
+                    setCopyToastOpen({ isShow: true, type: "address" });
+                  }}
+                >
+                  {getShortAddr(item?.contractAddress ?? "")}
+                  <CopyIcon color={"inherit"} />
+                </Link>
+              </Typography>
               <Typography
                 component={"span"}
                 whiteSpace={"pre"}
                 overflow={"hidden"}
                 display={"flex"}
+                paddingLeft={1}
                 flexDirection={"column"}
                 alignItems={"center"}
                 textOverflow={"ellipsis"}
@@ -400,14 +395,14 @@ export const CollectionItem = React.memo(
                 )}
                 <Typography
                   component={"span"}
-                  color={"var(--color-text-third)"}
+                  color={"textPrimary"}
                   title={item?.nftType}
                   sx={size === "small" ? { display: "none" } : {}}
                 >
                   {item?.nftType}
                 </Typography>
               </Typography>
-            </BoxLable>
+            </BoxLabel>
           </Box>
         </CardStyleItem>
       );

@@ -16,7 +16,7 @@ export const CardNFTStyled = styled(Card)`
 `;
 
 export const CardStyleItem = styled(Card)<
-  CardProps & { contentHeight?: number }
+  CardProps & { contentheight?: number; size: "large" | "medium" | "small" }
 >`
   background: var(--color-global-bg);
   width: 100%;
@@ -24,12 +24,29 @@ export const CardStyleItem = styled(Card)<
   height: 0;
   padding: 0 0
     calc(
-      100% + ${({ contentHeight }) => `${contentHeight ? contentHeight : 80}px`}
+      100% + ${({ contentheight }) => `${contentheight ? contentheight : 80}px`}
     );
   position: relative;
+  .boxLabel {
+    overflow: hidden;
+  }
 
   &.collection {
     padding: 0 0 calc(140%);
+    .boxLabel {
+      ${({ size, theme }) =>
+        size === "small"
+          ? `
+            padding: ${1 * theme.unit}px;
+            margin:0;
+          `
+          : `
+              .content{
+                width:60%;
+              }
+              padding: ${2 * theme.unit}px;
+              margin: ${2 * theme.unit}px;`}
+    }
   }
   &.nft-item {
     .MuiRadio-root,
@@ -51,7 +68,12 @@ export const CardStyleItem = styled(Card)<
   img {
     object-fit: contain;
   }
-` as (props: CardProps & { contentHeight?: number }) => JSX.Element;
+` as (
+  props: CardProps & {
+    contentheight?: number;
+    size: "large" | "medium" | "small";
+  }
+) => JSX.Element;
 
 export const ImageUploadWrapper = styled(Box)`
   position: relative;

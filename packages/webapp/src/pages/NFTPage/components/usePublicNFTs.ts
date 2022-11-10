@@ -2,6 +2,7 @@ import {
   CollectionMeta,
   CustomError,
   ErrorMap,
+  GET_IPFS_STRING,
   IPFS_LOOPRING_SITE,
   LOOPRING_NFT_METADATA,
   LOOPRING_TAKE_NFT_META_KET,
@@ -26,6 +27,22 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
+export type CollectionProps<Co, NFT> = {
+  collection: Partial<Co>;
+  total: number;
+  page: number;
+  filter: object;
+  listNFT: NFT[];
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
+  onDetail: () => void;
+  onFilterNFT: (props: {
+    legacyFilter?: sdk.LegacyNFT | "all";
+    limit?: number;
+    page?: number;
+  }) => void;
+  isLoading: boolean;
+};
 export const usePublicNFTs = <
   Co extends CollectionMeta,
   NFT extends Partial<NFTWholeINFO>
@@ -38,13 +55,10 @@ export const usePublicNFTs = <
   page?: number;
   pageSize?: number;
 }) => {
-  const { search, ...rest } = useLocation();
   const { renderNFTPromise, infoDetail, nftListReduce } = useNFTListDeep();
   // const history = useHistory();
-  // const searchParams = new URLSearchParams(search);
   const [filter, setFilter] = React.useState({});
   // const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
-  const { account } = useAccount();
 
   const [{ listNFT, total, page }, setListNFTValue] = React.useState<{
     listNFT: NFT[];
@@ -115,7 +129,7 @@ export const usePublicNFTs = <
   const { baseURL } = useSystem();
   React.useEffect(() => {
     onFilterNFT({});
-  }, [page, collection.id]);
+  }, [page, collection?.id]);
 
   return {
     collection: (collection ?? {}) as Partial<Co>,

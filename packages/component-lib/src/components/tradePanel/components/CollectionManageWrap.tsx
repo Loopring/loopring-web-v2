@@ -1,11 +1,12 @@
 import { useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Typography, Tab, Tabs } from "@mui/material";
+import { Box, Typography, Tab, Tabs, Tooltip } from "@mui/material";
 
 import { useSettings } from "../../../stores";
 import {
   CollectionMeta,
   EmptyValueTag,
+  Info2Icon,
   NFTWholeINFO,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
@@ -194,7 +195,26 @@ export const CollectionManageWrap = <
                   <Tab
                     key={item.toString()}
                     value={item.toString()}
-                    label={t(`labelImportCollection${item}`)}
+                    label={
+                      <Tooltip
+                        placement={"top"}
+                        title={t(`labelImportCollection${item}Des`).toString()}
+                      >
+                        <Typography
+                          component={"span"}
+                          display={"inline-flex"}
+                          alignItems={"center"}
+                        >
+                          <Info2Icon
+                            fontSize={"small"}
+                            htmlColor={"var(--color-text-secondary)"}
+                            sx={{ marginRight: 1 / 2 }}
+                          />
+
+                          {t(`labelImportCollection${item}`)}
+                        </Typography>
+                      </Tooltip>
+                    }
                   />
                 );
               })}

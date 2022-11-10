@@ -132,28 +132,27 @@ export const CollectionMedia = React.memo(
             </Box>
           )}
           {item.isCounterFactualNFT && item.baseUri === "" ? (
-            <Tooltip
-              title={t("labelMintInSyncTooltips").toString()}
-              placement={"top"}
+            <MediaLabelStyled
+              position={"absolute"}
+              left={0}
+              top={0}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              colorbg={"var(--color-warning)"}
             >
-              <MediaLabelStyled
-                position={"absolute"}
-                left={0}
-                top={0}
-                display={"flex"}
-                justfyContent={"center"}
-                alignItems={"center"}
+              <LegacyIcon
+                color={"inherit"}
+                htmlColor={"var(--color-text-button)"}
+              />
+              <Typography
+                color={"var(--color-text-button)"}
+                component={"span"}
+                paddingLeft={1}
               >
-                <LegacyIcon color={"inherit"} />
-                <Typography
-                  color={"inherit"}
-                  component={"span"}
-                  paddingLeft={1}
-                >
-                  {t("labelLegacy")}
-                </Typography>
-              </MediaLabelStyled>
-            </Tooltip>
+                {t("labelLegacy")}
+              </Typography>
+            </MediaLabelStyled>
           ) : (
             ""
           )}

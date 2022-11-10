@@ -51,21 +51,17 @@ export const CollectionItemPanel = <Co extends CollectionMeta>({
   collectionDate,
   getIPFSString,
   baseURL,
+  nftPublicProps,
 }: {
   collectionDate: Co;
   getIPFSString: GET_IPFS_STRING;
   baseURL: string;
+  nftPublicProps: any;
 }) => {
   const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
   const { t } = useTranslation();
   const { account } = useAccount();
-  const nftPublicProps = usePublicNFTs({
-    collection: collectionDate,
-    page: searchParams?.get("totalPage")
-      ? Number(searchParams?.get("totalPage"))
-      : 1,
-  });
 
   return (
     <Box flex={1} display={"flex"} flexDirection={"column"} paddingY={2}>
