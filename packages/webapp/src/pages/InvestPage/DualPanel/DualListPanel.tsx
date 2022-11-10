@@ -181,7 +181,7 @@ export const DualListPanel: any = withTranslation("common")(
             width={isMobile ? "100%" : "initial"}
             justifyContent={"space-between"}
           >
-            <NoMaxWidthTooltip 
+            {!isMobile && <NoMaxWidthTooltip 
               open={showBeginnerModeHelp}
               componentsProps={{arrow: {style: {color: theme.colorBase.popBg}}}}
               title={<Box marginX={4} marginY={2.5} display={"flex"} alignItems={"center"}>
@@ -208,7 +208,7 @@ export const DualListPanel: any = withTranslation("common")(
                 control={<Switch checked={beginnerMode} onChange={onToggleBeginnerMode} />}
                 label={  <Typography variant={"h6"} marginLeft={1}>{t("labelInvestDualBeginerMode")}</Typography> }
               />
-            </NoMaxWidthTooltip>
+            </NoMaxWidthTooltip>}
             <Button
               startIcon={<HelpIcon fontSize={"large"} />}
               variant={"text"}

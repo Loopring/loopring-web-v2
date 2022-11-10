@@ -161,7 +161,7 @@ export const BeginnerMode: any = withTranslation("common")(
                       {t("labelDualBeginnerAPR", {
                         APR: (!minAPY && !maxAPY) 
                           ? '--'
-                          : minAPY === maxAPY 
+                          : (minAPY === maxAPY || !minAPY || !maxAPY) 
                             ? `${getValuePrecisionThousand(Number(minAPY) * 100, 2, 2, 2, true)}%`
                             : `${getValuePrecisionThousand(Number(minAPY) * 100, 2, 2, 2, true)}% - ${getValuePrecisionThousand(Number(maxAPY) * 100, 2, 2, 2, true)}%`
                       })}
