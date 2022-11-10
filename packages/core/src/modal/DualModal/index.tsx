@@ -47,11 +47,13 @@ export const ModalDualPanel = withTranslation("common")(
     dualTradeProps,
     dualToastOpen,
     closeDualToast,
+    isBeginnerMode,
     ...rest
   }: WithTranslation & {
     dualTradeProps: DualWrapProps<any, any, any>;
     dualToastOpen?: TOASTOPEN;
     closeDualToast?: (state: boolean) => void;
+    isBeginnerMode: boolean
   }) => {
     const {
       modals: { isShowDual },
@@ -158,7 +160,7 @@ export const ModalDualPanel = withTranslation("common")(
             paddingBottom={3}
             paddingX={1}
           >
-            <DualWrap {...{ ...rest, ...dualTradeProps }} />
+            <DualWrap isBeginnerMode={isBeginnerMode} {...{ ...rest, ...dualTradeProps }} />
           </Box>
           <Toast
             alertText={dualToastOpen?.content ?? ""}

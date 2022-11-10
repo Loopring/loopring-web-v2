@@ -8,5 +8,9 @@
     "src",
     "src/*",
     "src/**/*.json"
-  ]
+  ],
+  "awesomeTypescriptLoaderOptions": {
+    "useCache": true,
+    "transpileOnly": true
+  }
 }

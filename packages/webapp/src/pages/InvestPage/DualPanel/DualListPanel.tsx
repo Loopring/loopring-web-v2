@@ -4,7 +4,9 @@ import {
   Box,
   Card,
   CardContent,
+  FormControlLabel,
   Grid,
+  Switch,
   Tab,
   Tabs,
   Typography,
@@ -35,6 +37,7 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 import { useTheme } from "@emotion/react";
+import { BeginnerMode } from "./BeginnerMode";
 
 const StyleDual = styled(Box)`
   position: relative;
@@ -111,7 +114,9 @@ export const DualListPanel: any = withTranslation("common")(
       marketBase,
       marketQuote,
       priceObj,
+      beginnerMode,
       handleOnPairChange,
+      onToggleBeginnerMode,
     } = useDualHook({ setConfirmDualInvest });
 
     const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade();
@@ -155,6 +160,10 @@ export const DualListPanel: any = withTranslation("common")(
             width={isMobile ? "100%" : "initial"}
             justifyContent={"space-between"}
           >
+            <FormControlLabel
+              control={<Switch  checked={beginnerMode} onChange={onToggleBeginnerMode} />}
+              label={  <Typography variant={"h6"} marginLeft={1}>{t("labelInvestDualBeginerMode")}</Typography> }
+            />
             <Button
               startIcon={<HelpIcon fontSize={"large"} />}
               variant={"text"}
@@ -178,7 +187,8 @@ export const DualListPanel: any = withTranslation("common")(
             </Button>
           </Box>
         </Box>
-        {!!marketArray?.length && (
+        {beginnerMode ? <BeginnerMode setConfirmDualInvest={setConfirmDualInvest}/>
+          : !!marketArray?.length && (
           <>
             <StyleDual flexDirection={"column"} display={"flex"} flex={1}>
               <Grid container spacing={2}>
@@ -424,13 +434,14 @@ export const DualListPanel: any = withTranslation("common")(
               </WrapperStyled>
             </StyleDual>
 
-            <ModalDualPanel
-              dualTradeProps={dualTradeProps}
-              dualToastOpen={dualToastOpen}
-              closeDualToast={closeDualToast}
-            />
           </>
         )}
+        <ModalDualPanel
+          dualTradeProps={dualTradeProps}
+          dualToastOpen={dualToastOpen}
+          closeDualToast={closeDualToast}
+          isBeginnerMode={beginnerMode}
+        />
       </Box>
     );
   }
