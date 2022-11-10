@@ -27,7 +27,17 @@ export const useDualHook = ({
   const [beginnerMode, setBeginnerMode] = React.useState<boolean>(
     new URLSearchParams(search).get('beginnerMode') === 'true'
   )
-
+  const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState<boolean>(localStorage.getItem('hasShownBeginnerModeHelp') === 'true' ? false : true)
+  const onCloseBeginnerModeHelp = React.useCallback(() => {
+    setShowBeginnerModeHelp(false)
+    localStorage.setItem('hasShownBeginnerModeHelp', 'true')
+  }, [])
+  React.useEffect(() => {
+    setTimeout(() => {
+      setShowBeginnerModeHelp(false)
+      localStorage.setItem('hasShownBeginnerModeHelp', 'true')
+    }, 5 * 1000);
+  }, [])
   const { marketArray, marketMap, tradeMap, status: dualStatus } = useDualMap();
   const { tokenPrices } = useTokenPrices();
   const [priceObj, setPriceObj] = React.useState<{
@@ -255,7 +265,6 @@ export const useDualHook = ({
   }, [])
   const onSelectStep3Token = React.useCallback((which: string) => {
     setStep3Token(which)
-    debugger
     if (step2BuyOrSell! === 'Sell') {
       var pairA = step1SelectedToken!
       var pairB = which
@@ -293,7 +302,9 @@ export const useDualHook = ({
     priceObj,
     pair,
     beginnerMode,
+    showBeginnerModeHelp,
     onToggleBeginnerMode,
+    onCloseBeginnerModeHelp,
     // confirmShowNoBalance,
     // setConfirmShowNoBalance,
     // serverUpdate,
@@ -305,5 +316,6 @@ export const useDualHook = ({
     onSelectStep1Token,
     onSelectStep2BuyOrSell,
     onSelectStep3Token,
+    
   };
 };

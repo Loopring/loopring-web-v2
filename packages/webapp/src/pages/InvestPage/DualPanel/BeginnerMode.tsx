@@ -64,57 +64,6 @@ const WrapperStyled = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 
-export const IOSSwitch = styled((props: SwitchProps) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }) => ({
-  width: 44,
-  height: 22,
-  padding: 0,
-  '& .MuiSwitch-switchBase': {
-    padding: 0,
-    margin: 2,
-    transitionDuration: '300ms',
-    '&.Mui-checked': {
-      transform: 'translateX(22px)',
-      color: '#fff',
-      '& + .MuiSwitch-track': {
-        backgroundColor: theme.colorBase.primary,
-        opacity: 1,
-        border: 0,
-      },
-      '&.Mui-disabled + .MuiSwitch-track': {
-        opacity: 0.5,
-      },
-    },
-    '&.Mui-focusVisible .MuiSwitch-thumb': {
-      color: '#33cf4d',
-      border: '6px solid #fff',
-    },
-    '&.Mui-disabled .MuiSwitch-thumb': {
-      color:
-        theme.palette.mode === 'light'
-          ? theme.palette.grey[100]
-          : theme.palette.grey[600],
-    },
-    '&.Mui-disabled + .MuiSwitch-track': {
-      opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
-    },
-  },
-  '& .MuiSwitch-thumb': {
-    boxSizing: 'border-box',
-    width: 18,
-    height: 18,
-  },
-  '& .MuiSwitch-track': {
-    borderRadius: 22 / 2,
-    backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
-    opacity: 1,
-    transition: theme.transitions.create(['background-color'], {
-      duration: 500,
-    }),
-  },
-}));
-
 export const BeginnerMode: any = withTranslation("common")(
   ({
     t,
@@ -128,8 +77,8 @@ export const BeginnerMode: any = withTranslation("common")(
     const { tokenMap, idIndex } = useTokenMap();
     const { setShowDual } = useOpenModals();
     const {
-      // pairASymbol,
-      // pairBSymbol,
+      pairASymbol,
+      pairBSymbol,
       isLoading,
       dualProducts,
       currentPrice,
@@ -148,8 +97,6 @@ export const BeginnerMode: any = withTranslation("common")(
     const dualType = step2BuyOrSell === "Sell"
       ? sdk.DUAL_TYPE.DUAL_BASE
       : sdk.DUAL_TYPE.DUAL_CURRENCY;
-    const pairASymbol = step1SelectedToken
-    const pairBSymbol = step3Token
     const tokenList = Reflect.ownKeys(tradeMap)
       .filter(tokenName => tokenName !== 'USDT' && tokenName !== 'USDC' && tokenName !== 'OLDUSDC')
       .sort((a, b) => a.toString().localeCompare(b.toString()))
@@ -211,9 +158,12 @@ export const BeginnerMode: any = withTranslation("common")(
                       {tokenName}
                     </Typography>
                     <Typography variant={"body2"} color={theme.colorBase.textSecondary}>
-                      {t("labelDualBeginnerAPRRange", {
-                        minAPY: `${getValuePrecisionThousand(Number(minAPY) * 100, 2, 2, 2, true)}%`,
-                        maxAPY: `${getValuePrecisionThousand(Number(maxAPY) * 100, 2, 2, 2, true)}%`,
+                      {t("labelDualBeginnerAPR", {
+                        APR: (!minAPY && !maxAPY) 
+                          ? '--'
+                          : minAPY === maxAPY 
+                            ? `${getValuePrecisionThousand(Number(minAPY) * 100, 2, 2, 2, true)}%`
+                            : `${getValuePrecisionThousand(Number(minAPY) * 100, 2, 2, 2, true)}% - ${getValuePrecisionThousand(Number(maxAPY) * 100, 2, 2, 2, true)}%`
                       })}
                     </Typography>
                   </Box>
