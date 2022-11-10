@@ -97,6 +97,7 @@ export const NFTList = withTranslation("common")(
                   flex={"1 1 120%"}
                 >
                   <CardStyleItem
+                    size={size}
                     contentheight={sizeConfig.contentHeight}
                     onClick={() => {
                       onClick && onClick(item);
@@ -147,6 +148,7 @@ export const NFTList = withTranslation("common")(
                         ))}
                       <Box
                         padding={2}
+                        className={"boxLabel"}
                         height={sizeConfig.contentHeight}
                         display={"flex"}
                         flexDirection={"row"}

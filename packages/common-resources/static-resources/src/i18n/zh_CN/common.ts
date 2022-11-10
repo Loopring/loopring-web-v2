@@ -1072,6 +1072,13 @@ export default {
   labelImportCollectionoutside: "Others",
   labelImportCollectioninside: "Current",
   labelImportCollectionall: "All",
+  labelImportCollectionundecidedDes:
+    "items under this contract not classified into a collection",
+  labelImportCollectionoutsideDes:
+    "items under this contract classified into a different collection",
+  labelImportCollectioninsideDes:
+    "items under this contract classified into the current collection",
+  labelImportCollectionallDes: "all items under this contract",
   labelImportCollectionTitle: "Import your legacy NFT Generate collection ",
   labelAssetTokens: "Tokens",
   labelAssetMyInvest: "My Investments",

@@ -67,7 +67,7 @@ export const ColorDarkDefault = Object.freeze({
   providerBtn: `${hexToRGB("#ffffff", "0.1")}`,
   providerBtnHover: `${hexToRGB("#ffffff", "0.03")}`,
   providerApprove: `${hexToRGB("#ffffff", "0.03")}`,
-  boxNFTLabel: `${hexToRGB("#000000", "0.3")}`,
+  boxNFTLabel: `${hexToRGB("#000000", "0.48")}`,
 
   redPock1: `linear-gradient(96.56deg, #FFD596 1.14%, #FFD390 46.4%, #FDBD6A 98.91%)`,
   redPock0: `linear-gradient(95.9deg, #FC7A5A 0.7%, #FF6151 99.3%);`,

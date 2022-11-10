@@ -37,6 +37,7 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
   setCopyToastOpen,
   setShowEdit,
   setShowManageLegacy,
+  count,
 }: {
   collectionDate: Co;
   getIPFSString: GET_IPFS_STRING;
@@ -44,6 +45,7 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
   account: Account;
   setShowManageLegacy?: (item: Co) => void;
   setShowEdit?: (item: Co) => void;
+  count: number;
   setCopyToastOpen: (props: { isShow: boolean; type: string }) => void;
 }) => {
   const theme = useTheme();
@@ -194,7 +196,7 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
               textOverflow={"ellipsis"}
             >
               {t("labelCollectionItemValue", {
-                value: collectionDate?.extends.count,
+                value: count, //collectionDate?.extends.count,
               })}
             </Typography>
           </Box>

@@ -1072,7 +1072,7 @@ export default {
   labelCheckImportCollectionTitle:
     "Import legacy NFTs under contract address to proceed",
   labelContinue: "Next",
-  labelImportCollection1: "Choose NFT contract address",
+  labelImportCollection1: "Import Collection for Legacy NFT",
   labelImportCollection2: "Create/Choose a collection",
   labelImportCollection3: "Select NFTs to move into/out of collection",
   labelSelectContractAddress: "Contract address",
@@ -1080,9 +1080,16 @@ export default {
     "The created collection here can only be used to categorize the Legacy NFT minted without collection_metadata field.\n You can freely move those NFTs into any collection you created here.",
   labelImportCollectionundecided: "Undecided",
   labelImportCollectionoutside: "Others",
-  labelImportCollectioninside: "Current",
+  labelImportCollectioninside: "Current Collection",
   labelImportCollectionall: "All",
-  labelImportCollectionTitle: "Import your legacy NFT Generate collection ",
+  labelImportCollectionundecidedDes:
+    "items under this contract not classified into a collection",
+  labelImportCollectionoutsideDes:
+    "items under this contract classified into a different collection",
+  labelImportCollectioninsideDes:
+    "items under this contract classified into the current collection",
+  labelImportCollectionallDes: "all items under this contract",
+  labelImportCollectionTitle: "Import Collection for Legacy NFT",
   labelAssetTokens: "Tokens",
   labelAssetMyInvest: "My Investments",
   labelORCreateCollection: "Or <1>Create Collection</1>",
@@ -1117,6 +1124,8 @@ export default {
   labelLegacy: "legacy",
   labelTitleMyNFTSAvailable: "My Holding NFTs",
   labelTitleTotalAvailable: "Total NFTs",
+  labelCheckImportCollectionDes:
+    " As the creator, you will be able to generate collection information in loopring server for the NFT minted earlier which doesn't contain collection information. And once you complete the processing, the other people holding your NFT will be able to view those NFT been categorized into well organized collections via loopring.io and loopring wallet.",
   labelL2toL1NFTFailed:
     "Sent {{value}} <span>{{symbol}}</span> to L1 has failed!",
   labelL2toL1NFTSuccess:

@@ -4,7 +4,6 @@ import {
   MintAdvanceNFTWrap,
   MintNFTConfirm,
   PanelContent,
-  PopoverPure,
   StyledPaperBg,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -42,7 +41,10 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
               ...mintWholeProps.nftMetaProps,
               collectionInputProps: {
                 collection: mintWholeProps.nftMintValue.collection,
-                collectionListProps,
+                collectionListProps: {
+                  ...collectionListProps,
+                  size: "small",
+                },
                 domain: LoopringAPI.delegate?.getCollectionDomain(),
                 makeMeta,
               } as any,

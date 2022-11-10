@@ -305,7 +305,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
               }
             }}
           >
-            {domain}/{(collection as any).collectionAddress}
+            {domain}/{getShortAddr((collection as any).collectionAddress)}
             <CopyIcon color={"inherit"} />
           </Link>
         </Typography>

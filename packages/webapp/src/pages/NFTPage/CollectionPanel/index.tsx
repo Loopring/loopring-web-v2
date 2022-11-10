@@ -28,9 +28,10 @@ import {
   useSystem,
 } from "@loopring-web/core";
 import { CreateUrlPanel } from "../components/landingPanel";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { CollectionItemPanel } from "../components/CollectionItemPanel";
+import { usePublicNFTs } from "../components/usePublicNFTs";
 
 enum MyCollectionView {
   List = "List",
@@ -70,6 +71,14 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
   } = useToggle();
   const { setShowNFTDeploy, setShowTradeIsFrozen } = useOpenModals();
   const { updateNFTDeployData } = useModalData();
+  const { search, ...rest } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const nftPublicProps = usePublicNFTs({
+    collection: detail ?? ({} as any),
+    page: searchParams?.get("totalPage")
+      ? Number(searchParams?.get("totalPage"))
+      : 1,
+  });
   return (
     <Box
       flex={1}
@@ -196,6 +205,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
                 `/nft/importLegacyCollection/${item.contractAddress}--${item.id}?isEdit=true`
               );
             }}
+            count={nftPublicProps?.total}
             setCopyToastOpen={collectionListProps.setCopyToastOpen}
           />
           <StyledPaperBg
@@ -205,17 +215,18 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             height={"100%"}
             display={"flex"}
           >
-            <CollectionItemPanel
-              collectionDate={detail}
-              getIPFSString={getIPFSString}
-              baseURL={baseURL}
-            />
-            {/*<EmptyDefault*/}
-            {/*  sx={{ flex: 1 }}*/}
-            {/*  message={() => {*/}
-            {/*    return <Trans i18nKey="labelComingSoon">Coming Soon</Trans>;*/}
-            {/*  }}*/}
+            {/*<CollectionItemPanel*/}
+            {/*  nftPublicProps={nftPublicProps}*/}
+            {/*  collectionDate={detail}*/}
+            {/*  getIPFSString={getIPFSString}*/}
+            {/*  baseURL={baseURL}*/}
             {/*/>*/}
+            <EmptyDefault
+              sx={{ flex: 1 }}
+              message={() => {
+                return <Trans i18nKey="labelComingSoon">Coming Soon</Trans>;
+              }}
+            />
           </StyledPaperBg>
         </Box>
       )}

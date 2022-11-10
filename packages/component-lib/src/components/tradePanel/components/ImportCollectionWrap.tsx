@@ -173,16 +173,21 @@ export const ImportCollectionWrap = <
             maxWidth={"760px"}
             flex={1}
           >
+            <Typography
+              variant={"body1"}
+              color={"textSecondary"}
+              marginBottom={2}
+              textAlign={"center"}
+              whiteSpace={"pre-line"}
+            >
+              {t("labelCheckImportCollectionDes")}
+            </Typography>
             <Box
               display={"flex"}
               alignItems={"flex-start"}
               flexDirection={"column"}
               justifyContent={"stretch"}
-              // flex={1}
             >
-              <Typography component={"h4"} variant={"h5"} marginBottom={2}>
-                {t("labelCheckImportCollectionTitle")}
-              </Typography>
               <TextField
                 id="ContractAddress"
                 select
