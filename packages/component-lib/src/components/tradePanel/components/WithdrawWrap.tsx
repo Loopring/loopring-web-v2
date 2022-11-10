@@ -98,7 +98,7 @@ export const WithdrawWrap = <
 }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
     assetsData: AssetsRawDataItem[];
-    handleConfirm: (index: number) => void;
+    // handleConfirm: (index: number) => void;
   }) => {
   const { isMobile } = useSettings();
   const [dropdownStatus, setDropdownStatus] =
@@ -493,8 +493,7 @@ export const WithdrawWrap = <
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            handleConfirm(0);
-            // onWithdrawClick(tradeData);
+            onWithdrawClick(tradeData);
           }}
           loading={
             withdrawBtnStatus === TradeBtnStatus.LOADING && !getDisabled

@@ -43,8 +43,8 @@ import {
   useAccount,
   useChargeFees,
   useModalData,
-  isAccActivated,
   store,
+  isAccActivated,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -254,7 +254,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+        if (
+          connectProvides.usedWeb3 &&
+          LoopringAPI.userAPI &&
+          isAccActivated()
+        ) {
           let isHWAddr = checkHWAddr(account.accAddress);
           if (!isHWAddr && !isNotHardwareWallet) {
             isHWAddr = true;
@@ -283,86 +287,71 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
           ) {
-            const code = sdk.checkErrorInfo(
-              response as sdk.RESULT_INFO,
-              isNotHardwareWallet
-            );
-            if (code === sdk.ConnectorError.USER_DENIED) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_User_Denied,
-              });
-              // setIsConfirmTransfer(false);
-            } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_First_Method_Denied,
-              });
-            } else {
-              if (
-                [102024, 102025, 114001, 114002].includes(
-                  (response as sdk.RESULT_INFO)?.code || 0
-                )
-              ) {
-                checkFeeIsEnough({ isRequiredAPI: true });
-              }
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_Failed,
-                error: response as sdk.RESULT_INFO,
-              });
-              // setIsConfirmTransfer(false);
-            }
-          } else if ((response as sdk.TX_HASH_API)?.hash) {
-            // setIsConfirmTransfer(false);
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_In_Progress,
-            });
-            await sdk.sleep(TOAST_TIME);
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_Success,
-              info: {
-                hash:
-                  Explorer +
-                  `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
-              },
-            });
-            if (isHWAddr) {
-              myLog("......try to set isHWAddr", isHWAddr);
-              updateHW({ wallet: account.accAddress, isHWAddr });
-            }
-            walletLayer2Service.sendUserUpdate();
-            resetTransferData();
-          } else {
-            resetTransferData();
+            throw response;
           }
+          setShowTransfer({ isShow: false });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Transfer_In_Progress,
+          });
+          await sdk.sleep(TOAST_TIME);
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Transfer_Success,
+            info: {
+              hash:
+                Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
+            },
+          });
+          if (isHWAddr) {
+            myLog("......try to set isHWAddr", isHWAddr);
+            updateHW({ wallet: account.accAddress, isHWAddr });
+          }
+          walletLayer2Service.sendUserUpdate();
+          resetTransferData();
         }
-      } catch (reason: any) {
-        const code = sdk.checkErrorInfo(reason, isNotHardwareWallet);
-
-        if (isAccActivated()) {
-          if (code === sdk.ConnectorError.USER_DENIED) {
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_User_Denied,
-            });
-          } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+      } catch (e: any) {
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
+            setLastRequest({ request });
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_First_Method_Denied,
             });
-          } else {
+            break;
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            setLastRequest({ request });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Transfer_User_Denied,
+            });
+            break;
+          default:
+            if (
+              [102024, 102025, 114001, 114002].includes(
+                (e as sdk.RESULT_INFO)?.code || 0
+              )
+            ) {
+              checkFeeIsEnough({ isRequiredAPI: true });
+            }
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_Failed,
               error: {
                 code: UIERROR_CODE.UNKNOWN,
-                msg: reason?.message,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
               },
             });
-          }
+
+            break;
         }
       }
     },
@@ -371,6 +360,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       checkHWAddr,
       chainId,
       setShowAccount,
+      setShowTransfer,
       resetTransferData,
       updateHW,
       checkFeeIsEnough,
@@ -394,7 +384,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         eddsaKey?.sk
       ) {
         try {
-          setShowTransfer({ isShow: false });
           setShowAccount({
             isShow: true,
             step: AccountStep.Transfer_WaitForAuth,
@@ -465,7 +454,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       account,
       tokenMap,
       exchangeInfo,
-      setShowTransfer,
       setShowAccount,
       realAddr,
       address,
@@ -507,7 +495,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         isShow: true,
         step: AccountStep.Transfer_WaitForAuth,
       });
-      debugger;
+
       processRequest(lastRequest, !isHardwareRetry);
     },
     [lastRequest, processRequest, setShowAccount]

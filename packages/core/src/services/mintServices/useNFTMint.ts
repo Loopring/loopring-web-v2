@@ -260,6 +260,17 @@ export function useNFTMint<
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
 
         switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTMint_First_Method_Denied,
+              info: {
+                symbol: nftMintValue.nftMETA?.name,
+                value: nftMintValue.mintData?.tradeValue,
+              },
+            });
+            mintService.signatureMint(true);
+            break;
           case sdk.ConnectorError.USER_DENIED:
           case sdk.ConnectorError.USER_DENIED_2:
             setShowAccount({
@@ -272,17 +283,7 @@ export function useNFTMint<
             });
             mintService.goMintConfirm();
             break;
-          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.NFTMint_First_Method_Denied,
-              info: {
-                symbol: nftMintValue.nftMETA?.name,
-                value: nftMintValue.mintData?.tradeValue,
-              },
-            });
-            mintService.signatureMint(true);
-            break;
+
           default:
             if (
               [102024, 102025, 114001, 114002].includes(

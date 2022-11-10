@@ -306,10 +306,10 @@ export function useAccountModalForUI({
       btnTxt: "labelClose",
       callback: (e: any) => {
         setShouldShow(false);
-        setShowTransfer({ isShow: false });
-        setShowWithdraw({ isShow: false });
-        setShowAccount({ isShow: false });
-        setShowResetAccount({ isShow: false });
+        // setShowTransfer({ isShow: false });
+        // setShowWithdraw({ isShow: false });
+        // setShowAccount({ isShow: false });
+        // setShowResetAccount({ isShow: false });
         if (onClose) {
           onClose(e);
         }

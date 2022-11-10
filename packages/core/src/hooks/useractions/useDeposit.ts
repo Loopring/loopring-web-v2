@@ -571,6 +571,7 @@ export const useDeposit = <
           // result.data = response
 
           if (response) {
+            setShowDeposit({ isShow: false });
             setShowAccount({
               isShow: true,
               info: {
@@ -665,7 +666,6 @@ export const useDeposit = <
   );
 
   const onDepositClick = React.useCallback(async () => {
-    // setShowDeposit({ isShow: false });
     // setLoadingBtn();
     const depositValue = store.getState()._router_modalData.depositValue;
     myLog("onDepositClick depositValue:", depositValue);
@@ -674,7 +674,7 @@ export const useDeposit = <
       // enableBtn();
       await handleDeposit(depositValue as T);
     }
-  }, [depositValue, handleDeposit, setShowDeposit]);
+  }, [depositValue, handleDeposit]);
 
   const handleAddressError = React.useCallback(() => {
     if (

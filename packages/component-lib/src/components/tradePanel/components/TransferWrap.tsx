@@ -65,7 +65,7 @@ export const TransferWrap = <
   realAddr,
   isLoopringAddress,
   addrStatus,
-  handleConfirm,
+  // handleConfirm,
   handleOnMemoChange,
   isAddressCheckLoading,
   isSameAddress,
@@ -74,7 +74,7 @@ export const TransferWrap = <
 }: TransferViewProps<T, I, C> &
   WithTranslation & {
     assetsData: any[];
-    handleConfirm: (index: number) => void;
+    // handleConfirm: (index: number) => void;
   }) => {
   const inputBtnRef = React.useRef();
   const { isMobile } = useSettings();
@@ -406,7 +406,9 @@ export const TransferWrap = <
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            handleConfirm(0);
+            const tradeDataWithMemo = { ...tradeData, memo: memo };
+            // onTransferClick(tradeData)
+            onTransferClick(tradeDataWithMemo);
           }}
           loading={
             !getDisabled && transferBtnStatus === TradeBtnStatus.LOADING

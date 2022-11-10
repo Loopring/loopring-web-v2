@@ -47,6 +47,7 @@ import { getIPFSString, getTimestampDaysLater, makeMeta } from "../../utils";
 import { ActionResultCode, DAYS } from "../../defs";
 import { useHistory } from "react-router-dom";
 import Web3 from "web3";
+import { isAccActivated } from "./checkAccStatus";
 
 const CID = require("cids");
 
@@ -190,7 +191,11 @@ export const useNFTMintAdvance = <
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+        if (
+          connectProvides.usedWeb3 &&
+          LoopringAPI.userAPI &&
+          isAccActivated()
+        ) {
           let isHWAddr = checkHWAddr(account.accAddress);
 
           if (!isHWAddr && !isNotHardwareWallet) {
@@ -256,6 +261,17 @@ export const useNFTMintAdvance = <
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
         switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTMint_First_Method_Denied,
+              info: {
+                symbol: nftMintAdvanceValue.name,
+                value: nftMintAdvanceValue.tradeValue,
+                isAdvanceMint: true,
+              },
+            });
+            break;
           case sdk.ConnectorError.USER_DENIED:
           case sdk.ConnectorError.USER_DENIED_2:
             setShowAccount({
@@ -268,18 +284,14 @@ export const useNFTMintAdvance = <
               },
             });
             break;
-          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.NFTMint_First_Method_Denied,
-              info: {
-                symbol: nftMintAdvanceValue.name,
-                value: nftMintAdvanceValue.tradeValue,
-                isAdvanceMint: true,
-              },
-            });
-            break;
           default:
+            if (
+              [102024, 102025, 114001, 114002].includes(
+                (e as sdk.RESULT_INFO)?.code || 0
+              )
+            ) {
+              checkFeeIsEnough({ isRequiredAPI: true });
+            }
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTMint_Failed,

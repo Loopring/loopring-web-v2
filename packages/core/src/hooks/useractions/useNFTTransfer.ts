@@ -239,7 +239,11 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
       try {
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+        if (
+          connectProvides.usedWeb3 &&
+          LoopringAPI.userAPI &&
+          isAccActivated()
+        ) {
           let isHWAddr = checkHWAddr(account.accAddress);
 
           if (!isHWAddr && !isNotHardwareWallet) {
@@ -267,91 +271,46 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           );
 
           myLog("submitInternalTransfer:", response);
-          if (isAccActivated()) {
-            if (
-              (response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message
-            ) {
-              const code = sdk.checkErrorInfo(
-                response as sdk.RESULT_INFO,
-                isNotHardwareWallet
-              );
-              if (code === sdk.ConnectorError.USER_DENIED) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTTransfer_User_Denied,
-                });
-                // setIsConfirmTransfer(false);
-              } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTTransfer_First_Method_Denied,
-                  info: {
-                    symbol: nftTransferValue.name,
-                  },
-                });
-              } else {
-                if (
-                  [102024, 102025, 114001, 114002].includes(
-                    (response as sdk.RESULT_INFO)?.code || 0
-                  )
-                ) {
-                  checkFeeIsEnough({ isRequiredAPI: true });
-                }
 
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTTransfer_Failed,
-                  error: response as sdk.RESULT_INFO,
-                  info: {
-                    symbol: nftTransferValue.name,
-                  },
-                });
-                // setIsConfirmTransfer(false);
-              }
-            } else if ((response as sdk.TX_HASH_API)?.hash) {
-              // setIsConfirmTransfer(false);
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTTransfer_In_Progress,
-              });
-              await sdk.sleep(TOAST_TIME);
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTTransfer_Success,
-                info: {
-                  symbol: nftTransferValue.name,
-                  hash:
-                    Explorer +
-                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftTransfer-${
-                      account.accountId
-                    }-${request.token.tokenId}-${request.storageId}`,
-                },
-              });
-              if (isHWAddr) {
-                myLog("......try to set isHWAddr", isHWAddr);
-                updateHW({ wallet: account.accAddress, isHWAddr });
-              }
-              walletLayer2Service.sendUserUpdate();
-              searchParams.delete("detail");
-              setShowNFTDetail({ isShow: false });
-              history.push(pathname + "?" + searchParams.toString());
-              resetNFTTransferData();
-            }
-          } else {
-            resetNFTTransferData();
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
           }
+          // setIsConfirmTransfer(false);
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTTransfer_In_Progress,
+          });
+          await sdk.sleep(TOAST_TIME);
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTTransfer_Success,
+            info: {
+              symbol: nftTransferValue.name,
+              hash:
+                Explorer +
+                `tx/${(response as sdk.TX_HASH_API)?.hash}-nftTransfer-${
+                  account.accountId
+                }-${request.token.tokenId}-${request.storageId}`,
+            },
+          });
+          if (isHWAddr) {
+            myLog("......try to set isHWAddr", isHWAddr);
+            updateHW({ wallet: account.accAddress, isHWAddr });
+          }
+          walletLayer2Service.sendUserUpdate();
+          searchParams.delete("detail");
+          setShowNFTDetail({ isShow: false });
+          history.push(pathname + "?" + searchParams.toString());
+          resetNFTTransferData();
         }
-      } catch (reason: any) {
-        const code = sdk.checkErrorInfo(reason, isNotHardwareWallet);
-
-        if (isAccActivated()) {
-          if (code === sdk.ConnectorError.USER_DENIED) {
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.NFTTransfer_User_Denied,
-            });
-          } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+      } catch (e: any) {
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
+            setLastRequest({ request });
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTTransfer_First_Method_Denied,
@@ -359,7 +318,23 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
                 symbol: nftTransferValue.name,
               },
             });
-          } else {
+            break;
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            setLastRequest({ request });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTTransfer_User_Denied,
+            });
+            break;
+          default:
+            if (
+              [102024, 102025, 114001, 114002].includes(
+                (e as sdk.RESULT_INFO)?.code || 0
+              )
+            ) {
+              checkFeeIsEnough({ isRequiredAPI: true });
+            }
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTTransfer_Failed,
@@ -368,10 +343,16 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
               },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
-                msg: reason?.message,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
               },
             });
-          }
+            break;
         }
       }
     },

@@ -126,21 +126,21 @@ export function useUpdateAccount() {
                 : AccountStep.UpdateAccount_User_Denied,
             });
             return;
+
           default:
+            setShowAccount({
+              isShow: true,
+              step: isReset
+                ? AccountStep.ResetAccount_Failed
+                : AccountStep.UpdateAccount_Failed,
+              error: {
+                ...((e as any) ?? {}),
+                ...error,
+                code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
+              },
+            });
             break;
         }
-
-        setShowAccount({
-          isShow: true,
-          step: isReset
-            ? AccountStep.ResetAccount_Failed
-            : AccountStep.UpdateAccount_Failed,
-          error: {
-            ...((e as any) ?? {}),
-            ...error,
-            code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
-          },
-        });
       }
     },
     [account.accAddress, checkHWAddr, setShowAccount, updateHW]

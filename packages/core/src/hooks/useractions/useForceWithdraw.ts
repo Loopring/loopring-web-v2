@@ -246,7 +246,11 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+        if (
+          connectProvides.usedWeb3 &&
+          LoopringAPI.userAPI &&
+          isAccActivated()
+        ) {
           let isHWAddr = checkHWAddr(account.accAddress);
 
           if (!isHWAddr && !isNotHardwareWallet) {
@@ -272,86 +276,35 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
           );
           myLog("submitNFTWithdraw:", response);
 
-          if (isAccActivated()) {
-            if (
-              (response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message
-            ) {
-              const code = sdk.checkErrorInfo(
-                response as sdk.RESULT_INFO,
-                isNotHardwareWallet
-              );
-              if (code === sdk.ConnectorError.USER_DENIED) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.ForceWithdraw_Denied,
-                });
-              } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                // setLastRequest({ request });
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.ForceWithdraw_First_Method_Denied,
-                  info: {
-                    symbol: forceWithdrawValue.belong,
-                  },
-                });
-              } else {
-                if (
-                  [102024, 102025, 114001, 114002].includes(
-                    (response as sdk.RESULT_INFO)?.code || 0
-                  )
-                ) {
-                  checkFeeIsEnough({ isRequiredAPI: true });
-                }
-
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.ForceWithdraw_Failed,
-                  error: response as sdk.RESULT_INFO,
-                  info: {
-                    symbol: forceWithdrawValue.belong,
-                  },
-                });
-              }
-            } else if ((response as sdk.TX_HASH_API)?.hash) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.ForceWithdraw_In_Progress,
-              });
-              await sdk.sleep(TOAST_TIME);
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.ForceWithdraw_Submit,
-                info: {
-                  symbol: forceWithdrawValue.belong,
-                },
-              });
-              if (isHWAddr) {
-                myLog("......try to set isHWAddr", isHWAddr);
-                updateHW({ wallet: account.accAddress, isHWAddr });
-              }
-              walletLayer2Service.sendUserUpdate();
-              resetDefault();
-            }
-          } else {
-            resetDefault();
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
           }
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.ForceWithdraw_In_Progress,
+          });
+          await sdk.sleep(TOAST_TIME);
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.ForceWithdraw_Submit,
+            info: {
+              symbol: forceWithdrawValue.belong,
+            },
+          });
+          if (isHWAddr) {
+            myLog("......try to set isHWAddr", isHWAddr);
+            updateHW({ wallet: account.accAddress, isHWAddr });
+          }
+          walletLayer2Service.sendUserUpdate();
+          resetDefault();
         }
-      } catch (reason: any) {
-        sdk.dumpError400(reason);
-        const code = sdk.checkErrorInfo(reason, isNotHardwareWallet);
-        myLog("code:", code);
-
-        if (isAccActivated()) {
-          if (code === sdk.ConnectorError.USER_DENIED) {
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.ForceWithdraw_Denied,
-              info: {
-                symbol: forceWithdrawValue.belong,
-              },
-            });
-          } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+      } catch (e: any) {
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
               isShow: true,
               step: AccountStep.ForceWithdraw_First_Method_Denied,
@@ -359,7 +312,25 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
                 symbol: forceWithdrawValue.belong,
               },
             });
-          } else {
+            break;
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.ForceWithdraw_Denied,
+              info: {
+                symbol: forceWithdrawValue.belong,
+              },
+            });
+            break;
+          default:
+            if (
+              [102024, 102025, 114001, 114002].includes(
+                (e as sdk.RESULT_INFO)?.code || 0
+              )
+            ) {
+              checkFeeIsEnough({ isRequiredAPI: true });
+            }
             setShowAccount({
               isShow: true,
               step: AccountStep.ForceWithdraw_Failed,
@@ -368,10 +339,16 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
               },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
-                msg: reason?.message,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
               },
             });
-          }
+            break;
         }
       }
     },
