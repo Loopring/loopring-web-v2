@@ -16,7 +16,7 @@ export const CardNFTStyled = styled(Card)`
 `;
 
 export const CardStyleItem = styled(Card)<
-  CardProps & { contentHeight?: number }
+  CardProps & { contentheight?: number }
 >`
   background: var(--color-global-bg);
   width: 100%;
@@ -24,7 +24,7 @@ export const CardStyleItem = styled(Card)<
   height: 0;
   padding: 0 0
     calc(
-      100% + ${({ contentHeight }) => `${contentHeight ? contentHeight : 80}px`}
+      100% + ${({ contentheight }) => `${contentheight ? contentheight : 80}px`}
     );
   position: relative;
 
@@ -51,7 +51,7 @@ export const CardStyleItem = styled(Card)<
   img {
     object-fit: contain;
   }
-` as (props: CardProps & { contentHeight?: number }) => JSX.Element;
+` as (props: CardProps & { contentheight?: number }) => JSX.Element;
 
 export const ImageUploadWrapper = styled(Box)`
   position: relative;

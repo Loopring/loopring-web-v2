@@ -45,6 +45,7 @@ import {
   walletLayer2Service,
   useSystem,
   getIPFSString,
+  useWalletLayer2,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -65,6 +66,8 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
+  const { updateWalletLayer2 } = useWalletLayer2();
+
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
   const history = useHistory();
@@ -204,12 +207,14 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   React.useEffect(() => {
     if (isShow || info?.isShowLocal) {
+      updateWalletLayer2();
       resetDefault();
     } else {
       resetIntervalTime();
     }
     return () => {
       resetIntervalTime();
+      setAddress("");
     };
   }, [isShow, info?.isShowLocal]);
 
@@ -454,11 +459,12 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
           processRequest(req, isFirstTime);
         } catch (e: any) {
-          sdk.dumpError400(e);
-          // nftTransfer failed
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTTransfer_Failed,
+            info: {
+              symbol: nftTransferValue?.name,
+            },
             error: {
               code: UIERROR_CODE.UNKNOWN,
               msg: e?.message,

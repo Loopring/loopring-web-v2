@@ -1117,4 +1117,12 @@ export default {
   labelLegacy: "legacy",
   labelTitleMyNFTSAvailable: "My Holding NFTs",
   labelTitleTotalAvailable: "Total NFTs",
+  labelL2toL1NFTFailed:
+    "Sent {{value}} <span>{{symbol}}</span> to L1 has failed!",
+  labelL2toL1NFTSuccess:
+    "Sent {{value}} <span>{{symbol}}</span> to L1 was successful!",
+  labelL2toL2NFTFailed:
+    "Sent {{value}} <span>{{symbol}}</span> from my Loopring L2 to another Loopring L2 failed!",
+  labelL2toL2NFTSuccess:
+    "Sent {{value}} <span>{{symbol}}</span> was successful!",
 };

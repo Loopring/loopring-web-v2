@@ -97,7 +97,7 @@ export const NFTTransfer_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: props.t("labelL2toL2Success", {
-      symbol: sanitize(props.symbol ?? "NFT"),
+      symbol: sanitize(props.symbol ?? "NFT").toString(),
       value: props.value,
     }),
   };
@@ -108,7 +108,7 @@ export const NFTTransfer_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL2toL2Failed", {
-      symbol: sanitize(props.symbol ?? "NFT"),
+      symbol: sanitize(props.symbol ?? "NFT").toString(),
       value: props.value,
     }),
   };

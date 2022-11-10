@@ -235,7 +235,7 @@ export const CollectionItem = React.memo(
         <CardStyleItem
           ref={_ref}
           className={"collection"}
-          contentHeight={sizeConfig.contentHeight}
+          contentheight={sizeConfig.contentHeight}
         >
           <Box
             position={"absolute"}

@@ -49,6 +49,7 @@ import {
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const makeAmmDetailExtendsActivityMap = ({
   ammMap,
@@ -235,12 +236,19 @@ export const useCoinPair = <C extends { [key: string]: any }>({
       ) {
         const { myCoinA, myCoinB } = coinPairInfo;
         const market = `${myCoinA?.name}-${myCoinB?.name}`;
-        const ammList = await LoopringAPI.exchangeAPI.getMixCandlestick({
+        const response = await LoopringAPI.exchangeAPI.getMixCandlestick({
           market: market,
           interval: TradingInterval.d1,
           limit: 30,
         });
-        const formattedPairHistory = ammList.candlesticks
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          myLog("getMixCandlestick", response);
+        }
+
+        const formattedPairHistory = response.candlesticks
           .map((o) => ({
             ...o,
             timeStamp: o.timestamp,

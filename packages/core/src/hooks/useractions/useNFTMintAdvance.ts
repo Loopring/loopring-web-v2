@@ -36,7 +36,6 @@ import {
 } from "../../stores";
 import { useBtnStatus, useMyCollection } from "../common";
 import { LoopringAPI } from "../../api_wrapper";
-import { isAccActivated } from "./checkAccStatus";
 import {
   useChargeFees,
   useWalletLayer2Socket,
@@ -198,8 +197,6 @@ export const useNFTMintAdvance = <
             isHWAddr = true;
           }
 
-          // setLastRequest({ ...request });
-
           const response = await LoopringAPI.userAPI?.submitNFTMint(
             {
               request,
@@ -220,98 +217,47 @@ export const useNFTMintAdvance = <
 
           myLog("submitNFTMintAdvance:", response);
 
-          if (isAccActivated()) {
-            if (
-              (response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message
-            ) {
-              // Withdraw failed
-              const code = sdk.checkErrorInfo(
-                response as sdk.RESULT_INFO,
-                isNotHardwareWallet
-              );
-              if (code === sdk.ConnectorError.USER_DENIED) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTMint_Denied,
-                  info: {
-                    symbol: nftMintAdvanceValue.name,
-                    value: nftMintAdvanceValue.tradeValue,
-                    isAdvanceMint: true,
-                  },
-                });
-              } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTMint_First_Method_Denied,
-                  info: {
-                    symbol: nftMintAdvanceValue.name,
-                    value: nftMintAdvanceValue.tradeValue,
-                    isAdvanceMint: true,
-                  },
-                });
-              } else {
-                if (
-                  [102024, 102025, 114001, 114002].includes(
-                    (response as sdk.RESULT_INFO)?.code || 0
-                  )
-                ) {
-                  checkFeeIsEnough({ isRequiredAPI: true });
-                }
-
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTMint_Failed,
-                  info: {
-                    symbol: nftMintAdvanceValue.name,
-                    value: nftMintAdvanceValue.tradeValue,
-                  },
-                  error: response as sdk.RESULT_INFO,
-                });
-                resetDefault();
-              }
-            } else if ((response as sdk.TX_HASH_API)?.hash) {
-              // Withdraw success
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTMint_In_Progress,
-                info: {
-                  symbol: nftMintAdvanceValue.name,
-                  value: nftMintAdvanceValue.tradeValue,
-                },
-              });
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTMint_Success,
-                info: {
-                  symbol: nftMintAdvanceValue.name,
-                  value: nftMintAdvanceValue.tradeValue,
-                  hash:
-                    Explorer +
-                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMintAdvance`,
-                },
-              });
-              await sdk.sleep(TOAST_TIME);
-              if (isHWAddr) {
-                myLog("......try to set isHWAddr", isHWAddr);
-                updateHW({ wallet: account.accAddress, isHWAddr });
-              }
-              walletLayer2Service.sendUserUpdate();
-              history.push({
-                pathname: `/NFT/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.contractAddress}--${nftMintAdvanceValue?.collectionMeta?.id}`,
-              });
-              resetDefault();
-              // checkFeeIsEnough();
-            }
-          } else {
-            resetDefault();
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
           }
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTMint_In_Progress,
+            info: {
+              symbol: nftMintAdvanceValue.name,
+              value: nftMintAdvanceValue.tradeValue,
+            },
+          });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTMint_Success,
+            info: {
+              symbol: nftMintAdvanceValue.name,
+              value: nftMintAdvanceValue.tradeValue,
+              hash:
+                Explorer +
+                `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMintAdvance`,
+            },
+          });
+          await sdk.sleep(TOAST_TIME);
+          if (isHWAddr) {
+            myLog("......try to set isHWAddr", isHWAddr);
+            updateHW({ wallet: account.accAddress, isHWAddr });
+          }
+          walletLayer2Service.sendUserUpdate();
+          history.push({
+            pathname: `/NFT/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.contractAddress}--${nftMintAdvanceValue?.collectionMeta?.id}`,
+          });
+          resetDefault();
         }
-      } catch (reason: any) {
-        const code = sdk.checkErrorInfo(reason, isNotHardwareWallet);
-
-        if (isAccActivated()) {
-          if (code === sdk.ConnectorError.USER_DENIED) {
+      } catch (e: any) {
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        switch (code) {
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTMint_Denied,
@@ -321,7 +267,8 @@ export const useNFTMintAdvance = <
                 isAdvanceMint: true,
               },
             });
-          } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+            break;
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTMint_First_Method_Denied,
@@ -331,7 +278,8 @@ export const useNFTMintAdvance = <
                 isAdvanceMint: true,
               },
             });
-          } else {
+            break;
+          default:
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTMint_Failed,
@@ -341,10 +289,16 @@ export const useNFTMintAdvance = <
               },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
-                msg: reason?.message,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
               },
             });
-          }
+            break;
         }
       }
     },
@@ -593,8 +547,6 @@ export const useNFTMintAdvance = <
 
           processRequest(req, isFirstTime);
         } catch (e: any) {
-          sdk.dumpError400(e);
-          // transfer failed
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_Failed,
@@ -602,7 +554,16 @@ export const useNFTMintAdvance = <
               symbol: nftMintAdvanceValue.name,
               value: nftMintAdvanceValue.tradeValue,
             },
-            error: { code: 400, message: e.message } as sdk.RESULT_INFO,
+            error: {
+              code: UIERROR_CODE.UNKNOWN,
+              msg: e?.message,
+              ...(e instanceof Error
+                ? {
+                    message: e?.message,
+                    stack: e?.stack,
+                  }
+                : e ?? {}),
+            },
           });
         }
         return;
