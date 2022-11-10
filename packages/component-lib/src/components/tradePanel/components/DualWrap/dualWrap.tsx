@@ -333,7 +333,7 @@ export const DualDetail = ({
           >
             {t("labelDualCalcLabel", {
               symbol: base,
-              tag: dualViewInfo.isUp ? "≤" : "<",
+              tag: dualViewInfo.isUp ? "<" : "≤",
               target: targetView,
               interpolation: {
                 escapeValue: false,
