@@ -4,7 +4,6 @@ import {
   MintAdvanceNFTWrap,
   MintNFTConfirm,
   PanelContent,
-  PopoverPure,
   StyledPaperBg,
 } from "@loopring-web/component-lib";
 import React from "react";
