@@ -4,7 +4,6 @@ import {
   findDualMarket,
   LoopringAPI,
   makeDualViewItem,
-  RootState,
   useDualMap,
   useTokenPrices,
 } from "@loopring-web/core";
@@ -17,8 +16,6 @@ import {
   myLog,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import { useDispatch, useSelector } from "react-redux";
-import { hidDualBeginnerHelp } from "@loopring-web/core/src/stores/localStore/confirmation";
 const DUALLimit = 20;
 export const useDualHook = ({
   setConfirmDualInvest,
@@ -30,13 +27,6 @@ export const useDualHook = ({
   const [beginnerMode, setBeginnerMode] = React.useState<boolean>(
     new URLSearchParams(search).get('beginnerMode') === 'true'
   )
-  const showBeginnerModeHelp = useSelector(
-    (state: RootState) => state.localStore.confirmation.showDualBeginnerHelp
-  );
-  const dispatch = useDispatch()
-  const onCloseBeginnerModeHelp = React.useCallback(() => {
-    dispatch(hidDualBeginnerHelp(undefined))
-  }, [])
   const { marketArray, marketMap, tradeMap, status: dualStatus } = useDualMap();
   const { tokenPrices } = useTokenPrices();
   const [priceObj, setPriceObj] = React.useState<{
@@ -296,9 +286,7 @@ export const useDualHook = ({
     priceObj,
     pair,
     beginnerMode,
-    showBeginnerModeHelp,
     onToggleBeginnerMode,
-    onCloseBeginnerModeHelp,
     // confirmShowNoBalance,
     // setConfirmShowNoBalance,
     // serverUpdate,

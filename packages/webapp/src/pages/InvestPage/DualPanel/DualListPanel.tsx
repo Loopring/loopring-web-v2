@@ -113,8 +113,12 @@ export const DualListPanel: any = withTranslation("common")(
   ({
     t,
     setConfirmDualInvest,
+    showBeginnerModeHelp,
+    onShowBeginnerModeHelp,
   }: WithTranslation & {
     setConfirmDualInvest: (state: any) => void;
+    showBeginnerModeHelp: boolean;
+    onShowBeginnerModeHelp: (show: boolean) => void;
   }) => {
     const { coinJson } = useSettings();
     const { forexMap } = useSystem();
@@ -134,10 +138,8 @@ export const DualListPanel: any = withTranslation("common")(
       marketQuote,
       priceObj,
       beginnerMode,
-      showBeginnerModeHelp,
       handleOnPairChange,
       onToggleBeginnerMode,
-      onCloseBeginnerModeHelp
     } = useDualHook({ setConfirmDualInvest });
 
     const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade();
@@ -197,7 +199,7 @@ export const DualListPanel: any = withTranslation("common")(
                   aria-label={t("labelClose")}
                   color={"inherit"}
                   onClick={() => {
-                    onCloseBeginnerModeHelp()
+                    onShowBeginnerModeHelp(false)
                   }}
                 >
                   <CloseIcon />
