@@ -12,9 +12,6 @@ import {
   useModalData,
   useTokenMap,
   useAccount,
-  ActionResult,
-  ActionResultCode,
-  checkErrorInfo,
   DAYS,
   getTimestampDaysLater,
   LoopringAPI,
@@ -204,23 +201,27 @@ export function useNFTMint<
               value: nftMintValue.mintData?.tradeValue,
             },
           });
-          const response = await LoopringAPI.userAPI?.submitNFTMint(
-            {
-              request,
-              web3: connectProvides.usedWeb3 as unknown as Web3,
-              chainId:
-                chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: (ConnectProvidersSignMap[connectName] ??
-                connectName) as unknown as sdk.ConnectorNames,
-              eddsaKey: eddsaKey.sk,
-              apiKey,
-              isHWAddr,
-            },
-            {
-              accountId: account.accountId,
-              counterFactualInfo: eddsaKey.counterFactualInfo,
-            } as any
-          );
+          const response = await LoopringAPI.userAPI
+            ?.submitNFTMint(
+              {
+                request,
+                web3: connectProvides.usedWeb3 as unknown as Web3,
+                chainId:
+                  chainId !== sdk.ChainId.GOERLI
+                    ? sdk.ChainId.MAINNET
+                    : chainId,
+                walletType: (ConnectProvidersSignMap[connectName] ??
+                  connectName) as unknown as sdk.ConnectorNames,
+                eddsaKey: eddsaKey.sk,
+                apiKey,
+                isHWAddr,
+              },
+              {
+                accountId: account.accountId,
+                counterFactualInfo: eddsaKey.counterFactualInfo,
+              } as any
+            )
+            .catch();
 
           myLog("submitNFTMint:", response);
 
@@ -229,78 +230,89 @@ export function useNFTMint<
             (response as sdk.RESULT_INFO).message
           ) {
             throw response;
-          } else if ((response as sdk.TX_HASH_API)?.hash) {
-            await sdk.sleep(TOAST_TIME);
+          }
+          await sdk.sleep(TOAST_TIME);
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTMint_Success,
+            info: {
+              symbol: nftMintValue.nftMETA?.name,
+              value: nftMintValue.mintData?.tradeValue,
+              hash:
+                Explorer +
+                `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMint-${
+                  account.accountId
+                }-${request.maxFee.tokenId}-${request.storageId}`,
+            },
+          });
+          if (isHWAddr) {
+            myLog("......try to set isHWAddr", isHWAddr);
+            updateHW({ wallet: account.accAddress, isHWAddr });
+          }
+          walletLayer2Service.sendUserUpdate();
+          history.push(
+            `/nft/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`
+          );
+          mintService.emptyData();
+        }
+      } catch (e: any) {
+        myLog("useNFTMint", e);
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
               isShow: true,
-              step: AccountStep.NFTMint_Success,
+              step: AccountStep.NFTMint_First_Method_Denied,
               info: {
                 symbol: nftMintValue.nftMETA?.name,
                 value: nftMintValue.mintData?.tradeValue,
-                hash:
-                  Explorer +
-                  `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMint-${
-                    account.accountId
-                  }-${request.maxFee.tokenId}-${request.storageId}`,
               },
             });
-            if (isHWAddr) {
-              myLog("......try to set isHWAddr", isHWAddr);
-              updateHW({ wallet: account.accAddress, isHWAddr });
-            }
-            walletLayer2Service.sendUserUpdate();
-            history.push({
-              pathname: `/NFT/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`,
+            mintService.signatureMint(true);
+            break;
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTMint_Denied,
+              info: {
+                symbol: nftMintValue.nftMETA?.name,
+                value: nftMintValue.mintData?.tradeValue,
+              },
             });
-            mintService.emptyData();
-            history.push("/nft/");
-          }
-        }
-      } catch (reason: any) {
-        const code = checkErrorInfo(reason, isNotHardwareWallet);
-        if (code === sdk.ConnectorError.USER_DENIED) {
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.NFTMint_Denied,
-            info: {
-              symbol: nftMintValue.nftMETA?.name,
-              value: nftMintValue.mintData?.tradeValue,
-            },
-          });
-          mintService.goMintConfirm();
-        } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.NFTMint_First_Method_Denied,
-            info: {
-              symbol: nftMintValue.nftMETA?.name,
-              value: nftMintValue.mintData?.tradeValue,
-            },
-          });
-          mintService.signatureMint(true);
-        } else {
-          if (
-            [102024, 102025, 114001, 114002].includes(
-              (reason as sdk.RESULT_INFO)?.code || 0
-            )
-          ) {
-            checkFeeIsEnough({ isRequiredAPI: true });
-          }
+            mintService.goMintConfirm();
+            break;
 
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.NFTMint_Failed,
-            info: {
-              symbol: nftMintValue.nftMETA?.name,
-              value: nftMintValue.mintData?.tradeValue,
-            },
-            error: {
-              code: UIERROR_CODE.UNKNOWN,
-              msg: reason?.message,
-              ...reason,
-            },
-          });
-          mintService.goMintConfirm();
+          default:
+            if (
+              [102024, 102025, 114001, 114002].includes(
+                (e as sdk.RESULT_INFO)?.code || 0
+              )
+            ) {
+              checkFeeIsEnough({ isRequiredAPI: true });
+            }
+
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTMint_Failed,
+              info: {
+                symbol: nftMintValue.nftMETA?.name,
+                value: nftMintValue.mintData?.tradeValue,
+              },
+              error: {
+                code: UIERROR_CODE.UNKNOWN,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
+              },
+            });
+            mintService.goMintConfirm();
+            break;
         }
       }
     },
@@ -320,7 +332,6 @@ export function useNFTMint<
 
   const onNFTMintClick = React.useCallback(
     async (isFirstTime: boolean = true) => {
-      let result: ActionResult = { code: ActionResultCode.NoError };
       const nftMintValue = store.getState()._router_modalData.nftMintValue;
       if (
         account.readyState === AccountStatus.ACTIVATED &&
@@ -395,12 +406,20 @@ export function useNFTMint<
               symbol: nftMintValue.nftMETA?.name,
               value: nftMintValue.mintData?.tradeValue,
             },
-            error: { code: 400, message: e.message } as sdk.RESULT_INFO,
+
+            error: {
+              code: e?.code ?? UIERROR_CODE.UNKNOWN,
+              message: e.message,
+              ...(e instanceof Error
+                ? {
+                    message: e?.message,
+                    stack: e?.stack,
+                  }
+                : e ?? {}),
+            } as sdk.RESULT_INFO,
           });
         }
         return;
-      } else {
-        result.code = ActionResultCode.DataNotReady;
       }
     },
     []
@@ -457,7 +476,9 @@ export function useNFTMint<
         }
         break;
       case MintCommands.SignatureMint:
-      // nftMintProps.onNFTMintClick(data?.isHardware);
+        nftMintProps.onNFTMintClick(data?.isHardware);
+        handleTabChange(1);
+        break;
       case MintCommands.MintConfirm:
         handleTabChange(1);
         break;

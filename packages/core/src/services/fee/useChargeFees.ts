@@ -414,13 +414,11 @@ export function useChargeFees({
           amount: props.amount,
           needAmountRefresh: props.needAmountRefresh,
         }));
+        getFeeList.cancel();
+      } else {
+        getFeeList.cancel();
+        getFeeList();
       }
-      getFeeList.cancel();
-      //   getFeeList();
-      //
-      // } else {
-      //   getFeeList();
-      // }
     } else {
       const walletMap =
         makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);

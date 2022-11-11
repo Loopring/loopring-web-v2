@@ -52,7 +52,6 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   //       return;
   //   }
   // }, [match?.params.item]);
-  const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
   const fiatView = React.useMemo(() => {
     return (
       <Box flex={1} flexDirection={"column"} display={"flex"}>

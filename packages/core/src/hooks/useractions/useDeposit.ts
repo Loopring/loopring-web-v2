@@ -24,7 +24,6 @@ import {
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
-  checkErrorInfo,
   useAddressCheck,
   useAllowances,
   useBtnStatus,
@@ -32,12 +31,13 @@ import {
   useTokenMap,
   useAccount,
   useSystem,
-  ActionResult,
   ActionResultCode,
   BIGO,
   LoopringAPI,
   store,
   useWalletLayer1,
+  DepositCommands,
+  depositServices,
 } from "../../index";
 import { useTranslation } from "react-i18next";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
@@ -54,6 +54,8 @@ export const useDeposit = <
   isAllowInputToAddress = false,
   opts?: { token?: string | null; owner?: string | null }
 ) => {
+  const subject = React.useMemo(() => depositServices.onSocket(), []);
+
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -100,6 +102,7 @@ export const useDeposit = <
     btnStatus,
     btnInfo,
     enableBtn,
+    // setLoadingBtn,
     disableBtn,
     setLabelAndParams,
     resetBtnInfo,
@@ -184,6 +187,7 @@ export const useDeposit = <
 
   React.useEffect(() => {
     updateBtnStatus();
+    myLog("walletLayer1?.ETH?.count", walletLayer1?.ETH?.count);
   }, [
     depositValue?.belong,
     depositValue?.tradeValue,
@@ -194,7 +198,6 @@ export const useDeposit = <
     realToAddress,
     toIsAddressCheckLoading,
     walletLayer1?.ETH?.count,
-    // toIsLoopringAddress,
   ]);
 
   const handlePanelEvent = React.useCallback(
@@ -428,17 +431,18 @@ export const useDeposit = <
         await signRefer();
       }
       const { readyState, connectName } = account;
-      let result: ActionResult = { code: ActionResultCode.NoError };
-      if (
-        readyState !== AccountStatus.UN_CONNECT &&
-        inputValue.tradeValue &&
-        tokenMap &&
-        exchangeInfo?.exchangeAddress &&
-        connectProvides.usedWeb3 &&
-        LoopringAPI.exchangeAPI &&
-        (!isAllowInputToAddress || (isAllowInputToAddress && realToAddress))
-      ) {
-        try {
+      let result = { code: ActionResultCode.NoError };
+
+      try {
+        if (
+          readyState !== AccountStatus.UN_CONNECT &&
+          inputValue.tradeValue &&
+          tokenMap &&
+          exchangeInfo?.exchangeAddress &&
+          connectProvides.usedWeb3 &&
+          LoopringAPI.exchangeAPI &&
+          (!isAllowInputToAddress || (isAllowInputToAddress && realToAddress))
+        ) {
           const tokenInfo = tokenMap[inputValue.belong];
           const gasLimit = parseInt(tokenInfo.gasAmounts.deposit);
           const fee = 0;
@@ -489,18 +493,22 @@ export const useDeposit = <
                   isMetaMask
                 );
                 nonce += 1;
-              } catch (reason: any) {
-                // result.code = ActionResultCode.ApproveFailed;
-                // result.data = reason;
-
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.Deposit_Approve_Denied,
-                  info: {
-                    isAllowInputToAddress,
-                  },
-                });
-                return;
+              } catch (error: any) {
+                if (error instanceof Error) {
+                  throw {
+                    // Pull all enumerable properties, supporting properties on custom Errors
+                    ...error,
+                    // Explicitly pull Error's non-enumerable properties
+                    message: error.message,
+                    stack: error.stack,
+                    type: "ApproveToken",
+                  };
+                } else {
+                  throw {
+                    ...(error as any),
+                    type: "ApproveToken",
+                  };
+                }
               }
             } else {
               myLog("allowance is enough! don't need approveMax!");
@@ -526,27 +534,44 @@ export const useDeposit = <
           myLog("before deposit:", chainId, connectName, isMetaMask);
 
           const realChainId = chainId === "unknown" ? 1 : chainId;
-
-          const response = await sdk.deposit(
-            connectProvides.usedWeb3,
-            account.accAddress,
-            exchangeInfo.exchangeAddress,
-            tokenInfo,
-            inputValue.tradeValue,
-            fee,
-            realGasPrice,
-            gasLimit,
-            realChainId,
-            nonce,
-            isMetaMask,
-            isAllowInputToAddress ? realToAddress : account.accAddress
-          );
+          let response;
+          try {
+            response = await sdk.deposit(
+              connectProvides.usedWeb3,
+              account.accAddress,
+              exchangeInfo.exchangeAddress,
+              tokenInfo,
+              inputValue.tradeValue,
+              fee,
+              realGasPrice,
+              gasLimit,
+              realChainId,
+              nonce,
+              isMetaMask,
+              isAllowInputToAddress ? realToAddress : account.accAddress
+            );
+          } catch (error) {
+            if (error instanceof Error) {
+              throw {
+                ...error,
+                message: error.message,
+                stack: error.stack,
+                type: "Deposit",
+              };
+            } else {
+              throw {
+                ...(error as any),
+                type: "Deposit",
+              };
+            }
+          }
 
           myLog("response:", response);
           // updateDepositHash({response.result})
           // result.data = response
 
           if (response) {
+            setShowDeposit({ isShow: false });
             setShowAccount({
               isShow: true,
               info: {
@@ -564,32 +589,33 @@ export const useDeposit = <
               value: inputValue.tradeValue,
             });
           } else {
-            // deposit failed
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Deposit_Failed,
-              info: {
-                isAllowInputToAddress,
-              },
-              error: {
-                code: UIERROR_CODE.UNKNOWN,
-                msg: "No Response",
-              },
-            });
+            throw { code: UIERROR_CODE.ERROR_NO_RESPONSE };
           }
           updateWalletLayer1();
           resetDepositData();
-        } catch (reason: any) {
-          const err = checkErrorInfo(reason, true);
-          myLog(
-            "---- deposit reason:",
-            reason?.message.indexOf("User denied transaction")
-          );
-          myLog(reason);
-          myLog("---- deposit err:", err);
-
-          switch (err) {
-            case sdk.ConnectorError.USER_DENIED:
+        } else {
+          throw { code: UIERROR_CODE.DATA_NOT_READY };
+        }
+      } catch (e) {
+        const { type, ..._error } = (e as any)?.message
+          ? (e as any)
+          : { type: "" };
+        const error = LoopringAPI?.exchangeAPI?.genErr(_error as any) ?? {
+          code: UIERROR_CODE.DATA_NOT_READY,
+        };
+        const code = sdk.checkErrorInfo(error, true);
+        switch (code) {
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            if (type === "ApproveToken") {
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.Deposit_Approve_Denied,
+                info: {
+                  isAllowInputToAddress,
+                },
+              });
+            } else {
               setShowAccount({
                 isShow: true,
                 step: AccountStep.Deposit_Denied,
@@ -597,25 +623,24 @@ export const useDeposit = <
                   isAllowInputToAddress,
                 },
               });
-              break;
-            default:
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Deposit_Failed,
-                info: {
-                  isAllowInputToAddress,
-                },
-                error: {
-                  code: result.code ?? UIERROR_CODE.UNKNOWN,
-                  msg: reason?.message,
-                },
-              });
-              resetDepositData();
-              break;
-          }
+            }
+            break;
+          default:
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Deposit_Failed,
+              info: {
+                isAllowInputToAddress,
+              },
+              error: {
+                ..._error,
+                ...error,
+                code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
+              },
+            });
+            resetDepositData();
+            break;
         }
-      } else {
-        result.code = ActionResultCode.DataNotReady;
       }
 
       return result;
@@ -641,13 +666,15 @@ export const useDeposit = <
   );
 
   const onDepositClick = React.useCallback(async () => {
+    // setLoadingBtn();
+    const depositValue = store.getState()._router_modalData.depositValue;
     myLog("onDepositClick depositValue:", depositValue);
-    setShowDeposit({ isShow: false });
 
     if (depositValue && depositValue.belong) {
+      // enableBtn();
       await handleDeposit(depositValue as T);
     }
-  }, [depositValue, handleDeposit, setShowDeposit]);
+  }, [depositValue, handleDeposit]);
 
   const handleAddressError = React.useCallback(() => {
     if (
@@ -700,6 +727,22 @@ export const useDeposit = <
   React.useEffect(() => {
     handleAddressError();
   }, [referStatus, toAddressStatus]);
+  React.useEffect(() => {
+    const subscription = subject.subscribe((props) => {
+      myLog("subscription Deposit DepsitERC20");
+
+      switch (props.status) {
+        case DepositCommands.DepsitERC20:
+          onDepositClick();
+          break;
+        default:
+          break;
+      }
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [subject]);
 
   const title =
     account.readyState === AccountStatus.NO_ACCOUNT

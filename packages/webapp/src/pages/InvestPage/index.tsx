@@ -4,17 +4,23 @@ import { Box, Tab, Tabs, Typography } from "@mui/material";
 
 import { useTranslation, withTranslation } from "react-i18next";
 import {
+  ConfirmInvestDefiRisk,
   ConfirmInvestDualRisk,
   useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
-import { confirmation, ViewAccountTemplate } from "@loopring-web/core";
+import {
+  confirmation,
+  useDualMap,
+  ViewAccountTemplate,
+} from "@loopring-web/core";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
 import { DualListPanel } from "./DualPanel/DualListPanel";
+import { myLog } from "@loopring-web/common-resources";
 
 export enum InvestType {
   MyBalance = 0,
@@ -170,10 +176,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
   const history = useHistory();
   const { confirmDualInvest: confirmDualInvestFun } =
     confirmation.useConfirmation();
-  const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false);
-  const onShowBeginnerModeHelp = React.useCallback((show: boolean) => {
-    setShowBeginnerModeHelp(show);
-  }, []);
+
   const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     (InvestRouter.includes(match?.params?.item)
@@ -183,6 +186,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
   );
   const [isShowTab, setIsShowTab] = React.useState<Boolean>(false);
   React.useEffect(() => {
+    // myLog(match?.params.item);
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
         setTabIndex(InvestType.MyBalance);
@@ -196,6 +200,12 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       case InvestRouter[InvestType.DeFi]:
         setTabIndex(InvestType.DeFi);
         setIsShowTab(false);
+        // if (marketArray?.length) {
+        //
+        // } else {
+        //   setTabIndex(InvestType.Overview);
+        //   setIsShowTab(true);
+        // }
         return;
       case InvestRouter[InvestType.Dual]:
         setTabIndex(InvestType.Dual);
@@ -237,16 +247,13 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           </Tabs>
         </Box>
       )}
+
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
         {tabIndex === InvestType.DeFi && <DeFiPanel />}
         {tabIndex === InvestType.Dual && (
-          <DualListPanel
-            showBeginnerModeHelp={showBeginnerModeHelp}
-            onShowBeginnerModeHelp={onShowBeginnerModeHelp}
-            setConfirmDualInvest={setConfirmDualInvest}
-          />
+          <DualListPanel setConfirmDualInvest={setConfirmDualInvest} />
         )}
         {tabIndex === InvestType.MyBalance && (
           <Box
@@ -267,10 +274,6 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
             history.goBack();
           } else {
             confirmDualInvestFun();
-            setShowBeginnerModeHelp(true);
-            setTimeout(() => {
-              onShowBeginnerModeHelp(false);
-            }, 5 * 1000);
           }
         }}
       />

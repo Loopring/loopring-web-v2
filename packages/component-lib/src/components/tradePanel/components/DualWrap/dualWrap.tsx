@@ -120,11 +120,7 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
     }
 `;
 });
-enum DisplayMode {
-  nonBeginnerMode = 1,
-  beginnerModeStep1,
-  beginnerModeStep2,
-}
+type DisaplyMode = 'nonBeginnerMode' | 'beginnerModeStep1' | 'beginnerModeStep2'
 export type DualDetailType = {
   dualViewInfo: DualViewBase;
   currentPrice: DualCurrentPrice;
@@ -143,8 +139,8 @@ export const DualDetail = ({
   // greaterEarnTokenSymbol,
   greaterEarnView,
   isOrder = false,
-  displayMode = DisplayMode.nonBeginnerMode,
-}: DualDetailType & { displayMode?: DisplayMode; tokenMap: any }) => {
+  displayMode = "nonBeginnerMode"
+}: DualDetailType & { displayMode?: DisaplyMode, tokenMap: any }) => {
   const { t } = useTranslation();
   const { upColor } = useSettings();
   const { base, quote, precisionForPrice } = currentPrice;
@@ -176,300 +172,307 @@ export const DualDetail = ({
 
   return (
     <Box>
-      {displayMode !== DisplayMode.beginnerModeStep1 && (
-        <Box paddingX={2} paddingBottom={1}>
-          <BoxChartStyle height={128} width={"100%"} position={"relative"}>
-            <Box className={"point1 point"}>
-              <Typography
-                variant={"body2"}
-                whiteSpace={"pre"}
-                color={"textPrimary"}
-              >
-                {t("labelDualTargetPrice3")}
-              </Typography>
-              <Typography>{targetView}</Typography>
-            </Box>
-            <Box
-              className={"point2 point"}
+      {displayMode !== 'beginnerModeStep1' && <Box paddingX={2} paddingBottom={1}>
+        <BoxChartStyle height={128} width={"100%"} position={"relative"}>
+          <Box className={"point1 point"}>
+            <Typography
+              variant={"body2"}
               whiteSpace={"pre"}
-              sx={{
-                left: sdk
+              color={"textPrimary"}
+            >
+              {t("labelDualTargetPrice3")}
+            </Typography>
+            <Typography>{targetView}</Typography>
+          </Box>
+          <Box
+            className={"point2 point"}
+            whiteSpace={"pre"}
+            sx={{
+              left: sdk
+                .toBig(dualViewInfo.currentPrice?.currentPrice ?? 0)
+                .minus(dualViewInfo.strike)
+                .gte(0)
+                ? "75%"
+                : "25%",
+            }}
+          >
+            <Typography variant={"body2"} color={"textPrimary"}>
+              {t("labelDualCurrentPrice3", {
+                symbol: base,
+              })}
+            </Typography>
+            <Typography
+              color={
+                upColor == UpColor.green
+                  ? "var(--color-error)"
+                  : "var(--color-success)"
+              }
+            >
+              {currentView}
+            </Typography>
+          </Box>
+          <Box className={"returnV1 returnV"}>
+            <Typography
+              variant={"body2"}
+              color={"var(--color-warning)"}
+              whiteSpace={"pre-line"}
+            >
+              {quote &&
+                t("labelDualReturn", {
+                  symbol:
+                    (greaterEarnView === "0"
+                      ? EmptyValueTag
+                      : greaterEarnView) +
+                    " " +
+                    quote,
+                })}
+            </Typography>
+          </Box>
+          <Box className={"returnV2 returnV"}>
+            <Typography
+              variant={"body2"}
+              color={"var(--color-success)"}
+              whiteSpace={"pre-line"}
+            >
+              {base &&
+                t("labelDualReturn", {
+                  symbol:
+                    (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
+                    " " +
+                    base,
+                })}
+            </Typography>
+          </Box>
+          <Box className={"backView"}>
+            <Box
+              className={"line"}
+              width={
+                sdk
                   .toBig(dualViewInfo.currentPrice?.currentPrice ?? 0)
                   .minus(dualViewInfo.strike)
                   .gte(0)
                   ? "75%"
-                  : "25%",
-              }}
-            >
-              <Typography variant={"body2"} color={"textPrimary"}>
-                {t("labelDualCurrentPrice3", {
-                  symbol: base,
-                })}
-              </Typography>
-              <Typography
-                color={
-                  upColor == UpColor.green
-                    ? "var(--color-error)"
-                    : "var(--color-success)"
-                }
-              >
-                {currentView}
-              </Typography>
-            </Box>
-            <Box className={"returnV1 returnV"}>
-              <Typography
-                variant={"body2"}
-                color={"var(--color-warning)"}
-                whiteSpace={"pre-line"}
-              >
-                {quote &&
-                  t("labelDualReturn", {
-                    symbol:
-                      (greaterEarnView === "0"
-                        ? EmptyValueTag
-                        : greaterEarnView) +
-                      " " +
-                      quote,
-                  })}
-              </Typography>
-            </Box>
-            <Box className={"returnV2 returnV"}>
-              <Typography
-                variant={"body2"}
-                color={"var(--color-success)"}
-                whiteSpace={"pre-line"}
-              >
-                {base &&
-                  t("labelDualReturn", {
-                    symbol:
-                      (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
-                      " " +
-                      base,
-                  })}
-              </Typography>
-            </Box>
-            <Box className={"backView"}>
-              <Box
-                className={"line"}
-                width={
-                  sdk
-                    .toBig(dualViewInfo.currentPrice?.currentPrice ?? 0)
-                    .minus(dualViewInfo.strike)
-                    .gte(0)
-                    ? "75%"
-                    : "25%"
-                }
-              />
-            </Box>
-          </BoxChartStyle>
-        </Box>
-      )}
-      {displayMode === DisplayMode.beginnerModeStep2 && (
-        <>
-          <Box paddingX={2} marginTop={2}>
-            <Typography variant={"h5"} marginBottom={0}>
-              {t("At Settlement Date")}
-            </Typography>
-            <Typography color={"textSecondary"} marginBottom={1}>
-              {t("labelDualBeginnerIndexPriceDes")}
-            </Typography>
-            <Box
-              marginBottom={1}
-              display={"flex"}
-              justifyContent={"space-between"}
-            >
-              <Typography>
-                {" "}
-                {t(
-                  dualViewInfo.isUp
-                    ? "labelDualBeginnerPriceSmallerThan"
-                    : "labelDualBeginnerPriceSmallerThanOrEqual",
-                  {
-                    value: targetView,
-                  }
-                )}
-              </Typography>
-              <Typography>
-                {base &&
-                  t("labelDualReturn", {
-                    symbol:
-                      (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
-                      " " +
-                      base,
-                  })}
-              </Typography>
-            </Box>
-            <Box
-              marginBottom={5}
-              display={"flex"}
-              justifyContent={"space-between"}
-            >
-              <Typography>
-                {t(
-                  dualViewInfo.isUp
-                    ? "labelDualBeginnerPriceGreaterThanOrEqual"
-                    : "labelDualBeginnerPriceGreaterThan",
-                  {
-                    value: targetView,
-                  }
-                )}
-              </Typography>
-              <Typography>
-                {quote &&
-                  t("labelDualReturn", {
-                    symbol:
-                      (greaterEarnView === "0"
-                        ? EmptyValueTag
-                        : greaterEarnView) +
-                      " " +
-                      quote,
-                  })}
-              </Typography>
-            </Box>
-          </Box>
-          <Typography
-            textAlign={"center"}
-            color={"var(--color-text-third)"}
-            variant={"body2"}
-          >
-            {t("labelDualBeginnerLockingDes")}
-          </Typography>
-        </>
-      )}
-      {displayMode !== DisplayMode.beginnerModeStep2 && (
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"stretch"}
-          justifyContent={"space-between"}
-          paddingX={2}
-          marginTop={displayMode === DisplayMode.nonBeginnerMode ? 2 : 0}
-        >
-          {displayMode === DisplayMode.nonBeginnerMode && (
-            <>
-              <Typography
-                variant={"body1"}
-                display={"inline-flex"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                paddingBottom={1}
-              >
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"textSecondary"}
-                >
-                  {t("labelDualCalcLabel", {
-                    symbol: base,
-                    tag: dualViewInfo.isUp ? "<" : "≤",
-                    target: targetView,
-                    interpolation: {
-                      escapeValue: false,
-                    },
-                  })}
-                </Typography>
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"textPrimary"}
-                  whiteSpace={"pre-line"}
-                >
-                  {t("labelDualReturnValue", {
-                    symbol: base,
-                    value: lessEarnView === "0" ? EmptyValueTag : lessEarnView,
-                  })}
-                </Typography>
-              </Typography>
-              <Typography
-                variant={"body1"}
-                display={"inline-flex"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                paddingBottom={3}
-              >
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"textSecondary"}
-                  whiteSpace={"pre-line"}
-                >
-                  {t("labelDualCalcLabel", {
-                    symbol: base,
-                    tag: dualViewInfo.isUp ? "≥" : ">",
-                    target: targetView,
-                    interpolation: {
-                      escapeValue: false,
-                    },
-                  })}
-                </Typography>
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"textPrimary"}
-                >
-                  {t("labelDualReturnValue", {
-                    symbol: quote,
-                    value:
-                      greaterEarnView === "0" ? EmptyValueTag : greaterEarnView,
-                  })}
-                </Typography>
-              </Typography>
-            </>
-          )}
-
-          {isOrder && (
-            <Box paddingBottom={1}>
-              <Divider />
-            </Box>
-          )}
-          <Typography
-            variant={"body1"}
-            display={"inline-flex"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-            paddingBottom={1}
-            order={isOrder ? 4 : 0}
-          >
-            <Tooltip title={t("labelDualCurrentAPRDes").toString()}>
-              <Typography
-                component={"span"}
-                variant={"inherit"}
-                color={"textSecondary"}
-                display={"inline-flex"}
-                alignItems={"center"}
-              >
-                <Trans i18nKey={"labelDualCurrentAPR"}>
-                  APR
-                  <Info2Icon
-                    fontSize={"small"}
-                    color={"inherit"}
-                    sx={{ marginX: 1 / 2 }}
-                  />
-                </Trans>
-              </Typography>
-            </Tooltip>
-            <Typography
-              component={"span"}
-              variant={"inherit"}
-              color={
-                upColor == UpColor.green
-                  ? "var(--color-success)"
-                  : "var(--color-error)"
+                  : "25%"
               }
-            >
-              {dualViewInfo?.apy}
-            </Typography>
-          </Typography>
+            />
+          </Box>
+        </BoxChartStyle>
+      </Box>}
 
+      {
+        displayMode === 'beginnerModeStep2' && (
+          <>
+            <Box paddingX={2} marginTop={2} >
+              <Typography variant={"h5"} marginBottom={0}>{t("At Settlement Date")}</Typography>
+              <Typography color={"textSecondary"} marginBottom={1}>{t("labelDualBeginnerIndexPriceDes")}</Typography>
+              <Box marginBottom={1} display={"flex"} justifyContent={"space-between"}>
+                <Typography>{t("labelDualBeginnerPriceSmallerOrEqualThan", {
+                  value: targetView
+                })}</Typography>
+                <Typography>
+                  {base &&
+                    t("labelDualReturn", {
+                      symbol:
+                        (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
+                        " " +
+                        base,
+                    })}
+                </Typography>
+              </Box>
+              <Box marginBottom={5} display={"flex"} justifyContent={"space-between"}>
+                <Typography>{t("labelDualBeginnerPriceGreaterThan", {
+                  value: targetView
+                })}</Typography>
+                <Typography>
+                  {quote &&
+                    t("labelDualReturn", {
+                      symbol:
+                        (greaterEarnView === "0"
+                          ? EmptyValueTag
+                          : greaterEarnView) +
+                        " " +
+                        quote,
+                    })}
+                </Typography>
+              </Box>
+            </Box>
+            <Typography
+              textAlign={"center"}
+              color={"var(--color-text-third)"}
+              variant={"body2"}
+            >
+              {t("labelDualBeginnerLockingDes")}
+            </Typography>
+          </>
+        )
+      }
+    {displayMode !== 'beginnerModeStep2' &&
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"stretch"}
+        justifyContent={"space-between"}
+        paddingX={2}
+        marginTop={2}
+      >
+        { displayMode === "nonBeginnerMode" && <>
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={1}
+        >
           <Typography
-            variant={"body1"}
-            display={"inline-flex"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-            paddingBottom={1}
-            order={isOrder ? 5 : 1}
+            component={"span"}
+            variant={"inherit"}
+            color={"textSecondary"}
           >
-            <Tooltip title={t("labelDualTargetPriceDes").toString()}>
+            {t("labelDualCalcLabel", {
+              symbol: base,
+              tag: dualViewInfo.isUp ? "<" : "≤",
+              target: targetView,
+              interpolation: {
+                escapeValue: false,
+              },
+            })}
+          </Typography>
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textPrimary"}
+            whiteSpace={"pre-line"}
+          >
+            {t("labelDualReturnValue", {
+              symbol: base,
+              value: lessEarnView === "0" ? EmptyValueTag : lessEarnView,
+            })}
+          </Typography>
+        </Typography>
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={3}
+        >
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textSecondary"}
+            whiteSpace={"pre-line"}
+          >
+            {t("labelDualCalcLabel", {
+              symbol: base,
+              tag: dualViewInfo.isUp ? "≥" : ">",
+              target: targetView,
+              interpolation: {
+                escapeValue: false,
+              },
+            })}
+          </Typography>
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textPrimary"}
+          >
+            {t("labelDualReturnValue", {
+              symbol: quote,
+              value: greaterEarnView === "0" ? EmptyValueTag : greaterEarnView,
+            })}
+          </Typography>
+        </Typography>
+        </>}
+        
+
+        {isOrder && (
+          <Box paddingBottom={1}>
+            <Divider />
+          </Box>
+        )}
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={1}
+          order={isOrder ? 4 : 0}
+        >
+          <Tooltip title={t("labelDualCurrentAPRDes").toString()}>
+            <Typography
+              component={"span"}
+              variant={"inherit"}
+              color={"textSecondary"}
+              display={"inline-flex"}
+              alignItems={"center"}
+            >
+              <Trans i18nKey={"labelDualCurrentAPR"}>
+                APR
+                <Info2Icon
+                  fontSize={"small"}
+                  color={"inherit"}
+                  sx={{ marginX: 1 / 2 }}
+                />
+              </Trans>
+            </Typography>
+          </Tooltip>
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={
+              upColor == UpColor.green
+                ? "var(--color-success)"
+                : "var(--color-error)"
+            }
+          >
+            {dualViewInfo?.apy}
+          </Typography>
+        </Typography>
+
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={1}
+          order={isOrder ? 5 : 1}
+        >
+          <Tooltip title={t("labelDualTargetPriceDes").toString()}>
+            <Typography
+              component={"span"}
+              variant={"inherit"}
+              color={"textSecondary"}
+              display={"inline-flex"}
+              alignItems={"center"}
+            >
+              <Trans i18nKey={"labelDualTargetPrice2"}>
+                Target Price
+                <Info2Icon
+                  fontSize={"small"}
+                  color={"inherit"}
+                  sx={{ marginX: 1 / 2 }}
+                />
+              </Trans>
+            </Typography>
+          </Tooltip>
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textPrimary"}
+          >
+            {targetView}
+          </Typography>
+        </Typography>
+        {isOrder && dualViewInfo.enterTime && (
+          <>
+            <Typography
+              variant={"body1"}
+              display={"inline-flex"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              paddingBottom={1}
+              order={1}
+            >
               <Typography
                 component={"span"}
                 variant={"inherit"}
@@ -477,145 +480,109 @@ export const DualDetail = ({
                 display={"inline-flex"}
                 alignItems={"center"}
               >
-                <Trans i18nKey={"labelDualTargetPrice2"}>
-                  Target Price
-                  <Info2Icon
-                    fontSize={"small"}
-                    color={"inherit"}
-                    sx={{ marginX: 1 / 2 }}
-                  />
-                </Trans>
-              </Typography>
-            </Tooltip>
-            <Typography
-              component={"span"}
-              variant={"inherit"}
-              color={"textPrimary"}
-            >
-              {targetView}
-            </Typography>
-          </Typography>
-          {isOrder && dualViewInfo.enterTime && (
-            <>
-              <Typography
-                variant={"body1"}
-                display={"inline-flex"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                paddingBottom={1}
-                order={1}
-              >
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"textSecondary"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                >
-                  {t("labelDualSubDate")}
-                </Typography>
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"textPrimary"}
-                >
-                  {moment(new Date(dualViewInfo.enterTime)).format(
-                    YEAR_DAY_MINUTE_FORMAT
-                  )}
-                </Typography>
+                {t("labelDualSubDate")}
               </Typography>
               <Typography
-                variant={"body1"}
+                component={"span"}
+                variant={"inherit"}
+                color={"textPrimary"}
+              >
+                {moment(new Date(dualViewInfo.enterTime)).format(
+                  YEAR_DAY_MINUTE_FORMAT
+                )}
+              </Typography>
+            </Typography>
+            <Typography
+              variant={"body1"}
+              display={"inline-flex"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              paddingBottom={1}
+              order={0}
+            >
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                color={"textSecondary"}
                 display={"inline-flex"}
                 alignItems={"center"}
-                justifyContent={"space-between"}
-                paddingBottom={1}
-                order={0}
               >
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"textSecondary"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                >
-                  {t("labelDualAmount")}
-                </Typography>
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"textPrimary"}
-                >
-                  {dualViewInfo?.amount}
-                </Typography>
+                {t("labelDualAmount")}
               </Typography>
-            </>
-          )}
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                color={"textPrimary"}
+              >
+                {dualViewInfo?.amount}
+              </Typography>
+            </Typography>
+          </>
+        )}
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={1}
+          order={isOrder ? 2 : 2}
+        >
           <Typography
-            variant={"body1"}
+            component={"span"}
+            variant={"inherit"}
+            color={"textSecondary"}
             display={"inline-flex"}
             alignItems={"center"}
-            justifyContent={"space-between"}
-            paddingBottom={1}
-            order={isOrder ? 2 : 2}
           >
-            <Typography
-              component={"span"}
-              variant={"inherit"}
-              color={"textSecondary"}
-              display={"inline-flex"}
-              alignItems={"center"}
-            >
-              {t("labelDualSettleDate")}
-            </Typography>
-            <Typography
-              component={"span"}
-              variant={"inherit"}
-              color={"textPrimary"}
-            >
-              {moment(new Date(dualViewInfo.expireTime)).format(
-                YEAR_DAY_MINUTE_FORMAT
-              )}
-            </Typography>
+            {t("labelDualSettleDate")}
           </Typography>
           <Typography
-            variant={"body1"}
+            component={"span"}
+            variant={"inherit"}
+            color={"textPrimary"}
+          >
+            {moment(new Date(dualViewInfo.expireTime)).format(
+              YEAR_DAY_MINUTE_FORMAT
+            )}
+          </Typography>
+        </Typography>
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={1}
+          order={isOrder ? 3 : 3}
+        >
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textSecondary"}
             display={"inline-flex"}
             alignItems={"center"}
-            justifyContent={"space-between"}
-            paddingBottom={1}
-            order={isOrder ? 3 : 3}
           >
-            <Typography
-              component={"span"}
-              variant={"inherit"}
-              color={"textSecondary"}
-              display={"inline-flex"}
-              alignItems={"center"}
-            >
-              {t("labelDualSettleDateDur")}
-            </Typography>
-            <Typography
-              component={"span"}
-              variant={"inherit"}
-              color={"textPrimary"}
-            >
-              {getValuePrecisionThousand(
-                (dualViewInfo.expireTime -
-                  (isOrder && dualViewInfo.enterTime
-                    ? dualViewInfo.enterTime
-                    : Date.now())) /
-                  (1000 * 60 * 60 * 24),
-                1,
-                1,
-                1,
-                true,
-                { floor: true }
-              )}
-            </Typography>
+            {t("labelDualSettleDateDur")}
           </Typography>
-        </Box>
-      )}
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textPrimary"}
+          >
+            {getValuePrecisionThousand(
+              (dualViewInfo.expireTime -
+                (isOrder && dualViewInfo.enterTime
+                  ? dualViewInfo.enterTime
+                  : Date.now())) /
+                (1000 * 60 * 60 * 24),
+              1,
+              1,
+              1,
+              true,
+              { floor: true }
+            )}
+          </Typography>
+        </Typography>
+      </Box>}
     </Box>
   );
 };
@@ -642,13 +609,11 @@ export const DualWrap = <
   accStatus,
   isBeginnerMode,
   ...rest
-}: DualWrapProps<T, I, DUAL> & { isBeginnerMode: boolean }) => {
+}: DualWrapProps<T, I, DUAL> & {isBeginnerMode: boolean}) => {
   const coinSellRef = React.useRef();
   const { t } = useTranslation();
   const priceSymbol = dualCalcData?.dualViewInfo?.currentPrice?.quote;
-  const [displayMode, setDisplayMode] = React.useState<DisplayMode>(
-    isBeginnerMode ? DisplayMode.beginnerModeStep1 : DisplayMode.nonBeginnerMode
-  );
+  const [displayMode, setDisplayMode] = React.useState<DisaplyMode>(isBeginnerMode ? 'beginnerModeStep1' : 'nonBeginnerMode');
 
   const getDisabled = React.useMemo(() => {
     return disabled || dualCalcData === undefined;
@@ -701,9 +666,7 @@ export const DualWrap = <
       const key = btnInfo?.label.split("|");
       return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
     } else {
-      return displayMode === DisplayMode.beginnerModeStep1
-        ? t("labelContinue")
-        : t(`labelInvestBtn`);
+      return displayMode === 'beginnerModeStep1' ? t('labelContinue') : t(`labelInvestBtn`);
     }
   }, [t, btnInfo]);
   const lessEarnView = React.useMemo(
@@ -768,55 +731,53 @@ export const DualWrap = <
     >
       {dualCalcData.dualViewInfo && priceSymbol && (
         <>
-          {displayMode !== DisplayMode.beginnerModeStep2 && (
-            <Grid
-              item
-              xs={12}
-              flexDirection={"column"}
+          {displayMode !== 'beginnerModeStep2' && <Grid
+            item
+            xs={12}
+            flexDirection={"column"}
+            alignItems={"stretch"}
+            justifyContent={"space-between"}
+            display={"flex"}
+          >
+            <Box
+              paddingX={2}
+              display={"flex"}
               alignItems={"stretch"}
               justifyContent={"space-between"}
-              display={"flex"}
+              flexDirection={"column"}
             >
-              <Box
-                paddingX={2}
-                display={"flex"}
-                alignItems={"stretch"}
+              <InputCoin<any, I, any>
+                ref={coinSellRef}
+                disabled={getDisabled}
+                {...{
+                  ...propsSell,
+                }}
+              />
+              <Typography
+                variant={"body1"}
+                display={"inline-flex"}
+                alignItems={"center"}
                 justifyContent={"space-between"}
-                flexDirection={"column"}
+                paddingTop={1}
+                paddingBottom={2}
               >
-                <InputCoin<any, I, any>
-                  ref={coinSellRef}
-                  disabled={getDisabled}
-                  {...{
-                    ...propsSell,
-                  }}
-                />
                 <Typography
-                  variant={"body1"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  justifyContent={"space-between"}
-                  paddingTop={1}
-                  paddingBottom={2}
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textSecondary"}
                 >
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"textSecondary"}
-                  >
-                    {t("labelDualQuota")}
-                  </Typography>
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"textPrimary"}
-                  >
-                    {totalQuota + " " + dualCalcData.coinSell.belong}
-                  </Typography>
+                  {t("labelDualQuota")}
                 </Typography>
-              </Box>
-            </Grid>
-          )}
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"textPrimary"}
+                >
+                  {totalQuota + " " + dualCalcData.coinSell.belong}
+                </Typography>
+              </Typography>
+            </Box>
+          </Grid>}
           <Grid
             item
             xs={12}
@@ -825,17 +786,15 @@ export const DualWrap = <
             alignItems={"stretch"}
             justifyContent={"space-between"}
           >
-            {displayMode === DisplayMode.nonBeginnerMode && (
-              <Typography
-                variant={"body1"}
-                component={"h6"}
-                color={"textSecondary"}
-                paddingX={2}
-                paddingY={1}
-              >
-                {t("labelDualSettlementCalculator")}
-              </Typography>
-            )}
+            {displayMode === 'nonBeginnerMode' && <Typography
+              variant={"body1"}
+              component={"h6"}
+              color={"textSecondary"}
+              paddingX={2}
+              paddingY={1}
+            >
+              {t("labelDualSettlementCalculator")}
+            </Typography>}
             <DualDetail
               dualViewInfo={dualCalcData.dualViewInfo as DualViewBase}
               currentPrice={dualCalcData.dualViewInfo.currentPrice}
@@ -855,13 +814,10 @@ export const DualWrap = <
                 size={"medium"}
                 color={"primary"}
                 onClick={() => {
-                  if (
-                    !btnInfo?.label &&
-                    displayMode === DisplayMode.beginnerModeStep1
-                  ) {
-                    setDisplayMode(DisplayMode.beginnerModeStep2);
-                  } else {
-                    onSubmitClick();
+                  if (!btnInfo?.label && displayMode === 'beginnerModeStep1') {
+                      setDisplayMode('beginnerModeStep2')
+                    } else {
+                      onSubmitClick();
                   }
                 }}
                 loading={

@@ -10,7 +10,6 @@ import {
   store,
   useSystem,
   isAccActivated,
-  checkErrorInfo,
   useChargeFees,
   useWalletLayer2NFT,
   useWalletL2Collection,
@@ -98,7 +97,7 @@ export function useNFTDeploy<
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
-        if (connectProvides.usedWeb3) {
+        if (connectProvides.usedWeb3 && isAccActivated()) {
           let isHWAddr = checkHWAddr(account.accAddress);
           isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr;
           let response;
@@ -144,103 +143,55 @@ export function useNFTDeploy<
             );
           }
 
-          if (isAccActivated()) {
-            if (
-              (response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message
-            ) {
-              const code = checkErrorInfo(
-                response as sdk.RESULT_INFO,
-                isFirstTime
-              );
-              if (code === sdk.ConnectorError.USER_DENIED) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTDeploy_Denied,
-                });
-              } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTDeploy_First_Method_Denied,
-                  info: {
-                    symbol: nftDeployValue?.tokenAddress,
-                  },
-                });
-              } else {
-                if (
-                  [102024, 102025, 114001, 114002].includes(
-                    (response as sdk.RESULT_INFO)?.code || 0
-                  )
-                ) {
-                  checkFeeIsEnough({ isRequiredAPI: true });
-                }
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTDeploy_Failed,
-                  error: response as sdk.RESULT_INFO,
-                  info: {
-                    symbol: nftDeployValue?.tokenAddress,
-                  },
-                });
-              }
-            } else if ((response as sdk.TX_HASH_API)?.hash) {
-              setOneItem({
-                chainId: chainId as sdk.ChainId,
-                uniqueId: request.tokenAddress.toLowerCase(),
-                domain: Layer1Action.NFTDeploy,
-              });
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTDeploy_In_Progress,
-              });
-
-              await sdk.sleep(TOAST_TIME);
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTDeploy_Submit,
-                info: {
-                  symbol: nftDeployValue?.tokenAddress,
-                },
-              });
-              if (isHWAddr) {
-                myLog("......try to set isHWAddr", isHWAddr);
-                updateHW({ wallet: account.accAddress, isHWAddr });
-              }
-              walletLayer2Service.sendUserUpdate();
-              searchParams.delete("detail");
-              if (nftDeployValue.nftData) {
-                updateWalletLayer2NFT({
-                  page: Number(searchParams.get("collectionPage")) ?? 1,
-                  collection:
-                    (nftDeployValue?.collectionMeta as any) ?? undefined,
-                });
-              } else {
-                updateWalletL2Collection({
-                  page: collectionPage,
-                });
-              }
-              setShowNFTDeploy({ isShow: false });
-              setShowNFTDetail({ isShow: false });
-              resetNFTDeployData();
-              history.push(pathname + "?" + searchParams.toString());
-            }
-          } else {
-            resetNFTDeployData();
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
           }
-        }
-      } catch (reason: any) {
-        const code = checkErrorInfo(reason as sdk.RESULT_INFO, isFirstTime);
+          setOneItem({
+            chainId: chainId as sdk.ChainId,
+            uniqueId: request.tokenAddress.toLowerCase(),
+            domain: Layer1Action.NFTDeploy,
+          });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTDeploy_In_Progress,
+          });
 
-        if (isAccActivated()) {
-          if (code === sdk.ConnectorError.USER_DENIED) {
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.NFTDeploy_Denied,
-              info: {
-                symbol: nftDeployValue?.tokenAddress,
-              },
+          await sdk.sleep(TOAST_TIME);
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTDeploy_Submit,
+            info: {
+              symbol: nftDeployValue?.tokenAddress,
+            },
+          });
+          if (isHWAddr) {
+            myLog("......try to set isHWAddr", isHWAddr);
+            updateHW({ wallet: account.accAddress, isHWAddr });
+          }
+          walletLayer2Service.sendUserUpdate();
+          searchParams.delete("detail");
+          if (nftDeployValue.nftData) {
+            updateWalletLayer2NFT({
+              page: Number(searchParams.get("collectionPage")) ?? 1,
+              collection: (nftDeployValue?.collectionMeta as any) ?? undefined,
             });
-          } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+          } else {
+            updateWalletL2Collection({
+              page: collectionPage,
+            });
+          }
+          setShowNFTDeploy({ isShow: false });
+          setShowNFTDetail({ isShow: false });
+          resetNFTDeployData();
+          history.push(pathname + "?" + searchParams.toString());
+        }
+      } catch (e: any) {
+        const code = sdk.checkErrorInfo(e, isFirstTime);
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTDeploy_First_Method_Denied,
@@ -248,7 +199,25 @@ export function useNFTDeploy<
                 symbol: nftDeployValue?.tokenAddress,
               },
             });
-          } else {
+            break;
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTDeploy_Denied,
+              info: {
+                symbol: nftDeployValue?.tokenAddress,
+              },
+            });
+            break;
+          default:
+            if (
+              [102024, 102025, 114001, 114002].includes(
+                (e as sdk.RESULT_INFO)?.code || 0
+              )
+            ) {
+              checkFeeIsEnough({ isRequiredAPI: true });
+            }
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTDeploy_Failed,
@@ -257,10 +226,17 @@ export function useNFTDeploy<
               },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
-                msg: (reason as sdk.RESULT_INFO).message,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
               },
             });
-          }
+
+            break;
         }
       }
     },

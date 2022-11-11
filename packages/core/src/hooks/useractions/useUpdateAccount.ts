@@ -1,28 +1,23 @@
 import React from "react";
 
-import { FeeInfo, myLog } from "@loopring-web/common-resources";
+import { FeeInfo, myLog, UIERROR_CODE } from "@loopring-web/common-resources";
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 
 import {
   activateAccount,
   useAccount,
-  ActionResult,
-  ActionResultCode,
-  checkErrorInfo,
-  EddsaKey,
   LoopringAPI,
   accountServices,
 } from "../../index";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { ConnectorError } from "@loopring-web/loopring-sdk";
 
 export function useUpdateAccount() {
   const { updateHW, checkHWAddr } = useWalletInfo();
 
   const { setShowAccount } = useOpenModals();
-
+  // const { t } = useTranslation("error");
   const { account } = useAccount();
 
   const goUpdateAccount = React.useCallback(
@@ -52,41 +47,48 @@ export function useUpdateAccount() {
         " isHWAddr:",
         isHWAddr
       );
-
-      const response: ActionResult = await activateAccount({
-        isHWAddr,
-        feeInfo,
-        isReset,
-      });
-
-      switch (response.code) {
-        case ActionResultCode.NoError:
-          const { eddsaKey, accInfo } = response?.data as EddsaKey;
-          if (!isFirstTime && isHWAddr) {
-            updateHW({ wallet: account.accAddress, isHWAddr });
-          }
-          const [{ apiKey }, { walletType }] = await Promise.all([
-            LoopringAPI.userAPI && accInfo && accInfo?.accountId !== -1
-              ? LoopringAPI.userAPI.getUserApiKey(
-                  {
-                    accountId: accInfo.accountId,
-                  },
-                  eddsaKey.sk
-                )
-              : Promise.resolve({ apiKey: undefined } as any),
-            LoopringAPI.walletAPI
-              ? LoopringAPI.walletAPI.getWalletType({
-                  wallet: account.accAddress,
-                })
-              : Promise.resolve({ walletType: undefined } as any),
-          ]);
+      let walletType, apiKey;
+      try {
+        const { eddsaKey, accInfo } = await activateAccount({
+          isHWAddr,
+          feeInfo,
+          isReset,
+        });
+        if (!isFirstTime && isHWAddr) {
+          updateHW({ wallet: account.accAddress, isHWAddr });
+        }
+        if (
+          LoopringAPI.userAPI &&
+          LoopringAPI.walletAPI &&
+          accInfo &&
+          accInfo?.accountId !== -1
+        ) {
+          [{ apiKey }, { walletType }] = await Promise.all([
+            LoopringAPI.userAPI.getUserApiKey(
+              {
+                accountId: accInfo.accountId,
+              },
+              eddsaKey.sk
+            ),
+            LoopringAPI.walletAPI.getWalletType({
+              wallet: account.accAddress,
+            }),
+          ])
+            .then((response) => {
+              if ((response[0] as sdk.RESULT_INFO)?.code) {
+                throw response[0];
+              }
+              return response as any;
+            })
+            .catch((error) => {
+              throw error;
+            });
           accountServices.sendAccountSigned({
             apiKey,
             eddsaKey,
             isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
             isContract: walletType?.isContract,
           });
-
           setShowAccount({
             isShow: true,
             step: isReset
@@ -95,64 +97,50 @@ export function useUpdateAccount() {
           });
           await sdk.sleep(1000);
           setShowAccount({ isShow: false });
-          break;
-        case ActionResultCode.UpdateAccountError:
-        case ActionResultCode.GenEddsaKeyError:
-          let errMsg = checkErrorInfo(
-            response?.data as sdk.RESULT_INFO,
-            isFirstTime as boolean
-          );
-          if (
-            (response?.data as sdk.RESULT_INFO)?.message?.startsWith(
-              ConnectorError.USER_DENIED_2
-            )
-          ) {
-            errMsg = sdk.ConnectorError.USER_DENIED;
-          }
+        } else {
+          throw { code: UIERROR_CODE.DATA_NOT_READY };
+        }
+      } catch (e) {
+        const error = LoopringAPI?.exchangeAPI?.genErr(e as any) ?? {
+          code: UIERROR_CODE.DATA_NOT_READY,
+        };
+        const code = sdk.checkErrorInfo(error, true);
+        myLog("unlock", error, e, code);
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
+            myLog("activateAccount UpdateAccount: NOT_SUPPORT_ERROR");
+            setShowAccount({
+              isShow: true,
+              step: isReset
+                ? AccountStep.ResetAccount_First_Method_Denied
+                : AccountStep.UpdateAccount_First_Method_Denied,
+            });
+            return;
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            myLog("activateAccount: USER_DENIED");
+            setShowAccount({
+              isShow: true,
+              step: isReset
+                ? AccountStep.ResetAccount_User_Denied
+                : AccountStep.UpdateAccount_User_Denied,
+            });
+            return;
 
-          switch (errMsg) {
-            case sdk.ConnectorError.NOT_SUPPORT_ERROR:
-              myLog("activateAccount UpdateAccount: NOT_SUPPORT_ERROR");
-              setShowAccount({
-                isShow: true,
-                step: isReset
-                  ? AccountStep.ResetAccount_First_Method_Denied
-                  : AccountStep.UpdateAccount_First_Method_Denied,
-              });
-              return;
-            case sdk.ConnectorError.USER_DENIED:
-              myLog("activateAccount: USER_DENIED");
-              setShowAccount({
-                isShow: true,
-                step: isReset
-                  ? AccountStep.ResetAccount_User_Denied
-                  : AccountStep.UpdateAccount_User_Denied,
-              });
-              return;
-            default:
-              myLog("activateAccount: Error");
-              setShowAccount({
-                isShow: true,
-                step: isReset
-                  ? AccountStep.ResetAccount_Failed
-                  : AccountStep.UpdateAccount_Failed,
-                error: response?.data as sdk.RESULT_INFO,
-              });
-              return;
-          }
-          break;
-        default:
-          myLog("activateAccount: USER_DENIED");
-          setShowAccount({
-            isShow: true,
-            step: isReset
-              ? AccountStep.ResetAccount_Failed
-              : AccountStep.UpdateAccount_Failed,
-            error: response?.data as sdk.RESULT_INFO,
-          });
-          return;
-
-          break;
+          default:
+            setShowAccount({
+              isShow: true,
+              step: isReset
+                ? AccountStep.ResetAccount_Failed
+                : AccountStep.UpdateAccount_Failed,
+              error: {
+                ...((e as any) ?? {}),
+                ...error,
+                code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
+              },
+            });
+            break;
+        }
       }
     },
     [account.accAddress, checkHWAddr, setShowAccount, updateHW]
