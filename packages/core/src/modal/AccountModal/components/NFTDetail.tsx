@@ -26,6 +26,7 @@ import {
   type,
   ZoomIcon,
   TOAST_TIME,
+  htmlDecode,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -45,7 +46,7 @@ import { nftRefresh, store, useAccount, useSystem } from "../../../stores";
 import React from "react";
 import { getIPFSString } from "../../../utils";
 import { LoopringAPI } from "../../../api_wrapper";
-import { htmlDecode, useToast } from "../../../hooks";
+import { useToast } from "../../../hooks";
 import { sanitize } from "dompurify";
 import { StylePaper } from "../../../component/styled";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
@@ -126,7 +127,7 @@ export const NFTDetail = withTranslation("common")(
         await LoopringAPI.nftAPI?.callRefreshNFT({
           network: "ETHEREUM",
           tokenAddress: popItem.tokenAddress ?? "",
-          nftId: popItem?.nftId?.toString() ?? "", //new BigNumber(?? "0", 16).toString(),
+          nftId: popItem?.nftId?.toString() ?? "",
           nftType: (popItem?.nftType?.toString() ?? "") as NFT_TYPE_STRING,
         });
         setToastOpen({
@@ -472,7 +473,6 @@ export const NFTDetail = withTranslation("common")(
                 value={NFTDetailTab.Property}
               />
             </Tabs>
-            {/*<InputSearch value={searchValue} onChange={handleSearchChange} />*/}
           </Box>
           <Divider style={{ marginTop: "-1px" }} />
           <Box
@@ -569,10 +569,37 @@ export const NFTDetail = withTranslation("common")(
                     style={{ wordBreak: "break-all" }}
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`}
+                    href={
+                      popItem.deploymentStatus ===
+                      DEPLOYMENT_STATUS.NOT_DEPLOYED
+                        ? `${Explorer}collections/${popItem.tokenAddress}?a=${popItem.nftId}`
+                        : `${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`
+                    }
                   >
                     {popItem.tokenAddress}
                   </Link>
+                </Typography>
+                <Typography
+                  display={"inline-flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  variant={"body1"}
+                  marginTop={1}
+                >
+                  <Typography
+                    component={"span"}
+                    color={"var(--color-text-third)"}
+                    width={150}
+                  >
+                    {t("labelNFTRoyaltyPercentage")}
+                  </Typography>
+                  <Typography
+                    component={"span"}
+                    color={"var(--color-text-secondary)"}
+                    // title={popItem?.royaltyPercentage}
+                  >
+                    {popItem?.royaltyPercentage ?? EmptyValueTag + "%"}
+                  </Typography>
                 </Typography>
                 <Typography
                   display={"inline-flex"}
@@ -742,35 +769,6 @@ export const NFTDetail = withTranslation("common")(
           onClose={closeToast}
         />
       </>
-
-      //   <BoxStyle
-      //     baseURL={baseURL}
-      //     isMobile={isMobile}
-      //     image={popItem.image}
-      //     marginLeft={2}
-      //     display={"flex"}
-      //     flex={1}
-      //     flexDirection={"column"}
-      //     alignItems={"center"}
-      //     className={"nft-detail"}
-      //     whiteSpace={"break-spaces"}
-      //     style={{ wordBreak: "break-all" }}
-      //   >
-      //     {/*{viewPage === 0 && detailView}*/}
-      //     {detailView}
-      //     <Toast
-      //       // snackbarOrigin={{
-      //       //   vertical: "top",
-      //       //   horizontal: "left",
-      //       // }}
-      //       alertText={toastOpen?.content ?? ""}
-      //       severity={toastOpen?.type ?? "success"}
-      //       open={toastOpen?.open ?? false}
-      //       autoHideDuration={TOAST_TIME}
-      //       onClose={closeToast}
-      //     />
-      //   </BoxStyle>
-      // </StylePaper>
     );
   }
 );

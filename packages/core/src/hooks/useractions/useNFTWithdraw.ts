@@ -48,6 +48,7 @@ import {
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import {
   useHistory,
+  useLocation,
   // useLocation
 } from "react-router-dom";
 
@@ -66,8 +67,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const history = useHistory();
-  // const { search, ...restLocation } = useLocation();
-  // const searchParams = new URLSearchParams(search);
+  const { search, pathname } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
     useModalData();
@@ -325,41 +326,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              history.go(0);
-              // history.push({
-              //   search,
-              //   ...restLocation,
-              // });
-              // if(/\/NFT\/assetsNFT\/byCollection/ig.test(restLocation.pathname) && nftWithdrawValue.collectionMeta){
-              //   updateWalletLayer2NFT({
-              //       page: Number(searchParams.get("myNFTPage")) ?? 1,
-              //       collection: nftWithdrawValue.collectionMeta,
-              //     });
-              // }else if(/\/NFT\/assetsNFT\/byList/ig.test(restLocation.pathname){
-              //
-              // }
-
-              // if (nftWithdrawValue.collectionMeta) {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byCollection/${nftWithdrawValue.collectionMeta?.id}-${nftWithdrawValue.collectionMeta?.contractAddress}`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page: Number(searchParams.get("collectionPage")) ?? 1,
-              //   //   collection: nftWithdrawValue.collectionMeta,
-              //   // });
-              // } else {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byList`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page,
-              //   //   collection: undefined,
-              //   // });
-              // }
+              searchParams.delete("detail");
               setShowNFTDetail({ isShow: false });
               resetNFTWithdrawData();
+              history.push(pathname + "?" + searchParams.toString());
             }
           } else {
             resetNFTWithdrawData();

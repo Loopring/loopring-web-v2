@@ -1,49 +1,71 @@
-import { Box, Grid, Pagination, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  Grid,
+  Pagination,
+  Radio,
+  Typography,
+} from "@mui/material";
 import {
   EmptyValueTag,
+  GET_IPFS_STRING,
   getShortAddr,
   NFTLimit,
+  sizeNFTConfig,
   SoursURL,
-  CollectionMeta,
 } from "@loopring-web/common-resources";
-import {
-  CardStyleItem,
-  EmptyDefault,
-  NFTMedia,
-} from "@loopring-web/component-lib";
-import { getIPFSString, useSystem } from "@loopring-web/core";
-import React from "react";
-import { useMyNFT } from "./useMyNFT";
+import { CardStyleItem, EmptyDefault, NFTMedia } from "../../index";
 import { WithTranslation, withTranslation } from "react-i18next";
-import styled from "@emotion/styled";
 import { sanitize } from "dompurify";
+import { NFTWholeINFO } from "@loopring-web/common-resources";
+import { useSettings } from "../../../stores";
+import { XOR } from "../../../types/lib";
 
-const _StyledPaper = styled(Box)`
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-`;
-export const MyNFTList = withTranslation("common")(
-  ({
-    collectionMeta,
-    collectionPage,
-    myNFTPage,
+export const NFTList = withTranslation("common")(
+  <NFT extends NFTWholeINFO>({
+    baseURL,
+    nftList,
+    getIPFSString,
+    size = "large",
+    onPageChange,
+    total,
+    page,
+    isLoading,
+    onClick,
+    selected = undefined,
+    isSelectOnly = false,
+    isMultipleSelect = false,
     t,
   }: {
-    collectionMeta: CollectionMeta | undefined;
-    collectionPage?: number;
-    myNFTPage?: number;
-  } & WithTranslation) => {
-    const { onDetail, nftList, isLoading, page, total, onPageChange } =
-      useMyNFT({ collectionMeta, collectionPage, myNFTPage });
-    const { baseURL } = useSystem();
-
+    baseURL: string;
+    nftList: Partial<NFT>[];
+    etherscanBaseUrl?: string;
+    size?: "large" | "medium" | "small";
+    getIPFSString: GET_IPFS_STRING;
+    onClick?: (item: Partial<NFT>) => Promise<void>;
+    onNFTReload?: (item: Partial<NFT>, index: number) => Promise<void>;
+    onPageChange: (page: number) => void;
+    total: number;
+    page: number;
+    isLoading: boolean;
+    selected?: Partial<NFT>[];
+    // onSelected: (item: Partial<NFT>) => void;
+  } & XOR<
+    { isSelectOnly: true; isMultipleSelect: true; selected: Partial<NFT>[] },
+    | { isSelectOnly: true; isMultipleSelect?: false; selected: NFT }
+    | { isSelectOnly?: false; isMultipleSelect?: false }
+  > &
+    WithTranslation) => {
+    const sizeConfig = sizeNFTConfig(size);
+    const { isMobile } = useSettings();
     return (
       <Box
         flex={1}
         // className={"MuiPaper-elevation2"}
         marginTop={2}
         marginBottom={2}
-        paddingX={2}
+        className={"nft-list-wrap"}
+        paddingX={isMobile ? 0 : 2}
         display={"flex"}
         flexDirection={"column"}
       >
@@ -64,41 +86,23 @@ export const MyNFTList = withTranslation("common")(
           </Box>
         ) : nftList && nftList.length ? (
           <>
-            {/*{total > NFTLimit && (*/}
-            {/*  <Box*/}
-            {/*    display={"flex"}*/}
-            {/*    alignItems={"center"}*/}
-            {/*    justifyContent={"right"}*/}
-            {/*    marginRight={3}*/}
-            {/*    marginBottom={2}*/}
-            {/*  >*/}
-            {/*    <Pagination*/}
-            {/*      color={"primary"}*/}
-            {/*      count={*/}
-            {/*        parseInt(String(total / NFTLimit)) +*/}
-            {/*        (total % NFTLimit > 0 ? 1 : 0)*/}
-            {/*      }*/}
-            {/*      page={page}*/}
-            {/*      onChange={(_event, value) => {*/}
-            {/*        collectionPageChange(Number(value));*/}
-            {/*      }}*/}
-            {/*    />*/}
-            {/*  </Box>*/}
-            {/*)}*/}
             <Grid container spacing={2}>
               {nftList.map((item, index) => (
                 <Grid
+                  xs={sizeConfig.wrap_xs}
+                  md={sizeConfig.wrap_md}
+                  lg={sizeConfig.wrap_lg}
                   key={(item?.nftId ?? "") + index.toString()}
                   item
-                  xs={12}
-                  md={6}
-                  lg={4}
                   flex={"1 1 120%"}
                 >
                   <CardStyleItem
+                    size={size}
+                    contentheight={sizeConfig.contentHeight}
                     onClick={() => {
-                      onDetail(item);
+                      onClick && onClick(item);
                     }}
+                    className={"nft-item"}
                   >
                     <Box
                       position={"absolute"}
@@ -117,9 +121,35 @@ export const MyNFTList = withTranslation("common")(
                         getIPFSString={getIPFSString}
                         baseURL={baseURL}
                       />
+
+                      {isSelectOnly &&
+                        (isMultipleSelect ? (
+                          <Checkbox
+                            size={"medium"}
+                            checked={
+                              !!selected?.find((_item) => {
+                                return item.nftData === _item.nftData;
+                              })
+                            }
+                            // color={"default"}
+                            value={item.nftData}
+                            name="radio-nft"
+                            inputProps={{ "aria-label": "selectNFT" }}
+                          />
+                        ) : (
+                          <Radio
+                            size={"medium"}
+                            // @ts-ignore
+                            checked={selected?.nftData === item.nftData}
+                            value={item.nftData}
+                            name="radio-nft"
+                            inputProps={{ "aria-label": "selectNFT" }}
+                          />
+                        ))}
                       <Box
                         padding={2}
-                        height={80}
+                        className={"boxLabel"}
+                        height={sizeConfig.contentHeight}
                         display={"flex"}
                         flexDirection={"row"}
                         alignItems={"center"}
@@ -147,6 +177,7 @@ export const MyNFTList = withTranslation("common")(
                             color={"textSecondary"}
                             component={"p"}
                             paddingTop={1}
+                            variant={size == "small" ? "body2" : "body1"}
                             minWidth={164}
                             textOverflow={"ellipsis"}
                             title={item?.nftId?.toString()}
@@ -168,8 +199,12 @@ export const MyNFTList = withTranslation("common")(
                             overflow={"hidden"}
                             textOverflow={"ellipsis"}
                           >
-                            {t("labelNFTAmountValue", { value: item.total })}
-                            {/*{item?.name ?? EmptyValueTag}*/}
+                            {t(
+                              size == "small"
+                                ? "labelNFTAmountSimpleValue"
+                                : "labelNFTAmountValue",
+                              { value: item.total }
+                            )}
                           </Typography>
                           <Typography
                             color={"--color-text-primary"}

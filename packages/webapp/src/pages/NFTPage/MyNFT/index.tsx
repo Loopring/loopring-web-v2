@@ -2,7 +2,7 @@ import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-import { MyNFTList } from "./NFTList";
+import { MyNFTList } from "./MyNFTList";
 import {
   LoopringAPI,
   NFTDetail,
@@ -41,7 +41,7 @@ enum MY_NFT_VIEW {
 
 export const MyNFTPanel = withTranslation("common")(
   ({ t }: WithTranslation) => {
-    const match: any = useRouteMatch("/NFT/assetsNFT/:tab?/:contract?");
+    const match: any = useRouteMatch("/nft/assetsNFT/:tab?/:contract?");
     const { walletL2NFTCollection } = useWalletL2NFTCollection();
     const [currentTab, setCurrentTab] = React.useState(() => {
       return match?.params.tab === MY_NFT_VIEW.LIST_COLLECTION
@@ -52,7 +52,7 @@ export const MyNFTPanel = withTranslation("common")(
     const { isMobile } = useSettings();
     const { baseURL, etherscanBaseUrl } = useSystem();
     const history = useHistory();
-    const { search } = useLocation();
+    const { search, pathname } = useLocation();
     const searchParams = new URLSearchParams(search);
     const {
       account: { accountId, apiKey },
@@ -60,7 +60,7 @@ export const MyNFTPanel = withTranslation("common")(
     const [collectionMeta, setCollectionMeta] =
       React.useState<undefined | CollectionMeta>(undefined);
     const checkCollection = async () => {
-      const [id, contract] = !!match?.params?.contract
+      const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("--")
         : [null, null];
       if (contract !== undefined && id !== undefined && LoopringAPI.userAPI) {
@@ -80,6 +80,8 @@ export const MyNFTPanel = withTranslation("common")(
               {
                 // @ts-ignore
                 tokenAddress: contract,
+                // @ts-ignore
+                collectionId: id,
                 accountId: accountId.toString(),
                 limit: CollectionLimit,
               },
@@ -107,7 +109,9 @@ export const MyNFTPanel = withTranslation("common")(
             setCollectionMeta(collectionMeta);
             return;
           } else {
-            history.push({ pathname: "/NFT/assetsNFT/byCollection", search });
+            history.push(
+              "/nft/assetsNFT/byCollection" + "?" + searchParams.toString()
+            );
           }
         }
       }
@@ -118,18 +122,29 @@ export const MyNFTPanel = withTranslation("common")(
       setShowNFTDetail,
     } = useOpenModals();
     React.useEffect(() => {
-      const [id, contract] = !!match?.params?.contract
+      const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("--")
         : [null, null];
       if (contract && id && contract.startsWith("0x")) {
         checkCollection();
       }
-      return () => {
-        setShowNFTDetail({ isShow: false });
-      };
     }, [match?.params?.contract]);
+    React.useEffect(() => {
+      if (isShowNFTDetail.isShow) {
+        searchParams.set("detail", "true");
+      } else {
+        searchParams.delete("detail");
+      }
+      history.replace(pathname + "?" + searchParams.toString());
+
+      return () => {
+        if (isShowNFTDetail.isShow) {
+          setShowNFTDetail({ isShow: false });
+        }
+      };
+    }, [isShowNFTDetail.isShow]);
     const breadcrumbs = React.useMemo(() => {
-      const [id, contract] = !!match?.params?.contract
+      const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("--")
         : [null, null];
       return [
@@ -139,7 +154,7 @@ export const MyNFTPanel = withTranslation("common")(
           color="inherit"
           onClick={() => {
             history.replace(
-              `/NFT/assetsNFT/${
+              `/nft/assetsNFT/${
                 match?.params?.tab ?? "byList"
               }?${searchParams.toString()}`
             );
@@ -160,7 +175,7 @@ export const MyNFTPanel = withTranslation("common")(
                   color="inherit"
                   onClick={() => {
                     history.replace(
-                      `/NFT/assetsNFT/${
+                      `/nft/assetsNFT/${
                         MY_NFT_VIEW.LIST_COLLECTION
                       }?${searchParams.toString()}`
                     );
@@ -218,10 +233,9 @@ export const MyNFTPanel = withTranslation("common")(
                 sx={{ color: "var(--color-text-secondary)" }}
                 color={"inherit"}
                 onClick={() =>
-                  history.push({
-                    pathname: "/NFT/assetsNFT/byCollection",
-                    search,
-                  })
+                  history.push(
+                    `/nft/assetsNFT/byCollection?${searchParams.toString()}`
+                  )
                 }
               >
                 <Typography
@@ -315,10 +329,7 @@ export const MyNFTPanel = withTranslation("common")(
               <Tabs
                 value={currentTab}
                 onChange={(_event, value) => {
-                  history.replace({
-                    pathname: `/NFT/assetsNFT/${value}`,
-                    search: "",
-                  });
+                  history.replace(`/nft/assetsNFT/${value}`);
                   setCurrentTab(value);
                 }}
                 aria-label="my-nft-tabs"

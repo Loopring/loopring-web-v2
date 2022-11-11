@@ -36,9 +36,9 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
     TradeTypes.Buy
-    // match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
-    //   ? TradeTypes.Buy
-    //   : TradeTypes.Sell
+    //   match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
+    //     ? TradeTypes.Buy
+    //     : TradeTypes.Sell
   );
   // React.useEffect(() => {
   //   switch (match?.params.tab) {

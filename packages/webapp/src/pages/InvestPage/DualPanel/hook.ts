@@ -7,7 +7,7 @@ import {
   useDualMap,
   useTokenPrices,
 } from "@loopring-web/core";
-import React, { useState } from "react";
+import React from "react";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
@@ -173,8 +173,6 @@ export const useDualHook = ({
         const rule = rules[0];
         const rawData = infos.reduce(
           (prev: any[], item: sdk.DualProductAndPrice) => {
-            // 如果dualType == dual_base,price.dualBid.baseQty < rule.baseMin,过滤；
-            // 如果dualType == dual_currency,price.dualBid.baseQty*strike < rule.currencyMax,过滤；
             myLog("filer Dual", item.strike, item?.dualPrice?.dualBid[0], rule);
             if (
               item?.dualPrice?.dualBid[0] &&
@@ -202,9 +200,6 @@ export const useDualHook = ({
               return prev;
             }
             return prev;
-            // price.dualBid空数组，过滤；
-            // 如果dualType == dual_base,price.dualBid.baseQty < rule.baseMin,过滤；
-            // 如果dualType == dual_currency,price.dualBid.baseQty*strike < rule.currencyMax,过滤；
           },
           [] as any[]
         );
@@ -303,5 +298,6 @@ export const useDualHook = ({
     onSelectStep1Token,
     onSelectStep2BuyOrSell,
     onSelectStep3Token,
+    
   };
 };

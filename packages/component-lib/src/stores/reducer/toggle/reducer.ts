@@ -16,6 +16,8 @@ const initialState: ToggleState = {
   deployNFT: { enable: true },
   updateAccount: { enable: true },
   collectionNFT: { enable: true },
+  WSTETHInvest: { enable: true },
+  RETHInvest: { enable: true },
   defiInvest: { enable: true },
   dualInvest: { enable: true },
 };
@@ -31,7 +33,8 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       const {
         order,
         joinAmm,
-        defiInvest,
+        WSTETHInvest,
+        RETHInvest,
         exitAmm,
         transfer,
         transferNFT,
@@ -81,8 +84,12 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       if (updateAccount !== undefined) {
         state.updateAccount = updateAccount;
       }
-      if (defiInvest !== undefined) {
-        state.defiInvest = defiInvest;
+
+      if (WSTETHInvest !== undefined) {
+        state.WSTETHInvest = WSTETHInvest;
+      }
+      if (RETHInvest !== undefined) {
+        state.RETHInvest = RETHInvest;
       }
       if (collectionNFT !== undefined) {
         state.collectionNFT = collectionNFT;

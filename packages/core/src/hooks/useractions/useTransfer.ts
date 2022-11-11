@@ -508,6 +508,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         isShow: true,
         step: AccountStep.Transfer_WaitForAuth,
       });
+      debugger;
       processRequest(lastRequest, !isHardwareRetry);
     },
     [lastRequest, processRequest, setShowAccount]

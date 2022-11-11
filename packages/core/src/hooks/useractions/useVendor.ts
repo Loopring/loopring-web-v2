@@ -35,7 +35,7 @@ import {
   RampInstantSDK,
 } from "@ramp-network/ramp-instant-sdk";
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
-import React, { useCallback } from "react";
+import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   ConnectProvidersSignMap,
@@ -51,6 +51,7 @@ export enum RAMP_SELL_PANEL {
 
 export const useVendor = () => {
   const { account } = useAccount();
+  const banxaRef = React.useRef();
   const {
     allowTrade: { raw_data },
   } = useSystem();
@@ -58,7 +59,10 @@ export const useVendor = () => {
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
   // const { isMobile } = useSettings();
-  const { updateOffRampData, resetOffRampData } = useModalData();
+  const {
+    // updateOffRampData,
+    resetOffRampData,
+  } = useModalData();
 
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
     RAMP_SELL_PANEL.LIST
@@ -195,38 +199,40 @@ export const useVendor = () => {
         // },
         // {
         //   ...VendorList.Banxa,
-        //   handleSelect: () => {
+        //   handleSelect: (event) => {
         //     setShowAccount({ isShow: false });
         //     // @ts-ignore
-        //     const banax: any = new window.Banxa("loopring");
-        //     banax.iframe(
-        //       "#iframeBanax",
-        //       "#iframeBanaxTarget",
-        //       {
-        //         // 'fiatType': 'AUD',
-        //         // 'coinType': 'BTC',
-        //         sellMode: true,
-        //         walletAddress: account.accAddress,
-        //         // fiatAmount: 200,
-        //         // coinAmount: 0.5,
-        //         // mo,
-        //       },
-        //       "800px",
-        //       "3Hiy7HuFcqwkgERyfRSwEHqrwSwTirm8zb"
-        //     );
-        //     // if (legalEnable) {
-        //     //   window.open(
-        //     //     "https://loopring.banxa.com/iframe?code=1fe263e17175561954c6&buyMode&walletAddress=" +
-        //     //     account.accAddress,
-        //     //     "_blank"
-        //     //   );
-        //     //   window.opener = null;
-        //     // }
+        //     const banxa: any = new window.Banxa("loopring", "sandbox");
+        //     // @ts-ignore
+        //     const anchor: HTMLElement = (
+        //       (event?.target as HTMLElement).ownerDocument || document
+        //     ).querySelector("#iframeBanxaTarget");
+        //     if (banxaRef && anchor) {
+        //       // debugger;
+        //       anchor.style.display = "flex";
+        //       banxa.generateIframe(
+        //         "#iframeBanxaTarget",
+        //         banxa.generateUrl({
+        //           sellMode: true,
+        //           blockchain: "LRC",
+        //           fiatType: "AUD",
+        //           coinType: "BTC",
+        //           fiatAmount: 200,
+        //           coinAmount: 0.5,
+        //           walletAddress: account.accAddress,
+        //         }),
+        //         false,
+        //         false
+        //         // "800px", //Optional width parameter – Pass false if not needed.
+        //         // "400px" //Optional height parameter – Pass false if not needed.
+        //       );
+        //     }
         //   },
         // },
       ]
     : [];
   return {
+    banxaRef,
     vendorListBuy,
     vendorListSell,
     vendorForce: undefined,
@@ -234,7 +240,6 @@ export const useVendor = () => {
     setSellPanel,
   };
 };
-
 export const useRampTransPost = () => {
   const { account } = useAccount();
   const { chainId } = useSystem();
@@ -388,7 +393,15 @@ export const useRampTransPost = () => {
         }
       }
     },
-    []
+    [
+      account,
+      chainId,
+      checkHWAddr,
+      resetTransferRampData,
+      setShowAccount,
+      updateHW,
+      updateTransferRampData,
+    ]
   );
   return { processRequestRampTransfer };
 };
@@ -416,8 +429,6 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   const [balanceNotEnough, setBalanceNotEnough] = React.useState(false);
   const { offRampValue } = useModalData();
   const { processRequestRampTransfer: processRequest } = useRampTransPost();
-  // const [_isFeeNotEnough, setIsFeeEnough] = React.useState();
-
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>)
   );
@@ -516,6 +527,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     enableBtn,
     isFeeNotEnough.isFeeNotEnough,
     tokenMap,
+    transferRampValue.address,
     transferRampValue.balance,
     transferRampValue.belong,
     transferRampValue.fee,
@@ -526,7 +538,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     checkBtnStatus();
   }, [chargeFeeTokenList, isFeeNotEnough.isFeeNotEnough, transferRampValue]);
 
-  const onTransferClick = useCallback(
+  const onTransferClick = React.useCallback(
     async (transferRampValue, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
 

@@ -129,6 +129,7 @@ export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
   NFTMETA & {
     nftBalance?: number;
     nftIdView?: string;
+    pendingOnSync: boolean;
     fee?: FeeInfo;
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
@@ -428,6 +429,7 @@ export type TradeDefi<C> = {
 
 export type L2CollectionFilter = {
   isMintable?: boolean;
+  isLegacy?: boolean;
   tokenAddress?: string;
   owner?: string;
 };

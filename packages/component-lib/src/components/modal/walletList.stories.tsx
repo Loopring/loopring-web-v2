@@ -26,7 +26,7 @@ import {
   ConnectSuccess,
   ConnectFailed,
   CommonConnectInProgress,
-} from "index";
+} from "../index";
 
 const Style = styled.div`
   flex: 1;
@@ -266,6 +266,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
           />
           <QRCodePanel
             {...{ ...rest }}
+            fgColor={"#fff"}
+            bgColor={"rgba(254, 164, 159, 0.38)"}
             description="Ox123213123123"
             url="http://www.163.com"
             handleClick={() => {

@@ -9,14 +9,16 @@ import {
   PlayIcon,
   RefreshIcon,
   SoursURL,
+  SyncIcon,
   VideoIcon,
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
-import { Box, BoxProps, Modal } from "@mui/material";
+import { Box, BoxProps, Modal, Tooltip, Typography } from "@mui/material";
 import {
   cssBackground,
   EmptyDefault,
+  MediaLabelStyled,
   ModalCloseButton,
   NftImage,
   NFTMedaProps,
@@ -25,7 +27,11 @@ import {
 } from "../../index";
 import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
-import { WithTranslation, withTranslation } from "react-i18next";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -59,7 +65,7 @@ export const NFTMedia = React.memo(
       const vidRef = React.useRef<HTMLVideoElement>(null);
       const aidRef = React.useRef<HTMLAudioElement>(null);
       const theme = useTheme();
-
+      const { t } = useTranslation();
       const {
         modals: {
           isShowNFTDetail: { isShow },
@@ -308,6 +314,33 @@ export const NFTMedia = React.memo(
                 </>
               )}
             </>
+          )}
+
+          {item?.pendingOnSync ? (
+            <Tooltip
+              title={t("labelMintInSyncTooltips").toString()}
+              placement={"top"}
+            >
+              <MediaLabelStyled
+                position={"absolute"}
+                left={0}
+                top={0}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <SyncIcon color={"inherit"} />
+                <Typography
+                  color={"inherit"}
+                  component={"span"}
+                  paddingLeft={1}
+                >
+                  {t("labelSync")}
+                </Typography>
+              </MediaLabelStyled>
+            </Tooltip>
+          ) : (
+            ""
           )}
         </BoxStyle>
       );

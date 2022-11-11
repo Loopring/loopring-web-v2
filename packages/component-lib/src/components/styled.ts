@@ -439,3 +439,17 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     }
   }
 ` as (props: ButtonProps) => JSX.Element;
+
+export const StyledPaperBg = styled(Box)`
+  background: var(--color-box);
+  border-radius: ${({ theme }) => theme.unit}px;
+` as any;
+
+export const MediaLabelStyled = styled(Box)<BoxProps & { colorbg?: string }>`
+  border-radius: 0 0 ${({ theme }) => theme.unit}px 0;
+  padding: ${({ theme }) => theme.unit / 2}px ${({ theme }) => theme.unit}px;
+  color: var(--color-box);
+  font-size: 1.4rem;
+  background: ${({ colorbg }) => (colorbg ? colorbg : "var(--color-tag)")};
+  cursor: help;
+` as (props: BoxProps & { colorbg?: string }) => JSX.Element;

@@ -12,6 +12,7 @@ export interface QRCodeProps {
   size?: number;
   url: string;
   className?: string;
+
   description?: string | JSX.Element;
 }
 

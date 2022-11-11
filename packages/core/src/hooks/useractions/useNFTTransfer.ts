@@ -49,7 +49,7 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const [memo, setMemo] = React.useState("");
@@ -69,7 +69,8 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
   const history = useHistory();
-  // const { search, ...restLocation } = useLocation();
+  const { search, pathname } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const [sureItsLayer2, setSureItsLayer2] =
     React.useState<WALLET_TYPE | undefined>(undefined);
@@ -233,7 +234,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       isNotHardwareWallet: boolean
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
-
       try {
         if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
           let isHWAddr = checkHWAddr(account.accAddress);
@@ -329,31 +329,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              // history.push({
-              //   search,
-              //   ...restLocation,
-              // });
-              history.go(0);
-              // if (nftTransferValue.collectionMeta) {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byCollection/${nftTransferValue.collectionMeta?.id}-${nftTransferValue.collectionMeta?.contractAddress}`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page: Number(searchParams.get("collectionPage")) ?? 1,
-              //   //   collection: nftTransferValue.collectionMeta?.contractAddress,
-              //   // });
-              // } else {
-              //   history.push({
-              //     pathname: `/NFT/assetsNFT/byList`,
-              //     search,
-              //   });
-              //   // updateWalletLayer2NFT({
-              //   //   page,
-              //   //   collection: undefined,
-              //   // });
-              // }
+              searchParams.delete("detail");
               setShowNFTDetail({ isShow: false });
+              history.push(pathname + "?" + searchParams.toString());
               resetNFTTransferData();
             }
           } else {

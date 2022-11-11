@@ -1,4 +1,5 @@
 import {
+  Account,
   CollectionMeta,
   CopyIcon,
   copyToClipBoard,
@@ -8,9 +9,8 @@ import {
 } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { Avatar, Box, BoxProps, Link, Typography } from "@mui/material";
-import React from "react";
 import { useTheme } from "@emotion/react";
-import { Button, useSettings } from "@loopring-web/component-lib";
+import { Button, useSettings } from "../../index";
 import { useTranslation } from "react-i18next";
 import { sanitize } from "dompurify";
 
@@ -25,19 +25,27 @@ const HeaderBannerStyle = styled(Box)<BoxProps & { url: string }>`
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: ${({ theme }) => theme.unit}px;
+  height: 100%;
+  width: 100%;
 ` as (props: BoxProps & { url: string }) => JSX.Element;
 
 export const CollectionDetailView = <Co extends CollectionMeta>({
   collectionDate,
   getIPFSString,
   baseURL,
+  account,
   setCopyToastOpen,
   setShowEdit,
+  setShowManageLegacy,
+  count,
 }: {
   collectionDate: Co;
   getIPFSString: GET_IPFS_STRING;
   baseURL: string;
+  account: Account;
+  setShowManageLegacy?: (item: Co) => void;
   setShowEdit?: (item: Co) => void;
+  count: number;
   setCopyToastOpen: (props: { isShow: boolean; type: string }) => void;
 }) => {
   const theme = useTheme();
@@ -188,7 +196,7 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
               textOverflow={"ellipsis"}
             >
               {t("labelCollectionItemValue", {
-                value: collectionDate?.extends.count,
+                value: count, //collectionDate?.extends.count,
               })}
             </Typography>
           </Box>
@@ -209,23 +217,42 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
             >
               {collectionDate?.nftType}
             </Typography>
-
-            {setShowEdit &&
-              // @ts-ignore
-              collectionDate?.isEditable && (
-                <Button
-                  fullWidth
-                  variant={"outlined"}
-                  size={"medium"}
-                  color={"primary"}
-                  onClick={() => {
-                    setShowEdit(collectionDate);
-                  }}
-                  sx={{ marginTop: 1 }}
-                >
-                  {t(`labelCollectionEditBtn`)}
-                </Button>
-              )}
+            {account.accAddress === collectionDate.owner ? (
+              <>
+                {setShowEdit && collectionDate?.isEditable && (
+                  <Button
+                    fullWidth
+                    variant={"outlined"}
+                    size={"medium"}
+                    color={"primary"}
+                    onClick={() => {
+                      setShowEdit(collectionDate);
+                    }}
+                    sx={{ marginTop: 1 }}
+                  >
+                    {t(`labelCollectionEditBtn`)}
+                  </Button>
+                )}
+                {setShowManageLegacy &&
+                  collectionDate?.isEditable &&
+                  collectionDate.baseUri === "" && (
+                    <Button
+                      fullWidth
+                      variant={"outlined"}
+                      size={"medium"}
+                      color={"primary"}
+                      onClick={() => {
+                        setShowManageLegacy(collectionDate);
+                      }}
+                      sx={{ marginTop: 1 }}
+                    >
+                      {t(`labelCollectionImportNFTBtn`)}
+                    </Button>
+                  )}
+              </>
+            ) : (
+              <></>
+            )}
           </Box>
         </Box>
       </Box>

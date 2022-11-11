@@ -134,7 +134,6 @@ import {
   useReset,
   useSystem,
   useTransfer,
-  useUpdateAccount,
   useVendor,
   useWalletLayer2,
   useWithdraw,
@@ -160,7 +159,6 @@ export function useAccountModalForUI({
   account: Account;
   onClose?: any;
 }) {
-  const { goUpdateAccount } = useUpdateAccount();
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
@@ -168,13 +166,7 @@ export function useAccountModalForUI({
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
   const history = useHistory();
   const {
-    modals: {
-      isShowAccount,
-      isShowWithdraw,
-      isShowTransfer,
-      // isShowNFTTransfer,
-      // isShowNFTWithdraw,
-    },
+    modals: { isShowAccount },
     setShowConnect,
     setShowAccount,
     setShowDeposit,
@@ -215,10 +207,10 @@ export function useAccountModalForUI({
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({
     setCollectionToastOpen,
   });
-  const { vendorListBuy } = useVendor();
+  const { vendorListBuy, banxaRef } = useVendor();
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
-  const { transferProps, retryBtn: transferRetry } = useTransfer();
+  const { transferProps } = useTransfer();
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
@@ -329,56 +321,6 @@ export function useAccountModalForUI({
     };
   }, [setShowAccount]);
 
-  const backToMintBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: false });
-        if (isShowAccount.info?.isAdvanceMint) {
-          nftMintAdvanceRetryBtn();
-        }
-      },
-    };
-  }, [
-    isShowAccount.info?.isAdvanceMint,
-    nftMintAdvanceRetryBtn,
-    setShowAccount,
-  ]);
-
-  const backToDeployBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: false });
-      },
-    };
-  }, [setShowAccount]);
-
-  const backToTransferBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        transferRetry(false);
-      },
-    };
-  }, [isShowTransfer.info, setShowAccount, setShowTransfer]);
-
-  const backToWithdrawBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: false });
-        setShowWithdraw({
-          isShow: true,
-          info: {
-            ...isShowWithdraw.info,
-            isRetry: true,
-          },
-        });
-      },
-    };
-  }, [isShowWithdraw, setShowAccount, setShowWithdraw]);
-
   const backToUnlockAccountBtnInfo = React.useMemo(() => {
     return {
       btnTxt: "labelRetry",
@@ -387,25 +329,6 @@ export function useAccountModalForUI({
       },
     };
   }, [setShowAccount]);
-
-  const backToUpdateAccountBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: true, step: AccountStep.CheckingActive });
-      },
-    };
-  }, [setShowAccount]);
-
-  const backToResetAccountBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: false });
-        setShowResetAccount({ isShow: true });
-      },
-    };
-  }, [setShowAccount, setShowResetAccount]);
 
   const closeBtnInfo = React.useMemo(() => {
     return {
@@ -501,7 +424,7 @@ export function useAccountModalForUI({
     return () => {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
-  }, [account.accAddress, chainInfos?.depositHashes]);
+  }, [account.accAddress, chainInfos?.depositHashes, updateDepositStatus]);
   const { setShowLayerSwapNotice } = useOpenModals();
 
   const addAssetList: AddAssetItem[] = React.useMemo(
@@ -553,6 +476,7 @@ export function useAccountModalForUI({
       isShowAccount?.info?.symbol,
       setShowAccount,
       setShowDeposit,
+      setShowLayerSwapNotice,
     ]
   );
   const sendAssetList: SendAssetItem[] = React.useMemo(
@@ -631,12 +555,7 @@ export function useAccountModalForUI({
         },
       },
     ],
-    [
-      isShowAccount?.info?.symbol,
-      setShowAccount,
-      setShowTransfer,
-      setShowWithdraw,
-    ]
+    [setShowAccount, setShowNFTTransfer, setShowNFTWithdraw]
   );
   const onBackReceive = React.useCallback(() => {
     setShowAccount({
@@ -701,6 +620,7 @@ export function useAccountModalForUI({
         view: (
           <VendorMenu
             vendorList={vendorListBuy}
+            banxaRef={banxaRef}
             type={TradeTypes.Buy}
             vendorForce={undefined}
             campaignTagConfig={campaignTagConfig}
@@ -711,9 +631,6 @@ export function useAccountModalForUI({
       [AccountStep.NoAccount]: {
         view: (
           <NoAccount
-            // className={
-            //   /(guardian)|(depositto)/gi.test(pathname ?? "") ? "guardian" : ""
-            // }
             {...{
               goActiveAccount,
               chainInfos,
@@ -738,9 +655,6 @@ export function useAccountModalForUI({
       [AccountStep.HadAccount]: {
         view: (
           <HadAccount
-            // className={
-            //   /(guardian)|(depositto)/gi.test(pathname ?? "") ? "guardian" : ""
-            // }
             {...{
               ...account,
               clearDepositHash: clearDeposit,
@@ -1049,7 +963,16 @@ export function useAccountModalForUI({
           <NFTMint_Denied
             symbol={isShowAccount.info?.name}
             value={isShowAccount.info?.value}
-            btnInfo={backToMintBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                if (isShowAccount.info?.isAdvanceMint) {
+                  nftMintAdvanceRetryBtn();
+                } else {
+                  mintService.signatureMint();
+                }
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1158,7 +1081,12 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeploy_Denied]: {
         view: (
           <NFTDeploy_Denied
-            btnInfo={backToDeployBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                nftDeployProps.onNFTDeployClick(nftDeployValue as any);
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1373,7 +1301,12 @@ export function useAccountModalForUI({
       [AccountStep.Transfer_User_Denied]: {
         view: (
           <Transfer_User_Denied
-            btnInfo={backToTransferBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                transferProps.onTransferClick(transferValue as any);
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1424,7 +1357,6 @@ export function useAccountModalForUI({
           />
         ),
       },
-
       // transferRamp
       [AccountStep.Transfer_RAMP_WaitForAuth]: {
         view: (
@@ -1566,7 +1498,12 @@ export function useAccountModalForUI({
       [AccountStep.Withdraw_User_Denied]: {
         view: (
           <Withdraw_User_Denied
-            btnInfo={backToWithdrawBtnInfo}
+            btnInfo={{
+              btnTxt: "labelTryAnother",
+              callback: () => {
+                withdrawProps.onWithdrawClick(withdrawValue as any);
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1936,7 +1873,8 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: t("labelTryAnother"),
               callback: (_e?: any) => {
-                goUpdateAccount({ isFirstTime: false });
+                activeAccountProps.onResetClick({ isFirstTime: false });
+                // goUpdateAccount({ isFirstTime: false });
               },
             }}
             {...{
@@ -1947,13 +1885,19 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          backToUpdateAccountBtnInfo.callback();
+          setShowAccount({ isShow: true, step: AccountStep.CheckingActive });
+          // backToUpdateAccountBtnInfo.callback();
         },
       },
       [AccountStep.UpdateAccount_User_Denied]: {
         view: (
           <UpdateAccount_User_Denied
-            btnInfo={backToUpdateAccountBtnInfo}
+            btnInfo={{
+              btnTxt: t("labelRetry"),
+              callback: (_e?: any) => {
+                activeAccountProps.onResetClick({});
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -2097,7 +2041,10 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: t("labelTryAnother"),
               callback: (_e?: any) => {
-                goUpdateAccount({ isReset: true, isFirstTime: false });
+                activeAccountProps.onResetClick({
+                  isReset: true,
+                  isFirstTime: false,
+                });
               },
             }}
             {...{
@@ -2108,14 +2055,22 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          backToResetAccountBtnInfo.callback();
+          setShowAccount({ isShow: false });
+          setShowResetAccount({ isShow: true });
         },
       },
       [AccountStep.ResetAccount_User_Denied]: {
         view: (
           <UpdateAccount_User_Denied
             patch={{ isReset: true }}
-            btnInfo={backToResetAccountBtnInfo}
+            btnInfo={{
+              btnTxt: t("labelRetry"),
+              callback: (_e?: any) => {
+                activeAccountProps.onResetClick({
+                  isReset: true,
+                });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -2255,6 +2210,7 @@ export function useAccountModalForUI({
     });
   }, [
     checkActiveStatusProps,
+    account,
     isShowAccount.info,
     isShowAccount.error,
     addAssetList,
@@ -2264,14 +2220,15 @@ export function useAccountModalForUI({
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,
     sendAssetList,
+    sendNFTAssetList,
     vendorListBuy,
+    campaignTagConfig,
     onBackReceive,
     chainInfos,
     isLayer1Only,
     onClose,
     updateDepositHash,
     clearDeposit,
-    account,
     rest,
     onSwitch,
     onCopy,
@@ -2283,25 +2240,18 @@ export function useAccountModalForUI({
     unlockBtn,
     t,
     onQRBack,
-    forceWithdrawRetry,
     backToDepositBtnInfo,
     closeBtnInfo,
     nftDepositValue,
-    backToNFTDepositBtnInfo,
-    backToMintBtnInfo,
     nftDeployValue,
-    backToDeployBtnInfo,
-    backToTransferBtnInfo,
-    backToWithdrawBtnInfo,
-    backToUpdateAccountBtnInfo,
-    backToUnlockAccountBtnInfo,
-    backToResetAccountBtnInfo,
     setShowAccount,
     setShowDeposit,
     nftMintAdvanceRetryBtn,
     nftDeployProps,
+    forceWithdrawRetry,
     transferProps,
     transferValue,
+    processRequestRampTransfer,
     withdrawProps,
     withdrawValue,
     nftTransferProps,
@@ -2309,7 +2259,6 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     nftWithdrawValue,
     setShowActiveAccount,
-    goUpdateAccount,
   ]);
 
   const currentModal = accountList[isShowAccount.step];
