@@ -33,8 +33,8 @@ export const useDualHook = ({
   const showBeginnerModeHelp = useSelector(
     (state: RootState) => state.localStore.confirmation.showDualBeginnerHelp
   );
+  const dispatch = useDispatch()
   const onCloseBeginnerModeHelp = React.useCallback(() => {
-    const dispatch = useDispatch()
     dispatch(hidDualBeginnerHelp(undefined))
   }, [])
   const { marketArray, marketMap, tradeMap, status: dualStatus } = useDualMap();
