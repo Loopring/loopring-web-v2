@@ -85,6 +85,7 @@ export default {
   descriptionExportAccount:
     "In order to access the Loopring L2 APIs, you will need to export a security key.",
   labelBtnExportAccount: "Export Account",
+  labelDownloadViewMore: "View More",
   labelTitlePreferences: "Preferences",
   labelTitleLayout: "Custom Setting",
   whichColorIsUp: "<0>{{up}} up</0> and <2>{{down}} down</2> ",
