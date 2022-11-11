@@ -338,6 +338,7 @@ export const CollectionItem = React.memo(
                   variant={size == "small" ? "body2" : "body1"}
                   component={"span"}
                   paddingRight={1}
+                  width={"100%"}
                   dangerouslySetInnerHTML={{
                     __html:
                       sanitize(

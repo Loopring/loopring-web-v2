@@ -96,6 +96,18 @@ export const useCollectionImport = <
     },
     [account.accountId, account.apiKey]
   );
+  React.useEffect(() => {
+    if (
+      collectionListProps.isLoading === false &&
+      selectCollection === undefined &&
+      collectionListProps.total
+    ) {
+      onCollectionChange(collectionListProps.collectionList[0]);
+    }
+    () => {
+      setSelectCollection(undefined);
+    };
+  }, [collectionListProps.isLoading]);
 
   const {
     collection,

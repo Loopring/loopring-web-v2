@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-
 export default {
   labelErrorTitle: "Error Detail:",
   labelNoContent: "No Content",
@@ -396,6 +395,7 @@ export default {
   labelNFTMyNFT: "My NFTs - Collection: {{collection}}",
   labelNFTTokenID: "ID:",
   labelNFTTYPE: "Token Standard:",
+  labelNFTRoyaltyPercentage: "Royalty (%):",
   labelNFTID: "ID:",
   labelNFTMinter: "Minter:",
   labelNFTMint: "Create NFT",
@@ -829,16 +829,14 @@ export default {
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n" +
     "You can choose one of the following approaches for the remaining amount:",
   labelDefiMaxBalance1:
-    "<0>" +
-    "<1>Withdraw {{symbol}} to L1 and trade trade through Uniswap, 1Inch, Lido or Pocket Pool.</1>" +
-    "<2>The Loopring pool will rebalance soon. Please come back later to redeem.</2>" +
-    "</0>",
+    "<li>Withdraw {{symbol}} to L1 and trade through 1Inch or {{type}}, etc...</li>" +
+    "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiNoBalance:
-    "<0>It is not possible for the Loopring pool to fulfil your complete request at the moment.</0>" +
-    "<1>You can choose one of the following approaches for the remaining amount:</1>",
+    "<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>" +
+    "<span>You can choose one of the following approaches for the remaining amount:</span>",
   labelDefiNoBalanceList:
-    "<0>Withdraw {{symbol}} to L1 and trade trade through Uniswap, 1Inch, Lido or Pocket Pool.</0>" +
-    "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
+    "<li>Withdraw {{symbol}} to L1 and trade through 1Inch or {{type}}, etc...</li>" +
+    "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
   labelDefiNoBalanceJoin:
@@ -862,22 +860,22 @@ export default {
   labelInvestSuccess: "Successfully {{type}} {{symbol}}",
   labelInvestFailed: "Subscribe Failed",
   labelWSETHDefiRiskTitle: "What is ETH Staking via Lido?",
-  labelRETHDefiRiskTitle: "What is ETH Staking Rocket Pool?",
+  labelRETHDefiRiskTitle: "What is ETH Staking via Rocket Pool?",
   labelWSETHDefiRisk:
-    "<0>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</0>\n" +
-    "<1>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</1>" +
-    "<2>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</2>\n",
-  labelWSETHDefiRisk2:
-    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</0>" +
-    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
+    "<p>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</p>" +
+    "<p>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</p>" +
+    "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>\n",
   labelRETHDefiRisk:
-    "<0>Rocket Pool is the first truly decentralized Ethereum staking pool. </0>" +
-    "<1>All of the Ethereum validator node operator's creation, withdrawals,\n and rewards delegation is handled by Rocket Pool's smart contracts on the Execution layer. This makes it completely decentralized.<1>" +
-    "<2>After staking ETH via Rocket Pool, you will receive rETH. The rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</2>",
+    "<p>Rocket Pool is the first truly decentralized Ethereum staking pool. Rocket Pool’s liquid staking token allows anyone to earn staking rewards easily without running staking software or locking assets. Rocket Pool handles all of the Ethereum validator operations with smart contracts on the Execution layer.</p>" +
+    "<p>Acquiring and holding rETH in your wallet means that you are staking ETH. rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</p>" +
+    "<p></p>",
+  labelWSETHDefiRisk2:
+    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</p>" +
+    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</p>",
   labelRETHDefiRisk2:
     "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
     "<1></1>",
-  labelDefiAgree: "I have read risk warning",
+  labelDefiAgree: "I have read and understand the risk warning",
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
@@ -1032,6 +1030,7 @@ export default {
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
   labelInvestDualTutorialCheck4: "I have read the risk warning.",
+  labelInvestDualBeginerMode: "Beginner Mode",
   labelDualAmount: "Amount",
   labelDuaInvestmentDetails: "Dual Investment Details",
   labelDualOrderTable: "Dual Investments",
@@ -1051,7 +1050,7 @@ export default {
   labelDualBeginnerStep3Title: "Choose Target Price and Settlement Date",
   labelDualBeginnerSellHighFor: "Sell high for {{token}}",
   labelDualBeginnerBuyLowWith: "Buy low with {{token}}",
-  
+
   labelInvestMyAmm: "My Investment",
   labelInvestMyDual: "My Investment",
   labelInvestMyDefi: "My Investment",
@@ -1079,7 +1078,7 @@ export default {
   labelCheckImportCollectionTitle:
     "Import legacy NFTs under contract address to proceed",
   labelContinue: "Next",
-  labelImportCollection1: "Choose NFT contract address",
+  labelImportCollection1: "Import Collection for Legacy NFT",
   labelImportCollection2: "Create/Choose a collection",
   labelImportCollection3: "Select NFTs to move into/out of collection",
   labelSelectContractAddress: "Contract address",
@@ -1087,7 +1086,7 @@ export default {
     "The created collection here can only be used to categorize the Legacy NFT minted without collection_metadata field.\n You can freely move those NFTs into any collection you created here.",
   labelImportCollectionundecided: "Undecided",
   labelImportCollectionoutside: "Others",
-  labelImportCollectioninside: "Current",
+  labelImportCollectioninside: "Current Collection",
   labelImportCollectionall: "All",
   labelImportCollectionundecidedDes:
     "items under this contract not classified into a collection",
@@ -1096,7 +1095,7 @@ export default {
   labelImportCollectioninsideDes:
     "items under this contract classified into the current collection",
   labelImportCollectionallDes: "all items under this contract",
-  labelImportCollectionTitle: "Import your legacy NFT Generate collection ",
+  labelImportCollectionTitle: "Import Collection for Legacy NFT",
   labelAssetTokens: "Tokens",
   labelAssetMyInvest: "My Investments",
   labelORCreateCollection: "Or <1>Create Collection</1>",
@@ -1107,7 +1106,7 @@ export default {
   labelMoveIn: "Move into {{symbol}}",
   labelMoveInCollection: "Collection",
   labelSelectAll: "Select All",
-  labelCancelAll: "Cancel All",
+  labelCancelAll: "Cancel",
   labelDoneBtn: "Done",
   labelDetail: "Detail",
   labelNFTMyCollection: "Collection: {{collection}}",
@@ -1126,4 +1125,20 @@ export default {
   labelSync: "in Sync",
   labelMintInSyncTooltips:
     "The NFT and collection information may not be synced up timely after minting due to onChain operation. Please stay tuned and refresh the page later.",
+  labelEstRateApr: "Est.rate (APR)",
+  labelStakingApr: "APR",
+  labelManageCollectionTitle: "Manage Legacy NFT",
+  labelLegacy: "legacy",
+  labelTitleMyNFTSAvailable: "My Holding NFTs",
+  labelTitleTotalAvailable: "Total NFTs",
+  labelCheckImportCollectionDes:
+    " As the creator, you will be able to generate collection information in loopring server for the NFT minted earlier which doesn't contain collection information. And once you complete the processing, the other people holding your NFT will be able to view those NFT been categorized into well organized collections via loopring.io and loopring wallet.",
+  labelL2toL1NFTFailed:
+    "Sent {{value}} <span>{{symbol}}</span> to L1 has failed!",
+  labelL2toL1NFTSuccess:
+    "Sent {{value}} <span>{{symbol}}</span> to L1 was successful!",
+  labelL2toL2NFTFailed:
+    "Sent {{value}} <span>{{symbol}}</span> from my Loopring L2 to another Loopring L2 failed!",
+  labelL2toL2NFTSuccess:
+    "Sent {{value}} <span>{{symbol}}</span> was successful!",
 };
