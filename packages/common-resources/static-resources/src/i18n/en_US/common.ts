@@ -1148,7 +1148,7 @@ export default {
   labelEstRateAprDes:
     "APR stands for annual percentage Rate. It is the actual annual rate of return, NOT taking into account the effect of compound interest.",
   labelCheckImportCollectionDes:
-    " As the creator, you will be able to generate collection information in loopring server for the NFT minted earlier which doesn't contain collection information. And once you complete the processing, the other people holding your NFT will be able to view those NFT been categorized into well organized collections via loopring.io and loopring wallet.",
+    "As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet.",
   labelL2toL1NFTFailed:
     "Sent {{value}} <span>{{symbol}}</span> to L1 has failed!",
   labelL2toL1NFTSuccess:
