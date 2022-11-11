@@ -9,7 +9,7 @@ import {
   CollectionDetailView,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
 import React from "react";
 import {
   CollectionMeta,
@@ -100,17 +100,19 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             </Typography>
 
             <Box display={"flex"} flexDirection={isMobile ? "column" : "row"}>
-              <Button
-                onClick={() => {
-                  history.push("/nft/importLegacyCollection");
-                }}
-                sx={isMobile ? { marginBottom: 2 } : { marginRight: 1 }}
-                // startIcon={<DownloadIcon />}
-                variant={"outlined"}
-                color={"primary"}
-              >
-                {t("labelImportCollection")}
-              </Button>
+              <Tooltip title={t("labelCheckImportCollectionDes").toString()}>
+                <Button
+                  onClick={() => {
+                    history.push("/nft/importLegacyCollection");
+                  }}
+                  sx={isMobile ? { marginBottom: 2 } : { marginRight: 1 }}
+                  // startIcon={<DownloadIcon />}
+                  variant={"outlined"}
+                  color={"primary"}
+                >
+                  {t("labelImportCollection")}
+                </Button>
+              </Tooltip>
               <Button
                 onClick={() => {
                   history.push("/nft/addCollection");

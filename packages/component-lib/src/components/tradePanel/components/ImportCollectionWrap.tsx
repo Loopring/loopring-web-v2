@@ -173,15 +173,6 @@ export const ImportCollectionWrap = <
             maxWidth={"760px"}
             flex={1}
           >
-            <Typography
-              variant={"body1"}
-              color={"textSecondary"}
-              marginBottom={2}
-              textAlign={"center"}
-              whiteSpace={"pre-line"}
-            >
-              {t("labelCheckImportCollectionDes")}
-            </Typography>
             <Box
               display={"flex"}
               alignItems={"flex-start"}
