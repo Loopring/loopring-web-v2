@@ -54,8 +54,8 @@ export const BtnDownload = ({
           horizontal: "center",
         }}
       >
-        <Box paddingX={4} paddingTop={4} paddingBottom={3}>
-          <DownloadPanel viewMoreUrl={url}/>
+        <Box minWidth={160}>
+          <DownloadPanel viewMoreUrl={url} />
         </Box>
       </PopoverPure>
     </Box>

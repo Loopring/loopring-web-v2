@@ -45,12 +45,12 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
   },
 });
 
-
 export { confirmationSlice };
 export const {
   confirm,
   confirmedRETHDefiInvest,
   confirmedWSETHDefiInvest,
   confirmDualInvest,
-  showDualBeginnerHelp, hidDualBeginnerHelp
+  showDualBeginnerHelp,
+  hidDualBeginnerHelp,
 } = confirmationSlice.actions;
