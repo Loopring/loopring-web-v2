@@ -1050,10 +1050,8 @@ export default {
   labelDualBeginnerPriceSmallerOrEqualThan: "if Index Price ≤ {{value}}",
   labelDualBeginnerPriceGreaterThan: "if Index Price > {{value}}",
   labelDualBeginnerAtSettlementDay: "At Settlement Date",
-  labelDualBeginnerIndexPriceDes:
-    "Index Price is derived from some leading exchanges.",
-  labelDualBeginnerLockingDes:
-    "Your token for investment will be locked until Settlement Date.",
+  labelDualBeginnerIndexPriceDes: "Index Price is derived from some leading exchanges.",
+  labelDualBeginnerLockingDes: "Your token for investment will be locked until Settlement Date.",
   labelDualBeginnerAPRRange: "APR: {{minAPY}} - {{maxAPY}}",
   labelDualBeginnerStep1Title: "Choose a token to sell or buy",
   labelDualBeginnerStep2Title: "Choose a token to sell or buy",

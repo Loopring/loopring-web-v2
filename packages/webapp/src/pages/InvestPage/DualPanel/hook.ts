@@ -1,4 +1,4 @@
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import {
   confirmation,
   findDualMarket,
@@ -23,6 +23,11 @@ export const useDualHook = ({
   setConfirmDualInvest: (state: any) => void;
 }) => {
   const match: any = useRouteMatch("/invest/dual/:market?");
+  const { search } = useLocation();
+  const [beginnerMode, setBeginnerMode] = React.useState<boolean>(
+    new URLSearchParams(search).get('beginnerMode') === 'true'
+  )
+
   const { marketArray, marketMap, tradeMap, status: dualStatus } = useDualMap();
   const { tokenPrices } = useTokenPrices();
   const [priceObj, setPriceObj] = React.useState<{
@@ -71,6 +76,13 @@ export const useDualHook = ({
     return [coinA, coinB];
   });
 
+  const onToggleBeginnerMode = React.useCallback(() => {
+    const searchParams = new URLSearchParams(search)
+    searchParams.set('beginnerMode', beginnerMode ? 'false' : 'true')
+    history.push(`${match.url}?${searchParams.toString()}`)
+    setBeginnerMode(!beginnerMode)
+  }, [beginnerMode])
+
   const handleOnPairChange = React.useCallback(
     (
       prosp:
@@ -93,7 +105,7 @@ export const useDualHook = ({
         setPairBSymbol(_pairBSymbol);
         market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol);
       }
-      history.push(`/invest/dual/${_pairASymbol}-${_pairBSymbol}`);
+      history.push(`/invest/dual/${_pairASymbol}-${_pairBSymbol}${search}`);
 
       if (market) {
         const [, , coinA, coinB] = market ?? "".match(/(dual-)?(\w+)-(\w+)/i);
@@ -224,6 +236,44 @@ export const useDualHook = ({
     };
   }, [pair, dualStatus]);
 
+  const [step1SelectedToken, setStep1SelectedToken] = React.useState<string | undefined>(undefined)
+  const [step2BuyOrSell, setStep2BuyOrSell] = React.useState< "Buy" | "Sell" | undefined>(undefined)
+  const [step3Token, setStep3Token] = React.useState< string | undefined>(undefined)
+  const onSelectStep1Token = React.useCallback((token: string) => {
+    setStep1SelectedToken(token)
+    setStep2BuyOrSell(undefined)
+    setStep3Token(undefined)
+  }, [])
+  const onSelectStep2BuyOrSell = React.useCallback((which: "Buy" | "Sell") => {
+    setStep2BuyOrSell(which)
+    setStep3Token(undefined)
+  }, [])
+  const onSelectStep3Token = React.useCallback((which: string) => {
+    setStep3Token(which)
+    debugger
+    if (step2BuyOrSell! === 'Sell') {
+      var pairA = step1SelectedToken!
+      var pairB = which
+    } else {
+      pairA = which
+      pairB = step1SelectedToken!
+    }
+    setPairASymbol(pairA)
+    setPairBSymbol(pairB)
+    const market = findDualMarket(marketArray, pairA, pairB);
+    history.push(`/invest/dual/${pairA}-${pairB}${search}`);
+    if (market) {
+      const [, , coinA, coinB] = market ?? "".match(/(dual-)?(\w+)-(\w+)/i);
+      setMarket(market);
+      setPair(`${pairA}-${pairB}`);
+      setMarketPair([coinA, coinB]);
+      setPriceObj({
+        symbol: coinA,
+        price: tokenPrices[coinA],
+      });
+    }
+  }, [step1SelectedToken, step2BuyOrSell, marketArray, tradeMap])
+
   return {
     // dualWrapProps: undefined,
     currentPrice,
@@ -237,9 +287,18 @@ export const useDualHook = ({
     marketQuote,
     priceObj,
     pair,
+    beginnerMode,
+    onToggleBeginnerMode,
     // confirmShowNoBalance,
     // setConfirmShowNoBalance,
     // serverUpdate,
     // setServerUpdate,
+
+    step1SelectedToken,
+    step2BuyOrSell,
+    step3Token,
+    onSelectStep1Token,
+    onSelectStep2BuyOrSell,
+    onSelectStep3Token,
   };
 };

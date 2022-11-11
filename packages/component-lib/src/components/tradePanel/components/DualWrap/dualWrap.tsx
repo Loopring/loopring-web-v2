@@ -120,6 +120,7 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
     }
 `;
 });
+type DisaplyMode = 'nonBeginnerMode' | 'beginnerModeStep1' | 'beginnerModeStep2'
 export type DualDetailType = {
   dualViewInfo: DualViewBase;
   currentPrice: DualCurrentPrice;
@@ -138,7 +139,8 @@ export const DualDetail = ({
   // greaterEarnTokenSymbol,
   greaterEarnView,
   isOrder = false,
-}: DualDetailType & { tokenMap: any }) => {
+  displayMode = "nonBeginnerMode"
+}: DualDetailType & { displayMode?: DisaplyMode, tokenMap: any }) => {
   const { t } = useTranslation();
   const { upColor } = useSettings();
   const { base, quote, precisionForPrice } = currentPrice;
@@ -170,7 +172,7 @@ export const DualDetail = ({
 
   return (
     <Box>
-      <Box paddingX={2} paddingBottom={1}>
+      {displayMode !== 'beginnerModeStep1' && <Box paddingX={2} paddingBottom={1}>
         <BoxChartStyle height={128} width={"100%"} position={"relative"}>
           <Box className={"point1 point"}>
             <Typography
@@ -255,8 +257,56 @@ export const DualDetail = ({
             />
           </Box>
         </BoxChartStyle>
-      </Box>
+      </Box>}
 
+      {
+        displayMode === 'beginnerModeStep2' && (
+          <>
+            <Box paddingX={2} marginTop={2} >
+              <Typography variant={"h5"} marginBottom={0}>{t("At Settlement Date")}</Typography>
+              <Typography color={"textSecondary"} marginBottom={1}>{t("labelDualBeginnerIndexPriceDes")}</Typography>
+              <Box marginBottom={1} display={"flex"} justifyContent={"space-between"}>
+                <Typography>{t("labelDualBeginnerPriceSmallerOrEqualThan", {
+                  value: targetView
+                })}</Typography>
+                <Typography>
+                  {base &&
+                    t("labelDualReturn", {
+                      symbol:
+                        (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
+                        " " +
+                        base,
+                    })}
+                </Typography>
+              </Box>
+              <Box marginBottom={5} display={"flex"} justifyContent={"space-between"}>
+                <Typography>{t("labelDualBeginnerPriceGreaterThan", {
+                  value: targetView
+                })}</Typography>
+                <Typography>
+                  {quote &&
+                    t("labelDualReturn", {
+                      symbol:
+                        (greaterEarnView === "0"
+                          ? EmptyValueTag
+                          : greaterEarnView) +
+                        " " +
+                        quote,
+                    })}
+                </Typography>
+              </Box>
+            </Box>
+            <Typography
+              textAlign={"center"}
+              color={"var(--color-text-third)"}
+              variant={"body2"}
+            >
+              {t("labelDualBeginnerLockingDes")}
+            </Typography>
+          </>
+        )
+      }
+    {displayMode !== 'beginnerModeStep2' &&
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -265,6 +315,7 @@ export const DualDetail = ({
         paddingX={2}
         marginTop={2}
       >
+        { displayMode === "nonBeginnerMode" && <>
         <Typography
           variant={"body1"}
           display={"inline-flex"}
@@ -331,6 +382,8 @@ export const DualDetail = ({
             })}
           </Typography>
         </Typography>
+        </>}
+        
 
         {isOrder && (
           <Box paddingBottom={1}>
@@ -529,7 +582,7 @@ export const DualDetail = ({
             )}
           </Typography>
         </Typography>
-      </Box>
+      </Box>}
     </Box>
   );
 };
@@ -554,11 +607,13 @@ export const DualWrap = <
   btnStatus,
   tokenMap,
   accStatus,
+  isBeginnerMode,
   ...rest
-}: DualWrapProps<T, I, DUAL>) => {
+}: DualWrapProps<T, I, DUAL> & {isBeginnerMode: boolean}) => {
   const coinSellRef = React.useRef();
   const { t } = useTranslation();
   const priceSymbol = dualCalcData?.dualViewInfo?.currentPrice?.quote;
+  const [displayMode, setDisplayMode] = React.useState<DisaplyMode>(isBeginnerMode ? 'beginnerModeStep1' : 'nonBeginnerMode');
 
   const getDisabled = React.useMemo(() => {
     return disabled || dualCalcData === undefined;
@@ -611,7 +666,7 @@ export const DualWrap = <
       const key = btnInfo?.label.split("|");
       return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
     } else {
-      return t(`labelInvestBtn`);
+      return displayMode === 'beginnerModeStep1' ? t('labelContinue') : t(`labelInvestBtn`);
     }
   }, [t, btnInfo]);
   const lessEarnView = React.useMemo(
@@ -676,7 +731,7 @@ export const DualWrap = <
     >
       {dualCalcData.dualViewInfo && priceSymbol && (
         <>
-          <Grid
+          {displayMode !== 'beginnerModeStep2' && <Grid
             item
             xs={12}
             flexDirection={"column"}
@@ -722,7 +777,7 @@ export const DualWrap = <
                 </Typography>
               </Typography>
             </Box>
-          </Grid>
+          </Grid>}
           <Grid
             item
             xs={12}
@@ -731,7 +786,7 @@ export const DualWrap = <
             alignItems={"stretch"}
             justifyContent={"space-between"}
           >
-            <Typography
+            {displayMode === 'nonBeginnerMode' && <Typography
               variant={"body1"}
               component={"h6"}
               color={"textSecondary"}
@@ -739,7 +794,7 @@ export const DualWrap = <
               paddingY={1}
             >
               {t("labelDualSettlementCalculator")}
-            </Typography>
+            </Typography>}
             <DualDetail
               dualViewInfo={dualCalcData.dualViewInfo as DualViewBase}
               currentPrice={dualCalcData.dualViewInfo.currentPrice}
@@ -748,6 +803,7 @@ export const DualWrap = <
               greaterEarnTokenSymbol={dualCalcData.greaterEarnTokenSymbol}
               lessEarnView={lessEarnView}
               greaterEarnView={greaterEarnView}
+              displayMode={displayMode}
             />
           </Grid>
           <Grid item xs={12}>
@@ -758,7 +814,11 @@ export const DualWrap = <
                 size={"medium"}
                 color={"primary"}
                 onClick={() => {
-                  onSubmitClick();
+                  if (!btnInfo?.label && displayMode === 'beginnerModeStep1') {
+                      setDisplayMode('beginnerModeStep2')
+                    } else {
+                      onSubmitClick();
+                  }
                 }}
                 loading={
                   !getDisabled && btnStatus === TradeBtnStatus.LOADING
