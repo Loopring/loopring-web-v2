@@ -15,7 +15,7 @@ export const DownloadPanel = withTranslation(["common", "layout"])
         href="https://play.google.com/store/apps/details?id=loopring.defi.wallet"
       >
         <img
-          width={260}
+          height={56}
           src={`${SoursURL}images/google-play.png`}
           alt={"GooglePlay"}
         />
@@ -27,7 +27,7 @@ export const DownloadPanel = withTranslation(["common", "layout"])
         href="https://download.loopring.io/LoopringWallet.apk"
       >
         <img
-          width={260}
+          height={56}
           src={`${SoursURL}images/android-apk.png`}
           alt={"Android"}
         />
@@ -39,7 +39,7 @@ export const DownloadPanel = withTranslation(["common", "layout"])
         href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126"
       >
         <img
-          width={260}
+          height={56}
           src={`${SoursURL}images/apple-app-store.png`}
           alt={"AppStore"}
         />
