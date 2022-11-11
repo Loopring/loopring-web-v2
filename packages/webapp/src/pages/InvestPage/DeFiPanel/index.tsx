@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   Grid,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -34,6 +35,7 @@ import {
   BackIcon,
   defiRETHAdvice,
   defiWSTETHAdvice,
+  Info2Icon,
   MarketType,
   TOAST_TIME,
   UpColor,
@@ -220,14 +222,24 @@ const LandDefiInvest = ({
                                     : "var(--color-error)"
                                 }
                               >
-                                {t("labelStakingApr") + ": " + item.apy + "%"}
+                                {item.apy + "%"}
                               </Typography>
-                              {/*<Typography*/}
-                              {/*  variant={"body2"}*/}
-                              {/*  color={"var(--color-text-third)"}*/}
-                              {/*>*/}
-                              {/*  {t("labelEstRateApr")}*/}
-                              {/*</Typography>*/}
+                              <Tooltip
+                                title={t("labelEstRateAprDes").toString()}
+                              >
+                                <Typography
+                                  variant={"body2"}
+                                  display={"inline-flex"}
+                                  alignItems={"center"}
+                                  color={"var(--color-text-third)"}
+                                >
+                                  {t("labelEstRateApr")}
+                                  <Info2Icon
+                                    color={"inherit"}
+                                    sx={{ marginLeft: 1 / 2 }}
+                                  />
+                                </Typography>
+                              </Tooltip>
                             </Typography>
                           )}
                         </Box>
