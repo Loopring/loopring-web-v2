@@ -49,7 +49,7 @@ export default {
   depositLabelRefer: "Referral address, Account ID or ENS. (Optional)",
   depositLabelPlaceholder: "address, Account ID or ENS",
   withdrawDescription:
-    "Your withdrawal will be processed in the next batch,\n which usually 30 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
+    "Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
   withdrawTypeLabelFast: "Fast (15 seconds at the earliest)",
   withdrawTypeLabelStandard: "Standard (about 25 minutes)",
   labelConnectWallet: "Connect wallet",
@@ -1043,20 +1043,23 @@ export default {
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
   labelInvestDualTutorialCheck4: "I have read the risk warning.",
   labelInvestDualBeginerMode: "Beginner Mode",
+  labelInvestDualBeginerModeDesLine1: "What is Dual Investment?",
+  labelInvestDualBeginerModeDesLine2: "You can use the beginner mode to quickly learn.",
   labelDualAmount: "Amount",
   labelDuaInvestmentDetails: "Dual Investment Details",
   labelDualOrderTable: "Dual Investments",
-
-  labelDualBeginnerPriceSmallerOrEqualThan: "if Index Price ≤ {{value}}",
+  
+  labelDualBeginnerPriceSmallerThan: "if Index Price < {{value}}",
+  labelDualBeginnerPriceSmallerThanOrEqual: "if Index Price ≤ {{value}}",
   labelDualBeginnerPriceGreaterThan: "if Index Price > {{value}}",
+  labelDualBeginnerPriceGreaterThanOrEqual: "if Index Price ≥ {{value}}",
+
   labelDualBeginnerAtSettlementDay: "At Settlement Date",
-  labelDualBeginnerIndexPriceDes:
-    "Index Price is derived from some leading exchanges.",
-  labelDualBeginnerLockingDes:
-    "Your token for investment will be locked until Settlement Date.",
-  labelDualBeginnerAPRRange: "APR: {{minAPY}} - {{maxAPY}}",
+  labelDualBeginnerIndexPriceDes: "Index Price is derived from some leading exchanges.",
+  labelDualBeginnerLockingDes: "Your token for investment will be locked until Settlement Date.",
+  labelDualBeginnerAPR: "APR: {{APR}}",
   labelDualBeginnerStep1Title: "Choose a token to sell or buy",
-  labelDualBeginnerStep2Title: "Choose a token to sell or buy",
+  labelDualBeginnerStep2Title: "Choose to sell or buy at desired price in the future",
   labelDualBeginnerSellHigh: "Sell {{token}} High",
   labelDualBeginnerBuyLow: "Buy {{token}} Low",
   labelDualBeginnerRecieveStable: "You will receive USDC or USDT",
