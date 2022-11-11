@@ -1050,8 +1050,10 @@ export default {
   labelDualBeginnerPriceSmallerOrEqualThan: "if Index Price ≤ {{value}}",
   labelDualBeginnerPriceGreaterThan: "if Index Price > {{value}}",
   labelDualBeginnerAtSettlementDay: "At Settlement Date",
-  labelDualBeginnerIndexPriceDes: "Index Price is derived from some leading exchanges.",
-  labelDualBeginnerLockingDes: "Your token for investment will be locked until Settlement Date.",
+  labelDualBeginnerIndexPriceDes:
+    "Index Price is derived from some leading exchanges.",
+  labelDualBeginnerLockingDes:
+    "Your token for investment will be locked until Settlement Date.",
   labelDualBeginnerAPRRange: "APR: {{minAPY}} - {{maxAPY}}",
   labelDualBeginnerStep1Title: "Choose a token to sell or buy",
   labelDualBeginnerStep2Title: "Choose a token to sell or buy",
@@ -1143,6 +1145,8 @@ export default {
   labelLegacy: "legacy",
   labelTitleMyNFTSAvailable: "My Holding NFTs",
   labelTitleTotalAvailable: "Total NFTs",
+  labelEstRateAprDes:
+    "APR stands for annual percentage Rate. It is the actual annual rate of return, NOT taking into account the effect of compound interest.",
   labelCheckImportCollectionDes:
     "As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet.",
   labelL2toL1NFTFailed:
