@@ -326,7 +326,7 @@ export const NFTMedia = React.memo(
                 left={0}
                 top={0}
                 display={"flex"}
-                justfyContent={"center"}
+                justifyContent={"center"}
                 alignItems={"center"}
               >
                 <SyncIcon color={"inherit"} />
