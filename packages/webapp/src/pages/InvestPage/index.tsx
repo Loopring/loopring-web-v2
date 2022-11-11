@@ -177,6 +177,10 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
     confirmDefiInvest: confirmDefiInvestFun,
     confirmDualInvest: confirmDualInvestFun,
   } = confirmation.useConfirmation();
+  const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false)
+  const onShowBeginnerModeHelp = React.useCallback((show: boolean) => {
+    setShowBeginnerModeHelp(show)
+  }, [])
   const { marketArray } = useDualMap();
   const [confirmDefiInvest, setConfirmDefiInvest] = React.useState(false);
   const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
@@ -254,7 +258,11 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           <DeFiPanel setConfirmDefiInvest={setConfirmDefiInvest} />
         )}
         {tabIndex === InvestType.Dual && (
-          <DualListPanel setConfirmDualInvest={setConfirmDualInvest} />
+          <DualListPanel 
+            showBeginnerModeHelp={showBeginnerModeHelp} 
+            onShowBeginnerModeHelp={onShowBeginnerModeHelp}  
+            setConfirmDualInvest={setConfirmDualInvest} 
+          />
         )}
         {tabIndex === InvestType.MyBalance && (
           <Box
@@ -285,6 +293,10 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
             history.goBack();
           } else {
             confirmDualInvestFun();
+            setShowBeginnerModeHelp(true)
+            setTimeout(() => {
+              onShowBeginnerModeHelp(false)
+            }, 5 * 1000);
           }
         }}
       />
