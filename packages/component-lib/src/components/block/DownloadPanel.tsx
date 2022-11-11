@@ -22,6 +22,7 @@ export const DownloadPanel = withTranslation(["common", "layout"])(
         >
           <img
             height={56}
+            width={175}
             src={`${SoursURL}images/google-play.png`}
             alt={"GooglePlay"}
           />
@@ -34,6 +35,7 @@ export const DownloadPanel = withTranslation(["common", "layout"])(
         >
           <img
             height={56}
+            width={175}
             src={`${SoursURL}images/android-apk.png`}
             alt={"Android"}
           />
@@ -46,6 +48,7 @@ export const DownloadPanel = withTranslation(["common", "layout"])(
         >
           <img
             height={56}
+            width={175}
             src={`${SoursURL}images/apple-app-store.png`}
             alt={"AppStore"}
           />
