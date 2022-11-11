@@ -6,6 +6,7 @@ const initialState: Confirmation = {
   confirmed: false,
   confirmedDefiInvest: false,
   confirmedDualInvest: false,
+  showDualBeginnerHelp: false,
 };
 
 const confirmationSlice: Slice<Confirmation> = createSlice<
@@ -25,9 +26,16 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     confirmDualInvest(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmedDualInvest = true;
     },
+    showDualBeginnerHelp(state: Confirmation, _action: PayloadAction<string>) {
+      state.showDualBeginnerHelp = true;
+    },
+    hidDualBeginnerHelp(state: Confirmation, _action: PayloadAction<string>) {
+      state.showDualBeginnerHelp = false;
+    },
   },
 });
 
+
 export { confirmationSlice };
-export const { confirm, confirmDefiInvest, confirmDualInvest } =
+export const { confirm, confirmDefiInvest, confirmDualInvest, showDualBeginnerHelp, hidDualBeginnerHelp } =
   confirmationSlice.actions;
