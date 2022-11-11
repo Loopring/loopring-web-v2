@@ -84,6 +84,7 @@ export default {
   labelTitleExportAccount: "导出账号",
   descriptionExportAccount: "你可以导出你的API密钥，在脚本中使用。",
   labelBtnExportAccount: "导出账号",
+  labelDownloadViewMore: "查看更多",
   labelTitlePreferences: "偏好设置",
   labelTitleLayout: "个性化设置",
   whichColorIsUp: "<0>{{up}} 上涨</0> -- <2>{{down}} 下跌</2>",
