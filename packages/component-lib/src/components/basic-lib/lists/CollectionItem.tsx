@@ -329,7 +329,6 @@ export const CollectionItem = React.memo(
                 alignItems={"flex-start"}
                 justifyContent={"space-evenly"}
                 alignSelf={"stretch"}
-                  alignSelf={"stretch"}
               >
                 <Typography
                   color={"textPrimary"}
