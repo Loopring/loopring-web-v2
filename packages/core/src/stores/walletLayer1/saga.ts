@@ -11,7 +11,7 @@ type WalletLayer1Map<R extends { [key: string]: any }> = {
 const getWalletLayer1Balance = async <R extends { [key: string]: any }>() => {
   const { accAddress } = store.getState().account;
   const { tokenMap, addressIndex } = store.getState().tokenMap;
-  if (tokenMap && LoopringAPI.exchangeAPI) {
+  if (tokenMap && LoopringAPI.exchangeAPI && accAddress) {
     const { ethBalance } = await LoopringAPI.exchangeAPI.getEthBalances({
       owner: accAddress,
     });
@@ -53,6 +53,8 @@ const getWalletLayer1Balance = async <R extends { [key: string]: any }>() => {
       }, {} as WalletLayer1Map<R>);
     }
     return { walletLayer1 };
+  } else {
+    return { walletLayer1: {} };
   }
 };
 

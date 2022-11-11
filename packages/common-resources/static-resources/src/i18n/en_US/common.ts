@@ -878,16 +878,16 @@ export default {
     "<p>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</p>" +
     "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>\n",
   labelRETHDefiRisk:
-    "<p>Rocket Pool is the first truly decentralized Ethereum staking pool. </0>" +
-    "<p>All of the Ethereum validator node operator's creation, withdrawals,\n and rewards delegation is handled by Rocket Pool's smart contracts on the Execution layer. This makes it completely decentralized.</p>" +
-    "<p>After staking ETH via Rocket Pool, you will receive rETH. The rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</p>",
+    "<p>Rocket Pool is the first truly decentralized Ethereum staking pool. Rocket Pool’s liquid staking token allows anyone to earn staking rewards easily without running staking software or locking assets. Rocket Pool handles all of the Ethereum validator operations with smart contracts on the Execution layer.</p>" +
+    "<p>Acquiring and holding rETH in your wallet means that you are staking ETH. rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</p>" +
+    "<p></p>",
   labelWSETHDefiRisk2:
     "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</p>" +
     "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</p>",
   labelRETHDefiRisk2:
     "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
     "<1></1>",
-  labelDefiAgree: "I have read risk warning",
+  labelDefiAgree: "I have read and understand the risk warning",
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
@@ -1042,9 +1042,29 @@ export default {
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
   labelInvestDualTutorialCheck4: "I have read the risk warning.",
+  labelInvestDualBeginerMode: "Beginner Mode",
   labelDualAmount: "Amount",
   labelDuaInvestmentDetails: "Dual Investment Details",
   labelDualOrderTable: "Dual Investments",
+
+  labelDualBeginnerPriceSmallerOrEqualThan: "if Index Price ≤ {{value}}",
+  labelDualBeginnerPriceGreaterThan: "if Index Price > {{value}}",
+  labelDualBeginnerAtSettlementDay: "At Settlement Date",
+  labelDualBeginnerIndexPriceDes:
+    "Index Price is derived from some leading exchanges.",
+  labelDualBeginnerLockingDes:
+    "Your token for investment will be locked until Settlement Date.",
+  labelDualBeginnerAPRRange: "APR: {{minAPY}} - {{maxAPY}}",
+  labelDualBeginnerStep1Title: "Choose a token to sell or buy",
+  labelDualBeginnerStep2Title: "Choose a token to sell or buy",
+  labelDualBeginnerSellHigh: "Sell {{token}} High",
+  labelDualBeginnerBuyLow: "Buy {{token}} Low",
+  labelDualBeginnerRecieveStable: "You will receive USDC or USDT",
+  labelDualBeginnerInvestStable: "You can invest USDC or USDT",
+  labelDualBeginnerStep3Title: "Choose Target Price and Settlement Date",
+  labelDualBeginnerSellHighFor: "Sell high for {{token}}",
+  labelDualBeginnerBuyLowWith: "Buy low with {{token}}",
+
   labelInvestMyAmm: "My Investment",
   labelInvestMyDual: "My Investment",
   labelInvestMyDefi: "My Investment",
@@ -1127,4 +1147,12 @@ export default {
   labelTitleTotalAvailable: "Total NFTs",
   labelCheckImportCollectionDes:
     " As the creator, you will be able to generate collection information in loopring server for the NFT minted earlier which doesn't contain collection information. And once you complete the processing, the other people holding your NFT will be able to view those NFT been categorized into well organized collections via loopring.io and loopring wallet.",
+  labelL2toL1NFTFailed:
+    "Sent {{value}} <span>{{symbol}}</span> to L1 has failed!",
+  labelL2toL1NFTSuccess:
+    "Sent {{value}} <span>{{symbol}}</span> to L1 was successful!",
+  labelL2toL2NFTFailed:
+    "Sent {{value}} <span>{{symbol}}</span> from my Loopring L2 to another Loopring L2 failed!",
+  labelL2toL2NFTSuccess:
+    "Sent {{value}} <span>{{symbol}}</span> was successful!",
 };
