@@ -442,10 +442,6 @@ export const ImportCollectionWrap = <
               </>
             ) : (
               <>
-                <Typography component={"p"} variant={"body1"} marginBottom={1}>
-                  {t("labelNoLegacyCollection")}
-                </Typography>
-
                 <Box
                   width={"100%"}
                   paddingX={isMobile ? 2 : 0}

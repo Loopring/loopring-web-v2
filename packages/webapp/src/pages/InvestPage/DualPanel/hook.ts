@@ -27,7 +27,6 @@ export const useDualHook = ({
   const [beginnerMode, setBeginnerMode] = React.useState<boolean>(
     new URLSearchParams(search).get('beginnerMode') === 'true'
   )
-
   const { marketArray, marketMap, tradeMap, status: dualStatus } = useDualMap();
   const { tokenPrices } = useTokenPrices();
   const [priceObj, setPriceObj] = React.useState<{
@@ -250,7 +249,6 @@ export const useDualHook = ({
   }, [])
   const onSelectStep3Token = React.useCallback((which: string) => {
     setStep3Token(which)
-    debugger
     if (step2BuyOrSell! === 'Sell') {
       var pairA = step1SelectedToken!
       var pairB = which
@@ -300,5 +298,6 @@ export const useDualHook = ({
     onSelectStep1Token,
     onSelectStep2BuyOrSell,
     onSelectStep3Token,
+    
   };
 };

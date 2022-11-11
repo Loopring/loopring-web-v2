@@ -3,4 +3,5 @@ export interface Confirmation {
   confirmedRETHDefiInvest: boolean;
   confirmedWSETHDefiInvest: boolean;
   confirmedDualInvest: boolean;
+  showDualBeginnerHelp: boolean;
 }

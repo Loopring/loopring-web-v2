@@ -74,7 +74,7 @@ export let headerToolBarData: Array<{
   {
     buttonComponent: ButtonComponentsMap.Download,
     url: "https://loopring.io/#/wallet",
-    i18nTitle: "labelDownloadAppTitle",
+    // i18nTitle: "labelDownloadAppTitle",
     // handleClick: undefined,
     // i18nDescription: "labelDownloadBtn",
   },
