@@ -135,7 +135,7 @@ const LandDefiInvest = ({
           history.push(defiRETHAdvice.router);
         }
       },
-      apy: defiMarketMap[defiWSTETHAdvice?.market ?? ""]?.apy,
+      apy: defiMarketMap[defiRETHAdvice?.market ?? ""]?.apy,
     },
   ];
 
@@ -220,14 +220,14 @@ const LandDefiInvest = ({
                                     : "var(--color-error)"
                                 }
                               >
-                                {item.apy + "%"}
+                                {t("labelStakingApr") + ": " + item.apy + "%"}
                               </Typography>
-                              <Typography
-                                variant={"body2"}
-                                color={"var(--color-text-third)"}
-                              >
-                                {t("labelEstRateApr")}
-                              </Typography>
+                              {/*<Typography*/}
+                              {/*  variant={"body2"}*/}
+                              {/*  color={"var(--color-text-third)"}*/}
+                              {/*>*/}
+                              {/*  {t("labelEstRateApr")}*/}
+                              {/*</Typography>*/}
                             </Typography>
                           )}
                         </Box>
