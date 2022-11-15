@@ -26,7 +26,7 @@ const getWalletLayer1Balance = async <R extends { [key: string]: any }>() => {
     // @ts-ignore
     tokenBalancesObj.forEach((item, index) => {
       // @ts-ignore
-      tokenBalances.set(item.address?.toLowerCase(), item.value);
+      tokenBalances.set(item.address.toLowerCase(), item.value);
     });
     // const tokenBalances = new Map(Object.entries(tokenBalancesObj));
     tokenBalances.set(
