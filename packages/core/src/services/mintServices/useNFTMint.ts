@@ -22,6 +22,7 @@ import {
   useSystem,
   useWalletLayer2NFT,
   getIPFSString,
+  LAST_STEP,
 } from "../../index";
 
 import {
@@ -34,7 +35,7 @@ import {
   MintTradeNFT,
   myLog,
   NFTMETA,
-  TOAST_TIME,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import {
@@ -195,7 +196,7 @@ export function useNFTMint<
           }
           setShowAccount({
             isShow: true,
-            step: AccountStep.NFTMint_In_Progress,
+            step: AccountStep.NFTMint_WaitForAuth,
             info: {
               symbol: nftMintValue.nftMETA?.name,
               value: nftMintValue.mintData?.tradeValue,
@@ -231,13 +232,14 @@ export function useNFTMint<
           ) {
             throw response;
           }
-          await sdk.sleep(TOAST_TIME);
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_Success,
             info: {
+              collection: nftMintValue.collection,
               symbol: nftMintValue.nftMETA?.name,
               value: nftMintValue.mintData?.tradeValue,
+              lastStep: LAST_STEP.nftMint,
               hash:
                 Explorer +
                 `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMint-${
@@ -250,15 +252,22 @@ export function useNFTMint<
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
           walletLayer2Service.sendUserUpdate();
+
+          mintService.emptyData({
+            lastStep: LAST_STEP.nftMint,
+            contractAddress: nftMintValue.collection?.contractAddress,
+          });
           history.push(
             `/nft/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`
           );
-          mintService.emptyData();
+          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+          }
         }
       } catch (e: any) {
         myLog("useNFTMint", e);
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
-
         switch (code) {
           case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
@@ -269,7 +278,6 @@ export function useNFTMint<
                 value: nftMintValue.mintData?.tradeValue,
               },
             });
-            mintService.signatureMint(true);
             break;
           case sdk.ConnectorError.USER_DENIED:
           case sdk.ConnectorError.USER_DENIED_2:
@@ -281,9 +289,7 @@ export function useNFTMint<
                 value: nftMintValue.mintData?.tradeValue,
               },
             });
-            mintService.goMintConfirm();
             break;
-
           default:
             if (
               [102024, 102025, 114001, 114002].includes(
@@ -291,6 +297,15 @@ export function useNFTMint<
               )
             ) {
               checkFeeIsEnough({ isRequiredAPI: true });
+            } else if ([102040].includes((e as sdk.RESULT_INFO)?.code || 0)) {
+              walletLayer2Service.sendUserUpdate();
+              mintService.emptyData({
+                lastStep: LAST_STEP.nftMint,
+                contractAddress: nftMintValue.collection?.contractAddress,
+              });
+              history.push(
+                `/nft/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`
+              );
             }
 
             setShowAccount({
@@ -311,7 +326,6 @@ export function useNFTMint<
                   : e ?? {}),
               },
             });
-            mintService.goMintConfirm();
             break;
         }
       }
@@ -346,7 +360,7 @@ export function useNFTMint<
         setShowNFTMintAdvance({ isShow: false });
         setShowAccount({
           isShow: true,
-          step: AccountStep.NFTMint_WaitForAuth,
+          step: AccountStep.NFTMint_In_Progress,
           info: {
             symbol: nftMintValue.nftMETA?.name,
             value: nftMintValue.mintData?.tradeValue,
@@ -394,11 +408,8 @@ export function useNFTMint<
             storageId: storageId?.offchainId,
           };
           myLog("onNFTMintClick req:", req);
-
           processRequest(req, isFirstTime);
         } catch (e: any) {
-          // sdk.dumpError400(e);
-          // transfer failed
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_Failed,
@@ -476,10 +487,10 @@ export function useNFTMint<
         }
         break;
       case MintCommands.SignatureMint:
-        nftMintProps.onNFTMintClick(data?.isHardware);
         handleTabChange(1);
         break;
       case MintCommands.MintConfirm:
+        nftMintProps.onNFTMintClick(data?.isHardware);
         handleTabChange(1);
         break;
     }

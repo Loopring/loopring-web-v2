@@ -374,9 +374,7 @@ export const MuiPaper = ({
         backgroundColor: colorBase.popBg,
         "&.MuiPopover-paper": {
           backgroundImage: "none",
-          // backgroundColor: colorBase.popBg
-          // backgroundColor: colorBase.background().popupBg2,
-          // backgroundColor: colorBase.popBg,
+          boxShadow: colorBase.shadowHover,
         },
       },
     },

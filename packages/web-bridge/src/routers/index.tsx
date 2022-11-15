@@ -27,7 +27,6 @@ export const useWrapModal = () => {
         assetsRawData={[]}
         depositProps={depositProps}
         isLayer1Only={true}
-        onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
       />
     ),
   };

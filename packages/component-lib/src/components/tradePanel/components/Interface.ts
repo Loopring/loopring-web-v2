@@ -234,6 +234,7 @@ export type InputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
 export type DefaultProps<T, I> = {
   tradeData: T;
   disabled?: boolean;
+  lastFailed?: boolean;
 } & (
   | {
       type?: "TOKEN";
@@ -251,9 +252,11 @@ export type DefaultProps<T, I> = {
 
 type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 
-export type BasicACoinTradeViewProps<T, I> = Required<
-  DefaultWithMethodProps<T, I>
+export type BasicACoinTradeViewProps<T, I> = Omit<
+  DefaultWithMethodProps<T, I>,
+  "lastFailed"
 > & {
+  lastFailed?: boolean;
   baseURL?: string;
   getIPFSString?: (url: string | undefined, basicUrl: string) => string;
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void;
@@ -267,7 +270,7 @@ export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
 };
 export type BasicANFTTradeProps<T, I> = Omit<
   BasicACoinTradeViewProps<T, I>,
-  "coinMap"
+  "coinMap" | "lastFailed"
 > & {
   type?: "NFT";
   baseURL: string;
@@ -285,6 +288,7 @@ export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
     props: SwitchData<T>,
     switchType: "Tomenu" | "Tobutton"
   ) => Promise<void>;
+
   onChangeEvent?: (index: 0 | 1, data: SwitchData<T>) => SwitchData<T>;
   inputButtonProps?: InputButtonDefaultProps<T, I>;
 } & Partial<SwitchPanelProps<any>>;

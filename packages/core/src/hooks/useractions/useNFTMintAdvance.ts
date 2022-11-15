@@ -17,7 +17,7 @@ import {
   LIVE_FEE_TIMES,
   MINT_LIMIT,
   myLog,
-  TOAST_TIME,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeNFT,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
@@ -28,6 +28,8 @@ import {
   connectProvides,
 } from "@loopring-web/web3-provider";
 import {
+  LAST_STEP,
+  store,
   useAccount,
   useModalData,
   useSystem,
@@ -242,12 +244,13 @@ export const useNFTMintAdvance = <
             info: {
               symbol: nftMintAdvanceValue.name,
               value: nftMintAdvanceValue.tradeValue,
+              lastStep: LAST_STEP.nftMintAdv,
               hash:
                 Explorer +
                 `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMintAdvance`,
             },
           });
-          await sdk.sleep(TOAST_TIME);
+
           if (isHWAddr) {
             myLog("......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
@@ -257,8 +260,13 @@ export const useNFTMintAdvance = <
             pathname: `/NFT/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.contractAddress}--${nftMintAdvanceValue?.collectionMeta?.id}`,
           });
           resetDefault();
+          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+          }
         }
       } catch (e: any) {
+        myLog("useADNFTMint", e);
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
         switch (code) {
           case sdk.ConnectorError.NOT_SUPPORT_ERROR:
@@ -291,6 +299,12 @@ export const useNFTMintAdvance = <
               )
             ) {
               checkFeeIsEnough({ isRequiredAPI: true });
+            } else if ([102040].includes((e as sdk.RESULT_INFO)?.code || 0)) {
+              walletLayer2Service.sendUserUpdate();
+              history.push({
+                pathname: `/NFT/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.contractAddress}--${nftMintAdvanceValue?.collectionMeta?.id}`,
+              });
+              resetDefault();
             }
             setShowAccount({
               isShow: true,

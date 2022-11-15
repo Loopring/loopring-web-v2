@@ -26,19 +26,6 @@ export const NFTDeposit_Approve_Denied = (
   return <DepositBase {...propsPatch} {...props} />;
 };
 
-export const NFTDeposit_Approve_Submit = (
-  props: PanelProps & Partial<NFTWholeINFO> & Partial<NFTWholeINFO>
-) => {
-  const propsPatch = {
-    iconType: IconType.SubmitIcon,
-    describe1: props.t("labelNFTTokenSuccessAccess", {
-      symbol: props?.symbol ?? "NFT",
-      value: props.value,
-    }),
-  };
-  return <DepositBase {...propsPatch} {...props} />;
-};
-
 export const NFTDeposit_WaitForAuth = (
   props: PanelProps & Partial<NFTWholeINFO>
 ) => {

@@ -157,11 +157,12 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetNFTMintData(
       state,
       _action?: PayloadAction<{
+        lastStep?: LAST_STEP;
         tokenAddress?: string;
         collection?: CollectionMeta;
       }>
     ) {
-      state.lastStep = LAST_STEP.default;
+      state.lastStep = _action?.payload?.lastStep ?? LAST_STEP.default;
       state.nftMintValue = {
         mintData: {
           ...initialMintNFT,
@@ -182,8 +183,15 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
           : undefined,
       };
     },
-    resetNFTMintAdvanceData(state) {
-      state.lastStep = LAST_STEP.default;
+    resetNFTMintAdvanceData(
+      state,
+      _action?: PayloadAction<{
+        lastStep?: LAST_STEP;
+        tokenAddress?: string;
+        collection?: CollectionMeta;
+      }>
+    ) {
+      state.lastStep = _action?.payload?.lastStep ?? LAST_STEP.default;
       state.nftMintAdvanceValue = initialTradeNFT;
     },
     resetCollectionAdvanceData(state) {
@@ -391,7 +399,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       action: PayloadAction<Partial<TradeNFT<any, any>>>
     ) {
       const { balance, tradeValue, ...rest } = action.payload;
-      state.lastStep = LAST_STEP.nftMint;
+      state.lastStep = LAST_STEP.nftMintAdv;
 
       if (balance && balance >= 0) {
         state.nftMintAdvanceValue.balance = balance;
@@ -407,12 +415,12 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       };
     },
     updateCollectionAdvanceData(state, action: PayloadAction<any>) {
-      state.lastStep = LAST_STEP.collecionAdv;
+      state.lastStep = LAST_STEP.collectionAdv;
       const _collectionAdvanceValue = action.payload;
       state.collectionAdvanceValue = { ..._collectionAdvanceValue };
     },
     updateCollectionData(state, action: PayloadAction<any>) {
-      state.lastStep = LAST_STEP.collecionAdv;
+      state.lastStep = LAST_STEP.collectionAdv;
       const _collectionValue = action.payload;
       state.collectionValue = { ..._collectionValue };
     },

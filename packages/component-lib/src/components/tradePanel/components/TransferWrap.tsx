@@ -50,6 +50,7 @@ export const TransferWrap = <
   memo,
   chargeFeeTokenList,
   feeInfo,
+  lastFailed,
   isFeeNotEnough,
   onTransferClick,
   handleSureItsLayer2,
@@ -400,6 +401,15 @@ export const TransferWrap = <
       </Grid>
 
       <Grid item alignSelf={"stretch"} paddingBottom={0}>
+        {lastFailed && (
+          <Typography
+            paddingBottom={1}
+            textAlign={"center"}
+            color={"var(--color-warning)"}
+          >
+            {t("labelConfirmAgainByFailed")}
+          </Typography>
+        )}
         <Button
           fullWidth
           variant={"contained"}

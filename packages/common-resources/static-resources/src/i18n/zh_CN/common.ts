@@ -693,7 +693,7 @@ export default {
   labelFromOtherL1: "From another L1 account",
   labelBuyWithCard: "Buy with Card",
   labelFromOtherL2: "From another Loopring L2 account",
-  labelFromExchange: "Buy from Exchange",
+  labelFromExchange: "From an exchange",
   labelOpenInWalletApp: "Open in wallet app/extension",
   labelConnectWithDapp: "Connect with Dapp",
   labelOpenInWalletTitle: "Open in wallet",
@@ -1033,7 +1033,8 @@ export default {
   labelInvestDualTutorialCheck4: "I have read the risk warning.",
   labelInvestDualBeginerMode: "Beginner Mode",
   labelInvestDualBeginerModeDesLine1: "What is Dual Investment?",
-  labelInvestDualBeginerModeDesLine2: "You can use the beginner mode to quickly learn.",
+  labelInvestDualBeginerModeDesLine2:
+    "You can use the beginner mode to quickly learn.",
   labelDualAmount: "Amount",
   labelDuaInvestmentDetails: "Dual Investment Details",
   labelDualOrderTable: "Dual Investments",
@@ -1043,11 +1044,14 @@ export default {
   labelDualBeginnerPriceGreaterThan: "if Index Price > {{value}}",
   labelDualBeginnerPriceGreaterThanOrEqual: "if Index Price ≥ {{value}}",
   labelDualBeginnerAtSettlementDay: "At Settlement Date",
-  labelDualBeginnerIndexPriceDes: "Index Price is derived from some leading exchanges.",
-  labelDualBeginnerLockingDes: "Your token for investment will be locked until Settlement Date.",
+  labelDualBeginnerIndexPriceDes:
+    "Index Price is derived from some leading exchanges.",
+  labelDualBeginnerLockingDes:
+    "Your token for investment will be locked until Settlement Date.",
   labelDualBeginnerAPR: "APR: {{APR}}",
   labelDualBeginnerStep1Title: "Choose a token to sell or buy",
-  labelDualBeginnerStep2Title: "Choose to sell or buy at desired price in the future",
+  labelDualBeginnerStep2Title:
+    "Choose to sell or buy at desired price in the future",
   labelDualBeginnerSellHigh: "Sell {{token}} High",
   labelDualBeginnerBuyLow: "Buy {{token}} Low",
   labelDualBeginnerRecieveStable: "You will receive USDC or USDT",

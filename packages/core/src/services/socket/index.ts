@@ -8,3 +8,4 @@ export * from "./services/mixorderService";
 export * from "./services/orderbookService";
 export * from "./services/tradeService";
 export * from "./services/mixtradeService";
+export * from "./hook/useWalletLayer2WithNFTSocket";

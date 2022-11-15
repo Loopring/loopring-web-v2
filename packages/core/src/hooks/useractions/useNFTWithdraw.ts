@@ -18,8 +18,8 @@ import {
   UIERROR_CODE,
   AddressError,
   EXCHANGE_TYPE,
-  TOAST_TIME,
   LIVE_FEE_TIMES,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -35,14 +35,15 @@ import {
   store,
   useAddressCheck,
   useBtnStatus,
-  useWalletLayer2Socket,
   walletLayer2Service,
   useModalData,
   isAccActivated,
   useChargeFees,
   useWalletLayer2NFT,
   useSystem,
+  useWalletLayer2WithNFTSocket,
   getIPFSString,
+  LAST_STEP,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import {
@@ -174,8 +175,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isNotAvailableAddress,
     sureIsAllowAddress,
   ]);
-
-  useWalletLayer2Socket({});
+  const walletLayer2Callback = React.useCallback(() => {
+    checkFeeIsEnough();
+  }, []);
+  useWalletLayer2WithNFTSocket({ walletLayer2Callback });
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
       checkFeeIsEnough();
@@ -275,7 +278,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
             isShow: true,
             step: AccountStep.NFTWithdraw_In_Progress,
           });
-          await sdk.sleep(TOAST_TIME);
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTWithdraw_Success,
@@ -293,10 +295,13 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
           walletLayer2Service.sendUserUpdate();
-          searchParams.delete("detail");
-          setShowNFTDetail({ isShow: false });
           resetNFTWithdrawData();
-          history.push(pathname + "?" + searchParams.toString());
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+            searchParams.delete("detail");
+            history.push(pathname + "?" + searchParams.toString());
+          }
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
@@ -492,6 +497,9 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isCFAddress,
     getIPFSString,
     baseURL,
+    lastFailed:
+      store.getState().modals.isShowAccount.info?.lastFailed ===
+      LAST_STEP.nftWithdraw,
     isContractAddress: isContract1XAddress,
     isAddressCheckLoading,
     addrStatus,

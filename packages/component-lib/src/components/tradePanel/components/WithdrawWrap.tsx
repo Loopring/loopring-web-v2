@@ -73,7 +73,8 @@ export const WithdrawWrap = <
   withdrawType,
   chargeFeeTokenList = [],
   feeInfo,
-  handleConfirm,
+  lastFailed,
+  // handleConfirm,
   isFeeNotEnough,
   onWithdrawClick,
   withdrawBtnStatus,
@@ -487,6 +488,15 @@ export const WithdrawWrap = <
       </Grid>
 
       <Grid item alignSelf={"stretch"} paddingBottom={0}>
+        {lastFailed && (
+          <Typography
+            paddingBottom={1}
+            textAlign={"center"}
+            color={"var(--color-warning)"}
+          >
+            {t("labelConfirmAgainByFailed")}
+          </Typography>
+        )}
         <Button
           fullWidth
           variant={"contained"}

@@ -53,7 +53,10 @@ export const useMyNFT = ({
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
 
-  const { setShowNFTDetail } = useOpenModals();
+  const {
+    setShowNFTDetail,
+    modals: { isShowNFTDetail },
+  } = useOpenModals();
   const { etherscanBaseUrl } = useSystem();
   const [page, setPage] = useState(-1);
 

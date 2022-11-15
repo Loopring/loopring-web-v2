@@ -16,6 +16,7 @@ import {
   AddressError,
   SagaStatus,
   L1_UPDATE,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import {
   connectProvides,
@@ -134,6 +135,8 @@ export const useDeposit = <
         .toBig(depositValue?.tradeValue)
         .lte(sdk.toBig(depositValue?.balance ?? ""))
     ) {
+      myLog("walletLayer1?.ETH?.count", walletLayer1?.ETH?.count);
+
       const curValInWei = sdk
         .toBig(depositValue?.tradeValue)
         .times("1e" + allowanceInfo?.tokenInfo.decimals);
@@ -187,7 +190,6 @@ export const useDeposit = <
 
   React.useEffect(() => {
     updateBtnStatus();
-    myLog("walletLayer1?.ETH?.count", walletLayer1?.ETH?.count);
   }, [
     depositValue?.belong,
     depositValue?.tradeValue,
@@ -567,11 +569,12 @@ export const useDeposit = <
           }
 
           myLog("response:", response);
-          // updateDepositHash({response.result})
-          // result.data = response
 
           if (response) {
+            // Close Deposit panel...
             setShowDeposit({ isShow: false });
+            resetDepositData();
+            updateWalletLayer1();
             setShowAccount({
               isShow: true,
               info: {
@@ -588,11 +591,11 @@ export const useDeposit = <
               type: "Deposit",
               value: inputValue.tradeValue,
             });
+            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+            setShowAccount({ isShow: false });
           } else {
             throw { code: UIERROR_CODE.ERROR_NO_RESPONSE };
           }
-          updateWalletLayer1();
-          resetDepositData();
         } else {
           throw { code: UIERROR_CODE.DATA_NOT_READY };
         }
@@ -641,6 +644,7 @@ export const useDeposit = <
             resetDepositData();
             break;
         }
+        updateWalletLayer1();
       }
 
       return result;

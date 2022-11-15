@@ -17,7 +17,6 @@ import {
   CreateAccount_Submit,
   CreateAccount_WaitForAuth,
   Deposit_Approve_Denied,
-  Deposit_Approve_Submit,
   Deposit_Approve_WaitForAuth,
   Deposit_Denied,
   Deposit_Failed,
@@ -197,27 +196,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
           />
         ),
       },
-      [AccountStep.Deposit_Approve_Submit]: {
-        view: (
-          <Deposit_Approve_Submit
-            btnInfo={closeBtn}
-            txCheck={{
-              route: "",
-              callback: () => {},
-            }}
-            link={{
-              name: "最近充值记录",
-              url: "http://demo.com",
-            }}
-            providerName={account.connectName as ConnectProviders}
-            {...{
-              ...rest,
-              symbol: "LRC",
-              value: "1.2121",
-            }}
-          />
-        ),
-      },
+
       [AccountStep.Deposit_WaitForAuth]: {
         view: (
           <Deposit_WaitForAuth

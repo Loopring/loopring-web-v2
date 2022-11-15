@@ -53,10 +53,7 @@ export const Card = withTranslation(["landPage", "common"], { withRef: true })(
       zoom: 1,
       zIndex: 10,
       border: `1px solid ${theme.colorBase.border}`, //"var(--border-card)",
-      boxShadow:
-        theme.mode === ThemeType.dark
-          ? "0px 10px 20px rgba(0, 0, 0, 0.15)"
-          : "0px 10px 20px rgba(87, 129, 236, 0.1)", //theme.colorBase.boxShadow, //"var(--box-card-shadow)",
+      boxShadow: "var(--shadow3)", //theme.colorBase.boxShadow, //"var(--box-card-shadow)",
       background: theme.mode === ThemeType.dark ? "#283485" : "#fff", //"var(--box-card-background)",
       default: {
         immediate: (key) => {

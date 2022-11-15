@@ -55,10 +55,10 @@ export const ColorDarkDefault = Object.freeze({
 
   /********************CSS shadow *******************/
   shadow: ` 0px 4px 4px ${hexToRGB("#000000", ".25")}`,
-  shadowHeader: `0px 4px 8px rgba(0, 0, 0, 0.15)`,
-  shadow2: `0px -4px 8px rgba(0, 0, 0, 0.15)`,
-  shadowHover: `0px 10px 20px rgba(0, 0, 0, 0.45)`,
-  shadow3: `0px 10px 20px rgba(0, 0, 0, 0.15)`,
+  shadowHeader: `0px 4px 8px  ${hexToRGB("#000000", ".15")}`,
+  shadow2: `0px -4px 8px ${hexToRGB("#000000", ".15")}`,
+  shadowHover: `0px 10px 20px  ${hexToRGB("#000000", ".45")}`,
+  shadow3: `0px 10px 20px ${hexToRGB("#000000", ".15")}`,
 
   /********************Case for provider*******************/
   white: "#ffffff",
@@ -121,11 +121,11 @@ export const ColorLightDefault = Object.freeze({
   buttonIcon: "#15162B",
 
   /********************CSS shadow *******************/
-  shadow: `0px 10px 20px rgba(87, 129, 236, 0.08)`,
-  shadowHeader: `0px 4px 8px rgba(87, 102, 236, 0.1)`,
-  shadow2: `0px -4px 8px rgba(87, 102, 236, 0.1)`,
-  shadowHover: `0px 10px 20px rgba(87, 129, 236, 0.25)`,
-  shadow3: `0px 10px 20px rgba(87, 129, 236, 0.1)`,
+  shadow: `0px 10px 20px ${hexToRGB("#5781EC", "0.08")}`,
+  shadowHeader: `0px 4px 8px ${hexToRGB("#5766EC", "0.1")}`,
+  shadow2: `0px -4px 8px ${hexToRGB("#5766EC", "0.1")}`,
+  shadowHover: `0px 10px 20px  ${hexToRGB("#5781EC", "0.25")}`,
+  shadow3: `0px 10px 20px  ${hexToRGB("#5781EC", "0.1")}`,
 
   /********************Case for provider*******************/
   white: "#ffffff",

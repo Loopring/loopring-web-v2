@@ -1,9 +1,10 @@
-import { useAccount } from "../../index";
+import { store, useAccount } from "../../index";
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { sleep, WalletType } from "@loopring-web/loopring-sdk";
 import { useAccountHook } from "../../services/account/useAccountHook";
+import { SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE } from "@loopring-web/common-resources";
 
 export function useAccountModal() {
   const {
@@ -97,10 +98,12 @@ export function useAccountModal() {
     });
   }, [setShowAccount, shouldShow]);
   const handleAccountActive = React.useCallback(async () => {
-    await sleep(1000);
     setShouldShow(false);
-    setShowAccount({ isShow: false });
     statusAccountUnset();
+    await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE);
+    if (store.getState().modals.isShowAccount.isShow) {
+      setShowAccount({ isShow: false });
+    }
   }, [setShouldShow, setShowAccount, statusAccountUnset]);
   useAccountHook({
     handleErrorAccount,

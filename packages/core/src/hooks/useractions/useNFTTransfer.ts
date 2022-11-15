@@ -23,8 +23,8 @@ import {
   UIERROR_CODE,
   AddressError,
   WALLET_TYPE,
-  TOAST_TIME,
   LIVE_FEE_TIMES,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -41,11 +41,12 @@ import {
   isAccActivated,
   useChargeFees,
   useWalletLayer2NFT,
-  useWalletLayer2Socket,
+  useWalletLayer2WithNFTSocket,
   walletLayer2Service,
   useSystem,
   getIPFSString,
   useWalletLayer2,
+  LAST_STEP,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -109,6 +110,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     isAddressCheckLoading,
     isSameAddress,
   } = useAddressCheck();
+
   React.useEffect(() => {
     setSureItsLayer2(undefined);
   }, [realAddr]);
@@ -167,8 +169,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     nftTransferValue.tradeValue,
     nftTransferValue.fee,
   ]);
-
-  useWalletLayer2Socket({});
+  const walletLayer2Callback = React.useCallback(() => {
+    checkFeeIsEnough();
+  }, []);
+  useWalletLayer2WithNFTSocket({ walletLayer2Callback });
 
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
@@ -283,7 +287,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             isShow: true,
             step: AccountStep.NFTTransfer_In_Progress,
           });
-          await sdk.sleep(TOAST_TIME);
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTTransfer_Success,
@@ -301,10 +304,13 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
           walletLayer2Service.sendUserUpdate();
-          searchParams.delete("detail");
-          setShowNFTDetail({ isShow: false });
-          history.push(pathname + "?" + searchParams.toString());
           resetNFTTransferData();
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+            searchParams.delete("detail");
+            history.push(pathname + "?" + searchParams.toString());
+          }
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
@@ -510,6 +516,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     type: "NFT",
     addressDefault: address,
     realAddr,
+    lastFailed:
+      store.getState().modals.isShowAccount.info?.lastFailed ===
+      LAST_STEP.nftTransfer,
     handleSureItsLayer2: (sure: WALLET_TYPE) => {
       setSureItsLayer2(sure);
     },

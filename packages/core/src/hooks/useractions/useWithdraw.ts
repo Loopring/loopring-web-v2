@@ -22,10 +22,10 @@ import {
   WithdrawTypes,
   AddressError,
   EXCHANGE_TYPE,
-  TOAST_TIME,
   LIVE_FEE_TIMES,
   getValuePrecisionThousand,
   globalSetup,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -48,6 +48,7 @@ import {
   useModalData,
   isAccActivated,
   store,
+  LAST_STEP,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import _ from "lodash";
@@ -446,7 +447,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             isShow: true,
             step: AccountStep.Withdraw_In_Progress,
           });
-          await sdk.sleep(TOAST_TIME);
           setShowAccount({
             isShow: true,
             step: AccountStep.Withdraw_Success,
@@ -459,13 +459,16 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             myLog("......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
-
           resetWithdrawData();
-
           walletLayer2Service.sendUserUpdate();
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+          }
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        myLog("checkErrorInfo", code, e);
         switch (code) {
           case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setLastRequest({ request });
@@ -656,6 +659,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isFastWithdrawAmountLimit,
     withdrawTypes,
     sureIsAllowAddress,
+    lastFailed:
+      store.getState().modals.isShowAccount.info?.lastFailed ===
+      LAST_STEP.withdraw,
     handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => {
       setSureIsAllowAddress(value);
     },
@@ -663,7 +669,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       if (withdrawValue && withdrawValue.belong) {
         handleWithdraw(withdrawValue, realAddr ? realAddr : address);
       }
-      setShowWithdraw({ isShow: false, info });
     },
     handleWithdrawTypeChange: (value) => {
       // setWithdrawType(value);

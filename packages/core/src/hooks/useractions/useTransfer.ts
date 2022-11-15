@@ -24,8 +24,8 @@ import {
   WalletMap,
   AddressError,
   WALLET_TYPE,
-  TOAST_TIME,
   LIVE_FEE_TIMES,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -45,6 +45,7 @@ import {
   useModalData,
   store,
   isAccActivated,
+  LAST_STEP,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -294,7 +295,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             isShow: true,
             step: AccountStep.Transfer_In_Progress,
           });
-          await sdk.sleep(TOAST_TIME);
           setShowAccount({
             isShow: true,
             step: AccountStep.Transfer_Success,
@@ -307,8 +307,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             myLog("......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
-          walletLayer2Service.sendUserUpdate();
           resetTransferData();
+          walletLayer2Service.sendUserUpdate();
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+          }
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
@@ -328,6 +332,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               step: AccountStep.Transfer_User_Denied,
             });
             break;
+
           default:
             if (
               [102024, 102025, 114001, 114002].includes(
@@ -500,6 +505,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
+  myLog(
+    "info?.lastFailed ",
+    store.getState().modals.isShowAccount.info?.lastFailed
+  );
 
   const transferProps: TransferProps<any, any> = {
     type: "TOKEN",
@@ -516,6 +525,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handleSureItsLayer2: (sure) => {
       setSureItsLayer2(sure);
     },
+    lastFailed:
+      store.getState().modals.isShowAccount.info?.lastFailed ===
+      LAST_STEP.transfer,
     // isConfirmTransfer,
     sureItsLayer2,
     chargeFeeTokenList,

@@ -19,7 +19,6 @@ import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 import { BackIcon, SoursURL, TradeTypes } from "@loopring-web/common-resources";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "@emotion/styled";
-import { InvestRouter, InvestType } from "../InvestPage";
 
 const StyledPaper = styled(Grid)`
   background: var(--color-box);
@@ -40,6 +39,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
     //     ? TradeTypes.Buy
     //     : TradeTypes.Sell
   );
+  const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
   // React.useEffect(() => {
   //   switch (match?.params.tab) {
   //     case InvestRouter[TradeTypes.Sell]:

@@ -43,6 +43,7 @@ export interface PanelProps {
   to?: string;
   btnInfo?: {
     btnTxt: any;
+    param?: { [key: string]: string };
     callback: (e?: any) => void;
   };
   providerName?: ConnectProviders | "unknown" | undefined;
@@ -324,7 +325,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   }
                 }}
               >
-                {t(btnInfo?.btnTxt)}
+                {t(btnInfo?.btnTxt, { ...btnInfo?.param })}
               </Button>
             </Box>
 

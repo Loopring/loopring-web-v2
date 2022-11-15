@@ -27,8 +27,8 @@ import {
   myLog,
   TradeNFT,
   UIERROR_CODE,
-  TOAST_TIME,
   LIVE_FEE_TIMES,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import { useBtnStatus } from "../common/useBtnStatus";
 
@@ -65,8 +65,9 @@ export function useNFTDeploy<
     setShowAccount,
     setShowNFTDetail,
     setShowNFTDeploy,
-    modals: { isShowNFTDeploy },
+    modals: { isShowNFTDeploy, isShowNFTDetail },
   } = useOpenModals();
+
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
   const history = useHistory();
@@ -154,12 +155,11 @@ export function useNFTDeploy<
             uniqueId: request.tokenAddress.toLowerCase(),
             domain: Layer1Action.NFTDeploy,
           });
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.NFTDeploy_In_Progress,
-          });
+          // setShowAccount({
+          //   isShow: true,
+          //   step: AccountStep.NFTDeploy_In_Progress,
+          // });
 
-          await sdk.sleep(TOAST_TIME);
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTDeploy_Submit,
@@ -172,21 +172,29 @@ export function useNFTDeploy<
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
           walletLayer2Service.sendUserUpdate();
-          searchParams.delete("detail");
+          setShowNFTDeploy({ isShow: false });
+          resetNFTDeployData();
+          // searchParams.delete("detail");
+
           if (nftDeployValue.nftData) {
             updateWalletLayer2NFT({
               page: Number(searchParams.get("collectionPage")) ?? 1,
               collection: (nftDeployValue?.collectionMeta as any) ?? undefined,
             });
+            setShowNFTDetail({
+              ...isShowNFTDetail,
+              deploymentStatus: sdk.DEPLOYMENT_STATUS.DEPLOYING,
+            });
           } else {
             updateWalletL2Collection({
               page: collectionPage,
             });
+            history.push(pathname + "?" + searchParams.toString());
           }
-          setShowNFTDeploy({ isShow: false });
-          setShowNFTDetail({ isShow: false });
-          resetNFTDeployData();
-          history.push(pathname + "?" + searchParams.toString());
+          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+          }
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isFirstTime);

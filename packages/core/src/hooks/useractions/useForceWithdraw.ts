@@ -7,6 +7,7 @@ import {
   AccountStep,
   ForceWithdrawProps,
   SwitchData,
+  TransactionTradeViews,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import {
@@ -16,10 +17,13 @@ import {
   myLog,
   UIERROR_CODE,
   WalletMap,
-  TOAST_TIME,
   LIVE_FEE_TIMES,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
-import { updateForceWithdrawData as updateForceWithdrawDataStore } from "@loopring-web/core";
+import {
+  LAST_STEP,
+  updateForceWithdrawData as updateForceWithdrawDataStore,
+} from "@loopring-web/core";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -42,7 +46,7 @@ import {
   WalletLayer2Map,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import Web3 from "web3";
 
 export const useForceWithdraw = <R extends IBData<T>, T>() => {
@@ -50,6 +54,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
   const { account } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
   const { setShowAccount } = useOpenModals();
+  const history = useHistory();
   const match = useRouteMatch("/layer2/:forceWithdraw");
   const {
     forceWithdrawValue,
@@ -286,7 +291,6 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
             isShow: true,
             step: AccountStep.ForceWithdraw_In_Progress,
           });
-          await sdk.sleep(TOAST_TIME);
           setShowAccount({
             isShow: true,
             step: AccountStep.ForceWithdraw_Submit,
@@ -300,6 +304,13 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
           }
           walletLayer2Service.sendUserUpdate();
           resetDefault();
+          history.push(
+            `/l2assets/history/transactions?types=${TransactionTradeViews.forceWithdraw}`
+          );
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+          }
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
@@ -489,6 +500,9 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
           balance: undefined,
         });
       },
+      lastFailed:
+        store.getState().modals.isShowAccount.info?.lastFailed ===
+        LAST_STEP.forceWithdraw,
       isActiveAccount,
       isNotAvailableAddress: !(isLoopringAddress && !isActiveAccount),
       realAddr,

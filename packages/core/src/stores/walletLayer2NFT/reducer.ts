@@ -18,6 +18,7 @@ const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
       state,
       _action: PayloadAction<{
         page?: number;
+        nftDatas?: string;
         collection: CollectionMeta | undefined;
       }>
     ) {

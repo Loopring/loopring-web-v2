@@ -14,6 +14,7 @@ import {
   globalSetup,
   IPFS_LOOPRING_SITE,
   myLog,
+  SUBMIT_PANEL_AUTO_CLOSE,
   TradeNFT,
   UIERROR_CODE,
   WalletMap,
@@ -40,6 +41,7 @@ import Web3 from "web3";
 
 import _ from "lodash";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
+import { useHistory } from "react-router-dom";
 
 export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   nftDepositProps: NFTDepositProps<T, I>;
@@ -54,6 +56,8 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
     useModalData();
   const { walletLayer1, updateWalletLayer1 } = useWalletLayer1();
   const { updateDepositHash } = useOnChainInfo();
+  const history = useHistory();
+
   const {
     btnStatus,
     btnInfo,
@@ -304,6 +308,8 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
             nftType: nftDepositValue.nftType as unknown as sdk.NFTType,
             sendByMetaMask: true,
           });
+          handleOnNFTDataChange({ nftIdView: "", tokenAddress: "" } as T);
+          resetNFTDepositData();
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTDeposit_Submit,
@@ -317,8 +323,12 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
             value: nftDepositValue.tradeValue,
           });
           myLog("response:", response);
-          handleOnNFTDataChange({ nftIdView: "", tokenAddress: "" } as T);
-          resetNFTDepositData();
+
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+            history.push("/nft/assetsNFT");
+          }
         } catch (error) {
           if (error instanceof Error) {
             throw {

@@ -84,7 +84,6 @@ const WrapModal = () => {
       isLayer1Only={
         /(guardian)|(depositto)/gi.test(location.pathname ?? "") ? true : false
       }
-      onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
     />
   );
 };

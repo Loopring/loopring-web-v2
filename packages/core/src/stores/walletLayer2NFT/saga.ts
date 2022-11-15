@@ -11,9 +11,11 @@ import { PayloadAction } from "@reduxjs/toolkit";
 
 const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   page,
+  nftDatas,
   collection,
 }: {
   page: number;
+  nftDatas?: string;
   collection: CollectionMeta | undefined;
 }) => {
   const offset = (page - 1) * NFTLimit;
@@ -31,6 +33,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
             offset,
             nonZero: true,
             metadata: true, // close metadata
+            ...(nftDatas ? { nftDatas } : {}),
           },
           apiKey
         )
@@ -48,6 +51,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
             offset,
             nonZero: true,
             metadata: true, // close metadata
+            ...(nftDatas ? { nftDatas } : {}),
           },
           apiKey
         )
@@ -67,15 +71,17 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
 };
 
 export function* getPostsSaga({
-  payload: { page = 1, collection },
+  payload: { page = 1, collection, nftDatas },
 }: PayloadAction<{
   page?: number;
+  nftDatas?: string;
   collection: CollectionMeta | undefined;
 }>) {
   try {
     // @ts-ignore
     const walletLayer2NFT: any = yield call(getWalletLayer2NFTBalance, {
       page,
+      nftDatas,
       collection,
     });
     yield put(getWalletLayer2NFTStatus({ ...walletLayer2NFT }));
