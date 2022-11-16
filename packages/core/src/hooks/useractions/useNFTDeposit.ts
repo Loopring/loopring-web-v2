@@ -75,7 +75,6 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
       if (LoopringAPI.nftAPI && exchangeInfo) {
         const web3: Web3 = connectProvides.usedWeb3 as unknown as Web3;
         setIsNFTCheckLoading(true);
-        updateWalletLayer1();
         let [balance, meta, isApproved] = await Promise.all([
           LoopringAPI.nftAPI.getNFTBalance({
             account: account.accAddress,
@@ -309,6 +308,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
             sendByMetaMask: true,
           });
           handleOnNFTDataChange({ nftIdView: "", tokenAddress: "" } as T);
+          updateWalletLayer1();
           resetNFTDepositData();
           setShowAccount({
             isShow: true,
@@ -398,6 +398,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
           });
           break;
       }
+      updateWalletLayer1();
     }
 
     return result;
@@ -488,6 +489,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
     walletLayer1?.ETH?.count,
   ]);
   React.useEffect(() => {
+    updateWalletLayer1();
     const subscription = subject.subscribe((props) => {
       myLog("subscription Deposit DepsitNFT");
       switch (props.status) {

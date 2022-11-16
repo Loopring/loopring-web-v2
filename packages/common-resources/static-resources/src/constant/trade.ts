@@ -134,7 +134,12 @@ export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
     __mediaType__?: Media;
-    collectionMeta?: Partial<Co>;
+    // collectionMeta?: Partial<Co>;
+    preference?: {
+      favourite: boolean;
+      hide: boolean;
+    };
+    collectionInfo: Co;
   };
 
 export type MintTradeNFT<I> = {
@@ -160,7 +165,10 @@ export type MintReadTradeNFT<I> = {
   Partial<Omit<sdk.NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 
 export type TradeNFT<I, Co> = MintTradeNFT<I> &
-  Partial<NFTWholeINFO<Co>> & { isApproved?: boolean };
+  Partial<NFTWholeINFO<Co>> & {
+    isApproved?: boolean;
+    collectionMeta: CollectionMeta;
+  };
 
 export enum NFT_TYPE_STRING {
   ERC721 = "ERC721",
@@ -435,6 +443,10 @@ export type L2CollectionFilter = {
   isLegacy?: boolean;
   tokenAddress?: string;
   owner?: string;
+};
+export type MyNFTFilter = {
+  favourite?: boolean;
+  hidden?: boolean;
 };
 
 export const LIVE_FEE_TIMES = 60000;

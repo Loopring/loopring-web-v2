@@ -271,7 +271,12 @@ export const useDeposit = <
         clearTimeout(nodeTimer.current);
       }
       nodeTimer.current = setTimeout(() => {
-        updateWalletLayer1();
+        if (
+          store.getState().modals.isShowDeposit.isShow ||
+          isAllowInputToAddress
+        ) {
+          updateWalletLayer1();
+        }
       }, L1_UPDATE);
       if (_symbol && walletLayer1) {
         // updateDepositData();

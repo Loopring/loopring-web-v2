@@ -95,6 +95,7 @@ export const CollectionItemPanel = <Co extends CollectionMeta>({
           onPageChange={(page: number) => {
             nftPublicProps.onFilterNFT({ ...nftPublicProps.filter, page });
           }}
+          isManage={false}
           isSelectOnly={false}
           isMultipleSelect={false}
           getIPFSString={getIPFSString}

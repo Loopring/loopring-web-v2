@@ -5,6 +5,7 @@ import {
   BoxProps,
   Divider,
   Grid,
+  IconButton,
   Link,
   Tab,
   Tabs,
@@ -27,6 +28,12 @@ import {
   ZoomIcon,
   TOAST_TIME,
   htmlDecode,
+  HideIcon,
+  ViewIcon,
+  SDK_ERROR_MAP_TO_UI,
+  UIERROR_CODE,
+  FavSolidIcon,
+  FavHollowIcon,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -48,8 +55,9 @@ import { getIPFSString } from "../../../utils";
 import { LoopringAPI } from "../../../api_wrapper";
 import { useToast } from "../../../hooks";
 import { sanitize } from "dompurify";
-import { StylePaper } from "../../../component/styled";
+import { StylePaper } from "../../../component";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 enum NFTDetailTab {
   Detail = "Detail",
   Property = "Property",
@@ -79,7 +87,6 @@ const BoxStyle = styled(Box)<
   props: { isMobile?: boolean; baseURL?: string } & BoxProps &
     Partial<NFTWholeINFO>
 ) => JSX.Element;
-
 export const NFTDetail = withTranslation("common")(
   ({
     popItem,
@@ -95,17 +102,24 @@ export const NFTDetail = withTranslation("common")(
     const { isMobile } = useSettings();
     const { chainId } = useSystem();
     const { account } = useAccount();
+    const [iconLoading, setIconLoading] = React.useState(false);
     const {
       nftDataHashes: { nftDataHashes },
       updateNFTRefreshHash,
     } = nftRefresh.useNFTRefresh();
+
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
     const { toastOpen, setToastOpen, closeToast } = useToast();
     const {
       toggle: { deployNFT },
     } = useToggle();
-    const { setShowAccount, setShowNFTDeploy, setShowTradeIsFrozen } =
-      useOpenModals();
+    const {
+      setShowNFTDetail,
+      setShowAccount,
+      setShowNFTDeploy,
+      setShowTradeIsFrozen,
+      modals: { isShowNFTDetail },
+    } = useOpenModals();
     const [zoom, setZoom] = React.useState(false);
     const [tabValue, setTabValue] = React.useState(NFTDetailTab.Detail);
     const [showFresh, setShowFresh] = React.useState(
@@ -114,6 +128,140 @@ export const NFTDetail = withTranslation("common")(
         : "click"
     );
     myLog("showFresh", showFresh);
+    const onFavoriteClick = React.useCallback(async () => {
+      if (LoopringAPI.userAPI) {
+        try {
+          setIconLoading(true);
+          const response = await LoopringAPI.userAPI.submitUpdateNFTGroup(
+            {
+              accountId: account.accountId,
+              nftHashes: [popItem.nftData ?? ""],
+              preferenceType: sdk.NFT_PREFERENCE_TYPE.fav,
+              statusToUpdate: !popItem?.preference?.favourite,
+            },
+            chainId as any,
+            account.apiKey,
+            account.eddsaKey.sk
+          );
+          setIconLoading(false);
+          if (
+            response &&
+            ((response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message)
+          ) {
+            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO;
+            throw new Error(
+              t(
+                _response.code && SDK_ERROR_MAP_TO_UI[_response.code]
+                  ? SDK_ERROR_MAP_TO_UI[_response.code].messageKey
+                  : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
+                { ns: "error", name: popItem.name?.trim() }
+              )
+            );
+          } else {
+            setToastOpen({
+              open: true,
+              type: "success",
+              content: t(`labelFavouriteSuccess`, {
+                favorite: !popItem?.preference?.favourite
+                  ? t("labelfavourite")
+                  : t("labelunfavourite"),
+              }),
+            });
+            setShowNFTDetail({
+              ...isShowNFTDetail,
+              preference: {
+                ...isShowNFTDetail.preference,
+                favourite: !popItem?.preference?.favourite ?? false,
+              } as any,
+            });
+          }
+        } catch (error) {
+          setToastOpen({
+            open: true,
+            type: "error",
+            content:
+              t(`labelFavouriteFailed`, {
+                favorite: !popItem?.preference?.favourite
+                  ? t("labelfavourite")
+                  : t("labelunfavourite"),
+              }) +
+              `: ${
+                (error as any)?.message
+                  ? (error as any).message
+                  : t("errorUnknown")
+              }`,
+          });
+        }
+      }
+    }, [popItem]);
+    const onHideClick = React.useCallback(async () => {
+      if (LoopringAPI.userAPI) {
+        try {
+          setIconLoading(true);
+          const response = await LoopringAPI.userAPI.submitUpdateNFTGroup(
+            {
+              accountId: account.accountId,
+              nftHashes: [popItem.nftData ?? ""],
+              preferenceType: sdk.NFT_PREFERENCE_TYPE.hide,
+              statusToUpdate: !popItem?.preference?.hide,
+            },
+            chainId as any,
+            account.apiKey,
+            account.eddsaKey.sk
+          );
+          setIconLoading(false);
+          if (
+            response &&
+            ((response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message)
+          ) {
+            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO;
+            throw new Error(
+              t(
+                _response.code && SDK_ERROR_MAP_TO_UI[_response.code]
+                  ? SDK_ERROR_MAP_TO_UI[_response.code].messageKey
+                  : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
+                { ns: "error", name: popItem.name?.trim() }
+              )
+            );
+          } else {
+            setToastOpen({
+              open: true,
+              type: "success",
+              content: t(`labelHideSuccess`, {
+                hide: !popItem?.preference?.hide
+                  ? t("labelhide")
+                  : t("labelunhide"),
+              }),
+            });
+            setShowNFTDetail({
+              ...isShowNFTDetail,
+              preference: {
+                ...isShowNFTDetail.preference,
+                hide: !popItem?.preference?.hide ?? false,
+              } as any,
+            });
+          }
+        } catch (error) {
+          setToastOpen({
+            open: true,
+            type: "error",
+            content:
+              t(`labelHideFailed`, {
+                hide: !popItem?.preference?.hide
+                  ? t("labelhide")
+                  : t("labelunhide"),
+              }) +
+              `: ${
+                (error as any)?.message
+                  ? (error as any).message
+                  : t("errorUnknown")
+              }`,
+          });
+        }
+      }
+    }, [popItem]);
 
     const handleRefresh = React.useCallback(async () => {
       setShowFresh("loading");
@@ -240,31 +388,73 @@ export const NFTDetail = withTranslation("common")(
                 alignItems={"center"}
                 justifyContent={"center"}
               >
+                {popItem.preference && (
+                  <Tooltip
+                    title={t(
+                      `labelFavouriteMethodTooltip${
+                        popItem.preference.favourite
+                          ? "favourite"
+                          : "unfavourite"
+                      }`
+                    ).toString()}
+                    placement={"top"}
+                  >
+                    <IconButton
+                      aria-label={t(
+                        `labelHideMethodTooltip${
+                          popItem.preference.favourite
+                            ? "favourite"
+                            : "unfavourite"
+                        }`
+                      )}
+                      size={"large"}
+                      edge={"end"}
+                      disabled={iconLoading}
+                      color={"inherit"}
+                      onClick={(_event) => {
+                        onFavoriteClick();
+                      }}
+                      sx={{
+                        minWidth: "initial",
+                        padding: "4px",
+                        marginRight: 1,
+                      }}
+                    >
+                      {popItem.preference.favourite ? (
+                        <FavSolidIcon htmlColor={"var(--color-error)"} />
+                      ) : (
+                        <FavHollowIcon />
+                      )}
+                    </IconButton>
+                  </Tooltip>
+                )}
                 <Tooltip
                   title={t("labelNFTServerRefresh").toString()}
                   placement={"top"}
                 >
-                  <Button
-                    size={"small"}
+                  <IconButton
                     aria-label={t("labelRefresh")}
                     disabled={showFresh !== "click"}
-                    variant={"outlined"}
+                    size={"large"}
+                    edge={"end"}
+                    color={"inherit"}
                     onClick={(_event) => {
                       handleRefresh();
                     }}
                     sx={{ minWidth: "initial", padding: "4px", marginRight: 1 }}
                   >
-                    <RefreshIPFSIcon color={"inherit"} fontSize={"medium"} />
-                  </Button>
+                    <RefreshIPFSIcon />
+                  </IconButton>
                 </Tooltip>
                 <Tooltip
                   title={t("labelLinkMetaData").toString()}
                   placement={"top"}
                 >
-                  <Button
-                    size={"small"}
+                  <IconButton
                     aria-label={t("labelLinkMetaData")}
-                    variant={"outlined"}
+                    size={"large"}
+                    edge={"end"}
+                    color={"inherit"}
                     onClick={() => {
                       const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(
                         popItem?.nftId ?? ""
@@ -275,20 +465,55 @@ export const NFTDetail = withTranslation("common")(
                     }}
                     sx={{ minWidth: "initial", padding: "4px", marginRight: 1 }}
                   >
-                    <LinkIcon color={"inherit"} fontSize={"medium"} />
-                  </Button>
+                    <LinkIcon />
+                  </IconButton>
                 </Tooltip>
-                <Button
-                  size={"small"}
-                  aria-label={t("labelZoom")}
-                  variant={"outlined"}
-                  onClick={(_event) => {
-                    setZoom(true);
-                  }}
-                  sx={{ minWidth: "initial", padding: "4px", marginRight: 1 }}
-                >
-                  <ZoomIcon color={"inherit"} fontSize={"medium"} />
-                </Button>
+                <Tooltip title={t("labelZoom").toString()} placement={"top"}>
+                  <IconButton
+                    aria-label={t("labelZoom")}
+                    size={"large"}
+                    edge={"end"}
+                    color={"inherit"}
+                    onClick={(_event) => {
+                      setZoom(true);
+                    }}
+                    sx={{ minWidth: "initial", padding: "4px", marginRight: 1 }}
+                  >
+                    <ZoomIcon />
+                  </IconButton>
+                </Tooltip>
+                {popItem.preference && (
+                  <Tooltip
+                    title={t(
+                      `labelHideMethodTooltip${
+                        popItem.preference.hide ? "hide" : "unhide"
+                      }`
+                    ).toString()}
+                    placement={"top"}
+                  >
+                    <IconButton
+                      aria-label={t(
+                        `labelHideMethodTooltip${
+                          popItem.preference.hide ? "hide" : "unhide"
+                        }`
+                      )}
+                      size={"large"}
+                      edge={"end"}
+                      disabled={iconLoading}
+                      color={"inherit"}
+                      onClick={(_event) => {
+                        onHideClick();
+                      }}
+                      sx={{
+                        minWidth: "initial",
+                        padding: "4px",
+                        marginRight: 1,
+                      }}
+                    >
+                      {popItem.preference.hide ? <HideIcon /> : <ViewIcon />}
+                    </IconButton>
+                  </Tooltip>
+                )}
               </Box>
             </Grid>
             <Grid
@@ -306,7 +531,7 @@ export const NFTDetail = withTranslation("common")(
                 paddingLeft={3}
                 flex={1}
               >
-                {popItem?.collectionMeta && (
+                {popItem?.collectionInfo && (
                   <Box
                     display={"flex"}
                     flexDirection={"row"}
@@ -315,7 +540,7 @@ export const NFTDetail = withTranslation("common")(
                   >
                     <>
                       {getIPFSString(
-                        popItem?.collectionMeta?.tileUri ?? "",
+                        popItem?.collectionInfo?.tileUri ?? "",
                         baseURL
                       ).startsWith("http") ? (
                         <Avatar
@@ -328,7 +553,7 @@ export const NFTDetail = withTranslation("common")(
                           }}
                           variant={"rounded"}
                           src={getIPFSString(
-                            popItem?.collectionMeta?.tileUri ?? "",
+                            popItem?.collectionInfo?.tileUri ?? "",
                             baseURL
                           )}
                         />
@@ -353,13 +578,13 @@ export const NFTDetail = withTranslation("common")(
                         color={"textPrimary"}
                         variant={"body1"}
                       >
-                        {popItem?.collectionMeta
-                          ? popItem?.collectionMeta?.name
-                            ? popItem?.collectionMeta?.name
+                        {popItem?.collectionInfo
+                          ? popItem?.collectionInfo?.name
+                            ? popItem?.collectionInfo?.name
                             : t("labelUnknown") +
                               " - " +
                               getShortAddr(
-                                popItem?.collectionMeta?.contractAddress ?? ""
+                                popItem?.collectionInfo?.contractAddress ?? ""
                               )
                           : EmptyValueTag}
                       </Typography>
@@ -546,7 +771,7 @@ export const NFTDetail = withTranslation("common")(
                           ? popItem.nftIdView
                           : popItem.nftId ?? ""
                       )}
-                    <LinkIcon color={"inherit"} fontSize={"medium"} />
+                    <LinkIcon fontSize={"medium"} />
                   </Link>
                 </Typography>
                 <Typography

@@ -7,6 +7,7 @@ import {
   LOOPRING_TAKE_NFT_META_KET,
   Media,
   myLog,
+  MyNFTFilter,
   NFTWholeINFO,
   SagaStatus,
 } from "@loopring-web/common-resources";
@@ -38,6 +39,8 @@ export const useMyNFT = ({
   const { search, ...rest } = useLocation();
   const { renderNFTPromise, infoDetail, nftListReduce } = useNFTListDeep();
   const history = useHistory();
+  const [filter, setFilter] =
+    React.useState<MyNFTFilter | undefined>(undefined);
   const searchParams = new URLSearchParams(search);
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -62,13 +65,15 @@ export const useMyNFT = ({
 
   // const onDetailClose = React.useCallback(() => setIsShow(false), []);
 
-  const onPageChange = (page: number = 1) => {
+  const onPageChange = (page: number = 1, filter?: MyNFTFilter | undefined) => {
+    setFilter(filter ?? undefined);
     setPage(page);
     setIsLoading(true);
     if (page !== -1) {
       updateWalletLayer2NFT({
         page,
         collection: collectionMeta ?? undefined,
+        filter,
       });
     }
     searchParams.set("myNFTPage", page.toString());
@@ -78,7 +83,12 @@ export const useMyNFT = ({
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
       if (item.hasOwnProperty("pendingOnSync")) {
-        if (collectionMeta === undefined && LoopringAPI.userAPI) {
+        let _collectionMeta = item.collectionInfo ?? collectionMeta;
+        if (
+          !item.collectionInfo &&
+          collectionMeta === undefined &&
+          LoopringAPI.userAPI
+        ) {
           const response = await LoopringAPI.userAPI
             .getUserNFTCollection(
               {
@@ -98,7 +108,7 @@ export const useMyNFT = ({
           ) {
             throw new CustomError(ErrorMap.ERROR_UNKNOWN);
           }
-          const collectionMeta = response.collections?.find(
+          _collectionMeta = response.collections?.find(
             (_item: CollectionMeta) => {
               return (
                 _item?.contractAddress?.toLowerCase() ===
@@ -106,13 +116,21 @@ export const useMyNFT = ({
               );
             }
           );
-          setShowNFTDetail({ isShow: true, ...item, collectionMeta });
-          updateNFTWithdrawData({ ...item, collectionMeta });
-          updateNFTTransferData({ ...item, collectionMeta });
+          setShowNFTDetail({
+            isShow: true,
+            ...item,
+            collectionInfo: collectionMeta,
+          });
+          updateNFTWithdrawData({ ...item, collectionInfo: collectionMeta });
+          updateNFTTransferData({ ...item, collectionInfo: collectionMeta });
         } else {
-          setShowNFTDetail({ isShow: true, ...item, collectionMeta });
-          updateNFTWithdrawData({ ...item, collectionMeta });
-          updateNFTTransferData({ ...item, collectionMeta });
+          setShowNFTDetail({
+            isShow: true,
+            ...item,
+            collectionInfo: _collectionMeta,
+          });
+          updateNFTWithdrawData({ ...item, collectionInfo: _collectionMeta });
+          updateNFTTransferData({ ...item, collectionInfo: _collectionMeta });
         }
         // setPopItem({ ...item, collectionMeta });
         if (
@@ -124,7 +142,7 @@ export const useMyNFT = ({
             .then(({ broker }) => {
               updateNFTDeployData({ broker });
             });
-          updateNFTDeployData({ ...item, collectionMeta });
+          updateNFTDeployData({ ...item, collectionInfo: _collectionMeta });
         }
       }
     },
@@ -164,10 +182,19 @@ export const useMyNFT = ({
     setNFTList(nftListReduce(walletLayer2NFT));
     setIsLoading(false);
     renderNFTPromise({ nftLists: walletLayer2NFT }).then((meta: any[]) => {
-      const { walletLayer2NFT, page: page_reudex } =
-        store.getState().walletLayer2NFT;
+      const {
+        walletLayer2NFT,
+        page: page_reudex,
+        filter: filter_redux,
+      } = store.getState().walletLayer2NFT;
       myLog("walletLayer2NFT  async media render", page, page_reudex);
-      if (page === page_reudex) {
+      if (
+        page === page_reudex &&
+        (!filter ||
+          (filter &&
+            filter?.favourite == filter_redux?.favourite &&
+            filter?.hidden == filter_redux?.hidden))
+      ) {
         setNFTList((state) => {
           return walletLayer2NFT.map((item, index) => {
             return {
@@ -180,7 +207,7 @@ export const useMyNFT = ({
         });
       }
     });
-  }, [etherscanBaseUrl, page, walletLayer2NFT]);
+  }, [etherscanBaseUrl, page, walletLayer2NFT, filter]);
   React.useEffect(() => {
     onPageChange(myNFTPage);
   }, [myNFTPage, collectionMeta?.id, collectionMeta?.contractAddress]);
@@ -211,6 +238,8 @@ export const useMyNFT = ({
     onPageChange,
     total,
     page,
+    // filter,
+    // setFilter,
     isLoading,
     walletLayer2NFT,
   };
