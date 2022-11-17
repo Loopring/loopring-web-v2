@@ -136,14 +136,14 @@ export const HebaoGuardianItem = <G extends sdk.Guardian>({
               color={"primary"}
               onClick={() => handleOpenApprove(guardian)}
             >
-              <Typography paddingX={2}> {t("labelApprove")}</Typography>
+              {t("labelApprove")}
             </Button>
             <Button
               variant={"outlined"}
               color={"primary"}
               onClick={() => handleReject(guardian)}
             >
-              <Typography paddingX={2}> {t("labelReject")} </Typography>
+              {t("labelReject")}
             </Button>
           </ButtonListRightStyled>
         </Box>
