@@ -112,16 +112,10 @@ export const SwapPage = withTranslation("common")(
         <SmallOrderAlert
           handleClose={smallOrderAlertCallBack}
           open={smallOrderAlertOpen}
-          value={
-            123123
-          }
         />
         <SwapSecondConfirmation
           handleClose={secondConfirmationCallBack}
           open={secondConfirmationOpen}
-          value={
-            123123
-          }
         />
       </Box>
     );
