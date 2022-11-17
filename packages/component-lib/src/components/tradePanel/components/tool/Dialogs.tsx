@@ -302,6 +302,62 @@ export const ConfirmImpact = withTranslation("common")(
     );
   }
 );
+export const SmallOrderAlert = withTranslation("common")(
+  ({
+    t,
+    value,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    value: number;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    // const [agree, setAgree] = React.useState("");
+
+    // React.useEffect(() => {
+    //   if (!open) {
+    //     setAgree("");
+    //   }
+    // }, [open]);
+
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("small order")}</DialogTitle>
+        
+      </Dialog>
+    );
+  }
+);
+export const SwapSecondConfirmation = withTranslation("common")(
+  ({
+    t,
+    value,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    value: number;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("second confirmation")}</DialogTitle>
+      </Dialog>
+    );
+  }
+);
 // export const NotAllowForSmartWallet = withTranslation("common", {
 //   withRef: true,
 // })(

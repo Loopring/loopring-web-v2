@@ -132,6 +132,28 @@ export const useSwap = <
   );
   const [isSwapLoading, setIsSwapLoading] = React.useState(false);
 
+  /***confirm  ***/
+  const [storageId, setStorageId] = React.useState<{
+    orderId: number;
+    offchainId: number;
+  }>({} as any);
+
+  const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
+  const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
+  const [smallOrderAlertOpen, setSmallOrderAlertOpen] =
+    React.useState<boolean>(false);
+  const [secondConfirmationOpen, setSecondConfirmationOpen] =
+    React.useState<boolean>(false);
+  const isSmallOrder = true;
+  const showSwapSecondConfirmation = true;
+  const priceAlertCallBack = React.useCallback(() => {
+    if (isSmallOrder) {
+      setSmallOrderAlertOpen(true);
+    } else if (showSwapSecondConfirmation) {
+      setSecondConfirmationOpen(true);
+    }
+  }, [showSwapSecondConfirmation, isSmallOrder]);
+
   const clearData = (
     calcTradeParams: Partial<MarketCalcParams> | null | undefined
   ) => {
@@ -514,6 +536,18 @@ export const useSwap = <
       updatePageTradeLite,
     ]
   );
+  const smallOrderAlertCallBack = React.useCallback(
+    (e: MouseEvent) => {
+      // alert(1)
+      swapFunc(undefined as any, true);
+      setSmallOrderAlertOpen(false);
+    },
+    [swapFunc]
+  );
+  const secondConfirmationCallBack = React.useCallback(() => {
+    setSecondConfirmationOpen(false);
+    swapFunc(undefined as any, true);
+  }, [swapFunc]);
   const swapCalculatorCallback = React.useCallback(async () => {
     const { priceLevel } = getPriceImpactInfo(
       pageTradeLite.calcTradeParams,
@@ -528,8 +562,11 @@ export const useSwap = <
     } else if (!order.enable) {
       setShowTradeIsFrozen({ isShow: true, type: "Swap" });
       setIsSwapLoading(false);
+    } else if (isSmallOrder) {
+      setSmallOrderAlertOpen(true);
+    } else if (showSwapSecondConfirmation) {
+      setSecondConfirmationOpen(true);
     } else {
-      // {}
       switch (priceLevel) {
         case PriceLevel.Lv1:
           setAlertOpen(true);
@@ -550,6 +587,8 @@ export const useSwap = <
     setShowSupport,
     setShowTradeIsFrozen,
     swapFunc,
+    showSwapSecondConfirmation,
+    isSmallOrder,
   ]);
   const {
     btnStatus: swapBtnStatus,
@@ -561,14 +600,6 @@ export const useSwap = <
     isLoading: isSwapLoading,
     submitCallback: swapCalculatorCallback,
   });
-
-  const [storageId, setStorageId] = React.useState<{
-    orderId: number;
-    offchainId: number;
-  }>({} as any);
-
-  const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
-  const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
 
   /*** Btn related end ***/
   const toPro = React.useCallback(() => {
@@ -1476,5 +1507,10 @@ export const useSwap = <
     market,
     toPro,
     isMobile,
+    priceAlertCallBack,
+    smallOrderAlertCallBack,
+    secondConfirmationCallBack,
+    smallOrderAlertOpen,
+    secondConfirmationOpen,
   };
 };
