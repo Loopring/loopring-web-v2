@@ -66,6 +66,7 @@ export default {
   labelkeyCreatorGrants: "Creator Grants",
   labelkeyL2Explorer: "Layer 2 Explorer",
   labelkeySubgraph: "Subgraph",
+  labelkeyBugBounty: "Bug Bounty"
   labelFooterSupport: "Support",
   labelkeyFeedback: "❤️ Submit a Request",
   labelkeyGuardian: "Wallet Guardian",

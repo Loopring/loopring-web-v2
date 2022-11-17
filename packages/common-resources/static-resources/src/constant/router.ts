@@ -363,6 +363,10 @@ export const FOOTER_LIST_MAP = {
       linkHref:
         "https://thegraph.com/explorer/subgraph?id=HgnaENC2oG5hJFsWoHvULBbj7djTJ7TZnqa58iTWA3Rd",
     },
+    {
+      linkName: "BugBounty", //Subgraph
+      linkHref: "https://loopring.io/#/document/bug_bounty_en.md",
+    },
   ],
 };
 
