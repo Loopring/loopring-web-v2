@@ -305,13 +305,14 @@ export const ConfirmImpact = withTranslation("common")(
 export const SmallOrderAlert = withTranslation("common")(
   ({
     t,
-    value,
     open,
     handleClose,
+    handleConfirm,
   }: WithTranslation & {
     open: boolean;
     value: number;
-    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+    handleClose: (event: MouseEvent) => void;
+    handleConfirm: () => void;
   }) => {
     // const [agree, setAgree] = React.useState("");
 
@@ -329,6 +330,7 @@ export const SmallOrderAlert = withTranslation("common")(
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("small order")}</DialogTitle>
+        <Button onClick={() => handleConfirm()}></Button>
         
       </Dialog>
     );
@@ -337,13 +339,13 @@ export const SmallOrderAlert = withTranslation("common")(
 export const SwapSecondConfirmation = withTranslation("common")(
   ({
     t,
-    value,
     open,
     handleClose,
+    handleConfirm
   }: WithTranslation & {
     open: boolean;
-    value: number;
-    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+    handleClose: (event: MouseEvent) => void;
+    handleConfirm: () => void;
   }) => {
 
     return (
@@ -354,6 +356,8 @@ export const SwapSecondConfirmation = withTranslation("common")(
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("second confirmation")}</DialogTitle>
+        <Button onClick={() => handleConfirm()}></Button>
+
       </Dialog>
     );
   }

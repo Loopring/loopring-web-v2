@@ -521,12 +521,12 @@ export const useSwap = <C extends { [key: string]: any }>({
   }, [showSwapSecondConfirmation, isSmallOrder])
   const smallOrderAlertCallBack = React.useCallback((e: MouseEvent) => {
     // alert(1)
+    swapFunc(undefined as any, true);
     setSmallOrderAlertOpen(false)
-    swapFunc(e, false);
   }, [swapFunc])
   const secondConfirmationCallBack = React.useCallback(() => {
     setSecondConfirmationOpen(false)
-    swapFunc(undefined as any, false);
+    swapFunc(undefined as any, true);
   }, [swapFunc])
   const swapCalculatorCallback = React.useCallback(async () => {
     const { priceLevel } = getPriceImpactInfo(
