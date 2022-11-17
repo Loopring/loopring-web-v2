@@ -20,6 +20,7 @@ import { ModalLock } from "./modal";
 import { WalletHistory } from "./WalletHistory";
 import { WalletValidationInfo } from "./WalletValidationInfo";
 import { WalletProtector } from "./WalletProtector";
+import { useTheme } from "@emotion/react";
 
 export const GuardianPage = withTranslation(["common"])(
   ({ t, ..._rest }: WithTranslation) => {
@@ -93,31 +94,32 @@ export const GuardianPage = withTranslation(["common"])(
                 src={`${SoursURL}images/loading-line.gif`}
               />
             </Box>
-          ) :  !isContractAddress ? (
+          ) : !isContractAddress ? (
             <WalletValidationInfo
-            onOpenAdd={onOpenAdd}
-            isContractAddress={isContractAddress}
-            // isLoading={isLoading}
-            {...{ guardiansList, guardianConfig, setOpenHebao }}
-            handleOpenModal={handleOpenModal}
-            loadData={loadData}
-          />
-        ) : (
-          <Box
-            flex={1}
-            display={"flex"}
-            justifyContent={"center"}
-            flexDirection={"column"}
-            alignItems={"center"}
-          >
-            <Typography
-              margin={3}
-              variant={isMobile ? "h4" : "h1"}
-              textAlign={"center"}
+              onOpenAdd={onOpenAdd}
+              isContractAddress={isContractAddress}
+              // isLoading={isLoading}
+              {...{ guardiansList, guardianConfig, setOpenHebao }}
+              handleOpenModal={handleOpenModal}
+              loadData={loadData}
+            />
+          ) : (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
             >
-              {t("labelWalletToWallet")}
-            </Typography>
-          </Box> ) ;
+              <Typography
+                margin={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
+                {t("labelWalletToWallet")}
+              </Typography>
+            </Box>
+          );
         case "guardian-history":
           return (
             <WalletHistory
@@ -275,11 +277,13 @@ export const GuardianPage = withTranslation(["common"])(
       isLoading,
       guardianRouter,
     ]);
-
+    const theme = useTheme();
     return (
       <>
         <ModalQRCode
           open={openQRCode}
+          fgColor={theme.colorBase.textPrimary}
+          bgColor={theme.colorBase.box}
           className={"guardianPop"}
           onClose={() => setOpenQRCode(false)}
           title={
