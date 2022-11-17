@@ -48,6 +48,11 @@ export function usePairMatch(path: string): {
       realMarket = marketTemp;
       coinAInfo = coinMap[coinA];
       coinBInfo = coinMap[coinB];
+    } else {
+      coinAInfo = coinMap[coinA];
+      coinB = tokenMap[coinA].tradePairs[0];
+      coinBInfo = coinMap[coinB];
+      realMarket = `${coinA}-${coinB}`;
     }
   }
 
