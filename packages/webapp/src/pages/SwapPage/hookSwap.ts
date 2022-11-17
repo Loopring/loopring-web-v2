@@ -270,7 +270,7 @@ export const useSwap = <
 
           if (sellMinAmt === undefined || !sellSymbol) {
             return {
-              label: undefined,
+              label: "labelEnterAmount",
               tradeBtnStatus: TradeBtnStatus.DISABLED,
             };
           } else {
