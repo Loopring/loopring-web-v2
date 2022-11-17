@@ -108,8 +108,13 @@ import {
   OrderListIcon,
   RefreshIPFSIcon,
   ViewMoreIcon,
-  PointIcon,
-  PointStarIcon,
+  LikeIcon,
+  ZoomIcon,
+  UnlikeIcon,
+  LegacyIcon,
+  SyncIcon,
+  FavHollowIcon,
+  FavSolidIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -228,8 +233,13 @@ const listIcon = [
   <OrderListIcon />,
   <RefreshIPFSIcon />,
   <ViewMoreIcon />,
-  <PointIcon />,
-  <PointStarIcon />,
+  <LikeIcon />,
+  <ZoomIcon />,
+  <UnlikeIcon />,
+  <LegacyIcon />,
+  <SyncIcon />,
+  <FavHollowIcon />,
+  <FavSolidIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

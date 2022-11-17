@@ -2,13 +2,13 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import {
   DepositProps,
   ModalAccount,
-  ModalCloseButton,
+  // ModalCloseButton,
   ModalPanel,
   ModalQRCode,
-  SwitchPanelStyled,
+  // SwitchPanelStyled,
   Toast,
   useOpenModals,
-  useSettings,
+  // useSettings,
 } from "@loopring-web/component-lib";
 import { useSystem } from "@loopring-web/core";
 import { useAccountModalForUI } from "./hook";
@@ -17,12 +17,12 @@ import {
   AssetsRawDataItem,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { Box, Modal as MuiModal } from "@mui/material";
-import { NFTDetail } from "./components/NFTDetail";
+// import { Box, Modal as MuiModal } from "@mui/material";
+// import { NFTDetail } from "./components/NFTDetail";
 
 export const ModalAccountInfo = withTranslation("common")(
   ({
-    onClose,
+    // onClose,
     etherscanBaseUrl,
     open,
     assetsRawData,
@@ -35,15 +35,19 @@ export const ModalAccountInfo = withTranslation("common")(
     isLayer1Only?: boolean;
     account: Account;
     depositProps: DepositProps<any, any>;
-    onClose?: (e: MouseEvent) => void;
+    // onClose?: (e: MouseEvent) => void;
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
-    const { isMobile } = useSettings();
+    // const { isMobile } = useSettings();
     const { baseURL } = useSystem();
     const {
-      modals: { isShowNFTDetail, isShowAccount },
-      setShowNFTDetail,
+      modals: {
+        // isShowNFTDetail,
+        isShowAccount,
+      },
+      // setShowNFTDetail,
+      setShowAccount,
       setShowDeposit,
       setShowTransfer,
       setShowWithdraw,
@@ -68,7 +72,6 @@ export const ModalAccountInfo = withTranslation("common")(
       // dualTradeProps,
       copyToastOpen,
       openQRCode,
-      closeBtnInfo,
       accountList,
       currentModal,
       onBackReceive,
@@ -79,7 +82,6 @@ export const ModalAccountInfo = withTranslation("common")(
       t,
       depositProps,
       etherscanBaseUrl,
-      onClose,
       isLayer1Only,
       ...rest,
     });
@@ -160,7 +162,9 @@ export const ModalAccountInfo = withTranslation("common")(
         />
         <ModalAccount
           open={isShowAccount.isShow}
-          onClose={closeBtnInfo.callback}
+          onClose={() => {
+            setShowAccount({ isShow: false });
+          }}
           panelList={accountList}
           onBack={currentModal?.onBack}
           onQRClick={currentModal?.onQRClick}
@@ -168,45 +172,40 @@ export const ModalAccountInfo = withTranslation("common")(
           etherscanBaseUrl={etherscanBaseUrl}
           isLayer2Only={isLayer1Only}
         />
-        <MuiModal
-          open={isShowNFTDetail.isShow}
-          onClose={() => {
-            setShowNFTDetail({ isShow: false });
-          }}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <SwitchPanelStyled
-            // width={"80%"}
-            width={isMobile ? "360px" : "80%"}
-            position={"relative"}
-            minWidth={isMobile ? "initial" : 1000}
-            style={{ alignItems: "stretch" }}
-          >
-            <Box display={"flex"} width={"100%"} flexDirection={"column"}>
-              <ModalCloseButton
-                onClose={() => {
-                  setShowNFTDetail({ isShow: false });
-                }}
-                t={t}
-                {...rest}
-              />
-            </Box>
-            <Box
-              display={"flex"}
-              flexDirection={isMobile ? "column" : "row"}
-              flex={1}
-              justifyContent={"stretch"}
-            >
-              <NFTDetail
-                baseURL={baseURL}
-                etherscanBaseUrl={etherscanBaseUrl}
-                popItem={isShowNFTDetail}
-                assetsRawData={assetsRawData}
-              />
-            </Box>
-          </SwitchPanelStyled>
-        </MuiModal>
+        {/*<MuiModal*/}
+        {/*  open={isShowNFTDetail.isShow}*/}
+        {/*  onClose={() => {*/}
+        {/*    setShowNFTDetail({ isShow: false });*/}
+        {/*  }}*/}
+        {/*  aria-labelledby="modal-modal-title"*/}
+        {/*  aria-describedby="modal-modal-description"*/}
+        {/*>*/}
+        {/*  <SwitchPanelStyled*/}
+        {/*    // width={"80%"}*/}
+        {/*    width={isMobile ? "360px" : "80%"}*/}
+        {/*    position={"relative"}*/}
+        {/*    minWidth={isMobile ? "initial" : 1000}*/}
+        {/*    style={{ alignItems: "stretch" }}*/}
+        {/*  >*/}
+        {/*    <Box display={"flex"} width={"100%"} flexDirection={"column"}>*/}
+        {/*      <ModalCloseButton*/}
+        {/*        onClose={() => {*/}
+        {/*          setShowNFTDetail({ isShow: false });*/}
+        {/*        }}*/}
+        {/*        t={t}*/}
+        {/*        {...rest}*/}
+        {/*      />*/}
+        {/*    </Box>*/}
+        {/*    <Box*/}
+        {/*      display={"flex"}*/}
+        {/*      flexDirection={isMobile ? "column" : "row"}*/}
+        {/*      flex={1}*/}
+        {/*      justifyContent={"stretch"}*/}
+        {/*    >*/}
+
+        {/*    </Box>*/}
+        {/*  </SwitchPanelStyled>*/}
+        {/*</MuiModal>*/}
       </>
     );
   }

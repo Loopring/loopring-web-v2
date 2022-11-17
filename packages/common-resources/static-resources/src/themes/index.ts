@@ -17,14 +17,14 @@ export { hr };
 //https://static.loopring.io/assets/images/coin/loopring.png
 export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
   &.MuiAvatar-root {
-    height: 36px;
-    width: 36px;
+    height: 72px;
+    width: 72px;
     background-image: url("./static/coin/loopring.png");
     ${({
       imgx,
       imgy,
-      imgheight = 36,
-      imgwidth = 36,
+      imgheight = 72,
+      imgwidth = 73,
       size = 24,
     }: AvatarCoinProps) => {
       return `
@@ -33,7 +33,6 @@ export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
              height: ${imgheight}px ;
              width: ${imgwidth}px ;
              transform-origin: center;
-             transform: scale(${size / 36});
         `;
     }}
     background-size: auto;

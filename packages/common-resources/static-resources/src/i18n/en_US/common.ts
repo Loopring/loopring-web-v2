@@ -85,6 +85,7 @@ export default {
   descriptionExportAccount:
     "In order to access the Loopring L2 APIs, you will need to export a security key.",
   labelBtnExportAccount: "Export Account",
+  labelDownloadViewMore: "View More",
   labelTitlePreferences: "Preferences",
   labelTitleLayout: "Custom Setting",
   whichColorIsUp: "<0>{{up}} up</0> and <2>{{down}} down</2> ",
@@ -400,13 +401,14 @@ export default {
   labelNFTTokenMinted: "Token Minted:",
   labelNFTDescription: "Description:",
   labelNFTDate: "Date:",
-  labelNFTDeployContract: "Deploy",
+  labelNFTDeployContract: "Deploy Contract",
   labelNFTSend: "Send:",
   labelNFTDeploy: "Deploy:",
   labelNFTDeploying: "Deploying",
   labelNFTMyNFT: "My NFTs - Collection: {{collection}}",
   labelNFTTokenID: "ID:",
   labelNFTTYPE: "Token Standard:",
+  labelNFTRoyaltyPercentage: "Royalty (%):",
   labelNFTID: "ID:",
   labelNFTMinter: "Minter:",
   labelNFTMint: "Create NFT",
@@ -434,7 +436,6 @@ export default {
     "This address does not yet have an active Loopring L2, {{way}} of {{token}} is disabled!",
   labelInvalidisSameAddress: "Cannot {{way}} to your own address.",
   labelTradeRaceRanking: "Trading Leaderboard",
-  labelTradeRaceYourVolume: "Your trading volume",
   labelTradeRaceYourRanking: "Your ranking",
   labelTradeRaceGoTrading: "Go to trade",
   labelTradeReadRule: "Read Rules",
@@ -704,7 +705,7 @@ export default {
   labelFromOtherL1: "From another L1 account",
   labelBuyWithCard: "Buy with Card",
   labelFromOtherL2: "From another Loopring L2 account",
-  labelFromExchange: "Buy from Exchange",
+  labelFromExchange: "From an exchange",
   labelOpenInWalletApp: "Open in wallet app/extension",
   labelConnectWithDapp: "Connect with Dapp",
   labelOpenInWalletTitle: "Open in wallet",
@@ -841,16 +842,14 @@ export default {
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n" +
     "You can choose one of the following approaches for the remaining amount:",
   labelDefiMaxBalance1:
-    "<0>" +
-    "<1>Withdraw WSTETH to L1 and trade trade through Uniswap, 1Inch or Lido.</1>" +
-    "<2>The Loopring pool will rebalance soon. Please come back later to redeem.</2>" +
-    "</0>",
+    "<li>Withdraw {{symbol}} to L1 and trade through 1Inch or {{type}}, etc...</li>" +
+    "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiNoBalance:
-    "<0>It is not possible for the Loopring pool to fulfil your complete request at the moment.</0>" +
-    "<1>You can choose one of the following approaches for the remaining amount:</1>",
+    "<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>" +
+    "<span>You can choose one of the following approaches for the remaining amount:</span>",
   labelDefiNoBalanceList:
-    "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
-    "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
+    "<li>Withdraw {{symbol}} to L1 and trade through 1Inch or {{type}}, etc...</li>" +
+    "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
   labelDefiNoBalanceJoin:
@@ -873,15 +872,23 @@ export default {
   labelViewMore: "View more",
   labelInvestSuccess: "Successfully {{type}} {{symbol}}",
   labelInvestFailed: "Subscribe Failed",
-  labelDefiRiskTitle: "What is ETH Staking via Lido?",
-  labelDefiRisk:
-    "<0>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</0>\n" +
-    "<1>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</1>\n" +
-    "<2>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</2>\n",
-  labelDefiRisk2:
-    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</0>" +
-    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
-  labelDefiAgree: "I have read risk warning",
+  labelWSETHDefiRiskTitle: "What is ETH Staking via Lido?",
+  labelRETHDefiRiskTitle: "What is ETH Staking via Rocket Pool?",
+  labelWSETHDefiRisk:
+    "<p>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</p>" +
+    "<p>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</p>" +
+    "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>\n",
+  labelRETHDefiRisk:
+    "<p>Rocket Pool is the first truly decentralized Ethereum staking pool. Rocket Pool’s liquid staking token allows anyone to earn staking rewards easily without running staking software or locking assets. Rocket Pool handles all of the Ethereum validator operations with smart contracts on the Execution layer.</p>" +
+    "<p>Acquiring and holding rETH in your wallet means that you are staking ETH. rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</p>" +
+    "<p></p>",
+  labelWSETHDefiRisk2:
+    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</p>" +
+    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</p>",
+  labelRETHDefiRisk2:
+    "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
+    "<1></1>",
+  labelDefiAgree: "I have read and understand the risk warning",
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
@@ -946,7 +953,7 @@ export default {
   labelMintSubmitBtn: "Create Your NFT",
   labelMintIPFSCIDDes: "Fill in the IPFS CID for NFT metadata",
   labelNFTMintSimpleBtn: "Create NFT",
-  labelCollectionEditBtn: "Edit",
+  labelCollectionEditBtn: "Edit Collection",
   labelCopyMetaClip: "Metadata Copied to Clipboard",
   labelCollectionMetaNoNameORTileUri:
     "Your Collection metadata is not setup {{type}}, please go to collection panel edit!",
@@ -955,7 +962,7 @@ export default {
     "Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site",
   labelCollectionMetaErrorType: "correct `royalty_percentage` from 0 to 10",
   labelNFTServerRefresh:
-    "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",
+    "Click to refresh loopring cache resource, this is an delay command usually takes 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
   labelNFTCollectionName: "Collection Name:",
@@ -969,7 +976,9 @@ export default {
   labelNoCollectionCover: "No Cover Media",
   labelNoNFTCover: "No Media Resource",
   labelNFTAmountValue: "Amount: {{value}}",
+  labelNFTAmountSimpleValue: " \u2A09 {{value}}",
   labelCollectionItemValue: "Item: {{value}}",
+  labelCollectionItemSimpleValue: " \u2A09 {{value}}",
   labelMyCollectionsDes:
     "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information. Until it happens, the previous NFTs will be categorized to collection named by their associated contract address.",
   labelNFTGuid:
@@ -1034,9 +1043,36 @@ export default {
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
   labelInvestDualTutorialCheck4: "I have read the risk warning.",
+  labelInvestDualBeginerMode: "Beginner Mode",
+  labelInvestDualBeginerModeDesLine1: "What is Dual Investment?",
+  labelInvestDualBeginerModeDesLine2:
+    "You can use the beginner mode to quickly learn.",
   labelDualAmount: "Amount",
   labelDuaInvestmentDetails: "Dual Investment Details",
   labelDualOrderTable: "Dual Investments",
+
+  labelDualBeginnerPriceSmallerThan: "if Index Price < {{value}}",
+  labelDualBeginnerPriceSmallerThanOrEqual: "if Index Price ≤ {{value}}",
+  labelDualBeginnerPriceGreaterThan: "if Index Price > {{value}}",
+  labelDualBeginnerPriceGreaterThanOrEqual: "if Index Price ≥ {{value}}",
+
+  labelDualBeginnerAtSettlementDay: "At Settlement Date",
+  labelDualBeginnerIndexPriceDes:
+    "Index Price is derived from some leading exchanges.",
+  labelDualBeginnerLockingDes:
+    "Your token for investment will be locked until Settlement Date.",
+  labelDualBeginnerAPR: "APR: {{APR}}",
+  labelDualBeginnerStep1Title: "Choose a token to sell or buy",
+  labelDualBeginnerStep2Title:
+    "Choose to sell or buy at desired price in the future",
+  labelDualBeginnerSellHigh: "Sell {{token}} High",
+  labelDualBeginnerBuyLow: "Buy {{token}} Low",
+  labelDualBeginnerRecieveStable: "You will receive USDC or USDT",
+  labelDualBeginnerInvestStable: "You can invest USDC or USDT",
+  labelDualBeginnerStep3Title: "Choose Target Price and Settlement Date",
+  labelDualBeginnerSellHighFor: "Sell high for {{token}}",
+  labelDualBeginnerBuyLowWith: "Buy low with {{token}}",
+
   labelInvestMyAmm: "My Investment",
   labelInvestMyDual: "My Investment",
   labelInvestMyDefi: "My Investment",
@@ -1051,4 +1087,107 @@ export default {
   labelAmmJoin: "Subscribe",
   labelDualPanelClose: "Go to My Investment",
   labelDualMobilePrice: "{{symbol}} price:",
+  labelEditCollectionSuccess: "Collection edit was successful",
+  labelEditCollectionFailed: "Collection edit has failed",
+  labelEditCollectionBtn: "Edit",
+  labelEditRestCollectionBtn: "Reset",
+  labelEditCollectionERC1155: "Edit My Collection",
+  labelDualSettlementCalculator: "Settlement Calculator",
+  labelDualSettleDateDur: "Days Till Settlement",
+  labelNoInvestContent:
+    "You currently have no investment assets. Start earning now with AMM, ETH Staking, or Dual Investments",
+  labelImportCollection: "Import Collection for Legacy NFT",
+  labelCheckImportCollectionTitle:
+    "Import legacy NFTs under contract address to proceed",
+  labelContinue: "Next",
+  labelImportCollection1: "Import Collection for Legacy NFT",
+  labelImportCollection2: "Create/Choose a collection",
+  labelImportCollection3: "Select NFTs to move into/out of collection",
+  labelSelectContractAddress: "Contract address",
+  labelImportChooseCollection:
+    "The created collection here can only be used to categorize the Legacy NFT minted without collection_metadata field.\n You can freely move those NFTs into any collection you created here.",
+  labelImportCollectionundecided: "Undecided",
+  labelImportCollectionoutside: "Others",
+  labelImportCollectioninside: "Current Collection",
+  labelImportCollectionall: "All",
+  labelImportCollectionundecidedDes:
+    "items under this contract not classified into a collection",
+  labelImportCollectionoutsideDes:
+    "items under this contract classified into a different collection",
+  labelImportCollectioninsideDes:
+    "items under this contract classified into the current collection",
+  labelImportCollectionallDes: "all items under this contract",
+  labelImportCollectionTitle: "Import Collection for Legacy NFT",
+  labelAssetTokens: "Tokens",
+  labelAssetMyInvest: "My Investments",
+  labelORCreateCollection: "Or <1>Create Collection</1>",
+  labelCreateLegacyCollection: "Create Legacy Collection",
+  labelNoLegacyCollection: "You have no Legacy Collection, please",
+  labelLegacyCollectionTitle: "Create Legacy Collection",
+  labelMoveOut: "Move out of {{symbol}}",
+  labelMoveIn: "Move into {{symbol}}",
+  labelMoveInCollection: "Collection",
+  labelSelectAll: "Select All",
+  labelCancelAll: "Cancel",
+  labelDoneBtn: "Done",
+  labelDetail: "Detail",
+  labelNFTMyCollection: "Collection: {{collection}}",
+  labelZoom: "Zoom Media",
+  labelRefresh: "Refresh NFT cache",
+  labelNFTDetailTab: "Details",
+  labelNFTPropertiesTab: "Properties",
+  labelLinkMetaData: "NFT metadata Resource link",
+  labelCountDown: "Count Down",
+  labelStackingSelect: "Choose Staking Product",
+  labelImportCollectionMove: "Collection",
+  labelCollectionImportNFTBtn: "Manage Legacy NFT",
+  labelNFTMoveFailed: "NFT move failed!",
+  labelNFTMoveSuccess: "NFT moved successful",
+  labelLuckTokenDefaultTitle: "Good Luck!",
+  labelSync: "in Sync",
+  labelMintInSyncTooltips:
+    "The NFT and collection information may not be synced up timely after minting due to onChain operation. Please stay tuned and refresh the page later.",
+  labelEstRateApr: "Est.rate (APR)",
+  labelStakingApr: "APR",
+  labelManageCollectionTitle: "Manage Legacy NFT",
+  labelLegacy: "legacy",
+  labelTitleMyNFTSAvailable: "My Holding NFTs",
+  labelTitleTotalAvailable: "Total NFTs",
+  labelEstRateAprDes:
+    "APR stands for annual percentage Rate. It is the actual annual rate of return, NOT taking into account the effect of compound interest.",
+  labelCheckImportCollectionDes:
+    "As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet.",
+  labelL2toL1NFTFailed:
+    "Sent {{value}} <span>{{symbol}}</span> to L1 has failed!",
+  labelL2toL1NFTSuccess:
+    "Sent {{value}} <span>{{symbol}}</span> to L1 was successful!",
+  labelL2toL2NFTFailed:
+    "Sent {{value}} <span>{{symbol}}</span> from my Loopring L2 to another Loopring L2 failed!",
+  labelL2toL2NFTSuccess:
+    "Sent {{value}} <span>{{symbol}}</span> was successful!",
+  labelDoAgain: "{{method}} Again",
+  labelDepositL1: "Receive from L1",
+  labelDepositNFTL1: "Receive NFT from L1",
+  labelL2ToL1Method: "Send {{symbol}} to L1",
+  labelL2ToL2Method: "Send {{symbol}} to L2",
+  labelConfirmAgainByFailed:
+    "You had a failed order, please confirm information again...",
+  labelNFTListfav: "Favorite",
+  labelNFTListhide: "Hide",
+  labelNFTListall: "Owned",
+  labelNFTHide: "Deploy Contract",
+  labelNFTUnHide: "Hide NFT",
+  labelNFTUnHideDes: "The easiest way to trade",
+  labelHideMethodTooltiphide: "Hide NFT",
+  labelHideMethodTooltipunhide: "Show NFT",
+  labelFavouriteMethodTooltipfavourite: "Favorite",
+  labelFavouriteMethodTooltipunfavourite: "Unfavorite",
+  labelfavourite: "Favorite",
+  labelunfavourite: "Unfavorite",
+  labelFavouriteSuccess: "Set {{favorite}} Successful",
+  labelFavouriteFailed: "Set {{favorite}} Failed",
+  labelhide: "Hide",
+  labelunhide: "Show",
+  labelHideSuccess: "{{hide}} NFT Successful",
+  labelHideFailed: "{{hide}} NFT Failed",
 };

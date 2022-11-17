@@ -2,6 +2,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
 import {
+  EmptyValueTag,
   globalSetup,
   MoreIcon,
   RowConfig,
@@ -27,7 +28,9 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
 
   .rdg {
     ${({ isMobile }) =>
-      !isMobile ? `` : `--template-columns: 16% 30% 44% 10% !important;`}
+      !isMobile
+        ? `--template-columns: 16% 16% 28% 6% 14% 10% 8% !important`
+        : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
   ${({ theme }) =>
@@ -73,6 +76,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       getDualAssetList,
       // idIndex,
       // tokenMap,
+      getDetail,
       dualMarketMap,
       showloading,
       showDetail,
@@ -174,6 +178,30 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           name: t("labelDualAssetFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return <>{row?.amount + " " + row.sellSymbol}</>;
+          },
+        },
+        {
+          key: "Return",
+          sortable: false,
+          width: "auto",
+          name: t("labelDualAssetReturn"),
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const { currentPrice, lessEarnView, greaterEarnView } =
+              getDetail(row);
+            const { base, quote } = currentPrice;
+            return (
+              <>
+                {(lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
+                  " " +
+                  base +
+                  "/" +
+                  (greaterEarnView === "0" ? EmptyValueTag : greaterEarnView) +
+                  " " +
+                  quote}
+              </>
+            );
           },
         },
         {

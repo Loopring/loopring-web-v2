@@ -69,7 +69,7 @@ export const QuotePage = withTranslation("common")(
                   value={tableTabValue}
                   onChange={handleTabChange}
                   disabled={showLoading}
-                  aria-label="disabled tabs example"
+                  aria-label="Market Switch"
                 >
                   <Tab label={t("labelQuotePageFavourite")} value="favourite" />
                   <Tab label={t("labelAll")} value="all" />
@@ -87,7 +87,7 @@ export const QuotePage = withTranslation("common")(
               onRowClick={(index: any, row: any, col: any) =>
                 handleRowClick(row)
               }
-              campaignTagConfig={campaignTagConfig}
+              campaignTagConfig={campaignTagConfig ?? ({} as any)}
               forexMap={forexMap as any}
               account={account}
               rawData={filteredData}

@@ -4,7 +4,7 @@ import {
   TradeFloat,
   ForexMap,
   RowConfig,
-  CAMPAIGN_TAG,
+  CAMPAIGNTAGCONFIG,
 } from "@loopring-web/common-resources";
 import { Currency } from "@loopring-web/loopring-sdk";
 
@@ -15,7 +15,7 @@ export type PoolTableProps<T, R = Row<T>> = {
   rawData: R[];
   handleWithdraw: (row: R) => void;
   handleDeposit: (row: R) => void;
-  campaignTagConfig?: CAMPAIGN_TAG[];
+  campaignTagConfig?: CAMPAIGNTAGCONFIG;
   showFilter?: boolean;
   wait?: number;
   tableHeight?: number;
@@ -34,5 +34,5 @@ export type IconColumnProps<R> = {
   row: R;
   account: Account;
   size?: number;
-  campaignTagConfig?: CAMPAIGN_TAG[];
+  campaignTagConfig?: CAMPAIGNTAGCONFIG;
 };

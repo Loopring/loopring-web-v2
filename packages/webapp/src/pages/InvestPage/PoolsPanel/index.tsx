@@ -18,7 +18,6 @@ import {
   store,
   useAccount,
   useSystem,
-  useAmmActivityMap,
   useTokenMap,
   useNotify,
 } from "@loopring-web/core";
@@ -51,7 +50,6 @@ export const PoolsPanel = withTranslation("common")(
     const container = React.useRef(null);
     const { account } = useAccount();
     const history = useHistory();
-    const theme = useTheme();
     const {
       filteredData,
       sortMethod,
@@ -138,16 +136,13 @@ export const PoolsPanel = withTranslation("common")(
                 forexMap: forexMap as any,
                 rowConfig: RowInvestConfig,
                 handleWithdraw: (row) => {
-                  // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                   const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;
-
                   setShowAmm({
                     isShow: true,
                     type: AmmPanelType.Exit,
                     symbol: pair,
                   });
                 },
-
                 handleDeposit: (row) => {
                   const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;
                   setShowAmm({

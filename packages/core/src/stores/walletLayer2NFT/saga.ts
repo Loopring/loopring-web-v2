@@ -2,56 +2,95 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getWalletLayer2NFTStatus, updateWalletLayer2NFT } from "./reducer";
 import { store, LoopringAPI } from "../../index";
 import {
+  CollectionMeta,
   CustomError,
   ErrorMap,
+  MyNFTFilter,
   NFTLimit,
 } from "@loopring-web/common-resources";
+import { PayloadAction } from "@reduxjs/toolkit";
 
 const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   page,
+  nftDatas,
   collection,
+  filter,
 }: {
   page: number;
-  collection: string | undefined;
+  nftDatas?: string;
+  collection: CollectionMeta | undefined;
+  filter?: MyNFTFilter | undefined;
 }) => {
-  // let _collection: string = collection;
-  // if (!collection) {
-  //   _collection = store.getState().walletLayer2NFT.collection;
-  // }
   const offset = (page - 1) * NFTLimit;
   const { accountId, apiKey } = store.getState().account;
   if (apiKey && accountId && LoopringAPI.userAPI) {
-    let { userNFTBalances, totalNum } = await LoopringAPI.userAPI
-      .getUserNFTBalances(
-        {
-          accountId,
-          tokenAddrs: collection,
-          limit: NFTLimit,
-          offset,
-          nonZero: true,
-          metadata: true, // close metadata
-        },
-        apiKey
-      )
-      .catch((_error) => {
-        throw new CustomError(ErrorMap.TIME_OUT);
-      });
+    let userNFTBalances, totalNum;
+    if (collection !== undefined && collection.id) {
+      ({ userNFTBalances, totalNum } = await LoopringAPI.userAPI
+        .getUserNFTBalancesByCollection(
+          {
+            accountId,
+            tokenAddress: collection.contractAddress,
+            collectionId: Number(collection.id),
+            limit: NFTLimit,
+            offset,
+            nonZero: true,
+            metadata: true, // close metadata
+            ...(nftDatas ? { nftDatas } : {}),
+            ...(filter ?? {}),
+          },
+          apiKey
+        )
+        .catch((_error) => {
+          throw new CustomError(ErrorMap.TIME_OUT);
+        }));
+    } else {
+      ({ userNFTBalances, totalNum } = await LoopringAPI.userAPI
+        .getUserNFTBalances(
+          {
+            accountId,
+            // @ts-ignore
+            tokenAddress: collection?.contractAddress ?? undefined,
+            limit: NFTLimit,
+            offset,
+            nonZero: true,
+            metadata: true, // close metadata
+            ...(nftDatas ? { nftDatas } : {}),
+            ...(filter ?? {}),
+          },
+          apiKey
+        )
+        .catch((_error) => {
+          throw new CustomError(ErrorMap.TIME_OUT);
+        }));
+    }
+
     return {
       walletLayer2NFT: userNFTBalances ?? [],
       total: totalNum,
       collection: collection,
+      filter,
       page,
     };
   }
   return {};
 };
 
-export function* getPostsSaga({ payload: { page = 1, collection } }: any) {
+export function* getPostsSaga({
+  payload: { page = 1, collection, nftDatas, filter },
+}: PayloadAction<{
+  page?: number;
+  nftDatas?: string;
+  collection: CollectionMeta | undefined;
+  filter?: MyNFTFilter | undefined;
+}>) {
   try {
     // @ts-ignore
     const walletLayer2NFT: any = yield call(getWalletLayer2NFTBalance, {
       page,
+      nftDatas,
       collection,
+      filter,
     });
     yield put(getWalletLayer2NFTStatus({ ...walletLayer2NFT }));
   } catch (err) {

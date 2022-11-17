@@ -1,6 +1,7 @@
 import React from "react";
 import { Avatar, Box, BoxProps, styled } from "@mui/material";
-import { AvatarCoinStyled, SoursURL } from "@loopring-web/common-resources";
+import { SoursURL } from "@loopring-web/common-resources";
+import { AvatarCoin } from "../../../basic-lib";
 
 const BoxStyle = styled(Box)<BoxProps & { size: number }>`
   ${({ size }) => {
@@ -36,7 +37,7 @@ export const CoinIcons = React.memo(
           justifyContent={"center"}
         >
           {coinAInfo ? (
-            <AvatarCoinStyled
+            <AvatarCoin
               imgx={coinAInfo.x}
               imgy={coinAInfo.y}
               imgheight={coinAInfo.height}
@@ -76,7 +77,7 @@ export const CoinIcons = React.memo(
             justifyContent={"center"}
           >
             {coinBInfo ? (
-              <AvatarCoinStyled
+              <AvatarCoin
                 imgx={coinBInfo.x}
                 imgy={coinBInfo.y}
                 imgheight={coinBInfo.h}

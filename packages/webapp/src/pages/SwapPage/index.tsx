@@ -9,8 +9,10 @@ import {
 import { useSwap } from "./hookSwap";
 import {
   getValuePrecisionThousand,
+  myLog,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
+import { useNotify } from "@loopring-web/core";
 
 export const SwapPage = withTranslation("common")(
   ({ ...rest }: WithTranslation) => {
@@ -35,6 +37,8 @@ export const SwapPage = withTranslation("common")(
       isMobile,
     } = useSwap({ path: "/trade/lite" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
+    const { campaignTagConfig } = useNotify().notifyMap ?? {};
+
     return (
       <Box
         display={"flex"}
@@ -59,6 +63,7 @@ export const SwapPage = withTranslation("common")(
               disabled: isSwapLoading,
               decimalsLimit: tradeCalcData.sellPrecision,
             }}
+            campaignTagConfig={campaignTagConfig ?? ({} as any)}
             market={market}
             onRefreshData={should15sRefresh}
             refreshRef={refreshRef}

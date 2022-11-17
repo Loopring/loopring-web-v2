@@ -3,6 +3,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { bindHover } from "material-ui-popup-state/es";
 import {
+  AvatarCoin,
   Button,
   Column,
   NewTagIcon,
@@ -15,7 +16,6 @@ import {
 } from "../../basic-lib";
 import {
   AmmDetail,
-  AvatarCoinStyled,
   CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -23,6 +23,7 @@ import {
   MoreIcon,
   PriceTag,
   RowConfig,
+  SCENARIO,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { Avatar, Box, BoxProps, Grid, Typography } from "@mui/material";
@@ -32,8 +33,9 @@ import { FormatterProps } from "react-data-grid";
 
 import { useSettings } from "../../../stores";
 import { TablePaddingX } from "../../styled";
-import { AmmPairDetail, TagIconList } from "../../block";
+import { AmmAPRDetail, AmmPairDetail, TagIconList } from "../../block";
 import { ActionPopContent } from "../myPoolTable/components/ActionPop";
+
 const BoxStyled = styled(Box)`` as typeof Box;
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   .rdg {
@@ -95,7 +97,7 @@ export const IconColumn = React.memo(
             justifyContent={"center"}
           >
             {coinAIcon ? (
-              <AvatarCoinStyled
+              <AvatarCoin
                 imgx={coinAIcon.x}
                 imgy={coinAIcon.y}
                 imgheight={coinAIcon.h}
@@ -134,7 +136,7 @@ export const IconColumn = React.memo(
             justifyContent={"center"}
           >
             {coinBIcon ? (
-              <AvatarCoinStyled
+              <AvatarCoin
                 imgx={coinBIcon.x}
                 imgy={coinBIcon.y}
                 imgheight={coinBIcon.h}
@@ -197,7 +199,7 @@ export const IconColumn = React.memo(
         )}
         {campaignTagConfig && (
           <TagIconList
-            scenario={"AMM"}
+            scenario={SCENARIO.Amm}
             campaignTagConfig={campaignTagConfig}
             symbol={pair}
           />
@@ -236,6 +238,13 @@ export const PoolsTable = withTranslation(["tables", "common"])(
     const { currency, isMobile } = useSettings();
 
     const getPopoverState = React.useCallback((label: string) => {
+      return usePopupState({
+        variant: "popover",
+        popupId: `popup-poolsTable-${label}`,
+      });
+    }, []);
+
+    const getPopoverAprState = React.useCallback((label: string) => {
       return usePopupState({
         variant: "popover",
         popupId: `popup-poolsTable-${label}`,
@@ -368,16 +377,50 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         width: "auto",
         maxWidth: 68,
         headerCellClass: "textAlignRight",
-        formatter: ({ row }) => {
+        formatter: ({ row, rowIdx }) => {
           const APR =
             typeof row.APR !== undefined && row.APR ? row?.APR : EmptyValueTag;
+          const popoverState = getPopoverAprState(rowIdx.toString());
           return (
             <Box className={"textAlignRight"}>
-              <Typography component={"span"}>
-                {APR === EmptyValueTag || typeof APR === "undefined"
+              <Typography
+                component={"span"}
+                style={
+                  APR === 0 ||
+                  typeof APR === "undefined" ||
+                  APR == EmptyValueTag
+                    ? {}
+                    : {
+                        cursor: "pointer",
+                        textDecoration: "underline dotted",
+                      }
+                }
+                {...bindHover(popoverState)}
+              >
+                {APR === 0 || typeof APR === "undefined" || APR == EmptyValueTag
                   ? EmptyValueTag
                   : getValuePrecisionThousand(APR, 2, 2, 2, true) + "%"}
               </Typography>
+              {!(
+                APR === 0 ||
+                typeof APR === "undefined" ||
+                APR == EmptyValueTag
+              ) && (
+                <PopoverPure
+                  className={"arrow-top-center"}
+                  {...bindPopper(popoverState)}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                  transformOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                  }}
+                >
+                  <AmmAPRDetail {...row.APRs} />
+                </PopoverPure>
+              )}
             </Box>
           );
         },
@@ -414,7 +457,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                   handleWithdraw(row as any);
                 }}
               >
-                {t("labelPoolTableRemoveLiqudity")}
+                {t("labelPoolTableRemoveLiquidity")}
               </Button>
             </Box>
           );

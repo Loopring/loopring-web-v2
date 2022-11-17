@@ -4,7 +4,6 @@ import { Box, Tab, Tabs, Typography } from "@mui/material";
 
 import { useTranslation, withTranslation } from "react-i18next";
 import {
-  ConfirmInvestDefiRisk,
   ConfirmInvestDualRisk,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -169,11 +168,12 @@ export const DefiTitle = () => {
 export const InvestPage = withTranslation("common", { withRef: true })(() => {
   let match: any = useRouteMatch("/invest/:item?");
   const history = useHistory();
-  const {
-    confirmDefiInvest: confirmDefiInvestFun,
-    confirmDualInvest: confirmDualInvestFun,
-  } = confirmation.useConfirmation();
-  const [confirmDefiInvest, setConfirmDefiInvest] = React.useState(false);
+  const { confirmDualInvest: confirmDualInvestFun } =
+    confirmation.useConfirmation();
+  const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false);
+  const onShowBeginnerModeHelp = React.useCallback((show: boolean) => {
+    setShowBeginnerModeHelp(show);
+  }, []);
   const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     (InvestRouter.includes(match?.params?.item)
@@ -240,11 +240,13 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
-        {tabIndex === InvestType.DeFi && (
-          <DeFiPanel setConfirmDefiInvest={setConfirmDefiInvest} />
-        )}
+        {tabIndex === InvestType.DeFi && <DeFiPanel />}
         {tabIndex === InvestType.Dual && (
-          <DualListPanel setConfirmDualInvest={setConfirmDualInvest} />
+          <DualListPanel
+            showBeginnerModeHelp={showBeginnerModeHelp}
+            onShowBeginnerModeHelp={onShowBeginnerModeHelp}
+            setConfirmDualInvest={setConfirmDualInvest}
+          />
         )}
         {tabIndex === InvestType.MyBalance && (
           <Box
@@ -257,17 +259,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           </Box>
         )}
       </Box>
-      <ConfirmInvestDefiRisk
-        open={confirmDefiInvest}
-        handleClose={(_e, isAgree) => {
-          // confirmDefiInvestFun(false);
-          if (!isAgree) {
-            history.goBack();
-          } else {
-            confirmDefiInvestFun();
-          }
-        }}
-      />
+
       <ConfirmInvestDualRisk
         open={confirmDualInvest}
         handleClose={(_e, isAgree) => {
@@ -275,6 +267,10 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
             history.goBack();
           } else {
             confirmDualInvestFun();
+            setShowBeginnerModeHelp(true);
+            setTimeout(() => {
+              onShowBeginnerModeHelp(false);
+            }, 5 * 1000);
           }
         }}
       />

@@ -13,7 +13,6 @@ import {
 } from "../../tradePanel/components";
 import React from "react";
 import { cloneDeep } from "lodash";
-import { WithdrawConfirm } from "../../tradePanel/components/WithdrawConfirm";
 
 export const WithdrawPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -37,9 +36,9 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
     });
 
     const [panelIndex, setPanelIndex] = React.useState(index + 1);
-    const handleConfirm = (index: number) => {
-      setPanelIndex(index);
-    };
+    // const handleConfirm = (index: number) => {
+    //   setPanelIndex(index);
+    // };
     // const hanleConfirm = () => {};
     React.useEffect(() => {
       setPanelIndex(index + 1);
@@ -64,16 +63,17 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
           key: "confirm",
           element: React.useMemo(
             () => (
+              <></>
               // @ts-ignore
-              <WithdrawConfirm
-                {...{
-                  ...rest,
-                  onWithdrawClick,
-                  type,
-                  tradeData: switchData.tradeData,
-                  handleConfirm,
-                }}
-              />
+              // <WithdrawConfirm
+              //   {...{
+              //     ...rest,
+              //     onWithdrawClick,
+              //     type,
+              //     tradeData: switchData.tradeData,
+              //     handleConfirm,
+              //   }}
+              // />
             ),
             [onWithdrawClick, rest, switchData.tradeData, type]
           ),
@@ -98,7 +98,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
                 {...{
                   ...rest,
                   type,
-                  handleConfirm,
+                  // handleConfirm,
                   chargeFeeTokenList: chargeFeeTokenList
                     ? chargeFeeTokenList
                     : [],

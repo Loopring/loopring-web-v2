@@ -18,11 +18,14 @@ import {
   WALLET_TYPE,
   EXCHANGE_TYPE,
   GET_IPFS_STRING,
+  Account,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
 import { CollectionInputProps } from "./tool";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { TOSTOBJECT } from "../../toast";
 
 /**
  * private props
@@ -105,7 +108,7 @@ export type ResetInfoProps<C> = {
 >;
 
 export type ResetExtendProps<C> = {
-  onResetClick: () => void;
+  onResetClick: (props: { isFirstTime?: boolean; isReset?: boolean }) => void;
 } & ResetInfoProps<C>;
 
 export type ResetViewProps<C extends FeeInfo> = ResetExtendProps<C>;
@@ -231,6 +234,7 @@ export type InputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
 export type DefaultProps<T, I> = {
   tradeData: T;
   disabled?: boolean;
+  lastFailed?: boolean;
 } & (
   | {
       type?: "TOKEN";
@@ -248,9 +252,11 @@ export type DefaultProps<T, I> = {
 
 type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 
-export type BasicACoinTradeViewProps<T, I> = Required<
-  DefaultWithMethodProps<T, I>
+export type BasicACoinTradeViewProps<T, I> = Omit<
+  DefaultWithMethodProps<T, I>,
+  "lastFailed"
 > & {
+  lastFailed?: boolean;
   baseURL?: string;
   getIPFSString?: (url: string | undefined, basicUrl: string) => string;
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void;
@@ -264,7 +270,7 @@ export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
 };
 export type BasicANFTTradeProps<T, I> = Omit<
   BasicACoinTradeViewProps<T, I>,
-  "coinMap"
+  "coinMap" | "lastFailed"
 > & {
   type?: "NFT";
   baseURL: string;
@@ -282,6 +288,7 @@ export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
     props: SwitchData<T>,
     switchType: "Tomenu" | "Tobutton"
   ) => Promise<void>;
+
   onChangeEvent?: (index: 0 | 1, data: SwitchData<T>) => SwitchData<T>;
   inputButtonProps?: InputButtonDefaultProps<T, I>;
 } & Partial<SwitchPanelProps<any>>;
@@ -458,3 +465,65 @@ export type CollectionAdvanceProps<_T> = {
   // handleError: (error: { code: number; message: string }) => void;
   metaData: string;
 } & BtnInfoProps;
+
+export enum ImportCollectionStep {
+  SELECTCONTRACT = 0,
+  SELECTCOLLECTION = 1,
+  SELECTNFT = 2,
+}
+
+export type CollectionManageData<NFT> = {
+  listNFT: NFT[];
+  page: number;
+  total: number;
+  toastObj: TOSTOBJECT;
+  onFilterNFT: (filter: {
+    legacyFilter: sdk.LegacyNFT | "all";
+    limit: number;
+    page: number;
+  }) => Promise<void>;
+  isLoading: boolean;
+  filter: any;
+};
+export type ImportCollectionViewProps<Co, NFT> = {
+  account: Account;
+  onContractChange: (item: string | undefined) => void;
+  onContractNext: (item: string) => void;
+  onCollectionChange: (item: Co | undefined) => void;
+  onCollectionNext: (item: Co) => void;
+  onNFTSelected: (item: NFT) => void;
+  onNFTSelectedMethod: (item: NFT[], method: CollectionMethod) => void;
+  step: ImportCollectionStep;
+  baseURL: string;
+  setStep: (step: ImportCollectionStep) => void;
+  disabled?: boolean;
+  getIPFSString: GET_IPFS_STRING;
+  onLoading?: boolean;
+  onClick: (item: string) => void;
+  data: {
+    contractList: string[];
+    selectContract:
+      | {
+          value: string;
+          total?: number;
+          list?: sdk.UserNFTBalanceInfo[];
+        }
+      | undefined;
+    selectCollection: Co | undefined;
+    selectNFTList: NFT[];
+    collectionInputProps: CollectionInputProps<any>;
+    nftProps: CollectionManageData<NFT>;
+  };
+};
+export enum CollectionMethod {
+  moveOut = "moveOut",
+  moveIn = "moveIn",
+}
+export type CollectionManageProps<Co, NFT> = {
+  collection: Partial<Co>;
+  selectedNFTS: NFT[];
+  onNFTSelected: (item: NFT | "addAll" | "removeAll") => void;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
+  onNFTSelectedMethod: (item: NFT[], method: CollectionMethod) => void;
+} & CollectionManageData<NFT>;

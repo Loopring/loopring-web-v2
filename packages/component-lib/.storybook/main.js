@@ -16,27 +16,61 @@ const hasJsxRuntime = (() => {
     return false;
   }
 })();
+const maxAssetSize = 1024 * 1024;
+
+const disableEsLint = (e) => {
+  return (
+    e.module.rules
+      .filter(
+        (e) =>
+          e.use &&
+          e.use.some((e) => e.options && void 0 !== e.options.useEslintrc)
+      )
+      .forEach((s) => {
+        e.module.rules = e.module.rules.filter((e) => e !== s);
+      }),
+    e
+  );
+};
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
+    "@storybook/addon-interactions",
     "@storybook/preset-create-react-app",
   ],
+  framework: "@storybook/react",
   typescript: {
-    reactDocgen: "none",
+    check: false,
   },
   webpackFinal: async (config, { configType }) => {
-    const isProd = configType.toLowerCase() === "production";
+    config = disableEsLint(config);
 
+    const isProd = configType.toLowerCase() === "production";
+    console.log(configType.toLowerCase());
+    // mode: isDevelopment ? 'development' : 'production',
+    console.log(
+      path.resolve(
+        __dirname,
+        "..",
+        "..",
+        "common-resources",
+        "static-resources"
+      )
+    );
     const modules = [
       ...config.resolve.modules,
-      path.resolve(__dirname, "..", "src"),
-      "node_modules/@loopring-web/common-resources",
-      //static-resources/src/loopring-interface/CoinInterface.ts
-      // path.resolve(__dirname, '..', '..', 'common-resources', "static-resources"),
-      // path.resolve(__dirname,'./'),
+      "node_modules",
+      path.resolve(
+        __dirname,
+        "..",
+        "..",
+        "common-resources",
+        "static-resources"
+      ),
     ];
+
     config.module.rules.push({
       test: /\.(mjs|js|jsx|tsx|ts)$/,
       // exclude: [/node_modules/, /dist/],
@@ -48,6 +82,7 @@ module.exports = {
           "common-resources",
           "static-resources"
         ),
+        // ...(isProd ? [path.resolve(__dirname, "..", "src")] : []),
       ],
 
       // resolve: { fullySpecified: false },
@@ -89,7 +124,8 @@ module.exports = {
               },
             },
           ],
-          "production" && require.resolve("react-refresh/babel"),
+          !isProd && require.resolve("react-refresh/babel"),
+          // "production" && require.resolve("react-refresh/babel"),
         ].filter(Boolean),
         // This is a feature of `babel-loader` for webpack (not Babel itself).
         // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -135,6 +171,7 @@ module.exports = {
 
     return {
       ...config,
+      mode: isProd ? "development" : "production",
       plugins: [...config.plugins],
       resolve: {
         ...config.resolve,
@@ -148,6 +185,16 @@ module.exports = {
           "@material-ui/core": "@mui/material",
           "@material-ui/core/Popover": "@mui/material/Popover",
         },
+      },
+      optimization: {
+        splitChunks: {
+          chunks: "all",
+          minSize: 30 * 1024,
+          maxSize: maxAssetSize,
+        },
+      },
+      performance: {
+        maxAssetSize: maxAssetSize,
       },
     };
   },

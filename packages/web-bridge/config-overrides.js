@@ -9,11 +9,16 @@ const {
 } = require("customize-cra");
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin"); //installed via npm
 
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 // const rewireLess = require('react-app-rewire-less')
+
+const { alias } = require("react-app-rewire-alias");
+
 const path = require("path");
+
 const GitRevisionPlugin = require("git-revision-webpack-plugin");
 const gitRevisionPlugin = new GitRevisionPlugin();
 
@@ -107,64 +112,19 @@ module.exports = override(
     console.log("-----> enter config!!!!!!!");
 
     const setConfig = (index) => {
-      let babelLoader = config.module.rules[1].oneOf[index];
       console.log("-----> enter setConfig!!!!!!! index:", index);
+      let babelLoader = config.module.rules[1].oneOf[index];
       babelLoader.include = babelLoader.include.replace("/web-bridge/src", "");
       config.module.rules[1].oneOf[index] = babelLoader;
     };
 
     setConfig(4);
-
-    // addCompression()
-
-    // addAnalyzer()
-
-    // setConfig(3);
-
-    /*
-    const oneOf_loc = config.module.rules.findIndex((n) => n.oneOf) // 这里的config是全局的
-    config.module.rules[oneOf_loc].oneOf = [
-      {
-        test: /\.module\.less$/,
-        use: getStyleLoaders(
-          {
-            importLoaders: 2,
-            modules: {
-              getLocalIdent: getCSSModuleLocalIdent,
-            },
-          },
-          'less-loader',
-        ),
-      },
-      ...config.module.rules[oneOf_loc].oneOf,
-    ]
-
-    config.resolve.modules = [
-      path.resolve(__dirname, "..", "src"),
-      "node_modules",
-
-    ]*/
     config.resolve.alias = {
       ...config.resolve.alias,
       "@material-ui/core/Menu": "@mui/material/Menu",
       "@material-ui/core": "@mui/material",
       "@material-ui/core/Popover": "@mui/material/Popover",
     };
-    // config.resolve = [
-    //   alias({
-    //
-    //   })(config)
-    // ]
-
     return config;
   }
-  /*
-  function override(config, env) {
-    config = rewireLess.withLoaderOptions({
-      javascriptEnabled: true,
-    })(config, env)
-
-    return config
-  },
-  */
 );

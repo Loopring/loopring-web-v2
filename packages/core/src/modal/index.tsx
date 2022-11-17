@@ -22,7 +22,6 @@ import { ModalCoinPairPanel } from "./AmmPoolModal";
 export const ModalGroup = withTranslation("common")(
   ({
     isLayer1Only,
-    onAccountInfoPanelClose,
     onWalletConnectPanelClose,
     depositProps,
     assetsRawData,
@@ -32,7 +31,6 @@ export const ModalGroup = withTranslation("common")(
     depositProps: DepositProps<any, any>;
     assetsRawData: AssetsRawDataItem[];
     onWalletConnectPanelClose?: (event: MouseEvent) => void;
-    onAccountInfoPanelClose?: (event: MouseEvent) => void;
   }) => {
     const { etherscanBaseUrl } = useSystem();
     const {
@@ -97,7 +95,6 @@ export const ModalGroup = withTranslation("common")(
             etherscanBaseUrl,
             account,
             open: isShowAccount.isShow,
-            onClose: onAccountInfoPanelClose,
             depositProps,
             isLayer1Only,
           }}
@@ -133,3 +130,4 @@ export const ModalGroup = withTranslation("common")(
   }
 );
 export * from "./DualModal";
+export * from "./AccountModal/components/NFTDetail";

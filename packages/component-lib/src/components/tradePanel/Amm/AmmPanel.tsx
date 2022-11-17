@@ -72,11 +72,7 @@ const WrapStyle = styled(Box)<
 
 const TabPanelBtn = ({ t, value, handleChange }: WithTranslation & any) => {
   return (
-    <Tabs
-      value={value}
-      onChange={handleChange}
-      aria-label="disabled tabs example"
-    >
+    <Tabs value={value} onChange={handleChange} aria-label="Amm Method Tab">
       <Tab label={t("labelLiquidityDeposit")} value={0} />
       <Tab label={t("labelLiquidityWithdraw")} value={1} />
     </Tabs>

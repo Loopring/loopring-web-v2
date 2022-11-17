@@ -18,8 +18,8 @@ import {
   UIERROR_CODE,
   AddressError,
   EXCHANGE_TYPE,
-  TOAST_TIME,
   LIVE_FEE_TIMES,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -35,18 +35,22 @@ import {
   store,
   useAddressCheck,
   useBtnStatus,
-  useWalletLayer2Socket,
   walletLayer2Service,
-  checkErrorInfo,
   useModalData,
   isAccActivated,
   useChargeFees,
   useWalletLayer2NFT,
   useSystem,
+  useWalletLayer2WithNFTSocket,
   getIPFSString,
+  LAST_STEP,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useHistory, useLocation } from "react-router-dom";
+import {
+  useHistory,
+  useLocation,
+  // useLocation
+} from "react-router-dom";
 
 export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
@@ -63,7 +67,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const history = useHistory();
-  const { search } = useLocation();
+  const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
 
   const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
@@ -171,8 +175,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isNotAvailableAddress,
     sureIsAllowAddress,
   ]);
-
-  useWalletLayer2Socket({});
+  const walletLayer2Callback = React.useCallback(() => {
+    checkFeeIsEnough();
+  }, []);
+  useWalletLayer2WithNFTSocket({ walletLayer2Callback });
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
       checkFeeIsEnough();
@@ -232,7 +238,11 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+        if (
+          connectProvides.usedWeb3 &&
+          LoopringAPI.userAPI &&
+          isAccActivated()
+        ) {
           let isHWAddr = checkHWAddr(account.accAddress);
 
           if (!isHWAddr && !isNotHardwareWallet) {
@@ -258,111 +268,45 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
           );
           myLog("submitNFTWithdraw:", response);
 
-          if (isAccActivated()) {
-            if (
-              (response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message
-            ) {
-              const code = checkErrorInfo(
-                response as sdk.RESULT_INFO,
-                isNotHardwareWallet
-              );
-              if (code === sdk.ConnectorError.USER_DENIED) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTWithdraw_User_Denied,
-                });
-              } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                setLastRequest({ request });
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTWithdraw_First_Method_Denied,
-                  info: {
-                    symbol: nftWithdrawValue.name,
-                  },
-                });
-              } else {
-                if (
-                  [102024, 102025, 114001, 114002].includes(
-                    (response as sdk.RESULT_INFO)?.code || 0
-                  )
-                ) {
-                  checkFeeIsEnough({ isRequiredAPI: true });
-                }
-
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTWithdraw_Failed,
-                  error: response as sdk.RESULT_INFO,
-                  info: {
-                    symbol: nftWithdrawValue.name,
-                  },
-                });
-              }
-            } else if ((response as sdk.TX_HASH_API)?.hash) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTWithdraw_In_Progress,
-              });
-              await sdk.sleep(TOAST_TIME);
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTWithdraw_Success,
-                info: {
-                  symbol: nftWithdrawValue.name,
-                  hash:
-                    Explorer +
-                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftWithdraw${
-                      account.accountId
-                    }-${request.token.tokenId}-${request.storageId}`,
-                },
-              });
-              if (isHWAddr) {
-                myLog("......try to set isHWAddr", isHWAddr);
-                updateHW({ wallet: account.accAddress, isHWAddr });
-              }
-              walletLayer2Service.sendUserUpdate();
-              if (nftWithdrawValue.collectionMeta) {
-                history.push({
-                  pathname: `/NFT/assetsNFT/byCollection/${nftWithdrawValue.collectionMeta?.contractAddress}|${nftWithdrawValue.collectionMeta?.id}`,
-                  search,
-                });
-                updateWalletLayer2NFT({
-                  page: Number(searchParams.get("collectionPage")) ?? 1,
-                  collection: nftWithdrawValue.collectionMeta?.contractAddress,
-                });
-              } else {
-                history.push({
-                  pathname: `/NFT/assetsNFT/byList`,
-                  search,
-                });
-                updateWalletLayer2NFT({
-                  page,
-                  collection: undefined,
-                });
-              }
-              setShowNFTDetail({ isShow: false });
-              resetNFTWithdrawData();
-            }
-          } else {
-            resetNFTWithdrawData();
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
+          }
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTWithdraw_In_Progress,
+          });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTWithdraw_Success,
+            info: {
+              symbol: nftWithdrawValue.name,
+              hash:
+                Explorer +
+                `tx/${(response as sdk.TX_HASH_API)?.hash}-nftWithdraw${
+                  account.accountId
+                }-${request.token.tokenId}-${request.storageId}`,
+            },
+          });
+          if (isHWAddr) {
+            myLog("......try to set isHWAddr", isHWAddr);
+            updateHW({ wallet: account.accAddress, isHWAddr });
+          }
+          walletLayer2Service.sendUserUpdate();
+          resetNFTWithdrawData();
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+            searchParams.delete("detail");
+            history.push(pathname + "?" + searchParams.toString());
           }
         }
-      } catch (reason: any) {
-        sdk.dumpError400(reason);
-        const code = checkErrorInfo(reason, isNotHardwareWallet);
-        myLog("code:", code);
-
-        if (isAccActivated()) {
-          if (code === sdk.ConnectorError.USER_DENIED) {
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.NFTWithdraw_User_Denied,
-              info: {
-                symbol: nftWithdrawValue.name,
-              },
-            });
-          } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+      } catch (e: any) {
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setLastRequest({ request });
             setShowAccount({
               isShow: true,
@@ -371,7 +315,26 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
                 symbol: nftWithdrawValue.name,
               },
             });
-          } else {
+            break;
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            setLastRequest({ request });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTWithdraw_User_Denied,
+              info: {
+                symbol: nftWithdrawValue.name,
+              },
+            });
+            break;
+          default:
+            if (
+              [102024, 102025, 114001, 114002].includes(
+                (e as sdk.RESULT_INFO)?.code || 0
+              )
+            ) {
+              checkFeeIsEnough({ isRequiredAPI: true });
+            }
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTWithdraw_Failed,
@@ -380,10 +343,16 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
               },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
-                msg: reason?.message,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
               },
             });
-          }
+            break;
         }
       }
     },
@@ -528,6 +497,9 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isCFAddress,
     getIPFSString,
     baseURL,
+    lastFailed:
+      store.getState().modals.isShowAccount.info?.lastFailed ===
+      LAST_STEP.nftWithdraw,
     isContractAddress: isContract1XAddress,
     isAddressCheckLoading,
     addrStatus,

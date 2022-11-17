@@ -29,9 +29,9 @@ export function getTimestampDaysLater(days: number, date: Date = new Date()) {
 }
 
 export function getContactInfo(
-  subject: string = "report to loopring website",
-  body: string = "Body Content"
+  _subject: string = "report to loopring website",
+  _body: string = "Body Content"
 ) {
   // const email = process.env.CONTACT_US_EMAIL ?? 'contact@loopring.io'
-  return `https://loopring.io/#/report`;
+  return `https://loopring.zohodesk.com/portal/en/newticket`;
 }

@@ -4,7 +4,6 @@ import { Meta, Story } from "@storybook/react/types-6-0";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { MemoryRouter } from "react-router-dom";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { gatewayList } from "@loopring-web/common-resources";
 import { ModalWalletConnect } from "./WalletConnect";
 
 import {
@@ -18,7 +17,6 @@ import {
   CreateAccount_Submit,
   CreateAccount_WaitForAuth,
   Deposit_Approve_Denied,
-  Deposit_Approve_Submit,
   Deposit_Approve_WaitForAuth,
   Deposit_Denied,
   Deposit_Failed,
@@ -51,6 +49,7 @@ import {
 } from "./ModalPanels";
 import { account } from "../../static";
 import { ConnectProviders } from "@loopring-web/web3-provider";
+import { gatewayList } from "@loopring-web/common-resources";
 
 const Style = styled.div`
   flex: 1;
@@ -197,27 +196,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
           />
         ),
       },
-      [AccountStep.Deposit_Approve_Submit]: {
-        view: (
-          <Deposit_Approve_Submit
-            btnInfo={closeBtn}
-            txCheck={{
-              route: "",
-              callback: () => {},
-            }}
-            link={{
-              name: "最近充值记录",
-              url: "http://demo.com",
-            }}
-            providerName={account.connectName as ConnectProviders}
-            {...{
-              ...rest,
-              symbol: "LRC",
-              value: "1.2121",
-            }}
-          />
-        ),
-      },
+
       [AccountStep.Deposit_WaitForAuth]: {
         view: (
           <Deposit_WaitForAuth

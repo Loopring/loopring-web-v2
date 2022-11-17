@@ -2,13 +2,21 @@ import {
   CollectionMeta,
   GET_IPFS_STRING,
   ImageIcon,
+  LegacyIcon,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
-import { Box, BoxProps } from "@mui/material";
-import { cssBackground, EmptyDefault, NftImage, useImage } from "../../index";
+import { Box, BoxProps, Tooltip, Typography } from "@mui/material";
+import {
+  cssBackground,
+  EmptyDefault,
+  MediaLabelStyled,
+  NftImage,
+  useImage,
+} from "../../index";
 import styled from "@emotion/styled";
+import { useTranslation } from "react-i18next";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -44,7 +52,7 @@ export const CollectionMedia = React.memo(
       ref: React.ForwardedRef<any>
     ) => {
       const theme = useTheme();
-      // const { t } = useTranslation("");
+      const { t } = useTranslation();
       const { hasLoaded, hasError } = useImage(
         getIPFSString(item.tileUri, baseURL) ?? ""
       );
@@ -64,6 +72,7 @@ export const CollectionMedia = React.memo(
           alignItems={"center"}
           justifyContent={"center"}
           onClick={onClick}
+          className={"media"}
         >
           {!hasLoaded ? (
             <Box
@@ -121,6 +130,31 @@ export const CollectionMedia = React.memo(
                 />
               )}
             </Box>
+          )}
+          {item.isCounterFactualNFT && item.baseUri === "" ? (
+            <MediaLabelStyled
+              position={"absolute"}
+              left={0}
+              top={0}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              colorbg={"var(--color-warning)"}
+            >
+              <LegacyIcon
+                color={"inherit"}
+                htmlColor={"var(--color-text-button)"}
+              />
+              <Typography
+                color={"var(--color-text-button)"}
+                component={"span"}
+                paddingLeft={1}
+              >
+                {t("labelLegacy")}
+              </Typography>
+            </MediaLabelStyled>
+          ) : (
+            ""
           )}
         </BoxStyle>
       );

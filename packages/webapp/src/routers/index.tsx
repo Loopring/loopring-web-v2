@@ -12,6 +12,7 @@ import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
+  hexToRGB,
   SagaStatus,
   setMyLog,
   ThemeType,
@@ -83,7 +84,6 @@ const WrapModal = () => {
       isLayer1Only={
         /(guardian)|(depositto)/gi.test(location.pathname ?? "") ? true : false
       }
-      onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
     />
   );
 };

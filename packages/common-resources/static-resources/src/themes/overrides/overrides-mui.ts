@@ -328,6 +328,10 @@ export const MuiButton = ({
           borderColor: colorBase.textPrimary,
           backgroundColor: colorBase.box,
         },
+        "&.MuiContained-sizeMedium": {
+          height: pxToRem(40),
+          fontSize: pxToRem(14),
+        },
         "&.Mui-disabled": {
           // backgroundColor: colorBase.defaultDisable,
           color: colorBase.textDisable,
@@ -336,12 +340,6 @@ export const MuiButton = ({
           // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
         },
       },
-
-      // outlinedSecondary:{
-      //     borderColor: colorBase.primaryLight,
-      //     color: colorBase.primaryLight,
-      //     '&:hover': {borderColor: colorBase.primary},
-      // },
     },
   };
 };
@@ -376,9 +374,7 @@ export const MuiPaper = ({
         backgroundColor: colorBase.popBg,
         "&.MuiPopover-paper": {
           backgroundImage: "none",
-          // backgroundColor: colorBase.popBg
-          // backgroundColor: colorBase.background().popupBg2,
-          // backgroundColor: colorBase.popBg,
+          boxShadow: colorBase.shadowHover,
         },
       },
     },

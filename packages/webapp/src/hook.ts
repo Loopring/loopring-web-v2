@@ -26,6 +26,7 @@ import {
 import { useAccountInit } from "./hookAccountInit";
 import { useSettings } from "@loopring-web/component-lib";
 import { useTheme } from "@emotion/react";
+import moment from "moment";
 
 /**
  * @description

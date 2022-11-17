@@ -1,5 +1,7 @@
 export interface Confirmation {
   confirmed: boolean;
-  confirmedDefiInvest: boolean;
+  confirmedRETHDefiInvest: boolean;
+  confirmedWSETHDefiInvest: boolean;
   confirmedDualInvest: boolean;
+  showDualBeginnerHelp: boolean;
 }

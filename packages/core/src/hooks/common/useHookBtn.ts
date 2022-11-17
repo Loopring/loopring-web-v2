@@ -15,7 +15,7 @@ export const useSubmitBtn = ({
   submitCallback: (...props: any[]) => any;
   availableTradeCheck: (...props: any[]) => {
     tradeBtnStatus: TradeBtnStatus;
-    label: string;
+    label: string | undefined;
   };
   isLoading: boolean;
 }) => {

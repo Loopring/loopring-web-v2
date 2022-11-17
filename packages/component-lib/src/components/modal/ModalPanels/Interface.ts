@@ -1,7 +1,7 @@
 import { ButtonProps } from "../../basic-lib";
 import {
   Account,
-  CAMPAIGN_TAG,
+  CAMPAIGNTAGCONFIG,
   FeeInfo,
   NFTWholeINFO,
   TradeTypes,
@@ -27,6 +27,7 @@ export type AccountBaseProps = {
 
 export enum AccountStep {
   CheckingActive,
+  // ImportLegacyCollection,
   AddAssetGateway,
   SendAssetGateway,
   SendNFTGateway,
@@ -39,7 +40,6 @@ export enum AccountStep {
   Deposit_Sign_WaitForRefer,
   Deposit_Approve_WaitForAuth,
   Deposit_Approve_Denied,
-  Deposit_Approve_Submit,
   Deposit_WaitForAuth,
   Deposit_Denied,
   Deposit_Failed,
@@ -47,7 +47,6 @@ export enum AccountStep {
 
   NFTDeposit_Approve_WaitForAuth,
   NFTDeposit_Approve_Denied,
-  NFTDeposit_Approve_Submit,
   NFTDeposit_WaitForAuth,
   NFTDeposit_Denied,
   NFTDeposit_Failed,
@@ -151,10 +150,11 @@ export enum AccountStep {
 export interface VendorMenuProps {
   // termUrl: string;
   type?: TradeTypes;
+  banxaRef?: React.Ref<any>;
   vendorList: VendorItem[];
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;
-  campaignTagConfig?: CAMPAIGN_TAG[];
+  campaignTagConfig?: CAMPAIGNTAGCONFIG;
 }
 interface InferfaceAssetItem {
   key: string;
@@ -206,4 +206,13 @@ export interface CheckActiveStatusProps<C = FeeInfo> {
   onIKnowClick: () => void;
   knowDisable: boolean;
   know: boolean;
+}
+export interface CheckImportCollectionProps {
+  account: Account;
+  value: string;
+  onChange: (item: string) => void;
+  contractList: string[];
+  disabled?: boolean;
+  loading?: boolean;
+  onClick: (item: string) => void;
 }

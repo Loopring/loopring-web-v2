@@ -55,10 +55,10 @@ export const ColorDarkDefault = Object.freeze({
 
   /********************CSS shadow *******************/
   shadow: ` 0px 4px 4px ${hexToRGB("#000000", ".25")}`,
-  shadowHeader: `0px 4px 8px rgba(0, 0, 0, 0.15)`,
-  shadow2: `0px -4px 8px rgba(0, 0, 0, 0.15)`,
-  shadowHover: `0px 10px 20px rgba(0, 0, 0, 0.45)`,
-  shadow3: `0px 10px 20px rgba(0, 0, 0, 0.15)`,
+  shadowHeader: `0px 4px 8px  ${hexToRGB("#000000", ".15")}`,
+  shadow2: `0px -4px 8px ${hexToRGB("#000000", ".15")}`,
+  shadowHover: `0px 10px 20px  ${hexToRGB("#000000", ".45")}`,
+  shadow3: `0px 10px 20px ${hexToRGB("#000000", ".15")}`,
 
   /********************Case for provider*******************/
   white: "#ffffff",
@@ -67,7 +67,14 @@ export const ColorDarkDefault = Object.freeze({
   providerBtn: `${hexToRGB("#ffffff", "0.1")}`,
   providerBtnHover: `${hexToRGB("#ffffff", "0.03")}`,
   providerApprove: `${hexToRGB("#ffffff", "0.03")}`,
-  boxNFTLabel: `${hexToRGB("#000000", "0.3")}`,
+  boxNFTLabel: `${hexToRGB("#000000", "0.48")}`,
+
+  redPock1: `linear-gradient(96.56deg, #FFD596 1.14%, #FFD390 46.4%, #FDBD6A 98.91%)`,
+  redPock0: `linear-gradient(95.9deg, #FC7A5A 0.7%, #FF6151 99.3%);`,
+  redPock1Disabled: `${hexToRGB("#F6F7FB", "0.5")}`,
+  redPockText1: "#A25402",
+  redPockText0: "#FFF7B1",
+  redPockBorder: "1px dashed rgba(255, 255, 255, 0.2)",
 });
 
 export const ColorLightDefault = Object.freeze({
@@ -114,11 +121,11 @@ export const ColorLightDefault = Object.freeze({
   buttonIcon: "#15162B",
 
   /********************CSS shadow *******************/
-  shadow: `0px 10px 20px rgba(87, 129, 236, 0.08)`,
-  shadowHeader: `0px 4px 8px rgba(87, 102, 236, 0.1)`,
-  shadow2: `0px -4px 8px rgba(87, 102, 236, 0.1)`,
-  shadowHover: `0px 10px 20px rgba(87, 129, 236, 0.25)`,
-  shadow3: `0px 10px 20px rgba(87, 129, 236, 0.1)`,
+  shadow: `0px 10px 20px ${hexToRGB("#5781EC", "0.08")}`,
+  shadowHeader: `0px 4px 8px ${hexToRGB("#5766EC", "0.1")}`,
+  shadow2: `0px -4px 8px ${hexToRGB("#5766EC", "0.1")}`,
+  shadowHover: `0px 10px 20px  ${hexToRGB("#5781EC", "0.25")}`,
+  shadow3: `0px 10px 20px  ${hexToRGB("#5781EC", "0.1")}`,
 
   /********************Case for provider*******************/
   white: "#ffffff",
@@ -128,6 +135,13 @@ export const ColorLightDefault = Object.freeze({
   providerBtnHover: `${hexToRGB("#3B5AF4", "0.15")}`,
   providerApprove: `#F6F7FB`,
   boxNFTLabel: `${hexToRGB("#6787FF", "0.08")}`,
+
+  redPock1: `linear-gradient(96.56deg, #FFD596 1.14%, #FFD390 46.4%, #FDBD6A 98.91%)`,
+  redPock0: `linear-gradient(95.9deg, #FC7A5A 0.7%, #FF6151 99.3%);`,
+  redPock1Disabled: `${hexToRGB("#F6F7FB", "0.5")}`,
+  redPockText1: "#A25402",
+  redPockText0: "#FFF7B1",
+  redPockBorder: "1px dashed rgba(255, 255, 255, 0.2)",
 });
 
 export type ColorBaseInterface = typeof ColorDarkDefault;

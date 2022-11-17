@@ -1,7 +1,7 @@
 export default {
   labelConnectUsSimple: "Please <1>contact us</1>.",
   labelConnectUs:
-    "If you believe this is indeed a bug, please <1>contact us</1>. <2/> We would appreciate your feedback.",
+    "If you believe this is indeed a bug, please <1>&nbsp; contact us</1>. We would appreciate your feedback.",
   errorBase: "Oops! Something went wrong.",
   errorTimeout: "Oops! Something went wrong at network.",
   errorLoading: "Loading! Please wait...",
@@ -50,4 +50,6 @@ export default {
   errorIpfsTimeout: "IPFS Gateway timeout, please try again",
   errorRampNoInstance: "Ramp Widget had out-off service, please re-order it.",
   errorDualExpired: "The order has expired.",
+  errorPrivateKey: "Signature Wrong private key",
+  errorNoResponse: "No response!",
 };

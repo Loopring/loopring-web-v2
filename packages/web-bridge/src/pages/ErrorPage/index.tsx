@@ -16,7 +16,6 @@ const StyleBox = styled(Box)`
 ` as typeof Box;
 
 export const ErrorPage = ({ messageKey }: ErrorObject) => {
-  // const {messageKey}: { id?:string,messageKey:string } = {messageKey: 'errorMessageTokenMapIsEmpty'};
   const { t } = useTranslation("error");
   const message = `labelConnectUs`;
   return (
@@ -35,7 +34,7 @@ export const ErrorPage = ({ messageKey }: ErrorObject) => {
         >
           {/*<StyleBox>*/}
           <Box textAlign={"center"} position={"relative"} left={128} top={-64}>
-            <Typography component={"h2"} variant={"h3"}>
+            <Typography component={"h2"} variant={"h3"} whiteSpace={"pre-line"}>
               {t(messageKey)}
             </Typography>
             <Typography
@@ -43,29 +42,29 @@ export const ErrorPage = ({ messageKey }: ErrorObject) => {
               component={"p"}
               variant={"body1"}
               color={"textSecondary"}
+              whiteSpace={"pre-line"}
             >
-              <Trans i18nKey={message}>
+              <Trans i18nKey={message} ns={"error"}>
                 If you believe this is indeed a bug, please
                 <Link
                   component={"a"}
+                  sx={{
+                    display: "inline-flex",
+                  }}
                   onClick={(e) => {
-                    window.location.href = getContactInfo();
+                    window.open(getContactInfo(), "_blank");
+                    window.opener = null;
                     e.preventDefault();
                   }}
                 >
-                  contact us
+                  &nbsp; contact us
                 </Link>
                 <br /> We would appreciate your feedback
               </Trans>
-              {/*{t(message)}*/}
-              {/*{t(messageKey)}*/}
             </Typography>
           </Box>
-          {/*</StyleBox>*/}
         </StyleBox>
       </Container>
-
-      {/*<Footer></Footer>*/}
     </>
   );
 };

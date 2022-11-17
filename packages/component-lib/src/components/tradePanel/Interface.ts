@@ -1,4 +1,5 @@
 import {
+  CAMPAIGNTAGCONFIG,
   CoinKey,
   FeeInfo,
   IBData,
@@ -142,6 +143,7 @@ export type SwapProps<T, I, TCD> = {
   onRefreshData?: () => void;
   toPro?: () => void;
   tradeData: SwapTradeData<T> | undefined;
+  campaignTagConfig: CAMPAIGNTAGCONFIG;
   handleSwapPanelEvent: (
     data: SwapData<SwapTradeData<T>>,
     switchType:

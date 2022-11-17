@@ -23,8 +23,8 @@ import {
   UIERROR_CODE,
   AddressError,
   WALLET_TYPE,
-  TOAST_TIME,
   LIVE_FEE_TIMES,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -37,19 +37,20 @@ import {
   store,
   useAddressCheck,
   useBtnStatus,
-  checkErrorInfo,
   useModalData,
   isAccActivated,
   useChargeFees,
   useWalletLayer2NFT,
-  useWalletLayer2Socket,
+  useWalletLayer2WithNFTSocket,
   walletLayer2Service,
   useSystem,
   getIPFSString,
+  useWalletLayer2,
+  LAST_STEP,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useHistory, useLocation } from "react-router-dom";
 import Web3 from "web3";
+import { useHistory, useLocation } from "react-router-dom";
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const [memo, setMemo] = React.useState("");
@@ -66,10 +67,12 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
+  const { updateWalletLayer2 } = useWalletLayer2();
+
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
   const history = useHistory();
-  const { search } = useLocation();
+  const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
 
   const [sureItsLayer2, setSureItsLayer2] =
@@ -107,6 +110,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     isAddressCheckLoading,
     isSameAddress,
   } = useAddressCheck();
+
   React.useEffect(() => {
     setSureItsLayer2(undefined);
   }, [realAddr]);
@@ -165,8 +169,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     nftTransferValue.tradeValue,
     nftTransferValue.fee,
   ]);
-
-  useWalletLayer2Socket({});
+  const walletLayer2Callback = React.useCallback(() => {
+    checkFeeIsEnough();
+  }, []);
+  useWalletLayer2WithNFTSocket({ walletLayer2Callback });
 
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
@@ -205,12 +211,14 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   React.useEffect(() => {
     if (isShow || info?.isShowLocal) {
+      updateWalletLayer2();
       resetDefault();
     } else {
       resetIntervalTime();
     }
     return () => {
       resetIntervalTime();
+      setAddress("");
     };
   }, [isShow, info?.isShowLocal]);
 
@@ -234,9 +242,12 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       isNotHardwareWallet: boolean
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
-
       try {
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+        if (
+          connectProvides.usedWeb3 &&
+          LoopringAPI.userAPI &&
+          isAccActivated()
+        ) {
           let isHWAddr = checkHWAddr(account.accAddress);
 
           if (!isHWAddr && !isNotHardwareWallet) {
@@ -264,108 +275,48 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           );
 
           myLog("submitInternalTransfer:", response);
-          if (isAccActivated()) {
-            if (
-              (response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message
-            ) {
-              const code = checkErrorInfo(
-                response as sdk.RESULT_INFO,
-                isNotHardwareWallet
-              );
-              if (code === sdk.ConnectorError.USER_DENIED) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTTransfer_User_Denied,
-                });
-                // setIsConfirmTransfer(false);
-              } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTTransfer_First_Method_Denied,
-                  info: {
-                    symbol: nftTransferValue.name,
-                  },
-                });
-              } else {
-                if (
-                  [102024, 102025, 114001, 114002].includes(
-                    (response as sdk.RESULT_INFO)?.code || 0
-                  )
-                ) {
-                  checkFeeIsEnough({ isRequiredAPI: true });
-                }
 
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.NFTTransfer_Failed,
-                  error: response as sdk.RESULT_INFO,
-                  info: {
-                    symbol: nftTransferValue.name,
-                  },
-                });
-                // setIsConfirmTransfer(false);
-              }
-            } else if ((response as sdk.TX_HASH_API)?.hash) {
-              // setIsConfirmTransfer(false);
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTTransfer_In_Progress,
-              });
-              await sdk.sleep(TOAST_TIME);
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTTransfer_Success,
-                info: {
-                  symbol: nftTransferValue.name,
-                  hash:
-                    Explorer +
-                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftTransfer-${
-                      account.accountId
-                    }-${request.token.tokenId}-${request.storageId}`,
-                },
-              });
-              if (isHWAddr) {
-                myLog("......try to set isHWAddr", isHWAddr);
-                updateHW({ wallet: account.accAddress, isHWAddr });
-              }
-              walletLayer2Service.sendUserUpdate();
-              if (nftTransferValue.collectionMeta) {
-                history.push({
-                  pathname: `/NFT/assetsNFT/byCollection/${nftTransferValue.collectionMeta?.contractAddress}|${nftTransferValue.collectionMeta?.id}`,
-                  search,
-                });
-                updateWalletLayer2NFT({
-                  page: Number(searchParams.get("collectionPage")) ?? 1,
-                  collection: nftTransferValue.collectionMeta?.contractAddress,
-                });
-              } else {
-                history.push({
-                  pathname: `/NFT/assetsNFT/byList`,
-                  search,
-                });
-                updateWalletLayer2NFT({
-                  page,
-                  collection: undefined,
-                });
-              }
-              setShowNFTDetail({ isShow: false });
-              resetNFTTransferData();
-            }
-          } else {
-            resetNFTTransferData();
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
+          }
+          // setIsConfirmTransfer(false);
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTTransfer_In_Progress,
+          });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTTransfer_Success,
+            info: {
+              symbol: nftTransferValue.name,
+              hash:
+                Explorer +
+                `tx/${(response as sdk.TX_HASH_API)?.hash}-nftTransfer-${
+                  account.accountId
+                }-${request.token.tokenId}-${request.storageId}`,
+            },
+          });
+          if (isHWAddr) {
+            myLog("......try to set isHWAddr", isHWAddr);
+            updateHW({ wallet: account.accAddress, isHWAddr });
+          }
+          walletLayer2Service.sendUserUpdate();
+          resetNFTTransferData();
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
+            searchParams.delete("detail");
+            history.push(pathname + "?" + searchParams.toString());
           }
         }
-      } catch (reason: any) {
-        const code = checkErrorInfo(reason, isNotHardwareWallet);
-
-        if (isAccActivated()) {
-          if (code === sdk.ConnectorError.USER_DENIED) {
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.NFTTransfer_User_Denied,
-            });
-          } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+      } catch (e: any) {
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
+            setLastRequest({ request });
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTTransfer_First_Method_Denied,
@@ -373,7 +324,23 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
                 symbol: nftTransferValue.name,
               },
             });
-          } else {
+            break;
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            setLastRequest({ request });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTTransfer_User_Denied,
+            });
+            break;
+          default:
+            if (
+              [102024, 102025, 114001, 114002].includes(
+                (e as sdk.RESULT_INFO)?.code || 0
+              )
+            ) {
+              checkFeeIsEnough({ isRequiredAPI: true });
+            }
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTTransfer_Failed,
@@ -382,10 +349,16 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
               },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
-                msg: reason?.message,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
               },
             });
-          }
+            break;
         }
       }
     },
@@ -473,11 +446,12 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
           processRequest(req, isFirstTime);
         } catch (e: any) {
-          sdk.dumpError400(e);
-          // nftTransfer failed
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTTransfer_Failed,
+            info: {
+              symbol: nftTransferValue?.name,
+            },
             error: {
               code: UIERROR_CODE.UNKNOWN,
               msg: e?.message,
@@ -542,6 +516,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     type: "NFT",
     addressDefault: address,
     realAddr,
+    lastFailed:
+      store.getState().modals.isShowAccount.info?.lastFailed ===
+      LAST_STEP.nftTransfer,
     handleSureItsLayer2: (sure: WALLET_TYPE) => {
       setSureItsLayer2(sure);
     },

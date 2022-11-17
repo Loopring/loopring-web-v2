@@ -64,7 +64,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>({
               tileUri: collectionAdvanceValue.tileUri?.trim(),
               owner: account.accAddress,
               nftFactory: sdk.NFTFactory_Collection[chainId],
-            } as sdk.CollectionMeta,
+            } as sdk.CollectionBasicMeta,
             chainId as any,
             account.apiKey,
             account.eddsaKey.sk

@@ -22,10 +22,10 @@ import {
   WithdrawTypes,
   AddressError,
   EXCHANGE_TYPE,
-  TOAST_TIME,
   LIVE_FEE_TIMES,
   getValuePrecisionThousand,
   globalSetup,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -45,10 +45,10 @@ import {
   useWalletLayer2Socket,
   walletLayer2Service,
   useSystem,
-  checkErrorInfo,
   useModalData,
   isAccActivated,
   store,
+  LAST_STEP,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import _ from "lodash";
@@ -405,7 +405,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+        if (
+          connectProvides.usedWeb3 &&
+          LoopringAPI.userAPI &&
+          isAccActivated()
+        ) {
           let isHWAddr = checkHWAddr(account.accAddress);
           if (!isHWAddr && !isNotHardwareWallet) {
             isHWAddr = true;
@@ -432,95 +436,79 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
           myLog("submitOffchainWithdraw:", response);
 
-          if (isAccActivated()) {
-            if (
-              (response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message
-            ) {
-              const code = checkErrorInfo(
-                response as sdk.RESULT_INFO,
-                isNotHardwareWallet
-              );
-              if (code === sdk.ConnectorError.USER_DENIED) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.Withdraw_User_Denied,
-                });
-              } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                setLastRequest({ request });
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.Withdraw_First_Method_Denied,
-                });
-              } else {
-                if (
-                  [102024, 102025, 114001, 114002].includes(
-                    (response as sdk.RESULT_INFO)?.code || 0
-                  )
-                ) {
-                  checkFeeIsEnough({ isRequiredAPI: true });
-                }
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.Withdraw_Failed,
-                  error: response as sdk.RESULT_INFO,
-                });
-              }
-            } else if ((response as sdk.TX_HASH_API)?.hash) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Withdraw_In_Progress,
-              });
-              await sdk.sleep(TOAST_TIME);
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Withdraw_Success,
-                info: {
-                  hash:
-                    Explorer +
-                    `tx/${(response as sdk.TX_HASH_API)?.hash}-withdraw`,
-                },
-              });
-              if (isHWAddr) {
-                myLog("......try to set isHWAddr", isHWAddr);
-                updateHW({ wallet: account.accAddress, isHWAddr });
-              }
-
-              resetWithdrawData();
-            }
-
-            walletLayer2Service.sendUserUpdate();
-          } else {
-            resetWithdrawData();
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
+          }
+          setShowWithdraw({ isShow: false, info });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Withdraw_In_Progress,
+          });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Withdraw_Success,
+            info: {
+              hash:
+                Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-withdraw`,
+            },
+          });
+          if (isHWAddr) {
+            myLog("......try to set isHWAddr", isHWAddr);
+            updateHW({ wallet: account.accAddress, isHWAddr });
+          }
+          resetWithdrawData();
+          walletLayer2Service.sendUserUpdate();
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          if (store.getState().modals.isShowAccount.isShow) {
+            setShowAccount({ isShow: false });
           }
         }
-      } catch (reason: any) {
-        sdk.dumpError400(reason);
-        const code = checkErrorInfo(reason, isNotHardwareWallet);
-        myLog("code:", code);
-
-        if (isAccActivated()) {
-          if (code === sdk.ConnectorError.USER_DENIED) {
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Withdraw_User_Denied,
-            });
-          } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+      } catch (e: any) {
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        myLog("checkErrorInfo", code, e);
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setLastRequest({ request });
             setShowAccount({
               isShow: true,
               step: AccountStep.Withdraw_First_Method_Denied,
             });
-          } else {
+            break;
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            setLastRequest({ request });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Withdraw_User_Denied,
+            });
+            break;
+          default:
+            if (
+              [102024, 102025, 114001, 114002].includes(
+                (e as sdk.RESULT_INFO)?.code || 0
+              )
+            ) {
+              checkFeeIsEnough({ isRequiredAPI: true });
+            }
             setShowAccount({
               isShow: true,
               step: AccountStep.Withdraw_Failed,
               error: {
                 code: UIERROR_CODE.UNKNOWN,
-                msg: reason?.message,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
               },
             });
-          }
+
+            break;
         }
       }
     },
@@ -552,7 +540,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         (info?.isToMyself || sureIsAllowAddress)
       ) {
         try {
-          setShowWithdraw({ isShow: false, info });
           setShowAccount({
             isShow: true,
             step: AccountStep.Withdraw_WaitForAuth,
@@ -637,7 +624,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       withdrawValue?.belong,
       info,
       sureIsAllowAddress,
-      setShowWithdraw,
       setShowAccount,
       processRequest,
     ]
@@ -673,6 +659,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isFastWithdrawAmountLimit,
     withdrawTypes,
     sureIsAllowAddress,
+    lastFailed:
+      store.getState().modals.isShowAccount.info?.lastFailed ===
+      LAST_STEP.withdraw,
     handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => {
       setSureIsAllowAddress(value);
     },
@@ -680,7 +669,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       if (withdrawValue && withdrawValue.belong) {
         handleWithdraw(withdrawValue, realAddr ? realAddr : address);
       }
-      setShowWithdraw({ isShow: false, info });
     },
     handleWithdrawTypeChange: (value) => {
       // setWithdrawType(value);

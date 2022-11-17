@@ -28,5 +28,6 @@ export * from "./AddAsset";
 export * from "./SendAsset";
 export * from "./SendNFTAsset";
 export * from "./CheckActiveStatus";
+export * from "./CheckImportCollection";
 export * from "./ForceWithdraw";
 export * from "./ForceWithdrawPanel";

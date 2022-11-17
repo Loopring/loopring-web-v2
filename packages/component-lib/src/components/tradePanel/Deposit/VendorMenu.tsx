@@ -5,7 +5,9 @@ import { useTranslation } from "react-i18next";
 import {
   BanxaIcon,
   RampIcon,
+  SCENARIO,
   TradeTypes,
+  VendorProviders,
 } from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
 import { useSettings } from "../../../stores";
@@ -39,6 +41,7 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
 
 export const VendorMenu = ({
   vendorList,
+  banxaRef,
   // handleSelect,
   campaignTagConfig,
   type = TradeTypes.Buy,
@@ -80,6 +83,12 @@ export const VendorMenu = ({
             <MenuBtnStyled
               variant={"outlined"}
               size={"large"}
+              id={item.key + (type == TradeTypes.Buy ? "-on" : "-off")}
+              ref={
+                item.key === VendorProviders.Banxa && type === TradeTypes.Buy
+                  ? banxaRef
+                  : undefined
+              }
               className={`${isMobile ? "isMobile" : ""} ${
                 vendorForce === item.key ? "selected vendor" : "vendor"
               }`}
@@ -109,7 +118,7 @@ export const VendorMenu = ({
               </Typography>
               {campaignTagConfig && (
                 <TagIconList
-                  scenario={"Fiat"}
+                  scenario={SCENARIO.Fiat}
                   size={"var(--svg-size-large)"}
                   campaignTagConfig={campaignTagConfig}
                   symbol={`${item.key}-${

@@ -1,5 +1,4 @@
-import { useHistory, useRouteMatch } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import {
   confirmation,
   findDualMarket,
@@ -24,6 +23,10 @@ export const useDualHook = ({
   setConfirmDualInvest: (state: any) => void;
 }) => {
   const match: any = useRouteMatch("/invest/dual/:market?");
+  const { search } = useLocation();
+  const [beginnerMode, setBeginnerMode] = React.useState<boolean>(
+    new URLSearchParams(search).get('beginnerMode') === 'true'
+  )
   const { marketArray, marketMap, tradeMap, status: dualStatus } = useDualMap();
   const { tokenPrices } = useTokenPrices();
   const [priceObj, setPriceObj] = React.useState<{
@@ -44,31 +47,40 @@ export const useDualHook = ({
   const [currentPrice, setCurrentPrice] =
     React.useState<DualCurrentPrice | undefined>(undefined);
   const [, , coinA, coinB] =
-    (match?.params?.market ? match.params.market : "ETH-USDT").match(
+    (match?.params?.market ? match.params.market : "ETH-USDC").match(
       /(dual-)?(\w+)-(\w+)/i
     ) ?? [];
 
   const [pairASymbol, setPairASymbol] = React.useState(() =>
-    tradeMap[coinA] ? coinA : "ETH"
+    tradeMap && tradeMap[coinA] ? coinA : "ETH"
   );
   const [pairBSymbol, setPairBSymbol] = React.useState(
     coinB && tradeMap && tradeMap[pairASymbol]?.tokenList
       ? tradeMap[pairASymbol].tokenList.includes(coinB)
         ? coinB
         : tradeMap[pairASymbol].tokenList[0]
-      : "USDT"
+      : "USDC"
   );
   const [pair, setPair] = React.useState(`${pairASymbol}-${pairBSymbol}`);
   const [market, setMarket] = React.useState(() =>
-    findDualMarket(marketArray, pairASymbol, pairBSymbol)
+    marketArray?.length
+      ? findDualMarket(marketArray, pairASymbol, pairBSymbol)
+      : ""
   );
   const [[marketBase, marketQuote], setMarketPair] = React.useState(() => {
     // @ts-ignore
     const [, , coinA, coinB] = market
       ? market
-      : "ETH-USDT".match(/(dual-)?(\w+)-(\w+)/i) ?? [];
+      : "ETH-USDC".match(/(dual-)?(\w+)-(\w+)/i) ?? [];
     return [coinA, coinB];
   });
+
+  const onToggleBeginnerMode = React.useCallback(() => {
+    const searchParams = new URLSearchParams(search)
+    searchParams.set('beginnerMode', beginnerMode ? 'false' : 'true')
+    history.push(`${match.url}?${searchParams.toString()}`)
+    setBeginnerMode(!beginnerMode)
+  }, [beginnerMode])
 
   const handleOnPairChange = React.useCallback(
     (
@@ -92,7 +104,7 @@ export const useDualHook = ({
         setPairBSymbol(_pairBSymbol);
         market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol);
       }
-      history.push(`/invest/dual/${_pairASymbol}-${_pairBSymbol}`);
+      history.push(`/invest/dual/${_pairASymbol}-${_pairBSymbol}${search}`);
 
       if (market) {
         const [, , coinA, coinB] = market ?? "".match(/(dual-)?(\w+)-(\w+)/i);
@@ -112,12 +124,13 @@ export const useDualHook = ({
   // const [productRawData,setProductRawData] = React.useState([])
   const getProduct = _.debounce(async () => {
     setIsLoading(true);
-    const market = findDualMarket(marketArray, pairASymbol, pairBSymbol);
+    const market =
+      marketArray && findDualMarket(marketArray, pairASymbol, pairBSymbol);
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
     // @ts-ignore
-    const currency = marketMap[market ?? ""]?.currency;
+    const currency = market ? marketMap[market]?.currency : undefined;
     if (pairASymbol && pairBSymbol && market) {
       // @ts-ignore
       const [, , marketSymbolA, marketSymbolB] = (market ?? "").match(
@@ -132,7 +145,7 @@ export const useDualHook = ({
       const response = await LoopringAPI.defiAPI?.getDualInfos({
         baseSymbol: marketSymbolA,
         quoteSymbol: quoteAlias ?? marketSymbolB,
-        currency,
+        currency: currency ?? "",
         dualType,
         startTime: Date.now() + 1000 * 60 * 60,
         timeSpan: 1000 * 60 * 60 * 24 * 9,
@@ -160,8 +173,6 @@ export const useDualHook = ({
         const rule = rules[0];
         const rawData = infos.reduce(
           (prev: any[], item: sdk.DualProductAndPrice) => {
-            // 如果dualType == dual_base,price.dualBid.baseQty < rule.baseMin,过滤；
-            // 如果dualType == dual_currency,price.dualBid.baseQty*strike < rule.currencyMax,过滤；
             myLog("filer Dual", item.strike, item?.dualPrice?.dualBid[0], rule);
             if (
               item?.dualPrice?.dualBid[0] &&
@@ -189,9 +200,6 @@ export const useDualHook = ({
               return prev;
             }
             return prev;
-            // price.dualBid空数组，过滤；
-            // 如果dualType == dual_base,price.dualBid.baseQty < rule.baseMin,过滤；
-            // 如果dualType == dual_currency,price.dualBid.baseQty*strike < rule.currencyMax,过滤；
           },
           [] as any[]
         );
@@ -205,12 +213,12 @@ export const useDualHook = ({
     }, 60000);
   }, 100);
   React.useEffect(() => {
-    if (
-      dualStatus === SagaStatus.UNSET &&
-      pairBSymbol &&
-      marketArray !== undefined
-    ) {
-      handleOnPairChange({ pairB: pairBSymbol });
+    if (dualStatus === SagaStatus.UNSET && pairBSymbol) {
+      if (marketArray !== undefined && marketArray.length) {
+        handleOnPairChange({ pairB: pairBSymbol });
+      } else if (marketArray?.length == 0) {
+        history.push("/invest");
+      }
     }
   }, [dualStatus]);
   React.useEffect(() => {
@@ -227,6 +235,43 @@ export const useDualHook = ({
     };
   }, [pair, dualStatus]);
 
+  const [step1SelectedToken, setStep1SelectedToken] = React.useState<string | undefined>(undefined)
+  const [step2BuyOrSell, setStep2BuyOrSell] = React.useState< "Buy" | "Sell" | undefined>(undefined)
+  const [step3Token, setStep3Token] = React.useState< string | undefined>(undefined)
+  const onSelectStep1Token = React.useCallback((token: string) => {
+    setStep1SelectedToken(token)
+    setStep2BuyOrSell(undefined)
+    setStep3Token(undefined)
+  }, [])
+  const onSelectStep2BuyOrSell = React.useCallback((which: "Buy" | "Sell") => {
+    setStep2BuyOrSell(which)
+    setStep3Token(undefined)
+  }, [])
+  const onSelectStep3Token = React.useCallback((which: string) => {
+    setStep3Token(which)
+    if (step2BuyOrSell! === 'Sell') {
+      var pairA = step1SelectedToken!
+      var pairB = which
+    } else {
+      pairA = which
+      pairB = step1SelectedToken!
+    }
+    setPairASymbol(pairA)
+    setPairBSymbol(pairB)
+    const market = findDualMarket(marketArray, pairA, pairB);
+    history.push(`/invest/dual/${pairA}-${pairB}${search}`);
+    if (market) {
+      const [, , coinA, coinB] = market ?? "".match(/(dual-)?(\w+)-(\w+)/i);
+      setMarket(market);
+      setPair(`${pairA}-${pairB}`);
+      setMarketPair([coinA, coinB]);
+      setPriceObj({
+        symbol: coinA,
+        price: tokenPrices[coinA],
+      });
+    }
+  }, [step1SelectedToken, step2BuyOrSell, marketArray, tradeMap])
+
   return {
     // dualWrapProps: undefined,
     currentPrice,
@@ -240,9 +285,19 @@ export const useDualHook = ({
     marketQuote,
     priceObj,
     pair,
+    beginnerMode,
+    onToggleBeginnerMode,
     // confirmShowNoBalance,
     // setConfirmShowNoBalance,
     // serverUpdate,
     // setServerUpdate,
+
+    step1SelectedToken,
+    step2BuyOrSell,
+    step3Token,
+    onSelectStep1Token,
+    onSelectStep2BuyOrSell,
+    onSelectStep3Token,
+    
   };
 };

@@ -1,12 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  Box,
-  Grid,
-  Link,
-  Typography,
-  LinearProgress,
-  Button,
-} from "@mui/material";
+import { Box, Grid, Link, Typography, LinearProgress } from "@mui/material";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
@@ -20,11 +13,7 @@ import {
   SoursURL,
   getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
-import {
-  useSettings,
-  VipPanel as VipView,
-  walletMap,
-} from "@loopring-web/component-lib";
+import { useSettings, VipPanel as VipView } from "@loopring-web/component-lib";
 import { useGetVIPInfo } from "./hooks";
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -104,7 +93,6 @@ export const VipPanel = withTranslation(["common", "layout"])(
     } = useAccount();
     const history = useHistory();
     const { isMobile } = useSettings();
-    const [setVipTable] = React.useState<string[][]>([]);
     const { tokenMap } = useTokenMap();
     const { walletLayer2 } = useWalletLayer2();
     const currentBalanceLRC = sdk
@@ -116,7 +104,6 @@ export const VipPanel = withTranslation(["common", "layout"])(
       tradeAmountInfo,
       userVIPInfo,
       getUserVIPInfo,
-      userAssets,
       getUserAssets,
     } = useGetVIPInfo();
 
@@ -128,7 +115,7 @@ export const VipPanel = withTranslation(["common", "layout"])(
         return userVIPInfo.vipInfo.vipTag;
       }
       return "vip_0";
-    }, [level]);
+    }, [userVIPInfo]);
 
     const getNextVIPlevel = React.useCallback(() => {
       const level = getVIPLevel();
@@ -174,12 +161,6 @@ export const VipPanel = withTranslation(["common", "layout"])(
       maker: "0",
       taker: "0.0025%",
     });
-
-    React.useEffect(() => {
-      getUserTradeAmount();
-      getUserVIPInfo();
-      getUserAssets();
-    }, [getUserTradeAmount, getUserVIPInfo, getUserAssets]);
 
     const isVIP4 = getVIPLevel() === "vip_4";
     const isSVIP = getVIPLevel() === "super_vip";
@@ -231,8 +212,12 @@ export const VipPanel = withTranslation(["common", "layout"])(
           });
         }
       }
-    }, [setVipTable, level]);
+    }, [level]);
+
     React.useEffect(() => {
+      getUserTradeAmount();
+      getUserVIPInfo();
+      getUserAssets();
       result();
     }, []);
 

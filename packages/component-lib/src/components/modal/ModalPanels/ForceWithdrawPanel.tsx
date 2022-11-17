@@ -8,7 +8,6 @@ import { ForceWithdrawProps } from "../../tradePanel";
 import { IBData } from "@loopring-web/common-resources";
 import { TradeMenuList, useBasicTrade } from "../../tradePanel/components";
 import React from "react";
-import { ForceWithdrawConfirm } from "../../tradePanel/components/ForceWithdrawConfirm";
 import { ForceWithdrawWrap } from "../../tradePanel/components/ForceWithdrawWrap";
 
 export const ForceWithdrawPanel = withTranslation(["common", "error"], {
@@ -33,9 +32,9 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
     });
 
     const [panelIndex, setPanelIndex] = React.useState(index + 1);
-    const handleConfirm = (index: number) => {
-      setPanelIndex(index);
-    };
+    // const handleConfirm = (index: number) => {
+    //   setPanelIndex(index);
+    // };
     // const hanleConfirm = () => {};
     React.useEffect(() => {
       setPanelIndex(index + 1);
@@ -51,15 +50,16 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
           element: React.useMemo(
             () => (
               // @ts-ignore
-              <ForceWithdrawConfirm
-                {...{
-                  ...rest,
-                  onWithdrawClick,
-                  type,
-                  tradeData: switchData.tradeData,
-                  handleConfirm,
-                }}
-              />
+              // <ForceWithdrawConfirm
+              //   {...{
+              //     ...rest,
+              //     onWithdrawClick,
+              //     type,
+              //     tradeData: switchData.tradeData,
+              //     handleConfirm,
+              //   }}
+              // />
+              <></>
             ),
             [onWithdrawClick, rest, switchData.tradeData, type]
           ),
@@ -86,7 +86,7 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
                 {...{
                   ...rest,
                   type,
-                  handleConfirm,
+                  // handleConfirm,
                   chargeFeeTokenList: chargeFeeTokenList
                     ? chargeFeeTokenList
                     : [],

@@ -7,7 +7,6 @@ import {
 } from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
-import { TokenInfo } from "@loopring-web/loopring-sdk";
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -134,8 +133,8 @@ export type DeFiCalcData<T> = {
 };
 
 export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {
-  sellToken?: TokenInfo;
-  buyToken?: TokenInfo;
+  sellToken?: sdk.TokenInfo;
+  buyToken?: sdk.TokenInfo;
   coinSell: B;
   dualViewInfo: R;
   balance: { [key: string]: sdk.DualBalance };
@@ -175,6 +174,11 @@ export type AmmDetailBase<T> = {
   isNew?: boolean;
   isActivity?: boolean;
   APR?: number;
+  APRs?: {
+    self: number;
+    event: number;
+    fee: number;
+  };
 };
 
 export type AmmDetail<T> = AmmDetailBase<T> & {
@@ -276,6 +280,17 @@ export type MyAmmLP<T> = {
   rewardToken2?: CoinInfo<T> | undefined;
   rewardDollar?: number | undefined;
   totalLpAmount?: number | undefined;
+  feeA24: number | undefined;
+  feeB24: number | undefined;
+  feeDollar24: number | undefined;
+  reward24: number | undefined;
+  reward224: number | undefined;
+  rewardDollar24: number | undefined;
+  extraDollar24: number | undefined;
+  extraRewards24: {
+    tokenSymbol: string;
+    amount: number;
+  }[];
 };
 
 export type TradeFloat = {

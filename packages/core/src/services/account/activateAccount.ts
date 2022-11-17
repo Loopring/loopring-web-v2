@@ -1,11 +1,10 @@
 import {
-  ActionResult,
-  ActionResultCode,
   DAYS,
   getTimestampDaysLater,
   LoopringAPI,
   store,
   NETWORKEXTEND,
+  EddsaKey,
 } from "../../index";
 import { FeeInfo, myLog, UIERROR_CODE } from "@loopring-web/common-resources";
 import {
@@ -23,50 +22,48 @@ export async function activateAccount({
   isHWAddr: boolean;
   feeInfo?: FeeInfo;
   isReset?: boolean;
-}): Promise<ActionResult> {
+}): Promise<EddsaKey> {
   // let result: ActionResult =;
-  let eddsaKey = undefined; //isReset ?  //: account.eddsaKey;
   const system = store.getState().system;
+  let eddsaKey = undefined; //isReset ?  //: account.eddsaKey;
   const { tokenMap } = store.getState().tokenMap;
   const {
     accAddress,
     connectName,
     eddsaKey: { counterFactualInfo },
   } = store.getState().account;
+
   if (
     !system.exchangeInfo?.exchangeAddress ||
     system.chainId === NETWORKEXTEND.NONETWORK ||
     connectName === ConnectProviders.Unknown ||
+    !LoopringAPI?.exchangeAPI ||
     !accAddress
   ) {
-    return {
-      code: ActionResultCode.DataNotReady,
-      data: {
-        code: UIERROR_CODE.DATA_NOT_READY,
-        message: "DATA NOT READY",
-      },
-    };
+    throw { code: UIERROR_CODE.DATA_NOT_READY };
   }
-  const accountResponse = await LoopringAPI?.exchangeAPI?.getAccount({
-    owner: accAddress,
-  });
+  let accInfo;
+  try {
+    const accountResponse = await LoopringAPI.exchangeAPI.getAccount({
+      owner: accAddress,
+    });
+    if (
+      (accountResponse as sdk.RESULT_INFO).code ||
+      (accountResponse as sdk.RESULT_INFO).message
+    ) {
+      throw accountResponse;
+    } else {
+      accInfo = accountResponse.accInfo;
+    }
+  } catch (error: any) {
+    throw error;
+  }
 
-  if (
-    (accountResponse &&
-      ((accountResponse as sdk.RESULT_INFO).code ||
-        (accountResponse as sdk.RESULT_INFO).message)) ||
-    !accountResponse?.accInfo?.accountId
-  ) {
-    return {
-      code: ActionResultCode.GetAccError,
-      data: accountResponse as sdk.RESULT_INFO,
-    };
-  }
-  const { accInfo } = accountResponse;
   let keySeed = sdk.GlobalAPI.KEY_MESSAGE.replace(
     "${exchangeAddress}",
     system.exchangeInfo.exchangeAddress
   ).replace("${nonce}", accInfo.nonce.toString());
+
   if (feeInfo?.belong && feeInfo.feeRaw) {
     const feeToken = tokenMap[feeInfo.belong];
     const tokenId = feeToken.tokenId;
@@ -82,21 +79,7 @@ export async function activateAccount({
         counterFactualInfo: counterFactualInfo ?? undefined,
       });
     } catch (error: any) {
-      const data =
-        typeof error === "string"
-          ? {
-              code: UIERROR_CODE.GENERATE_EDDSA,
-              message: error,
-            }
-          : {
-              code: UIERROR_CODE.GENERATE_EDDSA,
-              ...error,
-            };
-
-      return {
-        code: ActionResultCode.GenEddsaKeyError,
-        data,
-      };
+      throw error;
     }
     myLog("generateKeyPair done");
 
@@ -114,40 +97,39 @@ export async function activateAccount({
       nonce: accInfo.nonce as number,
     };
     myLog("updateAccountFromServer req:", request);
-    const response = await LoopringAPI?.userAPI?.updateAccount(
-      {
-        request,
-        web3: connectProvides.usedWeb3 as unknown as Web3,
-        chainId: system.chainId,
-        walletType: (ConnectProvidersSignMap[connectName] ??
-          connectName) as unknown as sdk.ConnectorNames,
-        isHWAddr,
-      },
-      {
-        accountId: accInfo.accountId,
-        counterFactualInfo: eddsaKey.counterFactualInfo,
+    try {
+      const response = await LoopringAPI?.userAPI?.updateAccount(
+        {
+          request,
+          web3: connectProvides.usedWeb3 as unknown as Web3,
+          chainId: system.chainId,
+          walletType: (ConnectProvidersSignMap[connectName] ??
+            connectName) as unknown as sdk.ConnectorNames,
+          isHWAddr,
+        },
+        {
+          accountId: accInfo.accountId,
+          counterFactualInfo: eddsaKey.counterFactualInfo,
+        }
+      );
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        throw response;
+      } else {
+        myLog("updateAccountResponse:", response);
+        return {
+          eddsaKey,
+          accInfo,
+          // code: ActionResultCode.NoError,
+          // data: { eddsaKey, accInfo },
+        };
       }
-    );
-    myLog("updateAccountResponse:", response);
-    if (
-      response &&
-      ((response as sdk.RESULT_INFO).code ||
-        (response as sdk.RESULT_INFO).message)
-    ) {
-      return {
-        code: ActionResultCode.UpdateAccountError,
-        data: response as sdk.RESULT_INFO,
-      };
-    } else {
-      return {
-        code: ActionResultCode.NoError,
-        data: { eddsaKey, accInfo },
-      };
+    } catch (error) {
+      throw error;
     }
   } else {
-    return {
-      code: ActionResultCode.DataNotReady,
-      data: { eddsaKey, accInfo },
-    };
+    throw { code: UIERROR_CODE.ERROR_ON_FEE_UI };
   }
 }

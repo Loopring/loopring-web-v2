@@ -86,10 +86,10 @@ export const CollectionInput = <Co extends CollectionMeta>({
   collectionListProps,
   fullWidth = false,
   width = "content-fit",
-  size = "medium",
   showCopy = false,
   onSelected,
   domain,
+  size = "large",
   // makeMeta,
   isRequired = false,
 }: CollectionInputProps<Co> & {
@@ -288,15 +288,16 @@ export const CollectionInput = <Co extends CollectionMeta>({
             alignItems={"center"}
             sx={{
               marginLeft: 0,
-              paddingLeft: 0,
+              paddingLeft: 1,
               justifyContent: "flex-start",
             }}
             onClick={(e) => {
               e.stopPropagation();
               if (collection) {
-                copyToClipBoard(`${domain}/${collection.contractAddress}`);
-                // const { metaDemo } = makeMeta({ collection, domain });
-                // // copyToClipBoard(JSON.stringify(metaDemo));
+                // @ts-ignore
+                copyToClipBoard(
+                  `${domain}/${(collection as any).collectionAddress}`
+                );
                 collectionListProps.setCopyToastOpen({
                   isShow: true,
                   type: "url",
@@ -304,7 +305,8 @@ export const CollectionInput = <Co extends CollectionMeta>({
               }
             }}
           >
-            "https://xxxxxxxx" <CopyIcon color={"inherit"} />
+            {domain}/{getShortAddr((collection as any).collectionAddress)}
+            <CopyIcon color={"inherit"} />
           </Link>
         </Typography>
       )}
@@ -337,6 +339,8 @@ export const CollectionInput = <Co extends CollectionMeta>({
           <CollectionCardList
             {...{ ...(collectionListProps as any) }}
             isSelectOnly={true}
+            size={collectionListProps?.size ?? size}
+            filter={{ isMintable: true }}
             selectCollection={collection}
             onSelectItem={(item) => {
               onSelected(item as Co);

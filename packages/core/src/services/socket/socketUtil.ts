@@ -27,14 +27,8 @@ export type SocketEventMap = {
 
 export class LoopringSocket {
   private static SocketEventMap: SocketEventMap = {
-    [sdk.WsTopicType.account]: (data: { [key: string]: any }) => {
-      const { totalAmount, tokenId, amountLocked, pending } = data;
-      walletLayer2Service.sendAccount({
-        tokenId,
-        locked: amountLocked,
-        total: totalAmount,
-        pending,
-      });
+    [sdk.WsTopicType.account]: (_data: { [key: string]: any }) => {
+      walletLayer2Service.sendUserUpdate();
     },
     [sdk.WsTopicType.order]: (data: sdk.OrderDetail) => {
       bookService.sendBook({

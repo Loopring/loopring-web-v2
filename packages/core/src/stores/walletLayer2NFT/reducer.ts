@@ -1,10 +1,14 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { WalletLayer2NFTStates } from "./interface";
-import { SagaStatus } from "@loopring-web/common-resources";
+import {
+  CollectionMeta,
+  MyNFTFilter,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 
 const initialState: WalletLayer2NFTStates = {
   walletLayer2NFT: [],
-  collection: "",
+  collection: undefined,
   total: 0,
   status: "DONE",
   errorMessage: null,
@@ -16,7 +20,12 @@ const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
   reducers: {
     updateWalletLayer2NFT(
       state,
-      _action: PayloadAction<{ page?: number; collection: string | undefined }>
+      _action: PayloadAction<{
+        page?: number;
+        nftDatas?: string;
+        collection: CollectionMeta | undefined;
+        filter?: MyNFTFilter | undefined;
+      }>
     ) {
       state.status = SagaStatus.PENDING;
     },
@@ -42,6 +51,7 @@ const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
       state.walletLayer2NFT = [...(action.payload?.walletLayer2NFT ?? [])];
       state.collection = action.payload.collection;
       state.total = action.payload.total ?? 0;
+      state.filter = action.payload.filter;
       state.status = SagaStatus.DONE;
       state.page = action.payload.page ?? 1;
     },
