@@ -167,7 +167,7 @@ export type MintReadTradeNFT<I> = {
 export type TradeNFT<I, Co> = MintTradeNFT<I> &
   Partial<NFTWholeINFO<Co>> & {
     isApproved?: boolean;
-    collectionMeta: CollectionMeta;
+    collectionMeta?: CollectionMeta;
   };
 
 export enum NFT_TYPE_STRING {
