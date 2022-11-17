@@ -153,6 +153,8 @@ export const useSwap = <C extends { [key: string]: any }>({
 
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
+  const [smallOrderAlertOpen, setSmallOrderAlertOpen] = React.useState<boolean>(false);
+  const [secondConfirmationOpen, setSecondConfirmationOpen] = React.useState<boolean>(false);
 
   const clearData = (
     calcTradeParams: Partial<MarketCalcParams> | null | undefined
@@ -508,6 +510,24 @@ export const useSwap = <C extends { [key: string]: any }>({
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
     [fnType.ACTIVATED]: [btnLabelAccountActive],
   });
+  const showSwapSecondConfirmation = true
+  const isSmallOrder = true
+  const priceAlertCallBack = React.useCallback(() => {
+    if (isSmallOrder) {
+      setSmallOrderAlertOpen(true)
+    } else if (showSwapSecondConfirmation) {
+      setSecondConfirmationOpen(true)
+    }
+  }, [showSwapSecondConfirmation, isSmallOrder])
+  const smallOrderAlertCallBack = React.useCallback((e: MouseEvent) => {
+    // alert(1)
+    setSmallOrderAlertOpen(false)
+    swapFunc(e, false);
+  }, [swapFunc])
+  const secondConfirmationCallBack = React.useCallback(() => {
+    setSecondConfirmationOpen(false)
+    swapFunc(undefined as any, false);
+  }, [swapFunc])
   const swapCalculatorCallback = React.useCallback(async () => {
     const { priceLevel } = getPriceImpactInfo(
       pageTradeLite.calcTradeParams,
@@ -522,8 +542,11 @@ export const useSwap = <C extends { [key: string]: any }>({
     } else if (!order.enable) {
       setShowTradeIsFrozen({ isShow: true, type: "Swap" });
       setIsSwapLoading(false);
+    } else if (isSmallOrder) {
+      setSmallOrderAlertOpen(true)
+    } else if (showSwapSecondConfirmation) {
+      setSecondConfirmationOpen(true)
     } else {
-      // {}
       switch (priceLevel) {
         case PriceLevel.Lv1:
           setAlertOpen(true);
@@ -544,6 +567,8 @@ export const useSwap = <C extends { [key: string]: any }>({
     setShowSupport,
     setShowTradeIsFrozen,
     swapFunc,
+    showSwapSecondConfirmation, 
+    isSmallOrder
   ]);
   const swapBtnClickArray = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.ACTIVATED]: [swapCalculatorCallback],
@@ -1444,6 +1469,22 @@ export const useSwap = <C extends { [key: string]: any }>({
         break;
     }
   };
+
+  // const priceAlertCallBack = React.useCallback(() => {
+  //   if (isSmallOrder) {
+  //     setSmallOrderAlertOpen(true)
+  //   } else if (showSwapSecondConfirmation) {
+  //     setSecondConfirmationOpen(true)
+  //   }
+  // }, [showSwapSecondConfirmation, isSmallOrder])
+  // const smallOrderAlertCallBack = React.useCallback(() => {
+  //   setSmallOrderAlertOpen(false)
+  //   swapFunc(undefined as any, true);
+  // }, [])
+  // const secondConfirmationCallBack = React.useCallback(() => {
+  //   setSecondConfirmationOpen(false)
+  //   swapFunc(undefined as any, true);
+  // }, [])
   return {
     toastOpen,
     closeToast,
@@ -1463,5 +1504,10 @@ export const useSwap = <C extends { [key: string]: any }>({
     market,
     toPro,
     isMobile,
+    priceAlertCallBack,
+    smallOrderAlertCallBack,
+    secondConfirmationCallBack,
+    smallOrderAlertOpen,
+    secondConfirmationOpen,
   };
 };

@@ -5,6 +5,8 @@ import {
   ConfirmImpact,
   SwapPanel,
   Toast,
+  SmallOrderAlert,
+  SwapSecondConfirmation
 } from "@loopring-web/component-lib";
 import { useSwap } from "./hookSwap";
 import {
@@ -35,6 +37,11 @@ export const SwapPage = withTranslation("common")(
       pageTradeLite,
       toPro,
       isMobile,
+      priceAlertCallBack,
+      smallOrderAlertCallBack,
+      secondConfirmationCallBack,
+      smallOrderAlertOpen,
+      secondConfirmationOpen,
     } = useSwap({ path: "/trade/lite" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     const { campaignTagConfig } = useNotify().notifyMap ?? {};
@@ -83,7 +90,7 @@ export const SwapPage = withTranslation("common")(
           onClose={closeToast}
         />
         <AlertImpact
-          handleClose={swapFunc}
+          handleClose={priceAlertCallBack}
           open={alertOpen}
           value={
             (getValuePrecisionThousand(
@@ -93,13 +100,27 @@ export const SwapPage = withTranslation("common")(
           }
         />
         <ConfirmImpact
-          handleClose={swapFunc}
+          handleClose={priceAlertCallBack}
           open={confirmOpen}
           value={
             (getValuePrecisionThousand(
               pageTradeLite?.priceImpactObj?.value,
               2
             ) + "%") as any
+          }
+        />
+        <SmallOrderAlert
+          handleClose={smallOrderAlertCallBack}
+          open={smallOrderAlertOpen}
+          value={
+            123123
+          }
+        />
+        <SwapSecondConfirmation
+          handleClose={secondConfirmationCallBack}
+          open={secondConfirmationOpen}
+          value={
+            123123
           }
         />
       </Box>

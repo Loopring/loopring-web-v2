@@ -1,21 +1,26 @@
 import { SwapProps, SwapTradeData } from "../Interface";
 import { withTranslation, WithTranslation } from "react-i18next";
-import React from "react";
-import { Box, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Grid, Popover, Switch, Tooltip, Typography } from "@mui/material";
 import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
 import {
+  defalutSlipage,
   IBData,
+  Info2Icon,
   OrderListIcon,
   SCENARIO,
+  SlippageTolerance,
+  SwapSettingIcon,
   TradeCalcData,
 } from "@loopring-web/common-resources";
-import { SwapData, SwapMenuList, SwapTradeWrap } from "../components";
+import { SlippagePanel, SwapData, SwapMenuList, SwapTradeWrap } from "../components";
 import { CountDownIcon } from "../components/tool/Refresh";
 import * as _ from "lodash";
 import { IconButtonStyled } from "../components/Styled";
 import { debounceTime, Subject } from "rxjs";
 import { useHistory } from "react-router-dom";
 import { TagIconList } from "../../block";
+import { useSettings } from "../../../stores";
 
 export const SwapPanel = withTranslation("common", { withRef: true })(
   <T extends IBData<I>, I, TCD extends TradeCalcData<I>>({
@@ -196,6 +201,15 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
       };
     }, [panelEventSubject]);
 
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+    const [settingPopoverOpen, setSettingPopoverOpen] = useState(false)
+    const settingPopoverId = settingPopoverOpen ? 'setting-popover' : undefined;
+    const { slippage, swapSecondConfirmation } = useSettings();
+    const slippageArray = SlippageTolerance.concat(
+      `slippage:${slippage}`
+    ) as Array<number | string>;
+    const tradeData = swapData.tradeData;
+
     const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
       index: index, // show default show
       panelList: [
@@ -258,10 +272,82 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   </Typography>
                 </Typography>
                 <Box alignSelf={"flex-end"} display={"flex"}>
-                  <CountDownIcon
-                    onRefreshData={onRefreshData}
-                    ref={refreshRef}
-                  />
+                  <Typography display={"inline-block"} marginLeft={2}>
+                    <IconButtonStyled
+                      onClick={e => {
+                        setSettingPopoverOpen(true)
+                        setAnchorEl(e.currentTarget)
+                      }}
+                      sx={{ backgroundColor: "var(--field-opacity)" }}
+                      className={"switch outlined"}
+                      aria-label="to Transaction"
+                      aria-describedby={settingPopoverId}
+                      size={"large"}
+                    >
+                      <SwapSettingIcon />
+                    </IconButtonStyled>
+                  </Typography>
+                  <Popover
+                    id={settingPopoverId}
+                    open={settingPopoverOpen}
+                    anchorEl={anchorEl}
+                    onClose={() => {
+                      setSettingPopoverOpen(false)
+                      setAnchorEl(null)
+                    }}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                  >
+                    <Typography>Settings</Typography>
+                    <Typography>Slippage Tolerance</Typography>
+                    <SlippagePanel
+                      t={rest.t}
+                      slippageList={slippageArray}
+                        slippage= {tradeData.slippage
+                          ? tradeData.slippage
+                          : tradeCalcData.slippage
+                          ? tradeCalcData.slippage
+                          : defalutSlipage}
+                      handleChange={() => {}}
+                    />
+                    <Grid
+                      container
+                      justifyContent={"space-between"}
+                      direction={"row"}
+                      alignItems={"center"}
+                      height={24}
+                    >
+                      <Tooltip
+                        title={rest.t("todo").toString()}
+                        placement={"top"}
+                      >
+                        <Typography
+                          component={"p"}
+                          variant="body2"
+                          color={"textSecondary"}
+                          display={"inline-flex"}
+                          alignItems={"center"}
+                        >
+                          <Info2Icon
+                            fontSize={"small"}
+                            color={"inherit"}
+                            sx={{ marginX: 1 / 2 }}
+                          />
+                          {" " + rest.t("todo")}
+                        </Typography>
+                      </Tooltip>
+                      <Switch checked={swapSecondConfirmation} /> 
+                      {/* todo */}
+                    </Grid>
+                  </Popover>
+                  <Typography display={"inline-block"} marginLeft={2}>
+                    <CountDownIcon
+                      onRefreshData={onRefreshData}
+                      ref={refreshRef}
+                    />
+                  </Typography>
                   <Typography display={"inline-block"} marginLeft={2}>
                     <IconButtonStyled
                       onClick={() => {
@@ -280,7 +366,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                 </Box>
               </>
             ),
-            [onRefreshData]
+            [onRefreshData, settingPopoverOpen]
           ),
         },
         {
