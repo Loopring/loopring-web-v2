@@ -87,24 +87,24 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
       }
     );
 
-    React.useEffect(() => {
-      setSwapData((state) => {
-        if (
-          rest.tradeData &&
-          (rest.tradeData.sell !== swapData.tradeData.sell ||
-            rest.tradeData.buy !== swapData.tradeData.buy)
-        ) {
-          if (!_.isEqual(rest.tradeData.sell, swapData.tradeData.sell)) {
-            // myLog('swap sell useEffect',rest.tradeData.sell,swapData.tradeData.sell)
-            state.tradeData.sell = rest.tradeData.sell;
-          }
-          if (!_.isEqual(rest.tradeData.buy, swapData.tradeData.buy)) {
-            state.tradeData.buy = rest.tradeData.buy;
-          }
-        }
-        return state;
-      });
-    }, [rest.tradeData]);
+    // React.useEffect(() => {
+    //   setSwapData((state) => {
+    //     if (
+    //       rest.tradeData &&
+    //       (rest.tradeData.sell !== swapData.tradeData.sell ||
+    //         rest.tradeData.buy !== swapData.tradeData.buy)
+    //     ) {
+    //       if (!_.isEqual(rest.tradeData.sell, swapData.tradeData.sell)) {
+    //         // myLog('swap sell useEffect',rest.tradeData.sell,swapData.tradeData.sell)
+    //         state.tradeData.sell = rest.tradeData.sell;
+    //       }
+    //       if (!_.isEqual(rest.tradeData.buy, swapData.tradeData.buy)) {
+    //         state.tradeData.buy = rest.tradeData.buy;
+    //       }
+    //     }
+    //     return state;
+    //   });
+    // }, [rest.tradeData]);
     const panelEventSubject = new Subject<
       { _index: 0 | 1; swapData: SwapData<SwapTradeData<T>> } | undefined
     >();
@@ -207,7 +207,13 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                 key={"trade"}
                 {...{
                   ...rest,
-                  swapData,
+                  swapData: {
+                    ...swapData,
+                    tradeData: {
+                      ...swapData.tradeData,
+                      ...rest.tradeData,
+                    },
+                  },
                   tradeCalcData,
                   onSwapClick,
                   onChangeEvent,
