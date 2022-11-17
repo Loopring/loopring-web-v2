@@ -282,8 +282,8 @@ export const GuardianPage = withTranslation(["common"])(
       <>
         <ModalQRCode
           open={openQRCode}
-          fgColor={theme.colorBase.textPrimary}
-          bgColor={theme.colorBase.box}
+          fgColor={"#000"}
+          bgColor={"#fff"}
           className={"guardianPop"}
           onClose={() => setOpenQRCode(false)}
           title={

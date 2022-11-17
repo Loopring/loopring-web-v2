@@ -210,7 +210,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   swapData: {
                     ...swapData,
                     tradeData: {
-                      ...swapData.tradeData,
+                      ...swapData?.tradeData,
                       ...rest.tradeData,
                     },
                   },
