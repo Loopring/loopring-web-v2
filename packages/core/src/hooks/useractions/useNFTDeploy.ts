@@ -340,7 +340,7 @@ export function useNFTDeploy<
             nftOwner: account.accAddress?.toLowerCase(),
             nftBaseUri: nftDeployValue.collectionMeta.baseUri ?? "",
             tokenAddress: nftDeployValue.tokenAddress,
-            nftFactory: nftDeployValue.collectionMeta.nftFactory,
+            nftFactory: nftDeployValue.collectionMeta?.nftFactory ?? "",
             transfer: {
               exchange: exchangeInfo.exchangeAddress,
               payerAddr: accAddress,
