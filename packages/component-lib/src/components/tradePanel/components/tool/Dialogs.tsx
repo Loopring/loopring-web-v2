@@ -1,4 +1,5 @@
 import {
+  Box,
   Checkbox,
   Dialog,
   DialogActions,
@@ -6,6 +7,7 @@ import {
   DialogContentText,
   DialogTitle,
   FormControlLabel as MuiFormControlLabel,
+  IconButton,
   Link,
   List,
   ListItem,
@@ -25,14 +27,18 @@ import {
   Bridge,
   CheckBoxIcon,
   CheckedIcon,
+  CloseIcon,
   copyToClipBoard,
   getValuePrecisionThousand,
+  SoursURL,
   TradeDefi,
+  WarningIcon2,
   // Lang,
   // MarkdownStyle,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
+import { useTheme } from "@emotion/react";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
@@ -62,16 +68,18 @@ export const AlertImpact = withTranslation("common")(
     value,
     open,
     handleClose,
+    handleConfirm
   }: WithTranslation & {
     open: boolean;
     value: number;
-    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+    handleClose: () => void;
+    handleConfirm: () => void;
   }) => {
     return (
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
+        onClose={(e: MouseEvent) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("labelImpactTitle")}</DialogTitle>
@@ -90,15 +98,15 @@ export const AlertImpact = withTranslation("common")(
           <Button
             variant={"outlined"}
             size={"medium"}
-            onClick={(e) => handleClose(e as any)}
+            onClick={(_) => handleClose()}
           >
             {t("labelDisAgreeConfirm")}
           </Button>
           <Button
             variant={"contained"}
             size={"small"}
-            onClick={(e) => {
-              handleClose(e as any, true);
+            onClick={(_) => {
+              handleConfirm();
             }}
             color={"primary"}
           >
@@ -234,10 +242,12 @@ export const ConfirmImpact = withTranslation("common")(
     value,
     open,
     handleClose,
+    handleConfirm
   }: WithTranslation & {
     open: boolean;
     value: number;
-    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+    handleClose: () => void;
+    handleConfirm: () => void;
   }) => {
     const [agree, setAgree] = React.useState("");
 
@@ -251,7 +261,7 @@ export const ConfirmImpact = withTranslation("common")(
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
+        onClose={(_) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("labelImpactTitle")}</DialogTitle>
@@ -284,14 +294,14 @@ export const ConfirmImpact = withTranslation("common")(
           <Button
             variant={"outlined"}
             size={"medium"}
-            onClick={(e) => handleClose(e as any)}
+            onClick={(_) => handleClose()}
           >
             {t("labelDisAgreeConfirm")}
           </Button>
           <Button
             variant={"contained"}
             size={"small"}
-            onClick={(e) => handleClose(e as any, true)}
+            onClick={(_) => handleConfirm()}
             disabled={agree.trim() !== "AGREE"}
             color={"primary"}
           >
@@ -310,28 +320,60 @@ export const SmallOrderAlert = withTranslation("common")(
     handleConfirm,
   }: WithTranslation & {
     open: boolean;
-    value: number;
-    handleClose: (event: MouseEvent) => void;
+    handleClose: () => void;
     handleConfirm: () => void;
   }) => {
-    // const [agree, setAgree] = React.useState("");
-
-    // React.useEffect(() => {
-    //   if (!open) {
-    //     setAgree("");
-    //   }
-    // }, [open]);
-
+    const theme = useTheme()
     return (
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
+        onClose={(_) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("small order")}</DialogTitle>
-        <Button onClick={() => handleConfirm()}></Button>
-        
+        <DialogContent style={{padding: `${theme.unit * 5}px`}}>
+        <IconButton
+            aria-label="close"
+            onClick={(_) => handleClose()}
+            sx={{
+              position: 'absolute',
+              right: theme.unit * 2.5,
+              top: theme.unit * 2.5,
+              color: theme.colorBase.boxSecondary,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Box marginTop={2} marginBottom={1.5} display={"flex"} justifyContent={"center"}>
+            <img src={SoursURL + "svg/warning.svg"}/>
+          </Box>
+          <Typography
+            marginBottom={4.5}
+            textAlign={"center"}
+            variant={"h4"}
+            color={"var(--color-warning)"}>
+            Warn !!
+          </Typography>
+          <Box paddingX={2}>
+            <Typography variant={"body1"} >Small trades (below ~$100) incur a higher fee. </Typography>
+            <Typography variant={"body1"} >Please review the fee before confirming.</Typography>
+            <Typography variant={"body1"} >Estimated Fee: todo</Typography>
+            <Typography variant={"body1"} >Fee percentage: todo%</Typography>
+            <Typography variant={"body1"} >Minimum Received: todo</Typography>
+          </Box>
+          <Button 
+            style={{
+              marginTop: `${theme.unit * 4.5}px`,
+              width: `${theme.unit * 50}px`
+            }}
+            variant={"contained"}
+            size={"large"}
+            color={"primary"}
+            onClick={() => handleConfirm()}>
+            Confirm
+          </Button>
+        </DialogContent>
+
       </Dialog>
     );
   }
@@ -344,20 +386,33 @@ export const SwapSecondConfirmation = withTranslation("common")(
     handleConfirm
   }: WithTranslation & {
     open: boolean;
-    handleClose: (event: MouseEvent) => void;
+    handleClose: () => void;
     handleConfirm: () => void;
   }) => {
-
+    const theme = useTheme()
     return (
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
+        onClose={(_) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("second confirmation")}</DialogTitle>
+        <DialogTitle>
+          <Typography variant={"h3"}>Confirm Swap</Typography> 
+          <IconButton
+            aria-label="close"
+            onClick={(_) => handleClose()}
+            sx={{
+              position: 'absolute',
+              right: theme.unit * 2.5,
+              top: theme.unit * 2.5,
+              color: theme.colorBase.boxSecondary,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          </DialogTitle>
         <Button onClick={() => handleConfirm()}></Button>
-
       </Dialog>
     );
   }

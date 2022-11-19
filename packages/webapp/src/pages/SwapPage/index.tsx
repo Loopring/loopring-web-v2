@@ -90,7 +90,8 @@ export const SwapPage = withTranslation("common")(
           onClose={closeToast}
         />
         <AlertImpact
-          handleClose={priceAlertCallBack}
+          handleClose={() => priceAlertCallBack(false)}
+          handleConfirm={() => priceAlertCallBack(true)}
           open={alertOpen}
           value={
             (getValuePrecisionThousand(
@@ -100,7 +101,8 @@ export const SwapPage = withTranslation("common")(
           }
         />
         <ConfirmImpact
-          handleClose={priceAlertCallBack}
+          handleClose={() => priceAlertCallBack(false)}
+          handleConfirm={() => priceAlertCallBack(true)}
           open={confirmOpen}
           value={
             (getValuePrecisionThousand(
@@ -110,12 +112,15 @@ export const SwapPage = withTranslation("common")(
           }
         />
         <SmallOrderAlert
-          handleClose={smallOrderAlertCallBack}
+          handleClose={() => smallOrderAlertCallBack(false)}
+          handleConfirm={() => smallOrderAlertCallBack(true)}
           open={smallOrderAlertOpen}
         />
         <SwapSecondConfirmation
-          handleClose={secondConfirmationCallBack}
-          open={secondConfirmationOpen}
+          handleClose={() => secondConfirmationCallBack(false)}
+          handleConfirm={() => secondConfirmationCallBack(true)}
+          open
+          // ={secondConfirmationOpen}
         />
       </Box>
     );

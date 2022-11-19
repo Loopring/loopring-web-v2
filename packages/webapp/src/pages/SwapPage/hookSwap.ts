@@ -194,180 +194,174 @@ export const useSwap = <C extends { [key: string]: any }>({
   };
   /*** Btn related function ***/
   const swapFunc = React.useCallback(
-    async (event: MouseEvent, isAgree?: boolean) => {
+    async () => {
       let { calcTradeParams, tradeChannel, orderType, maxFeeBips } =
         pageTradeLite;
-      setAlertOpen(false);
-      setConfirmOpen(false);
+      
+      if (
+        !LoopringAPI.userAPI ||
+        !tokenMap ||
+        !exchangeInfo ||
+        !calcTradeParams ||
+        account.readyState !== AccountStatus.ACTIVATED
+      ) {
+        setToastOpen({
+          open: true,
+          type: "error",
+          content: t("labelSwapFailed"),
+        });
+        setIsSwapLoading(false);
 
-      if (isAgree) {
+        return;
+      }
+
+      const sell = tradeData?.sell.belong as string;
+      const buy = tradeData?.buy.belong as string;
+
+      const sellToken = tokenMap[sell];
+      const buyToken = tokenMap[buy];
+
+      try {
+        const request: sdk.SubmitOrderRequestV3 = {
+          exchange: exchangeInfo.exchangeAddress,
+          accountId: account.accountId,
+          storageId: storageId.orderId,
+          sellToken: {
+            tokenId: sellToken.tokenId,
+            volume: calcTradeParams.amountS as string,
+          },
+          buyToken: {
+            tokenId: buyToken.tokenId,
+            volume: calcTradeParams.amountBOutSlip?.minReceived as string,
+          },
+          allOrNone: false,
+          validUntil: getTimestampDaysLater(__DAYS__),
+          // maxFeeBips: parseInt(totalFee as string),
+          maxFeeBips: maxFeeBips ?? MAPFEEBIPS,
+          fillAmountBOrS: false, // amm only false
+          orderType,
+          tradeChannel,
+          eddsaSignature: "",
+        };
+
+        myLog("submitOrder request", request);
+
+        const response: { hash: string } | any =
+          await LoopringAPI.userAPI.submitOrder(
+            request,
+            account.eddsaKey.sk,
+            account.apiKey
+          );
+
         if (
-          !LoopringAPI.userAPI ||
-          !tokenMap ||
-          !exchangeInfo ||
-          !calcTradeParams ||
-          account.readyState !== AccountStatus.ACTIVATED
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
         ) {
+          const errorItem =
+            SDK_ERROR_MAP_TO_UI[
+            (response as sdk.RESULT_INFO)?.code ?? 700001
+            ];
+          if ((response as sdk.RESULT_INFO).code === 114002) {
+            getAmount({ market });
+            clearData(calcTradeParams);
+          }
           setToastOpen({
             open: true,
             type: "error",
-            content: t("labelSwapFailed"),
+            content:
+              t("labelSwapFailed") +
+              " error: " +
+              (errorItem
+                ? t(errorItem.messageKey, { ns: "error" })
+                : (response as sdk.RESULT_INFO).message),
           });
-          setIsSwapLoading(false);
-
-          return;
-        }
-
-        const sell = tradeData?.sell.belong as string;
-        const buy = tradeData?.buy.belong as string;
-
-        const sellToken = tokenMap[sell];
-        const buyToken = tokenMap[buy];
-
-        try {
-          const request: sdk.SubmitOrderRequestV3 = {
-            exchange: exchangeInfo.exchangeAddress,
-            accountId: account.accountId,
-            storageId: storageId.orderId,
-            sellToken: {
-              tokenId: sellToken.tokenId,
-              volume: calcTradeParams.amountS as string,
+        } else {
+          getStorageId();
+          await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__);
+          const resp = await LoopringAPI.userAPI.getOrderDetails(
+            {
+              accountId: account.accountId,
+              orderHash: response.hash,
             },
-            buyToken: {
-              tokenId: buyToken.tokenId,
-              volume: calcTradeParams.amountBOutSlip?.minReceived as string,
-            },
-            allOrNone: false,
-            validUntil: getTimestampDaysLater(__DAYS__),
-            // maxFeeBips: parseInt(totalFee as string),
-            maxFeeBips: maxFeeBips ?? MAPFEEBIPS,
-            fillAmountBOrS: false, // amm only false
-            orderType,
-            tradeChannel,
-            eddsaSignature: "",
-          };
+            account.apiKey
+          );
 
-          myLog("submitOrder request", request);
+          myLog("-----> resp:", resp);
 
-          const response: { hash: string } | any =
-            await LoopringAPI.userAPI.submitOrder(
-              request,
-              account.eddsaKey.sk,
-              account.apiKey
-            );
-
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            const errorItem =
-              SDK_ERROR_MAP_TO_UI[
-                (response as sdk.RESULT_INFO)?.code ?? 700001
-              ];
-            if ((response as sdk.RESULT_INFO).code === 114002) {
-              getAmount({ market });
-              clearData(calcTradeParams);
-            }
-            setToastOpen({
-              open: true,
-              type: "error",
-              content:
-                t("labelSwapFailed") +
-                " error: " +
-                (errorItem
-                  ? t(errorItem.messageKey, { ns: "error" })
-                  : (response as sdk.RESULT_INFO).message),
-            });
-          } else {
-            getStorageId();
-            await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__);
-            const resp = await LoopringAPI.userAPI.getOrderDetails(
-              {
-                accountId: account.accountId,
-                orderHash: response.hash,
-              },
-              account.apiKey
-            );
-
-            myLog("-----> resp:", resp);
-
-            if (resp.orderDetail?.status !== undefined) {
-              myLog("resp.orderDetail:", resp.orderDetail);
-              switch (resp.orderDetail?.status) {
-                case sdk.OrderStatus.cancelled:
-                  const baseAmount = sdk.toBig(
-                    resp.orderDetail.volumes.baseAmount
-                  );
-                  const baseFilled = sdk.toBig(
-                    resp.orderDetail.volumes.baseFilled
-                  );
-                  const quoteAmount = sdk.toBig(
-                    resp.orderDetail.volumes.quoteAmount
-                  );
-                  const quoteFilled = sdk.toBig(
-                    resp.orderDetail.volumes.quoteFilled
-                  );
-                  const percentage1 = baseAmount.eq(BIGO)
-                    ? 0
-                    : baseFilled.div(baseAmount).toNumber();
-                  const percentage2 = quoteAmount.eq(BIGO)
-                    ? 0
-                    : quoteFilled.div(quoteAmount).toNumber();
-                  myLog(
-                    "percentage1:",
-                    percentage1,
-                    " percentage2:",
-                    percentage2
-                  );
-                  if (percentage1 === 0 || percentage2 === 0) {
-                    setToastOpen({
-                      open: true,
-                      type: "warning",
-                      content: t("labelSwapCancelled"),
-                    });
-                  } else {
-                    setToastOpen({
-                      open: true,
-                      type: "success",
-                      content: t("labelSwapSuccess"),
-                    });
-                  }
-                  break;
-                case sdk.OrderStatus.processed:
+          if (resp.orderDetail?.status !== undefined) {
+            myLog("resp.orderDetail:", resp.orderDetail);
+            switch (resp.orderDetail?.status) {
+              case sdk.OrderStatus.cancelled:
+                const baseAmount = sdk.toBig(
+                  resp.orderDetail.volumes.baseAmount
+                );
+                const baseFilled = sdk.toBig(
+                  resp.orderDetail.volumes.baseFilled
+                );
+                const quoteAmount = sdk.toBig(
+                  resp.orderDetail.volumes.quoteAmount
+                );
+                const quoteFilled = sdk.toBig(
+                  resp.orderDetail.volumes.quoteFilled
+                );
+                const percentage1 = baseAmount.eq(BIGO)
+                  ? 0
+                  : baseFilled.div(baseAmount).toNumber();
+                const percentage2 = quoteAmount.eq(BIGO)
+                  ? 0
+                  : quoteFilled.div(quoteAmount).toNumber();
+                myLog(
+                  "percentage1:",
+                  percentage1,
+                  " percentage2:",
+                  percentage2
+                );
+                if (percentage1 === 0 || percentage2 === 0) {
+                  setToastOpen({
+                    open: true,
+                    type: "warning",
+                    content: t("labelSwapCancelled"),
+                  });
+                } else {
                   setToastOpen({
                     open: true,
                     type: "success",
                     content: t("labelSwapSuccess"),
                   });
-                  break;
-                default:
-                  setToastOpen({
-                    open: true,
-                    type: "error",
-                    content: t("labelSwapFailed"),
-                  });
-              }
+                }
+                break;
+              case sdk.OrderStatus.processed:
+                setToastOpen({
+                  open: true,
+                  type: "success",
+                  content: t("labelSwapSuccess"),
+                });
+                break;
+              default:
+                setToastOpen({
+                  open: true,
+                  type: "error",
+                  content: t("labelSwapFailed"),
+                });
             }
-            walletLayer2Service.sendUserUpdate();
-            clearData(calcTradeParams);
           }
-        } catch (reason: any) {
-          sdk.dumpError400(reason);
-          setToastOpen({
-            open: true,
-            type: "error",
-            content: t("labelSwapFailed"),
-          });
+          walletLayer2Service.sendUserUpdate();
+          clearData(calcTradeParams);
         }
-
-        // setOutput(undefined)
-
-        await sdk.sleep(__SUBMIT_LOCK_TIMER__);
-
-        setIsSwapLoading(false);
-      } else {
-        setIsSwapLoading(false);
+      } catch (reason: any) {
+        sdk.dumpError400(reason);
+        setToastOpen({
+          open: true,
+          type: "error",
+          content: t("labelSwapFailed"),
+        });
       }
+
+      // setOutput(undefined)
+
+      await sdk.sleep(__SUBMIT_LOCK_TIMER__);
+
+      setIsSwapLoading(false);
     },
     [
       pageTradeLite,
@@ -512,21 +506,40 @@ export const useSwap = <C extends { [key: string]: any }>({
   });
   const showSwapSecondConfirmation = true
   const isSmallOrder = true
-  const priceAlertCallBack = React.useCallback(() => {
-    if (isSmallOrder) {
-      setSmallOrderAlertOpen(true)
-    } else if (showSwapSecondConfirmation) {
-      setSecondConfirmationOpen(true)
+  const priceAlertCallBack = React.useCallback((confirm: boolean) => {
+    if (confirm) {
+      if (isSmallOrder) {
+        setSmallOrderAlertOpen(true)
+      } else if (showSwapSecondConfirmation) {
+        setSecondConfirmationOpen(true)
+      }
+      setAlertOpen(false)
+      setConfirmOpen(false)
+    } else {
+      setAlertOpen(false)
+      setConfirmOpen(false)
+      setIsSwapLoading(false)
     }
   }, [showSwapSecondConfirmation, isSmallOrder])
-  const smallOrderAlertCallBack = React.useCallback((e: MouseEvent) => {
-    // alert(1)
-    swapFunc(undefined as any, true);
-    setSmallOrderAlertOpen(false)
+  const smallOrderAlertCallBack = React.useCallback((confirm: boolean) => {
+    if (confirm) {
+      swapFunc();
+      setIsSwapLoading(false)
+      setSmallOrderAlertOpen(false)
+    } else {
+      setSmallOrderAlertOpen(false)
+      setIsSwapLoading(false)
+    }
   }, [swapFunc])
-  const secondConfirmationCallBack = React.useCallback(() => {
-    setSecondConfirmationOpen(false)
-    swapFunc(undefined as any, true);
+  const secondConfirmationCallBack = React.useCallback((confirm: boolean) => {
+    if (confirm) {
+      swapFunc();
+      setSecondConfirmationOpen(false)
+      setIsSwapLoading(false)
+    } else {
+      setSecondConfirmationOpen(false)
+      setIsSwapLoading(false)
+    }
   }, [swapFunc])
   const swapCalculatorCallback = React.useCallback(async () => {
     const { priceLevel } = getPriceImpactInfo(
@@ -555,7 +568,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           setConfirmOpen(true);
           break;
         default:
-          swapFunc(undefined as any, true);
+          swapFunc();
           break;
       }
     }

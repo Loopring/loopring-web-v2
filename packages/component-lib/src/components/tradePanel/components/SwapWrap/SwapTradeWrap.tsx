@@ -536,7 +536,7 @@ export const SwapTradeWrap = <
               }
               fullWidth={true}
             >
-              {label}
+              {label}1
             </ButtonStyle>
           </Grid>
         </Grid>
