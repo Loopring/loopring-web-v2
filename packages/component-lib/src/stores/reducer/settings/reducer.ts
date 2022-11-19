@@ -29,7 +29,7 @@ const initialState: SettingsState = {
   hideSmallBalances: true,
   isMobile: false,
   proLayout: layoutConfigs[0].layouts,
-  swapSecondConfirmation: false,
+  swapSecondConfirmation: true,
 };
 
 export const settingsSlice: Slice<SettingsState> = createSlice({

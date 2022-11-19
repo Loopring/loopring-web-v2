@@ -505,7 +505,7 @@ export const useSwap = <C extends { [key: string]: any }>({
     [fnType.ACTIVATED]: [btnLabelAccountActive],
   });
   const showSwapSecondConfirmation = true
-  const isSmallOrder = true
+  const isSmallOrder = false
   const priceAlertCallBack = React.useCallback((confirm: boolean) => {
     if (confirm) {
       if (isSmallOrder) {

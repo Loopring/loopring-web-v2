@@ -322,10 +322,16 @@ export const SmallOrderAlert = withTranslation("common")(
     open,
     handleClose,
     handleConfirm,
+    estimatedFee,
+    feePercentage,
+    minimumReceived,
   }: WithTranslation & {
     open: boolean;
     handleClose: () => void;
     handleConfirm: () => void;
+    estimatedFee: string;
+    feePercentage: string;
+    minimumReceived: string;
   }) => {
     const theme = useTheme()
     return (
@@ -361,9 +367,9 @@ export const SmallOrderAlert = withTranslation("common")(
           <Box paddingX={2}>
             <Typography variant={"body1"} >Small trades (below ~$100) incur a higher fee. </Typography>
             <Typography variant={"body1"} >Please review the fee before confirming.</Typography>
-            <Typography variant={"body1"} >Estimated Fee: todo</Typography>
-            <Typography variant={"body1"} >Fee percentage: todo%</Typography>
-            <Typography variant={"body1"} >Minimum Received: todo</Typography>
+            <Typography variant={"body1"} >Estimated Fee: {estimatedFee}</Typography>
+            <Typography variant={"body1"} >Fee percentage: {feePercentage}%</Typography>
+            <Typography variant={"body1"} >Minimum Received: {minimumReceived}</Typography>
           </Box>
           <Button 
             style={{
@@ -387,11 +393,33 @@ export const SwapSecondConfirmation = withTranslation("common")(
     t,
     open,
     handleClose,
-    handleConfirm
+    handleConfirm,
+    fromSymbol,
+    fromAmount,
+    toSymbol,
+    toAmount,
+    userTakerRate,
+    tradeCostMin,
+    estimateFee,
+    priceImpactColor,
+    priceImpact,
+    minimumReceived,
+    slippage,
   }: WithTranslation & {
     open: boolean;
     handleClose: () => void;
     handleConfirm: () => void;
+    fromSymbol: string;
+    fromAmount: string;
+    toSymbol: string;
+    toAmount: string;
+    userTakerRate: string;
+    tradeCostMin: string;
+    estimateFee: string;
+    priceImpactColor: string;
+    priceImpact: string;
+    minimumReceived: string;
+    slippage: string;
   }) => {
     const theme = useTheme()
     return (
@@ -421,17 +449,17 @@ export const SwapSecondConfirmation = withTranslation("common")(
           <DialogContent>
             <Box paddingX={3} display={"flex"} marginTop={8} marginBottom={5} alignItems={"center"} justifyContent={"space-between"}>
               <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
-                <CoinIcon  symbol="ETH" size={48}/>
+                <CoinIcon symbol={fromSymbol} size={48}/>
                 <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>from</Typography>
-                <Typography>todo</Typography>
+                <Typography>{fromAmount} {fromSymbol}</Typography>
               </Box>
               <Box>
                 <RightArrowIcon />
               </Box>
               <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
-                <CoinIcon  symbol="ETH" size={48}/>
+                <CoinIcon symbol={toSymbol} size={48}/>
                 <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>to</Typography>
-                <Typography>todo</Typography>
+                <Typography>{toAmount} {toSymbol}</Typography>
               </Box>
             </Box>
             <Box>
@@ -445,8 +473,8 @@ export const SwapSecondConfirmation = withTranslation("common")(
                 <Tooltip
                   title={
                     t("labelSwapFeeTooltips", {
-                      // rate: userTakerRate,
-                      // value: tradeCostMin,
+                      rate: userTakerRate,
+                      value: tradeCostMin,
                     }).toString()
                   }
                   placement={"top"}
@@ -467,8 +495,7 @@ export const SwapSecondConfirmation = withTranslation("common")(
                   </Typography>
                 </Tooltip>
                 <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                  {/* {fee} */}
-                  todo
+                  {estimateFee}
                 </Typography>
               </Grid>
               
@@ -501,16 +528,13 @@ export const SwapSecondConfirmation = withTranslation("common")(
                 <Typography
                   component={"p"}
                   color={
-                    // priceImpactColor
-                    "todo"
+                    priceImpactColor
                   }
                   variant="body2"
                 >
-                  todo
-                  {/* {priceImpact} */}
+                  {priceImpact}
                 </Typography>
               </Grid>
-              {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
 
               <Grid
                 container
@@ -539,8 +563,7 @@ export const SwapSecondConfirmation = withTranslation("common")(
                   </Typography>
                 </Tooltip>
                 <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                  todo
-                  {/* {minimumReceived} */}
+                  {minimumReceived}
                 </Typography>
               </Grid>
               <Grid
@@ -569,60 +592,10 @@ export const SwapSecondConfirmation = withTranslation("common")(
                     {" " + t("swapTolerance")}
                   </Typography>
                 </Tooltip>
-
-                <Typography component={"p"} variant="body2">
-                  todo
-                  {/* {tradeCalcData ? (
-                  <>
-                    <Typography
-                      {...bindHover(popupState)}
-                      component={"span"}
-                      color={"textPrimary"}
-                    >
-                      <LinkActionStyle>
-                        {tradeData.slippage
-                          ? tradeData.slippage
-                          : tradeCalcData.slippage
-                          ? tradeCalcData.slippage
-                          : defalutSlipage}
-                        %
-                      </LinkActionStyle>
-                      <PopoverPure
-                        className={"arrow-right"}
-                        {...bindPopover(popupState)}
-                        {...{
-                          anchorOrigin: {
-                            vertical: "bottom",
-                            horizontal: "right",
-                          },
-                          transformOrigin: {
-                            vertical: "top",
-                            horizontal: "right",
-                          },
-                        }}
-                      >
-                        <SlippagePanel
-                          {...{
-                            ...rest,
-                            t,
-                            handleChange: _onSlippageChange,
-                            slippageList: slippageArray,
-                            slippage: tradeData.slippage
-                              ? tradeData.slippage
-                              : tradeCalcData.slippage
-                              ? tradeCalcData.slippage
-                              : defalutSlipage,
-                          }}
-                        />
-                      </PopoverPure>
-                    </Typography>
-                  </>
-                ) : (
-                  EmptyValueTag
-                )} */}
+                <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                  {slippage}%
                 </Typography>
               </Grid>
-
             </Box>
             <Button
               style={{
