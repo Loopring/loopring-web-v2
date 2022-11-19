@@ -7,16 +7,18 @@ import {
   DialogContentText,
   DialogTitle,
   FormControlLabel as MuiFormControlLabel,
+  Grid,
   IconButton,
   Link,
   List,
   ListItem,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { Button } from "../../../basic-lib";
+import { Button, CoinIcon } from "../../../basic-lib";
 import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
@@ -30,6 +32,8 @@ import {
   CloseIcon,
   copyToClipBoard,
   getValuePrecisionThousand,
+  Info2Icon,
+  RightArrowIcon,
   SoursURL,
   TradeDefi,
   WarningIcon2,
@@ -397,22 +401,242 @@ export const SwapSecondConfirmation = withTranslation("common")(
         onClose={(_) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>
-          <Typography variant={"h3"}>Confirm Swap</Typography> 
-          <IconButton
-            aria-label="close"
-            onClick={(_) => handleClose()}
-            sx={{
-              position: 'absolute',
-              right: theme.unit * 2.5,
-              top: theme.unit * 2.5,
-              color: theme.colorBase.boxSecondary,
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
+        <Box paddingX={3} paddingTop={2} paddingBottom={5.5}>
+          <DialogTitle>
+            <Typography variant={"h3"}>Confirm Swap</Typography>
+            <IconButton
+              aria-label="close"
+              onClick={(_) => handleClose()}
+              sx={{
+                position: 'absolute',
+                right: theme.unit * 3.5,
+                top: theme.unit * 3.5,
+                width: '100px',
+                color: theme.colorBase.boxSecondary,
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
           </DialogTitle>
-        <Button onClick={() => handleConfirm()}></Button>
+          <DialogContent>
+            <Box paddingX={3} display={"flex"} marginTop={8} marginBottom={5} alignItems={"center"} justifyContent={"space-between"}>
+              <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
+                <CoinIcon  symbol="ETH" size={48}/>
+                <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>from</Typography>
+                <Typography>todo</Typography>
+              </Box>
+              <Box>
+                <RightArrowIcon />
+              </Box>
+              <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
+                <CoinIcon  symbol="ETH" size={48}/>
+                <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>to</Typography>
+                <Typography>todo</Typography>
+              </Box>
+            </Box>
+            <Box>
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                marginTop={1 / 2}
+              >
+                <Tooltip
+                  title={
+                    t("labelSwapFeeTooltips", {
+                      // rate: userTakerRate,
+                      // value: tradeCostMin,
+                    }).toString()
+                  }
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapFee")}
+                  </Typography>
+                </Tooltip>
+                <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                  {/* {fee} */}
+                  todo
+                </Typography>
+              </Grid>
+              
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                marginTop={1 / 2}
+              >
+                <Tooltip
+                  title={t("labelSwapPriceImpactTooltips").toString()}
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapPriceImpact")}
+                  </Typography>
+                </Tooltip>
+                <Typography
+                  component={"p"}
+                  color={
+                    // priceImpactColor
+                    "todo"
+                  }
+                  variant="body2"
+                >
+                  todo
+                  {/* {priceImpact} */}
+                </Typography>
+              </Grid>
+              {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
+
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                marginTop={1 / 2}
+              >
+                <Tooltip
+                  title={t("labelSwapMinReceiveTooltips").toString()}
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapMinReceive")}
+                  </Typography>
+                </Tooltip>
+                <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                  todo
+                  {/* {minimumReceived} */}
+                </Typography>
+              </Grid>
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                height={24}
+              >
+                <Tooltip
+                  title={t("labelSwapToleranceTooltips").toString()}
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapTolerance")}
+                  </Typography>
+                </Tooltip>
+
+                <Typography component={"p"} variant="body2">
+                  todo
+                  {/* {tradeCalcData ? (
+                  <>
+                    <Typography
+                      {...bindHover(popupState)}
+                      component={"span"}
+                      color={"textPrimary"}
+                    >
+                      <LinkActionStyle>
+                        {tradeData.slippage
+                          ? tradeData.slippage
+                          : tradeCalcData.slippage
+                          ? tradeCalcData.slippage
+                          : defalutSlipage}
+                        %
+                      </LinkActionStyle>
+                      <PopoverPure
+                        className={"arrow-right"}
+                        {...bindPopover(popupState)}
+                        {...{
+                          anchorOrigin: {
+                            vertical: "bottom",
+                            horizontal: "right",
+                          },
+                          transformOrigin: {
+                            vertical: "top",
+                            horizontal: "right",
+                          },
+                        }}
+                      >
+                        <SlippagePanel
+                          {...{
+                            ...rest,
+                            t,
+                            handleChange: _onSlippageChange,
+                            slippageList: slippageArray,
+                            slippage: tradeData.slippage
+                              ? tradeData.slippage
+                              : tradeCalcData.slippage
+                              ? tradeCalcData.slippage
+                              : defalutSlipage,
+                          }}
+                        />
+                      </PopoverPure>
+                    </Typography>
+                  </>
+                ) : (
+                  EmptyValueTag
+                )} */}
+                </Typography>
+              </Grid>
+
+            </Box>
+            <Button
+              style={{
+                marginTop: `${theme.unit * 4.5}px`,
+                width: `${theme.unit * 39}px`
+              }}
+              variant={"contained"}
+              size={"large"}
+              color={"primary"}
+              onClick={() => handleConfirm()}>
+              Confirm
+            </Button>
+          </DialogContent>
+        </Box>
       </Dialog>
     );
   }
