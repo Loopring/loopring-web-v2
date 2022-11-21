@@ -37,6 +37,7 @@ import {
   TradeProType,
 } from "./tradePro/Interface";
 import React from "react";
+import { TOASTOPEN } from "../../components/toast";
 export { TradeProType, TradeBaseType };
 
 export type SwapTradeData<T> = {
@@ -158,6 +159,7 @@ export type SwapProps<T, I, TCD> = {
     index: 0 | 1,
     data: SwapData<SwapTradeData<T>>
   ) => SwapData<SwapTradeData<T>>;
+  setToastOpen?: (state: TOASTOPEN) => void;
 } & SwapInfoProps<T, I, TCD> &
   SwapTradeBaseEventProps<T, I> &
   SwapTradeBaseProps<T, I, TCD>;

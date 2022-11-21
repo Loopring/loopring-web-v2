@@ -77,7 +77,7 @@ export const AlertImpact = withTranslation("common")(
     open: boolean;
     value: number;
     handleClose: () => void;
-    handleConfirm: () => void;
+    handleConfirm?: () => void;
   }) => {
     return (
       <Dialog
@@ -110,7 +110,7 @@ export const AlertImpact = withTranslation("common")(
             variant={"contained"}
             size={"small"}
             onClick={(_) => {
-              handleConfirm();
+              handleConfirm && handleConfirm();
             }}
             color={"primary"}
           >
@@ -251,7 +251,7 @@ export const ConfirmImpact = withTranslation("common")(
     open: boolean;
     value: number;
     handleClose: () => void;
-    handleConfirm: () => void;
+    handleConfirm?: () => void;
   }) => {
     const [agree, setAgree] = React.useState("");
 
@@ -305,7 +305,7 @@ export const ConfirmImpact = withTranslation("common")(
           <Button
             variant={"contained"}
             size={"small"}
-            onClick={(_) => handleConfirm()}
+            onClick={(_) => handleConfirm && handleConfirm()}
             disabled={agree.trim() !== "AGREE"}
             color={"primary"}
           >
@@ -365,11 +365,11 @@ export const SmallOrderAlert = withTranslation("common")(
             Warn !!
           </Typography>
           <Box paddingX={2}>
-            <Typography variant={"body1"} >Small trades (below ~$100) incur a higher fee. </Typography>
-            <Typography variant={"body1"} >Please review the fee before confirming.</Typography>
-            <Typography variant={"body1"} >Estimated Fee: {estimatedFee}</Typography>
-            <Typography variant={"body1"} >Fee percentage: {feePercentage}%</Typography>
-            <Typography variant={"body1"} >Minimum Received: {minimumReceived}</Typography>
+            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine1")}</Typography>
+            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine2")}</Typography>
+            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine3", {estimatedFee})}</Typography>
+            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine4", {feePercentage})}</Typography>
+            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine5", {minimumReceived})}</Typography>
           </Box>
           <Button
             style={{
@@ -380,7 +380,7 @@ export const SmallOrderAlert = withTranslation("common")(
             size={"large"}
             color={"primary"}
             onClick={() => handleConfirm()}>
-            Confirm
+              {t("labelConfirm")}
           </Button>
         </DialogContent>
 
@@ -431,7 +431,7 @@ export const SwapSecondConfirmation = withTranslation("common")(
       >
         <Box paddingX={3} paddingTop={2} paddingBottom={5.5}>
           <DialogTitle>
-            <Typography variant={"h3"}>Confirm Swap</Typography>
+            <Typography variant={"h3"}>{t("labelSwapSecondConfirmTitle")}</Typography>
             <IconButton
               aria-label="close"
               onClick={(_) => handleClose()}
@@ -448,15 +448,15 @@ export const SwapSecondConfirmation = withTranslation("common")(
           </DialogTitle>
           <DialogContent>
             <Box paddingX={3} display={"flex"} marginTop={8} marginBottom={5} alignItems={"center"} justifyContent={"space-between"}>
-              <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
+              <Box width={"33%"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
                 <CoinIcon symbol={fromSymbol} size={48}/>
                 <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>from</Typography>
                 <Typography>{fromAmount} {fromSymbol}</Typography>
               </Box>
-              <Box>
+              <Box display={"flex"} justifyContent={"center"} width={"33%"}>
                 <RightArrowIcon />
               </Box>
-              <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
+              <Box width={"33%"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
                 <CoinIcon symbol={toSymbol} size={48}/>
                 <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>to</Typography>
                 <Typography>{toAmount} {toSymbol}</Typography>
@@ -606,7 +606,8 @@ export const SwapSecondConfirmation = withTranslation("common")(
               size={"large"}
               color={"primary"}
               onClick={() => handleConfirm()}>
-              Confirm
+                {t("labelConfirm")}
+
             </Button>
           </DialogContent>
         </Box>
