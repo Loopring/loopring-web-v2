@@ -5,7 +5,6 @@ const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath);
 const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
 const ReactRefreshWebpackPlugin = require("react-refresh-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
     return false;
@@ -34,8 +33,50 @@ const disableEsLint = (e) => {
     e
   );
 };
+function findBabelRules(config) {
+  let result_rule = {};
+  config.module.rules.filter((rule) => {
+    // console.log(rule);
+    if (rule.oneOf) {
+      result_rule = rule.oneOf.find((rule) => {
+        return (
+          rule.test &&
+          rule.test.toString() === /\.(js|mjs|jsx|ts|tsx)$/.toString()
+        );
+      });
+    }
+  });
+  return result_rule;
+  // return config.module.rules.filter((rule) => {
+  //   let isBabelLoader = false;
+  //   console.log(rule);
+  //   if (rule.loader && rule.loader.includes("babel-loader")) {
+  //     isBabelLoader = true;
+  //   }
+  //
+  //   if (rule.use) {
+  //     rule.use.forEach((use) => {
+  //       if (typeof use === "string" && use.includes("babel-loader")) {
+  //         isBabelLoader = true;
+  //       } else if (
+  //         typeof use === "object" &&
+  //         use.loader &&
+  //         use.loader.includes("babel-loader")
+  //       ) {
+  //         isBabelLoader = true;
+  //       }
+  //     });
+  //   }
+  //
+  //   return isBabelLoader;
+  // });
+}
 module.exports = {
-  stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
+  // stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
+  stories: [
+    "../src/components/basic-lib/Icon.stories.tsx",
+    "../src/components/basic-lib/color.stories.tsx",
+  ],
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
@@ -45,30 +86,31 @@ module.exports = {
   framework: "@storybook/react",
   typescript: {
     check: false,
-    reactDocgen: "none",
   },
+  babel: async (options) => ({
+    ...options,
+    plugins: [...options.plugins, "react-require"],
+    // any extra options you want to set
+  }),
   webpackFinal: async (config, { configType }) => {
     config = disableEsLint(config);
-    const Refresh = require("react-refresh/runtime");
-    Refresh.injectIntoGlobalHook(window);
-    window.$RefreshReg$ = function () {};
-    window.$RefreshSig$ = function () {
-      return function (type) {
-        return type;
-      };
-    };
     const isProd = configType.toLowerCase() === "production";
-    console.log(configType.toLowerCase());
     // mode: isDevelopment ? 'development' : 'production',
-    console.log(
-      path.resolve(
-        __dirname,
-        "..",
-        "..",
-        "common-resources",
-        "static-resources"
-      )
-    );
+    const rule = findBabelRules(config);
+
+    // console.log(
+    //   path.resolve(
+    //     __dirname,
+    //     "..",
+    //     "..",
+    //     "common-resources",
+    //     "static-resources"
+    //   )
+    //   // JSON.stringify(rule)
+    //   // rules[0],
+    //   // rules[1],
+    //   // rules[1].use
+    // );
     const modules = [
       ...config.resolve.modules,
       "node_modules",
@@ -80,72 +122,17 @@ module.exports = {
         "static-resources"
       ),
     ];
+    rule.include = [
+      ...rule.include,
+      path.resolve(
+        __dirname,
+        "..",
+        "..",
+        "common-resources",
+        "static-resources"
+      ),
+    ];
 
-    config.module.rules.push({
-      test: /\.(mjs|js|jsx|tsx|ts)$/,
-      // exclude: [/node_modules/, /dist/],
-      include: [
-        path.resolve(
-          __dirname,
-          "..",
-          "..",
-          "common-resources",
-          "static-resources"
-        ),
-        // ...(isProd ? [path.resolve(__dirname, "..", "src")] : []),
-      ],
-
-      // resolve: { fullySpecified: false },
-      loader: "babel-loader",
-      // loader: require.resolve('babel-loader'),
-      options: {
-        customize: require.resolve("babel-preset-react-app/webpack-overrides"),
-        presets: [
-          [
-            require.resolve("babel-preset-react-app"),
-            {
-              runtime: hasJsxRuntime ? "automatic" : "classic",
-            },
-          ],
-        ],
-        // @remove-on-eject-begin
-        babelrc: false,
-        configFile: false,
-        // Make sure we have a unique cache identifier, erring on the
-        // side of caution.
-        // We remove this when the user ejects because the default
-        // is sane and uses Babel options. Instead of options, we use
-        // the react-scripts and babel-preset-react-app versions.
-        cacheIdentifier: getCacheIdentifier("development", [
-          "babel-plugin-named-asset-import",
-          "babel-preset-react-app",
-          "react-dev-utils",
-          "react-scripts",
-        ]),
-        // @remove-on-eject-end
-        plugins: [
-          [
-            require.resolve("babel-plugin-named-asset-import"),
-            {
-              loaderMap: {
-                svg: {
-                  ReactComponent: "@svgr/webpack?-svgo,+titleProp,+ref![path]",
-                },
-              },
-            },
-          ],
-          !isProd && require.resolve("react-refresh/babel"),
-          // "production" && require.resolve("react-refresh/babel"),
-        ].filter(Boolean),
-        // This is a feature of `babel-loader` for webpack (not Babel itself).
-        // It enables caching results in ./node_modules/.cache/babel-loader/
-        // directory for faster rebuilds.
-        cacheDirectory: true,
-        // See #6846 for context on why cacheCompression is disabled
-        cacheCompression: false,
-        compact: "auto",
-      },
-    });
     config.module.rules.push({
       test: /\.s(a|c)ss$/,
       use: [
@@ -177,7 +164,6 @@ module.exports = {
           },
         ],
       }),
-      ...[!isProd && new ReactRefreshWebpackPlugin()].filter(Boolean),
     ]);
 
     return {
