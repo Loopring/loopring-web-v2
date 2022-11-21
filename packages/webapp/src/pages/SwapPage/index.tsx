@@ -6,8 +6,7 @@ import {
   SwapPanel,
   Toast,
   SmallOrderAlert,
-  SwapSecondConfirmation,
-  useSettings
+  SwapSecondConfirmation
 } from "@loopring-web/component-lib";
 import { useSwap } from "./hookSwap";
 import {
@@ -44,6 +43,7 @@ export const SwapPage = withTranslation("common")(
       secondConfirmationCallBack,
       smallOrderAlertOpen,
       secondConfirmationOpen,
+      setToastOpen
     } = useSwap({ path: "/trade/lite" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     const { campaignTagConfig } = useNotify().notifyMap ?? {};
@@ -88,6 +88,8 @@ export const SwapPage = withTranslation("common")(
           ? `${tradeData.slippage}`
           : "0.1")
       : EmptyValueTag
+
+    
     return (
       <Box
         display={"flex"}
@@ -121,6 +123,7 @@ export const SwapPage = withTranslation("common")(
             onSwapClick={onSwapClick}
             swapBtnI18nKey={swapBtnI18nKey}
             swapBtnStatus={swapBtnStatus}
+            setToastOpen={setToastOpen}
             {...{ handleSwapPanelEvent, ...rest }}
           />
         </Box>

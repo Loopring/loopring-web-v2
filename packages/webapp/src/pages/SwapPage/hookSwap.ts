@@ -1,5 +1,5 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   usePairMatch,
   useSocket,
@@ -29,6 +29,7 @@ import {
   reCalcStoB,
   swapDependAsync,
   useSubmitBtn,
+  useTokenPrices,
 } from "@loopring-web/core";
 
 import {
@@ -89,7 +90,7 @@ export const useSwap = <
   const history = useHistory();
   const refreshRef = React.createRef();
   const { toastOpen, setToastOpen, closeToast } = useToast();
-  const { isMobile } = useSettings();
+  const { isMobile, swapSecondConfirmation } = useSettings();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { account, status: accountStatus } = useAccount();
   const {
@@ -137,6 +138,8 @@ export const useSwap = <
     orderId: number;
     offchainId: number;
   }>({} as any);
+  const { tokenPrices } = useTokenPrices();
+
 
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
@@ -144,8 +147,11 @@ export const useSwap = <
     React.useState<boolean>(false);
   const [secondConfirmationOpen, setSecondConfirmationOpen] =
     React.useState<boolean>(false);
-  const isSmallOrder = true;
-  const showSwapSecondConfirmation = true;
+  const showSwapSecondConfirmation = swapSecondConfirmation
+  const isSmallOrder = (tradeData && 
+      tradeData.buy.tradeValue) 
+      ? (tokenPrices[tradeData.buy.belong] * tradeData.buy.tradeValue) < 100
+      : false
 
   const clearData = (
     calcTradeParams: Partial<MarketCalcParams> | null | undefined
@@ -514,6 +520,7 @@ export const useSwap = <
     __TOAST_AUTO_CLOSE_TIMER__,
     updatePageTradeLite,
   ]);
+  
   const priceAlertCallBack = React.useCallback(
     (confirm: boolean) => {
       if (confirm) {
@@ -1523,5 +1530,6 @@ export const useSwap = <
     secondConfirmationCallBack,
     smallOrderAlertOpen,
     secondConfirmationOpen,
+    setToastOpen
   };
 };
