@@ -724,7 +724,7 @@ export const useSwap = <
   /*** user Action function ***/
   //High: effect by wallet state update
   const handleSwapPanelEvent = async (
-    swapData: SwapData<T>,
+    swapData: SwapData<SwapTradeData<IBData<C>>>,
     swapType: any
   ): Promise<void> => {
     // myLog('handleSwapPanelEvent...')

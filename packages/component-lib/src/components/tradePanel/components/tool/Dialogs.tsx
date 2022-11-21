@@ -1,4 +1,5 @@
 import {
+  Box,
   Checkbox,
   Dialog,
   DialogActions,
@@ -6,15 +7,18 @@ import {
   DialogContentText,
   DialogTitle,
   FormControlLabel as MuiFormControlLabel,
+  Grid,
+  IconButton,
   Link,
   List,
   ListItem,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { Button } from "../../../basic-lib";
+import { Button, CoinIcon } from "../../../basic-lib";
 import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
@@ -25,14 +29,20 @@ import {
   Bridge,
   CheckBoxIcon,
   CheckedIcon,
+  CloseIcon,
   copyToClipBoard,
   getValuePrecisionThousand,
+  Info2Icon,
+  RightArrowIcon,
+  SoursURL,
   TradeDefi,
+  WarningIcon2,
   // Lang,
   // MarkdownStyle,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
+import { useTheme } from "@emotion/react";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
@@ -62,16 +72,18 @@ export const AlertImpact = withTranslation("common")(
     value,
     open,
     handleClose,
+    handleConfirm
   }: WithTranslation & {
     open: boolean;
     value: number;
-    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+    handleClose: () => void;
+    handleConfirm: () => void;
   }) => {
     return (
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
+        onClose={(e: MouseEvent) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("labelImpactTitle")}</DialogTitle>
@@ -90,15 +102,15 @@ export const AlertImpact = withTranslation("common")(
           <Button
             variant={"outlined"}
             size={"medium"}
-            onClick={(e) => handleClose(e as any)}
+            onClick={(_) => handleClose()}
           >
             {t("labelDisAgreeConfirm")}
           </Button>
           <Button
             variant={"contained"}
             size={"small"}
-            onClick={(e) => {
-              handleClose(e as any, true);
+            onClick={(_) => {
+              handleConfirm();
             }}
             color={"primary"}
           >
@@ -234,10 +246,12 @@ export const ConfirmImpact = withTranslation("common")(
     value,
     open,
     handleClose,
+    handleConfirm
   }: WithTranslation & {
     open: boolean;
     value: number;
-    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+    handleClose: () => void;
+    handleConfirm: () => void;
   }) => {
     const [agree, setAgree] = React.useState("");
 
@@ -251,7 +265,7 @@ export const ConfirmImpact = withTranslation("common")(
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
+        onClose={(_) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("labelImpactTitle")}</DialogTitle>
@@ -284,14 +298,14 @@ export const ConfirmImpact = withTranslation("common")(
           <Button
             variant={"outlined"}
             size={"medium"}
-            onClick={(e) => handleClose(e as any)}
+            onClick={(_) => handleClose()}
           >
             {t("labelDisAgreeConfirm")}
           </Button>
           <Button
             variant={"contained"}
             size={"small"}
-            onClick={(e) => handleClose(e as any, true)}
+            onClick={(_) => handleConfirm()}
             disabled={agree.trim() !== "AGREE"}
             color={"primary"}
           >
@@ -305,31 +319,71 @@ export const ConfirmImpact = withTranslation("common")(
 export const SmallOrderAlert = withTranslation("common")(
   ({
     t,
-    value,
     open,
     handleClose,
+    handleConfirm,
+    estimatedFee,
+    feePercentage,
+    minimumReceived,
   }: WithTranslation & {
     open: boolean;
-    value: number;
-    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+    handleClose: () => void;
+    handleConfirm: () => void;
+    estimatedFee: string;
+    feePercentage: string;
+    minimumReceived: string;
   }) => {
-    // const [agree, setAgree] = React.useState("");
-
-    // React.useEffect(() => {
-    //   if (!open) {
-    //     setAgree("");
-    //   }
-    // }, [open]);
-
+    const theme = useTheme()
     return (
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
+        onClose={(_) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("small order")}</DialogTitle>
-        
+        <DialogContent style={{padding: `${theme.unit * 5}px`}}>
+        <IconButton
+            aria-label="close"
+            onClick={(_) => handleClose()}
+            sx={{
+              position: 'absolute',
+              right: theme.unit * 2.5,
+              top: theme.unit * 2.5,
+              color: theme.colorBase.boxSecondary,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Box marginTop={2} marginBottom={1.5} display={"flex"} justifyContent={"center"}>
+            <img src={SoursURL + "svg/warning.svg"}/>
+          </Box>
+          <Typography
+            marginBottom={4.5}
+            textAlign={"center"}
+            variant={"h4"}
+            color={"var(--color-warning)"}>
+            Warn !!
+          </Typography>
+          <Box paddingX={2}>
+            <Typography variant={"body1"} >Small trades (below ~$100) incur a higher fee. </Typography>
+            <Typography variant={"body1"} >Please review the fee before confirming.</Typography>
+            <Typography variant={"body1"} >Estimated Fee: {estimatedFee}</Typography>
+            <Typography variant={"body1"} >Fee percentage: {feePercentage}%</Typography>
+            <Typography variant={"body1"} >Minimum Received: {minimumReceived}</Typography>
+          </Box>
+          <Button
+            style={{
+              marginTop: `${theme.unit * 4.5}px`,
+              width: `${theme.unit * 50}px`
+            }}
+            variant={"contained"}
+            size={"large"}
+            color={"primary"}
+            onClick={() => handleConfirm()}>
+            Confirm
+          </Button>
+        </DialogContent>
+
       </Dialog>
     );
   }
@@ -337,23 +391,225 @@ export const SmallOrderAlert = withTranslation("common")(
 export const SwapSecondConfirmation = withTranslation("common")(
   ({
     t,
-    value,
     open,
     handleClose,
+    handleConfirm,
+    fromSymbol,
+    fromAmount,
+    toSymbol,
+    toAmount,
+    userTakerRate,
+    tradeCostMin,
+    estimateFee,
+    priceImpactColor,
+    priceImpact,
+    minimumReceived,
+    slippage,
   }: WithTranslation & {
     open: boolean;
-    value: number;
-    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+    handleClose: () => void;
+    handleConfirm: () => void;
+    fromSymbol: string;
+    fromAmount: string;
+    toSymbol: string;
+    toAmount: string;
+    userTakerRate: string;
+    tradeCostMin: string;
+    estimateFee: string;
+    priceImpactColor: string;
+    priceImpact: string;
+    minimumReceived: string;
+    slippage: string;
   }) => {
-
+    const theme = useTheme()
     return (
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
+        onClose={(_) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("second confirmation")}</DialogTitle>
+        <Box paddingX={3} paddingTop={2} paddingBottom={5.5}>
+          <DialogTitle>
+            <Typography variant={"h3"}>Confirm Swap</Typography>
+            <IconButton
+              aria-label="close"
+              onClick={(_) => handleClose()}
+              sx={{
+                position: 'absolute',
+                right: theme.unit * 3.5,
+                top: theme.unit * 3.5,
+                width: '100px',
+                color: theme.colorBase.boxSecondary,
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <Box paddingX={3} display={"flex"} marginTop={8} marginBottom={5} alignItems={"center"} justifyContent={"space-between"}>
+              <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
+                <CoinIcon symbol={fromSymbol} size={48}/>
+                <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>from</Typography>
+                <Typography>{fromAmount} {fromSymbol}</Typography>
+              </Box>
+              <Box>
+                <RightArrowIcon />
+              </Box>
+              <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
+                <CoinIcon symbol={toSymbol} size={48}/>
+                <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>to</Typography>
+                <Typography>{toAmount} {toSymbol}</Typography>
+              </Box>
+            </Box>
+            <Box>
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                marginTop={1 / 2}
+              >
+                <Tooltip
+                  title={
+                    t("labelSwapFeeTooltips", {
+                      rate: userTakerRate,
+                      value: tradeCostMin,
+                    }).toString()
+                  }
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapFee")}
+                  </Typography>
+                </Tooltip>
+                <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                  {estimateFee}
+                </Typography>
+              </Grid>
+
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                marginTop={1 / 2}
+              >
+                <Tooltip
+                  title={t("labelSwapPriceImpactTooltips").toString()}
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapPriceImpact")}
+                  </Typography>
+                </Tooltip>
+                <Typography
+                  component={"p"}
+                  color={
+                    priceImpactColor
+                  }
+                  variant="body2"
+                >
+                  {priceImpact}
+                </Typography>
+              </Grid>
+
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                marginTop={1 / 2}
+              >
+                <Tooltip
+                  title={t("labelSwapMinReceiveTooltips").toString()}
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapMinReceive")}
+                  </Typography>
+                </Tooltip>
+                <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                  {minimumReceived}
+                </Typography>
+              </Grid>
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                height={24}
+              >
+                <Tooltip
+                  title={t("labelSwapToleranceTooltips").toString()}
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapTolerance")}
+                  </Typography>
+                </Tooltip>
+                <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                  {slippage}%
+                </Typography>
+              </Grid>
+            </Box>
+            <Button
+              style={{
+                marginTop: `${theme.unit * 4.5}px`,
+                width: `${theme.unit * 39}px`
+              }}
+              variant={"contained"}
+              size={"large"}
+              color={"primary"}
+              onClick={() => handleConfirm()}>
+              Confirm
+            </Button>
+          </DialogContent>
+        </Box>
       </Dialog>
     );
   }
