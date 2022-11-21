@@ -3,7 +3,9 @@ const nodePath = "../../";
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath);
 const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
+const ReactRefreshWebpackPlugin = require("react-refresh-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
     return false;
@@ -43,10 +45,18 @@ module.exports = {
   framework: "@storybook/react",
   typescript: {
     check: false,
+    reactDocgen: "none",
   },
   webpackFinal: async (config, { configType }) => {
     config = disableEsLint(config);
-
+    const Refresh = require("react-refresh/runtime");
+    Refresh.injectIntoGlobalHook(window);
+    window.$RefreshReg$ = function () {};
+    window.$RefreshSig$ = function () {
+      return function (type) {
+        return type;
+      };
+    };
     const isProd = configType.toLowerCase() === "production";
     console.log(configType.toLowerCase());
     // mode: isDevelopment ? 'development' : 'production',
@@ -167,6 +177,7 @@ module.exports = {
           },
         ],
       }),
+      ...[!isProd && new ReactRefreshWebpackPlugin()].filter(Boolean),
     ]);
 
     return {
