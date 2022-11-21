@@ -371,7 +371,7 @@ export const SwapTradeWrap = <
                 {fee}
               </Typography>
             </Grid>
-            <Grid
+            {/* <Grid
               container
               justifyContent={"space-between"}
               direction={"row"}
@@ -448,7 +448,7 @@ export const SwapTradeWrap = <
                   EmptyValueTag
                 )}
               </Typography>
-            </Grid>
+            </Grid> */}
             <Grid
               container
               justifyContent={"space-between"}

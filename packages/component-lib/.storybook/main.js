@@ -1,22 +1,27 @@
 const path = require("path");
+// const file = require("file");
 const nodePath = "../../";
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath);
-const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
-const ReactRefreshWebpackPlugin = require("react-refresh-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const hasJsxRuntime = (() => {
-  if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
-    return false;
-  }
 
-  try {
-    require.resolve("react/jsx-runtime");
-    return true;
-  } catch (e) {
-    return false;
-  }
-})();
+// const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
+// const ReactRefreshWebpackPlugin = require("react-refresh-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { webpack } = require("@storybook/builder-webpack5");
+const fs = require("fs");
+const JSONStream = require("JSONStream");
+// const hasJsxRuntime = (() => {
+//   if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
+//     return false;
+//   }
+//
+//   try {
+//     require.resolve("react/jsx-runtime");
+//     return true;
+//   } catch (e) {
+//     return false;
+//   }
+// })();
 const maxAssetSize = 1024 * 1024;
 
 const disableEsLint = (e) => {
@@ -47,29 +52,6 @@ function findBabelRules(config) {
     }
   });
   return result_rule;
-  // return config.module.rules.filter((rule) => {
-  //   let isBabelLoader = false;
-  //   console.log(rule);
-  //   if (rule.loader && rule.loader.includes("babel-loader")) {
-  //     isBabelLoader = true;
-  //   }
-  //
-  //   if (rule.use) {
-  //     rule.use.forEach((use) => {
-  //       if (typeof use === "string" && use.includes("babel-loader")) {
-  //         isBabelLoader = true;
-  //       } else if (
-  //         typeof use === "object" &&
-  //         use.loader &&
-  //         use.loader.includes("babel-loader")
-  //       ) {
-  //         isBabelLoader = true;
-  //       }
-  //     });
-  //   }
-  //
-  //   return isBabelLoader;
-  // });
 }
 module.exports = {
   // stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
@@ -87,30 +69,23 @@ module.exports = {
   typescript: {
     check: false,
   },
-  babel: async (options) => ({
-    ...options,
-    plugins: [...options.plugins, "react-require"],
-    // any extra options you want to set
-  }),
+  core: {
+    builder: "webpack5",
+  },
+
   webpackFinal: async (config, { configType }) => {
     config = disableEsLint(config);
     const isProd = configType.toLowerCase() === "production";
+    const reactDomPkg = await fs
+      .createReadStream(require.resolve("react-dom/package.json"))
+      .pipe(JSONStream.parse("*"))
+      .on("data", (data) => {
+        return data;
+      });
+    console.log("reactDomPkg", reactDomPkg);
     // mode: isDevelopment ? 'development' : 'production',
     const rule = findBabelRules(config);
 
-    // console.log(
-    //   path.resolve(
-    //     __dirname,
-    //     "..",
-    //     "..",
-    //     "common-resources",
-    //     "static-resources"
-    //   )
-    //   // JSON.stringify(rule)
-    //   // rules[0],
-    //   // rules[1],
-    //   // rules[1].use
-    // );
     const modules = [
       ...config.resolve.modules,
       "node_modules",
@@ -169,7 +144,17 @@ module.exports = {
     return {
       ...config,
       mode: isProd ? "development" : "production",
-      plugins: [...config.plugins],
+      plugins: [
+        ...config.plugins,
+        // reactDomPkg.version.startsWith("18") ||
+        // reactDomPkg.version.startsWith("0.0.0")
+        //   ? null
+        //   : new webpack.IgnorePlugin({
+        //       resourceRegExp: /react-dom\/client$/,
+        //       contextRegExp:
+        //         /(app\/react|app\\react|@storybook\/react|@storybook\\react)/, // TODO this needs to work for both in our MONOREPO and in the user's NODE_MODULES
+        //     }),
+      ],
       resolve: {
         ...config.resolve,
         modules,
