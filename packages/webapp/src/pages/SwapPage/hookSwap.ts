@@ -626,7 +626,7 @@ export const useSwap = <
   }, [market]);
 
   const should15sRefresh = React.useCallback(() => {
-    // myLog('should15sRefresh', market);
+    myLog("should15sRefresh", market);
     if (market) {
       // updateDepth()
       callPairDetailInfoAPIs();

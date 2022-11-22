@@ -7,7 +7,6 @@ const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath);
 // const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
 // const ReactRefreshWebpackPlugin = require("react-refresh-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { webpack } = require("@storybook/builder-webpack5");
 const fs = require("fs");
 const JSONStream = require("JSONStream");
 // const hasJsxRuntime = (() => {
@@ -54,11 +53,11 @@ function findBabelRules(config) {
   return result_rule;
 }
 module.exports = {
-  // stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
-  stories: [
-    "../src/components/basic-lib/Icon.stories.tsx",
-    "../src/components/basic-lib/color.stories.tsx",
-  ],
+  stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
+  // stories: [
+  //   "../src/components/basic-lib/Icon.stories.tsx",
+  //   "../src/components/basic-lib/color.stories.tsx",
+  // ],
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
@@ -69,10 +68,6 @@ module.exports = {
   typescript: {
     check: false,
   },
-  core: {
-    builder: "webpack5",
-  },
-
   webpackFinal: async (config, { configType }) => {
     config = disableEsLint(config);
     const isProd = configType.toLowerCase() === "production";
