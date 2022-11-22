@@ -59,8 +59,17 @@ module.exports = {
   //   "../src/components/basic-lib/color.stories.tsx",
   // ],
   addons: [
-    "@storybook/addon-links",
+    {
+      name: "@storybook/addon-docs",
+      options: {
+        configureJSX: true,
+        babelOptions: {},
+        sourceLoaderOptions: null,
+        transcludeMarkdown: true,
+      },
+    },
     "@storybook/addon-essentials",
+    "@storybook/addon-docs/preset",
     "@storybook/addon-interactions",
     "@storybook/preset-create-react-app",
   ],
@@ -71,13 +80,13 @@ module.exports = {
   webpackFinal: async (config, { configType }) => {
     config = disableEsLint(config);
     const isProd = configType.toLowerCase() === "production";
-    const reactDomPkg = await fs
-      .createReadStream(require.resolve("react-dom/package.json"))
-      .pipe(JSONStream.parse("*"))
-      .on("data", (data) => {
-        return data;
-      });
-    console.log("reactDomPkg", reactDomPkg);
+    // const reactDomPkg = await fs
+    //   .createReadStream(require.resolve("react-dom/package.json"))
+    //   .pipe(JSONStream.parse("*"))
+    //   .on("data", (data) => {
+    //     return data;
+    //   });
+    // console.log("reactDomPkg", reactDomPkg);
     // mode: isDevelopment ? 'development' : 'production',
     const rule = findBabelRules(config);
 
@@ -102,6 +111,22 @@ module.exports = {
         "static-resources"
       ),
     ];
+
+    rule.options.presets = [
+      [
+        "@babel/preset-env",
+        {
+          useBuiltIns: "usage",
+          corejs: 3,
+          loose: true,
+          bugfixes: true,
+          modules: false,
+        },
+      ],
+      ["@babel/preset-react", { useBuiltIns: true }],
+      ...rule.options.presets,
+    ];
+    console.log("rule.plugins:", rule.options.plugins);
 
     config.module.rules.push({
       test: /\.s(a|c)ss$/,
