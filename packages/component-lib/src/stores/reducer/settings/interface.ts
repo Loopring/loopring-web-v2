@@ -40,4 +40,5 @@ export interface SettingsState {
   hideSmallBalances: boolean;
   proLayout: Layouts;
   feeChargeOrder: string[];
+  swapSecondConfirmation: boolean;
 }

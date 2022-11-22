@@ -5,9 +5,12 @@ import {
   ConfirmImpact,
   SwapPanel,
   Toast,
+  SmallOrderAlert,
+  SwapSecondConfirmation
 } from "@loopring-web/component-lib";
 import { useSwap } from "./hookSwap";
 import {
+  EmptyValueTag,
   getValuePrecisionThousand,
   myLog,
   TOAST_TIME,
@@ -35,10 +38,58 @@ export const SwapPage = withTranslation("common")(
       pageTradeLite,
       toPro,
       isMobile,
+      priceAlertCallBack,
+      smallOrderAlertCallBack,
+      secondConfirmationCallBack,
+      smallOrderAlertOpen,
+      secondConfirmationOpen,
+      setToastOpen
     } = useSwap({ path: "/trade/lite" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     const { campaignTagConfig } = useNotify().notifyMap ?? {};
+    const estimatedFee =
+      tradeCalcData && tradeCalcData.fee && tradeData
+        ? `${tradeCalcData.fee} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+        : EmptyValueTag;
+    const minimumReceived =
+      tradeCalcData && tradeCalcData.minimumReceived && tradeData
+        ? `${tradeCalcData.minimumReceived}  ${tradeData.buy?.belong}`
+        : EmptyValueTag;
+    const feePercentage = tradeCalcData && tradeData?.buy.tradeValue
+      ? (Number(tradeCalcData.fee) / tradeData.buy.tradeValue * 100).toFixed(2)
+      : EmptyValueTag;
+    const priceImpactColor = tradeCalcData?.priceImpactColor
+      ? tradeCalcData.priceImpactColor
+      : "textPrimary";
+    const priceImpact =
+      tradeCalcData?.priceImpact !== undefined
+        ? getValuePrecisionThousand(
+            tradeCalcData.priceImpact,
+            undefined,
+            undefined,
+            2,
+            true
+          ) + " %"
+        : EmptyValueTag;
+    const userTakerRate =
+      tradeCalcData && tradeCalcData.feeTakerRate
+        ? (tradeCalcData.feeTakerRate / 100).toString()
+        : EmptyValueTag;
+    const tradeCostMin =
+      tradeCalcData && tradeCalcData.tradeCost && tradeData
+        ? `${tradeCalcData.tradeCost} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+        : EmptyValueTag;
+    const fromSymbol = tradeData?.sell.belong ?? EmptyValueTag
+    const fromAmount = tradeData?.sell.tradeValue?.toString() ?? EmptyValueTag
+    const toSymbol = tradeData?.buy.belong ?? EmptyValueTag
+    const toAmount = tradeData?.buy.tradeValue?.toString() ?? EmptyValueTag
+    const slippage = tradeData 
+      ? (tradeData.slippage 
+          ? `${tradeData.slippage}`
+          : "0.1")
+      : EmptyValueTag
 
+    
     return (
       <Box
         display={"flex"}
@@ -72,6 +123,7 @@ export const SwapPage = withTranslation("common")(
             onSwapClick={onSwapClick}
             swapBtnI18nKey={swapBtnI18nKey}
             swapBtnStatus={swapBtnStatus}
+            setToastOpen={setToastOpen}
             {...{ handleSwapPanelEvent, ...rest }}
           />
         </Box>
@@ -83,7 +135,8 @@ export const SwapPage = withTranslation("common")(
           onClose={closeToast}
         />
         <AlertImpact
-          handleClose={swapFunc}
+          handleClose={() => priceAlertCallBack(false)}
+          handleConfirm={() => priceAlertCallBack(true)}
           open={alertOpen}
           value={
             (getValuePrecisionThousand(
@@ -93,7 +146,8 @@ export const SwapPage = withTranslation("common")(
           }
         />
         <ConfirmImpact
-          handleClose={swapFunc}
+          handleClose={() => priceAlertCallBack(false)}
+          handleConfirm={() => priceAlertCallBack(true)}
           open={confirmOpen}
           value={
             (getValuePrecisionThousand(
@@ -101,6 +155,30 @@ export const SwapPage = withTranslation("common")(
               2
             ) + "%") as any
           }
+        />
+        <SmallOrderAlert
+          handleClose={() => smallOrderAlertCallBack(false)}
+          handleConfirm={() => smallOrderAlertCallBack(true)}
+          open={smallOrderAlertOpen}
+          estimatedFee={estimatedFee}
+          feePercentage={feePercentage}
+          minimumReceived={minimumReceived}
+        />
+        <SwapSecondConfirmation
+          handleClose={() => secondConfirmationCallBack(false)}
+          handleConfirm={() => secondConfirmationCallBack(true)}
+          open={secondConfirmationOpen}
+          fromSymbol={fromSymbol}
+          fromAmount={fromAmount}
+          toSymbol={toSymbol}
+          toAmount={toAmount}
+          slippage={slippage}
+          userTakerRate={userTakerRate}
+          tradeCostMin={tradeCostMin}
+          estimateFee={estimatedFee}
+          priceImpactColor={priceImpactColor}
+          priceImpact={priceImpact}
+          minimumReceived={minimumReceived}
         />
       </Box>
     );

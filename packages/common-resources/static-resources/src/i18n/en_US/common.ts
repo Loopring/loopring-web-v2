@@ -1161,4 +1161,14 @@ export default {
     "Sent {{value}} <span>{{symbol}}</span> from my Loopring L2 to another Loopring L2 failed!",
   labelL2toL2NFTSuccess:
     "Sent {{value}} <span>{{symbol}}</span> was successful!",
+  labelSmallOrderAlertLine1: "Small trades (below ~$100) incur a higher fee.",
+  labelSmallOrderAlertLine2: "Please review the fee before confirming.",
+  labelSmallOrderAlertLine3: "Estimated Fee: {{estimatedFee}}",
+  labelSmallOrderAlertLine4: "Fee percentage: {{feePercentage}}%",
+  labelSmallOrderAlertLine5: "Minimum Received: {{minimumReceived}}",
+  labelSwapSecondConfirmTitle: "Confirm Swap",
+  labelSwapSettingTitle: "Settings",
+  labelSwapSettingSecondConfirm: "Second confirmation",
+  labelSwapSettingSecondConfirmTootip: "skip confirm screen when toggled off",
+  labelSwapSettingToggleSuccess: "Swap second confirmation trun {{onOrOff}}",
 };

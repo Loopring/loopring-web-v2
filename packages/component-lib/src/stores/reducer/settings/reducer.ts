@@ -29,6 +29,7 @@ const initialState: SettingsState = {
   hideSmallBalances: true,
   isMobile: false,
   proLayout: layoutConfigs[0].layouts,
+  swapSecondConfirmation: true,
 };
 
 export const settingsSlice: Slice<SettingsState> = createSlice({
@@ -162,6 +163,9 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
       // }
       // myLog(action.payload,state.proLayout )
     },
+    setSwapSecondConfirmation(state, action: PayloadAction<boolean>) {
+      state.swapSecondConfirmation = action.payload
+    }
   },
 });
 export const {
@@ -179,5 +183,6 @@ export const {
   setHideL2Action,
   setHideSmallBalances,
   setIsMobile,
+  setSwapSecondConfirmation
 } = settingsSlice.actions;
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions
