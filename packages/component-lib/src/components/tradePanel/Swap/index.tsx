@@ -331,7 +331,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   >
                     <Box paddingX={2} paddingTop={2} paddingBottom={4}>
                       <Typography marginBottom={1}>{rest.t("labelSwapSettingTitle")}</Typography>
-                      <Typography marginBottom={1} variant={"body2"} color={"var(--color-text-third)"}>{rest.t("swapTolerance")}</Typography>
+                      <Typography marginBottom={1} variant={"body2"} color={"var(--color-text-secondary)"}>{rest.t("swapTolerance")}</Typography>
                       <SlippagePanel
                         t={rest.t}
                         slippageList={slippageArray}
