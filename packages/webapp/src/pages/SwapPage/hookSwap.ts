@@ -542,7 +542,6 @@ export const useSwap = <
     (confirm: boolean) => {
       if (confirm) {
         swapFunc();
-        setIsSwapLoading(false);
         setSmallOrderAlertOpen(false);
       } else {
         setSmallOrderAlertOpen(false);
@@ -556,7 +555,6 @@ export const useSwap = <
       if (confirm) {
         swapFunc();
         setSecondConfirmationOpen(false);
-        setIsSwapLoading(false);
       } else {
         setSecondConfirmationOpen(false);
         setIsSwapLoading(false);

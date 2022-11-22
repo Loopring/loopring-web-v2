@@ -14,6 +14,7 @@ const getWalletLayer1Balance = async <R extends { [key: string]: any }>() => {
   if (tokenMap && LoopringAPI.exchangeAPI && accAddress) {
     const [{ tokenBalances: tokenBalancesObj }, { ethBalance }] =
       await Promise.all([
+        // @ts-ignore
         LoopringAPI.exchangeAPI.getAllTokenBalances({
           owner: accAddress,
         }),
