@@ -134,7 +134,12 @@ export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
     __mediaType__?: Media;
-    collectionMeta?: Partial<Co>;
+    // collectionMeta?: Partial<Co>;
+    preference?: {
+      favourite: boolean;
+      hide: boolean;
+    };
+    collectionInfo: Co;
   };
 
 export type MintTradeNFT<I> = {
@@ -160,9 +165,10 @@ export type MintReadTradeNFT<I> = {
   Partial<Omit<sdk.NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 
 export type TradeNFT<I, Co> = MintTradeNFT<I> &
-  Partial<NFTWholeINFO<Co>> & { isApproved?: boolean };
-
-export const TOAST_TIME = 3000;
+  Partial<NFTWholeINFO<Co>> & {
+    isApproved?: boolean;
+    collectionMeta?: CollectionMeta;
+  };
 
 export enum NFT_TYPE_STRING {
   ERC721 = "ERC721",
@@ -173,6 +179,11 @@ export const EmptyValueTag = "--";
 export const DEAULT_NFTID_STRING =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
 export const MINT_LIMIT = 100000;
+export const SUBMIT_PANEL_AUTO_CLOSE = 8000;
+export const SUBMIT_PANEL_QUICK_AUTO_CLOSE = 3000;
+export const SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE = 1000;
+export const TOAST_TIME = 3000;
+
 export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;
 export const PROPERTY_Value_LIMIT = 40;
@@ -432,6 +443,10 @@ export type L2CollectionFilter = {
   isLegacy?: boolean;
   tokenAddress?: string;
   owner?: string;
+};
+export type MyNFTFilter = {
+  favourite?: boolean;
+  hidden?: boolean;
 };
 
 export const LIVE_FEE_TIMES = 60000;

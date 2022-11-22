@@ -6,12 +6,12 @@
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": ">=16.x"
+    "node": "16.x"
   },
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "2.1.16",
+    "@loopring-web/loopring-sdk": "3.0.0-beta.1",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "^1.1.3",
     "@mui/lab": "^5.0.0-alpha.45",

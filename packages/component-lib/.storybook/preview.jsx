@@ -1,4 +1,3 @@
-import configureStore from "./configureStore";
 import { GlobalStyles, ThemeProvider as MuThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterMoment";
@@ -8,6 +7,7 @@ import StoryRouter from "storybook-react-router";
 import { ThemeProvider } from "@emotion/react";
 import { getTheme, globalCss, i18n } from "@loopring-web/common-resources";
 import { setLanguage, setTheme, provider, ProviderComposer } from "../src";
+import configureStore from "./configureStore";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },

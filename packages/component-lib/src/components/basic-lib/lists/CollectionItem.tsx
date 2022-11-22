@@ -128,6 +128,7 @@ const ActionMemo = React.memo(
                 onClick={() => {
                   if (setShowEdit) {
                     setShowEdit(item);
+                    popupState.close();
                   }
                 }}
               >
@@ -147,6 +148,7 @@ const ActionMemo = React.memo(
                 onClick={() => {
                   if (setShowManageLegacy) {
                     setShowManageLegacy(item);
+                    popupState.close();
                   }
                 }}
               >
@@ -160,6 +162,7 @@ const ActionMemo = React.memo(
               <MenuItem
                 onClick={(_e) => {
                   setShowDeploy && setShowDeploy(item);
+                  popupState.close();
                 }}
               >
                 {t("labelNFTDeployContract")}
@@ -197,6 +200,7 @@ const ActionMemo = React.memo(
                 onClick={() => {
                   if (setShowMintNFT) {
                     setShowMintNFT(item);
+                    popupState.close();
                   }
                 }}
               >

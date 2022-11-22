@@ -75,7 +75,7 @@ export const calcPriceByAmmTickMapDepth = <_C>({
   let stob: number | string | undefined | BigNumber = undefined,
     btos: number | string | undefined | BigNumber = undefined,
     close: number | string | undefined = undefined;
-  if (coinA && coinB && tokenMap && marketMap && idIndex) {
+  if (coinA && coinB && tokenMap && marketMap && idIndex && marketMap[market]) {
     //first getValue from  ammPoolSnapshot
     if (ammPoolSnapshot) {
       const poolATokenVol: sdk.TokenVolumeV3 = ammPoolSnapshot.pooled[0];

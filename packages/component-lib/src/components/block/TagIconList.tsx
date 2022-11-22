@@ -22,16 +22,13 @@ export const TagIconList = React.memo(
         display={"inline-flex"}
         className={"tagIconList"}
       >
-        {campaignTagConfig[scenario]?.map((item) => {
-          if (
-            // item.scenarios?.includes(scenario) &&
-            item.symbols?.includes(symbol) &&
-            item.endShow >= Date.now() &&
-            item.startShow <= Date.now()
-          ) {
-            return (
-              <>
-                {item?.behavior === "tooltips" ? (
+        {campaignTagConfig[scenario]?.map((item, index) => {
+          return (
+            <React.Fragment key={item?.name + index}>
+              {item.symbols?.includes(symbol) &&
+              item.endShow >= Date.now() &&
+              item.startShow <= Date.now() ? (
+                item?.behavior === "tooltips" ? (
                   <Tooltip title={item.content ?? scenario}>
                     <Avatar
                       alt={item.name}
@@ -59,12 +56,12 @@ export const TagIconList = React.memo(
                     }}
                     src={item.iconSource}
                   />
-                )}
-              </>
-            );
-          } else {
-            return <></>;
-          }
+                )
+              ) : (
+                <></>
+              )}
+            </React.Fragment>
+          );
         })}
       </Typography>
     );

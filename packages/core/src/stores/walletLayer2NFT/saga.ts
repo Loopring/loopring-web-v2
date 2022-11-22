@@ -5,16 +5,21 @@ import {
   CollectionMeta,
   CustomError,
   ErrorMap,
+  MyNFTFilter,
   NFTLimit,
 } from "@loopring-web/common-resources";
 import { PayloadAction } from "@reduxjs/toolkit";
 
 const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   page,
+  nftDatas,
   collection,
+  filter,
 }: {
   page: number;
+  nftDatas?: string;
   collection: CollectionMeta | undefined;
+  filter?: MyNFTFilter | undefined;
 }) => {
   const offset = (page - 1) * NFTLimit;
   const { accountId, apiKey } = store.getState().account;
@@ -31,6 +36,8 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
             offset,
             nonZero: true,
             metadata: true, // close metadata
+            ...(nftDatas ? { nftDatas } : {}),
+            ...(filter ?? {}),
           },
           apiKey
         )
@@ -48,6 +55,8 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
             offset,
             nonZero: true,
             metadata: true, // close metadata
+            ...(nftDatas ? { nftDatas } : {}),
+            ...(filter ?? {}),
           },
           apiKey
         )
@@ -60,6 +69,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
       walletLayer2NFT: userNFTBalances ?? [],
       total: totalNum,
       collection: collection,
+      filter,
       page,
     };
   }
@@ -67,16 +77,20 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
 };
 
 export function* getPostsSaga({
-  payload: { page = 1, collection },
+  payload: { page = 1, collection, nftDatas, filter },
 }: PayloadAction<{
   page?: number;
+  nftDatas?: string;
   collection: CollectionMeta | undefined;
+  filter?: MyNFTFilter | undefined;
 }>) {
   try {
     // @ts-ignore
     const walletLayer2NFT: any = yield call(getWalletLayer2NFTBalance, {
       page,
+      nftDatas,
       collection,
+      filter,
     });
     yield put(getWalletLayer2NFTStatus({ ...walletLayer2NFT }));
   } catch (err) {

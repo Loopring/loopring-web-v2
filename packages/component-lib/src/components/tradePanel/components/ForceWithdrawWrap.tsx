@@ -79,7 +79,8 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
   isLoopringAddress = false,
   chargeFeeTokenList = [],
   feeInfo,
-  handleConfirm,
+  lastFailed,
+  // handleConfirm,
   isFeeNotEnough,
   onWithdrawClick,
   withdrawBtnStatus,
@@ -94,7 +95,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
 }: ForceWithdrawViewProps<T, I, C> &
   WithTranslation & {
     assetsData: AssetsRawDataItem[];
-    handleConfirm: (index: number) => void;
+    // handleConfirm: (index: number) => void;
   }) => {
   const { isMobile } = useSettings();
   const [dropdownStatus, setDropdownStatus] =
@@ -113,7 +114,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
     label: t("labelForceWithdrawEnterToken"),
     disableInputValue: true,
     maxAllow: false,
-    disabled: !Object.keys(walletMap).length,
+    disabled: !Object.keys(walletMap ?? {}).length,
     subLabel: "",
   };
 
@@ -377,14 +378,23 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
       </Grid>
 
       <Grid item alignSelf={"stretch"} paddingBottom={0}>
+        {lastFailed && (
+          <Typography
+            paddingBottom={1}
+            textAlign={"center"}
+            color={"var(--color-warning)"}
+          >
+            {t("labelConfirmAgainByFailed")}
+          </Typography>
+        )}
         <Button
           fullWidth
           variant={"contained"}
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            handleConfirm(0);
-            // onWithdrawClick(tradeData);
+            // handleConfirm(0);
+            onWithdrawClick({ ...tradeData } as unknown as T);
           }}
           loading={
             withdrawBtnStatus === TradeBtnStatus.LOADING && !getDisabled

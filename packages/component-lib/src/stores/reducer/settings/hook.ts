@@ -12,6 +12,7 @@ import {
   setLayouts,
   setPlatform,
   setSlippage,
+  setSwapSecondConfirmation,
   setTheme,
   setUpColor,
 } from "./reducer";
@@ -42,6 +43,7 @@ export function useSettings(): SettingsState & {
   setLayouts(value: Layouts): void;
   setFeeChargeOrder(value: string[]): void;
   setIsMobile(value: boolean): void;
+  setSwapSecondConfirmation(value: boolean): void;
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings);
   const dispatch = useDispatch();
@@ -101,6 +103,10 @@ export function useSettings(): SettingsState & {
     ),
     setIsMobile: React.useCallback(
       (value: boolean) => dispatch(setIsMobile(value)),
+      [dispatch]
+    ),
+    setSwapSecondConfirmation: React.useCallback(
+      (value: boolean) => dispatch(setSwapSecondConfirmation(value)),
       [dispatch]
     ),
   };

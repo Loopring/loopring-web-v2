@@ -13,7 +13,6 @@ import {
   CreateAccount_Submit,
   CreateAccount_WaitForAuth,
   Deposit_Approve_Denied,
-  Deposit_Approve_Submit,
   Deposit_Approve_WaitForAuth,
   Deposit_Denied,
   Deposit_Failed,
@@ -41,7 +40,6 @@ import {
   NFTDeploy_Submit,
   NFTDeploy_WaitForAuth,
   NFTDeposit_Approve_Denied,
-  NFTDeposit_Approve_Submit,
   NFTDeposit_Approve_WaitForAuth,
   NFTDeposit_Denied,
   NFTDeposit_Failed,
@@ -115,7 +113,9 @@ import {
   TradeTypes,
 } from "@loopring-web/common-resources";
 import {
+  depositServices,
   goActiveAccount,
+  LAST_STEP,
   lockAccount,
   mintService,
   onchainHashInfo,
@@ -124,30 +124,30 @@ import {
   useAccount,
   useActiveAccount,
   useCheckActiveStatus,
+  useCollectionAdvanceMeta,
   useExportAccount,
   useForceWithdraw,
   useModalData,
   useNFTDeploy,
+  useNFTMintAdvance,
   useNFTTransfer,
   useNFTWithdraw,
+  useNotify,
   useRampTransPost,
   useReset,
   useSystem,
+  useToast,
   useTransfer,
   useVendor,
   useWalletLayer2,
   useWithdraw,
-  useCollectionAdvanceMeta,
-  useToast,
-  useNFTMintAdvance,
-  useNotify,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
 
 export function useAccountModalForUI({
   t,
-  onClose,
+  // onClose,
   isLayer1Only = false,
   depositProps,
   ...rest
@@ -157,7 +157,7 @@ export function useAccountModalForUI({
   isLayer1Only?: boolean;
   depositProps: DepositProps<any, any>;
   account: Account;
-  onClose?: any;
+  // onClose?: any;
 }) {
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
@@ -166,7 +166,7 @@ export function useAccountModalForUI({
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
   const history = useHistory();
   const {
-    modals: { isShowAccount },
+    modals: { isShowAccount, isShowDeposit },
     setShowConnect,
     setShowAccount,
     setShowDeposit,
@@ -300,58 +300,24 @@ export function useAccountModalForUI({
     }
   }, [account.readyState, isShowAccount, setShowAccount]);
 
-  const backToDepositBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: false });
-        if (!depositProps.isAllowInputToAddress) {
-          setShowDeposit({ isShow: true });
-        }
-      },
-    };
-  }, [setShowAccount, depositProps.isAllowInputToAddress, setShowDeposit]);
-
-  const backToNFTDepositBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: false });
-      },
-    };
-  }, [setShowAccount]);
-
-  const backToUnlockAccountBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: true, step: AccountStep.HadAccount });
-      },
-    };
-  }, [setShowAccount]);
-
-  const closeBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelClose",
-      callback: (e: any) => {
-        setShouldShow(false);
-        setShowTransfer({ isShow: false });
-        setShowWithdraw({ isShow: false });
-        setShowAccount({ isShow: false });
-        setShowResetAccount({ isShow: false });
-        if (onClose) {
-          onClose(e);
-        }
-      },
-    };
-  }, [
-    onClose,
-    setShouldShow,
-    setShowAccount,
-    setShowResetAccount,
-    setShowTransfer,
-    setShowWithdraw,
-  ]);
+  const closeBtnInfo = React.useCallback(
+    (props?: { closeExtend?: (e?: any) => void }) => {
+      return {
+        btnTxt: "labelClose",
+        callback: (e: any) => {
+          setShouldShow(false);
+          setShowAccount({ isShow: false });
+          if (props?.closeExtend) {
+            props?.closeExtend(e);
+          }
+          // if (onClose) {
+          //   onClose(e);
+          // }
+        },
+      };
+    },
+    [setShouldShow, setShowAccount]
+  );
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const clearDeposit = React.useCallback(() => {
     clearDepositHash(account.accAddress);
@@ -438,7 +404,7 @@ export function useAccountModalForUI({
       {
         ...AddAssetList.FromMyL1,
         handleSelect: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
           setShowDeposit({ isShow: true, symbol: isShowAccount?.info?.symbol });
         },
       },
@@ -484,7 +450,7 @@ export function useAccountModalForUI({
       {
         ...SendAssetList.SendAssetToL2,
         handleSelect: (_e) => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
           setShowTransfer({
             isShow: true,
             symbol: isShowAccount?.info?.symbol,
@@ -494,7 +460,7 @@ export function useAccountModalForUI({
       {
         ...SendAssetList.SendAssetToMyL1,
         handleSelect: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
           setShowWithdraw({
             isShow: true,
             info: { isToMyself: true },
@@ -505,7 +471,7 @@ export function useAccountModalForUI({
       {
         ...SendAssetList.SendAssetToOtherL1,
         handleSelect: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
           setShowWithdraw({
             isShow: true,
             info: { isToMyself: false },
@@ -636,7 +602,10 @@ export function useAccountModalForUI({
               chainInfos,
               // isSupport,
               noButton: isLayer1Only,
-              onClose,
+              onClose: (_e: any) => {
+                setShouldShow(false);
+                setShowAccount({ isShow: false });
+              },
               updateDepositHash,
               clearDepositHash: clearDeposit,
               ...account,
@@ -662,7 +631,10 @@ export function useAccountModalForUI({
               noButton: isLayer1Only,
               onSwitch,
               onCopy,
-              onClose,
+              onClose: (_e: any) => {
+                setShouldShow(false);
+                setShowAccount({ isShow: false });
+              },
               etherscanUrl: rest.etherscanBaseUrl,
               onViewQRCode,
               onDisconnect,
@@ -724,7 +696,12 @@ export function useAccountModalForUI({
       [AccountStep.Deposit_Approve_Denied]: {
         view: (
           <Deposit_Approve_Denied
-            btnInfo={backToDepositBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                depositServices.depositERC20();
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -732,30 +709,9 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: !depositProps.isAllowInputToAddress
-          ? () => {
-              setShowAccount({ isShow: false });
-              setShowDeposit({ isShow: true });
-            }
-          : undefined,
-      },
-      [AccountStep.Deposit_Approve_Submit]: {
-        view: (
-          <Deposit_Approve_Submit
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-        onBack: !depositProps.isAllowInputToAddress
-          ? () => {
-              setShowAccount({ isShow: false });
-              setShowDeposit({ isShow: true });
-            }
-          : undefined,
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
       },
       [AccountStep.Deposit_WaitForAuth]: {
         view: (
@@ -772,17 +728,19 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: !depositProps.isAllowInputToAddress
-          ? () => {
-              setShowAccount({ isShow: false });
-              setShowDeposit({ isShow: true });
-            }
-          : undefined,
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
       },
       [AccountStep.Deposit_Denied]: {
         view: (
           <Deposit_Denied
-            btnInfo={backToDepositBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                depositServices.depositERC20();
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -790,17 +748,25 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: !depositProps.isAllowInputToAddress
-          ? () => {
-              setShowAccount({ isShow: false });
-              setShowDeposit({ isShow: true });
-            }
-          : undefined,
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
       },
       [AccountStep.Deposit_Failed]: {
         view: (
           <Deposit_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.deposit,
+                  },
+                });
+              },
+            })}
             {...{
               ...rest,
               account,
@@ -819,7 +785,20 @@ export function useAccountModalForUI({
       [AccountStep.Deposit_Submit]: {
         view: (
           <Deposit_Submit
-            btnInfo={closeBtnInfo}
+            btnInfo={{
+              btnTxt: "labelDoAgain",
+              param: { method: t("labelDepositL1") },
+              callback: () => {
+                setShowAccount({ isShow: false });
+                setShowDeposit({
+                  isShow: true,
+                  symbol:
+                    (rest as any)?.symbol ??
+                    isShowAccount?.info?.symbol ??
+                    "LRC",
+                });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -844,7 +823,13 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeposit_Approve_Denied]: {
         view: (
           <NFTDeposit_Approve_Denied
-            btnInfo={backToNFTDepositBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                depositServices.depositNFT();
+                // setShowAccount({ isShow: false });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -857,22 +842,7 @@ export function useAccountModalForUI({
           setShowAccount({ isShow: false });
         },
       },
-      [AccountStep.NFTDeposit_Approve_Submit]: {
-        view: (
-          <NFTDeposit_Approve_Submit
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
-              account,
-              ...nftDepositValue,
-              t,
-            }}
-          />
-        ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-        },
-      },
+
       [AccountStep.NFTDeposit_WaitForAuth]: {
         view: (
           <NFTDeposit_WaitForAuth
@@ -896,7 +866,12 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeposit_Denied]: {
         view: (
           <NFTDeposit_Denied
-            btnInfo={backToNFTDepositBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                depositServices.depositNFT();
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -912,7 +887,18 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeposit_Failed]: {
         view: (
           <NFTDeposit_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.nftDeposit,
+                  },
+                });
+              },
+            })}
             {...{
               ...rest,
               account,
@@ -929,7 +915,20 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeposit_Submit]: {
         view: (
           <NFTDeposit_Submit
-            btnInfo={closeBtnInfo}
+            btnInfo={{
+              btnTxt: "labelDoAgain",
+              param: { method: t("labelDepositNFTL1") },
+              callback: () => {
+                setShowAccount({ isShow: false });
+                setShowDeposit({
+                  isShow: true,
+                  symbol:
+                    (rest as any)?.symbol ??
+                    isShowAccount?.info?.symbol ??
+                    "LRC",
+                });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -969,7 +968,7 @@ export function useAccountModalForUI({
                 if (isShowAccount.info?.isAdvanceMint) {
                   nftMintAdvanceRetryBtn();
                 } else {
-                  mintService.signatureMint();
+                  mintService.goMintConfirm();
                 }
               },
             }}
@@ -993,7 +992,7 @@ export function useAccountModalForUI({
                 if (isShowAccount.info?.isAdvanceMint) {
                   nftMintAdvanceRetryBtn(true);
                 } else {
-                  mintService.signatureMint(true);
+                  mintService.goMintConfirm(true);
                 }
               },
             }}
@@ -1023,7 +1022,7 @@ export function useAccountModalForUI({
       [AccountStep.NFTMint_Failed]: {
         view: (
           <NFTMint_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             symbol={isShowAccount.info?.name}
             value={isShowAccount.info?.value}
             {...{
@@ -1041,7 +1040,30 @@ export function useAccountModalForUI({
       [AccountStep.NFTMint_Success]: {
         view: (
           <NFTMint_Success
-            btnInfo={closeBtnInfo}
+            // btnInfo={closeBtnInfo}
+            btnInfo={{
+              btnTxt: "labelDoAgain",
+              param: { method: t("labelMintNFT") },
+              callback: () => {
+                setShowAccount({ isShow: false });
+                if (isShowAccount.info?.lastStep === LAST_STEP.nftMint) {
+                  history.push(
+                    `/nft/mintNFT/${isShowAccount.info?.collection?.contractAddress}`
+                  );
+                } else {
+                  history.push("/nft/mintNFTAdvance");
+                }
+
+                // mintService.emptyData()
+                // setShowDeposit({
+                //   isShow: true,
+                //   symbol:
+                //     (rest as any)?.symbol ??
+                //     isShowAccount?.info?.symbol ??
+                //     "LRC",
+                // });
+              },
+            }}
             symbol={isShowAccount.info?.name}
             value={isShowAccount.info?.value}
             {...{
@@ -1132,7 +1154,7 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeploy_Failed]: {
         view: (
           <NFTDeploy_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -1149,7 +1171,7 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeploy_Submit]: {
         view: (
           <NFTDeploy_Submit
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -1238,7 +1260,18 @@ export function useAccountModalForUI({
       [AccountStep.ForceWithdraw_Failed]: {
         view: (
           <ForceWithdraw_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.forceWithdraw,
+                  },
+                });
+              },
+            })}
             {...{
               ...rest,
               account,
@@ -1255,7 +1288,7 @@ export function useAccountModalForUI({
       [AccountStep.ForceWithdraw_Submit]: {
         view: (
           <ForceWithdraw_Submit
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -1329,7 +1362,21 @@ export function useAccountModalForUI({
       [AccountStep.Transfer_Success]: {
         view: (
           <Transfer_Success
-            btnInfo={closeBtnInfo}
+            btnInfo={{
+              btnTxt: "labelDoAgain",
+              param: {
+                method: t("labelL2ToL2Method", {
+                  symbol: isShowAccount?.info?.symbol,
+                }),
+              },
+              callback: () => {
+                setShowAccount({ isShow: false });
+                setShowTransfer({
+                  isShow: true,
+                  symbol: isShowAccount?.info?.symbol,
+                });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1347,7 +1394,18 @@ export function useAccountModalForUI({
       [AccountStep.Transfer_Failed]: {
         view: (
           <Transfer_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.transfer,
+                  },
+                });
+              },
+            })}
             {...{
               ...rest,
               account,
@@ -1436,7 +1494,7 @@ export function useAccountModalForUI({
       [AccountStep.Transfer_RAMP_Success]: {
         view: (
           <Transfer_Success
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -1454,7 +1512,7 @@ export function useAccountModalForUI({
       [AccountStep.Transfer_RAMP_Failed]: {
         view: (
           <Transfer_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -1499,7 +1557,7 @@ export function useAccountModalForUI({
         view: (
           <Withdraw_User_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: "labelRetry",
               callback: () => {
                 withdrawProps.onWithdrawClick(withdrawValue as any);
               },
@@ -1526,7 +1584,24 @@ export function useAccountModalForUI({
       [AccountStep.Withdraw_Success]: {
         view: (
           <Withdraw_Success
-            btnInfo={closeBtnInfo}
+            btnInfo={{
+              btnTxt: "labelDoAgain",
+              param: {
+                method: t("labelL2ToL1Method", {
+                  symbol: isShowAccount?.info?.symbol,
+                }),
+              },
+              callback: () => {
+                setShowAccount({ isShow: false });
+                setShowWithdraw({
+                  isShow: true,
+                  info: {
+                    isToMyself: isShowAccount?.info?.isToMyself ?? false,
+                  },
+                  symbol: isShowAccount?.info?.symbol,
+                });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1544,7 +1619,18 @@ export function useAccountModalForUI({
       [AccountStep.Withdraw_Failed]: {
         view: (
           <Withdraw_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.withdraw,
+                  },
+                });
+              },
+            })}
             {...{
               ...rest,
               account,
@@ -1619,7 +1705,7 @@ export function useAccountModalForUI({
       [AccountStep.NFTTransfer_Success]: {
         view: (
           <NFTTransfer_Success
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -1637,7 +1723,18 @@ export function useAccountModalForUI({
       [AccountStep.NFTTransfer_Failed]: {
         view: (
           <NFTTransfer_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.nftTransfer,
+                  },
+                });
+              },
+            })}
             {...{
               ...rest,
               account,
@@ -1712,7 +1809,7 @@ export function useAccountModalForUI({
       [AccountStep.NFTWithdraw_Success]: {
         view: (
           <NFTWithdraw_Success
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -1730,7 +1827,18 @@ export function useAccountModalForUI({
       [AccountStep.NFTWithdraw_Failed]: {
         view: (
           <NFTWithdraw_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.nftWithdraw,
+                  },
+                });
+              },
+            })}
             {...{
               ...rest,
               account,
@@ -1829,133 +1937,6 @@ export function useAccountModalForUI({
         ),
       },
 
-      //update account
-
-      [AccountStep.UpdateAccount]: {
-        view: (
-          <UpdateAccount
-            {...{
-              ...account,
-              clearDepositHash: clearDeposit,
-              chainInfos,
-              etherscanUrl: rest.etherscanBaseUrl,
-              onSwitch,
-              onCopy,
-              onViewQRCode,
-              onDisconnect,
-              addressShort,
-            }}
-            goUpdateAccount={() => {
-              setShowAccount({ isShow: false });
-              setShowActiveAccount({ isShow: true });
-              // goUpdateAccount({});
-            }}
-            {...{ ...rest, account, t }}
-          />
-        ),
-        onQRClick,
-      },
-      [AccountStep.UpdateAccount_Approve_WaitForAuth]: {
-        view: (
-          <UpdateAccount_Approve_WaitForAuth
-            providerName={account.connectName as ConnectProviders}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.UpdateAccount_First_Method_Denied]: {
-        view: (
-          <UpdateAccount_First_Method_Denied
-            btnInfo={{
-              btnTxt: t("labelTryAnother"),
-              callback: (_e?: any) => {
-                activeAccountProps.onResetClick({ isFirstTime: false });
-                // goUpdateAccount({ isFirstTime: false });
-              },
-            }}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-        onBack: () => {
-          setShowAccount({ isShow: true, step: AccountStep.CheckingActive });
-          // backToUpdateAccountBtnInfo.callback();
-        },
-      },
-      [AccountStep.UpdateAccount_User_Denied]: {
-        view: (
-          <UpdateAccount_User_Denied
-            btnInfo={{
-              btnTxt: t("labelRetry"),
-              callback: (_e?: any) => {
-                activeAccountProps.onResetClick({});
-              },
-            }}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.UpdateAccount_Success]: {
-        view: (
-          <UpdateAccount_Success
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
-              account,
-              link: isShowAccount?.info?.hash
-                ? {
-                    name: "Txn Hash",
-                    url: isShowAccount?.info?.hash,
-                  }
-                : undefined,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.UpdateAccount_Success]: {
-        view: (
-          <UpdateAccount_Success
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
-              account,
-              link: isShowAccount?.info?.hash
-                ? {
-                    name: "Txn Hash",
-                    url: isShowAccount?.info?.hash,
-                  }
-                : undefined,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.UpdateAccount_Failed]: {
-        view: (
-          <UpdateAccount_Failed
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
-              account,
-              error: isShowAccount.error,
-              t,
-            }}
-          />
-        ),
-      },
-
       [AccountStep.UnlockAccount_WaitForAuth]: {
         view: (
           <UnlockAccount_WaitForAuth
@@ -1970,7 +1951,16 @@ export function useAccountModalForUI({
       [AccountStep.UnlockAccount_User_Denied]: {
         view: (
           <UnlockAccount_User_Denied
-            btnInfo={backToUnlockAccountBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                unlockAccount();
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.UnlockAccount_WaitForAuth,
+                });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1982,7 +1972,7 @@ export function useAccountModalForUI({
       [AccountStep.UnlockAccount_Success]: {
         view: (
           <UnlockAccount_Success
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -1994,7 +1984,7 @@ export function useAccountModalForUI({
       [AccountStep.UnlockAccount_Failed]: {
         view: (
           <UnlockAccount_Failed
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             resetAccount={() => {
               if (walletServices)
                 if (isShowAccount.info && isShowAccount.info.walletType) {
@@ -2083,7 +2073,7 @@ export function useAccountModalForUI({
         view: (
           <UpdateAccount_Success
             patch={{ isReset: true }}
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -2102,7 +2092,121 @@ export function useAccountModalForUI({
         view: (
           <UpdateAccount_Failed
             patch={{ isReset: true }}
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+
+      //update account
+      [AccountStep.UpdateAccount]: {
+        view: (
+          <UpdateAccount
+            {...{
+              ...account,
+              clearDepositHash: clearDeposit,
+              chainInfos,
+              etherscanUrl: rest.etherscanBaseUrl,
+              onSwitch,
+              onCopy,
+              onViewQRCode,
+              onDisconnect,
+              addressShort,
+            }}
+            goUpdateAccount={() => {
+              setShowAccount({ isShow: false });
+              setShowActiveAccount({ isShow: true });
+              // goUpdateAccount({});
+            }}
+            {...{ ...rest, account, t }}
+          />
+        ),
+        onQRClick,
+      },
+      [AccountStep.UpdateAccount_Approve_WaitForAuth]: {
+        view: (
+          <UpdateAccount_Approve_WaitForAuth
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.UpdateAccount_First_Method_Denied]: {
+        view: (
+          <UpdateAccount_First_Method_Denied
+            btnInfo={{
+              btnTxt: t("labelTryAnother"),
+              callback: (_e?: any) => {
+                activeAccountProps.onResetClick({ isFirstTime: false });
+                // goUpdateAccount({ isFirstTime: false });
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: true, step: AccountStep.CheckingActive });
+          // backToUpdateAccountBtnInfo.callback();
+        },
+      },
+      [AccountStep.UpdateAccount_User_Denied]: {
+        view: (
+          <UpdateAccount_User_Denied
+            btnInfo={{
+              btnTxt: t("labelRetry"),
+              callback: (_e?: any) => {
+                activeAccountProps.onResetClick({});
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.UpdateAccount_Success]: {
+        view: (
+          <UpdateAccount_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.UpdateAccount_Failed]: {
+        view: (
+          <UpdateAccount_Failed
+            btnInfo={{
+              btnTxt: "labelClose",
+              callback: () => {
+                setShouldShow(false);
+                setShowActiveAccount({ isShow: true });
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -2129,7 +2233,7 @@ export function useAccountModalForUI({
         view: (
           <ExportAccount_User_Denied
             patch={{ isReset: true }}
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -2142,7 +2246,7 @@ export function useAccountModalForUI({
         view: (
           <ExportAccount_Success
             patch={{ isReset: true }}
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -2155,7 +2259,7 @@ export function useAccountModalForUI({
         view: (
           <ExportAccount_Failed
             patch={{ isReset: true }}
-            btnInfo={closeBtnInfo}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -2170,12 +2274,9 @@ export function useAccountModalForUI({
           <Dual_Success
             btnInfo={{
               btnTxt: "labelDualPanelClose",
-              callback: (e: any) => {
+              callback: (_e: any) => {
                 setShouldShow(false);
                 history.push("/invest/balance");
-                if (onClose) {
-                  onClose(e);
-                }
               },
             }}
             {...{
@@ -2189,15 +2290,7 @@ export function useAccountModalForUI({
       [AccountStep.Dual_Failed]: {
         view: (
           <Dual_Failed
-            btnInfo={{
-              btnTxt: "labelClose",
-              callback: (e: any) => {
-                setShouldShow(false);
-                if (onClose) {
-                  onClose(e);
-                }
-              },
-            }}
+            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -2209,6 +2302,8 @@ export function useAccountModalForUI({
       },
     });
   }, [
+    activeAccountProps,
+    resetProps,
     checkActiveStatusProps,
     account,
     isShowAccount.info,
@@ -2226,7 +2321,6 @@ export function useAccountModalForUI({
     onBackReceive,
     chainInfos,
     isLayer1Only,
-    onClose,
     updateDepositHash,
     clearDeposit,
     rest,
@@ -2240,7 +2334,6 @@ export function useAccountModalForUI({
     unlockBtn,
     t,
     onQRBack,
-    backToDepositBtnInfo,
     closeBtnInfo,
     nftDepositValue,
     nftDeployValue,

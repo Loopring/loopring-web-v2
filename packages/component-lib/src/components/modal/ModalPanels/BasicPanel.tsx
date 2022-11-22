@@ -43,6 +43,7 @@ export interface PanelProps {
   to?: string;
   btnInfo?: {
     btnTxt: any;
+    param?: { [key: string]: string };
     callback: (e?: any) => void;
   };
   providerName?: ConnectProviders | "unknown" | undefined;
@@ -217,11 +218,11 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                 alignItems={"flex-center"}
               >
                 <Typography
+                  component={"div"}
                   variant={"h5"}
                   whiteSpace={"pre-line"}
                   textAlign={"center"}
                   color={"textPrimary"}
-                  component={"div"}
                   marginTop={0}
                   alignSelf={"flex-center"}
                   paddingX={2}
@@ -249,11 +250,11 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             {!!describe2 && <>{describe2}</>}
             {iconType === IconType.FailedIcon && error && (
               <Typography
+                component={"div"}
                 marginX={3}
                 whiteSpace={"pre-line"}
                 variant={"body2"}
                 color={"var(--color-text-third)"}
-                component={"div"}
                 marginBottom={2}
                 alignSelf={"flex-center"}
                 paddingX={1}
@@ -262,6 +263,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               >
                 {error && (
                   <Typography
+                    component={"span"}
                     variant={"inherit"}
                     display={"inline-flex"}
                     onClick={() =>
@@ -282,6 +284,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   <TextareaAutosizeStyled
                     aria-label="NFT Description"
                     minRows={5}
+                    style={{ maxHeight: "90px", overflow: "scroll" }}
                     disabled={true}
                     value={`${JSON.stringify(error)}}`}
                   />
@@ -295,7 +298,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             <Typography
               variant={"body2"}
               color={"textSecondary"}
-              component={"div"}
+              component={"span"}
               paddingX={5}
               alignSelf={"flex-start"}
             >
@@ -322,7 +325,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   }
                 }}
               >
-                {t(btnInfo?.btnTxt)}
+                {t(btnInfo?.btnTxt, { ...btnInfo?.param })}
               </Button>
             </Box>
 
@@ -344,9 +347,9 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   {link.name}
                   {link.name === "Txn Hash" && (
                     <Typography
+                      component={"span"}
                       paddingLeft={1}
                       color={"secondary"}
-                      component={"span"}
                       display={"inline-flex"}
                       alignItems={"center"}
                     >

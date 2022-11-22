@@ -65,27 +65,27 @@ export const CollectionItemPanel = <Co extends CollectionMeta>({
 
   return (
     <Box flex={1} display={"flex"} flexDirection={"column"} paddingY={2}>
-      {!!(account.readyState === AccountStatus.ACTIVATED) && (
-        <>
-          <Box display={"flex"} flexDirection={"column"}>
-            <Typography variant={"h5"} marginBottom={1} marginX={3}>
-              {t("labelTitleMyNFTSAvailable", { ns: "common" })}
-            </Typography>
-            <MyNFTList
-              collectionMeta={collectionDate}
-              size={"small"}
-              myNFTPage={
-                searchParams?.get("myNFTPage")
-                  ? Number(searchParams?.get("myNFTPage"))
-                  : 1
-              }
-            />
-          </Box>
-          <Box marginTop={3} marginBottom={2} marginX={2}>
-            <Divider />
-          </Box>
-        </>
-      )}
+      {/*{!!(account.readyState === AccountStatus.ACTIVATED) && (*/}
+      {/*  <>*/}
+      {/*    <Box display={"flex"} flexDirection={"column"}>*/}
+      {/*      <Typography variant={"h5"} marginBottom={1} marginX={3}>*/}
+      {/*        {t("labelTitleMyNFTSAvailable", { ns: "common" })}*/}
+      {/*      </Typography>*/}
+      {/*      <MyNFTList*/}
+      {/*        collectionMeta={collectionDate}*/}
+      {/*        size={"small"}*/}
+      {/*        myNFTPage={*/}
+      {/*          searchParams?.get("myNFTPage")*/}
+      {/*            ? Number(searchParams?.get("myNFTPage"))*/}
+      {/*            : 1*/}
+      {/*        }*/}
+      {/*      />*/}
+      {/*    </Box>*/}
+      {/*    <Box marginTop={3} marginBottom={2} marginX={2}>*/}
+      {/*      <Divider />*/}
+      {/*    </Box>*/}
+      {/*  </>*/}
+      {/*)}*/}
 
       <Box display={"flex"} flex={1} marginBottom={1} flexDirection={"column"}>
         <Typography variant={"h5"} marginBottom={1} marginX={3}>
@@ -95,6 +95,7 @@ export const CollectionItemPanel = <Co extends CollectionMeta>({
           onPageChange={(page: number) => {
             nftPublicProps.onFilterNFT({ ...nftPublicProps.filter, page });
           }}
+          isManage={false}
           isSelectOnly={false}
           isMultipleSelect={false}
           getIPFSString={getIPFSString}
@@ -103,7 +104,7 @@ export const CollectionItemPanel = <Co extends CollectionMeta>({
           isLoading={nftPublicProps.isLoading}
           total={nftPublicProps.total}
           page={nftPublicProps.page}
-          size={"small"}
+          size={"medium"}
           onClick={async (_item) => {
             nftPublicProps.onDetail();
           }}

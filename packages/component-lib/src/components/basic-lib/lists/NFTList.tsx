@@ -35,9 +35,11 @@ export const NFTList = withTranslation("common")(
     selected = undefined,
     isSelectOnly = false,
     isMultipleSelect = false,
+    isManage = false,
     t,
   }: {
     baseURL: string;
+    isManage?: boolean;
     nftList: Partial<NFT>[];
     etherscanBaseUrl?: string;
     size?: "large" | "medium" | "small";

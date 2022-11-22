@@ -14,7 +14,6 @@ import {
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {
-  checkErrorInfo,
   DAYS,
   getTimestampDaysLater,
   isAccActivated,
@@ -246,6 +245,20 @@ export const useRampTransPost = () => {
   const { checkHWAddr, updateHW } = useWalletInfo();
   const { setShowAccount } = useOpenModals();
   const { updateTransferRampData, resetTransferRampData } = useModalData();
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+    // setIsFeeNotEnough,
+  } = useChargeFees({
+    requestType: sdk.OffchainFeeReqType.TRANSFER,
+    updateData: ({ fee }) => {
+      const { transferRampValue } = store.getState()._router_modalData;
+      updateTransferRampData({ ...transferRampValue, fee });
+    },
+  });
   const processRequestRampTransfer = React.useCallback(
     async (
       request: sdk.OriginTransferRequestV3,
@@ -257,7 +270,8 @@ export const useRampTransPost = () => {
         if (
           connectProvides.usedWeb3 &&
           LoopringAPI.userAPI &&
-          window.rampInstance
+          window.rampInstance &&
+          isAccActivated()
         ) {
           let isHWAddr = checkHWAddr(account.accAddress);
           if (!isHWAddr && !isNotHardwareWallet) {
@@ -287,109 +301,83 @@ export const useRampTransPost = () => {
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
           ) {
-            const code = checkErrorInfo(
-              response as sdk.RESULT_INFO,
-              isNotHardwareWallet
-            );
-            if (code === sdk.ConnectorError.USER_DENIED) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_RAMP_User_Denied,
-              });
-              // setIsConfirmTransfer(false);
-            } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_RAMP_First_Method_Denied,
-              });
-            } else {
-              let info = {};
-              if (
-                [102024, 102025, 114001, 114002].includes(
-                  (response as sdk.RESULT_INFO)?.code || 0
-                )
-              ) {
-                info = {
-                  transferRamp: AccountStep.Transfer_RAMP_Failed,
-                  trigger: "checkFeeIsEnough",
-                };
-              }
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_RAMP_Failed,
-                error: response as sdk.RESULT_INFO,
-                ...info,
-              });
-              // setIsConfirmTransfer(false);
-            }
-          } else if ((response as sdk.TX_HASH_API)?.hash) {
-            // setIsConfirmTransfer(false);
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_RAMP_In_Progress,
-            });
-            await sdk.sleep(TOAST_TIME);
-
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_RAMP_Success,
-              info: {
-                hash:
-                  Explorer +
-                  `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
-              },
-            });
-            if (window.rampInstance) {
-              try {
-                console.log("RAMP WEIGHT display on transfer done");
-                // @ts-ignore
-                window.rampInstance.domNodes.overlay.style.display = "";
-              } catch (e) {
-                console.log("RAMP WEIGHT hidden failed");
-              }
-            }
-            if (isHWAddr) {
-              myLog("......try to set isHWAddr", isHWAddr);
-              updateHW({ wallet: account.accAddress, isHWAddr });
-            }
-            walletLayer2Service.sendUserUpdate();
-            resetTransferRampData();
-          } else {
-            resetTransferRampData();
+            throw response;
           }
-        } else {
+          // setIsConfirmTransfer(false);
           setShowAccount({
             isShow: true,
-            step: AccountStep.Transfer_RAMP_Failed,
-            error: {
-              code: UIERROR_CODE.ERROR_RAMP_NO_INSTANCE,
+            step: AccountStep.Transfer_RAMP_In_Progress,
+          });
+          await sdk.sleep(TOAST_TIME);
+
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Transfer_RAMP_Success,
+            info: {
+              hash:
+                Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
             },
           });
+          if (window.rampInstance) {
+            try {
+              console.log("RAMP WEIGHT display on transfer done");
+              // @ts-ignore
+              window.rampInstance.domNodes.overlay.style.display = "";
+            } catch (e) {
+              console.log("RAMP WEIGHT hidden failed");
+            }
+          }
+          if (isHWAddr) {
+            myLog("......try to set isHWAddr", isHWAddr);
+            updateHW({ wallet: account.accAddress, isHWAddr });
+          }
+          walletLayer2Service.sendUserUpdate();
+          resetTransferRampData();
         }
-      } catch (reason: any) {
-        const code = checkErrorInfo(reason, isNotHardwareWallet);
-
-        if (isAccActivated()) {
-          if (code === sdk.ConnectorError.USER_DENIED) {
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_RAMP_User_Denied,
-            });
-          } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+      } catch (e: any) {
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_RAMP_First_Method_Denied,
             });
-          } else {
+            break;
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Transfer_RAMP_User_Denied,
+            });
+            break;
+          default:
+            if (
+              [102024, 102025, 114001, 114002].includes(
+                (e as sdk.RESULT_INFO)?.code || 0
+              )
+            ) {
+              checkFeeIsEnough({ isRequiredAPI: true });
+            }
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_RAMP_Failed,
               error: {
                 code: UIERROR_CODE.UNKNOWN,
-                msg: reason?.message,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
               },
             });
-          }
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Transfer_Failed,
+            });
+
+            break;
         }
       }
     },
@@ -403,7 +391,14 @@ export const useRampTransPost = () => {
       updateTransferRampData,
     ]
   );
-  return { processRequestRampTransfer };
+  return {
+    processRequestRampTransfer,
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  };
 };
 export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   sellPanel,
@@ -428,7 +423,14 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   const { account } = useAccount();
   const [balanceNotEnough, setBalanceNotEnough] = React.useState(false);
   const { offRampValue } = useModalData();
-  const { processRequestRampTransfer: processRequest } = useRampTransPost();
+  const {
+    processRequestRampTransfer: processRequest,
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useRampTransPost();
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>)
   );
@@ -442,20 +444,6 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const { transferRampValue, updateTransferRampData, resetOffRampData } =
     useModalData();
-  const {
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    handleFeeChange,
-    feeInfo,
-    checkFeeIsEnough,
-    // setIsFeeNotEnough,
-  } = useChargeFees({
-    requestType: sdk.OffchainFeeReqType.TRANSFER,
-    updateData: ({ fee }) => {
-      const { transferRampValue } = store.getState()._router_modalData;
-      updateTransferRampData({ ...transferRampValue, fee });
-    },
-  });
 
   React.useEffect(() => {
     if (

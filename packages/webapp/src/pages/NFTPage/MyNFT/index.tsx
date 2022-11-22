@@ -262,7 +262,6 @@ export const MyNFTPanel = withTranslation("common")(
                 flex={1}
                 display={"flex"}
                 flexDirection={"column"}
-                justifyContent={""}
                 alignItems={"stretch"}
               >
                 <MyNFTList
@@ -373,7 +372,12 @@ export const MyNFTPanel = withTranslation("common")(
                 </Box>
               </Box>
             </Box>
-            <Box display={"flex"} flex={1}>
+            <Box
+              display={"flex"}
+              flex={1}
+              flexDirection={"column"}
+              justifyContent={"stretch"}
+            >
               {currentTab === MY_NFT_VIEW.LIST_NFT && (
                 <MyNFTList
                   collectionMeta={undefined}

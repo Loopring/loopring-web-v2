@@ -54,7 +54,7 @@ QRCodeProps & Partial<BaseQRCodeProps>) => {
         size={size}
         fgColor={fgColor}
         bgColor={bgColor}
-        style={{ padding: 8 }}
+        style={{ padding: 8, background: bgColor }}
         aria-label={`link:${url}`}
       />
       {description && (
@@ -67,7 +67,15 @@ QRCodeProps & Partial<BaseQRCodeProps>) => {
 };
 
 export const ModalQRCode = withTranslation("common")(
-  ({ onClose, open, t, ...rest }: ModalQRCodeProps & WithTranslation) => {
+  ({
+    onClose,
+    open,
+    t,
+    ...rest
+  }: ModalQRCodeProps &
+    QRCodeProps &
+    Partial<BaseQRCodeProps> &
+    WithTranslation) => {
     return (
       <Modal
         open={open}

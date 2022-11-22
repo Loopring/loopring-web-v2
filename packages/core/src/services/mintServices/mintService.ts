@@ -4,6 +4,7 @@ import {
   store,
   resetNFTMintData,
   updateNFTMintData,
+  LAST_STEP,
 } from "../../index";
 import {
   AccountStatus,
@@ -38,12 +39,19 @@ const subject = new Subject<{
 }>();
 
 export const mintService = {
-  emptyData: async (contractAddress?: string) => {
+  emptyData: async (
+    props:
+      | {
+          contractAddress?: string | undefined;
+          lastStep?: LAST_STEP | undefined;
+        }
+      | undefined
+  ) => {
     const {
       account,
       // system: { chainId },
     } = store.getState();
-    let tokenAddress = contractAddress,
+    let tokenAddress = props?.contractAddress,
       collection: undefined | CollectionMeta = undefined;
     if (
       tokenAddress &&
@@ -53,7 +61,7 @@ export const mintService = {
       const response = await LoopringAPI.userAPI?.getUserOwenCollection(
         {
           owner: account.accAddress,
-          tokenAddress: contractAddress,
+          tokenAddress: props?.contractAddress,
         },
         account.apiKey
       );
@@ -66,7 +74,9 @@ export const mintService = {
       }
       collection = (response as any).collections[0];
     }
-    store.dispatch(resetNFTMintData({ tokenAddress, collection }));
+    store.dispatch(
+      resetNFTMintData({ tokenAddress, collection, lastStep: props?.lastStep })
+    );
     subject.next({
       status: MintCommands.MetaDataSetup,
       data: {
@@ -161,9 +171,12 @@ export const mintService = {
     }
     // }
   },
-  goMintConfirm: () => {
+  goMintConfirm: (isHardware?: boolean) => {
     subject.next({
       status: MintCommands.MintConfirm,
+      data: {
+        isHardware: isHardware,
+      },
     });
   },
   backMetaDataSetup: () => {
@@ -174,12 +187,9 @@ export const mintService = {
       },
     });
   },
-  signatureMint: (isHardware?: boolean) => {
+  signatureMint: () => {
     subject.next({
       status: MintCommands.SignatureMint,
-      data: {
-        isHardware: isHardware,
-      },
     });
   },
   onSocket: () => subject.asObservable(),

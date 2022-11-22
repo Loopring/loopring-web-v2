@@ -66,7 +66,7 @@ export const useMintNFTPanel = <
       account.readyState === AccountStatus.ACTIVATED &&
       match?.params?.item === "mintNFT"
     ) {
-      mintService.emptyData(match?.params?.contract ?? "");
+      mintService.emptyData({ contractAddress: match?.params?.contract ?? "" });
     } else {
       resetIntervalTime();
     }

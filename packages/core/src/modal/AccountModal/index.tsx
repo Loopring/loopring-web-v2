@@ -22,7 +22,7 @@ import {
 
 export const ModalAccountInfo = withTranslation("common")(
   ({
-    onClose,
+    // onClose,
     etherscanBaseUrl,
     open,
     assetsRawData,
@@ -35,7 +35,7 @@ export const ModalAccountInfo = withTranslation("common")(
     isLayer1Only?: boolean;
     account: Account;
     depositProps: DepositProps<any, any>;
-    onClose?: (e: MouseEvent) => void;
+    // onClose?: (e: MouseEvent) => void;
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
@@ -47,6 +47,7 @@ export const ModalAccountInfo = withTranslation("common")(
         isShowAccount,
       },
       // setShowNFTDetail,
+      setShowAccount,
       setShowDeposit,
       setShowTransfer,
       setShowWithdraw,
@@ -71,7 +72,6 @@ export const ModalAccountInfo = withTranslation("common")(
       // dualTradeProps,
       copyToastOpen,
       openQRCode,
-      closeBtnInfo,
       accountList,
       currentModal,
       onBackReceive,
@@ -82,7 +82,6 @@ export const ModalAccountInfo = withTranslation("common")(
       t,
       depositProps,
       etherscanBaseUrl,
-      onClose,
       isLayer1Only,
       ...rest,
     });
@@ -163,7 +162,9 @@ export const ModalAccountInfo = withTranslation("common")(
         />
         <ModalAccount
           open={isShowAccount.isShow}
-          onClose={closeBtnInfo.callback}
+          onClose={() => {
+            setShowAccount({ isShow: false });
+          }}
           panelList={accountList}
           onBack={currentModal?.onBack}
           onQRClick={currentModal?.onQRClick}

@@ -182,7 +182,7 @@ export const CollectionManageWrap = <
             <Tabs
               value={tab}
               onChange={handleTabChange}
-              aria-label="disabled tabs example"
+              aria-label="Collection Manage Tab"
               sx={{ marginLeft: -2 }}
             >
               {[
@@ -254,6 +254,7 @@ export const CollectionManageWrap = <
               onPageChange={(page: number) => {
                 onFilterNFT({ ...filter, page });
               }}
+              isManage={false}
               isSelectOnly={tab !== "all"}
               isMultipleSelect={tab !== "all"}
               getIPFSString={getIPFSString}

@@ -217,18 +217,18 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             height={"100%"}
             display={"flex"}
           >
-            {/*<CollectionItemPanel*/}
-            {/*  nftPublicProps={nftPublicProps}*/}
-            {/*  collectionDate={detail}*/}
-            {/*  getIPFSString={getIPFSString}*/}
-            {/*  baseURL={baseURL}*/}
-            {/*/>*/}
-            <EmptyDefault
-              sx={{ flex: 1 }}
-              message={() => {
-                return <Trans i18nKey="labelComingSoon">Coming Soon</Trans>;
-              }}
+            <CollectionItemPanel
+              nftPublicProps={nftPublicProps}
+              collectionDate={detail}
+              getIPFSString={getIPFSString}
+              baseURL={baseURL}
             />
+            {/*<EmptyDefault*/}
+            {/*  sx={{ flex: 1 }}*/}
+            {/*  message={() => {*/}
+            {/*    return <Trans i18nKey="labelComingSoon">Coming Soon</Trans>;*/}
+            {/*  }}*/}
+            {/*/>*/}
           </StyledPaperBg>
         </Box>
       )}

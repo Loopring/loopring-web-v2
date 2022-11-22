@@ -16,7 +16,6 @@ import {
   connectProvides,
 } from "@loopring-web/web3-provider";
 
-import { checkErrorInfo } from "@loopring-web/core";
 import Web3 from "web3";
 
 export function useResetAccount() {
@@ -54,67 +53,85 @@ export function useExportAccountInfo() {
   }, [account]);
 
   const exportAccount = React.useCallback(async () => {
-    const account = store.getState().account;
+    const _account = store.getState().account;
+    const connectName = (ConnectProvidersSignMap[_account.connectName] ??
+      _account.connectName) as unknown as sdk.ConnectorNames;
     const { exchangeInfo, chainId } = store.getState().system;
-
-    myLog("exportAccount account:", account);
-
-    if (exchangeInfo && LoopringAPI.userAPI && account.nonce !== undefined) {
+    const { isMobile } = store.getState().settings;
+    let walletType, account;
+    if (
+      exchangeInfo &&
+      LoopringAPI.userAPI &&
+      LoopringAPI.walletAPI &&
+      LoopringAPI.exchangeAPI
+    ) {
       try {
         setShowAccount({
           isShow: true,
           step: AccountStep.ExportAccount_Approve_WaitForAuth,
         });
-
-        // const connectName = account.connectName as sdk.ConnectorNames;
-
-        const eddsaKey = await sdk.generateKeyPair({
-          web3: connectProvides.usedWeb3 as unknown as Web3,
-          address: account.accAddress,
-          chainId: chainId as any,
-          keySeed:
-            account.keySeed && account.keySeed !== ""
-              ? account.keySeed
-              : sdk.GlobalAPI.KEY_MESSAGE.replace(
-                  "${exchangeAddress}",
-                  exchangeInfo.exchangeAddress
-                ).replace("${nonce}", (account.nonce - 1).toString()),
-          walletType: (ConnectProvidersSignMap[account.connectName] ??
-            account.connectName) as unknown as sdk.ConnectorNames,
-          accountId: account.accountId,
-        });
-
-        const response = await LoopringAPI.userAPI.getUserApiKey(
-          {
-            accountId: account.accountId,
-          },
-          eddsaKey.sk
-        );
-
-        myLog("ExportAccount raw_data:", response);
-
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message ||
-          !response.apiKey
-        ) {
-          myLog("try to sendErrorUnlock....");
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.ExportAccount_Failed,
-            error: response as sdk.RESULT_INFO,
+        const walletTypePromise: Promise<{ walletType: any }> =
+          window.ethereum &&
+          _account.connectName === sdk.ConnectorNames.MetaMask &&
+          isMobile
+            ? Promise.resolve({ walletType: undefined })
+            : LoopringAPI.walletAPI.getWalletType({
+                wallet: _account.accAddress,
+              });
+        [{ accInfo: account }, { walletType }] = await Promise.all([
+          LoopringAPI.exchangeAPI.getAccount({
+            owner: _account.accAddress,
+          }),
+          walletTypePromise,
+        ])
+          .then((response) => {
+            if ((response[0] as sdk.RESULT_INFO)?.code) {
+              throw response[0];
+            }
+            return response;
+          })
+          .catch((error) => {
+            throw error;
           });
-        } else {
-          myLog("try to sendAccountSigned....");
-          setShowAccount({ isShow: false });
-          setShowExportAccount({ isShow: true });
+
+        myLog("exportAccount account:", account);
+
+        try {
+          const eddsaKey = await sdk.generateKeyPair({
+            web3: connectProvides.usedWeb3 as unknown as Web3,
+            address: account.owner,
+            chainId: chainId as any,
+            keySeed:
+              account.keySeed && _account.keySeed !== ""
+                ? _account.keySeed
+                : sdk.GlobalAPI.KEY_MESSAGE.replace(
+                    "${exchangeAddress}",
+                    exchangeInfo.exchangeAddress
+                  ).replace("${nonce}", (account.nonce - 1).toString()),
+            walletType: connectName,
+            accountId: account.accountId,
+          });
+          if (eddsaKey.sk === _account.eddsaKey.sk) {
+            myLog("try to sendAccountSigned....");
+            setShowAccount({ isShow: false });
+            setShowExportAccount({ isShow: true });
+          } else {
+            throw {
+              code: UIERROR_CODE.ERROR_PRIVATE_KEY,
+              msg: "Wrong private key",
+              message: "Wrong private key",
+            };
+          }
+        } catch (error) {
+          throw error;
         }
       } catch (e: any) {
         myLog("ExportAccount e:", e);
-
-        const errType = checkErrorInfo(e, true);
+        const error = LoopringAPI.exchangeAPI.genErr(e);
+        const errType = sdk.checkErrorInfo(error, true);
         switch (errType) {
           case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
             setShowAccount({
               isShow: true,
               step: AccountStep.ExportAccount_User_Denied,
@@ -129,6 +146,7 @@ export function useExportAccountInfo() {
           error: {
             code: UIERROR_CODE.UNKNOWN,
             msg: e?.message,
+            ...e,
           },
         });
       }

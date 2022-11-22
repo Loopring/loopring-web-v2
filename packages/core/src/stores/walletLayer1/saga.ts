@@ -12,26 +12,24 @@ const getWalletLayer1Balance = async <R extends { [key: string]: any }>() => {
   const { accAddress } = store.getState().account;
   const { tokenMap, addressIndex } = store.getState().tokenMap;
   if (tokenMap && LoopringAPI.exchangeAPI && accAddress) {
-    const { ethBalance } = await LoopringAPI.exchangeAPI.getEthBalances({
-      owner: accAddress,
+    const [{ tokenBalances: tokenBalancesObj }, { ethBalance }] =
+      await Promise.all([
+        // @ts-ignore
+        LoopringAPI.exchangeAPI.getAllTokenBalances({
+          owner: accAddress,
+        }),
+        LoopringAPI.exchangeAPI.getEthBalances({
+          owner: accAddress,
+        }),
+        ,
+      ]);
+    const tokenBalances = new Map();
+    // @ts-ignore
+    tokenBalancesObj.forEach((item, index) => {
+      // @ts-ignore
+      tokenBalances.set(item.address.toLowerCase(), item.value);
     });
-    const tokenArray2 = Reflect.ownKeys(tokenMap);
-    const tokenArray1 = tokenArray2.splice(0, tokenArray2.length / 2);
-    const [
-      { tokenBalances: tokenBalances1 },
-      { tokenBalances: tokenBalances2 },
-    ] = await Promise.all([
-      LoopringAPI.exchangeAPI.getTokenBalances({
-        owner: accAddress,
-        token: tokenArray1.map((ele) => tokenMap[ele as string].address), // marketCoins.join(),
-      }),
-      LoopringAPI.exchangeAPI.getTokenBalances({
-        owner: accAddress,
-        token: tokenArray2.map((ele) => tokenMap[ele as string].address), // marketCoins.join(),
-      }),
-    ]);
-    var tokenBalances = new Map([...tokenBalances1, ...tokenBalances2]);
-
+    // const tokenBalances = new Map(Object.entries(tokenBalancesObj));
     tokenBalances.set(
       tokenMap["ETH"].address as unknown as sdk.TokenAddress,
       ethBalance

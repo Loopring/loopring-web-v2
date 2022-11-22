@@ -2,7 +2,6 @@ import { Trans, useTranslation } from "react-i18next";
 import { TOptions } from "i18next";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { Link } from "@mui/material";
-
 export const ErrorMap = {
   ERROR_UNKNOWN: {
     id: "ERROR_UNKNOWN",
@@ -286,6 +285,16 @@ export const ErrorMap = {
     messageKey: "errorDualExpired",
     options: {},
   },
+  ERROR_PRIVATE_KEY: {
+    id: "ERROR_PRIVATE_KEY",
+    messageKey: "errorPrivateKey",
+    options: {},
+  },
+  ERROR_NO_RESPONSE: {
+    id: "ERROR_NO_RESPONSE",
+    messageKey: "errorNoResponse",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -309,6 +318,9 @@ export enum UIERROR_CODE {
   ERROR_COLLECTION_NO_SUPPORT = 700018,
   ERROR_COLLECTION_NOT_READABLE = 700019,
   IPFS_TIME_OUT = 700020,
+  ERROR_ON_FEE_UI = 700021,
+  ERROR_PRIVATE_KEY = 700022,
+  ERROR_NO_RESPONSE = 700023,
   ERROR_DUAL_EXPIRED = 115003,
 }
 export type ErrorObject = {
@@ -338,6 +350,9 @@ export const SDK_ERROR_MAP_TO_UI = {
   700018: ErrorMap.ERROR_COLLECTION_NO_SUPPORT,
   700019: ErrorMap.ERROR_COLLECTION_NOT_READABLE,
   700020: ErrorMap.IPFS_TIME_OUT,
+  700021: ErrorMap.ERROR_ON_FEE,
+  700022: ErrorMap.ERROR_PRIVATE_KEY,
+  700023: ErrorMap.ERROR_NO_RESPONSE,
   700100: ErrorMap.ERROR_RAMP_NO_INSTANCE,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument

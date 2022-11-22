@@ -31,17 +31,6 @@ export const Deposit_Approve_Denied = (props: PanelProps) => {
   return <DepositBase {...propsPatch} {...props} />;
 };
 
-export const Deposit_Approve_Submit = (props: PanelProps) => {
-  const propsPatch = {
-    iconType: IconType.SubmitIcon,
-    describe1: props.t("labelSuccessTokenAccess", {
-      symbol: props.symbol,
-      value: props.value,
-    }),
-  };
-  return <DepositBase {...propsPatch} {...props} />;
-};
-
 export const Deposit_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,

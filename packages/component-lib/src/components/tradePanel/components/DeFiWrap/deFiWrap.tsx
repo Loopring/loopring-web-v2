@@ -96,7 +96,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             // @ts-ignore
             deFiCalcData.BtoA && deFiCalcData?.BtoA !== "NaN"
               ? getValuePrecisionThousand(
-                  deFiCalcData?.AtoB,
+                  deFiCalcData?.BtoA,
                   tokenSell.precision,
                   tokenSell.precision,
                   tokenSell.precision,

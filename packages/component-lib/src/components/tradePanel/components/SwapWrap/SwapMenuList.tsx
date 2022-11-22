@@ -5,22 +5,21 @@ import React from 'react';
 import { TradeMenuList } from '../tool';
 import { SwapMenuListProps } from './Interface';
 
-export const SwapMenuList = <T extends IBData<I>,
-    I,
+export function SwapMenuList<T extends IBData<I>, I,
     TCD extends TradeCalcData<I>>({
-                                      onChangeEvent,
-                                      tradeCalcData,
-                                      swapData,
-                                      ...rest
-                                  }: SwapMenuListProps<T, TCD> & WithTranslation) => {
-    const selected: string | undefined = swapData.tradeData[ swapData.type ].belong ? swapData.tradeData[ swapData.type ]?.belong : '';
-    const tradeData = swapData.tradeData[ swapData.type ];
+        onChangeEvent,
+        tradeCalcData,
+        swapData,
+        ...rest
+    }: SwapMenuListProps<T, TCD> & WithTranslation) {
+    const selected: string | undefined = swapData.tradeData[swapData.type].belong ? swapData.tradeData[swapData.type]?.belong : '';
+    const tradeData = swapData.tradeData[swapData.type];
     const coinMap = swapData.type === 'sell' ? tradeCalcData?.coinInfoMap : tradeCalcData?.buyCoinInfoMap as any;
     const walletMap = tradeCalcData?.walletMap as any;   //IBData<I>
-    const handleOnChangeIndex = React.useCallback((index: 0 | 1, {tradeData, to}: SwitchData<IBData<I>>) => {
+    const handleOnChangeIndex = React.useCallback((index: 0 | 1, { tradeData, to }: SwitchData<IBData<I>>) => {
         onChangeEvent(index, {
             ...swapData,
-            tradeData: {...swapData.tradeData, [ swapData.type ]: tradeData},
+            tradeData: { ...swapData.tradeData, [swapData.type]: tradeData },
             to: to,
         });
     }, [swapData, onChangeEvent])
@@ -33,5 +32,5 @@ export const SwapMenuList = <T extends IBData<I>,
         coinMap,
         walletMap,
         onChangeEvent: handleOnChangeIndex
-    }}  />
+    }} />
 }

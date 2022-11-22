@@ -40,7 +40,6 @@ export enum AccountStep {
   Deposit_Sign_WaitForRefer,
   Deposit_Approve_WaitForAuth,
   Deposit_Approve_Denied,
-  Deposit_Approve_Submit,
   Deposit_WaitForAuth,
   Deposit_Denied,
   Deposit_Failed,
@@ -48,7 +47,6 @@ export enum AccountStep {
 
   NFTDeposit_Approve_WaitForAuth,
   NFTDeposit_Approve_Denied,
-  NFTDeposit_Approve_Submit,
   NFTDeposit_WaitForAuth,
   NFTDeposit_Denied,
   NFTDeposit_Failed,

@@ -62,40 +62,46 @@ export const NoAccount = withTranslation("common")(
             <DepositRecorder {...props} clear={props.clearDepositHash} t={t} />
           </Box>
         ) : (
-          <Box
-            display={"flex"}
-            marginTop={2}
-            alignSelf={"stretch"}
-            paddingX={5}
-            flexDirection={"column"}
-            alignItems={"center"}
-          >
-            <Typography variant={"body2"}>
-              {t("labelActivatedAccountDeposit")}
-            </Typography>
-            <AnimationArrow className={"arrowCta"} />
-            <Button
-              variant={"contained"}
-              fullWidth
-              size={"medium"}
-              onClick={() => {
-                goActiveAccount();
-              }}
+          <>
+            <Box
+              display={"flex"}
+              marginTop={2}
+              alignSelf={"stretch"}
+              paddingX={5}
+              flexDirection={"column"}
+              alignItems={"center"}
             >
-              {t("labelActiveL2Btn")}
-            </Button>
-          </Box>
+              <Typography variant={"body2"}>
+                {t("labelActivatedAccountDeposit")}
+              </Typography>
+              <AnimationArrow className={"arrowCta"} />
+              <Button
+                variant={"contained"}
+                fullWidth
+                size={"medium"}
+                onClick={() => {
+                  goActiveAccount();
+                }}
+              >
+                {t("labelActiveL2Btn")}
+              </Button>
+            </Box>
+            <Box
+              display={"flex"}
+              marginX={0}
+              marginTop={3}
+              alignSelf={"stretch"}
+              paddingX={5}
+              padding={0}
+            >
+              <DepositRecorder
+                {...props}
+                clear={props.clearDepositHash}
+                t={t}
+              />
+            </Box>
+          </>
         )}
-        <Box
-          display={"flex"}
-          marginX={0}
-          marginTop={3}
-          alignSelf={"stretch"}
-          paddingX={5}
-          padding={0}
-        >
-          <DepositRecorder {...props} clear={props.clearDepositHash} t={t} />
-        </Box>
       </Box>
     );
   }
