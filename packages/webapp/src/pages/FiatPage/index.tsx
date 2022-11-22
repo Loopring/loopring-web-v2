@@ -80,22 +80,22 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                 </Typography>
               }
             />
-            {/*<Tab*/}
-            {/*  value={TradeTypes.Sell}*/}
-            {/*  label={*/}
-            {/*    <Typography*/}
-            {/*      display={"inline-flex"}*/}
-            {/*      alignItems={"center"}*/}
-            {/*      component={"span"}*/}
-            {/*      variant={"h5"}*/}
-            {/*      whiteSpace={"pre"}*/}
-            {/*      marginRight={1}*/}
-            {/*      className={"fiat-Title"}*/}
-            {/*    >*/}
-            {/*      {t("labelSell")}*/}
-            {/*    </Typography>*/}
-            {/*  }*/}
-            {/*/>*/}
+            <Tab
+              value={TradeTypes.Sell}
+              label={
+                <Typography
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  component={"span"}
+                  variant={"h5"}
+                  whiteSpace={"pre"}
+                  marginRight={1}
+                  className={"fiat-Title"}
+                >
+                  {t("labelSell")}
+                </Typography>
+              }
+            />
           </Tabs>
         </Box>
         <Box
