@@ -183,10 +183,14 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
       };
     }
     if (
-      shouldUpdate.tokenAddress !== nftDepositValue.tokenAddress ||
-      shouldUpdate.nftIdView !== nftDepositValue.nftIdView ||
-      shouldUpdate.nftType !== nftDepositValue.nftType
+      (shouldUpdate.tokenAddress &&
+        shouldUpdate.tokenAddress !== nftDepositValue.tokenAddress) ||
+      (shouldUpdate.nftIdView &&
+        shouldUpdate.nftIdView != nftDepositValue.nftIdView) ||
+      (shouldUpdate.nftType !== undefined &&
+        shouldUpdate.nftType != nftDepositValue.nftType)
     ) {
+      myLog("debounceCheck", debounceCheck);
       const obj = { ...nftDepositValue, ...shouldUpdate };
       if (
         obj.tokenAddress &&
@@ -198,7 +202,9 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
       }
     } else if (
       nftDepositValue.balance !== 0 &&
-      (!data.tokenAddress || !data.nftIdView || data.nftType === undefined)
+      (!nftDepositValue.tokenAddress ||
+        !nftDepositValue.nftIdView ||
+        nftDepositValue.nftType === undefined)
     ) {
       shouldUpdate = {
         ...shouldUpdate,
