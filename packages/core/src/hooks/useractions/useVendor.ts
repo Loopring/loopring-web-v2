@@ -12,7 +12,6 @@ import {
   WALLET_TYPE,
   WalletMap,
   TOAST_TIME,
-  YEAR_DAY_MINUTE_FORMAT,
   BANXA_URLS,
 } from "@loopring-web/common-resources";
 import {
