@@ -518,11 +518,13 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
         return new Promise((res: any) => {
           if (data.to === "button") {
             if (data.tradeData.belong) {
+              const walletInfo = walletItsMap[data.tradeData.belong];
+
               updateForceWithdrawData({
                 ...forceWithdrawValue,
                 belong: data.tradeData.belong,
-                tradeValue: data.tradeData.balance, //data.tradeData?.tradeValue,
-                balance: data.tradeData.balance,
+                tradeValue: walletInfo?.count, //data.tradeData?.tradeValue,
+                balance: walletInfo?.count,
                 // withdrawAddress: realAddr,
               });
             } else {
