@@ -55,6 +55,7 @@ import {
 export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
     modals: {
+      isShowNFTDetail,
       isShowNFTWithdraw: { isShow, info },
     },
     setShowNFTWithdraw,
@@ -70,8 +71,12 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
 
-  const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
-    useModalData();
+  const {
+    nftWithdrawValue,
+    updateNFTTransferData,
+    updateNFTWithdrawData,
+    resetNFTWithdrawData,
+  } = useModalData();
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -274,6 +279,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
           ) {
             throw response;
           }
+          setShowNFTWithdraw({ isShow: false });
+
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTWithdraw_In_Progress,
@@ -294,8 +301,36 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
             myLog("......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
+
+          setShowNFTDetail({
+            ...isShowNFTDetail,
+            deploymentStatus:
+              isShowNFTDetail.deploymentStatus ===
+              sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
+                ? sdk.DEPLOYMENT_STATUS.DEPLOYING
+                : isShowNFTDetail.deploymentStatus,
+            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+          });
+          updateNFTWithdrawData({
+            ...isShowNFTDetail,
+            deploymentStatus:
+              isShowNFTDetail.deploymentStatus ===
+              sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
+                ? sdk.DEPLOYMENT_STATUS.DEPLOYING
+                : isShowNFTDetail.deploymentStatus,
+
+            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+          });
+          updateNFTTransferData({
+            ...isShowNFTDetail,
+            deploymentStatus:
+              isShowNFTDetail.deploymentStatus ===
+              sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
+                ? sdk.DEPLOYMENT_STATUS.DEPLOYING
+                : isShowNFTDetail.deploymentStatus,
+            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+          });
           walletLayer2Service.sendUserUpdate();
-          resetNFTWithdrawData();
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
           if (store.getState().modals.isShowAccount.isShow) {
             setShowAccount({ isShow: false });
@@ -390,7 +425,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
         eddsaKey?.sk
       ) {
         try {
-          setShowNFTWithdraw({ isShow: false });
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTWithdraw_WaitForAuth,
