@@ -12,6 +12,8 @@ import {
   WALLET_TYPE,
   WalletMap,
   TOAST_TIME,
+  YEAR_DAY_MINUTE_FORMAT,
+  BANXA_URLS,
 } from "@loopring-web/common-resources";
 import {
   DAYS,
@@ -42,6 +44,8 @@ import {
 } from "@loopring-web/web3-provider";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
+import moment from "moment";
+import axios from "axios";
 
 export enum RAMP_SELL_PANEL {
   LIST,
@@ -53,12 +57,14 @@ export const useVendor = () => {
   const banxaRef = React.useRef();
   const {
     allowTrade: { raw_data },
+    chainId,
   } = useSystem();
   const legalEnable = (raw_data as any)?.legal?.enable;
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [banxaOrder, setBanxaOrder] = React.useState(undefined);
+
   // const { isMobile } = useSettings();
   const {
     // updateOffRampData,
@@ -130,32 +136,63 @@ export const useVendor = () => {
       ]
     : [];
   const checkBanxaOrder = React.useCallback(
-    async ({ apiKey, query, payload, method }: any) => {
-      // const nftDataHashes =
-      //   store.getState().localStore.nftHashInfos[chainId]?.nftDataHashes;
+    async ({ url, query, payload, method }: any) => {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
-      // updateNFTRefreshHash(popItem.nftData);
-      // const searchParams = new URLSearchParams("");
-      // searchParams.set()
-      fetch(query, {
+      const querys = url + "?" + new URLSearchParams(query).toString();
+      const apiKey = await LoopringAPI.globalAPI?.getBanxaAPI({
         method,
-        headers: new Headers({
-          Accept: "application/json",
-          Authorization: `${apiKey}`,
-        }),
-      }).then((result) => {
-        if (result && result?.length) {
-          debugger;
-          setBanxaOrder(query);
-        }
+        query: querys,
+        payload,
       });
+      const bearer: string = (apiKey?.result as string) ?? "";
+      myLog("apiKey", bearer, query, new URLSearchParams(query).toString());
+
+      // const result = await fetch(query, {
+      //   method,
+      //   // withCredentials: true,
+      //   // credentials: "include",
+      //   headers: {},
+      // });
+
+      // LoopringAPI.globalAPI.In;
+
+      const _axios = axios.create({
+        baseURL: BANXA_URLS[chainId as number],
+        timeout: 6000,
+        headers: {
+          // Accept: "application/json",
+          Authorization: bearer,
+          "Content-Type": "application/json",
+        },
+        validateStatus: function (status: any) {
+          if ((status >= 200 && status < 300) || status === 400) {
+            return true;
+          }
+          return false;
+          // return true // always true, handle exception in each bussiness logic
+        },
+      });
+      const result = await _axios.request({ method, url: querys });
+      myLog(result.request);
+      // if (result && result.data && result.orders) {
+      //   debugger;
+      // }
+      //   .then((result) => {
+      //   if (result && result?.length) {
+      //     debugger;
+      //     setBanxaOrder(query);
+      //   }
+      // });
       // .then(({raw_data}) => {
       //   LoopringAPI.globalAPI.raw_data
       //   //
       //   setBanxaOrder;
       // });
+      if (nodeTimer.current) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      }
       nodeTimer.current = setTimeout(() => {
-        checkBanxaOrder({ apiKey, query, payload, method });
+        checkBanxaOrder({ url, query, payload, method });
 
         // updateNFTRefreshHash(popItem.nftData);
       }, 90000);
@@ -281,36 +318,23 @@ export const useVendor = () => {
               );
               const querys = {
                 account_reference: account.accAddress,
-                start_date: Date.now() - 20 * 60000,
-                end_date: Date.now(),
+                start_date: moment(Date.now())
+                  .add(-1, "days")
+                  .format("YYYY-MM-DD"),
+                end_date: moment(Date.now()).format("YYYY-MM-DD"),
                 status: "waitingPayment",
               };
               const method = sdk.ReqMethod.GET;
 
               const query = "/api/orders";
               const payload = "";
-              // loopring.banxa-sandbox.com
-              // loopring.banxa.com
-              LoopringAPI.globalAPI
-                ?.getBanxaAPI({
-                  method,
-                  query:
-                    query + "?" + new URLSearchParams(querys as any).toString(),
-                  payload,
-                })
-                .then((props) => {
-                  myLog("props", props);
-                  checkBanxaOrder({
-                    method,
-                    apiKey: props.result as any,
-                    query:
-                      "https://loopring.banxa-sandbox.com" +
-                      query +
-                      "?" +
-                      new URLSearchParams(querys as any).toString(),
-                    payload,
-                  });
-                });
+              checkBanxaOrder({
+                method,
+                url: query,
+                query: querys,
+                // new URLSearchParams(querys as any).toString(),
+                payload,
+              });
 
               // loopring.banxa.com
             }

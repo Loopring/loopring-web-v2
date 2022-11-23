@@ -34,10 +34,10 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
-    TradeTypes.Buy
-    //   match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
-    //     ? TradeTypes.Buy
-    //     : TradeTypes.Sell
+    // TradeTypes.Buy
+    match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
+      ? TradeTypes.Buy
+      : TradeTypes.Sell
   );
   const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
 
