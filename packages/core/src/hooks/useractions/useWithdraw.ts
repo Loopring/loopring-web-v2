@@ -453,6 +453,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             info: {
               hash:
                 Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-withdraw`,
+              isToMyself: info?.isToMyself,
             },
           });
           if (isHWAddr) {

@@ -19,6 +19,7 @@ import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 import { BackIcon, SoursURL, TradeTypes } from "@loopring-web/common-resources";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "@emotion/styled";
+import { InvestRouter, InvestType } from "../InvestPage";
 
 const StyledPaper = styled(Grid)`
   background: var(--color-box);
@@ -39,7 +40,6 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
     //     ? TradeTypes.Buy
     //     : TradeTypes.Sell
   );
-  const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
   // React.useEffect(() => {
   //   switch (match?.params.tab) {
   //     case InvestRouter[TradeTypes.Sell]:
@@ -52,6 +52,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   //       return;
   //   }
   // }, [match?.params.item]);
+  const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
   const fiatView = React.useMemo(() => {
     return (
       <Box flex={1} flexDirection={"column"} display={"flex"}>
@@ -80,22 +81,22 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                 </Typography>
               }
             />
-            <Tab
-              value={TradeTypes.Sell}
-              label={
-                <Typography
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  component={"span"}
-                  variant={"h5"}
-                  whiteSpace={"pre"}
-                  marginRight={1}
-                  className={"fiat-Title"}
-                >
-                  {t("labelSell")}
-                </Typography>
-              }
-            />
+            {/*<Tab*/}
+            {/*  value={TradeTypes.Sell}*/}
+            {/*  label={*/}
+            {/*    <Typography*/}
+            {/*      display={"inline-flex"}*/}
+            {/*      alignItems={"center"}*/}
+            {/*      component={"span"}*/}
+            {/*      variant={"h5"}*/}
+            {/*      whiteSpace={"pre"}*/}
+            {/*      marginRight={1}*/}
+            {/*      className={"fiat-Title"}*/}
+            {/*    >*/}
+            {/*      {t("labelSell")}*/}
+            {/*    </Typography>*/}
+            {/*  }*/}
+            {/*/>*/}
           </Tabs>
         </Box>
         <Box

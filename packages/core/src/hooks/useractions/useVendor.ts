@@ -196,40 +196,40 @@ export const useVendor = () => {
         //     }
         //   },
         // },
-        {
-          ...VendorList.Banxa,
-          handleSelect: (event) => {
-            setShowAccount({ isShow: false });
-            // @ts-ignore
-            const banxa: any = new window.Banxa("loopring", "sandbox");
-            // @ts-ignore
-            const anchor: HTMLElement = (
-              (event?.target as HTMLElement).ownerDocument || document
-            ).querySelector("#iframeBanxaTarget");
-            if (banxaRef && anchor) {
-              // debugger;
-              anchor.style.display = "flex";
-              banxa.generateIframe(
-                "#iframeBanxaTarget",
-                banxa.generateUrl({
-                  sellMode: true,
-                  blockchain: "LRC",
-                  fiatType: "AUD",
-                  coinType: "BTC",
-                  // fiatAmount: 200,
-                  // coinAmount: 0.5,
-                  walletAddress: account.accAddress,
-                  account_reference: account.accAddress,
-                  refund_address: account.accAddress,
-                }),
-                false,
-                false
-                // "800px", //Optional width parameter – Pass false if not needed.
-                // "400px" //Optional height parameter – Pass false if not needed.
-              );
-            }
-          },
-        },
+        // {
+        //   ...VendorList.Banxa,
+        //   handleSelect: (event) => {
+        //     setShowAccount({ isShow: false });
+        //     // @ts-ignore
+        //     const banxa: any = new window.Banxa("loopring", "sandbox");
+        //     // @ts-ignore
+        //     const anchor: HTMLElement = (
+        //       (event?.target as HTMLElement).ownerDocument || document
+        //     ).querySelector("#iframeBanxaTarget");
+        //     if (banxaRef && anchor) {
+        //       // debugger;
+        //       anchor.style.display = "flex";
+        //       banxa.generateIframe(
+        //         "#iframeBanxaTarget",
+        //         banxa.generateUrl({
+        //           sellMode: true,
+        //           blockchain: "LRC",
+        //           fiatType: "AUD",
+        //           coinType: "BTC",
+        //           // fiatAmount: 200,
+        //           // coinAmount: 0.5,
+        //           walletAddress: account.accAddress,
+        //           account_reference: account.accAddress,
+        //           refund_address: account.accAddress,
+        //         }),
+        //         false,
+        //         false
+        //         // "800px", //Optional width parameter – Pass false if not needed.
+        //         // "400px" //Optional height parameter – Pass false if not needed.
+        //       );
+        //     }
+        //   },
+        // },
       ]
     : [];
   return {
