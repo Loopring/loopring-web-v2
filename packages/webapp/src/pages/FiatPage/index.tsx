@@ -40,18 +40,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
     //     : TradeTypes.Sell
   );
   const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
-  // React.useEffect(() => {
-  //   switch (match?.params.tab) {
-  //     case InvestRouter[TradeTypes.Sell]:
-  //       setTabIndex(TradeTypes.Sell);
-  //       return;
-  //     // return ;
-  //     case InvestRouter[TradeTypes.Buy]:
-  //     default:
-  //       setTabIndex(TradeTypes.Buy);
-  //       return;
-  //   }
-  // }, [match?.params.item]);
+
   const fiatView = React.useMemo(() => {
     return (
       <Box flex={1} flexDirection={"column"} display={"flex"}>

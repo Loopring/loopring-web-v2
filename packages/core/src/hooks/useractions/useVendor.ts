@@ -57,6 +57,8 @@ export const useVendor = () => {
   const legalEnable = (raw_data as any)?.legal?.enable;
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+  const [banxaOrder, setBanxaOrder] = React.useState(undefined);
   // const { isMobile } = useSettings();
   const {
     // updateOffRampData,
@@ -127,6 +129,53 @@ export const useVendor = () => {
         },
       ]
     : [];
+  const checkBanxaOrder = React.useCallback(
+    async ({ apiKey, query, payload, method }: any) => {
+      // const nftDataHashes =
+      //   store.getState().localStore.nftHashInfos[chainId]?.nftDataHashes;
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      // updateNFTRefreshHash(popItem.nftData);
+      // const searchParams = new URLSearchParams("");
+      // searchParams.set()
+      fetch(query, {
+        method,
+        headers: new Headers({
+          Accept: "application/json",
+          Authorization: `${apiKey}`,
+        }),
+      }).then((result) => {
+        if (result && result?.length) {
+          debugger;
+          setBanxaOrder(query);
+        }
+      });
+      // .then(({raw_data}) => {
+      //   LoopringAPI.globalAPI.raw_data
+      //   //
+      //   setBanxaOrder;
+      // });
+      nodeTimer.current = setTimeout(() => {
+        checkBanxaOrder({ apiKey, query, payload, method });
+
+        // updateNFTRefreshHash(popItem.nftData);
+      }, 90000);
+      // if (
+      //   // popItem.nftData &&
+      //   // nftDataHashes &&
+      //   // nftDataHashes[popItem.nftData.toLowerCase()]
+      // ) {
+      //
+      //
+      // }
+      // else {
+      //   setShowFresh("click");
+      // }
+      return () => {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      };
+    },
+    [nodeTimer]
+  );
   const vendorListSell: VendorItem[] = legalShow
     ? [
         // {
@@ -196,38 +245,77 @@ export const useVendor = () => {
         //     }
         //   },
         // },
-        // {
-        //   ...VendorList.Banxa,
-        //   handleSelect: (event) => {
-        //     setShowAccount({ isShow: false });
-        //     // @ts-ignore
-        //     const banxa: any = new window.Banxa("loopring", "sandbox");
-        //     // @ts-ignore
-        //     const anchor: HTMLElement = (
-        //       (event?.target as HTMLElement).ownerDocument || document
-        //     ).querySelector("#iframeBanxaTarget");
-        //     if (banxaRef && anchor) {
-        //       // debugger;
-        //       anchor.style.display = "flex";
-        //       banxa.generateIframe(
-        //         "#iframeBanxaTarget",
-        //         banxa.generateUrl({
-        //           sellMode: true,
-        //           blockchain: "LRC",
-        //           fiatType: "AUD",
-        //           coinType: "BTC",
-        //           fiatAmount: 200,
-        //           coinAmount: 0.5,
-        //           walletAddress: account.accAddress,
-        //         }),
-        //         false,
-        //         false
-        //         // "800px", //Optional width parameter – Pass false if not needed.
-        //         // "400px" //Optional height parameter – Pass false if not needed.
-        //       );
-        //     }
-        //   },
-        // },
+        {
+          ...VendorList.Banxa,
+          handleSelect: async (event) => {
+            setShowAccount({ isShow: false });
+            // @ts-ignore
+            const banxa: any = new window.Banxa("loopring", "sandbox");
+            // @ts-ignore
+            const anchor: HTMLElement = (
+              (event?.target as HTMLElement).ownerDocument || document
+            ).querySelector("#iframeBanxaTarget");
+            if (banxaRef && anchor) {
+              // debugger;
+              anchor.style.display = "flex";
+              // @ts-ignore
+              const url = banxa.generateUrl({
+                sellMode: true,
+                blockchain: "LRC",
+                fiatType: "AUD",
+                coinType: "BTC",
+                // fiatAmount: 200,
+                // coinAmount: 0.5,
+                walletAddress: account.accAddress,
+                account_reference: account.accAddress,
+                refund_address: account.accAddress,
+              });
+              myLog("url", url);
+              banxa.generateIframe(
+                "#iframeBanxaTarget",
+                url,
+                false,
+                false
+                // "800px", //Optional width parameter – Pass false if not needed.
+                // "400px" //Optional height parameter – Pass false if not needed.
+              );
+              const querys = {
+                account_reference: account.accAddress,
+                start_date: Date.now() - 20 * 60000,
+                end_date: Date.now(),
+                status: "waitingPayment",
+              };
+              const method = sdk.ReqMethod.GET;
+
+              const query = "/api/orders";
+              const payload = "";
+              // loopring.banxa-sandbox.com
+              // loopring.banxa.com
+              LoopringAPI.globalAPI
+                ?.getBanxaAPI({
+                  method,
+                  query:
+                    query + "?" + new URLSearchParams(querys as any).toString(),
+                  payload,
+                })
+                .then((props) => {
+                  myLog("props", props);
+                  checkBanxaOrder({
+                    method,
+                    apiKey: props.result as any,
+                    query:
+                      "https://loopring.banxa-sandbox.com" +
+                      query +
+                      "?" +
+                      new URLSearchParams(querys as any).toString(),
+                    payload,
+                  });
+                });
+
+              // loopring.banxa.com
+            }
+          },
+        },
       ]
     : [];
   return {
