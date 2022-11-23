@@ -251,15 +251,16 @@ export function useNFTMint<
             myLog("......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
-          walletLayer2Service.sendUserUpdate();
 
+          walletLayer2Service.sendUserUpdate();
+          history.push(
+            `/nft/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`
+          );
           mintService.emptyData({
             lastStep: LAST_STEP.nftMint,
             contractAddress: nftMintValue.collection?.contractAddress,
           });
-          history.push(
-            `/nft/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`
-          );
+
           await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
           if (store.getState().modals.isShowAccount.isShow) {
             setShowAccount({ isShow: false });
@@ -299,13 +300,13 @@ export function useNFTMint<
               checkFeeIsEnough({ isRequiredAPI: true });
             } else if ([102040].includes((e as sdk.RESULT_INFO)?.code || 0)) {
               walletLayer2Service.sendUserUpdate();
+              history.push(
+                `/nft/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`
+              );
               mintService.emptyData({
                 lastStep: LAST_STEP.nftMint,
                 contractAddress: nftMintValue.collection?.contractAddress,
               });
-              history.push(
-                `/nft/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`
-              );
             }
 
             setShowAccount({
