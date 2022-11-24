@@ -134,6 +134,17 @@ export const useVendor = () => {
         },
       ]
     : [];
+  const BanxaApiCall = async ({
+    url,
+    query,
+    payload,
+    method,
+  }: {
+    url: string;
+    query: object;
+    payload: object;
+    method: "";
+  }) => {};
   const checkBanxaOrder = React.useCallback(
     async ({ url, query, payload, method }: any) => {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
@@ -302,9 +313,10 @@ export const useVendor = () => {
                 coinType: "BTC",
                 // fiatAmount: 200,
                 // coinAmount: 0.5,
-                walletAddress: account.accAddress,
+                // walletAddress: account.accAddress,
                 account_reference: account.accAddress,
                 refund_address: account.accAddress,
+                return_url_on_success: "https://loopring.io/#/l2assets",
               });
               myLog("url", url);
               banxa.generateIframe(
