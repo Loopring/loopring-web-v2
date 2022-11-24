@@ -45,12 +45,53 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
 import moment from "moment";
 import axios from "axios";
+import { ChainId } from "@loopring-web/loopring-sdk";
 
 export enum RAMP_SELL_PANEL {
   LIST,
   CONFIRM,
 }
 
+const banxaApiCall = async ({
+  url,
+  query,
+  payload,
+  method,
+  chainId,
+}: {
+  url: string;
+  query: URLSearchParams | string | string[][];
+  payload: object;
+  method: sdk.ReqMethod;
+  chainId: ChainId;
+}): Promise<{ [key: string]: any }> => {
+  const querys = url + "?" + new URLSearchParams(query).toString();
+  const apiKey = await LoopringAPI.globalAPI?.getBanxaAPI({
+    method,
+    query: querys,
+    payload: JSON.stringify(payload),
+  });
+  const bearer: string = (apiKey?.result as string) ?? "";
+  myLog("apiKey", bearer, query, new URLSearchParams(query).toString());
+  const _axios = axios.create({
+    baseURL: BANXA_URLS[chainId as number],
+    timeout: 6000,
+    headers: {
+      // Accept: "application/json",
+      Authorization: bearer,
+      "Content-Type": "application/json",
+    },
+    validateStatus: function (status: any) {
+      if ((status >= 200 && status < 300) || status === 400) {
+        return true;
+      }
+      return false;
+      // return true // always true, handle exception in each bussiness logic
+    },
+  });
+  const result = await _axios.request({ method, url: querys, data: payload });
+  return { ...result };
+};
 export const useVendor = () => {
   const { account } = useAccount();
   const banxaRef = React.useRef();
@@ -134,28 +175,17 @@ export const useVendor = () => {
         },
       ]
     : [];
-  const BanxaApiCall = async ({
-    url,
-    query,
-    payload,
-    method,
-  }: {
-    url: string;
-    query: object;
-    payload: object;
-    method: "";
-  }) => {};
+
   const checkBanxaOrder = React.useCallback(
     async ({ url, query, payload, method }: any) => {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
-      const querys = url + "?" + new URLSearchParams(query).toString();
-      const apiKey = await LoopringAPI.globalAPI?.getBanxaAPI({
-        method,
-        query: querys,
+      banxaApiCall({
+        url,
+        query,
         payload,
+        method,
+        chainId: chainId as ChainId,
       });
-      const bearer: string = (apiKey?.result as string) ?? "";
-      myLog("apiKey", bearer, query, new URLSearchParams(query).toString());
 
       // const result = await fetch(query, {
       //   method,
@@ -166,24 +196,7 @@ export const useVendor = () => {
 
       // LoopringAPI.globalAPI.In;
 
-      const _axios = axios.create({
-        baseURL: BANXA_URLS[chainId as number],
-        timeout: 6000,
-        headers: {
-          // Accept: "application/json",
-          Authorization: bearer,
-          "Content-Type": "application/json",
-        },
-        validateStatus: function (status: any) {
-          if ((status >= 200 && status < 300) || status === 400) {
-            return true;
-          }
-          return false;
-          // return true // always true, handle exception in each bussiness logic
-        },
-      });
-      const result = await _axios.request({ method, url: querys });
-      myLog(result.request);
+      // myLog(result.request);
       // if (result && result.data && result.orders) {
       //   debugger;
       // }
@@ -203,7 +216,6 @@ export const useVendor = () => {
       }
       nodeTimer.current = setTimeout(() => {
         checkBanxaOrder({ url, query, payload, method });
-
         // updateNFTRefreshHash(popItem.nftData);
       }, 90000);
       // if (
@@ -305,23 +317,38 @@ export const useVendor = () => {
             if (banxaRef && anchor) {
               // debugger;
               anchor.style.display = "flex";
-              // @ts-ignore
-              const url = banxa.generateUrl({
-                sellMode: true,
-                blockchain: "LRC",
-                fiatType: "AUD",
-                coinType: "BTC",
-                // fiatAmount: 200,
-                // coinAmount: 0.5,
-                // walletAddress: account.accAddress,
-                account_reference: account.accAddress,
-                refund_address: account.accAddress,
-                return_url_on_success: "https://loopring.io/#/l2assets",
+
+              const { checkout_url } = await banxaApiCall({
+                chainId: chainId as ChainId,
+                method: sdk.ReqMethod.POST,
+                url: "/api/orders",
+                query: "",
+                payload: {
+                  source: "USD",
+                  target: "USDC",
+                  refund_address: account.accAddress,
+                  return_url_on_success: "https://loopring.io/#/l2assets",
+                  account_reference: account.accAddress,
+                },
               });
-              myLog("url", url);
+
+              // @ts-ignore
+              // const url = banxa.generateUrl({
+              //   sellMode: true,
+              //   blockchain: "LRC",
+              //   fiatType: "AUD",
+              //   coinType: "BTC",
+              //   // fiatAmount: 200,
+              //   // coinAmount: 0.5,
+              //   // walletAddress: account.accAddress,
+              //   account_reference: account.accAddress,
+              //   refund_address: account.accAddress,
+              //   return_url_on_success: "https://loopring.io/#/l2assets",
+              // });
+              // myLog("url", url);
               banxa.generateIframe(
                 "#iframeBanxaTarget",
-                url,
+                checkout_url,
                 false,
                 false
                 // "800px", //Optional width parameter – Pass false if not needed.
