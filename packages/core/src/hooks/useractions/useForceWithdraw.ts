@@ -62,6 +62,9 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     resetForceWithdrawData,
   } = useModalData();
   const {
+    modals: { isShowAccount },
+  } = useOpenModals();
+  const {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
@@ -500,9 +503,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
           balance: undefined,
         });
       },
-      lastFailed:
-        store.getState().modals.isShowAccount.info?.lastFailed ===
-        LAST_STEP.forceWithdraw,
+      lastFailed: isShowAccount?.info?.lastFailed === LAST_STEP.forceWithdraw,
       isActiveAccount,
       isNotAvailableAddress: !(isLoopringAddress && !isActiveAccount),
       realAddr,
@@ -548,8 +549,10 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     addrStatus,
     address,
     btnStatus,
+    isShowAccount,
     chargeFeeTokenList,
     feeInfo,
+    isShowAccount?.info?.lastFailed,
     forceWithdrawValue,
     handleFeeChange,
     handleForceWithdraw,

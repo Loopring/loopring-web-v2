@@ -312,15 +312,24 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           }
           setShowNFTDetail({
             ...isShowNFTDetail,
-            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+            locked: (
+              Number(isShowNFTDetail?.locked ?? 0) +
+              Number(request?.token?.amount)
+            ).toString(),
           });
           updateNFTWithdrawData({
             ...isShowNFTDetail,
-            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+            locked: (
+              Number(isShowNFTDetail?.locked ?? 0) +
+              Number(request?.token?.amount)
+            ).toString(),
           });
           updateNFTTransferData({
             ...isShowNFTDetail,
-            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+            locked: (
+              Number(isShowNFTDetail?.locked ?? 0) +
+              Number(request?.token?.amount)
+            ).toString(),
           });
           walletLayer2Service.sendUserUpdate();
           // resetNFTTransferData();

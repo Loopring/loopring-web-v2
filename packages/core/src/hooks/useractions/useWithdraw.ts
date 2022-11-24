@@ -511,7 +511,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
                   : e ?? {}),
               },
             });
-
             break;
         }
       }
