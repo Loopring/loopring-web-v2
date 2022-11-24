@@ -455,6 +455,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             step: AccountStep.Withdraw_Success,
             info: {
               hash,
+              isToMyself: info?.isToMyself,
             },
           });
 
@@ -510,7 +511,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
                   : e ?? {}),
               },
             });
-
             break;
         }
       }

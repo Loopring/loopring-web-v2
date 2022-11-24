@@ -309,7 +309,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
               sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
                 ? sdk.DEPLOYMENT_STATUS.DEPLOYING
                 : isShowNFTDetail.deploymentStatus,
-            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+            locked: (
+              Number(isShowNFTDetail?.locked ?? 0) +
+              Number(request?.token?.amount)
+            ).toString(),
           });
           updateNFTWithdrawData({
             ...isShowNFTDetail,
@@ -319,7 +322,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
                 ? sdk.DEPLOYMENT_STATUS.DEPLOYING
                 : isShowNFTDetail.deploymentStatus,
 
-            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+            locked: (
+              Number(isShowNFTDetail?.locked ?? 0) +
+              Number(request?.token?.amount)
+            ).toString(),
           });
           updateNFTTransferData({
             ...isShowNFTDetail,
@@ -328,7 +334,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
               sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
                 ? sdk.DEPLOYMENT_STATUS.DEPLOYING
                 : isShowNFTDetail.deploymentStatus,
-            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+            locked: (
+              Number(isShowNFTDetail?.locked ?? 0) +
+              Number(request?.token?.amount)
+            ).toString(),
           });
           walletLayer2Service.sendUserUpdate();
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);

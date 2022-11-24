@@ -11,6 +11,16 @@ import _ from "lodash";
 import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
 import { AccountCommands } from "./command";
 import { updateAccountStatus } from "../../stores/account/reducer";
+import {
+  setShowDeposit,
+  setShowNFTDeploy,
+  setShowNFTDeposit,
+  setShowNFTMintAdvance,
+  setShowNFTTransfer,
+  setShowNFTWithdraw,
+  setShowTransfer,
+  setShowWithdraw,
+} from "@loopring-web/component-lib";
 
 const subject = new Subject<{ status: AccountCommands; data: any }>();
 
@@ -89,6 +99,16 @@ export const accountServices = {
           nonce: undefined,
         };
     store.dispatch(updateAccountStatus(updateInfo));
+
+    store.dispatch(setShowTransfer({ isShow: false }));
+    store.dispatch(setShowNFTTransfer({ isShow: false }));
+    store.dispatch(setShowWithdraw({ isShow: false }));
+    store.dispatch(setShowNFTWithdraw({ isShow: false }));
+    store.dispatch(setShowDeposit({ isShow: false }));
+    store.dispatch(setShowNFTDeposit({ isShow: false }));
+    store.dispatch(setShowNFTDeploy({ isShow: false }));
+    store.dispatch(setShowNFTMintAdvance({ isShow: false }));
+
     resetLayer2Data();
     // await sleep(50)
 

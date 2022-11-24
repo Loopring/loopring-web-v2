@@ -26,6 +26,7 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
     const { setShowFeeSetting } = useOpenModals();
     const { exportAccount } = useExportAccountInfo();
     const history = useHistory();
+    const { setShowAccount } = useOpenModals();
     return (
       <StyledPaper container className={"MuiPaper-elevation2"} marginBottom={2}>
         <Grid
@@ -257,6 +258,10 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
                   <Button
                     onClick={() => {
                       // exportAccInfo()
+                      setShowAccount({
+                        isShow: false,
+                        info: { lastFailed: undefined },
+                      });
                       history.push(`/layer2/forcewithdraw`);
                     }}
                     variant={"outlined"}

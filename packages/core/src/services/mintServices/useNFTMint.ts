@@ -188,6 +188,7 @@ export function useNFTMint<
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
       const { apiKey, connectName, eddsaKey } = account;
       try {
+        const nftMintValue = store.getState()._router_modalData.nftMintValue;
         if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
           let isHWAddr = checkHWAddr(account.accAddress);
 
@@ -251,11 +252,11 @@ export function useNFTMint<
             myLog("......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
-
-          walletLayer2Service.sendUserUpdate();
+          myLog("nftMintValue", nftMintValue.collection);
           history.push(
             `/nft/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`
           );
+          walletLayer2Service.sendUserUpdate();
           mintService.emptyData({
             lastStep: LAST_STEP.nftMint,
             contractAddress: nftMintValue.collection?.contractAddress,
