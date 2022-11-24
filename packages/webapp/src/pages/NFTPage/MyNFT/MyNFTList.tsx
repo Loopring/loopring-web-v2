@@ -34,21 +34,22 @@ export const MyNFTList = withTranslation("common")(
             if (tab === "all") {
               return;
             }
-            _filter = { favourite: false, hidden: false };
+            _filter = { hidden: false };
             break;
           case sdk.NFT_PREFERENCE_TYPE.fav:
             if (tab === sdk.NFT_PREFERENCE_TYPE.fav) {
               return;
             }
-            _filter = { favourite: true };
+            _filter = { favourite: true, hidden: false };
             break;
           case sdk.NFT_PREFERENCE_TYPE.hide:
             if (tab === sdk.NFT_PREFERENCE_TYPE.hide) {
               return;
             }
-            _filter = { favourite: false, hidden: true };
+            _filter = { hidden: true };
             break;
         }
+        nftProps.setFilter(_filter);
         nftProps.onPageChange(1, _filter);
       },
       [tab]

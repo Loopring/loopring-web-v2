@@ -64,21 +64,22 @@ export const useMyNFT = ({
   const [page, setPage] = useState(-1);
 
   // const onDetailClose = React.useCallback(() => setIsShow(false), []);
-
-  const onPageChange = (page: number = 1, filter?: MyNFTFilter | undefined) => {
-    setFilter(filter ?? undefined);
+  
+  const onPageChange = React.useCallback((page: number = 1, filter?: MyNFTFilter | undefined) => {
+    const theFilter = filter ?? {hidden: false}
+    setFilter(theFilter);
     setPage(page);
     setIsLoading(true);
     if (page !== -1) {
       updateWalletLayer2NFT({
         page,
         collection: collectionMeta ?? undefined,
-        filter,
+        filter: theFilter,
       });
     }
     searchParams.set("myNFTPage", page.toString());
     history.replace({ ...rest, search: searchParams.toString() });
-  };
+  }, [collectionMeta]) 
 
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
@@ -211,7 +212,7 @@ export const useMyNFT = ({
     );
   }, [etherscanBaseUrl, page, walletLayer2NFT, filter]);
   React.useEffect(() => {
-    onPageChange(myNFTPage);
+    onPageChange(myNFTPage, filter);
   }, [myNFTPage, collectionMeta?.id, collectionMeta?.contractAddress]);
 
   React.useEffect(() => {
@@ -241,7 +242,7 @@ export const useMyNFT = ({
     total,
     page,
     // filter,
-    // setFilter,
+    setFilter,
     isLoading,
     walletLayer2NFT,
   };
