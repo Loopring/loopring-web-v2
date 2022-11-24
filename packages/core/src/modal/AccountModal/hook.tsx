@@ -504,7 +504,7 @@ export function useAccountModalForUI({
           setShowAccount({ isShow: false });
           setShowNFTWithdraw({
             isShow: true,
-            info: { isToMyself: true },
+            info: { isToMyself: true, lastFailed: undefined },
           });
         },
       },
@@ -516,7 +516,7 @@ export function useAccountModalForUI({
           });
           setShowNFTWithdraw({
             isShow: true,
-            info: { isToMyself: false },
+            info: { isToMyself: false, lastFailed: undefined },
           });
         },
       },

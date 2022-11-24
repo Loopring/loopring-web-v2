@@ -48,6 +48,7 @@ export const MyNFTPanel = withTranslation("common")(
         ? MY_NFT_VIEW.LIST_COLLECTION
         : MY_NFT_VIEW.LIST_NFT;
     });
+
     const { toastOpen, closeToast } = useToast();
     const { isMobile } = useSettings();
     const { baseURL, etherscanBaseUrl } = useSystem();
@@ -120,6 +121,7 @@ export const MyNFTPanel = withTranslation("common")(
     const {
       modals: { isShowNFTDetail },
       setShowNFTDetail,
+      setShowAccount,
     } = useOpenModals();
     React.useEffect(() => {
       const [contract, id] = !!match?.params?.contract
@@ -356,7 +358,13 @@ export const MyNFTPanel = withTranslation("common")(
                     variant={"contained"}
                     size={"small"}
                     color={"primary"}
-                    onClick={() => history.push("/nft/depositNFT")}
+                    onClick={() => {
+                      setShowAccount({
+                        isShow: false,
+                        info: { lastFailed: undefined },
+                      });
+                      history.push("/nft/depositNFT");
+                    }}
                   >
                     {t("labelL1toL2NFT")}
                   </Button>
