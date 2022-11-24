@@ -310,11 +310,11 @@ export const ModalPanel = <
               ...nftDeployProps,
               assetsData,
             }}
-            onBack={() => {
-              setShowNFTDeploy({ isShow: false });
-              // setShowNFTWithdraw({isShow:false});
-              // setShowAccount({isShow:false,step:AccountStep.SendNFTGateway})
-            }}
+            // onBack={() => {
+            //   setShowNFTDeploy({ isShow: false });
+            //   // setShowNFTWithdraw({isShow:false});
+            //   // setShowAccount({isShow:false,step:AccountStep.SendNFTGateway})
+            // }}
           />
         }
       />

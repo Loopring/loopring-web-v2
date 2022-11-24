@@ -90,7 +90,7 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
                   chargeFeeTokenList: chargeFeeTokenList
                     ? chargeFeeTokenList
                     : [],
-                  tradeData: switchData.tradeData,
+                  tradeData: { ...switchData.tradeData, ...rest.tradeData },
                   onChangeEvent,
                   coinMap,
                   disabled: !!rest.disabled,

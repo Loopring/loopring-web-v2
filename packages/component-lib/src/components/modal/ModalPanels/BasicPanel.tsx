@@ -217,19 +217,87 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                 marginTop={marginTopDescribe1}
                 alignItems={"flex-center"}
               >
-                <Typography
-                  component={"div"}
-                  variant={"h5"}
-                  whiteSpace={"pre-line"}
-                  textAlign={"center"}
-                  color={"textPrimary"}
-                  marginTop={0}
-                  alignSelf={"flex-center"}
-                  paddingX={2}
-                  sx={{ wordBreak: "break-all" }}
-                >
-                  {describe1}
-                </Typography>
+                {iconType === IconType.FailedIcon ? (
+                  <Typography
+                    component={"div"}
+                    marginX={3}
+                    whiteSpace={"pre-line"}
+                    variant={"body1"}
+                    marginBottom={2}
+                    alignSelf={"flex-center"}
+                    paddingX={1}
+                    marginY={1}
+                    textAlign={"center"}
+                  >
+                    {error ? (
+                      <Typography
+                        color={"var(--color-error)"}
+                        component={"span"}
+                        variant={"inherit"}
+                        display={"inline-flex"}
+                        onClick={() =>
+                          setDropdownStatus((prev) =>
+                            prev === "up" ? "down" : "up"
+                          )
+                        }
+                      >
+                        {/*{`${t("labelErrorTitle")}`}*/}
+                        <TransErrorHelp error={error} options={errorOptions} />
+                        <DropdownIconStyled
+                          status={dropdownStatus}
+                          fontSize={"medium"}
+                        />
+                      </Typography>
+                    ) : (
+                      <Typography
+                        color={"var(--color-error)"}
+                        component={"span"}
+                        variant={"inherit"}
+                        display={"inline-flex"}
+                        onClick={() =>
+                          setDropdownStatus((prev) =>
+                            prev === "up" ? "down" : "up"
+                          )
+                        }
+                      >
+                        {describe1}
+                      </Typography>
+                    )}
+                    {dropdownStatus === "up" && (
+                      <TextareaAutosizeStyled
+                        aria-label="NFT Description"
+                        minRows={5}
+                        style={{ maxHeight: "90px", overflow: "scroll" }}
+                        disabled={true}
+                        value={`${JSON.stringify(error)}}`}
+                      />
+                    )}
+
+                    {/*{\`Error Description:\\n {code: ${error?.code}, message:${error?.message}}\`}*/}
+                  </Typography>
+                ) : (
+                  <Typography
+                    component={"div"}
+                    variant={"h5"}
+                    whiteSpace={"pre-line"}
+                    textAlign={"center"}
+                    color={
+                      iconType === IconType.SubmitIcon ||
+                      iconType === IconType.DoneIcon
+                        ? "var(--color-success)"
+                        : iconType === IconType.RefuseIcon
+                        ? "var(--color-error)"
+                        : "textPrimary"
+                    }
+                    marginTop={0}
+                    alignSelf={"flex-center"}
+                    paddingX={2}
+                    sx={{ wordBreak: "break-all" }}
+                  >
+                    {describe1}
+                  </Typography>
+                )}
+
                 {txCheck && (
                   <Link
                     target="_blank"
@@ -248,51 +316,6 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               </Box>
             )}
             {!!describe2 && <>{describe2}</>}
-            {iconType === IconType.FailedIcon && error && (
-              <Typography
-                component={"div"}
-                marginX={3}
-                whiteSpace={"pre-line"}
-                variant={"body2"}
-                color={"var(--color-text-third)"}
-                marginBottom={2}
-                alignSelf={"flex-center"}
-                paddingX={1}
-                marginY={1}
-                textAlign={"center"}
-              >
-                {error && (
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    display={"inline-flex"}
-                    onClick={() =>
-                      setDropdownStatus((prev) =>
-                        prev === "up" ? "down" : "up"
-                      )
-                    }
-                  >
-                    {`${t("labelErrorTitle")}`}
-                    <TransErrorHelp error={error} options={errorOptions} />
-                    <DropdownIconStyled
-                      status={dropdownStatus}
-                      fontSize={"medium"}
-                    />
-                  </Typography>
-                )}
-                {dropdownStatus === "up" && (
-                  <TextareaAutosizeStyled
-                    aria-label="NFT Description"
-                    minRows={5}
-                    style={{ maxHeight: "90px", overflow: "scroll" }}
-                    disabled={true}
-                    value={`${JSON.stringify(error)}}`}
-                  />
-                )}
-
-                {/*{\`Error Description:\\n {code: ${error?.code}, message:${error?.message}}\`}*/}
-              </Typography>
-            )}
           </Box>
           {providerName && (
             <Typography

@@ -166,7 +166,7 @@ export function useAccountModalForUI({
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
   const history = useHistory();
   const {
-    modals: { isShowAccount, isShowDeposit },
+    modals: { isShowAccount },
     setShowConnect,
     setShowAccount,
     setShowDeposit,
@@ -920,13 +920,7 @@ export function useAccountModalForUI({
               param: { method: t("labelDepositNFTL1") },
               callback: () => {
                 setShowAccount({ isShow: false });
-                setShowDeposit({
-                  isShow: true,
-                  symbol:
-                    (rest as any)?.symbol ??
-                    isShowAccount?.info?.symbol ??
-                    "LRC",
-                });
+                history.push("/nft/depositNFT");
               },
             }}
             {...{

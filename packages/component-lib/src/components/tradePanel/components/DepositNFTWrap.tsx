@@ -95,6 +95,7 @@ NFTDepositViewProps<T, I>) => {
         className={walletMap ? "" : "loading"}
         container
         flex={1}
+        marginTop={0}
         spacing={2}
       >
         <Grid
@@ -243,7 +244,7 @@ NFTDepositViewProps<T, I>) => {
                   <TextField
                     value={tradeData.nftIdView}
                     label={t("labelNFTTId")}
-                    placeholder={t("depositNFTAddressLabelPlaceholder")}
+                    placeholder={t("depositNFTIdLabelPlaceholder")}
                     onChange={(event) =>
                       handleOnNFTDataChange({
                         nftIdView: event.target?.value,

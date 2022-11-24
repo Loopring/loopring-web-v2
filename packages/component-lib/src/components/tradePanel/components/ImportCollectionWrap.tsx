@@ -237,7 +237,7 @@ export const ImportCollectionWrap = <
                               overflow={"hidden"}
                             >
                               <NFTMedia
-                                item={item}
+                                item={item as NFT}
                                 index={index}
                                 shouldPlay={false}
                                 onNFTError={() => undefined}

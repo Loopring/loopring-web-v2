@@ -59,6 +59,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     setShowNFTTransfer,
     setShowNFTDetail,
     modals: {
+      isShowNFTDetail,
       isShowNFTTransfer: { isShow, info },
     },
   } = useOpenModals();
@@ -69,8 +70,13 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const { updateWalletLayer2 } = useWalletLayer2();
 
-  const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
-    useModalData();
+  const {
+    nftTransferValue,
+    updateNFTWithdrawData,
+    updateNFTTransferData,
+    resetNFTTransferData,
+  } = useModalData();
+
   const history = useHistory();
   const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
@@ -282,6 +288,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           ) {
             throw response;
           }
+          setShowNFTTransfer({ isShow: false });
           // setIsConfirmTransfer(false);
           setShowAccount({
             isShow: true,
@@ -303,8 +310,20 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             myLog("......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
+          setShowNFTDetail({
+            ...isShowNFTDetail,
+            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+          });
+          updateNFTWithdrawData({
+            ...isShowNFTDetail,
+            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+          });
+          updateNFTTransferData({
+            ...isShowNFTDetail,
+            locked: (isShowNFTDetail?.locked ?? 0) + request?.token?.amount,
+          });
           walletLayer2Service.sendUserUpdate();
-          resetNFTTransferData();
+          // resetNFTTransferData();
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
           if (store.getState().modals.isShowAccount.isShow) {
             setShowAccount({ isShow: false });
@@ -396,7 +415,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         eddsaKey?.sk
       ) {
         try {
-          setShowNFTTransfer({ isShow: false });
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTTransfer_WaitForAuth,

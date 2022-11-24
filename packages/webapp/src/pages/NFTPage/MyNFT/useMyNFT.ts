@@ -181,32 +181,34 @@ export const useMyNFT = ({
   const renderNFT = React.useCallback(async () => {
     setNFTList(nftListReduce(walletLayer2NFT));
     setIsLoading(false);
-    renderNFTPromise({ nftLists: walletLayer2NFT }).then((meta: any[]) => {
-      const {
-        walletLayer2NFT,
-        page: page_reudex,
-        filter: filter_redux,
-      } = store.getState().walletLayer2NFT;
-      myLog("walletLayer2NFT  async media render", page, page_reudex);
-      if (
-        page === page_reudex &&
-        (!filter ||
-          (filter &&
-            filter?.favourite == filter_redux?.favourite &&
-            filter?.hidden == filter_redux?.hidden))
-      ) {
-        setNFTList((state) => {
-          return walletLayer2NFT.map((item, index) => {
-            return {
-              ...state[index],
-              ...meta[index],
-              tokenAddress: item.tokenAddress?.toLowerCase(),
-              etherscanBaseUrl,
-            };
+    renderNFTPromise({ nftLists: walletLayer2NFT as any }).then(
+      (meta: any[]) => {
+        const {
+          walletLayer2NFT,
+          page: page_reudex,
+          filter: filter_redux,
+        } = store.getState().walletLayer2NFT;
+        myLog("walletLayer2NFT  async media render", page, page_reudex);
+        if (
+          page === page_reudex &&
+          (!filter ||
+            (filter &&
+              filter?.favourite == filter_redux?.favourite &&
+              filter?.hidden == filter_redux?.hidden))
+        ) {
+          setNFTList((state) => {
+            return walletLayer2NFT.map((item, index) => {
+              return {
+                ...state[index],
+                ...meta[index],
+                tokenAddress: item.tokenAddress?.toLowerCase(),
+                etherscanBaseUrl,
+              };
+            });
           });
-        });
+        }
       }
-    });
+    );
   }, [etherscanBaseUrl, page, walletLayer2NFT, filter]);
   React.useEffect(() => {
     onPageChange(myNFTPage);
