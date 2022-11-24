@@ -65,7 +65,7 @@ export const DeployNFTWrap = <
           className={assetsData ? "" : "loading"}
           paddingBottom={3}
           container
-          marginTop={-3}
+          marginTop={0}
           paddingLeft={5 / 2}
           paddingRight={5 / 2}
           direction={"column"}
