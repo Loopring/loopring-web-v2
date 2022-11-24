@@ -447,15 +447,17 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             isShow: true,
             step: AccountStep.Withdraw_In_Progress,
           });
+          let hash =
+            Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-withdraw`;
+
           setShowAccount({
             isShow: true,
             step: AccountStep.Withdraw_Success,
             info: {
-              hash:
-                Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-withdraw`,
-              isToMyself: info?.isToMyself,
+              hash,
             },
           });
+
           if (isHWAddr) {
             myLog("......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });

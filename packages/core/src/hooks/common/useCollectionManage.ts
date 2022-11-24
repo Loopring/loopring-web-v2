@@ -89,7 +89,7 @@ export const useCollectionManage = <
             listNFT: nftListReduce(response.userNFTBalances),
           });
           setIsLoading(false);
-          renderNFTPromise({ nftLists: response.userNFTBalances }).then(
+          renderNFTPromise({ nftLists: response.userNFTBalances as any }).then(
             (meta: any[]) => {
               if (page === _page) {
                 setListNFTValue((state) => {
