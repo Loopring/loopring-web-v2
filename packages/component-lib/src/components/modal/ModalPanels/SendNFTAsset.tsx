@@ -33,7 +33,7 @@ export const SendNFTAsset = ({
   sendAssetList,
   allowTrade,
   // nftData,
-  isNotAllowToL1 = true,
+  isNotAllowToL1 = false,
 }: SendNFTAssetProps) => {
   const { t } = useTranslation("common");
   const { isMobile } = useSettings();
