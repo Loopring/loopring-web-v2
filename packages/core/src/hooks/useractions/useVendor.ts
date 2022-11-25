@@ -314,6 +314,7 @@ export const useVendor = () => {
             const anchor: HTMLElement = (
               (event?.target as HTMLElement).ownerDocument || document
             ).querySelector("#iframeBanxaTarget");
+            // anchor.querySelector("anchor");
             if (banxaRef && anchor) {
               // debugger;
               anchor.style.display = "flex";
@@ -324,14 +325,17 @@ export const useVendor = () => {
                 url: "/api/orders",
                 query: "",
                 payload: {
-                  source: "USD",
-                  target: "USDC",
+                  blockchain: "LRC",
+                  // iframe_domain: BANXA_URLS[chainId],
+                  source: "USDC",
+                  target: "AUD",
                   refund_address: account.accAddress,
                   return_url_on_success: "https://loopring.io/#/l2assets",
                   account_reference: account.accAddress,
                 },
               });
-
+              //loopring.banxa-sandbox.com/?sellMode&expires=1669311302&id=30090bbc-0fb4-4263-be91-c18d25de95ff&nested=1&oid=4b69ea208975f05c0e7b7c9a0515438c&signature=ae07724179d41f5766973dbc375c2acf18643c3756e7b0a40ad996ead3c6d535
+              //loopring.banxa-sandbox.com/?sellMode&expires=1669311133&id=700a332c-ec77-4816-8a2e-9f16b6219b36&nested=1&oid=f4724af852c6fdf54feed58f36f64f2c&signature=0faf71c7751b84ed3b995db77d41bf5a851083baa5a7c556eb2d28a10289533c
               // @ts-ignore
               // const url = banxa.generateUrl({
               //   sellMode: true,
