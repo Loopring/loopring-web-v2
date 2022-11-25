@@ -179,7 +179,7 @@ export const MyNFTPanel = withTranslation("common")(
                     history.replace(
                       `/nft/assetsNFT/${
                         MY_NFT_VIEW.LIST_COLLECTION
-                      }?${searchParams.toString()}`
+                      }/${contract}--${id}?${searchParams.toString()}`
                     );
                     setShowNFTDetail({ isShow: false });
                   }}
