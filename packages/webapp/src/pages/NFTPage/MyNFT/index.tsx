@@ -219,7 +219,7 @@ export const MyNFTPanel = withTranslation("common")(
     ]);
     return (
       <Box flex={1} display={"flex"} flexDirection={"column"}>
-        {match?.params?.contract && !isShowNFTDetail?.isShow ? (
+        {match?.params['tab'] === MY_NFT_VIEW.LIST_COLLECTION && match?.params?.contract && !isShowNFTDetail?.isShow ? (
           <>
             <Box
               display={"flex"}
