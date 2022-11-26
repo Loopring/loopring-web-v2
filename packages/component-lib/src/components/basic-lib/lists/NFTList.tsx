@@ -50,7 +50,8 @@ export const NFTList = withTranslation("common")(
     page: number;
     isLoading: boolean;
     selected?: Partial<NFT>[];
-    onPageChangeCallback: (page: string) => void;
+    onPageChange?: (page: number) => void;
+    onPageChangeCallback?: (page: string) => void;
     // onSelected: (item: Partial<NFT>) => void;
   } & XOR<
     { isSelectOnly: true; isMultipleSelect: true; selected: Partial<NFT>[] },
@@ -259,7 +260,7 @@ export const NFTList = withTranslation("common")(
                   }
                   page={page}
                   onChange={(_event, value) => {
-                    onPageChangeCallback(String(value))
+                    onPageChangeCallback && onPageChangeCallback(String(value))
                   }}
                 />
               </Box>
