@@ -572,3 +572,22 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     retryBtn,
   };
 };
+
+// ErrorCode.ERR_REST_ACCOUNT_NOT_EXIST, //104003
+//   message =s"payer hasn't completed opening an payerAccount, payerAccount id
+//
+// ErrorCode.ERR_ACCOUNT_FREEZED, //121001
+//   message = "payer is freeze"
+//
+//
+// ErrorCode.ERR_INVALID_ARGUMENT, //100001
+//   "payer address and payer id is not match"
+//
+// ErrorCode.ERR_INVALID_SIGNATURE, //100206
+//   "inner transfer eddsa sig invalid"
+//
+// ErrorCode.ERR_WALLET_BALANCE_NOT_ENOUGH, //109143
+//   s"balance of ${transfer.tokenId} in payerAccount ${transfer.payerId} is not enough"
+//
+// ErrorCode.ERR_NO_ACCOUNT, //113001
+//   s"withdraw address payerAccount info not found ${targetAccount.error}"

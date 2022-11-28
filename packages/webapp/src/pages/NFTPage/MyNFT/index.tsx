@@ -41,7 +41,7 @@ enum MY_NFT_VIEW {
 
 export const MyNFTPanel = withTranslation("common")(
   ({ t }: WithTranslation) => {
-    const match: any = useRouteMatch("/nft/assetsNFT/:tab?/:contract?");
+    const match: any = useRouteMatch("/nft/assetsNFT/:tab?/:contract?/:subTab?");
     const { walletL2NFTCollection } = useWalletL2NFTCollection();
     const [currentTab, setCurrentTab] = React.useState(() => {
       return match?.params.tab === MY_NFT_VIEW.LIST_COLLECTION
@@ -176,10 +176,11 @@ export const MyNFTPanel = withTranslation("common")(
                   key="2"
                   color="inherit"
                   onClick={() => {
+                    const subTabStr = match?.params?.subTab ? `/${match.params.subTab}` : ''
                     history.replace(
                       `/nft/assetsNFT/${
                         MY_NFT_VIEW.LIST_COLLECTION
-                      }?${searchParams.toString()}`
+                      }/${contract}--${id}${subTabStr}?${searchParams.toString()}`
                     );
                     setShowNFTDetail({ isShow: false });
                   }}
@@ -219,7 +220,7 @@ export const MyNFTPanel = withTranslation("common")(
     ]);
     return (
       <Box flex={1} display={"flex"} flexDirection={"column"}>
-        {match?.params?.contract && !isShowNFTDetail?.isShow ? (
+        {match?.params['tab'] === MY_NFT_VIEW.LIST_COLLECTION && match?.params?.contract && !isShowNFTDetail?.isShow ? (
           <>
             <Box
               display={"flex"}

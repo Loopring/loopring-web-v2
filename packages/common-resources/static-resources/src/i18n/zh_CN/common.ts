@@ -758,7 +758,7 @@ export default {
   labelOtherSmartDes:
     "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
   labelExchangeDes:
-    "The following trading platforms currently do not support Loopring L2 transfers (Binance, Coinbase, FTX, etc...). You will need to send funds to the L1 account. ",
+    "The following trading platforms currently do not support Loopring L2 transfers (Binance, Coinbase, etc...). You will need to send funds to the L1 account. ",
   labelExchangeTypeDes: "Please select the address source:",
   labelNonExchangeTypeDes:
     "eg: Loopring Wallet, Metamask, Coinbase Wallet, imtoken, Ledger, Trezor... EOA wallet",

@@ -27,7 +27,6 @@ export const NFTList = withTranslation("common")(
     nftList,
     getIPFSString,
     size = "large",
-    onPageChange,
     total,
     page,
     isLoading,
@@ -36,6 +35,7 @@ export const NFTList = withTranslation("common")(
     isSelectOnly = false,
     isMultipleSelect = false,
     isManage = false,
+    onPageChangeCallback,
     t,
   }: {
     baseURL: string;
@@ -46,11 +46,12 @@ export const NFTList = withTranslation("common")(
     getIPFSString: GET_IPFS_STRING;
     onClick?: (item: Partial<NFT>) => Promise<void>;
     onNFTReload?: (item: Partial<NFT>, index: number) => Promise<void>;
-    onPageChange: (page: number) => void;
     total: number;
     page: number;
     isLoading: boolean;
     selected?: Partial<NFT>[];
+    onPageChange?: (page: number) => void;
+    onPageChangeCallback?: (page: string) => void;
     // onSelected: (item: Partial<NFT>) => void;
   } & XOR<
     { isSelectOnly: true; isMultipleSelect: true; selected: Partial<NFT>[] },
@@ -259,7 +260,7 @@ export const NFTList = withTranslation("common")(
                   }
                   page={page}
                   onChange={(_event, value) => {
-                    onPageChange(Number(value));
+                    onPageChangeCallback && onPageChangeCallback(String(value))
                   }}
                 />
               </Box>
