@@ -6,7 +6,6 @@ import {
   LoadingIcon,
   SoursURL,
   AddressError,
-  getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
