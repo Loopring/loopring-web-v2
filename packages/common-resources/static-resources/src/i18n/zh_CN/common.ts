@@ -399,6 +399,7 @@ export default {
   labelNFTRoyaltyPercentage: "Royalty (%):",
   labelNFTID: "ID:",
   labelNFTMinter: "Minter:",
+  labelNFTMetadata: "Metadata:",
   labelNFTMint: "Create NFT",
   labelNFTTitleMyNFT: "My NFTs",
   labelNFTTOTAL: "Amount:",
