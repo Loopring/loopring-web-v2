@@ -373,7 +373,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                         </Tooltip>
                         <Switch 
                           onChange={() => {onSwitchChangeCallback()}} 
-                          checked={swapSecondConfirmation} 
+                          checked={swapSecondConfirmation !== false} 
                            />
                       </Grid>
                     </Box>

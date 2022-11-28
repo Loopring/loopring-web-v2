@@ -146,7 +146,7 @@ export const useSwap = <
     React.useState<boolean>(false);
   const [secondConfirmationOpen, setSecondConfirmationOpen] =
     React.useState<boolean>(false);
-  const showSwapSecondConfirmation = swapSecondConfirmation;
+  const showSwapSecondConfirmation = swapSecondConfirmation !== false;
   const isSmallOrder =
     tradeData && tradeData.buy.tradeValue
       ? tokenPrices[tradeData.buy.belong] * tradeData.buy.tradeValue < 100
