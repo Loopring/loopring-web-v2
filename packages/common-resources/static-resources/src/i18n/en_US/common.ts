@@ -24,7 +24,7 @@ export default {
   swapMinReceiveS: "Min. Received",
   labelSwapMinReceiveTooltips:
     "The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
-  swapFee: "Estimate Fee",
+  swapFee: "Trading Fee",
   swapFeeS: "Est. Fee",
   labelSwapFeeTooltips:
     "The trading fee is determined by your VIP level and the size of your trade. Small trades (below ~$100) incur a higher fee. Please review the fee before confirming.",
