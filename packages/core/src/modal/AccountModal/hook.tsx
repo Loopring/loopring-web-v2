@@ -605,7 +605,18 @@ export function useAccountModalForUI({
         height: "auto",
       },
       [AccountStep.CheckingActive]: {
-        view: <CheckActiveStatus {...checkActiveStatusProps} />,
+        view: (
+          <CheckActiveStatus
+            {...{
+              ...checkActiveStatusProps,
+              updateDepositHash,
+              chainInfos,
+              clearDepositHash: clearDeposit,
+              ...account,
+              etherscanUrl: rest.etherscanBaseUrl,
+            }}
+          />
+        ),
         height: "auto",
       },
       [AccountStep.AddAssetGateway]: {

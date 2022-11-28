@@ -1224,4 +1224,6 @@ export default {
     "If you have transferred tokens from another Loopring L2 account, please wait.",
   labelReceiveAddressDesActive:
     "If you have transferred tokens from another Loopring L2 account, please wait. Once you receive the assets, you can manually activate the L2 account.",
+  labelDepositWaiting:
+    "It make take some time for this transaction to execute on-chain.",
 };

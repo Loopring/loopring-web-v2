@@ -16,7 +16,6 @@ import {
   AddressError,
   SagaStatus,
   L1_UPDATE,
-  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import {
   connectProvides,
@@ -543,6 +542,7 @@ export const useDeposit = <
           const realChainId = chainId === "unknown" ? 1 : chainId;
           let response;
           try {
+            //response = { result: "xxxxxxxx" };
             response = await sdk.deposit(
               connectProvides.usedWeb3,
               account.accAddress,
@@ -588,6 +588,7 @@ export const useDeposit = <
                 value: inputValue.tradeValue,
                 hash: response.result,
                 isAllowInputToAddress,
+                isNewAccount,
               },
               step: AccountStep.Deposit_Submit,
             });
@@ -596,8 +597,8 @@ export const useDeposit = <
               type: "Deposit",
               value: inputValue.tradeValue,
             });
-            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
-            setShowAccount({ isShow: false });
+            // await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+            // setShowAccount({ isShow: false });
           } else {
             throw { code: UIERROR_CODE.ERROR_NO_RESPONSE };
           }

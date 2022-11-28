@@ -1,6 +1,7 @@
 import { ButtonProps } from "../../basic-lib";
 import {
   Account,
+  AccountHashInfo,
   CAMPAIGNTAGCONFIG,
   FeeInfo,
   NFTWholeINFO,
@@ -208,6 +209,9 @@ export interface CheckActiveStatusProps<C = FeeInfo> {
   onIKnowClick: () => void;
   knowDisable: boolean;
   know: boolean;
+  clearDepositHash?: () => void;
+  chainInfo?: AccountHashInfo;
+  etherscanUrl?: string;
 }
 export interface CheckImportCollectionProps {
   account: Account;
