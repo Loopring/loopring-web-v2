@@ -446,7 +446,7 @@ export const NFTDetail = withTranslation("common")(
                     }}
                     sx={{ minWidth: "initial", padding: "4px", marginRight: 1 }}
                   >
-                    <RefreshIPFSIcon />
+                    <RefreshIPFSIcon color={showFresh !== "click" ? "disabled" : undefined}/>
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={t("labelZoom").toString()} placement={"top"}>
