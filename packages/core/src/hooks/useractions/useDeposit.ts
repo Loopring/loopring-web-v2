@@ -427,16 +427,16 @@ export const useDeposit = <
   const handleDeposit = React.useCallback(
     async (inputValue: any) => {
       myLog("handleDeposit:", inputValue);
-      if (isNewAccount && inputValue.referAddress) {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.Deposit_Sign_WaitForRefer,
-          info: {
-            isAllowInputToAddress,
-          },
-        });
-        await signRefer();
-      }
+      // if (isNewAccount && inputValue.referAddress) {
+      //   setShowAccount({
+      //     isShow: true,
+      //     step: AccountStep.Deposit_Sign_WaitForRefer,
+      //     info: {
+      //       isAllowInputToAddress,
+      //     },
+      //   });
+      //   await signRefer();
+      // }
       const { readyState, connectName } = account;
       let result = { code: ActionResultCode.NoError };
 

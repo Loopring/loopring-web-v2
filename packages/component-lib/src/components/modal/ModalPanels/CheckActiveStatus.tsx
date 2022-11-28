@@ -131,15 +131,16 @@ export const CheckActiveStatus = ({
                     {t("labelFeeCalculating")}
                   </Typography>
                 ) : isFeeNotEnough.isFeeNotEnough ? (
-                  <Typography
-                    color={"var(--color-warning)"}
-                    component={"p"}
-                    variant={"body1"}
-                    marginTop={2}
-                  >
-                    {t("labelNotBalancePayForActive")}
-                  </Typography>
+                  <></>
                 ) : (
+                  // <Typography
+                  //   color={"var(--color-warning)"}
+                  //   component={"p"}
+                  //   variant={"body1"}
+                  //   marginTop={2}
+                  // >
+                  //   {t("labelNotBalancePayForActive")}
+                  // </Typography>
                   <Typography
                     color={"textPrimary"}
                     component={"p"}

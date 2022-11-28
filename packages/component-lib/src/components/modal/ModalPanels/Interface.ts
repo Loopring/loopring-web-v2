@@ -35,6 +35,7 @@ export enum AccountStep {
   NoAccount,
   QRCode,
   HadAccount,
+  ThirdPanelReturn,
   // new
   // Deposit,
   Deposit_Sign_WaitForRefer,
@@ -155,6 +156,7 @@ export interface VendorMenuProps {
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;
   campaignTagConfig?: CAMPAIGNTAGCONFIG;
+  callback?: () => void;
 }
 interface InferfaceAssetItem {
   key: string;
