@@ -50,11 +50,13 @@ export const QRAddressPanel = withTranslation("common")(
             <Typography
               variant={"body1"}
               display={"inline-flex"}
-              alignItems={"center"}
+              alignItems={"baseline"}
               color={"var(--color-warning)"}
               padding={2}
             >
-              <Info2Icon />
+              <Info2Icon
+                sx={{ marginRight: 1, position: "relative", top: 2 }}
+              />
               {isNewAccount
                 ? t("labelReceiveAddressGuide", {
                     symbol: feeChargeOrder?.join(", "),
@@ -77,7 +79,7 @@ export const QRAddressPanel = withTranslation("common")(
         >
           {accAddress}
         </Typography>
-        <Typography paddingTop={2} variant={"body2"}>
+        <Typography paddingTop={2} paddingBottom={1} variant={"body2"}>
           {t(
             isNewAccount
               ? "labelReceiveAddressDesActive"

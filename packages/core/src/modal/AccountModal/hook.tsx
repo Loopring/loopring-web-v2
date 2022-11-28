@@ -712,12 +712,11 @@ export function useAccountModalForUI({
           <QRAddressPanel
             {...{
               ...rest,
-
               account,
               btnInfo: {
                 ...closeBtnInfo(),
                 btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIknow2"),
-              },
+              } as any,
               ...account,
               isNewAccount: depositProps.isNewAccount,
               isForL2Send:
