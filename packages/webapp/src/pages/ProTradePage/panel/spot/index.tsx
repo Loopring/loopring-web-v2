@@ -226,7 +226,7 @@ export const SpotView = withTranslation("common")(
         }`
         : EmptyValueTag;
     const feePercentage = tradeCalcData && tradeData?.quote?.tradeValue
-      ? (Number(tradeCalcData.fee) / tradeData.quote.tradeValue * 100).toFixed(2)
+      ? (Number(tradeCalcData.fee) / (tradeType === TradeProType.sell ? tradeData.quote.tradeValue : tradeData.base.tradeValue) * 100).toFixed(2)
       : EmptyValueTag;
 
     return (
