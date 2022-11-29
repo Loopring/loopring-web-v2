@@ -192,10 +192,14 @@ export const useMyNFT = ({
     const searchParams = new URLSearchParams(location.search)
     let subTab
     let page: number
+    let collectionId: string | undefined 
+    let collectionContractAddress: string | undefined 
     if (byListOrCollection === 'byCollection') {
-      const [, , , , , theSubTab] = location.pathname.split('/')
+      const [, , , , contract, theSubTab] = location.pathname.split('/')
       subTab = theSubTab
       page = Number(searchParams.get('collectionPage')) ? Number(searchParams.get('collectionPage')) : 1
+      collectionId = contract.split('--')[1]
+      collectionContractAddress = contract.split('--')[0]
     } else {
       const [, , , , theSubTab] = location.pathname.split('/')
       subTab = theSubTab
@@ -206,13 +210,15 @@ export const useMyNFT = ({
       : { hidden: false };
     setIsLoading(true);
     if (page !== -1) {
+      // contract.sp
       updateWalletLayer2NFT({
         page,
-        collection: collectionMeta ?? undefined,
+        collectionId,
+        collectionContractAddress,
         filter,
       });
     }
-  }, [location])
+  }, [location, collectionMeta])
   return {
     nftList,
     onDetail,
