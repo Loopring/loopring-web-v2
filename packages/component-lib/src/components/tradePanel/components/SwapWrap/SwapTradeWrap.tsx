@@ -371,84 +371,7 @@ export const SwapTradeWrap = <
                 {fee}
               </Typography>
             </Grid>
-            {/* <Grid
-              container
-              justifyContent={"space-between"}
-              direction={"row"}
-              alignItems={"center"}
-              height={24}
-            >
-              <Tooltip
-                title={t("labelSwapToleranceTooltips").toString()}
-                placement={"top"}
-              >
-                <Typography
-                  component={"p"}
-                  variant="body2"
-                  color={"textSecondary"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                >
-                  <Info2Icon
-                    fontSize={"small"}
-                    color={"inherit"}
-                    sx={{ marginX: 1 / 2 }}
-                  />
-                  {" " + t("swapTolerance")}
-                </Typography>
-              </Tooltip>
-
-              <Typography component={"p"} variant="body2">
-                {tradeCalcData ? (
-                  <>
-                    <Typography
-                      {...bindHover(popupState)}
-                      component={"span"}
-                      color={"textPrimary"}
-                    >
-                      <LinkActionStyle>
-                        {tradeData.slippage
-                          ? tradeData.slippage
-                          : tradeCalcData.slippage
-                          ? tradeCalcData.slippage
-                          : defalutSlipage}
-                        %
-                      </LinkActionStyle>
-                      <PopoverPure
-                        className={"arrow-right"}
-                        {...bindPopover(popupState)}
-                        {...{
-                          anchorOrigin: {
-                            vertical: "bottom",
-                            horizontal: "right",
-                          },
-                          transformOrigin: {
-                            vertical: "top",
-                            horizontal: "right",
-                          },
-                        }}
-                      >
-                        <SlippagePanel
-                          {...{
-                            ...rest,
-                            t,
-                            handleChange: _onSlippageChange,
-                            slippageList: slippageArray,
-                            slippage: tradeData.slippage
-                              ? tradeData.slippage
-                              : tradeCalcData.slippage
-                              ? tradeCalcData.slippage
-                              : defalutSlipage,
-                          }}
-                        />
-                      </PopoverPure>
-                    </Typography>
-                  </>
-                ) : (
-                  EmptyValueTag
-                )}
-              </Typography>
-            </Grid> */}
+            
             <Grid
               container
               justifyContent={"space-between"}
@@ -513,6 +436,45 @@ export const SwapTradeWrap = <
               </Tooltip>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
                 {minimumReceived}
+              </Typography>
+            </Grid>
+            <Grid
+              container
+              justifyContent={"space-between"}
+              direction={"row"}
+              alignItems={"center"}
+              height={24}
+            >
+              <Tooltip
+                title={t("labelSwapToleranceTooltips").toString()}
+                placement={"top"}
+              >
+                <Typography
+                  component={"p"}
+                  variant="body2"
+                  color={"textSecondary"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <Info2Icon
+                    fontSize={"small"}
+                    color={"inherit"}
+                    sx={{ marginX: 1 / 2 }}
+                  />
+                  {" " + t("swapTolerance")}
+                </Typography>
+              </Tooltip>
+
+              <Typography component={"p"} variant="body2">
+                {tradeCalcData ? (
+                  (tradeData.slippage
+                    ? tradeData.slippage
+                    : tradeCalcData.slippage
+                    ? tradeCalcData.slippage
+                  : defalutSlipage) + '%'
+                ) : (
+                  EmptyValueTag
+                )}
               </Typography>
             </Grid>
           </Grid>
