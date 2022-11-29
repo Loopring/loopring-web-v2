@@ -570,6 +570,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         if (isSmallOrder) {
           setSmallOrderAlertOpen(true);
         } else {
+          setIsMarketLoading(true);
           marketSubmit();
         }
         setAlertOpen(false);
@@ -585,6 +586,7 @@ export const useMarket = <C extends { [key: string]: any }>({
   const smallOrderAlertCallBack = React.useCallback(
     (confirm: boolean) => {
       if (confirm) {
+        setIsMarketLoading(true);
         marketSubmit();
         setSmallOrderAlertOpen(false);
       } else {
@@ -597,6 +599,7 @@ export const useMarket = <C extends { [key: string]: any }>({
   const secondConfirmationCallBack = React.useCallback(
     (confirm: boolean) => {
       if (confirm) {
+        setIsMarketLoading(true);
         marketSubmit();
         setSecondConfirmationOpen(false);
       } else {
