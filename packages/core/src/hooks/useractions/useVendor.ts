@@ -43,7 +43,6 @@ import {
 } from "@loopring-web/web3-provider";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
-import moment from "moment";
 import axios from "axios";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
@@ -379,54 +378,31 @@ export const useVendor = () => {
                   account_reference: account.accAddress,
                 },
               });
-              //loopring.banxa-sandbox.com/?sellMode&expires=1669311302&id=30090bbc-0fb4-4263-be91-c18d25de95ff&nested=1&oid=4b69ea208975f05c0e7b7c9a0515438c&signature=ae07724179d41f5766973dbc375c2acf18643c3756e7b0a40ad996ead3c6d535
-              //loopring.banxa-sandbox.com/?sellMode&expires=1669311133&id=700a332c-ec77-4816-8a2e-9f16b6219b36&nested=1&oid=f4724af852c6fdf54feed58f36f64f2c&signature=0faf71c7751b84ed3b995db77d41bf5a851083baa5a7c556eb2d28a10289533c
-              // @ts-ignore
-              // const url = banxa.generateUrl({
-              //   sellMode: true,
-              //   blockchain: "LRC",
-              //   fiatType: "AUD",
-              //   coinType: "BTC",
-              //   // fiatAmount: 200,
-              //   // coinAmount: 0.5,
-              //   // walletAddress: account.accAddress,
-              //   account_reference: account.accAddress,
-              //   refund_address: account.accAddress,
-              //   return_url_on_success: "https://loopring.io/#/l2assets",
-              // });
-              // myLog("url", url);
-              banxa.generateIframe(
-                "#iframeBanxaTarget",
-                checkout_url,
-                false,
-                false
-                // "800px", //Optional width parameter – Pass false if not needed.
-                // "400px" //Optional height parameter – Pass false if not needed.
-              );
-              const querys = {
-                account_reference: account.accAddress,
-                start_date: moment(Date.now())
-                  .add(-1, "days")
-                  .format("YYYY-MM-DD"),
-                end_date: moment(Date.now()).format("YYYY-MM-DD"),
-                status: "waitingPayment",
-              };
-              const method = sdk.ReqMethod.GET;
-
-              const query = "/api/orders";
-              const payload = "";
-              checkBanxaOrder({
-                method,
-                url: query,
-                query: querys,
-                // new URLSearchParams(querys as any).toString(),
-                payload,
-              });
-
-              // loopring.banxa.com
             }
           },
         },
+        //loopring.banxa-sandbox.com/?sellMode&expires=1669311302&id=30090bbc-0fb4-4263-be91-c18d25de95ff&nested=1&oid=4b69ea208975f05c0e7b7c9a0515438c&signature=ae07724179d41f5766973dbc375c2acf18643c3756e7b0a40ad996ead3c6d535
+        //loopring.banxa-sandbox.com/?sellMode&expires=1669311133&id=700a332c-ec77-4816-8a2e-9f16b6219b36&nested=1&oid=f4724af852c6fdf54feed58f36f64f2c&signature=0faf71c7751b84ed3b995db77d41bf5a851083baa5a7c556eb2d28a10289533c
+        // @ts-ignore
+        // const url = banxa.generateUrl({
+        //   sellMode: true,
+        //   blockchain: "LRC",
+        //   fiatType: "AUD",
+        //   coinType: "BTC",
+        //   // fiatAmount: 200,
+        //   // coinAmount: 0.5,
+        //   // walletAddress: account.accAddress,
+        //           account_reference: account.accAddress,
+        //           refund_address: account.accAddress,
+        //         }),
+        //         false,
+        //         false
+        //         // "800px", //Optional width parameter – Pass false if not needed.
+        //         // "400px" //Optional height parameter – Pass false if not needed.
+        //       );
+        //     }
+        //   },
+        // },
       ]
     : [];
   return {
