@@ -179,7 +179,8 @@ export function useNFTDeploy<
           if (nftDeployValue.nftData) {
             updateWalletLayer2NFT({
               page: Number(searchParams.get("collectionPage")) ?? 1,
-              collection: (nftDeployValue?.collectionMeta as any) ?? undefined,
+              collectionId: nftDeployValue?.collectionMeta?.id, 
+              collectionContractAddress: nftDeployValue?.collectionMeta?.contractAddress, 
             });
             setShowNFTDetail({
               ...isShowNFTDetail,

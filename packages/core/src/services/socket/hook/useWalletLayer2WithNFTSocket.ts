@@ -47,7 +47,12 @@ export const useWalletLayer2WithNFTSocket = ({
         updateWalletLayer2();
       }
       if (walletLayer2NFTStatus !== SagaStatus.PENDING && nftDatas) {
-        updateWalletLayer2NFT({ page: 1, nftDatas: nftDatas?.join(",") });
+        updateWalletLayer2NFT({ 
+          page: 1, 
+          nftDatas: nftDatas?.join(","),
+          collectionContractAddress: undefined,
+          collectionId: undefined,
+        });
       }
     }, throttleWait),
     []
