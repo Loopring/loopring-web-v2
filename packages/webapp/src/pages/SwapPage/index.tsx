@@ -161,7 +161,7 @@ export const SwapPage = withTranslation("common")(
           }
         />
         <SmallOrderAlert
-          handleClose={() => setShowAccount(false)}
+          handleClose={() => smallOrderAlertCallBack(false)}
           handleConfirm={() => smallOrderAlertCallBack(true)}
           open={smallOrderAlertOpen}
           estimatedFee={estimatedFee}
@@ -169,7 +169,9 @@ export const SwapPage = withTranslation("common")(
           minimumReceived={minimumReceived}
         />
         <SwapSecondConfirmation
-          handleClose={() => secondConfirmationCallBack(false)}
+          handleClose={() => {
+            secondConfirmationCallBack(false);
+          }}
           handleConfirm={() => secondConfirmationCallBack(true)}
           open={secondConfirmationOpen}
           fromSymbol={fromSymbol}

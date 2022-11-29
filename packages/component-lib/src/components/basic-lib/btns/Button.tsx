@@ -17,6 +17,7 @@ import styled from "@emotion/styled";
 import {
   BackIcon,
   CloseIcon,
+  myLog,
   QRIcon,
   SoursURL,
 } from "@loopring-web/common-resources";
@@ -269,6 +270,7 @@ export const ModalCloseButton = ({
         aria-label={t("labelClose")}
         color={"inherit"}
         onClick={(event) => {
+          // myLog("IconButton escapeKeyDown");
           onClose && onClose(event, "escapeKeyDown");
         }}
       >

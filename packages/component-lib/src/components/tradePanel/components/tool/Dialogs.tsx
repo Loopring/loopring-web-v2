@@ -29,7 +29,6 @@ import {
   Bridge,
   CheckBoxIcon,
   CheckedIcon,
-  CloseIcon,
   copyToClipBoard,
   getValuePrecisionThousand,
   Info2Icon,
@@ -86,7 +85,7 @@ export const AlertImpact = withTranslation("common")(
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose()}
+        onClose={(_e: MouseEvent) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("labelImpactTitle")}</DialogTitle>
@@ -352,7 +351,12 @@ export const SmallOrderAlert = withTranslation("common")(
           justifyContent={"center"}
           width={isMobile ? "100%" : "var(--modal-width)"}
         >
-          <ModalCloseButton onClose={handleClose} {...{ ...rest, t }} />
+          <ModalCloseButton
+            onClose={() => {
+              handleClose();
+            }}
+            {...{ ...rest, t }}
+          />
           <Box
             flex={1}
             display={"flex"}
@@ -474,7 +478,9 @@ export const SwapSecondConfirmation = withTranslation("common")(
     return (
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={() => {
+          handleClose();
+        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -485,7 +491,12 @@ export const SwapSecondConfirmation = withTranslation("common")(
           paddingBottom={3}
           width={isMobile ? "100%" : "var(--modal-width)"}
         >
-          <ModalCloseButton onClose={handleClose} {...{ ...rest, t }} />
+          <ModalCloseButton
+            onClose={() => {
+              handleClose();
+            }}
+            {...{ ...rest, t }}
+          />
           <Typography variant={"h3"} textAlign={"center"} marginTop={-2}>
             {t("labelSwapSecondConfirmTitle")}
           </Typography>
