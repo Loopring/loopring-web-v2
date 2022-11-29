@@ -125,6 +125,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               }}
             />
           );
+
         case IconType.DoneIcon:
           return (
             <DoneIcon

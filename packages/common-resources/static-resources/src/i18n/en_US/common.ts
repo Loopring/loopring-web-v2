@@ -1202,4 +1202,6 @@ export default {
   labelSwapSettingSecondConfirm: "Second confirmation",
   labelSwapSettingSecondConfirmTootip: "skip confirm screen when toggled off",
   labelSwapSettingToggleSuccess: "Swap second confirmation trun {{onOrOff}}",
+  labelFrom: "From",
+  labelTo: "To",
 };

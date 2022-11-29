@@ -16,13 +16,11 @@ import {
 import { WithTranslation } from "react-i18next";
 import React from "react";
 import { Grid, Tooltip, Typography } from "@mui/material";
-import { InputButton, LinkActionStyle, PopoverPure } from "../../../basic-lib";
-import { usePopupState } from "material-ui-popup-state/hooks";
-import { bindHover, bindPopover } from "material-ui-popup-state/es";
+import { InputButton } from "../../../basic-lib";
+
 import { SwapTradeProps } from "./Interface";
 import { useSettings } from "../../../../stores";
 import { IconButtonStyled, ButtonStyle } from "../Styled";
-import { SlippagePanel } from "../tool";
 import { Box } from "@mui/material";
 
 export const SwapTradeWrap = <
@@ -112,28 +110,28 @@ export const SwapTradeWrap = <
       to: "button",
     });
   }, [swapData, onChangeEvent]);
-  const _onSlippageChange = React.useCallback(
-    (
-      slippage: number | string,
-      customSlippage: number | string | undefined
-    ) => {
-      popupState.close();
-      onChangeEvent(0, {
-        ...swapData,
-        tradeData: {
-          ...swapData.tradeData,
-          slippage: slippage,
-          __cache__: {
-            ...swapData.tradeData.__cache__,
-            customSlippage: customSlippage,
-          },
-        },
-        type: "sell",
-        to: "button",
-      });
-    },
-    [swapData, onChangeEvent]
-  );
+  // const _onSlippageChange = React.useCallback(
+  //   (
+  //     slippage: number | string,
+  //     customSlippage: number | string | undefined
+  //   ) => {
+  //     popupState.close();
+  //     onChangeEvent(0, {
+  //       ...swapData,
+  //       tradeData: {
+  //         ...swapData.tradeData,
+  //         slippage: slippage,
+  //         __cache__: {
+  //           ...swapData.tradeData.__cache__,
+  //           customSlippage: customSlippage,
+  //         },
+  //       },
+  //       type: "sell",
+  //       to: "button",
+  //     });
+  //   },
+  //   [swapData, onChangeEvent]
+  // );
 
   if (typeof handleError !== "function") {
     handleError = ({ belong, balance, tradeValue }: any) => {
@@ -171,10 +169,10 @@ export const SwapTradeWrap = <
     handleOnClick,
     ...rest,
   };
-  const popupState = usePopupState({
-    variant: "popover",
-    popupId: "slippagePop",
-  });
+  // const popupState = usePopupState({
+  //   variant: "popover",
+  //   popupId: "slippagePop",
+  // });
   const label = React.useMemo(() => {
     myLog(swapBtnI18nKey, "swapBtnI18nKey useMemo");
     if (swapBtnI18nKey) {
@@ -371,7 +369,7 @@ export const SwapTradeWrap = <
                 {fee}
               </Typography>
             </Grid>
-            
+
             <Grid
               container
               justifyContent={"space-between"}
@@ -466,15 +464,13 @@ export const SwapTradeWrap = <
               </Tooltip>
 
               <Typography component={"p"} variant="body2">
-                {tradeCalcData ? (
-                  (tradeData.slippage
-                    ? tradeData.slippage
-                    : tradeCalcData.slippage
-                    ? tradeCalcData.slippage
-                  : defalutSlipage) + '%'
-                ) : (
-                  EmptyValueTag
-                )}
+                {tradeCalcData
+                  ? (tradeData.slippage
+                      ? tradeData.slippage
+                      : tradeCalcData.slippage
+                      ? tradeCalcData.slippage
+                      : defalutSlipage) + "%"
+                  : EmptyValueTag}
               </Typography>
             </Grid>
           </Grid>
