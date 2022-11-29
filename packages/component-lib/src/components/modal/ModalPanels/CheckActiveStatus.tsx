@@ -274,7 +274,11 @@ export const CheckActiveStatus = ({
           paddingX={5}
           padding={0}
         >
-          <DepositRecorder {...props} clear={props.clearDepositHash} t={t} />
+          <DepositRecorder
+            {...({ ...props } as any)}
+            clear={props.clearDepositHash}
+            t={t}
+          />
         </Box>
       )}
     </Box>
