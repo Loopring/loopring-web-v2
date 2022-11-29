@@ -362,14 +362,13 @@ export const SmallOrderAlert = withTranslation("common")(
             textAlign={"center"}
             variant={"h4"}
             color={"var(--color-warning)"}>
-            Warn !!
+            Warning
           </Typography>
           <Box paddingX={2}>
             <Typography variant={"body1"}>{t("labelSmallOrderAlertLine1")}</Typography>
-            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine2")}</Typography>
-            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine3", {estimatedFee})}</Typography>
-            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine4", {feePercentage})}</Typography>
-            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine5", {minimumReceived})}</Typography>
+            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine3")} <Typography component={"span"} color={theme.colorBase.error}>{estimatedFee}</Typography> </Typography>
+            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine4")} <Typography component={"span"} color={theme.colorBase.error}>{feePercentage}%</Typography> </Typography>
+            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine5")} <Typography component={"span"} color={theme.colorBase.error}>{minimumReceived}</Typography> </Typography>
           </Box>
           <Button
             style={{

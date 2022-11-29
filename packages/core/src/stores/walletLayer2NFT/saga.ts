@@ -13,25 +13,27 @@ import { PayloadAction } from "@reduxjs/toolkit";
 const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   page,
   nftDatas,
-  collection,
+  collectionId,
+  collectionContractAddress,
   filter,
 }: {
   page: number;
   nftDatas?: string;
-  collection: CollectionMeta | undefined;
+  collectionId: string | undefined;
+  collectionContractAddress: string | undefined;
   filter?: MyNFTFilter | undefined;
 }) => {
   const offset = (page - 1) * NFTLimit;
   const { accountId, apiKey } = store.getState().account;
   if (apiKey && accountId && LoopringAPI.userAPI) {
     let userNFTBalances, totalNum;
-    if (collection !== undefined && collection.id) {
+    if (collectionId) {
       ({ userNFTBalances, totalNum } = await LoopringAPI.userAPI
         .getUserNFTBalancesByCollection(
           {
             accountId,
-            tokenAddress: collection.contractAddress,
-            collectionId: Number(collection.id),
+            tokenAddress: collectionContractAddress!,
+            collectionId: Number(collectionId),
             limit: NFTLimit,
             offset,
             nonZero: true,
@@ -50,7 +52,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
           {
             accountId,
             // @ts-ignore
-            tokenAddress: collection?.contractAddress ?? undefined,
+            tokenAddress: collectionContractAddress ?? undefined,
             limit: NFTLimit,
             offset,
             nonZero: true,
@@ -68,7 +70,10 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
     return {
       walletLayer2NFT: userNFTBalances ?? [],
       total: totalNum,
-      collection: collection,
+      collection: {
+        contractAddress: collectionContractAddress,
+        id: collectionId
+      },
       filter,
       page,
     };
@@ -77,11 +82,13 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
 };
 
 export function* getPostsSaga({
-  payload: { page = 1, collection, nftDatas, filter },
+  payload: { page = 1, collectionId, collectionContractAddress, nftDatas, filter },
 }: PayloadAction<{
   page?: number;
   nftDatas?: string;
-  collection: CollectionMeta | undefined;
+  // collection: CollectionMeta | undefined;
+  collectionId: string | undefined;
+  collectionContractAddress: string | undefined;
   filter?: MyNFTFilter | undefined;
 }>) {
   try {
@@ -89,7 +96,8 @@ export function* getPostsSaga({
     const walletLayer2NFT: any = yield call(getWalletLayer2NFTBalance, {
       page,
       nftDatas,
-      collection,
+      collectionId,
+      collectionContractAddress,
       filter,
     });
     yield put(getWalletLayer2NFTStatus({ ...walletLayer2NFT }));

@@ -14,7 +14,8 @@ export function useWalletLayer2NFT(): WalletLayer2NFTStates & {
   updateWalletLayer2NFT: (props: {
     page?: number;
     nftDatas?: string;
-    collection?: CollectionMeta | undefined;
+    collectionId: string | undefined,
+    collectionContractAddress: string | undefined,
     filter?: MyNFTFilter | undefined;
   }) => void;
   socketUpdateBalance: (balance: {
@@ -40,16 +41,18 @@ export function useWalletLayer2NFT(): WalletLayer2NFTStates & {
     updateWalletLayer2NFT: React.useCallback(
       ({
         page,
-        collection,
+        collectionId,
+        collectionContractAddress,
         nftDatas,
         filter,
       }: {
         page?: number;
         nftDatas?: string;
-        collection?: CollectionMeta | undefined;
+        collectionId: string | undefined;
+        collectionContractAddress: string | undefined;
         filter?: MyNFTFilter | undefined;
       }) =>
-        dispatch(updateWalletLayer2NFT({ page, collection, nftDatas, filter })),
+        dispatch(updateWalletLayer2NFT({ page, collectionId, collectionContractAddress, nftDatas, filter })),
       [dispatch]
     ),
     socketUpdateBalance: React.useCallback(

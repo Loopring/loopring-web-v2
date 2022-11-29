@@ -340,6 +340,9 @@ export const NFTDetail = withTranslation("common")(
       return sanitize(_str ?? EmptyValueTag);
     };
     const ref = React.useRef();
+    const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(
+      popItem?.nftId ?? ""
+    );
     return (
       <>
         <StylePaper
@@ -443,29 +446,7 @@ export const NFTDetail = withTranslation("common")(
                     }}
                     sx={{ minWidth: "initial", padding: "4px", marginRight: 1 }}
                   >
-                    <RefreshIPFSIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip
-                  title={t("labelLinkMetaData").toString()}
-                  placement={"top"}
-                >
-                  <IconButton
-                    aria-label={t("labelLinkMetaData")}
-                    size={"large"}
-                    edge={"end"}
-                    color={"inherit"}
-                    onClick={() => {
-                      const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(
-                        popItem?.nftId ?? ""
-                      );
-                      const uri = IPFS_LOOPRING_SITE + cid;
-                      window.open(uri, "_blank");
-                      window.opener = null;
-                    }}
-                    sx={{ minWidth: "initial", padding: "4px", marginRight: 1 }}
-                  >
-                    <LinkIcon />
+                    <RefreshIPFSIcon color={showFresh !== "click" ? "disabled" : undefined}/>
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={t("labelZoom").toString()} placement={"top"}>
@@ -877,6 +858,36 @@ export const NFTDetail = withTranslation("common")(
                     }}
                   >
                     {popItem.minter}
+                  </Link>
+                </Typography>
+                <Typography
+                  display={"inline-flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  variant={"body1"}
+                  marginTop={1}
+                >
+                  <Typography
+                    component={"span"}
+                    color={"var(--color-text-third)"}
+                    width={150}
+                  >
+                    {t("labelNFTMetadata")}
+                  </Typography>
+
+                  <Link
+                    fontSize={"inherit"}
+                    whiteSpace={"break-spaces"}
+                    style={{ wordBreak: "break-all" }}
+                    onClick={() => {
+                      window.open(
+                        IPFS_LOOPRING_SITE + cid,
+                        "blank"
+                      );
+                      window.opener = null;
+                    }}
+                  >
+                    {cid}
                   </Link>
                 </Typography>
               </>

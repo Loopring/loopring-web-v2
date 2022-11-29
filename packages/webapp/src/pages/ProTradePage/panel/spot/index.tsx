@@ -7,10 +7,13 @@ import {
   LimitTrade,
   MarketTrade,
   PopoverPure,
+  SmallOrderAlert,
+  SwapSecondConfirmation,
   Toast,
   TradeProType,
 } from "@loopring-web/component-lib";
 import {
+  EmptyValueTag,
   getValuePrecisionThousand,
   Info2Icon,
   MarketType,
@@ -22,6 +25,7 @@ import { useLimit } from "./hookLimit";
 import { Box, Divider, Tab, Tabs, Typography } from "@mui/material";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
+import { useCommon } from "@loopring-web/component-lib/src/components/tradePanel/tradePro/hookCommon";
 
 // const TabsStyle = styled(Tabs)`
 //   flex: 1;
@@ -81,6 +85,12 @@ export const SpotView = withTranslation("common")(
       resetMarketData,
       marketBtnClick,
       isMarketLoading,
+      priceAlertCallBack,
+      smallOrderAlertCallBack,
+      secondConfirmationCallBack,
+      smallOrderAlertOpen,
+      secondConfirmationOpen,
+      setToastOpen,
     } = useMarket({ market, resetTradeCalcData });
     const onTabChange = React.useCallback(
       (_e, value) => {
@@ -198,6 +208,65 @@ export const SpotView = withTranslation("common")(
         ? "This pair doesn’t support limit order, please place a market order"
         : "";
 
+    const tradeType = pageTradePro.tradeType;
+    const tradeCalcData = pageTradePro.tradeCalcProData;
+    const tradeData = marketTradeData
+    const estimatedFee =
+      tradeCalcData && tradeCalcData.fee
+        ? `${tradeCalcData.fee} ${tradeType === TradeProType.sell
+          ? tradeData.quote?.belong
+          : tradeData.base?.belong
+        }` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+        : EmptyValueTag;
+    const minimumReceived =
+      tradeCalcData && tradeCalcData.minimumReceived
+        ? `${tradeCalcData.minimumReceived}  ${tradeType === TradeProType.buy
+          ? tradeData.base.belong
+          : tradeData.quote.belong
+        }`
+        : EmptyValueTag;
+    const feePercentage = tradeCalcData && tradeData?.quote?.tradeValue
+      ? (Number(tradeCalcData.fee) / tradeData.quote.tradeValue * 100).toFixed(2)
+      : EmptyValueTag;
+    const priceImpactColor = tradeCalcData?.priceImpactColor
+      ? tradeCalcData.priceImpactColor
+      : "textPrimary";
+    const priceImpact2 =
+      tradeCalcData?.priceImpact !== undefined
+        ? getValuePrecisionThousand(
+          tradeCalcData.priceImpact,
+          undefined,
+          undefined,
+          2,
+          true
+        ) + " %"
+        : EmptyValueTag;
+    const userTakerRate =
+      tradeCalcData && tradeCalcData.feeTakerRate
+        ? (tradeCalcData.feeTakerRate / 100).toString()
+        : EmptyValueTag;
+    const tradeCostMin =
+      tradeCalcData && tradeCalcData.tradeCost
+        ? `${tradeCalcData.tradeCost} ${tradeData.quote?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+        : EmptyValueTag;
+    const fromSymbol = tradeType === TradeProType.sell
+      ? (tradeData?.base?.belong ?? EmptyValueTag)
+      : (tradeData?.quote?.belong ?? EmptyValueTag)
+    const fromAmount = tradeType === TradeProType.sell
+      ? (tradeData?.base?.tradeValue?.toString() ?? EmptyValueTag)
+      : (tradeData?.quote?.tradeValue?.toString() ?? EmptyValueTag)
+    const toSymbol = tradeType === TradeProType.sell
+      ? (tradeData?.quote?.belong ?? EmptyValueTag)
+      : (tradeData?.base?.belong ?? EmptyValueTag)
+    const toAmount = tradeType === TradeProType.sell
+      ? tradeData?.quote?.tradeValue?.toString() ?? EmptyValueTag
+      : tradeData?.base?.tradeValue?.toString() ?? EmptyValueTag
+    const slippage = tradeData
+      ? (tradeData.slippage
+        ? `${tradeData.slippage}`
+        : "0.1")
+      : EmptyValueTag
+
     return (
       <>
         <Toast
@@ -219,14 +288,40 @@ export const SpotView = withTranslation("common")(
           onClose={closeToastL}
         />
         <AlertImpact
-          handleClose={marketSubmit}
+          handleClose={() => priceAlertCallBack(false)}
+          handleConfirm={() => priceAlertCallBack(true)}
           open={alertOpen}
           value={priceImpact}
         />
         <ConfirmImpact
-          handleClose={marketSubmit}
+          handleClose={() => priceAlertCallBack(false)}
+          handleConfirm={() => priceAlertCallBack(true)}
           open={confirmOpen}
           value={priceImpact}
+        />
+        <SmallOrderAlert
+          handleClose={() => smallOrderAlertCallBack(false)}
+          handleConfirm={() => smallOrderAlertCallBack(true)}
+          open={smallOrderAlertOpen}
+          estimatedFee={estimatedFee}
+          feePercentage={feePercentage}
+          minimumReceived={minimumReceived}
+        />
+        <SwapSecondConfirmation
+          handleClose={() => secondConfirmationCallBack(false)}
+          handleConfirm={() => secondConfirmationCallBack(true)}
+          open={secondConfirmationOpen}
+          fromSymbol={fromSymbol}
+          fromAmount={fromAmount}
+          toSymbol={toSymbol}
+          toAmount={toAmount}
+          slippage={slippage}
+          userTakerRate={userTakerRate}
+          tradeCostMin={tradeCostMin}
+          estimateFee={estimatedFee}
+          priceImpactColor={priceImpactColor}
+          priceImpact={priceImpact2}
+          minimumReceived={minimumReceived}
         />
         <AlertLimitPrice
           handleClose={limitSubmit}
@@ -286,11 +381,11 @@ export const SpotView = withTranslation("common")(
                 }}
                 tradeMarketI18nKey={tradeMarketI18nKey}
                 tradeMarketBtnStyle={tradeMarketBtnStyle}
-                tradeType={pageTradePro.tradeType}
+                tradeType={tradeType}
                 tradeMarketBtnStatus={tradeMarketBtnStatus}
                 handleSubmitEvent={marketBtnClick}
                 tradeCalcProData={pageTradePro.tradeCalcProData}
-                tradeData={marketTradeData}
+                tradeData={tradeData}
                 onChangeEvent={onChangeMarketEvent}
               />
             )}
