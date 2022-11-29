@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import React from "react";
 import { globalSetup, refreshTime } from "@loopring-web/common-resources";
 import * as _ from "lodash";
+import { useTheme } from "@emotion/react";
 
 // @ts-ignore
 export const CountDownIcon = React.memo(
@@ -97,6 +98,7 @@ export const CountDownIcon = React.memo(
         // _refresh();
         return cleanSubscribe;
       }, []);
+      const theme = useTheme()
       return (
         <Box ref={ref}>
           <CountDownStyled
@@ -104,9 +106,9 @@ export const CountDownIcon = React.memo(
             component={"button"}
             className={"clock-loading outlined logo"}
             onClick={refresh}
+            color={theme.colorBase.logo}
           >
             <Typography component={"span"} className={"text-count"}>
-              {/*{refreshCount>0?refreshCount:''}*/}
             </Typography>
             <Box className={"circle"} />
           </CountDownStyled>

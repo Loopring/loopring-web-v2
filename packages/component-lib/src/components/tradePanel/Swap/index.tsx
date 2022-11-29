@@ -7,7 +7,7 @@ import {
   defalutSlipage,
   IBData,
   Info2Icon,
-  OrderListIcon,
+  OrderListIconV2,
   SCENARIO,
   SlippageTolerance,
   SwapSettingIcon,
@@ -21,6 +21,7 @@ import { useHistory } from "react-router-dom";
 import { TagIconList } from "../../block";
 import { useSettings } from "../../../stores";
 import styled from "@emotion/styled";
+import { useTheme } from "@emotion/react";
 const PopoverStyled = styled(Popover)`
   .MuiPaper-elevation2 {
     box-shadow: none;
@@ -234,6 +235,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
       },
       [swapData, onChangeEvent]
     );
+    const theme = useTheme()
 
     const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
       index: index, // show default show
@@ -301,19 +303,10 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                 </Typography>
                 <Box alignSelf={"flex-end"} display={"flex"}>
                   <Typography display={"inline-block"} marginLeft={2}>
-                    <IconButtonStyled
-                      onClick={e => {
-                        setSettingPopoverOpen(true)
-                        setAnchorEl(e.currentTarget)
-                      }}
-                      sx={{ backgroundColor: "var(--field-opacity)" }}
-                      className={"switch outlined"}
-                      aria-label="to Transaction"
-                      aria-describedby={settingPopoverId}
-                      size={"large"}
-                    >
-                      <SwapSettingIcon />
-                    </IconButtonStyled>
+                    <CountDownIcon
+                      onRefreshData={onRefreshData}
+                      ref={refreshRef}
+                    />
                   </Typography>
                   <PopoverStyled
                     id={settingPopoverId}
@@ -379,10 +372,19 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                     </Box>
                   </PopoverStyled>
                   <Typography display={"inline-block"} marginLeft={2}>
-                    <CountDownIcon
-                      onRefreshData={onRefreshData}
-                      ref={refreshRef}
-                    />
+                    <IconButtonStyled
+                      onClick={e => {
+                        setSettingPopoverOpen(true)
+                        setAnchorEl(e.currentTarget)
+                      }}
+                      sx={{ backgroundColor: "var(--field-opacity)" }}
+                      className={"switch outlined"}
+                      aria-label="to Transaction"
+                      aria-describedby={settingPopoverId}
+                      size={"large"}
+                    >
+                      <SwapSettingIcon htmlColor={theme.colorBase.logo}/>
+                    </IconButtonStyled>
                   </Typography>
                   <Typography display={"inline-block"} marginLeft={2}>
                     <IconButtonStyled
@@ -396,7 +398,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                       aria-label="to Transaction"
                       size={"large"}
                     >
-                      <OrderListIcon color={"primary"} fontSize={"large"} />
+                      <OrderListIconV2 stroke={theme.colorBase.logo} color="primary" />
                     </IconButtonStyled>
                   </Typography>
                 </Box>
