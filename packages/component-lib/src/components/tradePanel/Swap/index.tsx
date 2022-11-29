@@ -303,10 +303,19 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                 </Typography>
                 <Box alignSelf={"flex-end"} display={"flex"}>
                   <Typography display={"inline-block"} marginLeft={2}>
-                    <CountDownIcon
-                      onRefreshData={onRefreshData}
-                      ref={refreshRef}
-                    />
+                    <IconButtonStyled
+                      onClick={e => {
+                        setSettingPopoverOpen(true)
+                        setAnchorEl(e.currentTarget)
+                      }}
+                      sx={{ backgroundColor: "var(--field-opacity)" }}
+                      className={"switch outlined"}
+                      aria-label="to Transaction"
+                      aria-describedby={settingPopoverId}
+                      size={"large"}
+                    >
+                      <SwapSettingIcon htmlColor={theme.colorBase.logo}/>
+                    </IconButtonStyled>
                   </Typography>
                   <PopoverStyled
                     id={settingPopoverId}
@@ -372,20 +381,13 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                     </Box>
                   </PopoverStyled>
                   <Typography display={"inline-block"} marginLeft={2}>
-                    <IconButtonStyled
-                      onClick={e => {
-                        setSettingPopoverOpen(true)
-                        setAnchorEl(e.currentTarget)
-                      }}
-                      sx={{ backgroundColor: "var(--field-opacity)" }}
-                      className={"switch outlined"}
-                      aria-label="to Transaction"
-                      aria-describedby={settingPopoverId}
-                      size={"large"}
-                    >
-                      <SwapSettingIcon htmlColor={theme.colorBase.logo}/>
-                    </IconButtonStyled>
+                    <CountDownIcon
+                      onRefreshData={onRefreshData}
+                      ref={refreshRef}
+                    />
                   </Typography>
+                  
+                  
                   <Typography display={"inline-block"} marginLeft={2}>
                     <IconButtonStyled
                       onClick={() => {

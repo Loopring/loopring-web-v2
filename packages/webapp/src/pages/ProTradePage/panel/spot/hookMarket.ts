@@ -56,7 +56,7 @@ export const useMarket = <C extends { [key: string]: any }>({
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { account } = useAccount();
-  const { slippage, isMobile, swapSecondConfirmation } = useSettings();
+  const { slippage, isMobile } = useSettings();
   const { exchangeInfo, allowTrade } = useSystem();
   const {
     toggle: { order },
@@ -559,7 +559,6 @@ export const useMarket = <C extends { [key: string]: any }>({
     React.useState<boolean>(false);
   const [secondConfirmationOpen, setSecondConfirmationOpen] =
     React.useState<boolean>(false);
-  const showSwapSecondConfirmation = swapSecondConfirmation !== false;
   const { tokenPrices } = useTokenPrices();
   const isSmallOrder =
     marketTradeData && marketTradeData.quote.tradeValue
@@ -581,7 +580,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         setIsMarketLoading(false);
       }
     },
-    [showSwapSecondConfirmation, isSmallOrder]
+    [isSmallOrder]
   );
   const smallOrderAlertCallBack = React.useCallback(
     (confirm: boolean) => {
@@ -629,12 +628,10 @@ export const useMarket = <C extends { [key: string]: any }>({
       setConfirmOpen(true);
     } else if (isSmallOrder) {
       setSmallOrderAlertOpen(true);
-    } else if (showSwapSecondConfirmation) {
-      setSecondConfirmationOpen(true);
     } else {
       marketSubmit();
     }
-  }, [allowTrade, account.readyState, showSwapSecondConfirmation, isSmallOrder]);
+  }, [allowTrade, account.readyState, isSmallOrder]);
 
   const {
     btnStatus: tradeMarketBtnStatus,

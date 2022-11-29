@@ -1154,7 +1154,7 @@ export default {
   labelSmallOrderAlertLine1: "Small trades (below ~$100) incur a higher fee.",
   labelSmallOrderAlertLine2: "Please review the fee before confirming.",
   labelSmallOrderAlertLine3: "Trading Fee:",
-  labelSmallOrderAlertLine4: "Fee percentage:",
+  labelSmallOrderAlertLine4: "Fee ratio:",
   labelSmallOrderAlertLine5: "Minimum Received:",
   labelSwapSecondConfirmTitle: "Confirm Swap",
   labelSwapSettingTitle: "Settings",

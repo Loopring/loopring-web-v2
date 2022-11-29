@@ -447,15 +447,15 @@ export const SwapSecondConfirmation = withTranslation("common")(
           </DialogTitle>
           <DialogContent>
             <Box paddingX={3} display={"flex"} marginTop={8} marginBottom={5} alignItems={"center"} justifyContent={"space-between"}>
-              <Box width={"33%"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
+              <Box width={"45%"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
                 <CoinIcon symbol={fromSymbol} size={48}/>
                 <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>from</Typography>
                 <Typography>{fromAmount} {fromSymbol}</Typography>
               </Box>
-              <Box display={"flex"} justifyContent={"center"} width={"33%"}>
+              <Box display={"flex"} justifyContent={"center"} width={"10%"}>
                 <RightArrowIcon />
               </Box>
-              <Box width={"33%"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
+              <Box width={"45%"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
                 <CoinIcon symbol={toSymbol} size={48}/>
                 <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>to</Typography>
                 <Typography>{toAmount} {toSymbol}</Typography>
