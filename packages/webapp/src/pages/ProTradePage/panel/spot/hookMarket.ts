@@ -570,8 +570,8 @@ export const useMarket = <C extends { [key: string]: any }>({
       if (confirm) {
         if (isSmallOrder) {
           setSmallOrderAlertOpen(true);
-        } else if (showSwapSecondConfirmation) {
-          setSecondConfirmationOpen(true);
+        } else {
+          marketSubmit();
         }
         setAlertOpen(false);
         setConfirmOpen(false);
@@ -623,22 +623,16 @@ export const useMarket = <C extends { [key: string]: any }>({
     } else if (!order.enable) {
       setShowTradeIsFrozen({ isShow: true, type: "Limit" });
       setIsMarketLoading(false);
+    } else if (priceLevel === PriceLevel.Lv1) {
+      setAlertOpen(true);
+    } else if (priceLevel === PriceLevel.Lv2) {
+      setConfirmOpen(true);
     } else if (isSmallOrder) {
       setSmallOrderAlertOpen(true);
     } else if (showSwapSecondConfirmation) {
       setSecondConfirmationOpen(true);
     } else {
-      switch (priceLevel) {
-        case PriceLevel.Lv1:
-          setAlertOpen(true);
-          break;
-        case PriceLevel.Lv2:
-          setConfirmOpen(true);
-          break;
-        default:
-          marketSubmit();
-          break;
-      }
+      marketSubmit();
     }
   }, [allowTrade, account.readyState, showSwapSecondConfirmation, isSmallOrder]);
 

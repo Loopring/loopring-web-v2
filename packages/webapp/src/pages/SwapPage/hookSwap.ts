@@ -525,8 +525,8 @@ export const useSwap = <
       if (confirm) {
         if (isSmallOrder) {
           setSmallOrderAlertOpen(true);
-        } else if (showSwapSecondConfirmation) {
-          setSecondConfirmationOpen(true);
+        } else {
+          swapFunc();
         }
         setAlertOpen(false);
         setConfirmOpen(false);
@@ -577,22 +577,16 @@ export const useSwap = <
     } else if (!order.enable) {
       setShowTradeIsFrozen({ isShow: true, type: "Swap" });
       setIsSwapLoading(false);
+    } else if (priceLevel === PriceLevel.Lv1) {
+      setAlertOpen(true);
+    } else if (priceLevel === PriceLevel.Lv2) {
+      setConfirmOpen(true);
     } else if (isSmallOrder) {
       setSmallOrderAlertOpen(true);
     } else if (showSwapSecondConfirmation) {
       setSecondConfirmationOpen(true);
     } else {
-      switch (priceLevel) {
-        case PriceLevel.Lv1:
-          setAlertOpen(true);
-          break;
-        case PriceLevel.Lv2:
-          setConfirmOpen(true);
-          break;
-        default:
-          swapFunc();
-          break;
-      }
+      swapFunc();
     }
   }, [
     pageTradeLite.calcTradeParams,
