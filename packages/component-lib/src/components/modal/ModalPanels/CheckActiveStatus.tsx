@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 import { CheckActiveStatusProps } from "./Interface";
+import { DepositRecorder } from "./DepositRecorder";
+import { useTheme } from "@emotion/react";
 export const CheckActiveStatus = ({
   account,
   goSend,
@@ -14,9 +16,10 @@ export const CheckActiveStatus = ({
   know,
   onIKnowClick,
   chargeFeeTokenList = [],
+  ...props
 }: CheckActiveStatusProps) => {
   const { t } = useTranslation("common");
-
+  const theme = useTheme();
   const { isMobile } = useSettings();
 
   return (
@@ -25,7 +28,7 @@ export const CheckActiveStatus = ({
       display={"flex"}
       alignItems={"center"}
       flexDirection={"column"}
-      paddingBottom={4}
+      // paddingBottom={4}
       width={"100%"}
     >
       {!know ? (
@@ -131,15 +134,16 @@ export const CheckActiveStatus = ({
                     {t("labelFeeCalculating")}
                   </Typography>
                 ) : isFeeNotEnough.isFeeNotEnough ? (
-                  <Typography
-                    color={"var(--color-warning)"}
-                    component={"p"}
-                    variant={"body1"}
-                    marginTop={2}
-                  >
-                    {t("labelNotBalancePayForActive")}
-                  </Typography>
+                  <></>
                 ) : (
+                  // <Typography
+                  //   color={"var(--color-warning)"}
+                  //   component={"p"}
+                  //   variant={"body1"}
+                  //   marginTop={2}
+                  // >
+                  //   {t("labelNotBalancePayForActive")}
+                  // </Typography>
                   <Typography
                     color={"textPrimary"}
                     component={"p"}
@@ -191,7 +195,7 @@ export const CheckActiveStatus = ({
                   {chargeFeeTokenList?.map((item, index) => (
                     <Typography
                       key={index + item.belong}
-                      height={RowConfig.rowHeight}
+                      height={theme.unit * 4}
                       color={"textPrimary"}
                       display={"flex"}
                       textAlign={"center"}
@@ -245,7 +249,7 @@ export const CheckActiveStatus = ({
                     </Typography>
                   )
                 )}
-                <Box marginTop={3}>
+                <Box marginTop={1}>
                   <Button
                     size={"large"}
                     variant={"contained"}
@@ -259,6 +263,23 @@ export const CheckActiveStatus = ({
             )}
           </Box>
         </>
+      )}
+      {props.clearDepositHash && (
+        <Box
+          display={"flex"}
+          marginX={0}
+          marginTop={3}
+          marginBottom={0}
+          alignSelf={"stretch"}
+          paddingX={5}
+          padding={0}
+        >
+          <DepositRecorder
+            {...({ ...props } as any)}
+            clear={props.clearDepositHash}
+            t={t}
+          />
+        </Box>
       )}
     </Box>
   );

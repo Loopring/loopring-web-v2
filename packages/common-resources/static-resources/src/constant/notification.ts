@@ -49,6 +49,7 @@ export type NOTIFICATION_ITEM = {
 export type ACTIVITY = NOTIFICATION_ITEM;
 export type CAMPAIGN_TAG = {
   name: string;
+  type?: "activity" | "protocol" | ""; //options for Amm , activity|
   startShow: number;
   endShow: number;
   iconSource: string;

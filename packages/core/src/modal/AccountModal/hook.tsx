@@ -68,6 +68,7 @@ import {
   SendAsset,
   SendAssetItem,
   SendNFTAsset,
+  ThirdPanelReturn,
   Transfer_Failed,
   Transfer_First_Method_Denied,
   Transfer_In_Progress,
@@ -411,6 +412,25 @@ export function useAccountModalForUI({
       {
         ...AddAssetList.FromOtherL1,
         handleSelect: () => {
+          let dex = "labelAddAssetTitleBridgeDes";
+          if (
+            account.readyState &&
+            [
+              AccountStatus.DEPOSITING,
+              AccountStatus.NOT_ACTIVE,
+              AccountStatus.NO_ACCOUNT,
+            ].includes(
+              // @ts-ignore
+              account?.readyState
+            )
+          ) {
+            dex = "labelAddAssetTitleBridgeDesActive";
+          }
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.ThirdPanelReturn,
+            info: { title: t("labelAddAssetTitleBridge"), description: t(dex) },
+          });
           window.open(
             Bridge +
               `?l2account=${account.accAddress}&token=${
@@ -433,6 +453,28 @@ export function useAccountModalForUI({
       {
         ...AddAssetList.FromExchange,
         handleSelect: () => {
+          let dex = "labelAddAssetTitleExchangeDes";
+          if (
+            account.readyState &&
+            [
+              AccountStatus.DEPOSITING,
+              AccountStatus.NOT_ACTIVE,
+              AccountStatus.NO_ACCOUNT,
+            ].includes(
+              // @ts-ignore
+              account?.readyState
+            )
+          ) {
+            dex = "labelAddAssetTitleExchangeDesActive";
+          }
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.ThirdPanelReturn,
+            info: {
+              title: t("labelAddAssetTitleExchange"),
+              description: t(dex),
+            },
+          });
           setShowLayerSwapNotice({ isShow: true });
         },
       },
@@ -547,9 +589,34 @@ export function useAccountModalForUI({
   });
 
   const accountList = React.useMemo(() => {
+    // const isShowAccount?.info.
     return Object.values({
+      [AccountStep.ThirdPanelReturn]: {
+        view: (
+          <ThirdPanelReturn
+            title={isShowAccount?.info?.title ?? ""}
+            description={isShowAccount?.info?.description}
+            btnInfo={{
+              ...closeBtnInfo(),
+              btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIknow2"),
+            }}
+          />
+        ),
+        height: "auto",
+      },
       [AccountStep.CheckingActive]: {
-        view: <CheckActiveStatus {...checkActiveStatusProps} />,
+        view: (
+          <CheckActiveStatus
+            {...{
+              ...checkActiveStatusProps,
+              updateDepositHash,
+              chainInfos,
+              clearDepositHash: clearDeposit,
+              ...account,
+              etherscanUrl: rest.etherscanBaseUrl,
+            }}
+          />
+        ),
         height: "auto",
       },
       [AccountStep.AddAssetGateway]: {
@@ -657,6 +724,10 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               account,
+              btnInfo: {
+                ...closeBtnInfo(),
+                btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIknow2"),
+              } as any,
               ...account,
               isNewAccount: depositProps.isNewAccount,
               isForL2Send:
@@ -668,6 +739,7 @@ export function useAccountModalForUI({
         ),
         onBack: onQRBack,
         noClose: true,
+        height: "auto",
       },
       [AccountStep.Deposit_Sign_WaitForRefer]: {
         view: (

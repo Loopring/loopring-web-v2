@@ -2,9 +2,10 @@ import QRCode from "qrcode.react";
 import { Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { Box } from "@mui/material";
-import { Account } from "@loopring-web/common-resources";
+import { Account, Info2Icon } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
+import { Button } from "../../basic-lib";
 
 const BoxStyle = styled(Box)`
   ${({ theme }) =>
@@ -17,8 +18,13 @@ export const QRAddressPanel = withTranslation("common")(
     accAddress,
     isNewAccount,
     t,
+    btnInfo,
   }: //    etherscanUrl,
   WithTranslation & {
+    btnInfo: {
+      btnTxt: string;
+      callback: () => void;
+    };
     etherscanUrl: string;
     isForL2Send: boolean;
     isNewAccount: boolean;
@@ -43,9 +49,14 @@ export const QRAddressPanel = withTranslation("common")(
           <BoxStyle marginBottom={2}>
             <Typography
               variant={"body1"}
+              display={"inline-flex"}
+              alignItems={"baseline"}
               color={"var(--color-warning)"}
               padding={2}
             >
+              <Info2Icon
+                sx={{ marginRight: 1, position: "relative", top: 2 }}
+              />
               {isNewAccount
                 ? t("labelReceiveAddressGuide", {
                     symbol: feeChargeOrder?.join(", "),
@@ -68,6 +79,27 @@ export const QRAddressPanel = withTranslation("common")(
         >
           {accAddress}
         </Typography>
+        <Typography paddingTop={2} paddingBottom={1} variant={"body2"}>
+          {t(
+            isNewAccount
+              ? "labelReceiveAddressDesActive"
+              : "labelReceiveAddressDes"
+          )}
+        </Typography>
+        <Box alignSelf={"stretch"} paddingX={5}>
+          <Button
+            variant={"contained"}
+            fullWidth
+            size={"medium"}
+            onClick={(_e?: any) => {
+              if (btnInfo?.callback) {
+                btnInfo.callback();
+              }
+            }}
+          >
+            {btnInfo?.btnTxt}
+          </Button>
+        </Box>
       </Box>
     );
   }

@@ -46,6 +46,7 @@ import Web3 from "web3";
 import moment from "moment";
 import axios from "axios";
 import { ChainId } from "@loopring-web/loopring-sdk";
+import { useTranslation } from "react-i18next";
 
 export enum RAMP_SELL_PANEL {
   LIST,
@@ -94,6 +95,7 @@ const banxaApiCall = async ({
 };
 export const useVendor = () => {
   const { account } = useAccount();
+  const { t } = useTranslation();
   const banxaRef = React.useRef();
   const {
     allowTrade: { raw_data },
@@ -155,6 +157,28 @@ export const useVendor = () => {
                   window.rampInstance.unsubscribe("*", () => undefined);
                   window.rampInstance = undefined;
                 }
+                let dex = "labelAddAssetTitleCardDes";
+                if (
+                  account.readyState &&
+                  [
+                    AccountStatus.DEPOSITING,
+                    AccountStatus.NOT_ACTIVE,
+                    AccountStatus.NO_ACCOUNT,
+                  ].includes(
+                    // @ts-ignore
+                    account?.readyState
+                  )
+                ) {
+                  dex = "labelAddAssetTitleCardDesActive";
+                }
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.ThirdPanelReturn,
+                  info: {
+                    title: t("labelAddAssetTitleCard"),
+                    description: t(dex),
+                  },
+                });
               });
             }
           },
@@ -162,7 +186,28 @@ export const useVendor = () => {
         {
           ...VendorList.Banxa,
           handleSelect: () => {
-            setShowAccount({ isShow: false });
+            let dex = "labelAddAssetTitleCardDes";
+            if (
+              account.readyState &&
+              [
+                AccountStatus.DEPOSITING,
+                AccountStatus.NOT_ACTIVE,
+                AccountStatus.NO_ACCOUNT,
+              ].includes(
+                // @ts-ignore
+                account?.readyState
+              )
+            ) {
+              dex = "labelAddAssetTitleCardDesActive";
+            }
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.ThirdPanelReturn,
+              info: {
+                title: t("labelAddAssetTitleCard"),
+                description: t(dex),
+              },
+            });
             if (legalEnable) {
               window.open(
                 "https://loopring.banxa.com/iframe?code=1fe263e17175561954c6&buyMode&walletAddress=" +

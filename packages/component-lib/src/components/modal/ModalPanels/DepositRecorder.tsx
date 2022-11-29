@@ -34,6 +34,8 @@ const BoxStyled = styled(Box)`
     height: 1px;
     box-shadow: ${({ theme }) => theme.colorBase.shadowHeader};
   }
+  border-bottom-left-radius: ${({ theme }) => theme.unit}px;
+  border-bottom-right-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Box;
 
 export const DepositRecorder = ({
