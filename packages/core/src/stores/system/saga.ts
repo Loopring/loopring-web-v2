@@ -361,7 +361,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
         //   ];
         if (_exchangeInfo[chainId]) {
           myLog("exchangeInfo from localstorage");
-          exchangeInfo = _exchangeInfo;
+          exchangeInfo = _exchangeInfo[chainId];
           // const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(chainId)
           [{ forexMap, gasPrice }, allowTrade] = await Promise.all([
             should15MinutesUpdateDataGroup(chainId),
