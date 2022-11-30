@@ -475,7 +475,7 @@ export default {
   labelNFTDeployBtn: "Deploy Contract",
   labelNFTDeployBroker: "Deploy Broker:",
   labelDeployInProgress: "Processing...",
-  labelNFTDeployTitle: "Deploy NFT",
+  labelNFTDeployTitle: "Deploy Contract",
   labelVendor: "Buy with Card",
   labelLock: "Lock",
   labelWalletToWallet:
