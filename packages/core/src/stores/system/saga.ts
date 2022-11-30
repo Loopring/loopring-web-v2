@@ -37,55 +37,203 @@ import * as sdk from "@loopring-web/loopring-sdk";
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
 ) {
-  const [
-    { tokensMap, coinMap, totalCoinMap, idIndex, addressIndex },
-    { ammpools },
-    { pairs, marketArr, tokenArr, markets },
-    { disableWithdrawTokenList },
-  ] = yield all([
-    call(async () => LoopringAPI.exchangeAPI?.getTokens()),
-    call(async () => LoopringAPI.ammpoolAPI?.getAmmPoolConf()),
-    call(async () => LoopringAPI.exchangeAPI?.getMixMarkets()),
-    call(async () => {
-      try {
-        return await LoopringAPI.exchangeAPI?.disableWithdrawTokenList();
-      } catch (e: any) {
-        return {
-          disableWithdrawTokenList: [],
-          raw_data: undefined,
-        };
+  const { chainId } = store.getState().system;
+  const _tokenMap = JSON.parse(window.localStorage.getItem("tokenMap") ?? "{}")[
+    chainId
+  ];
+  const _ammpools = JSON.parse(window.localStorage.getItem("ammpools") ?? "{}")[
+    chainId
+  ];
+  const _markets = JSON.parse(window.localStorage.getItem("markets") ?? "{}")[
+    chainId
+  ];
+
+  const _disableWithdrawTokenList = JSON.parse(
+    window.localStorage.getItem("disableWithdrawTokenList") ?? "{}"
+  )[chainId];
+  let tokensMap,
+    coinMap,
+    totalCoinMap,
+    idIndex,
+    addressIndex,
+    tokenListRaw,
+    markets,
+    ammpools,
+    pairs,
+    marketArr,
+    tokenArr,
+    disableWithdrawTokenList,
+    ammpoolsRaw,
+    disableWithdrawTokenListRaw,
+    marketRaw;
+  if (_tokenMap && _ammpools && _markets && _disableWithdrawTokenList) {
+    myLog(
+      "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList from local storge"
+    );
+    const resultTokenMap = sdk.makeMarket(_tokenMap);
+    tokensMap = resultTokenMap.tokensMap;
+    coinMap = resultTokenMap.coinMap;
+    totalCoinMap = resultTokenMap.totalCoinMap;
+    idIndex = resultTokenMap.idIndex;
+    addressIndex = resultTokenMap.addressIndex;
+
+    const resultMarket = sdk.makeMarkets(_markets);
+    markets = resultMarket.markets;
+    pairs = resultMarket.pairs;
+    marketArr = resultMarket.marketArr;
+    tokenArr = resultMarket.tokenArr;
+    ammpools = sdk.makeAmmPool(_ammpools)?.ammpools;
+    // const { markets, pairs, marketArr, tokenArr } = sdk.makeMarkets(_disableWithdrawTokenList);
+    store.dispatch(
+      getTokenMap({
+        tokensMap,
+        coinMap,
+        totalCoinMap,
+        idIndex,
+        addressIndex,
+        marketMap: markets,
+        pairs,
+        marketArr,
+        tokenArr,
+        disableWithdrawTokenList: [..._disableWithdrawTokenList],
+      })
+    );
+    store.dispatch(initAmmMap({ ammpools, chainId }));
+    store.dispatch(getTokenPrices(undefined));
+    yield take("tokenPrices/getTokenPricesStatus");
+    store.dispatch(getTickers({ tickerKeys: marketArr, marketRaw }));
+    store.dispatch(getAmmMap({ ammpools }));
+    yield take("ammMap/getAmmMapStatus");
+    store.dispatch(getAmmActivityMap({ ammpools }));
+    myLog("getTokenPricesStatus update");
+
+    Promise.all([
+      LoopringAPI.exchangeAPI?.getTokens(),
+      LoopringAPI.ammpoolAPI?.getAmmPoolConf(),
+      LoopringAPI.exchangeAPI?.getMixMarkets(),
+      LoopringAPI.exchangeAPI?.disableWithdrawTokenList() ?? {
+        disableWithdrawTokenList: [],
+        raw_data: undefined,
+      },
+    ]).then(
+      ([
+        {
+          tokensMap,
+          coinMap,
+          totalCoinMap,
+          idIndex,
+          addressIndex,
+          raw_data: tokenListRaw,
+        },
+        { ammpools, raw_data: ammpoolsRaw },
+        { pairs, marketArr, tokenArr, markets, raw_data: marketRaw },
+        { disableWithdrawTokenList, raw_data: disableWithdrawTokenListRaw },
+      ]: any) => {
+        store.dispatch(
+          getTokenMap({
+            tokensMap,
+            coinMap,
+            totalCoinMap,
+            idIndex,
+            addressIndex,
+            marketMap: markets,
+            pairs,
+            marketArr,
+            tokenArr,
+            disableWithdrawTokenList,
+            tokenListRaw,
+            disableWithdrawTokenListRaw,
+            marketRaw,
+          })
+        );
+        store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
+        store.dispatch(
+          getTokenMap({
+            tokensMap,
+            coinMap,
+            totalCoinMap,
+            idIndex,
+            addressIndex,
+            marketMap: markets,
+            pairs,
+            marketArr,
+            tokenArr,
+            disableWithdrawTokenList,
+            tokenListRaw,
+            disableWithdrawTokenListRaw,
+            marketRaw,
+          })
+        );
+        myLog(
+          "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList update from server-side update"
+        );
+        store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
+        store.dispatch(getAmmMap({ ammpools }));
+        store.dispatch(getAmmActivityMap({ ammpools }));
       }
-    }),
-  ]);
-  store.dispatch(
-    getTokenMap({
-      tokensMap,
-      coinMap,
-      totalCoinMap,
-      idIndex,
-      addressIndex,
-      marketMap: markets,
-      pairs,
-      marketArr,
-      tokenArr,
-      disableWithdrawTokenList,
-    })
-  );
-  // store.dispatch(
-  //   getTokenPricesStatus({ tokenPrices, __timer__, __rawConfig__ })
-  // );
-  store.dispatch(getNotify(undefined));
-  store.dispatch(initAmmMap({ ammpools }));
-  yield take("tokenMap/getTokenMapStatus");
-  store.dispatch(getTokenPrices(undefined));
-  yield take("tokenPrices/getTokenPricesStatus");
-  store.dispatch(getTickers({ tickerKeys: marketArr }));
-  store.dispatch(getAmmMap({ ammpools }));
-  yield take("ammMap/getAmmMapStatus");
-  store.dispatch(getAmmActivityMap({ ammpools }));
-  if (store.getState().tokenMap.status === "ERROR") {
-    throw "tokenMap Error";
+    );
+  } else {
+    [
+      {
+        tokensMap,
+        coinMap,
+        totalCoinMap,
+        idIndex,
+        addressIndex,
+        raw_data: tokenListRaw,
+      },
+      { ammpools, raw_data: ammpoolsRaw },
+      { pairs, marketArr, tokenArr, markets, raw_data: marketRaw },
+      { disableWithdrawTokenList, raw_data: disableWithdrawTokenListRaw },
+    ] = yield all([
+      call(async () => LoopringAPI.exchangeAPI?.getTokens()),
+      call(async () => LoopringAPI.ammpoolAPI?.getAmmPoolConf()),
+      call(async () => LoopringAPI.exchangeAPI?.getMixMarkets()),
+      call(async () => {
+        try {
+          return await LoopringAPI.exchangeAPI?.disableWithdrawTokenList();
+        } catch (e: any) {
+          return {
+            disableWithdrawTokenList: [],
+            raw_data: undefined,
+          };
+        }
+      }),
+    ]);
+    myLog(
+      "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList update from server-side init"
+    );
+    store.dispatch(
+      getTokenMap({
+        tokensMap,
+        coinMap,
+        totalCoinMap,
+        idIndex,
+        addressIndex,
+        marketMap: markets,
+        pairs,
+        marketArr,
+        tokenArr,
+        disableWithdrawTokenList,
+        tokenListRaw,
+        disableWithdrawTokenListRaw,
+        marketRaw,
+      })
+    );
+    store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
+    store.dispatch(getNotify(undefined));
+    yield take("tokenMap/getTokenMapStatus");
+    store.dispatch(getTokenPrices(undefined));
+    yield take("tokenPrices/getTokenPricesStatus");
+    store.dispatch(getTickers({ tickerKeys: marketArr }));
+    store.dispatch(getAmmMap({ ammpools }));
+    yield take("ammMap/getAmmMapStatus");
+    store.dispatch(getAmmActivityMap({ ammpools }));
+    if (store.getState().tokenMap.status === "ERROR") {
+      throw "tokenMap Error";
+    }
   }
+
   store.dispatch(getDefiMap(undefined));
   store.dispatch(getDualMap(undefined));
   yield all([
@@ -117,7 +265,6 @@ const should15MinutesUpdateDataGroup = async (
       if (key.toString().toUpperCase() === Currency.usd.toUpperCase()) {
         indexUSD = index;
       }
-
       return (
         LoopringAPI?.walletAPI?.getLatestTokenPrices({
           currency: key.toString().toUpperCase(),
@@ -125,6 +272,7 @@ const should15MinutesUpdateDataGroup = async (
         }) ?? Promise.resolve({ tokenPrices: null })
       );
     });
+    myLog("getLatestTokenPrices & getGasPrice from service");
 
     const [{ gasPrice }, ...restForexs] = await Promise.all([
       LoopringAPI.exchangeAPI.getGasPrice(),
@@ -204,9 +352,18 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
           process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION;
       }
       try {
-        [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
-          await Promise.all([
-            LoopringAPI.exchangeAPI.getExchangeInfo(),
+        myLog("exchangeInfo chainId", chainId);
+        const _exchangeInfo = JSON.parse(
+          window.localStorage.getItem("exchangeInfo") ?? "{}"
+        );
+        // const _allowTrade = JSON.parse(window.localStorage.getItem("allowTrade") ?? "{}")[
+        //   chainId
+        //   ];
+        if (_exchangeInfo[chainId]) {
+          myLog("exchangeInfo from localstorage");
+          exchangeInfo = _exchangeInfo;
+          // const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(chainId)
+          [{ forexMap, gasPrice }, allowTrade] = await Promise.all([
             should15MinutesUpdateDataGroup(chainId),
             LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
               return {
@@ -215,6 +372,40 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
               };
             }),
           ]);
+
+          LoopringAPI.exchangeAPI
+            .getExchangeInfo()
+            .then(({ exchangeInfo }: any) => {
+              window.localStorage.setItem(
+                "exchangeInfo",
+                JSON.stringify({
+                  ..._exchangeInfo,
+                  [exchangeInfo.chainId]: exchangeInfo,
+                })
+              );
+              myLog("exchangeInfo from service");
+            });
+        } else {
+          [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
+            await Promise.all([
+              LoopringAPI.exchangeAPI.getExchangeInfo(),
+              should15MinutesUpdateDataGroup(chainId),
+              LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
+                return {
+                  ...result,
+                  legal: (result as any)?.raw_data?.legal ?? { enable: false },
+                };
+              }),
+            ]);
+          myLog("exchangeInfo from service because no localstorage ");
+          window.localStorage.setItem(
+            "exchangeInfo",
+            JSON.stringify({
+              ..._exchangeInfo,
+              [exchangeInfo.chainId]: exchangeInfo,
+            })
+          );
+        }
       } catch (e: any) {
         allowTrade = {
           defiInvest: { enable: false },

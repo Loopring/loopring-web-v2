@@ -451,9 +451,10 @@ export default {
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
   labelIsNotFeeToken: "Please deposit {{symbol}} to activate Loopring L2.",
-  labelIsETHDepositAlert: "Please reserve enough ETH for gas!",
+  labelIsETHDepositAlert:
+    "Please reserve enough ETH in Layer 1 account to pay for gas!",
   labelIsNotEnoughFeeToken:
-    "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
+    "Please deposit enough token to cover the activation fee: {{fee}} {{symbol}}. Remaining token will appear in your asset after activation",
   depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
   mintNFTAddressLabelPlaceholder:
     "(CIDv0 or dag-pb CIDv1) eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
@@ -488,7 +489,7 @@ export default {
   labelNFTDeployBtn: "Deploy Contract",
   labelNFTDeployBroker: "Deploy Broker:",
   labelDeployInProgress: "Processing...",
-  labelNFTDeployTitle: "Deploy Collection",
+  labelNFTDeployTitle: "Deploy Contract",
   labelVendor: "Buy with Card",
   labelLock: "Lock",
   labelWalletToWallet:
@@ -729,7 +730,7 @@ export default {
   labelReceiveAddress: "Receive Address",
   labelAssets: "Loopring L2 Assets",
   labelReceiveAddressGuide:
-    "Please send {{symbol}} funds from a Loopring L2 address",
+    "Please use a Loopring L2 account when transferring to avoid loss of assets ({{symbol}}).",
   labelL2toL2: "Send to another Loopring L2",
   labelL2toL1: "Send to L1",
   labelBenefitL2:
@@ -1202,6 +1203,33 @@ export default {
   labelSwapSettingSecondConfirm: "Second confirmation",
   labelSwapSettingSecondConfirmTootip: "skip confirm screen when toggled off",
   labelSwapSettingToggleSuccess: "Swap second confirmation trun {{onOrOff}}",
+  labelFeeMin: "Min {{fee}}",
+  labelIknow2: "I know",
+  labelAddAssetTitleBridge: "Add Asset From Another L1",
+  labelAddAssetTitleBridgeDesActive:
+    "If you have transferred tokens from another Ethereum L1 account, it may take some time for this transaction to execute on-chain. Once you receive the assets, you can manually activate the L2 account.",
+  labelAddAssetTitleBridgeDes:
+    "If you have transferred tokens from another Ethereum L1 account, it may take some time for this transaction to execute on-chain.",
+  labelAddAssetTitleExchange: "Add Asset From An Exchange",
+  labelAddAssetTitleExchangeDes:
+    "If you have transferred tokens from an Exchange, please wait. ",
+  labelAddAssetTitleExchangeDesActive:
+    "If you have transferred tokens from an Exchange, please wait. Once you receive the assets, you can manually activate the L2 account.",
+  labelAddAssetTitleCard: "Add Asset With a Card",
+  labelAddAssetTitleCardDes:
+    "If you have purchased crypto with a card, please wait for it to arrive in your account.",
+  labelAddAssetTitleCardDesActive:
+    "If you have purchased crypto with a card, please wait for it to arrive in your account. Upon arrival, L2 will be activated automatically.",
+  labelMinFeeForActive: "Min {{fee}}",
+  labelReceiveAddressDes:
+    "If you have transferred tokens from another Loopring L2 account, please wait.",
+  labelReceiveAddressDesActive:
+    "If you have transferred tokens from another Loopring L2 account, please wait. Once you receive the assets, you can manually activate the L2 account.",
+  labelDepositWaiting:
+    "It make take some time for this transaction to execute on-chain.",
   labelFrom: "From",
   labelTo: "To",
+  labeltransfer: "Transfer",
+  labelwithdraw: "Withdrawal",
+  labelDeposit: "Deposit",
 };

@@ -139,7 +139,7 @@ export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
       favourite: boolean;
       hide: boolean;
     };
-    collectionInfo: Co;
+    collectionInfo?: Co;
   };
 
 export type MintTradeNFT<I> = {

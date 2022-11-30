@@ -33,6 +33,12 @@ export type GetTokenMapParams<_R extends { [key: string]: any }> = {
   marketArr: string[];
   tokenArr: string[];
   disableWithdrawTokenList: any[];
+  tokenListRaw?: any;
+  disableWithdrawTokenListRaw?: any;
+  marketRaw: any;
+  // ammpoolsRaw?: any;
+  // marketRaw?: any;
+  //
 };
 
 export type AddressMap = {

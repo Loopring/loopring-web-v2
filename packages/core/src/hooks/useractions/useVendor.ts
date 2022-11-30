@@ -12,6 +12,7 @@ import {
   WALLET_TYPE,
   WalletMap,
   TOAST_TIME,
+  BANXA_URLS,
 } from "@loopring-web/common-resources";
 import {
   DAYS,
@@ -42,21 +43,69 @@ import {
 } from "@loopring-web/web3-provider";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
+import axios from "axios";
+import { ChainId } from "@loopring-web/loopring-sdk";
+import { useTranslation } from "react-i18next";
 
 export enum RAMP_SELL_PANEL {
   LIST,
   CONFIRM,
 }
 
+const banxaApiCall = async ({
+  url,
+  query,
+  payload,
+  method,
+  chainId,
+}: {
+  url: string;
+  query: URLSearchParams | string | string[][];
+  payload: object;
+  method: sdk.ReqMethod;
+  chainId: ChainId;
+}): Promise<{ [key: string]: any }> => {
+  const querys = url + "?" + new URLSearchParams(query).toString();
+  const apiKey = await LoopringAPI.globalAPI?.getBanxaAPI({
+    method,
+    query: querys,
+    payload: JSON.stringify(payload),
+  });
+  const bearer: string = (apiKey?.result as string) ?? "";
+  myLog("apiKey", bearer, query, new URLSearchParams(query).toString());
+  const _axios = axios.create({
+    baseURL: BANXA_URLS[chainId as number],
+    timeout: 6000,
+    headers: {
+      // Accept: "application/json",
+      Authorization: bearer,
+      "Content-Type": "application/json",
+    },
+    validateStatus: function (status: any) {
+      if ((status >= 200 && status < 300) || status === 400) {
+        return true;
+      }
+      return false;
+      // return true // always true, handle exception in each bussiness logic
+    },
+  });
+  const result = await _axios.request({ method, url: querys, data: payload });
+  return { ...result };
+};
 export const useVendor = () => {
   const { account } = useAccount();
+  const { t } = useTranslation();
   const banxaRef = React.useRef();
   const {
     allowTrade: { raw_data },
+    chainId,
   } = useSystem();
   const legalEnable = (raw_data as any)?.legal?.enable;
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+  const [banxaOrder, setBanxaOrder] = React.useState(undefined);
+
   // const { isMobile } = useSettings();
   const {
     // updateOffRampData,
@@ -107,6 +156,28 @@ export const useVendor = () => {
                   window.rampInstance.unsubscribe("*", () => undefined);
                   window.rampInstance = undefined;
                 }
+                let dex = "labelAddAssetTitleCardDes";
+                if (
+                  account.readyState &&
+                  [
+                    AccountStatus.DEPOSITING,
+                    AccountStatus.NOT_ACTIVE,
+                    AccountStatus.NO_ACCOUNT,
+                  ].includes(
+                    // @ts-ignore
+                    account?.readyState
+                  )
+                ) {
+                  dex = "labelAddAssetTitleCardDesActive";
+                }
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.ThirdPanelReturn,
+                  info: {
+                    title: t("labelAddAssetTitleCard"),
+                    description: t(dex),
+                  },
+                });
               });
             }
           },
@@ -114,7 +185,28 @@ export const useVendor = () => {
         {
           ...VendorList.Banxa,
           handleSelect: () => {
-            setShowAccount({ isShow: false });
+            let dex = "labelAddAssetTitleCardDes";
+            if (
+              account.readyState &&
+              [
+                AccountStatus.DEPOSITING,
+                AccountStatus.NOT_ACTIVE,
+                AccountStatus.NO_ACCOUNT,
+              ].includes(
+                // @ts-ignore
+                account?.readyState
+              )
+            ) {
+              dex = "labelAddAssetTitleCardDesActive";
+            }
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.ThirdPanelReturn,
+              info: {
+                title: t("labelAddAssetTitleCard"),
+                description: t(dex),
+              },
+            });
             if (legalEnable) {
               window.open(
                 "https://loopring.banxa.com/iframe?code=1fe263e17175561954c6&buyMode&walletAddress=" +
@@ -127,6 +219,66 @@ export const useVendor = () => {
         },
       ]
     : [];
+
+  const checkBanxaOrder = React.useCallback(
+    async ({ url, query, payload, method }: any) => {
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      banxaApiCall({
+        url,
+        query,
+        payload,
+        method,
+        chainId: chainId as ChainId,
+      });
+
+      // const result = await fetch(query, {
+      //   method,
+      //   // withCredentials: true,
+      //   // credentials: "include",
+      //   headers: {},
+      // });
+
+      // LoopringAPI.globalAPI.In;
+
+      // myLog(result.request);
+      // if (result && result.data && result.orders) {
+      //   debugger;
+      // }
+      //   .then((result) => {
+      //   if (result && result?.length) {
+      //     debugger;
+      //     setBanxaOrder(query);
+      //   }
+      // });
+      // .then(({raw_data}) => {
+      //   LoopringAPI.globalAPI.raw_data
+      //   //
+      //   setBanxaOrder;
+      // });
+      if (nodeTimer.current) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      }
+      nodeTimer.current = setTimeout(() => {
+        checkBanxaOrder({ url, query, payload, method });
+        // updateNFTRefreshHash(popItem.nftData);
+      }, 90000);
+      // if (
+      //   // popItem.nftData &&
+      //   // nftDataHashes &&
+      //   // nftDataHashes[popItem.nftData.toLowerCase()]
+      // ) {
+      //
+      //
+      // }
+      // else {
+      //   setShowFresh("click");
+      // }
+      return () => {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      };
+    },
+    [nodeTimer]
+  );
   const vendorListSell: VendorItem[] = legalShow
     ? [
         // {
@@ -196,29 +348,50 @@ export const useVendor = () => {
         //     }
         //   },
         // },
-        // {
-        //   ...VendorList.Banxa,
-        //   handleSelect: (event) => {
-        //     setShowAccount({ isShow: false });
-        //     // @ts-ignore
-        //     const banxa: any = new window.Banxa("loopring", "sandbox");
-        //     // @ts-ignore
-        //     const anchor: HTMLElement = (
-        //       (event?.target as HTMLElement).ownerDocument || document
-        //     ).querySelector("#iframeBanxaTarget");
-        //     if (banxaRef && anchor) {
-        //       // debugger;
-        //       anchor.style.display = "flex";
-        //       banxa.generateIframe(
-        //         "#iframeBanxaTarget",
-        //         banxa.generateUrl({
-        //           sellMode: true,
+        {
+          ...VendorList.Banxa,
+          handleSelect: async (event) => {
+            setShowAccount({ isShow: false });
+            // @ts-ignore
+            const banxa: any = new window.Banxa("loopring", "sandbox");
+            // @ts-ignore
+            const anchor: HTMLElement = (
+              (event?.target as HTMLElement).ownerDocument || document
+            ).querySelector("#iframeBanxaTarget");
+            // anchor.querySelector("anchor");
+            if (banxaRef && anchor) {
+              // debugger;
+              anchor.style.display = "flex";
+
+              const { checkout_url } = await banxaApiCall({
+                chainId: chainId as ChainId,
+                method: sdk.ReqMethod.POST,
+                url: "/api/orders",
+                query: "",
+                payload: {
+                  blockchain: "LRC",
+                  // iframe_domain: BANXA_URLS[chainId],
+                  source: "USDC",
+                  target: "AUD",
+                  refund_address: account.accAddress,
+                  return_url_on_success: "https://loopring.io/#/l2assets",
+                  account_reference: account.accAddress,
+                },
+              });
+            }
+          },
+        },
+        //loopring.banxa-sandbox.com/?sellMode&expires=1669311302&id=30090bbc-0fb4-4263-be91-c18d25de95ff&nested=1&oid=4b69ea208975f05c0e7b7c9a0515438c&signature=ae07724179d41f5766973dbc375c2acf18643c3756e7b0a40ad996ead3c6d535
+        //loopring.banxa-sandbox.com/?sellMode&expires=1669311133&id=700a332c-ec77-4816-8a2e-9f16b6219b36&nested=1&oid=f4724af852c6fdf54feed58f36f64f2c&signature=0faf71c7751b84ed3b995db77d41bf5a851083baa5a7c556eb2d28a10289533c
+        // @ts-ignore
+        // const url = banxa.generateUrl({
+        //   sellMode: true,
         //           blockchain: "LRC",
-        //           fiatType: "AUD",
-        //           coinType: "BTC",
-        //           // fiatAmount: 200,
-        //           // coinAmount: 0.5,
-        //           walletAddress: account.accAddress,
+        //   fiatType: "AUD",
+        //   coinType: "BTC",
+        //   // fiatAmount: 200,
+        //   // coinAmount: 0.5,
+        //   // walletAddress: account.accAddress,
         //           account_reference: account.accAddress,
         //           refund_address: account.accAddress,
         //         }),
