@@ -16,6 +16,7 @@ import {
   AddressError,
   SagaStatus,
   L1_UPDATE,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import {
   connectProvides,
