@@ -1196,7 +1196,7 @@ export default {
   labelSmallOrderAlertLine1: "Small trades (below ~$100) incur a higher fee.",
   labelSmallOrderAlertLine2: "Please review the fee before confirming.",
   labelSmallOrderAlertLine3: "Trading Fee:",
-  labelSmallOrderAlertLine4: "Fee percentage:",
+  labelSmallOrderAlertLine4: "Fee ratio:",
   labelSmallOrderAlertLine5: "Minimum Received:",
   labelSwapSecondConfirmTitle: "Confirm Swap",
   labelSwapSettingTitle: "Settings",
@@ -1227,4 +1227,6 @@ export default {
     "If you have transferred tokens from another Loopring L2 account, please wait. Once you receive the assets, you can manually activate the L2 account.",
   labelDepositWaiting:
     "It make take some time for this transaction to execute on-chain.",
+  labelFrom: "From",
+  labelTo: "To",
 };

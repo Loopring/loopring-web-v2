@@ -310,7 +310,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           resetTransferData();
           walletLayer2Service.sendUserUpdate();
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
-          if (store.getState().modals.isShowAccount.isShow) {
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step ==
+              AccountStep.Transfer_Success
+          ) {
             setShowAccount({ isShow: false });
           }
         }

@@ -331,7 +331,11 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
           myLog("response:", response);
 
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
-          if (store.getState().modals.isShowAccount.isShow) {
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step ==
+              AccountStep.NFTDeposit_Submit
+          ) {
             setShowAccount({ isShow: false });
             history.push("/nft/assetsNFT");
           }

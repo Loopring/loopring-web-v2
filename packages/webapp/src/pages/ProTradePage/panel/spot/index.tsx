@@ -226,46 +226,8 @@ export const SpotView = withTranslation("common")(
         }`
         : EmptyValueTag;
     const feePercentage = tradeCalcData && tradeData?.quote?.tradeValue
-      ? (Number(tradeCalcData.fee) / tradeData.quote.tradeValue * 100).toFixed(2)
+      ? (Number(tradeCalcData.fee) / (tradeType === TradeProType.sell ? tradeData.quote.tradeValue : tradeData.base.tradeValue) * 100).toFixed(2)
       : EmptyValueTag;
-    const priceImpactColor = tradeCalcData?.priceImpactColor
-      ? tradeCalcData.priceImpactColor
-      : "textPrimary";
-    const priceImpact2 =
-      tradeCalcData?.priceImpact !== undefined
-        ? getValuePrecisionThousand(
-          tradeCalcData.priceImpact,
-          undefined,
-          undefined,
-          2,
-          true
-        ) + " %"
-        : EmptyValueTag;
-    const userTakerRate =
-      tradeCalcData && tradeCalcData.feeTakerRate
-        ? (tradeCalcData.feeTakerRate / 100).toString()
-        : EmptyValueTag;
-    const tradeCostMin =
-      tradeCalcData && tradeCalcData.tradeCost
-        ? `${tradeCalcData.tradeCost} ${tradeData.quote?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
-        : EmptyValueTag;
-    const fromSymbol = tradeType === TradeProType.sell
-      ? (tradeData?.base?.belong ?? EmptyValueTag)
-      : (tradeData?.quote?.belong ?? EmptyValueTag)
-    const fromAmount = tradeType === TradeProType.sell
-      ? (tradeData?.base?.tradeValue?.toString() ?? EmptyValueTag)
-      : (tradeData?.quote?.tradeValue?.toString() ?? EmptyValueTag)
-    const toSymbol = tradeType === TradeProType.sell
-      ? (tradeData?.quote?.belong ?? EmptyValueTag)
-      : (tradeData?.base?.belong ?? EmptyValueTag)
-    const toAmount = tradeType === TradeProType.sell
-      ? tradeData?.quote?.tradeValue?.toString() ?? EmptyValueTag
-      : tradeData?.base?.tradeValue?.toString() ?? EmptyValueTag
-    const slippage = tradeData
-      ? (tradeData.slippage
-        ? `${tradeData.slippage}`
-        : "0.1")
-      : EmptyValueTag
 
     return (
       <>
@@ -305,22 +267,6 @@ export const SpotView = withTranslation("common")(
           open={smallOrderAlertOpen}
           estimatedFee={estimatedFee}
           feePercentage={feePercentage}
-          minimumReceived={minimumReceived}
-        />
-        <SwapSecondConfirmation
-          handleClose={() => secondConfirmationCallBack(false)}
-          handleConfirm={() => secondConfirmationCallBack(true)}
-          open={secondConfirmationOpen}
-          fromSymbol={fromSymbol}
-          fromAmount={fromAmount}
-          toSymbol={toSymbol}
-          toAmount={toAmount}
-          slippage={slippage}
-          userTakerRate={userTakerRate}
-          tradeCostMin={tradeCostMin}
-          estimateFee={estimatedFee}
-          priceImpactColor={priceImpactColor}
-          priceImpact={priceImpact2}
           minimumReceived={minimumReceived}
         />
         <AlertLimitPrice

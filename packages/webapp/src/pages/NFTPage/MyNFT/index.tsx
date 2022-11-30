@@ -159,11 +159,17 @@ export const MyNFTPanel = withTranslation("common")(
           key="1"
           color="inherit"
           onClick={() => {
-            history.replace(
-              `/nft/assetsNFT/${
-                match?.params?.tab ?? "byList"
-              }${subTab ? `/${subTab}` : ''}?${searchParams.toString()}`
-            );
+            if (match?.params?.tab === 'byList' ) {
+              history.replace(
+                `/nft/assetsNFT/${
+                  match?.params?.tab ?? "byList"
+                }${subTab ? `/${subTab}` : ''}?${searchParams.toString()}`
+              );
+            } else {
+              history.replace(
+                `/nft/assetsNFT/byCollection?${searchParams.toString()}`
+              );
+            }
             setShowNFTDetail({ isShow: false });
           }}
         >

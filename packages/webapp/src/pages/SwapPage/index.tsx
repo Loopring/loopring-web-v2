@@ -6,7 +6,8 @@ import {
   SwapPanel,
   Toast,
   SmallOrderAlert,
-  SwapSecondConfirmation
+  SwapSecondConfirmation,
+  setShowAccount,
 } from "@loopring-web/component-lib";
 import { useSwap } from "./hookSwap";
 import {
@@ -43,7 +44,7 @@ export const SwapPage = withTranslation("common")(
       secondConfirmationCallBack,
       smallOrderAlertOpen,
       secondConfirmationOpen,
-      setToastOpen
+      setToastOpen,
     } = useSwap({ path: "/trade/lite" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     const { campaignTagConfig } = useNotify().notifyMap ?? {};
@@ -55,9 +56,13 @@ export const SwapPage = withTranslation("common")(
       tradeCalcData && tradeCalcData.minimumReceived && tradeData
         ? `${tradeCalcData.minimumReceived}  ${tradeData.buy?.belong}`
         : EmptyValueTag;
-    const feePercentage = tradeCalcData && tradeData?.buy.tradeValue
-      ? (Number(tradeCalcData.fee) / tradeData.buy.tradeValue * 100).toFixed(2)
-      : EmptyValueTag;
+    const feePercentage =
+      tradeCalcData && tradeData?.buy.tradeValue
+        ? (
+            (Number(tradeCalcData.fee) / tradeData.buy.tradeValue) *
+            100
+          ).toFixed(2)
+        : EmptyValueTag;
     const priceImpactColor = tradeCalcData?.priceImpactColor
       ? tradeCalcData.priceImpactColor
       : "textPrimary";
@@ -79,17 +84,16 @@ export const SwapPage = withTranslation("common")(
       tradeCalcData && tradeCalcData.tradeCost && tradeData
         ? `${tradeCalcData.tradeCost} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
         : EmptyValueTag;
-    const fromSymbol = tradeData?.sell.belong ?? EmptyValueTag
-    const fromAmount = tradeData?.sell.tradeValue?.toString() ?? EmptyValueTag
-    const toSymbol = tradeData?.buy.belong ?? EmptyValueTag
-    const toAmount = tradeData?.buy.tradeValue?.toString() ?? EmptyValueTag
+    const fromSymbol = tradeData?.sell.belong ?? EmptyValueTag;
+    const fromAmount = tradeData?.sell.tradeValue?.toString() ?? EmptyValueTag;
+    const toSymbol = tradeData?.buy.belong ?? EmptyValueTag;
+    const toAmount = tradeData?.buy.tradeValue?.toString() ?? EmptyValueTag;
     const slippage = tradeData
-      ? (tradeData.slippage
-          ? `${tradeData.slippage}`
-          : "0.1")
-      : EmptyValueTag
+      ? tradeData.slippage
+        ? `${tradeData.slippage}`
+        : "0.1"
+      : EmptyValueTag;
 
-    
     return (
       <Box
         display={"flex"}
@@ -165,7 +169,9 @@ export const SwapPage = withTranslation("common")(
           minimumReceived={minimumReceived}
         />
         <SwapSecondConfirmation
-          handleClose={() => secondConfirmationCallBack(false)}
+          handleClose={() => {
+            secondConfirmationCallBack(false);
+          }}
           handleConfirm={() => secondConfirmationCallBack(true)}
           open={secondConfirmationOpen}
           fromSymbol={fromSymbol}

@@ -8,42 +8,44 @@ import {
   DialogTitle,
   FormControlLabel as MuiFormControlLabel,
   Grid,
-  IconButton,
   Link,
   List,
   ListItem,
+  Modal,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { Button, CoinIcon } from "../../../basic-lib";
+import { Button, CoinIcon, ModalCloseButton } from "../../../basic-lib";
 import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
-import { useOpenModals } from "../../../../stores";
+import { useOpenModals, useSettings } from "../../../../stores";
 
 import {
   Account,
   Bridge,
   CheckBoxIcon,
   CheckedIcon,
-  CloseIcon,
   copyToClipBoard,
   getValuePrecisionThousand,
   Info2Icon,
   RightArrowIcon,
   SoursURL,
   TradeDefi,
-  WarningIcon2,
   // Lang,
   // MarkdownStyle,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
-import { useTheme } from "@emotion/react";
+import { modalContentBaseStyle } from "../../../styled";
 
+const ModelStyle = styled(Box)`
+  ${({ theme }) => modalContentBaseStyle({ theme: theme })};
+  background: ${({ theme }) => theme.colorBase.box};
+` as typeof Box;
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
     z-index: 1900;
@@ -72,7 +74,7 @@ export const AlertImpact = withTranslation("common")(
     value,
     open,
     handleClose,
-    handleConfirm
+    handleConfirm,
   }: WithTranslation & {
     open: boolean;
     value: number;
@@ -83,7 +85,7 @@ export const AlertImpact = withTranslation("common")(
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose()}
+        onClose={(_e: MouseEvent) => handleClose()}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("labelImpactTitle")}</DialogTitle>
@@ -246,7 +248,7 @@ export const ConfirmImpact = withTranslation("common")(
     value,
     open,
     handleClose,
-    handleConfirm
+    handleConfirm,
   }: WithTranslation & {
     open: boolean;
     value: number;
@@ -325,6 +327,7 @@ export const SmallOrderAlert = withTranslation("common")(
     estimatedFee,
     feePercentage,
     minimumReceived,
+    ...rest
   }: WithTranslation & {
     open: boolean;
     handleClose: () => void;
@@ -333,57 +336,106 @@ export const SmallOrderAlert = withTranslation("common")(
     feePercentage: string;
     minimumReceived: string;
   }) => {
-    const theme = useTheme()
+    const size = 60;
+    const { isMobile } = useSettings();
     return (
-      <Dialog
+      <Modal
         open={open}
-        keepMounted
-        onClose={(_) => handleClose()}
-        aria-describedby="alert-dialog-slide-description"
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        <DialogContent style={{padding: `${theme.unit * 5}px`}}>
-        <IconButton
-            aria-label="close"
-            onClick={(_) => handleClose()}
-            sx={{
-              position: 'absolute',
-              right: theme.unit * 2.5,
-              top: theme.unit * 2.5,
-              color: theme.colorBase.boxSecondary,
+        <ModelStyle
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          width={isMobile ? "90%" : "var(--modal-width)"}
+        >
+          <ModalCloseButton
+            onClose={() => {
+              handleClose();
             }}
+            {...{ ...rest, t }}
+          />
+          <Box
+            flex={1}
+            display={"flex"}
+            alignItems={"stretch"}
+            flexDirection={"column"}
+            justifyContent={"space-between"}
+            paddingBottom={4}
+            width={"100%"}
           >
-            <CloseIcon />
-          </IconButton>
-          <Box marginTop={2} marginBottom={1.5} display={"flex"} justifyContent={"center"}>
-            <img src={SoursURL + "svg/warning.svg"}/>
-          </Box>
-          <Typography
-            marginBottom={4.5}
-            textAlign={"center"}
-            variant={"h4"}
-            color={"var(--color-warning)"}>
-            Warning
-          </Typography>
-          <Box paddingX={2}>
-            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine1")}</Typography>
-            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine3")} <Typography component={"span"} color={theme.colorBase.error}>{estimatedFee}</Typography> </Typography>
-            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine4")} <Typography component={"span"} color={theme.colorBase.error}>{feePercentage}%</Typography> </Typography>
-            <Typography variant={"body1"}>{t("labelSmallOrderAlertLine5")} <Typography component={"span"} color={theme.colorBase.error}>{minimumReceived}</Typography> </Typography>
-          </Box>
-          <Button
-            style={{
-              marginTop: `${theme.unit * 4.5}px`,
-              width: `${theme.unit * 50}px`
-            }}
-            variant={"contained"}
-            size={"large"}
-            color={"primary"}
-            onClick={() => handleConfirm()}>
-              {t("labelConfirm")}
-          </Button>
-        </DialogContent>
+            <>
+              <Box
+                marginTop={2}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                flexDirection={"column"}
+              >
+                <img src={SoursURL + "svg/warning.svg"} width={size} />
+                <Typography
+                  marginTop={1}
+                  marginBottom={2}
+                  textAlign={"center"}
+                  variant={"h4"}
+                  color={"var(--color-warning)"}
+                >
+                  {t("labelWarning")}
+                </Typography>
+              </Box>
 
-      </Dialog>
+              <Box marginTop={3} paddingX={4}>
+                <Typography variant={"body1"}>
+                  {t("labelSmallOrderAlertLine1")}
+                </Typography>
+                <Typography variant={"body1"} marginTop={2}>
+                  {t("labelSmallOrderAlertLine3")}
+                  <Typography
+                    component={"span"}
+                    color={"var(--color-error)"}
+                    paddingLeft={1 / 2}
+                  >
+                    {estimatedFee}
+                  </Typography>
+                </Typography>
+                <Typography variant={"body1"} marginTop={1}>
+                  {t("labelSmallOrderAlertLine4")}
+                  <Typography
+                    component={"span"}
+                    color={"var(--color-error)"}
+                    paddingLeft={1 / 2}
+                  >
+                    {feePercentage}%
+                  </Typography>{" "}
+                </Typography>
+                <Typography variant={"body1"} marginTop={1}>
+                  {t("labelSmallOrderAlertLine5")}
+                  <Typography
+                    component={"span"}
+                    color={"var(--color-error)"}
+                    paddingLeft={1 / 2}
+                  >
+                    {minimumReceived}
+                  </Typography>
+                </Typography>
+              </Box>
+              <Box display={"flex"} paddingX={4} width={"100%"} marginTop={3}>
+                <Button
+                  fullWidth
+                  variant={"contained"}
+                  size={"large"}
+                  color={"primary"}
+                  onClick={() => handleConfirm()}
+                >
+                  {t("labelConfirm")}
+                </Button>
+              </Box>
+            </>
+          </Box>
+        </ModelStyle>
+      </Modal>
     );
   }
 );
@@ -404,6 +456,7 @@ export const SwapSecondConfirmation = withTranslation("common")(
     priceImpact,
     minimumReceived,
     slippage,
+    ...rest
   }: WithTranslation & {
     open: boolean;
     handleClose: () => void;
@@ -420,62 +473,95 @@ export const SwapSecondConfirmation = withTranslation("common")(
     minimumReceived: string;
     slippage: string;
   }) => {
-    const theme = useTheme()
+    const { isMobile } = useSettings();
+
     return (
-      <Dialog
+      <Modal
         open={open}
-        keepMounted
-        onClose={(_) => handleClose()}
-        aria-describedby="alert-dialog-slide-description"
+        onClose={() => {
+          handleClose();
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        <Box paddingX={3} paddingTop={2} paddingBottom={5.5}>
-          <DialogTitle>
-            <Typography variant={"h3"}>{t("labelSwapSecondConfirmTitle")}</Typography>
-            <IconButton
-              aria-label="close"
-              onClick={(_) => handleClose()}
-              sx={{
-                position: 'absolute',
-                right: theme.unit * 3.5,
-                top: theme.unit * 3.5,
-                width: '100px',
-                color: theme.colorBase.boxSecondary,
-              }}
+        <ModelStyle
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          paddingBottom={3}
+          width={isMobile ? "90%" : "var(--modal-width)"}
+        >
+          <ModalCloseButton
+            onClose={() => {
+              handleClose();
+            }}
+            {...{ ...rest, t }}
+          />
+          <Typography variant={"h3"} textAlign={"center"} marginTop={-2}>
+            {t("labelSwapSecondConfirmTitle")}
+          </Typography>
+          <Box className={"content"} display={"flex"} flexDirection={"column"}>
+            <Box
+              display={"flex"}
+              marginTop={5}
+              marginBottom={5}
+              alignItems={"center"}
+              justifyContent={"center"}
             >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent>
-            <Box paddingX={3} display={"flex"} marginTop={8} marginBottom={5} alignItems={"center"} justifyContent={"space-between"}>
-              <Box width={"33%"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
-                <CoinIcon symbol={fromSymbol} size={48}/>
-                <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>from</Typography>
-                <Typography>{fromAmount} {fromSymbol}</Typography>
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+                width={"45%"}
+              >
+                <CoinIcon symbol={fromSymbol} size={48} />
+                <Typography
+                  marginTop={2}
+                  marginBottom={1}
+                  color={"var(--color-text-secondary)"}
+                >
+                  {t("labelFrom")}
+                </Typography>
+                <Typography>
+                  {fromAmount} {fromSymbol}
+                </Typography>
               </Box>
-              <Box display={"flex"} justifyContent={"center"} width={"33%"}>
+              <Box display={"flex"} justifyContent={"center"} width={"10%"}>
                 <RightArrowIcon />
               </Box>
-              <Box width={"33%"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
-                <CoinIcon symbol={toSymbol} size={48}/>
-                <Typography marginTop={2} marginBottom={1} color={theme.colorBase.textSecondary}>to</Typography>
-                <Typography>{toAmount} {toSymbol}</Typography>
+              <Box
+                width={"45%"}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+              >
+                <CoinIcon symbol={toSymbol} size={48} />
+                <Typography
+                  marginTop={2}
+                  marginBottom={1}
+                  color={"textSecondary"}
+                >
+                  {t("labelTo")}
+                </Typography>
+                <Typography>
+                  {toAmount} {toSymbol}
+                </Typography>
               </Box>
             </Box>
-            <Box>
+            <Grid container spacing={2} paddingX={3}>
               <Grid
-                container
+                item
+                xs={12}
                 justifyContent={"space-between"}
                 direction={"row"}
                 alignItems={"center"}
-                marginTop={1 / 2}
+                display={"flex"}
               >
                 <Tooltip
-                  title={
-                    t("labelSwapFeeTooltips", {
-                      rate: userTakerRate,
-                      value: tradeCostMin,
-                    }).toString()
-                  }
+                  title={t("labelSwapFeeTooltips", {
+                    rate: userTakerRate,
+                    value: tradeCostMin,
+                  }).toString()}
                   placement={"top"}
                 >
                   <Typography
@@ -490,20 +576,25 @@ export const SwapSecondConfirmation = withTranslation("common")(
                       color={"inherit"}
                       sx={{ marginX: 1 / 2 }}
                     />
-                    {" " + t("swapFee")}
+                    {t("swapFee")}
                   </Typography>
                 </Tooltip>
-                <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                <Typography
+                  component={"p"}
+                  variant="body2"
+                  display={"inline-flex"}
+                  color={"textPrimary"}
+                >
                   {estimateFee}
                 </Typography>
               </Grid>
-
               <Grid
-                container
+                item
+                xs={12}
                 justifyContent={"space-between"}
                 direction={"row"}
                 alignItems={"center"}
-                marginTop={1 / 2}
+                display={"flex"}
               >
                 <Tooltip
                   title={t("labelSwapPriceImpactTooltips").toString()}
@@ -526,21 +617,18 @@ export const SwapSecondConfirmation = withTranslation("common")(
                 </Tooltip>
                 <Typography
                   component={"p"}
-                  color={
-                    priceImpactColor
-                  }
+                  color={priceImpactColor}
                   variant="body2"
                 >
                   {priceImpact}
                 </Typography>
               </Grid>
-
               <Grid
-                container
+                item
+                xs={12}
                 justifyContent={"space-between"}
-                direction={"row"}
                 alignItems={"center"}
-                marginTop={1 / 2}
+                display={"flex"}
               >
                 <Tooltip
                   title={t("labelSwapMinReceiveTooltips").toString()}
@@ -561,16 +649,20 @@ export const SwapSecondConfirmation = withTranslation("common")(
                     {" " + t("swapMinReceive")}
                   </Typography>
                 </Tooltip>
-                <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                <Typography
+                  component={"p"}
+                  variant="body2"
+                  color={"textPrimary"}
+                >
                   {minimumReceived}
                 </Typography>
               </Grid>
               <Grid
-                container
+                item
+                xs={12}
                 justifyContent={"space-between"}
-                direction={"row"}
                 alignItems={"center"}
-                height={24}
+                display={"flex"}
               >
                 <Tooltip
                   title={t("labelSwapToleranceTooltips").toString()}
@@ -591,26 +683,29 @@ export const SwapSecondConfirmation = withTranslation("common")(
                     {" " + t("swapTolerance")}
                   </Typography>
                 </Tooltip>
-                <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                <Typography
+                  component={"p"}
+                  variant="body2"
+                  color={"textPrimary"}
+                >
                   {slippage}%
                 </Typography>
               </Grid>
-            </Box>
-            <Button
-              style={{
-                marginTop: `${theme.unit * 4.5}px`,
-                width: `${theme.unit * 39}px`
-              }}
-              variant={"contained"}
-              size={"large"}
-              color={"primary"}
-              onClick={() => handleConfirm()}>
+            </Grid>
+            <Box marginTop={3} paddingX={3} width={"100%"}>
+              <Button
+                fullWidth
+                variant={"contained"}
+                size={"large"}
+                color={"primary"}
+                onClick={() => handleConfirm()}
+              >
                 {t("labelConfirm")}
-
-            </Button>
-          </DialogContent>
-        </Box>
-      </Dialog>
+              </Button>
+            </Box>
+          </Box>
+        </ModelStyle>
+      </Modal>
     );
   }
 );

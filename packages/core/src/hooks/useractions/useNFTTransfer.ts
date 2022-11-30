@@ -334,7 +334,11 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           walletLayer2Service.sendUserUpdate();
           // resetNFTTransferData();
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
-          if (store.getState().modals.isShowAccount.isShow) {
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step ==
+              AccountStep.NFTTransfer_Success
+          ) {
             setShowAccount({ isShow: false });
             searchParams.delete("detail");
             history.push(pathname + "?" + searchParams.toString());

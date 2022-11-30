@@ -98,6 +98,7 @@ export const useMyNFT = ({
               );
             }
           );
+          window.scrollTo(0,0);
           setShowNFTDetail({
             isShow: true,
             ...item,
@@ -106,6 +107,7 @@ export const useMyNFT = ({
           updateNFTWithdrawData({ ...item, collectionInfo: collectionMeta });
           updateNFTTransferData({ ...item, collectionInfo: collectionMeta });
         } else {
+          window.scrollTo(0,0);
           setShowNFTDetail({
             isShow: true,
             ...item,
@@ -198,8 +200,8 @@ export const useMyNFT = ({
       const [, , , , contract, theSubTab] = location.pathname.split('/')
       subTab = theSubTab
       page = Number(searchParams.get('collectionPage')) ? Number(searchParams.get('collectionPage')) : 1
-      collectionId = contract.split('--')[1]
-      collectionContractAddress = contract.split('--')[0]
+      collectionId = (contract && contract.split('--')) ? contract.split('--')[1] : undefined
+      collectionContractAddress = (contract && contract.split('--')) ? contract.split('--')[0] : undefined
     } else {
       const [, , , , theSubTab] = location.pathname.split('/')
       subTab = theSubTab

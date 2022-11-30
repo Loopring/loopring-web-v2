@@ -526,6 +526,7 @@ export const useSwap = <
         if (isSmallOrder) {
           setSmallOrderAlertOpen(true);
         } else {
+          setIsSwapLoading(true);
           swapFunc();
         }
         setAlertOpen(false);
@@ -541,6 +542,7 @@ export const useSwap = <
   const smallOrderAlertCallBack = React.useCallback(
     (confirm: boolean) => {
       if (confirm) {
+        setIsSwapLoading(true);
         swapFunc();
         setSmallOrderAlertOpen(false);
       } else {
@@ -553,6 +555,7 @@ export const useSwap = <
   const secondConfirmationCallBack = React.useCallback(
     (confirm: boolean) => {
       if (confirm) {
+        setIsSwapLoading(true);
         swapFunc();
         setSecondConfirmationOpen(false);
       } else {

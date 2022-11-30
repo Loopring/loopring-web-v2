@@ -261,7 +261,11 @@ export const useNFTMintAdvance = <
           });
           resetDefault();
           await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
-          if (store.getState().modals.isShowAccount.isShow) {
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step ==
+              AccountStep.NFTMint_Success
+          ) {
             setShowAccount({ isShow: false });
           }
         }
