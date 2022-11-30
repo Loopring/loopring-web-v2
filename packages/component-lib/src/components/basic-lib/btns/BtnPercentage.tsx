@@ -6,6 +6,7 @@ import { Box } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
 import { Mark } from "@mui/base/SliderUnstyled/SliderUnstyledProps";
+import { myLog } from "@loopring-web/common-resources";
 
 const StyledSlider = styled(Slider)`
   && {
@@ -102,6 +103,7 @@ export const BtnPercentage = withTranslation("common")(
     const [value, setValue] = React.useState<number>(selected);
 
     React.useEffect(() => {
+      myLog("selected", selected);
       if (selected >= 0 && selected <= 100) {
         setValue(Math.floor(selected));
       } else {

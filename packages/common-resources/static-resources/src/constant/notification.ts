@@ -40,34 +40,49 @@ export type NOTIFICATION_ITEM = {
   description2: string;
   type: string;
   link: `#race-event/${number}/${number}/activities.${string}.json` | string;
+  linkIos: string;
+  linkAndroid: string;
   startShow: number;
   endShow: number;
   color: NOTIFY_COLOR;
   banner?: string;
   webRouter?: string;
+  webFlag: boolean;
+  versionIosMin: string;
+  versionIosMax: string;
+  versionAndroidMin: string;
+  versionAndroidMax: string;
 };
 export type ACTIVITY = NOTIFICATION_ITEM;
 export type CAMPAIGN_TAG = {
   name: string;
+  type?: "activity" | "protocol" | ""; //options for Amm , activity|
   startShow: number;
   endShow: number;
   iconSource: string;
   symbols: Array<string>;
   behavior: "tooltips" | "link";
   content: string;
+  webFlag: boolean;
+  versionIosMin: string;
+  versionIosMax: string;
+  versionAndroidMin: string;
+  versionAndroidMax: string;
 };
+
 export enum SCENARIO {
-  orderbook = "orderbook",
-  market = "market",
-  Amm = "Amm",
-  Fiat = "Fiat",
-  swap = "swap",
+  ORDERBOOK = "ORDERBOOK",
+  MARKET = "MARKET",
+  AMM = "AMM",
+  FIAT = "FIAT",
+  SWAP = "SWAP",
 }
 export type CAMPAIGNTAGCONFIG = {
   [key in SCENARIO]: CAMPAIGN_TAG[];
 };
 export type NOTIFICATION = {
   activities: ACTIVITY[];
+  activitiesInvest: ACTIVITY[];
   notifications: NOTIFICATION_ITEM[];
   invest: {
     investAdvice: InvestAdvice[];

@@ -86,12 +86,12 @@ export const colorBase = ({ theme }: any) => css`
     --color-white: white;
     --color-settlet: ${theme.colorBase.opacity};
 
-    --color-redPock0: ${theme.colorBase.redPock0};
-    --color-redPock1: ${theme.colorBase.redPock1};
-    --color-redPock1Disabled: ${theme.colorBase.redPock1Disabled};
-    --color-redPock-text0: ${theme.colorBase.redPockText0};
-    --color-redPock-text1: ${theme.colorBase.redPockText1};
-    --color-redPock-Border: ${theme.colorBase.redPockBorder};
+    --color-redPacket0: ${theme.colorBase.redPacket0};
+    --color-redPacket1: ${theme.colorBase.redPacket1};
+    --color-redPacket1Disabled: ${theme.colorBase.redPacket1Disabled};
+    --color-redPacket-text0: ${theme.colorBase.redPacketText0};
+    --color-redPacket-text1: ${theme.colorBase.redPacketText1};
+    --color-redPacket-Border: ${theme.colorBase.redPacketBorder};
   }
 `;
 export const scrollbarDefault = ({ theme }: any) => css`

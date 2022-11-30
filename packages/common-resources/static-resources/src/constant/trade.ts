@@ -9,6 +9,7 @@ import {
   DeFiCalcData,
   FeeInfo,
   IBData,
+  LuckyRedPacketItem,
 } from "../loopring-interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
@@ -139,7 +140,7 @@ export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
       favourite: boolean;
       hide: boolean;
     };
-    collectionInfo: Co;
+    collectionInfo?: Co;
   };
 
 export type MintTradeNFT<I> = {
@@ -490,3 +491,62 @@ export type DualViewOrder = DualViewBase & {
     order: sdk.UserDualTxsHistory;
   };
 };
+export type BanxaOrder = {
+  id: string;
+  account_id: string;
+  account_reference: string;
+  order_type: "CRYPTO-SELL";
+  payment_type: string | null;
+  ref: number | null;
+  fiat_code: string;
+  fiat_amount: number;
+  coin_code: string;
+  coin_amount: number;
+  wallet_address: string | null;
+  wallet_address_tag: string | null;
+  fee: number | null;
+  fee_tax: number | null;
+  payment_fee: number | null;
+  payment_fee_tax: number | null;
+  commission: number | null;
+  tx_hash: string | null;
+  tx_confirms: number | null;
+  created_date: string;
+  created_at: string;
+  status: string;
+  completed_at: string | null;
+  merchant_fee: number | null;
+  merchant_commission: number | null;
+  meta_data: string | null;
+  blockchain: { id: number; code: "LRC"; description: "Loopring " | null };
+};
+
+export const LuckyRedPacketList: LuckyRedPacketItem[] = [
+  {
+    labelKey: "labelLuckyRelayToken",
+    desKey: "labelLuckyRelayTokenDes",
+    value: {
+      value: 0,
+      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      mode: sdk.LuckyTokenClaimType.RELAY,
+    },
+  },
+  {
+    labelKey: "labelLuckyRandomToken",
+    desKey: "labelLuckyRandomTokenDes",
+    value: {
+      value: 1,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.COMMON,
+    },
+  },
+  {
+    labelKey: "labelLuckyCommonToken",
+    desKey: "labelLuckyCommonTokenDes",
+    value: {
+      value: 2,
+      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      mode: sdk.LuckyTokenClaimType.COMMON,
+    },
+  },
+];

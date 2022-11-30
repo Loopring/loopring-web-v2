@@ -2,6 +2,7 @@ import React from "react";
 import {
   AmmPanel,
   AmmPanelType,
+  ConfirmAmmExitMiniOrder,
   LoadingBlock,
   Toast,
 } from "@loopring-web/component-lib";
@@ -17,7 +18,6 @@ import { Grid } from "@mui/material";
 import { AmmPoolSnapshot, TickerData } from "@loopring-web/loopring-sdk";
 import { initSlippage, store } from "../../../index";
 import styled from "@emotion/styled";
-import { useDeepCompareEffect } from "react-use";
 
 export const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);
@@ -61,6 +61,10 @@ export const AmmPanelView = ({
   ammType?: keyof typeof AmmPanelType;
   getRecentAmmPoolTxs?: (props: { limit?: number; offset?: number }) => void;
 } & any) => {
+  const [confirmExitSmallOrder, setConfirmExitSmallOrder] = React.useState<{
+    open: boolean;
+    type: "Disabled" | "Mini";
+  }>({ open: false, type: "Disabled" });
   const {
     accountStatus,
     toastOpen,
@@ -78,7 +82,6 @@ export const AmmPanelView = ({
     onAmmClick: onAmmAddClick,
     btnStatus: addBtnStatus,
     btnI18nKey: ammDepositBtnI18nKey,
-    // updateJoinFee,
     updatePageAmmJoin,
   } = useAmmJoin({
     getFee,
@@ -95,6 +98,7 @@ export const AmmPanelView = ({
     onAmmClick: onAmmRemoveClick,
     btnStatus: removeBtnStatus,
     btnI18nKey: ammWithdrawBtnI18nKey,
+    exitSmallOrderCloseClick,
   } = useAmmExit({
     getFee,
     setToastOpen,
@@ -102,11 +106,10 @@ export const AmmPanelView = ({
     snapShotData,
     btos,
     stob,
+    setConfirmExitSmallOrder,
   });
-  // const [currAmmData, setCurrAmmData] = React.useState<any>(null)
 
-  // clear data when changing pair
-  useDeepCompareEffect(() => {
+  React.useEffect(() => {
     if (pair && !pair.coinAInfo && !pair.coinBInfo) {
       const newAmmData = {
         coinA: { belong: "" as any, tradeValue: undefined, balance: 0 },
@@ -117,7 +120,7 @@ export const AmmPanelView = ({
         ammData: newAmmData,
       });
     }
-  }, [pair, ammJoinData, updatePageAmmJoin]);
+  }, [pair, ammJoinData.coinB.belong, ammJoinData.coinB.belong]);
 
   const { tokenMap } = store.getState().tokenMap;
 
@@ -143,7 +146,14 @@ export const AmmPanelView = ({
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
       />
-
+      <ConfirmAmmExitMiniOrder
+        type={confirmExitSmallOrder.type}
+        handleClose={(_e: any, isAgree = false) => {
+          setConfirmExitSmallOrder({ open: false, type: "Disabled" });
+          exitSmallOrderCloseClick(isAgree);
+        }}
+        open={confirmExitSmallOrder.open}
+      />
       {pair ? (
         <>
           <AmmPanel

@@ -96,7 +96,7 @@ export const TradeMenuList = <T extends IBData<I>, I>({
             // height: '410px',
             filterString: value,
             handleSelect,
-            walletMap: walletMap, //tradeCalcData?.walletMap as any,   // TODO get form parents Data
+            walletMap: walletMap, //tradeCalcData?.walletMap as any,
             selected,
             t,
             ...rest,

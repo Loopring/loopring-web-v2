@@ -3,6 +3,7 @@ import {
   InputCoinProps,
   BtnInfoProps,
   SwitchPanelProps,
+  BtnInfo,
 } from "../../basic-lib";
 import {
   AddressError,
@@ -19,6 +20,9 @@ import {
   EXCHANGE_TYPE,
   GET_IPFS_STRING,
   Account,
+  BanxaOrder,
+  AssetsRawDataItem,
+  AccountStatus,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -27,6 +31,10 @@ import { CollectionInputProps } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { TOSTOBJECT } from "../../toast";
 
+export enum RedPacketStep {
+  ChooseType,
+  Main,
+}
 /**
  * private props
  */
@@ -53,6 +61,8 @@ export type TransferInfoProps<C> = {
   transferI18nKey?: string;
   transferBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   chargeFeeTokenList: Array<C>;
+  activeAccountPrice: string | undefined;
+  // activeAccountFeeList?: Array<C>;
   feeInfo: C;
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
@@ -69,20 +79,65 @@ export type TransferExtendProps<T, I, C> = {
   isLoopringAddress?: boolean;
   isAddressCheckLoading?: boolean;
   isSameAddress?: boolean;
+  isActiveAccountFee?: boolean;
   addrStatus: AddressError;
   onTransferClick: (data: T, isFirstTime?: boolean) => Promise<void>;
   handleFeeChange: (value: C) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
+  isActiveAccount?: boolean;
+  feeWithActive?: boolean;
+  handleOnFeeWithActive: (value: boolean) => void;
   wait?: number;
   onBack?: () => void;
   memo: string;
   handleOnMemoChange: (e: ChangeEvent<HTMLInputElement>) => void;
 } & TransferInfoProps<C>;
 
+export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
+  btnStatus: TradeBtnStatus;
+  btnInfo?: BtnInfo;
+  chargeFeeTokenList: Array<Fee>;
+  feeInfo: Fee;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
+  disabled?: boolean;
+  //
+};
+export type CreateRedPacketExtendsProps<T, F, LuckInfo> = {
+  tradeType: "TOKEN" | "NFT";
+  setActiveStep: (step: RedPacketStep) => void;
+  handleOnDataChange: (value: Partial<T>) => void;
+  redPacketStepValue: LuckInfo;
+  handleFeeChange: (value: F) => void;
+  onSubmitClick: () => Promise<void>;
+  activeStep: RedPacketStep;
+  onBack?: () => void;
+  // selectedType: LuckyRedPacketItem;
+  assetsData: AssetsRawDataItem[];
+  // handleOnSelectedType: (item: LuckyRedPacketItem) => void;
+} & CreateRedPacketInfoProps<F>;
+
+export type CreateRedPacketViewProps<T, I, F, LuckInfo> =
+  CreateRedPacketExtendsProps<T, F, LuckInfo> & BasicACoinTradeViewProps<T, I>;
+
+export type CreateRedPacketProps<T, I, C, LuckInfo> = Partial<
+  CreateRedPacketExtendsProps<T, C, LuckInfo>
+> &
+  Omit<Partial<BasicACoinTradeProps<T, I>>, "type">;
+
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
   TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;
 
 export type RampViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C>;
+export type BanxaViewProps<T, I, C = CoinKey<I>> = TransferViewProps<
+  T,
+  I,
+  C
+> & {
+  offBanxaValue?: BanxaOrder;
+};
 
 /**
  * private props
@@ -153,6 +208,7 @@ export type DepositExtendProps<T> = {
   handleClear: () => void;
   isToAddressEditable: boolean;
   onBack?: () => void;
+  accountReady?: AccountStatus | undefined;
 } & DepositInfoProps;
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &

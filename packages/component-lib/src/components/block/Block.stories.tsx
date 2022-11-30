@@ -7,22 +7,16 @@ import {
   CoinInfo,
   FloatTag,
   PriceTag,
-  RedPockSvg,
 } from "@loopring-web/common-resources";
-import {
-  coinMap,
-  CoinType,
-  FOREXMAP,
-  REDPOCKMOCK,
-  TOKEN_INFO,
-} from "../../static";
+import { coinMap, CoinType, FOREXMAP } from "../../static";
 import { withTranslation } from "react-i18next";
 import {
   AssetTitle,
   AssetTitleProps,
-  RedPockCard,
-  RedPockClock,
-  RedPockOpen,
+  RedPacketBgOpened,
+  RedPacketClock,
+  RedPacketOpen,
+  RedPacketQRCode,
   TradeTitle,
   VipPanel,
 } from "./";
@@ -305,11 +299,11 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
           marginY={2}
         >
           <Grid item>
-            <RedPockOpen onClose={() => {}} />
+            <RedPacketOpen />
           </Grid>
           <Grid item>
-            <RedPockClock
-              onClose={() => {}}
+            <RedPacketClock
+              type={"official"}
               countDown={{
                 days: undefined,
                 hours: undefined,
@@ -319,15 +313,24 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
             />
           </Grid>
           <Grid item>
-            <RedPockSvg />
+            <RedPacketBgOpened type={"default"} />
           </Grid>
-          <Grid item xs={4}>
-            <RedPockCard
-              luckyTokenItem={REDPOCKMOCK}
-              idIndex={TOKEN_INFO.idIndex}
-              tokenMap={TOKEN_INFO.tokenMap}
-            />
+          <Grid item>
+            <RedPacketBgOpened type={"official"} />
           </Grid>
+          <Grid item>
+            <RedPacketQRCode type={"default"} />
+          </Grid>
+          <Grid item>
+            <RedPacketQRCode type={"official"} />
+          </Grid>
+          {/*<Grid item xs={4}>*/}
+          {/*  <RedPacketCard*/}
+          {/*    luckyTokenItem={REDPACKETMOCK}*/}
+          {/*    idIndex={TOKEN_INFO.idIndex}*/}
+          {/*    tokenMap={TOKEN_INFO.tokenMap}*/}
+          {/*  />*/}
+          {/*</Grid>*/}
         </Grid>
 
         <h4>Vip Panel</h4>

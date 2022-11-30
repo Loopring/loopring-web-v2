@@ -1,2 +1,2 @@
 export * from "./Icon";
-export * from "./redPock";
+export * from "./redPacket";

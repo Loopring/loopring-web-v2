@@ -117,9 +117,8 @@ const ActionMemo = React.memo(
         >
           <Box borderRadius={"inherit"} minWidth={110}>
             {!!(
-              item.isCounterFactualNFT &&
-              // @ts-ignore
-              item.isEditable &&
+              item.extra?.properties?.isCounterFactualNFT &&
+              item.extra?.properties?.isEditable &&
               item.owner?.toLowerCase() ===
                 account?.accAddress?.toLowerCase() &&
               item?.nftType !== NFT_TYPE_STRING.ERC721
@@ -136,10 +135,9 @@ const ActionMemo = React.memo(
               </MenuItem>
             )}
             {!!(
-              item.isCounterFactualNFT &&
-              // @ts-ignore
-              item.isEditable &&
-              item.baseUri === "" &&
+              item.extra?.properties?.isCounterFactualNFT &&
+              item.extra?.properties?.isEditable &&
+              item.extra?.properties?.isLegacy &&
               item.owner?.toLowerCase() ===
                 account?.accAddress?.toLowerCase() &&
               item?.nftType !== NFT_TYPE_STRING.ERC721
@@ -155,7 +153,7 @@ const ActionMemo = React.memo(
                 {t("labelCollectionImportNFTBtn")}
               </MenuItem>
             )}
-            {item.isCounterFactualNFT &&
+            {item.extra?.properties?.isCounterFactualNFT &&
             item.baseUri !== "" &&
             item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
             item.owner?.toLowerCase() === account?.accAddress?.toLowerCase() ? (
@@ -190,8 +188,8 @@ const ActionMemo = React.memo(
               //   </MenuItem>
             )}
             {!!(
-              item.isCounterFactualNFT &&
-              item.isMintable &&
+              item.extra?.properties?.isCounterFactualNFT &&
+              item.extra?.properties?.isMintable &&
               item.owner?.toLowerCase() ===
                 account?.accAddress?.toLowerCase() &&
               item?.nftType !== NFT_TYPE_STRING.ERC721
@@ -294,7 +292,10 @@ export const CollectionItem = React.memo(
               left={0}
               right={0}
             >
-              {getIPFSString(item?.avatar ?? "", baseURL).startsWith("http") ? (
+              {(
+                item?.cached?.avatar ??
+                getIPFSString(item?.avatar ?? "", baseURL)
+              ).startsWith("http") ? (
                 <Avatar
                   sx={{
                     bgcolor: "var(--color-border-disable2)",
@@ -303,7 +304,10 @@ export const CollectionItem = React.memo(
                     ...(size === "small" ? { display: "none" } : {}),
                   }}
                   variant={"circular"}
-                  src={getIPFSString(item?.avatar ?? "", baseURL)}
+                  src={
+                    item?.cached?.avatar ??
+                    getIPFSString(item?.avatar ?? "", baseURL)
+                  }
                 />
               ) : (
                 <Avatar

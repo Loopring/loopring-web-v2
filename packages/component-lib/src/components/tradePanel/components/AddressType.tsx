@@ -1,4 +1,11 @@
-import { Divider, MenuItem, Radio, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  MenuItem,
+  Radio,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import React, { ForwardedRef } from "react";
@@ -134,23 +141,25 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
       label={t("labelL2toL2AddressType")}
       // inputProps={{}}
     >
-      {desMenuItem}
-      {walletList.map(({ value, label, description, disabled, maxWidth }) => (
-        <WalletItemOptions
-          key={value}
-          value={value}
-          myValue={value}
-          handleSelected={(value) => {
-            handleSelected(value as T);
-            onClose();
-          }}
-          maxWidth={maxWidth}
-          selectedValue={selectedValue}
-          label={label}
-          description={description}
-          disabled={disabled}
-        />
-      ))}
+      <Box maxWidth={"470px"}>
+        {desMenuItem}
+        {walletList.map(({ value, label, description, disabled, maxWidth }) => (
+          <WalletItemOptions
+            key={value}
+            value={value}
+            myValue={value}
+            handleSelected={(value) => {
+              handleSelected(value as T);
+              onClose();
+            }}
+            maxWidth={maxWidth}
+            selectedValue={selectedValue}
+            label={label}
+            description={description}
+            disabled={disabled}
+          />
+        ))}
+      </Box>
     </TextField>
   );
 };

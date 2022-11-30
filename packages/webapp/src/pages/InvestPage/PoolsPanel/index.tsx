@@ -136,7 +136,7 @@ export const PoolsPanel = withTranslation("common")(
                 forexMap: forexMap as any,
                 rowConfig: RowInvestConfig,
                 handleWithdraw: (row) => {
-                  const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;
+                  const pair = `${row.coinAInfo.simpleName}-${row.coinBInfo.simpleName}`;
                   setShowAmm({
                     isShow: true,
                     type: AmmPanelType.Exit,
@@ -144,7 +144,7 @@ export const PoolsPanel = withTranslation("common")(
                   });
                 },
                 handleDeposit: (row) => {
-                  const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;
+                  const pair = `${row.coinAInfo.simpleName}-${row.coinBInfo.simpleName}`;
                   setShowAmm({
                     isShow: true,
                     type: AmmPanelType.Join,

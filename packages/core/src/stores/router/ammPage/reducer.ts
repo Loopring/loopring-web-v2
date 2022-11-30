@@ -30,6 +30,8 @@ const initJoinState: PageAmmJoin = {
 const initExitState: PageAmmExit = {
   volA_show: undefined,
   volB_show: undefined,
+  volA: undefined,
+  volB: undefined,
   fees: {},
   fee: 0,
   request: undefined,
@@ -133,8 +135,12 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
         volB_show,
       } = action.payload;
 
-      if (fee) {
+      if (typeof fee !== "undefined") {
         state.ammExit.fee = fee;
+        state.ammExit.ammCalcData = {
+          ...state.ammExit.ammCalcData,
+          fee: fee + " " + state.ammExit?.ammCalcData?.lpCoinB.belong,
+        } as any;
       }
 
       if (fees) {

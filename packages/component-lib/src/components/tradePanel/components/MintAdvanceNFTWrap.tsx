@@ -3,12 +3,8 @@ import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
   Box,
-  Grid,
   Typography,
   Link,
-  Stepper,
-  StepLabel,
-  Step,
   FormControlLabel,
   Radio,
   Checkbox,
@@ -38,7 +34,6 @@ import {
   TGItemData,
   RadioGroupStyle,
   Button,
-  BtnInfo,
   CollectionInput,
 } from "../../basic-lib";
 import {
@@ -57,22 +52,13 @@ import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
 import { Toast } from "../../toast";
+import { BtnMain, HorizontalLabelPositionBelowStepper } from "./tool";
 
 export enum AdMethod {
   HasData = "HasData",
   NoData = "NoData",
 }
 
-const BoxStyle = styled(Grid)`
-  .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
-    height: var(--btn-icon-size-large);
-    width: var(--btn-icon-size-large);
-
-    .MuiStepIcon-text {
-      font-size: ${({ theme }) => theme.fontDefault.body1};
-    }
-  }
-` as typeof Grid;
 const MintAdStyle = styled(Box)`
   .MuiFormGroup-root {
     align-items: flex-start;
@@ -111,28 +97,6 @@ export enum MintStep {
   SELECTWAY = 0,
   INPUTCID = 1,
   MINT = 2,
-}
-
-export function HorizontalLabelPositionBelowStepper({
-  activeStep,
-}: {
-  activeStep: number;
-}) {
-  const { t } = useTranslation("common");
-  const { isMobile } = useSettings();
-  return (
-    <>
-      <BoxStyle sx={{ width: "100%" }} marginTop={isMobile ? 3 : 0}>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{t(label)}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </BoxStyle>
-    </>
-  );
 }
 
 export const MintAdvanceNFTWrap = <
@@ -206,8 +170,10 @@ export const MintAdvanceNFTWrap = <
 
     const checkErrorResult = ["name", "image", "royaltyPercentage"].reduce(
       (prev, item) => {
-        if (!tradeData[item]) {
-          prev.push(item === "royaltyPercentage" ? "royalty_percentage" : item);
+        if (item === "royaltyPercentage" && tradeData[item] === undefined) {
+          prev.push("royalty_percentage");
+        } else if (item !== "royaltyPercentage" && !tradeData[item]) {
+          prev.push(item);
         }
         return prev;
       },
@@ -218,7 +184,7 @@ export const MintAdvanceNFTWrap = <
       tradeData.nftId &&
       (checkErrorResult.length ||
         !(
-          tradeData.royaltyPercentage &&
+          tradeData.royaltyPercentage !== undefined &&
           Number.isInteger(tradeData.royaltyPercentage) &&
           tradeData.royaltyPercentage >= 0 &&
           tradeData.royaltyPercentage <= 10
@@ -282,44 +248,6 @@ export const MintAdvanceNFTWrap = <
   }, []);
   const [src, setSrc] = React.useState<string>("");
 
-  const btnMain = React.useCallback(
-    ({
-      defaultLabel = "labelMintNext",
-      btnInfo,
-      disabled,
-      onClick,
-      fullWidth,
-    }: {
-      defaultLabel?: string;
-      btnInfo?: BtnInfo;
-      disabled: () => boolean;
-      onClick: () => void;
-      fullWidth?: boolean;
-    }) => {
-      return (
-        <Button
-          variant={"contained"}
-          size={"medium"}
-          color={"primary"}
-          fullWidth={fullWidth}
-          className={"step"}
-          endIcon={
-            <BackIcon fontSize={"small"} sx={{ transform: "rotate(180deg)" }} />
-          }
-          loading={
-            !disabled() && nftMintBtnStatus === TradeBtnStatus.LOADING
-              ? "true"
-              : "false"
-          }
-          disabled={disabled() || nftMintBtnStatus === TradeBtnStatus.LOADING}
-          onClick={onClick}
-        >
-          {btnInfo ? t(btnInfo.label, btnInfo.params) : t(defaultLabel)}
-        </Button>
-      );
-    },
-    [nftMintBtnStatus, t]
-  );
   const [error, setError] = React.useState(false);
 
   const panelList: Array<{
@@ -483,20 +411,23 @@ export const MintAdvanceNFTWrap = <
               </Trans>
             </Typography>
             <Box width={"100%"} paddingX={isMobile ? 2 : 0} marginTop={2}>
-              {btnMain({
-                defaultLabel: "labelMintNext",
-                fullWidth: true,
-                disabled: () => {
-                  return (
-                    gDisabled ||
-                    !tradeData.tokenAddress ||
-                    !tradeData.collectionMeta
-                  );
-                },
-                onClick: () => {
-                  setActiveStep(MintStep.INPUTCID);
-                },
-              })}
+              <BtnMain
+                {...{
+                  defaultLabel: "labelMintNext",
+                  fullWidth: true,
+                  disabled: () => {
+                    return (
+                      gDisabled ||
+                      !tradeData.tokenAddress ||
+                      !tradeData.collectionMeta
+                    );
+                  },
+                  btnStatus: nftMintBtnStatus,
+                  onClick: () => {
+                    setActiveStep(MintStep.INPUTCID);
+                  },
+                }}
+              />
             </Box>
           </Box>
         ),
@@ -742,23 +673,26 @@ export const MintAdvanceNFTWrap = <
                 {t(`labelMintBack`)}
               </Button>
 
-              {btnMain({
-                defaultLabel: "labelMintNext",
-                btnInfo: undefined, //btnInfo,
-                disabled: () => {
-                  return (
-                    gDisabled ||
-                    !!isNotAvailableCID ||
-                    !tradeData.nftId ||
-                    !!metaDataErrorDataInfo.length ||
-                    !checked
-                  );
-                },
-                onClick: () => {
-                  setActiveStep(MintStep.MINT);
-                  setSrc(getIPFSString(tradeData?.image, baseURL));
-                },
-              })}
+              <BtnMain
+                {...{
+                  defaultLabel: "labelMintNext",
+                  btnInfo: undefined, //btnInfo,
+                  disabled: () => {
+                    return (
+                      gDisabled ||
+                      !!isNotAvailableCID ||
+                      !tradeData.nftId ||
+                      !!metaDataErrorDataInfo.length ||
+                      !checked
+                    );
+                  },
+                  btnStatus: nftMintBtnStatus,
+                  onClick: () => {
+                    setActiveStep(MintStep.MINT);
+                    setSrc(getIPFSString(tradeData?.image, baseURL));
+                  },
+                }}
+              />
             </Box>
           </Box>
         ),
@@ -1147,23 +1081,23 @@ export const MintAdvanceNFTWrap = <
                   >
                     {t(`labelMintBack`)}
                   </Button>
-                  {btnMain({
-                    defaultLabel: t("labelMintSubmitBtn"),
-                    // nftMintBtnStatus === TradeBtnStatus.DISABLED
-                    //   ? t("labelTokenAdMintBtn")
-                    //   : ,
-                    btnInfo: btnInfo,
-                    disabled: () => {
-                      return (
-                        gDisabled ||
-                        nftMintBtnStatus === TradeBtnStatus.DISABLED
-                      );
-                    },
-                    onClick: () => {
-                      // setActiveStep(MintSte)
-                      onNFTMintClick(tradeData);
-                    },
-                  })}
+                  <BtnMain
+                    {...{
+                      defaultLabel: t("labelMintSubmitBtn"),
+                      btnStatus: nftMintBtnStatus,
+                      btnInfo: btnInfo,
+                      disabled: () => {
+                        return (
+                          gDisabled ||
+                          nftMintBtnStatus === TradeBtnStatus.DISABLED
+                        );
+                      },
+                      onClick: () => {
+                        // setActiveStep(MintSte)
+                        onNFTMintClick(tradeData);
+                      },
+                    }}
+                  />
                 </Box>
               </Box>
             </Box>
@@ -1181,7 +1115,6 @@ export const MintAdvanceNFTWrap = <
     isNFTCheckLoading,
     collectionInputProps,
     tradeData,
-    btnMain,
     cid,
     isNotAvailableCID,
     metaDataErrorDataInfo,
@@ -1217,7 +1150,10 @@ export const MintAdvanceNFTWrap = <
       padding={5 / 2}
       alignItems={"center"}
     >
-      <HorizontalLabelPositionBelowStepper activeStep={activeStep} />
+      <HorizontalLabelPositionBelowStepper
+        activeStep={activeStep}
+        steps={steps}
+      />
       <MintAdStyle
         flex={1}
         marginTop={2}

@@ -1,6 +1,7 @@
 import { ButtonProps } from "../../basic-lib";
 import {
   Account,
+  AccountHashInfo,
   CAMPAIGNTAGCONFIG,
   FeeInfo,
   NFTWholeINFO,
@@ -35,6 +36,7 @@ export enum AccountStep {
   NoAccount,
   QRCode,
   HadAccount,
+  ThirdPanelReturn,
   // new
   // Deposit,
   Deposit_Sign_WaitForRefer,
@@ -66,6 +68,13 @@ export enum AccountStep {
   NFTDeploy_Failed,
   NFTDeploy_Submit,
 
+  RedPacketSend_WaitForAuth,
+  RedPacketSend_First_Method_Denied,
+  RedPacketSend_In_Progress,
+  RedPacketSend_User_Denied,
+  RedPacketSend_Failed,
+  RedPacketSend_Success,
+
   ForceWithdraw_WaitForAuth,
   ForceWithdraw_First_Method_Denied,
   ForceWithdraw_In_Progress,
@@ -86,6 +95,13 @@ export enum AccountStep {
   Transfer_RAMP_In_Progress,
   Transfer_RAMP_Success,
   Transfer_RAMP_Failed,
+
+  Transfer_BANXA_WaitForAuth,
+  Transfer_BANXA_First_Method_Denied,
+  Transfer_BANXA_User_Denied,
+  Transfer_BANXA_In_Progress,
+  Transfer_BANXA_Success,
+  Transfer_BANXA_Failed,
 
   Withdraw_WaitForAuth,
   Withdraw_First_Method_Denied,
@@ -155,6 +171,7 @@ export interface VendorMenuProps {
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;
   campaignTagConfig?: CAMPAIGNTAGCONFIG;
+  callback?: () => void;
 }
 interface InferfaceAssetItem {
   key: string;
@@ -206,6 +223,9 @@ export interface CheckActiveStatusProps<C = FeeInfo> {
   onIKnowClick: () => void;
   knowDisable: boolean;
   know: boolean;
+  clearDepositHash?: () => void;
+  chainInfos?: AccountHashInfo;
+  accAddress?: string;
 }
 export interface CheckImportCollectionProps {
   account: Account;

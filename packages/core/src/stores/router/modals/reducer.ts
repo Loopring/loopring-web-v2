@@ -1,15 +1,18 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import {
   ActiveAccountData,
+  ClaimData,
   DepositData,
   ForceWithdrawData,
   LAST_STEP,
   ModalDataStatus,
   NFT_MINT_VALUE,
+  RedPacketOrderData,
   TransferData,
   WithdrawData,
 } from "./interface";
 import {
+  BanxaOrder,
   CollectionMeta,
   MINT_LIMIT,
   MintTradeNFT,
@@ -47,6 +50,30 @@ const initialTransferState: TransferData = {
   __request__: undefined,
 };
 
+const initialRedPacketState: RedPacketOrderData<any> = {
+  belong: undefined as any,
+  tradeValue: 0,
+  balance: 0,
+  fee: undefined,
+  type: {
+    partition: sdk.LuckyTokenAmountType.AVERAGE,
+    mode: sdk.LuckyTokenClaimType.RELAY,
+    scope: sdk.LuckyTokenViewType.PRIVATE,
+  },
+
+  __request__: undefined,
+};
+
+const initialClaimState: ClaimData = {
+  belong: undefined as any,
+  tradeValue: 0,
+  balance: 0,
+  fee: undefined,
+  address: undefined,
+  memo: undefined,
+  __request__: undefined,
+};
+
 const initialDepositState: DepositData = {
   belong: undefined,
   tradeValue: 0,
@@ -81,9 +108,11 @@ const initialActiveAccountState: ActiveAccountData = {
 const initialState: ModalDataStatus = {
   lastStep: LAST_STEP.default,
   offRampValue: undefined,
+  offBanxaValue: undefined,
   withdrawValue: initialWithdrawState,
   transferValue: initialTransferState,
   transferRampValue: initialTransferState,
+  transferBanxaValue: initialTransferState,
   depositValue: initialDepositState,
   nftWithdrawValue: initialWithdrawState,
   nftTransferValue: initialTransferState,
@@ -98,6 +127,8 @@ const initialState: ModalDataStatus = {
   nftDeployValue: { ...initialTradeNFT, broker: "" },
   activeAccountValue: initialActiveAccountState,
   forceWithdrawValue: { ...initialForceWithdrawState },
+  redPacketOrder: { ...initialRedPacketState },
+  claimValue: { ...initialClaimState },
 };
 
 const modalDataSlice: Slice<ModalDataStatus> = createSlice({
@@ -108,6 +139,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       this.resetWithdrawData(state);
       this.resetTransferData(state);
       this.resetTransferRampData(state);
+      this.resetTransferBanxaData(state);
       this.resetDepositData(state);
       this.resetNFTWithdrawData(state);
       this.resetNFTTransferData(state);
@@ -116,6 +148,8 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       this.resetNFTMintData(state);
       this.resetNFTDeployData(state);
       this.resetForceWithdrawData(state);
+      this.resetRedPacketOrder(state);
+      this.resetClaimData(state);
     },
     resetForceWithdrawData(state) {
       state.lastStep = LAST_STEP.default;
@@ -137,6 +171,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetTransferRampData(state) {
       state.lastStep = LAST_STEP.default;
       state.transferRampValue = initialTransferState;
+    },
+    resetTransferBanxaData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.transferBanxaValue = initialTransferState;
     },
     resetDepositData(state) {
       state.lastStep = LAST_STEP.default;
@@ -209,6 +247,18 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetOffRampData(state) {
       state.lastStep = LAST_STEP.default;
       state.offRampValue = undefined;
+    },
+    resetOffBanxaData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.offBanxaValue = undefined;
+    },
+    resetRedPacketOrder(state) {
+      state.lastStep = LAST_STEP.default;
+      state.redPacketOrder = { ...initialRedPacketState };
+    },
+    resetClaimData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.claimValue = { ...initialClaimState };
     },
     updateActiveAccountData(
       state,
@@ -298,6 +348,29 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       }
       state.transferRampValue = {
         ...state.transferRampValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.transferValue.balance,
+        belong,
+        tradeValue,
+        address: address !== "*" ? address : undefined,
+        ...rest,
+      };
+    },
+    updateTransferBanxaData(
+      state,
+      action: PayloadAction<Partial<TransferData>>
+    ) {
+      const { belong, balance, tradeValue, address, __request__, ...rest } =
+        action.payload;
+      state.lastStep = LAST_STEP.offRampTrans;
+      if (__request__) {
+        state.transferBanxaValue.__request__ = __request__;
+        return state;
+      }
+      state.transferBanxaValue = {
+        ...state.transferBanxaValue,
         balance:
           balance === undefined || balance >= 0
             ? balance
@@ -505,6 +578,50 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       //   ...action.payload,
       // };
     },
+    updateOffBanxaData(state, action: PayloadAction<{ order: BanxaOrder }>) {
+      state.lastStep = LAST_STEP.offBanxa;
+      const { order } = action.payload;
+      if (order) {
+        state.offBanxaValue = {
+          ...order,
+        };
+      }
+    },
+    updateRedPacketOrder(
+      state,
+      action: PayloadAction<RedPacketOrderData<any>>
+    ) {
+      state.lastStep = LAST_STEP.redPacketSend;
+      const { balance, tradeValue, belong, ...rest } = action.payload;
+      state.redPacketOrder = {
+        ...state.redPacketOrder,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.redPacketOrder.balance,
+        belong,
+        tradeValue,
+        ...rest,
+      } as RedPacketOrderData<any>;
+      // state.redPacketOrder = {
+      //   ...state.redPacketOrder,
+      //   ...rest,
+      // };
+    },
+    updateClaimData(state, action: PayloadAction<ClaimData>) {
+      state.lastStep = LAST_STEP.claim;
+      const { balance, tradeValue, belong, ...rest } = action.payload;
+      state.claimValue = {
+        ...state.redPacketOrder,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.redPacketOrder.balance,
+        belong,
+        tradeValue,
+        ...rest,
+      } as ClaimData;
+    },
   },
 });
 
@@ -516,6 +633,7 @@ export const {
   updateWithdrawData,
   updateTransferData,
   updateTransferRampData,
+  updateTransferBanxaData,
   updateDepositData,
   updateNFTWithdrawData,
   updateNFTTransferData,
@@ -526,6 +644,10 @@ export const {
   updateCollectionAdvanceData,
   updateCollectionData,
   updateOffRampData,
+  updateOffBanxaData,
+  updateRedPacketOrder,
+  updateClaimData,
+  resetClaimData,
   resetForceWithdrawData,
   resetNFTWithdrawData,
   resetNFTTransferData,
@@ -541,5 +663,8 @@ export const {
   resetCollectionAdvanceData,
   resetCollectionData,
   resetOffRampData,
+  resetOffBanxaData,
+  resetRedPacketOrder,
+  resetTransferBanxaData,
   resetAll,
 } = modalDataSlice.actions;

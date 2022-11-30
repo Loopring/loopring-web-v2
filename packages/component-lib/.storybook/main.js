@@ -1,5 +1,4 @@
 const path = require("path");
-// const file = require("file");
 const nodePath = "../../";
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath);
@@ -8,19 +7,7 @@ const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath);
 // const ReactRefreshWebpackPlugin = require("react-refresh-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const fs = require("fs");
-const JSONStream = require("JSONStream");
-// const hasJsxRuntime = (() => {
-//   if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
-//     return false;
-//   }
-//
-//   try {
-//     require.resolve("react/jsx-runtime");
-//     return true;
-//   } catch (e) {
-//     return false;
-//   }
-// })();
+
 const maxAssetSize = 1024 * 1024;
 
 const disableEsLint = (e) => {
@@ -54,28 +41,25 @@ function findBabelRules(config) {
 }
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
-  // stories: [
-  //   "../src/components/basic-lib/Icon.stories.tsx",
-  //   "../src/components/basic-lib/color.stories.tsx",
-  // ],
   addons: [
-    {
-      name: "@storybook/addon-docs",
-      options: {
-        configureJSX: true,
-        babelOptions: {},
-        sourceLoaderOptions: null,
-        transcludeMarkdown: true,
-      },
-    },
+    "@storybook/addon-links",
     "@storybook/addon-essentials",
-    "@storybook/addon-docs/preset",
-    "@storybook/addon-interactions",
     "@storybook/preset-create-react-app",
+    "@storybook/addon-interactions",
   ],
   framework: "@storybook/react",
   typescript: {
     check: false,
+    checkOptions: {},
+    reactDocgen: "react-docgen-typescript",
+    reactDocgenTypescriptOptions: {
+      shouldExtractLiteralValuesFromEnum: true,
+      propFilter: (prop) =>
+        prop.parent ? !/node_modules/.test(prop.parent.fileName) : true,
+    },
+  },
+  core: {
+    builder: "webpack4",
   },
   webpackFinal: async (config, { configType }) => {
     config = disableEsLint(config);
@@ -92,14 +76,8 @@ module.exports = {
 
     const modules = [
       ...config.resolve.modules,
-      "node_modules",
-      path.resolve(
-        __dirname,
-        "..",
-        "..",
-        "common-resources",
-        "static-resources"
-      ),
+      path.resolve(__dirname, "..", "src"),
+      "node_modules/@loopring-web/common-resources",
     ];
     rule.include = [
       ...rule.include,
@@ -163,18 +141,7 @@ module.exports = {
 
     return {
       ...config,
-      mode: isProd ? "development" : "production",
-      plugins: [
-        ...config.plugins,
-        // reactDomPkg.version.startsWith("18") ||
-        // reactDomPkg.version.startsWith("0.0.0")
-        //   ? null
-        //   : new webpack.IgnorePlugin({
-        //       resourceRegExp: /react-dom\/client$/,
-        //       contextRegExp:
-        //         /(app\/react|app\\react|@storybook\/react|@storybook\\react)/, // TODO this needs to work for both in our MONOREPO and in the user's NODE_MODULES
-        //     }),
-      ],
+      plugins: [...config.plugins],
       resolve: {
         ...config.resolve,
         modules,
@@ -187,16 +154,6 @@ module.exports = {
           "@material-ui/core": "@mui/material",
           "@material-ui/core/Popover": "@mui/material/Popover",
         },
-      },
-      optimization: {
-        splitChunks: {
-          chunks: "all",
-          minSize: 30 * 1024,
-          maxSize: maxAssetSize,
-        },
-      },
-      performance: {
-        maxAssetSize: maxAssetSize,
       },
     };
   },

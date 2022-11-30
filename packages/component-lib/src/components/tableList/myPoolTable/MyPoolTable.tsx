@@ -277,12 +277,23 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
         }
         return (
           <Box className={"textAlignRight"} height={"100%"}>
-            <Typography component={"span"} {...bindHover(popState)}>
+            <Typography
+              component={"span"}
+              style={
+                dollarReward24 === 0
+                  ? {}
+                  : {
+                      cursor: "pointer",
+                      textDecoration: "underline dotted",
+                    }
+              }
+              {...bindHover(popState)}
+            >
               {dollarReward24 === 0
                 ? EmptyValueTag
                 : PriceTag[CurrencyToTag[currency]] +
                   getValuePrecisionThousand(
-                    (row.rewardDollar24 || 0) * (forexMap[currency] ?? 0),
+                    (dollarReward24 || 0) * (forexMap[currency] ?? 0),
                     undefined,
                     undefined,
                     2,

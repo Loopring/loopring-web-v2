@@ -32,7 +32,6 @@ import {
   copyToClipBoard,
   getValuePrecisionThousand,
   Info2Icon,
-  RightArrowIcon,
   SoursURL,
   TradeDefi,
   // Lang,
@@ -527,7 +526,7 @@ export const SwapSecondConfirmation = withTranslation("common")(
                 </Typography>
               </Box>
               <Box display={"flex"} justifyContent={"center"} width={"10%"}>
-                <RightArrowIcon />
+                <Typography variant={"h4"}>{"\u2192"}</Typography>
               </Box>
               <Box
                 width={"45%"}
@@ -1107,7 +1106,7 @@ export const LayerswapNotice = withTranslation("common", {
         setAgree(false);
       }
     }, [open]);
-    const { setShowLayerSwapNotice, setShowAccount } = useOpenModals();
+    const { setShowLayerSwapNotice } = useOpenModals();
     return (
       <DialogStyle
         open={open}
@@ -1156,7 +1155,6 @@ export const LayerswapNotice = withTranslation("common", {
                 `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}&lockNetwork=true&lockAddress=true&addressSource=loopringWeb`
               );
               window.opener = null;
-              setShowAccount({ isShow: false });
               setShowLayerSwapNotice({ isShow: false });
             }}
             color={"primary"}
@@ -1345,6 +1343,80 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
           </Button>
         </DialogActions>
       </Dialog>
+    );
+  }
+);
+
+export const ConfirmAmmExitMiniOrder = withTranslation("common")(
+  ({
+    t,
+    open,
+    type,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+  } & (
+      | {
+          type: "Disabled";
+          handleClose: (event: any) => void;
+        }
+      | {
+          type: "Mini";
+          handleClose: (event: any, isAgree?: boolean) => void;
+        }
+    )) => {
+    return (
+      <DialogStyle
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {t(
+              type === "Disabled"
+                ? "labelAmmExitMiniOrderDisabled"
+                : "labelAmmExitMiniOrderMini"
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          {type === "Disabled" ? (
+            <Button
+              variant={"contained"}
+              size={"small"}
+              onClick={(e) => {
+                handleClose(e);
+              }}
+              color={"primary"}
+            >
+              {t("labelIKnow")}
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant={"outlined"}
+                size={"medium"}
+                onClick={(e) => handleClose(e as any)}
+              >
+                {t("labelDisAgreeConfirm")}
+              </Button>
+              <Button
+                variant={"contained"}
+                size={"small"}
+                onClick={(e) => {
+                  handleClose(e as any, true);
+                }}
+                color={"primary"}
+              >
+                {t("labelAgreeConfirm")}
+              </Button>
+            </>
+          )}
+        </DialogActions>
+      </DialogStyle>
     );
   }
 );
@@ -1611,7 +1683,7 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
                 ETH directly on Layer 2. The pool will rebalance periodically
                 when it reaches a specific threshold. If there is not enough
                 inventory on Layer 2, user can always withdraw their wstETH
-                tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.{" "}
+                tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.
               </Typography>
             </Trans>
           </DialogContentText>

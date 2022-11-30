@@ -200,7 +200,7 @@ export const TradeTitle = <I extends object>({
               </Typography>
               {campaignTagConfig && (
                 <TagIconList
-                  scenario={SCENARIO.market}
+                  scenario={SCENARIO.MARKET}
                   campaignTagConfig={campaignTagConfig}
                   symbol={pair}
                 />

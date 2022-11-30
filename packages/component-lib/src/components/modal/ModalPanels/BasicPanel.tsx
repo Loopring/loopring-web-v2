@@ -9,6 +9,7 @@ import {
   SoursURL,
   TransErrorHelp,
   Account,
+  LoadingIcon,
 } from "@loopring-web/common-resources";
 import React from "react";
 
@@ -25,6 +26,7 @@ export enum IconType {
   FailedIcon,
   RefuseIcon,
   SubmitIcon,
+  PendingIcon,
 }
 
 export interface PanelProps {
@@ -97,10 +99,6 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               width={size}
               src={`${SoursURL}images/loading-line.gif`}
             />
-            // <LoadingIcon
-            //   color={"primary"}
-            //   style={{ width: size, height: size }}
-            // />
           );
         case IconType.FailedIcon:
           return (
@@ -134,6 +132,13 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                 width: size,
                 height: size,
               }}
+            />
+          );
+        case IconType.PendingIcon:
+          return (
+            <LoadingIcon
+              color={"primary"}
+              style={{ width: size, height: size }}
             />
           );
       }
@@ -475,9 +480,16 @@ export const WithdrawBase = (props: PanelProps) => {
   return <BasicPanel {...propsPatch} {...props} />;
 };
 
-export const DualBase = (props: PanelProps) => {
+export const DualBase = (props: PanelProps & { showTitle: boolean }) => {
+  const { showTitle } = props;
+  return (
+    <BasicPanel title={showTitle ? "labelDualTitle" : undefined} {...props} />
+  );
+};
+
+export const RedPacketBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelDualTitle",
+    title: "labelReaPacketTitle",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };

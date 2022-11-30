@@ -16,4 +16,5 @@ export type ToggleState = {
   RETHInvest: { enable: boolean; reason?: string };
   dualInvest: { enable: boolean; reason?: string };
   collectionNFT: { enable: boolean; reason?: string };
+  claim: { enable: boolean; reason?: string };
 };

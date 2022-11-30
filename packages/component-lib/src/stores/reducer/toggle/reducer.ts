@@ -20,6 +20,7 @@ const initialState: ToggleState = {
   RETHInvest: { enable: true },
   defiInvest: { enable: true },
   dualInvest: { enable: true },
+  claim: { enable: true },
 };
 
 export const toggleSlice: Slice<ToggleState> = createSlice<

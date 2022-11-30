@@ -184,7 +184,7 @@ export async function checkAddr(
   if (address) {
     try {
       if (
-        /^\d{5}$/g.test(address) &&
+        /^\d{5,8}$/g.test(address) &&
         Number(address) > 10000 &&
         LoopringAPI.exchangeAPI
       ) {

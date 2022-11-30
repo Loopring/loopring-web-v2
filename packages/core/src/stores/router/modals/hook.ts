@@ -30,19 +30,30 @@ import {
   updateForceWithdrawData,
   updateTransferRampData,
   resetTransferRampData,
+  updateTransferBanxaData,
+  resetTransferBanxaData,
+  updateOffBanxaData,
+  resetOffBanxaData,
+  resetRedPacketOrder,
+  updateRedPacketOrder,
+  updateClaimData,
+  resetClaimData,
 } from "./reducer";
 import {
   ActiveAccountData,
+  ClaimData,
   DepositData,
   ForceWithdrawData,
   LAST_STEP,
   ModalDataStatus,
   NFT_MINT_VALUE,
+  RedPacketOrderData,
   TransferData,
   WithdrawData,
 } from "./interface";
 import React from "react";
 import {
+  BanxaOrder,
   CollectionMeta,
   NFTWholeINFO,
   RequireOne,
@@ -135,11 +146,31 @@ export function useModalData(): {
     }>
   ) => void;
   resetOffRampData: () => void;
+  offBanxaValue: Partial<BanxaOrder> | undefined;
+  updateOffBanxaData: (
+    offBanxa: Partial<{
+      order: BanxaOrder;
+    }>
+  ) => void;
+  resetOffBanxaData: () => void;
   transferRampValue: TransferData;
   resetTransferRampData: () => void;
   updateTransferRampData: (
     transferData: RequireOne<TransferData, never>
   ) => void;
+  transferBanxaValue: TransferData;
+  resetTransferBanxaData: () => void;
+  updateTransferBanxaData: (
+    transferData: RequireOne<TransferData, never>
+  ) => void;
+
+  redPacketOrder: RedPacketOrderData<any>;
+  updateRedPacketOrder: (offRamp: RedPacketOrderData<any>) => void;
+  resetRedPacketOrder: () => void;
+
+  claimValue: Partial<ClaimData> | undefined;
+  updateClaimData: (offBanxa: Partial<ClaimData>) => void;
+  resetClaimData: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData
@@ -169,6 +200,12 @@ export function useModalData(): {
     updateTransferRampData: React.useCallback(
       (transferData: RequireOne<TransferData, never>) => {
         dispatch(updateTransferRampData(transferData));
+      },
+      [dispatch]
+    ),
+    updateTransferBanxaData: React.useCallback(
+      (transferData: RequireOne<TransferData, never>) => {
+        dispatch(updateTransferBanxaData(transferData));
       },
       [dispatch]
     ),
@@ -267,6 +304,22 @@ export function useModalData(): {
       },
       [dispatch]
     ),
+    updateOffBanxaData: React.useCallback(
+      (
+        offBanxa: Partial<{
+          order: BanxaOrder;
+        }>
+      ) => {
+        dispatch(updateOffBanxaData(offBanxa));
+      },
+      [dispatch]
+    ),
+    updateRedPacketOrder: (redPacketOrder: RedPacketOrderData<any>) => {
+      dispatch(updateRedPacketOrder(redPacketOrder));
+    },
+    updateClaimData: (data: Partial<ClaimData>) => {
+      dispatch(updateClaimData(data));
+    },
     resetForceWithdrawData: React.useCallback(() => {
       dispatch(resetForceWithdrawData(undefined));
     }, [dispatch]),
@@ -278,6 +331,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetTransferRampData: React.useCallback(() => {
       dispatch(resetTransferRampData(undefined));
+    }, [dispatch]),
+    resetTransferBanxaData: React.useCallback(() => {
+      dispatch(resetTransferBanxaData(undefined));
     }, [dispatch]),
     resetDepositData: React.useCallback(() => {
       dispatch(resetDepositData(undefined));
@@ -314,6 +370,15 @@ export function useModalData(): {
     }, [dispatch]),
     resetOffRampData: React.useCallback(() => {
       dispatch(resetOffRampData(undefined));
+    }, [dispatch]),
+    resetOffBanxaData: React.useCallback(() => {
+      dispatch(resetOffBanxaData(undefined));
+    }, [dispatch]),
+    resetRedPacketOrder: React.useCallback(() => {
+      dispatch(resetRedPacketOrder(undefined));
+    }, [dispatch]),
+    resetClaimData: React.useCallback(() => {
+      dispatch(resetClaimData(undefined));
     }, [dispatch]),
   };
 }

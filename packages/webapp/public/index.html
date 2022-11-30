@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-		<meta http-equiv="Content-Security-Policy"
-					content="frame-src 'self' https://loopring.banxa.com;">
 		<meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="description" content="Ethereum zkRollup Exchange and Payment Protocol">
@@ -118,18 +116,6 @@
         tag.parentNode.insertBefore(b, tag);
 
 
-        const close = document.querySelector('#iframeBanxaClose')
-        const parentsNode =  document.querySelector("#iframeBanxaTarget");
-				function closeBanax (){
-          const items = parentsNode.getElementsByTagName('iframe')
-					if(items){
-            parentsNode.removeChild(items[0])
-          }
-          parentsNode.style.display = "none";
-        }
-        if(close && parentsNode){
-          parentsNode.addEventListener('click',closeBanax)
-        }
         // var banaxDom = d.createElement("div");
         // banaxDom.id = "iframeBanaxTarget";
         // var body = document.body;

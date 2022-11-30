@@ -17,6 +17,7 @@ import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
 enum TabIndex {
   Tokens = "Tokens",
   Invests = "Invests",
+  RedPacket = "RedPacket",
 }
 
 const StyleTitlePaper = styled(Box)`
@@ -42,6 +43,9 @@ const AssetPanel = withTranslation("common")(
         case TabIndex.Invests:
           history.replace("/l2assets/assets/Invests");
           setCurrentTab(TabIndex.Invests);
+          break;
+        case TabIndex.RedPacket:
+          history.push("/redpacket/markets");
           break;
         case TabIndex.Tokens:
         default:
@@ -92,6 +96,7 @@ const AssetPanel = withTranslation("common")(
         >
           <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
           <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
+          {/*<Tab label={t("labelAssetRedPackets")} value={TabIndex.RedPacket} />*/}
         </Tabs>
         {currentTab === TabIndex.Tokens && (
           <StylePaper
@@ -122,6 +127,7 @@ const AssetPanel = withTranslation("common")(
           </StylePaper>
         )}
         {currentTab === TabIndex.Invests && <MyLiquidity isHideTotal={true} />}
+        {/*{currentTab === TabIndex.RedPacket && <RedPacketPanel />}*/}
       </>
     );
   }

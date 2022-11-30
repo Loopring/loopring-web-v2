@@ -2,6 +2,7 @@ import {
   Account,
   AccountStatus,
   AmmInData,
+  BanxaOrder,
   CoinInfo,
   CoinMap,
   DualCalcData,
@@ -17,11 +18,7 @@ import { ConnectProviders } from "@loopring-web/web3-provider";
 import {
   Currency,
   DUAL_TYPE,
-  LuckyTokenAmountType,
-  LuckyTokenClaimType,
   LuckyTokenItemForReceive,
-  LuckyTokenViewType,
-  LuckyTokenItemStatus,
 } from "@loopring-web/loopring-sdk";
 export const account: Account = {
   __timer__: -1,
@@ -520,6 +517,7 @@ export const DUALVIEWINFO: DualViewInfo = {
   },
   __raw__: {
     info: {
+      baseSize: "111",
       productId: "LRC-USDT-220907-0.36-P-USDT",
       base: "LRC",
       quote: "USDT",
@@ -530,17 +528,7 @@ export const DUALVIEWINFO: DualViewInfo = {
       expired: false,
       dualType: "DUAL_CURRENCY" as DUAL_TYPE,
       ratio: 0.46,
-      dualPrice: {
-        productId: "LRC-USDT-220907-0.36-P-USDT",
-        cacheQty: "",
-        priceTime: 1662446704650,
-        dualBid: [
-          {
-            baseProfit: "0.0237",
-            baseQty: "20000",
-          },
-        ],
-      },
+      profit: "",
     },
     index: {
       index: "0.36206575",
@@ -593,7 +581,7 @@ export const FOREXMAP: ForexMap<Currency> = {
   [Currency.usd]: 1,
   [Currency.cny]: 6.7,
 } as any;
-export const REDPOCKMOCK: LuckyTokenItemForReceive = {
+export const REDPACKETMOCK: LuckyTokenItemForReceive = {
   hash: "",
   sender: {
     accountId: 10008,
@@ -630,4 +618,116 @@ export const REDPOCKMOCK: LuckyTokenItemForReceive = {
   },
   templateNo: 0,
   createdAt: 1662769827,
+};
+export const LUCKTOKENLIST = [
+  {
+    id: 117080,
+    hash: "0x2635dc5a575d8b2972bfa60db73667b0eb236ec1314885f5a0b42e15165ca806",
+    sender: {
+      accountId: 41441,
+      address: "0x85992e1fc5f0f1a6edb6f4dac3a072fb0426b6c5",
+      ens: "",
+    },
+    champion: {
+      accountId: 83208,
+      address: "0x8bc49232d786cbaddc699b0e57783ccda913aeea",
+      ens: "",
+      amount: "121163022576739548",
+    },
+    tokenId: 1,
+    tokenAmount: {
+      totalCount: 2,
+      remainCount: 0,
+      totalAmount: "220000000000000000",
+      remainAmount: "0",
+    },
+    type: {
+      partition: 0,
+      scope: 0,
+      mode: 1,
+    },
+    status: "COMPLETED",
+    validSince: 1672331822000,
+    validUntil: 1672418222000,
+    info: {
+      memo: "10LRC to carl.loopring.eth > 2 part nft collection",
+      signer: "",
+      signerUrl: "",
+      logoUrl: "",
+    },
+    templateNo: 0,
+    createdAt: 1672245500416,
+    isNft: false,
+  },
+  {
+    id: 117076,
+    hash: "0x2f5c482b0711f5204491fe31ee927f0dde79906e2261a8e46106dd309ad0100f",
+    sender: {
+      accountId: 41441,
+      address: "0x85992e1fc5f0f1a6edb6f4dac3a072fb0426b6c5",
+      ens: "",
+    },
+    champion: {
+      accountId: 66702,
+      address: "0x4a860d9764882ca402d380964f81438c407765fd",
+      ens: "",
+      amount: "137774109408598431",
+    },
+    tokenId: 1,
+    tokenAmount: {
+      totalCount: 2,
+      remainCount: 0,
+      totalAmount: "220000000000000000",
+      remainAmount: "0",
+    },
+    type: {
+      partition: 0,
+      scope: 0,
+      mode: 1,
+    },
+    status: "COMPLETED",
+    validSince: 1672231875000,
+    validUntil: 1672318275000,
+    info: {
+      memo: "10LRC to carl.loopring.eth > 2 part nft collection",
+      signer: "",
+      signerUrl: "",
+      logoUrl: "",
+    },
+    templateNo: 0,
+    createdAt: 1672145547112,
+    isNft: false,
+  },
+];
+
+export const mockReturn: { order: BanxaOrder } = {
+  order: {
+    id: "dd734aec66eb781ecc7f7bb01274ec63",
+    account_id: "324a77f69fc5797c2afbe67efefddbba",
+    account_reference: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
+    order_type: "CRYPTO-SELL",
+    payment_type: null,
+    ref: null,
+    fiat_code: "AUD",
+    fiat_amount: 0,
+    coin_code: "USDC",
+    coin_amount: 0,
+    wallet_address: null,
+    wallet_address_tag: null,
+    fee: null,
+    fee_tax: null,
+    payment_fee: null,
+    payment_fee_tax: null,
+    commission: null,
+    tx_hash: null,
+    tx_confirms: 0,
+    created_date: "30-Nov-2022",
+    created_at: "30-Nov-2022 17:48:25",
+    status: "pendingPayment",
+    completed_at: null,
+    merchant_fee: null,
+    merchant_commission: null,
+    meta_data: null,
+    blockchain: { id: 30, code: "LRC", description: "Loopring " },
+  },
 };

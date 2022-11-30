@@ -46,6 +46,9 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
 }): { checkActiveStatusProps: CheckActiveStatusProps<C> } => {
   const { account } = useAccount();
   const { status: walletLayer2Status, updateWalletLayer2 } = useWalletLayer2();
+  // const { chainInfos } = onchainHashInfo.useOnChainInfo();
+  // const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+
   const {
     setShowAccount,
     setShowActiveAccount,
@@ -87,6 +90,14 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
               return sdk
                 .toBig(walletMap[item.belong]?.count ?? 0)
                 .gte(sdk.toBig(item.fee.toString().replace(sdk.SEP, "")));
+            } else {
+              return (
+                item?.feeRaw !== undefined &&
+                Number(item.fee.toString()) == 0 &&
+                sdk
+                  .toBig((item.feeRaw ?? "").toString().replace(sdk.SEP, ""))
+                  .eq(0)
+              );
             }
             return;
           }) === -1

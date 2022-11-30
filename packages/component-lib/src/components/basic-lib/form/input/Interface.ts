@@ -35,7 +35,7 @@ export type InputButtonProps<T, R, I> = {
     ref: React.ForwardedRef<any>
   ) => void;
   handleError?: (
-    ibData: T & { maxAllow?: boolean },
+    tradeData: T & { maxAllow?: boolean },
     ref: React.ForwardedRef<any>
   ) => { error: boolean; message?: string | JSX.Element };
   focusOnInput?: boolean;

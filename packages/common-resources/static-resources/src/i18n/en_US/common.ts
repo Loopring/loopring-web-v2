@@ -248,6 +248,7 @@ export default {
   labelMiningReward: "Reward",
   labelCookiesAgree: "Agree",
   labelLimitMin: "Minimum of {{arg}}",
+  labelAmmMinAnd: "and",
   labelLimitMinUnknown: "Order too small",
   labelLimitMax: "Maximum of {{arg}}",
   labelOrderSmall: "Order too small (>= 100.5LRC)",
@@ -451,9 +452,10 @@ export default {
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
   labelIsNotFeeToken: "Please deposit {{symbol}} to activate Loopring L2.",
-  labelIsETHDepositAlert: "Please reserve enough ETH for gas!",
+  labelIsETHDepositAlert:
+    "Please reserve enough ETH in Layer 1 account to pay for gas!",
   labelIsNotEnoughFeeToken:
-    "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
+    "Please deposit enough token to cover the activation fee: {{fee}} {{symbol}}. Remaining token will appear in your asset after activation",
   depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
   mintNFTAddressLabelPlaceholder:
     "(CIDv0 or dag-pb CIDv1) eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
@@ -488,7 +490,7 @@ export default {
   labelNFTDeployBtn: "Deploy Contract",
   labelNFTDeployBroker: "Deploy Broker:",
   labelDeployInProgress: "Processing...",
-  labelNFTDeployTitle: "Deploy Collection",
+  labelNFTDeployTitle: "Deploy Contract",
   labelVendor: "Buy with Card",
   labelLock: "Lock",
   labelWalletToWallet:
@@ -499,6 +501,18 @@ export default {
   labelWalletInputGuardianCodeDes:
     "Please contact the owner to obtain the approval code and enter it below.",
   labelWalletGuardianList: "Guardian List",
+  labelWalletRequestRecovery: "Request for Wallet Recovery",
+  labelWalletLoopringSmartWallet:
+    "The connected wallet is a Loopring Smart Wallet. Please use your Loopring Wallet mobile app to add Guardians.",
+  labelWalletNonLoopringSmartWallet:
+    "The connected wallet is a non-Loopring smart contract wallet, which cannot be set as a Guardian. Please try again using a different wallet.",
+  labelWalletGuardianHint:
+    "Easily add other Loopring Wallets as Guardians to secure your identity and crypto assets. After entering the wallet address, the user will receive a notification of the request directly in their Loopring Wallet app. Invite your friends and family to use the Loopring Wallet.",
+  labelWalletLockTitle: "Lock/unlock Wallet",
+  labelWalletLockDes: "Who I Protect",
+  labelWalletValidationTitle: "Approval Requests",
+  labelWalletValidationDes: "Guardian Request Handling",
+  labelWalletHistoryTitle: "View History",
   labelAddProtector: "add Guardian",
   labelUnknown: "Unknown",
   labelApprove: "Approve",
@@ -525,6 +539,7 @@ export default {
   labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN", // 35
   labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET", // 37
   labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS", // 200
+  labelTxGuardianCALL_CONTRACT_WA: "CALL CONTRACT",
   labelTxGuardian_recovery: "recovery wallet",
   labelTxGuardian_transfer: "over daily quota transfer",
   labelTxGuardian_add_guardian: "add guardian",
@@ -612,7 +627,7 @@ export default {
     "Activation of Loopring L2 with deposit of {{value}} {{symbol}} has been submitted! \n Approximately {{count}} minutes remaining...',",
   labelCreateAccountFailed:
     "Activation of Loopring L2 with deposit of {{value}} {{symbol}} has failed!",
-  labelL1toL2Hash: "My L1 \u2192 Loopring L2 Transaction Hash",
+  labelL1toL2Hash: "Recent transactions (From my L1 to my L2)",
   labelL1toL2HashEmpty:
     "My L1 \u2192 Loopring L2 transactions will show up here.",
   labelL1toL2Record: "Receive {{value}} {{symbol}}",
@@ -626,7 +641,7 @@ export default {
   labelL2toL2InvalidAddr: "Invalid address or ENS",
   labelL2toL2IsNotLoopringContract: "Is not Loopring Contract wallet address",
   labelL2toL2AddressNotLoopring:
-    "This address has not yet activated Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
+    "<0></0> This address does not have an activated Loopring L2. Please ensure  the recipient can access Loopring L2 before sending.",
   labelL2toL2AddressType: "Address Type",
   labelL2toL2OriginDesc:
     "Please select the address source. Note: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex…)",
@@ -725,11 +740,11 @@ export default {
   labelSendAssetHowto: "Where would you like to send your crypto to",
   labelL1toL2: "Add Loopring L2 assets From My L1",
   labelActivatedAccountChargeFeeList:
-    "Please make sure one of the below tokens with the minimum quantity is in your Loopring L2 account to proceed:",
+    "Please make sure one of the below tokens with the minimum quantity in your Loopring L2 account to proceed",
   labelReceiveAddress: "Receive Address",
   labelAssets: "Loopring L2 Assets",
   labelReceiveAddressGuide:
-    "Please send {{symbol}} funds from a Loopring L2 address",
+    "Please use a Loopring L2 account when transferring to avoid loss of assets ({{symbol}}).",
   labelL2toL2: "Send to another Loopring L2",
   labelL2toL1: "Send to L1",
   labelBenefitL2:
@@ -801,13 +816,16 @@ export default {
     "LayerSwap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelInvestAmmTitle: "AMM Pools",
   labelInvestBalanceTitle: "My Investments",
+  labelInvestDualRefreshErrorTitle: "Subscription Failed",
+  labelInvestDualRefreshError:
+    "The subscription of {{token1}}/{{token2}} Dual Investment failed.",
   labelTransactionsLink: "Transactions",
   labelAMMTransactionsLink: "View Pool Transactions",
   labelNFTMintWrongCIDBtn: "Wrong MetaData format",
   labelWithdrawBtn: "Withdraw",
-  labelForceWithdrawTitle: "Force Withdraw",
   labelFWithdrawFee: "Fee",
   labelFWithdrawNotEnough: "Insufficient balance",
+  labelForceWithdrawTitle: "Force Withdraw",
   labelForceWithdrawWaitForAuth: "Please confirm to force withdraw {{symbol}}",
   labelForceWithdrawDenied: "You rejected to force withdraw {{symbol}}.",
   labelForceWithdrawInProgress: "Processing...",
@@ -890,7 +908,7 @@ export default {
   labelRETHDefiRisk2:
     "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
     "<1></1>",
-  labelDefiAgree: "I have read and understand the risk warning",
+  labelDefiAgree: "I have read and understand the risk warning.",
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
@@ -964,7 +982,7 @@ export default {
     "Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site",
   labelCollectionMetaErrorType: "correct `royalty_percentage` from 0 to 10",
   labelNFTServerRefresh:
-    "Click to refresh loopring cache resource, this is an delay command usually takes 30 minutes.",
+    "Click to refresh the NFT's metadata. This process usually takes around 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
   labelNFTCollectionName: "Collection Name:",
@@ -982,7 +1000,7 @@ export default {
   labelCollectionItemValue: "Item: {{value}}",
   labelCollectionItemSimpleValue: " \u2A09 {{value}}",
   labelMyCollectionsDes:
-    "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information. Until it happens, the previous NFTs will be categorized to collection named by their associated contract address.",
+    "Legacy NFTs created in Loopring don't contain collection information. We have added the feature to allow creators to import the collection information so that those NFTs can be categorized well. <1>Go to Import Collection for Legacy NFT</1>",
   labelNFTGuid:
     "Please fill in the appropriate collection metadata field value in your NFT metadata with this string first, then upload it to IPFS to retrieve the CID to continue. <1>view more </1>",
   labelChooseCollectionTooltips:
@@ -993,11 +1011,15 @@ export default {
   labelBuy: "Buy",
   labelSell: "Sell",
   labelRampNoBalance: "Insufficient {{belong}} balance",
+  labelBanxaNoBalance: "Insufficient {{belong}} balance",
+  labelBanxaFeeNoBalance: "Insufficient {{belong}} balance & fee",
   labelL2toRampTitle: "Send to Ramp",
+  labelL2toBanxaTitle: "Send to Banxa",
+
   labelDualInvest: "Invest {{symbol}}",
   labelDualBase: "Sell High for {{symbol}}",
   labelDualQuote: "Buy {{symbol}} Low",
-  labelDualAgree: "I have read risk warning",
+  labelDualAgree: "I have read and understand the risk warning.",
   labelDualRiskTitle: "Dual Investment",
   labelDualInvestBaseTitle: "Invest {{symbolA}} (Sell High for {{symbolB}})",
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
@@ -1005,6 +1027,9 @@ export default {
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
   labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
   labelDualSuccess: "Subscription {{symbol}} Successfully",
+  labelDualProcessing: "Waiting for completion",
+  labelDualProcessingDes:
+    "We will try to fulfill your subscription request within minutes. If your subscription cannot be fully completed within the time frame, the unfilled portion will be unlocked. You can return later to resubscribe.",
   labelDualFailed: "Subscribe Failed",
   labelDualFee: "Fee",
   labelDualMin: "Minimum of {{arg}}",
@@ -1044,7 +1069,7 @@ export default {
     "I understand that subscribed assets are locked and users aren’t able to cancel or redeem before the Settlement Date.",
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
-  labelInvestDualTutorialCheck4: "I have read the risk warning.",
+  labelInvestDualTutorialCheck4: "I have read and understand the risk warning.",
   labelInvestDualBeginerMode: "Beginner Mode",
   labelInvestDualBeginerModeDesLine1: "What is Dual Investment?",
   labelInvestDualBeginerModeDesLine2:
@@ -1069,7 +1094,7 @@ export default {
     "Choose to sell or buy at desired price in the future",
   labelDualBeginnerSellHigh: "Sell {{token}} High",
   labelDualBeginnerBuyLow: "Buy {{token}} Low",
-  labelDualBeginnerRecieveStable: "You will receive USDC or USDT",
+  labelDualBeginnerReceiveStable: "You will receive USDC or USDT",
   labelDualBeginnerInvestStable: "You can invest USDC or USDT",
   labelDualBeginnerStep3Title: "Choose Target Price and Settlement Date",
   labelDualBeginnerSellHighFor: "Sell high for {{token}}",
@@ -1174,8 +1199,10 @@ export default {
   labelL2ToL2Method: "Send {{symbol}} to L2",
   labelConfirmAgainByFailed:
     "You had a failed order, please confirm information again...",
+  labelConfirmAgainByFailedWithBalance:
+    "You had a failed order, please confirm information again, Balance of {{symbol}} is {{count}}",
   labelNFTListfav: "Favorite",
-  labelNFTListhide: "Hide",
+  labelNFTListhide: "Hidden",
   labelNFTListall: "Owned",
   labelNFTHide: "Deploy Contract",
   labelNFTUnHide: "Hide NFT",
@@ -1202,6 +1229,136 @@ export default {
   labelSwapSettingSecondConfirm: "Second confirmation",
   labelSwapSettingSecondConfirmTootip: "skip confirm screen when toggled off",
   labelSwapSettingToggleSuccess: "Swap second confirmation trun {{onOrOff}}",
+  labelFeeMin: "Min {{fee}}",
+  labelIknow2: "I know",
+  labelAddAssetTitleBridge: "Add Asset From Another L1",
+  labelAddAssetTitleBridgeDesActive:
+    "If you have transferred tokens from another Ethereum L1 account, it may take some time for this transaction to execute on-chain. Once you receive the assets, you can manually activate the L2 account.",
+  labelAddAssetTitleBridgeDes:
+    "If you have transferred tokens from another Ethereum L1 account, it may take some time for this transaction to execute on-chain.",
+  labelAddAssetTitleExchange: "Add Asset From An Exchange",
+  labelAddAssetTitleExchangeDes:
+    "If you have transferred tokens from an Exchange, please wait. ",
+  labelAddAssetTitleExchangeDesActive:
+    "If you have transferred tokens from an Exchange, please wait. Once you receive the assets, you can manually activate the L2 account.",
+  labelAddAssetTitleCard: "Add Asset With a Card",
+  labelAddAssetTitleCardDes:
+    "If you have purchased crypto with a card, please wait for it to arrive in your account.",
+  labelAddAssetTitleCardDesActive:
+    "If you have purchased crypto with a card, please wait for it to arrive in your account. Upon arrival, L2 will be activated manually.",
+  labelMinFeeForActive: "Min {{fee}}",
+  labelReceiveAddressDes:
+    "If you have transferred tokens from another Loopring L2 account, please wait.",
+  labelReceiveAddressDesActive:
+    "If you have transferred tokens from other Loopring L2 accounts, please close this window and try to activate your L2 account again.",
+  labelDepositWaiting:
+    "It make take some time for this transaction to execute on-chain.",
   labelFrom: "From",
   labelTo: "To",
+  labeltransfer: "Transfer",
+  labelwithdraw: "Withdrawal",
+  labelDeposit: "Deposit",
+  labelFiatAmount: "Fiat Amount",
+  labelAssetRedPackets: "Red Packets",
+  labelRedPacketTitle: "Red Packets",
+  labelOpen: "Open",
+  labelRedPacketChoose: "Choose Red Packet Type",
+  labelRedPacketMain: "Input Red Packet/Send",
+  labelLuckyTokenViewTypePublic: "Public Red Packet",
+  labelLuckyTokenViewTypePrivate: "Private Red Packet",
+  labelLuckyTokenViewTypeDesPublic:
+    "Your gift packet is shared publicly by you via your custom QR code for others to receive.",
+  labelLuckyTokenViewTypeDesPrivate:
+    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
+  labelLuckyRelayToken: "Relay Red Packet",
+  labelLuckyRelayTokenDes:
+    "  If the recipient of the gift also re-shares the packet, they get half of whatever the next person receives as well.",
+  labelLuckyRandomToken: "Lucky Red Packet",
+  labelLuckyRandomTokenDes: "Each recipient will get a random amount of.",
+  labelLuckyCommonToken: "Normal Red Packet",
+  labelLuckyCommonTokenDes: "Each recipient will receive a pre-set split of.",
+  labelToMyL2: "My Loopring L2",
+  labelL1toL2NFTAmount: "NFT Amount",
+  labelInputRedPacketBtnLabel: "Select Token",
+  labelCreateRedPacket: "Send Red Packet",
+  labelMyRedPacket: " My Red Packet Record",
+  labelRedPacketMarkets: "Red Packet Markets",
+  labelRedPacketQRCodeImport: "Receive Red Packet",
+  labelLuckyTokenViewType0: "Private Red Packet",
+  labelLuckyTokenViewTypeDes0:
+    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
+  labelLuckyTokenViewType1: "Public Red Packet",
+  labelLuckyTokenViewTypeDes1:
+    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
+  labelSplit: "Split",
+  labelRedPacketMemo: "Best Wish",
+  labelRedPacketStart: "Active Time",
+  labelRedPacketSendWaitForAuth:
+    "Please confirm to send red packet {{value}} {{symbol}}.",
+  labelRedPacketSendDenied:
+    "You rejected to send {{value}} {{symbol}} red packet.",
+
+  labelRedPacketRecordTitle: "My Red Packet Record",
+  labelRedPacketReceived: "Received",
+  labelRedPacketSend: "Send",
+  labelBanxaNotReady:
+    "Please waiting a while for Banxa sdk loading, if you keep on face this problem try fresh the browser or contact us",
+  labelBanxaFailedForAPI:
+    "Please waiting a while, Banxa service is not available currently.",
+  labelL2toL2AddressFeePaid: "Active account fee had paid",
+  labelL2toL2AddressFeeActiveFee:
+    "Pay recipient's L2 activation fee: {{value}}",
+  labelImportRedPacket: "Import QR code to receive red packet",
+  labelCreateRedPacketTitle: "Send Red Packet",
+  labelClaimWithdrawFee: "Fee",
+  labelClaimWithdrawNotEnough: "Insufficient balance",
+  labelClaimWithdrawTitle: "Claim to Loopring L2",
+  labelClaimWithdrawWaitForAuth: "Please confirm to claim {{symbol}}",
+  labelClaimWithdrawDenied: "You rejected to claim {{symbol}}.",
+  labelClaimWithdrawInProgress: "Processing...",
+  labelClaimWithdrawFailed: "Claim has failed!",
+  labelClaimWithdrawSubmit: "Claim has been submitted",
+  labelClaimWithdrawToken: "Token Amount",
+  labelRedPacketSendSubmit: "Send red packet has been submitted. <1></1>",
+  labelRedPacketSendSuccess: "Red packet Send Successful. <1></1>",
+  labelRedPacketSendFailed: "Send red packet of {{value}} {{symbol}} failed!",
+  labelRedPacketSendInProgress: "Processing...",
+  labelRefreshRedPacket: "Refresh List",
+  labelRedPacketSendCommonTitle: "Normal Red Packet",
+  labelRedPacketSenRandomTitle: "Lucky Red Packet",
+  labelAmountEach: "Amount Each",
+  labelRedPacketTotalAmount: "Total Distribution Amount",
+  labelQuantity: "Quantity",
+  labelAssetAmount: "Asset Amounts: {{value}}",
+  labelCreateRedPacketBtn: "Prepare Red Packet",
+  labelRedPacketsExpireDes:
+    "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
+  labelReserveFee: "Insufficient {{symbol}} with fee",
+  labelRedPacketsInsufficient: "Insufficient {{symbol}} balance",
+  labelRedPacketsMinRange: "Min {{value}}",
+  labelRedPacketsMaxRange: "Max {{value}}",
+  labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
+  labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
+  labelRedPacketsSplitNumber: "Maximum split is {{value}}",
+  labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
+  labelRedPacketsSplitLuckyDetail:
+    "Token amount for each red packet is randomized",
+  labelSendRedPacketTitle: "Send Red Packet",
+  labelRedPacketWaitingBlock: "Block is not ready",
+  labelShare: "Share",
+  labelRelayRedPacket: "Relay Red Packet",
+  labelLuckyRedPacket: "Lucky Red Packet",
+  labelLuckyRedPacketStart: "Starts in: {{}}",
+  labelLuckyRedPacketTimeout: "Red packet has been \n taken out",
+  labelLuckyRedPacketDetail: "View red packet details",
+  labelRedPacketOpenInProgress: "Processing...",
+  labelRedPacketOpenFailed: "Open red packet failed!",
+  labelRedPacketOpen: "Open Red Packet",
+  labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
+  labelAmmExitMiniOrderDisabled:
+    "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
+  labelAmmExitMiniOrderMini:
+    "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
+  labelL2toL2FeeWithActive: "Fee (including activation fee)",
+  labelLpAmount: "LP Amount: {{value}}",
 };

@@ -1,5 +1,5 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   usePairMatch,
   useSocket,

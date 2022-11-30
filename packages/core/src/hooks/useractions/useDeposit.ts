@@ -303,7 +303,7 @@ export const useDeposit = <
       } else if (depositValue.belong && walletLayer1) {
         updateData = {
           belong: depositValue.belong,
-          balance: walletLayer1[depositValue.belong].count ?? 0,
+          balance: walletLayer1[depositValue.belong]?.count ?? 0,
           tradeValue,
         };
       }
@@ -427,16 +427,16 @@ export const useDeposit = <
   const handleDeposit = React.useCallback(
     async (inputValue: any) => {
       myLog("handleDeposit:", inputValue);
-      if (isNewAccount && inputValue.referAddress) {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.Deposit_Sign_WaitForRefer,
-          info: {
-            isAllowInputToAddress,
-          },
-        });
-        await signRefer();
-      }
+      // if (isNewAccount && inputValue.referAddress) {
+      //   setShowAccount({
+      //     isShow: true,
+      //     step: AccountStep.Deposit_Sign_WaitForRefer,
+      //     info: {
+      //       isAllowInputToAddress,
+      //     },
+      //   });
+      //   await signRefer();
+      // }
       const { readyState, connectName } = account;
       let result = { code: ActionResultCode.NoError };
 
@@ -543,6 +543,7 @@ export const useDeposit = <
           const realChainId = chainId === "unknown" ? 1 : chainId;
           let response;
           try {
+            //response = { result: "xxxxxxxx" };
             response = await sdk.deposit(
               connectProvides.usedWeb3,
               account.accAddress,
@@ -588,6 +589,7 @@ export const useDeposit = <
                 value: inputValue.tradeValue,
                 hash: response.result,
                 isAllowInputToAddress,
+                isNewAccount,
               },
               step: AccountStep.Deposit_Submit,
             });

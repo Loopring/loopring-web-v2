@@ -13,7 +13,7 @@ import {
   L2MyLiquidityIcon,
   L2HistoryIcon,
   RewardIcon,
-  RedPockIcon,
+  RedPacketIcon,
   SecurityIcon,
   VipIcon,
   L2OrderIcon,
@@ -117,7 +117,11 @@ import {
   FavSolidIcon,
   SwapSettingIcon,
   WarningIcon2,
-  RightArrowIcon,
+  RoundAddIcon,
+  ApprovalIcon,
+  LockGuardianIcon,
+  ViewHistoryIcon,
+  ScanQRIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -141,7 +145,7 @@ const listIcon = [
   <L2MyLiquidityIcon />,
   <L2HistoryIcon />,
   <RewardIcon />,
-  <RedPockIcon />,
+  <RedPacketIcon />,
   <SecurityIcon />,
   <VipIcon />,
   <L2OrderIcon />,
@@ -245,7 +249,11 @@ const listIcon = [
   <FavSolidIcon />,
   <SwapSettingIcon />,
   <WarningIcon2 />,
-  <RightArrowIcon />,
+  <RoundAddIcon />,
+  <ApprovalIcon />,
+  <LockGuardianIcon />,
+  <ViewHistoryIcon />,
+  <ScanQRIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

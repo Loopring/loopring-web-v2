@@ -12,6 +12,7 @@ import {
   TransferWrap,
   useBasicTrade,
 } from "../../tradePanel/components";
+import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
 
 export const TransferPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -37,9 +38,9 @@ export const TransferPanel = withTranslation(["common", "error"], {
       type,
     });
     const [panelIndex, setPanelIndex] = React.useState(index + 1);
-    // const handleConfirm = (index: number) => {
-    //   setPanelIndex(index);
-    // };
+    const handleConfirm = (index: number) => {
+      setPanelIndex(index);
+    };
     // const hanleConfirm = () => {};
     React.useEffect(() => {
       setPanelIndex(index + 1);
@@ -52,18 +53,16 @@ export const TransferPanel = withTranslation(["common", "error"], {
           key: "confirm",
           element: React.useMemo(
             () => (
-              <></>
-              // @ts-ignore
-              // <TransferConfirm
-              //   {...{
-              //     ...rest,
-              //     onTransferClick,
-              //     type,
-              //     tradeData: switchData.tradeData,
-              //     isThumb,
-              //     handleConfirm,
-              //   }}
-              // />
+              <TransferConfirm
+                {...{
+                  ...rest,
+                  onTransferClick,
+                  type,
+                  tradeData: switchData.tradeData,
+                  isThumb,
+                  handleConfirm,
+                }}
+              />
             ),
             [rest, onTransferClick, type, switchData.tradeData, isThumb]
           ),
@@ -95,7 +94,8 @@ export const TransferPanel = withTranslation(["common", "error"], {
                   onChangeEvent,
                   isThumb,
                   disabled: !!rest.disabled,
-                  onTransferClick,
+                  handleConfirm,
+                  // onTransferClick,
                   transferBtnStatus,
                   assetsData,
                   addrStatus,

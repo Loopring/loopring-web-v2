@@ -347,6 +347,13 @@ const WrapSwapPanel = (rest: any) => {
   };
   let swapProps: SwapProps<IBData<string>, string, any> = {
     refreshRef: React.createRef(),
+    campaignTagConfig: {
+      SWAP: [],
+      ORDERBOOK: [],
+      MARKET: [],
+      AMM: [],
+      FIAT: [],
+    } as any,
     tradeData: tradeData,
     isStob: true,
     tradeCalcData,

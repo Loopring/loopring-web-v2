@@ -190,12 +190,13 @@ export const CollectionInput = <Co extends CollectionMeta>({
         <Box flex={1} display={"flex"} flexDirection={"row"}>
           {collection ? (
             <>
-              {collectionListProps
-                .getIPFSString(
+              {(
+                collection?.cached?.tileUri ??
+                collectionListProps.getIPFSString(
                   collection?.tileUri ?? "",
                   collectionListProps.baseURL
                 )
-                .startsWith("http") ? (
+              ).startsWith("http") ? (
                 <Avatar
                   sx={{
                     bgcolor: "var(--color-border-disable2)",
@@ -210,10 +211,13 @@ export const CollectionInput = <Co extends CollectionMeta>({
                         : "var(--svg-size-large)",
                   }}
                   variant={"rounded"}
-                  src={collectionListProps.getIPFSString(
-                    collection?.tileUri ?? "",
-                    collectionListProps.baseURL
-                  )}
+                  src={
+                    collection?.cached?.tileUri ??
+                    collectionListProps.getIPFSString(
+                      collection?.tileUri ?? "",
+                      collectionListProps.baseURL
+                    )
+                  }
                 />
               ) : (
                 <Avatar

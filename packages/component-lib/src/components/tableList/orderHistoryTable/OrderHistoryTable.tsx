@@ -1246,9 +1246,11 @@ export const OrderHistoryTable = withTranslation("tables")(
             handleScroll ? (e) => handleScroll(e, isOpenOrder) : undefined
           }
           style={{
-            height: isOpenOrder
-              ? RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
-              : "initial",
+            height:
+              isOpenOrder && !isScroll
+                ? RowConfig.rowHeaderHeight +
+                  rawData.length * RowConfig.rowHeight
+                : "initial",
           }}
           {...{ ...defaultArgs, ...props, rawData, showloading: showLoading }}
         />

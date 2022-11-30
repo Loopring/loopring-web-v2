@@ -25,7 +25,7 @@ export class LoopringAPI {
   public static InitApi = (chainId: ChainId) => {
     LoopringAPI.userAPI = new UserAPI({ chainId }, 6000);
     LoopringAPI.exchangeAPI = new ExchangeAPI({ chainId }, 6000);
-    LoopringAPI.globalAPI = new GlobalAPI({ chainId }, 6000);
+    LoopringAPI.globalAPI = new GlobalAPI({ chainId }, 25000);
     LoopringAPI.ammpoolAPI = new AmmpoolAPI({ chainId }, 6000);
     LoopringAPI.walletAPI = new WalletAPI({ chainId }, 6000);
     LoopringAPI.wsAPI = new WsAPI({ chainId }, 6000);

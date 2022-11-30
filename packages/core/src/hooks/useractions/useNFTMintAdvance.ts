@@ -49,7 +49,7 @@ import { getIPFSString, getTimestampDaysLater, makeMeta } from "../../utils";
 import { ActionResultCode, DAYS } from "../../defs";
 import { useHistory } from "react-router-dom";
 import Web3 from "web3";
-import { isAccActivated } from "./checkAccStatus";
+import { isAccActivated } from "./useCheckAccStatus";
 
 const CID = require("cids");
 
@@ -462,9 +462,9 @@ export const useNFTMintAdvance = <
                   image: value.image,
                   collection_metadata: value.collection_metadata,
                   description: value.description ?? EmptyValueTag,
-                  royaltyPercentage: value.royalty_percentage
-                    ? Number(value.royalty_percentage)
-                    : undefined,
+                  royaltyPercentage: isNaN(value.royalty_percentage)
+                    ? undefined
+                    : Number(value.royalty_percentage),
                   ...shouldUpdate,
                 };
                 setIsNotAvailableCID(undefined);

@@ -12,6 +12,7 @@ import {
   SwitchData,
   TransferProps,
   useOpenModals,
+  useSettings,
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
@@ -25,6 +26,11 @@ import {
   WALLET_TYPE,
   LIVE_FEE_TIMES,
   SUBMIT_PANEL_AUTO_CLOSE,
+  FeeInfo,
+  PriceTag,
+  CurrencyToTag,
+  getValuePrecisionThousand,
+  EmptyValueTag,
 } from "@loopring-web/common-resources";
 
 import {
@@ -47,6 +53,8 @@ import {
   getIPFSString,
   useWalletLayer2,
   LAST_STEP,
+  useTokenPrices,
+  volumeToCountAsBigNumber,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -66,7 +74,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
-  const { exchangeInfo, chainId, baseURL } = useSystem();
+  const { exchangeInfo, chainId, baseURL, forexMap } = useSystem();
+  const { currency } = useSettings();
+  const { tokenPrices } = useTokenPrices();
+
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const { updateWalletLayer2 } = useWalletLayer2();
 
@@ -83,6 +94,11 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   const [sureItsLayer2, setSureItsLayer2] =
     React.useState<WALLET_TYPE | undefined>(undefined);
+
+  const [feeWithActive, setFeeWithActive] = React.useState(false);
+  // const [chargeFeeTransferList, setChargeFeeTransferList] = React.useState([
+  //   false,
+  // ]);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -92,26 +108,55 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     checkFeeIsEnough,
   } = useChargeFees({
     tokenAddress: nftTransferValue.tokenAddress,
-    requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    updateData: ({ fee }) => {
-      const nftTransferValue =
-        store.getState()._router_modalData.nftTransferValue;
-      updateNFTTransferData({
-        ...nftTransferValue,
-        balance: sdk
-          .toBig(nftTransferValue.total ?? 0)
-          .minus(nftTransferValue.locked ?? 0)
-          .toNumber(),
-        fee,
-      });
-    },
+    // requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+    requestType: feeWithActive
+      ? sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT
+      : sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+    updateData:
+      // React.useCallback(
+      ({ fee, requestType }) => {
+        let _requestType = feeWithActive
+          ? sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT
+          : sdk.OffchainNFTFeeReqType.NFT_TRANSFER;
+        myLog(
+          "transfer updateData",
+          feeWithActive,
+          requestType,
+          _requestType,
+          _requestType == requestType
+        );
+        if (_requestType === requestType) {
+          const nftTransferValue =
+            store.getState()._router_modalData.nftTransferValue;
+          updateNFTTransferData({
+            ...nftTransferValue,
+            balance: sdk
+              .toBig(nftTransferValue.total ?? 0)
+              .minus(nftTransferValue.locked ?? 0)
+              .toNumber(),
+            fee,
+          });
+        }
+      },
+    //   [feeWithActive]
+    // ),
   });
 
+  const {
+    chargeFeeTokenList: activeAccountFeeList,
+    checkFeeIsEnough: checkActiveFeeIsEnough,
+    // resetIntervalTime: resetActiveIntervalTime,
+  } = useChargeFees({
+    isActiveAccount: true,
+    requestType: undefined as any,
+  });
   const {
     address,
     realAddr,
     setAddress,
     addrStatus,
+    isActiveAccount,
+    isActiveAccountFee,
     isLoopringAddress,
     isAddressCheckLoading,
     isSameAddress,
@@ -186,6 +231,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       return;
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
+    // checkActiveFeeIsEnough({
+    //   isRequiredAPI: true,
+    //   // intervalTime: LIVE_FEE_TIMES,
+    // });
     if (nftTransferValue.nftData) {
       updateNFTTransferData({
         balance: sdk
@@ -221,10 +270,18 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       resetDefault();
     } else {
       resetIntervalTime();
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: undefined as any,
+      });
     }
     return () => {
       resetIntervalTime();
       setAddress("");
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: undefined as any,
+      });
     };
   }, [isShow, info?.isShowLocal]);
 
@@ -371,7 +428,12 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
                 (e as sdk.RESULT_INFO)?.code || 0
               )
             ) {
-              checkFeeIsEnough({ isRequiredAPI: true });
+              checkFeeIsEnough({
+                isRequiredAPI: true,
+                requestType: feeWithActive
+                  ? sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT
+                  : sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+              });
             }
             setShowAccount({
               isShow: true,
@@ -465,6 +527,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
               nftData: nftTransferValue.nftData,
               amount: tradeValue,
             },
+            payPayeeUpdateAccount: !isActiveAccountFee && feeWithActive,
             maxFee: {
               tokenId: feeToken.tokenId,
               amount: fee.toString(), // TEST: fee.toString(),
@@ -501,9 +564,49 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       realAddr,
       address,
       processRequest,
+      isActiveAccountFee,
+      feeWithActive,
     ]
   );
-
+  // const activeFee = React.useMemo(() => {
+  //   // return activeAccountFeeList?.find(
+  //   //   (item: any) => item.belong == feeInfo.belong
+  //   // );
+  // }, [feeInfo, activeAccountFeeList]);
+  const activeAccountPrice = React.useMemo(() => {
+    if (
+      realAddr !== "" &&
+      isActiveAccount == false &&
+      activeAccountFeeList.length &&
+      activeAccountFeeList[0] &&
+      tokenPrices &&
+      activeAccountFeeList[0].feeRaw
+    ) {
+      const feeInfo: FeeInfo = activeAccountFeeList[0];
+      const feeDollar: any =
+        volumeToCountAsBigNumber(feeInfo.belong, feeInfo.feeRaw ?? 0)?.times(
+          tokenPrices[feeInfo.belong]
+        ) ?? undefined;
+      return feeDollar && currency && forexMap[currency]
+        ? "～" +
+            PriceTag[CurrencyToTag[currency]] +
+            getValuePrecisionThousand(
+              // @ts-ignore
+              feeDollar * forexMap[currency],
+              2,
+              2,
+              2,
+              true,
+              { floor: true }
+            )
+        : EmptyValueTag;
+    } else {
+      return;
+    }
+    // return activeAccountFeeList?.find(
+    //   (item: any) => item.belong == feeInfo.belong
+    // );
+  }, [isActiveAccount, activeAccountFeeList, tokenPrices, currency]);
   const handlePanelEvent = useCallback(
     async (data: SwitchData<R>, _switchType: "Tomenu" | "Tobutton") => {
       return new Promise<void>((res: any) => {
@@ -530,6 +633,15 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     },
     [updateNFTTransferData]
   );
+
+  React.useEffect(() => {
+    if (realAddr !== "" && isActiveAccount === false) {
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: "TRANSFER_ACTIVE",
+      });
+    }
+  }, [isActiveAccount, realAddr]);
 
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
@@ -561,12 +673,12 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     transferBtnStatus: btnStatus,
     onTransferClick,
     handleFeeChange,
-    handleOnAddressChange: (value: any) => {
-      setAddress(value || "");
-    },
     addrStatus,
     feeInfo,
     chargeFeeTokenList,
+    activeAccountPrice,
+    // activeAccountFeeList,
+    // chargeFeeTransferList,
     isFeeNotEnough,
     handlePanelEvent,
     isLoopringAddress,
@@ -574,6 +686,45 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     getIPFSString,
     isSameAddress,
     isAddressCheckLoading,
+    handleOnAddressChange: (value: any) => {
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: undefined as any,
+      });
+      setAddress((state) => {
+        if (state !== value || "") {
+          // flag = true;
+          setFeeWithActive((state) => {
+            if (state !== false) {
+              checkFeeIsEnough({
+                isRequiredAPI: true,
+                requestType: sdk.OffchainFeeReqType.TRANSFER,
+              });
+            }
+            return false;
+          });
+        }
+        return value || "";
+      });
+    },
+    feeWithActive,
+    isActiveAccount,
+    isActiveAccountFee,
+    handleOnFeeWithActive: (value: boolean) => {
+      setFeeWithActive(value);
+      if (value && !isActiveAccountFee) {
+        checkFeeIsEnough({
+          isRequiredAPI: true,
+          requestType:
+            sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT,
+        });
+      } else {
+        checkFeeIsEnough({
+          isRequiredAPI: true,
+          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+        });
+      }
+    },
   };
   // const cancelNFTTransfer = () => {
   //   resetDefault();

@@ -7,6 +7,7 @@ import {
   FeeInfo,
   useAddressTypeLists,
   TOAST_TIME,
+  getShortAddr,
 } from "@loopring-web/common-resources";
 import { Button, Toast } from "../../index";
 import { TransferViewProps } from "./Interface";
@@ -23,12 +24,14 @@ export const TransferConfirm = <
   sureItsLayer2,
   handleConfirm,
   tradeData,
+  lastFailed,
   onTransferClick,
   realAddr,
   type,
   feeInfo,
+  feeWithActive,
   memo,
-}: TransferViewProps<T, I, C> & {
+}: Partial<TransferViewProps<T, I, C>> & {
   handleConfirm: (index: number) => void;
 } & WithTranslation) => {
   const { isMobile } = useSettings();
@@ -101,9 +104,23 @@ export const TransferConfirm = <
           {walletList.find((item) => item.value === sureItsLayer2)?.label}
         </Typography>
       </Grid>
+      {/*{feeWithActive && (*/}
+      {/*  <Grid item xs={12}>*/}
+      {/*    <Typography color={"var(--color-text-third)"} variant={"body1"}>*/}
+      {/*      {t("labelL2toL2IsActiveAccount")}*/}
+      {/*    </Typography>*/}
+      {/*    <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>*/}
+      {/*      {feeInfo?.fee + " "} {feeInfo?.belong}*/}
+      {/*    </Typography>*/}
+      {/*  </Grid>*/}
+      {/*)}*/}
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Fee")}
+          {feeWithActive
+            ? t("labelL2toL2FeeWithActive", {
+                addr: getShortAddr(realAddr ?? ""),
+              })
+            : t("labelL2toL2Fee")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {feeInfo?.fee + " "} {feeInfo?.belong}
@@ -120,6 +137,21 @@ export const TransferConfirm = <
       </Grid>
 
       <Grid item marginTop={2} alignSelf={"stretch"} paddingBottom={0}>
+        {lastFailed && (
+          <Typography
+            paddingBottom={1}
+            textAlign={"center"}
+            color={"var(--color-warning)"}
+          >
+            {t("labelConfirmAgainByFailedWithBalance", {
+              symbol:
+                type === "NFT"
+                  ? "NFT"
+                  : ` ${tradeData?.belong}` ?? EmptyValueTag,
+              count: tradeData?.balance,
+            })}
+          </Typography>
+        )}
         <Button
           fullWidth
           variant={"contained"}

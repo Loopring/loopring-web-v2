@@ -3,10 +3,11 @@ import {
   AccountStatus,
   AmmExitData,
   CoinInfo,
+  ErrorMap,
   fnType,
+  getValuePrecisionThousand,
   IBData,
   myLog,
-  SagaStatus,
   SDK_ERROR_MAP_TO_UI,
 } from "@loopring-web/common-resources";
 import {
@@ -15,29 +16,27 @@ import {
   useToggle,
 } from "@loopring-web/component-lib";
 import {
-  IdMap,
-  useTokenMap,
-  useAmmMap,
-  useAccount,
-  store,
-  LoopringAPI,
-  useWalletLayer2Socket,
-  walletLayer2Service,
   accountStaticCallBack,
   ammPairInit,
   btnClickMap,
   btnLabel,
+  DAYS,
+  getTimestampDaysLater,
+  IdMap,
+  initSlippage,
+  LoopringAPI,
   makeCache,
   makeWalletLayer2,
-  initSlippage,
+  store,
+  useAccount,
+  useAmmMap,
   usePageAmmPool,
-  getTimestampDaysLater,
-  DAYS,
+  useTokenMap,
+  useWalletLayer2Socket,
+  walletLayer2Service,
 } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
-
 import { useTranslation } from "react-i18next";
-
 import _ from "lodash";
 
 export const useAmmExit = ({
@@ -47,6 +46,7 @@ export const useAmmExit = ({
   snapShotData,
   stob,
   btos,
+  setConfirmExitSmallOrder,
 }: {
   stob: string;
   btos: string;
@@ -56,6 +56,10 @@ export const useAmmExit = ({
     coinAInfo: CoinInfo<string> | undefined;
     coinBInfo: CoinInfo<string> | undefined;
   };
+  setConfirmExitSmallOrder: (props: {
+    open: boolean;
+    type: "Disabled" | "Mini";
+  }) => void;
   snapShotData:
     | {
         tickerData: sdk.TickerData | undefined;
@@ -63,6 +67,7 @@ export const useAmmExit = ({
       }
     | undefined;
 }) => {
+  const { tickerData } = snapShotData ?? {};
   const {
     ammExit: {
       fees,
@@ -82,10 +87,9 @@ export const useAmmExit = ({
   const { t } = useTranslation(["common", "error"]);
 
   const [isLoading, setIsLoading] = React.useState(false);
-
   const { idIndex, marketArray, marketMap, coinMap, tokenMap } = useTokenMap();
   const { ammMap } = useAmmMap();
-  const { account, status: accountStatus } = useAccount();
+  const { account } = useAccount();
   const { setShowTradeIsFrozen } = useOpenModals();
   const {
     toggle: { exitAmm },
@@ -94,40 +98,134 @@ export const useAmmExit = ({
   const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
   const [baseMinAmt, setBaseMinAmt] = React.useState<any>();
   const [quoteMinAmt, setQuoteMinAmt] = React.useState<any>();
-  const [lpMinAmt, setLpMinAmt] = React.useState<any>();
+  const [lpMinAmt, setLpMinAmt] = React.useState<any>(undefined);
+
+  const {
+    modals: {
+      isShowAmm: { isShow },
+    },
+    // setShowAmm,
+  } = useOpenModals();
 
   React.useEffect(() => {
-    if (account.readyState !== AccountStatus.ACTIVATED && pair) {
-      const btnInfo = accountStaticCallBack(btnLabelNew);
-
-      if (typeof btnInfo === "string") {
-        updatePageAmmExitBtn({ btnI18nKey: btnInfo });
-      }
-
+    if (
+      isShow &&
+      pair &&
+      pair.coinAInfo &&
+      pair.coinBInfo &&
+      tokenMap &&
+      ammPoolSnapshot &&
+      ammPoolSnapshot.poolAddress.toLowerCase() ===
+        tokenMap[
+          `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
+        ].address.toLowerCase()
+    ) {
       initAmmData(pair, undefined, true);
     }
-  }, [account.readyState, pair, stob, updatePageAmmExitBtn]);
+  }, [isShow && pair && ammPoolSnapshot?.poolAddress]);
 
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED && ammData) {
-      const btnInfo = accountStaticCallBack(btnLabelNew, [
-        { ammData, volA_show, volB_show },
-      ]);
-      updatePageAmmExitBtn(btnInfo);
+    if (
+      account.readyState === AccountStatus.ACTIVATED &&
+      ammData?.coinA?.belong &&
+      ammData?.coinB?.belong
+    ) {
+      updatePageAmmExitBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]));
+    } else if (account.readyState !== AccountStatus.ACTIVATED) {
+      const btnInfo = accountStaticCallBack(btnLabelNew);
+      updatePageAmmExitBtn({
+        btnStatus: TradeBtnStatus.AVAILABLE,
+        btnI18nKey: typeof btnInfo === "string" ? btnInfo : btnI18nKey,
+      });
     }
-  }, [account.readyState, ammData, volA_show, volB_show, updatePageAmmExitBtn]);
+  }, [account.readyState, isLoading, ammData, volA_show, volB_show, lpMinAmt]);
+  const updateMiniTradeValue = React.useCallback(() => {
+    const {
+      ammExit: {
+        fees,
+        ammCalcData,
+        ammData: { slippage },
+      },
+      common: { ammPoolSnapshot },
+    } = store.getState()._router_pageAmmPool;
 
-  const initAmmData = React.useCallback(
-    async (pair: any, walletMap: any, isReset: boolean = false) => {
-      const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT);
+    if (ammCalcData && ammPoolSnapshot) {
+      const lpToken = tokenMap[ammCalcData.lpCoin.belong];
+      const { miniLpVal } = sdk.makeExitAmmPoolMini(
+        "0",
+        ammPoolSnapshot,
+        tokenMap as any,
+        idIndex as IdMap
+      );
+      let miniFeeLpWithSlippageVal = "";
 
-      let fee = undefined;
-      let fees = [];
-
-      if (feeInfo?.fee && feeInfo?.fees) {
-        fee = feeInfo?.fee.toNumber();
-        fees = feeInfo?.fees;
+      const slippageReal = sdk
+        .toBig(slippage ?? 0.1)
+        .div(100)
+        .toString();
+      if (fees && ammPoolSnapshot) {
+        const result = sdk.makeExitAmmCoverFeeLP(
+          fees,
+          ammPoolSnapshot,
+          tokenMap,
+          idIndex,
+          slippageReal
+        );
+        miniFeeLpWithSlippageVal = result.miniFeeLpWithSlippageVal;
       }
+      setLpMinAmt(() => {
+        const miniVal = sdk
+          .toBig(
+            sdk.toBig(miniFeeLpWithSlippageVal ?? 0).gte(miniLpVal)
+              ? miniFeeLpWithSlippageVal
+              : miniLpVal
+          )
+          .times(1.1);
+        // mylog(
+        //   "updateMiniTradeValue: miniFeeLpWithSlippage, miniLpVal, miniVal = great one * 1.1 ",
+        //   miniFeeLpWithSlippageVal.toString(),
+        //   miniLpVal.toString(),
+        //   miniVal.toString()
+        // );
+        return getValuePrecisionThousand(
+          miniVal,
+          lpToken.precision,
+          lpToken.precision,
+          lpToken.precision,
+          false,
+          { floor: false }
+        );
+      });
+    }
+  }, [tokenMap, idIndex]);
+  React.useEffect(() => {
+    // const quote: TokenVolumeV3 = ammPoolSnapshot.pooled[1];
+    if (
+      isShow &&
+      pair.coinAInfo &&
+      pair.coinBInfo &&
+      ammPoolSnapshot?.poolAddress &&
+      ammPoolSnapshot.pooled &&
+      ammPoolSnapshot.poolAddress.toLowerCase() ===
+        tokenMap[
+          `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
+        ].address.toLowerCase() &&
+      fees &&
+      ammData.slippage
+    ) {
+      // mylog(
+      //   "updateMiniTradeValue: fees, slippage, ammPoolSnapshot",
+      //   fees,
+      //   ammData.slippage,
+      //   ammPoolSnapshot.pooled,
+      //   ammPoolSnapshot.lp
+      // );
+      updateMiniTradeValue();
+    }
+  }, [pair, ammPoolSnapshot?.lp.volume, fees, isShow, ammData.slippage]);
+  const initAmmData = React.useCallback(
+    (pair: any, walletMap: any, isReset: boolean = false) => {
+      const { ammData, fee } = store.getState()._router_pageAmmPool.ammExit;
 
       const _ammCalcData = ammPairInit({
         fee,
@@ -139,26 +237,18 @@ export const useAmmExit = ({
         ammMap,
         stob,
         btos,
-        tickerData: snapShotData?.tickerData,
-        ammPoolSnapshot: snapShotData?.ammPoolSnapshot,
+        tickerData: tickerData,
+        ammPoolSnapshot: ammPoolSnapshot,
       });
 
-      const feePatch = {
-        fee,
-        fees,
-      };
-
-      myLog("exit feePatch:", feePatch);
-
-      if (isReset) {
-        updatePageAmmExit({ ammCalcData: _ammCalcData, ...feePatch });
-      } else {
-        updatePageAmmExit({
-          ammCalcData: { ...ammCalcData, ..._ammCalcData },
-          ...feePatch,
-        });
-      }
-
+      let newAmmData: any = isReset
+        ? {
+            coinA: { belong: undefined } as any,
+            coinB: { belong: undefined } as any,
+            coinLP: { belong: undefined } as any,
+            slippage: initSlippage,
+          }
+        : { ...ammData };
       if (
         _ammCalcData.lpCoin &&
         _ammCalcData.myCoinA &&
@@ -166,11 +256,7 @@ export const useAmmExit = ({
         tokenMap
       ) {
         const baseT = tokenMap[_ammCalcData.myCoinA.belong];
-
         const quoteT = tokenMap[_ammCalcData.myCoinB.belong];
-
-        const lpToken = tokenMap[_ammCalcData.lpCoin.belong];
-
         setBaseToken(baseT);
         setQuoteToken(quoteT);
         setBaseMinAmt(
@@ -189,38 +275,41 @@ export const useAmmExit = ({
                 .toNumber()
             : undefined
         );
-        setLpMinAmt(
-          lpToken
-            ? sdk
-                .toBig(lpToken.orderAmounts.minimum)
-                .div("1e" + lpToken.decimals)
-                .toNumber()
-            : undefined
-        );
 
-        const newAmmData = {
+        newAmmData = {
+          ...newAmmData,
           coinA: _ammCalcData.myCoinA,
           coinB: _ammCalcData.myCoinB,
-          coinLP: _ammCalcData.lpCoin,
+          coinLP: isReset
+            ? {
+                ..._ammCalcData.lpCoin,
+                tradeValue: undefined,
+              }
+            : {
+                ..._ammCalcData.lpCoin,
+                tradeValue: ammData?.coinLP?.tradeValue,
+              },
           slippage: initSlippage,
         };
-
-        updatePageAmmExit({ ammData: newAmmData });
+        updatePageAmmExit({
+          ammData: newAmmData,
+          ammCalcData: { ...ammCalcData, ..._ammCalcData },
+          // ...feePatch,
+        });
       } else {
-        myLog(
-          "check:",
-          _ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB
-        );
-        myLog("tokenMap:", tokenMap);
+        updatePageAmmExit({
+          ammCalcData: { ...ammCalcData, ..._ammCalcData },
+        });
       }
+      myLog("newAmmData:", newAmmData);
     },
     [
-      snapShotData,
+      ammPoolSnapshot,
+      tickerData,
       coinMap,
       tokenMap,
       ammCalcData,
       ammMap,
-      updatePageAmmExit,
       setBaseToken,
       setQuoteToken,
       setBaseMinAmt,
@@ -229,46 +318,36 @@ export const useAmmExit = ({
   );
 
   const btnLabelActiveCheck = React.useCallback(
-    ({
-      ammData,
-    }): { btnStatus?: TradeBtnStatus; btnI18nKey: string | undefined } => {
-      const times = 1;
+    ({}): { btnStatus?: TradeBtnStatus; btnI18nKey: string | undefined } => {
+      const { ammData, fee } = store.getState()._router_pageAmmPool.ammExit;
 
       const validAmt = ammData?.coinLP?.tradeValue
         ? sdk
-            .toBig(ammData?.coinLP?.tradeValue)
-            .gte(sdk.toBig(times * lpMinAmt))
+            .toBig(ammData?.coinLP?.tradeValue ?? 0)
+            .gte(sdk.toBig(lpMinAmt?.replace(sdk.SEP, "") ?? 0))
         : false;
 
       if (isLoading) {
         return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined };
-      } else {
-        if (account.readyState === AccountStatus.ACTIVATED) {
-          if (
-            ammData === undefined ||
-            ammData?.coinLP?.tradeValue === undefined ||
-            ammData?.coinLP?.tradeValue === 0
-          ) {
-            myLog("will DISABLED! ", ammData);
-
-            return {
-              btnStatus: TradeBtnStatus.DISABLED,
-              btnI18nKey: "labelEnterAmount",
-            };
-          } else if (validAmt) {
-            return {
-              btnStatus: TradeBtnStatus.AVAILABLE,
-              btnI18nKey: undefined,
-            };
-          } else {
-            return {
-              btnStatus: TradeBtnStatus.DISABLED,
-              btnI18nKey: `labelLimitMin| ${times * lpMinAmt} ${
-                ammData?.coinLP?.belong
-              } `,
-            };
-          }
-        } else {
+      } else if (account.readyState === AccountStatus.ACTIVATED) {
+        if (
+          ammData === undefined ||
+          ammData?.coinLP?.tradeValue === undefined ||
+          ammData?.coinLP?.tradeValue === 0 ||
+          fee === undefined ||
+          !lpMinAmt ||
+          fee === 0
+        ) {
+          myLog("will DISABLED! ", ammData, fee);
+          return {
+            btnStatus: TradeBtnStatus.DISABLED,
+            btnI18nKey: "labelEnterAmount",
+          };
+        } else if (!validAmt) {
+          return {
+            btnStatus: TradeBtnStatus.DISABLED,
+            btnI18nKey: `labelLimitMin| ${lpMinAmt} ${ammData?.coinLP?.belong} `,
+          };
         }
       }
 
@@ -285,7 +364,6 @@ export const useAmmExit = ({
       quoteMinAmt,
       lpMinAmt,
       isLoading,
-      updatePageAmmExit,
     ]
   );
 
@@ -294,23 +372,36 @@ export const useAmmExit = ({
   });
 
   const updateExitFee = React.useCallback(async () => {
-    if (pair?.coinBInfo?.simpleName && ammCalcData) {
-      const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT);
-
-      if (feeInfo?.fee && feeInfo?.fees) {
-        const newAmmCalcData = {
-          ...ammCalcData,
-          fee: feeInfo?.fee.toString() + " " + pair.coinBInfo.simpleName,
-        };
-
-        updatePageAmmExit({
-          fee: feeInfo?.fee.toNumber(),
-          fees: feeInfo?.fees,
-          ammCalcData: newAmmCalcData,
+    const account = store.getState().account;
+    if (
+      pair?.coinBInfo?.simpleName &&
+      account.readyState === AccountStatus.ACTIVATED
+    ) {
+      setIsLoading(true);
+      try {
+        const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT);
+        // const ammExit = store.getState()._router_pageAmmPool.ammExit;
+        if (feeInfo?.fee && feeInfo?.fees) {
+          updatePageAmmExit({
+            fee: feeInfo?.fee.toString(),
+            fees: feeInfo?.fees,
+          });
+        }
+      } catch (error) {
+        setToastOpen({
+          open: true,
+          type: "error",
+          content: t(ErrorMap.NO_NETWORK_ERROR.messageKey, { ns: "error" }),
         });
       }
+      setIsLoading(false);
+    } else {
+      updatePageAmmExit({
+        fee: 0,
+        fees: undefined,
+      });
     }
-  }, [updatePageAmmExit, ammCalcData, pair]);
+  }, [pair]);
 
   const handleExit = React.useCallback(
     async ({ data, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
@@ -324,6 +415,7 @@ export const useAmmExit = ({
         return;
       }
 
+      const ammExit = store.getState()._router_pageAmmPool.ammExit;
       const { slippage } = data;
 
       const slippageReal = sdk.toBig(slippage).div(100).toString();
@@ -339,7 +431,8 @@ export const useAmmExit = ({
       }
 
       let newAmmData = {
-        slippage: ammData.slippage,
+        ...ammData,
+        ...ammExit.ammData,
       };
 
       let rawVal = data.coinLP.tradeValue;
@@ -362,21 +455,19 @@ export const useAmmExit = ({
           0
         );
 
-        newAmmData["coinA"] = { ...ammData.coinA, tradeValue: volA_show };
-        newAmmData["coinB"] = { ...ammData.coinB, tradeValue: volB_show };
-
+        newAmmData.coinA = { ...ammData.coinA, tradeValue: volA_show };
+        newAmmData.coinB = { ...ammData.coinB, tradeValue: volB_show };
         ammDataPatch = { request, volA_show, volB_show };
+        updatePageAmmExit({
+          ...ammDataPatch,
+          ammData: {
+            ...newAmmData,
+            coinLP: data.coinLP,
+            slippage: data.slippage,
+          },
+        });
+      } else {
       }
-
-      updatePageAmmExit({
-        ...ammDataPatch,
-        ammData: {
-          ...ammData,
-          ...newAmmData,
-          coinLP: data.coinLP,
-          slippage: data.slippage,
-        },
-      });
     },
     [updatePageAmmExit, idIndex, marketArray, marketMap, baseToken, quoteToken]
   );
@@ -396,143 +487,171 @@ export const useAmmExit = ({
       account,
     });
   };
-
-  const ammCalculator = React.useCallback(
-    async function (props) {
-      setIsLoading(true);
-      updatePageAmmExitBtn({ btnStatus: TradeBtnStatus.LOADING });
-      if (ammInfo?.exitDisable) {
-        setShowTradeIsFrozen({
-          isShow: true,
-          messageKey: "labelNoticeForMarketFrozen",
-          type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
-        });
-        setIsLoading(false);
-      } else if (!exitAmm.enable) {
-        setShowTradeIsFrozen({
-          isShow: true,
-          type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
-        });
-        setIsLoading(false);
-      } else {
-        if (
-          !LoopringAPI.ammpoolAPI ||
-          !LoopringAPI.userAPI ||
-          !request ||
-          !account?.eddsaKey?.sk
-        ) {
-          myLog(
-            " onAmmJoin ammpoolAPI:",
-            LoopringAPI.ammpoolAPI,
-            "joinRequest:",
-            request
-          );
-
-          setToastOpen({
-            open: true,
-            type: "success",
-            content: t("labelJoinAmmFailed"),
-          });
-          setIsLoading(false);
-          walletLayer2Service.sendUserUpdate();
-          return;
-        }
-
-        let req = _.cloneDeep(request);
-
+  const sendRequest = React.useCallback(async () => {
+    const ammExit = store.getState()._router_pageAmmPool.ammExit;
+    try {
+      if (
+        LoopringAPI.ammpoolAPI &&
+        LoopringAPI.userAPI &&
+        ammExit.request &&
+        account?.eddsaKey?.sk &&
+        ammInfo?.domainSeparator
+      ) {
+        // let req = _.cloneDeep(request);
         const patch: sdk.AmmPoolRequestPatch = {
           chainId: store.getState().system.chainId as sdk.ChainId,
           ammName: ammInfo?.__rawConfig__.name ?? "",
           poolAddress: ammInfo?.address ?? "",
           eddsaKey: account.eddsaKey.sk,
         };
-
         const burnedReq: sdk.GetNextStorageIdRequest = {
           accountId: account.accountId,
-          sellTokenId: req.exitTokens.burned.tokenId as number,
+          sellTokenId: ammExit.request.exitTokens.burned.tokenId as number,
         };
         const storageId0 = await LoopringAPI.userAPI.getNextStorageId(
           burnedReq,
           account.apiKey
         );
+        // updatePageAmmExit({
+        //   ammData: {
+        //     ...ammData,
+        //     ...{
+        //       coinLP: { ...ammData.coinLP, tradeValue: 0 },
+        //     },
+        //   },
+        // });
+        myLog("exit ammpool request:", {
+          ...ammExit.request,
+          domainSeparator: ammInfo.domainSeparator,
+          storageId: storageId0.offchainId,
+          validUntil: getTimestampDaysLater(DAYS),
+        });
 
-        req.storageId = storageId0.offchainId;
-        if (ammInfo?.domainSeparator) {
-          req.domainSeparator = ammInfo.domainSeparator;
-        }
-
-        try {
-          myLog("---- try to exit req:", req);
-
-          updatePageAmmExit({
-            ammData: {
-              ...ammData,
-              ...{
-                coinLP: { ...ammData.coinLP, tradeValue: 0 },
-              },
+        const response = await LoopringAPI.ammpoolAPI
+          .exitAmmPool(
+            {
+              ...ammExit.request,
+              domainSeparator: ammInfo.domainSeparator,
+              storageId: storageId0.offchainId,
+              validUntil: getTimestampDaysLater(DAYS),
             },
-          });
-
-          req.validUntil = getTimestampDaysLater(DAYS);
-
-          myLog("exit ammpool req:", req);
-
-          const response = await LoopringAPI.ammpoolAPI.exitAmmPool(
-            req,
             patch,
             account.apiKey
-          );
-
-          myLog("exit ammpool response:", response);
-
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            const errorItem =
-              SDK_ERROR_MAP_TO_UI[
-                (response as sdk.RESULT_INFO)?.code ?? 700001
-              ];
-            setToastOpen({
-              open: true,
-              type: "error",
-              content:
-                t("labelExitAmmFailed") +
-                " error: " +
-                (errorItem
-                  ? t(errorItem.messageKey, { ns: "error" })
-                  : (response as sdk.RESULT_INFO).message),
-            });
-          } else {
-            setToastOpen({
-              open: true,
-              type: "success",
-              content: t("labelExitAmmSuccess"),
-            });
-          }
-        } catch (reason) {
-          sdk.dumpError400(reason);
+          )
+          .finally();
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          throw response;
+        } else {
           setToastOpen({
             open: true,
-            type: "error",
-            content: t("labelExitAmmFailed"),
+            type: "success",
+            content: t("labelExitAmmSuccess"),
           });
-        } finally {
-          setIsLoading(false);
-          updateExitFee();
-          walletLayer2Service.sendUserUpdate();
         }
 
-        if (props.__cache__) {
-          makeCache(props.__cache__);
+        if (ammExit.ammData?.__cache__) {
+          makeCache(ammExit.ammData?.__cache__);
+        }
+      } else {
+        throw new Error("api not ready");
+      }
+    } catch (error: any) {
+      if (error?.message === "api not ready") {
+        setToastOpen({
+          open: true,
+          type: "error",
+          content: t("labelJoinAmmFailed"),
+        });
+      } else if ((error as sdk.RESULT_INFO)?.code) {
+        const errorItem =
+          SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001];
+        setToastOpen({
+          open: true,
+          type: "error",
+          content:
+            t("labelExitAmmFailed") +
+            " error: " +
+            (errorItem
+              ? t(errorItem.messageKey, { ns: "error" })
+              : (error as sdk.RESULT_INFO).message),
+        });
+      } else if (error?.message) {
+        sdk.dumpError400(error);
+        setToastOpen({
+          open: true,
+          type: "error",
+          content: t("labelExitAmmFailed"),
+        });
+      }
+      return;
+    }
+    setIsLoading(false);
+    updatePageAmmExit({
+      ammData: {
+        ...ammData,
+        ...{
+          coinLP: { ...ammData.coinLP, tradeValue: 0 },
+        },
+      },
+    });
+    walletLayer2Service.sendUserUpdate();
+    await updateExitFee();
+  }, [ammData, account, ammInfo]);
+  const submitAmmExit = React.useCallback(async () => {
+    setIsLoading(true);
+    updatePageAmmExitBtn({ btnStatus: TradeBtnStatus.LOADING });
+
+    if (ammInfo?.exitDisable) {
+      setShowTradeIsFrozen({
+        isShow: true,
+        messageKey: "labelNoticeForMarketFrozen",
+        type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
+      });
+      setIsLoading(false);
+    } else if (!exitAmm.enable) {
+      setShowTradeIsFrozen({
+        isShow: true,
+        type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
+      });
+      setIsLoading(false);
+    } else {
+      sendRequest();
+    }
+  }, [request, account, t, updatePageAmmExit]);
+
+  const onSubmitBtnClick = React.useCallback(
+    async (_props) => {
+      const ammExit = store.getState()._router_pageAmmPool.ammExit;
+      if (ammExit.ammData.coinLP.tradeValue && ammExit.volB_show) {
+        // quoteValue < feeValue
+        const validAmt =
+          ammData?.coinLP?.tradeValue && ammExit.volB_show
+            ? sdk.toBig(ammExit.volB_show).gte(ammExit.fee)
+            : false;
+        // Lp value 15% will be charge for Fee should confirm, so for quote token is 15%*2 = 0.3
+        const validMiniAmt =
+          ammData?.coinLP?.tradeValue && ammExit.volB_show
+            ? sdk.toBig(ammExit.volB_show * 0.3).gte(ammExit.fee)
+            : false;
+        if (!validAmt) {
+          // quoteValue < feeValue
+          setConfirmExitSmallOrder({ open: true, type: "Disabled" });
+        } else if (!validMiniAmt) {
+          // Lp value 15% will be charge for Fee should confirm, so for quote token is 15%*2 = 0.3
+          setConfirmExitSmallOrder({ open: true, type: "Mini" });
+        } else {
+          submitAmmExit();
         }
       }
     },
-    [request, ammData, account, t, updatePageAmmExit]
+    [tokenMap, submitAmmExit]
   );
 
   const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
-    [fnType.ACTIVATED]: [ammCalculator],
+    [fnType.ACTIVATED]: [onSubmitBtnClick],
   });
   const onAmmClick = React.useCallback(
     (props: AmmExitData<IBData<any>>) => {
@@ -542,33 +661,22 @@ export const useAmmExit = ({
   );
 
   const walletLayer2Callback = React.useCallback(async () => {
-    if (pair?.coinBInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
-      const { walletMap } = makeWalletLayer2(false);
+    const { walletMap } = makeWalletLayer2(false);
+    if (
+      pair?.coinAInfo?.simpleName &&
+      pair?.coinBInfo?.simpleName &&
+      ammPoolSnapshot &&
+      ammPoolSnapshot.poolAddress.toLowerCase() ===
+        tokenMap[
+          `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
+        ].address.toLowerCase()
+    ) {
       initAmmData(pair, walletMap);
+      await updateExitFee();
       setIsLoading(false);
     }
-  }, [pair?.coinBInfo?.simpleName, snapShotData?.ammPoolSnapshot]);
-
+  }, [pair?.coinBInfo?.simpleName, ammPoolSnapshot]);
   useWalletLayer2Socket({ walletLayer2Callback });
-
-  React.useEffect(() => {
-    if (
-      accountStatus === SagaStatus.UNSET &&
-      LoopringAPI.userAPI &&
-      pair.coinBInfo?.simpleName &&
-      snapShotData?.ammPoolSnapshot &&
-      account.readyState === AccountStatus.ACTIVATED &&
-      tokenMap
-    ) {
-      walletLayer2Callback();
-    }
-  }, [
-    accountStatus,
-    account.readyState,
-    pair?.coinBInfo?.simpleName,
-    snapShotData?.ammPoolSnapshot,
-    tokenMap,
-  ]);
 
   return {
     ammCalcData,
@@ -577,6 +685,11 @@ export const useAmmExit = ({
     btnStatus,
     onAmmClick,
     btnI18nKey,
-    updateExitFee,
+    // updateExitFee,
+    exitSmallOrderCloseClick: (isAgree = false) => {
+      if (isAgree) {
+        submitAmmExit();
+      }
+    },
   };
 };

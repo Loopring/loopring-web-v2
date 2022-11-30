@@ -23,6 +23,13 @@ const TradeWrap = () => {
   };
   const WrapSwapPanel = () => {
     let swapProps: SwapProps<any, any, any> = {
+      campaignTagConfig: {
+        SWAP: [],
+        ORDERBOOK: [],
+        MARKET: [],
+        AMM: [],
+        FIAT: [],
+      } as any,
       refreshRef: React.createRef(),
       tradeData,
       // swapTradeData: tradeData,

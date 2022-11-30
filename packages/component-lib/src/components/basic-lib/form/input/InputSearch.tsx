@@ -1,10 +1,13 @@
-import { OutlinedInput, InputAdornment } from "@mui/material";
-import { SearchIcon, ErrorIcon } from "@loopring-web/common-resources";
-import { OutlinedInputProps } from "@mui/material";
+import {
+  InputAdornment,
+  OutlinedInput,
+  OutlinedInputProps,
+} from "@mui/material";
+import { CloseIcon, SearchIcon } from "@loopring-web/common-resources";
 import React from "react";
 import styled from "@emotion/styled";
 
-const CloseIconStyled = styled(ErrorIcon)`
+const CloseIconStyled = styled(CloseIcon)`
   position: absolute;
   top: 55%;
   transform: translateY(-50%);
@@ -48,7 +51,7 @@ export const InputSearch = React.forwardRef(
                 onChange("" as any);
               }
             }}
-          ></CloseIconStyled>
+          />
         }
       />
     );

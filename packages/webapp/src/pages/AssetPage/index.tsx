@@ -1,4 +1,4 @@
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { Box } from "@mui/material";
 import { AssetTitleMobile, useSettings } from "@loopring-web/component-lib";
@@ -9,6 +9,7 @@ import HistoryPanel from "./HistoryPanel";
 import React from "react";
 import { ViewAccountTemplate } from "@loopring-web/core";
 import { useGetAssets } from "./AssetPanel/hook";
+import { RedPacketPage } from "../RedPacketPage";
 
 export const subMenu = subMenuLayer2;
 
@@ -16,12 +17,15 @@ export const AssetPage = () => {
   let match: any = useRouteMatch("/l2assets/:item");
   const selected = match?.params.item ?? "assets";
   const { assetTitleProps, assetTitleMobileExtendProps } = useGetAssets();
+  const history = useHistory();
   const layer2Router = React.useMemo(() => {
-    switch (selected) {
+    switch (selected.toLowerCase()) {
       case "assets":
         return <AssetPanel />;
       case "history":
         return <HistoryPanel />;
+      // case "redpacket":
+      //   return history.push("redpacket");
       default:
         <AssetPanel />;
     }

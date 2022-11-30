@@ -69,12 +69,12 @@ export const ColorDarkDefault = Object.freeze({
   providerApprove: `${hexToRGB("#ffffff", "0.03")}`,
   boxNFTLabel: `${hexToRGB("#000000", "0.48")}`,
 
-  redPock1: `linear-gradient(96.56deg, #FFD596 1.14%, #FFD390 46.4%, #FDBD6A 98.91%)`,
-  redPock0: `linear-gradient(95.9deg, #FC7A5A 0.7%, #FF6151 99.3%);`,
-  redPock1Disabled: `${hexToRGB("#F6F7FB", "0.5")}`,
-  redPockText1: "#A25402",
-  redPockText0: "#FFF7B1",
-  redPockBorder: "1px dashed rgba(255, 255, 255, 0.2)",
+  redPacket1: `linear-gradient(96.56deg, #FFD596 1.14%, #FFD390 46.4%, #FDBD6A 98.91%)`,
+  redPacket0: `linear-gradient(95.9deg, #FC7A5A 0.7%, #FF6151 99.3%);`,
+  redPacket1Disabled: `${hexToRGB("#F6F7FB", "0.5")}`,
+  redPacketText1: "#A25402",
+  redPacketText0: "#FFF7B1",
+  redPacketBorder: "1px dashed rgba(255, 255, 255, 0.2)",
 });
 
 export const ColorLightDefault = Object.freeze({
@@ -136,12 +136,12 @@ export const ColorLightDefault = Object.freeze({
   providerApprove: `#F6F7FB`,
   boxNFTLabel: `${hexToRGB("#6787FF", "0.08")}`,
 
-  redPock1: `linear-gradient(96.56deg, #FFD596 1.14%, #FFD390 46.4%, #FDBD6A 98.91%)`,
-  redPock0: `linear-gradient(95.9deg, #FC7A5A 0.7%, #FF6151 99.3%);`,
-  redPock1Disabled: `${hexToRGB("#F6F7FB", "0.5")}`,
-  redPockText1: "#A25402",
-  redPockText0: "#FFF7B1",
-  redPockBorder: "1px dashed rgba(255, 255, 255, 0.2)",
+  redPacket1: `linear-gradient(96.56deg, #FFD596 1.14%, #FFD390 46.4%, #FDBD6A 98.91%)`,
+  redPacket0: `linear-gradient(95.9deg, #FC7A5A 0.7%, #FF6151 99.3%);`,
+  redPacket1Disabled: `${hexToRGB("#F6F7FB", "0.5")}`,
+  redPacketText1: "#A25402",
+  redPacketText0: "#FFF7B1",
+  redPacketBorder: "1px dashed rgba(255, 255, 255, 0.2)",
 });
 
 export type ColorBaseInterface = typeof ColorDarkDefault;

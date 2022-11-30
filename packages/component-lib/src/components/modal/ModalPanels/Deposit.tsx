@@ -1,4 +1,4 @@
-import { Trans } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { DepositBase, IconType, PanelProps } from "./BasicPanel";
 import { Box, Link, Typography } from "@mui/material";
 import { getShortAddr, LinkIcon } from "@loopring-web/common-resources";
@@ -67,6 +67,7 @@ export const Deposit_Failed = (props: PanelProps) => {
 
 export const Deposit_Submit = (props: PanelProps) => {
   const { isMobile } = useSettings();
+  const { t } = useTranslation();
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: (
@@ -100,8 +101,11 @@ export const Deposit_Submit = (props: PanelProps) => {
         minWidth={340}
         justifyContent={"center"}
         marginTop={2}
-        paddingX={isMobile ? 1 : 5}
+        paddingX={isMobile ? 1 : 0}
       >
+        <Typography color={"var(--color-warning)"}>
+          {t("labelDepositWaiting")}
+        </Typography>
         <Typography
           display={"inline-flex"}
           justifyContent={"space-between"}
@@ -135,7 +139,7 @@ export const Deposit_Submit = (props: PanelProps) => {
             {props.t("labelL1toL2TO")}
           </Typography>
           <Typography variant={"body1"} color={"var(--color-text-primary)"}>
-            {props.to ? "L2: " + getShortAddr(props.to) : "Loopring L2"}
+            {props.to ? "L2: " + getShortAddr(props.to) : t("labelToMyL2")}
           </Typography>
         </Typography>
       </Box>

@@ -6,6 +6,7 @@ import {
   LoadingIcon,
   SoursURL,
   AddressError,
+  AccountStatus,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
@@ -24,6 +25,8 @@ import * as sdk from "@loopring-web/loopring-sdk";
 
 export const DepositWrap = <
   T extends {
+    accountReady?: AccountStatus;
+
     referAddress?: string;
     toAddress?: string;
     addressError?: { error: boolean; message?: string };
@@ -40,6 +43,7 @@ export const DepositWrap = <
   description,
   btnInfo,
   depositBtnStatus,
+  accountReady,
   onDepositClick,
   isNewAccount,
   handleError,
@@ -47,6 +51,7 @@ export const DepositWrap = <
   chargeFeeTokenList,
   onChangeEvent,
   handleClear,
+  handleConfirm,
   isAllowInputToAddress,
   toIsAddressCheckLoading,
   // toIsLoopringAddress,
@@ -59,10 +64,16 @@ export const DepositWrap = <
   referStatus,
   wait = globalSetup.wait,
   allowTrade,
+
   ...rest
-}: DepositViewProps<T, I> & WithTranslation) => {
+}: DepositViewProps<T, I> & {
+  accountReady?: AccountStatus;
+  handleConfirm: (index: number) => void;
+} & WithTranslation) => {
   const inputBtnRef = React.useRef();
   let { feeChargeOrder, isMobile } = useSettings();
+  const [minFee, setMinFee] =
+    React.useState<{ minFee: string } | undefined>(undefined);
   const [_toAddress, setToAddress] = React.useState(tradeData.toAddress);
   const getDisabled = React.useMemo(() => {
     return disabled || depositBtnStatus === TradeBtnStatus.DISABLED;
@@ -78,9 +89,10 @@ export const DepositWrap = <
       );
 
       if (index === -1) {
+        setMinFee(undefined);
         return (
           <Typography
-            color={"var(--color-warning)"}
+            color={"var(--color-error)"}
             component={"p"}
             variant={"body1"}
             marginBottom={1}
@@ -91,28 +103,53 @@ export const DepositWrap = <
           </Typography>
         );
       }
-      const Max: number =
-        Number(chargeFeeTokenList[index].fee.toString().replace(sdk.SEP, "")) *
-        4;
-      if (Max > (tradeData.tradeValue ?? 0)) {
-        return (
-          <Typography
-            color={"var(--color-warning)"}
-            component={"p"}
-            variant={"body1"}
-            marginBottom={1}
-          >
-            {t("labelIsNotEnoughFeeToken", {
-              symbol: tradeData.belong,
-              fee: Max,
-            })}
-          </Typography>
-        );
-      } else {
+      const Max = sdk
+        .toBig(chargeFeeTokenList[index].fee.toString().replace(sdk.SEP, ""))
+        .times(4);
+      setMinFee({
+        minFee: t("labelMinFeeForActive", {
+          symbol: tradeData.belong.toString(),
+          fee: Max.toString(),
+        }),
+      });
+      if (!tradeData?.tradeValue || Max.lte(tradeData.tradeValue ?? 0)) {
         return <></>;
+      } else {
+        return (
+          <>
+            {/*<Typography*/}
+            {/*  color={"var(--color-error)"}*/}
+            {/*  component={"p"}*/}
+            {/*  display={"inline-flex"}*/}
+            {/*  justifyContent={"space-between"}*/}
+            {/*  variant={"body1"}*/}
+            {/*  marginBottom={1}*/}
+            {/*  width={"100"}*/}
+            {/*>*/}
+            {/*  <Typography>{}</Typography>*/}
+            {/*  <Typography>{}</Typography>*/}
+            {/*</Typography>*/}
+            <Typography
+              color={"var(--color-error)"}
+              component={"p"}
+              variant={"body1"}
+              marginBottom={1}
+            >
+              {t("labelIsNotEnoughFeeToken", {
+                symbol: tradeData.belong,
+                fee: Max.toString(),
+              })}
+            </Typography>
+          </>
+        );
       }
     } else if (isNewAccount) {
+      setMinFee(undefined);
       return (
+        // <Typography color={"var(--color-text-secondary)"}>
+        //   <Typography></Typography>
+        //   <Typography></Typography>
+        // </Typography>
         <Typography
           color={"var(--color-text-third)"}
           component={"p"}
@@ -161,82 +198,84 @@ export const DepositWrap = <
             tradeData,
             coinMap,
             inputButtonDefaultProps,
+            placeholderText: minFee?.minFee ? minFee.minFee : "0.00",
             inputBtnRef: inputBtnRef,
           }}
         />
+        {isNewAccount && <>{isNewAlert}</>}
       </Grid>
-      {!isAllowInputToAddress && isNewAccount ? (
-        <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
-          <TextField
-            className={"text-address"}
-            value={tradeData.referAddress ? tradeData.referAddress : ""}
-            error={
-              (!!tradeData.referAddress &&
-                referStatus !== AddressError.NoError) ||
-              !referIsLoopringAddress
-            }
-            label={t("depositLabelRefer")}
-            placeholder={t("depositLabelPlaceholder")}
-            onChange={(event) => {
-              const referAddress = event.target.value;
-              //...tradeData,
-              onChangeEvent(0, {
-                tradeData: { referAddress } as T,
-                to: "button",
-              });
-            }}
-            fullWidth={true}
-          />
-          {tradeData.referAddress !== "" ? (
-            referIsAddressCheckLoading ? (
-              <LoadingIcon
-                width={24}
-                style={{ top: "32px", right: "8px", position: "absolute" }}
-              />
-            ) : (
-              <IconClearStyled
-                color={"inherit"}
-                size={"small"}
-                style={{ top: "30px" }}
-                aria-label="Clear"
-                onClick={handleClear}
-              >
-                <CloseIcon />
-              </IconClearStyled>
-            )
-          ) : (
-            ""
-          )}
-          <Box marginLeft={1 / 2}>
-            {referStatus !== AddressError.NoError || !referIsLoopringAddress ? (
-              <Typography
-                color={"var(--color-error)"}
-                variant={"body2"}
-                marginTop={1 / 2}
-                alignSelf={"stretch"}
-                position={"relative"}
-              >
-                {t("labelAddressNotLoopring")}
-              </Typography>
-            ) : tradeData.referAddress &&
-              realReferAddress &&
-              !referIsAddressCheckLoading ? (
-              <Typography
-                color={"var(--color-text-primary)"}
-                variant={"body2"}
-                marginTop={1 / 2}
-                style={{ wordBreak: "break-all" }}
-              >
-                {realReferAddress}
-              </Typography>
-            ) : (
-              <></>
-            )}
-          </Box>
-        </Grid>
-      ) : (
-        <></>
-      )}
+      {/*{!isAllowInputToAddress && isNewAccount ? (*/}
+      {/*  <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>*/}
+      {/*    <TextField*/}
+      {/*      className={"text-address"}*/}
+      {/*      value={tradeData.referAddress ? tradeData.referAddress : ""}*/}
+      {/*      error={*/}
+      {/*        (!!tradeData.referAddress &&*/}
+      {/*          referStatus !== AddressError.NoError) ||*/}
+      {/*        !referIsLoopringAddress*/}
+      {/*      }*/}
+      {/*      label={t("depositLabelRefer")}*/}
+      {/*      placeholder={t("depositLabelPlaceholder")}*/}
+      {/*      onChange={(event) => {*/}
+      {/*        const referAddress = event.target.value;*/}
+      {/*        //...tradeData,*/}
+      {/*        onChangeEvent(0, {*/}
+      {/*          tradeData: { referAddress } as T,*/}
+      {/*          to: "button",*/}
+      {/*        });*/}
+      {/*      }}*/}
+      {/*      fullWidth={true}*/}
+      {/*    />*/}
+      {/*    {tradeData.referAddress !== "" ? (*/}
+      {/*      referIsAddressCheckLoading ? (*/}
+      {/*        <LoadingIcon*/}
+      {/*          width={24}*/}
+      {/*          style={{ top: "32px", right: "8px", position: "absolute" }}*/}
+      {/*        />*/}
+      {/*      ) : (*/}
+      {/*        <IconClearStyled*/}
+      {/*          color={"inherit"}*/}
+      {/*          size={"small"}*/}
+      {/*          style={{ top: "30px" }}*/}
+      {/*          aria-label="Clear"*/}
+      {/*          onClick={handleClear}*/}
+      {/*        >*/}
+      {/*          <CloseIcon />*/}
+      {/*        </IconClearStyled>*/}
+      {/*      )*/}
+      {/*    ) : (*/}
+      {/*      ""*/}
+      {/*    )}*/}
+      {/*    <Box marginLeft={1 / 2}>*/}
+      {/*      {referStatus !== AddressError.NoError || !referIsLoopringAddress ? (*/}
+      {/*        <Typography*/}
+      {/*          color={"var(--color-error)"}*/}
+      {/*          variant={"body2"}*/}
+      {/*          marginTop={1 / 2}*/}
+      {/*          alignSelf={"stretch"}*/}
+      {/*          position={"relative"}*/}
+      {/*        >*/}
+      {/*          {t("labelAddressNotLoopring")}*/}
+      {/*        </Typography>*/}
+      {/*      ) : tradeData.referAddress &&*/}
+      {/*        realReferAddress &&*/}
+      {/*        !referIsAddressCheckLoading ? (*/}
+      {/*        <Typography*/}
+      {/*          color={"var(--color-text-primary)"}*/}
+      {/*          variant={"body2"}*/}
+      {/*          marginTop={1 / 2}*/}
+      {/*          style={{ wordBreak: "break-all" }}*/}
+      {/*        >*/}
+      {/*          {realReferAddress}*/}
+      {/*        </Typography>*/}
+      {/*      ) : (*/}
+      {/*        <></>*/}
+      {/*      )}*/}
+      {/*    </Box>*/}
+      {/*  </Grid>*/}
+      {/*) : (*/}
+      {/*  <></>*/}
+      {/*)}*/}
       {isAllowInputToAddress ? (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
           <Box display={isToAddressEditable ? "inherit" : "none"}>
@@ -416,14 +455,15 @@ export const DepositWrap = <
             {t("labelIsETHDepositAlert")}
           </Typography>
         )}
-        {isNewAlert}
         <Button
           fullWidth
           variant={"contained"}
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            onDepositClick(tradeData);
+            accountReady == AccountStatus.UN_CONNECT
+              ? onDepositClick(tradeData)
+              : handleConfirm && handleConfirm(0);
           }}
           loading={
             !getDisabled && depositBtnStatus === TradeBtnStatus.LOADING

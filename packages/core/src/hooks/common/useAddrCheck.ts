@@ -24,6 +24,7 @@ export const useAddressCheck = () => {
     React.useState(false);
   const [isLoopringAddress, setIsLoopringAddress] = React.useState(false);
   const [isActiveAccount, setIsActiveAccount] = React.useState(false);
+  const [isActiveAccountFee, setIsActiveAccountFee] = React.useState(false);
   const [isSameAddress, setIsSameAddress] = React.useState(false);
   const [isCFAddress, setIsCFAddress] = React.useState(false);
   const [isContractAddress, setIsContractAddress] = React.useState(false);
@@ -41,7 +42,7 @@ export const useAddressCheck = () => {
           if (
             /^0x[a-fA-F0-9]{40}$/g.test(address) ||
             /.*\.eth$/gi.test(address) ||
-            (/^\d{5}$/g.test(address) && Number(address) > 10000)
+            (/^\d{5,8}$/g.test(address) && Number(address) > 10000)
           ) {
             if (nodeTimer.current !== -1) {
               clearTimeout(nodeTimer.current);
@@ -99,9 +100,15 @@ export const useAddressCheck = () => {
                   (response as sdk.RESULT_INFO).message)
               ) {
                 setIsLoopringAddress(false);
+                setIsActiveAccount(false);
+                setIsActiveAccountFee(false);
               } else {
                 setIsLoopringAddress(true);
                 setIsActiveAccount(response.accInfo.nonce !== 0);
+                setIsActiveAccountFee(
+                  response.accInfo.nonce === 0 &&
+                    /FirstUpdateAccountPaid/gi.test(response.accInfo.tags ?? "")
+                );
                 setCheckAddaccountId(response.accInfo.accountId);
               }
             }
@@ -164,5 +171,6 @@ export const useAddressCheck = () => {
     isSameAddress,
     isContract1XAddress,
     isContractAddress,
+    isActiveAccountFee,
   };
 };
