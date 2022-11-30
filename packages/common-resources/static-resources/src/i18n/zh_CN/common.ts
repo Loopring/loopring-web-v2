@@ -468,11 +468,11 @@ export default {
   labelNFTMintNoMetaDetail:
     "Your NFT metadata should identify <1>name, image, and royalty_percentage (integer from 0 to 10)</1>.",
   nftDeployDescription: "Deploy Collection",
-  nftDeployTitle: "Deploy Collection",
+  nftDeployTitle: "Deploy Contract",
   nftMintTitle: "Create NFT",
   nftMintBtn: "Create NFT",
   labelMintInProgress: "Processing...",
-  labelNFTDeployBtn: "Deploy NFT",
+  labelNFTDeployBtn: "Deploy Contract",
   labelNFTDeployBroker: "Deploy Broker:",
   labelDeployInProgress: "Processing...",
   labelNFTDeployTitle: "Deploy NFT",
