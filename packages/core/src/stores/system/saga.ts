@@ -14,7 +14,6 @@ import {
   CustomError,
   ErrorMap,
   ForexMap,
-  myLog,
 } from "@loopring-web/common-resources";
 import { statusUnset as accountStatusUnset } from "../account/reducer";
 import { ChainId, Currency } from "@loopring-web/loopring-sdk";
@@ -37,11 +36,55 @@ import * as sdk from "@loopring-web/loopring-sdk";
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
 ) {
+  const { chainId } = store.getState().system;
+  const _tokenMap = JSON.parse(window.localStorage.getItem("tokenMap") ?? "{}")[
+    chainId
+  ];
+  const _ammpools = JSON.parse(window.localStorage.getItem("ammpools") ?? "{}")[
+    chainId
+  ];
+  const _markets = JSON.parse(window.localStorage.getItem("markets") ?? "{}")[
+    chainId
+  ];
+
+  const _disableWithdrawTokenList = JSON.parse(
+    window.localStorage.getItem("disableWithdrawTokenList") ?? "{}"
+  )[chainId];
+  if (_tokenMap && _ammpools && _markets && _disableWithdrawTokenList) {
+    const { tokensMap, coinMap, totalCoinMap, idIndex, addressIndex } =
+      sdk.makeMarket(_tokenMap);
+    const { markets, pairs, marketArr, tokenArr } = sdk.makeMarkets(_markets);
+    const { ammpools } = sdk.makeAmmPool(_ammpools);
+    // const { markets, pairs, marketArr, tokenArr } = sdk.makeMarkets(_disableWithdrawTokenList);
+    store.dispatch(
+      getTokenMap({
+        tokensMap,
+        coinMap,
+        totalCoinMap,
+        idIndex,
+        addressIndex,
+        marketMap: markets,
+        pairs,
+        marketArr,
+        tokenArr,
+        disableWithdrawTokenList: [..._disableWithdrawTokenList],
+      })
+    );
+    store.dispatch(initAmmMap({ ammpools }));
+  }
+
   const [
-    { tokensMap, coinMap, totalCoinMap, idIndex, addressIndex },
-    { ammpools },
-    { pairs, marketArr, tokenArr, markets },
-    { disableWithdrawTokenList },
+    {
+      tokensMap,
+      coinMap,
+      totalCoinMap,
+      idIndex,
+      addressIndex,
+      raw_data: tokenListRaw,
+    },
+    { ammpools, raw_data: ammpoolsRaw },
+    { pairs, marketArr, tokenArr, markets, raw_data: marketRaw },
+    { disableWithdrawTokenList, raw_data: disableWithdrawTokenListRaw },
   ] = yield all([
     call(async () => LoopringAPI.exchangeAPI?.getTokens()),
     call(async () => LoopringAPI.ammpoolAPI?.getAmmPoolConf()),
@@ -69,17 +112,20 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       marketArr,
       tokenArr,
       disableWithdrawTokenList,
+      tokenListRaw,
+      disableWithdrawTokenListRaw,
+      marketRaw,
     })
   );
   // store.dispatch(
   //   getTokenPricesStatus({ tokenPrices, __timer__, __rawConfig__ })
   // );
   store.dispatch(getNotify(undefined));
-  store.dispatch(initAmmMap({ ammpools }));
+  store.dispatch(initAmmMap({ ammpools, ammpoolsRaw }));
   yield take("tokenMap/getTokenMapStatus");
   store.dispatch(getTokenPrices(undefined));
   yield take("tokenPrices/getTokenPricesStatus");
-  store.dispatch(getTickers({ tickerKeys: marketArr }));
+  store.dispatch(getTickers({ tickerKeys: marketArr, marketRaw }));
   store.dispatch(getAmmMap({ ammpools }));
   yield take("ammMap/getAmmMapStatus");
   store.dispatch(getAmmActivityMap({ ammpools }));

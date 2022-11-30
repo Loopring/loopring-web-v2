@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { AmmMapStates, GetAmmMapParams } from "./interface";
 import { SagaStatus } from "@loopring-web/common-resources";
 import { AmmPoolInfoV3, LoopringMap } from "@loopring-web/loopring-sdk";
+import { store } from "../../index";
 
 const initialState: Required<AmmMapStates<object, object>> = {
   ammMap: undefined,
@@ -15,9 +16,17 @@ const ammMapSlice: Slice = createSlice({
   reducers: {
     initAmmMap(
       state,
-      action: PayloadAction<{ ammpools: LoopringMap<AmmPoolInfoV3> }>
+      action: PayloadAction<{
+        ammpools: LoopringMap<AmmPoolInfoV3>;
+        ammpoolsRaw?: any;
+      }>
     ) {
+      const { chainId } = store.getState().system;
+      const ammpoolsChain = JSON.parse(
+        window.localStorage.getItem("ammpools") ?? ""
+      );
       const ammpools = action.payload.ammpools;
+      const ammpoolsRaw = action.payload.ammpoolsRaw;
       const ammMap: { [key: string]: string } = Reflect.ownKeys(
         ammpools
       ).reduce((prev, key) => {
@@ -42,6 +51,16 @@ const ammMapSlice: Slice = createSlice({
         };
       }, {});
       state.ammMap = ammMap;
+
+      if (ammpoolsRaw) {
+        localStorage.setItem(
+          "disableWithdrawTokenList",
+          JSON.stringify({
+            ...ammpoolsChain,
+            [chainId]: ammpoolsRaw,
+          })
+        );
+      }
     },
     getAmmMap(state, _action: PayloadAction<GetAmmMapParams>) {
       state.status = SagaStatus.PENDING;

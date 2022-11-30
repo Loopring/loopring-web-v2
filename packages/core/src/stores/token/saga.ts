@@ -2,6 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getTokenMap, getTokenMapStatus } from "./reducer";
 import { GetTokenMapParams } from "./interface";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { store } from "../index";
 
 const getTokenMapApi = async <R extends { [key: string]: any }>({
   tokensMap,
@@ -13,7 +14,18 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
   marketArr,
   tokenArr,
   disableWithdrawTokenList,
+  tokenListRaw,
+  disableWithdrawTokenListRaw,
+  marketRaw,
 }: GetTokenMapParams<R>) => {
+  const { chainId } = store.getState().system;
+  const tokenChainMap = window.localStorage.getItem("tokenMap");
+  const disableWithdrawTokenListChain = window.localStorage.getItem(
+    "disableWithdrawTokenList"
+  );
+  const marketChain = window.localStorage.getItem("market");
+  // debugger;
+
   // let coinMap: CoinMap<any, CoinInfo<any>> = {};
   // let totalCoinMap: CoinMap<any, CoinInfo<any>> = {};
   let tokenMap: any = tokensMap;
@@ -54,6 +66,36 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
     //   [tokensMap[key].tokenId]: key as string,
     // };
   });
+  if (disableWithdrawTokenListRaw) {
+    localStorage.setItem(
+      "disableWithdrawTokenList",
+      JSON.stringify({
+        ...(disableWithdrawTokenListChain
+          ? JSON.parse(disableWithdrawTokenListChain)
+          : {}),
+        [chainId]: disableWithdrawTokenListRaw,
+      })
+    );
+  }
+  if (tokenListRaw) {
+    localStorage.setItem(
+      "tokenMap",
+      JSON.stringify({
+        ...(tokenChainMap ? JSON.parse(tokenChainMap) : {}),
+        [chainId]: tokenListRaw,
+      })
+    );
+  }
+  if (marketRaw) {
+    localStorage.setItem(
+      "market",
+      JSON.stringify({
+        ...(marketChain ? JSON.parse(marketChain) : {}),
+        [chainId]: marketRaw,
+      })
+    );
+  }
+
   return {
     data: {
       coinMap,
@@ -83,7 +125,11 @@ export function* getPostsSaga<R extends { [key: string]: any }>({
       marketArr,
       tokenArr,
       disableWithdrawTokenList,
+      tokenListRaw,
+      marketRaw,
+      disableWithdrawTokenListRaw,
     } = payload;
+
     // @ts-ignore
     const { data } = yield call(getTokenMapApi, {
       tokensMap,
@@ -95,6 +141,9 @@ export function* getPostsSaga<R extends { [key: string]: any }>({
       marketArr,
       tokenArr,
       disableWithdrawTokenList,
+      tokenListRaw,
+      marketRaw,
+      disableWithdrawTokenListRaw,
     });
 
     yield put(getTokenMapStatus({ ...data, marketMap }));

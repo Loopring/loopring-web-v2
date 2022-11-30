@@ -23,7 +23,7 @@ const tokenMapSlice: Slice<TokenMapStates<object>> = createSlice({
       state.status = SagaStatus.PENDING;
     },
     getTokenMapStatus(state, action: PayloadAction<TokenMapStates<object>>) {
-      // @ts-ignore      console.log(action.type)
+      // @ts-ignore
       if (action.error) {
         state.status = SagaStatus.ERROR;
         // @ts-ignore
