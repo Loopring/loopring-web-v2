@@ -45,6 +45,7 @@ export const MyNFTCollectionList = withTranslation("common")(
               pathname: `/NFT/assetsNFT/byCollection/${item.contractAddress}--${item.id}`,
               search: searchParams.toString(),
             });
+            window.scrollTo(0, 0);
           }}
           {...{ ...(collectionListProps as any) }}
         />
