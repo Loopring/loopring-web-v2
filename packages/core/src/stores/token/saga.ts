@@ -23,7 +23,7 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
   const disableWithdrawTokenListChain = window.localStorage.getItem(
     "disableWithdrawTokenList"
   );
-  const marketChain = window.localStorage.getItem("market");
+  const marketChain = window.localStorage.getItem("markets");
   // debugger;
 
   // let coinMap: CoinMap<any, CoinInfo<any>> = {};
@@ -88,7 +88,7 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
   }
   if (marketRaw) {
     localStorage.setItem(
-      "market",
+      "markets",
       JSON.stringify({
         ...(marketChain ? JSON.parse(marketChain) : {}),
         [chainId]: marketRaw,

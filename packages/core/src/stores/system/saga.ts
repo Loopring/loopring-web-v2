@@ -225,7 +225,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     yield take("tokenMap/getTokenMapStatus");
     store.dispatch(getTokenPrices(undefined));
     yield take("tokenPrices/getTokenPricesStatus");
-    store.dispatch(getTickers({ tickerKeys: marketArr, marketRaw }));
+    store.dispatch(getTickers({ tickerKeys: marketArr }));
     store.dispatch(getAmmMap({ ammpools }));
     yield take("ammMap/getAmmMapStatus");
     store.dispatch(getAmmActivityMap({ ammpools }));
@@ -265,7 +265,6 @@ const should15MinutesUpdateDataGroup = async (
       if (key.toString().toUpperCase() === Currency.usd.toUpperCase()) {
         indexUSD = index;
       }
-
       return (
         LoopringAPI?.walletAPI?.getLatestTokenPrices({
           currency: key.toString().toUpperCase(),
@@ -273,6 +272,7 @@ const should15MinutesUpdateDataGroup = async (
         }) ?? Promise.resolve({ tokenPrices: null })
       );
     });
+    myLog("getLatestTokenPrices & getGasPrice from service");
 
     const [{ gasPrice }, ...restForexs] = await Promise.all([
       LoopringAPI.exchangeAPI.getGasPrice(),
@@ -364,7 +364,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
           exchangeInfo = _exchangeInfo;
           // const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(chainId)
           [{ forexMap, gasPrice }, allowTrade] = await Promise.all([
-            // LoopringAPI.exchangeAPI.getExchangeInfo(),
             should15MinutesUpdateDataGroup(chainId),
             LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
               return {
@@ -373,6 +372,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
               };
             }),
           ]);
+
           LoopringAPI.exchangeAPI
             .getExchangeInfo()
             .then(({ exchangeInfo }: any) => {

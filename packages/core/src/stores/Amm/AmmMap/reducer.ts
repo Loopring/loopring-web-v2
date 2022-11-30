@@ -20,7 +20,7 @@ const ammMapStoreLocal = (ammpoolsRaw: any, chainId?: any) => {
     window.localStorage.getItem("ammpools") ?? "{}"
   );
   localStorage.setItem(
-    "disableWithdrawTokenList",
+    "ammpools",
     JSON.stringify({
       ...ammpoolsChain,
       [chainId ?? 1]: ammpoolsRaw,
