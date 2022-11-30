@@ -27,6 +27,7 @@ import { useHistory } from "react-router-dom";
 import { TagIconList } from "../../block";
 import { useSettings } from "../../../stores";
 import styled from "@emotion/styled";
+import { useTheme } from "@emotion/react";
 const PopoverStyled = styled(Popover)`
   .MuiPaper-elevation2 {
     box-shadow: none;
@@ -254,6 +255,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
       },
       [swapData.tradeData, rest?.tradeData, onChangeEvent]
     );
+    const theme = useTheme()
 
     const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
       index: index, // show default show
@@ -332,7 +334,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                       aria-describedby={settingPopoverId}
                       size={"large"}
                     >
-                      <SwapSettingIcon />
+                      <SwapSettingIcon htmlColor={theme.colorBase.logo}/>
                     </IconButtonStyled>
                   </Typography>
                   <PopoverStyled
@@ -430,7 +432,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                       aria-label="to Transaction"
                       size={"large"}
                     >
-                      <OrderListIcon color={"primary"} fontSize={"large"} />
+                      <OrderListIcon fill={theme.colorBase.logo} fontSize={"large"} />
                     </IconButtonStyled>
                   </Typography>
                 </Box>
@@ -444,6 +446,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
               onSlippageChangeCallBack,
               tradeData,
               slippageArray,
+              theme
             ]
           ),
         },
