@@ -509,10 +509,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
-  myLog(
-    "info?.lastFailed ",
-    store.getState().modals.isShowAccount.info?.lastFailed
-  );
+  // myLog(
+  //   "info?.lastFailed ",
+  //   store.getState().modals.isShowAccount.info?.lastFailed
+  // );
 
   const transferProps: TransferProps<any, any> = {
     type: "TOKEN",

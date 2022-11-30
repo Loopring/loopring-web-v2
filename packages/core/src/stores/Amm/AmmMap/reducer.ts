@@ -1,14 +1,31 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { AmmMapStates, GetAmmMapParams } from "./interface";
-import { SagaStatus } from "@loopring-web/common-resources";
-import { AmmPoolInfoV3, LoopringMap } from "@loopring-web/loopring-sdk";
-import { store } from "../../index";
+import { myLog, SagaStatus } from "@loopring-web/common-resources";
+import {
+  AmmPoolInfoV3,
+  ChainId,
+  LoopringMap,
+} from "@loopring-web/loopring-sdk";
 
 const initialState: Required<AmmMapStates<object, object>> = {
   ammMap: undefined,
   __timer__: -1,
   status: SagaStatus.PENDING,
   errorMessage: null,
+};
+const ammMapStoreLocal = (ammpoolsRaw: any, chainId?: any) => {
+  // const system = store.getState().system;
+  myLog("system", chainId);
+  const ammpoolsChain = JSON.parse(
+    window.localStorage.getItem("ammpools") ?? "{}"
+  );
+  localStorage.setItem(
+    "disableWithdrawTokenList",
+    JSON.stringify({
+      ...ammpoolsChain,
+      [chainId ?? 1]: ammpoolsRaw,
+    })
+  );
 };
 const ammMapSlice: Slice = createSlice({
   name: "ammMap",
@@ -19,14 +36,12 @@ const ammMapSlice: Slice = createSlice({
       action: PayloadAction<{
         ammpools: LoopringMap<AmmPoolInfoV3>;
         ammpoolsRaw?: any;
+        chainId: ChainId;
       }>
     ) {
-      const { chainId } = store.getState().system;
-      const ammpoolsChain = JSON.parse(
-        window.localStorage.getItem("ammpools") ?? ""
-      );
       const ammpools = action.payload.ammpools;
       const ammpoolsRaw = action.payload.ammpoolsRaw;
+
       const ammMap: { [key: string]: string } = Reflect.ownKeys(
         ammpools
       ).reduce((prev, key) => {
@@ -53,13 +68,7 @@ const ammMapSlice: Slice = createSlice({
       state.ammMap = ammMap;
 
       if (ammpoolsRaw) {
-        localStorage.setItem(
-          "disableWithdrawTokenList",
-          JSON.stringify({
-            ...ammpoolsChain,
-            [chainId]: ammpoolsRaw,
-          })
-        );
+        ammMapStoreLocal(ammpoolsRaw, action.payload.chainId);
       }
     },
     getAmmMap(state, _action: PayloadAction<GetAmmMapParams>) {
