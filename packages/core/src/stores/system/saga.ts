@@ -352,13 +352,14 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
           process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION;
       }
       try {
+        myLog("exchangeInfo chainId", chainId);
         const _exchangeInfo = JSON.parse(
           window.localStorage.getItem("exchangeInfo") ?? "{}"
-        )[chainId];
+        );
         // const _allowTrade = JSON.parse(window.localStorage.getItem("allowTrade") ?? "{}")[
         //   chainId
         //   ];
-        if (_exchangeInfo) {
+        if (_exchangeInfo[chainId]) {
           myLog("exchangeInfo from localstorage");
           exchangeInfo = _exchangeInfo;
           // const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(chainId)
@@ -379,7 +380,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
                 "exchangeInfo",
                 JSON.stringify({
                   ..._exchangeInfo,
-                  [chainId]: exchangeInfo,
+                  [exchangeInfo.chainId]: exchangeInfo,
                 })
               );
             });
@@ -400,7 +401,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
             "exchangeInfo",
             JSON.stringify({
               ..._exchangeInfo,
-              [chainId]: exchangeInfo,
+              [exchangeInfo.chainId]: exchangeInfo,
             })
           );
         }
