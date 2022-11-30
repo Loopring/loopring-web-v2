@@ -1231,5 +1231,5 @@ export default {
   labelTo: "To",
   labeltransfer: "Transfer",
   labelwithdraw: "Withdrawal",
-  labelDeposit: "Deposit",
+  labeldeposit: "Deposit",
 };
