@@ -383,9 +383,9 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
                   [exchangeInfo.chainId]: exchangeInfo,
                 })
               );
+              myLog("exchangeInfo from service");
             });
         } else {
-          myLog("exchangeInfo no localstorage");
           [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
             await Promise.all([
               LoopringAPI.exchangeAPI.getExchangeInfo(),
@@ -397,6 +397,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
                 };
               }),
             ]);
+          myLog("exchangeInfo from service because no localstorage ");
           window.localStorage.setItem(
             "exchangeInfo",
             JSON.stringify({
