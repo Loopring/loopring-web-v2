@@ -466,7 +466,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           resetWithdrawData();
           walletLayer2Service.sendUserUpdate();
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
-          if (store.getState().modals.isShowAccount.isShow) {
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step ==
+              AccountStep.Withdraw_Success
+          ) {
             setShowAccount({ isShow: false });
           }
         }

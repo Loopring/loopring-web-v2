@@ -341,7 +341,11 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
           });
           walletLayer2Service.sendUserUpdate();
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
-          if (store.getState().modals.isShowAccount.isShow) {
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step ==
+              AccountStep.NFTWithdraw_Success
+          ) {
             setShowAccount({ isShow: false });
             searchParams.delete("detail");
             history.push(pathname + "?" + searchParams.toString());

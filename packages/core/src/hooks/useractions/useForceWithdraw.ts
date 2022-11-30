@@ -311,7 +311,11 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
             `/l2assets/history/transactions?types=${TransactionTradeViews.forceWithdraw}`
           );
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
-          if (store.getState().modals.isShowAccount.isShow) {
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step ==
+              AccountStep.ForceWithdraw_Submit
+          ) {
             setShowAccount({ isShow: false });
           }
         }

@@ -597,7 +597,13 @@ export const useDeposit = <
               value: inputValue.tradeValue,
             });
             await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
-            setShowAccount({ isShow: false });
+            if (
+              store.getState().modals.isShowAccount.isShow &&
+              store.getState().modals.isShowAccount.step ==
+                AccountStep.Deposit_Submit
+            ) {
+              setShowAccount({ isShow: false });
+            }
           } else {
             throw { code: UIERROR_CODE.ERROR_NO_RESPONSE };
           }

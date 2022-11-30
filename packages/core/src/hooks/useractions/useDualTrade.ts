@@ -18,6 +18,7 @@ import {
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -454,6 +455,14 @@ export const useDualTrade = <
               value: tradeDual.coinSell.tradeValue,
             },
           });
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step ==
+              AccountStep.Dual_Success
+          ) {
+            setShowAccount({ isShow: false });
+          }
         }
       } else {
         throw new Error("api not ready");
