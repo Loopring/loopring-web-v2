@@ -98,8 +98,8 @@ const initConfig = function* <_R extends { [key: string]: any }>(
         disableWithdrawTokenList: [..._disableWithdrawTokenList],
       })
     );
-    yield delay(1);
     store.dispatch(initAmmMap({ ammpools, chainId }));
+    yield delay(1);
     store.dispatch(getTokenPrices(undefined));
     yield take("tokenPrices/getTokenPricesStatus");
     store.dispatch(getTickers({ tickerKeys: marketArr }));
