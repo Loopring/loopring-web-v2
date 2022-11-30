@@ -349,7 +349,7 @@ export const SmallOrderAlert = withTranslation("common")(
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
-          width={isMobile ? "100%" : "var(--modal-width)"}
+          width={isMobile ? "98%" : "var(--modal-width)"}
         >
           <ModalCloseButton
             onClose={() => {
@@ -423,7 +423,7 @@ export const SmallOrderAlert = withTranslation("common")(
               </Box>
               <Box display={"flex"} paddingX={4} width={"100%"} marginTop={3}>
                 <Button
-                  fullWidth={true}
+                  fullWidth
                   variant={"contained"}
                   size={"large"}
                   color={"primary"}
@@ -489,7 +489,7 @@ export const SwapSecondConfirmation = withTranslation("common")(
           alignItems={"center"}
           justifyContent={"center"}
           paddingBottom={3}
-          width={isMobile ? "100%" : "var(--modal-width)"}
+          width={isMobile ? "98%" : "var(--modal-width)"}
         >
           <ModalCloseButton
             onClose={() => {
