@@ -1229,4 +1229,7 @@ export default {
     "It make take some time for this transaction to execute on-chain.",
   labelFrom: "From",
   labelTo: "To",
+  labeltransfer: "Transfer",
+  labelwithdraw: "Withdrawal",
+  labelDeposit: "Deposit",
 };
