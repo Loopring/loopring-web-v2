@@ -349,7 +349,7 @@ export const SmallOrderAlert = withTranslation("common")(
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
-          width={isMobile ? "98%" : "var(--modal-width)"}
+          width={isMobile ? "90%" : "var(--modal-width)"}
         >
           <ModalCloseButton
             onClose={() => {
@@ -489,7 +489,7 @@ export const SwapSecondConfirmation = withTranslation("common")(
           alignItems={"center"}
           justifyContent={"center"}
           paddingBottom={3}
-          width={isMobile ? "98%" : "var(--modal-width)"}
+          width={isMobile ? "90%" : "var(--modal-width)"}
         >
           <ModalCloseButton
             onClose={() => {
