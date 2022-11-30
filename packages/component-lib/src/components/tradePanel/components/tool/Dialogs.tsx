@@ -1156,7 +1156,7 @@ export const LayerswapNotice = withTranslation("common", {
                 `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}&lockNetwork=true&lockAddress=true&addressSource=loopringWeb`
               );
               window.opener = null;
-              setShowAccount({ isShow: false });
+              // setShowAccount({ isShow: false });
               setShowLayerSwapNotice({ isShow: false });
             }}
             color={"primary"}
