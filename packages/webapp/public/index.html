@@ -118,18 +118,7 @@
         tag.parentNode.insertBefore(b, tag);
 
 
-        const close = document.querySelector('#iframeBanxaClose')
-        const parentsNode =  document.querySelector("#iframeBanxaTarget");
-				function closeBanax (){
-          const items = parentsNode.getElementsByTagName('iframe')
-					if(items && items[0]){
-            parentsNode.removeChild(items[0])
-          }
-          parentsNode.style.display = "none";
-        }
-        if(close && parentsNode){
-          parentsNode.addEventListener('click',closeBanax)
-        }
+
         // var banaxDom = d.createElement("div");
         // banaxDom.id = "iframeBanaxTarget";
         // var body = document.body;

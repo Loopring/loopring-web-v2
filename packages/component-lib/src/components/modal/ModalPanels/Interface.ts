@@ -89,6 +89,13 @@ export enum AccountStep {
   Transfer_RAMP_Success,
   Transfer_RAMP_Failed,
 
+  Transfer_BANXA_WaitForAuth,
+  Transfer_BANXA_First_Method_Denied,
+  Transfer_BANXA_User_Denied,
+  Transfer_BANXA_In_Progress,
+  Transfer_BANXA_Success,
+  Transfer_BANXA_Failed,
+
   Withdraw_WaitForAuth,
   Withdraw_First_Method_Denied,
   Withdraw_User_Denied,

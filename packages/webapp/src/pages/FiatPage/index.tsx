@@ -1,5 +1,6 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
+  BanxaConfirm,
   Button,
   RampConfirm,
   useSettings,
@@ -8,6 +9,7 @@ import {
 import React from "react";
 import {
   RAMP_SELL_PANEL,
+  useBanxaConfirm,
   useModalData,
   useNotify,
   useRampConfirm,
@@ -28,18 +30,22 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const history = useHistory();
   const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
     useVendor();
-  const { resetTransferRampData } = useModalData();
+  const { resetTransferRampData, resetTransferBanxaData } = useModalData();
+
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
-    TradeTypes.Buy
-    // match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
-    //   ? TradeTypes.Buy
-    //   : TradeTypes.Sell
+    match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
+      ? TradeTypes.Buy
+      : TradeTypes.Sell
   );
   const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
+  const { banxaViewProps, offBanxaValue } = useBanxaConfirm({
+    sellPanel,
+    setSellPanel,
+  });
 
   const fiatView = React.useMemo(() => {
     return (
@@ -69,22 +75,22 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                 </Typography>
               }
             />
-            {/*<Tab*/}
-            {/*  value={TradeTypes.Sell}*/}
-            {/*  label={*/}
-            {/*    <Typography*/}
-            {/*      display={"inline-flex"}*/}
-            {/*      alignItems={"center"}*/}
-            {/*      component={"span"}*/}
-            {/*      variant={"h5"}*/}
-            {/*      whiteSpace={"pre"}*/}
-            {/*      marginRight={1}*/}
-            {/*      className={"fiat-Title"}*/}
-            {/*    >*/}
-            {/*      {t("labelSell")}*/}
-            {/*    </Typography>*/}
-            {/*  }*/}
-            {/*/>*/}
+            <Tab
+              value={TradeTypes.Sell}
+              label={
+                <Typography
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  component={"span"}
+                  variant={"h5"}
+                  whiteSpace={"pre"}
+                  marginRight={1}
+                  className={"fiat-Title"}
+                >
+                  {t("labelSell")}
+                </Typography>
+              }
+            />
           </Tabs>
         </Box>
         <Box
@@ -121,7 +127,49 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                 ) : (
                   <></>
                 )}
-                {sellPanel === RAMP_SELL_PANEL.CONFIRM && (
+                {sellPanel === RAMP_SELL_PANEL.BANXA_CONFIRM && (
+                  <Box flex={1} display={"flex"} flexDirection={"column"}>
+                    <Box marginBottom={2}>
+                      <Button
+                        startIcon={<BackIcon fontSize={"small"} />}
+                        variant={"text"}
+                        size={"medium"}
+                        sx={{ color: "var(--color-text-secondary)" }}
+                        color={"inherit"}
+                        onClick={() => {
+                          if (window.rampInstance) {
+                            window.rampInstance.close();
+                          } else {
+                            setSellPanel(RAMP_SELL_PANEL.LIST);
+                            resetTransferRampData();
+                          }
+                        }}
+                      >
+                        {t("labelBack")}
+                      </Button>
+                    </Box>
+                    {banxaViewProps ? (
+                      <BanxaConfirm {...{ ...banxaViewProps, offBanxaValue }} />
+                    ) : (
+                      <Box
+                        flex={1}
+                        display={"flex"}
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                        height={"90%"}
+                      >
+                        <img
+                          className="loading-gif"
+                          alt={"loading"}
+                          width="36"
+                          src={`${SoursURL}images/loading-line.gif`}
+                        />
+                        {/*<LoadingIcon style={{ width: 32, height: 32 }} />*/}
+                      </Box>
+                    )}
+                  </Box>
+                )}
+                {sellPanel === RAMP_SELL_PANEL.RAMP_CONFIRM && (
                   <Box flex={1} display={"flex"} flexDirection={"column"}>
                     <Box marginBottom={2}>
                       <Button

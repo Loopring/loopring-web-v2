@@ -995,6 +995,8 @@ export default {
   labelSell: "Sell",
   labelRampNoBalance: "Insufficient {{belong}} balance",
   labelL2toRampTitle: "Send to Ramp",
+  labelL2toBanxaTitle: "Send to Banxa",
+
   labelDualInvest: "Invest {{symbol}}",
   labelDualBase: "Sell High for {{symbol}}",
   labelDualQuote: "Buy {{symbol}} Low",
@@ -1232,4 +1234,5 @@ export default {
   labeltransfer: "Transfer",
   labelwithdraw: "Withdrawal",
   labelDeposit: "Deposit",
+  labelFaitAmount: "Token Amount",
 };

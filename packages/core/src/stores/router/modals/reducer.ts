@@ -10,6 +10,7 @@ import {
   WithdrawData,
 } from "./interface";
 import {
+  BanxaOrder,
   CollectionMeta,
   MINT_LIMIT,
   MintTradeNFT,
@@ -81,9 +82,11 @@ const initialActiveAccountState: ActiveAccountData = {
 const initialState: ModalDataStatus = {
   lastStep: LAST_STEP.default,
   offRampValue: undefined,
+  offBanxaValue: undefined,
   withdrawValue: initialWithdrawState,
   transferValue: initialTransferState,
   transferRampValue: initialTransferState,
+  transferBanxaValue: initialTransferState,
   depositValue: initialDepositState,
   nftWithdrawValue: initialWithdrawState,
   nftTransferValue: initialTransferState,
@@ -108,6 +111,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       this.resetWithdrawData(state);
       this.resetTransferData(state);
       this.resetTransferRampData(state);
+      this.resetTransferBanxaData(state);
       this.resetDepositData(state);
       this.resetNFTWithdrawData(state);
       this.resetNFTTransferData(state);
@@ -137,6 +141,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetTransferRampData(state) {
       state.lastStep = LAST_STEP.default;
       state.transferRampValue = initialTransferState;
+    },
+    resetTransferBanxaData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.transferBanxaValue = initialTransferState;
     },
     resetDepositData(state) {
       state.lastStep = LAST_STEP.default;
@@ -209,6 +217,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetOffRampData(state) {
       state.lastStep = LAST_STEP.default;
       state.offRampValue = undefined;
+    },
+    resetOffBanxaData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.offBanxaValue = undefined;
     },
     updateActiveAccountData(
       state,
@@ -298,6 +310,29 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       }
       state.transferRampValue = {
         ...state.transferRampValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.transferValue.balance,
+        belong,
+        tradeValue,
+        address: address !== "*" ? address : undefined,
+        ...rest,
+      };
+    },
+    updateTransferBanxaData(
+      state,
+      action: PayloadAction<Partial<TransferData>>
+    ) {
+      const { belong, balance, tradeValue, address, __request__, ...rest } =
+        action.payload;
+      state.lastStep = LAST_STEP.offRampTrans;
+      if (__request__) {
+        state.transferBanxaValue.__request__ = __request__;
+        return state;
+      }
+      state.transferBanxaValue = {
+        ...state.transferBanxaValue,
         balance:
           balance === undefined || balance >= 0
             ? balance
@@ -505,6 +540,15 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       //   ...action.payload,
       // };
     },
+    updateOffBanxaData(state, action: PayloadAction<{ order: BanxaOrder }>) {
+      state.lastStep = LAST_STEP.offBanxa;
+      const { order } = action.payload;
+      if (order) {
+        state.offBanxaValue = {
+          ...order,
+        };
+      }
+    },
   },
 });
 
@@ -516,6 +560,7 @@ export const {
   updateWithdrawData,
   updateTransferData,
   updateTransferRampData,
+  updateTransferBanxaData,
   updateDepositData,
   updateNFTWithdrawData,
   updateNFTTransferData,
@@ -526,6 +571,7 @@ export const {
   updateCollectionAdvanceData,
   updateCollectionData,
   updateOffRampData,
+  updateOffBanxaData,
   resetForceWithdrawData,
   resetNFTWithdrawData,
   resetNFTTransferData,
@@ -541,5 +587,7 @@ export const {
   resetCollectionAdvanceData,
   resetCollectionData,
   resetOffRampData,
+  resetOffBanxaData,
+  resetTransferBanxaData,
   resetAll,
 } = modalDataSlice.actions;

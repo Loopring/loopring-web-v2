@@ -30,6 +30,10 @@ import {
   updateForceWithdrawData,
   updateTransferRampData,
   resetTransferRampData,
+  updateTransferBanxaData,
+  resetTransferBanxaData,
+  updateOffBanxaData,
+  resetOffBanxaData,
 } from "./reducer";
 import {
   ActiveAccountData,
@@ -43,6 +47,7 @@ import {
 } from "./interface";
 import React from "react";
 import {
+  BanxaOrder,
   CollectionMeta,
   NFTWholeINFO,
   RequireOne,
@@ -135,9 +140,22 @@ export function useModalData(): {
     }>
   ) => void;
   resetOffRampData: () => void;
+
+  offBanxaValue: Partial<BanxaOrder> | undefined;
+  updateOffBanxaData: (
+    offRamp: Partial<{
+      order: BanxaOrder;
+    }>
+  ) => void;
+  resetOffBanxaData: () => void;
   transferRampValue: TransferData;
   resetTransferRampData: () => void;
   updateTransferRampData: (
+    transferData: RequireOne<TransferData, never>
+  ) => void;
+  transferBanxaValue: TransferData;
+  resetTransferBanxaData: () => void;
+  updateTransferBanxaData: (
     transferData: RequireOne<TransferData, never>
   ) => void;
 } {
@@ -169,6 +187,12 @@ export function useModalData(): {
     updateTransferRampData: React.useCallback(
       (transferData: RequireOne<TransferData, never>) => {
         dispatch(updateTransferRampData(transferData));
+      },
+      [dispatch]
+    ),
+    updateTransferBanxaData: React.useCallback(
+      (transferData: RequireOne<TransferData, never>) => {
+        dispatch(updateTransferBanxaData(transferData));
       },
       [dispatch]
     ),
@@ -267,6 +291,16 @@ export function useModalData(): {
       },
       [dispatch]
     ),
+    updateOffBanxaData: React.useCallback(
+      (
+        offRamp: Partial<{
+          order: BanxaOrder;
+        }>
+      ) => {
+        dispatch(updateOffBanxaData(offRamp));
+      },
+      [dispatch]
+    ),
     resetForceWithdrawData: React.useCallback(() => {
       dispatch(resetForceWithdrawData(undefined));
     }, [dispatch]),
@@ -278,6 +312,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetTransferRampData: React.useCallback(() => {
       dispatch(resetTransferRampData(undefined));
+    }, [dispatch]),
+    resetTransferBanxaData: React.useCallback(() => {
+      dispatch(resetTransferBanxaData(undefined));
     }, [dispatch]),
     resetDepositData: React.useCallback(() => {
       dispatch(resetDepositData(undefined));
@@ -314,6 +351,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetOffRampData: React.useCallback(() => {
       dispatch(resetOffRampData(undefined));
+    }, [dispatch]),
+    resetOffBanxaData: React.useCallback(() => {
+      dispatch(resetOffBanxaData(undefined));
     }, [dispatch]),
   };
 }
