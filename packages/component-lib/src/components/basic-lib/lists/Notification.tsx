@@ -269,6 +269,7 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
         //   history.replace(``)
         // }
         onClick={() => {
+          const hasParamTag = /\?/.test(link);
           if (webRouter) {
             const [_, target, router] = webRouter.match(/\[(.*)\](.*)/i) ?? [];
             if (router && target === "self") {
@@ -277,13 +278,19 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
               window.open(
                 router
                   ? `https://loopring.io/#/${router}`
-                  : `${link}` + `&l2account=${account?.accAddress}`,
+                  : `${link}${hasParamTag ? "" : "?"}` +
+                      `&l2account=${account?.accAddress}`,
                 "_blank"
               );
               window.opener = null;
             }
           } else if (link) {
-            window.open(`${link}&l2account=${account?.accAddress}`, "_blank");
+            window.open(
+              `${link}${hasParamTag ? "" : "?"}&l2account=${
+                account?.accAddress
+              }`,
+              "_blank"
+            );
             window.opener = null;
           }
         }}
