@@ -26,11 +26,11 @@ export const NotificationPanel = ({
     notifications: [],
     invest: {} as any,
     campaignTagConfig: {
-      orderbook: [],
-      market: [],
-      Amm: [],
-      Fiat: [],
-      swap: [],
+      ORDERBOOK: [],
+      MARKET: [],
+      AMM: [],
+      FIAT: [],
+      SWAP: [],
     },
   },
 }: {
@@ -39,7 +39,11 @@ export const NotificationPanel = ({
   // myLog("notifications", notification.notifications);
   notification.notifications = notification.notifications?.reduce(
     (prev, item) => {
-      if (item.endShow >= Date.now() && item.startShow <= Date.now()) {
+      if (
+        item.endShow >= Date.now() &&
+        item.startShow <= Date.now() &&
+        item.webFlag
+      ) {
         prev.push(item);
       }
       return prev;
@@ -47,7 +51,11 @@ export const NotificationPanel = ({
     [] as NOTIFICATION_ITEM[]
   );
   notification.activities = notification.activities?.reduce((prev, item) => {
-    if (item.endShow >= Date.now() && item.startShow <= Date.now()) {
+    if (
+      item.endShow >= Date.now() &&
+      item.startShow <= Date.now() &&
+      item.webFlag
+    ) {
       prev.push(item);
     }
     return prev;
