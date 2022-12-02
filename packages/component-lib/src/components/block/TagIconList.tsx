@@ -26,6 +26,7 @@ export const TagIconList = React.memo(
           return (
             <React.Fragment key={item?.name + index}>
               {item.symbols?.includes(symbol) &&
+              item.webFlag &&
               item.endShow >= Date.now() &&
               item.startShow <= Date.now() ? (
                 item?.behavior === "tooltips" ? (

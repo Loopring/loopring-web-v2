@@ -45,6 +45,11 @@ export type NOTIFICATION_ITEM = {
   color: NOTIFY_COLOR;
   banner?: string;
   webRouter?: string;
+  webFlag: boolean;
+  versionIosMin: string;
+  versionIosMax: string;
+  versionAndroidMin: string;
+  versionAndroidMax: string;
 };
 export type ACTIVITY = NOTIFICATION_ITEM;
 export type CAMPAIGN_TAG = {
@@ -56,6 +61,11 @@ export type CAMPAIGN_TAG = {
   symbols: Array<string>;
   behavior: "tooltips" | "link";
   content: string;
+  webFlag: boolean;
+  versionIosMin: string;
+  versionIosMax: string;
+  versionAndroidMin: string;
+  versionAndroidMax: string;
 };
 export enum SCENARIO {
   ORDERBOOK = "ORDERBOOK",
@@ -69,6 +79,7 @@ export type CAMPAIGNTAGCONFIG = {
 };
 export type NOTIFICATION = {
   activities: ACTIVITY[];
+  activitiesInvest: ACTIVITY[];
   notifications: NOTIFICATION_ITEM[];
   invest: {
     investAdvice: InvestAdvice[];
