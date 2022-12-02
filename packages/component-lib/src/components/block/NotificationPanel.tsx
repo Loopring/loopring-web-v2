@@ -23,6 +23,7 @@ const BoxStyle = styled(Box)`
 export const NotificationPanel = ({
   notification = {
     activities: [],
+    activitiesInvest: [],
     notifications: [],
     invest: {} as any,
     campaignTagConfig: {
@@ -60,6 +61,20 @@ export const NotificationPanel = ({
     }
     return prev;
   }, [] as ACTIVITY[]);
+
+  notification.activities = notification?.activitiesInvest?.reduce(
+    (prev, item) => {
+      if (
+        item.endShow >= Date.now() &&
+        item.startShow <= Date.now() &&
+        item.webFlag
+      ) {
+        prev.push(item);
+      }
+      return prev;
+    },
+    notification.activities as ACTIVITY[]
+  );
 
   const hasActivities =
     notification.activities && notification.activities?.length;

@@ -78,6 +78,7 @@ export type CAMPAIGNTAGCONFIG = {
 };
 export type NOTIFICATION = {
   activities: ACTIVITY[];
+  activitiesInvest: ACTIVITY[];
   notifications: NOTIFICATION_ITEM[];
   invest: {
     investAdvice: InvestAdvice[];
