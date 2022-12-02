@@ -34,7 +34,7 @@ export const mockReturn: { order: BanxaOrder } = {
     merchant_fee: null,
     merchant_commission: null,
     meta_data: null,
-    blockchain: { id: 30, code: "LRC", description: "Loopring" },
+    blockchain: { id: 30, code: "LRC", description: "Loopring " },
   },
 };
 export const mockAfterKYCReturn: { order: BanxaOrder } = {
@@ -49,7 +49,7 @@ export const mockAfterKYCReturn: { order: BanxaOrder } = {
     fiat_amount: 73.7,
     coin_code: "USDC",
     coin_amount: 49.99,
-    wallet_address: null,
+    wallet_address: "0x35405E1349658BcA12810d0f879Bf6c5d89B512C",
     wallet_address_tag: null,
     fee: 0,
     fee_tax: 0,
@@ -75,10 +75,10 @@ export enum BanxaCheck {
   OrderShow = 3,
 }
 export enum OrderENDReason {
-  UserCancel,
-  Expired,
-  Done,
-  Waiting,
+  UserCancel = 0,
+  Expired = 1,
+  Done = 2,
+  Waiting = 3,
 }
 // export enum IPFSCommands {
 //   ErrorGetIpfs = "ErrorGetIpfs",
@@ -179,13 +179,18 @@ export const banxaService = {
           });
         })
         .finally(() => {
-          mockAfterKYCReturn;
+          // subject.next({
+          //   status: BanxaCheck.CheckOrderStatus,
+          //   data: {
+          //     ...res,
+          //     ...mockAfterKYCReturn,
+          //   },
+          // });
         })
         .catch((res: any) => {
           subject.next({
             status: BanxaCheck.CheckOrderStatus,
             data: {
-              ...res,
               ...mockAfterKYCReturn,
             },
           });
@@ -203,20 +208,13 @@ export const banxaService = {
     });
   },
   orderDone: () => {
-    banxaService.banxaEnd({ reason: OrderENDReason.Done, data: "" });
-    // subject.next({
-    //   status: BanxaCheck.CheckOrderStatus,
-    //   data: {
-    //     ...res,
-    //     ...mockAfterKYCReturn,
-    //   },
-    // });
+    // banxaService.banxaEnd({ reason: OrderENDReason.Done, data: "" });
   },
   orderExpired: () => {
     banxaService.banxaEnd({ reason: OrderENDReason.Expired, data: "" });
   },
   banxaEnd: ({ reason, data }: { reason: OrderENDReason; data: any }) => {
-    store.dispatch(resetTransferBanxaData);
+    store.dispatch(resetTransferBanxaData(undefined));
     subject.next({
       status: BanxaCheck.OrderEnd,
       data: {

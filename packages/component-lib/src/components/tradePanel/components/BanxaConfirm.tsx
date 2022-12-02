@@ -102,11 +102,10 @@ export const BanxaConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
       </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelFaitAmount")}
+          {t("labelFiatAmount")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {tradeData?.fiat_amount + " "}
-          {tradeData?.fiat_code}
+          {fiat_amount + " " + fiat_code}
         </Typography>
         {balanceNotEnough && (
           <Typography

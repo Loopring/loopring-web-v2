@@ -1234,5 +1234,5 @@ export default {
   labeltransfer: "Transfer",
   labelwithdraw: "Withdrawal",
   labelDeposit: "Deposit",
-  labelFaitAmount: "Token Amount",
+  labelFiatAmount: "Fiat Amount",
 };

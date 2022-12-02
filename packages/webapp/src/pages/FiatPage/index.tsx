@@ -18,7 +18,12 @@ import {
 } from "@loopring-web/core";
 import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 
-import { BackIcon, SoursURL, TradeTypes } from "@loopring-web/common-resources";
+import {
+  BackIcon,
+  myLog,
+  SoursURL,
+  TradeTypes,
+} from "@loopring-web/common-resources";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "@emotion/styled";
 
@@ -31,7 +36,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
     useVendor();
   const { resetTransferRampData, resetTransferBanxaData } = useModalData();
-
+  myLog("sellPanel", sellPanel);
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
   const { isMobile } = useSettings();

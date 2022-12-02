@@ -1,35 +1,16 @@
 import {
   AccountStatus,
-  Explorer,
   myLog,
-  UIERROR_CODE,
   VendorItem,
   VendorList,
-  TOAST_TIME,
 } from "@loopring-web/common-resources";
-import {
-  isAccActivated,
-  LoopringAPI,
-  store,
-  useAccount,
-  useChargeFees,
-  useModalData,
-  useSystem,
-  walletLayer2Service,
-} from "../../index";
+import { useAccount, useModalData, useSystem } from "../../index";
 import {
   RampInstantEventTypes,
   RampInstantSDK,
 } from "@ramp-network/ramp-instant-sdk";
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
-import * as sdk from "@loopring-web/loopring-sdk";
-import {
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
-import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import Web3 from "web3";
 import { useTranslation } from "react-i18next";
 import { BanxaCheck, banxaService, OrderENDReason } from "../../services/banxa";
 
@@ -60,7 +41,8 @@ export const useVendor = () => {
   } = useModalData();
 
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
-    RAMP_SELL_PANEL.LIST
+    // RAMP_SELL_PANEL.LIST
+    RAMP_SELL_PANEL.BANXA_CONFIRM
   );
 
   const vendorListBuy: VendorItem[] = legalShow
@@ -167,66 +149,6 @@ export const useVendor = () => {
       ]
     : [];
 
-  // const checkBanxaOrder = React.useCallback(
-  //   async ({ url, query, payload, method }: any) => {
-  //     clearTimeout(nodeTimer.current as NodeJS.Timeout);
-  //
-  //     banxaApiCall({
-  //       url,
-  //       query,
-  //       payload,
-  //       method,
-  //       chainId: chainId as ChainId,
-  //     });
-  //
-  //     // const result = await fetch(query, {
-  //     //   method,
-  //     //   // withCredentials: true,
-  //     //   // credentials: "include",
-  //     //   headers: {},
-  //     // });
-  //
-  //     // LoopringAPI.globalAPI.In;
-  //
-  //     // myLog(result.request);
-  //     // if (result && result.data && result.orders) {
-  //     //   debugger;
-  //     // }
-  //     //   .then((result) => {
-  //     //   if (result && result?.length) {
-  //     //     debugger;
-  //     //     setBanxaOrder(query);
-  //     //   }
-  //     // });
-  //     // .then(({raw_data}) => {
-  //     //   LoopringAPI.globalAPI.raw_data
-  //     //   //
-  //     //   setBanxaOrder;
-  //     // });
-  //     if (nodeTimer.current) {
-  //       clearTimeout(nodeTimer.current as NodeJS.Timeout);
-  //     }
-  //     nodeTimer.current = setTimeout(() => {
-  //       checkBanxaOrder({ url, query, payload, method });
-  //       // updateNFTRefreshHash(popItem.nftData);
-  //     }, 90000);
-  //     // if (
-  //     //   // popItem.nftData &&
-  //     //   // nftDataHashes &&
-  //     //   // nftDataHashes[popItem.nftData.toLowerCase()]
-  //     // ) {
-  //     //
-  //     //
-  //     // }
-  //     // else {
-  //     //   setShowFresh("click");
-  //     // }
-  //     return () => {
-  //       clearTimeout(nodeTimer.current as NodeJS.Timeout);
-  //     };
-  //   },
-  //   [nodeTimer]
-  // );
   const vendorListSell: VendorItem[] = legalShow
     ? [
         // {
@@ -304,40 +226,10 @@ export const useVendor = () => {
             // @ts-ignore
           },
         },
-        //loopring.banxa-sandbox.com/?sellMode&expires=1669311302&id=30090bbc-0fb4-4263-be91-c18d25de95ff&nested=1&oid=4b69ea208975f05c0e7b7c9a0515438c&signature=ae07724179d41f5766973dbc375c2acf18643c3756e7b0a40ad996ead3c6d535
-        //loopring.banxa-sandbox.com/?sellMode&expires=1669311133&id=700a332c-ec77-4816-8a2e-9f16b6219b36&nested=1&oid=f4724af852c6fdf54feed58f36f64f2c&signature=0faf71c7751b84ed3b995db77d41bf5a851083baa5a7c556eb2d28a10289533c
-        // @ts-ignore
-        // const url = banxa.generateUrl({
-        //   sellMode: true,
-        //           blockchain: "LRC",
-        //   fiatType: "AUD",
-        //   coinType: "BTC",
-        //   // fiatAmount: 200,
-        //   // coinAmount: 0.5,
-        //   // walletAddress: account.accAddress,
-        //           account_reference: account.accAddress,
-        //           refund_address: account.accAddress,
-        //         }),
-        //         false,
-        //         false
-        //         // "800px", //Optional width parameter – Pass false if not needed.
-        //         // "400px" //Optional height parameter – Pass false if not needed.
-        //       );
-        //     }
-        //   },
-        // },
       ]
     : [];
-  // React.useEffect(() => {
-  //
-  //
-  //
-  //   return () => {
-  //
-  //
-  //   };
-  // }, []);
-  const closeBanax = () => {
+
+  const closeBanxa = () => {
     const parentsNode: any =
       window.document.querySelector("#iframeBanxaTarget");
     const items = parentsNode.getElementsByTagName("iframe");
@@ -346,43 +238,42 @@ export const useVendor = () => {
     }
     parentsNode.style.display = "none";
   };
-  const hideBanax = () => {
+  const hideBanxa = () => {
     const parentsNode: any =
       window.document.querySelector("#iframeBanxaTarget");
 
     parentsNode.style.display = "none";
   };
-  const showBanax = () => {
+  const showBanxa = () => {
     const parentsNode: any =
       window.document.querySelector("#iframeBanxaTarget");
     parentsNode.style.display = "flex";
   };
+  const clickEvent = () =>
+    banxaService.banxaEnd({
+      reason: OrderENDReason.UserCancel,
+      data: { resource: "on close" },
+    });
   React.useEffect(() => {
     const close = window.document.querySelector("#iframeBanxaClose");
     const parentsNode = window.document.querySelector("#iframeBanxaTarget");
-    const clickEvent = () =>
-      banxaService.banxaEnd({
-        reason: OrderENDReason.UserCancel,
-        data: undefined,
-      });
     if (close && parentsNode) {
       parentsNode.addEventListener("click", clickEvent);
     }
     const subscription = subject.subscribe((props) => {
-      myLog("subscription Deposit DepsitERC20");
-
+      myLog("subscription Banxa", props.status, props.data);
       switch (props.status) {
         // case BanxaCheck.CheckOrderStatus:
         //   checkOrderStatus(props.data);
         //   break;
         case BanxaCheck.OrderHide:
-          hideBanax();
+          hideBanxa();
           break;
         case BanxaCheck.OrderShow:
-          showBanax();
+          showBanxa();
           break;
         case BanxaCheck.OrderEnd:
-          closeBanax();
+          closeBanxa();
           // clearTimeout(nodeTimer.current as NodeJS.Timeout);
           break;
         default:
@@ -395,9 +286,9 @@ export const useVendor = () => {
       }
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
       subscription.unsubscribe();
-      closeBanax();
+      closeBanxa();
     };
-  }, [subject]);
+  }, []);
   return {
     banxaRef,
     vendorListBuy,
@@ -405,166 +296,5 @@ export const useVendor = () => {
     vendorForce: undefined,
     sellPanel,
     setSellPanel,
-  };
-};
-export const useRampTransPost = () => {
-  const { account } = useAccount();
-  const { chainId } = useSystem();
-  const { checkHWAddr, updateHW } = useWalletInfo();
-  const { setShowAccount } = useOpenModals();
-  const { updateTransferRampData, resetTransferRampData } = useModalData();
-  const {
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    handleFeeChange,
-    feeInfo,
-    checkFeeIsEnough,
-    // setIsFeeNotEnough,
-  } = useChargeFees({
-    requestType: sdk.OffchainFeeReqType.TRANSFER,
-    updateData: ({ fee }) => {
-      const { transferRampValue } = store.getState()._router_modalData;
-      updateTransferRampData({ ...transferRampValue, fee });
-    },
-  });
-  const processRequestRampTransfer = React.useCallback(
-    async (
-      request: sdk.OriginTransferRequestV3,
-      isNotHardwareWallet: boolean
-    ) => {
-      const { apiKey, connectName, eddsaKey } = account;
-
-      try {
-        if (
-          connectProvides.usedWeb3 &&
-          LoopringAPI.userAPI &&
-          window.rampInstance &&
-          isAccActivated()
-        ) {
-          let isHWAddr = checkHWAddr(account.accAddress);
-          if (!isHWAddr && !isNotHardwareWallet) {
-            isHWAddr = true;
-          }
-          updateTransferRampData({ __request__: request });
-          const response = await LoopringAPI.userAPI.submitInternalTransfer(
-            {
-              request,
-              web3: connectProvides.usedWeb3 as unknown as Web3,
-              chainId:
-                chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: (ConnectProvidersSignMap[connectName] ??
-                connectName) as unknown as sdk.ConnectorNames,
-              eddsaKey: eddsaKey.sk,
-              apiKey,
-              isHWAddr,
-            },
-            {
-              accountId: account.accountId,
-              counterFactualInfo: eddsaKey.counterFactualInfo,
-            }
-          );
-
-          myLog("submitInternalTransfer:", response);
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            throw response;
-          }
-          // setIsConfirmTransfer(false);
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.Transfer_RAMP_In_Progress,
-          });
-          await sdk.sleep(TOAST_TIME);
-
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.Transfer_RAMP_Success,
-            info: {
-              hash:
-                Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
-            },
-          });
-          if (window.rampInstance) {
-            try {
-              console.log("RAMP WEIGHT display on transfer done");
-              // @ts-ignore
-              window.rampInstance.domNodes.overlay.style.display = "";
-            } catch (e) {
-              console.log("RAMP WEIGHT hidden failed");
-            }
-          }
-          if (isHWAddr) {
-            myLog("......try to set isHWAddr", isHWAddr);
-            updateHW({ wallet: account.accAddress, isHWAddr });
-          }
-          walletLayer2Service.sendUserUpdate();
-          resetTransferRampData();
-        }
-      } catch (e: any) {
-        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
-        switch (code) {
-          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_RAMP_First_Method_Denied,
-            });
-            break;
-          case sdk.ConnectorError.USER_DENIED:
-          case sdk.ConnectorError.USER_DENIED_2:
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_RAMP_User_Denied,
-            });
-            break;
-          default:
-            if (
-              [102024, 102025, 114001, 114002].includes(
-                (e as sdk.RESULT_INFO)?.code || 0
-              )
-            ) {
-              checkFeeIsEnough({ isRequiredAPI: true });
-            }
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_RAMP_Failed,
-              error: {
-                code: UIERROR_CODE.UNKNOWN,
-                msg: e?.message,
-                ...(e instanceof Error
-                  ? {
-                      message: e?.message,
-                      stack: e?.stack,
-                    }
-                  : e ?? {}),
-              },
-            });
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_Failed,
-            });
-
-            break;
-        }
-      }
-    },
-    [
-      account,
-      chainId,
-      checkHWAddr,
-      resetTransferRampData,
-      setShowAccount,
-      updateHW,
-      updateTransferRampData,
-    ]
-  );
-  return {
-    processRequestRampTransfer,
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    handleFeeChange,
-    feeInfo,
-    checkFeeIsEnough,
   };
 };

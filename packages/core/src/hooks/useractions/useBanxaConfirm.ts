@@ -20,15 +20,11 @@ import { LoopringAPI } from "../../api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { getTimestampDaysLater } from "../../utils";
 import { DAYS } from "../../defs";
-import { RAMP_SELL_PANEL, useRampTransPost } from "./useVendor";
-import {
-  banxaApiCall,
-  BanxaCheck,
-  banxaService,
-  mockAfterKYCReturn,
-} from "../../services/banxa";
+import { RAMP_SELL_PANEL } from "./useVendor";
+import { banxaApiCall, BanxaCheck, banxaService } from "../../services/banxa";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import _ from "lodash";
+import { useRampTransPost } from "./useRampConfirm";
 
 export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   sellPanel,
@@ -75,11 +71,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   useWalletLayer2Socket({ walletLayer2Callback });
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
-  const {
-    transferBanxaValue,
-    updateTransferBanxaData,
-    resetTransferBanxaData,
-  } = useModalData();
+  const { transferBanxaValue, updateTransferBanxaData } = useModalData();
 
   React.useEffect(() => {
     if (
@@ -262,25 +254,24 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       query: "",
       payload: undefined,
     });
-    let orderInfo = mockAfterKYCReturn.order;
     const memo = "OFF-Banxa Transfer";
     //TODO status=== 'pendingPayment'
     if (
-      orderInfo.status === "pendingPayment" &&
-      orderInfo.wallet_address &&
-      orderInfo.coin_code
+      orders.status === "pendingPayment" &&
+      orders.wallet_address &&
+      orders.coin_code
     ) {
       banxaService.KYCDone();
-      updateOffBanxaData({ order: orderInfo });
+      updateOffBanxaData({ ...orders });
       updateTransferBanxaData({
-        belong: orderInfo.coin_code,
-        tradeValue: orderInfo.coin_amount,
-        balance: walletMap[orderInfo.coin_code]?.count,
-        address: orderInfo.wallet_address,
+        belong: orders.coin_code,
+        tradeValue: orders.coin_amount,
+        balance: walletMap[orders.coin_code]?.count,
+        address: orders.wallet_address,
         memo,
         fee: feeInfo,
       });
-      // setBanxaOrder(RAMP_SELL_PANEL.CONFIRM);
+      setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
     } else {
       setTimeout(() => {
         checkOrderStatus(orders);
@@ -289,9 +280,11 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   }, 100);
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {
+      myLog("subscription Banxa ", props);
       switch (props.status) {
         case BanxaCheck.CheckOrderStatus:
-          checkOrderStatus(props.data);
+          // @ts-ignore
+          checkOrderStatus(props.data.order);
           break;
         case BanxaCheck.OrderEnd:
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
