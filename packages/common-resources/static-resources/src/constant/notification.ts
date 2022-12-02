@@ -57,11 +57,11 @@ export type CAMPAIGN_TAG = {
   content: string;
 };
 export enum SCENARIO {
-  orderbook = "orderbook",
-  market = "market",
-  Amm = "Amm",
-  Fiat = "Fiat",
-  swap = "swap",
+  ORDERBOOK = "ORDERBOOK",
+  MARKET = "MARKET",
+  AMM = "AMM",
+  FIAT = "FIAT",
+  SWAP = "SWAP",
 }
 export type CAMPAIGNTAGCONFIG = {
   [key in SCENARIO]: CAMPAIGN_TAG[];

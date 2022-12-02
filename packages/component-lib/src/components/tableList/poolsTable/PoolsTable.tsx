@@ -199,7 +199,7 @@ export const IconColumn = React.memo(
         )}
         {campaignTagConfig && (
           <TagIconList
-            scenario={SCENARIO.Amm}
+            scenario={SCENARIO.AMM}
             campaignTagConfig={campaignTagConfig}
             symbol={pair}
           />

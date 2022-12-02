@@ -118,7 +118,7 @@ export const VendorMenu = ({
               </Typography>
               {campaignTagConfig && (
                 <TagIconList
-                  scenario={SCENARIO.Fiat}
+                  scenario={SCENARIO.FIAT}
                   size={"var(--svg-size-large)"}
                   campaignTagConfig={campaignTagConfig}
                   symbol={`${item.key}-${
