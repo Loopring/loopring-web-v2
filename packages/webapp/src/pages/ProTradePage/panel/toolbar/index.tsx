@@ -387,7 +387,7 @@ export const Toolbar = withTranslation("common")(
           </PopoverPure>
           {campaignTagConfig && (
             <TagIconList
-              scenario={SCENARIO.orderbook}
+              scenario={SCENARIO.ORDERBOOK}
               campaignTagConfig={campaignTagConfig}
               symbol={market}
             />

@@ -255,7 +255,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
       },
       [swapData.tradeData, rest?.tradeData, onChangeEvent]
     );
-    const theme = useTheme()
+    const theme = useTheme();
 
     const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
       index: index, // show default show
@@ -315,7 +315,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                     alignItems={"center"}
                   >
                     <TagIconList
-                      scenario={SCENARIO.swap}
+                      scenario={SCENARIO.SWAP}
                       campaignTagConfig={campaignTagConfig}
                       symbol={market as string}
                     />
@@ -334,7 +334,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                       aria-describedby={settingPopoverId}
                       size={"large"}
                     >
-                      <SwapSettingIcon htmlColor={theme.colorBase.logo}/>
+                      <SwapSettingIcon htmlColor={theme.colorBase.logo} />
                     </IconButtonStyled>
                   </Typography>
                   <PopoverStyled
@@ -432,7 +432,10 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                       aria-label="to Transaction"
                       size={"large"}
                     >
-                      <OrderListIcon fill={theme.colorBase.logo} fontSize={"large"} />
+                      <OrderListIcon
+                        fill={theme.colorBase.logo}
+                        fontSize={"large"}
+                      />
                     </IconButtonStyled>
                   </Typography>
                 </Box>
@@ -446,7 +449,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
               onSlippageChangeCallBack,
               tradeData,
               slippageArray,
-              theme
+              theme,
             ]
           ),
         },

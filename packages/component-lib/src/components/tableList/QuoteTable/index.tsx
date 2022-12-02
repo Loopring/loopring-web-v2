@@ -215,7 +215,7 @@ export const QuoteTable = withTranslation("tables")(
                     <TagIconList
                       campaignTagConfig={campaignTagConfig}
                       symbol={pair}
-                      scenario={SCENARIO.market}
+                      scenario={SCENARIO.MARKET}
                     />
                   )}
                 </Box>
