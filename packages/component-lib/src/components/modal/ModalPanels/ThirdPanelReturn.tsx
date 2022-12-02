@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 
 import { useSettings } from "../../../stores";
 import { Button } from "../../basic-lib";
+import { SoursURL } from "@loopring-web/common-resources";
 
 export const ThirdPanelReturn = ({
   title,
@@ -35,6 +36,7 @@ export const ThirdPanelReturn = ({
         >
           {title}
         </Typography>
+
         <Box
           display={"flex"}
           flexDirection={"column"}
@@ -46,6 +48,18 @@ export const ThirdPanelReturn = ({
           paddingX={isMobile ? 7 : 5}
           paddingBottom={4}
         >
+          <Box
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            paddingY={3}
+          >
+            <img
+              className="loading-gif"
+              width="36"
+              src={`${SoursURL}images/loading-line.gif`}
+            />
+          </Box>
           <Typography
             component={"p"}
             variant={"body1"}
