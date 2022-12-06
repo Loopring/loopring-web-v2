@@ -1,4 +1,4 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { useTranslation, WithTranslation, withTranslation } from "react-i18next";
 import React, { MouseEventHandler, ReactNode, useCallback } from "react";
 import {
   AccountStatus,
@@ -55,6 +55,7 @@ const WrongStatusStyled = styled(Box)`
 `
 
 const WrongStatus = ({ logo, content, onClickDisconnect }: { logo: ReactNode, content: string, onClickDisconnect: MouseEventHandler }) => {
+  const {t} = useTranslation()
   return <WrongStatusStyled>
     <Box className="logo">{logo}</Box>
     <Typography className={"content"}>
