@@ -1,16 +1,20 @@
-import { useTranslation, WithTranslation, withTranslation } from "react-i18next";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 import React, { MouseEventHandler, ReactNode, useCallback } from "react";
 import {
   AccountStatus,
   ApprovalIcon,
+  BackIcon,
   CopyIcon,
   copyToClipBoard,
   ExitIcon,
   FailedIcon,
   HelpIcon,
-  LockIcon2,
+  LockGuardianIcon,
   RefuseIcon,
-  RightIcon,
   RoundAddIcon,
   ViewHistoryIcon,
 } from "@loopring-web/common-resources";
@@ -40,35 +44,41 @@ const WrongStatusStyled = styled(Box)`
   align-items: center;
   padding: ${({ theme }) => theme.unit * 10}px auto;
   background-color: ${({ theme }) => theme.colorBase.box};
-  .logo{
+  .logo {
     margin-bottom: ${({ theme }) => theme.unit * 8}px;
   }
-  .content{
+  .content {
     text-align: center;
     color: ${({ theme }) => theme.colorBase.textSecondary};
     width: ${({ theme }) => theme.unit * 50}px;
     margin-bottom: ${({ theme }) => theme.unit * 8}px;
   }
-  .button{
+  .button {
     color: ${({ theme }) => theme.colorBase.textSecondary};
   }
-`
+`;
 
-const WrongStatus = ({ logo, content, onClickDisconnect }: { logo: ReactNode, content: string, onClickDisconnect: MouseEventHandler }) => {
-  const {t} = useTranslation()
-  return <WrongStatusStyled>
-    <Box className="logo">{logo}</Box>
-    <Typography className={"content"}>
-      {content}
-    </Typography>
-    <Button className={"button"} onClick={onClickDisconnect}>
-      <ExitIcon />
-      <Typography marginLeft={0.5}>
-        {t("labelDisconnect")}
-      </Typography>
-    </Button>
-  </WrongStatusStyled>
-}
+const WrongStatus = ({
+  logo,
+  content,
+  onClickDisconnect,
+}: {
+  logo: ReactNode;
+  content: string;
+  onClickDisconnect: MouseEventHandler;
+}) => {
+  const { t } = useTranslation();
+  return (
+    <WrongStatusStyled>
+      <Box className="logo">{logo}</Box>
+      <Typography className={"content"}>{content}</Typography>
+      <Button className={"button"} onClick={onClickDisconnect}>
+        <ExitIcon />
+        <Typography marginLeft={0.5}>{t("labelDisconnect")}</Typography>
+      </Button>
+    </WrongStatusStyled>
+  );
+};
 
 const SectionStyled = styled(Box)`
   padding: ${({ theme }) => theme.unit * 4}px;
@@ -82,22 +92,38 @@ const SectionStyled = styled(Box)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
-const Section = ({ logo, title, description, onClick }: { logo: JSX.Element, title: string, description?: string, onClick: MouseEventHandler }) => {
-  return <>
-    <SectionStyled onClick={onClick}>
-      <Box display={"flex"} alignItems={"center"}>
-        {logo}
-        <Box paddingLeft={3}>
-          <Typography variant={"h4"}>{title}</Typography>
-          {description && <Typography color={"var(--color-text-third) "}>{description}</Typography>}
+const Section = ({
+  logo,
+  title,
+  description,
+  onClick,
+}: {
+  logo: JSX.Element;
+  title: string;
+  description?: string;
+  onClick: MouseEventHandler;
+}) => {
+  return (
+    <>
+      <SectionStyled onClick={onClick}>
+        <Box display={"flex"} alignItems={"center"}>
+          {logo}
+          <Box paddingLeft={3}>
+            <Typography variant={"h4"}>{title}</Typography>
+            {description && (
+              <Typography color={"var(--color-text-third) "}>
+                {description}
+              </Typography>
+            )}
+          </Box>
         </Box>
-      </Box>
-      <RightIcon />
-    </SectionStyled>
-  </>
-}
+        <BackIcon sx={{ transform: "rotate(180deg)" }} />
+      </SectionStyled>
+    </>
+  );
+};
 
 const ContainerStyled = styled(Box)`
   display: flex;
@@ -105,8 +131,7 @@ const ContainerStyled = styled(Box)`
   width: 100%;
   align-items: center;
   padding: ${({ theme }) => theme.unit * 10}px auto;
-`
-
+`;
 
 export const GuardianPage = withTranslation(["common"])(
   ({ t, ..._rest }: WithTranslation) => {
@@ -120,7 +145,8 @@ export const GuardianPage = withTranslation(["common"])(
     const onOpenHistory = React.useCallback((open: boolean) => {
       setShowHistory(open);
     }, []);
-    const [showApprovalRequests, setShowApprovalRequests] = React.useState(false);
+    const [showApprovalRequests, setShowApprovalRequests] =
+      React.useState(false);
     const onOpenApprovalRequests = React.useCallback((open: boolean) => {
       setShowApprovalRequests(open);
     }, []);
@@ -165,12 +191,14 @@ export const GuardianPage = withTranslation(["common"])(
         return { ...state };
       });
     };
-    const isContractAddress = loopringSmartContractWallet === true || nonLoopringSmartContractWallet === true
+    const isContractAddress =
+      loopringSmartContractWallet === true ||
+      nonLoopringSmartContractWallet === true;
     const { isMobile } = useSettings();
     const onClickCopy = useCallback((str: string) => {
-      copyToClipBoard(str)
-    }, [])
-    const theme = useTheme()
+      copyToClipBoard(str);
+    }, []);
+    const theme = useTheme();
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
         return (
@@ -208,232 +236,262 @@ export const GuardianPage = withTranslation(["common"])(
       case AccountStatus.DEPOSITING:
       case AccountStatus.ACTIVATED:
         if (loopringSmartContractWallet) {
-          return <WrongStatus
-            logo={<RefuseIcon htmlColor="var(--color-warning)" style={{ width: 60, height: 60 }} />}
-            content={t("labelWalletLoopringSmartWallet")}
-            onClickDisconnect={() => {
-              walletServices.sendDisconnect("", "customer click disconnect");
-            }}
-          />
+          return (
+            <WrongStatus
+              logo={
+                <RefuseIcon
+                  htmlColor="var(--color-warning)"
+                  style={{ width: 60, height: 60 }}
+                />
+              }
+              content={t("labelWalletLoopringSmartWallet")}
+              onClickDisconnect={() => {
+                walletServices.sendDisconnect("", "customer click disconnect");
+              }}
+            />
+          );
         } else if (nonLoopringSmartContractWallet) {
-          return <WrongStatus
-            logo={<FailedIcon htmlColor="var(--color-error)" style={{ width: 60, height: 60 }} />}
-            content={t("labelWalletNonLoopringSmartWallet")}
-            onClickDisconnect={() => {
-              walletServices.sendDisconnect("", "customer click disconnect");
-            }}
-          />
+          return (
+            <WrongStatus
+              logo={
+                <FailedIcon
+                  htmlColor="var(--color-error)"
+                  style={{ width: 60, height: 60 }}
+                />
+              }
+              content={t("labelWalletNonLoopringSmartWallet")}
+              onClickDisconnect={() => {
+                walletServices.sendDisconnect("", "customer click disconnect");
+              }}
+            />
+          );
         }
         break;
       default:
         break;
     }
-    return <>
-      <GuardianModal
-        open={openQRCode}
-        onClose={() => onOpenAdd(false)}
-        title={
-          <Typography component={"p"} textAlign={"center"} marginBottom={1}>
-            <Typography
-              color={"var(--color-text-primary)"}
-              component={"p"}
-              variant={"h4"}
-              marginBottom={2}
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              {t("labelWalletAddAsGuardian")}
-              <Tooltip title={<>{t("labelWalletGuardianHint")}</> }>
-                <Box marginLeft={1} display={"flex"} alignItems={"center"}>
-                  <HelpIcon fontSize="large" />
-                </Box>
-              </Tooltip>
+    return (
+      <>
+        <GuardianModal
+          open={openQRCode}
+          onClose={() => onOpenAdd(false)}
+          title={
+            <Typography component={"p"} textAlign={"center"} marginBottom={1}>
+              <Typography
+                color={"var(--color-text-primary)"}
+                component={"p"}
+                variant={"h4"}
+                marginBottom={2}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                {t("labelWalletAddAsGuardian")}
+                <Tooltip title={<>{t("labelWalletGuardianHint")}</>}>
+                  <Box marginLeft={1} display={"flex"} alignItems={"center"}>
+                    <HelpIcon fontSize="large" />
+                  </Box>
+                </Tooltip>
+              </Typography>
+              <Typography
+                color={"var(--color-text-secondary)"}
+                component={"p"}
+                variant={"body1"}
+                marginBottom={2}
+              >
+                {t("labelWalletScanQRCode")}
+              </Typography>
             </Typography>
-            <Typography
-              color={"var(--color-text-secondary)"}
-              component={"p"}
-              variant={"body1"}
-              marginBottom={2}
-            >
-              {t("labelWalletScanQRCode")}
-            </Typography>
-          </Typography>
-        }
-        body={
-          <QRCodePanel
-            fgColor={theme.colorBase.dark}
-            description={
-              <Button onClick={() => account?.accAddress && onClickCopy(account?.accAddress)}>
-                <Typography
-                  marginTop={2}
-                  component={"div"}
-                  variant={"body2"}
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
+          }
+          body={
+            <QRCodePanel
+              fgColor={theme.colorBase.dark}
+              description={
+                <Button
+                  onClick={() =>
+                    account?.accAddress && onClickCopy(account?.accAddress)
+                  }
                 >
                   <Typography
-                    color={"var(--color-text-secondary)"}
-                    component={"p"}
-                    variant={"inherit"}
+                    marginTop={2}
+                    component={"div"}
+                    variant={"body2"}
                     display={"flex"}
+                    justifyContent={"center"}
                     alignItems={"center"}
                   >
-                    <Typography marginRight={0.5}>{account?.accAddress}</Typography>
-                    <CopyIcon />
+                    <Typography
+                      color={"var(--color-text-secondary)"}
+                      component={"p"}
+                      variant={"inherit"}
+                      display={"flex"}
+                      alignItems={"center"}
+                    >
+                      <Typography marginRight={0.5}>
+                        {account?.accAddress}
+                      </Typography>
+                      <CopyIcon />
+                    </Typography>
                   </Typography>
-                </Typography>
-              </Button>}
-            size={260}
-            url={`ethereum:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
+                </Button>
+              }
+              size={260}
+              url={`ethereum:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
+            />
+          }
+        />
+        <GuardianModal
+          open={showLockWallet}
+          onClose={() => onOpenLockWallet(false)}
+          title={
+            <Typography component={"p"} textAlign={"center"} marginBottom={1}>
+              <Typography
+                color={"var(--color-text-primary)"}
+                component={"p"}
+                variant={"h4"}
+                marginBottom={2}
+              >
+                {t("labelWalletLockTitle")}
+              </Typography>
+              <Typography
+                color={"var(--color-text-secondary)"}
+                component={"p"}
+                variant={"body1"}
+                marginBottom={2}
+              >
+                {t("labelWalletLockDes")}
+              </Typography>
+            </Typography>
+          }
+          body={
+            <WalletProtector
+              guardianConfig={guardianConfig}
+              loadData={loadData}
+              handleOpenModal={handleOpenModal}
+              protectorList={protectList}
+            />
+          }
+        />
+        <GuardianModal
+          open={showApprovalRequests}
+          onClose={() => onOpenApprovalRequests(false)}
+          title={
+            <Typography component={"p"} textAlign={"center"} marginBottom={1}>
+              <Typography
+                color={"var(--color-text-primary)"}
+                component={"p"}
+                variant={"h4"}
+                marginBottom={2}
+              >
+                {t("labelWalletValidationTitle")}
+              </Typography>
+              <Typography
+                color={"var(--color-text-secondary)"}
+                component={"p"}
+                variant={"body1"}
+                marginBottom={2}
+              >
+                {t("labelWalletValidationDes")}
+              </Typography>
+            </Typography>
+          }
+          body={
+            <WalletValidationInfo
+              isContractAddress={isContractAddress}
+              loadData={loadData}
+              guardianConfig={guardianConfig}
+              handleOpenModal={handleOpenModal}
+              guardiansList={guardiansList}
+            />
+          }
+        />
+        <GuardianModal
+          open={showHistory}
+          onClose={() => onOpenHistory(false)}
+          title={
+            <Typography component={"p"} textAlign={"center"} marginBottom={1}>
+              <Typography
+                color={"var(--color-text-primary)"}
+                component={"p"}
+                variant={"h4"}
+                marginBottom={2}
+              >
+                {t("labelWalletHistoryTitle")}
+              </Typography>
+            </Typography>
+          }
+          body={<WalletHistory operationLogList={operationLogList} />}
+        />
+        <ModalLock
+          options={openHebao.options ?? {}}
+          open={openHebao.isShow}
+          step={openHebao.step}
+          handleOpenModal={handleOpenModal}
+          onClose={() => {
+            setOpenHebao({
+              isShow: false,
+              step: GuardianStep.LockAccount_WaitForAuth,
+            });
+          }}
+        />
+        <ContainerStyled marginTop={2}>
+          <Section
+            onClick={() => onOpenAdd(true)}
+            title={"Set as Guardian"}
+            logo={
+              <RoundAddIcon
+                htmlColor="var(--color-text-primary)"
+                style={{
+                  width: "var(--svg-size-huge)",
+                  height: "var(--svg-size-huge)",
+                }}
+              />
+            }
           />
-        }
-      />
-      <GuardianModal
-        open={showLockWallet}
-        onClose={() => onOpenLockWallet(false)}
-        title={
-          <Typography component={"p"} textAlign={"center"} marginBottom={1}>
-            <Typography
-              color={"var(--color-text-primary)"}
-              component={"p"}
-              variant={"h4"}
-              marginBottom={2}
-            >
-              {t("labelWalletLockTitle")}
-            </Typography>
-            <Typography
-              color={"var(--color-text-secondary)"}
-              component={"p"}
-              variant={"body1"}
-              marginBottom={2}
-            >
-              {t("labelWalletLockDes")}
-            </Typography>
-          </Typography>
-        }
-        body={
-          <WalletProtector
-            guardianConfig={guardianConfig}
-            loadData={loadData}
-            handleOpenModal={handleOpenModal}
-            protectorList={protectList}
+          <Section
+            description={"Who I Protect"}
+            onClick={() => onOpenLockWallet(true)}
+            title={"Lock/unlock Wallet"}
+            logo={
+              <LockGuardianIcon
+                htmlColor="var(--color-text-primary)"
+                style={{
+                  width: "var(--svg-size-huge)",
+                  height: "var(--svg-size-huge)",
+                }}
+              />
+            }
           />
-        }
-      />
-      <GuardianModal
-        open
-        ={showApprovalRequests}
-        onClose={() => onOpenApprovalRequests(false)}
-        title={
-          <Typography component={"p"} textAlign={"center"} marginBottom={1}>
-            <Typography
-              color={"var(--color-text-primary)"}
-              component={"p"}
-              variant={"h4"}
-              marginBottom={2}
-            >
-              {t("labelWalletValidationTitle")}
-            </Typography>
-            <Typography
-              color={"var(--color-text-secondary)"}
-              component={"p"}
-              variant={"body1"}
-              marginBottom={2}
-            >
-              {t("labelWalletValidationDes")}
-            </Typography>
-          </Typography>
-        }
-        body={<WalletValidationInfo isContractAddress={isContractAddress} loadData={loadData} guardianConfig={guardianConfig}  handleOpenModal={handleOpenModal}  guardiansList={guardiansList} />}
-      />
-      <GuardianModal
-        open={showHistory}
-        onClose={() => onOpenHistory(false)}
-        title={
-          <Typography component={"p"} textAlign={"center"} marginBottom={1}>
-            <Typography
-              color={"var(--color-text-primary)"}
-              component={"p"}
-              variant={"h4"}
-              marginBottom={2}
-            >
-              {t("labelWalletHistoryTitle")}
-            </Typography>
-          </Typography>
-        }
-        body={<WalletHistory operationLogList={operationLogList}/>}
-      />
-      <ModalLock
-        options={openHebao.options ?? {}}
-        open={openHebao.isShow}
-        step={openHebao.step}
-        handleOpenModal={handleOpenModal}
-        onClose={() => {
-          setOpenHebao({
-            isShow: false,
-            step: GuardianStep.LockAccount_WaitForAuth,
-          });
-        }}
-      />
-      <ContainerStyled marginTop={2}>
-        <Section
-          onClick={() => onOpenAdd(true)}
-          title={"Set as Guardian"}
-          logo={
-            <RoundAddIcon
-              htmlColor="var(--color-text-primary)"
-              style={{
-                width: "var(--svg-size-cover)",
-                height: "var(--svg-size-cover)",
-              }}
-            />
-          }
-        />
-        <Section
-          description={"Who I Protect"}
-          onClick={() => onOpenLockWallet(true)}
-          title={"Lock/unlock Wallet"}
-          logo={
-            <LockIcon2
-              htmlColor="var(--color-text-primary)"
-              style={{
-                width: "var(--svg-size-cover)",
-                height: "var(--svg-size-cover)",
-              }}
-            />
-          }
-        />
-        <Section
-          description={"Guardian Request Handling"}
-          onClick={() => onOpenApprovalRequests(true)}
-          title={"Approve Requests"}
-          logo={
-            <ApprovalIcon
-              htmlColor="var(--color-text-primary)"
-              style={{
-                width: "var(--svg-size-cover)",
-                height: "var(--svg-size-cover)",
-              }}
-            />
-          }
-        />
-        <Section
-          description={"Guardian Handling Records"}
-          onClick={() => onOpenHistory(true)}
-          title={"View History"}
-          logo={
-            <ViewHistoryIcon
-              htmlColor="var(--color-text-primary)"
-              style={{
-                width: "var(--svg-size-cover)",
-                height: "var(--svg-size-cover)",
-              }}
-            />
-          }
-        />
-      </ContainerStyled>
-    </>
+          <Section
+            description={"Guardian Request Handling"}
+            onClick={() => onOpenApprovalRequests(true)}
+            title={"Approve Requests"}
+            logo={
+              <ApprovalIcon
+                htmlColor="var(--color-text-primary)"
+                style={{
+                  width: "var(--svg-size-huge)",
+                  height: "var(--svg-size-huge)",
+                }}
+              />
+            }
+          />
+          <Section
+            description={"Guardian Handling Records"}
+            onClick={() => onOpenHistory(true)}
+            title={"View History"}
+            logo={
+              <ViewHistoryIcon
+                htmlColor="var(--color-text-primary)"
+                style={{
+                  width: "var(--svg-size-huge)",
+                  height: "var(--svg-size-huge)",
+                }}
+              />
+            }
+          />
+        </ContainerStyled>
+      </>
+    );
   }
 );
