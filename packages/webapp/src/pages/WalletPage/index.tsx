@@ -244,7 +244,7 @@ export const GuardianPage = withTranslation(["common"])(
               justifyContent={"center"}
             >
               {t("labelWalletAddAsGuardian")}
-              <Tooltip title={t("labelWalletGuardianHint")}>
+              <Tooltip title={<>{t("labelWalletGuardianHint")}</> }>
                 <Box marginLeft={1} display={"flex"} alignItems={"center"}>
                   <HelpIcon fontSize="large" />
                 </Box>
