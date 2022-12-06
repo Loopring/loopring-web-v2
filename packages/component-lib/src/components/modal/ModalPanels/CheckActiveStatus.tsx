@@ -3,8 +3,18 @@ import { useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 import { CheckActiveStatusProps } from "./Interface";
-import { DepositRecorder } from "./DepositRecorder";
 import { useTheme } from "@emotion/react";
+import { DepositRecorder } from "./DepositRecorder";
+import styled from "@emotion/styled";
+const BoxStyle = styled(Box)`
+  .modalContent {
+    .depositRecord {
+      width: 100%;
+      padding: 0 ${({ theme }) => theme.unit}px;
+      background: initial;
+    }
+  }
+`;
 export const CheckActiveStatus = ({
   account,
   goSend,
@@ -15,6 +25,9 @@ export const CheckActiveStatus = ({
   knowDisable,
   know,
   onIKnowClick,
+  chainInfos,
+  accAddress,
+  clearDepositHash,
   chargeFeeTokenList = [],
   ...props
 }: CheckActiveStatusProps) => {
@@ -23,12 +36,13 @@ export const CheckActiveStatus = ({
   const { isMobile } = useSettings();
 
   return (
-    <Box
+    <BoxStyle
       flex={1}
       display={"flex"}
       alignItems={"center"}
       flexDirection={"column"}
       // paddingBottom={4}
+      paddingBottom={4}
       width={"100%"}
     >
       {!know ? (
@@ -52,25 +66,68 @@ export const CheckActiveStatus = ({
             className="modalContent"
             paddingX={5 / 2}
           >
-            <Typography
-              variant={"body1"}
-              color={"textSecondary"}
-              whiteSpace={"pre-line"}
-            >
-              {t("labelBenefitL2")}
-            </Typography>
-
-            <Box marginTop={3}>
-              <Button
-                size={"large"}
-                variant={"contained"}
-                fullWidth
-                disabled={knowDisable}
-                onClick={onIKnowClick}
-              >
-                {t("labelIKnow")}
-              </Button>
-            </Box>
+            <>
+              {chainInfos &&
+              accAddress &&
+              chainInfos?.depositHashes &&
+              chainInfos?.depositHashes[accAddress] &&
+              chainInfos?.depositHashes[accAddress].length &&
+              clearDepositHash ? (
+                <>
+                  <Typography
+                    variant={"body1"}
+                    color={"var(--color-warning)"}
+                    textAlign={"center"}
+                    marginBottom={2}
+                  >
+                    {t("labelDepositWaiting")}
+                  </Typography>
+                  <DepositRecorder
+                    {...({ ...props } as any)}
+                    accAddress={accAddress}
+                    chainInfos={chainInfos}
+                    // clear={clearDepositHash}
+                    t={t}
+                  />
+                  <Box marginTop={3}>
+                    <Button
+                      size={"large"}
+                      variant={"contained"}
+                      fullWidth
+                      disabled={knowDisable}
+                      onClick={onIKnowClick}
+                    >
+                      {t(
+                        isFeeNotEnough.isFeeNotEnough
+                          ? "labelAddAssetGateBtn"
+                          : "labelActiveLayer2Btn"
+                      )}
+                    </Button>
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <Typography
+                    variant={"body1"}
+                    color={"textSecondary"}
+                    whiteSpace={"pre-line"}
+                  >
+                    {t("labelBenefitL2")}
+                  </Typography>
+                  <Box marginTop={3}>
+                    <Button
+                      size={"large"}
+                      variant={"contained"}
+                      fullWidth
+                      disabled={knowDisable}
+                      onClick={onIKnowClick}
+                    >
+                      {t("labelIKnow")}
+                    </Button>
+                  </Box>
+                </>
+              )}
+            </>
           </Box>
         </>
       ) : (
@@ -264,23 +321,6 @@ export const CheckActiveStatus = ({
           </Box>
         </>
       )}
-      {props.clearDepositHash && (
-        <Box
-          display={"flex"}
-          marginX={0}
-          marginTop={3}
-          marginBottom={0}
-          alignSelf={"stretch"}
-          paddingX={5}
-          padding={0}
-        >
-          <DepositRecorder
-            {...({ ...props } as any)}
-            clear={props.clearDepositHash}
-            t={t}
-          />
-        </Box>
-      )}
-    </Box>
+    </BoxStyle>
   );
 };

@@ -108,6 +108,7 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
+  myLog,
   NFTWholeINFO,
   SendAssetList,
   SendNFTAssetList,
@@ -357,7 +358,7 @@ export function useAccountModalForUI({
       });
 
       if (flag) {
-        let wait = 30000;
+        let wait = 60000;
         if (
           account.readyState &&
           [AccountStatus.DEPOSITING, AccountStatus.NOT_ACTIVE].includes(
@@ -365,7 +366,7 @@ export function useAccountModalForUI({
             account?.readyState
           )
         ) {
-          wait = 10000;
+          wait = 30000;
         }
         nodeTimer.current = setTimeout(() => {
           updateDepositStatus();
@@ -377,6 +378,7 @@ export function useAccountModalForUI({
           account?.readyState
         )
       ) {
+        myLog(updateDepositStatus, "updateDepositStatus");
         updateWalletLayer2();
       }
     }
@@ -391,7 +393,7 @@ export function useAccountModalForUI({
     return () => {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
-  }, [account.accAddress, chainInfos?.depositHashes, updateDepositStatus]);
+  }, [account.accAddress, chainInfos?.depositHashes]);
   const { setShowLayerSwapNotice } = useOpenModals();
 
   const addAssetList: AddAssetItem[] = React.useMemo(

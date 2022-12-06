@@ -49,7 +49,7 @@ export const DepositRecorder = ({
   accAddress: string;
   etherscanUrl: string;
   chainInfos: AccountHashInfo;
-  clear: () => void;
+  clear?: () => void;
   // updateDepositHash: (depositHash: string, accountAddress: string, status?: 'success' | 'failed') => void
 }) => {
   const theme = useTheme();
@@ -75,15 +75,17 @@ export const DepositRecorder = ({
               >
                 {t("labelL1toL2Hash")}
               </Typography>
-              <Link
-                variant={"body2"}
-                paddingBottom={1}
-                onClick={() => {
-                  clear();
-                }}
-              >
-                {t("labelClearAll")}
-              </Link>
+              {clear && (
+                <Link
+                  variant={"body2"}
+                  paddingBottom={1}
+                  onClick={() => {
+                    clear();
+                  }}
+                >
+                  {t("labelClearAll")}
+                </Link>
+              )}
             </Typography>
             {chainInfos?.depositHashes[accAddress].map((txInfo) => {
               return (
@@ -163,6 +165,7 @@ export const DepositRecorder = ({
       flex={1}
       flexDirection={"column"}
       alignSelf={"flex-end"}
+      className={"depositRecord"}
     >
       {depositView}
     </BoxStyled>

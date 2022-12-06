@@ -32,7 +32,6 @@ import {
   copyToClipBoard,
   getValuePrecisionThousand,
   Info2Icon,
-  RightArrowIcon,
   SoursURL,
   TradeDefi,
   // Lang,

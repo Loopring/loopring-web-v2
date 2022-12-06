@@ -45,8 +45,10 @@ export const useHebaoMain = <
   H extends HebaoOperationLog
 >() => {
   const { account, status: accountStatus } = useAccount();
-  const [isContractAddress, setIsContractAddress] =
-    React.useState<boolean>(false);
+  const [loopringSmartContractWallet, setLoopringSmartContractWallet] =
+    React.useState<boolean | undefined>(undefined);
+  const [nonLoopringSmartContractWallet, setNonLoopringSmartContractWallet] =
+    React.useState<boolean | undefined>(undefined);
 
   const [
     { guardianConfig, protectList, guardiansList, operationLogList },
@@ -179,19 +181,17 @@ export const useHebaoMain = <
           wallet: account.accAddress,
         })
         .then(({ walletType }) => {
-          if (walletType?.isContract) {
-            setIsContractAddress(true);
-          } else {
-            setIsContractAddress(false);
-          }
+          setLoopringSmartContractWallet(walletType?.isContract && walletType?.loopringWalletContractVersion !== "")
+          setNonLoopringSmartContractWallet(walletType?.isContract && walletType?.loopringWalletContractVersion === "")
         })
         .catch(() => {
-          setIsContractAddress(true);
+          setNonLoopringSmartContractWallet(true)
         });
     }
   }, [accountStatus]);
   return {
-    isContractAddress,
+    loopringSmartContractWallet,
+    nonLoopringSmartContractWallet,
     protectList,
     guardiansList,
     guardianConfig,

@@ -217,8 +217,8 @@ export interface CheckActiveStatusProps<C = FeeInfo> {
   knowDisable: boolean;
   know: boolean;
   clearDepositHash?: () => void;
-  chainInfo?: AccountHashInfo;
-  etherscanUrl?: string;
+  chainInfos?: AccountHashInfo;
+  accAddress?: string;
 }
 export interface CheckImportCollectionProps {
   account: Account;

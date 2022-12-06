@@ -1,11 +1,18 @@
 import QRCode from "qrcode.react";
-import { Typography } from "@mui/material";
+import { Link, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { Box } from "@mui/material";
-import { Account, Info2Icon } from "@loopring-web/common-resources";
+import {
+  Account,
+  CopyIcon,
+  copyToClipBoard,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { Button } from "../../basic-lib";
+import React from "react";
+import { Toast } from "../../toast";
 
 const BoxStyle = styled(Box)`
   ${({ theme }) =>
@@ -30,6 +37,8 @@ export const QRAddressPanel = withTranslation("common")(
     isNewAccount: boolean;
   } & Account) => {
     const { feeChargeOrder } = useSettings();
+    const [copyToastOpen, setCopyToastOpen] = React.useState(false);
+
     //     const etherscanLink = etherscanUrl + 'address/' + accAddress;
     return (
       <Box
@@ -52,11 +61,9 @@ export const QRAddressPanel = withTranslation("common")(
               display={"inline-flex"}
               alignItems={"baseline"}
               color={"var(--color-warning)"}
-              padding={2}
+              paddingY={2}
+              paddingX={5}
             >
-              <Info2Icon
-                sx={{ marginRight: 1, position: "relative", top: 2 }}
-              />
               {isNewAccount
                 ? t("labelReceiveAddressGuide", {
                     symbol: feeChargeOrder?.join(", "),
@@ -71,15 +78,32 @@ export const QRAddressPanel = withTranslation("common")(
           style={{ padding: 8, backgroundColor: "#fff" }}
           aria-label={`address:${accAddress}`}
         />
-        <Typography
+        <Link
           marginTop={3}
           variant={"body2"}
           color={"textSecondary"}
-          style={{ wordBreak: "break-all" }}
+          sx={{ wordBreak: "break-all" }}
+          display={"inline-flex"}
+          alignItems={"center"}
+          onClick={(e) => {
+            e.stopPropagation();
+            copyToClipBoard(accAddress);
+            setCopyToastOpen(true);
+          }}
         >
           {accAddress}
-        </Typography>
-        <Typography paddingTop={2} paddingBottom={1} variant={"body2"}>
+          <CopyIcon
+            sx={{ paddingLeft: 1 }}
+            color={"inherit"}
+            fontSize={"medium"}
+          />
+        </Link>
+        <Typography
+          paddingX={5}
+          paddingTop={2}
+          paddingBottom={1}
+          variant={"body2"}
+        >
           {t(
             isNewAccount
               ? "labelReceiveAddressDesActive"
@@ -100,6 +124,15 @@ export const QRAddressPanel = withTranslation("common")(
             {btnInfo?.btnTxt}
           </Button>
         </Box>
+        <Toast
+          alertText={t("labelCopyAddClip")}
+          open={copyToastOpen}
+          autoHideDuration={TOAST_TIME}
+          onClose={() => {
+            setCopyToastOpen(false);
+          }}
+          severity={"success"}
+        />
       </Box>
     );
   }
