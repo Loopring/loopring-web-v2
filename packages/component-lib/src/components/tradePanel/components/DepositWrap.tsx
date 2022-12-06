@@ -94,17 +94,16 @@ export const DepositWrap = <
           </Typography>
         );
       }
-      const Max: number =
-        Number(chargeFeeTokenList[index].fee.toString().replace(sdk.SEP, "")) *
-        4;
-
+      const Max = sdk
+        .toBig(chargeFeeTokenList[index].fee.toString().replace(sdk.SEP, ""))
+        .times(4);
       setMinFee({
         minFee: t("labelMinFeeForActive", {
-          symbol: tradeData.belong,
-          fee: Max,
+          symbol: tradeData.belong.toString(),
+          fee: Max.toString(),
         }),
       });
-      if (!tradeData?.tradeValue || Max <= (tradeData.tradeValue ?? 0)) {
+      if (!tradeData?.tradeValue || Max.lte(tradeData.tradeValue ?? 0)) {
         return <></>;
       } else {
         return (
@@ -129,7 +128,7 @@ export const DepositWrap = <
             >
               {t("labelIsNotEnoughFeeToken", {
                 symbol: tradeData.belong,
-                fee: Max,
+                fee: Max.toString(),
               })}
             </Typography>
           </>

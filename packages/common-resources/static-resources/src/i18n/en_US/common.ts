@@ -613,7 +613,7 @@ export default {
     "Activation of Loopring L2 with deposit of {{value}} {{symbol}} has been submitted! \n Approximately {{count}} minutes remaining...',",
   labelCreateAccountFailed:
     "Activation of Loopring L2 with deposit of {{value}} {{symbol}} has failed!",
-  labelL1toL2Hash: "My L1 \u2192 Loopring L2 Transaction Hash",
+  labelL1toL2Hash: "Recent transactions (From my L1 to my L2)",
   labelL1toL2HashEmpty:
     "My L1 \u2192 Loopring L2 transactions will show up here.",
   labelL1toL2Record: "Receive {{value}} {{symbol}}",
@@ -726,7 +726,7 @@ export default {
   labelSendAssetHowto: "Where would you like to send your crypto to",
   labelL1toL2: "Add Loopring L2 assets From My L1",
   labelActivatedAccountChargeFeeList:
-    "Please make sure one of the below tokens with the minimum quantity is in your Loopring L2 account to proceed:",
+    "Please make sure one of the below tokens with the minimum quantity in your Loopring L2 account to proceed",
   labelReceiveAddress: "Receive Address",
   labelAssets: "Loopring L2 Assets",
   labelReceiveAddressGuide:
