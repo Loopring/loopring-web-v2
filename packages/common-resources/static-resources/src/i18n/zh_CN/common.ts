@@ -488,9 +488,12 @@ export default {
     "Please contact the owner to obtain the approval code and enter it below.",
   labelWalletGuardianList: "Guardian List",
   labelWalletRequestRecovery: "Request for Wallet Recovery",
-  labelWalletLoopringSmartWallet: "The connected wallet is a Loopring Smart Wallet. Please use your Loopring Wallet mobile app to add Guardians.",
-  labelWalletNonLoopringSmartWallet: "The connected wallet is a non-Loopring smart contract wallet, which cannot be set as a Guardian. Please try again using a different wallet.",
-  labelWalletGuardianHint: "Easily add other Loopring Wallets as Guardians to secure your identity and crypto assets. After entering the wallet address, the user will receive a notification of the request directly in their Loopring Wallet app. Invite your friends and family to use the Loopring Wallet.",
+  labelWalletLoopringSmartWallet:
+    "The connected wallet is a Loopring Smart Wallet. Please use your Loopring Wallet mobile app to add Guardians.",
+  labelWalletNonLoopringSmartWallet:
+    "The connected wallet is a non-Loopring smart contract wallet, which cannot be set as a Guardian. Please try again using a different wallet.",
+  labelWalletGuardianHint:
+    "Easily add other Loopring Wallets as Guardians to secure your identity and crypto assets. After entering the wallet address, the user will receive a notification of the request directly in their Loopring Wallet app. Invite your friends and family to use the Loopring Wallet.",
   labelWalletLockTitle: "Lock/unlock Wallet",
   labelWalletLockDes: "Who I Protect",
   labelWalletValidationTitle: "Approval Requests",
@@ -1066,7 +1069,7 @@ export default {
     "Choose to sell or buy at desired price in the future",
   labelDualBeginnerSellHigh: "Sell {{token}} High",
   labelDualBeginnerBuyLow: "Buy {{token}} Low",
-  labelDualBeginnerRecieveStable: "You will receive USDC or USDT",
+  labelDualBeginnerReceiveStable: "You will receive USDC or USDT",
   labelDualBeginnerInvestStable: "You can invest USDC or USDT",
   labelDualBeginnerStep3Title: "Choose Target Price and Settlement Date",
   labelDualBeginnerSellHighFor: "Sell high for {{token}}",

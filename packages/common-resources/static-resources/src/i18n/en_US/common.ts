@@ -1082,7 +1082,7 @@ export default {
     "Choose to sell or buy at desired price in the future",
   labelDualBeginnerSellHigh: "Sell {{token}} High",
   labelDualBeginnerBuyLow: "Buy {{token}} Low",
-  labelDualBeginnerRecieveStable: "You will receive USDC or USDT",
+  labelDualBeginnerReceiveStable: "You will receive USDC or USDT",
   labelDualBeginnerInvestStable: "You can invest USDC or USDT",
   labelDualBeginnerStep3Title: "Choose Target Price and Settlement Date",
   labelDualBeginnerSellHighFor: "Sell high for {{token}}",
