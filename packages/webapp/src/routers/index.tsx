@@ -157,6 +157,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
               flex={1}
               alignItems={"stretch"}
               flexDirection={"row"}
+              justifyContent={"center"}
               marginTop={3}
             >
               <GuardianPage />
