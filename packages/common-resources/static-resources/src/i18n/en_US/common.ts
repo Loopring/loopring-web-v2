@@ -501,9 +501,12 @@ export default {
     "Please contact the owner to obtain the approval code and enter it below.",
   labelWalletGuardianList: "Guardian List",
   labelWalletRequestRecovery: "Request for Wallet Recovery",
-  labelWalletLoopringSmartWallet: "The connected wallet is a Loopring Smart Wallet. Please use your Loopring Wallet mobile app to add Guardians.",
-  labelWalletNonLoopringSmartWallet: "The connected wallet is a non-Loopring smart contract wallet, which cannot be set as a Guardian. Please try again using a different wallet.",
-  labelWalletGuardianHint: "Easily add other Loopring Wallets as Guardians to secure your identity and crypto assets. After entering the wallet address, the user will receive a notification of the request directly in their Loopring Wallet app. Invite your friends and family to use the Loopring Wallet.",
+  labelWalletLoopringSmartWallet:
+    "The connected wallet is a Loopring Smart Wallet. Please use your Loopring Wallet mobile app to add Guardians.",
+  labelWalletNonLoopringSmartWallet:
+    "The connected wallet is a non-Loopring smart contract wallet, which cannot be set as a Guardian. Please try again using a different wallet.",
+  labelWalletGuardianHint:
+    "Easily add other Loopring Wallets as Guardians to secure your identity and crypto assets. After entering the wallet address, the user will receive a notification of the request directly in their Loopring Wallet app. Invite your friends and family to use the Loopring Wallet.",
   labelWalletLockTitle: "Lock/unlock Wallet",
   labelWalletLockDes: "Who I Protect",
   labelWalletValidationTitle: "Approval Requests",
@@ -1233,7 +1236,7 @@ export default {
   labelReceiveAddressDes:
     "If you have transferred tokens from another Loopring L2 account, please wait.",
   labelReceiveAddressDesActive:
-    "If you have transferred tokens from another Loopring L2 account, please wait. Once you receive the assets, you can manually activate the L2 account.",
+    "If you have transferred tokens from other Loopring L2 accounts, please close this window and try to activate your L2 account again.",
   labelDepositWaiting:
     "It make take some time for this transaction to execute on-chain.",
   labelFrom: "From",
