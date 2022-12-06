@@ -118,6 +118,7 @@
     ]
   },
   "devDependencies": {
+    "html5-qrcode": "2.3.4",
     "@babel/core": "^7.13.14",
     "@babel/eslint-parser": "^7.13.14",
     "@babel/plugin-transform-typescript": "^7.12.1",

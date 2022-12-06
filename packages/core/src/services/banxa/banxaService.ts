@@ -5,7 +5,10 @@ import { BANXA_URLS, BanxaOrder, myLog } from "@loopring-web/common-resources";
 import axios from "axios";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
-
+export enum BalanceReason {
+  Balance = 0,
+  FeeAndBalance = 1,
+}
 export const mockReturn: { order: BanxaOrder } = {
   order: {
     id: "dd734aec66eb781ecc7f7bb01274ec63",
@@ -47,7 +50,7 @@ export const mockAfterKYCReturn: { order: BanxaOrder } = {
     ref: 111904,
     fiat_code: "AUD",
     fiat_amount: 73.7,
-    coin_code: "USDC",
+    coin_code: "USDT",
     coin_amount: 49.99,
     wallet_address: "0x35405E1349658BcA12810d0f879Bf6c5d89B512C",
     wallet_address_tag: null,
@@ -187,7 +190,7 @@ export const banxaService = {
           //   },
           // });
         })
-        .catch((res: any) => {
+        .catch((_res: any) => {
           subject.next({
             status: BanxaCheck.CheckOrderStatus,
             data: {

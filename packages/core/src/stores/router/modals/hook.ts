@@ -143,7 +143,7 @@ export function useModalData(): {
 
   offBanxaValue: Partial<BanxaOrder> | undefined;
   updateOffBanxaData: (
-    offRamp: Partial<{
+    offBanxa: Partial<{
       order: BanxaOrder;
     }>
   ) => void;
@@ -293,11 +293,11 @@ export function useModalData(): {
     ),
     updateOffBanxaData: React.useCallback(
       (
-        offRamp: Partial<{
+        offBanxa: Partial<{
           order: BanxaOrder;
         }>
       ) => {
-        dispatch(updateOffBanxaData(offRamp));
+        dispatch(updateOffBanxaData(offBanxa));
       },
       [dispatch]
     ),

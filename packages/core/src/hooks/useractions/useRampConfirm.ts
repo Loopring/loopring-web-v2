@@ -275,7 +275,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     if (window.rampInstance) {
       window.rampInstance.close();
     } else {
-      setSellPanel(RAMP_SELL_PANEL.LIST);
+      // setSellPanel(RAMP_SELL_PANEL.LIST);
       resetOffRampData();
     }
   }, [

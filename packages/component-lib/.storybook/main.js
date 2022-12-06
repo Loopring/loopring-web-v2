@@ -54,28 +54,25 @@ function findBabelRules(config) {
 }
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
-  // stories: [
-  //   "../src/components/basic-lib/Icon.stories.tsx",
-  //   "../src/components/basic-lib/color.stories.tsx",
-  // ],
   addons: [
-    {
-      name: "@storybook/addon-docs",
-      options: {
-        configureJSX: true,
-        babelOptions: {},
-        sourceLoaderOptions: null,
-        transcludeMarkdown: true,
-      },
-    },
+    "@storybook/addon-links",
     "@storybook/addon-essentials",
-    "@storybook/addon-docs/preset",
-    "@storybook/addon-interactions",
     "@storybook/preset-create-react-app",
+    "@storybook/addon-interactions",
   ],
   framework: "@storybook/react",
   typescript: {
     check: false,
+    checkOptions: {},
+    reactDocgen: "react-docgen-typescript",
+    reactDocgenTypescriptOptions: {
+      shouldExtractLiteralValuesFromEnum: true,
+      propFilter: (prop) =>
+        prop.parent ? !/node_modules/.test(prop.parent.fileName) : true,
+    },
+  },
+  core: {
+    builder: "webpack4",
   },
   webpackFinal: async (config, { configType }) => {
     config = disableEsLint(config);

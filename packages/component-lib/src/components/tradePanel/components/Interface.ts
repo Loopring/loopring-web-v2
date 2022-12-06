@@ -84,8 +84,13 @@ export type TransferViewProps<T, I, C = CoinKey<I> | string> =
   TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;
 
 export type RampViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C>;
-export type BanxaViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C> &
-  BanxaOrder;
+export type BanxaViewProps<T, I, C = CoinKey<I>> = TransferViewProps<
+  T,
+  I,
+  C
+> & {
+  offBanxaValue?: BanxaOrder;
+};
 
 /**
  * private props

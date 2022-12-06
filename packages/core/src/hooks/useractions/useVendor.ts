@@ -13,6 +13,7 @@ import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { BanxaCheck, banxaService, OrderENDReason } from "../../services/banxa";
+import { useRouteMatch } from "react-router-dom";
 
 export enum RAMP_SELL_PANEL {
   LIST,
@@ -23,6 +24,7 @@ export enum RAMP_SELL_PANEL {
 export const useVendor = () => {
   const { account } = useAccount();
   const { t } = useTranslation();
+
   const banxaRef = React.useRef();
   const subject = React.useMemo(() => banxaService.onSocket(), []);
 
@@ -33,17 +35,22 @@ export const useVendor = () => {
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-  // const [banxaOrder, setBanxaOrder] = React.useState(undefined);
-  // const { isMobile } = useSettings();
+  const match: any = useRouteMatch("/trade/:fiat/:tab?");
+
   const {
     // updateOffRampData,
     resetOffRampData,
   } = useModalData();
 
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
-    // RAMP_SELL_PANEL.LIST
-    RAMP_SELL_PANEL.BANXA_CONFIRM
+    RAMP_SELL_PANEL.LIST
+    // RAMP_SELL_PANEL.BANXA_CONFIRM
   );
+  React.useEffect(() => {
+    if (match?.params?.tab === "Sell") {
+      setSellPanel(RAMP_SELL_PANEL.LIST);
+    }
+  }, [match?.params?.tab]);
 
   const vendorListBuy: VendorItem[] = legalShow
     ? [
@@ -296,5 +303,6 @@ export const useVendor = () => {
     vendorForce: undefined,
     sellPanel,
     setSellPanel,
+    // setSellPanel,
   };
 };

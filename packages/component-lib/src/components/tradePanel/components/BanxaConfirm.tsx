@@ -31,11 +31,13 @@ export const BanxaConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
   feeInfo,
   memo,
   balanceNotEnough,
-  fiat_code,
-  fiat_amount,
-  coin_code,
-  coin_amount,
-}: BanxaViewProps<T, I, C> & { balanceNotEnough: boolean }) => {
+  offBanxaValue,
+}: BanxaViewProps<T, I, C> & {
+  balanceNotEnough: {
+    isEnough: boolean;
+    reason?: string;
+  };
+}) => {
   const { isMobile } = useSettings();
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
@@ -76,7 +78,7 @@ export const BanxaConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
             variant={isMobile ? "h4" : "h3"}
             whiteSpace={"pre"}
           >
-            {t("labelL2toRampTitle")}
+            {t("labelL2toBanxaTitle")}
           </Typography>
         </Box>
       </Grid>
@@ -88,7 +90,7 @@ export const BanxaConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
           {tradeData?.tradeValue + " "}
           {tradeData?.belong}
         </Typography>
-        {balanceNotEnough && (
+        {balanceNotEnough.isEnough && (
           <Typography
             color={"var(--color-error)"}
             variant={"body2"}
@@ -96,7 +98,13 @@ export const BanxaConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
             alignSelf={"stretch"}
             position={"relative"}
           >
-            {t("labelRampNoBalance", { belong: tradeData?.belong })}
+            {t(
+              // @ts-ignore
+              balanceNotEnough?.reason == 1
+                ? "labelBanxaFeeNoBalance"
+                : "labelRampNoBalance",
+              { belong: tradeData?.belong }
+            )}
           </Typography>
         )}
       </Grid>
@@ -105,46 +113,15 @@ export const BanxaConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
           {t("labelFiatAmount")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {fiat_amount + " " + fiat_code}
+          {offBanxaValue?.fiat_amount + " " + offBanxaValue?.fiat_code}
         </Typography>
-        {balanceNotEnough && (
-          <Typography
-            color={"var(--color-error)"}
-            variant={"body2"}
-            marginTop={1 / 4}
-            alignSelf={"stretch"}
-            position={"relative"}
-          >
-            {t("labelRampNoBalance", { belong: tradeData?.belong })}
-          </Typography>
-        )}
-      </Grid>
-      <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2TokenAmount")}
-        </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {tradeData?.tradeValue + " "}
-          {tradeData?.belong}
-        </Typography>
-        {balanceNotEnough && (
-          <Typography
-            color={"var(--color-error)"}
-            variant={"body2"}
-            marginTop={1 / 4}
-            alignSelf={"stretch"}
-            position={"relative"}
-          >
-            {t("labelRampNoBalance", { belong: tradeData?.belong })}
-          </Typography>
-        )}
       </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
           {t("labelL2toL2AddressType")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {t("labelWalletTypeOptions", { type: "Ramp" })}
+          {t("labelWalletTypeOptions", { type: "Banxa" })}
         </Typography>
       </Grid>
 

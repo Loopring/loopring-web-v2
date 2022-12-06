@@ -994,6 +994,8 @@ export default {
   labelBuy: "Buy",
   labelSell: "Sell",
   labelRampNoBalance: "Insufficient {{belong}} balance",
+  labelBanxaNoBalance: "Insufficient {{belong}} balance",
+  labelBanxaFeeNoBalance: "Insufficient {{belong}} balance & fee",
   labelL2toRampTitle: "Send to Ramp",
   labelL2toBanxaTitle: "Send to Banxa",
 
