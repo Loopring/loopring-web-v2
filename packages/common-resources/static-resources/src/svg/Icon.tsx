@@ -1410,18 +1410,6 @@ export const WarningIcon2 = (props: SvgIconProps) => {
   );
 };
 
-export const RightArrowIcon = (props: SvgIconProps) => {
-  return (
-    <SvgIcon {...props} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M12.1956 18L13.1556 18.96C13.283 19.0872 13.4556 19.1586 13.6356 19.1586C13.8156 19.1586 13.9883 19.0872 14.1156 18.96L21.0756 12L14.1156 5.03997C13.9883 4.91276 13.8156 4.84131 13.6356 4.84131C13.4556 4.84131 13.283 4.91276 13.1556 5.03997L12.1956 5.99997C12.0684 6.12733 11.997 6.29997 11.997 6.47998C11.997 6.65998 12.0684 6.83262 12.1956 6.95997L15.8748 10.6392H2.91966C2.7392 10.6392 2.56614 10.7109 2.43854 10.8385C2.31094 10.9661 2.23926 11.1392 2.23926 11.3196V12.6804C2.23926 12.8609 2.31094 13.0339 2.43854 13.1615C2.56614 13.2891 2.7392 13.3608 2.91966 13.3608H15.8748L12.1956 17.04C12.1325 17.103 12.0824 17.1778 12.0482 17.2601C12.0141 17.3425 11.9965 17.4308 11.9965 17.52C11.9965 17.6091 12.0141 17.6974 12.0482 17.7798C12.0824 17.8622 12.1325 17.937 12.1956 18Z"
-      />
-    </SvgIcon>
-  );
-};
-
 export const RoundAddIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props} viewBox="0 0 24 24" aria-hidden="true">
@@ -1472,11 +1460,11 @@ export const ViewHistoryIcon = (props: SvgIconProps) => {
 };
 
 export const RedPockWrap = ({
-                              colorTop,
-                              startColor,
-                              endColor,
-                              ...props
-                            }: SvgIconProps & {
+  colorTop,
+  startColor,
+  endColor,
+  ...props
+}: SvgIconProps & {
   stroke: string;
   colorTop: "#FD7659" | "#FFD595";
   startColor: "#FC7A5A" | "#FFD596";
@@ -1588,11 +1576,11 @@ export const RedPockWrap = ({
 };
 
 export const RedPockOpenWrap = ({
-                                  colorTop,
-                                  startColor,
-                                  endColor,
-                                  ...props
-                                }: SvgIconProps & {
+  colorTop,
+  startColor,
+  endColor,
+  ...props
+}: SvgIconProps & {
   stroke: string;
   colorTop: "#FD7659" | "#FFD595";
   startColor: "#FC7A5A" | "#FFD596";
@@ -1732,4 +1720,3 @@ export const RedPockOpenWrap = ({
     </SvgIcon>
   );
 };
-

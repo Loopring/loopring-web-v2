@@ -526,7 +526,7 @@ export const SwapSecondConfirmation = withTranslation("common")(
                 </Typography>
               </Box>
               <Box display={"flex"} justifyContent={"center"} width={"10%"}>
-                <RightArrowIcon />
+                <Typography variant={"h4"}>{"\u2192"}</Typography>
               </Box>
               <Box
                 width={"45%"}
