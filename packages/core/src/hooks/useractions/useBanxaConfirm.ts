@@ -45,8 +45,8 @@ import {
 import { ChainId } from "@loopring-web/loopring-sdk";
 import _ from "lodash";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { isAccActivated } from "./checkAccStatus";
 import Web3 from "web3";
+import { isAccActivated } from "./useCheckAccStatus";
 
 export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   sellPanel,

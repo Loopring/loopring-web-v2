@@ -9,6 +9,7 @@ import HistoryPanel from "./HistoryPanel";
 import React from "react";
 import { ViewAccountTemplate } from "@loopring-web/core";
 import { useGetAssets } from "./AssetPanel/hook";
+import { RedPockPanel } from "./RedPockPanel";
 
 export const subMenu = subMenuLayer2;
 
@@ -17,11 +18,13 @@ export const AssetPage = () => {
   const selected = match?.params.item ?? "assets";
   const { assetTitleProps, assetTitleMobileExtendProps } = useGetAssets();
   const layer2Router = React.useMemo(() => {
-    switch (selected) {
+    switch (selected.toLowerCase()) {
       case "assets":
         return <AssetPanel />;
       case "history":
         return <HistoryPanel />;
+      case "redpocket":
+        return <RedPockPanel />;
       default:
         <AssetPanel />;
     }

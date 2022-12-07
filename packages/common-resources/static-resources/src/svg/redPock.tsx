@@ -334,7 +334,7 @@ export const RedPockQRCodeSvg = ({
         </linearGradient>
       </defs>
       <g transform={"translate(87 226)"}>
-        <rect width="160" height="160" fill="#D9D9D9" />
+        <rect className={"qrcode"} width="160" height="160" fill="#D9D9D9" />
       </g>
       <g transform={"translate(167 56)"}>
         {/*<rect x="15.5" y="45.5" width="280" height="21" />*/}

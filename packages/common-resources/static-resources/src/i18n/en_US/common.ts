@@ -1249,4 +1249,6 @@ export default {
   labelwithdraw: "Withdrawal",
   labelDeposit: "Deposit",
   labelFiatAmount: "Fiat Amount",
+  labelAssetRedPockets: "Red Pockets",
+  labelRedPocketTitle: "Red Pockets",
 };

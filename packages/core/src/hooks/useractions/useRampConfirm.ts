@@ -37,8 +37,8 @@ import { getTimestampDaysLater } from "../../utils";
 import { DAYS } from "../../defs";
 import { RAMP_SELL_PANEL } from "./useVendor";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { isAccActivated } from "./checkAccStatus";
 import Web3 from "web3";
+import { isAccActivated } from "./useCheckAccStatus";
 
 export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   sellPanel,
