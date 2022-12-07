@@ -282,7 +282,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
     //TODO: when API Done
-    let orderId = "94b40868a300710fea2e7dee8eaebef1ghuyyw";
+    let orderId = "b2a31fd2896ea739c3918f57ec3c9d8c";
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
     banxaApiCall({
       chainId: chainId as ChainId,
