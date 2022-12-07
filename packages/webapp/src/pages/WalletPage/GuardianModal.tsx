@@ -2,7 +2,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { Box, Modal, Typography } from "@mui/material";
 import { ReactNode } from "react";
-import { ModalBackButton, ModalCloseButton } from "@loopring-web/component-lib";
+import { ModalBackButton, ModalCloseButton, useSettings } from "@loopring-web/component-lib";
 
 type GuardianModalProps = {
   open: boolean;
@@ -15,17 +15,18 @@ type GuardianModalProps = {
   showBackButton?: boolean;
 };
 
-const GuardianModalContentStyled = styled(Box)`
+const GuardianModalContentStyled = styled(Box)<{isMobile?: boolean}>`
   & > div {
     background: var(--color-pop-bg);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: ${({ theme }) => theme.unit * 75}px;
+    width: ${({ theme, isMobile }) => isMobile ? "100%" : `${theme.unit * 75}px`};
+    margin: ${({ isMobile }) => isMobile ? "auto 2%" : "auto"};
   }
   &.guardianPop .content {
-    padding-top: ${({ theme }) => 5 * theme.unit}px;
+    padding-top: 40px;
     border-radius: ${({ theme }) => theme.unit}px;
   }
 `;
@@ -41,6 +42,7 @@ export const GuardianModal = withTranslation("common")(
     showBackButton,
     t
   }: GuardianModalProps & WithTranslation) => {
+    const { isMobile } = useSettings();
     return (
       <Modal
         open={open}
@@ -49,6 +51,7 @@ export const GuardianModal = withTranslation("common")(
         aria-describedby="modal-modal-description"
       >
         <GuardianModalContentStyled
+          isMobile={isMobile}
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
@@ -60,6 +63,8 @@ export const GuardianModal = withTranslation("common")(
             paddingBottom={3}
             display={"flex"}
             flexDirection={"column"}
+            // width={isMobile ? "100%" : "auto"}
+            width={"100%"}
           >
             {showBackButton && <ModalBackButton onBack={onBack} />}
             <ModalCloseButton onClose={onClose} t={t} />

@@ -266,7 +266,7 @@ export const WalletValidationInfo = ({
       </SwitchPanelStyled>
     </Modal>
     {
-      guardiansList.length !== 0 ? <Box height={"350px"} overflow="scroll">
+      guardiansList.length !== 0 ? <Box height={"320px"} overflow="scroll">
         {guardiansList.map((guardian, index) => {
           return (
             <Box
@@ -274,7 +274,7 @@ export const WalletValidationInfo = ({
               display={"flex"}
               alignItems={"center"}
               justifyContent={"space-between"}
-              marginBottom={4}
+              marginBottom={2}
             >
               <Box>
                 <Typography variant={"h6"}>{t("labelWalletRequestRecovery")}</Typography>

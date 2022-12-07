@@ -16,7 +16,7 @@ export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOper
   //   {status: 1, createdAt: 0, ens: 'ens', from: '111',hebaoTxType: 1, to: '111', id: 1},
   // ]
   const {t} = useTranslation();
-  return operationLogList.length !== 0 ? <Box height={"400px"} overflow="scroll">
+  return operationLogList.length !== 0 ? <Box height={"340px"} overflow="scroll">
     {operationLogList.map((log, index) => {
       return (
         <Box
@@ -24,7 +24,7 @@ export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOper
           display={"flex"}
           alignItems={"center"}
           justifyContent={"space-between"}
-          marginBottom={4}
+          marginBottom={2}
         >
           <Box>
             <Typography>

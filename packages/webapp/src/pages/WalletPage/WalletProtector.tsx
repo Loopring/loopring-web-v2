@@ -234,10 +234,10 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
       }
     }
     
-    return <Box height={"350px"} overflow="scroll">
+    return <Box height={"320px"} overflow="scroll">
       {protectorList.map(x => {
         const {lockStatus} = x
-        return <Box key={x.address} display={"flex"} alignItems={"center"} justifyContent={"space-between"} marginBottom={4}>
+        return <Box key={x.address} display={"flex"} alignItems={"center"} justifyContent={"space-between"} marginBottom={2}>
         <Box>
           <Typography variant={"h6"}>{x.ens ? x.ens : t('labelUnknown')}</Typography>
           <Typography color={"var(--color-text-third)"}>{x.address}</Typography>
