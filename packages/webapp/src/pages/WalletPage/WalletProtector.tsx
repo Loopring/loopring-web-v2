@@ -239,7 +239,7 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
         const {lockStatus} = x
         return <Box key={x.address} display={"flex"} alignItems={"center"} justifyContent={"space-between"} marginBottom={2}>
         <Box>
-          <Typography variant={"h6"}>{x.ens ? x.ens : t('labelUnknown')}</Typography>
+          <Typography variant={"body1"}>{x.ens ? x.ens : t('labelUnknown')}</Typography>
           <Typography color={"var(--color-text-third)"}>{x.address}</Typography>
         </Box>
         <StatusView status={lockStatus} onClickLock={() => {

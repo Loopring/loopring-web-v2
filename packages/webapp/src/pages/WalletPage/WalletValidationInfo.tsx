@@ -277,10 +277,10 @@ export const WalletValidationInfo = ({
               marginBottom={2}
             >
               <Box>
-                <Typography variant={"h6"}>{t("labelWalletRequestRecovery")}</Typography>
-                <Typography variant={"h6"}>
+                <Typography variant={"body1"}>{t("labelWalletRequestRecovery")}</Typography>
+                <Typography variant={"body1"}>
                   {/* todo: Unknown translation */}
-                  {guardian.ens ? guardian.ens : t("labelUnknown")} /
+                  {guardian.ens ? `${guardian.ens} /` : ''}
                   <Typography component={"span"} color={"var(--color-text-third)"}>{guardian.address && `${guardian.address.slice(0, 6)}...${guardian.address.slice(guardian.address.length - 4,)}`}</Typography>
                 </Typography>
               </Box>

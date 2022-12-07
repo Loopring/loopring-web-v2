@@ -28,7 +28,7 @@ export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOper
         >
           <Box>
             <Typography>
-              {log.ens ? log.ens : t("labelUnknown")} /
+              {log.ens ? `${log.ens} /` : ''}
               <Typography component={"span"} color={"var(--color-text-third)"}>{log.to && `${log.to.slice(0, 6)}...${log.to.slice(log.to.length - 4,)}`}</Typography>
             </Typography>
             <Typography
@@ -36,8 +36,8 @@ export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOper
               component={"span"}
               color={log.status ? "error" : "var(--color-success)"}
             >
-              {t("labelTxGuardian" + TxHebaoAction[log.status]) +
-                " "}
+
+              {`${t("labelTxGuardian" + TxHebaoAction[log.status]).slice(0,1).toUpperCase()}${t("labelTxGuardian" + TxHebaoAction[log.status]).slice(1).toLowerCase()} `}
             </Typography>
             
             <Typography
@@ -45,11 +45,10 @@ export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOper
               component={"span"}
               color={"--color-text-third"}
             >
-              
               {t(
                 "labelTxGuardian" +
                 TxGuardianHistoryType[log.hebaoTxType]
-              )}
+              ).toLowerCase()}
             </Typography>
             <Typography color={"var(--color-text-third)"} variant={"body1"}>
               {moment(
