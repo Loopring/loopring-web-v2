@@ -6,6 +6,7 @@ import {
   EmptyDefault,
   Button,
   GuardianStep,
+  useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -24,7 +25,7 @@ import {
 } from "@loopring-web/core";
 import { connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { HEBAO_LOCK_STATUS, Protector } from "@loopring-web/loopring-sdk";
+import { HEBAO_LOCK_STATUS, IsMobile, Protector } from "@loopring-web/loopring-sdk";
 
 const useHebaoProtector = <T extends sdk.Protector>({
   guardianConfig,
@@ -142,6 +143,7 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
     handleOpenModal,
     loadData,
   });
+  const { isMobile } = useSettings();
   if (protectorList.length === 0) {
     return <Box flex={1} height={"100%"} width={"100%"}>
       <EmptyDefault
@@ -233,6 +235,7 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
         default: return <></>
       }
     }
+
     
     return <Box height={"320px"} overflow="scroll">
       {protectorList.map(x => {
@@ -240,7 +243,13 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
         return <Box key={x.address} display={"flex"} alignItems={"center"} justifyContent={"space-between"} marginBottom={2}>
         <Box>
           <Typography variant={"body1"}>{x.ens ? x.ens : t('labelUnknown')}</Typography>
-          <Typography color={"var(--color-text-third)"}>{x.address}</Typography>
+          <Typography color={"var(--color-text-third)"} title={x.address}>
+            {
+              isMobile
+                ? (x.address && `${x.address.slice(0, 6)}...${x.address.slice(x.address.length - 4,)}`) 
+                : x.address
+            }
+          </Typography>
         </Box>
         <StatusView status={lockStatus} onClickLock={() => {
           onLock(x);

@@ -281,7 +281,7 @@ export const WalletValidationInfo = ({
                 <Typography variant={"body1"}>
                   {/* todo: Unknown translation */}
                   {guardian.ens ? `${guardian.ens} /` : ''}
-                  <Typography component={"span"} color={"var(--color-text-third)"}>{guardian.address && `${guardian.address.slice(0, 6)}...${guardian.address.slice(guardian.address.length - 4,)}`}</Typography>
+                  <Typography title={guardian.address} component={"span"} color={"var(--color-text-third)"}>{guardian.address && `${guardian.address.slice(0, 6)}...${guardian.address.slice(guardian.address.length - 4,)}`}</Typography>
                 </Typography>
               </Box>
               <Box>

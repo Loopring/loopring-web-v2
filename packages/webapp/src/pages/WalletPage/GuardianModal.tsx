@@ -17,12 +17,13 @@ type GuardianModalProps = {
 
 const GuardianModalContentStyled = styled(Box)<{isMobile?: boolean}>`
   & > div {
-    background: var(--color-pop-bg);
+    background: var(--color-box);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: ${({ theme, isMobile }) => isMobile ? "100%" : `${theme.unit * 75}px`};
+    width: ${({ isMobile }) => isMobile ? "92%" : "60%"};
+    min-width: ${({ isMobile }) => isMobile ? "auto" : "600px"};
     margin: ${({ isMobile }) => isMobile ? "auto 2%" : "auto"};
   }
   &.guardianPop .content {
@@ -30,6 +31,7 @@ const GuardianModalContentStyled = styled(Box)<{isMobile?: boolean}>`
     border-radius: ${({ theme }) => theme.unit}px;
   }
 `;
+
 
 
 export const GuardianModal = withTranslation("common")(
