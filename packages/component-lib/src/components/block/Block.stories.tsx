@@ -7,7 +7,6 @@ import {
   CoinInfo,
   FloatTag,
   PriceTag,
-  RedPockSvg,
 } from "@loopring-web/common-resources";
 import {
   coinMap,
@@ -20,9 +19,10 @@ import { withTranslation } from "react-i18next";
 import {
   AssetTitle,
   AssetTitleProps,
-  RedPockCard,
+  RedPockBgOpened,
   RedPockClock,
   RedPockOpen,
+  RedPockQRCode,
   TradeTitle,
   VipPanel,
 } from "./";
@@ -305,11 +305,11 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
           marginY={2}
         >
           <Grid item>
-            <RedPockOpen onClose={() => {}} />
+            <RedPockOpen />
           </Grid>
           <Grid item>
             <RedPockClock
-              onClose={() => {}}
+              type={"official"}
               countDown={{
                 days: undefined,
                 hours: undefined,
@@ -319,15 +319,24 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
             />
           </Grid>
           <Grid item>
-            <RedPockSvg />
+            <RedPockBgOpened type={"default"} />
           </Grid>
-          <Grid item xs={4}>
-            <RedPockCard
-              luckyTokenItem={REDPOCKMOCK}
-              idIndex={TOKEN_INFO.idIndex}
-              tokenMap={TOKEN_INFO.tokenMap}
-            />
+          <Grid item>
+            <RedPockBgOpened type={"official"} />
           </Grid>
+          <Grid item>
+            <RedPockQRCode type={"default"} />
+          </Grid>
+          <Grid item>
+            <RedPockQRCode type={"official"} />
+          </Grid>
+          {/*<Grid item xs={4}>*/}
+          {/*  <RedPockCard*/}
+          {/*    luckyTokenItem={REDPOCKMOCK}*/}
+          {/*    idIndex={TOKEN_INFO.idIndex}*/}
+          {/*    tokenMap={TOKEN_INFO.tokenMap}*/}
+          {/*  />*/}
+          {/*</Grid>*/}
         </Grid>
 
         <h4>Vip Panel</h4>

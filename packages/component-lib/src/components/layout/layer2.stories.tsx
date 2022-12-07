@@ -8,7 +8,7 @@ import {
   CssBaseline,
   GlobalStyles,
   Grid,
-  IconButton,
+  // IconButton,
   Paper,
   Toolbar,
 } from "@mui/material";
@@ -21,21 +21,20 @@ import {
   globalCss,
   headerMenuData,
   headerToolBarData,
-  HideIcon,
+  // HideIcon,
   // IBData,
   PriceTag,
   subMenuLayer2,
   // VendorProviders,
-  ViewIcon,
 } from "@loopring-web/common-resources";
 import { withTranslation } from "react-i18next";
 import { OrderHistoryTable as OrderHistoryTableUI } from "../tableList/orderHistoryTable";
 import { AssetTitleProps } from "../block";
-import React from "react";
 import { AssetTitle } from "../block";
 import { AccountBasePanel, AccountBaseProps } from "../";
 
 import { Typography } from "@mui/material";
+import React from "react";
 
 const Style = styled.div``;
 const SubMenuList = withTranslation("layout", { withRef: true })(
@@ -118,25 +117,25 @@ const Layer2Wrap = withTranslation("common")(({ t, ...rest }: any) => {
     ),
   };
   const hasAccount = true;
-  const [showAccountInfo, setShowAccountInfo] = React.useState(hasAccount);
-  const handleClick = (_event: React.MouseEvent) => {
-    if (showAccountInfo) {
-      setShowAccountInfo(false);
-    } else {
-      setShowAccountInfo(true);
-    }
-    _event.stopPropagation();
-  };
-  headerMenuData["layer2"].extender = hasAccount ? (
-    <IconButton
-      disabled={!hasAccount}
-      onClick={handleClick}
-      aria-label={t("labelShowAccountInfo")}
-      color="primary"
-    >
-      {showAccountInfo ? <HideIcon /> : <ViewIcon />}
-    </IconButton>
-  ) : undefined;
+  const [showAccountInfo, _setShowAccountInfo] = React.useState(hasAccount);
+  // const handleClick = (_event: React.MouseEvent) => {
+  //   if (showAccountInfo) {
+  //     setShowAccountInfo(false);
+  //   } else {
+  //     setShowAccountInfo(true);
+  //   }
+  //   _event.stopPropagation();
+  // };
+  // headerMenuData["as"].extender = hasAccount ? (
+  //   <IconButton
+  //     disabled={!hasAccount}
+  //     onClick={handleClick}
+  //     aria-label={t("labelShowAccountInfo")}
+  //     color="primary"
+  //   >
+  //     {showAccountInfo ? <HideIcon /> : <ViewIcon />}
+  //   </IconButton>
+  // ) : undefined;
 
   return (
     <>
@@ -144,7 +143,7 @@ const Layer2Wrap = withTranslation("common")(({ t, ...rest }: any) => {
       <HideOnScroll>
         <Header
           {...{ ...rest }}
-          headerMenuData={{ ...headerMenuData }}
+          headerMenuData={headerMenuData}
           headerToolBarData={{ ...headerToolBarData }}
           selected={"markets"}
         />
@@ -183,7 +182,12 @@ const Layer2Wrap = withTranslation("common")(({ t, ...rest }: any) => {
                 Orders
               </Typography>
               <Box marginTop={2} className="tableWrapper">
-                <OrderHistoryTable rawData={[]} pageSize={0} {...rest} />
+                <OrderHistoryTable
+                  rawData={[]}
+                  pageSize={0}
+                  {...rest}
+                  getOrderList={() => {}}
+                />
               </Box>
             </StylePaper>
           </Box>

@@ -117,6 +117,10 @@ import {
   FavSolidIcon,
   SwapSettingIcon,
   WarningIcon2,
+  RoundAddIcon,
+  ApprovalIcon,
+  LockGuardianIcon,
+  ViewHistoryIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -244,6 +248,10 @@ const listIcon = [
   <FavSolidIcon />,
   <SwapSettingIcon />,
   <WarningIcon2 />,
+  <RoundAddIcon />,
+  <ApprovalIcon />,
+  <LockGuardianIcon />,
+  <ViewHistoryIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

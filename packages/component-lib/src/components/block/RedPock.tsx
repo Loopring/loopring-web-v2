@@ -1,35 +1,30 @@
 import styled from "@emotion/styled";
-import { Box, BoxProps, Divider, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import React from "react";
-import { ModalCloseButton } from "../basic-lib";
+import { useTranslation } from "react-i18next";
 import {
-  useTranslation,
-  WithTranslation,
-  withTranslation,
-} from "react-i18next";
-import {
-  DAY_FORMAT,
   EmptyValueTag,
-  getShortAddr,
-  getValuePrecisionThousand,
-  MINUTE_FORMAT,
+  RedPockOpenWrapSVG,
+  RedPockQRCodeSvg,
+  // RedPockOpenWrapSvg,
+  RedPockWrapSVG,
+  // RedPockWrapSvg,
 } from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
-import moment from "moment";
+// .close-button {
+//   margin-top: 0;
+//   z-index: 888;
+// .MuiIconButton-root {
+//     color: var(--color-text-button);
+//   }
+// }
 
 export const RedPockBg = styled(Box)<BoxProps & { imageSrc?: string }>`
-  background: #ff5136;
-  border-radius: 8px;
-  min-width: 288px;
-  display: flex;
-  flex-direction: column;
-  .close-button {
-    margin-top: 0;
-    z-index: 888;
-    .MuiIconButton-root {
-      color: var(--color-text-button);
-    }
-  }
+  //background: #ff5136;
+  //border-radius: 8px;
+  //min-width: 288px;
+  //display: flex;
+  //flex-direction: column;
+  position: relative;
   .bottomEle {
     min-height: 120px;
   }
@@ -120,72 +115,156 @@ export const RedPockBg = styled(Box)<BoxProps & { imageSrc?: string }>`
     }
   }
 ` as (props: BoxProps & { imageSrc?: string }) => JSX.Element;
-
-export const RedPock = ({
-  content,
-  desContent,
-  betweenContent,
-  onClose,
-}: {
-  onClose: (e: MouseEvent) => void;
+export type RedPockDefault = {
+  type?: "default" | "official";
+  size?: "middle" | "large";
+};
+export type RedPockDefaultBg = RedPockDefault & {
   content: JSX.Element;
-  desContent: JSX.Element;
-  betweenContent?: JSX.Element;
-}) => {
-  const { t, ...rest } = useTranslation("common");
+};
+export const RedPockSize = {
+  middle: {
+    height: 400,
+    width: 260,
+  },
+  large: {
+    height: 600,
+    width: 320,
+  },
+};
+export const RedPockQRCode = ({ type = "default" }: RedPockDefault & any) => {
+  const RedPockColorConfig = {
+    default: {
+      colorTop: "#FD7659",
+      startColor: "#FC7A5A",
+      endColor: "#FF6151",
+      bgColor: "#ffffff",
+      fontColor: "#FFF7B1",
+      btnColor: "#FD7659",
+    },
+    official: {
+      colorTop: "#FFD595",
+      startColor: "#FFD596",
+      endColor: "#FDBD6A",
+      bgColor: "#ffffff",
+      fontColor: "#A25402",
+      btnColor: "#FD7659",
+    },
+  };
+  return <RedPockQRCodeSvg {...{ ...RedPockColorConfig[type] }} type={type} />;
+};
+export const RedPockBgDefault = ({
+  type = "default",
+  size = "middle",
+  content,
+}: RedPockDefaultBg & any) => {
+  const RedPockColorConfig = {
+    default: {
+      colorTop: "#FD7659",
+      startColor: "#FC7A5A",
+      endColor: "#FF6151",
+    },
+    official: {
+      colorTop: "#FFD595",
+      startColor: "#FFD596",
+      endColor: "#FDBD6A",
+    },
+  };
+  const scale = 414 / RedPockSize[size].height;
   return (
     <RedPockBg>
-      <ModalCloseButton onClose={onClose} {...{ ...rest, t }} />
-      <Box component={"div"} className={"topEle"}>
+      <Box
+        className={"bg"}
+        position={"absolute"}
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        zIndex={100}
+      >
+        <RedPockWrapSVG
+          {...{ ...RedPockColorConfig[type] }}
+          style={{ transform: `scale(${scale})` }}
+          height={"100%"}
+          width={"100%"}
+          type={type}
+          // height={RedPockSize[size].height}
+          // width={RedPockSize[size].width}
+        />
+      </Box>
+      <Box
+        position={"relative"}
+        zIndex={200}
+        height={RedPockSize[size].height}
+        width={RedPockSize[size].width}
+      >
         {content}
-      </Box>
-      <Box position={"relative"} top={0} left={0} className={"betweenEle"}>
-        {betweenContent}
-      </Box>
-      <Box component={"div"} className={"bottomEle"}>
-        {desContent}
       </Box>
     </RedPockBg>
   );
 };
-export const RedPockOpen = ({
-  onClose,
-}: {
-  onClose: (e: MouseEvent) => void;
-}) => {
-  const content = React.useMemo(() => {
-    return <></>;
-  }, []);
-  const betweenContent = React.useMemo(() => {
-    return (
-      <>
-        <Box display={"flex"} position={"absolute"} className={"open"}>
-          OPEN
-        </Box>
-      </>
-    );
-  }, []);
-  const desContent = React.useMemo(() => {
-    return (
-      <>
-        <Box display={"flex"} position={"absolute"} className={"open"}></Box>
-      </>
-    );
-  }, []);
+export const RedPockBgOpened = ({
+  type = "default",
+  size = "middle",
+  content,
+}: RedPockDefaultBg & any) => {
+  const scale = 414 / RedPockSize[size].height;
+
+  const RedPockColorConfig = {
+    default: {
+      colorTop: "#FFD596",
+      startColor: "#FC7A5A",
+      endColor: "#FF6151",
+      startBgColor: "#FC7A5A",
+      endBgColor: "#930D00",
+      startCard: "#FEF4DE",
+      endCard: "#FED897",
+      line: "#D4B164",
+    },
+    official: {
+      colorTop: "#FFD595",
+      startColor: "#FFD596",
+      endColor: "#FFD596",
+      startBgColor: "#FFD595",
+      endBgColor: "#934F00",
+      startCard: "#FEF4DE",
+      endCard: "#FED897",
+      line: "#D4B164",
+    },
+  };
   return (
-    <RedPock
-      onClose={onClose}
-      content={content}
-      desContent={desContent}
-      betweenContent={betweenContent}
-    />
+    <RedPockBg>
+      <Box position={"absolute"} zIndex={100}>
+        <RedPockOpenWrapSVG
+          {...{ ...RedPockColorConfig[type] }}
+          style={{ transform: `scale(${scale})` }}
+          height={"100%"}
+          width={"100%"}
+          type={type}
+        />
+      </Box>
+      <Box position={"relative"} zIndex={200} height={RedPockSize[size]}>
+        {content}
+      </Box>
+    </RedPockBg>
   );
 };
+
+export const RedPockOpen = ({ type = "default" }: RedPockDefault & any) => {
+  const content = React.useMemo(() => {
+    return (
+      <Box display={"flex"} position={"absolute"} className={"open"}>
+        OPEN
+      </Box>
+    );
+  }, []);
+
+  return <RedPockBgDefault type={type} content={content} />;
+};
 export const RedPockClock = ({
-  onClose,
+  type = "default",
   countDown,
-}: {
-  onClose: (e: MouseEvent) => void;
+}: RedPockDefault & {
   countDown: {
     days: undefined | string;
     hours: undefined | string;
@@ -195,9 +274,6 @@ export const RedPockClock = ({
 }) => {
   const { t } = useTranslation("common");
   const content = React.useMemo(() => {
-    return <></>;
-  }, []);
-  const betweenContent = React.useMemo(() => {
     return (
       <>
         <Box
@@ -283,23 +359,17 @@ export const RedPockClock = ({
       </>
     );
   }, []);
-  const desContent = React.useMemo(() => {
-    return (
-      <>
-        <Box display={"flex"} position={"absolute"} className={"open"}></Box>
-      </>
-    );
+  return <RedPockBgDefault type={type} content={content} />;
+};
+export const RedPockHistory = ({ type = "default" }: RedPockDefault & any) => {
+  const { t } = useTranslation("common");
+  const content = React.useMemo(() => {
+    return <>{t("official")}</>;
   }, []);
-  return (
-    <RedPock
-      onClose={onClose}
-      content={content}
-      desContent={desContent}
-      betweenContent={betweenContent}
-    />
-  );
+  return <RedPockBgOpened type={type} content={content} />;
 };
 
+// export const RedPockCard = withTranslation()(() => {});
 // export const RedPockQRCode = ({
 //   onClose,
 //   countDown,
@@ -332,100 +402,100 @@ export const RedPockClock = ({
 //   );
 // };
 
-export const RedPockCard = withTranslation()(
-  ({
-    t,
-    luckyTokenItem: {
-      hash,
-      sender,
-      champion,
-      tokenId,
-      tokenAmount,
-      type,
-      status,
-      validSince,
-      validUntil,
-      info,
-      templateNo,
-      createdAt,
-    },
-    idIndex,
-    tokenMap,
-  }: {
-    luckyTokenItem: sdk.LuckyTokenItemForReceive;
-    idIndex: { [key: string]: string };
-    tokenMap: { [key: string]: any };
-  } & WithTranslation) => {
-    const color = {
-      textColor: `var(--color-redPock-text${type.scope})`,
-      background: `var(--color-redPock${type.scope})`,
-    };
-    const luckToken = tokenMap[idIndex[tokenId]];
-    return (
-      <Box
-        display={"flex"}
-        borderRadius={1}
-        height={114}
-        paddingX={1}
-        paddingY={1}
-        flexDirection={"column"}
-        width={"100%"}
-        sx={{ background: color.background }}
-      >
-        <Typography
-          paddingX={1}
-          paddingTop={1}
-          variant={"h4"}
-          fontWeight={"900"}
-          color={color.textColor}
-        >
-          {`${getValuePrecisionThousand(
-            // @ts-ignore
-            sdk.toBig(tokenAmount.totalAmount).div("1e" + luckToken.decimals),
-            luckToken.decimals,
-            luckToken.decimals,
-            luckToken.decimals,
-            false
-          )} ${luckToken.symbol}`}
-        </Typography>
-        <Typography
-          paddingX={1}
-          textOverflow={"ellipsis"}
-          sx={{
-            overflow: "hidden",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            wordBreak: "break-all",
-          }}
-          whiteSpace={"pre-line"}
-          variant={"body1"}
-          display={"-webkit-box"}
-          color={color.textColor}
-          height={"3em"}
-        >
-          {info?.memo ?? t("labelLuckTokenDefaultTitle")}
-        </Typography>
-        <Divider
-          sx={{ border: "var(--color-redPock-Border)" }}
-          orientation={"horizontal"}
-        />
-        <Typography
-          variant={"body2"}
-          paddingX={1}
-          display={"flex"}
-          flexDirection={"row"}
-          color={color.textColor}
-          sx={{ opacity: 0.7 }}
-          justifyContent={"space-between"}
-        >
-          <Typography variant={"inherit"} color={"inherit"}>
-            {moment(validSince).format(`${DAY_FORMAT} ${MINUTE_FORMAT}`)}
-          </Typography>
-          <Typography variant={"inherit"} color={"inherit"}>
-            {sender.ens ? sender.ens : getShortAddr(sender.address)}
-          </Typography>
-        </Typography>
-      </Box>
-    );
-  }
-);
+// export const RedPockCard = withTranslation()(
+//   ({
+//     t,
+//     luckyTokenItem: {
+//       hash,
+//       sender,
+//       champion,
+//       tokenId,
+//       tokenAmount,
+//       type,
+//       status,
+//       validSince,
+//       validUntil,
+//       info,
+//       templateNo,
+//       createdAt,
+//     },
+//     idIndex,
+//     tokenMap,
+//   }: {
+//     luckyTokenItem: sdk.LuckyTokenItemForReceive;
+//     idIndex: { [key: string]: string };
+//     tokenMap: { [key: string]: any };
+//   } & WithTranslation) => {
+//     const color = {
+//       textColor: `var(--color-redPock-text${type.scope})`,
+//       background: `var(--color-redPock${type.scope})`,
+//     };
+//     const luckToken = tokenMap[idIndex[tokenId]];
+//     return (
+//       <Box
+//         display={"flex"}
+//         borderRadius={1}
+//         height={114}
+//         paddingX={1}
+//         paddingY={1}
+//         flexDirection={"column"}
+//         width={"100%"}
+//         sx={{ background: color.background }}
+//       >
+//         <Typography
+//           paddingX={1}
+//           paddingTop={1}
+//           variant={"h4"}
+//           fontWeight={"900"}
+//           color={color.textColor}
+//         >
+//           {`${getValuePrecisionThousand(
+//             // @ts-ignore
+//             sdk.toBig(tokenAmount.totalAmount).div("1e" + luckToken.decimals),
+//             luckToken.decimals,
+//             luckToken.decimals,
+//             luckToken.decimals,
+//             false
+//           )} ${luckToken.symbol}`}
+//         </Typography>
+//         <Typography
+//           paddingX={1}
+//           textOverflow={"ellipsis"}
+//           sx={{
+//             overflow: "hidden",
+//             WebkitLineClamp: 2,
+//             WebkitBoxOrient: "vertical",
+//             wordBreak: "break-all",
+//           }}
+//           whiteSpace={"pre-line"}
+//           variant={"body1"}
+//           display={"-webkit-box"}
+//           color={color.textColor}
+//           height={"3em"}
+//         >
+//           {info?.memo ?? t("labelLuckTokenDefaultTitle")}
+//         </Typography>
+//         <Divider
+//           sx={{ border: "var(--color-redPock-Border)" }}
+//           orientation={"horizontal"}
+//         />
+//         <Typography
+//           variant={"body2"}
+//           paddingX={1}
+//           display={"flex"}
+//           flexDirection={"row"}
+//           color={color.textColor}
+//           sx={{ opacity: 0.7 }}
+//           justifyContent={"space-between"}
+//         >
+//           <Typography variant={"inherit"} color={"inherit"}>
+//             {moment(validSince).format(`${DAY_FORMAT} ${MINUTE_FORMAT}`)}
+//           </Typography>
+//           <Typography variant={"inherit"} color={"inherit"}>
+//             {sender.ens ? sender.ens : getShortAddr(sender.address)}
+//           </Typography>
+//         </Typography>
+//       </Box>
+//     );
+//   }
+// );
