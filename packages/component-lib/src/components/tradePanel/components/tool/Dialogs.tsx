@@ -1106,7 +1106,7 @@ export const LayerswapNotice = withTranslation("common", {
         setAgree(false);
       }
     }, [open]);
-    const { setShowLayerSwapNotice, setShowAccount } = useOpenModals();
+    const { setShowLayerSwapNotice } = useOpenModals();
     return (
       <DialogStyle
         open={open}
