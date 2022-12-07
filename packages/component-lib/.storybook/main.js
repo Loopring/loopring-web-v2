@@ -2,20 +2,14 @@ const path = require("path");
 const nodePath = "../../";
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath);
-const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const hasJsxRuntime = (() => {
-  if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
-    return false;
-  }
 
-  try {
-    require.resolve("react/jsx-runtime");
-    return true;
-  } catch (e) {
-    return false;
-  }
-})();
+// const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
+// const ReactRefreshWebpackPlugin = require("react-refresh-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const fs = require("fs");
+
+const maxAssetSize = 1024 * 1024;
+
 const disableEsLint = (e) => {
   return (
     e.module.rules
@@ -51,14 +45,33 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/preset-create-react-app",
+    "@storybook/addon-interactions",
   ],
+  framework: "@storybook/react",
   typescript: {
-    reactDocgen: "none",
+    check: false,
+    checkOptions: {},
+    reactDocgen: "react-docgen-typescript",
+    reactDocgenTypescriptOptions: {
+      shouldExtractLiteralValuesFromEnum: true,
+      propFilter: (prop) =>
+        prop.parent ? !/node_modules/.test(prop.parent.fileName) : true,
+    },
+  },
+  core: {
+    builder: "webpack4",
   },
   webpackFinal: async (config, { configType }) => {
-    const isProd = configType.toLowerCase() === "production";
-
     config = disableEsLint(config);
+    const isProd = configType.toLowerCase() === "production";
+    // const reactDomPkg = await fs
+    //   .createReadStream(require.resolve("react-dom/package.json"))
+    //   .pipe(JSONStream.parse("*"))
+    //   .on("data", (data) => {
+    //     return data;
+    //   });
+    // console.log("reactDomPkg", reactDomPkg);
+    // mode: isDevelopment ? 'development' : 'production',
     const rule = findBabelRules(config);
 
     const modules = [
