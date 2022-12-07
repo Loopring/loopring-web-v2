@@ -49,7 +49,7 @@ import { getIPFSString, getTimestampDaysLater, makeMeta } from "../../utils";
 import { ActionResultCode, DAYS } from "../../defs";
 import { useHistory } from "react-router-dom";
 import Web3 from "web3";
-import { isAccActivated } from "./checkAccStatus";
+import { isAccActivated } from "./useCheckAccStatus";
 
 const CID = require("cids");
 
