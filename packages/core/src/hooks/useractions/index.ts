@@ -1,4 +1,4 @@
-export * from "./checkAccStatus";
+export * from "./useCheckAccStatus";
 export * from "./useAccountModal";
 export * from "./useActiveAccount";
 export * from "./useDeposit";

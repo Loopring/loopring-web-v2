@@ -15,7 +15,7 @@ import {
 } from "../../index";
 import { updateActiveAccountData as updateActiveAccountDataRedux } from "@loopring-web/core";
 
-import { SagaStatus, WalletMap } from "@loopring-web/common-resources";
+import { myLog, SagaStatus, WalletMap } from "@loopring-web/common-resources";
 import React from "react";
 
 export const useActiveAccount = <T>(): {
@@ -43,13 +43,14 @@ export const useActiveAccount = <T>(): {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
-    feeInfo,
     checkFeeIsEnough,
   } = useChargeFees({
     isActiveAccount: true,
     requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
     updateData: ({ fee, chargeFeeTokenList, isFeeNotEnough }) => {
       const { activeAccountValue } = store.getState()._router_modalData;
+      myLog("activeAccountValue feeInfo", fee);
+
       store.dispatch(
         updateActiveAccountDataRedux({
           ...activeAccountValue,
@@ -117,7 +118,7 @@ export const useActiveAccount = <T>(): {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
-    feeInfo,
+    feeInfo: activeAccountValue.fee,
   };
 
   return {
