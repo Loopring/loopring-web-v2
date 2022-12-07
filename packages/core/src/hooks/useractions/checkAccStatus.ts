@@ -6,7 +6,6 @@ import {
 } from "@loopring-web/common-resources";
 import {
   makeWalletLayer2,
-  onchainHashInfo,
   store,
   useAccount,
   useWalletLayer2,

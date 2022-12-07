@@ -220,7 +220,7 @@ export function useAccountModalForUI({
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
-  const [tryCheckL2BalanceTimes, setTryCheckL2BalanceTimes] = React.useState(0);
+  const [tryCheckL2BalanceTimes, setTryCheckL2BalanceTimes] = React.useState(5);
 
   // const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount();
@@ -358,7 +358,7 @@ export function useAccountModalForUI({
         }
       });
       if (flag) {
-        setTryCheckL2BalanceTimes(10);
+        setTryCheckL2BalanceTimes(20);
         let wait = 60000;
         if (
           account.readyState &&
