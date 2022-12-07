@@ -80,14 +80,14 @@ const WrongStatus = ({
   );
 };
 
-const SectionStyled = styled(Box)`
+const SectionStyled = styled(Box)<{isMobile?: boolean}>`
   padding: ${({ theme }) => theme.unit * 4}px;
   padding-top: auto;
   padding-bottom: auto;
   background: ${({ theme }) => theme.colorBase.box};
   margin-bottom: ${({ theme }) => theme.unit * 2}px;
-  width: ${({ theme }) => theme.unit * 60}px;
-  height: ${({ theme }) => theme.unit * 12}px;
+  width: ${({ theme, isMobile }) => isMobile ? '100%' : `${theme.unit * 60}px`};
+  height: 96px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -105,9 +105,10 @@ const Section = ({
   description?: string;
   onClick: MouseEventHandler;
 }) => {
+  const { isMobile } = useSettings();
   return (
     <>
-      <SectionStyled onClick={onClick}>
+      <SectionStyled isMobile={isMobile} onClick={onClick}>
         <Box display={"flex"} alignItems={"center"}>
           {logo}
           <Box paddingLeft={3}>
@@ -270,6 +271,7 @@ export const GuardianPage = withTranslation(["common"])(
       default:
         break;
     }
+    // const { isMobile } = useSettings();
     return (
       <>
         <GuardianModal

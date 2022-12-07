@@ -266,8 +266,7 @@ export const WalletValidationInfo = ({
       </SwitchPanelStyled>
     </Modal>
     {
-      guardiansList.length !== 0 ? <>
-
+      guardiansList.length !== 0 ? <Box height={"320px"} overflow="scroll">
         {guardiansList.map((guardian, index) => {
           return (
             <Box
@@ -275,14 +274,14 @@ export const WalletValidationInfo = ({
               display={"flex"}
               alignItems={"center"}
               justifyContent={"space-between"}
-              marginBottom={4}
+              marginBottom={2}
             >
               <Box>
-                <Typography variant={"h6"}>{t("labelWalletRequestRecovery")}</Typography>
-                <Typography variant={"h6"}>
+                <Typography variant={"body1"}>{t("labelWalletRequestRecovery")}</Typography>
+                <Typography variant={"body1"}>
                   {/* todo: Unknown translation */}
-                  {guardian.ens ? guardian.ens : t("labelUnknown")} /
-                  <Typography component={"span"} color={"var(--color-text-third)"}>{guardian.address && `${guardian.address.slice(0, 6)}...${guardian.address.slice(guardian.address.length - 4,)}`}</Typography>
+                  {guardian.ens ? `${guardian.ens} /` : ''}
+                  <Typography title={guardian.address} component={"span"} color={"var(--color-text-third)"}>{guardian.address && `${guardian.address.slice(0, 6)}...${guardian.address.slice(guardian.address.length - 4,)}`}</Typography>
                 </Typography>
               </Box>
               <Box>
@@ -302,7 +301,7 @@ export const WalletValidationInfo = ({
             </Box>
           );
         })}
-      </> : (
+      </Box> : (
         <Box flex={1} height={"100%"} width={"100%"}>
           <EmptyDefault
             style={{ alignSelf: "center" }}

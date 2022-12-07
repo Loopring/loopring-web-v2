@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 import { HebaoOperationLog } from "@loopring-web/loopring-sdk";
 import moment from "moment";
-import { TxHebaoAction } from "./hook";
+import { TxGuardianHistoryType, TxHebaoAction } from "./hook";
 
 export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOperationLog[] }) => {
   // operationLogList = [
@@ -16,7 +16,7 @@ export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOper
   //   {status: 1, createdAt: 0, ens: 'ens', from: '111',hebaoTxType: 1, to: '111', id: 1},
   // ]
   const {t} = useTranslation();
-  return operationLogList.length !== 0 ? <>
+  return operationLogList.length !== 0 ? <Box height={"340px"} overflow="scroll">
     {operationLogList.map((log, index) => {
       return (
         <Box
@@ -24,11 +24,33 @@ export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOper
           display={"flex"}
           alignItems={"center"}
           justifyContent={"space-between"}
-          marginBottom={4}
+          marginBottom={2}
         >
           <Box>
-            <Typography variant={"h6"}>{log.status === TxHebaoAction.Approve ? '授权' : '拒绝'}{log.ens ? log.ens : t("labelUnknown")}为守护人</Typography>
-            <Typography variant={"h6"}>
+            <Typography>
+              {log.ens ? `${log.ens} /` : ''}
+              <Typography component={"span"} color={"var(--color-text-third)"}>{log.to && `${log.to.slice(0, 6)}...${log.to.slice(log.to.length - 4,)}`}</Typography>
+            </Typography>
+            <Typography
+              variant={"body1"}
+              component={"span"}
+              color={log.status ? "error" : "var(--color-success)"}
+            >
+
+              {`${t("labelTxGuardian" + TxHebaoAction[log.status]).slice(0,1).toUpperCase()}${t("labelTxGuardian" + TxHebaoAction[log.status]).slice(1).toLowerCase()} `}
+            </Typography>
+            
+            <Typography
+              variant={"body1"}
+              component={"span"}
+              color={"--color-text-third"}
+            >
+              {t(
+                "labelTxGuardian" +
+                TxGuardianHistoryType[log.hebaoTxType]
+              ).toLowerCase()}
+            </Typography>
+            <Typography color={"var(--color-text-third)"} variant={"body1"}>
               {moment(
                 new Date(log.createdAt),
                 "YYYYMMDDHHMM"
@@ -38,7 +60,7 @@ export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOper
         </Box>
       );
     })}
-  </> : (
+  </Box> : (
     <Box flex={1} height={"100%"} width={"100%"}>
       <EmptyDefault
         style={{ alignSelf: "center" }}
