@@ -234,7 +234,7 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
       }
     }
     
-    return <>
+    return <Box height={"350px"} overflow="scroll">
       {protectorList.map(x => {
         const {lockStatus} = x
         return <Box key={x.address} display={"flex"} alignItems={"center"} justifyContent={"space-between"} marginBottom={4}>
@@ -251,8 +251,6 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
         }}/>
       </Box>
       })}
-    </>
-
+    </Box>
   }
-  
 }

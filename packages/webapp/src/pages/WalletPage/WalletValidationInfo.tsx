@@ -266,8 +266,7 @@ export const WalletValidationInfo = ({
       </SwitchPanelStyled>
     </Modal>
     {
-      guardiansList.length !== 0 ? <>
-
+      guardiansList.length !== 0 ? <Box height={"350px"} overflow="scroll">
         {guardiansList.map((guardian, index) => {
           return (
             <Box
@@ -302,7 +301,7 @@ export const WalletValidationInfo = ({
             </Box>
           );
         })}
-      </> : (
+      </Box> : (
         <Box flex={1} height={"100%"} width={"100%"}>
           <EmptyDefault
             style={{ alignSelf: "center" }}
