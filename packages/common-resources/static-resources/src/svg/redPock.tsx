@@ -1,218 +1,41 @@
-export const RedPockSvg = () => {
+import { SvgIcon, SvgIconProps } from "@mui/material";
+
+export const RedPockWrap = ({
+  colorTop,
+  startColor,
+  endColor,
+  ...props
+}: SvgIconProps & {
+  stroke: string;
+  colorTop: "#FD7659" | "#FFD595";
+  startColor: "#FC7A5A" | "#FFD596";
+  endColor: "#FF6151" | "#FDBD6A";
+}) => {
   return (
-    <svg width="310" height="556" viewBox="0 0 310 556" fill="none">
-      <path
-        d="M0 9.00001C0 4.58173 3.58172 1 8 1H302C306.418 1 310 4.58172 310 9V548C310 552.418 306.418 556 302 556H7.99999C3.58171 556 0 552.418 0 548V9.00001Z"
-        fill="#FF4F3D"
-      />
-      <mask
-        id="mask"
-        style={{ maskType: "alpha" }}
-        maskUnits="userSpaceOnUse"
-        x="1"
-        y="1"
-        width="310"
-        height="432"
-      >
-        <path
-          d="M1 9C1 4.58172 4.58172 1 9 1H303C307.418 1 311 4.58172 311 9V385.272C311 385.272 281.399 433 157.615 433C33.8299 433 1 385.272 1 385.272V9Z"
-          fill="black"
-          fill-opacity="0.2"
-        />
-      </mask>
-      <g mask="url(#mask)">
-        <rect x="1" width="310" height="433" fill="url(#nft)" />
-      </g>
-
-      <g filter="url(#filter0_d_7882_1156)">
-        <path
-          d="M0 8C0 3.58172 3.58172 0 8 0H302C306.418 0 310 3.58172 310 8V384.272C310 384.272 280.399 432 156.615 432C32.8299 432 0 384.272 0 384.272V8Z"
-          fill="#FEA49F"
-          fill-opacity="0.28"
-          shape-rendering="crispEdges"
+    <SvgIcon {...props} viewBox="0 0 274 414" aria-hidden="true">
+      <g filter="url(#filter0)">
+        <rect
+          x="7"
+          y="3"
+          width="260"
+          height="400"
+          rx="10"
+          fill="url(#paint_linear)"
         />
       </g>
-
-      <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        d="M50.2105 22.3999H36.2139L39.1892 26.9715L28.3565 35.3461L50.2105 22.4809V22.3999ZM28.0632 35.5281V10L17 26.9918L28.0632 35.5281ZM52.2012 35.4472V22.4404H54.3803V33.6671H57.3556V35.4472H52.2012ZM105.61 24.9083V27.0525H103.494V24.8881C103.557 23.8969 101.504 23.8564 101.65 24.8881V32.9187C101.65 33.4244 101.923 33.6874 102.53 33.6874C103.096 33.6874 103.494 33.4244 103.494 32.9187V30.7138H102.572V28.9337H105.61V32.9389C105.61 34.5167 104.521 35.5484 102.53 35.5484C100.54 35.5484 99.4502 34.4965 99.4502 32.9389V24.9083C99.4502 23.3507 100.54 22.2988 102.53 22.2988C104.521 22.2988 105.61 23.3305 105.61 24.9083ZM96.0767 29.5406C96.0348 28.3471 96.0139 27.2548 96.0139 26.2433H95.9929V22.4202H97.9835V35.4472H95.6786L93.6252 28.1853C93.6672 29.399 93.6881 30.552 93.6881 31.6038V35.4472H91.6976V22.4202H94.0652L96.0767 29.5406ZM90.1051 35.427H87.926V22.4H90.1051V35.427ZM83.5469 28.6707C84.0707 28.6707 84.3431 28.4078 84.3431 27.9021V24.969C84.3431 24.4633 84.0707 24.2003 83.5469 24.2003H82.5621V28.6707H83.5469ZM86.5222 24.969V27.9021C86.5222 28.8933 86.1031 29.6619 85.3069 30.0867L86.7946 35.4472H84.6155L83.2326 30.4711H82.5621V35.4472H80.3829V22.4202H83.5469C85.4955 22.4202 86.5222 23.3912 86.5222 24.969ZM76.3181 28.6707C76.8419 28.6707 77.1143 28.4078 77.1143 27.9021H77.1352V24.969C77.1352 24.4633 76.8629 24.2003 76.339 24.2003H75.3542V28.6707H76.3181ZM73.1751 22.4202H76.339C78.2877 22.4202 79.2934 23.3709 79.3143 24.9892V27.9223C79.3143 29.5001 78.2877 30.4711 76.339 30.4711H75.3542V35.4472H73.1751V22.4202ZM67.7483 32.9389C67.6226 33.9503 69.676 33.9503 69.5503 32.9389V24.9083C69.655 23.8969 67.6226 23.8969 67.7483 24.9083V32.9389ZM65.5692 24.9083C65.5692 23.3305 66.6587 22.2988 68.6493 22.2988C70.6189 22.2988 71.7294 23.3305 71.7294 24.9083V32.9389C71.7294 34.5167 70.6398 35.5484 68.6493 35.5484C66.6587 35.5484 65.5692 34.4965 65.5692 32.9389V24.9083ZM60.289 32.9389C60.1633 33.9503 62.2167 33.9503 62.091 32.9389V24.9083C62.1958 23.8969 60.1633 23.8969 60.289 24.9083V32.9389ZM58.1099 24.9083C58.1099 23.3305 59.1995 22.2988 61.19 22.2988C63.1805 22.2988 64.2701 23.3305 64.2701 24.9083V32.9389C64.2701 34.5167 63.1805 35.5484 61.19 35.5484C59.1995 35.5484 58.1099 34.4965 58.1099 32.9389V24.9083Z"
-        fill="white"
-      />
-      <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        d="M289.822 14.8348H292.094V12.9289L185.977 13.0519L185.885 27.4816H187.677L187.677 24.9815C187.677 24.8583 187.724 24.7402 187.807 24.6531C187.89 24.566 188.002 24.517 188.119 24.517H190.951C191.068 24.517 191.18 24.566 191.263 24.6531C191.346 24.7402 191.393 24.8583 191.393 24.9815L191.393 27.4813L193.666 27.4813C193.783 27.4813 193.895 27.5302 193.978 27.6173C194.061 27.7044 194.108 27.8226 194.108 27.9458V30.7666C194.108 30.8898 194.061 31.008 193.978 31.0951C193.895 31.1822 193.783 31.2311 193.666 31.2311H191.393L191.393 33.137L297.603 33.0147V18.5843H295.81V21.0844C295.81 21.2076 295.764 21.3257 295.681 21.4128C295.598 21.4999 295.485 21.5489 295.368 21.5489H292.537C292.419 21.5489 292.307 21.4999 292.224 21.4128C292.141 21.3257 292.094 21.2076 292.094 21.0844V18.5846H289.822C289.704 18.5846 289.592 18.5357 289.509 18.4486C289.426 18.3615 289.379 18.2433 289.379 18.1202V15.2993C289.379 15.1761 289.426 15.058 289.509 14.9709C289.592 14.8837 289.704 14.8348 289.822 14.8348ZM298.476 33.3718C298.483 33.3681 298.487 33.3543 298.487 33.3185V18.1198C298.487 17.9967 298.441 17.8785 298.358 17.7914C298.275 17.7043 298.162 17.6554 298.045 17.6554H295.81V15.7637H298.006C298.123 15.7637 298.236 15.7148 298.319 15.6277C298.401 15.5406 298.448 15.4225 298.448 15.2993V12.4645C298.448 12.3413 298.401 12.2231 298.319 12.136C298.236 12.0489 298.123 12 298.006 12H295.368C295.251 12 295.138 12.0489 295.055 12.136C294.972 12.2231 294.926 12.3413 294.926 12.4645V14.8348H292.979V12.4645C292.979 12.3413 292.933 12.2231 292.85 12.136C292.767 12.0489 292.654 12 292.537 12L185.885 12.1232C185.847 12.1232 185.809 12.1283 185.773 12.1382C185.702 12.0953 185.62 12.0736 185.538 12.0737C185.317 12.0737 185.096 12.2309 185.096 12.5381L185 27.9461C185 28.0693 185.047 28.1874 185.13 28.2745C185.213 28.3616 185.325 28.4105 185.442 28.4105H187.677L187.677 30.3022H185.482C185.364 30.3022 185.252 30.3511 185.169 30.4382C185.086 30.5253 185.039 30.6434 185.039 30.7666L185.039 33.6014C185.039 33.7246 185.086 33.8428 185.169 33.9299C185.252 34.017 185.364 34.0659 185.482 34.0659H188.119C188.236 34.0659 188.349 34.017 188.432 33.9299C188.515 33.8428 188.562 33.7246 188.562 33.6014L188.562 31.2311H190.508V33.6014C190.508 33.7246 190.554 33.8428 190.637 33.9299C190.72 34.017 190.833 34.0659 190.95 34.0659L298.045 33.9427C298.162 33.9427 298.275 33.8938 298.358 33.8067C298.441 33.7196 298.488 33.6014 298.488 33.4783C298.488 33.4421 298.483 33.4064 298.476 33.3718ZM290.264 17.6557H292.094V15.7637H290.264V17.6557ZM297.563 12.9289H295.81L295.81 14.8348H297.563V12.9289ZM294.925 20.6199V18.5843H292.979V20.6199H294.925ZM292.979 15.7637V17.6554L294.925 17.6557V15.7637H292.979ZM193.223 28.4102H191.393L191.393 30.3022H193.223V28.4102ZM185.924 33.137H187.677L187.677 31.2311L185.924 31.2311L185.924 33.137ZM188.562 25.446L188.562 27.4816H190.508V25.446H188.562ZM190.508 30.3022V28.4105L188.562 28.4102L188.562 30.3022H190.508Z"
-        fill="#FFF7B1"
-      />
-      <g>
-        <rect x="52.5" y="178" width="205" height="205" fill="url(#qrcode)" />
+      <g filter="url(#filter1)">
+        <path
+          d="M17 3C11.4771 3 7 7.47716 7 13V108.095C7 112.092 9.3688 115.728 13.1024 117.154C43.3399 128.709 87.6387 136 137 136C186.361 136 230.66 128.709 260.898 117.154C264.631 115.728 267 112.092 267 108.095V13C267 7.47716 262.523 3 257 3H17Z"
+          fill={colorTop}
+        />
       </g>
-
-      <g>
-        <rect x="169.5" y="511.5" width="124" height="20" />
-        <text
-          x="50%"
-          y="50%"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "40px",
-          }}
-        >
-          xxxxxx
-        </text>
-      </g>
-
-      <g transform={"translate(241 22)"}>
-        {/*<rect x="185.5" y="12.5" width="112" height="21"></rect>*/}
-        {/*185+56  */}
-        <text
-          id={"textType"}
-          stroke-width="0"
-          fill="#FFF7B1"
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
-        >
-          type of --
-        </text>
-      </g>
-      <g transform={"translate(160 56)"}>
-        {/*<rect x="15.5" y="45.5" width="280" height="21" />*/}
-        <text
-          id={"textSendBy"}
-          stroke-width="0"
-          fill="#FFC0B9"
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
-        >
-          {"text Send By/"}
-        </text>
-      </g>
-      <g transform={"translate(160 86)"}>
-        <rect x="15.5" y="74.5" width="280" height="34" />
-        <text
-          id={"textSendBy"}
-          stroke-width="0"
-          fill="#FFF7B1"
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "32px",
-          }}
-        >
-          {"xxxx,xxxxx LRC"}
-        </text>
-      </g>
-      <g transform={"translate(20, 110)"}>
-        <foreignObject
-          id={"textContent"}
-          width="280"
-          height="48"
-          x="1"
-          y="1"
-          requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"
-        >
-          <code
-            style={{
-              fontSize: "12px",
-              color: "#FFF7B1",
-              textAlign: "center",
-              overflow: "hidden",
-              lineHeight: "16px",
-            }}
-          >
-            Text goes here ccccc sss qwweeqx sdasdasd Text /n goes here ccccc
-            sss qwweeqx sdasdasd Text goes here ccccc sss qwweeqx sdasdasd
-          </code>
-        </foreignObject>
-        {/*<text*/}
-        {/*  stroke-width="0"*/}
-        {/*  fill="#FFF7B1"*/}
-        {/*  x="1"*/}
-        {/*  y="1"*/}
-        {/*  style={{*/}
-        {/*    dominantBaseline: "central",*/}
-        {/*    textAnchor: "middle",*/}
-        {/*    fontSize: "14px",*/}
-        {/*  }}*/}
-        {/*></text>*/}
-      </g>
-      <g transform={"translate(160 400)"}>
-        <text
-          id={"textGuide"}
-          stroke-width="0"
-          fill="#fff"
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
-        >
-          {"Scan QrCode use Loopring App"}
-        </text>
-      </g>
-      <g transform={"translate(160 454)"}>
-        <text
-          id={"textDuration"}
-          stroke-width="0"
-          fill="#fff"
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
-        >
-          {"2011/22/01/00:00:00 - 2011/22/01/00:00:00"}
-        </text>
-      </g>
-
-      <g transform={"translate(280 484)"}>
-        <text
-          id={"idNumber"}
-          stroke-width="0"
-          fill="#B42214"
-          width={"100%"}
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "end",
-            fontSize: "14px",
-          }}
-        >
-          {"No.112121218921"}
-        </text>
-      </g>
-      <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        d="M289.822 14.8348H292.094V12.9289L185.977 13.0519L185.885 27.4816H187.677L187.677 24.9815C187.677 24.8583 187.724 24.7402 187.807 24.6531C187.89 24.566 188.002 24.517 188.119 24.517H190.951C191.068 24.517 191.18 24.566 191.263 24.6531C191.346 24.7402 191.393 24.8583 191.393 24.9815L191.393 27.4813L193.666 27.4813C193.783 27.4813 193.895 27.5302 193.978 27.6173C194.061 27.7044 194.108 27.8226 194.108 27.9458V30.7666C194.108 30.8898 194.061 31.008 193.978 31.0951C193.895 31.1822 193.783 31.2311 193.666 31.2311H191.393L191.393 33.137L297.603 33.0147V18.5843H295.81V21.0844C295.81 21.2076 295.764 21.3257 295.681 21.4128C295.598 21.4999 295.485 21.5489 295.368 21.5489H292.537C292.419 21.5489 292.307 21.4999 292.224 21.4128C292.141 21.3257 292.094 21.2076 292.094 21.0844V18.5846H289.822C289.704 18.5846 289.592 18.5357 289.509 18.4486C289.426 18.3615 289.379 18.2433 289.379 18.1202V15.2993C289.379 15.1761 289.426 15.058 289.509 14.9709C289.592 14.8837 289.704 14.8348 289.822 14.8348ZM298.476 33.3718C298.483 33.3681 298.487 33.3543 298.487 33.3185V18.1198C298.487 17.9967 298.441 17.8785 298.358 17.7914C298.275 17.7043 298.162 17.6554 298.045 17.6554H295.81V15.7637H298.006C298.123 15.7637 298.236 15.7148 298.319 15.6277C298.401 15.5406 298.448 15.4225 298.448 15.2993V12.4645C298.448 12.3413 298.401 12.2231 298.319 12.136C298.236 12.0489 298.123 12 298.006 12H295.368C295.251 12 295.138 12.0489 295.055 12.136C294.972 12.2231 294.926 12.3413 294.926 12.4645V14.8348H292.979V12.4645C292.979 12.3413 292.933 12.2231 292.85 12.136C292.767 12.0489 292.654 12 292.537 12L185.885 12.1232C185.847 12.1232 185.809 12.1283 185.773 12.1382C185.702 12.0953 185.62 12.0736 185.538 12.0737C185.317 12.0737 185.096 12.2309 185.096 12.5381L185 27.9461C185 28.0693 185.047 28.1874 185.13 28.2745C185.213 28.3616 185.325 28.4105 185.442 28.4105H187.677L187.677 30.3022H185.482C185.364 30.3022 185.252 30.3511 185.169 30.4382C185.086 30.5253 185.039 30.6434 185.039 30.7666L185.039 33.6014C185.039 33.7246 185.086 33.8428 185.169 33.9299C185.252 34.017 185.364 34.0659 185.482 34.0659H188.119C188.236 34.0659 188.349 34.017 188.432 33.9299C188.515 33.8428 188.562 33.7246 188.562 33.6014L188.562 31.2311H190.508V33.6014C190.508 33.7246 190.554 33.8428 190.637 33.9299C190.72 34.017 190.833 34.0659 190.95 34.0659L298.045 33.9427C298.162 33.9427 298.275 33.8938 298.358 33.8067C298.441 33.7196 298.488 33.6014 298.488 33.4783C298.488 33.4421 298.483 33.4064 298.476 33.3718ZM290.264 17.6557H292.094V15.7637H290.264V17.6557ZM297.563 12.9289H295.81L295.81 14.8348H297.563V12.9289ZM294.925 20.6199V18.5843H292.979V20.6199H294.925ZM292.979 15.7637V17.6554L294.925 17.6557V15.7637H292.979ZM193.223 28.4102H191.393L191.393 30.3022H193.223V28.4102ZM185.924 33.137H187.677L187.677 31.2311L185.924 31.2311L185.924 33.137ZM188.562 25.446L188.562 27.4816H190.508V25.446H188.562ZM190.508 30.3022V28.4105L188.562 28.4102L188.562 30.3022H190.508Z"
-        fill="#FFF7B1"
-      />
       <defs>
         <filter
-          id="filter0_d_7882_1156"
+          id="filter0"
           x="0"
           y="0"
-          width="310"
-          height="436"
+          width="274"
+          height="414"
           filterUnits="userSpaceOnUse"
           color-interpolation-filters="sRGB"
         >
@@ -224,64 +47,433 @@ export const RedPockSvg = () => {
             result="hardAlpha"
           />
           <feOffset dy="4" />
+          <feGaussianBlur stdDeviation="3.5" />
           <feComposite in2="hardAlpha" operator="out" />
           <feColorMatrix
             type="matrix"
-            values="0 0 0 0 0.964706 0 0 0 0 0.243137 0 0 0 0 0.133333 0 0 0 1 0"
+            values="0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
           />
           <feBlend
             mode="normal"
             in2="BackgroundImageFix"
-            result="effect1_dropShadow_7882_1156"
+            result="effect1_dropShadow_8955_1158"
           />
           <feBlend
             mode="normal"
             in="SourceGraphic"
-            in2="effect1_dropShadow_7882_1156"
+            in2="effect1_dropShadow_8955_1158"
             result="shape"
           />
         </filter>
-      </defs>
-      <defs>
-        <pattern
-          id="nft"
-          patternContentUnits="objectBoundingBox"
-          width="1"
-          height="1"
+        <filter
+          id="filter1"
+          x="0"
+          y="0"
+          width="274"
+          height="147"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
         >
-          <use
-            xlinkHref="#image_nft"
-            transform="translate(-0) scale(0.00174194 0.00125)"
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
           />
-        </pattern>
-        <image
-          id="image_nft"
-          width="800"
-          height="800"
-          xlinkHref={"https://static.loopring.io/assets/images/nft_guid1.webp"}
-        />
-      </defs>
-      <defs>
-        <pattern
-          id="qrcode"
-          patternContentUnits="objectBoundingBox"
-          width="1"
-          height="1"
+          <feOffset dy="4" />
+          <feGaussianBlur stdDeviation="3.5" />
+          <feComposite in2="hardAlpha" operator="out" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="BackgroundImageFix"
+            result="effect1_dropShadow_8955_1158"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_dropShadow_8955_1158"
+            result="shape"
+          />
+        </filter>
+        <linearGradient
+          id="paint_linear"
+          x1="137"
+          y1="2.99997"
+          x2="137"
+          y2="403"
+          gradientUnits="userSpaceOnUse"
         >
-          <use
-            xlinkHref="#image_qrcode"
-            transform="translate(0,0) scale(0.004879)"
-          />
-        </pattern>
-        <image
-          id="image_qrcode"
-          width="205"
-          height="205"
-          xlinkHref={
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLaJgSR9qLKgL6dRmBOUrCKEIl9XPKwP7tIQ&usqp=CAU"
-          }
-        />
+          <stop stopColor={startColor} />
+          <stop offset="1" stopColor={endColor} />
+        </linearGradient>
       </defs>
+    </SvgIcon>
+  );
+};
+
+export const RedPockOpenWrap = ({
+  colorTop,
+  startColor,
+  endColor,
+  startBgColor,
+  endBgColor,
+  startCard,
+  endCard,
+  line,
+  ...props
+}: SvgIconProps & {
+  stroke: string;
+  colorTop: "#FFD596" | "#FFD595";
+  startColor: "#FC7A5A" | "#FF6151";
+  endColor: "#FF6151" | "#FDBD6A";
+  startBgColor: "#FC7A5A" | "#FFD595";
+  endBgColor: "#930D00" | "#FFD595";
+  startCard: "#FEF4DE";
+  endCard: "#FED897";
+  line: "#D4B164";
+}) => {
+  return (
+    <SvgIcon {...props} viewBox="0 0 274 414" aria-hidden="true">
+      <path
+        d="M0 39C0 33.4772 4.47715 29 10 29H250C255.523 29 260 33.4772 260 39V393C260 398.523 255.523 403 250 403H10C4.47716 403 0 398.523 0 393V39Z"
+        fill="url(#paint0)"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M130 14C137.732 14 144 7.73199 144 0H236C240.418 0 244 3.58172 244 8V180C244 184.418 240.418 188 236 188H24C19.5817 188 16 184.418 16 180V8C16 3.58172 19.5817 0 24 0H116C116 7.73199 122.268 14 130 14Z"
+        fill="url(#paint1)"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M111.976 13.6182C111.609 13.0951 111.264 12.5552 110.943 12H108.945V13H110.375C110.624 13.406 110.885 13.8036 111.157 14.1924L111.976 13.6182ZM34.5551 13.3475L35.1114 14.1784C34.3476 14.6898 33.6898 15.3476 33.1784 16.1114L32.3475 15.5551C32.9315 14.6827 33.6827 13.9315 34.5551 13.3475ZM31 166.053H32V168C32 168.469 32.0459 168.926 32.1333 169.367L31.1523 169.561C31.0524 169.056 31 168.534 31 168V166.053ZM32.3475 172.445L33.1784 171.889C33.6898 172.652 34.3476 173.31 35.1114 173.822L34.5551 174.653C33.6827 174.068 32.9315 173.317 32.3475 172.445ZM219.906 176V175H221.894C222.362 175 222.819 174.954 223.261 174.867L223.455 175.848C222.95 175.948 222.428 176 221.894 176H219.906ZM226.339 174.653L225.782 173.822C226.546 173.31 227.204 172.652 227.715 171.889L228.546 172.445C227.962 173.317 227.211 174.068 226.339 174.653ZM229.894 21.9474H228.894V20C228.894 19.5312 228.848 19.0742 228.76 18.6328L229.741 18.4387C229.841 18.9437 229.894 19.4657 229.894 20V21.9474ZM228.546 15.5551L227.715 16.1114C227.204 15.3476 226.546 14.6898 225.782 14.1784L226.339 13.3475C227.211 13.9315 227.962 14.6827 228.546 15.5551ZM151.08 12V13H149.625C149.376 13.406 149.115 13.8036 148.843 14.1924L148.024 13.6182C148.391 13.0951 148.736 12.5552 149.057 12H151.08ZM145.557 16.5555L146.264 17.2625C145.319 18.2078 144.292 19.0712 143.195 19.8411L142.62 19.0225C143.67 18.2859 144.653 17.4599 145.557 16.5555ZM139.3 20.9433L139.723 21.8494C138.52 22.4114 137.26 22.8724 135.955 23.2215L135.696 22.2554C136.945 21.9217 138.15 21.4808 139.3 20.9433ZM131.919 22.9175L132.005 23.9138C131.344 23.9709 130.675 24 130 24C129.325 24 128.656 23.9709 127.995 23.9138L128.081 22.9175C128.714 22.9721 129.354 23 130 23C130.646 23 131.286 22.9721 131.919 22.9175ZM124.304 22.2554L124.045 23.2215C122.74 22.8724 121.48 22.4114 120.277 21.8494L120.7 20.9433C121.85 21.4808 123.055 21.9217 124.304 22.2554ZM117.38 19.0225L116.805 19.8411C115.708 19.0712 114.681 18.2078 113.736 17.2625L114.443 16.5555C115.347 17.4599 116.33 18.2859 117.38 19.0225ZM155.127 12V13H159.173V12H155.127ZM163.22 12V13H167.266V12H163.22ZM171.312 12V13H175.359V12H171.312ZM179.405 12V13H183.452V12H179.405ZM187.498 12V13H191.545V12H187.498ZM195.591 12V13H199.638V12H195.591ZM203.684 12V13H207.731V12H203.684ZM211.777 12V13H215.824V12H211.777ZM219.87 12V13H221.894C222.362 13 222.819 13.0459 223.261 13.1333L223.455 12.1523C222.95 12.0524 222.428 12 221.894 12H219.87ZM229.894 25.8421H228.894V29.7368H229.894V25.8421ZM229.894 33.6316H228.894V37.5263H229.894V33.6316ZM229.894 41.421H228.894V45.3158H229.894V41.421ZM229.894 49.2105H228.894V53.1053H229.894V49.2105ZM229.894 57H228.894V60.8947H229.894V57ZM229.894 64.7895H228.894V68.6842H229.894V64.7895ZM229.894 72.5789H228.894V76.4737H229.894V72.5789ZM229.894 80.3684H228.894V84.2632H229.894V80.3684ZM229.894 88.1579H228.894V92.0526H229.894V88.1579ZM229.894 95.9474H228.894V99.8421H229.894V95.9474ZM229.894 103.737H228.894V107.632H229.894V103.737ZM229.894 111.526H228.894V115.421H229.894V111.526ZM229.894 119.316H228.894V123.211H229.894V119.316ZM229.894 127.105H228.894V131H229.894V127.105ZM229.894 134.895H228.894V138.789H229.894V134.895ZM229.894 142.684H228.894V146.579H229.894V142.684ZM229.894 150.474H228.894V154.368H229.894V150.474ZM229.894 158.263H228.894V162.158H229.894V158.263ZM229.894 166.053H228.894V168C228.894 168.469 228.848 168.926 228.76 169.367L229.741 169.561C229.841 169.056 229.894 168.534 229.894 168V166.053ZM215.93 176V175H211.954V176H215.93ZM207.978 176V175H204.002V176H207.978ZM200.026 176V175H196.05V176H200.026ZM192.074 176V175H188.098V176H192.074ZM184.122 176V175H180.146V176H184.122ZM176.17 176V175H172.194V176H176.17ZM168.218 176V175H164.242V176H168.218ZM160.266 176V175H156.29V176H160.266ZM152.314 176V175H148.339V176H152.314ZM144.363 176V175H140.387V176H144.363ZM136.411 176V175H132.435V176H136.411ZM128.459 176V175H124.483V176H128.459ZM120.507 176V175H116.531V176H120.507ZM112.555 176V175H108.579V176H112.555ZM104.603 176V175H100.627V176H104.603ZM96.6513 176V175H92.6753V176H96.6513ZM88.6994 176V175H84.7234V176H88.6994ZM80.7475 176V175H76.7715V176H80.7475ZM72.7956 176V175H68.8196V176H72.7956ZM64.8437 176V175H60.8677V176H64.8437ZM56.8918 176V175H52.9158V176H56.8918ZM48.9399 176V175H44.9639V176H48.9399ZM40.988 176V175H39C38.5312 175 38.0742 174.954 37.6328 174.867L37.4387 175.848C37.9437 175.948 38.4657 176 39 176H40.988ZM31 162.158H32V158.263H31V162.158ZM31 154.368H32V150.474H31V154.368ZM31 146.579H32V142.684H31V146.579ZM31 138.789H32V134.895H31V138.789ZM31 131H32V127.105H31V131ZM31 123.211H32V119.316H31V123.211ZM31 115.421H32V111.526H31V115.421ZM31 107.632H32V103.737H31V107.632ZM31 99.8421H32V95.9474H31V99.8421ZM31 92.0526H32V88.1579H31V92.0526ZM31 84.2632H32V80.3684H31V84.2632ZM31 76.4737H32V72.579H31V76.4737ZM31 68.6842H32V64.7895H31V68.6842ZM31 60.8947H32V57H31V60.8947ZM31 53.1053H32V49.2105H31V53.1053ZM31 45.3158H32V41.4211H31V45.3158ZM31 37.5263H32V33.6316H31V37.5263ZM31 29.7368H32V25.8421H31V29.7368ZM31 21.9474H32V20C32 19.5312 32.0459 19.0742 32.1333 18.6328L31.1523 18.4387C31.0524 18.9437 31 19.4657 31 20V21.9474ZM37.4387 12.1523L37.6328 13.1333C38.0742 13.0459 38.5312 13 39 13H40.9984V12H39C38.4657 12 37.9437 12.0524 37.4387 12.1523ZM44.9953 12V13H48.9921V12H44.9953ZM52.989 12V13H56.9858V12H52.989ZM60.9826 12V13H64.9795V12H60.9826ZM68.9763 12V13H72.9732V12H68.9763ZM76.97 12V13H80.9669V12H76.97ZM84.9637 12V13H88.9606V12H84.9637ZM92.9574 12V13H96.9543V12H92.9574ZM100.951 12V13H104.948V12H100.951Z"
+        fill={line}
+      />
+      <g filter="url(#filter0)">
+        <path
+          d="M0 108.095V393C0 398.523 4.47716 403 10 403H250C255.523 403 260 398.523 260 393V108.095C260 112.092 257.631 115.728 253.898 117.154C223.66 128.709 179.361 136 130 136C80.6387 136 36.3399 128.709 6.10237 117.154C2.3688 115.728 0 112.092 0 108.095Z"
+          fill="url(#paint2)"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0"
+          x="0"
+          y="108.095"
+          width="260"
+          height="294.905"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
+        >
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="BackgroundImageFix"
+            result="shape"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset dy="3" />
+          <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="shape"
+            result="effect1_innerShadow_8955_1198"
+          />
+        </filter>
+        <linearGradient
+          id="paint0"
+          x1="130"
+          y1="29"
+          x2="130"
+          y2="164.5"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={startBgColor} />
+          <stop offset="1" stopColor={endBgColor} />
+        </linearGradient>
+        <linearGradient
+          id="paint1"
+          x1="130"
+          y1="0"
+          x2="130"
+          y2="318"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={startCard} />
+          <stop offset="1" stopColor={endCard} />
+        </linearGradient>
+        <linearGradient
+          id="paint2"
+          x1="130"
+          y1="2.99983"
+          x2="328.271"
+          y2="176.757"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={startColor} />
+          <stop offset="1" stopColor={endColor} />
+        </linearGradient>
+      </defs>
+    </SvgIcon>
+  );
+};
+
+export const RedPockSvg = ({
+  startColor,
+  endColor,
+  colorTop,
+  bgColor,
+  fontColor,
+  btnColor,
+}: {
+  colorTop: "#FFD596" | "#FFD595";
+  startColor: "#FC7A5A" | "#FF6151";
+  endColor: "#FF6151" | "#FDBD6A";
+  bgColor: "#ffffff";
+  fontColor: "#FFF7B1" | "#A25402";
+  btnColor: "#FD7659";
+}) => {
+  return (
+    <svg
+      width="334"
+      height="603"
+      viewBox="0 0 334 603"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7 13C7 7.47714 11.4772 3 17 3H317C322.523 3 327 7.47715 327 13V593C327 598.523 322.523 603 317 603H17C11.4772 603 7 598.523 7 593V13Z"
+        fill="url(#paint0)"
+      />
+      <path
+        d="M108 537C108 527.059 116.059 519 126 519H208C217.941 519 226 527.059 226 537V537C226 546.941 217.941 555 208 555H126C116.059 555 108 546.941 108 537V537Z"
+        fill={bgColor}
+      />
+      <path
+        opacity="0.1"
+        d="M31 428C31 423.582 34.5817 420 39 420H295C299.418 420 303 423.582 303 428V477C303 481.418 299.418 485 295 485H39C34.5817 485 31 481.418 31 477V428Z"
+        fill={bgColor}
+      />
+      <g filter="url(#filter0)">
+        <path
+          d="M19.3077 3C12.5103 3 7 8.52071 7 15.3308V134.131C7 138.126 9.36023 141.753 13.0801 143.208C50.3215 157.777 105.464 167 167 167C228.536 167 283.679 157.777 320.92 143.208C324.64 141.753 327 138.126 327 134.131V15.3308C327 8.52071 321.49 3 314.692 3H19.3077Z"
+          fill={colorTop}
+        />
+      </g>
+      <path
+        opacity="0.1"
+        d="M225 3H319C323.418 3 327 6.58172 327 11V30H233C228.582 30 225 26.4183 225 22V3Z"
+        fill="white"
+      />
+      <defs>
+        <filter
+          id="filter0"
+          x="0"
+          y="0"
+          width="334"
+          height="178"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
+        >
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset dy="4" />
+          <feGaussianBlur stdDeviation="3.5" />
+          <feComposite in2="hardAlpha" operator="out" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="BackgroundImageFix"
+            result="effect1_dropShadow_8960_1241"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_dropShadow_8960_1241"
+            result="shape"
+          />
+        </filter>
+        <linearGradient
+          id="paint0"
+          x1="167"
+          y1="2.99995"
+          x2="451.393"
+          y2="207.498"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={startColor} />
+          <stop offset="1" stopColor={endColor} />
+        </linearGradient>
+      </defs>
+      <g transform={"translate(160 56)"}>
+        {/*<rect x="15.5" y="45.5" width="280" height="21" />*/}
+        <text
+          id={"textSendBy"}
+          stroke-width="0"
+          fill={fontColor}
+          x="1"
+          y="1"
+          style={{
+            dominantBaseline: "central",
+            textAnchor: "middle",
+            fontSize: "14px",
+          }}
+        >
+          {"text Send By/"}
+        </text>
+      </g>
+      <g transform={"translate(167 428)"}>
+        <text
+          id={"textSendBy"}
+          stroke-width="0"
+          fill={fontColor}
+          x="1"
+          y="1"
+          style={{
+            dominantBaseline: "central",
+            textAnchor: "middle",
+            fontSize: "14px",
+          }}
+        >
+          {"text Send By/"}
+        </text>
+      </g>
+      <g transform={"translate(167 561)"}>
+        <text
+          id={"textSendBy"}
+          stroke-width="0"
+          fill={fontColor}
+          x="1"
+          y="1"
+          style={{
+            dominantBaseline: "central",
+            textAnchor: "middle",
+            fontSize: "14px",
+          }}
+        >
+          {"text Send By/"}
+        </text>
+      </g>
+      <g transform={"translate(167 526)"}>
+        <text
+          id={"textSendBy"}
+          stroke-width="0"
+          fill={btnColor}
+          x="1"
+          y="1"
+          style={{
+            dominantBaseline: "central",
+            textAnchor: "middle",
+            fontSize: "14px",
+          }}
+        >
+          {"text Send By/"}
+        </text>
+      </g>
+      <g transform={"translate(167 51)"}>
+        <text
+          id={"textSendBy"}
+          stroke-width="0"
+          fill={fontColor}
+          x="1"
+          y="1"
+          style={{
+            dominantBaseline: "central",
+            textAnchor: "middle",
+            fontSize: "14px",
+          }}
+        >
+          {"text Send By/"}
+        </text>
+      </g>
+      <g transform={"translate(167 77)"}>
+        <text
+          id={"textSendBy"}
+          stroke-width="0"
+          fill={fontColor}
+          x="1"
+          y="1"
+          style={{
+            dominantBaseline: "central",
+            textAnchor: "middle",
+            fontSize: "14px",
+          }}
+        >
+          {"text Send By/"}
+        </text>
+      </g>
+      <g transform={"translate(167 191)"}>
+        <text
+          id={"textSendBy"}
+          stroke-width="0"
+          fill={fontColor}
+          x="1"
+          y="1"
+          style={{
+            dominantBaseline: "central",
+            textAnchor: "middle",
+            fontSize: "14px",
+          }}
+        >
+          {"text Send By/"}
+        </text>
+      </g>
+      <g transform={"translate(167 3)"}>
+        <text
+          id={"textSendBy"}
+          stroke-width="0"
+          fill={fontColor}
+          x="1"
+          y="1"
+          style={{
+            dominantBaseline: "central",
+            textAnchor: "middle",
+            fontSize: "14px",
+          }}
+        >
+          {"text Send By/"}
+        </text>
+      </g>
+      <g transform={"translate(167 240)"}>
+        <text
+          id={"textSendBy"}
+          stroke-width="0"
+          fill={fontColor}
+          x="1"
+          y="1"
+          style={{
+            dominantBaseline: "central",
+            textAnchor: "middle",
+            fontSize: "14px",
+          }}
+        >
+          {"text Send By/"}
+        </text>
+      </g>
     </svg>
   );
 };

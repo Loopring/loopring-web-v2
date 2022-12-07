@@ -47,8 +47,8 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
 }): { checkActiveStatusProps: CheckActiveStatusProps<C> } => {
   const { account } = useAccount();
   const { status: walletLayer2Status, updateWalletLayer2 } = useWalletLayer2();
-  const { chainInfos } = onchainHashInfo.useOnChainInfo();
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+  // const { chainInfos } = onchainHashInfo.useOnChainInfo();
+  // const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 
   const {
     setShowAccount,
@@ -105,26 +105,6 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
       checkFeeIsEnough();
     }
   }, [walletLayer2Status]);
-  const updateAssetsStatus = React.useCallback(async () => {
-    clearTimeout(nodeTimer.current as NodeJS.Timeout);
-    updateWalletLayer2();
-    nodeTimer.current = setTimeout(() => {
-      updateAssetsStatus();
-    }, 10000);
-  }, [updateWalletLayer2]);
-  React.useEffect(() => {
-    if (
-      account.accAddress &&
-      chainInfos?.depositHashes &&
-      chainInfos?.depositHashes[account.accAddress] &&
-      chainInfos?.depositHashes[account.accAddress].length
-    ) {
-      updateAssetsStatus();
-    }
-    return () => {
-      clearTimeout(nodeTimer.current as NodeJS.Timeout);
-    };
-  }, [chainInfos.depositHashes]);
 
   const init = React.useCallback(async () => {
     setKnowDisable(true);

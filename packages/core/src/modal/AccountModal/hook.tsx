@@ -220,6 +220,7 @@ export function useAccountModalForUI({
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
+  const [tryCheckL2BalanceTimes, setTryCheckL2BalanceTimes] = React.useState(0);
 
   // const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount();
@@ -356,8 +357,8 @@ export function useAccountModalForUI({
           flag = true;
         }
       });
-
       if (flag) {
+        setTryCheckL2BalanceTimes(10);
         let wait = 60000;
         if (
           account.readyState &&
@@ -371,18 +372,28 @@ export function useAccountModalForUI({
         nodeTimer.current = setTimeout(() => {
           updateDepositStatus();
         }, wait);
-      }
-      if (
-        [AccountStatus.DEPOSITING, AccountStatus.NOT_ACTIVE].includes(
-          // @ts-ignore
-          account?.readyState
-        )
-      ) {
-        myLog(updateDepositStatus, "updateDepositStatus");
         updateWalletLayer2();
+      } else {
+        setTryCheckL2BalanceTimes((state) => {
+          if (state > 0) {
+            myLog(updateDepositStatus, "updateDepositStatus");
+            updateWalletLayer2();
+            nodeTimer.current = setTimeout(() => {
+              updateDepositStatus();
+            }, 10000);
+          }
+          return state - 1;
+        });
       }
     }
-  }, [account, chainId, updateDepositHash, updateWalletLayer2, nodeTimer]);
+  }, [
+    account,
+    chainId,
+    updateDepositHash,
+    updateWalletLayer2,
+    nodeTimer,
+    tryCheckL2BalanceTimes,
+  ]);
   React.useEffect(() => {
     if (
       chainInfos?.depositHashes &&
