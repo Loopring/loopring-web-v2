@@ -436,7 +436,7 @@ export const GuardianPage = withTranslation(["common"])(
             });
           }}
         />
-        <ContainerStyled isMobile={isMobile} marginTop={2}>
+        <ContainerStyled marginTop={2}>
           <Section
             onClick={() => onOpenAdd(true)}
             title={"Set as Guardian"}
