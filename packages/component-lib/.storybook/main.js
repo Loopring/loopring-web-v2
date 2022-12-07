@@ -1,130 +1,105 @@
 const path = require("path");
-// const file = require("file");
 const nodePath = "../../";
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath);
-
-// const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
-// const ReactRefreshWebpackPlugin = require("react-refresh-webpack-plugin");
+const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const fs = require("fs");
-const JSONStream = require("JSONStream");
-// const hasJsxRuntime = (() => {
-//   if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
-//     return false;
-//   }
-//
-//   try {
-//     require.resolve("react/jsx-runtime");
-//     return true;
-//   } catch (e) {
-//     return false;
-//   }
-// })();
-const maxAssetSize = 1024 * 1024;
+const hasJsxRuntime = (() => {
+  if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
+    return false;
+  }
 
-const disableEsLint = (e) => {
-  return (
-    e.module.rules
-      .filter(
-        (e) =>
-          e.use &&
-          e.use.some((e) => e.options && void 0 !== e.options.useEslintrc)
-      )
-      .forEach((s) => {
-        e.module.rules = e.module.rules.filter((e) => e !== s);
-      }),
-    e
-  );
-};
-function findBabelRules(config) {
-  let result_rule = {};
-  config.module.rules.filter((rule) => {
-    // console.log(rule);
-    if (rule.oneOf) {
-      result_rule = rule.oneOf.find((rule) => {
-        return (
-          rule.test &&
-          rule.test.toString() === /\.(js|mjs|jsx|ts|tsx)$/.toString()
-        );
-      });
-    }
-  });
-  return result_rule;
-}
+  try {
+    require.resolve("react/jsx-runtime");
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/preset-create-react-app",
-    "@storybook/addon-interactions",
   ],
-  framework: "@storybook/react",
   typescript: {
-    check: false,
-    checkOptions: {},
-    reactDocgen: "react-docgen-typescript",
-    reactDocgenTypescriptOptions: {
-      shouldExtractLiteralValuesFromEnum: true,
-      propFilter: (prop) =>
-        prop.parent ? !/node_modules/.test(prop.parent.fileName) : true,
-    },
-  },
-  core: {
-    builder: "webpack4",
+    reactDocgen: "none",
   },
   webpackFinal: async (config, { configType }) => {
-    config = disableEsLint(config);
     const isProd = configType.toLowerCase() === "production";
-    // const reactDomPkg = await fs
-    //   .createReadStream(require.resolve("react-dom/package.json"))
-    //   .pipe(JSONStream.parse("*"))
-    //   .on("data", (data) => {
-    //     return data;
-    //   });
-    // console.log("reactDomPkg", reactDomPkg);
-    // mode: isDevelopment ? 'development' : 'production',
-    const rule = findBabelRules(config);
 
     const modules = [
       ...config.resolve.modules,
-      "node_modules",
-      path.resolve(
-        __dirname,
-        "..",
-        "..",
-        "common-resources",
-        "static-resources"
-      ),
+      path.resolve(__dirname, "..", "src"),
+      "node_modules/@loopring-web/common-resources",
+      //static-resources/src/loopring-interface/CoinInterface.ts
+      // path.resolve(__dirname, '..', '..', 'common-resources', "static-resources"),
+      // path.resolve(__dirname,'./'),
     ];
-    rule.include = [
-      ...rule.include,
-      path.resolve(
-        __dirname,
-        "..",
-        "..",
-        "common-resources",
-        "static-resources"
-      ),
-    ];
-
-    rule.options.presets = [
-      [
-        "@babel/preset-env",
-        {
-          useBuiltIns: "usage",
-          corejs: 3,
-          loose: true,
-          bugfixes: true,
-          modules: false,
-        },
+    config.module.rules.push({
+      test: /\.(mjs|js|jsx|tsx|ts)$/,
+      // exclude: [/node_modules/, /dist/],
+      include: [
+        path.resolve(
+          __dirname,
+          "..",
+          "..",
+          "common-resources",
+          "static-resources"
+        ),
       ],
-      ["@babel/preset-react", { useBuiltIns: true }],
-      ...rule.options.presets,
-    ];
-    console.log("rule.plugins:", rule.options.plugins);
 
+      // resolve: { fullySpecified: false },
+      loader: "babel-loader",
+      // loader: require.resolve('babel-loader'),
+      options: {
+        customize: require.resolve("babel-preset-react-app/webpack-overrides"),
+        presets: [
+          [
+            require.resolve("babel-preset-react-app"),
+            {
+              runtime: hasJsxRuntime ? "automatic" : "classic",
+            },
+          ],
+        ],
+        // @remove-on-eject-begin
+        babelrc: false,
+        configFile: false,
+        // Make sure we have a unique cache identifier, erring on the
+        // side of caution.
+        // We remove this when the user ejects because the default
+        // is sane and uses Babel options. Instead of options, we use
+        // the react-scripts and babel-preset-react-app versions.
+        cacheIdentifier: getCacheIdentifier("development", [
+          "babel-plugin-named-asset-import",
+          "babel-preset-react-app",
+          "react-dev-utils",
+          "react-scripts",
+        ]),
+        // @remove-on-eject-end
+        plugins: [
+          [
+            require.resolve("babel-plugin-named-asset-import"),
+            {
+              loaderMap: {
+                svg: {
+                  ReactComponent: "@svgr/webpack?-svgo,+titleProp,+ref![path]",
+                },
+              },
+            },
+          ],
+          "production" && require.resolve("react-refresh/babel"),
+        ].filter(Boolean),
+        // This is a feature of `babel-loader` for webpack (not Babel itself).
+        // It enables caching results in ./node_modules/.cache/babel-loader/
+        // directory for faster rebuilds.
+        cacheDirectory: true,
+        // See #6846 for context on why cacheCompression is disabled
+        cacheCompression: false,
+        compact: "auto",
+      },
+    });
     config.module.rules.push({
       test: /\.s(a|c)ss$/,
       use: [
@@ -160,18 +135,7 @@ module.exports = {
 
     return {
       ...config,
-      mode: isProd ? "development" : "production",
-      plugins: [
-        ...config.plugins,
-        // reactDomPkg.version.startsWith("18") ||
-        // reactDomPkg.version.startsWith("0.0.0")
-        //   ? null
-        //   : new webpack.IgnorePlugin({
-        //       resourceRegExp: /react-dom\/client$/,
-        //       contextRegExp:
-        //         /(app\/react|app\\react|@storybook\/react|@storybook\\react)/, // TODO this needs to work for both in our MONOREPO and in the user's NODE_MODULES
-        //     }),
-      ],
+      plugins: [...config.plugins],
       resolve: {
         ...config.resolve,
         modules,
@@ -184,16 +148,6 @@ module.exports = {
           "@material-ui/core": "@mui/material",
           "@material-ui/core/Popover": "@mui/material/Popover",
         },
-      },
-      optimization: {
-        splitChunks: {
-          chunks: "all",
-          minSize: 30 * 1024,
-          maxSize: maxAssetSize,
-        },
-      },
-      performance: {
-        maxAssetSize: maxAssetSize,
       },
     };
   },
