@@ -1,10 +1,10 @@
-import { ChainId } from "@loopring-web/loopring-sdk";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { ChainId } from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../api_wrapper";
 import { BANXA_URLS, BanxaOrder, myLog } from "@loopring-web/common-resources";
-import axios from "axios";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
+
 export enum BalanceReason {
   Balance = 0,
   FeeAndBalance = 1,
@@ -108,33 +108,21 @@ export const banxaApiCall = async ({
   payload: object | undefined;
   method: sdk.ReqMethod;
   chainId: ChainId;
-}): Promise<{ [key: string]: any }> => {
-  const querys = url + "?" + new URLSearchParams(query).toString();
-  const apiKey = await LoopringAPI.globalAPI?.getBanxaAPI({
+}): Promise<{ data: any }> => {
+  const querys =
+    url + (query ? "?" + new URLSearchParams(query).toString() : "");
+  const { result } = (await LoopringAPI.globalAPI?.getBanxaAPI({
+    url: BANXA_URLS[chainId as number],
     method,
     query: querys,
     payload: JSON.stringify(payload),
-  });
-  const bearer: string = (apiKey?.result as string) ?? "";
-  myLog("apiKey", bearer, query, new URLSearchParams(query).toString());
-  const _axios = axios.create({
-    baseURL: BANXA_URLS[chainId as number],
-    timeout: 6000,
-    headers: {
-      // Accept: "application/json",
-      Authorization: bearer,
-      "Content-Type": "application/json",
-    },
-    validateStatus: function (status: any) {
-      if ((status >= 200 && status < 300) || status === 400) {
-        return true;
-      }
-      return false;
-      // return true // always true, handle exception in each bussiness logic
-    },
-  });
-  const result = await _axios.request({ method, url: querys, data: payload });
-  return { ...result };
+  })) ?? { result: null };
+  let data: any;
+  try {
+    // @ts-ignore
+    data = JSON.parse(result)?.data;
+  } catch (e) {}
+  return { data };
 };
 
 const subject = new Subject<{
@@ -144,13 +132,16 @@ const subject = new Subject<{
   };
 }>();
 export const banxaService = {
-  banxaStart: () => {
+  banxaStart: async () => {
     const {
       account,
       system: { chainId },
     } = store.getState();
     // @ts-ignore
-    const banxa: any = new window.Banxa("loopring", "sandbox");
+    const banxa: any = new window.Banxa(
+      "loopring",
+      chainId == ChainId.GOERLI ? "sandbox" : ""
+    );
     // @ts-ignore
     const anchor: any = window.document.querySelector("#iframeBanxaTarget");
     // anchor.querySelector("anchor");
@@ -158,46 +149,54 @@ export const banxaService = {
       // debugger;
       anchor.style.display = "flex";
       //let { checkout_url, orderId } =
-      banxaApiCall({
+      const { data } = await banxaApiCall({
         chainId: chainId as ChainId,
         method: sdk.ReqMethod.POST,
         url: "/api/orders",
         query: "",
         payload: {
           blockchain: "LRC",
-          // iframe_domain: BANXA_URLS[chainId],
+          iframe_domain: BANXA_URLS[chainId],
           source: "USDC",
           target: "AUD",
           refund_address: account.accAddress,
           return_url_on_success: "https://loopring.io/#/l2assets",
           account_reference: account.accAddress,
         },
-      })
-        .then((res: any) => {
-          subject.next({
-            status: BanxaCheck.CheckOrderStatus,
-            data: {
-              res,
-            },
-          });
-        })
-        .finally(() => {
-          // subject.next({
-          //   status: BanxaCheck.CheckOrderStatus,
-          //   data: {
-          //     ...res,
-          //     ...mockAfterKYCReturn,
-          //   },
-          // });
-        })
-        .catch((_res: any) => {
-          subject.next({
-            status: BanxaCheck.CheckOrderStatus,
-            data: {
-              ...mockAfterKYCReturn,
-            },
-          });
-        });
+      });
+      myLog("banxa create order", data.order);
+      banxa.generateIframe(
+        "#iframeBanxaTarget",
+        data.order.checkout_url,
+        false
+        // "800px", //Optional width parameter – Pass false if not needed.
+        // "400px" //Optional height parameter – Pass false if not needed.
+      );
+      subject.next({
+        status: BanxaCheck.CheckOrderStatus,
+        data: data,
+      });
+
+      // .then((res: any) => {
+      //
+      // })
+      // .finally(() => {
+      //   // subject.next({
+      //   //   status: BanxaCheck.CheckOrderStatus,
+      //   //   data: {
+      //   //     ...res,
+      //   //     ...mockAfterKYCReturn,
+      //   //   },
+      //   // });
+      // })
+      // .catch((_res: any) => {
+      //   subject.next({
+      //     status: BanxaCheck.CheckOrderStatus,
+      //     data: {
+      //       ...mockAfterKYCReturn,
+      //     },
+      //   });
+      // });
     }
   },
   KYCDone: () => {

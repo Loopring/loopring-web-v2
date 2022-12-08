@@ -1,6 +1,7 @@
 import {
   AccountStatus,
   AddressError,
+  BanxaOrder,
   CoinMap,
   Explorer,
   FeeInfo,
@@ -277,34 +278,37 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     [account, tokenMap, exchangeInfo, setShowAccount, processRequest]
   );
 
-  const checkOrderStatus = _.debounce(async (orders: any) => {
+  const checkOrderStatus = _.debounce(async (_order: BanxaOrder) => {
     if (nodeTimer.current) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
     //TODO: when API Done
-    let orderId = "b2a31fd2896ea739c3918f57ec3c9d8c";
+    // let orderId = "b2a31fd2896ea739c3918f57ec3c9d8c";
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
-    banxaApiCall({
+    const {
+      data: { order },
+    } = await banxaApiCall({
       chainId: chainId as ChainId,
       method: sdk.ReqMethod.GET,
-      url: `api/orders/${orderId}`,
+      url: `/api/orders/${_order.id}`,
       query: "",
       payload: undefined,
     });
+    myLog("banxa check Order ", order);
     const memo = "OFF-Banxa Transfer";
-    //TODO status=== 'pendingPayment'
+    // TODO for KYC status changed
     if (
-      orders.status === "pendingPayment" &&
-      orders.wallet_address &&
-      orders.coin_code
+      order.status === "pendingPayment" &&
+      order.wallet_address &&
+      order.coin_code
     ) {
       banxaService.KYCDone();
-      updateOffBanxaData({ order: orders });
+      updateOffBanxaData({ order });
       updateTransferBanxaData({
-        belong: orders.coin_code,
-        tradeValue: orders.coin_amount,
-        balance: walletMap[orders.coin_code]?.count,
-        address: orders.wallet_address,
+        belong: order.coin_code,
+        tradeValue: order.coin_amount,
+        balance: walletMap[order.coin_code]?.count,
+        address: order.wallet_address,
         memo,
         fee: feeInfo,
       });
@@ -312,7 +316,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
     } else {
       setTimeout(() => {
-        checkOrderStatus(orders);
+        checkOrderStatus(order);
       }, 1000 * 15);
     }
   }, 100);
