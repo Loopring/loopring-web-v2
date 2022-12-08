@@ -438,7 +438,10 @@ export const GuardianPage = withTranslation(["common"])(
         />
         <ContainerStyled marginTop={2}>
           <Section
-            onClick={() => onOpenAdd(true)}
+            onClick={() => {
+              loadData()
+              onOpenAdd(true)}
+            }
             title={"Set as Guardian"}
             logo={
               <RoundAddIcon
@@ -452,7 +455,10 @@ export const GuardianPage = withTranslation(["common"])(
           />
           <Section
             description={"Who I Protect"}
-            onClick={() => onOpenLockWallet(true)}
+            onClick={() => {
+              loadData()
+              onOpenLockWallet(true)
+            }}
             title={"Lock/unlock Wallet"}
             logo={
               <LockGuardianIcon
@@ -466,7 +472,10 @@ export const GuardianPage = withTranslation(["common"])(
           />
           <Section
             description={"Guardian Request Handling"}
-            onClick={() => onOpenApprovalRequests(true)}
+            onClick={() => {
+              loadData()
+              onOpenApprovalRequests(true)
+            }}
             title={"Approve Requests"}
             logo={
               <ApprovalIcon
@@ -480,7 +489,10 @@ export const GuardianPage = withTranslation(["common"])(
           />
           <Section
             description={"Guardian Handling Records"}
-            onClick={() => onOpenHistory(true)}
+            onClick={() => {
+              loadData()
+              onOpenHistory(true)
+            }}
             title={"View History"}
             logo={
               <ViewHistoryIcon

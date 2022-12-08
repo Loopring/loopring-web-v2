@@ -26,29 +26,19 @@ export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOper
           justifyContent={"space-between"}
           marginBottom={2}
         >
-          <Box>
+          <Box display={"flex"} justifyContent={"space-between"} width={"100%"}>
             <Typography>
               {log.ens ? `${log.ens} /` : ''}
-              <Typography component={"span"} color={"var(--color-text-third)"}>{log.to && `${log.to.slice(0, 6)}...${log.to.slice(log.to.length - 4,)}`}</Typography>
-            </Typography>
-            <Typography
-              variant={"body1"}
-              component={"span"}
-              color={log.status ? "error" : "var(--color-success)"}
-            >
-
-              {`${t("labelTxGuardian" + TxHebaoAction[log.status]).slice(0,1).toUpperCase()}${t("labelTxGuardian" + TxHebaoAction[log.status]).slice(1).toLowerCase()} `}
-            </Typography>
-            
-            <Typography
-              variant={"body1"}
-              component={"span"}
-              color={"--color-text-third"}
-            >
-              {t(
-                "labelTxGuardian" +
-                TxGuardianHistoryType[log.hebaoTxType]
-              ).toLowerCase()}
+              <Typography component={"span"} color={log.ens ? "var(--color-text-third)" : ""}>
+                {log.to && `${log.to.slice(0, 6)}...${log.to.slice(log.to.length - 4,)} `}
+              </Typography>
+              <Typography>
+                {`${t("labelTxGuardian" + TxHebaoAction[log.status]).slice(0,1).toUpperCase()}${t("labelTxGuardian" + TxHebaoAction[log.status]).slice(1).toLowerCase()} `}
+                {t(
+                  "labelTxGuardian" +
+                  TxGuardianHistoryType[log.hebaoTxType]
+                ).toLowerCase()}
+              </Typography>
             </Typography>
             <Typography color={"var(--color-text-third)"} variant={"body1"}>
               {moment(
