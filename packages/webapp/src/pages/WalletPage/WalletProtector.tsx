@@ -170,9 +170,9 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
         case "LOCKED":
           return (
             <Box display={"flex"} alignItems={"center"}>
-              <LockIcon color={"error"} fontSize={"medium"} />
+              <LockIcon htmlColor={"var(--color-text-third)"} fontSize={"medium"} />
               <Typography
-                color={"error"}
+                color={"var(--color-text-third)"}
                 paddingLeft={1}
                 variant={"body1"}
                 component={"span"}
@@ -187,9 +187,9 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
         case "UNLOCK_WAITING":
           return (
             <Box display={"flex"} alignItems={"center"}>
-              <LoadingIcon color={"warning"} fontSize={"medium"} />
+              <LoadingIcon htmlColor={"var(--color-text-third)"} fontSize={"medium"} />
               <Typography
-                color={"warning"}
+                color={"var(--color-text-third)"}
                 paddingLeft={1}
                 variant={"body1"}
                 component={"span"}
@@ -204,9 +204,9 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
         case "LOCK_WAITING":
           return (
             <Box display={"flex"} alignItems={"center"}>
-              <LockIcon color={"warning"} fontSize={"medium"} />
+              <LockIcon htmlColor={"var(--color-text-third)"} fontSize={"medium"} />
               <Typography
-                color={"var(--color-warning)"}
+                color={"var(--color-text-third)"}
                 paddingLeft={1}
                 height={32}
                 variant={"body1"}
