@@ -181,7 +181,10 @@ export const useHebaoMain = <
           wallet: account.accAddress,
         })
         .then(({ walletType }) => {
-          setLoopringSmartContractWallet(walletType?.isContract && walletType?.loopringWalletContractVersion !== "")
+          setLoopringSmartContractWallet(
+            walletType?.isInCounterFactualStatus ||
+            (walletType?.isContract && walletType?.loopringWalletContractVersion !== "")
+          )
           setNonLoopringSmartContractWallet(walletType?.isContract && walletType?.loopringWalletContractVersion === "")
         })
         .catch(() => {

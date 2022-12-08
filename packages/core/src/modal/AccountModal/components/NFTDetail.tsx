@@ -69,6 +69,18 @@ const BoxNFT = styled(Box)`
   }
 ` as typeof Box;
 
+const FavoriteBoxStyle = styled(Box)`
+  .favHollow {
+    &:hover {
+      color: var(--color-error);
+    }
+  }
+  .favSolid {
+    &:hover {
+      color: var(--color-text-secondary);
+    }
+  }
+`;
 const BoxStyle = styled(Box)<
   { isMobile: boolean; baseURL: string } & BoxProps & Partial<NFTWholeINFO>
 >`
@@ -340,9 +352,7 @@ export const NFTDetail = withTranslation("common")(
       return sanitize(_str ?? EmptyValueTag);
     };
     const ref = React.useRef();
-    const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(
-      popItem?.nftId ?? ""
-    );
+    const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(popItem?.nftId ?? "");
     return (
       <>
         <StylePaper
@@ -385,7 +395,7 @@ export const NFTDetail = withTranslation("common")(
                   />
                 </Box>
               </BoxNFT>
-              <Box
+              <FavoriteBoxStyle
                 marginTop={2}
                 display={"flex"}
                 alignItems={"center"}
@@ -396,8 +406,8 @@ export const NFTDetail = withTranslation("common")(
                     title={t(
                       `labelFavouriteMethodTooltip${
                         popItem.preference.favourite
-                          ? "favourite"
-                          : "unfavourite"
+                          ? "unfavourite"
+                          : "favourite"
                       }`
                     ).toString()}
                     placement={"top"}
@@ -424,9 +434,12 @@ export const NFTDetail = withTranslation("common")(
                       }}
                     >
                       {popItem.preference.favourite ? (
-                        <FavSolidIcon htmlColor={"var(--color-error)"} />
+                        <FavSolidIcon
+                          className={"favSolid"}
+                          htmlColor={"var(--color-error)"}
+                        />
                       ) : (
-                        <FavHollowIcon />
+                        <FavHollowIcon className={"favHollow"} />
                       )}
                     </IconButton>
                   </Tooltip>
@@ -446,7 +459,9 @@ export const NFTDetail = withTranslation("common")(
                     }}
                     sx={{ minWidth: "initial", padding: "4px", marginRight: 1 }}
                   >
-                    <RefreshIPFSIcon color={showFresh !== "click" ? "disabled" : undefined}/>
+                    <RefreshIPFSIcon
+                      color={showFresh !== "click" ? "disabled" : undefined}
+                    />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={t("labelZoom").toString()} placement={"top"}>
@@ -467,7 +482,7 @@ export const NFTDetail = withTranslation("common")(
                   <Tooltip
                     title={t(
                       `labelHideMethodTooltip${
-                        popItem.preference.hide ? "hide" : "unhide"
+                        popItem.preference.hide ? "unhide" : "hide"
                       }`
                     ).toString()}
                     placement={"top"}
@@ -495,7 +510,7 @@ export const NFTDetail = withTranslation("common")(
                     </IconButton>
                   </Tooltip>
                 )}
-              </Box>
+              </FavoriteBoxStyle>
             </Grid>
             <Grid
               item
@@ -880,10 +895,7 @@ export const NFTDetail = withTranslation("common")(
                     whiteSpace={"break-spaces"}
                     style={{ wordBreak: "break-all" }}
                     onClick={() => {
-                      window.open(
-                        IPFS_LOOPRING_SITE + cid,
-                        "blank"
-                      );
+                      window.open(IPFS_LOOPRING_SITE + cid, "blank");
                       window.opener = null;
                     }}
                   >

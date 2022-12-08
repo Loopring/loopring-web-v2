@@ -93,7 +93,6 @@ export const WalletValidationInfo = ({
         signer: account.accAddress,
         signature: "",
       };
-
       LoopringAPI.walletAPI
         .submitApproveSignature(
           {
@@ -110,12 +109,8 @@ export const WalletValidationInfo = ({
           isContract1XAddress,
           contractType?.masterCopy ?? undefined,
           guardianModuleAddress ?? undefined
-        )
-        .then((response) => {
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
+        ).then((response) => {
+          if ((response as sdk.RESULT_INFO).code !== 0) {
             handleOpenModal({
               step: GuardianStep.Approve_Failed,
               options: {
@@ -277,7 +272,14 @@ export const WalletValidationInfo = ({
               marginBottom={2}
             >
               <Box>
-                <Typography variant={"body1"}>{t("labelWalletRequestRecovery")}</Typography>
+                <Typography variant={"body1"}>
+                  <Trans
+                    i18nKey={"labelWalletSignType"}
+                    tOptions={{ type: t("labelTxGuardian_" + guardian.type) }}
+                  >
+                    Request for {guardian.type?.replace("_", " ").toUpperCase() ?? "Unknown"}
+                  </Trans>  
+                </Typography>
                 <Typography variant={"body1"}>
                   {/* todo: Unknown translation */}
                   {guardian.ens ? `${guardian.ens} /` : ''}
