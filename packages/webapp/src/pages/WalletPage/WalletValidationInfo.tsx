@@ -93,7 +93,6 @@ export const WalletValidationInfo = ({
         signer: account.accAddress,
         signature: "",
       };
-
       LoopringAPI.walletAPI
         .submitApproveSignature(
           {
@@ -110,12 +109,8 @@ export const WalletValidationInfo = ({
           isContract1XAddress,
           contractType?.masterCopy ?? undefined,
           guardianModuleAddress ?? undefined
-        )
-        .then((response) => {
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
+        ).then((response) => {
+          if ((response as sdk.RESULT_INFO).code !== 0) {
             handleOpenModal({
               step: GuardianStep.Approve_Failed,
               options: {
