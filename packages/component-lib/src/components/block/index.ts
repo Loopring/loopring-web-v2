@@ -15,5 +15,5 @@ export * from "./AmmPairDetail";
 export * from "./CollectionMedia";
 export * from "./LoadingBlock";
 export * from "./TagIconList";
-export * from "./RedPock";
+export * from "./RedPocket";
 export * from "./CollectionDetailView";

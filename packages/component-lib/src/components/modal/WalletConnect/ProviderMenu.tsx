@@ -167,30 +167,28 @@ export const ProviderMenu = ({
         paddingX={isMobile ? 7 : 10}
         paddingBottom={4}
       >
-        <>
-          {gatewayList.map((item: GatewayItem) => (
-            <Box key={item.key} marginTop={1.5}>
-              <MenuBtnStyled
-                variant={"outlined"}
-                size={"large"}
-                className={`${isMobile ? "isMobile" : ""} ${
-                  providerName === item.key ? "selected provider " : "provider"
-                }`}
-                fullWidth
-                endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
-                onClick={(e) => {
-                  _handleSelect(
-                    e,
-                    item.key,
-                    item.handleSelect ? item.handleSelect : handleSelect
-                  );
-                }}
-              >
-                {t(item.keyi18n)}
-              </MenuBtnStyled>
-            </Box>
-          ))}
-        </>
+        {gatewayList.map((item: GatewayItem) => (
+          <Box key={item.key} marginTop={1.5}>
+            <MenuBtnStyled
+              variant={"outlined"}
+              size={"large"}
+              className={`${isMobile ? "isMobile" : ""} ${
+                providerName === item.key ? "selected provider " : "provider"
+              }`}
+              fullWidth
+              endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
+              onClick={(e) => {
+                _handleSelect(
+                  e,
+                  item.key,
+                  item.handleSelect ? item.handleSelect : handleSelect
+                );
+              }}
+            >
+              {t(item.keyi18n)}
+            </MenuBtnStyled>
+          </Box>
+        ))}
       </Box>
     </Box>
   );

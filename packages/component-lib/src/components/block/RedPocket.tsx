@@ -25,91 +25,67 @@ export const RedPockBg = styled(Box)<BoxProps & { imageSrc?: string }>`
   //display: flex;
   //flex-direction: column;
   position: relative;
-  .bottomEle {
-    min-height: 120px;
-  }
-  .topEle {
-    overflow: hidden;
-    border-radius: 8px 8px;
-    border-bottom-left-radius: 100% 88px;
-    border-bottom-right-radius: 100% 88px;
-    box-shadow: 0px 4px 0px #f73e22;
-    position: relative;
-    min-height: 350px;
-    width: 100%;
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
-    &::after {
-      content: "";
-      height: 100%;
-      width: 100%;
-      display: flex;
-      z-index: 99;
-      position: absolute;
-      background-color: rgba(254, 164, 159, 0.38);
-    }
-  }
-  .betweenEle {
-    .open {
-      background: #fff7b1;
-      display: inline-flex;
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
+  .content {
+    .betweenEle {
       left: 50%;
-      bottom: 0px;
-      transform: translate(-50%, 50%);
-      width: 88px;
-      height: 88px;
-      content: "Open";
-      font-size: 28px;
-      font-weight: 900;
-      color: #ff5136;
-      //color: ${({ theme }) => theme.colorBase.textButton};
-      //text-indent: -9999px;
-      border-radius: 100%;
-    }
-    .clock {
-      display: flex;
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
+      top: 128px;
       position: absolute;
-      font-size: 28px;
-      font-weight: 900;
-      transform: translate(-50%, calc(-50% - 16px));
-      z-index: 100;
-      left: 50%;
-      top: -50%;
-      .hours,
-      .minutes,
-      .seconds {
-        height: 52px;
-        width: 52px;
+      .open {
         background: #fff7b1;
+        color: #7c3400;
         display: inline-flex;
+        z-index: 100;
         align-items: center;
-        justify-content: flex-end;
-        border-radius: ${({ theme }) => theme.unit + "px"};
-        overflow: hidden;
-        color: #ff5136;
-        h4 {
-          text-indent: -9999em;
-          height: 0;
-          width: 0;
-        }
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        content: "Open";
+        font-size: 20px;
+        font-weight: 500;
+        border-radius: 100%;
+        transform: translate(-50%, -50%);
       }
-      .hours,
-      .minutes {
-        position: relative;
-        span:after {
-          display: block;
-          content: ":";
-          position: absolute;
-          right: -8px;
-          top: 0;
+      .clock {
+        display: flex;
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        font-size: 28px;
+        font-weight: 900;
+        transform: translate(-50%, -50%);
+        z-index: 100;
+        left: 50%;
+        top: -50%;
+        .hours,
+        .minutes,
+        .seconds {
+          justify-content: center;
+          height: 52px;
+          width: 52px;
+          background: #fff7b1;
+          color: #7c3400;
+          display: inline-flex;
+          align-items: center;
+          border-radius: ${({ theme }) => theme.unit + "px"};
+          h4 {
+            text-indent: -9999em;
+            height: 0;
+            width: 0;
+          }
+        }
+        .hours,
+        .minutes {
+          position: relative;
+          &:after {
+            display: block;
+            content: ":";
+            position: absolute;
+            font-size: 20px;
+            right: -12px;
+            line-height: 52px;
+            top: 0;
+          }
         }
       }
     }
@@ -193,6 +169,7 @@ export const RedPockBgDefault = ({
         />
       </Box>
       <Box
+        className={`content content${size}`}
         position={"relative"}
         zIndex={200}
         height={RedPockSize[size].height}
@@ -243,24 +220,41 @@ export const RedPockBgOpened = ({
           type={type}
         />
       </Box>
-      <Box position={"relative"} zIndex={200} height={RedPockSize[size]}>
+      <Box
+        className={`content content${size}`}
+        position={"relative"}
+        zIndex={200}
+        height={RedPockSize[size]}
+      >
         {content}
       </Box>
     </RedPockBg>
   );
 };
 
-export const RedPockOpen = ({ type = "default" }: RedPockDefault & any) => {
+export const RedPockOpen = ({
+  type = "default",
+  size,
+}: RedPockDefault & any) => {
+  const { t } = useTranslation();
   const content = React.useMemo(() => {
     return (
-      <Box display={"flex"} position={"absolute"} className={"open"}>
-        OPEN
+      <Box display={"flex"} flex={1}>
+        <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
+          <Box display={"flex"} position={"absolute"} className={"open"}>
+            {t("labelOpen")}
+          </Box>
+        </Box>
+        <Box display={"flex"}></Box>
+
+        <Box></Box>
       </Box>
     );
   }, []);
 
-  return <RedPockBgDefault type={type} content={content} />;
+  return <RedPockBgDefault type={type} size={size} content={content} />;
 };
+
 export const RedPockClock = ({
   type = "default",
   countDown,
@@ -276,83 +270,84 @@ export const RedPockClock = ({
   const content = React.useMemo(() => {
     return (
       <>
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          position={"absolute"}
-          className={"clock"}
-        >
-          <Typography
-            display={"inline-flex"}
-            component={"span"}
-            variant={"body1"}
-            marginBottom={1}
+        <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            position={"absolute"}
+            className={"clock"}
           >
-            {t("labelCountDown")}
-          </Typography>
-          <Box display={"flex"} flexDirection={"row"} flex={1}>
-            <Box
-              className={"hours"}
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-              marginRight={2}
+            <Typography
+              display={"none"}
+              component={"span"}
+              variant={"body1"}
+              // marginBottom={1}
             >
-              <Typography variant={"h2"} component={"span"} color={"inherit"}>
-                {Number(countDown?.hours) >= 0
-                  ? countDown?.hours
-                  : EmptyValueTag}
-              </Typography>
-              <Typography
-                variant={"h4"}
-                color={"var(--color-text-secondary)"}
-                marginTop={1}
-                style={{ textTransform: "uppercase" }}
+              {t("labelCountDown")}
+            </Typography>
+            <Box display={"flex"} flexDirection={"row"} flex={1}>
+              <Box
+                className={"hours"}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+                marginRight={2}
               >
-                {t("labelHours")}
-              </Typography>
-            </Box>
-            <Box
-              className={"minutes"}
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-              marginRight={2}
-            >
-              <Typography variant={"h2"} component={"span"} color={"inherit"}>
-                {Number(countDown?.minutes) >= 0
-                  ? countDown?.minutes
-                  : EmptyValueTag}
-              </Typography>
-              <Typography
-                variant={"h4"}
-                color={"var(--color-text-secondary)"}
-                marginTop={1}
-                style={{ textTransform: "uppercase" }}
+                <Typography variant={"h2"} component={"span"} color={"inherit"}>
+                  {Number(countDown?.hours) >= 0
+                    ? countDown?.hours
+                    : EmptyValueTag}
+                </Typography>
+                <Typography
+                  variant={"h4"}
+                  color={"var(--color-text-secondary)"}
+                  display={"none"}
+                  style={{ textTransform: "uppercase" }}
+                >
+                  {t("labelHours")}
+                </Typography>
+              </Box>
+              <Box
+                className={"minutes"}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+                marginRight={2}
               >
-                {t("labelMinutes")}
-              </Typography>
-            </Box>
-            <Box
-              className={"seconds"}
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-              marginRight={2}
-            >
-              <Typography variant={"h2"} component={"span"} color={"inherit"}>
-                {Number(countDown?.seconds) >= 0
-                  ? countDown?.seconds
-                  : EmptyValueTag}
-              </Typography>
-              <Typography
-                variant={"h4"}
-                color={"var(--color-text-secondary)"}
-                marginTop={1}
-                style={{ textTransform: "uppercase" }}
+                <Typography variant={"h2"} component={"span"} color={"inherit"}>
+                  {Number(countDown?.minutes) >= 0
+                    ? countDown?.minutes
+                    : EmptyValueTag}
+                </Typography>
+                <Typography
+                  variant={"h4"}
+                  color={"var(--color-text-secondary)"}
+                  display={"none"}
+                  style={{ textTransform: "uppercase" }}
+                >
+                  {t("labelMinutes")}
+                </Typography>
+              </Box>
+              <Box
+                className={"seconds"}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
               >
-                {t("labelSeconds")}
-              </Typography>
+                <Typography variant={"h2"} component={"span"} color={"inherit"}>
+                  {Number(countDown?.seconds) >= 0
+                    ? countDown?.seconds
+                    : EmptyValueTag}
+                </Typography>
+                <Typography
+                  variant={"h4"}
+                  color={"var(--color-text-secondary)"}
+                  display={"none"}
+                  style={{ textTransform: "uppercase" }}
+                >
+                  {t("labelSeconds")}
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Box>
@@ -367,6 +362,15 @@ export const RedPockHistory = ({ type = "default" }: RedPockDefault & any) => {
     return <>{t("official")}</>;
   }, []);
   return <RedPockBgOpened type={type} content={content} />;
+};
+
+export const RedPocKetDetailStyled = styled(Box)`
+  border-radius: ${({ theme }) => theme.unit}px;
+  background-color: var(--color-box);
+`;
+
+export const RedPocKetDetail = () => {
+  return <RedPocKetDetailStyled></RedPocKetDetailStyled>;
 };
 
 // export const RedPockCard = withTranslation()(() => {});

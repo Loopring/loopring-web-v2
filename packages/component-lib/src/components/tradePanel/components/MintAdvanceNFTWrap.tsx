@@ -3,12 +3,8 @@ import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
   Box,
-  Grid,
   Typography,
   Link,
-  Stepper,
-  StepLabel,
-  Step,
   FormControlLabel,
   Radio,
   Checkbox,
@@ -57,22 +53,13 @@ import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
 import { Toast } from "../../toast";
+import { HorizontalLabelPositionBelowStepper } from "./tool";
 
 export enum AdMethod {
   HasData = "HasData",
   NoData = "NoData",
 }
 
-const BoxStyle = styled(Grid)`
-  .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
-    height: var(--btn-icon-size-large);
-    width: var(--btn-icon-size-large);
-
-    .MuiStepIcon-text {
-      font-size: ${({ theme }) => theme.fontDefault.body1};
-    }
-  }
-` as typeof Grid;
 const MintAdStyle = styled(Box)`
   .MuiFormGroup-root {
     align-items: flex-start;
@@ -111,28 +98,6 @@ export enum MintStep {
   SELECTWAY = 0,
   INPUTCID = 1,
   MINT = 2,
-}
-
-export function HorizontalLabelPositionBelowStepper({
-  activeStep,
-}: {
-  activeStep: number;
-}) {
-  const { t } = useTranslation("common");
-  const { isMobile } = useSettings();
-  return (
-    <>
-      <BoxStyle sx={{ width: "100%" }} marginTop={isMobile ? 3 : 0}>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{t(label)}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </BoxStyle>
-    </>
-  );
 }
 
 export const MintAdvanceNFTWrap = <
@@ -1217,7 +1182,10 @@ export const MintAdvanceNFTWrap = <
       padding={5 / 2}
       alignItems={"center"}
     >
-      <HorizontalLabelPositionBelowStepper activeStep={activeStep} />
+      <HorizontalLabelPositionBelowStepper
+        activeStep={activeStep}
+        steps={steps}
+      />
       <MintAdStyle
         flex={1}
         marginTop={2}

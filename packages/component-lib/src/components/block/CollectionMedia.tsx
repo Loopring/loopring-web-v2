@@ -7,7 +7,7 @@ import {
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
-import { Box, BoxProps, Tooltip, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import {
   cssBackground,
   EmptyDefault,

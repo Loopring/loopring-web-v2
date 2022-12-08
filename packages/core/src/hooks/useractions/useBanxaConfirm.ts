@@ -329,6 +329,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           // @ts-ignore
           checkOrderStatus(props.data.order);
           break;
+        case BanxaCheck.OrderHide:
         case BanxaCheck.OrderEnd:
           myLog("Banxa Order End");
           clearTimeout(nodeTimer.current as NodeJS.Timeout);

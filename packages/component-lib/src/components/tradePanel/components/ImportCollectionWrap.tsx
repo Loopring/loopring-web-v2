@@ -1,16 +1,7 @@
 import { ImportCollectionStep, ImportCollectionViewProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  Stepper,
-  StepLabel,
-  Step,
-  ListItemText,
-  Link,
-} from "@mui/material";
+import { Box, Typography, ListItemText, Link } from "@mui/material";
 import {
   getShortAddr,
   BackIcon,
@@ -34,17 +25,8 @@ import { useSettings } from "../../../stores";
 import { CollectionManageWrap } from "./CollectionManageWrap";
 import { NFTMedia } from "../../block";
 import { useHistory } from "react-router-dom";
+import { HorizontalLabelPositionBelowStepper } from "./tool";
 
-const BoxStyle = styled(Grid)`
-  .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
-    height: var(--btn-icon-size-large);
-    width: var(--btn-icon-size-large);
-
-    .MuiStepIcon-text {
-      font-size: ${({ theme }) => theme.fontDefault.body1};
-    }
-  }
-` as typeof Grid;
 const MintAdStyle = styled(Box)`
   .MuiFormGroup-root {
     align-items: flex-start;
@@ -69,28 +51,6 @@ const steps = [
   "labelImportCollection2", //labelADMint2
   "labelImportCollection3", //Preview & Mint NFT
 ];
-
-function HorizontalLabelPositionBelowStepper({
-  step,
-}: {
-  step: ImportCollectionStep;
-}) {
-  const { t } = useTranslation("common");
-  const { isMobile } = useSettings();
-  return (
-    <>
-      <BoxStyle sx={{ width: "100%" }} marginTop={isMobile ? 3 : 0}>
-        <Stepper activeStep={step} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{t(label)}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </BoxStyle>
-    </>
-  );
-}
 
 export const ImportCollectionWrap = <
   Co extends CollectionMeta,
@@ -573,7 +533,7 @@ export const ImportCollectionWrap = <
       padding={5 / 2}
       alignItems={"center"}
     >
-      <HorizontalLabelPositionBelowStepper step={step} />
+      <HorizontalLabelPositionBelowStepper activeStep={step} steps={steps} />
       <MintAdStyle
         flex={1}
         marginTop={2}
