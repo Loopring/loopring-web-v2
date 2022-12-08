@@ -277,7 +277,14 @@ export const WalletValidationInfo = ({
               marginBottom={2}
             >
               <Box>
-                <Typography variant={"body1"}>{t("labelWalletRequestRecovery")}</Typography>
+                <Typography variant={"body1"}>
+                  <Trans
+                    i18nKey={"labelWalletSignType"}
+                    tOptions={{ type: t("labelTxGuardian_" + guardian.type) }}
+                  >
+                    Request for {guardian.type?.replace("_", " ").toUpperCase() ?? "Unknown"}
+                  </Trans>  
+                </Typography>
                 <Typography variant={"body1"}>
                   {/* todo: Unknown translation */}
                   {guardian.ens ? `${guardian.ens} /` : ''}
