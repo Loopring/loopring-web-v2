@@ -1,6 +1,6 @@
 import { SvgIcon, SvgIconProps } from "@mui/material";
 
-export const RedPockWrap = ({
+export const RedPockWrap2 = ({
   colorTop,
   startColor,
   endColor,
@@ -116,7 +116,7 @@ export const RedPockWrap = ({
   );
 };
 
-export const RedPockOpenWrap = ({
+export const RedPockOpenWrap2 = ({
   colorTop,
   startColor,
   endColor,
