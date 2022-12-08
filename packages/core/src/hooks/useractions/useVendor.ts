@@ -70,7 +70,7 @@ const banxaApiCall = async ({
     method,
     query: querys,
     payload: JSON.stringify(payload),
-  });
+  } as any);
   const bearer: string = (apiKey?.result as string) ?? "";
   myLog("apiKey", bearer, query, new URLSearchParams(query).toString());
   const _axios = axios.create({
