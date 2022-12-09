@@ -1218,7 +1218,7 @@ export default {
   labelAddAssetTitleCardDes:
     "If you have purchased crypto with a card, please wait for it to arrive in your account.",
   labelAddAssetTitleCardDesActive:
-    "If you have purchased crypto with a card, please wait for it to arrive in your account. Upon arrival, L2 will be activated automatically.",
+    "If you have purchased crypto with a card, please wait for it to arrive in your account. Upon arrival, L2 will be activated manually.",
   labelMinFeeForActive: "Min {{fee}}",
   labelReceiveAddressDes:
     "If you have transferred tokens from another Loopring L2 account, please wait.",
