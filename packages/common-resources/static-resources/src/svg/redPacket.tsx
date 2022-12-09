@@ -1,4 +1,4 @@
-export const RedPockWrapSVG = ({
+export const RedPacketWrapSVG = ({
   colorTop,
   startColor,
   endColor,
@@ -115,7 +115,7 @@ export const RedPockWrapSVG = ({
   );
 };
 
-export const RedPockOpenWrapSVG = ({
+export const RedPacketOpenWrapSVG = ({
   colorTop,
   startColor,
   endColor,
@@ -236,7 +236,7 @@ export const RedPockOpenWrapSVG = ({
   );
 };
 
-export const RedPockQRCodeSvg = ({
+export const RedPacketQRCodeSvg = ({
   startColor,
   endColor,
   colorTop,

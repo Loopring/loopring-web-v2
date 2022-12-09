@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { StylePaper } from "@loopring-web/core";
 
-export const RedPocketPage = () => {
+export const RedPacketPage = () => {
   const history = useHistory();
   const { t } = useTranslation();
   return (
@@ -24,10 +24,10 @@ export const RedPocketPage = () => {
           sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
           onClick={() => {
-            history.push("/l2assets/redpocket");
+            history.push("/l2assets/redpacket");
           }}
         >
-          {t("labelRedPocketTitle")}
+          {t("labelRedPacketTitle")}
         </Button>
       </Box>
       <StylePaper

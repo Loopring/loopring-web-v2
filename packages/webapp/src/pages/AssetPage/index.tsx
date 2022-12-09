@@ -9,7 +9,7 @@ import HistoryPanel from "./HistoryPanel";
 import React from "react";
 import { ViewAccountTemplate } from "@loopring-web/core";
 import { useGetAssets } from "./AssetPanel/hook";
-import { RedPockPanel } from "./RedPockPanel";
+import { RedPacketPanel } from "./RedPacketPanel";
 
 export const subMenu = subMenuLayer2;
 
@@ -23,8 +23,8 @@ export const AssetPage = () => {
         return <AssetPanel />;
       case "history":
         return <HistoryPanel />;
-      case "redpocket":
-        return <RedPockPanel />;
+      case "redpacket":
+        return <RedPacketPanel />;
       default:
         <AssetPanel />;
     }

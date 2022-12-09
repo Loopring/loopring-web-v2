@@ -375,7 +375,7 @@ export type GET_IPFS_STRING = (
   basicURl: string
 ) => string;
 
-export type RedPocketSend = {
+export type RedPacketSend = {
   type: sdk.LuckyTokenType;
   signerFlag: sdk.LuckyTokenSignerFlag;
   luckyToken: sdk.LuckyTokenInfo;
@@ -385,7 +385,7 @@ export type RedPocketSend = {
   validSince: number;
 }; // sdk.LuckyTokenItemForSend;
 
-export type LuckyRedPocketItem = {
+export type LuckyRedPacketItem = {
   labelKey: string;
   desKey: string;
   value: {

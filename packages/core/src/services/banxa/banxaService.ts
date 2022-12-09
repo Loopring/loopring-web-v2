@@ -1,7 +1,12 @@
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../api_wrapper";
-import { BANXA_URLS, BanxaOrder, myLog } from "@loopring-web/common-resources";
+import {
+  Account,
+  BANXA_URLS,
+  BanxaOrder,
+  myLog,
+} from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
 
@@ -102,21 +107,28 @@ export const banxaApiCall = async ({
   payload,
   method,
   chainId,
+  account,
 }: {
   url: string;
   query: URLSearchParams | string | string[][];
   payload: object | undefined;
   method: sdk.ReqMethod;
   chainId: ChainId;
+  account: Account;
 }): Promise<{ data: any }> => {
   const querys =
     url + (query ? "?" + new URLSearchParams(query).toString() : "");
-  const { result } = (await LoopringAPI.globalAPI?.getBanxaAPI({
-    url: BANXA_URLS[chainId as number],
-    method,
-    query: querys,
-    payload: JSON.stringify(payload),
-  })) ?? { result: null };
+  const { result } = (await LoopringAPI.globalAPI?.getBanxaAPI(
+    {
+      url: BANXA_URLS[chainId as number],
+      method,
+      query: querys,
+      accountId: account.accountId,
+      payload: JSON.stringify(payload),
+    },
+    account.eddsaKey.sk,
+    account.apiKey
+  )) ?? { result: null };
   let data: any;
   try {
     // @ts-ignore
@@ -148,9 +160,11 @@ export const banxaService = {
     if (anchor) {
       // debugger;
       anchor.style.display = "flex";
+
       //let { checkout_url, orderId } =
       const { data } = await banxaApiCall({
         chainId: chainId as ChainId,
+        account,
         method: sdk.ReqMethod.POST,
         url: "/api/orders",
         query: "",

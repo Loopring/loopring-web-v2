@@ -4,11 +4,11 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import {
   EmptyValueTag,
-  RedPockOpenWrapSVG,
-  RedPockQRCodeSvg,
-  // RedPockOpenWrapSvg,
-  RedPockWrapSVG,
-  // RedPockWrapSvg,
+  RedPacketOpenWrapSVG,
+  RedPacketQRCodeSvg,
+  // RedPacketOpenWrapSvg,
+  RedPacketWrapSVG,
+  // RedPacketWrapSvg,
 } from "@loopring-web/common-resources";
 // .close-button {
 //   margin-top: 0;
@@ -18,7 +18,7 @@ import {
 //   }
 // }
 
-export const RedPockBg = styled(Box)<BoxProps & { imageSrc?: string }>`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
   //background: #ff5136;
   //border-radius: 8px;
   //min-width: 288px;
@@ -91,14 +91,14 @@ export const RedPockBg = styled(Box)<BoxProps & { imageSrc?: string }>`
     }
   }
 ` as (props: BoxProps & { imageSrc?: string }) => JSX.Element;
-export type RedPockDefault = {
+export type RedPacketDefault = {
   type?: "default" | "official";
   size?: "middle" | "large";
 };
-export type RedPockDefaultBg = RedPockDefault & {
+export type RedPacketDefaultBg = RedPacketDefault & {
   content: JSX.Element;
 };
-export const RedPockSize = {
+export const RedPacketSize = {
   middle: {
     height: 400,
     width: 260,
@@ -108,8 +108,10 @@ export const RedPockSize = {
     width: 320,
   },
 };
-export const RedPockQRCode = ({ type = "default" }: RedPockDefault & any) => {
-  const RedPockColorConfig = {
+export const RedPacketQRCode = ({
+  type = "default",
+}: RedPacketDefault & any) => {
+  const RedPacketColorConfig = {
     default: {
       colorTop: "#FD7659",
       startColor: "#FC7A5A",
@@ -127,14 +129,16 @@ export const RedPockQRCode = ({ type = "default" }: RedPockDefault & any) => {
       btnColor: "#FD7659",
     },
   };
-  return <RedPockQRCodeSvg {...{ ...RedPockColorConfig[type] }} type={type} />;
+  return (
+    <RedPacketQRCodeSvg {...{ ...RedPacketColorConfig[type] }} type={type} />
+  );
 };
-export const RedPockBgDefault = ({
+export const RedPacketBgDefault = ({
   type = "default",
   size = "middle",
   content,
-}: RedPockDefaultBg & any) => {
-  const RedPockColorConfig = {
+}: RedPacketDefaultBg & any) => {
+  const RedPacketColorConfig = {
     default: {
       colorTop: "#FD7659",
       startColor: "#FC7A5A",
@@ -146,9 +150,9 @@ export const RedPockBgDefault = ({
       endColor: "#FDBD6A",
     },
   };
-  const scale = 414 / RedPockSize[size].height;
+  const scale = 414 / RedPacketSize[size].height;
   return (
-    <RedPockBg>
+    <RedPacketBg>
       <Box
         className={"bg"}
         position={"absolute"}
@@ -158,36 +162,36 @@ export const RedPockBgDefault = ({
         bottom={0}
         zIndex={100}
       >
-        <RedPockWrapSVG
-          {...{ ...RedPockColorConfig[type] }}
+        <RedPacketWrapSVG
+          {...{ ...RedPacketColorConfig[type] }}
           style={{ transform: `scale(${scale})` }}
           height={"100%"}
           width={"100%"}
           type={type}
-          // height={RedPockSize[size].height}
-          // width={RedPockSize[size].width}
+          // height={RedPacketSize[size].height}
+          // width={RedPacketSize[size].width}
         />
       </Box>
       <Box
         className={`content content${size}`}
         position={"relative"}
         zIndex={200}
-        height={RedPockSize[size].height}
-        width={RedPockSize[size].width}
+        height={RedPacketSize[size].height}
+        width={RedPacketSize[size].width}
       >
         {content}
       </Box>
-    </RedPockBg>
+    </RedPacketBg>
   );
 };
-export const RedPockBgOpened = ({
+export const RedPacketBgOpened = ({
   type = "default",
   size = "middle",
   content,
-}: RedPockDefaultBg & any) => {
-  const scale = 414 / RedPockSize[size].height;
+}: RedPacketDefaultBg & any) => {
+  const scale = 414 / RedPacketSize[size].height;
 
-  const RedPockColorConfig = {
+  const RedPacketColorConfig = {
     default: {
       colorTop: "#FFD596",
       startColor: "#FC7A5A",
@@ -210,10 +214,10 @@ export const RedPockBgOpened = ({
     },
   };
   return (
-    <RedPockBg>
+    <RedPacketBg>
       <Box position={"absolute"} zIndex={100}>
-        <RedPockOpenWrapSVG
-          {...{ ...RedPockColorConfig[type] }}
+        <RedPacketOpenWrapSVG
+          {...{ ...RedPacketColorConfig[type] }}
           style={{ transform: `scale(${scale})` }}
           height={"100%"}
           width={"100%"}
@@ -224,18 +228,18 @@ export const RedPockBgOpened = ({
         className={`content content${size}`}
         position={"relative"}
         zIndex={200}
-        height={RedPockSize[size]}
+        height={RedPacketSize[size]}
       >
         {content}
       </Box>
-    </RedPockBg>
+    </RedPacketBg>
   );
 };
 
-export const RedPockOpen = ({
+export const RedPacketOpen = ({
   type = "default",
   size,
-}: RedPockDefault & any) => {
+}: RedPacketDefault & any) => {
   const { t } = useTranslation();
   const content = React.useMemo(() => {
     return (
@@ -252,13 +256,13 @@ export const RedPockOpen = ({
     );
   }, []);
 
-  return <RedPockBgDefault type={type} size={size} content={content} />;
+  return <RedPacketBgDefault type={type} size={size} content={content} />;
 };
 
-export const RedPockClock = ({
+export const RedPacketClock = ({
   type = "default",
   countDown,
-}: RedPockDefault & {
+}: RedPacketDefault & {
   countDown: {
     days: undefined | string;
     hours: undefined | string;
@@ -354,27 +358,29 @@ export const RedPockClock = ({
       </>
     );
   }, []);
-  return <RedPockBgDefault type={type} content={content} />;
+  return <RedPacketBgDefault type={type} content={content} />;
 };
-export const RedPockHistory = ({ type = "default" }: RedPockDefault & any) => {
+export const RedPacketHistory = ({
+  type = "default",
+}: RedPacketDefault & any) => {
   const { t } = useTranslation("common");
   const content = React.useMemo(() => {
     return <>{t("official")}</>;
   }, []);
-  return <RedPockBgOpened type={type} content={content} />;
+  return <RedPacketBgOpened type={type} content={content} />;
 };
 
-export const RedPocKetDetailStyled = styled(Box)`
+export const RedPacketDetailStyled = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
   background-color: var(--color-box);
 `;
 
-export const RedPocKetDetail = () => {
-  return <RedPocKetDetailStyled></RedPocKetDetailStyled>;
+export const RedPacketDetail = () => {
+  return <RedPacketDetailStyled></RedPacketDetailStyled>;
 };
 
-// export const RedPockCard = withTranslation()(() => {});
-// export const RedPockQRCode = ({
+// export const RedPacketCard = withTranslation()(() => {});
+// export const RedPacketQRCode = ({
 //   onClose,
 //   countDown,
 // }: {
@@ -397,7 +403,7 @@ export const RedPocKetDetail = () => {
 //     return <></>;
 //   }, []);
 //   return (
-//     <RedPock
+//     <RedPacket
 //       onClose={onClose}
 //       content={content}
 //       desContent={desContent}
@@ -406,7 +412,7 @@ export const RedPocKetDetail = () => {
 //   );
 // };
 
-// export const RedPockCard = withTranslation()(
+// export const RedPacketCard = withTranslation()(
 //   ({
 //     t,
 //     luckyTokenItem: {
@@ -431,8 +437,8 @@ export const RedPocKetDetail = () => {
 //     tokenMap: { [key: string]: any };
 //   } & WithTranslation) => {
 //     const color = {
-//       textColor: `var(--color-redPock-text${type.scope})`,
-//       background: `var(--color-redPock${type.scope})`,
+//       textColor: `var(--color-redPacket-text${type.scope})`,
+//       background: `var(--color-redPacket${type.scope})`,
 //     };
 //     const luckToken = tokenMap[idIndex[tokenId]];
 //     return (
@@ -480,7 +486,7 @@ export const RedPocKetDetail = () => {
 //           {info?.memo ?? t("labelLuckTokenDefaultTitle")}
 //         </Typography>
 //         <Divider
-//           sx={{ border: "var(--color-redPock-Border)" }}
+//           sx={{ border: "var(--color-redPacket-Border)" }}
 //           orientation={"horizontal"}
 //         />
 //         <Typography

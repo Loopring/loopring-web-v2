@@ -9,15 +9,11 @@ import {
   DeFiCalcData,
   FeeInfo,
   IBData,
-  LuckyRedPocketItem,
+  LuckyRedPacketItem,
 } from "../loopring-interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 import { MarketType } from "./market";
-import {
-  LuckyTokenAmountType,
-  LuckyTokenClaimType,
-} from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
 export enum DeFiChgType {
   coinSell = "coinSell",
@@ -525,14 +521,14 @@ export type BanxaOrder = {
   blockchain: { id: number; code: "LRC"; description: "Loopring " | null };
 };
 
-export const LuckyRedPocketList: LuckyRedPocketItem[] = [
+export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyRelayToken",
     desKey: "labelLuckyRelayTokenDes",
     value: {
       value: 0,
-      partition: LuckyTokenAmountType.AVERAGE,
-      mode: LuckyTokenClaimType.RELAY,
+      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      mode: sdk.LuckyTokenClaimType.RELAY,
     },
   },
   {
@@ -540,19 +536,17 @@ export const LuckyRedPocketList: LuckyRedPocketItem[] = [
     desKey: "labelLuckyRandomTokenDes",
     value: {
       value: 1,
-      partition: LuckyTokenAmountType.RANDOM,
-      mode: LuckyTokenClaimType.COMMON,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.COMMON,
     },
   },
   {
-    labelKe: "labelLuckyCommonToken",
+    labelKey: "labelLuckyCommonToken",
     desKey: "labelLuckyCommonTokenDes",
     value: {
       value: 2,
-      partition: LuckyTokenAmountType.AVERAGE,
-      mode: LuckyTokenClaimType.COMMON,
+      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      mode: sdk.LuckyTokenClaimType.COMMON,
     },
-    // value: LuckyTokenClaimType,
-    // :LuckyTokenAmountType
   },
 ];

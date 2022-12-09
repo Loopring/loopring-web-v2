@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
-export const RedPockPanel = () => {
+export const RedPacketPanel = () => {
   const theme = useTheme();
   return (
     <Box flex={1}>

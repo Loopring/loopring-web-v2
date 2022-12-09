@@ -13,12 +13,12 @@ import { useGetAssets } from "./hook";
 import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
-import { RedPockPanel } from "../RedPockPanel";
+import { RedPacketPanel } from "../RedPacketPanel";
 
 enum TabIndex {
   Tokens = "Tokens",
   Invests = "Invests",
-  RedPocket = "RedPocket",
+  RedPacket = "RedPacket",
 }
 
 const StyleTitlePaper = styled(Box)`
@@ -45,9 +45,9 @@ const AssetPanel = withTranslation("common")(
           history.replace("/l2assets/assets/Invests");
           setCurrentTab(TabIndex.Invests);
           break;
-        case TabIndex.RedPocket:
-          history.replace("/l2assets/assets/RedPocket");
-          setCurrentTab(TabIndex.RedPocket);
+        case TabIndex.RedPacket:
+          history.replace("/l2assets/assets/RedPacket");
+          setCurrentTab(TabIndex.RedPacket);
           break;
         case TabIndex.Tokens:
         default:
@@ -98,7 +98,7 @@ const AssetPanel = withTranslation("common")(
         >
           <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
           <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
-          <Tab label={t("labelAssetRedPockets")} value={TabIndex.RedPocket} />
+          <Tab label={t("labelAssetRedPackets")} value={TabIndex.RedPacket} />
         </Tabs>
         {currentTab === TabIndex.Tokens && (
           <StylePaper
@@ -129,7 +129,7 @@ const AssetPanel = withTranslation("common")(
           </StylePaper>
         )}
         {currentTab === TabIndex.Invests && <MyLiquidity isHideTotal={true} />}
-        {currentTab === TabIndex.RedPocket && <RedPockPanel />}
+        {currentTab === TabIndex.RedPacket && <RedPacketPanel />}
       </>
     );
   }

@@ -1249,15 +1249,19 @@ export default {
   labelwithdraw: "Withdrawal",
   labelDeposit: "Deposit",
   labelFiatAmount: "Fiat Amount",
-  labelAssetRedPockets: "Red Pockets",
-  labelRedPocketTitle: "Red Pockets",
+  labelAssetRedPackets: "Red Packets",
+  labelRedPacketTitle: "Red Packets",
   labelOpen: "Open",
-  labelRedPocketChoose: "Choose Red Packet Type",
-  labelRedPocketMain: "Input Red Packet/Send",
+  labelRedPacketChoose: "Choose Red Packet Type",
+  labelRedPacketMain: "Input Red Packet/Send",
   labelLuckyTokenViewTypePublic: "Public Red Packet",
   labelLuckyTokenViewTypePrivate: "Private Red Packet",
   labelLuckyTokenViewTypeDesPublic:
     "Your gift packet is shared publicly by you via your custom QR code for others to receive.",
   labelLuckyTokenViewTypeDesPrivate:
     "Your gift packet is shared privately by you via your custom QR code for others to receive.",
+  labelLuckyRelayToken: "Relay Red Packet",
+  labelLuckyRandomToken: "Lucky Red Packet",
+  labelLuckyCommonToken: "Normal Red Packet",
+  labelInputRedpacket: "Select Token",
 };

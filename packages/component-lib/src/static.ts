@@ -17,11 +17,7 @@ import { ConnectProviders } from "@loopring-web/web3-provider";
 import {
   Currency,
   DUAL_TYPE,
-  LuckyTokenAmountType,
-  LuckyTokenClaimType,
   LuckyTokenItemForReceive,
-  LuckyTokenViewType,
-  LuckyTokenItemStatus,
 } from "@loopring-web/loopring-sdk";
 export const account: Account = {
   __timer__: -1,
@@ -593,7 +589,7 @@ export const FOREXMAP: ForexMap<Currency> = {
   [Currency.usd]: 1,
   [Currency.cny]: 6.7,
 } as any;
-export const REDPOCKMOCK: LuckyTokenItemForReceive = {
+export const REDPACKETMOCK: LuckyTokenItemForReceive = {
   hash: "",
   sender: {
     accountId: 10008,
