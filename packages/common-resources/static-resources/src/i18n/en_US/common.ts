@@ -538,6 +538,7 @@ export default {
   labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN", // 35
   labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET", // 37
   labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS", // 200
+  labelTxGuardianCALL_CONTRACT_WA: "CALL CONTRACT",
   labelTxGuardian_recovery: "recovery wallet",
   labelTxGuardian_transfer: "over daily quota transfer",
   labelTxGuardian_add_guardian: "add guardian",

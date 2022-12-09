@@ -34,10 +34,14 @@ export const WalletHistory = ({ operationLogList}: { operationLogList: HebaoOper
               </Typography>
               <Typography>
                 {`${t("labelTxGuardian" + TxHebaoAction[log.status]).slice(0,1).toUpperCase()}${t("labelTxGuardian" + TxHebaoAction[log.status]).slice(1).toLowerCase()} `}
-                {t(
-                  "labelTxGuardian" +
-                  TxGuardianHistoryType[log.hebaoTxType]
-                ).toLowerCase()}
+                {
+                  TxGuardianHistoryType[log.hebaoTxType] === undefined
+                    ? t("labelUnknown")
+                    : t(
+                      "labelTxGuardian" +
+                      TxGuardianHistoryType[log.hebaoTxType]
+                    ).toLowerCase()
+                }
               </Typography>
             </Typography>
             <Typography color={"var(--color-text-third)"} variant={"body1"}>
