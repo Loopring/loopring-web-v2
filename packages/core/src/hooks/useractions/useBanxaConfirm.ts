@@ -50,7 +50,6 @@ import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 
 export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
-  sellPanel,
   setSellPanel,
 }: {
   sellPanel: RAMP_SELL_PANEL;
@@ -282,10 +281,16 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     if (nodeTimer.current) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
-    const { account } = useAccount();
     //TODO: when API Done
     // let orderId = "b2a31fd2896ea739c3918f57ec3c9d8c";
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
+    //TODO
+    //@ts-ignore
+    _order = {
+      ..._order,
+      id: "54737597f1ae4daffd9ed5891cfa68dc",
+    };
+    myLog("banxa check Order ", _order.id);
     const {
       data: { order },
     } = await banxaApiCall({
@@ -293,14 +298,15 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       method: sdk.ReqMethod.GET,
       url: `/api/orders/${_order.id}`,
       query: "",
-      payload: undefined,
+      payload: {},
       account,
     });
-    myLog("banxa check Order ", order);
+    console.log("banxa check Order ", order);
+
     const memo = "OFF-Banxa Transfer";
-    // TODO for KYC status changed
+
     if (
-      order.status === "pendingPayment" &&
+      order.status === "waitingPayment" &&
       order.wallet_address &&
       order.coin_code
     ) {
