@@ -225,14 +225,14 @@ export const useVendor = () => {
         //     }
         //   },
         // },
-        {
-          ...VendorList.Banxa,
-          handleSelect: async (_event) => {
-            setShowAccount({ isShow: false });
-            banxaService.banxaStart();
-            // @ts-ignore
-          },
-        },
+        // {
+        //   ...VendorList.Banxa,
+        //   handleSelect: async (_event) => {
+        //     setShowAccount({ isShow: false });
+        //     banxaService.banxaStart();
+        //     // @ts-ignore
+        //   },
+        // },
       ]
     : [];
 
