@@ -1494,7 +1494,6 @@ export function useAccountModalForUI({
           />
         ),
       },
-      // transferRamp
       [AccountStep.Transfer_RAMP_WaitForAuth]: {
         view: (
           <Transfer_WaitForAuth
@@ -1589,6 +1588,114 @@ export function useAccountModalForUI({
         ),
       },
       [AccountStep.Transfer_RAMP_Failed]: {
+        view: (
+          <Transfer_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+
+      // transferBanxa
+      [AccountStep.Transfer_BANXA_WaitForAuth]: {
+        view: (
+          <Transfer_WaitForAuth
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_BANXA_First_Method_Denied]: {
+        view: (
+          <Transfer_First_Method_Denied
+            btnInfo={{
+              btnTxt: "labelTryAnother",
+              callback: () => {
+                const { __request__ } =
+                  store.getState()._router_modalData.transferBanxaValue;
+                if (__request__) {
+                  processRequestRampTransfer(__request__, false);
+                } else {
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.Transfer_RAMP_Failed,
+                  });
+                }
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_BANXA_User_Denied]: {
+        view: (
+          <Transfer_User_Denied
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                const { __request__ } =
+                  store.getState()._router_modalData.transferBanxaValue;
+                if (__request__) {
+                  processRequestRampTransfer(__request__, true);
+                } else {
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.Transfer_RAMP_Failed,
+                  });
+                }
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_BANXA_In_Progress]: {
+        view: (
+          <Transfer_In_Progress
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_BANXA_Success]: {
+        view: (
+          <Transfer_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_BANXA_Failed]: {
         view: (
           <Transfer_Failed
             btnInfo={closeBtnInfo()}

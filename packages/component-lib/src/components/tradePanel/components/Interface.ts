@@ -19,6 +19,7 @@ import {
   EXCHANGE_TYPE,
   GET_IPFS_STRING,
   Account,
+  BanxaOrder,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -83,6 +84,13 @@ export type TransferViewProps<T, I, C = CoinKey<I> | string> =
   TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;
 
 export type RampViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C>;
+export type BanxaViewProps<T, I, C = CoinKey<I>> = TransferViewProps<
+  T,
+  I,
+  C
+> & {
+  offBanxaValue?: BanxaOrder;
+};
 
 /**
  * private props

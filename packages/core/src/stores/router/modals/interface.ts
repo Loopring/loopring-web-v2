@@ -1,6 +1,7 @@
 import * as sdk from "@loopring-web/loopring-sdk";
 import { NFTTokenInfo, UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
 import {
+  BanxaOrder,
   CollectionMeta,
   FeeInfo,
   IBData,
@@ -75,6 +76,8 @@ export type ModalDataStatus = {
   withdrawValue: WithdrawData;
   transferValue: TransferData;
   transferRampValue: TransferData;
+  transferBanxaValue: TransferData;
+
   depositValue: DepositData;
   activeAccountValue: ActiveAccountData;
   forceWithdrawValue: ForceWithdrawData;
@@ -88,6 +91,7 @@ export type ModalDataStatus = {
   collectionValue: Partial<CollectionMeta>;
   nftMintValue: NFT_MINT_VALUE<any>;
   nftDeployValue: TradeNFT<any, any> & { broker: string };
+  offBanxaValue: BanxaOrder | undefined;
   offRampValue:
     | Partial<{
         offRampPurchase?: undefined;
@@ -113,6 +117,7 @@ export enum LAST_STEP {
   forceWithdraw = "forceWithdraw",
   collectionAdv = "collectionAdv",
   offRamp = "offRamp",
+  offBanxa = "offBanxa",
   offRampTrans = "offRampTrans",
   default = "default",
 }
