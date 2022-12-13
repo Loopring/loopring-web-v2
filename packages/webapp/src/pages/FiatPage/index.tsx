@@ -42,9 +42,10 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
-    match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
-      ? TradeTypes.Buy
-      : TradeTypes.Sell
+    TradeTypes.Buy
+    // match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
+    //   ? TradeTypes.Buy
+    //   : TradeTypes.Sell
   );
   const { banxaViewProps, offBanxaValue } = useBanxaConfirm({
     sellPanel,
@@ -79,22 +80,22 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                 </Typography>
               }
             />
-            <Tab
-              value={TradeTypes.Sell}
-              label={
-                <Typography
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  component={"span"}
-                  variant={"h5"}
-                  whiteSpace={"pre"}
-                  marginRight={1}
-                  className={"fiat-Title"}
-                >
-                  {t("labelSell")}
-                </Typography>
-              }
-            />
+            {/*<Tab*/}
+            {/*  value={TradeTypes.Sell}*/}
+            {/*  label={*/}
+            {/*    <Typography*/}
+            {/*      display={"inline-flex"}*/}
+            {/*      alignItems={"center"}*/}
+            {/*      component={"span"}*/}
+            {/*      variant={"h5"}*/}
+            {/*      whiteSpace={"pre"}*/}
+            {/*      marginRight={1}*/}
+            {/*      className={"fiat-Title"}*/}
+            {/*    >*/}
+            {/*      {t("labelSell")}*/}
+            {/*    </Typography>*/}
+            {/*  }*/}
+            {/*/>*/}
           </Tabs>
         </Box>
         <Box
@@ -141,24 +142,17 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                         sx={{ color: "var(--color-text-secondary)" }}
                         color={"inherit"}
                         onClick={(e) => {
-                          if (window.rampInstance) {
-                            window.rampInstance.close();
-                          } else {
-                            setSellPanel(RAMP_SELL_PANEL.LIST);
+                          setSellPanel(RAMP_SELL_PANEL.LIST);
 
-                            const close =
-                              window.document.querySelector(
-                                "#iframeBanxaClose"
-                              );
-                            if (close) {
-                              close.dispatchEvent(new Event("click"));
-                            }
-                            banxaService.banxaEnd({
-                              reason: OrderENDReason.UserCancel,
-                              data: { resource: "on close" },
-                            });
-                            // resetTransferRampData();
+                          const close =
+                            window.document.querySelector("#iframeBanxaClose");
+                          if (close) {
+                            close.dispatchEvent(new Event("click"));
                           }
+                          banxaService.banxaEnd({
+                            reason: OrderENDReason.UserCancel,
+                            data: { resource: "on close" },
+                          });
                         }}
                       >
                         {t("labelBack")}
