@@ -17,6 +17,7 @@ import {
   ViewAccountTemplate,
 } from "@loopring-web/core";
 import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
+import { banxaService, OrderENDReason } from "@loopring-web/core";
 
 import {
   BackIcon,
@@ -139,12 +140,24 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                         size={"medium"}
                         sx={{ color: "var(--color-text-secondary)" }}
                         color={"inherit"}
-                        onClick={() => {
+                        onClick={(e) => {
                           if (window.rampInstance) {
                             window.rampInstance.close();
                           } else {
                             setSellPanel(RAMP_SELL_PANEL.LIST);
-                            resetTransferRampData();
+
+                            const close =
+                              window.document.querySelector(
+                                "#iframeBanxaClose"
+                              );
+                            if (close) {
+                              close.dispatchEvent(new Event("click"));
+                            }
+                            banxaService.banxaEnd({
+                              reason: OrderENDReason.UserCancel,
+                              data: { resource: "on close" },
+                            });
+                            // resetTransferRampData();
                           }
                         }}
                       >

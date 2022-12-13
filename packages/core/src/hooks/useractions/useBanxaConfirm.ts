@@ -114,6 +114,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     if (
       tokenMap &&
       chargeFeeTokenList.length &&
+      isFeeNotEnough &&
       !isFeeNotEnough.isFeeNotEnough &&
       transferBanxaValue.belong &&
       tokenMap[transferBanxaValue.belong] &&
@@ -185,8 +186,8 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     checkBtnStatus();
   }, [
     chargeFeeTokenList,
-    feeInfo.belong,
-    isFeeNotEnough.isFeeNotEnough,
+    feeInfo?.belong,
+    isFeeNotEnough?.isFeeNotEnough,
     transferBanxaValue,
   ]);
 
@@ -281,14 +282,11 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     if (nodeTimer.current) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
-    //TODO: when API Done
-    // let orderId = "b2a31fd2896ea739c3918f57ec3c9d8c";
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
-    //TODO
     //@ts-ignore
     _order = {
       ..._order,
-      id: "54737597f1ae4daffd9ed5891cfa68dc",
+      // id: "54737597f1ae4daffd9ed5891cfa68dc",
     };
     myLog("banxa check Order ", _order.id);
     const {
@@ -328,9 +326,10 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       }, 1000 * 15);
     }
   }, 100);
+
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {
-      myLog("subscription Banxa ", props);
+      myLog("Banxa subscription ", props);
       switch (props.status) {
         case BanxaCheck.CheckOrderStatus:
           myLog("Banxa checkOrderStatus");
@@ -413,7 +412,8 @@ export const useBanxaTransPost = () => {
   const { chainId } = useSystem();
   const { checkHWAddr, updateHW } = useWalletInfo();
   const { setShowAccount } = useOpenModals();
-  const { updateTransferBanxaData, resetTransferBanxaData } = useModalData();
+  const { offBanxaValue, updateTransferBanxaData, resetTransferBanxaData } =
+    useModalData();
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -465,7 +465,8 @@ export const useBanxaTransPost = () => {
             }
           );
 
-          myLog("submitInternalTransfer:", response);
+          myLog("Banxa submitInternalTransfer:", response);
+
           if (
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
@@ -487,21 +488,39 @@ export const useBanxaTransPost = () => {
                 Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
             },
           });
-          if (window.rampInstance) {
-            try {
-              console.log("Banxa WEIGHT display on transfer done");
-              // @ts-ignore
-              window.rampInstance.domNodes.overlay.style.display = "";
-            } catch (e) {
-              console.log("Banxa WEIGHT hidden failed");
-            }
+          walletLayer2Service.sendUserUpdate();
+          myLog(
+            "Banxa tx_hash,source_address",
+            offBanxaValue?.id,
+            (response as sdk.TX_HASH_API)?.hash
+          );
+
+          if (
+            offBanxaValue &&
+            (response as sdk.TX_HASH_API)?.hash &&
+            offBanxaValue.wallet_address
+          ) {
+            const { data } = await banxaApiCall({
+              chainId: chainId as ChainId,
+              account,
+              method: sdk.ReqMethod.POST,
+              url: `/api/orders/${offBanxaValue.id}/confirm`,
+              query: "",
+              payload: {
+                tx_hash: (response as sdk.TX_HASH_API)?.hash,
+                source_address: account.accAddress,
+                destination_address: offBanxaValue.wallet_address,
+              },
+            });
+            myLog("Banxa confirmed", data);
           }
+
+          banxaService.TransferDone();
+
           if (isHWAddr) {
-            myLog("......try to set isHWAddr", isHWAddr);
+            myLog("Banxa ......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
-          walletLayer2Service.sendUserUpdate();
-          resetTransferBanxaData();
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
@@ -557,6 +576,7 @@ export const useBanxaTransPost = () => {
       resetTransferBanxaData,
       setShowAccount,
       updateHW,
+      offBanxaValue,
       updateTransferBanxaData,
     ]
   );

@@ -87,6 +87,7 @@ export enum OrderENDReason {
   Expired = 1,
   Done = 2,
   Waiting = 3,
+  CreateOrderFialed = 4,
 }
 // export enum IPFSCommands {
 //   ErrorGetIpfs = "ErrorGetIpfs",
@@ -160,36 +161,49 @@ export const banxaService = {
     if (anchor) {
       // debugger;
       anchor.style.display = "flex";
+      try {
+        const { data } = await banxaApiCall({
+          chainId: chainId as ChainId,
+          account,
+          method: sdk.ReqMethod.POST,
+          url: "/api/orders",
+          query: "",
+          payload: {
+            blockchain: "LRC",
+            iframe_domain: BANXA_URLS[chainId].replace(/http(s)?:\/\//, ""),
+            source: "USDC",
+            target: "AUD",
+            refund_address: account.accAddress,
+            return_url_on_success: "https://loopring.io/#/l2assets",
+            account_reference: account.accAddress,
+          },
+        });
+        myLog("banxa create order", data.order);
+        window.open(data.order.checkout_url);
+        window.opener = null;
+        banxa.generateIframe(
+          "#iframeBanxaTarget",
+          data.order.checkout_iframe,
+          false
+          // "800px", //Optional width parameter – Pass false if not needed.
+          // "400px" //Optional height parameter – Pass false if not needed.
+        );
+        subject.next({
+          status: BanxaCheck.CheckOrderStatus,
+          data: data,
+        });
+      } catch (e) {
+        banxaService.banxaEnd({
+          reason: OrderENDReason.CreateOrderFialed,
+          data: "",
+        });
 
+        // subject.next({
+        //   status: BanxaCheck.o,
+        //   data: data,
+        // });
+      }
       //let { checkout_url, orderId } =
-      const { data } = await banxaApiCall({
-        chainId: chainId as ChainId,
-        account,
-        method: sdk.ReqMethod.POST,
-        url: "/api/orders",
-        query: "",
-        payload: {
-          blockchain: "LRC",
-          iframe_domain: BANXA_URLS[chainId],
-          source: "USDC",
-          target: "AUD",
-          refund_address: account.accAddress,
-          return_url_on_success: "https://loopring.io/#/l2assets",
-          account_reference: account.accAddress,
-        },
-      });
-      myLog("banxa create order", data.order);
-      banxa.generateIframe(
-        "#iframeBanxaTarget",
-        data.order.checkout_url,
-        false
-        // "800px", //Optional width parameter – Pass false if not needed.
-        // "400px" //Optional height parameter – Pass false if not needed.
-      );
-      subject.next({
-        status: BanxaCheck.CheckOrderStatus,
-        data: data,
-      });
 
       // .then((res: any) => {
       //
@@ -231,6 +245,7 @@ export const banxaService = {
   },
   banxaEnd: ({ reason, data }: { reason: OrderENDReason; data: any }) => {
     store.dispatch(resetTransferBanxaData(undefined));
+
     subject.next({
       status: BanxaCheck.OrderEnd,
       data: {

@@ -21,12 +21,11 @@ import {
   LuckyRedPacketList,
   LuckyRedPacketItem,
   RedPacketSend,
-  WalletMap,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { CreateRedPacketViewProps, TradeBtnStatus } from "../Interface";
 // import { MintStep } from "./MintAdvanceNFTWrap";
-import { MenuBtnStyled } from "components";
+import { MenuBtnStyled } from "../../styled";
 import * as sdk from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 
