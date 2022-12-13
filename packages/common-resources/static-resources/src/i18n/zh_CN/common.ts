@@ -525,6 +525,7 @@ export default {
   labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN", // 35
   labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET", // 37
   labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS", // 200
+  labelTxGuardianCALL_CONTRACT_WA: "CALL CONTRACT",
   labelTxGuardian_recovery: "recovery wallet",
   labelTxGuardian_transfer: "over daily quota transfer",
   labelTxGuardian_add_guardian: "add guardian",
@@ -1218,7 +1219,7 @@ export default {
   labelAddAssetTitleCardDes:
     "If you have purchased crypto with a card, please wait for it to arrive in your account.",
   labelAddAssetTitleCardDesActive:
-    "If you have purchased crypto with a card, please wait for it to arrive in your account. Upon arrival, L2 will be activated automatically.",
+    "If you have purchased crypto with a card, please wait for it to arrive in your account. Upon arrival, L2 will be activated manually.",
   labelMinFeeForActive: "Min {{fee}}",
   labelReceiveAddressDes:
     "If you have transferred tokens from another Loopring L2 account, please wait.",

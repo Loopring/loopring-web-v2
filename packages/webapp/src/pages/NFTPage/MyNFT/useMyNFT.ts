@@ -36,7 +36,6 @@ export const useMyNFT = ({
   collectionPage?: number;
   myNFTPage?: number;
 }) => {
-  
   const { search, ...rest } = useLocation();
   const { renderNFTPromise, infoDetail, nftListReduce } = useNFTListDeep();
   const history = useHistory();
@@ -64,70 +63,59 @@ export const useMyNFT = ({
   const { etherscanBaseUrl } = useSystem();
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
-      if (item.hasOwnProperty("pendingOnSync")) {
-        let _collectionMeta = item.collectionInfo ?? collectionMeta;
+      let _collectionMeta = item.collectionInfo ?? collectionMeta;
+      if (
+        item.hasOwnProperty("pendingOnSync") &&
+        !item.collectionInfo &&
+        collectionMeta === undefined &&
+        LoopringAPI.userAPI
+      ) {
+        const response = await LoopringAPI.userAPI
+          .getUserNFTCollection(
+            {
+              accountId: account.accountId.toString(),
+              //@ts-ignore
+              tokenAddress: item.tokenAddress,
+            },
+            account.apiKey
+          )
+          .catch((_error) => {
+            throw new CustomError(ErrorMap.TIME_OUT);
+          });
         if (
-          !item.collectionInfo &&
-          collectionMeta === undefined &&
-          LoopringAPI.userAPI
+          response &&
+          ((response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message)
         ) {
-          const response = await LoopringAPI.userAPI
-            .getUserNFTCollection(
-              {
-                accountId: account.accountId.toString(),
-                //@ts-ignore
-                tokenAddress: item.tokenAddress,
-              },
-              account.apiKey
-            )
-            .catch((_error) => {
-              throw new CustomError(ErrorMap.TIME_OUT);
-            });
-          if (
-            response &&
-            ((response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message)
-          ) {
-            throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+          throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+        }
+        _collectionMeta = response.collections?.find(
+          (_item: CollectionMeta) => {
+            return (
+              _item?.contractAddress?.toLowerCase() ===
+                item?.tokenAddress?.toLowerCase() && _item.baseUri !== ""
+            );
           }
-          _collectionMeta = response.collections?.find(
-            (_item: CollectionMeta) => {
-              return (
-                _item?.contractAddress?.toLowerCase() ===
-                  item?.tokenAddress?.toLowerCase() && _item.baseUri !== ""
-              );
-            }
-          );
-          window.scrollTo(0,0);
-          setShowNFTDetail({
-            isShow: true,
-            ...item,
-            collectionInfo: collectionMeta,
+        );
+      }
+      window.scrollTo(0, 0);
+      setShowNFTDetail({
+        isShow: true,
+        ...item,
+        collectionInfo: _collectionMeta,
+      });
+      updateNFTWithdrawData({ ...item, collectionInfo: _collectionMeta });
+      updateNFTTransferData({ ...item, collectionInfo: _collectionMeta });
+      if (
+        item.isCounterFactualNFT &&
+        item.deploymentStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
+      ) {
+        await LoopringAPI.userAPI
+          ?.getAvailableBroker({ type: 0 })
+          .then(({ broker }) => {
+            updateNFTDeployData({ broker });
           });
-          updateNFTWithdrawData({ ...item, collectionInfo: collectionMeta });
-          updateNFTTransferData({ ...item, collectionInfo: collectionMeta });
-        } else {
-          window.scrollTo(0,0);
-          setShowNFTDetail({
-            isShow: true,
-            ...item,
-            collectionInfo: _collectionMeta,
-          });
-          updateNFTWithdrawData({ ...item, collectionInfo: _collectionMeta });
-          updateNFTTransferData({ ...item, collectionInfo: _collectionMeta });
-        }
-        // setPopItem({ ...item, collectionMeta });
-        if (
-          item.isCounterFactualNFT &&
-          item.deploymentStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
-        ) {
-          await LoopringAPI.userAPI
-            ?.getAvailableBroker({ type: 0 })
-            .then(({ broker }) => {
-              updateNFTDeployData({ broker });
-            });
-          updateNFTDeployData({ ...item, collectionInfo: _collectionMeta });
-        }
+        updateNFTDeployData({ ...item, collectionInfo: _collectionMeta });
       }
     },
     [
@@ -161,54 +149,75 @@ export const useMyNFT = ({
       return state;
     });
   };
-  const walletLayer2NFT2 = useSelector((state: any) => state.walletLayer2NFT.walletLayer2NFT)
+  const walletLayer2NFT2 = useSelector(
+    (state: any) => state.walletLayer2NFT.walletLayer2NFT
+  );
   React.useEffect(() => {
     setNFTList(nftListReduce(walletLayer2NFT2));
     setIsLoading(false);
     renderNFTPromise({ nftLists: walletLayer2NFT2 as any }).then(
       (meta: any[]) => {
-          setNFTList((state) => {
-            return walletLayer2NFT2.map((item: any, index: any) => {
-              return {
-                ...state[index],
-                ...meta[index],
-                tokenAddress: item.tokenAddress?.toLowerCase(),
-                etherscanBaseUrl,
-              };
-            });
+        setNFTList((state) => {
+          return walletLayer2NFT2.map((item: any, index: any) => {
+            return {
+              ...state[index],
+              ...meta[index],
+              tokenAddress: item.tokenAddress?.toLowerCase(),
+              etherscanBaseUrl,
+            };
           });
+        });
         // }
       }
     );
   }, [walletLayer2NFT2]);
-  const location = useLocation()
-  const [, , , byListOrCollection] = location.pathname.split('/')
-  const page = byListOrCollection === 'byCollection'
-    ?  Number(searchParams.get('collectionPage')) ? Number(searchParams.get('collectionPage')) : 1
-    :  Number(searchParams.get('myNFTPage')) ? Number(searchParams.get('myNFTPage')) : 1
-  const [locationState, setLocationState] = useState<any | undefined>(undefined)
+  const location = useLocation();
+  const [, , , byListOrCollection] = location.pathname.split("/");
+  const page =
+    byListOrCollection === "byCollection"
+      ? Number(searchParams.get("collectionPage"))
+        ? Number(searchParams.get("collectionPage"))
+        : 1
+      : Number(searchParams.get("myNFTPage"))
+      ? Number(searchParams.get("myNFTPage"))
+      : 1;
+  const [locationState, setLocationState] =
+    useState<any | undefined>(undefined);
   useEffect(() => {
-    if (locationState && locationState.pathname === location.pathname && locationState.search === location.search) return;
-    setLocationState(location)
-    const [, , , byListOrCollection] = location.pathname.split('/')
-    const searchParams = new URLSearchParams(location.search)
-    let subTab
-    let page: number
-    let collectionId: string | undefined 
-    let collectionContractAddress: string | undefined 
-    if (byListOrCollection === 'byCollection') {
-      const [, , , , contract, theSubTab] = location.pathname.split('/')
-      subTab = theSubTab
-      page = Number(searchParams.get('collectionPage')) ? Number(searchParams.get('collectionPage')) : 1
-      collectionId = (contract && contract.split('--')) ? contract.split('--')[1] : undefined
-      collectionContractAddress = (contract && contract.split('--')) ? contract.split('--')[0] : undefined
+    if (
+      locationState &&
+      locationState.pathname === location.pathname &&
+      locationState.search === location.search
+    )
+      return;
+    setLocationState(location);
+    const [, , , byListOrCollection] = location.pathname.split("/");
+    const searchParams = new URLSearchParams(location.search);
+    let subTab;
+    let page: number;
+    let collectionId: string | undefined;
+    let collectionContractAddress: string | undefined;
+    if (byListOrCollection === "byCollection") {
+      const [, , , , contract, theSubTab] = location.pathname.split("/");
+      subTab = theSubTab;
+      page = Number(searchParams.get("collectionPage"))
+        ? Number(searchParams.get("collectionPage"))
+        : 1;
+      collectionId =
+        contract && contract.split("--") ? contract.split("--")[1] : undefined;
+      collectionContractAddress =
+        contract && contract.split("--") ? contract.split("--")[0] : undefined;
     } else {
-      const [, , , , theSubTab] = location.pathname.split('/')
-      subTab = theSubTab
-      page = Number(searchParams.get('myNFTPage')) ? Number(searchParams.get('myNFTPage')) : 1
+      const [, , , , theSubTab] = location.pathname.split("/");
+      subTab = theSubTab;
+      page = Number(searchParams.get("myNFTPage"))
+        ? Number(searchParams.get("myNFTPage"))
+        : 1;
     }
-    const filter = subTab 
-      ? (subTab === 'fav' ? { favourite: true } : { hidden: true })
+    const filter = subTab
+      ? subTab === "fav"
+        ? { favourite: true }
+        : { hidden: true }
       : { hidden: false };
     setIsLoading(true);
     if (page !== -1) {
@@ -220,7 +229,7 @@ export const useMyNFT = ({
         filter,
       });
     }
-  }, [location, collectionMeta])
+  }, [location, collectionMeta]);
   return {
     nftList,
     onDetail,
