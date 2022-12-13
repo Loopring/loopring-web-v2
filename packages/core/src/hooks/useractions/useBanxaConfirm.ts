@@ -289,41 +289,55 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       // id: "54737597f1ae4daffd9ed5891cfa68dc",
     };
     myLog("banxa check Order ", _order.id);
-    const {
-      data: { order },
-    } = await banxaApiCall({
-      chainId: chainId as ChainId,
-      method: sdk.ReqMethod.GET,
-      url: `/api/orders/${_order.id}`,
-      query: "",
-      payload: {},
-      account,
-    });
-    console.log("banxa check Order ", order);
-
-    const memo = "OFF-Banxa Transfer";
-
-    if (
-      order.status === "waitingPayment" &&
-      order.wallet_address &&
-      order.coin_code
-    ) {
-      banxaService.KYCDone();
-      updateOffBanxaData({ order });
-      updateTransferBanxaData({
-        belong: order.coin_code,
-        tradeValue: order.coin_amount,
-        balance: walletMap[order.coin_code]?.count,
-        address: order.wallet_address,
-        memo,
-        fee: feeInfo,
+    try {
+      const {
+        data: { order },
+      } = await banxaApiCall({
+        chainId: chainId as ChainId,
+        method: sdk.ReqMethod.GET,
+        url: `/api/orders/${_order.id}`,
+        query: "",
+        payload: {},
+        account,
       });
-      myLog("BANXA_CONFIRM", RAMP_SELL_PANEL.BANXA_CONFIRM);
-      setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
-    } else {
-      setTimeout(() => {
-        checkOrderStatus(order);
-      }, 1000 * 15);
+      console.log("banxa check Order ", order);
+
+      const memo = "OFF-Banxa Transfer";
+
+      if (
+        order.status === "waitingPayment" &&
+        order.wallet_address &&
+        order.coin_code
+      ) {
+        banxaService.KYCDone();
+        // const transferBanxaValue = store.getState()._router_modalData.transferBanxaValue;
+        updateOffBanxaData({ order });
+        updateTransferBanxaData({
+          belong: order.coin_code,
+          tradeValue: order.coin_amount,
+          balance: walletMap[order.coin_code]?.count,
+          address: order.wallet_address,
+          memo,
+          // fee: feeInfo,//transferBanxaValue.fee,
+        });
+        myLog("BANXA_CONFIRM", RAMP_SELL_PANEL.BANXA_CONFIRM);
+        setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
+      } else {
+        setTimeout(() => {
+          checkOrderStatus(order);
+        }, 1000 * 15);
+      }
+    } catch (e) {
+      if (
+        _order &&
+        _order.id &&
+        _order.status &&
+        _order.status === "pendingPayment"
+      ) {
+        setTimeout(() => {
+          checkOrderStatus(_order);
+        }, 1000 * 15);
+      }
     }
   }, 100);
 
@@ -434,7 +448,7 @@ export const useBanxaTransPost = () => {
       isNotHardwareWallet: boolean
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
-
+      let response;
       try {
         if (
           connectProvides.usedWeb3 &&
@@ -447,9 +461,9 @@ export const useBanxaTransPost = () => {
           }
 
           updateTransferBanxaData({ __request__: request });
-          const response = await LoopringAPI.userAPI.submitInternalTransfer(
+          response = await LoopringAPI.userAPI.submitInternalTransfer(
             {
-              request,
+              request: _.cloneDeep(request),
               web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
@@ -495,28 +509,6 @@ export const useBanxaTransPost = () => {
             (response as sdk.TX_HASH_API)?.hash
           );
 
-          if (
-            offBanxaValue &&
-            (response as sdk.TX_HASH_API)?.hash &&
-            offBanxaValue.wallet_address
-          ) {
-            const { data } = await banxaApiCall({
-              chainId: chainId as ChainId,
-              account,
-              method: sdk.ReqMethod.POST,
-              url: `/api/orders/${offBanxaValue.id}/confirm`,
-              query: "",
-              payload: {
-                tx_hash: (response as sdk.TX_HASH_API)?.hash,
-                source_address: account.accAddress,
-                destination_address: offBanxaValue.wallet_address,
-              },
-            });
-            myLog("Banxa confirmed", data);
-          }
-
-          banxaService.TransferDone();
-
           if (isHWAddr) {
             myLog("Banxa ......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
@@ -546,6 +538,7 @@ export const useBanxaTransPost = () => {
             ) {
               checkFeeIsEnough({ isRequiredAPI: true });
             }
+            myLog("Transfer BANXA error", e);
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_BANXA_Failed,
@@ -560,13 +553,45 @@ export const useBanxaTransPost = () => {
                   : e ?? {}),
               },
             });
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_Failed,
-            });
 
             break;
         }
+      }
+      try {
+        if (
+          response &&
+          offBanxaValue &&
+          (response as sdk.TX_HASH_API)?.hash &&
+          offBanxaValue.wallet_address
+        ) {
+          const { data } = await banxaApiCall({
+            chainId: chainId as ChainId,
+            account,
+            method: sdk.ReqMethod.POST,
+            url: `/api/orders/${offBanxaValue.id}/confirm`,
+            query: "",
+            payload: {
+              tx_hash: (response as sdk.TX_HASH_API)?.hash,
+              source_address: account.accAddress,
+              destination_address: offBanxaValue.wallet_address,
+            },
+          });
+          myLog("Banxa confirmed", data);
+        }
+
+        banxaService.TransferDone();
+      } catch (error) {
+        //TODO confirm again.
+        // setShowAccount({
+        //   isShow: true,
+        //   step: AccountStep.Transfer_BANXA_Confirm,
+        //   info: {
+        //     order:offBanxaValue
+        //     tx_hash: (response as sdk.TX_HASH_API)?.hash,
+        //     source_address: account.accAddress,
+        //     destination_address: offBanxaValue.wallet_address,
+        //   },
+        // });
       }
     },
     [

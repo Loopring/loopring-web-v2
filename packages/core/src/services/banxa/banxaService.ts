@@ -171,7 +171,7 @@ export const banxaService = {
           payload: {
             blockchain: "LRC",
             iframe_domain: BANXA_URLS[chainId].replace(/http(s)?:\/\//, ""),
-            source: "USDC",
+            source: "USDT",
             target: "AUD",
             refund_address: account.accAddress,
             return_url_on_success: "https://loopring.io/#/l2assets",
@@ -181,13 +181,13 @@ export const banxaService = {
         myLog("banxa create order", data.order);
         window.open(data.order.checkout_url);
         window.opener = null;
-        banxa.generateIframe(
-          "#iframeBanxaTarget",
-          data.order.checkout_iframe,
-          false
-          // "800px", //Optional width parameter – Pass false if not needed.
-          // "400px" //Optional height parameter – Pass false if not needed.
-        );
+        // banxa.generateIframe(
+        //   "#iframeBanxaTarget",
+        //   data.order.checkout_iframe,
+        //   false
+        //   // "800px", //Optional width parameter – Pass false if not needed.
+        //   // "400px" //Optional height parameter – Pass false if not needed.
+        // );
         subject.next({
           status: BanxaCheck.CheckOrderStatus,
           data: data,
@@ -245,7 +245,12 @@ export const banxaService = {
   },
   banxaEnd: ({ reason, data }: { reason: OrderENDReason; data: any }) => {
     store.dispatch(resetTransferBanxaData(undefined));
-
+    const parentsNode: any =
+      window.document.querySelector("#iframeBanxaTarget");
+    const items = parentsNode.getElementsByTagName("iframe");
+    if (items && items[0]) {
+      [].slice.call(items).forEach((item) => parentsNode.removeChild(item));
+    }
     subject.next({
       status: BanxaCheck.OrderEnd,
       data: {
@@ -253,6 +258,7 @@ export const banxaService = {
         data,
       },
     });
+
     // const parentsNode: any =
     //   window.document.querySelector("#iframeBanxaTarget");
     // const items = parentsNode.getElementsByTagName("iframe");

@@ -9,7 +9,11 @@ import {
   TradeBtnStatus,
   WithdrawProps,
 } from "../../tradePanel/Interface";
-import { IBData, LuckyRedPacketItem } from "@loopring-web/common-resources";
+import {
+  FeeInfo,
+  IBData,
+  LuckyRedPacketItem,
+} from "@loopring-web/common-resources";
 import {
   HorizontalLabelPositionBelowStepper,
   TradeMenuList,
@@ -31,19 +35,20 @@ const steps = [
 export const CreateRedPackPanel = withTranslation(["common", "error"], {
   withRef: true,
 })(
-  <T extends IBData<I>, I>({
+  <T extends IBData<I>, I, C = FeeInfo>({
     type = "TOKEN",
     chargeFeeTokenList,
-    onWithdrawClick,
+    onSubmitClick,
     handleOnSelectedType,
-    withdrawBtnStatus,
+    btnStatus,
     assetsData,
+    handleOnDataChange,
     walletMap = {},
     coinMap = {},
     onBack,
     t,
     ...rest
-  }: CreateRedPacketViewProps<T, I> &
+  }: CreateRedPacketViewProps<T, I, C> &
     WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
       ...rest,
@@ -51,7 +56,7 @@ export const CreateRedPackPanel = withTranslation(["common", "error"], {
       type,
       // index,
       walletMap,
-    });
+    } as any);
     const [panelIndex, setPanelIndex] = React.useState(0);
     const setActiveStep = React.useCallback((index: RedPacketStep) => {
       switch (index) {
@@ -93,14 +98,8 @@ export const CreateRedPackPanel = withTranslation(["common", "error"], {
           element: React.useMemo(
             () => (
               <CreateRedPacketStepType
-                handleOnSelectedType={function (
-                  item: LuckyRedPacketItem
-                ): void {
-                  throw new Error("Function not implemented.");
-                }}
-                handleOnDataChange={function (value: Partial<{}>): void {
-                  throw new Error("Function not implemented.");
-                }}
+                handleOnSelectedType={handleOnSelectedType}
+                handleOnDataChange={handleOnDataChange}
                 redPacketStepValue={undefined}
                 selectedType={{
                   labelKey: "",
@@ -111,14 +110,9 @@ export const CreateRedPackPanel = withTranslation(["common", "error"], {
                     mode: sdk.LuckyTokenClaimType.RELAY,
                   },
                 }}
-                setActiveStep={function (step: RedPacketStep): void {
-                  throw new Error("Function not implemented.");
-                }}
+                setActiveStep={setActiveStep}
                 btnStatus={TradeBtnStatus.AVAILABLE}
                 walletMap={undefined}
-                onSubmitClick={function (): Promise<void> {
-                  throw new Error("Function not implemented.");
-                }}
                 activeStep={RedPacketStep.ChooseType}
               />
             ),

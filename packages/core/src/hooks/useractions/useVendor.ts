@@ -225,24 +225,24 @@ export const useVendor = () => {
         //     }
         //   },
         // },
-        // {
-        //   ...VendorList.Banxa,
-        //   handleSelect: async (_event) => {
-        //     setShowAccount({ isShow: false });
-        //     banxaService.banxaStart();
-        //     // @ts-ignore
-        //   },
-        // },
+        {
+          ...VendorList.Banxa,
+          handleSelect: async (_event) => {
+            setShowAccount({ isShow: false });
+            banxaService.banxaStart();
+            // @ts-ignore
+          },
+        },
       ]
     : [];
 
   const closeBanxa = () => {
     const parentsNode: any =
       window.document.querySelector("#iframeBanxaTarget");
-    const items = parentsNode.getElementsByTagName("iframe");
-    if (items && items[0]) {
-      parentsNode.removeChild(items[0]);
-    }
+    // const items = parentsNode.getElementsByTagName("iframe");
+    // if (items && items[0]) {
+    //   parentsNode.removeChild(items[0]);
+    // }
     parentsNode.style.display = "none";
   };
   const hideBanxa = () => {

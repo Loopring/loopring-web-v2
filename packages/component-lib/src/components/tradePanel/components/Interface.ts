@@ -95,18 +95,19 @@ export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
   disabled?: boolean;
   //
 };
-export type CreateRedPacketProps<T, I> = {
-  walletMap: WalletMap<I>;
+export type CreateRedPacketExtendsProps<T, C, LuckInfo> = {
   setActiveStep: (step: RedPacketStep) => void;
   handleOnDataChange: (value: Partial<T>) => void;
-  redPacketStepValue: T;
+  redPacketStepValue: LuckInfo;
   onSubmitClick: () => Promise<void>;
   activeStep: RedPacketStep;
+  onBack?: () => void;
   selectedType: LuckyRedPacketItem;
   handleOnSelectedType: (item: LuckyRedPacketItem) => void;
-} & CreateRedPacketInfoProps<T>;
+} & CreateRedPacketInfoProps<C>;
 
-export type CreateRedPacketViewProps<T, I> = CreateRedPacketProps<T, I>;
+export type CreateRedPacketViewProps<T, I, C, LuckInfo> =
+  CreateRedPacketExtendsProps<T, C, LuckInfo> & BasicACoinTradeViewProps<T, I>;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
   TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;

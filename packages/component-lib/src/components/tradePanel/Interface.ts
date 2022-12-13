@@ -23,6 +23,7 @@ import {
   NFTMetaViewProps,
   NFTMintAdvanceViewProps,
   ForceWithdrawViewProps,
+  CreateRedPacketViewProps,
 } from "./components/Interface";
 import {
   SwapData,
@@ -92,6 +93,12 @@ export type TransferProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<T, I> &
 export type ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps<T>;
 
 export type DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps;
+
+export type CreateRedPacket<T, I, C = FeeInfo> = BasicACoinTradeHookProps<
+  T,
+  I
+> &
+  CreateRedPacketViewProps<T, I, C>;
 
 export type TransferInfoProps<T, I> = DefaultProps<T, I> &
   _TransferInfoProps<CoinKey<I>>;

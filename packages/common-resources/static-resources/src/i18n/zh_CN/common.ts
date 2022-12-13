@@ -1232,4 +1232,5 @@ export default {
   labeltransfer: "Transfer",
   labelwithdraw: "Withdrawal",
   labeldeposit: "Deposit",
+  labelSplit: "Split",
 };

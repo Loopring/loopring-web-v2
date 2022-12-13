@@ -42,10 +42,10 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
-    TradeTypes.Buy
-    // match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
-    //   ? TradeTypes.Buy
-    //   : TradeTypes.Sell
+    // TradeTypes.Buy
+    match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
+      ? TradeTypes.Buy
+      : TradeTypes.Sell
   );
   const { banxaViewProps, offBanxaValue } = useBanxaConfirm({
     sellPanel,
@@ -80,22 +80,22 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                 </Typography>
               }
             />
-            {/*<Tab*/}
-            {/*  value={TradeTypes.Sell}*/}
-            {/*  label={*/}
-            {/*    <Typography*/}
-            {/*      display={"inline-flex"}*/}
-            {/*      alignItems={"center"}*/}
-            {/*      component={"span"}*/}
-            {/*      variant={"h5"}*/}
-            {/*      whiteSpace={"pre"}*/}
-            {/*      marginRight={1}*/}
-            {/*      className={"fiat-Title"}*/}
-            {/*    >*/}
-            {/*      {t("labelSell")}*/}
-            {/*    </Typography>*/}
-            {/*  }*/}
-            {/*/>*/}
+            <Tab
+              value={TradeTypes.Sell}
+              label={
+                <Typography
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  component={"span"}
+                  variant={"h5"}
+                  whiteSpace={"pre"}
+                  marginRight={1}
+                  className={"fiat-Title"}
+                >
+                  {t("labelSell")}
+                </Typography>
+              }
+            />
           </Tabs>
         </Box>
         <Box
