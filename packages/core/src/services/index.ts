@@ -6,3 +6,4 @@ export * from "./ipfs";
 export * from "./fee";
 export * from "./collectionServices";
 export * from "./depositServices";
+export * from "./banxa";
