@@ -58,10 +58,23 @@ export const btnLabel = {
 };
 export const goActiveAccount = () => {
   // accountServices.sendCheckAcc();
+
   store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }));
   store.dispatch(
     setShowAccount({ isShow: true, step: AccountStep.CheckingActive })
   );
+};
+export const geDepositingActive = () => {
+  // const { system, localStore, account } = store.getState();
+  // const isDepositing =
+  //   localStore.chainHashInfos[system?.chainId].depositHashes[
+  //     account?.accAddress
+  //     ];
+  // if(isDepositing){
+  //
+  // }else{
+  //
+  // }
 };
 
 export const btnClickMap: {

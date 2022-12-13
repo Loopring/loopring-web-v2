@@ -46,6 +46,9 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
 }): { checkActiveStatusProps: CheckActiveStatusProps<C> } => {
   const { account } = useAccount();
   const { status: walletLayer2Status, updateWalletLayer2 } = useWalletLayer2();
+  // const { chainInfos } = onchainHashInfo.useOnChainInfo();
+  // const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+
   const {
     setShowAccount,
     setShowActiveAccount,

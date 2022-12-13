@@ -32,6 +32,7 @@ export enum TxGuardianHistoryType {
   REMOVE_GUARDIAN_WA = 59, // 35
   UNLOCK_WALLET_WA = 60, // 37
   RESET_GUARDIANS_WA = 61, // 200
+  CALL_CONTRACT_WA = 62
 }
 
 export enum TxHebaoAction {
@@ -45,8 +46,10 @@ export const useHebaoMain = <
   H extends HebaoOperationLog
 >() => {
   const { account, status: accountStatus } = useAccount();
-  const [isContractAddress, setIsContractAddress] =
-    React.useState<boolean>(false);
+  const [loopringSmartContractWallet, setLoopringSmartContractWallet] =
+    React.useState<boolean | undefined>(undefined);
+  const [nonLoopringSmartContractWallet, setNonLoopringSmartContractWallet] =
+    React.useState<boolean | undefined>(undefined);
 
   const [
     { guardianConfig, protectList, guardiansList, operationLogList },
@@ -179,19 +182,20 @@ export const useHebaoMain = <
           wallet: account.accAddress,
         })
         .then(({ walletType }) => {
-          if (walletType?.isContract) {
-            setIsContractAddress(true);
-          } else {
-            setIsContractAddress(false);
-          }
+          setLoopringSmartContractWallet(
+            walletType?.isInCounterFactualStatus ||
+            (walletType?.isContract && walletType?.loopringWalletContractVersion !== "")
+          )
+          setNonLoopringSmartContractWallet(walletType?.isContract && walletType?.loopringWalletContractVersion === "")
         })
         .catch(() => {
-          setIsContractAddress(true);
+          setNonLoopringSmartContractWallet(true)
         });
     }
   }, [accountStatus]);
   return {
-    isContractAddress,
+    loopringSmartContractWallet,
+    nonLoopringSmartContractWallet,
     protectList,
     guardiansList,
     guardianConfig,

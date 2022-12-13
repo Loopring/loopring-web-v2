@@ -32,7 +32,6 @@ import {
   copyToClipBoard,
   getValuePrecisionThousand,
   Info2Icon,
-  RightArrowIcon,
   SoursURL,
   TradeDefi,
   // Lang,
@@ -527,7 +526,7 @@ export const SwapSecondConfirmation = withTranslation("common")(
                 </Typography>
               </Box>
               <Box display={"flex"} justifyContent={"center"} width={"10%"}>
-                <RightArrowIcon />
+                <Typography variant={"h4"}>{"\u2192"}</Typography>
               </Box>
               <Box
                 width={"45%"}
@@ -1107,7 +1106,7 @@ export const LayerswapNotice = withTranslation("common", {
         setAgree(false);
       }
     }, [open]);
-    const { setShowLayerSwapNotice, setShowAccount } = useOpenModals();
+    const { setShowLayerSwapNotice } = useOpenModals();
     return (
       <DialogStyle
         open={open}
@@ -1156,7 +1155,7 @@ export const LayerswapNotice = withTranslation("common", {
                 `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}&lockNetwork=true&lockAddress=true&addressSource=loopringWeb`
               );
               window.opener = null;
-              setShowAccount({ isShow: false });
+              // setShowAccount({ isShow: false });
               setShowLayerSwapNotice({ isShow: false });
             }}
             color={"primary"}

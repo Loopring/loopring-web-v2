@@ -451,9 +451,10 @@ export default {
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
   labelIsNotFeeToken: "Please deposit {{symbol}} to activate Loopring L2.",
-  labelIsETHDepositAlert: "Please reserve enough ETH for gas!",
+  labelIsETHDepositAlert:
+    "Please reserve enough ETH in Layer 1 account to pay for gas!",
   labelIsNotEnoughFeeToken:
-    "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
+    "Please deposit enough token to cover the activation fee: {{fee}} {{symbol}}. Remaining token will appear in your asset after activation",
   depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
   mintNFTAddressLabelPlaceholder:
     "(CIDv0 or dag-pb CIDv1) eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
@@ -499,6 +500,18 @@ export default {
   labelWalletInputGuardianCodeDes:
     "Please contact the owner to obtain the approval code and enter it below.",
   labelWalletGuardianList: "Guardian List",
+  labelWalletRequestRecovery: "Request for Wallet Recovery",
+  labelWalletLoopringSmartWallet:
+    "The connected wallet is a Loopring Smart Wallet. Please use your Loopring Wallet mobile app to add Guardians.",
+  labelWalletNonLoopringSmartWallet:
+    "The connected wallet is a non-Loopring smart contract wallet, which cannot be set as a Guardian. Please try again using a different wallet.",
+  labelWalletGuardianHint:
+    "Easily add other Loopring Wallets as Guardians to secure your identity and crypto assets. After entering the wallet address, the user will receive a notification of the request directly in their Loopring Wallet app. Invite your friends and family to use the Loopring Wallet.",
+  labelWalletLockTitle: "Lock/unlock Wallet",
+  labelWalletLockDes: "Who I Protect",
+  labelWalletValidationTitle: "Approval Requests",
+  labelWalletValidationDes: "Guardian Request Handling",
+  labelWalletHistoryTitle: "View History",
   labelAddProtector: "add Guardian",
   labelUnknown: "Unknown",
   labelApprove: "Approve",
@@ -525,6 +538,7 @@ export default {
   labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN", // 35
   labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET", // 37
   labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS", // 200
+  labelTxGuardianCALL_CONTRACT_WA: "CALL CONTRACT",
   labelTxGuardian_recovery: "recovery wallet",
   labelTxGuardian_transfer: "over daily quota transfer",
   labelTxGuardian_add_guardian: "add guardian",
@@ -612,7 +626,7 @@ export default {
     "Activation of Loopring L2 with deposit of {{value}} {{symbol}} has been submitted! \n Approximately {{count}} minutes remaining...',",
   labelCreateAccountFailed:
     "Activation of Loopring L2 with deposit of {{value}} {{symbol}} has failed!",
-  labelL1toL2Hash: "My L1 \u2192 Loopring L2 Transaction Hash",
+  labelL1toL2Hash: "Recent transactions (From my L1 to my L2)",
   labelL1toL2HashEmpty:
     "My L1 \u2192 Loopring L2 transactions will show up here.",
   labelL1toL2Record: "Receive {{value}} {{symbol}}",
@@ -725,11 +739,11 @@ export default {
   labelSendAssetHowto: "Where would you like to send your crypto to",
   labelL1toL2: "Add Loopring L2 assets From My L1",
   labelActivatedAccountChargeFeeList:
-    "Please make sure one of the below tokens with the minimum quantity is in your Loopring L2 account to proceed:",
+    "Please make sure one of the below tokens with the minimum quantity in your Loopring L2 account to proceed",
   labelReceiveAddress: "Receive Address",
   labelAssets: "Loopring L2 Assets",
   labelReceiveAddressGuide:
-    "Please send {{symbol}} funds from a Loopring L2 address",
+    "Please use a Loopring L2 account when transferring to avoid loss of assets ({{symbol}}).",
   labelL2toL2: "Send to another Loopring L2",
   labelL2toL1: "Send to L1",
   labelBenefitL2:
@@ -1069,7 +1083,7 @@ export default {
     "Choose to sell or buy at desired price in the future",
   labelDualBeginnerSellHigh: "Sell {{token}} High",
   labelDualBeginnerBuyLow: "Buy {{token}} Low",
-  labelDualBeginnerRecieveStable: "You will receive USDC or USDT",
+  labelDualBeginnerReceiveStable: "You will receive USDC or USDT",
   labelDualBeginnerInvestStable: "You can invest USDC or USDT",
   labelDualBeginnerStep3Title: "Choose Target Price and Settlement Date",
   labelDualBeginnerSellHighFor: "Sell high for {{token}}",
@@ -1202,6 +1216,33 @@ export default {
   labelSwapSettingSecondConfirm: "Second confirmation",
   labelSwapSettingSecondConfirmTootip: "skip confirm screen when toggled off",
   labelSwapSettingToggleSuccess: "Swap second confirmation trun {{onOrOff}}",
+  labelFeeMin: "Min {{fee}}",
+  labelIknow2: "I know",
+  labelAddAssetTitleBridge: "Add Asset From Another L1",
+  labelAddAssetTitleBridgeDesActive:
+    "If you have transferred tokens from another Ethereum L1 account, it may take some time for this transaction to execute on-chain. Once you receive the assets, you can manually activate the L2 account.",
+  labelAddAssetTitleBridgeDes:
+    "If you have transferred tokens from another Ethereum L1 account, it may take some time for this transaction to execute on-chain.",
+  labelAddAssetTitleExchange: "Add Asset From An Exchange",
+  labelAddAssetTitleExchangeDes:
+    "If you have transferred tokens from an Exchange, please wait. ",
+  labelAddAssetTitleExchangeDesActive:
+    "If you have transferred tokens from an Exchange, please wait. Once you receive the assets, you can manually activate the L2 account.",
+  labelAddAssetTitleCard: "Add Asset With a Card",
+  labelAddAssetTitleCardDes:
+    "If you have purchased crypto with a card, please wait for it to arrive in your account.",
+  labelAddAssetTitleCardDesActive:
+    "If you have purchased crypto with a card, please wait for it to arrive in your account. Upon arrival, L2 will be activated manually.",
+  labelMinFeeForActive: "Min {{fee}}",
+  labelReceiveAddressDes:
+    "If you have transferred tokens from another Loopring L2 account, please wait.",
+  labelReceiveAddressDesActive:
+    "If you have transferred tokens from other Loopring L2 accounts, please close this window and try to activate your L2 account again.",
+  labelDepositWaiting:
+    "It make take some time for this transaction to execute on-chain.",
   labelFrom: "From",
   labelTo: "To",
+  labeltransfer: "Transfer",
+  labelwithdraw: "Withdrawal",
+  labeldeposit: "Deposit",
 };

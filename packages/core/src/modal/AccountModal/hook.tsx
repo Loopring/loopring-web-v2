@@ -68,6 +68,7 @@ import {
   SendAsset,
   SendAssetItem,
   SendNFTAsset,
+  ThirdPanelReturn,
   Transfer_Failed,
   Transfer_First_Method_Denied,
   Transfer_In_Progress,
@@ -107,6 +108,7 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
+  myLog,
   NFTWholeINFO,
   SendAssetList,
   SendNFTAssetList,
@@ -218,6 +220,7 @@ export function useAccountModalForUI({
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
+  const [tryCheckL2BalanceTimes, setTryCheckL2BalanceTimes] = React.useState(5);
 
   // const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount();
@@ -354,9 +357,9 @@ export function useAccountModalForUI({
           flag = true;
         }
       });
-
       if (flag) {
-        let wait = 30000;
+        setTryCheckL2BalanceTimes(20);
+        let wait = 60000;
         if (
           account.readyState &&
           [AccountStatus.DEPOSITING, AccountStatus.NOT_ACTIVE].includes(
@@ -364,22 +367,33 @@ export function useAccountModalForUI({
             account?.readyState
           )
         ) {
-          wait = 10000;
+          wait = 30000;
         }
         nodeTimer.current = setTimeout(() => {
           updateDepositStatus();
         }, wait);
-      }
-      if (
-        [AccountStatus.DEPOSITING, AccountStatus.NOT_ACTIVE].includes(
-          // @ts-ignore
-          account?.readyState
-        )
-      ) {
         updateWalletLayer2();
+      } else {
+        setTryCheckL2BalanceTimes((state) => {
+          if (state > 0) {
+            myLog(updateDepositStatus, "updateDepositStatus");
+            updateWalletLayer2();
+            nodeTimer.current = setTimeout(() => {
+              updateDepositStatus();
+            }, 10000);
+          }
+          return state - 1;
+        });
       }
     }
-  }, [account, chainId, updateDepositHash, updateWalletLayer2, nodeTimer]);
+  }, [
+    account,
+    chainId,
+    updateDepositHash,
+    updateWalletLayer2,
+    nodeTimer,
+    tryCheckL2BalanceTimes,
+  ]);
   React.useEffect(() => {
     if (
       chainInfos?.depositHashes &&
@@ -390,7 +404,7 @@ export function useAccountModalForUI({
     return () => {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
-  }, [account.accAddress, chainInfos?.depositHashes, updateDepositStatus]);
+  }, [account.accAddress, chainInfos?.depositHashes]);
   const { setShowLayerSwapNotice } = useOpenModals();
 
   const addAssetList: AddAssetItem[] = React.useMemo(
@@ -411,6 +425,25 @@ export function useAccountModalForUI({
       {
         ...AddAssetList.FromOtherL1,
         handleSelect: () => {
+          let dex = "labelAddAssetTitleBridgeDes";
+          if (
+            account.readyState &&
+            [
+              AccountStatus.DEPOSITING,
+              AccountStatus.NOT_ACTIVE,
+              AccountStatus.NO_ACCOUNT,
+            ].includes(
+              // @ts-ignore
+              account?.readyState
+            )
+          ) {
+            dex = "labelAddAssetTitleBridgeDesActive";
+          }
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.ThirdPanelReturn,
+            info: { title: t("labelAddAssetTitleBridge"), description: t(dex) },
+          });
           window.open(
             Bridge +
               `?l2account=${account.accAddress}&token=${
@@ -433,6 +466,28 @@ export function useAccountModalForUI({
       {
         ...AddAssetList.FromExchange,
         handleSelect: () => {
+          let dex = "labelAddAssetTitleExchangeDes";
+          if (
+            account.readyState &&
+            [
+              AccountStatus.DEPOSITING,
+              AccountStatus.NOT_ACTIVE,
+              AccountStatus.NO_ACCOUNT,
+            ].includes(
+              // @ts-ignore
+              account?.readyState
+            )
+          ) {
+            dex = "labelAddAssetTitleExchangeDesActive";
+          }
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.ThirdPanelReturn,
+            info: {
+              title: t("labelAddAssetTitleExchange"),
+              description: t(dex),
+            },
+          });
           setShowLayerSwapNotice({ isShow: true });
         },
       },
@@ -547,9 +602,34 @@ export function useAccountModalForUI({
   });
 
   const accountList = React.useMemo(() => {
+    // const isShowAccount?.info.
     return Object.values({
+      [AccountStep.ThirdPanelReturn]: {
+        view: (
+          <ThirdPanelReturn
+            title={isShowAccount?.info?.title ?? ""}
+            description={isShowAccount?.info?.description}
+            btnInfo={{
+              ...closeBtnInfo(),
+              btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIknow2"),
+            }}
+          />
+        ),
+        height: "auto",
+      },
       [AccountStep.CheckingActive]: {
-        view: <CheckActiveStatus {...checkActiveStatusProps} />,
+        view: (
+          <CheckActiveStatus
+            {...{
+              ...checkActiveStatusProps,
+              updateDepositHash,
+              chainInfos,
+              clearDepositHash: clearDeposit,
+              ...account,
+              etherscanUrl: rest.etherscanBaseUrl,
+            }}
+          />
+        ),
         height: "auto",
       },
       [AccountStep.AddAssetGateway]: {
@@ -657,6 +737,10 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               account,
+              btnInfo: {
+                ...closeBtnInfo(),
+                btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIknow2"),
+              } as any,
               ...account,
               isNewAccount: depositProps.isNewAccount,
               isForL2Send:
@@ -668,6 +752,7 @@ export function useAccountModalForUI({
         ),
         onBack: onQRBack,
         noClose: true,
+        height: "auto",
       },
       [AccountStep.Deposit_Sign_WaitForRefer]: {
         view: (

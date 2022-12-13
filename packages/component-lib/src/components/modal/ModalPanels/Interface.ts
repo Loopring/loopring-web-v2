@@ -1,6 +1,7 @@
 import { ButtonProps } from "../../basic-lib";
 import {
   Account,
+  AccountHashInfo,
   CAMPAIGNTAGCONFIG,
   FeeInfo,
   NFTWholeINFO,
@@ -35,6 +36,7 @@ export enum AccountStep {
   NoAccount,
   QRCode,
   HadAccount,
+  ThirdPanelReturn,
   // new
   // Deposit,
   Deposit_Sign_WaitForRefer,
@@ -155,6 +157,7 @@ export interface VendorMenuProps {
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;
   campaignTagConfig?: CAMPAIGNTAGCONFIG;
+  callback?: () => void;
 }
 interface InferfaceAssetItem {
   key: string;
@@ -206,6 +209,9 @@ export interface CheckActiveStatusProps<C = FeeInfo> {
   onIKnowClick: () => void;
   knowDisable: boolean;
   know: boolean;
+  clearDepositHash?: () => void;
+  chainInfos?: AccountHashInfo;
+  accAddress?: string;
 }
 export interface CheckImportCollectionProps {
   account: Account;
