@@ -3,6 +3,7 @@ import {
   InputCoinProps,
   BtnInfoProps,
   SwitchPanelProps,
+  BtnInfo,
 } from "../../basic-lib";
 import {
   AddressError,
@@ -20,6 +21,7 @@ import {
   GET_IPFS_STRING,
   Account,
   BanxaOrder,
+  LuckyRedPacketItem,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -27,6 +29,7 @@ import { XOR } from "../../../types/lib";
 import { CollectionInputProps } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { TOSTOBJECT } from "../../toast";
+import { RedPacketStep } from "./CreateRedPacketWrap";
 
 /**
  * private props
@@ -79,6 +82,31 @@ export type TransferExtendProps<T, I, C> = {
   memo: string;
   handleOnMemoChange: (e: ChangeEvent<HTMLInputElement>) => void;
 } & TransferInfoProps<C>;
+
+export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
+  btnStatus: TradeBtnStatus;
+  btnInfo?: BtnInfo;
+  chargeFeeTokenList: Array<Fee>;
+  feeInfo: Fee;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
+  disabled?: boolean;
+  //
+};
+export type CreateRedPacketProps<T, I> = {
+  walletMap: WalletMap<I>;
+  setActiveStep: (step: RedPacketStep) => void;
+  handleOnDataChange: (value: Partial<T>) => void;
+  redPacketStepValue: T;
+  onSubmitClick: () => Promise<void>;
+  activeStep: RedPacketStep;
+  selectedType: LuckyRedPacketItem;
+  handleOnSelectedType: (item: LuckyRedPacketItem) => void;
+} & CreateRedPacketInfoProps<T>;
+
+export type CreateRedPacketViewProps<T, I> = CreateRedPacketProps<T, I>;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
   TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;

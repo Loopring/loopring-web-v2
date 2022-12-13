@@ -24,25 +24,12 @@ import {
   WalletMap,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
-import { TradeBtnStatus } from "../Interface";
+import { CreateRedPacketViewProps, TradeBtnStatus } from "../Interface";
 // import { MintStep } from "./MintAdvanceNFTWrap";
 import { MenuBtnStyled } from "components";
 import * as sdk from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 
-export type CreateRedPacketViewProps<Co> = {
-  btnStatus: TradeBtnStatus;
-  btnInfo?: BtnInfo;
-  disabled?: boolean;
-  walletMap: WalletMap<any>;
-  setActiveStep: (step: RedPacketStep) => void;
-  handleOnDataChange: (value: Partial<Co>) => void;
-  redPacketStepValue: Co;
-  onSubmitClick: () => Promise<void>;
-  activeStep: RedPacketStep;
-  selectedType: LuckyRedPacketItem;
-  handleOnSelectedType: (item: LuckyRedPacketItem) => void;
-};
 export enum RedPacketStep {
   ChooseType,
   Main,
