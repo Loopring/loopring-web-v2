@@ -535,9 +535,12 @@ export const NFTDetail = withTranslation("common")(
                     marginTop={2}
                   >
                     <>
-                      {getIPFSString(
-                        popItem?.collectionInfo?.tileUri ?? "",
-                        baseURL
+                      {(
+                        popItem?.collectionInfo?.cached?.tileUri ??
+                        getIPFSString(
+                          popItem?.collectionInfo?.tileUri ?? "",
+                          baseURL
+                        )
                       ).startsWith("http") ? (
                         <Avatar
                           className={"objectFit"}
@@ -548,10 +551,13 @@ export const NFTDetail = withTranslation("common")(
                             height: "var(--svg-size-large)",
                           }}
                           variant={"rounded"}
-                          src={getIPFSString(
-                            popItem?.collectionInfo?.tileUri ?? "",
-                            baseURL
-                          )}
+                          src={
+                            popItem?.collectionInfo?.cached?.tileUri ??
+                            getIPFSString(
+                              popItem?.collectionInfo?.tileUri ?? "",
+                              baseURL
+                            )
+                          }
                         />
                       ) : (
                         <Avatar

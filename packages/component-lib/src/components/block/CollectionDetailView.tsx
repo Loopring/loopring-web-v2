@@ -84,11 +84,15 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
           bottom={0}
           justifyContent={"center"}
         >
-          {getIPFSString(collectionDate?.banner ?? "", baseURL).startsWith(
-            "http"
-          ) ? (
+          {(
+            collectionDate?.cached?.banner ??
+            getIPFSString(collectionDate?.banner ?? "", baseURL)
+          ).startsWith("http") ? (
             <HeaderBannerStyle
-              url={getIPFSString(collectionDate?.banner ?? "", baseURL)}
+              url={
+                collectionDate?.cached?.banner ??
+                getIPFSString(collectionDate?.banner ?? "", baseURL)
+              }
             />
           ) : (
             <ImageIcon
@@ -119,9 +123,10 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
           borderRadius={theme.unit}
           sx={{ background: "var(--color-pop-bg)" }}
         >
-          {getIPFSString(collectionDate?.avatar ?? "", baseURL).startsWith(
-            "http"
-          ) ? (
+          {(
+            collectionDate?.cached?.avatar ??
+            getIPFSString(collectionDate?.avatar ?? "", baseURL)
+          ).startsWith("http") ? (
             <Avatar
               sx={{
                 bgcolor: "var(--color-border-disable2)",
@@ -130,7 +135,10 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
                 width: "100%",
               }}
               variant={"rounded"}
-              src={getIPFSString(collectionDate?.avatar ?? "", baseURL)}
+              src={
+                collectionDate?.cached?.avatar ??
+                getIPFSString(collectionDate?.avatar ?? "", baseURL)
+              }
             />
           ) : (
             <ImageIcon fontSize={"large"} />
@@ -219,7 +227,7 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
             </Typography>
             {account.accAddress === collectionDate.owner ? (
               <>
-                {setShowEdit && collectionDate?.isEditable && (
+                {setShowEdit && collectionDate.extra?.properties?.isEditable && (
                   <Button
                     fullWidth
                     variant={"outlined"}
@@ -234,8 +242,8 @@ export const CollectionDetailView = <Co extends CollectionMeta>({
                   </Button>
                 )}
                 {setShowManageLegacy &&
-                  collectionDate?.isEditable &&
-                  collectionDate.baseUri === "" && (
+                  collectionDate.extra?.properties?.isLegacy &&
+                  collectionDate.extra?.properties?.isEditable && (
                     <Button
                       fullWidth
                       variant={"outlined"}

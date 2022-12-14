@@ -7,7 +7,7 @@ import {
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
-import { Box, BoxProps, Tooltip, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import {
   cssBackground,
   EmptyDefault,
@@ -54,7 +54,7 @@ export const CollectionMedia = React.memo(
       const theme = useTheme();
       const { t } = useTranslation();
       const { hasLoaded, hasError } = useImage(
-        getIPFSString(item.tileUri, baseURL) ?? ""
+        item?.cached?.tileUri ?? getIPFSString(item.tileUri, baseURL) ?? ""
       );
 
       React.useEffect(() => {
@@ -104,7 +104,10 @@ export const CollectionMedia = React.memo(
                   alt={"tile"}
                   {...item}
                   onError={() => onRenderError(item, index)}
-                  src={getIPFSString(item.tileUri, baseURL)}
+                  src={
+                    item?.cached?.tileUri ??
+                    getIPFSString(item.tileUri, baseURL)
+                  }
                 />
               ) : (
                 <EmptyDefault
@@ -131,7 +134,7 @@ export const CollectionMedia = React.memo(
               )}
             </Box>
           )}
-          {item.isCounterFactualNFT && item.baseUri === "" ? (
+          {item.extra?.properties?.isLegacy ? (
             <MediaLabelStyled
               position={"absolute"}
               left={0}
