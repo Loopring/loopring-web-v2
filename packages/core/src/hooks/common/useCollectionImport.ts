@@ -54,7 +54,7 @@ export const useCollectionImport = <
       | undefined
     >(undefined);
   const [filter, setFilter] = React.useState<{
-    isisLegacy: boolean;
+    isLegacy: boolean;
     tokenAddress: string;
   }>({
     isLegacy: true,
