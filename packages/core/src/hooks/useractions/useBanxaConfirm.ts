@@ -312,6 +312,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         banxaService.KYCDone();
         // const transferBanxaValue = store.getState()._router_modalData.transferBanxaValue;
         updateOffBanxaData({ order });
+        checkFeeIsEnough({ isRequiredAPI: true });
         updateTransferBanxaData({
           belong: order.coin_code,
           tradeValue: order.coin_amount,
@@ -321,7 +322,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           // fee: feeInfo,//transferBanxaValue.fee,
         });
         myLog("BANXA_CONFIRM", RAMP_SELL_PANEL.BANXA_CONFIRM);
-        setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
       } else {
         setTimeout(() => {
           checkOrderStatus(order);
@@ -351,9 +351,19 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           checkOrderStatus(props.data.order);
           break;
         case BanxaCheck.OrderHide:
-        case BanxaCheck.OrderEnd:
-          myLog("Banxa Order End");
+          myLog("Banxa Order OrderHide");
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
+          if (props.data?.reason == "KYCDone") {
+            setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
+          }
+          break;
+        case BanxaCheck.OrderEnd:
+          clearTimeout(nodeTimer.current as NodeJS.Timeout);
+          break;
+        case BanxaCheck.OrderShow:
+          if (props.data?.reason == "transferDone") {
+            setSellPanel(RAMP_SELL_PANEL.LIST);
+          }
           break;
         default:
           break;
@@ -438,6 +448,7 @@ export const useBanxaTransPost = () => {
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
     updateData: ({ fee }) => {
+      myLog("transferBanxaValue updateData", fee);
       const { transferBanxaValue } = store.getState()._router_modalData;
       updateTransferBanxaData({ ...transferBanxaValue, fee });
     },
@@ -492,8 +503,6 @@ export const useBanxaTransPost = () => {
             isShow: true,
             step: AccountStep.Transfer_BANXA_In_Progress,
           });
-          await sdk.sleep(TOAST_TIME);
-
           setShowAccount({
             isShow: true,
             step: AccountStep.Transfer_BANXA_Success,
@@ -502,6 +511,7 @@ export const useBanxaTransPost = () => {
                 Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
             },
           });
+          banxaService.TransferDone();
           walletLayer2Service.sendUserUpdate();
           myLog(
             "Banxa tx_hash,source_address",
@@ -513,6 +523,7 @@ export const useBanxaTransPost = () => {
             myLog("Banxa ......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
+          await sdk.sleep(TOAST_TIME);
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
@@ -578,8 +589,6 @@ export const useBanxaTransPost = () => {
           });
           myLog("Banxa confirmed", data);
         }
-
-        banxaService.TransferDone();
       } catch (error) {
         //TODO confirm again.
         // setShowAccount({

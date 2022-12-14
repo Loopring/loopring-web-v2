@@ -230,11 +230,17 @@ export const banxaService = {
   KYCDone: () => {
     subject.next({
       status: BanxaCheck.OrderHide,
+      data: {
+        reason: "KYCDone",
+      },
     });
   },
   TransferDone: () => {
     subject.next({
       status: BanxaCheck.OrderShow,
+      data: {
+        reason: "transferDone",
+      },
     });
   },
   orderDone: () => {
