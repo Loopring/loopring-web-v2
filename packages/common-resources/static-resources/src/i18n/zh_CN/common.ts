@@ -891,7 +891,7 @@ export default {
   labelRETHDefiRisk2:
     "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
     "<1></1>",
-  labelDefiAgree: "I have read and understand the risk warning",
+  labelDefiAgree: "I have read and understand the risk warning.",
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
@@ -965,7 +965,7 @@ export default {
     "Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site",
   labelCollectionMetaErrorType: "correct `royalty_percentage` from 0 to 10",
   labelNFTServerRefresh:
-    "Click to refresh loopring cache resource, this is an delay command usually takes 30 minutes.",
+    "Click to refresh the NFT's metadata. This process usually takes around 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
   labelNFTCollectionName: "Collection Name:",
@@ -994,7 +994,11 @@ export default {
   labelBuy: "Buy",
   labelSell: "Sell",
   labelRampNoBalance: "Insufficient {{belong}} balance",
+  labelBanxaNoBalance: "Insufficient {{belong}} balance",
+  labelBanxaFeeNoBalance: "Insufficient {{belong}} balance & fee",
   labelL2toRampTitle: "Send to Ramp",
+  labelL2toBanxaTitle: "Send to Banxa",
+
   labelDualInvest: "Invest {{symbol}}",
   labelDualBase: "Sell High for {{symbol}}",
   labelDualQuote: "Buy {{symbol}} Low",
@@ -1224,12 +1228,28 @@ export default {
   labelReceiveAddressDes:
     "If you have transferred tokens from another Loopring L2 account, please wait.",
   labelReceiveAddressDesActive:
-    "If you have transferred tokens from another Loopring L2 account, please wait. Once you receive the assets, you can manually activate the L2 account.",
+    "If you have transferred tokens from other Loopring L2 accounts, please close this window and try to activate your L2 account again.",
   labelDepositWaiting:
     "It make take some time for this transaction to execute on-chain.",
   labelFrom: "From",
   labelTo: "To",
   labeltransfer: "Transfer",
   labelwithdraw: "Withdrawal",
-  labeldeposit: "Deposit",
+  labelDeposit: "Deposit",
+  labelFiatAmount: "Fiat Amount",
+  labelAssetRedPackets: "Red Packets",
+  labelRedPacketTitle: "Red Packets",
+  labelOpen: "Open",
+  labelRedPacketChoose: "Choose Red Packet Type",
+  labelRedPacketMain: "Input Red Packet/Send",
+  labelLuckyTokenViewTypePublic: "Public Red Packet",
+  labelLuckyTokenViewTypePrivate: "Private Red Packet",
+  labelLuckyTokenViewTypeDesPublic:
+    "Your gift packet is shared publicly by you via your custom QR code for others to receive.",
+  labelLuckyTokenViewTypeDesPrivate:
+    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
+  labelLuckyRelayToken: "Relay Red Packet",
+  labelLuckyRandomToken: "Lucky Red Packet",
+  labelLuckyCommonToken: "Normal Red Packet",
+  labelInputRedpacket: "Select Token",
 };
