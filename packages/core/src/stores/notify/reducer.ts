@@ -19,7 +19,7 @@ const notifyMapSlice: Slice<NotifyStates> = createSlice({
       // @ts-ignore
       if (action.error) {
         state.status = SagaStatus.ERROR;
-        // @ts-ignore
+        // @ts-ignoreis                                                  i
         state.errorMessage = action.error;
       }
       state.notifyMap = action.payload.notifyMap;
