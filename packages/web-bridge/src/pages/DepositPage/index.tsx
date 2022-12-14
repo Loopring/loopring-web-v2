@@ -32,7 +32,7 @@ const BoxStyle = styled(Box)`
     width: 100%;
   }
   &.mobile {
-    width: calc(var(--modal-width) + 20px);
+    width: calc(100vw - 20px);
   }
   .MuiToolbar-root {
     margin-top: -24px !important;
@@ -113,7 +113,7 @@ export const DepositToPage = withTranslation(["common"])(
         <Box
           display={"flex"}
           marginBottom={5 / 2}
-          width={`calc(var(--modal-width) + ${isMobile ? 20 : 0}px )`}
+          width={isMobile ? "calc(100vw - 20px)" : "var(--modal-width)"}
           justifyContent={"space-between"}
           alignItems={"center"}
         >
