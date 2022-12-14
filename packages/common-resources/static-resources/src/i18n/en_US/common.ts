@@ -904,7 +904,7 @@ export default {
   labelRETHDefiRisk2:
     "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
     "<1></1>",
-  labelDefiAgree: "I have read and understand the risk warning",
+  labelDefiAgree: "I have read and understand the risk warning.",
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
@@ -978,7 +978,7 @@ export default {
     "Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site",
   labelCollectionMetaErrorType: "correct `royalty_percentage` from 0 to 10",
   labelNFTServerRefresh:
-    "Click to refresh loopring cache resource, this is an delay command usually takes 30 minutes.",
+    "Click to refresh the NFT's metadata. This process usually takes around 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
   labelNFTCollectionName: "Collection Name:",
@@ -1015,7 +1015,7 @@ export default {
   labelDualInvest: "Invest {{symbol}}",
   labelDualBase: "Sell High for {{symbol}}",
   labelDualQuote: "Buy {{symbol}} Low",
-  labelDualAgree: "I have read risk warning",
+  labelDualAgree: "I have read and understand the risk warning.",
   labelDualRiskTitle: "Dual Investment",
   labelDualInvestBaseTitle: "Invest {{symbolA}} (Sell High for {{symbolB}})",
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
@@ -1062,7 +1062,7 @@ export default {
     "I understand that subscribed assets are locked and users aren’t able to cancel or redeem before the Settlement Date.",
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
-  labelInvestDualTutorialCheck4: "I have read the risk warning.",
+  labelInvestDualTutorialCheck4: "I have read and understand the risk warning.",
   labelInvestDualBeginerMode: "Beginner Mode",
   labelInvestDualBeginerModeDesLine1: "What is Dual Investment?",
   labelInvestDualBeginerModeDesLine2:
@@ -1193,7 +1193,7 @@ export default {
   labelConfirmAgainByFailed:
     "You had a failed order, please confirm information again...",
   labelNFTListfav: "Favorite",
-  labelNFTListhide: "Hide",
+  labelNFTListhide: "Hidden",
   labelNFTListall: "Owned",
   labelNFTHide: "Deploy Contract",
   labelNFTUnHide: "Hide NFT",

@@ -998,7 +998,7 @@ export default {
   labelDualInvest: "Invest {{symbol}}",
   labelDualBase: "Sell High for {{symbol}}",
   labelDualQuote: "Buy {{symbol}} Low",
-  labelDualAgree: "I have read risk warning",
+  labelDualAgree: "I have read and understand the risk warning.",
   labelDualRiskTitle: "Dual Investment",
   labelDualInvestBaseTitle: "Invest {{symbolA}} (Sell High for {{symbolB}})",
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
@@ -1045,7 +1045,7 @@ export default {
     "I understand that subscribed assets are locked and users aren’t able to cancel or redeem before the Settlement Date.",
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
-  labelInvestDualTutorialCheck4: "I have read the risk warning.",
+  labelInvestDualTutorialCheck4: "I have read and understand the risk warning.",
   labelInvestDualBeginerMode: "Beginner Mode",
   labelInvestDualBeginerModeDesLine1: "What is Dual Investment?",
   labelInvestDualBeginerModeDesLine2:
@@ -1176,7 +1176,7 @@ export default {
   labelConfirmAgainByFailed:
     "You had a failed order, please confirm information again...",
   labelNFTListfav: "Favorite",
-  labelNFTListhide: "Hide",
+  labelNFTListhide: "Hidden",
   labelNFTListall: "Owned",
   labelNFTHide: "Deploy Contract",
   labelNFTUnHide: "Hide NFT",
