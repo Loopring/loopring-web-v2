@@ -52,11 +52,9 @@ export const TransferWrap = <
   feeInfo,
   lastFailed,
   isFeeNotEnough,
-  onTransferClick,
   handleSureItsLayer2,
   handleFeeChange,
   isThumb,
-  // isConfirmTransfer,
   transferBtnStatus,
   addressDefault,
   handleOnAddressChange,
@@ -66,7 +64,7 @@ export const TransferWrap = <
   realAddr,
   isLoopringAddress,
   addrStatus,
-  // handleConfirm,
+  handleConfirm,
   handleOnMemoChange,
   isAddressCheckLoading,
   isSameAddress,
@@ -75,7 +73,7 @@ export const TransferWrap = <
 }: TransferViewProps<T, I, C> &
   WithTranslation & {
     assetsData: any[];
-    // handleConfirm: (index: number) => void;
+    handleConfirm: (index: number) => void;
   }) => {
   const inputBtnRef = React.useRef();
   const { isMobile } = useSettings();
@@ -407,7 +405,13 @@ export const TransferWrap = <
             textAlign={"center"}
             color={"var(--color-warning)"}
           >
-            {t("labelConfirmAgainByFailed")}
+            {t("labelConfirmAgainByFailedWithBalance", {
+              symbol:
+                type === "NFT"
+                  ? "NFT"
+                  : ` ${tradeData?.belong}` ?? EmptyValueTag,
+              count: tradeData?.balance,
+            })}
           </Typography>
         )}
         <Button
@@ -416,9 +420,7 @@ export const TransferWrap = <
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            const tradeDataWithMemo = { ...tradeData, memo: memo };
-            // onTransferClick(tradeData)
-            onTransferClick(tradeDataWithMemo);
+            handleConfirm(0);
           }}
           loading={
             !getDisabled && transferBtnStatus === TradeBtnStatus.LOADING

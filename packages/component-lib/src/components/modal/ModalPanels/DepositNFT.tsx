@@ -1,5 +1,13 @@
 import { DepositBase, IconType, PanelProps } from "./BasicPanel";
-import { NFTWholeINFO } from "@loopring-web/common-resources";
+import {
+  getShortAddr,
+  LinkIcon,
+  NFTWholeINFO,
+} from "@loopring-web/common-resources";
+import { sanitize } from "dompurify";
+import { Box, Link, Typography } from "@mui/material";
+import { Trans, useTranslation } from "react-i18next";
+import { useSettings } from "../../../stores";
 
 export const NFTDeposit_Approve_WaitForAuth = (
   props: PanelProps & Partial<NFTWholeINFO> & Partial<NFTWholeINFO>
@@ -58,7 +66,7 @@ export const NFTDeposit_Failed = (
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL1toL2Failed", {
-      symbol: props?.symbol ?? "NFT",
+      symbol: sanitize(props.symbol ?? "NFT").toString(),
       value: props.value,
     }),
   };
@@ -68,12 +76,90 @@ export const NFTDeposit_Failed = (
 export const NFTDeposit_Submit = (
   props: PanelProps & Partial<NFTWholeINFO>
 ) => {
+  const { isMobile } = useSettings();
+  const { t } = useTranslation();
+
   const propsPatch = {
     iconType: IconType.SubmitIcon,
-    describe1: props.t("labelL1toL2Submit", {
-      symbol: props?.symbol ?? "NFT",
-      value: props.value,
-    }),
+    describe1: (
+      <Link
+        fontSize={"inherit"}
+        whiteSpace={"break-spaces"}
+        display={"inline-flex"}
+        alignItems={"center"}
+        style={{ wordBreak: "break-all" }}
+        target="_blank"
+        rel="noopener noreferrer"
+        href={`${props.etherscanBaseUrl}tx/${props?.hash ?? ""}`}
+      >
+        <Trans
+          i18nKey={"labelL1toL2Submit"}
+          tOptions={{
+            symbol: sanitize(props.symbol ?? "NFT").toString(),
+            value: props.value,
+          }}
+        >
+          Add asset submitted.
+          <LinkIcon color={"inherit"} fontSize={"medium"} />
+        </Trans>
+      </Link>
+    ),
+    describe2: (
+      <Box
+        justifySelf={"stretch"}
+        display={"flex"}
+        flexDirection={"column"}
+        minWidth={340}
+        justifyContent={"center"}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 0}
+      >
+        <Typography color={"var(--color-warning)"}>
+          {t("labelDepositWaiting")}
+        </Typography>
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+        >
+          <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
+            {props.t("labelL1toL2NFTAmount")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            color={"var(--color-text-primary)"}
+            textOverflow={"ellipsis"}
+            overflow={"hidden"}
+          >
+            {props.value + " " + props.symbol}
+          </Typography>
+        </Typography>
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+        >
+          <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
+            {props.t("labelL1toL2From")}
+          </Typography>
+          <Typography variant={"body1"} color={"var(--color-text-primary)"}>
+            {"L1: " + getShortAddr(props.account?.accAddress ?? "")}
+          </Typography>
+        </Typography>
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+        >
+          <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
+            {props.t("labelL1toL2TO")}
+          </Typography>
+          <Typography variant={"body1"} color={"var(--color-text-primary)"}>
+            {props.to ? "L2: " + getShortAddr(props.to) : t("labelToMyL2")}
+          </Typography>
+        </Typography>
+      </Box>
+    ),
   };
   return <DepositBase {...propsPatch} {...props} />;
 };

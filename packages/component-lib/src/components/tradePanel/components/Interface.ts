@@ -20,6 +20,7 @@ import {
   GET_IPFS_STRING,
   Account,
   BanxaOrder,
+  AccountStatus,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -161,6 +162,7 @@ export type DepositExtendProps<T> = {
   handleClear: () => void;
   isToAddressEditable: boolean;
   onBack?: () => void;
+  accountReady?: AccountStatus | undefined;
 } & DepositInfoProps;
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &

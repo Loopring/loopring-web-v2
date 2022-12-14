@@ -1192,6 +1192,8 @@ export default {
   labelL2ToL2Method: "Send {{symbol}} to L2",
   labelConfirmAgainByFailed:
     "You had a failed order, please confirm information again...",
+  labelConfirmAgainByFailedWithBalance:
+    "You had a failed order, please confirm information again, Balance of {{symbol}} is {{count}}",
   labelNFTListfav: "Favorite",
   labelNFTListhide: "Hidden",
   labelNFTListall: "Owned",
@@ -1265,4 +1267,7 @@ export default {
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyCommonToken: "Normal Red Packet",
   labelInputRedpacket: "Select Token",
+  labelDepositTo: "L2 Recipient",
+  labelToMyL2: "My Loopring L2",
+  labelL1toL2NFTAmount: "NFT Amount",
 };

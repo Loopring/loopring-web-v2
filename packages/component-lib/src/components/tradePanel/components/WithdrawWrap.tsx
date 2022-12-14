@@ -74,9 +74,8 @@ export const WithdrawWrap = <
   chargeFeeTokenList = [],
   feeInfo,
   lastFailed,
-  // handleConfirm,
+  handleConfirm,
   isFeeNotEnough,
-  onWithdrawClick,
   withdrawBtnStatus,
   handleFeeChange,
   handleWithdrawTypeChange,
@@ -99,7 +98,7 @@ export const WithdrawWrap = <
 }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
     assetsData: AssetsRawDataItem[];
-    // handleConfirm: (index: number) => void;
+    handleConfirm: (index: number) => void;
   }) => {
   const { isMobile } = useSettings();
   const [dropdownStatus, setDropdownStatus] =
@@ -494,7 +493,7 @@ export const WithdrawWrap = <
             textAlign={"center"}
             color={"var(--color-warning)"}
           >
-            {t("labelConfirmAgainByFailed")}
+            {t("labelConfirmAgainByFailedWithBalance")}
           </Typography>
         )}
         <Button
@@ -503,7 +502,8 @@ export const WithdrawWrap = <
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            onWithdrawClick(tradeData);
+            handleConfirm(0);
+            // onWithdrawClick(tradeData);
           }}
           loading={
             withdrawBtnStatus === TradeBtnStatus.LOADING && !getDisabled
