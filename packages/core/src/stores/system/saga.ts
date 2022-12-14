@@ -222,7 +222,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       })
     );
     store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
-    store.dispatch(getNotify(undefined));
     yield take("tokenMap/getTokenMapStatus");
     store.dispatch(getTokenPrices(undefined));
     yield take("tokenPrices/getTokenPricesStatus");
@@ -234,7 +233,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       throw "tokenMap Error";
     }
   }
-
+  store.dispatch(getNotify(undefined));
   store.dispatch(getDefiMap(undefined));
   store.dispatch(getDualMap(undefined));
   yield all([
