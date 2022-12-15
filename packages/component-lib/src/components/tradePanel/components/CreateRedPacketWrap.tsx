@@ -115,7 +115,7 @@ const BtnMain = React.memo(
   }
 );
 export const CreateRedPacketStepType = withTranslation()(
-  <T extends IBData<I>, I, any, C = FeeInfo>({
+  <T extends IBData<I>, I, C = FeeInfo, LuckInfo = any>({
     handleOnSelectedType,
     handleOnDataChange,
     redPacketStepValue,
@@ -125,7 +125,7 @@ export const CreateRedPacketStepType = withTranslation()(
     btnStatus,
     btnInfo,
     t,
-  }: CreateRedPacketViewProps<T, I, C> & WithTranslation) => {
+  }: CreateRedPacketViewProps<T, I, C, LuckInfo> & WithTranslation) => {
     const { isMobile } = useSettings();
     const getDisabled = React.useMemo(() => {
       return disabled || btnStatus === TradeBtnStatus.DISABLED;
@@ -235,7 +235,7 @@ export const CreateRedPacketStepWrap = <
   T extends IBData<I>,
   I,
   F = FeeInfo,
-  LuckInfo
+  LuckInfo = any
 >({
   btnStatus,
   btnInfo,
