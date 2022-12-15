@@ -282,7 +282,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     if (nodeTimer.current) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
-    const walletMap = makeWalletLayer2(true).walletMap ?? {};
+    const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
     //@ts-ignore
     _order = {
       ..._order,

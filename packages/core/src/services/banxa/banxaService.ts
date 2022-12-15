@@ -179,15 +179,15 @@ export const banxaService = {
           },
         });
         myLog("banxa create order", data.order);
-        window.open(data.order.checkout_url);
-        window.opener = null;
-        // banxa.generateIframe(
-        //   "#iframeBanxaTarget",
-        //   data.order.checkout_iframe,
-        //   false
-        //   // "800px", //Optional width parameter – Pass false if not needed.
-        //   // "400px" //Optional height parameter – Pass false if not needed.
-        // );
+        // window.open(data.order.checkout_url);
+        // window.opener = null;
+        banxa.generateIframe(
+          "#iframeBanxaTarget",
+          data.order.checkout_iframe,
+          false
+          // "800px", //Optional width parameter – Pass false if not needed.
+          // "400px" //Optional height parameter – Pass false if not needed.
+        );
         subject.next({
           status: BanxaCheck.CheckOrderStatus,
           data: data,
