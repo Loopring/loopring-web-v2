@@ -147,7 +147,7 @@ export const TransferConfirm = <
             } else {
               setOpen(true);
             }
-            // handleConfirm(1);
+            handleConfirm(1);
           }}
         >
           {t("labelConfirm")}

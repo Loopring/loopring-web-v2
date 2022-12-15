@@ -19,7 +19,7 @@ export const WithdrawConfirm = <
   I,
   C extends FeeInfo
 >({
-  // handleConfirm,
+   handleConfirm,
   tradeData,
   onWithdrawClick,
   realAddr,
@@ -158,7 +158,7 @@ export const WithdrawConfirm = <
             } else {
               setOpen(true);
             }
-            // handleConfirm(1);
+            handleConfirm(1);
           }}
         >
           {t("labelConfirm")}

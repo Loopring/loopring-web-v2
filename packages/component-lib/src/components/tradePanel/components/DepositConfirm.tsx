@@ -20,7 +20,7 @@ export const DepositConfirm = <
   t,
   tradeData,
   onDepositClick,
-  // handleConfirm,
+  handleConfirm,
   title,
   lastFailed,
   realToAddress,
@@ -103,7 +103,7 @@ DepositViewProps<T, I> & {
             } else {
               setOpen(true);
             }
-            // handleConfirm(1);
+            handleConfirm(1);
           }}
         >
           {t("labelConfirm")}
