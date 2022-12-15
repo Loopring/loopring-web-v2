@@ -28,6 +28,7 @@ export const ModalWalletConnect = withTranslation("common", { withRef: true })(
       <Modal
         open={open}
         onClose={onClose}
+        disableEnforceFocus
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
