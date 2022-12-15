@@ -19,7 +19,7 @@ export const WithdrawConfirm = <
   I,
   C extends FeeInfo
 >({
-   handleConfirm,
+  handleConfirm,
   tradeData,
   onWithdrawClick,
   realAddr,
