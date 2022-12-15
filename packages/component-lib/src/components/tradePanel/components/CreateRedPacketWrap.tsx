@@ -42,7 +42,11 @@ import {
   // htmlDecode,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
-import { CreateRedPacketViewProps, TradeBtnStatus } from "../Interface";
+import {
+  CreateRedPacketViewProps,
+  RedPacketStep,
+  TradeBtnStatus,
+} from "../Interface";
 // import { MintStep } from "./MintAdvanceNFTWrap";
 import { MenuBtnStyled } from "../../styled";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -52,7 +56,6 @@ import { bindPopper } from "material-ui-popup-state/hooks";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { FeeToggle } from "./tool/FeeList";
-
 
 const RedPacketBoxStyle = styled(Box)`
   .MuiFormGroup-root {

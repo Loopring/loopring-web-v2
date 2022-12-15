@@ -13,7 +13,7 @@ import { useGetAssets } from "./hook";
 import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
-import { RedPacketPanel } from "../RedPacketPanel";
+import { RedPacketPanel } from "../../RedPacketPage/RedPacketPanel";
 
 enum TabIndex {
   Tokens = "Tokens",
@@ -46,8 +46,7 @@ const AssetPanel = withTranslation("common")(
           setCurrentTab(TabIndex.Invests);
           break;
         case TabIndex.RedPacket:
-          history.replace("/l2assets/assets/RedPacket");
-          setCurrentTab(TabIndex.RedPacket);
+          history.push("/redpacket/market");
           break;
         case TabIndex.Tokens:
         default:
@@ -129,7 +128,7 @@ const AssetPanel = withTranslation("common")(
           </StylePaper>
         )}
         {currentTab === TabIndex.Invests && <MyLiquidity isHideTotal={true} />}
-        {currentTab === TabIndex.RedPacket && <RedPacketPanel />}
+        {/*{currentTab === TabIndex.RedPacket && <RedPacketPanel />}*/}
       </>
     );
   }

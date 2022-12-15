@@ -40,6 +40,8 @@ export type NOTIFICATION_ITEM = {
   description2: string;
   type: string;
   link: `#race-event/${number}/${number}/activities.${string}.json` | string;
+  linkIos: string;
+  linkAndroid: string;
   startShow: number;
   endShow: number;
   color: NOTIFY_COLOR;

@@ -7,14 +7,9 @@ import {
 import {
   CreateRedPacketViewProps,
   RedPacketStep,
-  TradeBtnStatus,
   WithdrawProps,
 } from "../../tradePanel/Interface";
-import {
-  FeeInfo,
-  IBData,
-  LuckyRedPacketItem,
-} from "@loopring-web/common-resources";
+import { FeeInfo, IBData } from "@loopring-web/common-resources";
 import {
   HorizontalLabelPositionBelowStepper,
   TradeMenuList,
@@ -22,20 +17,19 @@ import {
 } from "../../tradePanel/components";
 import React from "react";
 import { cloneDeep } from "lodash";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { Box } from "@mui/material";
 const steps = [
   "labelRedPacketChoose", //Prepare NFT metadata
   "labelRedPacketMain", //labelADMint2
 ];
-export const CreateRedPackPanel = withTranslation(["common", "error"], {
+export const CreateRedPacketPanel = withTranslation(["common", "error"], {
   withRef: true,
 })(
-  <T extends IBData<I>, I, C = FeeInfo>({
+  <T extends IBData<I>, I, LuckInfo, C = FeeInfo>({
     type = "TOKEN",
     chargeFeeTokenList,
     onSubmitClick,
-    handleOnSelectedType,
+    // handleOnSelectedType,
     btnStatus,
     assetsData,
     handleOnDataChange,
@@ -44,7 +38,7 @@ export const CreateRedPackPanel = withTranslation(["common", "error"], {
     onBack,
     t,
     ...rest
-  }: CreateRedPacketViewProps<T, I, C> &
+  }: CreateRedPacketViewProps<T, I, LuckInfo, C> &
     WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
       ...rest,
@@ -121,8 +115,8 @@ export const CreateRedPackPanel = withTranslation(["common", "error"], {
           element: React.useMemo(() => {
             return <></>;
             // <CreateRedPacketStepWrap />
-          } []),
-          React.useMemo(
+          }, []),
+          toolBarItem: React.useMemo(
             () => (
               <>
                 {onBack ? (
@@ -170,7 +164,7 @@ export const CreateRedPackPanel = withTranslation(["common", "error"], {
             ] as any)
           : []
       ),
-    }
+    };
     return (
       <Box
         className={walletMap ? "" : "loading"}

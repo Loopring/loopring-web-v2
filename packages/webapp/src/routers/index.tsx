@@ -37,6 +37,7 @@ import { InvestPage } from "../pages/InvestPage";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { AssetPage } from "../pages/AssetPage";
 import { FiatPage } from "../pages/FiatPage";
+import { RedPacketPage } from "../pages/RedPacketPage";
 
 const ContentWrap = ({
   children,
@@ -206,7 +207,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <NotifyMarkdownPage />
           </Container>
         </Route>
-
         <Route exact path="/investrule/:path">
           {searchParams && searchParams.has("noheader") ? (
             <></>
@@ -280,7 +280,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <MiningPage />
           </ContentWrap>
         </Route>
-
+        <Route exact path={["/redpacket", "/redpacket/*"]}>
+          <ContentWrap state={state}>
+            <RedPacketPage />
+          </ContentWrap>
+        </Route>
         <Route exact path={["/l2assets", "/l2assets/*"]}>
           <ContentWrap state={state}>
             <AssetPage />

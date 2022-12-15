@@ -1265,4 +1265,8 @@ export default {
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyCommonToken: "Normal Red Packet",
   labelInputRedPacketBtnLabel: "Select Token",
+  labelCreateRedPacket: "Send Red Packet",
+  labelMyRedPacket: " My Red Packet Record",
+  labelRedPacketMarkets: "Red Packet Markets",
+  labelRedPacketQRCodeImport: "Receive Red Packet",
 };

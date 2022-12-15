@@ -1,42 +1,46 @@
 import React from "react";
 import { Box } from "@mui/material";
-import { Button } from "@loopring-web/component-lib";
-import { BackIcon } from "@loopring-web/common-resources";
-import { useHistory } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { StylePaper } from "@loopring-web/core";
+import { CreateRedPacketPanel } from "@loopring-web/component-lib";
+import { useRouteMatch } from "react-router-dom";
+import { ViewAccountTemplate } from "@loopring-web/core";
+
+import { RedPacketMarketPanel } from "./RedPacketMarketPanel";
+import { ReadRedPacketPanel } from "./ReadRedPacketPanel";
+import { MyRedPacketPanel } from "./MyRedPacketPanel";
 
 export const RedPacketPage = () => {
-  const history = useHistory();
-  const { t } = useTranslation();
-  return (
-    <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
-      <Box
-        marginBottom={2}
-        display={"flex"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-      >
-        <Button
-          startIcon={<BackIcon fontSize={"small"} />}
-          variant={"text"}
-          size={"medium"}
-          sx={{ color: "var(--color-text-secondary)" }}
-          color={"inherit"}
-          onClick={() => {
-            history.push("/l2assets/redpacket");
-          }}
+  let match: any = useRouteMatch("/redpacket/:item");
+  const selected = match?.params.item ?? "markets";
+  const reaPacketRouter = React.useMemo(() => {
+    switch (selected) {
+      case "create":
+        return <CreateRedPacketPanel />;
+      case "records":
+        return <MyRedPacketPanel />;
+      case "reader":
+        return <ReadRedPacketPanel />;
+      case "markets":
+        return <RedPacketMarketPanel />;
+      default:
+        <RedPacketMarketPanel />;
+    }
+  }, [selected]);
+  const activeView = React.useMemo(
+    () => (
+      <>
+        <Box
+          // minHeight={420}
+          display={"flex"}
+          alignItems={"stretch"}
+          flexDirection={"column"}
+          marginTop={0}
+          flex={1}
         >
-          {t("labelRedPacketTitle")}
-        </Button>
-      </Box>
-      <StylePaper
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        flex={1}
-      ></StylePaper>
-    </Box>
+          {reaPacketRouter}
+        </Box>
+      </>
+    ),
+    [reaPacketRouter]
   );
+  return <ViewAccountTemplate activeViewTemplate={activeView} />;
 };

@@ -358,10 +358,7 @@ export const useRampTransPost = () => {
     // setIsFeeNotEnough,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
-    updateData: ({ fee }) => {
-      const { transferRampValue } = store.getState()._router_modalData;
-      updateTransferRampData({ ...transferRampValue, fee });
-    },
+    updateData: ({ fee }) => {},
   });
   const processRequestRampTransfer = React.useCallback(
     async (

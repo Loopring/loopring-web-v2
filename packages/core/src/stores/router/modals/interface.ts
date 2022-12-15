@@ -70,6 +70,10 @@ export type NFT_MINT_VALUE<I> = {
   collection?: Partial<CollectionMeta>;
   error?: undefined | sdk.RESULT_INFO;
 };
+export type RedPacketOrderData<I = any> = IBData<I> & {
+  fee: FeeInfo | undefined;
+  __request__: any;
+} & Partial<sdk.LuckyTokenItemForSend>;
 
 export type ModalDataStatus = {
   lastStep: LAST_STEP;
@@ -77,7 +81,6 @@ export type ModalDataStatus = {
   transferValue: TransferData;
   transferRampValue: TransferData;
   transferBanxaValue: TransferData;
-
   depositValue: DepositData;
   activeAccountValue: ActiveAccountData;
   forceWithdrawValue: ForceWithdrawData;
@@ -102,6 +105,7 @@ export type ModalDataStatus = {
         };
       }>
     | undefined;
+  redPacketOrder: RedPacketOrderData;
 };
 
 export enum LAST_STEP {
@@ -119,5 +123,6 @@ export enum LAST_STEP {
   offRamp = "offRamp",
   offBanxa = "offBanxa",
   offRampTrans = "offRampTrans",
+  redPacketSend = "redPacketSend",
   default = "default",
 }

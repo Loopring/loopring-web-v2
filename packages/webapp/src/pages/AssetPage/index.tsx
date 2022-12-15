@@ -9,7 +9,7 @@ import HistoryPanel from "./HistoryPanel";
 import React from "react";
 import { ViewAccountTemplate } from "@loopring-web/core";
 import { useGetAssets } from "./AssetPanel/hook";
-import { RedPacketPanel } from "./RedPacketPanel";
+import { RedPacketPanel } from "../RedPacketPage/RedPacketPanel";
 
 export const subMenu = subMenuLayer2;
 

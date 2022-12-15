@@ -22,6 +22,7 @@ import {
   Account,
   BanxaOrder,
   LuckyRedPacketItem,
+  AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -99,14 +100,15 @@ export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
   //
 };
 export type CreateRedPacketExtendsProps<T, C, LuckInfo> = {
-  setActiveStep: (step: RedPacketStep) => void;
+  setActiveStep?: (step: RedPacketStep) => void;
   handleOnDataChange: (value: Partial<T>) => void;
   redPacketStepValue: LuckInfo;
   onSubmitClick: () => Promise<void>;
   activeStep: RedPacketStep;
   onBack?: () => void;
   selectedType: LuckyRedPacketItem;
-  handleOnSelectedType: (item: LuckyRedPacketItem) => void;
+  assetsData: AssetsRawDataItem[];
+  // handleOnSelectedType: (item: LuckyRedPacketItem) => void;
 } & CreateRedPacketInfoProps<C>;
 
 export type CreateRedPacketViewProps<T, I, C, LuckInfo> =

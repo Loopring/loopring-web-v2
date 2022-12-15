@@ -34,6 +34,8 @@ import {
   resetTransferBanxaData,
   updateOffBanxaData,
   resetOffBanxaData,
+  resetRedPacketOrder,
+  updateRedPacketOrder,
 } from "./reducer";
 import {
   ActiveAccountData,
@@ -42,6 +44,7 @@ import {
   LAST_STEP,
   ModalDataStatus,
   NFT_MINT_VALUE,
+  RedPacketOrderData,
   TransferData,
   WithdrawData,
 } from "./interface";
@@ -140,7 +143,6 @@ export function useModalData(): {
     }>
   ) => void;
   resetOffRampData: () => void;
-
   offBanxaValue: Partial<BanxaOrder> | undefined;
   updateOffBanxaData: (
     offBanxa: Partial<{
@@ -158,6 +160,10 @@ export function useModalData(): {
   updateTransferBanxaData: (
     transferData: RequireOne<TransferData, never>
   ) => void;
+
+  redPacketOrder: RedPacketOrderData;
+  updateRedPacketOrder: (offRamp: RedPacketOrderData) => void;
+  resetRedPacketOrder: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData
@@ -301,6 +307,9 @@ export function useModalData(): {
       },
       [dispatch]
     ),
+    updateRedPacketOrder: (redPacketOrder: RedPacketOrderData) => {
+      dispatch(updateRedPacketOrder(redPacketOrder));
+    },
     resetForceWithdrawData: React.useCallback(() => {
       dispatch(resetForceWithdrawData(undefined));
     }, [dispatch]),
@@ -354,6 +363,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetOffBanxaData: React.useCallback(() => {
       dispatch(resetOffBanxaData(undefined));
+    }, [dispatch]),
+    resetRedPacketOrder: React.useCallback(() => {
+      dispatch(resetRedPacketOrder(undefined));
     }, [dispatch]),
   };
 }

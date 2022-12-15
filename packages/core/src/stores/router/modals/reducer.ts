@@ -6,6 +6,7 @@ import {
   LAST_STEP,
   ModalDataStatus,
   NFT_MINT_VALUE,
+  RedPacketOrderData,
   TransferData,
   WithdrawData,
 } from "./interface";
@@ -44,6 +45,14 @@ const initialTransferState: TransferData = {
   balance: 0,
   address: undefined,
   memo: undefined,
+  fee: undefined,
+  __request__: undefined,
+};
+
+const initialRedPacketState: RedPacketOrderData = {
+  belong: undefined as any,
+  tradeValue: 0,
+  balance: 0,
   fee: undefined,
   __request__: undefined,
 };
@@ -101,6 +110,7 @@ const initialState: ModalDataStatus = {
   nftDeployValue: { ...initialTradeNFT, broker: "" },
   activeAccountValue: initialActiveAccountState,
   forceWithdrawValue: { ...initialForceWithdrawState },
+  redPacketOrder: { ...initialRedPacketState },
 };
 
 const modalDataSlice: Slice<ModalDataStatus> = createSlice({
@@ -221,6 +231,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetOffBanxaData(state) {
       state.lastStep = LAST_STEP.default;
       state.offBanxaValue = undefined;
+    },
+    resetRedPacketOrder(state) {
+      state.lastStep = LAST_STEP.default;
+      state.redPacketOrder = { ...initialRedPacketState };
     },
     updateActiveAccountData(
       state,
@@ -549,6 +563,24 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         };
       }
     },
+    updateRedPacketOrder(state, action: PayloadAction<RedPacketOrderData>) {
+      state.lastStep = LAST_STEP.redPacketSend;
+      const { balance, tradeValue, belong, ...rest } = action.payload;
+      state.redPacketOrder = {
+        ...state.redPacketOrder,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.redPacketOrder.balance,
+        belong,
+        tradeValue,
+        ...rest,
+      } as RedPacketOrderData;
+      // state.redPacketOrder = {
+      //   ...state.redPacketOrder,
+      //   ...rest,
+      // };
+    },
   },
 });
 
@@ -572,6 +604,7 @@ export const {
   updateCollectionData,
   updateOffRampData,
   updateOffBanxaData,
+  updateRedPacketOrder,
   resetForceWithdrawData,
   resetNFTWithdrawData,
   resetNFTTransferData,
@@ -588,6 +621,7 @@ export const {
   resetCollectionData,
   resetOffRampData,
   resetOffBanxaData,
+  resetRedPacketOrder,
   resetTransferBanxaData,
   resetAll,
 } = modalDataSlice.actions;
