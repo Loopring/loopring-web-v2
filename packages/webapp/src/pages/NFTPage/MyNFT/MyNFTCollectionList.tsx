@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import { TOAST_TIME } from "@loopring-web/common-resources";
 import {
   CollectionCardList,
@@ -8,7 +8,7 @@ import {
 import { useAccount, useMyNFTCollection } from "@loopring-web/core";
 import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { WithTranslation, withTranslation } from "react-i18next";
+import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 
 const _StyledPaper = styled(Box)`
@@ -33,7 +33,15 @@ export const MyNFTCollectionList = withTranslation("common")(
         flexDirection={"column"}
       >
         <Typography variant={"body1"} marginY={2} color={"textSecondary"}>
-          {t("labelMyCollectionsDes")}
+          <Trans i18nKey={"labelMyCollectionsDes"}>
+            Legacy NFTs created in Loopring don't contain collection
+            information. We have added the feature to allow creators to import
+            the collection information so that those NFTs can be categorized
+            well.
+            <Link href="#/nft/importLegacyCollection" target={"_self"}>
+              Go to Import Collection for Legacy NFT
+            </Link>
+          </Trans>
         </Typography>
         <CollectionCardList
           noEdit={true}
