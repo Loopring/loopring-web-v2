@@ -53,10 +53,7 @@ import { BasicACoinTrade } from "./BasicACoinTrade";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { FeeToggle } from "./tool/FeeList";
 
-export enum RedPacketStep {
-  ChooseType,
-  Main,
-}
+
 const RedPacketBoxStyle = styled(Box)`
   .MuiFormGroup-root {
     align-items: flex-start;

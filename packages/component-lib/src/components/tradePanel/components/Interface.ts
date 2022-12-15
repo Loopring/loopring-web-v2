@@ -29,8 +29,11 @@ import { XOR } from "../../../types/lib";
 import { CollectionInputProps } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { TOSTOBJECT } from "../../toast";
-import { RedPacketStep } from "./CreateRedPacketWrap";
 
+export enum RedPacketStep {
+  ChooseType,
+  Main,
+}
 /**
  * private props
  */

@@ -6,6 +6,7 @@ import {
 } from "../../basic-lib";
 import {
   CreateRedPacketViewProps,
+  RedPacketStep,
   TradeBtnStatus,
   WithdrawProps,
 } from "../../tradePanel/Interface";
@@ -22,11 +23,6 @@ import {
 import React from "react";
 import { cloneDeep } from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
-import {
-  CreateRedPacketStepType,
-  CreateRedPacketStepWrap,
-  RedPacketStep,
-} from "../../tradePanel/components/CreateRedPacketWrap";
 import { Box } from "@mui/material";
 const steps = [
   "labelRedPacketChoose", //Prepare NFT metadata
@@ -97,32 +93,36 @@ export const CreateRedPackPanel = withTranslation(["common", "error"], {
           key: "selectType",
           element: React.useMemo(
             () => (
-              <CreateRedPacketStepType
-                handleOnSelectedType={handleOnSelectedType}
-                handleOnDataChange={handleOnDataChange}
-                redPacketStepValue={undefined}
-                selectedType={{
-                  labelKey: "",
-                  desKey: "",
-                  value: {
-                    value: 0,
-                    partition: sdk.LuckyTokenAmountType.RANDOM,
-                    mode: sdk.LuckyTokenClaimType.RELAY,
-                  },
-                }}
-                setActiveStep={setActiveStep}
-                btnStatus={TradeBtnStatus.AVAILABLE}
-                walletMap={undefined}
-                activeStep={RedPacketStep.ChooseType}
-              />
+              <></>
+              // <CreateRedPacketStepType
+              //   handleOnSelectedType={handleOnSelectedType}
+              //   handleOnDataChange={handleOnDataChange}
+              //   redPacketStepValue={undefined}
+              //   selectedType={{
+              //     labelKey: "",
+              //     desKey: "",
+              //     value: {
+              //       value: 0,
+              //       partition: sdk.LuckyTokenAmountType.RANDOM,
+              //       mode: sdk.LuckyTokenClaimType.RELAY,
+              //     },
+              //   }}
+              //   setActiveStep={setActiveStep}
+              //   btnStatus={TradeBtnStatus.AVAILABLE}
+              //   walletMap={undefined}
+              //   activeStep={RedPacketStep.ChooseType}
+              // />
             ),
             []
           ),
         },
         {
           key: "trade",
-          element: React.useMemo(() => <CreateRedPacketStepWrap />, []),
-          toolBarItem: React.useMemo(
+          element: React.useMemo(() => {
+            return <></>;
+            // <CreateRedPacketStepWrap />
+          } []),
+          React.useMemo(
             () => (
               <>
                 {onBack ? (
@@ -170,7 +170,7 @@ export const CreateRedPackPanel = withTranslation(["common", "error"], {
             ] as any)
           : []
       ),
-    };
+    }
     return (
       <Box
         className={walletMap ? "" : "loading"}
