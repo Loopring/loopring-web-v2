@@ -14,7 +14,7 @@ export const RedPacketPage = () => {
   const reaPacketRouter = React.useMemo(() => {
     switch (selected) {
       case "create":
-        return <CreateRedPacketPanel />;
+        return <CreateRedPacketPanel accAddr={} />;
       case "records":
         return <MyRedPacketPanel />;
       case "reader":

@@ -116,7 +116,7 @@ const BtnMain = React.memo(
 );
 export const CreateRedPacketStepType = withTranslation()(
   <T extends IBData<I>, I, C = FeeInfo, LuckInfo = any>({
-    handleOnSelectedType,
+    // handleOnSelectedType,
     handleOnDataChange,
     redPacketStepValue,
     selectedType,
@@ -167,7 +167,12 @@ export const CreateRedPacketStepType = withTranslation()(
                 }`}
                 fullWidth
                 onClick={(_e) => {
-                  handleOnSelectedType(item);
+                  // handleOnSelectedType(item);
+                  switch (item.value.value) {
+                     case ''
+                  }
+                  // TODO:
+                  handleOnDataChange({t})
                 }}
               >
                 {t(item.labelKey)}

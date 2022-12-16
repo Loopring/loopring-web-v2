@@ -7,6 +7,7 @@ import {
 import {
   CreateRedPacketViewProps,
   RedPacketStep,
+  TradeBtnStatus,
   WithdrawProps,
 } from "../../tradePanel/Interface";
 import { FeeInfo, IBData } from "@loopring-web/common-resources";
@@ -18,6 +19,9 @@ import {
 import React from "react";
 import { cloneDeep } from "lodash";
 import { Box } from "@mui/material";
+import * as sdk from "@loopring-web/loopring-sdk";
+
+import { CreateRedPacketStepType } from "../../tradePanel/components/CreateRedPacketWrap";
 const steps = [
   "labelRedPacketChoose", //Prepare NFT metadata
   "labelRedPacketMain", //labelADMint2
@@ -87,25 +91,24 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
           key: "selectType",
           element: React.useMemo(
             () => (
-              <></>
-              // <CreateRedPacketStepType
-              //   handleOnSelectedType={handleOnSelectedType}
-              //   handleOnDataChange={handleOnDataChange}
-              //   redPacketStepValue={undefined}
-              //   selectedType={{
-              //     labelKey: "",
-              //     desKey: "",
-              //     value: {
-              //       value: 0,
-              //       partition: sdk.LuckyTokenAmountType.RANDOM,
-              //       mode: sdk.LuckyTokenClaimType.RELAY,
-              //     },
-              //   }}
-              //   setActiveStep={setActiveStep}
-              //   btnStatus={TradeBtnStatus.AVAILABLE}
-              //   walletMap={undefined}
-              //   activeStep={RedPacketStep.ChooseType}
-              // />
+              <CreateRedPacketStepType
+                // handleOnSelectedType={handleOnSelectedType}
+                handleOnDataChange={handleOnDataChange}
+                redPacketStepValue={undefined}
+                selectedType={{
+                  labelKey: "",
+                  desKey: "",
+                  value: {
+                    value: 0,
+                    partition: sdk.LuckyTokenAmountType.RANDOM,
+                    mode: sdk.LuckyTokenClaimType.RELAY,
+                  },
+                }}
+                setActiveStep={setActiveStep}
+                btnStatus={TradeBtnStatus.AVAILABLE}
+                walletMap={undefined}
+                activeStep={RedPacketStep.ChooseType}
+              />
             ),
             []
           ),
