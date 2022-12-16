@@ -1179,6 +1179,8 @@ export default {
   labelL2ToL2Method: "Send {{symbol}} to L2",
   labelConfirmAgainByFailed:
     "You had a failed order, please confirm information again...",
+  labelConfirmAgainByFailedWithBalance:
+    "You had a failed order, please confirm information again, Balance of {{symbol}} is {{count}}",
   labelNFTListfav: "Favorite",
   labelNFTListhide: "Hidden",
   labelNFTListall: "Owned",

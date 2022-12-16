@@ -139,7 +139,7 @@ export const Deposit_Submit = (props: PanelProps) => {
             {props.t("labelL1toL2TO")}
           </Typography>
           <Typography variant={"body1"} color={"var(--color-text-primary)"}>
-            {props.to ? "L2: " + getShortAddr(props.to) : "Loopring L2"}
+            {props.to ? "L2: " + getShortAddr(props.to) : t("labelToMyL2")}
           </Typography>
         </Typography>
       </Box>

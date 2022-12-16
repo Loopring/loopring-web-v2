@@ -303,7 +303,7 @@ export const useDeposit = <
       } else if (depositValue.belong && walletLayer1) {
         updateData = {
           belong: depositValue.belong,
-          balance: walletLayer1[depositValue.belong].count ?? 0,
+          balance: walletLayer1[depositValue.belong]?.count ?? 0,
           tradeValue,
         };
       }

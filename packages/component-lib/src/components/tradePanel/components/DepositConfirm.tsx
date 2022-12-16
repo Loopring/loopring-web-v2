@@ -1,40 +1,36 @@
-import { WithTranslation } from "react-i18next";
-import { Box, Grid, Typography } from "@mui/material";
 import {
   IBData,
-  NFTWholeINFO,
   EmptyValueTag,
-  FeeInfo,
-  useAddressTypeLists,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { Button, Toast } from "../../index";
-import { TransferViewProps } from "./Interface";
-import { useSettings } from "../../../stores";
+import { WithTranslation } from "react-i18next";
 import React from "react";
-import { sanitize } from "dompurify";
+import { Box, Grid, Typography } from "@mui/material";
+import { Button, DepositTitle, Toast, useSettings } from "../../../index";
+import { DepositViewProps } from "./Interface";
 
-export const TransferConfirm = <
-  T extends IBData<I> & Partial<NFTWholeINFO>,
-  I,
-  C extends FeeInfo
+export const DepositConfirm = <
+  T extends {
+    referAddress?: string;
+    toAddress?: string;
+    addressError?: { error: boolean; message?: string };
+  } & IBData<I>,
+  I
 >({
   t,
-  sureItsLayer2,
-  handleConfirm,
   tradeData,
+  onDepositClick,
+  handleConfirm,
+  title,
   lastFailed,
-  onTransferClick,
-  realAddr,
-  type,
-  feeInfo,
-  memo,
-}: Partial<TransferViewProps<T, I, C>> & {
+  realToAddress,
+}: // ...rest
+DepositViewProps<T, I> & {
   handleConfirm: (index: number) => void;
 } & WithTranslation) => {
   const { isMobile } = useSettings();
-  const { walletList } = useAddressTypeLists();
   const [open, setOpen] = React.useState(false);
+
   return (
     <Grid
       className={"confirm"}
@@ -57,13 +53,7 @@ export const TransferConfirm = <
           alignItems={"center"}
           marginBottom={2}
         >
-          <Typography
-            component={"h4"}
-            variant={isMobile ? "h4" : "h3"}
-            whiteSpace={"pre"}
-          >
-            {t("labelL2toL2Title")}
-          </Typography>
+          <DepositTitle title={title ? t(title) : undefined} isHideDes={true} />
         </Box>
       </Grid>
       <Grid item xs={12}>
@@ -75,51 +65,20 @@ export const TransferConfirm = <
           <Typography
             component={"span"}
             color={"textSecondary"}
-            dangerouslySetInnerHTML={{
-              __html:
-                sanitize(
-                  type === "NFT"
-                    ? " \u2A09 " + tradeData?.name ?? "NFT"
-                    : ` ${tradeData?.belong}` ?? EmptyValueTag
-                ) ?? "",
-            }}
-          />
+            marginLeft={1 / 2}
+          >
+            {tradeData?.belong}
+          </Typography>
         </Typography>
       </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Address")}
+          {t("labelDepositTo")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {realAddr}
+          {realToAddress}
         </Typography>
       </Grid>
-      <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2AddressType")}
-        </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {walletList.find((item) => item.value === sureItsLayer2)?.label}
-        </Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Fee")}
-        </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {feeInfo?.fee + " "} {feeInfo?.belong}
-        </Typography>
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelMemo")}
-        </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {memo ?? EmptyValueTag}
-        </Typography>
-      </Grid>
-
       <Grid item marginTop={2} alignSelf={"stretch"} paddingBottom={0}>
         {lastFailed && (
           <Typography
@@ -128,10 +87,7 @@ export const TransferConfirm = <
             color={"var(--color-warning)"}
           >
             {t("labelConfirmAgainByFailedWithBalance", {
-              symbol:
-                type === "NFT"
-                  ? "NFT"
-                  : ` ${tradeData?.belong}` ?? EmptyValueTag,
+              symbol: ` ${tradeData?.belong}` ?? EmptyValueTag,
               count: tradeData?.balance,
             })}
           </Typography>
@@ -142,8 +98,8 @@ export const TransferConfirm = <
           size={"medium"}
           color={"primary"}
           onClick={async () => {
-            if (onTransferClick) {
-              await onTransferClick({ ...tradeData, memo } as unknown as T);
+            if (onDepositClick) {
+              await onDepositClick({ ...tradeData } as unknown as T);
             } else {
               setOpen(true);
             }

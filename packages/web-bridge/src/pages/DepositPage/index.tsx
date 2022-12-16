@@ -11,6 +11,7 @@ import {
   BtnInfo,
   DepositPanel,
   DepositProps,
+  SwitchPanelStyled,
   TradeBtnStatus,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -23,17 +24,25 @@ import {
 import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import _ from "lodash";
-import { useLocation } from "react-router-dom";
 
 const BoxStyle = styled(Box)`
   max-height: var(--swap-box-height);
-  width: var(--swap-box-width);
+  width: var(--modal-width);
+  & > div > div {
+    width: 100%;
+  }
+  &.mobile {
+    width: calc(var(--modal-width) + 20px);
+  }
+  .MuiToolbar-root {
+    margin-top: -24px !important;
+  }
   min-height: 320px;
   ${({ theme }) => boxLiner({ theme })};
   .depositTitle {
     font-size: ${({ theme }) => theme.fontDefault.h4};
   }
-` as typeof Box;
+` as typeof SwitchPanelStyled;
 export const DepositToPage = withTranslation(["common"])(
   ({
     t,
@@ -94,75 +103,73 @@ export const DepositToPage = withTranslation(["common"])(
       [onDepositClick]
     );
     return (
-      <>
-        {
+      <Box
+        flex={1}
+        display={"flex"}
+        justifyContent={"center"}
+        flexDirection={"column"}
+        alignItems={"center"}
+      >
+        <Box
+          display={"flex"}
+          marginBottom={5 / 2}
+          width={`calc(var(--modal-width) + ${isMobile ? 20 : 0}px )`}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
+          <LoopringIcon
+            htmlColor={"var(--color-primary)"}
+            style={{ height: "40px", width: "120px", marginTop: -10 }}
+          />
           <Box
-            flex={1}
             display={"flex"}
-            justifyContent={"center"}
+            alignItems={"flex-end"}
             flexDirection={"column"}
-            alignItems={"center"}
+            justifyContent={"center"}
           >
-            <Box
-              display={"flex"}
-              marginBottom={5 / 2}
-              width={"var(--swap-box-width)"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-            >
-              <LoopringIcon
-                htmlColor={"var(--color-primary)"}
-                style={{ height: "40px", width: "120px", marginTop: -10 }}
-              />
-              <Box
-                display={"flex"}
-                alignItems={"flex-end"}
-                flexDirection={"column"}
-                justifyContent={"center"}
+            {account.readyState !== AccountStatus.UN_CONNECT && (
+              <Typography
+                color={"var(--color-text-secondary)"}
+                marginBottom={1 / 4}
               >
-                {account.readyState !== AccountStatus.UN_CONNECT && (
-                  <Typography
-                    color={"var(--color-text-secondary)"}
-                    marginBottom={1 / 4}
-                  >
-                    {t("labelPayer")}
-                  </Typography>
-                )}
-                <Box display={"flex"} alignItems={"center"}>
-                  <WalletConnectL1Btn isShowOnUnConnect={false} />
-                </Box>
-              </Box>
+                {t("labelPayer")}
+              </Typography>
+            )}
+            <Box display={"flex"} alignItems={"center"}>
+              <WalletConnectL1Btn isShowOnUnConnect={false} />
             </Box>
-            <BoxStyle
-              display={"flex"}
-              flexDirection={"column"}
-              paddingY={isMobile ? 2 : undefined}
-              paddingTop={5 / 2}
-            >
-              <Box
-                marginTop={-4}
-                display={"flex"}
-                flex={1}
-                flexDirection={"column"}
-              >
-                <DepositPanel
-                  {...restProps}
-                  isHideDes={account.readyState === AccountStatus.UN_CONNECT}
-                  title={t(
-                    account.readyState === AccountStatus.UN_CONNECT
-                      ? "labelL1toL2TitleBridgeNoConnect"
-                      : "labelL1toL2TitleBridge"
-                  )}
-                  btnInfo={_depositBtnI18nKey}
-                  depositBtnStatus={_depositBtnStatus}
-                  onDepositClick={_onDepositClick}
-                  isNewAccount={false}
-                />
-              </Box>
-            </BoxStyle>
           </Box>
-        }
-      </>
+        </Box>
+        <BoxStyle
+          display={"flex"}
+          flexDirection={"column"}
+          paddingY={isMobile ? 2 : undefined}
+          paddingTop={5 / 2}
+          className={isMobile ? "mobile" : ""}
+        >
+          <Box
+            marginTop={-3}
+            display={"flex"}
+            flex={1}
+            flexDirection={"column"}
+          >
+            <DepositPanel
+              {...restProps}
+              isHideDes={account.readyState === AccountStatus.UN_CONNECT}
+              title={t(
+                account.readyState === AccountStatus.UN_CONNECT
+                  ? "labelL1toL2TitleBridgeNoConnect"
+                  : "labelL1toL2TitleBridge"
+              )}
+              accountReady={account?.readyState as any}
+              btnInfo={_depositBtnI18nKey}
+              depositBtnStatus={_depositBtnStatus}
+              onDepositClick={_onDepositClick}
+              isNewAccount={false}
+            />
+          </Box>
+        </BoxStyle>
+      </Box>
     );
   }
 );

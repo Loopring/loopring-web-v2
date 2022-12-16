@@ -321,6 +321,8 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
             step: AccountStep.NFTDeposit_Submit,
             info: {
               symbol: nftDepositValue?.name,
+              value: nftDepositValue.tradeValue,
+              hash: response.result,
             },
           });
           updateDepositHash(response.result, account.accAddress, undefined, {

@@ -18,6 +18,7 @@ import {
 } from "../../tradePanel/components";
 import React from "react";
 import { cloneDeep } from "lodash";
+import { DepositConfirm } from "../../tradePanel/components/DepositConfirm";
 
 export const DepositPanel = withTranslation("common", { withRef: true })(
   <
@@ -33,9 +34,11 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
     depositBtnStatus,
     walletMap = {},
     coinMap = {},
+    accountReady,
     addressDefault,
     allowTrade,
     onBack,
+    t,
     ...rest
   }: DepositProps<T, I> & WithTranslation) => {
     // const { theme } = useSettings();
@@ -45,7 +48,15 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
       walletMap,
       coinMap,
     } as any);
-    // myLog("DepositProps", rest);
+    const [panelIndex, setPanelIndex] = React.useState(index + 1);
+    const handleConfirm = (index: number) => {
+      setPanelIndex(index);
+    };
+    // const hanleConfirm = () => {};
+    React.useEffect(() => {
+      setPanelIndex(index + 1);
+    }, [index]);
+
     const getFilteredWalletMap = React.useCallback(() => {
       if (walletMap) {
         const clonedWalletMap = cloneDeep(walletMap);
@@ -73,9 +84,40 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
       return {};
     }, [coinMap, getFilteredWalletMap]);
 
-    const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
-      index: index, // show default show
+    const props: SwitchPanelProps<"tradeMenuList" | "trade" | "confirm"> = {
+      index: panelIndex, // show default show
       panelList: [
+        {
+          key: "confirm",
+          element: React.useMemo(
+            () => (
+              // @ts-ignore
+              <DepositConfirm
+                {...{
+                  ...rest,
+                  t,
+                  realToAddress: rest.isAllowInputToAddress
+                    ? rest.realToAddress
+                    : t("labelToMyL2"),
+                  tradeData: switchData.tradeData,
+                  onDepositClick,
+                  handleConfirm,
+                }}
+              />
+            ),
+            [rest, handleConfirm, onDepositClick, type, switchData.tradeData]
+          ),
+          toolBarItem: (
+            <ModalBackButton
+              marginTop={0}
+              marginLeft={-2}
+              onBack={() => {
+                setPanelIndex(1);
+              }}
+              {...rest}
+            />
+          ),
+        },
         {
           key: "trade",
           // onBack,
@@ -86,16 +128,19 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                 key={"trade"}
                 {...{
                   ...rest,
+                  t,
                   type,
                   tradeData: switchData.tradeData,
                   onChangeEvent,
                   disabled: !!rest.disabled,
+                  handleConfirm,
                   onDepositClick,
                   depositBtnStatus,
                   walletMap,
                   coinMap,
                   addressDefault,
                   allowTrade,
+                  accountReady,
                 }}
               />
             ),
@@ -103,7 +148,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
               rest,
               switchData.tradeData,
               onChangeEvent,
-              onDepositClick,
+              // onDepositClick,
               depositBtnStatus,
               walletMap,
               coinMap,
@@ -140,6 +185,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                 {...{
                   nonZero: false,
                   sorted: true,
+                  t,
                   ...rest,
                   onChangeEvent,
                   //rest.walletMap,
@@ -164,7 +210,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
         },
       ],
     };
-    return <SwitchPanel {...{ ...rest, ...props }} />;
+    return <SwitchPanel {...{ ...rest, t, ...props }} />;
   }
 ) as <T, I>(
   props: DepositProps<T, I> & React.RefAttributes<any>

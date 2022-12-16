@@ -996,7 +996,7 @@ export default {
   labelCollectionItemValue: "Item: {{value}}",
   labelCollectionItemSimpleValue: " \u2A09 {{value}}",
   labelMyCollectionsDes:
-    "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information. Until it happens, the previous NFTs will be categorized to collection named by their associated contract address.",
+    "Legacy NFTs created in Loopring don't contain collection information. We have added the feature to allow creators to import the collection information so that those NFTs can be categorized well. <1>Go to Import Collection for Legacy NFT</1>",
   labelNFTGuid:
     "Please fill in the appropriate collection metadata field value in your NFT metadata with this string first, then upload it to IPFS to retrieve the CID to continue. <1>view more </1>",
   labelChooseCollectionTooltips:
@@ -1192,6 +1192,8 @@ export default {
   labelL2ToL2Method: "Send {{symbol}} to L2",
   labelConfirmAgainByFailed:
     "You had a failed order, please confirm information again...",
+  labelConfirmAgainByFailedWithBalance:
+    "You had a failed order, please confirm information again, Balance of {{symbol}} is {{count}}",
   labelNFTListfav: "Favorite",
   labelNFTListhide: "Hidden",
   labelNFTListall: "Owned",
@@ -1264,6 +1266,8 @@ export default {
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyCommonToken: "Normal Red Packet",
+  labelToMyL2: "My Loopring L2",
+  labelL1toL2NFTAmount: "NFT Amount",
   labelInputRedPacketBtnLabel: "Select Token",
   labelCreateRedPacket: "Send Red Packet",
   labelMyRedPacket: " My Red Packet Record",

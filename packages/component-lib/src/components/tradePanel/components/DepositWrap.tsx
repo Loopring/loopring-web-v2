@@ -6,6 +6,7 @@ import {
   LoadingIcon,
   SoursURL,
   AddressError,
+  AccountStatus,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
@@ -24,6 +25,8 @@ import * as sdk from "@loopring-web/loopring-sdk";
 
 export const DepositWrap = <
   T extends {
+    accountReady?: AccountStatus;
+
     referAddress?: string;
     toAddress?: string;
     addressError?: { error: boolean; message?: string };
@@ -40,6 +43,7 @@ export const DepositWrap = <
   description,
   btnInfo,
   depositBtnStatus,
+  accountReady,
   onDepositClick,
   isNewAccount,
   handleError,
@@ -47,6 +51,7 @@ export const DepositWrap = <
   chargeFeeTokenList,
   onChangeEvent,
   handleClear,
+  handleConfirm,
   isAllowInputToAddress,
   toIsAddressCheckLoading,
   // toIsLoopringAddress,
@@ -59,8 +64,12 @@ export const DepositWrap = <
   referStatus,
   wait = globalSetup.wait,
   allowTrade,
+
   ...rest
-}: DepositViewProps<T, I> & WithTranslation) => {
+}: DepositViewProps<T, I> & {
+  accountReady?: AccountStatus;
+  handleConfirm: (index: number) => void;
+} & WithTranslation) => {
   const inputBtnRef = React.useRef();
   let { feeChargeOrder, isMobile } = useSettings();
   const [minFee, setMinFee] =
@@ -452,7 +461,9 @@ export const DepositWrap = <
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            onDepositClick(tradeData);
+            accountReady == AccountStatus.UN_CONNECT
+              ? onDepositClick(tradeData)
+              : handleConfirm && handleConfirm(0);
           }}
           loading={
             !getDisabled && depositBtnStatus === TradeBtnStatus.LOADING

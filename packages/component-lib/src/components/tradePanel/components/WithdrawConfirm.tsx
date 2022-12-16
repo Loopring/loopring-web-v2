@@ -1,4 +1,4 @@
-import { WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
 import {
   IBData,
@@ -19,18 +19,19 @@ export const WithdrawConfirm = <
   I,
   C extends FeeInfo
 >({
-  t,
   handleConfirm,
   tradeData,
   onWithdrawClick,
   realAddr,
+  lastFailed,
   type,
   feeInfo,
   isToMyself,
   sureIsAllowAddress,
 }: Partial<WithdrawViewProps<T, I, C>> & {
   handleConfirm: (index: number) => void;
-} & WithTranslation) => {
+}) => {
+  const { t } = useTranslation();
   const { isMobile } = useSettings();
   const [open, setOpen] = React.useState(false);
   const { nonExchangeList, exchangeList } = useAddressTypeLists();
@@ -131,6 +132,21 @@ export const WithdrawConfirm = <
       </Grid>
 
       <Grid item marginTop={2} alignSelf={"stretch"} paddingBottom={0}>
+        {lastFailed && (
+          <Typography
+            paddingBottom={1}
+            textAlign={"center"}
+            color={"var(--color-warning)"}
+          >
+            {t("labelConfirmAgainByFailedWithBalance", {
+              symbol:
+                type === "NFT"
+                  ? "NFT"
+                  : ` ${tradeData?.belong}` ?? EmptyValueTag,
+              count: tradeData?.balance,
+            })}
+          </Typography>
+        )}
         <Button
           fullWidth
           variant={"contained"}
