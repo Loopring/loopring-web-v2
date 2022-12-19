@@ -9,6 +9,7 @@ import { useSettings } from "../stores";
 // @ts-ignore
 export const boxLiner = (_props: { theme: Theme }) => css`
   background: var(--color-box-linear);
+  textarea,
   .coinInput-wrap,
   .btnInput-wrap,
   .MuiOutlinedInput-root {
@@ -18,6 +19,7 @@ export const boxLiner = (_props: { theme: Theme }) => css`
       border-color: var(--color-border-hover);
     }
   }
+
   .MuiToolbar-root .MuiButtonBase-root.outlined {
     background-color: var(--field-opacity);
   }
@@ -399,6 +401,17 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
       font-size: ${({ theme }) => theme.fontDefault.h6};
     }
   }
+  &.redPacketType {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    text-indent: 0em;
+    text-align: left;
+    padding: ${({ theme }) => theme.unit * 2}px;
+    .mainTitlte {
+    }
+  }
 
   &.provider {
     justify-content: space-between;
@@ -419,6 +432,12 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     color: var(--color-text-button-select);
   }
   &.selected {
+    &.redPacketType {
+      border: 1px solid var(--color-border-select);
+      &:after {
+        display: none;
+      }
+    }
     position: relative;
     background: var(--provider-hover);
     border-color: var(--opacity);

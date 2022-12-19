@@ -1458,3 +1458,14 @@ export const ViewHistoryIcon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
+export const ScanQRIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon {...props} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M5.5 19.5V15.5H3.5V19.5V21.5H5.5H9.5V19.5H5.5ZM5.5 4.5H9.5V2.5H5.5H3.5V4.5V8.5H5.5V4.5ZM18.5 4.5V8.5H20.5V4.5V2.5H18.5H14.5V4.5H18.5ZM18.5 19.5H14.5V21.5H18.5H20.5V19.5V15.5H18.5V19.5ZM1.5 13H22.5V11H1.5V13Z"
+      />
+    </SvgIcon>
+  );
+};

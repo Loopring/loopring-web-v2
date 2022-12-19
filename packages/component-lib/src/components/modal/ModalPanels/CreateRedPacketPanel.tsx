@@ -1,13 +1,8 @@
 import { WithTranslation, withTranslation } from "react-i18next";
+import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
 import {
-  ModalBackButton,
-  SwitchPanel,
-  SwitchPanelProps,
-} from "../../basic-lib";
-import {
-  CreateRedPacketViewProps,
+  CreateRedPacketProps,
   RedPacketStep,
-  TradeBtnStatus,
   WithdrawProps,
 } from "../../tradePanel/Interface";
 import { FeeInfo, IBData } from "@loopring-web/common-resources";
@@ -18,36 +13,54 @@ import {
 } from "../../tradePanel/components";
 import React from "react";
 import { cloneDeep } from "lodash";
-import { Box } from "@mui/material";
-import * as sdk from "@loopring-web/loopring-sdk";
 
-import { CreateRedPacketStepType } from "../../tradePanel/components/CreateRedPacketWrap";
+import {
+  CreateRedPacketStepType,
+  CreateRedPacketStepWrap,
+} from "../../tradePanel/components/CreateRedPacketWrap";
+import { RedPacketOrderData } from "@loopring-web/core";
+import { Box, styled } from "@mui/material";
 const steps = [
   "labelRedPacketChoose", //Prepare NFT metadata
   "labelRedPacketMain", //labelADMint2
 ];
+const BoxStyle = styled(Box)`
+  &.createRedPacket {
+    .container {
+      align-items: center;
+      display: flex;
+    }
+    //div {
+    //
+    //
+    //}
+  }
+`;
 export const CreateRedPacketPanel = withTranslation(["common", "error"], {
   withRef: true,
 })(
-  <T extends IBData<I>, I, LuckInfo, C = FeeInfo>({
-    type = "TOKEN",
-    chargeFeeTokenList,
-    onSubmitClick,
-    // handleOnSelectedType,
-    btnStatus,
-    assetsData,
+  <
+    T extends Partial<RedPacketOrderData<I>>,
+    I extends any,
+    LuckInfo,
+    C = FeeInfo
+  >({
+    tradeType = "TOKEN",
+    tradeData,
     handleOnDataChange,
     walletMap = {},
     coinMap = {},
-    onBack,
     t,
     ...rest
-  }: CreateRedPacketViewProps<T, I, LuckInfo, C> &
+  }: CreateRedPacketProps<T, I, LuckInfo, C> &
     WithTranslation & { assetsData: any[] }) => {
+    const onBack = React.useCallback(() => {
+      setPanelIndex(0);
+    }, []);
     const { onChangeEvent, index, switchData } = useBasicTrade({
       ...rest,
       coinMap,
-      type,
+      type: tradeType,
       // index,
       walletMap,
     } as any);
@@ -83,6 +96,15 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
       });
       return clonedWalletMap;
     }, [walletMap]);
+    const handleError = ({ belong, balance, tradeValue }: IBData<I>) => {
+      if (typeof tradeValue !== "undefined" && (balance ?? 0 < tradeValue)) {
+        return {
+          error: true,
+          message: `Not enough ${belong} perform a deposit`,
+        };
+      }
+      return { error: false };
+    };
 
     const props: SwitchPanelProps<string> = {
       index: panelIndex,
@@ -91,56 +113,70 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
           key: "selectType",
           element: React.useMemo(
             () => (
+              // @ts-ignore
               <CreateRedPacketStepType
-                // handleOnSelectedType={handleOnSelectedType}
-                handleOnDataChange={handleOnDataChange}
+                handleError={handleError as any}
+                handleOnDataChange={handleOnDataChange as any}
                 redPacketStepValue={undefined}
-                selectedType={{
-                  labelKey: "",
-                  desKey: "",
-                  value: {
-                    value: 0,
-                    partition: sdk.LuckyTokenAmountType.RANDOM,
-                    mode: sdk.LuckyTokenClaimType.RELAY,
-                  },
-                }}
                 setActiveStep={setActiveStep}
-                btnStatus={TradeBtnStatus.AVAILABLE}
-                walletMap={undefined}
                 activeStep={RedPacketStep.ChooseType}
+                tradeData={tradeData as any}
+                tradeType={tradeType}
+                {...{ ...rest }}
               />
             ),
             []
           ),
+          toolBarItem: undefined,
         },
         {
           key: "trade",
           element: React.useMemo(() => {
-            return <></>;
-            // <CreateRedPacketStepWrap />
+            return (
+              // @ts-ignore
+              <CreateRedPacketStepWrap
+                onBack={onBack}
+                handleError={handleError as any}
+                handleOnDataChange={handleOnDataChange as any}
+                redPacketStepValue={undefined}
+                tradeType={tradeType}
+                onChangeEvent={onChangeEvent as any}
+                setActiveStep={setActiveStep}
+                activeStep={RedPacketStep.ChooseType}
+                tradeData={tradeData as any}
+                {...{ ...rest }}
+              />
+            );
           }, []),
-          toolBarItem: React.useMemo(
-            () => (
-              <>
-                {onBack ? (
-                  <ModalBackButton
-                    marginTop={0}
-                    marginLeft={-2}
-                    onBack={() => {
-                      onBack();
-                    }}
-                    {...rest}
-                  />
-                ) : (
-                  <></>
-                )}
-              </>
-            ),
-            [onBack]
-          ),
+          toolBarItem: undefined,
+          // React.useMemo(
+          // () => (
+          //   <>
+          //     {onBack ? (
+          //       <ModalBackButton
+          //         marginTop={0}
+          //         marginLeft={-2}
+          //         onBack={() => {
+          //           onBack();
+          //         }}
+          //         {...rest}
+          //       />
+          //     ) : (
+          //       // @ts-ignore
+          //       <CreateRedPacketStepWrap
+          //         handleError={handleError as any}
+          //         tradeData={tradeData as any}
+          //         handleOnDataChange={handleOnDataChange as any}
+          //         {...{ ...rest }}
+          //       />
+          //     )}
+          //   </>
+          // ),
+          // [onBack]
+          // ),
         },
       ].concat(
-        type === "TOKEN"
+        tradeType === "TOKEN"
           ? ([
               {
                 key: "tradeMenuList",
@@ -150,12 +186,13 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
                       {...({
                         nonZero: true,
                         sorted: true,
-                        ...rest,
                         onChangeEvent,
-                        coinMap,
                         selected: switchData.tradeData.belong,
                         tradeData: switchData.tradeData,
                         walletMap: getWalletMapWithoutLP(),
+                        t,
+                        ...rest,
+                        coinMap,
                         //oinMap
                       } as any)}
                     />
@@ -169,8 +206,8 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
       ),
     };
     return (
-      <Box
-        className={walletMap ? "" : "loading"}
+      <BoxStyle
+        className={walletMap ? "createRedPacket" : "loading createRedPacket"}
         display={"flex"}
         flex={1}
         flexDirection={"column"}
@@ -182,7 +219,7 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
           steps={steps}
         />
         <SwitchPanel {...{ ...rest, t, ...props }} />
-      </Box>
+      </BoxStyle>
     );
   }
 ) as unknown as <T, I>(

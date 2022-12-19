@@ -121,6 +121,7 @@ import {
   ApprovalIcon,
   LockGuardianIcon,
   ViewHistoryIcon,
+  ScanQRIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -252,6 +253,7 @@ const listIcon = [
   <ApprovalIcon />,
   <LockGuardianIcon />,
   <ViewHistoryIcon />,
+  <ScanQRIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

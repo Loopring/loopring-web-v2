@@ -65,6 +65,12 @@ import {
   NFTWithdraw_WaitForAuth,
   NoAccount,
   QRAddressPanel,
+  RedPacketSend_Failed,
+  RedPacketSend_First_Method_Denied,
+  RedPacketSend_In_Progress,
+  RedPacketSend_Submit,
+  RedPacketSend_User_Denied,
+  RedPacketSend_WaitForAuth,
   SendAsset,
   SendAssetItem,
   SendNFTAsset,
@@ -1159,6 +1165,113 @@ export function useAccountModalForUI({
           />
         ),
       },
+
+      [AccountStep.RedPacketSend_WaitForAuth]: {
+        view: (
+          <RedPacketSend_WaitForAuth
+            symbol={nftDeployValue.name}
+            value={nftDeployValue.tradeValue}
+            chainInfos={chainInfos}
+            updateDepositHash={updateDepositHash}
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+
+      [AccountStep.RedPacketSend_First_Method_Denied]: {
+        view: (
+          <RedPacketSend_First_Method_Denied
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                nftDeployProps.onNFTDeployClick(nftDeployValue as any);
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+      [AccountStep.RedPacketSend_In_Progress]: {
+        view: (
+          <RedPacketSend_In_Progress
+            btnInfo={{
+              btnTxt: "labelTryAnother",
+              callback: () => {
+                nftDeployProps.onNFTDeployClick(nftDeployValue as any, false);
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.RedPacketSend_User_Denied]: {
+        view: (
+          <RedPacketSend_User_Denied
+            {...{
+              ...rest,
+              account,
+              ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.RedPacketSend_Failed]: {
+        view: (
+          <RedPacketSend_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              ...nftDeployValue,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+      [AccountStep.RedPacketSend_Submit]: {
+        view: (
+          <RedPacketSend_Submit
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+
       [AccountStep.NFTDeploy_WaitForAuth]: {
         view: (
           <NFTDeploy_WaitForAuth

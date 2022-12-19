@@ -161,8 +161,8 @@ export function useModalData(): {
     transferData: RequireOne<TransferData, never>
   ) => void;
 
-  redPacketOrder: RedPacketOrderData;
-  updateRedPacketOrder: (offRamp: RedPacketOrderData) => void;
+  redPacketOrder: RedPacketOrderData<any>;
+  updateRedPacketOrder: (offRamp: RedPacketOrderData<any>) => void;
   resetRedPacketOrder: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
@@ -307,7 +307,7 @@ export function useModalData(): {
       },
       [dispatch]
     ),
-    updateRedPacketOrder: (redPacketOrder: RedPacketOrderData) => {
+    updateRedPacketOrder: (redPacketOrder: RedPacketOrderData<any>) => {
       dispatch(updateRedPacketOrder(redPacketOrder));
     },
     resetForceWithdrawData: React.useCallback(() => {

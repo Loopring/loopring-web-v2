@@ -5,7 +5,7 @@ import { useSettings } from "@loopring-web/component-lib";
 
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { BackIcon, QRIcon } from "@loopring-web/common-resources";
+import { BackIcon, QRIcon, ScanQRIcon } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 
 export const RedPacketMarketPanel = () => {
@@ -18,6 +18,7 @@ export const RedPacketMarketPanel = () => {
     <Box
       flex={1}
       display={"flex"}
+      flexDirection={"column"}
       sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
     >
       <Box
@@ -32,34 +33,35 @@ export const RedPacketMarketPanel = () => {
           size={"medium"}
           sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
-          onClick={() => history.push("./l2assets")}
+          onClick={() => history.push("/l2assets")}
         >
           {t("labelRedPacketMarkets")}
         </Button>
         <Box display={"flex"} alignItems={"center"} justifyContent={"flex-end"}>
           <Button
-            startIcon={<BackIcon fontSize={"small"} />}
-            variant={"text"}
+            variant={"outlined"}
             size={"medium"}
-            sx={{ color: "var(--color-text-secondary)" }}
             color={"inherit"}
-            onClick={() => history.push("./redpacket/create")}
+            sx={{ marginLeft: 1 }}
+            onClick={() => history.push("/redpacket/create")}
           >
             {t("labelCreateRedPacket")}
           </Button>
           <Button
             variant={"outlined"}
-            size={"small"}
+            size={"medium"}
             color={"inherit"}
-            onClick={() => history.push("./redpacket/records")}
+            sx={{ marginLeft: 1 }}
+            onClick={() => history.push("/redpacket/records")}
           >
             {t("labelMyRedPacket")}
           </Button>
           <Button
-            startIcon={<QRIcon fontSize={"small"} />}
+            startIcon={<ScanQRIcon fontSize={"small"} />}
             variant={"contained"}
             size={"small"}
-            onClick={() => history.push("./l2assets/reader")}
+            sx={{ marginLeft: 1 }}
+            onClick={() => history.push("/l2assets/reader")}
           >
             {t("labelRedPacketQRCodeImport")}
           </Button>

@@ -15,7 +15,6 @@ import {
 import {
   TextField,
   Button,
-  BtnInfo,
   MenuItem,
   CollectionInput,
   EmptyDefault,
@@ -25,7 +24,7 @@ import { useSettings } from "../../../stores";
 import { CollectionManageWrap } from "./CollectionManageWrap";
 import { NFTMedia } from "../../block";
 import { useHistory } from "react-router-dom";
-import { HorizontalLabelPositionBelowStepper } from "./tool";
+import { BtnMain, HorizontalLabelPositionBelowStepper } from "./tool";
 
 const MintAdStyle = styled(Box)`
   .MuiFormGroup-root {
@@ -82,37 +81,6 @@ export const ImportCollectionWrap = <
     selectNFTList,
   } = data;
   // myLog("ImportCollectionWrap", contractList);
-  const btnMain = ({
-    defaultLabel = "labelMintNext",
-    btnInfo,
-    disabled,
-    onClick,
-    fullWidth,
-  }: {
-    defaultLabel?: string;
-    btnInfo?: BtnInfo;
-    disabled: () => boolean;
-    onClick: () => void;
-    fullWidth?: boolean;
-  }) => {
-    return (
-      <Button
-        variant={"contained"}
-        size={"medium"}
-        color={"primary"}
-        fullWidth={fullWidth}
-        className={"step"}
-        endIcon={
-          <BackIcon fontSize={"small"} sx={{ transform: "rotate(180deg)" }} />
-        }
-        loading={!disabled() && onLoading ? "true" : "false"}
-        disabled={disabled()}
-        onClick={onClick}
-      >
-        {btnInfo ? t(btnInfo.label, btnInfo.params) : t(defaultLabel)}
-      </Button>
-    );
-  };
 
   const panelList: Array<{
     view: JSX.Element;
@@ -271,17 +239,21 @@ export const ImportCollectionWrap = <
               display={"flex"}
               justifyContent={"space-between"}
             >
-              {btnMain({
-                defaultLabel: "labelContinue",
-                fullWidth: true,
-                disabled: () => {
-                  return disabled || !selectContract || !selectContract?.total;
-                },
-                onClick: () => {
-                  setStep(ImportCollectionStep.SELECTCOLLECTION);
-                  onContractNext(selectContract?.value ?? "");
-                },
-              })}
+              <BtnMain
+                {...{
+                  defaultLabel: "labelContinue",
+                  fullWidth: true,
+                  disabled: () => {
+                    return (
+                      disabled || !selectContract || !selectContract?.total
+                    );
+                  },
+                  onClick: () => {
+                    setStep(ImportCollectionStep.SELECTCOLLECTION);
+                    onContractNext(selectContract?.value ?? "");
+                  },
+                }}
+              />
             </Box>
           </Box>
         ),
@@ -387,17 +359,19 @@ export const ImportCollectionWrap = <
                     {t(`labelMintBack`)}
                   </Button>
 
-                  {btnMain({
-                    defaultLabel: "labelMintNext",
-                    btnInfo: undefined, //btnInfo,
-                    disabled: () => {
-                      return disabled || !selectCollection;
-                    },
-                    onClick: () => {
-                      setStep(ImportCollectionStep.SELECTNFT);
-                      selectCollection && onCollectionNext(selectCollection);
-                    },
-                  })}
+                  <BtnMain
+                    {...{
+                      defaultLabel: "labelMintNext",
+                      btnInfo: undefined, //btnInfo,
+                      disabled: () => {
+                        return disabled || !selectCollection;
+                      },
+                      onClick: () => {
+                        setStep(ImportCollectionStep.SELECTNFT);
+                        selectCollection && onCollectionNext(selectCollection);
+                      },
+                    }}
+                  />
                 </Box>
               </>
             ) : (
@@ -486,16 +460,18 @@ export const ImportCollectionWrap = <
               >
                 {t(`labelMintBack`)}
               </Button>
-              {btnMain({
-                defaultLabel: t("labelDoneBtn"),
-                btnInfo: undefined,
-                disabled: () => {
-                  return disabled || !selectCollection;
-                },
-                onClick: () => {
-                  history.push("/nft/myCollection");
-                },
-              })}
+              <BtnMain
+                {...{
+                  defaultLabel: t("labelDoneBtn"),
+                  btnInfo: undefined,
+                  disabled: () => {
+                    return disabled || !selectCollection;
+                  },
+                  onClick: () => {
+                    history.push("/nft/myCollection");
+                  },
+                }}
+              />
             </Box>
           </Box>
         ),
@@ -507,7 +483,6 @@ export const ImportCollectionWrap = <
     contractList,
     onLoading,
     isMobile,
-    btnMain,
     collectionInputProps,
     selectCollection,
     baseURL,

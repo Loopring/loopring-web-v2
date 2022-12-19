@@ -70,7 +70,7 @@ export type NFT_MINT_VALUE<I> = {
   collection?: Partial<CollectionMeta>;
   error?: undefined | sdk.RESULT_INFO;
 };
-export type RedPacketOrderData<I = any> = IBData<I> & {
+export type RedPacketOrderData<I> = IBData<I> & {
   fee: FeeInfo | undefined;
   __request__: any;
 } & Partial<sdk.LuckyTokenItemForSend>;
@@ -105,7 +105,7 @@ export type ModalDataStatus = {
         };
       }>
     | undefined;
-  redPacketOrder: RedPacketOrderData;
+  redPacketOrder: RedPacketOrderData<any>;
 };
 
 export enum LAST_STEP {

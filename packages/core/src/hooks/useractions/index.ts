@@ -21,3 +21,4 @@ export * from "./useDualTrade";
 export * from "./useEditCollection";
 export * from "./useRampConfirm";
 export * from "./useBanxaConfirm";
+export * from "./useCreateRedPacket";

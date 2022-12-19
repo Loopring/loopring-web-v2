@@ -40,6 +40,22 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     }  
          
   `}
+  .createRedPacket & {
+    width: 100%;
+    .container {
+      > div {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        .redPacket {
+          justify-content: center;
+        }
+      }
+      //width: 100%;
+      //justify-content: center;
+    }
+  }
   ${({ theme }) => toolBarPanel({ theme })}
   border-radius: ${({ theme }) => theme.unit}px;
   .react-swipeable-view-container {

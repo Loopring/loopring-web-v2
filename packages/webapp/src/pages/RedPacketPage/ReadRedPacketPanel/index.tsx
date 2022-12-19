@@ -23,7 +23,7 @@ export const ReadRedPacketPanel = () => {
       <Box display={"flex"} flexDirection={isMobile ? "column" : "row"}>
         <Button
           onClick={() => {
-            history.push("/redpacket/market");
+            history.push("/redpacket/markets");
           }}
           startIcon={<AddIcon />}
           variant={"contained"}

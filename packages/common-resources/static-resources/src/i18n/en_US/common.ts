@@ -1264,8 +1264,12 @@ export default {
   labelLuckyTokenViewTypeDesPrivate:
     "Your gift packet is shared privately by you via your custom QR code for others to receive.",
   labelLuckyRelayToken: "Relay Red Packet",
+  labelLuckyRelayTokenDes:
+    "  If the recipient of the gift also re-shares the packet, they get half of whatever the next person receives as well.",
   labelLuckyRandomToken: "Lucky Red Packet",
+  labelLuckyRandomTokenDes: "Each recipient will get a random amount of.",
   labelLuckyCommonToken: "Normal Red Packet",
+  labelLuckyCommonTokenDes: "Each recipient will receive a pre-set split of.",
   labelToMyL2: "My Loopring L2",
   labelL1toL2NFTAmount: "NFT Amount",
   labelInputRedPacketBtnLabel: "Select Token",
@@ -1273,4 +1277,23 @@ export default {
   labelMyRedPacket: " My Red Packet Record",
   labelRedPacketMarkets: "Red Packet Markets",
   labelRedPacketQRCodeImport: "Receive Red Packet",
+  labelLuckyTokenViewType0: "Private Red Packet",
+  labelLuckyTokenViewTypeDes0:
+    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
+  labelLuckyTokenViewType1: "Public Red Packet",
+  labelLuckyTokenViewTypeDes1:
+    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
+  labelRedPacketSendTitle: "Lucky Red Packet",
+  labelSplit: "Split",
+  labelRedPacketMemo: "Memo",
+  labelRedPacketStart: "Active Time",
+  labelRedpacketSendWaitForAuth:
+    "Please confirm to send red packet {{value}} {{symbol}}.",
+  labelRedpacketSendDenied:
+    "You rejected to send {{value}} {{symbol}} red packet.",
+  labelRedpacketSendFailed: "Send red packet of {{value}} {{symbol}} failed!",
+  labelRedpacketSendSubmit: "Send red packet has been submitted. <1></1>",
+  labelRedPacketRecordTitle: "My Red Packet Record",
+  labelRedPacketReceived: "Received",
+  labelRedPacketSend: "Send",
 };

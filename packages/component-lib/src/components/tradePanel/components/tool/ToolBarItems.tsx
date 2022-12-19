@@ -1,10 +1,12 @@
 import { Grid, Step, StepLabel, Stepper } from "@mui/material";
-import { DropDownIcon } from "@loopring-web/common-resources";
-import { SwitchData } from "../../Interface";
+import { BackIcon, DropDownIcon } from "@loopring-web/common-resources";
+import { SwitchData, TradeBtnStatus } from "../../Interface";
 import { IconButtonStyled } from "../Styled";
 import { useTranslation } from "react-i18next";
 import { useSettings } from "../../../../stores";
+import { BtnInfo, Button } from "../../../index";
 import styled from "@emotion/styled";
+import React from "react";
 
 export const ToolBarItemBack = <T extends any>({
   onChangeEvent,
@@ -64,3 +66,42 @@ export function HorizontalLabelPositionBelowStepper({
     </>
   );
 }
+
+export const BtnMain = React.memo(
+  ({
+    defaultLabel = "labelMintNext",
+    btnInfo,
+    disabled,
+    onClick,
+    btnStatus,
+    fullWidth,
+  }: {
+    defaultLabel?: string;
+    btnInfo?: BtnInfo;
+    disabled: () => boolean;
+    onClick: () => void;
+    fullWidth?: boolean;
+    btnStatus?: keyof typeof TradeBtnStatus;
+  }) => {
+    const { t } = useTranslation();
+    return (
+      <Button
+        variant={"contained"}
+        size={"medium"}
+        color={"primary"}
+        fullWidth={fullWidth}
+        className={"step"}
+        endIcon={
+          <BackIcon fontSize={"small"} sx={{ transform: "rotate(180deg)" }} />
+        }
+        loading={
+          !disabled() && btnStatus === TradeBtnStatus.LOADING ? "true" : "false"
+        }
+        disabled={disabled() || btnStatus === TradeBtnStatus.LOADING}
+        onClick={onClick}
+      >
+        {btnInfo ? t(btnInfo.label, btnInfo.params) : t(defaultLabel)}
+      </Button>
+    );
+  }
+);

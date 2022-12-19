@@ -49,11 +49,17 @@ const initialTransferState: TransferData = {
   __request__: undefined,
 };
 
-const initialRedPacketState: RedPacketOrderData = {
+const initialRedPacketState: RedPacketOrderData<any> = {
   belong: undefined as any,
   tradeValue: 0,
   balance: 0,
   fee: undefined,
+  type: {
+    partition: sdk.LuckyTokenAmountType.AVERAGE,
+    mode: sdk.LuckyTokenClaimType.RELAY,
+    scope: sdk.LuckyTokenViewType.PRIVATE,
+  },
+
   __request__: undefined,
 };
 
@@ -575,7 +581,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         belong,
         tradeValue,
         ...rest,
-      } as RedPacketOrderData;
+      } as RedPacketOrderData<any>;
       // state.redPacketOrder = {
       //   ...state.redPacketOrder,
       //   ...rest,

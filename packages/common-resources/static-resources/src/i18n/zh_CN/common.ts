@@ -1255,4 +1255,5 @@ export default {
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyCommonToken: "Normal Red Packet",
   labelInputRedpacket: "Select Token",
+  labelReaPacketTitle: "Send Red Packet",
 };

@@ -21,7 +21,6 @@ import {
   GET_IPFS_STRING,
   Account,
   BanxaOrder,
-  LuckyRedPacketItem,
   AssetsRawDataItem,
   AccountStatus,
 } from "@loopring-web/common-resources";
@@ -100,20 +99,27 @@ export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
   disabled?: boolean;
   //
 };
-export type CreateRedPacketExtendsProps<T, C, LuckInfo> = {
-  setActiveStep?: (step: RedPacketStep) => void;
+export type CreateRedPacketExtendsProps<T, F, LuckInfo> = {
+  tradeType: "TOKEN" | "NFT";
+  setActiveStep: (step: RedPacketStep) => void;
   handleOnDataChange: (value: Partial<T>) => void;
   redPacketStepValue: LuckInfo;
+  handleFeeChange: (value: F) => void;
   onSubmitClick: () => Promise<void>;
   activeStep: RedPacketStep;
   onBack?: () => void;
-  selectedType: LuckyRedPacketItem;
+  // selectedType: LuckyRedPacketItem;
   assetsData: AssetsRawDataItem[];
   // handleOnSelectedType: (item: LuckyRedPacketItem) => void;
-} & CreateRedPacketInfoProps<C>;
+} & CreateRedPacketInfoProps<F>;
 
-export type CreateRedPacketViewProps<T, I, C, LuckInfo> =
-  CreateRedPacketExtendsProps<T, C, LuckInfo> & BasicACoinTradeViewProps<T, I>;
+export type CreateRedPacketViewProps<T, I, F, LuckInfo> =
+  CreateRedPacketExtendsProps<T, F, LuckInfo> & BasicACoinTradeViewProps<T, I>;
+
+export type CreateRedPacketProps<T, I, C, LuckInfo> = Partial<
+  CreateRedPacketExtendsProps<T, C, LuckInfo>
+> &
+  Omit<Partial<BasicACoinTradeProps<T, I>>, "type">;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
   TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;
