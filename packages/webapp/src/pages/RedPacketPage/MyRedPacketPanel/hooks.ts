@@ -25,11 +25,10 @@ import {
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
-} from "../../common-resources";
+} from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 import { DUAL_TYPE, GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
 import BigNumber from "bignumber.js";
-import { Limit } from "./useDualAsset";
 
 export type TxsFilterProps = {
   // accountId: number;
