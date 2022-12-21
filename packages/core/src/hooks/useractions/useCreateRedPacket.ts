@@ -53,9 +53,9 @@ export const useCreateRedPacket = <
 
   const {
     setShowAccount,
-    modals: {
-      isShowAccount: { info },
-    },
+    // modals: {
+    //   isShow: { info },
+    // },
   } = useOpenModals();
   const { redPacketOrder, resetRedPacketOrder, updateRedPacketOrder } =
     useModalData();
@@ -408,7 +408,7 @@ export const useCreateRedPacket = <
     handleOnDataChange,
     walletMap,
     coinMap: totalCoinMap,
-    feeInfo: redPacketOrder.fee,
+    feeInfo: redPacketOrder.fee ?? feeInfo,
     handleFeeChange,
     tradeData: redPacketOrder,
 
