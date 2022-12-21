@@ -2,6 +2,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
 import {
+  ClockIcon,
   EmptyValueTag,
   globalSetup,
   MoreIcon,
@@ -80,6 +81,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       dualMarketMap,
       showloading,
       showDetail,
+      refresh,
       t,
     } = props;
 
@@ -132,6 +134,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
               dualType === DUAL_TYPE.DUAL_BASE
                 ? [sellSymbol, buySymbol]
                 : [buySymbol, sellSymbol];
+            const showClock = true
             //${row.sellSymbol}/${row.buySymbol}
             return (
               <Typography
@@ -165,6 +168,9 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                     {`${base}/${quote}`}
                   </Typography>
                 </Typography>
+                {showClock && <Box marginLeft={1} display={"flex"} alignItems={"center"}>
+                  <ClockIcon />
+                </Box>}
               </Typography>
             );
           },
@@ -177,7 +183,11 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignCenter",
           name: t("labelDualAssetFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.amount + " " + row.sellSymbol}</>;
+            if (!row?.amount) {
+              return <>{"-- " + row.sellSymbol}</>;
+            } else {
+              return <>{row?.amount + " " + row.sellSymbol}</>;
+            }
           },
         },
         {
@@ -251,11 +261,18 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           name: t("labelDualAssetAction"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Link onClick={(_e) => showDetail(row)}>
-                {t("labelDualAssetDetail")}
-              </Link>
-            );
+            const showRefresh = true
+            return showRefresh
+              ? (
+                <Link onClick={(_e) => refresh(row)}>
+                  {t("labelDualAssetRefresh")}
+                </Link>
+              )
+              : (
+                <Link onClick={(_e) => showDetail(row)}>
+                  {t("labelDualAssetDetail")}
+                </Link>
+              );
           },
         },
       ],
