@@ -1255,7 +1255,7 @@ export function useAccountModalForUI({
           setShowAccount({ isShow: false });
         },
       },
-      [AccountStep.RedPacketSend_Submit]: {
+      [AccountStep.RedPacketSend_Success]: {
         view: (
           <RedPacketSend_Submit
             btnInfo={closeBtnInfo()}

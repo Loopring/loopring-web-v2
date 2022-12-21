@@ -38,7 +38,7 @@ export const RedPacketSend_In_Progress = (props: PanelProps) => {
 };
 
 // value symbol
-export const RedPacketSend_Submit = (props: PanelProps) => {
+export const RedPacketSend_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: props.t(" labelRedpacketSendSuccess", {
