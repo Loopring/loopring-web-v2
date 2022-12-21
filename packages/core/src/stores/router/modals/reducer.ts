@@ -569,7 +569,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         };
       }
     },
-    updateRedPacketOrder(state, action: PayloadAction<RedPacketOrderData>) {
+    updateRedPacketOrder(
+      state,
+      action: PayloadAction<RedPacketOrderData<any>>
+    ) {
       state.lastStep = LAST_STEP.redPacketSend;
       const { balance, tradeValue, belong, ...rest } = action.payload;
       state.redPacketOrder = {
