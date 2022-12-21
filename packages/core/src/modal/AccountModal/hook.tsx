@@ -67,8 +67,7 @@ import {
   QRAddressPanel,
   RedPacketSend_Failed,
   RedPacketSend_First_Method_Denied,
-  RedPacketSend_In_Progress,
-  RedPacketSend_Submit,
+  RedPacketSend_In_Progress, RedPacketSend_Success,
   RedPacketSend_User_Denied,
   RedPacketSend_WaitForAuth,
   SendAsset,
@@ -1257,7 +1256,7 @@ export function useAccountModalForUI({
       },
       [AccountStep.RedPacketSend_Success]: {
         view: (
-          <RedPacketSend_Submit
+          <RedPacketSend_Success
             btnInfo={closeBtnInfo()}
             {...{
               ...rest,
