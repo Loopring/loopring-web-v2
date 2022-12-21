@@ -371,7 +371,7 @@ export const FOOTER_LIST_MAP = {
     {
       linkName: "Subgraph", //Subgraph
       linkHref:
-        "https://thegraph.com/explorer/subgraph?id=HgnaENC2oG5hJFsWoHvULBbj7djTJ7TZnqa58iTWA3Rd",
+        "https://thegraph.com/explorer/subgraphs/7QP7oCLbEAjejkp7wSLTD1zbRMSiDydAmALksBB5E6i1",
     },
   ],
 };
