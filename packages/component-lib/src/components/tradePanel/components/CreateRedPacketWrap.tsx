@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import {
-  Button,
+  Button, DateTextField,
   DateTimePicker,
   InputCoin,
   TextareaAutosizeStyled,
@@ -42,7 +42,6 @@ import {
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
-  CreateRedPacketProps,
   CreateRedPacketViewProps,
   RedPacketStep,
   TradeBtnStatus,
@@ -123,7 +122,7 @@ export const CreateRedPacketStepType = withTranslation()(
       } else {
         return LuckyRedPacketList[0];
       }
-    });
+    }, [tradeData?.type]);
 
     // {
     //   labelKey: "labelLuckyRelayToken",
@@ -289,7 +288,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
     lastFailed,
     onBack,
     ...rest
-  }: CreateRedPacketProps<T, I, F, LuckInfo> & WithTranslation) => {
+  }: CreateRedPacketViewProps<T, I, F, LuckInfo> & WithTranslation) => {
     const { t } = useTranslation("common");
     const inputButtonDefaultProps = {
       label: t("labelInputRedPacketBtnLabel"),
@@ -333,6 +332,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
       }
     };
     const { isMobile } = useSettings();
+
     return (
       <RedPacketBoxStyle
         display={"flex"}
@@ -406,19 +406,21 @@ export const CreateRedPacketStepWrap = withTranslation()(
           </Grid>
 
           <Grid item alignSelf={"stretch"} position={"relative"}>
-            <BasicACoinTrade
-              {...{
-                ...rest,
-                t,
-                type: tradeType,
-                disabled,
-                walletMap,
-                tradeData: tradeData as T,
-                coinMap,
-                inputButtonDefaultProps,
-                inputBtnRef: inputBtnRef,
-              }}
-            />
+            {tradeType === "TOKEN" && (
+              <BasicACoinTrade
+                {...{
+                  ...rest,
+                  t,
+                  type: tradeType ?? "TOKEN",
+                  disabled,
+                  walletMap,
+                  tradeData: tradeData as T,
+                  coinMap,
+                  inputButtonDefaultProps,
+                  inputBtnRef: inputBtnRef,
+                }}
+              />
+            )}
           </Grid>
 
           <Grid item alignSelf={"stretch"} position={"relative"}>
@@ -517,9 +519,17 @@ export const CreateRedPacketStepWrap = withTranslation()(
             </FormLabel>
             {/*year' | 'day' | 'month' | 'hours' | 'minutes' | 'seconds*/}
             <DateTimePicker
-              views={["day", "hours", "minutes"]}
+              renderInput={(_props) => {
+                return (
+                  <DateTextField
+                    ref={_props.inputRef}
+                    {...{ ..._props, helperText: null }}
+                  />
+                );
+              }}
+              value={tradeData.validSince}
               onChange={() => {
-                handleOnDataChange({ validUntil: "" } as any);
+                handleOnDataChange({ validSince: "" } as any);
               }}
             />
             {/*{...props}*/}

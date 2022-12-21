@@ -16,9 +16,13 @@ import {
 } from "@mui/lab";
 
 import { TFunction } from "i18next";
-import { CalendarIcon } from "@loopring-web/common-resources";
+import {
+  CalendarIcon,
+  YEAR_DAY_FORMAT,
+  YEAR_DAY_MINUTE_FORMAT,
+} from "@loopring-web/common-resources";
 
-const DateTextField = styled(TextField)`
+export const DateTextField = styled(TextField)`
   && .MuiOutlinedInput-root.MuiInputBase-adornedEnd {
     padding-right: ${({ theme }) => theme.unit}px;
   }
@@ -150,7 +154,7 @@ export const DateRangePicker = experimentalStyled(
 
 ` as React.ComponentType<DateRangePickerProps & { t?: TFunction }>;
 
-export type DatePickerProps = {} & Omit<MuDatePickerProps, "renderInput">;
+export type DatePickerProps = Omit<MuDatePickerProps, "renderInput">;
 export const DatePicker = styled(
   ({
     t,
@@ -162,7 +166,7 @@ export const DatePicker = styled(
       {...props}
       disableFuture={props.disableFuture ? props.disableFuture : true}
       mask={props.mask ? props.mask : "__-__-__"}
-      inputFormat={inputFormat ? inputFormat : "YY-MM-DD"}
+      inputFormat={inputFormat ? inputFormat : YEAR_DAY_FORMAT}
       openTo={props.openTo ? props.openTo : "day"}
       views={props.views ? props.views : ["year", "day"]}
       value={value}
@@ -182,10 +186,7 @@ export const DatePicker = styled(
   DatePickerProps & { t?: TFunction }
 >;
 
-export type DateTimePickerProps = {} & Omit<
-  MuDateTimePickerProps,
-  "renderInput"
->;
+export type DateTimePickerProps = Omit<MuDateTimePickerProps, "renderInput">;
 
 export const DateTimePicker = styled(
   ({
@@ -198,7 +199,7 @@ export const DateTimePicker = styled(
       {...props}
       disableFuture={props.disableFuture ? props.disableFuture : true}
       mask={props.mask ? props.mask : "__-__-__"}
-      inputFormat={inputFormat ? inputFormat : "YY-MM-DD"}
+      inputFormat={inputFormat ? inputFormat : YEAR_DAY_MINUTE_FORMAT}
       openTo={props.openTo ? props.openTo : "day"}
       views={props.views ? props.views : ["day", "hours", "minutes"]}
       value={value}
