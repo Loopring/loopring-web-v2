@@ -184,7 +184,11 @@ export const useAmmJoin = ({
             );
             return {
               btnStatus: TradeBtnStatus.DISABLED,
-              btnI18nKey: `labelLimitMin| ${viewBaseMintAmt} ${ammData?.coinA.belong} or ${viewQuoteMintAmt} ${ammData?.coinB.belong}`,
+              btnI18nKey: `labelLimitMin| ${viewBaseMintAmt} ${
+                ammData?.coinA.belong
+              }  ${t("labelAmmMinAnd")} ${viewQuoteMintAmt} ${
+                ammData?.coinB.belong
+              }`,
             };
           }
         } else {
