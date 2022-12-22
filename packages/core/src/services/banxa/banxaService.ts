@@ -1,12 +1,7 @@
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../api_wrapper";
-import {
-  Account,
-  BANXA_URLS,
-  BanxaOrder,
-  myLog,
-} from "@loopring-web/common-resources";
+import { Account, BANXA_URLS, myLog } from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
 
@@ -14,68 +9,68 @@ export enum BalanceReason {
   Balance = 0,
   FeeAndBalance = 1,
 }
-export const mockReturn: { order: BanxaOrder } = {
-  order: {
-    id: "dd734aec66eb781ecc7f7bb01274ec63",
-    account_id: "324a77f69fc5797c2afbe67efefddbba",
-    account_reference: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
-    order_type: "CRYPTO-SELL",
-    payment_type: null,
-    ref: null,
-    fiat_code: "AUD",
-    fiat_amount: 0,
-    coin_code: "USDC",
-    coin_amount: 0,
-    wallet_address: null,
-    wallet_address_tag: null,
-    fee: null,
-    fee_tax: null,
-    payment_fee: null,
-    payment_fee_tax: null,
-    commission: null,
-    tx_hash: null,
-    tx_confirms: 0,
-    created_date: "30-Nov-2022",
-    created_at: "30-Nov-2022 17:48:25",
-    status: "pendingPayment",
-    completed_at: null,
-    merchant_fee: null,
-    merchant_commission: null,
-    meta_data: null,
-    blockchain: { id: 30, code: "LRC", description: "Loopring " },
-  },
-};
-export const mockAfterKYCReturn: { order: BanxaOrder } = {
-  order: {
-    id: "dd734aec66eb781ecc7f7bb01274ec63",
-    account_id: "324a77f69fc5797c2afbe67efefddbba",
-    account_reference: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
-    order_type: "CRYPTO-SELL",
-    payment_type: "DIRECTCREDIT",
-    ref: 111904,
-    fiat_code: "AUD",
-    fiat_amount: 73.7,
-    coin_code: "USDT",
-    coin_amount: 49.99,
-    wallet_address: "0x35405E1349658BcA12810d0f879Bf6c5d89B512C",
-    wallet_address_tag: null,
-    fee: 0,
-    fee_tax: 0,
-    payment_fee: 0,
-    payment_fee_tax: 0,
-    commission: 0,
-    tx_hash: null,
-    tx_confirms: 0,
-    created_date: "30-Nov-2022",
-    created_at: "30-Nov-2022 17:51:50",
-    status: "pendingPayment",
-    completed_at: null,
-    merchant_fee: 0,
-    merchant_commission: 0,
-    meta_data: null,
-    blockchain: { id: 30, code: "LRC", description: "Loopring " },
-  },
-};
+// export const mockReturn: { order: BanxaOrder } = {
+//   order: {
+//     id: "dd734aec66eb781ecc7f7bb01274ec63",
+//     account_id: "324a77f69fc5797c2afbe67efefddbba",
+//     account_reference: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
+//     order_type: "CRYPTO-SELL",
+//     payment_type: null,
+//     ref: null,
+//     fiat_code: "AUD",
+//     fiat_amount: 0,
+//     coin_code: "USDC",
+//     coin_amount: 0,
+//     wallet_address: null,
+//     wallet_address_tag: null,
+//     fee: null,
+//     fee_tax: null,
+//     payment_fee: null,
+//     payment_fee_tax: null,
+//     commission: null,
+//     tx_hash: null,
+//     tx_confirms: 0,
+//     created_date: "30-Nov-2022",
+//     created_at: "30-Nov-2022 17:48:25",
+//     status: "pendingPayment",
+//     completed_at: null,
+//     merchant_fee: null,
+//     merchant_commission: null,
+//     meta_data: null,
+//     blockchain: { id: 30, code: "LRC", description: "Loopring " },
+//   },
+// };
+// export const mockAfterKYCReturn: { order: BanxaOrder } = {
+//   order: {
+//     id: "dd734aec66eb781ecc7f7bb01274ec63",
+//     account_id: "324a77f69fc5797c2afbe67efefddbba",
+//     account_reference: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
+//     order_type: "CRYPTO-SELL",
+//     payment_type: "DIRECTCREDIT",
+//     ref: 111904,
+//     fiat_code: "AUD",
+//     fiat_amount: 73.7,
+//     coin_code: "USDT",
+//     coin_amount: 49.99,
+//     wallet_address: "0x35405E1349658BcA12810d0f879Bf6c5d89B512C",
+//     wallet_address_tag: null,
+//     fee: 0,
+//     fee_tax: 0,
+//     payment_fee: 0,
+//     payment_fee_tax: 0,
+//     commission: 0,
+//     tx_hash: null,
+//     tx_confirms: 0,
+//     created_date: "30-Nov-2022",
+//     created_at: "30-Nov-2022 17:51:50",
+//     status: "pendingPayment",
+//     completed_at: null,
+//     merchant_fee: 0,
+//     merchant_commission: 0,
+//     meta_data: null,
+//     blockchain: { id: 30, code: "LRC", description: "Loopring " },
+//   },
+// };
 export enum BanxaCheck {
   CheckOrderStatus = 0,
   OrderEnd = 1,
@@ -87,7 +82,8 @@ export enum OrderENDReason {
   Expired = 1,
   Done = 2,
   Waiting = 3,
-  CreateOrderFialed = 4,
+  BanxaNotReady,
+  CreateOrderFailed = 4,
 }
 // export enum IPFSCommands {
 //   ErrorGetIpfs = "ErrorGetIpfs",
@@ -151,14 +147,27 @@ export const banxaService = {
       system: { chainId },
     } = store.getState();
     // @ts-ignore
-    const banxa: any = new window.Banxa(
-      "loopring",
-      chainId == ChainId.GOERLI ? "sandbox" : ""
-    );
+    let banxa: any = undefined;
+    try {
+      banxa = new window.Banxa(
+        "loopring",
+        chainId == ChainId.GOERLI ? "sandbox" : ""
+      );
+    } catch (e) {
+      banxaService.banxaEnd({
+        reason: OrderENDReason.BanxaNotReady,
+        data: "Banxa SKD is not ready",
+      });
+
+      // subject.next({
+      //   status: BanxaCheck.o,
+      //   data: data,
+      // });
+    }
     // @ts-ignore
     const anchor: any = window.document.querySelector("#iframeBanxaTarget");
     // anchor.querySelector("anchor");
-    if (anchor) {
+    if (anchor && banxa) {
       // debugger;
       anchor.style.display = "flex";
       try {
@@ -194,8 +203,8 @@ export const banxaService = {
         });
       } catch (e) {
         banxaService.banxaEnd({
-          reason: OrderENDReason.CreateOrderFialed,
-          data: "",
+          reason: OrderENDReason.CreateOrderFailed,
+          data: (e as any)?.message,
         });
 
         // subject.next({

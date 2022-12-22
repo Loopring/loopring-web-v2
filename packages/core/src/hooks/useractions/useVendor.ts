@@ -24,6 +24,7 @@ export enum RAMP_SELL_PANEL {
 export const useVendor = () => {
   const { account } = useAccount();
   const { t } = useTranslation();
+  const { setShowTradeIsFrozen } = useOpenModals();
 
   const banxaRef = React.useRef();
   const subject = React.useMemo(() => banxaService.onSocket(), []);
@@ -261,6 +262,7 @@ export const useVendor = () => {
       reason: OrderENDReason.UserCancel,
       data: { resource: "on close" },
     });
+
   React.useEffect(() => {
     const close = window.document.querySelector("#iframeBanxaClose");
     const parentsNode = window.document.querySelector("#iframeBanxaTarget");
@@ -280,6 +282,18 @@ export const useVendor = () => {
           showBanxa();
           break;
         case BanxaCheck.OrderEnd:
+          if (props?.data?.reason === OrderENDReason.BanxaNotReady) {
+            setShowTradeIsFrozen({
+              isShow: true,
+              messageKey: "labelBanxaNotReady",
+            });
+          }
+          if (props?.data?.reason === OrderENDReason.CreateOrderFailed) {
+            setShowTradeIsFrozen({
+              isShow: true,
+              messageKey: "labelBanxaFailedforAPI",
+            });
+          }
           closeBanxa();
           // clearTimeout(nodeTimer.current as NodeJS.Timeout);
           break;
