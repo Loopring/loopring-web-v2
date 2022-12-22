@@ -146,9 +146,10 @@ export const banxaService = {
       account,
       system: { chainId },
     } = store.getState();
-    // @ts-ignore
+
     let banxa: any = undefined;
     try {
+      // @ts-ignore
       banxa = new window.Banxa(
         "loopring",
         chainId == ChainId.GOERLI ? "sandbox" : ""
