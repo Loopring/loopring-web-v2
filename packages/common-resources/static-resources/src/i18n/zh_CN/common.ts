@@ -237,6 +237,7 @@ export default {
   labelMiningReward: "活动奖励",
   labelCookiesAgree: "同意",
   labelLimitMin: "最小下单量{{arg}}",
+  labelAmmMinAnd: "and",
   labelLimitMax: "{{arg}} 最大下单量{{arg}}",
   labelOrderSmall: "Order too small (>= 100.5LRC)",
   labelEnterAmount: "请填写兑换数",

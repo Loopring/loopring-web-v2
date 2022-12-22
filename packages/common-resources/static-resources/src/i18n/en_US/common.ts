@@ -248,6 +248,7 @@ export default {
   labelMiningReward: "Reward",
   labelCookiesAgree: "Agree",
   labelLimitMin: "Minimum of {{arg}}",
+  labelAmmMinAnd: "and",
   labelLimitMinUnknown: "Order too small",
   labelLimitMax: "Maximum of {{arg}}",
   labelOrderSmall: "Order too small (>= 100.5LRC)",
