@@ -291,7 +291,7 @@ export const useVendor = () => {
           if (props?.data?.reason === OrderENDReason.CreateOrderFailed) {
             setShowTradeIsFrozen({
               isShow: true,
-              messageKey: "labelBanxaFailedforAPI",
+              messageKey: "labelBanxaFailedForAPI",
             });
           }
           closeBanxa();

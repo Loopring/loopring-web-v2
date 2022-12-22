@@ -1298,6 +1298,6 @@ export default {
   labelRedPacketSend: "Send",
   labelBanxaNotReady:
     "Please waiting a while for Banxa sdk loading, if you keep on face this problem try fresh the browser or contact us",
-  labelBanxaFailedforAPI:
+  labelBanxaFailedForAPI:
     "Please waiting a while, Banxa service is not available currently.",
 };
