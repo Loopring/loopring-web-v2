@@ -4,6 +4,7 @@ import {
   BtnInfoProps,
   SwitchPanelProps,
   BtnInfo,
+  IpfsFile,
 } from "../../basic-lib";
 import {
   AddressError,
@@ -21,8 +22,8 @@ import {
   GET_IPFS_STRING,
   Account,
   BanxaOrder,
-  AssetsRawDataItem,
   AccountStatus,
+  AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -577,3 +578,18 @@ export type CollectionManageProps<Co, NFT> = {
   getIPFSString: GET_IPFS_STRING;
   onNFTSelectedMethod: (item: NFT[], method: CollectionMethod) => void;
 } & CollectionManageData<NFT>;
+
+export type ImportRedPacketProps = {
+  btnStatus: TradeBtnStatus;
+  btnInfo?: BtnInfo;
+  disabled?: boolean;
+  //
+};
+export type ImportRedPacketExtendsProps<T> = {
+  handleOnDataChange: (value: Partial<T>) => void;
+  onSubmitClick: () => Promise<void>;
+  onFilesLoad: (key: string, value: IpfsFile) => void;
+  onDelete: (key: string) => void;
+} & ImportRedPacketProps;
+
+export type ImportRedPacketViewProps<T> = ImportRedPacketExtendsProps<T>;

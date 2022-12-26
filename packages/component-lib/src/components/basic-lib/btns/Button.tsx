@@ -17,7 +17,6 @@ import styled from "@emotion/styled";
 import {
   BackIcon,
   CloseIcon,
-  myLog,
   QRIcon,
   SoursURL,
 } from "@loopring-web/common-resources";

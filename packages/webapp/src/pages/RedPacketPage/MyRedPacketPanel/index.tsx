@@ -48,12 +48,12 @@ export const MyRedPacketPanel = () => {
   const handleTabChange = (value: TabIndex) => {
     switch (value) {
       case TabIndex.Send:
-        history.push("/redpacket/transaction/send");
+        history.push("/redpacket/records/send");
         setCurrentTab(TabIndex.Send);
         break;
       case TabIndex.Received:
       default:
-        history.replace("/redpacket/transaction/Received");
+        history.replace("/redpacket/records/Received");
         setCurrentTab(TabIndex.Received);
         break;
     }
@@ -65,7 +65,11 @@ export const MyRedPacketPanel = () => {
       flexDirection={"column"}
       sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
     >
-      <Box display={"flex"} flexDirection={isMobile ? "column" : "row"}>
+      <Box
+        display={"flex"}
+        flexDirection={isMobile ? "column" : "row"}
+        marginBottom={2}
+      >
         <Button
           startIcon={<BackIcon fontSize={"small"} />}
           variant={"text"}

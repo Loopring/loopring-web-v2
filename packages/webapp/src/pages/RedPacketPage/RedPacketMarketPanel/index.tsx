@@ -1,7 +1,11 @@
 import { Box, Button } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { StylePaper } from "@loopring-web/core";
-import { useSettings } from "@loopring-web/component-lib";
+import { StylePaper, useModalData } from "@loopring-web/core";
+import {
+  AccountStep,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
 
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -11,6 +15,7 @@ import { useHistory } from "react-router-dom";
 export const RedPacketMarketPanel = () => {
   const theme = useTheme();
   const container = React.useRef<HTMLDivElement>(null);
+  const { setShowAccount } = useOpenModals();
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const history = useHistory();
@@ -61,7 +66,9 @@ export const RedPacketMarketPanel = () => {
             variant={"contained"}
             size={"small"}
             sx={{ marginLeft: 1 }}
-            onClick={() => history.push("/l2assets/reader")}
+            onClick={() => {
+              setShowAccount({ isShow: true, step: AccountStep.QRCodeScanner });
+            }}
           >
             {t("labelRedPacketQRCodeImport")}
           </Button>

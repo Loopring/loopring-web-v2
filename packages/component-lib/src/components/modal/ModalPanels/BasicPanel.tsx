@@ -220,7 +220,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               >
                 {iconType === IconType.FailedIcon ? (
                   <Typography
-                    component={"div"}
+                    component={"span"}
                     marginX={3}
                     whiteSpace={"pre-line"}
                     variant={"body1"}
@@ -278,7 +278,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   </Typography>
                 ) : (
                   <Typography
-                    component={"div"}
+                    component={"span"}
                     variant={"h5"}
                     whiteSpace={"pre-line"}
                     textAlign={"center"}

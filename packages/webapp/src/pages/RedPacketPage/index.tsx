@@ -4,6 +4,7 @@ import { CreateRedPacketPanel } from "@loopring-web/component-lib";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import {
   RedPacketOrderData,
+  StylePaper,
   useCreateRedPacket,
   ViewAccountTemplate,
 } from "@loopring-web/core";
@@ -42,14 +43,16 @@ export const RedPacketPage = <
                 size={"medium"}
                 sx={{ color: "var(--color-text-secondary)" }}
                 color={"inherit"}
-                onClick={() => history.push("/l2assets")}
+                onClick={() => history.push("/redpacket/markets")}
               >
-                {t("labelRedPacketMarkets")}
+                {t("labelCreateRedPacketTitle")}
               </Button>
             </Box>
-            <CreateRedPacketPanel
-              {...{ ...(createRedPacketViewProps as any) }}
-            />
+            <StylePaper flex={1}>
+              <CreateRedPacketPanel
+                {...{ ...(createRedPacketViewProps as any) }}
+              />
+            </StylePaper>
           </Box>
         );
       case "records":

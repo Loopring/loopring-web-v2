@@ -35,6 +35,7 @@ export enum AccountStep {
   PayWithCard,
   NoAccount,
   QRCode,
+  QRCodeScanner,
   HadAccount,
   ThirdPanelReturn,
   // new

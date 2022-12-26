@@ -550,3 +550,5 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
 ];
+
+export const QRCODE_REGION_ID = "qrcodeRegionId";

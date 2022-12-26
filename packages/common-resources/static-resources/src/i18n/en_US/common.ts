@@ -1275,7 +1275,7 @@ export default {
   labelL1toL2NFTAmount: "NFT Amount",
   labelInputRedPacketBtnLabel: "Select Token",
   labelCreateRedPacket: "Send Red Packet",
-  labelMyRedPacket: " My Red Packet Record",
+  labelMyRedPacket: "My Red Packet Record",
   labelRedPacketMarkets: "Red Packet Markets",
   labelRedPacketQRCodeImport: "Receive Red Packet",
   labelLuckyTokenViewType0: "Private Red Packet",
@@ -1301,4 +1301,6 @@ export default {
     "Please waiting a while for Banxa sdk loading, if you keep on face this problem try fresh the browser or contact us",
   labelBanxaFailedForAPI:
     "Please waiting a while, Banxa service is not available currently.",
+  labelImportRedpacket: "Import QR code to receive redpacket",
+  labelCreateRedPacketTitle: "Send Red Packet",
 };

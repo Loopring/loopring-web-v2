@@ -152,6 +152,7 @@ import {
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
+import { ImportRedPacket } from "./components/QRCodeScanner";
 
 export function useAccountModalForUI({
   t,
@@ -736,6 +737,13 @@ export function useAccountModalForUI({
         ),
         onQRClick,
         height: isLayer1Only ? "auto" : null,
+      },
+      [AccountStep.QRCodeScanner]: {
+        view: <ImportRedPacket />,
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+        height: "auto",
       },
       [AccountStep.QRCode]: {
         view: (

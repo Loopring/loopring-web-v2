@@ -24,3 +24,4 @@ export * from "./components/CollectionManageWrap";
 export * from "./components/RampConfirm";
 export * from "./components/tool/Refresh";
 export * from "./components/BanxaConfirm";
+export * from "./components/ImportRedPacketWrap";
