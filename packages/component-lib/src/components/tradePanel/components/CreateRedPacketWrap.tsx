@@ -11,7 +11,6 @@ import {
 import React from "react";
 import {
   Button,
-  DateTextField,
   DateTimePicker,
   InputCoin,
   TextareaAutosizeStyled,
@@ -271,14 +270,6 @@ export const CreateRedPacketStepWrap = withTranslation()(
             </FormLabel>
             {/*year' | 'day' | 'month' | 'hours' | 'minutes' | 'seconds*/}
             <DateTimePicker
-              renderInput={(_props) => {
-                return (
-                  <DateTextField
-                    ref={_props.inputRef}
-                    {...{ ..._props, helperText: null }}
-                  />
-                );
-              }}
               value={tradeData.validSince}
               onChange={() => {
                 handleOnDataChange({ validSince: "" } as any);
