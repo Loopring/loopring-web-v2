@@ -200,7 +200,8 @@ export type LOOPRING_NFT_METADATA = {
 };
 
 export const NFTLimit = 12,
-  CollectionLimit = 12;
+  CollectionLimit = 12,
+  RedPacketLimit = 12;
 
 export const AddAssetList = {
   FromMyL1: {

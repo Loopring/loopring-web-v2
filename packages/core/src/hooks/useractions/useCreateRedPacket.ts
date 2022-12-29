@@ -1,8 +1,11 @@
 import {
   AccountStatus,
+  AssetsRawDataItem,
   Explorer,
   FeeInfo,
+  LIVE_FEE_TIMES,
   myLog,
+  SagaStatus,
   TOAST_TIME,
   UIERROR_CODE,
   WalletMap,
@@ -18,9 +21,10 @@ import {
 import {
   AccountStep,
   CreateRedPacketProps,
+  SwitchData,
   useOpenModals,
 } from "@loopring-web/component-lib";
-import React from "react";
+import React, { useCallback } from "react";
 import { makeWalletLayer2 } from "../help";
 import {
   useChargeFees,
@@ -39,37 +43,42 @@ import { DAYS } from "../../defs";
 import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useGetAssets } from "@loopring-web/webapp/src/pages/AssetPage/AssetPanel/hook";
+import { useRouteMatch } from "react-router-dom";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
   I,
-  F extends FeeInfo,
-  LuckInfo
->(): CreateRedPacketProps<T, I, F, LuckInfo> => {
+  F = FeeInfo
+>({
+  assetsRawData,
+}: {
+  assetsRawData: AssetsRawDataItem[];
+}): { createRedPacketProps: CreateRedPacketProps<T, I, F> } => {
+  let match: any = useRouteMatch("/redpacket/:item");
+
   const { exchangeInfo, chainId } = useSystem();
   const { tokenMap, totalCoinMap } = useTokenMap();
-  const { assetsRawData } = useGetAssets();
-
+  const {
+    allowTrade: { transfer: transferEnabale },
+  } = useSystem();
   const {
     setShowAccount,
-    // modals: {
-    //   isShow: { info },
-    // },
+    modals: {
+      isShowAccount: { info },
+    },
   } = useOpenModals();
   const { redPacketOrder, resetRedPacketOrder, updateRedPacketOrder } =
     useModalData();
-  const { account } = useAccount();
+  const { account, status: accountStatus } = useAccount();
   const { checkHWAddr, updateHW } = useWalletInfo();
 
-  // const [balanceNotEnough, setBalanceNotEnough] = React.useState(false);
-  // const { offRampValue } = useModalData();
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
+    resetIntervalTime,
     // setIsFeeNotEnough,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
@@ -85,20 +94,73 @@ export const useCreateRedPacket = <
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
     setWalletMap(walletMap);
-  }, []);
+    if (!redPacketOrder.belong && walletMap) {
+      resetDefault();
+    }
+  }, [redPacketOrder, accountStatus]);
+  const handleOnDataChange = React.useCallback(
+    (tradeData: Partial<T>) => {
+      const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
+      myLog("redPacketOrder handleOnDataChange", redPacketOrder, tradeData);
+      updateRedPacketOrder({ ...redPacketOrder, ...tradeData });
+    },
+    [updateRedPacketOrder]
+  );
+  const resetDefault = React.useCallback(() => {
+    if (info?.isRetry) {
+      checkFeeIsEnough();
+      return;
+    }
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
 
+    if (!redPacketOrder.belong && walletMap) {
+      const keys = Reflect.ownKeys(walletMap);
+      for (let key in keys) {
+        const keyVal = keys[key];
+        const walletInfo = walletMap[keyVal];
+        if (sdk.toBig(walletInfo.count).gt(0)) {
+          handleOnDataChange({
+            belong: keyVal as any,
+            tradeValue: undefined,
+            fee: feeInfo,
+            balance: walletInfo?.count,
+            memo: "",
+            numbers: undefined,
+          } as T);
+          break;
+        }
+      }
+    } else if (redPacketOrder.belong && walletMap) {
+      const walletInfo = walletMap[redPacketOrder.belong];
+      handleOnDataChange({
+        fee: feeInfo,
+        belong: redPacketOrder.belong,
+        tradeValue: undefined,
+        balance: walletInfo?.count,
+        memo: "",
+        numbers: undefined,
+      } as T);
+    } else {
+      handleOnDataChange({
+        fee: feeInfo,
+        belong: redPacketOrder.belong,
+        tradeValue: undefined,
+        balance: undefined,
+        memo: "",
+        numbers: undefined,
+      } as unknown as T);
+    }
+  }, [
+    checkFeeIsEnough,
+    walletMap,
+    handleOnDataChange,
+    feeInfo,
+    redPacketOrder.belong,
+    info?.isRetry,
+  ]);
   useWalletLayer2Socket({ walletLayer2Callback });
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
-
-  // React.useEffect(() => {
-  //   if (
-  //     info?.transferRamp === AccountStep.RedPacketSend_Failed &&
-  //     info?.trigger == "checkFeeIsEnough"
-  //   ) {
-  //     checkFeeIsEnough();
-  //   }
-  // }, [info?.transferRamp]);
 
   const checkBtnStatus = React.useCallback(() => {
     if (
@@ -166,10 +228,18 @@ export const useCreateRedPacket = <
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [chargeFeeTokenList, isFeeNotEnough.isFeeNotEnough, redPacketOrder]);
+  }, [
+    chargeFeeTokenList,
+    isFeeNotEnough.isFeeNotEnough,
+    redPacketOrder?.type,
+    redPacketOrder?.type?.scope,
+    redPacketOrder?.type?.partition,
+    redPacketOrder?.type?.mode,
+    redPacketOrder?.fee,
+  ]);
   const processRequest = React.useCallback(
     async (
-      request: sdk.OriginTransferRequestV3,
+      request: sdk.LuckyTokenItemForSendV3,
       isNotHardwareWallet: boolean
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
@@ -177,7 +247,7 @@ export const useCreateRedPacket = <
       try {
         if (
           connectProvides.usedWeb3 &&
-          LoopringAPI.userAPI &&
+          LoopringAPI.luckTokenAPI &&
           window.rampInstance &&
           isAccActivated()
         ) {
@@ -186,7 +256,7 @@ export const useCreateRedPacket = <
             isHWAddr = true;
           }
           updateRedPacketOrder({ __request__: request } as any);
-          const response = await LoopringAPI.userAPI.submitInternalTransfer(
+          const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSend(
             {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
@@ -299,8 +369,18 @@ export const useCreateRedPacket = <
       // updateTransferRampData,
     ]
   );
-  const onSubmitClick = React.useCallback(
-    async (transferRampValue, isFirstTime: boolean = true) => {
+  React.useEffect(() => {
+    if (match?.params?.item?.toLowerCase() === "create") {
+      resetDefault();
+    } else {
+      resetIntervalTime();
+    }
+    return () => {
+      resetIntervalTime();
+    };
+  }, [match?.params?.item]);
+  const onCreateRedPacketClick = React.useCallback(
+    async (redPacketOrder, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
 
       if (
@@ -309,10 +389,10 @@ export const useCreateRedPacket = <
         LoopringAPI.userAPI &&
         exchangeInfo &&
         connectProvides.usedWeb3 &&
-        transferRampValue.address !== "*" &&
-        transferRampValue?.fee &&
-        transferRampValue?.fee.belong &&
-        transferRampValue.fee?.__raw__ &&
+        redPacketOrder.address !== "*" &&
+        redPacketOrder?.fee &&
+        redPacketOrder?.fee.belong &&
+        redPacketOrder.fee?.__raw__ &&
         eddsaKey?.sk
       ) {
         try {
@@ -321,49 +401,59 @@ export const useCreateRedPacket = <
             step: AccountStep.RedPacketSend_WaitForAuth,
           });
 
-          const sellToken = tokenMap[transferRampValue.belong as string];
-          const feeToken = tokenMap[transferRampValue.fee.belong];
+          const token = tokenMap[redPacketOrder.belong as string];
+          const feeToken = tokenMap[redPacketOrder.fee.belong];
           const feeRaw =
-            transferRampValue.fee.feeRaw ??
-            transferRampValue.fee.__raw__?.feeRaw ??
+            redPacketOrder.fee.feeRaw ??
+            redPacketOrder.fee.__raw__?.feeRaw ??
             0;
           const fee = sdk.toBig(feeRaw);
-          // const balance = sdk
-          //   .toBig(transferRampValue.balance ?? 0)
-          //   .times("1e" + sellToken.decimals);
+
           const tradeValue = sdk
-            .toBig(transferRampValue.tradeValue ?? 0)
-            .times("1e" + sellToken.decimals);
-          // const isExceedBalance =
-          //   feeToken.tokenId === sellToken.tokenId &&
-          //   tradeValue.plus(fee).gt(balance);
-          const finalVol = tradeValue;
-          const transferVol = finalVol.toFixed(0, 0);
+            .toBig(redPacketOrder.tradeValue ?? 0)
+            .times("1e" + token.decimals);
+
+          // const transferVol = finalVol.toFixed(0, 0);
 
           const storageId = await LoopringAPI.userAPI?.getNextStorageId(
             {
               accountId,
-              sellTokenId: sellToken.tokenId,
+              sellTokenId: Number(feeToken.tokenId),
             },
             apiKey
           );
-          const req: sdk.OriginTransferRequestV3 = {
-            exchange: exchangeInfo.exchangeAddress,
-            payerAddr: accAddress,
-            payerId: accountId,
-            payeeAddr: transferRampValue.address,
-            payeeId: 0,
-            storageId: storageId?.offchainId,
-            token: {
-              tokenId: sellToken.tokenId,
-              volume: transferVol,
-            },
-            maxFee: {
-              tokenId: feeToken.tokenId,
-              volume: fee.toString(), // TEST: fee.toString(),
-            },
+          const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
+            type: 1,
+          });
+
+          const req: sdk.LuckyTokenItemForSendV3 = {
+            type: redPacketOrder.type,
+            numbers: redPacketOrder.numbers,
+            memo: redPacketOrder.memo,
+            signerFlag: redPacketOrder.signerFlag,
+            templateID: redPacketOrder.templateID,
+            validSince: redPacketOrder.validSince,
             validUntil: getTimestampDaysLater(DAYS),
-            memo: transferRampValue.memo,
+            luckyToken: {
+              exchange: exchangeInfo.exchangeAddress,
+              payerAddr: accAddress,
+              payerId: accountId,
+              payeeAddr: broker,
+              storageId: storageId.offchainId,
+              token: {
+                tokenId: token.tokenId,
+                volume: tradeValue.toFixed(),
+              },
+              maxFee: {
+                tokenId: feeToken.tokenId,
+                volume: fee.toFixed(), // TEST: fee.toString(),
+              },
+              // token: {
+              //   tokenId: feeToken.tokenId,
+              //   volume: fee.toFixed(), // TEST: fee.toString(),
+              // },
+              validUntil: getTimestampDaysLater(DAYS),
+            } as sdk.OriginTransferRequestV3,
           };
 
           myLog("transfer req:", req);
@@ -387,72 +477,45 @@ export const useCreateRedPacket = <
     [account, tokenMap, exchangeInfo, setShowAccount, processRequest]
   );
 
-  const handleOnDataChange = React.useCallback(
-    (key: string, value: any) => {
-      const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      myLog("redPacketOrder", redPacketOrder);
-      updateRedPacketOrder({ ...redPacketOrder, [key]: value });
+  const handlePanelEvent = useCallback(
+    async (data: SwitchData<Partial<T>>) => {
+      return new Promise<void>((res: any) => {
+        if (data.to === "button") {
+          if (walletMap && data?.tradeData?.belong) {
+            const walletInfo = walletMap[data?.tradeData?.belong as string];
+            handleOnDataChange({
+              belong: data.tradeData?.belong,
+              tradeValue: data.tradeData?.tradeValue,
+              balance: walletInfo ? walletInfo.count : 0,
+            } as T);
+          } else {
+            handleOnDataChange({
+              belong: undefined,
+              tradeValue: undefined,
+              balance: undefined,
+            } as unknown as T);
+          }
+        }
+        res();
+      });
     },
-    [updateRedPacketOrder]
+    [walletMap]
   );
-  // const handleOnSelectedType = (ite\
-  //   handleOnDataChange();
-  // };
-
-  return {
+  const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
+    type: "TOKEN",
     chargeFeeTokenList,
-    onSubmitClick,
+    onCreateRedPacketClick,
     btnStatus,
-    // handleOnSelectedType,
+    disabled: transferEnabale?.enable == true,
     assetsData: assetsRawData,
-    handleOnDataChange,
     walletMap,
     coinMap: totalCoinMap,
     feeInfo: redPacketOrder.fee ?? feeInfo,
     handleFeeChange,
-    tradeData: redPacketOrder,
+    tradeData: redPacketOrder as T,
+    handleOnDataChange,
+    handlePanelEvent,
+  } as any;
 
-    // onBack,
-    // setActiveStep,
-    // handleOnDataChange
-    // redPacketStepValue
-    // onSubmitClick
-    // activeStep
-    // onBack
-    // selectedType
-    // handleOnSelectedType
-    // type: "TOKEN",
-    // memo,
-    // fee,
-    // __request__,
-    // feeInfo,
-    // walletMap,
-    // handleFeeChange,
-    // balanceNotEnough,
-    // tradeData,
-    // disabled,
-    // disabled: !legalEnable,
-    // addressDefault: address,
-    // realAddr: address,
-    // tradeData,
-    // coinMap: totalCoinMap as CoinMap<T>,
-    // transferBtnStatus: btnStatus,
-    // isLoopringAddress: true,
-    // isSameAddress: false,
-    // isAddressCheckLoading: WALLET_TYPE.Loopring,
-    // feeInfo,
-    // handleFeeChange,
-    // balanceNotEnough,
-    // chargeFeeTokenList,
-    // isFeeNotEnough,
-    // handleSureItsLayer2: () => undefined,
-    // sureItsLayer2: true,
-    // onSubmitClick,
-    // handlePanelEvent: () => undefined,
-    // addrStatus: AddressError.NoError,
-    // memo,
-    // walletMap,
-    // handleOnMemoChange: () => undefined,
-    // handleOnAddressChange: () => undefined,
-  } as unknown as CreateRedPacketProps<T, I, F, LuckInfo>;
+  return { createRedPacketProps };
 };

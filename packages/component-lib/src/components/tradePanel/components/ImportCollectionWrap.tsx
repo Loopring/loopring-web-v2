@@ -447,12 +447,12 @@ export const ImportCollectionWrap = <
               justifyContent={"space-between"}
             >
               <Button
-                variant={"outlined"}
-                size={"medium"}
                 className={"step"}
                 startIcon={<BackIcon fontSize={"small"} />}
-                color={"primary"}
                 sx={{ height: "var(--btn-medium-height)" }}
+                variant={"outlined"}
+                size={"medium"}
+                color={"primary"}
                 onClick={() => {
                   setStep(ImportCollectionStep.SELECTCOLLECTION);
                   selectCollection && onCollectionChange(undefined);

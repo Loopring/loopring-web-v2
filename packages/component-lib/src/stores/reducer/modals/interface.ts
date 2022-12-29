@@ -28,6 +28,7 @@ export interface ModalState {
     agree?: boolean;
   };
   isWrongNetworkGuide: ModalStatePlayLoad;
+  isShowClaimWithdraw: ModalStatePlayLoad & Transaction;
   isShowTransfer: ModalStatePlayLoad & Transaction;
   isShowWithdraw: ModalStatePlayLoad & Transaction;
   isShowDeposit: ModalStatePlayLoad & Transaction & { partner?: boolean };

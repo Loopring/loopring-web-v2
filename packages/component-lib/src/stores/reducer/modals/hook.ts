@@ -26,6 +26,7 @@ import {
   setShowLayerSwapNotice,
   setShowNFTDeploy,
   setShowDual,
+  setShowClaimWithdraw,
 } from "./reducer";
 
 import React from "react";
@@ -43,6 +44,7 @@ export const useOpenModals = () => {
   const toggle = useSelector((state: any) => state.toggle) as ToggleState;
   return {
     modals: useSelector((state: any) => state.modals) as ModalState,
+
     setShowSupport: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) =>
         dispatch(setShowSupport(state)),
@@ -59,6 +61,16 @@ export const useOpenModals = () => {
     setShowWrongNetworkGuide: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) =>
         dispatch(setShowWrongNetworkGuide(state)),
+      [dispatch]
+    ),
+    setShowClaimWithdraw: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => {
+        if (toggle.claim.enable) {
+          dispatch(setShowClaimWithdraw(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Claim" }));
+        }
+      },
       [dispatch]
     ),
     setShowTransfer: React.useCallback(

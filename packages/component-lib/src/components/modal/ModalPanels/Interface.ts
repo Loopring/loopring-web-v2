@@ -13,22 +13,17 @@ import {
 import React from "react";
 
 export type AccountBaseProps = {
-  // addressShort: string
-  // address: string,
   level?: string;
   mainBtn?: ((props: ButtonProps) => JSX.Element) | JSX.Element;
   etherscanUrl: string;
-  // connectBy: string,
   onDisconnect?: any;
   onSwitch?: any;
-  // onLock?: any,
   onCopy?: any;
   onViewQRCode?: any;
 } & Account;
 
 export enum AccountStep {
   CheckingActive,
-  // ImportLegacyCollection,
   AddAssetGateway,
   SendAssetGateway,
   SendNFTGateway,
@@ -82,6 +77,13 @@ export enum AccountStep {
   ForceWithdraw_Denied,
   ForceWithdraw_Failed,
   ForceWithdraw_Submit,
+
+  ClaimWithdraw_WaitForAuth,
+  ClaimWithdraw_Denied,
+  ClaimWithdraw_First_Method_Denied,
+  ClaimWithdraw_In_Progress,
+  ClaimWithdraw_Failed,
+  ClaimWithdraw_Submit,
 
   Transfer_WaitForAuth,
   Transfer_First_Method_Denied,

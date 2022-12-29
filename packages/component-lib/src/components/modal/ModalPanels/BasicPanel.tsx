@@ -460,6 +460,12 @@ export const ForceWithdrawBase = (props: PanelProps) => {
   };
   return <BasicPanel {...props} {...propsPatch} />;
 };
+export const ClaimWithdrawBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelClaimWithdrawTitle",
+  };
+  return <BasicPanel {...props} {...propsPatch} />;
+};
 
 export const TransferBase = (props: PanelProps) => {
   const propsPatch = {

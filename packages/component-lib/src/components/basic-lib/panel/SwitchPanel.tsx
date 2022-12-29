@@ -42,18 +42,24 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   `}
   .createRedPacket & {
     width: 100%;
+
     .container {
-      > div {
+      & > div {
         width: 100%;
         flex: 1;
         display: flex;
         justify-content: center;
+
         .redPacket {
           justify-content: center;
         }
+        .menu-panel {
+          max-width: 760px;
+          padding: 0
+            ${({ theme, ismobile }) =>
+              (ismobile === "true" ? 2 : 10) * theme.unit}px;
+        }
       }
-      //width: 100%;
-      //justify-content: center;
     }
   }
   ${({ theme }) => toolBarPanel({ theme })}

@@ -34,6 +34,7 @@ const initialState: ModalState = {
   isShowCollectionAdvance: { isShow: false },
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
+  isShowClaimWithdraw: { isShow: false },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -304,6 +305,17 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         messageKey,
       };
     },
+    setShowClaimWithdraw(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & Transaction>
+    ) {
+      const { isShow, symbol, info } = action.payload;
+      state.isShowClaimWithdraw = {
+        isShow,
+        symbol,
+        info,
+      };
+    },
   },
 });
 export const {
@@ -332,4 +344,5 @@ export const {
   setShowWrongNetworkGuide,
   setShowOtherExchange,
   setShowLayerSwapNotice,
+  setShowClaimWithdraw,
 } = modalsSlice.actions;

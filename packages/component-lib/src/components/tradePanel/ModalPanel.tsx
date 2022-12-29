@@ -21,6 +21,7 @@ import {
   NFTDeployProps,
   AccountStep,
   CollectionAdvanceProps,
+  ClaimProps,
 } from "../..";
 import {
   Account,
@@ -33,6 +34,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { CollectionAdvanceWrap } from "./components/CollectionAdvanceWrap";
+import { ClaimWithdrawPanel } from "../modal/ModalPanels/ClaimWithdrawPanel";
 
 const BoxStyle = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
@@ -136,6 +138,7 @@ export const ModalPanel = <
   nftWithdrawProps,
   nftDeployProps,
   resetProps,
+  claimProps,
   // nftMintAdvanceProps,
   activeAccountProps,
   collectionAdvanceProps,
@@ -151,6 +154,7 @@ export const ModalPanel = <
   withdrawProps: WithdrawProps<T, I>;
   baseURL: string;
   nftTransferProps: TransferProps<N, I>;
+  claimProps: ClaimProps<T, I>;
   nftWithdrawProps: WithdrawProps<N, I>;
   nftDeployProps: NFTDeployProps<N & { broker: string }, I, F>;
   depositProps: DepositProps<T, I>;
@@ -197,11 +201,29 @@ export const ModalPanel = <
     isShowActiveAccount,
     isShowCollectionAdvance,
     isShowLayerSwapNotice,
+    isShowClaimWithdraw,
     // isShowDual,
   } = modals;
   const theme = useTheme();
   return (
     <>
+      <Modal
+        open={isShowClaimWithdraw.isShow}
+        contentClassName={"trade-wrap"}
+        onClose={() => setShowTransfer({ isShow: false })}
+        content={
+          <ClaimWithdrawPanel<any, any>
+            {...{
+              ...rest,
+              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
+              _height: "auto",
+              ...claimProps,
+              assetsData,
+            }}
+          />
+        }
+      />
       <Modal
         open={isShowTransfer.isShow}
         contentClassName={"trade-wrap"}
@@ -318,7 +340,6 @@ export const ModalPanel = <
           />
         }
       />
-
       <Modal
         open={isShowDeposit.isShow}
         contentClassName={"trade-wrap"}
@@ -341,7 +362,6 @@ export const ModalPanel = <
       {/*    <DepositPanel {...{ ...rest, ...depositGroupProps.depositProps }} />*/}
       {/*  }*/}
       {/*/>*/}
-
       <Modal
         open={isShowResetAccount.isShow}
         onClose={() =>

@@ -37,6 +37,7 @@ import { tokenPricesSlice } from "./tokenPrices/reducer";
 import { TradeProSettings } from "./localStore/tradeProSettings";
 import { notifyMapSlice } from "./notify/reducer";
 import { walletLayer2NFTSlice } from "./walletLayer2NFT/reducer";
+import { redpacketConfigsSlice } from "./redpacket/reducer";
 import { localStoreReducer } from "./localStore";
 import { getAnalytics } from "firebase/analytics";
 
@@ -140,6 +141,7 @@ const reducer = combineReducers({
   invest: investReducer,
   tokenMap: tokenMapSlice.reducer,
   tokenPrices: tokenPricesSlice.reducer,
+  redpacketConfigs: redpacketConfigsSlice.reducer,
   toggle: toggleSlice.reducer,
   walletLayer2: walletLayer2Slice.reducer,
   walletLayer2NFT: walletLayer2NFTSlice.reducer,

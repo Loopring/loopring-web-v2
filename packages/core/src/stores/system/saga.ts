@@ -33,6 +33,7 @@ import { getDefiMap } from "../invest/DefiMap/reducer";
 import { getInvestTokenTypeMap } from "../invest/InvestTokenTypeMap/reducer";
 import { getDualMap } from "../invest/DualMap/reducer";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { getRedPacketConfigs } from "../redpacket/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
@@ -233,9 +234,11 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       throw "tokenMap Error";
     }
   }
+  store.dispatch(getRedPacketConfigs(undefined));
   store.dispatch(getNotify(undefined));
   store.dispatch(getDefiMap(undefined));
   store.dispatch(getDualMap(undefined));
+
   yield all([
     take("defiMap/getDefiMapStatus"),
     take("dualMap/getDualMapStatus"),

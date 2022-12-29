@@ -5,6 +5,12 @@ import {
   AddAssetItem,
   Button,
   CheckActiveStatus,
+  ClaimWithdraw_Denied,
+  ClaimWithdraw_Failed,
+  ClaimWithdraw_First_Method_Denied,
+  ClaimWithdraw_In_Progress,
+  ClaimWithdraw_Submit,
+  ClaimWithdraw_WaitForAuth,
   CreateAccount_Approve_Denied,
   CreateAccount_Approve_Submit,
   CreateAccount_Approve_WaitForAuth,
@@ -153,6 +159,7 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
 import { ImportRedPacket } from "./components/QRCodeScanner";
+import { useClaimConfirm } from "../../hooks/useractions/useClaimConfirm";
 
 export function useAccountModalForUI({
   t,
@@ -195,6 +202,7 @@ export function useAccountModalForUI({
     transferValue,
     withdrawValue,
     forceWithdrawValue,
+    claimValue,
   } = useModalData();
 
   const { chainId, allowTrade } = useSystem();
@@ -224,6 +232,7 @@ export function useAccountModalForUI({
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
   const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
+  const { claimProps, retryBtn: claimRetryBtn } = useClaimConfirm();
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
@@ -383,7 +392,6 @@ export function useAccountModalForUI({
       } else {
         setTryCheckL2BalanceTimes((state) => {
           if (state > 0) {
-            myLog(updateDepositStatus, "updateDepositStatus");
             updateWalletLayer2();
             nodeTimer.current = setTimeout(() => {
               updateDepositStatus();
@@ -1388,15 +1396,15 @@ export function useAccountModalForUI({
       [AccountStep.ForceWithdraw_WaitForAuth]: {
         view: (
           <ForceWithdraw_WaitForAuth
-            symbol={nftDeployValue.name}
-            value={nftDeployValue.tradeValue}
+            symbol={forceWithdrawValue.belong}
+            value={forceWithdrawValue.tradeValue}
             chainInfos={chainInfos}
             updateDepositHash={updateDepositHash}
             providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
+              ...forceWithdrawValue,
               t,
             }}
           />
@@ -1501,6 +1509,112 @@ export function useAccountModalForUI({
         //   setShowAccount({ isShow: false });
         // },
       },
+
+      // ClaimWithdraw
+      [AccountStep.ClaimWithdraw_WaitForAuth]: {
+        view: (
+          <ClaimWithdraw_WaitForAuth
+            symbol={claimValue?.belong}
+            value={claimValue?.tradeValue}
+            chainInfos={chainInfos}
+            // updateDepositHash={updateDepositHash}
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ClaimWithdraw_Denied]: {
+        view: (
+          <ClaimWithdraw_Denied
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                claimRetryBtn();
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ClaimWithdraw_First_Method_Denied]: {
+        view: (
+          <ClaimWithdraw_First_Method_Denied
+            btnInfo={{
+              btnTxt: "labelTryAnother",
+              callback: () => {
+                claimRetryBtn(true);
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ClaimWithdraw_In_Progress]: {
+        view: (
+          <ClaimWithdraw_In_Progress
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ClaimWithdraw_Failed]: {
+        view: (
+          <ClaimWithdraw_Failed
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.claim,
+                  },
+                });
+              },
+            })}
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ClaimWithdraw_Submit]: {
+        view: (
+          <ClaimWithdraw_Submit
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              t,
+            }}
+          />
+        ),
+      },
+
       // transfer
       [AccountStep.Transfer_WaitForAuth]: {
         view: (
@@ -2669,6 +2783,7 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     transferProps,
     withdrawProps,
+    claimProps,
     depositProps,
     resetProps,
     collectionAdvanceProps,

@@ -1,16 +1,27 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Checkbox, Grid, IconButton } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { StylePaper, useModalData } from "@loopring-web/core";
 import {
   AccountStep,
+  FormControlLabel,
+  ImportCollectionStep,
+  InputSearch,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
 
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { BackIcon, QRIcon, ScanQRIcon } from "@loopring-web/common-resources";
+import {
+  BackIcon,
+  CheckBoxIcon,
+  CheckedIcon,
+  QRIcon,
+  RefreshIcon,
+  ScanQRIcon,
+} from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
+import { useMarketRedPacket } from "./hooks";
 
 export const RedPacketMarketPanel = () => {
   const theme = useTheme();
@@ -19,6 +30,7 @@ export const RedPacketMarketPanel = () => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const history = useHistory();
+  const { setShowOfficial, showOfficial } = useMarketRedPacket();
   return (
     <Box
       flex={1}
@@ -74,7 +86,53 @@ export const RedPacketMarketPanel = () => {
           </Button>
         </Box>
       </Box>
-      <StylePaper ref={container} flex={1}>
+      <StylePaper
+        ref={container}
+        flex={1}
+        display={"flex"}
+        flexDirection={"column"}
+      >
+        <Grid
+          container
+          spacing={1}
+          justifyContent={"flex-end"}
+          marginY={1}
+          paddingX={1}
+        >
+          <Grid item>
+            <Button
+              startIcon={<RefreshIcon fontSize={"small"} />}
+              variant={"outlined"}
+              size={"medium"}
+              color={"primary"}
+              onClick={() => {}}
+            >
+              {t("labelRefreshRedPacket")}
+            </Button>
+          </Grid>
+          <Grid item>
+            <FormControlLabel
+              style={{ marginRight: 0, paddingRight: 0 }}
+              control={
+                <Checkbox
+                  checked={showOfficial}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color="default"
+                  onChange={(event) => {
+                    setShowOfficial(event.target.checked);
+                  }}
+                />
+              }
+              label={t("labelHideSmallBalances")}
+            />
+          </Grid>
+        </Grid>
+
+        <Box flex={1} display={"flex"} paddingX={1}></Box>
+        {/*<IconButton>*/}
+        {/*  <RefreshIcon style={{ height: 36, width: 36 }} />*/}
+        {/*</IconButton>*/}
         {/*<Toast*/}
         {/*  alertText={toastOpen?.content ?? ""}*/}
         {/*  severity={toastOpen?.type ?? "success"}*/}

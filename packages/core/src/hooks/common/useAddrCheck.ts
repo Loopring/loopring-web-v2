@@ -41,7 +41,7 @@ export const useAddressCheck = () => {
           if (
             /^0x[a-fA-F0-9]{40}$/g.test(address) ||
             /.*\.eth$/gi.test(address) ||
-            (/^\d{5}$/g.test(address) && Number(address) > 10000)
+            (/^\d{5,8}$/g.test(address) && Number(address) > 10000)
           ) {
             if (nodeTimer.current !== -1) {
               clearTimeout(nodeTimer.current);

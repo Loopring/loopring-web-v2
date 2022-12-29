@@ -1,64 +1,25 @@
 import React from "react";
-import { Box, Button } from "@mui/material";
-import { CreateRedPacketPanel } from "@loopring-web/component-lib";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import {
-  RedPacketOrderData,
-  StylePaper,
-  useCreateRedPacket,
-  ViewAccountTemplate,
-} from "@loopring-web/core";
+import { Box } from "@mui/material";
+import { useRouteMatch } from "react-router-dom";
+import { ViewAccountTemplate } from "@loopring-web/core";
 
 import { RedPacketMarketPanel } from "./RedPacketMarketPanel";
-import { ReadRedPacketPanel } from "./ReadRedPacketPanel";
+import { CreateRedPacketUIPanel } from "./CreateRedPacketPanel";
 import { MyRedPacketPanel } from "./MyRedPacketPanel";
-import { BackIcon, FeeInfo } from "@loopring-web/common-resources";
-import { useTranslation } from "react-i18next";
+import { ReadRedPacketPanel } from "./ReadRedPacketPanel";
 
-export const RedPacketPage = <
-  T extends RedPacketOrderData<I>,
-  I extends any,
-  F extends FeeInfo,
-  LuckInfo
->() => {
+export const RedPacketPage = () => {
   let match: any = useRouteMatch("/redpacket/:item");
   const selected = match?.params.item ?? "markets";
-  const history = useHistory();
-  const { t } = useTranslation();
-  const createRedPacketViewProps = useCreateRedPacket<T, I, F, LuckInfo>();
+
   const reaPacketRouter = React.useMemo(() => {
     switch (selected) {
       case "create":
-        return (
-          <Box display={"flex"} flex={1} flexDirection={"column"}>
-            <Box
-              display={"flex"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              marginBottom={2}
-            >
-              <Button
-                startIcon={<BackIcon fontSize={"small"} />}
-                variant={"text"}
-                size={"medium"}
-                sx={{ color: "var(--color-text-secondary)" }}
-                color={"inherit"}
-                onClick={() => history.push("/redpacket/markets")}
-              >
-                {t("labelCreateRedPacketTitle")}
-              </Button>
-            </Box>
-            <StylePaper flex={1}>
-              <CreateRedPacketPanel
-                {...{ ...(createRedPacketViewProps as any) }}
-              />
-            </StylePaper>
-          </Box>
-        );
+        return <CreateRedPacketUIPanel />;
       case "records":
         return <MyRedPacketPanel />;
-      case "reader":
-        return <ReadRedPacketPanel />;
+      // case "reader":
+      //   return <ReadRedPacketPanel />;
       case "markets":
         return <RedPacketMarketPanel />;
       default:

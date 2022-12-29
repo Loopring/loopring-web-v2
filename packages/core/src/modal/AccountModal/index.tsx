@@ -67,6 +67,7 @@ export const ModalAccountInfo = withTranslation("common")(
       nftDeployProps,
       // nftMintAdvanceProps,
       resetProps,
+      claimProps,
       activeAccountProps,
       exportAccountProps,
       // dualTradeProps,
@@ -132,6 +133,7 @@ export const ModalAccountInfo = withTranslation("common")(
           nftTransferProps={nftTransferProps as any}
           nftWithdrawProps={nftWithdrawProps as any}
           nftDeployProps={nftDeployProps as any}
+          claimProps={claimProps as any}
           // dualTradeProps={dualTradeProps as any}
           // nftMintAdvanceProps={nftMintAdvanceProps as any}
           // nftWithdrawProps={nftWithdrawProps}

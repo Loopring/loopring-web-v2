@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import {
   ActiveAccountData,
+  ClaimData,
   DepositData,
   ForceWithdrawData,
   LAST_STEP,
@@ -63,6 +64,16 @@ const initialRedPacketState: RedPacketOrderData<any> = {
   __request__: undefined,
 };
 
+const initialClaimState: ClaimData = {
+  belong: undefined as any,
+  tradeValue: 0,
+  balance: 0,
+  fee: undefined,
+  address: undefined,
+  memo: undefined,
+  __request__: undefined,
+};
+
 const initialDepositState: DepositData = {
   belong: undefined,
   tradeValue: 0,
@@ -117,6 +128,7 @@ const initialState: ModalDataStatus = {
   activeAccountValue: initialActiveAccountState,
   forceWithdrawValue: { ...initialForceWithdrawState },
   redPacketOrder: { ...initialRedPacketState },
+  claimValue: { ...initialClaimState },
 };
 
 const modalDataSlice: Slice<ModalDataStatus> = createSlice({
@@ -136,6 +148,8 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       this.resetNFTMintData(state);
       this.resetNFTDeployData(state);
       this.resetForceWithdrawData(state);
+      this.resetRedPacketOrder(state);
+      this.resetClaimData(state);
     },
     resetForceWithdrawData(state) {
       state.lastStep = LAST_STEP.default;
@@ -241,6 +255,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetRedPacketOrder(state) {
       state.lastStep = LAST_STEP.default;
       state.redPacketOrder = { ...initialRedPacketState };
+    },
+    resetClaimData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.claimValue = { ...initialClaimState };
     },
     updateActiveAccountData(
       state,
@@ -590,6 +608,20 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       //   ...rest,
       // };
     },
+    updateClaimData(state, action: PayloadAction<ClaimData>) {
+      state.lastStep = LAST_STEP.claim;
+      const { balance, tradeValue, belong, ...rest } = action.payload;
+      state.claimValue = {
+        ...state.redPacketOrder,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.redPacketOrder.balance,
+        belong,
+        tradeValue,
+        ...rest,
+      } as ClaimData;
+    },
   },
 });
 
@@ -614,6 +646,8 @@ export const {
   updateOffRampData,
   updateOffBanxaData,
   updateRedPacketOrder,
+  updateClaimData,
+  resetClaimData,
   resetForceWithdrawData,
   resetNFTWithdrawData,
   resetNFTTransferData,

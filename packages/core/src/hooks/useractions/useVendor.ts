@@ -64,7 +64,7 @@ export const useVendor = () => {
             if (legalEnable) {
               let config: any = {
                 hostAppName: "Loopring",
-                hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
+                hostLogoUrl: "https://static.loopring.io/assets/svg/logo.svg",
                 userAddress: account.accAddress,
                 defaultFlow: "ONRAMP",
                 enabledFlows: ["ONRAMP"],
