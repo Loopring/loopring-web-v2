@@ -3,9 +3,12 @@ import { useTheme } from "@emotion/react";
 import { StylePaper, useModalData } from "@loopring-web/core";
 import {
   AccountStep,
+  EmptyDefault,
   FormControlLabel,
   ImportCollectionStep,
   InputSearch,
+  RedPacketBg,
+  RedPacketOpen,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -17,6 +20,7 @@ import {
   CheckBoxIcon,
   CheckedIcon,
   QRIcon,
+  RedPacketWrapSVG,
   RefreshIcon,
   ScanQRIcon,
 } from "@loopring-web/common-resources";
@@ -30,7 +34,13 @@ export const RedPacketMarketPanel = () => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const history = useHistory();
-  const { setShowOfficial, showOfficial } = useMarketRedPacket();
+  const {
+    setShowOfficial,
+    showOfficial,
+    getMarketRedPacket,
+    luckTokenList,
+    handlePageChange,
+  } = useMarketRedPacket();
   return (
     <Box
       flex={1}
@@ -129,7 +139,48 @@ export const RedPacketMarketPanel = () => {
           </Grid>
         </Grid>
 
-        <Box flex={1} display={"flex"} paddingX={1}></Box>
+        <Grid container spacing={1} flex={1} display={"flex"} paddingX={1}>
+          {luckTokenList.officialList?.length ? (
+            luckTokenList.officialList.map((item, index) => (
+              <Grid xs={6} md={4} lg={3} key={index}>
+                <RedPacketOpen type={"official"} />
+              </Grid>
+            ))
+          ) : (
+            <></>
+          )}
+          {luckTokenList.publicList?.length
+            ? luckTokenList.publicList.map((item, index) => (
+                <Grid xs={6} md={4} lg={3} key={index}>
+                  <RedPacketOpen />
+                </Grid>
+              ))
+            : !luckTokenList.officialList?.length &&
+              !luckTokenList.publicList?.length && (
+                <Box
+                  flex={1}
+                  display={"flex"}
+                  alignItems={"center"}
+                  height={"100%"}
+                  justifyContent={"center"}
+                >
+                  <EmptyDefault
+                    // width={"100%"}
+                    height={"100%"}
+                    message={() => (
+                      <Box
+                        flex={1}
+                        display={"flex"}
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                      >
+                        {t("labelNoContent")}
+                      </Box>
+                    )}
+                  />
+                </Box>
+              )}
+        </Grid>
         {/*<IconButton>*/}
         {/*  <RefreshIcon style={{ height: 36, width: 36 }} />*/}
         {/*</IconButton>*/}

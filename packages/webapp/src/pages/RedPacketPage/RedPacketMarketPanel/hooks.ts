@@ -13,12 +13,15 @@ import {
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
+  globalSetup,
   RedPacketLimit,
   SDK_ERROR_MAP_TO_UI,
+  TableType,
 } from "@loopring-web/common-resources";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
+import _ from "lodash";
 
-export const useMarketRedPacket = <R extends RawDataDualTxsItem>() =>
+export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>() =>
   // setToastOpen: (props: any) => void
   {
     const { t } = useTranslation(["error"]);
@@ -27,7 +30,13 @@ export const useMarketRedPacket = <R extends RawDataDualTxsItem>() =>
       account: { accountId, apiKey },
     } = useAccount();
 
-    const [luckTokenList, setLuckTokenList] = React.useState<R[]>([]);
+    const [luckTokenList, setLuckTokenList] = React.useState<{
+      officialList: R[];
+      publicList: R[];
+    }>({
+      officialList: [],
+      publicList: [],
+    });
     const { idIndex } = useTokenMap();
     const [pagination, setPagination] = React.useState<{
       pageSize: number;
@@ -51,22 +60,11 @@ export const useMarketRedPacket = <R extends RawDataDualTxsItem>() =>
     const [showLoading, setShowLoading] = React.useState(true);
 
     const getMarketRedPacket = React.useCallback(
-      async ({
-        showOfficial,
-        offset,
-        limit,
-      }: // start,
-      // end,
-      // offset,
-      // settlementStatus,
-      // investmentStatus,
-      // dualTypes,
-      // limit,
-      any) => {
+      async ({ showOfficial, offset }: any) => {
         setShowLoading(true);
         if (LoopringAPI.luckTokenAPI && accountId && apiKey) {
-          Promise.all(showOfficial?[
-             LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
+          const responses = await Promise.all([
+            LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
               {
                 senderId: 0,
                 hash: "",
@@ -82,33 +80,38 @@ export const useMarketRedPacket = <R extends RawDataDualTxsItem>() =>
                 official: true,
               } as any,
               apiKey
-            )
-          ]:[
-            ,LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
-            {
-              senderId: 0,
-              hash: "",
-              partitions: sdk.LuckyTokenAmountType.RANDOM,
-              modes: sdk.LuckyTokenClaimType.COMMON,
-              scopes: sdk.LuckyTokenViewType.PUBLIC,
-              statuses: `${sdk.LuckyTokenWithdrawStatus.PROCESSING},
+            ),
+            ...(showOfficial
+              ? []
+              : [
+                  LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
+                    {
+                      senderId: 0,
+                      hash: "",
+                      partitions: sdk.LuckyTokenAmountType.RANDOM,
+                      modes: sdk.LuckyTokenClaimType.COMMON,
+                      scopes: sdk.LuckyTokenViewType.PUBLIC,
+                      statuses: `${sdk.LuckyTokenWithdrawStatus.PROCESSING},
                 ${sdk.LuckyTokenWithdrawStatus.PROCESSED},
                 ${sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED},
                 ${sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED}`,
-              offset: (pagination.page - 1) * pagination?.pageSize,
-              limit: pagination?.pageSize,
-              official: showOfficial,
-            } as any,
-            apiKey
-          )])
-          const response =
-            ;
+                      offset,
+                      limit: pagination?.pageSize,
+                      official: showOfficial,
+                    } as any,
+                    apiKey
+                  ),
+                ]),
+          ]);
+
           if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
+            (responses[0] as sdk.RESULT_INFO).code ||
+            (responses[0] as sdk.RESULT_INFO).message
           ) {
-            // const errorItem =
-            //   SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+            const errorItem =
+              SDK_ERROR_MAP_TO_UI[
+                (responses[0] as sdk.RESULT_INFO)?.code ?? 700001
+              ];
             // if (setToastOpen) {
             //   setToastOpen({
             //     open: true,
@@ -120,67 +123,58 @@ export const useMarketRedPacket = <R extends RawDataDualTxsItem>() =>
             //   });
             // }
           } else {
-            // @ts-ignore
-            let result = (response as any)?.userDualTxs.reduce(
-              (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
-                const [, , coinA, coinB] =
-                  (item.tokenInfoOrigin.market ?? "dual-").match(
-                    /(dual-)?(\w+)-(\w+)/i
-                  ) ?? [];
-
-                let [sellTokenSymbol, buyTokenSymbol] =
-                  item.dualType == DUAL_TYPE.DUAL_BASE
-                    ? [
-                        coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
-                        coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
-                      ]
-                    : [
-                        coinB ?? idIndex[item.tokenInfoOrigin.tokenIn],
-                        coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
-                      ];
-                prev.push({
-                  ...makeDualOrderedItem(
-                    item,
-                    sellTokenSymbol,
-                    buyTokenSymbol,
-                    0,
-                    dualMarketMap[item.tokenInfoOrigin.market]
-                  ),
-                  amount: item.tokenInfoOrigin.amountIn,
-                });
-                return prev;
-              },
-              [] as RawDataDualAssetItem[]
-            );
-
-            setLuckTokenList(result);
+            setLuckTokenList({
+              officialList: responses[0]?.list as R[],
+              publicList:
+                responses?.length === 2 ? (responses[1].list as R[]) : [],
+            });
             setShowLoading(false);
             setPagination((state) => {
               return {
                 ...state,
-                totalNum: (response as any).totalNum,
+                totalNum: responses?.length === 2 ? responses[1].totalNum : 0,
               };
             });
-            // setDualPagination({
-            //   pageSize: limit,
-            //   total: (response as any).totalNum,
-            // });
           }
         }
         setShowLoading(false);
       },
       [accountId, apiKey, t, idIndex, dualMarketMap]
     );
+    const updateData = _.debounce(({ currPage, showOfficial }) => {
+      getMarketRedPacket({
+        offset: (currPage - 1) * pagination?.pageSize,
+        showOfficial,
+      });
+      setPagination((state) => {
+        return {
+          ...state,
+          page: currPage,
+        };
+      });
+    }, globalSetup.wait);
+
+    const handlePageChange = React.useCallback(
+      ({ page, showOfficial }: { page: number; showOfficial?: boolean }) => {
+        updateData({ currPage: page });
+      },
+      [updateData, showOfficial]
+    );
+    React.useEffect(() => {
+      updateData.cancel();
+      handlePageChange({ page: 0, showOfficial });
+      return () => {
+        updateData.cancel();
+      };
+    }, [pagination?.pageSize]);
 
     return {
-      // page,
       luckTokenList,
       showLoading,
       showOfficial,
       setShowOfficial,
       dualMarketMap,
       getMarketRedPacket,
-      // pagination,
-      // updateTickersUI,
+      handlePageChange,
     };
   };

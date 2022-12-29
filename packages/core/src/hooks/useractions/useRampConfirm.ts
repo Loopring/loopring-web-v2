@@ -11,13 +11,7 @@ import {
   WALLET_TYPE,
   WalletMap,
 } from "@loopring-web/common-resources";
-import {
-  store,
-  useAccount,
-  useModalData,
-  useSystem,
-  useTokenMap,
-} from "../../stores";
+import { useAccount, useModalData, useSystem, useTokenMap } from "../../stores";
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
 import { makeWalletLayer2 } from "../help";
@@ -291,13 +285,13 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     updateTransferRampData,
   ]);
   React.useEffect(() => {
-    if (RAMP_SELL_PANEL.RAMP_CONFIRM) {
+    if (sellPanel === RAMP_SELL_PANEL.RAMP_CONFIRM) {
       initRampViewProps();
     } else {
       //TODO MOCK
       // resetTransferRampData();
     }
-  }, [sellPanel, walletMap]);
+  }, [sellPanel]);
 
   const rampViewProps = React.useMemo(() => {
     const { address, memo, fee, __request__, ...tradeData } = transferRampValue;
