@@ -20,6 +20,7 @@ export const makeDualViewItem = (
 ): DualViewInfo => {
   // strike is targetPrice
   // ratio is  Interest
+  // @ts-ignore
   const {
     expireTime,
     strike,
@@ -28,6 +29,7 @@ export const makeDualViewItem = (
     // // currency: base,
     // currency: quote,
     dualType,
+    // @ts-ignore
     dualPrice: { dualBid },
   } = info;
   const { precisionForPrice } = market;

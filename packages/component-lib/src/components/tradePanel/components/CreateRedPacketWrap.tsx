@@ -11,7 +11,6 @@ import {
 import React from "react";
 import {
   Button,
-  DateTextField,
   DateTimePicker,
   InputCoin,
   TextareaAutosizeStyled,
@@ -140,10 +139,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
         <Grid
           className={walletMap ? "transfer-wrap" : "loading"}
           container
-          paddingX={isMobile ? 2 : 10}
           direction={"column"}
           alignItems={"stretch"}
-          justifyContent={"center"}
+          justifyContent={"start"}
           flex={1}
           height={"100%"}
           spacing={2}
@@ -151,6 +149,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
           minWidth={240}
           maxWidth={"760px"}
           flexWrap={"nowrap"}
+          paddingX={isMobile ? 2 : 10}
         >
           <Grid item>
             <Box
@@ -265,20 +264,12 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   className={"main-label"}
                   color={"var(--color-text-third)"}
                 >
-                  <Trans i18nKey={"labelRedPacketMemo"}>Send Time</Trans>
+                  <Trans i18nKey={"labelRedPacketStart"}>Send Time</Trans>
                 </Typography>
               </Tooltip>
             </FormLabel>
             {/*year' | 'day' | 'month' | 'hours' | 'minutes' | 'seconds*/}
             <DateTimePicker
-              renderInput={(_props) => {
-                return (
-                  <DateTextField
-                    ref={_props.inputRef}
-                    {...{ ..._props, helperText: null }}
-                  />
-                );
-              }}
               value={tradeData.validSince}
               onChange={() => {
                 handleOnDataChange({ validSince: "" } as any);
@@ -476,112 +467,121 @@ export const CreateRedPacketStepType = withTranslation()(
         justifyContent={"flex-start"}
         flexDirection={"column"}
         alignItems={"center"}
-        width={"100%"}
-        maxWidth={"760px"}
+        className={isMobile ? "mobile" : ""}
       >
         <Box
           display={"flex"}
           flexDirection={"column"}
-          alignItems={"stretch"}
-          alignSelf={"stretch"}
-          className="modalContent"
-          marginBottom={2}
+          width={"100%"}
+          minWidth={240}
+          maxWidth={"760px"}
+          flexWrap={"nowrap"}
           paddingX={isMobile ? 2 : 10}
+          className="modalConte"
+          paddingTop={2}
         >
-          {LuckyRedPacketList.map((item: LuckyRedPacketItem) => (
-            <Box key={item.value.value} marginBottom={1.5}>
-              <MenuBtnStyled
-                variant={"outlined"}
-                size={"large"}
-                className={`${isMobile ? "isMobile" : ""} ${
-                  selectedType.value.value === item.value.value
-                    ? "selected redPacketType "
-                    : "redPacketType"
-                }`}
-                fullWidth
-                onClick={(_e) => {
-                  handleOnDataChange({
-                    type: {
-                      ...tradeData?.type,
-                      // scope: value,
-                      partition: item.value.partition,
-                      mode: item.value.mode,
-                    },
-                  } as any);
-                }}
-              >
-                <Typography
-                  variant={"h5"}
-                  display={"inline-flex"}
-                  marginBottom={1 / 2}
-                  alignItems={"flex-start"}
-                  component={"span"}
-                >
-                  {t(item.labelKey)}
-                </Typography>
-                <Typography
-                  variant={"body1"}
-                  display={"inline-flex"}
-                  justifyContent={"flex-start"}
-                  component={"span"}
-                  color={"var(--color-text-secondary)"}
-                >
-                  {t(item.desKey)}
-                </Typography>
-              </MenuBtnStyled>
-            </Box>
-          ))}
-        </Box>
-        <Box marginBottom={2}>
-          <RadioGroup
-            aria-label="withdraw"
-            name="withdraw"
-            value={tradeData?.type?.scope as sdk.LuckyTokenViewType}
-            onChange={(_e, value) => {
-              handleOnDataChange({
-                type: {
-                  ...tradeData.type,
-                  scope: value,
-                },
-              } as any);
-            }}
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            alignItems={"stretch"}
+            alignSelf={"stretch"}
+            marginBottom={2}
           >
-            {[0, 1].map((key) => {
-              return (
-                <FormControlLabel
-                  key={key}
-                  sx={{ marginTop: 2 }}
-                  value={key.toString()}
-                  control={<Radio />}
-                  label={
-                    <>
-                      <Typography>
-                        {t("labelLuckyTokenViewType" + key)}
-                      </Typography>
-                      <Typography>
-                        {t("labelLuckyTokenViewTypeDes" + key)}
-                      </Typography>
-                    </>
-                  }
-                />
-              );
-            })}
-          </RadioGroup>
-        </Box>
-        <Box width={"100%"} maxWidth={"760px"} paddingX={isMobile ? 2 : 10}>
-          <BtnMain
-            {...{
-              defaultLabel: "labelContinue",
-              fullWidth: true,
-              btnInfo: btnInfo,
-              // btnStatus,
-              disabled: () => getDisabled,
-              onClick: () => {
-                setActiveStep(RedPacketStep.Main);
-                // onNFTMintClick(tradeData);
-              },
-            }}
-          />
+            {LuckyRedPacketList.map((item: LuckyRedPacketItem) => (
+              <Box key={item.value.value} marginBottom={1.5}>
+                <MenuBtnStyled
+                  variant={"outlined"}
+                  size={"large"}
+                  className={`${isMobile ? "isMobile" : ""} ${
+                    selectedType.value.value === item.value.value
+                      ? "selected redPacketType "
+                      : "redPacketType"
+                  }`}
+                  fullWidth
+                  onClick={(_e) => {
+                    handleOnDataChange({
+                      type: {
+                        ...tradeData?.type,
+                        // scope: value,
+                        partition: item.value.partition,
+                        mode: item.value.mode,
+                      },
+                    } as any);
+                  }}
+                >
+                  <Typography
+                    variant={"h5"}
+                    display={"inline-flex"}
+                    marginBottom={1 / 2}
+                    alignItems={"flex-start"}
+                    component={"span"}
+                  >
+                    {t(item.labelKey)}
+                  </Typography>
+                  <Typography
+                    variant={"body1"}
+                    display={"inline-flex"}
+                    justifyContent={"flex-start"}
+                    component={"span"}
+                    color={"var(--color-text-secondary)"}
+                  >
+                    {t(item.desKey)}
+                  </Typography>
+                </MenuBtnStyled>
+              </Box>
+            ))}
+          </Box>
+          <Box marginBottom={2}>
+            <RadioGroup
+              aria-label="withdraw"
+              name="withdraw"
+              value={tradeData?.type?.scope as sdk.LuckyTokenViewType}
+              onChange={(_e, value) => {
+                handleOnDataChange({
+                  type: {
+                    ...tradeData.type,
+                    scope: value,
+                  },
+                } as any);
+              }}
+            >
+              {[0, 1].map((key) => {
+                return (
+                  <FormControlLabel
+                    key={key}
+                    sx={{ marginTop: 2 }}
+                    value={key.toString()}
+                    control={<Radio />}
+                    label={
+                      <>
+                        <Typography>
+                          {t("labelLuckyTokenViewType" + key)}
+                        </Typography>
+                        <Typography>
+                          {t("labelLuckyTokenViewTypeDes" + key)}
+                        </Typography>
+                      </>
+                    }
+                  />
+                );
+              })}
+            </RadioGroup>
+          </Box>
+          <Box width={"100%"}>
+            <BtnMain
+              {...{
+                defaultLabel: "labelContinue",
+                fullWidth: true,
+                btnInfo: btnInfo,
+                // btnStatus,
+                disabled: () => getDisabled,
+                onClick: () => {
+                  setActiveStep(RedPacketStep.Main);
+                  // onNFTMintClick(tradeData);
+                },
+              }}
+            />
+          </Box>
         </Box>
       </RedPacketBoxStyle>
     );

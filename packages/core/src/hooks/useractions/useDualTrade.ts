@@ -305,6 +305,7 @@ export const useDualTrade = <
           if (dualInfo?.__raw__?.info) {
             dualInfo.__raw__.info = {
               ...dualInfo.__raw__.info,
+              // @ts-ignore
               dualPrice: {
                 ...dualPriceResponse.infos[0],
               },
@@ -392,6 +393,7 @@ export const useDualTrade = <
         const {
           dualType,
           productId,
+          // @ts-ignore
           dualPrice: { dualBid },
         } = tradeDual.dualViewInfo.__raw__.info;
 

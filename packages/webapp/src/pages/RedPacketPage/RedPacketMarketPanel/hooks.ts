@@ -71,10 +71,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>() =>
                 partitions: sdk.LuckyTokenAmountType.RANDOM,
                 modes: sdk.LuckyTokenClaimType.COMMON,
                 scopes: sdk.LuckyTokenViewType.PUBLIC,
-                statuses: `${sdk.LuckyTokenWithdrawStatus.PROCESSING},
-                ${sdk.LuckyTokenWithdrawStatus.PROCESSED},
-                ${sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED},
-                ${sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED}`,
+                statuses: `${sdk.LuckyTokenWithdrawStatus.PROCESSING},${sdk.LuckyTokenWithdrawStatus.PROCESSED},${sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED},${sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED}`,
                 offset: 0,
                 limit: 50,
                 official: true,
@@ -91,10 +88,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>() =>
                       partitions: sdk.LuckyTokenAmountType.RANDOM,
                       modes: sdk.LuckyTokenClaimType.COMMON,
                       scopes: sdk.LuckyTokenViewType.PUBLIC,
-                      statuses: `${sdk.LuckyTokenWithdrawStatus.PROCESSING},
-                ${sdk.LuckyTokenWithdrawStatus.PROCESSED},
-                ${sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED},
-                ${sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED}`,
+                      statuses: `${sdk.LuckyTokenWithdrawStatus.PROCESSING},${sdk.LuckyTokenWithdrawStatus.PROCESSED},${sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED},${sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED}`,
                       offset,
                       limit: pagination?.pageSize,
                       official: showOfficial,
@@ -162,7 +156,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>() =>
     );
     React.useEffect(() => {
       updateData.cancel();
-      handlePageChange({ page: 0, showOfficial });
+      handlePageChange({ page: 1, showOfficial });
       return () => {
         updateData.cancel();
       };

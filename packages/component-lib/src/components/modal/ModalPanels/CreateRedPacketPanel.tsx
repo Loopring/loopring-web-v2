@@ -30,10 +30,6 @@ const BoxStyle = styled(Box)`
       align-items: center;
       display: flex;
     }
-    //div {
-    //
-    //
-    //}
   }
 `;
 export const CreateRedPacketPanel = withTranslation(["common", "error"], {
@@ -180,7 +176,7 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
         display={"flex"}
         flex={1}
         flexDirection={"column"}
-        padding={5 / 2}
+        paddingY={5 / 2}
         alignItems={"center"}
       >
         <HorizontalLabelPositionBelowStepper

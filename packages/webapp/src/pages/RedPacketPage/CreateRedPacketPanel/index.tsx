@@ -44,10 +44,9 @@ export const CreateRedPacketUIPanel = <
           {t("labelCreateRedPacketTitle")}
         </Button>
       </Box>
-      <StylePaper flex={1}>
+      <StylePaper flex={1} display={"flex"} justifyContent={"center"}>
         <CreateRedPacketPanel
           {...{
-            _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
             //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
             _height: "auto",
             ...(createRedPacketProps as any),

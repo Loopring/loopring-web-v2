@@ -42,7 +42,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   `}
   .createRedPacket & {
     width: 100%;
-
+    ${({ ismobile }) => `${ismobile === "true" ? "width:380px;" : ""}`}
     .container {
       & > div {
         width: 100%;
@@ -58,6 +58,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
           padding: 0
             ${({ theme, ismobile }) =>
               (ismobile === "true" ? 2 : 10) * theme.unit}px;
+          padding-top: ${({ theme }) => 2 * theme.unit}px;
         }
       }
     }

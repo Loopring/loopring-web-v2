@@ -36,7 +36,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const history = useHistory();
   const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
     useVendor();
-  const { resetTransferRampData, resetTransferBanxaData } = useModalData();
+  // const { resetTransferRampData, resetTransferBanxaData } = useModalData();
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
   const { isMobile } = useSettings();
@@ -51,7 +51,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
     sellPanel,
     setSellPanel,
   });
-  const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
+  // const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
 
   const fiatView = React.useMemo(() => {
     return (
@@ -183,48 +183,48 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                     )}
                   </Box>
                 )}
-                {sellPanel === RAMP_SELL_PANEL.RAMP_CONFIRM && (
-                  <Box flex={1} display={"flex"} flexDirection={"column"}>
-                    <Box marginBottom={2}>
-                      <Button
-                        startIcon={<BackIcon fontSize={"small"} />}
-                        variant={"text"}
-                        size={"medium"}
-                        sx={{ color: "var(--color-text-secondary)" }}
-                        color={"inherit"}
-                        onClick={() => {
-                          if (window.rampInstance) {
-                            window.rampInstance.close();
-                          } else {
-                            setSellPanel(RAMP_SELL_PANEL.LIST);
-                            resetTransferRampData();
-                          }
-                        }}
-                      >
-                        {t("labelBack")}
-                      </Button>
-                    </Box>
-                    {rampViewProps ? (
-                      <RampConfirm {...{ ...rampViewProps }} />
-                    ) : (
-                      <Box
-                        flex={1}
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        height={"90%"}
-                      >
-                        <img
-                          className="loading-gif"
-                          alt={"loading"}
-                          width="36"
-                          src={`${SoursURL}images/loading-line.gif`}
-                        />
-                        {/*<LoadingIcon style={{ width: 32, height: 32 }} />*/}
-                      </Box>
-                    )}
-                  </Box>
-                )}
+                {/*{sellPanel === RAMP_SELL_PANEL.RAMP_CONFIRM && (*/}
+                {/*  <Box flex={1} display={"flex"} flexDirection={"column"}>*/}
+                {/*    <Box marginBottom={2}>*/}
+                {/*      <Button*/}
+                {/*        startIcon={<BackIcon fontSize={"small"} />}*/}
+                {/*        variant={"text"}*/}
+                {/*        size={"medium"}*/}
+                {/*        sx={{ color: "var(--color-text-secondary)" }}*/}
+                {/*        color={"inherit"}*/}
+                {/*        onClick={() => {*/}
+                {/*          if (window.rampInstance) {*/}
+                {/*            window.rampInstance.close();*/}
+                {/*          } else {*/}
+                {/*            setSellPanel(RAMP_SELL_PANEL.LIST);*/}
+                {/*            resetTransferRampData();*/}
+                {/*          }*/}
+                {/*        }}*/}
+                {/*      >*/}
+                {/*        {t("labelBack")}*/}
+                {/*      </Button>*/}
+                {/*    </Box>*/}
+                {/*    {rampViewProps ? (*/}
+                {/*      <RampConfirm {...{ ...rampViewProps }} />*/}
+                {/*    ) : (*/}
+                {/*      <Box*/}
+                {/*        flex={1}*/}
+                {/*        display={"flex"}*/}
+                {/*        alignItems={"center"}*/}
+                {/*        justifyContent={"center"}*/}
+                {/*        height={"90%"}*/}
+                {/*      >*/}
+                {/*        <img*/}
+                {/*          className="loading-gif"*/}
+                {/*          alt={"loading"}*/}
+                {/*          width="36"*/}
+                {/*          src={`${SoursURL}images/loading-line.gif`}*/}
+                {/*        />*/}
+                {/*        /!*<LoadingIcon style={{ width: 32, height: 32 }} />*!/*/}
+                {/*      </Box>*/}
+                {/*    )}*/}
+                {/*  </Box>*/}
+                {/*)}*/}
               </>
             )}
           </StyledPaper>
