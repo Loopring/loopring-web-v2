@@ -246,7 +246,7 @@ export default {
   labelAprFee: "Protocol APR:",
   labelAprEvent: "Activity APR:",
   label24Rewards: "24h Rewards",
-  labelRewardFee: "Fees:",
-  labelRewardReward: "Rewards:",
-  labelRewardExtra: "Extra Rewards:",
+  labelRewardFee: "AMM Rewards:",
+  labelRewardReward: "Other Rewards:",
+  labelRewardExtra: "Campaign Rewards:",
 };
