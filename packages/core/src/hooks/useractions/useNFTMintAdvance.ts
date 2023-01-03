@@ -462,9 +462,9 @@ export const useNFTMintAdvance = <
                   image: value.image,
                   collection_metadata: value.collection_metadata,
                   description: value.description ?? EmptyValueTag,
-                  royaltyPercentage: value.royalty_percentage
-                    ? Number(value.royalty_percentage)
-                    : undefined,
+                  royaltyPercentage: isNaN(value.royalty_percentage)
+                    ? undefined
+                    : Number(value.royalty_percentage),
                   ...shouldUpdate,
                 };
                 setIsNotAvailableCID(undefined);
