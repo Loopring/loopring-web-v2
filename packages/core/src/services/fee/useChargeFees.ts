@@ -172,7 +172,7 @@ export function useChargeFees({
         LoopringAPI.userAPI &&
         LoopringAPI.globalAPI
       ) {
-        myLog("getFeeList", requestType);
+        // myLog("getFeeList", requestType);
 
         try {
           const request:
