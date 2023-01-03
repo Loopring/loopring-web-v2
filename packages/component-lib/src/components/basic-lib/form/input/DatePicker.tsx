@@ -203,7 +203,7 @@ export const DateTimePicker = ({
 }: DateTimePickerProps & { t?: TFunction }) => (
   <MuDateTimePicker
     {...props}
-    disableFuture={props.disableFuture ? props.disableFuture : true}
+    disableFuture={props.disableFuture ? props.disableFuture : false}
     mask={props.mask ? props.mask : "__-__-__"}
     inputFormat={inputFormat ? inputFormat : YEAR_DAY_MINUTE_FORMAT}
     openTo={props.openTo ? props.openTo : "day"}
@@ -221,20 +221,6 @@ export const DateTimePicker = ({
     }
     desktopModeMediaQuery={"@media (min-width: 720px)"}
     renderInput={(_props) => {
-      // _props.inputProps = {
-      //   ..._props.inputProps,
-      //   endAdornment: (
-      //     <InputAdornment
-      //       variant={"standard"}
-      //       position="end"
-      //       className={"date-range-adornment"}
-      //     >
-      //       <IconButton size={"large"} edge={"end"}>
-      //         <CalendarIcon />
-      //       </IconButton>
-      //     </InputAdornment>
-      //   ),
-      // };
       return (
         <DateTextField
           ref={_props.inputRef}

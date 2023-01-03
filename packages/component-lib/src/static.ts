@@ -617,3 +617,84 @@ export const REDPACKETMOCK: LuckyTokenItemForReceive = {
   templateNo: 0,
   createdAt: 1662769827,
 };
+
+const LUCKTOKENLIST = [
+  {
+    id: 117080,
+    hash: "0x2635dc5a575d8b2972bfa60db73667b0eb236ec1314885f5a0b42e15165ca806",
+    sender: {
+      accountId: 41441,
+      address: "0x85992e1fc5f0f1a6edb6f4dac3a072fb0426b6c5",
+      ens: "",
+    },
+    champion: {
+      accountId: 83208,
+      address: "0x8bc49232d786cbaddc699b0e57783ccda913aeea",
+      ens: "",
+      amount: "121163022576739548",
+    },
+    tokenId: 1,
+    tokenAmount: {
+      totalCount: 2,
+      remainCount: 0,
+      totalAmount: "220000000000000000",
+      remainAmount: "0",
+    },
+    type: {
+      partition: 0,
+      scope: 0,
+      mode: 1,
+    },
+    status: "COMPLETED",
+    validSince: 1672331822000,
+    validUntil: 1672418222000,
+    info: {
+      memo: "10LRC to carl.loopring.eth > 2 part nft collection",
+      signer: "",
+      signerUrl: "",
+      logoUrl: "",
+    },
+    templateNo: 0,
+    createdAt: 1672245500416,
+    isNft: false,
+  },
+  {
+    id: 117076,
+    hash: "0x2f5c482b0711f5204491fe31ee927f0dde79906e2261a8e46106dd309ad0100f",
+    sender: {
+      accountId: 41441,
+      address: "0x85992e1fc5f0f1a6edb6f4dac3a072fb0426b6c5",
+      ens: "",
+    },
+    champion: {
+      accountId: 66702,
+      address: "0x4a860d9764882ca402d380964f81438c407765fd",
+      ens: "",
+      amount: "137774109408598431",
+    },
+    tokenId: 1,
+    tokenAmount: {
+      totalCount: 2,
+      remainCount: 0,
+      totalAmount: "220000000000000000",
+      remainAmount: "0",
+    },
+    type: {
+      partition: 0,
+      scope: 0,
+      mode: 1,
+    },
+    status: "COMPLETED",
+    validSince: 1672231875000,
+    validUntil: 1672318275000,
+    info: {
+      memo: "10LRC to carl.loopring.eth > 2 part nft collection",
+      signer: "",
+      signerUrl: "",
+      logoUrl: "",
+    },
+    templateNo: 0,
+    createdAt: 1672145547112,
+    isNft: false,
+  },
+];

@@ -126,6 +126,7 @@ export const useCreateRedPacket = <
             balance: walletInfo?.count,
             memo: "",
             numbers: undefined,
+            validSince: Date.now(),
           } as T);
           break;
         }
@@ -139,6 +140,7 @@ export const useCreateRedPacket = <
         balance: walletInfo?.count,
         memo: "",
         numbers: undefined,
+        validSince: Date.now(),
       } as T);
     } else {
       handleOnDataChange({
@@ -148,6 +150,7 @@ export const useCreateRedPacket = <
         balance: undefined,
         memo: "",
         numbers: undefined,
+        validSince: Date.now(),
       } as unknown as T);
     }
   }, [
@@ -170,7 +173,10 @@ export const useCreateRedPacket = <
       redPacketOrder.belong &&
       tokenMap[redPacketOrder.belong] &&
       redPacketOrder.fee &&
-      redPacketOrder.fee.belong
+      redPacketOrder.fee.belong &&
+      redPacketOrder.numbers &&
+      redPacketOrder.numbers > 0 &&
+      redPacketOrder.tradeValue
     ) {
       const sellToken = tokenMap[redPacketOrder.belong];
       const feeToken = tokenMap[redPacketOrder.fee.belong];
@@ -231,11 +237,15 @@ export const useCreateRedPacket = <
   }, [
     chargeFeeTokenList,
     isFeeNotEnough.isFeeNotEnough,
-    redPacketOrder?.type,
-    redPacketOrder?.type?.scope,
-    redPacketOrder?.type?.partition,
-    redPacketOrder?.type?.mode,
-    redPacketOrder?.fee,
+    // redPacketOrder?.type,
+    // redPacketOrder?.type?.scope,
+    // redPacketOrder?.type?.partition,
+    // redPacketOrder?.type?.mode,
+    redPacketOrder?.numbers,
+    redPacketOrder.balance,
+    redPacketOrder.belong,
+    redPacketOrder.fee,
+    redPacketOrder.tradeValue,
   ]);
   const processRequest = React.useCallback(
     async (
@@ -432,7 +442,7 @@ export const useCreateRedPacket = <
             memo: redPacketOrder.memo,
             signerFlag: redPacketOrder.signerFlag,
             templateID: redPacketOrder.templateID,
-            validSince: redPacketOrder.validSince,
+            validSince: Math.round(redPacketOrder.validSince / 1000),
             validUntil: getTimestampDaysLater(DAYS),
             luckyToken: {
               exchange: exchangeInfo.exchangeAddress,

@@ -29,6 +29,7 @@ import {
   EmptyValueTag,
   BackIcon,
   myLog,
+  IBData,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -44,6 +45,7 @@ import { FeeToggle } from "./tool/FeeList";
 import { RedPacketOrderData } from "@loopring-web/core";
 import { BtnMain } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
+import moment, { Moment } from "moment";
 
 const RedPacketBoxStyle = styled(Box)`
   .MuiFormGroup-root {
@@ -96,6 +98,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const inputButtonDefaultProps = {
       label: t("labelInputRedPacketBtnLabel"),
     };
+    const [dayValue, setDayValue] = React.useState<Moment | null>(moment());
+
     const getDisabled = React.useMemo(() => {
       return disabled || btnStatus === TradeBtnStatus.DISABLED;
     }, [disabled, btnStatus]);
@@ -111,6 +115,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
       maxAllow: true,
       handleError: () => {},
       isShowCoinInfo: false,
+      handleCountChange: (ibData: IBData<any>, _name: string, _ref: any) => {
+        handleOnDataChange({
+          numbers: ibData.tradeValue,
+        } as unknown as Partial<T>);
+      },
     };
 
     const handleToggleChange = (value: F) => {
@@ -251,28 +260,40 @@ export const CreateRedPacketStepWrap = withTranslation()(
             flexDirection={"column"}
           >
             <FormLabel>
-              <Tooltip
-                title={t("labelMintDescriptionTooltips").toString()}
-                placement={"top"}
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                lineHeight={"20px"}
+                display={"inline-flex"}
+                alignItems={"center"}
+                className={"main-label"}
+                color={"var(--color-text-third)"}
               >
-                <Typography
-                  variant={"body1"}
-                  component={"span"}
-                  lineHeight={"20px"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  className={"main-label"}
-                  color={"var(--color-text-third)"}
-                >
-                  <Trans i18nKey={"labelRedPacketStart"}>Send Time</Trans>
-                </Typography>
-              </Tooltip>
+                <Trans i18nKey={"labelRedPacketStart"}>Send Time</Trans>
+              </Typography>
             </FormLabel>
             {/*year' | 'day' | 'month' | 'hours' | 'minutes' | 'seconds*/}
             <DateTimePicker
-              value={tradeData.validSince}
-              onChange={() => {
-                handleOnDataChange({ validSince: "" } as any);
+              style={{ marginTop: 1 }}
+              value={
+                dayValue
+                // tradeData.validSince
+                //   ? tradeData.validSince < Date.now()
+                //     ? moment(new Date(tradeData.validSince))
+                //     : moment()
+                //   : moment()
+              }
+              disableFuture={false}
+              minDate={moment()}
+              // minDateTime={moment().add(q, "minutes").toDate()}
+              // maxDateTime={moment().add(1.5, "days")}
+              maxDateTime={moment().add(1, "days")}
+              onChange={(monent: any) => {
+                // myLog("selectionState", monent.toDate());
+                setDayValue(monent);
+                handleOnDataChange({
+                  validSince: monent.toDate().getTime(),
+                } as unknown as Partial<T>);
               }}
               disabled={disabled}
             />
@@ -438,13 +459,13 @@ export const CreateRedPacketStepType = withTranslation()(
       setSelectType(() => {
         if (tradeData?.type) {
           if (
-            tradeData.type.partition == sdk.LuckyTokenAmountType.AVERAGE &&
-            tradeData.type.mode == sdk.LuckyTokenClaimType.RELAY
+            tradeData.type.partition == LuckyRedPacketList[0].value.partition &&
+            tradeData.type.mode == LuckyRedPacketList[0].value.mode
           ) {
             return LuckyRedPacketList[0];
           } else if (
-            tradeData.type.partition == sdk.LuckyTokenAmountType.RANDOM &&
-            tradeData.type.mode == sdk.LuckyTokenClaimType.COMMON
+            tradeData.type.partition == LuckyRedPacketList[1].value.partition &&
+            tradeData.type.mode == LuckyRedPacketList[1].value.mode
           ) {
             return LuckyRedPacketList[1];
           } else {

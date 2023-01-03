@@ -528,7 +528,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     desKey: "labelLuckyRelayTokenDes",
     value: {
       value: 0,
-      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
       mode: sdk.LuckyTokenClaimType.RELAY,
     },
   },
