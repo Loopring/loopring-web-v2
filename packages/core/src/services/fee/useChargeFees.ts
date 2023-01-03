@@ -9,6 +9,7 @@ import {
   FeeChargeOrderUATDefault,
   FeeInfo,
   globalSetup,
+  myLog,
   WalletMap,
 } from "@loopring-web/common-resources";
 import {
@@ -62,6 +63,7 @@ export function useChargeFees({
     props?: {
       isRequiredAPI: true;
       intervalTime?: number;
+      requestType?: sdk.OffchainFeeReqType | sdk.OffchainNFTFeeReqType;
     } & any
   ) => void;
   handleFeeChange: (value: FeeInfo) => void;
@@ -167,6 +169,8 @@ export function useChargeFees({
         LoopringAPI.userAPI &&
         LoopringAPI.globalAPI
       ) {
+        myLog("getFeeList", requestType);
+
         try {
           const request:
             | sdk.GetOffchainFeeAmtRequest
@@ -210,6 +214,7 @@ export function useChargeFees({
             [
               sdk.OffchainNFTFeeReqType.NFT_MINT,
               sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
+              sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT,
               sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
               sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
             ].includes(requestType as any) &&
@@ -402,13 +407,23 @@ export function useChargeFees({
   );
 
   const checkFeeIsEnough = async (
-    props: undefined | ({ isRequiredAPI: true; intervalTime?: number } & any)
+    props:
+      | undefined
+      | ({
+          isRequiredAPI: true;
+          intervalTime?: number;
+          requestType?: sdk.OffchainFeeReqType;
+        } & any)
   ) => {
     if (props?.isRequiredAPI) {
       const intervalTime = props.intervalTime;
       setIntervalTime((state) => {
         return intervalTime ? intervalTime : state;
       });
+      if (props.requestType) {
+        requestType = props.requestType;
+        myLog("checkFeeIsEnough", requestType);
+      }
       if (props.amount && props.needAmountRefresh) {
         setAmount(() => ({
           amount: props.amount,

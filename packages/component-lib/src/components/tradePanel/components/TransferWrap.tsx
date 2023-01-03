@@ -1,6 +1,12 @@
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel as MuiFormControlLabel,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
@@ -16,6 +22,8 @@ import {
   EmptyValueTag,
   FeeInfo,
   AddressError,
+  CheckedIcon,
+  CheckBoxIcon,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -69,6 +77,10 @@ export const TransferWrap = <
   isAddressCheckLoading,
   isSameAddress,
   baseURL,
+  isActiveAccount,
+  isActiveAccountFee,
+  feeWithActive,
+  handleOnFeeWithActive,
   ...rest
 }: TransferViewProps<T, I, C> &
   WithTranslation & {
@@ -285,15 +297,44 @@ export const TransferWrap = <
               {!isAddressCheckLoading &&
                 addressDefault &&
                 addrStatus === AddressError.NoError &&
-                !isLoopringAddress && (
-                  <Typography
-                    color={"var(--color-error)"}
-                    lineHeight={1}
-                    variant={"body2"}
-                    marginTop={1 / 4}
-                  >
-                    {t("labelL2toL2AddressNotLoopring")}
-                  </Typography>
+                (!isLoopringAddress || !isActiveAccount) && (
+                  <Box>
+                    {(!isLoopringAddress || !isActiveAccount) && realAddr && (
+                      <Typography
+                        color={"var(--color-error)"}
+                        lineHeight={1}
+                        variant={"body2"}
+                        marginTop={1 / 2}
+                      >
+                        {t("labelL2toL2AddressNotLoopring")}
+                      </Typography>
+                    )}
+                    {!isActiveAccountFee && realAddr ? (
+                      <MuiFormControlLabel
+                        control={
+                          <Checkbox
+                            checked={feeWithActive}
+                            onChange={(_event: any, state: boolean) => {
+                              handleOnFeeWithActive(state);
+                            }}
+                            checkedIcon={<CheckedIcon />}
+                            icon={<CheckBoxIcon />}
+                            color="default"
+                          />
+                        }
+                        label={t("labelL2toL2AddressFeeActiveFee")}
+                      />
+                    ) : (
+                      <Typography
+                        color={"var(--color-text-secondary)"}
+                        lineHeight={1}
+                        variant={"body2"}
+                        marginTop={1 / 4}
+                      >
+                        {t("labelL2toL2AddressFeePaid")}
+                      </Typography>
+                    )}
+                  </Box>
                 )}
             </>
           )}

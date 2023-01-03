@@ -77,10 +77,14 @@ export type TransferExtendProps<T, I, C> = {
   isLoopringAddress?: boolean;
   isAddressCheckLoading?: boolean;
   isSameAddress?: boolean;
+  isActiveAccountFee?: boolean;
   addrStatus: AddressError;
   onTransferClick: (data: T, isFirstTime?: boolean) => Promise<void>;
   handleFeeChange: (value: C) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
+  isActiveAccount?: boolean;
+  feeWithActive?: boolean;
+  handleOnFeeWithActive: (value: boolean) => void;
   wait?: number;
   onBack?: () => void;
   memo: string;

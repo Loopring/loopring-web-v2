@@ -189,8 +189,7 @@ export const banxaService = {
           },
         });
         myLog("banxa create order", data.order);
-        // window.open(data.order.checkout_url);
-        // window.opener = null;
+
         banxa.generateIframe(
           "#iframeBanxaTarget",
           data.order.checkout_iframe,
