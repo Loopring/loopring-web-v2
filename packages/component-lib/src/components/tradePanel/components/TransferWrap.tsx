@@ -24,6 +24,7 @@ import {
   AddressError,
   CheckedIcon,
   CheckBoxIcon,
+  AlertIcon,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -57,6 +58,7 @@ export const TransferWrap = <
   type,
   memo,
   chargeFeeTokenList,
+  activeAccountFeeList,
   feeInfo,
   lastFailed,
   isFeeNotEnough,
@@ -106,6 +108,11 @@ export const TransferWrap = <
     return disabled || transferBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, transferBtnStatus]);
 
+  const activeFee = React.useMemo(() => {
+    return activeAccountFeeList?.find(
+      (item: any) => item.belong == feeInfo.belong
+    );
+  }, [feeInfo, activeAccountFeeList]);
   const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const onCopy = React.useCallback(
     async (content: string) => {
@@ -302,15 +309,30 @@ export const TransferWrap = <
                     {(!isLoopringAddress || !isActiveAccount) && realAddr && (
                       <Typography
                         color={"var(--color-error)"}
-                        lineHeight={1}
+                        lineHeight={1.2}
                         variant={"body2"}
                         marginTop={1 / 2}
+                        marginLeft={"-2px"}
+                        display={"inline-flex"}
                       >
-                        {t("labelL2toL2AddressNotLoopring")}
+                        <Trans i18nKey={"labelL2toL2AddressNotLoopring"}>
+                          <AlertIcon
+                            color={"inherit"}
+                            fontSize={"medium"}
+                            sx={{ marginRight: 1 }}
+                          />
+                          This address does not have an activated Loopring L2.
+                          Please ensure the recipient can access Loopring L2
+                          before sending.
+                        </Trans>
                       </Typography>
                     )}
                     {!isActiveAccountFee && realAddr ? (
                       <MuiFormControlLabel
+                        sx={{
+                          alignItems: "flex-start",
+                          marginTop: 1 / 2,
+                        }}
                         control={
                           <Checkbox
                             checked={feeWithActive}
@@ -322,17 +344,32 @@ export const TransferWrap = <
                             color="default"
                           />
                         }
-                        label={t("labelL2toL2AddressFeeActiveFee")}
+                        label={
+                          <Typography
+                            whiteSpace={"pre-line"}
+                            component={"span"}
+                            variant={"body1"}
+                            display={"block"}
+                            color={"textSecondary"}
+                            paddingTop={1 / 2}
+                          >
+                            {t("labelL2toL2AddressFeeActiveFee", {
+                              fee: activeFee?.fee ?? EmptyValueTag,
+                              symbol: activeFee?.belong ?? feeInfo.belong,
+                            })}
+                          </Typography>
+                        }
                       />
                     ) : (
-                      <Typography
-                        color={"var(--color-text-secondary)"}
-                        lineHeight={1}
-                        variant={"body2"}
-                        marginTop={1 / 4}
-                      >
-                        {t("labelL2toL2AddressFeePaid")}
-                      </Typography>
+                      <></>
+                      // <Typography
+                      //   color={"var(--color-text-secondary)"}
+                      //   lineHeight={1}
+                      //   variant={"body2"}
+                      //   marginTop={1 / 4}
+                      // >
+                      //   {t("labelL2toL2AddressFeePaid")}
+                      // </Typography>
                     )}
                   </Box>
                 )}

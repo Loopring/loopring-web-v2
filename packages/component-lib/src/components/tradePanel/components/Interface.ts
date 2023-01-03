@@ -61,6 +61,7 @@ export type TransferInfoProps<C> = {
   transferI18nKey?: string;
   transferBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   chargeFeeTokenList: Array<C>;
+  activeAccountFeeList?: Array<C>;
   feeInfo: C;
   isFeeNotEnough: {
     isFeeNotEnough: boolean;

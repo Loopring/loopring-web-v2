@@ -114,7 +114,6 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
-  myLog,
   NFTWholeINFO,
   SendAssetList,
   SendNFTAssetList,
@@ -382,7 +381,6 @@ export function useAccountModalForUI({
       } else {
         setTryCheckL2BalanceTimes((state) => {
           if (state > 0) {
-            myLog(updateDepositStatus, "updateDepositStatus");
             updateWalletLayer2();
             nodeTimer.current = setTimeout(() => {
               updateDepositStatus();
@@ -2683,6 +2681,7 @@ export function useAccountModalForUI({
     onBackSend,
     collectionToastOpen,
     collectionToastClose,
+    // checkActiveStatusProps,
     // dualToastOpen,
   };
 }

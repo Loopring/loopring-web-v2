@@ -85,10 +85,35 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     requestType: feeWithActive
       ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
       : sdk.OffchainFeeReqType.TRANSFER,
-    updateData: ({ fee }) => {
-      const transferValue = store.getState()._router_modalData.transferValue;
-      updateTransferData({ ...transferValue, fee });
+    updateData: ({ fee, requestType }) => {
+      let _requestType = feeWithActive
+        ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
+        : sdk.OffchainFeeReqType.TRANSFER;
+      // if (requestType === sdk.OffchainFeeReqType.TRANSFER) {
+      //   setChargeFeeTransferList(chargeFeeTokenList);
+      // }
+      myLog(
+        "transfer updateData",
+        feeWithActive,
+        requestType,
+        _requestType,
+        _requestType == requestType
+      );
+      if (_requestType === requestType) {
+        const transferValue = store.getState()._router_modalData.transferValue;
+        updateTransferData({ ...transferValue, fee });
+      }
     },
+    //   [feeWithActive]
+    // ),
+  });
+  const {
+    chargeFeeTokenList: activeAccountFeeList,
+    checkFeeIsEnough: checkActiveFeeIsEnough,
+    resetIntervalTime: resetActiveIntervalTime,
+  } = useChargeFees({
+    isActiveAccount: true,
+    requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
   });
   const handleOnMemoChange = React.useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -175,7 +200,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       return;
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
-
+    checkActiveFeeIsEnough({
+      isRequiredAPI: true,
+      intervalTime: LIVE_FEE_TIMES,
+    });
     if (symbol && walletMap) {
       myLog("resetDefault symbol:", symbol);
       updateTransferData({
@@ -242,9 +270,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       resetDefault();
     } else {
       resetIntervalTime();
+      resetActiveIntervalTime();
     }
     return () => {
       resetIntervalTime();
+      resetActiveIntervalTime();
     };
   }, [isShow, accountStatus, account.readyState]);
 
@@ -544,6 +574,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     // isConfirmTransfer,
     sureItsLayer2,
     chargeFeeTokenList,
+    activeAccountFeeList,
     isFeeNotEnough,
     isLoopringAddress,
     isSameAddress,

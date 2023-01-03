@@ -182,6 +182,7 @@ export const accountServices = {
         readyState: AccountStatus.NOT_ACTIVE,
         accAddress: accInfo.owner,
         _accountIdNotActive: accInfo.accountId,
+        tags: accInfo.tags,
         nonce: accInfo.nonce,
         keySeed: accInfo.keySeed,
       })

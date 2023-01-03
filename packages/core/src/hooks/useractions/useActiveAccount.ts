@@ -49,7 +49,8 @@ export const useActiveAccount = <T>(): {
     requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
     updateData: ({ fee, chargeFeeTokenList, isFeeNotEnough }) => {
       const { activeAccountValue } = store.getState()._router_modalData;
-      myLog("activeAccountValue feeInfo", fee);
+      // const { tags } = store.getState().account;
+      myLog("activeAccountValue feeInfo", fee, isFeeNotEnough);
 
       store.dispatch(
         updateActiveAccountDataRedux({

@@ -256,7 +256,8 @@ export const ModalPanel = <
             {...{
               ...nftTransferProps,
               _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
-              _height: isMobile ? "auto" : 540,
+              // _height: isMobile ? "auto" : 540,
+              _height: "auto",
               isThumb: false,
               type: "NFT",
               baseURL,

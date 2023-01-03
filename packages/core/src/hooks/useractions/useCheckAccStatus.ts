@@ -90,6 +90,14 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
               return sdk
                 .toBig(walletMap[item.belong]?.count ?? 0)
                 .gte(sdk.toBig(item.fee.toString().replace(sdk.SEP, "")));
+            } else {
+              return (
+                item?.feeRaw !== undefined &&
+                Number(item.fee.toString()) == 0 &&
+                sdk
+                  .toBig((item.feeRaw ?? "").toString().replace(sdk.SEP, ""))
+                  .eq(0)
+              );
             }
             return;
           }) === -1

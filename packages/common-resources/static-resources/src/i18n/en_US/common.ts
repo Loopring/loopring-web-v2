@@ -641,7 +641,7 @@ export default {
   labelL2toL2InvalidAddr: "Invalid address or ENS",
   labelL2toL2IsNotLoopringContract: "Is not Loopring Contract wallet address",
   labelL2toL2AddressNotLoopring:
-    "This address has not yet activated Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
+    "<0></0> This address does not have an activated Loopring L2. Please ensure  the recipient can access Loopring L2 before sending.",
   labelL2toL2AddressType: "Address Type",
   labelL2toL2OriginDesc:
     "Please select the address source. Note: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex…)",
@@ -1302,6 +1302,10 @@ export default {
   labelBanxaFailedForAPI:
     "Please waiting a while, Banxa service is not available currently.",
   labelL2toL2AddressFeePaid: "Active account fee had paid",
-  labelL2toL2AddressFeeActiveFee: "pay the Fee to active this account!",
+  labelL2toL2AddressFeeActiveFee:
+    "Pay recipient's L2 activation fee?  \n" +
+    "Activation Fee: {{fee}} {{symbol}}",
+  // "You can choose to pay their activation fee {{fee}} {{symbol}}?",
+  // "The recipient does not have Loopring L2 activated. You can choose to pay their activation fee. "\n
   labelL2toL2FeeWithActive: "Active {{addr}} L2 & Transfer Fee",
 };
