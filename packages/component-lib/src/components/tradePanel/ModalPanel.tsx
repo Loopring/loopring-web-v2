@@ -212,7 +212,7 @@ export const ModalPanel = <
               ...rest,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
-              _height: "auto",
+              _height: isMobile ? "auto" : 540,
               ...transferProps,
               assetsData,
             }}
@@ -256,8 +256,7 @@ export const ModalPanel = <
             {...{
               ...nftTransferProps,
               _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
-              // _height: isMobile ? "auto" : 540,
-              _height: "auto",
+              _height: isMobile ? "auto" : 540,
               isThumb: false,
               type: "NFT",
               baseURL,

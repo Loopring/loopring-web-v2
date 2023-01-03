@@ -304,37 +304,38 @@ export function useChargeFees({
                   };
                 }
                 setIsFeeNotEnough(_isFeeNotEnough);
-                if (!state || state?.feeRaw === undefined) {
-                  _feeInfo = _chargeFeeTokenList[0]
-                    ? _.cloneDeep(_chargeFeeTokenList[0])
-                    : {
-                        belong: "ETH",
-                        fee: 0,
-                        feeRaw: undefined,
-                      };
+                _feeInfo =
+                  !state || state?.feeRaw === undefined
+                    ? _chargeFeeTokenList[0]
+                      ? _.cloneDeep(_chargeFeeTokenList[0])
+                      : {
+                          belong: "ETH",
+                          fee: 0,
+                          feeRaw: undefined,
+                        }
+                    : _chargeFeeTokenList?.find(
+                        (ele) => ele.belong === state.belong
+                      ) ?? state;
 
-                  if (updateData && _feeInfo) {
-                    updateData({
-                      fee: {
-                        ..._feeInfo,
-                        __raw__: {
-                          ..._feeInfo.__raw__,
-                          tokenId:
-                            tokenMap[_feeInfo?.belong.toString()].tokenId,
-                        },
+                if (updateData && _feeInfo) {
+                  updateData({
+                    fee: {
+                      ..._feeInfo,
+                      __raw__: {
+                        ..._feeInfo.__raw__,
+                        tokenId: tokenMap[_feeInfo?.belong.toString()].tokenId,
                       },
-                      requestType,
-                      chargeFeeTokenList: _chargeFeeTokenList,
-                      isFeeNotEnough: _isFeeNotEnough,
-                      amount: _amount.needAmountRefresh
-                        ? _amount.amount
-                        : undefined,
-                    });
-                  }
-                  return _feeInfo;
-                } else {
-                  return state;
+                    },
+                    requestType,
+                    chargeFeeTokenList: _chargeFeeTokenList,
+                    isFeeNotEnough: _isFeeNotEnough,
+                    amount: _amount.needAmountRefresh
+                      ? _amount.amount
+                      : undefined,
+                  });
                 }
+                myLog("_feeInfo", _feeInfo);
+                return _feeInfo;
               } else {
                 if (
                   isFeeNotEnough.isFeeNotEnough ||

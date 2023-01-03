@@ -20,6 +20,8 @@ import {
   setShowNFTWithdraw,
   setShowTransfer,
   setShowWithdraw,
+  setShowActiveAccount,
+  setShowExportAccount,
 } from "@loopring-web/component-lib";
 
 const subject = new Subject<{ status: AccountCommands; data: any }>();
@@ -108,6 +110,8 @@ export const accountServices = {
     store.dispatch(setShowNFTDeposit({ isShow: false }));
     store.dispatch(setShowNFTDeploy({ isShow: false }));
     store.dispatch(setShowNFTMintAdvance({ isShow: false }));
+    store.dispatch(setShowActiveAccount({ isShow: false }));
+    store.dispatch(setShowExportAccount({ isShow: false }));
 
     resetLayer2Data();
     // await sleep(50)

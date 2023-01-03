@@ -15,7 +15,12 @@ import {
 } from "../../index";
 import { updateActiveAccountData as updateActiveAccountDataRedux } from "@loopring-web/core";
 
-import { myLog, SagaStatus, WalletMap } from "@loopring-web/common-resources";
+import {
+  LIVE_FEE_TIMES,
+  myLog,
+  SagaStatus,
+  WalletMap,
+} from "@loopring-web/common-resources";
 import React from "react";
 
 export const useActiveAccount = <T>(): {
@@ -44,6 +49,7 @@ export const useActiveAccount = <T>(): {
     isFeeNotEnough,
     handleFeeChange,
     checkFeeIsEnough,
+    resetIntervalTime,
   } = useChargeFees({
     isActiveAccount: true,
     requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
@@ -87,8 +93,13 @@ export const useActiveAccount = <T>(): {
   }, [isFeeNotEnough.isFeeNotEnough]);
   React.useEffect(() => {
     if (isShow) {
-      checkFeeIsEnough();
+      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
+    } else {
+      resetIntervalTime();
     }
+    return () => {
+      resetIntervalTime();
+    };
   }, [isShow]);
 
   const activeAccountProps: ResetProps<any> = {
