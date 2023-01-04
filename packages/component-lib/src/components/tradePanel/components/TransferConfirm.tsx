@@ -7,6 +7,7 @@ import {
   FeeInfo,
   useAddressTypeLists,
   TOAST_TIME,
+  getShortAddr,
 } from "@loopring-web/common-resources";
 import { Button, Toast } from "../../index";
 import { TransferViewProps } from "./Interface";
@@ -28,6 +29,7 @@ export const TransferConfirm = <
   realAddr,
   type,
   feeInfo,
+  feeWithActive,
   memo,
 }: Partial<TransferViewProps<T, I, C>> & {
   handleConfirm: (index: number) => void;
@@ -102,9 +104,23 @@ export const TransferConfirm = <
           {walletList.find((item) => item.value === sureItsLayer2)?.label}
         </Typography>
       </Grid>
+      {/*{feeWithActive && (*/}
+      {/*  <Grid item xs={12}>*/}
+      {/*    <Typography color={"var(--color-text-third)"} variant={"body1"}>*/}
+      {/*      {t("labelL2toL2IsActiveAccount")}*/}
+      {/*    </Typography>*/}
+      {/*    <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>*/}
+      {/*      {feeInfo?.fee + " "} {feeInfo?.belong}*/}
+      {/*    </Typography>*/}
+      {/*  </Grid>*/}
+      {/*)}*/}
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Fee")}
+          {feeWithActive
+            ? t("labelL2toL2FeeWithActive", {
+                addr: getShortAddr(realAddr ?? ""),
+              })
+            : t("labelL2toL2Fee")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {feeInfo?.fee + " "} {feeInfo?.belong}

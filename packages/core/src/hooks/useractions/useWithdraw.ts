@@ -390,6 +390,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       isRequiredAPI: true,
       intervalTime: LIVE_FEE_TIMES,
       amount,
+      requestType: withdrawType,
       needAmountRefresh:
         withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
     });

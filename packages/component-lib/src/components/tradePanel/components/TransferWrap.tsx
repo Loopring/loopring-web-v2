@@ -1,6 +1,12 @@
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel as MuiFormControlLabel,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
@@ -16,6 +22,9 @@ import {
   EmptyValueTag,
   FeeInfo,
   AddressError,
+  CheckedIcon,
+  CheckBoxIcon,
+  AlertIcon,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -49,6 +58,7 @@ export const TransferWrap = <
   type,
   memo,
   chargeFeeTokenList,
+  activeAccountFeeList,
   feeInfo,
   lastFailed,
   isFeeNotEnough,
@@ -69,6 +79,10 @@ export const TransferWrap = <
   isAddressCheckLoading,
   isSameAddress,
   baseURL,
+  isActiveAccount,
+  isActiveAccountFee,
+  feeWithActive,
+  handleOnFeeWithActive,
   ...rest
 }: TransferViewProps<T, I, C> &
   WithTranslation & {
@@ -94,6 +108,11 @@ export const TransferWrap = <
     return disabled || transferBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, transferBtnStatus]);
 
+  const activeFee = React.useMemo(() => {
+    return activeAccountFeeList?.find(
+      (item: any) => item.belong == feeInfo.belong
+    );
+  }, [feeInfo, activeAccountFeeList]);
   const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const onCopy = React.useCallback(
     async (content: string) => {
@@ -285,15 +304,74 @@ export const TransferWrap = <
               {!isAddressCheckLoading &&
                 addressDefault &&
                 addrStatus === AddressError.NoError &&
-                !isLoopringAddress && (
-                  <Typography
-                    color={"var(--color-error)"}
-                    lineHeight={1}
-                    variant={"body2"}
-                    marginTop={1 / 4}
-                  >
-                    {t("labelL2toL2AddressNotLoopring")}
-                  </Typography>
+                (!isLoopringAddress || !isActiveAccount) && (
+                  <Box>
+                    {(!isLoopringAddress || !isActiveAccount) && realAddr && (
+                      <Typography
+                        color={"var(--color-error)"}
+                        lineHeight={1.2}
+                        variant={"body2"}
+                        marginTop={1 / 2}
+                        marginLeft={"-2px"}
+                        display={"inline-flex"}
+                      >
+                        <Trans i18nKey={"labelL2toL2AddressNotLoopring"}>
+                          <AlertIcon
+                            color={"inherit"}
+                            fontSize={"medium"}
+                            sx={{ marginRight: 1 }}
+                          />
+                          This address does not have an activated Loopring L2.
+                          Please ensure the recipient can access Loopring L2
+                          before sending.
+                        </Trans>
+                      </Typography>
+                    )}
+                    {!isActiveAccountFee && realAddr ? (
+                      <MuiFormControlLabel
+                        sx={{
+                          alignItems: "flex-start",
+                          marginTop: 1 / 2,
+                        }}
+                        control={
+                          <Checkbox
+                            checked={feeWithActive}
+                            onChange={(_event: any, state: boolean) => {
+                              handleOnFeeWithActive(state);
+                            }}
+                            checkedIcon={<CheckedIcon />}
+                            icon={<CheckBoxIcon />}
+                            color="default"
+                          />
+                        }
+                        label={
+                          <Typography
+                            whiteSpace={"pre-line"}
+                            component={"span"}
+                            variant={"body1"}
+                            display={"block"}
+                            color={"textSecondary"}
+                            paddingTop={1 / 2}
+                          >
+                            {t("labelL2toL2AddressFeeActiveFee", {
+                              fee: activeFee?.fee ?? EmptyValueTag,
+                              symbol: activeFee?.belong ?? feeInfo.belong,
+                            })}
+                          </Typography>
+                        }
+                      />
+                    ) : (
+                      <></>
+                      // <Typography
+                      //   color={"var(--color-text-secondary)"}
+                      //   lineHeight={1}
+                      //   variant={"body2"}
+                      //   marginTop={1 / 4}
+                      // >
+                      //   {t("labelL2toL2AddressFeePaid")}
+                      // </Typography>
+                    )}
+                  </Box>
                 )}
             </>
           )}

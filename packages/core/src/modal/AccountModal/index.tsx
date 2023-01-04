@@ -15,6 +15,7 @@ import { useAccountModalForUI } from "./hook";
 import {
   Account,
   AssetsRawDataItem,
+  FeeInfo,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 // import { Box, Modal as MuiModal } from "@mui/material";
@@ -66,6 +67,7 @@ export const ModalAccountInfo = withTranslation("common")(
       nftWithdrawProps,
       nftDeployProps,
       // nftMintAdvanceProps,
+      // checkActiveStatusProps,
       resetProps,
       claimProps,
       activeAccountProps,
@@ -86,7 +88,10 @@ export const ModalAccountInfo = withTranslation("common")(
       isLayer1Only,
       ...rest,
     });
-
+    // myLog(
+    //   "resetProps.chargeFeeTokenList",
+    //   activeAccountProps.chargeFeeTokenList
+    // );
     return (
       <>
         <Toast
@@ -110,6 +115,7 @@ export const ModalAccountInfo = withTranslation("common")(
           baseURL={baseURL}
           transferProps={{
             ...transferProps,
+
             onBack: () => {
               setShowTransfer({ isShow: false });
               onBackSend();
@@ -130,7 +136,11 @@ export const ModalAccountInfo = withTranslation("common")(
             },
           }}
           collectionAdvanceProps={collectionAdvanceProps as any}
-          nftTransferProps={nftTransferProps as any}
+          nftTransferProps={
+            {
+              ...nftTransferProps,
+            } as any
+          }
           nftWithdrawProps={nftWithdrawProps as any}
           nftDeployProps={nftDeployProps as any}
           claimProps={claimProps as any}

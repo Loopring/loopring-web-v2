@@ -170,8 +170,10 @@ export const MintAdvanceNFTWrap = <
 
     const checkErrorResult = ["name", "image", "royaltyPercentage"].reduce(
       (prev, item) => {
-        if (!tradeData[item]) {
-          prev.push(item === "royaltyPercentage" ? "royalty_percentage" : item);
+        if (item === "royaltyPercentage" && tradeData[item] === undefined) {
+          prev.push("royalty_percentage");
+        } else if (item !== "royaltyPercentage" && !tradeData[item]) {
+          prev.push(item);
         }
         return prev;
       },
@@ -182,7 +184,7 @@ export const MintAdvanceNFTWrap = <
       tradeData.nftId &&
       (checkErrorResult.length ||
         !(
-          tradeData.royaltyPercentage &&
+          tradeData.royaltyPercentage !== undefined &&
           Number.isInteger(tradeData.royaltyPercentage) &&
           tradeData.royaltyPercentage >= 0 &&
           tradeData.royaltyPercentage <= 10

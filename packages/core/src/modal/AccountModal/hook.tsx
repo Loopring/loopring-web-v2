@@ -120,7 +120,6 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
-  myLog,
   NFTWholeINFO,
   SendAssetList,
   SendNFTAssetList,
@@ -2806,6 +2805,7 @@ export function useAccountModalForUI({
     onBackSend,
     collectionToastOpen,
     collectionToastClose,
+    // checkActiveStatusProps,
     // dualToastOpen,
   };
 }

@@ -72,6 +72,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const [sureItsLayer2, setSureItsLayer2] =
     React.useState<WALLET_TYPE | undefined>(undefined);
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
+  const [feeWithActive, setFeeWithActive] = React.useState(false);
 
   const {
     chargeFeeTokenList,
@@ -81,11 +82,38 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     checkFeeIsEnough,
     resetIntervalTime,
   } = useChargeFees({
-    requestType: sdk.OffchainFeeReqType.TRANSFER,
-    updateData: ({ fee }) => {
-      const transferValue = store.getState()._router_modalData.transferValue;
-      updateTransferData({ ...transferValue, fee });
+    requestType: feeWithActive
+      ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
+      : sdk.OffchainFeeReqType.TRANSFER,
+    updateData: ({ fee, requestType }) => {
+      let _requestType = feeWithActive
+        ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
+        : sdk.OffchainFeeReqType.TRANSFER;
+      // if (requestType === sdk.OffchainFeeReqType.TRANSFER) {
+      //   setChargeFeeTransferList(chargeFeeTokenList);
+      // }
+      myLog(
+        "transfer updateData",
+        feeWithActive,
+        requestType,
+        _requestType,
+        _requestType == requestType
+      );
+      if (_requestType === requestType) {
+        const transferValue = store.getState()._router_modalData.transferValue;
+        updateTransferData({ ...transferValue, fee });
+      }
     },
+    //   [feeWithActive]
+    // ),
+  });
+  const {
+    chargeFeeTokenList: activeAccountFeeList,
+    checkFeeIsEnough: checkActiveFeeIsEnough,
+    resetIntervalTime: resetActiveIntervalTime,
+  } = useChargeFees({
+    isActiveAccount: true,
+    requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
   });
   const handleOnMemoChange = React.useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -100,7 +128,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     setAddress,
     addrStatus,
     isLoopringAddress,
+    isActiveAccount,
     isAddressCheckLoading,
+    isActiveAccountFee,
     isSameAddress,
   } = useAddressCheck();
   React.useEffect(() => {
@@ -170,7 +200,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       return;
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
-
+    checkActiveFeeIsEnough({
+      isRequiredAPI: true,
+      intervalTime: LIVE_FEE_TIMES,
+    });
     if (symbol && walletMap) {
       myLog("resetDefault symbol:", symbol);
       updateTransferData({
@@ -237,9 +270,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       resetDefault();
     } else {
       resetIntervalTime();
+      resetActiveIntervalTime();
     }
     return () => {
       resetIntervalTime();
+      resetActiveIntervalTime();
     };
   }, [isShow, accountStatus, account.readyState]);
 
@@ -343,7 +378,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
                 (e as sdk.RESULT_INFO)?.code || 0
               )
             ) {
-              checkFeeIsEnough({ isRequiredAPI: true });
+              checkFeeIsEnough({
+                isRequiredAPI: true,
+                requestType: feeWithActive
+                  ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
+                  : sdk.OffchainFeeReqType.TRANSFER,
+              });
             }
             setShowAccount({
               isShow: true,
@@ -429,6 +469,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             payeeAddr: realAddr ? realAddr : address,
             payeeId: 0,
             storageId: storageId?.offchainId,
+            payPayeeUpdateAccount: !isActiveAccountFee && feeWithActive,
             token: {
               tokenId: sellToken.tokenId,
               volume: transferVol,
@@ -467,6 +508,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       realAddr,
       address,
       processRequest,
+      isActiveAccountFee,
+      feeWithActive,
     ]
   );
 
@@ -508,10 +551,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
-  // myLog(
-  //   "info?.lastFailed ",
-  //   store.getState().modals.isShowAccount.info?.lastFailed
-  // );
 
   const transferProps: TransferProps<any, any> = {
     type: "TOKEN",
@@ -534,6 +573,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     // isConfirmTransfer,
     sureItsLayer2,
     chargeFeeTokenList,
+    activeAccountFeeList,
     isFeeNotEnough,
     isLoopringAddress,
     isSameAddress,
@@ -542,7 +582,39 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     memo,
     handleOnMemoChange,
     handleOnAddressChange: (value: any) => {
-      setAddress(value || "");
+      // let flag,feeRecall;
+      setAddress((state) => {
+        if (state !== value || "") {
+          // flag = true;
+          setFeeWithActive((state) => {
+            if (state !== false) {
+              checkFeeIsEnough({
+                isRequiredAPI: true,
+                requestType: sdk.OffchainFeeReqType.TRANSFER,
+              });
+            }
+            return false;
+          });
+        }
+        return value || "";
+      });
+    },
+    isActiveAccount,
+    isActiveAccountFee,
+    feeWithActive,
+    handleOnFeeWithActive: (value: boolean) => {
+      setFeeWithActive(value);
+      if (value && !isActiveAccountFee) {
+        checkFeeIsEnough({
+          isRequiredAPI: true,
+          requestType: sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT,
+        });
+      } else {
+        checkFeeIsEnough({
+          isRequiredAPI: true,
+          requestType: sdk.OffchainFeeReqType.TRANSFER,
+        });
+      }
     },
   };
 

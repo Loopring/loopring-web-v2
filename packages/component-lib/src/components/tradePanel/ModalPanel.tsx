@@ -234,7 +234,7 @@ export const ModalPanel = <
               ...rest,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
-              _height: "auto",
+              _height: isMobile ? "auto" : 540,
               ...transferProps,
               assetsData,
             }}
