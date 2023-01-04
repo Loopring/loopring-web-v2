@@ -696,6 +696,7 @@ export const DualWrap = <
     handleCountChange,
     ...rest,
   };
+  console.log('propsSell', dualCalcData)
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split("|");
