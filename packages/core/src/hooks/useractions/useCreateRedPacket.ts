@@ -44,7 +44,11 @@ import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
-export const useCreateRedPacket = <T extends RedPacketOrderData<I>, I, F = FeeInfo>({
+export const useCreateRedPacket = <
+  T extends RedPacketOrderData<I>,
+  I,
+  F = FeeInfo
+>({
   assetsRawData,
   isShow = false,
 }: {
