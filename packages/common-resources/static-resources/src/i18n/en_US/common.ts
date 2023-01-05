@@ -1286,7 +1286,6 @@ export default {
   labelLuckyTokenViewType1: "Public Red Packet",
   labelLuckyTokenViewTypeDes1:
     "Your gift packet is shared privately by you via your custom QR code for others to receive.",
-  labelRedPacketSendTitle: "Lucky Red Packet",
   labelSplit: "Split",
   labelRedPacketMemo: "Memo",
   labelRedPacketStart: "Active Time",
@@ -1322,7 +1321,11 @@ export default {
   labelClaimWithdrawSubmit: "Claim has been submitted",
   labelClaimWithdrawToken: "Token Amount",
   labelRefreshRedPacket: "Refresh List",
+  labelRedPacketSendCommonTitle: "Identical Red Packet",
+  labelRedPacketSenRandomTitle: "Lucky Red Packet",
   labelAmountEach: "Amount Each",
+  labelTotalAmount: "Total Amount",
+  labelQuantity: "Quantity",
   labelAssetAmount: "Asset Amounts: {{value}}",
   labelCreateRedPacketBtn: "Prepare Red Packet",
   labelRedPacketsExpireDes:
@@ -1330,9 +1333,9 @@ export default {
   labelReserveFee: "Reserve enough {{symbol}} for fee",
   labelRedPacketsMinDual: "Min {{value}}",
   labelRedPacketsMaxDual: "Max {{value}}",
-  labelRedPacketslMin: "Minimum of {{value}} {{symbol}}",
-  labelRedPacketslMax: "Maximum of {value}} {{symbol}}",
-  labelRedPacketslSplitNumber: "Maximum split is {{value}}",
+  labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
+  labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
+  labelRedPacketsSplitNumber: "Maximum split is {{value}}",
 
   // labelClaimWithdrawEnterToken: "Select Token",
 };

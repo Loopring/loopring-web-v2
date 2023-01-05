@@ -103,7 +103,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
   } & WithTranslation) => {
     const { t } = useTranslation("common");
     const inputButtonDefaultProps = {
-      label: t("labelInputRedPacketBtnLabel"),
+      // label: t("labelInputRedPacketBtnLabel"),
+      label:
+        selectedType.value.value == 2
+          ? t("labelAmountEach")
+          : t("labelTotalAmount"), //t("labelTokenAmount"),
       decimalsLimit:
         (tokenMap && tokenMap[tradeData?.belong as string])?.precision ?? 8,
       placeholderText: tradeData?.belong
@@ -151,10 +155,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const inputSplitProps = React.useMemo(() => {
       const inputSplitProps: any = {
         label:
-          selectedType.value.value == 2
-            ? t("labelAmountEach")
-            : t("labelSplit"), //t("labelTokenAmount"),
-        placeholderText: "Quantity",
+          selectedType.value.value == 2 ? t("labelQuantity") : t("labelSplit"), //t("labelTokenAmount"),
+        placeholderText: t("labelQuantity"),
         isHideError: true,
         isShowCoinInfo: false,
         handleCountChange: (ibData: IBData<any>, _name: string, _ref: any) => {
@@ -278,7 +280,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 whiteSpace={"pre"}
                 marginRight={1}
               >
-                {t("labelRedPacketSendTitle")}
+                {t(
+                  selectedType.value.value == 2
+                    ? "labelRedPacketSendCommonTitle"
+                    : "labelRedPacketSenRandomTitle"
+                )}
               </Typography>
             </Box>
           </Grid>

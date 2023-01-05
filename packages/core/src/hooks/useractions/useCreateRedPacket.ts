@@ -242,8 +242,11 @@ export const useCreateRedPacket = <
           });
         } else if (isExceedBalance) {
         } else if (tooSmall) {
-          if (_tradeData.isEach) {
-            setLabelAndParams("labelRedPacketslMin", {
+          if (
+            _tradeData.isEach ||
+            tradeValue.lt(tradeToken.luckyTokenAmounts.minimum)
+          ) {
+            setLabelAndParams("labelRedPacketsMin", {
               value: getValuePrecisionThousand(
                 sdk
                   .toBig(tradeToken.luckyTokenAmounts.minimum ?? 0)
@@ -257,14 +260,14 @@ export const useCreateRedPacket = <
               symbol: tradeToken.symbol,
             });
           } else {
-            setLabelAndParams("labelRedPacketslSplitNumber", {
+            setLabelAndParams("labelRedPacketsSplitNumber", {
               value: tradeValue
                 .div(tradeToken.luckyTokenAmounts.minimum)
                 .toFixed(0, 1),
             });
           }
         } else if (tooLarge) {
-          setLabelAndParams("labelRedPacketslMax", {
+          setLabelAndParams("labelRedPacketsMax", {
             value: getValuePrecisionThousand(
               sdk
                 .toBig(tradeToken.luckyTokenAmounts.maximum ?? 0)
