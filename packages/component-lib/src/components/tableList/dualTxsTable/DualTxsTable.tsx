@@ -138,6 +138,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                     amountOut,
                   },
                   timeOrigin: { expireTime },
+                  investmentStatus
                 },
               },
               // expireTime,
@@ -185,11 +186,20 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 : Date.now() - expireTime >= 0
                 ? `${amount} ${sellSymbol}`
                 : `${amount} ${sellSymbol}`;
+            const pending = <Typography borderRadius={1} marginLeft={1} paddingX={0.5} bgcolor={"var(--color-warning)"}>pending</Typography>
+            const failed = <Typography borderRadius={1} marginLeft={1} paddingX={0.5} bgcolor={"var(--color-error)"}>failed</Typography>
             return (
               <Box display={"flex"} alignItems={"center"} flexDirection={"row"}>
                 <Typography color={statusColor}>{side}</Typography>
                 &nbsp;&nbsp;
                 <Typography component={"span"}>{sentence}</Typography>
+                { 
+                  investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED 
+                    ? failed
+                    : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING 
+                      ? pending
+                      : null 
+                }
               </Box>
             );
           },
