@@ -533,6 +533,18 @@ export const CreateRedPacketStepWrap = withTranslation()(
             >
               {redPacketTotalValue}
             </Typography>
+            <Typography
+              display={"inline-flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              variant={"body2"}
+              component={"span"}
+              color={"textThird"}
+              width={"100%"}
+              textAlign={"center"}
+            >
+
+            </Typography>
           </Grid>
 
           <Grid item alignSelf={"stretch"}>
@@ -605,7 +617,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               justifyContent={"center"}
               variant={"body2"}
               component={"span"}
-              color={"textThird"}
+              color={"textSecondary"}
               width={"100%"}
               textAlign={"center"}
             >
