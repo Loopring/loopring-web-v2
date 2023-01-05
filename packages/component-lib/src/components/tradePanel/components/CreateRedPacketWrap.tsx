@@ -542,9 +542,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               color={"textThird"}
               width={"100%"}
               textAlign={"center"}
-            >
-
-            </Typography>
+            ></Typography>
           </Grid>
 
           <Grid item alignSelf={"stretch"}>
