@@ -10,7 +10,7 @@ import {
 import { BackIcon, FeeInfo } from "@loopring-web/common-resources";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 
 export const CreateRedPacketUIPanel = <
@@ -19,12 +19,14 @@ export const CreateRedPacketUIPanel = <
   F extends FeeInfo
 >() => {
   const { assetsRawData } = useGetAssets();
+  let match: any = useRouteMatch("/redpacket/:item");
+
   const history = useHistory();
   const { t } = useTranslation();
   const { createRedPacketProps } = useCreateRedPacket<T, I, F>({
     assetsRawData,
+    isShow: match?.params?.item?.toLowerCase() === "create",
   });
-  const theme = useTheme();
   return (
     <Box display={"flex"} flex={1} flexDirection={"column"}>
       <Box

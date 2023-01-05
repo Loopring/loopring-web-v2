@@ -43,22 +43,17 @@ import { DAYS } from "../../defs";
 import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useRouteMatch } from "react-router-dom";
 
-export const useCreateRedPacket = <
-  T extends RedPacketOrderData<I>,
-  I,
-  F = FeeInfo
->({
+export const useCreateRedPacket = <T extends RedPacketOrderData<I>, I, F = FeeInfo>({
   assetsRawData,
+  isShow = false,
 }: {
   assetsRawData: AssetsRawDataItem[];
+  isShow?: boolean;
 }): {
   createRedPacketProps: CreateRedPacketProps<T, I, F>;
   retryBtn: (isHardware?: boolean) => void;
 } => {
-  let match: any = useRouteMatch("/redpacket/:item");
-
   const { exchangeInfo, chainId } = useSystem();
   const { tokenMap, totalCoinMap } = useTokenMap();
   const {
@@ -87,6 +82,7 @@ export const useCreateRedPacket = <
     requestType: sdk.OffchainFeeReqType.TRANSFER,
     updateData: ({ fee }) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
+      debugger;
       updateRedPacketOrder({ ...redPacketOrder, fee });
     },
   });
@@ -430,7 +426,7 @@ export const useCreateRedPacket = <
     ]
   );
   React.useEffect(() => {
-    if (match?.params?.item?.toLowerCase() === "create") {
+    if (isShow) {
       resetDefault();
     } else {
       resetIntervalTime();
@@ -438,7 +434,7 @@ export const useCreateRedPacket = <
     return () => {
       resetIntervalTime();
     };
-  }, [match?.params?.item]);
+  }, [isShow]);
   const onCreateRedPacketClick = React.useCallback(
     async (_redPacketOrder, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;

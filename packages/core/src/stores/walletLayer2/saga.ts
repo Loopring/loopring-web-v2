@@ -10,8 +10,7 @@ import { store, LoopringAPI } from "../../index";
 type WalletLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>;
 };
-let errorNumber = 10;
-let __timer__: NodeJS.Timer | -1 = -1;
+
 const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
   const { accountId, apiKey, readyState, _accountIdNotActive, accAddress } =
     store.getState().account;
@@ -25,9 +24,6 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
         { accountId, tokens: "" },
         apiKey
       );
-      if (__timer__ && __timer__ !== -1) {
-        clearTimeout(__timer__);
-      }
       if (userBalances) {
         walletLayer2 = Reflect.ownKeys(userBalances).reduce((prev, item) => {
           // @ts-ignore
