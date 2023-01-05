@@ -36,7 +36,10 @@ export function useChargeFees({
 }: {
   tokenAddress?: string | undefined;
   tokenSymbol?: string | undefined;
-  requestType: sdk.OffchainFeeReqType | sdk.OffchainNFTFeeReqType;
+  requestType:
+    | sdk.OffchainFeeReqType
+    | sdk.OffchainNFTFeeReqType
+    | "UPDATE_ACCOUNT_BY_NEW";
   amount?: number;
   intervalTime?: number;
   updateData?:
@@ -48,7 +51,10 @@ export function useChargeFees({
           isFeeNotEnough: boolean;
           isOnLoading: boolean;
         };
-        requestType: sdk.OffchainFeeReqType | sdk.OffchainNFTFeeReqType;
+        requestType:
+          | sdk.OffchainFeeReqType
+          | sdk.OffchainNFTFeeReqType
+          | "UPDATE_ACCOUNT_BY_NEW";
         [key: string]: any;
       }) => void);
   isActiveAccount?: boolean;
@@ -181,7 +187,7 @@ export function useChargeFees({
             accountId: account.accountId,
             tokenSymbol,
             tokenAddress,
-            requestType,
+            requestType: requestType as any,
             amount:
               tokenInfo && _amount.amount && _amount.needAmountRefresh
                 ? sdk
@@ -212,6 +218,7 @@ export function useChargeFees({
               fees = response.fees;
             }
           } else if (
+            requestType !== undefined &&
             [
               sdk.OffchainNFTFeeReqType.NFT_MINT,
               sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
@@ -235,6 +242,7 @@ export function useChargeFees({
               fees = response.fees;
             }
           } else if (
+            requestType !== undefined &&
             account.accountId &&
             account.accountId !== -1 &&
             account.apiKey
@@ -492,9 +500,9 @@ export function useChargeFees({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
       getFeeList.cancel();
     }
-    // myLog('tokenAddress', tokenAddress, requestType, account.readyState)
+    myLog("tokenAddress", tokenAddress, requestType, account.readyState);
     if (
-      isActiveAccount ||
+      (isActiveAccount && (requestType as any) === "UPDATE_ACCOUNT_BY_NEW") ||
       // &&
       // [
       //   AccountStatus.NO_ACCOUNT,
@@ -554,6 +562,7 @@ export function useChargeFees({
       getFeeList.cancel();
     };
   }, [
+    isActiveAccount,
     tokenAddress,
     tokenSymbol,
     requestType,
