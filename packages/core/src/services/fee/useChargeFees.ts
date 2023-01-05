@@ -444,7 +444,7 @@ export function useChargeFees({
       });
       if (props.amount && props.needAmountRefresh && props.requestType) {
         myLog("checkFeeIsEnough needAmountRefresh", requestType);
-        if (props.requestType !== requestType) {
+        if (props.requestType && props.requestType !== requestType) {
           setRequestType(props.requestType);
         }
         setAmount(() => ({
@@ -452,7 +452,7 @@ export function useChargeFees({
           needAmountRefresh: props.needAmountRefresh,
         }));
         getFeeList.cancel();
-      } else if (props.requestType !== requestType) {
+      } else if (props.requestType && props.requestType !== requestType) {
         setRequestType(props.requestType);
         myLog("checkFeeIsEnough", requestType);
         getFeeList.cancel();
