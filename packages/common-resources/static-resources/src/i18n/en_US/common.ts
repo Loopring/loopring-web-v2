@@ -1321,10 +1321,10 @@ export default {
   labelClaimWithdrawSubmit: "Claim has been submitted",
   labelClaimWithdrawToken: "Token Amount",
   labelRefreshRedPacket: "Refresh List",
-  labelRedPacketSendCommonTitle: "Identical Red Packet",
+  labelRedPacketSendCommonTitle: "Normal Red Packet",
   labelRedPacketSenRandomTitle: "Lucky Red Packet",
   labelAmountEach: "Amount Each",
-  labelTotalAmount: "Total Amount",
+  labelRedPacketTotalAmount: "Total Distribution Amount",
   labelQuantity: "Quantity",
   labelAssetAmount: "Asset Amounts: {{value}}",
   labelCreateRedPacketBtn: "Prepare Red Packet",
@@ -1336,6 +1336,9 @@ export default {
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
   labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
+  labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
+  labelRedPacketsSplitLuckyDetail:
+    "Token amount for each red packet is randomized",
 
   // labelClaimWithdrawEnterToken: "Select Token",
 };

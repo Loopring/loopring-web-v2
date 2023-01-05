@@ -103,20 +103,14 @@ export const CreateRedPacketStepWrap = withTranslation()(
   } & WithTranslation) => {
     const { t } = useTranslation("common");
     const inputButtonDefaultProps = {
-      // label: t("labelInputRedPacketBtnLabel"),
-      label:
-        selectedType.value.value == 2
-          ? t("labelAmountEach")
-          : t("labelTotalAmount"), //t("labelTokenAmount"),
+      label: t("labelRedPacketTotalAmount"),
       decimalsLimit:
         (tokenMap && tokenMap[tradeData?.belong as string])?.precision ?? 8,
       placeholderText: tradeData?.belong
-        ? selectedType.value.value == 2
-          ? t("labelRedPacketsMinDual", { value: minimum })
-          : t("labelRedPacketsMinDual", { value: minimum }) +
-            (sdk.toBig(maximum ?? 0).lt(sdk.toBig(tradeData.balance ?? 0))
-              ? " - " + t("labelRedPacketsMaxDual", { value: maximum })
-              : "")
+        ? t("labelRedPacketsMinDual", { value: minimum }) +
+          (sdk.toBig(maximum ?? 0).lt(sdk.toBig(tradeData.balance ?? 0))
+            ? " - " + t("labelRedPacketsMaxDual", { value: maximum })
+            : "")
         : "0.00",
     };
     const [dayValue, setDayValue] = React.useState<Moment | null>(moment());
@@ -128,34 +122,47 @@ export const CreateRedPacketStepWrap = withTranslation()(
       React.useState<"up" | "down">("down");
     const inputBtnRef = React.useRef();
     const inputSplitRef = React.useRef();
-    const redPacketTotalValue = React.useMemo(() => {
-      const value =
-        selectedType.value.value == 2
-          ? (tradeData?.tradeValue ?? 0) * (tradeData?.numbers ?? 0)
-          : tradeData?.tradeValue ?? 0;
-      if (value && tradeData.belong && tokenMap) {
-        // coinMap[tradeData.belong].
-        return (
-          getValuePrecisionThousand(
-            value,
-            tokenMap[tradeData?.belong as string].precision,
-            tokenMap[tradeData?.belong as string].precision,
-            tokenMap[tradeData?.belong as string].precision,
-            false
-            // { isFait: true }
-          ) +
-          " " +
-          tradeData.belong
-        );
+    const { total: redPacketTotalValue, splitValue } = React.useMemo(() => {
+      if (tradeData?.tradeValue && tradeData.belong && tokenMap) {
+        const splitValue =
+          selectedType.value.value == 2
+            ? (tradeData?.tradeValue ?? 0) / (tradeData?.numbers ?? 1)
+            : tradeData?.tradeValue ?? 0;
+        return {
+          total:
+            getValuePrecisionThousand(
+              tradeData?.tradeValue,
+              tokenMap[tradeData?.belong as string].precision,
+              tokenMap[tradeData?.belong as string].precision,
+              tokenMap[tradeData?.belong as string].precision,
+              false
+              // { isFait: true }
+            ) +
+            " " +
+            tradeData.belong,
+          splitValue:
+            selectedType.value.value == 2 &&
+            getValuePrecisionThousand(
+              splitValue,
+              tokenMap[tradeData?.belong as string].precision,
+              tokenMap[tradeData?.belong as string].precision,
+              tokenMap[tradeData?.belong as string].precision,
+              false
+              // { isFait: true }
+            ) +
+              " " +
+              tradeData.belong,
+        };
       } else {
-        return EmptyValueTag;
+        return {
+          total: EmptyValueTag,
+          splitValue: selectedType.value.value == 2 && EmptyValueTag,
+        };
       }
     }, [tradeData, selectedType.value.value, coinMap]);
-
     const inputSplitProps = React.useMemo(() => {
       const inputSplitProps: any = {
-        label:
-          selectedType.value.value == 2 ? t("labelQuantity") : t("labelSplit"), //t("labelTokenAmount"),
+        label: t("labelSplit"),
         placeholderText: t("labelQuantity"),
         isHideError: true,
         isShowCoinInfo: false,
@@ -165,14 +172,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
           } as unknown as Partial<T>);
         },
       };
-      if (
-        selectedType.value.value !== 2 &&
-        tradeData?.tradeValue &&
-        Number(tradeData?.tradeValue) &&
-        maximum
-      ) {
-        return {
-          ...inputSplitProps,
+      let inputSplitExtendProps = {};
+      if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
+        inputSplitExtendProps = {
           maxAllow: true,
           subLabel: t("labelAvailable"),
           handleError: (data: any) => {
@@ -186,10 +188,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
             };
           },
           inputData: {
-            belong:
-              selectedType.value.value == 2
-                ? t("labelAmountEach")
-                : t("labelSplit"),
+            belong: "Split",
             tradeValue: tradeData?.numbers,
             balance: sdk
               .toBig(tradeData.tradeValue)
@@ -198,41 +197,27 @@ export const CreateRedPacketStepWrap = withTranslation()(
           },
         };
       } else {
-        return {
-          ...inputSplitProps,
+        inputSplitExtendProps = {
           maxAllow: false,
           subLabel: "",
           handleError: () => undefined,
           inputData: {
-            belong:
-              selectedType.value.value == 2
-                ? t("labelAmountEach")
-                : t("labelSplit"),
+            belong: "Split",
             tradeValue: tradeData?.numbers,
             // count: tradeData?.numbers,
           },
         };
       }
-    }, [tradeData, selectedType.value.value, maximum, minimum]);
-
+      return {
+        ...inputSplitProps,
+        ...inputSplitExtendProps,
+      };
+    }, [tradeData, maximum, minimum]);
     const handleToggleChange = (value: F) => {
       if (handleFeeChange) {
         handleFeeChange(value);
       }
     };
-    const _balance = React.useMemo(() => {
-      if (
-        selectedType.value.value == 2 &&
-        tradeData?.numbers &&
-        // @ts-ignore
-        tradeData.numbers !== "0" &&
-        tradeData.balance
-      ) {
-        return tradeData.balance / tradeData.numbers;
-      } else {
-        return tradeData.balance;
-      }
-    }, [selectedType.value.value, tradeData.balance, tradeData?.numbers]);
     const { isMobile } = useSettings();
     myLog(
       "CreateRedPacketStepWrap tradeData",
@@ -304,36 +289,12 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   type: tradeType ?? "TOKEN",
                   disabled,
                   walletMap,
-                  tradeData:
-                    selectedType.value.value == 2 && tradeData?.numbers
-                      ? {
-                          ...tradeData,
-                          balance: _balance,
-                        }
-                      : (tradeData as T),
+                  tradeData: tradeData as T,
                   coinMap,
                   inputButtonDefaultProps,
                   inputBtnRef: inputBtnRef,
                 }}
               />
-            )}
-            {selectedType.value.value == 2 && (
-              <Typography
-                display={"inline-flex"}
-                width={"100%"}
-                justifyContent={"flex-end"}
-                color={"textSecondary"}
-              >
-                {t("labelAssetAmount", {
-                  value: getValuePrecisionThousand(
-                    tradeData.balance,
-                    8,
-                    8,
-                    8,
-                    false
-                  ),
-                })}
-              </Typography>
             )}
           </Grid>
 
@@ -542,7 +503,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
               color={"textThird"}
               width={"100%"}
               textAlign={"center"}
-            ></Typography>
+            >
+              {selectedType.value.value == 2
+                ? t("labelRedPacketsSplitCommonDetail", { value: splitValue })
+                : t("labelRedPacketsSplitLuckyDetail")}
+            </Typography>
           </Grid>
 
           <Grid item alignSelf={"stretch"}>

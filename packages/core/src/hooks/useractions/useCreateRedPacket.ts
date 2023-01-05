@@ -174,26 +174,27 @@ export const useCreateRedPacket = <
 
   const calcNumberAndAmount = React.useCallback(() => {
     const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-    if (
-      redPacketOrder?.type?.partition == sdk.LuckyTokenAmountType.AVERAGE &&
-      redPacketOrder?.type?.mode === sdk.LuckyTokenClaimType.COMMON
-    ) {
-      // amount * numbers < max
-      return {
-        tradeValue:
-          (redPacketOrder?.tradeValue ?? 0) * (redPacketOrder.numbers ?? 0),
-        eachValue: redPacketOrder.tradeValue,
-        isEach: true,
-      };
-    } else {
-      return {
-        tradeValue: redPacketOrder?.tradeValue,
-        eachValue:
-          (redPacketOrder?.tradeValue ?? 0) /
-          Number(redPacketOrder.numbers ?? 1),
-        isEach: false,
-      };
-    }
+    return {
+      tradeValue: redPacketOrder?.tradeValue,
+      eachValue:
+        (redPacketOrder?.tradeValue ?? 0) / Number(redPacketOrder.numbers ?? 1),
+      // isEach: false,
+    };
+    // if (
+    //   redPacketOrder?.type?.partition == sdk.LuckyTokenAmountType.AVERAGE &&
+    //   redPacketOrder?.type?.mode === sdk.LuckyTokenClaimType.COMMON
+    // ) {
+    //   // amount * numbers < max
+    //   return {
+    //     tradeValue: redPacketOrder?.tradeValue,
+    //     eachValue:
+    //       (redPacketOrder?.tradeValue ?? 0) /
+    //       Number(redPacketOrder.numbers ?? 1),
+    //     // isEach: true,
+    //   };
+    // } else {
+    //
+    // }
   }, []);
 
   const checkBtnStatus = React.useCallback(() => {
@@ -242,10 +243,7 @@ export const useCreateRedPacket = <
           });
         } else if (isExceedBalance) {
         } else if (tooSmall) {
-          if (
-            _tradeData.isEach ||
-            tradeValue.lt(tradeToken.luckyTokenAmounts.minimum)
-          ) {
+          if (tradeValue.lt(tradeToken.luckyTokenAmounts.minimum)) {
             setLabelAndParams("labelRedPacketsMin", {
               value: getValuePrecisionThousand(
                 sdk
