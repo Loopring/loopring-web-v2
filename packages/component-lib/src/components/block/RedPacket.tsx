@@ -10,21 +10,12 @@ import {
   RedPacketWrapSVG,
   // RedPacketWrapSvg,
 } from "@loopring-web/common-resources";
-// .close-button {
-//   margin-top: 0;
-//   z-index: 888;
-// .MuiIconButton-root {
-//     color: var(--color-text-button);
-//   }
-// }
 
 export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
-  //background: #ff5136;
-  //border-radius: 8px;
-  //min-width: 288px;
-  //display: flex;
-  //flex-direction: column;
+  display: flex;
+  align-items: center;
   position: relative;
+  justify-content: center;
   .content {
     .betweenEle {
       left: 50%;
@@ -91,13 +82,16 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
     }
   }
 ` as (props: BoxProps & { imageSrc?: string }) => JSX.Element;
+
 export type RedPacketDefault = {
   type?: "default" | "official";
   size?: "middle" | "large";
 };
+
 export type RedPacketDefaultBg = RedPacketDefault & {
   content: JSX.Element;
 };
+
 export const RedPacketSize = {
   middle: {
     height: 400,
@@ -108,6 +102,7 @@ export const RedPacketSize = {
     width: 320,
   },
 };
+
 export const RedPacketQRCode = ({
   type = "default",
 }: RedPacketDefault & any) => {
@@ -133,6 +128,7 @@ export const RedPacketQRCode = ({
     <RedPacketQRCodeSvg {...{ ...RedPacketColorConfig[type] }} type={type} />
   );
 };
+
 export const RedPacketBgDefault = ({
   type = "default",
   size = "middle",
@@ -184,6 +180,7 @@ export const RedPacketBgDefault = ({
     </RedPacketBg>
   );
 };
+
 export const RedPacketBgOpened = ({
   type = "default",
   size = "middle",
@@ -360,6 +357,7 @@ export const RedPacketClock = ({
   }, []);
   return <RedPacketBgDefault type={type} content={content} />;
 };
+
 export const RedPacketHistory = ({
   type = "default",
 }: RedPacketDefault & any) => {
@@ -376,7 +374,7 @@ export const RedPacketDetailStyled = styled(Box)`
 `;
 
 export const RedPacketDetail = () => {
-  return <RedPacketDetailStyled></RedPacketDetailStyled>;
+  return <RedPacketDetailStyled />;
 };
 
 // export const RedPacketCard = withTranslation()(() => {});

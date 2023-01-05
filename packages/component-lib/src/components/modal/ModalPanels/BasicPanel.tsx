@@ -236,6 +236,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                         component={"span"}
                         variant={"inherit"}
                         display={"inline-flex"}
+                        alignItems={"center"}
                         onClick={() =>
                           setDropdownStatus((prev) =>
                             prev === "up" ? "down" : "up"

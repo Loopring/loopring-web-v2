@@ -199,8 +199,9 @@ export const DateTimePicker = ({
   t,
   inputFormat,
   value,
+  fullWidth = false,
   ...props
-}: DateTimePickerProps & { t?: TFunction }) => (
+}: DateTimePickerProps & { t?: TFunction; fullWidth?: boolean }) => (
   <MuDateTimePicker
     {...props}
     disableFuture={props.disableFuture ? props.disableFuture : false}
@@ -224,6 +225,7 @@ export const DateTimePicker = ({
       return (
         <DateTextField
           ref={_props.inputRef}
+          fullWidth={fullWidth}
           {...{ ..._props, helperText: null }}
         />
       );

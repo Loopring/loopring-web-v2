@@ -24,8 +24,6 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
     "disableWithdrawTokenList"
   );
   const marketChain = window.localStorage.getItem("markets");
-  // debugger;
-
   // let coinMap: CoinMap<any, CoinInfo<any>> = {};
   // let totalCoinMap: CoinMap<any, CoinInfo<any>> = {};
   let tokenMap: any = tokensMap;
@@ -38,33 +36,10 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
     : [];
 
   Reflect.ownKeys(tokensMap).forEach((key) => {
-    // const coinInfo = {
-    //   icon: getIcon(key as string, tokensMap),
-    //   name: key as string,
-    //   simpleName: key as string,
-    //   description: "",
-    //   company: "",
-    // };
-    // if (!(key as string).startsWith("LP-")) {
-    //   coinMap[key as string] = coinInfo;
-    // }
-    // totalCoinMap[key as string] = coinInfo;
-
     if (pairs[key as string] && pairs[key as string].tokenList) {
       // @ts-ignore
       tokensMap[key].tradePairs = pairs[key as string].tokenList;
     }
-    // addressIndex = {
-    //   ...addressIndex,
-    //   // @ts-ignore
-    //   [tokensMap[key].address.toLowerCase()]: key as string,
-    // };
-    //
-    // idIndex = {
-    //   ...idIndex,
-    //   // @ts-ignore
-    //   [tokensMap[key].tokenId]: key as string,
-    // };
   });
   if (disableWithdrawTokenListRaw) {
     localStorage.setItem(

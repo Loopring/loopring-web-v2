@@ -3,9 +3,9 @@ import {
   AssetsRawDataItem,
   Explorer,
   FeeInfo,
+  getValuePrecisionThousand,
   LIVE_FEE_TIMES,
   myLog,
-  SagaStatus,
   TOAST_TIME,
   UIERROR_CODE,
   WalletMap,
@@ -163,9 +163,42 @@ export const useCreateRedPacket = <
   ]);
   useWalletLayer2Socket({ walletLayer2Callback });
 
-  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
+  const {
+    btnStatus,
+    enableBtn,
+    disableBtn,
+    setLabelAndParams,
+    resetBtnInfo,
+    btnInfo,
+  } = useBtnStatus();
+
+  const calcNumberAndAmount = React.useCallback(() => {
+    const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
+    if (
+      redPacketOrder?.type?.partition == sdk.LuckyTokenAmountType.AVERAGE &&
+      redPacketOrder?.type?.mode === sdk.LuckyTokenClaimType.COMMON
+    ) {
+      // amount * numbers < max
+      return {
+        tradeValue:
+          (redPacketOrder?.tradeValue ?? 0) * (redPacketOrder.numbers ?? 0),
+        eachValue: redPacketOrder.tradeValue,
+        isEach: true,
+      };
+    } else {
+      return {
+        tradeValue: redPacketOrder?.tradeValue,
+        eachValue:
+          (redPacketOrder?.tradeValue ?? 0) /
+          Number(redPacketOrder.numbers ?? 1),
+        isEach: false,
+      };
+    }
+  }, []);
 
   const checkBtnStatus = React.useCallback(() => {
+    const _tradeData = calcNumberAndAmount();
+    resetBtnInfo();
     if (
       tokenMap &&
       chargeFeeTokenList.length &&
@@ -176,47 +209,75 @@ export const useCreateRedPacket = <
       redPacketOrder.fee.belong &&
       redPacketOrder.numbers &&
       redPacketOrder.numbers > 0 &&
-      redPacketOrder.tradeValue
+      _tradeData.tradeValue
     ) {
-      const sellToken = tokenMap[redPacketOrder.belong];
+      const tradeToken = tokenMap[redPacketOrder.belong];
       const feeToken = tokenMap[redPacketOrder.fee.belong];
       const feeRaw =
         redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
       const fee = sdk.toBig(feeRaw);
       const balance = sdk
         .toBig(redPacketOrder.balance ?? 0)
-        .times("1e" + sellToken.decimals);
+        .times("1e" + tradeToken.decimals);
       const tradeValue = sdk
-        .toBig(redPacketOrder.tradeValue ?? 0)
-        .times("1e" + sellToken.decimals);
+        .toBig(_tradeData.tradeValue ?? 0)
+        .times("1e" + tradeToken.decimals);
+      const eachValue = sdk
+        .toBig(_tradeData.eachValue ?? 0)
+        .times("1e" + tradeToken.decimals);
       const isExceedBalance = tradeValue
-        .plus(feeToken.tokenId === sellToken.tokenId ? fee : "0")
+        .plus(feeToken.tokenId === tradeToken.tokenId ? fee : "0")
         .gt(balance);
-      myLog(
-        "isExceedBalance",
-        isExceedBalance,
-        fee.toString(),
-        tradeValue.toString()
-      );
-      if (tradeValue && !isExceedBalance) {
+      const tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts.minimum);
+      const tooLarge = tradeValue.gt(tradeToken.luckyTokenAmounts.maximum);
+
+      if (tradeValue && !isExceedBalance && !tooSmall && !tooLarge) {
         enableBtn();
         return;
       } else {
         disableBtn();
-        // if (isExceedBalance && feeToken.tokenId === sellToken.tokenId) {
-        //   // setIsFeeEnough(isFeeNotEnoughtrue);
-        //   // setIsFeeNotEnough({
-        //   //   isFeeNotEnough: true,
-        //   //   isOnLoading: false,
-        //   // });
-        //   setBalanceNotEnough(true);
-        // } else
-        // if (isExceedBalance) {
-        //   setBalanceNotEnough(true);
-        // }
-        // else {
-        //
-        // }
+        if (isExceedBalance && feeToken.tokenId === tradeToken.tokenId) {
+          setLabelAndParams("labelReserveFee", {
+            symbol: tradeToken.symbol as string,
+          });
+        } else if (isExceedBalance) {
+        } else if (tooSmall) {
+          if (_tradeData.isEach) {
+            setLabelAndParams("labelRedPacketslMin", {
+              value: getValuePrecisionThousand(
+                sdk
+                  .toBig(tradeToken.luckyTokenAmounts.minimum ?? 0)
+                  .div("1e" + tradeToken.decimals),
+                tradeToken.precision,
+                tradeToken.precision,
+                tradeToken.precision,
+                false,
+                { floor: false, isAbbreviate: true }
+              ),
+              symbol: tradeToken.symbol,
+            });
+          } else {
+            setLabelAndParams("labelRedPacketslSplitNumber", {
+              value: tradeValue
+                .div(tradeToken.luckyTokenAmounts.minimum)
+                .toFixed(0, 1),
+            });
+          }
+        } else if (tooLarge) {
+          setLabelAndParams("labelRedPacketslMax", {
+            value: getValuePrecisionThousand(
+              sdk
+                .toBig(tradeToken.luckyTokenAmounts.maximum ?? 0)
+                .div("1e" + tradeToken.decimals),
+              tradeToken.precision,
+              tradeToken.precision,
+              tradeToken.precision,
+              false,
+              { floor: true, isAbbreviate: true }
+            ),
+            symbol: tradeToken.symbol,
+          });
+        }
       }
     }
     disableBtn();
@@ -230,6 +291,7 @@ export const useCreateRedPacket = <
     redPacketOrder.belong,
     redPacketOrder.fee,
     redPacketOrder.tradeValue,
+    redPacketOrder.numbers,
   ]);
 
   React.useEffect(() => {
@@ -511,15 +573,38 @@ export const useCreateRedPacket = <
     },
     [walletMap]
   );
+  const [minimum, maximum] = React.useMemo(() => {
+    if (redPacketOrder.belong && tokenMap[redPacketOrder.belong]) {
+      const { minimum, maximum } =
+        tokenMap[redPacketOrder.belong].luckyTokenAmounts;
+      const decimals = tokenMap[redPacketOrder.belong].decimals;
+      return [
+        sdk
+          .toBig(minimum ?? 0)
+          .div("1e" + decimals)
+          .toString(),
+        sdk
+          .toBig(maximum ?? 0)
+          .div("1e" + decimals)
+          .toString(),
+      ];
+    } else {
+      return [undefined, undefined];
+    }
+  }, [redPacketOrder?.belong, tokenMap]);
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
     type: "TOKEN",
     chargeFeeTokenList,
     onCreateRedPacketClick,
     btnStatus,
+    btnInfo,
     disabled: transferEnabale?.enable == true,
     assetsData: assetsRawData,
     walletMap,
     coinMap: totalCoinMap,
+    tokenMap,
+    minimum,
+    maximum,
     feeInfo: redPacketOrder.fee ?? feeInfo,
     handleFeeChange,
     tradeData: redPacketOrder as T,

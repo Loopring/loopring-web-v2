@@ -24,7 +24,6 @@ import {
   BanxaOrder,
   AccountStatus,
   AssetsRawDataItem,
-  LuckyRedPacketItem,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -32,7 +31,6 @@ import { XOR } from "../../../types/lib";
 import { CollectionInputProps } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { TOSTOBJECT } from "../../toast";
-import { LuckyTokenViewType } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
 export enum RedPacketStep {
   ChooseType,
@@ -312,7 +310,6 @@ export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
     props: SwitchData<T>,
     switchType: "Tomenu" | "Tobutton"
   ) => Promise<void>;
-
   onChangeEvent?: (index: 0 | 1, data: SwitchData<T>) => SwitchData<T>;
   inputButtonProps?: InputButtonDefaultProps<T, I>;
 } & Partial<SwitchPanelProps<any>>;
@@ -587,6 +584,8 @@ export type ClaimExtendProps<T, C> = {
 export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
   btnStatus: TradeBtnStatus;
   btnInfo?: BtnInfo;
+  minimum: string | undefined;
+  maximum: string | undefined;
   chargeFeeTokenList: Array<Fee>;
   feeInfo: Fee;
   isFeeNotEnough: {
@@ -612,4 +611,5 @@ export type CreateRedPacketViewProps<T, I, F> = CreateRedPacketExtendsProps<
   BasicACoinTradeViewProps<T, I> & {
     setActiveStep: (step: RedPacketStep) => void;
     activeStep: RedPacketStep;
+    tokenMap: { [key: string]: sdk.TokenInfo };
   };

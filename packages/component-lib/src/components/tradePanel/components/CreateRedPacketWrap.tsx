@@ -30,6 +30,7 @@ import {
   BackIcon,
   myLog,
   IBData,
+  getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -86,17 +87,33 @@ export const CreateRedPacketStepWrap = withTranslation()(
     walletMap,
     tradeData,
     coinMap,
+    tokenMap,
     isFeeNotEnough,
     setActiveStep,
     feeInfo,
     chargeFeeTokenList,
     lastFailed,
+    selectedType,
+    minimum,
+    maximum,
     onBack,
     ...rest
-  }: CreateRedPacketViewProps<T, I, F> & WithTranslation) => {
+  }: CreateRedPacketViewProps<T, I, F> & {
+    selectedType: LuckyRedPacketItem;
+  } & WithTranslation) => {
     const { t } = useTranslation("common");
     const inputButtonDefaultProps = {
       label: t("labelInputRedPacketBtnLabel"),
+      decimalsLimit:
+        (tokenMap && tokenMap[tradeData?.belong as string])?.precision ?? 8,
+      placeholderText: tradeData?.belong
+        ? selectedType.value.value == 2
+          ? t("labelRedPacketsMinDual", { value: minimum })
+          : t("labelRedPacketsMinDual", { value: minimum }) +
+            (sdk.toBig(maximum ?? 0).lt(sdk.toBig(tradeData.balance ?? 0))
+              ? " - " + t("labelRedPacketsMaxDual", { value: maximum })
+              : "")
+        : "0.00",
     };
     const [dayValue, setDayValue] = React.useState<Moment | null>(moment());
 
@@ -107,26 +124,113 @@ export const CreateRedPacketStepWrap = withTranslation()(
       React.useState<"up" | "down">("down");
     const inputBtnRef = React.useRef();
     const inputSplitRef = React.useRef();
+    const redPacketTotalValue = React.useMemo(() => {
+      const value =
+        selectedType.value.value == 2
+          ? (tradeData?.tradeValue ?? 0) * (tradeData?.numbers ?? 0)
+          : tradeData?.tradeValue ?? 0;
+      if (value && tradeData.belong && tokenMap) {
+        // coinMap[tradeData.belong].
+        return (
+          getValuePrecisionThousand(
+            value,
+            tokenMap[tradeData?.belong as string].precision,
+            tokenMap[tradeData?.belong as string].precision,
+            tokenMap[tradeData?.belong as string].precision,
+            false
+            // { isFait: true }
+          ) +
+          " " +
+          tradeData.belong
+        );
+      } else {
+        return EmptyValueTag;
+      }
+    }, [tradeData, selectedType.value.value, coinMap]);
 
-    const inputSplitProps: any = {
-      label: t("labelSplit"), //t("labelTokenAmount"),
-      subLabel: "", //t("labelAvailable"),
-      placeholderText: "Quantity",
-      maxAllow: true,
-      handleError: () => {},
-      isShowCoinInfo: false,
-      handleCountChange: (ibData: IBData<any>, _name: string, _ref: any) => {
-        handleOnDataChange({
-          numbers: ibData.tradeValue,
-        } as unknown as Partial<T>);
-      },
-    };
+    const inputSplitProps = React.useMemo(() => {
+      const inputSplitProps: any = {
+        label:
+          selectedType.value.value == 2
+            ? t("labelAmountEach")
+            : t("labelSplit"), //t("labelTokenAmount"),
+        placeholderText: "Quantity",
+        isHideError: true,
+        isShowCoinInfo: false,
+        handleCountChange: (ibData: IBData<any>, _name: string, _ref: any) => {
+          handleOnDataChange({
+            numbers: ibData.tradeValue,
+          } as unknown as Partial<T>);
+        },
+      };
+      if (
+        selectedType.value.value !== 2 &&
+        tradeData?.tradeValue &&
+        Number(tradeData?.tradeValue) &&
+        maximum
+      ) {
+        return {
+          ...inputSplitProps,
+          maxAllow: true,
+          subLabel: t("labelAvailable"),
+          handleError: (data: any) => {
+            if (data.tradeValue && data.tradeValue > data.balance) {
+              return {
+                error: true,
+              };
+            }
+            return {
+              error: false,
+            };
+          },
+          inputData: {
+            belong:
+              selectedType.value.value == 2
+                ? t("labelAmountEach")
+                : t("labelSplit"),
+            tradeValue: tradeData?.numbers,
+            balance: sdk
+              .toBig(tradeData.tradeValue)
+              .div(Number(minimum) ?? 1)
+              .toFixed(0, 1),
+          },
+        };
+      } else {
+        return {
+          ...inputSplitProps,
+          maxAllow: false,
+          subLabel: "",
+          handleError: () => undefined,
+          inputData: {
+            belong:
+              selectedType.value.value == 2
+                ? t("labelAmountEach")
+                : t("labelSplit"),
+            tradeValue: tradeData?.numbers,
+            // count: tradeData?.numbers,
+          },
+        };
+      }
+    }, [tradeData, selectedType.value.value, maximum, minimum]);
 
     const handleToggleChange = (value: F) => {
       if (handleFeeChange) {
         handleFeeChange(value);
       }
     };
+    const _balance = React.useMemo(() => {
+      if (
+        selectedType.value.value == 2 &&
+        tradeData?.numbers &&
+        // @ts-ignore
+        tradeData.numbers !== "0" &&
+        tradeData.balance
+      ) {
+        return tradeData.balance / tradeData.numbers;
+      } else {
+        return tradeData.balance;
+      }
+    }, [selectedType.value.value, tradeData.balance, tradeData?.numbers]);
     const { isMobile } = useSettings();
     myLog(
       "CreateRedPacketStepWrap tradeData",
@@ -179,7 +283,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
             </Box>
           </Grid>
 
-          <Grid item alignSelf={"stretch"} position={"relative"}>
+          <Grid
+            item
+            alignSelf={"stretch"}
+            position={"relative"}
+            display={"flex"}
+            flexDirection={"column"}
+          >
             {tradeType === "TOKEN" && (
               <BasicACoinTrade
                 {...{
@@ -188,12 +298,36 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   type: tradeType ?? "TOKEN",
                   disabled,
                   walletMap,
-                  tradeData: tradeData as T,
+                  tradeData:
+                    selectedType.value.value == 2 && tradeData?.numbers
+                      ? {
+                          ...tradeData,
+                          balance: _balance,
+                        }
+                      : (tradeData as T),
                   coinMap,
                   inputButtonDefaultProps,
                   inputBtnRef: inputBtnRef,
                 }}
               />
+            )}
+            {selectedType.value.value == 2 && (
+              <Typography
+                display={"inline-flex"}
+                width={"100%"}
+                justifyContent={"flex-end"}
+                color={"textSecondary"}
+              >
+                {t("labelAssetAmount", {
+                  value: getValuePrecisionThousand(
+                    tradeData.balance,
+                    8,
+                    8,
+                    8,
+                    false
+                  ),
+                })}
+              </Typography>
             )}
           </Grid>
 
@@ -202,12 +336,12 @@ export const CreateRedPacketStepWrap = withTranslation()(
               ref={inputSplitRef}
               {...{
                 ...inputSplitProps,
-                name: "Split",
-                isHideError: true,
+                name: "numbers",
                 order: "right",
-                inputData: {
-                  belong: t("labelSplit"),
-                  count: tradeData?.numbers,
+                handleCountChange: (data) => {
+                  handleOnDataChange({
+                    numbers: data.tradeValue,
+                  } as unknown as Partial<T>);
                 },
                 coinMap: {},
                 coinPrecision: undefined,
@@ -273,30 +407,32 @@ export const CreateRedPacketStepWrap = withTranslation()(
               </Typography>
             </FormLabel>
             {/*year' | 'day' | 'month' | 'hours' | 'minutes' | 'seconds*/}
-            <DateTimePicker
-              style={{ marginTop: 1 }}
-              value={
-                dayValue
-                // tradeData.validSince
-                //   ? tradeData.validSince < Date.now()
-                //     ? moment(new Date(tradeData.validSince))
-                //     : moment()
-                //   : moment()
-              }
-              disableFuture={false}
-              minDate={moment()}
-              // minDateTime={moment().add(q, "minutes").toDate()}
-              // maxDateTime={moment().add(1.5, "days")}
-              maxDateTime={moment().add(1, "days")}
-              onChange={(monent: any) => {
-                // myLog("selectionState", monent.toDate());
-                setDayValue(monent);
-                handleOnDataChange({
-                  validSince: monent.toDate().getTime(),
-                } as unknown as Partial<T>);
-              }}
-              disabled={disabled}
-            />
+            <Box marginTop={1}>
+              <DateTimePicker
+                value={
+                  dayValue
+                  // tradeData.validSince
+                  //   ? tradeData.validSince < Date.now()
+                  //     ? moment(new Date(tradeData.validSince))
+                  //     : moment()
+                  //   : moment()
+                }
+                fullWidth={true}
+                disableFuture={false}
+                minDate={moment()}
+                // minDateTime={moment().add(q, "minutes").toDate()}
+                // maxDateTime={moment().add(1.5, "days")}
+                maxDateTime={moment().add(1, "days")}
+                onChange={(monent: any) => {
+                  // myLog("selectionState", monent.toDate());
+                  setDayValue(monent);
+                  handleOnDataChange({
+                    validSince: monent.toDate().getTime(),
+                  } as unknown as Partial<T>);
+                }}
+                disabled={disabled}
+              />
+            </Box>
           </Grid>
 
           <Grid item alignSelf={"stretch"} position={"relative"}>
@@ -379,6 +515,21 @@ export const CreateRedPacketStepWrap = withTranslation()(
             )}
           </Grid>
           <Grid item alignSelf={"stretch"}>
+            <Typography
+              display={"inline-flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              variant={"h3"}
+              component={"span"}
+              color={"textPrimary"}
+              width={"100%"}
+              textAlign={"center"}
+            >
+              {redPacketTotalValue}
+            </Typography>
+          </Grid>
+
+          <Grid item alignSelf={"stretch"}>
             {lastFailed && (
               <Typography
                 paddingBottom={1}
@@ -393,7 +544,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
           <Grid
             item
             alignSelf={"stretch"}
-            paddingBottom={0}
+            paddingBottom={1}
             display={"flex"}
             flexDirection={"row"}
             justifyContent={"space-between"}
@@ -409,6 +560,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 sx={{ height: "var(--btn-medium-height)" }}
                 onClick={() => {
                   setActiveStep(RedPacketStep.ChooseType);
+                  handleOnDataChange({
+                    numbers: undefined,
+                    tradeValue: undefined,
+                  } as any);
                 }}
               >
                 {t(`labelMintBack`)}
@@ -430,9 +585,26 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 }
                 disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
               >
-                {t(btnInfo?.label ?? `labelL2toL2Btn`)}
+                {btnInfo?.label
+                  ? t(btnInfo.label, btnInfo.params)
+                  : t(`labelCreateRedPacketBtn`)}
               </Button>
             </Box>
+          </Grid>
+          <Grid item alignSelf={"stretch"}>
+            <Typography
+              paddingBottom={0}
+              display={"inline-flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              variant={"body2"}
+              component={"span"}
+              color={"textThird"}
+              width={"100%"}
+              textAlign={"center"}
+            >
+              {t("labelRedPacketsExpireDes")}
+            </Typography>
           </Grid>
         </Grid>
       </RedPacketBoxStyle>
@@ -446,41 +618,18 @@ export const CreateRedPacketStepType = withTranslation()(
     tradeData,
     handleOnDataChange,
     setActiveStep,
+    selectedType,
     disabled = false,
     btnInfo,
     t,
-  }: CreateRedPacketViewProps<T, I, C> & WithTranslation) => {
+  }: CreateRedPacketViewProps<T, I, C> & {
+    selectedType: LuckyRedPacketItem;
+    // setSelectType: (value: LuckyRedPacketItem) => void;
+  } & WithTranslation) => {
     const { isMobile } = useSettings();
     const getDisabled = React.useMemo(() => {
       return disabled;
     }, [disabled]);
-    const [selectedType, setSelectType] = React.useState(LuckyRedPacketList[0]);
-    React.useEffect(() => {
-      setSelectType(() => {
-        if (tradeData?.type) {
-          if (
-            tradeData.type.partition == LuckyRedPacketList[0].value.partition &&
-            tradeData.type.mode == LuckyRedPacketList[0].value.mode
-          ) {
-            return LuckyRedPacketList[0];
-          } else if (
-            tradeData.type.partition == LuckyRedPacketList[1].value.partition &&
-            tradeData.type.mode == LuckyRedPacketList[1].value.mode
-          ) {
-            return LuckyRedPacketList[1];
-          } else {
-            return LuckyRedPacketList[2];
-          }
-        } else {
-          return LuckyRedPacketList[2];
-        }
-      });
-      // setScope();
-    }, [
-      tradeData?.type?.partition,
-      tradeData?.type?.scope,
-      tradeData?.type?.mode,
-    ]);
 
     return (
       <RedPacketBoxStyle

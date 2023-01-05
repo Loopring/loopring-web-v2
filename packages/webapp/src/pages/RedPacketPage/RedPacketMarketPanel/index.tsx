@@ -142,7 +142,7 @@ export const RedPacketMarketPanel = () => {
         <Grid container spacing={1} flex={1} display={"flex"} paddingX={1}>
           {luckTokenList.officialList?.length ? (
             luckTokenList.officialList.map((item, index) => (
-              <Grid xs={6} md={4} lg={3} key={index}>
+              <Grid xs={6} md={4} lg={3} key={index} position={"relative"}>
                 <RedPacketOpen type={"official"} />
               </Grid>
             ))
@@ -151,7 +151,7 @@ export const RedPacketMarketPanel = () => {
           )}
           {luckTokenList.publicList?.length
             ? luckTokenList.publicList.map((item, index) => (
-                <Grid xs={6} md={4} lg={3} key={index}>
+                <Grid xs={6} md={4} lg={3} key={index} position={"relative"}>
                   <RedPacketOpen />
                 </Grid>
               ))

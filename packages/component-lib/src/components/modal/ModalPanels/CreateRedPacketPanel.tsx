@@ -5,7 +5,11 @@ import {
   RedPacketStep,
   WithdrawProps,
 } from "../../tradePanel";
-import { FeeInfo, IBData, myLog } from "@loopring-web/common-resources";
+import {
+  FeeInfo,
+  LuckyRedPacketList,
+  myLog,
+} from "@loopring-web/common-resources";
 import {
   HorizontalLabelPositionBelowStepper,
   TradeMenuList,
@@ -42,6 +46,7 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
     handleOnDataChange,
     walletMap = {},
     coinMap = {},
+    tokenMap = {},
     t,
     ...rest
   }: CreateRedPacketProps<T, I, C> &
@@ -89,6 +94,33 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
       return clonedWalletMap;
     }, [walletMap]);
     myLog("createRedPacketProps", tradeData?.type);
+    const [selectedType, setSelectType] = React.useState(LuckyRedPacketList[0]);
+    React.useEffect(() => {
+      setSelectType(() => {
+        if (tradeData?.type) {
+          if (
+            tradeData.type.partition == LuckyRedPacketList[0].value.partition &&
+            tradeData.type.mode == LuckyRedPacketList[0].value.mode
+          ) {
+            return LuckyRedPacketList[0];
+          } else if (
+            tradeData.type.partition == LuckyRedPacketList[1].value.partition &&
+            tradeData.type.mode == LuckyRedPacketList[1].value.mode
+          ) {
+            return LuckyRedPacketList[1];
+          } else {
+            return LuckyRedPacketList[2];
+          }
+        } else {
+          return LuckyRedPacketList[2];
+        }
+      });
+      // setScope();
+    }, [
+      tradeData?.type?.partition,
+      tradeData?.type?.scope,
+      tradeData?.type?.mode,
+    ]);
 
     const props: SwitchPanelProps<string> = {
       index: panelIndex,
@@ -103,6 +135,8 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
                 tradeData={tradeData as any}
                 disabled={disabled}
                 tradeType={tradeType}
+                selectedType={selectedType}
+                // setSelectType={setSelectType}
                 {...{ ...rest }}
                 setActiveStep={setActiveStep}
                 activeStep={RedPacketStep.ChooseType}
@@ -121,8 +155,10 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
                 onBack={onBack}
                 disabled={disabled}
                 coinMap={coinMap}
+                selectedType={selectedType}
                 handleOnDataChange={handleOnDataChange as any}
                 tradeType={tradeType}
+                tokenMap={tokenMap}
                 tradeData={tradeData as any}
                 {...{ ...rest }}
                 walletMap={getWalletMapWithoutLP()}

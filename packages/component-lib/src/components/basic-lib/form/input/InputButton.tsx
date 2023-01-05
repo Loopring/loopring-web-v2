@@ -3,6 +3,7 @@ import {
   CoinInfo,
   DropDownIcon,
   FORMAT_STRING_LEN,
+  getValuePrecisionThousand,
   // getValuePrecisionThousand,
   IBData,
 } from "@loopring-web/common-resources";
@@ -54,8 +55,10 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   React.useEffect(() => {
     if (tradeValue === undefined && error.error) {
       setError({ error: false });
+    } else if (balance && tradeValue) {
+      _handleError(tradeValue);
     }
-  }, [tradeValue]);
+  }, [tradeValue, balance]);
   const _handleError = React.useCallback(
     (value: any) => {
       if (handleError) {
@@ -169,7 +172,11 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
                 onClick={_handleMaxAllowClick}
               >
                 <span>{subLabel}</span>
-                <span>{balance ? balance : "0.00"}</span>
+                <span>
+                  {balance
+                    ? getValuePrecisionThousand(balance, 8, 8, 8, false)
+                    : "0.00"}
+                </span>
               </Typography>
             ) : null}
           </Grid>

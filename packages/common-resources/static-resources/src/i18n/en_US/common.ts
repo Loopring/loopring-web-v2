@@ -1322,6 +1322,17 @@ export default {
   labelClaimWithdrawSubmit: "Claim has been submitted",
   labelClaimWithdrawToken: "Token Amount",
   labelRefreshRedPacket: "Refresh List",
+  labelAmountEach: "Amount Each",
+  labelAssetAmount: "Asset Amounts: {{value}}",
+  labelCreateRedPacketBtn: "Prepare Red Packet",
+  labelRedPacketsExpireDes:
+    "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
+  labelReserveFee: "Reserve enough {{symbol}} for fee",
+  labelRedPacketsMinDual: "Min {{value}}",
+  labelRedPacketsMaxDual: "Max {{value}}",
+  labelRedPacketslMin: "Minimum of {{value}} {{symbol}}",
+  labelRedPacketslMax: "Maximum of {value}} {{symbol}}",
+  labelRedPacketslSplitNumber: "Maximum split is {{value}}",
 
   // labelClaimWithdrawEnterToken: "Select Token",
 };

@@ -113,7 +113,7 @@ export const DepositToPage = withTranslation(["common"])(
         <Box
           display={"flex"}
           marginBottom={5 / 2}
-          width={`calc(var(--modal-width) + ${isMobile ? 20 : 0}px )`}
+          width={`calc(var(--modal-width) + ${isMobile ? 20 : 0}px)`}
           justifyContent={"space-between"}
           alignItems={"center"}
         >
