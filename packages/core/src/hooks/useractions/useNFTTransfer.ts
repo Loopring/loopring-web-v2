@@ -137,7 +137,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     resetIntervalTime: resetActiveIntervalTime,
   } = useChargeFees({
     isActiveAccount: true,
-    requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
+    requestType: undefined as any,
   });
   const {
     address,
@@ -578,6 +578,15 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     [updateNFTTransferData]
   );
 
+  React.useEffect(() => {
+    if (realAddr !== "" && isActiveAccount === false) {
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: "TRANSFER_ACTIVE",
+      });
+    }
+  }, [isActiveAccount, realAddr]);
+
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
       setShowAccount({
@@ -621,7 +630,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     isSameAddress,
     isAddressCheckLoading,
     handleOnAddressChange: (value: any) => {
-      // let flag,feeRecall;
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: undefined as any,
+      });
       setAddress((state) => {
         if (state !== value || "") {
           // flag = true;

@@ -29,6 +29,7 @@ import {
   CurrencyToTag,
   DualViewBase,
   EmptyValueTag,
+  FailedIcon,
   getValuePrecisionThousand,
   PriceTag,
   RowInvestConfig,
@@ -97,6 +98,9 @@ const MyLiquidity: any = withTranslation("common")(
       detail,
       setOpen,
       getDetail,
+      refresh,
+      setShowRefreshError,
+      showRefreshError,
     } = useDualAsset();
 
     React.useEffect(() => {
@@ -439,6 +443,7 @@ const MyLiquidity: any = withTranslation("common")(
                       pagination={pagination}
                       getDualAssetList={getDualTxList}
                       showDetail={showDetail}
+                      refresh={refresh}
                     />
                     <Modal
                       open={open}
@@ -489,6 +494,25 @@ const MyLiquidity: any = withTranslation("common")(
             </>
           )}
         </Box>
+        <Modal
+          open={showRefreshError}
+          onClose={(_e: any) => setShowRefreshError(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <SwitchPanelStyled width={"var(--modal-width)"}>
+            <ModalCloseButton
+              onClose={(_e: any) => setShowRefreshError(false)}
+              t={t}
+            />
+            <Box marginTop={9}>
+              <FailedIcon color={"error"} style={{ width: 60, height: 60 }} />
+            </Box>
+            <Typography marginTop={7} marginBottom={22}>
+              {t("labelInvestDualRefreshError")}
+            </Typography>
+          </SwitchPanelStyled>
+        </Modal>
       </Box>
     );
   }

@@ -113,7 +113,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     resetIntervalTime: resetActiveIntervalTime,
   } = useChargeFees({
     isActiveAccount: true,
-    requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
+    requestType: undefined as any,
   });
   const handleOnMemoChange = React.useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -551,6 +551,14 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
+  React.useEffect(() => {
+    if (realAddr !== "" && isActiveAccount === false) {
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: "TRANSFER_ACTIVE",
+      });
+    }
+  }, [isActiveAccount, realAddr]);
 
   const transferProps: TransferProps<any, any> = {
     type: "TOKEN",
@@ -582,7 +590,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     memo,
     handleOnMemoChange,
     handleOnAddressChange: (value: any) => {
-      // let flag,feeRecall;
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: undefined as any,
+      });
       setAddress((state) => {
         if (state !== value || "") {
           // flag = true;

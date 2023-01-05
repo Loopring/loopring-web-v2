@@ -2,6 +2,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
 import {
+  ClockIcon,
   EmptyValueTag,
   globalSetup,
   MoreIcon,
@@ -80,6 +81,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       dualMarketMap,
       showloading,
       showDetail,
+      refresh,
       t,
     } = props;
 
@@ -125,13 +127,15 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
               sellSymbol,
               buySymbol,
               __raw__: {
-                order: { dualType },
+                order: { dualType, investmentStatus },
               },
             } = row;
             const [base, quote] =
               dualType === DUAL_TYPE.DUAL_BASE
                 ? [sellSymbol, buySymbol]
                 : [buySymbol, sellSymbol];
+            const showClock =
+              investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING;
             //${row.sellSymbol}/${row.buySymbol}
             return (
               <Typography
@@ -165,6 +169,11 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                     {`${base}/${quote}`}
                   </Typography>
                 </Typography>
+                {showClock && (
+                  <Box marginLeft={1} display={"flex"} alignItems={"center"}>
+                    <ClockIcon />
+                  </Box>
+                )}
               </Typography>
             );
           },
@@ -177,7 +186,11 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignCenter",
           name: t("labelDualAssetFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.amount + " " + row.sellSymbol}</>;
+            if (!row?.amount) {
+              return <>{"-- " + row.sellSymbol}</>;
+            } else {
+              return <>{row?.amount + " " + row.sellSymbol}</>;
+            }
           },
         },
         {
@@ -251,7 +264,18 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           name: t("labelDualAssetAction"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
+            const investmentStatus = row.__raw__.order.investmentStatus;
+            const showRefresh =
+              investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING;
+            return showRefresh ? (
+              <Link
+                onClick={(_e) => {
+                  refresh(row);
+                }}
+              >
+                {t("labelDualAssetRefresh")}
+              </Link>
+            ) : (
               <Link onClick={(_e) => showDetail(row)}>
                 {t("labelDualAssetDetail")}
               </Link>
@@ -434,7 +458,8 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
-          onRowClick={(_index: number, row: R) => {
+          onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
+            if (c.key === "Action") return;
             showDetail(row);
           }}
           sortMethod={sortMethod}

@@ -36,7 +36,11 @@ export function useChargeFees({
 }: {
   tokenAddress?: string | undefined;
   tokenSymbol?: string | undefined;
-  requestType: sdk.OffchainFeeReqType | sdk.OffchainNFTFeeReqType;
+  requestType:
+    | sdk.OffchainFeeReqType
+    | sdk.OffchainNFTFeeReqType
+    | "UPDATE_ACCOUNT_BY_NEW"
+    | "TRANSFER_ACTIVE";
   amount?: number;
   intervalTime?: number;
   updateData?:
@@ -48,7 +52,11 @@ export function useChargeFees({
           isFeeNotEnough: boolean;
           isOnLoading: boolean;
         };
-        requestType: sdk.OffchainFeeReqType | sdk.OffchainNFTFeeReqType;
+        requestType:
+          | sdk.OffchainFeeReqType
+          | sdk.OffchainNFTFeeReqType
+          | "UPDATE_ACCOUNT_BY_NEW"
+          | "TRANSFER_ACTIVE";
         [key: string]: any;
       }) => void);
   isActiveAccount?: boolean;
@@ -181,7 +189,7 @@ export function useChargeFees({
             accountId: account.accountId,
             tokenSymbol,
             tokenAddress,
-            requestType,
+            requestType: requestType as any,
             amount:
               tokenInfo && _amount.amount && _amount.needAmountRefresh
                 ? sdk
@@ -195,7 +203,7 @@ export function useChargeFees({
                 : undefined,
           };
           let fees: any;
-          if (isActiveAccount) {
+          if (isActiveAccount && requestType !== undefined) {
             const response = await LoopringAPI.globalAPI.getActiveFeeInfo({
               accountId:
                 account._accountIdNotActive &&
@@ -212,6 +220,7 @@ export function useChargeFees({
               fees = response.fees;
             }
           } else if (
+            requestType !== undefined &&
             [
               sdk.OffchainNFTFeeReqType.NFT_MINT,
               sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
@@ -235,6 +244,7 @@ export function useChargeFees({
               fees = response.fees;
             }
           } else if (
+            requestType !== undefined &&
             account.accountId &&
             account.accountId !== -1 &&
             account.apiKey
@@ -434,13 +444,15 @@ export function useChargeFees({
       });
       if (props.amount && props.needAmountRefresh && props.requestType) {
         myLog("checkFeeIsEnough needAmountRefresh", requestType);
-        setRequestType(props.requestType);
+        if (props.requestType !== requestType) {
+          setRequestType(props.requestType);
+        }
         setAmount(() => ({
           amount: props.amount,
           needAmountRefresh: props.needAmountRefresh,
         }));
         getFeeList.cancel();
-      } else if (props.requestType) {
+      } else if (props.requestType !== requestType) {
         setRequestType(props.requestType);
         myLog("checkFeeIsEnough", requestType);
         getFeeList.cancel();
@@ -490,16 +502,17 @@ export function useChargeFees({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
       getFeeList.cancel();
     }
-    // myLog('tokenAddress', tokenAddress, requestType, account.readyState)
+    myLog("tokenAddress", tokenAddress, requestType, account.readyState);
     if (
-      isActiveAccount ||
-      // &&
-      // [
-      //   AccountStatus.NO_ACCOUNT,
-      //   AccountStatus.DEPOSITING,
-      //   AccountStatus.NOT_ACTIVE,
-      //   AccountStatus.LOCKED,
-      // ].includes(account.readyState as any))
+      (isActiveAccount &&
+        ((requestType === "UPDATE_ACCOUNT_BY_NEW" &&
+          [
+            AccountStatus.NO_ACCOUNT,
+            AccountStatus.DEPOSITING,
+            AccountStatus.NOT_ACTIVE,
+            AccountStatus.LOCKED,
+          ].includes(account.readyState as any)) ||
+          requestType === "TRANSFER_ACTIVE")) ||
       (!isActiveAccount &&
         walletLayer2Status === "UNSET" &&
         AccountStatus.ACTIVATED === account.readyState &&
@@ -552,6 +565,7 @@ export function useChargeFees({
       getFeeList.cancel();
     };
   }, [
+    isActiveAccount,
     tokenAddress,
     tokenSymbol,
     requestType,

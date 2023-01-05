@@ -35,15 +35,6 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
         }, {} as WalletLayer2Map<R>);
       }
     } catch (error) {
-      // if (__timer__ && __timer__ !== -1) {
-      //   clearTimeout(__timer__);
-      // }
-      // if (errorNumber--) {
-      //   __timer__ = setTimeout(() => {
-      //     store.dispatch(updateWalletLayer2(undefined));
-      //   }, 3000);
-      // }
-
       throw error;
     }
   } else if (
