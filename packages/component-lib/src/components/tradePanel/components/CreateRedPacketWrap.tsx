@@ -106,10 +106,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
       label: t("labelRedPacketTotalAmount"),
       decimalsLimit:
         (tokenMap && tokenMap[tradeData?.belong as string])?.precision ?? 8,
+      minimum,
       placeholderText: tradeData?.belong
-        ? t("labelRedPacketsMinDual", { value: minimum }) +
+        ? t("labelRedPacketsMinRange", { value: minimum }) +
           (sdk.toBig(maximum ?? 0).lt(sdk.toBig(tradeData.balance ?? 0))
-            ? " - " + t("labelRedPacketsMaxDual", { value: maximum })
+            ? " - " + t("labelRedPacketsMaxRange", { value: maximum })
             : "")
         : "0.00",
     };
@@ -289,7 +290,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   type: tradeType ?? "TOKEN",
                   disabled,
                   walletMap,
-                  tradeData: tradeData as T,
+                  tradeData,
                   coinMap,
                   inputButtonDefaultProps,
                   inputBtnRef: inputBtnRef,
@@ -348,7 +349,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               maxLength={25}
               onChange={(event) =>
                 handleOnDataChange({
-                  description: event.target.value,
+                  memo: event.target.value,
                 } as unknown as Partial<T>)
               }
               draggable={true}
@@ -376,22 +377,12 @@ export const CreateRedPacketStepWrap = withTranslation()(
             {/*year' | 'day' | 'month' | 'hours' | 'minutes' | 'seconds*/}
             <Box marginTop={1}>
               <DateTimePicker
-                value={
-                  dayValue
-                  // tradeData.validSince
-                  //   ? tradeData.validSince < Date.now()
-                  //     ? moment(new Date(tradeData.validSince))
-                  //     : moment()
-                  //   : moment()
-                }
+                value={dayValue}
                 fullWidth={true}
                 disableFuture={false}
                 minDate={moment()}
-                // minDateTime={moment().add(q, "minutes").toDate()}
-                // maxDateTime={moment().add(1.5, "days")}
                 maxDateTime={moment().add(1, "days")}
                 onChange={(monent: any) => {
-                  // myLog("selectionState", monent.toDate());
                   setDayValue(monent);
                   handleOnDataChange({
                     validSince: monent.toDate().getTime(),

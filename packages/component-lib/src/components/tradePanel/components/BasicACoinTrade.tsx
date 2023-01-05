@@ -55,6 +55,8 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
 
   if (typeof handleError !== "function") {
     handleError = ({ belong, balance, tradeValue }: T) => {
+      const minimum =
+        inputButtonProps?.minimum ?? inputButtonDefaultProps?.minimum;
       if (
         (typeof tradeValue !== "undefined" &&
           balance &&
@@ -64,6 +66,18 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
         return {
           error: true,
           message: t("tokenNotEnough", { belong: belong }),
+        };
+      } else if (
+        typeof tradeValue !== "undefined" &&
+        minimum !== undefined &&
+        tradeValue < Number(minimum)
+      ) {
+        return {
+          error: true,
+          message: t("errorMinError", {
+            value: minimum,
+            ns: ["error", "common"],
+          }),
         };
       }
       return { error: false, message: "" };

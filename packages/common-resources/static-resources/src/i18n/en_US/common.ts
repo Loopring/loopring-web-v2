@@ -1287,7 +1287,7 @@ export default {
   labelLuckyTokenViewTypeDes1:
     "Your gift packet is shared privately by you via your custom QR code for others to receive.",
   labelSplit: "Split",
-  labelRedPacketMemo: "Memo",
+  labelRedPacketMemo: "Best Wish",
   labelRedPacketStart: "Active Time",
   labelRedpacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
@@ -1330,15 +1330,17 @@ export default {
   labelCreateRedPacketBtn: "Prepare Red Packet",
   labelRedPacketsExpireDes:
     "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
-  labelReserveFee: "Reserve enough {{symbol}} for fee",
-  labelRedPacketsMinDual: "Min {{value}}",
-  labelRedPacketsMaxDual: "Max {{value}}",
+  labelReserveFee: "Insufficient {{symbol}} with fee",
+  labelRedPacketsInsufficient: "Insufficient {{symbol}} balance",
+  labelRedPacketsMinRange: "Min {{value}}",
+  labelRedPacketsMaxRange: "Max {{value}}",
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
   labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
     "Token amount for each red packet is randomized",
+  labelReaPacketTitle: "Send Red Packet",
 
   // labelClaimWithdrawEnterToken: "Select Token",
 };

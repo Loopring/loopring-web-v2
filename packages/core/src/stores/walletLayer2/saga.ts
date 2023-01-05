@@ -10,7 +10,8 @@ import { store, LoopringAPI } from "../../index";
 type WalletLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>;
 };
-
+let errorNumber = 10;
+let __timer__: NodeJS.Timer | -1 = -1;
 const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
   const { accountId, apiKey, readyState, _accountIdNotActive, accAddress } =
     store.getState().account;
@@ -19,16 +20,31 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
 
   if (apiKey && accountId && accountId >= 10000 && LoopringAPI.userAPI) {
     // @ts-ignore
-    const { userBalances } = await LoopringAPI.userAPI.getUserBalances(
-      { accountId, tokens: "" },
-      apiKey
-    );
+    try {
+      const { userBalances } = await LoopringAPI.userAPI.getUserBalances(
+        { accountId, tokens: "" },
+        apiKey
+      );
+      if (__timer__ && __timer__ !== -1) {
+        clearTimeout(__timer__);
+      }
+      if (userBalances) {
+        walletLayer2 = Reflect.ownKeys(userBalances).reduce((prev, item) => {
+          // @ts-ignore
+          return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
+        }, {} as WalletLayer2Map<R>);
+      }
+    } catch (error) {
+      // if (__timer__ && __timer__ !== -1) {
+      //   clearTimeout(__timer__);
+      // }
+      // if (errorNumber--) {
+      //   __timer__ = setTimeout(() => {
+      //     store.dispatch(updateWalletLayer2(undefined));
+      //   }, 3000);
+      // }
 
-    if (userBalances) {
-      walletLayer2 = Reflect.ownKeys(userBalances).reduce((prev, item) => {
-        // @ts-ignore
-        return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
-      }, {} as WalletLayer2Map<R>);
+      throw error;
     }
   } else if (
     !apiKey &&

@@ -53,7 +53,10 @@ export const useCreateRedPacket = <
   assetsRawData,
 }: {
   assetsRawData: AssetsRawDataItem[];
-}): { createRedPacketProps: CreateRedPacketProps<T, I, F> } => {
+}): {
+  createRedPacketProps: CreateRedPacketProps<T, I, F>;
+  retryBtn: (isHardware?: boolean) => void;
+} => {
   let match: any = useRouteMatch("/redpacket/:item");
 
   const { exchangeInfo, chainId } = useSystem();
@@ -96,6 +99,12 @@ export const useCreateRedPacket = <
     setWalletMap(walletMap);
     if (!redPacketOrder.belong && walletMap) {
       resetDefault();
+    } else if (walletMap && walletMap[redPacketOrder.belong]) {
+      // const walletInfo = walletMap[redPacketOrder.belong];
+      // myLog("update balance:", walletInfo?.count);
+      // handleOnDataChange({
+      //   balance: walletInfo?.count,
+      // } as T);
     }
   }, [redPacketOrder, accountStatus]);
   const handleOnDataChange = React.useCallback(
@@ -178,25 +187,8 @@ export const useCreateRedPacket = <
       tradeValue: redPacketOrder?.tradeValue,
       eachValue:
         (redPacketOrder?.tradeValue ?? 0) / Number(redPacketOrder.numbers ?? 1),
-      // isEach: false,
     };
-    // if (
-    //   redPacketOrder?.type?.partition == sdk.LuckyTokenAmountType.AVERAGE &&
-    //   redPacketOrder?.type?.mode === sdk.LuckyTokenClaimType.COMMON
-    // ) {
-    //   // amount * numbers < max
-    //   return {
-    //     tradeValue: redPacketOrder?.tradeValue,
-    //     eachValue:
-    //       (redPacketOrder?.tradeValue ?? 0) /
-    //       Number(redPacketOrder.numbers ?? 1),
-    //     // isEach: true,
-    //   };
-    // } else {
-    //
-    // }
   }, []);
-
   const checkBtnStatus = React.useCallback(() => {
     const _tradeData = calcNumberAndAmount();
     resetBtnInfo();
@@ -237,11 +229,14 @@ export const useCreateRedPacket = <
         return;
       } else {
         disableBtn();
-        if (isExceedBalance && feeToken.tokenId === tradeToken.tokenId) {
+        if (isExceedBalance && tradeValue.gt(balance)) {
+          setLabelAndParams("labelRedPacketsInsufficient", {
+            symbol: tradeToken.symbol as string,
+          });
+        } else if (isExceedBalance && feeToken.tokenId === tradeToken.tokenId) {
           setLabelAndParams("labelReserveFee", {
             symbol: tradeToken.symbol as string,
           });
-        } else if (isExceedBalance) {
         } else if (tooSmall) {
           if (tradeValue.lt(tradeToken.luckyTokenAmounts.minimum)) {
             setLabelAndParams("labelRedPacketsMin", {
@@ -300,10 +295,6 @@ export const useCreateRedPacket = <
   }, [
     chargeFeeTokenList,
     isFeeNotEnough.isFeeNotEnough,
-    // redPacketOrder?.type,
-    // redPacketOrder?.type?.scope,
-    // redPacketOrder?.type?.partition,
-    // redPacketOrder?.type?.mode,
     redPacketOrder?.numbers,
     redPacketOrder.balance,
     redPacketOrder.belong,
@@ -321,7 +312,6 @@ export const useCreateRedPacket = <
         if (
           connectProvides.usedWeb3 &&
           LoopringAPI.luckTokenAPI &&
-          window.rampInstance &&
           isAccActivated()
         ) {
           let isHWAddr = checkHWAddr(account.accAddress);
@@ -347,7 +337,7 @@ export const useCreateRedPacket = <
             }
           );
 
-          myLog("submitInternalTransfer:", response);
+          myLog("submit sendLuckTokenSend:", response);
           if (
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
@@ -423,23 +413,20 @@ export const useCreateRedPacket = <
                   : e ?? {}),
               },
             });
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_Failed,
-            });
 
             break;
         }
       }
     },
     [
-      // account,
-      // chainId,
-      // checkHWAddr,
-      // resetTransferRampData,
-      // setShowAccount,
-      // updateHW,
-      // updateTransferRampData,
+      account,
+      checkHWAddr,
+      chainId,
+      setShowAccount,
+      redPacketOrder.belong,
+      checkFeeIsEnough,
+      resetDefault,
+      updateHW,
     ]
   );
   React.useEffect(() => {
@@ -453,19 +440,27 @@ export const useCreateRedPacket = <
     };
   }, [match?.params?.item]);
   const onCreateRedPacketClick = React.useCallback(
-    async (redPacketOrder, isFirstTime: boolean = true) => {
+    async (_redPacketOrder, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
-
+      const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
+      const _tradeData = calcNumberAndAmount();
       if (
         readyState === AccountStatus.ACTIVATED &&
-        tokenMap &&
         LoopringAPI.userAPI &&
+        tokenMap &&
         exchangeInfo &&
-        connectProvides.usedWeb3 &&
-        redPacketOrder.address !== "*" &&
-        redPacketOrder?.fee &&
-        redPacketOrder?.fee.belong &&
+        chargeFeeTokenList.length &&
+        !isFeeNotEnough.isFeeNotEnough &&
+        redPacketOrder.belong &&
+        tokenMap[redPacketOrder.belong] &&
+        redPacketOrder.fee &&
+        redPacketOrder.fee.belong &&
         redPacketOrder.fee?.__raw__ &&
+        redPacketOrder.numbers &&
+        redPacketOrder.numbers > 0 &&
+        _tradeData.tradeValue &&
+        redPacketOrder.type &&
+        redPacketOrder.validSince &&
         eddsaKey?.sk
       ) {
         try {
@@ -473,38 +468,34 @@ export const useCreateRedPacket = <
             isShow: true,
             step: AccountStep.RedPacketSend_WaitForAuth,
           });
-
-          const token = tokenMap[redPacketOrder.belong as string];
+          const tradeToken = tokenMap[redPacketOrder.belong];
           const feeToken = tokenMap[redPacketOrder.fee.belong];
           const feeRaw =
             redPacketOrder.fee.feeRaw ??
             redPacketOrder.fee.__raw__?.feeRaw ??
             0;
           const fee = sdk.toBig(feeRaw);
-
           const tradeValue = sdk
-            .toBig(redPacketOrder.tradeValue ?? 0)
-            .times("1e" + token.decimals);
+            .toBig(_tradeData.tradeValue ?? 0)
+            .times("1e" + tradeToken.decimals);
 
-          // const transferVol = finalVol.toFixed(0, 0);
-
-          const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+          const storageId = await LoopringAPI.userAPI.getNextStorageId(
             {
               accountId,
               sellTokenId: Number(feeToken.tokenId),
             },
             apiKey
           );
-          const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
+          const { broker } = await LoopringAPI.userAPI.getAvailableBroker({
             type: 1,
           });
-
+          myLog("memo", redPacketOrder.memo);
           const req: sdk.LuckyTokenItemForSendV3 = {
             type: redPacketOrder.type,
             numbers: redPacketOrder.numbers,
-            memo: redPacketOrder.memo,
-            signerFlag: redPacketOrder.signerFlag,
-            templateID: redPacketOrder.templateID,
+            memo: redPacketOrder.memo ?? "",
+            signerFlag: redPacketOrder.signerFlag ?? 0,
+            templateID: 0,
             validSince: Math.round(redPacketOrder.validSince / 1000),
             validUntil: getTimestampDaysLater(DAYS),
             luckyToken: {
@@ -512,19 +503,15 @@ export const useCreateRedPacket = <
               payerAddr: accAddress,
               payerId: accountId,
               payeeAddr: broker,
-              storageId: storageId.offchainId,
+              storageId: storageId?.offchainId,
               token: {
-                tokenId: token.tokenId,
+                tokenId: tradeToken.tokenId,
                 volume: tradeValue.toFixed(),
               },
               maxFee: {
                 tokenId: feeToken.tokenId,
                 volume: fee.toFixed(), // TEST: fee.toString(),
               },
-              // token: {
-              //   tokenId: feeToken.tokenId,
-              //   volume: fee.toFixed(), // TEST: fee.toString(),
-              // },
               validUntil: getTimestampDaysLater(DAYS),
             } as sdk.OriginTransferRequestV3,
           };
@@ -593,6 +580,16 @@ export const useCreateRedPacket = <
       return [undefined, undefined];
     }
   }, [redPacketOrder?.belong, tokenMap]);
+  const retryBtn = React.useCallback(
+    (isHardwareRetry: boolean = false) => {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.RedPacketSend_WaitForAuth,
+      });
+      onCreateRedPacketClick({}, isHardwareRetry);
+    },
+    [processRequest, setShowAccount]
+  );
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
     type: "TOKEN",
     chargeFeeTokenList,
@@ -613,5 +610,5 @@ export const useCreateRedPacket = <
     handlePanelEvent,
   } as any;
 
-  return { createRedPacketProps };
+  return { createRedPacketProps, retryBtn };
 };

@@ -66,7 +66,6 @@ export const useNFTMintAdvance = <
     nftMintAdvanceValue,
     updateNFTMintAdvanceData,
     resetNFTMintAdvanceData,
-    a,
   } = useModalData();
   const {
     btnStatus,

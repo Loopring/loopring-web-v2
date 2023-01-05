@@ -138,6 +138,7 @@ import {
   useActiveAccount,
   useCheckActiveStatus,
   useCollectionAdvanceMeta,
+  useCreateRedPacket,
   useExportAccount,
   useForceWithdraw,
   useModalData,
@@ -159,6 +160,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
 import { ImportRedPacket } from "./components/QRCodeScanner";
 import { useClaimConfirm } from "../../hooks/useractions/useClaimConfirm";
+import { useGetAssets } from "@loopring-web/webapp/src/pages/AssetPage/AssetPanel/hook";
 
 export function useAccountModalForUI({
   t,
@@ -176,6 +178,8 @@ export function useAccountModalForUI({
 }) {
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
+  const { assetsRawData } = useGetAssets();
+
   const { updateWalletLayer2 } = useWalletLayer2();
   const { processRequestRampTransfer } = useRampTransPost();
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
@@ -220,6 +224,10 @@ export function useAccountModalForUI({
   } = useToast();
 
   const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance();
+  const { retryBtn: creatRedPacketRetryBtn } = useCreateRedPacket({
+    assetsRawData,
+  });
+
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({
     setCollectionToastOpen,
   });
@@ -1153,15 +1161,6 @@ export function useAccountModalForUI({
                 } else {
                   history.push("/nft/mintNFTAdvance");
                 }
-
-                // mintService.emptyData()
-                // setShowDeposit({
-                //   isShow: true,
-                //   symbol:
-                //     (rest as any)?.symbol ??
-                //     isShowAccount?.info?.symbol ??
-                //     "LRC",
-                // });
               },
             }}
             symbol={isShowAccount.info?.name}
@@ -1184,15 +1183,10 @@ export function useAccountModalForUI({
       [AccountStep.RedPacketSend_WaitForAuth]: {
         view: (
           <RedPacketSend_WaitForAuth
-            symbol={nftDeployValue.name}
-            value={nftDeployValue.tradeValue}
-            chainInfos={chainInfos}
-            updateDepositHash={updateDepositHash}
             providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
               t,
             }}
           />
@@ -1208,7 +1202,7 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: "labelRetry",
               callback: () => {
-                nftDeployProps.onNFTDeployClick(nftDeployValue as any);
+                creatRedPacketRetryBtn(true);
               },
             }}
             {...{
@@ -1223,13 +1217,27 @@ export function useAccountModalForUI({
           setShowAccount({ isShow: false });
         },
       },
+
       [AccountStep.RedPacketSend_In_Progress]: {
         view: (
           <RedPacketSend_In_Progress
+            {...{
+              ...rest,
+              account,
+              ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+      },
+
+      [AccountStep.RedPacketSend_User_Denied]: {
+        view: (
+          <RedPacketSend_User_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: "labelRetry",
               callback: () => {
-                nftDeployProps.onNFTDeployClick(nftDeployValue as any, false);
+                creatRedPacketRetryBtn();
               },
             }}
             {...{
@@ -1241,18 +1249,7 @@ export function useAccountModalForUI({
           />
         ),
       },
-      [AccountStep.RedPacketSend_User_Denied]: {
-        view: (
-          <RedPacketSend_User_Denied
-            {...{
-              ...rest,
-              account,
-              ...nftDeployValue,
-              t,
-            }}
-          />
-        ),
-      },
+
       [AccountStep.RedPacketSend_Failed]: {
         view: (
           <RedPacketSend_Failed
@@ -1270,6 +1267,7 @@ export function useAccountModalForUI({
           setShowAccount({ isShow: false });
         },
       },
+
       [AccountStep.RedPacketSend_Success]: {
         view: (
           <RedPacketSend_Success
@@ -2759,6 +2757,7 @@ export function useAccountModalForUI({
     nftDeployValue,
     setShowAccount,
     setShowDeposit,
+    creatRedPacketRetryBtn,
     nftMintAdvanceRetryBtn,
     nftDeployProps,
     forceWithdrawRetry,
