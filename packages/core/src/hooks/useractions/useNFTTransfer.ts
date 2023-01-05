@@ -582,7 +582,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     if (realAddr !== "" && isActiveAccount === false) {
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
-        requestType: "UPDATE_ACCOUNT_BY_NEW",
+        requestType: "TRANSFER_ACTIVE",
       });
     }
   }, [isActiveAccount, realAddr]);

@@ -556,7 +556,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     if (realAddr !== "" && isActiveAccount === false) {
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
-        requestType: "UPDATE_ACCOUNT_BY_NEW",
+        requestType: "TRANSFER_ACTIVE",
       });
     }
   }, [isActiveAccount, realAddr]);

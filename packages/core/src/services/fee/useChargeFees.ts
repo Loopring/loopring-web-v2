@@ -39,7 +39,8 @@ export function useChargeFees({
   requestType:
     | sdk.OffchainFeeReqType
     | sdk.OffchainNFTFeeReqType
-    | "UPDATE_ACCOUNT_BY_NEW";
+    | "UPDATE_ACCOUNT_BY_NEW"
+    | "TRANSFER_ACTIVE";
   amount?: number;
   intervalTime?: number;
   updateData?:
@@ -54,7 +55,8 @@ export function useChargeFees({
         requestType:
           | sdk.OffchainFeeReqType
           | sdk.OffchainNFTFeeReqType
-          | "UPDATE_ACCOUNT_BY_NEW";
+          | "UPDATE_ACCOUNT_BY_NEW"
+          | "TRANSFER_ACTIVE";
         [key: string]: any;
       }) => void);
   isActiveAccount?: boolean;
@@ -201,7 +203,7 @@ export function useChargeFees({
                 : undefined,
           };
           let fees: any;
-          if (isActiveAccount) {
+          if (isActiveAccount && requestType !== undefined) {
             const response = await LoopringAPI.globalAPI.getActiveFeeInfo({
               accountId:
                 account._accountIdNotActive &&
@@ -502,14 +504,15 @@ export function useChargeFees({
     }
     myLog("tokenAddress", tokenAddress, requestType, account.readyState);
     if (
-      (isActiveAccount && (requestType as any) === "UPDATE_ACCOUNT_BY_NEW") ||
-      // &&
-      // [
-      //   AccountStatus.NO_ACCOUNT,
-      //   AccountStatus.DEPOSITING,
-      //   AccountStatus.NOT_ACTIVE,
-      //   AccountStatus.LOCKED,
-      // ].includes(account.readyState as any))
+      (isActiveAccount &&
+        ((requestType === "UPDATE_ACCOUNT_BY_NEW" &&
+          [
+            AccountStatus.NO_ACCOUNT,
+            AccountStatus.DEPOSITING,
+            AccountStatus.NOT_ACTIVE,
+            AccountStatus.LOCKED,
+          ].includes(account.readyState as any)) ||
+          requestType === "TRANSFER_ACTIVE")) ||
       (!isActiveAccount &&
         walletLayer2Status === "UNSET" &&
         AccountStatus.ACTIVATED === account.readyState &&
