@@ -4,6 +4,7 @@ import { LoopringAPI } from "../../api_wrapper";
 import { Account, BANXA_URLS, myLog } from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
+import { useHistory } from "react-router-dom";
 
 export enum BalanceReason {
   Balance = 0,
@@ -180,7 +181,7 @@ export const banxaService = {
           query: "",
           payload: {
             blockchain: "LRC",
-            iframe_domain: BANXA_URLS[chainId].replace(/http(s)?:\/\//, ""),
+            iframe_domain: window.location.href.replace(/http(s)?:\/\//, ""), //: BANXA_URLS[chainId].replace(/http(s)?:\/\//, ""),
             source: "USDT",
             target: "AUD",
             refund_address: account.accAddress,
