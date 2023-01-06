@@ -254,17 +254,17 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     resetRedPacketOrder(state) {
       state.lastStep = LAST_STEP.default;
-      state.redPacketOrder = {...initialRedPacketState};
+      state.redPacketOrder = { ...initialRedPacketState };
     },
     resetClaimData(state) {
       state.lastStep = LAST_STEP.default;
-      state.claimValue = {...initialClaimState};
+      state.claimValue = { ...initialClaimState };
     },
     updateActiveAccountData(
       state,
       action: PayloadAction<Partial<ActiveAccountData>>
     ) {
-      const {chargeFeeList, walletLayer2, isFeeNotEnough, ...rest} =
+      const { chargeFeeList, walletLayer2, isFeeNotEnough, ...rest } =
         action.payload;
       state.lastStep = LAST_STEP.default;
       if (chargeFeeList) {
@@ -610,7 +610,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     updateClaimData(state, action: PayloadAction<ClaimData>) {
       state.lastStep = LAST_STEP.claim;
-      const {balance, tradeValue, belong, ...rest} = action.payload;
+      const { balance, tradeValue, belong, ...rest } = action.payload;
       state.claimValue = {
         ...state.redPacketOrder,
         balance:
