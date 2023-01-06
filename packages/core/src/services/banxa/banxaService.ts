@@ -4,74 +4,11 @@ import { LoopringAPI } from "../../api_wrapper";
 import { Account, BANXA_URLS, myLog } from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
-import { useHistory } from "react-router-dom";
 
 export enum BalanceReason {
   Balance = 0,
   FeeAndBalance = 1,
 }
-// export const mockReturn: { order: BanxaOrder } = {
-//   order: {
-//     id: "dd734aec66eb781ecc7f7bb01274ec63",
-//     account_id: "324a77f69fc5797c2afbe67efefddbba",
-//     account_reference: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
-//     order_type: "CRYPTO-SELL",
-//     payment_type: null,
-//     ref: null,
-//     fiat_code: "AUD",
-//     fiat_amount: 0,
-//     coin_code: "USDC",
-//     coin_amount: 0,
-//     wallet_address: null,
-//     wallet_address_tag: null,
-//     fee: null,
-//     fee_tax: null,
-//     payment_fee: null,
-//     payment_fee_tax: null,
-//     commission: null,
-//     tx_hash: null,
-//     tx_confirms: 0,
-//     created_date: "30-Nov-2022",
-//     created_at: "30-Nov-2022 17:48:25",
-//     status: "pendingPayment",
-//     completed_at: null,
-//     merchant_fee: null,
-//     merchant_commission: null,
-//     meta_data: null,
-//     blockchain: { id: 30, code: "LRC", description: "Loopring " },
-//   },
-// };
-// export const mockAfterKYCReturn: { order: BanxaOrder } = {
-//   order: {
-//     id: "dd734aec66eb781ecc7f7bb01274ec63",
-//     account_id: "324a77f69fc5797c2afbe67efefddbba",
-//     account_reference: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
-//     order_type: "CRYPTO-SELL",
-//     payment_type: "DIRECTCREDIT",
-//     ref: 111904,
-//     fiat_code: "AUD",
-//     fiat_amount: 73.7,
-//     coin_code: "USDT",
-//     coin_amount: 49.99,
-//     wallet_address: "0x35405E1349658BcA12810d0f879Bf6c5d89B512C",
-//     wallet_address_tag: null,
-//     fee: 0,
-//     fee_tax: 0,
-//     payment_fee: 0,
-//     payment_fee_tax: 0,
-//     commission: 0,
-//     tx_hash: null,
-//     tx_confirms: 0,
-//     created_date: "30-Nov-2022",
-//     created_at: "30-Nov-2022 17:51:50",
-//     status: "pendingPayment",
-//     completed_at: null,
-//     merchant_fee: 0,
-//     merchant_commission: 0,
-//     meta_data: null,
-//     blockchain: { id: 30, code: "LRC", description: "Loopring " },
-//   },
-// };
 export enum BanxaCheck {
   CheckOrderStatus = 0,
   OrderEnd = 1,
@@ -86,18 +23,6 @@ export enum OrderENDReason {
   BanxaNotReady,
   CreateOrderFailed = 4,
 }
-// export enum IPFSCommands {
-//   ErrorGetIpfs = "ErrorGetIpfs",
-//   IpfsResult = "IpfsResult",
-// }
-//
-// const subject = new Subject<{
-//   status: IPFSCommands;
-//   data?: {
-//     uniqueId?: string;
-//     [key: string]: any;
-//   };
-// }>();
 
 export const banxaApiCall = async ({
   url,
@@ -207,34 +132,7 @@ export const banxaService = {
           reason: OrderENDReason.CreateOrderFailed,
           data: (e as any)?.message,
         });
-
-        // subject.next({
-        //   status: BanxaCheck.o,
-        //   data: data,
-        // });
       }
-      //let { checkout_url, orderId } =
-
-      // .then((res: any) => {
-      //
-      // })
-      // .finally(() => {
-      //   // subject.next({
-      //   //   status: BanxaCheck.CheckOrderStatus,
-      //   //   data: {
-      //   //     ...res,
-      //   //     ...mockAfterKYCReturn,
-      //   //   },
-      //   // });
-      // })
-      // .catch((_res: any) => {
-      //   subject.next({
-      //     status: BanxaCheck.CheckOrderStatus,
-      //     data: {
-      //       ...mockAfterKYCReturn,
-      //     },
-      //   });
-      // });
     }
   },
   KYCDone: () => {
@@ -253,9 +151,7 @@ export const banxaService = {
       },
     });
   },
-  orderDone: () => {
-    // banxaService.banxaEnd({ reason: OrderENDReason.Done, data: "" });
-  },
+  orderDone: () => {},
   orderExpired: () => {
     banxaService.banxaEnd({ reason: OrderENDReason.Expired, data: "" });
   },
@@ -274,161 +170,7 @@ export const banxaService = {
         data,
       },
     });
-
-    // const parentsNode: any =
-    //   window.document.querySelector("#iframeBanxaTarget");
-    // const items = parentsNode.getElementsByTagName("iframe");
-    // if (items && items[0]) {
-    //   parentsNode.removeChild(items[0]);
-    // }
-    // parentsNode.style.display = "none";
   },
-  banxaConfirm: () => {
-    // subject.next({
-    //   status: BanxaCheck.OrderEnd,
-    //   data: {
-    //     reason,
-    //     data,
-    //   },
-    // });
-  },
-  // sendError: (error: CustomError) => {
-  //   subject.next({
-  //     status: IPFSCommands.ErrorGetIpfs,
-  //     data: {
-  //       error: error,
-  //     },
-  //   });
-  // },
-  // addJSONStringify: async ({
-  //   ipfs,
-  //   str,
-  //   uniqueId,
-  // }: {
-  //   ipfs: IPFSHTTPClient;
-  //   str: string;
-  //   uniqueId: string;
-  // }) => {
-  //   if (ipfs) {
-  //     try {
-  //       const data = await ipfs.add(str); //callIpfs({ ipfs, cmd, opts });
-  //       subject.next({
-  //         status: IPFSCommands.IpfsResult,
-  //         data: { ...data, uniqueId },
-  //       });
-  //     } catch (error) {
-  //       subject.next({
-  //         status: IPFSCommands.ErrorGetIpfs,
-  //         data: {
-  //           uniqueId,
-  //           error: {
-  //             code: UIERROR_CODE.ADD_IPFS_ERROR,
-  //             ...(error as any),
-  //             uniqueId,
-  //           },
-  //         },
-  //       });
-  //     }
-  //   } else {
-  //     subject.next({
-  //       status: IPFSCommands.ErrorGetIpfs,
-  //       data: {
-  //         uniqueId,
-  //         error: {
-  //           code: UIERROR_CODE.NO_IPFS_INSTANCE,
-  //           message: "IPFSHTTPClient is undefined",
-  //         } as sdk.RESULT_INFO,
-  //       },
-  //     });
-  //   }
-  // },
-  // addFile: async ({
-  //   ipfs,
-  //   file,
-  //   uniqueId,
-  // }: {
-  //   ipfs: IPFSHTTPClient | undefined;
-  //   file: File;
-  //   uniqueId: string;
-  // }) => {
-  //   if (ipfs) {
-  //     try {
-  //       const data: AddResult = await ipfs
-  //         .add({ content: file.stream() })
-  //         .catch((e) => {
-  //           throw e;
-  //         });
-  //       subject.next({
-  //         status: IPFSCommands.IpfsResult,
-  //         data: { ...data, uniqueId, file },
-  //       });
-  //     } catch (error) {
-  //       subject.next({
-  //         status: IPFSCommands.ErrorGetIpfs,
-  //         data: {
-  //           error: {
-  //             code: UIERROR_CODE.ADD_IPFS_ERROR,
-  //             ...(error as any),
-  //           },
-  //           uniqueId,
-  //         },
-  //       });
-  //     }
-  //   } else {
-  //     subject.next({
-  //       status: IPFSCommands.ErrorGetIpfs,
-  //       data: {
-  //         uniqueId,
-  //         error: {
-  //           code: UIERROR_CODE.NO_IPFS_INSTANCE,
-  //           message: "IPFSHTTPClient is undefined",
-  //         },
-  //       },
-  //     });
-  //   }
-  // },
-  // addJSON: async ({
-  //   ipfs,
-  //   json,
-  //   uniqueId,
-  // }: {
-  //   ipfs: IPFSHTTPClient | undefined;
-  //   json: string;
-  //   uniqueId: string;
-  // }) => {
-  //   if (ipfs) {
-  //     try {
-  //       const data: AddResult = await ipfs.add(json); //callIpfs({ ipfs, cmd, opts });
-  //       subject.next({
-  //         status: IPFSCommands.IpfsResult,
-  //         data: { ...data, uniqueId },
-  //       });
-  //     } catch (error) {
-  //       subject.next({
-  //         status: IPFSCommands.ErrorGetIpfs,
-  //         data: {
-  //           error: {
-  //             code: UIERROR_CODE.ADD_IPFS_ERROR,
-  //             ...(error as any),
-  //           },
-  //           uniqueId,
-  //         },
-  //       });
-  //     }
-  //   } else {
-  //     subject.next({
-  //       status: IPFSCommands.ErrorGetIpfs,
-  //       data: {
-  //         uniqueId,
-  //         error: {
-  //           code: UIERROR_CODE.NO_IPFS_INSTANCE,
-  //           message: "IPFSHTTPClient is undefined",
-  //         },
-  //       },
-  //     });
-  //   }
-  // },
-
-  // clearMessages: () => subject.next(),
+  banxaConfirm: () => {},
   onSocket: () => subject.asObservable(),
 };

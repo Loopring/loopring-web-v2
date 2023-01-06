@@ -160,8 +160,6 @@ export const useVendor = () => {
   const vendorListSell: VendorItem[] = legalShow
     ? [
         // {
-        //   // key: VendorProviders.Ramp,
-        //   // svgIcon: "RampIcon",
         //   ...VendorList.Ramp,
         //   handleSelect: () => {
         //     setShowAccount({ isShow: false });
