@@ -221,13 +221,6 @@ export const CreateRedPacketStepWrap = withTranslation()(
       }
     };
     const { isMobile } = useSettings();
-    myLog(
-      "CreateRedPacketStepWrap tradeData",
-      tradeData,
-      disabled,
-      walletMap,
-      coinMap
-    );
 
     return (
       <RedPacketBoxStyle
@@ -538,6 +531,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   handleOnDataChange({
                     numbers: undefined,
                     tradeValue: undefined,
+                    memo: "",
                   } as any);
                 }}
               >

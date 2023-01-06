@@ -4,7 +4,6 @@ import { LoopringAPI } from "../../api_wrapper";
 import { Account, BANXA_URLS, myLog } from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
-import { useHistory } from "react-router-dom";
 
 export enum BalanceReason {
   Balance = 0,
@@ -160,11 +159,6 @@ export const banxaService = {
         reason: OrderENDReason.BanxaNotReady,
         data: "Banxa SKD is not ready",
       });
-
-      // subject.next({
-      //   status: BanxaCheck.o,
-      //   data: data,
-      // });
     }
     // @ts-ignore
     const anchor: any = window.document.querySelector("#iframeBanxaTarget");
@@ -207,34 +201,7 @@ export const banxaService = {
           reason: OrderENDReason.CreateOrderFailed,
           data: (e as any)?.message,
         });
-
-        // subject.next({
-        //   status: BanxaCheck.o,
-        //   data: data,
-        // });
       }
-      //let { checkout_url, orderId } =
-
-      // .then((res: any) => {
-      //
-      // })
-      // .finally(() => {
-      //   // subject.next({
-      //   //   status: BanxaCheck.CheckOrderStatus,
-      //   //   data: {
-      //   //     ...res,
-      //   //     ...mockAfterKYCReturn,
-      //   //   },
-      //   // });
-      // })
-      // .catch((_res: any) => {
-      //   subject.next({
-      //     status: BanxaCheck.CheckOrderStatus,
-      //     data: {
-      //       ...mockAfterKYCReturn,
-      //     },
-      //   });
-      // });
     }
   },
   KYCDone: () => {
@@ -253,9 +220,7 @@ export const banxaService = {
       },
     });
   },
-  orderDone: () => {
-    // banxaService.banxaEnd({ reason: OrderENDReason.Done, data: "" });
-  },
+  orderDone: () => {},
   orderExpired: () => {
     banxaService.banxaEnd({ reason: OrderENDReason.Expired, data: "" });
   },
@@ -274,161 +239,7 @@ export const banxaService = {
         data,
       },
     });
-
-    // const parentsNode: any =
-    //   window.document.querySelector("#iframeBanxaTarget");
-    // const items = parentsNode.getElementsByTagName("iframe");
-    // if (items && items[0]) {
-    //   parentsNode.removeChild(items[0]);
-    // }
-    // parentsNode.style.display = "none";
   },
-  banxaConfirm: () => {
-    // subject.next({
-    //   status: BanxaCheck.OrderEnd,
-    //   data: {
-    //     reason,
-    //     data,
-    //   },
-    // });
-  },
-  // sendError: (error: CustomError) => {
-  //   subject.next({
-  //     status: IPFSCommands.ErrorGetIpfs,
-  //     data: {
-  //       error: error,
-  //     },
-  //   });
-  // },
-  // addJSONStringify: async ({
-  //   ipfs,
-  //   str,
-  //   uniqueId,
-  // }: {
-  //   ipfs: IPFSHTTPClient;
-  //   str: string;
-  //   uniqueId: string;
-  // }) => {
-  //   if (ipfs) {
-  //     try {
-  //       const data = await ipfs.add(str); //callIpfs({ ipfs, cmd, opts });
-  //       subject.next({
-  //         status: IPFSCommands.IpfsResult,
-  //         data: { ...data, uniqueId },
-  //       });
-  //     } catch (error) {
-  //       subject.next({
-  //         status: IPFSCommands.ErrorGetIpfs,
-  //         data: {
-  //           uniqueId,
-  //           error: {
-  //             code: UIERROR_CODE.ADD_IPFS_ERROR,
-  //             ...(error as any),
-  //             uniqueId,
-  //           },
-  //         },
-  //       });
-  //     }
-  //   } else {
-  //     subject.next({
-  //       status: IPFSCommands.ErrorGetIpfs,
-  //       data: {
-  //         uniqueId,
-  //         error: {
-  //           code: UIERROR_CODE.NO_IPFS_INSTANCE,
-  //           message: "IPFSHTTPClient is undefined",
-  //         } as sdk.RESULT_INFO,
-  //       },
-  //     });
-  //   }
-  // },
-  // addFile: async ({
-  //   ipfs,
-  //   file,
-  //   uniqueId,
-  // }: {
-  //   ipfs: IPFSHTTPClient | undefined;
-  //   file: File;
-  //   uniqueId: string;
-  // }) => {
-  //   if (ipfs) {
-  //     try {
-  //       const data: AddResult = await ipfs
-  //         .add({ content: file.stream() })
-  //         .catch((e) => {
-  //           throw e;
-  //         });
-  //       subject.next({
-  //         status: IPFSCommands.IpfsResult,
-  //         data: { ...data, uniqueId, file },
-  //       });
-  //     } catch (error) {
-  //       subject.next({
-  //         status: IPFSCommands.ErrorGetIpfs,
-  //         data: {
-  //           error: {
-  //             code: UIERROR_CODE.ADD_IPFS_ERROR,
-  //             ...(error as any),
-  //           },
-  //           uniqueId,
-  //         },
-  //       });
-  //     }
-  //   } else {
-  //     subject.next({
-  //       status: IPFSCommands.ErrorGetIpfs,
-  //       data: {
-  //         uniqueId,
-  //         error: {
-  //           code: UIERROR_CODE.NO_IPFS_INSTANCE,
-  //           message: "IPFSHTTPClient is undefined",
-  //         },
-  //       },
-  //     });
-  //   }
-  // },
-  // addJSON: async ({
-  //   ipfs,
-  //   json,
-  //   uniqueId,
-  // }: {
-  //   ipfs: IPFSHTTPClient | undefined;
-  //   json: string;
-  //   uniqueId: string;
-  // }) => {
-  //   if (ipfs) {
-  //     try {
-  //       const data: AddResult = await ipfs.add(json); //callIpfs({ ipfs, cmd, opts });
-  //       subject.next({
-  //         status: IPFSCommands.IpfsResult,
-  //         data: { ...data, uniqueId },
-  //       });
-  //     } catch (error) {
-  //       subject.next({
-  //         status: IPFSCommands.ErrorGetIpfs,
-  //         data: {
-  //           error: {
-  //             code: UIERROR_CODE.ADD_IPFS_ERROR,
-  //             ...(error as any),
-  //           },
-  //           uniqueId,
-  //         },
-  //       });
-  //     }
-  //   } else {
-  //     subject.next({
-  //       status: IPFSCommands.ErrorGetIpfs,
-  //       data: {
-  //         uniqueId,
-  //         error: {
-  //           code: UIERROR_CODE.NO_IPFS_INSTANCE,
-  //           message: "IPFSHTTPClient is undefined",
-  //         },
-  //       },
-  //     });
-  //   }
-  // },
-
-  // clearMessages: () => subject.next(),
+  banxaConfirm: () => {},
   onSocket: () => subject.asObservable(),
 };

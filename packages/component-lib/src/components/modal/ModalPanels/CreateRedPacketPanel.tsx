@@ -93,7 +93,6 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
       });
       return clonedWalletMap;
     }, [walletMap]);
-    myLog("createRedPacketProps", tradeData?.type);
     const [selectedType, setSelectType] = React.useState(LuckyRedPacketList[0]);
     React.useEffect(() => {
       setSelectType(() => {
