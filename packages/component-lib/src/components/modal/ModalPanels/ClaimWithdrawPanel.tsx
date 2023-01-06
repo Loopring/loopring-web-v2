@@ -9,7 +9,7 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
   withRef: true,
 })(
   <T extends IBData<I>, I>({
-    ...rest
+    ..._rest
   }: ClaimProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     return <Box></Box>;
   }

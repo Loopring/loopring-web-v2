@@ -86,7 +86,6 @@ export const useCreateRedPacket = <
     requestType: sdk.OffchainFeeReqType.TRANSFER,
     updateData: ({ fee }) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      debugger;
       updateRedPacketOrder({ ...redPacketOrder, fee });
     },
   });
@@ -202,7 +201,9 @@ export const useCreateRedPacket = <
       redPacketOrder.fee.belong &&
       redPacketOrder.numbers &&
       redPacketOrder.numbers > 0 &&
-      _tradeData.tradeValue
+      _tradeData.tradeValue &&
+      redPacketOrder.memo &&
+      redPacketOrder.memo?.trim().length > 0
     ) {
       const tradeToken = tokenMap[redPacketOrder.belong];
       const feeToken = tokenMap[redPacketOrder.fee.belong];
@@ -288,6 +289,7 @@ export const useCreateRedPacket = <
     redPacketOrder.fee,
     redPacketOrder.tradeValue,
     redPacketOrder.numbers,
+    redPacketOrder.memo,
   ]);
 
   React.useEffect(() => {
@@ -300,6 +302,7 @@ export const useCreateRedPacket = <
     redPacketOrder.belong,
     redPacketOrder.fee,
     redPacketOrder.tradeValue,
+    redPacketOrder.memo,
   ]);
   const processRequest = React.useCallback(
     async (
@@ -307,6 +310,7 @@ export const useCreateRedPacket = <
       isNotHardwareWallet: boolean
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
+      const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
 
       try {
         if (
@@ -318,7 +322,10 @@ export const useCreateRedPacket = <
           if (!isHWAddr && !isNotHardwareWallet) {
             isHWAddr = true;
           }
-          updateRedPacketOrder({ __request__: request } as any);
+          updateRedPacketOrder({
+            ...redPacketOrder,
+            __request__: request,
+          } as any);
           const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSend(
             {
               request,
@@ -440,7 +447,7 @@ export const useCreateRedPacket = <
     };
   }, [isShow]);
   const onCreateRedPacketClick = React.useCallback(
-    async (_redPacketOrder, isFirstTime: boolean = true) => {
+    async (_redPacketOrder, isHardwareRetry: boolean = false) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
       const _tradeData = calcNumberAndAmount();
@@ -461,6 +468,8 @@ export const useCreateRedPacket = <
         _tradeData.tradeValue &&
         redPacketOrder.type &&
         redPacketOrder.validSince &&
+        redPacketOrder.memo &&
+        redPacketOrder.memo?.trim().length > 0 &&
         eddsaKey?.sk
       ) {
         try {
@@ -494,8 +503,8 @@ export const useCreateRedPacket = <
             type: redPacketOrder.type,
             numbers: redPacketOrder.numbers,
             memo: redPacketOrder.memo ?? "",
-            signerFlag: redPacketOrder.signerFlag ?? 0,
-            templateID: 0,
+            signerFlag: false as any,
+            templateId: 0,
             validSince: Math.round(redPacketOrder.validSince / 1000),
             validUntil: getTimestampDaysLater(DAYS),
             luckyToken: {
@@ -504,21 +513,17 @@ export const useCreateRedPacket = <
               payerId: accountId,
               payeeAddr: broker,
               storageId: storageId?.offchainId,
-              token: {
-                tokenId: tradeToken.tokenId,
-                volume: tradeValue.toFixed(),
-              },
-              maxFee: {
-                tokenId: feeToken.tokenId,
-                volume: fee.toFixed(), // TEST: fee.toString(),
-              },
+              token: tradeToken.tokenId,
+              amount: tradeValue.toFixed(),
+              feeToken: feeToken.tokenId,
+              maxFeeAmount: fee.toFixed(),
               validUntil: getTimestampDaysLater(DAYS),
-            } as sdk.OriginTransferRequestV3,
+            } as unknown as sdk.OriginTransfer3RequestV3,
           };
 
           myLog("transfer req:", req);
 
-          processRequest(req, isFirstTime);
+          processRequest(req, !isHardwareRetry);
         } catch (e: any) {
           // transfer failed
           setShowAccount({

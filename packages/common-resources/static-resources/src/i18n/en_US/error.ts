@@ -53,4 +53,5 @@ export default {
   errorPrivateKey: "Signature Wrong private key",
   errorNoResponse: "No response!",
   errorMinError: "Minimum of {{value}}",
+  errorLengthLimit: "Length is limit",
 };

@@ -226,6 +226,7 @@ export function useAccountModalForUI({
   const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance();
   const { retryBtn: creatRedPacketRetryBtn } = useCreateRedPacket({
     assetsRawData,
+    isShow: false,
   });
 
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({

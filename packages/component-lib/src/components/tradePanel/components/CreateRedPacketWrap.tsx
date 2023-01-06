@@ -13,7 +13,7 @@ import {
   Button,
   DateTimePicker,
   InputCoin,
-  TextareaAutosizeStyled,
+  // TextareaAutosizeStyled,
   // TextField,
 } from "../../basic-lib";
 import {
@@ -47,6 +47,7 @@ import { RedPacketOrderData } from "@loopring-web/core";
 import { BtnMain } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import moment, { Moment } from "moment";
+import { TextareaWithCount } from "../../basic-lib/form/input/TextareaWithCount";
 
 const RedPacketBoxStyle = styled(Box)`
   .MuiFormGroup-root {
@@ -332,13 +333,14 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   alignItems={"center"}
                   className={"main-label"}
                   color={"var(--color-text-third)"}
+                  marginBottom={1 / 2}
                 >
                   <Trans i18nKey={"labelRedPacketMemo"}>Memo</Trans>
                 </Typography>
               </Tooltip>
             </FormLabel>
-            <TextareaAutosizeStyled
-              aria-label="Redpacket Description"
+            <TextareaWithCount
+              label="Redpacket Description"
               maxRows={5}
               minRows={5}
               disabled={disabled}
@@ -346,6 +348,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 overflowX: "hidden",
                 resize: "vertical",
               }}
+              // totalCount={25}
               maxLength={25}
               onChange={(event) =>
                 handleOnDataChange({
