@@ -36,9 +36,12 @@ import {
   resetOffBanxaData,
   resetRedPacketOrder,
   updateRedPacketOrder,
+  updateClaimData,
+  resetClaimData,
 } from "./reducer";
 import {
   ActiveAccountData,
+  ClaimData,
   DepositData,
   ForceWithdrawData,
   LAST_STEP,
@@ -164,6 +167,10 @@ export function useModalData(): {
   redPacketOrder: RedPacketOrderData<any>;
   updateRedPacketOrder: (offRamp: RedPacketOrderData<any>) => void;
   resetRedPacketOrder: () => void;
+
+  claimValue: Partial<ClaimData> | undefined;
+  updateClaimData: (offBanxa: Partial<ClaimData>) => void;
+  resetClaimData: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData
@@ -310,6 +317,9 @@ export function useModalData(): {
     updateRedPacketOrder: (redPacketOrder: RedPacketOrderData<any>) => {
       dispatch(updateRedPacketOrder(redPacketOrder));
     },
+    updateClaimData: (data: Partial<ClaimData>) => {
+      dispatch(updateClaimData(data));
+    },
     resetForceWithdrawData: React.useCallback(() => {
       dispatch(resetForceWithdrawData(undefined));
     }, [dispatch]),
@@ -366,6 +376,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetRedPacketOrder: React.useCallback(() => {
       dispatch(resetRedPacketOrder(undefined));
+    }, [dispatch]),
+    resetClaimData: React.useCallback(() => {
+      dispatch(resetClaimData(undefined));
     }, [dispatch]),
   };
 }

@@ -40,6 +40,16 @@ export type TransferData = {
   __request__: sdk.OriginTransferRequestV3 | undefined;
 };
 
+export type ClaimData = {
+  belong: string | undefined;
+  tradeValue: number | undefined;
+  balance: number | undefined;
+  address: string | undefined;
+  memo: string | undefined;
+  fee: FeeInfo | undefined;
+  __request__: sdk.OriginLuckTokenWithdrawsRequestV3 | undefined;
+};
+
 export type DepositData = {
   belong: string | undefined;
   tradeValue: number | undefined;
@@ -73,7 +83,7 @@ export type NFT_MINT_VALUE<I> = {
 export type RedPacketOrderData<I> = IBData<I> & {
   fee: FeeInfo | undefined;
   __request__: any;
-} & Partial<sdk.LuckyTokenItemForSend>;
+} & Partial<sdk.LuckyTokenItemForSendV3>;
 
 export type ModalDataStatus = {
   lastStep: LAST_STEP;
@@ -106,6 +116,7 @@ export type ModalDataStatus = {
       }>
     | undefined;
   redPacketOrder: RedPacketOrderData<any>;
+  claimValue: ClaimData;
 };
 
 export enum LAST_STEP {
@@ -124,5 +135,6 @@ export enum LAST_STEP {
   offBanxa = "offBanxa",
   offRampTrans = "offRampTrans",
   redPacketSend = "redPacketSend",
+  claim = "claim",
   default = "default",
 }
