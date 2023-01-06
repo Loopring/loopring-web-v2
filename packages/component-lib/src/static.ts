@@ -2,6 +2,7 @@ import {
   Account,
   AccountStatus,
   AmmInData,
+  BanxaOrder,
   CoinInfo,
   CoinMap,
   DualCalcData,
@@ -617,8 +618,7 @@ export const REDPACKETMOCK: LuckyTokenItemForReceive = {
   templateNo: 0,
   createdAt: 1662769827,
 };
-
-const LUCKTOKENLIST = [
+export const LUCKTOKENLIST = [
   {
     id: 117080,
     hash: "0x2635dc5a575d8b2972bfa60db73667b0eb236ec1314885f5a0b42e15165ca806",
@@ -698,3 +698,35 @@ const LUCKTOKENLIST = [
     isNft: false,
   },
 ];
+
+export const mockReturn: { order: BanxaOrder } = {
+  order: {
+    id: "dd734aec66eb781ecc7f7bb01274ec63",
+    account_id: "324a77f69fc5797c2afbe67efefddbba",
+    account_reference: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
+    order_type: "CRYPTO-SELL",
+    payment_type: null,
+    ref: null,
+    fiat_code: "AUD",
+    fiat_amount: 0,
+    coin_code: "USDC",
+    coin_amount: 0,
+    wallet_address: null,
+    wallet_address_tag: null,
+    fee: null,
+    fee_tax: null,
+    payment_fee: null,
+    payment_fee_tax: null,
+    commission: null,
+    tx_hash: null,
+    tx_confirms: 0,
+    created_date: "30-Nov-2022",
+    created_at: "30-Nov-2022 17:48:25",
+    status: "pendingPayment",
+    completed_at: null,
+    merchant_fee: null,
+    merchant_commission: null,
+    meta_data: null,
+    blockchain: { id: 30, code: "LRC", description: "Loopring " },
+  },
+};

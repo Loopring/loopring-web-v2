@@ -8,9 +8,7 @@ export function useRedPacketConfig(): RedPacketConfigStates & {
   updateRedPacketConfigs: (tickerKeys: Array<CoinKey<any>>) => void;
   statusUnset: () => void;
 } {
-  const redPacketConfigs: RedPacketConfigStates = useSelector(
-    (state: any) => state.redPacketConfigs
-  );
+  const redPacketConfigs = useSelector((state: any) => state.redPacketConfigs);
   const dispatch = useDispatch();
   return {
     ...redPacketConfigs,

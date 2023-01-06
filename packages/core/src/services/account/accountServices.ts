@@ -5,7 +5,7 @@ import {
 } from "@loopring-web/common-resources";
 
 import { Subject } from "rxjs";
-import { LoopringAPI, store } from "../../index";
+import { banxaService, LoopringAPI, OrderENDReason, store } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
 import _ from "lodash";
 import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
@@ -112,6 +112,10 @@ export const accountServices = {
     store.dispatch(setShowNFTMintAdvance({ isShow: false }));
     store.dispatch(setShowActiveAccount({ isShow: false }));
     store.dispatch(setShowExportAccount({ isShow: false }));
+    banxaService.banxaEnd({
+      reason: OrderENDReason.UserCancel,
+      data: { resource: "Account Locked" },
+    });
 
     resetLayer2Data();
     // await sleep(50)

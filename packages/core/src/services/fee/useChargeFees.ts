@@ -502,7 +502,7 @@ export function useChargeFees({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
       getFeeList.cancel();
     }
-    myLog("tokenAddress", tokenAddress, requestType, account.readyState);
+    // myLog("tokenAddress", tokenAddress, requestType, account.readyState);
     if (
       (isActiveAccount &&
         ((requestType === "UPDATE_ACCOUNT_BY_NEW" &&

@@ -88,7 +88,7 @@ export const NFTRedPacketSend_User_Denied = (props: PanelProps) => {
 export const NFTRedPacketSend_In_Progress = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t(" labelRedpacketSendInProgress"),
+    describe1: props.t("labelRedpacketSendInProgress"),
   };
   return <RedPacketBase {...propsPatch} {...props} />;
 };

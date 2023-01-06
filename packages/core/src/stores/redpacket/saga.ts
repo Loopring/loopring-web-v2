@@ -8,7 +8,7 @@ const getRedPacketConfigsApi = async (): Promise<{
   data: object | undefined;
   __timer__: NodeJS.Timer | -1;
 }> => {
-  let { __timer__ } = store.getState().redpacketConfigs.__timer__;
+  let { __timer__ } = store.getState().redPacketConfigs.__timer__;
   // let { redPacketConfigs } = store.getState().redpacketConfigs;
 
   if (LoopringAPI.luckTokenAPI) {

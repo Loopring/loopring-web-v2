@@ -43,6 +43,7 @@ import { DAYS } from "../../defs";
 import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import { useRedPacketConfig } from "../../stores/redpacket";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
@@ -69,6 +70,7 @@ export const useCreateRedPacket = <
       isShowAccount: { info },
     },
   } = useOpenModals();
+  const { redPacketConfigs } = useRedPacketConfig();
   const { redPacketOrder, resetRedPacketOrder, updateRedPacketOrder } =
     useModalData();
   const { account, status: accountStatus } = useAccount();
@@ -225,12 +227,20 @@ export const useCreateRedPacket = <
       const tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts.minimum);
       const tooLarge = tradeValue.gt(tradeToken.luckyTokenAmounts.maximum);
 
-      if (tradeValue && !isExceedBalance && !tooSmall && !tooLarge) {
+      if (
+        tradeValue &&
+        !isExceedBalance &&
+        !tooSmall &&
+        !tooLarge &&
+        redPacketConfigs?.luckTokenAgents
+      ) {
         enableBtn();
         return;
       } else {
         disableBtn();
-        if (isExceedBalance && tradeValue.gt(balance)) {
+        if (!redPacketConfigs?.luckTokenAgents) {
+          setLabelAndParams("labelReaPacketWaitingBlock", {});
+        } else if (isExceedBalance && tradeValue.gt(balance)) {
           setLabelAndParams("labelRedPacketsInsufficient", {
             symbol: tradeToken.symbol as string,
           });
@@ -290,6 +300,7 @@ export const useCreateRedPacket = <
     redPacketOrder.tradeValue,
     redPacketOrder.numbers,
     redPacketOrder.memo,
+    redPacketConfigs?.luckTokenAgents,
   ]);
 
   React.useEffect(() => {
@@ -303,6 +314,7 @@ export const useCreateRedPacket = <
     redPacketOrder.fee,
     redPacketOrder.tradeValue,
     redPacketOrder.memo,
+    redPacketConfigs?.luckTokenAgents,
   ]);
   const processRequest = React.useCallback(
     async (
@@ -467,8 +479,8 @@ export const useCreateRedPacket = <
         redPacketOrder.numbers > 0 &&
         _tradeData.tradeValue &&
         redPacketOrder.type &&
-        redPacketOrder.validSince &&
         redPacketOrder.memo &&
+        redPacketConfigs?.luckTokenAgents &&
         redPacketOrder.memo?.trim().length > 0 &&
         eddsaKey?.sk
       ) {
@@ -495,9 +507,9 @@ export const useCreateRedPacket = <
             },
             apiKey
           );
-          const { broker } = await LoopringAPI.userAPI.getAvailableBroker({
-            type: 1,
-          });
+          // const { broker } = await LoopringAPI.userAPI.getAvailableBroker({
+          //   type: 1,
+          // });
           myLog("memo", redPacketOrder.memo);
           const req: sdk.LuckyTokenItemForSendV3 = {
             type: redPacketOrder.type,
@@ -505,19 +517,23 @@ export const useCreateRedPacket = <
             memo: redPacketOrder.memo ?? "",
             signerFlag: false as any,
             templateId: 0,
-            validSince: Math.round(redPacketOrder.validSince / 1000),
-            validUntil: getTimestampDaysLater(DAYS),
+            validSince: Math.round(
+              (redPacketOrder.validSince ?? Date.now()) / 1000
+            ),
+            validUntil: getTimestampDaysLater(DAYS - 1),
             luckyToken: {
               exchange: exchangeInfo.exchangeAddress,
               payerAddr: accAddress,
               payerId: accountId,
-              payeeAddr: broker,
+              payeeAddr: Reflect.ownKeys(
+                redPacketConfigs.luckTokenAgents ?? {}
+              )[0],
               storageId: storageId?.offchainId,
               token: tradeToken.tokenId,
               amount: tradeValue.toFixed(),
               feeToken: feeToken.tokenId,
               maxFeeAmount: fee.toFixed(),
-              validUntil: getTimestampDaysLater(DAYS),
+              validUntil: getTimestampDaysLater(DAYS - 1),
             } as unknown as sdk.OriginTransfer3RequestV3,
           };
 
@@ -539,7 +555,14 @@ export const useCreateRedPacket = <
         return;
       }
     },
-    [account, tokenMap, exchangeInfo, setShowAccount, processRequest]
+    [
+      account,
+      tokenMap,
+      exchangeInfo,
+      setShowAccount,
+      processRequest,
+      redPacketConfigs?.luckTokenAgents,
+    ]
   );
 
   const handlePanelEvent = useCallback(

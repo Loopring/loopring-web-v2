@@ -141,7 +141,7 @@ const reducer = combineReducers({
   invest: investReducer,
   tokenMap: tokenMapSlice.reducer,
   tokenPrices: tokenPricesSlice.reducer,
-  redpacketConfigs: redpacketConfigsSlice.reducer,
+  redPacketConfigs: redpacketConfigsSlice.reducer,
   toggle: toggleSlice.reducer,
   walletLayer2: walletLayer2Slice.reducer,
   walletLayer2NFT: walletLayer2NFTSlice.reducer,

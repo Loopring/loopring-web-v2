@@ -1295,8 +1295,7 @@ export default {
     "Please confirm to send red packet {{value}} {{symbol}}.",
   labelRedpacketSendDenied:
     "You rejected to send {{value}} {{symbol}} red packet.",
-  labelRedpacketSendFailed: "Send red packet of {{value}} {{symbol}} failed!",
-  labelRedpacketSendSubmit: "Send red packet has been submitted. <1></1>",
+
   labelRedPacketRecordTitle: "My Red Packet Record",
   labelRedPacketReceived: "Received",
   labelRedPacketSend: "Send",
@@ -1322,6 +1321,10 @@ export default {
   labelClaimWithdrawFailed: "Claim has failed!",
   labelClaimWithdrawSubmit: "Claim has been submitted",
   labelClaimWithdrawToken: "Token Amount",
+  labelRedpacketSendSubmit: "Send red packet has been submitted. <1></1>",
+  labelRedpacketSendSuccess: "Redpacket Send Successful. <1></1>",
+  labelRedpacketSendFailed: "Send red packet of {{value}} {{symbol}} failed!",
+  labelRedpacketSendInProgress: "Processing...",
   labelRefreshRedPacket: "Refresh List",
   labelRedPacketSendCommonTitle: "Normal Red Packet",
   labelRedPacketSenRandomTitle: "Lucky Red Packet",
@@ -1343,6 +1346,7 @@ export default {
   labelRedPacketsSplitLuckyDetail:
     "Token amount for each red packet is randomized",
   labelReaPacketTitle: "Send Red Packet",
+  labelReaPacketWaitingBlock: "Block is not ready",
 
   // labelClaimWithdrawEnterToken: "Select Token",
 };
