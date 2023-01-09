@@ -582,12 +582,12 @@ export const RedPacketHistory = ({
 };
 
 export const RedPacketDetailStyled = styled(Box)`
-  border-radius: ${({theme}) => theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
   background-color: var(--color-box);
 ` as typeof Box;
 
 export const RedPacketDetail = () => {
-  return <RedPacketDetailStyled/>;
+  return <RedPacketDetailStyled />;
 };
 
 export type RedPacketTimeoutProps = RedPacketDefault & {
@@ -596,14 +596,14 @@ export type RedPacketTimeoutProps = RedPacketDefault & {
   viewDetail: () => void;
 };
 export const RedPacketTimeout = ({
-                                   type = "default",
-                                   size = "middle",
-                                   sender,
-                                   memo,
-                                   viewDetail,
-                                 }: RedPacketTimeoutProps) => {
-  const scale = RedPacketSize[ size ].height / 414;
-  const {t} = useTranslation("common");
+  type = "default",
+  size = "middle",
+  sender,
+  memo,
+  viewDetail,
+}: RedPacketTimeoutProps) => {
+  const scale = RedPacketSize[size].height / 414;
+  const { t } = useTranslation("common");
   return (
     <RedPacketBg
       sx={{
@@ -614,7 +614,7 @@ export const RedPacketTimeout = ({
     >
       <Box position={"absolute"} zIndex={100}>
         <RedPacketOpenWrapSVG
-          {...{...RedPacketCssColorConfig[ type ]}}
+          {...{ ...RedPacketCssColorConfig[type] }}
           height={"100%"}
           width={"100%"}
           type={type}
@@ -628,7 +628,7 @@ export const RedPacketTimeout = ({
         flexDirection={"column"}
         justifyContent={"stretch"}
         // alignItems={"s"}
-        height={RedPacketSize[ size ]}
+        height={RedPacketSize[size]}
       >
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
           <Typography
