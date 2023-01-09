@@ -15,7 +15,6 @@ import { useAccountModalForUI } from "./hook";
 import {
   Account,
   AssetsRawDataItem,
-  FeeInfo,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 // import { Box, Modal as MuiModal } from "@mui/material";

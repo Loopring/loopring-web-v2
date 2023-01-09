@@ -1351,6 +1351,11 @@ export default {
   labelRelayRedPacket: "Relay Red Packet",
   labelLuckyRedPacket: "Lucky Red Packet",
   labelLuckyRedPacketStart: "Starts in: {{}}",
+  labelLuckyRedPacketTimeout: "Red packet has been \n taken out",
+  labelLuckyRedPacketDetail: "View red packet details",
+  labelRedpacketOpenInProgress: "Processing...",
+  labelRedpacketOpenFailed: "Open red packet failed!",
+  labelReaPacketOpen: "Open Red Packet",
 
   // labelClaimWithdrawEnterToken: "Select Token",
 };

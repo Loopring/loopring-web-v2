@@ -17,6 +17,7 @@ import {
   RedPacketClock,
   RedPacketOpen,
   RedPacketQRCode,
+  RedPacketTimeout,
   TradeTitle,
   VipPanel,
 } from "./";
@@ -25,7 +26,6 @@ import { MarketBlock } from "./MarketBlock";
 // import { PoolDetailTitle } from './PoolDetailTitle';
 import { AmmCard } from "./AmmCard";
 import React from "react";
-import QRCode from "qrcode-svg";
 
 const Style = styled.div`
   background: var(--color-global-bg);
@@ -327,8 +327,8 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
               textAddress={"0x01....0101"}
               textContent={"back test back test back test back test"}
               amountStr={"1,000 LRC"}
-              textSendBy={"Luck RedPacket"}
-              textType={"Luck RedPacket"}
+              textSendBy={"Luck Red Packet"}
+              textType={"Luck Red Packet"}
               textShared={"shared"}
               textNo={"1231414"}
               url={url}
@@ -343,9 +343,18 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
               textContent={"back test back test back test back test"}
               amountStr={"1,000 LRC"}
               textSendBy={""}
-              textType={"Luck RedPacket"}
+              textType={"Relay Red Packet"}
               textShared={"shared"}
               textNo={"1231414"}
+            />
+          </Grid>
+          <Grid item>
+            <RedPacketTimeout
+              sender={"0x01....0101"}
+              memo={
+                "back test back test back test back test  back test back test"
+              }
+              viewDetail={() => undefined}
             />
           </Grid>
           {/*<Grid item xs={4}>*/}

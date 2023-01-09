@@ -1,4 +1,9 @@
-import { IconType, PanelProps, RedPacketBase } from "./BasicPanel";
+import {
+  IconType,
+  PanelProps,
+  RedPacketBase,
+  RedPacketOpenBase,
+} from "./BasicPanel";
 import { sanitize } from "dompurify";
 
 // value symbol
@@ -113,4 +118,20 @@ export const NFTRedPacketSend_Failed = (props: PanelProps) => {
     }),
   };
   return <RedPacketBase {...propsPatch} {...props} />;
+};
+
+export const RedPacketOpen_In_Progress = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.LoadingIcon,
+    describe1: props.t(" labelRedpacketOpenInProgress"),
+  };
+  return <RedPacketOpenBase {...propsPatch} {...props} />;
+};
+
+export const RedPacketOpen_Failed = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: props.t("labelRedpacketOpenFailed"),
+  };
+  return <RedPacketOpenBase {...propsPatch} {...props} />;
 };

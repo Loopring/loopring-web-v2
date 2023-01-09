@@ -1,12 +1,14 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   ModalRedPacket,
+  RedPacketOpen,
   RedPacketQRCode,
+  RedPacketTimeout,
   RedPacketViewStep,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import React from "react";
-import { useRedPacketModal } from "./hook";
+import { useRedPacketDetail, useRedPacketModal } from "./hook";
 
 export const ModalRedPacketPanel = withTranslation("common")(
   ({
@@ -23,8 +25,9 @@ export const ModalRedPacketPanel = withTranslation("common")(
       },
       setShowRedPacket,
     } = useOpenModals();
-    const { redPacketQRCodeProps } = useRedPacketModal();
-
+    const { redPacketQRCodeProps, redPacketTimeoutProps, redPacketOpenProps } =
+      useRedPacketModal();
+    // const { redPacketProps } = useRedPacketDetail();
     // const theme = useTheme();
     const redPacketList = React.useMemo(() => {
       return Object.values({
@@ -35,10 +38,25 @@ export const ModalRedPacketPanel = withTranslation("common")(
             <></>
           ),
         },
-        [RedPacketViewStep.OpenPanel]: { view: <></> },
+        [RedPacketViewStep.OpenPanel]: {
+          view: redPacketOpenProps ? (
+            <RedPacketOpen {...redPacketOpenProps} />
+          ) : (
+            <></>
+          ),
+        },
         [RedPacketViewStep.OpenedPanel]: { view: <></> },
         [RedPacketViewStep.DetailPanel]: { view: <></> },
-        [RedPacketViewStep.TimeOutPanel]: { view: <></> },
+        [RedPacketViewStep.TimeOutPanel]: {
+          view: redPacketTimeoutProps ? (
+            <RedPacketTimeout
+              size={"large"}
+              {...{ ...redPacketTimeoutProps }}
+            />
+          ) : (
+            <></>
+          ),
+        },
         [RedPacketViewStep.PreparePanel]: { view: <></> },
       });
     }, []);

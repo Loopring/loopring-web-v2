@@ -495,3 +495,10 @@ export const RedPacketBase = (props: PanelProps) => {
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };
+
+export const RedPacketOpenBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelReaPacketOpen",
+  };
+  return <BasicPanel {...propsPatch} {...props} />;
+};

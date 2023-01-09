@@ -71,6 +71,8 @@ import {
   NFTWithdraw_WaitForAuth,
   NoAccount,
   QRAddressPanel,
+  RedPacketOpen_Failed,
+  RedPacketOpen_In_Progress,
   RedPacketSend_Failed,
   RedPacketSend_First_Method_Denied,
   RedPacketSend_In_Progress,
@@ -1277,6 +1279,39 @@ export function useAccountModalForUI({
               ...rest,
               account,
               ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+
+      [AccountStep.RedPacketOpen_In_Progress]: {
+        view: (
+          <RedPacketOpen_In_Progress
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+
+      [AccountStep.RedPacketOpen_Failed]: {
+        view: (
+          <RedPacketOpen_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
               t,
             }}
           />

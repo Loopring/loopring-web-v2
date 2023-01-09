@@ -14,7 +14,7 @@ export const RedPacketWrapSVG = ({
 }) => {
   return (
     <svg {...props} viewBox="0 0 274 414" aria-hidden="true">
-      <g filter="url(#filter0)">
+      <g filter={`url(#filterWrap${type}0)`}>
         <rect
           x="7"
           y="3"
@@ -32,7 +32,7 @@ export const RedPacketWrapSVG = ({
       </g>
       <defs>
         <filter
-          id="filter0"
+          id={`filterWrap${type}0`}
           x="0"
           y="0"
           width="274"
@@ -130,15 +130,15 @@ export const RedPacketOpenWrapSVG = ({
   ...props
 }: {
   type: "default" | "official";
-  colorTop: "#FFD596" | "#FFD595";
-  startColor: "#FC7A5A" | "#FF6151";
+  colorTop: "#FD7659" | "#FFD595";
+  startColor: "#FC7A5A" | "#FFD596";
   endColor: "#FF6151" | "#FDBD6A";
   startBgColor: "#FC7A5A" | "#FFD595";
-  endBgColor: "#930D00" | "#FFD595";
+  endBgColor: "#930D00" | "#934F00";
   startCard: "#FEF4DE";
   endCard: "#FED897";
   line: "#D4B164";
-}) => {
+} & Partial<React.SVGProps<SVGSVGElement>>) => {
   return (
     <svg {...props} viewBox="0 0 274 414" aria-hidden="true">
       <g transform={"translate(7 7)"}>
@@ -254,6 +254,21 @@ export type ColorConfig = {
   fontColor: string;
   btnColor: string;
   qrColor: string;
+};
+export type ColorCssConfig = {
+  colorTop: "#FD7659" | "#FFD595";
+  startColor: "#FC7A5A" | "#FFD596";
+  endColor: "#FF6151" | "#FDBD6A";
+  startBgColor: "#FC7A5A" | "#FFD595";
+  endBgColor: "#930D00" | "#934F00";
+  startCard: "#FEF4DE";
+  endCard: "#FED897";
+  line: "#D4B164";
+  highLightColor: "#A25402";
+  highLightDisableColor: "#A25402";
+  primaryColor: "#FFF7B1" | "#A25402";
+  secondaryColor: "#D09145";
+  disableColor: "#7C3400";
 };
 export const RedPacketQRCodeSvg = React.memo(
   React.forwardRef(
