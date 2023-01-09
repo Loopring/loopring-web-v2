@@ -22,19 +22,19 @@ export function useRedPacketModal() {
   const {
     modals: {
       // isShowNFTDetail,
-      isShowRedPacket: {info, isShow, step},
+      isShowRedPacket: { info, isShow, step },
     },
     setShowRedPacket,
   } = useOpenModals();
-  const {account} = useAccount();
-  const {tokenMap, idIndex} = useTokenMap();
-  const {t} = useTranslation("common");
+  const { account } = useAccount();
+  const { tokenMap, idIndex } = useTokenMap();
+  const { t } = useTranslation("common");
   // React.useEffect(() => {
   //
   // }, [info.]);
   const amountStr = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
-    const token = tokenMap[ idIndex[ _info.tokenId ] ?? "" ];
+    const token = tokenMap[idIndex[_info.tokenId] ?? ""];
     if (token && _info.tokenAmount) {
       const symbol = token.symbol;
       const amount = getValuePrecisionThousand(
@@ -69,11 +69,20 @@ export function useRedPacketModal() {
     React.useMemo(() => {
       // new Date(info.validSince)
       const _info = info as sdk.LuckyTokenItemForReceive;
-      if (isShow && _info.status === sdk.LuckyTokenItemStatus.COMPLETED ||
-        _info.status === sdk.LuckyTokenItemStatus.OVER_DUE) {
-        setShowRedPacket({isShow,})
-      } else (isShow && _info?.hash && step === RedPacketViewStep.QRCodePanel &&)
-      {
+      if (
+        (isShow && _info.status === sdk.LuckyTokenItemStatus.COMPLETED) ||
+        _info.status === sdk.LuckyTokenItemStatus.OVER_DUE
+      ) {
+        setShowRedPacket({
+          isShow,
+          step: RedPacketViewStep.TimeOutPanel,
+          info: _info,
+        });
+      } else if (
+        isShow &&
+        _info?.hash &&
+        step === RedPacketViewStep.QRCodePanel
+      ) {
         const url = `${Exchange}/wallet?redpacket&id=${info?.hash}&referrer=${account.accAddress}`;
         return {
           url,
@@ -88,9 +97,7 @@ export function useRedPacketModal() {
           textShared: t("labelShare"),
           textNo: _info.templateNo?.toString(),
         } as RedPacketQRCodeProps;
-      }
-    else
-      {
+      } else {
         return undefined;
       }
     }, [info, account.accAddress, isShow, textSendBy, amountStr]);
