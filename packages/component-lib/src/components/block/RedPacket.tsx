@@ -460,7 +460,7 @@ export const RedPacketHistory = ({
 };
 
 export const RedPacketDetailStyled = styled(Box)`
-  border-radius: ${({theme}) => theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
   background-color: var(--color-box);
 ` as typeof Box;
 
