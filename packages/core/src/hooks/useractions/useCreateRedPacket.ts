@@ -6,6 +6,7 @@ import {
   getValuePrecisionThousand,
   LIVE_FEE_TIMES,
   myLog,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TOAST_TIME,
   UIERROR_CODE,
   WalletMap,
@@ -21,6 +22,7 @@ import {
 import {
   AccountStep,
   CreateRedPacketProps,
+  RedPacketViewStep,
   SwitchData,
   useOpenModals,
 } from "@loopring-web/component-lib";
@@ -44,6 +46,8 @@ import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRedPacketConfig } from "../../stores/redpacket";
+import { useHistory } from "react-router-dom";
+import * as loopring_defs from "@loopring-web/loopring-sdk";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
@@ -66,13 +70,13 @@ export const useCreateRedPacket = <
   } = useSystem();
   const {
     setShowAccount,
+    setShowRedPacket,
     modals: {
       isShowAccount: { info },
     },
   } = useOpenModals();
   const { redPacketConfigs } = useRedPacketConfig();
-  const { redPacketOrder, resetRedPacketOrder, updateRedPacketOrder } =
-    useModalData();
+  const { redPacketOrder, updateRedPacketOrder } = useModalData();
   const { account, status: accountStatus } = useAccount();
   const { checkHWAddr, updateHW } = useWalletInfo();
 
@@ -190,6 +194,8 @@ export const useCreateRedPacket = <
         (redPacketOrder?.tradeValue ?? 0) / Number(redPacketOrder.numbers ?? 1),
     };
   }, []);
+  const history = useHistory();
+
   const checkBtnStatus = React.useCallback(() => {
     const _tradeData = calcNumberAndAmount();
     resetBtnInfo();
@@ -378,21 +384,55 @@ export const useCreateRedPacket = <
                 Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
             },
           });
-          if (window.rampInstance) {
-            try {
-              console.log("RAMP WEIGHT display on transfer done");
-              // @ts-ignore
-              window.rampInstance.domNodes.overlay.style.display = "";
-            } catch (e) {
-              console.log("RAMP WEIGHT hidden failed");
-            }
-          }
+
           if (isHWAddr) {
             myLog("......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
           walletLayer2Service.sendUserUpdate();
-          resetRedPacketOrder();
+          history.push({
+            pathname: `redpacket?redPacketHash=${
+              (response as sdk.TX_HASH_API)?.hash
+            }`,
+          });
+          resetDefault();
+          if (
+            request.type.scope == sdk.LuckyTokenViewType.PRIVATE &&
+            (response as sdk.TX_HASH_API)?.hash
+          ) {
+            const luckTokenInfo: loopring_defs.LuckyTokenItemForReceive = (
+              await LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
+                {
+                  senderId: account.accountId,
+                  hash: (response as sdk.TX_HASH_API)?.hash,
+                  partitions: request.type.partition,
+                  modes: request.type.mode,
+                  scopes: request.type.scope,
+                  statuses: `0,1,2,3,4`,
+                  official: false,
+                } as any,
+                account.apiKey
+              )
+            ).list?.[0];
+            setShowAccount({ isShow: false });
+            setShowRedPacket({
+              isShow: true,
+              info: {
+                ...luckTokenInfo,
+                hash: (response as sdk.TX_HASH_API).hash,
+              },
+              step: RedPacketViewStep.QRCodePanel,
+            });
+          } else {
+            await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+            if (
+              store.getState().modals.isShowAccount.isShow &&
+              store.getState().modals.isShowAccount.step ==
+                AccountStep.RedPacketSend_Success
+            ) {
+              setShowAccount({ isShow: false });
+            }
+          }
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
@@ -511,11 +551,13 @@ export const useCreateRedPacket = <
           //   type: 1,
           // });
           myLog("memo", redPacketOrder.memo);
+
           const req: sdk.LuckyTokenItemForSendV3 = {
             type: redPacketOrder.type,
             numbers: redPacketOrder.numbers,
             memo: redPacketOrder.memo ?? "",
             signerFlag: false as any,
+            // @ts-ignore
             templateId: 0,
             validSince: Math.round(
               (redPacketOrder.validSince ?? Date.now()) / 1000
@@ -534,7 +576,7 @@ export const useCreateRedPacket = <
               feeToken: feeToken.tokenId,
               maxFeeAmount: fee.toFixed(),
               validUntil: getTimestampDaysLater(DAYS - 1),
-            } as unknown as sdk.OriginTransfer3RequestV3,
+            } as any,
           };
 
           myLog("transfer req:", req);

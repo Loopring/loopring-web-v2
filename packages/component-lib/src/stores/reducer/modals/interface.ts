@@ -56,6 +56,10 @@ export interface ModalState {
     error?: RESULT_INFO;
     // info?: { [key: string]: any };
   };
+  isShowRedPacket: ModalStatePlayLoad & {
+    step: number;
+    // info?: { [key: string]: any };
+  };
   isShowFeeSetting: ModalStatePlayLoad;
   isShowIFrame: ModalStatePlayLoad & { url: string };
 }

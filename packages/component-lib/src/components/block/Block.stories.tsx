@@ -25,6 +25,7 @@ import { MarketBlock } from "./MarketBlock";
 // import { PoolDetailTitle } from './PoolDetailTitle';
 import { AmmCard } from "./AmmCard";
 import React from "react";
+import QRCode from "qrcode-svg";
 
 const Style = styled.div`
   background: var(--color-global-bg);
@@ -224,6 +225,8 @@ const AssetTitleWrap = (rest: any) => {
   );
 };
 const Template: Story<any> = withTranslation("common")((...rest) => {
+  const url = `https://loopring.io/wallet?redpacket&id=${"sfgffddd"}&referrer=${"0x234234"}`;
+
   return (
     <Style>
       <MemoryRouter initialEntries={["/"]}>
@@ -319,10 +322,31 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
             <RedPacketBgOpened type={"official"} />
           </Grid>
           <Grid item>
-            <RedPacketQRCode type={"default"} />
+            <RedPacketQRCode
+              type={"default"}
+              textAddress={"0x01....0101"}
+              textContent={"back test back test back test back test"}
+              amountStr={"1,000 LRC"}
+              textSendBy={"Luck RedPacket"}
+              textType={"Luck RedPacket"}
+              textShared={"shared"}
+              textNo={"1231414"}
+              url={url}
+              // qrCodeG={qrCodeG}
+            />
           </Grid>
           <Grid item>
-            <RedPacketQRCode type={"official"} />
+            <RedPacketQRCode
+              url={url}
+              type={"official"}
+              textAddress={"0x01....0101"}
+              textContent={"back test back test back test back test"}
+              amountStr={"1,000 LRC"}
+              textSendBy={""}
+              textType={"Luck RedPacket"}
+              textShared={"shared"}
+              textNo={"1231414"}
+            />
           </Grid>
           {/*<Grid item xs={4}>*/}
           {/*  <RedPacketCard*/}

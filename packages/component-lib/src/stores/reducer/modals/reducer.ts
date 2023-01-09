@@ -9,6 +9,7 @@ import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { AmmPanelType } from "../../../components";
 
 const initialState: ModalState = {
+  isShowRedPacket: { isShow: false, step: 0 },
   isShowSupport: { isShow: false },
   isShowOtherExchange: { isShow: false },
   isWrongNetworkGuide: { isShow: false },
@@ -41,6 +42,21 @@ export const modalsSlice: Slice<ModalState> = createSlice({
   name: "modals",
   initialState,
   reducers: {
+    setShowRedPacket(
+      state,
+      action: PayloadAction<{
+        isShow: boolean;
+        step?: number;
+        info?: { [key: string]: any };
+      }>
+    ) {
+      const { isShow, step, info } = action.payload;
+      state.isShowRedPacket = {
+        isShow,
+        step: step ? step : 0,
+        info,
+      };
+    },
     setShowIFrame(
       state,
       action: PayloadAction<{ isShow: boolean; url: string }>
@@ -345,4 +361,5 @@ export const {
   setShowOtherExchange,
   setShowLayerSwapNotice,
   setShowClaimWithdraw,
+  setShowRedPacket,
 } = modalsSlice.actions;

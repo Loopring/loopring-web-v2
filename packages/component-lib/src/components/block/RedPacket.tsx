@@ -3,13 +3,17 @@ import { Box, BoxProps, Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
+  ColorConfig,
   EmptyValueTag,
+  myLog,
   RedPacketOpenWrapSVG,
   RedPacketQRCodeSvg,
+  RedPacketQRPropsExtends,
   // RedPacketOpenWrapSvg,
   RedPacketWrapSVG,
   // RedPacketWrapSvg,
 } from "@loopring-web/common-resources";
+import QRCode from "qrcode-svg";
 
 export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
   display: flex;
@@ -102,30 +106,117 @@ export const RedPacketSize = {
     width: 320,
   },
 };
-
+export const RedPacketColorConfig: {
+  default: ColorConfig;
+  official: ColorConfig;
+} = {
+  default: {
+    colorTop: "#FD7659",
+    startColor: "#FC7A5A",
+    endColor: "#FF6151",
+    bgColor: "#ffffff",
+    fontColor: "#FFF7B1",
+    btnColor: "#FD7659",
+    qrColor: "#FD7659",
+  },
+  official: {
+    colorTop: "#FFD595",
+    startColor: "#FFD596",
+    endColor: "#FDBD6A",
+    bgColor: "#ffffff",
+    fontColor: "#A25402",
+    btnColor: "#FD7659",
+    qrColor: "#A25402",
+  },
+};
+export type RedPacketQRCodeProps = {
+  url: string;
+} & RedPacketQRPropsExtends;
 export const RedPacketQRCode = ({
   type = "default",
-}: RedPacketDefault & any) => {
-  const RedPacketColorConfig = {
-    default: {
-      colorTop: "#FD7659",
-      startColor: "#FC7A5A",
-      endColor: "#FF6151",
-      bgColor: "#ffffff",
-      fontColor: "#FFF7B1",
-      btnColor: "#FD7659",
-    },
-    official: {
-      colorTop: "#FFD595",
-      startColor: "#FFD596",
-      endColor: "#FDBD6A",
-      bgColor: "#ffffff",
-      fontColor: "#A25402",
-      btnColor: "#FD7659",
-    },
+  url,
+  ...rest
+}: RedPacketDefault & RedPacketQRCodeProps) => {
+  const qrcodeRef = React.createRef<SVGGElement>();
+  const ref = React.useRef();
+  const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined);
+  React.useEffect(() => {
+    setQrCodeG(() => {
+      const colorConfig = RedPacketColorConfig[type];
+      const qrcode = new QRCode({
+        content: url,
+        width: 160,
+        height: 160,
+        color: colorConfig.qrColor, //colorConfig.startColor, // "white",
+        background: "white", //"colorConfig.bgColor",//"#FD7659",
+        predefined: true,
+        padding: 2,
+        xmlDeclaration: false,
+        // container: "g",
+      });
+
+      let qrCodeG = qrcode.svg({ container: "g" });
+      qrCodeG = qrCodeG.replace(/qrmodule/g, `qrmodule${type}`);
+      var parser = new DOMParser();
+      var qrCodeGEle = parser.parseFromString(qrCodeG, "text/xml");
+      // @ts-ignore
+      return qrCodeGEle.firstChild?.innerHTML ?? "";
+    });
+  }, [type]);
+  const onClick = (e) => {
+    try {
+      // @ts-ignore-start
+      const svg: SVGElement = ref.current as SVGElement;
+      const w = parseInt(svg.getAttribute("width") ?? "334");
+      const h = parseInt(svg.getAttribute("height") ?? "603");
+      if (svg && svg.outerHTML) {
+        const canvas = document.createElement("canvas");
+        const base64doc = btoa(unescape(encodeURIComponent(svg.outerHTML)));
+        const img_to_download = document.createElement("img");
+        img_to_download.src = "data:image/svg+xml;base64," + base64doc;
+        img_to_download.onload = function () {
+          canvas.setAttribute("width", w.toString());
+          canvas.setAttribute("height", h.toString());
+          // @ts-ignore
+          const context: CanvasRenderingContext2D = canvas.getContext("2d");
+          context.drawImage(img_to_download, 0, 0, w, h);
+          const dataURL = canvas.toDataURL("image/png");
+          // @ts-ignore
+          if (window.navigator.msSaveBlob) {
+            // @ts-ignore
+            window.navigator.msSaveBlob(
+              // @ts-ignore
+              canvas.msToBlob(),
+              "Loopring_Red_Packet.png"
+            );
+            e.preventDefault();
+          } else {
+            const a = document.createElement("a");
+            const my_evt = new MouseEvent("click");
+            a.download = "Loopring_Red_Packet.png";
+            a.href = dataURL;
+            a.dispatchEvent(my_evt);
+          }
+          //canvas.parentNode.removeChild(canvas);
+        };
+      }
+      // @ts-ignore-end
+    } catch (e) {}
   };
   return (
-    <RedPacketQRCodeSvg {...{ ...RedPacketColorConfig[type] }} type={type} />
+    <>
+      {qrCodeG && (
+        <Box onClick={onClick}>
+          <RedPacketQRCodeSvg
+            ref={ref}
+            {...{ ...RedPacketColorConfig[type], ...rest }}
+            qrcodeRef={qrcodeRef}
+            qrCodeG={qrCodeG}
+            type={type}
+          />
+        </Box>
+      )}
+    </>
   );
 };
 
@@ -246,7 +337,7 @@ export const RedPacketOpen = ({
             {t("labelOpen")}
           </Box>
         </Box>
-        <Box display={"flex"}></Box>
+        <Box display={"flex"} />
 
         <Box></Box>
       </Box>
@@ -369,9 +460,9 @@ export const RedPacketHistory = ({
 };
 
 export const RedPacketDetailStyled = styled(Box)`
-  border-radius: ${({ theme }) => theme.unit}px;
+  border-radius: ${({theme}) => theme.unit}px;
   background-color: var(--color-box);
-`;
+` as typeof Box;
 
 export const RedPacketDetail = () => {
   return <RedPacketDetailStyled />;

@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import {
   setShowAccount,
+  setShowRedPacket,
   setShowActiveAccount,
   setShowAmm,
   setShowConnect,
@@ -44,7 +45,15 @@ export const useOpenModals = () => {
   const toggle = useSelector((state: any) => state.toggle) as ToggleState;
   return {
     modals: useSelector((state: any) => state.modals) as ModalState,
-
+    setShowRedPacket: React.useCallback(
+      (
+        state: ModalStatePlayLoad & {
+          step?: number;
+          info?: { [key: string]: any };
+        }
+      ) => dispatch(setShowRedPacket(state)),
+      [dispatch]
+    ),
     setShowSupport: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) =>
         dispatch(setShowSupport(state)),

@@ -1,3 +1,5 @@
+import React from "react";
+
 export const RedPacketWrapSVG = ({
   colorTop,
   startColor,
@@ -235,252 +237,305 @@ export const RedPacketOpenWrapSVG = ({
     </svg>
   );
 };
-
-export const RedPacketQRCodeSvg = ({
-  startColor,
-  endColor,
-  colorTop,
-  bgColor,
-  fontColor,
-  btnColor,
-  type,
-}: {
-  type: "default" | "official";
-  colorTop: "#FFD596" | "#FFD595";
-  startColor: "#FC7A5A" | "#FFD596";
-  endColor: "#FF6151" | "#FDBD6A";
-  bgColor: "#ffffff";
-  fontColor: "#FFF7B1" | "#A25402";
-  btnColor: "#FD7659";
-}) => {
-  return (
-    <svg
-      width="334"
-      height="603"
-      viewBox="0 0 334 603"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M7 13C7 7.47714 11.4772 3 17 3H317C322.523 3 327 7.47715 327 13V593C327 598.523 322.523 603 317 603H17C11.4772 603 7 598.523 7 593V13Z"
-        fill={`url(#paintQRCode${type}0)`}
-      />
-      <path
-        d="M108 537C108 527.059 116.059 519 126 519H208C217.941 519 226 527.059 226 537V537C226 546.941 217.941 555 208 555H126C116.059 555 108 546.941 108 537V537Z"
-        fill={bgColor}
-      />
-      <path
-        opacity="0.16"
-        d="M31 428C31 423.582 34.5817 420 39 420H295C299.418 420 303 423.582 303 428V477C303 481.418 299.418 485 295 485H39C34.5817 485 31 481.418 31 477V428Z"
-        fill="white"
-      />
-      <g filter="url(#filterQRCode0)">
-        <path
-          d="M19.3077 3C12.5103 3 7 8.52071 7 15.3308V134.131C7 138.126 9.36023 141.753 13.0801 143.208C50.3215 157.777 105.464 167 167 167C228.536 167 283.679 157.777 320.92 143.208C324.64 141.753 327 138.126 327 134.131V15.3308C327 8.52071 321.49 3 314.692 3H19.3077Z"
-          fill={colorTop}
-        />
-      </g>
-      <path
-        opacity="0.16"
-        d="M225 3H319C323.418 3 327 6.58172 327 11V30H233C228.582 30 225 26.4183 225 22V3Z"
-        fill="white"
-      />
-      <defs>
-        <filter
-          id="filterQRCode0"
-          x="0"
-          y="0"
-          width="334"
-          height="178"
-          filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
-        >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset dy="4" />
-          <feGaussianBlur stdDeviation="3.5" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_8960_1241"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_8960_1241"
-            result="shape"
-          />
-        </filter>
-        <linearGradient
-          id={`paintQRCode${type}0`}
-          x1="167"
-          y1="2.99995"
-          x2="451.393"
-          y2="207.498"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor={startColor} />
-          <stop offset="1" stopColor={endColor} />
-        </linearGradient>
-      </defs>
-      <g transform={"translate(87 226)"}>
-        <rect className={"qrcode"} width="160" height="160" fill="#D9D9D9" />
-      </g>
-      <g transform={"translate(167 56)"}>
-        {/*<rect x="15.5" y="45.5" width="280" height="21" />*/}
-        <text
-          className={"textAddress"}
-          strokeWidth="0"
-          fill={fontColor}
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
-        >
-          {"0x01....0211"}
-        </text>
-      </g>
-      <g transform={"translate(167 88)"}>
-        <text
-          className={"textContent1"}
-          strokeWidth="0"
-          fill={fontColor}
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
-        >
-          {"textContent1"}
-        </text>
-      </g>
-      <g transform={"translate(167 112)"}>
-        <text
-          className={"textContent2"}
-          strokeWidth="0"
-          fill={fontColor}
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
-        >
-          {"textContent2"}
-        </text>
-      </g>
-      <g transform={"translate(167 192)"}>
-        <text
-          id={"textCount"}
-          strokeWidth="0"
-          fill={fontColor}
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "28px",
-          }}
-        >
-          {"0,000 LRC"}
-        </text>
-      </g>
-      <g transform={"translate(276 14)"}>
-        <text
-          className={"textType"}
-          strokeWidth="0"
-          fill={fontColor}
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
-        >
-          {"text-Type"}
-        </text>
-      </g>
-      <g transform={"translate(167 438)"}>
-        <text
-          id={"textSendBy"}
-          strokeWidth="0"
-          fill={fontColor}
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
-        >
-          {"text Send By/"}
-        </text>
-      </g>
-      <g transform={"translate(167 462)"}>
-        <text
-          id={"textSendBy"}
-          strokeWidth="0"
-          fill={fontColor}
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "14px",
-          }}
-        >
-          {"text Send By/"}
-        </text>
-      </g>
-      <g transform={"translate(167 535)"}>
-        <text
-          className={"textShared"}
-          strokeWidth="0"
-          fill={btnColor}
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "16px",
-          }}
-        >
-          {"share"}
-        </text>
-      </g>
-      <g transform={"translate(167 568)"}>
-        <text
-          className={"textNo"}
-          strokeWidth="0"
-          fill={fontColor}
-          x="1"
-          y="1"
-          style={{
-            dominantBaseline: "central",
-            textAnchor: "middle",
-            fontSize: "12px",
-          }}
-        >
-          {"No.032343"}
-        </text>
-      </g>
-    </svg>
-  );
+export type RedPacketQRPropsExtends = {
+  textAddress: string;
+  textContent: string;
+  amountStr: string;
+  textSendBy: string; //text send by
+  textType: string;
+  textShared: string;
+  textNo: string;
 };
+export type ColorConfig = {
+  colorTop: string;
+  startColor: string;
+  endColor: string;
+  bgColor: string;
+  fontColor: string;
+  btnColor: string;
+  qrColor: string;
+};
+export const RedPacketQRCodeSvg = React.memo(
+  React.forwardRef(
+    (
+      {
+        startColor,
+        endColor,
+        colorTop,
+        bgColor,
+        fontColor,
+        btnColor,
+        type,
+        qrcodeRef,
+        textAddress,
+        textContent,
+        amountStr,
+        qrCodeG,
+        textSendBy,
+        textType,
+        textShared,
+        textNo,
+      }: ColorConfig & {
+        type: "default" | "official";
+        qrcodeRef: React.Ref<SVGGElement>;
+        // qrCodeG;
+      } & {
+        qrcodeRef: React.Ref<SVGGElement>;
+        textAddress: string;
+        textContent: string;
+        amountStr: string;
+        textSendBy: string; //text send by
+        textType: string;
+        textShared: string;
+        textNo: string;
+        qrCodeG: string;
+      },
+      ref: React.ForwardedRef<any>
+    ) => {
+      const [[textContent1, textContent2], setTextContent] = React.useState([
+        textContent,
+        "",
+      ]);
+      React.useEffect(() => {
+        const [str1, str2] = textContent?.split("\n");
+        if (textContent && str2) {
+          setTextContent([str1, str2]);
+        } else if (textContent && textContent.length > 12) {
+          const value = textContent.substring(0, 12);
+          let _textContent2 = textContent.substring(12, textContent.length - 1);
+          const textArray = value.split(" ");
+          _textContent2 =
+            (textArray.length > 2 ? textArray.pop() : "") + _textContent2;
+          const _textContent1 = textArray.join(" ");
+          setTextContent([_textContent1, _textContent2]);
+        }
+      }, [textContent]);
+      // const qrcodeRef = React.createRef();
+      return (
+        <svg
+          ref={ref}
+          width="334"
+          height="603"
+          viewBox="0 0 334 603"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M7 13C7 7.47714 11.4772 3 17 3H317C322.523 3 327 7.47715 327 13V593C327 598.523 322.523 603 317 603H17C11.4772 603 7 598.523 7 593V13Z"
+            fill={`url(#paintQRCode${type}0)`}
+          />
+          <path
+            d="M108 537C108 527.059 116.059 519 126 519H208C217.941 519 226 527.059 226 537V537C226 546.941 217.941 555 208 555H126C116.059 555 108 546.941 108 537V537Z"
+            fill={bgColor}
+          />
+          {!!textSendBy && (
+            <path
+              opacity="0.16"
+              d="M31 428C31 423.582 34.5817 420 39 420H295C299.418 420 303 423.582 303 428V477C303 481.418 299.418 485 295 485H39C34.5817 485 31 481.418 31 477V428Z"
+              fill="white"
+            />
+          )}
+          <g filter={`url(#filterQRCode${type}0)`}>
+            <path
+              d="M19.3077 3C12.5103 3 7 8.52071 7 15.3308V134.131C7 138.126 9.36023 141.753 13.0801 143.208C50.3215 157.777 105.464 167 167 167C228.536 167 283.679 157.777 320.92 143.208C324.64 141.753 327 138.126 327 134.131V15.3308C327 8.52071 321.49 3 314.692 3H19.3077Z"
+              fill={colorTop}
+            />
+          </g>
+          <path
+            opacity="0.16"
+            d="M225 3H319C323.418 3 327 6.58172 327 11V30H233C228.582 30 225 26.4183 225 22V3Z"
+            fill="white"
+          />
+          <defs>
+            <filter
+              id={`filterQRCode${type}0`}
+              x="0"
+              y="0"
+              width="334"
+              height="178"
+              filterUnits="userSpaceOnUse"
+              color-interpolation-filters="sRGB"
+            >
+              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feColorMatrix
+                in="SourceAlpha"
+                type="matrix"
+                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                result="hardAlpha"
+              />
+              <feOffset dy="4" />
+              <feGaussianBlur stdDeviation="3.5" />
+              <feComposite in2="hardAlpha" operator="out" />
+              <feColorMatrix
+                type="matrix"
+                values="0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+              />
+              <feBlend
+                mode="normal"
+                in2="BackgroundImageFix"
+                result="effect1_dropShadow_8960_1241"
+              />
+              <feBlend
+                mode="normal"
+                in="SourceGraphic"
+                in2="effect1_dropShadow_8960_1241"
+                result="shape"
+              />
+            </filter>
+            <linearGradient
+              id={`paintQRCode${type}0`}
+              x1="167"
+              y1="2.99995"
+              x2="451.393"
+              y2="207.498"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor={startColor} />
+              <stop offset="1" stopColor={endColor} />
+            </linearGradient>
+          </defs>
+
+          <g
+            ref={qrcodeRef}
+            transform={"translate(87 226)"}
+            width="160"
+            height="160"
+            dangerouslySetInnerHTML={{ __html: qrCodeG ?? "" }}
+          >
+            {/*<rect className={"qrcode"} width="160" height="160" fill="#D9D9D9" />*/}
+            {/*{qrCodeG}*/}
+          </g>
+          <g transform={"translate(167 56)"}>
+            {/*<rect x="15.5" y="45.5" width="280" height="21" />*/}
+            <text
+              className={"textAddress"}
+              strokeWidth="0"
+              fill={fontColor}
+              x="1"
+              y="1"
+              style={{
+                dominantBaseline: "central",
+                textAnchor: "middle",
+                fontSize: "14px",
+              }}
+            >
+              {textAddress}
+            </text>
+          </g>
+          <g transform={"translate(167 88)"}>
+            <text
+              className={"textContent1"}
+              strokeWidth="0"
+              fill={fontColor}
+              x="1"
+              y="1"
+              style={{
+                dominantBaseline: "central",
+                textAnchor: "middle",
+                fontSize: "14px",
+              }}
+            >
+              {textContent1}
+            </text>
+          </g>
+          <g transform={"translate(167 112)"}>
+            <text
+              className={"textContent2"}
+              strokeWidth="0"
+              fill={fontColor}
+              x="1"
+              y="1"
+              style={{
+                dominantBaseline: "central",
+                textAnchor: "middle",
+                fontSize: "14px",
+              }}
+            >
+              {textContent2}
+            </text>
+          </g>
+          <g transform={"translate(167 192)"}>
+            <text
+              id={"amountStr"}
+              strokeWidth="0"
+              fill={fontColor}
+              x="1"
+              y="1"
+              style={{
+                dominantBaseline: "central",
+                textAnchor: "middle",
+                fontSize: "28px",
+              }}
+            >
+              {amountStr}
+            </text>
+          </g>
+          <g transform={"translate(276 14)"}>
+            <text
+              className={"textType"}
+              strokeWidth="0"
+              fill={fontColor}
+              x="1"
+              y="1"
+              style={{
+                dominantBaseline: "central",
+                textAnchor: "middle",
+                fontSize: "12px",
+              }}
+            >
+              {textType}
+            </text>
+          </g>
+          <g transform={"translate(167 438)"}>
+            <text
+              id={"textSendBy"}
+              strokeWidth="0"
+              fill={fontColor}
+              x="1"
+              y="1"
+              style={{
+                dominantBaseline: "central",
+                textAnchor: "middle",
+                fontSize: "14px",
+              }}
+            >
+              {textSendBy}
+            </text>
+          </g>
+          <g transform={"translate(167 535)"}>
+            <text
+              className={"textShared"}
+              strokeWidth="0"
+              fill={btnColor}
+              x="1"
+              y="1"
+              style={{
+                dominantBaseline: "central",
+                textAnchor: "middle",
+                fontSize: "16px",
+              }}
+            >
+              {textShared}
+            </text>
+          </g>
+          <g transform={"translate(167 568)"}>
+            <text
+              className={"textNo"}
+              strokeWidth="0"
+              fill={fontColor}
+              x="1"
+              y="1"
+              style={{
+                dominantBaseline: "central",
+                textAnchor: "middle",
+                fontSize: "12px",
+              }}
+            >
+              {textNo}
+            </text>
+          </g>
+        </svg>
+      );
+    }
+  )
+);

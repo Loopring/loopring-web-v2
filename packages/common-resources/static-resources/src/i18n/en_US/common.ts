@@ -1347,6 +1347,10 @@ export default {
     "Token amount for each red packet is randomized",
   labelReaPacketTitle: "Send Red Packet",
   labelReaPacketWaitingBlock: "Block is not ready",
+  labelShare: "Share",
+  labelRelayRedPacket: "Relay Red Packet",
+  labelLuckyRedPacket: "Lucky Red Packet",
+  labelLuckyRedPacketStart: "Starts in: {{}}",
 
   // labelClaimWithdrawEnterToken: "Select Token",
 };
