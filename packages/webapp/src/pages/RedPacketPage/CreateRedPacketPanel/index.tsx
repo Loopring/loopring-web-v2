@@ -19,7 +19,7 @@ export const CreateRedPacketUIPanel = <
   F extends FeeInfo
 >() => {
   const { assetsRawData } = useGetAssets();
-  let match: any = useRouteMatch("/redpacket/:item");
+  let match: any = useRouteMatch("/redPacket/:item");
 
   const history = useHistory();
   const { t } = useTranslation();
@@ -41,7 +41,7 @@ export const CreateRedPacketUIPanel = <
           size={"medium"}
           sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
-          onClick={() => history.push("/redpacket/markets")}
+          onClick={() => history.push("/redPacket/markets")}
         >
           {t("labelCreateRedPacketTitle")}
         </Button>

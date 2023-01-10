@@ -27,8 +27,8 @@ export const ImportRedPacketWrap = React.forwardRef(
           textAlign={"center"}
           justifyContent={"center"}
         >
-          <Trans i18nKey={"labelImportRedpacket"}>
-            Import QR code to receive redpacket
+          <Trans i18nKey={"labelImportRedPacket"}>
+            Import QR code to receive red packet
           </Trans>
         </Typography>
         <Box display={"flex"} flex={1}>

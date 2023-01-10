@@ -48,12 +48,12 @@ export const MyRedPacketPanel = () => {
   const handleTabChange = (value: TabIndex) => {
     switch (value) {
       case TabIndex.Send:
-        history.push("/redpacket/records/send");
+        history.push("/redPacket/records/send");
         setCurrentTab(TabIndex.Send);
         break;
       case TabIndex.Received:
       default:
-        history.replace("/redpacket/records/Received");
+        history.replace("/redPacket/records/Received");
         setCurrentTab(TabIndex.Received);
         break;
     }
@@ -76,7 +76,7 @@ export const MyRedPacketPanel = () => {
           size={"medium"}
           sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
-          onClick={() => history.push("/redpacket/markets")}
+          onClick={() => history.push("/redPacket/markets")}
         >
           {t("labelRedPacketRecordTitle")}
         </Button>

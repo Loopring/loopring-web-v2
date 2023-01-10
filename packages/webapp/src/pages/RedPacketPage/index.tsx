@@ -9,7 +9,7 @@ import { MyRedPacketPanel } from "./MyRedPacketPanel";
 import { ReadRedPacketPanel } from "./ReadRedPacketPanel";
 
 export const RedPacketPage = () => {
-  let match: any = useRouteMatch("/redpacket/:item");
+  let match: any = useRouteMatch("/redPacket/:item");
   const selected = match?.params.item ?? "markets";
 
   const reaPacketRouter = React.useMemo(() => {

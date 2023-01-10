@@ -24,8 +24,8 @@ export const AssetPage = () => {
         return <AssetPanel />;
       case "history":
         return <HistoryPanel />;
-      // case "redpacket":
-      //   return history.push("redpacket");
+      // case "redPacket":
+      //   return history.push("redPacket");
       default:
         <AssetPanel />;
     }

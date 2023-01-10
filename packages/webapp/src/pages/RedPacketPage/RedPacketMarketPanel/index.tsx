@@ -70,7 +70,7 @@ export const RedPacketMarketPanel = () => {
             size={"medium"}
             color={"inherit"}
             sx={{ marginLeft: 1 }}
-            onClick={() => history.push("/redpacket/create")}
+            onClick={() => history.push("/redPacket/create")}
           >
             {t("labelCreateRedPacket")}
           </Button>
@@ -79,7 +79,7 @@ export const RedPacketMarketPanel = () => {
             size={"medium"}
             color={"inherit"}
             sx={{ marginLeft: 1 }}
-            onClick={() => history.push("/redpacket/records")}
+            onClick={() => history.push("/redPacket/records")}
           >
             {t("labelMyRedPacket")}
           </Button>
