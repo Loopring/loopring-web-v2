@@ -21,12 +21,12 @@ const getRedPacketConfigsApi = async (): Promise<{
       }, 1000 * 60 * 30);
     })(__timer__);
     myLog("loop get getMixTicker");
-    const [resluckTokenAgents, resluckTokenAgentsAuth] = await Promise.all([
+    const [resLuckTokenAgents, resLuckTokenAgentsAuth] = await Promise.all([
       LoopringAPI.luckTokenAPI.getLuckTokenAgents(),
       LoopringAPI.luckTokenAPI.getLuckTokenAuthorizedSigners(),
     ]);
-    const luckTokenAgents = resluckTokenAgents?.luckTokenAgents;
-    const luckTokenAgentsAuth = resluckTokenAgentsAuth?.luckTokenAgents;
+    const luckTokenAgents = resLuckTokenAgents?.luckTokenAgents;
+    const luckTokenAgentsAuth = resLuckTokenAgentsAuth?.luckTokenAgents;
 
     return {
       data: {

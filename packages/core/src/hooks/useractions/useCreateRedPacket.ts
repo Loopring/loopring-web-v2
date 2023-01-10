@@ -45,7 +45,7 @@ import { DAYS } from "../../defs";
 import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useRedPacketConfig } from "../../stores/redpacket";
+import { useRedPacketConfig } from "../../stores/redPacket";
 import { useHistory } from "react-router-dom";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 

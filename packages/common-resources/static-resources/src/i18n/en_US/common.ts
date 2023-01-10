@@ -1291,9 +1291,9 @@ export default {
   labelSplit: "Split",
   labelRedPacketMemo: "Best Wish",
   labelRedPacketStart: "Active Time",
-  labelRedpacketSendWaitForAuth:
+  labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
-  labelRedpacketSendDenied:
+  labelRedPacketSendDenied:
     "You rejected to send {{value}} {{symbol}} red packet.",
 
   labelRedPacketRecordTitle: "My Red Packet Record",
@@ -1310,7 +1310,7 @@ export default {
   // "You can choose to pay their activation fee {{fee}} {{symbol}}?",
   // "The recipient does not have Loopring L2 activated. You can choose to pay their activation fee. "\n
   labelL2toL2FeeWithActive: "Active {{addr}} L2 & Transfer Fee",
-  labelImportRedpacket: "Import QR code to receive redpacket",
+  labelImportRedPacket: "Import QR code to receive red packet",
   labelCreateRedPacketTitle: "Send Red Packet",
   labelClaimWithdrawFee: "Fee",
   labelClaimWithdrawNotEnough: "Insufficient balance",
@@ -1321,10 +1321,10 @@ export default {
   labelClaimWithdrawFailed: "Claim has failed!",
   labelClaimWithdrawSubmit: "Claim has been submitted",
   labelClaimWithdrawToken: "Token Amount",
-  labelRedpacketSendSubmit: "Send red packet has been submitted. <1></1>",
-  labelRedpacketSendSuccess: "Redpacket Send Successful. <1></1>",
-  labelRedpacketSendFailed: "Send red packet of {{value}} {{symbol}} failed!",
-  labelRedpacketSendInProgress: "Processing...",
+  labelRedPacketSendSubmit: "Send red packet has been submitted. <1></1>",
+  labelRedPacketSendSuccess: "Red packet Send Successful. <1></1>",
+  labelRedPacketSendFailed: "Send red packet of {{value}} {{symbol}} failed!",
+  labelRedPacketSendInProgress: "Processing...",
   labelRefreshRedPacket: "Refresh List",
   labelRedPacketSendCommonTitle: "Normal Red Packet",
   labelRedPacketSenRandomTitle: "Lucky Red Packet",
@@ -1353,8 +1353,8 @@ export default {
   labelLuckyRedPacketStart: "Starts in: {{}}",
   labelLuckyRedPacketTimeout: "Red packet has been \n taken out",
   labelLuckyRedPacketDetail: "View red packet details",
-  labelRedpacketOpenInProgress: "Processing...",
-  labelRedpacketOpenFailed: "Open red packet failed!",
+  labelRedPacketOpenInProgress: "Processing...",
+  labelRedPacketOpenFailed: "Open red packet failed!",
   labelRedPacketOpen: "Open Red Packet",
   labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
 

@@ -33,7 +33,7 @@ import { getDefiMap } from "../invest/DefiMap/reducer";
 import { getInvestTokenTypeMap } from "../invest/InvestTokenTypeMap/reducer";
 import { getDualMap } from "../invest/DualMap/reducer";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { getRedPacketConfigs } from "../redpacket/reducer";
+import { getRedPacketConfigs } from "../redPacket/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"

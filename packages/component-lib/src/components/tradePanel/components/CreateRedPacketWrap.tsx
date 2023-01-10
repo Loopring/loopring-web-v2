@@ -28,7 +28,6 @@ import {
   FeeInfo,
   EmptyValueTag,
   BackIcon,
-  myLog,
   IBData,
   getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
@@ -333,7 +332,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               </Tooltip>
             </FormLabel>
             <TextareaWithCount
-              label="Redpacket Description"
+              label="Red packet Description"
               maxRows={5}
               minRows={5}
               disabled={disabled}

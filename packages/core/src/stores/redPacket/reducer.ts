@@ -8,7 +8,7 @@ const initialState: Required<RedPacketConfigStates> = {
   status: "PENDING",
   errorMessage: null,
 };
-const redpacketConfigsSlice: Slice = createSlice({
+const redPacketConfigsSlice: Slice = createSlice({
   name: "redPacketConfigs",
   initialState,
   reducers: {
@@ -39,6 +39,6 @@ const redpacketConfigsSlice: Slice = createSlice({
     },
   },
 });
-export { redpacketConfigsSlice };
+export { redPacketConfigsSlice };
 export const { getRedPacketConfigs, getRedPacketConfigsStatus, statusUnset } =
-  redpacketConfigsSlice.actions;
+  redPacketConfigsSlice.actions;
