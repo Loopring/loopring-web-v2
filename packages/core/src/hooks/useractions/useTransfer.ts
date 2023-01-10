@@ -12,6 +12,7 @@ import {
   SwitchData,
   TransferProps,
   useOpenModals,
+  useSettings,
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
@@ -26,6 +27,11 @@ import {
   WALLET_TYPE,
   LIVE_FEE_TIMES,
   SUBMIT_PANEL_AUTO_CLOSE,
+  FeeInfo,
+  PriceTag,
+  CurrencyToTag,
+  getValuePrecisionThousand,
+  EmptyValueTag,
 } from "@loopring-web/common-resources";
 
 import {
@@ -46,6 +52,8 @@ import {
   store,
   isAccActivated,
   LAST_STEP,
+  volumeToCountAsBigNumber,
+  useTokenPrices,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -61,7 +69,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const [memo, setMemo] = React.useState("");
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
-  const { exchangeInfo, chainId } = useSystem();
+  const { exchangeInfo, chainId, forexMap } = useSystem();
+  const { currency } = useSettings();
+  const { tokenPrices } = useTokenPrices();
 
   const { transferValue, updateTransferData, resetTransferData } =
     useModalData();
@@ -89,9 +99,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       let _requestType = feeWithActive
         ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
         : sdk.OffchainFeeReqType.TRANSFER;
-      // if (requestType === sdk.OffchainFeeReqType.TRANSFER) {
-      //   setChargeFeeTransferList(chargeFeeTokenList);
-      // }
+
       myLog(
         "transfer updateData",
         feeWithActive,
@@ -110,7 +118,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const {
     chargeFeeTokenList: activeAccountFeeList,
     checkFeeIsEnough: checkActiveFeeIsEnough,
-    resetIntervalTime: resetActiveIntervalTime,
+    // resetIntervalTime: resetActiveIntervalTime,
   } = useChargeFees({
     isActiveAccount: true,
     requestType: undefined as any,
@@ -200,10 +208,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       return;
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
-    checkActiveFeeIsEnough({
-      isRequiredAPI: true,
-      intervalTime: LIVE_FEE_TIMES,
-    });
+    // checkActiveFeeIsEnough({
+    //   isRequiredAPI: true,
+    //   intervalTime: LIVE_FEE_TIMES,
+    // });
     if (symbol && walletMap) {
       myLog("resetDefault symbol:", symbol);
       updateTransferData({
@@ -270,13 +278,20 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       resetDefault();
     } else {
       resetIntervalTime();
-      resetActiveIntervalTime();
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: undefined as any,
+      });
     }
     return () => {
       resetIntervalTime();
-      resetActiveIntervalTime();
+      setAddress("");
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: undefined as any,
+      });
     };
-  }, [isShow, accountStatus, account.readyState]);
+  }, [isShow]);
 
   const { checkHWAddr, updateHW } = useWalletInfo();
 
@@ -551,6 +566,39 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
+  const activeAccountPrice = React.useMemo(() => {
+    if (
+      realAddr !== "" &&
+      isActiveAccount == false &&
+      activeAccountFeeList.length &&
+      activeAccountFeeList[0] &&
+      tokenPrices &&
+      activeAccountFeeList[0].feeRaw
+    ) {
+      const feeInfo: FeeInfo = activeAccountFeeList[0];
+      const feeDollar: any =
+        volumeToCountAsBigNumber(feeInfo.belong, feeInfo.feeRaw ?? 0)?.times(
+          tokenPrices[feeInfo.belong]
+        ) ?? undefined;
+      return feeDollar
+        ? PriceTag[CurrencyToTag[currency]] +
+            getValuePrecisionThousand(
+              (feeDollar ?? 0) * (forexMap[currency] ?? 0),
+              2,
+              2,
+              2,
+              true,
+              { floor: true }
+            )
+        : EmptyValueTag;
+    } else {
+      return;
+    }
+    // return activeAccountFeeList?.find(
+    //   (item: any) => item.belong == feeInfo.belong
+    // );
+  }, [isActiveAccount, activeAccountFeeList, tokenPrices, currency]);
+
   React.useEffect(() => {
     if (realAddr !== "" && isActiveAccount === false) {
       checkActiveFeeIsEnough({
@@ -581,7 +629,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     // isConfirmTransfer,
     sureItsLayer2,
     chargeFeeTokenList,
-    activeAccountFeeList,
+    activeAccountPrice,
     isFeeNotEnough,
     isLoopringAddress,
     isSameAddress,

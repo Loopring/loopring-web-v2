@@ -58,7 +58,7 @@ export const TransferWrap = <
   type,
   memo,
   chargeFeeTokenList,
-  activeAccountFeeList,
+  activeAccountPrice,
   feeInfo,
   lastFailed,
   isFeeNotEnough,
@@ -108,11 +108,11 @@ export const TransferWrap = <
     return disabled || transferBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, transferBtnStatus]);
 
-  const activeFee = React.useMemo(() => {
-    return activeAccountFeeList?.find(
-      (item: any) => item.belong == feeInfo.belong
-    );
-  }, [feeInfo, activeAccountFeeList]);
+  // const activeFee = React.useMemo(() => {
+  //   // return activeAccountFeeList?.find(
+  //   //   (item: any) => item.belong == feeInfo.belong
+  //   // );
+  // }, [feeInfo, activeAccountFeeList]);
   const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const onCopy = React.useCallback(
     async (content: string) => {
@@ -354,8 +354,7 @@ export const TransferWrap = <
                             paddingTop={1 / 2}
                           >
                             {t("labelL2toL2AddressFeeActiveFee", {
-                              fee: activeFee?.fee ?? EmptyValueTag,
-                              symbol: activeFee?.belong ?? feeInfo.belong,
+                              value: activeAccountPrice,
                             })}
                           </Typography>
                         }
