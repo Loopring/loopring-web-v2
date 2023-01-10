@@ -665,7 +665,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     },
     // isConfirmTransfer,
     sureItsLayer2,
-    tradeData: { ...nftTransferValue } as unknown as R,
+    tradeData: {...nftTransferValue} as unknown as R,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     transferBtnStatus: btnStatus,
