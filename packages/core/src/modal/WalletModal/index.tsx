@@ -349,6 +349,22 @@ export const ModalWalletConnectPanel = withTranslation("common")(
               [account.connectName, setShowConnect]
             ),
           },
+          {
+            ...DefaultGatewayList[3],
+            handleSelect: React.useCallback(
+              async (event, flag?) => {
+                walletServices.sendDisconnect("", "should new provider");
+                setShowConnect({
+                  isShow: true,
+                  step: WalletConnectStep.WalletConnectProcessing,
+                });
+                setConnectProvider(DefaultGatewayList[3].key);
+                setProcessingCallback({ callback: CoinbaseCallback });
+                setStateCheck(true);
+              },
+              [setShowConnect]
+            ),
+          },
         ];
 
     const [copyToastOpen, setCopyToastOpen] = React.useState(false);
