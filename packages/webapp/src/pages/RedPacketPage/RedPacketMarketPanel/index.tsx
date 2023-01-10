@@ -134,7 +134,7 @@ export const RedPacketMarketPanel = () => {
                   }}
                 />
               }
-              label={t("labelHideSmallBalances")}
+              label={t("labelNotActive")}
             />
           </Grid>
         </Grid>

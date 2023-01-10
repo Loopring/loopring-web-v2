@@ -233,7 +233,9 @@ export const useAmmExit = ({
       ammData,
     }): { btnStatus?: TradeBtnStatus; btnI18nKey: string | undefined } => {
       const times = 1;
-
+      // const value = ammData.feeBips;
+      ammData.quota;
+      ammCalcData?.fee;
       const validAmt = ammData?.coinLP?.tradeValue
         ? sdk
             .toBig(ammData?.coinLP?.tradeValue)
@@ -351,21 +353,22 @@ export const useAmmExit = ({
       }
 
       if (rawVal) {
-        const { volA_show, volB_show, request } = sdk.makeExitAmmPoolRequest2(
-          rawVal.toString(),
-          slippageReal,
-          account.accAddress,
-          fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
-          ammPoolSnapshot,
-          tokenMap as any,
-          idIndex as IdMap,
-          0
-        );
+        const { volA_show, volB_show, request, volA, volB } =
+          sdk.makeExitAmmPoolRequest2(
+            rawVal.toString(),
+            slippageReal,
+            account.accAddress,
+            fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
+            ammPoolSnapshot,
+            tokenMap as any,
+            idIndex as IdMap,
+            0
+          );
 
         newAmmData["coinA"] = { ...ammData.coinA, tradeValue: volA_show };
         newAmmData["coinB"] = { ...ammData.coinB, tradeValue: volB_show };
 
-        ammDataPatch = { request, volA_show, volB_show };
+        ammDataPatch = { request, volA_show, volB_show, volA, volB };
       }
 
       updatePageAmmExit({
@@ -397,7 +400,7 @@ export const useAmmExit = ({
     });
   };
 
-  const ammCalculator = React.useCallback(
+  const submitAmmExit = React.useCallback(
     async function (props) {
       setIsLoading(true);
       updatePageAmmExitBtn({ btnStatus: TradeBtnStatus.LOADING });
@@ -532,7 +535,7 @@ export const useAmmExit = ({
   );
 
   const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
-    [fnType.ACTIVATED]: [ammCalculator],
+    [fnType.ACTIVATED]: [submitAmmExit],
   });
   const onAmmClick = React.useCallback(
     (props: AmmExitData<IBData<any>>) => {
