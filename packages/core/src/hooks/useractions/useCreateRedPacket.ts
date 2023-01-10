@@ -245,7 +245,7 @@ export const useCreateRedPacket = <
       } else {
         disableBtn();
         if (!redPacketConfigs?.luckTokenAgents) {
-          setLabelAndParams("labelReaPacketWaitingBlock", {});
+          setLabelAndParams("labelRedPacketWaitingBlock", {});
         } else if (isExceedBalance && tradeValue.gt(balance)) {
           setLabelAndParams("labelRedPacketsInsufficient", {
             symbol: tradeToken.symbol as string,

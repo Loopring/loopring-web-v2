@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
-import { Box, BoxProps, Link, Typography } from "@mui/material";
+import { Box, BoxProps, Divider, Link, Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ColorConfig,
-  ColorCssConfig,
+  RedPacketColorConfig,
+  RedPacketCssColorConfig,
   EmptyValueTag,
   RedPacketOpenWrapSVG,
   RedPacketQRCodeSvg,
@@ -13,67 +13,7 @@ import {
 } from "@loopring-web/common-resources";
 import QRCode from "qrcode-svg";
 
-export const RedPacketColorConfig: {
-  default: ColorConfig;
-  official: ColorConfig;
-} = {
-  default: {
-    colorTop: "#FD7659",
-    startColor: "#FC7A5A",
-    endColor: "#FF6151",
-    bgColor: "#ffffff",
-    fontColor: "#FFF7B1",
-    btnColor: "#FD7659",
-    qrColor: "#FD7659",
-  },
-  official: {
-    colorTop: "#FFD595",
-    startColor: "#FFD596",
-    endColor: "#FDBD6A",
-    bgColor: "#ffffff",
-    fontColor: "#A25402",
-    btnColor: "#FD7659",
-    qrColor: "#A25402",
-  },
-};
-const RedPacketCssColorConfig: {
-  default: ColorCssConfig;
-  official: ColorCssConfig;
-} = {
-  default: {
-    colorTop: "#FD7659",
-    startColor: "#FC7A5A",
-    endColor: "#FF6151",
-    startBgColor: "#FC7A5A",
-    endBgColor: "#930D00",
-    startCard: "#FEF4DE",
-    endCard: "#FED897",
-    line: "#D4B164",
-    highLightColor: "#A25402",
-    highLightDisableColor: "#A25402",
-    primaryColor: "#FFF7B1",
-    secondaryColor: "#D09145",
-    disableColor: "#7C3400",
-  },
-  official: {
-    colorTop: "#FFD595",
-    startColor: "#FFD596",
-    endColor: "#FDBD6A",
-    startBgColor: "#FFD595",
-    endBgColor: "#934F00",
-    startCard: "#FEF4DE",
-    endCard: "#FED897",
-    line: "#D4B164",
-    highLightColor: "#A25402",
-    highLightDisableColor: "#A25402",
-    primaryColor: "#A25402",
-    secondaryColor: "#D09145",
-    disableColor: "#7C3400",
-  },
-};
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -171,7 +111,7 @@ export const RedPacketBg = styled(Box)<
       display: flex;
       align-items: center;
       justify-content: center;
-      color: ${({ type }) => RedPacketCssColorConfig[type]?.highLightColor};
+      color: ${({ type }) => RedPacketCssColorConfig[type]?.primaryColor};
     }
 
     .middle {
@@ -186,6 +126,12 @@ export const RedPacketBg = styled(Box)<
       align-items: center;
       justify-content: center;
       heigh: 56px;
+    }
+  }
+
+  &.redPacketOpened {
+    .top {
+      color: ${({ type }) => RedPacketCssColorConfig[type]?.highLightColor};
     }
   }
 
@@ -405,20 +351,14 @@ export const RedPacketOpen = ({
   const { t } = useTranslation();
   const content = React.useMemo(() => {
     return (
-      <Box display={"flex"} flex={1} onClick={onOpen}>
+      <Box display={"flex"} flex={1} onClick={onOpen} flexDirection={"column"}>
         <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
           <Box display={"flex"} position={"absolute"} className={"open"}>
             {t("labelOpen")}
           </Box>
         </Box>
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
-          <Typography
-            color={"inherit"}
-            paddingTop={1 / 2}
-            className={"secondary"}
-          >
-            {sender}
-          </Typography>
+          <Typography color={"inherit"}>{sender}</Typography>
           {/*<Typography*/}
           {/*  color={"inherit"}*/}
           {/*  variant={"h4"}*/}
@@ -430,7 +370,7 @@ export const RedPacketOpen = ({
           {/*  {t("labelLuckyRedPacketTimeout")}*/}
           {/*</Typography>*/}
         </Box>
-        <Box display={"flex"} className={"middle"}>
+        <Box display={"flex"} className={"middle"} flexDirection={"column"}>
           <Typography
             color={"inherit"}
             variant={"h4"}
@@ -586,10 +526,6 @@ export const RedPacketDetailStyled = styled(Box)`
   background-color: var(--color-box);
 ` as typeof Box;
 
-export const RedPacketDetail = () => {
-  return <RedPacketDetailStyled />;
-};
-
 export type RedPacketTimeoutProps = RedPacketDefault & {
   sender: string;
   memo: string;
@@ -669,5 +605,86 @@ export const RedPacketTimeout = ({
         </Box>
       </Box>
     </RedPacketBg>
+  );
+};
+const BoxStyle = styled(Box)`
+  background: var(--color-box);
+  border-radius: ${({ theme }) => theme.unit}px;
+
+  .top {
+    border-radius: ${({ theme }) => theme.unit}px;
+    border-bottom-right-radius: 100%;
+    border-bottom-left-radius: 100%;
+  }
+`;
+export const RedPacketDetail = ({
+  render,
+  memo,
+  amountStr,
+  totalReceived,
+  countReceived,
+}: any) => {
+  const { t } = useTranslation("common");
+
+  return (
+    <BoxStyle flex={1}>
+      <Box
+        className={"top"}
+        width={"100%"}
+        sx={{
+          background: RedPacketColorConfig.default.startColor,
+          height: "88px",
+        }}
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+      >
+        <Typography
+          variant={"body1"}
+          color={RedPacketColorConfig.default.fontColor}
+        >
+          {t("labelLuckyRedPacket")}
+        </Typography>
+      </Box>
+      <Box
+        flex={1}
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
+        marginY={2}
+      >
+        <Typography variant={"body1"}>{render}</Typography>
+        <Typography
+          variant={"body2"}
+          color={"textThird"}
+          whiteSpace={"pre-line"}
+          textAlign={"center"}
+          marginTop={1 / 2}
+          paddingX={2}
+        >
+          {memo}
+        </Typography>
+        <Typography variant={"h4"} color={"textThird"} marginTop={1}>
+          {amountStr}
+        </Typography>
+      </Box>
+      <Divider orientation={"horizontal"} sx={{ borderWidth: 3 }} />
+      <Box
+        flex={1}
+        display={"flex"}
+        justifyContent={"stretch"}
+        flexDirection={"column"}
+        paddingX={1}
+      >
+        <Typography variant={"body1"} color={"textThird"} marginY={1 / 2}>
+          {t("labelRedPacketReceivedRecord", {
+            value: countReceived,
+            total: totalReceived,
+          })}
+        </Typography>
+        <Divider orientation={"horizontal"} sx={{ borderWidth: 1 }} />
+        <Box flex={1} overflow={"scroll"} paddingX={1}></Box>
+      </Box>
+    </BoxStyle>
   );
 };

@@ -491,14 +491,14 @@ export const DualBase = (props: PanelProps) => {
 
 export const RedPacketBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelReaPacketTitle",
+    title: "labelRedPacketTitle",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };
 
 export const RedPacketOpenBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelReaPacketOpen",
+    title: "labelRedPacketOpen",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };

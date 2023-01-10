@@ -15,6 +15,7 @@ import {
   AssetTitleProps,
   RedPacketBgOpened,
   RedPacketClock,
+  RedPacketDetail,
   RedPacketOpen,
   RedPacketQRCode,
   RedPacketTimeout,
@@ -302,7 +303,15 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
           marginY={2}
         >
           <Grid item>
-            <RedPacketOpen />
+            <RedPacketOpen
+              amountStr={"1,000 LRC"}
+              sender={"0x01....0101"}
+              memo={
+                "back test back test back test back test  back test back test"
+              }
+              viewDetail={() => undefined}
+              onOpen={() => undefined}
+            />
           </Grid>
           <Grid item>
             <RedPacketClock
@@ -357,6 +366,18 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
               viewDetail={() => undefined}
             />
           </Grid>
+          <Grid item>
+            <RedPacketDetail
+              totalReceived={1}
+              countReceived={1000}
+              amountStr={"1,000 LRC"}
+              render={"0x01....0101"}
+              memo={
+                "back test back test back test back test  back test back test"
+              }
+            />
+          </Grid>
+
           {/*<Grid item xs={4}>*/}
           {/*  <RedPacketCard*/}
           {/*    luckyTokenItem={REDPACKETMOCK}*/}

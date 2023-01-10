@@ -1345,8 +1345,8 @@ export default {
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
     "Token amount for each red packet is randomized",
-  labelReaPacketTitle: "Send Red Packet",
-  labelReaPacketWaitingBlock: "Block is not ready",
+  labelRedPacketTitle: "Send Red Packet",
+  labelRedPacketWaitingBlock: "Block is not ready",
   labelShare: "Share",
   labelRelayRedPacket: "Relay Red Packet",
   labelLuckyRedPacket: "Lucky Red Packet",
@@ -1355,7 +1355,8 @@ export default {
   labelLuckyRedPacketDetail: "View red packet details",
   labelRedpacketOpenInProgress: "Processing...",
   labelRedpacketOpenFailed: "Open red packet failed!",
-  labelReaPacketOpen: "Open Red Packet",
+  labelRedPacketOpen: "Open Red Packet",
+  labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
 
   // labelClaimWithdrawEnterToken: "Select Token",
 };
