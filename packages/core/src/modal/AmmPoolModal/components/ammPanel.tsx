@@ -83,7 +83,6 @@ export const AmmPanelView = ({
     onAmmClick: onAmmAddClick,
     btnStatus: addBtnStatus,
     btnI18nKey: ammDepositBtnI18nKey,
-    // updateJoinFee,
     updatePageAmmJoin,
   } = useAmmJoin({
     getFee,

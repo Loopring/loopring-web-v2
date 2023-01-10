@@ -29,6 +29,8 @@ export type PageAmmJoin = {
 export type PageAmmExit = {
   volA_show: number | undefined;
   volB_show: number | undefined;
+  volA: number | undefined;
+  volB: number | undefined;
   fees: sdk.LoopringMap<sdk.OffchainFeeInfo>;
   fee: number;
   request: sdk.ExitAmmPoolRequest | undefined;

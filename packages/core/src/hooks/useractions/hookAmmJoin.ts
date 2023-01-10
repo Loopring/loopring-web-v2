@@ -97,23 +97,18 @@ export const useAmmJoin = ({
   const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
   const [baseMinAmt, setBaseMinAmt] = React.useState<any>();
   const [quoteMinAmt, setQuoteMinAmt] = React.useState<any>();
+  const {
+    modals: {
+      isShowAmm: { isShow },
+    },
+    // setShowAmm,
+  } = useOpenModals();
 
   React.useEffect(() => {
-    if (account.readyState !== AccountStatus.ACTIVATED && pair) {
-      const btnInfo = accountStaticCallBack(btnLabelNew);
-
-      myLog("btnInfo:", btnInfo);
-
-      if (typeof btnInfo === "string") {
-        updatePageAmmJoinBtn({
-          btnStatus: TradeBtnStatus.AVAILABLE,
-          btnI18nKey: btnInfo,
-        });
-      }
-
+    if (isShow && pair) {
       initAmmData(pair, undefined, true);
     }
-  }, [account.readyState, pair, stob, updatePageAmmJoinBtn]);
+  }, [isShow && pair]);
 
   React.useEffect(() => {
     if (
@@ -122,6 +117,14 @@ export const useAmmJoin = ({
       ammData.coinB.belong
     ) {
       updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]));
+    } else if (account.readyState !== AccountStatus.ACTIVATED) {
+      const btnInfo = accountStaticCallBack(btnLabelNew);
+      if (typeof btnInfo === "string") {
+        updatePageAmmJoinBtn({
+          btnStatus: TradeBtnStatus.AVAILABLE,
+          btnI18nKey: btnInfo,
+        });
+      }
     }
   }, [account.readyState, ammData, updatePageAmmJoinBtn]);
 
@@ -621,7 +624,7 @@ export const useAmmJoin = ({
     btnStatus,
     onAmmClick,
     btnI18nKey,
-    updateJoinFee,
+    // updateJoinFee,
     updatePageAmmJoin,
   };
 };
