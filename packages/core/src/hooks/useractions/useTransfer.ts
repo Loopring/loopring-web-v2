@@ -573,10 +573,13 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         volumeToCountAsBigNumber(feeInfo.belong, feeInfo.feeRaw ?? 0)?.times(
           tokenPrices[feeInfo.belong]
         ) ?? undefined;
-      return feeDollar
-        ? PriceTag[CurrencyToTag[currency]] +
+
+      return feeDollar && currency && forexMap[currency]
+        ? "～" +
+            PriceTag[CurrencyToTag[currency]] +
             getValuePrecisionThousand(
-              (feeDollar ?? 0) * (forexMap[currency] ?? 0),
+              // @ts-ignore
+              feeDollar * forexMap[currency],
               2,
               2,
               2,

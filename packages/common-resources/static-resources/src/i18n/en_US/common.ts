@@ -1295,7 +1295,6 @@ export default {
     "Please confirm to send red packet {{value}} {{symbol}}.",
   labelRedPacketSendDenied:
     "You rejected to send {{value}} {{symbol}} red packet.",
-
   labelRedPacketRecordTitle: "My Red Packet Record",
   labelRedPacketReceived: "Received",
   labelRedPacketSend: "Send",
@@ -1305,8 +1304,7 @@ export default {
     "Please waiting a while, Banxa service is not available currently.",
   labelL2toL2AddressFeePaid: "Active account fee had paid",
   labelL2toL2AddressFeeActiveFee:
-    "You can choose to pay their activation fee. \n" +
-    "Pay recipient's L2 activation fee max cost: {{value}}",
+    "Pay recipient's L2 activation fee: {{value}}",
   // "You can choose to pay their activation fee {{fee}} {{symbol}}?",
   // "The recipient does not have Loopring L2 activated. You can choose to pay their activation fee. "\n
   labelL2toL2FeeWithActive: "Active {{addr}} L2 & Transfer Fee",
@@ -1361,5 +1359,5 @@ export default {
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:
     "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
-  // labelClaimWithdrawEnterToken: "Select Token",
+  labelL2toL2FeeWithActive: "Fee (including activation fee)",
 };

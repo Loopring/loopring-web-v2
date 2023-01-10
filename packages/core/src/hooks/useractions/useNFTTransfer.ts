@@ -587,10 +587,12 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         volumeToCountAsBigNumber(feeInfo.belong, feeInfo.feeRaw ?? 0)?.times(
           tokenPrices[feeInfo.belong]
         ) ?? undefined;
-      return feeDollar
-        ? PriceTag[CurrencyToTag[currency]] +
+      return feeDollar && currency && forexMap[currency]
+        ? "～" +
+            PriceTag[CurrencyToTag[currency]] +
             getValuePrecisionThousand(
-              (feeDollar ?? 0) * (forexMap[currency] ?? 0),
+              // @ts-ignore
+              feeDollar * forexMap[currency],
               2,
               2,
               2,
@@ -665,7 +667,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     },
     // isConfirmTransfer,
     sureItsLayer2,
-    tradeData: {...nftTransferValue} as unknown as R,
+    tradeData: { ...nftTransferValue } as unknown as R,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     transferBtnStatus: btnStatus,
