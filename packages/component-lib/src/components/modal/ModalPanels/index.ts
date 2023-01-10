@@ -35,5 +35,4 @@ export * from "./ThirdPanelReturn";
 export * from "./CreateRedPacketPanel";
 
 export * from "./ClaimWithdraw";
-
-export * from "./Redpacket";
+export * from "./RedPacket";

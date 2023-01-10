@@ -491,7 +491,7 @@ export const DualBase = (props: PanelProps) => {
 
 export const RedPacketBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelRedPacketTitle",
+    title: "labelSendRedPacketTitle",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };
