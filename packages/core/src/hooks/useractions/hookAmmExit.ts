@@ -100,38 +100,60 @@ export const useAmmExit = ({
   const [quoteMinAmt, setQuoteMinAmt] = React.useState<any>();
   const [lpMinAmt, setLpMinAmt] = React.useState<any>();
 
+  // React.useEffect(() => {
+  //   if (account.readyState !== AccountStatus.ACTIVATED || pair) {
+  //     const btnInfo = accountStaticCallBack(btnLabelNew);
+  //
+  //     if (typeof btnInfo === "string") {
+  //       updatePageAmmExitBtn({ btnI18nKey: btnInfo });
+  //     }
+  //
+  //     initAmmData(pair, undefined, true);
+  //   }
+  // }, [account.readyState, pair]);
+  //
+  // React.useEffect(() => {
+  //   if (account.readyState === AccountStatus.ACTIVATED && ammData) {
+  //     const btnInfo = accountStaticCallBack(btnLabelNew, [
+  //       { ammData, volA_show, volB_show },
+  //     ]);
+  //     updatePageAmmExitBtn(btnInfo);
+  //   }
+  // }, [account.readyState, isLoading, ammData, volA_show, volB_show]);
+  const {
+    modals: {
+      isShowAmm: { isShow },
+    },
+    // setShowAmm,
+  } = useOpenModals();
+
   React.useEffect(() => {
-    if (account.readyState !== AccountStatus.ACTIVATED && pair) {
-      const btnInfo = accountStaticCallBack(btnLabelNew);
-
-      if (typeof btnInfo === "string") {
-        updatePageAmmExitBtn({ btnI18nKey: btnInfo });
-      }
-
+    if (isShow && pair) {
       initAmmData(pair, undefined, true);
     }
-  }, [account.readyState, pair, stob, updatePageAmmExitBtn]);
+  }, [isShow && pair]);
 
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED && ammData) {
-      const btnInfo = accountStaticCallBack(btnLabelNew, [
-        { ammData, volA_show, volB_show },
-      ]);
-      updatePageAmmExitBtn(btnInfo);
+    if (
+      account.readyState === AccountStatus.ACTIVATED &&
+      ammData?.coinA?.belong &&
+      ammData?.coinB?.belong
+    ) {
+      updatePageAmmExitBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]));
+    } else if (account.readyState !== AccountStatus.ACTIVATED) {
+      const btnInfo = accountStaticCallBack(btnLabelNew);
+      if (typeof btnInfo === "string") {
+        updatePageAmmExitBtn({
+          btnStatus: TradeBtnStatus.AVAILABLE,
+          btnI18nKey: btnInfo,
+        });
+      }
     }
-  }, [account.readyState, ammData, volA_show, volB_show, updatePageAmmExitBtn]);
+  }, [account.readyState, isLoading, ammData, volA_show, volB_show]);
 
   const initAmmData = React.useCallback(
-    async (pair: any, walletMap: any, isReset: boolean = false) => {
-      const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT);
-
-      let fee = undefined;
-      let fees = [];
-
-      if (feeInfo?.fee && feeInfo?.fees) {
-        fee = feeInfo?.fee.toNumber();
-        fees = feeInfo?.fees;
-      }
+    (pair: any, walletMap: any, isReset: boolean = false) => {
+      const { ammData, fee } = store.getState()._router_pageAmmPool.ammExit;
 
       const _ammCalcData = ammPairInit({
         fee,
@@ -147,22 +169,15 @@ export const useAmmExit = ({
         ammPoolSnapshot: snapShotData?.ammPoolSnapshot,
       });
 
-      const feePatch = {
-        fee,
-        fees,
-      };
-
-      myLog("exit feePatch:", feePatch);
-
-      if (isReset) {
-        updatePageAmmExit({ ammCalcData: _ammCalcData, ...feePatch });
-      } else {
-        updatePageAmmExit({
-          ammCalcData: { ...ammCalcData, ..._ammCalcData },
-          ...feePatch,
-        });
-      }
-
+      let newAmmData: any = isReset
+        ? {
+            coinA: { belong: undefined } as any,
+            coinB: { belong: undefined } as any,
+            coinLP: { belong: undefined } as any,
+            slippage: initSlippage,
+          }
+        : { ...ammData };
+      myLog("newAmmData: isReset", newAmmData, isReset);
       if (
         _ammCalcData.lpCoin &&
         _ammCalcData.myCoinA &&
@@ -202,20 +217,41 @@ export const useAmmExit = ({
             : undefined
         );
 
-        const newAmmData = {
+        newAmmData = {
+          ...newAmmData,
           coinA: _ammCalcData.myCoinA,
           coinB: _ammCalcData.myCoinB,
-          coinLP: _ammCalcData.lpCoin,
+          coinLP: isReset
+            ? {
+                ..._ammCalcData.lpCoin,
+                tradeValue: undefined,
+              }
+            : {
+                ..._ammCalcData.lpCoin,
+                tradeValue: ammData?.coinLP?.tradeValue,
+              },
           slippage: initSlippage,
         };
-
-        updatePageAmmExit({ ammData: newAmmData });
+        updatePageAmmExit({
+          ammData: newAmmData,
+          ammCalcData: { ...ammCalcData, ..._ammCalcData },
+          // ...feePatch,
+        });
       } else {
         myLog(
           "check:",
           _ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB
         );
         myLog("tokenMap:", tokenMap);
+        updatePageAmmExit({
+          ammCalcData: { ...ammCalcData, ..._ammCalcData },
+        });
+      }
+      myLog("newAmmData:", newAmmData);
+
+      if (fee === undefined || fee == 0 || isReset) {
+        myLog("updateExitFee", fee, isReset);
+        updateExitFee();
       }
     },
     [
@@ -224,7 +260,6 @@ export const useAmmExit = ({
       tokenMap,
       ammCalcData,
       ammMap,
-      updatePageAmmExit,
       setBaseToken,
       setQuoteToken,
       setBaseMinAmt,
@@ -233,9 +268,13 @@ export const useAmmExit = ({
   );
 
   const btnLabelActiveCheck = React.useCallback(
-    ({
-      ammData,
-    }): { btnStatus?: TradeBtnStatus; btnI18nKey: string | undefined } => {
+    (
+      {
+        // ammData,
+      }
+    ): { btnStatus?: TradeBtnStatus; btnI18nKey: string | undefined } => {
+      const { ammData, fee } = store.getState()._router_pageAmmPool.ammExit;
+
       if (isLoading) {
         return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined };
       } else {
@@ -243,9 +282,11 @@ export const useAmmExit = ({
           if (
             ammData === undefined ||
             ammData?.coinLP?.tradeValue === undefined ||
-            ammData?.coinLP?.tradeValue === 0
+            ammData?.coinLP?.tradeValue === 0 ||
+            fee === undefined ||
+            fee === 0
           ) {
-            myLog("will DISABLED! ", ammData);
+            myLog("will DISABLED! ", ammData, fee);
 
             return {
               btnStatus: TradeBtnStatus.DISABLED,
@@ -257,7 +298,6 @@ export const useAmmExit = ({
               btnI18nKey: undefined,
             };
           }
-        } else {
         }
       }
 
@@ -274,7 +314,6 @@ export const useAmmExit = ({
       quoteMinAmt,
       lpMinAmt,
       isLoading,
-      updatePageAmmExit,
     ]
   );
 
@@ -283,23 +322,24 @@ export const useAmmExit = ({
   });
 
   const updateExitFee = React.useCallback(async () => {
+    const { ammCalcData } = store.getState()._router_pageAmmPool.ammExit;
     if (pair?.coinBInfo?.simpleName && ammCalcData) {
+      setIsLoading(true);
       const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT);
-
+      const ammExit = store.getState()._router_pageAmmPool.ammExit;
       if (feeInfo?.fee && feeInfo?.fees) {
-        const newAmmCalcData = {
-          ...ammCalcData,
-          fee: feeInfo?.fee.toString() + " " + pair.coinBInfo.simpleName,
-        };
-
         updatePageAmmExit({
           fee: feeInfo?.fee.toNumber(),
           fees: feeInfo?.fees,
-          ammCalcData: newAmmCalcData,
+          ammCalcData: {
+            ...ammExit.ammCalcData,
+            fee: feeInfo?.fee.toString() + " " + pair.coinBInfo.simpleName,
+          } as any,
         });
       }
+      setIsLoading(false);
     }
-  }, [updatePageAmmExit, ammCalcData, pair]);
+  }, [pair]);
 
   const handleExit = React.useCallback(
     async ({ data, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
@@ -313,6 +353,7 @@ export const useAmmExit = ({
         return;
       }
 
+      const ammExit = store.getState()._router_pageAmmPool.ammExit;
       const { slippage } = data;
 
       const slippageReal = sdk.toBig(slippage).div(100).toString();
@@ -328,7 +369,8 @@ export const useAmmExit = ({
       }
 
       let newAmmData = {
-        slippage: ammData.slippage,
+        ...ammData,
+        ...ammExit.ammData,
       };
 
       let rawVal = data.coinLP.tradeValue;
@@ -351,21 +393,20 @@ export const useAmmExit = ({
           0
         );
 
-        newAmmData["coinA"] = { ...ammData.coinA, tradeValue: volA_show };
-        newAmmData["coinB"] = { ...ammData.coinB, tradeValue: volB_show };
-
+        newAmmData.coinA = { ...ammData.coinA, tradeValue: volA_show };
+        newAmmData.coinB = { ...ammData.coinB, tradeValue: volB_show };
         ammDataPatch = { request, volA_show, volB_show };
+        updatePageAmmExit({
+          ...ammDataPatch,
+          ammData: {
+            ...newAmmData,
+            coinLP: data.coinLP,
+            slippage: data.slippage,
+          },
+        });
+      } else {
       }
-
-      updatePageAmmExit({
-        ...ammDataPatch,
-        ammData: {
-          ...ammData,
-          ...newAmmData,
-          coinLP: data.coinLP,
-          slippage: data.slippage,
-        },
-      });
+      myLog("newAmmData", newAmmData, data.coinLP);
     },
     [updatePageAmmExit, idIndex, marketArray, marketMap, baseToken, quoteToken]
   );
@@ -410,14 +451,14 @@ export const useAmmExit = ({
           burnedReq,
           account.apiKey
         );
-        updatePageAmmExit({
-          ammData: {
-            ...ammData,
-            ...{
-              coinLP: { ...ammData.coinLP, tradeValue: 0 },
-            },
-          },
-        });
+        // updatePageAmmExit({
+        //   ammData: {
+        //     ...ammData,
+        //     ...{
+        //       coinLP: { ...ammData.coinLP, tradeValue: 0 },
+        //     },
+        //   },
+        // });
         myLog("exit ammpool request:", {
           ...ammExit.request,
           domainSeparator: ammInfo.domainSeparator,
@@ -484,10 +525,19 @@ export const useAmmExit = ({
           content: t("labelExitAmmFailed"),
         });
       }
-      setIsLoading(false);
-      walletLayer2Service.sendUserUpdate();
       return;
     }
+    setIsLoading(false);
+    updatePageAmmExit({
+      ammData: {
+        ...ammData,
+        ...{
+          coinLP: { ...ammData.coinLP, tradeValue: 0 },
+        },
+      },
+    });
+    walletLayer2Service.sendUserUpdate();
+    await updateExitFee();
   }, [ammData, account, ammInfo]);
   const submitAmmExit = React.useCallback(async () => {
     setIsLoading(true);
@@ -584,7 +634,7 @@ export const useAmmExit = ({
     btnStatus,
     onAmmClick,
     btnI18nKey,
-    updateExitFee,
+    // updateExitFee,
     exitSmallOrderCloseClick: (isAgree = false) => {
       if (isAgree) {
         submitAmmExit();
