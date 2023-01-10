@@ -694,7 +694,6 @@ export const useDefiTrade = <
     setToastOpen,
     t,
   ]);
-  // const isNoBalance = ;
   const onSubmitBtnClick = React.useCallback(async () => {
     const tradeDefi = store.getState()._router_tradeDefi.tradeDefi;
     if (
@@ -738,9 +737,6 @@ export const useDefiTrade = <
       handleSubmit();
     }
   }, [tokenMap, coinSellSymbol, handleOnchange, handleSubmit]);
-
-  // useWalletLayer2Socket({ walletLayer2Callback });
-
   const {
     btnStatus,
     onBtnClick,
