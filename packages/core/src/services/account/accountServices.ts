@@ -22,6 +22,7 @@ import {
   setShowWithdraw,
   setShowActiveAccount,
   setShowExportAccount,
+  setShowResetAccount,
 } from "@loopring-web/component-lib";
 
 const subject = new Subject<{ status: AccountCommands; data: any }>();
@@ -111,6 +112,7 @@ export const accountServices = {
     store.dispatch(setShowNFTDeploy({ isShow: false }));
     store.dispatch(setShowNFTMintAdvance({ isShow: false }));
     store.dispatch(setShowActiveAccount({ isShow: false }));
+    store.dispatch(setShowResetAccount({ isShow: false }));
     store.dispatch(setShowExportAccount({ isShow: false }));
     banxaService.banxaEnd({
       reason: OrderENDReason.UserCancel,
