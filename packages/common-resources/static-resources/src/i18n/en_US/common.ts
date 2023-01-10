@@ -1306,7 +1306,7 @@ export default {
   labelL2toL2AddressFeePaid: "Active account fee had paid",
   labelL2toL2AddressFeeActiveFee:
     "You can choose to pay their activation fee \n" +
-    "Activation Fee: {{fee}} {{symbol}}",
+    "Max activation cost: {{value}}",
   // "You can choose to pay their activation fee {{fee}} {{symbol}}?",
   // "The recipient does not have Loopring L2 activated. You can choose to pay their activation fee. "\n
   labelL2toL2FeeWithActive: "Active {{addr}} L2 & Transfer Fee",

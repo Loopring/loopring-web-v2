@@ -12,6 +12,7 @@ import {
   SwitchData,
   TransferProps,
   useOpenModals,
+  useSettings,
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
@@ -25,6 +26,11 @@ import {
   WALLET_TYPE,
   LIVE_FEE_TIMES,
   SUBMIT_PANEL_AUTO_CLOSE,
+  FeeInfo,
+  PriceTag,
+  CurrencyToTag,
+  getValuePrecisionThousand,
+  EmptyValueTag,
 } from "@loopring-web/common-resources";
 
 import {
@@ -47,6 +53,8 @@ import {
   getIPFSString,
   useWalletLayer2,
   LAST_STEP,
+  useTokenPrices,
+  volumeToCountAsBigNumber,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -66,7 +74,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
-  const { exchangeInfo, chainId, baseURL } = useSystem();
+  const { exchangeInfo, chainId, baseURL, forexMap } = useSystem();
+  const { currency } = useSettings();
+  const { tokenPrices } = useTokenPrices();
+
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const { updateWalletLayer2 } = useWalletLayer2();
 
@@ -134,7 +145,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const {
     chargeFeeTokenList: activeAccountFeeList,
     checkFeeIsEnough: checkActiveFeeIsEnough,
-    resetIntervalTime: resetActiveIntervalTime,
+    // resetIntervalTime: resetActiveIntervalTime,
   } = useChargeFees({
     isActiveAccount: true,
     requestType: undefined as any,
@@ -220,10 +231,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       return;
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
-    checkActiveFeeIsEnough({
-      isRequiredAPI: true,
-      intervalTime: LIVE_FEE_TIMES,
-    });
+    // checkActiveFeeIsEnough({
+    //   isRequiredAPI: true,
+    //   // intervalTime: LIVE_FEE_TIMES,
+    // });
     if (nftTransferValue.nftData) {
       updateNFTTransferData({
         balance: sdk
@@ -259,11 +270,18 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       resetDefault();
     } else {
       resetIntervalTime();
-      resetActiveIntervalTime();
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: undefined as any,
+      });
     }
     return () => {
       resetIntervalTime();
       setAddress("");
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: undefined as any,
+      });
     };
   }, [isShow, info?.isShowLocal]);
 
@@ -550,7 +568,43 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       feeWithActive,
     ]
   );
-
+  // const activeFee = React.useMemo(() => {
+  //   // return activeAccountFeeList?.find(
+  //   //   (item: any) => item.belong == feeInfo.belong
+  //   // );
+  // }, [feeInfo, activeAccountFeeList]);
+  const activeAccountPrice = React.useMemo(() => {
+    if (
+      realAddr !== "" &&
+      isActiveAccount == false &&
+      activeAccountFeeList.length &&
+      activeAccountFeeList[0] &&
+      tokenPrices &&
+      activeAccountFeeList[0].feeRaw
+    ) {
+      const feeInfo: FeeInfo = activeAccountFeeList[0];
+      const feeDollar: any =
+        volumeToCountAsBigNumber(feeInfo.belong, feeInfo.feeRaw ?? 0)?.times(
+          tokenPrices[feeInfo.belong]
+        ) ?? undefined;
+      return feeDollar
+        ? PriceTag[CurrencyToTag[currency]] +
+            getValuePrecisionThousand(
+              (feeDollar ?? 0) * (forexMap[currency] ?? 0),
+              2,
+              2,
+              2,
+              true,
+              { floor: true }
+            )
+        : EmptyValueTag;
+    } else {
+      return;
+    }
+    // return activeAccountFeeList?.find(
+    //   (item: any) => item.belong == feeInfo.belong
+    // );
+  }, [isActiveAccount, activeAccountFeeList, tokenPrices, currency]);
   const handlePanelEvent = useCallback(
     async (data: SwitchData<R>, _switchType: "Tomenu" | "Tobutton") => {
       return new Promise<void>((res: any) => {
@@ -620,7 +674,8 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     addrStatus,
     feeInfo,
     chargeFeeTokenList,
-    activeAccountFeeList,
+    activeAccountPrice,
+    // activeAccountFeeList,
     // chargeFeeTransferList,
     isFeeNotEnough,
     handlePanelEvent,
