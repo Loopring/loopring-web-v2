@@ -13,7 +13,9 @@ import {
 } from "@loopring-web/common-resources";
 import QRCode from "qrcode-svg";
 
-export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
+export const RedPacketBg = styled(Box)<
+  BoxProps & { imageSrc?: string; type: string }
+>`
   display: flex;
   align-items: center;
   position: relative;
