@@ -47,6 +47,7 @@ export const useAmmExit = ({
   snapShotData,
   stob,
   btos,
+  setConfirmExitSmallOrder,
 }: {
   stob: string;
   btos: string;
@@ -56,6 +57,10 @@ export const useAmmExit = ({
     coinAInfo: CoinInfo<string> | undefined;
     coinBInfo: CoinInfo<string> | undefined;
   };
+  setConfirmExitSmallOrder: (props: {
+    open: boolean;
+    type: "Disabled" | "Mini";
+  }) => void;
   snapShotData:
     | {
         tickerData: sdk.TickerData | undefined;
@@ -82,7 +87,6 @@ export const useAmmExit = ({
   const { t } = useTranslation(["common", "error"]);
 
   const [isLoading, setIsLoading] = React.useState(false);
-
   const { idIndex, marketArray, marketMap, coinMap, tokenMap } = useTokenMap();
   const { ammMap } = useAmmMap();
   const { account, status: accountStatus } = useAccount();
@@ -232,14 +236,6 @@ export const useAmmExit = ({
     ({
       ammData,
     }): { btnStatus?: TradeBtnStatus; btnI18nKey: string | undefined } => {
-      const times = 1;
-
-      const validAmt = ammData?.coinLP?.tradeValue
-        ? sdk
-            .toBig(ammData?.coinLP?.tradeValue)
-            .gte(sdk.toBig(times * lpMinAmt))
-        : false;
-
       if (isLoading) {
         return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined };
       } else {
@@ -255,17 +251,10 @@ export const useAmmExit = ({
               btnStatus: TradeBtnStatus.DISABLED,
               btnI18nKey: "labelEnterAmount",
             };
-          } else if (validAmt) {
+          } else {
             return {
               btnStatus: TradeBtnStatus.AVAILABLE,
               btnI18nKey: undefined,
-            };
-          } else {
-            return {
-              btnStatus: TradeBtnStatus.DISABLED,
-              btnI18nKey: `labelLimitMin| ${times * lpMinAmt} ${
-                ammData?.coinLP?.belong
-              } `,
             };
           }
         } else {
@@ -396,143 +385,162 @@ export const useAmmExit = ({
       account,
     });
   };
-
-  const ammCalculator = React.useCallback(
-    async function (props) {
-      setIsLoading(true);
-      updatePageAmmExitBtn({ btnStatus: TradeBtnStatus.LOADING });
-      if (ammInfo?.exitDisable) {
-        setShowTradeIsFrozen({
-          isShow: true,
-          messageKey: "labelNoticeForMarketFrozen",
-          type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
-        });
-        setIsLoading(false);
-      } else if (!exitAmm.enable) {
-        setShowTradeIsFrozen({
-          isShow: true,
-          type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
-        });
-        setIsLoading(false);
-      } else {
-        if (
-          !LoopringAPI.ammpoolAPI ||
-          !LoopringAPI.userAPI ||
-          !request ||
-          !account?.eddsaKey?.sk
-        ) {
-          myLog(
-            " onAmmJoin ammpoolAPI:",
-            LoopringAPI.ammpoolAPI,
-            "joinRequest:",
-            request
-          );
-
-          setToastOpen({
-            open: true,
-            type: "success",
-            content: t("labelJoinAmmFailed"),
-          });
-          setIsLoading(false);
-          walletLayer2Service.sendUserUpdate();
-          return;
-        }
-
-        let req = _.cloneDeep(request);
-
+  const sendRequest = React.useCallback(async () => {
+    const ammExit = store.getState()._router_pageAmmPool.ammExit;
+    try {
+      if (
+        LoopringAPI.ammpoolAPI &&
+        LoopringAPI.userAPI &&
+        ammExit.request &&
+        account?.eddsaKey?.sk &&
+        ammInfo?.domainSeparator
+      ) {
+        // let req = _.cloneDeep(request);
         const patch: sdk.AmmPoolRequestPatch = {
           chainId: store.getState().system.chainId as sdk.ChainId,
           ammName: ammInfo?.__rawConfig__.name ?? "",
           poolAddress: ammInfo?.address ?? "",
           eddsaKey: account.eddsaKey.sk,
         };
-
         const burnedReq: sdk.GetNextStorageIdRequest = {
           accountId: account.accountId,
-          sellTokenId: req.exitTokens.burned.tokenId as number,
+          sellTokenId: ammExit.request.exitTokens.burned.tokenId as number,
         };
         const storageId0 = await LoopringAPI.userAPI.getNextStorageId(
           burnedReq,
           account.apiKey
         );
-
-        req.storageId = storageId0.offchainId;
-        if (ammInfo?.domainSeparator) {
-          req.domainSeparator = ammInfo.domainSeparator;
-        }
-
-        try {
-          myLog("---- try to exit req:", req);
-
-          updatePageAmmExit({
-            ammData: {
-              ...ammData,
-              ...{
-                coinLP: { ...ammData.coinLP, tradeValue: 0 },
-              },
+        updatePageAmmExit({
+          ammData: {
+            ...ammData,
+            ...{
+              coinLP: { ...ammData.coinLP, tradeValue: 0 },
             },
-          });
+          },
+        });
+        myLog("exit ammpool request:", {
+          ...ammExit.request,
+          domainSeparator: ammInfo.domainSeparator,
+          storageId: storageId0.offchainId,
+          validUntil: getTimestampDaysLater(DAYS),
+        });
 
-          req.validUntil = getTimestampDaysLater(DAYS);
-
-          myLog("exit ammpool req:", req);
-
-          const response = await LoopringAPI.ammpoolAPI.exitAmmPool(
-            req,
+        const response = await LoopringAPI.ammpoolAPI
+          .exitAmmPool(
+            {
+              ...ammExit.request,
+              domainSeparator: ammInfo.domainSeparator,
+              storageId: storageId0.offchainId,
+              validUntil: getTimestampDaysLater(DAYS),
+            },
             patch,
             account.apiKey
-          );
-
-          myLog("exit ammpool response:", response);
-
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            const errorItem =
-              SDK_ERROR_MAP_TO_UI[
-                (response as sdk.RESULT_INFO)?.code ?? 700001
-              ];
-            setToastOpen({
-              open: true,
-              type: "error",
-              content:
-                t("labelExitAmmFailed") +
-                " error: " +
-                (errorItem
-                  ? t(errorItem.messageKey, { ns: "error" })
-                  : (response as sdk.RESULT_INFO).message),
-            });
-          } else {
-            setToastOpen({
-              open: true,
-              type: "success",
-              content: t("labelExitAmmSuccess"),
-            });
-          }
-        } catch (reason) {
-          sdk.dumpError400(reason);
+          )
+          .finally();
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          throw response;
+        } else {
           setToastOpen({
             open: true,
-            type: "error",
-            content: t("labelExitAmmFailed"),
+            type: "success",
+            content: t("labelExitAmmSuccess"),
           });
-        } finally {
-          setIsLoading(false);
-          updateExitFee();
-          walletLayer2Service.sendUserUpdate();
         }
 
-        if (props.__cache__) {
-          makeCache(props.__cache__);
+        if (ammExit.ammData?.__cache__) {
+          makeCache(ammExit.ammData?.__cache__);
+        }
+      } else {
+        throw new Error("api not ready");
+      }
+    } catch (error: any) {
+      if (error?.message === "api not ready") {
+        setToastOpen({
+          open: true,
+          type: "error",
+          content: t("labelJoinAmmFailed"),
+        });
+      } else if ((error as sdk.RESULT_INFO)?.code) {
+        const errorItem =
+          SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001];
+        setToastOpen({
+          open: true,
+          type: "error",
+          content:
+            t("labelExitAmmFailed") +
+            " error: " +
+            (errorItem
+              ? t(errorItem.messageKey, { ns: "error" })
+              : (error as sdk.RESULT_INFO).message),
+        });
+      } else if (error?.message) {
+        sdk.dumpError400(error);
+        setToastOpen({
+          open: true,
+          type: "error",
+          content: t("labelExitAmmFailed"),
+        });
+      }
+      setIsLoading(false);
+      walletLayer2Service.sendUserUpdate();
+      return;
+    }
+  }, [ammData, account, ammInfo]);
+  const submitAmmExit = React.useCallback(async () => {
+    setIsLoading(true);
+    updatePageAmmExitBtn({ btnStatus: TradeBtnStatus.LOADING });
+
+    if (ammInfo?.exitDisable) {
+      setShowTradeIsFrozen({
+        isShow: true,
+        messageKey: "labelNoticeForMarketFrozen",
+        type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
+      });
+      setIsLoading(false);
+    } else if (!exitAmm.enable) {
+      setShowTradeIsFrozen({
+        isShow: true,
+        type: t("labelAmmExit") + ` ${ammInfo?.__rawConfig__.name}`,
+      });
+      setIsLoading(false);
+    } else {
+      sendRequest();
+    }
+  }, [request, account, t, updatePageAmmExit]);
+
+  const onSubmitBtnClick = React.useCallback(
+    async (_props) => {
+      const ammExit = store.getState()._router_pageAmmPool.ammExit;
+      if (ammExit.ammData.coinLP.tradeValue && ammExit.volB_show) {
+        // quoteValue < feeValue
+        const validAmt =
+          ammData?.coinLP?.tradeValue && ammExit.volB_show
+            ? sdk.toBig(ammExit.volB_show).gte(ammExit.fee)
+            : false;
+        // Lp value 15% will be charge for Fee should confirm, so for quote token is 15%*2 = 0.3
+        const validMiniAmt =
+          ammData?.coinLP?.tradeValue && ammExit.volB_show
+            ? sdk.toBig(ammExit.volB_show * 0.3).gte(ammExit.fee)
+            : false;
+        if (!validAmt) {
+          // quoteValue < feeValue
+          setConfirmExitSmallOrder({ open: true, type: "Disabled" });
+        } else if (!validMiniAmt) {
+          // Lp value 15% will be charge for Fee should confirm, so for quote token is 15%*2 = 0.3
+          setConfirmExitSmallOrder({ open: true, type: "Mini" });
+        } else {
+          submitAmmExit();
         }
       }
     },
-    [request, ammData, account, t, updatePageAmmExit]
+    [tokenMap, submitAmmExit]
   );
 
   const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
-    [fnType.ACTIVATED]: [ammCalculator],
+    [fnType.ACTIVATED]: [onSubmitBtnClick],
   });
   const onAmmClick = React.useCallback(
     (props: AmmExitData<IBData<any>>) => {
@@ -548,7 +556,6 @@ export const useAmmExit = ({
       setIsLoading(false);
     }
   }, [pair?.coinBInfo?.simpleName, snapShotData?.ammPoolSnapshot]);
-
   useWalletLayer2Socket({ walletLayer2Callback });
 
   React.useEffect(() => {
@@ -578,5 +585,10 @@ export const useAmmExit = ({
     onAmmClick,
     btnI18nKey,
     updateExitFee,
+    exitSmallOrderCloseClick: (isAgree = false) => {
+      if (isAgree) {
+        submitAmmExit();
+      }
+    },
   };
 };
