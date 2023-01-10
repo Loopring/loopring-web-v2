@@ -37,7 +37,7 @@ export const RedPacketSend_User_Denied = (props: PanelProps) => {
 export const RedPacketSend_In_Progress = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t(" labelRedPacketSendInProgress"),
+    describe1: props.t(" labelRedpacketSendInProgress"),
   };
   return <RedPacketBase {...propsPatch} {...props} />;
 };
@@ -46,7 +46,7 @@ export const RedPacketSend_In_Progress = (props: PanelProps) => {
 export const RedPacketSend_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
-    describe1: props.t(" labelRedPacketSendSuccess", {
+    describe1: props.t(" labelRedpacketSendSuccess", {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -58,7 +58,7 @@ export const RedPacketSend_Success = (props: PanelProps) => {
 export const RedPacketSend_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t(" labelRedPacketSendFailed", {
+    describe1: props.t(" labelRedpacketSendFailed", {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -93,7 +93,7 @@ export const NFTRedPacketSend_User_Denied = (props: PanelProps) => {
 export const NFTRedPacketSend_In_Progress = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t("labelRedPacketSendInProgress"),
+    describe1: props.t("labelRedpacketSendInProgress"),
   };
   return <RedPacketBase {...propsPatch} {...props} />;
 };
@@ -101,7 +101,7 @@ export const NFTRedPacketSend_In_Progress = (props: PanelProps) => {
 export const NFTRedPacketSend_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
-    describe1: props.t(" labelRedPacketSendSuccess", {
+    describe1: props.t(" labelRedpacketSendSuccess", {
       symbol: sanitize(props.symbol ?? "NFT").toString(),
       value: props.value,
     }),
@@ -112,7 +112,7 @@ export const NFTRedPacketSend_Success = (props: PanelProps) => {
 export const NFTRedPacketSend_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t(" labelRedPacketSendFailed", {
+    describe1: props.t(" labelRedpacketSendFailed", {
       symbol: sanitize(props.symbol ?? "NFT").toString(),
       value: props.value,
     }),
@@ -123,7 +123,7 @@ export const NFTRedPacketSend_Failed = (props: PanelProps) => {
 export const RedPacketOpen_In_Progress = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t(" labelRedPacketOpenInProgress"),
+    describe1: props.t(" labelRedpacketOpenInProgress"),
   };
   return <RedPacketOpenBase {...propsPatch} {...props} />;
 };
@@ -131,7 +131,7 @@ export const RedPacketOpen_In_Progress = (props: PanelProps) => {
 export const RedPacketOpen_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t("labelRedPacketOpenFailed"),
+    describe1: props.t("labelRedpacketOpenFailed"),
   };
   return <RedPacketOpenBase {...propsPatch} {...props} />;
 };
