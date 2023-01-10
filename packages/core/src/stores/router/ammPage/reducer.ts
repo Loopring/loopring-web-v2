@@ -30,6 +30,8 @@ const initJoinState: PageAmmJoin = {
 const initExitState: PageAmmExit = {
   volA_show: undefined,
   volB_show: undefined,
+  volA: undefined,
+  volB: undefined,
   fees: {},
   fee: 0,
   request: undefined,

@@ -1309,7 +1309,7 @@ export default {
   labelClaimWithdrawSubmit: "Claim has been submitted",
   labelClaimWithdrawToken: "Token Amount",
   labelRedPacketSendSubmit: "Send red packet has been submitted. <1></1>",
-  labelRedPacketSendSuccess: "RedPacket Send Successful. <1></1>",
+  labelRedPacketSendSuccess: "Red packet Send Successful. <1></1>",
   labelRedPacketSendFailed: "Send red packet of {{value}} {{symbol}} failed!",
   labelRedPacketSendInProgress: "Processing...",
   labelRefreshRedPacket: "Refresh List",
@@ -1344,6 +1344,9 @@ export default {
   labelRedPacketOpenFailed: "Open red packet failed!",
   labelRedPacketOpen: "Open Red Packet",
   labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
-
+  labelAmmExitMiniOrderDisabled:
+    "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
+  labelAmmExitMiniOrderMini:
+    "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
   // labelClaimWithdrawEnterToken: "Select Token",
 };

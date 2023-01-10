@@ -99,14 +99,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       let _requestType = feeWithActive
         ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
         : sdk.OffchainFeeReqType.TRANSFER;
-
-      myLog(
-        "transfer updateData",
-        feeWithActive,
-        requestType,
-        _requestType,
-        _requestType == requestType
-      );
       if (_requestType === requestType) {
         const transferValue = store.getState()._router_modalData.transferValue;
         updateTransferData({ ...transferValue, fee });

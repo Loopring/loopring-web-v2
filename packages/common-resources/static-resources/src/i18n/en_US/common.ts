@@ -1253,8 +1253,6 @@ export default {
   labelTo: "To",
   labeltransfer: "Transfer",
   labelwithdraw: "Withdrawal",
-  labeldeposit: "Deposit",
-  labelclaim: "Claim",
   labelDeposit: "Deposit",
   labelFiatAmount: "Fiat Amount",
   labelAssetRedPackets: "Red Packets",
@@ -1309,7 +1307,6 @@ export default {
     "Pay recipient's L2 activation fee max cost: {{value}}",
   // "You can choose to pay their activation fee {{fee}} {{symbol}}?",
   // "The recipient does not have Loopring L2 activated. You can choose to pay their activation fee. "\n
-  labelL2toL2FeeWithActive: "Active {{addr}} L2 & Transfer Fee",
   labelImportRedPacket: "Import QR code to receive red packet",
   labelCreateRedPacketTitle: "Send Red Packet",
   labelClaimWithdrawFee: "Fee",
@@ -1357,6 +1354,9 @@ export default {
   labelRedPacketOpenFailed: "Open red packet failed!",
   labelRedPacketOpen: "Open Red Packet",
   labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
-
-  // labelClaimWithdrawEnterToken: "Select Token",
+  labelAmmExitMiniOrderDisabled:
+    "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
+  labelAmmExitMiniOrderMini:
+    "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
+  labelL2toL2FeeWithActive: "Fee (including activation fee)",
 };

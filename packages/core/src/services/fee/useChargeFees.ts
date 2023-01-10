@@ -487,22 +487,12 @@ export function useChargeFees({
     }
   };
 
-  // React.useEffect(() => {
-  //   if (needAmountRefresh) {
-  //     setAmount(amount);
-  //   }
-  // }, [amount]);React.useEffect(() => {
-  //   if (needAmountRefresh) {
-  //     setAmount(amount);
-  //   }
-  // }, [amount]);
-
   React.useEffect(() => {
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
       getFeeList.cancel();
     }
-    // myLog("tokenAddress", tokenAddress, requestType, account.readyState);
+
     if (
       (isActiveAccount &&
         ((requestType === "UPDATE_ACCOUNT_BY_NEW" &&

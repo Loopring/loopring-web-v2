@@ -30,7 +30,6 @@ import { SlippagePanel } from "../tool";
 import { useSettings } from "../../../../stores";
 import { SvgStyled } from "./styled";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { toBig } from "@loopring-web/loopring-sdk";
 
 import { useAmmViewData } from "./ammViewHook";
 
@@ -66,12 +65,26 @@ export const AmmWithdrawWrap = <
   ) as Array<number | string>;
   const [isPercentage, setIsPercentage] = React.useState(true);
 
-  const percentage =
-    ammData?.coinLP?.tradeValue && ammCalcData?.lpCoin?.tradeValue
-      ? (ammData.coinLP.tradeValue / ammCalcData.lpCoin.tradeValue) * 100
+  const percentage = React.useMemo(() => {
+    return ammData?.coinLP?.tradeValue && ammData.coinLP.balance
+      ? getValuePrecisionThousand(
+          (ammData.coinLP.tradeValue / ammData.coinLP.balance) * 100,
+          2,
+          2,
+          2,
+          false
+        )
       : 0;
-  const [_selectedPercentage, setSelectedPercentage] =
-    React.useState(percentage);
+  }, [ammData?.coinLP?.tradeValue, ammData.coinLP.balance]);
+
+  // const [_selectedPercentage, setSelectedPercentage] =
+  //   React.useState(percentage);
+  // myLog(
+  //   "_selectedPercentage",
+  //   ammData?.coinLP?.tradeValue,
+  //   ammData.coinLP.balance,
+  //   percentage
+  // );
 
   const [_isStoB, setIsStoB] = React.useState(
     typeof isStob !== "undefined" ? isStob : true
@@ -117,19 +130,20 @@ export const AmmWithdrawWrap = <
 
   const handleCountChange = React.useCallback(
     (ibData: IBData<I>, _ref: any) => {
-      myLog(_ref?.current, coinLPRef.current);
+      // myLog(_ref?.current, coinLPRef.current);
       if (_ref) {
         if (
           ammData?.coinLP.tradeValue !== ibData.tradeValue &&
           ammData?.coinLP.balance
         ) {
-          const percentageValue = toBig(ibData.tradeValue ?? 0)
-            .div(ammData.coinLP.balance)
-            .times(100)
-            .toFixed(2);
-          if (!isNaN(Number(percentageValue))) {
-            setSelectedPercentage(Number(percentageValue));
-          }
+          // const percentageValue = toBig(ibData.tradeValue ?? 0)
+          //   .div(ammData.coinLP.balance)
+          //   .times(100)
+          //   .toFixed(2);
+          // if (!isNaN(Number(percentageValue))) {
+          //   myLog("selected", Number(percentageValue));
+          //   setSelectedPercentage(Number(percentageValue));
+          // }
           onRemoveChangeEvent({
             tradeData: { ...ammData, coinLP: ibData },
             type: "lp",
@@ -147,7 +161,9 @@ export const AmmWithdrawWrap = <
 
   const onPercentage = (value: any) => {
     if (ammData?.coinLP && ammData?.coinLP?.belong) {
-      setSelectedPercentage(value);
+      myLog("selected", Number(value));
+
+      // setSelectedPercentage(value);
       const cloneLP = _.cloneDeep(ammData.coinLP);
 
       cloneLP.tradeValue = sdk
@@ -155,8 +171,6 @@ export const AmmWithdrawWrap = <
         .times(value)
         .div(100)
         .toNumber();
-
-      myLog("onPercentage:", value, " :", cloneLP.balance, cloneLP.tradeValue);
 
       handleCountChange(cloneLP, null);
     }
@@ -209,9 +223,7 @@ export const AmmWithdrawWrap = <
   });
 
   const showPercentage =
-    _selectedPercentage < 0 || _selectedPercentage > 100
-      ? EmptyValueTag + "%"
-      : `${_selectedPercentage}%`;
+    percentage < 0 || percentage > 100 ? EmptyValueTag + "%" : `${percentage}%`;
   const lpTradeValue = ammData?.coinLP?.tradeValue;
   let lpBalance: any = ammData?.coinLP?.balance;
   lpBalance = parseFloat(lpBalance);
@@ -227,7 +239,6 @@ export const AmmWithdrawWrap = <
   const miniB = ammData?.coinB?.tradeValue
     ? getValuePrecisionThousand(ammData?.coinB?.tradeValue)
     : EmptyValueTag;
-
   return (
     <Grid
       className={ammCalcData ? "" : "loading"}
@@ -271,7 +282,11 @@ export const AmmWithdrawWrap = <
             </Typography>
             <Box alignSelf={"stretch"} marginTop={1} marginX={2} height={49}>
               <BtnPercentage
-                selected={_selectedPercentage}
+                disabled={
+                  getDisabled() ||
+                  ammWithdrawBtnStatus === TradeBtnStatus.LOADING
+                }
+                selected={percentage}
                 anchors={[
                   {
                     value: 0,
@@ -548,7 +563,7 @@ export const AmmWithdrawWrap = <
               color={"primary"}
               onClick={() => {
                 onAmmRemoveClick(ammData);
-                setSelectedPercentage(0);
+                // setSelectedPercentage(0);
               }}
               loading={
                 !getDisabled() &&

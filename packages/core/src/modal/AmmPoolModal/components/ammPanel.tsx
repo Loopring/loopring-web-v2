@@ -2,6 +2,7 @@ import React from "react";
 import {
   AmmPanel,
   AmmPanelType,
+  ConfirmAmmExitMiniOrder,
   LoadingBlock,
   Toast,
 } from "@loopring-web/component-lib";
@@ -61,6 +62,10 @@ export const AmmPanelView = ({
   ammType?: keyof typeof AmmPanelType;
   getRecentAmmPoolTxs?: (props: { limit?: number; offset?: number }) => void;
 } & any) => {
+  const [confirmExitSmallOrder, setConfirmExitSmallOrder] = React.useState<{
+    open: boolean;
+    type: "Disabled" | "Mini";
+  }>({ open: false, type: "Disabled" });
   const {
     accountStatus,
     toastOpen,
@@ -78,7 +83,6 @@ export const AmmPanelView = ({
     onAmmClick: onAmmAddClick,
     btnStatus: addBtnStatus,
     btnI18nKey: ammDepositBtnI18nKey,
-    // updateJoinFee,
     updatePageAmmJoin,
   } = useAmmJoin({
     getFee,
@@ -95,6 +99,7 @@ export const AmmPanelView = ({
     onAmmClick: onAmmRemoveClick,
     btnStatus: removeBtnStatus,
     btnI18nKey: ammWithdrawBtnI18nKey,
+    exitSmallOrderCloseClick,
   } = useAmmExit({
     getFee,
     setToastOpen,
@@ -102,6 +107,7 @@ export const AmmPanelView = ({
     snapShotData,
     btos,
     stob,
+    setConfirmExitSmallOrder,
   });
   // const [currAmmData, setCurrAmmData] = React.useState<any>(null)
 
@@ -143,7 +149,14 @@ export const AmmPanelView = ({
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
       />
-
+      <ConfirmAmmExitMiniOrder
+        type={confirmExitSmallOrder.type}
+        handleClose={(_e: any, isAgree = false) => {
+          setConfirmExitSmallOrder({ open: false, type: "Disabled" });
+          exitSmallOrderCloseClick(isAgree);
+        }}
+        open={confirmExitSmallOrder.open}
+      />
       {pair ? (
         <>
           <AmmPanel
