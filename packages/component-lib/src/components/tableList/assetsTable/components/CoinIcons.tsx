@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, Box, BoxProps, styled } from "@mui/material";
-import { SoursURL } from "@loopring-web/common-resources";
+import { SoursURL, TokenType } from "@loopring-web/common-resources";
 import { AvatarCoin } from "../../../basic-lib";
 
 const BoxStyle = styled(Box)<BoxProps & { size: number }>`
@@ -17,11 +17,11 @@ export const CoinIcons = React.memo(
   ({
     tokenIcon,
     size = 24,
-    type = "token",
+    type = TokenType.single,
   }: {
     tokenIcon: [any, any?];
     size?: number;
-    type?: string;
+    type?: TokenType;
   }) => {
     const [coinAInfo, coinBInfo] = tokenIcon;
     return (
@@ -64,7 +64,7 @@ export const CoinIcons = React.memo(
             />
           )}
         </Box>
-        {coinBInfo || ["dual", "lp"].includes(type) ? (
+        {coinBInfo || [TokenType.dual, TokenType.lp].includes(type) ? (
           <Box
             className={`logo-icon ${type}`}
             display={"flex"}

@@ -1360,4 +1360,5 @@ export default {
     "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
   labelL2toL2FeeWithActive: "Fee (including activation fee)",
   labelRedPacketMarketsBtn: "Red Packet Plaza",
+  labelRedPacketBtn: "Shared",
 };

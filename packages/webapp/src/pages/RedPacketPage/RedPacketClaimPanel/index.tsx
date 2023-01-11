@@ -1,66 +1,61 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Grid,
-  IconButton,
-  Link,
-  Typography,
-} from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { StylePaper, useSystem } from "@loopring-web/core";
+import React from "react";
+import { StylePaper, useSystem, useToast } from "@loopring-web/core";
 import {
   RedPacketClaimTable,
+  Toast,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-
-import React from "react";
 import { useTranslation } from "react-i18next";
-import { RedPacketIcon } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
-import { useClaimRedPacket, useMarketRedPacket } from "./hooks";
+import { useClaimRedPacket } from "./hooks";
+import { Box, Button } from "@mui/material";
+import { RedPacketIcon, TOAST_TIME } from "@loopring-web/common-resources";
 
 export const RedPacketClaimPanel = () => {
   const theme = useTheme();
   const container = React.useRef<HTMLDivElement>(null);
-  const {forexMap} = useSystem();
+  const { etherscanBaseUrl, forexMap } = useSystem();
+  const { setShowAccount } = useOpenModals();
+  const { toastOpen, setToastOpen, closeToast } = useToast();
+
   // const { forexMap } = u();
-  const {setShowAccount} = useOpenModals();
-  const {t} = useTranslation();
-  const {isMobile} = useSettings();
+  const { t } = useTranslation();
+  const { isMobile } = useSettings();
   const history = useHistory();
   const {
-    luckTokenList,
+    redPacketClaimList,
     showLoading,
-    showOfficial,
-    setShowOfficial,
+    // redPacketClaimTotal,
     getClaimRedPacket,
-    handlePageChange,
-  } = useClaimRedPacket();
+    onItemClick,
+  } = useClaimRedPacket(setToastOpen);
   return (
     <Box
       flex={1}
       display={"flex"}
       flexDirection={"column"}
-      sx={isMobile ? {maxWidth: "calc(100vw - 32px)"} : {}}
+      sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
+      paddingTop={2}
+      position={"relative"}
     >
       <Box
         position={"absolute"}
         display={"flex"}
         alignItems={"center"}
         sx={{
-          right: 2 * theme.unit,
+          right: 0,
           top: -42,
           zIndex: 99,
         }}
       >
         <Button
-          startIcon={<RedPacketIcon fontSize={"small"}/>}
+          startIcon={<RedPacketIcon fontSize={"small"} />}
           variant={"contained"}
-          size={"medium"}
-          sx={{color: "var(--color-text-secondary)"}}
-          color={"inherit"}
+          size={"small"}
+          // sx={{ color: "var(--color-text-secondary)" }}
+          color={"primary"}
           onClick={() => history.push("/redPacket/markets")}
         >
           {t("labelRedPacketMarketsBtn")}
@@ -74,12 +69,14 @@ export const RedPacketClaimPanel = () => {
       >
         <Box className="tableWrapper table-divide-short">
           <RedPacketClaimTable
-            rawData={luckTokenList}
-            showloading={showLoading}
-            forexMap={forexMap}
-            onItemClick={() => void}
-            etherscanBaseUrl
-            getMyRedPacketClaimList
+            {...{
+              rawData: redPacketClaimList,
+              showloading: showLoading,
+              forexMap,
+              onItemClick,
+              etherscanBaseUrl,
+              getClaimRedPacket,
+            }}
           />
           {/*<AssetsTable*/}
           {/*  /!*{...{*!/*/}
@@ -100,6 +97,13 @@ export const RedPacketClaimPanel = () => {
           {/*/>*/}
         </Box>
       </StylePaper>
+      <Toast
+        alertText={toastOpen?.content ?? ""}
+        severity={toastOpen?.type ?? "success"}
+        open={toastOpen?.open ?? false}
+        autoHideDuration={TOAST_TIME}
+        onClose={closeToast}
+      />
     </Box>
   );
 };

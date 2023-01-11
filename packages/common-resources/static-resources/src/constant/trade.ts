@@ -372,7 +372,7 @@ export const useAddressTypeLists = <
 };
 
 export const defalutSlipage = 0.1;
-export type ForexMap<C> = { [k in keyof C]?: number };
+export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 
 export const enum InvestMapType {
   Token = "Token",

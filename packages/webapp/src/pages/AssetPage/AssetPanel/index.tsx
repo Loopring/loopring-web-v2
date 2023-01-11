@@ -47,7 +47,7 @@ const AssetPanel = withTranslation("common")(
           setCurrentTab(TabIndex.Invests);
           break;
         case TabIndex.RedPacket:
-          history.replace("/l2assets/assets/redPacketClaim");
+          history.replace("/l2assets/assets/RedPacket");
           setCurrentTab(TabIndex.RedPacket);
           break;
         case TabIndex.Tokens:

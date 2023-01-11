@@ -1,7 +1,19 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-import { ForexMap } from "@loopring-web/common-resources";
+import { CoinInfo, ForexMap } from "@loopring-web/common-resources";
 
-export type RawDataRedPacketRecordsItem = {};
+export type RawDataRedPacketRecordsItem = {
+  token: CoinInfo<any> & { type: };
+  type: sdk.LuckyTokenViewType;
+  status: sdk.LuckyTokenItemStatus;
+  validSince: number;
+  validUntil: number;
+  totalCount: number;
+  remainCount: number;
+  totalAmount: string;
+  remainAmount: string;
+  createdAt: number;
+  rawData: sdk.LuckyTokenItemForReceive;
+};
 export type RawDataRedPacketReceivesItem = {};
 export type RawDataRedPacketClaimItem = {};
 
@@ -11,7 +23,7 @@ export interface RedPacketClaimTableProps<R, C = sdk.Currency> {
   forexMap: ForexMap<C>;
   onItemClick: (item: R) => void;
   etherscanBaseUrl: string;
-  getMyRedPacketClaimList: (props: any) => void;
+  getClaimRedPacket: (props: any) => void;
 }
 
 export interface RedPacketRecordsTableProps<R, C = sdk.Currency> {

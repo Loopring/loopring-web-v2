@@ -9,7 +9,10 @@ import {
 } from "@loopring-web/component-lib";
 import { StylePaper, useSystem, useToast } from "@loopring-web/core";
 import React from "react";
-import { useMyRedPacketReceiveTransaction, useMyRedPacketRecordTransaction } from "./hooks";
+import {
+  useMyRedPacketReceiveTransaction,
+  useMyRedPacketRecordTransaction,
+} from "./hooks";
 import {
   BackIcon,
   RowConfig,
@@ -21,36 +24,19 @@ enum TabIndex {
   Received = "Received",
   Send = "Send",
 }
-export const MyRedPacketPanel = () => {
+
+export const MyRedPacketPanel = ({
+  setToastOpen,
+}: {
+  setToastOpen: (props: any) => void;
+}) => {
   const theme = useTheme();
   const history = useHistory();
-  const {t} = useTranslation();
-  const {isMobile} = useSettings();
-  const {etherscanBaseUrl} = useSystem();
-  const {toastOpen, setToastOpen, closeToast} = useToast();
+  const { t } = useTranslation();
+  const { isMobile } = useSettings();
+  const { etherscanBaseUrl, forexMap } = useSystem();
 
   const container = React.useRef<HTMLDivElement>(null);
-
-  const [currentTab, setCurrentTab] = React.useState<TabIndex>(
-    TabIndex.Received
-  );
-
-  const {
-    getMyRedPacketRecordTxList,
-    myRedPacketRecordList,
-    myRedPacketRecordTotal,
-  } = useMyRedPacketRecordTransaction({
-    setToastOpen,
-  });
-  const {
-    getMyRedPacketReceiveList,
-    myRedPacketReceiveList,
-    myRedPacketReceiveTotal,
-  } = useMyRedPacketReceiveTransaction({
-    setToastOpen,
-  })
-  const [pageSize, setPageSize] = React.useState(0);
-
   React.useEffect(() => {
     let height = container?.current?.offsetHeight;
     if (height) {
@@ -59,6 +45,24 @@ export const MyRedPacketPanel = () => {
       handleTabChange(currentTab);
     }
   }, [container?.current?.offsetHeight]);
+  const [currentTab, setCurrentTab] = React.useState<TabIndex>(
+    TabIndex.Received
+  );
+
+  const {
+    showLoading: showloadingRecord,
+    getMyRedPacketRecordTxList,
+    myRedPacketRecordList,
+    myRedPacketRecordTotal,
+    onItemClick,
+  } = useMyRedPacketRecordTransaction(setToastOpen);
+  const {
+    showLoading: showloadingReceive,
+    getRedPacketReceiveList,
+    redPacketReceiveList,
+    redPacketReceiveTotal,
+  } = useMyRedPacketReceiveTransaction(setToastOpen);
+  const [pageSize, setPageSize] = React.useState(0);
 
   const handleTabChange = (value: TabIndex) => {
     switch (value) {
@@ -73,30 +77,24 @@ export const MyRedPacketPanel = () => {
         break;
     }
   };
+  // @ts-ignore
   return (
     <Box
       flex={1}
       display={"flex"}
       flexDirection={"column"}
-      sx={isMobile ? {maxWidth: "calc(100vw - 32px)"} : {}}
+      sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
     >
-      <Toast
-        alertText={toastOpen?.content ?? ""}
-        severity={toastOpen?.type ?? "success"}
-        open={toastOpen?.open ?? false}
-        autoHideDuration={TOAST_TIME}
-        onClose={closeToast}
-      />
       <Box
         display={"flex"}
         flexDirection={isMobile ? "column" : "row"}
         marginBottom={2}
       >
         <Button
-          startIcon={<BackIcon fontSize={"small"}/>}
+          startIcon={<BackIcon fontSize={"small"} />}
           variant={"text"}
           size={"medium"}
-          sx={{color: "var(--color-text-secondary)"}}
+          sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
           onClick={() => history.push("/redPacket/markets")}
         >
@@ -117,27 +115,33 @@ export const MyRedPacketPanel = () => {
           <Box className="tableWrapper table-divide-short">
             <RedPacketReceiveTable
               {...{
+                showloading: showloadingReceive,
+                forexMap,
                 etherscanBaseUrl,
-                rawData: myRedPacketReceiveList,
-                getMyRedPacketReceiveList,
+                rawData: redPacketReceiveList,
+                getRedPacketReceiveList,
                 pagination: {
                   pageSize: pageSize,
-                  total: myRedPacketReceive Total,
+                  total: redPacketReceiveTotal,
                 },
-              }}/>
+              }}
+            />
           </Box>
         )}
         {currentTab === TabIndex.Send && (
           <Box className="tableWrapper table-divide-short">
             <RedPacketRecordTable
               {...{
+                showloading: showloadingRecord,
                 etherscanBaseUrl,
+                forexMap,
                 rawData: myRedPacketRecordList,
                 getMyRedPacketRecordTxList,
                 pagination: {
                   pageSize: pageSize,
                   total: myRedPacketRecordTotal,
                 },
+                onItemClick,
               }}
             />
           </Box>

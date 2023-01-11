@@ -60,10 +60,11 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
   ) => {
     const {
       // getMyRedPacketClaimList,
-      tokenMap,
+      // tokenMap,
       rawData,
       showloading,
       onItemClick,
+      getClaimRedPacket,
       t,
     } = props;
     // const { isMobile, upColor } = useSettings();

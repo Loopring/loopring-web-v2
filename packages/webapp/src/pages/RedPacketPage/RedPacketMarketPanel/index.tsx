@@ -34,12 +34,13 @@ export const RedPacketMarketPanel = () => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const history = useHistory();
+
   const {
     setShowOfficial,
     showOfficial,
-    getMarketRedPacket,
+    // getMarketRedPacket,
     luckTokenList,
-    handlePageChange,
+    // handlePageChange,
   } = useMarketRedPacket();
   return (
     <Box
@@ -60,7 +61,7 @@ export const RedPacketMarketPanel = () => {
           size={"medium"}
           sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
-          onClick={() => history.push("/l2assets")}
+          onClick={() => history.push("/l2assets/assets/RedPacket")}
         >
           {t("labelRedPacketMarkets")}
         </Button>
@@ -142,9 +143,13 @@ export const RedPacketMarketPanel = () => {
         <Grid container spacing={1} flex={1} display={"flex"} paddingX={1}>
           {luckTokenList.officialList?.length ? (
             luckTokenList.officialList.map((item, index) => (
-              <Grid xs={6} md={4} lg={3} key={index} position={"relative"}>
-                <RedPacketOpen type={"official"} />
-              </Grid>
+              <Grid
+                xs={6}
+                md={4}
+                lg={3}
+                key={index}
+                position={"relative"}
+              ></Grid>
             ))
           ) : (
             <></>

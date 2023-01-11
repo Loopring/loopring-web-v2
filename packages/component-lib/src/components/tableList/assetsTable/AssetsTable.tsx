@@ -12,6 +12,7 @@ import {
   MarketType,
   PriceTag,
   RowConfig,
+  TokenType,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { CoinIcons } from "./components/CoinIcons";
@@ -82,12 +83,6 @@ interface Row {
   children?: Row[];
   isExpanded?: boolean;
   format?: any;
-}
-
-export enum TokenType {
-  single = "single",
-  lp = "lp",
-  defi = "defi",
 }
 
 export type TradePairItem = {
@@ -324,6 +319,7 @@ export const AssetsTable = withTranslation("tables")(
           const token = row["token"];
           const isLp = token.type === TokenType.lp;
           const isDefi = token.type === TokenType.defi;
+          // const isDual = token.type === TokenType.dual;
           const tokenValue = token.value;
 
           const isToL1 = token.type !== TokenType.lp;

@@ -1,11 +1,11 @@
 import { Checkbox, Grid } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { FormControlLabel, InputSearch } from "../../../";
-import { CheckBoxIcon, CheckedIcon } from "@loopring-web/common-resources";
 import {
+  CheckBoxIcon,
+  CheckedIcon,
   TokenType,
-  // RawDataAssetsItem
-} from "../AssetsTable";
+} from "@loopring-web/common-resources";
 
 export type TokenTypeCol = {
   type: TokenType;

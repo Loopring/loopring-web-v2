@@ -690,3 +690,19 @@ export const RedPacketDetail = ({
     </BoxStyle>
   );
 };
+
+export const RedPacketPrepare = ({
+  render,
+  memo,
+  amountStr,
+  totalReceived,
+  countReceived,
+}: any) => {
+  const { t } = useTranslation("common");
+
+  return (
+    <Box>
+      <RedPacketOpen type={"official"} />
+    </Box>
+  );
+};

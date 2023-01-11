@@ -16,6 +16,7 @@ import { useHistory } from "react-router-dom";
 import React from "react";
 import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
+import { CoinIcons } from "../assetsTable";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -73,7 +74,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
     const history = useHistory();
     const [page, setPage] = React.useState(1);
 
-    const updateData = _.debounce(async ({ page = 1, pair }: any) => {
+    const updateData = _.debounce(async ({ page = 1 }: any) => {
       await getMyRedPacketRecordTxList({
         offset: (page - 1) * (pagination?.pageSize ?? 10),
         limit: pagination?.pageSize ?? 10,
@@ -81,160 +82,83 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
     }, globalSetup.wait);
 
     const handlePageChange = React.useCallback(
-      ({ page = 1, type, date, pair }: any) => {
+      ({ page = 1 }: any) => {
         setPage(page);
         myLog("AmmTable page,", page);
-        updateData({ page, type, date, pair });
+        updateData({ page });
       },
       [updateData]
     );
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
-          key: "",
+          key: "Token",
           sortable: true,
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
-          name: t("labelDualApy"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display={"flex"}></Box>;
-          },
-        },
-        {
-          key: "",
-          sortable: true,
-          name: t("labelDualPrice"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display={"flex"}></Box>;
-          },
-        },
-        {
-          key: "",
-          sortable: true,
-          name: t("labelDualTerm"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex"></Box>;
-          },
-        },
-        {
-          key: "",
-          sortable: true,
-          name: t("labelDualSettlement"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex"></Box>;
-          },
-        },
-        {
-          key: "Action",
-          sortable: false,
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelDualAction"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          name: t("labelRecordToken"),
+          formatter: ({ row: { token } }: FormatterProps<R, unknown>) => {
             return (
-              <Typography
-                variant={"inherit"}
-                color={"textPrimary"}
-                display={"inline-flex"}
-                flexDirection={"column"}
-                className={"textAlignRight"}
-                component={"span"}
-              >
-                <Button
-                  variant={"contained"}
-                  color={"primary"}
-                  size={"small"}
-                  onClick={(_e) => {
-                    onItemClick(row);
-                  }}
-                >
-                  {t("labelInvestBtn", { ns: "common" })}
-                </Button>
-              </Typography>
+              <Box display={"flex"}>
+                <CoinIcons type={token.type} tokenIcon={tokenIcon} />
+              </Box>
             );
+          },
+        },
+        {
+          key: "Amount",
+          sortable: true,
+          name: t("labelRecordAmount"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <Box display={"flex"}></Box>;
+          },
+        },
+        {
+          key: "Type",
+          sortable: true,
+          name: t("labelRecordType"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <Box display="flex"></Box>;
+          },
+        },
+
+        {
+          key: "Status",
+          sortable: true,
+          name: t("labelRecordStatus"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <Box display="flex"></Box>;
+          },
+        },
+
+        {
+          key: "Number",
+          sortable: true,
+          name: t("labelRecordNumber"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <Box display="flex"></Box>;
+          },
+        },
+
+        {
+          key: "Time",
+          sortable: true,
+          name: t("labelRecordTime"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <Box display="flex"></Box>;
           },
         },
       ],
       [history, t]
     );
-
-    // const getColumnMobileTransaction = React.useCallback(
-    //   (): Column<R, unknown>[] => [
-    //     {
-    //       key: "Apy",
-    //       sortable: true,
-    //       cellClass: "textAlignLeft",
-    //       headerCellClass: "textAlignLeft",
-    //       name: t("labelDualApy"),
-    //       formatter: ({ row }: FormatterProps<R, unknown>) => {
-    //         return <Box display={"flex"}>{row?.apy ?? EmptyValueTag}</Box>;
-    //       },
-    //     },
-    //     {
-    //       key: "targetPrice",
-    //       sortable: true,
-    //       name: t("labelDualPrice"),
-    //       formatter: ({ row }: FormatterProps<R, unknown>) => {
-    //         const [_upColor, _downColor] =
-    //           upColor == UpColor.green
-    //             ? ["var(--color-success)", "var(--color-error)"]
-    //             : ["var(--color-error)", "var(--color-success)"];
-    //         return (
-    //           <Box
-    //             display="flex"
-    //             justifyContent={"stretch"}
-    //             height={"100%"}
-    //             alignItems={"center"}
-    //           >
-    //             <Typography component={"span"}> {row.strike}</Typography>
-    //             <Typography
-    //               component={"span"}
-    //               display={"inline-flex"}
-    //               alignItems={"center"}
-    //               color={"textSecondary"}
-    //               variant={"body2"}
-    //             >
-    //               <UpIcon
-    //                 fontSize={"small"}
-    //                 // htmlColor={row.isUp ? _upColor : _downColor}
-    //                 style={{
-    //                   transform: row.isUp ? "" : "rotate(-180deg)",
-    //                 }}
-    //               />
-    //               {row.settleRatio
-    //                 ? getValuePrecisionThousand(
-    //                     sdk
-    //                       .toBig(row.strike ?? 0)
-    //                       .minus(row.currentPrice?.currentPrice ?? 0)
-    //                       .div(row.currentPrice?.currentPrice ?? 1)
-    //                       .times(100)
-    //                       .abs(),
-    //                     2,
-    //                     2,
-    //                     2,
-    //                     true
-    //                   ) + "%"
-    //                 : EmptyValueTag}
-    //             </Typography>
-    //           </Box>
-    //         );
-    //       },
-    //     },
-    //     {
-    //       key: "Settlement",
-    //       sortable: true,
-    //       cellClass: "textAlignRight",
-    //       headerCellClass: "textAlignRight",
-    //       name: t("labelDualSettlement"),
-    //       formatter: ({ row }: FormatterProps<R, unknown>) => {
-    //         return (
-    //           <>{moment(new Date(row.expireTime)).format(YEAR_DAY_FORMAT)}</>
-    //         );
-    //       },
-    //     },
-    //   ],
-    //   [t]
-    // );
+    React.useEffect(() => {
+      updateData.cancel();
+      handlePageChange({ page: 1 });
+      // updateData({});
+      return () => {
+        updateData.cancel();
+      };
+    }, [pagination?.pageSize]);
 
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),
