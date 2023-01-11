@@ -1,15 +1,16 @@
+import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 import { LoopringAPI, useAccount, useTokenMap } from "@loopring-web/core";
 import React from "react";
-import * as sdk from "@loopring-web/loopring-sdk";
 import {
   globalSetup,
   RedPacketLimit,
   SDK_ERROR_MAP_TO_UI,
 } from "@loopring-web/common-resources";
 import _ from "lodash";
+import { RawDataRedPacketClaimItem } from "@loopring-web/component-lib";
 
-export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>() =>
+export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>() =>
   // setToastOpen: (props: any) => void
   {
     const { t } = useTranslation(["error"]);
@@ -46,7 +47,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>() =>
     // });
     const [showLoading, setShowLoading] = React.useState(true);
 
-    const getMarketRedPacket = React.useCallback(
+    const getClaimRedPacket = React.useCallback(
       async ({ showOfficial, offset }: any) => {
         setShowLoading(true);
         if (LoopringAPI.luckTokenAPI && accountId && apiKey) {
@@ -123,7 +124,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>() =>
       [accountId, apiKey, t, idIndex]
     );
     const updateData = _.debounce(({ currPage, showOfficial }) => {
-      getMarketRedPacket({
+      getClaimRedPacket({
         offset: (currPage - 1) * pagination?.pageSize,
         showOfficial,
       });
@@ -154,7 +155,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>() =>
       showLoading,
       showOfficial,
       setShowOfficial,
-      getMarketRedPacket,
+      getClaimRedPacket,
       handlePageChange,
     };
   };

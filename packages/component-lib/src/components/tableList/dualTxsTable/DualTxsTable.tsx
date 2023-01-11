@@ -17,7 +17,11 @@ import moment from "moment";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
-import { LABEL_INVESTMENT_STATUS_MAP, RawDataDualTxsItem } from "./Interface";
+import {
+  DualTxsTableProps,
+  LABEL_INVESTMENT_STATUS_MAP,
+  RawDataDualTxsItem,
+} from "./Interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
@@ -53,25 +57,6 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
-
-export interface DualTxsTableProps<R = RawDataDualTxsItem> {
-  // etherscanBaseUrl?: string;
-  rawData: R[];
-  pagination?: {
-    pageSize: number;
-    total: number;
-  };
-  idIndex: { [key: string]: string };
-  tokenMap: { [key: string]: any };
-  dualMarketMap: any;
-
-  getDualTxList: (props: any) => Promise<void>;
-  // filterTokens: string[];
-  // showFilter?: boolean;
-  showloading: boolean;
-  // accAddress: string;
-  // accountId: number;
-}
 
 export const DualTxsTable = withTranslation(["tables", "common"])(
   <R extends RawDataDualTxsItem>(

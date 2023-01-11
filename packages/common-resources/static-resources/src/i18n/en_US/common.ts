@@ -1278,7 +1278,7 @@ export default {
   labelInputRedPacketBtnLabel: "Select Token",
   labelCreateRedPacket: "Send Red Packet",
   labelMyRedPacket: " My Red Packet Record",
-  labelRedPacketMarkets: "Red Packet Markets",
+  labelRedPacketMarkets: "Red Packet Plaza",
   labelRedPacketQRCodeImport: "Receive Red Packet",
   labelLuckyTokenViewType0: "Private Red Packet",
   labelLuckyTokenViewTypeDes0:
@@ -1359,4 +1359,5 @@ export default {
   labelAmmExitMiniOrderMini:
     "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
   labelL2toL2FeeWithActive: "Fee (including activation fee)",
+  labelRedPacketMarketsBtn: "Red Packet Plaza",
 };

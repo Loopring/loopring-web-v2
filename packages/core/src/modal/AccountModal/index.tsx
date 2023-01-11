@@ -82,6 +82,7 @@ export const ModalAccountInfo = withTranslation("common")(
       collectionToastClose,
     } = useAccountModalForUI({
       t,
+      assetsRawData,
       depositProps,
       etherscanBaseUrl,
       isLayer1Only,

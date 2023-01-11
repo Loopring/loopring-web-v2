@@ -119,6 +119,7 @@ import {
   Account,
   AccountStatus,
   AddAssetList,
+  AssetsRawDataItem,
   Bridge,
   copyToClipBoard,
   FeeInfo,
@@ -162,11 +163,10 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
 import { ImportRedPacket } from "./components/QRCodeScanner";
 import { useClaimConfirm } from "../../hooks/useractions/useClaimConfirm";
-import { useGetAssets } from "@loopring-web/webapp/src/pages/AssetPage/AssetPanel/hook";
 
 export function useAccountModalForUI({
   t,
-  // onClose,
+  assetsRawData,
   isLayer1Only = false,
   depositProps,
   ...rest
@@ -176,11 +176,11 @@ export function useAccountModalForUI({
   isLayer1Only?: boolean;
   depositProps: DepositProps<any, any>;
   account: Account;
+  assetsRawData: AssetsRawDataItem[];
   // onClose?: any;
 }) {
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
-  const { assetsRawData } = useGetAssets();
 
   const { updateWalletLayer2 } = useWalletLayer2();
   const { processRequestRampTransfer } = useRampTransPost();

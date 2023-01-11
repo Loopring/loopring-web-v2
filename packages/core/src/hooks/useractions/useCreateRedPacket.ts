@@ -543,7 +543,7 @@ export const useCreateRedPacket = <
           const storageId = await LoopringAPI.userAPI.getNextStorageId(
             {
               accountId,
-              sellTokenId: Number(feeToken.tokenId),
+              sellTokenId: Number(tradeToken.tokenId),
             },
             apiKey
           );
