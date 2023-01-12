@@ -190,7 +190,7 @@ export function useRedPacketModal() {
                   request: {
                     hash: _info?.hash,
                     claimer: account.accAddress,
-                    referrer: _info?.referrer ?? undefined,
+                    referrer: _info?.referrer ?? "",
                   },
                   eddsaKey: account.eddsaKey.sk,
                   apiKey: account.apiKey,
