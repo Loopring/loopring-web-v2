@@ -1,13 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  Box,
-  Typography,
-  Avatar,
-  Switch,
-  SwitchProps,
-  Card,
-  CardProps,
-} from "@mui/material";
+import { Avatar, Box, Card, Typography } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useDualHook } from "./hook";
 import {
@@ -21,11 +13,12 @@ import { useDualMap, useSystem, useTokenMap } from "@loopring-web/core";
 import {
   getValuePrecisionThousand,
   SoursURL,
+  TokenType,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 import { useTheme } from "@emotion/react";
-import _, { keys, mapValues, maxBy, minBy, toPairs, values } from "lodash";
+import { maxBy, minBy, values } from "lodash";
 
 const SelectBox = styled(Card)<{ selected: boolean }>`
   cursor: pointer;
@@ -328,7 +321,7 @@ export const BeginnerMode: any = withTranslation("common")(
                   <Typography component={"span"} display={"inline-flex"}>
                     {/* eslint-disable-next-line react/jsx-no-undef */}
                     <CoinIcons
-                      type={"dual"}
+                      type={TokenType.dual}
                       size={32}
                       tokenIcon={[coinJson[pairASymbol], coinJson[pairBSymbol]]}
                     />

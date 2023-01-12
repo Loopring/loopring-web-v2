@@ -1,6 +1,6 @@
 import { Box, Button, Checkbox, Grid, IconButton } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { StylePaper, useModalData } from "@loopring-web/core";
+import { StylePaper, useModalData, useTokenMap } from "@loopring-web/core";
 import {
   AccountStep,
   EmptyDefault,
@@ -9,6 +9,7 @@ import {
   InputSearch,
   RedPacketBg,
   RedPacketOpen,
+  RedPacketPrepare,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -30,10 +31,11 @@ import { useMarketRedPacket } from "./hooks";
 export const RedPacketMarketPanel = () => {
   const theme = useTheme();
   const container = React.useRef<HTMLDivElement>(null);
-  const { setShowAccount } = useOpenModals();
+  const { setShowAccount, setShowRedPacket } = useOpenModals();
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const history = useHistory();
+  const { tokenMap, idIndex } = useTokenMap();
 
   const {
     setShowOfficial,
@@ -142,24 +144,35 @@ export const RedPacketMarketPanel = () => {
 
         <Grid container spacing={1} flex={1} display={"flex"} paddingX={1}>
           {luckTokenList.officialList?.length ? (
-            luckTokenList.officialList.map((item, index) => (
-              <Grid
-                xs={6}
-                md={4}
-                lg={3}
-                key={index}
-                position={"relative"}
-              ></Grid>
-            ))
+            luckTokenList.officialList.map((item, index) => {
+              const token = tokenMap[idIndex[item?.tokenId] ?? ""];
+              return (
+                <Grid xs={6} md={4} lg={3} key={index} position={"relative"}>
+                  <RedPacketPrepare
+                    {...{ ...item }}
+                    setShowRedPacket={setShowRedPacket}
+                    tokenInfo={token}
+                    _type="official"
+                  />
+                </Grid>
+              );
+            })
           ) : (
             <></>
           )}
           {luckTokenList.publicList?.length
-            ? luckTokenList.publicList.map((item, index) => (
-                <Grid xs={6} md={4} lg={3} key={index} position={"relative"}>
-                  <RedPacketOpen />
-                </Grid>
-              ))
+            ? luckTokenList.publicList.map((item, index) => {
+                const token = tokenMap[idIndex[item?.tokenId] ?? ""];
+                return (
+                  <Grid xs={6} md={4} lg={3} key={index} position={"relative"}>
+                    <RedPacketPrepare
+                      {...{ ...item }}
+                      setShowRedPacket={setShowRedPacket}
+                      tokenInfo={token}
+                    />
+                  </Grid>
+                );
+              })
             : !luckTokenList.officialList?.length &&
               !luckTokenList.publicList?.length && (
                 <Box

@@ -1337,7 +1337,7 @@ export default {
   labelShare: "Share",
   labelRelayRedPacket: "Relay Red Packet",
   labelLuckyRedPacket: "Lucky Red Packet",
-  labelLuckyRedPacketStart: "Starts in: {{}}",
+  labelLuckyRedPacketStart: "Starts in: {{value}}",
   labelLuckyRedPacketTimeout: "Red packet has been \n taken out",
   labelLuckyRedPacketDetail: "View red packet details",
   labelRedPacketOpenInProgress: "Processing...",

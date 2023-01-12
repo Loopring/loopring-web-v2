@@ -96,7 +96,7 @@ export const RedPacketWrapSVG = ({
           width="274"
           height="414"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <feFlood flood-opacity="0" result="BackgroundImageFix" />
           <feColorMatrix
@@ -131,7 +131,7 @@ export const RedPacketWrapSVG = ({
           width="274"
           height="147"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <feFlood flood-opacity="0" result="BackgroundImageFix" />
           <feColorMatrix
@@ -236,7 +236,7 @@ export const RedPacketOpenWrapSVG = ({
           width="260"
           height="294.905"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <feFlood flood-opacity="0" result="BackgroundImageFix" />
           <feBlend
@@ -432,7 +432,7 @@ export const RedPacketQRCodeSvg = React.memo(
               width="334"
               height="178"
               filterUnits="userSpaceOnUse"
-              color-interpolation-filters="sRGB"
+              colorInterpolationFilters="sRGB"
             >
               <feFlood flood-opacity="0" result="BackgroundImageFix" />
               <feColorMatrix

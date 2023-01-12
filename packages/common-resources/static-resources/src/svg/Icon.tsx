@@ -1483,3 +1483,14 @@ export const ClockIcon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
+export const CloseRedPacketIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M12 21.3238C17.1494 21.3238 21.3238 17.1494 21.3238 12C21.3238 6.8506 17.1494 2.67619 12 2.67619C6.8506 2.67619 2.67619 6.8506 2.67619 12C2.67619 17.1494 6.8506 21.3238 12 21.3238ZM12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12C1 18.0751 5.92487 23 12 23ZM12 10.437L9.56298 8L8 9.56298L10.437 12L8 14.437L9.56298 16L12 13.563L14.437 16L16 14.437L13.563 12L16 9.56298L14.437 8L12 10.437Z"
+      />
+    </SvgIcon>
+  );
+};

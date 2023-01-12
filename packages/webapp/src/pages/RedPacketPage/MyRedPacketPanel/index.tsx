@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   RedPacketReceiveTable,
@@ -35,6 +35,7 @@ export const MyRedPacketPanel = ({
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const { etherscanBaseUrl, forexMap } = useSystem();
+  let match: any = useRouteMatch("/redPacket/records/:item");
 
   const container = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
@@ -46,7 +47,7 @@ export const MyRedPacketPanel = ({
     }
   }, [container?.current?.offsetHeight]);
   const [currentTab, setCurrentTab] = React.useState<TabIndex>(
-    TabIndex.Received
+    match?.params.item ?? TabIndex.Received
   );
 
   const {
@@ -67,7 +68,7 @@ export const MyRedPacketPanel = ({
   const handleTabChange = (value: TabIndex) => {
     switch (value) {
       case TabIndex.Send:
-        history.push("/redPacket/records/send");
+        history.push("/redPacket/records/Send");
         setCurrentTab(TabIndex.Send);
         break;
       case TabIndex.Received:
@@ -77,6 +78,9 @@ export const MyRedPacketPanel = ({
         break;
     }
   };
+  // React.useEffect(() => {
+  //   handleTabChange(match?.params.item ?? TabIndex.Received);
+  // }, [match?.params.item]);
   // @ts-ignore
   return (
     <Box

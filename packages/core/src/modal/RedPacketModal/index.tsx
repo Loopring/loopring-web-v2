@@ -8,21 +8,17 @@ import {
   useOpenModals,
 } from "@loopring-web/component-lib";
 import React from "react";
-import { useRedPacketDetail, useRedPacketModal } from "./hook";
+import { useRedPacketModal } from "./hook";
+import { myLog } from "@loopring-web/common-resources";
 
 export const ModalRedPacketPanel = withTranslation("common")(
   ({
-    t,
     etherscanBaseUrl,
-    ..._rest
   }: WithTranslation & {
     etherscanBaseUrl: string;
   }) => {
     const {
-      modals: {
-        // isShowNFTDetail,
-        isShowRedPacket,
-      },
+      modals: { isShowRedPacket },
       setShowRedPacket,
     } = useOpenModals();
     const { redPacketQRCodeProps, redPacketTimeoutProps, redPacketOpenProps } =
@@ -30,6 +26,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
     // const { redPacketProps } = useRedPacketDetail();
     // const theme = useTheme();
     const redPacketList = React.useMemo(() => {
+      myLog(redPacketQRCodeProps);
       return Object.values({
         [RedPacketViewStep.QRCodePanel]: {
           view: redPacketQRCodeProps ? (
@@ -59,7 +56,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
         },
         [RedPacketViewStep.PreparePanel]: { view: <></> },
       });
-    }, []);
+    }, [redPacketQRCodeProps, redPacketTimeoutProps, redPacketOpenProps]);
     return (
       <ModalRedPacket
         onClose={() => {

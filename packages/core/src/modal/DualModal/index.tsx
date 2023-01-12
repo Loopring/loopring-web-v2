@@ -9,13 +9,12 @@ import {
   SwitchPanelStyled,
   Toast,
   TOASTOPEN,
-  // TradeTitle,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
 import { Box, Divider, Modal as MuiModal, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { myLog, TOAST_TIME } from "@loopring-web/common-resources";
+import { myLog, TOAST_TIME, TokenType } from "@loopring-web/common-resources";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 
 const BoxLinear = styled(SwitchPanelStyled)`
@@ -53,7 +52,7 @@ export const ModalDualPanel = withTranslation("common")(
     dualTradeProps: DualWrapProps<any, any, any>;
     dualToastOpen?: TOASTOPEN;
     closeDualToast?: (state: boolean) => void;
-    isBeginnerMode: boolean
+    isBeginnerMode: boolean;
   }) => {
     const {
       modals: { isShowDual },
@@ -109,7 +108,7 @@ export const ModalDualPanel = withTranslation("common")(
                   <Typography component={"span"} display={"inline-flex"}>
                     {/* eslint-disable-next-line react/jsx-no-undef */}
                     <CoinIcons
-                      type={"dual"}
+                      type={TokenType.dual}
                       size={32}
                       tokenIcon={[
                         coinJson[dualInfo.sellSymbol],
@@ -160,7 +159,10 @@ export const ModalDualPanel = withTranslation("common")(
             paddingBottom={3}
             paddingX={1}
           >
-            <DualWrap isBeginnerMode={isBeginnerMode} {...{ ...rest, ...dualTradeProps }} />
+            <DualWrap
+              isBeginnerMode={isBeginnerMode}
+              {...{ ...rest, ...dualTradeProps }}
+            />
           </Box>
           <Toast
             alertText={dualToastOpen?.content ?? ""}

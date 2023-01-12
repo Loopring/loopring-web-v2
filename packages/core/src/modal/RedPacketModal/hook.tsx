@@ -41,19 +41,13 @@ export function useRedPacketModal() {
   const { account } = useAccount();
   const { tokenMap, idIndex } = useTokenMap();
   const { t } = useTranslation("common");
-  // const { chainId, connectName } = useSystem();
-  // const { checkHWAddr, updateHW } = useWalletInfo();
-
-  // React.useEffect(() => {
-  //
-  // }, [info.]);
   const amountStr = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
-    const token = tokenMap[idIndex[_info.tokenId] ?? ""];
-    if (token && _info && _info.tokenAmount) {
+    const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
+    if (isShow && token && _info && _info.tokenAmount) {
       const symbol = token.symbol;
       const amount = getValuePrecisionThousand(
-        volumeToCountAsBigNumber(symbol, _info.tokenAmount as any),
+        volumeToCountAsBigNumber(symbol, _info.tokenAmount.totalCount as any),
         token.precision,
         token.precision,
         undefined,
@@ -71,7 +65,7 @@ export function useRedPacketModal() {
   }, [info?.tokenId, info?.tokenAmount]);
   const textSendBy = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
-    if (info && _info.validSince > _info.createdAt) {
+    if (isShow && info && _info.validSince > _info.createdAt) {
       const date = moment(new Date(`${_info.validSince}000`)).format(
         YEAR_DAY_MINUTE_FORMAT
       );
@@ -85,8 +79,10 @@ export function useRedPacketModal() {
       // new Date(info.validSince)
       const _info = info as sdk.LuckyTokenItemForReceive;
       if (
-        (isShow && _info.status === sdk.LuckyTokenItemStatus.COMPLETED) ||
-        _info.status === sdk.LuckyTokenItemStatus.OVER_DUE
+        isShow &&
+        _info &&
+        (_info?.status === sdk.LuckyTokenItemStatus.COMPLETED ||
+          _info.status === sdk.LuckyTokenItemStatus.OVER_DUE)
       ) {
         setShowRedPacket({
           isShow,
@@ -98,10 +94,13 @@ export function useRedPacketModal() {
         _info?.hash &&
         step === RedPacketViewStep.QRCodePanel
       ) {
-        const url = `${Exchange}/wallet?redpacket&id=${info?.hash}&referrer=${account.accAddress}`;
+        const url = `${Exchange}wallet?redpacket&id=${info?.hash}&referrer=${account.accAddress}`;
+
         return {
           url,
-          textAddress: _info.sender?.ens ?? getShortAddr(_info.sender?.address),
+          textAddress: _info.sender?.ens
+            ? _info.sender?.ens
+            : getShortAddr(_info.sender?.address),
           textContent: _info.info.memo,
           amountStr,
           textSendBy,
@@ -110,7 +109,8 @@ export function useRedPacketModal() {
               ? t("labelRelayRedPacket")
               : t("labelLuckyRedPacket"),
           textShared: t("labelShare"),
-          textNo: _info.templateNo?.toString(),
+          // @ts-ignore
+          textNo: t("labelRedPacketNo", { value: _info?.id?.toString() }),
         } as RedPacketQRCodeProps;
       } else {
         return undefined;
@@ -148,7 +148,8 @@ export function useRedPacketModal() {
     React.useMemo(() => {
       // new Date(info.validSince)
       const _info = info as sdk.LuckyTokenItemForReceive;
-      if (_info.status == sdk.LuckyTokenItemStatus.COMPLETED) {
+      if (isShow && _info?.status == sdk.LuckyTokenItemStatus.COMPLETED) {
+        // TODO:
       } else if (isShow && _info.status === sdk.LuckyTokenItemStatus.OVER_DUE) {
         setShowRedPacket({
           isShow,
@@ -248,9 +249,3 @@ export function useRedPacketModal() {
     redPacketOpenProps,
   };
 }
-
-export const useRedPacketDetail = () => {
-  return {
-    redPacketProps: undefined,
-  };
-};

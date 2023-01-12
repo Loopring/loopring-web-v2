@@ -1,8 +1,8 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-import { CoinInfo, ForexMap } from "@loopring-web/common-resources";
+import { CoinInfo, ForexMap, TokenType } from "@loopring-web/common-resources";
 
 export type RawDataRedPacketRecordsItem = {
-  token: CoinInfo<any> & { type: };
+  token: CoinInfo<any> & { type: TokenType };
   type: sdk.LuckyTokenViewType;
   status: sdk.LuckyTokenItemStatus;
   validSince: number;
@@ -30,7 +30,7 @@ export interface RedPacketRecordsTableProps<R, C = sdk.Currency> {
   rawData: R[];
   showloading: boolean;
   forexMap: ForexMap<C>;
-  onItemClick: (item: R) => void;
+  onItemClick: (item: sdk.LuckyTokenItemForReceive) => void;
   etherscanBaseUrl: string;
   pagination?: {
     pageSize: number;
@@ -49,4 +49,13 @@ export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {
     total: number;
   };
   getRedPacketReceiveList: (props: any) => void;
+}
+
+export enum LuckyTokenItemStatusMap {
+  SUBMITTING = 0,
+  NOT_EFFECTIVE = 1,
+  PENDING = 2,
+  COMPLETED = 3,
+  OVER_DUE = 4,
+  FAILED = 5,
 }

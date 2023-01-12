@@ -11,10 +11,14 @@ import {
   CoinInfo,
   getValuePrecisionThousand,
   SDK_ERROR_MAP_TO_UI,
+  TokenType,
 } from "@loopring-web/common-resources";
 import {
   RawDataRedPacketReceivesItem,
   RawDataRedPacketRecordsItem,
+  RedPacketViewStep,
+  setShowRedPacket,
+  useOpenModals,
 } from "@loopring-web/component-lib";
 
 export const useMyRedPacketRecordTransaction = <
@@ -33,14 +37,7 @@ export const useMyRedPacketRecordTransaction = <
   );
   const { idIndex, coinMap, tokenMap } = useTokenMap();
   const [myRedPacketRecordTotal, setMyRedPacketRecordTotal] = React.useState(0);
-  // const { marketMap: myRedPacketRecordMarketMap } = useMyRedPacketRecordMap();
-  // const [pagination, setMyRedPacketRecordPagination] = React.useState<{
-  //   pageSize: number;
-  //   total: number;
-  // }>({
-  //   pageSize: Limit,
-  //   total: 0,
-  // });
+  const { setShowRedPacket } = useOpenModals();
   const [showLoading, setShowLoading] = React.useState(true);
 
   const getMyRedPacketRecordTxList = React.useCallback(
@@ -52,7 +49,7 @@ export const useMyRedPacketRecordTransaction = <
             await LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
               {
                 senderId: accountId,
-                scopes: sdk.LuckyTokenViewType,
+                scopes: "0,1",
                 statuses: `0,1,2,3,4`,
                 official: false,
               } as any,
@@ -109,7 +106,11 @@ export const useMyRedPacketRecordTransaction = <
                 );
 
                 prev.push({
-                  token: tokenInfo as CoinInfo<any>,
+                  token: {
+                    ...tokenInfo,
+                    name: token.name,
+                    type: TokenType.single,
+                  } as any,
                   type: item.type.scope, //sdk.LuckyTokenItemStatus
                   status: item.status,
                   validSince: item.validSince,
@@ -134,7 +135,16 @@ export const useMyRedPacketRecordTransaction = <
     },
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
-  const onItemClick = () => {};
+  const onItemClick = (item: sdk.LuckyTokenItemForReceive) => {
+    setShowRedPacket({
+      isShow: true,
+      info: {
+        ...item,
+        hash: item.hash,
+      },
+      step: RedPacketViewStep.QRCodePanel,
+    });
+  };
 
   return {
     // page,
@@ -211,19 +221,13 @@ export const useMyRedPacketReceiveTransaction = <
             // @ts-ignore
             let result = (response as any)?.list.reduce(
               (prev: R[], item: sdk.LuckyTokenItemForReceive) => {
-                prev.push(item);
+                prev.push(item as any);
                 return prev;
               },
               [] as R[]
             );
 
             setRedPacketReceiveList(result);
-            // setShowLoading(false);
-            // setMyRedPacketReceiveTotal((response as any).totalNum);
-            // // setMyRedPacketReceivePagination({
-            //   pageSize: limit,
-            //   total: (response as any).totalNum,
-            // });
           }
         }
       }

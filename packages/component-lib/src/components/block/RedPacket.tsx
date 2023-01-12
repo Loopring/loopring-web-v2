@@ -10,8 +10,16 @@ import {
   RedPacketQRCodeSvg,
   RedPacketQRPropsExtends,
   RedPacketWrapSVG,
+  getValuePrecisionThousand,
+  YEAR_DAY_MINUTE_FORMAT,
+  getShortAddr,
 } from "@loopring-web/common-resources";
 import QRCode from "qrcode-svg";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { volumeToCountAsBigNumber } from "@loopring-web/core";
+import moment from "moment";
+import { RedPacketViewStep } from "../modal";
+import { ModalStatePlayLoad } from "../../stores";
 
 export const RedPacketBg = styled(Box)<
   BoxProps & { imageSrc?: string; type: string }
@@ -692,17 +700,78 @@ export const RedPacketDetail = ({
 };
 
 export const RedPacketPrepare = ({
-  render,
-  memo,
-  amountStr,
-  totalReceived,
-  countReceived,
-}: any) => {
+  tokenInfo,
+  setShowRedPacket,
+  _type = "default",
+  ...props
+}: {
+  tokenInfo: sdk.TokenInfo;
+  setShowRedPacket: (
+    state: ModalStatePlayLoad & {
+      step?: number;
+      info?: { [key: string]: any };
+    }
+  ) => void;
+  _type?: "official" | "default";
+} & sdk.LuckyTokenItemForReceive) => {
   const { t } = useTranslation("common");
 
+  const amountStr = React.useMemo(() => {
+    const _info = props as sdk.LuckyTokenItemForReceive;
+    if (tokenInfo && _info && _info.tokenAmount) {
+      const symbol = tokenInfo.symbol;
+      const amount = getValuePrecisionThousand(
+        volumeToCountAsBigNumber(symbol, _info.tokenAmount.totalCount as any),
+        tokenInfo.precision,
+        tokenInfo.precision,
+        undefined,
+        false,
+        {
+          floor: false,
+          // isTrade: true,
+        }
+      );
+      return amount + " " + symbol;
+    }
+    return "";
+
+    // tokenMap[]
+  }, [tokenInfo, props]);
+  const textSendBy = React.useMemo(() => {
+    const _info = props as sdk.LuckyTokenItemForReceive;
+    if (_info && _info.validSince > _info.createdAt) {
+      const date = moment(new Date(`${_info.validSince}000`)).format(
+        YEAR_DAY_MINUTE_FORMAT
+      );
+      return t("labelLuckyRedPacketStart", date);
+    } else {
+      return "";
+    }
+  }, [props?.validSince, props?.createdAt]);
   return (
     <Box>
-      <RedPacketOpen type={"official"} />
+      <RedPacketOpen
+        {...{
+          ...props,
+        }}
+        type={_type ? _type : "default"}
+        amountStr={amountStr}
+        // textSendBy={textSendBy}
+        viewDetail={() => {
+          setShowRedPacket({
+            isShow: true,
+            step: RedPacketViewStep.DetailPanel,
+            info: props,
+          });
+        }}
+        sender={
+          props?.sender?.ens
+            ? props?.sender?.ens
+            : getShortAddr(props?.sender?.address)
+        }
+        memo={props?.info?.memo}
+        onOpen={() => undefined}
+      />
     </Box>
   );
 };

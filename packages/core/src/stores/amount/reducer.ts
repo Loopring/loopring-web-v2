@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { AmountStates } from "./interface";
 import { SagaStatus } from "@loopring-web/common-resources";
-import * as loopring_defs from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const initialState: AmountStates = {
   amountMap: undefined,
@@ -9,7 +9,7 @@ const initialState: AmountStates = {
   status: "PENDING",
   errorMessage: null,
 };
-export type AmountMap = loopring_defs.LoopringMap<loopring_defs.TokenAmount>;
+export type AmountMap = sdk.LoopringMap<sdk.TokenAmount>;
 
 const amountMapSlice: Slice<AmountStates> = createSlice({
   name: "amountMap",

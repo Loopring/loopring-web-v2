@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Box, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import { Button, Column, Table } from "../../basic-lib";
-import { RowInvestConfig } from "@loopring-web/common-resources";
+import { RowConfig } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   RawDataRedPacketRecordsItem,
@@ -166,11 +166,10 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       <TableWrapperStyled>
         <TableStyled
           currentheight={
-            RowInvestConfig.rowHeaderHeight +
-            rawData.length * RowInvestConfig.rowHeight
+            RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
-          rowHeight={RowInvestConfig.rowHeight}
-          headerRowHeight={RowInvestConfig.rowHeaderHeight}
+          rowHeight={RowConfig.rowHeight}
+          headerRowHeight={RowConfig.rowHeaderHeight}
           onRowClick={(_index: number, row: R) => {
             onItemClick(row);
           }}

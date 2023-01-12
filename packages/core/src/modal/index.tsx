@@ -18,6 +18,7 @@ import {
 } from "@loopring-web/common-resources";
 import { Box, Modal as MuiModal } from "@mui/material";
 import { ModalCoinPairPanel } from "./AmmPoolModal";
+import { ModalRedPacketPanel } from "./RedPacketModal";
 
 export const ModalGroup = withTranslation("common")(
   ({
@@ -54,7 +55,6 @@ export const ModalGroup = withTranslation("common")(
       setShowWithdraw,
       setShowResetAccount,
     } = useOpenModals();
-
     const { account } = useAccount();
 
     React.useEffect(() => {
@@ -74,6 +74,7 @@ export const ModalGroup = withTranslation("common")(
             setShowSupport({ isShow: false });
           }}
         />
+        <ModalRedPacketPanel etherscanBaseUrl={etherscanBaseUrl} />
         <ModalWalletConnectPanel
           {...{
             ...rest,

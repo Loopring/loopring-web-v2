@@ -33,16 +33,15 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
       async ({ showOfficial, offset }: any) => {
         setShowLoading(true);
         if (LoopringAPI.luckTokenAPI && accountId && apiKey) {
-          const response =
-            await LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
-              {
-                senderId: accountId,
-                scopes: sdk.LuckyTokenViewType,
-                statuses: `0,1,2,3,4`,
-                official: false,
-              } as any,
-              apiKey
-            );
+          const response = await LoopringAPI.luckTokenAPI.getLuckTokenSummary(
+            // {
+            //   senderId: accountId,
+            //   scopes: sdk.LuckyTokenViewType,
+            //   statuses: `0,1,2,3,4`,
+            //   official: false,
+            // } as any,
+            apiKey
+          );
           if (
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message

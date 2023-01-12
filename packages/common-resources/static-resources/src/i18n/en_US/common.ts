@@ -1347,7 +1347,7 @@ export default {
   labelShare: "Share",
   labelRelayRedPacket: "Relay Red Packet",
   labelLuckyRedPacket: "Lucky Red Packet",
-  labelLuckyRedPacketStart: "Starts in: {{}}",
+  labelLuckyRedPacketStart: "Starts in: {{value}}",
   labelLuckyRedPacketTimeout: "Red packet has been \n taken out",
   labelLuckyRedPacketDetail: "View red packet details",
   labelRedPacketOpenInProgress: "Processing...",
@@ -1361,4 +1361,13 @@ export default {
   labelL2toL2FeeWithActive: "Fee (including activation fee)",
   labelRedPacketMarketsBtn: "Red Packet Plaza",
   labelRedPacketBtn: "Shared",
+  labelRedPacketViewType0: "public",
+  labelRedPacketViewType1: "private",
+  labelRedPacketStatusSUBMITTING: "Submitting", // SUBMITTING = 0,
+  labelRedPacketStatusNOT_EFFECTIVE: "Not Start", // NOT_EFFECTIVE = 1,
+  labelRedPacketStatusPENDING: "In Processing", // PENDING = 2,
+  labelRedPacketStatusCOMPLETED: "Completed", // COMPLETED = 3,
+  labelRedPacketStatusOVER_DUE: "Over Due", // OVER_DUE = 4,
+  labelRedPacketStatusFAILED: "Failed", // FAILED = 5
+  labelRedPacketNo: "NO.{{value}}", // FAILED = 5
 };

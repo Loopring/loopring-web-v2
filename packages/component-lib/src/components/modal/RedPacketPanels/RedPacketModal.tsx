@@ -7,7 +7,24 @@ import {
 } from "../../../index";
 import { Box } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
-import { HEADER_HEIGHT } from "@loopring-web/common-resources";
+import {
+  CloseRedPacketIcon,
+  HEADER_HEIGHT,
+} from "@loopring-web/common-resources";
+import styled from "@emotion/styled";
+
+const BoxStyle = styled(Box)`
+  .redPacketClose {
+    svg {
+      height: var(--btn-icon-size);
+      width: var(--btn-icon-size);
+    }
+
+    transform: translateY(-50%) translateX(-50%);
+    left: 50%;
+    bottom: ${({ theme }) => theme.unit}px;
+  }
+`;
 
 export const ModalRedPacket = withTranslation("common", { withRef: true })(
   ({
@@ -28,13 +45,24 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box
-          width={"100%"}
+        <BoxStyle
+          // width={"100%"}
           height={`calc(100vh - ${HEADER_HEIGHT}px)`}
-          position={"relative"}
+          position={"absolute"}
           overflow={"scroll"}
+          display={"flex"}
+          top="50%"
+          left="50%"
+          sx={{
+            transform: "translateY(-50%) translateX(-50%)",
+          }}
         >
-          <ModalCloseButton onClose={onClose} {...rest} />
+          <ModalCloseButton
+            closeIcon={<CloseRedPacketIcon />}
+            onClose={onClose}
+            className={"redPacketClose"}
+            {...rest}
+          />
           {onBack ? <ModalBackButton onBack={onBack} {...rest} /> : <></>}
           <SwipeableViews style={{ boxShadow: "24" }}>
             {panelList.map((panel, index) => {
@@ -52,7 +80,7 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
               );
             })}
           </SwipeableViews>
-        </Box>
+        </BoxStyle>
       </Modal>
     );
   }

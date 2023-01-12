@@ -1,12 +1,8 @@
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { TablePaddingX } from "../../styled";
-import { Button, Column, Table, TablePagination } from "../../basic-lib";
-import {
-  globalSetup,
-  myLog,
-  RowInvestConfig,
-} from "@loopring-web/common-resources";
+import { Column, Table, TablePagination } from "../../basic-lib";
+import { globalSetup, myLog, RowConfig } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   RawDataRedPacketRecordsItem,
@@ -68,7 +64,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
     const history = useHistory();
     const [page, setPage] = React.useState(1);
 
-    const updateData = _.debounce(async ({ page = 1, pair }: any) => {
+    const updateData = _.debounce(async ({ page = 1 }: any) => {
       await getRedPacketReceiveList({
         offset: (page - 1) * (pagination?.pageSize ?? 10),
         limit: pagination?.pageSize ?? 10,
@@ -119,36 +115,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
             return <Box display="flex"></Box>;
           },
         },
-        {
-          key: "Action",
-          sortable: false,
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelDualAction"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Typography
-                variant={"inherit"}
-                color={"textPrimary"}
-                display={"inline-flex"}
-                flexDirection={"column"}
-                className={"textAlignRight"}
-                component={"span"}
-              >
-                <Button
-                  variant={"contained"}
-                  color={"primary"}
-                  size={"small"}
-                  onClick={(_e) => {
-                    onItemClick(row);
-                  }}
-                >
-                  {t("labelInvestBtn", { ns: "common" })}
-                </Button>
-              </Typography>
-            );
-          },
-        },
       ],
       [history, t]
     );
@@ -163,14 +129,10 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       <TableWrapperStyled>
         <TableStyled
           currentheight={
-            RowInvestConfig.rowHeaderHeight +
-            rawData.length * RowInvestConfig.rowHeight
+            RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
-          rowHeight={RowInvestConfig.rowHeight}
-          headerRowHeight={RowInvestConfig.rowHeaderHeight}
-          onRowClick={(_index: number, row: R) => {
-            onItemClick(row);
-          }}
+          rowHeight={RowConfig.rowHeight}
+          headerRowHeight={RowConfig.rowHeaderHeight}
           {...{
             ...defaultArgs,
             // rowRenderer: RowRenderer,

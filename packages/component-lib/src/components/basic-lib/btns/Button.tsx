@@ -248,9 +248,11 @@ export const ToggleButtonGroup = withTranslation("common")(
 export const ModalCloseButton = ({
   onClose,
   className = "",
+  closeIcon = <CloseIcon />,
   t,
 }: {
   className?: string;
+  closeIcon?: JSX.Element;
   onClose?: {
     bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
   }["bivarianceHack"];
@@ -273,7 +275,7 @@ export const ModalCloseButton = ({
           onClose && onClose(event, "escapeKeyDown");
         }}
       >
-        <CloseIcon />
+        {closeIcon}
       </IconButton>
     </Box>
   );

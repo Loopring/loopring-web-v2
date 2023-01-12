@@ -1,14 +1,13 @@
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
-import { Button, Column, Table, TablePagination } from "../../basic-lib";
-import {
-  globalSetup,
-  myLog,
-  RowInvestConfig,
-} from "@loopring-web/common-resources";
+import { Column, Table, TablePagination } from "../../basic-lib";
+import { globalSetup, myLog, RowConfig } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
+import * as sdk from "@loopring-web/loopring-sdk";
+
 import {
+  LuckyTokenItemStatusMap,
   RawDataRedPacketRecordsItem,
   RedPacketRecordsTableProps,
 } from "./Interface";
@@ -17,6 +16,8 @@ import React from "react";
 import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
 import { CoinIcons } from "../assetsTable";
+import { useSettings } from "../../../stores";
+import moment from "moment";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -98,9 +99,43 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignLeft",
           name: t("labelRecordToken"),
           formatter: ({ row: { token } }: FormatterProps<R, unknown>) => {
+            let tokenIcon: [any, any] = [undefined, undefined];
+            const [head, middle, tail] = token.simpleName.split("-");
+            const { coinJson } = useSettings();
+            if (token.type === "lp" && middle && tail) {
+              tokenIcon =
+                coinJson[middle] && coinJson[tail]
+                  ? [coinJson[middle], coinJson[tail]]
+                  : [undefined, undefined];
+            }
+            if (token.type !== "lp" && head && head !== "lp") {
+              tokenIcon = coinJson[head]
+                ? [coinJson[head], undefined]
+                : [undefined, undefined];
+            }
             return (
-              <Box display={"flex"}>
+              <Box
+                height={"100%"}
+                display={"inline-flex"}
+                alignItems={"center"}
+              >
                 <CoinIcons type={token.type} tokenIcon={tokenIcon} />
+                <Typography
+                  marginLeft={1}
+                  component={"span"}
+                  color={"textPrimary"}
+                >
+                  {token?.simpleName}
+                </Typography>
+                <Typography
+                  marginLeft={1 / 2}
+                  component={"span"}
+                  variant={"body2"}
+                  className={"next-company"}
+                  color={"textSecondary"}
+                >
+                  {token?.name}
+                </Typography>
               </Box>
             );
           },
@@ -110,7 +145,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           sortable: true,
           name: t("labelRecordAmount"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display={"flex"}></Box>;
+            return <>{`${row.remainAmount}/${row.totalAmount}`}</>;
           },
         },
         {
@@ -118,25 +153,47 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           sortable: true,
           name: t("labelRecordType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex"></Box>;
+            return (
+              <>{t(`labelRedPacketViewType${row.type}`, { ns: "common" })}</>
+            );
           },
         },
-
         {
           key: "Status",
           sortable: true,
           name: t("labelRecordStatus"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex"></Box>;
+            if (
+              row.type === sdk.LuckyTokenViewType.PRIVATE &&
+              [0, 1, 2].includes(LuckyTokenItemStatusMap[row.status])
+            ) {
+              return (
+                <Link
+                  height={"100%"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  onClick={() =>
+                    onItemClick(row.rawData as sdk.LuckyTokenItemForReceive)
+                  }
+                >
+                  {t(`labelOpen`, { ns: "common" })}
+                </Link>
+              );
+            } else {
+              return (
+                <>{t(`labelRedPacketStatus${row.status}`, { ns: "common" })}</>
+              );
+            }
           },
         },
-
         {
           key: "Number",
           sortable: true,
           name: t("labelRecordNumber"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex"></Box>;
+            return (
+              <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
+            );
           },
         },
 
@@ -145,11 +202,18 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           sortable: true,
           name: t("labelRecordTime"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex"></Box>;
+            return (
+              <>
+                {moment(
+                  new Date(row.createdAt + "0000"),
+                  "YYYYMMDDHHMM"
+                ).fromNow()}
+              </>
+            );
           },
         },
       ],
-      [history, t]
+      [history, onItemClick, t]
     );
     React.useEffect(() => {
       updateData.cancel();
@@ -171,14 +235,10 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       <TableWrapperStyled>
         <TableStyled
           currentheight={
-            RowInvestConfig.rowHeaderHeight +
-            rawData.length * RowInvestConfig.rowHeight
+            RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
-          rowHeight={RowInvestConfig.rowHeight}
-          headerRowHeight={RowInvestConfig.rowHeaderHeight}
-          onRowClick={(_index: number, row: R) => {
-            onItemClick(row);
-          }}
+          rowHeight={RowConfig.rowHeight}
+          headerRowHeight={RowConfig.rowHeaderHeight}
           {...{
             ...defaultArgs,
             // rowRenderer: RowRenderer,

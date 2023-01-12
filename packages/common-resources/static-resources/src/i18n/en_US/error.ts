@@ -54,4 +54,5 @@ export default {
   errorNoResponse: "No response!",
   errorMinError: "Minimum of {{value}}",
   errorLengthLimit: "Length is limit",
+  errorRedpacketEmpty: "Red Packet is Empty",
 };

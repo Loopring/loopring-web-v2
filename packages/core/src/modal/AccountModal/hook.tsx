@@ -123,6 +123,7 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
+  myLog,
   NFTWholeINFO,
   SendAssetList,
   SendNFTAssetList,
@@ -151,6 +152,7 @@ import {
   useNFTWithdraw,
   useNotify,
   useRampTransPost,
+  useRedPacketScanQrcodeSuccess,
   useReset,
   useSystem,
   useToast,
@@ -213,6 +215,7 @@ export function useAccountModalForUI({
   const { chainId, allowTrade } = useSystem();
 
   const { account, addressShort, shouldShow, setShouldShow } = useAccount();
+  const redPacketScanQrcodeSuccessProps = useRedPacketScanQrcodeSuccess();
 
   const {
     exportAccountAlertText,
@@ -757,7 +760,7 @@ export function useAccountModalForUI({
         height: isLayer1Only ? "auto" : null,
       },
       [AccountStep.QRCodeScanner]: {
-        view: <ImportRedPacket />,
+        view: <ImportRedPacket {...redPacketScanQrcodeSuccessProps} />,
         onBack: () => {
           setShowAccount({ isShow: false });
         },
