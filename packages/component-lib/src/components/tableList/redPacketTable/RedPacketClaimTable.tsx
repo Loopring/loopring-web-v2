@@ -5,13 +5,12 @@ import { Button, Column, Table } from "../../basic-lib";
 import { RowConfig } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
-  RawDataRedPacketRecordsItem,
+  RawDataRedPacketClaimItem,
   RedPacketClaimTableProps,
 } from "./Interface";
 import { useHistory } from "react-router-dom";
 import React from "react";
 import { FormatterProps } from "react-data-grid";
-import _ from "lodash";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -55,7 +54,7 @@ const TableStyled = styled(Table)`
 ` as any;
 
 export const RedPacketClaimTable = withTranslation(["tables", "common"])(
-  <R extends RawDataRedPacketRecordsItem>(
+  <R extends RawDataRedPacketClaimItem>(
     props: RedPacketClaimTableProps<R> & WithTranslation
   ) => {
     const {

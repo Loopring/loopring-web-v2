@@ -1370,6 +1370,9 @@ export default {
   labelRedPacketClaimInProgress: "Processing...",
   labelRedPacketClaimFailed: "Open red packet failed!",
   labelRedPacketClaimSuccess: "",
+  labelReceived: "Received",
+  labelGoodLuck: "Good Luck",
+
   // labelRedPacketOpenInProgress:"Processing...",
   // labelRedPacketOpenFailed:"Read Red Packet failed!",
 };

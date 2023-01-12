@@ -5,7 +5,7 @@ import { Column, Table, TablePagination } from "../../basic-lib";
 import { globalSetup, myLog, RowConfig } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
-  RawDataRedPacketRecordsItem,
+  RawDataRedPacketReceivesItem,
   RedPacketReceiveTableProps,
 } from "./Interface";
 import { useHistory } from "react-router-dom";
@@ -53,9 +53,8 @@ const TableStyled = styled(Table)`
     text-align: center;
   }
 ` as any;
-
 export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
-  <R extends RawDataRedPacketRecordsItem>(
+  <R extends RawDataRedPacketReceivesItem>(
     props: RedPacketReceiveTableProps<R> & WithTranslation
   ) => {
     const { getRedPacketReceiveList, pagination, rawData, showloading, t } =

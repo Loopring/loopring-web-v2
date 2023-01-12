@@ -66,7 +66,8 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
             // @ts-ignore
             let result = (response as any)?.list.reduce(
               (prev: R[], item: sdk.LuckyTokenItemForReceive) => {
-                prev.push(item);
+                //TODO:
+                prev.push(item as unknown as R);
                 return prev;
               },
               [] as R[]

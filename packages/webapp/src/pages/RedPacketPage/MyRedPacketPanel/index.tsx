@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import {
   RedPacketReceiveTable,
   RedPacketRecordTable,
-  Toast,
   useSettings,
 } from "@loopring-web/component-lib";
 import { StylePaper, useSystem, useToast } from "@loopring-web/core";

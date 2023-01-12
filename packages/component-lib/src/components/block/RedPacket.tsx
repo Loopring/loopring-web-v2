@@ -359,6 +359,21 @@ export type RedPacketOpenProps = {
   viewDetail: () => void;
   onOpen: () => void;
 };
+export type RedPacketOpenedProps = {
+  sender: string;
+  amountStr: string;
+  amountClaimStr: string;
+  memo: string;
+  viewDetail: () => void;
+};
+export type RedPacketDetailProps = {
+  sender: string;
+  amountStr: string;
+  amountClaimStr: string;
+  memo: string;
+  detailList: any[];
+  detail: any;
+};
 
 export const RedPacketOpen = ({
   type = "default",
@@ -532,7 +547,7 @@ export const RedPacketClock = ({
   return <RedPacketBgDefault type={type} content={content} />;
 };
 
-export const RedPacketHistory = ({
+export const RedPacketOpened = ({
   type = "default",
 }: RedPacketDefault & any) => {
   const { t } = useTranslation("common");

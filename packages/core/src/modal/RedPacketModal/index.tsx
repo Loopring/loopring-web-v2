@@ -1,7 +1,9 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   ModalRedPacket,
+  RedPacketDetail,
   RedPacketOpen,
+  RedPacketOpened,
   RedPacketQRCode,
   RedPacketSize,
   RedPacketTimeout,
@@ -23,8 +25,13 @@ export const ModalRedPacketPanel = withTranslation("common")(
       modals: { isShowRedPacket },
       setShowRedPacket,
     } = useOpenModals();
-    const { redPacketQRCodeProps, redPacketTimeoutProps, redPacketOpenProps } =
-      useRedPacketModal();
+    const {
+      redPacketQRCodeProps,
+      redPacketTimeoutProps,
+      redPacketOpenProps,
+      redPacketOpenedProps,
+      redPacketDetailProps,
+    } = useRedPacketModal();
     // const { redPacketProps } = useRedPacketDetail();
     // const theme = useTheme();
     const redPacketList = React.useMemo(() => {
@@ -54,8 +61,24 @@ export const ModalRedPacketPanel = withTranslation("common")(
             <></>
           ),
         },
-        [RedPacketViewStep.OpenedPanel]: { view: <></> },
-        [RedPacketViewStep.DetailPanel]: { view: <></> },
+        [RedPacketViewStep.OpenedPanel]: {
+          view: redPacketOpenedProps ? (
+            <Box
+              height={RedPacketSize.large.height + 64}
+              width={RedPacketSize.large.width}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <RedPacketOpened size={"large"} {...redPacketOpenedProps} />
+            </Box>
+          ) : (
+            <></>
+          ),
+        },
+        [RedPacketViewStep.DetailPanel]: {
+          view: <RedPacketDetail redPacketDetailProps={redPacketDetailProps} />,
+        },
         [RedPacketViewStep.TimeOutPanel]: {
           view: redPacketTimeoutProps ? (
             <Box
