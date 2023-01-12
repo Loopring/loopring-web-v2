@@ -65,7 +65,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
             isShow: true,
             info: {
               ...luckTokenInfo,
-              referer: redPacketInfo.referrer,
+              referrer: redPacketInfo.referrer,
             },
             step: RedPacketViewStep.OpenPanel,
           });
