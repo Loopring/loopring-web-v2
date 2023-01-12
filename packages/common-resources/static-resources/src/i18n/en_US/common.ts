@@ -1372,6 +1372,9 @@ export default {
   labelRedPacketClaimSuccess: "",
   labelReceived: "Received",
   labelGoodLuck: "Good Luck",
+  labelRedPacketGrab: "Invite friends to grab",
+  labelLuckDraw: "Luckiest Draw",
+  labelMyLuckReward: "(My reward)",
 
   // labelRedPacketOpenInProgress:"Processing...",
   // labelRedPacketOpenFailed:"Read Red Packet failed!",

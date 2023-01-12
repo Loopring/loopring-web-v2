@@ -43,7 +43,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
               height={603 + 64}
               display={"flex"}
               justifyContent={"start"}
-              alignItems={"center"}
+              alignItems={"start"}
             >
               <RedPacketQRCode {...redPacketQRCodeProps} />
             </Box>
@@ -88,12 +88,9 @@ export const ModalRedPacketPanel = withTranslation("common")(
               width={RedPacketSize.large.width}
               display={"flex"}
               justifyContent={"center"}
-              alignItems={"center"}
+              alignItems={"start"}
             >
-              <RedPacketDetail
-                width={RedPacketSize.large.width}
-                redPacketDetailProps={redPacketDetailProps}
-              />
+              <RedPacketDetail {...redPacketDetailProps} />
             </Box>
           ) : (
             <></>

@@ -16,6 +16,14 @@ export type RawDataRedPacketRecordsItem = {
 };
 export type RawDataRedPacketReceivesItem = {};
 export type RawDataRedPacketClaimItem = {};
+export type RawDataRedPacketDetailItem = {
+  accountStr: string;
+  isSelf: boolean;
+  amountStr: string;
+  createdAt: number;
+  rawData: any;
+  isMax: boolean;
+};
 
 export interface RedPacketClaimTableProps<R, C = sdk.Currency> {
   rawData: R[];
@@ -58,4 +66,13 @@ export enum LuckyTokenItemStatusMap {
   COMPLETED = 3,
   OVER_DUE = 4,
   FAILED = 5,
+}
+
+export interface aRedPacketDetailTableProps<R, C = sdk.Currency> {
+  rawData: R[];
+  showloading: boolean;
+  forexMap: ForexMap<C>;
+  onItemClick: (item: R) => void;
+  etherscanBaseUrl: string;
+  getClaimRedPacket: (props: any) => void;
 }

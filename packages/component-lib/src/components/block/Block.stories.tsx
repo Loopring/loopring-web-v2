@@ -371,7 +371,7 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
               totalReceived={1}
               countReceived={1000}
               amountStr={"1,000 LRC"}
-              render={"0x01....0101"}
+              sender={"0x01....0101"}
               memo={
                 "back test back test back test back test  back test back test"
               }

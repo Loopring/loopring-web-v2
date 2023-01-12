@@ -189,6 +189,8 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
         {
           key: "Number",
           sortable: true,
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           name: t("labelRecordNumber"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
@@ -200,15 +202,12 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
         {
           key: "Time",
           sortable: true,
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
           name: t("labelRecordTime"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <>
-                {moment(
-                  new Date(row.createdAt + "0000"),
-                  "YYYYMMDDHHMM"
-                ).fromNow()}
-              </>
+              <>{moment(new Date(row.createdAt), "YYYYMMDDHHMM").fromNow()}</>
             );
           },
         },

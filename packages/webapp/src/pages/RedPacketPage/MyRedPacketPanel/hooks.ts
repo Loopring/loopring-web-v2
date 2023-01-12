@@ -83,7 +83,7 @@ export const useMyRedPacketRecordTransaction = <
               ) => {
                 const token = tokenMap[idIndex[item.tokenId]];
                 const tokenInfo = coinMap[token.symbol ?? ""];
-                const type = coinMap[idIndex[item.tokenId] ?? ""];
+                // const type = coinMap[idIndex[item.tokenId] ?? ""];
                 const totalAmount = getValuePrecisionThousand(
                   volumeToCountAsBigNumber(
                     token.symbol,

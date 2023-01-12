@@ -1,5 +1,12 @@
 import styled from "@emotion/styled";
-import { Box, BoxProps, Divider, Link, Typography } from "@mui/material";
+import {
+  Box,
+  BoxProps,
+  Button,
+  Divider,
+  Link,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -11,15 +18,16 @@ import {
   RedPacketQRPropsExtends,
   RedPacketWrapSVG,
   getValuePrecisionThousand,
-  YEAR_DAY_MINUTE_FORMAT,
   getShortAddr,
+  FirstPlaceIcon,
 } from "@loopring-web/common-resources";
 import QRCode from "qrcode-svg";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { volumeToCountAsBigNumber } from "@loopring-web/core";
-import moment from "moment";
 import { RedPacketViewStep } from "../modal";
 import { ModalStatePlayLoad } from "../../stores";
+import { RawDataRedPacketDetailItem } from "../tableList";
+import moment from "moment";
 
 export const RedPacketBg = styled(Box)<
   BoxProps & { imageSrc?: string; type: string }
@@ -152,6 +160,11 @@ export const RedPacketBg = styled(Box)<
   //}
 ` as (props: BoxProps & { imageSrc?: string; type: string }) => JSX.Element;
 
+export const BoxClaim = styled(Box)`
+  &.self {
+    background-color: var(--field-opacity);
+  }
+` as typeof Box;
 export type RedPacketDefault = {
   type?: "default" | "official";
   size?: "middle" | "large";
@@ -371,8 +384,12 @@ export type RedPacketDetailProps = {
   amountStr: string;
   amountClaimStr: string;
   memo: string;
-  detailList: any[];
-  detail: any;
+  claimList: RawDataRedPacketDetailItem[];
+  detail: sdk.LuckTokenHistory;
+  isShouldSharedRely: boolean;
+  totalCount: number;
+  remainCount: number;
+  onShared: () => void;
 };
 
 export const RedPacketOpen = ({
@@ -654,12 +671,17 @@ const BoxStyle = styled(Box)`
   }
 `;
 export const RedPacketDetail = ({
-  render,
-  memo,
+  sender,
   amountStr,
-  totalReceived,
-  countReceived,
-}: any) => {
+  // _amountClaimStr,
+  memo,
+  claimList,
+  // detail,
+  isShouldSharedRely,
+  totalCount,
+  remainCount,
+  onShared,
+}: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
 
   return (
@@ -693,7 +715,7 @@ export const RedPacketDetail = ({
         alignItems={"center"}
         marginY={2}
       >
-        <Typography variant={"body1"}>{render}</Typography>
+        <Typography variant={"body1"}>{sender}</Typography>
         <Typography
           variant={"body2"}
           color={"textThird"}
@@ -704,7 +726,11 @@ export const RedPacketDetail = ({
         >
           {memo}
         </Typography>
-        <Typography variant={"h4"} color={"textThird"} marginTop={1}>
+        <Typography
+          variant={"h3"}
+          color={RedPacketColorConfig.default.colorTop}
+          marginTop={1}
+        >
           {amountStr}
         </Typography>
       </Box>
@@ -716,15 +742,89 @@ export const RedPacketDetail = ({
         flexDirection={"column"}
         paddingX={1}
       >
-        <Typography variant={"body1"} color={"textThird"} marginY={1 / 2}>
+        <Typography variant={"body1"} color={"textThird"} marginY={1}>
           {t("labelRedPacketReceivedRecord", {
-            value: countReceived,
-            total: totalReceived,
+            value: totalCount - remainCount,
+            count: totalCount,
           })}
         </Typography>
         <Divider orientation={"horizontal"} sx={{ borderWidth: 1 }} />
-        <Box flex={1} overflow={"scroll"} paddingX={1}></Box>
+        <Box flex={1} overflow={"scroll"} paddingX={1}>
+          {claimList.map((item) => {
+            return (
+              <BoxClaim
+                className={item.isSelf ? "self claim" : "claim"}
+                display={"flex"}
+                justifyContent={"stretch"}
+                flexDirection={"column"}
+                paddingY={1}
+              >
+                <Typography
+                  component={"span"}
+                  display={"inline-flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
+                  <Typography
+                    variant={"body1"}
+                    component={"span"}
+                    color={"textPrimary"}
+                  >
+                    {item.accountStr} {item.isSelf ? "(My reward)" : ""}
+                  </Typography>
+                  <Typography
+                    variant={"body1"}
+                    component={"span"}
+                    color={"textPrimary"}
+                  >
+                    {item.amountStr}
+                  </Typography>
+                </Typography>
+                <Typography
+                  component={"span"}
+                  display={"inline-flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
+                  <Typography
+                    variant={"body2"}
+                    component={"span"}
+                    color={"textThird"}
+                  >
+                    {moment(new Date(item.createdAt), "YYYYMMDDHHMM").fromNow()}
+                  </Typography>
+                  {item.isMax && (
+                    <Typography
+                      component={"span"}
+                      color={"var(--color-star)"}
+                      display={"inline-flex"}
+                      alignItems={"center"}
+                      variant={"body2"}
+                    >
+                      <FirstPlaceIcon fontSize={"medium"} />
+                      {t("labelLuckDraw")}
+                    </Typography>
+                  )}
+                </Typography>
+              </BoxClaim>
+            );
+          })}
+        </Box>
       </Box>
+      {isShouldSharedRely && (
+        <Box paddingX={1} display={"flex"} flexDirection={"column"}>
+          <Button
+            variant={"contained"}
+            color={RedPacketColorConfig.default.colorTop as any}
+            fullWidth={true}
+            onClick={onShared}
+          >
+            {t("labelRedPacketGrab")}
+          </Button>
+        </Box>
+      )}
     </BoxStyle>
   );
 };
@@ -744,7 +844,7 @@ export const RedPacketPrepare = ({
   ) => void;
   _type?: "official" | "default";
 } & sdk.LuckyTokenItemForReceive) => {
-  const { t } = useTranslation("common");
+  // const { t } = useTranslation("common");
 
   const amountStr = React.useMemo(() => {
     const _info = props as sdk.LuckyTokenItemForReceive;
@@ -767,17 +867,17 @@ export const RedPacketPrepare = ({
 
     // tokenMap[]
   }, [tokenInfo, props]);
-  const textSendBy = React.useMemo(() => {
-    const _info = props as sdk.LuckyTokenItemForReceive;
-    if (_info && _info.validSince > _info.createdAt) {
-      const date = moment(new Date(`${_info.validSince}000`)).format(
-        YEAR_DAY_MINUTE_FORMAT
-      );
-      return t("labelLuckyRedPacketStart", date);
-    } else {
-      return "";
-    }
-  }, [props?.validSince, props?.createdAt]);
+  // const textSendBy = React.useMemo(() => {
+  //   const _info = props as sdk.LuckyTokenItemForReceive;
+  //   if (_info && _info.validSince > _info.createdAt) {
+  //     const date = moment(new Date(`${_info.validSince}000`)).format(
+  //       YEAR_DAY_MINUTE_FORMAT
+  //     );
+  //     return t("labelLuckyRedPacketStart", date);
+  //   } else {
+  //     return "";
+  //   }
+  // }, [props?.validSince, props?.createdAt]);
   return (
     <Box>
       <RedPacketOpen
