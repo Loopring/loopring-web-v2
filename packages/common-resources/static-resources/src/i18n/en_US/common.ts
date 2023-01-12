@@ -1303,10 +1303,7 @@ export default {
     "Please waiting a while, Banxa service is not available currently.",
   labelL2toL2AddressFeePaid: "Active account fee had paid",
   labelL2toL2AddressFeeActiveFee:
-    "You can choose to pay their activation fee. \n" +
-    "Pay recipient's L2 activation fee max cost: {{value}}",
-  // "You can choose to pay their activation fee {{fee}} {{symbol}}?",
-  // "The recipient does not have Loopring L2 activated. You can choose to pay their activation fee. "\n
+    "Pay recipient's L2 activation fee: {{value}}",
   labelImportRedPacket: "Import QR code to receive red packet",
   labelCreateRedPacketTitle: "Send Red Packet",
   labelClaimWithdrawFee: "Fee",
