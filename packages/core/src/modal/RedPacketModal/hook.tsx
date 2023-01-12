@@ -46,6 +46,7 @@ export function useRedPacketModal() {
   const { account } = useAccount();
   const { tokenMap, idIndex } = useTokenMap();
   const { t } = useTranslation("common");
+  const [detail, setDetail] = React.useState();
   const amountStr = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
     const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
@@ -111,6 +112,7 @@ export function useRedPacketModal() {
       if (
         isShow &&
         _info &&
+        step === RedPacketViewStep.QRCodePanel &&
         (_info?.status === sdk.LuckyTokenItemStatus.COMPLETED ||
           _info.status === sdk.LuckyTokenItemStatus.OVER_DUE)
       ) {
@@ -180,9 +182,17 @@ export function useRedPacketModal() {
       const _info = info as sdk.LuckyTokenItemForReceive & {
         referrer?: string;
       };
-      if (isShow && _info?.status == sdk.LuckyTokenItemStatus.COMPLETED) {
+      if (
+        isShow &&
+        _info?.status == sdk.LuckyTokenItemStatus.COMPLETED &&
+        step === RedPacketViewStep.OpenPanel
+      ) {
         // TODO:
-      } else if (isShow && _info.status === sdk.LuckyTokenItemStatus.OVER_DUE) {
+      } else if (
+        isShow &&
+        _info.status === sdk.LuckyTokenItemStatus.OVER_DUE &&
+        step === RedPacketViewStep.OpenPanel
+      ) {
         setShowRedPacket({
           isShow,
           step: RedPacketViewStep.TimeOutPanel,
@@ -298,16 +308,16 @@ export function useRedPacketModal() {
       }
       return undefined;
     }, [info, amountClaimStr, amountStr, account.accAddress, isShow, step]);
-  const redPacketDetailPropsCall = React.useCallback(async (): Promise<
+  const redPacketDetailCall = React.useCallback(async (): Promise<
     RedPacketDetailProps | undefined
   > => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string;
     };
+    setDetail(undefined);
     if (
       isShow &&
       _info?.hash &&
-      _info.claimAmount &&
       step === RedPacketViewStep.DetailPanel &&
       LoopringAPI.luckTokenAPI
     ) {
@@ -350,17 +360,10 @@ export function useRedPacketModal() {
           const detail = (response as any).detail;
           const luckTokenInfo: sdk.LuckyTokenItemForReceive = detail.luckyToken;
           if (luckTokenInfo) {
-            setShowAccount({ isShow: false });
-            return {
-              memo: _info.info.memo,
-              amountStr,
-              amountClaimStr,
-              sender: _info.sender?.ens
-                ? _info.sender?.ens
-                : getShortAddr(_info.sender?.address),
-              detailList: [],
-              detail,
-            } as RedPacketDetailProps;
+            setDetail(detail);
+            setShowAccount({
+              isShow: false,
+            });
           } else {
             const error = new CustomError(ErrorMap.ERROR_REDPACKET_EMPTY);
             setShowAccount({
@@ -389,17 +392,59 @@ export function useRedPacketModal() {
               : error ?? {}),
           },
         });
+        setShowRedPacket({ isShow: false });
       }
     } else {
       return undefined;
     }
     return undefined;
-  }, [info, amountClaimStr, amountStr, account.accAddress, isShow, step]);
+  }, [isShow, step, info]);
+  React.useEffect(() => {
+    if (isShow && step === RedPacketViewStep.DetailPanel) {
+      redPacketDetailCall();
+    }
+  }, [step, isShow]);
+  const redPacketDetailProps = React.useMemo(() => {
+    const _info = info as sdk.LuckyTokenItemForReceive & {
+      claimAmount?: string;
+    };
+    myLog("detail", detail);
+    if (
+      isShow &&
+      _info?.hash &&
+      step === RedPacketViewStep.DetailPanel &&
+      LoopringAPI.luckTokenAPI &&
+      detail
+    ) {
+      // _info.claimAmount &&
+
+      return {
+        memo: _info.info.memo,
+        amountStr,
+        amountClaimStr,
+        sender: _info.sender?.ens
+          ? _info.sender?.ens
+          : getShortAddr(_info.sender?.address),
+        detailList: [],
+        detail,
+      } as RedPacketDetailProps;
+    } else {
+      return undefined;
+    }
+  }, [
+    info,
+    detail,
+    amountClaimStr,
+    amountStr,
+    account.accAddress,
+    isShow,
+    step,
+  ]);
   return {
     redPacketQRCodeProps,
     redPacketTimeoutProps,
     redPacketOpenProps,
     redPacketOpenedProps,
-    redPacketDetailProps: redPacketDetailPropsCall(),
+    redPacketDetailProps,
   };
 }

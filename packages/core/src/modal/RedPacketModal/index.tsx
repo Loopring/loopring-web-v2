@@ -39,7 +39,12 @@ export const ModalRedPacketPanel = withTranslation("common")(
       return Object.values({
         [RedPacketViewStep.QRCodePanel]: {
           view: redPacketQRCodeProps ? (
-            <Box height={603 + 64}>
+            <Box
+              height={603 + 64}
+              display={"flex"}
+              justifyContent={"start"}
+              alignItems={"center"}
+            >
               <RedPacketQRCode {...redPacketQRCodeProps} />
             </Box>
           ) : (
@@ -77,7 +82,22 @@ export const ModalRedPacketPanel = withTranslation("common")(
           ),
         },
         [RedPacketViewStep.DetailPanel]: {
-          view: <RedPacketDetail redPacketDetailProps={redPacketDetailProps} />,
+          view: redPacketDetailProps ? (
+            <Box
+              height={RedPacketSize.large.height + 64}
+              width={RedPacketSize.large.width}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <RedPacketDetail
+                width={RedPacketSize.large.width}
+                redPacketDetailProps={redPacketDetailProps}
+              />
+            </Box>
+          ) : (
+            <></>
+          ),
         },
         [RedPacketViewStep.TimeOutPanel]: {
           view: redPacketTimeoutProps ? (
@@ -99,7 +119,12 @@ export const ModalRedPacketPanel = withTranslation("common")(
         },
         [RedPacketViewStep.PreparePanel]: { view: <></> },
       });
-    }, [redPacketQRCodeProps, redPacketTimeoutProps, redPacketOpenProps]);
+    }, [
+      redPacketQRCodeProps,
+      redPacketDetailProps,
+      redPacketTimeoutProps,
+      redPacketOpenProps,
+    ]);
     return (
       <ModalRedPacket
         onClose={() => {

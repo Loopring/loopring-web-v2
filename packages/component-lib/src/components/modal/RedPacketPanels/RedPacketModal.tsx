@@ -77,7 +77,7 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
                   display={"flex"}
                   key={index}
                   justifyContent={"center"}
-                  alignItems={"stretch"}
+                  alignItems={"center"}
                 >
                   {panel.view}
                 </Box>

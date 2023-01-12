@@ -663,7 +663,11 @@ export const RedPacketDetail = ({
   const { t } = useTranslation("common");
 
   return (
-    <BoxStyle flex={1}>
+    <BoxStyle
+      flex={1}
+      width={RedPacketSize.large.width}
+      height={RedPacketSize.large.height}
+    >
       <Box
         className={"top"}
         width={"100%"}
