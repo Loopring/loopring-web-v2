@@ -172,7 +172,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
         store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
         store.dispatch(getAmmMap({ ammpools }));
         store.dispatch(getAmmActivityMap({ ammpools }));
-      };
+      }
     );
   } else {
     [
