@@ -21,7 +21,6 @@ const getWalletL2NFTCollectionBalance = async <
 }) => {
   const offset = (page - 1) * CollectionLimit;
   const { accountId, apiKey } = store.getState().account;
-  myLog("getWalletL2NFTCollectionBalance");
   if (apiKey && accountId && LoopringAPI.userAPI) {
     const response = await LoopringAPI.userAPI
       .getUserNFTCollection(

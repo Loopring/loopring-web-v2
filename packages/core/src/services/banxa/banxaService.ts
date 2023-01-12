@@ -90,7 +90,6 @@ export const banxaService = {
     const anchor: any = window.document.querySelector("#iframeBanxaTarget");
     // anchor.querySelector("anchor");
     if (anchor && banxa) {
-      // debugger;
       anchor.style.display = "flex";
       try {
         const { data } = await banxaApiCall({

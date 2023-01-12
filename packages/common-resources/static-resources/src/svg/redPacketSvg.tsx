@@ -63,7 +63,6 @@ export const RedPacketWrapSVG = ({
   startColor,
   endColor,
   type,
-  ...props
 }: {
   type: "default" | "official";
   colorTop: "#FD7659" | "#FFD595";
@@ -71,7 +70,7 @@ export const RedPacketWrapSVG = ({
   endColor: "#FF6151" | "#FDBD6A";
 }) => {
   return (
-    <svg {...props} viewBox="0 0 274 414" aria-hidden="true">
+    <svg width={274} height={414} viewBox="0 0 274 414" aria-hidden="true">
       <g filter={`url(#filterWrap${type}0)`}>
         <rect
           x="7"
@@ -98,7 +97,7 @@ export const RedPacketWrapSVG = ({
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -133,7 +132,7 @@ export const RedPacketWrapSVG = ({
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -181,7 +180,7 @@ export const RedPacketWrapSVG = ({
 };
 
 export const RedPacketOpenWrapSVG = ({
-  colorTop,
+  // colorTop,
   startColor,
   endColor,
   startBgColor,
@@ -190,7 +189,6 @@ export const RedPacketOpenWrapSVG = ({
   endCard,
   line,
   type,
-  ...props
 }: {
   type: "default" | "official";
   colorTop: "#FD7659" | "#FFD595";
@@ -203,7 +201,7 @@ export const RedPacketOpenWrapSVG = ({
   line: "#D4B164";
 } & Partial<React.SVGProps<SVGSVGElement>>) => {
   return (
-    <svg {...props} viewBox="0 0 274 414" aria-hidden="true">
+    <svg width={274} height={414} viewBox="0 0 274 414" aria-hidden="true">
       <g transform={"translate(7 7)"}>
         <path
           d="M0 39C0 33.4772 4.47715 29 10 29H250C255.523 29 260 33.4772 260 39V393C260 398.523 255.523 403 250 403H10C4.47716 403 0 398.523 0 393V39Z"
@@ -238,7 +236,7 @@ export const RedPacketOpenWrapSVG = ({
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend
             mode="normal"
             in="SourceGraphic"
@@ -434,7 +432,7 @@ export const RedPacketQRCodeSvg = React.memo(
               filterUnits="userSpaceOnUse"
               colorInterpolationFilters="sRGB"
             >
-              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feFlood floodOpacity="0" result="BackgroundImageFix"/>
               <feColorMatrix
                 in="SourceAlpha"
                 type="matrix"

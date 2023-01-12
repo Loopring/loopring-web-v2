@@ -5,11 +5,7 @@ import {
   RedPacketStep,
   WithdrawProps,
 } from "../../tradePanel";
-import {
-  FeeInfo,
-  LuckyRedPacketList,
-  myLog,
-} from "@loopring-web/common-resources";
+import { FeeInfo, LuckyRedPacketList } from "@loopring-web/common-resources";
 import {
   HorizontalLabelPositionBelowStepper,
   TradeMenuList,

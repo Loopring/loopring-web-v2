@@ -7,7 +7,7 @@ import { myLog } from "@loopring-web/common-resources";
 export const ImportRedPacket = ({
   handleSuccess,
 }: {
-  handleSuccess: (value: string) => void;
+  handleSuccess: (value: string) => Promise<void>;
 }) => {
   const ref = React.useRef();
   // const { search } = useLocation();

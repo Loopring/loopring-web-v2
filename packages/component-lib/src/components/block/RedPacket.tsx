@@ -268,7 +268,7 @@ export const RedPacketBgDefault = ({
   size = "middle",
   content,
 }: RedPacketDefaultBg & any) => {
-  const scale = RedPacketSize[size].height / 414;
+  const scale = RedPacketSize[size].width / 260;
 
   return (
     <RedPacketBg
@@ -285,6 +285,8 @@ export const RedPacketBgDefault = ({
         right={0}
         bottom={0}
         zIndex={100}
+        display={"flex"}
+        justifyContent={"center"}
       >
         <RedPacketWrapSVG
           {...{ ...RedPacketCssColorConfig[type] }}
@@ -299,8 +301,8 @@ export const RedPacketBgDefault = ({
         className={`content content${size}`}
         position={"relative"}
         zIndex={200}
-        height={RedPacketSize[size].height}
-        width={RedPacketSize[size].width}
+        height={RedPacketSize["middle"].height}
+        width={RedPacketSize["middle"].width}
       >
         {content}
       </Box>
@@ -313,7 +315,7 @@ export const RedPacketBgOpened = ({
   size = "middle",
   content,
 }: RedPacketDefaultBg & any) => {
-  const scale = RedPacketSize[size].height / 414;
+  const scale = RedPacketSize[size].width / 260;
 
   return (
     <RedPacketBg
@@ -322,7 +324,16 @@ export const RedPacketBgOpened = ({
         transform: `scale(${scale})`,
       }}
     >
-      <Box position={"absolute"} zIndex={100}>
+      <Box
+        position={"absolute"}
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        zIndex={100}
+        display={"flex"}
+        justifyContent={"center"}
+      >
         <RedPacketOpenWrapSVG
           {...{ ...RedPacketCssColorConfig[type] }}
           height={"100%"}
@@ -334,7 +345,7 @@ export const RedPacketBgOpened = ({
         className={`content content${size}`}
         position={"relative"}
         zIndex={200}
-        height={RedPacketSize[size]}
+        height={RedPacketSize["middle"].height}
       >
         {content}
       </Box>
@@ -414,7 +425,7 @@ export const RedPacketOpen = ({
         </Box>
       </Box>
     );
-  }, []);
+  }, [size, sender, amountStr, memo, viewDetail, onOpen]);
 
   return <RedPacketBgDefault type={type} size={size} content={content} />;
 };
@@ -548,7 +559,7 @@ export const RedPacketTimeout = ({
   memo,
   viewDetail,
 }: RedPacketTimeoutProps) => {
-  const scale = RedPacketSize[size].height / 414;
+  const scale = RedPacketSize[size].width / 260;
   const { t } = useTranslation("common");
   return (
     <RedPacketBg
@@ -574,7 +585,7 @@ export const RedPacketTimeout = ({
         flexDirection={"column"}
         justifyContent={"stretch"}
         // alignItems={"s"}
-        height={RedPacketSize[size]}
+        height={RedPacketSize["middle"].height}
       >
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
           <Typography

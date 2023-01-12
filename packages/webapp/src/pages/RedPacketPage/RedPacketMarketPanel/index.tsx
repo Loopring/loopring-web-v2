@@ -104,6 +104,7 @@ export const RedPacketMarketPanel = () => {
         flex={1}
         display={"flex"}
         flexDirection={"column"}
+        paddingBottom={2}
       >
         <Grid
           container
@@ -141,30 +142,69 @@ export const RedPacketMarketPanel = () => {
             />
           </Grid>
         </Grid>
-
-        <Grid container spacing={1} flex={1} display={"flex"} paddingX={1}>
-          {luckTokenList.officialList?.length ? (
-            luckTokenList.officialList.map((item, index) => {
-              const token = tokenMap[idIndex[item?.tokenId] ?? ""];
-              return (
-                <Grid xs={6} md={4} lg={3} key={index} position={"relative"}>
-                  <RedPacketPrepare
-                    {...{ ...item }}
-                    setShowRedPacket={setShowRedPacket}
-                    tokenInfo={token}
-                    _type="official"
-                  />
-                </Grid>
-              );
-            })
-          ) : (
-            <></>
-          )}
-          {luckTokenList.publicList?.length
-            ? luckTokenList.publicList.map((item, index) => {
+        {!luckTokenList.officialList?.length &&
+        !luckTokenList.publicList?.length ? (
+          <Box
+            flex={1}
+            display={"flex"}
+            alignItems={"center"}
+            height={"100%"}
+            justifyContent={"center"}
+          >
+            <EmptyDefault
+              // width={"100%"}
+              height={"100%"}
+              message={() => (
+                <Box
+                  flex={1}
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
+                  {t("labelNoContent")}
+                </Box>
+              )}
+            />
+          </Box>
+        ) : (
+          <Grid container display={"flex"} paddingX={1}>
+            {luckTokenList.officialList?.length ? (
+              luckTokenList.officialList.map((item, index) => {
                 const token = tokenMap[idIndex[item?.tokenId] ?? ""];
                 return (
-                  <Grid xs={6} md={4} lg={3} key={index} position={"relative"}>
+                  <Grid
+                    item
+                    xs={6}
+                    md={4}
+                    lg={3}
+                    key={index}
+                    position={"relative"}
+                    marginY={1}
+                  >
+                    <RedPacketPrepare
+                      {...{ ...item }}
+                      setShowRedPacket={setShowRedPacket}
+                      tokenInfo={token}
+                      _type="official"
+                    />
+                  </Grid>
+                );
+              })
+            ) : (
+              <></>
+            )}
+            {!!luckTokenList.publicList?.length &&
+              luckTokenList.publicList.map((item, index) => {
+                const token = tokenMap[idIndex[item?.tokenId] ?? ""];
+                return (
+                  <Grid
+                    xs={6}
+                    md={4}
+                    lg={3}
+                    key={index}
+                    position={"relative"}
+                    marginY={1}
+                  >
                     <RedPacketPrepare
                       {...{ ...item }}
                       setShowRedPacket={setShowRedPacket}
@@ -172,51 +212,9 @@ export const RedPacketMarketPanel = () => {
                     />
                   </Grid>
                 );
-              })
-            : !luckTokenList.officialList?.length &&
-              !luckTokenList.publicList?.length && (
-                <Box
-                  flex={1}
-                  display={"flex"}
-                  alignItems={"center"}
-                  height={"100%"}
-                  justifyContent={"center"}
-                >
-                  <EmptyDefault
-                    // width={"100%"}
-                    height={"100%"}
-                    message={() => (
-                      <Box
-                        flex={1}
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                      >
-                        {t("labelNoContent")}
-                      </Box>
-                    )}
-                  />
-                </Box>
-              )}
-        </Grid>
-        {/*<IconButton>*/}
-        {/*  <RefreshIcon style={{ height: 36, width: 36 }} />*/}
-        {/*</IconButton>*/}
-        {/*<Toast*/}
-        {/*  alertText={toastOpen?.content ?? ""}*/}
-        {/*  severity={toastOpen?.type ?? "success"}*/}
-        {/*  open={toastOpen?.open ?? false}*/}
-        {/*  autoHideDuration={TOAST_TIME}*/}
-        {/*  onClose={closeToast}*/}
-        {/*/>*/}
-        {/*<Box*/}
-        {/*  marginTop={2}*/}
-        {/*  marginLeft={2}*/}
-        {/*  display={"flex"}*/}
-        {/*  */}
-        {/*>*/}
-        {/*    */}
-        {/*</Box>*/}
+              })}
+          </Grid>
+        )}
       </StylePaper>
     </Box>
   );

@@ -166,13 +166,13 @@ const initConfig = function* <_R extends { [key: string]: any }>(
             marketRaw,
           })
         );
-        myLog(
-          "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList update from server-side update"
-        );
+        // myLog(
+        //   "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList update from server-side update"
+        // );
         store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
         store.dispatch(getAmmMap({ ammpools }));
         store.dispatch(getAmmActivityMap({ ammpools }));
-      }
+      };
     );
   } else {
     [
@@ -257,7 +257,6 @@ const should15MinutesUpdateDataGroup = async (
   gasPrice: number | undefined;
   forexMap: ForexMap<Currency>;
 }> => {
-  // myLog("loop get getFiatPrice getGasPrice");
   if (LoopringAPI.exchangeAPI) {
     let indexUSD = 0;
     const tokenId =
@@ -275,7 +274,6 @@ const should15MinutesUpdateDataGroup = async (
         }) ?? Promise.resolve({ tokenPrices: null })
       );
     });
-    myLog("getLatestTokenPrices & getGasPrice from service");
 
     const [{ gasPrice }, ...restForexs] = await Promise.all([
       LoopringAPI.exchangeAPI.getGasPrice(),
@@ -355,7 +353,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
           process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION;
       }
       try {
-        myLog("exchangeInfo chainId", chainId);
         const _exchangeInfo = JSON.parse(
           window.localStorage.getItem("exchangeInfo") ?? "{}"
         );

@@ -3,6 +3,7 @@ import {
   ModalRedPacket,
   RedPacketOpen,
   RedPacketQRCode,
+  RedPacketSize,
   RedPacketTimeout,
   RedPacketViewStep,
   useOpenModals,
@@ -10,6 +11,7 @@ import {
 import React from "react";
 import { useRedPacketModal } from "./hook";
 import { myLog } from "@loopring-web/common-resources";
+import { Box } from "@mui/material";
 
 export const ModalRedPacketPanel = withTranslation("common")(
   ({
@@ -26,18 +28,28 @@ export const ModalRedPacketPanel = withTranslation("common")(
     // const { redPacketProps } = useRedPacketDetail();
     // const theme = useTheme();
     const redPacketList = React.useMemo(() => {
-      myLog(redPacketQRCodeProps);
+      myLog(redPacketOpenProps);
       return Object.values({
         [RedPacketViewStep.QRCodePanel]: {
           view: redPacketQRCodeProps ? (
-            <RedPacketQRCode {...redPacketQRCodeProps} />
+            <Box height={603 + 64}>
+              <RedPacketQRCode {...redPacketQRCodeProps} />
+            </Box>
           ) : (
             <></>
           ),
         },
         [RedPacketViewStep.OpenPanel]: {
           view: redPacketOpenProps ? (
-            <RedPacketOpen {...redPacketOpenProps} />
+            <Box
+              height={RedPacketSize.large.height + 64}
+              width={RedPacketSize.large.width}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <RedPacketOpen size={"large"} {...redPacketOpenProps} />
+            </Box>
           ) : (
             <></>
           ),
@@ -46,10 +58,18 @@ export const ModalRedPacketPanel = withTranslation("common")(
         [RedPacketViewStep.DetailPanel]: { view: <></> },
         [RedPacketViewStep.TimeOutPanel]: {
           view: redPacketTimeoutProps ? (
-            <RedPacketTimeout
-              size={"large"}
-              {...{ ...redPacketTimeoutProps }}
-            />
+            <Box
+              height={RedPacketSize.large.height + 64}
+              width={RedPacketSize.large.width}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <RedPacketTimeout
+                size={"large"}
+                {...{ ...redPacketTimeoutProps }}
+              />
+            </Box>
           ) : (
             <></>
           ),

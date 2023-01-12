@@ -123,12 +123,36 @@ export const NFTRedPacketSend_Failed = (props: PanelProps) => {
 export const RedPacketOpen_In_Progress = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t(" labelRedPacketOpenInProgress"),
+    describe1: props.t("labelRedPacketOpenInProgress"),
   };
   return <RedPacketOpenBase {...propsPatch} {...props} />;
 };
 
 export const RedPacketOpen_Failed = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: props.t("labelRedPacketOpenFailed"),
+  };
+  return <RedPacketOpenBase {...propsPatch} {...props} />;
+};
+
+export const RedPacketOpen_Claim_In_Progress = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.LoadingIcon,
+    describe1: props.t("labelRedPacketClaimInProgress"),
+  };
+  return <RedPacketOpenBase {...propsPatch} {...props} />;
+};
+
+export const RedPacketSend_Claim_Success = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.DoneIcon,
+    describe1: props.t("labelRedPacketClaimSuccess"),
+  };
+  return <RedPacketOpenBase {...propsPatch} {...props} />;
+};
+
+export const RedPacketOpen_Claim_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelRedPacketOpenFailed"),

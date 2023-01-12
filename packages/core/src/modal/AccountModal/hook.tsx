@@ -71,8 +71,11 @@ import {
   NFTWithdraw_WaitForAuth,
   NoAccount,
   QRAddressPanel,
+  RedPacketOpen_Claim_Failed,
+  RedPacketOpen_Claim_In_Progress,
   RedPacketOpen_Failed,
   RedPacketOpen_In_Progress,
+  RedPacketSend_Claim_Success,
   RedPacketSend_Failed,
   RedPacketSend_First_Method_Denied,
   RedPacketSend_In_Progress,
@@ -123,7 +126,6 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
-  myLog,
   NFTWholeINFO,
   SendAssetList,
   SendNFTAssetList,
@@ -1310,6 +1312,55 @@ export function useAccountModalForUI({
       [AccountStep.RedPacketOpen_Failed]: {
         view: (
           <RedPacketOpen_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+
+      [AccountStep.RedPacketOpen_Claim_In_Progress]: {
+        view: (
+          <RedPacketOpen_Claim_In_Progress
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+
+      [AccountStep.RedPacketSend_Claim_Success]: {
+        view: (
+          <RedPacketSend_Claim_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+      [AccountStep.RedPacketOpen_Claim_Failed]: {
+        view: (
+          <RedPacketOpen_Claim_Failed
             btnInfo={closeBtnInfo()}
             {...{
               ...rest,

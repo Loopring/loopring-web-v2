@@ -74,6 +74,10 @@ export enum AccountStep {
   RedPacketOpen_In_Progress,
   RedPacketOpen_Failed,
 
+  RedPacketOpen_Claim_In_Progress,
+  RedPacketSend_Claim_Success,
+  RedPacketOpen_Claim_Failed,
+
   ForceWithdraw_WaitForAuth,
   ForceWithdraw_First_Method_Denied,
   ForceWithdraw_In_Progress,

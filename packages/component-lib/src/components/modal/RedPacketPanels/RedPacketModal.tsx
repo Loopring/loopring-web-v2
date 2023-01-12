@@ -7,11 +7,9 @@ import {
 } from "../../../index";
 import { Box } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
-import {
-  CloseRedPacketIcon,
-  HEADER_HEIGHT,
-} from "@loopring-web/common-resources";
+import { CloseRedPacketIcon } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
+import { useTheme } from "@emotion/react";
 
 const BoxStyle = styled(Box)`
   .redPacketClose {
@@ -22,7 +20,7 @@ const BoxStyle = styled(Box)`
 
     transform: translateY(-50%) translateX(-50%);
     left: 50%;
-    bottom: ${({ theme }) => theme.unit}px;
+    bottom: -${({ theme }) => theme.unit}px;
   }
 `;
 
@@ -37,6 +35,8 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
     style,
     ...rest
   }: ModalRedPacketProps & WithTranslation) => {
+    const theme = useTheme();
+
     return (
       <Modal
         open={open}
@@ -47,7 +47,7 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
       >
         <BoxStyle
           // width={"100%"}
-          height={`calc(100vh - ${HEADER_HEIGHT}px)`}
+          // height={`calc(100vh - ${HEADER_HEIGHT}px)`}
           position={"absolute"}
           overflow={"scroll"}
           display={"flex"}
@@ -64,7 +64,11 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
             {...rest}
           />
           {onBack ? <ModalBackButton onBack={onBack} {...rest} /> : <></>}
-          <SwipeableViews style={{ boxShadow: "24" }}>
+          <SwipeableViews
+            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+            index={step}
+            style={{ boxShadow: "24" }}
+          >
             {panelList.map((panel, index) => {
               return (
                 <Box

@@ -13,6 +13,7 @@ import {
   Exchange,
   getShortAddr,
   getValuePrecisionThousand,
+  myLog,
   UIERROR_CODE,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
@@ -129,8 +130,9 @@ export function useRedPacketModal() {
       ) {
         return {
           memo: _info.info.memo,
-          sender:
-            _info.sender?.ens ?? getShortAddr(_info.sender?.address) ?? "",
+          sender: _info.sender?.ens
+            ? _info.sender?.ens
+            : getShortAddr(_info.sender?.address),
           viewDetail: () => {
             setShowRedPacket({
               isShow,
@@ -146,8 +148,9 @@ export function useRedPacketModal() {
     }, [info, account.accAddress, isShow, step]);
   const redPacketOpenProps: RedPacketOpenProps | undefined =
     React.useMemo(() => {
-      // new Date(info.validSince)
-      const _info = info as sdk.LuckyTokenItemForReceive;
+      const _info = info as sdk.LuckyTokenItemForReceive & {
+        referrer?: string;
+      };
       if (isShow && _info?.status == sdk.LuckyTokenItemStatus.COMPLETED) {
         // TODO:
       } else if (isShow && _info.status === sdk.LuckyTokenItemStatus.OVER_DUE) {
@@ -161,11 +164,13 @@ export function useRedPacketModal() {
         _info?.hash &&
         step === RedPacketViewStep.OpenPanel
       ) {
+        myLog("redPacketOpenProps", _info);
         return {
           memo: _info.info.memo,
           amountStr,
-          sender:
-            _info.sender?.ens ?? getShortAddr(_info.sender?.address) ?? "",
+          sender: _info.sender?.ens
+            ? _info.sender?.ens
+            : getShortAddr(_info.sender?.address),
           viewDetail: () => {
             setShowRedPacket({
               isShow,
@@ -177,31 +182,20 @@ export function useRedPacketModal() {
           onOpen: async () => {
             setShowAccount({
               isShow: true,
-              step: AccountStep.RedPacketOpen_In_Progress,
+              step: AccountStep.RedPacketOpen_Claim_In_Progress,
             });
-            // let isHWAddr = checkHWAddr(account.accAddress);
-            // if (!isHWAddr && !isNotHardwareWallet) {
-            //   isHWAddr = true;
-            // }
-
             try {
-              // TODO:
               let response =
                 LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
                   request: {
                     hash: _info?.hash,
                     claimer: account.accAddress,
                     // TODO:
-                    referrer: _info.info.memo,
+                    referrer: _info?.referrer ?? undefined,
                   },
-                  // chainId: chainId === "unknown" ? 1 : chainId,
-                  // walletType: (ConnectProvidersSignMap[connectName] ??
-                  //   connectName) as unknown as sdk.ConnectorNames,
                   eddsaKey: account.eddsaKey.sk,
                   apiKey: account.apiKey,
-                  // isHWAddr,
                 } as any);
-              //await
               if (
                 (response as sdk.RESULT_INFO).code ||
                 (response as sdk.RESULT_INFO).message

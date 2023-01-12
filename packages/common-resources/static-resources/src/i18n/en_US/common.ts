@@ -1348,7 +1348,7 @@ export default {
   labelLuckyRedPacketTimeout: "Red packet has been \n taken out",
   labelLuckyRedPacketDetail: "View red packet details",
   labelRedPacketOpenInProgress: "Processing...",
-  labelRedPacketOpenFailed: "Open red packet failed!",
+  labelRedPacketOpenFailed: "Read red packet failed!",
   labelRedPacketOpen: "Open Red Packet",
   labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
@@ -1367,4 +1367,9 @@ export default {
   labelRedPacketStatusOVER_DUE: "Over Due", // OVER_DUE = 4,
   labelRedPacketStatusFAILED: "Failed", // FAILED = 5
   labelRedPacketNo: "NO.{{value}}", // FAILED = 5
+  labelRedPacketClaimInProgress: "Processing...",
+  labelRedPacketClaimFailed: "Open red packet failed!",
+  labelRedPacketClaimSuccess: "",
+  // labelRedPacketOpenInProgress:"Processing...",
+  // labelRedPacketOpenFailed:"Read Red Packet failed!",
 };
