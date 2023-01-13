@@ -1,7 +1,12 @@
 import styled from "@emotion/styled";
-import { Box, Link, Typography } from "@mui/material";
+import { Box, Link } from "@mui/material";
 import { TablePaddingX } from "../../styled";
-import { Column, Table, TablePagination } from "../../basic-lib";
+import {
+  Column,
+  ColumnCoinDeep,
+  Table,
+  TablePagination,
+} from "../../basic-lib";
 import { globalSetup, myLog, RowConfig } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -15,8 +20,6 @@ import { useHistory } from "react-router-dom";
 import React from "react";
 import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
-import { CoinIcons } from "../assetsTable";
-import { useSettings } from "../../../stores";
 import moment from "moment";
 
 const TableWrapperStyled = styled(Box)`
@@ -98,47 +101,9 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelRecordToken"),
-          formatter: ({ row: { token } }: FormatterProps<R, unknown>) => {
-            let tokenIcon: [any, any] = [undefined, undefined];
-            const [head, middle, tail] = token.simpleName.split("-");
-            const { coinJson } = useSettings();
-            if (token.type === "lp" && middle && tail) {
-              tokenIcon =
-                coinJson[middle] && coinJson[tail]
-                  ? [coinJson[middle], coinJson[tail]]
-                  : [undefined, undefined];
-            }
-            if (token.type !== "lp" && head && head !== "lp") {
-              tokenIcon = coinJson[head]
-                ? [coinJson[head], undefined]
-                : [undefined, undefined];
-            }
-            return (
-              <Box
-                height={"100%"}
-                display={"inline-flex"}
-                alignItems={"center"}
-              >
-                <CoinIcons type={token.type} tokenIcon={tokenIcon} />
-                <Typography
-                  marginLeft={1}
-                  component={"span"}
-                  color={"textPrimary"}
-                >
-                  {token?.simpleName}
-                </Typography>
-                <Typography
-                  marginLeft={1 / 2}
-                  component={"span"}
-                  variant={"body2"}
-                  className={"next-company"}
-                  color={"textSecondary"}
-                >
-                  {token?.name}
-                </Typography>
-              </Box>
-            );
-          },
+          formatter: ({ row: { token } }: FormatterProps<R, unknown>) => (
+            <ColumnCoinDeep token={token} />
+          ),
         },
         {
           key: "Amount",

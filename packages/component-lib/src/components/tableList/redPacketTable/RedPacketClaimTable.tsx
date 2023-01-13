@@ -1,16 +1,22 @@
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { TablePaddingX } from "../../styled";
-import { Button, Column, Table } from "../../basic-lib";
-import { RowConfig } from "@loopring-web/common-resources";
+import { Button, Column, ColumnCoinDeep, Table } from "../../basic-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   RawDataRedPacketClaimItem,
   RedPacketClaimTableProps,
 } from "./Interface";
 import { useHistory } from "react-router-dom";
+import { useSettings } from "../../../stores";
 import React from "react";
 import { FormatterProps } from "react-data-grid";
+import {
+  CurrencyToTag,
+  getValuePrecisionThousand,
+  PriceTag,
+  RowConfig,
+} from "@loopring-web/common-resources";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -57,97 +63,65 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
   <R extends RawDataRedPacketClaimItem>(
     props: RedPacketClaimTableProps<R> & WithTranslation
   ) => {
-    const {
-      // getMyRedPacketClaimList,
-      // tokenMap,
-      rawData,
-      showloading,
-      onItemClick,
-      getClaimRedPacket,
-      t,
-    } = props;
-    // const { isMobile, upColor } = useSettings();
+    const { rawData, forexMap, showloading, onItemClick, t } = props;
     const history = useHistory();
-    // const [page, setPage] = React.useState(1);
+    const { currency } = useSettings();
 
-    // const updateData = _.debounce(async ({ page = 1, pair }: any) => {
-    //   await getMyRedPacketClaimList({
-    //     // offset: (page - 1) * (pagination?.pageSize ?? 10),
-    //     // limit: pagination?.pageSize ?? 10,
-    //   });
-    // }, globalSetup.wait);
-
-    // const handlePageChange = React.useCallback(
-    //   ({ page = 1, type, date, pair }: any) => {
-    //     setPage(page);
-    //     myLog("AmmTable page,", page);
-    //     updateData({ page, type, date, pair });
-    //   },
-    //   [updateData]
-    // );
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
-          key: "",
+          key: "Token",
           sortable: true,
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
-          name: t("labelDualApy"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display={"flex"}></Box>;
-          },
+          name: t("labelToken"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => (
+            <ColumnCoinDeep token={row.token} />
+          ),
         },
         {
-          key: "",
+          key: "Amount",
           sortable: true,
-          name: t("labelDualPrice"),
+          name: t("labelAmount"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display={"flex"}></Box>;
+            return <Box display={"flex"}>{row.amountStr}</Box>;
           },
         },
         {
-          key: "",
+          key: "Value",
           sortable: true,
-          name: t("labelDualTerm"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex"></Box>;
-          },
-        },
-        {
-          key: "",
-          sortable: true,
-          name: t("labelDualSettlement"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex"></Box>;
-          },
-        },
-        {
-          key: "Action",
-          sortable: false,
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelDualAction"),
+          name: t("labelValue"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <Typography
-                variant={"inherit"}
-                color={"textPrimary"}
-                display={"inline-flex"}
-                flexDirection={"column"}
-                className={"textAlignRight"}
-                component={"span"}
+              <Box display="flex">
+                {PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    (row.volume || 0) * (forexMap[currency] ?? 0),
+                    2,
+                    2,
+                    2,
+                    true,
+                    { isFait: true }
+                  )}
+              </Box>
+            );
+          },
+        },
+        {
+          key: "Actions",
+          name: t("labelActions"),
+          headerCellClass: "textAlignRight",
+          // minWidth: 280,
+          formatter: ({ row }) => {
+            return (
+              <Button
+                variant={"text"}
+                size={"small"}
+                color={"primary"}
+                onClick={() => onItemClick(row)}
               >
-                <Button
-                  variant={"contained"}
-                  color={"primary"}
-                  size={"small"}
-                  onClick={(_e) => {
-                    onItemClick(row);
-                  }}
-                >
-                  {t("labelInvestBtn", { ns: "common" })}
-                </Button>
-              </Typography>
+                {t("labelClaim")}
+              </Button>
             );
           },
         },

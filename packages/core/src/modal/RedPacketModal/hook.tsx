@@ -32,8 +32,6 @@ import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../api_wrapper";
 
-// import { useWalletInfo } from "../../stores/localStore/walletInfo";
-
 export function useRedPacketModal() {
   const {
     modals: {

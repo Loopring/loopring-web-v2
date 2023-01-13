@@ -13,9 +13,16 @@ import {
   TableProps,
 } from "./";
 import { EmptyDefault } from "../empty";
-import { RowConfig, SoursURL } from "@loopring-web/common-resources";
-import { Box, IconButton } from "@mui/material";
+import {
+  CoinInfo,
+  RowConfig,
+  SoursURL,
+  TokenType,
+} from "@loopring-web/common-resources";
+import { Box, IconButton, Typography } from "@mui/material";
 import { css } from "@emotion/react";
+import { useSettings } from "../../../stores";
+import { CoinIcons } from "../../tableList";
 
 interface TableWrapperStyledProps {
   showloading: "true" | "false";
@@ -373,3 +380,46 @@ export const Table = <R, SR>(
     </TableWrapperStyled>
   );
 };
+
+export const ColumnCoinDeep = React.memo(
+  ({
+    token: { type = TokenType.single, ...token },
+  }: // type = TokenType.single,
+  //
+  // ...token
+  {
+    token: CoinInfo<any> & { type?: TokenType };
+  }) => {
+    let tokenIcon: [any, any] = [undefined, undefined];
+    const [head, middle, tail] = token.simpleName.split("-");
+    const { coinJson } = useSettings();
+    if (type === "lp" && middle && tail) {
+      tokenIcon =
+        coinJson[middle] && coinJson[tail]
+          ? [coinJson[middle], coinJson[tail]]
+          : [undefined, undefined];
+    }
+    if (token.type !== "lp" && head && head !== "lp") {
+      tokenIcon = coinJson[head]
+        ? [coinJson[head], undefined]
+        : [undefined, undefined];
+    }
+    return (
+      <Box height={"100%"} display={"inline-flex"} alignItems={"center"}>
+        <CoinIcons type={token.type} tokenIcon={tokenIcon} />
+        <Typography marginLeft={1} component={"span"} color={"textPrimary"}>
+          {token?.simpleName}
+        </Typography>
+        <Typography
+          marginLeft={1 / 2}
+          component={"span"}
+          variant={"body2"}
+          className={"next-company"}
+          color={"textSecondary"}
+        >
+          {token?.name}
+        </Typography>
+      </Box>
+    );
+  }
+);

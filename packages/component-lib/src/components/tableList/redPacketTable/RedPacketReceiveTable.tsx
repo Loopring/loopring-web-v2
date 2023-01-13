@@ -12,6 +12,7 @@ import { useHistory } from "react-router-dom";
 import React from "react";
 import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
+import moment from "moment";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -81,37 +82,47 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
-          key: "",
+          key: "Token",
           sortable: true,
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
-          name: t("labelDualApy"),
+          name: t("labelToken"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return <Box display={"flex"}></Box>;
           },
         },
         {
-          key: "",
+          key: "Amount",
           sortable: true,
-          name: t("labelDualPrice"),
+          name: t("labelAmount"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return <Box display={"flex"}></Box>;
           },
         },
         {
-          key: "",
+          key: "Type",
           sortable: true,
-          name: t("labelDualTerm"),
+          name: t("labelType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return <Box display="flex"></Box>;
           },
         },
         {
-          key: "",
+          key: "Address",
           sortable: true,
-          name: t("labelDualSettlement"),
+          name: t("labelAddress"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return <Box display="flex"></Box>;
+          },
+        },
+        {
+          key: "Time",
+          sortable: true,
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
+          name: t("labelRecordTime"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return <>{moment(new Date(row), "YYYYMMDDHHMM").fromNow()}</>;
           },
         },
       ],

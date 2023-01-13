@@ -15,7 +15,12 @@ export type RawDataRedPacketRecordsItem = {
   rawData: sdk.LuckyTokenItemForReceive;
 };
 export type RawDataRedPacketReceivesItem = {};
-export type RawDataRedPacketClaimItem = {};
+export type RawDataRedPacketClaimItem = {
+  token: CoinInfo<any> & { type: TokenType };
+  amountStr: string;
+  volume: number;
+  rawData: any;
+};
 export type RawDataRedPacketDetailItem = {
   accountStr: string;
   isSelf: boolean;

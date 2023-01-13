@@ -31,6 +31,9 @@ export const RedPacketClaimPanel = () => {
     getClaimRedPacket,
     onItemClick,
   } = useClaimRedPacket(setToastOpen);
+  React.useEffect(() => {
+    getClaimRedPacket();
+  }, []);
   return (
     <Box
       flex={1}
@@ -78,23 +81,6 @@ export const RedPacketClaimPanel = () => {
               getClaimRedPacket,
             }}
           />
-          {/*<AssetsTable*/}
-          {/*  /!*{...{*!/*/}
-          {/*  /!*  rawData: assetsRawData,*!/*/}
-          {/*  /!*  disableWithdrawList,*!/*/}
-          {/*  /!*  showFilter: true,*!/*/}
-          {/*  /!*  allowTrade,*!/*/}
-          {/*  /!*  onSend,*!/*/}
-          {/*  /!*  onReceive,*!/*/}
-          {/*  /!*  getMarketArrayListCallback: getTokenRelatedMarketArray,*!/*/}
-          {/*  /!*  hideInvestToken,*!/*/}
-          {/*  /!*  forexMap: forexMap as any,*!/*/}
-          {/*  /!*  hideSmallBalances,*!/*/}
-          {/*  /!*  setHideLpToken,*!/*/}
-          {/*  /!*  setHideSmallBalances,*!/*/}
-          {/*  /!*  ...rest,*!/*/}
-          {/*  /!*}}*!/*/}
-          {/*/>*/}
         </Box>
       </StylePaper>
       <Toast

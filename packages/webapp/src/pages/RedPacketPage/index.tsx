@@ -21,8 +21,6 @@ export const RedPacketPage = () => {
         return <CreateRedPacketUIPanel />;
       case "records":
         return <MyRedPacketPanel setToastOpen={setToastOpen} />;
-      // case "reader":
-      //   return <ReadRedPacketPanel />;
       case "markets":
         return <RedPacketMarketPanel />;
       default:
@@ -41,7 +39,6 @@ export const RedPacketPage = () => {
           onClose={closeToast}
         />
         <Box
-          // minHeight={420}
           display={"flex"}
           alignItems={"stretch"}
           flexDirection={"column"}
