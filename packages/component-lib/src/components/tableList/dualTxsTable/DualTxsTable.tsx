@@ -194,7 +194,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 &nbsp;&nbsp;
                 <Typography component={"span"}>{sentence}</Typography>
                 { 
-                  investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED 
+                  (investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED || investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED)
                     ? failed
                     : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING 
                       ? pending
@@ -339,6 +339,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                   settlementStatus,
                   dualType,
                   deliveryPrice,
+                  investmentStatus,
                   tokenInfoOrigin: {
                     amountIn,
                     tokenOut,
@@ -360,7 +361,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
               false
             );
             const side =
-              settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+              (settlementStatus === sdk.SETTLEMENT_STATUS.PAID)
                 ? t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED)
                 : Date.now() - expireTime >= 0
                 ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
