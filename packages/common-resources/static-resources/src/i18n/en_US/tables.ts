@@ -259,5 +259,7 @@ export default {
   labelRecordTime: "Time",
   labelValue: "Value",
   labelClaim: "Claim",
+  labelAddress: "Address",
+  labelType: "Type",
   // labelRecordAction: "Action",
 };

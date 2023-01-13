@@ -185,6 +185,7 @@ export const ModalPanel = <
     setShowNFTWithdraw,
     setShowNFTDeploy,
     setShowAccount,
+    setShowClaimWithdraw,
     setShowCollectionAdvance,
     // setShowDual,
   } = useOpenModals();
@@ -210,7 +211,7 @@ export const ModalPanel = <
       <Modal
         open={isShowClaimWithdraw.isShow}
         contentClassName={"trade-wrap"}
-        onClose={() => setShowTransfer({ isShow: false })}
+        onClose={() => setShowClaimWithdraw({ isShow: false })}
         content={
           <ClaimWithdrawPanel
             {...{
