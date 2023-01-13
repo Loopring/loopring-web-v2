@@ -1,4 +1,5 @@
 import {
+  ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
@@ -28,7 +29,9 @@ export interface ModalState {
     agree?: boolean;
   };
   isWrongNetworkGuide: ModalStatePlayLoad;
-  isShowClaimWithdraw: ModalStatePlayLoad & Transaction;
+  isShowClaimWithdraw: ModalStatePlayLoad & {
+    claimToken: ClaimToken | undefined;
+  };
   isShowTransfer: ModalStatePlayLoad & Transaction;
   isShowWithdraw: ModalStatePlayLoad & Transaction;
   isShowDeposit: ModalStatePlayLoad & Transaction & { partner?: boolean };

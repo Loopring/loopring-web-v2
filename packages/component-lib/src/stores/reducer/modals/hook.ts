@@ -32,6 +32,7 @@ import {
 
 import React from "react";
 import {
+  ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
@@ -72,16 +73,7 @@ export const useOpenModals = () => {
         dispatch(setShowWrongNetworkGuide(state)),
       [dispatch]
     ),
-    setShowClaimWithdraw: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) => {
-        if (toggle.claim.enable) {
-          dispatch(setShowClaimWithdraw(state));
-        } else {
-          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Claim" }));
-        }
-      },
-      [dispatch]
-    ),
+
     setShowTransfer: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) => {
         if (toggle.transfer.enable) {
@@ -223,6 +215,16 @@ export const useOpenModals = () => {
     setShowDual: React.useCallback(
       (state: ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }) =>
         dispatch(setShowDual(state)),
+      [dispatch]
+    ),
+    setShowClaimWithdraw: React.useCallback(
+      (state: ModalStatePlayLoad & { claimToken: ClaimToken }) => {
+        if (toggle.claim.enable) {
+          dispatch(setShowClaimWithdraw(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Claim" }));
+        }
+      },
       [dispatch]
     ),
     setShowConnect: React.useCallback(

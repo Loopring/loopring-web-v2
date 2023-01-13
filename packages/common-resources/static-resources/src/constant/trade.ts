@@ -487,6 +487,10 @@ export type DualViewInfo = DualViewBase & {
     rule: sdk.DualRulesCoinsInfo;
   };
 };
+export type ClaimToken = sdk.UserBalanceInfo & {
+  isNft?: boolean;
+  nftTokenInfo?: sdk.NFTTokenInfo;
+};
 export type DualViewOrder = DualViewBase & {
   __raw__: {
     order: sdk.UserDualTxsHistory;

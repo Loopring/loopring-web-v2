@@ -2,12 +2,13 @@ import { useTheme } from "@emotion/react";
 import React from "react";
 import { StylePaper, useSystem, useToast } from "@loopring-web/core";
 import {
+  EmptyDefault,
   RedPacketClaimTable,
   Toast,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useClaimRedPacket } from "./hooks";
 import { Box, Button } from "@mui/material";
@@ -70,18 +71,29 @@ export const RedPacketClaimPanel = () => {
         display={"flex"}
         flexDirection={"column"}
       >
-        <Box className="tableWrapper table-divide-short">
-          <RedPacketClaimTable
-            {...{
-              rawData: redPacketClaimList,
-              showloading: showLoading,
-              forexMap,
-              onItemClick,
-              etherscanBaseUrl,
-              getClaimRedPacket,
-            }}
-          />
-        </Box>
+        {!!redPacketClaimList.length ? (
+          <Box className="tableWrapper table-divide-short">
+            <RedPacketClaimTable
+              {...{
+                rawData: redPacketClaimList,
+                showloading: showLoading,
+                forexMap,
+                onItemClick,
+                etherscanBaseUrl,
+                getClaimRedPacket,
+              }}
+            />
+          </Box>
+        ) : (
+          <Box flex={1} height={"100%"} width={"100%"}>
+            <EmptyDefault
+              height={"calc(100% - 35px)"}
+              message={() => {
+                return <Trans i18nKey="labelNoContent">Content is Empty</Trans>;
+              }}
+            />
+          </Box>
+        )}
       </StylePaper>
       <Toast
         alertText={toastOpen?.content ?? ""}

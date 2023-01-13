@@ -122,7 +122,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           name: t("labelRecordTime"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{moment(new Date(row), "YYYYMMDDHHMM").fromNow()}</>;
+            return <>{moment(new Date(), "YYYYMMDDHHMM").fromNow()}</>;
           },
         },
       ],

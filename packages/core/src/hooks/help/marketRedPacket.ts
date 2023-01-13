@@ -16,36 +16,40 @@ export const getUserReceiveList = (
   const { accountId } = store.getState().account;
   let _max = 0,
     _index = 0;
-  const list = claimList.reduce((prev, item, index) => {
-    const amountStr =
-      getValuePrecisionThousand(
-        volumeToCountAsBigNumber(tokenInfo.symbol, item.amount),
-        tokenInfo.precision,
-        tokenInfo.precision,
-        undefined,
-        false,
-        {
-          floor: false,
-          // isTrade: true,
-        }
-      ) +
-      " " +
-      tokenInfo.symbol;
-    if (sdk.toBig(item.amount).gte(_max)) {
-      _max = item.amount;
-      _index = index;
-    }
-    const redPacketDetailItem = {
-      accountStr: item.claimer?.ens
-        ? item.claimer.ens
-        : getShortAddr(item.claimer?.address ?? ""),
-      isSelf: accountId === item.claimer.accountId,
-      amountStr,
-      createdAt: item.createdAt,
-      rawData: item,
-    };
-    return [...prev, redPacketDetailItem];
-  }, [] as RawDataRedPacketDetailItem[]);
+  const list: RawDataRedPacketDetailItem[] = claimList.reduce(
+    (prev, item, index) => {
+      const amountStr =
+        getValuePrecisionThousand(
+          volumeToCountAsBigNumber(tokenInfo.symbol, item.amount),
+          tokenInfo.precision,
+          tokenInfo.precision,
+          undefined,
+          false,
+          {
+            floor: false,
+            // isTrade: true,
+          }
+        ) +
+        " " +
+        tokenInfo.symbol;
+      if (sdk.toBig(item.amount).gte(_max)) {
+        _max = item.amount;
+        _index = index;
+      }
+      const redPacketDetailItem: RawDataRedPacketDetailItem = {
+        accountStr: item.claimer?.ens
+          ? item.claimer.ens
+          : getShortAddr(item.claimer?.address ?? ""),
+        isSelf: accountId === item.claimer.accountId,
+        amountStr,
+        createdAt: item.createdAt,
+        isMax: false,
+        rawData: item,
+      };
+      return [...prev, redPacketDetailItem];
+    },
+    [] as RawDataRedPacketDetailItem[]
+  );
   list[_index].isMax = true;
   return list;
 };

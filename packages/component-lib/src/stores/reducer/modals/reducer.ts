@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import {
+  ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
@@ -35,7 +36,7 @@ const initialState: ModalState = {
   isShowCollectionAdvance: { isShow: false },
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
-  isShowClaimWithdraw: { isShow: false },
+  isShowClaimWithdraw: { isShow: false, claimToken: undefined },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -323,13 +324,12 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowClaimWithdraw(
       state,
-      action: PayloadAction<ModalStatePlayLoad & Transaction>
+      action: PayloadAction<ModalStatePlayLoad & { claimToken: ClaimToken }>
     ) {
-      const { isShow, symbol, info } = action.payload;
+      const { isShow, claimToken } = action.payload;
       state.isShowClaimWithdraw = {
         isShow,
-        symbol,
-        info,
+        claimToken,
       };
     },
   },

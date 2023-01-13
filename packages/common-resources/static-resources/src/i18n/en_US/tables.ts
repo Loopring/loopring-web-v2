@@ -257,5 +257,7 @@ export default {
   labelRecordStatus: "Status",
   labelRecordNumber: "Number",
   labelRecordTime: "Time",
+  labelValue: "Value",
+  labelClaim: "Claim",
   // labelRecordAction: "Action",
 };

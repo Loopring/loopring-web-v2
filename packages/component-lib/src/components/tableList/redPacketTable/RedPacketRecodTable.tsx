@@ -1,12 +1,7 @@
 import styled from "@emotion/styled";
 import { Box, Link } from "@mui/material";
 import { TablePaddingX } from "../../styled";
-import {
-  Column,
-  ColumnCoinDeep,
-  Table,
-  TablePagination,
-} from "../../basic-lib";
+import { Column, Table, TablePagination } from "../../basic-lib";
 import { globalSetup, myLog, RowConfig } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -21,6 +16,7 @@ import React from "react";
 import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
 import moment from "moment";
+import { ColumnCoinDeep } from "../assetsTable";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;

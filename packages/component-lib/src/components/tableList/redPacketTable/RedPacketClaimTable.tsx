@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { Box } from "@mui/material";
+import { Box, Link } from "@mui/material";
 import { TablePaddingX } from "../../styled";
-import { Button, Column, ColumnCoinDeep, Table } from "../../basic-lib";
+import { Column, Table } from "../../basic-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   RawDataRedPacketClaimItem,
@@ -17,6 +17,7 @@ import {
   PriceTag,
   RowConfig,
 } from "@loopring-web/common-resources";
+import { ColumnCoinDeep } from "../assetsTable";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -111,17 +112,13 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           key: "Actions",
           name: t("labelActions"),
           headerCellClass: "textAlignRight",
+          cellClass: "textAlignRight",
           // minWidth: 280,
           formatter: ({ row }) => {
             return (
-              <Button
-                variant={"text"}
-                size={"small"}
-                color={"primary"}
-                onClick={() => onItemClick(row)}
-              >
+              <Link onClick={() => onItemClick(row.rawData)}>
                 {t("labelClaim")}
-              </Button>
+              </Link>
             );
           },
         },
