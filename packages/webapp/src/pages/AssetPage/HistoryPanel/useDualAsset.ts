@@ -258,7 +258,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         } as R;
         if (
           refreshedRecord.__raw__.order.investmentStatus ===
-          sdk.LABEL_INVESTMENT_STATUS.FAILED
+          sdk.LABEL_INVESTMENT_STATUS.CANCELLED
         ) {
           const newDualList = dualList.filter((x) => {
             return x.__raw__.order.id !== refreshedRecord.__raw__.order.id;
@@ -293,6 +293,11 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
               limit,
               start,
               end,
+              investmentStatuses: [
+                sdk.LABEL_INVESTMENT_STATUS.FAILED,
+                sdk.LABEL_INVESTMENT_STATUS.PROCESSED,
+                sdk.LABEL_INVESTMENT_STATUS.PROCESSING,
+              ].join(","),
             } as any,
             apiKey
           ),
@@ -374,8 +379,13 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             },
             [] as RawDataDualAssetItem[]
           );
+          const filteredResult = (result as R[]).filter(
+            (x) =>
+              x.__raw__.order.investmentStatus !==
+              sdk.LABEL_INVESTMENT_STATUS.CANCELLED
+          );
 
-          setDualList(result);
+          setDualList(filteredResult);
           setShowLoading(false);
           setDualPagination({
             pageSize: limit,

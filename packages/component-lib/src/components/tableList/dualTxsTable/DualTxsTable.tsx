@@ -58,6 +58,25 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
+export interface DualTxsTableProps<R = RawDataDualTxsItem> {
+  // etherscanBaseUrl?: string;
+  rawData: R[];
+  pagination?: {
+    pageSize: number;
+    total: number;
+  };
+  idIndex: { [key: string]: string };
+  tokenMap: { [key: string]: any };
+  dualMarketMap: any;
+
+  getDualTxList: (props: any) => Promise<void>;
+  // filterTokens: string[];
+  // showFilter?: boolean;
+  showloading: boolean;
+  // accAddress: string;
+  // accountId: number;
+}
+
 export const DualTxsTable = withTranslation(["tables", "common"])(
   <R extends RawDataDualTxsItem>(
     props: DualTxsTableProps<R> & WithTranslation
@@ -196,7 +215,8 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 <Typography color={statusColor}>{side}</Typography>
                 &nbsp;&nbsp;
                 <Typography component={"span"}>{sentence}</Typography>
-                {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED
+                {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
+                investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
                   ? failed
                   : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
                   ? pending
@@ -340,6 +360,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                   settlementStatus,
                   dualType,
                   deliveryPrice,
+                  investmentStatus,
                   tokenInfoOrigin: {
                     amountIn,
                     tokenOut,

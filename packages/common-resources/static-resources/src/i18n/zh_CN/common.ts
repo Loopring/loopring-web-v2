@@ -1013,6 +1013,9 @@ export default {
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
   labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
   labelDualSuccess: "Subscription {{symbol}} Successfully",
+  labelDualProcessing: "Waiting for completion",
+  labelDualProcessingDes:
+    "We will try to fulfill your subscription request within minutes. If your subscription cannot be fully completed within the time frame, the unfilled portion will be unlocked. You can return later to resubscribe.",
   labelDualFailed: "Subscribe Failed",
   labelDualFee: "Fee",
   labelDualMin: "Minimum of {{arg}}",
