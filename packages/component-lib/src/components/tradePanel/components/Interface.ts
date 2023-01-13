@@ -565,22 +565,23 @@ export type ImportRedPacketExtendsProps<T> = {
 
 export type ImportRedPacketViewProps<T> = ImportRedPacketExtendsProps<T>;
 
-export type ClaimInfoProps<C> = {
+export type ClaimInfoProps<Fee> = {
   btnInfo?: BtnInfo;
   btnStatus?: TradeBtnStatus | undefined;
-  chargeFeeTokenList: Array<C>;
-  feeInfo: C;
+  chargeFeeTokenList: Array<Fee>;
+  feeInfo: Fee;
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
   };
 };
 
-export type ClaimExtendProps<T, C> = {
+export type ClaimExtendProps<T, Fee> = {
   onClaimClick: (data: Partial<T>, isHardwareRetry?: boolean) => void;
   tradeData: Partial<T>;
   lastFailed: boolean;
-} & ClaimInfoProps<C>;
+  handleFeeChange: (value: Fee) => void;
+} & ClaimInfoProps<Fee>;
 
 export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
   btnStatus: TradeBtnStatus;

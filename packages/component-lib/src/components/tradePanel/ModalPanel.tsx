@@ -212,14 +212,14 @@ export const ModalPanel = <
         contentClassName={"trade-wrap"}
         onClose={() => setShowTransfer({ isShow: false })}
         content={
-          <ClaimWithdrawPanel<any, any>
+          <ClaimWithdrawPanel
             {...{
               ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
-              _height: "auto",
               ...claimProps,
               assetsData,
+              // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              // //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
+              // _height: "auto",
             }}
           />
         }

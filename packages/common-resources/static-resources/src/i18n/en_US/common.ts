@@ -1375,6 +1375,8 @@ export default {
   labelRedPacketGrab: "Invite friends to grab",
   labelLuckDraw: "Luckiest Draw",
   labelMyLuckReward: "(My reward)",
+  labelClaimTitle: "Red Packet Claim",
+  labelClaimNoBalance: "Insufficient {{belong}} balance",
 
   // labelRedPacketOpenInProgress:"Processing...",
   // labelRedPacketOpenFailed:"Read Red Packet failed!",

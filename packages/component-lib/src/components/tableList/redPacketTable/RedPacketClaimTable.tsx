@@ -141,7 +141,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
           onRowClick={(_index: number, row: R) => {
-            onItemClick(row);
+            onItemClick(row.rawData);
           }}
           {...{
             ...defaultArgs,

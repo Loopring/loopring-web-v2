@@ -1,14 +1,11 @@
 import {
   AccountStatus,
   IBData,
+  LIVE_FEE_TIMES,
   myLog,
-  SagaStatus,
   SUBMIT_PANEL_AUTO_CLOSE,
   UIERROR_CODE,
-  WalletMap,
 } from "@loopring-web/common-resources";
-import Web3 from "web3";
-
 import {
   LAST_STEP,
   store,
@@ -17,51 +14,50 @@ import {
   useSystem,
   useTokenMap,
 } from "../../stores";
+import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import {
   AccountStep,
   ClaimProps,
   useOpenModals,
 } from "@loopring-web/component-lib";
+import { useBtnStatus } from "../common";
 import React from "react";
-import { makeWalletLayer2 } from "../help";
+import { volumeToCount } from "../help";
 import {
   useChargeFees,
   useWalletLayer2Socket,
   walletLayer2Service,
 } from "../../services";
-import { useBtnStatus } from "../common";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { LoopringAPI } from "../../api_wrapper";
-import { getTimestampDaysLater } from "../../utils";
-import { DAYS } from "../../defs";
 import {
   ConnectProvidersSignMap,
   connectProvides,
 } from "@loopring-web/web3-provider";
+import { LoopringAPI } from "../../api_wrapper";
 import { isAccActivated } from "./useCheckAccStatus";
-import { useWalletInfo } from "../../stores/localStore/walletInfo";
-export const useClaimConfirm = <T extends IBData<I>, I, C>() => {
+import Web3 from "web3";
+import { getTimestampDaysLater } from "../../utils";
+import { DAYS } from "../../defs";
+
+export const useClaimConfirm = <T extends IBData<I>, I>() => {
   const { exchangeInfo, chainId } = useSystem();
   const { account } = useAccount();
   const {
     allowTrade: { raw_data },
   } = useSystem();
   const legalEnable = (raw_data as any)?.legal?.enable;
-  const { tokenMap } = useTokenMap();
+  const { tokenMap, idIndex } = useTokenMap();
   const { checkHWAddr, updateHW } = useWalletInfo();
 
   const {
     setShowAccount,
     modals: {
+      isShowClaimWithdraw: { claimToken, isShow },
       isShowAccount: { info },
     },
   } = useOpenModals();
-
-  const { btnStatus, enableBtn, disableBtn, btnInfo } = useBtnStatus();
   const { claimValue, updateClaimData } = useModalData();
-  const [walletMap, setWalletMap] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>)
-  );
+  const { btnStatus, enableBtn, disableBtn, btnInfo } = useBtnStatus();
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -76,21 +72,36 @@ export const useClaimConfirm = <T extends IBData<I>, I, C>() => {
       updateClaimData({ ...claimValue, fee });
     },
   });
-  const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? {};
-    setWalletMap(walletMap);
-  }, []);
+  useWalletLayer2Socket({ walletLayer2Callback: undefined });
+  const resetDefault = React.useCallback(() => {
+    if (info?.isRetry) {
+      checkFeeIsEnough();
+      return;
+    }
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
 
-  useWalletLayer2Socket({ walletLayer2Callback });
+    if (claimToken) {
+      const token = tokenMap[idIndex[claimToken.tokenId]];
+      updateClaimData({
+        belong: idIndex[claimToken.tokenId],
+        tradeValue: volumeToCount(token.symbol, claimToken.total),
+        volume: claimToken.total,
+        balance: volumeToCount(token.symbol, claimToken.total),
+      });
+    } else {
+    }
+  }, [checkFeeIsEnough, updateClaimData, feeInfo, claimToken, info?.isRetry]);
 
   React.useEffect(() => {
-    if (
-      info?.transferBanxa === AccountStep.Transfer_BANXA_Failed &&
-      info?.trigger == "checkFeeIsEnough"
-    ) {
-      checkFeeIsEnough();
+    if (isShow) {
+      resetDefault();
+    } else {
+      resetIntervalTime();
     }
-  }, [info?.transferBanxa]);
+    return () => {
+      resetIntervalTime();
+    };
+  }, [isShow]);
   const processRequest = React.useCallback(
     async (
       request: sdk.OriginLuckTokenWithdrawsRequestV3,
@@ -219,22 +230,9 @@ export const useClaimConfirm = <T extends IBData<I>, I, C>() => {
     },
     []
   );
-  // React.useEffect(() => {
-  //   if (
-  //     isShow &&
-  //     accountStatus === SagaStatus.UNSET &&
-  //     account.readyState === AccountStatus.ACTIVATED
-  //   ) {
-  //     resetDefault();
-  //   } else {
-  //     resetIntervalTime();
-  //   }
-  //   return () => {
-  //     resetIntervalTime();
-  //   };
-  // }, [isShow, accountStatus, account.readyState]);
+
   const onClaimClick = React.useCallback(
-    async (data: Partial<T>, isHardwareRetry = false) => {
+    async (_data: Partial<T>, isHardwareRetry = false) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
       const claimValue = store.getState()._router_modalData.claimValue;
       if (
@@ -323,7 +321,6 @@ export const useClaimConfirm = <T extends IBData<I>, I, C>() => {
   );
   const checkBtnStatus = React.useCallback(() => {
     const claimValue = store.getState()._router_modalData.claimValue;
-    const walletMap = makeWalletLayer2(true).walletMap ?? {};
     if (
       tokenMap &&
       chargeFeeTokenList.length &&
@@ -332,9 +329,9 @@ export const useClaimConfirm = <T extends IBData<I>, I, C>() => {
       claimValue.belong &&
       tokenMap[claimValue.belong] &&
       claimValue.fee &&
-      claimValue.fee.belong &&
-      claimValue.address
+      claimValue.fee.belong
     ) {
+      enableBtn();
     }
     disableBtn();
   }, [
@@ -343,7 +340,6 @@ export const useClaimConfirm = <T extends IBData<I>, I, C>() => {
     enableBtn,
     isFeeNotEnough.isFeeNotEnough,
     tokenMap,
-    claimValue?.address,
     claimValue?.balance,
     claimValue?.belong,
     claimValue?.fee?.feeRaw,
@@ -365,14 +361,7 @@ export const useClaimConfirm = <T extends IBData<I>, I, C>() => {
         isShow: true,
         step: AccountStep.ClaimWithdraw_WaitForAuth,
       });
-      // handleForceWithdraw(
-      //   {
-      //     belong: claimValue.belong,
-      //     balance: claimValue.balance,
-      //     tradeValue: claimValue.tradeValue,
-      //   } as R,
-      //   !isHardwareRetry
-      // );
+      onClaimClick({}, isHardwareRetry);
     },
     [setShowAccount]
   );
@@ -381,7 +370,12 @@ export const useClaimConfirm = <T extends IBData<I>, I, C>() => {
     claimProps: {
       btnStatus,
       btnInfo,
-      tradeData: {},
+      disabled: !legalEnable,
+      tradeData: {
+        tradeValue: claimValue?.tradeValue,
+        belong: claimValue?.belong,
+        balance: claimValue?.belong,
+      },
       lastFailed: info?.lastFailed === LAST_STEP.claim,
       chargeFeeTokenList,
       isFeeNotEnough,
