@@ -2,6 +2,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
 import {
+  ClockIcon,
   EmptyValueTag,
   globalSetup,
   MoreIcon,
@@ -29,7 +30,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 16% 16% 28% 6% 14% 10% 8% !important`
+        ? `--template-columns: 23% 14% 25% 6% 14% 10% 8% !important`
         : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
@@ -80,6 +81,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       dualMarketMap,
       showloading,
       showDetail,
+      refresh,
       t,
     } = props;
 
@@ -125,13 +127,14 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
               sellSymbol,
               buySymbol,
               __raw__: {
-                order: { dualType },
+                order: { dualType, investmentStatus },
               },
             } = row;
             const [base, quote] =
               dualType === DUAL_TYPE.DUAL_BASE
                 ? [sellSymbol, buySymbol]
                 : [buySymbol, sellSymbol];
+            const showClock = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
             //${row.sellSymbol}/${row.buySymbol}
             return (
               <Typography
@@ -154,17 +157,22 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 </Typography>
                 <Typography
                   component={"span"}
-                  flexDirection={"column"}
                   display={"flex"}
                 >
                   <Typography
                     component={"span"}
-                    display={"inline-flex"}
+                    // display={"inline-flex"}
                     color={"textPrimary"}
+                    display={"flex"}
+                    flexDirection={"column"}
                   >
                     {`${base}/${quote}`}
                   </Typography>
+                  {showClock && <Box component={"span"} marginLeft={1} display={"flex"} alignItems={"center"}>
+                  <ClockIcon />
+                </Box>}
                 </Typography>
+                
               </Typography>
             );
           },
@@ -177,7 +185,11 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignCenter",
           name: t("labelDualAssetFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.amount + " " + row.sellSymbol}</>;
+            if (!row?.amount) {
+              return <>{"-- " + row.sellSymbol}</>;
+            } else {
+              return <>{row?.amount + " " + row.sellSymbol}</>;
+            }
           },
         },
         {
@@ -251,11 +263,21 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           name: t("labelDualAssetAction"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Link onClick={(_e) => showDetail(row)}>
-                {t("labelDualAssetDetail")}
-              </Link>
-            );
+            const investmentStatus = row.__raw__.order.investmentStatus;
+            const showRefresh = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+            return showRefresh
+              ? (
+                <Link onClick={(_e) => {
+                  refresh(row)}
+                }>
+                  {t("labelDualAssetRefresh")}
+                </Link>
+              )
+              : (
+                <Link onClick={(_e) => showDetail(row)}>
+                  {t("labelDualAssetDetail")}
+                </Link>
+              );
           },
         },
       ],
@@ -434,7 +456,8 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
-          onRowClick={(_index: number, row: R) => {
+          onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
+            if (c.key === 'Action') return
             showDetail(row);
           }}
           sortMethod={sortMethod}

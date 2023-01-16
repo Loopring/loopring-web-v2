@@ -6,11 +6,13 @@ import { useSettings } from "../../../stores";
 export const Dual_Success = (props: PanelProps) => {
   const { isMobile } = useSettings();
   const propsPatch = {
-    iconType: IconType.DoneIcon,
-    describe1: props.t("labelDualSuccess", {
-      symbol: props.symbol,
-      value: props.value,
-    }),
+    iconType: IconType.PendingIcon,
+    describe1: <Typography variant={"h5"} color={"var(--color-primary)"}>
+      {props.t("labelDualProcessing", {
+        symbol: props.symbol,
+        value: props.value,
+      })}
+    </Typography>,
     describe2: (
       <Typography
         justifySelf={"stretch"}
@@ -23,11 +25,11 @@ export const Dual_Success = (props: PanelProps) => {
         whiteSpace={"pre-line"}
         color={"textSecondary"}
       >
-        {props.t("labelDualDesSuccess")}
+        {props.t("labelDualProcessingDes")}
       </Typography>
     ),
   };
-  return <DualBase {...propsPatch} {...props} />;
+  return <DualBase showTitle={false} {...propsPatch} {...props} />;
 };
 
 // value symbol
@@ -39,5 +41,5 @@ export const Dual_Failed = (props: PanelProps) => {
       value: props.value,
     }),
   };
-  return <DualBase {...propsPatch} {...props} />;
+  return <DualBase showTitle={true} {...propsPatch} {...props} />;
 };

@@ -517,6 +517,7 @@ export const DUALVIEWINFO: DualViewInfo = {
   },
   __raw__: {
     info: {
+      baseSize: "111",
       productId: "LRC-USDT-220907-0.36-P-USDT",
       base: "LRC",
       quote: "USDT",

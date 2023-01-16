@@ -47,6 +47,8 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   const [open, setOpen] = React.useState<boolean>(false);
   const [detail, setDetail] =
     React.useState<DualDetailType | undefined>(undefined);
+  const [showRefreshError, setShowRefreshError] = React.useState<boolean>(false);
+  const [refreshErrorInfo, setRefreshErrorInfo] = React.useState<[string, string]>(['', '']);
 
   const getDetail = (item: R, index?: number) => {
     const {
@@ -169,6 +171,113 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       setOpen(true);
     }
   };
+  const refresh = async (item: R) => {
+    const hash = item.__raw__.order.hash
+    setShowLoading(true);
+    if (LoopringAPI.defiAPI && accountId && apiKey && marketArray?.length) {
+      const [response, responseTotal] = await Promise.all([
+        LoopringAPI.defiAPI.getDualTransactions(
+          {
+            accountId,
+            hashes: hash
+          } as any,
+          apiKey
+        ),
+        LoopringAPI.defiAPI.getDualUserLocked(
+          {
+            accountId: accountId,
+            lockTag: [DUAL_TYPE.DUAL_BASE, DUAL_TYPE.DUAL_CURRENCY],
+            //@ts-ignore
+            status: "LOCKED",
+          },
+          apiKey
+        ),
+      ]);
+      if (
+        (responseTotal as sdk.RESULT_INFO).code ||
+        (responseTotal as sdk.RESULT_INFO).message
+      ) {
+        setDualOnInvestAsset(undefined);
+      } else {
+        setDualOnInvestAsset(responseTotal.lockRecord);
+      }
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        const errorItem =
+          SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+        if (setToastOpen) {
+          setToastOpen({
+            open: true,
+            type: "error",
+            content:
+              "error : " + errorItem
+                ? t(errorItem.messageKey)
+                : (response as sdk.RESULT_INFO).message,
+          });
+        }
+      } else {
+        // @ts-ignore
+        let item = (response as any)?.userDualTxs[0] as sdk.UserDualTxsHistory
+        const [, , coinA, coinB] =
+          (item.tokenInfoOrigin.market ?? "dual-").match(
+            /(dual-)?(\w+)-(\w+)/i
+          ) ?? [];
+
+        let [sellTokenSymbol, buyTokenSymbol] =
+          item.dualType == DUAL_TYPE.DUAL_BASE
+            ? [
+              coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
+              coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
+            ]
+            : [
+              coinB ?? idIndex[item.tokenInfoOrigin.tokenIn],
+              coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
+            ];
+        const format = makeDualOrderedItem(
+          item,
+          sellTokenSymbol,
+          buyTokenSymbol,
+          0,
+          dualMarketMap[item.tokenInfoOrigin.market]
+        );
+
+        const amount = getValuePrecisionThousand(
+          sdk
+            .toBig(item.tokenInfoOrigin.amountIn)
+            .div("1e" + tokenMap[sellTokenSymbol].decimals),
+          tokenMap[sellTokenSymbol].precision,
+          tokenMap[sellTokenSymbol].precision,
+          tokenMap[sellTokenSymbol].precision,
+          true
+        );
+        const refreshedRecord = {
+          ...format,
+          amount,
+        } as R
+        if (refreshedRecord.__raw__.order.investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED) {
+          const newDualList = dualList.filter(x => {
+            return x.__raw__.order.id !== refreshedRecord.__raw__.order.id
+          })
+          // newDualList
+          setDualList(newDualList);
+          setRefreshErrorInfo([refreshedRecord.buySymbol, refreshedRecord.sellSymbol])
+          setShowRefreshError(true);
+          setShowLoading(false);
+        } else {
+          const newDualList = dualList.map(x => {
+            return x.__raw__.order.id === refreshedRecord.__raw__.order.id
+              ? refreshedRecord
+              : x
+          })
+          setDualList(newDualList);
+          setShowLoading(false);
+        }
+      }
+    }
+    setShowLoading(false);
+  };
   const getDualTxList = React.useCallback(
     async ({ start, end, offset, limit = Limit }: any) => {
       setShowLoading(true);
@@ -183,6 +292,11 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
               limit,
               start,
               end,
+              investmentStatuses: [
+                sdk.LABEL_INVESTMENT_STATUS.FAILED,
+                sdk.LABEL_INVESTMENT_STATUS.PROCESSED,
+                sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+              ].join(',')
             } as any,
             apiKey
           ),
@@ -264,8 +378,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             },
             [] as RawDataDualAssetItem[]
           );
+          const filteredResult = (result as R[]).filter(x => x.__raw__.order.investmentStatus !== sdk.LABEL_INVESTMENT_STATUS.CANCELLED)
 
-          setDualList(result);
+          setDualList(filteredResult);
           setShowLoading(false);
           setDualPagination({
             pageSize: limit,
@@ -290,6 +405,10 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     detail,
     setOpen,
     dualOnInvestAsset,
+    refresh,
+    setShowRefreshError,
+    showRefreshError,
+    refreshErrorInfo
     // updateTickersUI,
   };
 };
