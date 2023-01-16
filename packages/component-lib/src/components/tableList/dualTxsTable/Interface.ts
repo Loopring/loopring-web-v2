@@ -18,7 +18,6 @@ export interface DualAssetTableProps<R> {
   showloading: boolean;
   getDualAssetList: (props: any) => Promise<void>;
   showDetail: (item: R) => void;
-  refresh: (item: R) => void;
   pagination?: {
     pageSize: number;
     total: number;

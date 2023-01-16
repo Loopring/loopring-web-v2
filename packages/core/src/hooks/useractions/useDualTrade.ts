@@ -169,7 +169,6 @@ export const useDualTrade = <
           ...(calDualValue as TradeDual<R>),
         };
       }
-
       updateTradeDual({ ..._updateInfo, dualViewInfo, coinSell });
     },
     [
@@ -306,6 +305,9 @@ export const useDualTrade = <
           if (dualInfo?.__raw__?.info) {
             dualInfo.__raw__.info = {
               ...dualInfo.__raw__.info,
+              dualPrice: {
+                ...dualPriceResponse.infos[0],
+              },
             };
           }
           if (
@@ -390,8 +392,7 @@ export const useDualTrade = <
         const {
           dualType,
           productId,
-          profit
-          // dualPrice: { dualBid },
+          dualPrice: { dualBid },
         } = tradeDual.dualViewInfo.__raw__.info;
 
         // myLog("fee", tradeDual.feeVol);
@@ -420,7 +421,7 @@ export const useDualTrade = <
           maxFeeBips: tradeDual.maxFeeBips,
           fillAmountBOrS: false,
           fee: tradeDual.feeVol ?? "0",
-          baseProfit: profit,
+          baseProfit: dualBid[0].baseProfit,
           productId,
           settleRatio: tradeDual.dualViewInfo.settleRatio.replace(sdk.SEP, ""), //sdk.toBig(tradeDual.dualViewInfo.settleRatio).f,
           expireTime: tradeDual.dualViewInfo.expireTime,
