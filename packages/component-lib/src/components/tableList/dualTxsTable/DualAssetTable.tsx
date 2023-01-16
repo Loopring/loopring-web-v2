@@ -118,7 +118,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         {
           key: "Product",
           sortable: false,
-          width: "auto",
+          minWidth: 500,
           name: t("labelDualAssetProduct"),
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
@@ -157,20 +157,21 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 </Typography>
                 <Typography
                   component={"span"}
-                  flexDirection={"column"}
-                  display={"flex"}
                 >
                   <Typography
                     component={"span"}
-                    display={"inline-flex"}
+                    // display={"inline-flex"}
                     color={"textPrimary"}
+                    display={"flex"}
+                    flexDirection={"column"}
                   >
                     {`${base}/${quote}`}
                   </Typography>
-                </Typography>
-                {showClock && <Box marginLeft={1} display={"flex"} alignItems={"center"}>
+                  {true && <Box marginLeft={1} display={"flex"} alignItems={"center"}>
                   <ClockIcon />
                 </Box>}
+                </Typography>
+                
               </Typography>
             );
           },

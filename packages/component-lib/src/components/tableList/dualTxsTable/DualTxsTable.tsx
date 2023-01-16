@@ -19,7 +19,7 @@ import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
 import { LABEL_INVESTMENT_STATUS_MAP, RawDataDualTxsItem } from "./Interface";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE, LABEL_INVESTMENT_STATUS } from "@loopring-web/loopring-sdk";
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -157,13 +157,13 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
             const side =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED)
-                : Date.now() - expireTime >= 0
+                : (Date.now() - expireTime >= 0 && investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED && investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED)
                 ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
                 : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
             const statusColor =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? "var(--color-tag)"
-                : Date.now() - expireTime >= 0
+                : (Date.now() - expireTime >= 0 && investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED && investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED)
                 ? "var(--color-warning)"
                 : "var(--color-success)";
             let buySymbol, buyAmount;
@@ -360,16 +360,16 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
               tokenMap[sellSymbol].precision,
               false
             );
-            const side =
-              (settlementStatus === sdk.SETTLEMENT_STATUS.PAID)
+            const side = 
+              settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED)
-                : Date.now() - expireTime >= 0
-                ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
-                : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
+                : (Date.now() - expireTime >= 0 && investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED && investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED)
+                  ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
+                  : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
             const statusColor =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? "var(--color-tag)"
-                : Date.now() - expireTime >= 0
+                : (Date.now() - expireTime >= 0 && investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED && investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED)
                 ? "var(--color-warning)"
                 : "var(--color-success)";
             let buySymbol, buyAmount;
