@@ -66,7 +66,12 @@ export const DataGridStyled = styled(DataGrid)`
       ${hrShort}
     }
   }
+
   &.rdg {
+    &.scrollable .rdg-header-row {
+      background: var(--color-box);
+    }
+
     min-height: 350px;
     color: var(--color-text-primary);
     //color: inherit;
@@ -83,9 +88,6 @@ export const DataGridStyled = styled(DataGrid)`
           font-size: 12px;
         }
       }
-    }
-    &.scrollable .rdg-header-row {
-      background: var(--color-box);
     }
 
     .rdg-header-sort-name {
