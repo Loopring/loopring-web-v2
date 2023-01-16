@@ -297,7 +297,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     const { address, memo, fee, __request__, ...tradeData } = transferRampValue;
     return {
       type: "TOKEN",
-      disabled: !legalEnable,
+      disabled: !(legalEnable === true),
       addressDefault: address,
       realAddr: address,
       tradeData,

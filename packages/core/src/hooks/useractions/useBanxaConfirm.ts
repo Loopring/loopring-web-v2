@@ -390,7 +390,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
 
     return {
       type: "TOKEN",
-      disabled: !legalEnable,
+      disabled: !(legalEnable === true),
       addressDefault: address,
       realAddr: address,
       tradeData,

@@ -327,11 +327,12 @@ export const useClaimConfirm = <T extends IBData<I>, I>() => {
       isFeeNotEnough &&
       !isFeeNotEnough.isFeeNotEnough &&
       claimValue.belong &&
-      tokenMap[claimValue.belong] &&
+      claimValue.tradeValue &&
       claimValue.fee &&
       claimValue.fee.belong
     ) {
       enableBtn();
+      return;
     }
     disableBtn();
   }, [
@@ -350,7 +351,7 @@ export const useClaimConfirm = <T extends IBData<I>, I>() => {
     checkBtnStatus();
   }, [
     chargeFeeTokenList,
-    feeInfo?.belong,
+    claimValue?.tradeValue,
     isFeeNotEnough?.isFeeNotEnough,
     claimValue?.fee?.feeRaw,
   ]);
@@ -370,7 +371,7 @@ export const useClaimConfirm = <T extends IBData<I>, I>() => {
     claimProps: {
       btnStatus,
       btnInfo,
-      disabled: !legalEnable,
+      disabled: !(legalEnable === true),
       tradeData: {
         tradeValue: claimValue?.tradeValue,
         belong: claimValue?.belong,
