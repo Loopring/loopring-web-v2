@@ -23,7 +23,7 @@ import {
   RawDataDualTxsItem,
 } from "./Interface";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE, LABEL_INVESTMENT_STATUS } from "@loopring-web/loopring-sdk";
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -57,25 +57,6 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
-
-export interface DualTxsTableProps<R = RawDataDualTxsItem> {
-  // etherscanBaseUrl?: string;
-  rawData: R[];
-  pagination?: {
-    pageSize: number;
-    total: number;
-  };
-  idIndex: { [key: string]: string };
-  tokenMap: { [key: string]: any };
-  dualMarketMap: any;
-
-  getDualTxList: (props: any) => Promise<void>;
-  // filterTokens: string[];
-  // showFilter?: boolean;
-  showloading: boolean;
-  // accAddress: string;
-  // accountId: number;
-}
 
 export const DualTxsTable = withTranslation(["tables", "common"])(
   <R extends RawDataDualTxsItem>(
@@ -161,13 +142,17 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
             const side =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED)
-                : Date.now() - expireTime >= 0
+                : Date.now() - expireTime >= 0 &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED
                 ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
                 : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
             const statusColor =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? "var(--color-tag)"
-                : Date.now() - expireTime >= 0
+                : Date.now() - expireTime >= 0 &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED
                 ? "var(--color-warning)"
                 : "var(--color-success)";
             let buySymbol, buyAmount;
@@ -384,13 +369,17 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
             const side =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED)
-                : Date.now() - expireTime >= 0
+                : Date.now() - expireTime >= 0 &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED
                 ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
                 : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
             const statusColor =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? "var(--color-tag)"
-                : Date.now() - expireTime >= 0
+                : Date.now() - expireTime >= 0 &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED
                 ? "var(--color-warning)"
                 : "var(--color-success)";
             let buySymbol, buyAmount;

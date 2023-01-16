@@ -49,6 +49,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     React.useState<DualDetailType | undefined>(undefined);
   const [showRefreshError, setShowRefreshError] =
     React.useState<boolean>(false);
+  const [refreshErrorInfo, setRefreshErrorInfo] = React.useState<
+    [string, string]
+  >(["", ""]);
 
   const getDetail = (item: R, index?: number) => {
     const {
@@ -263,7 +266,12 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           const newDualList = dualList.filter((x) => {
             return x.__raw__.order.id !== refreshedRecord.__raw__.order.id;
           });
+          // newDualList
           setDualList(newDualList);
+          setRefreshErrorInfo([
+            refreshedRecord.buySymbol,
+            refreshedRecord.sellSymbol,
+          ]);
           setShowRefreshError(true);
           setShowLoading(false);
         } else {
@@ -413,6 +421,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     refresh,
     setShowRefreshError,
     showRefreshError,
+    refreshErrorInfo,
     // updateTickersUI,
   };
 };

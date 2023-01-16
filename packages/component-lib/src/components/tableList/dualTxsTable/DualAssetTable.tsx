@@ -31,7 +31,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 16% 16% 28% 6% 14% 10% 8% !important`
+        ? `--template-columns: 22% 14% 25% 6% 14% 10% 7% !important`
         : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
@@ -154,27 +154,30 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                     coinJson[row.buySymbol],
                   ]}
                 />
-                <Typography
-                  component={"span"}
-                  flexDirection={"column"}
-                  display={"flex"}
-                >
+                <Typography component={"span"} display={"flex"}>
                   <Typography
                     component={"span"}
-                    display={"inline-flex"}
+                    // display={"inline-flex"}
                     color={"textPrimary"}
+                    display={"flex"}
+                    flexDirection={"column"}
                   >
                     {`${base}/${quote}`}
                   </Typography>
+                  {showClock && (
+                    <Box
+                      component={"span"}
+                      marginLeft={1}
+                      display={"flex"}
+                      alignItems={"center"}
+                    >
+                      <ClockIcon />
+                    </Box>
+                  )}
                 </Typography>
-                {showClock && (
-                  <Box marginLeft={1} display={"flex"} alignItems={"center"}>
-                    <ClockIcon />
-                  </Box>
-                )}
               </Typography>
             );
-          },
+          };,
         },
         {
           key: "Frozen",
@@ -263,21 +266,21 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           name: t("labelDualAssetAction"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const investmentStatus = row.__raw__.order.investmentStatus;
-            const showRefresh =
-              investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING;
-            return showRefresh ? (
-              <Link
-                onClick={(_e) => {
-                  refresh(row);
-                }}
-              >
-                {t("labelDualAssetRefresh")}
-              </Link>
-            ) : (
-              <Link onClick={(_e) => showDetail(row)}>
-                {t("labelDualAssetDetail")}
-              </Link>
-            );
+            const showRefresh = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+            return showRefresh
+              ? (
+                <Link onClick={(_e) => {
+                  refresh(row)
+                }
+                }>
+                  {t("labelDualAssetRefresh")}
+                </Link>
+              )
+              : (
+                <Link onClick={(_e) => showDetail(row)}>
+                  {t("labelDualAssetDetail")}
+                </Link>
+              );
           },
         },
       ],
