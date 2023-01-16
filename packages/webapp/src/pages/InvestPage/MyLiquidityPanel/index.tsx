@@ -142,7 +142,6 @@ const MyLiquidity: any = withTranslation("common")(
       // dualList,
     });
 
-
     const theme = useTheme();
     const { isMobile } = useSettings();
     const fontSize: any = isMobile
