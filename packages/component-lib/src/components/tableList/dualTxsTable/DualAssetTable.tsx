@@ -30,7 +30,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 16% 16% 28% 6% 14% 10% 8% !important`
+        ? `--template-columns: 22% 14% 25% 6% 14% 10% 7% !important`
         : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
@@ -118,7 +118,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         {
           key: "Product",
           sortable: false,
-          minWidth: 500,
+          width: "auto",
           name: t("labelDualAssetProduct"),
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
@@ -157,6 +157,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 </Typography>
                 <Typography
                   component={"span"}
+                  display={"flex"}
                 >
                   <Typography
                     component={"span"}
@@ -167,7 +168,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                   >
                     {`${base}/${quote}`}
                   </Typography>
-                  {true && <Box marginLeft={1} display={"flex"} alignItems={"center"}>
+                  {showClock && <Box component={"span"} marginLeft={1} display={"flex"} alignItems={"center"}>
                   <ClockIcon />
                 </Box>}
                 </Typography>
