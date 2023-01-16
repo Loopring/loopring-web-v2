@@ -349,6 +349,8 @@ export const OrderbookPage = withTranslation("common")(() => {
                   className={layout.i}
                   component={"section"}
                   position={"relative"}
+                  display={"flex"}
+                  flexDirection={"column"}
                 >
                   {ViewList[layout.i]}
                   <IconButton
