@@ -177,7 +177,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 </Typography>
               </Typography>
             );
-          };,
+          },
         },
         {
           key: "Frozen",
@@ -266,21 +266,21 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           name: t("labelDualAssetAction"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const investmentStatus = row.__raw__.order.investmentStatus;
-            const showRefresh = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-            return showRefresh
-              ? (
-                <Link onClick={(_e) => {
-                  refresh(row)
-                }
-                }>
-                  {t("labelDualAssetRefresh")}
-                </Link>
-              )
-              : (
-                <Link onClick={(_e) => showDetail(row)}>
-                  {t("labelDualAssetDetail")}
-                </Link>
-              );
+            const showRefresh =
+              investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING;
+            return showRefresh ? (
+              <Link
+                onClick={(_e) => {
+                  refresh(row);
+                }}
+              >
+                {t("labelDualAssetRefresh")}
+              </Link>
+            ) : (
+              <Link onClick={(_e) => showDetail(row)}>
+                {t("labelDualAssetDetail")}
+              </Link>
+            );
           },
         },
       ],
