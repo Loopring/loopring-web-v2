@@ -683,7 +683,7 @@ export const CreateRedPacketStepType = withTranslation()(
                 } as any);
               }}
             >
-              {[0, 1].map((key) => {
+              {[1, 0].map((key) => {
                 return (
                   <FormControlLabel
                     key={key}

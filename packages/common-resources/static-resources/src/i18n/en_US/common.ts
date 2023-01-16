@@ -1284,11 +1284,11 @@ export default {
   labelMyRedPacket: " My Red Packet Record",
   labelRedPacketMarkets: "Red Packet Plaza",
   labelRedPacketQRCodeImport: "Receive Red Packet",
-  labelLuckyTokenViewType0: "Private Red Packet",
-  labelLuckyTokenViewTypeDes0:
-    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
-  labelLuckyTokenViewType1: "Public Red Packet",
+  labelLuckyTokenViewType1: "Private Red Packet",
   labelLuckyTokenViewTypeDes1:
+    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
+  labelLuckyTokenViewType0: "Public Red Packet",
+  labelLuckyTokenViewTypeDes0:
     "Your gift packet is shared privately by you via your custom QR code for others to receive.",
   labelSplit: "Split",
   labelRedPacketMemo: "Best Wish",
@@ -1319,8 +1319,8 @@ export default {
   labelClaimWithdrawFailed: "Claim has failed!",
   labelClaimWithdrawSubmit: "Claim has been submitted",
   labelClaimWithdrawToken: "Token Amount",
-  labelRedPacketSendSubmit: "Send red packet has been submitted. <1></1>",
-  labelRedPacketSendSuccess: "Red packet Send Successful. <1></1>",
+  labelRedPacketSendSubmit: "Send red packet has been submitted.",
+  labelRedPacketSendSuccess: "Red packet Send Successful.",
   labelRedPacketSendFailed: "Send red packet of {{value}} {{symbol}} failed!",
   labelRedPacketSendInProgress: "Processing...",
   labelRefreshRedPacket: "Refresh List",

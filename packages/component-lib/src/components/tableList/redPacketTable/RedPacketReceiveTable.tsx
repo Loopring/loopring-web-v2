@@ -87,7 +87,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R>) => {
             return <Box display={"flex"}></Box>;
           },
         },
@@ -95,7 +95,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           key: "Amount",
           sortable: true,
           name: t("labelAmount"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R>) => {
             return <Box display={"flex"}></Box>;
           },
         },
@@ -103,7 +103,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           key: "Type",
           sortable: true,
           name: t("labelType"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R>) => {
             return <Box display="flex"></Box>;
           },
         },
@@ -111,7 +111,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           key: "Address",
           sortable: true,
           name: t("labelAddress"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R>) => {
             return <Box display="flex"></Box>;
           },
         },
@@ -121,7 +121,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           headerCellClass: "textAlignRight",
           name: t("labelRecordTime"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R>) => {
             return <>{moment(new Date(), "YYYYMMDDHHMM").fromNow()}</>;
           },
         },

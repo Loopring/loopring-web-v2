@@ -389,11 +389,9 @@ export const useCreateRedPacket = <
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
           walletLayer2Service.sendUserUpdate();
-          history.push({
-            pathname: `redpacket?redPacketHash=${
-              (response as sdk.TX_HASH_API)?.hash
-            }`,
-          });
+          history.push(
+            `/redpacket?redPacketHash=${(response as sdk.TX_HASH_API)?.hash}`
+          );
           resetDefault();
           if (
             request.type.scope == sdk.LuckyTokenViewType.PRIVATE &&

@@ -131,7 +131,6 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
                 disabled={disabled}
                 tradeType={tradeType}
                 selectedType={selectedType}
-                // setSelectType={setSelectType}
                 {...{ ...rest }}
                 setActiveStep={setActiveStep}
                 activeStep={RedPacketStep.ChooseType}

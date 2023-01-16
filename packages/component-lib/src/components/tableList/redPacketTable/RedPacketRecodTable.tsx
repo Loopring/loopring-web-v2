@@ -111,7 +111,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Type",
-          sortable: true,
+          sortable: false,
           name: t("labelRecordType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
@@ -121,7 +121,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Status",
-          sortable: true,
+          sortable: false,
           name: t("labelRecordStatus"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             if (
@@ -159,7 +159,6 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             );
           },
         },
-
         {
           key: "Time",
           sortable: true,
@@ -199,11 +198,39 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           }
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
+          sortMethod={React.useCallback(
+            (sortedRows, sortColumn) => {
+              let _sortedRows: R[] = [];
+              switch (sortColumn) {
+                case "Token":
+                  _sortedRows = rawData.sort((a: R, b: R) => {
+                    return a.token.simpleName.localeCompare(b.token.simpleName);
+                  });
+                  break;
+                case "Amount":
+                  _sortedRows = rawData.sort((a: R, b: R) => {
+                    return a.totalAmount.localeCompare(b.totalAmount);
+                  });
+                  break;
+                case "Number":
+                  _sortedRows = rawData.sort((a: R, b: R) => {
+                    return b.totalCount - a.totalCount;
+                  });
+                  break;
+                case "Time":
+                  _sortedRows = rawData.sort((a: R, b: R) => {
+                    return b.createdAt - a.createdAt;
+                  });
+                  break;
+                default:
+              }
+              return _sortedRows;
+            },
+            [rawData]
+          )}
           {...{
             ...defaultArgs,
-            // rowRenderer: RowRenderer,
             ...props,
-
             rawData,
             showloading,
           }}
