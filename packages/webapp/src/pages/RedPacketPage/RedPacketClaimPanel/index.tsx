@@ -1,6 +1,11 @@
 import { useTheme } from "@emotion/react";
 import React from "react";
-import { StylePaper, useSystem, useToast } from "@loopring-web/core";
+import {
+  StylePaper,
+  useSystem,
+  useToast,
+  useWalletLayer2,
+} from "@loopring-web/core";
 import {
   EmptyDefault,
   RedPacketClaimTable,
@@ -12,29 +17,29 @@ import { Trans, useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useClaimRedPacket } from "./hooks";
 import { Box, Button } from "@mui/material";
-import { RedPacketIcon, TOAST_TIME } from "@loopring-web/common-resources";
+import {
+  RedPacketIcon,
+  SagaStatus,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
 
 export const RedPacketClaimPanel = () => {
-  const theme = useTheme();
   const container = React.useRef<HTMLDivElement>(null);
   const { etherscanBaseUrl, forexMap } = useSystem();
-  const { setShowAccount } = useOpenModals();
   const { toastOpen, setToastOpen, closeToast } = useToast();
-
-  // const { forexMap } = u();
+  const { status: walletLayer2Status } = useWalletLayer2();
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const history = useHistory();
-  const {
-    redPacketClaimList,
-    showLoading,
-    // redPacketClaimTotal,
-    getClaimRedPacket,
-    onItemClick,
-  } = useClaimRedPacket(setToastOpen);
+  const { redPacketClaimList, showLoading, getClaimRedPacket, onItemClick } =
+    useClaimRedPacket(setToastOpen);
+
   React.useEffect(() => {
-    getClaimRedPacket();
-  }, []);
+    if (getClaimRedPacket && walletLayer2Status === SagaStatus.UNSET) {
+      getClaimRedPacket();
+    }
+  }, [walletLayer2Status]);
+
   return (
     <Box
       flex={1}

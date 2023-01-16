@@ -122,7 +122,7 @@ export const useClaimConfirm = <T extends IBData<I>, I>() => {
             isHWAddr = true;
           }
 
-          myLog("nftWithdraw processRequest:", isHWAddr, isNotHardwareWallet);
+          myLog("ClaimConfirm processRequest:", isHWAddr, isNotHardwareWallet);
           const response =
             await LoopringAPI.luckTokenAPI.sendLuckTokenWithdraws(
               {
@@ -164,10 +164,7 @@ export const useClaimConfirm = <T extends IBData<I>, I>() => {
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
           walletLayer2Service.sendUserUpdate();
-          // resetDefault();
-          // history.push(
-          //   `/l2assets/history/transactions?types=${TransactionTradeViews.forceWithdraw}`
-          // );
+
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
           if (
             store.getState().modals.isShowAccount.isShow &&
@@ -228,7 +225,7 @@ export const useClaimConfirm = <T extends IBData<I>, I>() => {
         }
       }
     },
-    []
+    [account]
   );
 
   const onClaimClick = React.useCallback(
@@ -269,7 +266,7 @@ export const useClaimConfirm = <T extends IBData<I>, I>() => {
             apiKey
           );
           const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
-            type: 1,
+            type: 2,
           });
           const request: sdk.OriginLuckTokenWithdrawsRequestV3 = {
             tokenId: token.tokenId,
@@ -290,18 +287,24 @@ export const useClaimConfirm = <T extends IBData<I>, I>() => {
             },
           };
 
-          myLog("ForcesWithdrawals request:", request);
+          myLog("claimWithdrawals request:", request);
 
           processRequest(request, isHardwareRetry);
         } catch (e: any) {
-          sdk.dumpError400(e);
+          // sdk.dumpError400(e);
           setShowAccount({
             isShow: true,
             step: AccountStep.ClaimWithdraw_Failed,
             error: {
-              code: UIERROR_CODE.UNKNOWN,
-              msg: e?.message,
-            },
+              code: e?.code ?? UIERROR_CODE.UNKNOWN,
+              message: e.message,
+              ...(e instanceof Error
+                ? {
+                    message: e?.message,
+                    stack: e?.stack,
+                  }
+                : e ?? {}),
+            } as sdk.RESULT_INFO,
           });
         }
 

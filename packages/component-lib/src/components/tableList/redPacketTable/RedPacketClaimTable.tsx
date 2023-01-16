@@ -3,6 +3,7 @@ import { Box, Link } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import { Column, Table } from "../../basic-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
+
 import {
   RawDataRedPacketClaimItem,
   RedPacketClaimTableProps,
@@ -76,7 +77,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => (
+          formatter: ({ row }: FormatterProps<R>) => (
             <ColumnCoinDeep token={row.token} />
           ),
         },
@@ -84,7 +85,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           key: "Amount",
           sortable: true,
           name: t("labelAmount"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R>) => {
             return <Box display={"flex"}>{row.amountStr}</Box>;
           },
         },
@@ -92,7 +93,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           key: "Value",
           sortable: true,
           name: t("labelValue"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R>) => {
             return (
               <Box display="flex">
                 {PriceTag[CurrencyToTag[currency]] +
@@ -131,6 +132,32 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
+    const sortMethod = React.useCallback(
+      (sortedRows, sortColumn) => {
+        let _sortedRows: R[] = [];
+        switch (sortColumn) {
+          case "Token":
+            _sortedRows = sortedRows.sort((a: R, b: R) => {
+              return a.token.simpleName.localeCompare(b.token.simpleName);
+            });
+            break;
+          case "Amount":
+            _sortedRows = sortedRows.sort((a: R, b: R) => {
+              return a.amountStr.localeCompare(b.amountStr);
+            });
+            break;
+          case "Value":
+            _sortedRows = sortedRows.sort((a: R, b: R) => {
+              return b.volume - a.volume;
+            });
+            break;
+          case "Actions":
+          default:
+        }
+        return _sortedRows;
+      },
+      [rawData]
+    );
 
     return (
       <TableWrapperStyled>
@@ -143,6 +170,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           onRowClick={(_index: number, row: R) => {
             onItemClick(row.rawData);
           }}
+          sortMethod={sortMethod}
           {...{
             ...defaultArgs,
             // rowRenderer: RowRenderer,
