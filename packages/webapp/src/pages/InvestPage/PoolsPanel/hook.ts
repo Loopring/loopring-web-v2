@@ -84,8 +84,8 @@ export function useAmmMapUI<
           const _tickerMap = tickerMap[realMarket]?.__rawTicker__;
           const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {});
           if (coinMap) {
-            _ammMap[ammKey]["coinAInfo"] = coinMap[_ammMap[ammKey]["coinA"]];
-            _ammMap[ammKey]["coinBInfo"] = coinMap[_ammMap[ammKey]["coinB"]];
+            _ammMap[ammKey].coinAInfo = coinMap[_ammMap[ammKey].coinA];
+            _ammMap[ammKey].coinBInfo = coinMap[_ammMap[ammKey].coinB];
           }
           if (!_ammMap[ammKey].showDisable) {
             prev.push({
@@ -196,11 +196,11 @@ export function useAmmMapUI<
       setFilterValue(value);
       if (value) {
         const _rawData = rawData.filter((o) => {
-          const coinA = o.coinAInfo.simpleName.toLowerCase();
-          const coinB = o.coinBInfo.simpleName.toLowerCase();
+          const coinA = o.coinAInfo.simpleName?.toLowerCase();
+          const coinB = o.coinBInfo.simpleName?.toLowerCase();
           const formattedValue = value.toLowerCase();
           return (
-            coinA.includes(formattedValue) || coinB.includes(formattedValue)
+            [coinA].includes(formattedValue) || [coinB].includes(formattedValue)
           );
         });
         resetTableData(_rawData);

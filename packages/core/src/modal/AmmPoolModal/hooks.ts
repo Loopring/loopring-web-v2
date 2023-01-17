@@ -235,7 +235,7 @@ export const useCoinPair = <C extends { [key: string]: any }>({
         coinPairInfo.myCoinB
       ) {
         const { myCoinA, myCoinB } = coinPairInfo;
-        const market = `${myCoinA?.name}-${myCoinB?.name}`;
+        const market = `${myCoinA?.simpleName}-${myCoinB?.simpleName}`;
         const response = await LoopringAPI.exchangeAPI.getMixCandlestick({
           market: market,
           interval: TradingInterval.d1,
