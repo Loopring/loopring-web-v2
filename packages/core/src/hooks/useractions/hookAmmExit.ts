@@ -320,7 +320,7 @@ export const useAmmExit = ({
       const ammExit = store.getState()._router_pageAmmPool.ammExit;
       if (feeInfo?.fee && feeInfo?.fees) {
         updatePageAmmExit({
-          fee: feeInfo?.fee.toNumber(),
+          fee: feeInfo?.fee.toString(),
           fees: feeInfo?.fees,
           ammCalcData: {
             ...ammExit.ammCalcData,
