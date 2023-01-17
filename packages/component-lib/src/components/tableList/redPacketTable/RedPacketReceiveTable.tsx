@@ -13,6 +13,8 @@ import React from "react";
 import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
 import moment from "moment";
+import { ColumnCoinDeep } from "../assetsTable";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -24,6 +26,8 @@ const TableWrapperStyled = styled(Box)`
 `;
 const TableStyled = styled(Table)`
   &.rdg {
+    --template-columns: 20% 20% 30% auto auto !important;
+
     height: ${(props: any) => {
       if (props.ispro === "pro") {
         return "620px";
@@ -79,6 +83,14 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       },
       [updateData]
     );
+    React.useEffect(() => {
+      updateData.cancel();
+      handlePageChange({ page: 1 });
+      // updateData({});
+      return () => {
+        updateData.cancel();
+      };
+    }, [pagination?.pageSize]);
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -87,24 +99,38 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
-          formatter: ({ row }: FormatterProps<R>) => {
-            return <Box display={"flex"}></Box>;
-          },
+          formatter: ({ row: { token } }: FormatterProps<R, unknown>) => (
+            <ColumnCoinDeep token={token} />
+          ),
         },
         {
           key: "Amount",
           sortable: true,
           name: t("labelAmount"),
           formatter: ({ row }: FormatterProps<R>) => {
-            return <Box display={"flex"}></Box>;
+            return <>{`${row.amount}`}</>;
           },
         },
         {
           key: "Type",
           sortable: true,
           name: t("labelType"),
-          formatter: ({ row }: FormatterProps<R>) => {
-            return <Box display="flex"></Box>;
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <>
+                {t(
+                  row.type.partition == sdk.LuckyTokenAmountType.AVERAGE
+                    ? "labelRedPacketSendCommonTitle"
+                    : "labelRedPacketSenRandomTitle",
+                  { ns: "common" }
+                ) +
+                  " (" +
+                  t(`labelRedPacketViewType${row?.type?.scope ?? 0}`, {
+                    ns: "common",
+                  }) +
+                  ")"}
+              </>
+            );
           },
         },
         {
@@ -112,7 +138,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           sortable: true,
           name: t("labelAddress"),
           formatter: ({ row }: FormatterProps<R>) => {
-            return <Box display="flex"></Box>;
+            return <>{row.sender}</>;
           },
         },
         {
@@ -122,7 +148,9 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           name: t("labelRecordTime"),
           formatter: ({ row }: FormatterProps<R>) => {
-            return <>{moment(new Date(), "YYYYMMDDHHMM").fromNow()}</>;
+            return (
+              <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>
+            );
           },
         },
       ],

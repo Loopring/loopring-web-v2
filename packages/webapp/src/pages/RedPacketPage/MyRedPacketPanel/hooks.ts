@@ -9,6 +9,7 @@ import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   CoinInfo,
+  getShortAddr,
   getValuePrecisionThousand,
   SDK_ERROR_MAP_TO_UI,
   TokenType,
@@ -20,6 +21,7 @@ import {
   setShowRedPacket,
   useOpenModals,
 } from "@loopring-web/component-lib";
+import { LuckTokenHistory } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
 export const useMyRedPacketRecordTransaction = <
   R extends RawDataRedPacketRecordsItem
@@ -111,7 +113,7 @@ export const useMyRedPacketRecordTransaction = <
                     name: token.name,
                     type: TokenType.single,
                   } as any,
-                  type: item.type.scope, //sdk.LuckyTokenItemStatus
+                  type: item.type, //sdk.LuckyTokenItemStatus
                   status: item.status,
                   validSince: item.validSince,
                   validUntil: item.validSince,
@@ -166,7 +168,7 @@ export const useMyRedPacketReceiveTransaction = <
   const { t } = useTranslation(["error"]);
 
   const {
-    account: { accountId, apiKey },
+    account: { accountId, apiKey, accAddress },
   } = useAccount();
 
   const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>(
@@ -211,54 +213,62 @@ export const useMyRedPacketReceiveTransaction = <
             setRedPacketReceiveTotal((response as any)?.totalNum);
             // @ts-ignore
             let result = (response as any)?.list.reduce(
-              (
-                prev: RawDataRedPacketRecordsItem[],
-                item: sdk.LuckyTokenItemForReceive
-              ) => {
-                const token = tokenMap[idIndex[item.tokenId]];
+              (prev: R[], item: sdk.LuckTokenHistory) => {
+                // @ts-ignore
+                const { luckyToken, claim: myClaim } = item;
+                const token = tokenMap[idIndex[luckyToken.tokenId]];
                 const tokenInfo = coinMap[token.symbol ?? ""];
-                // const type = coinMap[idIndex[item.tokenId] ?? ""];
-                const totalAmount = getValuePrecisionThousand(
-                  volumeToCountAsBigNumber(
-                    token.symbol,
-                    item.tokenAmount.totalAmount
-                  ),
-                  token.precision,
-                  token.precision,
-                  token.precision,
-                  false
-                );
-                const remainAmount = getValuePrecisionThousand(
-                  volumeToCountAsBigNumber(
-                    token.symbol,
-                    item.tokenAmount.remainAmount
-                  ),
-                  token.precision,
-                  token.precision,
-                  token.precision,
-                  false
-                );
 
-                prev.push({
-                  token: {
-                    ...tokenInfo,
-                    name: token.name,
-                    type: TokenType.single,
-                  } as any,
-                  type: item.type.scope, //sdk.LuckyTokenItemStatus
-                  status: item.status,
-                  validSince: item.validSince,
-                  validUntil: item.validSince,
-                  totalCount: item.tokenAmount.totalCount,
-                  remainCount: item.tokenAmount.remainCount,
-                  totalAmount,
-                  remainAmount,
-                  createdAt: item.createdAt,
-                  rawData: item,
-                });
-                return prev;
+                const amount = getValuePrecisionThousand(
+                  volumeToCountAsBigNumber(
+                    token.symbol,
+                    myClaim?.amount ?? 0
+                    // luckyToken.tokenAmount.totalAmount
+                  ),
+                  token.precision,
+                  token.precision,
+                  token.precision,
+                  false
+                );
+                // const remainAmount = getValuePrecisionThousand(
+                //   volumeToCountAsBigNumber(
+                //     token.symbol,
+                //     item.luckyToken.remainAmount
+                //   ),
+                //   token.precision,
+                //   token.precision,
+                //   token.precision,
+                //   false
+                // );
+
+                prev.push();
+                return [
+                  ...prev,
+                  {
+                    token: {
+                      ...tokenInfo,
+                      name: token.name,
+                      type: TokenType.single,
+                    } as any,
+                    amount,
+                    type: luckyToken.type, //sdk.LuckyTokenItemStatus
+                    status: luckyToken.status,
+                    claimAt: myClaim?.createdAt,
+                    sender: luckyToken?.sender?.ens
+                      ? luckyToken?.sender?.ens
+                      : getShortAddr(luckyToken?.sender?.address),
+                    // validSince: luckyToken.validSince,
+                    // validUntil: luckyToken.validSince,
+                    // totalCount: luckyToken.tokenAmount.totalCount,
+                    // remainCount: luckyToken.tokenAmount.remainCount,
+                    // totalAmount,
+                    // remainAmount,
+                    // createdAt: item.createdAt,
+                    // rawData: item,
+                  },
+                ];
               },
-              [] as RawDataRedPacketRecordsItem[]
+              [] as R[]
             );
 
             setRedPacketReceiveList(result);

@@ -1364,6 +1364,8 @@ export default {
   labelRedPacketBtn: "Shared",
   labelRedPacketViewType0: "public",
   labelRedPacketViewType1: "private",
+  labelRedPacketViewTypeDetail0: "public Red Packet",
+  labelRedPacketViewTypeDetail1: "private Red Packet",
   labelRedPacketStatusSUBMITTING: "Submitting", // SUBMITTING = 0,
   labelRedPacketStatusNOT_EFFECTIVE: "Not Start", // NOT_EFFECTIVE = 1,
   labelRedPacketStatusPENDING: "In Processing", // PENDING = 2,

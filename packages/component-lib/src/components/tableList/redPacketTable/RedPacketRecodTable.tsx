@@ -28,6 +28,8 @@ const TableWrapperStyled = styled(Box)`
 `;
 const TableStyled = styled(Table)`
   &.rdg {
+    --template-columns: 16% 16% 26% auto auto auto !important;
+
     height: ${(props: any) => {
       if (props.ispro === "pro") {
         return "620px";
@@ -115,7 +117,19 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           name: t("labelRecordType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <>{t(`labelRedPacketViewType${row.type}`, { ns: "common" })}</>
+              <>
+                {t(
+                  row.type.partition == sdk.LuckyTokenAmountType.AVERAGE
+                    ? "labelRedPacketSendCommonTitle"
+                    : "labelRedPacketSenRandomTitle",
+                  { ns: "common" }
+                ) +
+                  " (" +
+                  t(`labelRedPacketViewType${row?.type?.scope ?? 0}`, {
+                    ns: "common",
+                  }) +
+                  ")"}
+              </>
             );
           },
         },
@@ -125,7 +139,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           name: t("labelRecordStatus"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             if (
-              row.type === sdk.LuckyTokenViewType.PRIVATE &&
+              row.type.scope === sdk.LuckyTokenViewType.PRIVATE &&
               [0, 1, 2].includes(LuckyTokenItemStatusMap[row.status])
             ) {
               return (
@@ -199,32 +213,32 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
           sortMethod={React.useCallback(
-            (sortedRows, sortColumn) => {
-              let _sortedRows: R[] = [];
+            (_sortedRows, sortColumn) => {
+              let resultRows: R[] = [];
               switch (sortColumn) {
                 case "Token":
-                  _sortedRows = rawData.sort((a: R, b: R) => {
+                  resultRows = rawData.sort((a: R, b: R) => {
                     return a.token.simpleName.localeCompare(b.token.simpleName);
                   });
                   break;
                 case "Amount":
-                  _sortedRows = rawData.sort((a: R, b: R) => {
+                  resultRows = rawData.sort((a: R, b: R) => {
                     return a.totalAmount.localeCompare(b.totalAmount);
                   });
                   break;
                 case "Number":
-                  _sortedRows = rawData.sort((a: R, b: R) => {
+                  resultRows = rawData.sort((a: R, b: R) => {
                     return b.totalCount - a.totalCount;
                   });
                   break;
                 case "Time":
-                  _sortedRows = rawData.sort((a: R, b: R) => {
+                  resultRows = rawData.sort((a: R, b: R) => {
                     return b.createdAt - a.createdAt;
                   });
                   break;
                 default:
               }
-              return _sortedRows;
+              return resultRows;
             },
             [rawData]
           )}

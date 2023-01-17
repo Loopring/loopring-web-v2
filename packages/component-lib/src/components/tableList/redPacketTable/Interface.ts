@@ -8,7 +8,7 @@ import {
 
 export type RawDataRedPacketRecordsItem = {
   token: CoinInfo<any> & { type: TokenType };
-  type: sdk.LuckyTokenViewType;
+  type: sdk.LuckyTokenType;
   status: sdk.LuckyTokenItemStatus;
   validSince: number;
   validUntil: number;
@@ -19,7 +19,14 @@ export type RawDataRedPacketRecordsItem = {
   createdAt: number;
   rawData: sdk.LuckyTokenItemForReceive;
 };
-export type RawDataRedPacketReceivesItem = {};
+export type RawDataRedPacketReceivesItem = {
+  token: CoinInfo<any> & { type: TokenType };
+  amount: string;
+  type: sdk.LuckyTokenType;
+  status: sdk.LuckyTokenItemStatus;
+  claimAt: number;
+  sender: string;
+};
 export type RawDataRedPacketClaimItem = {
   token: CoinInfo<any> & { type: TokenType };
   amountStr: string;
