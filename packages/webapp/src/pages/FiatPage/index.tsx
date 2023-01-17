@@ -36,7 +36,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const history = useHistory();
   const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
     useVendor();
-  // const { resetTransferRampData, resetTransferBanxaData } = useModalData();
+  const { resetTransferRampData, resetTransferBanxaData } = useModalData();
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
   const { isMobile } = useSettings();
@@ -56,7 +56,8 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const fiatView = React.useMemo(() => {
     return (
       <Box flex={1} flexDirection={"column"} display={"flex"}>
-        <Box display={"flex"}>
+        {/*<Box display={"flex"}>*/}
+        <Box display={"none"}>
           <Tabs
             variant={"scrollable"}
             value={tabIndex}
