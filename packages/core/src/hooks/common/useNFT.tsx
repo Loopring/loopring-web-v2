@@ -118,7 +118,7 @@ export const useNFTListDeep = <T extends Partial<NFTWholeINFO>>() => {
         ? Number(tokenInfo.total) - Number(tokenInfo.locked ?? 0)
         : 0,
     };
-    if (!tokenInfo.simpleName) {
+    if (!tokenInfo.name) {
       const meta = (await getMetaFromContractORIpfs(
         tokenInfo
       )) as LOOPRING_NFT_METADATA;

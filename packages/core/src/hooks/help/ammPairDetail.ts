@@ -16,28 +16,10 @@ export function ammPairInit({
 }: // ammPoolSnapshot
 any): AmmInData<string> {
   _ammCalcData.coinInfoMap = coinMap;
-
-  // if (isNaN(_ammCalcData.AtoB) && ammPoolSnapshot) {
-  //     const baseVol = volumeToCountAsBigNumber(pair.coinAInfo.simpleName, ammPoolSnapshot.pooled[ 0 ].volume);
-  //     const quoteVol = volumeToCountAsBigNumber(pair.coinBInfo.simpleName, ammPoolSnapshot.pooled[ 1 ].volume);
-  //     _ammCalcData.AtoB = quoteVol && baseVol && quoteVol.div(baseVol).toString()
-  // }
-  // _ammCalcData.AtoB = stob;
-  // _ammCalcData.BtoS = btos;
   if (stob) {
     _ammCalcData.AtoB = stob;
     _ammCalcData.BtoA = btos;
   }
-  // else if(ammPoolSnapshot){
-  //     const poolATokenVol: TokenVolumeV3 = ammPoolSnapshot.pooled[0];
-  //     const poolBTokenVol: TokenVolumeV3 = ammPoolSnapshot.pooled[1];
-  //     stob = volumeToCountAsBigNumber(pair.coinAInfo.simpleName, poolBTokenVol.volume)?.div(
-  //         volumeToCountAsBigNumber(pair.coinBInfo.simpleName, poolATokenVol.volume) || 1
-  //     )
-  //     // @ts-ignore
-  //     _ammCalcData.BtoA = getValuePrecisionThousand(BigNumber(1).div(stob).toNumber(),tokenMap[pair.coinAInfo.simpleName].precision)// .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
-  //     _ammCalcData.AtoB = getValuePrecisionThousand(stob?.toNumber(), tokenMap[pair.coinBInfo.simpleName].precision)
-  // }
 
   let coinACount = 0,
     coinBCount = 0,
