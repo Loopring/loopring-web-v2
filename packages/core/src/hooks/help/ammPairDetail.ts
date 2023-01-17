@@ -1,20 +1,15 @@
 import { AmmDetailBase, AmmInData } from "@loopring-web/common-resources";
 
-// import { volumeToCountAsBigNumber } from './volumeToCount';
-// import BigNumber from 'bignumber.js';
-
 export function ammPairInit({
   fee,
   pair,
   _ammCalcData,
   coinMap,
   walletMap,
-  // tokenMap,
   ammMap,
   stob,
   btos,
-}: // ammPoolSnapshot
-any): AmmInData<string> {
+}: any): AmmInData<string> {
   _ammCalcData.coinInfoMap = coinMap;
   if (stob) {
     _ammCalcData.AtoB = stob;
