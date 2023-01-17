@@ -527,7 +527,17 @@ export const DUALVIEWINFO: DualViewInfo = {
       expired: false,
       dualType: "DUAL_CURRENCY" as DUAL_TYPE,
       ratio: 0.46,
-      profit: "",
+      dualPrice: {
+        productId: "LRC-USDT-220907-0.36-P-USDT",
+        cacheQty: "",
+        priceTime: 1662446704650,
+        dualBid: [
+          {
+            baseProfit: "0.0237",
+            baseQty: "20000",
+          },
+        ],
+      },
     },
     index: {
       index: "0.36206575",
