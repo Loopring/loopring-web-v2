@@ -42,10 +42,10 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
-    // TradeTypes.Buy
-    match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
-      ? TradeTypes.Buy
-      : TradeTypes.Sell
+    TradeTypes.Buy
+    // match?.params?.tab?.toLowerCase() === "Buy".toLowerCase()
+    //   ? TradeTypes.Buy
+    //   : TradeTypes.Sell
   );
   const { banxaViewProps, offBanxaValue } = useBanxaConfirm({
     sellPanel,
@@ -55,7 +55,8 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const fiatView = React.useMemo(() => {
     return (
       <Box flex={1} flexDirection={"column"} display={"flex"}>
-        <Box display={"flex"}>
+        {/*<Box display={"flex"}>*/}
+        <Box display={"none"}>
           <Tabs
             variant={"scrollable"}
             value={tabIndex}
