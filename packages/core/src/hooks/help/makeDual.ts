@@ -27,8 +27,8 @@ export const makeDualViewItem = (
     // base,
     // // currency: base,
     // currency: quote,
-    profit,
     dualType,
+    dualPrice: { dualBid },
   } = info;
   const { precisionForPrice } = market;
   myLog("makeDualViewItem", expireTime, strike, ratio, dualType);
@@ -38,9 +38,9 @@ export const makeDualViewItem = (
       : [buySymbol, sellSymbol];
   // const { baseProfitStep } = rule;
   // baseProfit*ratio
-  const settleRatio = toBig(profit)
+  const settleRatio = toBig(dualBid[0].baseProfit)
     .times(ratio)
-    .toFixed(6, BigNumber.ROUND_DOWN);
+    .toFixed(Number(rule.baseProfitStep), BigNumber.ROUND_DOWN);
   // myLog(settleRatio, settleRatio);
   // const _baseProfitStep = Number(baseProfitStep);
   const apy = toBig(settleRatio)

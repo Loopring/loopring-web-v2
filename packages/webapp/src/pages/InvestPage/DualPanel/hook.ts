@@ -171,16 +171,38 @@ export const useDualHook = ({
         });
 
         const rule = rules[0];
-        const rawData = infos.map((item: sdk.DualProductAndPrice) => {
-          return makeDualViewItem(
-            item,
-            index,
-            rule,
-            pairASymbol,
-            pairBSymbol,
-            marketMap[market]
-          );
-        })
+        const rawData = infos.reduce(
+          (prev: any[], item: sdk.DualProductAndPrice) => {
+            myLog("filer Dual", item.strike, item?.dualPrice?.dualBid[0], rule);
+            if (
+              item?.dualPrice?.dualBid[0] &&
+              ((dualType === sdk.DUAL_TYPE.DUAL_BASE &&
+                sdk
+                  .toBig(item.dualPrice.dualBid[0].baseQty)
+                  .gte(rule.baseMin)) ||
+                (dualType == sdk.DUAL_TYPE.DUAL_CURRENCY &&
+                  sdk
+                    .toBig(item.dualPrice.dualBid[0].baseQty)
+                    .times(item.strike)
+                    .gte(rule.currencyMin)))
+            ) {
+              const result = makeDualViewItem(
+                item,
+                index,
+                rule,
+                pairASymbol,
+                pairBSymbol,
+                marketMap[market]
+              );
+              if (Number(result.apy.replace("%", "")) > 0) {
+                prev.push(result);
+              }
+              return prev;
+            }
+            return prev;
+          },
+          [] as any[]
+        );
         myLog("setDualProducts", rawData);
         setDualProducts(rawData);
       }
