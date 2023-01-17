@@ -1,49 +1,40 @@
-import { Box, Button, Checkbox, Grid, IconButton } from "@mui/material";
-import { useTheme } from "@emotion/react";
-import { StylePaper, useModalData, useTokenMap } from "@loopring-web/core";
+import React from "react";
 import {
   AccountStep,
   EmptyDefault,
   FormControlLabel,
-  ImportCollectionStep,
-  InputSearch,
-  RedPacketBg,
-  RedPacketOpen,
   RedPacketPrepare,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-
-import React from "react";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
+import { StylePaper, useTokenMap } from "@loopring-web/core";
+import { useMarketRedPacket } from "./hooks";
+import { Box, Button, Checkbox, Grid } from "@mui/material";
 import {
   BackIcon,
   CheckBoxIcon,
   CheckedIcon,
-  QRIcon,
-  RedPacketWrapSVG,
   RefreshIcon,
   ScanQRIcon,
 } from "@loopring-web/common-resources";
-import { useHistory } from "react-router-dom";
-import { useMarketRedPacket } from "./hooks";
 
-export const RedPacketMarketPanel = () => {
-  const theme = useTheme();
+export const RedPacketMarketPanel = ({
+  setToastOpen,
+}: {
+  setToastOpen: (props: any) => void;
+}) => {
   const container = React.useRef<HTMLDivElement>(null);
   const { setShowAccount, setShowRedPacket } = useOpenModals();
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const history = useHistory();
   const { tokenMap, idIndex } = useTokenMap();
-
-  const {
-    setShowOfficial,
-    showOfficial,
-    // getMarketRedPacket,
-    luckTokenList,
-    // handlePageChange,
-  } = useMarketRedPacket();
+  const { setShowOfficial, showOfficial, luckTokenList, handlePageChange } =
+    useMarketRedPacket({
+      setToastOpen,
+    });
   return (
     <Box
       flex={1}
@@ -111,7 +102,7 @@ export const RedPacketMarketPanel = () => {
           spacing={1}
           justifyContent={"flex-end"}
           marginY={1}
-          paddingX={1}
+          paddingX={2}
         >
           <Grid item>
             <Button
@@ -119,7 +110,9 @@ export const RedPacketMarketPanel = () => {
               variant={"outlined"}
               size={"medium"}
               color={"primary"}
-              onClick={() => {}}
+              onClick={() => {
+                handlePageChange({ page: 0 });
+              }}
             >
               {t("labelRefreshRedPacket")}
             </Button>

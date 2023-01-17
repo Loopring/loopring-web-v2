@@ -263,7 +263,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   selectedType.value.value == 2
                     ? "labelRedPacketSendCommonTitle"
                     : "labelRedPacketSenRandomTitle"
-                )}
+                ) +
+                  " (" +
+                  t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`) +
+                  ")"}
               </Typography>
             </Box>
           </Grid>

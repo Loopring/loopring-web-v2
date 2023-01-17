@@ -77,9 +77,7 @@ export const MyRedPacketPanel = ({
         break;
     }
   };
-  // React.useEffect(() => {
-  //   handleTabChange(match?.params.item ?? TabIndex.Received);
-  // }, [match?.params.item]);
+
   // @ts-ignore
   return (
     <Box

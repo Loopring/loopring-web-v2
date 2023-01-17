@@ -22,7 +22,7 @@ export const RedPacketPage = () => {
       case "records":
         return <MyRedPacketPanel setToastOpen={setToastOpen} />;
       case "markets":
-        return <RedPacketMarketPanel />;
+        return <RedPacketMarketPanel setToastOpen={setToastOpen} />;
       default:
         <RedPacketMarketPanel />;
     }

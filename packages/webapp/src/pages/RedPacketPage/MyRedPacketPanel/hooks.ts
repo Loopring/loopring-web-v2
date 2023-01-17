@@ -172,16 +172,8 @@ export const useMyRedPacketReceiveTransaction = <
   const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>(
     []
   );
-  const { idIndex } = useTokenMap();
+  const { idIndex, coinMap, tokenMap } = useTokenMap();
   const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0);
-  // const { marketMap: myRedPacketReceiveMarketMap } = useMyRedPacketReceiveMap();
-  // const [pagination, setMyRedPacketReceivePagination] = React.useState<{
-  //   pageSize: number;
-  //   total: number;
-  // }>({
-  //   pageSize: Limit,
-  //   total: 0,
-  // });
   const [showLoading, setShowLoading] = React.useState(true);
 
   const getRedPacketReceiveList = React.useCallback(
@@ -217,14 +209,56 @@ export const useMyRedPacketReceiveTransaction = <
             }
           } else {
             setRedPacketReceiveTotal((response as any)?.totalNum);
-
             // @ts-ignore
             let result = (response as any)?.list.reduce(
-              (prev: R[], item: sdk.LuckyTokenItemForReceive) => {
-                prev.push(item as any);
+              (
+                prev: RawDataRedPacketRecordsItem[],
+                item: sdk.LuckyTokenItemForReceive
+              ) => {
+                const token = tokenMap[idIndex[item.tokenId]];
+                const tokenInfo = coinMap[token.symbol ?? ""];
+                // const type = coinMap[idIndex[item.tokenId] ?? ""];
+                const totalAmount = getValuePrecisionThousand(
+                  volumeToCountAsBigNumber(
+                    token.symbol,
+                    item.tokenAmount.totalAmount
+                  ),
+                  token.precision,
+                  token.precision,
+                  token.precision,
+                  false
+                );
+                const remainAmount = getValuePrecisionThousand(
+                  volumeToCountAsBigNumber(
+                    token.symbol,
+                    item.tokenAmount.remainAmount
+                  ),
+                  token.precision,
+                  token.precision,
+                  token.precision,
+                  false
+                );
+
+                prev.push({
+                  token: {
+                    ...tokenInfo,
+                    name: token.name,
+                    type: TokenType.single,
+                  } as any,
+                  type: item.type.scope, //sdk.LuckyTokenItemStatus
+                  status: item.status,
+                  validSince: item.validSince,
+                  validUntil: item.validSince,
+                  totalCount: item.tokenAmount.totalCount,
+                  remainCount: item.tokenAmount.remainCount,
+                  totalAmount,
+                  remainAmount,
+                  createdAt: item.createdAt,
+                  rawData: item,
+                });
                 return prev;
               },
-              [] as R[]
+              [] as RawDataRedPacketRecordsItem[]
             );
 
             setRedPacketReceiveList(result);
@@ -237,12 +271,9 @@ export const useMyRedPacketReceiveTransaction = <
   );
 
   return {
-    // page,
     redPacketReceiveList,
     showLoading,
     getRedPacketReceiveList,
     redPacketReceiveTotal,
-    // pagination,
-    // updateTickersUI,
   };
 };
