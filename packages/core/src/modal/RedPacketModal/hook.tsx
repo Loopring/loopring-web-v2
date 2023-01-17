@@ -332,6 +332,10 @@ export function useRedPacketModal() {
           const luckTokenInfo: sdk.LuckyTokenItemForReceive = detail.luckyToken;
           if (luckTokenInfo) {
             setDetail(detail);
+            // setShowRedPacket({
+            //   isShow: true,
+            //   step: RedPacketViewStep.DetailPanel,
+            // });
             setShowAccount({
               isShow: false,
             });

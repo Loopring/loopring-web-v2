@@ -15,7 +15,7 @@ export const getUserReceiveList = (
   // const {idIndex,tokenMap} = store.getState().tokenMap
   const { accountId } = store.getState().account;
   let _max = 0,
-    _index = 0;
+    _index = -1;
   const list: RawDataRedPacketDetailItem[] = claimList.reduce(
     (prev, item, index) => {
       const amountStr =
@@ -50,6 +50,6 @@ export const getUserReceiveList = (
     },
     [] as RawDataRedPacketDetailItem[]
   );
-  list[_index].isMax = true;
+  if (_index !== -1) list[_index].isMax = true;
   return list;
 };

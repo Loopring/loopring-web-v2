@@ -142,8 +142,6 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
       //backgroundColor: var(--color-box);
       // color: var(--color-primary);
       color: var(--color-text-button-select);
-      // border: ${({ theme }) =>
-        theme.border.borderConfig({ c_key: "var(--color-primary)" })};
       border: ${({ theme }) =>
         theme.border.borderConfig({ c_key: "var(--color-border-hover)" })};
       background: var(--color-box);

@@ -28,6 +28,7 @@ import { RedPacketViewStep } from "../modal";
 import { ModalStatePlayLoad } from "../../stores";
 import { RawDataRedPacketDetailItem } from "../tableList";
 import moment from "moment";
+import { TradeProType } from "../tradePanel";
 
 export const RedPacketBg = styled(Box)<
   BoxProps & { imageSrc?: string; type: string }
@@ -689,6 +690,9 @@ export const RedPacketDetail = ({
       flex={1}
       width={RedPacketSize.large.width}
       height={RedPacketSize.large.height}
+      display={"flex"}
+      paddingBottom={2}
+      flexDirection={"column"}
     >
       <Box
         className={"top"}
@@ -709,7 +713,6 @@ export const RedPacketDetail = ({
         </Typography>
       </Box>
       <Box
-        flex={1}
         display={"flex"}
         flexDirection={"column"}
         alignItems={"center"}
@@ -817,7 +820,13 @@ export const RedPacketDetail = ({
         <Box paddingX={1} display={"flex"} flexDirection={"column"}>
           <Button
             variant={"contained"}
-            color={RedPacketColorConfig.default.colorTop as any}
+            color={"error"}
+            sx={{
+              backgroundColor: RedPacketColorConfig.default.colorTop as any,
+              "&:hover": {
+                backgroundColor: RedPacketColorConfig.default.colorTop as any,
+              },
+            }}
             fullWidth={true}
             onClick={onShared}
           >

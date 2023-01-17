@@ -194,6 +194,7 @@ export const RedPacketMarketPanel = ({
                     xs={6}
                     md={4}
                     lg={3}
+                    item
                     key={index}
                     position={"relative"}
                     marginY={1}
