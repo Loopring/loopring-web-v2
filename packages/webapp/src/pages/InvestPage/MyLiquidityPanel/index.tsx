@@ -347,7 +347,7 @@ const MyLiquidity: any = withTranslation("common")(
                       idIndex={idIndex}
                       tokenPrices={tokenPrices as any}
                       handleWithdraw={(row) => {
-                        const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                        const pair = `${row.ammDetail.coinAInfo.simpleName}-${row.ammDetail.coinBInfo.simpleName}`;
                         setShowAmm({
                           isShow: true,
                           type: AmmPanelType.Exit,
@@ -355,7 +355,7 @@ const MyLiquidity: any = withTranslation("common")(
                         });
                       }}
                       handleDeposit={(row) => {
-                        const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                        const pair = `${row.ammDetail.coinAInfo.simpleName}-${row.ammDetail.coinBInfo.simpleName}`;
                         setShowAmm({
                           isShow: true,
                           type: AmmPanelType.Join,
