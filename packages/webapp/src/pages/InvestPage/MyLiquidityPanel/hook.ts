@@ -77,10 +77,10 @@ export const useOverview = <
     if (filter.searchValue) {
       resultData = resultData.filter(
         (o) =>
-          o.ammDetail.coinAInfo.name
+          o.ammDetail.coinAInfo.simpleName
             .toLowerCase()
             .includes(filter.searchValue.toLowerCase()) ||
-          o.ammDetail.coinBInfo.name
+          o.ammDetail.coinBInfo.simpleName
             .toLowerCase()
             .includes(filter.searchValue.toLowerCase())
       );
