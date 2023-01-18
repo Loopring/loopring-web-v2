@@ -116,7 +116,7 @@ export const banxaService = {
         });
         // TODO: console.log
 
-        console.log("BANXA   create order", data.order);
+        console.log("BANXA create order", data.order);
 
         banxa.generateIframe(
           "#iframeBanxaTarget",
