@@ -153,7 +153,7 @@ export const useAmmExit = ({
 
     if (ammCalcData && ammPoolSnapshot) {
       const lpToken = tokenMap[ammCalcData.lpCoin.belong];
-      const { miniLpVal } = sdk.makeExitAmmPoolRatio(
+      const { miniLpVal } = sdk.makeExitAmmPoolMini(
         "0",
         ammPoolSnapshot,
         tokenMap as any,
