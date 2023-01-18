@@ -28,7 +28,6 @@ import { RedPacketViewStep } from "../modal";
 import { ModalStatePlayLoad } from "../../stores";
 import { RawDataRedPacketDetailItem } from "../tableList";
 import moment from "moment";
-import { TradeProType } from "../tradePanel";
 
 export const RedPacketBg = styled(Box)<
   BoxProps & { imageSrc?: string; type: string }
