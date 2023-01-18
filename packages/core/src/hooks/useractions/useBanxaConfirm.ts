@@ -300,7 +300,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         payload: {},
         account,
       });
-      console.log("banxa check Order ", order);
+      myLog("banxa check Order ", order);
 
       const memo = "OFF-Banxa Transfer";
 
@@ -321,7 +321,8 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           memo,
           // fee: feeInfo,//transferBanxaValue.fee,
         });
-        myLog("BANXA_CONFIRM", RAMP_SELL_PANEL.BANXA_CONFIRM);
+        // TODO: console.log
+        console.log("BANXA KYC Done BANXA order Info:", order);
       } else {
         setTimeout(() => {
           checkOrderStatus(order);
@@ -472,6 +473,8 @@ export const useBanxaTransPost = () => {
           }
 
           updateTransferBanxaData({ __request__: request });
+          // TODO: console.log
+          console.log("BANXA submitInternal Transfer request Info:", request);
           response = await LoopringAPI.userAPI.submitInternalTransfer(
             {
               request: _.cloneDeep(request),
@@ -490,7 +493,7 @@ export const useBanxaTransPost = () => {
             }
           );
 
-          myLog("Banxa submitInternalTransfer:", response);
+          // myLog("Banxa submitInternalTransfer:", response);
 
           if (
             (response as sdk.RESULT_INFO).code ||
@@ -513,11 +516,6 @@ export const useBanxaTransPost = () => {
           });
           banxaService.TransferDone();
           walletLayer2Service.sendUserUpdate();
-          myLog(
-            "Banxa tx_hash,source_address",
-            offBanxaValue?.id,
-            (response as sdk.TX_HASH_API)?.hash
-          );
 
           if (isHWAddr) {
             myLog("Banxa ......try to set isHWAddr", isHWAddr);
@@ -587,7 +585,12 @@ export const useBanxaTransPost = () => {
               destination_address: offBanxaValue.wallet_address,
             },
           });
-          myLog("Banxa confirmed", data);
+          // TODO: console.log
+          console.log(
+            "BANXA Confirm order API Call:",
+            `${offBanxaValue.id}`,
+            data
+          );
         }
       } catch (error) {
         //TODO confirm again.
