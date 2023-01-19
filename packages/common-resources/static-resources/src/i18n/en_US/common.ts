@@ -1356,4 +1356,5 @@ export default {
   labelAmmExitMiniOrderMini:
     "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
   labelL2toL2FeeWithActive: "Fee (including activation fee)",
+  labelLpAmount: "LP Amount: {{value}}",
 };
