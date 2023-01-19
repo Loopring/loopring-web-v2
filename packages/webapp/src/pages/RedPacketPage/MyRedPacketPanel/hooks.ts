@@ -280,7 +280,18 @@ export const useMyRedPacketReceiveTransaction = <
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
 
+  const onItemClick = (item: sdk.LuckTokenHistory) => {
+    setShowRedPacket({
+      isShow: true,
+      info: {
+        ...item,
+        hash: item.hash,
+      },
+      step: RedPacketViewStep.QRCodePanel,
+    });
+  };
   return {
+    onItemClick,
     redPacketReceiveList,
     showLoading,
     getRedPacketReceiveList,

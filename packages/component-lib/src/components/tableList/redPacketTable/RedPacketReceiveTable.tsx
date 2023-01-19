@@ -62,8 +62,14 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
   <R extends RawDataRedPacketReceivesItem>(
     props: RedPacketReceiveTableProps<R> & WithTranslation
   ) => {
-    const { getRedPacketReceiveList, pagination, rawData, showloading, t } =
-      props;
+    const {
+      getRedPacketReceiveList,
+      pagination,
+      rawData,
+      showloading,
+      t,
+      onItemClick,
+    } = props;
     // const { isMobile, upColor } = useSettings();
     const history = useHistory();
     const [page, setPage] = React.useState(1);
@@ -170,6 +176,9 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
           rowHeight={RowConfig.rowHeight}
+          onRowClick={(_index: number, row: R) => {
+            onItemClick(row.rawData);
+          }}
           headerRowHeight={RowConfig.rowHeaderHeight}
           {...{
             ...defaultArgs,

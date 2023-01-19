@@ -45,7 +45,7 @@ export function useRedPacketModal() {
   const { tokenMap, idIndex } = useTokenMap();
   const { t } = useTranslation("common");
   const [detail, setDetail] =
-    React.useState<undefined | sdk.LuckTokenHistory>(undefined);
+    React.useState<undefined | sdk.LuckTokenClaimDetail>(undefined);
   const amountStr = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
     const token = tokenMap[idIndex[_info?.tokenId] ?? ""];

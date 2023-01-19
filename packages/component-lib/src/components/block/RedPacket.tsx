@@ -385,7 +385,7 @@ export type RedPacketDetailProps = {
   amountClaimStr: string;
   memo: string;
   claimList: RawDataRedPacketDetailItem[];
-  detail: sdk.LuckTokenHistory;
+  detail: sdk.LuckTokenClaimDetail;
   isShouldSharedRely: boolean;
   totalCount: number;
   remainCount: number;

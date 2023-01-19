@@ -211,7 +211,9 @@ export const ModalPanel = <
       <Modal
         open={isShowClaimWithdraw.isShow}
         contentClassName={"trade-wrap"}
-        onClose={() => setShowClaimWithdraw({ isShow: false })}
+        onClose={() =>
+          setShowClaimWithdraw({ isShow: false, claimToken: undefined as any })
+        }
         content={
           <ClaimWithdrawPanel
             {...{

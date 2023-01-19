@@ -26,6 +26,7 @@ export type RawDataRedPacketReceivesItem = {
   status: sdk.LuckyTokenItemStatus;
   claimAt: number;
   sender: string;
+  rawData: any;
 };
 export type RawDataRedPacketClaimItem = {
   token: CoinInfo<any> & { type: TokenType };
@@ -73,6 +74,7 @@ export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {
     pageSize: number;
     total: number;
   };
+  onItemClick: (item: sdk.LuckTokenHistory) => void;
   getRedPacketReceiveList: (props: any) => void;
 }
 

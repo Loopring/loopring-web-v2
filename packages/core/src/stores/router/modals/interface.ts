@@ -45,6 +45,7 @@ export type ClaimData = {
   tradeValue: number | undefined;
   balance: number | undefined;
   fee: FeeInfo | undefined;
+  address: string | undefined;
   volume: string | undefined;
   __request__: sdk.OriginLuckTokenWithdrawsRequestV3 | undefined;
 };

@@ -61,6 +61,7 @@ export const MyRedPacketPanel = ({
     getRedPacketReceiveList,
     redPacketReceiveList,
     redPacketReceiveTotal,
+    onItemClick: onReceiveItemClick,
   } = useMyRedPacketReceiveTransaction(setToastOpen);
   const [pageSize, setPageSize] = React.useState(0);
 
@@ -116,6 +117,7 @@ export const MyRedPacketPanel = ({
           <Box className="tableWrapper table-divide-short">
             <RedPacketReceiveTable
               {...{
+                onItemClick: onReceiveItemClick,
                 showloading: showloadingReceive,
                 forexMap,
                 etherscanBaseUrl,

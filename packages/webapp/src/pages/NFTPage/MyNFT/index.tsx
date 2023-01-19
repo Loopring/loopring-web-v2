@@ -85,7 +85,7 @@ export const MyNFTPanel = withTranslation("common")(
                 collectionId: id,
                 accountId: accountId.toString(),
                 limit: CollectionLimit,
-              },
+              } as any,
               apiKey
             )
             .catch((_error) => {
