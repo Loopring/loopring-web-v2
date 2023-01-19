@@ -18,10 +18,8 @@ import {
   RawDataRedPacketReceivesItem,
   RawDataRedPacketRecordsItem,
   RedPacketViewStep,
-  setShowRedPacket,
   useOpenModals,
 } from "@loopring-web/component-lib";
-import { LuckTokenHistory } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
 export const useMyRedPacketRecordTransaction = <
   R extends RawDataRedPacketRecordsItem
@@ -37,9 +35,10 @@ export const useMyRedPacketRecordTransaction = <
   const [myRedPacketRecordList, setMyRedPacketRecordList] = React.useState<R[]>(
     []
   );
+  const { setShowRedPacket } = useOpenModals();
+
   const { idIndex, coinMap, tokenMap } = useTokenMap();
   const [myRedPacketRecordTotal, setMyRedPacketRecordTotal] = React.useState(0);
-  const { setShowRedPacket } = useOpenModals();
   const [showLoading, setShowLoading] = React.useState(true);
 
   const getMyRedPacketRecordTxList = React.useCallback(
@@ -174,6 +173,8 @@ export const useMyRedPacketReceiveTransaction = <
   const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>(
     []
   );
+  const { setShowRedPacket } = useOpenModals();
+
   const { idIndex, coinMap, tokenMap } = useTokenMap();
   const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
@@ -257,6 +258,7 @@ export const useMyRedPacketReceiveTransaction = <
                     sender: luckyToken?.sender?.ens
                       ? luckyToken?.sender?.ens
                       : getShortAddr(luckyToken?.sender?.address),
+                    rawData: item,
                     // validSince: luckyToken.validSince,
                     // validUntil: luckyToken.validSince,
                     // totalCount: luckyToken.tokenAmount.totalCount,
@@ -284,10 +286,10 @@ export const useMyRedPacketReceiveTransaction = <
     setShowRedPacket({
       isShow: true,
       info: {
-        ...item,
+        ...item.luckyToken,
         hash: item.hash,
       },
-      step: RedPacketViewStep.QRCodePanel,
+      step: RedPacketViewStep.DetailPanel,
     });
   };
   return {
