@@ -8,7 +8,6 @@ import {
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
-  CoinInfo,
   getShortAddr,
   getValuePrecisionThousand,
   SDK_ERROR_MAP_TO_UI,
@@ -287,7 +286,6 @@ export const useMyRedPacketReceiveTransaction = <
       isShow: true,
       info: {
         ...item.luckyToken,
-        hash: item.hash,
       },
       step: RedPacketViewStep.DetailPanel,
     });

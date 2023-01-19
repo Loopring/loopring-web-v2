@@ -5,4 +5,5 @@ export enum RedPacketViewStep {
   TimeOutPanel,
   PreparePanel,
   OpenedPanel,
+  RedPacketClock,
 }

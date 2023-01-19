@@ -1,6 +1,7 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   ModalRedPacket,
+  RedPacketClock,
   RedPacketDetail,
   RedPacketOpen,
   RedPacketOpened,
@@ -31,6 +32,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
       redPacketOpenProps,
       redPacketOpenedProps,
       redPacketDetailProps,
+      redPacketClockProps,
     } = useRedPacketModal();
     // const { redPacketProps } = useRedPacketDetail();
     // const theme = useTheme();
@@ -61,6 +63,21 @@ export const ModalRedPacketPanel = withTranslation("common")(
               alignItems={"center"}
             >
               <RedPacketOpen size={"large"} {...redPacketOpenProps} />
+            </Box>
+          ) : (
+            <></>
+          ),
+        },
+        [RedPacketViewStep.RedPacketClock]: {
+          view: redPacketClockProps ? (
+            <Box
+              height={RedPacketSize.large.height + 64}
+              width={RedPacketSize.large.width}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <RedPacketClock size={"large"} {...redPacketClockProps} />
             </Box>
           ) : (
             <></>

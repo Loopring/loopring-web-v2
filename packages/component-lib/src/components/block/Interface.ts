@@ -5,9 +5,12 @@ import {
   ForexMap,
   NFTWholeINFO,
   GET_IPFS_STRING,
+  RedPacketQRPropsExtends,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../tradePanel";
 import { Currency } from "@loopring-web/loopring-sdk";
+import { RawDataRedPacketDetailItem } from "../tableList";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export type MarketBlockProps<C> = {
   coinAInfo: CoinInfo<C>;
@@ -59,4 +62,54 @@ export type NFTMedaProps = {
   shouldPlay?: boolean;
   getIPFSString: GET_IPFS_STRING;
   baseURL: string;
+};
+export type RedPacketDefaultBg = RedPacketDefault & {
+  content: JSX.Element;
+};
+export type RedPacketDefault = {
+  type?: "default" | "official";
+  size?: "middle" | "large";
+};
+export type RedPacketTimeoutProps = RedPacketDefault & {
+  sender: string;
+  memo: string;
+  viewDetail: () => void;
+};
+export type RedPacketQRCodeProps = {
+  url: string;
+} & RedPacketQRPropsExtends;
+export type RedPacketOpenProps = {
+  sender: string;
+  amountStr: string;
+  memo: string;
+  viewDetail: () => void;
+  onOpen: () => void;
+};
+export type RedPacketOpenedProps = {
+  sender: string;
+  amountStr: string;
+  amountClaimStr: string;
+  memo: string;
+  viewDetail: () => void;
+};
+export type RedPacketDetailProps = {
+  sender: string;
+  amountStr: string;
+  amountClaimStr: string;
+  memo: string;
+  claimList: RawDataRedPacketDetailItem[];
+  detail: sdk.LuckTokenClaimDetail;
+  isShouldSharedRely: boolean;
+  totalCount: number;
+  remainCount: number;
+  onShared: () => void;
+};
+export type RedPacketClockProps = RedPacketDefault & {
+  validSince: number;
+  sender: string;
+  amountStr: string;
+  memo: string;
+  showRedPacket: () => void;
+  // viewDetail: () => void;
+  // onOpen: () => void;
 };

@@ -15,7 +15,6 @@ import {
   EmptyValueTag,
   RedPacketOpenWrapSVG,
   RedPacketQRCodeSvg,
-  RedPacketQRPropsExtends,
   RedPacketWrapSVG,
   getValuePrecisionThousand,
   getShortAddr,
@@ -25,10 +24,18 @@ import QRCode from "qrcode-svg";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { volumeToCountAsBigNumber } from "@loopring-web/core";
 import { RedPacketViewStep } from "../modal";
-import { ModalStatePlayLoad } from "../../stores";
-import { RawDataRedPacketDetailItem } from "../tableList";
+import { ModalStatePlayLoad, useOpenModals } from "../../stores";
 import moment from "moment";
-
+import {
+  RedPacketDefaultBg,
+  RedPacketDefault,
+  RedPacketTimeoutProps,
+  RedPacketQRCodeProps,
+  RedPacketOpenProps,
+  RedPacketOpenedProps,
+  RedPacketDetailProps,
+  RedPacketClockProps,
+} from "./Interface";
 export const RedPacketBg = styled(Box)<
   BoxProps & { imageSrc?: string; type: string }
 >`
@@ -162,17 +169,9 @@ export const RedPacketBg = styled(Box)<
 
 export const BoxClaim = styled(Box)`
   &.self {
-    background-color: var(--field-opacity);
+    //background-color: var(--field-opacity);
   }
 ` as typeof Box;
-export type RedPacketDefault = {
-  type?: "default" | "official";
-  size?: "middle" | "large";
-};
-
-export type RedPacketDefaultBg = RedPacketDefault & {
-  content: JSX.Element;
-};
 
 export const RedPacketSize = {
   middle: {
@@ -185,9 +184,6 @@ export const RedPacketSize = {
   },
 };
 
-export type RedPacketQRCodeProps = {
-  url: string;
-} & RedPacketQRPropsExtends;
 export const RedPacketQRCode = ({
   type = "default",
   url,
@@ -365,32 +361,6 @@ export const RedPacketBgOpened = ({
     </RedPacketBg>
   );
 };
-export type RedPacketOpenProps = {
-  sender: string;
-  amountStr: string;
-  memo: string;
-  viewDetail: () => void;
-  onOpen: () => void;
-};
-export type RedPacketOpenedProps = {
-  sender: string;
-  amountStr: string;
-  amountClaimStr: string;
-  memo: string;
-  viewDetail: () => void;
-};
-export type RedPacketDetailProps = {
-  sender: string;
-  amountStr: string;
-  amountClaimStr: string;
-  memo: string;
-  claimList: RawDataRedPacketDetailItem[];
-  detail: sdk.LuckTokenClaimDetail;
-  isShouldSharedRely: boolean;
-  totalCount: number;
-  remainCount: number;
-  onShared: () => void;
-};
 
 export const RedPacketOpen = ({
   type = "default",
@@ -464,16 +434,51 @@ export const RedPacketOpen = ({
 
 export const RedPacketClock = ({
   type = "default",
-  countDown,
-}: RedPacketDefault & {
-  countDown: {
-    days: undefined | string;
-    hours: undefined | string;
-    seconds: undefined | string;
-    minutes: undefined | string;
-  };
-}) => {
+  validSince,
+  showRedPacket,
+}: RedPacketClockProps) => {
   const { t } = useTranslation("common");
+  const anchorRef = React.useRef();
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+  const [countDown, setCountDown] =
+    React.useState<{
+      days: undefined | string;
+      hours: undefined | string;
+      seconds: undefined | string;
+      minutes: undefined | string;
+    }>();
+  const calculateTimeLeft = (validSince: number) => {
+    if (nodeTimer.current !== -1) {
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
+    }
+    let difference = +new Date(validSince) - Date.now();
+    if (difference > 0) {
+      setCountDown({
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
+        hours: (
+          "0" + Math.floor((difference / (1000 * 60 * 60)) % 24).toString()
+        ).slice(-2),
+        minutes: (
+          "0" + Math.floor((difference / 1000 / 60) % 60).toString()
+        ).slice(-2),
+        seconds: ("0" + Math.floor((difference / 1000) % 60).toString()).slice(
+          -2
+        ),
+      });
+      nodeTimer.current = setTimeout(() => calculateTimeLeft(validSince), 1000);
+    } else {
+      showRedPacket();
+    }
+  };
+  React.useEffect(() => {
+    calculateTimeLeft(validSince);
+    return () => {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      }
+    };
+  }, [validSince]);
+
   const content = React.useMemo(() => {
     return (
       <>
@@ -492,7 +497,12 @@ export const RedPacketClock = ({
             >
               {t("labelCountDown")}
             </Typography>
-            <Box display={"flex"} flexDirection={"row"} flex={1}>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              flex={1}
+              ref={anchorRef}
+            >
               <Box
                 className={"hours"}
                 display={"flex"}
@@ -566,7 +576,7 @@ export const RedPacketClock = ({
 
 export const RedPacketOpened = ({
   type = "default",
-}: RedPacketDefault & any) => {
+}: RedPacketOpenedProps & any) => {
   const { t } = useTranslation("common");
   const content = React.useMemo(() => {
     return <>{t("official")}</>;
@@ -579,11 +589,6 @@ export const RedPacketDetailStyled = styled(Box)`
   background-color: var(--color-box);
 ` as typeof Box;
 
-export type RedPacketTimeoutProps = RedPacketDefault & {
-  sender: string;
-  memo: string;
-  viewDetail: () => void;
-};
 export const RedPacketTimeout = ({
   type = "default",
   size = "middle",
@@ -683,7 +688,6 @@ export const RedPacketDetail = ({
   onShared,
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
-
   return (
     <BoxStyle
       flex={1}
@@ -742,16 +746,23 @@ export const RedPacketDetail = ({
         display={"flex"}
         justifyContent={"stretch"}
         flexDirection={"column"}
-        paddingX={1}
       >
-        <Typography variant={"body1"} color={"textThird"} marginY={1}>
+        <Typography
+          variant={"body1"}
+          color={"textThird"}
+          marginY={1}
+          paddingX={1}
+        >
           {t("labelRedPacketReceivedRecord", {
             value: totalCount - remainCount,
             count: totalCount,
           })}
         </Typography>
-        <Divider orientation={"horizontal"} sx={{ borderWidth: 1 }} />
-        <Box flex={1} overflow={"scroll"} paddingX={1}>
+        <Divider
+          orientation={"horizontal"}
+          sx={{ borderWidth: 1, paddingX: 1 }}
+        />
+        <Box flex={1} overflow={"scroll"}>
           {claimList.map((item) => {
             return (
               <BoxClaim
@@ -760,6 +771,7 @@ export const RedPacketDetail = ({
                 justifyContent={"stretch"}
                 flexDirection={"column"}
                 paddingY={1}
+                paddingX={2}
               >
                 <Typography
                   component={"span"}
@@ -771,9 +783,9 @@ export const RedPacketDetail = ({
                   <Typography
                     variant={"body1"}
                     component={"span"}
-                    color={"textPrimary"}
+                    color={item.isSelf ? "success" : "textPrimary"}
                   >
-                    {item.accountStr} {item.isSelf ? "(My reward)" : ""}
+                    {item.isSelf ? t("labelMyReward") : item.accountStr}
                   </Typography>
                   <Typography
                     variant={"body1"}
@@ -805,7 +817,10 @@ export const RedPacketDetail = ({
                       alignItems={"center"}
                       variant={"body2"}
                     >
-                      <FirstPlaceIcon fontSize={"medium"} />
+                      <FirstPlaceIcon
+                        fontSize={"medium"}
+                        sx={{ paddingRight: 1 / 2 }}
+                      />
                       {t("labelLuckDraw")}
                     </Typography>
                   )}

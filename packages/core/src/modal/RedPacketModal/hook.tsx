@@ -7,6 +7,7 @@ import {
   RedPacketOpenProps,
   RedPacketQRCodeProps,
   RedPacketTimeoutProps,
+  RedPacketClockProps,
   RedPacketViewStep,
   useOpenModals,
 } from "@loopring-web/component-lib";
@@ -286,6 +287,38 @@ export function useRedPacketModal() {
       }
       return undefined;
     }, [info, amountClaimStr, amountStr, account.accAddress, isShow, step]);
+  let redPacketClockProps: RedPacketClockProps | undefined =
+    React.useMemo(() => {
+      const _info = info as sdk.LuckyTokenItemForReceive & {
+        claimAmount?: string;
+      };
+      if (
+        isShow &&
+        info &&
+        step === RedPacketViewStep.RedPacketClock &&
+        _info?.hash
+      ) {
+        myLog("redPacketOpenProps", _info);
+        return {
+          memo: _info.info.memo,
+          amountStr,
+          amountClaimStr,
+          sender: _info.sender?.ens
+            ? _info.sender?.ens
+            : getShortAddr(_info.sender?.address),
+          validSince: _info.validSince,
+          showRedPacket: () => {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.OpenPanel,
+              info: _info,
+            });
+          },
+        };
+      }
+
+      return undefined;
+    }, [info, amountClaimStr, amountStr, account.accAddress, isShow, step]);
   const redPacketDetailCall = React.useCallback(async () => {
     setDetail(undefined);
     const _info = info as sdk.LuckyTokenItemForReceive & {
@@ -435,5 +468,6 @@ export function useRedPacketModal() {
     redPacketOpenProps,
     redPacketOpenedProps,
     redPacketDetailProps,
+    redPacketClockProps,
   };
 }
