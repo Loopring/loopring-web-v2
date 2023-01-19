@@ -158,7 +158,7 @@ export const useAmmExit = ({
         tokenMap as any,
         idIndex as IdMap
       );
-      let miniFeeLpWithSlippageVal = 0;
+      let miniFeeLpWithSlippageVal = "";
       if (fees && ammPoolSnapshot) {
         const result = sdk.makeExitAmmCoverFeeLP(
           fees,
@@ -176,9 +176,8 @@ export const useAmmExit = ({
           miniFeeLpWithSlippageVal,
           ammPoolSnapshot
         );
-
         return getValuePrecisionThousand(
-          sdk.toBig(miniFeeLpWithSlippageVal).gte(miniLpVal)
+          sdk.toBig(miniFeeLpWithSlippageVal ?? 0).gte(miniLpVal)
             ? miniFeeLpWithSlippageVal
             : miniLpVal,
           lpToken.precision,
