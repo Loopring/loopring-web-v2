@@ -24,7 +24,7 @@ import QRCode from "qrcode-svg";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { volumeToCountAsBigNumber } from "@loopring-web/core";
 import { RedPacketViewStep } from "../modal";
-import { ModalStatePlayLoad, useOpenModals } from "../../stores";
+import { ModalStatePlayLoad } from "../../stores";
 import moment from "moment";
 import {
   RedPacketDefaultBg,
