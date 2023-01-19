@@ -1360,6 +1360,7 @@ export default {
   labelAmmExitMiniOrderMini:
     "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
   labelL2toL2FeeWithActive: "Fee (including activation fee)",
+  labelLpAmount: "LP Amount: {{value}}",
   labelRedPacketMarketsBtn: "Red Packet Plaza",
   labelRedPacketBtn: "Shared",
   labelRedPacketViewType0: "public",
@@ -1383,7 +1384,4 @@ export default {
   labelMyLuckReward: "(My reward)",
   labelClaimTitle: "Red Packet Claim",
   labelClaimNoBalance: "Insufficient {{belong}} balance",
-
-  // labelRedPacketOpenInProgress:"Processing...",
-  // labelRedPacketOpenFailed:"Read Red Packet failed!",
 };
