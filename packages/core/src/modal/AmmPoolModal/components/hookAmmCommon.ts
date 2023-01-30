@@ -27,7 +27,7 @@ export const useAmmCommon = ({
 }) => {
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { sendSocketTopic, socketEnd } = useSocket();
-  const { account, status: accountStatus } = useAccount();
+  const { account } = useAccount();
   const { marketArray, marketMap, tokenMap } = useTokenMap();
   const { ammMap } = useAmmMap();
 
@@ -135,13 +135,6 @@ export const useAmmCommon = ({
         fee,
         fees,
       };
-    } else {
-      myLog(
-        LoopringAPI.userAPI,
-        accountStatus === SagaStatus.UNSET,
-        pair.coinBInfo?.simpleName,
-        account.readyState == AccountStatus.ACTIVATED
-      );
     }
   };
 
