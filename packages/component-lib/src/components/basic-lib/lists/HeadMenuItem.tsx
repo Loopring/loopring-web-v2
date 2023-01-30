@@ -212,11 +212,14 @@ export const HeadMenuItem = React.memo(
           }
           className={clsx([`layer-${layer}`, className])}
           ref={ref}
+          title={router?.description ?? undefined}
           onClick={
             handleListKeyDown
               ? handleListKeyDown
               : () => {
-                  history.push(router?.path.replace("${pair}", pair) ?? "");
+                  router?.path?.startsWith("http")
+                    ? window.open(router?.path, "_blank")
+                    : history.push(router?.path.replace("${pair}", pair) ?? "");
                 }
           }
         >

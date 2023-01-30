@@ -134,6 +134,8 @@ export const LoopringLogo = React.memo(() => {
         aria-label="menu"
         component={RouterLink}
         to={"/"}
+        // href={"https://loopring.io/#"}
+        replace={true}
         color={"inherit"}
       >
         Loopring 路印 loopring protocol 3.6 The first Layer2 Decentralized

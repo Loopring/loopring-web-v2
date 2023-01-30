@@ -178,6 +178,7 @@ export const store = configureStore({
 export const firebaseProps: ReactReduxFirebaseProviderProps = (() => {
   let firebase_app;
   switch (process.env.REACT_APP_NAME) {
+    case "guardian":
     case "bridge":
       // getAnalytics(firebase);
       firebase_app = firebase.initializeApp(firebaseBridgeConfig);

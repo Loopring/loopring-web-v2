@@ -150,12 +150,6 @@ export const TradeRacePage = withTranslation("common")(
               </ScrollTop>
               <Box className={"title-banner"} marginBottom={4}>
                 <Typography
-                  // sx={{
-                  //   textIndent:
-                  //     eventData.banner && eventData.showBannerOrTitle == "1"
-                  //       ? "-99999em"
-                  //       : "in",
-                  // }}
                   marginY={1}
                   component={"h1"}
                   variant={"h1"}

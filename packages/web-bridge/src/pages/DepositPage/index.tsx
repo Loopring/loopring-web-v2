@@ -2,6 +2,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
 import {
   AccountStatus,
+  Exchange,
   fnType,
   LoopringIcon,
   SagaStatus,
@@ -21,7 +22,7 @@ import {
   btnClickMap,
   WalletConnectL1Btn,
 } from "@loopring-web/core";
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import _ from "lodash";
 
@@ -117,10 +118,13 @@ export const DepositToPage = withTranslation(["common"])(
           justifyContent={"space-between"}
           alignItems={"center"}
         >
-          <LoopringIcon
-            htmlColor={"var(--color-primary)"}
-            style={{ height: "40px", width: "120px", marginTop: -10 }}
-          />
+          <Link href={Exchange?.toString() ?? ""}>
+            <LoopringIcon
+              htmlColor={"var(--color-primary)"}
+              style={{ height: "40px", width: "120px", marginTop: -10 }}
+            />
+          </Link>
+
           <Box
             display={"flex"}
             alignItems={"flex-end"}

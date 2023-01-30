@@ -105,11 +105,18 @@ const systemSlice: Slice<SystemStatus> = createSlice({
     },
   },
 });
-export { systemSlice };
-export const {
+const {
   updateSystem,
   setTopics,
   getSystemStatus,
   statusUnset,
   updateRealTimeObj,
 } = systemSlice.actions;
+export {
+  systemSlice,
+  updateSystem,
+  setTopics,
+  getSystemStatus,
+  statusUnset,
+  updateRealTimeObj,
+};

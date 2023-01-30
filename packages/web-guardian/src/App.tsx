@@ -9,7 +9,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { HashRouter as Router, useLocation } from "react-router-dom";
-import { storeForL1 as store } from "@loopring-web/core";
+import { storeForL1 } from "@loopring-web/core";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -25,11 +25,11 @@ const App = () => {
   const {
     i18n: { language },
   } = useTranslation();
-  const storeLan = store.getState().settings.language;
+  const storeLan = storeForL1.getState().settings.language;
 
   React.useEffect(() => {
     if (storeLan !== language) {
-      store.dispatch(setLanguage(language));
+      storeForL1.dispatch(setLanguage(language));
     }
   }, [storeLan, language]);
 
@@ -50,19 +50,19 @@ const App = () => {
     <>
       <GlobalStyles
         styles={css`
-      ${globalCss({ theme })};
+          ${globalCss({ theme })};
 
-      body {
-        ${
-          theme.mode === "dark"
-            ? `
+          body {
+            ${
+              theme.mode === "dark"
+                ? `
             color: ${theme.colorBase.textPrimary};
           `
-            : ``
-        }
+                : ``
+            }
 
 
-      }
+          }
 
           body:before {
             ${
@@ -72,8 +72,8 @@ const App = () => {
        `
                 : ""
             }
-      }
-    }`}
+          }
+        }`}
       />
 
       <Router>
