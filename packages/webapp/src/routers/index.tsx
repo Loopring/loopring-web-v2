@@ -7,14 +7,7 @@ import { SwapPage } from "pages/SwapPage";
 import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
-import {
-  useTicker,
-  ModalGroup,
-  useDeposit,
-  useSystem,
-  ModalCoinPairPanel,
-  ModalRedPacketPanel,
-} from "@loopring-web/core";
+import { useTicker, ModalGroup, useDeposit } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
@@ -84,22 +77,15 @@ const WrapModal = () => {
   const { depositProps } = useDeposit(false);
   const { assetsRawData } = useGetAssets();
   const location = useLocation();
-  const { etherscanBaseUrl } = useSystem();
-
+  const { setShowAccount } = useOpenModals();
   return (
-    <>
-      <ModalCoinPairPanel />
-      <ModalRedPacketPanel etherscanBaseUrl={etherscanBaseUrl} />
-      <ModalGroup
-        assetsRawData={assetsRawData}
-        depositProps={depositProps}
-        isLayer1Only={
-          /(guardian)|(depositto)/gi.test(location.pathname ?? "")
-            ? true
-            : false
-        }
-      />
-    </>
+    <ModalGroup
+      assetsRawData={assetsRawData}
+      depositProps={depositProps}
+      isLayer1Only={
+        /(guardian)|(depositto)/gi.test(location.pathname ?? "") ? true : false
+      }
+    />
   );
 };
 
@@ -294,7 +280,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <MiningPage />
           </ContentWrap>
         </Route>
-        <Route exact path={["/redPacket", "/redPacket/*"]}>
+        <Route exact path={["/redpacket", "/redpacket/*"]}>
           <ContentWrap state={state}>
             <RedPacketPage />
           </ContentWrap>

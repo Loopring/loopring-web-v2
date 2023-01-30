@@ -1,6 +1,7 @@
 import React from "react";
 import {
   useSystem,
+  useAmmMap,
   useTokenMap,
   useAccount,
   useTokenPrices,
@@ -53,6 +54,7 @@ export function useInit() {
   } = useAccount();
   const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } =
     useTokenMap();
+  const { status: ammMapStatus, statusUnset: ammMapStatusUnset } = useAmmMap();
   const { status: tokenPricesStatus, statusUnset: tokenPricesUnset } =
     useTokenPrices();
 
@@ -158,7 +160,15 @@ export function useInit() {
         break;
     }
   }, [systemStatus]);
-
+  React.useEffect(() => {
+    if (
+      tokenMapStatus === SagaStatus.UNSET &&
+      ammMapStatus === SagaStatus.UNSET &&
+      tokenPricesStatus === SagaStatus.UNSET
+    ) {
+      setState("DONE");
+    }
+  }, [tokenMapStatus, ammMapStatus, tokenPricesStatus]);
   React.useEffect(() => {
     switch (tokenMapStatus) {
       case SagaStatus.ERROR:
@@ -172,7 +182,19 @@ export function useInit() {
         break;
     }
   }, [tokenMapStatus]);
-
+  React.useEffect(() => {
+    switch (ammMapStatus) {
+      case SagaStatus.ERROR:
+        ammMapStatusUnset();
+        setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        ammMapStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [ammMapStatus]);
   React.useEffect(() => {
     switch (tokenPricesStatus) {
       case SagaStatus.ERROR:

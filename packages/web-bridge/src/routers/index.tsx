@@ -12,7 +12,6 @@ import { ErrorPage } from "../pages/ErrorPage";
 import { useOpenModals, useSettings } from "@loopring-web/component-lib";
 import { DepositToPage } from "../pages/DepositPage";
 import { Footer } from "../layouts/footer";
-import Header from "@loopring-web/web-guardian/src/layouts/header";
 
 export const useWrapModal = () => {
   const { search, pathname } = useLocation();
@@ -36,11 +35,12 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
   const location = useLocation();
   const { setTheme } = useSettings();
   const { depositProps, view: modalView } = useWrapModal();
+
   // const { depositProps } = useDeposit(true, { token, owner });
-  const searchParams = new URLSearchParams(location.search);
+  const query = new URLSearchParams(location.search);
   React.useEffect(() => {
-    if (searchParams.has("theme")) {
-      searchParams.get("theme") === ThemeType.dark
+    if (query.has("theme")) {
+      query.get("theme") === ThemeType.dark
         ? setTheme("dark")
         : setTheme("light");
     }
@@ -50,7 +50,7 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
       window.location.replace(`${window.location.origin}/error`);
     }
   }, [state]);
-  if (searchParams.has("___OhTrustDebugger___")) {
+  if (query.has("___OhTrustDebugger___")) {
     // @ts-ignore
     setMyLog(true);
   }
@@ -61,8 +61,6 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
           <LoadingPage />
         </Route>
         <Route exact path={["/", "/depositto", "/depositto/*"]}>
-          {/*{searchParams && searchParams.has("noheader") ? <></> : <Header />}*/}
-
           <Container
             maxWidth="lg"
             style={{
@@ -91,7 +89,7 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
         />
       </Switch>
       {modalView}
-      {searchParams && searchParams.has("nofooter") ? <></> : <Footer />}
+      {query && query.has("nofooter") ? <></> : <Footer />}
     </>
   );
 };
