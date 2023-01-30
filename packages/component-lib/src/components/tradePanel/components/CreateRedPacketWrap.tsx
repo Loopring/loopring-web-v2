@@ -580,24 +580,24 @@ export const CreateRedPacketStepWrap = withTranslation()(
         </Grid>
       </RedPacketBoxStyle>
     );
-  };
+  }
 );
 
 export const CreateRedPacketStepType = withTranslation()(
   <T extends RedPacketOrderData<I>, I, C = FeeInfo>({
-                                                      // handleOnSelectedType,
-                                                      tradeData,
-                                                      handleOnDataChange,
-                                                      setActiveStep,
-                                                      selectedType,
-                                                      disabled = false,
-                                                      btnInfo,
-                                                      t,
-                                                    }: CreateRedPacketViewProps<T, I, C> & {
+    // handleOnSelectedType,
+    tradeData,
+    handleOnDataChange,
+    setActiveStep,
+    selectedType,
+    disabled = false,
+    btnInfo,
+    t,
+  }: CreateRedPacketViewProps<T, I, C> & {
     selectedType: LuckyRedPacketItem;
     // setSelectType: (value: LuckyRedPacketItem) => void;
   } & WithTranslation) => {
-    const {isMobile} = useSettings();
+    const { isMobile } = useSettings();
     const getDisabled = React.useMemo(() => {
       return disabled;
     }, [disabled]);
@@ -690,9 +690,9 @@ export const CreateRedPacketStepType = withTranslation()(
                 return (
                   <FormControlLabel
                     key={key}
-                    sx={{marginTop: 2}}
+                    sx={{ marginTop: 2 }}
                     value={key.toString()}
-                    control={<Radio/>}
+                    control={<Radio />}
                     label={
                       <>
                         <Typography>

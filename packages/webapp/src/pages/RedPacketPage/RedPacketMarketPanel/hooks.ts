@@ -47,8 +47,8 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
             {
               senderId: 0,
               hash: "",
-              partitions: sdk.LuckyTokenAmountType.RANDOM,
-              modes: sdk.LuckyTokenClaimType.COMMON,
+              partitions: "0,1",
+              modes: "0,1",
               scopes: sdk.LuckyTokenViewType.PUBLIC,
               statuses: `${sdk.LuckyTokenWithdrawStatus.PROCESSING},${sdk.LuckyTokenWithdrawStatus.PROCESSED},${sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED},${sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED}`,
               offset: 0,
@@ -64,8 +64,8 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
                   {
                     senderId: 0,
                     hash: "",
-                    partitions: sdk.LuckyTokenAmountType.RANDOM,
-                    modes: sdk.LuckyTokenClaimType.COMMON,
+                    partitions: "0,1",
+                    modes: "0,1",
                     scopes: sdk.LuckyTokenViewType.PUBLIC,
                     statuses: `${sdk.LuckyTokenWithdrawStatus.PROCESSING},${sdk.LuckyTokenWithdrawStatus.PROCESSED},${sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED},${sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED}`,
                     offset,

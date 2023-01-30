@@ -1344,6 +1344,8 @@ export default {
   labelRedPacketsSplitLuckyDetail:
     "Token amount for each red packet is randomized",
   labelSendRedPacketTitle: "Send Red Packet",
+  labelSendRedPacketTitlePublic: "Send Red Packet (Public)",
+  labelSendRedPacketTitlePrivate: "Send Red Packet (Private)",
   labelRedPacketWaitingBlock: "Block is not ready",
   labelShare: "Share",
   labelRelayRedPacket: "Relay Red Packet",
@@ -1363,8 +1365,8 @@ export default {
   labelLpAmount: "LP Amount: {{value}}",
   labelRedPacketMarketsBtn: "Red Packet Plaza",
   labelRedPacketBtn: "Shared",
-  labelRedPacketViewType0: "public",
-  labelRedPacketViewType1: "private",
+  labelRedPacketViewType0: "Public",
+  labelRedPacketViewType1: "Private",
   labelRedPacketViewTypeDetail0: "public Red Packet",
   labelRedPacketViewTypeDetail1: "private Red Packet",
   labelRedPacketStatusSUBMITTING: "Submitting", // SUBMITTING = 0,
@@ -1384,4 +1386,5 @@ export default {
   labelMyLuckReward: "(My reward)",
   labelClaimTitle: "Red Packet Claim",
   labelClaimNoBalance: "Insufficient {{belong}} balance",
+  labelShareQRCode: "Generate QR Code for share",
 };

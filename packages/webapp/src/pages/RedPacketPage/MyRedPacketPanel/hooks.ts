@@ -50,7 +50,9 @@ export const useMyRedPacketRecordTransaction = <
               {
                 senderId: accountId,
                 scopes: "0,1",
-                statuses: `0,1,2,3,4`,
+                modes: "0,1",
+                partitions: "0,1",
+                statuses: "0,1,2,3,4",
                 official: false,
               } as any,
               apiKey
@@ -230,17 +232,6 @@ export const useMyRedPacketReceiveTransaction = <
                   token.precision,
                   false
                 );
-                // const remainAmount = getValuePrecisionThousand(
-                //   volumeToCountAsBigNumber(
-                //     token.symbol,
-                //     item.luckyToken.remainAmount
-                //   ),
-                //   token.precision,
-                //   token.precision,
-                //   token.precision,
-                //   false
-                // );
-
                 prev.push();
                 return [
                   ...prev,
@@ -258,14 +249,6 @@ export const useMyRedPacketReceiveTransaction = <
                       ? luckyToken?.sender?.ens
                       : getShortAddr(luckyToken?.sender?.address),
                     rawData: item,
-                    // validSince: luckyToken.validSince,
-                    // validUntil: luckyToken.validSince,
-                    // totalCount: luckyToken.tokenAmount.totalCount,
-                    // remainCount: luckyToken.tokenAmount.remainCount,
-                    // totalAmount,
-                    // remainAmount,
-                    // createdAt: item.createdAt,
-                    // rawData: item,
                   },
                 ];
               },

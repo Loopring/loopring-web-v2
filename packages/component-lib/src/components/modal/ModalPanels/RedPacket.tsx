@@ -5,6 +5,7 @@ import {
   RedPacketOpenBase,
 } from "./BasicPanel";
 import { sanitize } from "dompurify";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 // value symbol
 export const RedPacketSend_WaitForAuth = (props: PanelProps) => {
@@ -44,14 +45,37 @@ export const RedPacketSend_In_Progress = (props: PanelProps) => {
 
 // value symbol
 export const RedPacketSend_Success = (props: PanelProps) => {
-  const propsPatch = {
+  let propsPatch: any = {
     iconType: IconType.DoneIcon,
-    describe1: props.t("labelRedPacketSendSuccess", {
-      symbol: props.symbol,
-      value: props.value,
-    }),
   };
-  return <RedPacketBase {...propsPatch} {...props} />;
+
+  if (props.info.scope === sdk.LuckyTokenViewType.PRIVATE) {
+    propsPatch = {
+      ...propsPatch,
+      title: "labelSendRedPacketTitlePrivate",
+      describe1: props.t("labelRedPacketSendSuccess", {
+        symbol: props.symbol,
+        value: props.value,
+      }),
+    };
+  } else {
+    propsPatch = {
+      ...propsPatch,
+      title: "labelSendRedPacketTitlePublic",
+      describe1: props.t("labelRedPacketSendSuccess", {
+        symbol: props.symbol,
+        value: props.value,
+      }),
+      btnInfo: props?.info?.shared
+        ? {
+            btnTxt: "labelShareQRCode",
+            callback: props.info.shared,
+          }
+        : props.btnInfo,
+    };
+  }
+
+  return <RedPacketBase {...{ ...props, ...propsPatch }} />;
 };
 
 // value symbol

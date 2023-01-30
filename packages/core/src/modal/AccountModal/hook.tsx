@@ -1232,7 +1232,6 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
               t,
             }}
           />
@@ -1251,7 +1250,6 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
               t,
             }}
           />
@@ -1265,8 +1263,11 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
               error: isShowAccount.error,
+              info: {
+                ...isShowAccount.info,
+                lastFailed: LAST_STEP.redPacketSend,
+              },
               t,
             }}
           />
@@ -1283,7 +1284,16 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
+              info: {
+                ...isShowAccount.info,
+              },
+              // link: isShowAccount?.info?.hash
+              //   ? {
+              //     name: "Txn Hash",
+              //     url: isShowAccount?.info?.hash,
+              //   }
+              //   : undefined,
+
               t,
             }}
           />

@@ -2,7 +2,6 @@ import React from "react";
 import { Box } from "@mui/material";
 import { useRouteMatch } from "react-router-dom";
 import { useToast, ViewAccountTemplate } from "@loopring-web/core";
-
 import { RedPacketMarketPanel } from "./RedPacketMarketPanel";
 import { CreateRedPacketUIPanel } from "./CreateRedPacketPanel";
 import { MyRedPacketPanel } from "./MyRedPacketPanel";

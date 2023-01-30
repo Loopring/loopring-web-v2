@@ -35,6 +35,7 @@ export interface PanelProps {
   value?: number | string;
   symbol?: string;
   hash?: string;
+  info?: any;
   describe1?: any;
   describe2?: any;
   chainInfos?: any;
@@ -138,7 +139,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
           return (
             <LoadingIcon
               color={"primary"}
-              style={{width: size, height: size}}
+              style={{ width: size, height: size }}
             />
           );
       }

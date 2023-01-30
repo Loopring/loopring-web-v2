@@ -139,7 +139,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           name: t("labelRecordStatus"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             if (
-              row.type.scope === sdk.LuckyTokenViewType.PRIVATE &&
+              // row.type.scope === sdk.LuckyTokenViewType.PRIVATE &&
               [0, 1, 2].includes(LuckyTokenItemStatusMap[row.status])
             ) {
               return (

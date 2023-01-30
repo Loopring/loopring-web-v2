@@ -557,3 +557,18 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
 ];
 
 export const QRCODE_REGION_ID = "qrcodeRegionId";
+
+export type ACCOUNT_ADDRESS = string;
+export type TX_HASH = string;
+export type RedPacketHashItems = {
+  [key: TX_HASH]: {
+    claim: sdk.LuckTokenClaim;
+    luckToken: sdk.LuckyTokenItemForReceive;
+  };
+};
+export type RedPacketHashInfo = {
+  [key: ACCOUNT_ADDRESS]: RedPacketHashItems;
+};
+export type RedpacketHashInfos = {
+  [key in sdk.ChainId extends string ? string : string]: RedPacketHashInfo;
+};

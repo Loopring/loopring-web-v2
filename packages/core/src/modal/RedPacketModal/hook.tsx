@@ -47,6 +47,8 @@ export function useRedPacketModal() {
   const { t } = useTranslation("common");
   const [detail, setDetail] =
     React.useState<undefined | sdk.LuckTokenClaimDetail>(undefined);
+  const [qrcode, setQrcode] =
+    React.useState<undefined | sdk.LuckyTokenItemForReceive>(undefined);
   const amountStr = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
     const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
@@ -105,45 +107,7 @@ export function useRedPacketModal() {
       return "";
     }
   }, [info?.validSince, info?.createdAt]);
-  const redPacketQRCodeProps: RedPacketQRCodeProps | undefined =
-    React.useMemo(() => {
-      const _info = info as sdk.LuckyTokenItemForReceive & {
-        isShouldSharedRely: boolean;
-      };
-      if (isShow && info && step === RedPacketViewStep.QRCodePanel) {
-        if (
-          _info?.status === sdk.LuckyTokenItemStatus.COMPLETED ||
-          _info.status === sdk.LuckyTokenItemStatus.OVER_DUE
-        ) {
-          setShowRedPacket({
-            isShow,
-            step: RedPacketViewStep.TimeOutPanel,
-            info: _info,
-          });
-        } else if (_info?.hash) {
-          const url = `${Exchange}wallet?redpacket&id=${info?.hash}&referrer=${account.accAddress}`;
 
-          return {
-            url,
-            textAddress: _info.sender?.ens
-              ? _info.sender?.ens
-              : getShortAddr(_info.sender?.address),
-            textContent: _info.info.memo,
-            amountStr,
-            textSendBy,
-            textType:
-              _info.type.mode == sdk.LuckyTokenClaimType.RELAY
-                ? t("labelRelayRedPacket")
-                : t("labelLuckyRedPacket"),
-            textShared: t("labelShare"),
-            isShouldSharedRely: _info.isShouldSharedRely,
-            // @ts-ignore
-            textNo: t("labelRedPacketNo", { value: _info?.id?.toString() }),
-          } as RedPacketQRCodeProps;
-        }
-      }
-      return undefined;
-    }, [info, account.accAddress, isShow, textSendBy, amountStr, step]);
   const redPacketTimeoutProps: RedPacketTimeoutProps | undefined =
     React.useMemo(() => {
       const _info = info as sdk.LuckyTokenItemForReceive;
@@ -404,11 +368,135 @@ export function useRedPacketModal() {
       }
     }
   }, [isShow, step, info]);
-  React.useEffect(() => {
-    if (isShow && step === RedPacketViewStep.DetailPanel) {
-      redPacketDetailCall();
+
+  const redPacketQrCodeCall = React.useCallback(async () => {
+    setQrcode(undefined);
+    if (info?.hash && LoopringAPI.luckTokenAPI) {
+      const response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
+        {
+          hash: info.hash,
+          fromId: 0,
+          showHelper: true,
+        } as any,
+        account.apiKey
+      );
+      const luckTokenInfo = response.detail
+        .luckyToken as sdk.LuckyTokenItemForReceive;
+      setQrcode(luckTokenInfo);
+      // const luckTokenInfo: sdk.LuckyTokenItemForReceive = (
+      //   await LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
+      //     {
+      //       senderId: info?.sender,
+      //       hash: info.hash,
+      //       partitions:'',
+      //       // partitions: request.type.partition,
+      //       // modes: request.type.mode,
+      //       // scopes: request.type.scope,
+      //       statuses: `0,1,2,3,4`,
+      //       official: false,
+      //     } as any,
+      //     account.apiKey
+      //   )
+      // ).list?.[0];
     }
-  }, [step, isShow]);
+
+    // setDetail(undefined);
+    // const _info = info as sdk.LuckyTokenItemForReceive & {
+    //   claimAmount?: string;
+    // };
+    // setShowAccount({
+    //   isShow: true,
+    //   step: AccountStep.RedPacketOpen_Claim_In_Progress,
+    // });
+    // if (_info?.hash && LoopringAPI.luckTokenAPI) {
+    //   try {
+    //     setShowAccount({
+    //       isShow: true,
+    //       step: AccountStep.RedPacketOpen_In_Progress,
+    //     });
+    //     const response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
+    //       {
+    //         hash: _info.hash,
+    //         fromId: 0,
+    //         showHelper: true,
+    //       } as any,
+    //       account.apiKey
+    //     );
+    //     if (
+    //       (response as sdk.RESULT_INFO).code ||
+    //       (response as sdk.RESULT_INFO).message
+    //     ) {
+    //       setShowAccount({
+    //         isShow: true,
+    //         step: AccountStep.RedPacketOpen_Failed,
+    //         error: {
+    //           code: (response as sdk.RESULT_INFO)?.code,
+    //           msg: (response as sdk.RESULT_INFO)?.message,
+    //           ...(response instanceof Error
+    //             ? {
+    //               message: response?.message,
+    //               stack: response?.stack,
+    //             }
+    //             : response ?? {}),
+    //         },
+    //       });
+    //     } else {
+    //       const detail = (response as any).detail;
+    //       const luckTokenInfo: sdk.LuckyTokenItemForReceive = detail.luckyToken;
+    //       if (luckTokenInfo) {
+    //         setDetail(detail);
+    //         // setShowRedPacket({
+    //         //   isShow: true,
+    //         //   step: RedPacketViewStep.DetailPanel,
+    //         // });
+    //         setShowAccount({
+    //           isShow: false,
+    //         });
+    //       } else {
+    //         const error = new CustomError(ErrorMap.ERROR_REDPACKET_EMPTY);
+    //         setShowAccount({
+    //           isShow: true,
+    //           step: AccountStep.RedPacketOpen_Failed,
+    //           error: {
+    //             code: UIERROR_CODE.ERROR_REDPACKET_EMPTY,
+    //             msg: error.message,
+    //           },
+    //         });
+    //       }
+    //     }
+    //   } catch (error: any) {
+    //     setShowAccount({
+    //       isShow: true,
+    //       step: AccountStep.RedPacketOpen_Failed,
+    //       error: {
+    //         code: UIERROR_CODE.UNKNOWN,
+    //         msg: error?.message,
+    //         // @ts-ignore
+    //         ...(error instanceof Error
+    //           ? {
+    //             message: error?.message,
+    //             stack: error?.stack,
+    //           }
+    //           : error ?? {}),
+    //       },
+    //     });
+    //     setShowRedPacket({ isShow: false });
+    //   }
+    // }
+  }, [isShow, step, info]);
+  React.useEffect(() => {
+    if (isShow) {
+      if (step === RedPacketViewStep.DetailPanel) {
+        redPacketDetailCall();
+      } else if (
+        step === RedPacketViewStep.QRCodePanel &&
+        info?.hash &&
+        info?.sender
+      ) {
+        redPacketQrCodeCall();
+      }
+    }
+  }, [step, isShow, info]);
   const redPacketDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string;
@@ -462,6 +550,48 @@ export function useRedPacketModal() {
     isShow,
     step,
   ]);
+  const redPacketQRCodeProps: RedPacketQRCodeProps | undefined =
+    React.useMemo(() => {
+      if (
+        isShow &&
+        info &&
+        step === RedPacketViewStep.QRCodePanel &&
+        qrcode &&
+        qrcode.hash
+      ) {
+        if (
+          qrcode.status === sdk.LuckyTokenItemStatus.COMPLETED ||
+          qrcode.status === sdk.LuckyTokenItemStatus.OVER_DUE
+        ) {
+          setShowRedPacket({
+            isShow,
+            step: RedPacketViewStep.TimeOutPanel,
+            info: qrcode,
+          });
+        } else if (qrcode?.hash) {
+          const url = `${Exchange}wallet?redpacket&id=${qrcode?.hash}&referrer=${account.accAddress}`;
+          return {
+            url,
+            textAddress: qrcode.sender?.ens
+              ? qrcode.sender?.ens
+              : getShortAddr(qrcode.sender?.address),
+            textContent: qrcode.info.memo,
+            amountStr,
+            textSendBy,
+            textType:
+              qrcode.type.mode == sdk.LuckyTokenClaimType.RELAY
+                ? t("labelRelayRedPacket")
+                : t("labelLuckyRedPacket"),
+            textShared: t("labelShare"),
+            isShouldSharedRely:
+              qrcode.type.mode == sdk.LuckyTokenClaimType.RELAY,
+            // @ts-ignore
+            textNo: t("labelRedPacketNo", { value: qrcode?.id?.toString() }),
+          } as RedPacketQRCodeProps;
+        }
+      }
+      return undefined;
+    }, [info, qrcode, account.accAddress, isShow, textSendBy, amountStr, step]);
   return {
     redPacketQRCodeProps,
     redPacketTimeoutProps,

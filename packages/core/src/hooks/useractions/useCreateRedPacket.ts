@@ -6,7 +6,7 @@ import {
   getValuePrecisionThousand,
   LIVE_FEE_TIMES,
   myLog,
-  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
+  SUBMIT_PANEL_AUTO_CLOSE,
   TOAST_TIME,
   UIERROR_CODE,
   WalletMap,
@@ -379,8 +379,24 @@ export const useCreateRedPacket = <
             isShow: true,
             step: AccountStep.RedPacketSend_Success,
             info: {
+              scope: request.type.scope,
               hash:
                 Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
+              shared:
+                request.type.scope == sdk.LuckyTokenViewType.PUBLIC
+                  ? () => {
+                      setShowAccount({ isShow: false });
+                      setShowRedPacket({
+                        isShow: true,
+                        info: {
+                          // ...luckTokenInfo,
+                          sender: account.accountId,
+                          hash: (response as sdk.TX_HASH_API).hash,
+                        },
+                        step: RedPacketViewStep.QRCodePanel,
+                      });
+                    }
+                  : undefined,
             },
           });
 
@@ -397,31 +413,18 @@ export const useCreateRedPacket = <
             request.type.scope == sdk.LuckyTokenViewType.PRIVATE &&
             (response as sdk.TX_HASH_API)?.hash
           ) {
-            const luckTokenInfo: sdk.LuckyTokenItemForReceive = (
-              await LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
-                {
-                  senderId: account.accountId,
-                  hash: (response as sdk.TX_HASH_API)?.hash,
-                  partitions: request.type.partition,
-                  modes: request.type.mode,
-                  scopes: request.type.scope,
-                  statuses: `0,1,2,3,4`,
-                  official: false,
-                } as any,
-                account.apiKey
-              )
-            ).list?.[0];
             setShowAccount({ isShow: false });
             setShowRedPacket({
               isShow: true,
               info: {
-                ...luckTokenInfo,
-                hash: (luckTokenInfo as sdk.TX_HASH_API).hash,
+                // ...luckTokenInfo,
+                sender: account.accountId,
+                hash: (response as sdk.TX_HASH_API).hash,
               },
               step: RedPacketViewStep.QRCodePanel,
             });
           } else {
-            await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
             if (
               store.getState().modals.isShowAccount.isShow &&
               store.getState().modals.isShowAccount.step ==
