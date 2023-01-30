@@ -3,10 +3,10 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import {
-  store,
-  persistor,
+  storeForL1,
   TimeoutCheckProvider,
-  firebaseProps,
+  persistorL1,
+  firebaseL1Props,
 } from "@loopring-web/core";
 import { getTheme, i18n } from "@loopring-web/common-resources";
 import { ThemeProvider as MuThemeProvider } from "@mui/material";
@@ -31,7 +31,7 @@ if (process.env.REACT_APP_VER) {
 
 const ProviderApp = React.memo(({ children }: { children: JSX.Element }) => {
   const providers: Array<[TProvider<any>, any]> = [
-    provider(Provider as any, { store }),
+    provider(Provider as any, { store: storeForL1 }),
     provider(LocalizationProvider as any, { dateAdapter: MomentUtils }),
     provider(I18nextProvider as any, { i18n: i18n }),
   ] as any;
@@ -44,7 +44,7 @@ const ProviderThen = React.memo(({ children }: { children: JSX.Element }) => {
   const providers: Array<[TProvider<any>, any]> = [
     provider(MuThemeProvider as any, { theme: getTheme(themeMode, isMobile) }),
     provider(ThemeProvider as any, { theme: getTheme(themeMode, isMobile) }),
-    provider(PersistGate as any, { persistor, loading: null }),
+    provider(PersistGate as any, { persistor: persistorL1, loading: null }),
     provider(TimeoutCheckProvider as any),
   ] as any;
   return <ProviderComposer providers={providers}>{children}</ProviderComposer>;
@@ -52,7 +52,7 @@ const ProviderThen = React.memo(({ children }: { children: JSX.Element }) => {
 
 ReactDOM.render(
   <ProviderApp>
-    <ReactReduxFirebaseProvider {...firebaseProps}>
+    <ReactReduxFirebaseProvider {...firebaseL1Props}>
       <ProviderThen>
         <App />
       </ProviderThen>
