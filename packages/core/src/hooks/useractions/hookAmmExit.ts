@@ -146,7 +146,11 @@ export const useAmmExit = ({
   }, [account.readyState, isLoading, ammData, volA_show, volB_show, lpMinAmt]);
   const updateMiniTradeValue = React.useCallback(() => {
     const {
-      ammExit: { fees, ammCalcData },
+      ammExit: {
+        fees,
+        ammCalcData,
+        ammData: { slippage },
+      },
       common: { ammPoolSnapshot },
     } = store.getState()._router_pageAmmPool;
     myLog("miniFeeLpWithSlippageVal", fees);
@@ -160,13 +164,18 @@ export const useAmmExit = ({
         idIndex as IdMap
       );
       let miniFeeLpWithSlippageVal = "";
+
+      const slippageReal = sdk
+        .toBig(slippage ?? 0.1)
+        .div(100)
+        .toString();
       if (fees && ammPoolSnapshot) {
         const result = sdk.makeExitAmmCoverFeeLP(
           fees,
           ammPoolSnapshot,
           tokenMap,
-          idIndex
-          // slippageTolerance
+          idIndex,
+          slippageReal
         );
         miniFeeLpWithSlippageVal = result.miniFeeLpWithSlippageVal;
       }
@@ -442,6 +451,9 @@ export const useAmmExit = ({
           },
         });
       } else {
+      }
+      if (data.slippage !== ammExit.ammData.slippage) {
+        updateMiniTradeValue();
       }
       myLog("newAmmData", newAmmData, data.coinLP);
     },
