@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { Box, Grid, Typography } from "@mui/material";
-import React, { useMemo } from "react";
-import { Trans, WithTranslation, withTranslation } from "react-i18next";
+import { Grid, Typography } from "@mui/material";
+import React from "react";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 const StylePaper = styled(Grid)`
   width: 100%;

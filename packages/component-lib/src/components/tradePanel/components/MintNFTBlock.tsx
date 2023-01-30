@@ -168,7 +168,6 @@ export const MintNFTBlock = <
                 if (data.tradeValue && data.tradeValue > data.balance) {
                   return {
                     error: true,
-                    // message: `Not enough ${belong} perform a deposit`,
                   };
                 }
                 return {

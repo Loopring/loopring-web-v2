@@ -1,7 +1,7 @@
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../api_wrapper";
-import { Account, BANXA_URLS, myLog } from "@loopring-web/common-resources";
+import { Account, BANXA_URLS } from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
 
@@ -85,17 +85,11 @@ export const banxaService = {
         reason: OrderENDReason.BanxaNotReady,
         data: "Banxa SKD is not ready",
       });
-
-      // subject.next({
-      //   status: BanxaCheck.o,
-      //   data: data,
-      // });
     }
     // @ts-ignore
     const anchor: any = window.document.querySelector("#iframeBanxaTarget");
     // anchor.querySelector("anchor");
     if (anchor && banxa) {
-      // debugger;
       anchor.style.display = "flex";
       try {
         const { data } = await banxaApiCall({
@@ -114,7 +108,9 @@ export const banxaService = {
             account_reference: account.accAddress,
           },
         });
-        myLog("banxa create order", data.order);
+        // TODO: console.log
+
+        console.log("BANXA create order", data.order);
 
         banxa.generateIframe(
           "#iframeBanxaTarget",

@@ -70,9 +70,8 @@ const initialClaimState: ClaimData = {
   balance: 0,
   fee: undefined,
   address: undefined,
-  memo: undefined,
   __request__: undefined,
-};
+} as any;
 
 const initialDepositState: DepositData = {
   belong: undefined,

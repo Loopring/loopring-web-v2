@@ -6,15 +6,15 @@ import {
 } from "@loopring-web/loopring-sdk";
 import React from "react";
 import {
-  makeUIAmmActivityMap,
-  makeMyPoolRowWithPoolState,
-  makeWalletLayer2,
   LoopringAPI,
+  makeMyPoolRowWithPoolState,
+  makeUIAmmActivityMap,
+  makeWalletLayer2,
+  store,
   useAmmMap,
   useUserRewards,
-  store,
-  useSystem,
 } from "@loopring-web/core";
+
 export type RewardListItem = {
   amount: string;
   time: number;

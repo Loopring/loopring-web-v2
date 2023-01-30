@@ -118,13 +118,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         let _requestType = feeWithActive
           ? sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT
           : sdk.OffchainNFTFeeReqType.NFT_TRANSFER;
-        myLog(
-          "transfer updateData",
-          feeWithActive,
-          requestType,
-          _requestType,
-          _requestType == requestType
-        );
         if (_requestType === requestType) {
           const nftTransferValue =
             store.getState()._router_modalData.nftTransferValue;

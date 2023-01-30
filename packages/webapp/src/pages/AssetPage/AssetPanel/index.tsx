@@ -8,11 +8,12 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 
-import { useTokenMap, StylePaper, useSystem } from "@loopring-web/core";
+import { StylePaper, useSystem, useTokenMap } from "@loopring-web/core";
 import { useGetAssets } from "./hook";
 import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
+import { RedPacketClaimPanel } from "../../RedPacketPage/RedPacketClaimPanel";
 
 enum TabIndex {
   Tokens = "Tokens",
@@ -45,7 +46,8 @@ const AssetPanel = withTranslation("common")(
           setCurrentTab(TabIndex.Invests);
           break;
         case TabIndex.RedPacket:
-          history.push("/redpacket/markets");
+          history.replace("/l2assets/assets/RedPacket");
+          setCurrentTab(TabIndex.RedPacket);
           break;
         case TabIndex.Tokens:
         default:
@@ -96,7 +98,7 @@ const AssetPanel = withTranslation("common")(
         >
           <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
           <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
-          {/*<Tab label={t("labelAssetRedPackets")} value={TabIndex.RedPacket} />*/}
+          <Tab label={t("labelAssetRedPackets")} value={TabIndex.RedPacket} />
         </Tabs>
         {currentTab === TabIndex.Tokens && (
           <StylePaper
@@ -127,7 +129,7 @@ const AssetPanel = withTranslation("common")(
           </StylePaper>
         )}
         {currentTab === TabIndex.Invests && <MyLiquidity isHideTotal={true} />}
-        {/*{currentTab === TabIndex.RedPacket && <RedPacketPanel />}*/}
+        {currentTab === TabIndex.RedPacket && <RedPacketClaimPanel />}
       </>
     );
   }

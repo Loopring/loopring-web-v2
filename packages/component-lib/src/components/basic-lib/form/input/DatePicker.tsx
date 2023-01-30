@@ -171,6 +171,13 @@ export const DatePicker = styled(
       views={props.views ? props.views : ["year", "day"]}
       value={value}
       components={{ OpenPickerIcon: CalendarIcon }}
+      OpenPickerButtonProps={
+        props.OpenPickerButtonProps
+          ? props.OpenPickerButtonProps
+          : {
+              size: "large",
+            }
+      }
       desktopModeMediaQuery={"@media (min-width: 720px)"}
       renderInput={(_props) => {
         return (
@@ -188,36 +195,43 @@ export const DatePicker = styled(
 
 export type DateTimePickerProps = Omit<MuDateTimePickerProps, "renderInput">;
 
-export const DateTimePicker = styled(
-  ({
-    t,
-    inputFormat,
-    value,
-    ...props
-  }: DateTimePickerProps & { t?: TFunction }) => (
-    <MuDateTimePicker
-      {...props}
-      disableFuture={props.disableFuture ? props.disableFuture : true}
-      mask={props.mask ? props.mask : "__-__-__"}
-      inputFormat={inputFormat ? inputFormat : YEAR_DAY_MINUTE_FORMAT}
-      openTo={props.openTo ? props.openTo : "day"}
-      views={props.views ? props.views : ["day", "hours", "minutes"]}
-      value={value}
-      components={{ OpenPickerIcon: CalendarIcon }}
-      desktopModeMediaQuery={"@media (min-width: 720px)"}
-      renderInput={(_props) => {
-        return (
-          <DateTextField
-            ref={_props.inputRef}
-            {...{ ..._props, helperText: null }}
-          />
-        );
-      }}
-    />
-  )
-)<MuDateTimePickerProps>`` as React.ComponentType<
-  MuDateTimePickerProps & { t?: TFunction }
->;
+export const DateTimePicker = ({
+  t,
+  inputFormat,
+  value,
+  fullWidth = false,
+  ...props
+}: DateTimePickerProps & { t?: TFunction; fullWidth?: boolean }) => (
+  <MuDateTimePicker
+    {...props}
+    disableFuture={props.disableFuture ? props.disableFuture : false}
+    mask={props.mask ? props.mask : "__-__-__"}
+    inputFormat={inputFormat ? inputFormat : YEAR_DAY_MINUTE_FORMAT}
+    openTo={props.openTo ? props.openTo : "day"}
+    views={props.views ? props.views : ["day", "hours", "minutes"]}
+    value={value}
+    components={{
+      OpenPickerIcon: CalendarIcon,
+    }}
+    OpenPickerButtonProps={
+      props.OpenPickerButtonProps
+        ? props.OpenPickerButtonProps
+        : {
+            size: "large",
+          }
+    }
+    desktopModeMediaQuery={"@media (min-width: 720px)"}
+    renderInput={(_props) => {
+      return (
+        <DateTextField
+          ref={_props.inputRef}
+          fullWidth={fullWidth}
+          {...{ ..._props, helperText: null }}
+        />
+      );
+    }}
+  />
+);
 // (({ theme }) => ({
 //     position: 'relative',
 //     '& .MuiIconButton-edgeEnd': {

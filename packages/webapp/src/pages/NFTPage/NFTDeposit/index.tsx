@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React from "react";
 import {
   Button,
@@ -7,7 +7,7 @@ import {
   PopoverPure,
 } from "@loopring-web/component-lib";
 
-import { useNFTDeposit, useSystem } from "@loopring-web/core";
+import { useNFTDeposit } from "@loopring-web/core";
 import { BackIcon, Info2Icon } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";

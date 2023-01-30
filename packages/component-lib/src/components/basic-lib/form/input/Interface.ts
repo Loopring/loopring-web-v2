@@ -22,6 +22,7 @@ export type InputButtonProps<T, R, I> = {
   disabled?: boolean;
   logoColor?: string;
   wait?: number;
+  minimum?: string | number | undefined;
   size?: InputSize;
   isHideError?: boolean;
   handleCountChange?: (

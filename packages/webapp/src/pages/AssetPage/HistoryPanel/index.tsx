@@ -12,7 +12,15 @@ import {
   TransactionTable,
   useSettings,
 } from "@loopring-web/component-lib";
-import { StylePaper, useGetOrderHistorys } from "@loopring-web/core";
+import {
+  StylePaper,
+  useAccount,
+  useAmmMap,
+  useGetOrderHistorys,
+  useSystem,
+  useToast,
+  useTokenMap,
+} from "@loopring-web/core";
 import {
   useDualTransaction,
   useGetAmmRecord,
@@ -21,14 +29,6 @@ import {
   useGetTxs,
   useOrderList,
 } from "./hooks";
-
-import {
-  useSystem,
-  useAccount,
-  useToast,
-  useTokenMap,
-  useAmmMap,
-} from "@loopring-web/core";
 import {
   BackIcon,
   RowConfig,

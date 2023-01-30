@@ -30,7 +30,7 @@ const systemSlice: Slice<SystemStatus> = createSlice({
   name: "system",
   initialState,
   reducers: {
-    updateSystem(state, action: PayloadAction<System<{ [key: string]: any }>>) {
+    updateSystem(state, action: PayloadAction<System>) {
       state.chainId = action.payload.chainId;
       state.status = SagaStatus.PENDING;
     },
@@ -105,11 +105,18 @@ const systemSlice: Slice<SystemStatus> = createSlice({
     },
   },
 });
-export { systemSlice };
-export const {
+const {
   updateSystem,
   setTopics,
   getSystemStatus,
   statusUnset,
   updateRealTimeObj,
 } = systemSlice.actions;
+export {
+  systemSlice,
+  updateSystem,
+  setTopics,
+  getSystemStatus,
+  statusUnset,
+  updateRealTimeObj,
+};

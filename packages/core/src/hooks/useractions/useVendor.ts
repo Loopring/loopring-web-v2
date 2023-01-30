@@ -4,7 +4,12 @@ import {
   VendorItem,
   VendorList,
 } from "@loopring-web/common-resources";
-import { useAccount, useModalData, useSystem } from "../../index";
+import {
+  // updateOffRampData,
+  useAccount,
+  useModalData,
+  useSystem,
+} from "../../index";
 import {
   RampInstantEventTypes,
   RampInstantSDK,
@@ -64,7 +69,7 @@ export const useVendor = () => {
             if (legalEnable) {
               let config: any = {
                 hostAppName: "Loopring",
-                hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
+                hostLogoUrl: "https://static.loopring.io/assets/svg/logo.svg",
                 userAddress: account.accAddress,
                 defaultFlow: "ONRAMP",
                 enabledFlows: ["ONRAMP"],
@@ -166,7 +171,7 @@ export const useVendor = () => {
         //     if (legalEnable) {
         //       let config: any = {
         //         hostAppName: "Loopring",
-        //         hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
+        //         hostLogoUrl: "https://static.loopring.io/assets/svg/logo.svg",
         //         userAddress: account.accAddress,
         //         defaultFlow: "OFFRAMP",
         //         enabledFlows: ["OFFRAMP"],
@@ -190,7 +195,7 @@ export const useVendor = () => {
         //               updateOffRampData({
         //                 send: { assetSymbol, amount, destinationAddress },
         //               });
-        //               setSellPanel(RAMP_SELL_PANEL.CONFIRM);
+        //               setSellPanel(RAMP_SELL_PANEL.RAMP_CONFIRM);
         //               console.log(
         //                 "onSendCrypto",
         //                 assetSymbol,

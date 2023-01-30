@@ -16,9 +16,9 @@ import {
 } from "@loopring-web/common-resources";
 import { useOrderList } from "./hookTable";
 import {
+  tradeProSettings as tradeProSettingsReduce,
   useAccount,
   useGetOrderHistorys,
-  tradeProSettings as tradeProSettingsReduce,
 } from "@loopring-web/core";
 import styled from "@emotion/styled";
 import { useHistory } from "react-router-dom";
@@ -30,6 +30,15 @@ const CheckboxStyled = styled(Box)`
   transform: translateY(-50%);
 `;
 
+const BoxStyle = styled(Box)`
+  & .rdg {
+    min-height: initial;
+  }
+
+  &.min-height .rdg {
+    min-height: 240px;
+  }
+` as typeof Box;
 export const OrderTableView = withTranslation("common")(
   <C extends { [key: string]: any }>({
     t,
@@ -65,7 +74,7 @@ export const OrderTableView = withTranslation("common")(
     const { tradeProSettings, updateIsHideOtherPairs } =
       tradeProSettingsReduce.useTradeProSettings();
 
-    const getFilteredData = React.useCallback(() => {
+    const filteredData = React.useMemo(() => {
       return tradeProSettings?.hideOtherTradingPairs
         ? rawData.filter((o) => o.market === market)
         : rawData;
@@ -110,9 +119,14 @@ export const OrderTableView = withTranslation("common")(
       } else {
         return;
       }
-      // const _rowMarket = row.pair.coinA +'-' +row.pair.coinB
     };
+    const container = React.useRef();
 
+    const height = React.useMemo(() => {
+      // @ts-ignore
+      return container?.current?.offsetHeight;
+      // @ts-ignore
+    }, [container?.current?.offsetHeight]);
     return (
       <>
         <Box
@@ -148,26 +162,36 @@ export const OrderTableView = withTranslation("common")(
           )}
         </Box>
         <Divider />
-        <OrderHistoryTable
-          {...{
-            rawData: getFilteredData(),
-            getOrderList,
-            getOrderDetail,
-            orderDetailList,
-            cancelOrder,
-            onRowClick,
-            cancelOrderByHashList,
-            showLoading,
-            isOpenOrder: tabValue === 0,
-            isPro: true,
-            isScroll: true,
-            handleScroll: handleScroll,
-            clearOrderDetail,
-            showDetailLoading,
-            userOrderDetailList,
-            getUserOrderDetailTradeList,
-          }}
-        />
+        <BoxStyle
+          flex={1}
+          ref={container}
+          className={filteredData?.length > 0 ? "" : "min-height"}
+          display={"flex"}
+          flexDirection={"column"}
+        >
+          <OrderHistoryTable
+            {...{
+              // height,
+              // height: height-
+              rawData: filteredData,
+              getOrderList,
+              getOrderDetail,
+              orderDetailList,
+              cancelOrder,
+              onRowClick,
+              cancelOrderByHashList,
+              showLoading,
+              isOpenOrder: tabValue === 0,
+              isPro: true,
+              isScroll: true,
+              handleScroll: handleScroll,
+              clearOrderDetail,
+              showDetailLoading,
+              userOrderDetailList,
+              getUserOrderDetailTradeList,
+            }}
+          />
+        </BoxStyle>
       </>
     );
   }

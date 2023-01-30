@@ -17,7 +17,6 @@ import styled from "@emotion/styled";
 import {
   BackIcon,
   CloseIcon,
-  myLog,
   QRIcon,
   SoursURL,
 } from "@loopring-web/common-resources";
@@ -143,8 +142,6 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
       //backgroundColor: var(--color-box);
       // color: var(--color-primary);
       color: var(--color-text-button-select);
-      // border: ${({ theme }) =>
-        theme.border.borderConfig({ c_key: "var(--color-primary)" })};
       border: ${({ theme }) =>
         theme.border.borderConfig({ c_key: "var(--color-border-hover)" })};
       background: var(--color-box);
@@ -249,9 +246,11 @@ export const ToggleButtonGroup = withTranslation("common")(
 export const ModalCloseButton = ({
   onClose,
   className = "",
+  closeIcon = <CloseIcon />,
   t,
 }: {
   className?: string;
+  closeIcon?: JSX.Element;
   onClose?: {
     bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
   }["bivarianceHack"];
@@ -274,7 +273,7 @@ export const ModalCloseButton = ({
           onClose && onClose(event, "escapeKeyDown");
         }}
       >
-        <CloseIcon />
+        {closeIcon}
       </IconButton>
     </Box>
   );

@@ -1,36 +1,14 @@
 import {
-  AccountStatus,
   CollectionMeta,
-  CopyIcon,
-  copyToClipBoard,
   GET_IPFS_STRING,
-  getShortAddr,
-  ImageIcon,
-  NFT_TYPE_STRING,
-  RowInvestConfig,
 } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
-import {
-  Avatar,
-  Box,
-  BoxProps,
-  Divider,
-  Link,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import React from "react";
-import { useTheme } from "@emotion/react";
-import {
-  InvestOverviewTable,
-  NFTList,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { NFTList } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
-import { getIPFSString, useAccount } from "@loopring-web/core";
-import { MyNFTList } from "../MyNFT/MyNFTList";
+import { useAccount } from "@loopring-web/core";
 import { useLocation } from "react-router-dom";
-import { usePublicNFTs } from "./usePublicNFTs";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);

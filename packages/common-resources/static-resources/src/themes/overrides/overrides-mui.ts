@@ -906,7 +906,7 @@ export const MuiDivider = ({ colorBase }: any) => {
   return {
     styleOverrides: {
       root: {
-        borderColor: `${colorBase.dividerColor}`,
+        borderColor: `${colorBase.divide}`,
         // margin: `${unit / 4 * 5}px 0`,
       },
     },

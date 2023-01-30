@@ -4,10 +4,8 @@ import {
   CreateCollectionWrap,
   Toast,
 } from "@loopring-web/component-lib";
-import { useTranslation } from "react-i18next";
 import { Box } from "@mui/material";
 import React from "react";
-import { useHistory } from "react-router-dom";
 import { useCollectionPanel } from "./hook";
 import { BackIcon, TOAST_TIME } from "@loopring-web/common-resources";
 

@@ -9,7 +9,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { HashRouter as Router, useLocation } from "react-router-dom";
-import { store } from "@loopring-web/core";
+import { storeForL1 as store } from "@loopring-web/core";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();

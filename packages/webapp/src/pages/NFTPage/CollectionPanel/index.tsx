@@ -1,23 +1,21 @@
 import {
+  CollectionCardList,
+  CollectionDetailView,
+  StyledPaperBg,
   Toast,
   useOpenModals,
-  useToggle,
-  CollectionCardList,
-  EmptyDefault,
   useSettings,
-  StyledPaperBg,
-  CollectionDetailView,
+  useToggle,
 } from "@loopring-web/component-lib";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { Box, Button, Tooltip, Typography } from "@mui/material";
 import React from "react";
 import {
+  AddIcon,
   CollectionMeta,
   CreateCollectionStep,
-  TradeNFT,
   TOAST_TIME,
-  AddIcon,
-  Account,
+  TradeNFT,
 } from "@loopring-web/common-resources";
 import {
   getIPFSString,

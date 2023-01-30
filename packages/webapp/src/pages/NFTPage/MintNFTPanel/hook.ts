@@ -6,17 +6,22 @@ import {
   NFTMETA,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import { useModalData } from "@loopring-web/core";
+import {
+  mintService,
+  useAccount,
+  useModalData,
+  useNFTMeta,
+  useNFTMint,
+} from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
-import { useNFTMeta } from "@loopring-web/core";
-import { mintService, useNFTMint } from "@loopring-web/core";
 import React from "react";
-import { useAccount } from "@loopring-web/core";
 import { useRouteMatch } from "react-router-dom";
+
 const enum MINT_VIEW_STEP {
   METADATA,
   MINT_CONFIRM,
 }
+
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMintNFTPanel = <
   Me extends NFTMETA,

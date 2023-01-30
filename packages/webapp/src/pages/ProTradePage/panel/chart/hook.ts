@@ -1,19 +1,20 @@
 import React, { useEffect } from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { TradingInterval } from "@loopring-web/loopring-sdk";
 import { IOHLCData, RawDataTradeItem } from "@loopring-web/component-lib";
 import {
-  store,
   LoopringAPI,
+  store,
   usePageTradePro,
   useTokenMap,
+  volumeToCount,
 } from "@loopring-web/core";
 import moment from "moment";
 import {
   getValuePrecisionThousand,
   myLog,
 } from "@loopring-web/common-resources";
-import { TradingInterval } from "@loopring-web/loopring-sdk";
-import { volumeToCount } from "@loopring-web/core";
+
 export enum TradingIntervalToTimer {
   "1min" = 60000,
   "5min" = 300000,

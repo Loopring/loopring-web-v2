@@ -19,7 +19,6 @@ import {
   ModalCloseButton,
   MyPoolTable,
   SwitchPanelStyled,
-  TokenType,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -33,6 +32,7 @@ import {
   getValuePrecisionThousand,
   PriceTag,
   RowInvestConfig,
+  TokenType,
 } from "@loopring-web/common-resources";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { useOverview } from "./hook";
@@ -100,7 +100,8 @@ const MyLiquidity: any = withTranslation("common")(
       getDetail,
       refresh,
       setShowRefreshError,
-      showRefreshError
+      showRefreshError,
+      refreshErrorInfo,
     } = useDualAsset();
 
     React.useEffect(() => {
@@ -351,7 +352,7 @@ const MyLiquidity: any = withTranslation("common")(
                       idIndex={idIndex}
                       tokenPrices={tokenPrices as any}
                       handleWithdraw={(row) => {
-                        const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                        const pair = `${row.ammDetail.coinAInfo.simpleName}-${row.ammDetail.coinBInfo.simpleName}`;
                         setShowAmm({
                           isShow: true,
                           type: AmmPanelType.Exit,
@@ -359,7 +360,7 @@ const MyLiquidity: any = withTranslation("common")(
                         });
                       }}
                       handleDeposit={(row) => {
-                        const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                        const pair = `${row.ammDetail.coinAInfo.simpleName}-${row.ammDetail.coinBInfo.simpleName}`;
                         setShowAmm({
                           isShow: true,
                           type: AmmPanelType.Join,
@@ -505,10 +506,19 @@ const MyLiquidity: any = withTranslation("common")(
               onClose={(_e: any) => setShowRefreshError(false)}
               t={t}
             />
-            <Box marginTop={9} >
+            <Box marginTop={9}>
               <FailedIcon color={"error"} style={{ width: 60, height: 60 }} />
             </Box>
-            <Typography marginTop={7} marginBottom={22}>{t("labelInvestDualRefreshError")}</Typography>
+
+            <Typography marginTop={1} variant={"h5"}>
+              {t("labelInvestDualRefreshErrorTitle")}
+            </Typography>
+            <Typography marginTop={5} marginBottom={22}>
+              {t("labelInvestDualRefreshError", {
+                token1: refreshErrorInfo[0],
+                token2: refreshErrorInfo[1],
+              })}
+            </Typography>
           </SwitchPanelStyled>
         </Modal>
       </Box>

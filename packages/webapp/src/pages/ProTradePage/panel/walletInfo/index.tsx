@@ -22,12 +22,12 @@ import {
 } from "@loopring-web/component-lib";
 import _ from "lodash";
 import {
-  useTokenMap,
   accountStaticCallBack,
   btnClickMap,
   btnLabel,
-  usePageTradePro,
   useAccount,
+  usePageTradePro,
+  useTokenMap,
   volumeToCount,
   volumeToCountAsBigNumber,
 } from "@loopring-web/core";

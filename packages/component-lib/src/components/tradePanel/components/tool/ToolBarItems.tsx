@@ -40,6 +40,7 @@ const BoxStyle = styled(Grid)`
 
     .MuiStepIcon-text {
       font-size: ${({ theme }) => theme.fontDefault.body1};
+      fill: var(--color-text-button);
     }
   }
 ` as typeof Grid;

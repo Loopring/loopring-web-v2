@@ -18,7 +18,6 @@ import { Grid } from "@mui/material";
 import { AmmPoolSnapshot, TickerData } from "@loopring-web/loopring-sdk";
 import { initSlippage, store } from "../../../index";
 import styled from "@emotion/styled";
-import { useDeepCompareEffect } from "react-use";
 
 export const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);
@@ -109,10 +108,8 @@ export const AmmPanelView = ({
     stob,
     setConfirmExitSmallOrder,
   });
-  // const [currAmmData, setCurrAmmData] = React.useState<any>(null)
 
-  // clear data when changing pair
-  useDeepCompareEffect(() => {
+  React.useEffect(() => {
     if (pair && !pair.coinAInfo && !pair.coinBInfo) {
       const newAmmData = {
         coinA: { belong: "" as any, tradeValue: undefined, balance: 0 },
@@ -123,7 +120,7 @@ export const AmmPanelView = ({
         ammData: newAmmData,
       });
     }
-  }, [pair, ammJoinData, updatePageAmmJoin]);
+  }, [pair, ammJoinData.coinB.belong, ammJoinData.coinB.belong]);
 
   const { tokenMap } = store.getState().tokenMap;
 

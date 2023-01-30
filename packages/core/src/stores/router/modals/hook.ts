@@ -169,7 +169,7 @@ export function useModalData(): {
   resetRedPacketOrder: () => void;
 
   claimValue: Partial<ClaimData> | undefined;
-  updateClaimData: (offBanxa: Partial<ClaimData>) => void;
+  updateClaimData: (value: Partial<ClaimData>) => void;
   resetClaimData: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(

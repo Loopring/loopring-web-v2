@@ -1,30 +1,18 @@
 import {
   CollectionMeta,
-  CustomError,
-  ErrorMap,
   GET_IPFS_STRING,
-  IPFS_LOOPRING_SITE,
-  LOOPRING_NFT_METADATA,
-  LOOPRING_TAKE_NFT_META_KET,
-  Media,
-  myLog,
   NFTLimit,
   NFTWholeINFO,
-  SagaStatus,
 } from "@loopring-web/common-resources";
-import React, { useState } from "react";
+import React from "react";
 import {
   getIPFSString,
   LoopringAPI,
-  store,
-  useAccount,
+  useNFTListDeep,
+  useSystem,
 } from "@loopring-web/core";
-import { useSystem, useNFTListDeep } from "@loopring-web/core";
-import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
-import { CollectionMethod, useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export type CollectionProps<Co, NFT> = {

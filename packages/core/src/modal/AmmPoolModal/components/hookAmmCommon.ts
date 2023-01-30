@@ -14,6 +14,7 @@ import {
   useSocket,
   useToast,
   usePageAmmPool,
+  store,
 } from "../../../index";
 
 export const useAmmCommon = ({
@@ -26,7 +27,7 @@ export const useAmmCommon = ({
 }) => {
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { sendSocketTopic, socketEnd } = useSocket();
-  const { account, status: accountStatus } = useAccount();
+  const { account } = useAccount();
   const { marketArray, marketMap, tokenMap } = useTokenMap();
   const { ammMap } = useAmmMap();
 
@@ -98,46 +99,44 @@ export const useAmmCommon = ({
     }
   }, []);
 
-  const getFee = React.useCallback(
-    async (
-      requestType:
-        | sdk.OffchainFeeReqType.AMM_EXIT
-        | sdk.OffchainFeeReqType.AMM_JOIN
-    ) => {
-      if (
-        accountStatus === SagaStatus.UNSET &&
-        LoopringAPI.userAPI &&
-        pair.coinBInfo?.simpleName &&
-        account.readyState === AccountStatus.ACTIVATED &&
-        tokenMap
-      ) {
-        const feeToken: sdk.TokenInfo = tokenMap[pair.coinBInfo.simpleName];
+  const getFee = async (
+    requestType:
+      | sdk.OffchainFeeReqType.AMM_EXIT
+      | sdk.OffchainFeeReqType.AMM_JOIN
+  ) => {
+    const account = store.getState().account;
+    if (
+      LoopringAPI.userAPI &&
+      account.status == SagaStatus.UNSET &&
+      pair.coinBInfo?.simpleName &&
+      account.readyState == AccountStatus.ACTIVATED &&
+      tokenMap
+    ) {
+      const feeToken: sdk.TokenInfo = tokenMap[pair.coinBInfo.simpleName];
 
-        const request: sdk.GetOffchainFeeAmtRequest = {
-          accountId: account.accountId,
-          requestType,
-          tokenSymbol: pair.coinBInfo.simpleName as string,
-        };
+      const request: sdk.GetOffchainFeeAmtRequest = {
+        accountId: account.accountId,
+        requestType,
+        tokenSymbol: pair.coinBInfo.simpleName as string,
+      };
 
-        const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(
-          request,
-          account.apiKey
-        );
+      const { fees } = await LoopringAPI.userAPI?.getOffchainFeeAmt(
+        request,
+        account.apiKey
+      );
 
-        const feeRaw = fees[pair.coinBInfo.simpleName]
-          ? fees[pair.coinBInfo.simpleName].fee
-          : 0;
-        const fee = sdk.toBig(feeRaw).div("1e" + feeToken.decimals);
+      const feeRaw = fees[pair.coinBInfo.simpleName]
+        ? fees[pair.coinBInfo.simpleName].fee
+        : 0;
+      const fee = sdk.toBig(feeRaw).div("1e" + feeToken.decimals);
 
-        myLog("new fee:", fee.toString());
-        return {
-          fee,
-          fees,
-        };
-      }
-    },
-    [accountStatus, account, pair, tokenMap]
-  );
+      myLog("new fee:", fee.toString());
+      return {
+        fee,
+        fees,
+      };
+    }
+  };
 
   return {
     accountStatus: account.readyState,

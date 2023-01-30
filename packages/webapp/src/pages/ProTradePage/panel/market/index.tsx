@@ -35,12 +35,11 @@ import {
 import React from "react";
 import {
   usePageTradePro,
+  useSystem,
   useTokenMap,
   useTokenPrices,
-  useSystem,
 } from "@loopring-web/core";
 import styled from "@emotion/styled/";
-import { Currency } from "@loopring-web/loopring-sdk";
 
 export enum TabMarketIndex {
   Orderbook = "Orderbook",

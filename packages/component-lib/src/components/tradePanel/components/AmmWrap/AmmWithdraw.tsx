@@ -278,7 +278,7 @@ export const AmmWithdrawWrap = <
               marginTop={1}
               lineHeight={"22px"}
             >
-              {showLP}
+              {t("labelLpAmount", { value: showLP })}
             </Typography>
             <Box alignSelf={"stretch"} marginTop={1} marginX={2} height={49}>
               <BtnPercentage
@@ -552,7 +552,7 @@ export const AmmWithdrawWrap = <
                 {t("swapFee")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {ammCalcData ? ammCalcData?.fee : EmptyValueTag}
+                {ammCalcData ? ammCalcData?.fee.toString() : EmptyValueTag}
               </Typography>
             </Grid>
           </Grid>

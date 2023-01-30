@@ -265,7 +265,11 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
             isHWAddr = true;
           }
 
-          myLog("nftWithdraw processRequest:", isHWAddr, isNotHardwareWallet);
+          myLog(
+            "force Withdraw processRequest:",
+            isHWAddr,
+            isNotHardwareWallet
+          );
           const response = await LoopringAPI.userAPI.submitForceWithdrawals(
             {
               request,

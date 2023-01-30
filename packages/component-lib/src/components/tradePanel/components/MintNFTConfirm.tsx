@@ -339,9 +339,7 @@ export const MintNFTConfirm = <
                     }}
                     display={"inline-flex"}
                     title={nftMintData.nftId}
-                    href={`
-                     ()
-                    ${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
+                    href={`${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

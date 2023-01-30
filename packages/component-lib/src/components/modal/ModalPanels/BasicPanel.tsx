@@ -135,10 +135,12 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             />
           );
         case IconType.PendingIcon:
-          return <LoadingIcon
-            color={"primary"}
-            style={{ width: size, height: size }}
-          />;
+          return (
+            <LoadingIcon
+              color={"primary"}
+              style={{width: size, height: size}}
+            />
+          );
       }
     }, [iconType, size]);
 
@@ -223,7 +225,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               >
                 {iconType === IconType.FailedIcon ? (
                   <Typography
-                    component={"div"}
+                    component={"span"}
                     marginX={3}
                     whiteSpace={"pre-line"}
                     variant={"body1"}
@@ -239,6 +241,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                         component={"span"}
                         variant={"inherit"}
                         display={"inline-flex"}
+                        alignItems={"center"}
                         onClick={() =>
                           setDropdownStatus((prev) =>
                             prev === "up" ? "down" : "up"
@@ -281,7 +284,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   </Typography>
                 ) : (
                   <Typography
-                    component={"div"}
+                    component={"span"}
                     variant={"h5"}
                     whiteSpace={"pre-line"}
                     textAlign={"center"}
@@ -463,6 +466,12 @@ export const ForceWithdrawBase = (props: PanelProps) => {
   };
   return <BasicPanel {...props} {...propsPatch} />;
 };
+export const ClaimWithdrawBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelClaimWithdrawTitle",
+  };
+  return <BasicPanel {...props} {...propsPatch} />;
+};
 
 export const TransferBase = (props: PanelProps) => {
   const propsPatch = {
@@ -479,13 +488,22 @@ export const WithdrawBase = (props: PanelProps) => {
 };
 
 export const DualBase = (props: PanelProps & { showTitle: boolean }) => {
-  const { showTitle } = props
-  return <BasicPanel title={showTitle ? "labelDualTitle" : undefined} {...props} />;
+  const { showTitle } = props;
+  return (
+    <BasicPanel title={showTitle ? "labelDualTitle" : undefined} {...props} />
+  );
 };
 
 export const RedPacketBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelReaPacketTitle",
+    title: "labelSendRedPacketTitle",
+  };
+  return <BasicPanel {...propsPatch} {...props} />;
+};
+
+export const RedPacketOpenBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelRedPacketOpen",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };

@@ -33,6 +33,7 @@ import { getDefiMap } from "../invest/DefiMap/reducer";
 import { getInvestTokenTypeMap } from "../invest/InvestTokenTypeMap/reducer";
 import { getDualMap } from "../invest/DualMap/reducer";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { getRedPacketConfigs } from "../redPacket/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
@@ -165,13 +166,13 @@ const initConfig = function* <_R extends { [key: string]: any }>(
             marketRaw,
           })
         );
-        myLog(
-          "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList update from server-side update"
-        );
+        // myLog(
+        //   "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList update from server-side update"
+        // );
         store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
         store.dispatch(getAmmMap({ ammpools }));
         store.dispatch(getAmmActivityMap({ ammpools }));
-      }
+      };
     );
   } else {
     [
@@ -233,9 +234,11 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       throw "tokenMap Error";
     }
   }
+  store.dispatch(getRedPacketConfigs(undefined));
   store.dispatch(getNotify(undefined));
   store.dispatch(getDefiMap(undefined));
   store.dispatch(getDualMap(undefined));
+
   yield all([
     take("defiMap/getDefiMapStatus"),
     take("dualMap/getDualMapStatus"),
@@ -254,7 +257,6 @@ const should15MinutesUpdateDataGroup = async (
   gasPrice: number | undefined;
   forexMap: ForexMap<Currency>;
 }> => {
-  // myLog("loop get getFiatPrice getGasPrice");
   if (LoopringAPI.exchangeAPI) {
     let indexUSD = 0;
     const tokenId =
@@ -272,7 +274,6 @@ const should15MinutesUpdateDataGroup = async (
         }) ?? Promise.resolve({ tokenPrices: null })
       );
     });
-    myLog("getLatestTokenPrices & getGasPrice from service");
 
     const [{ gasPrice }, ...restForexs] = await Promise.all([
       LoopringAPI.exchangeAPI.getGasPrice(),
@@ -352,7 +353,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
           process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION;
       }
       try {
-        myLog("exchangeInfo chainId", chainId);
         const _exchangeInfo = JSON.parse(
           window.localStorage.getItem("exchangeInfo") ?? "{}"
         );

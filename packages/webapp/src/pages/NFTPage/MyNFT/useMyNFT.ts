@@ -2,28 +2,22 @@ import {
   CollectionMeta,
   CustomError,
   ErrorMap,
-  IPFS_LOOPRING_SITE,
-  LOOPRING_NFT_METADATA,
-  LOOPRING_TAKE_NFT_META_KET,
-  Media,
-  myLog,
   MyNFTFilter,
   NFTWholeINFO,
-  SagaStatus,
 } from "@loopring-web/common-resources";
 import React, { useEffect, useState } from "react";
 import {
-  getIPFSString,
   LoopringAPI,
-  store,
   useAccount,
+  useModalData,
+  useNFTListDeep,
+  useSystem,
+  useWalletLayer2NFT,
 } from "@loopring-web/core";
-import { useSystem, useNFTListDeep } from "@loopring-web/core";
-import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });

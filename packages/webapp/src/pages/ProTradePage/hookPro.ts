@@ -10,15 +10,15 @@ import {
 } from "@loopring-web/common-resources";
 
 import {
-  usePageTradePro,
-  store,
   makeWalletLayer2,
-  useWalletLayer2,
-  usePairMatch,
-  useAmount,
-  useAccount,
-  useTokenMap,
   marketInitCheck,
+  store,
+  useAccount,
+  useAmount,
+  usePageTradePro,
+  usePairMatch,
+  useTokenMap,
+  useWalletLayer2,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useOrderList } from "./panel/orderTable/hookTable";

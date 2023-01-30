@@ -4,6 +4,7 @@ import {
   BtnInfoProps,
   SwitchPanelProps,
   BtnInfo,
+  IpfsFile,
 } from "../../basic-lib";
 import {
   AddressError,
@@ -21,8 +22,8 @@ import {
   GET_IPFS_STRING,
   Account,
   BanxaOrder,
-  AssetsRawDataItem,
   AccountStatus,
+  AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -92,40 +93,6 @@ export type TransferExtendProps<T, I, C> = {
   memo: string;
   handleOnMemoChange: (e: ChangeEvent<HTMLInputElement>) => void;
 } & TransferInfoProps<C>;
-
-export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
-  btnStatus: TradeBtnStatus;
-  btnInfo?: BtnInfo;
-  chargeFeeTokenList: Array<Fee>;
-  feeInfo: Fee;
-  isFeeNotEnough: {
-    isFeeNotEnough: boolean;
-    isOnLoading: boolean;
-  };
-  disabled?: boolean;
-  //
-};
-export type CreateRedPacketExtendsProps<T, F, LuckInfo> = {
-  tradeType: "TOKEN" | "NFT";
-  setActiveStep: (step: RedPacketStep) => void;
-  handleOnDataChange: (value: Partial<T>) => void;
-  redPacketStepValue: LuckInfo;
-  handleFeeChange: (value: F) => void;
-  onSubmitClick: () => Promise<void>;
-  activeStep: RedPacketStep;
-  onBack?: () => void;
-  // selectedType: LuckyRedPacketItem;
-  assetsData: AssetsRawDataItem[];
-  // handleOnSelectedType: (item: LuckyRedPacketItem) => void;
-} & CreateRedPacketInfoProps<F>;
-
-export type CreateRedPacketViewProps<T, I, F, LuckInfo> =
-  CreateRedPacketExtendsProps<T, F, LuckInfo> & BasicACoinTradeViewProps<T, I>;
-
-export type CreateRedPacketProps<T, I, C, LuckInfo> = Partial<
-  CreateRedPacketExtendsProps<T, C, LuckInfo>
-> &
-  Omit<Partial<BasicACoinTradeProps<T, I>>, "type">;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
   TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;
@@ -344,7 +311,6 @@ export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
     props: SwitchData<T>,
     switchType: "Tomenu" | "Tobutton"
   ) => Promise<void>;
-
   onChangeEvent?: (index: 0 | 1, data: SwitchData<T>) => SwitchData<T>;
   inputButtonProps?: InputButtonDefaultProps<T, I>;
 } & Partial<SwitchPanelProps<any>>;
@@ -575,6 +541,7 @@ export enum CollectionMethod {
   moveOut = "moveOut",
   moveIn = "moveIn",
 }
+
 export type CollectionManageProps<Co, NFT> = {
   collection: Partial<Co>;
   selectedNFTS: NFT[];
@@ -583,3 +550,69 @@ export type CollectionManageProps<Co, NFT> = {
   getIPFSString: GET_IPFS_STRING;
   onNFTSelectedMethod: (item: NFT[], method: CollectionMethod) => void;
 } & CollectionManageData<NFT>;
+
+export type ImportRedPacketProps = {
+  btnStatus: TradeBtnStatus;
+  btnInfo?: BtnInfo;
+  disabled?: boolean;
+  //
+};
+export type ImportRedPacketExtendsProps<T> = {
+  handleOnDataChange: (value: Partial<T>) => void;
+  onSubmitClick: () => Promise<void>;
+  onFilesLoad: (key: string, value: IpfsFile) => void;
+  onDelete: (key: string) => void;
+} & ImportRedPacketProps;
+
+export type ImportRedPacketViewProps<T> = ImportRedPacketExtendsProps<T>;
+
+export type ClaimInfoProps<Fee> = {
+  btnInfo?: BtnInfo;
+  btnStatus?: TradeBtnStatus | undefined;
+  chargeFeeTokenList: Array<Fee>;
+  feeInfo: Fee;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
+};
+
+export type ClaimExtendProps<T, Fee> = {
+  onClaimClick: (data: Partial<T>, isHardwareRetry?: boolean) => void;
+  tradeData: Partial<T>;
+  lastFailed: boolean;
+  handleFeeChange: (value: Fee) => void;
+} & ClaimInfoProps<Fee>;
+
+export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
+  btnStatus: TradeBtnStatus;
+  btnInfo?: BtnInfo;
+  minimum: string | undefined;
+  maximum: string | undefined;
+  chargeFeeTokenList: Array<Fee>;
+  feeInfo: Fee;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
+  disabled?: boolean;
+  //
+};
+export type CreateRedPacketExtendsProps<T, F> = {
+  tradeType: "TOKEN" | "NFT";
+  handleOnDataChange: (value: Partial<T>) => void;
+  handleFeeChange: (value: F) => void;
+  onCreateRedPacketClick: () => Promise<void>;
+  onBack?: () => void;
+  assetsData: AssetsRawDataItem[];
+} & CreateRedPacketInfoProps<F>;
+
+export type CreateRedPacketViewProps<T, I, F> = CreateRedPacketExtendsProps<
+  T,
+  F
+> &
+  BasicACoinTradeViewProps<T, I> & {
+    setActiveStep: (step: RedPacketStep) => void;
+    activeStep: RedPacketStep;
+    tokenMap: { [key: string]: sdk.TokenInfo };
+  };

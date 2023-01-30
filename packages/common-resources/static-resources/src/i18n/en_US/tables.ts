@@ -250,4 +250,16 @@ export default {
   labelRewardFee: "AMM Rewards:",
   labelRewardReward: "Other Rewards:",
   labelRewardExtra: "Campaign Rewards:",
+
+  labelRecordToken: "Token",
+  labelRecordAmount: "Amount",
+  labelRecordType: "Type",
+  labelRecordStatus: "Status",
+  labelRecordNumber: "Number",
+  labelRecordTime: "Time",
+  labelValue: "Value",
+  labelClaim: "Claim",
+  labelAddress: "Address",
+  labelType: "Type",
+  // labelRecordAction: "Action",
 };

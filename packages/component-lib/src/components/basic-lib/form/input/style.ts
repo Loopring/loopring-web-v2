@@ -304,6 +304,11 @@ export const TextareaAutosizeStyled = styled(TextareaAutosize)`
         d_R: 0.5,
       })};
   }
+
+  &.error {
+    ${({ theme }) =>
+      theme.border.defaultFrame({ c_key: "var(--color-error)", d_R: 0.5 })};
+  }
 ` as typeof TextareaAutosize;
 
 export const InputSearchWrapperStyled = styled(Box)`

@@ -3,17 +3,15 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import {
   AlertImpact,
   ConfirmImpact,
-  SwapPanel,
-  Toast,
   SmallOrderAlert,
+  SwapPanel,
   SwapSecondConfirmation,
-  setShowAccount,
+  Toast,
 } from "@loopring-web/component-lib";
 import { useSwap } from "./hookSwap";
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
-  myLog,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { useNotify } from "@loopring-web/core";

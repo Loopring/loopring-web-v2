@@ -1,7 +1,8 @@
 import React from "react";
-import { Avatar, Box, BoxProps, styled } from "@mui/material";
-import { SoursURL } from "@loopring-web/common-resources";
+import { Avatar, Box, BoxProps, styled, Typography } from "@mui/material";
+import { CoinInfo, SoursURL, TokenType } from "@loopring-web/common-resources";
 import { AvatarCoin } from "../../../basic-lib";
+import { useSettings } from "../../../../stores";
 
 const BoxStyle = styled(Box)<BoxProps & { size: number }>`
   ${({ size }) => {
@@ -17,11 +18,11 @@ export const CoinIcons = React.memo(
   ({
     tokenIcon,
     size = 24,
-    type = "token",
+    type = TokenType.single,
   }: {
     tokenIcon: [any, any?];
     size?: number;
-    type?: string;
+    type?: TokenType;
   }) => {
     const [coinAInfo, coinBInfo] = tokenIcon;
     return (
@@ -64,7 +65,7 @@ export const CoinIcons = React.memo(
             />
           )}
         </Box>
-        {coinBInfo || ["dual", "lp"].includes(type) ? (
+        {coinBInfo || [TokenType.dual, TokenType.lp].includes(type) ? (
           <Box
             className={`logo-icon ${type}`}
             display={"flex"}
@@ -108,6 +109,46 @@ export const CoinIcons = React.memo(
           <></>
         )}
       </BoxStyle>
+    );
+  }
+);
+
+export const ColumnCoinDeep = React.memo(
+  ({
+    token: { type = TokenType.single, ...token },
+  }: {
+    token: CoinInfo<any> & { type?: TokenType };
+  }) => {
+    let tokenIcon: [any, any] = [undefined, undefined];
+    const [head, middle, tail] = token.simpleName.split("-");
+    const { coinJson } = useSettings();
+    if (type === "lp" && middle && tail) {
+      tokenIcon =
+        coinJson[middle] && coinJson[tail]
+          ? [coinJson[middle], coinJson[tail]]
+          : [undefined, undefined];
+    }
+    if (type !== "lp" && head && head !== "lp") {
+      tokenIcon = coinJson[head]
+        ? [coinJson[head], undefined]
+        : [undefined, undefined];
+    }
+    return (
+      <Box height={"100%"} display={"inline-flex"} alignItems={"center"}>
+        <CoinIcons type={type} tokenIcon={tokenIcon} />
+        <Typography marginLeft={1} component={"span"} color={"textPrimary"}>
+          {token?.simpleName}
+        </Typography>
+        <Typography
+          marginLeft={1 / 2}
+          component={"span"}
+          variant={"body2"}
+          className={"next-company"}
+          color={"textSecondary"}
+        >
+          {token?.name}
+        </Typography>
+      </Box>
     );
   }
 );

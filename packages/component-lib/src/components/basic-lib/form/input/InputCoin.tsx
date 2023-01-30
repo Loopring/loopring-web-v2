@@ -51,8 +51,10 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   React.useEffect(() => {
     if (tradeValue === undefined && error.error) {
       setError({ error: false });
+    } else if (balance !== undefined && tradeValue) {
+      _handleError(tradeValue);
     }
-  }, [tradeValue]);
+  }, [tradeValue, balance]);
   const [error, setError] = React.useState<{
     error: boolean;
     message?: string | JSX.Element;

@@ -10,7 +10,7 @@ import {
   Info2Icon,
   myLog,
   ReverseIcon,
-  SlippageTolerance,
+  // SlippageTolerance,
   TradeCalcData,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
@@ -45,12 +45,12 @@ export const SwapTradeWrap = <
 }: SwapTradeProps<T, I, TCD> & WithTranslation) => {
   const sellRef = React.useRef();
   const buyRef = React.useRef();
-  const { slippage } = useSettings();
+  // const { slippage } = useSettings();
   let tradeData = swapData.tradeData;
 
-  const slippageArray: Array<number | string> = SlippageTolerance.concat(
-    `slippage:${slippage}`
-  ) as Array<number | string>;
+  // const _slippageArray: Array<number | string> = SlippageTolerance.concat(
+  //   `slippage:${slippage}`
+  // ) as Array<number | string>;
 
   const [_isStoB, setIsStoB] = React.useState(
     typeof isStob !== "undefined" ? isStob : true

@@ -114,19 +114,25 @@ export const NFTDeposit_Submit = (
         marginTop={2}
         paddingX={isMobile ? 1 : 0}
       >
-        <Typography color={"var(--color-warning)"}>
+        <Typography component={"span"} color={"var(--color-warning)"}>
           {t("labelDepositWaiting")}
         </Typography>
         <Typography
+          component={"span"}
           display={"inline-flex"}
           justifyContent={"space-between"}
           marginTop={2}
         >
-          <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-secondary)"}
+          >
             {props.t("labelL1toL2NFTAmount")}
           </Typography>
           <Typography
             variant={"body1"}
+            component={"span"}
             color={"var(--color-text-primary)"}
             textOverflow={"ellipsis"}
             overflow={"hidden"}
@@ -135,26 +141,44 @@ export const NFTDeposit_Submit = (
           </Typography>
         </Typography>
         <Typography
+          component={"span"}
           display={"inline-flex"}
           justifyContent={"space-between"}
           marginTop={2}
         >
-          <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-secondary)"}
+          >
             {props.t("labelL1toL2From")}
           </Typography>
-          <Typography variant={"body1"} color={"var(--color-text-primary)"}>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-primary)"}
+          >
             {"L1: " + getShortAddr(props.account?.accAddress ?? "")}
           </Typography>
         </Typography>
         <Typography
+          component={"span"}
           display={"inline-flex"}
           justifyContent={"space-between"}
           marginTop={2}
         >
-          <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-secondary)"}
+          >
             {props.t("labelL1toL2TO")}
           </Typography>
-          <Typography variant={"body1"} color={"var(--color-text-primary)"}>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-primary)"}
+          >
             {props.to ? "L2: " + getShortAddr(props.to) : t("labelToMyL2")}
           </Typography>
         </Typography>

@@ -1,10 +1,9 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useSettings } from "@loopring-web/component-lib";
 
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { AddIcon } from "@loopring-web/common-resources";
 import { StylePaper } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
 
@@ -20,19 +19,19 @@ export const ReadRedPacketPanel = () => {
       display={"flex"}
       sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
     >
-      <Box display={"flex"} flexDirection={isMobile ? "column" : "row"}>
-        <Button
-          onClick={() => {
-            history.push("/redpacket/markets");
-          }}
-          startIcon={<AddIcon />}
-          variant={"contained"}
-          size={"small"}
-          color={"primary"}
-        >
-          {t("labelCreateCollection")}
-        </Button>
-      </Box>
+      {/*<Box display={"flex"} flexDirection={isMobile ? "column" : "row"}>*/}
+      {/*  <Button*/}
+      {/*    onClick={() => {*/}
+      {/*      history.push("/redPacket/markets");*/}
+      {/*    }}*/}
+      {/*    startIcon={<AddIcon />}*/}
+      {/*    variant={"contained"}*/}
+      {/*    size={"small"}*/}
+      {/*    color={"primary"}*/}
+      {/*  >*/}
+      {/*    {t("labelCreateCollection")}*/}
+      {/*  </Button>*/}
+      {/*</Box>*/}
       <StylePaper ref={container} flex={1}></StylePaper>
     </Box>
   );

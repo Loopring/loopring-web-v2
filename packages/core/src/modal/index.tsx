@@ -17,7 +17,6 @@ import {
   AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import { Box, Modal as MuiModal } from "@mui/material";
-import { ModalCoinPairPanel } from "./AmmPoolModal";
 
 export const ModalGroup = withTranslation("common")(
   ({
@@ -54,7 +53,6 @@ export const ModalGroup = withTranslation("common")(
       setShowWithdraw,
       setShowResetAccount,
     } = useOpenModals();
-
     const { account } = useAccount();
 
     React.useEffect(() => {
@@ -74,6 +72,7 @@ export const ModalGroup = withTranslation("common")(
             setShowSupport({ isShow: false });
           }}
         />
+        {/*<ModalRedPacketPanel etherscanBaseUrl={etherscanBaseUrl} />*/}
         <ModalWalletConnectPanel
           {...{
             ...rest,
@@ -99,7 +98,7 @@ export const ModalGroup = withTranslation("common")(
             isLayer1Only,
           }}
         />
-        <ModalCoinPairPanel />
+        {/*<ModalCoinPairPanel />*/}
         <ModalSettingFee
           open={isShowFeeSetting.isShow}
           onClose={() => setShowFeeSetting({ isShow: false })}
@@ -129,5 +128,7 @@ export const ModalGroup = withTranslation("common")(
     );
   }
 );
+export * from "./AmmPoolModal";
+export * from "./RedPacketModal";
 export * from "./DualModal";
 export * from "./AccountModal/components/NFTDetail";

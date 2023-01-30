@@ -7,6 +7,7 @@ import {
   globalSetup,
   MoreIcon,
   RowConfig,
+  TokenType,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
@@ -30,7 +31,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 16% 16% 28% 6% 14% 10% 8% !important`
+        ? `--template-columns: 23% 14% 25% 6% 14% 10% 8% !important`
         : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
@@ -134,7 +135,8 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
               dualType === DUAL_TYPE.DUAL_BASE
                 ? [sellSymbol, buySymbol]
                 : [buySymbol, sellSymbol];
-            const showClock = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+            const showClock =
+              investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING;
             //${row.sellSymbol}/${row.buySymbol}
             return (
               <Typography
@@ -144,33 +146,35 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 height={"100%"}
                 alignItems={"center"}
               >
-                <Typography component={"span"} display={"inline-flex"}>
-                  {/* eslint-disable-next-line react/jsx-no-undef */}
-                  <CoinIcons
-                    type={"dual"}
-                    size={24}
-                    tokenIcon={[
-                      coinJson[row.sellSymbol],
-                      coinJson[row.buySymbol],
-                    ]}
-                  />
-                </Typography>
-                <Typography
-                  component={"span"}
-                  flexDirection={"column"}
-                  display={"flex"}
-                >
+                <CoinIcons
+                  type={TokenType.dual}
+                  size={24}
+                  tokenIcon={[
+                    coinJson[row.sellSymbol],
+                    coinJson[row.buySymbol],
+                  ]}
+                />
+                <Typography component={"span"} display={"flex"}>
                   <Typography
                     component={"span"}
-                    display={"inline-flex"}
+                    // display={"inline-flex"}
                     color={"textPrimary"}
+                    display={"flex"}
+                    flexDirection={"column"}
                   >
                     {`${base}/${quote}`}
                   </Typography>
+                  {showClock && (
+                    <Box
+                      component={"span"}
+                      marginLeft={1}
+                      display={"flex"}
+                      alignItems={"center"}
+                    >
+                      <ClockIcon />
+                    </Box>
+                  )}
                 </Typography>
-                {showClock && <Box marginLeft={1} display={"flex"} alignItems={"center"}>
-                  <ClockIcon />
-                </Box>}
               </Typography>
             );
           },
@@ -262,20 +266,21 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           name: t("labelDualAssetAction"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const investmentStatus = row.__raw__.order.investmentStatus;
-            const showRefresh = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-            return showRefresh
-              ? (
-                <Link onClick={(_e) => {
-                  refresh(row)}
-                }>
-                  {t("labelDualAssetRefresh")}
-                </Link>
-              )
-              : (
-                <Link onClick={(_e) => showDetail(row)}>
-                  {t("labelDualAssetDetail")}
-                </Link>
-              );
+            const showRefresh =
+              investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING;
+            return showRefresh ? (
+              <Link
+                onClick={(_e) => {
+                  refresh(row);
+                }}
+              >
+                {t("labelDualAssetRefresh")}
+              </Link>
+            ) : (
+              <Link onClick={(_e) => showDetail(row)}>
+                {t("labelDualAssetDetail")}
+              </Link>
+            );
           },
         },
       ],
@@ -303,7 +308,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 <Typography component={"span"} display={"inline-flex"}>
                   {/* eslint-disable-next-line react/jsx-no-undef */}
                   <CoinIcons
-                    type={"dual"}
+                    type={TokenType.dual}
                     size={24}
                     tokenIcon={[
                       coinJson[row.sellSymbol],
@@ -455,7 +460,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
           onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
-            if (c.key === 'Action') return
+            if (c.key === "Action") return;
             showDetail(row);
           }}
           sortMethod={sortMethod}
