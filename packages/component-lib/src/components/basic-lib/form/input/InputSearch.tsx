@@ -1,6 +1,9 @@
-import { OutlinedInput, InputAdornment } from "@mui/material";
-import { SearchIcon, CloseIcon } from "@loopring-web/common-resources";
-import { OutlinedInputProps } from "@mui/material";
+import {
+  InputAdornment,
+  OutlinedInput,
+  OutlinedInputProps,
+} from "@mui/material";
+import { CloseIcon, SearchIcon } from "@loopring-web/common-resources";
 import React from "react";
 import styled from "@emotion/styled";
 

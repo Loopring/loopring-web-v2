@@ -106,7 +106,7 @@ export function useAmmMapUI<
         getFilteredData(search ?? "", rawData);
       }
     } catch (error: any) {
-      throw new CustomError({ ...ErrorMap.NO_TOKEN_MAP, options: error });
+      // new CustomError({ ...ErrorMap?.NO_TOKEN_MAP, options: error });
     }
   }, [ammMap, coinMap, resetTableData, tickerMap, search]);
   const sortMethod = React.useCallback(
