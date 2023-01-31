@@ -4,36 +4,40 @@ import {
   AmmDetail,
   CustomError,
   ErrorMap,
+  RowInvestConfig,
   SagaStatus,
   TradeFloat,
-  RowInvestConfig,
 } from "@loopring-web/common-resources";
 
 import {
   makeTickView,
   useAmmMap,
-  useTokenMap,
   useSocket,
   useTicker,
+  useTokenMap,
   useTokenPrices,
 } from "@loopring-web/core";
 
 import { WsTopicType } from "@loopring-web/loopring-sdk";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 // import { tickerService } from 'services/tickerService';
 type Row<R> = AmmDetail<R> & { tradeFloat: TradeFloat };
+
 export function useAmmMapUI<
   R extends { [key: string]: any },
   I extends { [key: string]: any }
 >() {
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
+  const location = useLocation();
+  const history = useHistory();
+  const searchParams = new URLSearchParams(location.search);
+  const search = searchParams.get("search");
 
   const [rawData, setRawData] = React.useState<Array<Row<R>> | []>([]);
   const [filteredData, setFilteredData] = React.useState<Array<Row<R>> | []>(
     []
   );
+
   const { coinMap, marketArray, status: tokenMapStatus } = useTokenMap();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [filterValue, setFilterValue] = React.useState("");
@@ -99,12 +103,12 @@ export function useAmmMapUI<
           return prev;
         }, [] as Array<Row<R>>);
         setRawData(rawData);
-        resetTableData(rawData);
+        getFilteredData(search ?? "", rawData);
       }
     } catch (error: any) {
       throw new CustomError({ ...ErrorMap.NO_TOKEN_MAP, options: error });
     }
-  }, [ammMap, coinMap, resetTableData, tickerMap]);
+  }, [ammMap, coinMap, resetTableData, tickerMap, search]);
   const sortMethod = React.useCallback(
     (_sortedRows, sortColumn) => {
       let _rawData: Row<R>[] = [];
@@ -189,10 +193,10 @@ export function useAmmMapUI<
     ) {
       updateRawData();
     }
-  }, [tickerStatus, ammStatus, tokenMapStatus]);
+  }, [tickerStatus, ammStatus, tokenMapStatus, search]);
 
   const getFilteredData = React.useCallback(
-    (value: string) => {
+    (value: string, rawData: Row<R>[]) => {
       setFilterValue(value);
       if (value) {
         const _rawData = rawData.filter((o) => {
@@ -207,21 +211,23 @@ export function useAmmMapUI<
       } else {
         resetTableData(rawData);
       }
+      // return rawData;
+      // setRawData((rawData) => {
+      //
+      // });
     },
     [rawData, resetTableData]
   );
-  React.useEffect(() => {
-    const search = searchParams.get("search");
-    if (search && rawData.length) {
-      getFilteredData(search);
-    }
-  }, [search, rawData]);
 
   return {
     rawData,
     filterValue,
     tableHeight,
-    getFilteredData,
+    getFilteredData: (value: string) => {
+      searchParams.set("search", value ?? "");
+      history.replace({ search: searchParams.toString() });
+      getFilteredData(value, rawData);
+    },
     filteredData,
     sortMethod,
   };
