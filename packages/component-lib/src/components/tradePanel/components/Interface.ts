@@ -1,29 +1,29 @@
 import {
+  BtnInfo,
+  BtnInfoProps,
   InputButtonProps,
   InputCoinProps,
-  BtnInfoProps,
-  SwitchPanelProps,
-  BtnInfo,
   IpfsFile,
+  SwitchPanelProps,
 } from "../../basic-lib";
 import {
+  Account,
+  AccountStatus,
   AddressError,
+  AssetsRawDataItem,
+  BanxaOrder,
   CoinInfo,
   CoinKey,
   CoinMap,
+  EXCHANGE_TYPE,
   FeeInfo,
+  GET_IPFS_STRING,
   RequireOne,
+  WALLET_TYPE,
   WalletCoin,
   WalletMap,
   WithdrawType,
   WithdrawTypes,
-  WALLET_TYPE,
-  EXCHANGE_TYPE,
-  GET_IPFS_STRING,
-  Account,
-  BanxaOrder,
-  AccountStatus,
-  AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -36,6 +36,7 @@ export enum RedPacketStep {
   ChooseType,
   Main,
 }
+
 /**
  * private props
  */
@@ -537,6 +538,7 @@ export type ImportCollectionViewProps<Co, NFT> = {
     nftProps: CollectionManageData<NFT>;
   };
 };
+
 export enum CollectionMethod {
   moveOut = "moveOut",
   moveIn = "moveIn",

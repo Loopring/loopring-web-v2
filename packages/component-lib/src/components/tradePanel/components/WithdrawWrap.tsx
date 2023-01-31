@@ -11,19 +11,19 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  AddressError,
+  AssetsRawDataItem,
   CloseIcon,
   copyToClipBoard,
   DropDownIcon,
   EmptyValueTag,
   FeeInfo,
   globalSetup,
-  Info2Icon,
   IBData,
+  Info2Icon,
   LoadingIcon,
   NFTWholeINFO,
   TOAST_TIME,
-  AddressError,
-  AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,

@@ -2,12 +2,12 @@ import styled from "@emotion/styled/macro";
 import { Box, Container, Link, List, Typography } from "@mui/material";
 import React from "react";
 import {
+  DiscordIcon,
   FooterInterface,
   LoopringIcon,
-  DiscordIcon,
+  MediumIcon,
   TwitterIcon,
   YoutubeIcon,
-  MediumIcon,
 } from "@loopring-web/common-resources";
 
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -42,6 +42,7 @@ export const Footer = withTranslation(["layout"])(
     const { isMobile } = useSettings();
     React.useLayoutEffect(() => {
       function updateSize() {}
+
       window.addEventListener("resize", updateSize);
       updateSize();
       return () => window.removeEventListener("resize", updateSize);

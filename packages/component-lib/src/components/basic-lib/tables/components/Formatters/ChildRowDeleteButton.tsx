@@ -36,39 +36,35 @@ const ChildRowButtonClassname = styled.div`
 `;
 
 interface ChildRowDeleteButtonProps {
-    isCellSelected: boolean;
-    isDeleteSubRowEnabled: boolean;
-    onDeleteSubRow: () => void;
+  isCellSelected: boolean;
+  isDeleteSubRowEnabled: boolean;
+  onDeleteSubRow: () => void;
 }
 
 export function ChildRowDeleteButton({
-                                         isCellSelected,
-                                         onDeleteSubRow,
-                                         isDeleteSubRowEnabled
-                                     }: ChildRowDeleteButtonProps) {
-    const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected);
+  isCellSelected,
+  onDeleteSubRow,
+  isDeleteSubRowEnabled,
+}: ChildRowDeleteButtonProps) {
+  const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected);
 
-    function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            onDeleteSubRow();
-        }
+  function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onDeleteSubRow();
     }
+  }
 
-    return (
-        <>
-            <ChildRowActionCrossClassname/>
-            {isDeleteSubRowEnabled && (
-                <ChildRowButtonClassname onClick={onDeleteSubRow}>
-          <span
-              ref={iconRef}
-              tabIndex={-1}
-              onKeyDown={handleKeyDown}
-          >
+  return (
+    <>
+      <ChildRowActionCrossClassname />
+      {isDeleteSubRowEnabled && (
+        <ChildRowButtonClassname onClick={onDeleteSubRow}>
+          <span ref={iconRef} tabIndex={-1} onKeyDown={handleKeyDown}>
             ❌
           </span>
-                </ChildRowButtonClassname>
-            )}
-        </>
-    );
+        </ChildRowButtonClassname>
+      )}
+    </>
+  );
 }

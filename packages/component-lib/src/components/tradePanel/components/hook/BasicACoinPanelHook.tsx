@@ -5,6 +5,7 @@ import { SwitchData } from "../../Interface";
 import { useDeepCompareEffect } from "react-use";
 import { ToolBarItemBack } from "../tool";
 import { debounceTime, Subject } from "rxjs";
+
 export const useBasicTrade = <
   T extends Partial<IBData<I> & MintTradeNFT<I> & { [key: string]: any }>,
   I

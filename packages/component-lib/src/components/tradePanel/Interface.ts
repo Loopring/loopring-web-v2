@@ -8,23 +8,23 @@ import {
 } from "@loopring-web/common-resources";
 import {
   BasicACoinTradeHookProps,
+  ClaimExtendProps,
+  CreateRedPacketViewProps,
   DefaultProps,
   DepositExtendProps,
   DepositInfoProps as _DepositInfoProps,
+  ExportAccountExtendProps,
+  ForceWithdrawViewProps,
+  NFTDeployViewProps,
+  NFTDepositViewProps,
+  NFTMetaViewProps,
+  NFTMintAdvanceViewProps,
+  NFTMintViewProps,
   ResetExtendProps,
   ResetInfoProps as _ResetInfoProps,
   TransferExtendProps,
   TransferInfoProps as _TransferInfoProps,
   WithdrawExtendProps,
-  ExportAccountExtendProps,
-  NFTDepositViewProps,
-  NFTMintViewProps,
-  NFTDeployViewProps,
-  NFTMetaViewProps,
-  NFTMintAdvanceViewProps,
-  ForceWithdrawViewProps,
-  CreateRedPacketViewProps,
-  ClaimExtendProps,
 } from "./components/Interface";
 import {
   SwapData,
@@ -40,6 +40,7 @@ import {
 } from "./tradePro/Interface";
 import React from "react";
 import { TOASTOPEN } from "../../components/toast";
+
 export { TradeProType, TradeBaseType };
 
 export type SwapTradeData<T> = {

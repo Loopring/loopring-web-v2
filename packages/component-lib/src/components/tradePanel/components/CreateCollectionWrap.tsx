@@ -18,8 +18,8 @@ import {
 import { Trans, useTranslation } from "react-i18next";
 import {
   CollectionMeta,
-  Info2Icon,
   htmlDecode,
+  Info2Icon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { TradeBtnStatus } from "../Interface";

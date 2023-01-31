@@ -1,12 +1,12 @@
 import {
+  AccountStatus,
+  AddressError,
   Bridge,
   CloseIcon,
   globalSetup,
   IBData,
   LoadingIcon,
   SoursURL,
-  AddressError,
-  AccountStatus,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";

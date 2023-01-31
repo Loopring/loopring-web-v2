@@ -1,25 +1,24 @@
 import {
-  AmmJoinData,
+  AccountStatus,
   AmmInData,
+  AmmJoinData,
+  defalutSlipage,
   EmptyValueTag,
   IBData,
   LinkedIcon,
   SlippageTolerance,
-  AccountStatus,
-  defalutSlipage,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import { AmmDepositWrapProps } from "./Interface";
 import { InputCoin, LinkActionStyle, PopoverPure } from "../../../basic-lib";
 import React from "react";
 import { usePopupState } from "material-ui-popup-state/hooks";
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { bindHover, bindPopover } from "material-ui-popup-state/es";
 import { SlippagePanel } from "../tool";
 import { TradeBtnStatus } from "../../Interface";
 import { SvgStyled } from "./styled";
 import { useSettings } from "../../../../stores";
-import { Box } from "@mui/material";
 import { useAmmViewData } from "./ammViewHook";
 import { ButtonStyle } from "../Styled";
 

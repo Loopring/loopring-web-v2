@@ -10,18 +10,16 @@ import {
   Info2Icon,
   myLog,
   ReverseIcon,
-  // SlippageTolerance,
   TradeCalcData,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import React from "react";
-import { Grid, Tooltip, Typography } from "@mui/material";
+import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import { InputButton } from "../../../basic-lib";
 
 import { SwapTradeProps } from "./Interface";
 import { useSettings } from "../../../../stores";
-import { IconButtonStyled, ButtonStyle } from "../Styled";
-import { Box } from "@mui/material";
+import { ButtonStyle, IconButtonStyled } from "../Styled";
 
 export const SwapTradeWrap = <
   T extends IBData<I>,

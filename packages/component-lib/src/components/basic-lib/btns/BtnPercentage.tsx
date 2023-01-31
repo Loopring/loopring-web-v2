@@ -1,8 +1,7 @@
 /* Rectangle 340 */
 import styled from "@emotion/styled";
 import { BtnPercentageProps } from "./Interface";
-import { Slider } from "@mui/material";
-import { Box } from "@mui/material";
+import { Box, Slider } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
 import { Mark } from "@mui/base/SliderUnstyled/SliderUnstyledProps";
@@ -11,6 +10,7 @@ import { myLog } from "@loopring-web/common-resources";
 const StyledSlider = styled(Slider)`
   && {
     border: 0;
+
     & .MuiSlider-mark {
       width: 24px;
       height: 24px;
@@ -38,9 +38,11 @@ const StyledSlider = styled(Slider)`
           })};
       }
     }
+
     & .MuiSlider-markLabel {
       line-height: initial;
     }
+
     & .MuiSlider-rail {
       width: 100%;
       height: 4px;

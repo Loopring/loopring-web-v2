@@ -1,16 +1,16 @@
 import {
   CoinInfo,
-  PriceTag,
-  TradeFloat,
   ForexMap,
-  NFTWholeINFO,
   GET_IPFS_STRING,
+  NFTWholeINFO,
+  PriceTag,
   RedPacketQRPropsExtends,
+  TradeFloat,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../tradePanel";
+import * as sdk from "@loopring-web/loopring-sdk";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { RawDataRedPacketDetailItem } from "../tableList";
-import * as sdk from "@loopring-web/loopring-sdk";
 
 export type MarketBlockProps<C> = {
   coinAInfo: CoinInfo<C>;

@@ -1,4 +1,4 @@
-import { IconType, PanelProps, DualBase } from "./BasicPanel";
+import { DualBase, IconType, PanelProps } from "./BasicPanel";
 import { Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 

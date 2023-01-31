@@ -1,10 +1,9 @@
-import { FormHelperText, Grid } from "@mui/material";
+import { FormHelperText, Grid, Typography } from "@mui/material";
 import {
   CoinInfo,
   DropDownIcon,
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
-  // getValuePrecisionThousand,
   IBData,
 } from "@loopring-web/common-resources";
 import { InputButtonProps, InputSize } from "./Interface";
@@ -12,7 +11,6 @@ import React from "react";
 import { useFocusRef } from "../hooks";
 import { IInput, ISBtn, IWrap } from "./style";
 import { CoinIcon } from "./Default";
-import { Typography } from "@mui/material";
 
 function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   {

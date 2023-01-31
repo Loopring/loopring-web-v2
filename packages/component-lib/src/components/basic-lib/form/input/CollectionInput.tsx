@@ -9,15 +9,15 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  CollectionMeta,
   CopyIcon,
   copyToClipBoard,
   getShortAddr,
-  Info2Icon,
-  CollectionMeta,
-  MakeMeta,
-  TOAST_TIME,
-  myLog,
   ImageIcon,
+  Info2Icon,
+  MakeMeta,
+  myLog,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {
   CollectionCardList,

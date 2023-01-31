@@ -1,9 +1,9 @@
 import {
   CloseIcon,
-  TradeNFT,
   LoadingIcon,
   myLog,
   SoursURL,
+  TradeNFT,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { useTranslation } from "react-i18next";

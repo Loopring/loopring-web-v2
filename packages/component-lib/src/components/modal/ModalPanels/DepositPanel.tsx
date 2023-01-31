@@ -1,11 +1,6 @@
 import { DepositProps } from "../../tradePanel/Interface";
 import { withTranslation, WithTranslation } from "react-i18next";
-import {
-  CoinInfo,
-  CoinMap,
-  IBData,
-  // myLog,
-} from "@loopring-web/common-resources";
+import { CoinInfo, CoinMap, IBData } from "@loopring-web/common-resources";
 import {
   ModalBackButton,
   SwitchPanel,

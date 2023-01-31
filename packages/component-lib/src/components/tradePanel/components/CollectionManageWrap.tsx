@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Typography, Tab, Tabs, Tooltip } from "@mui/material";
+import { Box, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 
 import { useSettings } from "../../../stores";
 import {
@@ -10,7 +10,7 @@ import {
   NFTWholeINFO,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { NFTList, Button } from "../../basic-lib";
+import { Button, NFTList } from "../../basic-lib";
 import { CollectionManageProps, CollectionMethod } from "./Interface";
 import styled from "@emotion/styled";
 import * as sdk from "@loopring-web/loopring-sdk";

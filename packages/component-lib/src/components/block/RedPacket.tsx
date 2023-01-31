@@ -10,15 +10,15 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
+  EmptyValueTag,
+  FirstPlaceIcon,
+  getShortAddr,
+  getValuePrecisionThousand,
   RedPacketColorConfig,
   RedPacketCssColorConfig,
-  EmptyValueTag,
   RedPacketOpenWrapSVG,
   RedPacketQRCodeSvg,
   RedPacketWrapSVG,
-  getValuePrecisionThousand,
-  getShortAddr,
-  FirstPlaceIcon,
 } from "@loopring-web/common-resources";
 import QRCode from "qrcode-svg";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -27,14 +27,14 @@ import { RedPacketViewStep } from "../modal";
 import { ModalStatePlayLoad } from "../../stores";
 import moment from "moment";
 import {
-  RedPacketDefaultBg,
-  RedPacketDefault,
-  RedPacketTimeoutProps,
-  RedPacketQRCodeProps,
-  RedPacketOpenProps,
-  RedPacketOpenedProps,
-  RedPacketDetailProps,
   RedPacketClockProps,
+  RedPacketDefault,
+  RedPacketDefaultBg,
+  RedPacketDetailProps,
+  RedPacketOpenedProps,
+  RedPacketOpenProps,
+  RedPacketQRCodeProps,
+  RedPacketTimeoutProps,
 } from "./Interface";
 
 export const RedPacketBg = styled(Box)<

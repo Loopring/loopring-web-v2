@@ -178,6 +178,7 @@ function _SwitchPanel<T extends string>(
     </SwipeableViewsStyled>
   );
 }
+
 export const SwitchPanel = React.memo(React.forwardRef(_SwitchPanel)) as <
   T extends string
 >(

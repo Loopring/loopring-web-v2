@@ -1,14 +1,14 @@
 import {
-  Snackbar,
   Alert,
   AlertTitle,
-  Typography,
+  Snackbar,
   SnackbarOrigin,
+  Typography,
 } from "@mui/material";
 import {
-  GoodIcon,
   AlertIcon,
   ErrorIcon,
+  GoodIcon,
   InfoIcon,
 } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";

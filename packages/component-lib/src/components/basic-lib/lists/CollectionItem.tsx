@@ -13,17 +13,19 @@ import {
   Link,
   MenuItem,
   Pagination,
+  Popover,
   Radio,
   Typography,
-  Popover,
 } from "@mui/material";
 import {
+  CollectionLimit,
   CollectionMeta,
   CopyIcon,
   copyToClipBoard,
   getShortAddr,
   ImageIcon,
   NFT_TYPE_STRING,
+  NFTLimit,
   sizeNFTConfig,
   SoursURL,
   ViewMoreIcon,
@@ -31,7 +33,6 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { CollectionLimit, NFTLimit } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import {
   bindMenu,

@@ -2,14 +2,14 @@ import styled from "@emotion/styled";
 import {
   AppBar,
   Box,
+  ClickAwayListener,
   Container,
+  Divider,
   IconButton,
   Slide,
   Toolbar,
   Typography,
   useScrollTrigger,
-  ClickAwayListener,
-  Divider,
 } from "@mui/material";
 import {
   Link as RouterLink,
@@ -19,23 +19,23 @@ import {
 } from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
+  Button,
+  HeaderMenuSub,
   HeadMenuItem,
   Layer2Item,
-  TabItemPlus,
-  Button,
   PopoverPure,
-  HeaderMenuSub,
+  TabItemPlus,
 } from "../basic-lib";
 import { HeaderProps, HeaderToolBarInterface } from "./Interface";
 import {
   ButtonComponentsMap,
   HeaderMenuItemInterface,
-  HeaderMenuTabStatus,
-  SoursURL,
-  MenuIcon,
-  LoopringLogoIcon,
-  subMenuLayer2,
   headerMenuLandingData,
+  HeaderMenuTabStatus,
+  LoopringLogoIcon,
+  MenuIcon,
+  SoursURL,
+  subMenuLayer2,
   toolBarAvailableItem,
   toolBarMobileAvailableItem,
 } from "@loopring-web/common-resources";

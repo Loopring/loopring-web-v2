@@ -120,11 +120,13 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
     }
 `;
 });
+
 enum DisplayMode {
   nonBeginnerMode = 1,
   beginnerModeStep1,
   beginnerModeStep2,
 }
+
 export type DualDetailType = {
   dualViewInfo: DualViewBase;
   currentPrice: DualCurrentPrice;

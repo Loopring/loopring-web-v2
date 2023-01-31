@@ -1,5 +1,5 @@
-import { Trans, WithTranslation } from "react-i18next";
-import { IconType, PanelProps, BasicPanel } from "../ModalPanels/BasicPanel";
+import { Trans } from "react-i18next";
+import { BasicPanel, IconType, PanelProps } from "../ModalPanels/BasicPanel";
 
 export const WalletApprove = (props: PanelProps) => {
   const propsPatch = {

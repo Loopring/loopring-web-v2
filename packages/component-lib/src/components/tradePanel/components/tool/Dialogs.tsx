@@ -34,8 +34,6 @@ import {
   Info2Icon,
   SoursURL,
   TradeDefi,
-  // Lang,
-  // MarkdownStyle,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";

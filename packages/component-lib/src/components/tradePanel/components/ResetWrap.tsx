@@ -1,7 +1,7 @@
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import { Grid, Typography, Box, Link } from "@mui/material";
+import { Box, Grid, Link, Typography } from "@mui/material";
 import { EmptyValueTag, FeeInfo } from "@loopring-web/common-resources";
 import { Button } from "../../basic-lib";
 import { ResetViewProps } from "./Interface";

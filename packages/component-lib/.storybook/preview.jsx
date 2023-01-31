@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import StoryRouter from "storybook-react-router";
 import { ThemeProvider } from "@emotion/react";
 import { getTheme, globalCss, i18n } from "@loopring-web/common-resources";
-import { setLanguage, setTheme, provider, ProviderComposer } from "../src";
+import { provider, ProviderComposer, setLanguage, setTheme } from "../src";
 import configureStore from "./configureStore";
 
 export const parameters = {

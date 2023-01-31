@@ -3,8 +3,8 @@ import styled from "@emotion/styled";
 import { Box, Grid, Typography } from "@mui/material";
 import moment from "moment";
 import {
-  YEAR_DAY_MINUTE_FORMAT,
   EmptyValueTag,
+  YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { TxType } from "@loopring-web/loopring-sdk";
 import React from "react";

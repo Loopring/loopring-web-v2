@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
 import {
-  IBData,
   EmptyValueTag,
   FeeInfo,
+  IBData,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {

@@ -183,6 +183,7 @@ export interface VendorMenuProps {
   campaignTagConfig?: CAMPAIGNTAGCONFIG;
   callback?: () => void;
 }
+
 interface InferfaceAssetItem {
   key: string;
   svgIcon: string;
@@ -191,6 +192,7 @@ interface InferfaceAssetItem {
 }
 
 export interface AddAssetItem extends InferfaceAssetItem {}
+
 export interface SendAssetItem extends InferfaceAssetItem {}
 
 export interface AddAssetProps {
@@ -210,6 +212,7 @@ export interface SendAssetProps {
     [key: string]: { enable?: boolean; reason?: string; show?: boolean };
   };
 }
+
 export interface SendNFTAssetProps {
   nftData: Partial<NFTWholeINFO>;
   sendAssetList: AddAssetItem[];
@@ -237,6 +240,7 @@ export interface CheckActiveStatusProps<C = FeeInfo> {
   chainInfos?: AccountHashInfo;
   accAddress?: string;
 }
+
 export interface CheckImportCollectionProps {
   account: Account;
   value: string;

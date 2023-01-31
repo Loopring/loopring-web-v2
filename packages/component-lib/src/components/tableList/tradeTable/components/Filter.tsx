@@ -2,15 +2,9 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Grid, MenuItem } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
-import {
-  TextField,
-  // DateRangePicker
-} from "../../../basic-lib/form";
+import { TextField } from "../../../basic-lib/form";
 import { Button } from "../../../basic-lib/btns";
-import {
-  DropDownIcon,
-  // myLog
-} from "@loopring-web/common-resources";
+import { DropDownIcon } from "@loopring-web/common-resources";
 import { DateRange } from "@mui/lab";
 
 export interface FilterProps {

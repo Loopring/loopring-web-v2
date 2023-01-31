@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { Trans, WithTranslation } from "react-i18next";
 import {
-  // LoadingIcon,
   DoneIcon,
   FailedIcon,
   RefuseIcon,

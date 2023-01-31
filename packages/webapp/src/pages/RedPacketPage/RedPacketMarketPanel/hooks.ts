@@ -41,6 +41,12 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
   const getMarketRedPacket = React.useCallback(
     async ({ showOfficial, offset }: any) => {
       setShowLoading(true);
+      const statuses = [
+        sdk.LuckyTokenWithdrawStatus.PROCESSING,
+        sdk.LuckyTokenWithdrawStatus.PROCESSED,
+        sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED,
+        sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED,
+      ];
       if (LoopringAPI.luckTokenAPI && accountId && apiKey) {
         const responses = await Promise.all([
           LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
@@ -50,7 +56,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
               partitions: "0,1",
               modes: "0,1",
               scopes: sdk.LuckyTokenViewType.PUBLIC,
-              statuses: `${sdk.LuckyTokenWithdrawStatus.PROCESSING},${sdk.LuckyTokenWithdrawStatus.PROCESSED},${sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED},${sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED}`,
+              statuses: statuses.join(","),
               offset: 0,
               limit: 50,
               official: true,

@@ -5,21 +5,21 @@ import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
   Box,
   Grid,
-  ListItem,
   List,
-  Typography,
+  ListItem,
   ListItemText,
+  Typography,
 } from "@mui/material";
 import {
+  AssetsRawDataItem,
   CloseIcon,
   DropDownIcon,
   EmptyValueTag,
   FeeInfo,
   globalSetup,
   IBData,
-  LoadingIcon,
-  AssetsRawDataItem,
   Info2Icon,
+  LoadingIcon,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,

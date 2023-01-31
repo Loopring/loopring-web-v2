@@ -2,6 +2,7 @@ import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 import React from "react";
 import {
+  BarSeries,
   bollingerBand,
   BollingerBandTooltip,
   BollingerSeries,
@@ -13,6 +14,7 @@ import {
   discontinuousTimeScaleProviderBuilder,
   EdgeIndicator,
   ema,
+  Label,
   lastVisibleItemBasedZoomAnchor,
   LineSeries,
   MACDSeries,
@@ -21,19 +23,17 @@ import {
   MouseCoordinateY,
   MovingAverageTooltip,
   OHLCTooltip,
-  sma,
-  sar,
   rsi,
+  RSISeries,
+  RSITooltip,
+  sar,
+  SARSeries,
+  SingleValueTooltip,
+  sma,
   withDeviceRatio,
   withSize,
   XAxis,
   YAxis,
-  BarSeries,
-  SARSeries,
-  SingleValueTooltip,
-  RSISeries,
-  RSITooltip,
-  Label,
 } from "react-financial-charts";
 import { macd } from "@react-financial-charts/indicators";
 
@@ -46,6 +46,7 @@ export interface IOHLCData {
   volume: number;
   txs: number;
 }
+
 export enum MainIndicator {
   MA = "MA",
   EMA = "EMA",

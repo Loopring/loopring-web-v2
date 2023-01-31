@@ -1,20 +1,19 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import { TFunction, Trans, withTranslation } from "react-i18next";
 import {
+  Account,
   DoneIcon,
   FailedIcon,
-  RefuseIcon,
-  SubmitIcon,
   LinkIcon,
-  SoursURL,
-  TransErrorHelp,
-  Account,
   LoadingIcon,
+  RefuseIcon,
+  SoursURL,
+  SubmitIcon,
+  TransErrorHelp,
 } from "@loopring-web/common-resources";
 import React from "react";
 
 import { Button, TextareaAutosizeStyled } from "../../basic-lib";
-import { Link } from "@mui/material";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import { DropdownIconStyled } from "../../tradePanel";

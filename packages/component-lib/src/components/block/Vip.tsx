@@ -1,7 +1,7 @@
 import React from "react";
 import { Column, Table } from "../basic-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Typography, Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { CheckIcon } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 
@@ -13,6 +13,7 @@ interface Row {
   maker: string;
   taker: string;
 }
+
 const TableStyle = styled(Table)`
   &.rdg {
     border-top: 1px solid var(--color-divide);

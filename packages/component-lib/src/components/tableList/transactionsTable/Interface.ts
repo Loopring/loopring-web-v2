@@ -11,6 +11,7 @@ export enum TransactionStatus {
   received = "received",
   failed = "failed",
 }
+
 // export enum TransactionTradeTypes {
 //   allTypes = "all",
 //   deposit = "DEPOSIT",
@@ -24,6 +25,7 @@ export const TransactionTradeTypes = {
   send: `${sdk.UserTxTypes.TRANSFER},${sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL},onchain_withdrawal`,
   forceWithdraw: `${sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW}`,
 };
+
 export enum TransactionTradeViews {
   allTypes = "ALL",
   receive = "RECEIVE",

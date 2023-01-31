@@ -1,9 +1,6 @@
 import { CoinInfo, CoinKey, CoinMap } from "@loopring-web/common-resources";
 import React from "react";
-import {
-  // Box, BoxProps, Button, ButtonProps,
-  InputProps,
-} from "@mui/material";
+import { InputProps } from "@mui/material";
 // import styled from '@emotion/styled';
 // import CurrencyInput from 'react-currency-input-field';
 
@@ -42,10 +39,12 @@ export type InputButtonProps<T, R, I> = {
   focusOnInput?: boolean;
   name?: string;
 };
+
 export enum InputSize {
   middle = "middle",
   small = "small",
 }
+
 export type InputCoinProps<T, R, I> = {
   inputData?: T | undefined;
   label: string | JSX.Element;

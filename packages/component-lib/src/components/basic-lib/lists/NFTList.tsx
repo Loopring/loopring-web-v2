@@ -11,13 +11,13 @@ import {
   GET_IPFS_STRING,
   getShortAddr,
   NFTLimit,
+  NFTWholeINFO,
   sizeNFTConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { CardStyleItem, EmptyDefault, NFTMedia } from "../../index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { sanitize } from "dompurify";
-import { NFTWholeINFO } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { XOR } from "../../../types/lib";
 
@@ -260,7 +260,7 @@ export const NFTList = withTranslation("common")(
                   }
                   page={page}
                   onChange={(_event, value) => {
-                    onPageChangeCallback && onPageChangeCallback(String(value))
+                    onPageChangeCallback && onPageChangeCallback(String(value));
                   }}
                 />
               </Box>

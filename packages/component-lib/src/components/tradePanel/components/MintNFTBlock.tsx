@@ -21,10 +21,10 @@ import {
 } from "@loopring-web/common-resources";
 import {
   Button,
-  InputSize,
-  TextField,
-  TextareaAutosizeStyled,
   InputCoin,
+  InputSize,
+  TextareaAutosizeStyled,
+  TextField,
 } from "../../basic-lib";
 
 import { TradeBtnStatus } from "../Interface";

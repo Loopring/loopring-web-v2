@@ -1,8 +1,7 @@
 import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { EmptyIcon } from "@loopring-web/common-resources";
-import { Box, Typography } from "@mui/material";
-import { BoxProps } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 
 export type EmptyProps = {
   height?: number | string;

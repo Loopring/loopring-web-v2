@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
 import {
-  IBData,
-  NFTWholeINFO,
   EmptyValueTag,
   FeeInfo,
+  IBData,
+  NFTWholeINFO,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {

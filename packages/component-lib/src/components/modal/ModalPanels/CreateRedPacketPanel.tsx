@@ -20,6 +20,7 @@ import {
 } from "../../tradePanel/components/CreateRedPacketWrap";
 import { RedPacketOrderData } from "@loopring-web/core";
 import { Box, styled } from "@mui/material";
+
 const steps = [
   "labelRedPacketChoose", //Prepare NFT metadata
   "labelRedPacketMain", //labelADMint2

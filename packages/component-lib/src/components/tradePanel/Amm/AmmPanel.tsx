@@ -5,19 +5,18 @@ import {
   AmmWithdrawChgData,
   AmmWithdrawWrap,
 } from "../components";
-import { BoxProps, Grid, Tab, Tabs, Toolbar } from "@mui/material";
+import { Box, BoxProps, Grid, Tab, Tabs, Toolbar } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import qs from "query-string";
 import {
-  AmmJoinData,
-  AmmInData,
   AmmExitData,
+  AmmInData,
+  AmmJoinData,
   IBData,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
 import { useDeepCompareEffect } from "react-use";
-import { Box } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { CountDownIcon } from "../components/tool/Refresh";
 import styled from "@emotion/styled";

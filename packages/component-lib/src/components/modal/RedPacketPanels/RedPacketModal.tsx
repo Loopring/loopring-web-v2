@@ -1,11 +1,10 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Modal } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import {
   ModalBackButton,
   ModalCloseButton,
   ModalRedPacketProps,
 } from "../../../index";
-import { Box } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
 import { CloseRedPacketIcon } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";

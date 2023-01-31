@@ -8,7 +8,8 @@ import { Box, ListItemText, TextField, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 import { CheckImportCollectionProps } from "./Interface";
 import React from "react";
-import { MenuItem, Button } from "../../basic-lib";
+import { Button, MenuItem } from "../../basic-lib";
+
 export const CheckImportCollection = ({
   // account,
   value,

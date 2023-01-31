@@ -18,6 +18,7 @@ export enum SubRowAction {
   UpdateRaw = "updateRaw",
   SortRow = "sortRow",
 }
+
 export interface InvestRowAction<R = DepartmentRow> {
   type: SubRowAction;
   symbol?: string;
@@ -25,6 +26,7 @@ export interface InvestRowAction<R = DepartmentRow> {
   _des?: "DESC" | "ASC" | undefined;
   rows?: R[];
 }
+
 type FilterExtend = {
   showFilter: boolean;
   filterValue: string;

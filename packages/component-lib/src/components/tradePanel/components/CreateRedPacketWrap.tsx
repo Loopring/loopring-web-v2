@@ -9,13 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import {
-  Button,
-  DateTimePicker,
-  InputCoin,
-  // TextareaAutosizeStyled,
-  // TextField,
-} from "../../basic-lib";
+import { Button, DateTimePicker, InputCoin } from "../../basic-lib";
 import {
   Trans,
   useTranslation,
@@ -23,13 +17,13 @@ import {
   withTranslation,
 } from "react-i18next";
 import {
-  LuckyRedPacketList,
-  LuckyRedPacketItem,
-  FeeInfo,
-  EmptyValueTag,
   BackIcon,
-  IBData,
+  EmptyValueTag,
+  FeeInfo,
   getValuePrecisionThousand,
+  IBData,
+  LuckyRedPacketItem,
+  LuckyRedPacketList,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {

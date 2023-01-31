@@ -14,8 +14,7 @@ import {
   TradeFloat,
   UpColor,
 } from "@loopring-web/common-resources";
-import { Box, Grid } from "@mui/material";
-import { Avatar, Typography } from "@mui/material";
+import { Avatar, Box, Grid, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import {
   AvatarCoin,

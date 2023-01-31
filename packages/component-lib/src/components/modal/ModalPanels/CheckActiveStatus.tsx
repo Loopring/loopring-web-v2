@@ -6,6 +6,7 @@ import { CheckActiveStatusProps } from "./Interface";
 import { useTheme } from "@emotion/react";
 import { DepositRecorder } from "./DepositRecorder";
 import styled from "@emotion/styled";
+
 const BoxStyle = styled(Box)`
   .modalContent {
     .depositRecord {
