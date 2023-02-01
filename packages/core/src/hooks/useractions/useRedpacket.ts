@@ -13,6 +13,88 @@ import {
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 
+export function useOpenRedpacket() {
+  const { setShowRedPacket, setShowAccount } = useOpenModals();
+  const { chainId } = useSystem();
+  const { account } = useAccount();
+
+  const callOpen = React.useCallback(async () => {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.RedPacketOpen_Claim_In_Progress,
+    });
+    const _info = store.getState().modals.isShowRedPacket
+      .info as sdk.LuckyTokenItemForReceive & {
+      referrer?: string;
+      isShouldSharedRely: boolean;
+    };
+    try {
+      let response =
+        await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
+          request: {
+            hash: _info?.hash,
+            claimer: account.accAddress,
+            referrer:
+              _info.isShouldSharedRely && _info?.referrer
+                ? _info?.referrer
+                : "",
+          },
+          eddsaKey: account.eddsaKey.sk,
+          apiKey: account.apiKey,
+        } as any);
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        throw response;
+      }
+
+      setShowAccount({
+        isShow: false,
+      });
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.DetailPanel,
+        info: {
+          ..._info,
+          response,
+          claimAmount: (response as any).amount,
+        },
+      });
+    } catch (error: any) {
+      if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
+        setShowRedPacket({
+          isShow: true,
+          step: RedPacketViewStep.DetailPanel,
+          info: {
+            ..._info,
+          },
+        });
+      } else {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.RedPacketOpen_Failed,
+          error: {
+            code: UIERROR_CODE.UNKNOWN,
+            msg: error?.message,
+            // @ts-ignore
+            ...(error instanceof Error
+              ? {
+                  message: error?.message,
+                  stack: error?.stack,
+                }
+              : error ?? {}),
+          },
+        });
+      }
+    }
+  }, [chainId, account]);
+
+  return {
+    callOpen,
+  };
+}
+
 export const useRedPacketScanQrcodeSuccess = () => {
   const {
     setShowAccount,
@@ -67,6 +149,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
 
         if (luckTokenInfo) {
           setShowAccount({ isShow: false });
+          debugger;
           if (response.detail?.claimAmount) {
             setShowRedPacket({
               isShow: true,
@@ -181,85 +264,3 @@ export const useRedPacketScanQrcodeSuccess = () => {
     handleSuccess,
   };
 };
-
-export function useOpenRedpacket() {
-  const { setShowRedPacket, setShowAccount } = useOpenModals();
-  const { chainId } = useSystem();
-  const { account } = useAccount();
-
-  const callOpen = React.useCallback(async () => {
-    setShowAccount({
-      isShow: true,
-      step: AccountStep.RedPacketOpen_Claim_In_Progress,
-    });
-    const _info = store.getState().modals.isShowRedPacket
-      .info as sdk.LuckyTokenItemForReceive & {
-      referrer?: string;
-      isShouldSharedRely: boolean;
-    };
-    try {
-      let response =
-        await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
-          request: {
-            hash: _info?.hash,
-            claimer: account.accAddress,
-            referrer:
-              _info.isShouldSharedRely && _info?.referrer
-                ? _info?.referrer
-                : "",
-          },
-          eddsaKey: account.eddsaKey.sk,
-          apiKey: account.apiKey,
-        } as any);
-      if (
-        (response as sdk.RESULT_INFO).code ||
-        (response as sdk.RESULT_INFO).message
-      ) {
-        throw response;
-      }
-
-      setShowAccount({
-        isShow: false,
-      });
-      setShowRedPacket({
-        isShow: true,
-        step: RedPacketViewStep.DetailPanel,
-        info: {
-          ..._info,
-          response,
-          claimAmount: (response as any).amount,
-        },
-      });
-    } catch (error: any) {
-      if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
-        setShowRedPacket({
-          isShow: true,
-          step: RedPacketViewStep.DetailPanel,
-          info: {
-            ..._info,
-          },
-        });
-      } else {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.RedPacketOpen_Failed,
-          error: {
-            code: UIERROR_CODE.UNKNOWN,
-            msg: error?.message,
-            // @ts-ignore
-            ...(error instanceof Error
-              ? {
-                  message: error?.message,
-                  stack: error?.stack,
-                }
-              : error ?? {}),
-          },
-        });
-      }
-    }
-  }, [chainId, account]);
-
-  return {
-    callOpen,
-  };
-}

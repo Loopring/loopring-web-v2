@@ -21,7 +21,6 @@ import {
   getValuePrecisionThousand,
   myLog,
   UIERROR_CODE,
-  YEAR_DAY_MINUTE_FORMAT,
   YEAR_DAY_SECOND_FORMAT,
 } from "@loopring-web/common-resources";
 import {
