@@ -60,10 +60,10 @@ export const RedPacketCssColorConfig: {
   },
 };
 export const RedPacketWrapSVG = ({
-                                   colorTop,
-                                   startColor,
-                                   endColor,
-                                   type,
+  colorTop,
+  startColor,
+  endColor,
+  type,
 }: {
   type: "default" | "official";
   colorTop: "#FD7659" | "#FFD595";
@@ -181,15 +181,15 @@ export const RedPacketWrapSVG = ({
 };
 
 export const RedPacketOpenWrapSVG = ({
-                                       // colorTop,
-                                       startColor,
-                                       endColor,
-                                       startBgColor,
-                                       endBgColor,
-                                       startCard,
-                                       endCard,
-                                       line,
-                                       type,
+  // colorTop,
+  startColor,
+  endColor,
+  startBgColor,
+  endBgColor,
+  startCard,
+  endCard,
+  line,
+  type,
 }: {
   type: "default" | "official";
   colorTop: "#FD7659" | "#FFD595";
