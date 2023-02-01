@@ -123,6 +123,7 @@ export const useAmmExit = ({
       initAmmData(pair, undefined, true);
     }
   }, [isShow && pair && ammPoolSnapshot?.poolAddress]);
+
   React.useEffect(() => {
     if (
       account.readyState === AccountStatus.ACTIVATED &&
@@ -188,8 +189,7 @@ export const useAmmExit = ({
               : miniLpVal
           )
           .times(1.1);
-        // todo:
-        console.log(
+        myLog(
           "updateMiniTradeValue: miniFeeLpWithSlippage, miniLpVal, miniVal = great one * 1.1 ",
           miniFeeLpWithSlippageVal.toString(),
           miniLpVal.toString(),
@@ -221,8 +221,7 @@ export const useAmmExit = ({
       fees &&
       ammData.slippage
     ) {
-      // todo:
-      console.log(
+      myLog(
         "updateMiniTradeValue: fees, slippage, ammPoolSnapshot",
         fees,
         ammData.slippage,
@@ -339,8 +338,7 @@ export const useAmmExit = ({
             .toBig(ammData?.coinLP?.tradeValue ?? 0)
             .gte(sdk.toBig(lpMinAmt?.replace(sdk.SEP, "") ?? 0))
         : false;
-      // todo:
-      console.log(
+      myLog(
         "updateMiniTradeValue validAmt: fee, lpMinAmt",
         fee,
         lpMinAmt.toString()

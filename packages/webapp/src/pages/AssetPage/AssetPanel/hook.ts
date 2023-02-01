@@ -29,6 +29,7 @@ import {
   PriceTag,
   TokenType,
   YEAR_DAY_FORMAT,
+  TokenType,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
