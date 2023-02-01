@@ -48,6 +48,12 @@ export interface FeeInfo {
   };
 }
 
+export enum TokenType {
+  single = "single",
+  lp = "lp",
+  defi = "defi",
+  dual = "dual",
+}
 export type PairMap<
   R extends { [key: string]: any },
   P = { coinA: CoinInfo<R>; coinB: CoinInfo<R> }

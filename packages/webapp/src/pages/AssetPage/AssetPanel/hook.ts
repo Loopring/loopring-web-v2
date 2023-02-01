@@ -16,7 +16,6 @@ import {
 import {
   AccountStep,
   AssetTitleProps,
-  TokenType,
   TradeBtnStatus,
   useOpenModals,
   useSettings,
@@ -29,6 +28,7 @@ import {
   myLog,
   PriceTag,
   YEAR_DAY_FORMAT,
+  TokenType,
 } from "@loopring-web/common-resources";
 
 import { WsTopicType } from "@loopring-web/loopring-sdk";
@@ -97,7 +97,6 @@ export const useGetAssets = () => {
           detail: assetsDetailList[index],
         })
     );
-
     setAssetsMap(map);
   }, []);
   useWalletLayer2Socket({ walletLayer2Callback });

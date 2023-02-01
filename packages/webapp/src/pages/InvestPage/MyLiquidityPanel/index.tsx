@@ -19,7 +19,6 @@ import {
   ModalCloseButton,
   MyPoolTable,
   SwitchPanelStyled,
-  TokenType,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -33,6 +32,7 @@ import {
   getValuePrecisionThousand,
   PriceTag,
   RowInvestConfig,
+  TokenType,
 } from "@loopring-web/common-resources";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { useOverview } from "./hook";

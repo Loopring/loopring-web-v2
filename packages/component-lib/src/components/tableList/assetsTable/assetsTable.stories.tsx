@@ -2,7 +2,8 @@ import styled from "@emotion/styled";
 import { Meta, Story } from "@storybook/react/types-6-0";
 import { withTranslation } from "react-i18next";
 import { MemoryRouter } from "react-router-dom";
-import { AssetsTable, RawDataAssetsItem, TokenType } from "./index";
+import { AssetsTable, RawDataAssetsItem } from "./index";
+import { TokenType } from "@loopring-web/common-resources";
 
 const Style = styled.div`
   flex: 1;

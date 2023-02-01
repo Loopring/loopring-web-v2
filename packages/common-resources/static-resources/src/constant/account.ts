@@ -1,6 +1,6 @@
 import { StateBase } from "./sagaStatus";
 import { ConnectProviders } from "@loopring-web/web3-provider";
-import { TokenType } from "@loopring-web/component-lib";
+import { TokenType } from "../loopring-interface";
 
 export enum AccountStatus {
   UN_CONNECT = "UN_CONNECT",
