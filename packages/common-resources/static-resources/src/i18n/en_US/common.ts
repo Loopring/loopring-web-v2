@@ -1387,4 +1387,7 @@ export default {
   labelClaimTitle: "Red Packet Claim",
   labelClaimNoBalance: "Insufficient {{belong}} balance",
   labelShareQRCode: "Generate QR Code for share",
+  labelSeal: "Seal",
+  labelOpenAfter: "Open after {{time}}",
+  labelTotalRedPacket: "Total {{value}}",
 };

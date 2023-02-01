@@ -11,11 +11,12 @@ import { TokenInfo } from "@loopring-web/loopring-sdk";
 export const getUserReceiveList = (
   claimList: sdk.LuckTokenClaim[],
   tokenInfo: TokenInfo
-): RawDataRedPacketDetailItem[] => {
+): { list: RawDataRedPacketDetailItem[]; isMyLuck: boolean } => {
   // const {idIndex,tokenMap} = store.getState().tokenMap
   const { accountId } = store.getState().account;
   let _max = 0,
     _index = -1;
+  let isMyLuck = false;
   const list: RawDataRedPacketDetailItem[] = claimList.reduce(
     (prev, item, index) => {
       const amountStr =
@@ -50,6 +51,11 @@ export const getUserReceiveList = (
     },
     [] as RawDataRedPacketDetailItem[]
   );
-  if (_index !== -1) list[_index].isMax = true;
-  return list;
+
+  if (_index !== -1) {
+    list[_index].isMax = true;
+    list[_index].isSelf == true ? (isMyLuck = true) : (isMyLuck = false);
+  }
+
+  return { list, isMyLuck };
 };

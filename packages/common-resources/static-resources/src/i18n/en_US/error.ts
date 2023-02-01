@@ -55,4 +55,5 @@ export default {
   errorMinError: "Minimum of {{value}}",
   errorLengthLimit: "Length is limit",
   errorRedpacketEmpty: "Red Packet is Empty",
+  errorRedpacketClaimed: "You already opened Red Packet",
 };

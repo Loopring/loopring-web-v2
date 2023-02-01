@@ -1,14 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addMarket, addMarkets, clearAll, removeMarket } from "./reducer";
+import {
+  clearAll,
+  clearRedPacketHash,
+  updateRedpacketHash,
+  updateRedpacketHashProps,
+} from "./reducer";
 import React from "react";
 import { RedpacketHashInfos } from "@loopring-web/common-resources";
 
 export const useRedPacketHistory = (): {
   redPacketHistory: RedpacketHashInfos;
   clearAll: () => void;
-  removeMarket: (pair: string) => void;
-  addMarket: (pair: string) => void;
-  addMarkets: (pair: string[]) => void;
+  clearRedPacketHash: () => void;
+  updateRedpacketHash: (props: updateRedpacketHashProps) => void;
 } => {
   const redPacketHistory: RedpacketHashInfos = useSelector(
     (state: any) => state.localStore.redPacketHistory
@@ -20,16 +24,12 @@ export const useRedPacketHistory = (): {
       () => dispatch(clearAll(undefined)),
       [dispatch]
     ),
-    removeMarket: React.useCallback(
-      (pair) => dispatch(removeMarket(pair)),
+    clearRedPacketHash: React.useCallback(
+      () => dispatch(clearRedPacketHash(undefined)),
       [dispatch]
     ),
-    addMarket: React.useCallback(
-      (pair) => dispatch(addMarket(pair)),
-      [dispatch]
-    ),
-    addMarkets: React.useCallback(
-      (pairs) => dispatch(addMarkets(pairs)),
+    updateRedpacketHash: React.useCallback(
+      (prosp: updateRedpacketHashProps) => dispatch(updateRedpacketHash(prosp)),
       [dispatch]
     ),
   };

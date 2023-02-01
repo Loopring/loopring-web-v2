@@ -9,7 +9,13 @@ import {
 } from "@loopring-web/common-resources";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import * as sdk from "@loopring-web/loopring-sdk";
-
+export type updateRedpacketHashProps = {
+  hash: TX_HASH;
+  luckToken: sdk.LuckyTokenItemForReceive;
+  chainId: sdk.ChainId;
+  address: string;
+  claimAmount: string;
+};
 const initialState: RedpacketHashInfos = {
   [ChainId.GOERLI]: {},
   [ChainId.MAINNET]: {},
@@ -29,7 +35,7 @@ const redPacketHistorySlice: Slice<RedpacketHashInfos> = createSlice<
     },
     clearRedPacketHash(
       state: RedpacketHashInfos,
-      _action: PayloadAction<string>
+      _action: PayloadAction<undefined>
     ) {
       function make(state: RedpacketHashInfos, chainId: string) {
         return Reflect.ownKeys(state[chainId]).reduce(
@@ -66,25 +72,20 @@ const redPacketHistorySlice: Slice<RedpacketHashInfos> = createSlice<
     },
     updateRedpacketHash(
       state: ChainHashInfos,
-      action: PayloadAction<{
-        hash: TX_HASH;
-        luckToken: sdk.LuckyTokenItemForReceive;
-        claim: sdk.LuckTokenClaim;
-        chainId: ChainId;
-      }>
+      action: PayloadAction<updateRedpacketHashProps>
     ) {
-      const { hash, luckToken, claim, chainId } = action.payload;
-      if (!state[chainId] || !state[chainId][claim.claimer.address]) {
-        state[chainId] = { ...state[chainId], [claim.claimer.address]: {} };
+      const { hash, luckToken, claimAmount, address, chainId } = action.payload;
+      if (!state[chainId] || !state[chainId][address]) {
+        state[chainId] = { ...state[chainId], [address]: {} };
       }
       if (luckToken && hash) {
         state[chainId] = {
           ...state[chainId],
-          [claim.claimer.address]: {
-            ...state[chainId][claim.claimer.address],
+          [address]: {
+            ...state[chainId][address],
             [hash]: {
               luckToken,
-              claim,
+              claim: claimAmount,
             },
           },
         };

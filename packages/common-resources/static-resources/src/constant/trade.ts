@@ -562,7 +562,7 @@ export type ACCOUNT_ADDRESS = string;
 export type TX_HASH = string;
 export type RedPacketHashItems = {
   [key: TX_HASH]: {
-    claim: sdk.LuckTokenClaim;
+    claim: string;
     luckToken: sdk.LuckyTokenItemForReceive;
   };
 };

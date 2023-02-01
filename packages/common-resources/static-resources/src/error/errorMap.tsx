@@ -300,6 +300,11 @@ export const ErrorMap = {
     messageKey: "errorRedpacketEmpty",
     options: {},
   },
+  ERROR_REDPACKET_CLAIMED: {
+    id: "ERROR_REDPACKET_CLAIMED",
+    messageKey: "errorRedpacketClaimed",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -328,6 +333,7 @@ export enum UIERROR_CODE {
   ERROR_REDPACKET_EMPTY = 700024,
   ERROR_RAMP_NO_INSTANCE = 700100,
   ERROR_DUAL_EXPIRED = 115003,
+  ERROR_REDPACKET_CLAIMED = 113002,
 }
 export type ErrorObject = {
   from?: string;
@@ -407,6 +413,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   108000: ErrorMap.ERROR_NO_MARKET, //Unsupported market
   102127: ErrorMap.ERROR_COLLECTION_SAME_NAME,
   108001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Unsupported depth level
+  113002: ErrorMap.ERROR_REDPACKET_CLAIMED,
   114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
   122001: ErrorMap.ERROR_ON_REFRESH,

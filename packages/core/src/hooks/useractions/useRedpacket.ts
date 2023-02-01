@@ -6,7 +6,7 @@ import {
   useOpenModals,
 } from "@loopring-web/component-lib";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useAccount } from "../../stores";
+import { store, useAccount, useSystem } from "../../stores";
 import {
   CustomError,
   ErrorMap,
@@ -20,7 +20,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
     // modals: { isShowAccount },
   } = useOpenModals();
   const {
-    account: { apiKey },
+    account: { apiKey, accountId },
   } = useAccount();
   const [redPacketInfo, setRedPacketInfo] =
     React.useState<{ hash: string; referrer: string } | undefined>(undefined);
@@ -32,6 +32,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
       });
       const response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
         {
+          accountId: accountId,
           hash: redPacketInfo.hash,
           fromId: 0,
           showHelper: true,
@@ -82,7 +83,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
         }
       }
     }
-  }, [redPacketInfo]);
+  }, [redPacketInfo, accountId]);
   React.useEffect(() => {
     if (redPacketInfo) {
       getLuckTokenDetail();
@@ -126,3 +127,81 @@ export const useRedPacketDetail = () => {
     redPacketProps: undefined,
   };
 };
+
+export function useOpenRedpacket() {
+  const { setShowRedPacket, setShowAccount } = useOpenModals();
+  const { chainId } = useSystem();
+  const { account } = useAccount();
+
+  const callOpen = React.useCallback(async () => {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.RedPacketOpen_Claim_In_Progress,
+    });
+    const _info = store.getState().modals.isShowRedPacket
+      .info as sdk.LuckyTokenItemForReceive & {
+      referrer?: string;
+    };
+    try {
+      let response =
+        await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
+          request: {
+            hash: _info?.hash,
+            claimer: account.accAddress,
+            referrer: _info?.referrer ?? "",
+          },
+          eddsaKey: account.eddsaKey.sk,
+          apiKey: account.apiKey,
+        } as any);
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        throw response;
+      }
+
+      setShowAccount({
+        isShow: false,
+      });
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.DetailPanel,
+        info: {
+          ..._info,
+          response,
+          claimAmount: (response as any).amount,
+        },
+      });
+    } catch (error: any) {
+      if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
+        setShowRedPacket({
+          isShow: true,
+          step: RedPacketViewStep.DetailPanel,
+          info: {
+            ..._info,
+          },
+        });
+      } else {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.RedPacketOpen_Failed,
+          error: {
+            code: UIERROR_CODE.UNKNOWN,
+            msg: error?.message,
+            // @ts-ignore
+            ...(error instanceof Error
+              ? {
+                  message: error?.message,
+                  stack: error?.stack,
+                }
+              : error ?? {}),
+          },
+        });
+      }
+    }
+  }, [chainId, account]);
+
+  return {
+    callOpen,
+  };
+}

@@ -356,6 +356,7 @@ export const useGetAssets = () => {
   };
   React.useEffect(() => {
     getUserAssets();
+    return () => {};
   }, []);
   return {
     assetsRawData,

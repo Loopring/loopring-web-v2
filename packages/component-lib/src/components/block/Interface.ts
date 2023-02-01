@@ -85,6 +85,14 @@ export type RedPacketOpenProps = {
   viewDetail: () => void;
   onOpen: () => void;
 };
+export type RedPacketUnreadyProps = {
+  sender: string;
+  amountStr: string;
+  memo: string;
+  validSince: number;
+  // viewDetail: () => void;
+  // onOpen: () => void;
+};
 export type RedPacketOpenedProps = {
   sender: string;
   amountStr: string;
@@ -97,12 +105,16 @@ export type RedPacketDetailProps = {
   amountStr: string;
   amountClaimStr: string;
   memo: string;
+  isMyLuck: boolean;
+  myAmountStr: string;
   claimList: RawDataRedPacketDetailItem[];
   detail: sdk.LuckTokenClaimDetail;
   isShouldSharedRely: boolean;
   totalCount: number;
   remainCount: number;
   onShared: () => void;
+  page: number;
+  handlePageChange: (page: number) => void;
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

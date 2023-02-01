@@ -10,19 +10,20 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
+  Account,
   EmptyValueTag,
   FirstPlaceIcon,
   getShortAddr,
-  getValuePrecisionThousand,
   RedPacketColorConfig,
   RedPacketCssColorConfig,
+  RedPacketHashItems,
   RedPacketOpenWrapSVG,
   RedPacketQRCodeSvg,
   RedPacketWrapSVG,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import QRCode from "qrcode-svg";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { volumeToCountAsBigNumber } from "@loopring-web/core";
 import { RedPacketViewStep } from "../modal";
 import { ModalStatePlayLoad } from "../../stores";
 import moment from "moment";
@@ -35,11 +36,10 @@ import {
   RedPacketOpenProps,
   RedPacketQRCodeProps,
   RedPacketTimeoutProps,
+  RedPacketUnreadyProps,
 } from "./Interface";
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -62,6 +62,7 @@ export const RedPacketBg = styled(Box)<
             RedPacketCssColorConfig[type]?.highLightDisableColor}; //#7c3400;
         }
 
+        cursor: pointer;
         display: inline-flex;
         z-index: 100;
         align-items: center;
@@ -74,6 +75,18 @@ export const RedPacketBg = styled(Box)<
         border-radius: 100%;
         transform: translate(-50%, -50%);
       }
+
+      .open.openUnready {
+        background: url("${SoursURL}/images/redpacketLock.webp") center
+          no-repeat;
+        color: ${({ type }) =>
+          RedPacketCssColorConfig[type]?.colorTop}; //#7c3400;
+        width: 76px;
+        height: 76px;
+        background-size: contain;
+        border-radius: initial;
+      }
+
       .clock {
         display: flex;
         z-index: 100;
@@ -383,16 +396,6 @@ export const RedPacketOpen = ({
         </Box>
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
           <Typography color={"inherit"}>{sender}</Typography>
-          {/*<Typography*/}
-          {/*  color={"inherit"}*/}
-          {/*  variant={"h4"}*/}
-          {/*  className={"timeoutTitle"}*/}
-          {/*  whiteSpace={"pre-line"}*/}
-          {/*  paddingTop={2}*/}
-          {/*  textAlign={"center"}*/}
-          {/*>*/}
-          {/*  {t("labelLuckyRedPacketTimeout")}*/}
-          {/*</Typography>*/}
         </Box>
         <Box display={"flex"} className={"middle"} flexDirection={"column"}>
           <Typography
@@ -421,7 +424,10 @@ export const RedPacketOpen = ({
             whiteSpace={"pre-line"}
             color={"inherit"}
             variant={"body1"}
-            onClick={viewDetail}
+            onClick={(e) => {
+              e.stopPropagation();
+              viewDetail();
+            }}
           >
             {t("labelLuckyRedPacketDetail")}
           </Link>
@@ -452,7 +458,7 @@ export const RedPacketClock = ({
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
-    let difference = +new Date(validSince) - Date.now();
+    let difference = +new Date(validSince).toTimeString() - Date.now();
     if (difference > 0) {
       setCountDown({
         days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
@@ -575,6 +581,73 @@ export const RedPacketClock = ({
   return <RedPacketBgDefault type={type} content={content} />;
 };
 
+export const RedPacketUnready = ({
+  type = "default",
+  size,
+  sender,
+  validSince,
+  amountStr,
+  memo,
+}: RedPacketDefault & RedPacketUnreadyProps) => {
+  const { t } = useTranslation();
+  const content = React.useMemo(() => {
+    return (
+      <Box display={"flex"} flex={1} flexDirection={"column"}>
+        <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
+          <Box
+            display={"flex"}
+            position={"absolute"}
+            className={"open openUnready"}
+          >
+            {t("labelSeal")}
+          </Box>
+        </Box>
+        <Box display={"flex"} className={"top"} flexDirection={"column"}>
+          <Typography color={"inherit"}>{sender}</Typography>
+        </Box>
+        <Box
+          display={"flex"}
+          className={"middle"}
+          flexDirection={"column"}
+          position={"relative"}
+        >
+          <Typography
+            color={"inherit"}
+            position={"absolute"}
+            marginTop={3}
+            top={0}
+          >
+            {t("labelOpenAfter", {
+              time: moment(validSince).fromNow(),
+            })}
+          </Typography>
+          <Typography
+            color={"inherit"}
+            variant={"h4"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            paddingX={2}
+            paddingTop={1}
+          >
+            {amountStr}
+          </Typography>
+          <Typography
+            color={"inherit"}
+            variant={"body1"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            paddingX={2}
+          >
+            {memo}
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }, [size, sender, amountStr, memo]);
+
+  return <RedPacketBgDefault type={type} size={size} content={content} />;
+};
+
 export const RedPacketOpened = ({
   type = "default",
 }: RedPacketOpenedProps & any) => {
@@ -657,7 +730,10 @@ export const RedPacketTimeout = ({
             whiteSpace={"pre-line"}
             color={"inherit"}
             variant={"body1"}
-            onClick={viewDetail}
+            onClick={(e) => {
+              e.stopPropagation();
+              viewDetail();
+            }}
           >
             {t("labelLuckyRedPacketDetail")}
           </Link>
@@ -666,6 +742,7 @@ export const RedPacketTimeout = ({
     </RedPacketBg>
   );
 };
+
 const BoxStyle = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
@@ -676,13 +753,18 @@ const BoxStyle = styled(Box)`
     border-bottom-left-radius: 100%;
   }
 `;
+
 export const RedPacketDetail = ({
   sender,
   amountStr,
   // _amountClaimStr,
   memo,
+  page = 1,
   claimList,
   // detail,
+  // detail,
+  myAmountStr,
+  // isMyLuck,
   isShouldSharedRely,
   totalCount,
   remainCount,
@@ -738,7 +820,13 @@ export const RedPacketDetail = ({
           color={RedPacketColorConfig.default.colorTop}
           marginTop={1}
         >
-          {amountStr}
+          {myAmountStr ? myAmountStr : EmptyValueTag}
+        </Typography>
+        <Typography
+          variant={"body2"}
+          color={RedPacketColorConfig.default.colorTop}
+        >
+          {t("labelTotalRedPacket", { value: amountStr })}
         </Typography>
       </Box>
       <Divider orientation={"horizontal"} sx={{ borderWidth: 3 }} />
@@ -854,78 +942,125 @@ export const RedPacketDetail = ({
 };
 
 export const RedPacketPrepare = ({
-  tokenInfo,
-  setShowRedPacket,
-  _type = "default",
-  ...props
-}: {
+                                   chainId,
+                                   account,
+                                   tokenInfo,
+                                   setShowRedPacket,
+                                   redPacketHashItems,
+                                   _type = "default",
+                                   amountStr,
+                                   onOpen,
+                                   ...props
+                                 }: {
+  chainId: sdk.ChainId;
+  account: Account;
+  amountStr: string;
+
   tokenInfo: sdk.TokenInfo;
+  redPacketHashItems: RedPacketHashItems | undefined;
   setShowRedPacket: (
     state: ModalStatePlayLoad & {
       step?: number;
-      info?: { [key: string]: any };
+      info?: { [ key: string ]: any };
     }
   ) => void;
+  onOpen: () => void;
   _type?: "official" | "default";
 } & sdk.LuckyTokenItemForReceive) => {
   // const { t } = useTranslation("common");
-
-  const amountStr = React.useMemo(() => {
-    const _info = props as sdk.LuckyTokenItemForReceive;
-    if (tokenInfo && _info && _info.tokenAmount) {
-      const symbol = tokenInfo.symbol;
-      const amount = getValuePrecisionThousand(
-        volumeToCountAsBigNumber(symbol, _info.tokenAmount.totalCount as any),
-        tokenInfo.precision,
-        tokenInfo.precision,
-        undefined,
-        false,
-        {
-          floor: false,
-          // isTrade: true,
-        }
-      );
-      return amount + " " + symbol;
+  const _info = props as sdk.LuckyTokenItemForReceive;
+  const viewItem = React.useMemo(() => {
+    let claim: undefined | string = undefined;
+    if (redPacketHashItems && redPacketHashItems[ _info.hash ]) {
+      claim = redPacketHashItems[ _info.hash ].claim;
+      // const historyInfos = redPacketHistory[chainId][account.accAddress];
     }
-    return "";
-
-    // tokenMap[]
-  }, [tokenInfo, props]);
-  // const textSendBy = React.useMemo(() => {
-  //   const _info = props as sdk.LuckyTokenItemForReceive;
-  //   if (_info && _info.validSince > _info.createdAt) {
-  //     const date = moment(new Date(`${_info.validSince}000`)).format(
-  //       YEAR_DAY_MINUTE_FORMAT
-  //     );
-  //     return t("labelLuckyRedPacketStart", date);
-  //   } else {
-  //     return "";
-  //   }
-  // }, [props?.validSince, props?.createdAt]);
-  return (
-    <Box>
-      <RedPacketOpen
-        {...{
-          ...props,
-        }}
-        type={_type ? _type : "default"}
-        amountStr={amountStr}
-        // textSendBy={textSendBy}
-        viewDetail={() => {
-          setShowRedPacket({
-            isShow: true,
-            step: RedPacketViewStep.DetailPanel,
-            info: props,
-          });
-        }}
-        sender={
-          props?.sender?.ens
-            ? props?.sender?.ens
-            : getShortAddr(props?.sender?.address)
-        }
-        memo={props?.info?.memo}
-        onOpen={() => undefined}
-      />
-    </Box>
-  );
+    let difference = new Date(_info.validSince).getTime() - Date.now();
+    if (claim) {
+      return (
+        <RedPacketOpened
+          {...{
+            ...props,
+          }}
+          type={_type ? _type : "default"}
+          amountStr={amountStr}
+          viewDetail={() => {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.DetailPanel,
+              info: _info,
+            });
+          }}
+          sender={
+            props?.sender?.ens
+              ? props?.sender?.ens
+              : getShortAddr(props?.sender?.address)
+          }
+          memo={props?.info?.memo}
+        />
+      );
+    } else if (difference > 180000) {
+      return (
+        <RedPacketUnready
+          sender={
+            props?.sender?.ens
+              ? props?.sender?.ens
+              : getShortAddr(props?.sender?.address)
+          }
+          {...props?.info}
+          amountStr={amountStr}
+          validSince={_info.validSince}
+        />
+      );
+    } else if (difference > 0) {
+      return (
+        <RedPacketClock
+          sender={
+            props?.sender?.ens
+              ? props?.sender?.ens
+              : getShortAddr(props?.sender?.address)
+          }
+          showRedPacket={function (): void {
+            throw new Error("Function not implemented.");
+          }}
+          {...props?.info}
+          amountStr={amountStr}
+          validSince={_info.validSince}
+        />
+      );
+    } else {
+      return (
+        <RedPacketOpen
+          {...{
+            ...props,
+          }}
+          type={_type ? _type : "default"}
+          amountStr={amountStr}
+          // textSendBy={textSendBy}
+          viewDetail={() => {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.DetailPanel,
+              info: props,
+            });
+          }}
+          sender={
+            props?.sender?.ens
+              ? props?.sender?.ens
+              : getShortAddr(props?.sender?.address)
+          }
+          memo={props?.info?.memo}
+          onOpen={() => {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.OpenPanel,
+              info: _info,
+            });
+            onOpen();
+          }}
+        />
+      );
+    }
+  }, [amountStr, redPacketHashItems, onOpen, _info]);
+  return <Box>{viewItem}</Box>;
 };
