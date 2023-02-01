@@ -7,12 +7,14 @@ export const Dual_Success = (props: PanelProps) => {
   const { isMobile } = useSettings();
   const propsPatch = {
     iconType: IconType.PendingIcon,
-    describe1: <Typography variant={"h5"} color={"var(--color-primary)"}>
-      {props.t("labelDualProcessing", {
-        symbol: props.symbol,
-        value: props.value,
-      })}
-    </Typography>,
+    describe1: (
+      <Typography variant={"h5"} color={"var(--color-primary)"}>
+        {props.t("labelDualProcessing", {
+          symbol: props.symbol,
+          value: props.value,
+        })}
+      </Typography>
+    ),
     describe2: (
       <Typography
         justifySelf={"stretch"}

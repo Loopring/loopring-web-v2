@@ -32,10 +32,12 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
+
 enum TabIndex {
   Received = "Received",
   Send = "Send",
 }
+
 export const MyRedPacketPanel = () => {
   const theme = useTheme();
   const container = React.useRef<HTMLDivElement>(null);

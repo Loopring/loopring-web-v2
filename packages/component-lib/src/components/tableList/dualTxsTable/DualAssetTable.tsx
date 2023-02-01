@@ -75,8 +75,6 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       rawData,
       pagination,
       getDualAssetList,
-      // idIndex,
-      // tokenMap,
       getDetail,
       dualMarketMap,
       showloading,
@@ -134,7 +132,8 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
               dualType === DUAL_TYPE.DUAL_BASE
                 ? [sellSymbol, buySymbol]
                 : [buySymbol, sellSymbol];
-            const showClock = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+            const showClock =
+              investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING;
             //${row.sellSymbol}/${row.buySymbol}
             return (
               <Typography
@@ -155,10 +154,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                     ]}
                   />
                 </Typography>
-                <Typography
-                  component={"span"}
-                  display={"flex"}
-                >
+                <Typography component={"span"} display={"flex"}>
                   <Typography
                     component={"span"}
                     // display={"inline-flex"}
@@ -168,11 +164,17 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                   >
                     {`${base}/${quote}`}
                   </Typography>
-                  {showClock && <Box component={"span"} marginLeft={1} display={"flex"} alignItems={"center"}>
-                  <ClockIcon />
-                </Box>}
+                  {showClock && (
+                    <Box
+                      component={"span"}
+                      marginLeft={1}
+                      display={"flex"}
+                      alignItems={"center"}
+                    >
+                      <ClockIcon />
+                    </Box>
+                  )}
                 </Typography>
-                
               </Typography>
             );
           },
@@ -264,20 +266,21 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           name: t("labelDualAssetAction"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const investmentStatus = row.__raw__.order.investmentStatus;
-            const showRefresh = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-            return showRefresh
-              ? (
-                <Link onClick={(_e) => {
-                  refresh(row)}
-                }>
-                  {t("labelDualAssetRefresh")}
-                </Link>
-              )
-              : (
-                <Link onClick={(_e) => showDetail(row)}>
-                  {t("labelDualAssetDetail")}
-                </Link>
-              );
+            const showRefresh =
+              investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING;
+            return showRefresh ? (
+              <Link
+                onClick={(_e) => {
+                  refresh(row);
+                }}
+              >
+                {t("labelDualAssetRefresh")}
+              </Link>
+            ) : (
+              <Link onClick={(_e) => showDetail(row)}>
+                {t("labelDualAssetDetail")}
+              </Link>
+            );
           },
         },
       ],
@@ -457,7 +460,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
           onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
-            if (c.key === 'Action') return
+            if (c.key === "Action") return;
             showDetail(row);
           }}
           sortMethod={sortMethod}

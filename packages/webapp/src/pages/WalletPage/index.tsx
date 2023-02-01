@@ -44,15 +44,18 @@ const WrongStatusStyled = styled(Box)`
   align-items: center;
   padding: ${({ theme }) => theme.unit * 10}px auto;
   background-color: ${({ theme }) => theme.colorBase.box};
+
   .logo {
     margin-bottom: ${({ theme }) => theme.unit * 8}px;
   }
+
   .content {
     text-align: center;
     color: ${({ theme }) => theme.colorBase.textSecondary};
     width: ${({ theme }) => theme.unit * 50}px;
     margin-bottom: ${({ theme }) => theme.unit * 8}px;
   }
+
   .button {
     color: ${({ theme }) => theme.colorBase.textSecondary};
   }
@@ -80,13 +83,14 @@ const WrongStatus = ({
   );
 };
 
-const SectionStyled = styled(Box)<{isMobile?: boolean}>`
+const SectionStyled = styled(Box)<{ isMobile?: boolean }>`
   padding: ${({ theme }) => theme.unit * 4}px;
   padding-top: auto;
   padding-bottom: auto;
   background: ${({ theme }) => theme.colorBase.box};
   margin-bottom: ${({ theme }) => theme.unit * 2}px;
-  width: ${({ theme, isMobile }) => isMobile ? '100%' : `${theme.unit * 60}px`};
+  width: ${({ theme, isMobile }) =>
+    isMobile ? "100%" : `${theme.unit * 60}px`};
   height: 96px;
   cursor: pointer;
   display: flex;
@@ -439,9 +443,9 @@ export const GuardianPage = withTranslation(["common"])(
         <ContainerStyled marginTop={2}>
           <Section
             onClick={() => {
-              loadData()
-              onOpenAdd(true)}
-            }
+              loadData();
+              onOpenAdd(true);
+            }}
             title={"Set as Guardian"}
             logo={
               <RoundAddIcon
@@ -456,8 +460,8 @@ export const GuardianPage = withTranslation(["common"])(
           <Section
             description={"Who I Protect"}
             onClick={() => {
-              loadData()
-              onOpenLockWallet(true)
+              loadData();
+              onOpenLockWallet(true);
             }}
             title={"Lock/unlock Wallet"}
             logo={
@@ -473,8 +477,8 @@ export const GuardianPage = withTranslation(["common"])(
           <Section
             description={"Guardian Request Handling"}
             onClick={() => {
-              loadData()
-              onOpenApprovalRequests(true)
+              loadData();
+              onOpenApprovalRequests(true);
             }}
             title={"Approve Requests"}
             logo={
@@ -490,8 +494,8 @@ export const GuardianPage = withTranslation(["common"])(
           <Section
             description={"Guardian Handling Records"}
             onClick={() => {
-              loadData()
-              onOpenHistory(true)
+              loadData();
+              onOpenHistory(true);
             }}
             title={"View History"}
             logo={

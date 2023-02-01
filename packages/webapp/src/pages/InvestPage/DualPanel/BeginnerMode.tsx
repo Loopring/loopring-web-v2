@@ -38,6 +38,7 @@ const SelectBox = styled(Card)<{ selected: boolean }>`
     selected ? theme.colorBase.borderSelect : theme.colorBase.fieldOpacity};
   margin-right: ${({ theme }) => 2.5 * theme.unit}px;
   box-shadow: none;
+
   :hover {
     border-color: ${({ theme }) => theme.colorBase.borderHover};
   }

@@ -2,7 +2,11 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { Box, Modal, Typography } from "@mui/material";
 import { ReactNode } from "react";
-import { ModalBackButton, ModalCloseButton, useSettings } from "@loopring-web/component-lib";
+import {
+  ModalBackButton,
+  ModalCloseButton,
+  useSettings,
+} from "@loopring-web/component-lib";
 
 type GuardianModalProps = {
   open: boolean;
@@ -15,24 +19,23 @@ type GuardianModalProps = {
   showBackButton?: boolean;
 };
 
-const GuardianModalContentStyled = styled(Box)<{isMobile?: boolean}>`
+const GuardianModalContentStyled = styled(Box)<{ isMobile?: boolean }>`
   & > div {
     background: var(--color-box);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: ${({ isMobile }) => isMobile ? "92%" : "60%"};
-    min-width: ${({ isMobile }) => isMobile ? "auto" : "600px"};
-    margin: ${({ isMobile }) => isMobile ? "auto 2%" : "auto"};
+    width: ${({ isMobile }) => (isMobile ? "92%" : "60%")};
+    min-width: ${({ isMobile }) => (isMobile ? "auto" : "600px")};
+    margin: ${({ isMobile }) => (isMobile ? "auto 2%" : "auto")};
   }
+
   &.guardianPop .content {
     padding-top: 40px;
     border-radius: ${({ theme }) => theme.unit}px;
   }
 `;
-
-
 
 export const GuardianModal = withTranslation("common")(
   ({
@@ -42,7 +45,7 @@ export const GuardianModal = withTranslation("common")(
     title,
     onBack,
     showBackButton,
-    t
+    t,
   }: GuardianModalProps & WithTranslation) => {
     const { isMobile } = useSettings();
     return (

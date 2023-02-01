@@ -69,6 +69,7 @@ export type CAMPAIGN_TAG = {
   versionAndroidMin: string;
   versionAndroidMax: string;
 };
+
 export enum SCENARIO {
   ORDERBOOK = "ORDERBOOK",
   MARKET = "MARKET",

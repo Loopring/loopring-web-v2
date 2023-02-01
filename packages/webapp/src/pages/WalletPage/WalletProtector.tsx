@@ -1,7 +1,4 @@
-import {
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
   EmptyDefault,
   Button,
@@ -25,7 +22,11 @@ import {
 } from "@loopring-web/core";
 import { connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { HEBAO_LOCK_STATUS, IsMobile, Protector } from "@loopring-web/loopring-sdk";
+import {
+  HEBAO_LOCK_STATUS,
+  IsMobile,
+  Protector,
+} from "@loopring-web/loopring-sdk";
 
 const useHebaoProtector = <T extends sdk.Protector>({
   guardianConfig,
@@ -131,9 +132,14 @@ const useHebaoProtector = <T extends sdk.Protector>({
   };
 };
 
-export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guardianConfig}: { 
+export const WalletProtector = ({
+  protectorList,
+  handleOpenModal,
+  loadData,
+  guardianConfig,
+}: {
   protectorList: Protector[];
-  handleOpenModal: (info: {step: GuardianStep, options?: any}) => void;
+  handleOpenModal: (info: { step: GuardianStep; options?: any }) => void;
   loadData: () => Promise<void>;
   guardianConfig: any;
 }) => {
@@ -145,32 +151,41 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
   });
   const { isMobile } = useSettings();
   if (protectorList.length === 0) {
-    return <Box flex={1} height={"100%"} width={"100%"}>
-      <EmptyDefault
-        style={{ alignSelf: "center" }}
-        height={"100%"}
-        message={() => (
-          <Box
-            flex={1}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-          >
-            {t("labelNoContent")}
-          </Box>
-        )}
-      />
-    </Box>
+    return (
+      <Box flex={1} height={"100%"} width={"100%"}>
+        <EmptyDefault
+          style={{ alignSelf: "center" }}
+          height={"100%"}
+          message={() => (
+            <Box
+              flex={1}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              {t("labelNoContent")}
+            </Box>
+          )}
+        />
+      </Box>
+    );
   } else {
-
-    const StatusView = ({ status, onClickLock }: {status: HEBAO_LOCK_STATUS, onClickLock: () => void}) => {
-
+    const StatusView = ({
+      status,
+      onClickLock,
+    }: {
+      status: HEBAO_LOCK_STATUS;
+      onClickLock: () => void;
+    }) => {
       switch (status) {
         case "UNLOCK_FAILED":
         case "LOCKED":
           return (
             <Box display={"flex"} alignItems={"center"}>
-              <LockIcon htmlColor={"var(--color-text-third)"} fontSize={"medium"} />
+              <LockIcon
+                htmlColor={"var(--color-text-third)"}
+                fontSize={"medium"}
+              />
               <Typography
                 color={"var(--color-text-third)"}
                 paddingLeft={1}
@@ -187,7 +202,10 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
         case "UNLOCK_WAITING":
           return (
             <Box display={"flex"} alignItems={"center"}>
-              <LoadingIcon htmlColor={"var(--color-text-third)"} fontSize={"medium"} />
+              <LoadingIcon
+                htmlColor={"var(--color-text-third)"}
+                fontSize={"medium"}
+              />
               <Typography
                 color={"var(--color-text-third)"}
                 paddingLeft={1}
@@ -204,7 +222,10 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
         case "LOCK_WAITING":
           return (
             <Box display={"flex"} alignItems={"center"}>
-              <LockIcon htmlColor={"var(--color-text-third)"} fontSize={"medium"} />
+              <LockIcon
+                htmlColor={"var(--color-text-third)"}
+                fontSize={"medium"}
+              />
               <Typography
                 color={"var(--color-text-third)"}
                 paddingLeft={1}
@@ -232,34 +253,50 @@ export const WalletProtector = ({ protectorList, handleOpenModal, loadData, guar
               {t("labelLock")}
             </Button>
           );
-        default: return <></>
+        default:
+          return <></>;
       }
-    }
+    };
 
-    
-    return <Box height={"320px"} overflow="scroll">
-      {protectorList.map(x => {
-        const {lockStatus} = x
-        return <Box key={x.address} display={"flex"} alignItems={"center"} justifyContent={"space-between"} marginBottom={2}>
-        <Box>
-          <Typography variant={"body1"}>{x.ens ? x.ens : t('labelUnknown')}</Typography>
-          <Typography color={"var(--color-text-third)"} title={x.address}>
-            {
-              isMobile
-                ? (x.address && `${x.address.slice(0, 6)}...${x.address.slice(x.address.length - 4,)}`) 
-                : x.address
-            }
-          </Typography>
-        </Box>
-        <StatusView status={lockStatus} onClickLock={() => {
-          onLock(x);
-          handleOpenModal({
-            step: GuardianStep.LockAccount_WaitForAuth,
-            options: { lockRetry: onLock, lockRetryParams: x },
-          });
-        }}/>
+    return (
+      <Box height={"320px"} overflow="scroll">
+        {protectorList.map((x) => {
+          const { lockStatus } = x;
+          return (
+            <Box
+              key={x.address}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              marginBottom={2}
+            >
+              <Box>
+                <Typography variant={"body1"}>
+                  {x.ens ? x.ens : t("labelUnknown")}
+                </Typography>
+                <Typography color={"var(--color-text-third)"} title={x.address}>
+                  {isMobile
+                    ? x.address &&
+                      `${x.address.slice(0, 6)}...${x.address.slice(
+                        x.address.length - 4
+                      )}`
+                    : x.address}
+                </Typography>
+              </Box>
+              <StatusView
+                status={lockStatus}
+                onClickLock={() => {
+                  onLock(x);
+                  handleOpenModal({
+                    step: GuardianStep.LockAccount_WaitForAuth,
+                    options: { lockRetry: onLock, lockRetryParams: x },
+                  });
+                }}
+              />
+            </Box>
+          );
+        })}
       </Box>
-      })}
-    </Box>
+    );
   }
-}
+};

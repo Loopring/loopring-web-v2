@@ -25,11 +25,13 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
   //display: flex;
   //flex-direction: column;
   position: relative;
+
   .content {
     .betweenEle {
       left: 50%;
       top: 128px;
       position: absolute;
+
       .open {
         background: #fff7b1;
         color: #7c3400;
@@ -45,6 +47,7 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
         border-radius: 100%;
         transform: translate(-50%, -50%);
       }
+
       .clock {
         display: flex;
         z-index: 100;
@@ -57,6 +60,7 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
         z-index: 100;
         left: 50%;
         top: -50%;
+
         .hours,
         .minutes,
         .seconds {
@@ -68,15 +72,18 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
           display: inline-flex;
           align-items: center;
           border-radius: ${({ theme }) => theme.unit + "px"};
+
           h4 {
             text-indent: -9999em;
             height: 0;
             width: 0;
           }
         }
+
         .hours,
         .minutes {
           position: relative;
+
           &:after {
             display: block;
             content: ":";

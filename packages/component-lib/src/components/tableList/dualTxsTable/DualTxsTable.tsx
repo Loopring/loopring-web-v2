@@ -138,7 +138,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                     amountOut,
                   },
                   timeOrigin: { expireTime },
-                  investmentStatus
+                  investmentStatus,
                 },
               },
               // expireTime,
@@ -157,13 +157,17 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
             const side =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED)
-                : (Date.now() - expireTime >= 0 && investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED && investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED)
+                : Date.now() - expireTime >= 0 &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED
                 ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
                 : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
             const statusColor =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? "var(--color-tag)"
-                : (Date.now() - expireTime >= 0 && investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED && investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED)
+                : Date.now() - expireTime >= 0 &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED
                 ? "var(--color-warning)"
                 : "var(--color-success)";
             let buySymbol, buyAmount;
@@ -186,20 +190,37 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
                 : Date.now() - expireTime >= 0
                 ? `${amount} ${sellSymbol}`
                 : `${amount} ${sellSymbol}`;
-            const pending = <Typography borderRadius={1} marginLeft={1} paddingX={0.5} bgcolor={"var(--color-warning)"}>pending</Typography>
-            const failed = <Typography borderRadius={1} marginLeft={1} paddingX={0.5} bgcolor={"var(--color-error)"}>failed</Typography>
+            const pending = (
+              <Typography
+                borderRadius={1}
+                marginLeft={1}
+                paddingX={0.5}
+                bgcolor={"var(--color-warning)"}
+              >
+                pending
+              </Typography>
+            );
+            const failed = (
+              <Typography
+                borderRadius={1}
+                marginLeft={1}
+                paddingX={0.5}
+                bgcolor={"var(--color-error)"}
+              >
+                failed
+              </Typography>
+            );
             return (
               <Box display={"flex"} alignItems={"center"} flexDirection={"row"}>
                 <Typography color={statusColor}>{side}</Typography>
                 &nbsp;&nbsp;
                 <Typography component={"span"}>{sentence}</Typography>
-                { 
-                  (investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED || investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED)
-                    ? failed
-                    : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING 
-                      ? pending
-                      : null 
-                }
+                {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
+                investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
+                  ? failed
+                  : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+                  ? pending
+                  : null}
               </Box>
             );
           },
@@ -360,16 +381,20 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
               tokenMap[sellSymbol].precision,
               false
             );
-            const side = 
+            const side =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED)
-                : (Date.now() - expireTime >= 0 && investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED && investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED)
-                  ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
-                  : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
+                : Date.now() - expireTime >= 0 &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED
+                ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
+                : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE);
             const statusColor =
               settlementStatus === sdk.SETTLEMENT_STATUS.PAID
                 ? "var(--color-tag)"
-                : (Date.now() - expireTime >= 0 && investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED && investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED)
+                : Date.now() - expireTime >= 0 &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+                  investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED
                 ? "var(--color-warning)"
                 : "var(--color-success)";
             let buySymbol, buyAmount;

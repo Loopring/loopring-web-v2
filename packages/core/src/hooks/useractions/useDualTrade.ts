@@ -390,7 +390,7 @@ export const useDualTrade = <
         const {
           dualType,
           productId,
-          profit
+          profit,
           // dualPrice: { dualBid },
         } = tradeDual.dualViewInfo.__raw__.info;
 

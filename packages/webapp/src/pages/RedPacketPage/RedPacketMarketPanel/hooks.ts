@@ -39,6 +39,7 @@ export type TxsFilterProps = {
   limit?: number;
   types?: sdk.UserTxTypes[] | string;
 };
+
 enum TxTypeAMM {
   Add = "join_pool",
   Remove = "exit_pool",

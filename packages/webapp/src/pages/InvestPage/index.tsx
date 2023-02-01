@@ -75,38 +75,6 @@ export const AmmTitle = () => {
       >
         {t("labelInvestAmmTitle")}
       </Typography>
-      {/* // TODO */}
-      {/*<HelpIcon*/}
-      {/*  {...bindHover(popupState)}*/}
-      {/*  fontSize={isMobile ? "medium" : "large"}*/}
-      {/*  htmlColor={"var(--color-text-third)"}*/}
-      {/*/>*/}
-      {/*<PopoverPure*/}
-      {/*  className={"arrow-center"}*/}
-      {/*  {...bindPopper(popupState)}*/}
-      {/*  anchorOrigin={{*/}
-      {/*    vertical: "bottom",*/}
-      {/*    horizontal: "center",*/}
-      {/*  }}*/}
-      {/*  transformOrigin={{*/}
-      {/*    vertical: "top",*/}
-      {/*    horizontal: "center",*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  <Typography*/}
-      {/*    padding={2}*/}
-      {/*    component={"p"}*/}
-      {/*    variant={"body2"}*/}
-      {/*    whiteSpace={"pre-line"}*/}
-      {/*  >*/}
-      {/*    <Trans*/}
-      {/*      i18nKey={description ? description : "labelInvestAmmDescription"}*/}
-      {/*    >*/}
-      {/*      Once your deposit is confirmed on Ethereum, it will be added to your*/}
-      {/*      balance within 2 minutes.*/}
-      {/*    </Trans>*/}
-      {/*  </Typography>*/}
-      {/*</PopoverPure>*/}
     </Typography>
   );
 };
@@ -129,38 +97,6 @@ export const DefiTitle = () => {
       >
         {t("labelInvestDefiTitle")}
       </Typography>
-      {/* // TODO */}
-      {/*<HelpIcon*/}
-      {/*  {...bindHover(popupState)}*/}
-      {/*  fontSize={isMobile ? "medium" : "large"}*/}
-      {/*  htmlColor={"var(--color-text-third)"}*/}
-      {/*/>*/}
-      {/*<PopoverPure*/}
-      {/*  className={"arrow-center"}*/}
-      {/*  {...bindPopper(popupState)}*/}
-      {/*  anchorOrigin={{*/}
-      {/*    vertical: "bottom",*/}
-      {/*    horizontal: "center",*/}
-      {/*  }}*/}
-      {/*  transformOrigin={{*/}
-      {/*    vertical: "top",*/}
-      {/*    horizontal: "center",*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  <Typography*/}
-      {/*    padding={2}*/}
-      {/*    component={"p"}*/}
-      {/*    variant={"body2"}*/}
-      {/*    whiteSpace={"pre-line"}*/}
-      {/*  >*/}
-      {/*    <Trans*/}
-      {/*      i18nKey={description ? description : "labelInvestAmmDescription"}*/}
-      {/*    >*/}
-      {/*      Once your deposit is confirmed on Ethereum, it will be added to your*/}
-      {/*      balance within 2 minutes.*/}
-      {/*    </Trans>*/}
-      {/*  </Typography>*/}
-      {/*</PopoverPure>*/}
     </Typography>
   );
 };

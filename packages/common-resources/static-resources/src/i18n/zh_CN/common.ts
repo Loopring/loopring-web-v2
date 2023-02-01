@@ -803,8 +803,7 @@ export default {
     "LayerSwap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelInvestAmmTitle: "AMM Pools",
   labelInvestBalanceTitle: "My Investments",
-  labelInvestDualRefreshErrorTitle:
-    "Subscription Failed",
+  labelInvestDualRefreshErrorTitle: "Subscription Failed",
   labelInvestDualRefreshError:
     "The subscription of {{token1}}/{{token2}} Dual Investment failed.",
   labelTransactionsLink: "Transactions",
@@ -1016,7 +1015,8 @@ export default {
   labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
   labelDualSuccess: "Subscription {{symbol}} Successfully",
   labelDualProcessing: "Waiting for completion",
-  labelDualProcessingDes: "We will try to fulfill your subscription request within minutes. If your subscription cannot be fully completed within the time frame, the unfilled portion will be unlocked. You can return later to resubscribe.",
+  labelDualProcessingDes:
+    "We will try to fulfill your subscription request within minutes. If your subscription cannot be fully completed within the time frame, the unfilled portion will be unlocked. You can return later to resubscribe.",
   labelDualFailed: "Subscribe Failed",
   labelDualFee: "Fee",
   labelDualMin: "Minimum of {{arg}}",

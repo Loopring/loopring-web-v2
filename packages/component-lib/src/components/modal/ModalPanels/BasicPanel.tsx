@@ -135,10 +135,12 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             />
           );
         case IconType.PendingIcon:
-          return <LoadingIcon
-            color={"primary"}
-            style={{ width: size, height: size }}
-          />;
+          return (
+            <LoadingIcon
+              color={"primary"}
+              style={{ width: size, height: size }}
+            />
+          );
       }
     }, [iconType, size]);
 
@@ -479,8 +481,10 @@ export const WithdrawBase = (props: PanelProps) => {
 };
 
 export const DualBase = (props: PanelProps & { showTitle: boolean }) => {
-  const { showTitle } = props
-  return <BasicPanel title={showTitle ? "labelDualTitle" : undefined} {...props} />;
+  const { showTitle } = props;
+  return (
+    <BasicPanel title={showTitle ? "labelDualTitle" : undefined} {...props} />
+  );
 };
 
 export const RedPacketBase = (props: PanelProps) => {

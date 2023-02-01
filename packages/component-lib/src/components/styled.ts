@@ -9,12 +9,14 @@ import { useSettings } from "../stores";
 // @ts-ignore
 export const boxLiner = (_props: { theme: Theme }) => css`
   background: var(--color-box-linear);
+
   textarea,
   .coinInput-wrap,
   .btnInput-wrap,
   .MuiOutlinedInput-root {
     background: var(--field-opacity);
     border-color: var(--opacity);
+
     :hover {
       border-color: var(--color-border-hover);
     }
@@ -397,10 +399,12 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     //justify-content: flex-start;
     justify-content: space-between;
     flex-direction: row;
+
     &.isMobile {
       font-size: ${({ theme }) => theme.fontDefault.h6};
     }
   }
+
   &.redPacketType {
     display: flex;
     flex-direction: column;
@@ -409,6 +413,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     text-indent: 0em;
     text-align: left;
     padding: ${({ theme }) => theme.unit * 2}px;
+
     .mainTitlte {
     }
   }
@@ -418,26 +423,32 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     flex-direction: row;
     white-space: pre;
   }
+
   &.vendor {
     justify-content: center;
     flex-direction: column;
+
     & > .vendorName {
       text-indent: -999em;
       justify-content: center;
     }
   }
+
   &:hover {
     background: var(--provider-hover);
     border-color: var(--opacity);
     color: var(--color-text-button-select);
   }
+
   &.selected {
     &.redPacketType {
       border: 1px solid var(--color-border-select);
+
       &:after {
         display: none;
       }
     }
+
     position: relative;
     background: var(--provider-hover);
     border-color: var(--opacity);

@@ -43,6 +43,7 @@ const BoxStyle = styled(Grid)`
     }
   }
 ` as typeof Grid;
+
 export function HorizontalLabelPositionBelowStepper({
   activeStep,
   steps,

@@ -32,7 +32,7 @@ export enum TxGuardianHistoryType {
   REMOVE_GUARDIAN_WA = 59, // 35
   UNLOCK_WALLET_WA = 60, // 37
   RESET_GUARDIANS_WA = 61, // 200
-  CALL_CONTRACT_WA = 62
+  CALL_CONTRACT_WA = 62,
 }
 
 export enum TxHebaoAction {
@@ -184,12 +184,16 @@ export const useHebaoMain = <
         .then(({ walletType }) => {
           setLoopringSmartContractWallet(
             walletType?.isInCounterFactualStatus ||
-            (walletType?.isContract && walletType?.loopringWalletContractVersion !== "")
-          )
-          setNonLoopringSmartContractWallet(walletType?.isContract && walletType?.loopringWalletContractVersion === "")
+              (walletType?.isContract &&
+                walletType?.loopringWalletContractVersion !== "")
+          );
+          setNonLoopringSmartContractWallet(
+            walletType?.isContract &&
+              walletType?.loopringWalletContractVersion === ""
+          );
         })
         .catch(() => {
-          setNonLoopringSmartContractWallet(true)
+          setNonLoopringSmartContractWallet(true);
         });
     }
   }, [accountStatus]);

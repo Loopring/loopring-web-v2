@@ -2,29 +2,23 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import {
   BanxaConfirm,
   Button,
-  RampConfirm,
   useSettings,
   VendorMenu,
 } from "@loopring-web/component-lib";
 import React from "react";
 import {
+  banxaService,
+  OrderENDReason,
   RAMP_SELL_PANEL,
   useBanxaConfirm,
   useModalData,
   useNotify,
-  useRampConfirm,
   useVendor,
   ViewAccountTemplate,
 } from "@loopring-web/core";
 import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
-import { banxaService, OrderENDReason } from "@loopring-web/core";
 
-import {
-  BackIcon,
-  myLog,
-  SoursURL,
-  TradeTypes,
-} from "@loopring-web/common-resources";
+import { BackIcon, SoursURL, TradeTypes } from "@loopring-web/common-resources";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "@emotion/styled";
 
@@ -42,10 +36,10 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
-    TradeTypes.Buy
-    // match?.params?.tab?.toLowerCase() === "sell".toLowerCase()
-    //   ? TradeTypes.Sell
-    //   : TradeTypes.Buy
+    // TradeTypes.Buy
+    match?.params?.tab?.toLowerCase() === "sell".toLowerCase()
+      ? TradeTypes.Sell
+      : TradeTypes.Buy
   );
   const { banxaViewProps, offBanxaValue } = useBanxaConfirm({
     sellPanel,
