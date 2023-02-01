@@ -141,6 +141,7 @@ export function useOpenRedpacket() {
     const _info = store.getState().modals.isShowRedPacket
       .info as sdk.LuckyTokenItemForReceive & {
       referrer?: string;
+      isShouldSharedRely: boolean;
     };
     try {
       let response =
@@ -148,7 +149,10 @@ export function useOpenRedpacket() {
           request: {
             hash: _info?.hash,
             claimer: account.accAddress,
-            referrer: _info?.referrer ?? "",
+            referrer:
+              _info.isShouldSharedRely && _info?.referrer
+                ? _info?.referrer
+                : "",
           },
           eddsaKey: account.eddsaKey.sk,
           apiKey: account.apiKey,

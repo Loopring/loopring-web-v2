@@ -10,6 +10,7 @@ import {
   RedPacketClockProps,
   RedPacketViewStep,
   useOpenModals,
+  RedPacketDetailLimit,
 } from "@loopring-web/component-lib";
 import React from "react";
 import {
@@ -21,6 +22,7 @@ import {
   myLog,
   UIERROR_CODE,
   YEAR_DAY_MINUTE_FORMAT,
+  YEAR_DAY_SECOND_FORMAT,
 } from "@loopring-web/common-resources";
 import {
   store,
@@ -107,13 +109,16 @@ export function useRedPacketModal() {
 
   const textSendBy = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
-    if (isShow && info && _info.validSince > _info.createdAt) {
-      const date = moment(new Date(`${_info.validSince}000`)).format(
-        YEAR_DAY_MINUTE_FORMAT
+
+    if (isShow && info && _info.validSince > Date.now()) {
+      const date = moment(new Date(_info.validSince)).format(
+        YEAR_DAY_SECOND_FORMAT
       );
-      return t("labelLuckyRedPacketStart", date);
+      return t("labelLuckyRedPacketStart", {
+        value: date,
+      });
     } else {
-      return "";
+      return t("labelLuckyRedPacketStarted");
     }
   }, [info?.validSince, info?.createdAt]);
 
@@ -184,6 +189,7 @@ export function useRedPacketModal() {
       const _info = info as sdk.LuckyTokenItemForReceive & {
         claimAmount?: string;
       };
+
       if (
         isShow &&
         info &&
@@ -191,10 +197,29 @@ export function useRedPacketModal() {
         _info?.hash
       ) {
         myLog("redPacketOpenProps", _info);
+        let myAmountStr: string | undefined = undefined;
+        if (_info?.claimAmount) {
+          const tokenInfo = tokenMap[idIndex[_info?.tokenId] ?? ""];
+          const symbol = tokenInfo.symbol;
+          myAmountStr =
+            getValuePrecisionThousand(
+              volumeToCountAsBigNumber(symbol, _info.claimAmount as any),
+              tokenInfo.precision,
+              tokenInfo.precision,
+              undefined,
+              false,
+              {
+                floor: false,
+                // isTrade: true,
+              }
+            ) +
+            " " +
+            symbol;
+        }
         return {
           memo: _info.info.memo,
           amountStr,
-          amountClaimStr,
+          myAmountStr,
           sender: _info.sender?.ens
             ? _info.sender?.ens
             : getShortAddr(_info.sender?.address),
@@ -242,7 +267,13 @@ export function useRedPacketModal() {
       return undefined;
     }, [info, amountClaimStr, amountStr, account.accAddress, isShow, step]);
   const redPacketDetailCall = React.useCallback(
-    async ({ limit = 10, offset = 0 }: { limit?: number; offset?: number }) => {
+    async ({
+      limit = RedPacketDetailLimit,
+      offset = 0,
+    }: {
+      limit?: number;
+      offset?: number;
+    }) => {
       setDetail(undefined);
       const _info = info as sdk.LuckyTokenItemForReceive & {
         claimAmount?: string;
@@ -362,116 +393,32 @@ export function useRedPacketModal() {
       const luckTokenInfo = response.detail
         .luckyToken as sdk.LuckyTokenItemForReceive;
       setQrcode(luckTokenInfo);
-      if (response.detail?.claimAmount) {
-        setDetail(response.detail);
-        setShowRedPacket({
-          isShow: true,
-          step: RedPacketViewStep.DetailPanel,
-          info: {
-            isFromQrScan: true,
-            ...luckTokenInfo,
-            // hash: luckTokenInfo.hash,
-            // response.detail
-          },
-        });
-      }
+      // if (response.detail?.claimAmount) {
+      //   setDetail(response.detail);
+      //   setShowRedPacket({
+      //     isShow: true,
+      //     step: RedPacketViewStep.DetailPanel,
+      //     info: {
+      //       isFromQrScan: true,
+      //       ...luckTokenInfo,
+      //       // hash: luckTokenInfo.hash,
+      //       // response.detail
+      //     },
+      //   });
+      // }
     }
-
-    // setDetail(undefined);
-    // const _info = info as sdk.LuckyTokenItemForReceive & {
-    //   claimAmount?: string;
-    // };
-    // setShowAccount({
-    //   isShow: true,
-    //   step: AccountStep.RedPacketOpen_Claim_In_Progress,
-    // });
-    // if (_info?.hash && LoopringAPI.luckTokenAPI) {
-    //   try {
-    //     setShowAccount({
-    //       isShow: true,
-    //       step: AccountStep.RedPacketOpen_In_Progress,
-    //     });
-    //     const response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
-    //       {
-    //         hash: _info.hash,
-    //         fromId: 0,
-    //         showHelper: true,
-    //       } as any,
-    //       account.apiKey
-    //     );
-    //     if (
-    //       (response as sdk.RESULT_INFO).code ||
-    //       (response as sdk.RESULT_INFO).message
-    //     ) {
-    //       setShowAccount({
-    //         isShow: true,
-    //         step: AccountStep.RedPacketOpen_Failed,
-    //         error: {
-    //           code: (response as sdk.RESULT_INFO)?.code,
-    //           msg: (response as sdk.RESULT_INFO)?.message,
-    //           ...(response instanceof Error
-    //             ? {
-    //               message: response?.message,
-    //               stack: response?.stack,
-    //             }
-    //             : response ?? {}),
-    //         },
-    //       });
-    //     } else {
-    //       const detail = (response as any).detail;
-    //       const luckTokenInfo: sdk.LuckyTokenItemForReceive = detail.luckyToken;
-    //       if (luckTokenInfo) {
-    //         setDetail(detail);
-    //         // setShowRedPacket({
-    //         //   isShow: true,
-    //         //   step: RedPacketViewStep.DetailPanel,
-    //         // });
-    //         setShowAccount({
-    //           isShow: false,
-    //         });
-    //       } else {
-    //         const error = new CustomError(ErrorMap.ERROR_REDPACKET_EMPTY);
-    //         setShowAccount({
-    //           isShow: true,
-    //           step: AccountStep.RedPacketOpen_Failed,
-    //           error: {
-    //             code: UIERROR_CODE.ERROR_REDPACKET_EMPTY,
-    //             msg: error.message,
-    //           },
-    //         });
-    //       }
-    //     }
-    //   } catch (error: any) {
-    //     setShowAccount({
-    //       isShow: true,
-    //       step: AccountStep.RedPacketOpen_Failed,
-    //       error: {
-    //         code: UIERROR_CODE.UNKNOWN,
-    //         msg: error?.message,
-    //         // @ts-ignore
-    //         ...(error instanceof Error
-    //           ? {
-    //             message: error?.message,
-    //             stack: error?.stack,
-    //           }
-    //           : error ?? {}),
-    //       },
-    //     });
-    //     setShowRedPacket({ isShow: false });
-    //   }
-    // }
   }, [isShow, step, info]);
   React.useEffect(() => {
     if (isShow) {
       const info = store.getState().modals.isShowRedPacket.info;
       if (step === RedPacketViewStep.DetailPanel && !info?.isFromQrScan) {
         redPacketDetailCall({});
-      } else if (
-        step === RedPacketViewStep.QRCodePanel &&
-        info?.hash &&
-        info?.sender
-      ) {
-        redPacketQrCodeCall();
+      } else if (step === RedPacketViewStep.QRCodePanel && info?.hash) {
+        if (info?.id) {
+          setQrcode(info as any);
+        } else {
+          redPacketQrCodeCall();
+        }
       }
     }
   }, [step, isShow]);
@@ -490,6 +437,7 @@ export function useRedPacketModal() {
     ) {
       const isShouldSharedRely =
         detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.RELAY &&
+        detail.luckyToken.type.scope === sdk.LuckyTokenViewType.PRIVATE &&
         !["OVER_DUE", "FAILED"].includes(detail.luckyToken.status);
       const tokenInfo = tokenMap[idIndex[detail?.tokenId] ?? ""];
       const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
@@ -511,9 +459,10 @@ export function useRedPacketModal() {
           " " +
           symbol;
       }
-      const { list, isMyLuck } = getUserReceiveList(
+      const { list } = getUserReceiveList(
         detail.claims as any,
-        tokenInfo
+        tokenInfo,
+        detail.champion
       );
       return {
         totalCount: detail.luckyToken.tokenAmount.totalCount,
@@ -525,7 +474,6 @@ export function useRedPacketModal() {
           ? _info.sender?.ens
           : getShortAddr(_info.sender?.address),
         claimList: list,
-        isMyLuck,
         detail,
         myAmountStr,
         isShouldSharedRely,
@@ -538,6 +486,7 @@ export function useRedPacketModal() {
             step: RedPacketViewStep.QRCodePanel,
             info: {
               ...detail.luckyToken,
+              referrer: account.accountId,
               isShouldSharedRely,
             },
           });
@@ -588,6 +537,7 @@ export function useRedPacketModal() {
                 ? t("labelRelayRedPacket")
                 : t("labelLuckyRedPacket"),
             textShared: t("labelShare"),
+            textDes: t("labelRedpacketScanDes"),
             isShouldSharedRely:
               qrcode.type.mode == sdk.LuckyTokenClaimType.RELAY,
             // @ts-ignore

@@ -1,3 +1,4 @@
+import { sanitize } from "dompurify";
 import React from "react";
 
 export const RedPacketColorConfig: {
@@ -59,10 +60,10 @@ export const RedPacketCssColorConfig: {
   },
 };
 export const RedPacketWrapSVG = ({
-  colorTop,
-  startColor,
-  endColor,
-  type,
+                                   colorTop,
+                                   startColor,
+                                   endColor,
+                                   type,
 }: {
   type: "default" | "official";
   colorTop: "#FD7659" | "#FFD595";
@@ -180,15 +181,15 @@ export const RedPacketWrapSVG = ({
 };
 
 export const RedPacketOpenWrapSVG = ({
-  // colorTop,
-  startColor,
-  endColor,
-  startBgColor,
-  endBgColor,
-  startCard,
-  endCard,
-  line,
-  type,
+                                       // colorTop,
+                                       startColor,
+                                       endColor,
+                                       startBgColor,
+                                       endBgColor,
+                                       startCard,
+                                       endCard,
+                                       line,
+                                       type,
 }: {
   type: "default" | "official";
   colorTop: "#FD7659" | "#FFD595";
@@ -306,6 +307,7 @@ export type RedPacketQRPropsExtends = {
   textType: string;
   textShared: string;
   textNo: string;
+  textDes: string;
 };
 export type ColorConfig = {
   colorTop: string;
@@ -351,21 +353,15 @@ export const RedPacketQRCodeSvg = React.memo(
         textType,
         textShared,
         textNo,
+        textDes,
       }: ColorConfig & {
         type: "default" | "official";
         qrcodeRef: React.Ref<SVGGElement>;
         // qrCodeG;
-      } & {
-        qrcodeRef: React.Ref<SVGGElement>;
-        textAddress: string;
-        textContent: string;
-        amountStr: string;
-        textSendBy: string; //text send by
-        textType: string;
-        textShared: string;
-        textNo: string;
-        qrCodeG: string;
-      },
+      } & RedPacketQRPropsExtends & {
+          qrcodeRef: React.Ref<SVGGElement>;
+          qrCodeG: string;
+        },
       ref: React.ForwardedRef<any>
     ) => {
       const [[textContent1, textContent2], setTextContent] = React.useState([
@@ -515,9 +511,8 @@ export const RedPacketQRCodeSvg = React.memo(
                 textAnchor: "middle",
                 fontSize: "14px",
               }}
-            >
-              {textContent1}
-            </text>
+              dangerouslySetInnerHTML={{ __html: sanitize(textContent1) }}
+            />
           </g>
           <g transform={"translate(167 112)"}>
             <text
@@ -531,9 +526,8 @@ export const RedPacketQRCodeSvg = React.memo(
                 textAnchor: "middle",
                 fontSize: "14px",
               }}
-            >
-              {textContent2}
-            </text>
+              dangerouslySetInnerHTML={{ __html: sanitize(textContent2) }}
+            />
           </g>
           <g transform={"translate(167 192)"}>
             <text
@@ -567,6 +561,7 @@ export const RedPacketQRCodeSvg = React.memo(
               {textType}
             </text>
           </g>
+
           <g transform={"translate(167 438)"}>
             <text
               id={"textSendBy"}
@@ -580,9 +575,26 @@ export const RedPacketQRCodeSvg = React.memo(
                 fontSize: "14px",
               }}
             >
-              {textSendBy}
+              {textDes}
             </text>
           </g>
+
+          <g transform={"translate(167 466)"}>
+            <text
+              id={"textSendBy"}
+              strokeWidth="0"
+              fill={fontColor}
+              x="1"
+              y="1"
+              style={{
+                dominantBaseline: "central",
+                textAnchor: "middle",
+                fontSize: "14px",
+              }}
+              dangerouslySetInnerHTML={{ __html: textSendBy }}
+            />
+          </g>
+
           <g transform={"translate(167 535)"}>
             <text
               className={"textShared"}

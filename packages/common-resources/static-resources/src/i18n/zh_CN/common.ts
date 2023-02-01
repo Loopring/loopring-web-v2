@@ -1353,5 +1353,5 @@ export default {
   labelAmmExitMiniOrderMini:
     "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
   // labelClaimWithdrawEnterToken: "Select Token",
-  labelMyReward: "My Reward",
+  labelMyRedPacketReward: "My Rewards",
 };

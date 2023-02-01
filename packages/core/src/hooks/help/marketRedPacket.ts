@@ -6,56 +6,112 @@ import {
 } from "@loopring-web/common-resources";
 import { volumeToCountAsBigNumber } from "./volumeToCount";
 import { store } from "../../stores";
-import { TokenInfo } from "@loopring-web/loopring-sdk";
 
 export const getUserReceiveList = (
   claimList: sdk.LuckTokenClaim[],
-  tokenInfo: TokenInfo
-): { list: RawDataRedPacketDetailItem[]; isMyLuck: boolean } => {
+  tokenInfo: sdk.TokenInfo,
+  champion?: {
+    accountId: number;
+    address: string;
+    ens: string;
+    amount: string | number;
+  }
+): { list: RawDataRedPacketDetailItem[] } => {
   // const {idIndex,tokenMap} = store.getState().tokenMap
   const { accountId } = store.getState().account;
-  let _max = 0,
-    _index = -1;
-  let isMyLuck = false;
-  const list: RawDataRedPacketDetailItem[] = claimList.reduce(
-    (prev, item, index) => {
-      const amountStr =
-        getValuePrecisionThousand(
-          volumeToCountAsBigNumber(tokenInfo.symbol, item.amount),
-          tokenInfo.precision,
-          tokenInfo.precision,
-          undefined,
-          false,
-          {
-            floor: false,
-            // isTrade: true,
-          }
-        ) +
-        " " +
-        tokenInfo.symbol;
-      if (sdk.toBig(item.amount).gte(_max)) {
-        _max = item.amount;
-        _index = index;
+  // let _max = 0,
+  //   _index = -1;
+  const list: RawDataRedPacketDetailItem[] = claimList.reduce((prev, item) => {
+    const amountStr =
+      getValuePrecisionThousand(
+        volumeToCountAsBigNumber(tokenInfo.symbol, item.amount),
+        tokenInfo.precision,
+        tokenInfo.precision,
+        undefined,
+        false,
+        {
+          floor: false,
+          // isTrade: true,
+        }
+      ) +
+      " " +
+      tokenInfo.symbol;
+    // if (sdk.toBig(item.amount).gte(_max)) {
+    //   _max = item.amount;
+    //   _index = index;
+    // }
+    const redPacketDetailItem: RawDataRedPacketDetailItem = {
+      accountStr: item.claimer?.ens
+        ? item.claimer.ens
+        : getShortAddr(item.claimer?.address ?? ""),
+      isSelf: accountId === item.claimer.accountId,
+      amountStr,
+      createdAt: item.createdAt,
+      isMax: champion?.amount == item.amount,
+      rawData: item,
+    };
+    return [...prev, redPacketDetailItem];
+  }, [] as RawDataRedPacketDetailItem[]);
+
+  return { list };
+};
+const amountStrCallback = (
+  tokenMap: any,
+  idIndex: any,
+  tokenId: any,
+  tokenAmount: string
+) => {
+  const tokenInfo = tokenMap[idIndex[tokenId] ?? ""];
+
+  if (tokenInfo && tokenAmount) {
+    const symbol = tokenInfo.symbol;
+    const amount = getValuePrecisionThousand(
+      volumeToCountAsBigNumber(symbol, tokenAmount),
+      tokenInfo.precision,
+      tokenInfo.precision,
+      undefined,
+      false,
+      {
+        floor: false,
+        // isTrade: true,
       }
-      const redPacketDetailItem: RawDataRedPacketDetailItem = {
-        accountStr: item.claimer?.ens
-          ? item.claimer.ens
-          : getShortAddr(item.claimer?.address ?? ""),
-        isSelf: accountId === item.claimer.accountId,
-        amountStr,
-        createdAt: item.createdAt,
-        isMax: false,
-        rawData: item,
-      };
-      return [...prev, redPacketDetailItem];
-    },
-    [] as RawDataRedPacketDetailItem[]
-  );
-
-  if (_index !== -1) {
-    list[_index].isMax = true;
-    list[_index].isSelf == true ? (isMyLuck = true) : (isMyLuck = false);
+    );
+    return amount + " " + symbol;
   }
+  return "";
 
-  return { list, isMyLuck };
+  // tokenMap[]
+};
+
+export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
+  const {
+    account,
+    localStore: { redPacketHistory },
+    tokenMap: { idIndex, tokenMap },
+    system: { chainId },
+  } = store.getState();
+  let claim: string | undefined = undefined;
+  if (
+    redPacketHistory[chainId] &&
+    redPacketHistory[chainId][account.accAddress] &&
+    redPacketHistory[chainId][account.accAddress][luckToken.hash]
+  ) {
+    claim = redPacketHistory[chainId][account.accAddress][luckToken.hash].claim;
+  }
+  const tokenInfo = tokenMap[idIndex[luckToken.tokenId] ?? ""];
+
+  return {
+    chainId,
+    account,
+    amountStr: amountStrCallback(
+      tokenMap,
+      idIndex,
+      luckToken.tokenId,
+      luckToken.tokenAmount.totalAmount
+    ),
+    myAmountStr:
+      claim && amountStrCallback(tokenMap, idIndex, luckToken.tokenId, claim),
+    tokenInfo,
+    claim,
+  };
 };

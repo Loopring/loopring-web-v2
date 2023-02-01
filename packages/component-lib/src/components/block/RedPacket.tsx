@@ -16,7 +16,6 @@ import {
   getShortAddr,
   RedPacketColorConfig,
   RedPacketCssColorConfig,
-  RedPacketHashItems,
   RedPacketOpenWrapSVG,
   RedPacketQRCodeSvg,
   RedPacketWrapSVG,
@@ -31,6 +30,7 @@ import {
   RedPacketClockProps,
   RedPacketDefault,
   RedPacketDefaultBg,
+  RedPacketDetailLimit,
   RedPacketDetailProps,
   RedPacketOpenedProps,
   RedPacketOpenProps,
@@ -38,6 +38,7 @@ import {
   RedPacketTimeoutProps,
   RedPacketUnreadyProps,
 } from "./Interface";
+import { TablePagination } from "../basic-lib";
 
 export const RedPacketBg = styled(Box)<
   BoxProps & { imageSrc?: string; type: string }
@@ -652,10 +653,65 @@ export const RedPacketUnready = ({
 
 export const RedPacketOpened = ({
   type = "default",
-}: RedPacketOpenedProps & any) => {
+  sender,
+  memo,
+  myAmountStr,
+  amountStr,
+  viewDetail,
+}: RedPacketDefault & RedPacketOpenedProps) => {
   const { t } = useTranslation("common");
   const content = React.useMemo(() => {
-    return <>{t("official")}</>;
+    return (
+      <Box display={"flex"} flex={1} flexDirection={"column"}>
+        <Box display={"flex"} className={"top"} flexDirection={"column"}>
+          <Typography
+            variant={"h5"}
+            color={RedPacketCssColorConfig[type].highLightColor}
+          >
+            {t("labelRedPacketReceived")}
+          </Typography>
+          <Typography
+            variant={"h4"}
+            color={RedPacketCssColorConfig[type].highLightColor}
+          >
+            {myAmountStr ? myAmountStr : EmptyValueTag}
+          </Typography>
+          <Typography
+            variant={"body2"}
+            color={RedPacketCssColorConfig[type].highLightColor}
+          >
+            {t("labelTotalRedPacket", { value: amountStr })}
+          </Typography>
+        </Box>
+        <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+          <Typography color={"inherit"}>{sender}</Typography>
+          <Typography
+            variant={"body2"}
+            color={"inherit"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            marginTop={1 / 2}
+            paddingX={2}
+          >
+            {memo}
+          </Typography>
+        </Box>
+        <Box display={"flex"} className={"footer"}>
+          <Link
+            className={"viewDetail"}
+            whiteSpace={"pre-line"}
+            color={"inherit"}
+            variant={"body1"}
+            onClick={(e) => {
+              e.stopPropagation();
+              viewDetail();
+            }}
+          >
+            {t("labelLuckyRedPacketDetail")}
+          </Link>
+        </Box>
+      </Box>
+    );
   }, []);
   return <RedPacketBgOpened type={type} content={content} />;
 };
@@ -765,14 +821,29 @@ export const RedPacketDetail = ({
   claimList,
   // detail,
   // detail,
+  handlePageChange,
   myAmountStr,
-  // isMyLuck,
   isShouldSharedRely,
   totalCount,
   remainCount,
   onShared,
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
+  const pageNation = React.useMemo(() => {
+    if (totalCount - remainCount - RedPacketDetailLimit > 0) {
+      return (
+        <TablePagination
+          page={page}
+          pageSize={RedPacketDetailLimit}
+          total={totalCount - remainCount}
+          onPageChange={handlePageChange}
+        />
+      );
+    } else {
+      return <></>;
+    }
+  }, []);
+
   return (
     <BoxStyle
       flex={1}
@@ -876,7 +947,9 @@ export const RedPacketDetail = ({
                     component={"span"}
                     color={item.isSelf ? "success" : "textPrimary"}
                   >
-                    {item.isSelf ? t("labelMyReward") : item.accountStr}
+                    {item.isSelf
+                      ? t("labelMyRedPacketReward")
+                      : item.accountStr}
                   </Typography>
                   <Typography
                     variant={"body1"}
@@ -920,6 +993,7 @@ export const RedPacketDetail = ({
             );
           })}
         </Box>
+        {pageNation}
       </Box>
       {isShouldSharedRely && (
         <Box paddingX={1} display={"flex"} flexDirection={"column"}>
@@ -948,18 +1022,19 @@ export const RedPacketPrepare = ({
   account,
   tokenInfo,
   setShowRedPacket,
-  redPacketHashItems,
+  claim,
   _type = "default",
   amountStr,
+  myAmountStr,
   onOpen,
   ...props
 }: {
   chainId: sdk.ChainId;
   account: Account;
   amountStr: string;
-
   tokenInfo: sdk.TokenInfo;
-  redPacketHashItems: RedPacketHashItems | undefined;
+  claim: string | undefined;
+  myAmountStr: string | undefined;
   setShowRedPacket: (
     state: ModalStatePlayLoad & {
       step?: number;
@@ -972,11 +1047,6 @@ export const RedPacketPrepare = ({
   // const { t } = useTranslation("common");
   const _info = props as sdk.LuckyTokenItemForReceive;
   const viewItem = React.useMemo(() => {
-    let claim: undefined | string = undefined;
-    if (redPacketHashItems && redPacketHashItems[_info.hash]) {
-      claim = redPacketHashItems[_info.hash].claim;
-      // const historyInfos = redPacketHistory[chainId][account.accAddress];
-    }
     let difference = new Date(_info.validSince).getTime() - Date.now();
     if (claim) {
       return (
@@ -986,6 +1056,7 @@ export const RedPacketPrepare = ({
           }}
           type={_type ? _type : "default"}
           amountStr={amountStr}
+          myAmountStr={myAmountStr}
           viewDetail={() => {
             setShowRedPacket({
               isShow: true,
@@ -1063,6 +1134,6 @@ export const RedPacketPrepare = ({
         />
       );
     }
-  }, [amountStr, redPacketHashItems, onOpen, _info]);
+  }, [amountStr, claim, myAmountStr, onOpen, _info]);
   return <Box>{viewItem}</Box>;
 };

@@ -10,13 +10,10 @@ import {
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import {
-  redPacketHistory,
+  makeViewCard,
   StylePaper,
-  useAccount,
   useOpenRedpacket,
-  useSystem,
   useTokenMap,
-  volumeToCountAsBigNumber,
 } from "@loopring-web/core";
 import { useMarketRedPacket } from "./hooks";
 import { Box, Button, Checkbox, Grid } from "@mui/material";
@@ -24,11 +21,9 @@ import {
   BackIcon,
   CheckBoxIcon,
   CheckedIcon,
-  getValuePrecisionThousand,
   RefreshIcon,
   ScanQRIcon,
 } from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
 
 export const RedPacketMarketPanel = ({
   setToastOpen,
@@ -37,12 +32,8 @@ export const RedPacketMarketPanel = ({
 }) => {
   const container = React.useRef<HTMLDivElement>(null);
   const { setShowAccount, setShowRedPacket } = useOpenModals();
-  const _redPacketHistory =
-    redPacketHistory.useRedPacketHistory().redPacketHistory;
   const { t } = useTranslation();
   const { isMobile } = useSettings();
-  const { chainId } = useSystem();
-  const { account } = useAccount();
   const history = useHistory();
   const { callOpen } = useOpenRedpacket();
   const { tokenMap, idIndex } = useTokenMap();
@@ -50,35 +41,6 @@ export const RedPacketMarketPanel = ({
     useMarketRedPacket({
       setToastOpen,
     });
-  const amountStrCallback = React.useCallback(
-    (_info: sdk.LuckyTokenItemForReceive) => {
-      const tokenInfo = tokenMap[idIndex[_info?.tokenId] ?? ""];
-
-      if (tokenInfo && _info && _info.tokenAmount) {
-        const symbol = tokenInfo.symbol;
-        const amount = getValuePrecisionThousand(
-          volumeToCountAsBigNumber(
-            symbol,
-            _info.tokenAmount.totalAmount as any
-          ),
-          tokenInfo.precision,
-          tokenInfo.precision,
-          undefined,
-          false,
-          {
-            floor: false,
-            // isTrade: true,
-          }
-        );
-        return amount + " " + symbol;
-      }
-      return "";
-
-      // tokenMap[]
-    },
-    [tokenMap]
-  );
-  // const callOpen = () => {};
   return (
     <Box
       flex={1}
@@ -207,7 +169,15 @@ export const RedPacketMarketPanel = ({
           <Grid container display={"flex"} paddingX={1}>
             {luckTokenList.officialList?.length ? (
               luckTokenList.officialList.map((item, index) => {
-                const token = tokenMap[idIndex[item?.tokenId] ?? ""];
+                // const token = tokenMap[idIndex[item?.tokenId] ?? ""];
+                const {
+                  chainId,
+                  account,
+                  amountStr,
+                  myAmountStr,
+                  tokenInfo,
+                  claim,
+                } = makeViewCard(item);
                 return (
                   <Grid
                     item
@@ -220,17 +190,14 @@ export const RedPacketMarketPanel = ({
                   >
                     <RedPacketPrepare
                       {...{ ...item }}
-                      redPacketHashItems={
-                        _redPacketHistory[chainId]
-                          ? _redPacketHistory[chainId][account.accAddress]
-                          : undefined
-                      }
+                      claim={claim}
                       setShowRedPacket={setShowRedPacket} //
                       chainId={chainId as any}
                       account={account}
-                      amountStr={amountStrCallback(item)}
+                      amountStr={amountStr}
+                      myAmountStr={myAmountStr}
                       onOpen={callOpen}
-                      tokenInfo={token}
+                      tokenInfo={tokenInfo}
                       _type="official"
                     />
                   </Grid>
@@ -242,6 +209,14 @@ export const RedPacketMarketPanel = ({
             {!!luckTokenList.publicList?.length &&
               luckTokenList.publicList.map((item, index) => {
                 const token = tokenMap[idIndex[item?.tokenId] ?? ""];
+                const {
+                  chainId,
+                  account,
+                  amountStr,
+                  myAmountStr,
+                  tokenInfo,
+                  claim,
+                } = makeViewCard(item);
                 return (
                   <Grid
                     xs={6}
@@ -253,18 +228,15 @@ export const RedPacketMarketPanel = ({
                     marginY={1}
                   >
                     <RedPacketPrepare
+                      claim={claim}
                       {...{ ...item }}
-                      redPacketHashItems={
-                        _redPacketHistory[chainId]
-                          ? _redPacketHistory[chainId][account.accAddress]
-                          : undefined
-                      }
                       setShowRedPacket={setShowRedPacket} //
                       chainId={chainId as any}
                       account={account}
-                      amountStr={amountStrCallback(item)}
+                      amountStr={amountStr}
+                      myAmountStr={myAmountStr}
                       onOpen={callOpen}
-                      tokenInfo={token}
+                      tokenInfo={tokenInfo}
                     />
                   </Grid>
                 );
