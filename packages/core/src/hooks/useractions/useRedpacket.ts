@@ -149,7 +149,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
 
         if (luckTokenInfo) {
           setShowAccount({ isShow: false });
-          if (response.detail?.claimAmount !== "0") {
+          if (response.detail?.claimAmount.toString() !== "0") {
             setShowRedPacket({
               isShow: true,
               step: RedPacketViewStep.DetailPanel,

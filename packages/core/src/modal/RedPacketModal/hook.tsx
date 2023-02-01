@@ -238,7 +238,7 @@ export function useRedPacketModal() {
         step === RedPacketViewStep.RedPacketClock &&
         _info?.hash
       ) {
-        myLog("redPacketOpenProps", _info);
+        myLog("redPacketClockProps", _info);
         return {
           memo: _info.info.memo,
           amountStr,

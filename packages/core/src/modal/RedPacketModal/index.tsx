@@ -135,9 +135,11 @@ export const ModalRedPacketPanel = withTranslation("common")(
       });
     }, [
       redPacketQRCodeProps,
+      redPacketOpenProps,
       redPacketDetailProps,
       redPacketTimeoutProps,
-      redPacketOpenProps,
+      redPacketOpenedProps,
+      redPacketClockProps,
     ]);
     return (
       <ModalRedPacket

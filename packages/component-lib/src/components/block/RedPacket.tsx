@@ -444,9 +444,13 @@ export const RedPacketOpen = ({
 
 export const RedPacketClock = ({
   type = "default",
+  size,
   validSince,
+  sender,
+  amountStr,
+  memo,
   showRedPacket,
-}: RedPacketClockProps) => {
+}: RedPacketDefault & RedPacketClockProps) => {
   const { t } = useTranslation("common");
   const anchorRef = React.useRef();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -457,7 +461,7 @@ export const RedPacketClock = ({
       seconds: undefined | string;
       minutes: undefined | string;
     }>();
-  const calculateTimeLeft = (validSince: number) => {
+  const calculateTimeLeft = React.useCallback((validSince: number) => {
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
@@ -479,7 +483,7 @@ export const RedPacketClock = ({
     } else {
       showRedPacket();
     }
-  };
+  }, []);
   React.useEffect(() => {
     calculateTimeLeft(validSince);
     return () => {
@@ -578,10 +582,34 @@ export const RedPacketClock = ({
             </Box>
           </Box>
         </Box>
+        <Box display={"flex"} className={"top"} flexDirection={"column"}>
+          <Typography color={"inherit"}>{sender}</Typography>
+        </Box>
+        <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+          <Typography
+            color={"inherit"}
+            variant={"h4"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            paddingX={2}
+            paddingTop={1}
+          >
+            {amountStr}
+          </Typography>
+          <Typography
+            color={"inherit"}
+            variant={"body1"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            paddingX={2}
+          >
+            {memo}
+          </Typography>
+        </Box>
       </>
     );
-  }, []);
-  return <RedPacketBgDefault type={type} content={content} />;
+  }, [countDown]);
+  return <RedPacketBgDefault type={type} size={size} content={content} />;
 };
 
 export const RedPacketUnready = ({
