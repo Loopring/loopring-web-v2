@@ -75,6 +75,7 @@ const FavoriteBoxStyle = styled(Box)`
       color: var(--color-error);
     }
   }
+
   .favSolid {
     &:hover {
       color: var(--color-text-secondary);
@@ -89,6 +90,7 @@ const BoxStyle = styled(Box)<
       object-fit: contain;
     }
   }
+
   .line-clamp {
     display: -webkit-box;
     -webkit-line-clamp: 2;

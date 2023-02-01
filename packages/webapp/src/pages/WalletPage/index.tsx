@@ -44,15 +44,18 @@ const WrongStatusStyled = styled(Box)`
   align-items: center;
   padding: ${({ theme }) => theme.unit * 10}px auto;
   background-color: ${({ theme }) => theme.colorBase.box};
+
   .logo {
     margin-bottom: ${({ theme }) => theme.unit * 8}px;
   }
+
   .content {
     text-align: center;
     color: ${({ theme }) => theme.colorBase.textSecondary};
     width: ${({ theme }) => theme.unit * 50}px;
     margin-bottom: ${({ theme }) => theme.unit * 8}px;
   }
+
   .button {
     color: ${({ theme }) => theme.colorBase.textSecondary};
   }

@@ -59,11 +59,13 @@ const RedPacketBoxStyle = styled(Box)`
     padding-left: ${({ theme }) => theme.unit * 4}px;
     padding-right: ${({ theme }) => theme.unit * 4}px;
   }
+
   //width: 100%;
   //display: flex;
   textarea {
     background: var(--field-opacity);
     border-color: var(--opacity);
+
     :hover {
       border-color: var(--color-border-hover);
     }

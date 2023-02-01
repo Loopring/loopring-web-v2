@@ -181,13 +181,12 @@ export const useAmmExit = ({
               : miniLpVal
           )
           .times(1.1);
-        // TODO: remove after test
-        console.log(
-          "updateMiniTradeValue: miniFeeLpWithSlippage, miniLpVal, miniVal = great one * 1.1 ",
-          miniFeeLpWithSlippageVal.toString(),
-          miniLpVal.toString(),
-          miniVal.toString()
-        );
+        // mylog(
+        //   "updateMiniTradeValue: miniFeeLpWithSlippage, miniLpVal, miniVal = great one * 1.1 ",
+        //   miniFeeLpWithSlippageVal.toString(),
+        //   miniLpVal.toString(),
+        //   miniVal.toString()
+        // );
         return getValuePrecisionThousand(
           miniVal,
           lpToken.precision,
@@ -214,14 +213,13 @@ export const useAmmExit = ({
       fees &&
       ammData.slippage
     ) {
-      // TODO: remove after test
-      console.log(
-        "updateMiniTradeValue: fees, slippage, ammPoolSnapshot",
-        fees,
-        ammData.slippage,
-        ammPoolSnapshot.pooled,
-        ammPoolSnapshot.lp
-      );
+      // mylog(
+      //   "updateMiniTradeValue: fees, slippage, ammPoolSnapshot",
+      //   fees,
+      //   ammData.slippage,
+      //   ammPoolSnapshot.pooled,
+      //   ammPoolSnapshot.lp
+      // );
       updateMiniTradeValue();
     }
   }, [pair, ammPoolSnapshot?.lp.volume, fees, isShow, ammData.slippage]);

@@ -26,12 +26,14 @@ export const DateTextField = styled(TextField)`
   && .MuiOutlinedInput-root.MuiInputBase-adornedEnd {
     padding-right: ${({ theme }) => theme.unit}px;
   }
+
   && .date-range-adornment {
     .MuiIconButton-edgeEnd {
       height: var(--btn-icon-size);
       width: var(--btn-icon-size);
     }
   }
+
   //position: relative;
   //
   //&& .MuiInputBase-input {

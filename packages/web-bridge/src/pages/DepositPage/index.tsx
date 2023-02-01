@@ -29,17 +29,22 @@ import _ from "lodash";
 const BoxStyle = styled(Box)`
   max-height: var(--swap-box-height);
   width: var(--modal-width);
+
   & > div > div {
     width: 100%;
   }
+
   &.mobile {
     width: calc(var(--modal-width) + 20px);
   }
+
   .MuiToolbar-root {
     margin-top: -24px !important;
   }
+
   min-height: 320px;
   ${({ theme }) => boxLiner({ theme })};
+
   .depositTitle {
     font-size: ${({ theme }) => theme.fontDefault.h4};
   }

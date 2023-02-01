@@ -7,7 +7,6 @@ import {
   globalSetup,
   MoreIcon,
   RowConfig,
-  TokenType,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
@@ -76,8 +75,6 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       rawData,
       pagination,
       getDualAssetList,
-      // idIndex,
-      // tokenMap,
       getDetail,
       dualMarketMap,
       showloading,
@@ -146,14 +143,17 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 height={"100%"}
                 alignItems={"center"}
               >
-                <CoinIcons
-                  type={TokenType.dual}
-                  size={24}
-                  tokenIcon={[
-                    coinJson[row.sellSymbol],
-                    coinJson[row.buySymbol],
-                  ]}
-                />
+                <Typography component={"span"} display={"inline-flex"}>
+                  {/* eslint-disable-next-line react/jsx-no-undef */}
+                  <CoinIcons
+                    type={"dual"}
+                    size={24}
+                    tokenIcon={[
+                      coinJson[row.sellSymbol],
+                      coinJson[row.buySymbol],
+                    ]}
+                  />
+                </Typography>
                 <Typography component={"span"} display={"flex"}>
                   <Typography
                     component={"span"}
@@ -308,7 +308,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 <Typography component={"span"} display={"inline-flex"}>
                   {/* eslint-disable-next-line react/jsx-no-undef */}
                   <CoinIcons
-                    type={TokenType.dual}
+                    type={"dual"}
                     size={24}
                     tokenIcon={[
                       coinJson[row.sellSymbol],

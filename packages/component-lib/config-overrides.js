@@ -140,7 +140,7 @@ module.exports = override(
           "static-resources"
         ),
       ],
-      // TODO - this should be handled by the general `resolve.extensions` option
+      // this should be handled by the general `resolve.extensions` option
       // resolve: { fullySpecified: false },
       loader: "babel-loader",
       // loader: require.resolve('babel-loader'),

@@ -9,12 +9,14 @@ export enum BalanceReason {
   Balance = 0,
   FeeAndBalance = 1,
 }
+
 export enum BanxaCheck {
   CheckOrderStatus = 0,
   OrderEnd = 1,
   OrderHide = 2,
   OrderShow = 3,
 }
+
 export enum OrderENDReason {
   UserCancel = 0,
   Expired = 1,
