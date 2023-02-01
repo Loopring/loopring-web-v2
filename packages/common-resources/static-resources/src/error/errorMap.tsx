@@ -2,6 +2,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { TOptions } from "i18next";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { Link } from "@mui/material";
+
 export const ErrorMap = {
   ERROR_UNKNOWN: {
     id: "ERROR_UNKNOWN",
@@ -305,7 +306,18 @@ export const ErrorMap = {
     messageKey: "errorRedpacketClaimed",
     options: {},
   },
+  ERROR_REDPACKET_CLAIM_OUT: {
+    id: "ERROR_REDPACKET_CLAIM_OUT",
+    messageKey: "errorRedpacketClaimOut",
+    options: {},
+  },
+  ERROR_REDPACKET_CLAIM_TIMEOUT: {
+    id: "ERROR_REDPACKET_CLAIM_TIMEOUT",
+    messageKey: "errorRedpacketClaimTimeOut",
+    options: {},
+  },
 };
+
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
   PROVIDER_ERROR = 700002,
@@ -334,7 +346,10 @@ export enum UIERROR_CODE {
   ERROR_RAMP_NO_INSTANCE = 700100,
   ERROR_DUAL_EXPIRED = 115003,
   ERROR_REDPACKET_CLAIMED = 113002,
+  ERROR_REDPACKET_CLAIM_OUT = 113006,
+  ERROR_REDPACKET_CLAIM_TIMEOUT = 113000,
 }
+
 export type ErrorObject = {
   from?: string;
   timestamp?: number;
@@ -413,7 +428,9 @@ export const SDK_ERROR_MAP_TO_UI = {
   108000: ErrorMap.ERROR_NO_MARKET, //Unsupported market
   102127: ErrorMap.ERROR_COLLECTION_SAME_NAME,
   108001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Unsupported depth level
-  113002: ErrorMap.ERROR_REDPACKET_CLAIMED,
+  113002: ErrorMap.ERROR_REDPACKET_CLAIMED, // REDPACKET_CLAIMED
+  113006: ErrorMap.ERROR_REDPACKET_CLAIM_OUT, // REDPACKET_COUNT_OUT
+  113000: ErrorMap.ERROR_REDPACKET_CLAIM_TIMEOUT, // REDPACKET_CLAIM_TIMEOUT
   114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
   122001: ErrorMap.ERROR_ON_REFRESH,

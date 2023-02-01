@@ -4,6 +4,7 @@ import {
   EmptyDefault,
   FormControlLabel,
   RedPacketPrepare,
+  RedPacketViewStep,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -31,12 +32,15 @@ export const RedPacketMarketPanel = ({
   setToastOpen: (props: any) => void;
 }) => {
   const container = React.useRef<HTMLDivElement>(null);
-  const { setShowAccount, setShowRedPacket } = useOpenModals();
+  const {
+    setShowAccount,
+    setShowRedPacket,
+    modals: { isShowRedPacket },
+  } = useOpenModals();
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const history = useHistory();
   const { callOpen } = useOpenRedpacket();
-  const { tokenMap, idIndex } = useTokenMap();
   const { setShowOfficial, showOfficial, luckTokenList, handlePageChange } =
     useMarketRedPacket({
       setToastOpen,
@@ -169,7 +173,18 @@ export const RedPacketMarketPanel = ({
           <Grid container display={"flex"} paddingX={1}>
             {luckTokenList.officialList?.length ? (
               luckTokenList.officialList.map((item, index) => {
-                // const token = tokenMap[idIndex[item?.tokenId] ?? ""];
+                if (
+                  isShowRedPacket.step === RedPacketViewStep.TimeOutPanel &&
+                  isShowRedPacket.info &&
+                  isShowRedPacket.info.hash === item.hash &&
+                  // @ts-ignore
+                  isShowRedPacket.info.id == item.id
+                ) {
+                  item = {
+                    ...item,
+                    ...isShowRedPacket.info,
+                  };
+                }
                 const {
                   chainId,
                   account,
@@ -208,7 +223,18 @@ export const RedPacketMarketPanel = ({
             )}
             {!!luckTokenList.publicList?.length &&
               luckTokenList.publicList.map((item, index) => {
-                const token = tokenMap[idIndex[item?.tokenId] ?? ""];
+                if (
+                  isShowRedPacket.step === RedPacketViewStep.TimeOutPanel &&
+                  isShowRedPacket.info &&
+                  isShowRedPacket.info.hash === item.hash &&
+                  // @ts-ignore
+                  isShowRedPacket.info.id == item.id
+                ) {
+                  item = {
+                    ...item,
+                    ...isShowRedPacket.info,
+                  };
+                }
                 const {
                   chainId,
                   account,

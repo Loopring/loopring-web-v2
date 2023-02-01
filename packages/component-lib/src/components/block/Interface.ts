@@ -72,7 +72,7 @@ export type RedPacketDefault = {
 };
 export type RedPacketTimeoutProps = RedPacketDefault & {
   sender: string;
-  memo: string;
+  memo?: string;
   viewDetail: () => void;
 };
 export type RedPacketQRCodeProps = {

@@ -1116,17 +1116,42 @@ export const RedPacketPrepare = ({
     } else if (difference > 0) {
       return (
         <RedPacketClock
+          {...props?.info}
           sender={
             props?.sender?.ens
               ? props?.sender?.ens
               : getShortAddr(props?.sender?.address)
           }
-          showRedPacket={function (): void {
-            throw new Error("Function not implemented.");
-          }}
-          {...props?.info}
+          showRedPacket={() =>
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.OpenPanel,
+              info: _info,
+            })
+          }
           amountStr={amountStr}
           validSince={_info.validSince}
+        />
+      );
+    } else if (
+      difference + 86400000 < 0 ||
+      _info.tokenAmount.remainCount === 0
+    ) {
+      return (
+        <RedPacketTimeout
+          {...props?.info}
+          sender={
+            props?.sender?.ens
+              ? props?.sender?.ens
+              : getShortAddr(props?.sender?.address)
+          }
+          viewDetail={() => {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.DetailPanel,
+              info: props,
+            });
+          }}
         />
       );
     } else {

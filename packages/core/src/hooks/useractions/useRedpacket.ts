@@ -28,64 +28,88 @@ export function useOpenRedpacket() {
       referrer?: string;
       isShouldSharedRely: boolean;
     };
-    try {
-      let response =
-        await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
-          request: {
-            hash: _info?.hash,
-            claimer: account.accAddress,
-            referrer:
-              _info.isShouldSharedRely && _info?.referrer
-                ? _info?.referrer
-                : "",
-          },
-          eddsaKey: account.eddsaKey.sk,
-          apiKey: account.apiKey,
-        } as any);
-      if (
-        (response as sdk.RESULT_INFO).code ||
-        (response as sdk.RESULT_INFO).message
-      ) {
-        throw response;
-      }
-
-      setShowAccount({
-        isShow: false,
-      });
+    let difference = new Date(_info.validSince).getTime() - Date.now();
+    if (difference + 86400000 < 0 || _info.tokenAmount.remainCount === 0) {
       setShowRedPacket({
         isShow: true,
-        step: RedPacketViewStep.DetailPanel,
+        step: RedPacketViewStep.TimeOutPanel,
         info: {
           ..._info,
-          response,
-          claimAmount: (response as any).amount,
         },
       });
-    } catch (error: any) {
-      if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
+    } else {
+      try {
+        let response =
+          await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
+            request: {
+              hash: _info?.hash,
+              claimer: account.accAddress,
+              referrer:
+                _info.isShouldSharedRely && _info?.referrer
+                  ? _info?.referrer
+                  : "",
+            },
+            eddsaKey: account.eddsaKey.sk,
+            apiKey: account.apiKey,
+          } as any);
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          throw response;
+        }
+
+        setShowAccount({
+          isShow: false,
+        });
         setShowRedPacket({
           isShow: true,
           step: RedPacketViewStep.DetailPanel,
           info: {
             ..._info,
+            response,
+            claimAmount: (response as any).amount,
           },
         });
-      } else {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.RedPacketOpen_Failed,
-          error: {
-            code: UIERROR_CODE.UNKNOWN,
-            msg: error?.message,
-            // @ts-ignore
-            ...(error instanceof Error
-              ? {
-                  message: error?.message,
-                  stack: error?.stack,
-                }
-              : error ?? {}),
-          },
-        });
+      } catch (error: any) {
+        if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
+          setShowRedPacket({
+            isShow: true,
+            step: RedPacketViewStep.DetailPanel,
+            info: {
+              ..._info,
+            },
+          });
+        } else if (
+          [
+            UIERROR_CODE.ERROR_REDPACKET_CLAIM_TIMEOUT,
+            UIERROR_CODE.ERROR_REDPACKET_CLAIM_OUT,
+          ]
+        ) {
+          setShowRedPacket({
+            isShow: true,
+            step: RedPacketViewStep.TimeOutPanel,
+            info: {
+              ..._info,
+            },
+          });
+        } else {
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.RedPacketOpen_Failed,
+            error: {
+              code: UIERROR_CODE.UNKNOWN,
+              msg: error?.message,
+              // @ts-ignore
+              ...(error instanceof Error
+                ? {
+                    message: error?.message,
+                    stack: error?.stack,
+                  }
+                : error ?? {}),
+            },
+          });
+        }
       }
     }
   }, [chainId, account]);
@@ -114,6 +138,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
         isShow: true,
         step: AccountStep.RedPacketOpen_In_Progress,
       });
+
       const response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
         {
           accountId: accountId,
@@ -166,7 +191,10 @@ export const useRedPacketScanQrcodeSuccess = () => {
               },
               step: RedPacketViewStep.RedPacketClock,
             });
-          } else if (difference + 86400000 < 0) {
+          } else if (
+            difference + 86400000 < 0 ||
+            luckTokenInfo.tokenAmount.remainCount === 0
+          ) {
             setShowRedPacket({
               isShow: true,
               info: {

@@ -562,7 +562,9 @@ export const useCreateRedPacket = <
             validSince: Math.round(
               (redPacketOrder.validSince ?? Date.now()) / 1000
             ),
-            validUntil: getTimestampDaysLater(DAYS - 1),
+            validUntil: Math.round(
+              (redPacketOrder.validSince ?? Date.now()) / 1000 + 86400
+            ),
             luckyToken: {
               exchange: exchangeInfo.exchangeAddress,
               payerAddr: accAddress,

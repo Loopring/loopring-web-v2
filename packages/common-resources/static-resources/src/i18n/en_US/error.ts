@@ -56,4 +56,6 @@ export default {
   errorLengthLimit: "Length is limit",
   errorRedpacketEmpty: "Red Packet is Empty",
   errorRedpacketClaimed: "You already opened Red Packet",
+  errorRedpacketClaimOut: "You opened the Red Packet Too Later",
+  errorRedpacketClaimTimeOut: "You opened the Red Packet Too Later",
 };

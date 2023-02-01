@@ -121,9 +121,10 @@ export function useRedPacketModal() {
       if (
         isShow &&
         info &&
-        step === RedPacketViewStep.TimeOutPanel &&
-        (_info.status === sdk.LuckyTokenItemStatus.COMPLETED ||
-          _info.status === sdk.LuckyTokenItemStatus.OVER_DUE)
+        step === RedPacketViewStep.TimeOutPanel
+        // &&
+        // (_info.status === sdk.LuckyTokenItemStatus.COMPLETED ||
+        //   _info.status === sdk.LuckyTokenItemStatus.OVER_DUE)
       ) {
         return {
           memo: _info.info.memo,
@@ -313,7 +314,7 @@ export function useRedPacketModal() {
             });
           } else {
             if (
-              response.detail?.claimAmount &&
+              response.detail?.claimAmount?.toString() !== "0" &&
               _info?.type.scope === sdk.LuckyTokenViewType.PUBLIC
             ) {
               updateRedpacketHash({
@@ -422,7 +423,7 @@ export function useRedPacketModal() {
       const tokenInfo = tokenMap[idIndex[detail?.tokenId] ?? ""];
       const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
       let myAmountStr: string | undefined = undefined;
-      if (detail.claimAmount) {
+      if (detail.claimAmount.toString() !== "0") {
         const symbol = token.symbol;
         myAmountStr =
           getValuePrecisionThousand(
