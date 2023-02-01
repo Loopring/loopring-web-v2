@@ -200,7 +200,8 @@ export type LOOPRING_NFT_METADATA = {
 };
 
 export const NFTLimit = 12,
-  CollectionLimit = 12;
+  CollectionLimit = 12,
+  RedPacketLimit = 12;
 
 export const AddAssetList = {
   FromMyL1: {
@@ -371,7 +372,7 @@ export const useAddressTypeLists = <
 };
 
 export const defalutSlipage = 0.1;
-export type ForexMap<C> = { [k in keyof C]?: number };
+export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 
 export const enum InvestMapType {
   Token = "Token",
@@ -486,6 +487,10 @@ export type DualViewInfo = DualViewBase & {
     rule: sdk.DualRulesCoinsInfo;
   };
 };
+export type ClaimToken = sdk.UserBalanceInfo & {
+  isNft?: boolean;
+  nftTokenInfo?: sdk.NFTTokenInfo;
+};
 export type DualViewOrder = DualViewBase & {
   __raw__: {
     order: sdk.UserDualTxsHistory;
@@ -527,7 +532,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     desKey: "labelLuckyRelayTokenDes",
     value: {
       value: 0,
-      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
       mode: sdk.LuckyTokenClaimType.RELAY,
     },
   },
@@ -550,3 +555,20 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
 ];
+
+export const QRCODE_REGION_ID = "qrcodeRegionId";
+
+export type ACCOUNT_ADDRESS = string;
+export type TX_HASH = string;
+export type RedPacketHashItems = {
+  [key: TX_HASH]: {
+    claim: string;
+    luckToken: sdk.LuckyTokenItemForReceive;
+  };
+};
+export type RedPacketHashInfo = {
+  [key: ACCOUNT_ADDRESS]: RedPacketHashItems;
+};
+export type RedpacketHashInfos = {
+  [key in sdk.ChainId extends string ? string : string]: RedPacketHashInfo;
+};

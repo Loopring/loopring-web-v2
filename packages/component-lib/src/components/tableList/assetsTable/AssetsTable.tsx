@@ -12,6 +12,7 @@ import {
   MarketType,
   PriceTag,
   RowConfig,
+  TokenType,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { CoinIcons } from "./components/CoinIcons";
@@ -82,12 +83,6 @@ interface Row {
   children?: Row[];
   isExpanded?: boolean;
   format?: any;
-}
-
-export enum TokenType {
-  single = "single",
-  lp = "lp",
-  defi = "defi",
 }
 
 export type TradePairItem = {

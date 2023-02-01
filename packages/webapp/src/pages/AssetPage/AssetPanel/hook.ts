@@ -16,7 +16,6 @@ import {
 import {
   AccountStep,
   AssetTitleProps,
-  TokenType,
   TradeBtnStatus,
   useOpenModals,
   useSettings,
@@ -29,6 +28,7 @@ import {
   myLog,
   PriceTag,
   YEAR_DAY_FORMAT,
+  TokenType,
 } from "@loopring-web/common-resources";
 
 import { WsTopicType } from "@loopring-web/loopring-sdk";
