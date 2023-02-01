@@ -39,7 +39,9 @@ import {
   RedPacketUnreadyProps,
 } from "./Interface";
 
-export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
+export const RedPacketBg = styled(Box)<
+  BoxProps & { imageSrc?: string; type: string }
+>`
   display: flex;
   align-items: center;
   position: relative;
@@ -942,16 +944,16 @@ export const RedPacketDetail = ({
 };
 
 export const RedPacketPrepare = ({
-                                   chainId,
-                                   account,
-                                   tokenInfo,
-                                   setShowRedPacket,
-                                   redPacketHashItems,
-                                   _type = "default",
-                                   amountStr,
-                                   onOpen,
-                                   ...props
-                                 }: {
+  chainId,
+  account,
+  tokenInfo,
+  setShowRedPacket,
+  redPacketHashItems,
+  _type = "default",
+  amountStr,
+  onOpen,
+  ...props
+}: {
   chainId: sdk.ChainId;
   account: Account;
   amountStr: string;
@@ -961,7 +963,7 @@ export const RedPacketPrepare = ({
   setShowRedPacket: (
     state: ModalStatePlayLoad & {
       step?: number;
-      info?: { [ key: string ]: any };
+      info?: { [key: string]: any };
     }
   ) => void;
   onOpen: () => void;
@@ -971,8 +973,8 @@ export const RedPacketPrepare = ({
   const _info = props as sdk.LuckyTokenItemForReceive;
   const viewItem = React.useMemo(() => {
     let claim: undefined | string = undefined;
-    if (redPacketHashItems && redPacketHashItems[ _info.hash ]) {
-      claim = redPacketHashItems[ _info.hash ].claim;
+    if (redPacketHashItems && redPacketHashItems[_info.hash]) {
+      claim = redPacketHashItems[_info.hash].claim;
       // const historyInfos = redPacketHistory[chainId][account.accAddress];
     }
     let difference = new Date(_info.validSince).getTime() - Date.now();
