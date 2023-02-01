@@ -7,6 +7,7 @@ import {
   globalSetup,
   MoreIcon,
   RowConfig,
+  TokenType,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
@@ -146,7 +147,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                 <Typography component={"span"} display={"inline-flex"}>
                   {/* eslint-disable-next-line react/jsx-no-undef */}
                   <CoinIcons
-                    type={"dual"}
+                    type={TokenType.dual}
                     size={24}
                     tokenIcon={[
                       coinJson[row.sellSymbol],

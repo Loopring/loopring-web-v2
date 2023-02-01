@@ -11,7 +11,7 @@ import { ChainId } from "@loopring-web/loopring-sdk";
 import * as sdk from "@loopring-web/loopring-sdk";
 export type updateRedpacketHashProps = {
   hash: TX_HASH;
-  luckToken: sdk.LuckyTokenItemForReceive;
+  luckToken: { validSince: number; hash: string };
   chainId: sdk.ChainId;
   address: string;
   claimAmount: string;
@@ -84,7 +84,10 @@ const redPacketHistorySlice: Slice<RedpacketHashInfos> = createSlice<
           [address]: {
             ...state[chainId][address],
             [hash]: {
-              luckToken,
+              luckToken: {
+                validSince: luckToken.validSince,
+                hash: luckToken.hash,
+              },
               claim: claimAmount,
             },
           },
