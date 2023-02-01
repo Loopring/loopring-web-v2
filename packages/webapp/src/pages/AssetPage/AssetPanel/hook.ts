@@ -97,7 +97,6 @@ export const useGetAssets = () => {
           detail: assetsDetailList[index],
         })
     );
-
     setAssetsMap(map);
   }, []);
   useWalletLayer2Socket({ walletLayer2Callback });
