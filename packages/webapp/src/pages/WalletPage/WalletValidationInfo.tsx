@@ -1,41 +1,21 @@
-import {
-  Box,
-  Grid,
-  ListItem,
-  ListItemProps,
-  ListItemText,
-  Modal,
-  Typography,
-} from "@mui/material";
+import { Box, Modal, Typography } from "@mui/material";
 import * as sdk from "@loopring-web/loopring-sdk";
-
-import styled from "@emotion/styled";
+import { Guardian } from "@loopring-web/loopring-sdk";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
   Button,
-  ButtonListRightStyled,
   EmptyDefault,
-  GuardianNotSupport,
   GuardianStep,
   InputCode,
   ModalCloseButton,
   SwitchPanelStyled,
-  Toast,
 } from "@loopring-web/component-lib";
-import { LoopringAPI } from "@loopring-web/core";
+import { LoopringAPI, useAccount, useSystem } from "@loopring-web/core";
 import Web3 from "web3";
 
 import { connectProvides } from "@loopring-web/web3-provider";
-import { useAccount } from "@loopring-web/core";
-import { useSystem } from "@loopring-web/core";
-import {
-  RefreshIcon,
-  SDK_ERROR_MAP_TO_UI,
-  SecurityIcon,
-  TOAST_TIME,
-} from "@loopring-web/common-resources";
-import { Guardian } from "@loopring-web/loopring-sdk";
+import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
 
 const VCODE_UNIT = 6;
 export const WalletValidationInfo = ({
