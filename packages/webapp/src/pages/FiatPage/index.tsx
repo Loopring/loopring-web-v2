@@ -42,10 +42,10 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
-    // TradeTypes.Buy
-    match?.params?.tab?.toLowerCase() === "sell".toLowerCase()
-      ? TradeTypes.Sell
-      : TradeTypes.Buy
+    TradeTypes.Buy
+    // match?.params?.tab?.toLowerCase() === "sell".toLowerCase()
+    //   ? TradeTypes.Sell
+    //   : TradeTypes.Buy
   );
   const { banxaViewProps, offBanxaValue } = useBanxaConfirm({
     sellPanel,
