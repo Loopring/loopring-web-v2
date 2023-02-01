@@ -123,7 +123,6 @@ export const useAmmExit = ({
       initAmmData(pair, undefined, true);
     }
   }, [isShow && pair && ammPoolSnapshot?.poolAddress]);
-
   React.useEffect(() => {
     if (
       account.readyState === AccountStatus.ACTIVATED &&
@@ -138,7 +137,15 @@ export const useAmmExit = ({
         btnI18nKey: typeof btnInfo === "string" ? btnInfo : btnI18nKey,
       });
     }
-  }, [account.readyState, isLoading, ammData, volA_show, volB_show, lpMinAmt]);
+  }, [
+    account.readyState,
+    isLoading,
+    fees,
+    ammData,
+    volA_show,
+    volB_show,
+    lpMinAmt,
+  ]);
   const updateMiniTradeValue = React.useCallback(() => {
     const {
       ammExit: {
@@ -181,12 +188,13 @@ export const useAmmExit = ({
               : miniLpVal
           )
           .times(1.1);
-        // mylog(
-        //   "updateMiniTradeValue: miniFeeLpWithSlippage, miniLpVal, miniVal = great one * 1.1 ",
-        //   miniFeeLpWithSlippageVal.toString(),
-        //   miniLpVal.toString(),
-        //   miniVal.toString()
-        // );
+        // todo:
+        console.log(
+          "updateMiniTradeValue: miniFeeLpWithSlippage, miniLpVal, miniVal = great one * 1.1 ",
+          miniFeeLpWithSlippageVal.toString(),
+          miniLpVal.toString(),
+          miniVal.toString()
+        );
         return getValuePrecisionThousand(
           miniVal,
           lpToken.precision,
@@ -213,16 +221,21 @@ export const useAmmExit = ({
       fees &&
       ammData.slippage
     ) {
-      // mylog(
-      //   "updateMiniTradeValue: fees, slippage, ammPoolSnapshot",
-      //   fees,
-      //   ammData.slippage,
-      //   ammPoolSnapshot.pooled,
-      //   ammPoolSnapshot.lp
-      // );
+      // todo:
+      console.log(
+        "updateMiniTradeValue: fees, slippage, ammPoolSnapshot",
+        fees,
+        ammData.slippage,
+        ammPoolSnapshot.pooled,
+        ammPoolSnapshot.lp
+      );
       updateMiniTradeValue();
     }
   }, [pair, ammPoolSnapshot?.lp.volume, fees, isShow, ammData.slippage]);
+  React.useEffect(() => {
+    updateExitFee();
+  }, [ammPoolSnapshot?.lp.volume]);
+
   const initAmmData = React.useCallback(
     (pair: any, walletMap: any, isReset: boolean = false) => {
       const { ammData, fee } = store.getState()._router_pageAmmPool.ammExit;
@@ -326,7 +339,12 @@ export const useAmmExit = ({
             .toBig(ammData?.coinLP?.tradeValue ?? 0)
             .gte(sdk.toBig(lpMinAmt?.replace(sdk.SEP, "") ?? 0))
         : false;
-
+      // todo:
+      console.log(
+        "updateMiniTradeValue validAmt: fee, lpMinAmt",
+        fee,
+        lpMinAmt.toString()
+      );
       if (isLoading) {
         return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined };
       } else if (account.readyState === AccountStatus.ACTIVATED) {
@@ -568,6 +586,13 @@ export const useAmmExit = ({
       } else if ((error as sdk.RESULT_INFO)?.code) {
         const errorItem =
           SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001];
+        if (
+          [102024, 102025, 114001, 114002].includes(
+            (error as sdk.RESULT_INFO)?.code || 0
+          )
+        ) {
+          await updateExitFee();
+        }
         setToastOpen({
           open: true,
           type: "error",
@@ -586,7 +611,6 @@ export const useAmmExit = ({
           content: t("labelExitAmmFailed"),
         });
       }
-      return;
     }
     setIsLoading(false);
     updatePageAmmExit({
