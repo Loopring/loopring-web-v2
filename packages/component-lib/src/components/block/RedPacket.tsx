@@ -461,7 +461,7 @@ export const RedPacketClock = ({
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
-    let difference = +new Date(validSince).toTimeString() - Date.now();
+    let difference = +new Date(validSince).getTime() - Date.now();
     if (difference > 0) {
       setCountDown({
         days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),

@@ -22,6 +22,8 @@ export const useRedPacketScanQrcodeSuccess = () => {
   const {
     account: { apiKey, accountId },
   } = useAccount();
+  const { callOpen } = useOpenRedpacket();
+
   const [redPacketInfo, setRedPacketInfo] =
     React.useState<{ hash: string; referrer: string } | undefined>(undefined);
   const getLuckTokenDetail = React.useCallback(async () => {
@@ -58,17 +60,51 @@ export const useRedPacketScanQrcodeSuccess = () => {
           },
         });
       } else {
-        const luckTokenInfo: sdk.LuckyTokenItemForReceive = (response as any)
-          .detail.luckyToken;
+        const detail = (response as any).detail;
+        const luckTokenInfo: sdk.LuckyTokenItemForReceive = detail.luckyToken;
+        let difference =
+          new Date(luckTokenInfo.validSince).getTime() - Date.now();
+
         if (luckTokenInfo) {
           setShowAccount({ isShow: false });
-          setShowRedPacket({
-            isShow: true,
-            info: {
-              ...luckTokenInfo,
-              referrer: redPacketInfo.referrer,
-            },
-            step: RedPacketViewStep.OpenPanel,
+          if (response.detail?.claimAmount) {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.DetailPanel,
+              info: {
+                ...luckTokenInfo,
+              },
+            });
+          } else if (difference > 0) {
+            setShowRedPacket({
+              isShow: true,
+              info: {
+                ...luckTokenInfo,
+                referrer: redPacketInfo.referrer,
+              },
+              step: RedPacketViewStep.RedPacketClock,
+            });
+          } else if (difference + 86400000 < 0) {
+            setShowRedPacket({
+              isShow: true,
+              info: {
+                ...luckTokenInfo,
+              },
+              step: RedPacketViewStep.TimeOutPanel,
+            });
+          } else {
+            setShowRedPacket({
+              isShow: true,
+              info: {
+                ...luckTokenInfo,
+                referrer: redPacketInfo.referrer,
+              },
+              step: RedPacketViewStep.OpenPanel,
+            });
+            callOpen();
+          }
+          setShowAccount({
+            isShow: false,
           });
         } else {
           const error = new CustomError(ErrorMap.ERROR_REDPACKET_EMPTY);
@@ -81,6 +117,29 @@ export const useRedPacketScanQrcodeSuccess = () => {
             },
           });
         }
+        // const luckTokenInfo: sdk.LuckyTokenItemForReceive = (response as any)
+        //   .detail.luckyToken;
+        // if (luckTokenInfo) {
+        //   setShowAccount({ isShow: false });
+        //   setShowRedPacket({
+        //     isShow: true,
+        //     info: {
+        //       ...luckTokenInfo,
+        //       referrer: redPacketInfo.referrer,
+        //     },
+        //     step: RedPacketViewStep.OpenPanel,
+        //   });
+        // } else {
+        //   const error = new CustomError(ErrorMap.ERROR_REDPACKET_EMPTY);
+        //   setShowAccount({
+        //     isShow: true,
+        //     step: AccountStep.RedPacketOpen_Failed,
+        //     error: {
+        //       code: UIERROR_CODE.ERROR_REDPACKET_EMPTY,
+        //       msg: error.message,
+        //     },
+        //   });
+        // }
       }
     }
   }, [redPacketInfo, accountId]);
@@ -120,11 +179,6 @@ export const useRedPacketScanQrcodeSuccess = () => {
   );
   return {
     handleSuccess,
-  };
-};
-export const useRedPacketDetail = () => {
-  return {
-    redPacketProps: undefined,
   };
 };
 

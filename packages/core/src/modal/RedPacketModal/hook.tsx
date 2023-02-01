@@ -393,25 +393,12 @@ export function useRedPacketModal() {
       const luckTokenInfo = response.detail
         .luckyToken as sdk.LuckyTokenItemForReceive;
       setQrcode(luckTokenInfo);
-      // if (response.detail?.claimAmount) {
-      //   setDetail(response.detail);
-      //   setShowRedPacket({
-      //     isShow: true,
-      //     step: RedPacketViewStep.DetailPanel,
-      //     info: {
-      //       isFromQrScan: true,
-      //       ...luckTokenInfo,
-      //       // hash: luckTokenInfo.hash,
-      //       // response.detail
-      //     },
-      //   });
-      // }
     }
   }, [isShow, step, info]);
   React.useEffect(() => {
     if (isShow) {
       const info = store.getState().modals.isShowRedPacket.info;
-      if (step === RedPacketViewStep.DetailPanel && !info?.isFromQrScan) {
+      if (step === RedPacketViewStep.DetailPanel) {
         redPacketDetailCall({});
       } else if (step === RedPacketViewStep.QRCodePanel && info?.hash) {
         if (info?.id) {
