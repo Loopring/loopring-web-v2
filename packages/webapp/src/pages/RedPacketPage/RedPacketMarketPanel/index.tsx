@@ -19,15 +19,30 @@ import {
   useTokenMap,
 } from "@loopring-web/core";
 import { useMarketRedPacket } from "./hooks";
-import { Box, Button, Checkbox, Grid } from "@mui/material";
+import { Box, Button, Checkbox, Grid, IconButton } from "@mui/material";
 import {
   BackIcon,
   CheckBoxIcon,
   CheckedIcon,
   RefreshIcon,
   ScanQRIcon,
+  SoursURL,
 } from "@loopring-web/common-resources";
+import styled from "@emotion/styled";
 
+const LoadingStyled = styled(Box)`
+  position: fixed;
+  z-index: 21;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--field-opacity);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+`;
 export const RedPacketMarketPanel = ({
   setToastOpen,
 }: {
@@ -44,6 +59,7 @@ export const RedPacketMarketPanel = ({
   const history = useHistory();
   const { callOpen } = useOpenRedpacket();
   const {
+    showLoading,
     setShowOfficial,
     showOfficial,
     luckTokenList,
@@ -113,6 +129,7 @@ export const RedPacketMarketPanel = ({
         display={"flex"}
         flexDirection={"column"}
         paddingBottom={2}
+        position={"relative"}
       >
         <Grid
           container
@@ -275,6 +292,16 @@ export const RedPacketMarketPanel = ({
                 );
               })}
           </Grid>
+        )}
+        {showLoading && (
+          <LoadingStyled color={"inherit"}>
+            <img
+              className="loading-gif"
+              alt={"loading"}
+              width="36"
+              src={`${SoursURL}images/loading-line.gif`}
+            />
+          </LoadingStyled>
         )}
         <Box>
           <TablePagination
