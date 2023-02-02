@@ -1393,4 +1393,5 @@ export default {
   labelMyRedPacketReward: "My Rewards",
   labelRedpacketScanDes: "Using Loopring App san the QR code",
   labelLuckyRedPacketStarted: "Red Packet is Started",
+  labelNFTRedpacketBtn: "Send Red Packet",
 };

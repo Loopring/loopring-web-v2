@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import {
+  setNFTMetaNotReady,
   setShowAccount,
   setShowActiveAccount,
   setShowAmm,
@@ -53,6 +54,15 @@ export const useOpenModals = () => {
           info?: { [key: string]: any };
         }
       ) => dispatch(setShowRedPacket(state)),
+      [dispatch]
+    ),
+    setNFTMetaNotReady: React.useCallback(
+      (
+        state: ModalStatePlayLoad & {
+          step?: number;
+          info?: { [key: string]: any };
+        }
+      ) => dispatch(setNFTMetaNotReady(state)),
       [dispatch]
     ),
     setShowSupport: React.useCallback(

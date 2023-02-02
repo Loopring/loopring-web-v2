@@ -25,6 +25,7 @@ export type Transaction = {
 
 export interface ModalState {
   isShowSupport: ModalStatePlayLoad;
+  isShowNFTMetaNotReady: ModalStatePlayLoad;
   isShowOtherExchange: ModalStatePlayLoad & {
     agree?: boolean;
   };

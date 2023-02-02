@@ -1,6 +1,8 @@
 import {
+  AccountStep,
   AlertNotSupport,
   DepositProps,
+  InformationForNoMetaNFT,
   ModalCloseButton,
   ModalSettingFee,
   OtherExchangeDialog,
@@ -46,12 +48,15 @@ export const ModalGroup = withTranslation("common")(
         isShowConnect,
         isShowSupport,
         isShowOtherExchange,
+        isShowNFTMetaNotReady,
       },
+      setShowAccount,
       setShowSupport,
       setShowDeposit,
       setShowTransfer,
       setShowWithdraw,
       setShowResetAccount,
+      setNFTMetaNotReady,
     } = useOpenModals();
     const { account } = useAccount();
 
@@ -86,7 +91,19 @@ export const ModalGroup = withTranslation("common")(
             setShowOtherExchange({ isShow: false, agree });
           }}
         />
-
+        <InformationForNoMetaNFT
+          open={!!isShowNFTMetaNotReady.isShow}
+          method={isShowNFTMetaNotReady?.info?.method}
+          handleClose={(_e, isAgree) => {
+            setNFTMetaNotReady({ isShow: false });
+            if (isAgree) {
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.SendNFTGateway,
+              });
+            }
+          }}
+        />
         <ModalAccountInfo
           {...{
             ...rest,

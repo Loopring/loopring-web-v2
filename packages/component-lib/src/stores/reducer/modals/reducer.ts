@@ -10,6 +10,7 @@ import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { AmmPanelType } from "../../../components";
 
 const initialState: ModalState = {
+  isShowNFTMetaNotReady: { isShow: false },
   isShowRedPacket: { isShow: false, step: 0 },
   isShowSupport: { isShow: false },
   isShowOtherExchange: { isShow: false },
@@ -43,6 +44,20 @@ export const modalsSlice: Slice<ModalState> = createSlice({
   name: "modals",
   initialState,
   reducers: {
+    setNFTMetaNotReady(
+      state,
+      action: PayloadAction<{
+        isShow: boolean;
+        step?: number;
+        info?: { [key: string]: any };
+      }>
+    ) {
+      const { isShow, info } = action.payload;
+      state.isShowNFTMetaNotReady = {
+        isShow,
+        info,
+      };
+    },
     setShowRedPacket(
       state,
       action: PayloadAction<{
@@ -362,4 +377,5 @@ export const {
   setShowLayerSwapNotice,
   setShowClaimWithdraw,
   setShowRedPacket,
+  setNFTMetaNotReady,
 } = modalsSlice.actions;

@@ -122,6 +122,7 @@ export const MyNFTPanel = withTranslation("common")(
       modals: { isShowNFTDetail },
       setShowNFTDetail,
       setShowAccount,
+      setNFTMetaNotReady,
     } = useOpenModals();
     React.useEffect(() => {
       const [contract, id] = !!match?.params?.contract
@@ -329,6 +330,7 @@ export const MyNFTPanel = withTranslation("common")(
               etherscanBaseUrl={etherscanBaseUrl}
               popItem={isShowNFTDetail}
               assetsRawData={[]}
+              setNFTMetaNotReady={setNFTMetaNotReady}
             />
           </>
         ) : (

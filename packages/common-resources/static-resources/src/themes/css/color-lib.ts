@@ -68,6 +68,7 @@ export const ColorDarkDefault = Object.freeze({
   providerBtnHover: `${hexToRGB("#ffffff", "0.03")}`,
   providerApprove: `${hexToRGB("#ffffff", "0.03")}`,
   boxNFTLabel: `${hexToRGB("#000000", "0.48")}`,
+  boxNFTBtn: `${hexToRGB("#000000", "0.28")}`,
 
   redPacket1: `linear-gradient(96.56deg, #FFD596 1.14%, #FFD390 46.4%, #FDBD6A 98.91%)`,
   redPacket0: `linear-gradient(95.9deg, #FC7A5A 0.7%, #FF6151 99.3%);`,
@@ -135,6 +136,7 @@ export const ColorLightDefault = Object.freeze({
   providerBtnHover: `${hexToRGB("#3B5AF4", "0.15")}`,
   providerApprove: `#F6F7FB`,
   boxNFTLabel: `${hexToRGB("#6787FF", "0.08")}`,
+  boxNFTBtn: `${hexToRGB("#000000", "0.28")}`,
 
   redPacket1: `linear-gradient(96.56deg, #FFD596 1.14%, #FFD390 46.4%, #FDBD6A 98.91%)`,
   redPacket0: `linear-gradient(95.9deg, #FC7A5A 0.7%, #FF6151 99.3%);`,

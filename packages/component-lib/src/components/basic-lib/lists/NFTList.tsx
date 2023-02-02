@@ -2,11 +2,14 @@ import {
   Box,
   Checkbox,
   Grid,
+  MenuItem,
   Pagination,
+  Popover,
   Radio,
   Typography,
 } from "@mui/material";
 import {
+  Account,
   EmptyValueTag,
   GET_IPFS_STRING,
   getShortAddr,
@@ -14,12 +17,159 @@ import {
   NFTWholeINFO,
   sizeNFTConfig,
   SoursURL,
+  ViewMoreIcon,
 } from "@loopring-web/common-resources";
-import { CardStyleItem, EmptyDefault, NFTMedia } from "../../index";
-import { WithTranslation, withTranslation } from "react-i18next";
+import {
+  AccountStep,
+  CardStyleItem,
+  EmptyDefault,
+  NFTMedia,
+} from "../../index";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 import { sanitize } from "dompurify";
-import { useSettings } from "../../../stores";
+import { IconButtonStyle } from "../../../";
+import { ToggleState, useSettings } from "../../../stores";
 import { XOR } from "../../../types/lib";
+import React from "react";
+import {
+  bindMenu,
+  bindTrigger,
+  usePopupState,
+} from "material-ui-popup-state/hooks";
+import styled from "@emotion/styled";
+import { DEPLOYMENT_STATUS } from "@loopring-web/loopring-sdk";
+
+const BoxBtnGroup = styled(Box)`
+  position: absolute;
+  right: ${({ theme }) => 2 * theme.unit}px;
+  top: ${({ theme }) => 2 * theme.unit}px;
+  z-index: 99;
+  //flex-direction: row-reverse;
+  &.mobile {
+  }
+` as typeof Box;
+
+export type NFTItemBasicProps = {
+  toggle?: ToggleState;
+  setNFTMetaNotReady: (props: any) => void;
+  setShowNFTDeploy: (props: any) => void;
+  setShowNFTDetail: (props: any) => void;
+  setShowNFTTransfer: (props: any) => void;
+  setShowNFTWithdraw: (props: any) => void;
+  setShowTradeIsFrozen: (props: any) => void;
+  setShowRedPacket: (props: any) => void;
+  setShowAccount: (props: any) => void;
+};
+
+const ActionMemo = React.memo(
+  <NFT extends NFTWholeINFO>({
+    account,
+    toggle,
+    setShowNFTDeploy,
+    // setShowNFTDetail,
+    setShowNFTTransfer,
+    setShowNFTWithdraw,
+    setShowAccount,
+    setShowTradeIsFrozen,
+    setNFTMetaNotReady,
+    setShowRedPacket,
+    item,
+  }: NFTItemBasicProps & { item: NFT; account?: Account }) => {
+    const { t } = useTranslation("common");
+
+    const popupState = usePopupState({
+      variant: "popover",
+      popupId: "collection-action",
+    });
+    const bindContent = bindMenu(popupState);
+    const bindAction = bindTrigger(popupState);
+    const [isKnowNFTNoMeta, setIsKnowNFTNoMeta] = React.useState<boolean>(
+      !!(item?.name !== "" && item.image && item.image !== "")
+    );
+    React.useEffect(() => {
+      setIsKnowNFTNoMeta((_state) => {
+        return !!(item.name !== "" && item.image && item.image !== "");
+      });
+    }, [item.name, item.image]);
+
+    return (
+      <Grid item marginTop={1}>
+        <IconButtonStyle size={"large"} edge={"end"} {...{ ...bindAction }}>
+          <ViewMoreIcon />
+        </IconButtonStyle>
+        <Popover
+          {...bindContent}
+          anchorReference="anchorEl"
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <Box borderRadius={"inherit"} minWidth={110}>
+            {!!(
+              item.isCounterFactualNFT &&
+              item.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+              item.minter?.toLowerCase() === account?.accAddress.toLowerCase()
+            ) && (
+              <MenuItem
+                onClick={() =>
+                  toggle?.deployNFT?.enable
+                    ? setShowNFTDeploy({
+                        ...item,
+                      })
+                    : setShowTradeIsFrozen({
+                        isShow: true,
+                        type: t("nftDeployDescription"),
+                      })
+                }
+              >
+                {t("labelNFTDeployContract")}
+              </MenuItem>
+            )}
+            <MenuItem
+              onClick={() => {
+                setShowNFTTransfer({ ...item });
+                setShowNFTWithdraw({ ...item });
+                isKnowNFTNoMeta
+                  ? setShowAccount({
+                      isShow: true,
+                      step: AccountStep.SendNFTGateway,
+                      info: { ...item },
+                    })
+                  : setNFTMetaNotReady({
+                      isShow: false,
+                      info: { method: "Send" },
+                    });
+              }}
+            >
+              {t("labelNFTSendBtn")}
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                isKnowNFTNoMeta
+                  ? setShowRedPacket({ ...item })
+                  : setNFTMetaNotReady({
+                      isShow: false,
+                      info: { method: "Send" },
+                    });
+              }}
+            >
+              {t("labelNFTRedpacketBtn")}
+            </MenuItem>
+          </Box>
+        </Popover>
+      </Grid>
+    );
+  }
+);
 
 export const NFTList = withTranslation("common")(
   <NFT extends NFTWholeINFO>({
@@ -34,9 +184,11 @@ export const NFTList = withTranslation("common")(
     selected = undefined,
     isSelectOnly = false,
     isMultipleSelect = false,
-    isManage = false,
     onPageChangeCallback,
+    setNFTMetaNotReady,
+    isEdit,
     t,
+    ...props
   }: {
     baseURL: string;
     isManage?: boolean;
@@ -52,15 +204,23 @@ export const NFTList = withTranslation("common")(
     selected?: Partial<NFT>[];
     onPageChange?: (page: number) => void;
     onPageChangeCallback?: (page: string) => void;
+    setNFTMetaNotReady: (props: any) => void;
+    account?: Account;
+    toggle?: any;
     // onSelected: (item: Partial<NFT>) => void;
-  } & XOR<
-    { isSelectOnly: true; isMultipleSelect: true; selected: Partial<NFT>[] },
-    | { isSelectOnly: true; isMultipleSelect?: false; selected: NFT }
-    | { isSelectOnly?: false; isMultipleSelect?: false }
-  > &
+  } & ((NFTItemBasicProps & { isEdit: true }) | { isEdit?: false }) &
+    XOR<
+      { isSelectOnly: true; isMultipleSelect: true; selected: Partial<NFT>[] },
+      | { isSelectOnly: true; isMultipleSelect?: false; selected: NFT }
+      | {
+          isSelectOnly?: false;
+          isMultipleSelect?: false;
+        }
+    > &
     WithTranslation) => {
     const sizeConfig = sizeNFTConfig(size);
     const { isMobile } = useSettings();
+    // @ts-ignore
     return (
       <Box
         flex={1}
@@ -102,11 +262,17 @@ export const NFTList = withTranslation("common")(
                   <CardStyleItem
                     size={size}
                     contentheight={sizeConfig.contentHeight}
-                    onClick={() => {
-                      onClick && onClick(item);
-                    }}
                     className={"nft-item"}
                   >
+                    {isEdit && (
+                      <BoxBtnGroup className={"btn-group"}>
+                        <ActionMemo
+                          {...{ ...(props as any) }}
+                          item={item as any}
+                          setNFTMetaNotReady={setNFTMetaNotReady}
+                        />
+                      </BoxBtnGroup>
+                    )}
                     <Box
                       position={"absolute"}
                       width={"100%"}
@@ -114,6 +280,10 @@ export const NFTList = withTranslation("common")(
                       display={"flex"}
                       flexDirection={"column"}
                       justifyContent={"space-between"}
+                      onClick={(e) => {
+                        e.isPropagationStopped();
+                        onClick && onClick(item);
+                      }}
                     >
                       <NFTMedia
                         item={item}
@@ -158,7 +328,6 @@ export const NFTList = withTranslation("common")(
                         alignItems={"center"}
                         justifyContent={"space-between"}
                         sx={{ background: "var(--color-box-nft-label)" }}
-                        // flexWrap={"wrap"}
                       >
                         <Box
                           display={"flex"}
@@ -217,9 +386,7 @@ export const NFTList = withTranslation("common")(
                             minWidth={1}
                             textOverflow={"ellipsis"}
                             title={item?.nftId?.toString()}
-                          >
-                            {"\n"}
-                          </Typography>
+                          ></Typography>
                           {/*<Typography*/}
                           {/*  variant={""}*/}
                           {/*  component={"div"}*/}

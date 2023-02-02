@@ -47,6 +47,7 @@ export const colorBase = ({ theme }: any) => css`
     --color-tag: ${theme.colorBase.tag};
     --color-box: ${theme.colorBase.box};
     --color-box-nft-label: ${theme.colorBase.boxNFTLabel};
+    --color-box-nft-btn: ${theme.colorBase.boxNFTBtn};
     --color-box: ${theme.colorBase.box};
     --color-box-hover: ${theme.colorBase.boxHover};
     --color-pop-bg: ${theme.colorBase.popBg};

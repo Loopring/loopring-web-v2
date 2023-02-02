@@ -1,6 +1,16 @@
 import { CollectionMeta } from "@loopring-web/common-resources";
-import { NFTList, useSettings } from "@loopring-web/component-lib";
-import { getIPFSString, useSystem } from "@loopring-web/core";
+import {
+  NFTList,
+  useOpenModals,
+  useSettings,
+  useToggle,
+} from "@loopring-web/component-lib";
+import {
+  getIPFSString,
+  useAccount,
+  useModalData,
+  useSystem,
+} from "@loopring-web/core";
 import React from "react";
 import { useMyNFT } from "./useMyNFT";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -23,6 +33,27 @@ export const MyNFTList = withTranslation("common")(
   } & WithTranslation) => {
     const { baseURL } = useSystem();
     const { isMobile } = useSettings();
+    const {
+      // setShowNFTDetail,
+      // setShowAccount,
+      setShowNFTDeploy,
+      setShowNFTDetail,
+      setShowNFTTransfer,
+      setShowNFTWithdraw,
+      setShowTradeIsFrozen,
+      setShowRedPacket,
+      setShowAccount,
+      setNFTMetaNotReady,
+      // modals: { isShowNFTDetail },
+    } = useOpenModals();
+    const {
+      updateNFTDeployData,
+      updateNFTTransferData,
+      updateNFTWithdrawData,
+    } = useModalData();
+    const { account } = useAccount();
+    const { toggle } = useToggle();
+
     const match = useRouteMatch("/NFT/assetsNFT/:mainTab?");
     const isByCollection = match?.params["mainTab"] === "byCollection";
     const tabParams = isByCollection
@@ -83,6 +114,7 @@ export const MyNFTList = withTranslation("common")(
       },
       [tab, history, location, match, contractParam, isByCollection]
     );
+    // @ts-ignore
     return (
       <>
         <Tabs
@@ -101,10 +133,6 @@ export const MyNFTList = withTranslation("common")(
                 key={item.toString()}
                 value={item.toString()}
                 label={
-                  // <Tooltip
-                  //   placement={"top"}
-                  //   title={t(`labelImportCollection${item}Des`).toString()}
-                  // >
                   <Typography
                     component={"span"}
                     display={"inline-flex"}
@@ -131,6 +159,37 @@ export const MyNFTList = withTranslation("common")(
             onClick: nftProps.onDetail,
             getIPFSString,
           }}
+          account={account}
+          isEdit={true}
+          toggle={toggle}
+          // @ts-ignore
+          setShowNFTDeploy={(item: any) => {
+            updateNFTDeployData({ ...item });
+            setShowNFTDeploy({ isShow: true, info: { ...{ item } } });
+            setShowAccount({ isShow: false });
+          }}
+          setShowNFTDetail={(item: any) => {
+            // updateNFTDetail({...item})
+            setShowNFTDetail({ isShow: true, info: { ...{ item } } });
+            setShowAccount({ isShow: false });
+          }}
+          setShowNFTTransfer={(item: any) => {
+            updateNFTTransferData({ ...item });
+            setShowNFTTransfer({ isShow: false, info: { ...{ item } } });
+            setShowAccount({ isShow: false });
+          }}
+          setShowNFTWithdraw={(item: any) => {
+            updateNFTWithdrawData({ ...item });
+            setShowNFTWithdraw({ isShow: false, info: { ...{ item } } });
+            setShowAccount({ isShow: false });
+          }}
+          setShowTradeIsFrozen={setShowTradeIsFrozen}
+          setShowRedPacket={(item: any) => {
+            setShowRedPacket({ isShow: true, info: { ...item } });
+            setShowAccount({ isShow: false });
+          }}
+          setShowAccount={setShowAccount}
+          setNFTMetaNotReady={setNFTMetaNotReady}
           onPageChangeCallback={onPageChangeCallback}
           isManage={false}
           size={size ?? isMobile ? "small" : "large"}

@@ -1,4 +1,9 @@
-import { MenuItem as MuiMenuItem, Select, SelectProps } from "@mui/material";
+import {
+  IconButton,
+  MenuItem as MuiMenuItem,
+  Select,
+  SelectProps,
+} from "@mui/material";
 import styled from "@emotion/styled";
 import { MuiMenuItemProps } from "./Interface";
 import React from "react";
@@ -81,6 +86,11 @@ export const OutlineSelectItem = styled(MenuItem)<any>`
     }
   }
 ` as typeof MenuItem;
+export const IconButtonStyle = styled(IconButton)`
+  background-color: var(--color-box-nft-btn);
+  margin: 0 ${({ theme }) => theme.unit / 2}px;
+  ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};
+}`;
 
 export * from "./FileListItem";
 export * from "./HeadMenuItem";

@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import { Box, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 
-import { useSettings } from "../../../stores";
+import { useOpenModals, useSettings } from "../../../stores";
 import {
   CollectionMeta,
   EmptyValueTag,
@@ -84,6 +84,8 @@ export const CollectionManageWrap = <
     },
     [filter, onFilterNFT]
   );
+  const { setNFTMetaNotReady } = useOpenModals();
+
   const Btn = React.useMemo(() => {
     switch (tab) {
       case sdk.LegacyNFT.undecided:
@@ -254,6 +256,7 @@ export const CollectionManageWrap = <
               onPageChange={(page: number) => {
                 onFilterNFT({ ...filter, page });
               }}
+              setNFTMetaNotReady={setNFTMetaNotReady}
               isManage={false}
               isSelectOnly={tab !== "all"}
               isMultipleSelect={tab !== "all"}

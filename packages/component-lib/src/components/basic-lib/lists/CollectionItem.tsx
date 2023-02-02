@@ -4,12 +4,12 @@ import {
   CollectionListProps,
   CollectionMedia,
   EmptyDefault,
+  IconButtonStyle,
 } from "../../../index";
 import {
   Avatar,
   Box,
   Grid,
-  IconButton,
   Link,
   MenuItem,
   Pagination,
@@ -74,12 +74,6 @@ const BoxBtnGroup = styled(Box)`
   &.mobile {
   }
 ` as typeof Box;
-const IconButtonStyle = styled(IconButton)`
-  background-color: var(--field-opacity);
-  margin: 0 ${({ theme }) => theme.unit / 2}px;
-  ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};
-
-}`;
 
 const ActionMemo = React.memo(
   <Co extends CollectionMeta>({

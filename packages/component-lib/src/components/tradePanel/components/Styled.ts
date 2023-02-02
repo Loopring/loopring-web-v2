@@ -41,12 +41,6 @@ export const IconClearStyled = styled(IconButton)`
 ` as typeof IconButton;
 
 export const IconButtonStyled = styled(IconButton)`
-  &.MuiButtonBase-root {
-    //svg {
-    //  color: var(--color-text-primary);
-    //}
-  }
-
   .MuiToolbar-root &.MuiButtonBase-root {
     svg {
       //font-size: ${({ theme }) => theme.fontDefault.h4};

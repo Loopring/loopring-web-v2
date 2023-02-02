@@ -5,28 +5,12 @@ import {
 import styled from "@emotion/styled";
 import { Box, BoxProps, Typography } from "@mui/material";
 import React from "react";
-import { NFTList } from "@loopring-web/component-lib";
+import { NFTList, useOpenModals } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useAccount } from "@loopring-web/core";
 import { useLocation } from "react-router-dom";
 
-const StyledPaper = styled(Box)`
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-`;
-//--color-box
-const HeaderBannerStyle = styled(Box)<BoxProps & { url: string }>`
-  background-image: url(${({ url }) => url});
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-radius: ${({ theme }) => theme.unit}px;
-  height: 100%;
-  width: 100%;
-` as (props: BoxProps & { url: string }) => JSX.Element;
-
 export const CollectionItemPanel = <Co extends CollectionMeta>({
-  collectionDate,
   getIPFSString,
   baseURL,
   nftPublicProps,
@@ -36,35 +20,11 @@ export const CollectionItemPanel = <Co extends CollectionMeta>({
   baseURL: string;
   nftPublicProps: any;
 }) => {
-  const { search, pathname } = useLocation();
-  const searchParams = new URLSearchParams(search);
   const { t } = useTranslation();
-  const { account } = useAccount();
+  const { setNFTMetaNotReady } = useOpenModals();
 
   return (
     <Box flex={1} display={"flex"} flexDirection={"column"} paddingY={2}>
-      {/*{!!(account.readyState === AccountStatus.ACTIVATED) && (*/}
-      {/*  <>*/}
-      {/*    <Box display={"flex"} flexDirection={"column"}>*/}
-      {/*      <Typography variant={"h5"} marginBottom={1} marginX={3}>*/}
-      {/*        {t("labelTitleMyNFTSAvailable", { ns: "common" })}*/}
-      {/*      </Typography>*/}
-      {/*      <MyNFTList*/}
-      {/*        collectionMeta={collectionDate}*/}
-      {/*        size={"small"}*/}
-      {/*        myNFTPage={*/}
-      {/*          searchParams?.get("myNFTPage")*/}
-      {/*            ? Number(searchParams?.get("myNFTPage"))*/}
-      {/*            : 1*/}
-      {/*        }*/}
-      {/*      />*/}
-      {/*    </Box>*/}
-      {/*    <Box marginTop={3} marginBottom={2} marginX={2}>*/}
-      {/*      <Divider />*/}
-      {/*    </Box>*/}
-      {/*  </>*/}
-      {/*)}*/}
-
       <Box display={"flex"} flex={1} marginBottom={1} flexDirection={"column"}>
         <Typography variant={"h5"} marginBottom={1} marginX={3}>
           {t("labelTitleTotalAvailable", { ns: "common" })}
@@ -86,6 +46,7 @@ export const CollectionItemPanel = <Co extends CollectionMeta>({
           onClick={async (_item) => {
             nftPublicProps.onDetail();
           }}
+          setNFTMetaNotReady={setNFTMetaNotReady}
         />
       </Box>
     </Box>
