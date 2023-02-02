@@ -188,6 +188,7 @@ export const TOAST_TIME = 3000;
 export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;
 export const PROPERTY_Value_LIMIT = 40;
+export const REDPACKET_ORDER_LIMIT = 10000;
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: "name",
   image: "image",

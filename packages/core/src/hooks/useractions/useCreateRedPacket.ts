@@ -6,6 +6,7 @@ import {
   getValuePrecisionThousand,
   LIVE_FEE_TIMES,
   myLog,
+  REDPACKET_ORDER_LIMIT,
   SUBMIT_PANEL_AUTO_CLOSE,
   TOAST_TIME,
   UIERROR_CODE,
@@ -208,6 +209,7 @@ export const useCreateRedPacket = <
       redPacketOrder.fee.belong &&
       redPacketOrder.numbers &&
       redPacketOrder.numbers > 0 &&
+      redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
       _tradeData.tradeValue &&
       redPacketOrder.memo &&
       redPacketOrder.memo?.trim().length > 0
@@ -253,7 +255,7 @@ export const useCreateRedPacket = <
           setLabelAndParams("labelReserveFee", {
             symbol: tradeToken.symbol as string,
           });
-        } else if (tooSmall) {
+        } else if (tooSmall || redPacketOrder.numbers > REDPACKET_ORDER_LIMIT) {
           if (tradeValue.lt(tradeToken.luckyTokenAmounts.minimum)) {
             setLabelAndParams("labelRedPacketsMin", {
               value: getValuePrecisionThousand(
@@ -269,10 +271,14 @@ export const useCreateRedPacket = <
               symbol: tradeToken.symbol,
             });
           } else {
+            let value = tradeValue
+              .div(tradeToken.luckyTokenAmounts.minimum)
+              .toFixed(0, 1);
             setLabelAndParams("labelRedPacketsSplitNumber", {
-              value: tradeValue
-                .div(tradeToken.luckyTokenAmounts.minimum)
-                .toFixed(0, 1),
+              value: (Number(value) <= REDPACKET_ORDER_LIMIT
+                ? balance
+                : REDPACKET_ORDER_LIMIT
+              ).toString(),
             });
           }
         } else if (tooLarge) {

@@ -24,6 +24,7 @@ import {
   IBData,
   LuckyRedPacketItem,
   LuckyRedPacketList,
+  REDPACKET_ORDER_LIMIT,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -170,7 +171,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
         },
       };
       let inputSplitExtendProps = {};
+      REDPACKET_ORDER_LIMIT;
       if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
+        let balance = sdk
+          .toBig(tradeData.tradeValue)
+          .div(Number(minimum) ?? 1)
+          .toFixed(0, 1);
+
         inputSplitExtendProps = {
           maxAllow: true,
           subLabel: t("labelAvailable"),
@@ -187,10 +194,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
           inputData: {
             belong: "Split",
             tradeValue: tradeData?.numbers,
-            balance: sdk
-              .toBig(tradeData.tradeValue)
-              .div(Number(minimum) ?? 1)
-              .toFixed(0, 1),
+            balance:
+              Number(balance) <= REDPACKET_ORDER_LIMIT
+                ? balance
+                : REDPACKET_ORDER_LIMIT,
           },
         };
       } else {
