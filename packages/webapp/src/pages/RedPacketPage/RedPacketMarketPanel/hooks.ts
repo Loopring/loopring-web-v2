@@ -33,9 +33,11 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
   const [luckTokenList, setLuckTokenList] = React.useState<{
     officialList: R[];
     publicList: R[];
+    publicTotal: number;
   }>({
     officialList: [],
     publicList: [],
+    publicTotal: 0,
   });
 
   const getMarketRedPacket = React.useCallback(
@@ -106,6 +108,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
             officialList: responses[0]?.list as R[],
             publicList:
               responses?.length === 2 ? (responses[1].list as R[]) : [],
+            publicTotal: responses[1].totalNum,
           });
           setShowLoading(false);
           setPagination((state) => {
@@ -148,6 +151,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
   }, [pagination?.pageSize]);
 
   return {
+    pagination,
     luckTokenList,
     showLoading,
     showOfficial,

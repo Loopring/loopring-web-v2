@@ -190,6 +190,8 @@ export default {
   labelTypeONCHAIN_WITHDRAWAL: "Send",
   labelTypeOFFCHAIN_WITHDRAWAL: "Send",
   labelTypeTRANSFER: "Send",
+  labelTypeWITHDRAW_LUCKY_TOKEN: "Red Packet Claim",
+  labelTypeSEND_LUCKY_TOKEN: "Red Packet Send",
   labelTxNFTFilterMINT: "Mint",
   labelShowFilter: "Show Filter",
   labelTypeDELEGATED_FORCE_WITHDRAW: "Force Withdraw",

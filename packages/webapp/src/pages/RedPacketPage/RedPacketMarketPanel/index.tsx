@@ -3,8 +3,10 @@ import {
   AccountStep,
   EmptyDefault,
   FormControlLabel,
+  RedPacketDetailLimit,
   RedPacketPrepare,
   RedPacketViewStep,
+  TablePagination,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -41,10 +43,15 @@ export const RedPacketMarketPanel = ({
   const { isMobile } = useSettings();
   const history = useHistory();
   const { callOpen } = useOpenRedpacket();
-  const { setShowOfficial, showOfficial, luckTokenList, handlePageChange } =
-    useMarketRedPacket({
-      setToastOpen,
-    });
+  const {
+    setShowOfficial,
+    showOfficial,
+    luckTokenList,
+    pagination,
+    handlePageChange,
+  } = useMarketRedPacket({
+    setToastOpen,
+  });
   return (
     <Box
       flex={1}
@@ -269,6 +276,16 @@ export const RedPacketMarketPanel = ({
               })}
           </Grid>
         )}
+        <Box>
+          <TablePagination
+            page={pagination.page}
+            pageSize={pagination.pageSize}
+            total={luckTokenList.publicTotal}
+            onPageChange={(page) => {
+              handlePageChange({ page });
+            }}
+          />
+        </Box>
       </StylePaper>
     </Box>
   );

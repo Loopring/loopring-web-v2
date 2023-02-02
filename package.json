@@ -64,7 +64,8 @@
     "remark-gfm": "^3.0.0",
     "rxjs": "^7.1.0",
     "voca": "^1.4.0",
-    "web3": "^1.8.0"
+    "web3": "^1.8.0",
+    "html5-qrcode": "2.3.4"
   },
   "build": {
     "files": [
@@ -155,7 +156,6 @@
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "html-loader": "^0.5.5",
-    "html5-qrcode": "2.3.4",
     "lerna": "^4.0.0",
     "node-sass": "^6.0.1",
     "react-router": "^5.2.1",

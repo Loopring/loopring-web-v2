@@ -9,12 +9,13 @@ import {
   EmptyDefault,
   RedPacketClaimTable,
   Toast,
+  TransactionTradeViews,
   useSettings,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useClaimRedPacket } from "./hooks";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Link } from "@mui/material";
 import {
   RedPacketIcon,
   SagaStatus,
@@ -57,6 +58,14 @@ export const RedPacketClaimPanel = () => {
           zIndex: 99,
         }}
       >
+        <Button
+          variant={"text"}
+          target="_self"
+          rel="noopener noreferrer"
+          href={`./#/l2assets/history/transactions?types=${TransactionTradeViews.redPacket}`}
+        >
+          {t("labelTransactionsLink")}
+        </Button>
         <Button
           startIcon={<RedPacketIcon fontSize={"small"} />}
           variant={"contained"}

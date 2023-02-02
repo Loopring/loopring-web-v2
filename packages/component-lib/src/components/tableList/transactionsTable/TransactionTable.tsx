@@ -13,6 +13,7 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   globalSetup,
+  RedPacketIcon,
   TableType,
   TransferIcon,
   UNIX_TIMESTAMP_FORMAT,
@@ -94,7 +95,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 124px auto auto auto 120px 120px !important;`
+        ? `--template-columns: 136px auto auto auto 120px 120px !important;`
         : `--template-columns: 60% 40% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -265,7 +266,21 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               row.receiverAddress?.toUpperCase() === accAddress?.toUpperCase()
                 ? t(`labelTypeReceive`)
                 : t(`labelType${value?.toUpperCase()}`);
-            return <Box className="rdg-cell-value">{renderValue}</Box>;
+            return (
+              <Box
+                className="rdg-cell-value"
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"flex-start"}
+                height={"100%"}
+              >
+                {/*{/_LUCKY_TOKEN/gi.test(value?.toUpperCase()) && (*/}
+                {/*  <RedPacketIcon fontSize={"inherit"} />*/}
+                {/*)}*/}
+                {renderValue}
+              </Box>
+            );
           },
         },
         {
@@ -483,7 +498,6 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           formatter: ({ row }) => {
             const { unit, value } = row["amount"];
             const hasValue = Number.isFinite(value);
-
             const side =
               row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER &&
               row.receiverAddress?.toUpperCase() === accAddress?.toUpperCase()
@@ -517,6 +531,10 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 <DepositIcon fontSize={"inherit"} />
               ) : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER ? (
                 <TransferIcon fontSize={"inherit"} />
+              ) : row.side.toLowerCase() === "send_lucky_token" ? ( //todo  `${sdk.UserTxTypes.SEND_LUCKY_TOKEN},${sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN}`
+                <RedPacketIcon fontSize={"inherit"} />
+              ) : row.side.toLowerCase() === "withdraw_lucky_token" ? ( //todo  `${sdk.UserTxTypes.SEND_LUCKY_TOKEN},${sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN}`
+                <RedPacketIcon fontSize={"inherit"} />
               ) : (
                 <WithdrawIcon fontSize={"inherit"} />
               );
