@@ -140,7 +140,7 @@ export const useAmmExit = ({
       common: { ammPoolSnapshot },
     } = store.getState()._router_pageAmmPool;
 
-    if (ammCalcData && ammCalcData.lpCoin.belong && ammPoolSnapshot) {
+    if (ammCalcData && ammCalcData.lpCoin?.belong && ammPoolSnapshot) {
       const lpToken = tokenMap[ammCalcData.lpCoin.belong];
       const { miniLpVal } = sdk.makeExitAmmPoolMini(
         "0",
@@ -676,7 +676,20 @@ export const useAmmExit = ({
           `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
         ].address.toLowerCase()
     ) {
-      initAmmData(pair, walletMap);
+      // if (walletMap && Reflect.ownKeys(walletMap).length) {
+      //   initAmmData(pair, walletMap);
+      // } else {
+      //   initAmmData(pair, undefined, true);
+      // }
+      const { ammData } = store.getState()._router_pageAmmPool.ammExit;
+      if (
+        ammData?.coinLP?.belong ===
+        `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
+      ) {
+        initAmmData(pair, walletMap);
+      } else {
+        initAmmData(pair, walletMap, true);
+      }
       await updateExitFee();
       setIsLoading(false);
     }
@@ -694,14 +707,13 @@ export const useAmmExit = ({
           `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
         ].address.toLowerCase()
     ) {
-      initAmmData(pair, undefined, true);
+      walletLayer2Service.sendUserUpdate();
     }
   }, [isShow && pair && ammPoolSnapshot?.poolAddress]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
-  React.useEffect(() => {
-    walletLayer2Service.sendUserUpdate();
-  }, []);
+  // React.useEffect(() => {
+  // }, [isShow]);
 
   return {
     ammCalcData,
