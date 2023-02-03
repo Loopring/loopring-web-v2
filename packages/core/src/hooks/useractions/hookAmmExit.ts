@@ -215,8 +215,13 @@ export const useAmmExit = ({
     }
   }, [pair, ammPoolSnapshot?.lp.volume, fees, isShow, ammData.slippage]);
   React.useEffect(() => {
-    updateExitFee();
-  }, [ammPoolSnapshot?.lp.volume]);
+    if (
+      ammPoolSnapshot?.lp.tokenId &&
+      idIndex[ammPoolSnapshot?.lp?.tokenId] === ammCalcData?.lpCoin?.belong
+    ) {
+      updateExitFee();
+    }
+  }, [ammPoolSnapshot?.lp.volume, ammCalcData?.lpCoin?.belong]);
 
   const initAmmData = React.useCallback(
     (pair: any, walletMap: any, isReset: boolean = false) => {
@@ -372,8 +377,9 @@ export const useAmmExit = ({
 
   const updateExitFee = React.useCallback(async () => {
     const account = store.getState().account;
+    const ammExit = store.getState()._router_pageAmmPool.ammExit;
     if (
-      pair?.coinBInfo?.simpleName &&
+      ammExit.ammCalcData?.lpCoinB?.belong &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
       setIsLoading(true);
@@ -387,6 +393,7 @@ export const useAmmExit = ({
           });
         }
       } catch (error) {
+        console.log(error);
         setToastOpen({
           open: true,
           type: "error",
@@ -400,7 +407,7 @@ export const useAmmExit = ({
         fees: undefined,
       });
     }
-  }, [pair]);
+  }, []);
 
   const handleExit = React.useCallback(
     async ({ data, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
@@ -717,7 +724,10 @@ export const useAmmExit = ({
 
   return {
     ammCalcData,
-    ammData,
+    ammData: {
+      ...ammData,
+      // ...isLoading,
+    },
     handleAmmPoolEvent,
     btnStatus,
     onAmmClick,

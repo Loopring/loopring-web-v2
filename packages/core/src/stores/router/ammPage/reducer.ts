@@ -139,7 +139,7 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
         state.ammExit.fee = fee;
         state.ammExit.ammCalcData = {
           ...state.ammExit.ammCalcData,
-          fee: fee + " " + state.ammExit?.ammCalcData?.lpCoinB.belong,
+          fee: fee + " " + state.ammExit?.ammCalcData?.lpCoinB?.belong,
         } as any;
       }
 
