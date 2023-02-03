@@ -109,23 +109,6 @@ export const useAmmExit = ({
 
   React.useEffect(() => {
     if (
-      isShow &&
-      pair &&
-      pair.coinAInfo &&
-      pair.coinBInfo &&
-      tokenMap &&
-      ammPoolSnapshot &&
-      ammPoolSnapshot.poolAddress.toLowerCase() ===
-        tokenMap[
-          `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
-        ].address.toLowerCase()
-    ) {
-      initAmmData(pair, undefined, true);
-    }
-  }, [isShow && pair && ammPoolSnapshot?.poolAddress]);
-
-  React.useEffect(() => {
-    if (
       account.readyState === AccountStatus.ACTIVATED &&
       ammData?.coinA?.belong &&
       ammData?.coinB?.belong
@@ -157,7 +140,7 @@ export const useAmmExit = ({
       common: { ammPoolSnapshot },
     } = store.getState()._router_pageAmmPool;
 
-    if (ammCalcData && ammPoolSnapshot) {
+    if (ammCalcData && ammCalcData.lpCoin.belong && ammPoolSnapshot) {
       const lpToken = tokenMap[ammCalcData.lpCoin.belong];
       const { miniLpVal } = sdk.makeExitAmmPoolMini(
         "0",
@@ -698,7 +681,27 @@ export const useAmmExit = ({
       setIsLoading(false);
     }
   }, [pair?.coinBInfo?.simpleName, ammPoolSnapshot]);
+  React.useEffect(() => {
+    if (
+      isShow &&
+      pair &&
+      pair.coinAInfo &&
+      pair.coinBInfo &&
+      tokenMap &&
+      ammPoolSnapshot &&
+      ammPoolSnapshot.poolAddress.toLowerCase() ===
+        tokenMap[
+          `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
+        ].address.toLowerCase()
+    ) {
+      initAmmData(pair, undefined, true);
+    }
+  }, [isShow && pair && ammPoolSnapshot?.poolAddress]);
+
   useWalletLayer2Socket({ walletLayer2Callback });
+  React.useEffect(() => {
+    walletLayer2Service.sendUserUpdate();
+  }, []);
 
   return {
     ammCalcData,
