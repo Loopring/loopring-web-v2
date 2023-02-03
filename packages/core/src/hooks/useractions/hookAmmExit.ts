@@ -341,7 +341,7 @@ export const useAmmExit = ({
       myLog(
         "updateMiniTradeValue validAmt: fee, lpMinAmt",
         fee,
-        lpMinAmt.toString()
+        lpMinAmt?.toString()
       );
       if (isLoading) {
         return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined };
