@@ -23,7 +23,7 @@ import { useTheme } from "@emotion/react";
 export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
   withRef: true,
 })(
-  <T extends IBData<I>, I, Fee extends FeeInfo>({
+  <T extends IBData<I> & { tradeValueView: string }, I, Fee extends FeeInfo>({
     t,
     tradeData,
     feeInfo,
@@ -64,7 +64,7 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
         spacing={2}
         paddingBottom={5 / 2}
       >
-        <Grid item xs={12}>
+        <Grid item xs={12} marginTop={1}>
           <Box
             display={"flex"}
             flexDirection={"column"}
@@ -77,17 +77,50 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
               variant={isMobile ? "h4" : "h3"}
               whiteSpace={"pre"}
             >
-              {t("labelClaimTitle")}
+              {t("labelRedPacketClaimTitle")}
             </Typography>
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <Typography color={"var(--color-text-third)"} variant={"body1"}>
-            {t("labelL2toL2TokenAmount")}
+          <Typography
+            component={"h5"}
+            color={"textPrimary"}
+            marginTop={1}
+            variant={"h2"}
+            textAlign={"center"}
+          >
+            {tradeData?.tradeValueView + " " + tradeData?.belong}
           </Typography>
-          <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-            {tradeData?.tradeValue + " "}
-            {tradeData?.belong}
+        </Grid>
+        {/*<Grid item xs={12}>*/}
+        {/*  <Typography color={"var(--color-text-third)"} variant={"body1"}>*/}
+        {/*    {t("labelL2toL2TokenAmount")}*/}
+        {/*  </Typography>*/}
+        {/*</Grid>*/}
+
+        <Grid item xs={12}>
+          <Typography color={"var(--color-text-third)"} variant={"body1"}>
+            {t("labelRedPacketFrom")}
+          </Typography>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-primary)"}
+          >
+            {t("labelRedPacketMy")}
+          </Typography>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography color={"var(--color-text-third)"} variant={"body1"}>
+            {t("labelRedPacketTo")}
+          </Typography>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-primary)"}
+          >
+            {t("labelToMyL2")}
           </Typography>
         </Grid>
         <Grid item xs={12} alignSelf={"stretch"} position={"relative"}>

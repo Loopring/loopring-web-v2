@@ -4,6 +4,7 @@ import {
   IconButton,
   InputAdornment,
   TextField,
+  TextFieldProps,
 } from "@mui/material";
 import styled from "@emotion/styled";
 import {
@@ -185,7 +186,7 @@ export const DatePicker = styled(
         return (
           <DateTextField
             ref={_props.inputRef}
-            {...{ ..._props, helperText: null }}
+            {...{ ..._props, ...props.textFiledProps, helperText: null }}
           />
         );
       }}
@@ -202,8 +203,13 @@ export const DateTimePicker = ({
   inputFormat,
   value,
   fullWidth = false,
+  textFiledProps,
   ...props
-}: DateTimePickerProps & { t?: TFunction; fullWidth?: boolean }) => (
+}: DateTimePickerProps & {
+  t?: TFunction;
+  fullWidth?: boolean;
+  textFiledProps?: Partial<TextFieldProps>;
+}) => (
   <MuDateTimePicker
     {...props}
     disableFuture={props.disableFuture ? props.disableFuture : false}
@@ -228,7 +234,7 @@ export const DateTimePicker = ({
         <DateTextField
           ref={_props.inputRef}
           fullWidth={fullWidth}
-          {...{ ..._props, helperText: null }}
+          {...{ ...textFiledProps, ..._props, helperText: null }}
         />
       );
     }}

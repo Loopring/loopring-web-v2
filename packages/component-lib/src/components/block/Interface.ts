@@ -73,7 +73,7 @@ export type RedPacketDefault = {
 export type RedPacketTimeoutProps = RedPacketDefault & {
   sender: string;
   memo?: string;
-  viewDetail: () => void;
+  viewDetail?: () => void;
 };
 export type RedPacketQRCodeProps = {
   url: string;
@@ -82,7 +82,7 @@ export type RedPacketOpenProps = {
   sender: string;
   amountStr: string;
   memo: string;
-  viewDetail: () => void;
+  viewDetail?: () => void;
   onOpen: () => void;
 };
 export type RedPacketUnreadyProps = {
@@ -114,6 +114,8 @@ export type RedPacketDetailProps = {
   remainCount: number;
   onShared: () => void;
   page: number;
+  relyAmount?: string;
+  relyNumber?: string;
   handlePageChange: (page: number, limit?: number) => void;
 };
 export type RedPacketClockProps = RedPacketDefault & {

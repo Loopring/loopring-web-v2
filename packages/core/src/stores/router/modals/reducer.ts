@@ -55,6 +55,7 @@ const initialRedPacketState: RedPacketOrderData<any> = {
   tradeValue: 0,
   balance: 0,
   fee: undefined,
+  validUntil: 1,
   type: {
     partition: sdk.LuckyTokenAmountType.AVERAGE,
     mode: sdk.LuckyTokenClaimType.RELAY,

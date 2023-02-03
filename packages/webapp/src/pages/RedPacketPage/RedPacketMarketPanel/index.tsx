@@ -3,7 +3,6 @@ import {
   AccountStep,
   EmptyDefault,
   FormControlLabel,
-  RedPacketDetailLimit,
   RedPacketPrepare,
   RedPacketViewStep,
   TablePagination,
@@ -12,14 +11,9 @@ import {
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import {
-  makeViewCard,
-  StylePaper,
-  useOpenRedpacket,
-  useTokenMap,
-} from "@loopring-web/core";
+import { makeViewCard, StylePaper, useOpenRedpacket } from "@loopring-web/core";
 import { useMarketRedPacket } from "./hooks";
-import { Box, Button, Checkbox, Grid, IconButton } from "@mui/material";
+import { Box, Button, Checkbox, Grid } from "@mui/material";
 import {
   BackIcon,
   CheckBoxIcon,
@@ -275,7 +269,7 @@ export const RedPacketMarketPanel = ({
                     item
                     key={index}
                     position={"relative"}
-                    marginY={1}
+                    marginY={2}
                   >
                     <RedPacketPrepare
                       claim={claim}

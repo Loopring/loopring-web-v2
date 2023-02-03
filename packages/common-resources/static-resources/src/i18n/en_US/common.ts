@@ -649,6 +649,7 @@ export default {
   labelL2toL2OriginBtnWallet: "Wallet",
   labelL2toL2Confirm: "Confirm",
   labelL2toL2TokenAmount: "Token Amount",
+
   labelL1toL2ThirdPart: "{{type}} Crypto with",
   labelActiveAccountFeeNotEnough: "Insufficient balance <1>Add assets</1>",
   labelNFTTransferTX: "L2 \u2192 L2",
@@ -1384,7 +1385,7 @@ export default {
   labelRedPacketGrab: "Invite friends to grab",
   labelLuckDraw: "Luckiest Draw",
   labelMyLuckReward: "(My reward)",
-  labelClaimTitle: "Red Packet Claim",
+  labelRedPacketClaimTitle: "Claim to Loopring L2",
   labelClaimNoBalance: "Insufficient {{belong}} balance",
   labelShareQRCode: "Generate QR Code for share",
   labelSeal: "Seal",
@@ -1394,4 +1395,12 @@ export default {
   labelRedpacketScanDes: "Using Loopring App san the QR code",
   labelLuckyRedPacketStarted: "Red Packet is Started",
   labelNFTRedpacketBtn: "Send Red Packet",
+  labelRedpacketDurationTitle: "Active durations",
+  labelRedpacketDurationPlaceHold: "Min 1 - Max 30",
+  labelRedPacketDescription: "Red Packet Description",
+  labelRedpacketHavePeopleHelp:
+    "<1>{{number}}</1> friends relayed this red packet, you extend reward: <3>{{amount}}</3>.",
+  labelRedPacketFrom: "From",
+  labelRedPacketTo: "To Loopring L2",
+  labelRedPacketMy: "My red packet",
 };

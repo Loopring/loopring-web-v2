@@ -418,13 +418,17 @@ export function useRedPacketModal() {
     ) {
       const isShouldSharedRely =
         detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.RELAY &&
-        detail.luckyToken.type.scope === sdk.LuckyTokenViewType.PRIVATE &&
-        !["OVER_DUE", "FAILED"].includes(detail.luckyToken.status);
+        // detail.luckyToken.type.scope === sdk.LuckyTokenViewType.PRIVATE &&
+        ![
+          sdk.LuckyTokenItemStatus.OVER_DUE,
+          sdk.LuckyTokenItemStatus.FAILED,
+          sdk.LuckyTokenItemStatus.COMPLETED,
+        ].includes(detail.luckyToken.status);
       const tokenInfo = tokenMap[idIndex[detail?.tokenId] ?? ""];
       const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
       let myAmountStr: string | undefined = undefined;
+      const symbol = token.symbol;
       if (detail.claimAmount.toString() !== "0") {
-        const symbol = token.symbol;
         myAmountStr =
           getValuePrecisionThousand(
             volumeToCountAsBigNumber(symbol, detail.claimAmount as any),
@@ -440,6 +444,23 @@ export function useRedPacketModal() {
           " " +
           symbol;
       }
+      const relyNumber = detail.helpers?.length;
+      const value =
+        detail.helpers?.reduce((prev, item) => {
+          return prev.plus(item.amount);
+        }, sdk.toBig(0)) ?? 0;
+      const relyAmount = getValuePrecisionThousand(
+        volumeToCountAsBigNumber(symbol, value),
+        token.precision,
+        token.precision,
+        undefined,
+        false,
+        {
+          floor: false,
+          // isTrade: true,
+        }
+      );
+
       const { list } = getUserReceiveList(
         detail.claims as any,
         tokenInfo,
@@ -457,6 +478,8 @@ export function useRedPacketModal() {
         claimList: list,
         detail,
         myAmountStr,
+        relyAmount: relyAmount ? relyAmount.toString() : undefined,
+        relyNumber: relyNumber ? relyNumber.toString() : undefined,
         isShouldSharedRely,
         handlePageChange: (page: number = 1) => {
           redPacketDetailCall({ offset: page - 1 });

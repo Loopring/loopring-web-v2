@@ -160,7 +160,7 @@ export const MyNFTList = withTranslation("common")(
             getIPFSString,
           }}
           account={account}
-          isEdit={true}
+          isEdit={false}
           toggle={toggle}
           // @ts-ignore
           setShowNFTDeploy={(item: any) => {

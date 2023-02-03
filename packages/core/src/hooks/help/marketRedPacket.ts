@@ -46,6 +46,12 @@ export const getUserReceiveList = (
         : getShortAddr(item.claimer?.address ?? ""),
       isSelf: accountId === item.claimer.accountId,
       amountStr,
+      helper: (item.referrer?.address
+        ? item.referrer?.ens
+          ? item.referrer.ens
+          : getShortAddr(item.referrer.address.toString())
+        : ""
+      ).toString(),
       createdAt: item.createdAt,
       isMax: champion?.amount == item.amount,
       rawData: item,

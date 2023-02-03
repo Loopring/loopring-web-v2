@@ -46,7 +46,9 @@ const redPacketHistorySlice: Slice<RedpacketHashInfos> = createSlice<
                 const item = obj[hash.toString()];
                 if (
                   item &&
-                  new Date(item.luckToken.validSince + 86400000).getTime() -
+                  new Date(
+                    item.luckToken.validSince + 30 * 86400000
+                  ).getTime() -
                     Date.now() >
                     0
                 ) {

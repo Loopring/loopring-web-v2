@@ -41,6 +41,7 @@ export type RawDataRedPacketDetailItem = {
   createdAt: number;
   rawData: any;
   isMax: boolean;
+  helper?: string;
 };
 
 export interface RedPacketClaimTableProps<R, C = sdk.Currency> {

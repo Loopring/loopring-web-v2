@@ -6,6 +6,7 @@ import {
   useOpenModals,
 } from "@loopring-web/component-lib";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
 import { store, useAccount, useSystem } from "../../stores";
 import {
   CustomError,
@@ -28,8 +29,12 @@ export function useOpenRedpacket() {
       referrer?: string;
       isShouldSharedRely: boolean;
     };
-    let difference = new Date(_info.validSince).getTime() - Date.now();
-    if (difference + 86400000 < 0 || _info.tokenAmount.remainCount === 0) {
+    // let difference = new Date(_info.validSince).getTime() - Date.now();
+    if (
+      _info.status == LuckyTokenItemStatus.COMPLETED ||
+      _info.status == LuckyTokenItemStatus.OVER_DUE ||
+      _info.tokenAmount.remainCount === 0
+    ) {
       setShowRedPacket({
         isShow: true,
         step: RedPacketViewStep.TimeOutPanel,
@@ -192,7 +197,9 @@ export const useRedPacketScanQrcodeSuccess = () => {
               step: RedPacketViewStep.RedPacketClock,
             });
           } else if (
-            difference + 86400000 < 0 ||
+            luckTokenInfo.status == LuckyTokenItemStatus.COMPLETED ||
+            luckTokenInfo.status == LuckyTokenItemStatus.OVER_DUE ||
+            // difference + 86400000 < 0 ||
             luckTokenInfo.tokenAmount.remainCount === 0
           ) {
             setShowRedPacket({

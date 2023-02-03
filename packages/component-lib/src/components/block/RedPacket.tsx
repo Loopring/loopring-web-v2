@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import {
   Account,
   EmptyValueTag,
@@ -39,6 +39,7 @@ import {
   RedPacketUnreadyProps,
 } from "./Interface";
 import { TablePagination } from "../basic-lib";
+import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
 
 export const RedPacketBg = styled(Box)<
   BoxProps & { imageSrc?: string; type: string }
@@ -422,18 +423,20 @@ export const RedPacketOpen = ({
           </Typography>
         </Box>
         <Box display={"flex"} className={"footer"}>
-          <Link
-            className={"viewDetail"}
-            whiteSpace={"pre-line"}
-            color={"inherit"}
-            variant={"body1"}
-            onClick={(e) => {
-              e.stopPropagation();
-              viewDetail();
-            }}
-          >
-            {t("labelLuckyRedPacketDetail")}
-          </Link>
+          {viewDetail && (
+            <Link
+              className={"viewDetail"}
+              whiteSpace={"pre-line"}
+              color={"inherit"}
+              variant={"body1"}
+              onClick={(e) => {
+                e.stopPropagation();
+                viewDetail();
+              }}
+            >
+              {t("labelLuckyRedPacketDetail")}
+            </Link>
+          )}
         </Box>
       </Box>
     );
@@ -811,18 +814,20 @@ export const RedPacketTimeout = ({
           </Typography>
         </Box>
         <Box display={"flex"} className={"footer"}>
-          <Link
-            className={"viewDetail"}
-            whiteSpace={"pre-line"}
-            color={"inherit"}
-            variant={"body1"}
-            onClick={(e) => {
-              e.stopPropagation();
-              viewDetail();
-            }}
-          >
-            {t("labelLuckyRedPacketDetail")}
-          </Link>
+          {viewDetail && (
+            <Link
+              className={"viewDetail"}
+              whiteSpace={"pre-line"}
+              color={"inherit"}
+              variant={"body1"}
+              onClick={(e) => {
+                e.stopPropagation();
+                viewDetail();
+              }}
+            >
+              {t("labelLuckyRedPacketDetail")}
+            </Link>
+          )}
         </Box>
       </Box>
     </RedPacketBg>
@@ -855,6 +860,8 @@ export const RedPacketDetail = ({
   totalCount,
   remainCount,
   onShared,
+  relyNumber,
+  relyAmount,
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const pageNation = React.useMemo(() => {
@@ -878,7 +885,7 @@ export const RedPacketDetail = ({
       width={RedPacketSize.large.width}
       height={RedPacketSize.large.height}
       display={"flex"}
-      paddingBottom={2}
+      paddingBottom={1}
       flexDirection={"column"}
     >
       <Box
@@ -1001,21 +1008,35 @@ export const RedPacketDetail = ({
                   >
                     {moment(new Date(item.createdAt), "YYYYMMDDHHMM").fromNow()}
                   </Typography>
-                  {item.isMax && (
-                    <Typography
-                      component={"span"}
-                      color={"var(--color-star)"}
-                      display={"inline-flex"}
-                      alignItems={"center"}
-                      variant={"body2"}
-                    >
-                      <FirstPlaceIcon
-                        fontSize={"medium"}
-                        sx={{ paddingRight: 1 / 2 }}
-                      />
-                      {t("labelLuckDraw")}
-                    </Typography>
-                  )}
+                  <Typography display={"inline"}>
+                    {item.helper && (
+                      <Typography
+                        component={"span"}
+                        color={"var(--color-primary)"}
+                        display={"inline-flex"}
+                        alignItems={"center"}
+                        variant={"body2"}
+                      >
+                        {item.helper}
+                      </Typography>
+                    )}
+                    {item.isMax && (
+                      <Typography
+                        component={"span"}
+                        color={"var(--color-star)"}
+                        display={"inline-flex"}
+                        alignItems={"center"}
+                        variant={"body2"}
+                        marginLeft={1}
+                      >
+                        <FirstPlaceIcon
+                          fontSize={"medium"}
+                          sx={{ paddingRight: 1 / 2 }}
+                        />
+                        {t("labelLuckDraw")}
+                      </Typography>
+                    )}
+                  </Typography>
                 </Typography>
               </BoxClaim>
             );
@@ -1039,6 +1060,38 @@ export const RedPacketDetail = ({
           >
             {t("labelRedPacketGrab")}
           </Button>
+          <Typography
+            color={"textSecondary"}
+            variant={"body2"}
+            textAlign={"center"}
+            paddingTop={1}
+            component={"span"}
+          >
+            <Trans
+              i18nKey={"labelRedpacketHavePeopleHelp"}
+              tOptions={{
+                number: relyNumber ? relyNumber : EmptyValueTag,
+                amount: relyAmount ? relyAmount : EmptyValueTag,
+              }}
+            >
+              have
+              <Typography
+                variant={"inherit"}
+                component={"span"}
+                color={RedPacketColorConfig.default.startColor}
+              >
+                {relyNumber ?? EmptyValueTag}
+              </Typography>
+              friends help you pick up Redpacket, you extends reward:
+              <Typography
+                variant={"inherit"}
+                component={"span"}
+                color={RedPacketColorConfig.default.fontColor}
+              >
+                {relyAmount ?? EmptyValueTag}
+              </Typography>
+            </Trans>
+          </Typography>
         </Box>
       )}
     </BoxStyle>
@@ -1134,7 +1187,9 @@ export const RedPacketPrepare = ({
         />
       );
     } else if (
-      difference + 86400000 < 0 ||
+      // difference + 86400000 < 0 ||
+      _info.status == LuckyTokenItemStatus.COMPLETED ||
+      _info.status == LuckyTokenItemStatus.OVER_DUE ||
       _info.tokenAmount.remainCount === 0
     ) {
       return (
@@ -1145,13 +1200,13 @@ export const RedPacketPrepare = ({
               ? props?.sender?.ens
               : getShortAddr(props?.sender?.address)
           }
-          viewDetail={() => {
-            setShowRedPacket({
-              isShow: true,
-              step: RedPacketViewStep.DetailPanel,
-              info: props,
-            });
-          }}
+          // viewDetail={() => {
+          //   setShowRedPacket({
+          //     isShow: true,
+          //     step: RedPacketViewStep.DetailPanel,
+          //     info: props,
+          //   });
+          // }}
         />
       );
     } else {
@@ -1163,13 +1218,13 @@ export const RedPacketPrepare = ({
           type={_type ? _type : "default"}
           amountStr={amountStr}
           // textSendBy={textSendBy}
-          viewDetail={() => {
-            setShowRedPacket({
-              isShow: true,
-              step: RedPacketViewStep.DetailPanel,
-              info: props,
-            });
-          }}
+          // viewDetail={() => {
+          //   setShowRedPacket({
+          //     isShow: true,
+          //     step: RedPacketViewStep.DetailPanel,
+          //     info: props,
+          //   });
+          // }}
           sender={
             props?.sender?.ens
               ? props?.sender?.ens

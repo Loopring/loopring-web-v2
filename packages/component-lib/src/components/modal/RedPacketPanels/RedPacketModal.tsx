@@ -17,9 +17,10 @@ const BoxStyle = styled(Box)`
       width: var(--btn-icon-size);
     }
 
-    transform: translateY(-50%) translateX(-50%);
-    left: 50%;
-    bottom: -${({ theme }) => theme.unit}px;
+    //transform: translateY(-50%) translateX(-50%);
+    //left: 50%;
+    top: ${({ theme }) => 4 * theme.unit}px;
+    right: -${({ theme }) => theme.unit}px;
   }
 `;
 
@@ -57,7 +58,9 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
           }}
         >
           <ModalCloseButton
-            closeIcon={<CloseRedPacketIcon />}
+            closeIcon={
+              <CloseRedPacketIcon htmlColor={"var(--color-text-button)"} />
+            }
             onClose={onClose}
             className={"redPacketClose"}
             {...rest}
@@ -66,7 +69,12 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
           <SwipeableViews
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}
             index={step}
-            style={{ boxShadow: "24" }}
+            style={{
+              boxShadow: "24",
+              marginTop: 4 * theme.unit,
+              marginLeft: 4 * theme.unit,
+              marginRight: 4 * theme.unit,
+            }}
           >
             {panelList.map((panel, index) => {
               return (

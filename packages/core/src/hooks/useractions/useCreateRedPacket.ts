@@ -140,6 +140,7 @@ export const useCreateRedPacket = <
             balance: walletInfo?.count,
             memo: "",
             numbers: undefined,
+            validUntil: 1,
             validSince: Date.now(),
           } as T);
           break;
@@ -152,6 +153,7 @@ export const useCreateRedPacket = <
         belong: redPacketOrder.belong,
         tradeValue: undefined,
         balance: walletInfo?.count,
+        validUntil: 1,
         memo: "",
         numbers: undefined,
         validSince: Date.now(),
@@ -209,6 +211,9 @@ export const useCreateRedPacket = <
       redPacketOrder.fee.belong &&
       redPacketOrder.numbers &&
       redPacketOrder.numbers > 0 &&
+      redPacketOrder.validUntil &&
+      Number(redPacketOrder.validUntil) >= 1 &&
+      Number(redPacketOrder.validUntil) <= DAYS &&
       redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
       _tradeData.tradeValue &&
       redPacketOrder.memo &&
@@ -326,6 +331,7 @@ export const useCreateRedPacket = <
     redPacketOrder.tradeValue,
     redPacketOrder.memo,
     redPacketConfigs?.luckTokenAgents,
+    redPacketOrder?.validUntil,
   ]);
   const processRequest = React.useCallback(
     async (
@@ -526,6 +532,9 @@ export const useCreateRedPacket = <
         _tradeData.tradeValue &&
         redPacketOrder.type &&
         redPacketOrder.memo &&
+        redPacketOrder?.validUntil &&
+        redPacketOrder?.validUntil >= 1 &&
+        redPacketOrder?.validUntil <= DAYS &&
         redPacketConfigs?.luckTokenAgents &&
         redPacketOrder.memo?.trim().length > 0 &&
         eddsaKey?.sk
@@ -569,7 +578,8 @@ export const useCreateRedPacket = <
               (redPacketOrder.validSince ?? Date.now()) / 1000
             ),
             validUntil: Math.round(
-              (redPacketOrder.validSince ?? Date.now()) / 1000 + 86400
+              (redPacketOrder.validSince ?? Date.now()) / 1000 +
+                86400 * (redPacketOrder.validUntil ?? 1)
             ),
             luckyToken: {
               exchange: exchangeInfo.exchangeAddress,

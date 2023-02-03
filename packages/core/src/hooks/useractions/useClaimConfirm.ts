@@ -1,5 +1,6 @@
 import {
   AccountStatus,
+  getValuePrecisionThousand,
   IBData,
   LIVE_FEE_TIMES,
   myLog,
@@ -7,7 +8,6 @@ import {
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import {
-  LAST_STEP,
   store,
   useAccount,
   useModalData,
@@ -39,7 +39,10 @@ import Web3 from "web3";
 import { getTimestampDaysLater } from "../../utils";
 import { DAYS } from "../../defs";
 
-export const useClaimConfirm = <T extends IBData<I>, I>() => {
+export const useClaimConfirm = <
+  T extends IBData<I> & { tradeValueView: string },
+  I
+>() => {
   const { exchangeInfo, chainId } = useSystem();
   const { account } = useAccount();
   const {
@@ -379,8 +382,14 @@ export const useClaimConfirm = <T extends IBData<I>, I>() => {
         tradeValue: claimValue?.tradeValue,
         belong: claimValue?.belong,
         balance: claimValue?.belong,
+        tradeValueView: getValuePrecisionThousand(
+          claimValue?.tradeValue,
+          tokenMap[claimValue?.belong?.toString() ?? ""]?.precision,
+          tokenMap[claimValue?.belong?.toString() ?? ""]?.precision,
+          tokenMap[claimValue?.belong?.toString() ?? ""]?.precision,
+          false
+        ),
       },
-      lastFailed: info?.lastFailed === LAST_STEP.claim,
       chargeFeeTokenList,
       isFeeNotEnough,
       handleFeeChange,

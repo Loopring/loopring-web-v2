@@ -5,7 +5,7 @@ import {
   Grid,
   Radio,
   RadioGroup,
-  Tooltip,
+  TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -41,7 +41,6 @@ import { RedPacketOrderData } from "@loopring-web/core";
 import { BtnMain } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import moment, { Moment } from "moment";
-import { TextareaWithCount } from "../../basic-lib/form/input/TextareaWithCount";
 
 const RedPacketBoxStyle = styled(Box)`
   .MuiFormGroup-root {
@@ -99,6 +98,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
     selectedType: LuckyRedPacketItem;
   } & WithTranslation) => {
     const { t } = useTranslation("common");
+
     const inputButtonDefaultProps = {
       label: t("labelRedPacketTotalAmount"),
       decimalsLimit:
@@ -112,6 +112,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
         : "0.00",
     };
     const [dayValue, setDayValue] = React.useState<Moment | null>(moment());
+    const [durationValue, setDurationValue] = React.useState<number>(1);
 
     const getDisabled = React.useMemo(() => {
       return disabled || btnStatus === TradeBtnStatus.DISABLED;
@@ -217,6 +218,40 @@ export const CreateRedPacketStepWrap = withTranslation()(
         ...inputSplitExtendProps,
       };
     }, [tradeData, maximum, minimum]);
+
+    const durationProps = {
+      label: (
+        <Typography color={"var(--color-text-third)"}>
+          {t("labelRedpacketDurationTitle")}
+        </Typography>
+      ),
+      placeholderText: t("labelRedpacketDurationPlaceHold"),
+      isHideError: true,
+      isShowCoinInfo: false,
+      handleCountChange: (ibData: IBData<any>, _name: string, _ref: any) => {
+        handleOnDataChange({
+          numbers: ibData.tradeValue,
+        } as unknown as Partial<T>);
+      },
+      handleError: (data: any) => {
+        if (data.tradeValue && data.tradeValue > data.balance) {
+          return {
+            error: true,
+          };
+        }
+        return {
+          error: false,
+        };
+      },
+      size: "small",
+      maxAllow: true,
+      subLabel: t("labelAvailable"),
+      inputData: {
+        belong: "Split",
+        tradeValue: durationValue as any,
+        balance: 30,
+      } as any,
+    };
     const handleToggleChange = (value: F) => {
       if (handleFeeChange) {
         handleFeeChange(value);
@@ -224,6 +259,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
     };
     const { isMobile } = useSettings();
 
+    // @ts-ignore
     return (
       <RedPacketBoxStyle
         display={"flex"}
@@ -318,42 +354,23 @@ export const CreateRedPacketStepWrap = withTranslation()(
           </Grid>
 
           <Grid item alignSelf={"stretch"}>
-            <FormLabel>
-              <Tooltip
-                title={t("labelMintDescriptionTooltips").toString()}
-                placement={"top"}
-              >
+            <TextField
+              label={
                 <Typography
-                  variant={"body1"}
                   component={"span"}
-                  lineHeight={"20px"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  className={"main-label"}
                   color={"var(--color-text-third)"}
-                  marginBottom={1 / 2}
                 >
-                  <Trans i18nKey={"labelRedPacketMemo"}>Memo</Trans>
+                  {t("labelRedPacketMemo")}
                 </Typography>
-              </Tooltip>
-            </FormLabel>
-            <TextareaWithCount
-              label="Red packet Description"
-              maxRows={5}
-              minRows={5}
-              disabled={disabled}
-              style={{
-                overflowX: "hidden",
-                resize: "vertical",
-              }}
-              // totalCount={25}
-              maxLength={25}
+              }
               onChange={(event) =>
                 handleOnDataChange({
-                  memo: event.target.value,
+                  memo: event.target.value, //event?.target?.value,
                 } as unknown as Partial<T>)
               }
-              draggable={true}
+              size={"large"}
+              inputProps={{ maxLength: 25 }}
+              fullWidth={true}
             />
           </Grid>
           <Grid
@@ -372,7 +389,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 className={"main-label"}
                 color={"var(--color-text-third)"}
               >
-                <Trans i18nKey={"labelRedPacketStart"}>Send Time</Trans>
+                <Trans i18nKey={"labelRedPacketStart"}>Active Time</Trans>
               </Typography>
             </FormLabel>
             {/*year' | 'day' | 'month' | 'hours' | 'minutes' | 'seconds*/}
@@ -388,6 +405,40 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   handleOnDataChange({
                     validSince: monent.toDate().getTime(),
                   } as unknown as Partial<T>);
+                }}
+                textFiledProps={{ size: "large" }}
+                disabled={disabled}
+              />
+            </Box>
+            {/*<FormLabel>*/}
+            {/*  <Typography*/}
+            {/*    variant={"body1"}*/}
+            {/*    component={"span"}*/}
+            {/*    lineHeight={"20px"}*/}
+            {/*    display={"inline-flex"}*/}
+            {/*    alignItems={"center"}*/}
+            {/*    className={"main-label"}*/}
+            {/*    color={"var(--color-text-third)"}*/}
+            {/*  >*/}
+            {/*    <Trans i18nKey={"labelRedPacketStart"}>Active Duration</Trans>*/}
+            {/*  </Typography>*/}
+            {/*</FormLabel>*/}
+            <Box marginTop={1}>
+              <InputCoin
+                {...{
+                  ...durationProps,
+                  name: "numbers",
+                  order: "right",
+                  handleCountChange: (data) => {
+                    // @ts-ignore
+                    setDurationValue(data.tradeValue ?? "");
+                    handleOnDataChange({
+                      validUntil: data.tradeValue,
+                    } as unknown as Partial<T>);
+                  },
+                  size: "small" as any,
+                  coinMap: {},
+                  coinPrecision: undefined,
                 }}
                 disabled={disabled}
               />
