@@ -146,8 +146,9 @@ export const NFTRedPacketSend_Failed = (props: PanelProps) => {
 
 export const RedPacketOpen_In_Progress = (props: PanelProps) => {
   const propsPatch = {
+    title: "",
     iconType: IconType.LoadingIcon,
-    describe1: props.t("labelRedPacketOpenInProgress"),
+    // describe1: props.t("labelRedPacketOpenInProgress"),
   };
   return <RedPacketOpenBase {...propsPatch} {...props} />;
 };

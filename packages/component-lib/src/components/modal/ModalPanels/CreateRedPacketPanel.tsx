@@ -15,6 +15,7 @@ import React from "react";
 import { cloneDeep } from "lodash";
 
 import {
+  CreateRedPacketStepTokenType,
   CreateRedPacketStepType,
   CreateRedPacketStepWrap,
 } from "../../tradePanel/components/CreateRedPacketWrap";
@@ -22,6 +23,7 @@ import { RedPacketOrderData } from "@loopring-web/core";
 import { Box, styled } from "@mui/material";
 
 const steps = [
+  "labelRedPacketTypeTokens", //labelADMint2
   "labelRedPacketChoose", //Prepare NFT metadata
   "labelRedPacketMain", //labelADMint2
 ];
@@ -61,11 +63,14 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
     const [panelIndex, setPanelIndex] = React.useState(0);
     const setActiveStep = React.useCallback((index: RedPacketStep) => {
       switch (index) {
+        case RedPacketStep.TradeType:
+          setPanelIndex(0);
+          break;
         case RedPacketStep.Main:
           setPanelIndex(1);
           break;
         case RedPacketStep.ChooseType:
-          setPanelIndex(0);
+          setPanelIndex(2);
           break;
       }
     }, []);
@@ -121,6 +126,24 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
     const props: SwitchPanelProps<string> = {
       index: panelIndex,
       panelList: [
+        {
+          key: "selectTokenType",
+          element: React.useMemo(
+            () => (
+              // @ts-ignore
+              <CreateRedPacketStepTokenType
+                handleOnDataChange={handleOnDataChange as any}
+                disabled={disabled}
+                tradeType={tradeType}
+                {...{ ...rest }}
+                setActiveStep={setActiveStep}
+                activeStep={RedPacketStep.TradeType}
+              />
+            ),
+            [tradeData, disabled, rest]
+          ),
+          toolBarItem: undefined,
+        },
         {
           key: "selectType",
           element: React.useMemo(
@@ -208,6 +231,7 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
         flex={1}
         flexDirection={"column"}
         paddingY={5 / 2}
+        paddingTop={3}
         alignItems={"center"}
       >
         <HorizontalLabelPositionBelowStepper

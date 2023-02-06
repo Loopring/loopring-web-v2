@@ -1306,7 +1306,6 @@ export function useAccountModalForUI({
       [AccountStep.RedPacketOpen_In_Progress]: {
         view: (
           <RedPacketOpen_In_Progress
-            btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
@@ -1314,9 +1313,6 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-        },
       },
 
       [AccountStep.RedPacketOpen_Failed]: {

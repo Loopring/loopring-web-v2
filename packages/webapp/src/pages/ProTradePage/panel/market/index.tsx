@@ -23,15 +23,7 @@ import {
   UpColor,
   UpIcon,
 } from "@loopring-web/common-resources";
-import {
-  Box,
-  Divider,
-  MenuItem,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, MenuItem, Tab, Tabs, Typography } from "@mui/material";
 import React from "react";
 import {
   usePageTradePro,
@@ -40,7 +32,7 @@ import {
   useTokenPrices,
 } from "@loopring-web/core";
 import styled from "@emotion/styled/";
-
+import { TextField } from "@loopring-web/component-lib";
 export enum TabMarketIndex {
   Orderbook = "Orderbook",
   Trades = "Trades",

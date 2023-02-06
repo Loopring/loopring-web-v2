@@ -12,13 +12,17 @@ import {
   List,
   ListItem,
   Modal,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { Button, CoinIcon, ModalCloseButton } from "../../../basic-lib";
+import {
+  Button,
+  CoinIcon,
+  ModalCloseButton,
+  TextField,
+} from "../../../basic-lib";
 import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";

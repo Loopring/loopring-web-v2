@@ -43,6 +43,10 @@ const BoxStyle = styled(Grid)`
       fill: var(--color-text-button);
     }
   }
+
+  .MuiStepConnector-root.Mui-active . MuiStepConnector-line {
+    border-color: var(--color-primary);
+  }
 ` as typeof Grid;
 
 export function HorizontalLabelPositionBelowStepper({

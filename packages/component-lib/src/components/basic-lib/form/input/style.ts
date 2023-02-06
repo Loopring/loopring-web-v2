@@ -5,11 +5,62 @@ import {
   Button,
   ButtonProps,
   RadioGroup,
+  TextField as MuiTextField,
+  TextFieldProps,
   TextareaAutosize,
 } from "@mui/material";
 import CurrencyInput from "react-currency-input-field";
+
 import { InputSize } from "./Interface";
 
+export const TextField = styled(MuiTextField)<TextFieldProps>`
+  && .MuiOutlinedInput-root {
+    ${({ size }) =>
+      size == "large"
+        ? `
+      height:var(--input-height-large);
+      font-size:2rem;
+      .MuiInputAdornment-root{
+       svg{
+        height:var(--btn-icon-size);
+        width: var(--btn-icon-size);
+       }
+       
+      }
+    `
+        : ``};
+  }
+
+  .MuiInputAdornment-root {
+    padding: 0 ${({ theme }) => theme.unit}px;
+  }
+
+  label + & {
+    //margin-top: 24px;
+    margin-top: 0;
+  }
+
+  && {
+    .MuiSelect-nativeInput + svg {
+      position: absolute;
+      right: 0.4rem;
+      top: ${({ theme }) => theme.unit}px;
+      color: var(--color-text-secondary);
+    }
+
+    &:not(.MuiFormControl-fullWidth) {
+      max-width: 260px;
+    }
+
+    text-overflow: fade();
+  }
+
+  &:focus {
+    ${({ theme }) => theme.border.defaultFrame({ c_key: "focus", d_R: 0.5 })};
+    outline: transparent;
+  }
+`;
+// export MuiTextField = styled(MuTextField)<>``;
 export const IWrap = styled(Box)<
   BoxProps & { size: "middle" | "small"; isMobile?: boolean }
 >`
@@ -56,7 +107,7 @@ export const IWrap = styled(Box)<
     background: var(--color-box);
     border-radius: ${({ theme }) => theme.unit / 2}px;
     margin-top: ${({ theme }) => `${theme.unit / 2}px`};
-    height: var(--btn-Input-height);
+    height: var(--input-height-large);
 
     ::before {
       content: "";
@@ -131,7 +182,7 @@ export const IWrap = styled(Box)<
           }
           .coinInput-wrap, .btnInput-wrap{
               font-size: ${theme.fontDefault.h4};
-              height: var(--btn-Input-height);
+              height: var(--input-height-large);
               &.text-small{
                 font-size: ${theme.fontDefault.body1};
               }

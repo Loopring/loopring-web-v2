@@ -434,7 +434,7 @@ export default {
   labelInvalidisContract1XAddress:
     "Loopring wallet 1.x is disabled {{way}} {{token}}",
   labelInvalidisContractAddress:
-    "{{way}} of {{token}} to Contract wallet is not available ",
+    "{{way}} of {{token}} to Contract wallet is not available",
   labelInvalidisLoopringAddress:
     "This address does not yet have an active Loopring L2, {{way}} of {{token}} is disabled!",
   labelInvalidisSameAddress: "Cannot {{way}} to your own address.",
@@ -1263,6 +1263,7 @@ export default {
   labelAssetRedPackets: "Red Packets",
   labelRedPacketTitle: "Red Packets",
   labelOpen: "Open",
+  labelRedPacketTypeTokens: "Choose Erc20 Tokens / NFTs",
   labelRedPacketChoose: "Choose Red Packet Type",
   labelRedPacketMain: "Input Red Packet/Send",
   labelLuckyTokenViewTypePublic: "Public Red Packet",
@@ -1293,7 +1294,7 @@ export default {
     "Your gift packet is shared privately by you via your custom QR code for others to receive.",
   labelSplit: "Split",
   labelRedPacketMemo: "Best Wish",
-  labelRedPacketStart: "Active Time",
+  labelRedPacketStart: "Allow Open Time",
   labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
   labelRedPacketSendDenied:
@@ -1345,8 +1346,8 @@ export default {
   labelRedPacketsSplitLuckyDetail:
     "Token amount for each red packet is randomized",
   labelSendRedPacketTitle: "Send Red Packet",
-  labelSendRedPacketTitlePublic: "Send Red Packet (Public)",
-  labelSendRedPacketTitlePrivate: "Send Red Packet (Private)",
+  labelSendRedPacketTitlePublic: "Send Red Packet -- Public",
+  labelSendRedPacketTitlePrivate: "Send Red Packet -- Private",
   labelRedPacketWaitingBlock: "Block is not ready",
   labelShare: "Share",
   labelRelayRedPacket: "Relay Red Packet",
@@ -1403,4 +1404,7 @@ export default {
   labelRedPacketFrom: "From",
   labelRedPacketTo: "To Loopring L2",
   labelRedPacketMy: "My red packet",
+  labelRedpacketNotActive: "Hide the redpacket received",
+  labelRedpacketTokens: "ERC20 Tokens",
+  labelRedpacketNFTS: "NFTs",
 };

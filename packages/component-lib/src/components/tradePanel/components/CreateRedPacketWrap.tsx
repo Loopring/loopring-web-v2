@@ -1,15 +1,22 @@
 import {
+  Avatar,
   Box,
+  CardContent,
   FormControlLabel,
   FormLabel,
   Grid,
   Radio,
   RadioGroup,
-  TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
-import { Button, DateTimePicker, InputCoin } from "../../basic-lib";
+import {
+  Button,
+  CardStyleItem,
+  DateTimePicker,
+  InputCoin,
+  TextField,
+} from "../../basic-lib";
 import {
   Trans,
   useTranslation,
@@ -25,6 +32,7 @@ import {
   LuckyRedPacketItem,
   LuckyRedPacketList,
   REDPACKET_ORDER_LIMIT,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -436,7 +444,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                       validUntil: data.tradeValue,
                     } as unknown as Partial<T>);
                   },
-                  size: "small" as any,
+                  size: "middle" as any,
                   coinMap: {},
                   coinPrecision: undefined,
                 }}
@@ -587,6 +595,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   handleOnDataChange({
                     numbers: undefined,
                     tradeValue: undefined,
+                    validSince: Date.now(),
+                    validUntil: 1,
                     memo: "",
                   } as any);
                 }}
@@ -762,23 +772,168 @@ export const CreateRedPacketStepType = withTranslation()(
               })}
             </RadioGroup>
           </Box>
-          <Box width={"100%"}>
-            <BtnMain
-              {...{
-                defaultLabel: "labelContinue",
-                fullWidth: true,
-                btnInfo: btnInfo,
-                // btnStatus,
-                disabled: () => getDisabled,
-                onClick: () => {
-                  setActiveStep(RedPacketStep.Main);
-                  // onNFTMintClick(tradeData);
-                },
-              }}
-            />
+          <Box
+            width={"100%"}
+            alignSelf={"stretch"}
+            paddingBottom={1}
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"space-between"}
+          >
+            <Box width={"48%"}>
+              <Button
+                variant={"outlined"}
+                size={"medium"}
+                fullWidth
+                className={"step"}
+                startIcon={<BackIcon fontSize={"small"} />}
+                color={"primary"}
+                sx={{ height: "var(--btn-medium-height)" }}
+                onClick={() => {
+                  setActiveStep(RedPacketStep.TradeType);
+                }}
+              >
+                {t(`labelMintBack`)}
+              </Button>
+            </Box>
+            <Box width={"48%"}>
+              <BtnMain
+                {...{
+                  defaultLabel: "labelContinue",
+                  fullWidth: true,
+                  btnInfo: btnInfo,
+                  // btnStatus,
+                  disabled: () => getDisabled,
+                  onClick: () => {
+                    setActiveStep(RedPacketStep.Main);
+                    // onNFTMintClick(tradeData);
+                  },
+                }}
+              />
+            </Box>
           </Box>
         </Box>
       </RedPacketBoxStyle>
+    );
+  }
+);
+
+export const CreateRedPacketStepTokenType = withTranslation()(
+  <T extends RedPacketOrderData<I>, I, C = FeeInfo>({
+    tradeType = "TOKEN",
+    setActiveStep,
+    disabled = false,
+    btnInfo,
+    t,
+  }: CreateRedPacketViewProps<T, I, C> & {
+    selectedType: LuckyRedPacketItem;
+    // setSelectType: (value: LuckyRedPacketItem) => void;
+  } & WithTranslation) => {
+    const { isMobile } = useSettings();
+    const getDisabled = React.useMemo(() => {
+      return disabled;
+    }, [disabled]);
+
+    return (
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        width={"100%"}
+        minWidth={240}
+        maxWidth={"760px"}
+        flexWrap={"nowrap"}
+        paddingX={isMobile ? 2 : 10}
+        className="modalConte"
+        paddingTop={2}
+        position={"absolute"}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={6} display={"flex"} marginBottom={2}>
+            <CardStyleItem
+              className={
+                tradeType === "TOKEN"
+                  ? "btnCard column selected"
+                  : "btnCard column"
+              }
+              sx={{ height: "100%" }}
+              // onClick={() => handleOnPairChange({ pairA: item.toString() })}
+            >
+              <CardContent sx={{ alignItems: "center" }}>
+                <Typography component={"span"} display={"inline-flex"}>
+                  <Avatar
+                    variant="rounded"
+                    style={{
+                      height: "var(--redPacket-avatar)",
+                      width: "var(--redPacket-avatar)",
+                    }}
+                    // src={sellData?.icon}
+                    src={SoursURL + "images/redPacketERC20.webp"}
+                  />
+                </Typography>
+
+                <Typography variant={"h5"} paddingLeft={1}>
+                  {t("labelRedpacketTokens")}
+                </Typography>
+              </CardContent>
+            </CardStyleItem>
+          </Grid>
+          <Grid item xs={6} display={"flex"} marginBottom={2}>
+            <CardStyleItem
+              className={
+                tradeType === "NFT"
+                  ? "btnCard column selected"
+                  : "btnCard column"
+              }
+              sx={{ height: "100%" }}
+              // onClick={() => handleOnPairChange({ pairA: item.toString() })}
+            >
+              <CardContent sx={{ alignItems: "center" }}>
+                <Typography component={"span"} display={"inline-flex"}>
+                  <Typography component={"span"} display={"inline-flex"}>
+                    <Avatar
+                      variant="rounded"
+                      style={{
+                        height: "var(--redPacket-avatar)",
+                        width: "var(--redPacket-avatar)",
+                      }}
+                      // src={sellData?.icon}
+                      src={SoursURL + "images/redPacketNFT.webp"}
+                    />
+                  </Typography>
+                </Typography>
+                <Typography variant={"h5"} paddingLeft={1}>
+                  {t("labelRedpacketNFTS")}
+                </Typography>
+              </CardContent>
+            </CardStyleItem>
+          </Grid>
+        </Grid>
+
+        <Box width={"100%"}>
+          <BtnMain
+            {...{
+              defaultLabel: "labelContinue",
+              fullWidth: true,
+              btnInfo: btnInfo,
+              // btnStatus,
+              disabled: () => getDisabled,
+              onClick: () => {
+                setActiveStep(RedPacketStep.Main);
+                // onNFTMintClick(tradeData);
+              },
+            }}
+          />
+        </Box>
+      </Box>
+      // <RedPacketBoxStyle
+      //   display={"flex"}
+      //   justifyContent={"flex-start"}
+      //   flexDirection={"column"}
+      //   alignItems={"center"}
+      //   className={isMobile ? "mobile" : ""}
+      // >
+      //
+      // </RedPacketBoxStyle>
     );
   }
 );

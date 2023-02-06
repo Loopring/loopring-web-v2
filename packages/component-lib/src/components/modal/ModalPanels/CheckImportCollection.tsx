@@ -4,11 +4,11 @@ import {
   getShortAddr,
 } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
-import { Box, ListItemText, TextField, Typography } from "@mui/material";
+import { Box, ListItemText, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 import { CheckImportCollectionProps } from "./Interface";
 import React from "react";
-import { Button, MenuItem } from "../../basic-lib";
+import { Button, MenuItem, TextField } from "../../basic-lib";
 
 export const CheckImportCollection = ({
   // account,

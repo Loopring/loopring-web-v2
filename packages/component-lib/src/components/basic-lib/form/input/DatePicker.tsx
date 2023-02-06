@@ -3,7 +3,6 @@ import {
   experimentalStyled,
   IconButton,
   InputAdornment,
-  TextField,
   TextFieldProps,
 } from "@mui/material";
 import styled from "@emotion/styled";
@@ -22,11 +21,12 @@ import {
   YEAR_DAY_FORMAT,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
+import { TextField } from "./style";
 
 export const DateTextField = styled(TextField)`
-  && .MuiOutlinedInput-root.MuiInputBase-adornedEnd {
-    padding-right: ${({ theme }) => theme.unit}px;
-  }
+  // && .MuiOutlinedInput-root.MuiInputBase-adornedEnd {
+  //
+  // }
 
   && .date-range-adornment {
     .MuiIconButton-edgeEnd {

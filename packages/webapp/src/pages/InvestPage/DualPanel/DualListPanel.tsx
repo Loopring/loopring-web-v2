@@ -19,6 +19,7 @@ import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useDualHook } from "./hook";
 import {
   Button,
+  CardStyleItem,
   CoinIcon,
   CoinIcons,
   DualTable,
@@ -55,46 +56,6 @@ const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
 
 const StyleDual = styled(Box)`
   position: relative;
-
-  .dualInvestCard {
-    .MuiCardContent-root {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-    }
-
-    flex: 1;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: ${({ theme }) => (3 / 2) * theme.unit}px 0;
-    box-shadow: none;
-    transition: none;
-    ${({ theme }) =>
-      theme.border.defaultFrame({
-        c_key: "var(--field-opacity)",
-        d_R: 0.5,
-      })};
-
-    &.selected {
-      ${({ theme }) =>
-        theme.border.defaultFrame({
-          c_key: "var(--color-border-select)",
-          d_R: 0.5,
-        })};
-    }
-
-    &:hover {
-      ${({ theme }) =>
-        theme.border.defaultFrame({
-          c_key: "var(--color-border-hover)",
-          d_R: 0.5,
-        })};
-    }
-  }
 ` as typeof Box;
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -135,9 +96,6 @@ export const DualListPanel: any = withTranslation("common")(
       currentPrice,
       pair,
       market,
-      marketBase,
-      marketQuote,
-      priceObj,
       beginnerMode,
       handleOnPairChange,
       onToggleBeginnerMode,
@@ -280,12 +238,12 @@ export const DualListPanel: any = withTranslation("common")(
                             lg={2}
                             key={item.toString() + index.toString()}
                           >
-                            <Card
+                            <CardStyleItem
                               className={
                                 item.toString().toLowerCase() ===
                                 pairASymbol.toLowerCase()
-                                  ? "dualInvestCard selected"
-                                  : "dualInvestCard "
+                                  ? "btnCard dualInvestCard selected"
+                                  : "btnCard dualInvestCard "
                               }
                               sx={{ height: "100%" }}
                               onClick={() =>
@@ -308,7 +266,7 @@ export const DualListPanel: any = withTranslation("common")(
                                   })}
                                 </Typography>
                               </CardContent>
-                            </Card>
+                            </CardStyleItem>
                           </Grid>
                         );
                       })}

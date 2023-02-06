@@ -9,6 +9,7 @@ export * from "./InputCode";
 export * from "./CollectionInput";
 export * from "./TextareaWithCount";
 export {
+  TextField,
   TextareaAutosizeStyled,
   InputSearchWrapperStyled,
   RadioGroupStyle,

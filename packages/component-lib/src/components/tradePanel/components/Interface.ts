@@ -33,6 +33,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { TOSTOBJECT } from "../../toast";
 
 export enum RedPacketStep {
+  TradeType,
   ChooseType,
   Main,
 }
@@ -609,11 +610,8 @@ export type CreateRedPacketExtendsProps<T, F> = {
   assetsData: AssetsRawDataItem[];
 } & CreateRedPacketInfoProps<F>;
 
-export type CreateRedPacketViewProps<T, I, F> = CreateRedPacketExtendsProps<
-  T,
-  F
-> &
-  BasicACoinTradeViewProps<T, I> & {
+export type CreateRedPacketViewProps<T, I, F> = CreateRedPacketExtendsProps<T, F> &
+  XOR<BasicACoinTradeProps<T, I>, BasicANFTTradeProps<T, I>> & {
     setActiveStep: (step: RedPacketStep) => void;
     activeStep: RedPacketStep;
     tokenMap: { [key: string]: sdk.TokenInfo };

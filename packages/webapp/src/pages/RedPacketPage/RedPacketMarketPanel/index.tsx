@@ -159,7 +159,7 @@ export const RedPacketMarketPanel = ({
                   }}
                 />
               }
-              label={t("labelNotActive")}
+              label={t("labelRedpacketNotActive")}
             />
           </Grid>
         </Grid>

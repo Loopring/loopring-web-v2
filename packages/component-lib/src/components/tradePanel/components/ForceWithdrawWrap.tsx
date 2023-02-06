@@ -32,8 +32,8 @@ import { TradeBtnStatus } from "../Interface";
 import {
   Button,
   IconClearStyled,
-  TextField,
   useSettings,
+  TextField,
 } from "../../../index";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { FeeToggle } from "./tool/FeeList";

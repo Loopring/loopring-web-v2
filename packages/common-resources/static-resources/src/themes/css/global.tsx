@@ -217,7 +217,7 @@ export const globalCss = ({ theme }: any) => css`
     --header-submenu-item-width: 250px;
     --desktop-max-width: 1200px;
     --desktop-min-width: 1024px;
-    --btn-Input-height: 48px;
+    --input-height-large: 48px;
     --btn-Input-small-height: 32px;
     --btn-medium-height: 40px;
     //--btn-max-width: 160px;
@@ -271,6 +271,7 @@ export const globalCss = ({ theme }: any) => css`
     --nft-card: 320px;
     --nft-large-avatar: 160px;
     --nft-small-avatar: 80px;
+    --redPacket-avatar: 72px;
     --notification-activited-heigth: 80px;
     @media only screen and (max-width: 768px) {
       --modal-width: 320px;

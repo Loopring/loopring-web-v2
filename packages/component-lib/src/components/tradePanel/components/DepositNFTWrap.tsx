@@ -13,11 +13,10 @@ import {
   EmptyDefault,
   IconClearStyled,
   InputSize,
-  TextField,
   TGItemData,
   ToggleButtonGroup,
 } from "../../";
-import { Button, useSettings } from "../../../index";
+import { Button, useSettings, TextField } from "../../../index";
 import { NFTDepositViewProps } from "./Interface";
 import { NFTInput } from "./BasicANFTTrade";
 import { NFTType } from "@loopring-web/loopring-sdk";

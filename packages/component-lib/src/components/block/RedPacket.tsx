@@ -1175,13 +1175,13 @@ export const RedPacketPrepare = ({
               ? props?.sender?.ens
               : getShortAddr(props?.sender?.address)
           }
-          showRedPacket={() =>
+          showRedPacket={() => {
             setShowRedPacket({
-              isShow: true,
+              isShow: false,
               step: RedPacketViewStep.OpenPanel,
               info: _info,
-            })
-          }
+            });
+          }}
           amountStr={amountStr}
           validSince={_info.validSince}
         />
