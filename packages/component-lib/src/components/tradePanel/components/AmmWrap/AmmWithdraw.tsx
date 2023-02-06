@@ -258,7 +258,12 @@ export const AmmWithdrawWrap = <
         flexDirection={"column"}
       >
         <Typography alignSelf={"flex-end"}>
-          <Link onClick={() => setIsPercentage(!isPercentage)}>
+          <Link
+            onClick={() =>
+              ammWithdrawBtnStatus !== TradeBtnStatus.LOADING &&
+              setIsPercentage(!isPercentage)
+            }
+          >
             {t("labelAmmSwitch")}
           </Link>
         </Typography>
