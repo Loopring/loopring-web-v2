@@ -15,7 +15,7 @@ import {
 import { Trans, useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useClaimRedPacket } from "./hooks";
-import { Box, Button, Link } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import {
   RedPacketIcon,
   SagaStatus,

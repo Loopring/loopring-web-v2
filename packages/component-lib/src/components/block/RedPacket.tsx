@@ -1023,7 +1023,7 @@ export const RedPacketDetail = ({
                     {item.isMax && (
                       <Typography
                         component={"span"}
-                        color={"warning"}
+                        color={"var(--color-warning)"}
                         display={"inline-flex"}
                         alignItems={"center"}
                         variant={"body2"}

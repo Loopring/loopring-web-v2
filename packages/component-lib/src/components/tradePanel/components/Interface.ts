@@ -19,6 +19,7 @@ import {
   FeeInfo,
   GET_IPFS_STRING,
   RequireOne,
+  TRADE_TYPE,
   WALLET_TYPE,
   WalletCoin,
   WalletMap,
@@ -262,12 +263,12 @@ export type DefaultProps<T, I> = {
   lastFailed?: boolean;
 } & (
   | {
-      type?: "TOKEN";
+      type?: TRADE_TYPE.TOKEN;
       coinMap: CoinMap<I, CoinInfo<I>>;
       walletMap: WalletMap<I, WalletCoin<I>>;
     }
   | {
-      type: "NFT";
+      type: TRADE_TYPE.NFT;
       coinMap?: CoinMap<I, CoinInfo<I>>;
       walletMap?: WalletMap<I, WalletCoin<I>>;
       baseURL?: string;
@@ -288,7 +289,7 @@ export type BasicACoinTradeViewProps<T, I> = Omit<
 } & Pick<InputButtonProps<T, I, CoinInfo<I>>, "handleError">;
 
 export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
-  type?: "TOKEN";
+  type?: TRADE_TYPE.TOKEN;
   inputBtnRef: React.Ref<any>;
   inputButtonProps?: InputButtonDefaultProps<I, CoinInfo<I>>;
   inputButtonDefaultProps?: InputButtonDefaultProps<I, CoinInfo<I>>;
@@ -308,7 +309,7 @@ export type BasicANFTTradeProps<T, I> = Omit<
 };
 
 export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
-  type?: "TOKEN" | "NFT";
+  type?: TRADE_TYPE;
   handlePanelEvent?: (
     props: SwitchData<T>,
     switchType: "Tomenu" | "Tobutton"
@@ -602,7 +603,7 @@ export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
   //
 };
 export type CreateRedPacketExtendsProps<T, F> = {
-  tradeType: "TOKEN" | "NFT";
+  tradeType: TRADE_TYPE;
   handleOnDataChange: (value: Partial<T>) => void;
   handleFeeChange: (value: F) => void;
   onCreateRedPacketClick: () => Promise<void>;

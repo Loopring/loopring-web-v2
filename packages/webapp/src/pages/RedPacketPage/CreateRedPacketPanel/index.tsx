@@ -48,6 +48,7 @@ export const CreateRedPacketUIPanel = <
       <StylePaper flex={1} display={"flex"} justifyContent={"center"}>
         <CreateRedPacketPanel
           {...{
+            tradeType: createRedPacketProps.tradeData?.tradeType,
             //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
             _height: "auto",
             ...(createRedPacketProps as any),

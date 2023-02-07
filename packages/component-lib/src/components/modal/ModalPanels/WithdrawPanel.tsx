@@ -5,7 +5,7 @@ import {
   SwitchPanelProps,
 } from "../../basic-lib";
 import { WithdrawProps } from "../../tradePanel/Interface";
-import { IBData } from "@loopring-web/common-resources";
+import { IBData, TRADE_TYPE } from "@loopring-web/common-resources";
 import {
   TradeMenuList,
   useBasicTrade,
@@ -19,7 +19,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
   withRef: true,
 })(
   <T extends IBData<I>, I>({
-    type = "TOKEN",
+    type = TRADE_TYPE.TOKEN,
     chargeFeeTokenList,
     onWithdrawClick,
     withdrawBtnStatus,

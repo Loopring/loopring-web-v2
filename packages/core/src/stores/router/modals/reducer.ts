@@ -17,8 +17,9 @@ import {
   MintTradeNFT,
   NFTMETA,
   NFTWholeINFO,
-  TradeNFT,
   RedPacketOrderData,
+  TRADE_TYPE,
+  TradeNFT,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../../api_wrapper";
@@ -61,7 +62,20 @@ const initialRedPacketState: RedPacketOrderData<any> = {
     mode: sdk.LuckyTokenClaimType.RELAY,
     scope: sdk.LuckyTokenViewType.PRIVATE,
   },
-
+  tradeType: TRADE_TYPE.TOKEN,
+  __request__: undefined,
+};
+const initialRedPacketNFTState: RedPacketOrderData<any> = {
+  belong: undefined as any,
+  tradeValue: 0,
+  fee: undefined,
+  validUntil: 1,
+  type: {
+    partition: sdk.LuckyTokenAmountType.AVERAGE,
+    mode: sdk.LuckyTokenClaimType.RELAY,
+    scope: sdk.LuckyTokenViewType.PRIVATE,
+  },
+  tradeType: TRADE_TYPE.NFT,
   __request__: undefined,
 };
 
@@ -242,7 +256,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     resetNFTDeployData(state) {
       state.lastStep = LAST_STEP.default;
-      state.nftDeployValue = { ...initialTradeNFT, broker: "" };
+      state.nftDeployValue = {...initialTradeNFT, broker: ""};
     },
     resetOffRampData(state) {
       state.lastStep = LAST_STEP.default;
@@ -252,13 +266,22 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state.lastStep = LAST_STEP.default;
       state.offBanxaValue = undefined;
     },
-    resetRedPacketOrder(state) {
+    resetRedPacketOrder(
+      state,
+      _action?: PayloadAction<{
+        type?: TRADE_TYPE;
+      }>
+    ) {
       state.lastStep = LAST_STEP.default;
-      state.redPacketOrder = { ...initialRedPacketState };
+      state.redPacketOrder = {
+        ...(_action?.payload?.type === TRADE_TYPE.NFT
+          ? initialRedPacketNFTState
+          : initialRedPacketState),
+      } as RedPacketOrderData<any>;
     },
     resetClaimData(state) {
       state.lastStep = LAST_STEP.default;
-      state.claimValue = { ...initialClaimState };
+      state.claimValue = {...initialClaimState};
     },
     updateActiveAccountData(
       state,

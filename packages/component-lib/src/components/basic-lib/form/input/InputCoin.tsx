@@ -157,6 +157,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
               fontSize={"inherit"}
               color={"var(--color-text-third)"}
               className={"main-label"}
+              component={"span"}
             >
               {label}
             </Typography>
@@ -164,6 +165,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
           <Grid item xs={9} className={"sub-label"}>
             {subLabel && belong ? (
               <Typography
+                component={"span"}
                 fontSize={"inherit"}
                 color={"inherit"}
                 className={maxAllow && balance > 0 ? "max-allow" : "no-balance"}

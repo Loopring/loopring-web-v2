@@ -1,4 +1,8 @@
-import { IBData, MintTradeNFT } from "@loopring-web/common-resources";
+import {
+  IBData,
+  MintTradeNFT,
+  TRADE_TYPE,
+} from "@loopring-web/common-resources";
 import { BasicACoinTradeHookProps } from "../Interface";
 import React from "react";
 import { SwitchData } from "../../Interface";
@@ -14,7 +18,7 @@ export const useBasicTrade = <
   handlePanelEvent,
   walletMap = {},
   coinMap,
-  type = "TOKEN",
+  type = TRADE_TYPE.TOKEN,
   ...rest
 }: BasicACoinTradeHookProps<T, I>) => {
   tradeData = tradeData ? tradeData : ({} as T);

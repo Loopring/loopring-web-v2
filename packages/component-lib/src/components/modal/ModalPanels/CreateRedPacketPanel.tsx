@@ -5,7 +5,12 @@ import {
   RedPacketStep,
   WithdrawProps,
 } from "../../tradePanel";
-import { FeeInfo, LuckyRedPacketList } from "@loopring-web/common-resources";
+import {
+  FeeInfo,
+  LuckyRedPacketList,
+  RedPacketOrderData,
+  TRADE_TYPE,
+} from "@loopring-web/common-resources";
 import {
   HorizontalLabelPositionBelowStepper,
   TradeMenuList,
@@ -19,7 +24,6 @@ import {
   CreateRedPacketStepType,
   CreateRedPacketStepWrap,
 } from "../../tradePanel/components/CreateRedPacketWrap";
-import { RedPacketOrderData } from "@loopring-web/core";
 import { Box, styled } from "@mui/material";
 
 const steps = [
@@ -39,7 +43,7 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
   withRef: true,
 })(
   <T extends Partial<RedPacketOrderData<I>>, I extends any, C = FeeInfo>({
-    tradeType = "TOKEN",
+    tradeType = TRADE_TYPE.TOKEN,
     tradeData,
     disabled,
     handleOnDataChange,
@@ -66,10 +70,10 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
         case RedPacketStep.TradeType:
           setPanelIndex(0);
           break;
-        case RedPacketStep.Main:
+        case RedPacketStep.ChooseType:
           setPanelIndex(1);
           break;
-        case RedPacketStep.ChooseType:
+        case RedPacketStep.Main:
           setPanelIndex(2);
           break;
       }
@@ -223,6 +227,7 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
             ] as any)
           : []
       ),
+      _width: "100%",
     };
     return (
       <BoxStyle
@@ -232,13 +237,22 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
         flexDirection={"column"}
         paddingY={5 / 2}
         paddingTop={3}
+        paddingBottom={0}
         alignItems={"center"}
       >
         <HorizontalLabelPositionBelowStepper
           activeStep={panelIndex === 0 ? 0 : 1}
           steps={steps}
         />
-        <Box paddingTop={2} display={"flex"} flex={1}>
+        <Box
+          paddingTop={2}
+          display={"flex"}
+          flex={1}
+          width={"100%"}
+          minWidth={240}
+          maxWidth={720}
+          paddingX={3}
+        >
           <SwitchPanel {...{ ...rest, t, ...props }} />
         </Box>
       </BoxStyle>

@@ -20,6 +20,7 @@ import {
   IBData,
   Info2Icon,
   LoadingIcon,
+  TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -287,7 +288,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
               <BasicACoinTrade
                 {...{
                   ...rest,
-                  type: "TOKEN",
+                  type: TRADE_TYPE.TOKEN,
                   t,
                   walletMap,
                   tradeData: {

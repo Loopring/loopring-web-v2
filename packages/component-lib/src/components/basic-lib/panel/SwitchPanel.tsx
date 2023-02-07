@@ -152,7 +152,7 @@ function _SwitchPanel<T extends string>(
       _width={rest._width}
       ismobile={isMobile ? "true" : "false"}
     >
-      {panelList.map((panel: PanelContent<T>) => {
+      {panelList.map((panel: PanelContent<T>, _index) => {
         return (
           <Box
             display={"flex"}

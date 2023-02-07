@@ -1,6 +1,11 @@
 import { DepositProps } from "../../tradePanel/Interface";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { CoinInfo, CoinMap, IBData } from "@loopring-web/common-resources";
+import {
+  CoinInfo,
+  CoinMap,
+  IBData,
+  TRADE_TYPE,
+} from "@loopring-web/common-resources";
 import {
   ModalBackButton,
   SwitchPanel,
@@ -24,7 +29,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
     } & IBData<I>,
     I
   >({
-    type = "TOKEN",
+    type = TRADE_TYPE.TOKEN,
     onDepositClick,
     depositBtnStatus,
     walletMap = {},

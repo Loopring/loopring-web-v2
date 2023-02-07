@@ -1336,6 +1336,7 @@ export default {
   labelRedPacketsExpireDes:
     "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
   labelReserveFee: "Insufficient {{symbol}} with fee",
+  labelRedPacketFee: "Insufficient fee",
   labelRedPacketsInsufficient: "Insufficient {{symbol}} balance",
   labelRedPacketsMinRange: "Min {{value}}",
   labelRedPacketsMaxRange: "Max {{value}}",

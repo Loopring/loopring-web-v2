@@ -8,6 +8,7 @@ import {
   IBData,
   myLog,
   TOAST_TIME,
+  TRADE_TYPE,
   UIERROR_CODE,
   WALLET_TYPE,
   WalletMap,
@@ -390,7 +391,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       transferBanxaValue;
 
     return {
-      type: "TOKEN",
+      type: TRADE_TYPE.TOKEN,
       disabled: !(legalEnable === true),
       addressDefault: address,
       realAddr: address,

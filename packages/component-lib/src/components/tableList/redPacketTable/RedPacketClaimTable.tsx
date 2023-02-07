@@ -133,28 +133,27 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
         columnsRaw as Column<any, unknown>[],
     };
     const sortMethod = React.useCallback(
-      (sortedRows, sortColumn) => {
-        let _sortedRows: R[] = [];
+      (_sortedRows, sortColumn) => {
+        let resultRows: R[] = [];
         switch (sortColumn) {
           case "Token":
-            _sortedRows = sortedRows.sort((a: R, b: R) => {
+            resultRows = rawData.sort((a: R, b: R) => {
               return a.token.simpleName.localeCompare(b.token.simpleName);
             });
             break;
           case "Amount":
-            _sortedRows = sortedRows.sort((a: R, b: R) => {
+            resultRows = rawData.sort((a: R, b: R) => {
               return a.amountStr.localeCompare(b.amountStr);
             });
             break;
           case "Value":
-            _sortedRows = sortedRows.sort((a: R, b: R) => {
+            resultRows = rawData.sort((a: R, b: R) => {
               return b.volume - a.volume;
             });
             break;
-          case "Actions":
           default:
         }
-        return _sortedRows;
+        return resultRows;
       },
       [rawData]
     );

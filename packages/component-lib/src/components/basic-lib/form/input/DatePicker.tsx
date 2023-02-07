@@ -157,7 +157,9 @@ export const DateRangePicker = experimentalStyled(
 
 ` as React.ComponentType<DateRangePickerProps & { t?: TFunction }>;
 
-export type DatePickerProps = Omit<MuDatePickerProps, "renderInput">;
+export type DatePickerProps = Omit<MuDatePickerProps, "renderInput"> & {
+  textFiledProps?: TextFieldProps;
+};
 export const DatePicker = styled(
   ({
     t,
@@ -186,7 +188,7 @@ export const DatePicker = styled(
         return (
           <DateTextField
             ref={_props.inputRef}
-            {...{ ..._props, ...props.textFiledProps, helperText: null }}
+            {...{ ..._props, ...props?.textFiledProps, helperText: null }}
           />
         );
       }}

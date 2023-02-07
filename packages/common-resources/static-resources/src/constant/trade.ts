@@ -14,6 +14,7 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 import { MarketType } from "./market";
+import { XOR } from "@loopring-web/loopring-sdk";
 
 export enum DeFiChgType {
   coinSell = "coinSell",
@@ -189,6 +190,7 @@ export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;
 export const PROPERTY_Value_LIMIT = 40;
 export const REDPACKET_ORDER_LIMIT = 10000;
+export const REDPACKET_ORDER_NFT_LIMIT = 20000;
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: "name",
   image: "image",
@@ -497,6 +499,11 @@ export type DualViewOrder = DualViewBase & {
     order: sdk.UserDualTxsHistory;
   };
 };
+
+export enum TRADE_TYPE {
+  TOKEN = "TOKEN",
+  NFT = "NFT",
+}
 export type BanxaOrder = {
   id: string;
   account_id: string;
@@ -574,7 +581,15 @@ export type RedpacketHashInfos = {
   [key in sdk.ChainId extends string ? string : string]: RedPacketHashInfo;
 };
 
-export type RedPacketOrderData<I> = IBData<I> & {
+export type RedPacketOrderData<I> = XOR<
+  {
+    tradeType: TRADE_TYPE.TOKEN;
+  } & IBData<I>,
+  {
+    tradeType: TRADE_TYPE.NFT;
+    tradeValue: number;
+  } & Partial<NFTWholeINFO>
+> & {
   fee: FeeInfo | undefined;
   __request__: any;
 } & Partial<sdk.LuckyTokenItemForSendV3>;

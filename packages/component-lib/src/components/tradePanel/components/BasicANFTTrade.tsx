@@ -4,6 +4,7 @@ import {
   getFormattedHash,
   IBData,
   NFTWholeINFO,
+  TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import React from "react";
@@ -131,7 +132,7 @@ export const NFTInput = React.memo(
   }: BasicANFTTradeProps<T, I> &
     Omit<WithTranslation, "tReady" | "i18n"> & {
       onCopy?: (content: string) => Promise<void>;
-      type?: "TOKEN" | "NFT";
+      type?: TRADE_TYPE;
     }) => {
     return (
       <>
@@ -267,6 +268,6 @@ export const NFTInput = React.memo(
   props: BasicANFTTradeProps<T, I> &
     Omit<WithTranslation, "tReady" | "i18n"> & {
       onCopy?: (content: string) => Promise<void>;
-      type?: "TOKEN" | "NFT";
+      type?: TRADE_TYPE;
     }
 ) => JSX.Element;

@@ -28,6 +28,7 @@ import {
   CollectionMeta,
   FeeInfo,
   IBData,
+  TRADE_TYPE,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -277,13 +278,13 @@ export const ModalPanel = <
         contentClassName={"trade-wrap"}
         onClose={() => setShowNFTTransfer({ isShow: false })}
         content={
-          <TransferPanel<any, any>
+          <TransferPanel
             {...{
               ...nftTransferProps,
               _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
               _height: isMobile ? "auto" : 560,
               isThumb: false,
-              type: "NFT",
+              type: TRADE_TYPE.NFT,
               baseURL,
               assetsData,
             }}
@@ -302,7 +303,7 @@ export const ModalPanel = <
         contentClassName={"trade-wrap"}
         onClose={() => setShowNFTWithdraw({ isShow: false })}
         content={
-          <WithdrawPanel<any, any>
+          <WithdrawPanel
             {...{
               // _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
@@ -310,7 +311,7 @@ export const ModalPanel = <
               _height: "auto",
               isThumb: false,
               ...nftWithdrawProps,
-              type: "NFT",
+              type: TRADE_TYPE.NFT,
               baseURL,
               assetsData,
             }}

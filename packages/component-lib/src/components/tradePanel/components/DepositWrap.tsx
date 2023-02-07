@@ -7,6 +7,7 @@ import {
   IBData,
   LoadingIcon,
   SoursURL,
+  TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
@@ -191,7 +192,7 @@ export const DepositWrap = <
           {...{
             ...rest,
             t,
-            type: "TOKEN",
+            type: TRADE_TYPE.TOKEN,
             disabled,
             onChangeEvent,
             walletMap,
