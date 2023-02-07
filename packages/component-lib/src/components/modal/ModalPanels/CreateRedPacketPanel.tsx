@@ -1,10 +1,6 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
-import {
-  CreateRedPacketProps,
-  RedPacketStep,
-  WithdrawProps,
-} from "../../tradePanel";
+import { CreateRedPacketProps, RedPacketStep } from "../../tradePanel";
 import {
   FeeInfo,
   LuckyRedPacketList,
@@ -39,24 +35,21 @@ const BoxStyle = styled(Box)`
     }
   }
 `;
-export const CreateRedPacketPanel = withTranslation(["common", "error"], {
-  withRef: true,
-})(
-  <T extends Partial<RedPacketOrderData<I>>, I extends any, C = FeeInfo>({
-    tradeType = TRADE_TYPE.TOKEN,
-    tradeData,
-    disabled,
-    handleOnDataChange,
-    walletMap = {},
-    coinMap = {},
-    tokenMap = {},
-    t,
-    ...rest
-  }: CreateRedPacketProps<T, I, C> &
-    WithTranslation & { assetsData: any[] }) => {
-    const onBack = React.useCallback(() => {
-      setPanelIndex(0);
-    }, []);
+export const CreateRedPacketPanel = React.forwardRef(
+  <T extends Partial<RedPacketOrderData<I>>, I extends any, C = FeeInfo>(
+    {
+      tradeType,
+      tradeData,
+      disabled,
+      handleOnDataChange,
+      walletMap = {},
+      coinMap = {},
+      tokenMap = {},
+      ...rest
+    }: CreateRedPacketProps<T, I, C> & { assetsData: any[] },
+    _ref: React.RefAttributes<any>
+  ) => {
+    const { t, i18n, ready: tReady } = useTranslation(["common", "error"]);
     const { onChangeEvent, index, switchData } = useBasicTrade({
       ...rest,
       coinMap,
@@ -79,9 +72,10 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
       }
     }, []);
     React.useEffect(() => {
+      // debugger;
       setPanelIndex((state) => {
-        if (state > 0) {
-          return index + 1;
+        if (state > 1) {
+          return index + 2;
         } else {
           return state;
         }
@@ -127,14 +121,13 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
       tradeData?.type?.mode,
     ]);
 
-    const props: SwitchPanelProps<string> = {
-      index: panelIndex,
-      panelList: [
-        {
-          key: "selectTokenType",
-          element: React.useMemo(
-            () => (
-              // @ts-ignore
+    const props: SwitchPanelProps<string> = React.useMemo(() => {
+      return {
+        index: panelIndex,
+        panelList: [
+          {
+            key: "selectTokenType",
+            element: (
               <CreateRedPacketStepTokenType
                 handleOnDataChange={handleOnDataChange as any}
                 disabled={disabled}
@@ -144,15 +137,11 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
                 activeStep={RedPacketStep.TradeType}
               />
             ),
-            [tradeData, disabled, rest]
-          ),
-          toolBarItem: undefined,
-        },
-        {
-          key: "selectType",
-          element: React.useMemo(
-            () => (
-              // @ts-ignore
+            toolBarItem: undefined,
+          },
+          {
+            key: "selectType",
+            element: (
               <CreateRedPacketStepType
                 handleOnDataChange={handleOnDataChange as any}
                 tradeData={tradeData as any}
@@ -164,17 +153,12 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
                 activeStep={RedPacketStep.ChooseType}
               />
             ),
-            [tradeData, disabled, rest]
-          ),
-          toolBarItem: undefined,
-        },
-        {
-          key: "trade",
-          element: React.useMemo(() => {
-            return (
-              // @ts-ignore
+            toolBarItem: undefined,
+          },
+          {
+            key: "trade",
+            element: (
               <CreateRedPacketStepWrap
-                onBack={onBack}
                 disabled={disabled}
                 coinMap={coinMap}
                 selectedType={selectedType}
@@ -188,17 +172,15 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
                 setActiveStep={setActiveStep}
                 activeStep={RedPacketStep.Main}
               />
-            );
-          }, [tradeData, tradeType, disabled, coinMap, rest]),
-          toolBarItem: undefined,
-        },
-      ].concat(
-        tradeType === "TOKEN"
-          ? ([
-              {
-                key: "tradeMenuList",
-                element: React.useMemo(
-                  () => (
+            ),
+            toolBarItem: undefined,
+          },
+        ].concat(
+          tradeType === TRADE_TYPE.TOKEN
+            ? ([
+                {
+                  key: "tradeMenuList",
+                  element: (
                     <TradeMenuList
                       {...({
                         nonZero: true,
@@ -214,21 +196,26 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
                       } as any)}
                     />
                   ),
-                  [
-                    switchData,
-                    coinMap,
-                    rest,
-                    onChangeEvent,
-                    getWalletMapWithoutLP,
-                  ]
-                ),
-                toolBarItem: undefined,
-              },
-            ] as any)
-          : []
-      ),
-      _width: "100%",
-    };
+                  toolBarItem: undefined,
+                },
+              ] as any)
+            : []
+        ),
+        _width: "100%",
+      };
+    }, [
+      tradeData,
+      rest,
+      tradeType,
+      switchData,
+      coinMap,
+      rest,
+      onChangeEvent,
+      getWalletMapWithoutLP,
+      panelIndex,
+      disabled,
+      tradeData,
+    ]);
     return (
       <BoxStyle
         className={walletMap ? "createRedPacket" : "loading createRedPacket"}
@@ -253,11 +240,9 @@ export const CreateRedPacketPanel = withTranslation(["common", "error"], {
           maxWidth={720}
           paddingX={3}
         >
-          <SwitchPanel {...{ ...rest, t, ...props }} />
+          <SwitchPanel {...{ ...rest, tReady, i18n, t, ...props }} />
         </Box>
       </BoxStyle>
     );
   }
-) as unknown as <T, I>(
-  props: WithdrawProps<T, I> & React.RefAttributes<any>
-) => JSX.Element;
+);

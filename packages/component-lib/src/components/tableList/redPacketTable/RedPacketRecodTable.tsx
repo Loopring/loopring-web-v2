@@ -124,11 +124,10 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
                     : "labelRedPacketSenRandomTitle",
                   { ns: "common" }
                 ) +
-                  " (" +
+                  " — " +
                   t(`labelRedPacketViewType${row?.type?.scope ?? 0}`, {
                     ns: "common",
-                  }) +
-                  ")"}
+                  })}
               </>
             );
           },

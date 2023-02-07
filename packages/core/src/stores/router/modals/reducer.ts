@@ -256,7 +256,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     resetNFTDeployData(state) {
       state.lastStep = LAST_STEP.default;
-      state.nftDeployValue = {...initialTradeNFT, broker: ""};
+      state.nftDeployValue = { ...initialTradeNFT, broker: "" };
     },
     resetOffRampData(state) {
       state.lastStep = LAST_STEP.default;
@@ -281,7 +281,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     resetClaimData(state) {
       state.lastStep = LAST_STEP.default;
-      state.claimValue = {...initialClaimState};
+      state.claimValue = { ...initialClaimState };
     },
     updateActiveAccountData(
       state,

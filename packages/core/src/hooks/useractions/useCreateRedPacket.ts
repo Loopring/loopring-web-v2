@@ -90,7 +90,7 @@ export const useCreateRedPacket = <
         }
       : {
           requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-          tokenAddress: redPacketOrder.tokenAddress,
+          tokenAddress: redPacketOrder?.tokenAddress,
         };
 
   const {
@@ -767,7 +767,7 @@ export const useCreateRedPacket = <
     [processRequest, setShowAccount]
   );
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
-    type: redPacketOrder.tradeType,
+    tradeType: redPacketOrder.tradeType,
     chargeFeeTokenList,
     onCreateRedPacketClick,
     btnStatus,

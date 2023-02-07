@@ -106,7 +106,6 @@ export const CreateRedPacketStepWrap = withTranslation()(
     selectedType,
     minimum,
     maximum,
-    onBack,
     ...rest
   }: CreateRedPacketViewProps<T, I, F> & {
     selectedType: LuckyRedPacketItem;
@@ -275,18 +274,14 @@ export const CreateRedPacketStepWrap = withTranslation()(
 
     // @ts-ignore
     return (
-      <RedPacketBoxStyle
-        className={"redPacket"}
-        justifyContent={"center"}
-        marginTop={2}
-      >
+      <RedPacketBoxStyle className={"redPacket"} justifyContent={"center"}>
         <Box marginY={1} display={"flex"}>
           <Box
             display={"flex"}
             flexDirection={"row"}
             justifyContent={"flex-start"}
             alignItems={"center"}
-            marginBottom={2}
+            marginBottom={1}
           >
             <Typography
               component={"h4"}
@@ -299,9 +294,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   ? "labelRedPacketSendCommonTitle"
                   : "labelRedPacketSenRandomTitle"
               ) +
-                " (" +
-                t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`) +
-                ")"}
+                " — " +
+                t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
             </Typography>
           </Box>
         </Box>
@@ -643,7 +637,7 @@ export const CreateRedPacketStepType = withTranslation()(
 
     return (
       <RedPacketBoxStyle
-        display={"flex"}
+        className={"redPacket"}
         justifyContent={"flex-start"}
         flexDirection={"column"}
         alignItems={"center"}
@@ -654,7 +648,7 @@ export const CreateRedPacketStepType = withTranslation()(
           flexDirection={"column"}
           alignItems={"stretch"}
           alignSelf={"stretch"}
-          marginBottom={2}
+          marginY={2}
         >
           {LuckyRedPacketList.map((item: LuckyRedPacketItem) => (
             <Box key={item.value.value} marginBottom={1.5}>
@@ -801,11 +795,12 @@ export const CreateRedPacketStepTokenType = withTranslation()(
         display={"flex"}
         flexDirection={"column"}
         width={"100%"}
-        flexWrap={"nowrap"}
         paddingX={isMobile ? 2 : 10}
         className="modalConte"
-        paddingTop={2}
         position={"absolute"}
+        height={"100%"}
+        maxHeight={"480px"}
+        justifyContent={"space-evenly"}
       >
         <Grid container spacing={2}>
           <Grid item xs={6} display={"flex"} marginBottom={2}>
