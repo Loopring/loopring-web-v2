@@ -7,13 +7,13 @@ import {
   LIVE_FEE_TIMES,
   myLog,
   REDPACKET_ORDER_LIMIT,
+  RedPacketOrderData,
   SUBMIT_PANEL_AUTO_CLOSE,
   TOAST_TIME,
   UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
 import {
-  RedPacketOrderData,
   store,
   useAccount,
   useModalData,

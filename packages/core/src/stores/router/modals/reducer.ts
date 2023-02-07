@@ -7,7 +7,6 @@ import {
   LAST_STEP,
   ModalDataStatus,
   NFT_MINT_VALUE,
-  RedPacketOrderData,
   TransferData,
   WithdrawData,
 } from "./interface";
@@ -19,6 +18,7 @@ import {
   NFTMETA,
   NFTWholeINFO,
   TradeNFT,
+  RedPacketOrderData,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../../api_wrapper";

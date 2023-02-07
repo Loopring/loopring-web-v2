@@ -573,3 +573,8 @@ export type RedPacketHashInfo = {
 export type RedpacketHashInfos = {
   [key in sdk.ChainId extends string ? string : string]: RedPacketHashInfo;
 };
+
+export type RedPacketOrderData<I> = IBData<I> & {
+  fee: FeeInfo | undefined;
+  __request__: any;
+} & Partial<sdk.LuckyTokenItemForSendV3>;

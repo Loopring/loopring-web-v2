@@ -12,9 +12,11 @@ import {
 import { Box, MenuItem, Typography } from "@mui/material";
 import {
   InputSearch,
+  PlaceComponent,
   Table,
   TablePaddingX,
   TextField,
+  TradeRaceTable,
   useSettings,
 } from "@loopring-web/component-lib";
 import styled from "@emotion/styled";
@@ -123,52 +125,6 @@ export const RankRaw = <R extends object>({
     }
   }, [rank?.data, searchValue]);
 
-  const defaultArgs: any = {
-    columnMode: column.length
-      ? column.map((item, index) => ({
-          key: item.key,
-          name: item.label,
-          width: "auto",
-          headerCellClass:
-            index == 0
-              ? "textAlignLeft"
-              : column.length == index + 1
-              ? "textAlignRight"
-              : `textAlignCenter`,
-          cellClass:
-            index == 0
-              ? "textAlignLeft"
-              : column.length == index + 1
-              ? "rdg-cell-value textAlignRight"
-              : "rdg-cell-value textAlignCenter",
-          formatter: ({ row }: any) => {
-            if (/address/gi.test(item.key.toLowerCase())) {
-              return getShortAddr(row[item.key]);
-            } else if (/rank/gi.test(item.key.toLowerCase())) {
-              const value = row.rank;
-              const formattedValue =
-                value === "1" ? (
-                  <FirstPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
-                ) : value === "2" ? (
-                  <SecondPlaceIcon
-                    style={{ marginTop: 8 }}
-                    fontSize={"large"}
-                  />
-                ) : value === "3" ? (
-                  <ThirdPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
-                ) : (
-                  <Box paddingLeft={1}>{value}</Box>
-                );
-              return <Box className="rdg-cell-value">{formattedValue}</Box>;
-            } else {
-              return row[item.key] ?? "";
-            }
-          },
-        }))
-      : [],
-    generateRows: (rawData: R) => rawData,
-    generateColumns: ({ columnsRaw }: any) => columnsRaw,
-  };
   React.useEffect(() => {
     getTableValues();
   }, [selected]);
@@ -281,10 +237,6 @@ export const RankRaw = <R extends object>({
               {index + 1 !== column.length ? ", " : ""}
             </Typography>
           ))}
-
-          {/*<Typography variant={"h5"}>*/}
-          {/*  {`${t("labelTradeRaceYourRanking")}: ${rank?.owner?.rank || EmptyValueTag}, ${t("labelTradeRaceYourVolume",key:{})}: ${rank?.owner?. || EmptyValueTag}`}*/}
-          {/*</Typography>*/}
         </Box>
         <TableStyled
           minHeight={120}
@@ -294,13 +246,11 @@ export const RankRaw = <R extends object>({
           }
         >
           {rank?.data?.length ? (
-            <Table
-              className={"scrollable"}
-              {...{
-                ...defaultArgs,
-                rawData: rankTableData,
-                showloading: showLoading,
-              }}
+            <TradeRaceTable
+              scrollable={true}
+              column={column}
+              rawData={rankTableData}
+              showloading={showLoading}
             />
           ) : (
             <Box

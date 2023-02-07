@@ -47,7 +47,6 @@ import {
   LAST_STEP,
   ModalDataStatus,
   NFT_MINT_VALUE,
-  RedPacketOrderData,
   TransferData,
   WithdrawData,
 } from "./interface";
@@ -58,6 +57,7 @@ import {
   NFTWholeINFO,
   RequireOne,
   TradeNFT,
+  RedPacketOrderData,
 } from "@loopring-web/common-resources";
 import { RootState } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";

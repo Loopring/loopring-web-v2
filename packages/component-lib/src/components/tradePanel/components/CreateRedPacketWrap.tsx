@@ -31,6 +31,7 @@ import {
   IBData,
   LuckyRedPacketItem,
   LuckyRedPacketList,
+  RedPacketOrderData,
   REDPACKET_ORDER_LIMIT,
   SoursURL,
 } from "@loopring-web/common-resources";
@@ -45,7 +46,6 @@ import styled from "@emotion/styled";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { FeeToggle } from "./tool/FeeList";
-import { RedPacketOrderData } from "@loopring-web/core";
 import { BtnMain } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import moment, { Moment } from "moment";
@@ -180,7 +180,6 @@ export const CreateRedPacketStepWrap = withTranslation()(
         },
       };
       let inputSplitExtendProps = {};
-      REDPACKET_ORDER_LIMIT;
       if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
         let balance = sdk
           .toBig(tradeData.tradeValue)

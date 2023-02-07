@@ -610,7 +610,10 @@ export type CreateRedPacketExtendsProps<T, F> = {
   assetsData: AssetsRawDataItem[];
 } & CreateRedPacketInfoProps<F>;
 
-export type CreateRedPacketViewProps<T, I, F> = CreateRedPacketExtendsProps<T, F> &
+export type CreateRedPacketViewProps<T, I, F> = CreateRedPacketExtendsProps<
+  T,
+  F
+> &
   XOR<BasicACoinTradeProps<T, I>, BasicANFTTradeProps<T, I>> & {
     setActiveStep: (step: RedPacketStep) => void;
     activeStep: RedPacketStep;

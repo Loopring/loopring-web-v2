@@ -2,12 +2,12 @@ import { Box, Button } from "@mui/material";
 import { CreateRedPacketPanel } from "@loopring-web/component-lib";
 
 import React from "react";
+import { StylePaper, useCreateRedPacket } from "@loopring-web/core";
 import {
+  BackIcon,
+  FeeInfo,
   RedPacketOrderData,
-  StylePaper,
-  useCreateRedPacket,
-} from "@loopring-web/core";
-import { BackIcon, FeeInfo } from "@loopring-web/common-resources";
+} from "@loopring-web/common-resources";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";

@@ -313,7 +313,6 @@ export const MyNFTPanel = withTranslation("common")(
           </>
         ) : isShowNFTDetail.isShow ? (
           <>
-            {/*<Breadcrumbs separator="›" aria-label="breadcrumb">*/}
             <Breadcrumbs
               separator={
                 <BackIcon

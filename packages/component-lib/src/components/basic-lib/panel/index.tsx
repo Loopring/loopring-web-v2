@@ -1,5 +1,10 @@
 import styled from "@emotion/styled";
-import { Box, Card, CardProps } from "@mui/material";
+import { Box, Card, CardProps, Typography } from "@mui/material";
+import {
+  FirstPlaceIcon,
+  SecondPlaceIcon,
+  ThirdPlaceIcon,
+} from "@loopring-web/common-resources";
 
 export * from "./SwitchPanel";
 export * from "./SubMenu";
@@ -131,3 +136,45 @@ export const ImageUploadWrapper = styled(Box)`
     }
   }
 ` as typeof Box;
+
+export const PlaceComponent = ({ rank }: { rank: number }) => {
+  return (
+    <Typography
+      component={"span"}
+      display={"inline-flex"}
+      position={"relative"}
+    >
+      <>
+        {rank.toString() === "1" ? (
+          <FirstPlaceIcon
+            sx={{ position: "absolute", top: -6 }}
+            fontSize={"large"}
+          />
+        ) : rank.toString() === "2" ? (
+          <SecondPlaceIcon
+            sx={{ position: "absolute", top: -4, left: -1 }}
+            fontSize={"large"}
+          />
+        ) : rank.toString() === "3" ? (
+          <ThirdPlaceIcon
+            sx={{ position: "absolute", top: -4, left: -1 }}
+            fontSize={"large"}
+          />
+        ) : (
+          ""
+        )}
+        <Typography
+          display={"inline-flex"}
+          component={"span"}
+          zIndex={99}
+          width={24}
+          justifyContent={"center"}
+          alignItems={"center"}
+          color={Number(rank) <= 3 ? "#B07D00" : "inherit"}
+        >
+          {rank}
+        </Typography>
+      </>
+    </Typography>
+  );
+};
