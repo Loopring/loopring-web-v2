@@ -30,23 +30,16 @@ export const useMyNFT = ({
   collectionPage?: number;
   myNFTPage?: number;
 }) => {
-  const { search, ...rest } = useLocation();
+  const { search } = useLocation();
   const { renderNFTPromise, infoDetail, nftListReduce } = useNFTListDeep();
-  const history = useHistory();
-  const [filter, setFilter] =
-    React.useState<MyNFTFilter | undefined>(undefined);
+  // const [filter, setFilter] =
+  //   React.useState<MyNFTFilter | undefined>(undefined);
   const searchParams = new URLSearchParams(search);
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const { account } = useAccount();
-  const {
-    status: walletLayer2NFTStatus,
-    walletLayer2NFT,
-    total,
-    page: page_redux,
-    collection: collection_redux,
-    updateWalletLayer2NFT,
-  } = useWalletLayer2NFT();
+  const { walletLayer2NFT, total, updateWalletLayer2NFT } =
+    useWalletLayer2NFT();
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
 
@@ -233,7 +226,7 @@ export const useMyNFT = ({
     total,
     page,
     // filter,
-    setFilter,
+    // setFilter,
     isLoading,
     walletLayer2NFT,
   };
