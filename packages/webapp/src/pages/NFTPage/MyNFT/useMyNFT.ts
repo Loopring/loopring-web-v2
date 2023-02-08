@@ -228,6 +228,7 @@ export const useMyNFT = ({
   ]);
 
   return {
+    collectionMeta,
     nftList,
     onDetail,
     etherscanBaseUrl,

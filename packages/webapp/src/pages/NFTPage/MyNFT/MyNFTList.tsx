@@ -34,14 +34,18 @@ export const MyNFTList = withTranslation("common")(
     const searchParam = new URLSearchParams(search);
     const [tab, setTab] =
       React.useState<sdk.NFT_PREFERENCE_TYPE | "all">("all");
-    const onPageChange = _.debounce((page, filter) => {
-      nftProps.onPageChange(page, { ...filter });
-    }, globalSetup.wait);
+
     const nftProps = useMyNFT({
       collectionMeta,
       collectionPage,
       myNFTPage,
     });
+    const onPageChange = React.useCallback(
+      (page, filter) => {
+        nftProps.onPageChange(page, { ...filter });
+      },
+      [nftProps?.onPageChange]
+    );
     const handleTabChange = React.useCallback(
       (_e, value, page = 1) => {
         let _filter = {};
@@ -59,13 +63,15 @@ export const MyNFTList = withTranslation("common")(
         }
         onPageChange(page, _filter);
       },
-      [tab]
+      [tab, onPageChange]
     );
 
     React.useEffect(() => {
       if (
         accountStatus === SagaStatus.UNSET &&
-        account.readyState === AccountStatus.ACTIVATED
+        account.readyState === AccountStatus.ACTIVATED &&
+        nftProps?.collectionMeta?.contractAddress ===
+          collectionMeta?.contractAddress
       ) {
         const page = myNFTPage;
         // const page = searchParam.get("myNFTPage");
@@ -84,7 +90,12 @@ export const MyNFTList = withTranslation("common")(
 
         handleTabChange(undefined, tab, page ?? 1);
       }
-    }, [collectionMeta?.id, accountStatus, myNFTPage, account.readyState]);
+    }, [
+      nftProps?.collectionMeta?.contractAddress,
+      accountStatus,
+      myNFTPage,
+      account.readyState,
+    ]);
 
     return (
       <>

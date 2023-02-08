@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  CollectionMeta,
   EmptyValueTag,
   GET_IPFS_STRING,
   getShortAddr,
@@ -22,7 +23,7 @@ import { useSettings } from "../../../stores";
 import { XOR } from "../../../types/lib";
 
 export const NFTList = withTranslation("common")(
-  <NFT extends NFTWholeINFO>({
+  <NFT extends NFTWholeINFO, Co = CollectionMeta>({
     baseURL,
     nftList,
     getIPFSString,
@@ -51,6 +52,7 @@ export const NFTList = withTranslation("common")(
     isLoading: boolean;
     selected?: Partial<NFT>[];
     onPageChange?: (page: number) => void;
+    collectionMeta?: Co;
   } & XOR<
     { isSelectOnly: true; isMultipleSelect: true; selected: Partial<NFT>[] },
     | { isSelectOnly: true; isMultipleSelect?: false; selected: NFT }
