@@ -12,7 +12,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { Tab, Tabs, Typography } from "@mui/material";
 import { useLocation } from "react-router";
-import _ from "lodash";
 
 export const MyNFTList = withTranslation("common")(
   ({
