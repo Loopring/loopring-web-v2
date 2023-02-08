@@ -80,11 +80,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2();
-            updateWalletLayer2NFT({
-              page: 1,
-              collectionId: undefined,
-              collectionContractAddress: undefined,
-            });
+            // updateWalletLayer2NFT({ page: 1, collectionId: undefined, collectionContractAddress: undefined });
             updateWalletL2NFTCollection({ page: 1 });
             updateWalletL2Collection({ page: 1 });
           }

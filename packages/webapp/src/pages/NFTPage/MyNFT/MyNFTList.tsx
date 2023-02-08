@@ -33,6 +33,16 @@ export const MyNFTList = withTranslation("common")(
   } & WithTranslation) => {
     const { baseURL } = useSystem();
     const { isMobile } = useSettings();
+    const { status: accountStatus, account } = useAccount();
+    const { search } = useLocation();
+    const searchParam = new URLSearchParams(search);
+    const [tab, setTab] =
+      React.useState<sdk.NFT_PREFERENCE_TYPE | "all">("all");
+    const nftProps = useMyNFT({
+      collectionMeta,
+      collectionPage,
+      myNFTPage,
+    });
     const {
       // setShowNFTDetail,
       // setShowAccount,
@@ -54,75 +64,67 @@ export const MyNFTList = withTranslation("common")(
     const { account } = useAccount();
     const { toggle } = useToggle();
 
-    const match = useRouteMatch("/NFT/assetsNFT/:mainTab?");
-    const isByCollection = match?.params["mainTab"] === "byCollection";
-    const tabParams = isByCollection
-      ? useRouteMatch("/NFT/assetsNFT/byCollection/:contract?/:tab?")?.params[
-          "tab"
-        ]
-      : useRouteMatch("/NFT/assetsNFT/byList/:tab?")?.params["tab"];
-    const contractParam = isByCollection
-      ? useRouteMatch("/NFT/assetsNFT/byCollection/:contract?/:tab?")?.params[
-          "contract"
-        ]
-      : undefined;
-    const tab: sdk.NFT_PREFERENCE_TYPE | "all" =
-      tabParams === sdk.NFT_PREFERENCE_TYPE.fav
-        ? sdk.NFT_PREFERENCE_TYPE.fav
-        : tabParams === sdk.NFT_PREFERENCE_TYPE.hide
-        ? sdk.NFT_PREFERENCE_TYPE.hide
-        : "all";
-    const nftProps = useMyNFT({ collectionMeta, collectionPage, myNFTPage });
-    const history = useHistory();
-    const location = useLocation();
-    const onPageChangeCallback = React.useCallback(
-      (page: string) => {
-        const params = new URLSearchParams(location.search);
-        isByCollection
-          ? params.set("collectionPage", page)
-          : params.set("myNFTPage", page);
-        history.replace({
-          ...location,
-          search: params.toString(),
-        });
+    const onPageChange = React.useCallback(
+      (page, filter) => {
+        nftProps.onPageChange(page, { ...filter });
       },
-      [isByCollection, location]
+      [nftProps?.onPageChange]
+    );
+    const handleTabChange = React.useCallback(
+      (_e, value, page = 1) => {
+        let _filter = {};
+        setTab(value);
+        switch (value) {
+          case "all":
+            _filter = { favourite: false, hidden: false };
+            break;
+          case sdk.NFT_PREFERENCE_TYPE.fav:
+            _filter = { favourite: true };
+            break;
+          case sdk.NFT_PREFERENCE_TYPE.hide:
+            _filter = { favourite: false, hidden: true };
+            break;
+        }
+        onPageChange(page, _filter);
+      },
+      [tab, onPageChange]
     );
 
-    const handleTabChange = React.useCallback(
-      (_e, value) => {
-        if (tab === value) return;
-        if (isByCollection) {
-          history.replace({
-            ...location,
-            pathname:
-              value === "all"
-                ? `/NFT/assetsNFT/byCollection/${contractParam}`
-                : `/NFT/assetsNFT/byCollection/${contractParam}/${value}`,
-            search: "",
-          });
-        } else {
-          history.replace({
-            ...location,
-            pathname:
-              value === "all"
-                ? `/NFT/assetsNFT/byList`
-                : `/NFT/assetsNFT/byList/${value}`,
-            search: "",
-          });
-        }
-      },
-      [tab, history, location, match, contractParam, isByCollection]
-    );
-    // @ts-ignore
+    React.useEffect(() => {
+      if (
+        accountStatus === SagaStatus.UNSET &&
+        account.readyState === AccountStatus.ACTIVATED &&
+        nftProps?.collectionMeta?.contractAddress ===
+        collectionMeta?.contractAddress
+      ) {
+        const page = myNFTPage;
+        // const page = searchParam.get("myNFTPage");
+        const filter = JSON.parse(
+          searchParam.get("filter") ??
+          JSON.stringify({
+            favourite: false,
+            hidden: false,
+          })
+        );
+        let tab = filter?.favourite
+          ? sdk.NFT_PREFERENCE_TYPE.fav
+          : filter?.hidden
+            ? sdk.NFT_PREFERENCE_TYPE.hide
+            : "all";
+
+        handleTabChange(undefined, tab, page ?? 1);
+      }
+    }, [
+      nftProps?.collectionMeta?.contractAddress,
+      accountStatus,
+      myNFTPage,
+      account.readyState,
+    ]);
+
+
     return (
       <>
-        <Tabs
-          value={tab}
-          onChange={handleTabChange}
-          aria-label="NFT Group Tab"
-          // sx={{  }}
-        >
+        <Tabs value={tab} onChange={handleTabChange} aria-label="NFT Group Tab">
           {[
             "all",
             sdk.NFT_PREFERENCE_TYPE.fav,
@@ -130,6 +132,7 @@ export const MyNFTList = withTranslation("common")(
           ].map((item) => {
             return (
               <Tab
+                disabled={nftProps?.isLoading}
                 key={item.toString()}
                 value={item.toString()}
                 label={
@@ -138,12 +141,6 @@ export const MyNFTList = withTranslation("common")(
                     display={"inline-flex"}
                     alignItems={"center"}
                   >
-                    {/*<Info2Icon*/}
-                    {/*  fontSize={"small"}*/}
-                    {/*  htmlColor={"var(--color-text-secondary)"}*/}
-                    {/*  sx={{ marginRight: 1 / 2 }}*/}
-                    {/*/>*/}
-
                     {t(`labelNFTList${item}`)}
                   </Typography>
                   // </Tooltip>
@@ -158,6 +155,16 @@ export const MyNFTList = withTranslation("common")(
             baseURL,
             onClick: nftProps.onDetail,
             getIPFSString,
+          }}
+          onPageChange={(page) => {
+            const filter = JSON.parse(
+              searchParam.get("filter") ??
+                JSON.stringify({
+                  favourite: false,
+                  hidden: false,
+                })
+            );
+            onPageChange(page, filter);
           }}
           account={account}
           isEdit={false}
@@ -190,7 +197,6 @@ export const MyNFTList = withTranslation("common")(
           }}
           setShowAccount={setShowAccount}
           setNFTMetaNotReady={setNFTMetaNotReady}
-          onPageChangeCallback={onPageChangeCallback}
           isManage={false}
           size={size ?? isMobile ? "small" : "large"}
         />

@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import {
   Account,
+  CollectionMeta,
   EmptyValueTag,
   GET_IPFS_STRING,
   getShortAddr,
@@ -172,7 +173,7 @@ const ActionMemo = React.memo(
 );
 
 export const NFTList = withTranslation("common")(
-  <NFT extends NFTWholeINFO>({
+  <NFT extends NFTWholeINFO, Co = CollectionMeta>({
     baseURL,
     nftList,
     getIPFSString,
@@ -184,7 +185,8 @@ export const NFTList = withTranslation("common")(
     selected = undefined,
     isSelectOnly = false,
     isMultipleSelect = false,
-    onPageChangeCallback,
+    // isManage = false,
+    onPageChange,
     setNFTMetaNotReady,
     isEdit,
     t,
@@ -203,7 +205,8 @@ export const NFTList = withTranslation("common")(
     isLoading: boolean;
     selected?: Partial<NFT>[];
     onPageChange?: (page: number) => void;
-    onPageChangeCallback?: (page: string) => void;
+    collectionMeta?: Co;
+  } & XOR<
     setNFTMetaNotReady: (props: any) => void;
     account?: Account;
     toggle?: any;
@@ -386,23 +389,7 @@ export const NFTList = withTranslation("common")(
                             minWidth={1}
                             textOverflow={"ellipsis"}
                             title={item?.nftId?.toString()}
-                          ></Typography>
-                          {/*<Typography*/}
-                          {/*  variant={""}*/}
-                          {/*  component={"div"}*/}
-                          {/*  height={40}*/}
-                          {/*  paddingX={3}*/}
-                          {/*  whiteSpace={"pre"}*/}
-                          {/*  display={"inline-flex"}*/}
-                          {/*  alignItems={"center"}*/}
-                          {/*  color={"textPrimary"}*/}
-                          {/*  style={{*/}
-                          {/*    // background: "var(--field-opacity)",*/}
-                          {/*    // borderRadius: "20px",*/}
-                          {/*  }}*/}
-                          {/*>*/}
-                          {/*  × {item.total}*/}
-                          {/*</Typography>*/}
+                          />
                         </Box>
                       </Box>
                     </Box>
@@ -410,7 +397,7 @@ export const NFTList = withTranslation("common")(
                 </Grid>
               ))}
             </Grid>
-            {total > NFTLimit && (
+            {total > NFTLimit && onPageChange && (
               <Box
                 display={"flex"}
                 alignItems={"center"}
@@ -427,7 +414,7 @@ export const NFTList = withTranslation("common")(
                   }
                   page={page}
                   onChange={(_event, value) => {
-                    onPageChangeCallback && onPageChangeCallback(String(value));
+                    onPageChange(Number(value));
                   }}
                 />
               </Box>

@@ -2,7 +2,6 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getWalletLayer2NFTStatus, updateWalletLayer2NFT } from "./reducer";
 import { store, LoopringAPI } from "../../index";
 import {
-  CollectionMeta,
   CustomError,
   ErrorMap,
   MyNFTFilter,
@@ -72,7 +71,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
       total: totalNum,
       collection: {
         contractAddress: collectionContractAddress,
-        id: collectionId
+        id: collectionId,
       },
       filter,
       page,
@@ -82,7 +81,13 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
 };
 
 export function* getPostsSaga({
-  payload: { page = 1, collectionId, collectionContractAddress, nftDatas, filter },
+  payload: {
+    page = 1,
+    collectionId,
+    collectionContractAddress,
+    nftDatas,
+    filter,
+  },
 }: PayloadAction<{
   page?: number;
   nftDatas?: string;
