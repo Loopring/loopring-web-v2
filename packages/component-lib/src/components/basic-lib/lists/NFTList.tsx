@@ -185,7 +185,6 @@ export const NFTList = withTranslation("common")(
     selected = undefined,
     isSelectOnly = false,
     isMultipleSelect = false,
-    // isManage = false,
     onPageChange,
     setNFTMetaNotReady,
     isEdit,
@@ -205,11 +204,10 @@ export const NFTList = withTranslation("common")(
     isLoading: boolean;
     selected?: Partial<NFT>[];
     onPageChange?: (page: number) => void;
-    collectionMeta?: Co;
-  } & XOR<
     setNFTMetaNotReady: (props: any) => void;
     account?: Account;
     toggle?: any;
+    collectionMeta?: Co;
     // onSelected: (item: Partial<NFT>) => void;
   } & ((NFTItemBasicProps & { isEdit: true }) | { isEdit?: false }) &
     XOR<
@@ -223,7 +221,6 @@ export const NFTList = withTranslation("common")(
     WithTranslation) => {
     const sizeConfig = sizeNFTConfig(size);
     const { isMobile } = useSettings();
-    // @ts-ignore
     return (
       <Box
         flex={1}

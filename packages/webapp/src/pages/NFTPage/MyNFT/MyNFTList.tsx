@@ -1,4 +1,8 @@
-import { CollectionMeta } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  CollectionMeta,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 import {
   NFTList,
   useOpenModals,
@@ -16,7 +20,7 @@ import { useMyNFT } from "./useMyNFT";
 import { WithTranslation, withTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { Tab, Tabs, Typography } from "@mui/material";
-import { useHistory, useLocation, useRouteMatch } from "react-router";
+import { useLocation } from "react-router";
 
 export const MyNFTList = withTranslation("common")(
   ({
@@ -61,7 +65,6 @@ export const MyNFTList = withTranslation("common")(
       updateNFTTransferData,
       updateNFTWithdrawData,
     } = useModalData();
-    const { account } = useAccount();
     const { toggle } = useToggle();
 
     const onPageChange = React.useCallback(
@@ -95,22 +98,22 @@ export const MyNFTList = withTranslation("common")(
         accountStatus === SagaStatus.UNSET &&
         account.readyState === AccountStatus.ACTIVATED &&
         nftProps?.collectionMeta?.contractAddress ===
-        collectionMeta?.contractAddress
+          collectionMeta?.contractAddress
       ) {
         const page = myNFTPage;
         // const page = searchParam.get("myNFTPage");
         const filter = JSON.parse(
           searchParam.get("filter") ??
-          JSON.stringify({
-            favourite: false,
-            hidden: false,
-          })
+            JSON.stringify({
+              favourite: false,
+              hidden: false,
+            })
         );
         let tab = filter?.favourite
           ? sdk.NFT_PREFERENCE_TYPE.fav
           : filter?.hidden
-            ? sdk.NFT_PREFERENCE_TYPE.hide
-            : "all";
+          ? sdk.NFT_PREFERENCE_TYPE.hide
+          : "all";
 
         handleTabChange(undefined, tab, page ?? 1);
       }
@@ -120,7 +123,6 @@ export const MyNFTList = withTranslation("common")(
       myNFTPage,
       account.readyState,
     ]);
-
 
     return (
       <>

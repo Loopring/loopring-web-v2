@@ -2,12 +2,15 @@ import {
   CollectionMeta,
   CustomError,
   ErrorMap,
+  myLog,
   MyNFTFilter,
   NFTWholeINFO,
+  SagaStatus,
 } from "@loopring-web/common-resources";
 import React from "react";
 import {
   LoopringAPI,
+  store,
   useAccount,
   useModalData,
   useNFTListDeep,
@@ -29,10 +32,11 @@ export const useMyNFT = ({
   collectionPage?: number;
   myNFTPage?: number;
 }) => {
-  const { search } = useLocation();
+  const { search, ...rest } = useLocation();
   const { renderNFTPromise, infoDetail, nftListReduce } = useNFTListDeep();
-  // const [filter, setFilter] =
-  //   React.useState<MyNFTFilter | undefined>(undefined);
+  const history = useHistory();
+  const [filter, setFilter] =
+    React.useState<MyNFTFilter | undefined>(undefined);
   const searchParams = new URLSearchParams(search);
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);

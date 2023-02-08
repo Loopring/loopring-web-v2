@@ -10,6 +10,7 @@ import {
   LoopringAPI,
   useNFTListDeep,
   useSystem,
+  useWalletLayer2NFT,
 } from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
 import * as sdk from "@loopring-web/loopring-sdk";

@@ -781,10 +781,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     handleOnDataChange,
     btnInfo,
     t,
-  }: CreateRedPacketViewProps<T, I, C> & {
-    selectedType: LuckyRedPacketItem;
-    // setSelectType: (value: LuckyRedPacketItem) => void;
-  } & WithTranslation) => {
+  }: Omit<CreateRedPacketViewProps<T, I, C>, ""> & WithTranslation) => {
     const { isMobile } = useSettings();
     const getDisabled = React.useMemo(() => {
       return disabled;
@@ -893,5 +890,5 @@ export const CreateRedPacketStepTokenType = withTranslation()(
       //
       // </RedPacketBoxStyle>
     );
-  }
+  };
 );
