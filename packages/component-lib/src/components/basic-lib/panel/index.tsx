@@ -1,5 +1,10 @@
 import styled from "@emotion/styled";
-import { Box, Card, CardProps } from "@mui/material";
+import { Box, Card, CardProps, Typography } from "@mui/material";
+import {
+  FirstPlaceIcon,
+  SecondPlaceIcon,
+  ThirdPlaceIcon,
+} from "@loopring-web/common-resources";
 
 export * from "./SwitchPanel";
 export * from "./SubMenu";
@@ -16,7 +21,10 @@ export const CardNFTStyled = styled(Card)`
 `;
 
 export const CardStyleItem = styled(Card)<
-  CardProps & { contentheight?: number; size: "large" | "medium" | "small" }
+  CardProps & {
+    contentheight?: number;
+    size?: "large" | "medium" | "small" | undefined;
+  }
 >`
   background: var(--color-global-bg);
   width: 100%;
@@ -27,12 +35,14 @@ export const CardStyleItem = styled(Card)<
       100% + ${({ contentheight }) => `${contentheight ? contentheight : 80}px`}
     );
   position: relative;
+
   .boxLabel {
     overflow: hidden;
   }
 
   &.collection {
     padding: 0 0 calc(140%);
+
     .boxLabel {
       ${({ size, theme }) =>
         size === "small"
@@ -48,6 +58,7 @@ export const CardStyleItem = styled(Card)<
               margin: ${2 * theme.unit}px;`}
     }
   }
+
   &.nft-item {
     .MuiRadio-root,
     .MuiCheckbox-root {
@@ -55,13 +66,53 @@ export const CardStyleItem = styled(Card)<
         background-color: rgba(65, 105, 255, 0.05);
         color: var(--color-text-secondary);
       }
+
       &.Mui-checked {
         box-shadow: inset 0px 0px 60px var(--color-global-bg-opacity);
       }
+
       position: absolute;
       right: ${({ theme }) => theme.unit}px;
       top: ${({ theme }) => theme.unit}px;
       transform: scale(1.5);
+    }
+  }
+
+  &.btnCard {
+    background: var(--color-box);
+
+    .MuiCardContent-root {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    &.column .MuiCardContent-root {
+      flex-direction: column;
+    }
+
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: ${({ theme }) => (3 / 2) * theme.unit}px;
+    box-shadow: none;
+    transition: none;
+    ${({ theme }) =>
+      theme.border.defaultFrame({
+        c_key: "var(--field-opacity)",
+        d_R: 0.5,
+      })};
+
+    &.selected,
+    &:hover {
+      ${({ theme }) =>
+        theme.border.defaultFrame({
+          c_key: "var(--color-border-select)",
+          d_R: 0.5,
+        })};
     }
   }
 
@@ -89,3 +140,45 @@ export const ImageUploadWrapper = styled(Box)`
     }
   }
 ` as typeof Box;
+
+export const PlaceComponent = ({ rank }: { rank: number }) => {
+  return (
+    <Typography
+      component={"span"}
+      display={"inline-flex"}
+      position={"relative"}
+    >
+      <>
+        {rank.toString() === "1" ? (
+          <FirstPlaceIcon
+            sx={{ position: "absolute", top: -6 }}
+            fontSize={"large"}
+          />
+        ) : rank.toString() === "2" ? (
+          <SecondPlaceIcon
+            sx={{ position: "absolute", top: -4, left: -1 }}
+            fontSize={"large"}
+          />
+        ) : rank.toString() === "3" ? (
+          <ThirdPlaceIcon
+            sx={{ position: "absolute", top: -4, left: -1 }}
+            fontSize={"large"}
+          />
+        ) : (
+          ""
+        )}
+        <Typography
+          display={"inline-flex"}
+          component={"span"}
+          zIndex={99}
+          width={24}
+          justifyContent={"center"}
+          alignItems={"center"}
+          color={Number(rank) <= 3 ? "#B07D00" : "inherit"}
+        >
+          {rank}
+        </Typography>
+      </>
+    </Typography>
+  );
+};

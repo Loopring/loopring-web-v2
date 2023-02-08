@@ -2,18 +2,13 @@ import React from "react";
 import {
   DropDownIcon,
   EmptyValueTag,
-  FirstPlaceIcon,
   getShortAddr,
   RowConfig,
-  SecondPlaceIcon,
   SoursURL,
-  ThirdPlaceIcon,
 } from "@loopring-web/common-resources";
 import { Box, MenuItem, Typography } from "@mui/material";
 import {
   InputSearch,
-  PlaceComponent,
-  Table,
   TablePaddingX,
   TextField,
   TradeRaceTable,
