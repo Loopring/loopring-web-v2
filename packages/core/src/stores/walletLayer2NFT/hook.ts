@@ -5,7 +5,7 @@ import {
   statusUnset,
   updateWalletLayer2NFT,
 } from "./reducer";
-import { CollectionMeta, MyNFTFilter } from "@loopring-web/common-resources";
+import { MyNFTFilter } from "@loopring-web/common-resources";
 import { WalletLayer2NFTStates } from "./interface";
 import React from "react";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
@@ -14,8 +14,8 @@ export function useWalletLayer2NFT(): WalletLayer2NFTStates & {
   updateWalletLayer2NFT: (props: {
     page?: number;
     nftDatas?: string;
-    collectionId: string | undefined,
-    collectionContractAddress: string | undefined,
+    collectionId: string | undefined;
+    collectionContractAddress: string | undefined;
     filter?: MyNFTFilter | undefined;
   }) => void;
   socketUpdateBalance: (balance: {
@@ -52,7 +52,15 @@ export function useWalletLayer2NFT(): WalletLayer2NFTStates & {
         collectionContractAddress: string | undefined;
         filter?: MyNFTFilter | undefined;
       }) =>
-        dispatch(updateWalletLayer2NFT({ page, collectionId, collectionContractAddress, nftDatas, filter })),
+        dispatch(
+          updateWalletLayer2NFT({
+            page,
+            collectionId,
+            collectionContractAddress,
+            nftDatas,
+            filter,
+          })
+        ),
       [dispatch]
     ),
     socketUpdateBalance: React.useCallback(

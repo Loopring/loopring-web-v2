@@ -1,12 +1,19 @@
-import { CollectionMeta, Info2Icon } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  CollectionMeta,
+  globalSetup,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 import { NFTList, useSettings } from "@loopring-web/component-lib";
-import { getIPFSString, useSystem } from "@loopring-web/core";
+import { getIPFSString, useAccount, useSystem } from "@loopring-web/core";
 import React from "react";
 import { useMyNFT } from "./useMyNFT";
 import { WithTranslation, withTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { Box, Tab, Tabs, Tooltip, Typography } from "@mui/material";
-import { useHistory, useLocation, useParams, useRouteMatch } from "react-router";
+import { Tab, Tabs, Typography } from "@mui/material";
+import { useLocation } from "react-router";
+import _ from "lodash";
+
 export const MyNFTList = withTranslation("common")(
   ({
     collectionMeta,
@@ -20,67 +27,68 @@ export const MyNFTList = withTranslation("common")(
     myNFTPage?: number;
     size?: string;
   } & WithTranslation) => {
-    
     const { baseURL } = useSystem();
     const { isMobile } = useSettings();
-    const match = useRouteMatch("/NFT/assetsNFT/:mainTab?")
-    const isByCollection = match?.params['mainTab'] === 'byCollection'
-    const tabParams = isByCollection
-      ? useRouteMatch("/NFT/assetsNFT/byCollection/:contract?/:tab?")?.params['tab']
-      : useRouteMatch("/NFT/assetsNFT/byList/:tab?")?.params['tab']
-    const contractParam = isByCollection
-      ? useRouteMatch("/NFT/assetsNFT/byCollection/:contract?/:tab?")?.params['contract']
-      : undefined
-    const tab: sdk.NFT_PREFERENCE_TYPE | 'all' = tabParams === sdk.NFT_PREFERENCE_TYPE.fav 
-      ? sdk.NFT_PREFERENCE_TYPE.fav 
-      : tabParams === sdk.NFT_PREFERENCE_TYPE.hide
-        ? sdk.NFT_PREFERENCE_TYPE.hide
-        : "all"
-    const nftProps = useMyNFT({ collectionMeta, collectionPage, myNFTPage });
-    const history = useHistory();
-    const location = useLocation();
-    const onPageChangeCallback = React.useCallback((page: string) => {
-      const params = new URLSearchParams(location.search);
-      isByCollection ? params.set('collectionPage', page) : params.set('myNFTPage', page)
-      history.replace({
-        ...location,
-        search: params.toString()
-      })
-    }, [isByCollection, location])
-
+    const { status: accountStatus, account } = useAccount();
+    const { search } = useLocation();
+    const searchParam = new URLSearchParams(search);
+    const [tab, setTab] =
+      React.useState<sdk.NFT_PREFERENCE_TYPE | "all">("all");
+    const onPageChange = _.debounce((page, filter) => {
+      nftProps.onPageChange(page, { ...filter });
+    }, globalSetup.wait);
+    const nftProps = useMyNFT({
+      collectionMeta,
+      collectionPage,
+      myNFTPage,
+    });
     const handleTabChange = React.useCallback(
-      (_e, value) => {
-        if (tab === value) return
-        if (isByCollection) {
-          history.replace({
-            ...location,
-            pathname: value === 'all' 
-              ? `/NFT/assetsNFT/byCollection/${contractParam}`
-              : `/NFT/assetsNFT/byCollection/${contractParam}/${value}`,
-            search: ''
-          })
-        } else {
-          
-          history.replace({
-            ...location,
-            pathname: value === 'all' 
-              ? `/NFT/assetsNFT/byList`
-              : `/NFT/assetsNFT/byList/${value}`,
-            search: ''
-          })
+      (_e, value, page = 1) => {
+        let _filter = {};
+        setTab(value);
+        switch (value) {
+          case "all":
+            _filter = { favourite: false, hidden: false };
+            break;
+          case sdk.NFT_PREFERENCE_TYPE.fav:
+            _filter = { favourite: true };
+            break;
+          case sdk.NFT_PREFERENCE_TYPE.hide:
+            _filter = { favourite: false, hidden: true };
+            break;
         }
-
+        onPageChange(page, _filter);
       },
-      [tab, history, location, match, contractParam, isByCollection]
+      [tab]
     );
+
+    React.useEffect(() => {
+      if (
+        accountStatus === SagaStatus.UNSET &&
+        account.readyState === AccountStatus.ACTIVATED
+      ) {
+        const page = myNFTPage;
+        // const page = searchParam.get("myNFTPage");
+        const filter = JSON.parse(
+          searchParam.get("filter") ??
+            JSON.stringify({
+              favourite: false,
+              hidden: false,
+            })
+        );
+        let tab = filter?.favourite
+          ? sdk.NFT_PREFERENCE_TYPE.fav
+          : filter?.hidden
+          ? sdk.NFT_PREFERENCE_TYPE.hide
+          : "all";
+
+        handleTabChange(undefined, tab, page ?? 1);
+      }
+    }, [collectionMeta?.id, accountStatus, myNFTPage, account.readyState]);
+
     return (
       <>
-        <Tabs
-          value={tab}
-          onChange={handleTabChange}
-          aria-label="NFT Group Tab"
-          // sx={{  }}
-        >
+        <Tabs value={tab} onChange={handleTabChange} aria-label="NFT Group Tab">
           {[
             "all",
             sdk.NFT_PREFERENCE_TYPE.fav,
@@ -88,24 +96,15 @@ export const MyNFTList = withTranslation("common")(
           ].map((item) => {
             return (
               <Tab
+                disabled={nftProps?.isLoading}
                 key={item.toString()}
                 value={item.toString()}
                 label={
-                  // <Tooltip
-                  //   placement={"top"}
-                  //   title={t(`labelImportCollection${item}Des`).toString()}
-                  // >
                   <Typography
                     component={"span"}
                     display={"inline-flex"}
                     alignItems={"center"}
                   >
-                    {/*<Info2Icon*/}
-                    {/*  fontSize={"small"}*/}
-                    {/*  htmlColor={"var(--color-text-secondary)"}*/}
-                    {/*  sx={{ marginRight: 1 / 2 }}*/}
-                    {/*/>*/}
-
                     {t(`labelNFTList${item}`)}
                   </Typography>
                   // </Tooltip>
@@ -121,7 +120,16 @@ export const MyNFTList = withTranslation("common")(
             onClick: nftProps.onDetail,
             getIPFSString,
           }}
-          onPageChangeCallback={onPageChangeCallback}
+          onPageChange={(page) => {
+            const filter = JSON.parse(
+              searchParam.get("filter") ??
+                JSON.stringify({
+                  favourite: false,
+                  hidden: false,
+                })
+            );
+            onPageChange(page, filter);
+          }}
           isManage={false}
           size={size ?? isMobile ? "small" : "large"}
         />
