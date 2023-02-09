@@ -44,7 +44,9 @@ import { TablePagination, BoxNFT } from "../basic-lib";
 import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
 import { NFTMedia } from "./nftMedia";
 
-export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
+export const RedPacketBg = styled(Box)<
+  BoxProps & { imageSrc?: string; type: string }
+>`
   display: flex;
   align-items: center;
   position: relative;
@@ -620,7 +622,7 @@ export const RedPacketClock = ({
             whiteSpace={"pre-line"}
             textAlign={"center"}
             paddingX={2}
-            sx={{wordBreak: "break-all"}}
+            sx={{ wordBreak: "break-all" }}
           >
             {memo}
           </Typography>
@@ -703,15 +705,15 @@ RedPacketDefault & RedPacketUnreadyProps) => {
 };
 
 export const RedPacketOpened = ({
-                                  type = "default",
-                                  size,
-                                  sender,
-                                  memo,
-                                  myAmountStr,
-                                  amountStr,
-                                  viewDetail,
-                                  ImageEle,
-                                }: RedPacketDefault & RedPacketOpenedProps) => {
+  type = "default",
+  size,
+  sender,
+  memo,
+  myAmountStr,
+  amountStr,
+  viewDetail,
+  ImageEle,
+}: RedPacketDefault & RedPacketOpenedProps) => {
   const { t } = useTranslation("common");
   const content = React.useMemo(() => {
     return (
@@ -746,7 +748,7 @@ export const RedPacketOpened = ({
             textAlign={"center"}
             marginTop={1 / 2}
             paddingX={2}
-            sx={{wordBreak: "break-all"}}
+            sx={{ wordBreak: "break-all" }}
           >
             {memo}
           </Typography>
@@ -768,7 +770,7 @@ export const RedPacketOpened = ({
       </Box>
     );
   }, []);
-  return <RedPacketBgOpened type={type} content={content} size={size}/>;
+  return <RedPacketBgOpened type={type} content={content} size={size} />;
 };
 
 export const RedPacketDetailStyled = styled(Box)`
@@ -777,13 +779,13 @@ export const RedPacketDetailStyled = styled(Box)`
 ` as typeof Box;
 
 export const RedPacketTimeout = ({
-                                   type = "default",
-                                   size,
-                                   sender,
-                                   memo,
-                                   viewDetail,
-                                 }: RedPacketTimeoutProps) => {
-  const {t} = useTranslation("common");
+  type = "default",
+  size,
+  sender,
+  memo,
+  viewDetail,
+}: RedPacketTimeoutProps) => {
+  const { t } = useTranslation("common");
   const content = React.useMemo(() => {
     return (
       <Box
@@ -794,7 +796,7 @@ export const RedPacketTimeout = ({
         flexDirection={"column"}
         justifyContent={"stretch"}
         // alignItems={"s"}
-        height={RedPacketSize[ "middle" ].height}
+        height={RedPacketSize["middle"].height}
       >
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
           <Typography
@@ -818,7 +820,7 @@ export const RedPacketTimeout = ({
             whiteSpace={"pre-line"}
             textAlign={"center"}
             paddingX={2}
-            sx={{wordBreak: "break-all"}}
+            sx={{ wordBreak: "break-all" }}
           >
             {memo}
           </Typography>
@@ -842,7 +844,7 @@ export const RedPacketTimeout = ({
       </Box>
     );
   }, []);
-  return <RedPacketBgOpened type={type} content={content} size={size}/>;
+  return <RedPacketBgOpened type={type} content={content} size={size} />;
 };
 
 const BoxStyle = styled(Box)`
@@ -857,12 +859,12 @@ const BoxStyle = styled(Box)`
 `;
 
 export const RedPacketDetail = ({
-  sender,
-  amountStr,
-  // _amountClaimStr,
-  memo,
-  page = 1,
-  claimList,
+                                  sender,
+                                  amountStr,
+                                  // _amountClaimStr,
+                                  memo,
+                                  page = 1,
+                                  claimList,
                                   // detail,
                                   // detail,
                                   handlePageChange,
@@ -875,7 +877,7 @@ export const RedPacketDetail = ({
                                   relyAmount,
                                   ImageEle,
                                 }: RedPacketDetailProps) => {
-  const { t } = useTranslation("common");
+  const {t} = useTranslation("common");
   const pageNation = React.useMemo(() => {
     if (totalCount - remainCount - RedPacketDetailLimit > 0) {
       return (
