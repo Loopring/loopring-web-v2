@@ -4,6 +4,7 @@ import { CreateRedPacketProps, RedPacketStep } from "../../tradePanel";
 import {
   FeeInfo,
   LuckyRedPacketList,
+  NFTWholeINFO,
   RedPacketOrderData,
   TRADE_TYPE,
 } from "@loopring-web/common-resources";
@@ -38,7 +39,8 @@ const BoxStyle = styled(Box)`
 export const CreateRedPacketPanel = <
   T extends Partial<RedPacketOrderData<I>>,
   I extends any,
-  C = FeeInfo
+  C = FeeInfo,
+  NFT = NFTWholeINFO
 >({
   tradeType,
   tradeData,
@@ -50,7 +52,7 @@ export const CreateRedPacketPanel = <
   //@ts-ignore
   myNFTPanel,
   ...rest
-}: CreateRedPacketProps<T, I, C> & { assetsData: any[] }) => {
+}: CreateRedPacketProps<T, I, C, NFT> & { assetsData: any[] }) => {
   const { t, i18n, ready: tReady } = useTranslation(["common", "error"]);
   const { onChangeEvent, index, switchData } = useBasicTrade({
     ...rest,

@@ -4,6 +4,7 @@ import {
   FeeInfo,
   IBData,
   MarketType,
+  NFTWholeINFO,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import {
@@ -99,11 +100,8 @@ export type ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps<T>;
 
 export type DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps;
 
-export type CreateRedPacketProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<
-  T,
-  I
-> &
-  CreateRedPacketViewProps<T, I, C>;
+export type CreateRedPacketProps<T, I, C = FeeInfo, NFT = NFTWholeINFO> =
+  BasicACoinTradeHookProps<T, I> & CreateRedPacketViewProps<T, I, C>;
 
 export type TransferInfoProps<T, I> = DefaultProps<T, I> &
   _TransferInfoProps<CoinKey<I>>;

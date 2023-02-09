@@ -22,7 +22,16 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { Tab, Tabs, Typography } from "@mui/material";
 import { useLocation } from "react-router";
-
+export type MyNFTListProps<NFT> = {
+  collectionMeta: CollectionMeta | undefined;
+  collectionPage?: number;
+  myNFTPage?: number;
+  size?: string;
+  isSelect?: boolean;
+  selected?: NFT[];
+  isMultipleSelect?: boolean;
+  onSelect: (value: NFT) => void;
+};
 export const MyNFTList = withTranslation("common")(
   <NFT extends NFTWholeINFO>({
     collectionMeta,
@@ -34,16 +43,7 @@ export const MyNFTList = withTranslation("common")(
     isMultipleSelect,
     onSelect,
     t,
-  }: {
-    collectionMeta: CollectionMeta | undefined;
-    collectionPage?: number;
-    myNFTPage?: number;
-    size?: string;
-    isSelect?: boolean;
-    selected?: NFT[];
-    isMultipleSelect?: boolean;
-    onSelect: (value: NFT) => void;
-  } & WithTranslation) => {
+  }: MyNFTListProps<NFT> & WithTranslation) => {
     const { baseURL } = useSystem();
     const { isMobile } = useSettings();
     const { status: accountStatus, account } = useAccount();
@@ -220,5 +220,5 @@ export const MyNFTList = withTranslation("common")(
         />
       </>
     );
-  }
-);
+  };
+) as <NFT extends NFTWholeINFO>(pros: MyNFTListProps<NFT>) => JSX.Element;

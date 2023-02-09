@@ -18,6 +18,7 @@ import {
   EXCHANGE_TYPE,
   FeeInfo,
   GET_IPFS_STRING,
+  NFTWholeINFO,
   RequireOne,
   TRADE_TYPE,
   WALLET_TYPE,
@@ -625,12 +626,16 @@ export type CreateRedPacketExtendsProps<T, F> = {
   assetsData: AssetsRawDataItem[];
 } & CreateRedPacketInfoProps<F>;
 
-export type CreateRedPacketViewProps<T, I, F> = CreateRedPacketExtendsProps<
-  T,
-  F
-> &
-  XOR<BasicACoinTradeProps<T, I>, BasicANFTTradeProps<T, I>> & {
-    setActiveStep: (step: RedPacketStep) => void;
-    activeStep: RedPacketStep;
-    tokenMap: { [key: string]: sdk.TokenInfo };
-  };
+export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> =
+  CreateRedPacketExtendsProps<T, F> &
+    XOR<
+      BasicACoinTradeProps<T, I>,
+      BasicANFTTradeProps<T, I> & {
+        handleOnChoose: (value: NFT) => void;
+        selectNFT: NFT;
+      }
+    > & {
+      setActiveStep: (step: RedPacketStep) => void;
+      activeStep: RedPacketStep;
+      tokenMap: { [key: string]: sdk.TokenInfo };
+    };

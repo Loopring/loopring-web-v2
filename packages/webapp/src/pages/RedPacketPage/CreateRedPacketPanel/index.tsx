@@ -28,7 +28,7 @@ export const ChooseNFTPanel = React.memo(
     onSelect,
   }: {
     selectNFT: NFT[];
-    onSelect: (value: NFT[]) => void;
+    onSelect: (value: NFT) => void;
   }) => {
     const matchPreUrl = "/redPacket/create/";
     const preMatch = useRouteMatch(`/redPacket/create/:tab?/:contract?`);
@@ -60,14 +60,14 @@ export const ChooseNFTPanel = React.memo(
         isMultipleSelect={false}
         isSelect={true}
         size={"small"}
-        selected={selectNFT ? selectNFT[0] : undefined}
-        onSelect={onSelect && onSelect}
+        selected={selectNFT}
+        onSelect={onSelect}
         contractStr={preMatch?.params["contract"] ?? ""}
         matchPreUrl={matchPreUrl}
         toggle={toggle}
       />
     );
-  }
+  };
 );
 export const CreateRedPacketUIPanel = <
   T extends RedPacketOrderData<I>,
@@ -113,8 +113,8 @@ export const CreateRedPacketUIPanel = <
             myNFTPanel: (
               <ChooseNFTPanel
                 onSelect={(value: any) => {
-                  createRedPacketProps?.handleOnChoose &&
-                    createRedPacketProps.handleOnChoose(value);
+                  createRedPacketProps.handleOnChoose &&
+                  createRedPacketProps.handleOnChoose(value);
                 }}
                 selectNFT={[createRedPacketProps.selectNFT]}
               />

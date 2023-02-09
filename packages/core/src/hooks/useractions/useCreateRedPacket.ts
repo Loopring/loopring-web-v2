@@ -55,7 +55,8 @@ import { useHistory } from "react-router-dom";
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
   I,
-  F = FeeInfo
+  F = FeeInfo,
+  NFT = NFTWholeINFO
 >({
   assetsRawData,
   isShow = false,
@@ -63,7 +64,7 @@ export const useCreateRedPacket = <
   assetsRawData: AssetsRawDataItem[];
   isShow?: boolean;
 }): {
-  createRedPacketProps: CreateRedPacketProps<T, I, F>;
+  createRedPacketProps: CreateRedPacketProps<T, I, F, NFT>;
   retryBtn: (isHardware?: boolean) => void;
 } => {
   const { exchangeInfo, chainId } = useSystem();
@@ -79,8 +80,7 @@ export const useCreateRedPacket = <
       isShowAccount: { info },
     },
   } = useOpenModals();
-  const [selectNFT, setSelectNFT] =
-    React.useState<NFTWholeINFO | undefined>(undefined);
+  const [selectNFT, setSelectNFT] = React.useState<NFT | undefined>(undefined);
 
   const { redPacketConfigs } = useRedPacketConfig();
   const { redPacketOrder, updateRedPacketOrder, resetRedPacketOrder } =
@@ -789,10 +789,10 @@ export const useCreateRedPacket = <
     handleOnDataChange,
     handlePanelEvent,
     selectNFT,
-    handleOnChoose: (value: Partial<NFTWholeINFO>) => {
-      setSelectNFT(value);
+    handleOnChoose: (value: NFT) => {
+      setSelectNFT(value as NFT);
     },
-  } as unknown as CreateRedPacketProps<T, I, F>;
+  } as CreateRedPacketProps<T, I, F, NFT>;
 
   return { createRedPacketProps, retryBtn };
 };
