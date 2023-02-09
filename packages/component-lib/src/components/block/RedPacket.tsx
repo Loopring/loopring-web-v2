@@ -859,25 +859,25 @@ const BoxStyle = styled(Box)`
 `;
 
 export const RedPacketDetail = ({
-                                  sender,
-                                  amountStr,
-                                  // _amountClaimStr,
-                                  memo,
-                                  page = 1,
-                                  claimList,
-                                  // detail,
-                                  // detail,
-                                  handlePageChange,
-                                  myAmountStr,
-                                  isShouldSharedRely,
-                                  totalCount,
-                                  remainCount,
-                                  onShared,
-                                  relyNumber,
-                                  relyAmount,
-                                  ImageEle,
-                                }: RedPacketDetailProps) => {
-  const {t} = useTranslation("common");
+  sender,
+  amountStr,
+  // _amountClaimStr,
+  memo,
+  page = 1,
+  claimList,
+  // detail,
+  // detail,
+  handlePageChange,
+  myAmountStr,
+  isShouldSharedRely,
+  totalCount,
+  remainCount,
+  onShared,
+  relyNumber,
+  relyAmount,
+  ImageEle,
+}: RedPacketDetailProps) => {
+  const { t } = useTranslation("common");
   const pageNation = React.useMemo(() => {
     if (totalCount - remainCount - RedPacketDetailLimit > 0) {
       return (
@@ -934,7 +934,7 @@ export const RedPacketDetail = ({
           textAlign={"center"}
           marginTop={1 / 2}
           paddingX={2}
-          sx={{wordBreak: "break-all"}}
+          sx={{ wordBreak: "break-all" }}
         >
           {memo}
         </Typography>
@@ -1115,19 +1115,19 @@ export const RedPacketDetail = ({
 };
 
 export const RedPacketPrepare = ({
-                                   chainId,
-                                   account,
-                                   tokenInfo,
-                                   setShowRedPacket,
-                                   claim,
-                                   _type = "default",
-                                   amountStr,
-                                   myAmountStr,
-                                   onOpen,
-                                   getIPFSString,
-                                   baseURL,
-                                   ...props
-                                 }: {
+  chainId,
+  account,
+  tokenInfo,
+  setShowRedPacket,
+  claim,
+  _type = "default",
+  amountStr,
+  myAmountStr,
+  onOpen,
+  getIPFSString,
+  baseURL,
+  ...props
+}: {
   chainId: sdk.ChainId;
   account: Account;
   amountStr: string;
@@ -1137,7 +1137,7 @@ export const RedPacketPrepare = ({
   setShowRedPacket: (
     state: ModalStatePlayLoad & {
       step?: number;
-      info?: { [ key: string ]: any };
+      info?: { [key: string]: any };
     }
   ) => void;
   baseURL: string;
