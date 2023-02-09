@@ -1411,4 +1411,8 @@ export default {
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
   labelChooseNFTTooltips: "",
   tokenSelectNFTToken: "Select NFT",
+  labelRedPacketClaimERC20: "ERC20",
+  labelRedPacketClaimNFT: "NFT",
+  labelRedPacketMarketERC20: "ERC20",
+  labelRedPacketMarketNFT: "NFT",
 };

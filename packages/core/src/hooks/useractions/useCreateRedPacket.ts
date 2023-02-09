@@ -241,10 +241,15 @@ export const useCreateRedPacket = <
   const calcNumberAndAmount = React.useCallback(() => {
     const redPacketOrder = store.getState()._router_modalData
       .redPacketOrder as T;
+    const eachValue = sdk
+      .toBig(redPacketOrder?.tradeValue ?? 0)
+      .div(redPacketOrder.numbers ?? 1);
     return {
       tradeValue: redPacketOrder?.tradeValue,
       eachValue:
-        (redPacketOrder?.tradeValue ?? 0) / Number(redPacketOrder.numbers ?? 1),
+        redPacketOrder.tradeType === TRADE_TYPE.TOKEN
+          ? eachValue.toString()
+          : eachValue.toFixed(),
     };
   }, []);
   const history = useHistory();
@@ -304,7 +309,10 @@ export const useCreateRedPacket = <
         isExceedBalance = tradeValue.gt(balance);
         const eachValue = sdk.toBig(_tradeData.eachValue ?? 0);
         tooSmall = eachValue.lt(1);
-        tooLarge = tradeValue.gt(REDPACKET_ORDER_NFT_LIMIT);
+        tooLarge = tradeValue
+          // @ts-ignore
+          .div(tradeValue?.numbers ?? 1)
+          .gt(REDPACKET_ORDER_NFT_LIMIT);
       }
 
       if (
@@ -742,24 +750,40 @@ export const useCreateRedPacket = <
     [walletMap]
   );
   const [minimum, maximum] = React.useMemo(() => {
-    if (redPacketOrder.belong && tokenMap[redPacketOrder.belong]) {
-      const { minimum, maximum } =
-        tokenMap[redPacketOrder.belong].luckyTokenAmounts;
-      const decimals = tokenMap[redPacketOrder.belong].decimals;
-      return [
-        sdk
-          .toBig(minimum ?? 0)
-          .div("1e" + decimals)
-          .toString(),
-        sdk
-          .toBig(maximum ?? 0)
-          .div("1e" + decimals)
-          .toString(),
-      ];
+    if (redPacketOrder.tradeType === TRADE_TYPE.NFT) {
+      const minimum = sdk
+        .toBig(redPacketOrder?.tradeValue ?? 0)
+        .div(REDPACKET_ORDER_NFT_LIMIT)
+        .toFixed(0, 1);
+
+      const maximum =
+        redPacketOrder?.balance &&
+        // @ts-ignore
+        sdk.toBig(redPacketOrder.balance ?? 0).lt(REDPACKET_ORDER_LIMIT)
+          ? // @ts-ignore
+            redPacketOrder?.tradeValue ?? redPacketOrder.balance
+          : REDPACKET_ORDER_LIMIT;
+      return [minimum ? 1 : minimum, maximum];
     } else {
-      return [undefined, undefined];
+      if (redPacketOrder.belong && tokenMap[redPacketOrder.belong]) {
+        const { minimum, maximum } =
+          tokenMap[redPacketOrder.belong].luckyTokenAmounts;
+        const decimals = tokenMap[redPacketOrder.belong].decimals;
+        return [
+          sdk
+            .toBig(minimum ?? 0)
+            .div("1e" + decimals)
+            .toString(),
+          sdk
+            .toBig(maximum ?? 0)
+            .div("1e" + decimals)
+            .toString(),
+        ];
+      } else {
+        return [undefined, undefined];
+      }
     }
-  }, [redPacketOrder?.belong, tokenMap]);
+  }, [redPacketOrder?.belong, tokenMap, redPacketOrder.tradeType]);
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
       setShowAccount({
@@ -789,10 +813,24 @@ export const useCreateRedPacket = <
     handleOnDataChange,
     handlePanelEvent,
     selectNFT,
-    handleOnChoose: (value: NFT) => {
-      setSelectNFT(value as NFT);
+    handleOnChoose: (_value: NFT) => {
+      setSelectNFT(_value as NFT);
+      if (_value) {
+        const value = _value as any;
+        handleOnDataChange({
+          collectionInfo: value.collectionInfo,
+          tokenId: value.tokenId,
+          tradeValue: undefined,
+          balance: value.nftBalance ?? value.total,
+          nftData: value.nftData,
+          belong: value.name,
+          image: value?.metadata?.imageSize
+            ? value?.metadata?.imageSize["240-240"]
+            : value.image,
+        } as T);
+      }
     },
-  } as CreateRedPacketProps<T, I, F, NFT>;
+  } as unknown as CreateRedPacketProps<T, I, F, NFT>;
 
   return { createRedPacketProps, retryBtn };
 };

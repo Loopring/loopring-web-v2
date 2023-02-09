@@ -39,11 +39,13 @@ import {
   SoursURL,
   TRADE_TYPE,
   CoinInfo,
+  myLog,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
   CreateRedPacketViewProps,
   RedPacketStep,
+  SwitchData,
   TradeBtnStatus,
 } from "../Interface";
 import { MenuBtnStyled } from "../../styled";
@@ -129,7 +131,6 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const inputNFTButtonDefaultProps: Partial<
       InputButtonProps<T, I, CoinInfo<I>>
     > = {
-      // label: t("labelRedPacketTotalAmount"),
       decimalsLimit: 0,
       minimum,
       placeholderText: "0",
@@ -145,43 +146,54 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const inputBtnRef = React.useRef();
     const inputSplitRef = React.useRef();
     const { total: redPacketTotalValue, splitValue } = React.useMemo(() => {
-      if (tradeData?.tradeValue && tradeData.belong && tokenMap) {
+      if (tradeType == TRADE_TYPE.TOKEN) {
+        if (tradeData?.tradeValue && tradeData.belong && tokenMap) {
+          const splitValue =
+            selectedType.value.value == 2
+              ? (tradeData?.tradeValue ?? 0) / (tradeData?.numbers ?? 1)
+              : tradeData?.tradeValue ?? 0;
+          return {
+            total:
+              getValuePrecisionThousand(
+                tradeData?.tradeValue,
+                tokenMap[tradeData?.belong as string].precision,
+                tokenMap[tradeData?.belong as string].precision,
+                tokenMap[tradeData?.belong as string].precision,
+                false
+                // { isFait: true }
+              ) +
+              " " +
+              tradeData.belong,
+            splitValue:
+              selectedType.value.value == 2 &&
+              getValuePrecisionThousand(
+                splitValue,
+                tokenMap[tradeData?.belong as string].precision,
+                tokenMap[tradeData?.belong as string].precision,
+                tokenMap[tradeData?.belong as string].precision,
+                false
+                // { isFait: true }
+              ) +
+                " " +
+                tradeData.belong,
+          };
+        } else {
+          return {
+            total: EmptyValueTag,
+            splitValue: selectedType.value.value == 2 && EmptyValueTag,
+          };
+        }
+      } else {
         const splitValue =
           selectedType.value.value == 2
             ? (tradeData?.tradeValue ?? 0) / (tradeData?.numbers ?? 1)
             : tradeData?.tradeValue ?? 0;
         return {
-          total:
-            getValuePrecisionThousand(
-              tradeData?.tradeValue,
-              tokenMap[tradeData?.belong as string].precision,
-              tokenMap[tradeData?.belong as string].precision,
-              tokenMap[tradeData?.belong as string].precision,
-              false
-              // { isFait: true }
-            ) +
-            " " +
-            tradeData.belong,
-          splitValue:
-            selectedType.value.value == 2 &&
-            getValuePrecisionThousand(
-              splitValue,
-              tokenMap[tradeData?.belong as string].precision,
-              tokenMap[tradeData?.belong as string].precision,
-              tokenMap[tradeData?.belong as string].precision,
-              false
-              // { isFait: true }
-            ) +
-              " " +
-              tradeData.belong,
-        };
-      } else {
-        return {
-          total: EmptyValueTag,
-          splitValue: selectedType.value.value == 2 && EmptyValueTag,
+          total: tradeData.tradeValue ?? EmptyValueTag,
+          splitValue: splitValue && EmptyValueTag,
         };
       }
-    }, [tradeData, selectedType.value.value, coinMap]);
+    }, [tradeData, selectedType.value.value, coinMap, tradeType]);
     const inputSplitProps = React.useMemo(() => {
       const inputSplitProps: any = {
         label: t("labelSplit"),
@@ -196,11 +208,20 @@ export const CreateRedPacketStepWrap = withTranslation()(
         fullWidth: true,
       };
       let inputSplitExtendProps = {};
+
       if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
         let balance = sdk
           .toBig(tradeData.tradeValue)
           .div(Number(minimum) ?? 1)
           .toFixed(0, 1);
+        balance =
+          tradeType === TRADE_TYPE.TOKEN
+            ? Number(balance) <= REDPACKET_ORDER_LIMIT
+              ? balance
+              : REDPACKET_ORDER_LIMIT
+            : Number(balance) <= REDPACKET_ORDER_LIMIT
+            ? balance
+            : REDPACKET_ORDER_LIMIT;
 
         inputSplitExtendProps = {
           maxAllow: true,
@@ -215,13 +236,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
               error: false,
             };
           },
+          balance,
           inputData: {
             belong: "Split",
             tradeValue: tradeData?.numbers,
-            balance:
-              Number(balance) <= REDPACKET_ORDER_LIMIT
-                ? balance
-                : REDPACKET_ORDER_LIMIT,
           },
         };
       } else {
@@ -240,11 +258,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
         ...inputSplitProps,
         ...inputSplitExtendProps,
       };
-    }, [tradeData, maximum, minimum]);
-
+    }, [tradeData?.tradeValue, maximum, minimum, tradeType]);
     const durationProps: Partial<InputCoinProps<T, CoinInfo<I>, I>> = {
       label: (
-        <Typography color={"var(--color-text-third)"}>
+        <Typography component={"span"} color={"var(--color-text-third)"}>
           {t("labelRedpacketDurationTitle")}
         </Typography>
       ),
@@ -344,6 +361,39 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 tradeData: {
                   ...tradeData,
                 } as any,
+                onChangeEvent: (
+                  _index: 0 | 1,
+                  { to, tradeData: newTradeData }: SwitchData<T>
+                ) => {
+                  myLog("RedPacket Panel", _index, RedPacketStep.Main + _index);
+                  if (_index === 1) {
+                    handleOnDataChange({
+                      collectionInfo: undefined,
+                      tokenId: undefined,
+                      tradeValue: undefined,
+                      balance: undefined,
+                      nftData: undefined,
+                      belong: undefined,
+                      image: undefined,
+                    } as T);
+                    setActiveStep(RedPacketStep.NFTList);
+                  } else if (to === "button") {
+                    handleOnDataChange({
+                      tradeValue: newTradeData.tradeValue,
+                      belong: newTradeData.belong,
+                      balance: newTradeData.balance,
+                      nftData: newTradeData.nftData,
+                    } as any);
+                    // const count = tradeData.balance;
+                    // const tradeValue = tradeData.tradeValue
+                    //   ? _newTradeData.tradeValue
+                    //   : undefined;
+
+                    // setActiveStep(RedPacketStep.Main);
+                  }
+                  // setActiveStep(RedPacketStep.Main + _index);
+                },
+
                 inputNFTButtonDefaultProps,
                 inputNFTRef: inputBtnRef,
               }}
@@ -431,7 +481,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
           <Box marginTop={1}>
             <InputCoin
               {...{
-                ...durationProps,
+                ...(durationProps as any),
                 name: "numbers",
                 order: "right",
                 handleCountChange: (data) => {
@@ -457,7 +507,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
           flexDirection={"column"}
         >
           {!chargeFeeTokenList?.length ? (
-            <Typography>{t("labelFeeCalculating")}</Typography>
+            <Typography component={"span"}>
+              {t("labelFeeCalculating")}
+            </Typography>
           ) : (
             <>
               <Typography
@@ -499,8 +551,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   ) : (
                     isFeeNotEnough?.isFeeNotEnough && (
                       <Typography
-                        marginLeft={1}
                         component={"span"}
+                        marginLeft={1}
                         color={"var(--color-error)"}
                       >
                         {t("labelL2toL2FeeNotEnough")}
@@ -512,6 +564,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               {dropdownStatus === "up" && (
                 <FeeTokenItemWrapper padding={2}>
                   <Typography
+                    component={"span"}
                     variant={"body2"}
                     color={"var(--color-text-third)"}
                     marginBottom={1}
@@ -564,6 +617,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
         <Box marginY={1} display={"flex"} alignSelf={"stretch"}>
           {lastFailed && (
             <Typography
+              component={"span"}
               paddingBottom={1}
               textAlign={"center"}
               color={"var(--color-warning)"}
@@ -757,10 +811,10 @@ export const CreateRedPacketStepType = withTranslation()(
                   control={<Radio />}
                   label={
                     <>
-                      <Typography>
+                      <Typography component={"span"}>
                         {t("labelLuckyTokenViewType" + key)}
                       </Typography>
-                      <Typography>
+                      <Typography component={"span"}>
                         {t("labelLuckyTokenViewTypeDes" + key)}
                       </Typography>
                     </>
@@ -867,7 +921,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                   />
                 </Typography>
 
-                <Typography variant={"h5"} marginTop={2}>
+                <Typography component={"span"} variant={"h5"} marginTop={2}>
                   {t("labelRedpacketTokens")}
                 </Typography>
               </CardContent>
@@ -899,7 +953,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                     />
                   </Typography>
                 </Typography>
-                <Typography variant={"h5"} marginTop={2}>
+                <Typography component={"span"} variant={"h5"} marginTop={2}>
                   {t("labelRedpacketNFTS")}
                 </Typography>
               </CardContent>

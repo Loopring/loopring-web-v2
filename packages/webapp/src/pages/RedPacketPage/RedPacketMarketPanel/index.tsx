@@ -10,10 +10,12 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { makeViewCard, StylePaper, useOpenRedpacket } from "@loopring-web/core";
 import { useMarketRedPacket } from "./hooks";
-import { Box, Button, Checkbox, Grid } from "@mui/material";
+import { Box, Button, Checkbox, Grid, Tab, Tabs } from "@mui/material";
+import * as sdk from "@loopring-web/loopring-sdk";
+
 import {
   BackIcon,
   CheckBoxIcon,
@@ -37,6 +39,11 @@ const LoadingStyled = styled(Box)`
   height: 100%;
   width: 100%;
 `;
+
+enum TabIndex {
+  ERC20 = "ERC20",
+  NFT = "NFT",
+}
 export const RedPacketMarketPanel = ({
   setToastOpen,
 }: {
@@ -54,14 +61,103 @@ export const RedPacketMarketPanel = ({
   const { callOpen } = useOpenRedpacket();
   const {
     showLoading,
-    setShowOfficial,
-    showOfficial,
+    hideOpen,
+    setHideOpen,
     luckTokenList,
     pagination,
     handlePageChange,
   } = useMarketRedPacket({
     setToastOpen,
   });
+  let match: any = useRouteMatch("/redPacket/markets/:item");
+
+  const [currentTab, setCurrentTab] = React.useState<TabIndex>(
+    match?.params.item ?? TabIndex.ERC20
+  );
+
+  const handleTabChange = (value: TabIndex) => {
+    switch (value) {
+      case TabIndex.ERC20:
+        history.push("/redPacket/markets/ERC20");
+        setCurrentTab(TabIndex.ERC20);
+        break;
+      case TabIndex.NFT:
+      default:
+        history.replace("/redPacket/markets/NFT");
+        setCurrentTab(TabIndex.NFT);
+        break;
+    }
+  };
+  const listMemo = React.useCallback(
+    (list: sdk.LuckyTokenItemForReceive[] | undefined) => {
+      return (
+        <>
+          {list?.length ? (
+            list.map((item, index) => {
+              if (
+                isShowRedPacket.step === RedPacketViewStep.TimeOutPanel &&
+                isShowRedPacket.info &&
+                isShowRedPacket.info.hash === item.hash &&
+                // @ts-ignore
+                isShowRedPacket.info.id == item.id
+              ) {
+                item = {
+                  ...item,
+                  ...isShowRedPacket.info,
+                };
+              }
+              const {
+                chainId,
+                account,
+                amountStr,
+                myAmountStr,
+                tokenInfo,
+                claim,
+              } = makeViewCard(item);
+
+              return !(hideOpen && claim) ? (
+                <Grid
+                  item
+                  xs={6}
+                  md={4}
+                  lg={3}
+                  key={index + item.hash}
+                  position={"relative"}
+                  marginY={1}
+                >
+                  <RedPacketPrepare
+                    {...{ ...item }}
+                    claim={claim}
+                    setShowRedPacket={setShowRedPacket} //
+                    chainId={chainId as any}
+                    account={account}
+                    amountStr={amountStr}
+                    myAmountStr={myAmountStr}
+                    onOpen={callOpen}
+                    tokenInfo={tokenInfo}
+                    _type="official"
+                  />
+                </Grid>
+              ) : (
+                <></>
+              );
+            })
+          ) : (
+            <></>
+          )}
+        </>
+      );
+    },
+    [hideOpen]
+  );
+  const listERC20 = React.useMemo(() => {
+    return (
+      <>
+        {listMemo(luckTokenList.officialList)}
+        {listMemo(luckTokenList.publicList)}
+      </>
+    );
+  }, [hideOpen, luckTokenList.officialList, luckTokenList.publicList]);
   return (
     <Box
       flex={1}
@@ -125,188 +221,120 @@ export const RedPacketMarketPanel = ({
         paddingBottom={2}
         position={"relative"}
       >
-        <Grid
-          container
-          spacing={1}
-          justifyContent={"flex-end"}
-          marginY={1}
-          paddingX={2}
+        <Box
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          marginBottom={1}
         >
-          <Grid item>
-            <Button
-              startIcon={<RefreshIcon fontSize={"small"} />}
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={() => {
-                handlePageChange({ page: 0 });
-              }}
-            >
-              {t("labelRefreshRedPacket")}
-            </Button>
-          </Grid>
-          <Grid item>
-            <FormControlLabel
-              style={{ marginRight: 0, paddingRight: 0 }}
-              control={
-                <Checkbox
-                  checked={showOfficial}
-                  checkedIcon={<CheckedIcon />}
-                  icon={<CheckBoxIcon />}
-                  color="default"
-                  onChange={(event) => {
-                    setShowOfficial(event.target.checked);
-                  }}
-                />
-              }
-              label={t("labelRedpacketNotActive")}
-            />
-          </Grid>
-        </Grid>
-        {!luckTokenList.officialList?.length &&
-        !luckTokenList.publicList?.length ? (
-          <Box
-            flex={1}
-            display={"flex"}
-            alignItems={"center"}
-            height={"100%"}
-            justifyContent={"center"}
+          <Tabs
+            value={currentTab}
+            onChange={(_event, value) => handleTabChange(value)}
+            aria-label="l2-history-tabs"
+            variant="scrollable"
           >
-            <EmptyDefault
-              // width={"100%"}
-              height={"100%"}
-              message={() => (
-                <Box
-                  flex={1}
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                >
-                  {t("labelNoContent")}
-                </Box>
-              )}
+            <Tab
+              label={t("labelRedPacketMarket" + TabIndex.ERC20)}
+              value={TabIndex.ERC20}
             />
+            <Tab
+              label={t("labelRedPacketMarket" + TabIndex.NFT)}
+              value={TabIndex.NFT}
+            />
+          </Tabs>
+          <Box
+            justifyContent={"flex-end"}
+            marginY={1}
+            paddingX={2}
+            display={"flex"}
+          >
+            <Box>
+              <Button
+                startIcon={<RefreshIcon fontSize={"small"} />}
+                variant={"outlined"}
+                size={"medium"}
+                color={"primary"}
+                onClick={() => {
+                  handlePageChange({ page: 0 });
+                }}
+              >
+                {t("labelRefreshRedPacket")}
+              </Button>
+            </Box>
+            <Box marginLeft={1}>
+              <FormControlLabel
+                style={{ marginRight: 0, paddingRight: 0 }}
+                control={
+                  <Checkbox
+                    checked={hideOpen}
+                    checkedIcon={<CheckedIcon />}
+                    icon={<CheckBoxIcon />}
+                    color="default"
+                    onChange={(event) => {
+                      setHideOpen(event.target.checked);
+                    }}
+                  />
+                }
+                label={t("labelRedpacketNotActive")}
+              />
+            </Box>
           </Box>
-        ) : (
-          <Grid container display={"flex"} paddingX={1}>
-            {luckTokenList.officialList?.length ? (
-              luckTokenList.officialList.map((item, index) => {
-                if (
-                  isShowRedPacket.step === RedPacketViewStep.TimeOutPanel &&
-                  isShowRedPacket.info &&
-                  isShowRedPacket.info.hash === item.hash &&
-                  // @ts-ignore
-                  isShowRedPacket.info.id == item.id
-                ) {
-                  item = {
-                    ...item,
-                    ...isShowRedPacket.info,
-                  };
-                }
-                const {
-                  chainId,
-                  account,
-                  amountStr,
-                  myAmountStr,
-                  tokenInfo,
-                  claim,
-                } = makeViewCard(item);
-                return (
-                  <Grid
-                    item
-                    xs={6}
-                    md={4}
-                    lg={3}
-                    key={index}
-                    position={"relative"}
-                    marginY={1}
-                  >
-                    <RedPacketPrepare
-                      {...{ ...item }}
-                      claim={claim}
-                      setShowRedPacket={setShowRedPacket} //
-                      chainId={chainId as any}
-                      account={account}
-                      amountStr={amountStr}
-                      myAmountStr={myAmountStr}
-                      onOpen={callOpen}
-                      tokenInfo={tokenInfo}
-                      _type="official"
-                    />
-                  </Grid>
-                );
-              })
-            ) : (
-              <></>
-            )}
-            {!!luckTokenList.publicList?.length &&
-              luckTokenList.publicList.map((item, index) => {
-                if (
-                  isShowRedPacket.step === RedPacketViewStep.TimeOutPanel &&
-                  isShowRedPacket.info &&
-                  isShowRedPacket.info.hash === item.hash &&
-                  // @ts-ignore
-                  isShowRedPacket.info.id == item.id
-                ) {
-                  item = {
-                    ...item,
-                    ...isShowRedPacket.info,
-                  };
-                }
-                const {
-                  chainId,
-                  account,
-                  amountStr,
-                  myAmountStr,
-                  tokenInfo,
-                  claim,
-                } = makeViewCard(item);
-                return (
-                  <Grid
-                    xs={6}
-                    md={4}
-                    lg={3}
-                    item
-                    key={index}
-                    position={"relative"}
-                    marginY={2}
-                  >
-                    <RedPacketPrepare
-                      claim={claim}
-                      {...{ ...item }}
-                      setShowRedPacket={setShowRedPacket} //
-                      chainId={chainId as any}
-                      account={account}
-                      amountStr={amountStr}
-                      myAmountStr={myAmountStr}
-                      onOpen={callOpen}
-                      tokenInfo={tokenInfo}
-                    />
-                  </Grid>
-                );
-              })}
-          </Grid>
-        )}
-        {showLoading && (
-          <LoadingStyled color={"inherit"}>
-            <img
-              className="loading-gif"
-              alt={"loading"}
-              width="36"
-              src={`${SoursURL}images/loading-line.gif`}
-            />
-          </LoadingStyled>
-        )}
-        <Box>
-          <TablePagination
-            page={pagination.page}
-            pageSize={pagination.pageSize}
-            total={luckTokenList.publicTotal}
-            onPageChange={(page) => {
-              handlePageChange({ page });
-            }}
-          />
         </Box>
+
+        {currentTab === TabIndex.ERC20 && (
+          <>
+            {!luckTokenList.officialList?.length &&
+            !luckTokenList.publicList?.length ? (
+              <Box
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                height={"100%"}
+                justifyContent={"center"}
+              >
+                <EmptyDefault
+                  // width={"100%"}
+                  height={"100%"}
+                  message={() => (
+                    <Box
+                      flex={1}
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                    >
+                      {t("labelNoContent")}
+                    </Box>
+                  )}
+                />
+              </Box>
+            ) : (
+              <Grid container display={"flex"} paddingX={1} spacing={2}>
+                {listERC20}
+              </Grid>
+            )}
+            {showLoading && (
+              <LoadingStyled color={"inherit"}>
+                <img
+                  className="loading-gif"
+                  alt={"loading"}
+                  width="36"
+                  src={`${SoursURL}images/loading-line.gif`}
+                />
+              </LoadingStyled>
+            )}
+            <Box>
+              <TablePagination
+                page={pagination.page}
+                pageSize={pagination.pageSize}
+                total={luckTokenList.publicTotal}
+                onPageChange={(page) => {
+                  handlePageChange({ page });
+                }}
+              />
+            </Box>
+          </>
+        )}
+        {currentTab === TabIndex.NFT && <></>}
       </StylePaper>
     </Box>
   );

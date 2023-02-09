@@ -204,7 +204,16 @@ export const _BasicANFTTrade = <
         }}
       />
     );
-  }, []);
+  }, [
+    tradeData,
+    getDisabled,
+    isBalanceLimit,
+    handleError,
+    inputNFTRef,
+    inputNFTProps,
+    inputNFTDefaultProps,
+    rest?.isSelected,
+  ]);
   return <>{rest?.isSelected ? chooseElement : noSelectElement}</>;
 };
 export const BasicANFTTrade = React.memo(React.forwardRef(_BasicANFTTrade)) as <
@@ -219,7 +228,7 @@ export const NFTInput = React.memo(
     isThumb,
     tradeData,
     t,
-    isBalanceLimit,
+    isBalanceLimit = true,
     onCopy,
     inputNFTDefaultProps,
     inputNFTRef,
@@ -263,6 +272,7 @@ export const NFTInput = React.memo(
                 inputNFTDefaultProps: {
                   label: rest?.isSelected ? (
                     <Typography
+                      component={"span"}
                       variant={"body1"}
                       color={"textSecondary"}
                       className={"main-label"}
@@ -291,6 +301,7 @@ export const NFTInput = React.memo(
                   ) : (
                     <Typography
                       variant={"body1"}
+                      component={"span"}
                       color={"var(--color-text-secondary)"}
                       className={"main-label"}
                       paddingBottom={1 / 2}

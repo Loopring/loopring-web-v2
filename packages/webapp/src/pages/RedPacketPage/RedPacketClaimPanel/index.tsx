@@ -8,19 +8,26 @@ import {
 import {
   EmptyDefault,
   RedPacketClaimTable,
+  RedPacketReceiveTable,
+  RedPacketRecordTable,
   Toast,
   TransactionTradeViews,
   useSettings,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useClaimRedPacket } from "./hooks";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Tab, Tabs } from "@mui/material";
 import {
   RedPacketIcon,
   SagaStatus,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
+
+enum TabIndex {
+  ERC20 = "ERC20",
+  NFT = "NFT",
+}
 
 export const RedPacketClaimPanel = () => {
   const container = React.useRef<HTMLDivElement>(null);
@@ -32,13 +39,30 @@ export const RedPacketClaimPanel = () => {
   const history = useHistory();
   const { redPacketClaimList, showLoading, getClaimRedPacket, onItemClick } =
     useClaimRedPacket(setToastOpen);
+  let match: any = useRouteMatch("/l2assets/assets/RedPacket/:item");
 
   React.useEffect(() => {
     if (getClaimRedPacket && walletLayer2Status === SagaStatus.UNSET) {
       getClaimRedPacket();
     }
   }, [walletLayer2Status]);
+  const [currentTab, setCurrentTab] = React.useState<TabIndex>(
+    match?.params.item ?? TabIndex.ERC20
+  );
 
+  const handleTabChange = (value: TabIndex) => {
+    switch (value) {
+      case TabIndex.ERC20:
+        history.push("/l2assets/assets/RedPacket/ERC20");
+        setCurrentTab(TabIndex.ERC20);
+        break;
+      case TabIndex.NFT:
+      default:
+        history.replace("/l2assets/assets/RedPacket/NFT");
+        setCurrentTab(TabIndex.NFT);
+        break;
+    }
+  };
   return (
     <Box
       flex={1}
@@ -83,29 +107,51 @@ export const RedPacketClaimPanel = () => {
         display={"flex"}
         flexDirection={"column"}
       >
-        {!!redPacketClaimList.length ? (
-          <Box className="tableWrapper table-divide-short">
-            <RedPacketClaimTable
-              {...{
-                rawData: redPacketClaimList,
-                showloading: showLoading,
-                forexMap,
-                onItemClick,
-                etherscanBaseUrl,
-                getClaimRedPacket,
-              }}
-            />
-          </Box>
-        ) : (
-          <Box flex={1} height={"100%"} width={"100%"}>
-            <EmptyDefault
-              height={"calc(100% - 35px)"}
-              message={() => {
-                return <Trans i18nKey="labelNoContent">Content is Empty</Trans>;
-              }}
-            />
-          </Box>
+        <Tabs
+          value={currentTab}
+          onChange={(_event, value) => handleTabChange(value)}
+          aria-label="l2-history-tabs"
+          variant="scrollable"
+        >
+          <Tab
+            label={t("labelRedPacketClaim" + TabIndex.ERC20)}
+            value={TabIndex.ERC20}
+          />
+          <Tab
+            label={t("labelRedPacketClaim" + TabIndex.NFT)}
+            value={TabIndex.NFT}
+          />
+        </Tabs>
+        {currentTab === TabIndex.ERC20 && (
+          <>
+            {!!redPacketClaimList.length ? (
+              <Box className="tableWrapper table-divide-short">
+                <RedPacketClaimTable
+                  {...{
+                    rawData: redPacketClaimList,
+                    showloading: showLoading,
+                    forexMap,
+                    onItemClick,
+                    etherscanBaseUrl,
+                    getClaimRedPacket,
+                  }}
+                />
+              </Box>
+            ) : (
+              <Box flex={1} height={"100%"} width={"100%"}>
+                <EmptyDefault
+                  height={"calc(100% - 35px)"}
+                  message={() => {
+                    return (
+                      <Trans i18nKey="labelNoContent">Content is Empty</Trans>
+                    );
+                  }}
+                />
+              </Box>
+            )}
+          </>
         )}
+        {currentTab === TabIndex.NFT && <></>}
       </StylePaper>
       <Toast
         alertText={toastOpen?.content ?? ""}

@@ -19,7 +19,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
     account: { accountId, apiKey },
   } = useAccount();
   const { idIndex } = useTokenMap();
-  const [showOfficial, setShowOfficial] = React.useState<boolean>(false);
+  const [hideOpen, setHideOpen] = React.useState<boolean>(false);
   const [showLoading, setShowLoading] = React.useState(true);
   const [pagination, setPagination] = React.useState<{
     pageSize: number;
@@ -137,14 +137,14 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
   }, globalSetup.wait);
 
   const handlePageChange = React.useCallback(
-    ({ page, showOfficial }: { page: number; showOfficial?: boolean }) => {
+    ({ page }: { page: number; showOfficial?: boolean }) => {
       updateData({ currPage: page });
     },
-    [updateData, showOfficial]
+    [updateData]
   );
   React.useEffect(() => {
     updateData.cancel();
-    handlePageChange({ page: 1, showOfficial });
+    handlePageChange({ page: 1 });
     return () => {
       updateData.cancel();
     };
@@ -154,8 +154,8 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
     pagination,
     luckTokenList,
     showLoading,
-    showOfficial,
-    setShowOfficial,
+    hideOpen,
+    setHideOpen,
     getMarketRedPacket,
     handlePageChange,
   };

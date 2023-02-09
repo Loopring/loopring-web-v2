@@ -22,6 +22,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { Tab, Tabs, Typography } from "@mui/material";
 import { useLocation } from "react-router";
+
 export type MyNFTListProps<NFT> = {
   collectionMeta: CollectionMeta | undefined;
   collectionPage?: number;
@@ -220,5 +221,5 @@ export const MyNFTList = withTranslation("common")(
         />
       </>
     );
-  };
+  }
 ) as <NFT extends NFTWholeINFO>(pros: MyNFTListProps<NFT>) => JSX.Element;

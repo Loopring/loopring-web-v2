@@ -123,7 +123,7 @@ export const MyNFTPanelUI = <NFT extends NFTWholeINFO>({
                     : 1
                 }
                 size={size}
-                onSelect={onSelect}
+                onSelect={onSelect as any}
                 isSelect={isSelect}
                 isMultipleSelect={isMultipleSelect}
                 selected={selected}
@@ -225,7 +225,7 @@ export const MyNFTPanelUI = <NFT extends NFTWholeINFO>({
             {currentTab === MY_NFT_VIEW.LIST_NFT && (
               <MyNFTList
                 size={size}
-                onSelect={onSelect}
+                onSelect={onSelect as any}
                 collectionMeta={undefined}
                 isSelect={isSelect}
                 isMultipleSelect={isMultipleSelect}

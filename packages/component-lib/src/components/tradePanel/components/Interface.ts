@@ -38,6 +38,7 @@ export enum RedPacketStep {
   TradeType,
   ChooseType,
   Main,
+  NFTList = 3,
 }
 
 /**

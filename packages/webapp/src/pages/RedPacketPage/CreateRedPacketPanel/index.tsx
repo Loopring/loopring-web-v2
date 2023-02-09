@@ -67,7 +67,7 @@ export const ChooseNFTPanel = React.memo(
         toggle={toggle}
       />
     );
-  };
+  }
 );
 export const CreateRedPacketUIPanel = <
   T extends RedPacketOrderData<I>,
@@ -108,17 +108,22 @@ export const CreateRedPacketUIPanel = <
           {...{
             _height: "auto",
             ...createRedPacketProps,
+            tradeType: createRedPacketProps.tradeType,
             getIPFSString: getIPFSString,
             baseURL,
             myNFTPanel: (
               <ChooseNFTPanel
                 onSelect={(value: any) => {
                   createRedPacketProps.handleOnChoose &&
-                  createRedPacketProps.handleOnChoose(value);
+                    createRedPacketProps.handleOnChoose(value);
                 }}
-                selectNFT={[createRedPacketProps.selectNFT]}
+                selectNFT={
+                  createRedPacketProps?.selectNFT
+                    ? [createRedPacketProps.selectNFT]
+                    : []
+                }
               />
-            ),
+            ) as any,
           }}
         />
       </StylePaper>

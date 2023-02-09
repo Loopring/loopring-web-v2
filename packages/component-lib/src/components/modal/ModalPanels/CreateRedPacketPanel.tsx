@@ -61,8 +61,18 @@ export const CreateRedPacketPanel = <
     // index,
     walletMap,
   } as any);
+  const [panelIndex, setPanelIndex] = React.useState(RedPacketStep.TradeType);
 
-  const [panelIndex, setPanelIndex] = React.useState(0);
+  React.useEffect(() => {
+    if (
+      tradeType === TRADE_TYPE.NFT &&
+      tradeData.nftData &&
+      panelIndex === RedPacketStep.NFTList
+    ) {
+      setActiveStep(RedPacketStep.Main);
+    }
+  }, [tradeData?.nftData, panelIndex, tradeType]);
+
   const setActiveStep = React.useCallback((index: RedPacketStep) => {
     switch (index) {
       case RedPacketStep.TradeType:
@@ -74,10 +84,12 @@ export const CreateRedPacketPanel = <
       case RedPacketStep.Main:
         setPanelIndex(2);
         break;
+      case RedPacketStep.NFTList:
+        setPanelIndex(3);
+        break;
     }
   }, []);
   React.useEffect(() => {
-    // debugger;
     setPanelIndex((state) => {
       if (state > 1) {
         return index + 2;
