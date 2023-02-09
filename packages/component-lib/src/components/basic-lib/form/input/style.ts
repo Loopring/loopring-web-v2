@@ -62,9 +62,14 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
 `;
 // export MuiTextField = styled(MuTextField)<>``;
 export const IWrap = styled(Box)<
-  BoxProps & { size: "middle" | "small"; isMobile?: boolean }
+  BoxProps & {
+    size: "middle" | "small";
+    isMobile?: boolean;
+    fullWidth?: boolean;
+  }
 >`
   ${({ theme }) => theme.border.defaultFrame({ c_key: "var(--opacity)" })};
+  ${({ fullWidth }) => fullWidth && `width:100%`};
 
   .label-wrap {
     white-space: nowrap;
@@ -195,7 +200,11 @@ export const IWrap = styled(Box)<
     }
   }};
 ` as (
-  props: BoxProps & { size: "middle" | "small"; isMobile?: boolean }
+  props: BoxProps & {
+    size: "middle" | "small";
+    isMobile?: boolean;
+    fullWidth?: boolean;
+  }
 ) => JSX.Element;
 export const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
   & {

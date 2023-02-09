@@ -5,6 +5,8 @@ import {
   Button,
   DepositNFTWrap,
   PopoverPure,
+  useOpenModals,
+  useToggle,
 } from "@loopring-web/component-lib";
 
 import { useNFTDeposit } from "@loopring-web/core";
@@ -23,10 +25,19 @@ export const DepositNFTPanel = () => {
   const { nftDepositProps } = useNFTDeposit();
   const { t } = useTranslation(["common"]);
   const history = useHistory();
+  const { setShowTradeIsFrozen } = useOpenModals();
+
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-nftDeposit`,
   });
+  const { toggle } = useToggle();
+  React.useEffect(() => {
+    if (!toggle.depositNFT?.enable) {
+      setShowTradeIsFrozen({ isShow: true, type: "Deposit" });
+      history.goBack();
+    }
+  }, [toggle.depositNFT?.enable]);
   return (
     <Box flex={1} display={"flex"} flexDirection={"column"}>
       <Box marginBottom={2}>

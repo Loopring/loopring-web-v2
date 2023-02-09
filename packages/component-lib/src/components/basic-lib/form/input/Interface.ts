@@ -1,6 +1,7 @@
 import { CoinInfo, CoinKey, CoinMap } from "@loopring-web/common-resources";
 import React from "react";
 import { InputProps } from "@mui/material";
+import { XOR } from "../../../../types/lib";
 // import styled from '@emotion/styled';
 // import CurrencyInput from 'react-currency-input-field';
 
@@ -38,7 +39,14 @@ export type InputButtonProps<T, R, I> = {
   ) => { error: boolean; message?: string | JSX.Element };
   focusOnInput?: boolean;
   name?: string;
-};
+  fullwidth?: boolean;
+} & (
+  | {
+      isShowCoinIcon: false;
+      CoinIconElement?: JSX.Element;
+    }
+  | { isShowCoinIcon: true; CoinIconElement: undefined }
+);
 
 export enum InputSize {
   middle = "middle",
@@ -53,6 +61,7 @@ export type InputCoinProps<T, R, I> = {
   placeholderText?: string;
   allowDecimals?: boolean;
   maxAllow?: boolean;
+  minimum?: number;
   // isBalanceLimit?: boolean;
   decimalsLimit?: number;
   disabled?: boolean;
@@ -66,18 +75,23 @@ export type InputCoinProps<T, R, I> = {
     ref: React.ForwardedRef<any>
   ) => void;
   handleError?: (
-    ibData: T,
+    ibData: T & { maxAllow?: boolean },
     ref: React.ForwardedRef<any>
   ) => { error: boolean; message?: string | JSX.Element };
   focusOnInput?: boolean;
   size?: InputSize;
-  isShowCoinIcon?: boolean;
   order?: "left" | "right";
   name?: string;
-  isShowCoinInfo?: boolean;
+
   coinLabelStyle?: React.CSSProperties;
   coinPrecision?: number;
-};
+} & XOR<
+  { isShowCoinInfo: true } & XOR<
+    { isShowCoinIcon: boolean },
+    { CoinIconElement?: JSX.Element }
+  >,
+  { isShowCoinInfo?: false }
+>;
 export type InputSelectProps<T, I = CoinKey<T>> = {
   // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,
   // walletMap: WalletMap<R,I extends CoinInfo?WalletCoin:WalletCoin> | {},

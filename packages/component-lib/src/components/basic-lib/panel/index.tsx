@@ -122,7 +122,7 @@ export const CardStyleItem = styled(Card)<
 ` as (
   props: CardProps & {
     contentheight?: number;
-    size: "large" | "medium" | "small";
+    size?: "large" | "medium" | "small" | undefined;
   }
 ) => JSX.Element;
 

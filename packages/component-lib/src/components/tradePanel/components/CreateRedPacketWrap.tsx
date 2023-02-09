@@ -14,7 +14,10 @@ import {
   Button,
   CardStyleItem,
   DateTimePicker,
+  InputButtonProps,
   InputCoin,
+  InputCoinProps,
+  InputSize,
   TextField,
 } from "../../basic-lib";
 import {
@@ -35,6 +38,7 @@ import {
   REDPACKET_ORDER_LIMIT,
   SoursURL,
   TRADE_TYPE,
+  CoinInfo,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -50,13 +54,10 @@ import { FeeToggle } from "./tool/FeeList";
 import { BtnMain } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import moment, { Moment } from "moment";
+import { NFTInput } from "./BasicANFTTrade";
 
 const RedPacketBoxStyle = styled(Box)`
-  //position: absolute;
   padding-top: ${({ theme }) => theme.unit}px;
-  //width: 100%;
-  //min-width: 240px;
-  //max-width: 720px;
   .MuiFormGroup-root {
     align-items: flex-start;
   }
@@ -123,6 +124,15 @@ export const CreateRedPacketStepWrap = withTranslation()(
             ? " - " + t("labelRedPacketsMaxRange", { value: maximum })
             : "")
         : "0.00",
+    };
+
+    const inputNFTButtonDefaultProps: Partial<
+      InputButtonProps<T, I, CoinInfo<I>>
+    > = {
+      // label: t("labelRedPacketTotalAmount"),
+      decimalsLimit: 0,
+      minimum,
+      placeholderText: "0",
     };
     const [dayValue, setDayValue] = React.useState<Moment | null>(moment());
     const [durationValue, setDurationValue] = React.useState<number>(1);
@@ -232,7 +242,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
       };
     }, [tradeData, maximum, minimum]);
 
-    const durationProps = {
+    const durationProps: Partial<InputCoinProps<T, CoinInfo<I>, I>> = {
       label: (
         <Typography color={"var(--color-text-third)"}>
           {t("labelRedpacketDurationTitle")}
@@ -241,7 +251,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
       placeholderText: t("labelRedpacketDurationPlaceHold"),
       isHideError: true,
       isShowCoinInfo: false,
-      handleCountChange: (ibData: IBData<any>, _name: string, _ref: any) => {
+      handleCountChange: (ibData: T, _name: string, _ref: any) => {
         handleOnDataChange({
           numbers: ibData.tradeValue,
         } as unknown as Partial<T>);
@@ -256,7 +266,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
           error: false,
         };
       },
-      size: "small",
+      size: InputSize.middle,
       maxAllow: true,
       subLabel: t("labelAvailable"),
       inputData: {
@@ -306,18 +316,36 @@ export const CreateRedPacketStepWrap = withTranslation()(
           position={"relative"}
           flexDirection={"column"}
         >
-          {tradeType === "TOKEN" && (
+          {tradeType === "TOKEN" ? (
             <BasicACoinTrade
               {...{
                 ...rest,
                 t,
+
                 type: tradeType ?? "TOKEN",
                 disabled,
                 walletMap,
                 tradeData,
                 coinMap,
                 inputButtonDefaultProps,
-                inputBtnRef: inputBtnRef,
+                inputBtnRef,
+              }}
+            />
+          ) : (
+            <NFTInput
+              {...{
+                ...rest,
+                t,
+                fullwidth: true,
+                isThumb: true,
+                isSelected: true,
+                type: tradeType,
+                disabled,
+                tradeData: {
+                  ...tradeData,
+                } as any,
+                inputNFTButtonDefaultProps,
+                inputNFTRef: inputBtnRef,
               }}
             />
           )}
@@ -614,11 +642,16 @@ export const CreateRedPacketStepWrap = withTranslation()(
       </RedPacketBoxStyle>
     );
   }
-);
+) as <T extends Partial<RedPacketOrderData<I>>, I, F extends FeeInfo>(
+  props: CreateRedPacketViewProps<T, I, F> & {
+    selectedType: LuckyRedPacketItem;
+  }
+) => JSX.Element;
 
 export const CreateRedPacketStepType = withTranslation()(
   <T extends RedPacketOrderData<I>, I, C = FeeInfo>({
     // handleOnSelectedType,
+    tradeType,
     tradeData,
     handleOnDataChange,
     setActiveStep,
@@ -626,7 +659,7 @@ export const CreateRedPacketStepType = withTranslation()(
     disabled = false,
     btnInfo,
     t,
-  }: CreateRedPacketViewProps<T, I, C> & {
+  }: Omit<CreateRedPacketViewProps<T, I, C>, "tokenMap"> & {
     selectedType: LuckyRedPacketItem;
     // setSelectType: (value: LuckyRedPacketItem) => void;
   } & WithTranslation) => {
@@ -637,11 +670,12 @@ export const CreateRedPacketStepType = withTranslation()(
 
     return (
       <RedPacketBoxStyle
-        className={"redPacket"}
+        className={isMobile ? "mobile redPacket" : ""}
         justifyContent={"flex-start"}
         flexDirection={"column"}
         alignItems={"center"}
-        className={isMobile ? "mobile" : ""}
+        width={"100%"}
+        maxWidth={720}
       >
         <Box
           display={"flex"}
@@ -650,49 +684,55 @@ export const CreateRedPacketStepType = withTranslation()(
           alignSelf={"stretch"}
           marginY={2}
         >
-          {LuckyRedPacketList.map((item: LuckyRedPacketItem) => (
-            <Box key={item.value.value} marginBottom={1.5}>
-              <MenuBtnStyled
-                variant={"outlined"}
-                size={"large"}
-                className={`${isMobile ? "isMobile" : ""} ${
-                  selectedType.value.value === item.value.value
-                    ? "selected redPacketType "
-                    : "redPacketType"
-                }`}
-                fullWidth
-                onClick={(_e) => {
-                  handleOnDataChange({
-                    type: {
-                      ...tradeData?.type,
-                      // scope: value,
-                      partition: item.value.partition,
-                      mode: item.value.mode,
-                    },
-                  } as any);
-                }}
-              >
-                <Typography
-                  variant={"h5"}
-                  display={"inline-flex"}
-                  marginBottom={1 / 2}
-                  alignItems={"flex-start"}
-                  component={"span"}
-                >
-                  {t(item.labelKey)}
-                </Typography>
-                <Typography
-                  variant={"body1"}
-                  display={"inline-flex"}
-                  justifyContent={"flex-start"}
-                  component={"span"}
-                  color={"var(--color-text-secondary)"}
-                >
-                  {t(item.desKey)}
-                </Typography>
-              </MenuBtnStyled>
-            </Box>
-          ))}
+          {LuckyRedPacketList.map((item: LuckyRedPacketItem, index) => {
+            return (
+              <React.Fragment key={index}>
+                {!(tradeType == TRADE_TYPE.NFT && index == 0) && (
+                  <Box key={item.value.value} marginBottom={1}>
+                    <MenuBtnStyled
+                      variant={"outlined"}
+                      size={"large"}
+                      className={`${isMobile ? "isMobile" : ""} ${
+                        selectedType.value.value === item.value.value
+                          ? "selected redPacketType "
+                          : "redPacketType"
+                      }`}
+                      fullWidth
+                      onClick={(_e) => {
+                        handleOnDataChange({
+                          type: {
+                            ...tradeData?.type,
+                            // scope: value,
+                            partition: item.value.partition,
+                            mode: item.value.mode,
+                          },
+                        } as any);
+                      }}
+                    >
+                      <Typography
+                        variant={"h5"}
+                        display={"inline-flex"}
+                        marginBottom={1 / 2}
+                        alignItems={"flex-start"}
+                        component={"span"}
+                      >
+                        {t(item.labelKey)}
+                      </Typography>
+                      <Typography
+                        variant={"body1"}
+                        display={"inline-flex"}
+                        justifyContent={"flex-start"}
+                        component={"span"}
+                        color={"var(--color-text-secondary)"}
+                      >
+                        {t(item.desKey)}
+                      </Typography>
+                    </MenuBtnStyled>
+                  </Box>
+                )}
+              </React.Fragment>
+            );
+          })}
         </Box>
         <Box marginBottom={2} display={"flex"} alignItems={"stretch"}>
           <RadioGroup
@@ -781,7 +821,8 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     handleOnDataChange,
     btnInfo,
     t,
-  }: Omit<CreateRedPacketViewProps<T, I, C>, ""> & WithTranslation) => {
+  }: Omit<CreateRedPacketViewProps<T, I, C>, "tradeData" | "tokenMap"> &
+    WithTranslation) => {
     const { isMobile } = useSettings();
     const getDisabled = React.useMemo(() => {
       return disabled;
@@ -792,6 +833,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
         display={"flex"}
         flexDirection={"column"}
         width={"100%"}
+        maxWidth={720}
         paddingX={isMobile ? 2 : 10}
         className="modalConte"
         position={"absolute"}
@@ -890,5 +932,5 @@ export const CreateRedPacketStepTokenType = withTranslation()(
       //
       // </RedPacketBoxStyle>
     );
-  };
+  }
 );

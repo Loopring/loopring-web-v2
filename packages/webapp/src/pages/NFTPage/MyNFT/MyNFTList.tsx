@@ -1,6 +1,7 @@
 import {
   AccountStatus,
   CollectionMeta,
+  NFTWholeINFO,
   SagaStatus,
 } from "@loopring-web/common-resources";
 import {
@@ -23,17 +24,25 @@ import { Tab, Tabs, Typography } from "@mui/material";
 import { useLocation } from "react-router";
 
 export const MyNFTList = withTranslation("common")(
-  ({
+  <NFT extends NFTWholeINFO>({
     collectionMeta,
     collectionPage,
     myNFTPage,
     size,
+    isSelect,
+    selected,
+    isMultipleSelect,
+    onSelect,
     t,
   }: {
     collectionMeta: CollectionMeta | undefined;
     collectionPage?: number;
     myNFTPage?: number;
     size?: string;
+    isSelect?: boolean;
+    selected?: NFT[];
+    isMultipleSelect?: boolean;
+    onSelect: (value: NFT) => void;
   } & WithTranslation) => {
     const { baseURL } = useSystem();
     const { isMobile } = useSettings();
@@ -155,7 +164,11 @@ export const MyNFTList = withTranslation("common")(
           {...{
             ...nftProps,
             baseURL,
-            onClick: nftProps.onDetail,
+            onClick: isSelect
+              ? (value: NFT) => {
+                  onSelect(value);
+                }
+              : nftProps.onDetail,
             getIPFSString,
           }}
           onPageChange={(page) => {
@@ -170,6 +183,9 @@ export const MyNFTList = withTranslation("common")(
           }}
           account={account}
           isEdit={false}
+          isSelectOnly={isSelect}
+          isMultipleSelect={isMultipleSelect}
+          selected={selected}
           toggle={toggle}
           // @ts-ignore
           setShowNFTDeploy={(item: any) => {

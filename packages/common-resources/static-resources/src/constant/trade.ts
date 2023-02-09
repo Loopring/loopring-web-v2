@@ -453,6 +453,10 @@ export type MyNFTFilter = {
   favourite?: boolean;
   hidden?: boolean;
 };
+export enum MY_NFT_VIEW {
+  LIST_COLLECTION = "byCollection",
+  LIST_NFT = "byList",
+}
 
 export const LIVE_FEE_TIMES = 60000;
 export const L1_UPDATE = 15000;

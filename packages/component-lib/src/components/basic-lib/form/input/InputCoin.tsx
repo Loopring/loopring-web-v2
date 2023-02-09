@@ -37,6 +37,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     isShowCoinIcon = true,
     coinLabelStyle = undefined,
     coinPrecision = 6,
+    CoinIconElement,
   }: InputCoinProps<T, C, I>,
   ref: React.ForwardedRef<any>
 ) {
@@ -209,6 +210,21 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
                     justifyContent={"center"}
                   >
                     <CoinIcon symbol={belong} />
+                  </Grid>
+                )}
+                {!isShowCoinIcon && CoinIconElement && (
+                  <Grid
+                    item
+                    display={"flex"}
+                    order={order === "left" ? 2 : 1}
+                    paddingLeft={order === "left" ? 1 : 0}
+                    className={"logo-icon"}
+                    width={"var(--list-menu-coin-size)"}
+                    height={"var(--list-menu-coin-size)"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                  >
+                    {CoinIconElement}
                   </Grid>
                 )}
                 <Grid

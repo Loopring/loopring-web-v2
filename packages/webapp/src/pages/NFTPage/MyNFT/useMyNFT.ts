@@ -1,4 +1,5 @@
 import {
+  CollectionLimit,
   CollectionMeta,
   CustomError,
   ErrorMap,
@@ -15,6 +16,7 @@ import {
   useModalData,
   useNFTListDeep,
   useSystem,
+  useWalletL2NFTCollection,
   useWalletLayer2NFT,
 } from "@loopring-web/core";
 import { useOpenModals } from "@loopring-web/component-lib";
@@ -233,5 +235,87 @@ export const useMyNFT = ({
     page,
     isLoading,
     walletLayer2NFT,
+  };
+};
+
+export const useNFTCollection = ({
+  contractStr,
+  matchPreUrl,
+}: {
+  contractStr: string;
+  matchPreUrl: string;
+}) => {
+  const history = useHistory();
+  const { search } = useLocation();
+
+  const searchParams = new URLSearchParams(search);
+  const { walletL2NFTCollection } = useWalletL2NFTCollection();
+  const {
+    account: { accountId, apiKey },
+  } = useAccount();
+
+  const [collectionMeta, setCollectionMeta] =
+    React.useState<undefined | CollectionMeta>(undefined);
+  const checkCollection = async () => {
+    const [contract, id] = contractStr ? contractStr.split("--") : [null, null];
+    if (contract !== undefined && id !== undefined && LoopringAPI.userAPI) {
+      const collectionMeta = walletL2NFTCollection.find((item) => {
+        return (
+          (id !== undefined ? Number(item.id) === Number(id) : true) &&
+          item.contractAddress?.toLowerCase() === contract?.toLowerCase()
+        );
+      });
+      if (collectionMeta) {
+        setCollectionMeta(collectionMeta);
+        return;
+      } else {
+        const response = await LoopringAPI.userAPI
+          .getUserNFTCollection(
+            {
+              tokenAddress: contract,
+              collectionId: id,
+              accountId: accountId.toString(),
+              limit: CollectionLimit,
+            } as any,
+            apiKey
+          )
+          .catch((_error) => {
+            throw new CustomError(ErrorMap.TIME_OUT);
+          });
+        if (
+          response &&
+          ((response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message)
+        ) {
+          throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+        }
+        const collections = response.collections;
+        if (collections.length) {
+          const collectionMeta = collections.find((item: any) => {
+            return (
+              (id !== undefined ? Number(item.id) === Number(id) : true) &&
+              item.contractAddress?.toLowerCase() === contract?.toLowerCase()
+            );
+          });
+
+          setCollectionMeta(collectionMeta);
+          return;
+        } else {
+          history.push(
+            `${matchPreUrl}/byCollection` + "?" + searchParams.toString()
+          );
+        }
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    const [contract, id] = contractStr ? contractStr.split("--") : [null, null];
+    if (contract && id && contract.startsWith("0x")) {
+      checkCollection();
+    }
+  }, [contractStr]);
+  return {
+    collectionMeta,
   };
 };

@@ -6,6 +6,7 @@ import {
   getValuePrecisionThousand,
   LIVE_FEE_TIMES,
   myLog,
+  NFTWholeINFO,
   REDPACKET_ORDER_LIMIT,
   REDPACKET_ORDER_NFT_LIMIT,
   RedPacketOrderData,
@@ -78,6 +79,9 @@ export const useCreateRedPacket = <
       isShowAccount: { info },
     },
   } = useOpenModals();
+  const [selectNFT, setSelectNFT] =
+    React.useState<NFTWholeINFO | undefined>(undefined);
+
   const { redPacketConfigs } = useRedPacketConfig();
   const { redPacketOrder, updateRedPacketOrder, resetRedPacketOrder } =
     useModalData();
@@ -784,7 +788,11 @@ export const useCreateRedPacket = <
     tradeData: redPacketOrder as T,
     handleOnDataChange,
     handlePanelEvent,
-  } as any;
+    selectNFT,
+    handleOnChoose: (value: Partial<NFTWholeINFO>) => {
+      setSelectNFT(value);
+    },
+  } as unknown as CreateRedPacketProps<T, I, F>;
 
   return { createRedPacketProps, retryBtn };
 };

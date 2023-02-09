@@ -47,6 +47,8 @@ export const CreateRedPacketPanel = <
   walletMap = {},
   coinMap = {},
   tokenMap = {},
+  //@ts-ignore
+  myNFTPanel,
   ...rest
 }: CreateRedPacketProps<T, I, C> & { assetsData: any[] }) => {
   const { t, i18n, ready: tReady } = useTranslation(["common", "error"]);
@@ -57,6 +59,7 @@ export const CreateRedPacketPanel = <
     // index,
     walletMap,
   } as any);
+
   const [panelIndex, setPanelIndex] = React.useState(0);
   const setActiveStep = React.useCallback((index: RedPacketStep) => {
     switch (index) {
@@ -129,14 +132,14 @@ export const CreateRedPacketPanel = <
           key: "selectTokenType",
           element: (
             <CreateRedPacketStepTokenType
-              tradeData={{ ...tradeData } as T}
-              tokenMap={tokenMap}
-              handleOnDataChange={handleOnDataChange as any}
-              disabled={disabled}
-              tradeType={tradeType}
-              {...{ ...rest }}
-              setActiveStep={setActiveStep}
-              activeStep={RedPacketStep.TradeType}
+              {...({
+                ...rest,
+                handleOnDataChange: handleOnDataChange as any,
+                disabled,
+                tradeType,
+                setActiveStep,
+                activeStep: RedPacketStep.TradeType,
+              } as any)}
             />
           ),
           toolBarItem: undefined,
@@ -145,15 +148,19 @@ export const CreateRedPacketPanel = <
           key: "selectType",
           element: (
             <CreateRedPacketStepType
-              tokenMap={tokenMap}
-              handleOnDataChange={handleOnDataChange as any}
-              tradeData={{ ...tradeData } as T}
-              disabled={disabled}
-              tradeType={tradeType}
-              selectedType={selectedType}
-              {...{ ...rest }}
-              setActiveStep={setActiveStep}
-              activeStep={RedPacketStep.ChooseType}
+              {...({
+                ...rest,
+                handleOnDataChange: handleOnDataChange as any,
+                tradeData: {
+                  ...tradeData,
+                  type: tradeData.type,
+                } as any,
+                disabled,
+                tradeType,
+                selectedType,
+                setActiveStep,
+                activeStep: RedPacketStep.ChooseType,
+              } as any)}
             />
           ),
           toolBarItem: undefined,
@@ -161,19 +168,22 @@ export const CreateRedPacketPanel = <
         {
           key: "trade",
           element: (
+            // @ts-ignore
             <CreateRedPacketStepWrap
-              tradeData={{ ...tradeData } as T}
-              disabled={disabled}
-              coinMap={coinMap}
-              selectedType={selectedType}
-              handleOnDataChange={handleOnDataChange as any}
-              tradeType={tradeType}
-              tokenMap={tokenMap}
-              {...{ ...rest }}
-              walletMap={getWalletMapWithoutLP()}
-              onChangeEvent={onChangeEvent as any}
-              setActiveStep={setActiveStep}
-              activeStep={RedPacketStep.Main}
+              {...{
+                ...rest,
+                tradeData,
+                disabled,
+                coinMap,
+                selectedType,
+                handleOnDataChange: handleOnDataChange as any,
+                tradeType,
+                tokenMap,
+                walletMap: getWalletMapWithoutLP(),
+                onChangeEvent,
+                setActiveStep,
+                activeStep: RedPacketStep.Main,
+              }}
             />
           ),
           toolBarItem: undefined,
@@ -199,6 +209,14 @@ export const CreateRedPacketPanel = <
                     } as any)}
                   />
                 ),
+                toolBarItem: undefined,
+              },
+            ] as any)
+          : myNFTPanel
+          ? ([
+              {
+                key: "nftList",
+                element: myNFTPanel,
                 toolBarItem: undefined,
               },
             ] as any)
@@ -240,7 +258,6 @@ export const CreateRedPacketPanel = <
         flex={1}
         width={"100%"}
         minWidth={240}
-        maxWidth={720}
         paddingX={3}
       >
         <SwitchPanel {...{ ...rest, tReady, i18n, t, ...props }} />

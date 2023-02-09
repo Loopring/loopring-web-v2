@@ -294,19 +294,33 @@ export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
   inputButtonProps?: InputButtonDefaultProps<I, CoinInfo<I>>;
   inputButtonDefaultProps?: InputButtonDefaultProps<I, CoinInfo<I>>;
 };
-export type BasicANFTTradeProps<T, I> = Omit<
+export type BasicANFTTradeProps<T, I> = (Omit<
   BasicACoinTradeViewProps<T, I>,
-  "coinMap" | "lastFailed"
+  "coinMap" | "lastFailed" | "walletMap"
 > & {
-  type?: "NFT";
+  type: TRADE_TYPE.NFT;
   baseURL: string;
+  fullwidth?: boolean;
   getIPFSString: GET_IPFS_STRING;
-  isThumb?: boolean;
   isBalanceLimit?: boolean;
   inputNFTRef: React.Ref<any>;
   inputNFTProps?: inputNFTProps<I, CoinInfo<I>>;
   inputNFTDefaultProps: inputNFTProps<I, CoinInfo<I>>;
-};
+}) &
+  XOR<
+    {
+      isThumb: true;
+      isRequired: boolean;
+      isSelected: boolean;
+      onChangeEvent?: (index: 0 | 1, data: SwitchData<T>) => SwitchData<T>;
+      handlePanelEvent?: (
+        props: SwitchData<T>,
+        switchType: "Tomenu" | "Tobutton"
+      ) => Promise<void>;
+      myNFTPanel: JSX.Element;
+    },
+    { isThumb?: boolean }
+  >;
 
 export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
   type?: TRADE_TYPE;

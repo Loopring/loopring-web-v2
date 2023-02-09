@@ -1408,4 +1408,7 @@ export default {
   labelRedpacketNotActive: "Hide the redpacket received",
   labelRedpacketTokens: "ERC20 Tokens",
   labelRedpacketNFTS: "NFTs",
+  labelChooseNFT: "Choose NFT <1>{{required}}</1>",
+  labelChooseNFTTooltips: "",
+  tokenSelectNFTToken: "Select NFT",
 };
