@@ -92,13 +92,24 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
     updatePageAmmJoin(state, action: PayloadAction<Partial<PageAmmJoin>>) {
       const { fee, fees, request, ammCalcData, ammData } = action.payload;
 
-      if (fee) {
+      if (typeof fee !== "undefined") {
         state.ammJoin.fee = fee;
+        state.ammJoin.ammCalcData = {
+          ...state.ammJoin.ammCalcData,
+          fee: fee + " " + state.ammJoin?.ammCalcData?.lpCoinB?.belong,
+        } as any;
       }
 
       if (fees) {
         state.ammJoin.fees = fees;
       }
+      // if (fee) {
+      //   state.ammJoin.fee = fee;
+      // }
+      //
+      // if (fees) {
+      //   state.ammJoin.fees = fees;
+      // }
 
       if (request) {
         state.ammJoin.request = request;

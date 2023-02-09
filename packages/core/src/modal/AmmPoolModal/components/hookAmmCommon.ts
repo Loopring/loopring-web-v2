@@ -15,7 +15,9 @@ import {
   useToast,
   usePageAmmPool,
   store,
+  walletLayer2Service,
 } from "../../../index";
+import { useOpenModals } from "@loopring-web/component-lib";
 
 export const useAmmCommon = ({
   pair,
@@ -31,7 +33,11 @@ export const useAmmCommon = ({
   const { marketArray, marketMap, tokenMap } = useTokenMap();
   const { ammMap } = useAmmMap();
 
-  const { updatePageAmmCommon } = usePageAmmPool();
+  const {
+    updatePageAmmCommon,
+    resetAmmPool,
+    common: { ammPoolSnapshot },
+  } = usePageAmmPool();
 
   const updateAmmPoolSnapshot = React.useCallback(async () => {
     if (
@@ -97,6 +103,9 @@ export const useAmmCommon = ({
       // @ts-ignore
       refreshRef.current.firstElementChild.click();
     }
+    return () => {
+      resetAmmPool();
+    };
   }, []);
 
   const getFee = async (
@@ -137,7 +146,28 @@ export const useAmmCommon = ({
       };
     }
   };
-
+  const {
+    modals: {
+      isShowAmm: { isShow },
+    },
+    // setShowAmm,
+  } = useOpenModals();
+  React.useEffect(() => {
+    if (
+      isShow &&
+      pair.coinBInfo?.simpleName &&
+      pair.coinAInfo?.simpleName &&
+      tokenMap &&
+      ammPoolSnapshot &&
+      ammPoolSnapshot?.poolAddress.toLowerCase() ===
+        tokenMap[
+          `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
+        ].address.toLowerCase()
+    ) {
+      walletLayer2Service.sendUserUpdate();
+    }
+  }, [isShow, pair, ammPoolSnapshot?.poolAddress]);
+  //&& pair && ammPoolSnapshot?.poolAddress
   return {
     accountStatus: account.readyState,
     toastOpen,
