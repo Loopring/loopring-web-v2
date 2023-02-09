@@ -11,7 +11,13 @@ import {
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { makeViewCard, StylePaper, useOpenRedpacket } from "@loopring-web/core";
+import {
+  getIPFSString,
+  makeViewCard,
+  StylePaper,
+  useOpenRedpacket,
+  useSystem,
+} from "@loopring-web/core";
 import { useMarketRedPacket } from "./hooks";
 import { Box, Button, Checkbox, Grid, Tab, Tabs } from "@mui/material";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -20,6 +26,7 @@ import {
   BackIcon,
   CheckBoxIcon,
   CheckedIcon,
+  GET_IPFS_STRING,
   RefreshIcon,
   ScanQRIcon,
   SoursURL,
@@ -44,6 +51,7 @@ enum TabIndex {
   ERC20 = "ERC20",
   NFT = "NFT",
 }
+
 export const RedPacketMarketPanel = ({
   setToastOpen,
 }: {
@@ -58,7 +66,9 @@ export const RedPacketMarketPanel = ({
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const history = useHistory();
+  const { baseURL } = useSystem();
   const { callOpen } = useOpenRedpacket();
+  let match: any = useRouteMatch("/redPacket/markets/:item");
   const {
     showLoading,
     hideOpen,
@@ -69,7 +79,6 @@ export const RedPacketMarketPanel = ({
   } = useMarketRedPacket({
     setToastOpen,
   });
-  let match: any = useRouteMatch("/redPacket/markets/:item");
 
   const [currentTab, setCurrentTab] = React.useState<TabIndex>(
     match?.params.item ?? TabIndex.ERC20
@@ -135,6 +144,8 @@ export const RedPacketMarketPanel = ({
                     myAmountStr={myAmountStr}
                     onOpen={callOpen}
                     tokenInfo={tokenInfo}
+                    getIPFSString={getIPFSString}
+                    baseURL={baseURL}
                     _type="official"
                   />
                 </Grid>
@@ -280,61 +291,111 @@ export const RedPacketMarketPanel = ({
             </Box>
           </Box>
         </Box>
-
-        {currentTab === TabIndex.ERC20 && (
-          <>
-            {!luckTokenList.officialList?.length &&
-            !luckTokenList.publicList?.length ? (
-              <Box
-                flex={1}
-                display={"flex"}
-                alignItems={"center"}
+        <>
+          {!luckTokenList.officialList?.length &&
+          !luckTokenList.publicList?.length ? (
+            <Box
+              flex={1}
+              display={"flex"}
+              alignItems={"center"}
+              height={"100%"}
+              justifyContent={"center"}
+            >
+              <EmptyDefault
+                // width={"100%"}
                 height={"100%"}
-                justifyContent={"center"}
-              >
-                <EmptyDefault
-                  // width={"100%"}
-                  height={"100%"}
-                  message={() => (
-                    <Box
-                      flex={1}
-                      display={"flex"}
-                      alignItems={"center"}
-                      justifyContent={"center"}
-                    >
-                      {t("labelNoContent")}
-                    </Box>
-                  )}
-                />
-              </Box>
-            ) : (
-              <Grid container display={"flex"} paddingX={1} spacing={2}>
-                {listERC20}
-              </Grid>
-            )}
-            {showLoading && (
-              <LoadingStyled color={"inherit"}>
-                <img
-                  className="loading-gif"
-                  alt={"loading"}
-                  width="36"
-                  src={`${SoursURL}images/loading-line.gif`}
-                />
-              </LoadingStyled>
-            )}
-            <Box>
-              <TablePagination
-                page={pagination.page}
-                pageSize={pagination.pageSize}
-                total={luckTokenList.publicTotal}
-                onPageChange={(page) => {
-                  handlePageChange({ page });
-                }}
+                message={() => (
+                  <Box
+                    flex={1}
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                  >
+                    {t("labelNoContent")}
+                  </Box>
+                )}
               />
             </Box>
-          </>
-        )}
-        {currentTab === TabIndex.NFT && <></>}
+          ) : (
+            <Grid container display={"flex"} paddingX={1} spacing={2}>
+              {listERC20}
+            </Grid>
+          )}
+          {showLoading && (
+            <LoadingStyled color={"inherit"}>
+              <img
+                className="loading-gif"
+                alt={"loading"}
+                width="36"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </LoadingStyled>
+          )}
+          <Box>
+            <TablePagination
+              page={pagination.page}
+              pageSize={pagination.pageSize}
+              total={luckTokenList.publicTotal}
+              onPageChange={(page) => {
+                handlePageChange({ page });
+              }}
+            />
+          </Box>
+        </>
+        {/*{currentTab === TabIndex.ERC20 && (*/}
+        {/*  <>*/}
+        {/*    {!luckTokenList.officialList?.length &&*/}
+        {/*    !luckTokenList.publicList?.length ? (*/}
+        {/*      <Box*/}
+        {/*        flex={1}*/}
+        {/*        display={"flex"}*/}
+        {/*        alignItems={"center"}*/}
+        {/*        height={"100%"}*/}
+        {/*        justifyContent={"center"}*/}
+        {/*      >*/}
+        {/*        <EmptyDefault*/}
+        {/*          // width={"100%"}*/}
+        {/*          height={"100%"}*/}
+        {/*          message={() => (*/}
+        {/*            <Box*/}
+        {/*              flex={1}*/}
+        {/*              display={"flex"}*/}
+        {/*              alignItems={"center"}*/}
+        {/*              justifyContent={"center"}*/}
+        {/*            >*/}
+        {/*              {t("labelNoContent")}*/}
+        {/*            </Box>*/}
+        {/*          )}*/}
+        {/*        />*/}
+        {/*      </Box>*/}
+        {/*    ) : (*/}
+        {/*      <Grid container display={"flex"} paddingX={1} spacing={2}>*/}
+        {/*        {listERC20}*/}
+        {/*      </Grid>*/}
+        {/*    )}*/}
+        {/*    {showLoading && (*/}
+        {/*      <LoadingStyled color={"inherit"}>*/}
+        {/*        <img*/}
+        {/*          className="loading-gif"*/}
+        {/*          alt={"loading"}*/}
+        {/*          width="36"*/}
+        {/*          src={`${SoursURL}images/loading-line.gif`}*/}
+        {/*        />*/}
+        {/*      </LoadingStyled>*/}
+        {/*    )}*/}
+        {/*    <Box>*/}
+        {/*      <TablePagination*/}
+        {/*        page={pagination.page}*/}
+        {/*        pageSize={pagination.pageSize}*/}
+        {/*        total={luckTokenList.publicTotal}*/}
+        {/*        onPageChange={(page) => {*/}
+        {/*          handlePageChange({ page });*/}
+        {/*        }}*/}
+        {/*      />*/}
+        {/*    </Box>*/}
+        {/*  </>*/}
+        {/*)}*/}
+        {/*{currentTab === TabIndex.NFT && <></>}*/}
       </StylePaper>
     </Box>
   );

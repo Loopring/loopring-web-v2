@@ -13,7 +13,9 @@ import {
   Account,
   EmptyValueTag,
   FirstPlaceIcon,
+  GET_IPFS_STRING,
   getShortAddr,
+  NFTWholeINFO,
   RedPacketColorConfig,
   RedPacketCssColorConfig,
   RedPacketOpenWrapSVG,
@@ -38,12 +40,11 @@ import {
   RedPacketTimeoutProps,
   RedPacketUnreadyProps,
 } from "./Interface";
-import { TablePagination } from "../basic-lib";
+import { TablePagination, BoxNFT } from "../basic-lib";
 import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
+import { NFTMedia } from "./nftMedia";
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -178,6 +179,15 @@ export const RedPacketBg = styled(Box)<
     }
   }
 
+  &.redPacketOpened,
+  &.redPacketOpen {
+    .redPacketNFT {
+      height: var(--nft-large-avatar);
+      width: var(--nft-large-avatar);
+      margin-top: 50px;
+    }
+  }
+
   //&.redPacketOpened {
   //  .content {
   //
@@ -303,6 +313,7 @@ export const RedPacketBgDefault = ({
       sx={{
         transform: `scale(${scale})`,
       }}
+      className={"redPacketOpen"}
     >
       <Box
         className={"bg"}
@@ -350,6 +361,7 @@ export const RedPacketBgOpened = ({
       sx={{
         transform: `scale(${scale})`,
       }}
+      className={"redPacketOpened"}
     >
       <Box
         position={"absolute"}
@@ -388,6 +400,7 @@ export const RedPacketOpen = ({
   memo,
   viewDetail,
   onOpen,
+  ImageEle,
 }: RedPacketDefault & RedPacketOpenProps) => {
   const { t } = useTranslation();
   const content = React.useMemo(() => {
@@ -402,6 +415,7 @@ export const RedPacketOpen = ({
           <Typography color={"inherit"}>{sender}</Typography>
         </Box>
         <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+          {ImageEle}
           <Typography
             color={"inherit"}
             variant={"h4"}
@@ -418,6 +432,7 @@ export const RedPacketOpen = ({
             whiteSpace={"pre-line"}
             textAlign={"center"}
             paddingX={2}
+            sx={{ wordBreak: "break-all" }}
           >
             {memo}
           </Typography>
@@ -605,6 +620,7 @@ export const RedPacketClock = ({
             whiteSpace={"pre-line"}
             textAlign={"center"}
             paddingX={2}
+            sx={{wordBreak: "break-all"}}
           >
             {memo}
           </Typography>
@@ -622,7 +638,9 @@ export const RedPacketUnready = ({
   validSince,
   amountStr,
   memo,
-}: RedPacketDefault & RedPacketUnreadyProps) => {
+  ImageEle,
+}: // ImageEle,
+RedPacketDefault & RedPacketUnreadyProps) => {
   const { t } = useTranslation();
   const content = React.useMemo(() => {
     return (
@@ -655,6 +673,7 @@ export const RedPacketUnready = ({
               time: moment(validSince).fromNow(),
             })}
           </Typography>
+          {ImageEle}
           <Typography
             color={"inherit"}
             variant={"h4"}
@@ -671,6 +690,7 @@ export const RedPacketUnready = ({
             whiteSpace={"pre-line"}
             textAlign={"center"}
             paddingX={2}
+            sx={{ wordBreak: "break-all" }}
           >
             {memo}
           </Typography>
@@ -683,13 +703,15 @@ export const RedPacketUnready = ({
 };
 
 export const RedPacketOpened = ({
-  type = "default",
-  sender,
-  memo,
-  myAmountStr,
-  amountStr,
-  viewDetail,
-}: RedPacketDefault & RedPacketOpenedProps) => {
+                                  type = "default",
+                                  size,
+                                  sender,
+                                  memo,
+                                  myAmountStr,
+                                  amountStr,
+                                  viewDetail,
+                                  ImageEle,
+                                }: RedPacketDefault & RedPacketOpenedProps) => {
   const { t } = useTranslation("common");
   const content = React.useMemo(() => {
     return (
@@ -715,6 +737,7 @@ export const RedPacketOpened = ({
           </Typography>
         </Box>
         <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+          {ImageEle}
           <Typography color={"inherit"}>{sender}</Typography>
           <Typography
             variant={"body2"}
@@ -723,6 +746,7 @@ export const RedPacketOpened = ({
             textAlign={"center"}
             marginTop={1 / 2}
             paddingX={2}
+            sx={{wordBreak: "break-all"}}
           >
             {memo}
           </Typography>
@@ -744,7 +768,7 @@ export const RedPacketOpened = ({
       </Box>
     );
   }, []);
-  return <RedPacketBgOpened type={type} content={content} />;
+  return <RedPacketBgOpened type={type} content={content} size={size}/>;
 };
 
 export const RedPacketDetailStyled = styled(Box)`
@@ -753,30 +777,15 @@ export const RedPacketDetailStyled = styled(Box)`
 ` as typeof Box;
 
 export const RedPacketTimeout = ({
-  type = "default",
-  size = "middle",
-  sender,
-  memo,
-  viewDetail,
-}: RedPacketTimeoutProps) => {
-  const scale = RedPacketSize[size].width / 260;
-  const { t } = useTranslation("common");
-  return (
-    <RedPacketBg
-      sx={{
-        transform: `scale(${scale})`,
-      }}
-      type={type}
-      className={"redPacketOpened"}
-    >
-      <Box position={"absolute"} zIndex={100}>
-        <RedPacketOpenWrapSVG
-          {...{ ...RedPacketCssColorConfig[type] }}
-          height={"100%"}
-          width={"100%"}
-          type={type}
-        />
-      </Box>
+                                   type = "default",
+                                   size,
+                                   sender,
+                                   memo,
+                                   viewDetail,
+                                 }: RedPacketTimeoutProps) => {
+  const {t} = useTranslation("common");
+  const content = React.useMemo(() => {
+    return (
       <Box
         className={`content content${size}`}
         position={"relative"}
@@ -785,7 +794,7 @@ export const RedPacketTimeout = ({
         flexDirection={"column"}
         justifyContent={"stretch"}
         // alignItems={"s"}
-        height={RedPacketSize["middle"].height}
+        height={RedPacketSize[ "middle" ].height}
       >
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
           <Typography
@@ -809,6 +818,7 @@ export const RedPacketTimeout = ({
             whiteSpace={"pre-line"}
             textAlign={"center"}
             paddingX={2}
+            sx={{wordBreak: "break-all"}}
           >
             {memo}
           </Typography>
@@ -830,8 +840,9 @@ export const RedPacketTimeout = ({
           )}
         </Box>
       </Box>
-    </RedPacketBg>
-  );
+    );
+  }, []);
+  return <RedPacketBgOpened type={type} content={content} size={size}/>;
 };
 
 const BoxStyle = styled(Box)`
@@ -852,17 +863,18 @@ export const RedPacketDetail = ({
   memo,
   page = 1,
   claimList,
-  // detail,
-  // detail,
-  handlePageChange,
-  myAmountStr,
-  isShouldSharedRely,
-  totalCount,
-  remainCount,
-  onShared,
-  relyNumber,
-  relyAmount,
-}: RedPacketDetailProps) => {
+                                  // detail,
+                                  // detail,
+                                  handlePageChange,
+                                  myAmountStr,
+                                  isShouldSharedRely,
+                                  totalCount,
+                                  remainCount,
+                                  onShared,
+                                  relyNumber,
+                                  relyAmount,
+                                  ImageEle,
+                                }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const pageNation = React.useMemo(() => {
     if (totalCount - remainCount - RedPacketDetailLimit > 0) {
@@ -920,9 +932,11 @@ export const RedPacketDetail = ({
           textAlign={"center"}
           marginTop={1 / 2}
           paddingX={2}
+          sx={{wordBreak: "break-all"}}
         >
           {memo}
         </Typography>
+        {ImageEle}
         <Typography
           variant={"h3"}
           color={RedPacketColorConfig.default.colorTop}
@@ -1099,17 +1113,19 @@ export const RedPacketDetail = ({
 };
 
 export const RedPacketPrepare = ({
-  chainId,
-  account,
-  tokenInfo,
-  setShowRedPacket,
-  claim,
-  _type = "default",
-  amountStr,
-  myAmountStr,
-  onOpen,
-  ...props
-}: {
+                                   chainId,
+                                   account,
+                                   tokenInfo,
+                                   setShowRedPacket,
+                                   claim,
+                                   _type = "default",
+                                   amountStr,
+                                   myAmountStr,
+                                   onOpen,
+                                   getIPFSString,
+                                   baseURL,
+                                   ...props
+                                 }: {
   chainId: sdk.ChainId;
   account: Account;
   amountStr: string;
@@ -1119,14 +1135,46 @@ export const RedPacketPrepare = ({
   setShowRedPacket: (
     state: ModalStatePlayLoad & {
       step?: number;
-      info?: { [key: string]: any };
+      info?: { [ key: string ]: any };
     }
   ) => void;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
   onOpen: () => void;
   _type?: "official" | "default";
 } & sdk.LuckyTokenItemForReceive) => {
   // const { t } = useTranslation("common");
+  const ref = React.createRef();
   const _info = props as sdk.LuckyTokenItemForReceive;
+  // const props.isNft;
+  const ImageEle = React.useMemo(() => {
+    return props.isNft ? (
+      <BoxNFT flex={1} position={"relative"} className={"redPacketNFT"}>
+        <Box
+          position={"absolute"}
+          top={0}
+          right={0}
+          bottom={0}
+          left={0}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          <NFTMedia
+            ref={ref}
+            item={props.nftTokenInfo as Partial<NFTWholeINFO>}
+            shouldPlay={true}
+            onNFTError={() => undefined}
+            isOrigin={true}
+            getIPFSString={getIPFSString}
+            baseURL={baseURL}
+          />
+        </Box>
+      </BoxNFT>
+    ) : (
+      <></>
+    );
+  }, [props]);
   const viewItem = React.useMemo(() => {
     let difference = new Date(_info.validSince).getTime() - Date.now();
     if (claim) {
@@ -1162,6 +1210,7 @@ export const RedPacketPrepare = ({
               : getShortAddr(props?.sender?.address)
           }
           {...props?.info}
+          ImageEle={ImageEle}
           amountStr={amountStr}
           validSince={_info.validSince}
         />
@@ -1170,6 +1219,7 @@ export const RedPacketPrepare = ({
       return (
         <RedPacketClock
           {...props?.info}
+          ImageEle={ImageEle}
           sender={
             props?.sender?.ens
               ? props?.sender?.ens
@@ -1195,6 +1245,7 @@ export const RedPacketPrepare = ({
       return (
         <RedPacketTimeout
           {...props?.info}
+          ImageEle={ImageEle}
           sender={
             props?.sender?.ens
               ? props?.sender?.ens
@@ -1215,16 +1266,9 @@ export const RedPacketPrepare = ({
           {...{
             ...props,
           }}
+          ImageEle={ImageEle ?? undefined}
           type={_type ? _type : "default"}
           amountStr={amountStr}
-          // textSendBy={textSendBy}
-          // viewDetail={() => {
-          //   setShowRedPacket({
-          //     isShow: true,
-          //     step: RedPacketViewStep.DetailPanel,
-          //     info: props,
-          //   });
-          // }}
           sender={
             props?.sender?.ens
               ? props?.sender?.ens

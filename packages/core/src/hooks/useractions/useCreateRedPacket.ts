@@ -304,7 +304,7 @@ export const useCreateRedPacket = <
         tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts.minimum);
         tooLarge = tradeValue.gt(tradeToken.luckyTokenAmounts.maximum);
       } else {
-        balance = redPacketOrder.nftBalance ?? 0;
+        balance = redPacketOrder.balance ?? 0;
         tradeValue = sdk.toBig(redPacketOrder.tradeValue);
         isExceedBalance = tradeValue.gt(balance);
         const eachValue = sdk.toBig(_tradeData.eachValue ?? 0);
@@ -320,6 +320,10 @@ export const useCreateRedPacket = <
         !isExceedBalance &&
         !tooSmall &&
         !tooLarge &&
+        ((redPacketOrder.tradeType === TRADE_TYPE.NFT &&
+          redPacketOrder.nftData) ||
+          // @ts-ignore
+          redPacketOrder.tradeType === TRADE_TYPE.TOKEN) &&
         redPacketConfigs?.luckTokenAgents
       ) {
         enableBtn();
@@ -672,6 +676,10 @@ export const useCreateRedPacket = <
             numbers: redPacketOrder.numbers,
             memo: redPacketOrder.memo ?? "",
             signerFlag: false as any,
+            nftData:
+              redPacketOrder.tradeType === TRADE_TYPE.NFT
+                ? redPacketOrder.nftData
+                : undefined,
             // @ts-ignore
             templateId: 0,
             validSince: Math.round(
@@ -824,6 +832,7 @@ export const useCreateRedPacket = <
           balance: value.nftBalance ?? value.total,
           nftData: value.nftData,
           belong: value.name,
+          tokenAddress: value.tokenAddress,
           image: value?.metadata?.imageSize
             ? value?.metadata?.imageSize["240-240"]
             : value.image,

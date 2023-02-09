@@ -8,6 +8,7 @@ import {
   SDK_ERROR_MAP_TO_UI,
 } from "@loopring-web/common-resources";
 import _ from "lodash";
+import { useRouteMatch } from "react-router-dom";
 
 export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
   setToastOpen,
@@ -21,6 +22,8 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
   const { idIndex } = useTokenMap();
   const [hideOpen, setHideOpen] = React.useState<boolean>(false);
   const [showLoading, setShowLoading] = React.useState(true);
+  let match: any = useRouteMatch("/redPacket/markets/:item");
+
   const [pagination, setPagination] = React.useState<{
     pageSize: number;
     total: number;
@@ -50,6 +53,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
         sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED,
       ];
       if (LoopringAPI.luckTokenAPI && accountId && apiKey) {
+        const isNft = match?.params?.item?.toUpperCase() === "NFT";
         const responses = await Promise.all([
           LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
             {
@@ -62,6 +66,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
               offset: 0,
               limit: 50,
               official: true,
+              isNft,
             } as any,
             apiKey
           ),
@@ -79,6 +84,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
                     offset,
                     limit: pagination?.pageSize,
                     official: showOfficial,
+                    isNft,
                   } as any,
                   apiKey
                 ),
@@ -121,7 +127,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
       }
       setShowLoading(false);
     },
-    [accountId, apiKey, t, idIndex]
+    [accountId, apiKey, t, idIndex, match?.params?.item]
   );
   const updateData = _.debounce(({ currPage, showOfficial }) => {
     getMarketRedPacket({
@@ -148,7 +154,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
     return () => {
       updateData.cancel();
     };
-  }, [pagination?.pageSize]);
+  }, [pagination?.pageSize, match?.params?.item]);
 
   return {
     pagination,

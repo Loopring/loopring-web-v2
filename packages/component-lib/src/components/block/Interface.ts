@@ -69,6 +69,7 @@ export type RedPacketDefaultBg = RedPacketDefault & {
 export type RedPacketDefault = {
   type?: "default" | "official";
   size?: "middle" | "large";
+  ImageEle?: JSX.Element | undefined;
 };
 export type RedPacketTimeoutProps = RedPacketDefault & {
   sender: string;
@@ -117,6 +118,7 @@ export type RedPacketDetailProps = {
   relyAmount?: string;
   relyNumber?: string;
   handlePageChange: (page: number, limit?: number) => void;
+  ImageEle?: JSX.Element | undefined;
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

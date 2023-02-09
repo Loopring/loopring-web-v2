@@ -28,18 +28,17 @@ import {
 } from "react-i18next";
 import {
   BackIcon,
+  CoinInfo,
   EmptyValueTag,
   FeeInfo,
   getValuePrecisionThousand,
   IBData,
   LuckyRedPacketItem,
   LuckyRedPacketList,
-  RedPacketOrderData,
   REDPACKET_ORDER_LIMIT,
+  RedPacketOrderData,
   SoursURL,
   TRADE_TYPE,
-  CoinInfo,
-  myLog,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -60,6 +59,7 @@ import { NFTInput } from "./BasicANFTTrade";
 
 const RedPacketBoxStyle = styled(Box)`
   padding-top: ${({ theme }) => theme.unit}px;
+
   .MuiFormGroup-root {
     align-items: flex-start;
   }
@@ -210,18 +210,14 @@ export const CreateRedPacketStepWrap = withTranslation()(
       let inputSplitExtendProps = {};
 
       if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
-        let balance = sdk
+        let balance: any = sdk
           .toBig(tradeData.tradeValue)
           .div(Number(minimum) ?? 1)
           .toFixed(0, 1);
-        balance =
-          tradeType === TRADE_TYPE.TOKEN
-            ? Number(balance) <= REDPACKET_ORDER_LIMIT
-              ? balance
-              : REDPACKET_ORDER_LIMIT
-            : Number(balance) <= REDPACKET_ORDER_LIMIT
-            ? balance
-            : REDPACKET_ORDER_LIMIT;
+
+        balance = sdk.toBig(balance).lte(REDPACKET_ORDER_LIMIT)
+          ? balance
+          : REDPACKET_ORDER_LIMIT;
 
         inputSplitExtendProps = {
           maxAllow: true,
@@ -236,8 +232,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
               error: false,
             };
           },
-          balance,
+
           inputData: {
+            balance,
             belong: "Split",
             tradeValue: tradeData?.numbers,
           },
@@ -358,14 +355,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 isSelected: true,
                 type: tradeType,
                 disabled,
-                tradeData: {
-                  ...tradeData,
-                } as any,
+                tradeData: tradeData as any,
                 onChangeEvent: (
                   _index: 0 | 1,
                   { to, tradeData: newTradeData }: SwitchData<T>
                 ) => {
-                  myLog("RedPacket Panel", _index, RedPacketStep.Main + _index);
                   if (_index === 1) {
                     handleOnDataChange({
                       collectionInfo: undefined,

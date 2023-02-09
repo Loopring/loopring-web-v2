@@ -47,7 +47,9 @@ export const ModalRedPacketPanel = withTranslation("common")(
               justifyContent={"start"}
               alignItems={"start"}
             >
-              <RedPacketQRCode {...redPacketQRCodeProps} />
+              <Box flex={1}>
+                <RedPacketQRCode {...redPacketQRCodeProps} />
+              </Box>
             </Box>
           ) : (
             <></>
@@ -62,7 +64,9 @@ export const ModalRedPacketPanel = withTranslation("common")(
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <RedPacketOpen size={"large"} {...redPacketOpenProps} />
+              <Box flex={1}>
+                <RedPacketOpen size={"large"} {...redPacketOpenProps} />
+              </Box>
             </Box>
           ) : (
             <></>
@@ -77,7 +81,9 @@ export const ModalRedPacketPanel = withTranslation("common")(
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <RedPacketClock size={"large"} {...redPacketClockProps} />
+              <Box flex={1}>
+                <RedPacketClock size={"large"} {...redPacketClockProps} />
+              </Box>
             </Box>
           ) : (
             <></>
@@ -92,7 +98,26 @@ export const ModalRedPacketPanel = withTranslation("common")(
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <RedPacketOpened size={"large"} {...redPacketOpenedProps} />
+              <Box flex={1}>
+                <RedPacketOpened size={"large"} {...redPacketOpenedProps} />
+              </Box>
+            </Box>
+          ) : (
+            <></>
+          ),
+        },
+        [RedPacketViewStep.TimeOutPanel]: {
+          view: redPacketTimeoutProps ? (
+            <Box
+              height={RedPacketSize.large.height}
+              width={RedPacketSize.large.width}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <Box flex={1}>
+                <RedPacketTimeout size={"large"} {...redPacketTimeoutProps} />
+              </Box>
             </Box>
           ) : (
             <></>
@@ -114,24 +139,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
             <></>
           ),
         },
-        [RedPacketViewStep.TimeOutPanel]: {
-          view: redPacketTimeoutProps ? (
-            <Box
-              height={RedPacketSize.large.height}
-              width={RedPacketSize.large.width}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
-              <RedPacketTimeout
-                size={"large"}
-                {...{ ...redPacketTimeoutProps }}
-              />
-            </Box>
-          ) : (
-            <></>
-          ),
-        },
+
         [RedPacketViewStep.PreparePanel]: { view: <></> },
       });
     }, [

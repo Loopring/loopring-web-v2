@@ -11,6 +11,8 @@ import {
   RedPacketViewStep,
   useOpenModals,
   RedPacketDetailLimit,
+  NFTMedia,
+  BoxNFT,
 } from "@loopring-web/component-lib";
 import React from "react";
 import {
@@ -20,6 +22,7 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   myLog,
+  NFTWholeINFO,
   UIERROR_CODE,
   YEAR_DAY_SECOND_FORMAT,
 } from "@loopring-web/common-resources";
@@ -34,8 +37,12 @@ import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../api_wrapper";
 import { useRedPacketHistory } from "../../stores/localStore/redPacket";
+import { Box } from "@mui/material";
+import { getIPFSString } from "../../utils";
 
 export function useRedPacketModal() {
+  const ref = React.createRef();
+
   const {
     modals: {
       // isShowNFTDetail,
@@ -46,15 +53,44 @@ export function useRedPacketModal() {
   } = useOpenModals();
   const { account } = useAccount();
   const { updateRedpacketHash } = useRedPacketHistory();
-  const { chainId } = useSystem();
-
+  const { chainId, baseURL } = useSystem();
   const { tokenMap, idIndex } = useTokenMap();
   const { t } = useTranslation("common");
   const { callOpen } = useOpenRedpacket();
+
   const [detail, setDetail] =
     React.useState<undefined | sdk.LuckTokenClaimDetail>(undefined);
   const [qrcode, setQrcode] =
     React.useState<undefined | sdk.LuckyTokenItemForReceive>(undefined);
+  const ImageEle = React.useMemo(() => {
+    const _info = info as sdk.LuckyTokenItemForReceive;
+    if (isShow && _info.isNft && _info && _info.nftTokenInfo) {
+      return (
+        <BoxNFT flex={1} position={"relative"} className={"redPacketNFT"}>
+          <Box
+            position={"absolute"}
+            top={0}
+            right={0}
+            bottom={0}
+            left={0}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            <NFTMedia
+              ref={ref}
+              item={_info.nftTokenInfo as Partial<NFTWholeINFO>}
+              shouldPlay={true}
+              onNFTError={() => undefined}
+              isOrigin={true}
+              getIPFSString={getIPFSString}
+              baseURL={baseURL}
+            />
+          </Box>
+        </BoxNFT>
+      );
+    }
+  }, [info?.isNft, info?.nftDta, info]);
   const amountStr = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
     const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
@@ -127,6 +163,7 @@ export function useRedPacketModal() {
         //   _info.status === sdk.LuckyTokenItemStatus.OVER_DUE)
       ) {
         return {
+          ImageEle,
           memo: _info.info.memo,
           sender: _info.sender?.ens
             ? _info.sender?.ens
@@ -159,6 +196,7 @@ export function useRedPacketModal() {
         } else if (_info?.hash) {
           myLog("redPacketOpenProps", _info);
           return {
+            ImageEle,
             memo: _info.info.memo,
             amountStr,
             sender: _info.sender?.ens
@@ -211,6 +249,7 @@ export function useRedPacketModal() {
             symbol;
         }
         return {
+          ImageEle,
           memo: _info.info.memo,
           amountStr,
           myAmountStr,
@@ -241,6 +280,7 @@ export function useRedPacketModal() {
       ) {
         myLog("redPacketClockProps", _info);
         return {
+          ImageEle,
           memo: _info.info.memo,
           amountStr,
           amountClaimStr,
@@ -447,6 +487,7 @@ export function useRedPacketModal() {
       const relyNumber = detail.helpers?.length;
       const value =
         detail.helpers?.reduce((prev, item) => {
+          // @ts-ignore
           return prev.plus(item.amount);
         }, sdk.toBig(0)) ?? 0;
       const relyAmount = getValuePrecisionThousand(
@@ -467,6 +508,7 @@ export function useRedPacketModal() {
         detail.champion
       );
       return {
+        ImageEle,
         totalCount: detail.luckyToken.tokenAmount.totalCount,
         remainCount: detail.luckyToken.tokenAmount.remainCount,
         memo: _info.info.memo,
@@ -530,6 +572,7 @@ export function useRedPacketModal() {
           const url = `${Exchange}wallet?redpacket&id=${qrcode?.hash}&referrer=${account.accAddress}`;
           return {
             url,
+            ImageEle,
             textAddress: qrcode.sender?.ens
               ? qrcode.sender?.ens
               : getShortAddr(qrcode.sender?.address),
