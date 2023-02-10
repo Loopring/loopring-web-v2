@@ -228,6 +228,7 @@ const AssetTitleWrap = (rest: any) => {
 const Template: Story<any> = withTranslation("common")((...rest) => {
   const url = `https://loopring.io/wallet?redpacket&id=${"sfgffddd"}&referrer=${"0x234234"}`;
 
+  // @ts-ignore
   return (
     <Style>
       <MemoryRouter initialEntries={["/"]}>
@@ -379,19 +380,21 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
               amountClaimStr={""}
               myAmountStr={""}
               claimList={[]}
-              detail={{
-                champion: {
-                  accountId: 0,
-                  address: "",
-                  ens: "",
-                  amount: 0,
-                },
-                claimAmount: 0,
-                claims: [],
-                tokenId: 0,
-                hash: "",
-                helpers: [],
-              }}
+              detail={
+                {
+                  champion: {
+                    accountId: 0,
+                    address: "",
+                    ens: "",
+                    amount: 0,
+                  },
+                  claimAmount: 0,
+                  claims: [],
+                  tokenId: 0,
+                  hash: "",
+                  helpers: [],
+                } as any
+              }
               isShouldSharedRely={false}
               totalCount={0}
               remainCount={0}
