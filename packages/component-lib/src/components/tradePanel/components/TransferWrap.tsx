@@ -199,7 +199,7 @@ export const TransferWrap = <
       <Grid item alignSelf={"stretch"} position={"relative"}>
         {type === "NFT" ? (
           <NFTInput
-            {...{
+            {...({
               ...rest,
               isThumb,
               type,
@@ -213,7 +213,7 @@ export const TransferWrap = <
               coinMap,
               inputNFTDefaultProps: { label: "" },
               inputNFTRef: inputBtnRef,
-            }}
+            } as any)}
           />
         ) : (
           <BasicACoinTrade

@@ -30,6 +30,7 @@ import {
   RefreshIcon,
   ScanQRIcon,
   SoursURL,
+  TabTokenTypeIndex,
 } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 
@@ -46,11 +47,6 @@ const LoadingStyled = styled(Box)`
   height: 100%;
   width: 100%;
 `;
-
-enum TabIndex {
-  ERC20 = "ERC20",
-  NFT = "NFT",
-}
 
 export const RedPacketMarketPanel = ({
   setToastOpen,
@@ -80,20 +76,20 @@ export const RedPacketMarketPanel = ({
     setToastOpen,
   });
 
-  const [currentTab, setCurrentTab] = React.useState<TabIndex>(
-    match?.params.item ?? TabIndex.ERC20
+  const [currentTab, setCurrentTab] = React.useState<TabTokenTypeIndex>(
+    match?.params.item ?? TabTokenTypeIndex.ERC20
   );
 
-  const handleTabChange = (value: TabIndex) => {
+  const handleTabChange = (value: TabTokenTypeIndex) => {
     switch (value) {
-      case TabIndex.ERC20:
+      case TabTokenTypeIndex.ERC20:
         history.push("/redPacket/markets/ERC20");
-        setCurrentTab(TabIndex.ERC20);
+        setCurrentTab(TabTokenTypeIndex.ERC20);
         break;
-      case TabIndex.NFT:
+      case TabTokenTypeIndex.NFT:
       default:
         history.replace("/redPacket/markets/NFT");
-        setCurrentTab(TabIndex.NFT);
+        setCurrentTab(TabTokenTypeIndex.NFT);
         break;
     }
   };
@@ -245,12 +241,12 @@ export const RedPacketMarketPanel = ({
             variant="scrollable"
           >
             <Tab
-              label={t("labelRedPacketMarket" + TabIndex.ERC20)}
-              value={TabIndex.ERC20}
+              label={t("labelRedPacketMarket" + TabTokenTypeIndex.ERC20)}
+              value={TabTokenTypeIndex.ERC20}
             />
             <Tab
-              label={t("labelRedPacketMarket" + TabIndex.NFT)}
-              value={TabIndex.NFT}
+              label={t("labelRedPacketMarket" + TabTokenTypeIndex.NFT)}
+              value={TabTokenTypeIndex.NFT}
             />
           </Tabs>
           <Box

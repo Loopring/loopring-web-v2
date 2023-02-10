@@ -597,3 +597,8 @@ export type RedPacketOrderData<I> = XOR<
   fee: FeeInfo | undefined;
   __request__: any;
 } & Partial<sdk.LuckyTokenItemForSendV3>;
+
+export enum TabTokenTypeIndex {
+  ERC20 = "ERC20",
+  NFT = "NFT",
+}

@@ -40,6 +40,7 @@ import { LoopringAPI } from "../../api_wrapper";
 import { useRedPacketHistory } from "../../stores/localStore/redPacket";
 import { Box } from "@mui/material";
 import { getIPFSString } from "../../utils";
+import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 
 export function useRedPacketModal() {
   const ref = React.createRef();
@@ -542,7 +543,7 @@ export function useRedPacketModal() {
           // const symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
           myAmountStr =
             getValuePrecisionThousand(
-              _info.claimAmount,
+              detail.claimAmount,
               0,
               0,
               undefined,
@@ -575,7 +576,7 @@ export function useRedPacketModal() {
           symbol = tokenInfo.symbol;
           myAmountStr =
             getValuePrecisionThousand(
-              volumeToCountAsBigNumber(symbol, _info.claimAmount as any),
+              volumeToCountAsBigNumber(symbol, detail.claimAmount as any),
               tokenInfo.precision,
               tokenInfo.precision,
               undefined,
@@ -669,9 +670,12 @@ export function useRedPacketModal() {
           });
         } else if (qrcode?.hash) {
           const url = `${Exchange}wallet?redpacket&id=${qrcode?.hash}&referrer=${account.accAddress}`;
+
           return {
             url,
-            ImageEle,
+            imageEleUrl:
+              info.nftTokenInfo?.metadata?.imageSize[NFT_IMAGE_SIZES.large] ??
+              undefined,
             textAddress: qrcode.sender?.ens
               ? qrcode.sender?.ens
               : getShortAddr(qrcode.sender?.address),

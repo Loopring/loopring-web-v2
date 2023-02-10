@@ -44,9 +44,7 @@ import { TablePagination, BoxNFT } from "../basic-lib";
 import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
 import { NFTMedia } from "./nftMedia";
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -161,7 +159,7 @@ export const RedPacketBg = styled(Box)<
     }
 
     .middle {
-      height: 208px;
+      height: 228px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -184,9 +182,10 @@ export const RedPacketBg = styled(Box)<
   &.redPacketOpened,
   &.redPacketOpen {
     .redPacketNFT {
-      height: var(--nft-large-avatar);
+      margin-top: 48px;
+      padding-top: 0;
       width: var(--nft-large-avatar);
-      margin-top: 50px;
+      height: var(--nft-large-avatar);
     }
   }
 
@@ -216,6 +215,7 @@ export const RedPacketSize = {
 
 export const RedPacketQRCode = ({
   type = "default",
+  imageEleUrl,
   url,
   ...rest
 }: RedPacketDefault & RedPacketQRCodeProps) => {
@@ -293,6 +293,7 @@ export const RedPacketQRCode = ({
             ref={ref}
             {...{ ...RedPacketColorConfig[type], ...rest }}
             qrcodeRef={qrcodeRef}
+            imageEleUrl={imageEleUrl}
             qrCodeG={qrCodeG}
             type={type}
           />
@@ -890,6 +891,10 @@ export const RedPacketTimeout = ({
 const BoxStyle = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
+
+  .redPacketNFT {
+    padding-top: var(--nft-large-avatar);
+  }
 
   .top {
     border-radius: ${({ theme }) => theme.unit}px;

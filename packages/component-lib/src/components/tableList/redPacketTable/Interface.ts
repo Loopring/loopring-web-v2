@@ -5,9 +5,10 @@ import {
   ForexMap,
   TokenType,
 } from "@loopring-web/common-resources";
+import { UserNFTBalanceInfo } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
 export type RawDataRedPacketRecordsItem = {
-  token: CoinInfo<any> & { type: TokenType };
+  token: (CoinInfo<any> | sdk.UserNFTBalanceInfo) & { type: TokenType };
   type: sdk.LuckyTokenType;
   status: sdk.LuckyTokenItemStatus;
   validSince: number;
@@ -20,7 +21,7 @@ export type RawDataRedPacketRecordsItem = {
   rawData: sdk.LuckyTokenItemForReceive;
 };
 export type RawDataRedPacketReceivesItem = {
-  token: CoinInfo<any> & { type: TokenType };
+  token: (CoinInfo<any> | sdk.UserNFTBalanceInfo) & { type: TokenType };
   amount: string;
   type: sdk.LuckyTokenType;
   status: sdk.LuckyTokenItemStatus;

@@ -308,6 +308,7 @@ export type RedPacketQRPropsExtends = {
   textShared: string;
   textNo: string;
   textDes: string;
+  imageEleUrl?: string;
 };
 export type ColorConfig = {
   colorTop: string;
@@ -354,6 +355,7 @@ export const RedPacketQRCodeSvg = React.memo(
         textShared,
         textNo,
         textDes,
+        imageEleUrl,
       }: ColorConfig & {
         type: "default" | "official";
         qrcodeRef: React.Ref<SVGGElement>;
@@ -382,6 +384,7 @@ export const RedPacketQRCodeSvg = React.memo(
           setTextContent([_textContent1, _textContent2]);
         }
       }, [textContent]);
+
       // const qrcodeRef = React.createRef();
       return (
         <svg
@@ -471,10 +474,9 @@ export const RedPacketQRCodeSvg = React.memo(
               <stop offset="1" stopColor={endColor} />
             </linearGradient>
           </defs>
-
           <g
             ref={qrcodeRef}
-            transform={"translate(87 226)"}
+            transform={"translate(87 236)"}
             width="160"
             height="160"
             dangerouslySetInnerHTML={{ __html: qrCodeG ?? "" }}
@@ -482,6 +484,13 @@ export const RedPacketQRCodeSvg = React.memo(
             {/*<rect className={"qrcode"} width="160" height="160" fill="#D9D9D9" />*/}
             {/*{qrCodeG}*/}
           </g>
+          <image
+            transform={"translate(128 110)"}
+            href={imageEleUrl}
+            height="80"
+            width="80"
+          />
+
           <g transform={"translate(167 56)"}>
             {/*<rect x="15.5" y="45.5" width="280" height="21" />*/}
             <text
@@ -529,7 +538,7 @@ export const RedPacketQRCodeSvg = React.memo(
               dangerouslySetInnerHTML={{ __html: sanitize(textContent2) }}
             />
           </g>
-          <g transform={"translate(167 192)"}>
+          <g transform={"translate(167 202)"}>
             <text
               id={"amountStr"}
               strokeWidth="0"
@@ -561,7 +570,6 @@ export const RedPacketQRCodeSvg = React.memo(
               {textType}
             </text>
           </g>
-
           <g transform={"translate(167 438)"}>
             <text
               id={"textSendBy"}
@@ -578,7 +586,6 @@ export const RedPacketQRCodeSvg = React.memo(
               {textDes}
             </text>
           </g>
-
           <g transform={"translate(167 466)"}>
             <text
               id={"textSendBy"}
@@ -594,7 +601,6 @@ export const RedPacketQRCodeSvg = React.memo(
               dangerouslySetInnerHTML={{ __html: textSendBy }}
             />
           </g>
-
           <g transform={"translate(167 535)"}>
             <text
               className={"textShared"}

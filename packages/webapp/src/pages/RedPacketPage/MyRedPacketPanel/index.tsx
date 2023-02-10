@@ -12,7 +12,11 @@ import {
   useMyRedPacketReceiveTransaction,
   useMyRedPacketRecordTransaction,
 } from "./hooks";
-import { BackIcon, RowConfig } from "@loopring-web/common-resources";
+import {
+  BackIcon,
+  RowConfig,
+  TabTokenTypeIndex,
+} from "@loopring-web/common-resources";
 import { Box, Button, Tab, Tabs } from "@mui/material";
 
 enum TabIndex {
@@ -30,7 +34,7 @@ export const MyRedPacketPanel = ({
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const { etherscanBaseUrl, forexMap } = useSystem();
-  let match: any = useRouteMatch("/redPacket/records/:item");
+  let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
 
   const container = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
@@ -44,6 +48,10 @@ export const MyRedPacketPanel = ({
   const [currentTab, setCurrentTab] = React.useState<TabIndex>(
     match?.params.item ?? TabIndex.Received
   );
+  const [currentTokenTab, setCurrentTokenTab] =
+    React.useState<TabTokenTypeIndex>(
+      match?.params.type ?? TabTokenTypeIndex.ERC20
+    );
 
   const {
     showLoading: showloadingRecord,
@@ -51,16 +59,21 @@ export const MyRedPacketPanel = ({
     myRedPacketRecordList,
     myRedPacketRecordTotal,
     onItemClick,
-  } = useMyRedPacketRecordTransaction(setToastOpen);
+  } = useMyRedPacketRecordTransaction({
+    setToastOpen,
+    tabType: currentTokenTab,
+  });
   const {
     showLoading: showloadingReceive,
     getRedPacketReceiveList,
     redPacketReceiveList,
     redPacketReceiveTotal,
     onItemClick: onReceiveItemClick,
-  } = useMyRedPacketReceiveTransaction(setToastOpen);
+  } = useMyRedPacketReceiveTransaction({
+    setToastOpen,
+    tabType: currentTokenTab,
+  });
   const [pageSize, setPageSize] = React.useState(0);
-
   const handleTabChange = (value: TabIndex) => {
     switch (value) {
       case TabIndex.Send:
@@ -71,6 +84,24 @@ export const MyRedPacketPanel = ({
       default:
         history.replace("/redPacket/records/Received");
         setCurrentTab(TabIndex.Received);
+        break;
+    }
+  };
+  const handleTypeTabChange = (value: TabTokenTypeIndex) => {
+    switch (value) {
+      case TabTokenTypeIndex.ERC20:
+        history.push(
+          `/redPacket/records/${currentTab}/${TabTokenTypeIndex.ERC20}`
+        );
+        setCurrentTokenTab(TabTokenTypeIndex.ERC20);
+
+        break;
+      case TabTokenTypeIndex.NFT:
+      default:
+        history.replace(
+          `/redPacket/records/${currentTab}/${TabTokenTypeIndex.NFT}`
+        );
+        setCurrentTokenTab(TabTokenTypeIndex.NFT);
         break;
     }
   };
@@ -99,6 +130,21 @@ export const MyRedPacketPanel = ({
           {t("labelRedPacketRecordTitle")}
         </Button>
       </Box>
+      <Tabs
+        value={currentTokenTab}
+        onChange={(_event, value) => handleTypeTabChange(value)}
+        aria-label="l2-history-tabs"
+        variant="scrollable"
+      >
+        <Tab
+          label={t("labelRedPacketMarket" + TabTokenTypeIndex.ERC20)}
+          value={TabTokenTypeIndex.ERC20}
+        />
+        <Tab
+          label={t("labelRedPacketMarket" + TabTokenTypeIndex.NFT)}
+          value={TabTokenTypeIndex.NFT}
+        />
+      </Tabs>
       <StylePaper ref={container} flex={1}>
         <Tabs
           value={currentTab}

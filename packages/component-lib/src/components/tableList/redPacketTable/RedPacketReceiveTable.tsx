@@ -1,8 +1,19 @@
 import styled from "@emotion/styled";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
-import { Column, Table, TablePagination } from "../../basic-lib";
-import { globalSetup, myLog, RowConfig } from "@loopring-web/common-resources";
+import {
+  BoxNFT,
+  Column,
+  NftImage,
+  Table,
+  TablePagination,
+} from "../../basic-lib";
+import {
+  globalSetup,
+  myLog,
+  RowConfig,
+  TokenType,
+} from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   RawDataRedPacketReceivesItem,
@@ -105,9 +116,61 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
-          formatter: ({ row: { token } }: FormatterProps<R, unknown>) => (
-            <ColumnCoinDeep token={token} />
-          ),
+          formatter: ({ row: { token } }: FormatterProps<R, unknown>) => {
+            if (token.type === TokenType.single) {
+              return <ColumnCoinDeep token={token as any} />;
+            } else {
+              const { metadata } = token as sdk.UserNFTBalanceInfo;
+              return (
+                <Box
+                  className="rdg-cell-value"
+                  height={"100%"}
+                  display={"flex"}
+                  alignItems={"center"}
+                >
+                  {metadata?.imageSize ? (
+                    <Box
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      height={RowConfig.rowHeight + "px"}
+                      width={RowConfig.rowHeight + "px"}
+                      padding={1 / 4}
+                      style={{ background: "var(--field-opacity)" }}
+                    >
+                      {metadata?.imageSize && (
+                        <NftImage
+                          alt={metadata?.base?.name}
+                          onError={() => undefined}
+                          src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+                        />
+                      )}
+                    </Box>
+                  ) : (
+                    <BoxNFT
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      height={RowConfig.rowHeight + "px"}
+                      width={RowConfig.rowHeight + "px"}
+                    />
+                  )}
+                  <Typography
+                    color={"inherit"}
+                    flex={1}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                    paddingLeft={1}
+                    overflow={"hidden"}
+                    textOverflow={"ellipsis"}
+                    component={"span"}
+                  >
+                    {metadata?.base?.name ?? "NFT"}
+                  </Typography>
+                </Box>
+              );
+            }
+          },
         },
         {
           key: "Amount",

@@ -627,7 +627,9 @@ export const useCreateRedPacket = <
         chargeFeeTokenList.length &&
         !isFeeNotEnough.isFeeNotEnough &&
         redPacketOrder.belong &&
-        tokenMap[redPacketOrder.belong] &&
+        (redPacketOrder.tradeType === TRADE_TYPE.NFT
+          ? redPacketOrder.nftData
+          : tokenMap[redPacketOrder.belong]) &&
         redPacketOrder.fee &&
         redPacketOrder.fee.belong &&
         redPacketOrder.fee?.__raw__ &&
@@ -648,16 +650,26 @@ export const useCreateRedPacket = <
             isShow: true,
             step: AccountStep.RedPacketSend_WaitForAuth,
           });
-          const tradeToken = tokenMap[redPacketOrder.belong];
+          let tradeToken, tradeValue;
+          if (redPacketOrder.tradeType === TRADE_TYPE.NFT) {
+            tradeToken = {
+              tokenId: redPacketOrder.tokenId,
+              nftDta: redPacketOrder.nftData,
+            };
+            tradeValue = sdk.toBig(_tradeData.tradeValue);
+          } else {
+            //@ts-ignore
+            tradeToken = tokenMap[redPacketOrder.belong.toString()];
+            tradeValue = sdk
+              .toBig(_tradeData.tradeValue ?? 0)
+              .times("1e" + tradeToken.decimals);
+          }
           const feeToken = tokenMap[redPacketOrder.fee.belong];
           const feeRaw =
             redPacketOrder.fee.feeRaw ??
             redPacketOrder.fee.__raw__?.feeRaw ??
             0;
           const fee = sdk.toBig(feeRaw);
-          const tradeValue = sdk
-            .toBig(_tradeData.tradeValue ?? 0)
-            .times("1e" + tradeToken.decimals);
 
           const storageId = await LoopringAPI.userAPI.getNextStorageId(
             {
@@ -672,7 +684,14 @@ export const useCreateRedPacket = <
           myLog("memo", redPacketOrder.memo);
 
           const req: sdk.LuckyTokenItemForSendV3 = {
-            type: redPacketOrder.type,
+            type: {
+              ...redPacketOrder.type,
+              mode:
+                redPacketOrder.tradeType === TRADE_TYPE.NFT
+                  ? sdk.LuckyTokenClaimType.COMMON
+                  : // @ts-ignore
+                    redPacketOrder.type?.mode ?? sdk.LuckyTokenClaimType.COMMON,
+            },
             numbers: redPacketOrder.numbers,
             memo: redPacketOrder.memo ?? "",
             signerFlag: false as any,

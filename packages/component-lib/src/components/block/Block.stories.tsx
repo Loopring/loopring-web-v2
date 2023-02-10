@@ -316,11 +316,12 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
           <Grid item>
             <RedPacketClock
               type={"official"}
-              countDown={{
-                days: undefined,
-                hours: undefined,
-                seconds: undefined,
-                minutes: undefined,
+              validSince={0}
+              sender={".."}
+              amountStr={".."}
+              memo={".."}
+              showRedPacket={function (): void {
+                throw new Error("Function not implemented.");
               }}
             />
           </Grid>
@@ -342,6 +343,7 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
               textNo={"1231414"}
               url={url}
               // qrCodeG={qrCodeG}
+              textDes={""}
             />
           </Grid>
           <Grid item>
@@ -355,6 +357,7 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
               textType={"Relay Red Packet"}
               textShared={"shared"}
               textNo={"1231414"}
+              textDes={""}
             />
           </Grid>
           <Grid item>
@@ -368,13 +371,40 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
           </Grid>
           <Grid item>
             <RedPacketDetail
-              totalReceived={1}
-              countReceived={1000}
               amountStr={"1,000 LRC"}
               sender={"0x01....0101"}
               memo={
                 "back test back test back test back test  back test back test"
               }
+              amountClaimStr={""}
+              myAmountStr={""}
+              claimList={[]}
+              detail={{
+                champion: {
+                  accountId: 0,
+                  address: "",
+                  ens: "",
+                  amount: 0,
+                },
+                claimAmount: 0,
+                claims: [],
+                tokenId: 0,
+                hash: "",
+                helpers: [],
+              }}
+              isShouldSharedRely={false}
+              totalCount={0}
+              remainCount={0}
+              onShared={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+              page={0}
+              handlePageChange={function (
+                _page: number,
+                _limit?: number
+              ): void {
+                throw new Error("Function not implemented.");
+              }}
             />
           </Grid>
 

@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import {
+  amountStrCallback,
+  amountStrNFTCallback,
   LoopringAPI,
   useAccount,
   useTokenMap,
@@ -11,6 +13,7 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   SDK_ERROR_MAP_TO_UI,
+  TabTokenTypeIndex,
   TokenType,
 } from "@loopring-web/common-resources";
 import {
@@ -19,12 +22,15 @@ import {
   RedPacketViewStep,
   useOpenModals,
 } from "@loopring-web/component-lib";
+import { useRouteMatch } from "react-router-dom";
 
-export const useMyRedPacketRecordTransaction = <
-  R extends RawDataRedPacketRecordsItem
->(
-  setToastOpen: (props: any) => void
-) => {
+export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecordsItem>({
+  setToastOpen,
+  tabType,
+}: {
+  setToastOpen: (props: any) => void;
+  tabType: TabTokenTypeIndex;
+}) => {
   const { t } = useTranslation(["error"]);
 
   const {
@@ -35,11 +41,13 @@ export const useMyRedPacketRecordTransaction = <
     []
   );
   const { setShowRedPacket } = useOpenModals();
-
   const { idIndex, coinMap, tokenMap } = useTokenMap();
   const [myRedPacketRecordTotal, setMyRedPacketRecordTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
-
+  // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
+  React.useEffect(() => {
+    getMyRedPacketRecordTxList({ offset: 0 });
+  }, [tabType]);
   const getMyRedPacketRecordTxList = React.useCallback(
     async ({ offset, limit }: any) => {
       setShowLoading(true);
@@ -54,6 +62,9 @@ export const useMyRedPacketRecordTransaction = <
                 partitions: "0,1",
                 statuses: "0,1,2,3,4",
                 official: false,
+                offset,
+                limit,
+                isNft: tabType === "NFT" ? true : false,
               } as any,
               apiKey
             );
@@ -83,35 +94,46 @@ export const useMyRedPacketRecordTransaction = <
                 prev: RawDataRedPacketRecordsItem[],
                 item: sdk.LuckyTokenItemForReceive
               ) => {
-                const token = tokenMap[idIndex[item.tokenId]];
-                const tokenInfo = coinMap[token.symbol ?? ""];
                 // const type = coinMap[idIndex[item.tokenId] ?? ""];
-                const totalAmount = getValuePrecisionThousand(
-                  volumeToCountAsBigNumber(
-                    token.symbol,
-                    item.tokenAmount.totalAmount
-                  ),
-                  token.precision,
-                  token.precision,
-                  token.precision,
-                  false
-                );
-                const remainAmount = getValuePrecisionThousand(
-                  volumeToCountAsBigNumber(
-                    token.symbol,
-                    item.tokenAmount.remainAmount
-                  ),
-                  token.precision,
-                  token.precision,
-                  token.precision,
-                  false
-                );
+                let remainAmount, totalAmount, tokenInfo;
+                if (item.isNft) {
+                  tokenInfo = {
+                    ...item.nftTokenInfo,
+                    type: TokenType.nft,
+                    // icon:
+                  };
+                  totalAmount = amountStrNFTCallback(
+                    item.nftTokenInfo as any,
+                    item.tokenAmount.totalAmount ?? 0
+                  ).amount;
+                  remainAmount = amountStrNFTCallback(
+                    item.nftTokenInfo as any,
+                    item.tokenAmount.remainAmount ?? 0
+                  ).amount;
+                } else {
+                  const token = tokenMap[idIndex[item.tokenId]];
+                  tokenInfo = {
+                    ...coinMap[token.symbol ?? ""],
+                    name: token?.name,
+                    type: TokenType.single,
+                  };
+                  totalAmount = amountStrCallback(
+                    tokenMap,
+                    idIndex,
+                    item.tokenId,
+                    item.tokenAmount.totalAmount ?? 0
+                  ).amount;
+                  remainAmount = amountStrCallback(
+                    tokenMap,
+                    idIndex,
+                    item.tokenId,
+                    item.tokenAmount.remainAmount ?? 0
+                  ).amount;
+                }
 
                 prev.push({
                   token: {
                     ...tokenInfo,
-                    name: token.name,
-                    type: TokenType.single,
                   } as any,
                   type: item.type, //sdk.LuckyTokenItemStatus
                   status: item.status,
@@ -135,7 +157,7 @@ export const useMyRedPacketRecordTransaction = <
       }
       setShowLoading(false);
     },
-    [accountId, apiKey, setToastOpen, t, idIndex]
+    [accountId, apiKey, setToastOpen, t, idIndex, tabType]
   );
   const onItemClick = (item: sdk.LuckyTokenItemForReceive) => {
     setShowRedPacket({
@@ -158,13 +180,17 @@ export const useMyRedPacketRecordTransaction = <
     // pagination,
     // updateTickersUI,
   };
-};
+};;
 
 export const useMyRedPacketReceiveTransaction = <
   R extends RawDataRedPacketReceivesItem
->(
-  setToastOpen: (props: any) => void
-) => {
+>({
+  setToastOpen,
+  tabType,
+}: {
+  setToastOpen: (props: any) => void;
+  tabType: TabTokenTypeIndex;
+}) => {
   const { t } = useTranslation(["error"]);
 
   const {
@@ -179,6 +205,8 @@ export const useMyRedPacketReceiveTransaction = <
   const { idIndex, coinMap, tokenMap } = useTokenMap();
   const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
+  // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
+  let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
 
   const getRedPacketReceiveList = React.useCallback(
     async ({ offset, limit }: any) => {
@@ -190,6 +218,7 @@ export const useMyRedPacketReceiveTransaction = <
               {
                 offset,
                 limit,
+                isNft: tabType === "NFT" ? true : false,
               } as any,
               apiKey
             );
@@ -218,28 +247,38 @@ export const useMyRedPacketReceiveTransaction = <
               (prev: R[], item: sdk.LuckTokenHistory) => {
                 // @ts-ignore
                 const { luckyToken, claim: myClaim } = item;
-                const token = tokenMap[idIndex[luckyToken.tokenId]];
-                const tokenInfo = coinMap[token.symbol ?? ""];
 
-                const amount = getValuePrecisionThousand(
-                  volumeToCountAsBigNumber(
-                    token.symbol,
-                    myClaim?.amount ?? 0
-                    // luckyToken.tokenAmount.totalAmount
-                  ),
-                  token.precision,
-                  token.precision,
-                  token.precision,
-                  false
-                );
+                let amount, tokenInfo;
+                if (luckyToken.isNft) {
+                  amount = amountStrNFTCallback(
+                    luckyToken.nftTokenInfo as any,
+                    myClaim?.amount?.toString() ?? 0
+                  ).amount;
+                  tokenInfo = {
+                    ...luckyToken.nftTokenInfo,
+                    type: TokenType.nft,
+                  };
+                } else {
+                  const token = tokenMap[idIndex[luckyToken.tokenId]];
+                  tokenInfo = {
+                    ...coinMap[token.symbol ?? ""],
+                    name: token.name,
+                    type: TokenType.single,
+                  };
+                  amount = amountStrCallback(
+                    tokenMap,
+                    idIndex,
+                    luckyToken.tokenId,
+                    myClaim?.amount?.toString() ?? 0
+                  ).amount;
+                }
+
                 prev.push();
                 return [
                   ...prev,
                   {
                     token: {
                       ...tokenInfo,
-                      name: token.name,
-                      type: TokenType.single,
                     } as any,
                     amount,
                     type: luckyToken.type, //sdk.LuckyTokenItemStatus
@@ -261,9 +300,12 @@ export const useMyRedPacketReceiveTransaction = <
       }
       setShowLoading(false);
     },
-    [accountId, apiKey, setToastOpen, t, idIndex]
+    [accountId, apiKey, setToastOpen, t, idIndex, tabType]
   );
 
+  React.useEffect(() => {
+    getRedPacketReceiveList({ offset: 0 });
+  }, [tabType]);
   const onItemClick = (item: sdk.LuckTokenHistory) => {
     setShowRedPacket({
       isShow: true,

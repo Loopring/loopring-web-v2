@@ -53,6 +53,7 @@ export enum TokenType {
   lp = "lp",
   defi = "defi",
   dual = "dual",
+  nft = "nft",
 }
 export type PairMap<
   R extends { [key: string]: any },

@@ -109,7 +109,7 @@ export const getUserNFTReceiveList = (
 
   return { list };
 };
-const amountStrCallback = (
+export const amountStrCallback = (
   tokenMap: any,
   idIndex: any,
   tokenId: any,
@@ -130,13 +130,16 @@ const amountStrCallback = (
         // isTrade: true,
       }
     );
-    return amount + " " + symbol;
+    return {
+      amountStr: amount + " " + symbol,
+      amount,
+    };
   }
-  return "";
+  return {};
 
   // tokenMap[]
 };
-const amountStrNFTCallback = (
+export const amountStrNFTCallback = (
   nftInfo: sdk.UserNFTBalanceInfo,
   tokenAmount: string
 ) => {
@@ -153,11 +156,14 @@ const amountStrNFTCallback = (
         // isTrade: true,
       }
     );
-    return amount + " " + symbol;
+    return {
+      amountStr: amount + " " + symbol,
+      amount,
+    };
   }
-  return "";
+  return {};
   // tokenMap[]
-};
+};;
 
 export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
   const {
@@ -183,18 +189,19 @@ export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
       ? amountStrNFTCallback(
           luckToken.nftTokenInfo as any,
           luckToken.tokenAmount.totalAmount
-        )
+        ).amount
       : amountStrCallback(
           tokenMap,
           idIndex,
           luckToken.tokenId,
           luckToken.tokenAmount.totalAmount
-        ),
+        ).amount,
     myAmountStr:
       claim &&
       (luckToken.isNft
-        ? amountStrNFTCallback(luckToken.nftTokenInfo, claim)
-        : amountStrCallback(tokenMap, idIndex, luckToken.tokenId, claim)),
+        ? amountStrNFTCallback(luckToken.nftTokenInfo as any, claim).amount
+        : amountStrCallback(tokenMap, idIndex, luckToken.tokenId, claim)
+      ).amount,
     tokenInfo,
     claim,
   };

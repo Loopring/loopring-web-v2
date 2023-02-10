@@ -238,7 +238,7 @@ export const WithdrawWrap = <
       <Grid item alignSelf={"stretch"} position={"relative"}>
         {type === "NFT" ? (
           <NFTInput
-            {...{
+            {...({
               ...rest,
               isThumb,
               type,
@@ -252,7 +252,7 @@ export const WithdrawWrap = <
               coinMap,
               inputNFTDefaultProps: { label: "" },
               inputNFTRef: inputBtnRef,
-            }}
+            } as any)}
           />
         ) : (
           <BasicACoinTrade

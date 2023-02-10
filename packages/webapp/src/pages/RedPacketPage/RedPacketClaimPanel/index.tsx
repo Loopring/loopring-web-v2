@@ -22,12 +22,8 @@ import {
   RedPacketIcon,
   SagaStatus,
   TOAST_TIME,
+  TabTokenTypeIndex,
 } from "@loopring-web/common-resources";
-
-enum TabIndex {
-  ERC20 = "ERC20",
-  NFT = "NFT",
-}
 
 export const RedPacketClaimPanel = () => {
   const container = React.useRef<HTMLDivElement>(null);
@@ -46,20 +42,20 @@ export const RedPacketClaimPanel = () => {
       getClaimRedPacket();
     }
   }, [walletLayer2Status]);
-  const [currentTab, setCurrentTab] = React.useState<TabIndex>(
-    match?.params.item ?? TabIndex.ERC20
+  const [currentTab, setCurrentTab] = React.useState<TabTokenTypeIndex>(
+    match?.params.item ?? TabTokenTypeIndex.ERC20
   );
 
-  const handleTabChange = (value: TabIndex) => {
+  const handleTabChange = (value: TabTokenTypeIndex) => {
     switch (value) {
-      case TabIndex.ERC20:
+      case TabTokenTypeIndex.ERC20:
         history.push("/l2assets/assets/RedPacket/ERC20");
-        setCurrentTab(TabIndex.ERC20);
+        setCurrentTab(TabTokenTypeIndex.ERC20);
         break;
-      case TabIndex.NFT:
+      case TabTokenTypeIndex.NFT:
       default:
         history.replace("/l2assets/assets/RedPacket/NFT");
-        setCurrentTab(TabIndex.NFT);
+        setCurrentTab(TabTokenTypeIndex.NFT);
         break;
     }
   };
@@ -114,15 +110,15 @@ export const RedPacketClaimPanel = () => {
           variant="scrollable"
         >
           <Tab
-            label={t("labelRedPacketClaim" + TabIndex.ERC20)}
-            value={TabIndex.ERC20}
+            label={t("labelRedPacketClaim" + TabTokenTypeIndex.ERC20)}
+            value={TabTokenTypeIndex.ERC20}
           />
           <Tab
-            label={t("labelRedPacketClaim" + TabIndex.NFT)}
-            value={TabIndex.NFT}
+            label={t("labelRedPacketClaim" + TabTokenTypeIndex.NFT)}
+            value={TabTokenTypeIndex.NFT}
           />
         </Tabs>
-        {currentTab === TabIndex.ERC20 && (
+        {currentTab === TabTokenTypeIndex.ERC20 && (
           <>
             {!!redPacketClaimList.length ? (
               <Box className="tableWrapper table-divide-short">
@@ -151,7 +147,7 @@ export const RedPacketClaimPanel = () => {
             )}
           </>
         )}
-        {currentTab === TabIndex.NFT && <></>}
+        {currentTab === TabTokenTypeIndex.NFT && <></>}
       </StylePaper>
       <Toast
         alertText={toastOpen?.content ?? ""}
