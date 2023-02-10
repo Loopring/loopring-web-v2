@@ -56,10 +56,9 @@ export const usePublicNFTs = <
   pageSize?: number;
 }) => {
   const { renderNFTPromise, infoDetail, nftListReduce } = useNFTListDeep();
-  // const history = useHistory();
   const [filter, setFilter] = React.useState({});
-  // const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
-
+  const { page: page_redux, collection: collection_redux } =
+    useWalletLayer2NFT();
   const [{ listNFT, total, page }, setListNFTValue] = React.useState<{
     listNFT: NFT[];
     total: number;
@@ -128,8 +127,11 @@ export const usePublicNFTs = <
   );
   const { baseURL } = useSystem();
   React.useEffect(() => {
-    onFilterNFT({});
-  }, [page, collection?.id]);
+    // if (Number(page) !== Number(page_redux)) {
+    //
+    // }
+    onFilterNFT({ page: 1 });
+  }, [collection?.id]);
 
   return {
     collection: (collection ?? {}) as Partial<Co>,

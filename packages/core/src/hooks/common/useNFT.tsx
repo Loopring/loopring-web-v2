@@ -154,20 +154,27 @@ export const useNFTListDeep = <T extends Partial<NFTWholeINFO>>() => {
       tokenInfo.animationUrl &&
       tokenInfo?.animationUrl !== ""
     ) {
-      const req = await fetch(getIPFSString(tokenInfo?.animationUrl, baseURL), {
-        method: "HEAD",
-      });
-      // myLog("animationUrl", "content-type", req.headers.get("content-type"));
+      try {
+        const req = await fetch(
+          getIPFSString(tokenInfo?.animationUrl, baseURL),
+          {
+            method: "HEAD",
+          }
+        );
+        if (/audio/gi.test(req?.headers?.get("content-type") ?? "")) {
+          tokenInfo.__mediaType__ = Media.Audio;
+        }
+        if (/video/gi.test(req?.headers?.get("content-type") ?? "")) {
+          tokenInfo.__mediaType__ = Media.Video;
+        }
+        if (/image/gi.test(req?.headers?.get("content-type") ?? "")) {
+          tokenInfo.__mediaType__ = Media.Image;
+        }
+      } catch (error) {
+        console.log("nft animationUrl", error);
+      }
 
-      if (/audio/gi.test(req?.headers?.get("content-type") ?? "")) {
-        tokenInfo.__mediaType__ = Media.Audio;
-      }
-      if (/video/gi.test(req?.headers?.get("content-type") ?? "")) {
-        tokenInfo.__mediaType__ = Media.Video;
-      }
-      if (/image/gi.test(req?.headers?.get("content-type") ?? "")) {
-        tokenInfo.__mediaType__ = Media.Image;
-      }
+      // myLog("animationUrl", "content-type", req.headers.get("content-type"));
     }
 
     return tokenInfo;

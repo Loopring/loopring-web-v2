@@ -109,23 +109,6 @@ export const useAmmExit = ({
 
   React.useEffect(() => {
     if (
-      isShow &&
-      pair &&
-      pair.coinAInfo &&
-      pair.coinBInfo &&
-      tokenMap &&
-      ammPoolSnapshot &&
-      ammPoolSnapshot.poolAddress.toLowerCase() ===
-        tokenMap[
-          `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
-        ].address.toLowerCase()
-    ) {
-      initAmmData(pair, undefined, true);
-    }
-  }, [isShow && pair && ammPoolSnapshot?.poolAddress]);
-
-  React.useEffect(() => {
-    if (
       account.readyState === AccountStatus.ACTIVATED &&
       ammData?.coinA?.belong &&
       ammData?.coinB?.belong
@@ -157,7 +140,7 @@ export const useAmmExit = ({
       common: { ammPoolSnapshot },
     } = store.getState()._router_pageAmmPool;
 
-    if (ammCalcData && ammPoolSnapshot) {
+    if (ammCalcData && ammCalcData.lpCoin?.belong && ammPoolSnapshot) {
       const lpToken = tokenMap[ammCalcData.lpCoin.belong];
       const { miniLpVal } = sdk.makeExitAmmPoolMini(
         "0",
@@ -232,8 +215,13 @@ export const useAmmExit = ({
     }
   }, [pair, ammPoolSnapshot?.lp.volume, fees, isShow, ammData.slippage]);
   React.useEffect(() => {
-    updateExitFee();
-  }, [ammPoolSnapshot?.lp.volume]);
+    if (
+      ammPoolSnapshot?.lp.tokenId &&
+      idIndex[ammPoolSnapshot?.lp?.tokenId] === ammCalcData?.lpCoin?.belong
+    ) {
+      updateExitFee();
+    }
+  }, [ammPoolSnapshot?.lp.volume, ammCalcData?.lpCoin?.belong]);
 
   const initAmmData = React.useCallback(
     (pair: any, walletMap: any, isReset: boolean = false) => {
@@ -341,7 +329,7 @@ export const useAmmExit = ({
       myLog(
         "updateMiniTradeValue validAmt: fee, lpMinAmt",
         fee,
-        lpMinAmt.toString()
+        lpMinAmt?.toString()
       );
       if (isLoading) {
         return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined };
@@ -389,11 +377,15 @@ export const useAmmExit = ({
 
   const updateExitFee = React.useCallback(async () => {
     const account = store.getState().account;
+    const ammExit = store.getState()._router_pageAmmPool.ammExit;
     if (
-      pair?.coinBInfo?.simpleName &&
+      ammExit.ammCalcData?.lpCoinB?.belong &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
-      setIsLoading(true);
+      // if (ammExit.fees === undefined) {
+      //   setIsLoading(true);
+      // }
+
       try {
         const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT);
         // const ammExit = store.getState()._router_pageAmmPool.ammExit;
@@ -404,6 +396,7 @@ export const useAmmExit = ({
           });
         }
       } catch (error) {
+        console.log(error);
         setToastOpen({
           open: true,
           type: "error",
@@ -417,7 +410,7 @@ export const useAmmExit = ({
         fees: undefined,
       });
     }
-  }, [pair]);
+  }, []);
 
   const handleExit = React.useCallback(
     async ({ data, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
@@ -579,7 +572,7 @@ export const useAmmExit = ({
         setToastOpen({
           open: true,
           type: "error",
-          content: t("labelJoinAmmFailed"),
+          content: t("labelExitAmmFailed"),
         });
       } else if ((error as sdk.RESULT_INFO)?.code) {
         const errorItem =
@@ -693,16 +686,30 @@ export const useAmmExit = ({
           `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
         ].address.toLowerCase()
     ) {
-      initAmmData(pair, walletMap);
+      const { ammData } = store.getState()._router_pageAmmPool.ammExit;
+      if (
+        ammData?.coinLP?.belong ===
+        `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
+      ) {
+        initAmmData(pair, walletMap);
+      } else {
+        setIsLoading(true);
+        initAmmData(pair, walletMap, true);
+      }
       await updateExitFee();
-      setIsLoading(false);
     }
   }, [pair?.coinBInfo?.simpleName, ammPoolSnapshot]);
+
   useWalletLayer2Socket({ walletLayer2Callback });
+  // React.useEffect(() => {
+  // }, [isShow]);
 
   return {
     ammCalcData,
-    ammData,
+    ammData: {
+      ...ammData,
+      // ...isLoading,
+    },
     handleAmmPoolEvent,
     btnStatus,
     onAmmClick,
