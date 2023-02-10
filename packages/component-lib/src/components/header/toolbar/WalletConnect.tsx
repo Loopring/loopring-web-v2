@@ -3,13 +3,13 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import {
   AccountStatus,
+  CircleIcon,
   getShortAddr,
   LoadingIcon,
   LockIcon,
-  UnConnectIcon,
-  CircleIcon,
   myLog,
   SagaStatus,
+  UnConnectIcon,
 } from "@loopring-web/common-resources";
 import { Typography } from "@mui/material";
 import { Button } from "../../basic-lib";
@@ -17,6 +17,7 @@ import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
+
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;

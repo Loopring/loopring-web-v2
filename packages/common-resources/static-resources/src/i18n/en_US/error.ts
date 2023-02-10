@@ -52,4 +52,10 @@ export default {
   errorDualExpired: "The order has expired.",
   errorPrivateKey: "Signature Wrong private key",
   errorNoResponse: "No response!",
+  errorMinError: "Minimum of {{value}}",
+  errorLengthLimit: "Length is limit",
+  errorRedpacketEmpty: "Red Packet is Empty",
+  errorRedpacketClaimed: "You already opened Red Packet",
+  errorRedpacketClaimOut: "You opened the Red Packet Too Later",
+  errorRedpacketClaimTimeOut: "You opened the Red Packet Too Later",
 };

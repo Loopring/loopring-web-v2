@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, Grid, Link, Typography, LinearProgress } from "@mui/material";
+import { Box, Grid, LinearProgress, Link, Typography } from "@mui/material";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
@@ -10,8 +10,8 @@ import {
   useWalletLayer2,
 } from "@loopring-web/core";
 import {
-  SoursURL,
   getValuePrecisionThousand,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import { useSettings, VipPanel as VipView } from "@loopring-web/component-lib";
 import { useGetVIPInfo } from "./hooks";

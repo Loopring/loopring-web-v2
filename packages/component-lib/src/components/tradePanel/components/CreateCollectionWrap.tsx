@@ -1,11 +1,4 @@
-import {
-  Box,
-  FormLabel,
-  Grid,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, FormLabel, Grid, Tooltip, Typography } from "@mui/material";
 import React from "react";
 import {
   BtnInfo,
@@ -14,12 +7,13 @@ import {
   IpfsFile,
   IPFSSourceUpload,
   TextareaAutosizeStyled,
+  TextField,
 } from "../../basic-lib";
 import { Trans, useTranslation } from "react-i18next";
 import {
   CollectionMeta,
-  Info2Icon,
   htmlDecode,
+  Info2Icon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { TradeBtnStatus } from "../Interface";

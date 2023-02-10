@@ -1,4 +1,4 @@
-import { Grid, Step, StepLabel, Stepper } from "@mui/material";
+import { Box, Grid, Step, StepLabel, Stepper } from "@mui/material";
 import { BackIcon, DropDownIcon } from "@loopring-web/common-resources";
 import { SwitchData, TradeBtnStatus } from "../../Interface";
 import { IconButtonStyled } from "../Styled";
@@ -33,14 +33,19 @@ export const ToolBarItemBack = <T extends any>({
   );
 };
 
-const BoxStyle = styled(Grid)`
+const BoxStyle = styled(Box)`
   .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
     height: var(--btn-icon-size-large);
     width: var(--btn-icon-size-large);
 
     .MuiStepIcon-text {
       font-size: ${({ theme }) => theme.fontDefault.body1};
+      fill: var(--color-text-button);
     }
+  }
+
+  .MuiStepConnector-root.Mui-active .MuiStepConnector-line {
+    border-color: var(--color-primary);
   }
 ` as typeof Grid;
 

@@ -5,21 +5,22 @@ import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
   Box,
   Grid,
-  ListItem,
   List,
-  Typography,
+  ListItem,
   ListItemText,
+  Typography,
 } from "@mui/material";
 import {
+  AssetsRawDataItem,
   CloseIcon,
   DropDownIcon,
   EmptyValueTag,
   FeeInfo,
   globalSetup,
   IBData,
-  LoadingIcon,
-  AssetsRawDataItem,
   Info2Icon,
+  LoadingIcon,
+  TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -32,8 +33,8 @@ import { TradeBtnStatus } from "../Interface";
 import {
   Button,
   IconClearStyled,
-  TextField,
   useSettings,
+  TextField,
 } from "../../../index";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { FeeToggle } from "./tool/FeeList";
@@ -130,7 +131,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
-      direction={"column"} /* minHeight={540} */
+      direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}
       flex={1}
@@ -287,7 +288,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
               <BasicACoinTrade
                 {...{
                   ...rest,
-                  type: "TOKEN",
+                  type: TRADE_TYPE.TOKEN,
                   t,
                   walletMap,
                   tradeData: {

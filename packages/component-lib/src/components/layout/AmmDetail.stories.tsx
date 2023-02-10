@@ -37,8 +37,7 @@ import moment from "moment";
 import { TradeTitle } from "../block";
 import { Header } from "../header";
 import React from "react";
-import { AmmPanelType, AmmProps } from "../tradePanel";
-import { AmmPanel } from "../tradePanel";
+import { AmmPanel, AmmPanelType, AmmProps } from "../tradePanel";
 import { Currency } from "@loopring-web/loopring-sdk";
 
 const Style = styled.div``;

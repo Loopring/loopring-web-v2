@@ -1,14 +1,22 @@
 import {
   AccountStatus,
+  AssetsRawDataItem,
   Explorer,
   FeeInfo,
+  getValuePrecisionThousand,
+  LIVE_FEE_TIMES,
   myLog,
+  NFTWholeINFO,
+  REDPACKET_ORDER_LIMIT,
+  REDPACKET_ORDER_NFT_LIMIT,
+  RedPacketOrderData,
+  SUBMIT_PANEL_AUTO_CLOSE,
   TOAST_TIME,
+  TRADE_TYPE,
   UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
 import {
-  RedPacketOrderData,
   store,
   useAccount,
   useModalData,
@@ -18,9 +26,11 @@ import {
 import {
   AccountStep,
   CreateRedPacketProps,
+  RedPacketViewStep,
+  SwitchData,
   useOpenModals,
 } from "@loopring-web/component-lib";
-import React from "react";
+import React, { useCallback } from "react";
 import { makeWalletLayer2 } from "../help";
 import {
   useChargeFees,
@@ -39,43 +49,77 @@ import { DAYS } from "../../defs";
 import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useGetAssets } from "@loopring-web/webapp/src/pages/AssetPage/AssetPanel/hook";
+import { useRedPacketConfig } from "../../stores/redPacket";
+import { useHistory } from "react-router-dom";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
   I,
-  F extends FeeInfo,
-  LuckInfo
->(): CreateRedPacketProps<T, I, F, LuckInfo> => {
+  F = FeeInfo,
+  NFT = NFTWholeINFO
+>({
+  assetsRawData,
+  isShow = false,
+}: {
+  assetsRawData: AssetsRawDataItem[];
+  isShow?: boolean;
+}): {
+  createRedPacketProps: CreateRedPacketProps<T, I, F, NFT>;
+  retryBtn: (isHardware?: boolean) => void;
+} => {
   const { exchangeInfo, chainId } = useSystem();
   const { tokenMap, totalCoinMap } = useTokenMap();
-  const { assetsRawData } = useGetAssets();
-
+  // const tradeType
+  const {
+    allowTrade: { transfer: transferEnabale },
+  } = useSystem();
   const {
     setShowAccount,
-    // modals: {
-    //   isShow: { info },
-    // },
+    setShowRedPacket,
+    modals: {
+      isShowAccount: { info },
+    },
   } = useOpenModals();
-  const { redPacketOrder, resetRedPacketOrder, updateRedPacketOrder } =
-    useModalData();
-  const { account } = useAccount();
-  const { checkHWAddr, updateHW } = useWalletInfo();
+  const [selectNFT, setSelectNFT] = React.useState<NFT | undefined>(undefined);
 
-  // const [balanceNotEnough, setBalanceNotEnough] = React.useState(false);
-  // const { offRampValue } = useModalData();
+  const { redPacketConfigs } = useRedPacketConfig();
+  const { redPacketOrder, updateRedPacketOrder, resetRedPacketOrder } =
+    useModalData();
+  const { account, status: accountStatus } = useAccount();
+  const { checkHWAddr, updateHW } = useWalletInfo();
+  const feeProps =
+    redPacketOrder.tradeType === "TOKEN"
+      ? {
+          requestType: sdk.OffchainFeeReqType.TRANSFER,
+        }
+      : {
+          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+          tokenAddress: redPacketOrder?.tokenAddress,
+        };
+
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
     checkFeeIsEnough,
+    resetIntervalTime,
     // setIsFeeNotEnough,
   } = useChargeFees({
-    requestType: sdk.OffchainFeeReqType.TRANSFER,
+    ...feeProps,
     updateData: ({ fee }) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      updateRedPacketOrder({ ...redPacketOrder, fee });
+      if (redPacketOrder.tradeType === "TOKEN") {
+        updateRedPacketOrder({
+          ...(redPacketOrder as any),
+          fee: fee,
+        });
+      } else if (
+        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
+        redPacketOrder.tokenAddress
+      ) {
+        updateRedPacketOrder({ ...redPacketOrder, fee: fee });
+      }
     },
   });
 
@@ -85,70 +129,281 @@ export const useCreateRedPacket = <
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
     setWalletMap(walletMap);
-  }, []);
+    if (
+      TRADE_TYPE.TOKEN === redPacketOrder.tradeType &&
+      !redPacketOrder.belong &&
+      walletMap
+    ) {
+      resetDefault(TRADE_TYPE.TOKEN);
+    } else if (
+      TRADE_TYPE.TOKEN === redPacketOrder.tradeType &&
+      walletMap &&
+      walletMap[redPacketOrder.belong]
+    ) {
+      handleOnDataChange({
+        balance: walletMap[redPacketOrder.belong]?.count,
+      } as T);
+    }
+  }, [redPacketOrder, accountStatus]);
+  const handleOnDataChange = React.useCallback(
+    (tradeData: Partial<T>) => {
+      const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
+      myLog("redPacketOrder handleOnDataChange", redPacketOrder, tradeData);
+      if (tradeData.tradeType) {
+        resetDefault(tradeData.tradeType);
+      } else {
+        updateRedPacketOrder({ ...redPacketOrder, ...tradeData });
+      }
+    },
+    [updateRedPacketOrder]
+  );
+  const resetDefault = React.useCallback(
+    (value: TRADE_TYPE) => {
+      if (info?.isRetry) {
+        checkFeeIsEnough();
+        return;
+      }
+      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
 
+      if (TRADE_TYPE.TOKEN === value && !redPacketOrder.belong && walletMap) {
+        const keys = Reflect.ownKeys(walletMap);
+        for (let key in keys) {
+          const keyVal = keys[key];
+          const walletInfo = walletMap[keyVal];
+          if (sdk.toBig(walletInfo.count).gt(0)) {
+            updateRedPacketOrder({
+              belong: keyVal as any,
+              tradeValue: undefined,
+              fee: feeInfo,
+              balance: walletInfo?.count,
+              memo: "",
+              numbers: undefined,
+              validUntil: 1,
+              validSince: Date.now(),
+              tradeType: value,
+            } as unknown as T);
+            break;
+          }
+        }
+      } else if (
+        TRADE_TYPE.TOKEN === value &&
+        redPacketOrder.belong &&
+        walletMap
+      ) {
+        const walletInfo = walletMap[redPacketOrder.belong];
+        updateRedPacketOrder({
+          fee: feeInfo,
+          belong: redPacketOrder.belong as any,
+          tradeValue: undefined as any,
+          balance: walletInfo?.count,
+          memo: "",
+          numbers: undefined,
+          validSince: Date.now(),
+          validUntil: 1,
+          tradeType: value,
+        } as unknown as T);
+      } else if (TRADE_TYPE.NFT === value) {
+        resetRedPacketOrder(value);
+      } else {
+        updateRedPacketOrder({
+          fee: feeInfo,
+          belong: redPacketOrder.belong,
+          tradeValue: undefined,
+          balance: undefined,
+          memo: "",
+          numbers: undefined,
+          validSince: Date.now(),
+          validUntil: 1,
+          tradeType: "TOKEN",
+        } as unknown as T);
+      }
+    },
+    [
+      checkFeeIsEnough,
+      walletMap,
+      handleOnDataChange,
+      feeInfo,
+      redPacketOrder.belong,
+      info?.isRetry,
+    ]
+  );
   useWalletLayer2Socket({ walletLayer2Callback });
 
-  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
+  const {
+    btnStatus,
+    enableBtn,
+    disableBtn,
+    setLabelAndParams,
+    resetBtnInfo,
+    btnInfo,
+  } = useBtnStatus();
 
-  // React.useEffect(() => {
-  //   if (
-  //     info?.transferRamp === AccountStep.RedPacketSend_Failed &&
-  //     info?.trigger == "checkFeeIsEnough"
-  //   ) {
-  //     checkFeeIsEnough();
-  //   }
-  // }, [info?.transferRamp]);
+  const calcNumberAndAmount = React.useCallback(() => {
+    const redPacketOrder = store.getState()._router_modalData
+      .redPacketOrder as T;
+    const eachValue = sdk
+      .toBig(redPacketOrder?.tradeValue ?? 0)
+      .div(redPacketOrder.numbers ?? 1);
+    return {
+      tradeValue: redPacketOrder?.tradeValue,
+      eachValue:
+        redPacketOrder.tradeType === TRADE_TYPE.TOKEN
+          ? eachValue.toString()
+          : eachValue.toFixed(),
+    };
+  }, []);
+  const history = useHistory();
 
   const checkBtnStatus = React.useCallback(() => {
+    const _tradeData = calcNumberAndAmount();
+    resetBtnInfo();
     if (
       tokenMap &&
       chargeFeeTokenList.length &&
       !isFeeNotEnough.isFeeNotEnough &&
-      redPacketOrder.belong &&
-      tokenMap[redPacketOrder.belong] &&
       redPacketOrder.fee &&
-      redPacketOrder.fee.belong
+      redPacketOrder.fee?.belong &&
+      redPacketOrder.numbers &&
+      redPacketOrder.numbers > 0 &&
+      redPacketOrder.validUntil &&
+      Number(redPacketOrder.validUntil) >= 1 &&
+      Number(redPacketOrder.validUntil) <= DAYS &&
+      redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
+      _tradeData.tradeValue &&
+      redPacketOrder.memo &&
+      redPacketOrder.memo?.trim().length > 0
     ) {
-      const sellToken = tokenMap[redPacketOrder.belong];
+      let tradeToken: any = {},
+        balance,
+        tradeValue,
+        isExceedBalance,
+        tooSmall,
+        tooLarge;
       const feeToken = tokenMap[redPacketOrder.fee.belong];
       const feeRaw =
         redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
       const fee = sdk.toBig(feeRaw);
-      const balance = sdk
-        .toBig(redPacketOrder.balance ?? 0)
-        .times("1e" + sellToken.decimals);
-      const tradeValue = sdk
-        .toBig(redPacketOrder.tradeValue ?? 0)
-        .times("1e" + sellToken.decimals);
-      const isExceedBalance = tradeValue
-        .plus(feeToken.tokenId === sellToken.tokenId ? fee : "0")
-        .gt(balance);
-      myLog(
-        "isExceedBalance",
-        isExceedBalance,
-        fee.toString(),
-        tradeValue.toString()
-      );
-      if (tradeValue && !isExceedBalance) {
+      if (
+        (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
+        redPacketOrder.belong &&
+        tokenMap[(redPacketOrder as T).belong as any]
+      ) {
+        tradeToken = tokenMap[(redPacketOrder as T).belong as any];
+        balance = sdk
+          .toBig((redPacketOrder as T).balance ?? 0)
+          .times("1e" + tradeToken.decimals);
+        tradeValue = sdk
+          .toBig(_tradeData.tradeValue ?? 0)
+          .times("1e" + tradeToken.decimals);
+        isExceedBalance = tradeValue
+          .plus(feeToken.tokenId === tradeToken.tokenId ? fee : "0")
+          .gt(balance);
+        const eachValue = sdk
+          .toBig(_tradeData.eachValue ?? 0)
+          .times("1e" + tradeToken.decimals);
+        tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts.minimum);
+        tooLarge = tradeValue.gt(tradeToken.luckyTokenAmounts.maximum);
+      } else {
+        balance = redPacketOrder.balance ?? 0;
+        tradeValue = sdk.toBig(redPacketOrder.tradeValue);
+        isExceedBalance = tradeValue.gt(balance);
+        const eachValue = sdk.toBig(_tradeData.eachValue ?? 0);
+        tooSmall = eachValue.lt(1);
+        tooLarge = tradeValue
+          // @ts-ignore
+          .div(tradeValue?.numbers ?? 1)
+          .gt(REDPACKET_ORDER_NFT_LIMIT);
+      }
+
+      if (
+        tradeValue &&
+        !isExceedBalance &&
+        !tooSmall &&
+        !tooLarge &&
+        ((redPacketOrder.tradeType === TRADE_TYPE.NFT &&
+          redPacketOrder.nftData) ||
+          // @ts-ignore
+          redPacketOrder.tradeType === TRADE_TYPE.TOKEN) &&
+        redPacketConfigs?.luckTokenAgents
+      ) {
         enableBtn();
         return;
       } else {
         disableBtn();
-        // if (isExceedBalance && feeToken.tokenId === sellToken.tokenId) {
-        //   // setIsFeeEnough(isFeeNotEnoughtrue);
-        //   // setIsFeeNotEnough({
-        //   //   isFeeNotEnough: true,
-        //   //   isOnLoading: false,
-        //   // });
-        //   setBalanceNotEnough(true);
-        // } else
-        // if (isExceedBalance) {
-        //   setBalanceNotEnough(true);
-        // }
-        // else {
-        //
-        // }
+        if (!redPacketConfigs?.luckTokenAgents) {
+          setLabelAndParams("labelRedPacketWaitingBlock", {});
+        } else if (isExceedBalance && tradeValue.gt(balance)) {
+          setLabelAndParams("labelRedPacketsInsufficient", {
+            symbol:
+              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN
+                ? (tradeToken.symbol as string)
+                : "NFT",
+          });
+        } else if (
+          isExceedBalance &&
+          (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
+          feeToken.tokenId === tradeToken.tokenId
+        ) {
+          setLabelAndParams("labelReserveFee", {
+            symbol: tradeToken.symbol as string,
+          });
+        } else if (isFeeNotEnough) {
+          setLabelAndParams("labelRedPacketFee", {});
+        } else if (tooSmall || redPacketOrder.numbers > REDPACKET_ORDER_LIMIT) {
+          if (tooSmall) {
+            setLabelAndParams(
+              "labelRedPacketsMin",
+              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
+                ? {
+                    value: getValuePrecisionThousand(
+                      sdk
+                        .toBig(tradeToken.luckyTokenAmounts.minimum ?? 0)
+                        .div("1e" + tradeToken.decimals),
+                      tradeToken.precision,
+                      tradeToken.precision,
+                      tradeToken.precision,
+                      false,
+                      { floor: false, isAbbreviate: true }
+                    ),
+                    symbol: tradeToken.symbol,
+                  }
+                : { value: 1, symbol: "NFT" }
+            );
+          } else {
+            let value =
+              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
+                ? tradeValue
+                    .div(tradeToken.luckyTokenAmounts.minimum)
+                    .toFixed(0, 1)
+                : tradeValue;
+            const limit =
+              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN
+                ? REDPACKET_ORDER_LIMIT
+                : REDPACKET_ORDER_NFT_LIMIT;
+            setLabelAndParams("labelRedPacketsSplitNumber", {
+              value: (Number(value) <= limit ? balance : limit).toString(),
+            });
+          }
+        } else if (tooLarge) {
+          setLabelAndParams(
+            "labelRedPacketsMax",
+            (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
+              ? {
+                  value: getValuePrecisionThousand(
+                    sdk
+                      .toBig(tradeToken.luckyTokenAmounts.maximum ?? 0)
+                      .div("1e" + tradeToken.decimals),
+                    tradeToken.precision,
+                    tradeToken.precision,
+                    tradeToken.precision,
+                    false,
+                    { floor: true, isAbbreviate: true }
+                  ),
+                  symbol: tradeToken.symbol,
+                }
+              : { value: REDPACKET_ORDER_NFT_LIMIT, symbol: "NFT" }
+          );
+        }
       }
     }
     disableBtn();
@@ -162,31 +417,48 @@ export const useCreateRedPacket = <
     redPacketOrder.belong,
     redPacketOrder.fee,
     redPacketOrder.tradeValue,
+    redPacketOrder.numbers,
+    redPacketOrder.memo,
+    redPacketConfigs?.luckTokenAgents,
   ]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [chargeFeeTokenList, isFeeNotEnough.isFeeNotEnough, redPacketOrder]);
+  }, [
+    chargeFeeTokenList,
+    isFeeNotEnough.isFeeNotEnough,
+    redPacketOrder?.numbers,
+    redPacketOrder.balance,
+    redPacketOrder.belong,
+    redPacketOrder.fee,
+    redPacketOrder.tradeValue,
+    redPacketOrder.memo,
+    redPacketConfigs?.luckTokenAgents,
+    redPacketOrder?.validUntil,
+  ]);
   const processRequest = React.useCallback(
     async (
-      request: sdk.OriginTransferRequestV3,
+      request: sdk.LuckyTokenItemForSendV3,
       isNotHardwareWallet: boolean
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
+      const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
 
       try {
         if (
           connectProvides.usedWeb3 &&
-          LoopringAPI.userAPI &&
-          window.rampInstance &&
+          LoopringAPI.luckTokenAPI &&
           isAccActivated()
         ) {
           let isHWAddr = checkHWAddr(account.accAddress);
           if (!isHWAddr && !isNotHardwareWallet) {
             isHWAddr = true;
           }
-          updateRedPacketOrder({ __request__: request } as any);
-          const response = await LoopringAPI.userAPI.submitInternalTransfer(
+          updateRedPacketOrder({
+            ...redPacketOrder,
+            __request__: request,
+          } as any);
+          const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSend(
             {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
@@ -204,7 +476,7 @@ export const useCreateRedPacket = <
             }
           );
 
-          myLog("submitInternalTransfer:", response);
+          myLog("submit sendLuckTokenSend:", response);
           if (
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
@@ -222,25 +494,60 @@ export const useCreateRedPacket = <
             isShow: true,
             step: AccountStep.RedPacketSend_Success,
             info: {
+              scope: request.type.scope,
               hash:
                 Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
+              shared:
+                request.type.scope == sdk.LuckyTokenViewType.PUBLIC
+                  ? () => {
+                      setShowAccount({ isShow: false });
+                      setShowRedPacket({
+                        isShow: true,
+                        info: {
+                          // ...luckTokenInfo,
+                          sender: account.accountId,
+                          hash: (response as sdk.TX_HASH_API).hash,
+                        },
+                        step: RedPacketViewStep.QRCodePanel,
+                      });
+                    }
+                  : undefined,
             },
           });
-          if (window.rampInstance) {
-            try {
-              console.log("RAMP WEIGHT display on transfer done");
-              // @ts-ignore
-              window.rampInstance.domNodes.overlay.style.display = "";
-            } catch (e) {
-              console.log("RAMP WEIGHT hidden failed");
-            }
-          }
+
           if (isHWAddr) {
             myLog("......try to set isHWAddr", isHWAddr);
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
           walletLayer2Service.sendUserUpdate();
-          resetRedPacketOrder();
+          history.push(
+            `/redpacket?redPacketHash=${(response as sdk.TX_HASH_API)?.hash}`
+          );
+          resetDefault(TRADE_TYPE.TOKEN);
+          if (
+            request.type.scope == sdk.LuckyTokenViewType.PRIVATE &&
+            (response as sdk.TX_HASH_API)?.hash
+          ) {
+            setShowAccount({ isShow: false });
+            setShowRedPacket({
+              isShow: true,
+              info: {
+                // ...luckTokenInfo,
+                sender: account.accountId,
+                hash: (response as sdk.TX_HASH_API).hash,
+              },
+              step: RedPacketViewStep.QRCodePanel,
+            });
+          } else {
+            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+            if (
+              store.getState().modals.isShowAccount.isShow &&
+              store.getState().modals.isShowAccount.step ==
+                AccountStep.RedPacketSend_Success
+            ) {
+              setShowAccount({ isShow: false });
+            }
+          }
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
@@ -280,39 +587,60 @@ export const useCreateRedPacket = <
                   : e ?? {}),
               },
             });
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_Failed,
-            });
 
             break;
         }
       }
     },
     [
-      // account,
-      // chainId,
-      // checkHWAddr,
-      // resetTransferRampData,
-      // setShowAccount,
-      // updateHW,
-      // updateTransferRampData,
+      account,
+      checkHWAddr,
+      chainId,
+      setShowAccount,
+      redPacketOrder.belong,
+      checkFeeIsEnough,
+      resetDefault,
+      updateHW,
     ]
   );
-  const onSubmitClick = React.useCallback(
-    async (transferRampValue, isFirstTime: boolean = true) => {
+  React.useEffect(() => {
+    if (isShow) {
+      resetDefault(TRADE_TYPE.TOKEN);
+    } else {
+      resetIntervalTime();
+    }
+    return () => {
+      resetIntervalTime();
+    };
+  }, [isShow]);
+  const onCreateRedPacketClick = React.useCallback(
+    async (_redPacketOrder, isHardwareRetry: boolean = false) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
-
+      const redPacketOrder = store.getState()._router_modalData
+        .redPacketOrder as T;
+      const _tradeData = calcNumberAndAmount();
       if (
         readyState === AccountStatus.ACTIVATED &&
-        tokenMap &&
         LoopringAPI.userAPI &&
+        tokenMap &&
         exchangeInfo &&
-        connectProvides.usedWeb3 &&
-        transferRampValue.address !== "*" &&
-        transferRampValue?.fee &&
-        transferRampValue?.fee.belong &&
-        transferRampValue.fee?.__raw__ &&
+        chargeFeeTokenList.length &&
+        !isFeeNotEnough.isFeeNotEnough &&
+        redPacketOrder.belong &&
+        tokenMap[redPacketOrder.belong] &&
+        redPacketOrder.fee &&
+        redPacketOrder.fee.belong &&
+        redPacketOrder.fee?.__raw__ &&
+        redPacketOrder.numbers &&
+        redPacketOrder.numbers > 0 &&
+        _tradeData.tradeValue &&
+        redPacketOrder.type &&
+        redPacketOrder.memo &&
+        redPacketOrder?.validUntil &&
+        redPacketOrder?.validUntil >= 1 &&
+        redPacketOrder?.validUntil <= DAYS &&
+        redPacketConfigs?.luckTokenAgents &&
+        redPacketOrder.memo?.trim().length > 0 &&
         eddsaKey?.sk
       ) {
         try {
@@ -320,55 +648,66 @@ export const useCreateRedPacket = <
             isShow: true,
             step: AccountStep.RedPacketSend_WaitForAuth,
           });
-
-          const sellToken = tokenMap[transferRampValue.belong as string];
-          const feeToken = tokenMap[transferRampValue.fee.belong];
+          const tradeToken = tokenMap[redPacketOrder.belong];
+          const feeToken = tokenMap[redPacketOrder.fee.belong];
           const feeRaw =
-            transferRampValue.fee.feeRaw ??
-            transferRampValue.fee.__raw__?.feeRaw ??
+            redPacketOrder.fee.feeRaw ??
+            redPacketOrder.fee.__raw__?.feeRaw ??
             0;
           const fee = sdk.toBig(feeRaw);
-          // const balance = sdk
-          //   .toBig(transferRampValue.balance ?? 0)
-          //   .times("1e" + sellToken.decimals);
           const tradeValue = sdk
-            .toBig(transferRampValue.tradeValue ?? 0)
-            .times("1e" + sellToken.decimals);
-          // const isExceedBalance =
-          //   feeToken.tokenId === sellToken.tokenId &&
-          //   tradeValue.plus(fee).gt(balance);
-          const finalVol = tradeValue;
-          const transferVol = finalVol.toFixed(0, 0);
+            .toBig(_tradeData.tradeValue ?? 0)
+            .times("1e" + tradeToken.decimals);
 
-          const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+          const storageId = await LoopringAPI.userAPI.getNextStorageId(
             {
               accountId,
-              sellTokenId: sellToken.tokenId,
+              sellTokenId: Number(tradeToken.tokenId),
             },
             apiKey
           );
-          const req: sdk.OriginTransferRequestV3 = {
-            exchange: exchangeInfo.exchangeAddress,
-            payerAddr: accAddress,
-            payerId: accountId,
-            payeeAddr: transferRampValue.address,
-            payeeId: 0,
-            storageId: storageId?.offchainId,
-            token: {
-              tokenId: sellToken.tokenId,
-              volume: transferVol,
-            },
-            maxFee: {
-              tokenId: feeToken.tokenId,
-              volume: fee.toString(), // TEST: fee.toString(),
-            },
-            validUntil: getTimestampDaysLater(DAYS),
-            memo: transferRampValue.memo,
+          // const { broker } = await LoopringAPI.userAPI.getAvailableBroker({
+          //   type: 1,
+          // });
+          myLog("memo", redPacketOrder.memo);
+
+          const req: sdk.LuckyTokenItemForSendV3 = {
+            type: redPacketOrder.type,
+            numbers: redPacketOrder.numbers,
+            memo: redPacketOrder.memo ?? "",
+            signerFlag: false as any,
+            nftData:
+              redPacketOrder.tradeType === TRADE_TYPE.NFT
+                ? redPacketOrder.nftData
+                : undefined,
+            // @ts-ignore
+            templateId: 0,
+            validSince: Math.round(
+              (redPacketOrder.validSince ?? Date.now()) / 1000
+            ),
+            validUntil: Math.round(
+              (redPacketOrder.validSince ?? Date.now()) / 1000 +
+                86400 * (redPacketOrder.validUntil ?? 1)
+            ),
+            luckyToken: {
+              exchange: exchangeInfo.exchangeAddress,
+              payerAddr: accAddress,
+              payerId: accountId,
+              payeeAddr: Reflect.ownKeys(
+                redPacketConfigs.luckTokenAgents ?? {}
+              )[0],
+              storageId: storageId?.offchainId,
+              token: tradeToken.tokenId,
+              amount: tradeValue.toFixed(),
+              feeToken: feeToken.tokenId,
+              maxFeeAmount: fee.toFixed(),
+              validUntil: getTimestampDaysLater(DAYS - 1),
+            } as any,
           };
 
           myLog("transfer req:", req);
 
-          processRequest(req, isFirstTime);
+          processRequest(req, !isHardwareRetry);
         } catch (e: any) {
           // transfer failed
           setShowAccount({
@@ -384,75 +723,123 @@ export const useCreateRedPacket = <
         return;
       }
     },
-    [account, tokenMap, exchangeInfo, setShowAccount, processRequest]
+    [
+      account,
+      tokenMap,
+      exchangeInfo,
+      setShowAccount,
+      processRequest,
+      redPacketConfigs?.luckTokenAgents,
+    ]
   );
 
-  const handleOnDataChange = React.useCallback(
-    (key: string, value: any) => {
-      const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      myLog("redPacketOrder", redPacketOrder);
-      updateRedPacketOrder({ ...redPacketOrder, [key]: value });
+  const handlePanelEvent = useCallback(
+    async (data: SwitchData<Partial<T>>) => {
+      return new Promise<void>((res: any) => {
+        if (data.to === "button") {
+          if (walletMap && data?.tradeData?.belong) {
+            const walletInfo = walletMap[data?.tradeData?.belong as string];
+            handleOnDataChange({
+              belong: data.tradeData?.belong,
+              tradeValue: data.tradeData?.tradeValue,
+              balance: walletInfo ? walletInfo.count : 0,
+            } as T);
+          } else {
+            handleOnDataChange({
+              belong: undefined,
+              tradeValue: undefined,
+              balance: undefined,
+            } as unknown as T);
+          }
+        }
+        res();
+      });
     },
-    [updateRedPacketOrder]
+    [walletMap]
   );
-  // const handleOnSelectedType = (ite\
-  //   handleOnDataChange();
-  // };
+  const [minimum, maximum] = React.useMemo(() => {
+    if (redPacketOrder.tradeType === TRADE_TYPE.NFT) {
+      const minimum = sdk
+        .toBig(redPacketOrder?.tradeValue ?? 0)
+        .div(REDPACKET_ORDER_NFT_LIMIT)
+        .toFixed(0, 1);
 
-  return {
+      const maximum =
+        redPacketOrder?.balance &&
+        // @ts-ignore
+        sdk.toBig(redPacketOrder.balance ?? 0).lt(REDPACKET_ORDER_LIMIT)
+          ? // @ts-ignore
+            redPacketOrder?.tradeValue ?? redPacketOrder.balance
+          : REDPACKET_ORDER_LIMIT;
+      return [minimum ? 1 : minimum, maximum];
+    } else {
+      if (redPacketOrder.belong && tokenMap[redPacketOrder.belong]) {
+        const { minimum, maximum } =
+          tokenMap[redPacketOrder.belong].luckyTokenAmounts;
+        const decimals = tokenMap[redPacketOrder.belong].decimals;
+        return [
+          sdk
+            .toBig(minimum ?? 0)
+            .div("1e" + decimals)
+            .toString(),
+          sdk
+            .toBig(maximum ?? 0)
+            .div("1e" + decimals)
+            .toString(),
+        ];
+      } else {
+        return [undefined, undefined];
+      }
+    }
+  }, [redPacketOrder?.belong, tokenMap, redPacketOrder.tradeType]);
+  const retryBtn = React.useCallback(
+    (isHardwareRetry: boolean = false) => {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.RedPacketSend_WaitForAuth,
+      });
+      onCreateRedPacketClick({}, isHardwareRetry);
+    },
+    [processRequest, setShowAccount]
+  );
+  const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
+    tradeType: redPacketOrder.tradeType,
     chargeFeeTokenList,
-    onSubmitClick,
+    onCreateRedPacketClick,
     btnStatus,
-    // handleOnSelectedType,
+    btnInfo,
+    disabled: transferEnabale?.enable == true,
     assetsData: assetsRawData,
-    handleOnDataChange,
     walletMap,
     coinMap: totalCoinMap,
+    tokenMap,
+    minimum,
+    maximum,
     feeInfo: redPacketOrder.fee ?? feeInfo,
     handleFeeChange,
-    tradeData: redPacketOrder,
+    tradeData: redPacketOrder as T,
+    handleOnDataChange,
+    handlePanelEvent,
+    selectNFT,
+    handleOnChoose: (_value: NFT) => {
+      setSelectNFT(_value as NFT);
+      if (_value) {
+        const value = _value as any;
+        handleOnDataChange({
+          collectionInfo: value.collectionInfo,
+          tokenId: value.tokenId,
+          tradeValue: undefined,
+          balance: value.nftBalance ?? value.total,
+          nftData: value.nftData,
+          belong: value.name,
+          tokenAddress: value.tokenAddress,
+          image: value?.metadata?.imageSize
+            ? value?.metadata?.imageSize["240-240"]
+            : value.image,
+        } as T);
+      }
+    },
+  } as unknown as CreateRedPacketProps<T, I, F, NFT>;
 
-    // onBack,
-    // setActiveStep,
-    // handleOnDataChange
-    // redPacketStepValue
-    // onSubmitClick
-    // activeStep
-    // onBack
-    // selectedType
-    // handleOnSelectedType
-    // type: "TOKEN",
-    // memo,
-    // fee,
-    // __request__,
-    // feeInfo,
-    // walletMap,
-    // handleFeeChange,
-    // balanceNotEnough,
-    // tradeData,
-    // disabled,
-    // disabled: !legalEnable,
-    // addressDefault: address,
-    // realAddr: address,
-    // tradeData,
-    // coinMap: totalCoinMap as CoinMap<T>,
-    // transferBtnStatus: btnStatus,
-    // isLoopringAddress: true,
-    // isSameAddress: false,
-    // isAddressCheckLoading: WALLET_TYPE.Loopring,
-    // feeInfo,
-    // handleFeeChange,
-    // balanceNotEnough,
-    // chargeFeeTokenList,
-    // isFeeNotEnough,
-    // handleSureItsLayer2: () => undefined,
-    // sureItsLayer2: true,
-    // onSubmitClick,
-    // handlePanelEvent: () => undefined,
-    // addrStatus: AddressError.NoError,
-    // memo,
-    // walletMap,
-    // handleOnMemoChange: () => undefined,
-    // handleOnAddressChange: () => undefined,
-  } as unknown as CreateRedPacketProps<T, I, F, LuckInfo>;
+  return { createRedPacketProps, retryBtn };
 };

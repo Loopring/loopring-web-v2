@@ -48,6 +48,11 @@ export const BoxNFT = styled(Box)`
   background-color: var(--opacity);
   background-image: url(${SoursURL + "svg/loopring.svg"});
 
+  &.redPacketNFT {
+    height: var(--nft-large-avatar);
+    width: var(--nft-large-avatar);
+  }
+
   img {
     object-fit: contain;
     overflow: hidden;

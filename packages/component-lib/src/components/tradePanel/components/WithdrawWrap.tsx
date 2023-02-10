@@ -11,19 +11,19 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  AddressError,
+  AssetsRawDataItem,
   CloseIcon,
   copyToClipBoard,
   DropDownIcon,
   EmptyValueTag,
   FeeInfo,
   globalSetup,
-  Info2Icon,
   IBData,
+  Info2Icon,
   LoadingIcon,
   NFTWholeINFO,
   TOAST_TIME,
-  AddressError,
-  AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -173,7 +173,7 @@ export const WithdrawWrap = <
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
-      direction={"column"} /* minHeight={540} */
+      direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}
       flex={1}

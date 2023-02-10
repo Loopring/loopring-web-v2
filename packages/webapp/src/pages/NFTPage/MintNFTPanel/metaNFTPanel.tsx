@@ -8,14 +8,14 @@ import {
 } from "@mui/material";
 import {
   DropdownIconStyled,
+  ImageUploadWrapper,
   IpfsFile,
   IPFSSourceUpload,
   MintNFTBlock,
-  NFTMintProps,
-  NFTMetaProps,
   NFTMetaBlockProps,
+  NFTMetaProps,
+  NFTMintProps,
   TextareaAutosizeStyled,
-  ImageUploadWrapper,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";

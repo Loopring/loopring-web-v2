@@ -3,6 +3,7 @@ export * from "./WalletConnect";
 export * from "./ModalPanelBase";
 export * from "./ModalPanels";
 export * from "./WalletPanels";
+export * from "./RedPacketPanels";
 export * from "./setting";
 export type ModalBasicProps = {
   open: boolean;
@@ -26,3 +27,4 @@ export type ModalBasicProps = {
 export type ModalWalletConnectProps = ModalBasicProps;
 export type ModalAccountProps = ModalWalletConnectProps;
 export type ModalGuardianProps = ModalWalletConnectProps;
+export type ModalRedPacketProps = ModalBasicProps;

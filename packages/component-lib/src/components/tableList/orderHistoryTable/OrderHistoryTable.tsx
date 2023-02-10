@@ -1,35 +1,35 @@
 import React from "react";
 import {
-  PopoverPure,
   Button,
   CancelAllOrdersAlert,
+  PopoverPure,
   QuoteTableRawDataItem,
 } from "../../index";
 import { bindTrigger } from "material-ui-popup-state/es";
 import styled from "@emotion/styled";
 import {
   Box,
-  Modal,
-  Typography,
+  BoxProps,
   ClickAwayListener,
   Grid,
-  BoxProps,
   Link,
+  Modal,
+  Typography,
 } from "@mui/material";
 import { DateRange } from "@mui/lab";
 import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
-import { usePopupState, bindPopper } from "material-ui-popup-state/hooks";
+import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
+  DirectionTag,
   DropDownIcon,
   EmptyValueTag,
+  getValuePrecisionThousand,
+  globalSetup,
+  RowConfig,
   TableType,
   TradeStatus,
   TradeTypes,
-  getValuePrecisionThousand,
-  DirectionTag,
-  globalSetup,
-  RowConfig,
   UNIX_TIMESTAMP_FORMAT,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
@@ -38,9 +38,9 @@ import { OrderDetailPanel } from "./components/modal";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 import {
   GetOrdersRequest,
-  Side,
-  OrderType,
   GetUserTradesRequest,
+  OrderType,
+  Side,
 } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 import _ from "lodash";

@@ -10,21 +10,21 @@ import {
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
+  AddressError,
+  AlertIcon,
+  CheckBoxIcon,
+  CheckedIcon,
   CloseIcon,
   copyToClipBoard,
   DropDownIcon,
-  globalSetup,
-  Info2Icon,
-  IBData,
-  NFTWholeINFO,
-  TOAST_TIME,
-  LoadingIcon,
   EmptyValueTag,
   FeeInfo,
-  AddressError,
-  CheckedIcon,
-  CheckBoxIcon,
-  AlertIcon,
+  globalSetup,
+  IBData,
+  Info2Icon,
+  LoadingIcon,
+  NFTWholeINFO,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {
   Button,

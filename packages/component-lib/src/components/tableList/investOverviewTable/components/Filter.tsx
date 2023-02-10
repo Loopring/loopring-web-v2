@@ -1,7 +1,6 @@
 import { Grid } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { InputSearch } from "../../../";
-import { myLog } from "@loopring-web/common-resources";
 
 export interface FilterProps {
   // hideInvestToken: boolean;

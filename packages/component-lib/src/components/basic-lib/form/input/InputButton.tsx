@@ -1,9 +1,9 @@
-import { FormHelperText, Grid } from "@mui/material";
+import { FormHelperText, Grid, Typography } from "@mui/material";
 import {
   CoinInfo,
   DropDownIcon,
   FORMAT_STRING_LEN,
-  // getValuePrecisionThousand,
+  getValuePrecisionThousand,
   IBData,
 } from "@loopring-web/common-resources";
 import { InputButtonProps, InputSize } from "./Interface";
@@ -11,7 +11,6 @@ import React from "react";
 import { useFocusRef } from "../hooks";
 import { IInput, ISBtn, IWrap } from "./style";
 import { CoinIcon } from "./Default";
-import { Typography } from "@mui/material";
 
 function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   {
@@ -25,6 +24,8 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     disabled,
     decimalsLimit = 8,
     allowDecimals = true,
+    isShowCoinIcon = false,
+    CoinIconElement,
     emptyText = "tokenSelectToken",
     placeholderText = "0.00",
     inputData,
@@ -34,6 +35,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     name,
     size = InputSize.middle,
     isHideError = false,
+    fullwidth = false,
   }: // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>
@@ -54,8 +56,10 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   React.useEffect(() => {
     if (tradeValue === undefined && error.error) {
       setError({ error: false });
+    } else if (balance && tradeValue) {
+      _handleError(tradeValue);
     }
-  }, [tradeValue]);
+  }, [tradeValue, balance]);
   const _handleError = React.useCallback(
     (value: any) => {
       if (handleError) {
@@ -139,44 +143,47 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   // formatValue(sValue)
 
   return (
-    <>
-      <IWrap component={"div"} ref={ref} size={size}>
-        <Grid
-          container
-          component={"div"}
-          className={"label-wrap"}
-          justifyContent={"space-between"}
-          paddingBottom={1 / 2}
-        >
-          <Grid item xs={3}>
+    <IWrap component={"div"} ref={ref} size={size} fullWidth={fullwidth}>
+      <Grid
+        container
+        component={"div"}
+        className={"label-wrap"}
+        justifyContent={"space-between"}
+        paddingBottom={1 / 2}
+      >
+        <Grid item xs={3}>
+          <Typography
+            fontSize={"inherit"}
+            className={"main-label"}
+            color={"var(--color-text-third)"}
+          >
+            {label}
+          </Typography>
+        </Grid>
+        <Grid item xs={9} className={"sub-label"}>
+          {subLabel && belong ? (
             <Typography
               fontSize={"inherit"}
-              className={"main-label"}
-              color={"var(--color-text-third)"}
+              className={
+                maxAllow && balance > 0
+                  ? `max-allow ${disabled ? "disabled" : ""}`
+                  : `no-balance ${disabled ? "disabled" : ""}`
+              }
+              onClick={_handleMaxAllowClick}
             >
-              {label}
+              <span>{subLabel}</span>
+              <span>
+                {balance
+                  ? getValuePrecisionThousand(balance, 8, 8, 8, false)
+                  : "0.00"}
+              </span>
             </Typography>
-          </Grid>
-          <Grid item xs={9} className={"sub-label"}>
-            {subLabel && belong ? (
-              <Typography
-                fontSize={"inherit"}
-                className={
-                  maxAllow && balance > 0
-                    ? `max-allow ${disabled ? "disabled" : ""}`
-                    : `no-balance ${disabled ? "disabled" : ""}`
-                }
-                onClick={_handleMaxAllowClick}
-              >
-                <span>{subLabel}</span>
-                <span>{balance ? balance : "0.00"}</span>
-              </Typography>
-            ) : null}
-          </Grid>
+          ) : null}
         </Grid>
-        <Grid
-          container
-          className={`btnInput-wrap
+      </Grid>
+      <Grid
+        container
+        className={`btnInput-wrap
                   ${
                     (belong && belong.length) >= FORMAT_STRING_LEN
                       ? "text-small"
@@ -184,27 +191,28 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
                   }
                   ${error.error ? "error" : ""}
                   `}
-          wrap={"nowrap"}
-          alignItems={"stretch"}
-          alignContent={"stretch"}
-        >
-          <Grid item className={"btn-wrap"}>
-            <ISBtn
-              variant={"text"}
-              onClick={(event) =>
-                handleOnClick(event, name ?? "inputBtnDefault", ref)
-              }
-              endIcon={
-                <DropDownIcon
-                  color={"inherit"}
-                  fontSize={"large"}
-                  style={{ marginLeft: "-4px" }}
-                />
-              }
-              disabled={disabled}
-            >
-              {belong ? (
-                <Grid container align-items={"center"} display={"flex"}>
+        wrap={"nowrap"}
+        alignItems={"stretch"}
+        alignContent={"stretch"}
+      >
+        <Grid item className={"btn-wrap"}>
+          <ISBtn
+            variant={"text"}
+            onClick={(event) =>
+              handleOnClick(event, name ?? "inputBtnDefault", ref)
+            }
+            endIcon={
+              <DropDownIcon
+                color={"inherit"}
+                fontSize={"large"}
+                style={{ marginLeft: "-4px" }}
+              />
+            }
+            disabled={disabled}
+          >
+            {belong ? (
+              <Grid container align-items={"center"} display={"flex"}>
+                {isShowCoinIcon && (
                   <Grid
                     item
                     display={"flex"}
@@ -216,55 +224,68 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
                   >
                     <CoinIcon symbol={belong} />
                   </Grid>
-                  <Grid item paddingLeft={1}>
-                    <Typography fontSize={"inherit"} color={"inherit"}>
-                      {belong}
-                    </Typography>
+                )}
+                {!isShowCoinIcon && CoinIconElement && (
+                  <Grid
+                    item
+                    display={"flex"}
+                    className={"logo-icon"}
+                    width={"var(--list-menu-coin-size)"}
+                    height={"var(--list-menu-coin-size)"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                  >
+                    {CoinIconElement}
                   </Grid>
+                )}
+                <Grid item paddingLeft={1}>
+                  <Typography fontSize={"inherit"} color={"inherit"}>
+                    {belong}
+                  </Typography>
                 </Grid>
-              ) : (
-                <span className={"placeholder"}>{emptyText}</span>
-              )}
-            </ISBtn>
-          </Grid>
-          <Grid item className={"input-wrap input-wrap-right"}>
-            <IInput
-              ref={inputEle}
-              autoComplete="off"
-              onValueChange={_handleContChange}
-              value={typeof sValue === "undefined" ? "" : sValue}
-              allowNegativeValue={false}
-              decimalSeparator="."
-              groupSeparator=","
-              name={name}
-              disabled={!(!disabled || belong) || disableInputValue}
-              placeholder={placeholderText}
-              aria-placeholder={placeholderText}
-              aria-label={label}
-              decimalsLimit={decimalsLimit}
-              allowDecimals={allowDecimals}
-            />
-            <label />
+              </Grid>
+            ) : (
+              <span className={"placeholder"}>{emptyText}</span>
+            )}
+          </ISBtn>
+        </Grid>
+        <Grid item className={"input-wrap input-wrap-right"}>
+          <IInput
+            ref={inputEle}
+            autoComplete="off"
+            onValueChange={_handleContChange}
+            value={typeof sValue === "undefined" ? "" : sValue}
+            allowNegativeValue={false}
+            decimalSeparator="."
+            groupSeparator=","
+            name={name}
+            disabled={!(!disabled || belong) || disableInputValue}
+            placeholder={placeholderText}
+            aria-placeholder={placeholderText}
+            aria-label={belong}
+            decimalsLimit={decimalsLimit}
+            allowDecimals={allowDecimals}
+          />
+          <label />
+        </Grid>
+      </Grid>
+      {isHideError ? (
+        <></>
+      ) : (
+        <Grid
+          container
+          className={"message-wrap"}
+          wrap={"nowrap"}
+          alignItems={"stretch"}
+          alignContent={"stretch"}
+          justifyContent={"flex-end"}
+        >
+          <Grid item>
+            <FormHelperText>{error.message}</FormHelperText>
           </Grid>
         </Grid>
-        {isHideError ? (
-          <></>
-        ) : (
-          <Grid
-            container
-            className={"message-wrap"}
-            wrap={"nowrap"}
-            alignItems={"stretch"}
-            alignContent={"stretch"}
-            justifyContent={"flex-end"}
-          >
-            <Grid item>
-              <FormHelperText>{error.message}</FormHelperText>
-            </Grid>
-          </Grid>
-        )}
-      </IWrap>
-    </>
+      )}
+    </IWrap>
   );
 }
 

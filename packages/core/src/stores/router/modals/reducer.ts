@@ -7,7 +7,6 @@ import {
   LAST_STEP,
   ModalDataStatus,
   NFT_MINT_VALUE,
-  RedPacketOrderData,
   TransferData,
   WithdrawData,
 } from "./interface";
@@ -18,6 +17,8 @@ import {
   MintTradeNFT,
   NFTMETA,
   NFTWholeINFO,
+  RedPacketOrderData,
+  TRADE_TYPE,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -55,12 +56,26 @@ const initialRedPacketState: RedPacketOrderData<any> = {
   tradeValue: 0,
   balance: 0,
   fee: undefined,
+  validUntil: 1,
   type: {
     partition: sdk.LuckyTokenAmountType.AVERAGE,
     mode: sdk.LuckyTokenClaimType.RELAY,
     scope: sdk.LuckyTokenViewType.PRIVATE,
   },
-
+  tradeType: TRADE_TYPE.TOKEN,
+  __request__: undefined,
+};
+const initialRedPacketNFTState: RedPacketOrderData<any> = {
+  belong: undefined as any,
+  tradeValue: 0,
+  fee: undefined,
+  validUntil: 1,
+  type: {
+    partition: sdk.LuckyTokenAmountType.AVERAGE,
+    mode: sdk.LuckyTokenClaimType.RELAY,
+    scope: sdk.LuckyTokenViewType.PRIVATE,
+  },
+  tradeType: TRADE_TYPE.NFT,
   __request__: undefined,
 };
 
@@ -70,9 +85,8 @@ const initialClaimState: ClaimData = {
   balance: 0,
   fee: undefined,
   address: undefined,
-  memo: undefined,
   __request__: undefined,
-};
+} as any;
 
 const initialDepositState: DepositData = {
   belong: undefined,
@@ -252,9 +266,18 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state.lastStep = LAST_STEP.default;
       state.offBanxaValue = undefined;
     },
-    resetRedPacketOrder(state) {
+    resetRedPacketOrder(
+      state,
+      _action?: PayloadAction<{
+        type?: TRADE_TYPE;
+      }>
+    ) {
       state.lastStep = LAST_STEP.default;
-      state.redPacketOrder = { ...initialRedPacketState };
+      state.redPacketOrder = {
+        ...(_action?.payload?.type === TRADE_TYPE.NFT
+          ? initialRedPacketNFTState
+          : initialRedPacketState),
+      } as RedPacketOrderData<any>;
     },
     resetClaimData(state) {
       state.lastStep = LAST_STEP.default;

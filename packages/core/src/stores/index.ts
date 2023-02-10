@@ -37,6 +37,7 @@ import { tokenPricesSlice } from "./tokenPrices/reducer";
 import { TradeProSettings } from "./localStore/tradeProSettings";
 import { notifyMapSlice } from "./notify/reducer";
 import { walletLayer2NFTSlice } from "./walletLayer2NFT/reducer";
+import { redPacketConfigsSlice } from "./redPacket/reducer";
 import { localStoreReducer } from "./localStore";
 import { getAnalytics } from "firebase/analytics";
 
@@ -47,6 +48,7 @@ import {
   LAYER1_ACTION_HISTORY,
   myLog,
   NFTHashInfos,
+  RedpacketHashInfos,
 } from "@loopring-web/common-resources";
 import { FavoriteMarketStates } from "./localStore/favoriteMarket";
 import { Confirmation } from "./localStore/confirmation";
@@ -113,6 +115,7 @@ const persistedLocalStoreReducer = persistReducer<
     tradeProSettings: TradeProSettings;
     layer1ActionHistory: LAYER1_ACTION_HISTORY;
     nftHashInfos: NFTHashInfos;
+    redPacketHistory: RedpacketHashInfos;
   }>
 >(persistLocalStoreConfig, localStoreReducer);
 
@@ -140,6 +143,7 @@ const reducer = combineReducers({
   invest: investReducer,
   tokenMap: tokenMapSlice.reducer,
   tokenPrices: tokenPricesSlice.reducer,
+  redPacketConfigs: redPacketConfigsSlice.reducer,
   toggle: toggleSlice.reducer,
   walletLayer2: walletLayer2Slice.reducer,
   walletLayer2NFT: walletLayer2NFTSlice.reducer,
@@ -176,6 +180,7 @@ export const store = configureStore({
 export const firebaseProps: ReactReduxFirebaseProviderProps = (() => {
   let firebase_app;
   switch (process.env.REACT_APP_NAME) {
+    case "guardian":
     case "bridge":
       // getAnalytics(firebase);
       firebase_app = firebase.initializeApp(firebaseBridgeConfig);

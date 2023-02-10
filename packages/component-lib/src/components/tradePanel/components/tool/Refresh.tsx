@@ -98,7 +98,7 @@ export const CountDownIcon = React.memo(
         // _refresh();
         return cleanSubscribe;
       }, []);
-      const theme = useTheme()
+      const theme = useTheme();
       return (
         <Box ref={ref}>
           <CountDownStyled
@@ -108,8 +108,10 @@ export const CountDownIcon = React.memo(
             onClick={refresh}
             color={theme.colorBase.logo}
           >
-            <Typography component={"span"} className={"text-count"}>
-            </Typography>
+            <Typography
+              component={"span"}
+              className={"text-count"}
+            ></Typography>
             <Box className={"circle"} />
           </CountDownStyled>
         </Box>

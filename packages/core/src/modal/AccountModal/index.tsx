@@ -15,7 +15,6 @@ import { useAccountModalForUI } from "./hook";
 import {
   Account,
   AssetsRawDataItem,
-  FeeInfo,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 // import { Box, Modal as MuiModal } from "@mui/material";
@@ -69,6 +68,7 @@ export const ModalAccountInfo = withTranslation("common")(
       // nftMintAdvanceProps,
       // checkActiveStatusProps,
       resetProps,
+      claimProps,
       activeAccountProps,
       exportAccountProps,
       // dualTradeProps,
@@ -82,6 +82,7 @@ export const ModalAccountInfo = withTranslation("common")(
       collectionToastClose,
     } = useAccountModalForUI({
       t,
+      assetsRawData,
       depositProps,
       etherscanBaseUrl,
       isLayer1Only,
@@ -142,6 +143,7 @@ export const ModalAccountInfo = withTranslation("common")(
           }
           nftWithdrawProps={nftWithdrawProps as any}
           nftDeployProps={nftDeployProps as any}
+          claimProps={claimProps as any}
           // dualTradeProps={dualTradeProps as any}
           // nftMintAdvanceProps={nftMintAdvanceProps as any}
           // nftWithdrawProps={nftWithdrawProps}

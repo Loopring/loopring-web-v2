@@ -9,17 +9,16 @@ import {
   ThemeType,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
-import { useOpenModals, useSettings } from "@loopring-web/component-lib";
+import { useSettings } from "@loopring-web/component-lib";
 import { DepositToPage } from "../pages/DepositPage";
 import { Footer } from "../layouts/footer";
 
 export const useWrapModal = () => {
-  const { search, pathname } = useLocation();
+  const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const token = searchParams.get("token");
   const l2account = searchParams.get("l2account") || searchParams.get("owner");
   const { depositProps } = useDeposit(true, { token, owner: l2account });
-  const { setShowAccount } = useOpenModals();
   return {
     depositProps,
     view: (
@@ -35,12 +34,11 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
   const location = useLocation();
   const { setTheme } = useSettings();
   const { depositProps, view: modalView } = useWrapModal();
-
   // const { depositProps } = useDeposit(true, { token, owner });
-  const query = new URLSearchParams(location.search);
+  const searchParams = new URLSearchParams(location.search);
   React.useEffect(() => {
-    if (query.has("theme")) {
-      query.get("theme") === ThemeType.dark
+    if (searchParams.has("theme")) {
+      searchParams.get("theme") === ThemeType.dark
         ? setTheme("dark")
         : setTheme("light");
     }
@@ -50,7 +48,7 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
       window.location.replace(`${window.location.origin}/error`);
     }
   }, [state]);
-  if (query.has("___OhTrustDebugger___")) {
+  if (searchParams.has("___OhTrustDebugger___")) {
     // @ts-ignore
     setMyLog(true);
   }
@@ -61,6 +59,7 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
           <LoadingPage />
         </Route>
         <Route exact path={["/", "/depositto", "/depositto/*"]}>
+          {/*{searchParams && searchParams.has("noheader") ? <></> : <Header />}*/}
           <Container
             maxWidth="lg"
             style={{
@@ -89,7 +88,7 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
         />
       </Switch>
       {modalView}
-      {query && query.has("nofooter") ? <></> : <Footer />}
+      {searchParams && searchParams.has("nofooter") ? <></> : <Footer />}
     </>
   );
 };

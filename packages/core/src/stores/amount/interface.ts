@@ -1,9 +1,9 @@
 import { StateBase } from "@loopring-web/common-resources";
-import * as loopring_defs from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 //key is market or AMM-${market}
 export type Amount = {
-  [key: string]: loopring_defs.LoopringMap<loopring_defs.TokenAmount>;
+  [key: string]: sdk.LoopringMap<sdk.TokenAmount>;
 };
 export type TimerMap = { [key: string]: NodeJS.Timeout | -1 };
 /**

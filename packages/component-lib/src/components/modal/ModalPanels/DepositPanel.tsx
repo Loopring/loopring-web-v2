@@ -4,7 +4,7 @@ import {
   CoinInfo,
   CoinMap,
   IBData,
-  // myLog,
+  TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import {
   ModalBackButton,
@@ -29,7 +29,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
     } & IBData<I>,
     I
   >({
-    type = "TOKEN",
+    type = TRADE_TYPE.TOKEN,
     onDepositClick,
     depositBtnStatus,
     walletMap = {},

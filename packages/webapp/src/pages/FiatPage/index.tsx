@@ -45,6 +45,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
     sellPanel,
     setSellPanel,
   });
+  // const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
 
   const fiatView = React.useMemo(() => {
     return (
@@ -223,17 +224,6 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
             )}
           </StyledPaper>
         </Box>
-        {/*<ConfirmInvestDefiRisk*/}
-        {/*  open={confirmDefiInvest}*/}
-        {/*  handleClose={(_e, isAgree) => {*/}
-        {/*    setConfirmDefiInvest(false);*/}
-        {/*    if (!isAgree) {*/}
-        {/*      history.goBack();*/}
-        {/*    } else {*/}
-        {/*      confirmDefiInvestFun();*/}
-        {/*    }*/}
-        {/*  }}*/}
-        {/*/>*/}
       </Box>
     );
   }, [t, tabIndex, vendorListBuy, vendorListSell]);

@@ -1,23 +1,23 @@
 import { ImportCollectionStep, ImportCollectionViewProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Typography, ListItemText, Link } from "@mui/material";
+import { Box, Link, ListItemText, Typography } from "@mui/material";
 import {
-  getShortAddr,
+  AddIcon,
   BackIcon,
-  DropDownIcon,
-  NFTWholeINFO,
   CollectionMeta,
+  DropDownIcon,
+  getShortAddr,
+  NFTWholeINFO,
   SoursURL,
   ViewMoreIcon,
-  AddIcon,
 } from "@loopring-web/common-resources";
 import {
-  TextField,
   Button,
-  MenuItem,
   CollectionInput,
   EmptyDefault,
+  MenuItem,
+  TextField,
 } from "../../basic-lib";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
@@ -447,12 +447,12 @@ export const ImportCollectionWrap = <
               justifyContent={"space-between"}
             >
               <Button
-                variant={"outlined"}
-                size={"medium"}
                 className={"step"}
                 startIcon={<BackIcon fontSize={"small"} />}
-                color={"primary"}
                 sx={{ height: "var(--btn-medium-height)" }}
+                variant={"outlined"}
+                size={"medium"}
+                color={"primary"}
                 onClick={() => {
                   setStep(ImportCollectionStep.SELECTCOLLECTION);
                   selectCollection && onCollectionChange(undefined);

@@ -4,11 +4,11 @@ import { Box, BoxProps, Link, Typography } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import {
-  Column,
-  TablePagination,
-  Table,
-  NftImage,
   BoxNFT,
+  Column,
+  NftImage,
+  Table,
+  TablePagination,
 } from "../../basic-lib";
 import {
   CompleteIcon,

@@ -87,17 +87,11 @@ export const banxaService = {
         reason: OrderENDReason.BanxaNotReady,
         data: "Banxa SKD is not ready",
       });
-
-      // subject.next({
-      //   status: BanxaCheck.o,
-      //   data: data,
-      // });
     }
     // @ts-ignore
     const anchor: any = window.document.querySelector("#iframeBanxaTarget");
     // anchor.querySelector("anchor");
     if (anchor && banxa) {
-      // debugger;
       anchor.style.display = "flex";
       try {
         const { data } = await banxaApiCall({

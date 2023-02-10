@@ -2,23 +2,17 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Grid, MenuItem } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
-import {
-  DateRangePicker,
-  TextField,
-  Button,
-} from "../../../basic-lib";
-import {
-  DropDownIcon,
-} from "@loopring-web/common-resources";
-import { FilterTradeNFTTypes } from '../Interface';
-import { useSettings } from '../../../../stores';
-import { DateRange } from '@mui/lab';
+import { Button, DateRangePicker, TextField } from "../../../basic-lib";
+import { DropDownIcon } from "@loopring-web/common-resources";
+import { FilterTradeNFTTypes } from "../Interface";
+import { useSettings } from "../../../../stores";
+import { DateRange } from "@mui/lab";
 
 export interface FilterProps {
   filterDate?: DateRange<Date | string>;
   filterType: FilterTradeNFTTypes;
   handleReset: () => void;
-  handleFilterChange: ({type, date}: any) => void;
+  handleFilterChange: ({ type, date }: any) => void;
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -38,17 +32,17 @@ export enum FilterTradeTypes {
   allTypes = "all",
 }
 
-export const Filter = withTranslation("tables", {withRef: true})(
+export const Filter = withTranslation("tables", { withRef: true })(
   ({
-     t,
-     filterDate = [null, null],
-     filterType,
-     // filterPairs = [],
-     // filterPair,
-     handleReset,
-     handleFilterChange,
-   }: // marketMap,
-     FilterProps & WithTranslation) => {
+    t,
+    filterDate = [null, null],
+    filterType,
+    // filterPairs = [],
+    // filterPair,
+    handleReset,
+    handleFilterChange,
+  }: // marketMap,
+  FilterProps & WithTranslation) => {
     const FilterTradeTypeList = [
       {
         label: t("labelFilterTradeNFTAll"),
@@ -64,8 +58,7 @@ export const Filter = withTranslation("tables", {withRef: true})(
       },
     ];
 
-
-    const {isMobile} = useSettings();
+    const { isMobile } = useSettings();
     return (
       <Grid container spacing={2} alignItems={"center"}>
         <Grid item xs={6} md={3} order={isMobile ? 1 : 0}>
@@ -75,9 +68,9 @@ export const Filter = withTranslation("tables", {withRef: true})(
             fullWidth
             value={filterType}
             onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-              handleFilterChange({type: event.target.value});
+              handleFilterChange({ type: event.target.value });
             }}
-            inputProps={{IconComponent: DropDownIcon}}
+            inputProps={{ IconComponent: DropDownIcon }}
           >
             {FilterTradeTypeList.map((o) => (
               <MenuItem key={o.value} value={o.value}>
@@ -90,7 +83,7 @@ export const Filter = withTranslation("tables", {withRef: true})(
           <DateRangePicker
             value={filterDate}
             onChange={(date: any) => {
-              handleFilterChange({date: date});
+              handleFilterChange({ date: date });
             }}
           />
         </Grid>

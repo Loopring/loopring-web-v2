@@ -23,6 +23,7 @@ export type CoinSource = {
   sourceW: number;
   sourceH: number;
 };
+
 export interface SettingsState {
   themeMode: ThemeKeys;
   language: LanguageKeys;

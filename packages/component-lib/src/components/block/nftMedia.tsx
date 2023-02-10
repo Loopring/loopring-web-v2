@@ -43,6 +43,11 @@ const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
     var(--color-global-bg-opacity) 0%,
     var(--color-global-bg-opacity) 100%
   );
+
+  .redPacketNFT & {
+    background-image: none;
+    background-color: initial;
+  }
 ` as (prosp: BoxProps & { theme: Theme }) => JSX.Element;
 const PlayIconStyle = styled(PlayIcon)`
   color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".8")};

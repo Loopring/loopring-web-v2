@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Typography, Tab, Tabs, Tooltip } from "@mui/material";
+import { Box, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 
-import { useSettings } from "../../../stores";
+import { useOpenModals, useSettings } from "../../../stores";
 import {
   CollectionMeta,
   EmptyValueTag,
@@ -10,7 +10,7 @@ import {
   NFTWholeINFO,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { NFTList, Button } from "../../basic-lib";
+import { Button, NFTList } from "../../basic-lib";
 import { CollectionManageProps, CollectionMethod } from "./Interface";
 import styled from "@emotion/styled";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -84,6 +84,8 @@ export const CollectionManageWrap = <
     },
     [filter, onFilterNFT]
   );
+  const { setNFTMetaNotReady } = useOpenModals();
+
   const Btn = React.useMemo(() => {
     switch (tab) {
       case sdk.LegacyNFT.undecided:
@@ -254,6 +256,7 @@ export const CollectionManageWrap = <
               onPageChange={(page: number) => {
                 onFilterNFT({ ...filter, page });
               }}
+              setNFTMetaNotReady={setNFTMetaNotReady}
               isManage={false}
               isSelectOnly={tab !== "all"}
               isMultipleSelect={tab !== "all"}

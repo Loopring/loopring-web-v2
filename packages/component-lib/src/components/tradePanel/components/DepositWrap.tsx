@@ -1,12 +1,13 @@
 import {
+  AccountStatus,
+  AddressError,
   Bridge,
   CloseIcon,
   globalSetup,
   IBData,
   LoadingIcon,
   SoursURL,
-  AddressError,
-  AccountStatus,
+  TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
@@ -16,8 +17,8 @@ import {
   Button,
   DepositTitle,
   IconClearStyled,
-  TextField,
   useSettings,
+  TextField,
 } from "../../../index";
 import { DepositViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
@@ -191,7 +192,7 @@ export const DepositWrap = <
           {...{
             ...rest,
             t,
-            type: "TOKEN",
+            type: TRADE_TYPE.TOKEN,
             disabled,
             onChangeEvent,
             walletMap,

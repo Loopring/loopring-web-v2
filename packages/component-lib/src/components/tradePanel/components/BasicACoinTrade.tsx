@@ -2,7 +2,7 @@ import { CoinInfo, CoinMap, IBData } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import React from "react";
 import { BasicACoinTradeProps } from "./Interface";
-import { InputButton } from "../../basic-lib";
+import { InputButton, InputButtonProps } from "../../basic-lib";
 
 export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
   t,
@@ -55,6 +55,8 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
 
   if (typeof handleError !== "function") {
     handleError = ({ belong, balance, tradeValue }: T) => {
+      const minimum =
+        inputButtonProps?.minimum ?? inputButtonDefaultProps?.minimum;
       if (
         (typeof tradeValue !== "undefined" &&
           balance &&
@@ -65,12 +67,24 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
           error: true,
           message: t("tokenNotEnough", { belong: belong }),
         };
+      } else if (
+        typeof tradeValue !== "undefined" &&
+        minimum !== undefined &&
+        tradeValue < Number(minimum)
+      ) {
+        return {
+          error: true,
+          message: t("errorMinError", {
+            value: minimum,
+            ns: ["error", "common"],
+          }),
+        };
       }
       return { error: false, message: "" };
     };
   }
 
-  const inputBtnProps = {
+  const inputBtnProps: InputButtonProps<T, CoinInfo<I>, I> = {
     subLabel: t("tokenMax"),
     emptyText: t("tokenSelectToken"),
     placeholderText: "0.00",
@@ -82,14 +96,15 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
     ...inputButtonDefaultProps,
     ...inputButtonProps,
     ...rest,
-  };
+  } as InputButtonProps<T, CoinInfo<I>, I>;
 
   return (
     <InputButton
       ref={inputBtnRef}
+      isShowCoinIcon={true}
       disabled={getDisabled()}
       {...{
-        ...inputBtnProps,
+        ...(inputBtnProps as any),
         inputData: tradeData ? tradeData : ({} as T),
         coinMap: coinMap ? coinMap : ({} as CoinMap<I, CoinInfo<I>>),
       }}

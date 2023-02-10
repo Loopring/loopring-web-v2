@@ -21,10 +21,10 @@ import {
 } from "@loopring-web/common-resources";
 import {
   Button,
-  InputSize,
-  TextField,
-  TextareaAutosizeStyled,
   InputCoin,
+  InputSize,
+  TextareaAutosizeStyled,
+  TextField,
 } from "../../basic-lib";
 
 import { TradeBtnStatus } from "../Interface";
@@ -168,7 +168,6 @@ export const MintNFTBlock = <
                 if (data.tradeValue && data.tradeValue > data.balance) {
                   return {
                     error: true,
-                    // message: `Not enough ${belong} perform a deposit`,
                   };
                 }
                 return {

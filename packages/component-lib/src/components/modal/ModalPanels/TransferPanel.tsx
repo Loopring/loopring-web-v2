@@ -4,7 +4,7 @@ import {
   SwitchPanel,
   SwitchPanelProps,
 } from "../../basic-lib";
-import { IBData } from "@loopring-web/common-resources";
+import { IBData, TRADE_TYPE } from "@loopring-web/common-resources";
 import React from "react";
 import { TransferProps } from "../../tradePanel";
 import {
@@ -21,7 +21,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
     walletMap = {},
     coinMap = {},
     isThumb = true,
-    type = "TOKEN",
+    type = TRADE_TYPE.TOKEN,
     chargeFeeTokenList,
     onTransferClick,
     transferBtnStatus,

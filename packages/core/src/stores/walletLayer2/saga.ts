@@ -19,16 +19,19 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
 
   if (apiKey && accountId && accountId >= 10000 && LoopringAPI.userAPI) {
     // @ts-ignore
-    const { userBalances } = await LoopringAPI.userAPI.getUserBalances(
-      { accountId, tokens: "" },
-      apiKey
-    );
-
-    if (userBalances) {
-      walletLayer2 = Reflect.ownKeys(userBalances).reduce((prev, item) => {
-        // @ts-ignore
-        return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
-      }, {} as WalletLayer2Map<R>);
+    try {
+      const { userBalances } = await LoopringAPI.userAPI.getUserBalances(
+        { accountId, tokens: "" },
+        apiKey
+      );
+      if (userBalances) {
+        walletLayer2 = Reflect.ownKeys(userBalances).reduce((prev, item) => {
+          // @ts-ignore
+          return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
+        }, {} as WalletLayer2Map<R>);
+      }
+    } catch (error) {
+      throw error;
     }
   } else if (
     !apiKey &&

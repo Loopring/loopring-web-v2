@@ -3,8 +3,7 @@ import { Box, BoxProps, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import moment from "moment";
-import { Column, Table } from "../../basic-lib";
-import { TablePagination } from "../../basic-lib";
+import { Column, Table, TablePagination } from "../../basic-lib";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 import { Filter, FilterTradeTypes } from "./components/Filter";
 import {

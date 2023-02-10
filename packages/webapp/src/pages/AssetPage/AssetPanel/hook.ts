@@ -1,17 +1,17 @@
 import React from "react";
 import {
+  LoopringAPI,
+  makeWalletLayer2,
   store,
   useAccount,
-  makeWalletLayer2,
-  volumeToCountAsBigNumber,
+  useDefiMap,
   useSocket,
-  useWalletLayer2Socket,
   useSystem,
   useTokenMap,
-  LoopringAPI,
   useTokenPrices,
-  useDefiMap,
   useWalletLayer2,
+  useWalletLayer2Socket,
+  volumeToCountAsBigNumber,
 } from "@loopring-web/core";
 import {
   AccountStep,
@@ -27,15 +27,15 @@ import {
   EmptyValueTag,
   myLog,
   PriceTag,
-  YEAR_DAY_FORMAT,
   TokenType,
+  YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 
+import * as sdk from "@loopring-web/loopring-sdk";
 import { WsTopicType } from "@loopring-web/loopring-sdk";
 
 import BigNumber from "bignumber.js";
 import moment from "moment";
-import * as sdk from "@loopring-web/loopring-sdk";
 
 export const useGetAssets = () => {
   // const [chartData, setChartData] = React.useState<TrendDataItem[]>([])
@@ -355,6 +355,7 @@ export const useGetAssets = () => {
   };
   React.useEffect(() => {
     getUserAssets();
+    return () => {};
   }, []);
   return {
     assetsRawData,

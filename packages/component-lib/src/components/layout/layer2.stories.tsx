@@ -8,32 +8,24 @@ import {
   CssBaseline,
   GlobalStyles,
   Grid,
-  // IconButton,
   Paper,
   Toolbar,
+  Typography,
 } from "@mui/material";
 import { Header, HideOnScroll } from "../header";
 import { css, Theme, useTheme } from "@emotion/react";
 import { Button, SubMenu, SubMenuList as BasicSubMenuList } from "../basic-lib";
 import {
-  // AmmExitData,
-  // AmmInData,
   globalCss,
   headerMenuData,
   headerToolBarData,
-  // HideIcon,
-  // IBData,
   PriceTag,
   subMenuLayer2,
-  // VendorProviders,
 } from "@loopring-web/common-resources";
 import { withTranslation } from "react-i18next";
 import { OrderHistoryTable as OrderHistoryTableUI } from "../tableList/orderHistoryTable";
-import { AssetTitleProps } from "../block";
-import { AssetTitle } from "../block";
+import { AssetTitle, AssetTitleProps } from "../block";
 import { AccountBasePanel, AccountBaseProps } from "../";
-
-import { Typography } from "@mui/material";
 import React from "react";
 
 const Style = styled.div``;

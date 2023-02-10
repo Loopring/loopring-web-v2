@@ -11,6 +11,7 @@ import SwipeableViews from "react-swipeable-views";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
+
 const ToolbarStyle = styled(Toolbar)`
   .MuiTabs-root {
     flex: 1;

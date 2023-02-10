@@ -46,33 +46,33 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
         // action.payload === 'en_US' ? moment.locale('en') : moment.locale(action.payload.toLocaleLowerCase());
         action.payload === "en_US"
           ? moment.updateLocale("en", {
-            relativeTime: {
-              future: (diff) => (diff == "just now" ? diff : `in ${diff}`),
-              past: (diff) => (diff == "just now" ? diff : `${diff} ago`),
-              s: "just now",
-              ss: "just now",
-            },
-          })
+              relativeTime: {
+                future: (diff) => (diff == "just now" ? diff : `in ${diff}`),
+                past: (diff) => (diff == "just now" ? diff : `${diff} ago`),
+                s: "just now",
+                ss: "just now",
+              },
+            })
           : moment.updateLocale("zh-cn", {
-            relativeTime: {
-              future: "%s后",
-              past: "%s前",
-              s: "几秒",
-              ss: "%d 秒",
-              m: "1 分钟",
-              mm: "%d 分钟",
-              h: "1 小时",
-              hh: "%d 小时",
-              d: "1 天",
-              dd: "%d 天",
-              w: "1 周",
-              ww: "%d 周",
-              M: "1 个月",
-              MM: "%d 个月",
-              y: "1 年",
-              yy: "%d 年",
-            },
-          });
+              relativeTime: {
+                future: "%s后",
+                past: "%s前",
+                s: "几秒",
+                ss: "%d 秒",
+                m: "1 分钟",
+                mm: "%d 分钟",
+                h: "1 小时",
+                hh: "%d 小时",
+                d: "1 天",
+                dd: "%d 天",
+                w: "1 周",
+                ww: "%d 周",
+                M: "1 个月",
+                MM: "%d 个月",
+                y: "1 年",
+                yy: "%d 年",
+              },
+            });
         state.language = action.payload;
       }
     },
@@ -164,8 +164,8 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
       // myLog(action.payload,state.proLayout )
     },
     setSwapSecondConfirmation(state, action: PayloadAction<boolean>) {
-      state.swapSecondConfirmation = action.payload
-    }
+      state.swapSecondConfirmation = action.payload;
+    },
   },
 });
 export const {
@@ -183,6 +183,6 @@ export const {
   setHideL2Action,
   setHideSmallBalances,
   setIsMobile,
-  setSwapSecondConfirmation
+  setSwapSecondConfirmation,
 } = settingsSlice.actions;
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

@@ -8,6 +8,7 @@ import {
   MintTradeNFT,
   NFTMETA,
   NFTWholeINFO,
+  RedPacketOrderData,
   TradeNFT,
   WithdrawType,
 } from "@loopring-web/common-resources";
@@ -44,9 +45,9 @@ export type ClaimData = {
   belong: string | undefined;
   tradeValue: number | undefined;
   balance: number | undefined;
-  address: string | undefined;
-  memo: string | undefined;
   fee: FeeInfo | undefined;
+  address: string | undefined;
+  volume: string | undefined;
   __request__: sdk.OriginLuckTokenWithdrawsRequestV3 | undefined;
 };
 
@@ -80,10 +81,6 @@ export type NFT_MINT_VALUE<I> = {
   collection?: Partial<CollectionMeta>;
   error?: undefined | sdk.RESULT_INFO;
 };
-export type RedPacketOrderData<I> = IBData<I> & {
-  fee: FeeInfo | undefined;
-  __request__: any;
-} & Partial<sdk.LuckyTokenItemForSendV3>;
 
 export type ModalDataStatus = {
   lastStep: LAST_STEP;

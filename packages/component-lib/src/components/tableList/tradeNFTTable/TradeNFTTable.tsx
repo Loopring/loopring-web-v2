@@ -10,11 +10,11 @@ import {
 import moment from "moment";
 
 import {
+  BoxNFT,
   Column,
   NftImage,
   Table,
   TablePagination,
-  BoxNFT,
 } from "../../basic-lib";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 import { Filter, FilterTradeTypes } from "./components/Filter";
@@ -30,9 +30,9 @@ import {
   UNIX_TIMESTAMP_FORMAT,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
+import * as sdk from "@loopring-web/loopring-sdk";
 import { Currency, NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import _ from "lodash";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { FilterTradeNFTTypes, NFTTradeProps } from "./Interface";
 import { DateRange } from "@mui/lab";
 

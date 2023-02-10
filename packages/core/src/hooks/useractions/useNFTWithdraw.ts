@@ -11,46 +11,43 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
+  AddressError,
   CoinMap,
+  EXCHANGE_TYPE,
   Explorer,
+  LIVE_FEE_TIMES,
   myLog,
+  SUBMIT_PANEL_AUTO_CLOSE,
+  TRADE_TYPE,
   TradeNFT,
   UIERROR_CODE,
-  AddressError,
-  EXCHANGE_TYPE,
-  LIVE_FEE_TIMES,
-  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import {
-  useTokenMap,
-  useAccount,
   BIGO,
   DAYS,
+  getIPFSString,
   getTimestampDaysLater,
+  isAccActivated,
+  LAST_STEP,
   LoopringAPI,
   store,
+  useAccount,
   useAddressCheck,
   useBtnStatus,
-  walletLayer2Service,
-  useModalData,
-  isAccActivated,
   useChargeFees,
-  useWalletLayer2NFT,
+  useModalData,
   useSystem,
+  useTokenMap,
+  useWalletLayer2NFT,
   useWalletLayer2WithNFTSocket,
-  getIPFSString,
-  LAST_STEP,
+  walletLayer2Service,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import {
-  useHistory,
-  useLocation,
-  // useLocation
-} from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
@@ -531,7 +528,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     handleSureIsAllowAddress: (value) => {
       setSureIsAllowAddress(value);
     },
-    type: "NFT",
+    type: TRADE_TYPE.NFT,
     addressDefault: address,
     accAddr: account.accAddress,
     isNotAvailableAddress,

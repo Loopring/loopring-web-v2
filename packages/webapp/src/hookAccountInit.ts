@@ -9,6 +9,7 @@ import {
   useWalletLayer2NFT,
   useWalletL2NFTCollection,
   useWalletL2Collection,
+  redPacketHistory,
 } from "@loopring-web/core";
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -48,6 +49,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletL2NFTCollectionStatus,
     statusUnset: walletL2NFTCollectionstatusUnset,
   } = useWalletL2NFTCollection();
+  const { clearRedPacketHash } = redPacketHistory.useRedPacketHistory();
   const { account, status: accountStatus } = useAccount();
 
   React.useEffect(() => {
@@ -72,7 +74,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           break;
         case AccountStatus.ACTIVATED:
           getUserRewards();
-          // }
+          clearRedPacketHash();
           if (walletLayer1Status !== SagaStatus.PENDING) {
             updateWalletLayer1();
           }

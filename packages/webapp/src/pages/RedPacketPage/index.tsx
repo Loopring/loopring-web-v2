@@ -1,72 +1,42 @@
 import React from "react";
-import { Box, Button } from "@mui/material";
-import { CreateRedPacketPanel } from "@loopring-web/component-lib";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import {
-  RedPacketOrderData,
-  useCreateRedPacket,
-  ViewAccountTemplate,
-} from "@loopring-web/core";
-
+import { Box } from "@mui/material";
+import { useRouteMatch } from "react-router-dom";
+import { useToast, ViewAccountTemplate } from "@loopring-web/core";
 import { RedPacketMarketPanel } from "./RedPacketMarketPanel";
-import { ReadRedPacketPanel } from "./ReadRedPacketPanel";
+import { CreateRedPacketUIPanel } from "./CreateRedPacketPanel";
 import { MyRedPacketPanel } from "./MyRedPacketPanel";
-import { BackIcon, FeeInfo } from "@loopring-web/common-resources";
-import { useTranslation } from "react-i18next";
+import { TOAST_TIME } from "@loopring-web/common-resources";
+import { Toast } from "@loopring-web/component-lib";
 
-export const RedPacketPage = <
-  T extends RedPacketOrderData<I>,
-  I extends any,
-  F extends FeeInfo,
-  LuckInfo
->() => {
-  let match: any = useRouteMatch("/redpacket/:item");
+export const RedPacketPage = () => {
+  let match: any = useRouteMatch("/redPacket/:item");
   const selected = match?.params.item ?? "markets";
-  const history = useHistory();
-  const { t } = useTranslation();
-  const createRedPacketViewProps = useCreateRedPacket<T, I, F, LuckInfo>();
+  const { toastOpen, setToastOpen, closeToast } = useToast();
+
   const reaPacketRouter = React.useMemo(() => {
     switch (selected) {
       case "create":
-        return (
-          <Box display={"flex"} flex={1} flexDirection={"column"}>
-            <Box
-              display={"flex"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              marginBottom={2}
-            >
-              <Button
-                startIcon={<BackIcon fontSize={"small"} />}
-                variant={"text"}
-                size={"medium"}
-                sx={{ color: "var(--color-text-secondary)" }}
-                color={"inherit"}
-                onClick={() => history.push("/l2assets")}
-              >
-                {t("labelRedPacketMarkets")}
-              </Button>
-            </Box>
-            <CreateRedPacketPanel
-              {...{ ...(createRedPacketViewProps as any) }}
-            />
-          </Box>
-        );
+        return <CreateRedPacketUIPanel />;
       case "records":
-        return <MyRedPacketPanel />;
-      case "reader":
-        return <ReadRedPacketPanel />;
+        return <MyRedPacketPanel setToastOpen={setToastOpen} />;
       case "markets":
-        return <RedPacketMarketPanel />;
+        return <RedPacketMarketPanel setToastOpen={setToastOpen} />;
       default:
-        <RedPacketMarketPanel />;
+        <RedPacketMarketPanel setToastOpen={setToastOpen} />;
     }
   }, [selected]);
+
   const activeView = React.useMemo(
     () => (
       <>
+        <Toast
+          alertText={toastOpen?.content ?? ""}
+          severity={toastOpen?.type ?? "success"}
+          open={toastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={closeToast}
+        />
         <Box
-          // minHeight={420}
           display={"flex"}
           alignItems={"stretch"}
           flexDirection={"column"}

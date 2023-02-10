@@ -1,5 +1,5 @@
 import { Trans, useTranslation } from "react-i18next";
-import { IconType, PanelProps, BasicPanel } from "../ModalPanels/BasicPanel";
+import { BasicPanel, IconType, PanelProps } from "../ModalPanels/BasicPanel";
 import { Box, Typography } from "@mui/material";
 
 export const LockWallet = (props: PanelProps) => {

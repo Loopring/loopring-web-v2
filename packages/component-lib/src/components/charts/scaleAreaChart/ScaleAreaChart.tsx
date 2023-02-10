@@ -5,7 +5,7 @@ import TrendChart from "./TrendChart";
 import DepthChart from "./DepthChart";
 import { ChartType } from "../";
 
-import { WrapperedKlineChart, IndicatorProps } from "./KlineChart";
+import { IndicatorProps, WrapperedKlineChart } from "./KlineChart";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import { TradingInterval } from "@loopring-web/loopring-sdk";

@@ -1,8 +1,7 @@
 import styled from "@emotion/styled";
-import { BoxProps, Grid, Typography } from "@mui/material";
+import { Box, BoxProps, Grid, Typography } from "@mui/material";
 import { css, Theme, useTheme } from "@emotion/react";
 import { UpColor } from "@loopring-web/common-resources";
-import { Box } from "@mui/material";
 import { Button, ButtonProps } from "./basic-lib";
 import { useSettings } from "../stores";
 

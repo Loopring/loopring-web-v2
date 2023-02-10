@@ -8,18 +8,18 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import {
   AmmCardProps,
-  AmmJoinData,
-  AmmInData,
   AmmExitData,
+  AmmInData,
+  AmmJoinData,
+  getMiningLinkList,
   IBData,
 } from "@loopring-web/common-resources";
-import { Box, Grid, Typography, Modal } from "@mui/material";
+import { Box, Grid, Modal, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { useAmmMiningUI, RewardListItem } from "./hook";
+import { RewardListItem, useAmmMiningUI } from "./hook";
 import { Trans, withTranslation } from "react-i18next";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
-import { getMiningLinkList } from "@loopring-web/common-resources";
-import { store, useAmmActivityMap, useAccount } from "@loopring-web/core";
+import { store, useAccount, useAmmActivityMap } from "@loopring-web/core";
 
 export enum MiningJumpType {
   orderbook = "orderbook",

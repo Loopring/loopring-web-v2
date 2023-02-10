@@ -1341,7 +1341,7 @@ export default {
   labelShare: "Share",
   labelRelayRedPacket: "Relay Red Packet",
   labelLuckyRedPacket: "Lucky Red Packet",
-  labelLuckyRedPacketStart: "Starts in: {{}}",
+  labelLuckyRedPacketStart: "Starts in: {{value}}",
   labelLuckyRedPacketTimeout: "Red packet has been \n taken out",
   labelLuckyRedPacketDetail: "View red packet details",
   labelRedPacketOpenInProgress: "Processing...",
@@ -1353,4 +1353,5 @@ export default {
   labelAmmExitMiniOrderMini:
     "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
   // labelClaimWithdrawEnterToken: "Select Token",
+  labelMyRedPacketReward: "My Rewards",
 };

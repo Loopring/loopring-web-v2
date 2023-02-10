@@ -1,5 +1,9 @@
-import { InvestRowAction, RowInvest, SubRowAction } from "../Interface";
-import { DepartmentRow } from "../Interface";
+import {
+  DepartmentRow,
+  InvestRowAction,
+  RowInvest,
+  SubRowAction,
+} from "../Interface";
 import { InvestColumnKey } from "../index";
 
 function toggleSubRow(rows: RowInvest[], symbol?: string): RowInvest[] {
@@ -25,6 +29,7 @@ function toggleSubRow(rows: RowInvest[], symbol?: string): RowInvest[] {
     return [];
   }
 }
+
 function updateRow(_oldRows: RowInvest[], rows: RowInvest[]): RowInvest[] {
   return [...rows];
 }

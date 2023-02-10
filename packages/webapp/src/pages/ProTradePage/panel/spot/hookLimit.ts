@@ -1,5 +1,20 @@
 import React from "react";
-import { useAccount, useToast } from "@loopring-web/core";
+import {
+  BIGO,
+  getPriceImpactInfo,
+  LoopringAPI,
+  PriceLevel,
+  store,
+  useAccount,
+  usePageTradePro,
+  usePlaceOrder,
+  useSubmitBtn,
+  useSystem,
+  useToast,
+  useTokenMap,
+  useTokenPrices,
+  walletLayer2Service,
+} from "@loopring-web/core";
 import {
   AccountStatus,
   getValuePrecisionThousand,
@@ -17,19 +32,6 @@ import {
   useSettings,
   useToggle,
 } from "@loopring-web/component-lib";
-import { usePageTradePro, useSubmitBtn } from "@loopring-web/core";
-import {
-  walletLayer2Service,
-  useSystem,
-  useTokenPrices,
-  getPriceImpactInfo,
-  BIGO,
-  PriceLevel,
-  store,
-  LoopringAPI,
-  usePlaceOrder,
-  useTokenMap,
-} from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import * as _ from "lodash";

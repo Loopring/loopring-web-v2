@@ -1,13 +1,15 @@
 import React, { useCallback, useState } from "react";
 import {
-  useAccount,
-  useTokenMap,
-  tradeItemToTableDataItem,
-  store,
   LoopringAPI,
-  useWalletLayer2,
   makeDualOrderedItem,
+  store,
+  tradeItemToTableDataItem,
+  useAccount,
   useDualMap,
+  useTokenMap,
+  useWalletLayer2,
+  volumeToCount,
+  volumeToCountAsBigNumber,
 } from "@loopring-web/core";
 import {
   AmmSideTypes,
@@ -19,17 +21,15 @@ import {
   RawDataTransactionItem,
   TransactionStatus,
 } from "@loopring-web/component-lib";
-import { volumeToCount, volumeToCountAsBigNumber } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { DUAL_TYPE, GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
 import {
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
 } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
-import { DUAL_TYPE, GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
 import BigNumber from "bignumber.js";
-import { Limit } from "./useDualAsset";
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -40,6 +40,7 @@ export type TxsFilterProps = {
   limit?: number;
   types?: sdk.UserTxTypes[] | string;
 };
+
 enum TxTypeAMM {
   Add = "join_pool",
   Remove = "exit_pool",

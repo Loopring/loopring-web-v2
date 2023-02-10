@@ -5,9 +5,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports":true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": "./src",
-    "rootDir": "./src",
+    "rootDir": "./src"
   },
   "include": [
     "src",

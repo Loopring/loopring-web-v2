@@ -1,7 +1,7 @@
 import { NFTMintViewProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Typography, Link } from "@mui/material";
+import { Box, Grid, Link, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
@@ -17,11 +17,11 @@ import {
 } from "@loopring-web/common-resources";
 import {
   Button,
-  EmptyDefault,
-  TextareaAutosizeStyled,
-  Table,
   Column,
+  EmptyDefault,
   NftImage,
+  Table,
+  TextareaAutosizeStyled,
 } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { TradeBtnStatus } from "../Interface";
@@ -339,9 +339,7 @@ export const MintNFTConfirm = <
                     }}
                     display={"inline-flex"}
                     title={nftMintData.nftId}
-                    href={`
-                     ()
-                    ${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
+                    href={`${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

@@ -319,6 +319,7 @@ export const AssetsTable = withTranslation("tables")(
           const token = row["token"];
           const isLp = token.type === TokenType.lp;
           const isDefi = token.type === TokenType.defi;
+          // const isDual = token.type === TokenType.dual;
           const tokenValue = token.value;
 
           const isToL1 = token.type !== TokenType.lp;

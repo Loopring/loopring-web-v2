@@ -15,7 +15,7 @@ import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { RawDataDefiTxsItem } from "./Interface";
+import { DefiTxsTableProps, RawDataDefiTxsItem } from "./Interface";
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -50,23 +50,6 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
-export interface DefiTxsTableProps<R = RawDataDefiTxsItem> {
-  // etherscanBaseUrl?: string;
-  rawData: R[];
-  pagination?: {
-    pageSize: number;
-    total: number;
-  };
-  idIndex: { [key: string]: string };
-  tokenMap: { [key: string]: any };
-
-  getDefiTxList: (props: any) => Promise<void>;
-  // filterTokens: string[];
-  // showFilter?: boolean;
-  showloading: boolean;
-  // accAddress: string;
-  // accountId: number;
-}
 export const DefiTxsTable = withTranslation(["tables", "common"])(
   <R extends RawDataDefiTxsItem>(
     props: DefiTxsTableProps<R> & WithTranslation

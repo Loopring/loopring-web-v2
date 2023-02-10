@@ -1,5 +1,5 @@
 import { ForexMap, StateBase } from "@loopring-web/common-resources";
-import { ChainId, Currency, ExchangeInfo } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export enum ENV {
   DEV = "DEV",
@@ -11,8 +11,8 @@ export enum NETWORKEXTEND {
   NONETWORK = "unknown",
 }
 
-export type NETWORK = NETWORKEXTEND | ChainId;
-export type System<R = Currency> = {
+export type NETWORK = NETWORKEXTEND | sdk.ChainId;
+export type System = {
   env: keyof typeof ENV;
   chainId: NETWORK;
   // network: keyof typeof NETWORK,
@@ -20,8 +20,8 @@ export type System<R = Currency> = {
   socketURL: string;
   baseURL: string;
   gasPrice: number;
-  forexMap: ForexMap<R>;
-  exchangeInfo: ExchangeInfo | undefined;
+  forexMap: ForexMap;
+  exchangeInfo: sdk.ExchangeInfo | undefined;
   allowTrade: {
     register: { enable: boolean; reason?: string };
     order: { enable: boolean; reason?: string };
@@ -44,7 +44,7 @@ export type System<R = Currency> = {
   };
 };
 
-export type SystemStatus = System<{ [key: string]: any }> & {
+export type SystemStatus = System & {
   // system:System | {}
   __timer__: NodeJS.Timeout | -1;
   topics: any[];

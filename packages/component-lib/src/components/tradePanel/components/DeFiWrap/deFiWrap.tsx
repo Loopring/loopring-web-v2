@@ -1,5 +1,6 @@
 import {
   DeFiCalcData,
+  DeFiChgType,
   EmptyValueTag,
   ExchangeIcon,
   getValuePrecisionThousand,
@@ -7,7 +8,6 @@ import {
   myLog,
   OrderListIcon,
   ReverseIcon,
-  DeFiChgType,
 } from "@loopring-web/common-resources";
 import { DeFiWrapProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";

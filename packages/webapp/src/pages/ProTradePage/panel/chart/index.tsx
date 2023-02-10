@@ -1,36 +1,36 @@
 import React from "react";
 import { bindTrigger } from "material-ui-popup-state/es";
-import { usePopupState, bindPopper } from "material-ui-popup-state/hooks";
+import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
-  Divider,
   Box,
-  Typography,
-  Grid,
-  MenuItem,
   Checkbox,
   ClickAwayListener,
+  Divider,
+  Grid,
+  MenuItem,
+  Typography,
 } from "@mui/material";
 import {
-  ScaleAreaChart,
   ChartType,
-  SubIndicator,
   PopoverPure,
+  ScaleAreaChart,
+  SubIndicator,
 } from "@loopring-web/component-lib";
 import {
-  KLineFeaturesIcon,
-  DepthViewData,
-  MarketType,
   depth2ViewData,
+  DepthViewData,
+  KLineFeaturesIcon,
+  MarketType,
 } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
-import { useTokenMap, usePageTradePro } from "@loopring-web/core";
+import { usePageTradePro, useTokenMap } from "@loopring-web/core";
 
 import { useKlineChart } from "./hook";
 import {
-  timeIntervalData,
-  SubIndicatorList,
   chartFearturesList,
+  SubIndicatorList,
+  timeIntervalData,
 } from "./klineConfig";
 import { cloneDeepWith } from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";

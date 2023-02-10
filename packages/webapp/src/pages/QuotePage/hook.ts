@@ -1,26 +1,22 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 
-import {
-  MarketBlockProps,
-  QuoteTableRawDataItem,
-} from "@loopring-web/component-lib";
+import { QuoteTableRawDataItem } from "@loopring-web/component-lib";
 import { WsTopicType } from "@loopring-web/loopring-sdk";
 
 import { RowConfig, SagaStatus } from "@loopring-web/common-resources";
 import _ from "lodash";
 import {
-  store,
-  LoopringAPI,
-  tickerService,
   favoriteMarket as favoriteMarketReducer,
-  useAmmActivityMap,
   LAYOUT,
-  useTicker,
-  useSocket,
-  useTokenPrices,
-  useTokenMap,
-  useSystem,
+  LoopringAPI,
+  store,
+  tickerService,
   useNotify,
+  useSocket,
+  useSystem,
+  useTicker,
+  useTokenMap,
+  useTokenPrices,
 } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
 
@@ -136,11 +132,13 @@ export function useQuote<C extends { [key: string]: string }>() {
     tickList,
   };
 }
+
 export enum TableFilterParams {
   all = "all",
   favourite = "favourite",
   // ranking = "ranking",
 }
+
 export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   const { status: tickerStatus } = useTicker();
   const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([]);

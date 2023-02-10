@@ -1,7 +1,6 @@
 import { useRouteMatch } from "react-router-dom";
 
 import { Box } from "@mui/material";
-import { subMenuLayer2 } from "@loopring-web/common-resources";
 
 import React from "react";
 import { ViewAccountTemplate } from "@loopring-web/core";

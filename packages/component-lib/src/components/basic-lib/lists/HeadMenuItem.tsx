@@ -29,6 +29,7 @@ import {
 import Menu from "material-ui-popup-state/HoverMenu";
 import React, { ForwardedRef, RefAttributes } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
+
 export const HeaderMenu = styled(Container)`
   display: flex;
   justify-content: space-between;
@@ -212,11 +213,14 @@ export const HeadMenuItem = React.memo(
           }
           className={clsx([`layer-${layer}`, className])}
           ref={ref}
+          title={router?.description ?? undefined}
           onClick={
             handleListKeyDown
               ? handleListKeyDown
               : () => {
-                  history.push(router?.path.replace("${pair}", pair) ?? "");
+                  router?.path?.startsWith("http")
+                    ? window.open(router?.path, "_blank")
+                    : history.push(router?.path.replace("${pair}", pair) ?? "");
                 }
           }
         >

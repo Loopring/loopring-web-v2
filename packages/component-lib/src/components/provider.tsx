@@ -1,6 +1,9 @@
-import type { Provider as TProvider } from "react"
+import type { Provider as TProvider } from "react";
 
-export const provider = (Provider: TProvider<any>, props: any = {}) => [Provider, props];
+export const provider = (Provider: TProvider<any>, props: any = {}) => [
+  Provider,
+  props,
+];
 
 /**
  * @param providers  inner -> outer
@@ -15,14 +18,20 @@ export const provider = (Provider: TProvider<any>, props: any = {}) => [Provider
  *     <App />
  *  </ProviderComposer>
  */
-export const ProviderComposer = ({providers, children}: { providers: Array<[TProvider<any>, any]>, children: any }) => {
-    // @ts-ignore
-    return providers.reduce((children, [Provider, props]: [TProvider<any>, any]) => {
-
-            // @ts-ignore
-            return <Provider {...props}>{children}</Provider>
-        }
-        , children)
-    // return children;
-}
-
+export const ProviderComposer = ({
+  providers,
+  children,
+}: {
+  providers: Array<[TProvider<any>, any]>;
+  children: any;
+}) => {
+  // @ts-ignore
+  return providers.reduce(
+    (children, [Provider, props]: [TProvider<any>, any]) => {
+      // @ts-ignore
+      return <Provider {...props}>{children}</Provider>;
+    },
+    children
+  );
+  // return children;
+};

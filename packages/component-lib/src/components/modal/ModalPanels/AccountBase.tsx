@@ -2,10 +2,10 @@ import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 import {
   CopyIcon,
+  ExitIcon,
   getShortAddr,
   LinkIcon,
   SoursURL,
-  ExitIcon,
 } from "@loopring-web/common-resources";
 import { TFunction, Trans } from "react-i18next";
 import styled from "@emotion/styled";

@@ -1,13 +1,16 @@
 import {
   CoinInfo,
-  PriceTag,
-  TradeFloat,
   ForexMap,
-  NFTWholeINFO,
   GET_IPFS_STRING,
+  NFTWholeINFO,
+  PriceTag,
+  RedPacketQRPropsExtends,
+  TradeFloat,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../tradePanel";
+import * as sdk from "@loopring-web/loopring-sdk";
 import { Currency } from "@loopring-web/loopring-sdk";
+import { RawDataRedPacketDetailItem } from "../tableList";
 
 export type MarketBlockProps<C> = {
   coinAInfo: CoinInfo<C>;
@@ -59,4 +62,70 @@ export type NFTMedaProps = {
   shouldPlay?: boolean;
   getIPFSString: GET_IPFS_STRING;
   baseURL: string;
+};
+export type RedPacketDefaultBg = RedPacketDefault & {
+  content: JSX.Element;
+};
+export type RedPacketDefault = {
+  type?: "default" | "official";
+  size?: "middle" | "large";
+  ImageEle?: JSX.Element | undefined;
+};
+export type RedPacketTimeoutProps = RedPacketDefault & {
+  sender: string;
+  memo?: string;
+  viewDetail?: () => void;
+};
+export type RedPacketQRCodeProps = {
+  url: string;
+} & RedPacketQRPropsExtends;
+export type RedPacketOpenProps = {
+  sender: string;
+  amountStr: string;
+  memo: string;
+  viewDetail?: () => void;
+  onOpen: () => void;
+};
+export type RedPacketUnreadyProps = {
+  sender: string;
+  amountStr: string;
+  memo: string;
+  validSince: number;
+  // viewDetail: () => void;
+  // onOpen: () => void;
+};
+export type RedPacketOpenedProps = {
+  sender: string;
+  amountStr: string;
+  myAmountStr: string | undefined;
+  memo: string;
+  viewDetail: () => void;
+};
+export const RedPacketDetailLimit = 5;
+export type RedPacketDetailProps = {
+  sender: string;
+  amountStr: string;
+  amountClaimStr: string;
+  memo: string;
+  myAmountStr: string;
+  claimList: RawDataRedPacketDetailItem[];
+  detail: sdk.LuckTokenClaimDetail;
+  isShouldSharedRely: boolean;
+  totalCount: number;
+  remainCount: number;
+  onShared: () => void;
+  page: number;
+  relyAmount?: string;
+  relyNumber?: string;
+  handlePageChange: (page: number, limit?: number) => void;
+  ImageEle?: JSX.Element | undefined;
+};
+export type RedPacketClockProps = RedPacketDefault & {
+  validSince: number;
+  sender: string;
+  amountStr: string;
+  memo: string;
+  showRedPacket: () => void;
+  // viewDetail: () => void;
+  // onOpen: () => void;
 };

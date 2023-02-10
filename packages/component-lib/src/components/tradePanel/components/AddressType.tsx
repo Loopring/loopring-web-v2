@@ -1,11 +1,4 @@
-import {
-  Box,
-  Divider,
-  MenuItem,
-  Radio,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, MenuItem, Radio, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import React, { ForwardedRef } from "react";
@@ -15,7 +8,7 @@ import {
   useAddressTypeLists,
   WALLET_TYPE,
 } from "@loopring-web/common-resources";
-import { MenuItemProps } from "../../basic-lib";
+import { MenuItemProps, TextField } from "../../basic-lib";
 import { useOpenModals } from "../../../stores";
 
 const MenuItemStyle = styled(MenuItem)<

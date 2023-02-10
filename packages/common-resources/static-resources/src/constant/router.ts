@@ -146,15 +146,31 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "Landing-page",
       i18nKey: "labelZkRollupLayer2",
     },
-    router: { path: "/" },
+    router: { path: "https://loopring.io/#/" },
   },
   {
     label: {
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "/wallet" },
+    router: { path: "https://loopring.io/#/wallet" },
   },
+  // {
+  //   label: {
+  //     id: "bridge",
+  //     i18nKey: "labelBridge",
+  //     description: "labelBridgeDes",
+  //   },
+  //   router: { path: "https://loopring.io/#/" },
+  // },
+  // {
+  //   label: {
+  //     id: "guardian",
+  //     i18nKey: "labelGuardian",
+  //     description: "labelGuardianDes",
+  //   },
+  //   router: { path: "https://loopring.io/#/" },
+  // },
 ];
 export const subMenuLayer2 = {
   assetsGroup: [

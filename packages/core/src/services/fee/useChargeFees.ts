@@ -344,7 +344,7 @@ export function useChargeFees({
                       : undefined,
                   });
                 }
-                myLog("_feeInfo", _feeInfo);
+                // myLog("_feeInfo", _feeInfo);
                 return _feeInfo;
               } else {
                 if (

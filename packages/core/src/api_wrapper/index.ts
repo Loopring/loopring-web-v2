@@ -5,6 +5,7 @@ import {
   DelegateAPI,
   ExchangeAPI,
   GlobalAPI,
+  LuckTokenAPI,
   NFTAPI,
   UserAPI,
   WalletAPI,
@@ -21,9 +22,11 @@ export class LoopringAPI {
   public static delegate: DelegateAPI | undefined = undefined;
   public static globalAPI: GlobalAPI | undefined = undefined;
   public static defiAPI: DefiAPI | undefined = undefined;
+  public static luckTokenAPI: LuckTokenAPI | undefined = undefined;
   public static __chainId__: ChainId | undefined = undefined;
   public static InitApi = (chainId: ChainId) => {
     LoopringAPI.userAPI = new UserAPI({ chainId }, 6000);
+    LoopringAPI.luckTokenAPI = new LuckTokenAPI({ chainId }, 6000);
     LoopringAPI.exchangeAPI = new ExchangeAPI({ chainId }, 6000);
     LoopringAPI.globalAPI = new GlobalAPI({ chainId }, 25000);
     LoopringAPI.ammpoolAPI = new AmmpoolAPI({ chainId }, 6000);

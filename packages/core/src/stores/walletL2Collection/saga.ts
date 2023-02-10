@@ -71,8 +71,6 @@ const getWalletL2CollectionBalance = async <_R extends { [key: string]: any }>({
   }
   collections = (response as any)?.collections;
   totalNum = (response as any).totalNum;
-  myLog("legacy", collections, totalNum);
-
   return {
     walletL2Collection: collections ?? [],
     total: totalNum,

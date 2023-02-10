@@ -1,13 +1,13 @@
 import { WithTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
 import {
-  IBData,
-  NFTWholeINFO,
   EmptyValueTag,
   FeeInfo,
-  useAddressTypeLists,
-  TOAST_TIME,
   getShortAddr,
+  IBData,
+  NFTWholeINFO,
+  TOAST_TIME,
+  useAddressTypeLists,
 } from "@loopring-web/common-resources";
 import { Button, Toast } from "../../index";
 import { TransferViewProps } from "./Interface";

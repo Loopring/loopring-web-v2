@@ -3,13 +3,11 @@ import {
   myLog,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { useAccount } from "@loopring-web/core";
+import { LoopringAPI, store, useAccount } from "@loopring-web/core";
 import React from "react";
 
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
-import { store } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { LoopringAPI } from "@loopring-web/core";
 
 import {
   ConnectProvidersSignMap,

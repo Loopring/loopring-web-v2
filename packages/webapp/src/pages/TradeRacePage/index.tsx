@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import styled from "@emotion/styled";
-import { ScrollTop, LoadingBlock } from "@loopring-web/component-lib";
+import { LoadingBlock, ScrollTop } from "@loopring-web/component-lib";
 import { EVENT_STATUS, useTradeRace } from "./hook";
 import {
   EmptyValueTag,
@@ -150,12 +150,6 @@ export const TradeRacePage = withTranslation("common")(
               </ScrollTop>
               <Box className={"title-banner"} marginBottom={4}>
                 <Typography
-                  // sx={{
-                  //   textIndent:
-                  //     eventData.banner && eventData.showBannerOrTitle == "1"
-                  //       ? "-99999em"
-                  //       : "in",
-                  // }}
                   marginY={1}
                   component={"h1"}
                   variant={"h1"}

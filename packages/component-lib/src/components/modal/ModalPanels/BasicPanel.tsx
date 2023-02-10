@@ -1,20 +1,19 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import { TFunction, Trans, withTranslation } from "react-i18next";
 import {
+  Account,
   DoneIcon,
   FailedIcon,
-  RefuseIcon,
-  SubmitIcon,
   LinkIcon,
-  SoursURL,
-  TransErrorHelp,
-  Account,
   LoadingIcon,
+  RefuseIcon,
+  SoursURL,
+  SubmitIcon,
+  TransErrorHelp,
 } from "@loopring-web/common-resources";
 import React from "react";
 
 import { Button, TextareaAutosizeStyled } from "../../basic-lib";
-import { Link } from "@mui/material";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import { DropdownIconStyled } from "../../tradePanel";
@@ -35,6 +34,7 @@ export interface PanelProps {
   value?: number | string;
   symbol?: string;
   hash?: string;
+  info?: any;
   describe1?: any;
   describe2?: any;
   chainInfos?: any;
@@ -225,7 +225,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               >
                 {iconType === IconType.FailedIcon ? (
                   <Typography
-                    component={"div"}
+                    component={"span"}
                     marginX={3}
                     whiteSpace={"pre-line"}
                     variant={"body1"}
@@ -241,6 +241,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                         component={"span"}
                         variant={"inherit"}
                         display={"inline-flex"}
+                        alignItems={"center"}
                         onClick={() =>
                           setDropdownStatus((prev) =>
                             prev === "up" ? "down" : "up"
@@ -283,7 +284,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   </Typography>
                 ) : (
                   <Typography
-                    component={"div"}
+                    component={"span"}
                     variant={"h5"}
                     whiteSpace={"pre-line"}
                     textAlign={"center"}
@@ -465,6 +466,12 @@ export const ForceWithdrawBase = (props: PanelProps) => {
   };
   return <BasicPanel {...props} {...propsPatch} />;
 };
+export const ClaimWithdrawBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelClaimWithdrawTitle",
+  };
+  return <BasicPanel {...props} {...propsPatch} />;
+};
 
 export const TransferBase = (props: PanelProps) => {
   const propsPatch = {
@@ -489,7 +496,14 @@ export const DualBase = (props: PanelProps & { showTitle: boolean }) => {
 
 export const RedPacketBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelReaPacketTitle",
+    title: "labelSendRedPacketTitle",
+  };
+  return <BasicPanel {...propsPatch} {...props} />;
+};
+
+export const RedPacketOpenBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelRedPacketOpen",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };

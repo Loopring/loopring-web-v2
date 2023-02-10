@@ -1,29 +1,28 @@
 import {
+  CollectionLimit,
   CollectionMeta,
   CustomError,
   ErrorMap,
-  IPFS_LOOPRING_SITE,
-  LOOPRING_NFT_METADATA,
-  LOOPRING_TAKE_NFT_META_KET,
-  Media,
   myLog,
   MyNFTFilter,
   NFTWholeINFO,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import React, { useState } from "react";
+import React from "react";
 import {
-  getIPFSString,
   LoopringAPI,
   store,
   useAccount,
+  useModalData,
+  useNFTListDeep,
+  useSystem,
+  useWalletL2NFTCollection,
+  useWalletLayer2NFT,
 } from "@loopring-web/core";
-import { useSystem, useNFTListDeep } from "@loopring-web/core";
-import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = ({
@@ -49,7 +48,6 @@ export const useMyNFT = ({
     walletLayer2NFT,
     total,
     page: page_redux,
-    // filter: filter_redux,
     collection: collection_redux,
     updateWalletLayer2NFT,
   } = useWalletLayer2NFT();
@@ -61,7 +59,7 @@ export const useMyNFT = ({
     modals: { isShowNFTDetail },
   } = useOpenModals();
   const { etherscanBaseUrl } = useSystem();
-  const [page, setPage] = useState(-1);
+  const [page, setPage] = React.useState(-1);
 
   // const onDetailClose = React.useCallback(() => setIsShow(false), []);
 
@@ -130,7 +128,6 @@ export const useMyNFT = ({
         collectionInfo: _collectionMeta,
       });
       updateNFTWithdrawData({ ...item, collectionInfo: _collectionMeta });
-      updateNFTTransferData({ ...item, collectionInfo: _collectionMeta });
       updateNFTTransferData({ ...item, collectionInfo: _collectionMeta });
       if (
         item.isCounterFactualNFT &&
@@ -238,5 +235,87 @@ export const useMyNFT = ({
     page,
     isLoading,
     walletLayer2NFT,
+  };
+};
+
+export const useNFTCollection = ({
+  contractStr,
+  matchPreUrl,
+}: {
+  contractStr: string;
+  matchPreUrl: string;
+}) => {
+  const history = useHistory();
+  const { search } = useLocation();
+
+  const searchParams = new URLSearchParams(search);
+  const { walletL2NFTCollection } = useWalletL2NFTCollection();
+  const {
+    account: { accountId, apiKey },
+  } = useAccount();
+
+  const [collectionMeta, setCollectionMeta] =
+    React.useState<undefined | CollectionMeta>(undefined);
+  const checkCollection = async () => {
+    const [contract, id] = contractStr ? contractStr.split("--") : [null, null];
+    if (contract !== undefined && id !== undefined && LoopringAPI.userAPI) {
+      const collectionMeta = walletL2NFTCollection.find((item) => {
+        return (
+          (id !== undefined ? Number(item.id) === Number(id) : true) &&
+          item.contractAddress?.toLowerCase() === contract?.toLowerCase()
+        );
+      });
+      if (collectionMeta) {
+        setCollectionMeta(collectionMeta);
+        return;
+      } else {
+        const response = await LoopringAPI.userAPI
+          .getUserNFTCollection(
+            {
+              tokenAddress: contract,
+              collectionId: id,
+              accountId: accountId.toString(),
+              limit: CollectionLimit,
+            } as any,
+            apiKey
+          )
+          .catch((_error) => {
+            throw new CustomError(ErrorMap.TIME_OUT);
+          });
+        if (
+          response &&
+          ((response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message)
+        ) {
+          throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+        }
+        const collections = response.collections;
+        if (collections.length) {
+          const collectionMeta = collections.find((item: any) => {
+            return (
+              (id !== undefined ? Number(item.id) === Number(id) : true) &&
+              item.contractAddress?.toLowerCase() === contract?.toLowerCase()
+            );
+          });
+
+          setCollectionMeta(collectionMeta);
+          return;
+        } else {
+          history.push(
+            `${matchPreUrl}/byCollection` + "?" + searchParams.toString()
+          );
+        }
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    const [contract, id] = contractStr ? contractStr.split("--") : [null, null];
+    if (contract && id && contract.startsWith("0x")) {
+      checkCollection();
+    }
+  }, [contractStr]);
+  return {
+    collectionMeta,
   };
 };

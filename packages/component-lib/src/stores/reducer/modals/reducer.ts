@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import {
+  ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
@@ -9,6 +10,8 @@ import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { AmmPanelType } from "../../../components";
 
 const initialState: ModalState = {
+  isShowNFTMetaNotReady: { isShow: false },
+  isShowRedPacket: { isShow: false, step: 0 },
   isShowSupport: { isShow: false },
   isShowOtherExchange: { isShow: false },
   isWrongNetworkGuide: { isShow: false },
@@ -34,12 +37,42 @@ const initialState: ModalState = {
   isShowCollectionAdvance: { isShow: false },
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
+  isShowClaimWithdraw: { isShow: false, claimToken: undefined },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
   name: "modals",
   initialState,
   reducers: {
+    setNFTMetaNotReady(
+      state,
+      action: PayloadAction<{
+        isShow: boolean;
+        step?: number;
+        info?: { [key: string]: any };
+      }>
+    ) {
+      const { isShow, info } = action.payload;
+      state.isShowNFTMetaNotReady = {
+        isShow,
+        info,
+      };
+    },
+    setShowRedPacket(
+      state,
+      action: PayloadAction<{
+        isShow: boolean;
+        step?: number;
+        info?: { [key: string]: any };
+      }>
+    ) {
+      const { isShow, step, info } = action.payload;
+      state.isShowRedPacket = {
+        isShow,
+        step: step ? step : 0,
+        info,
+      };
+    },
     setShowIFrame(
       state,
       action: PayloadAction<{ isShow: boolean; url: string }>
@@ -304,6 +337,16 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         messageKey,
       };
     },
+    setShowClaimWithdraw(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & { claimToken: ClaimToken }>
+    ) {
+      const { isShow, claimToken } = action.payload;
+      state.isShowClaimWithdraw = {
+        isShow,
+        claimToken,
+      };
+    },
   },
 });
 export const {
@@ -332,4 +375,7 @@ export const {
   setShowWrongNetworkGuide,
   setShowOtherExchange,
   setShowLayerSwapNotice,
+  setShowClaimWithdraw,
+  setShowRedPacket,
+  setNFTMetaNotReady,
 } = modalsSlice.actions;

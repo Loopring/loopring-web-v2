@@ -3,7 +3,7 @@ import React from "react";
 import { Meta, Story } from "@storybook/react/types-6-0";
 import { withTranslation } from "react-i18next";
 import { MemoryRouter } from "react-router-dom";
-import { Button, Grid } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import {
   AccountFull,
   AccountStatus,
@@ -19,13 +19,12 @@ import { ModalQRCode, QRCodePanel } from "./QRCode";
 
 import { account } from "../../static";
 import { WalletConnectBtn } from "../header";
-import { Box } from "@mui/material";
 
 import {
-  WalletConnectConnectInProgress,
-  ConnectSuccess,
-  ConnectFailed,
   CommonConnectInProgress,
+  ConnectFailed,
+  ConnectSuccess,
+  WalletConnectConnectInProgress,
 } from "../index";
 
 const Style = styled.div`

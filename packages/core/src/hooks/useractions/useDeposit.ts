@@ -8,37 +8,38 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
+  AddressError,
   CoinMap,
   IBData,
+  L1_UPDATE,
   myLog,
+  SagaStatus,
+  SUBMIT_PANEL_AUTO_CLOSE,
+  TRADE_TYPE,
   UIERROR_CODE,
   WalletMap,
-  AddressError,
-  SagaStatus,
-  L1_UPDATE,
-  SUBMIT_PANEL_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import {
-  connectProvides,
   ConnectProvidersSignMap,
+  connectProvides,
 } from "@loopring-web/web3-provider";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
+  ActionResultCode,
+  BIGO,
+  DepositCommands,
+  depositServices,
+  LoopringAPI,
+  store,
+  useAccount,
   useAddressCheck,
   useAllowances,
   useBtnStatus,
   useModalData,
-  useTokenMap,
-  useAccount,
   useSystem,
-  ActionResultCode,
-  BIGO,
-  LoopringAPI,
-  store,
+  useTokenMap,
   useWalletLayer1,
-  DepositCommands,
-  depositServices,
 } from "../../index";
 import { useTranslation } from "react-i18next";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
@@ -769,7 +770,7 @@ export const useDeposit = <
     btnInfo,
     isNewAccount,
     title,
-    type: "TOKEN",
+    type: TRADE_TYPE.TOKEN,
     handleClear,
     allowTrade,
     isAllowInputToAddress,

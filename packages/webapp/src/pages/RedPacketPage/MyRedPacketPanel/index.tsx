@@ -1,65 +1,81 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Link,
-  Tab,
-  Tabs,
-  Tooltip,
-} from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { StylePaper } from "@loopring-web/core";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
-  AmmTable,
-  AssetsTable,
-  DefiTxsTable,
-  DualTxsTable,
-  OrderHistoryTable,
-  Toast,
-  TradeTable,
-  TransactionTable,
+  RedPacketReceiveTable,
+  RedPacketRecordTable,
   useSettings,
 } from "@loopring-web/component-lib";
-import {
-  AddIcon,
-  BackIcon,
-  CheckBoxIcon,
-  CheckedIcon,
-  TOAST_TIME,
-} from "@loopring-web/common-resources";
+import { StylePaper, useSystem } from "@loopring-web/core";
 import React from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
-import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
+import {
+  useMyRedPacketReceiveTransaction,
+  useMyRedPacketRecordTransaction,
+} from "./hooks";
+import { BackIcon, RowConfig } from "@loopring-web/common-resources";
+import { Box, Button, Tab, Tabs } from "@mui/material";
 
 enum TabIndex {
   Received = "Received",
   Send = "Send",
 }
 
-export const MyRedPacketPanel = () => {
+export const MyRedPacketPanel = ({
+  setToastOpen,
+}: {
+  setToastOpen: (props: any) => void;
+}) => {
   const theme = useTheme();
-  const container = React.useRef<HTMLDivElement>(null);
   const history = useHistory();
   const { t } = useTranslation();
   const { isMobile } = useSettings();
+  const { etherscanBaseUrl, forexMap } = useSystem();
+  let match: any = useRouteMatch("/redPacket/records/:item");
+
+  const container = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    let height = container?.current?.offsetHeight;
+    if (height) {
+      const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
+      setPageSize(Math.floor((height - 120) / RowConfig.rowHeight) - 3);
+      handleTabChange(currentTab);
+    }
+  }, [container?.current?.offsetHeight]);
   const [currentTab, setCurrentTab] = React.useState<TabIndex>(
-    TabIndex.Received
+    match?.params.item ?? TabIndex.Received
   );
+
+  const {
+    showLoading: showloadingRecord,
+    getMyRedPacketRecordTxList,
+    myRedPacketRecordList,
+    myRedPacketRecordTotal,
+    onItemClick,
+  } = useMyRedPacketRecordTransaction(setToastOpen);
+  const {
+    showLoading: showloadingReceive,
+    getRedPacketReceiveList,
+    redPacketReceiveList,
+    redPacketReceiveTotal,
+    onItemClick: onReceiveItemClick,
+  } = useMyRedPacketReceiveTransaction(setToastOpen);
+  const [pageSize, setPageSize] = React.useState(0);
+
   const handleTabChange = (value: TabIndex) => {
     switch (value) {
       case TabIndex.Send:
-        history.push("/redpacket/transaction/send");
+        history.push("/redPacket/records/Send");
         setCurrentTab(TabIndex.Send);
         break;
       case TabIndex.Received:
       default:
-        history.replace("/redpacket/transaction/Received");
+        history.replace("/redPacket/records/Received");
         setCurrentTab(TabIndex.Received);
         break;
     }
   };
+
+  // @ts-ignore
   return (
     <Box
       flex={1}
@@ -67,14 +83,18 @@ export const MyRedPacketPanel = () => {
       flexDirection={"column"}
       sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
     >
-      <Box display={"flex"} flexDirection={isMobile ? "column" : "row"}>
+      <Box
+        display={"flex"}
+        flexDirection={isMobile ? "column" : "row"}
+        marginBottom={2}
+      >
         <Button
           startIcon={<BackIcon fontSize={"small"} />}
           variant={"text"}
           size={"medium"}
           sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
-          onClick={() => history.push("/redpacket/markets")}
+          onClick={() => history.push("/redPacket/markets")}
         >
           {t("labelRedPacketRecordTitle")}
         </Button>
@@ -90,10 +110,40 @@ export const MyRedPacketPanel = () => {
           <Tab label={t("labelRedPacketSend")} value={TabIndex.Send} />
         </Tabs>
         {currentTab === TabIndex.Received && (
-          <Box className="tableWrapper table-divide-short"></Box>
+          <Box className="tableWrapper table-divide-short">
+            <RedPacketReceiveTable
+              {...{
+                onItemClick: onReceiveItemClick,
+                showloading: showloadingReceive,
+                forexMap,
+                etherscanBaseUrl,
+                rawData: redPacketReceiveList,
+                getRedPacketReceiveList,
+                pagination: {
+                  pageSize: pageSize,
+                  total: redPacketReceiveTotal,
+                },
+              }}
+            />
+          </Box>
         )}
         {currentTab === TabIndex.Send && (
-          <Box className="tableWrapper table-divide-short"></Box>
+          <Box className="tableWrapper table-divide-short">
+            <RedPacketRecordTable
+              {...{
+                showloading: showloadingRecord,
+                etherscanBaseUrl,
+                forexMap,
+                rawData: myRedPacketRecordList,
+                getMyRedPacketRecordTxList,
+                pagination: {
+                  pageSize: pageSize,
+                  total: myRedPacketRecordTotal,
+                },
+                onItemClick,
+              }}
+            />
+          </Box>
         )}
       </StylePaper>
     </Box>

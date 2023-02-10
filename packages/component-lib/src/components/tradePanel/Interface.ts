@@ -4,26 +4,28 @@ import {
   FeeInfo,
   IBData,
   MarketType,
+  NFTWholeINFO,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import {
   BasicACoinTradeHookProps,
+  ClaimExtendProps,
+  CreateRedPacketViewProps,
   DefaultProps,
   DepositExtendProps,
   DepositInfoProps as _DepositInfoProps,
+  ExportAccountExtendProps,
+  ForceWithdrawViewProps,
+  NFTDeployViewProps,
+  NFTDepositViewProps,
+  NFTMetaViewProps,
+  NFTMintAdvanceViewProps,
+  NFTMintViewProps,
   ResetExtendProps,
   ResetInfoProps as _ResetInfoProps,
   TransferExtendProps,
   TransferInfoProps as _TransferInfoProps,
   WithdrawExtendProps,
-  ExportAccountExtendProps,
-  NFTDepositViewProps,
-  NFTMintViewProps,
-  NFTDeployViewProps,
-  NFTMetaViewProps,
-  NFTMintAdvanceViewProps,
-  ForceWithdrawViewProps,
-  CreateRedPacketViewProps,
 } from "./components/Interface";
 import {
   SwapData,
@@ -39,6 +41,7 @@ import {
 } from "./tradePro/Interface";
 import React from "react";
 import { TOASTOPEN } from "../../components/toast";
+
 export { TradeProType, TradeBaseType };
 
 export type SwapTradeData<T> = {
@@ -90,12 +93,18 @@ export type WithdrawProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<T, I> &
 export type TransferProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<T, I> &
   TransferExtendProps<T, I, C>;
 
+export type ClaimProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<T, I> &
+  ClaimExtendProps<T, C>;
+
 export type ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps<T>;
 
 export type DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps;
 
-export type CreateRedPacket<T, I, LuckToken, C = FeeInfo> =
-  BasicACoinTradeHookProps<T, I> & CreateRedPacketViewProps<T, I, C, LuckToken>;
+export type CreateRedPacketProps<T, I, C = FeeInfo, _NFT = NFTWholeINFO> = Omit<
+  BasicACoinTradeHookProps<T, I>,
+  "type"
+> &
+  CreateRedPacketViewProps<T, I, C>;
 
 export type TransferInfoProps<T, I> = DefaultProps<T, I> &
   _TransferInfoProps<CoinKey<I>>;

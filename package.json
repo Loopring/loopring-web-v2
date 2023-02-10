@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "3.1.0",
+    "@loopring-web/loopring-sdk": "3.1.2",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "^1.1.3",
     "@mui/lab": "^5.0.0-alpha.45",
@@ -64,7 +64,8 @@
     "remark-gfm": "^3.0.0",
     "rxjs": "^7.1.0",
     "voca": "^1.4.0",
-    "web3": "^1.8.0"
+    "web3": "^1.8.0",
+    "html5-qrcode": "2.3.4"
   },
   "build": {
     "files": [
@@ -135,6 +136,7 @@
     "@types/jest": "^26.0.15",
     "@types/lodash": "^4.14.168",
     "@types/node": "^12.0.0",
+    "@types/qrcode-svg": "^1.1.1",
     "@types/react": "^17.0.3",
     "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-dom": "^17.0.0",
