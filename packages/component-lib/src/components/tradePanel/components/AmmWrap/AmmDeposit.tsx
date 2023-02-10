@@ -211,7 +211,9 @@ export const AmmDepositWrap = <
       >
         <InputCoin<any, I, any>
           ref={coinARef}
-          disabled={getDisabled()}
+          disabled={
+            getDisabled() || ammDepositBtnStatus === TradeBtnStatus.LOADING
+          }
           {...{
             ...propsA,
             name: "coinA",
@@ -233,7 +235,9 @@ export const AmmDepositWrap = <
         </Box>
         <InputCoin<any, I, any>
           ref={coinBRef}
-          disabled={getDisabled()}
+          disabled={
+            getDisabled() || ammDepositBtnStatus === TradeBtnStatus.LOADING
+          }
           {...{
             ...propsB,
             name: "coinB",

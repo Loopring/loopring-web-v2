@@ -46,6 +46,7 @@ export type NOTIFICATION_ITEM = {
   endShow: number;
   color: NOTIFY_COLOR;
   banner?: string;
+  bannerDark?: string;
   webRouter?: string;
   webFlag: boolean;
   versionIosMin: string;

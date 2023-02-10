@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
+  resetAmmPool,
   updatePageAmmCommon,
   updatePageAmmExit,
   updatePageAmmExitBtn,
@@ -22,6 +23,7 @@ export function usePageAmmPool(): PageAmmPoolStatus & {
   updatePageAmmJoinBtn: (pageAmmPool: RequireOne<PageAmmJoin, never>) => void;
   updatePageAmmExit: (pageAmmPool: RequireOne<PageAmmExit, never>) => void;
   updatePageAmmExitBtn: (pageAmmPool: RequireOne<PageAmmExit, never>) => void;
+  resetAmmPool: () => void;
 } {
   const pageAmmPoolStatus: PageAmmPoolStatus = useSelector(
     (state: RootState) => state._router_pageAmmPool
@@ -29,6 +31,9 @@ export function usePageAmmPool(): PageAmmPoolStatus & {
   const dispatch = useDispatch();
   return {
     ...pageAmmPoolStatus,
+    resetAmmPool: React.useCallback(() => {
+      dispatch(resetAmmPool({}));
+    }, [dispatch]),
     updatePageAmmCommon: React.useCallback(
       (pageAmmJoin: RequireOne<PageAmmCommon, never>) => {
         dispatch(updatePageAmmCommon(pageAmmJoin));

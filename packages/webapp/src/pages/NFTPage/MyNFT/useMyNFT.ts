@@ -71,9 +71,9 @@ export const useMyNFT = ({
       updateWalletLayer2NFT({
         page,
         collectionId: collectionMeta?.id?.toString() ?? undefined,
-        collectionContractAddress: collectionMeta?.collectionAddress?.toString()
-          ? collectionMeta?.collectionAddress?.toString()
-          : collectionMeta?.contractAddress.toString() ?? undefined,
+        collectionContractAddress: collectionMeta?.contractAddress.toString()
+          ? collectionMeta?.contractAddress.toString()
+          : collectionMeta?.collectionAddress?.toString() ?? undefined,
         filter,
       });
     }
