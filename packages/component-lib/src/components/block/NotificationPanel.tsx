@@ -78,17 +78,10 @@ export const NotificationPanel = ({
 
   const hasActivities =
     notification.activities && notification.activities?.length;
-  // &&
-  // notification.activities.findIndex(({ startShow }) => {
-  //   myLog("NotificationPanel", Date.now() > startShow);
-  //   return Date.now() > startShow;
-  // }) !== -1;
+
   const hasNotifications =
     notification.notifications && notification.notifications?.length;
-  // &&
-  // notification.notifications.findIndex(
-  //   ({ startShow }) => Date.now() > startShow
-  // ) !== -1;
+
   return (
     <BoxStyle
       display={"flex"}

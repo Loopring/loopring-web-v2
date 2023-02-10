@@ -13,6 +13,7 @@ import {
   languageMap,
   NOTIFICATION_ITEM,
   NOTIFY_COLOR,
+  ThemeType,
 } from "@loopring-web/common-resources";
 import { css, Theme } from "@emotion/react";
 import { useHistory } from "react-router-dom";
@@ -22,10 +23,13 @@ const cssBackground = ({
   theme,
   color,
   banner,
+  bannerDark,
   lng,
 }: { theme: Theme; lng: string } & Partial<NOTIFICATION_ITEM>) => {
   let svg: string, _color: string;
   const fillColor = theme.colorBase.textDisable;
+  const _banner: string | undefined =
+    theme.mode === ThemeType.dark && bannerDark?.length ? bannerDark : banner;
   const opacity = 0.2;
   if (banner) {
     return css`
@@ -33,7 +37,7 @@ const cssBackground = ({
 
       &,
       &:hover {
-        background: url("${banner.replace("{lng}", lng)}");
+        background: url("${_banner?.replace("{lng}", lng)}");
         background-size: cover;
       }
 
@@ -97,7 +101,7 @@ const cssBackground = ({
 };
 
 const NotificationListItemStyled = styled(ListItem)<
-  ListItemProps & Partial<ACTIVITY> & { lng: string }
+  ListItemProps & Partial<ACTIVITY> & { lng: string; bannerDark: string }
 >`
   cursor: pointer;
   height: var(--notification-activited-heigth);
@@ -144,12 +148,13 @@ export const NotificationListItem = (
     description2,
     account,
     banner,
+    bannerDark,
     webRouter,
     link,
   } = props;
   return (
     <NotificationListItemStyled
-      {...{ lng, banner }}
+      {...{ lng, banner, bannerDark }}
       alignItems="flex-start"
       onClick={() => {
         if (webRouter) {
