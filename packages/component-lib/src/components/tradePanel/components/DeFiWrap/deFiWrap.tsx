@@ -249,7 +249,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         alignSelf={"stretch"}
         alignItems={"stretch"}
       >
-        <InputCoin<any, I, any>
+        <InputCoin
           ref={coinSellRef}
           disabled={getDisabled}
           {...{

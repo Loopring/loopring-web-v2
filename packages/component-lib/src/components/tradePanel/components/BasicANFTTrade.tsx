@@ -6,7 +6,7 @@ import {
   NFTWholeINFO,
   TRADE_TYPE,
 } from "@loopring-web/common-resources";
-import { Trans, useTranslation, WithTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import { BasicANFTTradeProps } from "./Interface";
 import {
@@ -47,11 +47,7 @@ export const _BasicANFTTrade = <
 }: BasicANFTTradeProps<T, I>) => {
   const { t } = useTranslation("common");
   const getDisabled = () => {
-    if (disabled || tradeData === undefined) {
-      return true;
-    } else {
-      return false;
-    }
+    return disabled || tradeData === undefined;
   };
   const handleCountChange: any = React.useCallback(
     (_tradeData: T, _name: string, _ref: any) => {
@@ -126,7 +122,7 @@ export const _BasicANFTTrade = <
       decimalsLimit: 0,
       allowDecimals: false,
       isHideError: true,
-      isShowCoinInfo: isThumb ? true : false,
+      isShowCoinInfo: !!isThumb,
       isShowCoinIcon: false,
       CoinIconElement,
       order: "right",
@@ -227,7 +223,6 @@ export const NFTInput = React.memo(
   <T extends IBData<I> & Partial<NFTWholeINFO>, I extends any>({
     isThumb,
     tradeData,
-    t,
     isBalanceLimit = true,
     onCopy,
     inputNFTDefaultProps,
@@ -237,15 +232,12 @@ export const NFTInput = React.memo(
     getIPFSString,
     baseURL,
     fullwidth,
-    // isRequired,
-    // isSelected,
-    // handleOnChoose,
     ...rest
-  }: BasicANFTTradeProps<T, I> &
-    Omit<WithTranslation, "tReady" | "i18n"> & {
-      onCopy?: (content: string) => Promise<void>;
-      type?: TRADE_TYPE;
-    }) => {
+  }: BasicANFTTradeProps<T, I> & {
+    onCopy?: (content: string) => Promise<void>;
+    type?: TRADE_TYPE.NFT;
+  }) => {
+    const { t } = useTranslation("common");
     return (
       <>
         {isThumb ? (
@@ -318,7 +310,7 @@ export const NFTInput = React.memo(
                 ...(typeof rest?.isSelected !== undefined
                   ? ({
                       isSelected: rest?.isSelected,
-                      isRequired: !!rest?.isRequired ? true : false,
+                      isRequired: !!rest?.isRequired,
                       // handleOnChoose,
                     } as any)
                   : {}),
@@ -351,4 +343,9 @@ export const NFTInput = React.memo(
       </>
     );
   }
-);
+) as <T extends IBData<I> & Partial<NFTWholeINFO>, I extends any>(
+  props: BasicANFTTradeProps<T, I> & {
+    onCopy?: (content: string) => Promise<void>;
+    type?: TRADE_TYPE.NFT;
+  }
+) => JSX.Element;

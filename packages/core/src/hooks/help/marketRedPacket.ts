@@ -88,6 +88,28 @@ const amountStrCallback = (
 
   // tokenMap[]
 };
+const amountStrNFTCallback = (
+  nftInfo: sdk.UserNFTBalanceInfo,
+  tokenAmount: string
+) => {
+  if (nftInfo && tokenAmount) {
+    const symbol = nftInfo?.metadata?.base?.name ?? "NFT";
+    const amount = getValuePrecisionThousand(
+      tokenAmount,
+      0,
+      0,
+      undefined,
+      false,
+      {
+        floor: false,
+        // isTrade: true,
+      }
+    );
+    return amount + " " + symbol;
+  }
+  return "";
+  // tokenMap[]
+};
 
 export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
   const {
@@ -109,12 +131,17 @@ export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
   return {
     chainId,
     account,
-    amountStr: amountStrCallback(
-      tokenMap,
-      idIndex,
-      luckToken.tokenId,
-      luckToken.tokenAmount.totalAmount
-    ),
+    amountStr: luckToken.isNft
+      ? amountStrNFTCallback(
+          luckToken.nftTokenInfo as any,
+          luckToken.tokenAmount.totalAmount
+        )
+      : amountStrCallback(
+          tokenMap,
+          idIndex,
+          luckToken.tokenId,
+          luckToken.tokenAmount.totalAmount
+        ),
     myAmountStr:
       claim && amountStrCallback(tokenMap, idIndex, luckToken.tokenId, claim),
     tokenInfo,

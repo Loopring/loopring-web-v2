@@ -61,7 +61,7 @@ export type InputCoinProps<T, R, I> = {
   placeholderText?: string;
   allowDecimals?: boolean;
   maxAllow?: boolean;
-  minimum?: number;
+  minimum?: number | string;
   // isBalanceLimit?: boolean;
   decimalsLimit?: number;
   disabled?: boolean;

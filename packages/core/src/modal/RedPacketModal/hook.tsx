@@ -93,21 +93,42 @@ export function useRedPacketModal() {
   }, [info?.isNft, info?.nftDta, info]);
   const amountStr = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
-    const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
-    if (isShow && token && _info && _info.tokenAmount) {
-      const symbol = token.symbol;
-      const amount = getValuePrecisionThousand(
-        volumeToCountAsBigNumber(symbol, _info.tokenAmount.totalAmount as any),
-        token.precision,
-        token.precision,
-        undefined,
-        false,
-        {
-          floor: false,
-          // isTrade: true,
-        }
-      );
-      return amount + " " + symbol;
+    let symbol;
+    if (isShow && _info && _info.tokenAmount) {
+      if (_info.isNft) {
+        //@ ts-ignore
+        symbol = (_info.nftTokenInfo as any)?.metadata?.base?.name ?? "NFT";
+        const amount = getValuePrecisionThousand(
+          _info.tokenAmount.totalAmount,
+          0,
+          0,
+          undefined,
+          false,
+          {
+            floor: false,
+            // isTrade: true,
+          }
+        );
+        return amount + " " + symbol;
+      } else {
+        const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
+        const symbol = token.symbol;
+        const amount = getValuePrecisionThousand(
+          volumeToCountAsBigNumber(
+            symbol,
+            _info.tokenAmount.totalAmount as any
+          ),
+          token.precision,
+          token.precision,
+          undefined,
+          false,
+          {
+            floor: false,
+            // isTrade: true,
+          }
+        );
+        return amount + " " + symbol;
+      }
     }
     return "";
   }, [info?.tokenId, info?.tokenAmount]);
@@ -115,21 +136,39 @@ export function useRedPacketModal() {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount: string;
     };
-    const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
-    if (isShow && token && _info && _info.claimAmount) {
-      const symbol = token.symbol;
-      const amount = getValuePrecisionThousand(
-        volumeToCountAsBigNumber(symbol, _info.claimAmount as any),
-        token.precision,
-        token.precision,
-        undefined,
-        false,
-        {
-          floor: false,
-          // isTrade: true,
-        }
-      );
-      return amount + " " + symbol;
+    let symbol;
+    if (isShow && _info && _info.claimAmount) {
+      if (_info.isNft) {
+        //@ ts-ignore
+        symbol = (_info.nftTokenInfo as any)?.metadata?.base?.name ?? "NFT";
+        const amount = getValuePrecisionThousand(
+          _info.claimAmount,
+          0,
+          0,
+          undefined,
+          false,
+          {
+            floor: false,
+            // isTrade: true,
+          }
+        );
+        return amount + " " + symbol;
+      } else {
+        const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
+        symbol = token.symbol;
+        const amount = getValuePrecisionThousand(
+          volumeToCountAsBigNumber(symbol, _info.claimAmount as any),
+          token.precision,
+          token.precision,
+          undefined,
+          false,
+          {
+            floor: false,
+            // isTrade: true,
+          }
+        );
+        return amount + " " + symbol;
+      }
     }
     return "";
 
@@ -230,23 +269,43 @@ export function useRedPacketModal() {
       ) {
         myLog("redPacketOpenProps", _info);
         let myAmountStr: string | undefined = undefined;
+        let symbol: string;
         if (_info?.claimAmount) {
-          const tokenInfo = tokenMap[idIndex[_info?.tokenId] ?? ""];
-          const symbol = tokenInfo.symbol;
-          myAmountStr =
-            getValuePrecisionThousand(
-              volumeToCountAsBigNumber(symbol, _info.claimAmount as any),
-              tokenInfo.precision,
-              tokenInfo.precision,
-              undefined,
-              false,
-              {
-                floor: false,
-                // isTrade: true,
-              }
-            ) +
-            " " +
-            symbol;
+          if (_info.isNft) {
+            // @ts-ignore
+            symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
+            myAmountStr =
+              getValuePrecisionThousand(
+                volumeToCountAsBigNumber(symbol, _info.claimAmount as any),
+                0,
+                0,
+                undefined,
+                false,
+                {
+                  floor: false,
+                  // isTrade: true,
+                }
+              ) +
+              " " +
+              symbol;
+          } else {
+            let tokenInfo = tokenMap[idIndex[_info?.tokenId] ?? ""];
+            symbol = tokenInfo.symbol;
+            myAmountStr =
+              getValuePrecisionThousand(
+                volumeToCountAsBigNumber(symbol, _info.claimAmount as any),
+                tokenInfo.precision,
+                tokenInfo.precision,
+                undefined,
+                false,
+                {
+                  floor: false,
+                  // isTrade: true,
+                }
+              ) +
+              " " +
+              symbol;
+          }
         }
         return {
           ImageEle,
@@ -467,11 +526,61 @@ export function useRedPacketModal() {
       const tokenInfo = tokenMap[idIndex[detail?.tokenId] ?? ""];
       const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
       let myAmountStr: string | undefined = undefined;
-      const symbol = token.symbol;
+      const relyNumber = detail.helpers?.length;
+      const value =
+        detail.helpers?.reduce((prev, item) => {
+          // @ts-ignore
+          return prev.plus(item.amount);
+        }, sdk.toBig(0)) ?? 0;
+      let relyAmount: string | undefined = undefined;
       if (detail.claimAmount.toString() !== "0") {
-        myAmountStr =
-          getValuePrecisionThousand(
-            volumeToCountAsBigNumber(symbol, detail.claimAmount as any),
+        if (_info.isNft) {
+          // @ts-ignore
+          const symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
+          myAmountStr =
+            getValuePrecisionThousand(
+              _info.claimAmount,
+              0,
+              0,
+              undefined,
+              false,
+              {
+                floor: false,
+                // isTrade: true,
+              }
+            ) +
+            " " +
+            symbol;
+          relyAmount = getValuePrecisionThousand(
+            value,
+            0,
+            0,
+            undefined,
+            false,
+            {
+              floor: false,
+              // isTrade: true,
+            }
+          );
+        } else {
+          let tokenInfo = tokenMap[idIndex[_info?.tokenId] ?? ""];
+          const symbol = tokenInfo.symbol;
+          myAmountStr =
+            getValuePrecisionThousand(
+              volumeToCountAsBigNumber(symbol, _info.claimAmount as any),
+              tokenInfo.precision,
+              tokenInfo.precision,
+              undefined,
+              false,
+              {
+                floor: false,
+                // isTrade: true,
+              }
+            ) +
+            " " +
+            symbol;
+          relyAmount = getValuePrecisionThousand(
+            volumeToCountAsBigNumber(symbol, value),
             token.precision,
             token.precision,
             undefined,
@@ -480,27 +589,9 @@ export function useRedPacketModal() {
               floor: false,
               // isTrade: true,
             }
-          ) +
-          " " +
-          symbol;
-      }
-      const relyNumber = detail.helpers?.length;
-      const value =
-        detail.helpers?.reduce((prev, item) => {
-          // @ts-ignore
-          return prev.plus(item.amount);
-        }, sdk.toBig(0)) ?? 0;
-      const relyAmount = getValuePrecisionThousand(
-        volumeToCountAsBigNumber(symbol, value),
-        token.precision,
-        token.precision,
-        undefined,
-        false,
-        {
-          floor: false,
-          // isTrade: true,
+          );
         }
-      );
+      }
 
       const { list } = getUserReceiveList(
         detail.claims as any,
@@ -520,8 +611,8 @@ export function useRedPacketModal() {
         claimList: list,
         detail,
         myAmountStr,
-        relyAmount: relyAmount ? relyAmount.toString() : undefined,
-        relyNumber: relyNumber ? relyNumber.toString() : undefined,
+        relyAmount: relyAmount ? relyAmount?.toString() : undefined,
+        relyNumber: relyNumber ? relyNumber?.toString() : undefined,
         isShouldSharedRely,
         handlePageChange: (page: number = 1) => {
           redPacketDetailCall({ offset: page - 1 });

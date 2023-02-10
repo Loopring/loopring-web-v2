@@ -347,7 +347,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
             />
           ) : (
             <NFTInput
-              {...{
+              {...({
                 ...rest,
                 t,
                 fullwidth: true,
@@ -355,7 +355,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 isSelected: true,
                 type: tradeType,
                 disabled,
-                tradeData: tradeData as any,
+                tradeData: tradeData as T,
                 onChangeEvent: (
                   _index: 0 | 1,
                   { to, tradeData: newTradeData }: SwitchData<T>
@@ -378,19 +378,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
                       balance: newTradeData.balance,
                       nftData: newTradeData.nftData,
                     } as any);
-                    // const count = tradeData.balance;
-                    // const tradeValue = tradeData.tradeValue
-                    //   ? _newTradeData.tradeValue
-                    //   : undefined;
-
-                    // setActiveStep(RedPacketStep.Main);
                   }
-                  // setActiveStep(RedPacketStep.Main + _index);
                 },
-
                 inputNFTButtonDefaultProps,
                 inputNFTRef: inputBtnRef,
-              }}
+              } as any)}
             />
           )}
         </Box>
