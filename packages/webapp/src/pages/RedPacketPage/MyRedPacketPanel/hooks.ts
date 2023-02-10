@@ -24,7 +24,9 @@ import {
 } from "@loopring-web/component-lib";
 import { useRouteMatch } from "react-router-dom";
 
-export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecordsItem>({
+export const useMyRedPacketRecordTransaction = <
+  R extends RawDataRedPacketRecordsItem
+>({
   setToastOpen,
   tabType,
 }: {
@@ -180,7 +182,7 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
     // pagination,
     // updateTickersUI,
   };
-};;
+};
 
 export const useMyRedPacketReceiveTransaction = <
   R extends RawDataRedPacketReceivesItem

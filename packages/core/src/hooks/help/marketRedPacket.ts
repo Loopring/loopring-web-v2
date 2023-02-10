@@ -163,7 +163,7 @@ export const amountStrNFTCallback = (
   }
   return {};
   // tokenMap[]
-};;
+};
 
 export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
   const {
