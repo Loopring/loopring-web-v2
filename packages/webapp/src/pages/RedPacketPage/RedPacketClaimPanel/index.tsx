@@ -16,7 +16,7 @@ import {
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { useClaimRedPacket } from "./hooks";
+import { useClaimNFTRedPacket, useClaimRedPacket } from "./hooks";
 import { Box, Button, Tab, Tabs } from "@mui/material";
 import {
   RedPacketIcon,
@@ -35,6 +35,14 @@ export const RedPacketClaimPanel = () => {
   const history = useHistory();
   const { redPacketClaimList, showLoading, getClaimRedPacket, onItemClick } =
     useClaimRedPacket(setToastOpen);
+  const {
+    page,
+    pagination,
+    onItemClick: onItemNFTClick,
+    redPacketNFTClaimList,
+    showLoading: showNFTLoading,
+    getClaimNFTRedPacket,
+  } = useClaimNFTRedPacket(setToastOpen);
   let match: any = useRouteMatch("/l2assets/assets/RedPacket/:item");
 
   React.useEffect(() => {
@@ -147,7 +155,23 @@ export const RedPacketClaimPanel = () => {
             )}
           </>
         )}
-        {currentTab === TabTokenTypeIndex.NFT && <></>}
+        {currentTab === TabTokenTypeIndex.NFT && (
+          <>
+            <RedPacketClaimTable
+              {...{
+                isNFT: true,
+                rawData: redPacketNFTClaimList,
+                showloading: showNFTLoading,
+                forexMap,
+                onItemClick: onItemNFTClick,
+                etherscanBaseUrl,
+                getClaimRedPacket: getClaimNFTRedPacket,
+                page,
+                pagination,
+              }}
+            />
+          </>
+        )}
       </StylePaper>
       <Toast
         alertText={toastOpen?.content ?? ""}

@@ -84,13 +84,23 @@ export const useClaimConfirm = <
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
 
     if (claimToken) {
-      const token = tokenMap[idIndex[claimToken.tokenId]];
-      updateClaimData({
-        belong: idIndex[claimToken.tokenId],
-        tradeValue: volumeToCount(token.symbol, claimToken.total),
-        volume: claimToken.total,
-        balance: volumeToCount(token.symbol, claimToken.total),
-      });
+      if (claimToken?.isNft) {
+        updateClaimData({
+          ...claimToken.nftTokenInfo,
+          belong: claimToken.nftTokenInfo?.metadata?.base?.name ?? "NFT",
+          tradeValue: Number(claimToken.total),
+          volume: claimToken.total,
+          balance: Number(claimToken.total),
+        });
+      } else {
+        const token = tokenMap[idIndex[claimToken.tokenId]];
+        updateClaimData({
+          belong: idIndex[claimToken.tokenId],
+          tradeValue: volumeToCount(token.symbol, claimToken.total),
+          volume: claimToken.total,
+          balance: volumeToCount(token.symbol, claimToken.total),
+        });
+      }
     } else {
     }
   }, [checkFeeIsEnough, updateClaimData, feeInfo, claimToken, info?.isRetry]);

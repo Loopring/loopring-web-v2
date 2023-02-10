@@ -1,10 +1,17 @@
 import styled from "@emotion/styled";
-import { Box, Link } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
-import { Column, Table } from "../../basic-lib";
+import {
+  BoxNFT,
+  Column,
+  NftImage,
+  Table,
+  TablePagination,
+} from "../../basic-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 import {
+  RawDataNFTRedPacketClaimItem,
   RawDataRedPacketClaimItem,
   RedPacketClaimTableProps,
 } from "./Interface";
@@ -15,10 +22,15 @@ import { FormatterProps } from "react-data-grid";
 import {
   CurrencyToTag,
   getValuePrecisionThousand,
+  globalSetup,
+  myLog,
   PriceTag,
   RowConfig,
+  TokenType,
 } from "@loopring-web/common-resources";
 import { ColumnCoinDeep } from "../assetsTable";
+import * as sdk from "@loopring-web/loopring-sdk";
+import _ from "lodash";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -62,13 +74,46 @@ const TableStyled = styled(Table)`
 ` as any;
 
 export const RedPacketClaimTable = withTranslation(["tables", "common"])(
-  <R extends RawDataRedPacketClaimItem>(
+  <R extends RawDataRedPacketClaimItem | RawDataNFTRedPacketClaimItem>(
     props: RedPacketClaimTableProps<R> & WithTranslation
   ) => {
-    const { rawData, forexMap, showloading, onItemClick, t } = props;
+    const {
+      rawData,
+      forexMap,
+      showloading,
+      onItemClick,
+      getClaimRedPacket,
+      pagination,
+      page,
+      isNFT = false,
+      t,
+    } = props;
     const history = useHistory();
     const { currency } = useSettings();
+    const updateData = _.debounce(async ({ page = 1 }: any) => {
+      await getClaimRedPacket({
+        offset: (page - 1) * (pagination?.pageSize ?? 10),
+        limit: pagination?.pageSize ?? 10,
+      });
+    }, globalSetup.wait);
 
+    const handlePageChange = React.useCallback(
+      ({ page = 1 }: any) => {
+        myLog("RedPacket Receive page,", page);
+        updateData({
+          page,
+        });
+      },
+      [updateData]
+    );
+    React.useEffect(() => {
+      updateData.cancel();
+      handlePageChange({ page: 1 });
+      // updateData({});
+      return () => {
+        updateData.cancel();
+      };
+    }, []);
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -77,9 +122,61 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
-          formatter: ({ row }: FormatterProps<R>) => (
-            <ColumnCoinDeep token={row.token} />
-          ),
+          formatter: ({ row: { token } }: FormatterProps<R>) => {
+            if (token.type === TokenType.single) {
+              return <ColumnCoinDeep token={token as any} />;
+            } else {
+              const { metadata } = token as sdk.UserNFTBalanceInfo;
+              return (
+                <Box
+                  className="rdg-cell-value"
+                  height={"100%"}
+                  display={"flex"}
+                  alignItems={"center"}
+                >
+                  {metadata?.imageSize ? (
+                    <Box
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      height={RowConfig.rowHeight + "px"}
+                      width={RowConfig.rowHeight + "px"}
+                      padding={1 / 4}
+                      style={{ background: "var(--field-opacity)" }}
+                    >
+                      {metadata?.imageSize && (
+                        <NftImage
+                          alt={metadata?.base?.name}
+                          onError={() => undefined}
+                          src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+                        />
+                      )}
+                    </Box>
+                  ) : (
+                    <BoxNFT
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      height={RowConfig.rowHeight + "px"}
+                      width={RowConfig.rowHeight + "px"}
+                    />
+                  )}
+                  <Typography
+                    color={"inherit"}
+                    flex={1}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                    paddingLeft={1}
+                    overflow={"hidden"}
+                    textOverflow={"ellipsis"}
+                    component={"span"}
+                  >
+                    {metadata?.base?.name ?? "NFT"}
+                  </Typography>
+                </Box>
+              );
+            }
+          },
         },
         {
           key: "Amount",
@@ -89,26 +186,30 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
             return <Box display={"flex"}>{row.amountStr}</Box>;
           },
         },
-        {
-          key: "Value",
-          sortable: true,
-          name: t("labelValue"),
-          formatter: ({ row }: FormatterProps<R>) => {
-            return (
-              <Box display="flex">
-                {PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    (row.volume || 0) * (forexMap[currency] ?? 0),
-                    2,
-                    2,
-                    2,
-                    true,
-                    { isFait: true }
-                  )}
-              </Box>
-            );
-          },
-        },
+        ...(isNFT
+          ? []
+          : [
+              {
+                key: "Value",
+                sortable: true,
+                name: t("labelValue"),
+                formatter: ({ row }: FormatterProps<R>) => {
+                  return (
+                    <Box display="flex">
+                      {PriceTag[CurrencyToTag[currency]] +
+                        getValuePrecisionThousand(
+                          (row.volume || 0) * (forexMap[currency] ?? 0),
+                          2,
+                          2,
+                          2,
+                          true,
+                          { isFait: true }
+                        )}
+                    </Box>
+                  );
+                },
+              },
+            ]),
         {
           key: "Actions",
           name: t("labelActions"),
@@ -138,7 +239,15 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
         switch (sortColumn) {
           case "Token":
             resultRows = rawData.sort((a: R, b: R) => {
-              return a.token.simpleName.localeCompare(b.token.simpleName);
+              if (a.token.type == TokenType.nft) {
+                return (a.token as any)?.metadata?.base?.name?.localeCompare(
+                  (b.token as any)?.metadata?.base?.name
+                );
+              } else {
+                return (a.token as any)?.simpleName.localeCompare(
+                  (b.token as any)?.simpleName
+                );
+              }
             });
             break;
           case "Amount":
@@ -162,7 +271,9 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       <TableWrapperStyled>
         <TableStyled
           currentheight={
-            RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
+            pagination
+              ? undefined
+              : RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
@@ -179,7 +290,15 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
             showloading,
           }}
         />
+        {!!(pagination && pagination.total && page !== undefined) && (
+          <TablePagination
+            page={page}
+            pageSize={pagination.pageSize}
+            total={pagination.total}
+            onPageChange={(page) => handlePageChange({ page })}
+          />
+        )}
       </TableWrapperStyled>
     );
-  }
+  };
 );

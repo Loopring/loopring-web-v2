@@ -5,7 +5,7 @@ import {
   ForexMap,
   TokenType,
 } from "@loopring-web/common-resources";
-import { UserNFTBalanceInfo } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
+import { XOR } from "../../../types/lib";
 
 export type RawDataRedPacketRecordsItem = {
   token: (CoinInfo<any> | sdk.UserNFTBalanceInfo) & { type: TokenType };
@@ -35,6 +35,12 @@ export type RawDataRedPacketClaimItem = {
   volume: number;
   rawData: any;
 };
+export type RawDataNFTRedPacketClaimItem = Omit<
+  RawDataRedPacketClaimItem,
+  "token"
+> & {
+  token: sdk.UserNFTBalanceInfo & { type: TokenType.nft };
+};
 export type RawDataRedPacketDetailItem = {
   accountStr: string;
   isSelf: boolean;
@@ -45,17 +51,28 @@ export type RawDataRedPacketDetailItem = {
   helper?: string;
 };
 
-export interface RedPacketClaimTableProps<R, C = sdk.Currency> {
+export type RedPacketClaimTableProps<R, C = sdk.Currency> = {
   rawData: R[];
   showloading: boolean;
   forexMap: ForexMap<C>;
   onItemClick: (item: ClaimToken) => void;
   etherscanBaseUrl: string;
+  isNFT?: boolean;
   getClaimRedPacket: (props: any) => void;
-}
+} & XOR<
+  {
+    pagination?: {
+      pageSize: number;
+      total: number;
+    };
+    page?: number;
+  },
+  {}
+>;
 
 export interface RedPacketRecordsTableProps<R, C = sdk.Currency> {
   rawData: R[];
+  tokenType: TokenType;
   showloading: boolean;
   forexMap: ForexMap<C>;
   onItemClick: (item: sdk.LuckyTokenItemForReceive) => void;
@@ -69,6 +86,7 @@ export interface RedPacketRecordsTableProps<R, C = sdk.Currency> {
 
 export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {
   rawData: R[];
+  tokenType: TokenType;
   showloading: boolean;
   forexMap: ForexMap<C>;
   etherscanBaseUrl: string;

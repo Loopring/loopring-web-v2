@@ -51,7 +51,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
     return (
       <Box flex={1} flexDirection={"column"} display={"flex"}>
         {/*<Box display={"flex"}>*/}
-        <Box display={"none"}>
+        <Box>
           <Tabs
             variant={"scrollable"}
             value={tabIndex}

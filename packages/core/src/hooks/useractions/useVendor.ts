@@ -1,15 +1,11 @@
 import {
   AccountStatus,
   myLog,
+  TradeBtnStatus,
   VendorItem,
   VendorList,
 } from "@loopring-web/common-resources";
-import {
-  // updateOffRampData,
-  useAccount,
-  useModalData,
-  useSystem,
-} from "../../index";
+import { useAccount, useModalData, useSystem } from "../../index";
 import {
   RampInstantEventTypes,
   RampInstantSDK,
@@ -161,7 +157,9 @@ export const useVendor = () => {
         },
       ]
     : [];
-
+  const [banxaBtnStatus, setBanxaBtnStatus] = React.useState<TradeBtnStatus>(
+    TradeBtnStatus.AVAILABLE
+  );
   const vendorListSell: VendorItem[] = legalShow
     ? [
         // {
@@ -231,7 +229,9 @@ export const useVendor = () => {
         // },
         {
           ...VendorList.Banxa,
+          btnStatus: banxaBtnStatus,
           handleSelect: async (_event) => {
+            setBanxaBtnStatus(TradeBtnStatus.LOADING);
             setShowAccount({ isShow: false });
             banxaService.banxaStart();
             // @ts-ignore
@@ -252,7 +252,6 @@ export const useVendor = () => {
   const hideBanxa = () => {
     const parentsNode: any =
       window.document.querySelector("#iframeBanxaTarget");
-
     parentsNode.style.display = "none";
   };
   const showBanxa = () => {
@@ -279,12 +278,15 @@ export const useVendor = () => {
         //   checkOrderStatus(props.data);
         //   break;
         case BanxaCheck.OrderHide:
+          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
           hideBanxa();
           break;
         case BanxaCheck.OrderShow:
+          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
           showBanxa();
           break;
         case BanxaCheck.OrderEnd:
+          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
           if (props?.data?.reason === OrderENDReason.BanxaNotReady) {
             setShowTradeIsFrozen({
               isShow: true,

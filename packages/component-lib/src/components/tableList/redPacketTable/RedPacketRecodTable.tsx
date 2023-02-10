@@ -82,15 +82,17 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       rawData,
       showloading,
       onItemClick,
+      tokenType,
       t,
     } = props;
     const history = useHistory();
     const [page, setPage] = React.useState(1);
 
-    const updateData = _.debounce(async ({ page = 1 }: any) => {
+    const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
       await getMyRedPacketRecordTxList({
         offset: (page - 1) * (pagination?.pageSize ?? 10),
         limit: pagination?.pageSize ?? 10,
+        filter,
       });
     }, globalSetup.wait);
 
@@ -98,9 +100,12 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       ({ page = 1 }: any) => {
         setPage(page);
         myLog("AmmTable page,", page);
-        updateData({ page });
+        updateData({
+          page,
+          filter: { isNft: tokenType === TokenType.nft ? true : false },
+        });
       },
-      [updateData]
+      [updateData, tokenType]
     );
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
@@ -257,7 +262,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize]);
+    }, [pagination?.pageSize, tokenType]);
 
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),
@@ -280,7 +285,17 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
               switch (sortColumn) {
                 case "Token":
                   resultRows = rawData.sort((a: R, b: R) => {
-                    return a.token.simpleName.localeCompare(b.token.simpleName);
+                    if (a.token.type == TokenType.nft) {
+                      return (
+                        a.token as any
+                      )?.metadata?.base?.name?.localeCompare(
+                        (b.token as any)?.metadata?.base?.name
+                      );
+                    } else {
+                      return (a.token as any)?.simpleName.localeCompare(
+                        (b.token as any)?.simpleName
+                      );
+                    }
                   });
                   break;
                 case "Amount":

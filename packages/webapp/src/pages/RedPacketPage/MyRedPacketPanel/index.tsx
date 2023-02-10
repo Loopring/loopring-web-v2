@@ -16,12 +16,15 @@ import {
   BackIcon,
   RowConfig,
   TabTokenTypeIndex,
+  TokenType,
 } from "@loopring-web/common-resources";
 import { Box, Button, Tab, Tabs } from "@mui/material";
 
 enum TabIndex {
   Received = "Received",
   Send = "Send",
+  NFTReceived = "NFTReceived",
+  NFTSend = "NFTSend",
 }
 
 export const MyRedPacketPanel = ({
@@ -37,22 +40,24 @@ export const MyRedPacketPanel = ({
   let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
 
   const container = React.useRef<HTMLDivElement>(null);
+
+  const [currentTab, setCurrentTab] = React.useState<TabIndex>(
+    match?.params.item ?? TabIndex.Received
+  );
+
+  const [pageSize, setPageSize] = React.useState(0);
+
   React.useEffect(() => {
     let height = container?.current?.offsetHeight;
     if (height) {
       const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
-      setPageSize(Math.floor((height - 120) / RowConfig.rowHeight) - 3);
+      setPageSize(pageSize);
       handleTabChange(currentTab);
     }
   }, [container?.current?.offsetHeight]);
-  const [currentTab, setCurrentTab] = React.useState<TabIndex>(
-    match?.params.item ?? TabIndex.Received
-  );
-  const [currentTokenTab, setCurrentTokenTab] =
-    React.useState<TabTokenTypeIndex>(
-      match?.params.type ?? TabTokenTypeIndex.ERC20
-    );
 
+  // getRedPacketReceiveList({ offset: 0, limit: pageSize });
+  // getMyRedPacketRecordTxList({ offset: 0, limit: pageSize });
   const {
     showLoading: showloadingRecord,
     getMyRedPacketRecordTxList,
@@ -61,7 +66,7 @@ export const MyRedPacketPanel = ({
     onItemClick,
   } = useMyRedPacketRecordTransaction({
     setToastOpen,
-    tabType: currentTokenTab,
+    // tabType: currentTokenTab,
   });
   const {
     showLoading: showloadingReceive,
@@ -71,39 +76,11 @@ export const MyRedPacketPanel = ({
     onItemClick: onReceiveItemClick,
   } = useMyRedPacketReceiveTransaction({
     setToastOpen,
-    tabType: currentTokenTab,
+    // tabType: currentTokenTab,
   });
-  const [pageSize, setPageSize] = React.useState(0);
   const handleTabChange = (value: TabIndex) => {
-    switch (value) {
-      case TabIndex.Send:
-        history.push("/redPacket/records/Send");
-        setCurrentTab(TabIndex.Send);
-        break;
-      case TabIndex.Received:
-      default:
-        history.replace("/redPacket/records/Received");
-        setCurrentTab(TabIndex.Received);
-        break;
-    }
-  };
-  const handleTypeTabChange = (value: TabTokenTypeIndex) => {
-    switch (value) {
-      case TabTokenTypeIndex.ERC20:
-        history.push(
-          `/redPacket/records/${currentTab}/${TabTokenTypeIndex.ERC20}`
-        );
-        setCurrentTokenTab(TabTokenTypeIndex.ERC20);
-
-        break;
-      case TabTokenTypeIndex.NFT:
-      default:
-        history.replace(
-          `/redPacket/records/${currentTab}/${TabTokenTypeIndex.NFT}`
-        );
-        setCurrentTokenTab(TabTokenTypeIndex.NFT);
-        break;
-    }
+    history.push(`/redPacket/records/${value}`);
+    setCurrentTab(value);
   };
 
   // @ts-ignore
@@ -130,35 +107,48 @@ export const MyRedPacketPanel = ({
           {t("labelRedPacketRecordTitle")}
         </Button>
       </Box>
-      <Tabs
-        value={currentTokenTab}
-        onChange={(_event, value) => handleTypeTabChange(value)}
-        aria-label="l2-history-tabs"
-        variant="scrollable"
-      >
-        <Tab
-          label={t("labelRedPacketMarket" + TabTokenTypeIndex.ERC20)}
-          value={TabTokenTypeIndex.ERC20}
-        />
-        <Tab
-          label={t("labelRedPacketMarket" + TabTokenTypeIndex.NFT)}
-          value={TabTokenTypeIndex.NFT}
-        />
-      </Tabs>
+
       <StylePaper ref={container} flex={1}>
+        {/*<Tabs*/}
+        {/*  value={currentTokenTab}*/}
+        {/*  onChange={(_event, value) => handleTypeTabChange(value)}*/}
+        {/*  aria-label="l2-history-tabs"*/}
+        {/*  variant="scrollable"*/}
+        {/*>*/}
+        {/*  <Tab*/}
+        {/*    label={t("labelRedPacketMarket" + TabTokenTypeIndex.ERC20)}*/}
+        {/*    value={TabTokenTypeIndex.ERC20}*/}
+        {/*  />*/}
+        {/*  <Tab*/}
+        {/*    label={t("labelRedPacketMarket" + TabTokenTypeIndex.NFT)}*/}
+        {/*    value={TabTokenTypeIndex.NFT}*/}
+        {/*  />*/}
+        {/*</Tabs>*/}
         <Tabs
           value={currentTab}
           onChange={(_event, value) => handleTabChange(value)}
           aria-label="l2-history-tabs"
           variant="scrollable"
         >
-          <Tab label={t("labelRedPacketReceived")} value={TabIndex.Received} />
-          <Tab label={t("labelRedPacketSend")} value={TabIndex.Send} />
+          {Reflect.ownKeys(TabIndex).map((keyItem) => {
+            return (
+              <Tab
+                key={keyItem.toString()}
+                label={t(`labelRedPacket${TabIndex[keyItem.toString()]}`)}
+                value={TabIndex[keyItem]}
+              />
+            );
+          })}
+          {/*<Tab label={t("labelRedPacketReceived")} value={TabIndex.Received} />*/}
+          {/*<Tab label={t("labelRedPacketSend")} value={TabIndex.Send} />*/}
         </Tabs>
-        {currentTab === TabIndex.Received && (
+        {[TabIndex.Received, TabIndex.NFTReceived].includes(currentTab) && (
           <Box className="tableWrapper table-divide-short">
             <RedPacketReceiveTable
               {...{
+                tokenType: /nft/gi.test(currentTab)
+                  ? TokenType.nft
+                  : TokenType.single,
                 onItemClick: onReceiveItemClick,
                 showloading: showloadingReceive,
                 forexMap,
@@ -173,10 +163,13 @@ export const MyRedPacketPanel = ({
             />
           </Box>
         )}
-        {currentTab === TabIndex.Send && (
+        {[TabIndex.Send, TabIndex.NFTSend].includes(currentTab) && (
           <Box className="tableWrapper table-divide-short">
             <RedPacketRecordTable
               {...{
+                tokenType: /nft/gi.test(currentTab)
+                  ? TokenType.nft
+                  : TokenType.single,
                 showloading: showloadingRecord,
                 etherscanBaseUrl,
                 forexMap,

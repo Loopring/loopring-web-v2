@@ -384,7 +384,7 @@ export const RedPacketQRCodeSvg = React.memo(
           setTextContent([_textContent1, _textContent2]);
         }
       }, [textContent]);
-
+      const station = imageEleUrl ? [36, 68, 86, 208] : [56, 88, 106, 186];
       // const qrcodeRef = React.createRef();
       return (
         <svg
@@ -484,14 +484,16 @@ export const RedPacketQRCodeSvg = React.memo(
             {/*<rect className={"qrcode"} width="160" height="160" fill="#D9D9D9" />*/}
             {/*{qrCodeG}*/}
           </g>
-          <image
-            transform={"translate(128 110)"}
-            href={imageEleUrl}
-            height="80"
-            width="80"
-          />
+          {imageEleUrl && (
+            <image
+              transform={"translate(128 110)"}
+              href={imageEleUrl}
+              height="80"
+              width="80"
+            />
+          )}
 
-          <g transform={"translate(167 56)"}>
+          <g transform={`translate(167 ${station[0]})`}>
             {/*<rect x="15.5" y="45.5" width="280" height="21" />*/}
             <text
               className={"textAddress"}
@@ -508,7 +510,7 @@ export const RedPacketQRCodeSvg = React.memo(
               {textAddress}
             </text>
           </g>
-          <g transform={"translate(167 88)"}>
+          <g transform={`translate(167 ${station[1]})`}>
             <text
               className={"textContent1"}
               strokeWidth="0"
@@ -523,7 +525,7 @@ export const RedPacketQRCodeSvg = React.memo(
               dangerouslySetInnerHTML={{ __html: sanitize(textContent1) }}
             />
           </g>
-          <g transform={"translate(167 112)"}>
+          <g transform={`translate(167 ${station[2]})`}>
             <text
               className={"textContent2"}
               strokeWidth="0"
@@ -538,7 +540,7 @@ export const RedPacketQRCodeSvg = React.memo(
               dangerouslySetInnerHTML={{ __html: sanitize(textContent2) }}
             />
           </g>
-          <g transform={"translate(167 202)"}>
+          <g transform={`translate(167 ${station[3]})`}>
             <text
               id={"amountStr"}
               strokeWidth="0"

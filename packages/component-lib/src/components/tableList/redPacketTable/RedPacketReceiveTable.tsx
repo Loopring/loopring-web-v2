@@ -74,6 +74,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
     props: RedPacketReceiveTableProps<R> & WithTranslation
   ) => {
     const {
+      tokenType,
       getRedPacketReceiveList,
       pagination,
       rawData,
@@ -85,20 +86,24 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
     const history = useHistory();
     const [page, setPage] = React.useState(1);
 
-    const updateData = _.debounce(async ({ page = 1 }: any) => {
+    const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
       await getRedPacketReceiveList({
         offset: (page - 1) * (pagination?.pageSize ?? 10),
         limit: pagination?.pageSize ?? 10,
+        filter,
       });
     }, globalSetup.wait);
 
     const handlePageChange = React.useCallback(
-      ({ page = 1, type, date, pair }: any) => {
+      ({ page = 1 }: any) => {
         setPage(page);
-        myLog("AmmTable page,", page);
-        updateData({ page, type, date, pair });
+        myLog("RedPacket Receive page,", page);
+        updateData({
+          page,
+          filter: { isNft: tokenType === TokenType.nft },
+        });
       },
-      [updateData]
+      [updateData, tokenType]
     );
     React.useEffect(() => {
       updateData.cancel();
@@ -107,7 +112,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize]);
+    }, [pagination?.pageSize, tokenType]);
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -182,7 +187,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Type",
-          sortable: true,
+          sortable: false,
           name: t("labelType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
@@ -203,7 +208,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Address",
-          sortable: true,
+          sortable: false,
           name: t("labelAddress"),
           formatter: ({ row }: FormatterProps<R>) => {
             return <>{row.sender}</>;
@@ -241,6 +246,41 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           onRowClick={(_index: number, row: R) => {
             onItemClick(row.rawData);
           }}
+          sortMethod={React.useCallback(
+            (_sortedRows, sortColumn) => {
+              let resultRows: R[] = [];
+              switch (sortColumn) {
+                case "Token":
+                  resultRows = rawData.sort((a: R, b: R) => {
+                    if (a.token.type == TokenType.nft) {
+                      return (
+                        a.token as any
+                      )?.metadata?.base?.name?.localeCompare(
+                        (b.token as any)?.metadata?.base?.name
+                      );
+                    } else {
+                      return (a.token as any)?.simpleName.localeCompare(
+                        (b.token as any)?.simpleName
+                      );
+                    }
+                  });
+                  break;
+                case "Amount":
+                  resultRows = rawData.sort((a: R, b: R) => {
+                    return a.amount.localeCompare(b.amount);
+                  });
+                  break;
+                case "Time":
+                  resultRows = rawData.sort((a: R, b: R) => {
+                    return b.claimAt - a.claimAt;
+                  });
+                  break;
+                default:
+              }
+              return resultRows;
+            },
+            [rawData]
+          )}
           headerRowHeight={RowConfig.rowHeaderHeight}
           {...{
             ...defaultArgs,

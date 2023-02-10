@@ -22,16 +22,15 @@ import {
   RedPacketViewStep,
   useOpenModals,
 } from "@loopring-web/component-lib";
-import { useRouteMatch } from "react-router-dom";
 
 export const useMyRedPacketRecordTransaction = <
   R extends RawDataRedPacketRecordsItem
 >({
   setToastOpen,
-  tabType,
-}: {
+}: // tabType,
+{
   setToastOpen: (props: any) => void;
-  tabType: TabTokenTypeIndex;
+  // tabType: TabTokenTypeIndex;
 }) => {
   const { t } = useTranslation(["error"]);
 
@@ -47,11 +46,9 @@ export const useMyRedPacketRecordTransaction = <
   const [myRedPacketRecordTotal, setMyRedPacketRecordTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
   // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
-  React.useEffect(() => {
-    getMyRedPacketRecordTxList({ offset: 0 });
-  }, [tabType]);
+
   const getMyRedPacketRecordTxList = React.useCallback(
-    async ({ offset, limit }: any) => {
+    async ({ offset, limit, filter }: any) => {
       setShowLoading(true);
       if (LoopringAPI.luckTokenAPI && accountId) {
         if (apiKey) {
@@ -66,7 +63,7 @@ export const useMyRedPacketRecordTransaction = <
                 official: false,
                 offset,
                 limit,
-                isNft: tabType === "NFT" ? true : false,
+                ...filter,
               } as any,
               apiKey
             );
@@ -159,7 +156,7 @@ export const useMyRedPacketRecordTransaction = <
       }
       setShowLoading(false);
     },
-    [accountId, apiKey, setToastOpen, t, idIndex, tabType]
+    [accountId, apiKey, setToastOpen, t, idIndex]
   );
   const onItemClick = (item: sdk.LuckyTokenItemForReceive) => {
     setShowRedPacket({
@@ -188,10 +185,10 @@ export const useMyRedPacketReceiveTransaction = <
   R extends RawDataRedPacketReceivesItem
 >({
   setToastOpen,
-  tabType,
-}: {
+}: // tabType,
+{
   setToastOpen: (props: any) => void;
-  tabType: TabTokenTypeIndex;
+  // tabType: TabTokenTypeIndex;
 }) => {
   const { t } = useTranslation(["error"]);
 
@@ -208,10 +205,9 @@ export const useMyRedPacketReceiveTransaction = <
   const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
   // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
-  let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
 
   const getRedPacketReceiveList = React.useCallback(
-    async ({ offset, limit }: any) => {
+    async ({ offset, limit, filter }: any) => {
       setShowLoading(true);
       if (LoopringAPI.luckTokenAPI && accountId) {
         if (apiKey) {
@@ -220,7 +216,7 @@ export const useMyRedPacketReceiveTransaction = <
               {
                 offset,
                 limit,
-                isNft: tabType === "NFT" ? true : false,
+                ...filter,
               } as any,
               apiKey
             );
@@ -302,12 +298,9 @@ export const useMyRedPacketReceiveTransaction = <
       }
       setShowLoading(false);
     },
-    [accountId, apiKey, setToastOpen, t, idIndex, tabType]
+    [accountId, apiKey, setToastOpen, t, idIndex]
   );
 
-  React.useEffect(() => {
-    getRedPacketReceiveList({ offset: 0 });
-  }, [tabType]);
   const onItemClick = (item: sdk.LuckTokenHistory) => {
     setShowRedPacket({
       isShow: true,

@@ -75,3 +75,8 @@ export const sizeNFTConfig = (size: "large" | "medium" | "small") => {
       break;
   }
 };
+export enum TradeBtnStatus {
+  AVAILABLE = "AVAILABLE",
+  DISABLED = "DISABLED",
+  LOADING = "LOADING",
+}

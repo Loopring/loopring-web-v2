@@ -28,6 +28,8 @@ import {
 } from "@loopring-web/common-resources";
 import { store, useAccount, useSystem, useTokenMap } from "../../stores";
 import {
+  amountStrCallback,
+  amountStrNFTCallback,
   getUserNFTReceiveList,
   getUserReceiveList,
   useOpenRedpacket,
@@ -674,13 +676,23 @@ export function useRedPacketModal() {
           return {
             url,
             imageEleUrl:
-              info.nftTokenInfo?.metadata?.imageSize[NFT_IMAGE_SIZES.large] ??
+              qrcode.nftTokenInfo?.metadata?.imageSize[NFT_IMAGE_SIZES.large] ??
               undefined,
             textAddress: qrcode.sender?.ens
               ? qrcode.sender?.ens
               : getShortAddr(qrcode.sender?.address),
             textContent: qrcode.info.memo,
-            amountStr,
+            amountStr: qrcode.isNft
+              ? amountStrNFTCallback(
+                  qrcode.nftTokenInfo as any,
+                  qrcode.tokenAmount.totalAmount
+                ).amountStr
+              : amountStrCallback(
+                  tokenMap,
+                  idIndex,
+                  qrcode.tokenId,
+                  qrcode.tokenAmount.totalAmount
+                ).amountStr,
             textSendBy,
             textType:
               qrcode.type.mode == sdk.LuckyTokenClaimType.RELAY

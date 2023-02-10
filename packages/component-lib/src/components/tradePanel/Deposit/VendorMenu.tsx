@@ -12,6 +12,7 @@ import {
 import { useTheme } from "@emotion/react";
 import { useSettings } from "../../../stores";
 import { TagIconList } from "../../block";
+import { TradeBtnStatus } from "../Interface";
 
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   const theme = useTheme();
@@ -102,6 +103,17 @@ export const VendorMenu = ({
                     : "",
                 flexDirection: "row",
               }}
+              loading={
+                item.btnStatus && item.btnStatus === TradeBtnStatus.LOADING
+                  ? "true"
+                  : "false"
+              }
+              disabled={
+                item.btnStatus &&
+                [TradeBtnStatus.LOADING, TradeBtnStatus.DISABLED].includes(
+                  item.btnStatus
+                )
+              }
               startIcon={IconItem({ svgIcon: item.svgIcon })}
               onClick={(e) => {
                 if (item.handleSelect) {
