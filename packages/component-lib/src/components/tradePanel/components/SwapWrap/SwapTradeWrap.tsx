@@ -150,11 +150,13 @@ export const SwapTradeWrap = <
     placeholderText: "0.00",
     maxAllow: true,
     ...tokenSellProps,
+    isShowCoinInfo: true,
+    isShowCoinIcon: true,
     handleError,
     handleCountChange,
     handleOnClick,
     ...rest,
-  };
+  } as any;
   const propsBuy = {
     label: t("tokenEnterReceiveToken"),
     // subLabel: t('tokenHave'),
@@ -162,11 +164,12 @@ export const SwapTradeWrap = <
     placeholderText: "0.00",
     maxAllow: false,
     ...tokenBuyProps,
-    // handleError,
+    isShowCoinInfo: true,
+    isShowCoinIcon: true,
     handleCountChange,
     handleOnClick,
     ...rest,
-  };
+  } as any;
   // const popupState = usePopupState({
   //   variant: "popover",
   //   popupId: "slippagePop",

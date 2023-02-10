@@ -40,19 +40,18 @@ export type InputButtonProps<T, R, I> = {
   focusOnInput?: boolean;
   name?: string;
   fullwidth?: boolean;
-} & (
-  | {
-      isShowCoinIcon: false;
-      CoinIconElement?: JSX.Element;
-    }
-  | { isShowCoinIcon: true; CoinIconElement: undefined }
-);
+} & XOR<
+  { isShowCoinInfo?: true } & XOR<
+    { isShowCoinIcon: true },
+    { isShowCoinIcon: false; CoinIconElement?: JSX.Element }
+  >,
+  { isShowCoinInfo: false }
+>;
 
 export enum InputSize {
   middle = "middle",
   small = "small",
 }
-
 export type InputCoinProps<T, R, I> = {
   inputData?: T | undefined;
   label: string | JSX.Element;
@@ -87,10 +86,10 @@ export type InputCoinProps<T, R, I> = {
   coinPrecision?: number;
 } & XOR<
   { isShowCoinInfo: true } & XOR<
-    { isShowCoinIcon: boolean },
-    { CoinIconElement?: JSX.Element }
+    { isShowCoinIcon: true },
+    { CoinIconElement?: JSX.Element | undefined; isShowCoinIcon: false }
   >,
-  { isShowCoinInfo?: false }
+  { isShowCoinInfo: false }
 >;
 export type InputSelectProps<T, I = CoinKey<T>> = {
   // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,

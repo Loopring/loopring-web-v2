@@ -28,6 +28,7 @@ import {
 } from "@loopring-web/common-resources";
 import { store, useAccount, useSystem, useTokenMap } from "../../stores";
 import {
+  getUserNFTReceiveList,
   getUserReceiveList,
   useOpenRedpacket,
   volumeToCountAsBigNumber,
@@ -96,8 +97,9 @@ export function useRedPacketModal() {
     let symbol;
     if (isShow && _info && _info.tokenAmount) {
       if (_info.isNft) {
-        //@ ts-ignore
-        symbol = (_info.nftTokenInfo as any)?.metadata?.base?.name ?? "NFT";
+        symbol = "NFT";
+        // @ ts-ignore
+        // symbol = (_info.nftTokenInfo as any)?.metadata?.base?.name ?? "NFT";
         const amount = getValuePrecisionThousand(
           _info.tokenAmount.totalAmount,
           0,
@@ -139,8 +141,8 @@ export function useRedPacketModal() {
     let symbol;
     if (isShow && _info && _info.claimAmount) {
       if (_info.isNft) {
-        //@ ts-ignore
-        symbol = (_info.nftTokenInfo as any)?.metadata?.base?.name ?? "NFT";
+        symbol = "NFT";
+        // (_info.nftTokenInfo as any)?.metadata?.base?.name ?? "NFT";
         const amount = getValuePrecisionThousand(
           _info.claimAmount,
           0,
@@ -272,8 +274,9 @@ export function useRedPacketModal() {
         let symbol: string;
         if (_info?.claimAmount) {
           if (_info.isNft) {
+            symbol = "NFT";
             // @ts-ignore
-            symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
+            // symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
             myAmountStr =
               getValuePrecisionThousand(
                 volumeToCountAsBigNumber(symbol, _info.claimAmount as any),
@@ -523,8 +526,6 @@ export function useRedPacketModal() {
           sdk.LuckyTokenItemStatus.FAILED,
           sdk.LuckyTokenItemStatus.COMPLETED,
         ].includes(detail.luckyToken.status);
-      const tokenInfo = tokenMap[idIndex[detail?.tokenId] ?? ""];
-      const token = tokenMap[idIndex[_info?.tokenId] ?? ""];
       let myAmountStr: string | undefined = undefined;
       const relyNumber = detail.helpers?.length;
       const value =
@@ -533,10 +534,12 @@ export function useRedPacketModal() {
           return prev.plus(item.amount);
         }, sdk.toBig(0)) ?? 0;
       let relyAmount: string | undefined = undefined;
+      let symbol, list;
       if (detail.claimAmount.toString() !== "0") {
         if (_info.isNft) {
+          symbol = "NFT";
           // @ts-ignore
-          const symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
+          // const symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
           myAmountStr =
             getValuePrecisionThousand(
               _info.claimAmount,
@@ -562,9 +565,14 @@ export function useRedPacketModal() {
               // isTrade: true,
             }
           );
+          list = getUserNFTReceiveList(
+            detail.claims as any,
+            _info.nftTokenInfo as any,
+            detail.champion
+          ).list;
         } else {
           let tokenInfo = tokenMap[idIndex[_info?.tokenId] ?? ""];
-          const symbol = tokenInfo.symbol;
+          symbol = tokenInfo.symbol;
           myAmountStr =
             getValuePrecisionThousand(
               volumeToCountAsBigNumber(symbol, _info.claimAmount as any),
@@ -581,8 +589,8 @@ export function useRedPacketModal() {
             symbol;
           relyAmount = getValuePrecisionThousand(
             volumeToCountAsBigNumber(symbol, value),
-            token.precision,
-            token.precision,
+            tokenInfo.precision,
+            tokenInfo.precision,
             undefined,
             false,
             {
@@ -590,14 +598,14 @@ export function useRedPacketModal() {
               // isTrade: true,
             }
           );
+          list = getUserReceiveList(
+            detail.claims as any,
+            tokenInfo,
+            detail.champion
+          ).list;
         }
       }
 
-      const { list } = getUserReceiveList(
-        detail.claims as any,
-        tokenInfo,
-        detail.champion
-      );
       return {
         ImageEle,
         totalCount: detail.luckyToken.tokenAmount.totalCount,

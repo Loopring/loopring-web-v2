@@ -433,8 +433,16 @@ export const RedPacketOpen = ({
             variant={"body1"}
             whiteSpace={"pre-line"}
             textAlign={"center"}
-            paddingX={2}
-            sx={{ wordBreak: "break-all" }}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            paddingX={4}
+            sx={{
+              wordBreak: "break-all",
+              display: "-webkit-box",
+              "-webkit-line-clamp": "2",
+              lineClamp: "2",
+              "-webkit-box-orient": "vertical",
+            }}
           >
             {memo}
           </Typography>
@@ -621,8 +629,16 @@ export const RedPacketClock = ({
             variant={"body1"}
             whiteSpace={"pre-line"}
             textAlign={"center"}
-            paddingX={2}
-            sx={{ wordBreak: "break-all" }}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            paddingX={4}
+            sx={{
+              wordBreak: "break-all",
+              display: "-webkit-box",
+              "-webkit-line-clamp": "2",
+              lineClamp: "2",
+              "-webkit-box-orient": "vertical",
+            }}
           >
             {memo}
           </Typography>
@@ -691,8 +707,16 @@ RedPacketDefault & RedPacketUnreadyProps) => {
             variant={"body1"}
             whiteSpace={"pre-line"}
             textAlign={"center"}
-            paddingX={2}
-            sx={{ wordBreak: "break-all" }}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            paddingX={4}
+            sx={{
+              wordBreak: "break-all",
+              display: "-webkit-box",
+              "-webkit-line-clamp": "2",
+              lineClamp: "2",
+              "-webkit-box-orient": "vertical",
+            }}
           >
             {memo}
           </Typography>
@@ -747,8 +771,16 @@ export const RedPacketOpened = ({
             whiteSpace={"pre-line"}
             textAlign={"center"}
             marginTop={1 / 2}
-            paddingX={2}
-            sx={{ wordBreak: "break-all" }}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            paddingX={4}
+            sx={{
+              wordBreak: "break-all",
+              display: "-webkit-box",
+              "-webkit-line-clamp": "2",
+              lineClamp: "2",
+              "-webkit-box-orient": "vertical",
+            }}
           >
             {memo}
           </Typography>
@@ -819,8 +851,16 @@ export const RedPacketTimeout = ({
             variant={"body1"}
             whiteSpace={"pre-line"}
             textAlign={"center"}
-            paddingX={2}
-            sx={{ wordBreak: "break-all" }}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            paddingX={4}
+            sx={{
+              wordBreak: "break-all",
+              display: "-webkit-box",
+              "-webkit-line-clamp": "2",
+              lineClamp: "2",
+              "-webkit-box-orient": "vertical",
+            }}
           >
             {memo}
           </Typography>
@@ -933,8 +973,16 @@ export const RedPacketDetail = ({
           whiteSpace={"pre-line"}
           textAlign={"center"}
           marginTop={1 / 2}
-          paddingX={2}
-          sx={{ wordBreak: "break-all" }}
+          overflow={"hidden"}
+          textOverflow={"ellipsis"}
+          paddingX={4}
+          sx={{
+            wordBreak: "break-all",
+            display: "-webkit-box",
+            "-webkit-line-clamp": "2",
+            lineClamp: "2",
+            "-webkit-box-orient": "vertical",
+          }}
         >
           {memo}
         </Typography>

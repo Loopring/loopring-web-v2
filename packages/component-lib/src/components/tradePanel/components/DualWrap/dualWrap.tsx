@@ -696,8 +696,10 @@ export const DualWrap = <
     ...tokenSellProps,
     handleError: handleError as any,
     handleCountChange,
+    isShowCoinInfo: true,
+    isShowCoinIcon: true,
     ...rest,
-  };
+  } as any;
   console.log("propsSell", dualCalcData);
   const label = React.useMemo(() => {
     if (btnInfo?.label) {

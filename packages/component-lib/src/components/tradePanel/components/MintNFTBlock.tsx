@@ -177,7 +177,6 @@ export const MintNFTBlock = <
               // size = InputSize.middle,
               isHideError: true,
               isShowCoinInfo: false,
-              isShowCoinIcon: false,
               order: "right",
               noBalance: "0",
               coinPrecision: 0,
