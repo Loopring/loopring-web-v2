@@ -126,8 +126,9 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               ref={priceRef as any}
               name={"price"}
               disabled={false}
-              {...{
+              {...({
                 ...propsPrice,
+                isShowCoinInfo: true,
                 maxAllow: false,
                 isHideError: true,
                 inputData: tradeData ? tradeData.price : ({} as any),
@@ -135,7 +136,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
                   tradeCalcProData && tradeCalcProData.coinInfoMap
                     ? tradeCalcProData.coinInfoMap
                     : ({} as CoinMap<I, CoinInfo<I>>),
-              }}
+              } as any)}
             />
           </Box>
           <Box paddingTop={2}>
@@ -143,9 +144,10 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               ref={baseRef as any}
               name={"base"}
               disabled={getDisabled()}
-              {...{
+              {...({
                 ...propsBase,
                 // maxAllow:false,
+                isShowCoinInfo: true,
                 isHideError: true,
                 handleCountChange,
                 inputData: tradeData ? tradeData.base : ({} as any),
@@ -153,7 +155,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
                   tradeCalcProData && tradeCalcProData.coinInfoMap
                     ? tradeCalcProData.coinInfoMap
                     : ({} as CoinMap<I, CoinInfo<I>>),
-              }}
+              } as any)}
             />
           </Box>
           {/*</Grid>*/}
@@ -196,7 +198,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               ref={quoteRef}
               name={"quote"}
               disabled={getDisabled()}
-              {...{
+              {...({
                 ...propsQuote,
                 isHideError: true,
                 handleCountChange,
@@ -205,7 +207,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
                   tradeCalcProData && tradeCalcProData.coinInfoMap
                     ? tradeCalcProData.coinInfoMap
                     : ({} as CoinMap<I, CoinInfo<I>>),
-              }}
+              } as any)}
             />
           </Box>
           {/*</Grid>*/}
