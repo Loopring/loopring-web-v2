@@ -8,8 +8,6 @@ import {
 import {
   EmptyDefault,
   RedPacketClaimTable,
-  RedPacketReceiveTable,
-  RedPacketRecordTable,
   Toast,
   TransactionTradeViews,
   useSettings,
@@ -21,8 +19,8 @@ import { Box, Button, Tab, Tabs } from "@mui/material";
 import {
   RedPacketIcon,
   SagaStatus,
-  TOAST_TIME,
   TabTokenTypeIndex,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 
 export const RedPacketClaimPanel = () => {

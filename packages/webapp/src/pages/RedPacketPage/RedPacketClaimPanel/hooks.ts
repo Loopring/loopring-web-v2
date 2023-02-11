@@ -17,7 +17,6 @@ import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   ClaimToken,
-  getValuePrecisionThousand,
   RedPacketLimit,
   SDK_ERROR_MAP_TO_UI,
   TokenType,

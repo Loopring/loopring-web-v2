@@ -26,7 +26,6 @@ import {
   BackIcon,
   CheckBoxIcon,
   CheckedIcon,
-  GET_IPFS_STRING,
   RefreshIcon,
   ScanQRIcon,
   SoursURL,

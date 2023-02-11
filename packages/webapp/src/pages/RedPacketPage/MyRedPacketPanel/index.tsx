@@ -12,12 +12,7 @@ import {
   useMyRedPacketReceiveTransaction,
   useMyRedPacketRecordTransaction,
 } from "./hooks";
-import {
-  BackIcon,
-  RowConfig,
-  TabTokenTypeIndex,
-  TokenType,
-} from "@loopring-web/common-resources";
+import { BackIcon, RowConfig, TokenType } from "@loopring-web/common-resources";
 import { Box, Button, Tab, Tabs } from "@mui/material";
 
 enum TabIndex {

@@ -5,15 +5,12 @@ import {
   LoopringAPI,
   useAccount,
   useTokenMap,
-  volumeToCountAsBigNumber,
 } from "@loopring-web/core";
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   getShortAddr,
-  getValuePrecisionThousand,
   SDK_ERROR_MAP_TO_UI,
-  TabTokenTypeIndex,
   TokenType,
 } from "@loopring-web/common-resources";
 import {
