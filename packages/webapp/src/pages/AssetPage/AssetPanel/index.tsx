@@ -98,7 +98,9 @@ const AssetPanel = withTranslation("common")(
         >
           <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
           <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
-          <Tab label={t("labelAssetRedPackets")} value={TabIndex.RedPacket} />
+          {!isMobile && (
+            <Tab label={t("labelAssetRedPackets")} value={TabIndex.RedPacket} />
+          )}
         </Tabs>
         {currentTab === TabIndex.Tokens && (
           <StylePaper

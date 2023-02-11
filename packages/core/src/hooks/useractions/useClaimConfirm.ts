@@ -5,6 +5,7 @@ import {
   LIVE_FEE_TIMES,
   myLog,
   SUBMIT_PANEL_AUTO_CLOSE,
+  TRADE_TYPE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import {
@@ -61,6 +62,15 @@ export const useClaimConfirm = <
   } = useOpenModals();
   const { claimValue, updateClaimData } = useModalData();
   const { btnStatus, enableBtn, disableBtn, btnInfo } = useBtnStatus();
+  const feeProps =
+    claimValue.tradeType === TRADE_TYPE.TOKEN
+      ? {
+          requestType: sdk.OffchainFeeReqType.TRANSFER,
+        }
+      : {
+          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+          tokenAddress: claimValue?.tokenAddress,
+        };
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -69,7 +79,7 @@ export const useClaimConfirm = <
     checkFeeIsEnough,
     resetIntervalTime,
   } = useChargeFees({
-    requestType: sdk.OffchainFeeReqType.TRANSFER,
+    ...feeProps,
     updateData: ({ fee }) => {
       const claimValue = store.getState()._router_modalData.claimValue;
       updateClaimData({ ...claimValue, fee });
@@ -87,7 +97,9 @@ export const useClaimConfirm = <
       if (claimToken?.isNft) {
         updateClaimData({
           ...claimToken.nftTokenInfo,
+          tradeType: TRADE_TYPE.NFT,
           // nftData: claimToken.nftData,
+          tokenAddress: claimToken.tokenId,
           tokenId: claimToken.tokenId,
           belong: claimToken.nftTokenInfo?.metadata?.base?.name ?? "NFT",
           tradeValue: Number(claimToken.total),
@@ -98,6 +110,7 @@ export const useClaimConfirm = <
         const token = tokenMap[idIndex[claimToken.tokenId]];
         updateClaimData({
           belong: idIndex[claimToken.tokenId],
+          tradeType: TRADE_TYPE.TOKEN,
           tradeValue: volumeToCount(token.symbol, claimToken.total),
           volume: claimToken.total,
           balance: volumeToCount(token.symbol, claimToken.total),

@@ -85,6 +85,7 @@ const initialClaimState: ClaimData = {
   balance: 0,
   fee: undefined,
   address: undefined,
+  tradeType: TRADE_TYPE.TOKEN,
   __request__: undefined,
 } as any;
 

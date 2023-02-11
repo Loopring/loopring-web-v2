@@ -169,7 +169,7 @@ export function useModalData(): {
   updateRedPacketOrder: (redPacketOrder: RedPacketOrderData<any>) => void;
   resetRedPacketOrder: (type?: TRADE_TYPE) => void;
 
-  claimValue: Partial<ClaimData> | undefined;
+  claimValue: Partial<ClaimData>;
   updateClaimData: (value: Partial<ClaimData>) => void;
   resetClaimData: () => void;
 } {

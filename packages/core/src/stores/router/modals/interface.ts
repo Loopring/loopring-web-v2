@@ -1,5 +1,9 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-import { NFTTokenInfo, UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
+import {
+  NFTTokenInfo,
+  UserNFTBalanceInfo,
+  XOR,
+} from "@loopring-web/loopring-sdk";
 import {
   BanxaOrder,
   CollectionMeta,
@@ -9,6 +13,7 @@ import {
   NFTMETA,
   NFTWholeINFO,
   RedPacketOrderData,
+  TRADE_TYPE,
   TradeNFT,
   WithdrawType,
 } from "@loopring-web/common-resources";
@@ -48,10 +53,19 @@ export type ClaimData = {
   fee: FeeInfo | undefined;
   address: string | undefined;
   volume: string | undefined;
-  tokenId?: number;
-  nftData?: string;
+  tradeType: TRADE_TYPE;
   __request__: sdk.OriginLuckTokenWithdrawsRequestV3 | undefined;
-};
+} & XOR<
+  {
+    tradeType: TRADE_TYPE.TOKEN;
+  },
+  {
+    tradeType: TRADE_TYPE.NFT;
+    tokenId: number;
+    nftData: string;
+    tokenAddress: string;
+  }
+>;
 
 export type DepositData = {
   belong: string | undefined;
