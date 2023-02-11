@@ -7,6 +7,5 @@ type Cache = {
 export const makeCache = (__cache__: Cache) => {
   if (typeof __cache__.customSlippage !== undefined) {
     store.dispatch(setSlippage(__cache__.customSlippage as number));
-    // store.getState().settings
   }
 };

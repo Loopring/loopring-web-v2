@@ -35,7 +35,6 @@ export const makeMarketArray = (
 
   marketTrades.forEach((item: sdk.MarketTradeInfo) => {
     try {
-      // const {base, quote} = sdk.getBaseQuote(item.market)
       if (tokenMap) {
         tradeArray.push(tradeItemToTableDataItem(item));
       }
@@ -70,18 +69,10 @@ export const getUserAmmTransaction = ({
         totalNum,
       };
     });
-  // }
 };
 
 // getAmmPoolTxs
-
-export const getRecentAmmTransaction = ({
-  address,
-  offset,
-  limit,
-}: // txStatus,
-any) => {
-  // const {apiKey} = store.getState().account
+export const getRecentAmmTransaction = ({ address, offset, limit }: any) => {
   return LoopringAPI.ammpoolAPI
     ?.getAmmPoolTxs({
       poolAddress: address,
