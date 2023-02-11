@@ -131,7 +131,9 @@ const AssetPanel = withTranslation("common")(
           </StylePaper>
         )}
         {currentTab === TabIndex.Invests && <MyLiquidity isHideTotal={true} />}
-        {currentTab === TabIndex.RedPacket && <RedPacketClaimPanel />}
+        {!isMobile && currentTab === TabIndex.RedPacket && (
+          <RedPacketClaimPanel />
+        )}
       </>
     );
   }

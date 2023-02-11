@@ -31,20 +31,11 @@ export const AssetTitle = withTranslation("common")(
     t,
     assetInfo,
     accountId,
-    // onShowWithdraw,
-    // onShowTransfer,
     onShowSend,
     onShowReceive,
-    // onShowDeposit,
-    // btnShowDepositStatus,
-    // btnShowTransferStatus,
-    // btnShowWithdrawStatus,
     hideL2Assets,
     setHideL2Assets,
-  }: // showPartnr,
-  // legalEnable,
-  // legalShow,
-  AssetTitleProps & WithTranslation) => {
+  }: AssetTitleProps & WithTranslation) => {
     const history = useHistory();
     return (
       <Grid
@@ -150,17 +141,12 @@ export const AssetTitle = withTranslation("common")(
 export const AssetTitleMobile = ({
   assetInfo,
   accountId,
-  // onShowWithdraw,
-  // onShowTransfer,
+
   onShowSend,
   onShowReceive,
-  // onShowDeposit,
   hideL2Assets,
   setHideL2Assets,
-}: // showPartner,
-// legalEnable,
-// legalShow,
-AssetTitleMobileProps) => {
+}: AssetTitleMobileProps) => {
   const { hideL2Action, setHideL2Action } = useSettings();
   // const [dropdownStatus, setDropdownStatus] =
   //   React.useState<"up" | "down">(hideL2Action?"up":"down");
