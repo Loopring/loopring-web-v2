@@ -129,6 +129,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               {...({
                 ...propsPrice,
                 isShowCoinInfo: true,
+                isShowCoinIcon: false,
                 maxAllow: false,
                 isHideError: true,
                 inputData: tradeData ? tradeData.price : ({} as any),
@@ -144,10 +145,11 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               ref={baseRef as any}
               name={"base"}
               disabled={getDisabled()}
-              {...({
+              {...{
                 ...propsBase,
                 // maxAllow:false,
                 isShowCoinInfo: true,
+                isShowCoinIcon: false,
                 isHideError: true,
                 handleCountChange,
                 inputData: tradeData ? tradeData.base : ({} as any),
@@ -155,7 +157,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
                   tradeCalcProData && tradeCalcProData.coinInfoMap
                     ? tradeCalcProData.coinInfoMap
                     : ({} as CoinMap<I, CoinInfo<I>>),
-              } as any)}
+              }}
             />
           </Box>
           {/*</Grid>*/}
@@ -198,16 +200,18 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               ref={quoteRef}
               name={"quote"}
               disabled={getDisabled()}
-              {...({
+              {...{
                 ...propsQuote,
                 isHideError: true,
+                isShowCoinInfo: true,
+                isShowCoinIcon: false,
                 handleCountChange,
                 inputData: tradeData ? tradeData.quote : ({} as any),
                 coinMap:
                   tradeCalcProData && tradeCalcProData.coinInfoMap
                     ? tradeCalcProData.coinInfoMap
                     : ({} as CoinMap<I, CoinInfo<I>>),
-              } as any)}
+              }}
             />
           </Box>
           {/*</Grid>*/}

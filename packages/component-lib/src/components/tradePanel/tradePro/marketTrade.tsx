@@ -214,6 +214,8 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
               {...{
                 ...propsBase,
                 // maxAllow:false,
+                isShowCoinInfo: true,
+                isShowCoinIcon: false,
                 handleCountChange,
                 isHideError: true,
                 inputData: tradeData ? tradeData.base : ({} as any),
@@ -268,6 +270,8 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                 ...propsQuote,
                 isHideError: true,
                 handleCountChange,
+                isShowCoinInfo: true,
+                isShowCoinIcon: false,
                 inputData: tradeData ? tradeData.quote : ({} as any),
                 coinMap:
                   tradeCalcProData && tradeCalcProData.coinInfoMap
