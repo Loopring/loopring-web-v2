@@ -17,8 +17,8 @@ import {
   Button,
   DepositTitle,
   IconClearStyled,
-  useSettings,
   TextField,
+  useSettings,
 } from "../../../index";
 import { DepositViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";

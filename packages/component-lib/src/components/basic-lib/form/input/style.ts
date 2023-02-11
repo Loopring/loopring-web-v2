@@ -5,9 +5,9 @@ import {
   Button,
   ButtonProps,
   RadioGroup,
+  TextareaAutosize,
   TextField as MuiTextField,
   TextFieldProps,
-  TextareaAutosize,
 } from "@mui/material";
 import CurrencyInput from "react-currency-input-field";
 
@@ -93,13 +93,16 @@ export const IWrap = styled(Box)<
     .max-allow {
       text-decoration: underline dotted;
       color: var(--color-secoundary);
+
       &:hover {
         color: var(--color-primary);
       }
     }
+
     .no-balance {
       text-decoration: none;
     }
+
     .disabled {
       color: var(--color-text-disable);
     }
@@ -149,6 +152,7 @@ export const IWrap = styled(Box)<
       justify-content: flex-start;
     }
   }
+
   ${({ size, theme, isMobile }) => {
     if (size === InputSize.small) {
       return `
@@ -244,6 +248,7 @@ export const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
     text-overflow: ellipsis;
     font-size: ${({ theme }) => theme.fontDefault.h5};
     color: var(--color-text-primary);
+
     .MuiButton-endIcon {
       color: var(--color-text-third);
     }
@@ -267,10 +272,12 @@ export const IInput = styled(CurrencyInput)`
   ::placeholder {
     color: var(--color-text-secondary);;
   }
-  :disabled{
+
+  :disabled {
     color: var(--color-text-disable);
   }
-  width: 100%; 
+
+  width: 100%;
   height: 100%;
   border: 0;
   margin: 0;
@@ -285,16 +292,19 @@ export const IInput = styled(CurrencyInput)`
   letter-spacing: inherit;
   animation-duration: 10ms;
   -webkit-tap-highlight-color: transparent;
+
   + label {
     height: 0;
     width: 0;
   }
+
   :focus {
     outline: 0;
+
     & + label::before {
-      content:'';
+      content: '';
       position: absolute;
-      top:0;
+      top: 0;
       left: 0;
       right: 0;
       bottom: 0;
@@ -305,6 +315,7 @@ export const IInput = styled(CurrencyInput)`
         })};`};
     }
   }
+
   .error &:focus {
     & + label::before {
       ${({ theme }) =>
@@ -316,10 +327,10 @@ export const IInput = styled(CurrencyInput)`
     text-align: right;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-   
+
 
     :focus {
-      
+
     }
   }
 
@@ -327,10 +338,10 @@ export const IInput = styled(CurrencyInput)`
     text-align: left;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    
+
 
     :focus {
-     
+
     }
   }
 }` as typeof CurrencyInput;

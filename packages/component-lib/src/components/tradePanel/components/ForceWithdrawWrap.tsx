@@ -33,8 +33,8 @@ import { TradeBtnStatus } from "../Interface";
 import {
   Button,
   IconClearStyled,
-  useSettings,
   TextField,
+  useSettings,
 } from "../../../index";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { FeeToggle } from "./tool/FeeList";

@@ -16,7 +16,7 @@ import {
   TGItemData,
   ToggleButtonGroup,
 } from "../../";
-import { Button, useSettings, TextField } from "../../../index";
+import { Button, TextField, useSettings } from "../../../index";
 import { NFTDepositViewProps } from "./Interface";
 import { NFTInput } from "./BasicANFTTrade";
 import { NFTType } from "@loopring-web/loopring-sdk";

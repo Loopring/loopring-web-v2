@@ -52,6 +52,7 @@ export enum InputSize {
   middle = "middle",
   small = "small",
 }
+
 export type InputCoinProps<T, R, I> = {
   inputData?: T | undefined;
   label: string | JSX.Element;
