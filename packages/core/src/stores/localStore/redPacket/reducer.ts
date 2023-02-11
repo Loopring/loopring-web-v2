@@ -3,7 +3,7 @@ import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
 import {
   ChainHashInfos,
   RedPacketHashInfo,
-  RedpacketHashInfos,
+  RedPacketHashInfos,
   RedPacketHashItems,
   TX_HASH,
 } from "@loopring-web/common-resources";
@@ -16,13 +16,13 @@ export type updateRedpacketHashProps = {
   address: string;
   claimAmount: string;
 };
-const initialState: RedpacketHashInfos = {
+const initialState: RedPacketHashInfos = {
   [ChainId.GOERLI]: {},
   [ChainId.MAINNET]: {},
   // withdrawHashes:{},
 };
-const redPacketHistorySlice: Slice<RedpacketHashInfos> = createSlice<
-  RedpacketHashInfos,
+const redPacketHistorySlice: Slice<RedPacketHashInfos> = createSlice<
+  RedPacketHashInfos,
   SliceCaseReducers<any>,
   "redPacketHistory"
 >({
@@ -30,14 +30,14 @@ const redPacketHistorySlice: Slice<RedpacketHashInfos> = createSlice<
   initialState,
   reducers: {
     // @ts-ignore
-    clearAll(state: RedpacketHashInfos, _action: PayloadAction<undefined>) {
+    clearAll(state: RedPacketHashInfos, _action: PayloadAction<undefined>) {
       state = { ...initialState };
     },
     clearRedPacketHash(
-      state: RedpacketHashInfos,
+      state: RedPacketHashInfos,
       _action: PayloadAction<undefined>
     ) {
-      function make(state: RedpacketHashInfos, chainId: string) {
+      function make(state: RedPacketHashInfos, chainId: string) {
         return Reflect.ownKeys(state[chainId]).reduce(
           (prev, address) => {
             if (state[chainId][address.toString()]) {

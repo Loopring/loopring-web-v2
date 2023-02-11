@@ -48,7 +48,8 @@ import {
   LAYER1_ACTION_HISTORY,
   myLog,
   NFTHashInfos,
-  RedpacketHashInfos,
+  OffRampHashInfos,
+  RedPacketHashInfos,
 } from "@loopring-web/common-resources";
 import { FavoriteMarketStates } from "./localStore/favoriteMarket";
 import { Confirmation } from "./localStore/confirmation";
@@ -115,7 +116,8 @@ const persistedLocalStoreReducer = persistReducer<
     tradeProSettings: TradeProSettings;
     layer1ActionHistory: LAYER1_ACTION_HISTORY;
     nftHashInfos: NFTHashInfos;
-    redPacketHistory: RedpacketHashInfos;
+    redPacketHistory: RedPacketHashInfos;
+    offRampHistory: OffRampHashInfos;
   }>
 >(persistLocalStoreConfig, localStoreReducer);
 

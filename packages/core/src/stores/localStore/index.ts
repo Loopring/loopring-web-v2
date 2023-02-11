@@ -7,6 +7,7 @@ import { tradeProSettingsSlice } from "./tradeProSettings";
 import { layer1ActionHistorySlice } from "./layer1Store";
 import { NFTHashInfoSlice } from "./nftRefresh";
 import { redPacketHistorySlice } from "./redPacket";
+import { offRampHistorySlice } from "./offRamp";
 
 export const localStoreReducer = combineReducers({
   favoriteMarket: favoriteMarketSlice.reducer,
@@ -17,6 +18,7 @@ export const localStoreReducer = combineReducers({
   layer1ActionHistory: layer1ActionHistorySlice.reducer,
   nftHashInfos: NFTHashInfoSlice.reducer,
   redPacketHistory: redPacketHistorySlice.reducer,
+  offRampHistory: offRampHistorySlice.reducer,
 });
 
 export * as confirmation from "./confirmation";
@@ -27,3 +29,4 @@ export * as nftRefresh from "./nftRefresh";
 export * as tradeProSettings from "./tradeProSettings";
 export * as walletInfo from "./walletInfo";
 export * as redPacketHistory from "./redPacket";
+export * as offRampHistory from "./offRamp";

@@ -6,15 +6,15 @@ import {
   updateRedpacketHashProps,
 } from "./reducer";
 import React from "react";
-import { RedpacketHashInfos } from "@loopring-web/common-resources";
+import { RedPacketHashInfos } from "@loopring-web/common-resources";
 
 export const useRedPacketHistory = (): {
-  redPacketHistory: RedpacketHashInfos;
+  redPacketHistory: RedPacketHashInfos;
   clearAll: () => void;
   clearRedPacketHash: () => void;
   updateRedpacketHash: (props: updateRedpacketHashProps) => void;
 } => {
-  const redPacketHistory: RedpacketHashInfos = useSelector(
+  const redPacketHistory: RedPacketHashInfos = useSelector(
     (state: any) => state.localStore.redPacketHistory
   );
   const dispatch = useDispatch();

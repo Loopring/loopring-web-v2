@@ -15,6 +15,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 import { MarketType } from "./market";
 import { XOR } from "@loopring-web/loopring-sdk";
+import { VendorProviders } from "./vendor";
 
 export enum DeFiChgType {
   coinSell = "coinSell",
@@ -581,8 +582,26 @@ export type RedPacketHashItems = {
 export type RedPacketHashInfo = {
   [key: ACCOUNT_ADDRESS]: RedPacketHashItems;
 };
-export type RedpacketHashInfos = {
+export type RedPacketHashInfos = {
   [key in sdk.ChainId extends string ? string : string]: RedPacketHashInfo;
+};
+
+export enum OffRampStatus {
+  waitingForPayment = "waitingForPayment",
+}
+
+export type OffRampHashItems<T = VendorProviders> = {
+  [K in keyof T]: {
+    orderId: string;
+    status: OffRampStatus;
+    [key: string]: any;
+  };
+};
+export type OffRampHashInfo = {
+  [key: ACCOUNT_ADDRESS]: OffRampHashItems;
+};
+export type OffRampHashInfos = {
+  [key in sdk.ChainId extends string ? string : string]: OffRampHashInfo;
 };
 
 export type RedPacketOrderData<I> = XOR<
