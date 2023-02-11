@@ -350,6 +350,7 @@ export const TextareaAutosizeStyled = styled(TextareaAutosize)`
   label + & {
     margin-top: ${({ theme }) => theme.unit}px;
   }
+
   background: (var(--opacity));
   font-family: inherit;
   color: inherit;
@@ -360,10 +361,12 @@ export const TextareaAutosizeStyled = styled(TextareaAutosize)`
       c_key: theme.colorBase.border,
       d_R: 0.5,
     })};
+
   &:focus {
     ${({ theme }) => theme.border.defaultFrame({ c_key: "focus", d_R: 0.5 })};
     outline: transparent;
   }
+
   &:disabled {
     line-height: 1.5em;
     border: 0;
