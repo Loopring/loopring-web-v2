@@ -1417,4 +1417,6 @@ export default {
   labelRedPacketClaimNFT: "NFT",
   labelRedPacketMarketERC20: "ERC20",
   labelRedPacketMarketNFT: "NFT",
+  labelRedPacketNotSupport:
+    "tUnfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
 };

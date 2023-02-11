@@ -48,6 +48,8 @@ export type ClaimData = {
   fee: FeeInfo | undefined;
   address: string | undefined;
   volume: string | undefined;
+  tokenId?: number;
+  nftData?: string;
   __request__: sdk.OriginLuckTokenWithdrawsRequestV3 | undefined;
 };
 

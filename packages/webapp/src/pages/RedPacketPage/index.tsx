@@ -1,18 +1,20 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useRouteMatch } from "react-router-dom";
 import { useToast, ViewAccountTemplate } from "@loopring-web/core";
 import { RedPacketMarketPanel } from "./RedPacketMarketPanel";
 import { CreateRedPacketUIPanel } from "./CreateRedPacketPanel";
 import { MyRedPacketPanel } from "./MyRedPacketPanel";
 import { TOAST_TIME } from "@loopring-web/common-resources";
-import { Toast } from "@loopring-web/component-lib";
+import { Toast, useSettings } from "@loopring-web/component-lib";
+import { useTranslation } from "react-i18next";
 
 export const RedPacketPage = () => {
   let match: any = useRouteMatch("/redPacket/:item");
   const selected = match?.params.item ?? "markets";
   const { toastOpen, setToastOpen, closeToast } = useToast();
-
+  const { isMobile } = useSettings();
+  const { t } = useTranslation();
   const reaPacketRouter = React.useMemo(() => {
     switch (selected) {
       case "create":
@@ -49,5 +51,15 @@ export const RedPacketPage = () => {
     ),
     [reaPacketRouter]
   );
-  return <ViewAccountTemplate activeViewTemplate={activeView} />;
+  return (
+    <>
+      {isMobile ? (
+        <Typography component={"h3"}>
+          {t("labelRedPacketNotSupport")}
+        </Typography>
+      ) : (
+        <ViewAccountTemplate activeViewTemplate={activeView} />
+      )}
+    </>
+  );
 };

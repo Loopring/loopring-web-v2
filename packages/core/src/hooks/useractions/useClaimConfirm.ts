@@ -87,11 +87,13 @@ export const useClaimConfirm = <
       if (claimToken?.isNft) {
         updateClaimData({
           ...claimToken.nftTokenInfo,
+          // nftData: claimToken.nftData,
+          tokenId: claimToken.tokenId,
           belong: claimToken.nftTokenInfo?.metadata?.base?.name ?? "NFT",
           tradeValue: Number(claimToken.total),
           volume: claimToken.total,
           balance: Number(claimToken.total),
-        });
+        } as any);
       } else {
         const token = tokenMap[idIndex[claimToken.tokenId]];
         updateClaimData({
@@ -266,10 +268,22 @@ export const useClaimConfirm = <
           const feeRaw =
             claimValue.fee.feeRaw ?? claimValue.fee.__raw__?.feeRaw ?? 0;
           const fee = sdk.toBig(feeRaw);
-          const token = tokenMap[claimValue?.belong];
-          const amount = sdk
-            .toBig(claimValue?.tradeValue ?? 0)
-            .times("1e" + token.decimals);
+
+          let token: any;
+          let nftData = undefined;
+          if (claimValue?.nftData) {
+            token = {
+              tokenId: claimValue.tokenId,
+            };
+            nftData = claimValue.nftData;
+          } else {
+            token = tokenMap[claimValue?.belong];
+          }
+          const amount =
+            claimValue?.volume ??
+            sdk
+              .toBig(claimValue?.tradeValue ?? 0)
+              .times("1e" + token?.decimals ?? 0);
 
           const storageId = await LoopringAPI.userAPI?.getNextStorageId(
             {
@@ -285,6 +299,7 @@ export const useClaimConfirm = <
             tokenId: token.tokenId,
             feeTokenId: feeToken.tokenId,
             amount: amount.toString(),
+            nftData,
             claimer: accAddress,
             transfer: {
               exchange: exchangeInfo.exchangeAddress,

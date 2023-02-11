@@ -300,5 +300,5 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
         )}
       </TableWrapperStyled>
     );
-  };
+  }
 );
