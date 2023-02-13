@@ -241,16 +241,25 @@ export const useCreateRedPacket = <
   const calcNumberAndAmount = React.useCallback(() => {
     const redPacketOrder = store.getState()._router_modalData
       .redPacketOrder as T;
-    const eachValue = sdk
-      .toBig(redPacketOrder?.tradeValue ?? 0)
-      .div(redPacketOrder.numbers ?? 1);
-    return {
-      tradeValue: redPacketOrder?.tradeValue,
-      eachValue:
-        redPacketOrder.tradeType === TRADE_TYPE.TOKEN
-          ? eachValue.toString()
-          : eachValue.toFixed(),
-    };
+    if (redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.RANDOM) {
+      const eachValue = sdk
+        .toBig(redPacketOrder?.tradeValue ?? 0)
+        .div(redPacketOrder.numbers ?? 1);
+      return {
+        tradeValue: redPacketOrder?.tradeValue,
+        eachValue:
+          redPacketOrder.tradeType === TRADE_TYPE.TOKEN
+            ? eachValue.toString()
+            : eachValue.toFixed(),
+      };
+    } else {
+      return {
+        tradeValue: sdk
+          .toBig(redPacketOrder?.tradeValue ?? 0)
+          .times(redPacketOrder.numbers ?? 1),
+        eachValue: redPacketOrder?.tradeValue,
+      };
+    }
   }, []);
   const history = useHistory();
 

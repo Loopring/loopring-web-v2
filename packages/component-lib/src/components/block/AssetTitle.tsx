@@ -37,9 +37,7 @@ export const AssetTitle = withTranslation("common")(
     hideL2Assets,
     setHideL2Assets,
     assetBtnStatus,
-  }: AssetTitleProps & {
-    assetBtnStatus: TradeBtnStatus;
-  } & WithTranslation) => {
+  }: AssetTitleProps & WithTranslation) => {
     const history = useHistory();
     return (
       <Grid

@@ -2,10 +2,7 @@ import { useRouteMatch } from "react-router-dom";
 
 import { Box } from "@mui/material";
 import { AssetTitleMobile, useSettings } from "@loopring-web/component-lib";
-import {
-  AccountStatus,
-  subMenuLayer2,
-} from "@loopring-web/common-resources";
+import { AccountStatus, subMenuLayer2 } from "@loopring-web/common-resources";
 
 import HistoryPanel from "./HistoryPanel";
 import React from "react";
@@ -15,7 +12,6 @@ import {
   walletLayer2Service,
 } from "@loopring-web/core";
 import { useGetAssets } from "./AssetPanel/hook";
-import { WsTopicType } from "@loopring-web/loopring-sdk";
 import { AssetPanel } from "./AssetPanel";
 
 export const subMenu = subMenuLayer2;

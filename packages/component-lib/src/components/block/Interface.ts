@@ -9,14 +9,13 @@ import {
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../tradePanel";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { Currency } from "@loopring-web/loopring-sdk";
 import { RawDataRedPacketDetailItem } from "../tableList";
 
 export type MarketBlockProps<C> = {
   coinAInfo: CoinInfo<C>;
   coinBInfo: CoinInfo<C>;
   tradeFloat: TradeFloat;
-  forexMap: ForexMap<Currency>;
+  forexMap: ForexMap<sdk.Currency>;
   chartData?: {
     close: number;
     timeStamp: number;
@@ -35,12 +34,12 @@ export type AssetTitleProps = {
   onShowSend: (token?: string) => void;
   hideL2Assets: boolean;
   setHideL2Assets: (value: boolean) => void;
+  assetBtnStatus: TradeBtnStatus;
 };
 
 export type AssetTitleMobileProps = AssetTitleProps & {
   // onShowNFTDeposit: () => void;
   // onShowNFTMINT: () => void;
-  assetBtnStatus: TradeBtnStatus;
   btnShowNFTDepositStatus?: keyof typeof TradeBtnStatus;
   btnShowNFTMINTStatus?: keyof typeof TradeBtnStatus;
 };

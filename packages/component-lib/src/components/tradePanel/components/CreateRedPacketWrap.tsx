@@ -149,13 +149,17 @@ export const CreateRedPacketStepWrap = withTranslation()(
       if (tradeType == TRADE_TYPE.TOKEN) {
         if (tradeData?.tradeValue && tradeData.belong && tokenMap) {
           const splitValue =
-            selectedType.value.value == 2
+            selectedType.value.value == sdk.LuckyTokenAmountType.RANDOM
               ? (tradeData?.tradeValue ?? 0) / (tradeData?.numbers ?? 1)
+              : tradeData?.tradeValue ?? 0;
+          const total =
+            selectedType.value.value == sdk.LuckyTokenAmountType.AVERAGE
+              ? (tradeData?.tradeValue ?? 0) * (tradeData?.numbers ?? 0)
               : tradeData?.tradeValue ?? 0;
           return {
             total:
               getValuePrecisionThousand(
-                tradeData?.tradeValue,
+                total,
                 tokenMap[tradeData?.belong as string].precision,
                 tokenMap[tradeData?.belong as string].precision,
                 tokenMap[tradeData?.belong as string].precision,
@@ -196,7 +200,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
     }, [tradeData, selectedType.value.value, coinMap, tradeType]);
     const inputSplitProps = React.useMemo(() => {
       const inputSplitProps: any = {
-        label: t("labelSplit"),
+        label:
+          selectedType.value.value == 2 ? t("labelQuantity") : t("labelSplit"), //t("labelTokenAmount"),
         placeholderText: t("labelQuantity"),
         isHideError: true,
         isShowCoinInfo: false,
@@ -207,13 +212,20 @@ export const CreateRedPacketStepWrap = withTranslation()(
         },
         fullWidth: true,
       };
-      let inputSplitExtendProps = {};
-
+      let inputSplitExtendProps = {},
+        balance: any = undefined;
       if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
-        let balance: any = sdk
-          .toBig(tradeData.tradeValue)
-          .div(Number(minimum) ?? 1)
-          .toFixed(0, 1);
+        if (selectedType.value.value !== 2) {
+          balance = sdk
+            .toBig(tradeData.tradeValue)
+            .div(Number(minimum) ?? 1)
+            .toFixed(0, 1);
+        } else {
+          balance = sdk
+            .toBig(tradeData.balance ?? 0)
+            .div(tradeData.tradeValue)
+            .toFixed(0, 1);
+        }
 
         balance = sdk.toBig(balance).lte(REDPACKET_ORDER_LIMIT)
           ? balance
@@ -232,11 +244,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
               error: false,
             };
           },
-
           inputData: {
-            balance,
-            belong: "Split",
+            belong:
+              selectedType.value.value == 2
+                ? t("labelAmountEach")
+                : t("labelSplit"),
             tradeValue: tradeData?.numbers,
+            balance: balance,
           },
         };
       } else {
@@ -245,7 +259,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
           subLabel: "",
           handleError: () => undefined,
           inputData: {
-            belong: "Split",
+            belong:
+              selectedType.value.value == 2
+                ? t("labelAmountEach")
+                : t("labelSplit"),
             tradeValue: tradeData?.numbers,
             // count: tradeData?.numbers,
           },
@@ -294,6 +311,26 @@ export const CreateRedPacketStepWrap = withTranslation()(
         handleFeeChange(value);
       }
     };
+    const _balance = React.useMemo(() => {
+      if (
+        selectedType.value.value == 2 &&
+        tradeData?.numbers &&
+        // @ts-ignore
+        tradeData.numbers !== "0" &&
+        tradeData.balance
+      ) {
+        return getValuePrecisionThousand(
+          sdk.toBig(tradeData.balance).div(tradeData.numbers).toString(),
+          tokenMap[tradeData?.belong as string].precision,
+          tokenMap[tradeData?.belong as string].precision,
+          tokenMap[tradeData?.belong as string].precision,
+          false
+          // { isFait: true }
+        );
+      } else {
+        return tradeData.balance;
+      }
+    }, [selectedType.value.value, tradeData.balance, tradeData?.numbers]);
     const { isMobile } = useSettings();
 
     // @ts-ignore
@@ -339,7 +376,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 type: tradeType ?? "TOKEN",
                 disabled,
                 walletMap,
-                tradeData,
+                tradeData:
+                  selectedType.value.value == 2 && tradeData?.numbers
+                    ? {
+                        ...tradeData,
+                        balance: _balance,
+                      }
+                    : (tradeData as T),
                 coinMap,
                 inputButtonDefaultProps,
                 inputBtnRef,
@@ -355,7 +398,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 isSelected: true,
                 type: tradeType,
                 disabled,
-                tradeData: tradeData as T,
+                tradeData:
+                  selectedType.value.value == 2 && tradeData?.numbers
+                    ? {
+                        ...tradeData,
+                        balance: _balance,
+                      }
+                    : (tradeData as T),
                 onChangeEvent: (
                   _index: 0 | 1,
                   { to, tradeData: newTradeData }: SwitchData<T>
@@ -384,6 +433,24 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 inputNFTRef: inputBtnRef,
               } as any)}
             />
+          )}
+          {selectedType.value.value == 2 && (
+            <Typography
+              display={"inline-flex"}
+              width={"100%"}
+              justifyContent={"flex-end"}
+              color={"textSecondary"}
+            >
+              {t("labelAssetAmount", {
+                value: getValuePrecisionThousand(
+                  tradeData.balance,
+                  8,
+                  8,
+                  8,
+                  false
+                ),
+              })}
+            </Typography>
           )}
         </Box>
         <Box
