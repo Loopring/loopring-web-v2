@@ -1,34 +1,52 @@
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 
 import { Box } from "@mui/material";
 import { AssetTitleMobile, useSettings } from "@loopring-web/component-lib";
-import { subMenuLayer2 } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  myLog,
+  subMenuLayer2,
+} from "@loopring-web/common-resources";
 
 import AssetPanel from "./AssetPanel";
 import HistoryPanel from "./HistoryPanel";
 import React from "react";
-import { ViewAccountTemplate } from "@loopring-web/core";
+import {
+  useAccount,
+  ViewAccountTemplate,
+  walletLayer2Service,
+} from "@loopring-web/core";
 import { useGetAssets } from "./AssetPanel/hook";
+import { WsTopicType } from "@loopring-web/loopring-sdk";
 
 export const subMenu = subMenuLayer2;
 
 export const AssetPage = () => {
   let match: any = useRouteMatch("/l2assets/:item");
   const selected = match?.params.item ?? "assets";
-  const { assetTitleProps, assetTitleMobileExtendProps } = useGetAssets();
-  const history = useHistory();
+  const { assetTitleProps, assetTitleMobileExtendProps, ...assetPanelProps } =
+    useGetAssets();
+  const { account } = useAccount();
+
+  React.useEffect(() => {
+    if (account.readyState === AccountStatus.ACTIVATED) {
+      walletLayer2Service.sendUserUpdate();
+    }
+  }, []);
   const layer2Router = React.useMemo(() => {
     switch (selected.toLowerCase()) {
-      case "assets":
-        return <AssetPanel />;
       case "history":
         return <HistoryPanel />;
-      // case "redPacket":
-      //   return history.push("redPacket");
+      case "assets":
       default:
-        <AssetPanel />;
+        return (
+          <AssetPanel
+            assetTitleProps={assetTitleProps}
+            assetPanelProps={assetPanelProps}
+          />
+        );
     }
-  }, [selected]);
+  }, [selected, assetTitleProps, assetPanelProps]);
   const { isMobile } = useSettings();
   const activeView = React.useMemo(
     () => (
@@ -42,6 +60,7 @@ export const AssetPage = () => {
         >
           {isMobile && (
             <AssetTitleMobile
+              assetBtnStatus={assetPanelProps.assetBtnStatus}
               {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
             />
           )}

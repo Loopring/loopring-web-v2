@@ -17,6 +17,7 @@ import {
   StylePaper,
   useOpenRedpacket,
   useSystem,
+  redPacketHistory as redPacketHistoryStore,
 } from "@loopring-web/core";
 import { useMarketRedPacket } from "./hooks";
 import { Box, Button, Checkbox, Grid, Tab, Tabs } from "@mui/material";
@@ -62,6 +63,7 @@ export const RedPacketMarketPanel = ({
   const { isMobile } = useSettings();
   const history = useHistory();
   const { baseURL } = useSystem();
+  const { redPacketHistory } = redPacketHistoryStore.useRedPacketHistory();
   const { callOpen } = useOpenRedpacket();
   let match: any = useRouteMatch("/redPacket/markets/:item");
   const {
@@ -92,70 +94,67 @@ export const RedPacketMarketPanel = ({
         break;
     }
   };
-  const listMemo = React.useCallback(
-    (list: sdk.LuckyTokenItemForReceive[] | undefined) => {
-      return (
-        <>
-          {list?.length ? (
-            list.map((item, index) => {
-              if (
-                isShowRedPacket.step === RedPacketViewStep.TimeOutPanel &&
-                isShowRedPacket.info &&
-                isShowRedPacket.info.hash === item.hash &&
-                // @ts-ignore
-                isShowRedPacket.info.id == item.id
-              ) {
-                item = {
-                  ...item,
-                  ...isShowRedPacket.info,
-                };
-              }
-              const {
-                chainId,
-                account,
-                amountStr,
-                myAmountStr,
-                tokenInfo,
-                claim,
-              } = makeViewCard(item);
+  const listMemo = (list: sdk.LuckyTokenItemForReceive[] | undefined) => {
+    return (
+      <>
+        {list?.length ? (
+          list.map((item, index) => {
+            if (
+              isShowRedPacket.step === RedPacketViewStep.TimeOutPanel &&
+              isShowRedPacket.info &&
+              isShowRedPacket.info.hash === item.hash &&
+              // @ts-ignore
+              isShowRedPacket.info.id == item.id
+            ) {
+              item = {
+                ...item,
+                ...isShowRedPacket.info,
+              };
+            }
+            const {
+              chainId,
+              account,
+              amountStr,
+              myAmountStr,
+              tokenInfo,
+              claim,
+            } = makeViewCard(item);
 
-              return !(hideOpen && claim) ? (
-                <Grid
-                  item
-                  xs={6}
-                  md={4}
-                  lg={3}
-                  key={index + item.hash}
-                  position={"relative"}
-                  marginY={1}
-                >
-                  <RedPacketPrepare
-                    {...{ ...item }}
-                    claim={claim}
-                    setShowRedPacket={setShowRedPacket} //
-                    chainId={chainId as any}
-                    account={account}
-                    amountStr={amountStr}
-                    myAmountStr={myAmountStr}
-                    onOpen={callOpen}
-                    tokenInfo={tokenInfo}
-                    getIPFSString={getIPFSString}
-                    baseURL={baseURL}
-                    _type="official"
-                  />
-                </Grid>
-              ) : (
-                <></>
-              );
-            })
-          ) : (
-            <></>
-          )}
-        </>
-      );
-    },
-    [hideOpen]
-  );
+            return !(hideOpen && claim) ? (
+              <Grid
+                item
+                xs={6}
+                md={4}
+                lg={3}
+                key={index + item.hash}
+                position={"relative"}
+                marginY={1}
+              >
+                <RedPacketPrepare
+                  {...{ ...item }}
+                  claim={claim}
+                  setShowRedPacket={setShowRedPacket} //
+                  chainId={chainId as any}
+                  account={account}
+                  amountStr={amountStr}
+                  myAmountStr={myAmountStr}
+                  onOpen={callOpen}
+                  tokenInfo={tokenInfo}
+                  getIPFSString={getIPFSString}
+                  baseURL={baseURL}
+                  _type="official"
+                />
+              </Grid>
+            ) : (
+              <></>
+            );
+          })
+        ) : (
+          <></>
+        )}
+      </>
+    );
+  };
   const listERC20 = React.useMemo(() => {
     return (
       <>
@@ -163,7 +162,12 @@ export const RedPacketMarketPanel = ({
         {listMemo(luckTokenList.publicList)}
       </>
     );
-  }, [hideOpen, luckTokenList.officialList, luckTokenList.publicList]);
+  }, [
+    hideOpen,
+    redPacketHistory,
+    luckTokenList.officialList,
+    luckTokenList.publicList,
+  ]);
   return (
     <Box
       flex={1}

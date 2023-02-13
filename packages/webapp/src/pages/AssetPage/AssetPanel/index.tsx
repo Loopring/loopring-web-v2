@@ -5,11 +5,12 @@ import styled from "@emotion/styled";
 import {
   AssetsTable,
   AssetTitle,
+  AssetTitleProps,
   useSettings,
 } from "@loopring-web/component-lib";
 
 import { StylePaper, useSystem, useTokenMap } from "@loopring-web/core";
-import { useGetAssets } from "./hook";
+import { AssetPanelProps, useGetAssets } from "./hook";
 import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
@@ -28,7 +29,26 @@ const StyleTitlePaper = styled(Box)`
 `;
 
 const AssetPanel = withTranslation("common")(
-  ({ t, ...rest }: WithTranslation) => {
+  ({
+    t,
+    assetTitleProps,
+    assetPanelProps: {
+      assetsRawData,
+      getTokenRelatedMarketArray,
+      onSend,
+      assetBtnStatus,
+      onReceive,
+      hideInvestToken,
+      hideSmallBalances,
+      allowTrade,
+      setHideLpToken,
+      setHideSmallBalances,
+    },
+    ...rest
+  }: {
+    assetTitleProps: AssetTitleProps;
+    assetPanelProps: AssetPanelProps; //AssetPanelProps;
+  } & WithTranslation) => {
     const container = React.useRef(null);
     const { disableWithdrawList } = useTokenMap();
     const { forexMap } = useSystem();
@@ -59,18 +79,6 @@ const AssetPanel = withTranslation("common")(
     React.useEffect(() => {
       handleTabChange(match?.params.item ?? TabIndex.Tokens);
     }, [match?.params.item]);
-    const {
-      assetsRawData,
-      assetTitleProps,
-      getTokenRelatedMarketArray,
-      onSend,
-      onReceive,
-      hideInvestToken,
-      hideSmallBalances,
-      allowTrade,
-      setHideLpToken,
-      setHideSmallBalances,
-    } = useGetAssets();
 
     return (
       <>
@@ -84,6 +92,7 @@ const AssetPanel = withTranslation("common")(
               {...{
                 t,
                 ...rest,
+                assetBtnStatus,
                 ...assetTitleProps,
               }}
             />

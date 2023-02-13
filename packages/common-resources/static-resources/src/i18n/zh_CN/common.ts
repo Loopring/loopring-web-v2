@@ -1250,7 +1250,7 @@ export default {
   labelFiatAmount: "Fiat Amount",
   labelAssetRedPackets: "Red Packets",
   labelRedPacketTitle: "Red Packets",
-  labelOpen: "Open",
+  labelRedPacketOpen: "Open",
   labelRedPacketChoose: "Choose Red Packet Type",
   labelRedPacketMain: "Input Red Packet/Send",
   labelLuckyTokenViewTypePublic: "Public Red Packet",

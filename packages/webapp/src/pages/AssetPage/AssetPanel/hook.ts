@@ -4,6 +4,7 @@ import {
   makeWalletLayer2,
   store,
   useAccount,
+  useBtnStatus,
   useDefiMap,
   useSocket,
   useSystem,
@@ -12,6 +13,7 @@ import {
   useWalletLayer2,
   useWalletLayer2Socket,
   volumeToCountAsBigNumber,
+  walletLayer2Service,
 } from "@loopring-web/core";
 import {
   AccountStep,
@@ -27,6 +29,7 @@ import {
   EmptyValueTag,
   myLog,
   PriceTag,
+  SagaStatus,
   TokenType,
   YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
@@ -37,49 +40,83 @@ import { WsTopicType } from "@loopring-web/loopring-sdk";
 import BigNumber from "bignumber.js";
 import moment from "moment";
 
-export const useGetAssets = () => {
-  // const [chartData, setChartData] = React.useState<TrendDataItem[]>([])
+export type AssetPanelProps = {
+  assetsRawData: AssetsRawDataItem[];
+  account: any;
+  hideL2Assets: any;
+  onSend: any;
+  onReceive: any;
+  marketArray: any;
+  userAssets: any;
+  getUserAssets: any;
+  hideInvestToken: any;
+  allowTrade: any;
+  setHideL2Assets: any;
+  setHideLpToken: any;
+  setHideSmallBalances: any;
+  themeMode: any;
+  getTokenRelatedMarketArray: any;
+  hideSmallBalances: any;
+  assetBtnStatus: TradeBtnStatus;
+};
+export const useGetAssets = (): AssetPanelProps & {
+  assetTitleProps: any;
+  assetTitleMobileExtendProps: any;
+} => {
   const [assetsMap, setAssetsMap] = React.useState<{ [key: string]: any }>({});
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>(
     []
   );
-  const { updateWalletLayer2 } = useWalletLayer2();
 
   const [userAssets, setUserAssets] = React.useState<any[]>([]);
   // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
   const { account } = useAccount();
   const { sendSocketTopic, socketEnd } = useSocket();
-  const { forexMap, allowTrade } = useSystem();
+  const { allowTrade, forexMap } = useSystem();
   const { tokenPrices } = useTokenPrices();
   const { ammMap } = store.getState().amm.ammMap;
+  const {
+    btnStatus: assetBtnStatus,
+    enableBtn,
+    setLoadingBtn,
+  } = useBtnStatus();
 
   const { setShowAccount } = useOpenModals();
 
   const {
     themeMode,
+    currency,
     hideL2Assets,
     hideInvestToken,
     hideSmallBalances,
-    currency,
     setHideLpToken,
     setHideSmallBalances,
     setHideL2Assets,
   } = useSettings();
+  const { status: walletL2Status } = useWalletLayer2();
 
   const { marketArray, tokenMap } = useTokenMap();
   const { marketCoins: defiCoinArray } = useDefiMap();
+
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
       sendSocketTopic({ [WsTopicType.account]: true });
-      updateWalletLayer2();
+      myLog("setLoadingBtn setLoadingBtn", assetBtnStatus);
+      setLoadingBtn();
     } else {
       socketEnd();
     }
     return () => {
       socketEnd();
     };
-  }, [account.readyState]);
+  }, []);
 
+  React.useEffect(() => {
+    if (walletL2Status === SagaStatus.DONE) {
+      myLog("setLoadingBtn enableBtn", assetBtnStatus);
+      enableBtn();
+    }
+  }, [walletL2Status]);
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(false);
     const assetsKeyList =
@@ -279,9 +316,6 @@ export const useGetAssets = () => {
     getAssetsRawData();
   }, [assetsMap]);
 
-  // const total = assetsRawData
-  //   .map((o) => o.tokenValueDollar)
-  //   .reduce((a, b) => a + b, 0);
   const onReceive = React.useCallback(
     (token?: any) => {
       setShowAccount({
@@ -302,35 +336,12 @@ export const useGetAssets = () => {
     },
     [setShowAccount]
   );
-  // const onShowDeposit = React.useCallback(
-  //   (token?: any, partner?: boolean) => {
-  //     if (partner) {
-  //       setShowDeposit({ isShow: true, partner: true });
-  //     } else {
-  //       setShowDeposit({ isShow: true, symbol: token });
-  //     }
-  //   },
-  //   [setShowDeposit]
-  // );
-  //
-  // const onShowTransfer = React.useCallback(
-  //   (token?: any) => {
-  //     setShowTransfer({ isShow: true, symbol: token });
-  //   },
-  //   [setShowTransfer]
-  // );
-  //
-  // const onShowWithdraw = React.useCallback(
-  //   (token?: any) => {
-  //     setShowWithdraw({ isShow: true, symbol: token });
-  //   },
-  //   [setShowWithdraw]
-  // );
 
+  React.useEffect(() => {
+    getUserAssets();
+    return () => {};
+  }, []);
   const assetTitleProps: AssetTitleProps = {
-    // btnShowDepositStatus: TradeBtnStatus.AVAILABLE,
-    // btnShowTransferStatus: TradeBtnStatus.AVAILABLE,
-    // btnShowWithdrawStatus: TradeBtnStatus.AVAILABLE,
     setHideL2Assets,
     assetInfo: {
       totalAsset: assetsRawData
@@ -353,19 +364,16 @@ export const useGetAssets = () => {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   };
-  React.useEffect(() => {
-    getUserAssets();
-    return () => {};
-  }, []);
   return {
+    assetTitleProps,
+
+    assetTitleMobileExtendProps,
     assetsRawData,
-    // total,
+    assetBtnStatus,
     account,
     hideL2Assets,
     onSend,
     onReceive,
-    assetTitleProps,
-    assetTitleMobileExtendProps,
     marketArray,
     userAssets,
     getUserAssets,

@@ -82,9 +82,20 @@ export const useClaimConfirm = <
     ...feeProps,
     updateData: ({ fee }) => {
       const claimValue = store.getState()._router_modalData.claimValue;
-      updateClaimData({ ...claimValue, fee });
+      if (claimValue.tradeType === TRADE_TYPE.TOKEN) {
+        updateClaimData({
+          ...(claimValue as any),
+          fee: fee,
+        });
+      } else if (
+        claimValue.tradeType === TRADE_TYPE.NFT &&
+        claimValue.tokenAddress
+      ) {
+        updateClaimData({ ...claimValue, fee: fee });
+      }
     },
   });
+
   useWalletLayer2Socket({ walletLayer2Callback: undefined });
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
@@ -99,7 +110,7 @@ export const useClaimConfirm = <
           ...claimToken.nftTokenInfo,
           tradeType: TRADE_TYPE.NFT,
           // nftData: claimToken.nftData,
-          tokenAddress: claimToken.tokenId,
+          tokenAddress: claimToken?.nftTokenInfo?.tokenAddress,
           tokenId: claimToken.tokenId,
           belong: claimToken.nftTokenInfo?.metadata?.base?.name ?? "NFT",
           tradeValue: Number(claimToken.total),
@@ -123,6 +134,7 @@ export const useClaimConfirm = <
   React.useEffect(() => {
     if (isShow) {
       resetDefault();
+      walletLayer2Service.sendUserUpdate();
     } else {
       resetIntervalTime();
     }

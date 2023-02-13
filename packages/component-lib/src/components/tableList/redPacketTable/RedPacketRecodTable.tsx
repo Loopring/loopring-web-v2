@@ -218,7 +218,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
                     onItemClick(row.rawData as sdk.LuckyTokenItemForReceive)
                   }
                 >
-                  {t(`labelOpen`, { ns: "common" })}
+                  {t(`labelRedPacketShowQR`, { ns: "common" })}
                 </Link>
               );
             } else {

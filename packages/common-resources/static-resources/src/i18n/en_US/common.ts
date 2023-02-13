@@ -1260,9 +1260,18 @@ export default {
   labelwithdraw: "Withdrawal",
   labelDeposit: "Deposit",
   labelFiatAmount: "Fiat Amount",
+  labelToMyL2: "My Loopring L2",
+  labelBanxaNotReady:
+    "Please waiting a while for Banxa sdk loading, if you keep on face this problem try fresh the browser or contact us",
+  labelBanxaFailedForAPI:
+    "Please waiting a while, Banxa service is not available currently.",
+  labelL2toL2AddressFeePaid: "Active account fee had paid",
+  labelL2toL2AddressFeeActiveFee:
+    "Pay recipient's L2 activation fee: {{value}}",
+  labelL2toL2FeeWithActive: "Fee (including activation fee)",
+  labelRedPacketOpen: "Open",
   labelAssetRedPackets: "Red Packets",
   labelRedPacketTitle: "Red Packets",
-  labelOpen: "Open",
   labelRedPacketTypeTokens: "Choose Erc20 Tokens / NFTs",
   labelRedPacketChoose: "Choose Red Packet Type",
   labelRedPacketMain: "Input Red Packet/Send",
@@ -1274,12 +1283,11 @@ export default {
     "Your gift packet is shared privately by you via your custom QR code for others to receive.",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
-    "  If the recipient of the gift also re-shares the packet, they get half of whatever the next person receives as well.",
+    "If the recipient of the gift also re-shares the packet, they get half of whatever the next person receives as well.",
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyRandomTokenDes: "Each recipient will get a random amount of.",
   labelLuckyCommonToken: "Normal Red Packet",
   labelLuckyCommonTokenDes: "Each recipient will receive a pre-set split of.",
-  labelToMyL2: "My Loopring L2",
   labelL1toL2NFTAmount: "NFT Amount",
   labelInputRedPacketBtnLabel: "Select Token",
   labelCreateRedPacket: "Send Red Packet",
@@ -1299,19 +1307,11 @@ export default {
     "Please confirm to send red packet {{value}} {{symbol}}.",
   labelRedPacketSendDenied:
     "You rejected to send {{value}} {{symbol}} red packet.",
-
   labelRedPacketRecordTitle: "My Red Packet Record",
   labelRedPacketReceived: "ERC20 Received",
   labelRedPacketSend: "ERC20 Send",
   labelRedPacketNFTReceived: "NFT Received",
   labelRedPacketNFTSend: "NFT Send",
-  labelBanxaNotReady:
-    "Please waiting a while for Banxa sdk loading, if you keep on face this problem try fresh the browser or contact us",
-  labelBanxaFailedForAPI:
-    "Please waiting a while, Banxa service is not available currently.",
-  labelL2toL2AddressFeePaid: "Active account fee had paid",
-  labelL2toL2AddressFeeActiveFee:
-    "Pay recipient's L2 activation fee: {{value}}",
   labelImportRedPacket: "Import QR code to receive red packet",
   labelCreateRedPacketTitle: "Send Red Packet",
   labelClaimWithdrawFee: "Fee",
@@ -1360,13 +1360,12 @@ export default {
   labelLuckyRedPacketDetail: "View red packet details",
   labelRedPacketOpenInProgress: "Processing...",
   labelRedPacketOpenFailed: "Read red packet failed!",
-  labelRedPacketOpen: "Open Red Packet",
+  labelRedPacketShowQR: "Share red packet",
   labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:
     "The transaction fee will account for 15% of the LP value, are you sure you want to redeem it?",
-  labelL2toL2FeeWithActive: "Fee (including activation fee)",
   labelLpAmount: "LP Amount: {{value}}",
   labelRedPacketMarketsBtn: "Red Packet Plaza",
   labelRedPacketBtn: "Shared",
@@ -1407,7 +1406,7 @@ export default {
   labelRedPacketFrom: "From",
   labelRedPacketTo: "To Loopring L2",
   labelRedPacketMy: "My red packet",
-  labelRedpacketNotActive: "Hide the redpacket received",
+  labelRedpacketNotActive: "Hide the red packet received",
   labelRedpacketTokens: "ERC20 Tokens",
   labelRedpacketNFTS: "NFTs",
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
@@ -1418,5 +1417,5 @@ export default {
   labelRedPacketMarketERC20: "ERC20",
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
-    "tUnfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
+    "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
 };

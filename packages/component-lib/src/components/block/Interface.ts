@@ -33,23 +33,14 @@ export type AssetTitleProps = {
   accountId: number;
   onShowReceive: (token?: string) => void;
   onShowSend: (token?: string) => void;
-  // onShowWithdraw: (token?: string) => void;
-  // onShowTransfer: (token?: string) => void;
-  // onShowReceive: (token?: string) => void;
-  // onShowDeposit: (token?: string) => void;
-  // btnShowDepositStatus?: keyof typeof TradeBtnStatus;
-  // btnShowTransferStatus?: keyof typeof TradeBtnStatus;
-  // btnShowWithdrawStatus?: keyof typeof TradeBtnStatus;
   hideL2Assets: boolean;
   setHideL2Assets: (value: boolean) => void;
-  // showPartner: () => void;
-  // legalEnable?: boolean;
-  // legalShow?: boolean;
 };
 
 export type AssetTitleMobileProps = AssetTitleProps & {
   // onShowNFTDeposit: () => void;
   // onShowNFTMINT: () => void;
+  assetBtnStatus: TradeBtnStatus;
   btnShowNFTDepositStatus?: keyof typeof TradeBtnStatus;
   btnShowNFTMINTStatus?: keyof typeof TradeBtnStatus;
 };

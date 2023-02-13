@@ -164,9 +164,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
             reason: BalanceReason.Balance,
           });
         }
-        // else {
-        //
-        // }
       }
     }
     disableBtn();
@@ -226,9 +223,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           const tradeValue = sdk
             .toBig(transferBanxaValue.tradeValue ?? 0)
             .times("1e" + sellToken.decimals);
-          // const isExceedBalance =
-          //   feeToken.tokenId === sellToken.tokenId &&
-          //   tradeValue.plus(fee).gt(balance);
           const finalVol = tradeValue;
           const transferVol = finalVol.toFixed(0, 0);
 

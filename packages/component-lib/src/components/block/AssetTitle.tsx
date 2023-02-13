@@ -3,7 +3,9 @@ import {
   getValuePrecisionThousand,
   HeaderMenuItemInterface,
   HideIcon,
+  myLog,
   subMenuLayer2,
+  TradeBtnStatus,
   ViewIcon,
 } from "@loopring-web/common-resources";
 import {
@@ -35,8 +37,13 @@ export const AssetTitle = withTranslation("common")(
     onShowReceive,
     hideL2Assets,
     setHideL2Assets,
-  }: AssetTitleProps & WithTranslation) => {
+    assetBtnStatus,
+  }: AssetTitleProps & {
+    assetBtnStatus: TradeBtnStatus;
+  } & WithTranslation) => {
     const history = useHistory();
+    myLog("setLoadingBtn assetBtnStatus", assetBtnStatus);
+
     return (
       <Grid
         container
@@ -112,6 +119,7 @@ export const AssetTitle = withTranslation("common")(
             variant={"contained"}
             size={"small"}
             color={"primary"}
+            disabled={assetBtnStatus === TradeBtnStatus.LOADING}
             onClick={() => onShowSend()}
           >
             {t("labelSendAssetBtn")}
@@ -120,6 +128,7 @@ export const AssetTitle = withTranslation("common")(
             variant={"contained"}
             size={"small"}
             color={"primary"}
+            disabled={assetBtnStatus === TradeBtnStatus.LOADING}
             onClick={() => onShowReceive()}
           >
             {t("labelAddAssetBtn")}
@@ -141,15 +150,12 @@ export const AssetTitle = withTranslation("common")(
 export const AssetTitleMobile = ({
   assetInfo,
   accountId,
-
   onShowSend,
   onShowReceive,
   hideL2Assets,
   setHideL2Assets,
-}: AssetTitleMobileProps) => {
+}: AssetTitleMobileProps & { assetBtnStatus: TradeBtnStatus }) => {
   const { hideL2Action, setHideL2Action } = useSettings();
-  // const [dropdownStatus, setDropdownStatus] =
-  //   React.useState<"up" | "down">(hideL2Action?"up":"down");
   const { t } = useTranslation(["common", "layout"]);
   let match: any = useRouteMatch("/l2assets/:item");
   const history = useHistory();

@@ -109,7 +109,7 @@ export const useCreateRedPacket = <
     ...feeProps,
     updateData: ({ fee }) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      if (redPacketOrder.tradeType === "TOKEN") {
+      if (redPacketOrder.tradeType === TRADE_TYPE.TOKEN) {
         updateRedPacketOrder({
           ...(redPacketOrder as any),
           fee: fee,

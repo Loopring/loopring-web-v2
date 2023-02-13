@@ -413,7 +413,7 @@ export const RedPacketOpen = ({
       <Box display={"flex"} flex={1} onClick={onOpen} flexDirection={"column"}>
         <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
           <Box display={"flex"} position={"absolute"} className={"open"}>
-            {t("labelOpen")}
+            {t("labelRedPacketOpen")}
           </Box>
         </Box>
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
