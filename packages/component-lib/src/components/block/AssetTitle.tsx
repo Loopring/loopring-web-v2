@@ -3,7 +3,6 @@ import {
   getValuePrecisionThousand,
   HeaderMenuItemInterface,
   HideIcon,
-  myLog,
   subMenuLayer2,
   TradeBtnStatus,
   ViewIcon,
@@ -42,8 +41,6 @@ export const AssetTitle = withTranslation("common")(
     assetBtnStatus: TradeBtnStatus;
   } & WithTranslation) => {
     const history = useHistory();
-    myLog("setLoadingBtn assetBtnStatus", assetBtnStatus);
-
     return (
       <Grid
         container

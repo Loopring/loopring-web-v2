@@ -109,7 +109,7 @@ export const useGetAssets = (): AssetPanelProps & {
     return () => {
       socketEnd();
     };
-  }, []);
+  }, [account.readyState]);
 
   React.useEffect(() => {
     if (walletL2Status === SagaStatus.DONE) {
@@ -187,7 +187,7 @@ export const useGetAssets = (): AssetPanelProps & {
     ) {
       const tokenKeys = Object.keys(tokenMap);
       let data: any[] = [];
-      tokenKeys.forEach((key, index) => {
+      tokenKeys.forEach((key, _index) => {
         let item = undefined;
         const isDefi = [...(defiCoinArray ? defiCoinArray : [])].includes(key);
         if (assetsMap[key]) {
@@ -366,7 +366,6 @@ export const useGetAssets = (): AssetPanelProps & {
   };
   return {
     assetTitleProps,
-
     assetTitleMobileExtendProps,
     assetsRawData,
     assetBtnStatus,
