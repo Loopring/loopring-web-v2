@@ -4,7 +4,6 @@ import { Box } from "@mui/material";
 import { AssetTitleMobile, useSettings } from "@loopring-web/component-lib";
 import {
   AccountStatus,
-  myLog,
   subMenuLayer2,
 } from "@loopring-web/common-resources";
 
@@ -72,7 +71,13 @@ export const AssetPage = () => {
         </Box>
       </>
     ),
-    [assetTitleMobileExtendProps, assetTitleProps, isMobile, layer2Router]
+    [
+      assetTitleMobileExtendProps,
+      assetTitleProps,
+      isMobile,
+      assetBtnStatus,
+      layer2Router,
+    ]
   );
   return <ViewAccountTemplate activeViewTemplate={activeView} />;
   // <>{viewTemplate}</>;
