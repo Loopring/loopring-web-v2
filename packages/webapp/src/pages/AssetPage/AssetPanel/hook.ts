@@ -51,7 +51,7 @@ export type AssetPanelProps = {
   getUserAssets: any;
   hideInvestToken: any;
   allowTrade: any;
-  setHideL2Assets: any;
+  setHideL2Assets: (value: boolean) => void;
   setHideLpToken: any;
   setHideSmallBalances: any;
   themeMode: any;

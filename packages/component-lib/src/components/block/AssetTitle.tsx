@@ -151,7 +151,7 @@ export const AssetTitleMobile = ({
   onShowReceive,
   hideL2Assets,
   setHideL2Assets,
-}: AssetTitleMobileProps & { assetBtnStatus: TradeBtnStatus }) => {
+}: AssetTitleMobileProps) => {
   const { hideL2Action, setHideL2Action } = useSettings();
   const { t } = useTranslation(["common", "layout"]);
   let match: any = useRouteMatch("/l2assets/:item");
