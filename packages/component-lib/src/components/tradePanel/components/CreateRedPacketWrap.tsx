@@ -146,16 +146,28 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const inputBtnRef = React.useRef();
     const inputSplitRef = React.useRef();
     const { total: redPacketTotalValue, splitValue } = React.useMemo(() => {
-      if (tradeType == TRADE_TYPE.TOKEN) {
-        if (tradeData?.tradeValue && tradeData.belong && tokenMap) {
-          const splitValue =
-            selectedType.value.value == sdk.LuckyTokenAmountType.RANDOM
-              ? (tradeData?.tradeValue ?? 0) / (tradeData?.numbers ?? 1)
-              : tradeData?.tradeValue ?? 0;
-          const total =
-            selectedType.value.value == sdk.LuckyTokenAmountType.AVERAGE
-              ? (tradeData?.tradeValue ?? 0) * (tradeData?.numbers ?? 0)
-              : tradeData?.tradeValue ?? 0;
+      // if (tradeType == TRADE_TYPE.TOKEN) {
+      //
+      // } else {
+      //   const splitValue =
+      //     selectedType.value.value == 2
+      //       ? (tradeData?.tradeValue ?? 0) / (tradeData?.numbers ?? 1)
+      //       : tradeData?.tradeValue ?? 0;
+      //   return {
+      //     total: tradeData.tradeValue ?? EmptyValueTag,
+      //     splitValue: splitValue && EmptyValueTag,
+      //   };
+      // }
+      if (tradeData?.tradeValue && tradeData.belong && tokenMap) {
+        const splitValue =
+          selectedType.value.partition == sdk.LuckyTokenAmountType.RANDOM
+            ? (tradeData?.tradeValue ?? 0) / (tradeData?.numbers ?? 1)
+            : tradeData?.tradeValue ?? 0;
+        const total =
+          selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+            ? (tradeData?.tradeValue ?? 0) * (tradeData?.numbers ?? 0)
+            : tradeData?.tradeValue ?? 0;
+        if (tradeType == TRADE_TYPE.TOKEN) {
           return {
             total:
               getValuePrecisionThousand(
@@ -169,7 +181,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
               " " +
               tradeData.belong,
             splitValue:
-              selectedType.value.value == 2 &&
+              selectedType.value.partition ==
+                sdk.LuckyTokenAmountType.AVERAGE &&
               getValuePrecisionThousand(
                 splitValue,
                 tokenMap[tradeData?.belong as string].precision,
@@ -183,25 +196,53 @@ export const CreateRedPacketStepWrap = withTranslation()(
           };
         } else {
           return {
-            total: EmptyValueTag,
-            splitValue: selectedType.value.value == 2 && EmptyValueTag,
+            total:
+              getValuePrecisionThousand(
+                total,
+                0,
+                0,
+                0,
+                false
+                // { isFait: true }
+              ) +
+              " " +
+              tradeData.belong,
+            splitValue:
+              selectedType.value.partition ==
+                sdk.LuckyTokenAmountType.AVERAGE &&
+              getValuePrecisionThousand(
+                splitValue,
+                0,
+                0,
+                0,
+                false
+                // { isFait: true }
+              ) +
+                " " +
+                tradeData.belong,
           };
         }
       } else {
-        const splitValue =
-          selectedType.value.value == 2
-            ? (tradeData?.tradeValue ?? 0) / (tradeData?.numbers ?? 1)
-            : tradeData?.tradeValue ?? 0;
         return {
-          total: tradeData.tradeValue ?? EmptyValueTag,
-          splitValue: splitValue && EmptyValueTag,
+          total: EmptyValueTag,
+          splitValue:
+            selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE &&
+            EmptyValueTag,
         };
       }
-    }, [tradeData, selectedType.value.value, coinMap, tradeType]);
+    }, [
+      tradeData,
+      tradeData?.numbers,
+      selectedType.value.partition,
+      coinMap,
+      tradeType,
+    ]);
     const inputSplitProps = React.useMemo(() => {
       const inputSplitProps: any = {
         label:
-          selectedType.value.value == 2 ? t("labelQuantity") : t("labelSplit"), //t("labelTokenAmount"),
+          selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+            ? t("labelQuantity")
+            : t("labelSplit"), //t("labelTokenAmount"),
         placeholderText: t("labelQuantity"),
         isHideError: true,
         isShowCoinInfo: false,
@@ -215,7 +256,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
       let inputSplitExtendProps = {},
         balance: any = undefined;
       if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
-        if (selectedType.value.value !== 2) {
+        if (selectedType.value.partition !== sdk.LuckyTokenAmountType.AVERAGE) {
           balance = sdk
             .toBig(tradeData.tradeValue)
             .div(Number(minimum) ?? 1)
@@ -246,7 +287,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
           },
           inputData: {
             belong:
-              selectedType.value.value == 2
+              selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
                 ? t("labelAmountEach")
                 : t("labelSplit"),
             tradeValue: tradeData?.numbers,
@@ -260,7 +301,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
           handleError: () => undefined,
           inputData: {
             belong:
-              selectedType.value.value == 2
+              selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
                 ? t("labelAmountEach")
                 : t("labelSplit"),
             tradeValue: tradeData?.numbers,
@@ -313,7 +354,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
     };
     const _balance = React.useMemo(() => {
       if (
-        selectedType.value.value == 2 &&
+        selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE &&
         tradeData?.numbers &&
         // @ts-ignore
         tradeData.numbers !== "0" &&
@@ -330,7 +371,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
       } else {
         return tradeData.balance;
       }
-    }, [selectedType.value.value, tradeData.balance, tradeData?.numbers]);
+    }, [selectedType.value.partition, tradeData.balance, tradeData?.numbers]);
     const { isMobile } = useSettings();
 
     // @ts-ignore
@@ -351,7 +392,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               marginRight={1}
             >
               {t(
-                selectedType.value.value == 2
+                selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
                   ? "labelRedPacketSendCommonTitle"
                   : "labelRedPacketSenRandomTitle"
               ) +
@@ -377,7 +418,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 disabled,
                 walletMap,
                 tradeData:
-                  selectedType.value.value == 2 && tradeData?.numbers
+                  selectedType.value.partition ==
+                    sdk.LuckyTokenAmountType.AVERAGE && tradeData?.numbers
                     ? {
                         ...tradeData,
                         balance: _balance,
@@ -399,7 +441,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 type: tradeType,
                 disabled,
                 tradeData:
-                  selectedType.value.value == 2 && tradeData?.numbers
+                  selectedType.value.partition ==
+                    sdk.LuckyTokenAmountType.AVERAGE && tradeData?.numbers
                     ? {
                         ...tradeData,
                         balance: _balance,
@@ -434,7 +477,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               } as any)}
             />
           )}
-          {selectedType.value.value == 2 && (
+          {selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE && (
             <Typography
               display={"inline-flex"}
               width={"100%"}
@@ -662,7 +705,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
             width={"100%"}
             textAlign={"center"}
           >
-            {selectedType.value.value == 2
+            {selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
               ? t("labelRedPacketsSplitCommonDetail", { value: splitValue })
               : t("labelRedPacketsSplitLuckyDetail")}
           </Typography>
@@ -748,7 +791,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
         </Box>
       </RedPacketBoxStyle>
     );
-  }
+  };
 ) as <T extends Partial<RedPacketOrderData<I>>, I, F extends FeeInfo>(
   props: CreateRedPacketViewProps<T, I, F> & {
     selectedType: LuckyRedPacketItem;

@@ -359,7 +359,7 @@ export const useGetAssets = (): AssetPanelProps & {
     onShowSend: () => {
       setShowAccount({ isShow: true, step: AccountStep.SendAssetGateway });
     },
-  };
+  } as any;
   const assetTitleMobileExtendProps = {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,

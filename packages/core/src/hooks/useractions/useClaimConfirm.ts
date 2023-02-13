@@ -145,7 +145,7 @@ export const useClaimConfirm = <
   const processRequest = React.useCallback(
     async (
       request: sdk.OriginLuckTokenWithdrawsRequestV3,
-      isNotHardwareWallet: boolean = false
+      isHardwareWallet: boolean = false
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
       const claimValue = store.getState()._router_modalData.claimValue;
@@ -158,11 +158,11 @@ export const useClaimConfirm = <
         ) {
           let isHWAddr = checkHWAddr(account.accAddress);
 
-          if (!isHWAddr && !isNotHardwareWallet) {
+          if (!isHWAddr && isHardwareWallet) {
             isHWAddr = true;
           }
 
-          myLog("ClaimConfirm processRequest:", isHWAddr, isNotHardwareWallet);
+          myLog("ClaimConfirm processRequest:", isHWAddr, isHardwareWallet);
           const response =
             await LoopringAPI.luckTokenAPI.sendLuckTokenWithdraws(
               {
@@ -215,7 +215,7 @@ export const useClaimConfirm = <
           }
         }
       } catch (e: any) {
-        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        const code = sdk.checkErrorInfo(e, isHardwareWallet);
         switch (code) {
           case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({

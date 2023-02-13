@@ -92,8 +92,8 @@ export const AssetPanel = withTranslation("common")(
               {...{
                 t,
                 ...rest,
-                assetBtnStatus,
                 ...assetTitleProps,
+                assetBtnStatus,
               }}
             />
           </StyleTitlePaper>
