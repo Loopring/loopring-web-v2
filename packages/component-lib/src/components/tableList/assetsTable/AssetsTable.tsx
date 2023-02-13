@@ -115,7 +115,8 @@ export type AssetsTableProps = {
   showFilter?: boolean;
   onSend: (token: string, isToL1: boolean) => void;
   onReceive: (token: string) => void;
-  // onShowDeposit: (token: string) => void;
+  // onShowDeposit: (token: string) => vo
+  // id;
   // onShowTransfer: (token: string) => void;
   // onShowWithdraw: (token: string) => void;
   getMarketArrayListCallback: (token: string) => string[];

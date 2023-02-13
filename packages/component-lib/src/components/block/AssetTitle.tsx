@@ -13,7 +13,7 @@ import {
 } from "react-i18next";
 import { AssetTitleMobileProps, AssetTitleProps } from "./Interface";
 import styled from "@emotion/styled";
-import { DropdownIconStyled } from "../tradePanel";
+import { DropdownIconStyled, TradeBtnStatus } from "../tradePanel";
 import { AnimationArrow, Button, ButtonListRightStyled } from "./../";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSettings } from "../../stores";
@@ -31,21 +31,16 @@ export const AssetTitle = withTranslation("common")(
     t,
     assetInfo,
     accountId,
-    // onShowWithdraw,
-    // onShowTransfer,
     onShowSend,
     onShowReceive,
-    // onShowDeposit,
-    // btnShowDepositStatus,
-    // btnShowTransferStatus,
-    // btnShowWithdrawStatus,
     hideL2Assets,
     setHideL2Assets,
-  }: // showPartnr,
-  // legalEnable,
-  // legalShow,
-  AssetTitleProps & WithTranslation) => {
+    assetBtnStatus,
+  }: AssetTitleProps & {
+    assetBtnStatus: TradeBtnStatus;
+  } & WithTranslation) => {
     const history = useHistory();
+
     return (
       <Grid
         container
@@ -121,6 +116,7 @@ export const AssetTitle = withTranslation("common")(
             variant={"contained"}
             size={"small"}
             color={"primary"}
+            disabled={assetBtnStatus === TradeBtnStatus.LOADING}
             onClick={() => onShowSend()}
           >
             {t("labelSendAssetBtn")}
@@ -129,6 +125,7 @@ export const AssetTitle = withTranslation("common")(
             variant={"contained"}
             size={"small"}
             color={"primary"}
+            disabled={assetBtnStatus === TradeBtnStatus.LOADING}
             onClick={() => onShowReceive()}
           >
             {t("labelAddAssetBtn")}
@@ -150,20 +147,12 @@ export const AssetTitle = withTranslation("common")(
 export const AssetTitleMobile = ({
   assetInfo,
   accountId,
-  // onShowWithdraw,
-  // onShowTransfer,
   onShowSend,
   onShowReceive,
-  // onShowDeposit,
   hideL2Assets,
   setHideL2Assets,
-}: // showPartner,
-// legalEnable,
-// legalShow,
-AssetTitleMobileProps) => {
+}: AssetTitleMobileProps & { assetBtnStatus: TradeBtnStatus }) => {
   const { hideL2Action, setHideL2Action } = useSettings();
-  // const [dropdownStatus, setDropdownStatus] =
-  //   React.useState<"up" | "down">(hideL2Action?"up":"down");
   const { t } = useTranslation(["common", "layout"]);
   let match: any = useRouteMatch("/l2assets/:item");
   const history = useHistory();
