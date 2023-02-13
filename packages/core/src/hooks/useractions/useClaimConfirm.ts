@@ -296,19 +296,19 @@ export const useClaimConfirm = <
 
           let token: any;
           let nftData = undefined;
+          let amount;
           if (claimValue?.nftData) {
             token = {
               tokenId: claimValue.tokenId,
             };
             nftData = claimValue.nftData;
+            amount = claimValue?.tradeValue;
           } else {
             token = tokenMap[claimValue?.belong];
-          }
-          const amount =
-            claimValue?.volume ??
-            sdk
+            amount = sdk
               .toBig(claimValue?.tradeValue ?? 0)
               .times("1e" + token?.decimals ?? 0);
+          }
 
           const storageId = await LoopringAPI.userAPI?.getNextStorageId(
             {
@@ -332,6 +332,10 @@ export const useClaimConfirm = <
               payerId: accountId,
               payeeAddr: broker,
               storageId: storageId.offchainId,
+              maxFee: {
+                tokenId: 0,
+                volume: "0",
+              },
               token: {
                 tokenId: feeToken.tokenId,
                 volume: fee.toFixed(), // TEST: fee.toString(),

@@ -8,7 +8,6 @@ import {
   subMenuLayer2,
 } from "@loopring-web/common-resources";
 
-import AssetPanel from "./AssetPanel";
 import HistoryPanel from "./HistoryPanel";
 import React from "react";
 import {
@@ -18,14 +17,19 @@ import {
 } from "@loopring-web/core";
 import { useGetAssets } from "./AssetPanel/hook";
 import { WsTopicType } from "@loopring-web/loopring-sdk";
+import { AssetPanel } from "./AssetPanel";
 
 export const subMenu = subMenuLayer2;
 
 export const AssetPage = () => {
   let match: any = useRouteMatch("/l2assets/:item");
   const selected = match?.params.item ?? "assets";
-  const { assetTitleProps, assetTitleMobileExtendProps, ...assetPanelProps } =
-    useGetAssets();
+  const {
+    assetTitleProps,
+    assetTitleMobileExtendProps,
+    assetBtnStatus,
+    ...assetPanelProps
+  } = useGetAssets();
   const { account } = useAccount();
 
   React.useEffect(() => {
@@ -42,11 +46,11 @@ export const AssetPage = () => {
         return (
           <AssetPanel
             assetTitleProps={assetTitleProps}
-            assetPanelProps={assetPanelProps}
+            assetPanelProps={{ ...assetPanelProps, assetBtnStatus }}
           />
         );
     }
-  }, [selected, assetTitleProps, assetPanelProps]);
+  }, [selected, assetTitleProps, assetPanelProps, assetBtnStatus]);
   const { isMobile } = useSettings();
   const activeView = React.useMemo(
     () => (
@@ -60,7 +64,7 @@ export const AssetPage = () => {
         >
           {isMobile && (
             <AssetTitleMobile
-              assetBtnStatus={assetPanelProps.assetBtnStatus}
+              assetBtnStatus={assetBtnStatus}
               {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
             />
           )}

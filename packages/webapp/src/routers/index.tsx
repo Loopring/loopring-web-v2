@@ -19,17 +19,12 @@ import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
-  hexToRGB,
   SagaStatus,
   setMyLog,
   ThemeType,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
-import {
-  useOpenModals,
-  useSettings,
-  LoadingBlock,
-} from "@loopring-web/component-lib";
+import { useSettings, LoadingBlock } from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
   MarkdownPage,
