@@ -29,7 +29,7 @@ const StyleTitlePaper = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 
-const AssetPanel = withTranslation("common")(
+export const AssetPanel = withTranslation("common")(
   ({
     t,
     assetTitleProps,
@@ -164,7 +164,5 @@ const AssetPanel = withTranslation("common")(
         {/*)}*/}
       </>
     );
-  };
+  }
 );
-
-export default AssetPanel;

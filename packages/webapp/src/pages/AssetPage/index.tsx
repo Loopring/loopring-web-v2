@@ -2,13 +2,9 @@ import { useRouteMatch } from "react-router-dom";
 
 import { Box } from "@mui/material";
 import { AssetTitleMobile, useSettings } from "@loopring-web/component-lib";
-import {
-  AccountStatus,
-  myLog,
-  subMenuLayer2,
-} from "@loopring-web/common-resources";
+import { AccountStatus, subMenuLayer2 } from "@loopring-web/common-resources";
 
-import AssetPanel from "./AssetPanel";
+import { AssetPanel } from "./AssetPanel";
 import HistoryPanel from "./HistoryPanel";
 import React from "react";
 import {
@@ -17,7 +13,6 @@ import {
   walletLayer2Service,
 } from "@loopring-web/core";
 import { useGetAssets } from "./AssetPanel/hook";
-import { WsTopicType } from "@loopring-web/loopring-sdk";
 
 export const subMenu = subMenuLayer2;
 
@@ -64,7 +59,7 @@ export const AssetPage = () => {
         >
           {isMobile && (
             <AssetTitleMobile
-              assetBtnStatus={assetPanelProps.assetBtnStatus}
+              assetBtnStatus={assetBtnStatus}
               {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
             />
           )}
@@ -72,7 +67,13 @@ export const AssetPage = () => {
         </Box>
       </>
     ),
-    [assetTitleMobileExtendProps, assetTitleProps, isMobile, layer2Router]
+    [
+      assetTitleMobileExtendProps,
+      assetTitleProps,
+      isMobile,
+      assetBtnStatus,
+      layer2Router,
+    ]
   );
   return <ViewAccountTemplate activeViewTemplate={activeView} />;
   // <>{viewTemplate}</>;
