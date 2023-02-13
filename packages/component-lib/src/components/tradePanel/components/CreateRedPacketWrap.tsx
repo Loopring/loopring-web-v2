@@ -161,12 +161,14 @@ export const CreateRedPacketStepWrap = withTranslation()(
       if (tradeData?.tradeValue && tradeData.belong && tokenMap) {
         const splitValue =
           selectedType.value.partition == sdk.LuckyTokenAmountType.RANDOM
-            ? (tradeData?.tradeValue ?? 0) / (tradeData?.numbers ?? 1)
-            : tradeData?.tradeValue ?? 0;
+            ? sdk.toBig(tradeData?.tradeValue ?? 0).div(tradeData?.numbers ?? 1)
+            : sdk.toBig(tradeData?.tradeValue ?? 0);
         const total =
           selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-            ? (tradeData?.tradeValue ?? 0) * (tradeData?.numbers ?? 0)
-            : tradeData?.tradeValue ?? 0;
+            ? sdk
+                .toBig(tradeData?.tradeValue ?? 0)
+                .times(tradeData?.numbers ?? 0)
+            : sdk.toBig(tradeData?.tradeValue ?? 0);
         if (tradeType == TRADE_TYPE.TOKEN) {
           return {
             total:
@@ -181,8 +183,6 @@ export const CreateRedPacketStepWrap = withTranslation()(
               " " +
               tradeData.belong,
             splitValue:
-              selectedType.value.partition ==
-                sdk.LuckyTokenAmountType.AVERAGE &&
               getValuePrecisionThousand(
                 splitValue,
                 tokenMap[tradeData?.belong as string].precision,
@@ -191,8 +191,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 false
                 // { isFait: true }
               ) +
-                " " +
-                tradeData.belong,
+              " " +
+              tradeData.belong,
           };
         } else {
           return {
@@ -201,25 +201,23 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 total,
                 0,
                 0,
-                0,
+                1,
                 false
                 // { isFait: true }
               ) +
               " " +
               tradeData.belong,
             splitValue:
-              selectedType.value.partition ==
-                sdk.LuckyTokenAmountType.AVERAGE &&
               getValuePrecisionThousand(
-                splitValue,
+                splitValue.toFixed(0, 1),
                 0,
                 0,
-                0,
+                1,
                 false
                 // { isFait: true }
               ) +
-                " " +
-                tradeData.belong,
+              " " +
+              tradeData.belong,
           };
         }
       } else {
@@ -360,14 +358,14 @@ export const CreateRedPacketStepWrap = withTranslation()(
         tradeData.numbers !== "0" &&
         tradeData.balance
       ) {
-        return getValuePrecisionThousand(
-          sdk.toBig(tradeData.balance).div(tradeData.numbers).toString(),
-          tokenMap[tradeData?.belong as string].precision,
-          tokenMap[tradeData?.belong as string].precision,
-          tokenMap[tradeData?.belong as string].precision,
-          false
-          // { isFait: true }
-        );
+        if (tradeType === TRADE_TYPE.NFT) {
+          return sdk
+            .toBig(tradeData.balance)
+            .div(tradeData.numbers)
+            .toFixed(0, 1);
+        } else {
+          return sdk.toBig(tradeData.balance).div(tradeData.numbers).toString();
+        }
       } else {
         return tradeData.balance;
       }
@@ -791,7 +789,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
         </Box>
       </RedPacketBoxStyle>
     );
-  };
+  }
 ) as <T extends Partial<RedPacketOrderData<I>>, I, F extends FeeInfo>(
   props: CreateRedPacketViewProps<T, I, F> & {
     selectedType: LuckyRedPacketItem;
