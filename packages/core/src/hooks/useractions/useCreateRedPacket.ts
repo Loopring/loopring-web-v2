@@ -170,8 +170,8 @@ export const useCreateRedPacket = <
         const keys = Reflect.ownKeys(walletMap);
         for (let key in keys) {
           const keyVal = keys[key];
-          const walletInfo = walletMap[keyVal];
-          if (sdk.toBig(walletInfo.count).gt(0)) {
+          const walletInfo = walletMap[keyVal.toString()];
+          if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
             updateRedPacketOrder({
               belong: keyVal as any,
               tradeValue: undefined,

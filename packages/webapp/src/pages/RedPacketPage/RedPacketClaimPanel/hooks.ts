@@ -21,7 +21,6 @@ import {
   SDK_ERROR_MAP_TO_UI,
   TokenType,
 } from "@loopring-web/common-resources";
-import { Limit } from "../../AssetPage/HistoryPanel/useDualAsset";
 
 export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   setToastOpen: (props: any) => void
@@ -117,9 +116,11 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   };
 };
 
-export const useClaimNFTRedPacket = <R extends RawDataNFTRedPacketClaimItem>(
-  setToastOpen: (props: any) => void
-) => {
+export const useClaimNFTRedPacket = <R extends RawDataNFTRedPacketClaimItem>({
+  setToastOpen,
+}: {
+  setToastOpen: (props: any) => void;
+}) => {
   const { t } = useTranslation(["error"]);
 
   const {
@@ -129,14 +130,9 @@ export const useClaimNFTRedPacket = <R extends RawDataNFTRedPacketClaimItem>(
   const [redPacketNFTClaimList, setNFTRedPacketClaimList] = React.useState<R[]>(
     []
   );
+
   const [page, setPage] = React.useState(1);
-  const [pagination, setPagination] = React.useState<{
-    pageSize: number;
-    total: number;
-  }>({
-    pageSize: Limit,
-    total: 0,
-  });
+  const [total, setTotal] = React.useState(0);
 
   const [showLoading, setShowLoading] = React.useState(true);
   const { setShowClaimWithdraw } = useOpenModals();
@@ -170,10 +166,7 @@ export const useClaimNFTRedPacket = <R extends RawDataNFTRedPacketClaimItem>(
             });
           }
         } else {
-          setPagination({
-            pageSize: limit,
-            total: (response as any)?.totalNum,
-          });
+          setTotal((response as any)?.totalNum);
           setPage(Number(1 + (offset / limit).toFixed()));
           // @ts-ignore
           let result = (response as any).tokenBalance?.reduce(
@@ -217,8 +210,7 @@ export const useClaimNFTRedPacket = <R extends RawDataNFTRedPacketClaimItem>(
     onItemClick,
     redPacketNFTClaimList,
     showLoading,
-    redPacketNFTClaimTotal: pagination.total,
+    redPacketNFTClaimTotal: total,
     getClaimNFTRedPacket,
-    pagination,
   };
 };

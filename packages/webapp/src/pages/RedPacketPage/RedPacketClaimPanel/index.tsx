@@ -18,6 +18,7 @@ import { useClaimNFTRedPacket, useClaimRedPacket } from "./hooks";
 import { Box, Button, Tab, Tabs } from "@mui/material";
 import {
   RedPacketIcon,
+  RowConfig,
   SagaStatus,
   TabTokenTypeIndex,
   TOAST_TIME,
@@ -31,16 +32,17 @@ export const RedPacketClaimPanel = () => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const history = useHistory();
+
   const { redPacketClaimList, showLoading, getClaimRedPacket, onItemClick } =
     useClaimRedPacket(setToastOpen);
   const {
     page,
-    pagination,
     onItemClick: onItemNFTClick,
     redPacketNFTClaimList,
     showLoading: showNFTLoading,
     getClaimNFTRedPacket,
-  } = useClaimNFTRedPacket(setToastOpen);
+    redPacketNFTClaimTotal,
+  } = useClaimNFTRedPacket({ setToastOpen });
   let match: any = useRouteMatch("/l2assets/assets/RedPacket/:item");
 
   React.useEffect(() => {
@@ -48,6 +50,16 @@ export const RedPacketClaimPanel = () => {
       getClaimRedPacket();
     }
   }, [walletLayer2Status]);
+  const [pageSize, setPageSize] = React.useState(0);
+
+  React.useEffect(() => {
+    let height = container?.current?.offsetHeight;
+    if (height) {
+      const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
+      setPageSize(pageSize);
+      handleTabChange(currentTab);
+    }
+  }, [container?.current?.offsetHeight]);
   const [currentTab, setCurrentTab] = React.useState<TabTokenTypeIndex>(
     match?.params.item ?? TabTokenTypeIndex.ERC20
   );
@@ -65,6 +77,7 @@ export const RedPacketClaimPanel = () => {
         break;
     }
   };
+
   return (
     <Box
       flex={1}
@@ -165,7 +178,10 @@ export const RedPacketClaimPanel = () => {
                 etherscanBaseUrl,
                 getClaimRedPacket: getClaimNFTRedPacket,
                 page,
-                pagination,
+                pagination: {
+                  pageSize: pageSize,
+                  total: redPacketNFTClaimTotal,
+                },
               }}
             />
           </>
