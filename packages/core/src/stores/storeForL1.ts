@@ -25,8 +25,10 @@ import {
 import { getAnalytics } from "firebase/analytics";
 
 import {
+  ChainHashInfos,
   firebaseBridgeConfig,
   firebaseIOConfig,
+  LAYER1_ACTION_HISTORY,
   myLog,
 } from "@loopring-web/common-resources";
 
@@ -36,11 +38,13 @@ import {
 } from "react-redux-firebase";
 import firebase from "firebase/compat/app";
 
-import { modalDataSlice, socketSlice, updateVersion } from "./index";
-import { OnChainHashInfoSlice } from "./localStore/onchainHashInfo";
-import { confirmationSlice } from "./localStore/confirmation";
-import { walletInfoSlice } from "./localStore/walletInfo";
-import { layer1ActionHistorySlice } from "./localStore/layer1Store";
+import {
+  localStoreReducerL1,
+  modalDataSlice,
+  socketSlice,
+  updateVersion,
+} from "./index";
+
 import { systemSlice } from "./system/reducer";
 import { tokenMapSlice } from "./token/reducer";
 import { tokenPricesSlice } from "./tokenPrices/reducer";
@@ -55,6 +59,8 @@ import { socketForks } from "./socket/saga";
 import { accountFork } from "./account/saga";
 import { notifyForks } from "./notify/saga";
 import { layer1ActionHistoryForks } from "./localStore/layer1Store/saga";
+import { Confirmation } from "./localStore/confirmation";
+import { WalletInfo } from "./localStore/walletInfo";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -89,21 +95,15 @@ const persistedSettingReducer = persistReducer<SettingsState>(
   persistSettingConfig,
   settingsSlice.reducer
 );
-const localStoreReducer = combineReducers({
-  chainHashInfos: OnChainHashInfoSlice.reducer,
-  confirmation: confirmationSlice.reducer,
-  walletInfo: walletInfoSlice.reducer,
-  layer1ActionHistory: layer1ActionHistorySlice.reducer,
-});
 
 const persistedLocalStoreReducer = persistReducer<
   CombinedState<{
-    chainHashInfos: any;
-    confirmation: any;
-    walletInfo: any;
-    layer1ActionHistory: any;
+    chainHashInfos: ChainHashInfos;
+    confirmation: Confirmation;
+    walletInfo: WalletInfo;
+    layer1ActionHistory: LAYER1_ACTION_HISTORY;
   }>
->(persistLocalStoreConfig, localStoreReducer);
+>(persistLocalStoreConfig, localStoreReducerL1);
 
 function* l1Saga() {
   yield all([

@@ -10,7 +10,6 @@ import { persistReducer } from "redux-persist";
 import storageSession from "redux-persist/lib/storage/session";
 import storage from "redux-persist/lib/storage";
 import persistStore from "redux-persist/es/persistStore";
-import hardSet from "redux-persist/lib/stateReconciler/hardSet";
 import mySaga from "./rootSaga";
 import { updateVersion } from "./global/actions";
 import createSagaMiddleware from "redux-saga";
@@ -89,17 +88,31 @@ const persistAccConfig = {
 const persistSettingConfig = {
   key: "settings",
   storage: storage,
-  stateReconciler: hardSet,
 };
 
 const persistLocalStoreConfig = {
   key: "localStore",
   storage: storage,
-  stateReconciler: hardSet,
 };
 const persistedAccountReducer = persistReducer(
   persistAccConfig,
   accountSlice.reducer
+);
+const perisitTokenPricesSessionStoreConfig = persistReducer(
+  { key: "tokenPrices", storage: storageSession, timeout: DEFAULT_TIMEOUT },
+  tokenPricesSlice.reducer
+);
+const perisitWalletLayer2SessionStoreConfig = persistReducer(
+  { key: "walletLayer2", storage: storageSession, timeout: DEFAULT_TIMEOUT },
+  walletLayer2Slice.reducer
+);
+const perisitWalletLayer1SessionStoreConfig = persistReducer(
+  { key: "walletLayer1", storage: storageSession, timeout: DEFAULT_TIMEOUT },
+  walletLayer1Slice.reducer
+);
+const perisitTickerMapSessionStoreConfig = persistReducer(
+  { key: "tickerMap", storage: storageSession, timeout: DEFAULT_TIMEOUT },
+  tickerMapSlice.reducer
 );
 
 const persistedSettingReducer = persistReducer<SettingsState>(
@@ -144,15 +157,15 @@ const reducer = combineReducers({
   amm: ammReducer,
   invest: investReducer,
   tokenMap: tokenMapSlice.reducer,
-  tokenPrices: tokenPricesSlice.reducer,
   redPacketConfigs: redPacketConfigsSlice.reducer,
   toggle: toggleSlice.reducer,
-  walletLayer2: walletLayer2Slice.reducer,
+  tokenPrices: perisitTokenPricesSessionStoreConfig,
+  walletLayer2: perisitWalletLayer2SessionStoreConfig,
+  walletLayer1: perisitWalletLayer1SessionStoreConfig,
+  tickerMap: perisitTickerMapSessionStoreConfig,
   walletLayer2NFT: walletLayer2NFTSlice.reducer,
   walletL2Collection: walletL2CollectionSlice.reducer,
   walletL2NFTCollection: walletL2NFTCollectionSlice.reducer,
-  walletLayer1: walletLayer1Slice.reducer,
-  tickerMap: tickerMapSlice.reducer,
   localStore: persistedLocalStoreReducer,
   amountMap: amountMapSlice.reducer,
   notifyMap: notifyMapSlice.reducer,

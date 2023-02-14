@@ -116,7 +116,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const { t } = useTranslation("common");
 
     const inputButtonDefaultProps = {
-      label: t("labelRedPacketTotalAmount"),
+      label:
+        selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+          ? t("labelAmountEach")
+          : t("labelRedPacketTotalAmount"),
       decimalsLimit:
         (tokenMap && tokenMap[tradeData?.belong as string])?.precision ?? 8,
       minimum,
@@ -131,6 +134,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const inputNFTButtonDefaultProps: Partial<
       InputButtonProps<T, I, CoinInfo<I>>
     > = {
+      label:
+        selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+          ? t("labelAmountEach")
+          : t("labelRedPacketTotalAmount"),
       decimalsLimit: 0,
       minimum,
       placeholderText: "0",
@@ -206,7 +213,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 // { isFait: true }
               ) +
               " " +
-              tradeData.belong,
+              "NFT",
             splitValue:
               getValuePrecisionThousand(
                 splitValue.toFixed(0, 1),
@@ -217,7 +224,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 // { isFait: true }
               ) +
               " " +
-              tradeData.belong,
+              "NFT",
           };
         }
       } else {
@@ -286,11 +293,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
           inputData: {
             belong:
               selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-                ? t("labelAmountEach")
+                ? t("labelQuantity")
                 : t("labelSplit"),
-            tradeValue: tradeData?.numbers,
-            balance: balance,
           },
+          tradeValue: tradeData?.numbers,
+          balance: balance,
         };
       } else {
         inputSplitExtendProps = {
@@ -311,7 +318,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
         ...inputSplitProps,
         ...inputSplitExtendProps,
       };
-    }, [tradeData?.tradeValue, maximum, minimum, tradeType]);
+    }, [
+      tradeData?.tradeValue,
+      selectedType.value.partition,
+      maximum,
+      minimum,
+      tradeType,
+    ]);
     const durationProps: Partial<InputCoinProps<T, CoinInfo<I>, I>> = {
       label: (
         <Typography component={"span"} color={"var(--color-text-third)"}>
@@ -364,7 +377,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
             .div(tradeData.numbers)
             .toFixed(0, 1);
         } else {
-          return sdk.toBig(tradeData.balance).div(tradeData.numbers).toString();
+          return sdk
+            .toBig(tradeData.balance)
+            .div(tradeData.numbers)
+            .toFixed(0, 1);
         }
       } else {
         return tradeData.balance;
@@ -470,7 +486,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                     } as any);
                   }
                 },
-                inputNFTButtonDefaultProps,
+                inputNFTDefaultProps: inputNFTButtonDefaultProps,
                 inputNFTRef: inputBtnRef,
               } as any)}
             />

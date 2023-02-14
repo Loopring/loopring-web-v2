@@ -178,6 +178,7 @@ export const _BasicANFTTrade = <
       handleCountChange,
       handleOnClick: handleOnClick as any,
       ...inputNFTDefaultProps,
+
       ...inputNFTProps,
       ...rest,
     } as InputButtonProps<T, any, I>;
@@ -274,21 +275,25 @@ export const NFTInput = React.memo(
                       lineHeight={24}
                       alignItems={"center"}
                     >
-                      <Trans
-                        i18nKey={"labelChooseNFT"}
-                        tOptions={{
-                          required: rest?.isRequired ? "\uFE61" : "",
-                        }}
-                      >
-                        Choose NFT
-                        <Typography
-                          component={"span"}
-                          variant={"inherit"}
-                          color={"error"}
+                      {inputNFTDefaultProps?.label ? (
+                        inputNFTDefaultProps?.label
+                      ) : (
+                        <Trans
+                          i18nKey={"labelChooseNFT"}
+                          tOptions={{
+                            required: rest?.isRequired ? "\uFE61" : "",
+                          }}
                         >
-                          {"\uFE61"}
-                        </Typography>
-                      </Trans>
+                          Choose NFT
+                          <Typography
+                            component={"span"}
+                            variant={"inherit"}
+                            color={"error"}
+                          >
+                            {"\uFE61"}
+                          </Typography>
+                        </Trans>
+                      )}
                     </Typography>
                   ) : (
                     <Typography

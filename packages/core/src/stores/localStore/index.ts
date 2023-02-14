@@ -8,6 +8,7 @@ import { layer1ActionHistorySlice } from "./layer1Store";
 import { NFTHashInfoSlice } from "./nftRefresh";
 import { redPacketHistorySlice } from "./redPacket";
 import { offRampHistorySlice } from "./offRamp";
+import { CombinedState, Reducer } from "redux";
 
 export const localStoreReducer = combineReducers({
   favoriteMarket: favoriteMarketSlice.reducer,
@@ -20,6 +21,14 @@ export const localStoreReducer = combineReducers({
   redPacketHistory: redPacketHistorySlice.reducer,
   offRampHistory: offRampHistorySlice.reducer,
 });
+export const localStoreReducerL1: Reducer<CombinedState<any>> = combineReducers(
+  {
+    chainHashInfos: OnChainHashInfoSlice.reducer,
+    confirmation: confirmationSlice.reducer,
+    walletInfo: walletInfoSlice.reducer,
+    layer1ActionHistory: layer1ActionHistorySlice.reducer,
+  }
+);
 
 export * as confirmation from "./confirmation";
 export * as favoriteMarket from "./favoriteMarket";
