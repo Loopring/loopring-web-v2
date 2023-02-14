@@ -55,7 +55,7 @@ export const RedPacketClaimPanel = () => {
   React.useEffect(() => {
     let height = container?.current?.offsetHeight;
     if (height) {
-      const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
+      const pageSize = Math.floor(height / RowConfig.rowHeight) - 3;
       setPageSize(pageSize);
       handleTabChange(currentTab);
     }

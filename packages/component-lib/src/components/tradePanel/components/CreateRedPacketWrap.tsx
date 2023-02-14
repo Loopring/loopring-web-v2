@@ -261,8 +261,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
       let inputSplitExtendProps = {},
         balance: any = undefined;
       if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
-        if (selectedType.value.partition !== sdk.LuckyTokenAmountType.AVERAGE) {
-          balance = sdk.toBig(tradeData.tradeValue).toFixed(0, 1);
+        if (selectedType.value.partition === sdk.LuckyTokenAmountType.AVERAGE) {
+          balance = sdk
+            .toBig(tradeData.balance)
+            .div(tradeData.tradeValue)
+            .toFixed(0, 1);
         } else {
           balance = sdk
             .toBig(tradeData.tradeValue)
