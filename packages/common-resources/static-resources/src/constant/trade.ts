@@ -588,6 +588,12 @@ export type RedPacketHashInfos = {
 
 export enum OffRampStatus {
   waitingForPayment = "waitingForPayment",
+  watingForCreateOrder = "watingForCreateOrder",
+  expired = "expired",
+  cancel = "cancel",
+  waitingForWithdraw = "waitingForWithdraw",
+  done = "done",
+  refund = "refund",
 }
 
 export type OffRampHashItems<T = VendorProviders> = {
