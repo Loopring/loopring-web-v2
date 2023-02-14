@@ -28,6 +28,7 @@ import { boxLiner, useSettings } from "@loopring-web/component-lib";
 import styled from "@emotion/styled/";
 import { usePageTradePro } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
+import { useGetAssets } from "../AssetPage/AssetPanel/hook";
 
 const MARKET_ROW_LENGTH: number = 8;
 // const MARKET_ROW_LENGTH_LG: number = 11;
@@ -90,9 +91,11 @@ export const OrderbookPage = withTranslation("common")(() => {
   const {
     pageTradePro: { depthLevel, depthForCalc },
   } = usePageTradePro();
-  const { market, handleOnMarketChange, resetTradeCalcData } = usePro();
+  const { market, handleOnMarketChange, assetBtnStatus, resetTradeCalcData } =
+    usePro();
   const { unit } = useTheme();
   const { proLayout, setLayouts, isMobile } = useSettings();
+
   const history = useHistory();
 
   const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
@@ -239,8 +242,10 @@ export const OrderbookPage = withTranslation("common")(() => {
       [market, handleLayoutChange, handleOnMarketChange]
     ),
     walletInfo: React.useMemo(
-      () => <WalletInfo market={market as any} />,
-      [market]
+      () => (
+        <WalletInfo market={market as any} assetBtnStatus={assetBtnStatus} />
+      ),
+      [market, assetBtnStatus]
     ),
     spot: sportMemo,
     market: React.useMemo(

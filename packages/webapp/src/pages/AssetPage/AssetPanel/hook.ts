@@ -72,7 +72,7 @@ export const useGetAssets = (): AssetPanelProps & {
   const { account } = useAccount();
   const { sendSocketTopic, socketEnd } = useSocket();
   const { allowTrade, forexMap } = useSystem();
-  const { tokenPrices } = useTokenPrices();
+  const { tokenPrices, status: tokenPriceStatus } = useTokenPrices();
   const { ammMap } = store.getState().amm.ammMap;
   const {
     btnStatus: assetBtnStatus,
@@ -319,8 +319,10 @@ export const useGetAssets = (): AssetPanelProps & {
   }, [ammMap, assetsMap, tokenMap, tokenPriceList, tokenPrices]);
 
   React.useEffect(() => {
-    getAssetsRawData();
-  }, [assetsMap]);
+    if (tokenPriceStatus === SagaStatus.UNSET) {
+      getAssetsRawData();
+    }
+  }, [tokenPriceStatus, assetsMap]);
 
   const onReceive = React.useCallback(
     (token?: any) => {

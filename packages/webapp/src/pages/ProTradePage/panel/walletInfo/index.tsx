@@ -9,8 +9,10 @@ import {
   i18n,
   LockIcon,
   MarketType,
+  myLog,
   SagaStatus,
   SoursURL,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { Avatar, Box, Divider, Typography } from "@mui/material";
 import {
@@ -50,6 +52,7 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
       },
     ],
   });
+
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET) {
       setLabel(accountStaticCallBack(_btnLabel));
@@ -287,7 +290,15 @@ const AssetsValue = React.memo(({ symbol }: { symbol: string }) => {
   }
 });
 const UnLookView = React.memo(
-  ({ t, market }: { market: MarketType; t: TFunction }) => {
+  ({
+    t,
+    market,
+    assetBtnStatus,
+  }: {
+    assetBtnStatus: TradeBtnStatus;
+    market: MarketType;
+    t: TFunction;
+  }) => {
     // const {pageTradePro: {tradeCalcProData}} = usePageTradePro();
     //@ts-ignore
     const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
@@ -312,6 +323,7 @@ const UnLookView = React.memo(
     //   },
     //   [setShowTransfer]
     // );
+    // myLog("assetBtnStatus", assetBtnStatus);
 
     return (
       <Box paddingBottom={2}>
@@ -443,6 +455,7 @@ const UnLookView = React.memo(
                 variant={"contained"}
                 size={"small"}
                 color={"primary"}
+                disabled={assetBtnStatus === TradeBtnStatus.LOADING}
                 onClick={() =>
                   setShowAccount({
                     isShow: true,
@@ -459,6 +472,7 @@ const UnLookView = React.memo(
                 style={{ height: 28, fontSize: "1.4rem" }}
                 variant={"outlined"}
                 size={"small"}
+                disabled={assetBtnStatus === TradeBtnStatus.LOADING}
                 onClick={() =>
                   setShowAccount({
                     isShow: true,
@@ -480,6 +494,7 @@ const UnLookView = React.memo(
 export const WalletInfo = withTranslation(["common", "layout"])(
   (
     props: {
+      assetBtnStatus: TradeBtnStatus;
       market: MarketType;
     } & WithTranslation
   ) => {
