@@ -50,16 +50,17 @@ export const RedPacketClaimPanel = () => {
       getClaimRedPacket();
     }
   }, [walletLayer2Status]);
-  const [pageSize, setPageSize] = React.useState(0);
+  //TODO:
+  const [pageSize, setPageSize] = React.useState(500);
 
-  React.useEffect(() => {
-    let height = container?.current?.offsetHeight;
-    if (height) {
-      const pageSize = Math.floor(height / RowConfig.rowHeight) - 3;
-      setPageSize(pageSize);
-      handleTabChange(currentTab);
-    }
-  }, [container?.current?.offsetHeight]);
+  // React.useEffect(() => {
+  //   let height = container?.current?.offsetHeight;
+  //   if (height) {
+  //     const pageSize = Math.floor(height / RowConfig.rowHeight) - 3;
+  //     setPageSize(pageSize);
+  //     handleTabChange(currentTab);
+  //   }
+  // }, [container?.current?.offsetHeight]);
   const [currentTab, setCurrentTab] = React.useState<TabTokenTypeIndex>(
     match?.params.item ?? TabTokenTypeIndex.ERC20
   );
@@ -177,11 +178,11 @@ export const RedPacketClaimPanel = () => {
                 onItemClick: onItemNFTClick,
                 etherscanBaseUrl,
                 getClaimRedPacket: getClaimNFTRedPacket,
-                page,
-                pagination: {
-                  pageSize: pageSize,
-                  total: redPacketNFTClaimTotal,
-                },
+                // page,
+                // pagination: {
+                //   pageSize: pageSize,
+                //   total: redPacketNFTClaimTotal,
+                // },
               }}
             />
           </>

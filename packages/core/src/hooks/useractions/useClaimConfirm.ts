@@ -55,6 +55,7 @@ export const useClaimConfirm = <
 
   const {
     setShowAccount,
+    setShowClaimWithdraw,
     modals: {
       isShowClaimWithdraw: { claimToken, isShow },
       isShowAccount: { info },
@@ -204,7 +205,7 @@ export const useClaimConfirm = <
             updateHW({ wallet: account.accAddress, isHWAddr });
           }
           walletLayer2Service.sendUserUpdate();
-
+          setShowClaimWithdraw({ isShow: false });
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
           if (
             store.getState().modals.isShowAccount.isShow &&
@@ -296,18 +297,16 @@ export const useClaimConfirm = <
 
           let token: any;
           let nftData = undefined;
-          let amount;
+          let amount: any = 0;
           if (claimValue?.nftData) {
             token = {
               tokenId: claimValue.tokenId,
             };
             nftData = claimValue.nftData;
-            amount = claimValue?.tradeValue;
+            amount = claimValue.volume;
           } else {
             token = tokenMap[claimValue?.belong];
-            amount = sdk
-              .toBig(claimValue?.tradeValue ?? 0)
-              .times("1e" + token?.decimals ?? 0);
+            amount = claimValue.volume;
           }
 
           const storageId = await LoopringAPI.userAPI?.getNextStorageId(

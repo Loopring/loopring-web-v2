@@ -228,7 +228,7 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowClaimWithdraw: React.useCallback(
-      (state: ModalStatePlayLoad & { claimToken: ClaimToken }) => {
+      (state: ModalStatePlayLoad & { claimToken?: ClaimToken }) => {
         if (toggle.claim.enable) {
           dispatch(setShowClaimWithdraw(state));
         } else {
