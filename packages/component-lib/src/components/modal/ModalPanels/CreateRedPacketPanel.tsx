@@ -49,6 +49,7 @@ export const CreateRedPacketPanel = <
   walletMap = {},
   coinMap = {},
   tokenMap = {},
+  assetsData,
   //@ts-ignore
   myNFTPanel,
   ...rest
@@ -244,7 +245,9 @@ export const CreateRedPacketPanel = <
     tradeType,
     switchData,
     coinMap,
+    assetsData,
     rest,
+    walletMap,
     onChangeEvent,
     getWalletMapWithoutLP,
     panelIndex,

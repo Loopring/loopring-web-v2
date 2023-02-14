@@ -262,14 +262,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
         balance: any = undefined;
       if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
         if (selectedType.value.partition !== sdk.LuckyTokenAmountType.AVERAGE) {
+          balance = sdk.toBig(tradeData.tradeValue).toFixed(0, 1);
+        } else {
           balance = sdk
             .toBig(tradeData.tradeValue)
             .div(Number(minimum) ?? 1)
-            .toFixed(0, 1);
-        } else {
-          balance = sdk
-            .toBig(tradeData.balance ?? 0)
-            .div(tradeData.tradeValue)
             .toFixed(0, 1);
         }
 
@@ -295,9 +292,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
               selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
                 ? t("labelQuantity")
                 : t("labelSplit"),
+            tradeValue: tradeData?.numbers,
+            balance: balance,
           },
-          tradeValue: tradeData?.numbers,
-          balance: balance,
         };
       } else {
         inputSplitExtendProps = {
@@ -377,10 +374,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
             .div(tradeData.numbers)
             .toFixed(0, 1);
         } else {
-          return sdk
-            .toBig(tradeData.balance)
-            .div(tradeData.numbers)
-            .toFixed(0, 1);
+          return sdk.toBig(tradeData.balance).div(tradeData.numbers).toString();
         }
       } else {
         return tradeData.balance;
@@ -1076,25 +1070,14 @@ export const CreateRedPacketStepTokenType = withTranslation()(
               defaultLabel: "labelContinue",
               fullWidth: true,
               btnInfo: btnInfo,
-              // btnStatus,
               disabled: () => getDisabled,
               onClick: () => {
                 setActiveStep(RedPacketStep.ChooseType);
-                // onNFTMintClick(tradeData);
               },
             }}
           />
         </Box>
       </RedPacketBoxStyle>
-      // <RedPacketBoxStyle
-      //   display={"flex"}
-      //   justifyContent={"flex-start"}
-      //   flexDirection={"column"}
-      //   alignItems={"center"}
-      //   className={isMobile ? "mobile" : ""}
-      // >
-      //
-      // </RedPacketBoxStyle>
     );
   }
 );

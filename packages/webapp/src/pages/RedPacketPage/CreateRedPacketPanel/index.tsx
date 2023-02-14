@@ -1,5 +1,10 @@
 import { Box, Button } from "@mui/material";
-import { CreateRedPacketPanel, useToggle } from "@loopring-web/component-lib";
+import {
+  CreateRedPacketPanel,
+  LoadingBlock,
+  TradeBtnStatus,
+  useToggle,
+} from "@loopring-web/component-lib";
 
 import React from "react";
 import {
@@ -7,6 +12,7 @@ import {
   StylePaper,
   useCreateRedPacket,
   useSystem,
+  walletLayer2Service,
 } from "@loopring-web/core";
 import {
   BackIcon,
@@ -74,7 +80,7 @@ export const CreateRedPacketUIPanel = <
   I extends any,
   F extends FeeInfo
 >() => {
-  const { assetsRawData } = useGetAssets();
+  const { assetsRawData, assetBtnStatus } = useGetAssets();
   let match: any = useRouteMatch("/redPacket/:item");
   const history = useHistory();
   const { baseURL } = useSystem();
@@ -104,28 +110,32 @@ export const CreateRedPacketUIPanel = <
         </Button>
       </Box>
       <StylePaper flex={1} display={"flex"} justifyContent={"center"}>
-        <CreateRedPacketPanel
-          {...{
-            _height: "auto",
-            ...createRedPacketProps,
-            tradeType: createRedPacketProps.tradeType,
-            getIPFSString: getIPFSString,
-            baseURL,
-            myNFTPanel: (
-              <ChooseNFTPanel
-                onSelect={(value: any) => {
-                  createRedPacketProps.handleOnChoose &&
-                    createRedPacketProps.handleOnChoose(value);
-                }}
-                selectNFT={
-                  createRedPacketProps?.selectNFT
-                    ? [createRedPacketProps.selectNFT]
-                    : []
-                }
-              />
-            ) as any,
-          }}
-        />
+        {assetBtnStatus === TradeBtnStatus.LOADING ? (
+          <LoadingBlock />
+        ) : (
+          <CreateRedPacketPanel
+            {...{
+              _height: "auto",
+              ...createRedPacketProps,
+              tradeType: createRedPacketProps.tradeType,
+              getIPFSString: getIPFSString,
+              baseURL,
+              myNFTPanel: (
+                <ChooseNFTPanel
+                  onSelect={(value: any) => {
+                    createRedPacketProps.handleOnChoose &&
+                      createRedPacketProps.handleOnChoose(value);
+                  }}
+                  selectNFT={
+                    createRedPacketProps?.selectNFT
+                      ? [createRedPacketProps.selectNFT]
+                      : []
+                  }
+                />
+              ) as any,
+            }}
+          />
+        )}
       </StylePaper>
     </Box>
   );

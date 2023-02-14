@@ -129,6 +129,7 @@ export const useCreateRedPacket = <
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
     setWalletMap(walletMap);
+    const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
     if (
       TRADE_TYPE.TOKEN === redPacketOrder.tradeType &&
       !redPacketOrder.belong &&
@@ -164,7 +165,7 @@ export const useCreateRedPacket = <
         return;
       }
       checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
-
+      const walletMap = makeWalletLayer2(true).walletMap ?? {};
       if (TRADE_TYPE.TOKEN === value && !redPacketOrder.belong && walletMap) {
         const keys = Reflect.ownKeys(walletMap);
         for (let key in keys) {
@@ -615,6 +616,7 @@ export const useCreateRedPacket = <
   React.useEffect(() => {
     if (isShow) {
       resetDefault(TRADE_TYPE.TOKEN);
+      walletLayer2Service.sendUserUpdate();
     } else {
       resetIntervalTime();
     }
@@ -622,6 +624,7 @@ export const useCreateRedPacket = <
       resetIntervalTime();
     };
   }, [isShow]);
+
   const onCreateRedPacketClick = React.useCallback(
     async (_redPacketOrder, isHardwareRetry: boolean = false) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
