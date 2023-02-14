@@ -102,7 +102,9 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     store.dispatch(initAmmMap({ ammpools, chainId }));
     yield delay(1);
     store.dispatch(getTokenPrices(undefined));
-    yield take("tokenPrices/getTokenPricesStatus");
+    if (!Object.keys(store.getState().tokenPrices).length) {
+      yield take("tokenPrices/getTokenPricesStatus");
+    }
     store.dispatch(getTickers({ tickerKeys: marketArr }));
     store.dispatch(getAmmMap({ ammpools }));
     yield take("ammMap/getAmmMapStatus");

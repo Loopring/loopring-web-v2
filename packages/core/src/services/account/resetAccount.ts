@@ -5,6 +5,8 @@ import { reset as resetwalletLayer2NFT } from "../../stores/walletLayer2NFT/redu
 
 import { resetAmount } from "../../stores/amount/reducer";
 import { store } from "../../stores";
+import { resetTokenPrices } from "../../stores/tokenPrices/reducer";
+import { resetTicker } from "../../stores/ticker/reducer";
 
 export function resetLayer12Data() {
   store.dispatch(resetAmount(undefined));
@@ -12,6 +14,11 @@ export function resetLayer12Data() {
   store.dispatch(resetWalletLayer1(undefined));
   store.dispatch(resetWalletLayer2(undefined));
   store.dispatch(resetwalletLayer2NFT(undefined));
+}
+
+export function resetSystemData() {
+  store.dispatch(resetTokenPrices(undefined));
+  store.dispatch(resetTicker(undefined));
 }
 
 export function resetLayer2Data() {
