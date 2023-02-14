@@ -24,6 +24,7 @@ import {
   RefreshIcon,
   SoursURL,
   TOAST_TIME,
+  TradeBtnStatus,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import {
@@ -47,7 +48,6 @@ import {
   DEPLOYMENT_STATUS,
   NFTType,
 } from "@loopring-web/loopring-sdk";
-import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";

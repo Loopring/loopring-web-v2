@@ -14,6 +14,7 @@ import {
   RefreshIcon,
   RowConfig,
   SoursURL,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -24,7 +25,6 @@ import {
   TextareaAutosizeStyled,
 } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
-import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
@@ -33,6 +33,7 @@ const GridStyle = styled(Grid)`
   .coinInput-wrap {
     border: 1px solid var(--color-border);
   }
+
   .MuiInputLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.body2};
   }

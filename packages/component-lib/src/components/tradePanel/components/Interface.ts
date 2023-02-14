@@ -6,6 +6,11 @@ import {
   IpfsFile,
   SwitchPanelProps,
 } from "../../basic-lib";
+import React, { ChangeEvent } from "react";
+import { XOR } from "../../../types/lib";
+import { CollectionInputProps } from "./tool";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { TOSTOBJECT } from "../../toast";
 import {
   Account,
   AccountStatus,
@@ -21,18 +26,13 @@ import {
   NFTWholeINFO,
   RequireOne,
   TRADE_TYPE,
+  TradeBtnStatus,
   WALLET_TYPE,
   WalletCoin,
   WalletMap,
   WithdrawType,
   WithdrawTypes,
 } from "@loopring-web/common-resources";
-import { TradeBtnStatus } from "../Interface";
-import React, { ChangeEvent } from "react";
-import { XOR } from "../../../types/lib";
-import { CollectionInputProps } from "./tool";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { TOSTOBJECT } from "../../toast";
 
 export enum RedPacketStep {
   TradeType,

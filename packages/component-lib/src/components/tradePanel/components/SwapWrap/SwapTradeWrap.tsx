@@ -1,4 +1,4 @@
-import { SwapTradeData, TradeBtnStatus } from "../../Interface";
+import { SwapTradeData } from "../../Interface";
 import {
   CoinInfo,
   CoinMap,
@@ -10,6 +10,7 @@ import {
   Info2Icon,
   myLog,
   ReverseIcon,
+  TradeBtnStatus,
   TradeCalcData,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";

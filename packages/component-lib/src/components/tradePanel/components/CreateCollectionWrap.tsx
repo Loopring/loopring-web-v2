@@ -14,9 +14,9 @@ import {
   CollectionMeta,
   htmlDecode,
   Info2Icon,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
-import { TradeBtnStatus } from "../Interface";
 
 export type CreateCollectionViewProps<Co> = {
   keys: { [key: string]: undefined | IpfsFile };

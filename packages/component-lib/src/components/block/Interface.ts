@@ -5,9 +5,9 @@ import {
   NFTWholeINFO,
   PriceTag,
   RedPacketQRPropsExtends,
+  TradeBtnStatus,
   TradeFloat,
 } from "@loopring-web/common-resources";
-import { TradeBtnStatus } from "../tradePanel";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { RawDataRedPacketDetailItem } from "../tableList";
 

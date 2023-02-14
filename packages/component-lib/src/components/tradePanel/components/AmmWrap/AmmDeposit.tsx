@@ -7,6 +7,7 @@ import {
   IBData,
   LinkedIcon,
   SlippageTolerance,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import { AmmDepositWrapProps } from "./Interface";
@@ -16,7 +17,6 @@ import { usePopupState } from "material-ui-popup-state/hooks";
 import { Box, Grid, Typography } from "@mui/material";
 import { bindHover, bindPopover } from "material-ui-popup-state/es";
 import { SlippagePanel } from "../tool";
-import { TradeBtnStatus } from "../../Interface";
 import { SvgStyled } from "./styled";
 import { useSettings } from "../../../../stores";
 import { useAmmViewData } from "./ammViewHook";

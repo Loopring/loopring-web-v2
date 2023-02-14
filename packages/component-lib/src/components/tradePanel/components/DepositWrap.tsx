@@ -8,8 +8,8 @@ import {
   LoadingIcon,
   SoursURL,
   TRADE_TYPE,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
-import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Link, Typography } from "@mui/material";

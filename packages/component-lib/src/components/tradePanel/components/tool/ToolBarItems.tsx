@@ -1,6 +1,10 @@
 import { Box, Grid, Step, StepLabel, Stepper } from "@mui/material";
-import { BackIcon, DropDownIcon } from "@loopring-web/common-resources";
-import { SwitchData, TradeBtnStatus } from "../../Interface";
+import {
+  BackIcon,
+  DropDownIcon,
+  TradeBtnStatus,
+} from "@loopring-web/common-resources";
+import { SwitchData } from "../../Interface";
 import { IconButtonStyled } from "../Styled";
 import { useTranslation } from "react-i18next";
 import { useSettings } from "../../../../stores";

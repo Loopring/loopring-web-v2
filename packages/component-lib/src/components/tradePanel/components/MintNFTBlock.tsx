@@ -18,6 +18,7 @@ import {
   MintTradeNFT,
   myLog,
   NFTMETA,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -27,7 +28,6 @@ import {
   TextField,
 } from "../../basic-lib";
 
-import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { NFTInput } from "./BasicANFTTrade";

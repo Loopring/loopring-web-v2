@@ -21,6 +21,7 @@ import {
   Info2Icon,
   LoadingIcon,
   TRADE_TYPE,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -29,7 +30,6 @@ import {
   InputButtonDefaultProps,
   PopoverPure,
 } from "../..";
-import { TradeBtnStatus } from "../Interface";
 import {
   Button,
   IconClearStyled,
@@ -44,6 +44,7 @@ export const ListStyle = styled(List)`
   li {
     height: auto;
     padding: 0;
+
     &:before {
       content: "•";
       padding-top: ${({ theme }) => theme.unit}px;
@@ -51,7 +52,9 @@ export const ListStyle = styled(List)`
       display: inline-flex;
       padding-right: ${({ theme }) => theme.unit}px;
     }
+
     display: inline-flex;
+
     &:hover {
       background-color: initial;
     }

@@ -24,6 +24,7 @@ import {
   LoadingIcon,
   NFTWholeINFO,
   TOAST_TIME,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -31,7 +32,6 @@ import {
   PopoverPure,
   Toast,
 } from "../..";
-import { TradeBtnStatus } from "../Interface";
 import {
   Button,
   IconClearStyled,

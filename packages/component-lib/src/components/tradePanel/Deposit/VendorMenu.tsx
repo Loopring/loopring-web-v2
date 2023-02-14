@@ -6,13 +6,13 @@ import {
   BanxaIcon,
   RampIcon,
   SCENARIO,
+  TradeBtnStatus,
   TradeTypes,
   VendorProviders,
 } from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
 import { useSettings } from "../../../stores";
 import { TagIconList } from "../../block";
-import { TradeBtnStatus } from "../Interface";
 
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   const theme = useTheme();

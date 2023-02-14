@@ -3,9 +3,9 @@ import {
   LoadingIcon,
   myLog,
   SoursURL,
+  TradeBtnStatus,
   TradeNFT,
 } from "@loopring-web/common-resources";
-import { TradeBtnStatus } from "../Interface";
 import { useTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";

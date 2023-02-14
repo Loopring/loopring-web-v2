@@ -1,6 +1,9 @@
-import { TradeBtnStatus } from "../Interface";
 import { InputButtonProps } from "../../basic-lib";
-import { CoinInfo, TradeCalcProData } from "@loopring-web/common-resources";
+import {
+  CoinInfo,
+  TradeBtnStatus,
+  TradeCalcProData,
+} from "@loopring-web/common-resources";
 import React from "react";
 
 export enum TradeProType {

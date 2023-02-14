@@ -1,6 +1,6 @@
-import { SwapTradeData, SwitchData, TradeBtnStatus } from "../../Interface";
+import { SwapTradeData, SwitchData } from "../../Interface";
 import { InputButtonProps } from "../../../basic-lib";
-import { CoinInfo } from "@loopring-web/common-resources";
+import { CoinInfo, TradeBtnStatus } from "@loopring-web/common-resources";
 
 export type SwapData<ST> = {
   type: "buy" | "sell" | "exchange";

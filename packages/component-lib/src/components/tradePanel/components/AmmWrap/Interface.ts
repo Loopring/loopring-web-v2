@@ -1,6 +1,9 @@
 import { InputButtonProps } from "../../../basic-lib";
-import { AccountStatus, CoinInfo } from "@loopring-web/common-resources";
-import { TradeBtnStatus } from "../../index";
+import {
+  AccountStatus,
+  CoinInfo,
+  TradeBtnStatus,
+} from "@loopring-web/common-resources";
 
 export type AmmChgData<AT> = {
   type: "coinA" | "coinB";

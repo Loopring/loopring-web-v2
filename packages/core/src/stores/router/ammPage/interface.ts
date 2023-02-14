@@ -1,10 +1,10 @@
-import { TradeBtnStatus } from "@loopring-web/component-lib";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   AmmExitData,
   AmmInData,
   AmmJoinData,
   IBData,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { AmmDetailStore } from "../../Amm";
 
