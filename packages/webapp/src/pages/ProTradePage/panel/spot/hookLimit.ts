@@ -21,12 +21,12 @@ import {
   IBData,
   MarketType,
   myLog,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   DepthType,
   LimitTradeData,
   TradeBaseType,
-  TradeBtnStatus,
   TradeProType,
   useOpenModals,
   useSettings,

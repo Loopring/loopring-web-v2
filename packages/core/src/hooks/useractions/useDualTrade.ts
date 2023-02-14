@@ -3,7 +3,6 @@ import {
   AccountStep,
   DualChgData,
   DualWrapProps,
-  TradeBtnStatus,
   useOpenModals,
   useToggle,
 } from "@loopring-web/component-lib";
@@ -19,6 +18,7 @@ import {
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 
 import {

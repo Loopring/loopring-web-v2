@@ -10,6 +10,7 @@ import {
   myLog,
   SlippageTolerance,
   SoursURL,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { AmmWithdrawWrapProps } from "./Interface";
 import { WithTranslation } from "react-i18next";
@@ -23,7 +24,6 @@ import {
   InputCoin,
   LinkActionStyle,
   PopoverPure,
-  TradeBtnStatus,
 } from "../../../index";
 import { bindHover, bindPopover } from "material-ui-popup-state/es";
 import { SlippagePanel } from "../tool";

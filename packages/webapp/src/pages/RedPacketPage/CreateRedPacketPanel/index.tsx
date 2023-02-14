@@ -2,7 +2,6 @@ import { Box, Button } from "@mui/material";
 import {
   CreateRedPacketPanel,
   LoadingBlock,
-  TradeBtnStatus,
   useToggle,
 } from "@loopring-web/component-lib";
 
@@ -12,7 +11,6 @@ import {
   StylePaper,
   useCreateRedPacket,
   useSystem,
-  walletLayer2Service,
 } from "@loopring-web/core";
 import {
   BackIcon,
@@ -20,6 +18,7 @@ import {
   MY_NFT_VIEW,
   NFTWholeINFO,
   RedPacketOrderData,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
 import { useTranslation } from "react-i18next";

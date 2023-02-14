@@ -5,6 +5,7 @@ import {
   FeeInfo,
   IBData,
   TOAST_TIME,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import React from "react";
 import {
@@ -12,7 +13,6 @@ import {
   DropdownIconStyled,
   FeeToggle,
   FeeTokenItemWrapper,
-  TradeBtnStatus,
 } from "../../tradePanel";
 import { Box, Grid, Typography } from "@mui/material";
 import { Button } from "../../basic-lib";

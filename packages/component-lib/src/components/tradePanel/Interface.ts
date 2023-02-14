@@ -206,12 +206,6 @@ export type SwitchData<T> = {
   tradeData: T;
 };
 
-export enum TradeBtnStatus {
-  AVAILABLE = "AVAILABLE",
-  DISABLED = "DISABLED",
-  LOADING = "LOADING",
-}
-
 export enum SwitchType {
   TO_MENU = "Tomenu",
   TO_BTN = "Tobutton",

@@ -1,6 +1,6 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import { BtnPercentage, InputCoin, InputSize } from "../../basic-lib";
-import { LimitTradeData, TradeBtnStatus, TradeLimitProps } from "../Interface";
+import { LimitTradeData, TradeLimitProps } from "../Interface";
 import {
   CoinInfo,
   CoinKey,
@@ -8,6 +8,7 @@ import {
   CurrencyToTag,
   IBData,
   PriceTag,
+  TradeBtnStatus,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import { Box, Tab } from "@mui/material";

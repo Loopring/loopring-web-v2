@@ -11,6 +11,7 @@ import {
   IBData,
   SlippageTolerance,
   TRADE_TYPE,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   ammCalcData,
@@ -35,7 +36,6 @@ import {
   SwapProps,
   SwapTradeData,
   SwitchData,
-  TradeBtnStatus,
   TransferProps,
   WithdrawProps,
 } from "./index";

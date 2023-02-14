@@ -39,13 +39,13 @@ import {
   RedPacketOrderData,
   SoursURL,
   TRADE_TYPE,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
   CreateRedPacketViewProps,
   RedPacketStep,
   SwitchData,
-  TradeBtnStatus,
 } from "../Interface";
 import { MenuBtnStyled } from "../../styled";
 import styled from "@emotion/styled";

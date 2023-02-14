@@ -13,12 +13,10 @@ import {
   useWalletLayer2,
   useWalletLayer2Socket,
   volumeToCountAsBigNumber,
-  walletLayer2Service,
 } from "@loopring-web/core";
 import {
   AccountStep,
   AssetTitleProps,
-  TradeBtnStatus,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -31,6 +29,7 @@ import {
   PriceTag,
   SagaStatus,
   TokenType,
+  TradeBtnStatus,
   YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 
@@ -112,11 +111,18 @@ export const useGetAssets = (): AssetPanelProps & {
   }, [account.readyState]);
 
   React.useEffect(() => {
-    if (walletL2Status === SagaStatus.DONE) {
-      myLog("setLoadingBtn enableBtn", assetBtnStatus);
+    if (walletL2Status === SagaStatus.DONE || assetsRawData.length) {
+      myLog("setLoadingBtn enableBtn");
       enableBtn();
     }
-  }, [walletL2Status]);
+  }, [walletL2Status, assetsRawData]);
+  // React.useEffect(() => {
+  //   if (walletL2Status === SagaStatus.DONE) {
+  //     myLog("setLoadingBtn enableBtn", assetBtnStatus);
+  //     enableBtn();
+  //   }
+  // }, [walletL2Status]);
+
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(false);
     const assetsKeyList =

@@ -25,6 +25,7 @@ import {
   LoadingIcon,
   NFTWholeINFO,
   TOAST_TIME,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -33,7 +34,6 @@ import {
   IconClearStyled,
   TextField,
   Toast,
-  TradeBtnStatus,
 } from "../../index";
 import { PopoverPure } from "../../";
 import { TransferViewProps } from "./Interface";

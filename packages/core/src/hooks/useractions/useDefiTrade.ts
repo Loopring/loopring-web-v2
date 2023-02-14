@@ -1,7 +1,6 @@
 import React from "react";
 import {
   DeFiWrapProps,
-  TradeBtnStatus,
   useOpenModals,
   useToggle,
 } from "@loopring-web/component-lib";
@@ -9,19 +8,20 @@ import {
   AccountStatus,
   CustomErrorWithCode,
   DeFiCalcData,
+  DeFiChgType,
   getValuePrecisionThousand,
   globalSetup,
   IBData,
   MarketType,
   myLog,
   SDK_ERROR_MAP_TO_UI,
-  DeFiChgType,
+  TradeBtnStatus,
   TradeDefi,
 } from "@loopring-web/common-resources";
 
 import {
-  useSubmitBtn,
   makeWalletLayer2,
+  useSubmitBtn,
   useWalletLayer2Socket,
 } from "@loopring-web/core";
 import _ from "lodash";
@@ -29,14 +29,14 @@ import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import {
-  useTokenMap,
-  useAccount,
   DAYS,
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  walletLayer2Service,
+  useAccount,
   useSystem,
+  useTokenMap,
+  walletLayer2Service,
 } from "../../index";
 import { useTranslation } from "react-i18next";
 import { useDefiMap, useTradeDefi } from "../../stores";

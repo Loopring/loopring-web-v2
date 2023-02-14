@@ -10,11 +10,12 @@ import {
 } from "@loopring-web/component-lib";
 
 import { StylePaper, useSystem, useTokenMap } from "@loopring-web/core";
-import { AssetPanelProps, useGetAssets } from "./hook";
+import { AssetPanelProps } from "./hook";
 import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
 import { RedPacketClaimPanel } from "../../RedPacketPage/RedPacketClaimPanel";
+import { TradeBtnStatus } from "@loopring-web/common-resources";
 
 enum TabIndex {
   Tokens = "Tokens",
@@ -127,6 +128,7 @@ export const AssetPanel = withTranslation("common")(
                   allowTrade,
                   onSend,
                   onReceive,
+                  isLoading: assetBtnStatus === TradeBtnStatus.LOADING,
                   getMarketArrayListCallback: getTokenRelatedMarketArray,
                   hideInvestToken,
                   forexMap: forexMap as any,

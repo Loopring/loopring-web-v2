@@ -1,10 +1,5 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import {
-  MarketTradeData,
-  TradeBaseType,
-  TradeBtnStatus,
-  TradeMarketProps,
-} from "../Interface";
+import { MarketTradeData, TradeBaseType, TradeMarketProps } from "../Interface";
 import {
   CoinInfo,
   CoinKey,
@@ -15,6 +10,7 @@ import {
   IBData,
   Info2Icon,
   SlippageTolerance,
+  TradeBtnStatus,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import { TradeProType } from "./Interface";

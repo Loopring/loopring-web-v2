@@ -6,6 +6,7 @@ import {
   fnType,
   LoopringIcon,
   SagaStatus,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   boxLiner,
@@ -13,7 +14,6 @@ import {
   DepositPanel,
   DepositProps,
   SwitchPanelStyled,
-  TradeBtnStatus,
   useSettings,
 } from "@loopring-web/component-lib";
 import {

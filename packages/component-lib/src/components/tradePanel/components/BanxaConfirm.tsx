@@ -5,6 +5,7 @@ import {
   FeeInfo,
   IBData,
   TOAST_TIME,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   BanxaViewProps,
@@ -13,7 +14,6 @@ import {
   FeeToggle,
   FeeTokenItemWrapper,
   Toast,
-  TradeBtnStatus,
 } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";

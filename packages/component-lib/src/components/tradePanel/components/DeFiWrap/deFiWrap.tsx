@@ -8,6 +8,7 @@ import {
   myLog,
   OrderListIcon,
   ReverseIcon,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { DeFiWrapProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
@@ -15,7 +16,6 @@ import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { InputCoin } from "../../../basic-lib";
 import { ButtonStyle, IconButtonStyled } from "../Styled";
-import { TradeBtnStatus } from "../../Interface";
 import { CountDownIcon } from "../tool/Refresh";
 import { useHistory } from "react-router-dom";
 import BigNumber from "bignumber.js";

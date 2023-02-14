@@ -5,6 +5,7 @@ import {
   IBData,
   MarketType,
   myLog,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -12,7 +13,6 @@ import { toBig } from "@loopring-web/loopring-sdk";
 import {
   MarketTradeData,
   TradeBaseType,
-  TradeBtnStatus,
   TradeProType,
   useOpenModals,
   useSettings,

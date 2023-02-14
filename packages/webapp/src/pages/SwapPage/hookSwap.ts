@@ -44,6 +44,7 @@ import {
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
+  TradeBtnStatus,
   TradeCalcData,
   WalletMap,
 } from "@loopring-web/common-resources";
@@ -51,7 +52,6 @@ import {
   SwapData,
   SwapTradeData,
   SwapType,
-  TradeBtnStatus,
   useOpenModals,
   useSettings,
   useToggle,
