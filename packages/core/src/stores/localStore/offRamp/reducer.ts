@@ -73,7 +73,7 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
         case OffRampStatus.done:
         case OffRampStatus.expired:
         case OffRampStatus.refund:
-          if (state[chainId][address] && state[chainId][address][product]) {
+          if (state[chainId][address][product]) {
             if (
               state[chainId][address][product].pending?.orderId.toString() ==
               orderId.toString()
@@ -88,7 +88,7 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
           }
           break;
         case OffRampStatus.waitingForWithdraw:
-          if (state[chainId][address] && state[chainId][address][product]) {
+          if (state[chainId][address][product]) {
             let pending =
               state[chainId][address][product]?.pending?.orderId.toString() !==
               orderId.toString()
@@ -110,30 +110,31 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
           state[chainId] = {
             ...state[chainId],
             [address]: {
-              ...(state[chainId][address] ?? undefined),
+              ...state[chainId][address],
               [product]: productObj,
             },
           };
           break;
         case OffRampStatus.watingForCreateOrder:
         case OffRampStatus.waitingForPayment:
-          if (state[chainId][address] && state[chainId][address][product]) {
-            productObj = {
-              pending: action.payload,
-              payments: [
-                ...(state[chainId][address][product]?.payments ?? undefined),
-              ],
-            };
+          if (
+            state[chainId][address][product]?.payments &&
+            state[chainId][address][product]?.payments.find(
+              (_item: OffRampHashInfos) =>
+                _item?.orderId.toString() == orderId.toString()
+            )
+          ) {
+            productObj = state[chainId][address][product];
           } else {
             productObj = {
               pending: action.payload,
-              payments: [],
+              payments: [...(state[chainId][address][product]?.payments ?? [])],
             };
           }
           state[chainId] = {
             ...state[chainId],
             [address]: {
-              ...(state[chainId][address] ?? undefined),
+              ...state[chainId][address],
               [product]: productObj,
             },
           };
