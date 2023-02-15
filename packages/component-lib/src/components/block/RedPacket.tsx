@@ -44,7 +44,9 @@ import { TablePagination, BoxNFT } from "../basic-lib";
 import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
 import { NFTMedia } from "./nftMedia";
 
-export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
+export const RedPacketBg = styled(Box)<
+  BoxProps & { imageSrc?: string; type: string }
+>`
   display: flex;
   align-items: center;
   position: relative;
