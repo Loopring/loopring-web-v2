@@ -10,6 +10,7 @@ import {
   useWalletL2NFTCollection,
   useWalletL2Collection,
   redPacketHistory,
+  offFaitService,
 } from "@loopring-web/core";
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -54,6 +55,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET && state === SagaStatus.DONE) {
+      offFaitService.banxaEnd();
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
         case AccountStatus.ERROR_NETWORK:
@@ -75,12 +77,12 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         case AccountStatus.ACTIVATED:
           getUserRewards();
           clearRedPacketHash();
+          offFaitService.backendCheckStart();
           if (walletLayer1Status !== SagaStatus.PENDING) {
             updateWalletLayer1();
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2();
-            // updateWalletLayer2NFT({ page: 1, collectionId: undefined, collectionContractAddress: undefined });
             updateWalletL2NFTCollection({ page: 1 });
             updateWalletL2Collection({ page: 1 });
           }

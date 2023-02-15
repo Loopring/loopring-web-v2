@@ -14,17 +14,27 @@ import {
   useSystem,
   ModalCoinPairPanel,
   ModalRedPacketPanel,
+  useOffFaitModal,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
+  OffRampStatus,
   SagaStatus,
   setMyLog,
   ThemeType,
+  TOAST_TIME,
+  VendorProviders,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
-import { useSettings, LoadingBlock } from "@loopring-web/component-lib";
+import {
+  useSettings,
+  LoadingBlock,
+  Toast,
+  NoticePanelSnackBar,
+  NoticeSnack,
+} from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
   MarkdownPage,
@@ -40,6 +50,7 @@ import { getAnalytics, logEvent } from "firebase/analytics";
 import { AssetPage } from "../pages/AssetPage";
 import { FiatPage } from "../pages/FiatPage";
 import { RedPacketPage } from "../pages/RedPacketPage";
+import { useTranslation } from "react-i18next";
 
 const ContentWrap = ({
   children,
@@ -75,12 +86,27 @@ const ContentWrap = ({
     </>
   );
 };
+
 const WrapModal = () => {
   const { depositProps } = useDeposit(false);
   const { assetsRawData } = useGetAssets();
   const location = useLocation();
   const { etherscanBaseUrl } = useSystem();
-
+  const { t } = useTranslation();
+  const { open, actionEle, handleClose } = useOffFaitModal();
+  const noticeSnacksElEs = React.useMemo(() => {
+    return [
+      <NoticeSnack
+        actionEle={actionEle}
+        open={open}
+        handleClose={handleClose}
+        messageInfo={{
+          key: VendorProviders.Banxa,
+          message: t("labelOrderBanxaIsReadyToPay"),
+        }}
+      />,
+    ] as any;
+  }, []);
   return (
     <>
       <ModalCoinPairPanel />
@@ -94,6 +120,7 @@ const WrapModal = () => {
             : false
         }
       />
+      <NoticePanelSnackBar noticeSnacksElEs={noticeSnacksElEs} />
     </>
   );
 };

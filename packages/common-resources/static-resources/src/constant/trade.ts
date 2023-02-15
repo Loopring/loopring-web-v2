@@ -587,21 +587,29 @@ export type RedPacketHashInfos = {
 };
 
 export enum OffRampStatus {
-  waitingForPayment = "waitingForPayment",
+  // waitingForPayment = "waitingForPayment",
   watingForCreateOrder = "watingForCreateOrder",
+  waitingForWithdraw = "waitingForWithdraw",
   expired = "expired",
   cancel = "cancel",
-  waitingForWithdraw = "waitingForWithdraw",
   done = "done",
   refund = "refund",
 }
 
+export type OffRampHashItem = {
+  orderId: string;
+  chainId: sdk.ChainId;
+  address: string;
+  product: VendorProviders;
+  status: OffRampStatus;
+  [key: string]: any;
+};
+export type OffRampHashItemObj = {
+  pending: OffRampHashItem;
+  payments: OffRampHashItem[];
+};
 export type OffRampHashItems<T = VendorProviders> = {
-  [K in keyof T]: {
-    orderId: string;
-    status: OffRampStatus;
-    [key: string]: any;
-  };
+  [K in keyof T]: OffRampHashItemObj;
 };
 export type OffRampHashInfo = {
   [key: ACCOUNT_ADDRESS]: OffRampHashItems;
@@ -626,4 +634,9 @@ export type RedPacketOrderData<I> = XOR<
 export enum TabTokenTypeIndex {
   ERC20 = "ERC20",
   NFT = "NFT",
+}
+
+export interface SnackbarMessage {
+  message: string;
+  key: number | string;
 }

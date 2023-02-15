@@ -3,23 +3,11 @@ import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
 import {
   ChainHashInfos,
   OffRampHashInfos,
+  OffRampHashItem,
   OffRampStatus,
-  VendorProviders,
 } from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { ChainId } from "@loopring-web/loopring-sdk";
 
-export type OffRampHashItem = {
-  orderId: string;
-  chainId: sdk.ChainId;
-  address: string;
-  product: VendorProviders;
-  status: OffRampStatus;
-};
-export type updateOffRampHashProps = {
-  pending: OffRampHashItem;
-  payments: OffRampHashItem[];
-};
 const initialState: OffRampHashInfos = {
   [ChainId.GOERLI]: {},
   [ChainId.MAINNET]: {},
@@ -116,7 +104,7 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
           };
           break;
         case OffRampStatus.watingForCreateOrder:
-        case OffRampStatus.waitingForPayment:
+          // case OffRampStatus.waitingForPayment:
           if (
             state[chainId][address][product]?.payments &&
             state[chainId][address][product]?.payments.find(

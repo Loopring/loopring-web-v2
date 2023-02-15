@@ -116,12 +116,6 @@ export const useGetAssets = (): AssetPanelProps & {
       enableBtn();
     }
   }, [walletL2Status, assetsRawData]);
-  // React.useEffect(() => {
-  //   if (walletL2Status === SagaStatus.DONE) {
-  //     myLog("setLoadingBtn enableBtn", assetBtnStatus);
-  //     enableBtn();
-  //   }
-  // }, [walletL2Status]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(false);
@@ -318,12 +312,6 @@ export const useGetAssets = (): AssetPanelProps & {
     }
   }, [ammMap, assetsMap, tokenMap, tokenPriceList, tokenPrices]);
 
-  React.useEffect(() => {
-    if (tokenPriceStatus === SagaStatus.UNSET) {
-      getAssetsRawData();
-    }
-  }, [tokenPriceStatus, assetsMap]);
-
   const onReceive = React.useCallback(
     (token?: any) => {
       setShowAccount({
@@ -344,9 +332,17 @@ export const useGetAssets = (): AssetPanelProps & {
     },
     [setShowAccount]
   );
-
+  React.useEffect(() => {
+    if (
+      tokenPriceStatus === SagaStatus.UNSET ||
+      (!assetsRawData.length && Reflect.ownKeys(assetsMap ?? {}).length)
+    ) {
+      getAssetsRawData();
+    }
+  }, [tokenPriceStatus, assetsMap]);
   React.useEffect(() => {
     getUserAssets();
+    walletLayer2Callback();
     return () => {};
   }, []);
   const assetTitleProps: AssetTitleProps = {

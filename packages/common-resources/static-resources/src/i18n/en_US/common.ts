@@ -1418,4 +1418,8 @@ export default {
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
+  labelOrderOpen: "next",
+  labelOrderCancel: "cancel",
+  labelOrderBanxaIsReadyToPay:
+    "KYC is Done, please click the button to next step",
 };
