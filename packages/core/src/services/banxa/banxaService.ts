@@ -1,7 +1,11 @@
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../api_wrapper";
-import { Account, BANXA_URLS } from "@loopring-web/common-resources";
+import {
+  Account,
+  BANXA_URLS,
+  BanxaOrder,
+} from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
 import { offFaitService } from "./offFaitService";
@@ -151,7 +155,14 @@ export const banxaService = {
       },
     });
   },
-  TransferDone: () => {
+  TransferDone: ({order}: { order: Partial<BanxaOrder> }) => {
+    offFaitService.banxaCheckStatus({
+      data: {
+        status: "paymentReceived",
+        id: order.id ?? "",
+        wallet_address: order.wallet_address,
+      },
+    });
     subject.next({
       status: BanxaCheck.OrderShow,
       data: {
@@ -159,9 +170,10 @@ export const banxaService = {
       },
     });
   },
-  orderDone: () => {},
+  orderDone: () => {
+  },
   orderExpired: () => {
-    banxaService.banxaEnd({ reason: OrderENDReason.Expired, data: "" });
+    banxaService.banxaEnd({reason: OrderENDReason.Expired, data: ""});
   },
   banxaEnd: ({ reason, data }: { reason: OrderENDReason; data: any }) => {
     store.dispatch(resetTransferBanxaData(undefined));
