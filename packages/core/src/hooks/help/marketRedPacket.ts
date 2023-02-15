@@ -192,9 +192,9 @@ export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
     myAmountStr:
       claim &&
       (luckToken.isNft
-        ? amountStrNFTCallback(luckToken.nftTokenInfo as any, claim).amount
+        ? amountStrNFTCallback(luckToken.nftTokenInfo as any, claim).amountStr
         : amountStrCallback(tokenMap, idIndex, luckToken.tokenId, claim)
-      ).amount,
+            .amountStr),
     tokenInfo,
     claim,
   };

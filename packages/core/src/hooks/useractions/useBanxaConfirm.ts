@@ -24,6 +24,7 @@ import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
 import { makeWalletLayer2 } from "../help";
 import {
+  offFaitService,
   useChargeFees,
   useWalletLayer2Socket,
   walletLayer2Service,
@@ -586,6 +587,13 @@ export const useBanxaTransPost = () => {
             `${offBanxaValue.id}`,
             data
           );
+          offFaitService.banxaCheckStatus({
+            data: {
+              status: "paymentReceived",
+              id: offBanxaValue.id ?? "",
+              wallet_address: offBanxaValue.wallet_address,
+            },
+          });
         }
       } catch (error) {
         //TODO confirm again.

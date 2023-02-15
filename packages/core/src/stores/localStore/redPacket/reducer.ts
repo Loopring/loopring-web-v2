@@ -30,9 +30,9 @@ const redPacketHistorySlice: Slice<RedPacketHashInfos> = createSlice<
   initialState,
   reducers: {
     // @ts-ignore
-    clearAll(state: RedPacketHashInfos, _action: PayloadAction<undefined>) {
-      state = { ...initialState };
-    },
+    // clearAll(state: RedPacketHashInfos, _action: PayloadAction<undefined>) {
+    //   state = { ...initialState };
+    // },
     clearRedPacketHash(
       state: RedPacketHashInfos,
       _action: PayloadAction<undefined>

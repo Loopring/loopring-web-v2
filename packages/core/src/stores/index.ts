@@ -134,19 +134,6 @@ const persistedLocalStoreReducer = persistReducer<
   }>
 >(persistLocalStoreConfig, localStoreReducer);
 
-// firebase.initializeApp(fbConfig)
-
-// if (process.env.REACT_APP_NAME) {
-//
-//   console.log("VER:", process.env.REACT_APP_VER);
-// }
-
-// let firebaseReducer: any = {
-//   firebase: undefined,
-// };
-
-// Initialize Firebase
-
 const reducer = combineReducers({
   account: persistedAccountReducer,
   socket: socketSlice.reducer,

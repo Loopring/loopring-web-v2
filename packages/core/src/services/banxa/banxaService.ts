@@ -4,6 +4,7 @@ import { LoopringAPI } from "../../api_wrapper";
 import { Account, BANXA_URLS } from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
+import { offFaitService } from "./offFaitService";
 
 export enum BalanceReason {
   Balance = 0,
@@ -121,6 +122,15 @@ export const banxaService = {
           // "800px", //Optional width parameter – Pass false if not needed.
           // "400px" //Optional height parameter – Pass false if not needed.
         );
+        offFaitService.banxaCheckStatus({
+          data: {
+            status: data.order.status ?? "create",
+            id: data.order.id,
+            checkout_iframe: data.order.checkout_iframe,
+            wallet_address: data.order?.wallet_address?.toString() ?? undefined,
+            account_reference: data.order.account_reference,
+          },
+        });
         subject.next({
           status: BanxaCheck.CheckOrderStatus,
           data: data,

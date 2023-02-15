@@ -11,6 +11,7 @@ import { store, useAccount, useSystem } from "../../stores";
 import {
   CustomError,
   ErrorMap,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 
@@ -78,6 +79,9 @@ export function useOpenRedpacket() {
         });
       } catch (error: any) {
         if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
+          setShowAccount({
+            isShow: false,
+          });
           setShowRedPacket({
             isShow: true,
             step: RedPacketViewStep.DetailPanel,
@@ -89,8 +93,11 @@ export function useOpenRedpacket() {
           [
             UIERROR_CODE.ERROR_REDPACKET_CLAIM_TIMEOUT,
             UIERROR_CODE.ERROR_REDPACKET_CLAIM_OUT,
-          ]
+          ].includes(error?.code)
         ) {
+          setShowAccount({
+            isShow: false,
+          });
           setShowRedPacket({
             isShow: true,
             step: RedPacketViewStep.TimeOutPanel,
@@ -114,6 +121,10 @@ export function useOpenRedpacket() {
                 : error ?? {}),
             },
           });
+          // await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+          // setShowAccount({
+          //   isShow: false,
+          // });
         }
       }
     }

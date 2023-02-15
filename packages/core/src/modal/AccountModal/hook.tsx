@@ -1306,6 +1306,7 @@ export function useAccountModalForUI({
       [AccountStep.RedPacketOpen_In_Progress]: {
         view: (
           <RedPacketOpen_In_Progress
+            btnInfo={undefined}
             {...{
               ...rest,
               account,

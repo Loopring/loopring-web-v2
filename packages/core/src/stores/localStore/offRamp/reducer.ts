@@ -77,16 +77,23 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
           break;
         case OffRampStatus.waitingForWithdraw:
           if (state[chainId][address][product]) {
-            let pending =
+            let pending,
+              prev: any = undefined;
+            if (
               state[chainId][address][product]?.pending?.orderId.toString() !==
               orderId.toString()
-                ? state[chainId][address][product]?.pending
-                : [];
+            ) {
+              pending = state[chainId][address][product]?.pending;
+            } else {
+              pending = [];
+              prev = state[chainId][address][product]?.pending;
+            }
+
             productObj = {
               pending,
               payments: [
                 ...(state[chainId][address][product]?.payments ?? undefined),
-                { ...action.payload },
+                { ...prev, ...action.payload },
               ],
             };
           } else {
@@ -114,8 +121,15 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
           ) {
             productObj = state[chainId][address][product];
           } else {
+            let pending;
+            if (
+              state[chainId][address][product]?.pending?.orderId.toString() ==
+              orderId.toString()
+            ) {
+              pending = state[chainId][address][product]?.pending;
+            }
             productObj = {
-              pending: action.payload,
+              pending: { ...pending, ...action.payload },
               payments: [...(state[chainId][address][product]?.payments ?? [])],
             };
           }

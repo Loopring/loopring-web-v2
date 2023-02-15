@@ -602,6 +602,9 @@ export type OffRampHashItem = {
   address: string;
   product: VendorProviders;
   status: OffRampStatus;
+  wallet_address?: string | undefined;
+  checkout_iframe?: string;
+  account_reference?: string;
   [key: string]: any;
 };
 export type OffRampHashItemObj = {

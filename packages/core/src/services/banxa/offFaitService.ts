@@ -79,84 +79,97 @@ export const offFaitService = {
       } as OffRampHashItem)
     );
   },
-  banxaCheckStatus: ({ data: order }: { data: any }) => {
+  banxaCheckStatus: ({
+    data: order,
+  }: {
+    data: Omit<OffRampHashItem, "status" | "orderId"> & {
+      status: string;
+      id: string;
+    };
+  }) => {
     const {
       system: { chainId },
       account,
     } = store.getState();
+
     if (order && order.status) {
-      if (order.wallet_address && order.status === "waitingPayment") {
+      if (order?.wallet_address && order.status === "waitingPayment") {
         offFaitService.notifyUI({
           data: order,
           product: VendorProviders.Banxa,
           status: OffRampStatus.watingForCreateOrder,
         });
-      } else if (order.wallet_address && order.status === "refunded") {
+      } else if (order.status === "refunded") {
         offFaitService.notifyUI({
           data: order,
           product: VendorProviders.Banxa,
           status: OffRampStatus.refund,
         });
-      } else if (order.wallet_address && order.status === "complete") {
+      } else if (order.status === "complete") {
         offFaitService.notifyUI({
           data: order,
           product: VendorProviders.Banxa,
           status: OffRampStatus.done,
         });
       }
+      const _order = {
+        orderId: order.id,
+        address: account.accAddress,
+        chainId,
+        product: VendorProviders.Banxa,
+        ...(order?.checkout_iframe
+          ? { checkout_iframe: order?.checkout_iframe }
+          : {}),
+        ...(order?.wallet_address
+          ? { wallet_address: order?.wallet_address?.toString() ?? undefined }
+          : {}),
+        ...(order?.account_reference
+          ? { account_reference: order?.account_reference }
+          : {}),
+      };
       if (
-        (order.wallet_address && order.status === "waitingPayment") ||
-        (order.wallet_address && order.status === "pendingPayment")
+        order.status === "waitingPayment" ||
+        order.status === "pendingPayment" ||
+        order.status === "create"
       ) {
         store.dispatch(
           updateOffRampHash({
-            orderId: order.orderId,
-            address: account.accAddress,
-            product: VendorProviders.Banxa,
+            ..._order,
             status: OffRampStatus.watingForCreateOrder,
           } as OffRampHashItem)
         );
       } else if (
-        (order.wallet_address && order.status === "paymentReceived") ||
-        (order.wallet_address && order.status === "inProgress")
+        order.status === "paymentReceived" ||
+        order.status === "inProgress"
       ) {
         store.dispatch(
           updateOffRampHash({
-            orderId: order.orderId,
-            address: account.accAddress,
-            product: VendorProviders.Banxa,
+            ..._order,
             status: OffRampStatus.waitingForWithdraw,
           } as OffRampHashItem)
         );
       } else if (
-        (order.wallet_address && order.status === "cancelled") ||
-        (order.wallet_address && order.status === "expired") ||
-        (order.wallet_address && order.status === "declined")
+        order.status === "cancelled" ||
+        order.status === "expired" ||
+        order.status === "declined"
       ) {
         store.dispatch(
           updateOffRampHash({
-            orderId: order.orderId,
-            address: account.accAddress,
-            product: VendorProviders.Banxa,
-            chainId,
+            ..._order,
             status: OffRampStatus.expired,
           } as OffRampHashItem)
         );
-      } else if (order.wallet_address && order.status === "refunded") {
+      } else if (order.status === "refunded") {
         store.dispatch(
           updateOffRampHash({
-            orderId: order.orderId,
-            address: account.accAddress,
-            product: VendorProviders.Banxa,
+            ..._order,
             status: OffRampStatus.refund,
           } as OffRampHashItem)
         );
-      } else if (order.wallet_address && order.status === "complete") {
+      } else if (order.status === "complete") {
         store.dispatch(
           updateOffRampHash({
-            orderId: order.orderId,
-            address: account.accAddress,
-            product: VendorProviders.Banxa,
+            ..._order,
             status: OffRampStatus.done,
           } as OffRampHashItem)
         );
@@ -168,7 +181,10 @@ export const offFaitService = {
     status,
     product,
   }: {
-    data: { order: any; status: OffRampStatus };
+    data: Omit<OffRampHashItem, "status" | "orderId"> & {
+      status: string;
+      id: string;
+    };
     status: OffRampStatus;
     product: VendorProviders;
   }) => {

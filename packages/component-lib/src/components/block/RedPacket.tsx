@@ -44,9 +44,7 @@ import { TablePagination, BoxNFT } from "../basic-lib";
 import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
 import { NFTMedia } from "./nftMedia";
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -188,6 +186,10 @@ export const RedPacketBg = styled(Box)<
       padding-top: 0;
       width: var(--nft-large-avatar);
       height: var(--nft-large-avatar);
+    }
+
+    .RedPacketReceived .redPacketNFT {
+      margin-top: 20px;
     }
   }
 
@@ -755,6 +757,7 @@ export const RedPacketOpened = ({
           <Typography
             variant={"h4"}
             color={RedPacketCssColorConfig[type].highLightColor}
+            marginTop={1}
           >
             {myAmountStr ? myAmountStr : EmptyValueTag}
           </Typography>
@@ -765,7 +768,11 @@ export const RedPacketOpened = ({
             {t("labelTotalRedPacket", { value: amountStr })}
           </Typography>
         </Box>
-        <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+        <Box
+          display={"flex"}
+          className={"middle RedPacketReceived"}
+          flexDirection={"column"}
+        >
           {ImageEle}
           <Typography color={"inherit"}>{sender}</Typography>
           <Typography
@@ -895,6 +902,7 @@ const BoxStyle = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 
   .redPacketNFT {
+    margin-top: ${({ theme }) => 2 * theme.unit}px;
     padding-top: var(--nft-large-avatar);
   }
 
@@ -1240,6 +1248,7 @@ export const RedPacketPrepare = ({
           {...{
             ...props,
           }}
+          ImageEle={ImageEle}
           type={_type ? _type : "default"}
           amountStr={amountStr}
           myAmountStr={myAmountStr}

@@ -7,9 +7,8 @@ import { setLanguage } from "@loopring-web/component-lib";
 import { useInit } from "./hook";
 import React from "react";
 import { useTranslation } from "react-i18next";
-
 import { HashRouter as Router, useLocation } from "react-router-dom";
-import { storeForL1 as store } from "@loopring-web/core";
+import { storeForL1 } from "./index";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -25,11 +24,11 @@ const App = () => {
   const {
     i18n: { language },
   } = useTranslation();
-  const storeLan = store.getState().settings.language;
+  const storeLan = storeForL1.getState().settings.language;
 
   React.useEffect(() => {
     if (storeLan !== language) {
-      store.dispatch(setLanguage(language));
+      storeForL1.dispatch(setLanguage(language));
     }
   }, [storeLan, language]);
 

@@ -45,7 +45,7 @@ export const MyRedPacketPanel = ({
   React.useEffect(() => {
     let height = container?.current?.offsetHeight;
     if (height) {
-      const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
+      const pageSize = Math.floor((height - 120) / RowConfig.rowHeight - 1);
       setPageSize(pageSize);
       handleTabChange(currentTab);
     }
@@ -103,7 +103,7 @@ export const MyRedPacketPanel = ({
         </Button>
       </Box>
 
-      <StylePaper ref={container} flex={1}>
+      <StylePaper overflow={"scroll"} ref={container} flex={1}>
         {/*<Tabs*/}
         {/*  value={currentTokenTab}*/}
         {/*  onChange={(_event, value) => handleTypeTabChange(value)}*/}
