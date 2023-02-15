@@ -342,7 +342,7 @@ export const useGetAssets = (): AssetPanelProps & {
   }, [tokenPriceStatus, assetsMap]);
   React.useEffect(() => {
     getUserAssets();
-    walletLayer2Callback();
+
     return () => {};
   }, []);
   const assetTitleProps: AssetTitleProps = {

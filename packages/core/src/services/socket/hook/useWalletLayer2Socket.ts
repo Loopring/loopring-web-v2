@@ -52,4 +52,8 @@ export const useWalletLayer2Socket = ({
       walletLayer1Callback();
     }
   }, [walletLayer1Status]);
+  React.useEffect(() => {
+    walletLayer2Callback && walletLayer2Callback();
+    walletLayer1Callback && walletLayer1Callback();
+  }, []);
 };
