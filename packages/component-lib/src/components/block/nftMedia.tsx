@@ -228,7 +228,7 @@ export const NFTMedia = React.memo(
                       r={getIPFSString(item?.image, baseURL)}
                       src={getIPFSString(item?.animationUrl, baseURL)}
                       ref={d3Ref}
-                      autoplay
+                      autoPlay
                       auto-rotate
                       camera-controls
                       controls
