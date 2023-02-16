@@ -8,6 +8,7 @@
     "src",
     "src/*",
     "src/**/*.json",
+    "src/types.d.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
     "useCache": true,
