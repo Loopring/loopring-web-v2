@@ -33,6 +33,7 @@ import {
   WithTranslation,
   withTranslation,
 } from "react-i18next";
+import "@google/model-viewer";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -222,7 +223,6 @@ export const NFTMedia = React.memo(
                       setPlay(true);
                     }}
                   >
-                    {/* //@ts-ignore} */}
                     <model-viewer
                       poste
                       r={getIPFSString(item?.image, baseURL)}

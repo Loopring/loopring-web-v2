@@ -7,7 +7,7 @@
   "include": [
     "src",
     "src/*",
-    "src/**/*.json"
+    "src/**/*.json",
   ],
   "awesomeTypescriptLoaderOptions": {
     "useCache": true,
