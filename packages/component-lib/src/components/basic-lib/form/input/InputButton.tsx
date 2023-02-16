@@ -11,6 +11,7 @@ import React from "react";
 import { useFocusRef } from "../hooks";
 import { IInput, ISBtn, IWrap } from "./style";
 import { CoinIcon } from "./Default";
+import { sanitize } from "dompurify";
 
 function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   {
@@ -239,9 +240,11 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
                   </Grid>
                 )}
                 <Grid item paddingLeft={1}>
-                  <Typography fontSize={"inherit"} color={"inherit"}>
-                    {belong}
-                  </Typography>
+                  <Typography
+                    fontSize={"inherit"}
+                    color={"inherit"}
+                    dangerouslySetInnerHTML={{ __html: sanitize(belong) }}
+                  />
                 </Grid>
               </Grid>
             ) : (

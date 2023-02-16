@@ -31,6 +31,7 @@
     "ffjavascript": "^0.1.0",
     "firebase": "^9.8.3",
     "github-markdown-css": "^5.0.0",
+    "html5-qrcode": "2.3.4",
     "i18next": "^20.1.0",
     "ipfs-http-client": "^56.0.2",
     "jsqr": "^1.4.0",
@@ -64,8 +65,7 @@
     "remark-gfm": "^3.0.0",
     "rxjs": "^7.1.0",
     "voca": "^1.4.0",
-    "web3": "^1.8.0",
-    "html5-qrcode": "2.3.4"
+    "web3": "^1.8.0"
   },
   "build": {
     "files": [
@@ -119,13 +119,13 @@
     ]
   },
   "devDependencies": {
-    "html5-qrcode": "2.3.4",
     "@babel/core": "^7.13.14",
     "@babel/eslint-parser": "^7.13.14",
     "@babel/plugin-transform-typescript": "^7.12.1",
     "@babel/preset-env": "^7.13.12",
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
+    "@google/model-viewer": "^3.0.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/react-hooks": "^5.1.0",
@@ -156,6 +156,7 @@
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "html-loader": "^0.5.5",
+    "html5-qrcode": "2.3.4",
     "lerna": "^4.0.0",
     "node-sass": "^6.0.1",
     "react-router": "^5.2.1",

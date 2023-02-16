@@ -167,6 +167,9 @@ export const useNFTListDeep = <T extends Partial<NFTWholeINFO>>() => {
         if (/video/gi.test(req?.headers?.get("content-type") ?? "")) {
           tokenInfo.__mediaType__ = Media.Video;
         }
+        if (/(model)/gi.test(req?.headers?.get("content-type") ?? "")) {
+          tokenInfo.__mediaType__ = Media.Media3D;
+        }
         if (/image/gi.test(req?.headers?.get("content-type") ?? "")) {
           tokenInfo.__mediaType__ = Media.Image;
         }

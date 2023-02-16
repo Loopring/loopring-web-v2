@@ -10,6 +10,7 @@ import {
   RefreshIcon,
   SoursURL,
   SyncIcon,
+  ThreeDIcon,
   VideoIcon,
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
@@ -69,6 +70,8 @@ export const NFTMedia = React.memo(
     ) => {
       const vidRef = React.useRef<HTMLVideoElement>(null);
       const aidRef = React.useRef<HTMLAudioElement>(null);
+      const d3Ref = React.useRef<HTMLAudioElement>(null);
+
       const theme = useTheme();
       const { t } = useTranslation();
       const {
@@ -182,6 +185,62 @@ export const NFTMedia = React.memo(
                 )}
               </>
             );
+          case Media.Media3D:
+            // @ts-ignore
+            return (
+              <>
+                <Box
+                  position={"absolute"}
+                  right={theme.unit}
+                  bottom={theme.unit}
+                  borderRadius={"50%"}
+                  sx={{ background: "var(--color-box)" }}
+                  padding={3 / 2}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  zIndex={100}
+                >
+                  <ThreeDIcon
+                    fontSize={"large"}
+                    htmlColor={"var(--text-third)"}
+                  />
+                </Box>
+
+                {item.animationUrl && shouldPlay && !play && (
+                  <Box
+                    position={"absolute"}
+                    left={"50%"}
+                    top={"50%"}
+                    zIndex={100}
+                    sx={{
+                      transform: "translate(-50% , -50%)",
+                      cursor: "pointer",
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPlay(true);
+                    }}
+                  >
+                    <model-viewer
+                      poste
+                      r={getIPFSString(item?.image, baseURL)}
+                      src={getIPFSString(item?.animationUrl, baseURL)}
+                      ref={d3Ref}
+                      autoplay
+                      auto-rotate
+                      camera-controls
+                      controls
+                      loop
+                      ar-modes="webxr scene-viewer quick-look"
+                      loading="eager"
+                      touch-action="pan-y"
+                      shadow-intensity="1"
+                    />
+                  </Box>
+                )}
+              </>
+            );
           default:
             return <></>;
         }
@@ -194,6 +253,9 @@ export const NFTMedia = React.memo(
           if (aidRef.current) {
             aidRef.current.pause();
           }
+          if (d3Ref.current) {
+            d3Ref.current.pause();
+          }
         }
         return () => {
           if (vidRef.current) {
@@ -201,6 +263,9 @@ export const NFTMedia = React.memo(
           }
           if (aidRef.current) {
             aidRef.current.pause();
+          }
+          if (d3Ref.current) {
+            d3Ref.current.pause();
           }
         };
       }, [isShow]);

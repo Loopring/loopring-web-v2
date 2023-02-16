@@ -11,4 +11,19 @@ declare global {
     __renderReportCall__: () => void;
     rampInstance: RampInstantSDK | undefined;
   }
+
+  namespace JSX {
+    interface IntrinsicElements {
+      "model-viewer": React.DetailedHTMLProps<
+        React.AllHTMLAttributes<
+          Partial<globalThis.HTMLElementTagNameMap["model-viewer"]>
+        >,
+        Partial<globalThis.HTMLElementTagNameMap["model-viewer"]>
+      >;
+    }
+
+    interface MyElementAttributes {
+      src: string;
+    }
+  }
 }

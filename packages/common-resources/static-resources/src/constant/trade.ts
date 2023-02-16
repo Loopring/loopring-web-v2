@@ -125,6 +125,7 @@ export enum Media {
   Audio = "Audio",
   Image = "Image",
   Video = "Video",
+  Media3D = "Media3D",
 }
 
 export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
