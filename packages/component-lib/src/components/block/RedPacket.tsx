@@ -43,6 +43,7 @@ import {
 import { TablePagination, BoxNFT } from "../basic-lib";
 import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
 import { NFTMedia } from "./nftMedia";
+import { sanitize } from "dompurify";
 
 export const RedPacketBg = styled(Box)<
   BoxProps & { imageSrc?: string; type: string }
@@ -450,9 +451,8 @@ export const RedPacketOpen = ({
               lineClamp: "2",
               "-webkit-box-orient": "vertical",
             }}
-          >
-            {memo}
-          </Typography>
+            dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+          />
         </Box>
         <Box display={"flex"} className={"footer"}>
           {viewDetail && (
@@ -646,9 +646,8 @@ export const RedPacketClock = ({
               lineClamp: "2",
               "-webkit-box-orient": "vertical",
             }}
-          >
-            {memo}
-          </Typography>
+            dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+          ></Typography>
         </Box>
       </>
     );
@@ -724,9 +723,8 @@ RedPacketDefault & RedPacketUnreadyProps) => {
               lineClamp: "2",
               "-webkit-box-orient": "vertical",
             }}
-          >
-            {memo}
-          </Typography>
+            dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+          ></Typography>
         </Box>
       </Box>
     );
@@ -793,9 +791,8 @@ export const RedPacketOpened = ({
               lineClamp: "2",
               "-webkit-box-orient": "vertical",
             }}
-          >
-            {memo}
-          </Typography>
+            dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+          />
         </Box>
         <Box display={"flex"} className={"footer"}>
           <Link
@@ -873,9 +870,8 @@ export const RedPacketTimeout = ({
               lineClamp: "2",
               "-webkit-box-orient": "vertical",
             }}
-          >
-            {memo}
-          </Typography>
+            dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+          />
         </Box>
         <Box display={"flex"} className={"footer"}>
           {viewDetail && (
@@ -1000,9 +996,8 @@ export const RedPacketDetail = ({
             lineClamp: "2",
             "-webkit-box-orient": "vertical",
           }}
-        >
-          {memo}
-        </Typography>
+          dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+        />
         {ImageEle}
         <Typography
           variant={"h3"}
