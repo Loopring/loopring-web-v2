@@ -224,8 +224,7 @@ export const NFTMedia = React.memo(
                     }}
                   >
                     <model-viewer
-                      poste
-                      r={getIPFSString(item?.image, baseURL)}
+                      poster={getIPFSString(item?.image, baseURL)}
                       src={getIPFSString(item?.animationUrl, baseURL)}
                       ref={d3Ref}
                       autoPlay
