@@ -222,6 +222,7 @@ export const NFTMedia = React.memo(
                       setPlay(true);
                     }}
                   >
+                    {/* //@ts-ignore} */}
                     <model-viewer
                       poste
                       r={getIPFSString(item?.image, baseURL)}
