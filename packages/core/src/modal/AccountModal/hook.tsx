@@ -11,6 +11,7 @@ import {
   ClaimWithdraw_In_Progress,
   ClaimWithdraw_Submit,
   ClaimWithdraw_WaitForAuth,
+  ContinuousBanxaOrder,
   CreateAccount_Approve_Denied,
   CreateAccount_Approve_Submit,
   CreateAccount_Approve_WaitForAuth,
@@ -132,12 +133,14 @@ import {
   TradeTypes,
 } from "@loopring-web/common-resources";
 import {
+  banxaService,
   depositServices,
   goActiveAccount,
   LAST_STEP,
   lockAccount,
   mintService,
   onchainHashInfo,
+  OrderENDReason,
   store,
   unlockAccount,
   useAccount,
@@ -634,6 +637,32 @@ export function useAccountModalForUI({
   const accountList = React.useMemo(() => {
     // const isShowAccount?.info.
     return Object.values({
+      [AccountStep.ContinuousBanxaOrder]: {
+        view: (
+          <ContinuousBanxaOrder
+            title={t("labelBanxaTitleCreateAgain")}
+            btnInfo={{
+              isLoading: isShowAccount?.info?.isBanxaLaunchLoading,
+              callback: () => {
+                banxaService.openOldOne();
+              },
+              btnTxt: t("labelBanxaContinuous"),
+            }}
+            btnInfo2={{
+              isLoading: isShowAccount?.info?.isBanxaLaunchLoading,
+              callback: () => {
+                banxaService.banxaEnd({
+                  reason: OrderENDReason.UserCancel,
+                  data: "",
+                });
+                banxaService.banxaStart(true);
+              },
+              btnTxt: t("labelBanxaCreate"),
+            }}
+          />
+        ),
+        height: "auto",
+      },
       [AccountStep.ThirdPanelReturn]: {
         view: (
           <ThirdPanelReturn
@@ -641,7 +670,7 @@ export function useAccountModalForUI({
             description={isShowAccount?.info?.description}
             btnInfo={{
               ...closeBtnInfo(),
-              btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIknow2"),
+              btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIKnow2"),
             }}
           />
         ),
@@ -776,7 +805,7 @@ export function useAccountModalForUI({
               account,
               btnInfo: {
                 ...closeBtnInfo(),
-                btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIknow2"),
+                btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIKnow2"),
               } as any,
               ...account,
               isNewAccount: depositProps.isNewAccount,

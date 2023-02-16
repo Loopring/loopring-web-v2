@@ -23,6 +23,7 @@ export type AccountBaseProps = {
 } & Account;
 
 export enum AccountStep {
+  ContinuousBanxaOrder,
   CheckingActive,
   AddAssetGateway,
   SendAssetGateway,

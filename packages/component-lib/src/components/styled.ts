@@ -391,8 +391,9 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
   padding: 0 ${({ theme }) => theme.unit * 3}px;
   text-indent: 0.5em;
   position: relative;
+
   &.addAsset,
-  &.sendAsset {
+  &.banxaEnter &.sendAsset {
     white-space: pre;
     font-size: ${({ theme }) => theme.fontDefault.h5};
     //justify-content: flex-start;

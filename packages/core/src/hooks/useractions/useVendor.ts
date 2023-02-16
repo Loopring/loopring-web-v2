@@ -15,6 +15,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { BanxaCheck, banxaService, OrderENDReason } from "../../services/banxa";
 import { useRouteMatch } from "react-router-dom";
+import _ from "lodash";
 
 export enum RAMP_SELL_PANEL {
   LIST,
@@ -51,6 +52,7 @@ export const useVendor = () => {
   React.useEffect(() => {
     if (match?.params?.tab === "Sell") {
       setSellPanel(RAMP_SELL_PANEL.LIST);
+      banxaService.banxaCheckHavePending();
     }
   }, [match?.params?.tab]);
 
@@ -160,6 +162,10 @@ export const useVendor = () => {
   const [banxaBtnStatus, setBanxaBtnStatus] = React.useState<TradeBtnStatus>(
     TradeBtnStatus.AVAILABLE
   );
+  const _banxaClick = _.debounce(() => {
+    banxaService.banxaEnd({ reason: OrderENDReason.UserCancel, data: "" });
+    banxaService.banxaStart();
+  }, 500);
   const vendorListSell: VendorItem[] = legalShow
     ? [
         // {
@@ -233,7 +239,7 @@ export const useVendor = () => {
           handleSelect: async (_event) => {
             setBanxaBtnStatus(TradeBtnStatus.LOADING);
             setShowAccount({ isShow: false });
-            banxaService.banxaStart();
+            _banxaClick();
             // @ts-ignore
           },
         },

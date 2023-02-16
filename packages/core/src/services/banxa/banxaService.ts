@@ -5,10 +5,16 @@ import {
   Account,
   BANXA_URLS,
   BanxaOrder,
+  myLog,
+  VendorProviders,
 } from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
 import { offFaitService } from "./offFaitService";
+import {
+  // AccountStep,
+  setShowAccount,
+} from "@loopring-web/component-lib";
 
 export enum BalanceReason {
   Balance = 0,
@@ -74,12 +80,51 @@ const subject = new Subject<{
   };
 }>();
 export const banxaService = {
-  banxaStart: async () => {
+  banxaCheckHavePending: async () => {
     const {
       account,
       system: { chainId },
+      localStore: { offRampHistory },
+      // modals:{isShowAccount}
     } = store.getState();
-
+    if (
+      offRampHistory[chainId][account.accAddress] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+        "pending"
+      ]
+    ) {
+      const _order =
+        offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+          "pending"
+        ];
+      const { data } = await banxaApiCall({
+        chainId: chainId as ChainId,
+        method: sdk.ReqMethod.GET,
+        url: `/api/orders/${_order.orderId}`,
+        query: "",
+        payload: {},
+        account,
+      });
+      offFaitService.banxaCheckStatus({
+        data: {
+          status: data.order.status,
+          id: data.order.id,
+          checkout_iframe: data.order.checkout_iframe,
+          wallet_address: data.order?.wallet_address?.toString() ?? undefined,
+          account_reference: data.order.account_reference,
+        },
+      });
+      myLog("banxa Check Have Pending", data.order);
+    }
+  },
+  openOldOne: async () => {
+    const {
+      account,
+      system: { chainId },
+      localStore: { offRampHistory },
+      // modals:{isShowAccount}
+    } = store.getState();
     let banxa: any = undefined;
     try {
       // @ts-ignore
@@ -93,7 +138,70 @@ export const banxaService = {
         data: "Banxa SKD is not ready",
       });
     }
-    // @ts-ignore
+    store.dispatch(
+      setShowAccount({ isShow: false, info: { isBanxaLaunchLoading: true } })
+    );
+    if (
+      offRampHistory[chainId][account.accAddress] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+        "pending"
+      ] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+        "pending"
+      ].checkout_iframe
+    ) {
+      const url =
+        offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+          "pending"
+        ].checkout_iframe;
+      myLog("iframeBanxaTarget checkout_iframe", url);
+      banxa.generateIframe("#iframeBanxaTarget", url, false);
+    } else {
+      banxaService.banxaStart(true);
+    }
+  },
+  banxaStart: async (_createNew = false) => {
+    const {
+      account,
+      system: { chainId },
+      // localStore: { offRampHistory },
+      // modals:{isShowAccount}
+    } = store.getState();
+
+    // if (
+    //   offRampHistory[chainId][account.accAddress] &&
+    //   offRampHistory[chainId][account.accAddress][VendorProviders.Banxa] &&
+    //   offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+    //     "pending"
+    //   ] &&
+    //   !createNew
+    // ) {
+    //   store.dispatch(
+    //     setShowAccount({
+    //       isShow: true,
+    //       step: AccountStep.ContinuousBanxaOrder,
+    //     })
+    //   );
+    //   return;
+    // }
+    let banxa: any = undefined;
+    try {
+      // @ts-ignore
+      banxa = new window.Banxa(
+        "loopring",
+        chainId == ChainId.GOERLI ? "sandbox" : ""
+      );
+    } catch (e) {
+      banxaService.banxaEnd({
+        reason: OrderENDReason.BanxaNotReady,
+        data: "Banxa SKD is not ready",
+      });
+      return;
+    }
+    store.dispatch(
+      setShowAccount({ isShow: false, info: { isBanxaLaunchLoading: true } })
+    );
     const anchor: any = window.document.querySelector("#iframeBanxaTarget");
     // anchor.querySelector("anchor");
     if (anchor && banxa) {
@@ -146,6 +254,8 @@ export const banxaService = {
         });
       }
     }
+
+    // @ts-ignore
   },
   KYCDone: () => {
     subject.next({
@@ -155,7 +265,7 @@ export const banxaService = {
       },
     });
   },
-  TransferDone: ({order}: { order: Partial<BanxaOrder> }) => {
+  TransferDone: ({ order }: { order: Partial<BanxaOrder> }) => {
     offFaitService.banxaCheckStatus({
       data: {
         status: "paymentReceived",
@@ -170,10 +280,9 @@ export const banxaService = {
       },
     });
   },
-  orderDone: () => {
-  },
+  orderDone: () => {},
   orderExpired: () => {
-    banxaService.banxaEnd({reason: OrderENDReason.Expired, data: ""});
+    banxaService.banxaEnd({ reason: OrderENDReason.Expired, data: "" });
   },
   banxaEnd: ({ reason, data }: { reason: OrderENDReason; data: any }) => {
     store.dispatch(resetTransferBanxaData(undefined));

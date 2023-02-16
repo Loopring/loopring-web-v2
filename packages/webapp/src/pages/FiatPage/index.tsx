@@ -30,7 +30,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const history = useHistory();
   const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
     useVendor();
-  const { resetTransferRampData, resetTransferBanxaData } = useModalData();
+  // const { resetTransferRampData, resetTransferBanxaData } = useModalData();
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
 
   const { isMobile } = useSettings();

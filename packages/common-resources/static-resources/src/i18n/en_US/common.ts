@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+
 export default {
   labelErrorTitle: "Error Detail: ",
   labelNoContent: "No Content",
@@ -1231,7 +1232,7 @@ export default {
   labelSwapSettingSecondConfirmTootip: "skip confirm screen when toggled off",
   labelSwapSettingToggleSuccess: "Swap second confirmation trun {{onOrOff}}",
   labelFeeMin: "Min {{fee}}",
-  labelIknow2: "I know",
+  labelIKnow2: "I know",
   labelAddAssetTitleBridge: "Add Asset From Another L1",
   labelAddAssetTitleBridgeDesActive:
     "If you have transferred tokens from another Ethereum L1 account, it may take some time for this transaction to execute on-chain. Once you receive the assets, you can manually activate the L2 account.",
@@ -1422,4 +1423,7 @@ export default {
   labelOrderCancel: "cancel",
   labelOrderBanxaIsReadyToPay:
     "KYC is Done, please click the button to next step",
+  labelBanxaContinuous: "Continuous preview order",
+  labelBanxaCreate: "Create a new order",
+  labelBanxaTitleCreateAgain: "You still having an order in progressing:",
 };
