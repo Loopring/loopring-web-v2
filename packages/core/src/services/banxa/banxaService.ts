@@ -12,6 +12,7 @@ import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
 import { offFaitService } from "./offFaitService";
 import {
+  AccountStep,
   // AccountStep,
   setShowAccount,
 } from "@loopring-web/component-lib";
@@ -125,19 +126,19 @@ export const banxaService = {
       localStore: { offRampHistory },
       // modals:{isShowAccount}
     } = store.getState();
-    let banxa: any = undefined;
-    try {
-      // @ts-ignore
-      banxa = new window.Banxa(
-        "loopring",
-        chainId == ChainId.GOERLI ? "sandbox" : ""
-      );
-    } catch (e) {
-      banxaService.banxaEnd({
-        reason: OrderENDReason.BanxaNotReady,
-        data: "Banxa SKD is not ready",
-      });
-    }
+    // let banxa: any = undefined;
+    // try {
+    //   // @ts-ignore
+    //   banxa = new window.Banxa(
+    //     "loopring",
+    //     chainId == ChainId.GOERLI ? "sandbox" : ""
+    //   );
+    // } catch (e) {
+    //   banxaService.banxaEnd({
+    //     reason: OrderENDReason.BanxaNotReady,
+    //     data: "Banxa SKD is not ready",
+    //   });
+    // }
     store.dispatch(
       setShowAccount({ isShow: false, info: { isBanxaLaunchLoading: true } })
     );
@@ -151,12 +152,12 @@ export const banxaService = {
         "pending"
       ].checkout_iframe
     ) {
-      const url =
-        offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
-          "pending"
-        ].checkout_iframe;
-      myLog("iframeBanxaTarget checkout_iframe", url);
-      banxa.generateIframe("#iframeBanxaTarget", url, false);
+      // const url =
+      //   offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+      //     "pending"
+      //   ].checkout_iframe;
+      // myLog("iframeBanxaTarget checkout_iframe", url);
+      // banxa.generateIframe("#iframeBanxaTarget", url, false);
     } else {
       banxaService.banxaStart(true);
     }
@@ -169,22 +170,27 @@ export const banxaService = {
       // modals:{isShowAccount}
     } = store.getState();
 
-    // if (
-    //   offRampHistory[chainId][account.accAddress] &&
-    //   offRampHistory[chainId][account.accAddress][VendorProviders.Banxa] &&
-    //   offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
-    //     "pending"
-    //   ] &&
-    //   !createNew
-    // ) {
-    //   store.dispatch(
-    //     setShowAccount({
-    //       isShow: true,
-    //       step: AccountStep.ContinuousBanxaOrder,
-    //     })
-    //   );
-    //   return;
-    // }
+    if (
+      offRampHistory[chainId][account.accAddress] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+        "pending"
+      ] &&
+      !createNew
+    ) {
+      const orderId =
+        offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+          "pending"
+        ].orderId;
+      store.dispatch(
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.ContinuousBanxaOrder,
+          info: orderId,
+        })
+      );
+      return;
+    }
     let banxa: any = undefined;
     try {
       // @ts-ignore

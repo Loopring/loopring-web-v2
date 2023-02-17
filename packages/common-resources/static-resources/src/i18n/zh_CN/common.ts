@@ -1408,7 +1408,7 @@ export default {
   labelOrderCancel: "cancel",
   labelOrderBanxaIsReadyToPay:
     "KYC is Done, please click the button to next step",
-  labelBanxaContinuous: "Continuous preview order",
+  labelBanxaContinuous: "Continuous waiting",
   labelBanxaCreate: "Create a new order",
   labelBanxaTitleCreateAgain: "You still having an order in progressing:",
 };

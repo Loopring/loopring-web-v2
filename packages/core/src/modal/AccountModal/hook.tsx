@@ -644,10 +644,17 @@ export function useAccountModalForUI({
             btnInfo={{
               isLoading: isShowAccount?.info?.isBanxaLaunchLoading,
               callback: () => {
-                banxaService.openOldOne();
+                setShouldShow(false);
+                setShowAccount({ isShow: false });
+                // if (props?.closeExtend) {
+                //   props?.closeExtend(e);
+                // }
+                // banxaService.openOldOne();
               },
               btnTxt: t("labelBanxaContinuous"),
             }}
+            orderId={isShowAccount?.info?.orderId}
+            chainId={chainId as any}
             btnInfo2={{
               isLoading: isShowAccount?.info?.isBanxaLaunchLoading,
               callback: () => {
