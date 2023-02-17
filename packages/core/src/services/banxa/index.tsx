@@ -5,6 +5,8 @@ import { Box } from "@mui/material";
 import { Button } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
+import { useModalData } from "../../stores";
+import { banxaService } from "./banxaService";
 
 export * from "./banxaService";
 export * from "./offFaitService";
@@ -17,6 +19,9 @@ export function useOffFaitModal() {
   const handleClose = () => {
     setOpen(false);
   };
+  const { updateOffBanxaData } = useModalData();
+  // const {  updateTransferBanxaData } = useModalData();
+
   const [order, setOrder] = React.useState<any>({});
   const actionEle = React.useMemo(() => {
     return (
@@ -32,6 +37,8 @@ export function useOffFaitModal() {
           color={"primary"}
           onClick={() => {
             history.push(`/trade/fiat/sell?orderId=${order.orderId}`);
+            updateOffBanxaData({ order });
+            banxaService.KYCDone();
             handleClose();
           }}
         >
@@ -50,11 +57,11 @@ export function useOffFaitModal() {
         </Button>
       </Box>
     );
-  }, []);
+  }, [order]);
   const handleShowUI = React.useCallback((props: OffOderUIItem) => {
+    setOrder(props.order);
     setOpen(true);
     //todo props.product
-    setOrder(props.order);
   }, []);
 
   React.useEffect(() => {

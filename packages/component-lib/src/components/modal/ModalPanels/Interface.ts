@@ -112,6 +112,7 @@ export enum AccountStep {
   Transfer_BANXA_User_Denied,
   Transfer_BANXA_In_Progress,
   Transfer_BANXA_Success,
+  Transfer_BANXA_Confirm,
   Transfer_BANXA_Failed,
 
   Withdraw_WaitForAuth,

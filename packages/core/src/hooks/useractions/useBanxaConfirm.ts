@@ -1,6 +1,7 @@
 import {
   AccountStatus,
   AddressError,
+  BANXA_URLS,
   BanxaOrder,
   CoinMap,
   Explorer,
@@ -277,7 +278,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     if (nodeTimer.current) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
-    const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
     //@ts-ignore
     _order = {
       ..._order,
@@ -297,8 +297,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       });
       myLog("banxa check Order ", order);
 
-      const memo = "OFF-Banxa Transfer";
-
       if (
         order.status === "waitingPayment" &&
         order.wallet_address &&
@@ -307,15 +305,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         banxaService.KYCDone();
         // const transferBanxaValue = store.getState()._router_modalData.transferBanxaValue;
         updateOffBanxaData({ order });
-        checkFeeIsEnough({ isRequiredAPI: true });
-        updateTransferBanxaData({
-          belong: order.coin_code,
-          tradeValue: order.coin_amount,
-          balance: walletMap[order.coin_code]?.count,
-          address: order.wallet_address,
-          memo,
-          // fee: feeInfo,//transferBanxaValue.fee,
-        });
         // TODO: console.log
         console.log("BANXA KYC Done BANXA order Info:", order);
       } else {
@@ -349,8 +338,25 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         case BanxaCheck.OrderHide:
           myLog("Banxa Order OrderHide");
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
+
           if (props.data?.reason == "KYCDone") {
-            setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
+            const memo = "OFF-Banxa Transfer";
+            const {
+              _router_modalData: { offBanxaValue },
+            } = store.getState();
+            if (offBanxaValue) {
+              const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
+              checkFeeIsEnough({ isRequiredAPI: true });
+              updateTransferBanxaData({
+                belong: offBanxaValue.coin_code,
+                tradeValue: offBanxaValue.coin_amount,
+                balance: walletMap[offBanxaValue.coin_code]?.count,
+                address: offBanxaValue.wallet_address ?? "",
+                memo,
+                // fee: feeInfo,//transferBanxaValue.fee,
+              });
+              setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
+            }
           }
           break;
         case BanxaCheck.OrderEnd:
@@ -359,6 +365,13 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         case BanxaCheck.OrderShow:
           if (props.data?.reason == "transferDone") {
             setSellPanel(RAMP_SELL_PANEL.LIST);
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Transfer_BANXA_Confirm,
+              info: {
+                hash: `${BANXA_URLS[chainId]}/status/${props.data.id}`,
+              },
+            });
           }
           break;
         default:

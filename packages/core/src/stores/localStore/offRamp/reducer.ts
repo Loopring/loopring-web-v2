@@ -111,7 +111,6 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
           };
           break;
         case OffRampStatus.watingForCreateOrder:
-          // case OffRampStatus.waitingForPayment:
           if (
             state[chainId][address][product]?.payments &&
             state[chainId][address][product]?.payments.find(

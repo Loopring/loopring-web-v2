@@ -255,16 +255,16 @@ export const useVendor = () => {
     // }
     parentsNode.style.display = "none";
   };
-  const hideBanxa = () => {
-    const parentsNode: any =
-      window.document.querySelector("#iframeBanxaTarget");
-    parentsNode.style.display = "none";
-  };
-  const showBanxa = () => {
-    const parentsNode: any =
-      window.document.querySelector("#iframeBanxaTarget");
-    parentsNode.style.display = "flex";
-  };
+  // const hideBanxa = () => {
+  //   const parentsNode: any =
+  //     window.document.querySelector("#iframeBanxaTarget");
+  //   parentsNode.style.display = "none";
+  // };
+  // const showBanxa = () => {
+  //   const parentsNode: any =
+  //     window.document.querySelector("#iframeBanxaTarget");
+  //   parentsNode.style.display = "flex";
+  // };
   const clickEvent = () =>
     banxaService.banxaEnd({
       reason: OrderENDReason.UserCancel,
@@ -285,11 +285,12 @@ export const useVendor = () => {
         //   break;
         case BanxaCheck.OrderHide:
           setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
-          hideBanxa();
+          // hideBanxa();
+          closeBanxa();
           break;
         case BanxaCheck.OrderShow:
           setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
-          showBanxa();
+          // showBanxa();
           break;
         case BanxaCheck.OrderEnd:
           setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);

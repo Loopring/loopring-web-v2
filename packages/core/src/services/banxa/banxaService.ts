@@ -6,6 +6,7 @@ import {
   BANXA_URLS,
   BanxaOrder,
   myLog,
+  OffRampStatus,
   VendorProviders,
 } from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
@@ -126,6 +127,7 @@ export const banxaService = {
       localStore: { offRampHistory },
       // modals:{isShowAccount}
     } = store.getState();
+
     // let banxa: any = undefined;
     // try {
     //   // @ts-ignore
@@ -162,12 +164,11 @@ export const banxaService = {
       banxaService.banxaStart(true);
     }
   },
-  banxaStart: async (_createNew = false) => {
+  banxaStart: async (createNew = false) => {
     const {
       account,
       system: { chainId },
-      // localStore: { offRampHistory },
-      // modals:{isShowAccount}
+      localStore: { offRampHistory },
     } = store.getState();
 
     if (
@@ -189,6 +190,14 @@ export const banxaService = {
           info: orderId,
         })
       );
+
+      offFaitService.notifyUI({
+        data: offRampHistory[chainId][account.accAddress][
+          VendorProviders.Banxa
+        ]["pending"],
+        product: VendorProviders.Banxa,
+        status: OffRampStatus.watingForCreateOrder,
+      });
       return;
     }
     let banxa: any = undefined;
@@ -283,6 +292,7 @@ export const banxaService = {
       status: BanxaCheck.OrderShow,
       data: {
         reason: "transferDone",
+        id: order.id ?? "",
       },
     });
   },

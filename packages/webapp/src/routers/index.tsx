@@ -106,7 +106,7 @@ const WrapModal = () => {
         }}
       />,
     ] as any;
-  }, []);
+  }, [open, actionEle]);
   return (
     <>
       <ModalCoinPairPanel />

@@ -124,6 +124,7 @@ const BoxStyle = styled(Box)<BoxProps & { isMobile: boolean | undefined }>`
         bottom: ${2 * theme.unit}px;
         background: ${theme.colorBase.box};
         color: var(--color-text-third);
+        bottom: 32px;
       }
     `}
     padding-left: 0;
@@ -157,41 +158,41 @@ export const ContinuousBanxaOrder = ({
   const { t } = useTranslation();
   return (
     <>
-      <Box
+      <BoxStyle
         flex={1}
         display={"flex"}
         alignItems={"center"}
         justifyContent={"space-between"}
         flexDirection={"column"}
+        isMobile={isMobile}
       >
-        {/*<Typography*/}
-        {/*  component={"h3"}*/}
-        {/*  variant={"h5"}*/}
-        {/*  whiteSpace={"pre"}*/}
-        {/*  marginBottom={3}*/}
-        {/*  marginTop={-1}*/}
-        {/*>*/}
-        {/*  {title}*/}
-        {/*</Typography>*/}
-        <BoxStyle
+        <Typography
+          component={"h3"}
+          variant={"h5"}
+          whiteSpace={"pre-line"}
+          marginBottom={3}
+          marginTop={-1}
+          marginX={2}
+          alignSelf={"flex-start"}
+        >
+          {t("labelBanxaTitleCreateAgain")}
+        </Typography>
+        <Box
           className={"way-content"}
           display={"flex"}
           flexDirection={"column"}
           paddingBottom={3}
-          isMobile={isMobile}
         >
-          <Box marginTop={1.5} component={"div"}>
+          <Box marginTop={1.5} component={"div"} marginX={2}>
             <Typography
-              component={"h3"}
-              variant={"h5"}
-              whiteSpace={"pre"}
+              component={"h4"}
+              variant={"body1"}
+              whiteSpace={"pre-line"}
               marginBottom={3}
-              marginTop={-1}
             >
               <Trans i18nKey={"labelYouAlreadyHaveAnBanxa"}>
-                You already have an Banxa Order in progress, If you already
-                submit the KYC and input bank account, you can keep waiting for
-                Banax validation and
+                If you already submit the KYC and input bank account, you can
+                keep waiting for Banax validation and
                 <Link
                   style={{
                     cursor: "pointer",
@@ -209,11 +210,10 @@ export const ContinuousBanxaOrder = ({
               </Trans>
             </Typography>
             <Box
-              flex={1}
-              height={"100%"}
               display={"flex"}
               alignItems={"center"}
               justifyContent={"center"}
+              marginX={2}
             >
               <img
                 className="loading-gif"
@@ -223,40 +223,37 @@ export const ContinuousBanxaOrder = ({
               />
             </Box>
 
-            <Box marginTop={1.5}>
-              <MenuBtnStyled
-                variant={"outlined"}
-                size={"large"}
-                className={`banxaEnter  ${isMobile ? "isMobile" : ""}`}
-                fullWidth
-                loading={btnInfo?.isLoading ? "true" : "false"}
-                disabled={btnInfo?.isLoading}
-                endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
-                onClick={(_e) => {
-                  btnInfo.callback();
-                }}
-              >
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"inherit"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  lineHeight={"1.2em"}
-                  sx={{
-                    textIndent: 0,
-                    textAlign: "left",
-                  }}
-                >
-                  {btnInfo.btnTxt}
-                </Typography>
-              </MenuBtnStyled>
-            </Box>
+            {/*<MenuBtnStyled*/}
+            {/*  variant={"outlined"}*/}
+            {/*  size={"large"}*/}
+            {/*  className={`banxaEnter  ${isMobile ? "isMobile" : ""}`}*/}
+            {/*  fullWidth*/}
+            {/*  loading={btnInfo?.isLoading ? "true" : "false"}*/}
+            {/*  disabled={btnInfo?.isLoading}*/}
+            {/*  endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}*/}
+            {/*  onClick={(_e) => {*/}
+            {/*    btnInfo.callback();*/}
+            {/*  }}*/}
+            {/*>*/}
+            {/*  <Typography*/}
+            {/*    component={"span"}*/}
+            {/*    variant={"inherit"}*/}
+            {/*    color={"inherit"}*/}
+            {/*    display={"inline-flex"}*/}
+            {/*    alignItems={"center"}*/}
+            {/*    lineHeight={"1.2em"}*/}
+            {/*    sx={{*/}
+            {/*      textIndent: 0,*/}
+            {/*      textAlign: "left",*/}
+            {/*    }}*/}
+            {/*  >*/}
+            {/*    {btnInfo.btnTxt}*/}
+            {/*  </Typography>*/}
+            {/*</MenuBtnStyled>*/}
           </Box>
-
-          <Box marginTop={1.5}>
+          <Box marginTop={1.5} component={"div"} marginX={2}>
             <Typography
-              component={"h3"}
+              component={"h4"}
               variant={"h5"}
               whiteSpace={"pre"}
               marginBottom={3}
@@ -292,8 +289,8 @@ export const ContinuousBanxaOrder = ({
               </Typography>
             </MenuBtnStyled>
           </Box>
-        </BoxStyle>
-      </Box>
+        </Box>
+      </BoxStyle>
     </>
   );
 };

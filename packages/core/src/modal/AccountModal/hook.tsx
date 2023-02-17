@@ -87,6 +87,7 @@ import {
   SendAssetItem,
   SendNFTAsset,
   ThirdPanelReturn,
+  Transfer_banxa_confirm,
   Transfer_Failed,
   Transfer_First_Method_Denied,
   Transfer_In_Progress,
@@ -2052,6 +2053,24 @@ export function useAccountModalForUI({
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_BANXA_Confirm]: {
+        view: (
+          <Transfer_banxa_confirm
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Banxa Status",
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,

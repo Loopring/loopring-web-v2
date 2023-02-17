@@ -1427,6 +1427,6 @@ export default {
   labelBanxaCreate: "Create a new order",
   labelBanxaTitleCreateAgain: "You still having an order in progressing:",
   labelYouAlreadyHaveAnBanxa:
-    "You already have an Banxa Order in progress, If you already submit the KYC and input bank account, you can keep waiting for it and,<1>check the status on Banxa website</1>, otherwise please click Button to create new order\n",
+    "If you already submit the KYC and input bank account, you can keep waiting for it and,<1>check the status on Banxa website</1>, otherwise please click Button to create new order\n",
   labelHaveAnBanxaCancel: "Or cancel it create a new order",
 };

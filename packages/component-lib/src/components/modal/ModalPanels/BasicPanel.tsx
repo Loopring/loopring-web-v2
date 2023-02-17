@@ -378,7 +378,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   rel="noopener noreferrer"
                 >
                   {link.name}
-                  {link.name === "Txn Hash" && (
+                  {["Txn Hash", "Banxa Status"].includes(link.name) && (
                     <Typography
                       component={"span"}
                       paddingLeft={1}
