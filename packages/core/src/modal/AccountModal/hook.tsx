@@ -141,7 +141,6 @@ import {
   lockAccount,
   mintService,
   onchainHashInfo,
-  OrderENDReason,
   store,
   unlockAccount,
   useAccount,
@@ -659,10 +658,11 @@ export function useAccountModalForUI({
             btnInfo2={{
               isLoading: isShowAccount?.info?.isBanxaLaunchLoading,
               callback: () => {
-                banxaService.banxaEnd({
-                  reason: OrderENDReason.UserCancel,
-                  data: "",
-                });
+                // banxaService.banxaEnd({
+                //   reason: OrderENDReason.UserCancel,
+                //   data: "",
+                // });
+                setShowAccount({ isShow: false });
                 banxaService.banxaStart(true);
               },
               btnTxt: t("labelBanxaCreate"),

@@ -1,6 +1,5 @@
 import {
   AccountStatus,
-  myLog,
   TradeBtnStatus,
   VendorItem,
   VendorList,
@@ -13,7 +12,7 @@ import {
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { BanxaCheck, banxaService, OrderENDReason } from "../../services/banxa";
+import { BanxaCheck, banxaService, OrderENDReason } from "../../services";
 import { useRouteMatch } from "react-router-dom";
 import _ from "lodash";
 
@@ -163,7 +162,7 @@ export const useVendor = () => {
     TradeBtnStatus.AVAILABLE
   );
   const _banxaClick = _.debounce(() => {
-    banxaService.banxaEnd({ reason: OrderENDReason.UserCancel, data: "" });
+    // banxaService.banxaEnd({ reason: OrderENDReason.UserCancel, data: "" });
     banxaService.banxaStart();
   }, 500);
   const vendorListSell: VendorItem[] = legalShow
@@ -278,7 +277,6 @@ export const useVendor = () => {
       parentsNode.addEventListener("click", clickEvent);
     }
     const subscription = subject.subscribe((props) => {
-      myLog("subscription Banxa", props.status, props.data);
       switch (props.status) {
         // case BanxaCheck.CheckOrderStatus:
         //   checkOrderStatus(props.data);
@@ -294,6 +292,7 @@ export const useVendor = () => {
           break;
         case BanxaCheck.OrderEnd:
           setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
+          // myLog("subscription Banxa", props.status, props.data);
           if (props?.data?.reason === OrderENDReason.BanxaNotReady) {
             setShowTradeIsFrozen({
               isShow: true,

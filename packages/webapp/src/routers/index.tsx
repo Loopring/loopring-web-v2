@@ -15,6 +15,8 @@ import {
   ModalCoinPairPanel,
   ModalRedPacketPanel,
   useOffFaitModal,
+  useVendor,
+  useBanxaConfirm,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
@@ -132,7 +134,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
   const { setTheme } = useSettings();
-
+  const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
+    useVendor();
+  const { banxaViewProps, offBanxaValue } = useBanxaConfirm({
+    sellPanel,
+    setSellPanel,
+  });
   // const { pathname } = useLocation();
   const searchParams = new URLSearchParams(location.search);
   React.useEffect(() => {
@@ -303,7 +310,14 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         </Route>
         <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
           <ContentWrap state={state}>
-            <FiatPage />
+            <FiatPage
+              vendorListBuy={vendorListBuy}
+              vendorListSell={vendorListSell}
+              sellPanel={sellPanel}
+              setSellPanel={setSellPanel}
+              banxaViewProps={banxaViewProps}
+              offBanxaValue={offBanxaValue}
+            />
           </ContentWrap>
         </Route>
         <Route exact path="/markets">

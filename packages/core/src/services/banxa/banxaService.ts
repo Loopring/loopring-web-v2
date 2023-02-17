@@ -107,16 +107,19 @@ export const banxaService = {
         payload: {},
         account,
       });
-      offFaitService.banxaCheckStatus({
-        data: {
-          status: data.order.status,
-          id: data.order.id,
-          checkout_iframe: data.order.checkout_iframe,
-          wallet_address: data.order?.wallet_address?.toString() ?? undefined,
-          account_reference: data.order.account_reference,
-        },
-      });
-      myLog("banxa Check Have Pending", data.order);
+      if (data) {
+        myLog("banxa Check Have Pending", data.order);
+
+        offFaitService.banxaCheckStatus({
+          data: {
+            status: data.order?.status,
+            id: data.order.id,
+            checkout_iframe: data.order.checkout_iframe,
+            wallet_address: data.order?.wallet_address?.toString() ?? undefined,
+            account_reference: data.order.account_reference,
+          },
+        });
+      }
     }
   },
   openOldOne: async () => {

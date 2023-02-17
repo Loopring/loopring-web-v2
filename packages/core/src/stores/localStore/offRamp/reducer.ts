@@ -85,7 +85,7 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
             ) {
               pending = state[chainId][address][product]?.pending;
             } else {
-              pending = [];
+              pending = undefined;
               prev = state[chainId][address][product]?.pending;
             }
 
