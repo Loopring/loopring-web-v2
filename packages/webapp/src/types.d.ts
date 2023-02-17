@@ -15,12 +15,19 @@ declare global {
   }
   namespace JSX {
     interface IntrinsicElements {
-      "model-viewer": React.DetailedHTMLProps<
-        React.AllHTMLAttributes<
-          Partial<globalThis.HTMLElementTagNameMap["model-viewer"]>
-        >,
-        Partial<globalThis.HTMLElementTagNameMap["model-viewer"]>
-      >;
+      "model-viewer": MyElementAttributes;
+    }
+
+    interface MyElementAttributes {
+      src: string;
+      "auto-rotate": any;
+      "camera-controls": any;
+      "ar-modes": any;
+      "touch-action": any;
+      "shadow-intensity": any;
+      poster: string;
+
+      [key: string]: any;
     }
   }
 }

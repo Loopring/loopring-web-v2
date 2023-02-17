@@ -33,7 +33,7 @@ import {
   WithTranslation,
   withTranslation,
 } from "react-i18next";
-import "@google/model-viewer";
+// import "@google/model-viewer";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -187,6 +187,7 @@ export const NFTMedia = React.memo(
               </>
             );
           case Media.Media3D:
+            // @ts-ignore
             // @ts-ignore
             return (
               <>

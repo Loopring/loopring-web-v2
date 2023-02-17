@@ -34,6 +34,19 @@ import * as sdk from "@loopring-web/loopring-sdk";
 const MaxSize = 10485760;
 
 const TYPES = ["jpeg", "jpg", "gif", "png"];
+const MaxMediaSize = 10485760 * 5;
+const MediaTYPES = [
+  "jpeg",
+  "jpg",
+  "gif",
+  "png",
+  "mp3",
+  "mp4",
+  "pdf",
+  "gltf",
+  "glb",
+  "usdz",
+];
 export const MetaNFTPanel = <
   Me extends NFTMETA,
   Mi extends MintTradeNFT<I>,
@@ -80,29 +93,60 @@ Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
         flex={1}
       >
         <Grid item xs={12} md={5} position={"relative"}>
-          <FormLabel>
-            <Typography variant={"body2"} marginBottom={1}>
-              <Trans i18nKey={"labelIPFSUploadTitle"}>
-                Upload Image
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"error"}
-                >
-                  {"\uFE61"}
-                </Typography>
-              </Trans>
-            </Typography>
-          </FormLabel>
+          <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
+            <FormLabel>
+              <Typography variant={"body2"} marginBottom={1}>
+                <Trans i18nKey={"labelIPFSUploadTitle"}>
+                  Cover Image
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"error"}
+                  >
+                    {"\uFE61"}
+                  </Typography>
+                </Trans>
+              </Typography>
+            </FormLabel>
+            <Box maxWidth={160} maxHeight={160}>
+              <IPFSSourceUpload
+                fullSize={true}
+                value={ipfsMediaSources}
+                maxSize={MaxSize}
+                types={TYPES}
+                onChange={onFilesLoad}
+                onDelete={onDelete}
+              />
+            </Box>
+          </Box>
+          <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
+            <FormLabel>
+              <Typography variant={"body2"} marginBottom={1}>
+                <Trans i18nKey={"labelIPFSUploadTitle"}>
+                  NFT Media (mp3,mp4,3d,image)
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"error"}
+                  >
+                    {"\uFE61"}
+                  </Typography>
+                </Trans>
+              </Typography>
+            </FormLabel>
+            <Box maxWidth={320}>
+              <IPFSSourceUpload
+                height={"60%"}
+                fullSize={true}
+                value={ipfsMediaSources}
+                maxSize={MaxMediaSize}
+                types={MediaTYPES}
+                onChange={onFilesLoad}
+                onDelete={onDelete}
+              />
+            </Box>
+          </Box>
 
-          <IPFSSourceUpload
-            fullSize={true}
-            value={ipfsMediaSources}
-            maxSize={MaxSize}
-            types={TYPES}
-            onChange={onFilesLoad}
-            onDelete={onDelete}
-          />
           <Box marginTop={1}>
             <MuiFormControlLabel
               control={

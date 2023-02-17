@@ -1303,7 +1303,7 @@ export default {
     "Your gift packet is shared privately by you via your custom QR code for others to receive.",
   labelSplit: "Split",
   labelRedPacketMemo: "Best Wish",
-  labelRedPacketStart: "Allow Open Time",
+  labelRedPacketStart: "Available in",
   labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
   labelRedPacketSendDenied:
@@ -1399,8 +1399,8 @@ export default {
   labelRedpacketScanDes: "Using Loopring App san the QR code",
   labelLuckyRedPacketStarted: "Red Packet is Started",
   labelNFTRedpacketBtn: "Send Red Packet",
-  labelRedpacketDurationTitle: "Active durations",
-  labelRedpacketDurationPlaceHold: "Min 1 - Max 30",
+  labelRedpacketDurationTitle: "Expires after",
+  labelRedpacketDurationPlaceHold: "Min 1 - Max 30 Days",
   labelRedPacketDescription: "Red Packet Description",
   labelRedpacketHavePeopleHelp:
     "<1>{{number}}</1> friends relayed this red packet, you extend reward: <3>{{amount}}</3>.",

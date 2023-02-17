@@ -451,7 +451,7 @@ export const RedPacketOpen = ({
               lineClamp: "2",
               "-webkit-box-orient": "vertical",
             }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
           />
         </Box>
         <Box display={"flex"} className={"footer"}>
@@ -646,7 +646,7 @@ export const RedPacketClock = ({
               lineClamp: "2",
               "-webkit-box-orient": "vertical",
             }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
           ></Typography>
         </Box>
       </>
@@ -723,7 +723,7 @@ RedPacketDefault & RedPacketUnreadyProps) => {
               lineClamp: "2",
               "-webkit-box-orient": "vertical",
             }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
           ></Typography>
         </Box>
       </Box>
@@ -791,7 +791,7 @@ export const RedPacketOpened = ({
               lineClamp: "2",
               "-webkit-box-orient": "vertical",
             }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
           />
         </Box>
         <Box display={"flex"} className={"footer"}>
@@ -870,7 +870,7 @@ export const RedPacketTimeout = ({
               lineClamp: "2",
               "-webkit-box-orient": "vertical",
             }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
           />
         </Box>
         <Box display={"flex"} className={"footer"}>
@@ -996,7 +996,7 @@ export const RedPacketDetail = ({
             lineClamp: "2",
             "-webkit-box-orient": "vertical",
           }}
-          dangerouslySetInnerHTML={{ __html: sanitize(memo) }}
+          dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
         />
         {ImageEle}
         <Typography
