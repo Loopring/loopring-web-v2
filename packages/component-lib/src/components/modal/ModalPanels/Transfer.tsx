@@ -51,11 +51,8 @@ export const Transfer_Success = (props: PanelProps) => {
 
 export const Transfer_banxa_confirm = (props: PanelProps) => {
   const propsPatch = {
-    iconType: IconType.DoneIcon,
-    describe1: props.t("labelL2toL2Success", {
-      symbol: props.symbol,
-      value: props.value,
-    }),
+    iconType: IconType.SubmitIcon,
+    describe1: props.t("labelBanxaConfirmSubmit", { order: props.info.order }),
   };
   return <TransferBase {...propsPatch} {...props} />;
 };

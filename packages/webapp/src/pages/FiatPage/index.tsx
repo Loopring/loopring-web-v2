@@ -8,6 +8,7 @@ import {
 import React from "react";
 import {
   banxaService,
+  offFaitService,
   OrderENDReason,
   RAMP_SELL_PANEL,
   useBanxaConfirm,
@@ -138,6 +139,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                         sx={{ color: "var(--color-text-secondary)" }}
                         color={"inherit"}
                         onClick={(e) => {
+                          offFaitService.offRampCancel({ data: offBanxaValue });
                           setSellPanel(RAMP_SELL_PANEL.LIST);
 
                           const close =

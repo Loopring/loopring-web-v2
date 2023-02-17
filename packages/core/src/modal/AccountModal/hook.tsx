@@ -2068,6 +2068,7 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               account,
+              info: { ...isShowAccount?.info },
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Banxa Status",

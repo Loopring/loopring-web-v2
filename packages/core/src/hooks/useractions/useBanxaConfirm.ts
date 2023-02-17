@@ -302,9 +302,9 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         order.wallet_address &&
         order.coin_code
       ) {
+        updateOffBanxaData({ order });
         banxaService.KYCDone();
         // const transferBanxaValue = store.getState()._router_modalData.transferBanxaValue;
-        updateOffBanxaData({ order });
         // TODO: console.log
         console.log("BANXA KYC Done BANXA order Info:", order);
       } else {
@@ -346,6 +346,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
             } = store.getState();
             if (offBanxaValue) {
               const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
+              setShowAccount({ isShow: false });
               checkFeeIsEnough({ isRequiredAPI: true });
               updateTransferBanxaData({
                 belong: offBanxaValue.coin_code,
@@ -369,6 +370,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
               isShow: true,
               step: AccountStep.Transfer_BANXA_Confirm,
               info: {
+                order: props.data.id,
                 hash: `${BANXA_URLS[chainId]}/status/${props.data.id}`,
               },
             });

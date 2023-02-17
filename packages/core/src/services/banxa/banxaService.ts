@@ -6,7 +6,6 @@ import {
   BANXA_URLS,
   BanxaOrder,
   myLog,
-  OffRampStatus,
   VendorProviders,
 } from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
@@ -190,14 +189,6 @@ export const banxaService = {
           info: orderId,
         })
       );
-
-      offFaitService.notifyUI({
-        data: offRampHistory[chainId][account.accAddress][
-          VendorProviders.Banxa
-        ]["pending"],
-        product: VendorProviders.Banxa,
-        status: OffRampStatus.watingForCreateOrder,
-      });
       return;
     }
     let banxa: any = undefined;
