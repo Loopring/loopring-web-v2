@@ -189,7 +189,7 @@ export const banxaService = {
         setShowAccount({
           isShow: true,
           step: AccountStep.ContinuousBanxaOrder,
-          info: orderId,
+          info: { orderId },
         })
       );
       return;

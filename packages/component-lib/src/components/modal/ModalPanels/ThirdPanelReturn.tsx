@@ -132,7 +132,7 @@ const BoxStyle = styled(Box)<BoxProps & { isMobile: boolean | undefined }>`
 ` as (props: BoxProps & { isMobile: boolean | undefined }) => JSX.Element;
 
 export const ContinuousBanxaOrder = ({
-  _title,
+  // _title,
   // description,
   chainId,
   btnInfo,
