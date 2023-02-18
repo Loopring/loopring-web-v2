@@ -52,7 +52,7 @@ export const Transfer_Success = (props: PanelProps) => {
 export const Transfer_banxa_confirm = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
-    describe1: props.t("labelBanxaConfirmSubmit", { order: props.info.order }),
+    describe1: props.t("labelBanxaConfirmSubmit", { order: props.info.id }),
   };
   return <TransferBase {...propsPatch} {...props} />;
 };

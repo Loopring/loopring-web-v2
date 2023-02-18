@@ -44,7 +44,7 @@ import {
   banxaApiCall,
   BanxaCheck,
   banxaService,
-} from "../../services/banxa";
+} from "../../services";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import _ from "lodash";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
@@ -365,13 +365,16 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           break;
         case BanxaCheck.OrderShow:
           if (props.data?.reason == "transferDone") {
+            const {
+              _router_modalData: { offBanxaValue },
+            } = store.getState();
             setSellPanel(RAMP_SELL_PANEL.LIST);
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_BANXA_Confirm,
               info: {
-                order: props.data.id,
-                hash: `${BANXA_URLS[chainId]}/status/${props.data.id}`,
+                orderId: offBanxaValue?.id,
+                hash: `${BANXA_URLS[chainId]}/status/${offBanxaValue?.id}`,
               },
             });
           }
