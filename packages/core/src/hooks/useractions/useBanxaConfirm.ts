@@ -50,6 +50,8 @@ import _ from "lodash";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import { useLocation } from "react-use";
 
 export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   setSellPanel,
@@ -57,6 +59,10 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   sellPanel: RAMP_SELL_PANEL;
   setSellPanel: (value: RAMP_SELL_PANEL) => void;
 }) => {
+  const match: any = useRouteMatch("/trade/fiat/:tab?");
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const history = useHistory();
   const subject = React.useMemo(() => banxaService.onSocket(), []);
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 
@@ -108,6 +114,33 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       checkFeeIsEnough();
     }
   }, [info?.transferBanxa]);
+  const restTransfer = React.useCallback(() => {
+    const memo = "OFF-Banxa Transfer";
+    if (offBanxaValue) {
+      const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
+      setShowAccount({ isShow: false });
+      checkFeeIsEnough({ isRequiredAPI: true });
+      updateTransferBanxaData({
+        belong: offBanxaValue.coin_code,
+        tradeValue: offBanxaValue.coin_amount,
+        balance: walletMap[offBanxaValue?.coin_code ?? ""]?.count,
+        address: offBanxaValue.wallet_address ?? "",
+        memo,
+        // fee: feeInfo,//transferBanxaValue.fee,
+      });
+      setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
+    }
+  }, [offBanxaValue]);
+  React.useEffect(() => {
+    if (
+      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
+      searchParams.get("orderId") &&
+      searchParams.get("orderId")?.toLowerCase() ==
+        offBanxaValue?.id?.toLowerCase()
+    ) {
+      restTransfer();
+    }
+  }, [match.params?.tab, searchParams.has("orderId")]);
 
   const checkBtnStatus = React.useCallback(() => {
     const transferBanxaValue =
@@ -340,24 +373,10 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
 
           if (props.data?.reason == "KYCDone") {
-            const memo = "OFF-Banxa Transfer";
             const {
               _router_modalData: { offBanxaValue },
             } = store.getState();
-            if (offBanxaValue) {
-              const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
-              setShowAccount({ isShow: false });
-              checkFeeIsEnough({ isRequiredAPI: true });
-              updateTransferBanxaData({
-                belong: offBanxaValue.coin_code,
-                tradeValue: offBanxaValue.coin_amount,
-                balance: walletMap[offBanxaValue.coin_code]?.count,
-                address: offBanxaValue.wallet_address ?? "",
-                memo,
-                // fee: feeInfo,//transferBanxaValue.fee,
-              });
-              setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
-            }
+            history.replace(`/trade/fiat/sell?orderId=${offBanxaValue?.id}`);
           }
           break;
         case BanxaCheck.OrderEnd:
@@ -449,9 +468,8 @@ export const useBanxaTransPost = () => {
   const { account } = useAccount();
   const { chainId } = useSystem();
   const { checkHWAddr, updateHW } = useWalletInfo();
-  const { setShowAccount } = useOpenModals();
-  const { offBanxaValue, updateTransferBanxaData, resetTransferBanxaData } =
-    useModalData();
+  const {setShowAccount} = useOpenModals();
+  const {offBanxaValue, updateTransferBanxaData} = useModalData();
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -623,7 +641,6 @@ export const useBanxaTransPost = () => {
       account,
       chainId,
       checkHWAddr,
-      resetTransferBanxaData,
       setShowAccount,
       updateHW,
       offBanxaValue,

@@ -11,7 +11,9 @@ import {
   offFaitService,
   OrderENDReason,
   RAMP_SELL_PANEL,
+  useBanxaConfirm,
   useNotify,
+  useVendor,
   ViewAccountTemplate,
 } from "@loopring-web/core";
 import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
@@ -27,24 +29,29 @@ const StyledPaper = styled(Grid)`
 export const FiatPage = withTranslation("common")(
   ({
     t,
-    vendorListBuy,
-    vendorListSell,
-    sellPanel,
-    setSellPanel,
-    banxaViewProps,
-    offBanxaValue,
-  }: WithTranslation & {
-    vendorListBuy: any;
-    vendorListSell: any;
-    banxaViewProps: any;
-    offBanxaValue: any;
-    sellPanel: RAMP_SELL_PANEL;
-    setSellPanel: (value: RAMP_SELL_PANEL) => void;
+  }: // vendorListBuy,
+  // vendorListSell,
+  // sellPanel,
+  // setSellPanel,
+  // banxaViewProps,
+  // offBanxaValue,
+  WithTranslation & {
+    // vendorListBuy: any;
+    // vendorListSell: any;
+    // banxaViewProps: any;
+    // offBanxaValue: any;
+    // sellPanel: RAMP_SELL_PANEL;
+    // setSellPanel: (value: RAMP_SELL_PANEL) => void;
   }) => {
     const history = useHistory();
     // const { resetTransferRampData, resetTransferBanxaData } = useModalData();
     const { campaignTagConfig } = useNotify().notifyMap ?? {};
-
+    const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
+      useVendor();
+    const { banxaViewProps, offBanxaValue } = useBanxaConfirm({
+      sellPanel,
+      setSellPanel,
+    });
     const { isMobile } = useSettings();
     const match: any = useRouteMatch("/trade/fiat/:tab?");
     const [tabIndex, setTabIndex] = React.useState<TradeTypes>(

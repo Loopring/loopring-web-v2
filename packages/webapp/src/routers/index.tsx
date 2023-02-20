@@ -134,12 +134,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
   const { setTheme } = useSettings();
-  const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
-    useVendor();
-  const { banxaViewProps, offBanxaValue } = useBanxaConfirm({
-    sellPanel,
-    setSellPanel,
-  });
+
   // const { pathname } = useLocation();
   const searchParams = new URLSearchParams(location.search);
   React.useEffect(() => {
@@ -311,12 +306,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
           <ContentWrap state={state}>
             <FiatPage
-              vendorListBuy={vendorListBuy}
-              vendorListSell={vendorListSell}
-              sellPanel={sellPanel}
-              setSellPanel={setSellPanel}
-              banxaViewProps={banxaViewProps}
-              offBanxaValue={offBanxaValue}
+            // vendorListBuy={vendorListBuy}
+            // vendorListSell={vendorListSell}
+            // sellPanel={sellPanel}
+            // setSellPanel={setSellPanel}
+            // banxaViewProps={banxaViewProps}
+            // offBanxaValue={offBanxaValue}
             />
           </ContentWrap>
         </Route>
