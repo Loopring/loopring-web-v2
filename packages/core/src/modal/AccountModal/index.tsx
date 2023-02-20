@@ -2,13 +2,10 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import {
   DepositProps,
   ModalAccount,
-  // ModalCloseButton,
   ModalPanel,
   ModalQRCode,
-  // SwitchPanelStyled,
   Toast,
   useOpenModals,
-  // useSettings,
 } from "@loopring-web/component-lib";
 import { useSystem } from "@loopring-web/core";
 import { useAccountModalForUI } from "./hook";
@@ -17,8 +14,6 @@ import {
   AssetsRawDataItem,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-// import { Box, Modal as MuiModal } from "@mui/material";
-// import { NFTDetail } from "./components/NFTDetail";
 
 export const ModalAccountInfo = withTranslation("common")(
   ({
@@ -176,6 +171,7 @@ export const ModalAccountInfo = withTranslation("common")(
           open={isShowAccount.isShow}
           onClose={() => {
             setShowAccount({ isShow: false });
+            currentModal?.onClose && currentModal?.onClose();
           }}
           panelList={accountList}
           onBack={currentModal?.onBack}

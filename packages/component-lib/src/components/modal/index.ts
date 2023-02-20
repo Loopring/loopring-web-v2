@@ -20,6 +20,7 @@ export type ModalBasicProps = {
   panelList: Array<{
     view: JSX.Element;
     onBack?: undefined | (() => void);
+    onClose?: undefined | (() => void);
     height?: any;
     width?: any;
   }>;

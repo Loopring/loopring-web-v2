@@ -141,6 +141,7 @@ import {
   lockAccount,
   mintService,
   onchainHashInfo,
+  OrderENDReason,
   store,
   unlockAccount,
   useAccount,
@@ -646,6 +647,7 @@ export function useAccountModalForUI({
               callback: () => {
                 setShouldShow(false);
                 setShowAccount({ isShow: false });
+
                 // if (props?.closeExtend) {
                 //   props?.closeExtend(e);
                 // }
@@ -670,6 +672,12 @@ export function useAccountModalForUI({
           />
         ),
         height: "auto",
+        onClose: () => {
+          banxaService.banxaEnd({
+            reason: OrderENDReason.UserCancel,
+            data: { resource: "on close" },
+          });
+        },
       },
       [AccountStep.ThirdPanelReturn]: {
         view: (

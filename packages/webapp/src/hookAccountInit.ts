@@ -21,7 +21,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     statusUnset: wallet1statusUnset,
   } = useWalletLayer1();
   const {
-    updateWalletLayer2NFT,
     resetLayer2NFT,
     status: wallet2statusNFTStatus,
     statusUnset: wallet2statusNFTUnset,
@@ -91,6 +90,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       }
     }
   }, [accountStatus, state, account.readyState]);
+
   React.useEffect(() => {
     switch (walletLayer1Status) {
       case SagaStatus.ERROR:

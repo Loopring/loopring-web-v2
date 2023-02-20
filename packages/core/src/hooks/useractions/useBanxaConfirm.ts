@@ -60,7 +60,8 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   setSellPanel: (value: RAMP_SELL_PANEL) => void;
 }) => {
   const match: any = useRouteMatch("/trade/fiat/:tab?");
-  const { search } = useLocation();
+  const { href } = useLocation();
+  const search = href?.split("?")[1] ?? "";
   const searchParams = new URLSearchParams(search);
   const subject = React.useMemo(() => banxaService.onSocket(), []);
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -115,7 +116,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   }, [info?.transferBanxa]);
   const restTransfer = React.useCallback(() => {
     const memo = "OFF-Banxa Transfer";
-    if (offBanxaValue) {
+    if (offBanxaValue && offBanxaValue.id) {
       const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
       setShowAccount({ isShow: false });
       checkFeeIsEnough({ isRequiredAPI: true });
@@ -128,6 +129,8 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         // fee: feeInfo,//transferBanxaValue.fee,
       });
       setSellPanel(RAMP_SELL_PANEL.BANXA_CONFIRM);
+    } else {
+      setSellPanel(RAMP_SELL_PANEL.LIST);
     }
   }, [offBanxaValue]);
   React.useEffect(() => {
@@ -138,8 +141,13 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         offBanxaValue?.id?.toLowerCase()
     ) {
       restTransfer();
+    } else if (
+      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
+      searchParams.get("orderId")
+    ) {
+      banxaService.banxaCheckHavePending();
     }
-  }, [match.params?.tab, searchParams.has("orderId")]);
+  }, [match.params?.tab, offBanxaValue?.id]);
 
   const checkBtnStatus = React.useCallback(() => {
     const transferBanxaValue =
@@ -371,6 +379,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           break;
         case BanxaCheck.OrderEnd:
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
+
           break;
         case BanxaCheck.OrderShow:
           if (props.data?.reason == "transferDone") {

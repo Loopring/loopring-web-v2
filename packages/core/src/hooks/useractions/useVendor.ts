@@ -37,7 +37,6 @@ export const useVendor = () => {
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-  const match: any = useRouteMatch("/trade/:fiat/:tab?");
 
   const {
     // updateOffRampData,
@@ -48,12 +47,6 @@ export const useVendor = () => {
     RAMP_SELL_PANEL.LIST
     // RAMP_SELL_PANEL.BANXA_CONFIRM
   );
-  React.useEffect(() => {
-    if (match?.params?.tab === "Sell") {
-      setSellPanel(RAMP_SELL_PANEL.LIST);
-      banxaService.banxaCheckHavePending();
-    }
-  }, [match?.params?.tab]);
 
   const vendorListBuy: VendorItem[] = legalShow
     ? [
@@ -291,7 +284,6 @@ export const useVendor = () => {
           // showBanxa();
           break;
         case BanxaCheck.OrderEnd:
-          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
           // myLog("subscription Banxa", props.status, props.data);
           if (props?.data?.reason === OrderENDReason.BanxaNotReady) {
             setShowTradeIsFrozen({
@@ -306,6 +298,8 @@ export const useVendor = () => {
             });
           }
           closeBanxa();
+          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
+
           // clearTimeout(nodeTimer.current as NodeJS.Timeout);
           break;
         default:

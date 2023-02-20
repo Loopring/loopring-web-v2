@@ -17,6 +17,7 @@ import {
   useOffFaitModal,
   useVendor,
   useBanxaConfirm,
+  useOffRampHandler,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
@@ -96,6 +97,7 @@ const WrapModal = () => {
   const { etherscanBaseUrl } = useSystem();
   const { t } = useTranslation();
   const { open, actionEle, handleClose } = useOffFaitModal();
+
   const noticeSnacksElEs = React.useMemo(() => {
     return [
       <NoticeSnack
@@ -129,14 +131,12 @@ const WrapModal = () => {
 
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
-
+  const searchParams = new URLSearchParams(location.search);
   const proFlag =
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
   const { setTheme } = useSettings();
 
-  // const { pathname } = useLocation();
-  const searchParams = new URLSearchParams(location.search);
   React.useEffect(() => {
     if (searchParams.has("theme")) {
       searchParams.get("theme") === ThemeType.dark

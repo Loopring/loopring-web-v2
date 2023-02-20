@@ -23,13 +23,9 @@ export function useOffFaitModal() {
   const handleClose = () => {
     setOpen(false);
   };
-  const { updateOffBanxaData } = useModalData();
+  const { offBanxaValue, updateOffBanxaData } = useModalData();
   const { href } = useLocation();
-  // const {pathname,search}= useLocation()
-  // const {  updateTransferBanxaData } = useModalData();
-  // const match: any = useRouteMatch("/trade/fiat/:tab?");
-
-  const [order, setOrder] = React.useState<any>({});
+  useOffRampHandler();
   const actionEle = React.useMemo(() => {
     return (
       <Box
@@ -43,7 +39,6 @@ export function useOffFaitModal() {
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            updateOffBanxaData({ order });
             banxaService.KYCDone();
             handleClose();
           }}
@@ -63,13 +58,12 @@ export function useOffFaitModal() {
         </Button>
       </Box>
     );
-  }, [order]);
+  }, [offBanxaValue]);
   const handleShowUI = React.useCallback((props: OffOderUIItem) => {
+    updateOffBanxaData({ order: props.order });
     if (!/trade\/fiat\/sell\?orderId/gi.test(href ?? "")) {
-      setOrder(props.order);
       setOpen(true);
     }
-    //todo props.product
   }, []);
 
   React.useEffect(() => {
@@ -104,6 +98,7 @@ export function useOffFaitModal() {
 export const useOffRampHandler = () => {
   const subject = React.useMemo(() => banxaService.onSocket(), []);
   const history = useHistory();
+  const searchParams = new URLSearchParams("");
 
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {
@@ -115,7 +110,11 @@ export const useOffRampHandler = () => {
             _router_modalData: { offBanxaValue },
           } = store.getState();
           if (props.data?.reason == "KYCDone" && offBanxaValue) {
-            history.push(`/trade/fiat/sell?orderId=${offBanxaValue.id}`);
+            searchParams.set("orderId", offBanxaValue.id);
+            history.push({
+              pathname: "/trade/fiat/sell",
+              search: searchParams.toString(),
+            });
           }
           break;
         default:
