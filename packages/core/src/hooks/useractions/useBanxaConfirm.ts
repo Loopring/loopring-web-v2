@@ -116,6 +116,9 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   }, [info?.transferBanxa]);
   const restTransfer = React.useCallback(() => {
     const memo = "OFF-Banxa Transfer";
+    const {
+      _router_modalData: { offBanxaValue },
+    } = store.getState();
     if (offBanxaValue && offBanxaValue.id) {
       const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
       setShowAccount({ isShow: false });

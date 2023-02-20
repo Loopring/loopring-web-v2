@@ -18,7 +18,12 @@ import {
 } from "@loopring-web/core";
 import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 
-import { BackIcon, SoursURL, TradeTypes } from "@loopring-web/common-resources";
+import {
+  BackIcon,
+  SoursURL,
+  TradeTypes,
+  VendorProviders,
+} from "@loopring-web/common-resources";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "@emotion/styled";
 
@@ -155,7 +160,11 @@ export const FiatPage = withTranslation("common")(
                           color={"inherit"}
                           onClick={(e) => {
                             offFaitService.offRampCancel({
-                              data: offBanxaValue,
+                              data: {
+                                product: VendorProviders.Banxa,
+                                orderId: offBanxaValue?.id,
+                                ...offBanxaValue,
+                              },
                             });
                             setSellPanel(RAMP_SELL_PANEL.LIST);
 
@@ -247,7 +256,7 @@ export const FiatPage = withTranslation("common")(
           </Box>
         </Box>
       );
-    }, [t, tabIndex, vendorListBuy, vendorListSell]);
+    }, [t, tabIndex, vendorListBuy, vendorListSell, offBanxaValue]);
     const activeView = React.useMemo(
       () => (
         <>

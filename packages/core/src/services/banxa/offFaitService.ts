@@ -72,9 +72,15 @@ export const offFaitService = {
     }
   },
   offRampCancel: ({ data: order }: { data: any }) => {
+    const {
+      system: { chainId },
+      account: { accAddress },
+    } = store.getState();
     store.dispatch(
       updateOffRampHash({
         ...order,
+        address: accAddress,
+        chainId,
         status: OffRampStatus.cancel,
       } as OffRampHashItem)
     );

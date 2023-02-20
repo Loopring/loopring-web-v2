@@ -111,13 +111,7 @@ export const banxaService = {
         myLog("banxa Check Have Pending", data.order);
 
         offFaitService.banxaCheckStatus({
-          data: {
-            status: data.order?.status,
-            id: data.order.id,
-            checkout_iframe: data.order.checkout_iframe,
-            wallet_address: data.order?.wallet_address?.toString() ?? undefined,
-            account_reference: data.order.account_reference,
-          },
+          data: data.order,
         });
       }
     }
@@ -245,11 +239,9 @@ export const banxaService = {
         );
         offFaitService.banxaCheckStatus({
           data: {
+            ...data.order,
             status: data.order.status ?? "create",
             id: data.order.id,
-            checkout_iframe: data.order.checkout_iframe,
-            wallet_address: data.order?.wallet_address?.toString() ?? undefined,
-            account_reference: data.order.account_reference,
           },
         });
         subject.next({

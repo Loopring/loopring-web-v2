@@ -40,6 +40,7 @@ export const useVendor = () => {
   const {
     // updateOffRampData,
     resetOffRampData,
+    resetOffBanxaData,
   } = useModalData();
 
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
@@ -154,7 +155,7 @@ export const useVendor = () => {
     TradeBtnStatus.AVAILABLE
   );
   const _banxaClick = _.debounce(() => {
-    // banxaService.banxaEnd({ reason: OrderENDReason.UserCancel, data: "" });
+    resetOffBanxaData();
     banxaService.banxaStart();
   }, 500);
   const vendorListSell: VendorItem[] = legalShow

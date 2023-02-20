@@ -50,6 +50,13 @@ export function useOffFaitModal() {
           variant={"text"}
           size={"medium"}
           onClick={() => {
+            offFaitService.offRampCancel({
+              data: {
+                product: VendorProviders.Banxa,
+                orderId: offBanxaValue?.id,
+                ...offBanxaValue,
+              },
+            });
             setOpen(false);
             handleClose();
           }}
@@ -61,8 +68,14 @@ export function useOffFaitModal() {
   }, [offBanxaValue]);
   const handleShowUI = React.useCallback((props: OffOderUIItem) => {
     updateOffBanxaData({ order: props.order });
-    if (!/trade\/fiat\/sell\?orderId/gi.test(href ?? "")) {
+    if (!/trade\/fiat\/sell/gi.test(href ?? "")) {
       setOpen(true);
+    } else if (
+      /trade\/fiat\/sell/gi.test(href ?? "") &&
+      !/\?orderId/gi.test(href ?? "")
+    ) {
+      banxaService.KYCDone();
+      handleClose();
     }
   }, []);
 
