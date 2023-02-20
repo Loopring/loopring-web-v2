@@ -1,12 +1,16 @@
 import React from "react";
-import { OffRampStatus, VendorProviders } from "@loopring-web/common-resources";
+import {
+  myLog,
+  OffRampStatus,
+  VendorProviders,
+} from "@loopring-web/common-resources";
 import { OffFaitCommon, offFaitService, OffOderUIItem } from "./offFaitService";
 import { Box } from "@mui/material";
 import { Button } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import { useModalData } from "../../stores";
-import { banxaService } from "./banxaService";
+import { store, useModalData } from "../../stores";
+import { BanxaCheck, banxaService } from "./banxaService";
 import { useLocation } from "react-use";
 
 export * from "./banxaService";
@@ -15,7 +19,6 @@ export * from "./offFaitService";
 export function useOffFaitModal() {
   const { t } = useTranslation("common");
   const subject = React.useMemo(() => offFaitService.onSocket(), []);
-  const history = useHistory();
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -40,7 +43,6 @@ export function useOffFaitModal() {
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            history.push(`/trade/fiat/sell?orderId=${order.id}`);
             updateOffBanxaData({ order });
             banxaService.KYCDone();
             handleClose();
@@ -98,3 +100,30 @@ export function useOffFaitModal() {
     handleClose,
   };
 }
+
+export const useOffRampHandler = () => {
+  const subject = React.useMemo(() => banxaService.onSocket(), []);
+  const history = useHistory();
+
+  React.useEffect(() => {
+    const subscription = subject.subscribe((props) => {
+      myLog("Banxa subscription ", props);
+      switch (props.status) {
+        case BanxaCheck.OrderHide:
+          myLog("Banxa Order OrderHide");
+          const {
+            _router_modalData: { offBanxaValue },
+          } = store.getState();
+          if (props.data?.reason == "KYCDone" && offBanxaValue) {
+            history.push(`/trade/fiat/sell?orderId=${offBanxaValue.id}`);
+          }
+          break;
+        default:
+          break;
+      }
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [subject]);
+};

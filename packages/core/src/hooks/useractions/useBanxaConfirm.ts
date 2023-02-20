@@ -50,7 +50,7 @@ import _ from "lodash";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import { useLocation } from "react-use";
 
 export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
@@ -62,7 +62,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
-  const history = useHistory();
   const subject = React.useMemo(() => banxaService.onSocket(), []);
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 
@@ -337,8 +336,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       ) {
         updateOffBanxaData({ order });
         banxaService.KYCDone();
-        // const transferBanxaValue = store.getState()._router_modalData.transferBanxaValue;
-        // TODO: console.log
         console.log("BANXA KYC Done BANXA order Info:", order);
       } else {
         setTimeout(() => {
@@ -371,13 +368,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         case BanxaCheck.OrderHide:
           myLog("Banxa Order OrderHide");
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
-
-          if (props.data?.reason == "KYCDone") {
-            const {
-              _router_modalData: { offBanxaValue },
-            } = store.getState();
-            history.replace(`/trade/fiat/sell?orderId=${offBanxaValue?.id}`);
-          }
           break;
         case BanxaCheck.OrderEnd:
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
