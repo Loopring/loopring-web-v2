@@ -468,8 +468,8 @@ export const useBanxaTransPost = () => {
   const { account } = useAccount();
   const { chainId } = useSystem();
   const { checkHWAddr, updateHW } = useWalletInfo();
-  const {setShowAccount} = useOpenModals();
-  const {offBanxaValue, updateTransferBanxaData} = useModalData();
+  const { setShowAccount } = useOpenModals();
+  const { offBanxaValue, updateTransferBanxaData } = useModalData();
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
