@@ -62,6 +62,7 @@ export const ThirdPanelReturn = ({
               className="loading-gif"
               width="36"
               src={`${SoursURL}images/loading-line.gif`}
+              alt={"loading-gif"}
             />
           </Box>
           <Typography
