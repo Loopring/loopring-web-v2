@@ -13,7 +13,6 @@ import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { BanxaCheck, banxaService, OrderENDReason } from "../../services";
-import { useRouteMatch } from "react-router-dom";
 import _ from "lodash";
 
 export enum RAMP_SELL_PANEL {
