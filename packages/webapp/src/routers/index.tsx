@@ -105,6 +105,7 @@ const WrapModal = () => {
         open={open}
         handleClose={handleClose}
         messageInfo={{
+          svgIcon: "BanxaIcon",
           key: VendorProviders.Banxa,
           message: t("labelOrderBanxaIsReadyToPay"),
         }}

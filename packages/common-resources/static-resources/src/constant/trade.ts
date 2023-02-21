@@ -643,4 +643,5 @@ export enum TabTokenTypeIndex {
 export interface SnackbarMessage {
   message: string;
   key: number | string;
+  svgIcon?: string;
 }

@@ -11,14 +11,58 @@ import {
 import { DropzoneOptions, useDropzone } from "react-dropzone";
 import styled from "@emotion/styled";
 import {
+  AudioIcon,
   CloseIcon,
   ErrorIcon,
+  GET_IPFS_STRING,
+  hexToRGB,
   ImageIcon,
+  Media,
+  myLog,
+  PlayIcon,
   SoursURL,
+  ThreeDIcon,
+  VideoIcon,
 } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 import React from "react";
+import { useTheme } from "@emotion/react";
 import { NftImage } from "../media";
+
+export const TYPES = ["image/jpeg", "image/jpg", "image/gif", "image/png"];
+export const MediaTYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/gif",
+  "image/png",
+  "audio/mp3",
+  "audio/mpeg",
+  "video/mp4",
+  "video/mpeg4",
+  "application/pdf",
+  "model",
+  "gltf",
+  "glb",
+  "",
+  "model/gltf",
+  "model/glb",
+  "model/usdz",
+];
+export const getMediaType = (type: string): Media | undefined => {
+  if (/audio/gi.test(type ?? "")) {
+    return Media.Audio;
+  }
+  if (/video/gi.test(type ?? "")) {
+    return Media.Video;
+  }
+  if (/(model)/gi.test(type ?? "")) {
+    return Media.Media3D;
+  }
+  if (/image/gi.test(type ?? "")) {
+    return Media.Image;
+  }
+  return;
+};
 
 const BoxStyle = styled(Box)`
   ${({ theme }) =>
@@ -70,6 +114,233 @@ export const IPFS_INIT: Partial<IpfsFile> = {
   error: undefined,
   isUpdateIPFS: false,
 };
+export const MediaSVGToggle = ({
+  url,
+  play,
+  getIPFSString,
+  baseURL,
+  mediaTyp,
+  setPlay,
+  isShow,
+}: {
+  url: string;
+  play: boolean;
+  getIPFSString: GET_IPFS_STRING;
+  baseURL: string;
+  mediaTyp: Media | undefined;
+  setPlay: (props: boolean) => void;
+  isShow: boolean;
+}) => {
+  const theme = useTheme();
+  const vidRef = React.useRef<HTMLVideoElement>(null);
+  const aidRef = React.useRef<HTMLAudioElement>(null);
+  const d3Ref = React.useRef<HTMLAudioElement>(null);
+  const typeSvg = React.useMemo(() => {
+    myLog("item.__mediaType__", mediaTyp);
+    switch (mediaTyp) {
+      case Media.Audio:
+        return (
+          <>
+            <Box
+              position={"absolute"}
+              right={theme.unit}
+              bottom={theme.unit}
+              borderRadius={"50%"}
+              sx={{ background: "var(--color-box)" }}
+              padding={3 / 2}
+              display={"inline-flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              zIndex={100}
+            >
+              <AudioIcon fontSize={"large"} htmlColor={"var(--text-third)"} />
+            </Box>
+            {url && (
+              <Box
+                position={"absolute"}
+                left={"50%"}
+                bottom={theme.unit}
+                sx={{ transform: "translateX(-50%)" }}
+                zIndex={100}
+              >
+                <audio
+                  src={getIPFSString(url, baseURL)}
+                  ref={aidRef}
+                  controls
+                  loop
+                  className="w-full rounded-none h-12"
+                  controlsList="nodownload"
+                />
+              </Box>
+            )}
+          </>
+        );
+      case Media.Video:
+        return (
+          <>
+            <Box
+              position={"absolute"}
+              right={theme.unit}
+              bottom={theme.unit}
+              borderRadius={"50%"}
+              sx={{ background: "var(--color-box)" }}
+              padding={3 / 2}
+              display={"inline-flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              zIndex={100}
+            >
+              <VideoIcon fontSize={"large"} htmlColor={"var(--text-third)"} />
+            </Box>
+
+            {url && (
+              <Box
+                position={"absolute"}
+                left={"50%"}
+                top={"50%"}
+                zIndex={100}
+                sx={{
+                  transform: "translate(-50% , -50%)",
+                  cursor: "pointer",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPlay(true);
+                }}
+              >
+                {play ? (
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    flex={1}
+                  >
+                    <video
+                      ref={vidRef}
+                      src={getIPFSString(url, baseURL)}
+                      autoPlay
+                      muted
+                      controls
+                      loop
+                      controlsList="nodownload"
+                      style={{ width: "100%" }}
+                    />
+                  </Box>
+                ) : (
+                  <PlayIconStyle
+                    sx={{ minHeight: 72, minWidth: 72 }}
+                    // width={60}
+                    // height={60}
+                    // htmlColor={"var(--color-text-disable)"}
+                  />
+                )}
+              </Box>
+            )}
+          </>
+        );
+      case Media.Media3D:
+        return (
+          <>
+            <Box
+              position={"absolute"}
+              right={theme.unit}
+              bottom={theme.unit}
+              borderRadius={"50%"}
+              sx={{ background: "var(--color-box)" }}
+              padding={3 / 2}
+              display={"inline-flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              zIndex={100}
+            >
+              <ThreeDIcon fontSize={"large"} htmlColor={"var(--text-third)"} />
+            </Box>
+
+            {url && (
+              <Box
+                position={"absolute"}
+                left={"50%"}
+                top={"50%"}
+                zIndex={100}
+                sx={{
+                  transform: "translate(-50% , -50%)",
+                  cursor: "pointer",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPlay(true);
+                }}
+              >
+                <model-viewer
+                  src={getIPFSString(url, baseURL)}
+                  ref={d3Ref}
+                  autoPlay
+                  auto-rotate
+                  camera-controls
+                  controls
+                  loop
+                  ar-modes="webxr scene-viewer quick-look"
+                  loading="eager"
+                  touch-action="pan-y"
+                  shadow-intensity="1"
+                />
+              </Box>
+            )}
+          </>
+        );
+      case Media.Image:
+        return (
+          <>
+            {url && (
+              <Box
+                position={"absolute"}
+                left={"50%"}
+                top={"50%"}
+                zIndex={100}
+                sx={{
+                  transform: "translate(-50% , -50%)",
+                  cursor: "pointer",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPlay(true);
+                }}
+              >
+                <NftImage alt={"image"} onError={() => undefined} src={url} />
+              </Box>
+            )}
+          </>
+        );
+      default:
+        return <></>;
+    }
+  }, [mediaTyp, url, play, theme.unit]);
+  React.useEffect(() => {
+    if (isShow === false) {
+      if (vidRef.current) {
+        vidRef.current.pause();
+      }
+      if (aidRef.current) {
+        aidRef.current.pause();
+      }
+      if (d3Ref.current) {
+        d3Ref.current.pause();
+      }
+    }
+    return () => {
+      if (vidRef.current) {
+        vidRef.current.pause();
+      }
+      if (aidRef.current) {
+        aidRef.current.pause();
+      }
+      if (d3Ref.current) {
+        d3Ref.current.pause();
+      }
+    };
+  }, [isShow]);
+  return <>{typeSvg}</>;
+};
 
 export const IPFSSourceUpload = ({
   value,
@@ -84,7 +355,9 @@ export const IPFSSourceUpload = ({
   disabled,
   maxSize = 10485760,
   onDelete,
-  types = ["jpeg", "jpg", "gif", "png"],
+  types = TYPES,
+  getIPFSString,
+  baseURL,
   ...options
 }: Omit<DropzoneOptions, "onDrop" | "onDropAccepted"> & {
   // sx?: SxProps<Theme>;
@@ -99,10 +372,10 @@ export const IPFSSourceUpload = ({
   types?: string[];
   onDelete: () => void;
   onChange: (files: IpfsFile) => void;
+  getIPFSString: GET_IPFS_STRING;
+  baseURL: string;
 }) => {
   const { t } = useTranslation();
-  // const
-
   const onDropAccepted = React.useCallback(
     (file: File[]) => {
       onChange({
@@ -123,7 +396,7 @@ export const IPFSSourceUpload = ({
       maxSize,
       accept: types
         ?.map((item) => {
-          return `image/${item}`;
+          return `${item}`;
         })
         .join(", "),
       onDropAccepted,
@@ -234,12 +507,25 @@ export const IPFSSourceUpload = ({
                   rel="noopener noreferrer"
                   href={value.fullSrc}
                 >
-                  <NftImage
-                    alt={value?.file?.name}
-                    title={value.cid}
-                    onError={() => undefined}
-                    src={value.localSrc}
-                  />
+                  {/*<NftImage*/}
+                  {/*  alt={value?.file?.name}*/}
+                  {/*  title={value.cid}*/}
+                  {/*  onError={() => undefined}*/}
+                  {/*  src={value.localSrc}*/}
+                  {/*/>*/}
+                  {value && value.fullSrc ? (
+                    <MediaSVGToggle
+                      url={value.fullSrc ?? ""}
+                      play={true}
+                      setPlay={() => {}}
+                      mediaTyp={getMediaType(value.file.type)}
+                      getIPFSString={getIPFSString}
+                      baseURL={baseURL} //
+                      isShow={true}
+                    />
+                  ) : (
+                    <></>
+                  )}
                 </LinkStyle>
                 {close}
               </>
@@ -274,7 +560,15 @@ export const IPFSSourceUpload = ({
                   {...typographyProps}
                 >
                   {t(title, {
-                    types: types?.join(", "),
+                    types: types
+                      ?.map((ele) => {
+                        const split = ele?.split("/");
+                        if (split.length === 2) {
+                          return split[1];
+                        }
+                        return ele;
+                      })
+                      .join(", "),
                     size: (maxSize / 1000000).toFixed(0),
                   })}
                 </Typography>
@@ -289,3 +583,7 @@ export const IPFSSourceUpload = ({
     </Box>
   );
 };
+
+const PlayIconStyle = styled(PlayIcon)`
+  color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".8")};
+`;

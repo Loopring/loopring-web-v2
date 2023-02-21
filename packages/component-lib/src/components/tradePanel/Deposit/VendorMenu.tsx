@@ -14,7 +14,7 @@ import { useTheme } from "@emotion/react";
 import { useSettings } from "../../../stores";
 import { TagIconList } from "../../block";
 
-const IconItem = ({ svgIcon }: { svgIcon: string }) => {
+export const VendorIconItem = ({ svgIcon }: { svgIcon: string }) => {
   const theme = useTheme();
   switch (svgIcon) {
     case "BanxaIcon":
@@ -114,7 +114,7 @@ export const VendorMenu = ({
                   item.btnStatus
                 )
               }
-              startIcon={IconItem({ svgIcon: item.svgIcon })}
+              startIcon={VendorIconItem({ svgIcon: item.svgIcon })}
               onClick={(e) => {
                 if (item.handleSelect) {
                   item.handleSelect(e);

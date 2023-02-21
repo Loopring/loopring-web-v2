@@ -16,10 +16,12 @@ import {
   TradeNFT,
 } from "@loopring-web/common-resources";
 import {
+  getIPFSString,
   LoopringAPI,
   makeMeta,
   useMyCollection,
   useNFTMintAdvance,
+  useSystem,
 } from "@loopring-web/core";
 
 export const MintNFTPanel = <Co extends CollectionMeta>() => {
@@ -27,6 +29,8 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
   const mintWholeProps = useMintNFTPanel();
   const collectionListProps = useMyCollection();
   const { t } = useTranslation(["common"]);
+  const { baseURL } = useSystem();
+
   const panelList: Pick<
     PanelContent<"METADATA" | "MINT_CONFIRM">,
     "key" | "element"
@@ -36,6 +40,8 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
       element: (
         <MetaNFTPanel
           {...{
+            getIPFSString,
+            baseURL,
             ...mintWholeProps,
             nftMetaProps: {
               ...mintWholeProps.nftMetaProps,
@@ -63,7 +69,7 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
           disabled={false}
           // baseURL={mintWholeProps.nftMetaProps.baseURL}
           walletMap={{}}
-          {...mintWholeProps.nftMintProps}
+          {...{ ...mintWholeProps.nftMintProps, getIPFSString, baseURL }}
           metaData={mintWholeProps.nftMintValue.nftMETA}
           isFeeNotEnough={mintWholeProps.isFeeNotEnough}
           handleFeeChange={mintWholeProps.handleFeeChange}

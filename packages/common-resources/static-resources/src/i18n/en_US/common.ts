@@ -673,7 +673,8 @@ export default {
   depositLabelTo: "To address, Account ID or ENS.",
   labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
-  labelIPFSUploadTitle: "Upload Image (Dimensions: 1:1) <1>\uFE61</1> ",
+  labelIPFSUploadTitle: "Cover Image (Dimensions: 1:1) <1>\uFE61</1> ",
+  labelIPFSUploadMediaTitle: " NFT Media (mp3,mp4,3d,image)",
   labelLoadDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelUpload: "upload",
@@ -1419,16 +1420,16 @@ export default {
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
-  labelOrderOpen: "next",
-  labelOrderCancel: "cancel",
+  labelOrderOpen: "Continue",
+  labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
-    "KYC is Done, please click the button to next step",
+    "The crypto selling order is ready. Please continue.",
   labelBanxaContinuous: "Continuous preview order",
   labelBanxaCreate: "Create a new order",
   labelBanxaTitleCreateAgain: "You still having an order in progressing:",
   labelYouAlreadyHaveAnBanxa:
-    "If you already submit the KYC and input bank account, you can keep waiting for it and, <1>check the status on Banxa website</1>, otherwise please click Button to create new order\n",
-  labelHaveAnBanxaCancel: "Or cancel it create a new order",
+    "If you have already submitted KYC and entered your bank account, you can continue to wait and <1>status on the Banxa website</1>, or you can create a new order instead.\n",
+  labelHaveAnBanxaCancel: "", //"Or cancel it create a new order",
   labelBanxaConfirmSubmit:
     "Off-Ramp L2 Transfer with Banxa order: {{order}} has been submitted, please click the link and save it for check the status",
 };

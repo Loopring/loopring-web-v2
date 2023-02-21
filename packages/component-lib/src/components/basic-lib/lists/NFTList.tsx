@@ -191,12 +191,12 @@ export const NFTList = withTranslation("common")(
     t,
     ...props
   }: {
+    getIPFSString: GET_IPFS_STRING;
     baseURL: string;
     isManage?: boolean;
     nftList: Partial<NFT>[];
     etherscanBaseUrl?: string;
     size?: "large" | "medium" | "small";
-    getIPFSString: GET_IPFS_STRING;
     onClick?: (item: Partial<NFT>) => Promise<void>;
     onNFTReload?: (item: Partial<NFT>, index: number) => Promise<void>;
     total: number;

@@ -25,7 +25,7 @@ declare global {
       "ar-modes": any;
       "touch-action": any;
       "shadow-intensity": any;
-      poster: string;
+      poster?: string;
 
       [key: string]: any;
     }

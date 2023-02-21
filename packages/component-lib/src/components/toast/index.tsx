@@ -1,6 +1,7 @@
 import {
   Alert,
   AlertTitle,
+  Box,
   Snackbar,
   SnackbarOrigin,
   Typography,
@@ -15,6 +16,7 @@ import {
 import styled from "@emotion/styled";
 import { withTranslation, WithTranslation } from "react-i18next";
 import React from "react";
+import { VendorIconItem } from "../tradePanel";
 
 export type TOASTOPEN = {
   open: boolean;
@@ -115,7 +117,15 @@ export const NoticeSnack = ({
         height: "fit-content",
       }}
       onClose={handleClose}
-      message={messageInfo ? messageInfo.message : undefined}
+      message={
+        <Box display={"flex"} flexDirection={"column"}>
+          {messageInfo.svgIcon &&
+            VendorIconItem({ svgIcon: messageInfo.svgIcon })}
+          <Typography component={"span"} display={"block"}>
+            {messageInfo ? messageInfo.message : undefined}
+          </Typography>
+        </Box>
+      }
       action={actionEle}
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
     />

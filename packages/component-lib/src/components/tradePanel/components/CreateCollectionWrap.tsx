@@ -12,6 +12,7 @@ import {
 import { Trans, useTranslation } from "react-i18next";
 import {
   CollectionMeta,
+  GET_IPFS_STRING,
   htmlDecode,
   Info2Icon,
   TradeBtnStatus,
@@ -30,6 +31,8 @@ export type CreateCollectionViewProps<Co> = {
   onSubmitClick: () => Promise<void>;
   handleOnDataChange: (key: string, value: any) => void;
   collectionValue: Co;
+  getIPFSString: GET_IPFS_STRING;
+  baseURL: string;
 };
 
 export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
@@ -44,6 +47,8 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
   handleOnDataChange,
   collectionValue,
   onSubmitClick,
+  getIPFSString,
+  baseURL,
 }: CreateCollectionViewProps<T>) => {
   const { t } = useTranslation("common");
   const getDisabled = React.useMemo(() => {
@@ -95,7 +100,8 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
                 typographyProps={{}}
                 buttonProps={{}}
                 height={"calc( 100% * 7 / 5)"}
-                // title={t("labelTileUri")}
+                getIPFSString={getIPFSString}
+                baseURL={baseURL}
                 buttonText={""}
                 value={keys?.tileUri ?? undefined}
                 onDelete={() => {
@@ -132,7 +138,8 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
                 typographyProps={{}}
                 buttonProps={{}}
                 height={"100%"}
-                // maxSize={MaxSize}
+                getIPFSString={getIPFSString}
+                baseURL={baseURL}
                 title={"labelAvatarDes"}
                 buttonText={""}
                 value={keys?.avatar ?? undefined}
@@ -162,8 +169,8 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
               height={"calc( 100%/ 3)"}
               typographyProps={{}}
               buttonProps={{}}
-              // maxSize={MaxSize}
-              // title={"Banner  (1500 x 500) size "}
+              getIPFSString={getIPFSString}
+              baseURL={baseURL}
               buttonText={""}
               value={keys?.banner ?? undefined}
               onDelete={() => {

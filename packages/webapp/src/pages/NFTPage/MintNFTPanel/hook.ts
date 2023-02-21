@@ -42,7 +42,7 @@ export const useMintNFTPanel = <
   const {
     onFilesLoad,
     onDelete,
-    ipfsMediaSources,
+    keys,
     ipfsProvides,
     nftMetaProps,
     chargeFeeTokenList,
@@ -84,7 +84,7 @@ export const useMintNFTPanel = <
     errorOnMeta,
     onFilesLoad,
     onDelete,
-    ipfsMediaSources,
+    keys,
     ipfsProvides,
     nftMetaProps,
     chargeFeeTokenList,

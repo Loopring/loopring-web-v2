@@ -3,7 +3,6 @@ import {
   IPFS_LOOPRING_SITE,
   LOOPRING_NFT_METADATA,
   LOOPRING_TAKE_NFT_META_KET,
-  Media,
   myLog,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
@@ -14,6 +13,7 @@ import Web3 from "web3";
 import React from "react";
 import { getIPFSString } from "../../utils";
 import { useSystem } from "../../stores";
+import { getMediaType } from "@loopring-web/component-lib";
 
 export const useNFTListDeep = <T extends Partial<NFTWholeINFO>>() => {
   const { baseURL } = useSystem();
@@ -111,6 +111,7 @@ export const useNFTListDeep = <T extends Partial<NFTWholeINFO>>() => {
           : true,
       ...nftToken,
     } as NFTWholeINFO;
+    //debuggera
     tokenInfo = {
       ...tokenInfo,
       nftIdView: new BigNumber(tokenInfo.nftId ?? "0", 16).toString(),
@@ -161,18 +162,10 @@ export const useNFTListDeep = <T extends Partial<NFTWholeINFO>>() => {
             method: "HEAD",
           }
         );
-        if (/audio/gi.test(req?.headers?.get("content-type") ?? "")) {
-          tokenInfo.__mediaType__ = Media.Audio;
-        }
-        if (/video/gi.test(req?.headers?.get("content-type") ?? "")) {
-          tokenInfo.__mediaType__ = Media.Video;
-        }
-        if (/(model)/gi.test(req?.headers?.get("content-type") ?? "")) {
-          tokenInfo.__mediaType__ = Media.Media3D;
-        }
-        if (/image/gi.test(req?.headers?.get("content-type") ?? "")) {
-          tokenInfo.__mediaType__ = Media.Image;
-        }
+        debugger;
+        tokenInfo.__mediaType__ = getMediaType(
+          req?.headers?.get("content-type") ?? ""
+        );
       } catch (error) {
         console.log("nft animationUrl", error);
       }

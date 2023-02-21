@@ -11,11 +11,13 @@ import {
   ImageUploadWrapper,
   IpfsFile,
   IPFSSourceUpload,
+  MediaTYPES,
   MintNFTBlock,
   NFTMetaBlockProps,
   NFTMetaProps,
   NFTMintProps,
   TextareaAutosizeStyled,
+  TYPES,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
@@ -28,25 +30,17 @@ import {
   NFTMETA,
   TransErrorHelp,
 } from "@loopring-web/common-resources";
-import { LoopringAPI, NFT_MINT_VALUE, useSystem } from "@loopring-web/core";
+import {
+  getIPFSString,
+  LoopringAPI,
+  NFT_MINT_VALUE,
+  useSystem,
+} from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 const MaxSize = 10485760;
-
-const TYPES = ["jpeg", "jpg", "gif", "png"];
 const MaxMediaSize = 10485760 * 5;
-const MediaTYPES = [
-  "jpeg",
-  "jpg",
-  "gif",
-  "png",
-  "mp3",
-  "mp4",
-  "pdf",
-  "gltf",
-  "glb",
-  "usdz",
-];
+
 export const MetaNFTPanel = <
   Me extends NFTMETA,
   Mi extends MintTradeNFT<I>,
@@ -56,21 +50,20 @@ export const MetaNFTPanel = <
 >({
   nftMetaProps,
   nftMintProps,
-  ipfsMediaSources,
+  keys,
   onFilesLoad,
   onDelete,
   nftMintValue,
   errorOnMeta,
-}: // collectionInputProps,
-Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
+}: Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
   feeInfo: C;
   errorOnMeta: undefined | sdk.RESULT_INFO;
   nftMintValue: NFT_MINT_VALUE<I>;
   nftMintProps: NFTMintProps<Me, Mi, C>;
   nftMetaProps: NFTMetaProps<Me, Co, C>;
-  onFilesLoad: (value: IpfsFile) => void;
-  onDelete: () => void;
-  ipfsMediaSources: IpfsFile | undefined;
+  onFilesLoad: (key: string, value: IpfsFile) => void;
+  onDelete: (keys: string[]) => void;
+  keys: { [key: string]: undefined | IpfsFile };
 }) => {
   const { t } = useTranslation("common");
   const { baseURL } = useSystem();
@@ -111,26 +104,30 @@ Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
             <Box maxWidth={160} maxHeight={160}>
               <IPFSSourceUpload
                 fullSize={true}
-                value={ipfsMediaSources}
+                value={keys?.image}
                 maxSize={MaxSize}
                 types={TYPES}
-                onChange={onFilesLoad}
-                onDelete={onDelete}
+                getIPFSString={getIPFSString}
+                baseURL={baseURL}
+                onChange={(value) => {
+                  onFilesLoad("image", value);
+                }}
+                onDelete={() => onDelete(["image"])}
               />
             </Box>
           </Box>
           <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
             <FormLabel>
               <Typography variant={"body2"} marginBottom={1}>
-                <Trans i18nKey={"labelIPFSUploadTitle"}>
+                <Trans i18nKey={"labelIPFSUploadMediaTitle"}>
                   NFT Media (mp3,mp4,3d,image)
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"error"}
-                  >
-                    {"\uFE61"}
-                  </Typography>
+                  {/*<Typography*/}
+                  {/*  component={"span"}*/}
+                  {/*  variant={"inherit"}*/}
+                  {/*  color={"error"}*/}
+                  {/*>*/}
+                  {/*  {"\uFE61"}*/}
+                  {/*</Typography>*/}
                 </Trans>
               </Typography>
             </FormLabel>
@@ -138,11 +135,15 @@ Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
               <IPFSSourceUpload
                 height={"60%"}
                 fullSize={true}
-                value={ipfsMediaSources}
+                value={keys.animationUrl}
                 maxSize={MaxMediaSize}
                 types={MediaTYPES}
-                onChange={onFilesLoad}
-                onDelete={onDelete}
+                getIPFSString={getIPFSString}
+                baseURL={baseURL}
+                onChange={(value) => {
+                  onFilesLoad("animationUrl", value);
+                }}
+                onDelete={() => onDelete(["animationUrl"])}
               />
             </Box>
           </Box>
@@ -170,7 +171,9 @@ Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
             baseURL={baseURL}
             domain={domain}
             handleMintDataChange={nftMintProps.handleMintDataChange}
-            disabled={ipfsMediaSources?.isProcessing}
+            disabled={
+              keys["image"]?.isProcessing || keys["animationUrl"]?.isProcessing
+            }
             nftMeta={nftMintValue.nftMETA as Me}
             mintData={nftMintValue.mintData as Mi}
             feeInfo={nftMintProps.feeInfo}

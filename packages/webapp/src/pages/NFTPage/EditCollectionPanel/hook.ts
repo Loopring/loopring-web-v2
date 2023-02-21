@@ -7,6 +7,8 @@ import {
   collectionService,
   useAccount,
   useEditCollection,
+  useSystem,
+  getIPFSString,
 } from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
 import React from "react";
@@ -23,6 +25,7 @@ export const useCollectionPanel = <T extends CollectionMeta>({
   const { t } = useTranslation("common");
   const isEdit = match?.params?.item === "editCollection";
   const history = useHistory();
+  const { baseURL } = useSystem();
   const {
     keys,
     collectionToastOpen,
@@ -105,6 +108,8 @@ export const useCollectionPanel = <T extends CollectionMeta>({
     btnStatus,
     btnInfo,
     disabled,
+    baseURL,
+    getIPFSString,
     handleOnDataChange,
     collectionValue,
     resetEdit,
