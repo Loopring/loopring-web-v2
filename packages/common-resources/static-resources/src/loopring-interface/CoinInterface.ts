@@ -138,6 +138,10 @@ export type DeFiCalcData<T> = {
   BtoA: string;
   fee: string;
 };
+export type DeFiSideCalcData<T> = {
+  coinSell: T;
+  fee: string;
+};
 
 export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {
   sellToken?: sdk.TokenInfo;

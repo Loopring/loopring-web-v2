@@ -1,24 +1,19 @@
 import {
-  DeFiCalcData,
-  DeFiChgType,
+  DeFiSideCalcData,
   EmptyValueTag,
-  ExchangeIcon,
-  getValuePrecisionThousand,
   IBData,
   myLog,
   OrderListIcon,
-  ReverseIcon,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
-import { DeFiWrapProps } from "./Interface";
-import { Trans, useTranslation } from "react-i18next";
+import { DeFiSideWrapProps } from "./Interface";
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { InputCoin } from "../../../basic-lib";
 import { ButtonStyle, IconButtonStyled } from "../Styled";
 import { CountDownIcon } from "../tool/Refresh";
 import { useHistory } from "react-router-dom";
-import BigNumber from "bignumber.js";
 import styled from "@emotion/styled";
 
 const GridStyle = styled(Grid)`
@@ -28,14 +23,13 @@ const GridStyle = styled(Grid)`
   }
 `;
 
-export const DeFiLRCWrap = <
+export const DeFiSideWrap = <
   T extends IBData<I>,
   I,
-  ACD extends DeFiCalcData<T>
+  ACD extends DeFiSideCalcData<T>
 >({
   disabled,
   isJoin,
-  isStoB,
   btnInfo,
   refreshRef,
   onRefreshData,
@@ -49,75 +43,17 @@ export const DeFiLRCWrap = <
   deFiCalcData,
   accStatus,
   tokenSell,
-  tokenBuy,
   isLoading,
   btnStatus,
   tokenSellProps,
-  tokenBuyProps,
   maxSellVol,
-  maxBuyVol,
-  market,
   ...rest
-}: DeFiWrapProps<T, I, ACD>) => {
+}: DeFiSideWrapProps<T, I, ACD>) => {
   // @ts-ignore
-  const [, baseSymbol, _quoteSymbol] = market.match(/(\w+)-(\w+)/i);
   const coinSellRef = React.useRef();
-  const coinBuyRef = React.useRef();
+
   const { t } = useTranslation();
   const history = useHistory();
-  const _onSwitchStob = React.useCallback(
-    (_event: any) => {
-      if (typeof switchStobEvent === "function") {
-        switchStobEvent(!isStoB);
-      }
-    },
-    [switchStobEvent, isStoB]
-  );
-
-  const showVal =
-    deFiCalcData.coinSell?.belong &&
-    deFiCalcData.coinBuy?.belong &&
-    deFiCalcData?.AtoB;
-
-  const convertStr = React.useMemo(() => {
-    return deFiCalcData.coinSell && deFiCalcData.coinBuy
-      ? isStoB
-        ? `1${deFiCalcData.coinSell.belong} \u2248 ${
-            // @ts-ignore
-            // eslint-disable-next-line eqeqeq
-            deFiCalcData?.AtoB && deFiCalcData?.AtoB !== "NaN"
-              ? getValuePrecisionThousand(
-                  deFiCalcData?.AtoB,
-                  tokenBuy.precision,
-                  tokenBuy.precision,
-                  tokenBuy.precision,
-                  false,
-                  { floor: true }
-                )
-              : EmptyValueTag
-          } ${deFiCalcData.coinBuy.belong}`
-        : `1${deFiCalcData.coinBuy.belong}  \u2248 ${
-            // @ts-ignore
-            deFiCalcData.BtoA && deFiCalcData?.BtoA !== "NaN"
-              ? getValuePrecisionThousand(
-                  deFiCalcData?.BtoA,
-                  tokenSell.precision,
-                  tokenSell.precision,
-                  tokenSell.precision,
-                  false,
-                  { floor: true }
-                )
-              : EmptyValueTag
-          } ${deFiCalcData.coinSell.belong}`
-      : t("labelCalculating");
-  }, [
-    deFiCalcData?.AtoB,
-    deFiCalcData.BtoA,
-    deFiCalcData.coinBuy,
-    deFiCalcData.coinSell,
-    isStoB,
-    t,
-  ]);
 
   // const getDisabled = () => {
   //   return (
@@ -127,36 +63,22 @@ export const DeFiLRCWrap = <
   //   );
   // };
   const getDisabled = React.useMemo(() => {
-    return (
-      disabled || deFiCalcData === undefined || deFiCalcData.AtoB === undefined
-    );
+    return disabled || deFiCalcData === undefined;
   }, [btnStatus, deFiCalcData, disabled]);
   // myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
 
   const handleCountChange = React.useCallback(
     (ibData: T, _name: string, _ref: any) => {
-      const focus: DeFiChgType =
-        _ref?.current === coinSellRef.current
-          ? DeFiChgType.coinSell
-          : DeFiChgType.coinBuy;
-
-      if (deFiCalcData[focus].tradeValue !== ibData.tradeValue) {
+      if (deFiCalcData.coinSell.tradeValue !== ibData.tradeValue) {
         myLog("defi handleCountChange", _name, ibData);
 
         onChangeEvent({
           tradeData: { ...ibData },
-          type: focus,
         });
       }
     },
     [deFiCalcData, onChangeEvent]
   );
-  const covertOnClick = React.useCallback(() => {
-    onChangeEvent({
-      tradeData: undefined,
-      type: DeFiChgType.exchange,
-    });
-  }, [onChangeEvent]);
   const propsSell = {
     label: t("tokenEnterPaymentToken"),
     subLabel: t("tokenMax"),
@@ -170,19 +92,7 @@ export const DeFiLRCWrap = <
     handleCountChange: handleCountChange as any,
     ...rest,
   } as any;
-  const propsBuy = {
-    label: t("tokenEnterReceiveToken"),
-    // subLabel: t('tokenHave'),
-    emptyText: t("tokenSelectToken"),
-    placeholderText: "0.00",
-    isShowCoinInfo: true,
-    isShowCoinIcon: true,
-    maxAllow: false,
-    ...tokenBuyProps,
-    // handleError,
-    handleCountChange,
-    ...rest,
-  } as any;
+
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split("|");
@@ -192,17 +102,7 @@ export const DeFiLRCWrap = <
     }
   }, [isJoin, t, btnInfo]);
 
-  const maxValue =
-    tokenBuy.symbol &&
-    maxBuyVol &&
-    `${getValuePrecisionThousand(
-      new BigNumber(maxBuyVol ?? 0).div("1e" + tokenBuy.decimals),
-      tokenBuy.precision,
-      tokenBuy.precision,
-      tokenBuy.precision,
-      false,
-      { floor: true }
-    )} ${tokenBuy.symbol}`;
+  const maxValue = "";
 
   return (
     <Grid
@@ -237,7 +137,7 @@ export const DeFiLRCWrap = <
           <Typography display={"inline-block"} marginLeft={2}>
             <IconButtonStyled
               onClick={() => {
-                history.push(`/l2assets/history/defiRecords?market=${market}`);
+                history.push(`/l2assets/history/defiSideRecords`);
               }}
               sx={{ backgroundColor: "var(--field-opacity)" }}
               className={"switch outlined"}
@@ -270,57 +170,6 @@ export const DeFiLRCWrap = <
             coinPrecision: tokenSell.precision,
           }}
         />
-        <Box alignSelf={"center"} marginY={1}>
-          <IconButtonStyled
-            size={"large"}
-            onClick={covertOnClick}
-            disabled={true}
-            aria-label={t("tokenExchange")}
-          >
-            <ExchangeIcon
-              fontSize={"large"}
-              htmlColor={"var(--color-text-disable)"}
-            />
-          </IconButtonStyled>
-        </Box>
-        <InputCoin<T, I, any>
-          ref={coinBuyRef}
-          disabled={getDisabled}
-          {...{
-            ...propsBuy,
-            name: "coinBuy",
-            isHideError: true,
-            order: "right",
-            inputData: deFiCalcData ? deFiCalcData.coinBuy : ({} as any),
-            coinMap: {},
-            coinPrecision: tokenBuy.precision,
-          }}
-        />
-      </Grid>
-      <Grid item>
-        <Typography
-          component={"p"}
-          variant="body1"
-          textAlign={"center"}
-          lineHeight={"24px"}
-          paddingY={2}
-        >
-          {showVal ? (
-            <>
-              {convertStr}
-              <IconButtonStyled
-                size={"small"}
-                aria-label={t("tokenExchange")}
-                onClick={_onSwitchStob}
-                // style={{transform: 'rotate(90deg)'}}
-              >
-                <ReverseIcon />
-              </IconButtonStyled>
-            </>
-          ) : (
-            t("labelCalculating")
-          )}
-        </Typography>
       </Grid>
       <Grid item alignSelf={"stretch"}>
         <Grid container direction={"column"} spacing={1} alignItems={"stretch"}>
@@ -341,7 +190,7 @@ export const DeFiLRCWrap = <
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
                 {deFiCalcData?.fee
-                  ? deFiCalcData.fee + ` ${tokenBuy.symbol}`
+                  ? deFiCalcData.fee + ` ${tokenSell.symbol}`
                   : EmptyValueTag}
               </Typography>
             </Grid>
@@ -379,17 +228,7 @@ export const DeFiLRCWrap = <
                   marginTop={1}
                   flexDirection={"column"}
                   color={"var(--color-warning)"}
-                >
-                  <Trans
-                    i18nKey={"labelDefiMaxBalanceJoin"}
-                    tOptions={{ maxValue }}
-                  >
-                    The quota is almost sold out and can't fulfil your complete
-                    order. You can only subscribe {{ maxValue }} now. Loopring
-                    will setup the pool soon, please revisit for subscription
-                    later.
-                  </Trans>
-                </Typography>
+                ></Typography>
               ) : (
                 <Typography
                   variant={"body1"}
@@ -403,36 +242,13 @@ export const DeFiLRCWrap = <
                     component={"span"}
                     variant={"inherit"}
                     color={"inherit"}
-                  >
-                    <Trans
-                      i18nKey={"labelDefiMaxBalance"}
-                      tOptions={{ maxValue }}
-                    >
-                      Loopring rebalance pool can't satisfy your complete
-                      request. You can only redeem {{ maxValue }} now. For the
-                      remaining investment, you can choose one of the approaches
-                    </Trans>
-                  </Typography>
+                  ></Typography>
                   <Typography
                     component={"span"}
                     variant={"inherit"}
                     color={"inherit"}
                     marginTop={1}
-                  >
-                    <ul>
-                      <Trans
-                        i18nKey={"labelDefiMaxBalance1"}
-                        components={{ li: <li /> }}
-                        tOptions={{ symbol: baseSymbol, type }}
-                      >
-                        <li>
-                          Withdraw wstETH to L1 and trade through CRV or LIDO
-                          directly
-                        </li>
-                        <li>Wait some time for Loopring to seto for redeem</li>
-                      </Trans>
-                    </ul>
-                  </Typography>
+                  ></Typography>
                 </Typography>
               )}
             </GridStyle>

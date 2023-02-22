@@ -40,3 +40,25 @@ export type DeFiWrapProps<T, I, ACD> = {
   accStatus?: AccountStatus;
   type: string;
 };
+
+export type DeFiSideWrapProps<T, I, ACD> = {
+  isJoin: boolean;
+  disabled?: boolean;
+  btnInfo?: BtnInfo;
+  refreshRef: React.Ref<any>;
+  onRefreshData?: (shouldFeeUpdate?: boolean, clearTrade?: boolean) => void;
+  isLoading: boolean;
+  maxSellVol?: string;
+  confirmShowLimitBalance: boolean;
+  onSubmitClick: () => void;
+  onConfirm: () => void;
+  switchStobEvent?: (_isStoB: boolean) => void;
+  onChangeEvent: (data: { tradeData?: undefined | T }) => void;
+  handleError?: (data: T) => void;
+  tokenSellProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
+  deFiCalcData: ACD;
+  tokenSell: TokenInfo;
+  btnStatus?: keyof typeof TradeBtnStatus | undefined;
+  accStatus?: AccountStatus;
+  type: string;
+};
