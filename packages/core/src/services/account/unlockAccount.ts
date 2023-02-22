@@ -77,8 +77,8 @@ export async function unlockAccount() {
           request: {
             accountId: account.accountId,
           },
-          // @ts-ignore
         },
+        // @ts-ignore
         account.publicKey
       );
       if (
