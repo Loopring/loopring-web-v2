@@ -109,7 +109,7 @@ export const NoticeSnack = ({
     <Snackbar
       key={messageInfo ? messageInfo.key : undefined}
       open={open}
-      autoHideDuration={null}
+      autoHideDuration={20000}
       sx={{
         pointerEvents: "all",
         flexDirection: "column",
