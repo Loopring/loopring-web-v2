@@ -109,19 +109,20 @@ export const NoticeSnack = ({
     <Snackbar
       key={messageInfo ? messageInfo.key : undefined}
       open={open}
-      autoHideDuration={6000}
+      autoHideDuration={null}
       sx={{
         pointerEvents: "all",
         flexDirection: "column",
         top: "80% !important",
         height: "fit-content",
+        ".MuiPaper-root": { background: "var(--color-pop-bg)" },
       }}
       onClose={handleClose}
       message={
         <Box display={"flex"} flexDirection={"column"}>
           {messageInfo.svgIcon &&
             VendorIconItem({ svgIcon: messageInfo.svgIcon })}
-          <Typography component={"span"} display={"block"}>
+          <Typography component={"span"} display={"block"} marginY={1}>
             {messageInfo ? messageInfo.message : undefined}
           </Typography>
         </Box>

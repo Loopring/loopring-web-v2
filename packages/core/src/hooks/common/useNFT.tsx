@@ -162,7 +162,6 @@ export const useNFTListDeep = <T extends Partial<NFTWholeINFO>>() => {
             method: "HEAD",
           }
         );
-        debugger;
         tokenInfo.__mediaType__ = getMediaType(
           req?.headers?.get("content-type") ?? ""
         );

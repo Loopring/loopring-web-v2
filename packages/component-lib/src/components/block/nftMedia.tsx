@@ -128,10 +128,11 @@ export const NFTMedia = React.memo(
                 </Box>
               ) : (
                 <>
-                  {shouldPlay && item.__mediaType__ && item.animationUrl && (
+                  {item.__mediaType__ && item.animationUrl && (
                     <MediaSVGToggle
                       url={item.animationUrl}
                       play={play}
+                      shouldPlay={shouldPlay}
                       setPlay={setPlay}
                       mediaTyp={item.__mediaType__}
                       getIPFSString={getIPFSString}
@@ -143,6 +144,7 @@ export const NFTMedia = React.memo(
                     alignSelf={"stretch"}
                     position={"relative"}
                     flex={1}
+                    margin={1}
                     display={"flex"}
                   >
                     {play && shouldPlay ? (

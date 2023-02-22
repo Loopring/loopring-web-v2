@@ -15,26 +15,20 @@ import {
   ModalCoinPairPanel,
   ModalRedPacketPanel,
   useOffFaitModal,
-  useVendor,
-  useBanxaConfirm,
-  useOffRampHandler,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
-  OffRampStatus,
   SagaStatus,
   setMyLog,
   ThemeType,
-  TOAST_TIME,
   VendorProviders,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
 import {
   useSettings,
   LoadingBlock,
-  Toast,
   NoticePanelSnackBar,
   NoticeSnack,
 } from "@loopring-web/component-lib";

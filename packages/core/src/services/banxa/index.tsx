@@ -35,8 +35,8 @@ export function useOffFaitModal() {
       >
         <Button
           sx={{ marginLeft: 1 }}
-          variant={"outlined"}
-          size={"medium"}
+          variant={"contained"}
+          size={"small"}
           color={"primary"}
           onClick={() => {
             banxaService.KYCDone();

@@ -39,14 +39,13 @@ export const MediaTYPES = [
   "audio/mpeg",
   "video/mp4",
   "video/mpeg4",
-  "application/pdf",
   "model",
   "gltf",
   "glb",
-  "",
   "model/gltf",
   "model/glb",
   "model/usdz",
+  "",
 ];
 export const getMediaType = (type: string): Media | undefined => {
   if (/audio/gi.test(type ?? "")) {
@@ -122,6 +121,7 @@ export const MediaSVGToggle = ({
   mediaTyp,
   setPlay,
   isShow,
+  shouldPlay = false,
 }: {
   url: string;
   play: boolean;
@@ -130,6 +130,7 @@ export const MediaSVGToggle = ({
   mediaTyp: Media | undefined;
   setPlay: (props: boolean) => void;
   isShow: boolean;
+  shouldPlay: boolean;
 }) => {
   const theme = useTheme();
   const vidRef = React.useRef<HTMLVideoElement>(null);
@@ -155,7 +156,7 @@ export const MediaSVGToggle = ({
             >
               <AudioIcon fontSize={"large"} htmlColor={"var(--text-third)"} />
             </Box>
-            {url && (
+            {url && shouldPlay && (
               <Box
                 position={"absolute"}
                 left={"50%"}
@@ -193,12 +194,13 @@ export const MediaSVGToggle = ({
               <VideoIcon fontSize={"large"} htmlColor={"var(--text-third)"} />
             </Box>
 
-            {url && (
+            {url && shouldPlay && (
               <Box
                 position={"absolute"}
                 left={"50%"}
                 top={"50%"}
                 zIndex={100}
+                width={"100%"}
                 sx={{
                   transform: "translate(-50% , -50%)",
                   cursor: "pointer",
@@ -208,13 +210,13 @@ export const MediaSVGToggle = ({
                   setPlay(true);
                 }}
               >
-                {play ? (
-                  <Box
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"center"}
-                    flex={1}
-                  >
+                <Box
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  flex={1}
+                >
+                  {play ? (
                     <video
                       ref={vidRef}
                       src={getIPFSString(url, baseURL)}
@@ -225,15 +227,18 @@ export const MediaSVGToggle = ({
                       controlsList="nodownload"
                       style={{ width: "100%" }}
                     />
-                  </Box>
-                ) : (
-                  <PlayIconStyle
-                    sx={{ minHeight: 72, minWidth: 72 }}
-                    // width={60}
-                    // height={60}
-                    // htmlColor={"var(--color-text-disable)"}
-                  />
-                )}
+                  ) : (
+                    <PlayIconStyle
+                      sx={{
+                        minHeight: 72,
+                        minWidth: 72,
+                      }}
+                      // width={60}
+                      // height={60}
+                      // htmlColor={"var(--color-text-disable)"}
+                    />
+                  )}
+                </Box>
               </Box>
             )}
           </>
@@ -256,22 +261,22 @@ export const MediaSVGToggle = ({
               <ThreeDIcon fontSize={"large"} htmlColor={"var(--text-third)"} />
             </Box>
 
-            {url && (
+            {url && shouldPlay && (
               <Box
                 position={"absolute"}
                 left={"50%"}
                 top={"50%"}
                 zIndex={100}
+                height={"100%"}
+                width={"100%"}
                 sx={{
                   transform: "translate(-50% , -50%)",
                   cursor: "pointer",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPlay(true);
+                  background: "var(--color-global-bg)",
                 }}
               >
                 <model-viewer
+                  style={{ height: "100%", width: "100%" }}
                   src={getIPFSString(url, baseURL)}
                   ref={d3Ref}
                   autoPlay
@@ -291,7 +296,7 @@ export const MediaSVGToggle = ({
       case Media.Image:
         return (
           <>
-            {url && (
+            {url && shouldPlay && (
               <Box
                 position={"absolute"}
                 left={"50%"}
@@ -517,6 +522,7 @@ export const IPFSSourceUpload = ({
                     <MediaSVGToggle
                       url={value.fullSrc ?? ""}
                       play={true}
+                      shouldPlay={true}
                       setPlay={() => {}}
                       mediaTyp={getMediaType(value.file.type)}
                       getIPFSString={getIPFSString}
@@ -583,7 +589,13 @@ export const IPFSSourceUpload = ({
     </Box>
   );
 };
+//${({ theme }) =>
+//  // padding: ${({ theme }) => 2 * theme.unit}px;
+//background: ${({ theme }) => hexToRGB(theme.colorBase.textPrimary, ".6")};
 
 const PlayIconStyle = styled(PlayIcon)`
-  color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".8")};
+  color: ${({theme}) => hexToRGB(theme.colorBase.box, ".9")};
+  border-radius: 100%;
+  box-shadow: inset 0px 0px 60px ${({theme}) => hexToRGB(theme.colorBase.textPrimary, ".7")};
+  padding: ${({theme}) => 1 * theme.unit}px;
 `;

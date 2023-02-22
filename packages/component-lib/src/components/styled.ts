@@ -393,16 +393,19 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
   position: relative;
 
   &.addAsset,
-  &.banxaEnter &.sendAsset {
+  &.sendAsset {
     white-space: pre;
     font-size: ${({ theme }) => theme.fontDefault.h5};
-    //justify-content: flex-start;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: row;
 
     &.isMobile {
       font-size: ${({ theme }) => theme.fontDefault.h6};
     }
+  }
+
+  &.banxaEnter {
+    justify-content: space-between;
   }
 
   &.redPacketType {
