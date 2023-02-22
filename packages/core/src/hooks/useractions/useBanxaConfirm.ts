@@ -25,6 +25,8 @@ import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
 import { makeWalletLayer2 } from "../help";
 import {
+  OffFaitCommon,
+  offFaitService,
   useChargeFees,
   useWalletLayer2Socket,
   walletLayer2Service,
@@ -52,6 +54,7 @@ import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 import { useRouteMatch } from "react-router-dom";
 import { useLocation } from "react-use";
+import { merge } from "rxjs";
 
 export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   setSellPanel,
@@ -63,7 +66,11 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   const { href } = useLocation();
   const search = href?.split("?")[1] ?? "";
   const searchParams = new URLSearchParams(search);
-  const subject = React.useMemo(() => banxaService.onSocket(), []);
+  const subject = React.useMemo(
+    () => merge(banxaService.onSocket(), offFaitService.onSocket()),
+    []
+  );
+
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 
   const { exchangeInfo, chainId } = useSystem();
@@ -123,6 +130,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
       setShowAccount({ isShow: false });
       checkFeeIsEnough({ isRequiredAPI: true });
+
       updateTransferBanxaData({
         belong: offBanxaValue.coin_code,
         tradeValue: offBanxaValue.coin_amount,
@@ -136,21 +144,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       setSellPanel(RAMP_SELL_PANEL.LIST);
     }
   }, [offBanxaValue]);
-  React.useEffect(() => {
-    if (
-      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
-      searchParams.get("orderId") &&
-      searchParams.get("orderId")?.toLowerCase() ==
-        offBanxaValue?.id?.toLowerCase()
-    ) {
-      restTransfer();
-    } else if (
-      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
-      searchParams.get("orderId")
-    ) {
-      banxaService.banxaCheckHavePending();
-    }
-  }, [match.params?.tab, offBanxaValue?.id]);
 
   const checkBtnStatus = React.useCallback(() => {
     const transferBanxaValue =
@@ -223,6 +216,18 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     transferBanxaValue.fee?.feeRaw,
     transferBanxaValue.tradeValue,
   ]);
+
+  React.useEffect(() => {
+    const offBanxaValue = store.getState()._router_modalData.offBanxaValue;
+    if (
+      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
+      searchParams.get("orderId") &&
+      searchParams.get("orderId")?.toLowerCase() ==
+        offBanxaValue?.id?.toLowerCase()
+    ) {
+      restTransfer();
+    }
+  }, [match.params?.tab, offBanxaValue?.id, searchParams.get("orderId")]);
 
   React.useEffect(() => {
     checkBtnStatus();
@@ -371,6 +376,10 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     const subscription = subject.subscribe((props) => {
       myLog("Banxa subscription ", props);
       switch (props.status) {
+        case OffFaitCommon.OffFaitCancel:
+          setSellPanel(RAMP_SELL_PANEL.LIST);
+          clearTimeout(nodeTimer.current as NodeJS.Timeout);
+          break;
         case BanxaCheck.CheckOrderStatus:
           myLog("Banxa checkOrderStatus");
           // @ts-ignore
@@ -378,11 +387,13 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           break;
         case BanxaCheck.OrderHide:
           myLog("Banxa Order OrderHide");
+          // if (props.data?.reason == "KYCDone") {
+          //   restTransfer();
+          // }
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
           break;
         case BanxaCheck.OrderEnd:
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
-
           break;
         case BanxaCheck.OrderShow:
           if (props.data?.reason == "transferDone") {

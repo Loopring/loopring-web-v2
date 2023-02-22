@@ -132,6 +132,7 @@ import {
   SendAssetList,
   SendNFTAssetList,
   TradeTypes,
+  VendorProviders,
 } from "@loopring-web/common-resources";
 import {
   banxaService,
@@ -140,6 +141,7 @@ import {
   LAST_STEP,
   lockAccount,
   mintService,
+  offFaitService,
   onchainHashInfo,
   OrderENDReason,
   store,
@@ -660,11 +662,13 @@ export function useAccountModalForUI({
             btnInfo2={{
               isLoading: isShowAccount?.info?.isBanxaLaunchLoading,
               callback: () => {
-                // banxaService.banxaEnd({
-                //   reason: OrderENDReason.UserCancel,
-                //   data: "",
-                // });
                 setShowAccount({ isShow: false });
+                offFaitService.offRampCancel({
+                  data: {
+                    product: VendorProviders.Banxa,
+                    orderId: isShowAccount?.info?.orderId,
+                  },
+                });
                 banxaService.banxaStart(true);
               },
               btnTxt: t("labelBanxaCreate"),

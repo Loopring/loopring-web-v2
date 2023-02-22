@@ -187,13 +187,13 @@ export const ContinuousBanxaOrder = ({
           <Box marginTop={1.5} component={"div"} marginX={2}>
             <Typography
               component={"h4"}
-              variant={"body1"}
-              whiteSpace={"pre-line"}
+              variant={"h5"}
+              whiteSpace={"pre"}
               marginBottom={3}
+              marginTop={-1}
             >
               <Trans i18nKey={"labelYouAlreadyHaveAnBanxa"}>
-                If you already submit the KYC and input bank account, you can
-                keep waiting for Banax validation and
+                You already have an awaiting payment
                 <Link
                   style={{
                     cursor: "pointer",
@@ -205,9 +205,9 @@ export const ContinuousBanxaOrder = ({
                   rel="noopener noreferrer"
                   href={`${BANXA_URLS[chainId]}/status/${orderId}`}
                 >
-                  check the status on Banxa website
+                  order
                 </Link>
-                , otherwise please click Button create new order
+                continue , or you can create a new order instead.
               </Trans>
             </Typography>
             <Box
@@ -223,34 +223,33 @@ export const ContinuousBanxaOrder = ({
                 src={`${SoursURL}images/loading-line.gif`}
               />
             </Box>
-
-            {/*<MenuBtnStyled*/}
-            {/*  variant={"outlined"}*/}
-            {/*  size={"large"}*/}
-            {/*  className={`banxaEnter  ${isMobile ? "isMobile" : ""}`}*/}
-            {/*  fullWidth*/}
-            {/*  loading={btnInfo?.isLoading ? "true" : "false"}*/}
-            {/*  disabled={btnInfo?.isLoading}*/}
-            {/*  endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}*/}
-            {/*  onClick={(_e) => {*/}
-            {/*    btnInfo.callback();*/}
-            {/*  }}*/}
-            {/*>*/}
-            {/*  <Typography*/}
-            {/*    component={"span"}*/}
-            {/*    variant={"inherit"}*/}
-            {/*    color={"inherit"}*/}
-            {/*    display={"inline-flex"}*/}
-            {/*    alignItems={"center"}*/}
-            {/*    lineHeight={"1.2em"}*/}
-            {/*    sx={{*/}
-            {/*      textIndent: 0,*/}
-            {/*      textAlign: "left",*/}
-            {/*    }}*/}
-            {/*  >*/}
-            {/*    {btnInfo.btnTxt}*/}
-            {/*  </Typography>*/}
-            {/*</MenuBtnStyled>*/}
+            <MenuBtnStyled
+              variant={"outlined"}
+              size={"large"}
+              className={`banxaEnter  ${isMobile ? "isMobile" : ""}`}
+              fullWidth
+              loading={btnInfo?.isLoading ? "true" : "false"}
+              disabled={btnInfo?.isLoading}
+              endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
+              onClick={(_e) => {
+                btnInfo.callback();
+              }}
+            >
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                color={"inherit"}
+                display={"inline-flex"}
+                alignItems={"center"}
+                lineHeight={"1.2em"}
+                sx={{
+                  textIndent: 0,
+                  textAlign: "left",
+                }}
+              >
+                {btnInfo.btnTxt}
+              </Typography>
+            </MenuBtnStyled>
           </Box>
           <Box marginTop={1.5} component={"div"} marginX={2}>
             <Typography

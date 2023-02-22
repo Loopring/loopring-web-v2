@@ -1426,10 +1426,10 @@ export default {
     "The crypto selling order is ready. Please continue.",
   labelBanxaContinuous: "Continuous preview order",
   labelBanxaCreate: "Create a new order",
-  labelBanxaTitleCreateAgain: "You still having an order in progressing:",
+  labelBanxaTitleCreateAgain: "", //You still having an order in progressing:
   labelYouAlreadyHaveAnBanxa:
-    "If you have already submitted KYC and entered your bank account, you can continue to wait and <1>status on the Banxa website</1>, or you can create a new order instead.\n",
-  labelHaveAnBanxaCancel: "", //"Or cancel it create a new order",
+    "You already have an awaiting payment <1>order</1>.",
+  labelHaveAnBanxaCancel: "or you can create a new order instead.", //"Or cancel it create a new order",
   labelBanxaConfirmSubmit:
     "Off-Ramp L2 Transfer with Banxa order: {{order}} has been submitted, please click the link and save it for check the status",
 };

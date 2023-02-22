@@ -1,10 +1,11 @@
 import {
   AccountStatus,
+  myLog,
   TradeBtnStatus,
   VendorItem,
   VendorList,
 } from "@loopring-web/common-resources";
-import { useAccount, useModalData, useSystem } from "../../index";
+import { store, useAccount, useModalData, useSystem } from "../../index";
 import {
   RampInstantEventTypes,
   RampInstantSDK,
@@ -14,6 +15,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { BanxaCheck, banxaService, OrderENDReason } from "../../services";
 import _ from "lodash";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import { useLocation } from "react-use";
 
 export enum RAMP_SELL_PANEL {
   LIST,
@@ -25,6 +28,7 @@ export const useVendor = () => {
   const { account } = useAccount();
   const { t } = useTranslation();
   const { setShowTradeIsFrozen } = useOpenModals();
+  const match: any = useRouteMatch("/trade/fiat/:tab?");
 
   const banxaRef = React.useRef();
   const subject = React.useMemo(() => banxaService.onSocket(), []);
@@ -36,7 +40,10 @@ export const useVendor = () => {
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-
+  const history = useHistory();
+  const { href } = useLocation();
+  const search = href?.split("?")[1] ?? "";
+  const searchParams = new URLSearchParams(search);
   const {
     // updateOffRampData,
     resetOffRampData,
@@ -47,6 +54,13 @@ export const useVendor = () => {
     RAMP_SELL_PANEL.LIST
     // RAMP_SELL_PANEL.BANXA_CONFIRM
   );
+  const [banxaBtnStatus, setBanxaBtnStatus] = React.useState<TradeBtnStatus>(
+    TradeBtnStatus.AVAILABLE
+  );
+  const _banxaClick = _.debounce(() => {
+    resetOffBanxaData();
+    banxaService.banxaStart();
+  }, 500);
 
   const vendorListBuy: VendorItem[] = legalShow
     ? [
@@ -151,13 +165,7 @@ export const useVendor = () => {
         },
       ]
     : [];
-  const [banxaBtnStatus, setBanxaBtnStatus] = React.useState<TradeBtnStatus>(
-    TradeBtnStatus.AVAILABLE
-  );
-  const _banxaClick = _.debounce(() => {
-    resetOffBanxaData();
-    banxaService.banxaStart();
-  }, 500);
+
   const vendorListSell: VendorItem[] = legalShow
     ? [
         // {
@@ -241,22 +249,48 @@ export const useVendor = () => {
   const closeBanxa = () => {
     const parentsNode: any =
       window.document.querySelector("#iframeBanxaTarget");
-    // const items = parentsNode.getElementsByTagName("iframe");
-    // if (items && items[0]) {
-    //   parentsNode.removeChild(items[0]);
-    // }
     parentsNode.style.display = "none";
   };
-  // const hideBanxa = () => {
-  //   const parentsNode: any =
-  //     window.document.querySelector("#iframeBanxaTarget");
-  //   parentsNode.style.display = "none";
-  // };
-  // const showBanxa = () => {
-  //   const parentsNode: any =
-  //     window.document.querySelector("#iframeBanxaTarget");
-  //   parentsNode.style.display = "flex";
-  // };
+
+  const enterCheck = React.useCallback(async () => {
+    const data = await banxaService.banxaCheckHavePending();
+    if (data?.order?.status === "waitingPayment") {
+      myLog("banxa Check Have waitingPayment", data.order);
+      banxaService.KYCDone();
+      searchParams.set("orderId", data?.order.id);
+      history.replace({
+        pathname: "/trade/fiat/sell",
+        search: searchParams.toString(),
+      });
+      store.dispatch(
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.ContinuousBanxaOrder,
+          info: { orderId: data?.order.id },
+        })
+      );
+      return;
+    }
+    setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
+  }, []);
+  React.useEffect(() => {
+    const offBanxaValue = store.getState()._router_modalData.offBanxaValue;
+    if (
+      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
+      searchParams.get("orderId") &&
+      searchParams.get("orderId")?.toLowerCase() !==
+        offBanxaValue?.id?.toLowerCase()
+    ) {
+      banxaService.banxaCheckHavePending();
+    } else if (
+      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
+      !searchParams.has("orderId")
+    ) {
+      setBanxaBtnStatus(TradeBtnStatus.LOADING);
+      setSellPanel(RAMP_SELL_PANEL.LIST);
+      enterCheck();
+    }
+  }, [match?.params?.tab, searchParams?.get("orderId")]);
   const clickEvent = () =>
     banxaService.banxaEnd({
       reason: OrderENDReason.UserCancel,
