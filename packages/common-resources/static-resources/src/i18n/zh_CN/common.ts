@@ -421,7 +421,7 @@ export default {
   labelInvalidisContract1XAddress:
     "Loopring wallet 1.x is disabled {{way}} {{token}}",
   labelInvalidisContractAddress:
-    "{{way}} of {{token}} to Contract wallet is not available ",
+    "{{way}} of {{token}} to Contract wallet is not available",
   labelInvalidisLoopringAddress:
     "This address does not yet have an active Loopring L2, {{way}} of {{token}} is disabled!",
   labelInvalidisSameAddress: "Cannot {{way}} to your own address.",
@@ -484,7 +484,7 @@ export default {
     "The connected wallet is a contract address which cannot be used (Except Recover Wallet). If you are connecting a mobile Loopring Smart Wallet, you can protect it and manage guardians within the app.",
   labelWalletAddAsGuardian: "Add a guardian",
   labelWalletInputGuardianCode: "Input 6 digital Code and Approve",
-  labelWalletScanQRCode: "Please use your Loopring wallet to scan the QR code",
+  labelWalletScanQRCode: "Using Loopring Wallet, scan the QR code.",
   labelWalletInputGuardianCodeDes:
     "Please contact the owner to obtain the approval code and enter it below.",
   labelWalletGuardianList: "Guardian List",
@@ -636,6 +636,7 @@ export default {
   labelL2toL2OriginBtnWallet: "Wallet",
   labelL2toL2Confirm: "Confirm",
   labelL2toL2TokenAmount: "Token Amount",
+
   labelL1toL2ThirdPart: "{{type}} Crypto with",
   labelActiveAccountFeeNotEnough: "Insufficient balance <1>Add assets</1>",
   labelNFTTransferTX: "L2 \u2192 L2",
@@ -658,7 +659,8 @@ export default {
   depositLabelTo: "To address, Account ID or ENS.",
   labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
-  labelIPFSUploadTitle: "Upload Image (Dimensions: 1:1) <1>\uFE61</1> ",
+  labelIPFSUploadTitle: "Cover Image (Dimensions: 1:1) <1>\uFE61</1> ",
+  labelIPFSUploadMediaTitle: " NFT Media (mp3,mp4,3d,image)",
   labelLoadDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelUpload: "upload",
@@ -1258,18 +1260,18 @@ export default {
   labelRedPacketOpen: "Open",
   labelAssetRedPackets: "Red Packets",
   labelRedPacketTitle: "Red Packets",
-  labelRedPacketTypeTokens: "Choose Erc20 Tokens / NFTs",
+  labelRedPacketTypeTokens: "Choose Tokens / NFTs",
   labelRedPacketChoose: "Choose Red Packet Type",
   labelRedPacketMain: "Input Red Packet/Send",
   labelLuckyTokenViewTypePublic: "Public Red Packet",
   labelLuckyTokenViewTypePrivate: "Private Red Packet",
   labelLuckyTokenViewTypeDesPublic:
-    "Your gift packet is shared publicly by you via your custom QR code for others to receive.",
+    "Your Red Packet is public, and everyone can try to claim a share of it.",
   labelLuckyTokenViewTypeDesPrivate:
-    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
+    "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
-    "If the recipient of the gift also re-shares the packet, they get half of whatever the next person receives as well.",
+    "If the recipient of the Red Packet also re-shares the packet, they receive half of whatever the next person receives.",
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyRandomTokenDes: "Each recipient will get a random amount of.",
   labelLuckyCommonToken: "Normal Red Packet",
@@ -1285,10 +1287,10 @@ export default {
     "Your gift packet is shared privately by you via your custom QR code for others to receive.",
   labelLuckyTokenViewType0: "Public Red Packet",
   labelLuckyTokenViewTypeDes0:
-    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
-  labelSplit: "Split",
-  labelRedPacketMemo: "Best Wish",
-  labelRedPacketStart: "Allow Open Time",
+    "Your Red Packet is shared privately with others via a custom QR code.",
+  labelSplit: "Red Packet Count",
+  labelRedPacketMemo: "Best Wishes",
+  labelRedPacketStart: "Available in",
   labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
   labelRedPacketSendDenied:
@@ -1317,12 +1319,12 @@ export default {
   labelRedPacketSendCommonTitle: "Normal Red Packet",
   labelRedPacketSenRandomTitle: "Lucky Red Packet",
   labelAmountEach: "Amount Each",
-  labelRedPacketTotalAmount: "Total Distribution Amount",
+  labelRedPacketTotalAmount: "Total Amount",
   labelQuantity: "Quantity",
   labelAssetAmount: "Asset Amounts: {{value}}",
   labelCreateRedPacketBtn: "Prepare Red Packet",
   labelRedPacketsExpireDes:
-    "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
+    "Unclaimed tokens remaining after the expiration will be returned within 24h",
   labelReserveFee: "Insufficient {{symbol}} with fee",
   labelRedPacketFee: "Insufficient fee",
   labelRedPacketsInsufficient: "Insufficient {{symbol}} balance",
@@ -1333,7 +1335,7 @@ export default {
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
-    "Token amount for each red packet is randomized",
+    "Each recipient will get a random amount of the total Red Packet shared.",
   labelSendRedPacketTitle: "Send Red Packet",
   labelSendRedPacketTitlePublic: "Send Red Packet -- Public",
   labelSendRedPacketTitlePrivate: "Send Red Packet -- Private",
@@ -1371,7 +1373,7 @@ export default {
   labelRedPacketClaimSuccess: "",
   labelReceived: "Received",
   labelGoodLuck: "Good Luck",
-  labelRedPacketGrab: "Invite friends to grab",
+  labelRedPacketGrab: "Share with Friends",
   labelLuckDraw: "Luckiest Draw",
   labelMyLuckReward: "(My reward)",
   labelRedPacketClaimTitle: "Claim to Loopring L2",
@@ -1381,18 +1383,18 @@ export default {
   labelOpenAfter: "Open after {{time}}",
   labelTotalRedPacket: "Total {{value}}",
   labelMyRedPacketReward: "My Rewards",
-  labelRedpacketScanDes: "Using Loopring App san the QR code",
+  labelRedpacketScanDes: "Using Loopring Wallet, scan the QR code.",
   labelLuckyRedPacketStarted: "Red Packet is Started",
   labelNFTRedpacketBtn: "Send Red Packet",
-  labelRedpacketDurationTitle: "Active durations",
-  labelRedpacketDurationPlaceHold: "Min 1 - Max 30",
+  labelRedpacketDurationTitle: "Expires after",
+  labelRedpacketDurationPlaceHold: "Min 1 - Max 30 Days",
   labelRedPacketDescription: "Red Packet Description",
   labelRedpacketHavePeopleHelp:
     "<1>{{number}}</1> friends relayed this red packet, you extend reward: <3>{{amount}}</3>.",
   labelRedPacketFrom: "From",
   labelRedPacketTo: "To Loopring L2",
   labelRedPacketMy: "My red packet",
-  labelRedpacketNotActive: "Hide the red packet received",
+  labelRedpacketNotActive: "Hide the redpacket received",
   labelRedpacketTokens: "ERC20 Tokens",
   labelRedpacketNFTS: "NFTs",
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
@@ -1404,11 +1406,16 @@ export default {
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
-  labelOrderOpen: "next",
-  labelOrderCancel: "cancel",
+  labelOrderOpen: "Continue",
+  labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
-    "KYC is Done, please click the button to next step",
-  labelBanxaContinuous: "Continuous waiting",
+    "The crypto selling order is ready. Please continue.",
+  labelBanxaContinuous: "Continuous preview order",
   labelBanxaCreate: "Create a new order",
   labelBanxaTitleCreateAgain: "You still having an order in progressing:",
+  labelYouAlreadyHaveAnBanxa:
+    "If you have already submitted KYC and entered your bank account, you can continue to wait and <1>status on the Banxa website</1>, or you can create a new order instead.\n",
+  labelHaveAnBanxaCancel: "", //"Or cancel it create a new order",
+  labelBanxaConfirmSubmit:
+    "Off-Ramp L2 Transfer with Banxa order: {{order}} has been submitted, please click the link and save it for check the status",
 };
