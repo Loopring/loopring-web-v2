@@ -21,7 +21,6 @@ import React from "react";
 export const BanxaConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
   tradeData,
   onTransferClick,
-  realAddr,
   disabled,
   isFeeNotEnough,
   handleFeeChange,

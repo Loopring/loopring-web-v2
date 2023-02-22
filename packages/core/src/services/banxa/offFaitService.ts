@@ -14,6 +14,7 @@ let __timer__: -1 | NodeJS.Timeout = -1;
 
 export enum OffFaitCommon {
   ShowUI = "ShowUI",
+  OffFaitCancel = "OffFaitCancel",
 }
 
 export type OffOderUIItem = {
@@ -84,6 +85,13 @@ export const offFaitService = {
         status: OffRampStatus.cancel,
       } as OffRampHashItem)
     );
+    subject.next({
+      status: OffFaitCommon.OffFaitCancel,
+      data: {
+        reason: "offRampCancel",
+        id: order.id ?? "",
+      },
+    });
   },
   banxaCheckStatus: ({
     data: order,

@@ -65,6 +65,16 @@ export const FiatPage = withTranslation("common")(
         ? TradeTypes.Sell
         : TradeTypes.Buy
     );
+    React.useEffect(() => {
+      setTabIndex((state) => {
+        return match?.params?.tab &&
+          state.toLowerCase() === match?.params?.tab.toLowerCase()
+          ? state
+          : match?.params?.tab?.toLowerCase() === "sell".toLowerCase()
+          ? TradeTypes.Sell
+          : TradeTypes.Buy;
+      });
+    }, [match?.params?.tab]);
 
     // const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
 

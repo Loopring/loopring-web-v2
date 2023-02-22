@@ -68,14 +68,11 @@ export function useOffFaitModal() {
   }, [offBanxaValue]);
   const handleShowUI = React.useCallback((props: OffOderUIItem) => {
     updateOffBanxaData({ order: props.order });
-    if (!/trade\/fiat\/sell/gi.test(href ?? "")) {
-      setOpen(true);
-    } else if (
-      /trade\/fiat\/sell/gi.test(href ?? "") &&
-      !/\?orderId/gi.test(href ?? "")
-    ) {
+    if (/trade\/fiat\/sell\?orderId/gi.test(window.location.href ?? "")) {
       banxaService.KYCDone();
       handleClose();
+    } else if (!/trade\/fiat\/sell/gi.test(window.location.href ?? "")) {
+      setOpen(true);
     }
   }, []);
 

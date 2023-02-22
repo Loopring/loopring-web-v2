@@ -12,7 +12,6 @@ import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
 import { offFaitService } from "./offFaitService";
 import {
-  AccountStep,
   // AccountStep,
   setShowAccount,
 } from "@loopring-web/component-lib";
@@ -113,6 +112,7 @@ export const banxaService = {
         offFaitService.banxaCheckStatus({
           data: data.order,
         });
+        return data;
       }
     }
   },
@@ -160,34 +160,12 @@ export const banxaService = {
       banxaService.banxaStart(true);
     }
   },
-  banxaStart: async (createNew = false) => {
+  banxaStart: async (_createNew = false) => {
     const {
       account,
       system: { chainId },
-      localStore: { offRampHistory },
+      // localStore: { offRampHistory },
     } = store.getState();
-
-    if (
-      offRampHistory[chainId][account.accAddress] &&
-      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa] &&
-      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
-        "pending"
-      ] &&
-      !createNew
-    ) {
-      const orderId =
-        offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
-          "pending"
-        ].orderId;
-      store.dispatch(
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.ContinuousBanxaOrder,
-          info: { orderId },
-        })
-      );
-      return;
-    }
     let banxa: any = undefined;
     try {
       // @ts-ignore
