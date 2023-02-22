@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { store, useModalData } from "../../stores";
 import { BanxaCheck, banxaService } from "./banxaService";
-import { useLocation } from "react-use";
 
 export * from "./banxaService";
 export * from "./offFaitService";
@@ -24,7 +23,6 @@ export function useOffFaitModal() {
     setOpen(false);
   };
   const { offBanxaValue, updateOffBanxaData } = useModalData();
-  const { href } = useLocation();
   useOffRampHandler();
   const actionEle = React.useMemo(() => {
     return (
