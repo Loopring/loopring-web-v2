@@ -7,6 +7,7 @@
 import {
   CollectionMeta,
   DeFiCalcData,
+  DeFiSideCalcData,
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
@@ -384,12 +385,14 @@ export const enum InvestMapType {
   AMM = "AMM",
   STAKE = "STAKE",
   DUAL = "DUAL",
+  STAKELRC = "STAKELRC",
 }
 
 export const InvestOpenType = [
   InvestMapType.AMM,
   InvestMapType.STAKE,
   InvestMapType.DUAL,
+  InvestMapType.STAKELRC,
 ];
 
 export const enum InvestDuration {
@@ -443,6 +446,20 @@ export type TradeDefi<C> = {
   request?: sdk.DefiOrderRequest;
   defiBalances?: { [key: string]: string };
   lastInput?: DeFiChgType;
+};
+export type TradeStack<C> = {
+  sellToken: sdk.TokenInfo;
+  type: string;
+  sellVol: string;
+  deFiSideCalcData?: DeFiSideCalcData<C>;
+  maxFeeBips?: number;
+  maxSellVol?: string;
+  miniSellVol?: string;
+  request?: {
+    accountId: number;
+    hash: string;
+    token: sdk.TokenVolumeV3;
+  };
 };
 
 export type L2CollectionFilter = {

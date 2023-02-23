@@ -149,6 +149,7 @@ const ToolBarItem = ({
   buttonComponent,
   notification,
   account,
+  chainId,
   ...props
 }: any) => {
   const match = useRouteMatch("/:l1/:l2?");
@@ -168,6 +169,7 @@ const ToolBarItem = ({
             {...props}
             notification={notification}
             account={account}
+            chainId={chainId}
           />
         );
       case ButtonComponentsMap.Setting:
@@ -245,6 +247,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         allowTrade,
         selected,
         account,
+        chainId,
         isWrap = true,
         isLandPage = false,
         isMobile = false,
@@ -281,7 +284,13 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           ].map((index: number) => {
             return (
               <ToolBarItem
-                {...{ ...toolbarList[index], account, notification, ...rest }}
+                {...{
+                  ...toolbarList[index],
+                  account,
+                  chainId,
+                  notification,
+                  ...rest,
+                }}
                 key={index}
               />
             );

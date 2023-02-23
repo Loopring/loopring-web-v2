@@ -250,6 +250,15 @@ export const subMenuInvest = [
       description: "labelInvestDualDes",
     },
   },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: "/invest/stacklrc" },
+    label: {
+      id: "stackonesided",
+      i18nKey: "labelInvestStackOneSided",
+      description: "labelInvestStackOneSidedDes",
+    },
+  },
 ];
 
 export const subMenuNFT = {
@@ -496,6 +505,7 @@ export const defiRETHAdvice: InvestAdvice = {
   project: "Rocket Pool",
   market: "RETH-ETH",
 };
+
 export const DEFI_ADVICE_MAP = {
   WSTETH: defiWSTETHAdvice,
   RETH: defiRETHAdvice,
@@ -507,5 +517,14 @@ export const dualAdvice: InvestAdvice = {
   banner: SoursURL + "images/icon-dual.svg",
   titleI18n: "labelInvestDual",
   desI18n: "labelInvestDualDes",
+  enable: true,
+};
+export const stackAdvice: InvestAdvice = {
+  type: InvestMapType.STAKELRC,
+  router: "/invest/stacklrc",
+  notification: "",
+  banner: SoursURL + "images/icon-stack-lrc.svg",
+  titleI18n: "labelInvestStackLRC",
+  desI18n: "labelInvestStackLRCDes",
   enable: true,
 };

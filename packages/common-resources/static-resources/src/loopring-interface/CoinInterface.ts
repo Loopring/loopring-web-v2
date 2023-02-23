@@ -140,7 +140,6 @@ export type DeFiCalcData<T> = {
 };
 export type DeFiSideCalcData<T> = {
   coinSell: T;
-  fee: string;
 };
 
 export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {

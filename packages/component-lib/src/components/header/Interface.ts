@@ -3,6 +3,7 @@ import {
   HeaderMenuItemInterface,
   Notify,
 } from "@loopring-web/common-resources";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export interface HeaderToolBarInterface {
   buttonComponent: number;
@@ -14,6 +15,7 @@ export interface HeaderProps<R> {
   headerMenuData: HeaderMenuItemInterface[];
   notification?: Notify;
   account?: Account;
+  chainId: sdk.ChainId;
   allowTrade: {
     register: { enable: boolean; reason?: string };
     order: { enable: boolean; reason?: string };

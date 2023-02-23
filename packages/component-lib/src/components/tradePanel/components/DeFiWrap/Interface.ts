@@ -56,7 +56,7 @@ export type DeFiSideWrapProps<T, I, ACD> = {
   onChangeEvent: (data: { tradeData?: undefined | T }) => void;
   handleError?: (data: T) => void;
   tokenSellProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
-  deFiCalcData: ACD;
+  deFiSideCalcData: ACD;
   tokenSell: TokenInfo;
   btnStatus?: keyof typeof TradeBtnStatus | undefined;
   accStatus?: AccountStatus;

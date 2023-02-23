@@ -15,6 +15,7 @@ import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
 import { DualListPanel } from "./DualPanel/DualListPanel";
+import { StackTradePanel } from "./StakePanel/StackTradePanel";
 
 export enum InvestType {
   MyBalance = 0,
@@ -22,9 +23,17 @@ export enum InvestType {
   DeFi = 2,
   Overview = 3,
   Dual = 4,
+  Stack = 5,
 }
 
-export const InvestRouter = ["balance", "ammpool", "defi", "overview", "dual"];
+export const InvestRouter = [
+  "balance",
+  "ammpool",
+  "defi",
+  "overview",
+  "dual",
+  "stacklrc",
+];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
   return (
@@ -137,6 +146,10 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         setTabIndex(InvestType.Dual);
         setIsShowTab(false);
         return;
+      case InvestRouter[InvestType.Stack]:
+        setTabIndex(InvestType.Stack);
+        setIsShowTab(false);
+        return;
       case InvestRouter[InvestType.Overview]:
       case "":
       default:
@@ -194,6 +207,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
             <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
           </Box>
         )}
+        {tabIndex === InvestType.Stack && <StackTradePanel isJoin={true} />}
       </Box>
 
       <ConfirmInvestDualRisk

@@ -59,6 +59,7 @@ import {
   pageAmmPoolSlice,
   pageTradeLiteSlice,
   pageTradeProSlice,
+  tradeStackSlice,
 } from "./router";
 import {
   firebaseReducer,
@@ -159,6 +160,7 @@ const reducer = combineReducers({
   firebase: firebaseReducer,
   _router_tradeDefi: tradeDefiSlice.reducer,
   _router_tradeDual: tradeDualSlice.reducer,
+  _router_tradeStack: tradeStackSlice.reducer,
   _router_pageTradeLite: pageTradeLiteSlice.reducer,
   _router_pageTradePro: pageTradeProSlice.reducer,
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
