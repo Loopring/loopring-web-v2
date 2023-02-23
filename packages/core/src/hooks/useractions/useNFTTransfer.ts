@@ -657,6 +657,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       store.getState().modals.isShowAccount.info?.lastFailed ===
       LAST_STEP.nftTransfer,
     handleSureItsLayer2: (sure: WALLET_TYPE) => {
+      
       setSureItsLayer2(sure);
     },
     // isConfirmTransfer,
