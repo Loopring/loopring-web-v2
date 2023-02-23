@@ -316,6 +316,10 @@ export const ErrorMap = {
     messageKey: "errorRedpacketClaimTimeOut",
     options: {},
   },
+  ERROR_OFF_RAMP_EXPIRED: {
+    id: "ERROR_OFF_RAMP_EXPIRED",
+    messageKey: "errorOffRampExpired",
+  },
 };
 
 export enum UIERROR_CODE {
@@ -344,6 +348,7 @@ export enum UIERROR_CODE {
   ERROR_NO_RESPONSE = 700023,
   ERROR_REDPACKET_EMPTY = 700024,
   ERROR_RAMP_NO_INSTANCE = 700100,
+  ERROR_OFF_RAMP_EXPIRED = 700101,
   ERROR_DUAL_EXPIRED = 115003,
   ERROR_REDPACKET_CLAIMED = 113002,
   ERROR_REDPACKET_CLAIM_OUT = 113006,
@@ -382,6 +387,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   700023: ErrorMap.ERROR_NO_RESPONSE,
   700024: ErrorMap.ERROR_REDPACKET_EMPTY,
   700100: ErrorMap.ERROR_RAMP_NO_INSTANCE,
+  700101: ErrorMap.ERROR_OFF_RAMP_EXPIRED,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found
