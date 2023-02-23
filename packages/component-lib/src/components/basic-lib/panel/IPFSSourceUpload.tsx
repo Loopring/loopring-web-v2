@@ -34,6 +34,7 @@ export const MediaTYPES = [
   "image/jpeg",
   "image/jpg",
   "image/gif",
+  "image/webp",
   "image/png",
   "audio/mp3",
   "audio/mpeg",

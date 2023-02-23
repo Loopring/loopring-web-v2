@@ -194,6 +194,13 @@ export const MintNFTBlock = <
                   >
                     <Trans i18nKey={"labelMintRoyaltyPercentage"}>
                       Royalty(%)
+                      <Typography
+                        component={"span"}
+                        variant={"inherit"}
+                        color={"error"}
+                      >
+                        {"\uFE61"}
+                      </Typography>
                       <Info2Icon
                         fontSize={"small"}
                         color={"inherit"}

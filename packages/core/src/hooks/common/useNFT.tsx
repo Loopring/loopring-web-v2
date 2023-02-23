@@ -135,6 +135,8 @@ export const useNFTListDeep = <T extends Partial<NFTWholeINFO>>() => {
           {
             ...tokenInfo,
             ...(meta as any),
+            animationUrl: (meta as any)?.animation_url,
+            royaltyPercentage: (meta as any)?.royalty_percentage,
             isFailedLoadMeta: false,
           }
         );
