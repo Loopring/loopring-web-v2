@@ -673,8 +673,14 @@ export default {
   depositLabelTo: "To address, Account ID or ENS.",
   labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
-  labelIPFSUploadTitle: "Cover Image (Dimensions: 1:1) <1>\uFE61</1> ",
-  labelIPFSUploadMediaTitle: " NFT Media (mp3,mp4,3d,image)",
+  labelIPFSUploadTitle:
+    "Preview Image (Dimensions: 1:1) <1>\uFE61</1><2>\u2139</2>",
+  labelIPFSUploadTooltips:
+    "The file uploaded here will be used as the cover image when displaying NFT item.",
+  labelIPFSUploadMediaTitle:
+    "Multimedia Content (image, audio, video and 3D)<1>\u2139</1>",
+  labelIPFSUploadMediaTooltips:
+    "If no file is uploaded here, it will use the same content as “Preview Image”.",
   labelLoadDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelUpload: "upload",
@@ -689,7 +695,7 @@ export default {
   labelMintCollection: "Choose Collection <1>{{required}}</1><2></2>",
   labelMintCollectionTooltips:
     "This is the collection where your NFT will appear.",
-  labelMintRoyaltyPercentage: "Royalty (%) <1>\u2139</1>",
+  labelMintRoyaltyPercentage: "Royalty (%) <1>\uFE61</1><2>\u2139</2>",
   labelMintRoyaltyPercentageRange: "Max Int:",
   labelMintRoyaltyPercentageTooltips:
     "Represents the percentage to be received from each subsequent resale (max 10%).",

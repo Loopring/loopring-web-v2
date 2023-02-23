@@ -4,6 +4,7 @@ import {
   FormControlLabel as MuiFormControlLabel,
   FormLabel,
   Grid,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -26,6 +27,7 @@ import {
   CheckedIcon,
   CollectionMeta,
   FeeInfo,
+  Info2Icon,
   MintTradeNFT,
   NFTMETA,
   TransErrorHelp,
@@ -88,18 +90,33 @@ export const MetaNFTPanel = <
         <Grid item xs={12} md={5} position={"relative"}>
           <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
             <FormLabel>
-              <Typography variant={"body2"} marginBottom={1}>
-                <Trans i18nKey={"labelIPFSUploadTitle"}>
-                  Cover Image
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"error"}
-                  >
-                    {"\uFE61"}
-                  </Typography>
-                </Trans>
-              </Typography>
+              <Tooltip
+                title={t("labelMintRoyaltyPercentageTooltips").toString()}
+                placement={"top"}
+              >
+                <Typography
+                  variant={"body2"}
+                  marginBottom={1}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <Trans i18nKey={"labelIPFSUploadTitle"}>
+                    Cover Image
+                    <Typography
+                      component={"span"}
+                      variant={"inherit"}
+                      color={"error"}
+                    >
+                      {"\uFE61"}
+                    </Typography>
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                  </Trans>
+                </Typography>
+              </Tooltip>
             </FormLabel>
             <Box maxWidth={160} maxHeight={160}>
               <IPFSSourceUpload
@@ -118,18 +135,26 @@ export const MetaNFTPanel = <
           </Box>
           <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
             <FormLabel>
-              <Typography variant={"body2"} marginBottom={1}>
-                <Trans i18nKey={"labelIPFSUploadMediaTitle"}>
-                  NFT Media (mp3,mp4,3d,image)
-                  {/*<Typography*/}
-                  {/*  component={"span"}*/}
-                  {/*  variant={"inherit"}*/}
-                  {/*  color={"error"}*/}
-                  {/*>*/}
-                  {/*  {"\uFE61"}*/}
-                  {/*</Typography>*/}
-                </Trans>
-              </Typography>
+              <Tooltip
+                title={t("labelIPFSUploadMediaTooltips").toString()}
+                placement={"top"}
+              >
+                <Typography
+                  variant={"body2"}
+                  marginBottom={1}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <Trans i18nKey={"labelIPFSUploadMediaTitle"}>
+                    Multimedia Content (image, audio, video and 3D)
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                  </Trans>
+                </Typography>
+              </Tooltip>
             </FormLabel>
             <Box maxWidth={320}>
               <IPFSSourceUpload
