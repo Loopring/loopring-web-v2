@@ -62,7 +62,6 @@ export async function unlockAccount() {
             ).replace("${nonce}", (nonce - 1).toString());
 
       myLog("generateKeyPair:", msg, chainId, isMobile);
-      // @ts-ignore
       const response = await LoopringAPI.userAPI.unLockAccount(
         {
           keyPair: {
@@ -78,7 +77,6 @@ export async function unlockAccount() {
             accountId: account.accountId,
           },
         },
-        // @ts-ignore
         account.publicKey
       );
       if (
