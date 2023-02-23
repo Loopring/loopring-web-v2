@@ -1424,12 +1424,12 @@ export default {
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
     "The crypto selling order is ready. Please continue.",
-  labelBanxaContinuous: "Continuous preview order",
-  labelBanxaCreate: "Create a new order",
+  labelBanxaContinuous: "Proceed existing order",
+  labelBanxaCreate: "Create new order",
   labelBanxaTitleCreateAgain: "", //You still having an order in progressing:
   labelYouAlreadyHaveAnBanxa:
-    "You already have an awaiting payment <1>order</1>.",
-  labelHaveAnBanxaCancel: "or you can create a new order instead.", //"Or cancel it create a new order",
+    "Existing <1>order</1> detected, send token to complete order.",
+  labelHaveAnBanxaCancel: "Create a new order from scratch.", //"Or cancel it create a new order",
   labelBanxaConfirmSubmit:
     "Off-Ramp L2 Transfer with Banxa order: {{order}} has been submitted, please click the link and save it for check the status",
 };

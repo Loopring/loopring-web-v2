@@ -4,10 +4,12 @@ import {
   BANXA_URLS,
   BanxaOrder,
   CoinMap,
+  CustomErrorWithCode,
   Explorer,
   FeeInfo,
   IBData,
   myLog,
+  SDK_ERROR_MAP_TO_UI,
   TOAST_TIME,
   TRADE_TYPE,
   UIERROR_CODE,
@@ -55,6 +57,7 @@ import { isAccActivated } from "./useCheckAccStatus";
 import { useRouteMatch } from "react-router-dom";
 import { useLocation } from "react-use";
 import { merge } from "rxjs";
+import { useTranslation } from "react-i18next";
 
 export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   setSellPanel,
@@ -62,6 +65,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   sellPanel: RAMP_SELL_PANEL;
   setSellPanel: (value: RAMP_SELL_PANEL) => void;
 }) => {
+  const { t } = useTranslation();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
   const { href } = useLocation();
   const search = href?.split("?")[1] ?? "";
@@ -126,7 +130,11 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     const {
       _router_modalData: { offBanxaValue },
     } = store.getState();
-    if (offBanxaValue && offBanxaValue.id) {
+    if (
+      offBanxaValue &&
+      offBanxaValue.id &&
+      offBanxaValue.status === "waitingPayment"
+    ) {
       const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
       setShowAccount({ isShow: false });
       checkFeeIsEnough({ isRequiredAPI: true });
@@ -240,8 +248,9 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
 
   const onTransferClick = React.useCallback(
     async (isFirstTime: boolean = true) => {
-      const transferBanxaValue =
-        store.getState()._router_modalData.transferBanxaValue;
+      const { transferBanxaValue, offBanxaValue } =
+        store.getState()._router_modalData;
+
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
       if (
         readyState === AccountStatus.ACTIVATED &&
@@ -252,6 +261,10 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
         transferBanxaValue.address !== "*" &&
         transferBanxaValue.address &&
         transferBanxaValue?.fee &&
+        offBanxaValue &&
+        offBanxaValue.id &&
+        offBanxaValue.wallet_address?.toLowerCase() ===
+          transferBanxaValue.address.toLowerCase() &&
         transferBanxaValue?.fee.belong &&
         eddsaKey?.sk
       ) {
@@ -275,13 +288,38 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           const finalVol = tradeValue;
           const transferVol = finalVol.toFixed(0, 0);
 
-          const storageId = await LoopringAPI.userAPI?.getNextStorageId(
-            {
-              accountId,
-              sellTokenId: sellToken.tokenId,
-            },
-            apiKey
-          );
+          const [storageId, { data }] = await Promise.all([
+            LoopringAPI.userAPI?.getNextStorageId(
+              {
+                accountId,
+                sellTokenId: sellToken.tokenId,
+              },
+              apiKey
+            ),
+            banxaApiCall({
+              chainId: chainId as ChainId,
+              method: sdk.ReqMethod.GET,
+              url: `/api/orders/${offBanxaValue.id}`,
+              query: "",
+              payload: {},
+              account,
+            }),
+          ]);
+          if (
+            data?.order?.status !== "waitingPayment" ||
+            !data?.order?.wallet_address
+          ) {
+            offFaitService.banxaCheckStatus({
+              data: data?.order,
+            });
+
+            throw new CustomErrorWithCode({
+              ...SDK_ERROR_MAP_TO_UI[UIERROR_CODE.ERROR_OFF_RAMP_EXPIRED],
+              code: UIERROR_CODE.ERROR_OFF_RAMP_EXPIRED,
+              message: "Banxa Expired",
+            });
+            // throw new CustomError(ErrorMap.ERROR_OFF_RAMP_EXPIRED);
+          }
           const req: sdk.OriginTransferRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
             payerAddr: accAddress,
@@ -305,15 +343,31 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
 
           processRequest(req, isFirstTime);
         } catch (e: any) {
+          if (e?.code === UIERROR_CODE.ERROR_OFF_RAMP_EXPIRED) {
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Transfer_BANXA_Failed,
+              error: {
+                code: UIERROR_CODE.UNKNOWN,
+                message: t(
+                  e.code && e.messageKey
+                    ? e.messageKey
+                    : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
+                  { ns: "error" }
+                ),
+              } as sdk.RESULT_INFO,
+            });
+          } else {
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Transfer_BANXA_Failed,
+              error: {
+                code: UIERROR_CODE.UNKNOWN,
+                message: e.message,
+              } as sdk.RESULT_INFO,
+            });
+          }
           // transfer failed
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.Transfer_BANXA_Failed,
-            error: {
-              code: UIERROR_CODE.UNKNOWN,
-              message: e.message,
-            } as sdk.RESULT_INFO,
-          });
         }
       } else {
         return;
@@ -387,13 +441,11 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           break;
         case BanxaCheck.OrderHide:
           myLog("Banxa Order OrderHide");
-          // if (props.data?.reason == "KYCDone") {
-          //   restTransfer();
-          // }
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
           break;
         case BanxaCheck.OrderEnd:
           clearTimeout(nodeTimer.current as NodeJS.Timeout);
+          setSellPanel(RAMP_SELL_PANEL.LIST);
           break;
         case BanxaCheck.OrderShow:
           if (props.data?.reason == "transferDone") {

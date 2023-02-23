@@ -5,7 +5,7 @@ import {
   OffRampStatus,
   VendorProviders,
 } from "@loopring-web/common-resources";
-import { banxaApiCall } from "./banxaService";
+import { banxaApiCall, banxaService } from "./banxaService";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { updateOffRampHash } from "../../stores/localStore/offRamp";
 import { Subject } from "rxjs";
@@ -173,6 +173,7 @@ export const offFaitService = {
             status: OffRampStatus.expired,
           } as OffRampHashItem)
         );
+        banxaService.orderExpired();
       } else if (order.status === "refunded") {
         store.dispatch(
           updateOffRampHash({
