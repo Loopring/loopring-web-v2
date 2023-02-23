@@ -62,20 +62,24 @@ export async function unlockAccount() {
             ).replace("${nonce}", (nonce - 1).toString());
 
       myLog("generateKeyPair:", msg, chainId, isMobile);
-      const response = await LoopringAPI.userAPI.unLockAccount({
-        keyPair: {
-          web3: connectProvides.usedWeb3 as unknown as Web3,
-          address: account.owner,
-          keySeed: msg,
-          walletType: connectName,
-          chainId: Number(chainId),
-          accountId: Number(account.accountId),
-          isMobile: isMobile,
+      const response = await LoopringAPI.userAPI.unLockAccount(
+        {
+          keyPair: {
+            web3: connectProvides.usedWeb3 as unknown as Web3,
+            address: account.owner,
+            keySeed: msg,
+            walletType: connectName,
+            chainId: Number(chainId),
+            accountId: Number(account.accountId),
+            isMobile: isMobile,
+          },
+          request: {
+            accountId: account.accountId,
+          },
         },
-        request: {
-          accountId: account.accountId,
-        },
-      });
+        // @ts-ignore
+        account.publicKey
+      );
       if (
         response.hasOwnProperty("apiKey") &&
         response.hasOwnProperty("eddsaKey")
