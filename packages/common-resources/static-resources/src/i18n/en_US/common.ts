@@ -1437,7 +1437,7 @@ export default {
     "Existing <1>order</1> detected, send token to complete order.",
   labelHaveAnBanxaCancel: "Create a new order from scratch.", //"Or cancel it create a new order",
   labelBanxaConfirmSubmit:
-    "Off-Ramp L2 Transfer with Banxa order: {{order}} has been submitted, please click the link and save it for check the status",
+    "Token has been sent to Banxa wallet. You can save/click below link to check the payment status anytime.",
   labelInvestStackLRC: "LRC STAKING",
   labelInvestStackLRCDES: "Earn LRC staking rewards",
 };
