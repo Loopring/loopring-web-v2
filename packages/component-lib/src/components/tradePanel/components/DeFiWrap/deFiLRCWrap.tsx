@@ -23,7 +23,11 @@ const GridStyle = styled(Grid)`
   }
 `;
 
-export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcData<T>>({
+export const DeFiSideWrap = <
+  T extends IBData<I>,
+  I,
+  ACD extends DeFiSideCalcData<T>
+>({
   disabled,
   isJoin,
   btnInfo,
