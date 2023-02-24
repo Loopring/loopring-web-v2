@@ -1417,5 +1417,5 @@ export default {
     "If you have already submitted KYC and entered your bank account, you can continue to wait and <1>status on the Banxa website</1>, or you can create a new order instead.\n",
   labelHaveAnBanxaCancel: "", //"Or cancel it create a new order",
   labelBanxaConfirmSubmit:
-    "Off-Ramp L2 Transfer with Banxa order: {{order}} has been submitted, please click the link and save it for check the status",
+    "The sell order payment submitted. You can save/click below link to check the payment status anytime.",
 };
