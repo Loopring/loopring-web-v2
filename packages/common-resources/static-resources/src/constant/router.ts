@@ -255,8 +255,8 @@ export const subMenuInvest = [
     router: { path: "/invest/stacklrc" },
     label: {
       id: "stackonesided",
-      i18nKey: "labelInvestStackOneSided",
-      description: "labelInvestStackOneSidedDes",
+      i18nKey: "labelInvestStackLRC",
+      description: "labelInvestStackLRCDes",
     },
   },
 ];

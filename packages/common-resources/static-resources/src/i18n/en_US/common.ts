@@ -1438,4 +1438,6 @@ export default {
   labelHaveAnBanxaCancel: "Create a new order from scratch.", //"Or cancel it create a new order",
   labelBanxaConfirmSubmit:
     "Off-Ramp L2 Transfer with Banxa order: {{order}} has been submitted, please click the link and save it for check the status",
+  labelInvestStackLRC: "LRC STAKING",
+  labelInvestStackLRCDES: "Earn LRC staking rewards",
 };
