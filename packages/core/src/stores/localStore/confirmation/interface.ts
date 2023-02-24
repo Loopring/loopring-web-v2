@@ -4,4 +4,5 @@ export interface Confirmation {
   confirmedWSETHDefiInvest: boolean;
   confirmedDualInvest: boolean;
   showDualBeginnerHelp: boolean;
+  confirmedLRCStakeInvest: boolean;
 }

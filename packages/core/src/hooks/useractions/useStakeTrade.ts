@@ -44,8 +44,8 @@ export const useStakeTrade = <
   I,
   ACD extends DeFiSideCalcData<T>
 >({
-  isJoin = true,
   setToastOpen,
+  isJoin = true,
 }: // setServerUpdate,
 // setConfirmShowNoBalance,
 // confirmShowLimitBalance,

@@ -1841,3 +1841,111 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
     );
   }
 );
+export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  }) => {
+    const [agree, setAgree] = React.useState(false);
+    React.useEffect(() => {
+      if (!open) {
+        setAgree(false);
+      }
+    }, [open]);
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t(`labelLRCStakingTitle`)}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans
+              i18nKey={`labelLRCStakingRisk`}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"span"}
+                    variant={"body1"}
+                    display={"block"}
+                    marginBottom={1}
+                    color={"textSecondary"}
+                  />
+                ),
+              }}
+            >
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                marginBottom={1}
+                color={"textSecondary"}
+              >
+                LRC staking is incentivized through an allocated portion of the
+                Loopring protocol fee; the exact percentage is determined by the
+                Loopring DAO. The APY is updated daily based on the allocated
+                amount from previous day’s fee. Any LRC holder can participate
+                in LRC staking via L2 to accumulate daily rewards. The assets
+                must be staked for a minimum of 90 days to receive rewards.
+              </Typography>
+            </Trans>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelLRCStakingAgree")}
+          />
+        </DialogContent>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-defiRisk2">
+            <Trans i18nKey={`labelLRCStakingRisk2`}>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body2"}
+                marginTop={2}
+                display={"block"}
+                color={"textThird"}
+              >
+                The staked LRC will be locked in Loopring L2, meaning it cannot
+                be used for other purposes. You may redeem your LRC at any time;
+                however, doing so before the 90-day minimum requirement will
+                forfeit any accumulated reward.
+              </Typography>
+            </Trans>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);

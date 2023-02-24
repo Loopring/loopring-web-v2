@@ -1,15 +1,15 @@
 import {
   DeFiSideCalcData,
-  EmptyValueTag,
   IBData,
+  Info2Icon,
   myLog,
   OrderListIcon,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { DeFiSideWrapProps } from "./Interface";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import { InputCoin } from "../../../basic-lib";
 import { ButtonStyle, IconButtonStyled } from "../Styled";
 import { CountDownIcon } from "../tool/Refresh";
@@ -23,11 +23,7 @@ const GridStyle = styled(Grid)`
   }
 `;
 
-export const DeFiSideWrap = <
-  T extends IBData<I>,
-  I,
-  ACD extends DeFiSideCalcData<T>
->({
+export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcData<T>>({
   disabled,
   isJoin,
   btnInfo,
@@ -40,7 +36,7 @@ export const DeFiSideWrap = <
   switchStobEvent,
   onChangeEvent,
   handleError,
-  deFiCalcData,
+  deFiSideCalcData,
   accStatus,
   tokenSell,
   isLoading,
@@ -54,22 +50,13 @@ export const DeFiSideWrap = <
 
   const { t } = useTranslation();
   const history = useHistory();
-
-  // const getDisabled = () => {
-  //   return (
-  //     disabled ||
-  //     deFiCalcData === undefined ||
-  //     deFiCalcData.coinMap === undefined
-  //   );
-  // };
   const getDisabled = React.useMemo(() => {
-    return disabled || deFiCalcData === undefined;
-  }, [btnStatus, deFiCalcData, disabled]);
-  // myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
+    return disabled || deFiSideCalcData === undefined;
+  }, [btnStatus, deFiSideCalcData, disabled]);
 
   const handleCountChange = React.useCallback(
     (ibData: T, _name: string, _ref: any) => {
-      if (deFiCalcData.coinSell.tradeValue !== ibData.tradeValue) {
+      if (deFiSideCalcData.coinSell.tradeValue !== ibData.tradeValue) {
         myLog("defi handleCountChange", _name, ibData);
 
         onChangeEvent({
@@ -77,8 +64,9 @@ export const DeFiSideWrap = <
         });
       }
     },
-    [deFiCalcData, onChangeEvent]
+    [deFiSideCalcData, onChangeEvent]
   );
+
   const propsSell = {
     label: t("tokenEnterPaymentToken"),
     subLabel: t("tokenMax"),
@@ -106,7 +94,7 @@ export const DeFiSideWrap = <
 
   return (
     <Grid
-      className={deFiCalcData ? "" : "loading"}
+      className={deFiSideCalcData ? "" : "loading"}
       container
       direction={"column"}
       justifyContent={"space-between"}
@@ -130,7 +118,7 @@ export const DeFiSideWrap = <
           alignItems={"center"}
           alignSelf={"self-start"}
         >
-          {t("labelInvestDefiTitle")}
+          {t("labelInvestLRCTitle")}
         </Typography>
         <Box alignSelf={"flex-end"} display={"flex"}>
           <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
@@ -165,36 +153,143 @@ export const DeFiSideWrap = <
             name: "coinSell",
             isHideError: true,
             order: "right",
-            inputData: deFiCalcData ? deFiCalcData.coinSell : ({} as any),
+            inputData: deFiSideCalcData
+              ? deFiSideCalcData.coinSell
+              : ({} as any),
             coinMap: {},
             coinPrecision: tokenSell.precision,
           }}
         />
       </Grid>
+      <Grid item alignSelf={"stretch"} marginTop={1 / 2} marginBottom={2}>
+        <Typography
+          component={"span"}
+          display={"inline-flex"}
+          color={"textSecondary"}
+          variant={"body2"}
+        >
+          <Trans i18nKey={"labelInvestLRCStakingLockAlert"}>
+            <Typography component={"span"}>*</Typography>Your assets for
+            investment will be locked until your redemption.
+          </Trans>
+        </Typography>
+      </Grid>
+      <Grid
+        container
+        justifyContent={"space-between"}
+        direction={"row"}
+        alignItems={"center"}
+        marginTop={1 / 2}
+      >
+        <Tooltip
+          title={t("labelLRCStakeAPRTooltips").toString()}
+          placement={"top"}
+        >
+          <Typography
+            component={"p"}
+            variant="body2"
+            color={"textSecondary"}
+            display={"inline-flex"}
+            alignItems={"center"}
+          >
+            <Trans i18nKey={"labelLRCStakeAPR"}>
+              APR
+              <Info2Icon
+                fontSize={"small"}
+                color={"inherit"}
+                sx={{ marginX: 1 / 2 }}
+              />
+            </Trans>
+          </Typography>
+        </Tooltip>
+        <Typography component={"p"} variant="body2" color={"textPrimary"}>
+          {}
+        </Typography>
+      </Grid>
+
+      <Grid
+        container
+        justifyContent={"space-between"}
+        direction={"row"}
+        alignItems={"center"}
+        marginTop={1 / 2}
+      >
+        <Tooltip
+          title={t("labelLRCStakeEarnTooltips").toString()}
+          placement={"top"}
+        >
+          <Typography
+            component={"p"}
+            variant="body2"
+            color={"textSecondary"}
+            display={"inline-flex"}
+            alignItems={"center"}
+          >
+            <Trans i18nKey={"labelLRCStakeEarn"}>
+              Earn
+              <Info2Icon
+                fontSize={"small"}
+                color={"inherit"}
+                sx={{ marginX: 1 / 2 }}
+              />
+            </Trans>
+          </Typography>
+        </Tooltip>
+      </Grid>
+      <Grid
+        container
+        justifyContent={"space-between"}
+        direction={"row"}
+        alignItems={"center"}
+        marginTop={1 / 2}
+      >
+        <Typography
+          component={"p"}
+          variant="body2"
+          color={"textSecondary"}
+          display={"inline-flex"}
+          alignItems={"center"}
+        >
+          {t("labelLRCStakeSubTime")}
+        </Typography>
+        <Typography component={"p"} variant="body2" color={"textPrimary"}>
+          {}
+        </Typography>
+      </Grid>
+      <Grid
+        container
+        justifyContent={"space-between"}
+        direction={"row"}
+        alignItems={"center"}
+        marginTop={1 / 2}
+      >
+        <Tooltip
+          title={(t("labelLRCStakeDurationTooltips").toString(), { day: 90 })}
+          placement={"top"}
+        >
+          <Typography
+            component={"p"}
+            variant="body2"
+            color={"textSecondary"}
+            display={"inline-flex"}
+            alignItems={"center"}
+          >
+            <Trans i18nKey={"labelLRCStakeDuration"}>
+              Duration
+              <Info2Icon
+                fontSize={"small"}
+                color={"inherit"}
+                sx={{ marginX: 1 / 2 }}
+              />
+            </Trans>
+          </Typography>
+        </Tooltip>
+        <Typography component={"p"} variant="body2" color={"textPrimary"}>
+          {}
+        </Typography>
+      </Grid>
       <Grid item alignSelf={"stretch"}>
         <Grid container direction={"column"} spacing={1} alignItems={"stretch"}>
-          <Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>
-            <Grid
-              container
-              justifyContent={"space-between"}
-              direction={"row"}
-              alignItems={"center"}
-              marginTop={1 / 2}
-            >
-              <Typography
-                component={"p"}
-                variant="body2"
-                color={"textSecondary"}
-              >
-                {t("labelDefiFee")}
-              </Typography>
-              <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {deFiCalcData?.fee
-                  ? deFiCalcData.fee + ` ${tokenSell.symbol}`
-                  : EmptyValueTag}
-              </Typography>
-            </Grid>
-          </Grid>
           <Grid item>
             <ButtonStyle
               fullWidth
