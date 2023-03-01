@@ -531,9 +531,9 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 <DepositIcon fontSize={"inherit"} />
               ) : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER ? (
                 <TransferIcon fontSize={"inherit"} />
-              ) : row.side.toLowerCase() === "send_lucky_token" ? ( //todo  `${sdk.UserTxTypes.SEND_LUCKY_TOKEN},${sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN}`
+              ) : row.side.toLowerCase() === "send_lucky_token" ? (
                 <RedPacketIcon fontSize={"inherit"} />
-              ) : row.side.toLowerCase() === "withdraw_lucky_token" ? ( //todo  `${sdk.UserTxTypes.SEND_LUCKY_TOKEN},${sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN}`
+              ) : row.side.toLowerCase() === "withdraw_lucky_token" ? (
                 <RedPacketIcon fontSize={"inherit"} />
               ) : (
                 <WithdrawIcon fontSize={"inherit"} />

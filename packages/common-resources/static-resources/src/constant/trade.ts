@@ -7,6 +7,8 @@
 import {
   CollectionMeta,
   DeFiCalcData,
+  DeFiSideCalcData,
+  DeFiSideRedeemCalcData,
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
@@ -190,6 +192,7 @@ export const TOAST_TIME = 3000;
 
 export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;
+export const STAKING_INVEST_LIMIT = 5;
 export const PROPERTY_Value_LIMIT = 40;
 export const REDPACKET_ORDER_LIMIT = 10000;
 export const REDPACKET_ORDER_NFT_LIMIT = 20000;
@@ -384,12 +387,14 @@ export const enum InvestMapType {
   AMM = "AMM",
   STAKE = "STAKE",
   DUAL = "DUAL",
+  STAKELRC = "STAKELRC",
 }
 
 export const InvestOpenType = [
   InvestMapType.AMM,
   InvestMapType.STAKE,
   InvestMapType.DUAL,
+  InvestMapType.STAKELRC,
 ];
 
 export const enum InvestDuration {
@@ -443,6 +448,27 @@ export type TradeDefi<C> = {
   request?: sdk.DefiOrderRequest;
   defiBalances?: { [key: string]: string };
   lastInput?: DeFiChgType;
+};
+export type TradeStack<C> = {
+  sellToken: sdk.TokenInfo;
+  sellVol: string;
+  deFiSideCalcData?: DeFiSideCalcData<C>;
+  request?: {
+    accountId: number;
+    hash: string;
+    token: sdk.TokenVolumeV3;
+  };
+};
+
+export type RedeemStack<C> = {
+  sellToken: sdk.TokenInfo;
+  sellVol?: string;
+  deFiSideRedeemCalcData: DeFiSideRedeemCalcData<C>;
+  request?: {
+    accountId: number;
+    hash: string;
+    token: sdk.TokenVolumeV3;
+  };
 };
 
 export type L2CollectionFilter = {
@@ -509,6 +535,11 @@ export type DualViewOrder = DualViewBase & {
 export enum TRADE_TYPE {
   TOKEN = "TOKEN",
   NFT = "NFT",
+}
+
+export enum CLAIM_TYPE {
+  redPacket = "redPacket",
+  lrcStaking = "lrcStaking",
 }
 export type BanxaOrder = {
   id: string;

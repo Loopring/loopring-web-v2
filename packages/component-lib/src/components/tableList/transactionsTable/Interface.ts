@@ -20,11 +20,11 @@ export enum TransactionStatus {
 //   forceWithdraw = "DELEGATED_FORCE_WITHDRAW",
 // }
 export const TransactionTradeTypes = {
-  allTypes: `${sdk.UserTxTypes.DEPOSIT},${sdk.UserTxTypes.TRANSFER},${sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW},${sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL},${sdk.UserTxTypes.FORCE_WITHDRAWAL},withdraw_lucky_token,send_lucky_token`, //todo  `${sdk.UserTxTypes.SEND_LUCKY_TOKEN},${sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN}`
+  allTypes: `${sdk.UserTxTypes.DEPOSIT},${sdk.UserTxTypes.TRANSFER},${sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW},${sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL},${sdk.UserTxTypes.FORCE_WITHDRAWAL},withdraw_lucky_token,send_lucky_token`,
   receive: `${sdk.UserTxTypes.DEPOSIT}`,
   send: `${sdk.UserTxTypes.TRANSFER},${sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL},onchain_withdrawal`,
   forceWithdraw: `${sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW}`,
-  redPacket: `withdraw_lucky_token,send_lucky_token`, //todo  `${sdk.UserTxTypes.SEND_LUCKY_TOKEN},${sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN}`
+  redPacket: `withdraw_lucky_token,send_lucky_token`,
 };
 
 export enum TransactionTradeViews {

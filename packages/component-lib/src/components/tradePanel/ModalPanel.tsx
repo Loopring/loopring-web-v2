@@ -4,6 +4,8 @@ import {
   ActiveAccountPanel,
   ClaimProps,
   CollectionAdvanceProps,
+  DeFiStackRedeemWrap,
+  DeFiStakeRedeemWrapProps,
   DeployNFTWrap,
   DepositPanel,
   DepositProps,
@@ -144,6 +146,8 @@ export const ModalPanel = <
   activeAccountProps,
   collectionAdvanceProps,
   // dualTradeProps,
+
+  sideStackRedeemProps,
   assetsData,
   account,
   baseURL,
@@ -159,6 +163,7 @@ export const ModalPanel = <
   nftWithdrawProps: WithdrawProps<N, I>;
   nftDeployProps: NFTDeployProps<N & { broker: string }, I, F>;
   depositProps: DepositProps<T, I>;
+  sideStackRedeemProps: DeFiStakeRedeemWrapProps<T, I, any>;
   // depositGroupProps: DepositGroupProps<T, I>;
   // nftDepositProps: NFTDepositProps<T, I>;
   collectionAdvanceProps: CollectionAdvanceProps<C>;
@@ -188,6 +193,7 @@ export const ModalPanel = <
     setShowAccount,
     setShowClaimWithdraw,
     setShowCollectionAdvance,
+    setShowSideStakingRedeem,
     // setShowDual,
   } = useOpenModals();
   const {
@@ -204,6 +210,7 @@ export const ModalPanel = <
     isShowCollectionAdvance,
     isShowLayerSwapNotice,
     isShowClaimWithdraw,
+    isShowSideStakingRedeem,
     // isShowDual,
   } = modals;
   const theme = useTheme();
@@ -448,6 +455,19 @@ export const ModalPanel = <
               ...collectionAdvanceProps,
             }}
           />
+        }
+      />
+      <Modal
+        open={isShowSideStakingRedeem.isShow}
+        contentClassName={"trade-wrap hasLinerBg"}
+        onClose={() => setShowSideStakingRedeem({ isShow: false })}
+        content={
+          <Box flex={1} display={"flex"} paddingX={5 / 2} paddingBottom={5 / 2}>
+            <DeFiStackRedeemWrap
+              isJoin={false}
+              {...(sideStackRedeemProps as any)}
+            />
+          </Box>
         }
       />
     </>

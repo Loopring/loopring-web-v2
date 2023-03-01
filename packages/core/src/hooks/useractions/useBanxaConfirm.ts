@@ -126,7 +126,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     }
   }, [info?.transferBanxa]);
   const restTransfer = React.useCallback(() => {
-    const memo = "OFF-Banxa Transfer";
     const {
       _router_modalData: { offBanxaValue },
     } = store.getState();
@@ -135,6 +134,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       offBanxaValue.id &&
       offBanxaValue.status === "waitingPayment"
     ) {
+      const memo = `banxa-off:${offBanxaValue.id}`;
       const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
       setShowAccount({ isShow: false });
       checkFeeIsEnough({ isRequiredAPI: true });
@@ -569,8 +569,7 @@ export const useBanxaTransPost = () => {
           }
 
           updateTransferBanxaData({ __request__: request });
-          // TODO: console.log
-          console.log("BANXA submitInternal Transfer request Info:", request);
+
           response = await LoopringAPI.userAPI.submitInternalTransfer(
             {
               request: _.cloneDeep(request),
@@ -669,7 +668,7 @@ export const useBanxaTransPost = () => {
           (response as sdk.TX_HASH_API)?.hash &&
           offBanxaValue.wallet_address
         ) {
-          const { data } = await banxaApiCall({
+          banxaApiCall({
             chainId: chainId as ChainId,
             account,
             method: sdk.ReqMethod.POST,
@@ -681,25 +680,9 @@ export const useBanxaTransPost = () => {
               destination_address: offBanxaValue.wallet_address,
             },
           });
-          // TODO: console.log
-          console.log(
-            "BANXA Confirm order API Call:",
-            `${offBanxaValue.id}`,
-            data
-          );
         }
       } catch (error) {
-        //TODO confirm again.
-        // setShowAccount({
-        //   isShow: true,
-        //   step: AccountStep.Transfer_BANXA_Confirm,
-        //   info: {
-        //     order:offBanxaValue
-        //     tx_hash: (response as sdk.TX_HASH_API)?.hash,
-        //     source_address: account.accAddress,
-        //     destination_address: offBanxaValue.wallet_address,
-        //   },
-        // });
+        console.error("Banxa confirm error", error);
       }
     },
     [

@@ -138,6 +138,30 @@ export type DeFiCalcData<T> = {
   BtoA: string;
   fee: string;
 };
+export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
+  coinSell: T;
+  stackViewInfo: R & {
+    dalyEarn?: string;
+    maxSellAmount?: string;
+    miniSellAmount?: string;
+    maxSellVol?: string;
+    minSellVol?: string;
+  };
+};
+export type DeFiSideRedeemCalcData<
+  T,
+  R = sdk.StakeInfoOrigin & sdk.STACKING_PRODUCT
+> = {
+  coinSell: T;
+  stackViewInfo: R & {
+    maxSellAmount?: string;
+    miniSellAmount?: string;
+    maxSellVol?: string;
+    minSellVol?: string;
+    minAmount: string;
+    maxAmount: string;
+  };
+};
 
 export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {
   sellToken?: sdk.TokenInfo;

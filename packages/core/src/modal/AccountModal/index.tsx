@@ -48,6 +48,8 @@ export const ModalAccountInfo = withTranslation("common")(
       setShowWithdraw,
     } = useOpenModals();
     const {
+      toastOpen,
+      closeToast,
       exportAccountAlertText,
       exportAccountToastOpen,
       setExportAccountToastOpen,
@@ -67,6 +69,7 @@ export const ModalAccountInfo = withTranslation("common")(
       activeAccountProps,
       exportAccountProps,
       // dualTradeProps,
+      sideStackRedeemProps,
       copyToastOpen,
       openQRCode,
       accountList,
@@ -87,8 +90,15 @@ export const ModalAccountInfo = withTranslation("common")(
     //   "resetProps.chargeFeeTokenList",
     //   activeAccountProps.chargeFeeTokenList
     // );
+
     return (
       <>
+        <Toast
+          alertText={toastOpen?.content ?? ""}
+          open={toastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={closeToast}
+        />
         <Toast
           alertText={exportAccountAlertText as string}
           open={exportAccountToastOpen}
@@ -143,11 +153,12 @@ export const ModalAccountInfo = withTranslation("common")(
           // nftMintAdvanceProps={nftMintAdvanceProps as any}
           // nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
-          activeAccountProps={activeAccountProps}
+          activeAccountProps={activeAccountProps as any}
           exportAccountProps={exportAccountProps}
           assetsData={assetsRawData}
           setExportAccountToastOpen={setExportAccountToastOpen}
           account={account}
+          sideStackRedeemProps={sideStackRedeemProps as any}
           {...{ _height: "var(--modal-height)", _width: "var(--modal-width)" }}
         />
 

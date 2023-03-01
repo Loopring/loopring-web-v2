@@ -26,197 +26,197 @@ const BoxInput = styled(Box)`
     font-size: ${({ theme }) => theme.fontDefault.body1};
   }
 ` as typeof Box;
-export const _BasicANFTTrade = <
-  T extends IBData<I> & Partial<NFTWholeINFO>,
-  I extends any
->({
-  tradeData,
-  onChangeEvent,
-  disabled,
-  isBalanceLimit,
-  handleError: _handleError,
-  inputNFTRef,
-  baseURL,
-  getIPFSString,
-  inputNFTProps,
-  inputNFTDefaultProps,
-  // isSelected = false,
-  // isRequired = false,
-  isThumb,
-  ...rest
-}: BasicANFTTradeProps<T, I>) => {
-  const { t } = useTranslation("common");
-  const getDisabled = () => {
-    return disabled || tradeData === undefined;
-  };
-  const handleCountChange: any = React.useCallback(
-    (_tradeData: T, _name: string, _ref: any) => {
-      //const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
-      if ((tradeData as T)?.tradeValue !== _tradeData.tradeValue) {
-        onChangeEvent &&
-          onChangeEvent(0, {
-            tradeData: { ...tradeData, ..._tradeData },
-            to: "button",
+export const BasicANFTTrade = React.memo(
+  React.forwardRef(
+    <T extends IBData<I> & Partial<NFTWholeINFO>, I extends any>(
+      {
+        tradeData,
+        onChangeEvent,
+        disabled,
+        isBalanceLimit,
+        handleError: _handleError,
+        inputNFTRef,
+        baseURL,
+        getIPFSString,
+        inputNFTProps,
+        inputNFTDefaultProps,
+        // isSelected = false,
+        // isRequired = false,
+        isThumb,
+        ...rest
+      }: BasicANFTTradeProps<T, I>,
+      _ref: React.Ref<any>
+    ) => {
+      const { t } = useTranslation("common");
+      const getDisabled = () => {
+        return disabled || tradeData === undefined;
+      };
+      const handleCountChange: any = React.useCallback(
+        (_tradeData: T, _name: string, _ref: any) => {
+          //const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
+          if ((tradeData as T)?.tradeValue !== _tradeData.tradeValue) {
+            onChangeEvent &&
+              onChangeEvent(0, {
+                tradeData: { ...tradeData, ..._tradeData },
+                to: "button",
+              });
+          }
+        },
+        [onChangeEvent, tradeData]
+      );
+      const handleOnClick = React.useCallback(
+        (_event: React.MouseEvent, _ref: any) => {
+          onChangeEvent(1, {
+            tradeData: { ...tradeData, tradeValue: 0 },
+            to: "menu",
           });
-      }
-    },
-    [onChangeEvent, tradeData]
-  );
-  const handleOnClick = React.useCallback(
-    (_event: React.MouseEvent, _ref: any) => {
-      onChangeEvent(1, {
-        tradeData: { ...tradeData, tradeValue: 0 },
-        to: "menu",
-      });
-    },
-    [tradeData, onChangeEvent]
-  );
-  let handleError: any;
-  if (typeof _handleError !== "function") {
-    handleError = ({ balance, tradeValue }: T) => {
-      if (
-        (isBalanceLimit &&
-          balance &&
-          typeof tradeValue !== "undefined" &&
-          isBalanceLimit &&
-          sdk.toBig(balance).lt(tradeValue)) ||
-        !tradeValue ||
-        Number(tradeValue) < 1
-      ) {
-        return {
-          error: true,
-          message: t("tokenNotEnough", { belong: "NFT" }),
+        },
+        [tradeData, onChangeEvent]
+      );
+      let handleError: any;
+      if (typeof _handleError !== "function") {
+        handleError = ({ balance, tradeValue }: T) => {
+          if (
+            (isBalanceLimit &&
+              balance &&
+              typeof tradeValue !== "undefined" &&
+              isBalanceLimit &&
+              sdk.toBig(balance).lt(tradeValue)) ||
+            !tradeValue ||
+            Number(tradeValue) < 1
+          ) {
+            return {
+              error: true,
+              message: t("tokenNotEnough", { belong: "NFT" }),
+            };
+          }
+          return { error: false, message: "" };
         };
+      } else {
+        handleError = _handleError;
       }
-      return { error: false, message: "" };
-    };
-  } else {
-    handleError = _handleError;
-  }
-  const CoinIconElement =
-    isThumb && tradeData?.nftData ? (
-      tradeData?.image ? (
-        <img
-          alt={tradeData?.belong ? tradeData?.belong : "NFT"}
-          width={"100%"}
-          height={"100%"}
-          src={getIPFSString(tradeData.image, baseURL)}
-        />
-      ) : (
-        <Avatar
-          sx={{
-            bgcolor: "var(--color-border-disable2)",
-            width: "100%",
-            height: "100%",
-          }}
-          variant={"circular"}
-        >
-          <ImageIcon />
-        </Avatar>
-      )
-    ) : undefined;
-  const noSelectElement = React.useMemo(() => {
-    const inputCoinProps: InputCoinProps<T, I, CoinInfo<I>> = {
-      subLabel: t("labelAvailable"),
-      placeholderText: "0",
-      decimalsLimit: 0,
-      allowDecimals: false,
-      isHideError: true,
-      isShowCoinInfo: !!isThumb,
-      isShowCoinIcon: false,
-      CoinIconElement,
-      order: "right",
-      noBalance: "0",
-      // coinLabelStyle ,
-      coinPrecision: 0,
-      maxAllow: isBalanceLimit,
-      handleError: handleError as any,
-      handleCountChange,
-      ...inputNFTDefaultProps,
-      ...inputNFTProps,
-      ...rest,
-    } as InputCoinProps<T, I, CoinInfo<I>>;
-    return (
-      <InputCoin<T, I, CoinInfo<I>>
-        ref={inputNFTRef}
-        disabled={getDisabled()}
-        {...{
-          ...inputCoinProps,
-          inputData: tradeData
-            ? {
-                ...tradeData,
-                belong: tradeData?.belong ? tradeData?.belong : "NFT",
-              }
-            : ({} as T),
-          coinMap: {} as CoinMap<I, CoinInfo<I>>,
-        }}
-      />
-    );
-  }, [
-    tradeData,
-    getDisabled,
-    isBalanceLimit,
-    handleError,
-    inputNFTRef,
-    inputNFTProps,
-    inputNFTDefaultProps,
-    rest?.isSelected,
-  ]);
-  const chooseElement = React.useMemo(() => {
-    const inputBtnProps: InputButtonProps<T, any, I> = {
-      subLabel: t("labelAvailable"),
-      emptyText: t("labelChooseNFT"),
-      placeholderText: "0",
-      decimalsLimit: 0,
-      allowDecimals: false,
-      CoinIconElement,
-      order: "right",
-      noBalance: "0",
-      coinPrecision: 0,
-      maxAllow: isBalanceLimit,
-      handleError: handleError as any,
-      handleCountChange,
-      handleOnClick: handleOnClick as any,
-      ...inputNFTDefaultProps,
+      const CoinIconElement =
+        isThumb && tradeData?.nftData ? (
+          tradeData?.image ? (
+            <img
+              alt={tradeData?.belong ? tradeData?.belong : "NFT"}
+              width={"100%"}
+              height={"100%"}
+              src={getIPFSString(tradeData.image, baseURL)}
+            />
+          ) : (
+            <Avatar
+              sx={{
+                bgcolor: "var(--color-border-disable2)",
+                width: "100%",
+                height: "100%",
+              }}
+              variant={"circular"}
+            >
+              <ImageIcon />
+            </Avatar>
+          )
+        ) : undefined;
+      const noSelectElement = React.useMemo(() => {
+        const inputCoinProps: InputCoinProps<T, I, CoinInfo<I>> = {
+          subLabel: t("labelAvailable"),
+          placeholderText: "0",
+          decimalsLimit: 0,
+          allowDecimals: false,
+          isHideError: true,
+          isShowCoinInfo: !!isThumb,
+          isShowCoinIcon: false,
+          CoinIconElement,
+          order: "right",
+          noBalance: "0",
+          // coinLabelStyle ,
+          coinPrecision: 0,
+          maxAllow: isBalanceLimit,
+          handleError: handleError as any,
+          handleCountChange,
+          ...inputNFTDefaultProps,
+          ...inputNFTProps,
+          ...rest,
+        } as InputCoinProps<T, I, CoinInfo<I>>;
+        return (
+          <InputCoin<T, I, CoinInfo<I>>
+            ref={inputNFTRef}
+            disabled={getDisabled()}
+            {...{
+              ...inputCoinProps,
+              inputData: tradeData
+                ? {
+                    ...tradeData,
+                    belong: tradeData?.belong ? tradeData?.belong : "NFT",
+                  }
+                : ({} as T),
+              coinMap: {} as CoinMap<I, CoinInfo<I>>,
+            }}
+          />
+        );
+      }, [
+        tradeData,
+        getDisabled,
+        isBalanceLimit,
+        handleError,
+        inputNFTRef,
+        inputNFTProps,
+        inputNFTDefaultProps,
+        rest?.isSelected,
+      ]);
+      const chooseElement = React.useMemo(() => {
+        const inputBtnProps: InputButtonProps<T, any, I> = {
+          subLabel: t("labelAvailable"),
+          emptyText: t("labelChooseNFT"),
+          placeholderText: "0",
+          decimalsLimit: 0,
+          allowDecimals: false,
+          CoinIconElement,
+          order: "right",
+          noBalance: "0",
+          coinPrecision: 0,
+          maxAllow: isBalanceLimit,
+          handleError: handleError as any,
+          handleCountChange,
+          handleOnClick: handleOnClick as any,
+          ...inputNFTDefaultProps,
 
-      ...inputNFTProps,
-      ...rest,
-    } as InputButtonProps<T, any, I>;
-    return (
-      <InputButton
-        ref={inputNFTRef}
-        disabled={getDisabled()}
-        fullwidth={true}
-        {...{
-          ...inputBtnProps,
-          inputData: tradeData
-            ? {
-                ...tradeData,
-                belong: tradeData?.belong
-                  ? tradeData?.belong
-                  : t("tokenSelectNFTToken"),
-              }
-            : ({} as T),
-          coinMap: {} as CoinMap<I, CoinInfo<I>>,
-        }}
-      />
-    );
-  }, [
-    tradeData,
-    getDisabled,
-    isBalanceLimit,
-    handleError,
-    inputNFTRef,
-    inputNFTProps,
-    inputNFTDefaultProps,
-    rest?.isSelected,
-  ]);
-  return <>{rest?.isSelected ? chooseElement : noSelectElement}</>;
-};
-export const BasicANFTTrade = React.memo(React.forwardRef(_BasicANFTTrade)) as <
-  T extends IBData<I> & Partial<NFTWholeINFO>,
-  I extends any
->(
+          ...inputNFTProps,
+          ...rest,
+        } as InputButtonProps<T, any, I>;
+        return (
+          <InputButton
+            ref={inputNFTRef}
+            disabled={getDisabled()}
+            fullwidth={true}
+            {...{
+              ...inputBtnProps,
+              inputData: tradeData
+                ? {
+                    ...tradeData,
+                    belong: tradeData?.belong
+                      ? tradeData?.belong
+                      : t("tokenSelectNFTToken"),
+                  }
+                : ({} as T),
+              coinMap: {} as CoinMap<I, CoinInfo<I>>,
+            }}
+          />
+        );
+      }, [
+        tradeData,
+        getDisabled,
+        isBalanceLimit,
+        handleError,
+        inputNFTRef,
+        inputNFTProps,
+        inputNFTDefaultProps,
+        rest?.isSelected,
+      ]);
+      return <>{rest?.isSelected ? chooseElement : noSelectElement}</>;
+    }
+  )
+) as <T extends IBData<I> & Partial<NFTWholeINFO>, I extends any>(
   props: BasicANFTTradeProps<T, I>
 ) => JSX.Element;
 

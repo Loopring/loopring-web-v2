@@ -41,7 +41,7 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 
 const MaxSize = 10485760;
-const MaxMediaSize = 10485760 * 5;
+const MaxMediaSize = 10485760 * 100; //TODO
 
 export const MetaNFTPanel = <
   Me extends NFTMETA,
@@ -91,7 +91,7 @@ export const MetaNFTPanel = <
           <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
             <FormLabel>
               <Tooltip
-                title={t("labelMintRoyaltyPercentageTooltips").toString()}
+                title={t("labelIPFSUploadTooltips").toString()}
                 placement={"top"}
               >
                 <Typography
@@ -162,7 +162,8 @@ export const MetaNFTPanel = <
                 fullSize={true}
                 value={keys.animationUrl}
                 maxSize={MaxMediaSize}
-                types={MediaTYPES}
+                types={[]}
+                messageTypes={MediaTYPES}
                 getIPFSString={getIPFSString}
                 baseURL={baseURL}
                 onChange={(value) => {

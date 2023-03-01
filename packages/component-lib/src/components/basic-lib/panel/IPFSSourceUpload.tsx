@@ -41,8 +41,6 @@ export const MediaTYPES = [
   "video/mp4",
   "video/mpeg4",
   "model",
-  "gltf",
-  "glb",
   "model/gltf",
   "model/glb",
   "model/usdz",
@@ -92,6 +90,11 @@ const LinkStyle = styled(Link)`
       d_W: 0,
       d_R: 1,
     })};
+
+  .media-content {
+    height: 100%;
+    width: 100%;
+  }
 ` as typeof Link;
 
 export type IpfsFile = {
@@ -164,6 +167,7 @@ export const MediaSVGToggle = ({
                 bottom={theme.unit}
                 sx={{ transform: "translateX(-50%)" }}
                 zIndex={100}
+                className={"media-content"}
               >
                 <audio
                   src={getIPFSString(url, baseURL)}
@@ -210,6 +214,7 @@ export const MediaSVGToggle = ({
                   e.stopPropagation();
                   setPlay(true);
                 }}
+                className={"media-content"}
               >
                 <Box
                   display={"flex"}
@@ -275,6 +280,7 @@ export const MediaSVGToggle = ({
                   cursor: "pointer",
                   background: "var(--color-global-bg)",
                 }}
+                className={"media-content"}
               >
                 <model-viewer
                   style={{ height: "100%", width: "100%" }}
@@ -311,6 +317,7 @@ export const MediaSVGToggle = ({
                   e.stopPropagation();
                   setPlay(true);
                 }}
+                className={"media-content"}
               >
                 <NftImage alt={"image"} onError={() => undefined} src={url} />
               </Box>
@@ -363,12 +370,14 @@ export const IPFSSourceUpload = ({
   onDelete,
   types = TYPES,
   getIPFSString,
+  messageTypes,
   baseURL,
   ...options
 }: Omit<DropzoneOptions, "onDrop" | "onDropAccepted"> & {
   // sx?: SxProps<Theme>;
   fullSize?: boolean;
   width?: number | string;
+  messageTypes?: string[];
   height?: number | string;
   typographyProps?: TypographyProps;
   buttonProps?: Omit<ButtonProps, "onClick">;
@@ -400,11 +409,7 @@ export const IPFSSourceUpload = ({
       ...options,
       disabled,
       maxSize,
-      accept: types
-        ?.map((item) => {
-          return `${item}`;
-        })
-        .join(", "),
+      accept: types?.length ? types : undefined,
       onDropAccepted,
       noClick: true,
       noKeyboard: true,
@@ -424,6 +429,7 @@ export const IPFSSourceUpload = ({
           right: 8,
           top: 8,
           background: "var(--color-global-bg)",
+          zIndex: 101,
         }}
         color={"inherit"}
         onClick={onDelete}
@@ -567,15 +573,15 @@ export const IPFSSourceUpload = ({
                   {...typographyProps}
                 >
                   {t(title, {
-                    types: types
-                      ?.map((ele) => {
+                    types: (messageTypes ?? types)
+                      ?.reduce((prev, ele) => {
                         const split = ele?.split("/");
                         if (split.length === 2) {
-                          return split[1];
+                          return [...prev, split[1]];
                         }
-                        return ele;
-                      })
-                      .join(", "),
+                        return prev;
+                      }, [] as string[])
+                      ?.join(", "),
                     size: (maxSize / 1000000).toFixed(0),
                   })}
                 </Typography>

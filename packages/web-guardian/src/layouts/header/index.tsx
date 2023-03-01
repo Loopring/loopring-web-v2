@@ -27,9 +27,8 @@ const Header = withTranslation("common")(
       const { headerToolBarData, notifyMap, headerMenuLandingData } =
         useHeader();
       const { isMobile } = useSettings();
-      const { pathname } = useLocation();
       const { confirmWrapper } = confirmation.useConfirmation();
-      const { allowTrade } = useSystem();
+      const { allowTrade, chainId } = useSystem();
       const { account } = useAccount();
       return (
         <>
@@ -39,6 +38,7 @@ const Header = withTranslation("common")(
               account={account}
               allowTrade={allowTrade}
               isMobile={isMobile}
+              chainId={chainId}
               // isLandPage={true}
               // isWrap={false}
               headerMenuData={headerMenuLandingData}

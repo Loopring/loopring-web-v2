@@ -1,4 +1,5 @@
 import {
+  CLAIM_TYPE,
   ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
@@ -32,6 +33,7 @@ export interface ModalState {
   isWrongNetworkGuide: ModalStatePlayLoad;
   isShowClaimWithdraw: ModalStatePlayLoad & {
     claimToken: ClaimToken | undefined;
+    claimType: CLAIM_TYPE | undefined;
   };
   isShowTransfer: ModalStatePlayLoad & Transaction;
   isShowWithdraw: ModalStatePlayLoad & Transaction;
@@ -66,4 +68,5 @@ export interface ModalState {
   };
   isShowFeeSetting: ModalStatePlayLoad;
   isShowIFrame: ModalStatePlayLoad & { url: string };
+  isShowSideStakingRedeem: ModalStatePlayLoad & { symbol?: string };
 }

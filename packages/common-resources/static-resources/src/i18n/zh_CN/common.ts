@@ -1418,4 +1418,5 @@ export default {
   labelHaveAnBanxaCancel: "", //"Or cancel it create a new order",
   labelBanxaConfirmSubmit:
     "The sell order payment submitted. You can save/click below link to check the payment status anytime.",
+  labelStakeNoEnough: "Insufficient balance",
 };

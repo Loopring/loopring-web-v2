@@ -23,6 +23,7 @@ import {
   setShowOtherExchange,
   setShowRedPacket,
   setShowResetAccount,
+  setShowSideStakingRedeem,
   setShowSupport,
   setShowSwap,
   setShowTradeIsFrozen,
@@ -33,6 +34,7 @@ import {
 
 import React from "react";
 import {
+  CLAIM_TYPE,
   ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
@@ -228,7 +230,12 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowClaimWithdraw: React.useCallback(
-      (state: ModalStatePlayLoad & { claimToken?: ClaimToken }) => {
+      (
+        state: ModalStatePlayLoad & {
+          claimToken?: ClaimToken;
+          claimType?: CLAIM_TYPE;
+        }
+      ) => {
         if (toggle.claim.enable) {
           dispatch(setShowClaimWithdraw(state));
         } else {
@@ -262,6 +269,11 @@ export const useOpenModals = () => {
     setShowTradeIsFrozen: React.useCallback(
       (state: ModalStatePlayLoad & { type?: string; messageKey?: string }) =>
         dispatch(setShowTradeIsFrozen(state)),
+      [dispatch]
+    ),
+    setShowSideStakingRedeem: React.useCallback(
+      (state: ModalStatePlayLoad & { symbol?: string }) =>
+        dispatch(setShowSideStakingRedeem(state)),
       [dispatch]
     ),
   };

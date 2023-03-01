@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import {
+  CLAIM_TYPE,
   ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
@@ -37,7 +38,12 @@ const initialState: ModalState = {
   isShowCollectionAdvance: { isShow: false },
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
-  isShowClaimWithdraw: { isShow: false, claimToken: undefined },
+  isShowClaimWithdraw: {
+    isShow: false,
+    claimToken: undefined,
+    claimType: undefined,
+  },
+  isShowSideStakingRedeem: { isShow: false, symbol: undefined },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -339,12 +345,25 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowClaimWithdraw(
       state,
-      action: PayloadAction<ModalStatePlayLoad & { claimToken: ClaimToken }>
+      action: PayloadAction<
+        ModalStatePlayLoad & { claimToken: ClaimToken; claimType: CLAIM_TYPE }
+      >
     ) {
-      const { isShow, claimToken } = action.payload;
+      const { isShow, claimToken, claimType } = action.payload;
       state.isShowClaimWithdraw = {
         isShow,
         claimToken,
+        claimType,
+      };
+    },
+    setShowSideStakingRedeem(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & { symbol?: string }>
+    ) {
+      const { isShow, symbol } = action.payload;
+      state.isShowSideStakingRedeem = {
+        isShow,
+        symbol,
       };
     },
   },
@@ -378,4 +397,5 @@ export const {
   setShowClaimWithdraw,
   setShowRedPacket,
   setNFTMetaNotReady,
+  setShowSideStakingRedeem,
 } = modalsSlice.actions;

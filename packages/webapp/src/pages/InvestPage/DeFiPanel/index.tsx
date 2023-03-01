@@ -41,7 +41,7 @@ import {
   UpColor,
 } from "@loopring-web/common-resources";
 
-const StyleWrapper = styled(Box)`
+export const StyleWrapper = styled(Box)`
   position: relative;
   border-radius: ${({ theme }) => theme.unit}px;
 
@@ -55,16 +55,19 @@ const StyleWrapper = styled(Box)`
 
   border-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Grid;
-const StyleCardContent = styled(CardContent)`
+export const StyleCardContent = styled(CardContent)`
   display: flex;
+
   &.tableLap {
     display: block;
     width: 100%;
     cursor: pointer;
+
     .content {
       flex-direction: column;
       align-items: center;
       padding-top: ${({ theme }) => 4 * theme.unit}px;
+
       .des {
         align-items: center;
         margin: ${({ theme }) => 3 * theme.unit}px 0;

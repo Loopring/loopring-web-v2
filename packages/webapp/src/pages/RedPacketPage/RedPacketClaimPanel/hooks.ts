@@ -16,6 +16,7 @@ import {
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
+  CLAIM_TYPE,
   ClaimToken,
   RedPacketLimit,
   SDK_ERROR_MAP_TO_UI,
@@ -36,7 +37,7 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   const { idIndex, coinMap, tokenMap } = useTokenMap();
   const { tokenPrices } = useTokenPrices();
   const [showLoading, setShowLoading] = React.useState(true);
-  const { modals, setShowClaimWithdraw } = useOpenModals();
+  const { setShowClaimWithdraw } = useOpenModals();
   const getClaimRedPacket = React.useCallback(async () => {
     setShowLoading(true);
     if (LoopringAPI.luckTokenAPI && accountId && apiKey) {
@@ -104,6 +105,7 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
       claimToken: {
         ...item,
       },
+      claimType: CLAIM_TYPE.redPacket,
     });
   };
 
@@ -202,6 +204,7 @@ export const useClaimNFTRedPacket = <R extends RawDataNFTRedPacketClaimItem>({
       claimToken: {
         ...item,
       },
+      claimType: CLAIM_TYPE.redPacket,
     });
   };
 

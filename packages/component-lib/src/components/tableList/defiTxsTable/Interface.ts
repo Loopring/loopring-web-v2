@@ -19,3 +19,34 @@ export interface DefiTxsTableProps<R = RawDataDefiTxsItem> {
   // accAddress: string;
   // accountId: number;
 }
+
+export type RawDataDefiSideStakingItem = sdk.StakeInfoOrigin;
+
+export interface DefiSideStakingTableProps<R = RawDataDefiSideStakingItem> {
+  // etherscanBaseUrl?: string;
+  rawData: R[];
+  pagination?: {
+    pageSize: number;
+    total: number;
+  };
+  idIndex: { [key: string]: string };
+  tokenMap: { [key: string]: any };
+  geDefiSideStakingList: (props: any) => Promise<void>;
+  showloading: boolean;
+  redeemItemClick: (item: R) => void;
+}
+
+export type RawDataDefiSideStakingTxItem = sdk.STACKING_TRANSACTIONS;
+
+export interface DefiSideStakingTxTableProps<R = RawDataDefiSideStakingTxItem> {
+  // etherscanBaseUrl?: string;
+  rawData: R[];
+  pagination?: {
+    pageSize: number;
+    total: number;
+  };
+  idIndex: { [key: string]: string };
+  tokenMap: { [key: string]: any };
+  getSideStakingTxList: (props: any) => Promise<void>;
+  showloading: boolean;
+}
