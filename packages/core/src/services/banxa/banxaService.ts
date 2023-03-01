@@ -204,9 +204,6 @@ export const banxaService = {
             account_reference: account.accAddress,
           },
         });
-        // TODO: console.log
-
-        console.log("BANXA create order", data.order);
 
         banxa.generateIframe(
           "#iframeBanxaTarget",

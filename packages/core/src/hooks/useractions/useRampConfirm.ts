@@ -289,8 +289,6 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     if (sellPanel === RAMP_SELL_PANEL.RAMP_CONFIRM) {
       initRampViewProps();
     } else {
-      //TODO MOCK
-      // resetTransferRampData();
     }
   }, [sellPanel]);
 
