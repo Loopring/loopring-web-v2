@@ -41,8 +41,6 @@ export const MediaTYPES = [
   "video/mp4",
   "video/mpeg4",
   "model",
-  "gltf",
-  "glb",
   "model/gltf",
   "model/glb",
   "model/usdz",
@@ -568,14 +566,13 @@ export const IPFSSourceUpload = ({
                 >
                   {t(title, {
                     types: types
-                      ?.map((ele) => {
+                      ?.reduce((prev, ele) => {
                         const split = ele?.split("/");
                         if (split.length === 2) {
-                          return split[1];
+                          return [...prev, split[1]];
                         }
-                        return ele;
-                      })
-                      .join(", "),
+                      }, [] as string[])
+                      ?.join(", "),
                     size: (maxSize / 1000000).toFixed(0),
                   })}
                 </Typography>
