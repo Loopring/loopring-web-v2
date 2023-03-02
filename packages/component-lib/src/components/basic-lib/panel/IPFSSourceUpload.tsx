@@ -361,12 +361,14 @@ export const IPFSSourceUpload = ({
   onDelete,
   types = TYPES,
   getIPFSString,
+  messageTypes,
   baseURL,
   ...options
 }: Omit<DropzoneOptions, "onDrop" | "onDropAccepted"> & {
   // sx?: SxProps<Theme>;
   fullSize?: boolean;
   width?: number | string;
+  messageTypes?: string[];
   height?: number | string;
   typographyProps?: TypographyProps;
   buttonProps?: Omit<ButtonProps, "onClick">;
@@ -398,11 +400,7 @@ export const IPFSSourceUpload = ({
       ...options,
       disabled,
       maxSize,
-      accept: types
-        ?.map((item) => {
-          return `${item}`;
-        })
-        .join(", "),
+      accept: types,
       onDropAccepted,
       noClick: true,
       noKeyboard: true,
@@ -565,7 +563,7 @@ export const IPFSSourceUpload = ({
                   {...typographyProps}
                 >
                   {t(title, {
-                    types: types
+                    types: (messageTypes ?? types)
                       ?.reduce((prev, ele) => {
                         const split = ele?.split("/");
                         if (split.length === 2) {

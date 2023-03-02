@@ -162,7 +162,8 @@ export const MetaNFTPanel = <
                 fullSize={true}
                 value={keys.animationUrl}
                 maxSize={MaxMediaSize}
-                types={MediaTYPES}
+                types={["..."]}
+                messageTypes={MediaTYPES}
                 getIPFSString={getIPFSString}
                 baseURL={baseURL}
                 onChange={(value) => {
