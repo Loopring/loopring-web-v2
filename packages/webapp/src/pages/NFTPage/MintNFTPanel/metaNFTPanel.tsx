@@ -41,7 +41,7 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 
 const MaxSize = 10485760;
-const MaxMediaSize = 10485760 * 5;
+const MaxMediaSize = 10485760 * 10;
 
 export const MetaNFTPanel = <
   Me extends NFTMETA,
