@@ -73,11 +73,13 @@ export const useStakeTradeExit = <
       } else if (
         sdk
           .toBig(
-            redeemStack?.deFiSideRedeemCalcData?.stackViewInfo.remainAmount
+            (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+              .remainAmount
           )
           .minus(redeemStack?.sellVol)
           .minus(
-            redeemStack?.deFiSideRedeemCalcData?.stackViewInfo?.minSellVol ?? 0
+            (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+              ?.minSellVol ?? 0
           )
           .lt(0)
       ) {
@@ -88,7 +90,10 @@ export const useStakeTradeExit = <
       } else if (
         sdk
           .toBig(redeemStack?.sellVol)
-          .gt(redeemStack?.deFiSideRedeemCalcData?.stackViewInfo?.remainAmount)
+          .gt(
+            (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+              ?.remainAmount
+          )
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -297,18 +302,18 @@ export const useStakeTradeExit = <
       isJoin: false,
       isFullTime:
         Date.now() >=
-          redeemStack?.deFiSideRedeemCalcData?.stackViewInfo?.claimableTime ??
-        0,
+          (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+            ?.claimableTime ?? 0,
       disabled: account.readyState === AccountStatus.ACTIVATED,
       btnInfo: {
         label: tradeMarketI18nKey,
         params: {},
       },
       isLoading: false,
-      minSellAmount:
-        redeemStack?.deFiSideRedeemCalcData?.stackViewInfo?.miniSellAmount,
-      maxSellAmount:
-        redeemStack?.deFiSideRedeemCalcData?.stackViewInfo?.maxSellAmount,
+      minSellAmount: (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+        ?.miniSellAmount,
+      maxSellAmount: (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+        ?.maxSellAmount,
       onSubmitClick: onBtnClick as () => void,
       switchStobEvent: (
         _isStoB: boolean | ((prevState: boolean) => boolean)
@@ -322,8 +327,8 @@ export const useStakeTradeExit = <
   }, [
     sendRequest,
     redeemStack.deFiSideRedeemCalcData,
-    redeemStack?.deFiSideRedeemCalcData?.stackViewInfo?.claimableTime,
-    redeemStack?.deFiSideRedeemCalcData?.stackViewInfo?.maxSellVol,
+    (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)?.claimableTime,
+    (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)?.maxSellVol,
     account.readyState,
     tradeMarketI18nKey,
     onBtnClick,
@@ -339,4 +344,4 @@ export const useStakeTradeExit = <
       ACD
     >,
   };
-};
+};;

@@ -148,12 +148,10 @@ export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
     minSellVol?: string;
   };
 };
-export type DeFiSideRedeemCalcData<
-  T,
-  R = sdk.StakeInfoOrigin & sdk.STACKING_PRODUCT
-> = {
+type RedeemInfo = sdk.StakeInfoOrigin & sdk.STACKING_PRODUCT;
+export type DeFiSideRedeemCalcData<T, _R = RedeemInfo> = {
   coinSell: T;
-  stackViewInfo: R & {
+  stackViewInfo: _R & {
     maxSellAmount?: string;
     miniSellAmount?: string;
     maxSellVol?: string;
