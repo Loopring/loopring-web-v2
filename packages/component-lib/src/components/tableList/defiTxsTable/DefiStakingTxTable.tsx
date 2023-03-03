@@ -237,6 +237,7 @@ export const DefiStakingTxTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           formatter: ({ row }) => {
+            debugger;
             let side = {
               color: "var(--color-text-primary)",
               type: `labelStakeTransactionType${row.type}`,

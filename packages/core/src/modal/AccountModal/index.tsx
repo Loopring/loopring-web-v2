@@ -76,8 +76,8 @@ export const ModalAccountInfo = withTranslation("common")(
       currentModal,
       onBackReceive,
       onBackSend,
-      collectionToastOpen,
-      collectionToastClose,
+      toastOpen,
+      closeToast,
     } = useAccountModalForUI({
       t,
       assetsRawData,
@@ -109,11 +109,11 @@ export const ModalAccountInfo = withTranslation("common")(
           severity={"success"}
         />
         <Toast
-          alertText={collectionToastOpen?.content ?? ""}
-          severity={collectionToastOpen?.type ?? "success"}
-          open={collectionToastOpen?.open ?? false}
+          alertText={toastOpen?.content ?? ""}
+          severity={toastOpen?.type ?? "success"}
+          open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
-          onClose={collectionToastClose}
+          onClose={closeToast}
         />
 
         <ModalPanel

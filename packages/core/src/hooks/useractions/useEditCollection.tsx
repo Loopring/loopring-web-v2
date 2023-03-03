@@ -66,11 +66,27 @@ export const useEditCollection = <T extends CollectionMeta>({
   const { updateWalletL2Collection } = useWalletL2Collection();
   const history = useHistory();
   const keysEditInit = (collection: Partial<CollectionMeta> = {}) => {
+    // const req = Promise.all([
+    //   fetch(getIPFSString(collection.banner, baseURL), {
+    //     method: "HEAD",
+    //   }),
+    //   fetch(getIPFSString(collection.tileUri, baseURL), {
+    //     method: "HEAD",
+    //   }),
+    //   fetch(getIPFSString(collection.avatar, baseURL), {
+    //     method: "HEAD",
+    //   }),
+    // ]).then([]);
+    // tokenInfo.__mediaType__ = getMediaType(
+    //   req?.headers?.get("content-type") ?? ""
+    // );
     return {
       banner: collection.banner
         ? ({
             error: undefined,
-            file: undefined,
+            file: {
+              type: "image/*",
+            },
             fullSrc: getIPFSString(collection.banner, baseURL),
             localSrc: getIPFSString(collection.banner, baseURL),
             isProcessing: false,
@@ -81,7 +97,9 @@ export const useEditCollection = <T extends CollectionMeta>({
       tileUri: collection.tileUri
         ? ({
             error: undefined,
-            file: undefined,
+            file: {
+              type: "image/*",
+            },
             fullSrc: getIPFSString(collection.tileUri, baseURL),
             localSrc: getIPFSString(collection.tileUri, baseURL),
             isProcessing: false,
@@ -92,7 +110,9 @@ export const useEditCollection = <T extends CollectionMeta>({
       avatar: collection.avatar
         ? ({
             error: undefined,
-            file: undefined,
+            file: {
+              type: "image/*",
+            },
             fullSrc: getIPFSString(collection.avatar, baseURL),
             localSrc: getIPFSString(collection.avatar, baseURL),
             isProcessing: false,

@@ -231,11 +231,6 @@ export function useAccountModalForUI({
     exportAccountToastOpen,
     setExportAccountToastOpen,
   } = useExportAccount();
-  const {
-    toastOpen: collectionToastOpen,
-    setToastOpen: setCollectionToastOpen,
-    closeToast: collectionToastClose,
-  } = useToast();
   const { toastOpen, setToastOpen, closeToast } = useToast();
 
   const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance();
@@ -245,7 +240,7 @@ export function useAccountModalForUI({
   });
 
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({
-    setCollectionToastOpen,
+    setCollectionToastOpen: setToastOpen,
   });
   const { vendorListBuy, banxaRef } = useVendor();
   // const { nftMintProps } = useNFTMint();
@@ -635,6 +630,7 @@ export function useAccountModalForUI({
   }, [isShowAccount?.info, setShowAccount]);
 
   const { checkActiveStatusProps } = useCheckActiveStatus<FeeInfo>({
+    setToastOpen,
     onDisconnect,
     isDepositing: !!chainInfos?.depositHashes[account?.accAddress]?.length,
     chargeFeeTokenList: activeAccountProps.chargeFeeTokenList as FeeInfo[],
@@ -2963,7 +2959,7 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
     copyToastOpen,
     setCopyToastOpen,
-    setCollectionToastOpen,
+    setToastOpen,
     openQRCode,
     setOpenQRCode,
     isShowAccount,
@@ -2973,10 +2969,7 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    collectionToastOpen,
-    collectionToastClose,
     toastOpen,
-    setToastOpen,
     closeToast,
     // checkActiveStatusProps,
     // dualToastOpen,

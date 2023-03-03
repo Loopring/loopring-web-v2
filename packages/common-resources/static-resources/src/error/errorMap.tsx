@@ -323,6 +323,7 @@ export const ErrorMap = {
 };
 
 export enum UIERROR_CODE {
+  NO_NETWORK_ERROR = 700000,
   UNKNOWN = 700001,
   PROVIDER_ERROR = 700002,
   PROVIDER_ERROR_Unknown = 700003,
@@ -362,6 +363,7 @@ export type ErrorObject = {
   [key: string]: any;
 };
 export const SDK_ERROR_MAP_TO_UI = {
+  700000: ErrorMap.NO_NETWORK_ERROR,
   700001: ErrorMap.ERROR_UNKNOWN, //UI Unknown error =>
   700002: ErrorMap.ERROR_PROVIDER_ERROR,
   700003: ErrorMap.ERROR_UNKNOWN,
