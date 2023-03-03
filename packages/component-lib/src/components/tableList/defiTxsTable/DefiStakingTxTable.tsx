@@ -121,7 +121,8 @@ export const DefiStakingTxTable = withTranslation(["tables", "common"])(
           formatter: ({ row }) => {
             let side = {
               color: "var(--color-text-primary)",
-              type: `labelStakeTransactionType${row.type}`,
+              // @ts-ignore
+              type: `labelStakeTransactionType${row.stakingType}`,
             };
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr = row.amount
@@ -139,7 +140,8 @@ export const DefiStakingTxTable = withTranslation(["tables", "common"])(
                 " " +
                 tokenInfo.symbol
               : EmptyValueTag;
-            switch (row.type) {
+            // @ts-ignore
+            switch (row.stakingType) {
               case sdk.StakeTransactionType.subscribe:
                 side = {
                   ...side,
@@ -237,13 +239,13 @@ export const DefiStakingTxTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           formatter: ({ row }) => {
-            debugger;
             let side = {
               color: "var(--color-text-primary)",
-              type: `labelStakeTransactionType${row.type}`,
+              // @ts-ignore
+              type: `labelStakeTransactionType${row.stakingType}`,
             };
-
-            switch (row.type) {
+            // @ts-ignore
+            switch (row.stakingType) {
               case sdk.StakeTransactionType.subscribe:
                 side = {
                   ...side,
@@ -354,11 +356,7 @@ export const DefiStakingTxTable = withTranslation(["tables", "common"])(
       // let filters: any = {};
       updateData.cancel();
       updateData({ currPage: 1 });
-      // handlePageChange(1);
-      // if (searchParams.get("types")) {
-      //   filters.type = searchParams.get("types");
-      // }
-      // handleFilterChange(filters);
+
       return () => {
         updateData.cancel();
       };

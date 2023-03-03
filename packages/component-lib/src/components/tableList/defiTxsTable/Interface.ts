@@ -36,7 +36,9 @@ export interface DefiSideStakingTableProps<R = RawDataDefiSideStakingItem> {
   redeemItemClick: (item: R) => void;
 }
 
-export type RawDataDefiSideStakingTxItem = sdk.STACKING_TRANSACTIONS;
+export type RawDataDefiSideStakingTxItem = sdk.STACKING_TRANSACTIONS & {
+  stakingType: string;
+};
 
 export interface DefiSideStakingTxTableProps<R = RawDataDefiSideStakingTxItem> {
   // etherscanBaseUrl?: string;
