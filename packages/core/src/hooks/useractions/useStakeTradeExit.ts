@@ -344,4 +344,4 @@ export const useStakeTradeExit = <
       ACD
     >,
   };
-};;
+};
