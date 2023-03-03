@@ -41,9 +41,7 @@ export const MediaTYPES = [
   "video/mp4",
   "video/mpeg4",
   "model",
-  "model/gltf",
   "model/glb",
-  "model/usdz",
   "",
 ];
 export const getMediaType = (type: string): Media | undefined => {
@@ -165,6 +163,9 @@ export const MediaSVGToggle = ({
                 position={"absolute"}
                 left={"50%"}
                 bottom={theme.unit}
+                display={"flex"}
+                alignItems={"flex-end"}
+                justifyContent={"center"}
                 sx={{ transform: "translateX(-50%)" }}
                 zIndex={100}
                 className={"media-content"}
@@ -540,6 +541,39 @@ export const IPFSSourceUpload = ({
                     <></>
                   )}
                 </LinkStyle>
+
+                <Typography
+                  component={"span"}
+                  display={"flex"}
+                  justifyContent={"flex-start"}
+                  alignItems={"center"}
+                  flexDirection={"column"}
+                  sx={{
+                    pointerEvents: "none",
+                    opacity: 1,
+                    position: "absolute",
+                    right: "0",
+                    top: "0",
+                    color: "var(--color-button-text)",
+                    zIndex: 100,
+                    height: "100%",
+                    width: "100%",
+                  }}
+                >
+                  {/*<UploadedIcon*/}
+                  {/*  sx={{*/}
+                  {/*    height: "50% !important",*/}
+                  {/*    width: "50% !important",*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                  <Typography
+                    color={"inherit"}
+                    component={"span"}
+                    marginTop={1}
+                  >
+                    Successfully Uploaded
+                  </Typography>
+                </Typography>
                 {close}
               </>
             )
