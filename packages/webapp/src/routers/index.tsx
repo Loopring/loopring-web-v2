@@ -320,11 +320,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <MiningPage />
           </ContentWrap>
         </Route>
-        <Route exact path={["/redPacket", "/redPacket/*"]}>
-          <ContentWrap state={state}>
-            <RedPacketPage />
-          </ContentWrap>
-        </Route>
+        {/*TODO: redPacket*/}
+        {/*<Route exact path={["/redPacket", "/redPacket/*"]}>*/}
+        {/*  <ContentWrap state={state}>*/}
+        {/*    <RedPacketPage />*/}
+        {/*  </ContentWrap>*/}
+        {/*</Route>*/}
         <Route exact path={["/l2assets", "/l2assets/*"]}>
           <ContentWrap state={state}>
             <AssetPage />
