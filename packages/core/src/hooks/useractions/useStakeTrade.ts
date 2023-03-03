@@ -517,7 +517,7 @@ export const useStakeRedeemClick = () => {
             .toString(),
           tradeValue: undefined,
         },
-        stackViewInfo: { ...item } as any,
+        stackViewInfo: { ...item } as never,
       },
     });
     setShowSideStakingRedeem({ isShow: true, symbol: tokenInfo.symbol });
