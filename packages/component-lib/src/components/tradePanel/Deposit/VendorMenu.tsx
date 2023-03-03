@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { MenuBtnStyled } from "../../styled";
 import { VendorMenuProps } from "../../modal/ModalPanels/Interface";
 import { useTranslation } from "react-i18next";
@@ -50,6 +50,7 @@ export const VendorMenu = ({
 }: VendorMenuProps) => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
+  const theme = useTheme();
   return (
     <Box
       flex={1}
@@ -136,6 +137,19 @@ export const VendorMenu = ({
                   symbol={`${item.key}-${
                     type == TradeTypes.Buy ? "on" : "off"
                   }`}
+                />
+              )}
+              {type == TradeTypes.Sell && (
+                <Avatar
+                  alt={"BETA"}
+                  style={{
+                    width: "auto",
+                    // width: size ? size : "var(--svg-size-medium)",
+                    height: "var(--svg-size-medium)",
+                    marginRight: theme.unit / 2,
+                  }}
+                  variant={"square"}
+                  src={"https://static.loopring.io/assets/svg/beta.png"}
                 />
               )}
               {/*{item.flag &&*/}

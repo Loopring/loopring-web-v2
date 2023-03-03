@@ -15,7 +15,7 @@ import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
 import { RedPacketClaimPanel } from "../../RedPacketPage/RedPacketClaimPanel";
-import { TradeBtnStatus } from "@loopring-web/common-resources";
+import { TradeBtnStatus, UploadedIcon } from "@loopring-web/common-resources";
 
 enum TabIndex {
   Tokens = "Tokens",
