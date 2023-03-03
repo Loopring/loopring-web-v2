@@ -48,8 +48,6 @@ export const ModalAccountInfo = withTranslation("common")(
       setShowWithdraw,
     } = useOpenModals();
     const {
-      toastOpen,
-      closeToast,
       exportAccountAlertText,
       exportAccountToastOpen,
       setExportAccountToastOpen,
