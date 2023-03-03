@@ -59,6 +59,13 @@ export const getMediaType = (type: string): Media | undefined => {
   }
   return;
 };
+const PlayIconStyle = styled(PlayIcon)`
+  color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".9")};
+  border-radius: 100%;
+  box-shadow: inset 0px 0px 60px
+    ${({ theme }) => hexToRGB(theme.colorBase.textPrimary, ".7")};
+  padding: ${({ theme }) => 1 * theme.unit}px;
+`;
 
 const BoxStyle = styled(Box)`
   ${({ theme }) =>
@@ -633,11 +640,3 @@ export const IPFSSourceUpload = ({
 //${({ theme }) =>
 //  // padding: ${({ theme }) => 2 * theme.unit}px;
 //background: ${({ theme }) => hexToRGB(theme.colorBase.textPrimary, ".6")};
-
-const PlayIconStyle = styled(PlayIcon)`
-  color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".9")};
-  border-radius: 100%;
-  box-shadow: inset 0px 0px 60px
-    ${({ theme }) => hexToRGB(theme.colorBase.textPrimary, ".7")};
-  padding: ${({ theme }) => 1 * theme.unit}px;
-`;
