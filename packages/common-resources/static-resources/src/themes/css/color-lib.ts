@@ -135,7 +135,7 @@ export const ColorLightDefault = Object.freeze({
   providerBtn: `${hexToRGB("#3B5AF4", "0.1")}`,
   providerBtnHover: `${hexToRGB("#3B5AF4", "0.15")}`,
   providerApprove: `#F6F7FB`,
-  boxNFTLabel: `${hexToRGB("#6787FF", "0.08")}`,
+  boxNFTLabel: `${hexToRGB("#ffffff", "0.58")}`,
   boxNFTBtn: `${hexToRGB("#000000", "0.28")}`,
 
   redPacket1: `linear-gradient(96.56deg, #FFD596 1.14%, #FFD390 46.4%, #FDBD6A 98.91%)`,

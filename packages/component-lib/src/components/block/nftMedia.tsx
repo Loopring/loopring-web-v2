@@ -144,7 +144,7 @@ export const NFTMedia = React.memo(
                     alignSelf={"stretch"}
                     position={"relative"}
                     flex={1}
-                    margin={1}
+                    margin={"1"}
                     display={"flex"}
                   >
                     {play && shouldPlay ? (
