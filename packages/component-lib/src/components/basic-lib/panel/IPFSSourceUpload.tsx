@@ -532,7 +532,7 @@ export const IPFSSourceUpload = ({
                       play={true}
                       shouldPlay={true}
                       setPlay={() => {}}
-                      mediaTyp={getMediaType(value.file.type)}
+                      mediaTyp={getMediaType(value.file?.type)}
                       getIPFSString={getIPFSString}
                       baseURL={baseURL} //
                       isShow={true}
