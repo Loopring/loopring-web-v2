@@ -256,7 +256,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                           fontSize={"medium"}
                         />
                       </Typography>
-                    ) : (
+                    ) : typeof describe1 === "string" ? (
                       <Typography
                         color={"var(--color-error)"}
                         component={"span"}
@@ -271,6 +271,20 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                           __html: sanitize(describe1),
                         }}
                       />
+                    ) : (
+                      <Typography
+                        color={"var(--color-error)"}
+                        component={"span"}
+                        variant={"inherit"}
+                        display={"inline-flex"}
+                        onClick={() =>
+                          setDropdownStatus((prev) =>
+                            prev === "up" ? "down" : "up"
+                          )
+                        }
+                      >
+                        {describe1}
+                      </Typography>
                     )}
                     {dropdownStatus === "up" && (
                       <TextareaAutosizeStyled
@@ -284,7 +298,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
 
                     {/*{\`Error Description:\\n {code: ${error?.code}, message:${error?.message}}\`}*/}
                   </Typography>
-                ) : (
+                ) : typeof describe1 === "string" ? (
                   <Typography
                     component={"span"}
                     variant={"h5"}
@@ -306,6 +320,27 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                       __html: sanitize(describe1),
                     }}
                   />
+                ) : (
+                  <Typography
+                    component={"span"}
+                    variant={"h5"}
+                    whiteSpace={"pre-line"}
+                    textAlign={"center"}
+                    color={
+                      iconType === IconType.SubmitIcon ||
+                      iconType === IconType.DoneIcon
+                        ? "var(--color-success)"
+                        : iconType === IconType.RefuseIcon
+                        ? "var(--color-error)"
+                        : "textPrimary"
+                    }
+                    marginTop={0}
+                    alignSelf={"flex-center"}
+                    paddingX={2}
+                    sx={{ wordBreak: "break-all" }}
+                  >
+                    {describe1}
+                  </Typography>
                 )}
 
                 {txCheck && (

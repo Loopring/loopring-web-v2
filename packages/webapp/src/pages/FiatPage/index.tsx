@@ -20,6 +20,7 @@ import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 
 import {
   BackIcon,
+  myLog,
   SoursURL,
   TradeTypes,
   VendorProviders,
@@ -75,8 +76,6 @@ export const FiatPage = withTranslation("common")(
           : TradeTypes.Buy;
       });
     }, [match?.params?.tab]);
-
-    // const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
 
     const fiatView = React.useMemo(() => {
       return (
