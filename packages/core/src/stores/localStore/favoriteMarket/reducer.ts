@@ -10,7 +10,7 @@ const favoriteMarketSlice: Slice<FavoriteMarketStates> = createSlice<
   name: "favoriteMarket",
   initialState: [],
   reducers: {
-    clearAll(state: FavoriteMarketStates, action: PayloadAction<undefined>) {
+    clearAll(state: FavoriteMarketStates, _action: PayloadAction<undefined>) {
       state.length = 0;
     },
     removeMarket(state: FavoriteMarketStates, action: PayloadAction<string>) {

@@ -5,7 +5,6 @@ import { TFunction } from "react-i18next";
 import {
   AccountHashInfo,
   CompleteIcon,
-  // EmptyIcon,
   getFormattedHash,
   LinkIcon,
   WaitingIcon,

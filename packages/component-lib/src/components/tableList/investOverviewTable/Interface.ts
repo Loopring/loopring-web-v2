@@ -1,7 +1,13 @@
-import { InvestItem, RowConfig } from "@loopring-web/common-resources";
+import {
+  CoinInfo,
+  InvestItem,
+  RowConfig,
+} from "@loopring-web/common-resources";
 import { TokenInfo, XOR } from "@loopring-web/loopring-sdk";
 
-export type DepartmentRow = Required<InvestItem & { token: TokenInfo }>;
+export type DepartmentRow = Required<
+  InvestItem & { token: TokenInfo; coinInfo: CoinInfo<any> }
+>;
 export type RowInvest = DepartmentRow & {
   isExpanded?: boolean;
   children?: InvestItem[];
@@ -12,6 +18,7 @@ export enum SubRowAction {
   UpdateRaw = "updateRaw",
   SortRow = "sortRow",
 }
+
 export interface InvestRowAction<R = DepartmentRow> {
   type: SubRowAction;
   symbol?: string;
@@ -19,6 +26,7 @@ export interface InvestRowAction<R = DepartmentRow> {
   _des?: "DESC" | "ASC" | undefined;
   rows?: R[];
 }
+
 type FilterExtend = {
   showFilter: boolean;
   filterValue: string;

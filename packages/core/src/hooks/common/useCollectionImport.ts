@@ -46,7 +46,7 @@ export const useCollectionImport = <
   const { legacyContract } = useWalletL2Collection();
 
   const [onLoading, setOnLoading] = React.useState<boolean>(false);
-  // const { baseURL } = useSystem();
+
   // const [contractList, setContractList] = React.useState<string[]>([""]);
   const [selectContract, setSelectContract] =
     React.useState<

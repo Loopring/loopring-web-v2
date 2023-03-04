@@ -2,6 +2,8 @@ import {
   AccountStatus,
   FeeInfo,
   SagaStatus,
+  TransErrorHelp,
+  UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
 import {
@@ -13,6 +15,7 @@ import {
 import {
   AccountStep,
   CheckActiveStatusProps,
+  TOASTOPEN,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -29,6 +32,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   chargeFeeTokenList,
   onDisconnect,
   isDepositing,
+  setToastOpen,
 }: // isShow,
 {
   // isShow: boolean;
@@ -38,6 +42,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
   };
+  setToastOpen: (state: TOASTOPEN) => void;
   chargeFeeTokenList: C[];
   checkFeeIsEnough: (props?: {
     isRequiredAPI: true;
@@ -115,12 +120,21 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
 
   const init = React.useCallback(async () => {
     setKnowDisable(true);
-    const isContract = await sdk.isContract(
-      connectProvides.usedWeb3,
-      account.accAddress
-    );
-    setIsAddressContract(isContract);
-    updateWalletLayer2();
+    try {
+      const isContract = await sdk.isContract(
+        connectProvides.usedWeb3,
+        account.accAddress
+      );
+      setIsAddressContract(isContract);
+      updateWalletLayer2();
+    } catch (error: any) {
+      console.log("Web3 error", error);
+      setToastOpen({
+        open: true,
+        type: "error",
+        content: <TransErrorHelp error={{ code: UIERROR_CODE.TIME_OUT }} />,
+      });
+    }
   }, [account.accAddress, updateWalletLayer2]);
 
   React.useEffect(() => {

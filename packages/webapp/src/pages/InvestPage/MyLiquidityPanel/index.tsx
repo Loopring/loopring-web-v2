@@ -176,7 +176,7 @@ const MyLiquidity: any = withTranslation("common")(
           display={"flex"}
           alignItems={"center"}
           sx={
-            isHideTotal
+            isHideTotal && !isMobile
               ? {
                   right: 2 * theme.unit,
                   top: -42,

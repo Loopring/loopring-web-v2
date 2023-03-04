@@ -1,12 +1,7 @@
-import { Box, Container, Grid, Typography, Link, Button } from "@mui/material";
+import { Box, Grid, Link, Typography } from "@mui/material";
 import React from "react";
 import styled from "@emotion/styled/";
-import {
-  ThemeType,
-  SoursURL,
-  LandPageHeightConfig,
-  DropDownIcon,
-} from "@loopring-web/common-resources";
+import { LandPageHeightConfig, SoursURL } from "@loopring-web/common-resources";
 import { withTranslation } from "react-i18next";
 import { ContainerStyle, ContainerStyled, TitleTypography } from "./style";
 import { useSettings } from "@loopring-web/component-lib";

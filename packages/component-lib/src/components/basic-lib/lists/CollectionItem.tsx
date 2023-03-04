@@ -4,26 +4,28 @@ import {
   CollectionListProps,
   CollectionMedia,
   EmptyDefault,
+  IconButtonStyle,
 } from "../../../index";
 import {
   Avatar,
   Box,
   Grid,
-  IconButton,
   Link,
   MenuItem,
   Pagination,
+  Popover,
   Radio,
   Typography,
-  Popover,
 } from "@mui/material";
 import {
+  CollectionLimit,
   CollectionMeta,
   CopyIcon,
   copyToClipBoard,
   getShortAddr,
   ImageIcon,
   NFT_TYPE_STRING,
+  NFTLimit,
   sizeNFTConfig,
   SoursURL,
   ViewMoreIcon,
@@ -31,7 +33,6 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { CollectionLimit, NFTLimit } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import {
   bindMenu,
@@ -73,12 +74,6 @@ const BoxBtnGroup = styled(Box)`
   &.mobile {
   }
 ` as typeof Box;
-const IconButtonStyle = styled(IconButton)`
-  background-color: var(--field-opacity);
-  margin: 0 ${({ theme }) => theme.unit / 2}px;
-  ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};
-
-}`;
 
 const ActionMemo = React.memo(
   <Co extends CollectionMeta>({

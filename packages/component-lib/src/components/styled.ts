@@ -1,8 +1,7 @@
 import styled from "@emotion/styled";
-import { BoxProps, Grid, Typography } from "@mui/material";
+import { Box, BoxProps, Grid, Typography } from "@mui/material";
 import { css, Theme, useTheme } from "@emotion/react";
 import { UpColor } from "@loopring-web/common-resources";
-import { Box } from "@mui/material";
 import { Button, ButtonProps } from "./basic-lib";
 import { useSettings } from "../stores";
 
@@ -392,17 +391,21 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
   padding: 0 ${({ theme }) => theme.unit * 3}px;
   text-indent: 0.5em;
   position: relative;
+
   &.addAsset,
   &.sendAsset {
     white-space: pre;
     font-size: ${({ theme }) => theme.fontDefault.h5};
-    //justify-content: flex-start;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: row;
 
     &.isMobile {
       font-size: ${({ theme }) => theme.fontDefault.h6};
     }
+  }
+
+  &.banxaEnter {
+    justify-content: space-between;
   }
 
   &.redPacketType {

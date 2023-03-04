@@ -28,6 +28,7 @@ import { TagIconList } from "../../block";
 import { useSettings } from "../../../stores";
 import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
+
 const PopoverStyled = styled(Popover)`
   .MuiPaper-elevation2 {
     box-shadow: none;

@@ -24,6 +24,7 @@ const disableEsLint = (e) => {
     e
   );
 };
+
 function findBabelRules(config) {
   let result_rule = {};
   config.module.rules.filter((rule) => {
@@ -39,6 +40,7 @@ function findBabelRules(config) {
   });
   return result_rule;
 }
+
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   addons: [

@@ -10,7 +10,6 @@ import { persistReducer } from "redux-persist";
 import storageSession from "redux-persist/lib/storage/session";
 import storage from "redux-persist/lib/storage";
 import persistStore from "redux-persist/es/persistStore";
-import hardSet from "redux-persist/lib/stateReconciler/hardSet";
 import mySaga from "./rootSaga";
 import { updateVersion } from "./global/actions";
 import createSagaMiddleware from "redux-saga";
@@ -37,6 +36,7 @@ import { tokenPricesSlice } from "./tokenPrices/reducer";
 import { TradeProSettings } from "./localStore/tradeProSettings";
 import { notifyMapSlice } from "./notify/reducer";
 import { walletLayer2NFTSlice } from "./walletLayer2NFT/reducer";
+import { redPacketConfigsSlice } from "./redPacket/reducer";
 import { localStoreReducer } from "./localStore";
 import { getAnalytics } from "firebase/analytics";
 
@@ -47,6 +47,8 @@ import {
   LAYER1_ACTION_HISTORY,
   myLog,
   NFTHashInfos,
+  OffRampHashInfos,
+  RedPacketHashInfos,
 } from "@loopring-web/common-resources";
 import { FavoriteMarketStates } from "./localStore/favoriteMarket";
 import { Confirmation } from "./localStore/confirmation";
@@ -86,17 +88,31 @@ const persistAccConfig = {
 const persistSettingConfig = {
   key: "settings",
   storage: storage,
-  stateReconciler: hardSet,
 };
 
 const persistLocalStoreConfig = {
   key: "localStore",
   storage: storage,
-  stateReconciler: hardSet,
 };
 const persistedAccountReducer = persistReducer(
   persistAccConfig,
   accountSlice.reducer
+);
+const perisitTokenPricesSessionStoreConfig = persistReducer(
+  { key: "tokenPrices", storage: storageSession, timeout: DEFAULT_TIMEOUT },
+  tokenPricesSlice.reducer
+);
+const perisitWalletLayer2SessionStoreConfig = persistReducer(
+  { key: "walletLayer2", storage: storageSession, timeout: DEFAULT_TIMEOUT },
+  walletLayer2Slice.reducer
+);
+const perisitWalletLayer1SessionStoreConfig = persistReducer(
+  { key: "walletLayer1", storage: storageSession, timeout: DEFAULT_TIMEOUT },
+  walletLayer1Slice.reducer
+);
+const perisitTickerMapSessionStoreConfig = persistReducer(
+  { key: "tickerMap", storage: storageSession, timeout: DEFAULT_TIMEOUT },
+  tickerMapSlice.reducer
 );
 
 const persistedSettingReducer = persistReducer<SettingsState>(
@@ -113,21 +129,10 @@ const persistedLocalStoreReducer = persistReducer<
     tradeProSettings: TradeProSettings;
     layer1ActionHistory: LAYER1_ACTION_HISTORY;
     nftHashInfos: NFTHashInfos;
+    redPacketHistory: RedPacketHashInfos;
+    offRampHistory: OffRampHashInfos;
   }>
 >(persistLocalStoreConfig, localStoreReducer);
-
-// firebase.initializeApp(fbConfig)
-
-// if (process.env.REACT_APP_NAME) {
-//
-//   console.log("VER:", process.env.REACT_APP_VER);
-// }
-
-// let firebaseReducer: any = {
-//   firebase: undefined,
-// };
-
-// Initialize Firebase
 
 const reducer = combineReducers({
   account: persistedAccountReducer,
@@ -139,14 +144,15 @@ const reducer = combineReducers({
   amm: ammReducer,
   invest: investReducer,
   tokenMap: tokenMapSlice.reducer,
-  tokenPrices: tokenPricesSlice.reducer,
+  redPacketConfigs: redPacketConfigsSlice.reducer,
   toggle: toggleSlice.reducer,
-  walletLayer2: walletLayer2Slice.reducer,
+  tokenPrices: perisitTokenPricesSessionStoreConfig,
+  walletLayer2: perisitWalletLayer2SessionStoreConfig,
+  walletLayer1: perisitWalletLayer1SessionStoreConfig,
+  tickerMap: perisitTickerMapSessionStoreConfig,
   walletLayer2NFT: walletLayer2NFTSlice.reducer,
   walletL2Collection: walletL2CollectionSlice.reducer,
   walletL2NFTCollection: walletL2NFTCollectionSlice.reducer,
-  walletLayer1: walletLayer1Slice.reducer,
-  tickerMap: tickerMapSlice.reducer,
   localStore: persistedLocalStoreReducer,
   amountMap: amountMapSlice.reducer,
   notifyMap: notifyMapSlice.reducer,
@@ -176,6 +182,7 @@ export const store = configureStore({
 export const firebaseProps: ReactReduxFirebaseProviderProps = (() => {
   let firebase_app;
   switch (process.env.REACT_APP_NAME) {
+    case "guardian":
     case "bridge":
       // getAnalytics(firebase);
       firebase_app = firebase.initializeApp(firebaseBridgeConfig);

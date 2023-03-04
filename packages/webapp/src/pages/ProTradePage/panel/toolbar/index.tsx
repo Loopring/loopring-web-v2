@@ -16,6 +16,7 @@ import {
 import {
   Button,
   InputSearch,
+  InputSearchWrapperStyled,
   MarketBlockProps,
   PopoverPure,
   QuoteTable,
@@ -40,21 +41,19 @@ import styled from "@emotion/styled";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Layout, Layouts } from "react-grid-layout";
 import {
+  favoriteMarket as favoriteMarketRD,
+  TableProWrapStyled,
+  useAccount,
+  useNotify,
+  useSystem,
   useTicker,
   useTokenMap,
-  volumeToCount,
   useTokenPrices,
-  useSystem,
-  favoriteMarket as favoriteMarketRD,
-  useAmmActivityMap,
-  useAccount,
-  TableProWrapStyled,
-  useNotify,
+  volumeToCount,
 } from "@loopring-web/core";
 import { useToolbar } from "./hook";
 import { useHistory } from "react-router-dom";
 import { useTickList } from "../../../QuotePage/hook";
-import { InputSearchWrapperStyled } from "@loopring-web/component-lib";
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);

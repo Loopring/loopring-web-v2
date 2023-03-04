@@ -1,6 +1,6 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import { BtnPercentage, InputCoin, InputSize } from "../../basic-lib";
-import { LimitTradeData, TradeBtnStatus, TradeLimitProps } from "../Interface";
+import { LimitTradeData, TradeLimitProps } from "../Interface";
 import {
   CoinInfo,
   CoinKey,
@@ -8,6 +8,7 @@ import {
   CurrencyToTag,
   IBData,
   PriceTag,
+  TradeBtnStatus,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import { Box, Tab } from "@mui/material";
@@ -126,8 +127,10 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               ref={priceRef as any}
               name={"price"}
               disabled={false}
-              {...{
+              {...({
                 ...propsPrice,
+                isShowCoinInfo: true,
+                isShowCoinIcon: false,
                 maxAllow: false,
                 isHideError: true,
                 inputData: tradeData ? tradeData.price : ({} as any),
@@ -135,7 +138,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
                   tradeCalcProData && tradeCalcProData.coinInfoMap
                     ? tradeCalcProData.coinInfoMap
                     : ({} as CoinMap<I, CoinInfo<I>>),
-              }}
+              } as any)}
             />
           </Box>
           <Box paddingTop={2}>
@@ -146,6 +149,8 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               {...{
                 ...propsBase,
                 // maxAllow:false,
+                isShowCoinInfo: true,
+                isShowCoinIcon: false,
                 isHideError: true,
                 handleCountChange,
                 inputData: tradeData ? tradeData.base : ({} as any),
@@ -199,6 +204,8 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               {...{
                 ...propsQuote,
                 isHideError: true,
+                isShowCoinInfo: true,
+                isShowCoinIcon: false,
                 handleCountChange,
                 inputData: tradeData ? tradeData.quote : ({} as any),
                 coinMap:

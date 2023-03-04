@@ -1,5 +1,5 @@
 import { Trans } from "react-i18next";
-import { UnlockAccountBase, IconType, PanelProps } from "./BasicPanel";
+import { IconType, PanelProps, UnlockAccountBase } from "./BasicPanel";
 import { Link, Typography } from "@mui/material";
 import { WalletType } from "@loopring-web/loopring-sdk";
 import { FEED_BACK_LINK } from "@loopring-web/common-resources";

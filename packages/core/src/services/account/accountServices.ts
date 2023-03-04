@@ -23,6 +23,8 @@ import {
   setShowActiveAccount,
   setShowExportAccount,
   setShowResetAccount,
+  setShowRedPacket,
+  setShowClaimWithdraw,
 } from "@loopring-web/component-lib";
 
 const subject = new Subject<{ status: AccountCommands; data: any }>();
@@ -114,6 +116,8 @@ export const accountServices = {
     store.dispatch(setShowActiveAccount({ isShow: false }));
     store.dispatch(setShowResetAccount({ isShow: false }));
     store.dispatch(setShowExportAccount({ isShow: false }));
+    store.dispatch(setShowRedPacket({ isShow: false }));
+    store.dispatch(setShowClaimWithdraw({ isShow: false }));
     banxaService.banxaEnd({
       reason: OrderENDReason.UserCancel,
       data: { resource: "Account Locked" },

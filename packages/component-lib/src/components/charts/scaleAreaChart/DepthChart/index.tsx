@@ -1,7 +1,6 @@
-import React from "react";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { getDepthData } from "../data";
-import { Typography, Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
   Area,
   ComposedChart,

@@ -10,20 +10,21 @@ import {
 } from "@loopring-web/common-resources";
 
 import {
-  usePageTradePro,
-  store,
   makeWalletLayer2,
-  useWalletLayer2,
-  usePairMatch,
-  useAmount,
-  useAccount,
-  useTokenMap,
   marketInitCheck,
+  store,
+  useAccount,
+  useAmount,
+  usePageTradePro,
+  usePairMatch,
+  useTokenMap,
+  useWalletLayer2,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useOrderList } from "./panel/orderTable/hookTable";
 import { useProSocket, useSocketProService } from "./proService";
 import { useHistory } from "react-router-dom";
+import { useGetAssets } from "../AssetPage/AssetPanel/hook";
 
 export const usePro = <C extends { [key: string]: any }>(): {
   [key: string]: any;
@@ -44,6 +45,7 @@ export const usePro = <C extends { [key: string]: any }>(): {
   const { getAmount } = useAmount();
   const { account, status: accountStatus } = useAccount();
   const { status: walletLayer2Status } = useWalletLayer2();
+  const { assetBtnStatus } = useGetAssets();
   const { getOrderList } = useOrderList();
   const { coinMap, tokenMap, marketArray, marketCoins, marketMap } =
     useTokenMap();
@@ -172,9 +174,9 @@ export const usePro = <C extends { [key: string]: any }>(): {
     },
     [coinMap, tokenMap, marketMap, marketArray, market]
   );
-
   return {
     market,
+    assetBtnStatus,
     handleOnMarketChange,
     resetTradeCalcData,
   };

@@ -15,7 +15,6 @@ const getUserRewardsApi = async <R extends { [key: string]: any }>(
   const { accountId } = store.getState().account;
   let { __timer__ } = store.getState().userRewardsMap;
   if (LoopringAPI.ammpoolAPI && accountId) {
-    myLog("loop get getAmmPoolUserRewards");
     let ammUserRewardMap = {};
     try {
       const response = await LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({

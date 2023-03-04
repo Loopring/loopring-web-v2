@@ -1,8 +1,8 @@
 import {
+  ColumnKey as InvestColumnKey,
+  DepartmentRow,
   InvestOverviewTableProps,
   RowInvest,
-  DepartmentRow,
-  ColumnKey as InvestColumnKey,
 } from "./Interface";
 
 export * from "./InvestOverviewTable";

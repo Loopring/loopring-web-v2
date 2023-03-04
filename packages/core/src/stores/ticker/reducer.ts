@@ -13,6 +13,14 @@ const tickerMapSlice: Slice = createSlice({
   name: "tickerMap",
   initialState,
   reducers: {
+    resetTicker(state) {
+      if (state.__timer__ !== -1) {
+        clearInterval(state.__timer__);
+        state.__timer__ = -1;
+      }
+      state.tickerMap = {};
+      state.status = SagaStatus.UNSET;
+    },
     updateTicker(state, _action: PayloadAction<LoopringMap<TickerData>>) {
       state.status = SagaStatus.PENDING;
     },
@@ -41,5 +49,10 @@ const tickerMapSlice: Slice = createSlice({
   },
 });
 export { tickerMapSlice };
-export const { updateTicker, getTickers, getTickerStatus, statusUnset } =
-  tickerMapSlice.actions;
+export const {
+  updateTicker,
+  resetTicker,
+  getTickers,
+  getTickerStatus,
+  statusUnset,
+} = tickerMapSlice.actions;

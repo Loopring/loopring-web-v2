@@ -7,8 +7,13 @@ export const makeInvestRow = <R extends RowInvest>(
   investTokenTypeMap: InvestTokenTypeMap,
   key: string
 ): R => {
+  const { coinMap } = store.getState().tokenMap;
+  const info = investTokenTypeMap[key].detail;
+  const coinInfo = coinMap[info.token.symbol];
+
   let item = {
     ...investTokenTypeMap[key].detail,
+    coinInfo,
     i18nKey: "" as any,
     children: [],
     isExpanded: false,
@@ -17,7 +22,8 @@ export const makeInvestRow = <R extends RowInvest>(
   const children = InvestOpenType.reduce((prev, type) => {
     if (investTokenTypeMap[key][type]) {
       let _row: any = investTokenTypeMap[key][type];
-      _row = { ..._row, token: item.token };
+      const coinInfo = coinMap[item.token.symbol];
+      _row = { ..._row, coinInfo, token: item.token };
       prev.push(_row as DepartmentRow);
     }
     return prev;

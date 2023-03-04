@@ -8,10 +8,11 @@ import {
   copyToClipBoard,
   Info2Icon,
   TOAST_TIME,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
 import { Button, PopoverPure, TextareaAutosizeStyled } from "../../basic-lib";
-import { CollectionAdvanceProps, TradeBtnStatus } from "../Interface";
+import { CollectionAdvanceProps } from "../Interface";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { Toast } from "../../toast";

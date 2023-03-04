@@ -4,9 +4,9 @@ import {
   CoinInfo,
   DeFiChgType,
   MarketType,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
-import { TradeBtnStatus } from "../../Interface";
 import React from "react";
 
 export type DeFiChgData<T> = {

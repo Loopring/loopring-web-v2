@@ -1,11 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
 import {
-  IBData,
-  NFTWholeINFO,
   EmptyValueTag,
   FeeInfo,
+  IBData,
+  NFTWholeINFO,
   TOAST_TIME,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -14,7 +15,6 @@ import {
   FeeTokenItemWrapper,
   RampViewProps,
   Toast,
-  TradeBtnStatus,
 } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";

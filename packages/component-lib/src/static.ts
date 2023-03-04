@@ -20,6 +20,7 @@ import {
   DUAL_TYPE,
   LuckyTokenItemForReceive,
 } from "@loopring-web/loopring-sdk";
+
 export const account: Account = {
   __timer__: -1,
   frozen: false,

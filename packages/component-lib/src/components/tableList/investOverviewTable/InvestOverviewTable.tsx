@@ -8,6 +8,7 @@ import {
   InvestDuration,
   InvestMapType,
   RowConfig,
+  TokenType,
 } from "@loopring-web/common-resources";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
 import {
@@ -25,6 +26,7 @@ import { Filter } from "./components/Filter";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
 import { InvestColumnKey } from "./index";
+import { ColumnCoinDeep } from "../assetsTable";
 
 const TableStyled = styled(Box)<
   { isMobile?: boolean; hasContent?: boolean } & BoxProps
@@ -123,27 +125,9 @@ export const InvestOverviewTable = <R extends RowInvest>({
       formatter: ({ row }) => {
         switch (row.type) {
           case InvestMapType.Token:
-            const token: TokenInfo = row.token;
+            const token = row.coinInfo;
             return (
-              <Box
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-                height={"100%"}
-              >
-                {token?.symbol && <CoinIcon symbol={token?.symbol} />}
-                <Typography component={"span"} className={"next-coin"}>
-                  {token?.symbol}
-                </Typography>
-                <Typography
-                  marginLeft={1}
-                  component={"span"}
-                  className={"next-company"}
-                  color={"textSecondary"}
-                >
-                  {token?.name}
-                </Typography>
-              </Box>
+              <ColumnCoinDeep token={{ ...token, type: TokenType.single }} />
             );
           default:
             return (

@@ -1,38 +1,41 @@
 import { Box, BoxProps, Modal as MuiModal } from "@mui/material";
 import {
-  ModalCloseButton,
-  ModalPanelProps,
-  ResetPanel,
+  AccountStep,
+  ActiveAccountPanel,
+  ClaimProps,
+  CollectionAdvanceProps,
+  DeployNFTWrap,
+  DepositPanel,
+  DepositProps,
   ExportAccountPanel,
+  InformationForAccountFrozen,
+  LayerswapNotice,
+  ModalCloseButton,
+  modalContentBaseStyle,
+  ModalPanelProps,
+  NFTDeployProps,
+  ResetPanel,
   ResetProps,
   TransferPanel,
   TransferProps,
   useOpenModals,
+  useSettings,
   WithdrawPanel,
   WithdrawProps,
-  ActiveAccountPanel,
-  modalContentBaseStyle,
-  InformationForAccountFrozen,
-  DepositPanel,
-  DepositProps,
-  useSettings,
-  LayerswapNotice,
-  DeployNFTWrap,
-  NFTDeployProps,
-  AccountStep,
-  CollectionAdvanceProps,
 } from "../..";
 import {
   Account,
   CollectionMeta,
   FeeInfo,
   IBData,
+  TRADE_TYPE,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { CollectionAdvanceWrap } from "./components/CollectionAdvanceWrap";
+import { ClaimWithdrawPanel } from "../modal/ModalPanels/ClaimWithdrawPanel";
 
 const BoxStyle = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
@@ -136,6 +139,7 @@ export const ModalPanel = <
   nftWithdrawProps,
   nftDeployProps,
   resetProps,
+  claimProps,
   // nftMintAdvanceProps,
   activeAccountProps,
   collectionAdvanceProps,
@@ -151,6 +155,7 @@ export const ModalPanel = <
   withdrawProps: WithdrawProps<T, I>;
   baseURL: string;
   nftTransferProps: TransferProps<N, I>;
+  claimProps: ClaimProps<T, I>;
   nftWithdrawProps: WithdrawProps<N, I>;
   nftDeployProps: NFTDeployProps<N & { broker: string }, I, F>;
   depositProps: DepositProps<T, I>;
@@ -181,6 +186,7 @@ export const ModalPanel = <
     setShowNFTWithdraw,
     setShowNFTDeploy,
     setShowAccount,
+    setShowClaimWithdraw,
     setShowCollectionAdvance,
     // setShowDual,
   } = useOpenModals();
@@ -197,11 +203,31 @@ export const ModalPanel = <
     isShowActiveAccount,
     isShowCollectionAdvance,
     isShowLayerSwapNotice,
+    isShowClaimWithdraw,
     // isShowDual,
   } = modals;
   const theme = useTheme();
   return (
     <>
+      <Modal
+        open={isShowClaimWithdraw.isShow}
+        contentClassName={"trade-wrap"}
+        onClose={() =>
+          setShowClaimWithdraw({ isShow: false, claimToken: undefined as any })
+        }
+        content={
+          <ClaimWithdrawPanel
+            {...{
+              ...rest,
+              ...claimProps,
+              assetsData,
+              // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              // //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
+              // _height: "auto",
+            }}
+          />
+        }
+      />
       <Modal
         open={isShowTransfer.isShow}
         contentClassName={"trade-wrap"}
@@ -212,7 +238,7 @@ export const ModalPanel = <
               ...rest,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
-              _height: isMobile ? "auto" : 540,
+              _height: isMobile ? "auto" : 560,
               ...transferProps,
               assetsData,
             }}
@@ -252,13 +278,13 @@ export const ModalPanel = <
         contentClassName={"trade-wrap"}
         onClose={() => setShowNFTTransfer({ isShow: false })}
         content={
-          <TransferPanel<any, any>
+          <TransferPanel
             {...{
               ...nftTransferProps,
               _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
-              _height: isMobile ? "auto" : 540,
+              _height: isMobile ? "auto" : 560,
               isThumb: false,
-              type: "NFT",
+              type: TRADE_TYPE.NFT,
               baseURL,
               assetsData,
             }}
@@ -277,16 +303,15 @@ export const ModalPanel = <
         contentClassName={"trade-wrap"}
         onClose={() => setShowNFTWithdraw({ isShow: false })}
         content={
-          <WithdrawPanel<any, any>
+          <WithdrawPanel
             {...{
               // _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
-              // _height: isMobile ? "auto" : 540,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
               _height: "auto",
               isThumb: false,
               ...nftWithdrawProps,
-              type: "NFT",
+              type: TRADE_TYPE.NFT,
               baseURL,
               assetsData,
             }}
@@ -318,7 +343,6 @@ export const ModalPanel = <
           />
         }
       />
-
       <Modal
         open={isShowDeposit.isShow}
         contentClassName={"trade-wrap"}
@@ -341,7 +365,6 @@ export const ModalPanel = <
       {/*    <DepositPanel {...{ ...rest, ...depositGroupProps.depositProps }} />*/}
       {/*  }*/}
       {/*/>*/}
-
       <Modal
         open={isShowResetAccount.isShow}
         onClose={() =>

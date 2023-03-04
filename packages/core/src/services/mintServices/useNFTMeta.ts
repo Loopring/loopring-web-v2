@@ -37,10 +37,15 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   const { updateNFTMintData, resetNFTMintData } = useModalData();
   const [errorOnMeta, setErrorOnMeta] =
     React.useState<sdk.RESULT_INFO | undefined>(undefined);
-  const [_cidUniqueID, setCIDUniqueId] =
-    React.useState<string | undefined>(undefined);
-  const [ipfsMediaSources, setIpfsMediaSources] =
-    React.useState<IpfsFile | undefined>(undefined);
+  const [_, setCIDUniqueId] = React.useState<string | undefined>(undefined);
+  const [keys, setKeys] = React.useState<{
+    [key: string]: undefined | IpfsFile;
+  }>(() => {
+    return {
+      image: undefined,
+      animationUrl: undefined,
+    };
+  });
   const [userAgree, setUserAgree] = React.useState(false);
   const { baseURL } = useSystem();
   const domain = LoopringAPI.delegate?.getCollectionDomain() ?? "";
@@ -56,6 +61,9 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
         switch (key) {
           case "image":
             buildNFTMeta.image = _newnftMeta.image;
+            break;
+          case "animationUrl":
+            buildNFTMeta.animationUrl = _newnftMeta.animationUrl;
             break;
           case "name":
             buildNFTMeta.name = _newnftMeta.name;
@@ -97,49 +105,71 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
     },
     [updateNFTMintData]
   );
+  // const handleOnMetaChange = React.useCallback(
+  //   (key: string, value: any) => {
+  //     const collectionValue =
+  //       store.getState()._router_modalData.collectionValue;
+  //     myLog("collectionValue", collectionValue);
+  //     updateCollectionData({ ...collectionValue, [key]: value });
+  //   },
+  //   [updateCollectionData]
+  // );
+
   const handleFailedUpload = React.useCallback(
     (data: { uniqueId: string; error: sdk.RESULT_INFO }) => {
-      setIpfsMediaSources((value) => {
-        let _value: IpfsFile = { ...(value ?? {}) } as IpfsFile;
-        if (value && value?.uniqueId === data.uniqueId) {
-          _value = {
-            ..._value,
-            isProcessing: false,
-            ...{
-              error: data.error
-                ? data.error
-                : {
-                    code: UIERROR_CODE.UNKNOWN,
-                    message: `Ipfs Error ${data}`,
-                  },
-            },
+      setKeys((state) => {
+        const key: string = Reflect.ownKeys(state).find((key) => {
+          return state[key as any]?.uniqueId === data.uniqueId;
+        }) as string;
+        if (key) {
+          handleOnMetaChange({ [key]: undefined } as Partial<T>);
+          return {
+            ...state,
+            [key]: {
+              ...state[key],
+              isProcessing: false,
+              ...{
+                error: data.error
+                  ? data.error
+                  : {
+                      code: UIERROR_CODE.UNKNOWN,
+                      message: `Ipfs Error ${data}`,
+                    },
+              },
+            } as IpfsFile,
           };
-          handleOnMetaChange({
-            image: undefined,
-          } as Partial<T>);
+        } else {
+          return state;
         }
-        return _value;
       });
     },
     [handleOnMetaChange]
   );
   const handleSuccessUpload = React.useCallback(
     (data: AddResult & { uniqueId: string }) => {
-      setIpfsMediaSources((value) => {
-        let _value: IpfsFile = { ...(value ?? {}) } as IpfsFile;
-        if (value && value?.uniqueId === data.uniqueId) {
+      setKeys((state) => {
+        const key: string = Reflect.ownKeys(state).find((key) => {
+          return state[key as any]?.uniqueId === data.uniqueId;
+        }) as string;
+        if (key) {
           const cid = data.cid.toString();
-          _value = {
-            ..._value,
-            cid: cid,
-            fullSrc: getIPFSString(`${IPFS_HEAD_URL}${data.path}`, baseURL),
-            isProcessing: false,
-          };
           handleOnMetaChange({
-            image: `${IPFS_HEAD_URL}${data.path}`,
-          } as T);
+            [key]: `${IPFS_HEAD_URL}${data.path}`,
+          } as unknown as Partial<T>);
+          return {
+            ...state,
+            [key as any]: {
+              ...state[key as any],
+              ...{
+                cid,
+                fullSrc: getIPFSString(`${IPFS_HEAD_URL}${data.path}`, baseURL),
+                isProcessing: false,
+              },
+            },
+          };
+        } else {
+          return state;
         }
-        return _value;
       });
       setCIDUniqueId((cidUniqueID) => {
         if (cidUniqueID && cidUniqueID === data.uniqueId) {
@@ -148,30 +178,71 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
         return cidUniqueID;
       });
     },
-    [handleOnMetaChange]
+    [baseURL, handleOnMetaChange]
   );
+
   const { ipfsProvides } = useIPFS({
     handleSuccessUpload,
     handleFailedUpload,
   });
   const onFilesLoad = React.useCallback(
-    (value: IpfsFile) => {
+    (key: string, value: IpfsFile) => {
+      let uniqueId = key + "|" + Date.now();
       value.isUpdateIPFS = true;
-      setIpfsMediaSources(value);
       ipfsService.addFile({
         ipfs: ipfsProvides.ipfs,
         file: value.file,
-        uniqueId: value.uniqueId,
+        uniqueId: uniqueId,
+      });
+      setKeys((state) => {
+        return {
+          ...state,
+          [key]: {
+            ...value,
+            file: value.file,
+            uniqueId: uniqueId,
+            cid: "",
+          },
+        };
       });
     },
     [ipfsProvides.ipfs]
   );
-  const onDelete = React.useCallback(() => {
-    setIpfsMediaSources(undefined);
-    handleOnMetaChange({
-      image: undefined,
-    } as Partial<T>);
-  }, [handleOnMetaChange]);
+
+  // const onFilesLoad = React.useCallback(
+  //   (value: IpfsFile) => {
+  //     value.isUpdateIPFS = true;
+  //     setIpfsMediaSources(value);
+  //     ipfsService.addFile({
+  //       ipfs: ipfsProvides.ipfs,
+  //       file: value.file,
+  //       uniqueId: value.uniqueId,
+  //     });
+  //   },
+  //   [ipfsProvides.ipfs]
+  // );
+  // const onDelete = React.useCallback(() => {
+  //   setIpfsMediaSources(undefined);
+  //   handleOnMetaChange({
+  //     image: undefined,
+  //   } as Partial<T>);
+  // }, [handleOnMetaChange]);
+
+  const onDelete = React.useCallback(
+    (keys: string[]) => {
+      setKeys((state) => {
+        keys.forEach((key: string) => {
+          handleOnMetaChange({ [key]: undefined } as Partial<T>);
+          state = {
+            ...state,
+            [key]: undefined,
+          };
+        });
+        return state;
+      });
+    },
+    [handleOnMetaChange]
+  );
 
   const {
     chargeFeeTokenList,
@@ -309,7 +380,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   }, [nftMintValue.mintData, nftMintValue.nftMETA, userAgree, updateBtnStatus]);
 
   const resetMETADAT = (_nftMintValue?: NFT_MINT_VALUE<any>) => {
-    onDelete();
+    onDelete(["image", "animationUrl"]);
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
   };
   const onMetaClick = React.useCallback(() => {
@@ -317,6 +388,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
     setCIDUniqueId(uniqueId);
     mintService.processingIPFS({ ipfsProvides, uniqueId });
   }, [ipfsProvides, nftMintValue.nftMETA]);
+
   const handleUserAgree = (value: boolean) => {
     setUserAgree(value);
   };
@@ -360,7 +432,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   return {
     onFilesLoad,
     onDelete,
-    ipfsMediaSources,
+    keys,
     ipfsProvides,
     nftMetaProps,
     chargeFeeTokenList,

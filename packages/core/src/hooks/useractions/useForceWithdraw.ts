@@ -19,6 +19,7 @@ import {
   WalletMap,
   LIVE_FEE_TIMES,
   SUBMIT_PANEL_AUTO_CLOSE,
+  TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import {
   LAST_STEP,
@@ -265,7 +266,11 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
             isHWAddr = true;
           }
 
-          myLog("nftWithdraw processRequest:", isHWAddr, isNotHardwareWallet);
+          myLog(
+            "force Withdraw processRequest:",
+            isHWAddr,
+            isNotHardwareWallet
+          );
           const response = await LoopringAPI.userAPI.submitForceWithdrawals(
             {
               request,
@@ -497,7 +502,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     return {
       disabled: false,
       // onChangeEvent: undefined,
-      type: "TOKEN",
+      type: TRADE_TYPE.TOKEN,
       addressDefault: address,
       handleOnAddressChange: (value: any) => {
         setAddress(value);

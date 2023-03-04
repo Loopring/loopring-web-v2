@@ -21,6 +21,7 @@ import {
   MenuItem,
   Tab,
   Tabs,
+  Typography,
 } from "@mui/material";
 import { coinMap, CoinType, layer2ItemData, walletMap } from "../../../static";
 import { CoinMenu } from "./CoinList";
@@ -33,8 +34,6 @@ import {
   NOTIFICATION_ITEM,
 } from "@loopring-web/common-resources";
 import React from "react";
-
-import { Typography } from "@mui/material";
 import { SubMenuItem } from "./SubMenuList";
 import { TabItemPlus } from "./HeadToolbar";
 import { ListItemActivity, NotificationListItem } from "./Notification";

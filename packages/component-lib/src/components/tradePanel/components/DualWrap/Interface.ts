@@ -1,7 +1,10 @@
 import { BtnInfo, InputButtonProps } from "../../../basic-lib";
-import { AccountStatus, CoinInfo } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  CoinInfo,
+  TradeBtnStatus,
+} from "@loopring-web/common-resources";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
-import { TradeBtnStatus } from "../../Interface";
 import React from "react";
 
 export type DualChgData<T> = {

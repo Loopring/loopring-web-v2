@@ -1,10 +1,11 @@
 import {
   AccountStatus,
   myLog,
+  TradeBtnStatus,
   VendorItem,
   VendorList,
 } from "@loopring-web/common-resources";
-import { useAccount, useModalData, useSystem } from "../../index";
+import { store, useAccount, useModalData, useSystem } from "../../index";
 import {
   RampInstantEventTypes,
   RampInstantSDK,
@@ -12,8 +13,10 @@ import {
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { BanxaCheck, banxaService, OrderENDReason } from "../../services/banxa";
-import { useRouteMatch } from "react-router-dom";
+import { BanxaCheck, banxaService, OrderENDReason } from "../../services";
+import _ from "lodash";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import { useLocation } from "react-use";
 
 export enum RAMP_SELL_PANEL {
   LIST,
@@ -25,6 +28,7 @@ export const useVendor = () => {
   const { account } = useAccount();
   const { t } = useTranslation();
   const { setShowTradeIsFrozen } = useOpenModals();
+  const match: any = useRouteMatch("/trade/fiat/:tab?");
 
   const banxaRef = React.useRef();
   const subject = React.useMemo(() => banxaService.onSocket(), []);
@@ -36,22 +40,27 @@ export const useVendor = () => {
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-  const match: any = useRouteMatch("/trade/:fiat/:tab?");
-
+  const history = useHistory();
+  const { href } = useLocation();
+  const search = href?.split("?")[1] ?? "";
+  const searchParams = new URLSearchParams(search);
   const {
     // updateOffRampData,
     resetOffRampData,
+    resetOffBanxaData,
   } = useModalData();
 
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
     RAMP_SELL_PANEL.LIST
     // RAMP_SELL_PANEL.BANXA_CONFIRM
   );
-  React.useEffect(() => {
-    if (match?.params?.tab === "Sell") {
-      setSellPanel(RAMP_SELL_PANEL.LIST);
-    }
-  }, [match?.params?.tab]);
+  const [banxaBtnStatus, setBanxaBtnStatus] = React.useState<TradeBtnStatus>(
+    TradeBtnStatus.AVAILABLE
+  );
+  const _banxaClick = _.debounce(() => {
+    resetOffBanxaData();
+    banxaService.banxaStart();
+  }, 500);
 
   const vendorListBuy: VendorItem[] = legalShow
     ? [
@@ -64,7 +73,7 @@ export const useVendor = () => {
             if (legalEnable) {
               let config: any = {
                 hostAppName: "Loopring",
-                hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
+                hostLogoUrl: "https://static.loopring.io/assets/svg/logo.svg",
                 userAddress: account.accAddress,
                 defaultFlow: "ONRAMP",
                 enabledFlows: ["ONRAMP"],
@@ -166,7 +175,7 @@ export const useVendor = () => {
         //     if (legalEnable) {
         //       let config: any = {
         //         hostAppName: "Loopring",
-        //         hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
+        //         hostLogoUrl: "https://static.loopring.io/assets/svg/logo.svg",
         //         userAddress: account.accAddress,
         //         defaultFlow: "OFFRAMP",
         //         enabledFlows: ["OFFRAMP"],
@@ -190,7 +199,7 @@ export const useVendor = () => {
         //               updateOffRampData({
         //                 send: { assetSymbol, amount, destinationAddress },
         //               });
-        //               setSellPanel(RAMP_SELL_PANEL.CONFIRM);
+        //               setSellPanel(RAMP_SELL_PANEL.RAMP_CONFIRM);
         //               console.log(
         //                 "onSendCrypto",
         //                 assetSymbol,
@@ -226,9 +235,11 @@ export const useVendor = () => {
         // },
         {
           ...VendorList.Banxa,
+          btnStatus: banxaBtnStatus,
           handleSelect: async (_event) => {
+            setBanxaBtnStatus(TradeBtnStatus.LOADING);
             setShowAccount({ isShow: false });
-            banxaService.banxaStart();
+            _banxaClick();
             // @ts-ignore
           },
         },
@@ -238,23 +249,48 @@ export const useVendor = () => {
   const closeBanxa = () => {
     const parentsNode: any =
       window.document.querySelector("#iframeBanxaTarget");
-    // const items = parentsNode.getElementsByTagName("iframe");
-    // if (items && items[0]) {
-    //   parentsNode.removeChild(items[0]);
-    // }
     parentsNode.style.display = "none";
   };
-  const hideBanxa = () => {
-    const parentsNode: any =
-      window.document.querySelector("#iframeBanxaTarget");
 
-    parentsNode.style.display = "none";
-  };
-  const showBanxa = () => {
-    const parentsNode: any =
-      window.document.querySelector("#iframeBanxaTarget");
-    parentsNode.style.display = "flex";
-  };
+  const enterCheck = React.useCallback(async () => {
+    const data = await banxaService.banxaCheckHavePending();
+    if (data?.order?.status === "waitingPayment") {
+      myLog("banxa Check Have waitingPayment", data.order);
+      banxaService.KYCDone();
+      searchParams.set("orderId", data?.order.id);
+      history.replace({
+        pathname: "/trade/fiat/sell",
+        search: searchParams.toString(),
+      });
+      store.dispatch(
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.ContinuousBanxaOrder,
+          info: { orderId: data?.order.id },
+        })
+      );
+      return;
+    }
+    setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
+  }, []);
+  React.useEffect(() => {
+    const offBanxaValue = store.getState()._router_modalData.offBanxaValue;
+    if (
+      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
+      searchParams.get("orderId") &&
+      searchParams.get("orderId")?.toLowerCase() !==
+        offBanxaValue?.id?.toLowerCase()
+    ) {
+      banxaService.banxaCheckHavePending();
+    } else if (
+      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
+      !searchParams.has("orderId")
+    ) {
+      setBanxaBtnStatus(TradeBtnStatus.LOADING);
+      setSellPanel(RAMP_SELL_PANEL.LIST);
+      enterCheck();
+    }
+  }, [match?.params?.tab, searchParams?.get("orderId")]);
   const clickEvent = () =>
     banxaService.banxaEnd({
       reason: OrderENDReason.UserCancel,
@@ -268,18 +304,21 @@ export const useVendor = () => {
       parentsNode.addEventListener("click", clickEvent);
     }
     const subscription = subject.subscribe((props) => {
-      myLog("subscription Banxa", props.status, props.data);
       switch (props.status) {
         // case BanxaCheck.CheckOrderStatus:
         //   checkOrderStatus(props.data);
         //   break;
         case BanxaCheck.OrderHide:
-          hideBanxa();
+          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
+          // hideBanxa();
+          closeBanxa();
           break;
         case BanxaCheck.OrderShow:
-          showBanxa();
+          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
+          // showBanxa();
           break;
         case BanxaCheck.OrderEnd:
+          // myLog("subscription Banxa", props.status, props.data);
           if (props?.data?.reason === OrderENDReason.BanxaNotReady) {
             setShowTradeIsFrozen({
               isShow: true,
@@ -293,6 +332,8 @@ export const useVendor = () => {
             });
           }
           closeBanxa();
+          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
+
           // clearTimeout(nodeTimer.current as NodeJS.Timeout);
           break;
         default:

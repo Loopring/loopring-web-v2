@@ -21,6 +21,7 @@ const StyledBox = styled(Box)`
   .full-btn-close {
   }
 ` as typeof Box;
+
 export interface PopperProps {
   isShow: boolean;
   title?: string;
@@ -28,6 +29,7 @@ export interface PopperProps {
   btnTxt: string;
   clickToConfirm?: () => void;
 }
+
 export const BottomRule = ({
   isShow,
   title,

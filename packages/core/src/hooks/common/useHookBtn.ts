@@ -1,6 +1,10 @@
 import React from "react";
-import { TradeBtnStatus } from "@loopring-web/component-lib";
-import { AccountStatus, fnType, myLog } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  fnType,
+  myLog,
+  TradeBtnStatus,
+} from "@loopring-web/common-resources";
 import * as _ from "lodash";
 import { accountStaticCallBack, btnClickMap, btnLabel } from "../help";
 import { useAccount } from "../../stores";

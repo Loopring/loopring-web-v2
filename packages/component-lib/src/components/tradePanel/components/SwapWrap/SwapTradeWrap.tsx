@@ -1,4 +1,4 @@
-import { SwapTradeData, TradeBtnStatus } from "../../Interface";
+import { SwapTradeData } from "../../Interface";
 import {
   CoinInfo,
   CoinMap,
@@ -10,18 +10,17 @@ import {
   Info2Icon,
   myLog,
   ReverseIcon,
-  SlippageTolerance,
+  TradeBtnStatus,
   TradeCalcData,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import React from "react";
-import { Grid, Tooltip, Typography } from "@mui/material";
+import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import { InputButton } from "../../../basic-lib";
 
 import { SwapTradeProps } from "./Interface";
 import { useSettings } from "../../../../stores";
-import { IconButtonStyled, ButtonStyle } from "../Styled";
-import { Box } from "@mui/material";
+import { ButtonStyle, IconButtonStyled } from "../Styled";
 
 export const SwapTradeWrap = <
   T extends IBData<I>,
@@ -45,12 +44,12 @@ export const SwapTradeWrap = <
 }: SwapTradeProps<T, I, TCD> & WithTranslation) => {
   const sellRef = React.useRef();
   const buyRef = React.useRef();
-  const { slippage } = useSettings();
+  // const { slippage } = useSettings();
   let tradeData = swapData.tradeData;
 
-  const slippageArray: Array<number | string> = SlippageTolerance.concat(
-    `slippage:${slippage}`
-  ) as Array<number | string>;
+  // const _slippageArray: Array<number | string> = SlippageTolerance.concat(
+  //   `slippage:${slippage}`
+  // ) as Array<number | string>;
 
   const [_isStoB, setIsStoB] = React.useState(
     typeof isStob !== "undefined" ? isStob : true
@@ -152,11 +151,13 @@ export const SwapTradeWrap = <
     placeholderText: "0.00",
     maxAllow: true,
     ...tokenSellProps,
+    isShowCoinInfo: true,
+    isShowCoinIcon: true,
     handleError,
     handleCountChange,
     handleOnClick,
     ...rest,
-  };
+  } as any;
   const propsBuy = {
     label: t("tokenEnterReceiveToken"),
     // subLabel: t('tokenHave'),
@@ -164,11 +165,12 @@ export const SwapTradeWrap = <
     placeholderText: "0.00",
     maxAllow: false,
     ...tokenBuyProps,
-    // handleError,
+    isShowCoinInfo: true,
+    isShowCoinIcon: true,
     handleCountChange,
     handleOnClick,
     ...rest,
-  };
+  } as any;
   // const popupState = usePopupState({
   //   variant: "popover",
   //   popupId: "slippagePop",

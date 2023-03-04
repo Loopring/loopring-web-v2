@@ -17,7 +17,6 @@ import {
 import {
   AccountStep,
   AssetTitleProps,
-  TradeBtnStatus,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -30,6 +29,7 @@ import {
   PriceTag,
   SagaStatus,
   TokenType,
+  TradeBtnStatus,
   YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 
@@ -72,7 +72,7 @@ export const useGetAssets = (): AssetPanelProps & {
   const { account } = useAccount();
   const { sendSocketTopic, socketEnd } = useSocket();
   const { allowTrade, forexMap } = useSystem();
-  const { tokenPrices } = useTokenPrices();
+  const { tokenPrices, status: tokenPriceStatus } = useTokenPrices();
   const { ammMap } = store.getState().amm.ammMap;
   const {
     btnStatus: assetBtnStatus,
@@ -111,11 +111,12 @@ export const useGetAssets = (): AssetPanelProps & {
   }, [account.readyState]);
 
   React.useEffect(() => {
-    if (walletL2Status === SagaStatus.DONE) {
-      myLog("setLoadingBtn enableBtn", assetBtnStatus);
+    if (walletL2Status === SagaStatus.DONE || assetsRawData.length) {
+      myLog("setLoadingBtn enableBtn");
       enableBtn();
     }
-  }, [walletL2Status]);
+  }, [walletL2Status, assetsRawData]);
+
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(false);
     const assetsKeyList =
@@ -311,10 +312,6 @@ export const useGetAssets = (): AssetPanelProps & {
     }
   }, [ammMap, assetsMap, tokenMap, tokenPriceList, tokenPrices]);
 
-  React.useEffect(() => {
-    getAssetsRawData();
-  }, [assetsMap]);
-
   const onReceive = React.useCallback(
     (token?: any) => {
       setShowAccount({
@@ -335,15 +332,20 @@ export const useGetAssets = (): AssetPanelProps & {
     },
     [setShowAccount]
   );
-
+  React.useEffect(() => {
+    if (
+      tokenPriceStatus === SagaStatus.UNSET ||
+      (!assetsRawData.length && Reflect.ownKeys(assetsMap ?? {}).length)
+    ) {
+      getAssetsRawData();
+    }
+  }, [tokenPriceStatus, assetsMap]);
   React.useEffect(() => {
     getUserAssets();
+
     return () => {};
   }, []);
   const assetTitleProps: AssetTitleProps = {
-    // btnShowDepositStatus: TradeBtnStatus.AVAILABLE,
-    // btnShowTransferStatus: TradeBtnStatus.AVAILABLE,
-    // btnShowWithdrawStatus: TradeBtnStatus.AVAILABLE,
     setHideL2Assets,
     assetInfo: {
       totalAsset: assetsRawData
@@ -361,7 +363,7 @@ export const useGetAssets = (): AssetPanelProps & {
     onShowSend: () => {
       setShowAccount({ isShow: true, step: AccountStep.SendAssetGateway });
     },
-  };
+  } as any;
   const assetTitleMobileExtendProps = {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,

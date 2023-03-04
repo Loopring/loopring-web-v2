@@ -1,7 +1,6 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Modal } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { Box } from "@mui/material";
 import {
   ModalBackButton,
   ModalCloseButton,

@@ -3,8 +3,8 @@ import {
   AmmJoinData,
   defalutSlipage,
   IBData,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
-import { TradeBtnStatus } from "@loopring-web/component-lib";
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { PageAmmCommon } from "./index";
 import { PageAmmExit, PageAmmJoin, PageAmmPoolStatus } from "./interface";

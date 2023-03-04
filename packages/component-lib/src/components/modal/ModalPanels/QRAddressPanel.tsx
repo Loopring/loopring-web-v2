@@ -1,7 +1,6 @@
 import QRCode from "qrcode.react";
-import { Link, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Box } from "@mui/material";
 import {
   Account,
   CopyIcon,

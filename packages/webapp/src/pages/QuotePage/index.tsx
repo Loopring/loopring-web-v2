@@ -1,17 +1,12 @@
 import React from "react";
 import styled from "@emotion/styled/macro";
 
-import {
-  InputSearch,
-  // MarketBlock,
-  // MarketBlockProps,
-  QuoteTable,
-} from "@loopring-web/component-lib";
+import { InputSearch, QuoteTable } from "@loopring-web/component-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { myLog, RowConfig } from "@loopring-web/common-resources";
+import { RowConfig } from "@loopring-web/common-resources";
 import { Box, Container, Divider, Grid, Tab, Tabs } from "@mui/material";
 import { useQuotePage } from "./hook";
-import { useAccount, TableWrapStyled, useSystem } from "@loopring-web/core";
+import { TableWrapStyled, useAccount, useSystem } from "@loopring-web/core";
 
 const RowStyled = styled(Grid)`
   & .MuiGrid-root:not(:last-of-type) > div {

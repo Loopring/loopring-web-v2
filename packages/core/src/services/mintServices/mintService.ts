@@ -97,7 +97,7 @@ export const mintService = {
     } = store.getState()._router_modalData;
     let _nftMETA: any = {
       image: nftMETA.image,
-      animation_url: nftMETA.image,
+      animation_url: nftMETA.animationUrl ?? nftMETA.image,
       name: nftMETA.name,
       royalty_percentage: nftMETA.royaltyPercentage, // 0 - 10 for UI
       description: nftMETA.description,

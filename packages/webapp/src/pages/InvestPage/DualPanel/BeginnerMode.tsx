@@ -1,13 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  Box,
-  Typography,
-  Avatar,
-  Switch,
-  SwitchProps,
-  Card,
-  CardProps,
-} from "@mui/material";
+import { Avatar, Box, Card, CardContent, Typography } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useDualHook } from "./hook";
 import {
@@ -16,33 +8,18 @@ import {
   DualTable,
   useOpenModals,
   useSettings,
+  CardStyleItem,
 } from "@loopring-web/component-lib";
 import { useDualMap, useSystem, useTokenMap } from "@loopring-web/core";
 import {
   getValuePrecisionThousand,
   SoursURL,
+  TokenType,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
 import { useTheme } from "@emotion/react";
-import _, { keys, mapValues, maxBy, minBy, toPairs, values } from "lodash";
-
-const SelectBox = styled(Card)<{ selected: boolean }>`
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  border: 1px solid;
-  border-radius: ${({ theme }) => 0.5 * theme.unit}px;
-  padding: ${({ theme }) => `${1.5 * theme.unit}px ${2 * theme.unit}px`};
-  border-color: ${({ selected, theme }: { selected: boolean; theme: any }) =>
-    selected ? theme.colorBase.borderSelect : theme.colorBase.fieldOpacity};
-  margin-right: ${({ theme }) => 2.5 * theme.unit}px;
-  box-shadow: none;
-
-  :hover {
-    border-color: ${({ theme }) => theme.colorBase.borderHover};
-  }
-`;
+import { maxBy, minBy, values } from "lodash";
 
 const WhiteCircleText = styled(Box)`
   justify-content: center;
@@ -81,7 +58,6 @@ export const BeginnerMode: any = withTranslation("common")(
       isLoading,
       dualProducts,
       currentPrice,
-      pair,
       market,
 
       step1SelectedToken,
@@ -97,7 +73,7 @@ export const BeginnerMode: any = withTranslation("common")(
       step2BuyOrSell === "Sell"
         ? sdk.DUAL_TYPE.DUAL_BASE
         : sdk.DUAL_TYPE.DUAL_CURRENCY;
-    const tokenList = Reflect.ownKeys(tradeMap)
+    const tokenList = Reflect.ownKeys(tradeMap ?? {})
       .filter(
         (tokenName) =>
           tokenName !== "USDT" &&
@@ -159,57 +135,69 @@ export const BeginnerMode: any = withTranslation("common")(
               const selected = step1SelectedToken === tokenName;
 
               return (
-                <SelectBox
-                  onClick={() => onSelectStep1Token(tokenName.toString())}
-                  selected={selected}
-                >
-                  <CoinIcon
-                    size={32}
-                    symbol={typeof tokenName === "string" ? tokenName : ""}
-                  />
-                  <Box marginLeft={1.5}>
-                    <Typography
-                      color={
-                        selected
-                          ? theme.colorBase.textPrimary
-                          : theme.colorBase.textSecondary
-                      }
-                    >
-                      {tokenName}
-                    </Typography>
-                    <Typography
-                      variant={"body2"}
-                      color={theme.colorBase.textSecondary}
-                    >
-                      {t("labelDualBeginnerAPR", {
-                        APR:
-                          !minAPY && !maxAPY
-                            ? "--"
-                            : minAPY === maxAPY || !minAPY || !maxAPY
-                            ? `${getValuePrecisionThousand(
-                                Number(minAPY) * 100,
-                                2,
-                                2,
-                                2,
-                                true
-                              )}%`
-                            : `${getValuePrecisionThousand(
-                                Number(minAPY) * 100,
-                                2,
-                                2,
-                                2,
-                                true
-                              )}% - ${getValuePrecisionThousand(
-                                Number(maxAPY) * 100,
-                                2,
-                                2,
-                                2,
-                                true
-                              )}%`,
-                      })}
-                    </Typography>
-                  </Box>
-                </SelectBox>
+                <Box marginRight={2} key={logo}>
+                  <CardStyleItem
+                    className={
+                      selected
+                        ? "btnCard dualInvestCard selected"
+                        : "btnCard dualInvestCard "
+                    }
+                    onClick={() => onSelectStep1Token(tokenName.toString())}
+                  >
+                    <CardContent sx={{ alignItems: "center" }}>
+                      <Typography component={"span"} display={"inline-flex"}>
+                        <CoinIcon
+                          size={32}
+                          symbol={
+                            typeof tokenName === "string" ? tokenName : ""
+                          }
+                        />
+                      </Typography>
+                      <Typography paddingLeft={1}>
+                        <Typography
+                          color={
+                            selected
+                              ? theme.colorBase.textPrimary
+                              : theme.colorBase.textSecondary
+                          }
+                        >
+                          {tokenName}
+                        </Typography>
+                        <Typography
+                          variant={"body2"}
+                          color={theme.colorBase.textSecondary}
+                        >
+                          {t("labelDualBeginnerAPR", {
+                            APR:
+                              !minAPY && !maxAPY
+                                ? "--"
+                                : minAPY === maxAPY || !minAPY || !maxAPY
+                                ? `${getValuePrecisionThousand(
+                                    Number(minAPY) * 100,
+                                    2,
+                                    2,
+                                    2,
+                                    true
+                                  )}%`
+                                : `${getValuePrecisionThousand(
+                                    Number(minAPY) * 100,
+                                    2,
+                                    2,
+                                    2,
+                                    true
+                                  )}% - ${getValuePrecisionThousand(
+                                    Number(maxAPY) * 100,
+                                    2,
+                                    2,
+                                    2,
+                                    true
+                                  )}%`,
+                          })}
+                        </Typography>
+                      </Typography>
+                    </CardContent>
+                  </CardStyleItem>
+                </Box>
               );
             })}
           </Box>
@@ -224,59 +212,82 @@ export const BeginnerMode: any = withTranslation("common")(
               </Typography>
             </Typography>
             <Box display={"flex"} flexDirection={"row"}>
-              <SelectBox
-                onClick={() => onSelectStep2BuyOrSell("Sell")}
-                selected={step2BuyOrSell === "Sell"}
-              >
-                <Avatar
-                  alt={"sell-high"}
-                  src={SoursURL + "/svg/sell-high.svg"}
-                />
-                <Box marginLeft={1.5}>
-                  <Typography
-                    color={
-                      step2BuyOrSell === "Sell"
-                        ? theme.colorBase.textPrimary
-                        : theme.colorBase.textSecondary
-                    }
-                  >
-                    {t("labelDualBeginnerSellHigh", {
-                      token: step1SelectedToken,
-                    })}
-                  </Typography>
-                  <Typography
-                    variant={"body2"}
-                    color={theme.colorBase.textSecondary}
-                  >
-                    {t("labelDualBeginnerReceiveStable")}
-                  </Typography>
-                </Box>
-              </SelectBox>
-              <SelectBox
-                onClick={() => onSelectStep2BuyOrSell("Buy")}
-                selected={step2BuyOrSell === "Buy"}
-              >
-                <Avatar alt={"buy-low"} src={SoursURL + "/svg/buy-low.svg"} />
-                <Box marginLeft={1.5}>
-                  <Typography
-                    color={
-                      step2BuyOrSell === "Buy"
-                        ? theme.colorBase.textPrimary
-                        : theme.colorBase.textSecondary
-                    }
-                  >
-                    {t("labelDualBeginnerBuyLow", {
-                      token: step1SelectedToken,
-                    })}
-                  </Typography>
-                  <Typography
-                    variant={"body2"}
-                    color={theme.colorBase.textSecondary}
-                  >
-                    {t("labelDualBeginnerInvestStable")}
-                  </Typography>
-                </Box>
-              </SelectBox>
+              <Box marginRight={2}>
+                <CardStyleItem
+                  className={
+                    step2BuyOrSell === "Sell"
+                      ? "btnCard dualInvestCard selected"
+                      : "btnCard dualInvestCard "
+                  }
+                  onClick={() => onSelectStep2BuyOrSell("Sell")}
+                >
+                  <CardContent sx={{ alignItems: "center" }}>
+                    <Typography component={"span"} display={"inline-flex"}>
+                      <Avatar
+                        alt={"sell-high"}
+                        src={SoursURL + "/svg/sell-high.svg"}
+                      />
+                    </Typography>
+                    <Typography paddingLeft={1}>
+                      <Typography
+                        color={
+                          step2BuyOrSell === "Sell"
+                            ? theme.colorBase.textPrimary
+                            : theme.colorBase.textSecondary
+                        }
+                      >
+                        {t("labelDualBeginnerSellHigh", {
+                          token: step1SelectedToken,
+                        })}
+                      </Typography>
+                      <Typography
+                        variant={"body2"}
+                        color={theme.colorBase.textSecondary}
+                      >
+                        {t("labelDualBeginnerReceiveStable")}
+                      </Typography>
+                    </Typography>
+                  </CardContent>
+                </CardStyleItem>
+              </Box>
+              <Box marginLeft={2}>
+                <CardStyleItem
+                  className={
+                    step2BuyOrSell === "Buy"
+                      ? "btnCard dualInvestCard selected"
+                      : "btnCard dualInvestCard "
+                  }
+                  onClick={() => onSelectStep2BuyOrSell("Buy")}
+                >
+                  <CardContent sx={{ alignItems: "center" }}>
+                    <Typography component={"span"} display={"inline-flex"}>
+                      <Avatar
+                        alt={"buy-low"}
+                        src={SoursURL + "/svg/buy-low.svg"}
+                      />
+                    </Typography>
+                    <Typography paddingLeft={1}>
+                      <Typography
+                        color={
+                          step2BuyOrSell === "Buy"
+                            ? theme.colorBase.textPrimary
+                            : theme.colorBase.textSecondary
+                        }
+                      >
+                        {t("labelDualBeginnerBuyLow", {
+                          token: step1SelectedToken,
+                        })}
+                      </Typography>
+                      <Typography
+                        variant={"body2"}
+                        color={theme.colorBase.textSecondary}
+                      >
+                        {t("labelDualBeginnerInvestStable")}
+                      </Typography>
+                    </Typography>
+                  </CardContent>
+                </CardStyleItem>
+              </Box>
             </Box>
           </Box>
         )}
@@ -292,18 +303,29 @@ export const BeginnerMode: any = withTranslation("common")(
             <Box display={"flex"} flexDirection={"row"}>
               {step3Tokens.map((token) => {
                 return (
-                  <SelectBox
-                    onClick={() => onSelectStep3Token(token)}
-                    style={{ alignItems: "center" }}
-                    selected={step3Token === token}
-                  >
-                    <CoinIcon size={20} symbol={token} />
-                    <Typography marginLeft={1}>
-                      {step2BuyOrSell === "Buy"
-                        ? t("labelDualBeginnerBuyLowWith", { token: token })
-                        : t("labelDualBeginnerSellHighFor", { token: token })}
-                    </Typography>
-                  </SelectBox>
+                  <Box marginRight={2} key={token}>
+                    <CardStyleItem
+                      className={
+                        step3Token === token
+                          ? "btnCard dualInvestCard selected"
+                          : "btnCard dualInvestCard "
+                      }
+                      onClick={() => onSelectStep3Token(token)}
+                    >
+                      <CardContent sx={{ alignItems: "center" }}>
+                        <Typography component={"span"} display={"inline-flex"}>
+                          <CoinIcon size={20} symbol={token} />
+                        </Typography>
+                        <Typography paddingLeft={1}>
+                          {step2BuyOrSell === "Buy"
+                            ? t("labelDualBeginnerBuyLowWith", { token: token })
+                            : t("labelDualBeginnerSellHighFor", {
+                                token: token,
+                              })}
+                        </Typography>
+                      </CardContent>
+                    </CardStyleItem>
+                  </Box>
                 );
               })}
             </Box>
@@ -329,7 +351,7 @@ export const BeginnerMode: any = withTranslation("common")(
                   <Typography component={"span"} display={"inline-flex"}>
                     {/* eslint-disable-next-line react/jsx-no-undef */}
                     <CoinIcons
-                      type={"dual"}
+                      type={TokenType.dual}
                       size={32}
                       tokenIcon={[coinJson[pairASymbol], coinJson[pairBSymbol]]}
                     />

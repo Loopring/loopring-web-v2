@@ -1,40 +1,46 @@
 import {
+  BtnInfo,
+  BtnInfoProps,
   InputButtonProps,
   InputCoinProps,
-  BtnInfoProps,
+  IpfsFile,
   SwitchPanelProps,
-  BtnInfo,
 } from "../../basic-lib";
-import {
-  AddressError,
-  CoinInfo,
-  CoinKey,
-  CoinMap,
-  FeeInfo,
-  RequireOne,
-  WalletCoin,
-  WalletMap,
-  WithdrawType,
-  WithdrawTypes,
-  WALLET_TYPE,
-  EXCHANGE_TYPE,
-  GET_IPFS_STRING,
-  Account,
-  BanxaOrder,
-  AssetsRawDataItem,
-  AccountStatus,
-} from "@loopring-web/common-resources";
-import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
 import { CollectionInputProps } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { TOSTOBJECT } from "../../toast";
+import {
+  Account,
+  AccountStatus,
+  AddressError,
+  AssetsRawDataItem,
+  BanxaOrder,
+  CoinInfo,
+  CoinKey,
+  CoinMap,
+  EXCHANGE_TYPE,
+  FeeInfo,
+  GET_IPFS_STRING,
+  NFTWholeINFO,
+  RequireOne,
+  TRADE_TYPE,
+  TradeBtnStatus,
+  WALLET_TYPE,
+  WalletCoin,
+  WalletMap,
+  WithdrawType,
+  WithdrawTypes,
+} from "@loopring-web/common-resources";
 
 export enum RedPacketStep {
+  TradeType,
   ChooseType,
   Main,
+  NFTList = 3,
 }
+
 /**
  * private props
  */
@@ -92,40 +98,6 @@ export type TransferExtendProps<T, I, C> = {
   memo: string;
   handleOnMemoChange: (e: ChangeEvent<HTMLInputElement>) => void;
 } & TransferInfoProps<C>;
-
-export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
-  btnStatus: TradeBtnStatus;
-  btnInfo?: BtnInfo;
-  chargeFeeTokenList: Array<Fee>;
-  feeInfo: Fee;
-  isFeeNotEnough: {
-    isFeeNotEnough: boolean;
-    isOnLoading: boolean;
-  };
-  disabled?: boolean;
-  //
-};
-export type CreateRedPacketExtendsProps<T, F, LuckInfo> = {
-  tradeType: "TOKEN" | "NFT";
-  setActiveStep: (step: RedPacketStep) => void;
-  handleOnDataChange: (value: Partial<T>) => void;
-  redPacketStepValue: LuckInfo;
-  handleFeeChange: (value: F) => void;
-  onSubmitClick: () => Promise<void>;
-  activeStep: RedPacketStep;
-  onBack?: () => void;
-  // selectedType: LuckyRedPacketItem;
-  assetsData: AssetsRawDataItem[];
-  // handleOnSelectedType: (item: LuckyRedPacketItem) => void;
-} & CreateRedPacketInfoProps<F>;
-
-export type CreateRedPacketViewProps<T, I, F, LuckInfo> =
-  CreateRedPacketExtendsProps<T, F, LuckInfo> & BasicACoinTradeViewProps<T, I>;
-
-export type CreateRedPacketProps<T, I, C, LuckInfo> = Partial<
-  CreateRedPacketExtendsProps<T, C, LuckInfo>
-> &
-  Omit<Partial<BasicACoinTradeProps<T, I>>, "type">;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
   TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;
@@ -293,12 +265,12 @@ export type DefaultProps<T, I> = {
   lastFailed?: boolean;
 } & (
   | {
-      type?: "TOKEN";
+      type?: TRADE_TYPE.TOKEN;
       coinMap: CoinMap<I, CoinInfo<I>>;
       walletMap: WalletMap<I, WalletCoin<I>>;
     }
   | {
-      type: "NFT";
+      type: TRADE_TYPE.NFT;
       coinMap?: CoinMap<I, CoinInfo<I>>;
       walletMap?: WalletMap<I, WalletCoin<I>>;
       baseURL?: string;
@@ -319,32 +291,45 @@ export type BasicACoinTradeViewProps<T, I> = Omit<
 } & Pick<InputButtonProps<T, I, CoinInfo<I>>, "handleError">;
 
 export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
-  type?: "TOKEN";
+  type?: TRADE_TYPE.TOKEN;
   inputBtnRef: React.Ref<any>;
   inputButtonProps?: InputButtonDefaultProps<I, CoinInfo<I>>;
   inputButtonDefaultProps?: InputButtonDefaultProps<I, CoinInfo<I>>;
 };
-export type BasicANFTTradeProps<T, I> = Omit<
+export type BasicANFTTradeProps<T, I> = (Omit<
   BasicACoinTradeViewProps<T, I>,
-  "coinMap" | "lastFailed"
+  "coinMap" | "lastFailed" | "walletMap"
 > & {
-  type?: "NFT";
+  type: TRADE_TYPE.NFT;
   baseURL: string;
+  fullwidth?: boolean;
   getIPFSString: GET_IPFS_STRING;
-  isThumb?: boolean;
   isBalanceLimit?: boolean;
   inputNFTRef: React.Ref<any>;
   inputNFTProps?: inputNFTProps<I, CoinInfo<I>>;
   inputNFTDefaultProps: inputNFTProps<I, CoinInfo<I>>;
-};
+}) &
+  XOR<
+    {
+      isThumb: true;
+      isRequired: boolean;
+      isSelected: boolean;
+      onChangeEvent?: (index: 0 | 1, data: SwitchData<T>) => SwitchData<T>;
+      handlePanelEvent?: (
+        props: SwitchData<T>,
+        switchType: "Tomenu" | "Tobutton"
+      ) => Promise<void>;
+      myNFTPanel: JSX.Element;
+    },
+    { isThumb?: boolean }
+  >;
 
 export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
-  type?: "TOKEN" | "NFT";
+  type?: TRADE_TYPE;
   handlePanelEvent?: (
     props: SwitchData<T>,
     switchType: "Tomenu" | "Tobutton"
   ) => Promise<void>;
-
   onChangeEvent?: (index: 0 | 1, data: SwitchData<T>) => SwitchData<T>;
   inputButtonProps?: InputButtonDefaultProps<T, I>;
 } & Partial<SwitchPanelProps<any>>;
@@ -571,10 +556,12 @@ export type ImportCollectionViewProps<Co, NFT> = {
     nftProps: CollectionManageData<NFT>;
   };
 };
+
 export enum CollectionMethod {
   moveOut = "moveOut",
   moveIn = "moveIn",
 }
+
 export type CollectionManageProps<Co, NFT> = {
   collection: Partial<Co>;
   selectedNFTS: NFT[];
@@ -583,3 +570,73 @@ export type CollectionManageProps<Co, NFT> = {
   getIPFSString: GET_IPFS_STRING;
   onNFTSelectedMethod: (item: NFT[], method: CollectionMethod) => void;
 } & CollectionManageData<NFT>;
+
+export type ImportRedPacketProps = {
+  btnStatus: TradeBtnStatus;
+  btnInfo?: BtnInfo;
+  disabled?: boolean;
+  //
+};
+export type ImportRedPacketExtendsProps<T> = {
+  handleOnDataChange: (value: Partial<T>) => void;
+  onSubmitClick: () => Promise<void>;
+  onFilesLoad: (key: string, value: IpfsFile) => void;
+  onDelete: (key: string) => void;
+} & ImportRedPacketProps;
+
+export type ImportRedPacketViewProps<T> = ImportRedPacketExtendsProps<T>;
+
+export type ClaimInfoProps<Fee> = {
+  btnInfo?: BtnInfo;
+  btnStatus?: TradeBtnStatus | undefined;
+  chargeFeeTokenList: Array<Fee>;
+  feeInfo: Fee;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
+};
+
+export type ClaimExtendProps<T, Fee> = {
+  onClaimClick: (data: Partial<T>, isHardwareRetry?: boolean) => void;
+  tradeData: Partial<T>;
+  lastFailed: boolean;
+  handleFeeChange: (value: Fee) => void;
+} & ClaimInfoProps<Fee>;
+
+export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
+  btnStatus: TradeBtnStatus;
+  btnInfo?: BtnInfo;
+  minimum: string | undefined;
+  maximum: string | undefined;
+  chargeFeeTokenList: Array<Fee>;
+  feeInfo: Fee;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
+  disabled?: boolean;
+  //
+};
+export type CreateRedPacketExtendsProps<T, F> = {
+  tradeType: TRADE_TYPE;
+  handleOnDataChange: (value: Partial<T>) => void;
+  handleFeeChange: (value: F) => void;
+  onCreateRedPacketClick: () => Promise<void>;
+  onBack?: () => void;
+  assetsData: AssetsRawDataItem[];
+} & CreateRedPacketInfoProps<F>;
+
+export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> =
+  CreateRedPacketExtendsProps<T, F> &
+    XOR<
+      BasicACoinTradeProps<T, I>,
+      BasicANFTTradeProps<T, I> & {
+        handleOnChoose: (value: NFT) => void;
+        selectNFT: NFT;
+      }
+    > & {
+      setActiveStep: (step: RedPacketStep) => void;
+      activeStep: RedPacketStep;
+      tokenMap: { [key: string]: sdk.TokenInfo };
+    };

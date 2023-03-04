@@ -1,5 +1,9 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-import { NFTTokenInfo, UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
+import {
+  NFTTokenInfo,
+  UserNFTBalanceInfo,
+  XOR,
+} from "@loopring-web/loopring-sdk";
 import {
   BanxaOrder,
   CollectionMeta,
@@ -8,6 +12,8 @@ import {
   MintTradeNFT,
   NFTMETA,
   NFTWholeINFO,
+  RedPacketOrderData,
+  TRADE_TYPE,
   TradeNFT,
   WithdrawType,
 } from "@loopring-web/common-resources";
@@ -44,11 +50,22 @@ export type ClaimData = {
   belong: string | undefined;
   tradeValue: number | undefined;
   balance: number | undefined;
-  address: string | undefined;
-  memo: string | undefined;
   fee: FeeInfo | undefined;
+  address: string | undefined;
+  volume: string | undefined;
+  tradeType: TRADE_TYPE;
   __request__: sdk.OriginLuckTokenWithdrawsRequestV3 | undefined;
-};
+} & XOR<
+  {
+    tradeType: TRADE_TYPE.TOKEN;
+  },
+  {
+    tradeType: TRADE_TYPE.NFT;
+    tokenId: number;
+    nftData: string;
+    tokenAddress: string;
+  }
+>;
 
 export type DepositData = {
   belong: string | undefined;
@@ -80,10 +97,6 @@ export type NFT_MINT_VALUE<I> = {
   collection?: Partial<CollectionMeta>;
   error?: undefined | sdk.RESULT_INFO;
 };
-export type RedPacketOrderData<I> = IBData<I> & {
-  fee: FeeInfo | undefined;
-  __request__: any;
-} & Partial<sdk.LuckyTokenItemForSendV3>;
 
 export type ModalDataStatus = {
   lastStep: LAST_STEP;

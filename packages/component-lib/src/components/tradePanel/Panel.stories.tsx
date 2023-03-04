@@ -10,6 +10,8 @@ import {
   AmmJoinData,
   IBData,
   SlippageTolerance,
+  TRADE_TYPE,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   ammCalcData,
@@ -34,7 +36,6 @@ import {
   SwapProps,
   SwapTradeData,
   SwitchData,
-  TradeBtnStatus,
   TransferProps,
   WithdrawProps,
 } from "./index";
@@ -72,7 +73,7 @@ let depositProps: DepositProps<any, any> = {
   toIsAddressCheckLoading: false,
   referIsLoopringAddress: false,
   referIsAddressCheckLoading: false,
-  type: "NFT",
+  type: TRADE_TYPE.NFT,
   isNewAccount: false,
   tradeData,
   coinMap,
@@ -95,7 +96,7 @@ let depositProps: DepositProps<any, any> = {
 };
 let withdrawProps: Partial<WithdrawProps<any, any>> = {
   disabled: false,
-  type: "TOKEN",
+  type: TRADE_TYPE.TOKEN,
   isContractAddress: false,
   isFeeNotEnough: {
     isFeeNotEnough: false,

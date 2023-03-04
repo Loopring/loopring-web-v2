@@ -9,30 +9,27 @@ import {
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
-} from "@loopring-web/common-resources";
-import {
   TradeBtnStatus,
-  useOpenModals,
-  useToggle,
-} from "@loopring-web/component-lib";
+} from "@loopring-web/common-resources";
+import { useOpenModals, useToggle } from "@loopring-web/component-lib";
 import {
   accountStaticCallBack,
   ammPairInit,
   btnClickMap,
   btnLabel,
-  makeCache,
-  makeWalletLayer2,
-  useAmmMap,
-  IdMap,
-  useTokenMap,
-  useAccount,
-  LoopringAPI,
-  store,
-  useSystem,
   DAYS,
   getTimestampDaysLater,
+  IdMap,
   initSlippage,
+  LoopringAPI,
+  makeCache,
+  makeWalletLayer2,
+  store,
+  useAccount,
+  useAmmMap,
   usePageAmmPool,
+  useSystem,
+  useTokenMap,
   useWalletLayer2Socket,
   walletLayer2Service,
 } from "../../index";

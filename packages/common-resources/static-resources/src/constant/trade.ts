@@ -14,6 +14,8 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 import { MarketType } from "./market";
+import { XOR } from "@loopring-web/loopring-sdk";
+import { VendorProviders } from "./vendor";
 
 export enum DeFiChgType {
   coinSell = "coinSell",
@@ -123,6 +125,7 @@ export enum Media {
   Audio = "Audio",
   Image = "Image",
   Video = "Video",
+  Media3D = "Media3D",
 }
 
 export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
@@ -188,6 +191,8 @@ export const TOAST_TIME = 3000;
 export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;
 export const PROPERTY_Value_LIMIT = 40;
+export const REDPACKET_ORDER_LIMIT = 10000;
+export const REDPACKET_ORDER_NFT_LIMIT = 20000;
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: "name",
   image: "image",
@@ -450,6 +455,10 @@ export type MyNFTFilter = {
   favourite?: boolean;
   hidden?: boolean;
 };
+export enum MY_NFT_VIEW {
+  LIST_COLLECTION = "byCollection",
+  LIST_NFT = "byList",
+}
 
 export const LIVE_FEE_TIMES = 60000;
 export const L1_UPDATE = 15000;
@@ -489,13 +498,18 @@ export type DualViewInfo = DualViewBase & {
 };
 export type ClaimToken = sdk.UserBalanceInfo & {
   isNft?: boolean;
-  nftTokenInfo?: sdk.NFTTokenInfo;
+  nftTokenInfo?: sdk.UserNFTBalanceInfo;
 };
 export type DualViewOrder = DualViewBase & {
   __raw__: {
     order: sdk.UserDualTxsHistory;
   };
 };
+
+export enum TRADE_TYPE {
+  TOKEN = "TOKEN",
+  NFT = "NFT",
+}
 export type BanxaOrder = {
   id: string;
   account_id: string;
@@ -569,6 +583,65 @@ export type RedPacketHashItems = {
 export type RedPacketHashInfo = {
   [key: ACCOUNT_ADDRESS]: RedPacketHashItems;
 };
-export type RedpacketHashInfos = {
+export type RedPacketHashInfos = {
   [key in sdk.ChainId extends string ? string : string]: RedPacketHashInfo;
 };
+
+export enum OffRampStatus {
+  // waitingForPayment = "waitingForPayment",
+  watingForCreateOrder = "watingForCreateOrder",
+  waitingForWithdraw = "waitingForWithdraw",
+  expired = "expired",
+  cancel = "cancel",
+  done = "done",
+  refund = "refund",
+}
+
+export type OffRampHashItem = {
+  orderId: string;
+  chainId: sdk.ChainId;
+  address: string;
+  product: VendorProviders;
+  status: OffRampStatus;
+  wallet_address?: string | undefined;
+  checkout_iframe?: string;
+  account_reference?: string;
+  [key: string]: any;
+};
+export type OffRampHashItemObj = {
+  pending: OffRampHashItem;
+  payments: OffRampHashItem[];
+};
+export type OffRampHashItems<T = VendorProviders> = {
+  [K in keyof T]: OffRampHashItemObj;
+};
+export type OffRampHashInfo = {
+  [key: ACCOUNT_ADDRESS]: OffRampHashItems;
+};
+export type OffRampHashInfos = {
+  [key in sdk.ChainId extends string ? string : string]: OffRampHashInfo;
+};
+
+export type RedPacketOrderData<I> = XOR<
+  {
+    tradeType: TRADE_TYPE.TOKEN;
+  } & IBData<I>,
+  {
+    tradeType: TRADE_TYPE.NFT;
+    tradeValue: number;
+  } & Partial<NFTWholeINFO>
+> & {
+  fee: FeeInfo | undefined;
+  __request__: any;
+} & Partial<sdk.LuckyTokenItemForSendV3>;
+
+export enum TabTokenTypeIndex {
+  ERC20 = "ERC20",
+  NFT = "NFT",
+}
+
+export interface SnackbarMessage {
+  message: string;
+  key: number | string;
+  svgIcon?: string;
+}

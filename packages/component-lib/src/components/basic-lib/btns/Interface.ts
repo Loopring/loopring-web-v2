@@ -1,7 +1,7 @@
 import {
   ButtonProps as MuButtonPros,
-  ToggleButtonGroupProps as MuToggleButtonGroupProps,
   SliderProps,
+  ToggleButtonGroupProps as MuToggleButtonGroupProps,
 } from "@mui/material";
 import { XOR } from "../../../types/lib";
 import { Mark } from "@mui/base/SliderUnstyled/SliderUnstyledProps";
@@ -34,6 +34,7 @@ export interface BtnPercentageProps extends SliderProps {
   handleChanged: (item: any) => void;
   step?: number;
 }
+
 export interface BtnPercentageDraggableProps extends BtnPercentageProps {
   maxValue: string | number;
 }

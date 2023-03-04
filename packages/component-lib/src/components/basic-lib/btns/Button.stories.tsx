@@ -5,9 +5,10 @@ import {
   Box,
   Breadcrumbs,
   Grid,
-  Pagination,
-  Typography,
   Link,
+  Pagination,
+  Switch,
+  Typography,
 } from "@mui/material";
 import { ButtonProps, TGItemData, TGItemJSXInterface } from "./Interface";
 import {
@@ -17,7 +18,6 @@ import {
   ModalCloseButton,
   ToggleButtonGroup,
 } from "./index";
-import { Switch } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 
@@ -180,7 +180,6 @@ export const LButton: Story<ButtonProps> = withTranslation()(
               <Grid item>
                 <Grid container direction={"column"} spacing={2}>
                   <Grid item>
-              
                     <Button
                       variant={"contained"}
                       size={"medium"}
@@ -190,7 +189,6 @@ export const LButton: Story<ButtonProps> = withTranslation()(
                     </Button>
                   </Grid>
                   <Grid item>
-                  
                     <Button
                       variant={"contained"}
                       size={"medium"}

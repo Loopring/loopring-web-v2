@@ -32,12 +32,15 @@ const InputCodeStyle = styled(Box)`
     border: 1px solid var(--color-border);
     font-size: 38px;
   }
+
   .code-inputs input:focus {
     outline: none;
   }
+
   .code-inputs input:first-of-type {
     margin-left: 24px;
   }
+
   .code-inputs input:nth-of-type(3n) {
     margin-right: 24px;
   }

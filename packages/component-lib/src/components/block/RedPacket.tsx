@@ -1,32 +1,61 @@
 import styled from "@emotion/styled";
-import { Box, BoxProps, Typography } from "@mui/material";
-import React from "react";
-import { useTranslation } from "react-i18next";
 import {
+  Box,
+  BoxProps,
+  Button,
+  Divider,
+  Link,
+  Typography,
+} from "@mui/material";
+import React from "react";
+import { Trans, useTranslation } from "react-i18next";
+import {
+  Account,
   EmptyValueTag,
+  FirstPlaceIcon,
+  GET_IPFS_STRING,
+  getShortAddr,
+  NFTWholeINFO,
+  RedPacketColorConfig,
+  RedPacketCssColorConfig,
   RedPacketOpenWrapSVG,
   RedPacketQRCodeSvg,
-  // RedPacketOpenWrapSvg,
   RedPacketWrapSVG,
-  // RedPacketWrapSvg,
+  SoursURL,
 } from "@loopring-web/common-resources";
-// .close-button {
-//   margin-top: 0;
-//   z-index: 888;
-// .MuiIconButton-root {
-//     color: var(--color-text-button);
-//   }
-// }
+import QRCode from "qrcode-svg";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { RedPacketViewStep } from "../modal";
+import { ModalStatePlayLoad } from "../../stores";
+import moment from "moment";
+import {
+  RedPacketClockProps,
+  RedPacketDefault,
+  RedPacketDefaultBg,
+  RedPacketDetailLimit,
+  RedPacketDetailProps,
+  RedPacketOpenedProps,
+  RedPacketOpenProps,
+  RedPacketQRCodeProps,
+  RedPacketTimeoutProps,
+  RedPacketUnreadyProps,
+} from "./Interface";
+import { TablePagination, BoxNFT } from "../basic-lib";
+import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
+import { NFTMedia } from "./nftMedia";
+import { sanitize } from "dompurify";
 
-export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
-  //background: #ff5136;
-  //border-radius: 8px;
-  //min-width: 288px;
-  //display: flex;
-  //flex-direction: column;
+export const RedPacketBg = styled(Box)<
+  BoxProps & { imageSrc?: string; type: string }
+>`
+  display: flex;
+  align-items: center;
   position: relative;
+  justify-content: center;
 
   .content {
+    color: ${({ type }) => RedPacketCssColorConfig[type]?.primaryColor};
+
     .betweenEle {
       left: 50%;
       top: 128px;
@@ -34,7 +63,14 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
 
       .open {
         background: #fff7b1;
-        color: #7c3400;
+        color: ${({ type }) =>
+          RedPacketCssColorConfig[type]?.highLightColor}; //#7c3400;
+        &.disable {
+          color: ${({ type }) =>
+            RedPacketCssColorConfig[type]?.highLightDisableColor}; //#7c3400;
+        }
+
+        cursor: pointer;
         display: inline-flex;
         z-index: 100;
         align-items: center;
@@ -46,6 +82,17 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
         font-weight: 500;
         border-radius: 100%;
         transform: translate(-50%, -50%);
+      }
+
+      .open.openUnready {
+        background: url("${SoursURL}/images/redpacketLock.webp") center
+          no-repeat;
+        color: ${({ type }) =>
+          RedPacketCssColorConfig[type]?.colorTop}; //#7c3400;
+        width: 76px;
+        height: 76px;
+        background-size: contain;
+        border-radius: initial;
       }
 
       .clock {
@@ -60,7 +107,6 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
         z-index: 100;
         left: 50%;
         top: -50%;
-
         .hours,
         .minutes,
         .seconds {
@@ -72,18 +118,15 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
           display: inline-flex;
           align-items: center;
           border-radius: ${({ theme }) => theme.unit + "px"};
-
           h4 {
             text-indent: -9999em;
             height: 0;
             width: 0;
           }
         }
-
         .hours,
         .minutes {
           position: relative;
-
           &:after {
             display: block;
             content: ":";
@@ -96,15 +139,76 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string }>`
         }
       }
     }
+
+    .secondary {
+      color: ${({ type }) => RedPacketCssColorConfig[type]?.secondaryColor};
+    }
+
+    .viewDetail {
+      color: ${({ type }) => RedPacketCssColorConfig[type]?.primaryColor};
+
+      &:hover {
+        text-decoration: underline;
+        //color: ${({ type }) => RedPacketCssColorConfig[type]?.secondaryColor};
+      }
+    }
+
+    .top {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: ${({ type }) => RedPacketCssColorConfig[type]?.primaryColor};
+    }
+
+    .middle {
+      height: 228px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      heigh: 56px;
+    }
   }
-` as (props: BoxProps & { imageSrc?: string }) => JSX.Element;
-export type RedPacketDefault = {
-  type?: "default" | "official";
-  size?: "middle" | "large";
-};
-export type RedPacketDefaultBg = RedPacketDefault & {
-  content: JSX.Element;
-};
+
+  &.redPacketOpened {
+    .top {
+      color: ${({ type }) => RedPacketCssColorConfig[type]?.highLightColor};
+    }
+  }
+
+  &.redPacketOpened,
+  &.redPacketOpen {
+    .redPacketNFT {
+      margin-top: 48px;
+      padding-top: 0;
+      width: var(--nft-large-avatar);
+      height: var(--nft-large-avatar);
+    }
+
+    .RedPacketReceived .redPacketNFT {
+      margin-top: 20px;
+    }
+  }
+
+  //&.redPacketOpened {
+  //  .content {
+  //
+  //  }
+  //}
+` as (props: BoxProps & { imageSrc?: string; type: string }) => JSX.Element;
+
+export const BoxClaim = styled(Box)`
+  &.self {
+    //background-color: var(--field-opacity);
+  }
+` as typeof Box;
+
 export const RedPacketSize = {
   middle: {
     height: 400,
@@ -115,51 +219,112 @@ export const RedPacketSize = {
     width: 320,
   },
 };
+
 export const RedPacketQRCode = ({
   type = "default",
-}: RedPacketDefault & any) => {
-  const RedPacketColorConfig = {
-    default: {
-      colorTop: "#FD7659",
-      startColor: "#FC7A5A",
-      endColor: "#FF6151",
-      bgColor: "#ffffff",
-      fontColor: "#FFF7B1",
-      btnColor: "#FD7659",
-    },
-    official: {
-      colorTop: "#FFD595",
-      startColor: "#FFD596",
-      endColor: "#FDBD6A",
-      bgColor: "#ffffff",
-      fontColor: "#A25402",
-      btnColor: "#FD7659",
-    },
+  imageEleUrl,
+  url,
+  ...rest
+}: RedPacketDefault & RedPacketQRCodeProps) => {
+  const qrcodeRef = React.createRef<SVGGElement>();
+  const ref = React.useRef();
+  const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined);
+  React.useEffect(() => {
+    setQrCodeG(() => {
+      const colorConfig = RedPacketColorConfig[type];
+      const qrcode = new QRCode({
+        content: url,
+        width: 160,
+        height: 160,
+        color: colorConfig.qrColor, //colorConfig.startColor, // "white",
+        background: "white", //"colorConfig.bgColor",//"#FD7659",
+        predefined: true,
+        padding: 2,
+        xmlDeclaration: false,
+        // container: "g",
+      });
+
+      let qrCodeG = qrcode.svg({ container: "g" });
+      qrCodeG = qrCodeG.replace(/qrmodule/g, `qrmodule${type}`);
+      var parser = new DOMParser();
+      var qrCodeGEle = parser.parseFromString(qrCodeG, "text/xml");
+      // @ts-ignore
+      return qrCodeGEle.firstChild?.innerHTML ?? "";
+    });
+  }, [type]);
+  const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    try {
+      // @ts-ignore-start
+      const svg: SVGElement = ref.current as SVGElement;
+      const w = parseInt(svg.getAttribute("width") ?? "334");
+      const h = parseInt(svg.getAttribute("height") ?? "603");
+      if (svg && svg.outerHTML) {
+        const canvas = document.createElement("canvas");
+        const base64doc = btoa(unescape(encodeURIComponent(svg.outerHTML)));
+        const img_to_download = document.createElement("img");
+        img_to_download.src = "data:image/svg+xml;base64," + base64doc;
+        img_to_download.onload = function () {
+          canvas.setAttribute("width", w.toString());
+          canvas.setAttribute("height", h.toString());
+          // @ts-ignore
+          const context: CanvasRenderingContext2D = canvas.getContext("2d");
+          context.drawImage(img_to_download, 0, 0, w, h);
+          const dataURL = canvas.toDataURL("image/png");
+          // @ts-ignore
+          if (window.navigator.msSaveBlob) {
+            // @ts-ignore
+            window.navigator.msSaveBlob(
+              // @ts-ignore
+              canvas.msToBlob(),
+              "Loopring_Red_Packet.png"
+            );
+            e.preventDefault();
+          } else {
+            const a = document.createElement("a");
+            const my_evt = new MouseEvent("click");
+            a.download = "Loopring_Red_Packet.png";
+            a.href = dataURL;
+            a.dispatchEvent(my_evt);
+          }
+          //canvas.parentNode.removeChild(canvas);
+        };
+      }
+      // @ts-ignore-end
+    } catch (error) {}
   };
   return (
-    <RedPacketQRCodeSvg {...{ ...RedPacketColorConfig[type] }} type={type} />
+    <>
+      {qrCodeG && (
+        <Box onClick={onClick}>
+          <RedPacketQRCodeSvg
+            ref={ref}
+            {...{ ...RedPacketColorConfig[type], ...rest }}
+            qrcodeRef={qrcodeRef}
+            imageEleUrl={imageEleUrl}
+            qrCodeG={qrCodeG}
+            type={type}
+          />
+        </Box>
+      )}
+    </>
   );
 };
+
 export const RedPacketBgDefault = ({
   type = "default",
   size = "middle",
   content,
 }: RedPacketDefaultBg & any) => {
-  const RedPacketColorConfig = {
-    default: {
-      colorTop: "#FD7659",
-      startColor: "#FC7A5A",
-      endColor: "#FF6151",
-    },
-    official: {
-      colorTop: "#FFD595",
-      startColor: "#FFD596",
-      endColor: "#FDBD6A",
-    },
-  };
-  const scale = 414 / RedPacketSize[size].height;
+  const scale = RedPacketSize[size].width / 260;
+
   return (
-    <RedPacketBg>
+    <RedPacketBg
+      type={type}
+      sx={{
+        transform: `scale(${scale})`,
+      }}
+      className={"redPacketOpen"}
+    >
       <Box
         className={"bg"}
         position={"absolute"}
@@ -168,10 +333,11 @@ export const RedPacketBgDefault = ({
         right={0}
         bottom={0}
         zIndex={100}
+        display={"flex"}
+        justifyContent={"center"}
       >
         <RedPacketWrapSVG
-          {...{ ...RedPacketColorConfig[type] }}
-          style={{ transform: `scale(${scale})` }}
+          {...{ ...RedPacketCssColorConfig[type] }}
           height={"100%"}
           width={"100%"}
           type={type}
@@ -183,49 +349,42 @@ export const RedPacketBgDefault = ({
         className={`content content${size}`}
         position={"relative"}
         zIndex={200}
-        height={RedPacketSize[size].height}
-        width={RedPacketSize[size].width}
+        height={RedPacketSize["middle"].height}
+        width={RedPacketSize["middle"].width}
       >
         {content}
       </Box>
     </RedPacketBg>
   );
 };
+
 export const RedPacketBgOpened = ({
   type = "default",
   size = "middle",
   content,
 }: RedPacketDefaultBg & any) => {
-  const scale = 414 / RedPacketSize[size].height;
+  const scale = RedPacketSize[size].width / 260;
 
-  const RedPacketColorConfig = {
-    default: {
-      colorTop: "#FFD596",
-      startColor: "#FC7A5A",
-      endColor: "#FF6151",
-      startBgColor: "#FC7A5A",
-      endBgColor: "#930D00",
-      startCard: "#FEF4DE",
-      endCard: "#FED897",
-      line: "#D4B164",
-    },
-    official: {
-      colorTop: "#FFD595",
-      startColor: "#FFD596",
-      endColor: "#FFD596",
-      startBgColor: "#FFD595",
-      endBgColor: "#934F00",
-      startCard: "#FEF4DE",
-      endCard: "#FED897",
-      line: "#D4B164",
-    },
-  };
   return (
-    <RedPacketBg>
-      <Box position={"absolute"} zIndex={100}>
+    <RedPacketBg
+      type={type}
+      sx={{
+        transform: `scale(${scale})`,
+      }}
+      className={"redPacketOpened"}
+    >
+      <Box
+        position={"absolute"}
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        zIndex={100}
+        display={"flex"}
+        justifyContent={"center"}
+      >
         <RedPacketOpenWrapSVG
-          {...{ ...RedPacketColorConfig[type] }}
-          style={{ transform: `scale(${scale})` }}
+          {...{ ...RedPacketCssColorConfig[type] }}
           height={"100%"}
           width={"100%"}
           type={type}
@@ -235,7 +394,7 @@ export const RedPacketBgOpened = ({
         className={`content content${size}`}
         position={"relative"}
         zIndex={200}
-        height={RedPacketSize[size]}
+        height={RedPacketSize["middle"].height}
       >
         {content}
       </Box>
@@ -246,38 +405,129 @@ export const RedPacketBgOpened = ({
 export const RedPacketOpen = ({
   type = "default",
   size,
-}: RedPacketDefault & any) => {
+  sender,
+  amountStr,
+  memo,
+  viewDetail,
+  onOpen,
+  ImageEle,
+}: RedPacketDefault & RedPacketOpenProps) => {
   const { t } = useTranslation();
   const content = React.useMemo(() => {
     return (
-      <Box display={"flex"} flex={1}>
+      <Box display={"flex"} flex={1} onClick={onOpen} flexDirection={"column"}>
         <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
           <Box display={"flex"} position={"absolute"} className={"open"}>
-            {t("labelOpen")}
+            {t("labelRedPacketOpen")}
           </Box>
         </Box>
-        <Box display={"flex"}></Box>
-
-        <Box></Box>
+        <Box display={"flex"} className={"top"} flexDirection={"column"}>
+          <Typography color={"inherit"}>{sender}</Typography>
+        </Box>
+        <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+          {ImageEle}
+          <Typography
+            color={"inherit"}
+            variant={"h4"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            paddingX={2}
+            paddingTop={1}
+          >
+            {amountStr}
+          </Typography>
+          <Typography
+            color={"inherit"}
+            variant={"body1"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            paddingX={4}
+            sx={{
+              wordBreak: "break-all",
+              display: "-webkit-box",
+              "-webkit-line-clamp": "2",
+              lineClamp: "2",
+              "-webkit-box-orient": "vertical",
+            }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+          />
+        </Box>
+        <Box display={"flex"} className={"footer"}>
+          {viewDetail && (
+            <Link
+              className={"viewDetail"}
+              whiteSpace={"pre-line"}
+              color={"inherit"}
+              variant={"body1"}
+              onClick={(e) => {
+                e.stopPropagation();
+                viewDetail();
+              }}
+            >
+              {t("labelLuckyRedPacketDetail")}
+            </Link>
+          )}
+        </Box>
       </Box>
     );
-  }, []);
+  }, [size, sender, amountStr, memo, viewDetail, onOpen]);
 
   return <RedPacketBgDefault type={type} size={size} content={content} />;
 };
 
 export const RedPacketClock = ({
   type = "default",
-  countDown,
-}: RedPacketDefault & {
-  countDown: {
-    days: undefined | string;
-    hours: undefined | string;
-    seconds: undefined | string;
-    minutes: undefined | string;
-  };
-}) => {
+  size,
+  validSince,
+  sender,
+  amountStr,
+  memo,
+  showRedPacket,
+}: RedPacketDefault & RedPacketClockProps) => {
   const { t } = useTranslation("common");
+  const anchorRef = React.useRef();
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+  const [countDown, setCountDown] =
+    React.useState<{
+      days: undefined | string;
+      hours: undefined | string;
+      seconds: undefined | string;
+      minutes: undefined | string;
+    }>();
+  const calculateTimeLeft = React.useCallback((validSince: number) => {
+    if (nodeTimer.current !== -1) {
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
+    }
+    let difference = +new Date(validSince).getTime() - Date.now();
+    if (difference > 0) {
+      setCountDown({
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
+        hours: (
+          "0" + Math.floor((difference / (1000 * 60 * 60)) % 24).toString()
+        ).slice(-2),
+        minutes: (
+          "0" + Math.floor((difference / 1000 / 60) % 60).toString()
+        ).slice(-2),
+        seconds: ("0" + Math.floor((difference / 1000) % 60).toString()).slice(
+          -2
+        ),
+      });
+      nodeTimer.current = setTimeout(() => calculateTimeLeft(validSince), 1000);
+    } else {
+      showRedPacket();
+    }
+  }, []);
+  React.useEffect(() => {
+    calculateTimeLeft(validSince);
+    return () => {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      }
+    };
+  }, [validSince]);
+
   const content = React.useMemo(() => {
     return (
       <>
@@ -296,7 +546,12 @@ export const RedPacketClock = ({
             >
               {t("labelCountDown")}
             </Typography>
-            <Box display={"flex"} flexDirection={"row"} flex={1}>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              flex={1}
+              ref={anchorRef}
+            >
               <Box
                 className={"hours"}
                 display={"flex"}
@@ -362,157 +617,738 @@ export const RedPacketClock = ({
             </Box>
           </Box>
         </Box>
+        <Box display={"flex"} className={"top"} flexDirection={"column"}>
+          <Typography color={"inherit"}>{sender}</Typography>
+        </Box>
+        <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+          <Typography
+            color={"inherit"}
+            variant={"h4"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            paddingX={2}
+            paddingTop={1}
+          >
+            {amountStr}
+          </Typography>
+          <Typography
+            color={"inherit"}
+            variant={"body1"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            paddingX={4}
+            sx={{
+              wordBreak: "break-all",
+              display: "-webkit-box",
+              "-webkit-line-clamp": "2",
+              lineClamp: "2",
+              "-webkit-box-orient": "vertical",
+            }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+          ></Typography>
+        </Box>
       </>
     );
-  }, []);
-  return <RedPacketBgDefault type={type} content={content} />;
+  }, [countDown]);
+  return <RedPacketBgDefault type={type} size={size} content={content} />;
 };
-export const RedPacketHistory = ({
+
+export const RedPacketUnready = ({
   type = "default",
-}: RedPacketDefault & any) => {
+  size,
+  sender,
+  validSince,
+  amountStr,
+  memo,
+  ImageEle,
+}: // ImageEle,
+RedPacketDefault & RedPacketUnreadyProps) => {
+  const { t } = useTranslation();
+  const content = React.useMemo(() => {
+    return (
+      <Box display={"flex"} flex={1} flexDirection={"column"}>
+        <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
+          <Box
+            display={"flex"}
+            position={"absolute"}
+            className={"open openUnready"}
+          >
+            {t("labelSeal")}
+          </Box>
+        </Box>
+        <Box display={"flex"} className={"top"} flexDirection={"column"}>
+          <Typography color={"inherit"}>{sender}</Typography>
+        </Box>
+        <Box
+          display={"flex"}
+          className={"middle"}
+          flexDirection={"column"}
+          position={"relative"}
+        >
+          <Typography
+            color={"inherit"}
+            position={"absolute"}
+            marginTop={3}
+            top={0}
+          >
+            {t("labelOpenAfter", {
+              time: moment(validSince).fromNow(),
+            })}
+          </Typography>
+          {ImageEle}
+          <Typography
+            color={"inherit"}
+            variant={"h4"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            paddingX={2}
+            paddingTop={1}
+          >
+            {amountStr}
+          </Typography>
+          <Typography
+            color={"inherit"}
+            variant={"body1"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            paddingX={4}
+            sx={{
+              wordBreak: "break-all",
+              display: "-webkit-box",
+              "-webkit-line-clamp": "2",
+              lineClamp: "2",
+              "-webkit-box-orient": "vertical",
+            }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+          ></Typography>
+        </Box>
+      </Box>
+    );
+  }, [size, sender, amountStr, memo]);
+
+  return <RedPacketBgDefault type={type} size={size} content={content} />;
+};
+
+export const RedPacketOpened = ({
+  type = "default",
+  size,
+  sender,
+  memo,
+  myAmountStr,
+  amountStr,
+  viewDetail,
+  ImageEle,
+}: RedPacketDefault & RedPacketOpenedProps) => {
   const { t } = useTranslation("common");
   const content = React.useMemo(() => {
-    return <>{t("official")}</>;
+    return (
+      <Box display={"flex"} flex={1} flexDirection={"column"}>
+        <Box display={"flex"} className={"top"} flexDirection={"column"}>
+          <Typography
+            variant={"h5"}
+            color={RedPacketCssColorConfig[type].highLightColor}
+          >
+            {t("labelRedPacketReceived")}
+          </Typography>
+          <Typography
+            variant={"h4"}
+            color={RedPacketCssColorConfig[type].highLightColor}
+            marginTop={1}
+          >
+            {myAmountStr ? myAmountStr : EmptyValueTag}
+          </Typography>
+          <Typography
+            variant={"body2"}
+            color={RedPacketCssColorConfig[type].highLightColor}
+          >
+            {t("labelTotalRedPacket", { value: amountStr })}
+          </Typography>
+        </Box>
+        <Box
+          display={"flex"}
+          className={"middle RedPacketReceived"}
+          flexDirection={"column"}
+        >
+          {ImageEle}
+          <Typography color={"inherit"}>{sender}</Typography>
+          <Typography
+            variant={"body2"}
+            color={"inherit"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            marginTop={1 / 2}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            paddingX={4}
+            sx={{
+              wordBreak: "break-all",
+              display: "-webkit-box",
+              "-webkit-line-clamp": "2",
+              lineClamp: "2",
+              "-webkit-box-orient": "vertical",
+            }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+          />
+        </Box>
+        <Box display={"flex"} className={"footer"}>
+          <Link
+            className={"viewDetail"}
+            whiteSpace={"pre-line"}
+            color={"inherit"}
+            variant={"body1"}
+            onClick={(e) => {
+              e.stopPropagation();
+              viewDetail();
+            }}
+          >
+            {t("labelLuckyRedPacketDetail")}
+          </Link>
+        </Box>
+      </Box>
+    );
   }, []);
-  return <RedPacketBgOpened type={type} content={content} />;
+  return <RedPacketBgOpened type={type} content={content} size={size} />;
 };
 
 export const RedPacketDetailStyled = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
   background-color: var(--color-box);
-`;
+` as typeof Box;
 
-export const RedPacketDetail = () => {
-  return <RedPacketDetailStyled></RedPacketDetailStyled>;
+export const RedPacketTimeout = ({
+  type = "default",
+  size,
+  sender,
+  memo,
+  viewDetail,
+}: RedPacketTimeoutProps) => {
+  const { t } = useTranslation("common");
+  const content = React.useMemo(() => {
+    return (
+      <Box
+        className={`content content${size}`}
+        position={"relative"}
+        zIndex={200}
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"stretch"}
+        // alignItems={"s"}
+        height={RedPacketSize["middle"].height}
+      >
+        <Box display={"flex"} className={"top"} flexDirection={"column"}>
+          <Typography
+            color={"inherit"}
+            variant={"h4"}
+            className={"timeoutTitle"}
+            whiteSpace={"pre-line"}
+            paddingTop={2}
+            textAlign={"center"}
+          >
+            {t("labelLuckyRedPacketTimeout")}
+          </Typography>
+          <Typography paddingTop={1 / 2} className={"secondary"}>
+            {sender}
+          </Typography>
+        </Box>
+        <Box display={"flex"} className={"middle"}>
+          <Typography
+            color={"inherit"}
+            variant={"body1"}
+            whiteSpace={"pre-line"}
+            textAlign={"center"}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            paddingX={4}
+            sx={{
+              wordBreak: "break-all",
+              display: "-webkit-box",
+              "-webkit-line-clamp": "2",
+              lineClamp: "2",
+              "-webkit-box-orient": "vertical",
+            }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+          />
+        </Box>
+        <Box display={"flex"} className={"footer"}>
+          {viewDetail && (
+            <Link
+              className={"viewDetail"}
+              whiteSpace={"pre-line"}
+              color={"inherit"}
+              variant={"body1"}
+              onClick={(e) => {
+                e.stopPropagation();
+                viewDetail();
+              }}
+            >
+              {t("labelLuckyRedPacketDetail")}
+            </Link>
+          )}
+        </Box>
+      </Box>
+    );
+  }, []);
+  return <RedPacketBgOpened type={type} content={content} size={size} />;
 };
 
-// export const RedPacketCard = withTranslation()(() => {});
-// export const RedPacketQRCode = ({
-//   onClose,
-//   countDown,
-// }: {
-//   onClose: (e: MouseEvent) => void;
-//   countDown: {
-//     days: undefined | string;
-//     hours: undefined | string;
-//     seconds: undefined | string;
-//     minutes: undefined | string;
-//   };
-// }) => {
-//   const { t } = useTranslation("common");
-//   const content = React.useMemo(() => {
-//     return <></>;
-//   }, []);
-//   const betweenContent = React.useMemo(() => {
-//     return <></>;
-//   }, []);
-//   const desContent = React.useMemo(() => {
-//     return <></>;
-//   }, []);
-//   return (
-//     <RedPacket
-//       onClose={onClose}
-//       content={content}
-//       desContent={desContent}
-//       betweenContent={betweenContent}
-//     />
-//   );
-// };
+const BoxStyle = styled(Box)`
+  background: var(--color-box);
+  border-radius: ${({ theme }) => theme.unit}px;
 
-// export const RedPacketCard = withTranslation()(
-//   ({
-//     t,
-//     luckyTokenItem: {
-//       hash,
-//       sender,
-//       champion,
-//       tokenId,
-//       tokenAmount,
-//       type,
-//       status,
-//       validSince,
-//       validUntil,
-//       info,
-//       templateNo,
-//       createdAt,
-//     },
-//     idIndex,
-//     tokenMap,
-//   }: {
-//     luckyTokenItem: sdk.LuckyTokenItemForReceive;
-//     idIndex: { [key: string]: string };
-//     tokenMap: { [key: string]: any };
-//   } & WithTranslation) => {
-//     const color = {
-//       textColor: `var(--color-redPacket-text${type.scope})`,
-//       background: `var(--color-redPacket${type.scope})`,
-//     };
-//     const luckToken = tokenMap[idIndex[tokenId]];
-//     return (
-//       <Box
-//         display={"flex"}
-//         borderRadius={1}
-//         height={114}
-//         paddingX={1}
-//         paddingY={1}
-//         flexDirection={"column"}
-//         width={"100%"}
-//         sx={{ background: color.background }}
-//       >
-//         <Typography
-//           paddingX={1}
-//           paddingTop={1}
-//           variant={"h4"}
-//           fontWeight={"900"}
-//           color={color.textColor}
-//         >
-//           {`${getValuePrecisionThousand(
-//             // @ts-ignore
-//             sdk.toBig(tokenAmount.totalAmount).div("1e" + luckToken.decimals),
-//             luckToken.decimals,
-//             luckToken.decimals,
-//             luckToken.decimals,
-//             false
-//           )} ${luckToken.symbol}`}
-//         </Typography>
-//         <Typography
-//           paddingX={1}
-//           textOverflow={"ellipsis"}
-//           sx={{
-//             overflow: "hidden",
-//             WebkitLineClamp: 2,
-//             WebkitBoxOrient: "vertical",
-//             wordBreak: "break-all",
-//           }}
-//           whiteSpace={"pre-line"}
-//           variant={"body1"}
-//           display={"-webkit-box"}
-//           color={color.textColor}
-//           height={"3em"}
-//         >
-//           {info?.memo ?? t("labelLuckTokenDefaultTitle")}
-//         </Typography>
-//         <Divider
-//           sx={{ border: "var(--color-redPacket-Border)" }}
-//           orientation={"horizontal"}
-//         />
-//         <Typography
-//           variant={"body2"}
-//           paddingX={1}
-//           display={"flex"}
-//           flexDirection={"row"}
-//           color={color.textColor}
-//           sx={{ opacity: 0.7 }}
-//           justifyContent={"space-between"}
-//         >
-//           <Typography variant={"inherit"} color={"inherit"}>
-//             {moment(validSince).format(`${DAY_FORMAT} ${MINUTE_FORMAT}`)}
-//           </Typography>
-//           <Typography variant={"inherit"} color={"inherit"}>
-//             {sender.ens ? sender.ens : getShortAddr(sender.address)}
-//           </Typography>
-//         </Typography>
-//       </Box>
-//     );
-//   }
-// );
+  .redPacketNFT {
+    margin-top: ${({ theme }) => 2 * theme.unit}px;
+    padding-top: var(--nft-large-avatar);
+  }
+
+  .top {
+    border-radius: ${({ theme }) => theme.unit}px;
+    border-bottom-right-radius: 100%;
+    border-bottom-left-radius: 100%;
+  }
+`;
+
+export const RedPacketDetail = ({
+  sender,
+  amountStr,
+  // _amountClaimStr,
+  memo,
+  page = 1,
+  claimList,
+  // detail,
+  // detail,
+  handlePageChange,
+  myAmountStr,
+  isShouldSharedRely,
+  totalCount,
+  remainCount,
+  onShared,
+  relyNumber,
+  relyAmount,
+  ImageEle,
+}: RedPacketDetailProps) => {
+  const { t } = useTranslation("common");
+  const pageNation = React.useMemo(() => {
+    if (totalCount - remainCount - RedPacketDetailLimit > 0) {
+      return (
+        <TablePagination
+          page={page}
+          pageSize={RedPacketDetailLimit}
+          total={totalCount - remainCount}
+          onPageChange={handlePageChange}
+        />
+      );
+    } else {
+      return <></>;
+    }
+  }, []);
+
+  return (
+    <BoxStyle
+      flex={1}
+      width={RedPacketSize.large.width}
+      height={RedPacketSize.large.height}
+      display={"flex"}
+      paddingBottom={1}
+      flexDirection={"column"}
+    >
+      <Box
+        className={"top"}
+        width={"100%"}
+        sx={{
+          background: RedPacketColorConfig.default.startColor,
+          height: "88px",
+        }}
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+      >
+        <Typography
+          variant={"body1"}
+          color={RedPacketColorConfig.default.fontColor}
+        >
+          {t("labelLuckyRedPacket")}
+        </Typography>
+      </Box>
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
+        marginY={2}
+      >
+        <Typography variant={"body1"}>{sender}</Typography>
+        <Typography
+          variant={"body2"}
+          color={"textThird"}
+          whiteSpace={"pre-line"}
+          textAlign={"center"}
+          marginTop={1 / 2}
+          overflow={"hidden"}
+          textOverflow={"ellipsis"}
+          paddingX={4}
+          sx={{
+            wordBreak: "break-all",
+            display: "-webkit-box",
+            "-webkit-line-clamp": "2",
+            lineClamp: "2",
+            "-webkit-box-orient": "vertical",
+          }}
+          dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+        />
+        {ImageEle}
+        <Typography
+          variant={"h3"}
+          color={RedPacketColorConfig.default.colorTop}
+          marginTop={1}
+        >
+          {myAmountStr ? myAmountStr : EmptyValueTag}
+        </Typography>
+        <Typography
+          variant={"body2"}
+          color={RedPacketColorConfig.default.colorTop}
+        >
+          {t("labelTotalRedPacket", { value: amountStr })}
+        </Typography>
+      </Box>
+      <Divider orientation={"horizontal"} sx={{ borderWidth: 3 }} />
+      <Box
+        flex={1}
+        display={"flex"}
+        justifyContent={"stretch"}
+        flexDirection={"column"}
+      >
+        <Typography
+          variant={"body1"}
+          color={"textThird"}
+          marginY={1}
+          paddingX={1}
+        >
+          {t("labelRedPacketReceivedRecord", {
+            value: totalCount - remainCount,
+            count: totalCount,
+          })}
+        </Typography>
+        <Divider
+          orientation={"horizontal"}
+          sx={{ borderWidth: 1, paddingX: 1 }}
+        />
+        <Box flex={1} overflow={"scroll"}>
+          {claimList.map((item) => {
+            return (
+              <BoxClaim
+                className={item.isSelf ? "self claim" : "claim"}
+                display={"flex"}
+                justifyContent={"stretch"}
+                flexDirection={"column"}
+                paddingY={1}
+                paddingX={2}
+              >
+                <Typography
+                  component={"span"}
+                  display={"inline-flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
+                  <Typography
+                    variant={"body1"}
+                    component={"span"}
+                    color={item.isSelf ? "success" : "textPrimary"}
+                  >
+                    {item.isSelf
+                      ? t("labelMyRedPacketReward")
+                      : item.accountStr}
+                  </Typography>
+                  <Typography
+                    variant={"body1"}
+                    component={"span"}
+                    color={"textPrimary"}
+                  >
+                    {item.amountStr}
+                  </Typography>
+                </Typography>
+                <Typography
+                  component={"span"}
+                  display={"inline-flex"}
+                  flexDirection={"row"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
+                  <Typography
+                    variant={"body2"}
+                    component={"span"}
+                    color={"textThird"}
+                  >
+                    {moment(new Date(item.createdAt), "YYYYMMDDHHMM").fromNow()}
+                  </Typography>
+                  <Typography display={"inline"}>
+                    {item.helper && (
+                      <Typography
+                        component={"span"}
+                        color={"var(--color-primary)"}
+                        display={"inline-flex"}
+                        alignItems={"center"}
+                        variant={"body2"}
+                      >
+                        {item.helper}
+                      </Typography>
+                    )}
+                    {item.isMax && (
+                      <Typography
+                        component={"span"}
+                        color={"var(--color-warning)"}
+                        display={"inline-flex"}
+                        alignItems={"center"}
+                        variant={"body2"}
+                        marginLeft={1}
+                      >
+                        <FirstPlaceIcon
+                          fontSize={"medium"}
+                          sx={{ paddingRight: 1 / 2 }}
+                        />
+                        {t("labelLuckDraw")}
+                      </Typography>
+                    )}
+                  </Typography>
+                </Typography>
+              </BoxClaim>
+            );
+          })}
+        </Box>
+        {pageNation}
+      </Box>
+      {isShouldSharedRely && (
+        <Box paddingX={1} display={"flex"} flexDirection={"column"}>
+          <Button
+            variant={"contained"}
+            color={"error"}
+            sx={{
+              backgroundColor: RedPacketColorConfig.default.colorTop as any,
+              "&:hover": {
+                backgroundColor: RedPacketColorConfig.default.colorTop as any,
+              },
+            }}
+            fullWidth={true}
+            onClick={onShared}
+          >
+            {t("labelRedPacketGrab")}
+          </Button>
+          <Typography
+            color={"textSecondary"}
+            variant={"body2"}
+            textAlign={"center"}
+            paddingTop={1}
+            component={"span"}
+          >
+            <Trans
+              i18nKey={"labelRedpacketHavePeopleHelp"}
+              tOptions={{
+                number: relyNumber ? relyNumber : EmptyValueTag,
+                amount: relyAmount ? relyAmount : EmptyValueTag,
+              }}
+            >
+              have
+              <Typography
+                variant={"inherit"}
+                component={"span"}
+                color={RedPacketColorConfig.default.startColor}
+              >
+                {relyNumber ?? EmptyValueTag}
+              </Typography>
+              friends help you pick up Redpacket, you extends reward:
+              <Typography
+                variant={"inherit"}
+                component={"span"}
+                color={RedPacketColorConfig.default.fontColor}
+              >
+                {relyAmount ?? EmptyValueTag}
+              </Typography>
+            </Trans>
+          </Typography>
+        </Box>
+      )}
+    </BoxStyle>
+  );
+};
+
+export const RedPacketPrepare = ({
+  chainId,
+  account,
+  tokenInfo,
+  setShowRedPacket,
+  claim,
+  _type = "default",
+  amountStr,
+  myAmountStr,
+  onOpen,
+  getIPFSString,
+  baseURL,
+  ...props
+}: {
+  chainId: sdk.ChainId;
+  account: Account;
+  amountStr: string;
+  tokenInfo: sdk.TokenInfo;
+  claim: string | undefined;
+  myAmountStr: string | undefined;
+  setShowRedPacket: (
+    state: ModalStatePlayLoad & {
+      step?: number;
+      info?: { [key: string]: any };
+    }
+  ) => void;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
+  onOpen: () => void;
+  _type?: "official" | "default";
+} & sdk.LuckyTokenItemForReceive) => {
+  // const { t } = useTranslation("common");
+  const ref = React.createRef();
+  const _info = props as sdk.LuckyTokenItemForReceive;
+  // const props.isNft;
+  const ImageEle = React.useMemo(() => {
+    return props.isNft ? (
+      <BoxNFT flex={1} position={"relative"} className={"redPacketNFT"}>
+        <Box
+          position={"absolute"}
+          top={0}
+          right={0}
+          bottom={0}
+          left={0}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          <NFTMedia
+            ref={ref}
+            item={props.nftTokenInfo as Partial<NFTWholeINFO>}
+            shouldPlay={true}
+            onNFTError={() => undefined}
+            isOrigin={true}
+            getIPFSString={getIPFSString}
+            baseURL={baseURL}
+          />
+        </Box>
+      </BoxNFT>
+    ) : (
+      <></>
+    );
+  }, [props]);
+  const viewItem = React.useMemo(() => {
+    let difference = new Date(_info.validSince).getTime() - Date.now();
+    if (claim) {
+      return (
+        <RedPacketOpened
+          {...{
+            ...props,
+          }}
+          ImageEle={ImageEle}
+          type={_type ? _type : "default"}
+          amountStr={amountStr}
+          myAmountStr={myAmountStr}
+          viewDetail={() => {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.DetailPanel,
+              info: _info,
+            });
+          }}
+          sender={
+            props?.sender?.ens
+              ? props?.sender?.ens
+              : getShortAddr(props?.sender?.address)
+          }
+          memo={props?.info?.memo}
+        />
+      );
+    } else if (difference > 180000) {
+      return (
+        <RedPacketUnready
+          sender={
+            props?.sender?.ens
+              ? props?.sender?.ens
+              : getShortAddr(props?.sender?.address)
+          }
+          {...props?.info}
+          ImageEle={ImageEle}
+          amountStr={amountStr}
+          validSince={_info.validSince}
+        />
+      );
+    } else if (difference > 0) {
+      return (
+        <RedPacketClock
+          {...props?.info}
+          ImageEle={ImageEle}
+          sender={
+            props?.sender?.ens
+              ? props?.sender?.ens
+              : getShortAddr(props?.sender?.address)
+          }
+          showRedPacket={() => {
+            setShowRedPacket({
+              isShow: false,
+              step: RedPacketViewStep.OpenPanel,
+              info: _info,
+            });
+          }}
+          amountStr={amountStr}
+          validSince={_info.validSince}
+        />
+      );
+    } else if (
+      // difference + 86400000 < 0 ||
+      _info.status == LuckyTokenItemStatus.COMPLETED ||
+      _info.status == LuckyTokenItemStatus.OVER_DUE ||
+      _info.tokenAmount.remainCount === 0
+    ) {
+      return (
+        <RedPacketTimeout
+          {...props?.info}
+          ImageEle={ImageEle}
+          sender={
+            props?.sender?.ens
+              ? props?.sender?.ens
+              : getShortAddr(props?.sender?.address)
+          }
+          // viewDetail={() => {
+          //   setShowRedPacket({
+          //     isShow: true,
+          //     step: RedPacketViewStep.DetailPanel,
+          //     info: props,
+          //   });
+          // }}
+        />
+      );
+    } else {
+      return (
+        <RedPacketOpen
+          {...{
+            ...props,
+          }}
+          ImageEle={ImageEle ?? undefined}
+          type={_type ? _type : "default"}
+          amountStr={amountStr}
+          sender={
+            props?.sender?.ens
+              ? props?.sender?.ens
+              : getShortAddr(props?.sender?.address)
+          }
+          memo={props?.info?.memo}
+          onOpen={() => {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.OpenPanel,
+              info: _info,
+            });
+            onOpen();
+          }}
+        />
+      );
+    }
+  }, [amountStr, claim, myAmountStr, onOpen, _info]);
+  return <Box>{viewItem}</Box>;
+};

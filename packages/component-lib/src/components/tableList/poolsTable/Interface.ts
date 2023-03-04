@@ -1,10 +1,10 @@
 import {
   Account,
   AmmDetail,
-  TradeFloat,
+  CAMPAIGNTAGCONFIG,
   ForexMap,
   RowConfig,
-  CAMPAIGNTAGCONFIG,
+  TradeFloat,
 } from "@loopring-web/common-resources";
 import { Currency } from "@loopring-web/loopring-sdk";
 

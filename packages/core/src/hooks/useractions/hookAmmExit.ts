@@ -9,12 +9,9 @@ import {
   IBData,
   myLog,
   SDK_ERROR_MAP_TO_UI,
-} from "@loopring-web/common-resources";
-import {
   TradeBtnStatus,
-  useOpenModals,
-  useToggle,
-} from "@loopring-web/component-lib";
+} from "@loopring-web/common-resources";
+import { useOpenModals, useToggle } from "@loopring-web/component-lib";
 import {
   accountStaticCallBack,
   ammPairInit,

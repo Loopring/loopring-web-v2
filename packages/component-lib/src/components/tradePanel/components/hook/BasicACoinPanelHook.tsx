@@ -1,10 +1,15 @@
-import { IBData, MintTradeNFT } from "@loopring-web/common-resources";
+import {
+  IBData,
+  MintTradeNFT,
+  TRADE_TYPE,
+} from "@loopring-web/common-resources";
 import { BasicACoinTradeHookProps } from "../Interface";
 import React from "react";
 import { SwitchData } from "../../Interface";
 import { useDeepCompareEffect } from "react-use";
 import { ToolBarItemBack } from "../tool";
 import { debounceTime, Subject } from "rxjs";
+
 export const useBasicTrade = <
   T extends Partial<IBData<I> & MintTradeNFT<I> & { [key: string]: any }>,
   I
@@ -13,7 +18,7 @@ export const useBasicTrade = <
   handlePanelEvent,
   walletMap = {},
   coinMap,
-  type = "TOKEN",
+  type = TRADE_TYPE.TOKEN,
   ...rest
 }: BasicACoinTradeHookProps<T, I>) => {
   tradeData = tradeData ? tradeData : ({} as T);

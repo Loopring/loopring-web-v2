@@ -47,6 +47,7 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
         deployNFT,
         updateAccount,
         collectionNFT,
+        claim,
       } = action.payload;
       if (order !== undefined) {
         state.order = order;
@@ -94,6 +95,9 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       }
       if (collectionNFT !== undefined) {
         state.collectionNFT = collectionNFT;
+      }
+      if (claim !== undefined) {
+        state.claim = claim;
       }
     },
   },

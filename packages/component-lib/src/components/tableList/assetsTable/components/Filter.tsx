@@ -11,6 +11,7 @@ export type TokenTypeCol = {
   type: TokenType;
   value: string;
 };
+
 export interface FilterProps {
   hideInvestToken?: boolean;
   hideSmallBalances?: boolean;

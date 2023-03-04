@@ -6,16 +6,16 @@ import {
   AssetsTable,
   AssetTitle,
   AssetTitleProps,
-  TradeBtnStatus,
   useSettings,
 } from "@loopring-web/component-lib";
 
 import { StylePaper, useSystem, useTokenMap } from "@loopring-web/core";
-import { AssetPanelProps, useGetAssets } from "./hook";
+import { AssetPanelProps } from "./hook";
 import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
-import { SoursURL, TradeStatus } from "@loopring-web/common-resources";
+import { RedPacketClaimPanel } from "../../RedPacketPage/RedPacketClaimPanel";
+import { TradeBtnStatus, UploadedIcon } from "@loopring-web/common-resources";
 
 enum TabIndex {
   Tokens = "Tokens",
@@ -93,8 +93,8 @@ export const AssetPanel = withTranslation("common")(
               {...{
                 t,
                 ...rest,
-                assetBtnStatus,
                 ...assetTitleProps,
+                assetBtnStatus,
               }}
             />
           </StyleTitlePaper>
@@ -120,48 +120,31 @@ export const AssetPanel = withTranslation("common")(
             className={"MuiPaper-elevation2"}
           >
             <Box className="tableWrapper table-divide-short">
-              {assetBtnStatus === TradeBtnStatus.LOADING ? (
-                <Box
-                  flex={1}
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  height={"90%"}
-                >
-                  <img
-                    className="loading-gif"
-                    alt={"loading"}
-                    width="36"
-                    src={`${SoursURL}images/loading-line.gif`}
-                  />
-                </Box>
-              ) : (
-                <AssetsTable
-                  {...{
-                    rawData: assetsRawData,
-                    disableWithdrawList,
-                    showFilter: true,
-                    allowTrade,
-                    onSend,
-                    onReceive,
-
-                    getMarketArrayListCallback: getTokenRelatedMarketArray,
-                    hideInvestToken,
-                    forexMap: forexMap as any,
-                    hideSmallBalances,
-                    setHideLpToken,
-                    setHideSmallBalances,
-                    ...rest,
-                  }}
-                />
-              )}
+              <AssetsTable
+                {...{
+                  rawData: assetsRawData,
+                  disableWithdrawList,
+                  showFilter: true,
+                  allowTrade,
+                  onSend,
+                  onReceive,
+                  isLoading: assetBtnStatus === TradeBtnStatus.LOADING,
+                  getMarketArrayListCallback: getTokenRelatedMarketArray,
+                  hideInvestToken,
+                  forexMap: forexMap as any,
+                  hideSmallBalances,
+                  setHideLpToken,
+                  setHideSmallBalances,
+                  ...rest,
+                }}
+              />
             </Box>
           </StylePaper>
         )}
         {currentTab === TabIndex.Invests && <MyLiquidity isHideTotal={true} />}
-        {/*{!isMobile && currentTab === TabIndex.RedPacket && (*/}
-        {/*  <RedPacketClaimPanel />*/}
-        {/*)}*/}
+        {!isMobile && currentTab === TabIndex.RedPacket && (
+          <RedPacketClaimPanel />
+        )}
       </>
     );
   }

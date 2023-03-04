@@ -98,7 +98,9 @@ export const MuiLink = ({ colorBase }: any) => {
 
 export const MuiTextField = ({
   colorBase,
-}: any): { styleOverrides: ComponentsOverrides["MuiTextField"] } => {
+}: any): {
+  styleOverrides: ComponentsOverrides["MuiTextField"];
+} => {
   return {
     styleOverrides: {
       root: {
@@ -158,75 +160,7 @@ export const MuiToolbar = () => {
 export const MuiSwitch = (): {
   styleOverrides: ComponentsOverrides["MuiSwitch"];
 } => {
-  // const borderWidth = 2;
-  // const padding = borderWidth + 2;
-  // const width = pxToRem(46);
-  // const height = pxToRem(24);
-  // const size = pxToRem(16);
   return { styleOverrides: {} };
-  // const gap =  (38 - (borderWidth + padding)*2);
-  // return {
-  //     styleOverrides: {
-  //         root: {
-  //             width,
-  //             height,
-  //             padding: 0,
-  //             margin: pxToRem(8),
-  //             overflow: 'unset',
-  //             '& .MuiIconButton-root': {
-  //                 padding: pxToRem(padding),
-  //                 height: 'auto',
-  //                 width: 'auto'
-  //             },
-  //             '& .Mui-checked': {
-  //                 color: colorBase.textPrimary,
-  //                 // transform: `translateX(-${gap}px)`,
-  //                 '& + .MuiSwitch-track.MuiSwitch-track': {
-  //                     backgroundColor: 'transparent',
-  //                     // opacity: opacity,
-  //                     borderWidth,
-  //                     border: `solid ${colorBase.primary}`,
-  //                 },
-  //                 '& .MuiSwitch-thumb': {
-  //                     backgroundColor: colorBase.primary,
-  //                     opacity: opacity,
-  //                 }
-  //             },
-  //             '& .MuiIconButton-root.Mui-disabled': {
-  //                 '&.Mui-checked .MuiSwitch-thumb': {
-  //                     backgroundColor: colorBase.primary,
-  //                 },
-  //                 '& + .MuiSwitch-track': {
-  //                     backgroundColor: colorBase.divide,
-  //                     border: 'none',
-  //                     opacity: 0.6 * opacity,
-  //                 },
-  //                 '& .MuiSwitch-thumb': {
-  //                     backgroundColor: colorBase.textSecondary,
-  //                     opacity: .6 * opacity,
-  //                 }
-  //             }
-  //
-  //         },
-  //         colorPrimary: {},
-  //         track: {
-  //             borderRadius: 40,
-  //             border: `solid ${colorBase.textSecondary}`,
-  //             borderWidth,
-  //             backgroundColor: 'transparent', //${colorBase.textSecondary},
-  //             opacity: 1,
-  //             boxSizing: 'border-box',
-  //         },
-  //
-  //         thumb: {
-  //             boxShadow: 'none',
-  //             backgroundColor: colorBase.textSecondary, // this.palette.grey[400],
-  //             width: size,
-  //             height: size,
-  //         },
-  //
-  //     }
-  // }
 };
 
 export const MuiButton = ({
@@ -906,7 +840,7 @@ export const MuiDivider = ({ colorBase }: any) => {
   return {
     styleOverrides: {
       root: {
-        borderColor: `${colorBase.dividerColor}`,
+        borderColor: `${colorBase.divide}`,
         // margin: `${unit / 4 * 5}px 0`,
       },
     },

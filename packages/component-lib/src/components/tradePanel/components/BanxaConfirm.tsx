@@ -1,10 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
 import {
-  IBData,
   EmptyValueTag,
   FeeInfo,
+  IBData,
   TOAST_TIME,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   BanxaViewProps,
@@ -13,7 +14,6 @@ import {
   FeeToggle,
   FeeTokenItemWrapper,
   Toast,
-  TradeBtnStatus,
 } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";
@@ -21,7 +21,6 @@ import React from "react";
 export const BanxaConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
   tradeData,
   onTransferClick,
-  realAddr,
   disabled,
   isFeeNotEnough,
   handleFeeChange,

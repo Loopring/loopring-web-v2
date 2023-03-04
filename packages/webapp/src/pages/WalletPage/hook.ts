@@ -1,10 +1,10 @@
 import React from "react";
 import {
-  useAccount,
-  LoopringAPI,
-  useSystem,
   layer1Store,
+  LoopringAPI,
   store,
+  useAccount,
+  useSystem,
 } from "@loopring-web/core";
 
 import {
@@ -20,6 +20,7 @@ import {
   Protector,
 } from "@loopring-web/loopring-sdk";
 import { GuardianStep } from "@loopring-web/component-lib";
+
 export enum TxGuardianHistoryType {
   ADD_GUARDIAN = 51,
   GUARDIAN_CONFIRM_ADDITION = 52,

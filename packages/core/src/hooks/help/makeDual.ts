@@ -16,39 +16,24 @@ export const makeDualViewItem = (
   sellSymbol: string,
   buySymbol: string,
   market: sdk.DefiMarketInfo
-  // balance: sdk.DualBalance
 ): DualViewInfo => {
-  // strike is targetPrice
-  // ratio is  Interest
-  const {
-    expireTime,
-    strike,
-    ratio,
-    // base,
-    // // currency: base,
-    // currency: quote,
-    profit,
-    dualType,
-  } = info;
+  const { expireTime, strike, ratio, profit, dualType } = info;
   const { precisionForPrice } = market;
   myLog("makeDualViewItem", expireTime, strike, ratio, dualType);
   const [base, quote] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
       ? [sellSymbol, buySymbol]
       : [buySymbol, sellSymbol];
-  // const { baseProfitStep } = rule;
-  // baseProfit*ratio
+
   const settleRatio = toBig(profit)
     .times(ratio)
     .toFixed(6, BigNumber.ROUND_DOWN);
-  // myLog(settleRatio, settleRatio);
-  // const _baseProfitStep = Number(baseProfitStep);
+
   const apy = toBig(settleRatio)
     .div((expireTime - Date.now()) / 86400000)
     .times(36500); // year APY
   const term = moment().to(new Date(expireTime), true);
 
-  // const currentPrice tickerMap[market];
   myLog("dual", {
     apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
     settleRatio, //targetPrice
@@ -64,15 +49,12 @@ export const makeDualViewItem = (
     sellSymbol,
     buySymbol,
   });
-  // const apr =  info.dualPrice.ba
   return {
     apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + "%") as any,
-    settleRatio, // quote Interest
+    settleRatio,
     term,
     strike,
-    isUp: dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE ? true : false, //sdk.toBig(strike).gt(index.index) ? true : false,
-    // targetPrice,
-    // subscribeData,
+    isUp: dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE ? true : false,
     productId: info.productId,
     expireTime,
     currentPrice: {
@@ -97,16 +79,13 @@ export const makeDualOrderedItem = (
   buySymbol: string,
   currentPrice: number,
   market: sdk.DefiMarketInfo
-  // balance: sdk.DualBalance
 ): DualViewOrder => {
   const {
     settleRatio,
     dualType,
     strike,
-    // deliveryPrice,
     productId,
     createdAt,
-    // tokenInfoOrigin,
     timeOrigin: { expireTime },
   } = props;
   const [base, quote] =
@@ -126,7 +105,6 @@ export const makeDualOrderedItem = (
     term,
     strike: strike.toString(),
     isUp: dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE ? true : false,
-    // targetPrice,
     productId,
     enterTime: createdAt,
     expireTime,

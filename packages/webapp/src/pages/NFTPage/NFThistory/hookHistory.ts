@@ -1,18 +1,20 @@
-import React, { useState } from "react";
-import { LoopringAPI } from "@loopring-web/core";
+import React from "react";
+import {
+  LoopringAPI,
+  useAccount,
+  useSystem,
+  volumeToCountAsBigNumber,
+} from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
 import {
   NFTTableFilter,
   NFTTableProps,
+  NFTTradeFilter,
+  NFTTradeProps,
   TxnDetailProps,
   useSettings,
-  NFTTradeProps,
-  NFTTradeFilter,
 } from "@loopring-web/component-lib";
-import { useSystem } from "@loopring-web/core";
-import { useAccount } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { volumeToCountAsBigNumber } from "@loopring-web/core";
 import {
   RowConfig,
   UNIX_TIMESTAMP_FORMAT,

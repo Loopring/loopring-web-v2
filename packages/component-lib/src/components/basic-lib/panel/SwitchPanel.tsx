@@ -43,8 +43,9 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   .createRedPacket & {
     width: 100%;
 
+    ${({ ismobile }) => `${ismobile === "true" ? "width:380px;" : ""}`}
     .container {
-      > div {
+      & > div {
         width: 100%;
         flex: 1;
         display: flex;
@@ -53,20 +54,28 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
         .redPacket {
           justify-content: center;
         }
-      }
 
-      //width: 100%;
-      //justify-content: center;
+        .menu-panel {
+          max-width: 760px;
+          padding: 0
+            ${({ theme, ismobile }) =>
+              (ismobile === "true" ? 2 : 10) * theme.unit}px;
+          padding-top: ${({ theme }) => 2 * theme.unit}px;
+        }
+      }
     }
   }
 
   ${({ theme }) => toolBarPanel({ theme })}
   border-radius: ${({ theme }) => theme.unit}px;
+
   .react-swipeable-view-container {
     height: 100%;
+
     & > div {
       .container {
         flex: 1;
+
         .coinInput-wrap,
         .btnInput-wrap,
         .MuiOutlinedInput-root {
@@ -143,7 +152,7 @@ function _SwitchPanel<T extends string>(
       _width={rest._width}
       ismobile={isMobile ? "true" : "false"}
     >
-      {panelList.map((panel: PanelContent<T>) => {
+      {panelList.map((panel: PanelContent<T>, _index) => {
         return (
           <Box
             display={"flex"}
@@ -169,6 +178,7 @@ function _SwitchPanel<T extends string>(
     </SwipeableViewsStyled>
   );
 }
+
 export const SwitchPanel = React.memo(React.forwardRef(_SwitchPanel)) as <
   T extends string
 >(

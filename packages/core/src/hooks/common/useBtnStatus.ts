@@ -1,5 +1,6 @@
 import React from "react";
-import { BtnInfo, TradeBtnStatus } from "@loopring-web/component-lib";
+import { BtnInfo } from "@loopring-web/component-lib";
+import { TradeBtnStatus } from "@loopring-web/common-resources";
 
 export function useBtnStatus() {
   const [btnStatus, setBtnStatus] = React.useState<TradeBtnStatus>(
