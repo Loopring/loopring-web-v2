@@ -1,18 +1,17 @@
 import { Box } from "@mui/material";
 import React from "react";
 import {
-  CollectionMeta,
-  BackIcon,
   AccountStatus,
-  myLog,
+  BackIcon,
+  CollectionMeta,
 } from "@loopring-web/common-resources";
 import { useAccount, useModalData } from "@loopring-web/core";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
+  Button,
   LoadingBlock,
   StyledPaperBg,
-  Button,
 } from "@loopring-web/component-lib";
 import { CollectionManage } from "./CollectionManage";
 import { ImportCollection } from "./ImportCollection";

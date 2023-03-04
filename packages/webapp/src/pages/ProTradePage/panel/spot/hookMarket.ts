@@ -5,41 +5,38 @@ import {
   IBData,
   MarketType,
   myLog,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { toBig } from "@loopring-web/loopring-sdk";
 import {
-  account,
   MarketTradeData,
   TradeBaseType,
-  TradeBtnStatus,
   TradeProType,
   useOpenModals,
   useSettings,
   useToggle,
 } from "@loopring-web/component-lib";
 import {
-  usePageTradePro,
+  BIGO,
+  getPriceImpactInfo,
+  LoopringAPI,
+  PriceLevel,
+  store,
   useAccount,
-  useTokenMap,
+  useAmount,
+  usePageTradePro,
+  usePlaceOrder,
+  useSubmitBtn,
   useSystem,
   useToast,
-  LoopringAPI,
-  walletLayer2Service,
-  useAmount,
-  useSubmitBtn,
+  useTokenMap,
   useTokenPrices,
+  walletLayer2Service,
 } from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
-import {
-  getPriceImpactInfo,
-  PriceLevel,
-  usePlaceOrder,
-  store,
-  BIGO,
-} from "@loopring-web/core";
 import * as _ from "lodash";
-import { toBig } from "@loopring-web/loopring-sdk";
 
 export const useMarket = <C extends { [key: string]: any }>({
   market,
@@ -321,175 +318,163 @@ export const useMarket = <C extends { [key: string]: any }>({
     },
     [baseSymbol, quoteSymbol]
   );
-  const marketSubmit = React.useCallback(
-    async () => {
-      // const {calcTradeParams, request, tradeCalcProData,} = pageTradePro;
-      const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-      const { calcTradeParams, request } = pageTradePro;
-      // setAlertOpen(false);
-      // setConfirmOpen(false);
-      if (
-        !LoopringAPI.userAPI ||
-        !tokenMap ||
-        !exchangeInfo ||
-        !calcTradeParams ||
-        !request ||
-        account.readyState !== AccountStatus.ACTIVATED
-      ) {
-        setToastOpen({
-          open: true,
-          type: "error",
-          content: t("labelSwapFailed"),
-        });
-        setIsMarketLoading(false);
+  const marketSubmit = React.useCallback(async () => {
+    // const {calcTradeParams, request, tradeCalcProData,} = pageTradePro;
+    const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+    const { calcTradeParams, request } = pageTradePro;
+    // setAlertOpen(false);
+    // setConfirmOpen(false);
+    if (
+      !LoopringAPI.userAPI ||
+      !tokenMap ||
+      !exchangeInfo ||
+      !calcTradeParams ||
+      !request ||
+      account.readyState !== AccountStatus.ACTIVATED
+    ) {
+      setToastOpen({
+        open: true,
+        type: "error",
+        content: t("labelSwapFailed"),
+      });
+      setIsMarketLoading(false);
 
-        return;
-      }
+      return;
+    }
 
-      // const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
-      // const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
-      try {
-        const req: sdk.GetNextStorageIdRequest = {
-          accountId: account.accountId,
-          sellTokenId: request.sellToken.tokenId as number,
-        };
+    // const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
+    // const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
+    try {
+      const req: sdk.GetNextStorageIdRequest = {
+        accountId: account.accountId,
+        sellTokenId: request.sellToken.tokenId as number,
+      };
 
-        const storageId = await LoopringAPI.userAPI.getNextStorageId(
-          req,
+      const storageId = await LoopringAPI.userAPI.getNextStorageId(
+        req,
+        account.apiKey
+      );
+
+      const requestClone = _.cloneDeep(request);
+
+      requestClone.storageId = storageId.orderId;
+
+      myLog(requestClone);
+
+      const response: { hash: string } | any =
+        await LoopringAPI.userAPI.submitOrder(
+          requestClone,
+          account.eddsaKey.sk,
           account.apiKey
         );
 
-        const requestClone = _.cloneDeep(request);
+      myLog(response);
 
-        requestClone.storageId = storageId.orderId;
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        if ((response as sdk.RESULT_INFO).code === 114002) {
+          getAmount({ market });
+          resetTradeData(pageTradePro.tradeType);
+        }
+        setToastOpen({
+          open: true,
+          type: "error",
+          content: t("labelSwapFailed") + " : " + response.message,
+        });
+      } else {
+        await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__);
 
-        myLog(requestClone);
+        const resp = await LoopringAPI.userAPI.getOrderDetails(
+          {
+            accountId: account.accountId,
+            orderHash: response.hash,
+          },
+          account.apiKey
+        );
 
-        const response: { hash: string } | any =
-          await LoopringAPI.userAPI.submitOrder(
-            requestClone,
-            account.eddsaKey.sk,
-            account.apiKey
-          );
+        myLog("-----> resp:", resp);
 
-        myLog(response);
-
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          if ((response as sdk.RESULT_INFO).code === 114002) {
-            getAmount({ market });
-            resetTradeData(pageTradePro.tradeType);
-          }
-          setToastOpen({
-            open: true,
-            type: "error",
-            content: t("labelSwapFailed") + " : " + response.message,
-          });
-        } else {
-          await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__);
-
-          const resp = await LoopringAPI.userAPI.getOrderDetails(
-            {
-              accountId: account.accountId,
-              orderHash: response.hash,
-            },
-            account.apiKey
-          );
-
-          myLog("-----> resp:", resp);
-
-          if (resp.orderDetail?.status !== undefined) {
-            myLog("resp.orderDetail:", resp.orderDetail);
-            switch (resp.orderDetail?.status) {
-              case sdk.OrderStatus.cancelled:
-                const baseAmount = sdk.toBig(
-                  resp.orderDetail.volumes.baseAmount
-                );
-                const baseFilled = sdk.toBig(
-                  resp.orderDetail.volumes.baseFilled
-                );
-                const quoteAmount = sdk.toBig(
-                  resp.orderDetail.volumes.quoteAmount
-                );
-                const quoteFilled = sdk.toBig(
-                  resp.orderDetail.volumes.quoteFilled
-                );
-                const percentage1 = baseAmount.eq(BIGO)
-                  ? 0
-                  : baseFilled.div(baseAmount).toNumber();
-                const percentage2 = quoteAmount.eq(BIGO)
-                  ? 0
-                  : quoteFilled.div(quoteAmount).toNumber();
-                myLog(
-                  "percentage1:",
-                  percentage1,
-                  " percentage2:",
-                  percentage2
-                );
-                if (percentage1 === 0 || percentage2 === 0) {
-                  setToastOpen({
-                    open: true,
-                    type: "warning",
-                    content: t("labelSwapCancelled"),
-                  });
-                } else {
-                  setToastOpen({
-                    open: true,
-                    type: "success",
-                    content: t("labelSwapSuccess"),
-                  });
-                }
-                break;
-              case sdk.OrderStatus.processed:
+        if (resp.orderDetail?.status !== undefined) {
+          myLog("resp.orderDetail:", resp.orderDetail);
+          switch (resp.orderDetail?.status) {
+            case sdk.OrderStatus.cancelled:
+              const baseAmount = sdk.toBig(resp.orderDetail.volumes.baseAmount);
+              const baseFilled = sdk.toBig(resp.orderDetail.volumes.baseFilled);
+              const quoteAmount = sdk.toBig(
+                resp.orderDetail.volumes.quoteAmount
+              );
+              const quoteFilled = sdk.toBig(
+                resp.orderDetail.volumes.quoteFilled
+              );
+              const percentage1 = baseAmount.eq(BIGO)
+                ? 0
+                : baseFilled.div(baseAmount).toNumber();
+              const percentage2 = quoteAmount.eq(BIGO)
+                ? 0
+                : quoteFilled.div(quoteAmount).toNumber();
+              myLog("percentage1:", percentage1, " percentage2:", percentage2);
+              if (percentage1 === 0 || percentage2 === 0) {
+                setToastOpen({
+                  open: true,
+                  type: "warning",
+                  content: t("labelSwapCancelled"),
+                });
+              } else {
                 setToastOpen({
                   open: true,
                   type: "success",
                   content: t("labelSwapSuccess"),
                 });
-                break;
-              case sdk.OrderStatus.processing:
-                setToastOpen({
-                  open: true,
-                  type: "success",
-                  content: t("labelOrderProcessing"),
-                });
-                break;
-              default:
-                setToastOpen({
-                  open: true,
-                  type: "error",
-                  content: t("labelSwapFailed"),
-                });
-                break;
-            }
+              }
+              break;
+            case sdk.OrderStatus.processed:
+              setToastOpen({
+                open: true,
+                type: "success",
+                content: t("labelSwapSuccess"),
+              });
+              break;
+            case sdk.OrderStatus.processing:
+              setToastOpen({
+                open: true,
+                type: "success",
+                content: t("labelOrderProcessing"),
+              });
+              break;
+            default:
+              setToastOpen({
+                open: true,
+                type: "error",
+                content: t("labelSwapFailed"),
+              });
+              break;
           }
-          resetTradeData(pageTradePro.tradeType);
-          walletLayer2Service.sendUserUpdate();
         }
-      } catch (reason: any) {
-        sdk.dumpError400(reason);
-        setToastOpen({
-          open: true,
-          type: "error",
-          content: t("labelSwapFailed"),
-        });
+        resetTradeData(pageTradePro.tradeType);
+        walletLayer2Service.sendUserUpdate();
       }
+    } catch (reason: any) {
+      sdk.dumpError400(reason);
+      setToastOpen({
+        open: true,
+        type: "error",
+        content: t("labelSwapFailed"),
+      });
+    }
 
-      // setOutput(undefined)
-      await sdk.sleep(__SUBMIT_LOCK_TIMER__);
-      setIsMarketLoading(false);
-    },
-    [
-      account.readyState,
-      tokenMap,
-      marketTradeData,
-      setIsMarketLoading,
-      setToastOpen,
-      setMarketTradeData,
-    ]
-  );
+    // setOutput(undefined)
+    await sdk.sleep(__SUBMIT_LOCK_TIMER__);
+    setIsMarketLoading(false);
+  }, [
+    account.readyState,
+    tokenMap,
+    marketTradeData,
+    setIsMarketLoading,
+    setToastOpen,
+    setMarketTradeData,
+  ]);
 
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus;
@@ -562,7 +547,9 @@ export const useMarket = <C extends { [key: string]: any }>({
   const { tokenPrices } = useTokenPrices();
   const isSmallOrder =
     marketTradeData && marketTradeData.quote.tradeValue
-      ? tokenPrices[marketTradeData.quote.belong] * marketTradeData.quote.tradeValue < 100
+      ? tokenPrices[marketTradeData.quote.belong] *
+          marketTradeData.quote.tradeValue <
+        100
       : false;
   const priceAlertCallBack = React.useCallback(
     (confirm: boolean) => {
@@ -609,7 +596,6 @@ export const useMarket = <C extends { [key: string]: any }>({
     },
     [marketSubmit]
   );
-  
 
   const onSubmitBtnClick = React.useCallback(async () => {
     setIsMarketLoading(true);
@@ -669,7 +655,7 @@ export const useMarket = <C extends { [key: string]: any }>({
     smallOrderAlertOpen,
     secondConfirmationOpen,
     setToastOpen,
-    priceAlertCallBack
+    priceAlertCallBack,
     // marketTicker,
   };
 };

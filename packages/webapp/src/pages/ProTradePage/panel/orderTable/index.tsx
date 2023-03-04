@@ -17,9 +17,9 @@ import {
 } from "@loopring-web/common-resources";
 import { useOrderList } from "./hookTable";
 import {
+  tradeProSettings as tradeProSettingsReduce,
   useAccount,
   useGetOrderHistorys,
-  tradeProSettings as tradeProSettingsReduce,
 } from "@loopring-web/core";
 import styled from "@emotion/styled";
 import { useHistory } from "react-router-dom";

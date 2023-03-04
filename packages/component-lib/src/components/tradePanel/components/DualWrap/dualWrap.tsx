@@ -11,6 +11,7 @@ import {
   IBData,
   Info2Icon,
   myLog,
+  TradeBtnStatus,
   UpColor,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
@@ -22,7 +23,6 @@ import { useSettings } from "../../../../stores";
 import styled from "@emotion/styled";
 import { ButtonStyle } from "../Styled";
 import { InputCoin } from "../../../basic-lib";
-import { TradeBtnStatus } from "../../Interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 const BoxChartStyle = styled(Box)(({ theme }: any) => {
@@ -120,11 +120,13 @@ const BoxChartStyle = styled(Box)(({ theme }: any) => {
     }
 `;
 });
+
 enum DisplayMode {
   nonBeginnerMode = 1,
   beginnerModeStep1,
   beginnerModeStep2,
 }
+
 export type DualDetailType = {
   dualViewInfo: DualViewBase;
   currentPrice: DualCurrentPrice;
@@ -694,8 +696,10 @@ export const DualWrap = <
     ...tokenSellProps,
     handleError: handleError as any,
     handleCountChange,
+    isShowCoinInfo: true,
+    isShowCoinIcon: true,
     ...rest,
-  };
+  } as any;
   console.log("propsSell", dualCalcData);
   const label = React.useMemo(() => {
     if (btnInfo?.label) {

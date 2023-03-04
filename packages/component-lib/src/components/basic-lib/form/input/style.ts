@@ -6,14 +6,70 @@ import {
   ButtonProps,
   RadioGroup,
   TextareaAutosize,
+  TextField as MuiTextField,
+  TextFieldProps,
 } from "@mui/material";
 import CurrencyInput from "react-currency-input-field";
+
 import { InputSize } from "./Interface";
 
+export const TextField = styled(MuiTextField)<TextFieldProps>`
+  && .MuiOutlinedInput-root {
+    ${({ size }) =>
+      size == "large"
+        ? `
+      height:var(--input-height-large);
+      font-size:2rem;
+      .MuiInputAdornment-root{
+       svg{
+        height:var(--btn-icon-size);
+        width: var(--btn-icon-size);
+       }
+       
+      }
+    `
+        : ``};
+  }
+
+  .MuiInputAdornment-root {
+    padding: 0 ${({ theme }) => theme.unit}px;
+  }
+
+  label + & {
+    //margin-top: 24px;
+    margin-top: 0;
+  }
+
+  && {
+    .MuiSelect-nativeInput + svg {
+      position: absolute;
+      right: 0.4rem;
+      top: ${({ theme }) => theme.unit}px;
+      color: var(--color-text-secondary);
+    }
+
+    &:not(.MuiFormControl-fullWidth) {
+      max-width: 260px;
+    }
+
+    text-overflow: fade();
+  }
+
+  &:focus {
+    ${({ theme }) => theme.border.defaultFrame({ c_key: "focus", d_R: 0.5 })};
+    outline: transparent;
+  }
+`;
+// export MuiTextField = styled(MuTextField)<>``;
 export const IWrap = styled(Box)<
-  BoxProps & { size: "middle" | "small"; isMobile?: boolean }
+  BoxProps & {
+    size: "middle" | "small";
+    isMobile?: boolean;
+    fullWidth?: boolean;
+  }
 >`
   ${({ theme }) => theme.border.defaultFrame({ c_key: "var(--opacity)" })};
+  ${({ fullWidth }) => fullWidth && `width:100%`};
 
   .label-wrap {
     white-space: nowrap;
@@ -37,13 +93,16 @@ export const IWrap = styled(Box)<
     .max-allow {
       text-decoration: underline dotted;
       color: var(--color-secoundary);
+
       &:hover {
         color: var(--color-primary);
       }
     }
+
     .no-balance {
       text-decoration: none;
     }
+
     .disabled {
       color: var(--color-text-disable);
     }
@@ -56,7 +115,7 @@ export const IWrap = styled(Box)<
     background: var(--color-box);
     border-radius: ${({ theme }) => theme.unit / 2}px;
     margin-top: ${({ theme }) => `${theme.unit / 2}px`};
-    height: var(--btn-Input-height);
+    height: var(--input-height-large);
 
     ::before {
       content: "";
@@ -93,6 +152,7 @@ export const IWrap = styled(Box)<
       justify-content: flex-start;
     }
   }
+
   ${({ size, theme, isMobile }) => {
     if (size === InputSize.small) {
       return `
@@ -131,7 +191,7 @@ export const IWrap = styled(Box)<
           }
           .coinInput-wrap, .btnInput-wrap{
               font-size: ${theme.fontDefault.h4};
-              height: var(--btn-Input-height);
+              height: var(--input-height-large);
               &.text-small{
                 font-size: ${theme.fontDefault.body1};
               }
@@ -144,7 +204,11 @@ export const IWrap = styled(Box)<
     }
   }};
 ` as (
-  props: BoxProps & { size: "middle" | "small"; isMobile?: boolean }
+  props: BoxProps & {
+    size: "middle" | "small";
+    isMobile?: boolean;
+    fullWidth?: boolean;
+  }
 ) => JSX.Element;
 export const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
   & {
@@ -184,6 +248,7 @@ export const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
     text-overflow: ellipsis;
     font-size: ${({ theme }) => theme.fontDefault.h5};
     color: var(--color-text-primary);
+
     .MuiButton-endIcon {
       color: var(--color-text-third);
     }
@@ -207,10 +272,12 @@ export const IInput = styled(CurrencyInput)`
   ::placeholder {
     color: var(--color-text-secondary);;
   }
-  :disabled{
+
+  :disabled {
     color: var(--color-text-disable);
   }
-  width: 100%; 
+
+  width: 100%;
   height: 100%;
   border: 0;
   margin: 0;
@@ -225,16 +292,19 @@ export const IInput = styled(CurrencyInput)`
   letter-spacing: inherit;
   animation-duration: 10ms;
   -webkit-tap-highlight-color: transparent;
+
   + label {
     height: 0;
     width: 0;
   }
+
   :focus {
     outline: 0;
+
     & + label::before {
-      content:'';
+      content: '';
       position: absolute;
-      top:0;
+      top: 0;
       left: 0;
       right: 0;
       bottom: 0;
@@ -245,6 +315,7 @@ export const IInput = styled(CurrencyInput)`
         })};`};
     }
   }
+
   .error &:focus {
     & + label::before {
       ${({ theme }) =>
@@ -256,10 +327,10 @@ export const IInput = styled(CurrencyInput)`
     text-align: right;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-   
+
 
     :focus {
-      
+
     }
   }
 
@@ -267,10 +338,10 @@ export const IInput = styled(CurrencyInput)`
     text-align: left;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    
+
 
     :focus {
-     
+
     }
   }
 }` as typeof CurrencyInput;
@@ -279,6 +350,7 @@ export const TextareaAutosizeStyled = styled(TextareaAutosize)`
   label + & {
     margin-top: ${({ theme }) => theme.unit}px;
   }
+
   background: (var(--opacity));
   font-family: inherit;
   color: inherit;
@@ -289,10 +361,12 @@ export const TextareaAutosizeStyled = styled(TextareaAutosize)`
       c_key: theme.colorBase.border,
       d_R: 0.5,
     })};
+
   &:focus {
     ${({ theme }) => theme.border.defaultFrame({ c_key: "focus", d_R: 0.5 })};
     outline: transparent;
   }
+
   &:disabled {
     line-height: 1.5em;
     border: 0;
@@ -303,6 +377,11 @@ export const TextareaAutosizeStyled = styled(TextareaAutosize)`
         c_key: theme.colorBase.opacity,
         d_R: 0.5,
       })};
+  }
+
+  &.error {
+    ${({ theme }) =>
+      theme.border.defaultFrame({ c_key: "var(--color-error)", d_R: 0.5 })};
   }
 ` as typeof TextareaAutosize;
 

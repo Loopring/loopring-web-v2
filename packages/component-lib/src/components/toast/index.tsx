@@ -1,18 +1,22 @@
 import {
-  Snackbar,
   Alert,
   AlertTitle,
-  Typography,
+  Box,
+  Snackbar,
   SnackbarOrigin,
+  Typography,
 } from "@mui/material";
 import {
-  GoodIcon,
   AlertIcon,
   ErrorIcon,
+  GoodIcon,
   InfoIcon,
+  SnackbarMessage,
 } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { withTranslation, WithTranslation } from "react-i18next";
+import React from "react";
+import { VendorIconItem } from "../tradePanel";
 
 export type TOASTOPEN = {
   open: boolean;
@@ -89,3 +93,55 @@ export const Toast = withTranslation("common")(
     );
   }
 );
+
+export const NoticeSnack = ({
+  messageInfo,
+  handleClose,
+  open,
+  actionEle,
+}: {
+  open: boolean;
+  handleClose: () => void;
+  actionEle: JSX.Element;
+  messageInfo: SnackbarMessage;
+}) => {
+  return (
+    <Snackbar
+      key={messageInfo ? messageInfo.key : undefined}
+      open={open}
+      autoHideDuration={20000}
+      sx={{
+        pointerEvents: "all",
+        flexDirection: "column",
+        top: "80% !important",
+        height: "fit-content",
+        ".MuiPaper-root": { background: "var(--color-pop-bg)" },
+      }}
+      onClose={handleClose}
+      message={
+        <Box display={"flex"} flexDirection={"column"}>
+          {messageInfo.svgIcon &&
+            VendorIconItem({ svgIcon: messageInfo.svgIcon })}
+          <Typography component={"span"} display={"block"} marginY={1}>
+            {messageInfo ? messageInfo.message : undefined}
+          </Typography>
+        </Box>
+      }
+      action={actionEle}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+    />
+  );
+};
+export const NoticePanelSnackBar = ({
+  noticeSnacksElEs,
+}: {
+  noticeSnacksElEs: Array<typeof NoticeSnack>;
+}) => {
+  return (
+    <>
+      {noticeSnacksElEs.map((item, index) => {
+        return <React.Fragment key={index}>{item}</React.Fragment>;
+      })}
+    </>
+  );
+};

@@ -7,6 +7,7 @@ import { OrderHistoryTable } from "./orderHistoryTable";
 import { RawDataTransactionItem, TransactionTable } from "./transactionsTable";
 import { OrderHistoryRawDataItem } from "./orderHistoryTable/OrderHistoryTable";
 import { TradeStatus, TradeTypes } from "@loopring-web/common-resources";
+import { TradeRaceTable } from "./index";
 
 const Style = styled.div`
   flex: 1;
@@ -115,6 +116,28 @@ const rawDataOrderHistory: OrderHistoryRawDataItem[] = [
 ];
 
 const rawDataTransaction: RawDataTransactionItem[] = [];
+const rawRank: any[] = [
+  {
+    rank: 1,
+    address: "0x...1",
+    xxx: "xxx",
+  },
+  {
+    rank: 2,
+    address: "0x...1",
+    xxx: "xxx",
+  },
+  {
+    rank: 3,
+    address: "0x...1",
+    xxx: "xxx",
+  },
+  {
+    rank: 4,
+    address: "0x...1",
+    xxx: "xxx",
+  },
+];
 
 const Template: Story<any> = withTranslation()((args: any) => {
   const { type } = args;
@@ -126,6 +149,8 @@ const Template: Story<any> = withTranslation()((args: any) => {
             <QuoteTable {...args} />
           ) : type === "orderHistory" ? (
             <OrderHistoryTable {...args} />
+          ) : type === "rank" ? (
+            <TradeRaceTable {...args} />
           ) : (
             <TransactionTable {...args} />
           )}
@@ -141,6 +166,8 @@ export const OrderHistory = Template.bind({});
 export const Quote = Template.bind({});
 // @ts-ignore
 export const Transaction = Template.bind({});
+// @ts-ignore
+export const TradeRace = Template.bind({});
 
 Quote.args = {
   rawData: rawDatacoinBPrice,
@@ -166,6 +193,24 @@ Transaction.args = {
     pageSize: 5,
   },
   showFilter: true,
+};
+TradeRace.args = {
+  rawData: rawRank,
+  type: "rank",
+  column: [
+    {
+      key: "rank",
+      label: "rank",
+    },
+    {
+      key: "address",
+      label: "address",
+    },
+    {
+      key: "xxx",
+      label: "xxx",
+    },
+  ],
 };
 export default {
   title: "components/TableList",

@@ -1,5 +1,6 @@
 import {
   DeFiCalcData,
+  DeFiChgType,
   EmptyValueTag,
   ExchangeIcon,
   getValuePrecisionThousand,
@@ -7,7 +8,7 @@ import {
   myLog,
   OrderListIcon,
   ReverseIcon,
-  DeFiChgType,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { DeFiWrapProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
@@ -15,7 +16,6 @@ import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { InputCoin } from "../../../basic-lib";
 import { ButtonStyle, IconButtonStyled } from "../Styled";
-import { TradeBtnStatus } from "../../Interface";
 import { CountDownIcon } from "../tool/Refresh";
 import { useHistory } from "react-router-dom";
 import BigNumber from "bignumber.js";
@@ -158,23 +158,27 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     subLabel: t("tokenMax"),
     emptyText: t("tokenSelectToken"),
     placeholderText: "0.00",
+    isShowCoinInfo: true,
+    isShowCoinIcon: true,
     maxAllow: true,
     ...tokenSellProps,
     handleError: handleError as any,
-    handleCountChange,
+    handleCountChange: handleCountChange as any,
     ...rest,
-  };
+  } as any;
   const propsBuy = {
     label: t("tokenEnterReceiveToken"),
     // subLabel: t('tokenHave'),
     emptyText: t("tokenSelectToken"),
     placeholderText: "0.00",
+    isShowCoinInfo: true,
+    isShowCoinIcon: true,
     maxAllow: false,
     ...tokenBuyProps,
     // handleError,
     handleCountChange,
     ...rest,
-  };
+  } as any;
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split("|");
@@ -249,7 +253,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         alignSelf={"stretch"}
         alignItems={"stretch"}
       >
-        <InputCoin<any, I, any>
+        <InputCoin<T, I, any>
           ref={coinSellRef}
           disabled={getDisabled}
           {...{
@@ -275,7 +279,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             />
           </IconButtonStyled>
         </Box>
-        <InputCoin<any, I, any>
+        <InputCoin<T, I, any>
           ref={coinBuyRef}
           disabled={getDisabled}
           {...{

@@ -1,11 +1,21 @@
 import {
   AccountStatus,
   CollectionMeta,
-  globalSetup,
+  NFTWholeINFO,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import { NFTList, useSettings } from "@loopring-web/component-lib";
-import { getIPFSString, useAccount, useSystem } from "@loopring-web/core";
+import {
+  NFTList,
+  useOpenModals,
+  useSettings,
+  useToggle,
+} from "@loopring-web/component-lib";
+import {
+  getIPFSString,
+  useAccount,
+  useModalData,
+  useSystem,
+} from "@loopring-web/core";
 import React from "react";
 import { useMyNFT } from "./useMyNFT";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -13,19 +23,28 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { Tab, Tabs, Typography } from "@mui/material";
 import { useLocation } from "react-router";
 
+export type MyNFTListProps<NFT> = {
+  collectionMeta: CollectionMeta | undefined;
+  collectionPage?: number;
+  myNFTPage?: number;
+  size?: string;
+  isSelect?: boolean;
+  selected?: NFT[];
+  isMultipleSelect?: boolean;
+  onSelect: (value: NFT) => void;
+};
 export const MyNFTList = withTranslation("common")(
-  ({
+  <NFT extends NFTWholeINFO>({
     collectionMeta,
     collectionPage,
     myNFTPage,
     size,
+    isSelect,
+    selected,
+    isMultipleSelect,
+    onSelect,
     t,
-  }: {
-    collectionMeta: CollectionMeta | undefined;
-    collectionPage?: number;
-    myNFTPage?: number;
-    size?: string;
-  } & WithTranslation) => {
+  }: MyNFTListProps<NFT> & WithTranslation) => {
     const { baseURL } = useSystem();
     const { isMobile } = useSettings();
     const { status: accountStatus, account } = useAccount();
@@ -33,12 +52,31 @@ export const MyNFTList = withTranslation("common")(
     const searchParam = new URLSearchParams(search);
     const [tab, setTab] =
       React.useState<sdk.NFT_PREFERENCE_TYPE | "all">("all");
-
     const nftProps = useMyNFT({
       collectionMeta,
       collectionPage,
       myNFTPage,
     });
+    const {
+      // setShowNFTDetail,
+      // setShowAccount,
+      setShowNFTDeploy,
+      setShowNFTDetail,
+      setShowNFTTransfer,
+      setShowNFTWithdraw,
+      setShowTradeIsFrozen,
+      setShowRedPacket,
+      setShowAccount,
+      setNFTMetaNotReady,
+      // modals: { isShowNFTDetail },
+    } = useOpenModals();
+    const {
+      updateNFTDeployData,
+      updateNFTTransferData,
+      updateNFTWithdrawData,
+    } = useModalData();
+    const { toggle } = useToggle();
+
     const onPageChange = React.useCallback(
       (page, filter) => {
         nftProps.onPageChange(page, { ...filter });
@@ -127,7 +165,11 @@ export const MyNFTList = withTranslation("common")(
           {...{
             ...nftProps,
             baseURL,
-            onClick: nftProps.onDetail,
+            onClick: isSelect
+              ? (value: NFT) => {
+                  onSelect(value);
+                }
+              : nftProps.onDetail,
             getIPFSString,
           }}
           onPageChange={(page) => {
@@ -140,10 +182,44 @@ export const MyNFTList = withTranslation("common")(
             );
             onPageChange(page, filter);
           }}
+          account={account}
+          isEdit={false}
+          isSelectOnly={isSelect}
+          isMultipleSelect={isMultipleSelect}
+          selected={selected}
+          toggle={toggle}
+          // @ts-ignore
+          setShowNFTDeploy={(item: any) => {
+            updateNFTDeployData({ ...item });
+            setShowNFTDeploy({ isShow: true, info: { ...{ item } } });
+            setShowAccount({ isShow: false });
+          }}
+          setShowNFTDetail={(item: any) => {
+            // updateNFTDetail({...item})
+            setShowNFTDetail({ isShow: true, info: { ...{ item } } });
+            setShowAccount({ isShow: false });
+          }}
+          setShowNFTTransfer={(item: any) => {
+            updateNFTTransferData({ ...item });
+            setShowNFTTransfer({ isShow: false, info: { ...{ item } } });
+            setShowAccount({ isShow: false });
+          }}
+          setShowNFTWithdraw={(item: any) => {
+            updateNFTWithdrawData({ ...item });
+            setShowNFTWithdraw({ isShow: false, info: { ...{ item } } });
+            setShowAccount({ isShow: false });
+          }}
+          setShowTradeIsFrozen={setShowTradeIsFrozen}
+          setShowRedPacket={(item: any) => {
+            setShowRedPacket({ isShow: true, info: { ...item } });
+            setShowAccount({ isShow: false });
+          }}
+          setShowAccount={setShowAccount}
+          setNFTMetaNotReady={setNFTMetaNotReady}
           isManage={false}
           size={size ?? isMobile ? "small" : "large"}
         />
       </>
     );
   }
-);
+) as <NFT extends NFTWholeINFO>(pros: MyNFTListProps<NFT>) => JSX.Element;

@@ -4,18 +4,21 @@ import {
   FormControlLabel as MuiFormControlLabel,
   FormLabel,
   Grid,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
   DropdownIconStyled,
+  ImageUploadWrapper,
   IpfsFile,
   IPFSSourceUpload,
+  MediaTYPES,
   MintNFTBlock,
-  NFTMintProps,
-  NFTMetaProps,
   NFTMetaBlockProps,
+  NFTMetaProps,
+  NFTMintProps,
   TextareaAutosizeStyled,
-  ImageUploadWrapper,
+  TYPES,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
@@ -24,16 +27,22 @@ import {
   CheckedIcon,
   CollectionMeta,
   FeeInfo,
+  Info2Icon,
   MintTradeNFT,
   NFTMETA,
   TransErrorHelp,
 } from "@loopring-web/common-resources";
-import { LoopringAPI, NFT_MINT_VALUE, useSystem } from "@loopring-web/core";
+import {
+  getIPFSString,
+  LoopringAPI,
+  NFT_MINT_VALUE,
+  useSystem,
+} from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 const MaxSize = 10485760;
+const MaxMediaSize = 10485760 * 5;
 
-const TYPES = ["jpeg", "jpg", "gif", "png"];
 export const MetaNFTPanel = <
   Me extends NFTMETA,
   Mi extends MintTradeNFT<I>,
@@ -43,21 +52,20 @@ export const MetaNFTPanel = <
 >({
   nftMetaProps,
   nftMintProps,
-  ipfsMediaSources,
+  keys,
   onFilesLoad,
   onDelete,
   nftMintValue,
   errorOnMeta,
-}: // collectionInputProps,
-Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
+}: Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
   feeInfo: C;
   errorOnMeta: undefined | sdk.RESULT_INFO;
   nftMintValue: NFT_MINT_VALUE<I>;
   nftMintProps: NFTMintProps<Me, Mi, C>;
   nftMetaProps: NFTMetaProps<Me, Co, C>;
-  onFilesLoad: (value: IpfsFile) => void;
-  onDelete: () => void;
-  ipfsMediaSources: IpfsFile | undefined;
+  onFilesLoad: (key: string, value: IpfsFile) => void;
+  onDelete: (keys: string[]) => void;
+  keys: { [key: string]: undefined | IpfsFile };
 }) => {
   const { t } = useTranslation("common");
   const { baseURL } = useSystem();
@@ -80,29 +88,92 @@ Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
         flex={1}
       >
         <Grid item xs={12} md={5} position={"relative"}>
-          <FormLabel>
-            <Typography variant={"body2"} marginBottom={1}>
-              <Trans i18nKey={"labelIPFSUploadTitle"}>
-                Upload Image
+          <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
+            <FormLabel>
+              <Tooltip
+                title={t("labelIPFSUploadTooltips").toString()}
+                placement={"top"}
+              >
                 <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"error"}
+                  variant={"body2"}
+                  marginBottom={1}
+                  display={"inline-flex"}
+                  alignItems={"center"}
                 >
-                  {"\uFE61"}
+                  <Trans i18nKey={"labelIPFSUploadTitle"}>
+                    Cover Image
+                    <Typography
+                      component={"span"}
+                      variant={"inherit"}
+                      color={"error"}
+                    >
+                      {"\uFE61"}
+                    </Typography>
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                  </Trans>
                 </Typography>
-              </Trans>
-            </Typography>
-          </FormLabel>
+              </Tooltip>
+            </FormLabel>
+            <Box maxWidth={240} maxHeight={240}>
+              <IPFSSourceUpload
+                fullSize={true}
+                value={keys?.image}
+                maxSize={MaxSize}
+                types={TYPES}
+                getIPFSString={getIPFSString}
+                baseURL={baseURL}
+                onChange={(value) => {
+                  onFilesLoad("image", value);
+                }}
+                onDelete={() => onDelete(["image"])}
+              />
+            </Box>
+          </Box>
+          <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
+            <FormLabel>
+              <Tooltip
+                title={t("labelIPFSUploadMediaTooltips").toString()}
+                placement={"top"}
+              >
+                <Typography
+                  variant={"body2"}
+                  marginBottom={1}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <Trans i18nKey={"labelIPFSUploadMediaTitle"}>
+                    Multimedia Content (image, audio, video and 3D)
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                  </Trans>
+                </Typography>
+              </Tooltip>
+            </FormLabel>
+            <Box maxWidth={320}>
+              <IPFSSourceUpload
+                height={"40%"}
+                fullSize={true}
+                value={keys.animationUrl}
+                maxSize={MaxMediaSize}
+                types={[]}
+                messageTypes={MediaTYPES}
+                getIPFSString={getIPFSString}
+                baseURL={baseURL}
+                onChange={(value) => {
+                  onFilesLoad("animationUrl", value);
+                }}
+                onDelete={() => onDelete(["animationUrl"])}
+              />
+            </Box>
+          </Box>
 
-          <IPFSSourceUpload
-            fullSize={true}
-            value={ipfsMediaSources}
-            maxSize={MaxSize}
-            types={TYPES}
-            onChange={onFilesLoad}
-            onDelete={onDelete}
-          />
           <Box marginTop={1}>
             <MuiFormControlLabel
               control={
@@ -126,7 +197,9 @@ Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
             baseURL={baseURL}
             domain={domain}
             handleMintDataChange={nftMintProps.handleMintDataChange}
-            disabled={ipfsMediaSources?.isProcessing}
+            disabled={
+              keys["image"]?.isProcessing || keys["animationUrl"]?.isProcessing
+            }
             nftMeta={nftMintValue.nftMETA as Me}
             mintData={nftMintValue.mintData as Mi}
             feeInfo={nftMintProps.feeInfo}

@@ -1,11 +1,11 @@
 import {
   CloseIcon,
-  TradeNFT,
   LoadingIcon,
   myLog,
   SoursURL,
+  TradeBtnStatus,
+  TradeNFT,
 } from "@loopring-web/common-resources";
-import { TradeBtnStatus } from "../Interface";
 import { useTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
@@ -13,11 +13,10 @@ import {
   EmptyDefault,
   IconClearStyled,
   InputSize,
-  TextField,
   TGItemData,
   ToggleButtonGroup,
 } from "../../";
-import { Button, useSettings } from "../../../index";
+import { Button, TextField, useSettings } from "../../../index";
 import { NFTDepositViewProps } from "./Interface";
 import { NFTInput } from "./BasicANFTTrade";
 import { NFTType } from "@loopring-web/loopring-sdk";

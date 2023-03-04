@@ -10,7 +10,7 @@ import { Card } from "./Card";
 import { useHistory } from "react-router-dom";
 import { LoopringAPI } from "@loopring-web/core";
 import { useSettings } from "@loopring-web/component-lib";
-import { ContainerStyle, TitleTypography, ContainerStyled } from "./style";
+import { ContainerStyle, ContainerStyled, TitleTypography } from "./style";
 
 const ButtonStyled = styled(Button)`
   display: flex;

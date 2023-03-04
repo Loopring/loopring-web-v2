@@ -5,6 +5,13 @@ import {
   AddAssetItem,
   Button,
   CheckActiveStatus,
+  ClaimWithdraw_Denied,
+  ClaimWithdraw_Failed,
+  ClaimWithdraw_First_Method_Denied,
+  ClaimWithdraw_In_Progress,
+  ClaimWithdraw_Submit,
+  ClaimWithdraw_WaitForAuth,
+  ContinuousBanxaOrder,
   CreateAccount_Approve_Denied,
   CreateAccount_Approve_Submit,
   CreateAccount_Approve_WaitForAuth,
@@ -65,6 +72,11 @@ import {
   NFTWithdraw_WaitForAuth,
   NoAccount,
   QRAddressPanel,
+  RedPacketOpen_Claim_Failed,
+  RedPacketOpen_Claim_In_Progress,
+  RedPacketOpen_Failed,
+  RedPacketOpen_In_Progress,
+  RedPacketSend_Claim_Success,
   RedPacketSend_Failed,
   RedPacketSend_First_Method_Denied,
   RedPacketSend_In_Progress,
@@ -75,6 +87,7 @@ import {
   SendAssetItem,
   SendNFTAsset,
   ThirdPanelReturn,
+  Transfer_banxa_confirm,
   Transfer_Failed,
   Transfer_First_Method_Denied,
   Transfer_In_Progress,
@@ -111,6 +124,7 @@ import {
   Account,
   AccountStatus,
   AddAssetList,
+  AssetsRawDataItem,
   Bridge,
   copyToClipBoard,
   FeeInfo,
@@ -118,20 +132,25 @@ import {
   SendAssetList,
   SendNFTAssetList,
   TradeTypes,
+  VendorProviders,
 } from "@loopring-web/common-resources";
 import {
+  banxaService,
   depositServices,
   goActiveAccount,
   LAST_STEP,
   lockAccount,
   mintService,
+  offFaitService,
   onchainHashInfo,
+  OrderENDReason,
   store,
   unlockAccount,
   useAccount,
   useActiveAccount,
   useCheckActiveStatus,
   useCollectionAdvanceMeta,
+  useCreateRedPacket,
   useExportAccount,
   useForceWithdraw,
   useModalData,
@@ -141,6 +160,7 @@ import {
   useNFTWithdraw,
   useNotify,
   useRampTransPost,
+  useRedPacketScanQrcodeSuccess,
   useReset,
   useSystem,
   useToast,
@@ -151,10 +171,12 @@ import {
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
+import { ImportRedPacket } from "./components/QRCodeScanner";
+import { useClaimConfirm } from "../../hooks/useractions/useClaimConfirm";
 
 export function useAccountModalForUI({
   t,
-  // onClose,
+  assetsRawData,
   isLayer1Only = false,
   depositProps,
   ...rest
@@ -164,10 +186,12 @@ export function useAccountModalForUI({
   isLayer1Only?: boolean;
   depositProps: DepositProps<any, any>;
   account: Account;
+  assetsRawData: AssetsRawDataItem[];
   // onClose?: any;
 }) {
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
+
   const { updateWalletLayer2 } = useWalletLayer2();
   const { processRequestRampTransfer } = useRampTransPost();
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
@@ -193,26 +217,29 @@ export function useAccountModalForUI({
     transferValue,
     withdrawValue,
     forceWithdrawValue,
+    claimValue,
   } = useModalData();
 
   const { chainId, allowTrade } = useSystem();
 
   const { account, addressShort, shouldShow, setShouldShow } = useAccount();
+  const redPacketScanQrcodeSuccessProps = useRedPacketScanQrcodeSuccess();
 
   const {
     exportAccountAlertText,
     exportAccountToastOpen,
     setExportAccountToastOpen,
   } = useExportAccount();
-  const {
-    toastOpen: collectionToastOpen,
-    setToastOpen: setCollectionToastOpen,
-    closeToast: collectionToastClose,
-  } = useToast();
+  const { toastOpen, setToastOpen, closeToast } = useToast();
 
   const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance();
+  const { retryBtn: creatRedPacketRetryBtn } = useCreateRedPacket({
+    assetsRawData,
+    isShow: false,
+  });
+
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({
-    setCollectionToastOpen,
+    setCollectionToastOpen: setToastOpen,
   });
   const { vendorListBuy, banxaRef } = useVendor();
   // const { nftMintProps } = useNFTMint();
@@ -222,6 +249,7 @@ export function useAccountModalForUI({
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
   const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
+  const { claimProps, retryBtn: claimRetryBtn } = useClaimConfirm();
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
@@ -598,6 +626,7 @@ export function useAccountModalForUI({
   }, [isShowAccount?.info, setShowAccount]);
 
   const { checkActiveStatusProps } = useCheckActiveStatus<FeeInfo>({
+    setToastOpen,
     onDisconnect,
     isDepositing: !!chainInfos?.depositHashes[account?.accAddress]?.length,
     chargeFeeTokenList: activeAccountProps.chargeFeeTokenList as FeeInfo[],
@@ -608,6 +637,49 @@ export function useAccountModalForUI({
   const accountList = React.useMemo(() => {
     // const isShowAccount?.info.
     return Object.values({
+      [AccountStep.ContinuousBanxaOrder]: {
+        view: (
+          <ContinuousBanxaOrder
+            title={t("labelBanxaTitleCreateAgain")}
+            btnInfo={{
+              isLoading: isShowAccount?.info?.isBanxaLaunchLoading,
+              callback: () => {
+                setShouldShow(false);
+                setShowAccount({ isShow: false });
+
+                // if (props?.closeExtend) {
+                //   props?.closeExtend(e);
+                // }
+                // banxaService.openOldOne();
+              },
+              btnTxt: t("labelBanxaContinuous"),
+            }}
+            orderId={isShowAccount?.info?.orderId}
+            chainId={chainId as any}
+            btnInfo2={{
+              isLoading: isShowAccount?.info?.isBanxaLaunchLoading,
+              callback: () => {
+                setShowAccount({ isShow: false });
+                offFaitService.offRampCancel({
+                  data: {
+                    product: VendorProviders.Banxa,
+                    orderId: isShowAccount?.info?.orderId,
+                  },
+                });
+                banxaService.banxaStart(true);
+              },
+              btnTxt: t("labelBanxaCreate"),
+            }}
+          />
+        ),
+        height: "auto",
+        onClose: () => {
+          banxaService.banxaEnd({
+            reason: OrderENDReason.UserCancel,
+            data: { resource: "on close" },
+          });
+        },
+      },
       [AccountStep.ThirdPanelReturn]: {
         view: (
           <ThirdPanelReturn
@@ -615,7 +687,7 @@ export function useAccountModalForUI({
             description={isShowAccount?.info?.description}
             btnInfo={{
               ...closeBtnInfo(),
-              btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIknow2"),
+              btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIKnow2"),
             }}
           />
         ),
@@ -735,6 +807,13 @@ export function useAccountModalForUI({
         onQRClick,
         height: isLayer1Only ? "auto" : null,
       },
+      [AccountStep.QRCodeScanner]: {
+        view: <ImportRedPacket {...redPacketScanQrcodeSuccessProps} />,
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+        height: "auto",
+      },
       [AccountStep.QRCode]: {
         view: (
           <QRAddressPanel
@@ -743,7 +822,7 @@ export function useAccountModalForUI({
               account,
               btnInfo: {
                 ...closeBtnInfo(),
-                btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIknow2"),
+                btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIKnow2"),
               } as any,
               ...account,
               isNewAccount: depositProps.isNewAccount,
@@ -1136,15 +1215,6 @@ export function useAccountModalForUI({
                 } else {
                   history.push("/nft/mintNFTAdvance");
                 }
-
-                // mintService.emptyData()
-                // setShowDeposit({
-                //   isShow: true,
-                //   symbol:
-                //     (rest as any)?.symbol ??
-                //     isShowAccount?.info?.symbol ??
-                //     "LRC",
-                // });
               },
             }}
             symbol={isShowAccount.info?.name}
@@ -1167,15 +1237,10 @@ export function useAccountModalForUI({
       [AccountStep.RedPacketSend_WaitForAuth]: {
         view: (
           <RedPacketSend_WaitForAuth
-            symbol={nftDeployValue.name}
-            value={nftDeployValue.tradeValue}
-            chainInfos={chainInfos}
-            updateDepositHash={updateDepositHash}
             providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
               t,
             }}
           />
@@ -1191,7 +1256,7 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: "labelRetry",
               callback: () => {
-                nftDeployProps.onNFTDeployClick(nftDeployValue as any);
+                creatRedPacketRetryBtn(true);
               },
             }}
             {...{
@@ -1206,36 +1271,37 @@ export function useAccountModalForUI({
           setShowAccount({ isShow: false });
         },
       },
+
       [AccountStep.RedPacketSend_In_Progress]: {
         view: (
           <RedPacketSend_In_Progress
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+
+      [AccountStep.RedPacketSend_User_Denied]: {
+        view: (
+          <RedPacketSend_User_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: "labelRetry",
               callback: () => {
-                nftDeployProps.onNFTDeployClick(nftDeployValue as any, false);
+                creatRedPacketRetryBtn();
               },
             }}
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
               t,
             }}
           />
         ),
       },
-      [AccountStep.RedPacketSend_User_Denied]: {
-        view: (
-          <RedPacketSend_User_Denied
-            {...{
-              ...rest,
-              account,
-              ...nftDeployValue,
-              t,
-            }}
-          />
-        ),
-      },
+
       [AccountStep.RedPacketSend_Failed]: {
         view: (
           <RedPacketSend_Failed
@@ -1243,7 +1309,66 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
+              error: isShowAccount.error,
+              info: {
+                ...isShowAccount.info,
+                lastFailed: LAST_STEP.redPacketSend,
+              },
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+
+      [AccountStep.RedPacketSend_Success]: {
+        view: (
+          <RedPacketSend_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              info: {
+                ...isShowAccount.info,
+              },
+              // link: isShowAccount?.info?.hash
+              //   ? {
+              //     name: "Txn Hash",
+              //     url: isShowAccount?.info?.hash,
+              //   }
+              //   : undefined,
+
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+
+      [AccountStep.RedPacketOpen_In_Progress]: {
+        view: (
+          <RedPacketOpen_In_Progress
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+
+      [AccountStep.RedPacketOpen_Failed]: {
+        view: (
+          <RedPacketOpen_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
               error: isShowAccount.error,
               t,
             }}
@@ -1253,14 +1378,47 @@ export function useAccountModalForUI({
           setShowAccount({ isShow: false });
         },
       },
-      [AccountStep.RedPacketSend_Success]: {
+
+      [AccountStep.RedPacketOpen_Claim_In_Progress]: {
         view: (
-          <RedPacketSend_Success
+          <RedPacketOpen_Claim_In_Progress
             btnInfo={closeBtnInfo()}
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+
+      [AccountStep.RedPacketSend_Claim_Success]: {
+        view: (
+          <RedPacketSend_Claim_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+      [AccountStep.RedPacketOpen_Claim_Failed]: {
+        view: (
+          <RedPacketOpen_Claim_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1378,15 +1536,15 @@ export function useAccountModalForUI({
       [AccountStep.ForceWithdraw_WaitForAuth]: {
         view: (
           <ForceWithdraw_WaitForAuth
-            symbol={nftDeployValue.name}
-            value={nftDeployValue.tradeValue}
+            symbol={forceWithdrawValue.belong}
+            value={forceWithdrawValue.tradeValue}
             chainInfos={chainInfos}
             updateDepositHash={updateDepositHash}
             providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
+              ...forceWithdrawValue,
               t,
             }}
           />
@@ -1491,6 +1649,112 @@ export function useAccountModalForUI({
         //   setShowAccount({ isShow: false });
         // },
       },
+
+      // ClaimWithdraw
+      [AccountStep.ClaimWithdraw_WaitForAuth]: {
+        view: (
+          <ClaimWithdraw_WaitForAuth
+            symbol={claimValue?.belong}
+            value={claimValue?.tradeValue}
+            chainInfos={chainInfos}
+            // updateDepositHash={updateDepositHash}
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ClaimWithdraw_Denied]: {
+        view: (
+          <ClaimWithdraw_Denied
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                claimRetryBtn();
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ClaimWithdraw_First_Method_Denied]: {
+        view: (
+          <ClaimWithdraw_First_Method_Denied
+            btnInfo={{
+              btnTxt: "labelTryAnother",
+              callback: () => {
+                claimRetryBtn(true);
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ClaimWithdraw_In_Progress]: {
+        view: (
+          <ClaimWithdraw_In_Progress
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ClaimWithdraw_Failed]: {
+        view: (
+          <ClaimWithdraw_Failed
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.claim,
+                  },
+                });
+              },
+            })}
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ClaimWithdraw_Submit]: {
+        view: (
+          <ClaimWithdraw_Submit
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              ...claimValue,
+              t,
+            }}
+          />
+        ),
+      },
+
       // transfer
       [AccountStep.Transfer_WaitForAuth]: {
         view: (
@@ -1798,6 +2062,25 @@ export function useAccountModalForUI({
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_BANXA_Confirm]: {
+        view: (
+          <Transfer_banxa_confirm
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              info: { ...isShowAccount?.info },
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Banxa Status",
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -2636,6 +2919,7 @@ export function useAccountModalForUI({
     nftDeployValue,
     setShowAccount,
     setShowDeposit,
+    creatRedPacketRetryBtn,
     nftMintAdvanceRetryBtn,
     nftDeployProps,
     forceWithdrawRetry,
@@ -2659,6 +2943,7 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     transferProps,
     withdrawProps,
+    claimProps,
     depositProps,
     resetProps,
     collectionAdvanceProps,
@@ -2669,7 +2954,7 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
     copyToastOpen,
     setCopyToastOpen,
-    setCollectionToastOpen,
+    setToastOpen,
     openQRCode,
     setOpenQRCode,
     isShowAccount,
@@ -2679,8 +2964,8 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    collectionToastOpen,
-    collectionToastClose,
+    toastOpen,
+    closeToast,
     // checkActiveStatusProps,
     // dualToastOpen,
   };

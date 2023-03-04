@@ -34,10 +34,12 @@ export const TagIconList = React.memo(
                     <Avatar
                       alt={item.name}
                       style={{
-                        width: size ? size : "var(--svg-size-medium)",
+                        width: "auto",
+                        // width: size ? size : "var(--svg-size-medium)",
                         height: size ? size : "var(--svg-size-medium)",
                         marginRight: theme.unit / 2,
                       }}
+                      variant={"square"}
                       src={item.iconSource}
                     />
                   </Tooltip>
@@ -50,8 +52,10 @@ export const TagIconList = React.memo(
                       }
                     }}
                     alt={item.name}
+                    variant={"square"}
                     style={{
-                      width: size ? size : "var(--svg-size-medium)",
+                      width: "auto",
+                      // width: size ? size : "var(--svg-size-medium)",
                       height: size ? size : "var(--svg-size-medium)",
                       marginRight: theme.unit / 2,
                     }}

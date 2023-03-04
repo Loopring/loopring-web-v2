@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Box, Tab, Tabs } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { Button, TradeNFTTable, TsNFTTable } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useHistoryNFT } from "./hookHistory";
@@ -17,6 +17,7 @@ enum TabIndex {
   transactions = "transactions",
   trades = "trades",
 }
+
 export const MyNFTHistory = () => {
   const { t } = useTranslation("common");
   const match: any = useRouteMatch("/NFT/transactionNFT/:tab");

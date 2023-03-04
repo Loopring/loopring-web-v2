@@ -10,11 +10,6 @@ export enum ActionResultCode {
 
 export type EddsaKey = { eddsaKey: any; accInfo?: sdk.AccountInfo };
 
-// export interface ActionResult {
-//   code: ActionResultCode;
-//   data?: sdk.RESULT_INFO | EddsaKey;
-// }
-
 export const LAYOUT = {
   HEADER_HEIGHT: 64,
   FOOT_COMMON_HEIGHT: 48,

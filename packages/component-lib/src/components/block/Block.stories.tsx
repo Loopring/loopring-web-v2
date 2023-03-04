@@ -15,8 +15,10 @@ import {
   AssetTitleProps,
   RedPacketBgOpened,
   RedPacketClock,
+  RedPacketDetail,
   RedPacketOpen,
   RedPacketQRCode,
+  RedPacketTimeout,
   TradeTitle,
   VipPanel,
 } from "./";
@@ -224,6 +226,9 @@ const AssetTitleWrap = (rest: any) => {
   );
 };
 const Template: Story<any> = withTranslation("common")((...rest) => {
+  const url = `https://loopring.io/wallet?redpacket&id=${"sfgffddd"}&referrer=${"0x234234"}`;
+
+  // @ts-ignore
   return (
     <Style>
       <MemoryRouter initialEntries={["/"]}>
@@ -299,16 +304,25 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
           marginY={2}
         >
           <Grid item>
-            <RedPacketOpen />
+            <RedPacketOpen
+              amountStr={"1,000 LRC"}
+              sender={"0x01....0101"}
+              memo={
+                "back test back test back test back test  back test back test"
+              }
+              viewDetail={() => undefined}
+              onOpen={() => undefined}
+            />
           </Grid>
           <Grid item>
             <RedPacketClock
               type={"official"}
-              countDown={{
-                days: undefined,
-                hours: undefined,
-                seconds: undefined,
-                minutes: undefined,
+              validSince={0}
+              sender={".."}
+              amountStr={".."}
+              memo={".."}
+              showRedPacket={function (): void {
+                throw new Error("Function not implemented.");
               }}
             />
           </Grid>
@@ -319,11 +333,84 @@ const Template: Story<any> = withTranslation("common")((...rest) => {
             <RedPacketBgOpened type={"official"} />
           </Grid>
           <Grid item>
-            <RedPacketQRCode type={"default"} />
+            <RedPacketQRCode
+              type={"default"}
+              textAddress={"0x01....0101"}
+              textContent={"back test back test back test back test"}
+              amountStr={"1,000 LRC"}
+              textSendBy={"Luck Red Packet"}
+              textType={"Luck Red Packet"}
+              textShared={"shared"}
+              textNo={"1231414"}
+              url={url}
+              // qrCodeG={qrCodeG}
+              textDes={""}
+            />
           </Grid>
           <Grid item>
-            <RedPacketQRCode type={"official"} />
+            <RedPacketQRCode
+              url={url}
+              type={"official"}
+              textAddress={"0x01....0101"}
+              textContent={"back test back test back test back test"}
+              amountStr={"1,000 LRC"}
+              textSendBy={""}
+              textType={"Relay Red Packet"}
+              textShared={"shared"}
+              textNo={"1231414"}
+              textDes={""}
+            />
           </Grid>
+          <Grid item>
+            <RedPacketTimeout
+              sender={"0x01....0101"}
+              memo={
+                "back test back test back test back test  back test back test"
+              }
+              viewDetail={() => undefined}
+            />
+          </Grid>
+          <Grid item>
+            <RedPacketDetail
+              amountStr={"1,000 LRC"}
+              sender={"0x01....0101"}
+              memo={
+                "back test back test back test back test  back test back test"
+              }
+              amountClaimStr={""}
+              myAmountStr={""}
+              claimList={[]}
+              detail={
+                {
+                  champion: {
+                    accountId: 0,
+                    address: "",
+                    ens: "",
+                    amount: 0,
+                  },
+                  claimAmount: 0,
+                  claims: [],
+                  tokenId: 0,
+                  hash: "",
+                  helpers: [],
+                } as any
+              }
+              isShouldSharedRely={false}
+              totalCount={0}
+              remainCount={0}
+              onShared={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+              page={0}
+              handlePageChange={function (
+                _page: number,
+                _limit?: number
+              ): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
+          </Grid>
+
           {/*<Grid item xs={4}>*/}
           {/*  <RedPacketCard*/}
           {/*    luckyTokenItem={REDPACKETMOCK}*/}

@@ -1,6 +1,6 @@
 import {
-  IBData,
   EmptyValueTag,
+  IBData,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";

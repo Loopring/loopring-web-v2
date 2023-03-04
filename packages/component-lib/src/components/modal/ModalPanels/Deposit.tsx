@@ -103,42 +103,69 @@ export const Deposit_Submit = (props: PanelProps) => {
         marginTop={2}
         paddingX={isMobile ? 1 : 0}
       >
-        <Typography color={"var(--color-warning)"}>
+        <Typography color={"var(--color-warning)"} component={"span"}>
           {t("labelDepositWaiting")}
         </Typography>
         <Typography
           display={"inline-flex"}
           justifyContent={"space-between"}
           marginTop={2}
+          component={"span"}
         >
-          <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
             {props.t("labelL1toL2TokenAmount")}
           </Typography>
-          <Typography variant={"body1"} color={"var(--color-text-primary)"}>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
             {props.value + " " + props.symbol}
           </Typography>
         </Typography>
         <Typography
+          component={"span"}
           display={"inline-flex"}
           justifyContent={"space-between"}
           marginTop={2}
         >
-          <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-secondary)"}
+          >
             {props.t("labelL1toL2From")}
           </Typography>
-          <Typography variant={"body1"} color={"var(--color-text-primary)"}>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-primary)"}
+          >
             {"L1: " + getShortAddr(props.account?.accAddress ?? "")}
           </Typography>
         </Typography>
         <Typography
+          component={"span"}
           display={"inline-flex"}
           justifyContent={"space-between"}
           marginTop={2}
         >
-          <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-secondary)"}
+          >
             {props.t("labelL1toL2TO")}
           </Typography>
-          <Typography variant={"body1"} color={"var(--color-text-primary)"}>
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            color={"var(--color-text-primary)"}
+          >
             {props.to ? "L2: " + getShortAddr(props.to) : t("labelToMyL2")}
           </Typography>
         </Typography>

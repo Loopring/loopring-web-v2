@@ -1,16 +1,10 @@
 import {
-  AudioIcon,
   GET_IPFS_STRING,
-  hexToRGB,
   ImageIcon,
-  Media,
-  myLog,
   NFTWholeINFO,
-  PlayIcon,
   RefreshIcon,
   SoursURL,
   SyncIcon,
-  VideoIcon,
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
@@ -19,6 +13,7 @@ import {
   cssBackground,
   EmptyDefault,
   MediaLabelStyled,
+  MediaSVGToggle,
   ModalCloseButton,
   NftImage,
   NFTMedaProps,
@@ -32,6 +27,7 @@ import {
   WithTranslation,
   withTranslation,
 } from "react-i18next";
+// import "@google/model-viewer";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -43,10 +39,12 @@ const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
     var(--color-global-bg-opacity) 0%,
     var(--color-global-bg-opacity) 100%
   );
+
+  .redPacketNFT & {
+    background-image: none;
+    background-color: initial;
+  }
 ` as (prosp: BoxProps & { theme: Theme }) => JSX.Element;
-const PlayIconStyle = styled(PlayIcon)`
-  color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".8")};
-`;
 
 export const NFTMedia = React.memo(
   React.forwardRef(
@@ -62,8 +60,6 @@ export const NFTMedia = React.memo(
       }: NFTMedaProps,
       ref: React.ForwardedRef<any>
     ) => {
-      const vidRef = React.useRef<HTMLVideoElement>(null);
-      const aidRef = React.useRef<HTMLAudioElement>(null);
       const theme = useTheme();
       const { t } = useTranslation();
       const {
@@ -88,117 +84,7 @@ export const NFTMedia = React.memo(
         : item?.metadata?.imageSize[NFT_IMAGE_SIZES.original] ??
           getIPFSString(item?.image, baseURL);
       const { hasLoaded: fullSrcHasLoaded } = useImage(fullSrc ?? "");
-      const typeSvg = React.useMemo(() => {
-        myLog("item.__mediaType__", item.__mediaType__);
-        switch (item.__mediaType__) {
-          case Media.Audio:
-            return (
-              <>
-                <Box
-                  position={"absolute"}
-                  right={theme.unit}
-                  bottom={theme.unit}
-                  borderRadius={"50%"}
-                  sx={{ background: "var(--color-box)" }}
-                  padding={3 / 2}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  zIndex={100}
-                >
-                  <AudioIcon
-                    fontSize={"large"}
-                    htmlColor={"var(--text-third)"}
-                  />
-                </Box>
-                {item.animationUrl && shouldPlay && (
-                  <Box
-                    position={"absolute"}
-                    left={"50%"}
-                    bottom={theme.unit}
-                    sx={{ transform: "translateX(-50%)" }}
-                    zIndex={100}
-                  >
-                    <audio
-                      src={getIPFSString(item?.animationUrl, baseURL)}
-                      ref={aidRef}
-                      controls
-                      loop
-                      className="w-full rounded-none h-12"
-                      controlsList="nodownload"
-                    />
-                  </Box>
-                )}
-              </>
-            );
-          case Media.Video:
-            return (
-              <>
-                <Box
-                  position={"absolute"}
-                  right={theme.unit}
-                  bottom={theme.unit}
-                  borderRadius={"50%"}
-                  sx={{ background: "var(--color-box)" }}
-                  padding={3 / 2}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  zIndex={100}
-                >
-                  <VideoIcon
-                    fontSize={"large"}
-                    htmlColor={"var(--text-third)"}
-                  />
-                </Box>
 
-                {item.animationUrl && shouldPlay && !play && (
-                  <Box
-                    position={"absolute"}
-                    left={"50%"}
-                    top={"50%"}
-                    zIndex={100}
-                    sx={{
-                      transform: "translate(-50% , -50%)",
-                      cursor: "pointer",
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPlay(true);
-                    }}
-                  >
-                    <PlayIconStyle
-                      sx={{ minHeight: 72, minWidth: 72 }}
-                      // width={60}
-                      // height={60}
-                      // htmlColor={"var(--color-text-disable)"}
-                    />
-                  </Box>
-                )}
-              </>
-            );
-          default:
-            return <></>;
-        }
-      }, [item.__mediaType__, item.animationUrl, play, shouldPlay, theme.unit]);
-      React.useEffect(() => {
-        if (isShow === false && shouldPlay) {
-          if (vidRef.current) {
-            vidRef.current.pause();
-          }
-          if (aidRef.current) {
-            aidRef.current.pause();
-          }
-        }
-        return () => {
-          if (vidRef.current) {
-            vidRef.current.pause();
-          }
-          if (aidRef.current) {
-            aidRef.current.pause();
-          }
-        };
-      }, [isShow]);
       return (
         <BoxStyle
           ref={ref}
@@ -242,37 +128,27 @@ export const NFTMedia = React.memo(
                 </Box>
               ) : (
                 <>
-                  {typeSvg}
+                  {item.__mediaType__ && item.animationUrl && (
+                    <MediaSVGToggle
+                      url={item.animationUrl}
+                      play={play}
+                      shouldPlay={shouldPlay}
+                      setPlay={setPlay}
+                      mediaTyp={item.__mediaType__}
+                      getIPFSString={getIPFSString}
+                      baseURL={baseURL}
+                      isShow={isShow}
+                    />
+                  )}
                   <Box
                     alignSelf={"stretch"}
                     position={"relative"}
                     flex={1}
+                    margin={"1"}
                     display={"flex"}
-                    // style={{
-                    //   background:
-                    //     (!!fullSrc && fullSrcHasLoaded) || !!previewSrc
-                    //       ? "var(--field-opacity)"
-                    //       : "",
-                    // }}
                   >
                     {play && shouldPlay ? (
-                      <Box
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        flex={1}
-                      >
-                        <video
-                          ref={vidRef}
-                          src={getIPFSString(item?.animationUrl, baseURL)}
-                          autoPlay
-                          muted
-                          controls
-                          loop
-                          controlsList="nodownload"
-                          style={{ width: "100%" }}
-                        />
-                      </Box>
+                      <></>
                     ) : !!fullSrc && fullSrcHasLoaded ? (
                       <NftImage
                         alt={item?.image}
@@ -420,7 +296,7 @@ export const ZoomMedia = withTranslation("common")(
                 ref={ref}
                 item={nftItem as Partial<NFTWholeINFO>}
                 shouldPlay={true}
-                onNFTError={() => undefined}
+                onNFTError={() => "undefined"}
                 isOrigin={true}
                 getIPFSString={getIPFSString}
                 baseURL={baseURL}

@@ -16,45 +16,46 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
+  AddressError,
   CoinMap,
+  CurrencyToTag,
+  EmptyValueTag,
   Explorer,
+  FeeInfo,
+  getValuePrecisionThousand,
+  LIVE_FEE_TIMES,
   myLog,
+  PriceTag,
   SagaStatus,
+  SUBMIT_PANEL_AUTO_CLOSE,
+  TRADE_TYPE,
   TradeNFT,
   UIERROR_CODE,
-  AddressError,
   WALLET_TYPE,
-  LIVE_FEE_TIMES,
-  SUBMIT_PANEL_AUTO_CLOSE,
-  FeeInfo,
-  PriceTag,
-  CurrencyToTag,
-  getValuePrecisionThousand,
-  EmptyValueTag,
 } from "@loopring-web/common-resources";
 
 import {
-  useTokenMap,
-  useAccount,
   BIGO,
   DAYS,
+  getIPFSString,
   getTimestampDaysLater,
+  isAccActivated,
+  LAST_STEP,
   LoopringAPI,
   store,
+  useAccount,
   useAddressCheck,
   useBtnStatus,
-  useModalData,
-  isAccActivated,
   useChargeFees,
+  useModalData,
+  useSystem,
+  useTokenMap,
+  useTokenPrices,
+  useWalletLayer2,
   useWalletLayer2NFT,
   useWalletLayer2WithNFTSocket,
-  walletLayer2Service,
-  useSystem,
-  getIPFSString,
-  useWalletLayer2,
-  LAST_STEP,
-  useTokenPrices,
   volumeToCountAsBigNumber,
+  walletLayer2Service,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -118,13 +119,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         let _requestType = feeWithActive
           ? sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT
           : sdk.OffchainNFTFeeReqType.NFT_TRANSFER;
-        myLog(
-          "transfer updateData",
-          feeWithActive,
-          requestType,
-          _requestType,
-          _requestType == requestType
-        );
         if (_requestType === requestType) {
           const nftTransferValue =
             store.getState()._router_modalData.nftTransferValue;
@@ -656,7 +650,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const nftTransferProps: TransferProps<R, T> = {
     handleOnMemoChange,
     memo,
-    type: "NFT",
+    type: TRADE_TYPE.NFT,
     addressDefault: address,
     realAddr,
     lastFailed:

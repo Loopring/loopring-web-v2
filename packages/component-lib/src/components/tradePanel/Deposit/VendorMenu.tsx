@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { MenuBtnStyled } from "../../styled";
 import { VendorMenuProps } from "../../modal/ModalPanels/Interface";
 import { useTranslation } from "react-i18next";
@@ -6,6 +6,7 @@ import {
   BanxaIcon,
   RampIcon,
   SCENARIO,
+  TradeBtnStatus,
   TradeTypes,
   VendorProviders,
 } from "@loopring-web/common-resources";
@@ -13,7 +14,7 @@ import { useTheme } from "@emotion/react";
 import { useSettings } from "../../../stores";
 import { TagIconList } from "../../block";
 
-const IconItem = ({ svgIcon }: { svgIcon: string }) => {
+export const VendorIconItem = ({ svgIcon }: { svgIcon: string }) => {
   const theme = useTheme();
   switch (svgIcon) {
     case "BanxaIcon":
@@ -49,6 +50,7 @@ export const VendorMenu = ({
 }: VendorMenuProps) => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
+  const theme = useTheme();
   return (
     <Box
       flex={1}
@@ -102,7 +104,18 @@ export const VendorMenu = ({
                     : "",
                 flexDirection: "row",
               }}
-              startIcon={IconItem({ svgIcon: item.svgIcon })}
+              loading={
+                item.btnStatus && item.btnStatus === TradeBtnStatus.LOADING
+                  ? "true"
+                  : "false"
+              }
+              disabled={
+                item.btnStatus &&
+                [TradeBtnStatus.LOADING, TradeBtnStatus.DISABLED].includes(
+                  item.btnStatus
+                )
+              }
+              startIcon={VendorIconItem({ svgIcon: item.svgIcon })}
               onClick={(e) => {
                 if (item.handleSelect) {
                   item.handleSelect(e);
@@ -124,6 +137,19 @@ export const VendorMenu = ({
                   symbol={`${item.key}-${
                     type == TradeTypes.Buy ? "on" : "off"
                   }`}
+                />
+              )}
+              {type == TradeTypes.Sell && (
+                <Avatar
+                  alt={"BETA"}
+                  style={{
+                    width: "auto",
+                    // width: size ? size : "var(--svg-size-medium)",
+                    height: "var(--svg-size-medium)",
+                    marginRight: theme.unit / 2,
+                  }}
+                  variant={"square"}
+                  src={"https://static.loopring.io/assets/svg/beta.png"}
                 />
               )}
               {/*{item.flag &&*/}

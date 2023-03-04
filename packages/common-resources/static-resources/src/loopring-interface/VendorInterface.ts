@@ -1,4 +1,5 @@
 import { VendorProviders } from "../constant/vendor";
+import { TradeBtnStatus } from "../constant";
 
 export interface VendorItem {
   key: VendorProviders;
@@ -9,5 +10,6 @@ export interface VendorItem {
     tag?: string;
     highLight?: string;
   };
+  btnStatus?: TradeBtnStatus;
   handleSelect?: (event?: React.MouseEvent) => void;
 }

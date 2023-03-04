@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
 import {
+  EmptyValueTag,
+  FeeInfo,
   IBData,
   NFTWholeINFO,
-  FeeInfo,
-  useAddressTypeLists,
   TOAST_TIME,
-  EmptyValueTag,
+  useAddressTypeLists,
 } from "@loopring-web/common-resources";
 import { Button, Toast } from "../../index";
 import { WithdrawViewProps } from "./Interface";

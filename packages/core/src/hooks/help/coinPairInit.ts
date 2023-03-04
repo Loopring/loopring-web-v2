@@ -18,9 +18,6 @@ export function coinPairInit({
       _tradeCalcData.coinBuy = buy;
       return _tradeCalcData;
     }
-    // else{
-    //     _tradeCalcData.coinBuy = tokenMap[ sell ].tradePairs[ 0 ];
-    // }
   }
   if (!_tradeCalcData.coinSell || _tradeCalcData.coinSell === "") {
     _tradeCalcData.coinSell = "LRC";

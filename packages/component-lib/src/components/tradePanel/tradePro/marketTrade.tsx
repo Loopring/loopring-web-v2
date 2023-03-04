@@ -1,10 +1,5 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import {
-  MarketTradeData,
-  TradeBaseType,
-  TradeBtnStatus,
-  TradeMarketProps,
-} from "../Interface";
+import { MarketTradeData, TradeBaseType, TradeMarketProps } from "../Interface";
 import {
   CoinInfo,
   CoinKey,
@@ -15,6 +10,7 @@ import {
   IBData,
   Info2Icon,
   SlippageTolerance,
+  TradeBtnStatus,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import { TradeProType } from "./Interface";
@@ -214,6 +210,8 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
               {...{
                 ...propsBase,
                 // maxAllow:false,
+                isShowCoinInfo: true,
+                isShowCoinIcon: false,
                 handleCountChange,
                 isHideError: true,
                 inputData: tradeData ? tradeData.base : ({} as any),
@@ -268,6 +266,8 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                 ...propsQuote,
                 isHideError: true,
                 handleCountChange,
+                isShowCoinInfo: true,
+                isShowCoinIcon: false,
                 inputData: tradeData ? tradeData.quote : ({} as any),
                 coinMap:
                   tradeCalcProData && tradeCalcProData.coinInfoMap

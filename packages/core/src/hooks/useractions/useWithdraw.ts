@@ -26,6 +26,7 @@ import {
   getValuePrecisionThousand,
   globalSetup,
   SUBMIT_PANEL_AUTO_CLOSE,
+  TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -648,7 +649,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   );
 
   const withdrawProps: WithdrawProps<any, any> = {
-    type: "TOKEN",
+    type: TRADE_TYPE.TOKEN,
     isAddressCheckLoading,
     isCFAddress,
     isToMyself: info?.isToMyself,

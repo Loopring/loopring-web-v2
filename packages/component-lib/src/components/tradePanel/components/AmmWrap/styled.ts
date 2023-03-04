@@ -1,8 +1,8 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
 export const SvgStyled = styled.div`
-  & svg{
+  & svg {
     width: 24px;
     height: 24px;
   }
-`
+`;

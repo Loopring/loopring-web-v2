@@ -1,5 +1,5 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Modal } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import {
   ModalBackButton,
   ModalCloseButton,
@@ -8,7 +8,6 @@ import {
   SwitchPanelStyled,
 } from "../../../index";
 import { useTheme } from "@emotion/react";
-import { Box } from "@mui/material";
 
 export const ModalWalletConnect = withTranslation("common", { withRef: true })(
   ({

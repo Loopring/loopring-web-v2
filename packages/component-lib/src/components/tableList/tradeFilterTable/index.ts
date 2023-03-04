@@ -1,1 +1,1 @@
-export * from './TradeFilterTable'
+export * from "./TradeFilterTable";

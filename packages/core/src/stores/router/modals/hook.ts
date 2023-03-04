@@ -47,7 +47,6 @@ import {
   LAST_STEP,
   ModalDataStatus,
   NFT_MINT_VALUE,
-  RedPacketOrderData,
   TransferData,
   WithdrawData,
 } from "./interface";
@@ -58,6 +57,8 @@ import {
   NFTWholeINFO,
   RequireOne,
   TradeNFT,
+  RedPacketOrderData,
+  TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import { RootState } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -165,11 +166,11 @@ export function useModalData(): {
   ) => void;
 
   redPacketOrder: RedPacketOrderData<any>;
-  updateRedPacketOrder: (offRamp: RedPacketOrderData<any>) => void;
-  resetRedPacketOrder: () => void;
+  updateRedPacketOrder: (redPacketOrder: RedPacketOrderData<any>) => void;
+  resetRedPacketOrder: (type?: TRADE_TYPE) => void;
 
-  claimValue: Partial<ClaimData> | undefined;
-  updateClaimData: (offBanxa: Partial<ClaimData>) => void;
+  claimValue: Partial<ClaimData>;
+  updateClaimData: (value: Partial<ClaimData>) => void;
   resetClaimData: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
@@ -374,9 +375,12 @@ export function useModalData(): {
     resetOffBanxaData: React.useCallback(() => {
       dispatch(resetOffBanxaData(undefined));
     }, [dispatch]),
-    resetRedPacketOrder: React.useCallback(() => {
-      dispatch(resetRedPacketOrder(undefined));
-    }, [dispatch]),
+    resetRedPacketOrder: React.useCallback(
+      (type?: TRADE_TYPE) => {
+        dispatch(resetRedPacketOrder({ type }));
+      },
+      [dispatch]
+    ),
     resetClaimData: React.useCallback(() => {
       dispatch(resetClaimData(undefined));
     }, [dispatch]),

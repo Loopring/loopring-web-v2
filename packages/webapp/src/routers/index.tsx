@@ -7,21 +7,30 @@ import { SwapPage } from "pages/SwapPage";
 import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
-import { useTicker, ModalGroup, useDeposit } from "@loopring-web/core";
+import {
+  useTicker,
+  ModalGroup,
+  useDeposit,
+  useSystem,
+  ModalCoinPairPanel,
+  ModalRedPacketPanel,
+  useOffFaitModal,
+} from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
-  hexToRGB,
   SagaStatus,
   setMyLog,
   ThemeType,
+  VendorProviders,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
 import {
-  useOpenModals,
   useSettings,
   LoadingBlock,
+  NoticePanelSnackBar,
+  NoticeSnack,
 } from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
@@ -38,6 +47,7 @@ import { getAnalytics, logEvent } from "firebase/analytics";
 import { AssetPage } from "../pages/AssetPage";
 import { FiatPage } from "../pages/FiatPage";
 import { RedPacketPage } from "../pages/RedPacketPage";
+import { useTranslation } from "react-i18next";
 
 const ContentWrap = ({
   children,
@@ -73,32 +83,55 @@ const ContentWrap = ({
     </>
   );
 };
+
 const WrapModal = () => {
   const { depositProps } = useDeposit(false);
   const { assetsRawData } = useGetAssets();
   const location = useLocation();
-  const { setShowAccount } = useOpenModals();
+  const { etherscanBaseUrl } = useSystem();
+  const { t } = useTranslation();
+  const { open, actionEle, handleClose } = useOffFaitModal();
+
+  const noticeSnacksElEs = React.useMemo(() => {
+    return [
+      <NoticeSnack
+        actionEle={actionEle}
+        open={open}
+        handleClose={handleClose}
+        messageInfo={{
+          svgIcon: "BanxaIcon",
+          key: VendorProviders.Banxa,
+          message: t("labelOrderBanxaIsReadyToPay"),
+        }}
+      />,
+    ] as any;
+  }, [open, actionEle]);
   return (
-    <ModalGroup
-      assetsRawData={assetsRawData}
-      depositProps={depositProps}
-      isLayer1Only={
-        /(guardian)|(depositto)/gi.test(location.pathname ?? "") ? true : false
-      }
-    />
+    <>
+      <ModalCoinPairPanel />
+      <ModalRedPacketPanel etherscanBaseUrl={etherscanBaseUrl} />
+      <ModalGroup
+        assetsRawData={assetsRawData}
+        depositProps={depositProps}
+        isLayer1Only={
+          /(guardian)|(depositto)/gi.test(location.pathname ?? "")
+            ? true
+            : false
+        }
+      />
+      <NoticePanelSnackBar noticeSnacksElEs={noticeSnacksElEs} />
+    </>
   );
 };
 
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
-
+  const searchParams = new URLSearchParams(location.search);
   const proFlag =
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
   const { setTheme } = useSettings();
 
-  // const { pathname } = useLocation();
-  const searchParams = new URLSearchParams(location.search);
   React.useEffect(() => {
     if (searchParams.has("theme")) {
       searchParams.get("theme") === ThemeType.dark
@@ -267,7 +300,14 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         </Route>
         <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
           <ContentWrap state={state}>
-            <FiatPage />
+            <FiatPage
+            // vendorListBuy={vendorListBuy}
+            // vendorListSell={vendorListSell}
+            // sellPanel={sellPanel}
+            // setSellPanel={setSellPanel}
+            // banxaViewProps={banxaViewProps}
+            // offBanxaValue={offBanxaValue}
+            />
           </ContentWrap>
         </Route>
         <Route exact path="/markets">
@@ -280,11 +320,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <MiningPage />
           </ContentWrap>
         </Route>
-        <Route exact path={["/redpacket", "/redpacket/*"]}>
-          <ContentWrap state={state}>
-            <RedPacketPage />
-          </ContentWrap>
-        </Route>
+        {/*TODO: redPacket*/}
+        {/*<Route exact path={["/redPacket", "/redPacket/*"]}>*/}
+        {/*  <ContentWrap state={state}>*/}
+        {/*    <RedPacketPage />*/}
+        {/*  </ContentWrap>*/}
+        {/*</Route>*/}
         <Route exact path={["/l2assets", "/l2assets/*"]}>
           <ContentWrap state={state}>
             <AssetPage />

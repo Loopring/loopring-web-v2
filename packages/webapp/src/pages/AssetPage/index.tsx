@@ -4,7 +4,6 @@ import { Box } from "@mui/material";
 import { AssetTitleMobile, useSettings } from "@loopring-web/component-lib";
 import { AccountStatus, subMenuLayer2 } from "@loopring-web/common-resources";
 
-import { AssetPanel } from "./AssetPanel";
 import HistoryPanel from "./HistoryPanel";
 import React from "react";
 import {
@@ -13,6 +12,7 @@ import {
   walletLayer2Service,
 } from "@loopring-web/core";
 import { useGetAssets } from "./AssetPanel/hook";
+import { AssetPanel } from "./AssetPanel";
 
 export const subMenu = subMenuLayer2;
 

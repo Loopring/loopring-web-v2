@@ -1,6 +1,6 @@
 import { WithTranslation } from "react-i18next";
 import { Box, Grid, ListItem, ListItemText, Typography } from "@mui/material";
-import { IBData, FeeInfo, TOAST_TIME } from "@loopring-web/common-resources";
+import { FeeInfo, IBData, TOAST_TIME } from "@loopring-web/common-resources";
 import { Button, ForceWithdrawViewProps, Toast } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";

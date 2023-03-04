@@ -8,7 +8,6 @@ import {
   MarketTrade,
   PopoverPure,
   SmallOrderAlert,
-  SwapSecondConfirmation,
   Toast,
   TradeProType,
 } from "@loopring-web/component-lib";
@@ -25,7 +24,6 @@ import { useLimit } from "./hookLimit";
 import { Box, Divider, Tab, Tabs, Typography } from "@mui/material";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
-import { useCommon } from "@loopring-web/component-lib/src/components/tradePanel/tradePro/hookCommon";
 
 // const TabsStyle = styled(Tabs)`
 //   flex: 1;
@@ -210,24 +208,33 @@ export const SpotView = withTranslation("common")(
 
     const tradeType = pageTradePro.tradeType;
     const tradeCalcData = pageTradePro.tradeCalcProData;
-    const tradeData = marketTradeData
+    const tradeData = marketTradeData;
     const estimatedFee =
       tradeCalcData && tradeCalcData.fee
-        ? `${tradeCalcData.fee} ${tradeType === TradeProType.sell
-          ? tradeData.quote?.belong
-          : tradeData.base?.belong
-        }` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+        ? `${tradeCalcData.fee} ${
+            tradeType === TradeProType.sell
+              ? tradeData.quote?.belong
+              : tradeData.base?.belong
+          }` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
         : EmptyValueTag;
     const minimumReceived =
       tradeCalcData && tradeCalcData.minimumReceived
-        ? `${tradeCalcData.minimumReceived}  ${tradeType === TradeProType.buy
-          ? tradeData.base.belong
-          : tradeData.quote.belong
-        }`
+        ? `${tradeCalcData.minimumReceived}  ${
+            tradeType === TradeProType.buy
+              ? tradeData.base.belong
+              : tradeData.quote.belong
+          }`
         : EmptyValueTag;
-    const feePercentage = tradeCalcData && tradeData?.quote?.tradeValue
-      ? (Number(tradeCalcData.fee) / (tradeType === TradeProType.sell ? tradeData.quote.tradeValue : tradeData.base.tradeValue) * 100).toFixed(2)
-      : EmptyValueTag;
+    const feePercentage =
+      tradeCalcData && tradeData?.quote?.tradeValue
+        ? (
+            (Number(tradeCalcData.fee) /
+              (tradeType === TradeProType.sell
+                ? tradeData.quote.tradeValue
+                : tradeData.base.tradeValue)) *
+            100
+          ).toFixed(2)
+        : EmptyValueTag;
 
     return (
       <>

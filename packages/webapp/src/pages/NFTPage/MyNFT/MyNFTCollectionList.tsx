@@ -16,7 +16,14 @@ const _StyledPaper = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 export const MyNFTCollectionList = withTranslation("common")(
-  ({ t }: WithTranslation) => {
+  ({
+    t,
+    size,
+    matchPreUrl,
+  }: {
+    size?: "large" | "medium" | "small" | undefined;
+    matchPreUrl: string;
+  } & WithTranslation) => {
     const history = useHistory();
     const { search } = useLocation();
     const searchParams = new URLSearchParams(search);
@@ -46,11 +53,11 @@ export const MyNFTCollectionList = withTranslation("common")(
         <CollectionCardList
           noEdit={true}
           account={account}
-          size={isMobile ? "small" : "large"}
+          size={size ?? isMobile ? "small" : "large"}
           onItemClick={(item) => {
             searchParams.set("myNFTPage", "1");
             history.push({
-              pathname: `/NFT/assetsNFT/byCollection/${item.contractAddress}--${item.id}`,
+              pathname: `${matchPreUrl}byCollection/${item.contractAddress}--${item.id}`,
               search: searchParams.toString(),
             });
             window.scrollTo(0, 0);

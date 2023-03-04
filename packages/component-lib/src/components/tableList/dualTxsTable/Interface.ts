@@ -25,6 +25,19 @@ export interface DualAssetTableProps<R> {
   };
 }
 
+export interface DualTxsTableProps<R = RawDataDualTxsItem> {
+  rawData: R[];
+  pagination?: {
+    pageSize: number;
+    total: number;
+  };
+  idIndex: { [key: string]: string };
+  tokenMap: { [key: string]: any };
+  dualMarketMap: any;
+  getDualTxList: (props: any) => Promise<void>;
+  showloading: boolean;
+}
+
 export enum LABEL_INVESTMENT_STATUS_MAP {
   INVESTMENT_RECEIVED = "labelInvestmentStatusSettled",
   DELIVERING = "labelInvestmentStatusDelivering",

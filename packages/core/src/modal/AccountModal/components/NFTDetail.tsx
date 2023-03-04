@@ -47,7 +47,6 @@ import {
   AccountStep,
   EmptyDefault,
   Toast,
-  InformationForNoMetaNFT,
 } from "@loopring-web/component-lib";
 import { nftRefresh, store, useAccount, useSystem } from "../../../stores";
 import React from "react";
@@ -106,11 +105,13 @@ export const NFTDetail = withTranslation("common")(
     popItem,
     etherscanBaseUrl,
     baseURL,
+    setNFTMetaNotReady,
     t,
   }: {
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
     baseURL: string;
+    setNFTMetaNotReady: (props: any) => void;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
     const { isMobile } = useSettings();
@@ -299,8 +300,8 @@ export const NFTDetail = withTranslation("common")(
         });
       }
     }, []);
-    const [showDialog, setShowDialog] =
-      React.useState<string | undefined>(undefined);
+    // const [showDialog, setShowDialog] =
+    //   React.useState<string | undefined>(undefined);
     const [isKnowNFTNoMeta, setIsKnowNFTNoMeta] = React.useState<boolean>(
       !!(popItem?.name !== "" && popItem.image && popItem.image !== "")
     );
@@ -646,7 +647,10 @@ export const NFTDetail = withTranslation("common")(
                             step: AccountStep.SendNFTGateway,
                             info: { ...popItem },
                           })
-                        : setShowDialog("Send")
+                        : setNFTMetaNotReady({
+                            isShow: true,
+                            info: { method: "Send" },
+                          })
                     }
                   >
                     {t("labelNFTSendBtn")}
@@ -995,19 +999,6 @@ export const NFTDetail = withTranslation("common")(
               ))}
           </Box>
         </StylePaper>
-        <InformationForNoMetaNFT
-          open={!!showDialog}
-          method={showDialog}
-          handleClose={(_e, isAgree) => {
-            setShowDialog(undefined);
-            if (isAgree && showDialog) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.SendNFTGateway,
-              });
-            }
-          }}
-        />
         <ZoomMedia
           onClose={() => {
             setZoom(false);

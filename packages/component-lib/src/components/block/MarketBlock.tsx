@@ -6,12 +6,10 @@ import {
   getValuePrecisionThousand,
   PriceTag,
 } from "@loopring-web/common-resources";
-import { Box, BoxProps, Grid } from "@mui/material";
-import { Typography } from "@mui/material";
+import { Box, BoxProps, Grid, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { floatTag, MarketBlockProps, useSettings } from "./../../index";
-import { ScaleAreaChart } from "../charts";
-import { ChartType } from "../charts";
+import { ChartType, ScaleAreaChart } from "../charts";
 
 type StyledProps = {
   custom: any;

@@ -32,6 +32,7 @@ import {
   CurrencyToTag,
   getValuePrecisionThousand,
   EmptyValueTag,
+  TRADE_TYPE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -541,7 +542,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             });
           }
         }
-
         res();
       });
     },
@@ -605,7 +605,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   }, [isActiveAccount, realAddr]);
 
   const transferProps: TransferProps<any, any> = {
-    type: "TOKEN",
+    type: TRADE_TYPE.TOKEN,
     addressDefault: address,
     realAddr,
     tradeData: transferValue as any,

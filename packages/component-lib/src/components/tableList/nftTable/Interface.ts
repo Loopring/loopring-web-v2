@@ -46,7 +46,6 @@ export type NFTTableFilter = {
   page: number;
 };
 
-
 export type NFTTableProps<Row> = NFTTableFilter & {
   etherscanBaseUrl?: string;
   rawData: Row[];
@@ -63,6 +62,3 @@ export type NFTTableProps<Row> = NFTTableFilter & {
   accountId: number;
   // accAddress?: string;
 };
-
-
-

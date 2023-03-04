@@ -1,6 +1,7 @@
 import {
   EmptyValueTag,
   FeeInfo,
+  TradeBtnStatus,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { NFTDeployViewProps } from "./Interface";
@@ -9,7 +10,6 @@ import React from "react";
 import { Box, Grid, Link, Toolbar, Typography } from "@mui/material";
 import { Button, ModalBackButton } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
-import { TradeBtnStatus } from "../Interface";
 import { FeeToggle } from "./tool/FeeList";
 
 export const DeployNFTWrap = <

@@ -3,16 +3,16 @@ import {
   experimentalStyled,
   IconButton,
   InputAdornment,
-  TextField,
+  TextFieldProps,
 } from "@mui/material";
 import styled from "@emotion/styled";
 import {
   DatePicker as MuDatePicker,
   DatePickerProps as MuDatePickerProps,
-  DateTimePicker as MuDateTimePicker,
-  DateTimePickerProps as MuDateTimePickerProps,
   DateRangePicker as MuDateRangePicker,
   DateRangePickerProps as MuDateRangePickerProps,
+  DateTimePicker as MuDateTimePicker,
+  DateTimePickerProps as MuDateTimePickerProps,
 } from "@mui/lab";
 
 import { TFunction } from "i18next";
@@ -21,11 +21,12 @@ import {
   YEAR_DAY_FORMAT,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
+import { TextField } from "./style";
 
 export const DateTextField = styled(TextField)`
-  && .MuiOutlinedInput-root.MuiInputBase-adornedEnd {
-    padding-right: ${({ theme }) => theme.unit}px;
-  }
+  // && .MuiOutlinedInput-root.MuiInputBase-adornedEnd {
+  //
+  // }
 
   && .date-range-adornment {
     .MuiIconButton-edgeEnd {
@@ -156,7 +157,9 @@ export const DateRangePicker = experimentalStyled(
 
 ` as React.ComponentType<DateRangePickerProps & { t?: TFunction }>;
 
-export type DatePickerProps = Omit<MuDatePickerProps, "renderInput">;
+export type DatePickerProps = Omit<MuDatePickerProps, "renderInput"> & {
+  textFiledProps?: TextFieldProps;
+};
 export const DatePicker = styled(
   ({
     t,
@@ -173,12 +176,19 @@ export const DatePicker = styled(
       views={props.views ? props.views : ["year", "day"]}
       value={value}
       components={{ OpenPickerIcon: CalendarIcon }}
+      OpenPickerButtonProps={
+        props.OpenPickerButtonProps
+          ? props.OpenPickerButtonProps
+          : {
+              size: "large",
+            }
+      }
       desktopModeMediaQuery={"@media (min-width: 720px)"}
       renderInput={(_props) => {
         return (
           <DateTextField
             ref={_props.inputRef}
-            {...{ ..._props, helperText: null }}
+            {...{ ..._props, ...props?.textFiledProps, helperText: null }}
           />
         );
       }}
@@ -190,36 +200,48 @@ export const DatePicker = styled(
 
 export type DateTimePickerProps = Omit<MuDateTimePickerProps, "renderInput">;
 
-export const DateTimePicker = styled(
-  ({
-    t,
-    inputFormat,
-    value,
-    ...props
-  }: DateTimePickerProps & { t?: TFunction }) => (
-    <MuDateTimePicker
-      {...props}
-      disableFuture={props.disableFuture ? props.disableFuture : true}
-      mask={props.mask ? props.mask : "__-__-__"}
-      inputFormat={inputFormat ? inputFormat : YEAR_DAY_MINUTE_FORMAT}
-      openTo={props.openTo ? props.openTo : "day"}
-      views={props.views ? props.views : ["day", "hours", "minutes"]}
-      value={value}
-      components={{ OpenPickerIcon: CalendarIcon }}
-      desktopModeMediaQuery={"@media (min-width: 720px)"}
-      renderInput={(_props) => {
-        return (
-          <DateTextField
-            ref={_props.inputRef}
-            {...{ ..._props, helperText: null }}
-          />
-        );
-      }}
-    />
-  )
-)<MuDateTimePickerProps>`` as React.ComponentType<
-  MuDateTimePickerProps & { t?: TFunction }
->;
+export const DateTimePicker = ({
+  t,
+  inputFormat,
+  value,
+  fullWidth = false,
+  textFiledProps,
+  ...props
+}: DateTimePickerProps & {
+  t?: TFunction;
+  fullWidth?: boolean;
+  textFiledProps?: Partial<TextFieldProps>;
+}) => (
+  <MuDateTimePicker
+    {...props}
+    disableFuture={props.disableFuture ? props.disableFuture : false}
+    mask={props.mask ? props.mask : "__-__-__"}
+    inputFormat={inputFormat ? inputFormat : YEAR_DAY_MINUTE_FORMAT}
+    openTo={props.openTo ? props.openTo : "day"}
+    views={props.views ? props.views : ["day", "hours", "minutes"]}
+    value={value}
+    components={{
+      OpenPickerIcon: CalendarIcon,
+    }}
+    OpenPickerButtonProps={
+      props.OpenPickerButtonProps
+        ? props.OpenPickerButtonProps
+        : {
+            size: "large",
+          }
+    }
+    desktopModeMediaQuery={"@media (min-width: 720px)"}
+    renderInput={(_props) => {
+      return (
+        <DateTextField
+          ref={_props.inputRef}
+          fullWidth={fullWidth}
+          {...{ ...textFiledProps, ..._props, helperText: null }}
+        />
+      );
+    }}
+  />
+);
 // (({ theme }) => ({
 //     position: 'relative',
 //     '& .MuiIconButton-edgeEnd': {

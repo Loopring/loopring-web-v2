@@ -1,6 +1,5 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Modal } from "@mui/material";
-import { Box } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import {
   ModalAccountProps,
   ModalBackButton,

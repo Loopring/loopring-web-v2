@@ -11,19 +11,20 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  AddressError,
+  AssetsRawDataItem,
   CloseIcon,
   copyToClipBoard,
   DropDownIcon,
   EmptyValueTag,
   FeeInfo,
   globalSetup,
-  Info2Icon,
   IBData,
+  Info2Icon,
   LoadingIcon,
   NFTWholeINFO,
   TOAST_TIME,
-  AddressError,
-  AssetsRawDataItem,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -31,7 +32,6 @@ import {
   PopoverPure,
   Toast,
 } from "../..";
-import { TradeBtnStatus } from "../Interface";
 import {
   Button,
   IconClearStyled,
@@ -173,7 +173,7 @@ export const WithdrawWrap = <
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
-      direction={"column"} /* minHeight={540} */
+      direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}
       flex={1}
@@ -238,7 +238,7 @@ export const WithdrawWrap = <
       <Grid item alignSelf={"stretch"} position={"relative"}>
         {type === "NFT" ? (
           <NFTInput
-            {...{
+            {...({
               ...rest,
               isThumb,
               type,
@@ -252,7 +252,7 @@ export const WithdrawWrap = <
               coinMap,
               inputNFTDefaultProps: { label: "" },
               inputNFTRef: inputBtnRef,
-            }}
+            } as any)}
           />
         ) : (
           <BasicACoinTrade

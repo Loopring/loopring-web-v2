@@ -10,21 +10,22 @@ import {
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
+  AddressError,
+  AlertIcon,
+  CheckBoxIcon,
+  CheckedIcon,
   CloseIcon,
   copyToClipBoard,
   DropDownIcon,
-  globalSetup,
-  Info2Icon,
-  IBData,
-  NFTWholeINFO,
-  TOAST_TIME,
-  LoadingIcon,
   EmptyValueTag,
   FeeInfo,
-  AddressError,
-  CheckedIcon,
-  CheckBoxIcon,
-  AlertIcon,
+  globalSetup,
+  IBData,
+  Info2Icon,
+  LoadingIcon,
+  NFTWholeINFO,
+  TOAST_TIME,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -33,7 +34,6 @@ import {
   IconClearStyled,
   TextField,
   Toast,
-  TradeBtnStatus,
 } from "../../index";
 import { PopoverPure } from "../../";
 import { TransferViewProps } from "./Interface";
@@ -199,7 +199,7 @@ export const TransferWrap = <
       <Grid item alignSelf={"stretch"} position={"relative"}>
         {type === "NFT" ? (
           <NFTInput
-            {...{
+            {...({
               ...rest,
               isThumb,
               type,
@@ -213,7 +213,7 @@ export const TransferWrap = <
               coinMap,
               inputNFTDefaultProps: { label: "" },
               inputNFTRef: inputBtnRef,
-            }}
+            } as any)}
           />
         ) : (
           <BasicACoinTrade

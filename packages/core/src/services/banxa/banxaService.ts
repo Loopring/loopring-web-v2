@@ -1,9 +1,20 @@
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../api_wrapper";
-import { Account, BANXA_URLS } from "@loopring-web/common-resources";
+import {
+  Account,
+  BANXA_URLS,
+  BanxaOrder,
+  myLog,
+  VendorProviders,
+} from "@loopring-web/common-resources";
 import { resetTransferBanxaData, store } from "../../stores";
 import { Subject } from "rxjs";
+import { offFaitService } from "./offFaitService";
+import {
+  // AccountStep,
+  setShowAccount,
+} from "@loopring-web/component-lib";
 
 export enum BalanceReason {
   Balance = 0,
@@ -69,12 +80,92 @@ const subject = new Subject<{
   };
 }>();
 export const banxaService = {
-  banxaStart: async () => {
+  banxaCheckHavePending: async () => {
     const {
       account,
       system: { chainId },
+      localStore: { offRampHistory },
+      // modals:{isShowAccount}
+    } = store.getState();
+    if (
+      offRampHistory[chainId][account.accAddress] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+        "pending"
+      ]
+    ) {
+      const _order =
+        offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+          "pending"
+        ];
+      const { data } = await banxaApiCall({
+        chainId: chainId as ChainId,
+        method: sdk.ReqMethod.GET,
+        url: `/api/orders/${_order.orderId}`,
+        query: "",
+        payload: {},
+        account,
+      });
+      if (data) {
+        myLog("banxa Check Have Pending", data.order);
+
+        offFaitService.banxaCheckStatus({
+          data: data.order,
+        });
+        return data;
+      }
+    }
+  },
+  openOldOne: async () => {
+    const {
+      account,
+      system: { chainId },
+      localStore: { offRampHistory },
+      // modals:{isShowAccount}
     } = store.getState();
 
+    // let banxa: any = undefined;
+    // try {
+    //   // @ts-ignore
+    //   banxa = new window.Banxa(
+    //     "loopring",
+    //     chainId == ChainId.GOERLI ? "sandbox" : ""
+    //   );
+    // } catch (e) {
+    //   banxaService.banxaEnd({
+    //     reason: OrderENDReason.BanxaNotReady,
+    //     data: "Banxa SKD is not ready",
+    //   });
+    // }
+    store.dispatch(
+      setShowAccount({ isShow: false, info: { isBanxaLaunchLoading: true } })
+    );
+    if (
+      offRampHistory[chainId][account.accAddress] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+        "pending"
+      ] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+        "pending"
+      ].checkout_iframe
+    ) {
+      // const url =
+      //   offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
+      //     "pending"
+      //   ].checkout_iframe;
+      // myLog("iframeBanxaTarget checkout_iframe", url);
+      // banxa.generateIframe("#iframeBanxaTarget", url, false);
+    } else {
+      banxaService.banxaStart(true);
+    }
+  },
+  banxaStart: async (_createNew = false) => {
+    const {
+      account,
+      system: { chainId },
+      // localStore: { offRampHistory },
+    } = store.getState();
     let banxa: any = undefined;
     try {
       // @ts-ignore
@@ -87,17 +178,14 @@ export const banxaService = {
         reason: OrderENDReason.BanxaNotReady,
         data: "Banxa SKD is not ready",
       });
-
-      // subject.next({
-      //   status: BanxaCheck.o,
-      //   data: data,
-      // });
+      return;
     }
-    // @ts-ignore
+    store.dispatch(
+      setShowAccount({ isShow: false, info: { isBanxaLaunchLoading: true } })
+    );
     const anchor: any = window.document.querySelector("#iframeBanxaTarget");
     // anchor.querySelector("anchor");
     if (anchor && banxa) {
-      // debugger;
       anchor.style.display = "flex";
       try {
         const { data } = await banxaApiCall({
@@ -116,9 +204,6 @@ export const banxaService = {
             account_reference: account.accAddress,
           },
         });
-        // TODO: console.log
-
-        console.log("BANXA create order", data.order);
 
         banxa.generateIframe(
           "#iframeBanxaTarget",
@@ -127,6 +212,13 @@ export const banxaService = {
           // "800px", //Optional width parameter – Pass false if not needed.
           // "400px" //Optional height parameter – Pass false if not needed.
         );
+        offFaitService.banxaCheckStatus({
+          data: {
+            ...data.order,
+            status: data.order.status ?? "create",
+            id: data.order.id,
+          },
+        });
         subject.next({
           status: BanxaCheck.CheckOrderStatus,
           data: data,
@@ -138,6 +230,8 @@ export const banxaService = {
         });
       }
     }
+
+    // @ts-ignore
   },
   KYCDone: () => {
     subject.next({
@@ -147,11 +241,19 @@ export const banxaService = {
       },
     });
   },
-  TransferDone: () => {
+  TransferDone: ({ order }: { order: Partial<BanxaOrder> }) => {
+    offFaitService.banxaCheckStatus({
+      data: {
+        status: "paymentReceived",
+        id: order.id ?? "",
+        wallet_address: order.wallet_address,
+      },
+    });
     subject.next({
       status: BanxaCheck.OrderShow,
       data: {
         reason: "transferDone",
+        id: order.id ?? "",
       },
     });
   },

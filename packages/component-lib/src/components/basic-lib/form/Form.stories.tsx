@@ -7,6 +7,7 @@ import {
   FormControl,
   FormControlLabel as MuiFormControlLabel,
   Grid,
+  Link,
   ListItemText,
   SelectChangeEvent,
   Typography,
@@ -23,10 +24,10 @@ import {
   DateRangePicker,
   InputButton,
   InputButtonProps,
+  InputSearch,
   InputSelect,
   InputSelectProps,
   TextField,
-  InputSearch,
 } from "./input";
 import {
   CheckBoxIcon,
@@ -43,8 +44,7 @@ import { DateRange } from "@mui/lab";
 import { EmptyDefault } from "../empty";
 import { coinMap, CoinType, inputProps, walletMap } from "../../../static";
 import { CoinMenu } from "../lists";
-import { InputCoin } from "./input/InputCoin";
-import { Link } from "@mui/material";
+import { InputCoin } from "./input";
 import { IconClearStyled } from "../../tradePanel";
 
 const Style = styled.div`
@@ -91,6 +91,8 @@ const InputButtonWrap = () => {
     CoinType,
     CoinInfo<CoinType>
   > = {
+    isShowCoinIcon: true,
+    isShowCoinInfo: true,
     handleOnClick,
     ...inputProps,
   };
@@ -100,7 +102,7 @@ const InputButtonWrap = () => {
       <Grid item xs={4}>
         <InputButton<IBData<CoinType>, CoinType, CoinInfo<CoinType>>
           {..._inputProps}
-        ></InputButton>
+        />
       </Grid>
 
       <Grid item xs={4}>
@@ -115,12 +117,12 @@ const InputButtonWrap = () => {
               ref,
             },
           }}
-        ></InputButton>
+        />
       </Grid>
       <Grid item xs={4}>
         <InputButton<IBData<CoinType>, CoinType, CoinInfo<CoinType>>
           {...{ ..._inputProps, ...{ inputData: data } }}
-        ></InputButton>
+        />
       </Grid>
     </>
   );
@@ -171,7 +173,9 @@ const InputIconWrap = () => {
   > = {
     handleCountChange,
     ...inputProps,
-  };
+    isShowCoinIcon: true,
+    isShowCoinInfo: true,
+  } as any;
 
   return (
     <>
@@ -300,7 +304,7 @@ const InputSelectWrap = (rest: any) => {
           ...rest,
         }}
         ref={ref}
-      ></CoinMenu>
+      />
     );
 
     {

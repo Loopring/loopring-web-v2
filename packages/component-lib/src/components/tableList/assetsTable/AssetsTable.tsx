@@ -33,7 +33,6 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
             lan === "en_US" ? "184px" : "184px"
           } !important;`
         : `--template-columns: 54% 40% 6% !important;`}
-
     .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
@@ -56,10 +55,11 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
       !isMobile
         ? `--template-columns: 200px 150px auto auto 205px !important;`
         : `--template-columns: 54% 40% 6% !important;`}
-    }
   }
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+}
+
+${({ theme }) =>
+  TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean; lan: string } & BoxProps) => JSX.Element;
 
 interface Row {
@@ -115,10 +115,7 @@ export type AssetsTableProps = {
   showFilter?: boolean;
   onSend: (token: string, isToL1: boolean) => void;
   onReceive: (token: string) => void;
-  // onShowDeposit: (token: string) => vo
-  // id;
-  // onShowTransfer: (token: string) => void;
-  // onShowWithdraw: (token: string) => void;
+  isLoading?: boolean;
   getMarketArrayListCallback: (token: string) => string[];
   rowConfig?: typeof RowConfig;
   disableWithdrawList: string[];
@@ -148,6 +145,7 @@ export const AssetsTable = withTranslation("tables")(
       hideInvestToken,
       hideSmallBalances,
       setHideLpToken,
+      isLoading = false,
       setHideSmallBalances,
       forexMap,
       rowConfig = RowConfig,
@@ -320,6 +318,7 @@ export const AssetsTable = withTranslation("tables")(
           const token = row["token"];
           const isLp = token.type === TokenType.lp;
           const isDefi = token.type === TokenType.defi;
+          // const isDual = token.type === TokenType.dual;
           const tokenValue = token.value;
 
           const isToL1 = token.type !== TokenType.lp;
@@ -496,6 +495,7 @@ export const AssetsTable = withTranslation("tables")(
           generateColumns={({ columnsRaw }: any) =>
             columnsRaw as Column<any, unknown>[]
           }
+          showloading={isLoading}
           columnMode={
             isMobile
               ? getColumnMobileAssets(t, allowTrade)

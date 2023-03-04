@@ -4,10 +4,10 @@ import moment from "moment";
 import { Column, Table } from "../../basic-lib";
 import {
   EmptyValueTag,
-  MarketRowHeight,
-  TradeTypes,
   getValuePrecisionThousand,
+  MarketRowHeight,
   SECOND_FORMAT,
+  TradeTypes,
 } from "@loopring-web/common-resources";
 import { RawDataTradeItem } from "../tradeTable";
 import { useSettings } from "../../../stores";

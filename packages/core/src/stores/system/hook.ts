@@ -5,7 +5,7 @@ import React from "react";
 import { statusUnset } from "../Amm/AmmMap/reducer";
 
 export function useSystem(): SystemStatus & {
-  updateSystem: (system: Partial<System<{ [key: string]: any }>>) => void;
+  updateSystem: (system: Partial<System>) => void;
   statusUnset: () => void;
 } {
   const system: SystemStatus = useSelector((state: any) => state.system);
@@ -17,8 +17,7 @@ export function useSystem(): SystemStatus & {
       [dispatch]
     ),
     updateSystem: React.useCallback(
-      (system: Partial<System<{ [key: string]: any }>>) =>
-        dispatch(updateSystem(system)),
+      (system: Partial<System>) => dispatch(updateSystem(system)),
       [dispatch]
     ),
   };

@@ -1,12 +1,25 @@
 import * as _ from "lodash";
 import {
   ammPoolService,
-  tickerService,
-  walletLayer2Service,
-  useAmmMap,
-  useWalletLayer2,
-  useWalletLayer1,
+  bookService,
+  LoopringAPI,
+  makeMarketArray,
+  mixorderService,
+  mixtradeService,
+  SocketMap,
+  store,
   swapDependAsync,
+  tickerService,
+  updatePageTradePro,
+  useAccount,
+  useAmmMap,
+  usePageTradePro,
+  useSocket,
+  useTicker,
+  useTokenMap,
+  useWalletLayer1,
+  useWalletLayer2,
+  walletLayer2Service,
 } from "@loopring-web/core";
 import React from "react";
 import {
@@ -17,21 +30,6 @@ import {
   SagaStatus,
 } from "@loopring-web/common-resources";
 import { debounceTime, map, merge, of, Subject, switchAll } from "rxjs";
-import {
-  store,
-  updatePageTradePro,
-  usePageTradePro,
-  useSocket,
-  useAccount,
-  useTokenMap,
-  SocketMap,
-  LoopringAPI,
-  makeMarketArray,
-  useTicker,
-  bookService,
-  mixorderService,
-  mixtradeService,
-} from "@loopring-web/core";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 

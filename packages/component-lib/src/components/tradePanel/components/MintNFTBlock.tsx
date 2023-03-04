@@ -18,16 +18,16 @@ import {
   MintTradeNFT,
   myLog,
   NFTMETA,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
   Button,
-  InputSize,
-  TextField,
-  TextareaAutosizeStyled,
   InputCoin,
+  InputSize,
+  TextareaAutosizeStyled,
+  TextField,
 } from "../../basic-lib";
 
-import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { NFTInput } from "./BasicANFTTrade";
@@ -168,7 +168,6 @@ export const MintNFTBlock = <
                 if (data.tradeValue && data.tradeValue > data.balance) {
                   return {
                     error: true,
-                    // message: `Not enough ${belong} perform a deposit`,
                   };
                 }
                 return {
@@ -178,7 +177,6 @@ export const MintNFTBlock = <
               // size = InputSize.middle,
               isHideError: true,
               isShowCoinInfo: false,
-              isShowCoinIcon: false,
               order: "right",
               noBalance: "0",
               coinPrecision: 0,
@@ -196,6 +194,13 @@ export const MintNFTBlock = <
                   >
                     <Trans i18nKey={"labelMintRoyaltyPercentage"}>
                       Royalty(%)
+                      <Typography
+                        component={"span"}
+                        variant={"inherit"}
+                        color={"error"}
+                      >
+                        {"\uFE61"}
+                      </Typography>
                       <Info2Icon
                         fontSize={"small"}
                         color={"inherit"}

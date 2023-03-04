@@ -1,6 +1,7 @@
 export * from "./component";
 export * from "./stores/index";
 export * from "./stores/rootSaga";
+export * from "./stores/storeForL1";
 export * from "./hookConnect";
 export * from "./TimeoutCheckProvider";
 export * from "./storage";

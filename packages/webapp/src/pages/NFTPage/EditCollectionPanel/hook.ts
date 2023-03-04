@@ -3,10 +3,15 @@ import {
   CollectionMeta,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import { collectionService, useEditCollection } from "@loopring-web/core";
+import {
+  collectionService,
+  useAccount,
+  useEditCollection,
+  useSystem,
+  getIPFSString,
+} from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
 import React from "react";
-import { useAccount } from "@loopring-web/core";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -20,6 +25,7 @@ export const useCollectionPanel = <T extends CollectionMeta>({
   const { t } = useTranslation("common");
   const isEdit = match?.params?.item === "editCollection";
   const history = useHistory();
+  const { baseURL } = useSystem();
   const {
     keys,
     collectionToastOpen,
@@ -102,6 +108,8 @@ export const useCollectionPanel = <T extends CollectionMeta>({
     btnStatus,
     btnInfo,
     disabled,
+    baseURL,
+    getIPFSString,
     handleOnDataChange,
     collectionValue,
     resetEdit,

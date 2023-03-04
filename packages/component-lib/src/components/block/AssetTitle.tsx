@@ -4,6 +4,7 @@ import {
   HeaderMenuItemInterface,
   HideIcon,
   subMenuLayer2,
+  TradeBtnStatus,
   ViewIcon,
 } from "@loopring-web/common-resources";
 import {
@@ -13,7 +14,7 @@ import {
 } from "react-i18next";
 import { AssetTitleMobileProps, AssetTitleProps } from "./Interface";
 import styled from "@emotion/styled";
-import { DropdownIconStyled, TradeBtnStatus } from "../tradePanel";
+import { DropdownIconStyled } from "../tradePanel";
 import { AnimationArrow, Button, ButtonListRightStyled } from "./../";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSettings } from "../../stores";
@@ -36,11 +37,8 @@ export const AssetTitle = withTranslation("common")(
     hideL2Assets,
     setHideL2Assets,
     assetBtnStatus,
-  }: AssetTitleProps & {
-    assetBtnStatus: TradeBtnStatus;
-  } & WithTranslation) => {
+  }: AssetTitleProps & WithTranslation) => {
     const history = useHistory();
-
     return (
       <Grid
         container

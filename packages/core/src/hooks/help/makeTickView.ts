@@ -20,12 +20,9 @@ export const makeTickView = (tick: Partial<TickerData>) => {
       priceDollar: 0,
       floatTag,
       reward: 0,
-      // close: (tick.close ?? 0) ? Number(tick.close?.toFixed(6)) : undefined,
       close: isNaN(tick.close || 0) ? undefined : tick.close,
       high: tick.high === 0 ? undefined : tick.high,
       low: tick.low === 0 ? undefined : tick.low,
-
-      // APR: 0,
     };
     if (tick.close && tokenPrices) {
       const volume = VolToNumberWithPrecision(
@@ -61,8 +58,6 @@ export const makeTickerMap = <R extends { [key: string]: any }>({
     const item: TickerData = tickerMap[key as any];
     if (item && item.base && forexMap && tokenPrices[item.base]) {
       const price = tokenPrices[item.base];
-      // fiatPrices[ item.base ] ? fiatPrices[ item.base ].price : fiatPrices[ 'USDT' ].price
-      // const volume = VolToNumberWithPrecision(item.base_token_volume, item.base as string)
       const volume = volumeToCount(
         item.symbol.split("-")[1],
         item.quote_token_volume
@@ -74,7 +69,6 @@ export const makeTickerMap = <R extends { [key: string]: any }>({
       const extraTickerInfo = makeTickView(item);
 
       prev[key as keyof R] = {
-        // ...item,
         ...extraTickerInfo,
         timeUnit: "24h",
         priceDollar:

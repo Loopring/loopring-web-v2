@@ -17,6 +17,7 @@ export interface TradeRaceRow {
     token: string;
   };
 }
+
 const rowHeight = RowConfig.rowHeight;
 const TableStyle = styled(Table)`
   &.rdg {

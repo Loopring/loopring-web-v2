@@ -3,38 +3,39 @@ import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
   Box,
-  Typography,
-  Link,
-  FormControlLabel,
-  Radio,
   Checkbox,
+  FormControlLabel,
   FormControlLabel as MuiFormControlLabel,
+  Link,
+  Radio,
+  Typography,
 } from "@mui/material";
 import {
+  BackIcon,
+  CheckBoxIcon,
+  CheckedIcon,
   CloseIcon,
   EmptyValueTag,
   FeeInfo,
+  getShortAddr,
   Info2Icon,
   LoadingIcon,
   myLog,
-  TradeNFT,
-  SoursURL,
   RefreshIcon,
-  getShortAddr,
-  CheckedIcon,
-  CheckBoxIcon,
-  BackIcon,
+  SoursURL,
   TOAST_TIME,
+  TradeBtnStatus,
+  TradeNFT,
 } from "@loopring-web/common-resources";
 import {
+  Button,
+  CollectionInput,
   EmptyDefault,
   InputSize,
   NftImage,
+  RadioGroupStyle,
   TextField,
   TGItemData,
-  RadioGroupStyle,
-  Button,
-  CollectionInput,
 } from "../../basic-lib";
 import {
   DropdownIconStyled,
@@ -47,7 +48,6 @@ import {
   DEPLOYMENT_STATUS,
   NFTType,
 } from "@loopring-web/loopring-sdk";
-import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";

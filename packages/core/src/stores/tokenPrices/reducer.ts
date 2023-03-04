@@ -13,6 +13,14 @@ const tokenPricesSlice: Slice = createSlice({
   name: "tokenPrices",
   initialState,
   reducers: {
+    resetTokenPrices(state) {
+      if (state.__timer__ !== -1) {
+        clearInterval(state.__timer__);
+        state.__timer__ = -1;
+      }
+      state.tokenPrices = {};
+      state.status = SagaStatus.UNSET;
+    },
     getTokenPrices(state, _action: PayloadAction<undefined>) {
       state.status = SagaStatus.PENDING;
     },
@@ -40,5 +48,9 @@ const tokenPricesSlice: Slice = createSlice({
   },
 });
 export { tokenPricesSlice };
-export const { getTokenPrices, getTokenPricesStatus, statusUnset } =
-  tokenPricesSlice.actions;
+export const {
+  resetTokenPrices,
+  getTokenPrices,
+  getTokenPricesStatus,
+  statusUnset,
+} = tokenPricesSlice.actions;

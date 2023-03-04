@@ -185,7 +185,6 @@ export const ViewAccountTemplate = React.memo(
     const { t } = useTranslation(["common", "layout"]);
     const { isMobile } = useSettings();
 
-    // const { assetTitleProps, assetTitleMobileExtendProps } = useGetAssets();
     const viewTemplate = React.useMemo(() => {
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:

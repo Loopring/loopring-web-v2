@@ -2,6 +2,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { TOptions } from "i18next";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { Link } from "@mui/material";
+
 export const ErrorMap = {
   ERROR_UNKNOWN: {
     id: "ERROR_UNKNOWN",
@@ -295,8 +296,34 @@ export const ErrorMap = {
     messageKey: "errorNoResponse",
     options: {},
   },
+  ERROR_REDPACKET_EMPTY: {
+    id: "ERROR_REDPACKET_EMPTY",
+    messageKey: "errorRedpacketEmpty",
+    options: {},
+  },
+  ERROR_REDPACKET_CLAIMED: {
+    id: "ERROR_REDPACKET_CLAIMED",
+    messageKey: "errorRedpacketClaimed",
+    options: {},
+  },
+  ERROR_REDPACKET_CLAIM_OUT: {
+    id: "ERROR_REDPACKET_CLAIM_OUT",
+    messageKey: "errorRedpacketClaimOut",
+    options: {},
+  },
+  ERROR_REDPACKET_CLAIM_TIMEOUT: {
+    id: "ERROR_REDPACKET_CLAIM_TIMEOUT",
+    messageKey: "errorRedpacketClaimTimeOut",
+    options: {},
+  },
+  ERROR_OFF_RAMP_EXPIRED: {
+    id: "ERROR_OFF_RAMP_EXPIRED",
+    messageKey: "errorOffRampExpired",
+  },
 };
+
 export enum UIERROR_CODE {
+  NO_NETWORK_ERROR = 700000,
   UNKNOWN = 700001,
   PROVIDER_ERROR = 700002,
   PROVIDER_ERROR_Unknown = 700003,
@@ -312,7 +339,6 @@ export enum UIERROR_CODE {
   ERROR_JSON_STRINGIFY = 700013,
   ERROR_COLLECTION_METADATA_NO_TILEURI = 700014,
   ERROR_COLLECTION_NO_NAME = 700015,
-  ERROR_RAMP_NO_INSTANCE = 700100,
   ERROR_COLLECTION_INFO = 700016,
   ERROR_COLLECTION_EMPTY = 700017,
   ERROR_COLLECTION_NO_SUPPORT = 700018,
@@ -321,8 +347,15 @@ export enum UIERROR_CODE {
   ERROR_ON_FEE_UI = 700021,
   ERROR_PRIVATE_KEY = 700022,
   ERROR_NO_RESPONSE = 700023,
+  ERROR_REDPACKET_EMPTY = 700024,
+  ERROR_RAMP_NO_INSTANCE = 700100,
+  ERROR_OFF_RAMP_EXPIRED = 700101,
   ERROR_DUAL_EXPIRED = 115003,
+  ERROR_REDPACKET_CLAIMED = 113002,
+  ERROR_REDPACKET_CLAIM_OUT = 113006,
+  ERROR_REDPACKET_CLAIM_TIMEOUT = 113000,
 }
+
 export type ErrorObject = {
   from?: string;
   timestamp?: number;
@@ -330,6 +363,7 @@ export type ErrorObject = {
   [key: string]: any;
 };
 export const SDK_ERROR_MAP_TO_UI = {
+  700000: ErrorMap.NO_NETWORK_ERROR,
   700001: ErrorMap.ERROR_UNKNOWN, //UI Unknown error =>
   700002: ErrorMap.ERROR_PROVIDER_ERROR,
   700003: ErrorMap.ERROR_UNKNOWN,
@@ -353,7 +387,9 @@ export const SDK_ERROR_MAP_TO_UI = {
   700021: ErrorMap.ERROR_ON_FEE,
   700022: ErrorMap.ERROR_PRIVATE_KEY,
   700023: ErrorMap.ERROR_NO_RESPONSE,
+  700024: ErrorMap.ERROR_REDPACKET_EMPTY,
   700100: ErrorMap.ERROR_RAMP_NO_INSTANCE,
+  700101: ErrorMap.ERROR_OFF_RAMP_EXPIRED,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found
@@ -400,6 +436,9 @@ export const SDK_ERROR_MAP_TO_UI = {
   108000: ErrorMap.ERROR_NO_MARKET, //Unsupported market
   102127: ErrorMap.ERROR_COLLECTION_SAME_NAME,
   108001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Unsupported depth level
+  113002: ErrorMap.ERROR_REDPACKET_CLAIMED, // REDPACKET_CLAIMED
+  113006: ErrorMap.ERROR_REDPACKET_CLAIM_OUT, // REDPACKET_COUNT_OUT
+  113000: ErrorMap.ERROR_REDPACKET_CLAIM_TIMEOUT, // REDPACKET_CLAIM_TIMEOUT
   114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
   122001: ErrorMap.ERROR_ON_REFRESH,

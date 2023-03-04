@@ -1,35 +1,39 @@
 import { useDispatch, useSelector } from "react-redux";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import {
+  setNFTMetaNotReady,
   setShowAccount,
   setShowActiveAccount,
   setShowAmm,
+  setShowClaimWithdraw,
+  setShowCollectionAdvance,
   setShowConnect,
   setShowDeposit,
+  setShowDual,
   setShowExportAccount,
   setShowFeeSetting,
   setShowIFrame,
+  setShowLayerSwapNotice,
+  setShowNFTDeploy,
   setShowNFTDeposit,
+  setShowNFTDetail,
+  setShowNFTMintAdvance,
   setShowNFTTransfer,
   setShowNFTWithdraw,
+  setShowOtherExchange,
+  setShowRedPacket,
   setShowResetAccount,
   setShowSupport,
   setShowSwap,
+  setShowTradeIsFrozen,
   setShowTransfer,
   setShowWithdraw,
-  setShowTradeIsFrozen,
   setShowWrongNetworkGuide,
-  setShowNFTMintAdvance,
-  setShowCollectionAdvance,
-  setShowOtherExchange,
-  setShowNFTDetail,
-  setShowLayerSwapNotice,
-  setShowNFTDeploy,
-  setShowDual,
 } from "./reducer";
 
 import React from "react";
 import {
+  ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
@@ -43,6 +47,24 @@ export const useOpenModals = () => {
   const toggle = useSelector((state: any) => state.toggle) as ToggleState;
   return {
     modals: useSelector((state: any) => state.modals) as ModalState,
+    setShowRedPacket: React.useCallback(
+      (
+        state: ModalStatePlayLoad & {
+          step?: number;
+          info?: { [key: string]: any };
+        }
+      ) => dispatch(setShowRedPacket(state)),
+      [dispatch]
+    ),
+    setNFTMetaNotReady: React.useCallback(
+      (
+        state: ModalStatePlayLoad & {
+          step?: number;
+          info?: { [key: string]: any };
+        }
+      ) => dispatch(setNFTMetaNotReady(state)),
+      [dispatch]
+    ),
     setShowSupport: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) =>
         dispatch(setShowSupport(state)),
@@ -61,6 +83,7 @@ export const useOpenModals = () => {
         dispatch(setShowWrongNetworkGuide(state)),
       [dispatch]
     ),
+
     setShowTransfer: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) => {
         if (toggle.transfer.enable) {
@@ -202,6 +225,16 @@ export const useOpenModals = () => {
     setShowDual: React.useCallback(
       (state: ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }) =>
         dispatch(setShowDual(state)),
+      [dispatch]
+    ),
+    setShowClaimWithdraw: React.useCallback(
+      (state: ModalStatePlayLoad & { claimToken?: ClaimToken }) => {
+        if (toggle.claim.enable) {
+          dispatch(setShowClaimWithdraw(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Claim" }));
+        }
+      },
       [dispatch]
     ),
     setShowConnect: React.useCallback(

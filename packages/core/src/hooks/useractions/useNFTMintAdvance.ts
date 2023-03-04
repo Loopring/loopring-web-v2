@@ -504,7 +504,7 @@ export const useNFTMintAdvance = <
   );
 
   const onNFTMintAdvanceClick = React.useCallback(
-    async (_nftMintAdvanceValue, isFirstTime: boolean = true) => {
+    async (_nftMintAdvanceValue, isHardwareRetry: boolean = false) => {
       let result = { code: ActionResultCode.NoError };
       // pattern="^Qm[a-zA-Z0-9]{44}$"
       if (
@@ -575,7 +575,7 @@ export const useNFTMintAdvance = <
           };
           myLog("onNFTMintAdvanceClick req:", req);
 
-          processRequest(req, isFirstTime);
+          processRequest(req, !isHardwareRetry);
         } catch (e: any) {
           setShowAccount({
             isShow: true,
