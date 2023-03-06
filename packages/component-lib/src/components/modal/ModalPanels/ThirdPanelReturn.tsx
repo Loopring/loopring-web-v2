@@ -210,7 +210,19 @@ export const ContinuousBanxaOrder = ({
                 continue , or you can create a new order instead.
               </Trans>
             </Typography>
-
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              marginX={2}
+            >
+              <img
+                className="loading-gif"
+                alt={"loading"}
+                width="60"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </Box>
             <MenuBtnStyled
               variant={"outlined"}
               size={"large"}

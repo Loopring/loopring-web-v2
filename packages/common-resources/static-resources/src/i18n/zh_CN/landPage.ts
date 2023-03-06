@@ -48,7 +48,7 @@ export default {
     "Based on smart contracts, the Loopring Wallet adopts a pluggable, modular design which can be continuously upgraded under your authorization to use future standards and new technologies.",
   labelWalletUnleashed: "ETHEREUM UNLEASHED",
   labelWalletUnleashedDetail:
-    "Your mobile gateway to Ethereum DeFi, collectables, and more.",
+    "Your mobile gateway to Ethereum DeFi, collectibles, and more.",
   labelLaunchApp: "LAUNCH APP",
   labelLaunchMobileApp: "Exchange",
   labelUpgradeHide:
