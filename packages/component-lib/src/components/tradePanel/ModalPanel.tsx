@@ -264,6 +264,14 @@ export const ModalPanel = <
               _height: "auto",
               ...withdrawProps,
               assetsData,
+              isFromContact: isShowWithdraw.address ? true : false,
+              contact: isShowWithdraw.address 
+                ? {
+                  address: isShowWithdraw.address!,
+                  name: isShowWithdraw.name!,
+                }
+                : undefined,
+              
             }}
           />
         }

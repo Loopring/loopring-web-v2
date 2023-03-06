@@ -5,7 +5,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from "@loopring-web/common-resources";
-import { RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { RESULT_INFO, AddressType } from "@loopring-web/loopring-sdk";
 import { AmmPanelType } from "../../../components";
 
 export enum ModalType {
@@ -23,6 +23,11 @@ export type ModalStatePlayLoad = {
 export type Transaction = {
   symbol?: undefined | string;
 };
+export type Contact = {
+  name?: string,
+  address?: string,
+  addressType?: AddressType
+}
 
 export interface ModalState {
   isShowSupport: ModalStatePlayLoad;
@@ -35,8 +40,8 @@ export interface ModalState {
     claimToken: ClaimToken | undefined;
     claimType: CLAIM_TYPE | undefined;
   };
-  isShowTransfer: ModalStatePlayLoad & Transaction;
-  isShowWithdraw: ModalStatePlayLoad & Transaction;
+  isShowTransfer: ModalStatePlayLoad & Transaction & Contact;
+  isShowWithdraw: ModalStatePlayLoad & Transaction & Contact;
   isShowDeposit: ModalStatePlayLoad & Transaction & { partner?: boolean };
   isShowNFTDetail: ModalStatePlayLoad & Partial<NFTWholeINFO>;
   isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;

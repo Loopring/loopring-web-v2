@@ -124,6 +124,7 @@ import {
   WithdrawIcon,
   YoutubeIcon,
   ZoomIcon,
+  ContactIcon
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -258,6 +259,7 @@ const listIcon = [
   <ScanQRIcon />,
   <CloseRedPacketIcon />,
   <ClockIcon />,
+  <ContactIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

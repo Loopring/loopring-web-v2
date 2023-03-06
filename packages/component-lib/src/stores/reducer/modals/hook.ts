@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
+import { Contact, ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import {
   setNFTMetaNotReady,
   setShowAccount,
@@ -87,7 +87,7 @@ export const useOpenModals = () => {
     ),
 
     setShowTransfer: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) => {
+      (state: ModalStatePlayLoad & Transaction & Contact) => {
         if (toggle.transfer.enable) {
           dispatch(setShowTransfer(state));
         } else {
@@ -113,7 +113,7 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowWithdraw: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) => {
+      (state: ModalStatePlayLoad & Transaction & Contact) => {
         if (toggle.withdraw.enable) {
           dispatch(setShowWithdraw(state));
         } else {
