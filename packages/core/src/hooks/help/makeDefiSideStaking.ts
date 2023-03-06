@@ -6,6 +6,7 @@ import {
   DualViewInfo,
   DualViewOrder,
   getValuePrecisionThousand,
+  IBData,
   myLog,
 } from "@loopring-web/common-resources";
 import moment from "moment";
@@ -204,13 +205,10 @@ export const calcSideStaking = <T>({
   }
 };
 
-export const calcRedeemStaking = <
-  T,
-  R = sdk.StakeInfoOrigin & sdk.STACKING_PRODUCT
->({
+export const calcRedeemStaking = <T extends IBData<any>, R>({
   inputValue,
   // isJoin,
-  deFiSideRedeemCalcData: { stackViewInfo, ...rest },
+  deFiSideRedeemCalcData: { stackViewInfo, coinSell, ...rest },
   tokenSell,
 }: {
   inputValue: string;
@@ -224,9 +222,14 @@ export const calcRedeemStaking = <
   isJoin: boolean;
   deFiSideRedeemCalcData: DeFiSideRedeemCalcData<T, R>;
 } => {
-  const sellVol = sdk
-    .toBig(inputValue ? inputValue : 0)
-    .times("1e" + tokenSell.decimals);
+  let sellVol;
+  if (inputValue?.toString() == coinSell.balance?.toString()) {
+    sellVol = (stackViewInfo as any).remainAmount;
+  } else {
+    sellVol = sdk
+      .toBig(inputValue ? inputValue : 0)
+      .times("1e" + tokenSell.decimals);
+  }
 
   const maxSellAmount = sdk
     .toBig((stackViewInfo as any)?.maxAmount)
@@ -236,11 +239,13 @@ export const calcRedeemStaking = <
     .toBig((stackViewInfo as any).minAmount)
     .div("1e" + tokenSell.decimals)
     .toString();
+
   if ((stackViewInfo as any).symbol) {
     return {
       sellVol: sellVol.toString(),
       deFiSideRedeemCalcData: {
         ...rest,
+        coinSell,
         stackViewInfo: {
           ...(stackViewInfo as any),
           minSellVol: (stackViewInfo as any).minAmount,
@@ -258,6 +263,7 @@ export const calcRedeemStaking = <
       sellVol: sellVol.toString(),
       deFiSideRedeemCalcData: {
         ...rest,
+        coinSell,
         stackViewInfo: {
           ...(stackViewInfo as any),
           minSellVol: undefined,

@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import {
   AmmPanelType,
   AssetsTable,
@@ -76,6 +76,9 @@ const MyLiquidity: any = withTranslation("common")(
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
     let match: any = useRouteMatch("/invest/balance/:type");
+    const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
+
     const ammPoolRef = React.useRef(null);
     const stackingRef = React.useRef(null);
     const dualRef = React.useRef(null);
@@ -117,34 +120,6 @@ const MyLiquidity: any = withTranslation("common")(
       showRefreshError,
       refreshErrorInfo,
     } = useDualAsset();
-
-    React.useEffect(() => {
-      if (match?.params?.type) {
-        switch (match?.params?.type) {
-          case "dual":
-            // @ts-ignore
-            window.scrollTo(0, dualRef?.current?.offsetTop);
-            break;
-          case "stack":
-            // @ts-ignore
-            window.scrollTo(0, stackingRef?.current?.offsetTop);
-            break;
-          case "amm":
-            // @ts-ignore
-            window.scrollTo(0, ammPoolRef?.current?.offsetTop);
-            break;
-          case "sideStake":
-            // @ts-ignore
-            window.scrollTo(0, sideStakeRef?.current?.offsetTop);
-        }
-      }
-    }, [match?.params?.type]);
-
-    React.useEffect(() => {
-      if (account.accountId) {
-        getDualTxList({});
-      }
-    }, [account.accountId]);
     const {
       summaryMyInvest,
       myPoolRow,
@@ -167,6 +142,38 @@ const MyLiquidity: any = withTranslation("common")(
       hideSmallBalances,
       // dualList,
     });
+
+    React.useEffect(() => {
+      if (match?.params?.type) {
+        switch (match?.params?.type) {
+          case "dual":
+            // @ts-ignore
+            window.scrollTo(0, dualRef?.current?.offsetTop);
+            break;
+          case "stack":
+            // @ts-ignore
+            window.scrollTo(0, stackingRef?.current?.offsetTop);
+
+            break;
+          case "amm":
+            // @ts-ignore
+            window.scrollTo(0, ammPoolRef?.current?.offsetTop);
+            break;
+          case "sideStake":
+            // @ts-ignore
+            window.scrollTo(0, sideStakeRef?.current?.offsetTop);
+        }
+      }
+      if (searchParams?.get("refreshStake")) {
+        getStakingList({});
+      }
+    }, [match?.params?.type, searchParams?.get("refreshStake")]);
+
+    React.useEffect(() => {
+      if (account.accountId) {
+        getDualTxList({});
+      }
+    }, [account.accountId]);
 
     const theme = useTheme();
     const { isMobile } = useSettings();
@@ -407,35 +414,38 @@ const MyLiquidity: any = withTranslation("common")(
                   paddingX={0}
                   flex={1}
                 >
-                  <Grid item xs={6}>
-                    <Typography variant={"h5"} marginBottom={2} marginX={3}>
-                      {t("labelInvestType_LRCSTAKE")}
-                    </Typography>
-                    {summaryMyInvest?.stakeLRCDollar !== undefined ? (
-                      <Typography component={"h4"} variant={"h3"} marginX={3}>
-                        {summaryMyInvest?.stakeLRCDollar
-                          ? PriceTag[CurrencyToTag[currency]] +
-                            getValuePrecisionThousand(
-                              sdk
-                                .toBig(summaryMyInvest?.stakeLRCDollar)
-                                .times(forexMap[currency] ?? 0),
-                              undefined,
-                              undefined,
-                              2,
-                              true,
-                              { isFait: true, floor: true }
-                            )
-                          : EmptyValueTag}
+                  <Grid container>
+                    <Grid item xs={6}>
+                      <Typography variant={"h5"} marginBottom={2} marginX={3}>
+                        {t("labelInvestType_LRCSTAKE")}
                       </Typography>
-                    ) : (
-                      ""
-                    )}
-                  </Grid>
-                  <Grid item xs={6} justifyContent={"flex-end"}>
-                    <Box
-                      display={"flex"}
+                      {summaryMyInvest?.stakeLRCDollar !== undefined ? (
+                        <Typography component={"h4"} variant={"h3"} marginX={3}>
+                          {summaryMyInvest?.stakeLRCDollar
+                            ? PriceTag[CurrencyToTag[currency]] +
+                              getValuePrecisionThousand(
+                                sdk
+                                  .toBig(summaryMyInvest?.stakeLRCDollar)
+                                  .times(forexMap[currency] ?? 0),
+                                undefined,
+                                undefined,
+                                2,
+                                true,
+                                { isFait: true, floor: true }
+                              )
+                            : EmptyValueTag}
+                        </Typography>
+                      ) : (
+                        ""
+                      )}
+                    </Grid>
+                    <Grid
+                      item
+                      xs={3}
+                      justifyContent={"flex-end"}
                       flexDirection={"column"}
-                      marginLeft={2}
+                      alignItems={"flex-end"}
+                      display={"flex "}
                     >
                       <Typography
                         variant={"body1"}
@@ -466,11 +476,15 @@ const MyLiquidity: any = withTranslation("common")(
                             stakedSymbol
                           : EmptyValueTag}
                       </Typography>
-                    </Box>
-                    <Box
-                      display={"flex"}
+                    </Grid>
+
+                    <Grid
+                      item
+                      xs={3}
+                      justifyContent={"flex-end"}
                       flexDirection={"column"}
-                      marginLeft={2}
+                      alignItems={"flex-end"}
+                      display={"flex"}
                     >
                       <Typography
                         variant={"body1"}
@@ -538,31 +552,24 @@ const MyLiquidity: any = withTranslation("common")(
                           EmptyValueTag
                         )}
                       </Typography>
-                    </Box>
+                    </Grid>
                   </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    flex={1}
-                  >
-                    <DefiStakingTable
-                      {...{
-                        rawData: stakingList,
-                        pagination: {
-                          pageSize: STAKING_INVEST_LIMIT,
-                          total: stakingTotal,
-                        },
-                        idIndex,
-                        tokenMap,
-                        redeemItemClick,
-                        geDefiSideStakingList: getStakingList,
-                        showloading: stakeShowLoading,
-                        ...rest,
-                      }}
-                    />
-                  </Grid>
+
+                  <DefiStakingTable
+                    {...{
+                      rawData: stakingList,
+                      pagination: {
+                        pageSize: STAKING_INVEST_LIMIT,
+                        total: stakingTotal,
+                      },
+                      idIndex,
+                      tokenMap,
+                      redeemItemClick,
+                      geDefiSideStakingList: getStakingList,
+                      showloading: stakeShowLoading,
+                      ...rest,
+                    }}
+                  />
                 </TableWrapStyled>
               )}
               {!!(lidoAssets?.length > 0) && (

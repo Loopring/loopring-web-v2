@@ -112,7 +112,7 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
     const [page, setPage] = React.useState(1);
     const redeemItemClick = (item: R) => {
       setDetail(item);
-      if (Date.now() >= item.claimableTime) {
+      if (Date.now() < item.claimableTime) {
         setOpenAlert(true);
       } else {
         setOpenDetail(false);
@@ -258,11 +258,18 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           name: t("labelDefiStakingDuration"),
           formatter: ({ row }) => {
-            const diff = moment(new Date(row.stakeAt ?? "")).diff(
-              moment(Date.now()),
-              "days"
+            const diff = moment(Date.now()).diff(
+              moment(new Date(row.stakeAt ?? "")),
+              "days",
+              false
             );
-            return <>{diff ? diff : "< 1" + " " + t("labelDays")}</>;
+            return (
+              <>
+                {diff
+                  ? diff + " " + t("labelDays")
+                  : "< 1" + " " + t("labelDays")}
+              </>
+            );
           },
         },
         {

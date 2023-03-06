@@ -1,7 +1,6 @@
 import React from "react";
 import {
   DeFiSideWrapProps,
-  RawDataDefiSideStakingItem,
   useOpenModals,
   useToggle,
 } from "@loopring-web/component-lib";
@@ -21,7 +20,6 @@ import {
 import {
   calcSideStaking,
   makeWalletLayer2,
-  useRedeemStack,
   useSubmitBtn,
   useWalletLayer2Socket,
 } from "@loopring-web/core";
@@ -498,29 +496,4 @@ export const useStakeTradeJOIN = <
   return {
     stackWrapProps: stackWrapProps as unknown as DeFiSideWrapProps<T, I, ACD>,
   };
-};
-export const useStakeRedeemClick = () => {
-  const { tokenMap, idIndex } = useTokenMap();
-  const { updateRedeemStack } = useRedeemStack();
-  const { setShowSideStakingRedeem } = useOpenModals();
-
-  const redeemItemClick = (item: RawDataDefiSideStakingItem) => {
-    const tokenInfo = tokenMap[idIndex[item.tokenId]];
-    updateRedeemStack({
-      sellToken: tokenInfo,
-      deFiSideRedeemCalcData: {
-        coinSell: {
-          belong: tokenInfo.symbol,
-          count: sdk
-            .toBig("remainAmount")
-            .div("1e" + tokenInfo.decimals)
-            .toString(),
-          tradeValue: undefined,
-        },
-        stackViewInfo: { ...item } as never,
-      },
-    });
-    setShowSideStakingRedeem({ isShow: true, symbol: tokenInfo.symbol });
-  };
-  return { redeemItemClick };
 };

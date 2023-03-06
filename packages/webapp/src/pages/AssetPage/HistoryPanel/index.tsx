@@ -308,7 +308,7 @@ const HistoryPanel = withTranslation("common")(
             ) : currentTab === TabIndex.sideStakingRecords ? (
               <DefiStakingTxTable
                 {...{
-                  rawData: sideStakingList,
+                  rawData: sideStakingList as any[],
                   pagination: {
                     pageSize: pageSize,
                     total: sideStakingTotal,

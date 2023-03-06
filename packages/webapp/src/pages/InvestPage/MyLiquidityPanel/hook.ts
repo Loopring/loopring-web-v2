@@ -55,7 +55,7 @@ export const useOverview = <
   tableHeight: number;
   handleFilterChange: (props: { searchValue: string }) => void;
   stakingList: RawDataDefiSideStakingItem[];
-  getStakingList: (props: { limit: number; offset: number }) => Promise<void>;
+  getStakingList: (props: { limit?: number; offset?: number }) => Promise<void>;
   stakeShowLoading: boolean;
   stakingTotal: number;
   totalStaked: string;

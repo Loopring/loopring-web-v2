@@ -27,15 +27,17 @@ const GridStyle = styled(Grid)`
     font-size: ${({ theme }) => theme.fontDefault.h5};
   }
 
-  textarea,
-  .coinInput-wrap,
-  .btnInput-wrap,
-  .MuiOutlinedInput-root {
-    background: var(--field-opacity);
-    border-color: var(--opacity);
+  div {
+    textarea,
+    .coinInput-wrap,
+    .btnInput-wrap,
+    .MuiOutlinedInput-root {
+      background: var(--field-opacity);
+      border-color: var(--opacity);
 
-    :hover {
-      border-color: var(--color-border-hover);
+      :hover {
+        border-color: var(--color-border-hover);
+      }
     }
   }
 `;
@@ -69,7 +71,7 @@ export const DeFiStackRedeemWrap = <
     !isJoin && !isFullTime ? false : true
   );
   const getDisabled = React.useMemo(() => {
-    return disabled || deFiSideRedeemCalcData === undefined || !agree;
+    return disabled || deFiSideRedeemCalcData === undefined;
   }, [btnStatus, deFiSideRedeemCalcData, disabled]);
 
   const handleCountChange = React.useCallback(
@@ -92,7 +94,8 @@ export const DeFiStackRedeemWrap = <
     isShowCoinIcon: true,
     maxAllow: true,
     handleError: (data: any) => {
-      if (sdk.toBig(data.balance).minus(data.tradeValue).lt(minSellAmount)) {
+      const value = sdk.toBig(data.balance).minus(data.tradeValue);
+      if (value.lt(minSellAmount) && !value.eq(0)) {
         return {
           error: true,
           message: t("labelRemainingAmount", {
@@ -108,6 +111,14 @@ export const DeFiStackRedeemWrap = <
               deFiSideRedeemCalcData.coinSell.belong,
           }),
         };
+      } else if (
+        data.tradeValue &&
+        (data.tradeValue > data.balance ||
+          sdk.toBig(data.tradeValue).lt(minSellAmount))
+      ) {
+        return {
+          error: true,
+        };
       }
       return {
         error: false,
@@ -122,53 +133,48 @@ export const DeFiStackRedeemWrap = <
       const key = btnInfo?.label.split("|");
       return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
     } else {
-      return isJoin ? t(`labelInvestBtn`) : t(`labelRedeemBtn`);
+      return t(`labelRedeemBtn`);
     }
-  }, [isJoin, t, btnInfo]);
+  }, [t, btnInfo]);
 
-  const { remainingEarn, forfeitedEarn, forfeitedEarnColor } =
-    React.useMemo(() => {
-      const { initialAmount, remainAmount, totalRewards } =
-        deFiSideRedeemCalcData.stackViewInfo;
-      const tradeVol = sdk
-        .toBig(deFiSideRedeemCalcData.coinSell.tradeValue ?? 0)
-        .times("1e" + tokenSell.decimals);
-      const rateEarn = tradeVol.gt(0)
-        ? tradeVol.div(initialAmount).times(totalRewards)
-        : sdk.toBig(remainAmount).div(initialAmount).times(totalRewards);
-      return {
-        currentTotalEarnings: sdk
-          .toBig(remainAmount)
-          .div(initialAmount)
-          .times(totalRewards),
-        ...(tradeVol.lte(remainAmount) && rateEarn.gt(0)
-          ? {
-              forfeitedEarn: EmptyValueTag,
-              forfeitedEarnColor: "var(--color-text-primary)",
-            }
-          : {
-              forfeitedEarnColor: "var(--color-error)",
-              forfeitedEarn:
-                "-" +
-                getValuePrecisionThousand(
-                  rateEarn.div("1e" + tokenSell.decimals),
-                  tokenSell.precision,
-                  tokenSell.precision,
-                  tokenSell.precision,
-                  false
-                ) +
-                " " +
-                deFiSideRedeemCalcData.coinSell.belong,
-            }),
-
-        remainingEarn:
-          tradeVol.lte(remainAmount) && rateEarn.gt(0)
-            ? EmptyValueTag
-            : getValuePrecisionThousand(
-                sdk
-                  .toBig(totalRewards)
-                  .minus(rateEarn)
-                  .div("1e" + tokenSell.decimals),
+  const {
+    currentTotalEarnings,
+    remainingEarn,
+    forfeitedEarn,
+    forfeitedEarnColor,
+  } = React.useMemo(() => {
+    const { remainAmount, totalRewards } = deFiSideRedeemCalcData.stackViewInfo;
+    const tradeVol = sdk
+      .toBig(deFiSideRedeemCalcData.coinSell.tradeValue ?? 0)
+      .times("1e" + tokenSell.decimals);
+    const rateEarn = tradeVol.gt(0)
+      ? tradeVol.div(remainAmount).times(totalRewards)
+      : sdk.toBig(remainAmount).div(remainAmount).times(totalRewards);
+    // .toBig(remainAmount)
+    // .div(remainAmount)
+    return {
+      currentTotalEarnings:
+        getValuePrecisionThousand(
+          sdk.toBig(totalRewards).div("1e" + tokenSell.decimals),
+          tokenSell.precision,
+          tokenSell.precision,
+          tokenSell.precision,
+          false
+        ) +
+        " " +
+        deFiSideRedeemCalcData.coinSell.belong,
+      ...(tradeVol.gt(remainAmount) ||
+      deFiSideRedeemCalcData.coinSell.tradeValue == undefined
+        ? {
+            forfeitedEarn: EmptyValueTag,
+            forfeitedEarnColor: "var(--color-text-primary)",
+          }
+        : {
+            forfeitedEarnColor: "var(--color-error)",
+            forfeitedEarn:
+              "-" +
+              getValuePrecisionThousand(
+                rateEarn.div("1e" + tokenSell.decimals),
                 tokenSell.precision,
                 tokenSell.precision,
                 tokenSell.precision,
@@ -176,11 +182,28 @@ export const DeFiStackRedeemWrap = <
               ) +
               " " +
               deFiSideRedeemCalcData.coinSell.belong,
-      };
-    }, [
-      deFiSideRedeemCalcData.stackViewInfo,
-      deFiSideRedeemCalcData.coinSell.tradeValue,
-    ]);
+          }),
+
+      remainingEarn:
+        tradeVol.lte(remainAmount) && rateEarn.gt(0)
+          ? EmptyValueTag
+          : getValuePrecisionThousand(
+              sdk
+                .toBig(totalRewards)
+                .minus(rateEarn)
+                .div("1e" + tokenSell.decimals),
+              tokenSell.precision,
+              tokenSell.precision,
+              tokenSell.precision,
+              false
+            ) +
+            " " +
+            deFiSideRedeemCalcData.coinSell.belong,
+    };
+  }, [
+    deFiSideRedeemCalcData.stackViewInfo,
+    deFiSideRedeemCalcData.coinSell.tradeValue,
+  ]);
   // const daysDuration = Math.ceil(
   //   Number(deFiSideRedeemCalcData?.stackViewInfo?.rewardPeriod ?? 0) / 86400000
   // );
@@ -201,7 +224,8 @@ export const DeFiStackRedeemWrap = <
   //     : EmptyValueTag;
   myLog(
     "deFiSideRedeemCalcData.stackViewInfo",
-    deFiSideRedeemCalcData.stackViewInfo
+    deFiSideRedeemCalcData.stackViewInfo,
+    deFiSideRedeemCalcData.coinSell
   );
   return (
     <GridStyle
@@ -316,7 +340,7 @@ export const DeFiStackRedeemWrap = <
               </Trans>
             </Typography>
             <Typography component={"p"} variant={"body2"} color={"textPrimary"}>
-              {}
+              {currentTotalEarnings}
             </Typography>
           </Grid>
           <Grid
@@ -407,7 +431,11 @@ export const DeFiStackRedeemWrap = <
                 />
               }
               label={
-                <Typography variant={"body1"} color={"textSecondary"}>
+                <Typography
+                  variant={"body1"}
+                  color={"textSecondary"}
+                  sx={{ wordBreak: "break-all" }}
+                >
                   {t("labelLRCStakeRedeemAgree")}
                 </Typography>
               }
@@ -435,7 +463,8 @@ export const DeFiStackRedeemWrap = <
               disabled={
                 getDisabled ||
                 btnStatus === TradeBtnStatus.LOADING ||
-                btnStatus === TradeBtnStatus.DISABLED
+                btnStatus === TradeBtnStatus.DISABLED ||
+                !agree
               }
             >
               {label}

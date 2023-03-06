@@ -1502,4 +1502,6 @@ export default {
   labelStakingCumulativeEarnings: "Cumulative Earnings",
   labelStakingClaimableEarnings: "Claimable Earnings",
   labelClaimBtn: "Claim",
+  labelStakeNoEnough: "Insufficient {{belong}} balance",
+  labelDefiRemindMin: "Please redeem all Balance",
 };
