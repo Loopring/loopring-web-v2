@@ -126,7 +126,6 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     }
   }, [info?.transferBanxa]);
   const restTransfer = React.useCallback(() => {
-    const memo = "OFF-Banxa Transfer";
     const {
       _router_modalData: { offBanxaValue },
     } = store.getState();
@@ -135,6 +134,7 @@ export const useBanxaConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       offBanxaValue.id &&
       offBanxaValue.status === "waitingPayment"
     ) {
+      const memo = `banxa-off:${offBanxaValue.id}`;
       const walletMap = makeWalletLayer2(true)?.walletMap ?? {};
       setShowAccount({ isShow: false });
       checkFeeIsEnough({ isRequiredAPI: true });
