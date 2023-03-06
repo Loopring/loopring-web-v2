@@ -1440,4 +1440,5 @@ export default {
     "Token has been sent to Banxa wallet. You can save/click below link to check the payment status anytime.",
   labelInvestStackLRC: "LRC STAKING",
   labelInvestStackLRCDES: "Earn LRC staking rewards",
+  labelFriendsPayActivation: "Your friend has paid for your L2 activation fee.",
 };

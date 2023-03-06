@@ -101,6 +101,7 @@ export const ResetWrap = <T extends FeeInfo>({
                   status={dropdownStatus}
                   fontSize={"medium"}
                 />
+
                 {isFeeNotEnough.isOnLoading ? (
                   <Typography
                     color={"var(--color-warning)"}
@@ -136,6 +137,17 @@ export const ResetWrap = <T extends FeeInfo>({
                 )}
               </Box>
             </Typography>
+            {isNewAccount && feeInfo?.fee?.toString() == "0" ? (
+              <Typography
+                color={"var(--color-success)"}
+                marginLeft={1}
+                component={"span"}
+              >
+                {t("labelFriendsPayActivation")}
+              </Typography>
+            ) : (
+              ""
+            )}
             {isNewAccount && (
               <Typography
                 component={"span"}
