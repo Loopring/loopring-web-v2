@@ -1444,6 +1444,7 @@ export default {
     "Token has been sent to Banxa wallet. You can save/click below link to check the payment status anytime.",
   labelInvestStackLRC: "LRC STAKING",
   labelInvestStackLRCDES: "Earn LRC staking rewards",
+  labelFriendsPayActivation: "Your friend has paid for your L2 activation fee.",
   labelLRCStakingTitle: "What's LRC Staking",
   labelLRCStakingRisk:
     "<p>LRC staking is incentivized through an allocated portion of the Loopring protocol fee; the exact percentage is determined by the Loopring DAO. The APY is updated daily based on the allocated amount from previous day’s fee. Any LRC holder can participate in LRC staking via L2 to accumulate daily rewards. The assets must be staked for a minimum of 90 days to receive rewards.</p>",
