@@ -82,6 +82,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       forexMap,
       showloading,
       onItemClick,
+      onViewMoreNFTsClick,
       getClaimRedPacket,
       pagination,
       page,
@@ -217,21 +218,50 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           // minWidth: 280,
           formatter: ({ row }) => {
-            return (
-              <Link onClick={() => onItemClick(row.rawData)}>
-                {t("labelClaim")}
-              </Link>
-            );
+            if (row.token.type === TokenType.single && row.token.name === "NFTs") {
+              return (
+                <Link onClick={() => onViewMoreNFTsClick()}>
+                  View More
+                </Link>
+              );
+            } else {
+              return (
+                <Link onClick={() => onItemClick(row.rawData)}>
+                  {t("labelClaim")}
+                </Link>
+              );
+
+            }
+            
           },
         },
       ],
       [history, t]
     );
+
+    const NFTrow = {
+      token: {
+        icon: "https://static.loopring.io/assets/ethereum/assets/0x0000000000000000000000000000000000000000/logo.png",
+        name: "NFTs",
+        simpleName: "",
+        description: "ETH",
+        company: "Ethereum",
+        type: "single"
+      },
+      "amountStr": "todo",
+      "volume": undefined,
+      // "rawData": {
+      //   "tokenId": 0,
+      //   "total": "13000000000000001", 
+      //   "locked": "0", 
+      //   "pending": { "withdraw": "0", "deposit": "0" }, "isNft": false
+      // }
+    }
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),
-      generateRows: (rawData: any) => rawData,
+      generateRows: (rawData: any) => [NFTrow, ...rawData],
       generateColumns: ({ columnsRaw }: any) =>
-        columnsRaw as Column<any, unknown>[],
+        columnsRaw  as Column<any, unknown>[],
     };
     const sortMethod = React.useCallback(
       (_sortedRows, sortColumn) => {

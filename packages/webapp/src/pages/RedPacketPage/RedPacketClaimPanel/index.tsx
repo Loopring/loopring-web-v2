@@ -33,7 +33,7 @@ export const RedPacketClaimPanel = () => {
   const { isMobile } = useSettings();
   const history = useHistory();
 
-  const { redPacketClaimList, showLoading, getClaimRedPacket, onItemClick } =
+  const { redPacketClaimList, showLoading, getClaimRedPacket, onItemClick, onViewMoreNFTsClick } =
     useClaimRedPacket(setToastOpen);
   const {
     page,
@@ -147,9 +147,12 @@ export const RedPacketClaimPanel = () => {
                     rawData: redPacketClaimList,
                     showloading: showLoading,
                     forexMap,
+                    
                     onItemClick,
                     etherscanBaseUrl,
                     getClaimRedPacket,
+                    onViewMoreNFTsClick,
+
                   }}
                 />
               </Box>

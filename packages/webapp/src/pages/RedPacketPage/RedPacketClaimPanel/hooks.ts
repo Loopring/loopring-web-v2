@@ -108,8 +108,18 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
       claimType: CLAIM_TYPE.redPacket,
     });
   };
+  const onViewMoreNFTsClick = () => {
+    // setShowClaimWithdraw({
+    //   isShow: true,
+    //   claimToken: {
+    //     ...item,
+    //   },
+    //   claimType: CLAIM_TYPE.redPacket,
+    // });
+  };
 
   return {
+    onViewMoreNFTsClick,
     onItemClick,
     redPacketClaimList,
     showLoading,
