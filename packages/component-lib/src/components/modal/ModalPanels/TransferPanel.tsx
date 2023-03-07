@@ -46,39 +46,40 @@ export const TransferPanel = withTranslation(["common", "error"], {
     const handleConfirm = (index: number) => {
       setPanelIndex(index);
     };
-    // const hanleConfirm = () => {};
+    // const handleConfirm = () => {};
     React.useEffect(() => {
       setPanelIndex(index + 1);
     }, [index]);
     type DisplayContact = {
-      name: string
-      address: string
-      avatarURL: string
-      editing: boolean
-    }
+      name: string;
+      address: string;
+      avatarURL: string;
+      editing: boolean;
+    };
     const [contacts, setContacts] = React.useState([] as DisplayContact[]);
     const {
       account: { accountId, apiKey },
     } = useAccount();
     useEffect(() => {
-      LoopringAPI.contactAPI!.getContacts({
-        isHebao: false,
-        accountId
-      }, apiKey)
-        .then((x: any) => {
-          const displayContacts = x.contacts.map((xx: any) => {
+      LoopringAPI.contactAPI!.getContacts(
+        {
+          isHebao: false,
+          accountId,
+        },
+        apiKey
+      ).then((x: any) => {
+        const displayContacts = x.contacts.map((xx: any) => {
+          return {
+            name: xx.contactName,
+            address: xx.contactAddress,
 
-            return {
-              name: xx.contactName,
-              address: xx.contactAddress,
-              
-              avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), //todo
-              editing: false
-            } as DisplayContact
-          })
-          setContacts(displayContacts)
-        })
-    }, [])
+            avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), //todo
+            editing: false,
+          } as DisplayContact;
+        });
+        setContacts(displayContacts);
+      });
+    }, []);
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(
@@ -106,7 +107,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
           {...rest}
         />
       ),
-    }
+    };
     const tradePanel = {
       key: "trade",
       element: React.useMemo(
@@ -133,9 +134,9 @@ export const TransferPanel = withTranslation(["common", "error"], {
               isFromContact,
               contact,
               onClickContact: () => {
-                setPanelIndex(3); // todo handle tradeMenuList 
+                setPanelIndex(3); // todo handle tradeMenuList
                 // rest.handleOnAddressChange(address)
-              }
+              },
             }}
           />
         ),
@@ -172,7 +173,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
         ),
         [onBack]
       ),
-    }
+    };
     const tokenSelectionPanel = {
       key: "tradeMenuList",
       element: React.useMemo(
@@ -195,8 +196,8 @@ export const TransferPanel = withTranslation(["common", "error"], {
       ),
       // toolBarItem: undefined,
       toolBarItem: undefined,
-    }
-    const contactSelectionPanel =  {
+    };
+    const contactSelectionPanel = {
       key: "contactSelection",
       element: React.useMemo(
         () => (
@@ -206,7 +207,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
             contacts={contacts}
             onSelect={(address) => {
               setPanelIndex(1);
-              rest.handleOnAddressChange(address)
+              rest.handleOnAddressChange(address);
             }}
           />
         ),
@@ -233,9 +234,8 @@ export const TransferPanel = withTranslation(["common", "error"], {
         tradePanel,
         tokenSelectionPanel,
         contactSelectionPanel,
-      ]
-    }
-
+      ],
+    };
 
     // const props: SwitchPanelProps<string> = {
     //   index: panelIndex, // show default show

@@ -27,10 +27,7 @@ import {
   NFTWholeINFO,
   TOAST_TIME,
   TradeBtnStatus,
-  AddressError,
-  AssetsRawDataItem,
   WALLET_TYPE,
-  EXCHANGE_TYPE,
   ContactIcon,
 } from "@loopring-web/common-resources";
 import {
@@ -39,12 +36,7 @@ import {
   PopoverPure,
   Toast,
 } from "../..";
-import {
-  Button,
-  IconClearStyled,
-  TextField,
-  useSettings,
-} from "../../../index";
+import { Button, TextField, useSettings } from "../../../index";
 import { WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { NFTInput } from "./BasicANFTTrade";
@@ -178,21 +170,11 @@ export const WithdrawWrap = <
     }
   }, [t, tradeData, withdrawI18nKey]);
 
-  const detectedWalletType = isLoopringAddress 
+  const detectedWalletType = isLoopringAddress
     ? WALLET_TYPE.Loopring
-    : isContractAddress 
-      ? WALLET_TYPE.OtherSmart 
-      : WALLET_TYPE.EOA 
-  let isExchange
-  if (sureIsAllowAddress && sureIsAllowAddress in EXCHANGE_TYPE) {
-    isExchange = true
-  } else {
-    isExchange = false
-  }
-  // const isExchangeEOA = 
-  //   detectedWalletType === WALLET_TYPE.EOA && isExchange
-  // const isOtherSmartWallet = 
-  //   detectedWalletType === WALLET_TYPE.OtherSmart
+    : isContractAddress
+    ? WALLET_TYPE.OtherSmart
+    : WALLET_TYPE.EOA;
 
   return (
     <Grid
@@ -312,18 +294,18 @@ export const WithdrawWrap = <
               fullWidth={true}
               InputProps={{
                 style: {
-                  paddingRight: '8px',
+                  paddingRight: "8px",
                 },
-                endAdornment: isFromContact
-                  ? undefined
-                  : <InputAdornment style={{
-                    cursor: "pointer",
-                  }} position="end" >
+                endAdornment: isFromContact ? undefined : (
+                  <InputAdornment
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    position="end"
+                  >
                     {addressDefault !== "" ? (
                       isAddressCheckLoading ? (
-                        <LoadingIcon
-                          width={24}
-                        />
+                        <LoadingIcon width={24} />
                       ) : (
                         <IconButton
                           color={"inherit"}
@@ -338,11 +320,15 @@ export const WithdrawWrap = <
                       ""
                     )}
                     <IconButton>
-                      <ContactIcon onClick={() => {
-                        onClickContact!()
-                      }} fontSize={"large"} />
+                      <ContactIcon
+                        onClick={() => {
+                          onClickContact!();
+                        }}
+                        fontSize={"large"}
+                      />
                     </IconButton>
                   </InputAdornment>
+                ),
               }}
             />
           </>
