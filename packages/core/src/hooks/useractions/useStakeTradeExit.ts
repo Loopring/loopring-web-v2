@@ -115,7 +115,7 @@ export const useStakeTradeExit = <
           label: `labelDefiMin| ${getValuePrecisionThousand(
             sdk.toBig(
               (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
-                ?.miniSellAmount ?? 0
+                ?.minSellAmount ?? 0
             ),
             tokenMap[coinSellSymbol].precision,
             tokenMap[coinSellSymbol].precision,

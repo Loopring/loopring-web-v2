@@ -162,7 +162,7 @@ export const calcSideStaking = <T>({
     .toBig(deFiSideCalcData.stackViewInfo.maxAmount)
     .div("1e" + tokenSell.decimals)
     .toString();
-  const miniSellAmount = sdk
+  const minSellAmount = sdk
     .toBig(deFiSideCalcData.stackViewInfo.minAmount)
     .div("1e" + tokenSell.decimals)
     .toString();
@@ -176,7 +176,7 @@ export const calcSideStaking = <T>({
           minSellVol: deFiSideCalcData.stackViewInfo.minAmount,
           maxSellVol: deFiSideCalcData.stackViewInfo.maxAmount,
           maxSellAmount,
-          miniSellAmount,
+          minSellAmount,
           dalyEarn,
         },
       },
@@ -194,7 +194,7 @@ export const calcSideStaking = <T>({
           minSellVol: undefined,
           maxSellVol: undefined,
           maxSellAmount,
-          miniSellAmount,
+          minSellAmount,
           dalyEarn,
         },
       },
@@ -235,7 +235,7 @@ export const calcRedeemStaking = <T extends IBData<any>, R>({
     .toBig((stackViewInfo as any)?.maxAmount)
     .div("1e" + tokenSell.decimals)
     .toString();
-  const miniSellAmount = sdk
+  const minSellAmount = sdk
     .toBig((stackViewInfo as any).minAmount)
     .div("1e" + tokenSell.decimals)
     .toString();
@@ -251,7 +251,7 @@ export const calcRedeemStaking = <T extends IBData<any>, R>({
           minSellVol: (stackViewInfo as any).minAmount,
           maxSellVol: (stackViewInfo as any).maxAmount,
           maxSellAmount,
-          miniSellAmount,
+          minSellAmount,
         },
       },
       isJoin: true,
@@ -269,7 +269,7 @@ export const calcRedeemStaking = <T extends IBData<any>, R>({
           minSellVol: undefined,
           maxSellVol: undefined,
           maxSellAmount,
-          miniSellAmount,
+          minSellAmount,
         },
       },
       isJoin: true,

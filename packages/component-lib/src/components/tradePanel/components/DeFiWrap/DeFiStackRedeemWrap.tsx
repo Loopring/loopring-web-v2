@@ -93,8 +93,10 @@ export const DeFiStackRedeemWrap = <
     isShowCoinInfo: true,
     isShowCoinIcon: true,
     maxAllow: true,
+    isHideError: false,
     handleError: (data: any) => {
       const value = sdk.toBig(data.balance).minus(data.tradeValue);
+
       if (value.lt(minSellAmount) && !value.eq(0)) {
         return {
           error: true,
@@ -186,8 +188,7 @@ export const DeFiStackRedeemWrap = <
 
       remainingEarn:
         tradeVol.lte(remainAmount) && rateEarn.gt(0)
-          ? EmptyValueTag
-          : getValuePrecisionThousand(
+          ? getValuePrecisionThousand(
               sdk
                 .toBig(totalRewards)
                 .minus(rateEarn)
@@ -198,7 +199,8 @@ export const DeFiStackRedeemWrap = <
               false
             ) +
             " " +
-            deFiSideRedeemCalcData.coinSell.belong,
+            deFiSideRedeemCalcData.coinSell.belong
+          : EmptyValueTag,
     };
   }, [
     deFiSideRedeemCalcData.stackViewInfo,
@@ -270,7 +272,6 @@ export const DeFiStackRedeemWrap = <
           {...{
             ...propsSell,
             name: "coinSell",
-            isHideError: true,
             order: "right",
             inputData: deFiSideRedeemCalcData
               ? deFiSideRedeemCalcData.coinSell

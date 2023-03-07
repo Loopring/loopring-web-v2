@@ -143,7 +143,7 @@ export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
   stackViewInfo: R & {
     dalyEarn?: string;
     maxSellAmount?: string;
-    miniSellAmount?: string;
+    minSellAmount?: string;
     maxSellVol?: string;
     minSellVol?: string;
   };
@@ -151,7 +151,7 @@ export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
 type RedeemInfo = sdk.StakeInfoOrigin &
   sdk.STACKING_PRODUCT & {
     maxSellAmount?: string;
-    miniSellAmount?: string;
+    minSellAmount?: string;
     maxSellVol?: string;
     minSellVol?: string;
     minAmount: string;

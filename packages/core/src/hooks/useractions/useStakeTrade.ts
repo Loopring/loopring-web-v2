@@ -376,7 +376,7 @@ export const useStakeTradeJOIN = <
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDefiMin| ${getValuePrecisionThousand(
             sdk.toBig(
-              tradeStack?.deFiSideCalcData?.stackViewInfo?.miniSellAmount ?? 0
+              tradeStack?.deFiSideCalcData?.stackViewInfo?.minSellAmount ?? 0
             ),
             tokenMap[coinSellSymbol].precision,
             tokenMap[coinSellSymbol].precision,
@@ -472,8 +472,7 @@ export const useStakeTradeJOIN = <
       deFiSideCalcData: {
         ...tradeStack.deFiSideCalcData,
       },
-      minSellAmount:
-        tradeStack?.deFiSideCalcData?.stackViewInfo?.miniSellAmount,
+      minSellAmount: tradeStack?.deFiSideCalcData?.stackViewInfo?.minSellAmount,
       maxSellAmount: tradeStack?.deFiSideCalcData?.stackViewInfo?.maxSellAmount,
       tokenSell: {
         ...tokenMap[coinSellSymbol],

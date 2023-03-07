@@ -339,8 +339,18 @@ export const useClaimConfirm = <
             },
             apiKey
           );
+          let brokerType = undefined;
+          switch (claimValue.claimType) {
+            case CLAIM_TYPE.redPacket:
+              brokerType = 2;
+              break;
+            case CLAIM_TYPE.lrcStaking:
+              brokerType = 0;
+              break;
+          }
+          claimValue.claimType === CLAIM_TYPE.redPacket;
           const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
-            type: 2,
+            type: brokerType,
           });
           let request:
             | sdk.OriginLuckTokenWithdrawsRequestV3
