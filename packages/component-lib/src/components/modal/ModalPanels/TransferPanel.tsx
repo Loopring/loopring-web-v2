@@ -5,7 +5,7 @@ import {
   SwitchPanelProps,
 } from "../../basic-lib";
 import { IBData, TRADE_TYPE } from "@loopring-web/common-resources";
-import React, { useEffect }from "react";
+import React, { useEffect } from "react";
 import { TransferProps } from "../../tradePanel";
 import {
   TradeMenuList,
