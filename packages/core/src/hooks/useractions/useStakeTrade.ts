@@ -174,6 +174,10 @@ export const useStakeTradeJOIN = <
               sellToken: tokenMap[coinSellSymbol],
               deFiSideCalcData: {
                 ...deFiSideCalcDataInit,
+                coinSell: {
+                  ...deFiSideCalcDataInit.coinSell,
+                  tradeValue: undefined,
+                },
               } as DeFiSideCalcData<T>,
             });
             myLog("resetDefault defi clearTrade", deFiSideCalcDataInit);
