@@ -217,7 +217,7 @@ export type WithdrawExtendProps<T, I, C> = {
   realAddr?: string;
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;
-  isLoopringAddress: boolean;
+  isLoopringAddress?: boolean;
   isContractAddress: boolean;
   isFastWithdrawAmountLimit?: boolean;
   addrStatus: AddressError;
@@ -231,7 +231,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isToMyself?: boolean;
   sureIsAllowAddress: WALLET_TYPE | EXCHANGE_TYPE | undefined;
   handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => void;
-  contact?: {address: string, name: string, addressType: sdk.AddressType}
+  contact?: {address: string, name: string, addressType?: sdk.AddressType}
   isFromContact?: boolean
   onClickContact?: () => void
 } & WithdrawInfoProps<C>;

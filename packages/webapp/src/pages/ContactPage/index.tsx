@@ -1,14 +1,11 @@
 import { Avatar, Box, Button, OutlinedInput, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { DataGridStyled, InputSearch, Table, Toast } from "@loopring-web/component-lib";
-import DataGrid, { SortColumn } from "react-data-grid";
-import { useTranslation } from "react-i18next";
-import { ActiveIcon, EditIcon, TOAST_TIME } from "@loopring-web/common-resources";
+import { InputSearch, Toast } from "@loopring-web/component-lib";
+import { EditIcon, TOAST_TIME } from "@loopring-web/common-resources";
 import { Add } from "./add";
 import { Delete } from "./delete";
 import { Send } from "./send";
-import { useContact, useContact2 } from "./hooks";
-import { SingleContact } from "@loopring-web/component-lib/src/components/tradePanel/components/ContactSelection";
+import { useContact } from "./hooks";
 import { useHistory } from "react-router";
 
 const ContactPageStyle = styled(Box)`
@@ -54,7 +51,7 @@ export const ContactPage = () => {
     onCloseSend,
     sendInfo,
     onCloseToast,
-  } = useContact2()
+  } = useContact()
   let totastText = ''
   if (toastInfo.isSuccess) {
     switch (toastInfo.type) {

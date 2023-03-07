@@ -1,10 +1,10 @@
 // import { Dialog } from "@mui/material";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box } from '@mui/material';
-import { Contact, useContact, useContactSend } from './hooks';
-import { CheckIcon, LoadingIcon, TOAST_TIME } from '@loopring-web/common-resources';
-import { AvatarCoin, CoinIcon, TextField, Toast } from '@loopring-web/component-lib';
+import { Contact, useContactSend } from './hooks';
+import { CheckIcon } from '@loopring-web/common-resources';
+import { CoinIcon, TextField } from '@loopring-web/component-lib';
 import { useTheme } from '@emotion/react';
 import styled from "@emotion/styled";
 

@@ -1,10 +1,10 @@
 // import { Dialog } from "@mui/material";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, IconButton } from '@mui/material';
-import { useContact, useContact2, useContactAdd } from './hooks';
-import { CloseIcon, LoadingIcon, TOAST_TIME } from '@loopring-web/common-resources';
-import { TextField, Toast } from '@loopring-web/component-lib';
+import { useContactAdd } from './hooks';
+import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources';
+import { TextField } from '@loopring-web/component-lib';
 import { useTheme } from '@emotion/react';
 
 interface AddDialogProps {
