@@ -183,12 +183,6 @@ export const WithdrawWrap = <
     : isContractAddress 
       ? WALLET_TYPE.OtherSmart 
       : WALLET_TYPE.EOA 
-  let isExchange
-  if (sureIsAllowAddress && sureIsAllowAddress in EXCHANGE_TYPE) {
-    isExchange = true
-  } else {
-    isExchange = false
-  }
   // const isExchangeEOA = 
   //   detectedWalletType === WALLET_TYPE.EOA && isExchange
   // const isOtherSmartWallet = 
