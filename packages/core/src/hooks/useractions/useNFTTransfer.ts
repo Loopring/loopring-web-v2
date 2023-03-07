@@ -32,6 +32,7 @@ import {
   TradeNFT,
   UIERROR_CODE,
   WALLET_TYPE,
+  EXCHANGE_TYPE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -94,7 +95,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const searchParams = new URLSearchParams(search);
 
   const [sureItsLayer2, setSureItsLayer2] =
-    React.useState<WALLET_TYPE | undefined>(undefined);
+    React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(undefined);
 
   const [feeWithActive, setFeeWithActive] = React.useState(false);
   // const [chargeFeeTransferList, setChargeFeeTransferList] = React.useState([
@@ -656,8 +657,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     lastFailed:
       store.getState().modals.isShowAccount.info?.lastFailed ===
       LAST_STEP.nftTransfer,
-    handleSureItsLayer2: (sure: WALLET_TYPE) => {
-      
+    handleSureItsLayer2: (sure: WALLET_TYPE | EXCHANGE_TYPE) => {
       setSureItsLayer2(sure);
     },
     // isConfirmTransfer,

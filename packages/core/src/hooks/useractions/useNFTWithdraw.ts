@@ -21,6 +21,7 @@ import {
   TRADE_TYPE,
   TradeNFT,
   UIERROR_CODE,
+  WALLET_TYPE,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -103,7 +104,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
 
   const { checkHWAddr, updateHW } = useWalletInfo();
   const [sureIsAllowAddress, setSureIsAllowAddress] =
-    React.useState<EXCHANGE_TYPE | undefined>(undefined);
+    React.useState<EXCHANGE_TYPE | WALLET_TYPE | undefined>(undefined);
 
   const [lastRequest, setLastRequest] = React.useState<any>({});
 
@@ -585,6 +586,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     feeInfo,
     chargeFeeTokenList,
     isFeeNotEnough,
+    isLoopringAddress: true
   } as WithdrawProps<any, any>;
 
   return {

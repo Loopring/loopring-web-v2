@@ -14,10 +14,7 @@ import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useRouteMatch } from "react-router";
 import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
-// export type RewardListItem = {
-//   amount: string;
-//   time: number;
-// };
+
 
 export type Contact = {
   name: string,
@@ -27,7 +24,7 @@ export type Contact = {
 }
 type Network = 'L1' | 'L2'
 
-export const useContact2 = () => {
+export const useContact = () => {
   const [addOpen, setAddOpen] = React.useState(false);
   const [deleteInfo, setDeleteInfo] = React.useState({
     open: false,
@@ -431,8 +428,8 @@ export function useTransactions() {
         //       : (response as sdk.RESULT_INFO).message,
         // });
       } else {
-        const formattedList: RawDataTransactionItem[] = response.raw_data.bills.map(
-          (o) => {
+        const formattedList: RawDataTransactionItem[] = (response as any).raw_data.bills.map(
+          (o: any) => {
             const feePrecision = tokenMap
               ? tokenMap[o.tokenF].precision
               : undefined;
@@ -544,116 +541,3 @@ export function useTransactions() {
     getUserTxnList,
   };
 }
-
-
-
-export const useContact = () => {
-  const [addOpen, setAddOpen] = React.useState(false);
-  const [addLoading, setAddLoading] = React.useState(false);
-  const [addAddress, setAddAddress] = React.useState('');
-  const [addName, setAddName] = React.useState('');
-  const [toastStatus, setToastStatus] = React.useState('Succuss' as 'Succuss' | 'Error' | 'Init');
-  const addShowInvalidAddress = addAddress !== ''
-    ? !utils.isAddress(addAddress)
-    : false
-  const addButtonDisable = !utils.isAddress(addAddress) || addName === ''
-  const onToogleAdd = React.useCallback((open: boolean) => {
-    setAddOpen(open)
-  }, [])
-  const submitAddingContact = React.useCallback((address: string, name: string) => {
-
-    debugger
-  }, [])
-  console.log('addOpen', addOpen)
-
-  const [deleteInfo, setDeleteInfo] = React.useState({
-    open: false,
-    selected: undefined as Contact | undefined
-  });
-  // const [deleteInfo, setDeleteInfo] = useState({
-  //   open: true,
-  //   selected: {
-  //     name: 'AA',
-  //     address: '0xfF7d59D9316EBA168837E3eF924BCDFd64b237D8',
-  //     id: 'aaaaa'
-  //   } as Contact | undefined
-  // });
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
-  const submitContactDeletion = React.useCallback((contact: Contact) => {
-    debugger
-  }, [])
-
-  const [sendInfo, setSendInfo] = React.useState({
-    open: true,
-    selected: {
-      name: 'AA',
-      address: '0xfF7d59D9316EBA168837E3eF924BCDFd64b237D8',
-      addressType : 'aaaaa'
-    } as Contact | undefined
-  });
-  const [sendLoading, setSendLoading] = React.useState(false);
-  const [sendNetwork, setSendNetwork] = React.useState('L1' as Network);
-  const { setShowTransfer, setShowWithdraw } = useOpenModals()
-  const submitSendingContact = React.useCallback((contact: Contact, network: Network) => {
-    if (network === 'L1') {
-      setShowWithdraw({
-        isShow: true,
-        address: contact.address,
-        name: contact.name,
-        symbol: "ETH"
-      })
-    } else {
-      setShowTransfer({
-        isShow: true,
-        address: contact.address,
-        name: contact.name,
-        symbol: "ETH"
-      })
-    }
-  }, [])
-
-
-  // useEffect(() => {
-  // setShowTransfer({
-  //   isShow: true,
-  //   // info?: { [key: string]: any };
-  // })
-  // })
-
-
-
-
-
-  return {
-
-    addOpen,
-    setAddOpen,
-    addLoading,
-    setAddLoading,
-    addAddress,
-    setAddAddress,
-    addName,
-    setAddName,
-    toastStatus,
-    setToastStatus,
-    addShowInvalidAddress,
-    addButtonDisable,
-    submitAddingContact,
-    onToogleAdd,
-
-
-    deleteInfo,
-    setDeleteInfo,
-    submitContactDeletion,
-    deleteLoading,
-    // setToastStatus,
-
-    sendInfo,
-    setSendInfo,
-    sendLoading,
-    setSendLoading,
-    submitSendingContact,
-    sendNetwork,
-    setSendNetwork
-  }
-};

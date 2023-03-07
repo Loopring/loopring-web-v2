@@ -1,10 +1,10 @@
 // import { Dialog } from "@mui/material";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, IconButton } from '@mui/material';
-import { Contact, useContact, useContact2 } from './hooks';
-import { CloseIcon, colorBase, LoadingIcon, TOAST_TIME } from '@loopring-web/common-resources';
-import { TextField, Toast } from '@loopring-web/component-lib';
+import { Contact } from './hooks';
+import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources';
+import { TextField } from '@loopring-web/component-lib';
 import { useTheme } from '@emotion/react';
 
 interface DeleteDialogProps {
