@@ -178,7 +178,6 @@ export const useOverview = <
       let totalCurrentInvest = {
         ammPoolDollar: 0,
         stakeETHDollar: 0,
-        dualStakeDollar: 0,
       };
       if (_walletMap && ammMap && userRewardsMap && tokenPrices) {
         // @ts-ignore
@@ -227,17 +226,17 @@ export const useOverview = <
               tokenPrices[defiCoinKey] ?? 0
           );
         }, []);
-        if (dualOnInvestAsset) {
-          Object.keys(dualOnInvestAsset).forEach((key) => {
-            const item = dualOnInvestAsset[key];
-            const { amount, tokenId } = item;
-            const tokenInfo = tokenMap[idIndex[tokenId]];
-            totalCurrentInvest.dualStakeDollar +=
-              volumeToCountAsBigNumber(tokenInfo.symbol, amount)
-                ?.times(tokenPrices[tokenInfo.symbol] ?? 0)
-                .toNumber() ?? 0;
-          });
-        }
+        // if (dualOnInvestAsset) {
+        //   Object.keys(dualOnInvestAsset).forEach((key) => {
+        //     const item = dualOnInvestAsset[key];
+        //     const { amount, tokenId } = item;
+        //     const tokenInfo = tokenMap[idIndex[tokenId]];
+        //     totalCurrentInvest.dualStakeDollar +=
+        //       volumeToCountAsBigNumber(tokenInfo.symbol, amount)
+        //         ?.times(tokenPrices[tokenInfo.symbol] ?? 0)
+        //         .toNumber() ?? 0;
+        //   });
+        // }
 
         setSummaryMyInvest((state) => {
           return {
@@ -245,7 +244,7 @@ export const useOverview = <
             ...totalCurrentInvest,
             investDollar: sdk
               .toBig(totalCurrentInvest.ammPoolDollar ?? 0)
-              .plus(totalCurrentInvest.dualStakeDollar ?? 0)
+              .plus(state.dualStakeDollar ?? 0)
               .plus(totalCurrentInvest.stakeETHDollar ?? 0)
               .plus(state.stakeLRCDollar ?? 0)
               .toString(),
@@ -374,6 +373,7 @@ export const useOverview = <
             .toBig(totalStaked)
             .div("1e" + tokenMap[LRCStakingSymbol].decimals)
             .times(tokenPrices[LRCStakingSymbol]);
+
           setSummaryMyInvest((state) => {
             return {
               ...state,
