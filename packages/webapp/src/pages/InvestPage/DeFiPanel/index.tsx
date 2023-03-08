@@ -216,9 +216,11 @@ const LandDefiInvest = ({
                               flexDirection={"column"}
                               alignItems={"center"}
                               marginTop={2}
+                              component={"span"}
                             >
                               <Typography
                                 variant={"h3"}
+                                component={"span"}
                                 color={
                                   upColor === UpColor.green
                                     ? "var(--color-success)"
@@ -232,6 +234,7 @@ const LandDefiInvest = ({
                               >
                                 <Typography
                                   variant={"body2"}
+                                  component={"span"}
                                   display={"inline-flex"}
                                   alignItems={"center"}
                                   color={"var(--color-text-third)"}

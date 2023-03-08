@@ -204,7 +204,7 @@ export const useClaimConfirm = <
             );
           }
 
-          myLog("submitNFTWithdraw:", response);
+          myLog("claim submitted :", claimValue.claimType, response);
 
           if (
             (response as sdk.RESULT_INFO).code ||

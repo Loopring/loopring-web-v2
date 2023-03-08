@@ -73,7 +73,6 @@ export function* getPostsSaga() {
     yield put(getStakingMapStatus(err));
   }
 }
-
 export function* getDefiSyncSaga({
   payload,
 }: PayloadAction<{ stakingMap: StakingMap }>) {
@@ -89,7 +88,6 @@ export function* getDefiSyncSaga({
 export function* stakingMapInitSaga() {
   yield all([takeLatest(getStakingMap, getPostsSaga)]);
 }
-
 export function* stakingMapSyncSaga() {
   yield all([takeLatest(updateDefiSyncMap, getDefiSyncSaga)]);
 }

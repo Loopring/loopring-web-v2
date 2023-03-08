@@ -1,7 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getInvestTokenTypeMap, getInvestTokenTypeMapStatus } from "./reducer";
 import { AmmDetailStore, InvestTokenTypeMap, store } from "../../index";
-import * as sdk from "@loopring-web/loopring-sdk";
 import {
   InvestDuration,
   InvestItem,
@@ -23,7 +22,7 @@ function calcApr(
   return [start, end];
 }
 function calcDefiApr(
-  defiinfo: sdk.DefiMarketInfo,
+  defiinfo: { apy: string } | any,
   investItem: InvestItem
 ): [start: number, end: number] {
   let [start, end] = investItem.apr;
@@ -65,6 +64,8 @@ const getInvestMapApi = async () => {
   const { ammMap } = store.getState().amm.ammMap;
   const { marketMap: defiMarketMap } = store.getState().invest.defiMap;
   const { marketMap: dualMarketMap } = store.getState().invest.dualMap;
+  const { marketMap: stakingMarketMap } = store.getState().invest.stakingMap;
+
   const { tokenMap } = store.getState().tokenMap;
   let investTokenTypeMap: InvestTokenTypeMap = Object.keys(ammMap).reduce(
     (prev, key) => {
@@ -163,46 +164,7 @@ const getInvestMapApi = async () => {
     investTokenTypeMap = Object.keys(defiMarketMap).reduce((prev, key) => {
       const [, _coinA, coinB] = key.match(/(\w+)-(\w+)/i);
       const defiInfo = defiMarketMap[key];
-      // if (prev[coinA] && prev[coinA]) {
-      //   let investItem = prev[coinA][InvestMapType.STAKE];
-      //   if (investItem) {
-      //     investItem.apr = calcDefiApr(defiInfo, investItem);
-      //   } else {
-      //     prev[coinA][InvestMapType.STAKE] = {
-      //       type: InvestMapType.STAKE,
-      //       // token: tokenMap[coinB],
-      //       i18nKey: `labelInvestType_${InvestMapType.STAKE}`,
-      //       apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
-      //       durationType: InvestDuration.Flexible,
-      //       duration: "",
-      //     };
-      //   }
-      // } else {
-      //   prev[coinA] = {
-      //     detail: {
-      //       token: tokenMap[coinA],
-      //       apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
-      //       durationType: InvestDuration.All,
-      //       duration: "",
-      //     },
-      //     [InvestMapType.STAKE]: {
-      //       type: InvestMapType.STAKE,
-      //       // token: tokenMap[coinB],
-      //       i18nKey: `labelInvestType_${InvestMapType.STAKE}`,
-      //       apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
-      //       durationType: InvestDuration.Flexible,
-      //       duration: "",
-      //     },
-      //   };
-      // }
-      // if (prev[coinA]?.detail && defiInfo.apy) {
-      //   prev[coinA].detail.apr = [
-      //     prev[coinA]?.detail?.apr[0] === 0
-      //       ? defiInfo.apy
-      //       : Math.min(defiInfo.apy, prev[coinA]?.detail?.apr[0]),
-      //     Math.max(defiInfo.apy, prev[coinA]?.detail?.apr[1]),
-      //   ];
-      // }
+
       if (prev[coinB] && prev[coinB]) {
         let investItem = prev[coinB][InvestMapType.STAKE];
         if (investItem) {
@@ -388,11 +350,64 @@ const getInvestMapApi = async () => {
     }, investTokenTypeMap);
   }
 
-  // investTokenTypeMap = Object(investTokenTypeMap).map((item,index)=>{
-  //   item.detail.apr =
-  //
-  //   return
-  // });
+  if (stakingMarketMap) {
+    investTokenTypeMap = Object.keys(stakingMarketMap).reduce((prev, key) => {
+      const coin = key;
+      if (prev[coin] && prev[coin]) {
+        let investItem = prev[coin][InvestMapType.STAKELRC];
+        if (investItem) {
+          investItem.apr = calcDefiApr(
+            { apy: stakingMarketMap[key].apr },
+            investItem
+          );
+        } else {
+          prev[coin][InvestMapType.STAKELRC] = {
+            type: InvestMapType.STAKELRC,
+            // token: tokenMap[coinB],
+            i18nKey: `labelInvestType_${InvestMapType.STAKELRC}`,
+            apr: [
+              stakingMarketMap[key]?.apr ?? 0,
+              stakingMarketMap[key]?.apr ?? 0,
+            ],
+            durationType: InvestDuration.Flexible,
+            duration: "",
+          };
+        }
+      } else {
+        prev[coin] = {
+          detail: {
+            token: tokenMap[coin],
+            apr: [
+              stakingMarketMap[key]?.apr ?? 0,
+              stakingMarketMap[key]?.apr ?? 0,
+            ],
+            durationType: InvestDuration.All,
+            duration: "",
+          },
+          [InvestMapType.STAKE]: {
+            type: InvestMapType.STAKE,
+            // token: tokenMap[coinB],
+            i18nKey: `labelInvestType_${InvestMapType.STAKE}`,
+            apr: [
+              stakingMarketMap[key]?.apr ?? 0,
+              stakingMarketMap[key]?.apr ?? 0,
+            ],
+            durationType: InvestDuration.Flexible,
+            duration: "",
+          },
+        };
+      }
+      if (prev[coin]?.detail && stakingMarketMap[key].apr) {
+        prev[coin].detail.apr = [
+          prev[coin]?.detail?.apr[0] === 0
+            ? stakingMarketMap[key].apy
+            : Math.min(stakingMarketMap[key].apr, prev[coin]?.detail?.apr[0]),
+          Math.max(stakingMarketMap[key].apr, prev[coin]?.detail?.apr[1]),
+        ];
+      }
+      return prev;
+    }, investTokenTypeMap);
+  }
 
   return {
     investTokenTypeMap,

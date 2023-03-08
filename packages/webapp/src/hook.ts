@@ -14,6 +14,7 @@ import {
   useDefiMap,
   useInvestTokenTypeMap,
   useDualMap,
+  useStakingMap,
 } from "@loopring-web/core";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { SagaStatus, ThemeType } from "@loopring-web/common-resources";
@@ -26,7 +27,6 @@ import {
 import { useAccountInit } from "./hookAccountInit";
 import { useSettings } from "@loopring-web/component-lib";
 import { useTheme } from "@emotion/react";
-import moment from "moment";
 
 /**
  * @description
@@ -69,6 +69,9 @@ export function useInit() {
     useDefiMap();
   const { status: dualMapStatus, statusUnset: dualMapStatusUnset } =
     useDualMap();
+  const { status: stakingMapStatus, statusUnset: stakingMapStatusUnset } =
+    useStakingMap();
+
   const {
     status: investTokenTypeMapStatus,
     statusUnset: investTokenTypeMapStatusUnset,
@@ -322,6 +325,19 @@ export function useInit() {
         break;
     }
   }, [dualMapStatus]);
+  React.useEffect(() => {
+    switch (stakingMapStatus) {
+      case SagaStatus.ERROR:
+        stakingMapStatusUnset();
+        // setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        stakingMapStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [stakingMapStatus]);
 
   React.useEffect(() => {
     switch (investTokenTypeMapStatus) {

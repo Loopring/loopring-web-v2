@@ -893,6 +893,7 @@ export default {
   labelInvestType_AMM: "AMM Pool",
   labelInvestType_STAKE: "ETH Staking",
   labelInvestType_DUAL: "Dual Investment",
+  labelInvestType_STAKELRC: "LRC Staking",
   labelInvestAll: "Mixed",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
@@ -1490,7 +1491,6 @@ export default {
   labelDeFiSideSubscribeTime: "Subscribe Time",
   labelDeFiSideHoldingTime: "Holding Time",
   labelDeFiSideInvestmentDetails: "{{symbol}} Staking Details",
-  labelInvestType_LRCSTAKE: "LRC Staking",
   labelSideStakingTable: "LRC Staking",
   labelInvestMaxDefi: "Min {{minValue}} - Max {{maxValue}}",
   labelDefiMax: "Allowable maximum is {{arg}}",
@@ -1504,4 +1504,5 @@ export default {
   labelClaimBtn: "Claim",
   labelStakeNoEnough: "Insufficient {{belong}} balance",
   labelDefiRemindMin: "Please redeem all Balance",
+  labelInvestType_LRCSTAKE: "LRC Staking",
 };

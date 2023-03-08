@@ -15,6 +15,7 @@ import {
   useAccount,
   useAmmMap,
   useDefiMap,
+  useStakingMap,
   useTokenMap,
   useTokenPrices,
   useUserRewards,
@@ -71,6 +72,7 @@ export const useOverview = <
   const { marketCoins: defiCoinArray } = useDefiMap();
   const { status: ammMapStatus, ammMap } = useAmmMap();
   const { tokenPrices } = useTokenPrices();
+  const { status: stakingMapStatus, marketMap: stakingMap } = useStakingMap();
 
   const [summaryMyInvest, setSummaryMyInvest] = React.useState<
     Partial<SummaryMyInvest>
@@ -322,7 +324,7 @@ export const useOverview = <
       setStakeShowLoading(true);
       const LRCStakingSymbol = "LRC";
       if (LoopringAPI.defiAPI) {
-        const [response, responseProduct] = await Promise.all([
+        const [response] = await Promise.all([
           LoopringAPI.defiAPI.getStakeSummary(
             {
               accountId: account.accountId,
@@ -333,15 +335,12 @@ export const useOverview = <
             },
             account.apiKey
           ),
-          LoopringAPI.defiAPI.getStakeProducts(),
         ]);
         if (
           (response &&
             ((response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message)) ||
-          (responseProduct &&
-            ((responseProduct as sdk.RESULT_INFO).code ||
-              (responseProduct as sdk.RESULT_INFO).message))
+          !stakingMap[LRCStakingSymbol]
         ) {
           throw new CustomError(ErrorMap.ERROR_UNKNOWN);
         } else {
@@ -353,34 +352,10 @@ export const useOverview = <
             totalClaimableRewards,
             list,
           } = response as any;
-          // {
-          //
-          //   list: [
-          //     {
-          //       accountId: 18605,
-          //       tokenId: 1,
-          //       stakeAt: 1677580146000,
-          //       initialAmount: "1000000000000000000000",
-          //       remainAmount: "1000000000000000000000",
-          //       totalRewards: "0",
-          //       productId: "LRC-20230228",
-          //       hash: "0x2a8b7ae4756e11034fa18d13bc08fbba324ac86278250b443b6c2c3e32bb1128",
-          //       status: "locked",
-          //       createdAt: 1677580147987,
-          //       updatedAt: 1677580147987,
-          //       claimableTime: 1677752946000,
-          //       lastDayPendingRewards: "0",
-          //       apr: "",
-          //     },
-          //   ],
-          // } as any;
-          let product = (responseProduct as any)?.products?.markets.find(
-            (ele: sdk.STACKING_PRODUCT) =>
-              ele.symbol?.toLowerCase() === LRCStakingSymbol?.toLowerCase()
-          );
+
           list = list.map((item: sdk.StakeInfoOrigin) => {
             return {
-              ...product,
+              ...stakingMap[LRCStakingSymbol],
               ...item,
             };
           });
@@ -418,10 +393,13 @@ export const useOverview = <
     [account, tokenPrices]
   );
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED) {
+    if (
+      account.readyState === AccountStatus.ACTIVATED &&
+      stakingMapStatus === SagaStatus.UNSET
+    ) {
       getStakingList({});
     }
-  }, [account.readyState]);
+  }, [account.readyState, stakingMapStatus]);
   return {
     myAmmMarketArray,
     summaryMyInvest,
