@@ -418,6 +418,8 @@ export type RedPacketSend = {
 export type LuckyRedPacketItem = {
   labelKey: string;
   desKey: string;
+  showInNFTS?: boolean;
+  showInERC20?: boolean;
   value: {
     value: number;
     partition: sdk.LuckyTokenAmountType;

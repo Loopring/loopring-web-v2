@@ -633,6 +633,8 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onCreateRedPacketClick: () => Promise<void>;
   onBack?: () => void;
   assetsData: AssetsRawDataItem[];
+  onChangePrivateChecked?: () => void;
+  privateChecked?: boolean;
 } & CreateRedPacketInfoProps<F>;
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> =

@@ -139,6 +139,8 @@ export const CreateRedPacketPanel = <
     tradeData?.type?.mode,
   ]);
 
+  const [privateChecked, setPrivateChecked] = React.useState(false)
+
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     return {
       index: panelIndex,
@@ -176,6 +178,16 @@ export const CreateRedPacketPanel = <
                 setActiveStep,
                 activeStep: RedPacketStep.ChooseType,
               } as any)}
+              privateChecked={privateChecked}
+              onChangePrivateChecked={() => {
+                handleOnDataChange({
+                  type: {
+                    ...tradeData?.type,  
+                    scope: !privateChecked ? 1 : 0,
+                  },
+                } as any);
+                setPrivateChecked(!privateChecked)
+              }}
             />
           ),
           toolBarItem: undefined,

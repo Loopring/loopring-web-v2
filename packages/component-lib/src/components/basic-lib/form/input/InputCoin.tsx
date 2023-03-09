@@ -146,6 +146,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   return (
     <>
       <IWrap isMobile={isMobile} size={size} component={"div"} ref={ref}>
+        
         <Grid
           container
           component={"div"}
@@ -163,6 +164,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
               {label}
             </Typography>
           </Grid>
+          
           <Grid item xs={9} className={"sub-label"}>
             {subLabel && belong ? (
               <Typography

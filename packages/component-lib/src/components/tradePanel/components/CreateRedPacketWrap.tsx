@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   CardContent,
+  Checkbox,
   FormControlLabel,
   FormLabel,
   Grid,
@@ -40,6 +41,9 @@ import {
   SoursURL,
   TRADE_TYPE,
   TradeBtnStatus,
+  CheckBoxIcon,
+  CircleIcon,
+  GoodIcon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -88,6 +92,7 @@ const RedPacketBoxStyle = styled(Box)`
     }
   }
 `;
+
 export const CreateRedPacketStepWrap = withTranslation()(
   <T extends Partial<RedPacketOrderData<I>>, I, F extends FeeInfo>({
     btnStatus,
@@ -242,6 +247,86 @@ export const CreateRedPacketStepWrap = withTranslation()(
       coinMap,
       tradeType,
     ]);
+    // const inputSplitProps2 = React.useMemo(() => {
+    //   const inputSplitProps: any = {
+    //     label: '有礼物的红包个数',
+    //     placeholderText: t("labelQuantity"),
+    //     isHideError: true,
+    //     isShowCoinInfo: false,
+    //     handleCountChange: (ibData: IBData<any>, _name: string, _ref: any) => {
+    //       handleOnDataChange({
+    //         numbers: ibData.tradeValue,
+    //       } as unknown as Partial<T>);
+    //     },
+    //     fullWidth: true,
+    //   };
+    //   let inputSplitExtendProps = {},
+    //     balance: any = undefined;
+    //   // if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
+    //   //   if (selectedType.value.partition === sdk.LuckyTokenAmountType.AVERAGE) {
+    //   //     balance = sdk
+    //   //       .toBig(tradeData?.balance ?? 0)
+    //   //       .div(tradeData.tradeValue)
+    //   //       .toFixed(0, 1);
+    //   //   } else {
+    //   //     balance = sdk
+    //   //       .toBig(tradeData.tradeValue)
+    //   //       .div(Number(minimum) ?? 1)
+    //   //       .toFixed(0, 1);
+    //   //   }
+
+    //   //   balance = sdk.toBig(balance).lte(REDPACKET_ORDER_LIMIT)
+    //   //     ? balance
+    //   //     : REDPACKET_ORDER_LIMIT;
+
+    //   //   inputSplitExtendProps = {
+    //   //     maxAllow: true,
+    //   //     subLabel: t("labelAvailable"),
+    //   //     handleError: (data: any) => {
+    //   //       if (data.tradeValue && data.tradeValue > data.balance) {
+    //   //         return {
+    //   //           error: true,
+    //   //         };
+    //   //       }
+    //   //       return {
+    //   //         error: false,
+    //   //       };
+    //   //     },
+    //   //     inputData: {
+    //   //       belong:
+    //   //         selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+    //   //           ? t("labelQuantity")
+    //   //           : t("labelSplit"),
+    //   //       tradeValue: tradeData?.numbers,
+    //   //       balance: balance,
+    //   //     },
+    //   //   };
+    //   // } else {
+    //   //   inputSplitExtendProps = {
+    //   //     maxAllow: false,
+    //   //     subLabel: "",
+    //   //     handleError: () => undefined,
+    //   //     inputData: {
+    //   //       belong:
+    //   //         selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+    //   //           ? t("labelAmountEach")
+    //   //           : t("labelSplit"),
+    //   //       tradeValue: tradeData?.numbers,
+    //   //       // count: tradeData?.numbers,
+    //   //     },
+    //   //   };
+    //   // }
+    //   return {
+    //     ...inputSplitProps,
+    //     // ...inputSplitExtendProps,
+    //   };
+    // }, [
+    //   tradeData?.tradeValue,
+    //   selectedType.value.partition,
+    //   maximum,
+    //   minimum,
+    //   tradeType,
+    // ]);
     const inputSplitProps = React.useMemo(() => {
       const inputSplitProps: any = {
         label:
@@ -506,6 +591,47 @@ export const CreateRedPacketStepWrap = withTranslation()(
               })}
             </Typography>
           )}
+        </Box>
+        <Box
+          marginY={1}
+          display={"flex"}
+          alignSelf={"stretch"}
+          justifyContent={"stretch"}
+          flexDirection={"column"}
+          position={"relative"}
+        >
+          <InputCoin<any, I, any>
+            // ref={inputSplitRef}
+            label={'有礼物的红包个数'}
+            placeholderText={t("labelQuantity")}
+            isHideError
+            isShowCoinInfo={false}
+            handleError={(data: any) => {
+              return  {
+                error: (tradeData?.giftNumbers && tradeData?.numbers && tradeData?.giftNumbers > tradeData?.numbers)
+                  ? true
+                  : false
+              }
+            }}
+            name={"giftnumbers"}
+            order={"right"}
+            handleCountChange={(data) => {
+              // debugger
+              handleOnDataChange({
+                giftNumbers: data.tradeValue,
+              } as unknown as Partial<T>);
+            }}
+            inputData={{
+              belong:
+                selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+                  ? t("labelQuantity")
+                  : t("labelSplit"),
+              tradeValue: tradeData?.giftNumbers,
+            }}
+            coinMap={{}}
+            coinPrecision={undefined}
+            disabled={disabled}
+          />
         </Box>
         <Box
           marginY={1}
@@ -819,11 +945,14 @@ export const CreateRedPacketStepType = withTranslation()(
     selectedType,
     disabled = false,
     btnInfo,
+    privateChecked,
+    onChangePrivateChecked,
     t,
   }: Omit<CreateRedPacketViewProps<T, I, C>, "tokenMap"> & {
     selectedType: LuckyRedPacketItem;
     // setSelectType: (value: LuckyRedPacketItem) => void;
   } & WithTranslation) => {
+    
     const { isMobile } = useSettings();
     const getDisabled = React.useMemo(() => {
       return disabled;
@@ -845,10 +974,10 @@ export const CreateRedPacketStepType = withTranslation()(
           alignSelf={"stretch"}
           marginY={2}
         >
-          {LuckyRedPacketList.map((item: LuckyRedPacketItem, index) => {
+          {LuckyRedPacketList.filter(item => tradeType == TRADE_TYPE.NFT ? item.showInNFTS : item.showInERC20).map((item: LuckyRedPacketItem, index) => {
             return (
               <React.Fragment key={index}>
-                {!(tradeType == TRADE_TYPE.NFT && index == 0) && (
+                {/* {!(tradeType == TRADE_TYPE.NFT && index == 0) && ( */}
                   <Box key={item.value.value} marginBottom={1}>
                     <MenuBtnStyled
                       variant={"outlined"}
@@ -890,47 +1019,96 @@ export const CreateRedPacketStepType = withTranslation()(
                       </Typography>
                     </MenuBtnStyled>
                   </Box>
-                )}
+                {/* )} */}
               </React.Fragment>
             );
           })}
         </Box>
-        <Box marginBottom={2} display={"flex"} alignItems={"stretch"}>
-          <RadioGroup
-            aria-label="withdraw"
-            name="withdraw"
-            value={tradeData?.type?.scope as sdk.LuckyTokenViewType}
-            onChange={(_e, value) => {
-              handleOnDataChange({
-                type: {
-                  ...tradeData.type,
-                  scope: value,
-                },
-              } as any);
-            }}
-          >
-            {[1, 0].map((key) => {
-              return (
-                <FormControlLabel
-                  key={key}
-                  sx={{ marginTop: 2 }}
-                  value={key.toString()}
-                  control={<Radio />}
-                  label={
-                    <>
-                      <Typography component={"span"}>
-                        {t("labelLuckyTokenViewType" + key)}
-                      </Typography>
-                      <Typography component={"span"}>
-                        {t("labelLuckyTokenViewTypeDes" + key)}
-                      </Typography>
-                    </>
-                  }
-                />
-              );
-            })}
-          </RadioGroup>
-        </Box>
+        {
+          tradeType === TRADE_TYPE.NFT
+            ? (
+              <>
+              <Box  onClick={() => {
+                onChangePrivateChecked!();
+              }} style={{cursor: "pointer"}} position={"relative"} marginBottom={10} display={"flex"} alignItems={"start"}>
+                <Box position={"absolute"} left={8} top={5}>
+                  <Checkbox
+                    style={{
+                      padding: '0'
+                    }}
+                    checked={privateChecked}
+                    checkedIcon={<GoodIcon htmlColor={"var(--color-primary)"}></GoodIcon>}
+                    icon={<GoodIcon htmlColor={"var(--color-third)"}></GoodIcon>}
+                    color="default"
+                  />
+                </Box>
+                {/* <GoodIcon htmlColor={"var(--color-third)"}></GoodIcon> */}
+                <Box display={"flex"} marginLeft={4} flexDirection={"column"}>
+                  <Typography
+                    variant={"h5"}
+                    display={"inline-flex"}
+                    marginBottom={1 / 2}
+                    alignItems={"flex-start"}
+                    component={"span"}
+                    style={{cursor: "pointer"}}
+                  >
+                    Private Red Packet
+                  </Typography>
+                  <Typography
+                    variant={"body1"}
+                    display={"inline-flex"}
+                    justifyContent={"flex-start"}
+                    component={"span"}
+                    color={"var(--color-text-secondary)"}
+                  >
+                    Your Red Packet is shared privately with others via a custom QR code.
+                  </Typography>
+                </Box>
+              </Box>
+              <Typography marginBottom={3} color={"var(--color-text-secondary)"}>
+                Note：For NFT red packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.
+              </Typography>
+              </>
+            )
+            : (
+              <Box marginBottom={2} display={"flex"} alignItems={"stretch"}>
+                <RadioGroup
+                  aria-label="withdraw"
+                  name="withdraw"
+                  value={tradeData?.type?.scope as sdk.LuckyTokenViewType}
+                  onChange={(_e, value) => {
+                    handleOnDataChange({
+                      type: {
+                        ...tradeData.type,
+                        scope: value,
+                      },
+                    } as any);
+                  }}
+                >
+                  {[1, 0].map((key) => {
+                    return (
+                      <FormControlLabel
+                        key={key}
+                        sx={{ marginTop: 2 }}
+                        value={key.toString()}
+                        control={<Radio />}
+                        label={
+                          <>
+                            <Typography component={"span"}>
+                              {t("labelLuckyTokenViewType" + key)}
+                            </Typography>
+                            <Typography component={"span"}>
+                              {t("labelLuckyTokenViewTypeDes" + key)}
+                            </Typography>
+                          </>
+                        }
+                      />
+                    );
+                  })}
+                </RadioGroup>
+              </Box>
+            )
+        }
         <Box
           width={"100%"}
           alignSelf={"stretch"}

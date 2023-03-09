@@ -267,6 +267,7 @@ export const useCreateRedPacket = <
   const checkBtnStatus = React.useCallback(() => {
     const _tradeData = calcNumberAndAmount();
     resetBtnInfo();
+    // debugger
     if (
       tokenMap &&
       chargeFeeTokenList.length &&
@@ -281,7 +282,10 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
       _tradeData.tradeValue &&
       redPacketOrder.memo &&
-      redPacketOrder.memo?.trim().length > 0
+      redPacketOrder.memo?.trim().length > 0 && 
+      redPacketOrder.giftNumbers &&
+      redPacketOrder.giftNumbers > 0 &&
+      redPacketOrder.giftNumbers <= redPacketOrder.numbers
     ) {
       let tradeToken: any = {},
         balance,
@@ -631,6 +635,7 @@ export const useCreateRedPacket = <
       const redPacketOrder = store.getState()._router_modalData
         .redPacketOrder as T;
       const _tradeData = calcNumberAndAmount();
+      debugger
       if (
         readyState === AccountStatus.ACTIVATED &&
         LoopringAPI.userAPI &&
@@ -705,6 +710,7 @@ export const useCreateRedPacket = <
                     redPacketOrder.type?.mode ?? sdk.LuckyTokenClaimType.COMMON,
             },
             numbers: redPacketOrder.numbers,
+            giftNumbers: redPacketOrder.giftNumbers!,
             memo: redPacketOrder.memo ?? "",
             signerFlag: false as any,
             nftData:
