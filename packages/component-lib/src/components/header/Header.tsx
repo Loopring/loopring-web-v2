@@ -565,11 +565,10 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       {...{ ...headerMenuLandingData[0], ...rest, t }}
                       handleListKeyDown={() =>
                         history.push(
-                          "" +
-                            headerMenuLandingData[0].router?.path.replace(
-                              "${pair}",
-                              pair
-                            )
+                          headerMenuLandingData[0].router?.pathName?.replace(
+                            "${pair}",
+                            pair
+                          ) ?? ""
                         )
                       }
                     />
@@ -578,11 +577,10 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       {...{ ...headerMenuLandingData[1], ...rest, t }}
                       handleListKeyDown={() =>
                         history.push(
-                          "" +
-                            headerMenuLandingData[1].router?.path.replace(
-                              "${pair}",
-                              pair
-                            )
+                          headerMenuLandingData[1].router?.pathName?.replace(
+                            "${pair}",
+                            pair
+                          ) ?? ""
                         )
                       }
                     />
