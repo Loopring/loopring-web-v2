@@ -2,7 +2,6 @@ import React from "react";
 import {
   layer1Store,
   LoopringAPI,
-  storeForL1 as store,
   useAccount,
   useSystem,
 } from "@loopring-web/core";
@@ -20,6 +19,7 @@ import {
   Protector,
 } from "@loopring-web/loopring-sdk";
 import { GuardianStep } from "@loopring-web/component-lib";
+import { storeForL1 } from "../../index";
 
 export enum TxGuardianHistoryType {
   ADD_GUARDIAN = 51,
@@ -79,7 +79,8 @@ export const useHebaoMain = <
   const { chainId } = useSystem();
   const [isLoading, setIsLoading] = React.useState(false);
   const loadData = React.useCallback(async () => {
-    const layer1ActionHistory = store.getState().localStore.layer1ActionHistory;
+    const layer1ActionHistory =
+      storeForL1.getState().localStore.layer1ActionHistory;
     if (LoopringAPI.walletAPI && account.accAddress) {
       setIsLoading(true);
       const [

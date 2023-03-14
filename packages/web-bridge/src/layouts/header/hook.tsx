@@ -12,7 +12,6 @@ import {
   accountReducer,
   accountStaticCallBack,
   btnClickMap,
-  storeForL1 as store,
   useAccount,
   useNotify,
 } from "@loopring-web/core";
@@ -20,6 +19,7 @@ import {
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 
 import _ from "lodash";
+import { storeForL1 } from "../../index";
 
 export const useHeader = () => {
   const accountTotal = useAccount();
@@ -35,16 +35,20 @@ export const useHeader = () => {
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.ACTIVATED]: [
       function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
-        store.dispatch(
+        storeForL1.dispatch(
+          accountReducer.changeShowModel({ _userOnModel: true })
+        );
+        storeForL1.dispatch(
           setShowAccount({ isShow: true, step: AccountStep.HadAccount })
         );
       },
     ],
     [fnType.LOCKED]: [
       function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
-        store.dispatch(
+        storeForL1.dispatch(
+          accountReducer.changeShowModel({ _userOnModel: true })
+        );
+        storeForL1.dispatch(
           setShowAccount({ isShow: true, step: AccountStep.HadAccount })
         );
       },

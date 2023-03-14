@@ -12,4 +12,16 @@ declare global {
     __renderReportCall__: () => void;
     rampInstance: RampInstantSDK | undefined;
   }
+
+  interface MyElementAttributes {
+    src: string;
+    "auto-rotate": any;
+    "camera-controls": any;
+    "ar-modes": any;
+    "touch-action": any;
+    "shadow-intensity": any;
+    poster?: string;
+
+    [key: string]: any;
+  }
 }
