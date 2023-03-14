@@ -148,6 +148,7 @@ export const useCreateRedPacket = <
   }, [redPacketOrder, accountStatus]);
   const handleOnDataChange = React.useCallback(
     (tradeData: Partial<T>) => {
+      
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
       myLog("redPacketOrder handleOnDataChange", redPacketOrder, tradeData);
       if (tradeData.tradeType) {
@@ -179,7 +180,7 @@ export const useCreateRedPacket = <
               balance: walletInfo?.count,
               memo: "",
               numbers: undefined,
-              validUntil: 1,
+              validUntil: undefined,
               validSince: Date.now(),
               tradeType: value,
             } as unknown as T);
@@ -200,7 +201,7 @@ export const useCreateRedPacket = <
           memo: "",
           numbers: undefined,
           validSince: Date.now(),
-          validUntil: 1,
+          validUntil: undefined,
           tradeType: value,
         } as unknown as T);
       } else if (TRADE_TYPE.NFT === value) {
@@ -214,7 +215,7 @@ export const useCreateRedPacket = <
           memo: "",
           numbers: undefined,
           validSince: Date.now(),
-          validUntil: 1,
+          validUntil: undefined,
           tradeType: "TOKEN",
         } as unknown as T);
       }
@@ -277,15 +278,13 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers &&
       redPacketOrder.numbers > 0 &&
       redPacketOrder.validUntil &&
-      Number(redPacketOrder.validUntil) >= 1 &&
-      Number(redPacketOrder.validUntil) <= DAYS &&
+      // Number(redPacketOrder.validUntil) >= 1 &&
+      // Number(redPacketOrder.validUntil) <= DAYS &&
       redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
       _tradeData.tradeValue &&
       redPacketOrder.memo &&
-      redPacketOrder.memo?.trim().length > 0 && 
-      redPacketOrder.giftNumbers &&
-      redPacketOrder.giftNumbers > 0 &&
-      redPacketOrder.giftNumbers <= redPacketOrder.numbers
+      redPacketOrder.memo?.trim().length > 0 &&
+      redPacketOrder.giftNumbers
     ) {
       let tradeToken: any = {},
         balance,
@@ -293,10 +292,14 @@ export const useCreateRedPacket = <
         isExceedBalance,
         tooSmall,
         tooLarge;
+        // giftNumbersLargerThanNumbers;
+      // const giftNumbersLessThanNumbers = 
+      //   redPacketOrder.giftNumbers <= redPacketOrder.numbers
       const feeToken = tokenMap[redPacketOrder.fee.belong];
       const feeRaw =
         redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
       const fee = sdk.toBig(feeRaw);
+      const giftsLargerThanPackets = sdk.toBig(redPacketOrder.giftNumbers).isGreaterThan(redPacketOrder.numbers)
       if (
         (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
         redPacketOrder.belong &&
@@ -338,7 +341,8 @@ export const useCreateRedPacket = <
           redPacketOrder.nftData) ||
           // @ts-ignore
           redPacketOrder.tradeType === TRADE_TYPE.TOKEN) &&
-        redPacketConfigs?.luckTokenAgents
+        redPacketConfigs?.luckTokenAgents &&
+        !giftsLargerThanPackets
       ) {
         enableBtn();
         return;
@@ -361,7 +365,7 @@ export const useCreateRedPacket = <
           setLabelAndParams("labelReserveFee", {
             symbol: tradeToken.symbol as string,
           });
-        } else if (isFeeNotEnough) {
+        } else if (isFeeNotEnough.isFeeNotEnough) {
           setLabelAndParams("labelRedPacketFee", {});
         } else if (tooSmall || redPacketOrder.numbers > REDPACKET_ORDER_LIMIT) {
           if (tooSmall) {
@@ -417,6 +421,8 @@ export const useCreateRedPacket = <
                 }
               : { value: REDPACKET_ORDER_NFT_LIMIT, symbol: "NFT" }
           );
+        } else if (giftsLargerThanPackets) {
+          setLabelAndParams("todo label", {});
         }
       }
     }
@@ -434,6 +440,9 @@ export const useCreateRedPacket = <
     redPacketOrder.numbers,
     redPacketOrder.memo,
     redPacketConfigs?.luckTokenAgents,
+    redPacketOrder.giftNumbers,
+    redPacketOrder.validSince,
+    redPacketOrder.validUntil,
   ]);
 
   React.useEffect(() => {
@@ -448,7 +457,9 @@ export const useCreateRedPacket = <
     redPacketOrder.tradeValue,
     redPacketOrder.memo,
     redPacketConfigs?.luckTokenAgents,
-    redPacketOrder?.validUntil,
+    redPacketOrder.validSince,
+    redPacketOrder.validUntil,
+    redPacketOrder?.giftNumbers,
   ]);
   const processRequest = React.useCallback(
     async (
@@ -472,6 +483,7 @@ export const useCreateRedPacket = <
             ...redPacketOrder,
             __request__: request,
           } as any);
+          debugger
           const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSend(
             {
               request,
@@ -656,8 +668,8 @@ export const useCreateRedPacket = <
         redPacketOrder.type &&
         redPacketOrder.memo &&
         redPacketOrder?.validUntil &&
-        redPacketOrder?.validUntil >= 1 &&
-        redPacketOrder?.validUntil <= DAYS &&
+        // redPacketOrder?.validUntil >= 1 &&
+        // redPacketOrder?.validUntil <= DAYS &&
         redPacketConfigs?.luckTokenAgents &&
         redPacketOrder.memo?.trim().length > 0 &&
         eddsaKey?.sk
@@ -705,7 +717,7 @@ export const useCreateRedPacket = <
               ...redPacketOrder.type,
               mode:
                 redPacketOrder.tradeType === TRADE_TYPE.NFT
-                  ? sdk.LuckyTokenClaimType.COMMON
+                  ? (redPacketOrder.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) ? sdk.LuckyTokenClaimType.BLIND_BOX : sdk.LuckyTokenClaimType.COMMON
                   : // @ts-ignore
                     redPacketOrder.type?.mode ?? sdk.LuckyTokenClaimType.COMMON,
             },
@@ -723,8 +735,8 @@ export const useCreateRedPacket = <
               (redPacketOrder.validSince ?? Date.now()) / 1000
             ),
             validUntil: Math.round(
-              (redPacketOrder.validSince ?? Date.now()) / 1000 +
-                86400 * (redPacketOrder.validUntil ?? 1)
+              (redPacketOrder.validUntil ?? Date.now()) / 1000 
+              // + 86400 * (redPacketOrder.validUntil ?? 1)
             ),
             luckyToken: {
               exchange: exchangeInfo.exchangeAddress,

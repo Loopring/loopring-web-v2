@@ -60,6 +60,8 @@ import { BtnMain } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import moment, { Moment } from "moment";
 import { NFTInput } from "./BasicANFTTrade";
+// import { DateTimeRangePicker } from " components/datetimerangepicker";
+import { DateTimeRangePicker } from "../../datetimerangepicker";
 
 const RedPacketBoxStyle = styled(Box)`
   padding-top: ${({ theme }) => theme.unit}px;
@@ -366,6 +368,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
           maxAllow: true,
           subLabel: t("labelAvailable"),
           handleError: (data: any) => {
+            handleOnDataChange({
+              numbers: data.tradeValue,
+            } as unknown as Partial<T>);
             if (data.tradeValue && data.tradeValue > data.balance) {
               return {
                 error: true,
@@ -469,6 +474,31 @@ export const CreateRedPacketStepWrap = withTranslation()(
       }
     }, [selectedType.value.partition, tradeData.balance, tradeData?.numbers]);
     const { isMobile } = useSettings();
+    // tradeData.validSince
+
+    const startDateTime = tradeData.validSince 
+      ? moment(tradeData.validSince)
+      : null 
+      // as Moment | null
+    const endDateTime = tradeData.validUntil 
+      ? moment(tradeData.validUntil )
+      : null
+      // as Moment | null
+    const now = moment()
+
+    const startMinDateTime = endDateTime
+      ? moment.max(now, endDateTime.clone().subtract(7, 'days'))
+      : now
+    const startMaxDateTime = endDateTime 
+      ? endDateTime.clone()
+      : undefined
+
+    const endMinDateTime = startDateTime 
+      ? moment.max(now, startDateTime.clone())
+      : now
+    const endMaxDateTime = startDateTime 
+      ? startDateTime.clone().add(7, 'days') 
+      : undefined
 
     // @ts-ignore
     return (
@@ -592,47 +622,56 @@ export const CreateRedPacketStepWrap = withTranslation()(
             </Typography>
           )}
         </Box>
-        <Box
-          marginY={1}
-          display={"flex"}
-          alignSelf={"stretch"}
-          justifyContent={"stretch"}
-          flexDirection={"column"}
-          position={"relative"}
-        >
-          <InputCoin<any, I, any>
-            // ref={inputSplitRef}
-            label={'有礼物的红包个数'}
-            placeholderText={t("labelQuantity")}
-            isHideError
-            isShowCoinInfo={false}
-            handleError={(data: any) => {
-              return  {
-                error: (tradeData?.giftNumbers && tradeData?.numbers && tradeData?.giftNumbers > tradeData?.numbers)
-                  ? true
-                  : false
+        {
+          tradeType === TRADE_TYPE.NFT && <Box
+            marginY={1}
+            display={"flex"}
+            alignSelf={"stretch"}
+            justifyContent={"stretch"}
+            flexDirection={"column"}
+            position={"relative"}
+          >
+            <InputCoin<any, I, any>
+              // ref={inputSplitRef}
+              label={'有礼物的红包个数'}
+              placeholderText={t("labelQuantity")}
+              isHideError={false}
+              isShowCoinInfo={false}
+              handleError={(data: any) => {
+                handleOnDataChange({
+                  giftNumbers: data.tradeValue,
+                } as unknown as Partial<T>);
+                return {
+                  error: (tradeData.giftNumbers && tradeData.numbers && tradeData.giftNumbers > tradeData.numbers)
+                    ? true
+                    : false
+                }
+              }}
+              name={"giftnumbers"}
+              order={"right"}
+              handleCountChange={(data) => {
+                handleOnDataChange({
+                  giftNumbers: data.tradeValue,
+                } as unknown as Partial<T>);
+              }}
+              inputData={{
+                belong:
+                  selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+                    ? t("labelQuantity")
+                    : t("labelSplit"),
+                tradeValue: tradeData?.giftNumbers,
+              }}
+              coinMap={{}}
+              coinPrecision={undefined}
+              disabled={disabled}
+              inputError={
+                (tradeData.giftNumbers && tradeData.numbers && tradeData.giftNumbers > tradeData.numbers)
+                  ? { error: true }
+                  : { error: false }
               }
-            }}
-            name={"giftnumbers"}
-            order={"right"}
-            handleCountChange={(data) => {
-              // debugger
-              handleOnDataChange({
-                giftNumbers: data.tradeValue,
-              } as unknown as Partial<T>);
-            }}
-            inputData={{
-              belong:
-                selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-                  ? t("labelQuantity")
-                  : t("labelSplit"),
-              tradeValue: tradeData?.giftNumbers,
-            }}
-            coinMap={{}}
-            coinPrecision={undefined}
-            disabled={disabled}
-          />
-        </Box>
+            />
+          </Box>
+        }
         <Box
           marginY={1}
           display={"flex"}
@@ -691,10 +730,36 @@ export const CreateRedPacketStepWrap = withTranslation()(
               className={"main-label"}
               color={"var(--color-text-third)"}
             >
-              <Trans i18nKey={"labelRedPacketStart"}>Active Time</Trans>
+              <Trans i18nKey={"labelRedPacketStart111"}>Active Time</Trans>
             </Typography>
           </FormLabel>
           <Box marginTop={1}>
+            <DateTimeRangePicker 
+              startValue={startDateTime} 
+              startMinDateTime={startMinDateTime}
+              startMaxDateTime={startMaxDateTime}
+              onStartChange={(m) => {
+                handleOnDataChange({
+                  validSince: m ? m.toDate().getTime() : undefined,
+                } as unknown as Partial<T>);
+              }}
+              onStartOpen={() => {
+                handleOnDataChange({
+                  validUntil: undefined,
+                } as unknown as Partial<T>);
+              }}
+              
+              endValue={endDateTime}
+              endMinDateTime={endMinDateTime}
+              endMaxDateTime={endMaxDateTime}
+              onEndChange={(m) => {
+                handleOnDataChange({
+                  validUntil: m ? m.toDate().getTime() : undefined,
+                } as unknown as Partial<T>);
+              }}
+            />
+          </Box>
+          {/* <Box marginTop={1}>
             <DateTimePicker
               value={dayValue}
               fullWidth={true}
@@ -730,7 +795,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               }}
               disabled={disabled}
             />
-          </Box>
+          </Box> */}
         </Box>
         <Box
           marginY={1}
@@ -911,7 +976,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
             </Button>
           </Box>
         </Box>
-        <Box display={"flex"} alignSelf={"stretch"}>
+
+        <Box marginTop={4} display={"flex"} alignSelf={"stretch"}>
           <Typography
             paddingBottom={0}
             display={"inline-flex"}
@@ -923,7 +989,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
             width={"100%"}
             textAlign={"center"}
           >
-            {t("labelRedPacketsExpireDes")}
+            {
+              tradeType === TRADE_TYPE.TOKEN
+                ? 'Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned'
+                : "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet."
+            }
           </Typography>
         </Box>
       </RedPacketBoxStyle>
@@ -989,6 +1059,7 @@ export const CreateRedPacketStepType = withTranslation()(
                       }`}
                       fullWidth
                       onClick={(_e) => {
+                        // debugger
                         handleOnDataChange({
                           type: {
                             ...tradeData?.type,

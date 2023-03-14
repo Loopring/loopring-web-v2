@@ -29,6 +29,16 @@ export type RawDataRedPacketReceivesItem = {
   sender: string;
   rawData: any;
 };
+export type RawDataRedPacketBlindBoxReceivesItem = {
+  token: (CoinInfo<any> | sdk.UserNFTBalanceInfo) & { type: TokenType };
+  amount: string;
+  type: sdk.LuckyTokenType;
+  status: sdk.LuckyTokenItemStatus;
+  claimAt: number;
+  sender: string;
+  rawData: any;
+};
+
 export type RawDataRedPacketClaimItem = {
   token: CoinInfo<any> & { type: TokenType };
   amountStr: string;
@@ -88,6 +98,19 @@ export interface RedPacketRecordsTableProps<R, C = sdk.Currency> {
 export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {
   rawData: R[];
   tokenType: TokenType;
+  showloading: boolean;
+  forexMap: ForexMap<C>;
+  etherscanBaseUrl: string;
+  pagination?: {
+    pageSize: number;
+    total: number;
+  };
+  onItemClick: (item: sdk.LuckTokenHistory) => void;
+  getRedPacketReceiveList: (props: any) => void;
+}
+
+export interface RedPacketBlindBoxReceiveTableProps<R, C = sdk.Currency> {
+  rawData: R[];
   showloading: boolean;
   forexMap: ForexMap<C>;
   etherscanBaseUrl: string;

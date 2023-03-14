@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import {
   BoxNFT,
+  Button,
   Column,
   NftImage,
   Table,
@@ -113,6 +114,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         updateData.cancel();
       };
     }, [pagination?.pageSize, tokenType]);
+    // console.log
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -226,8 +228,52 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
             );
           },
         },
+        // ...[tokenType === TokenType.nft?]
+        ...(tokenType === TokenType.nft
+          ? [
+            {
+              key: "End Time",
+              sortable: true,
+              cellClass: "textAlignRight",
+              headerCellClass: "textAlignRight",
+              name: "End Time",
+              formatter: ({ row }: FormatterProps<R>) => {
+                
+                return (
+                  <>{moment(new Date(row.rawData.validUntil), "YYYYMMDDHHMM").fromNow()}</>
+                );
+              },
+            },
+            {
+              key: "Action",
+              sortable: true,
+              cellClass: "textAlignRight",
+              headerCellClass: "textAlignRight",
+              name: "Action",
+              formatter: ({ row }: FormatterProps<R>) => {
+                if (row.status === sdk.LuckyTokenItemStatus.PENDING) {
+                  return <Button onClick={() => {
+                    history.push('/redPacket/markets/NFT')
+                  }}>Claim</Button>
+                } else if (row.status === sdk.LuckyTokenItemStatus.OVER_DUE) {
+                  return <Button onClick={() => {
+                    history.push('/redPacket/markets/NFT')
+                  }}>Expired</Button>
+                } else if (row.status === sdk.LuckyTokenItemStatus.COMPLETED) {
+                  return <Button onClick={()=> {
+                    history.push('/redPacket/markets/NFT')
+                  }}>Claimed</Button>
+                } else {
+                  return <></>
+                }
+              },
+            }
+          ]
+          : []
+        )
+        
       ],
-      [history, t]
+      [history, t, tokenType]
     );
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),

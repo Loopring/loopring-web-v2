@@ -38,6 +38,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     coinLabelStyle = undefined,
     coinPrecision = 6,
     CoinIconElement,
+    inputError
   }: InputCoinProps<T, C, I>,
   ref: React.ForwardedRef<any>
 ) {
@@ -63,6 +64,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     error: false,
     message: "",
   });
+  const innerErrorOrInputError = inputError ?? error 
   const _handleError = React.useCallback(
     (value: any) => {
       if (handleError) {
@@ -185,7 +187,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
           container
           className={`coinInput-wrap
          ${(belong && belong.length) >= FORMAT_STRING_LEN ? "text-small" : ""} 
-         ${error.error ? "error" : ""}`}
+         ${innerErrorOrInputError.error ? "error" : ""}`}
           wrap={"nowrap"}
           alignItems={"stretch"}
           alignContent={"stretch"}
@@ -282,7 +284,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
             justifyContent={"flex-end"}
           >
             <Grid item>
-              <FormHelperText>{error.message}</FormHelperText>
+              <FormHelperText>{innerErrorOrInputError.message}</FormHelperText>
             </Grid>
           </Grid>
         )}
