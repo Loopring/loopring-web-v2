@@ -114,20 +114,22 @@ export const CreateRedPacketPanel = <
   const [selectedType, setSelectType] = React.useState(LuckyRedPacketList[0]);
   React.useEffect(() => {
     setSelectType(() => {
-      if (tradeData?.type) {
-        if (
-          tradeData.type.partition == LuckyRedPacketList[0].value.partition &&
-          tradeData.type.mode == LuckyRedPacketList[0].value.mode
-        ) {
-          return LuckyRedPacketList[0];
-        } else if (
-          tradeData.type.partition == LuckyRedPacketList[1].value.partition &&
-          tradeData.type.mode == LuckyRedPacketList[1].value.mode
-        ) {
-          return LuckyRedPacketList[1];
-        } else {
-          return LuckyRedPacketList[2];
-        }
+      if (tradeData && tradeData.type) {
+        const found = LuckyRedPacketList.find(x => tradeData.type?.partition == x.value.partition && tradeData.type?.mode == x.value.mode)
+        return found ?? LuckyRedPacketList[2]
+        // if (
+        //   tradeData.type.partition == LuckyRedPacketList[0].value.partition &&
+        //   tradeData.type.mode == LuckyRedPacketList[0].value.mode
+        // ) {
+        //   return LuckyRedPacketList[0];
+        // } else if (
+        //   tradeData.type.partition == LuckyRedPacketList[1].value.partition &&
+        //   tradeData.type.mode == LuckyRedPacketList[1].value.mode
+        // ) {
+        //   return LuckyRedPacketList[1];
+        // } else {
+        //   return LuckyRedPacketList[2];
+        // }
       } else {
         return LuckyRedPacketList[2];
       }
