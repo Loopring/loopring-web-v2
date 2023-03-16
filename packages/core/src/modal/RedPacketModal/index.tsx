@@ -1,6 +1,7 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   ModalRedPacket,
+  RedPacketBlindBoxDetail,
   RedPacketClock,
   RedPacketDetail,
   RedPacketOpen,
@@ -33,6 +34,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
       redPacketOpenedProps,
       redPacketDetailProps,
       redPacketClockProps,
+      redPacketBlindBoxDetailProps
     } = useRedPacketModal();
     // const { redPacketProps } = useRedPacketDetail();
     // const theme = useTheme();
@@ -141,6 +143,23 @@ export const ModalRedPacketPanel = withTranslation("common")(
         },
 
         [RedPacketViewStep.PreparePanel]: { view: <></> },
+        [RedPacketViewStep.BlindBoxDetail]: { 
+          view: true ? (
+            <Box
+              minHeight={RedPacketSize.large.height}
+              height={"80vh"}
+              width={RedPacketSize.large.width}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"start"}
+            >
+              <RedPacketBlindBoxDetail
+                {...(redPacketBlindBoxDetailProps ?? {})}
+              />
+            </Box>
+          )
+          : <></>
+        },
       });
     }, [
       redPacketQRCodeProps,
@@ -149,6 +168,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
       redPacketTimeoutProps,
       redPacketOpenedProps,
       redPacketClockProps,
+      redPacketBlindBoxDetailProps,
     ]);
     return (
       <ModalRedPacket
@@ -156,7 +176,9 @@ export const ModalRedPacketPanel = withTranslation("common")(
           setShowRedPacket({ isShow: false });
         }}
         etherscanBaseUrl={etherscanBaseUrl}
-        step={isShowRedPacket.step}
+        step={7
+          // isShowRedPacket.step
+        }
         open={isShowRedPacket.isShow}
         panelList={redPacketList}
       />

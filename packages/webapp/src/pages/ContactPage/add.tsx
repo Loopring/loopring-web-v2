@@ -106,7 +106,6 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
             variant="contained"
             disabled={addButtonDisable}
             onClick={() => {
-              debugger
               submitAddingContact(addAddress, addName)
             }}
             fullWidth>

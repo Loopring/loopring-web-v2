@@ -111,7 +111,6 @@ export const useNFTListDeep = <T extends Partial<NFTWholeINFO>>() => {
           : true,
       ...nftToken,
     } as NFTWholeINFO;
-    //debuggera
     tokenInfo = {
       ...tokenInfo,
       nftIdView: new BigNumber(tokenInfo.nftId ?? "0", 16).toString(),

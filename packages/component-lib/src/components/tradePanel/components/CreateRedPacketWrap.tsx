@@ -1059,7 +1059,6 @@ export const CreateRedPacketStepType = withTranslation()(
                       }`}
                       fullWidth
                       onClick={(_e) => {
-                        // debugger
                         handleOnDataChange({
                           type: {
                             ...tradeData?.type,

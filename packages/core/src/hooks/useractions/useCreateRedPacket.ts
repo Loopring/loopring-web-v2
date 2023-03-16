@@ -268,7 +268,6 @@ export const useCreateRedPacket = <
   const checkBtnStatus = React.useCallback(() => {
     const _tradeData = calcNumberAndAmount();
     resetBtnInfo();
-    // debugger
     if (
       tokenMap &&
       chargeFeeTokenList.length &&
@@ -483,7 +482,7 @@ export const useCreateRedPacket = <
             ...redPacketOrder,
             __request__: request,
           } as any);
-          debugger
+
           const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSend(
             {
               request,
@@ -647,7 +646,7 @@ export const useCreateRedPacket = <
       const redPacketOrder = store.getState()._router_modalData
         .redPacketOrder as T;
       const _tradeData = calcNumberAndAmount();
-      debugger
+
       if (
         readyState === AccountStatus.ACTIVATED &&
         LoopringAPI.userAPI &&

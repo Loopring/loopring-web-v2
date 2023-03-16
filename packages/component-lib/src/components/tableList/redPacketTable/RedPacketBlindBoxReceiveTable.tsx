@@ -142,11 +142,35 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
         headerCellClass: "textAlignRight",
         name: "End Time",
         formatter: ({ row }: FormatterProps<R>) => {
-          debugger
           return (
-            // <>{moment(new Date(row.rawData.), "YYYYMMDDHHMM").fromNow()}</>
-            <>{moment(new Date(0), "YYYYMMDDHHMM").fromNow()}</>
+            <>{moment(row.rawData.luckyToken.validUntil).format('YYYY.MM.DD HH:MM')}</>
           );
+        },
+      },
+      {
+        key: "Action",
+        sortable: true,
+        cellClass: "textAlignRight",
+        headerCellClass: "textAlignRight",
+        name: "Action",
+        formatter: ({ row }: FormatterProps<R>) => {
+          // const status = row.rawData.luckyToken.validSince < Date.now() 
+          //   ? 
+          // row.rawData.luckyToken.status
+          // return <Button variant={"text"}>Open</Button>
+          // <>Start time: {moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')}</>
+          if (row.rawData.luckyToken.validSince > Date.now()) {
+            return <>Start time: {moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')}</>
+          } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
+            return <>Opend</>
+          } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
+            return <>Expired</>
+          } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) { 
+            return <Button variant={"outlined"}>Open</Button>
+          }
+          // return (
+          //   <>{moment(row.rawData.luckyToken.validUntil).format('YYYY.MM.DD HH:MM')}</>
+          // );
         },
       },
     ] as Column<R, unknown>[];

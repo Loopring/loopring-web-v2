@@ -6,6 +6,7 @@ import {
   Divider,
   Link,
   Typography,
+  Modal
 } from "@mui/material";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -29,6 +30,7 @@ import { RedPacketViewStep } from "../modal";
 import { ModalStatePlayLoad } from "../../stores";
 import moment from "moment";
 import {
+  RedPacketBlindBoxDetailProps,
   RedPacketClockProps,
   RedPacketDefault,
   RedPacketDefaultBg,
@@ -40,10 +42,13 @@ import {
   RedPacketTimeoutProps,
   RedPacketUnreadyProps,
 } from "./Interface";
-import { TablePagination, BoxNFT } from "../basic-lib";
+import { TablePagination, BoxNFT, ModalCloseButton, ModalCloseButtonPosition } from "../basic-lib";
 import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
 import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
+import { useTheme } from "@emotion/react";
+import temp1 from "./temp1.png";
+import temp2 from "./temp2.png";
 
 export const RedPacketBg = styled(Box)<
   BoxProps & { imageSrc?: string; type: string }
@@ -1351,4 +1356,380 @@ export const RedPacketPrepare = ({
     }
   }, [amountStr, claim, myAmountStr, onOpen, _info]);
   return <Box>{viewItem}</Box>;
+};
+
+
+const BlindBoxDetailBoxStyle = styled(Box)`
+  background: var(--color-box);
+  border-radius: ${({ theme }) => theme.unit}px;
+
+  .redPacketNFT {
+    margin-top: ${({ theme }) => 2 * theme.unit}px;
+    padding-top: var(--nft-large-avatar);
+  }
+
+  .top {
+    border-radius: ${({ theme }) => theme.unit}px;
+    border-bottom-right-radius: 100%;
+    border-bottom-left-radius: 100%;
+  }
+
+  .viewDetail {
+    color: ${RedPacketCssColorConfig.default?.primaryColor};
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+
+
+export const RedPacketBlindBoxDetail = ({
+  sender,
+  memo,
+  type,
+  blindBoxStartTime,
+  lotteryStartTime,
+  lotteryEndTime,
+  opendBlindBoxAmount,
+  totalBlindBoxAmount,
+  deliverdGiftsAmount,
+  totalGiftsAmount,
+  imageEle,
+  onShared,
+  onClickViewDetail,
+  NFTClaimList,
+  BlindBoxClaimList,
+  showOpenLottery,
+  wonNFTInfo,
+  onClickClaim,
+  onCloseOpenModal
+}: RedPacketBlindBoxDetailProps) => {
+  const { t } = useTranslation("common");
+  const theme = useTheme()
+  const emptyImg = theme.mode === 'dark' 
+    ? temp1
+    : temp2
+  
+  return (
+    <BlindBoxDetailBoxStyle
+      flex={1}
+      width={RedPacketSize.large.width}
+      height={RedPacketSize.large.height}
+      display={"flex"}
+      paddingBottom={1}
+      flexDirection={"column"}
+    >
+      <Modal
+        open
+        // ={showOpenLottery === true}
+        onClose={onCloseOpenModal}
+      >
+        <>
+          
+          <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+            
+            <Box
+              padding={5}
+              bgcolor={"var(--color-box)"}
+              width={"var(--modal-width)"}
+              borderRadius={1}
+              display={"flex"}
+              alignItems={"center"}
+              flexDirection={"column"}
+              position={"relative"}
+            >
+              {/* <Box></Box> */}
+              <ModalCloseButtonPosition right={2} top={2} t={t} onClose={onCloseOpenModal!} />
+              <Typography marginBottom={3} variant={"h3"}>{wonNFTInfo ? '恭喜获得' : '很遗憾'} </Typography>
+              <Typography variant={"h5"}>{wonNFTInfo ? wonNFTInfo.name : '您没有获得奖励'} </Typography>
+              {
+                wonNFTInfo
+                  ? <img width={"40%"} src={wonNFTInfo.url}></img>
+                  : <img src={emptyImg}></img>
+              }
+              <Link marginBottom={3} onClick={onClickViewDetail} variant={"body1"} color={theme.colorBase.textSecondary} marginTop={5}>
+                <u>{'View Red Packet Detail >'}</u>
+              </Link>
+              {
+                wonNFTInfo && <Button
+                  variant={"contained"}
+
+                  fullWidth
+                  onClick={onClickClaim}
+                >
+                  Claim
+                </Button>
+              }
+
+            </Box>
+          </Box>
+        </>
+      </Modal>
+      <Box
+        className={"top"}
+        width={"100%"}
+        sx={{
+          background: RedPacketColorConfig.default.startColor,
+          height: "88px",
+        }}
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+      >
+        <Typography
+          variant={"body1"}
+          color={RedPacketColorConfig.default.fontColor}
+        >
+          Blind Box Red Packet
+        </Typography>
+      </Box>
+
+      {
+        type === 'BlindBox Claime Detail' 
+          ? (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"stretch"}
+              flexDirection={"column"}
+              width={"100%"}
+              paddingX={1}
+              marginTop={3}
+            >
+              <Typography
+                variant={"body1"}
+                color={"textThird"}
+                marginY={1}
+                paddingX={1}
+              >
+                Received Blind Box {opendBlindBoxAmount}/{totalBlindBoxAmount}
+              </Typography>
+
+              <Box flex={1} overflow={"scroll"}>
+                {BlindBoxClaimList!.map(info => {
+                  return <BoxClaim
+                    className={"claim"}
+                    display={"flex"}
+                    justifyContent={"stretch"}
+                    flexDirection={"column"}
+                    paddingY={1}
+                    paddingX={1}
+                  >
+                    <Typography
+                      component={"span"}
+                      display={"inline-flex"}
+                      flexDirection={"row"}
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
+                    >
+                      <Typography
+                        variant={"body1"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      >
+                        {info.who}
+                      </Typography>
+                      <Typography
+                        variant={"body1"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      >
+                        *{info.amount}
+                      </Typography>
+                    </Typography>
+                    <Typography
+                      component={"span"}
+                      display={"inline-flex"}
+                      flexDirection={"row"}
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
+                    >
+                      <Typography
+                        variant={"body2"}
+                        component={"span"}
+                        color={"textThird"}
+                      >
+                        {moment(info.when).fromNow()}
+                      </Typography>
+                      <Typography display={"inline"}>
+                      </Typography>
+                    </Typography>
+                  </BoxClaim>
+                })}
+              </Box>
+            </Box>
+          )
+          : (
+            <Box paddingBottom={2} display={"flex"} flexDirection={"column"} paddingX={1} justifyContent={"space-between"} height={"100%"}>
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+                marginY={2}
+              >
+                <Typography variant={"body1"}>{sender}</Typography>
+                <Typography
+                  variant={"body2"}
+                  color={"textThird"}
+                  whiteSpace={"pre-line"}
+                  textAlign={"center"}
+                  marginTop={1 / 2}
+                  overflow={"hidden"}
+                  textOverflow={"ellipsis"}
+                  paddingX={4}
+                  sx={{
+                    wordBreak: "break-all",
+                    display: "-webkit-box",
+                    "-webkit-line-clamp": "2",
+                    lineClamp: "2",
+                    "-webkit-box-orient": "vertical",
+                  }}
+                  dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+                />
+                {imageEle}
+                <Typography
+                  variant={"body1"}
+                  color={theme.colorBase.textSecondary}
+                  marginTop={1}
+
+                  textAlign={"center"}
+                >
+                  The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.
+                </Typography>
+                <Typography
+                  variant={"body1"}
+                  color={theme.colorBase.textSecondary}
+                  // color={RedPacketColorConfig.default.fontColor}
+                  marginTop={1}
+
+                  textAlign={"center"}
+                >
+                  {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered.
+                </Typography>
+                <Typography
+                  variant={"body1"}
+                  color={theme.colorBase.warning}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {type === 'Not Started'
+                    ? `Blindbox can be opened after: ${moment(blindBoxStartTime).format('YYYY.MM.DD HH:mm')}`
+                    : type === 'Blind Box Started'
+                      ? `Blindbox will be ended after: ${moment(lotteryStartTime).format('YYYY.MM.DD HH:mm')}`
+                      : `The NFTs Claimed will be ended after: ${moment(lotteryEndTime).format('YYYY.MM.DD HH:mm')}`
+                  }
+                </Typography>
+                {
+                  (type === 'Blind Box Started' || type === 'Lottery Started') && <Link
+                    className={"viewDetail"}
+                    whiteSpace={"pre-line"}
+                    color={"inherit"}
+                    variant={"body1"}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClickViewDetail!();
+                    }}
+                  >
+                    {t("labelLuckyRedPacketDetail")}
+                  </Link>
+                }
+                {
+                  type === 'Lottery Started' && <>
+                    <Divider orientation={"horizontal"} sx={{ borderWidth: 3, width: '120%', marginY: 1, marginX: -2 }} />
+                    <Box
+                      flex={1}
+                      display={"flex"}
+                      justifyContent={"stretch"}
+                      flexDirection={"column"}
+                      width={"100%"}
+                    >
+                      <Typography
+                        variant={"body1"}
+                        color={"textThird"}
+                        marginY={1}
+                        paddingX={1}
+                      >
+                        Received NFT {deliverdGiftsAmount}/{totalGiftsAmount}
+                      </Typography>
+
+                      <Box flex={1} overflow={"scroll"}>
+                        {NFTClaimList!.map(info => {
+                          return <BoxClaim
+                            className={"claim"}
+                            display={"flex"}
+                            justifyContent={"stretch"}
+                            flexDirection={"column"}
+                            paddingY={1}
+                            paddingX={1}
+                          >
+                            <Typography
+                              component={"span"}
+                              display={"inline-flex"}
+                              flexDirection={"row"}
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                            >
+                              <Typography
+                                variant={"body1"}
+                                component={"span"}
+                                color={"textPrimary"}
+                              >
+                                {info.who}
+                              </Typography>
+                              <Typography
+                                variant={"body1"}
+                                component={"span"}
+                                color={"textPrimary"}
+                              >
+                                *{info.amount}
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              component={"span"}
+                              display={"inline-flex"}
+                              flexDirection={"row"}
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                            >
+                              <Typography
+                                variant={"body2"}
+                                component={"span"}
+                                color={"textThird"}
+                              >
+                                {moment(info.when).fromNow()}
+                              </Typography>
+                              <Typography display={"inline"}>
+                              </Typography>
+                            </Typography>
+                          </BoxClaim>
+                        })}
+                      </Box>
+                    </Box>
+                  </>
+                }
+              </Box >
+              {(type === 'Not Started' || type === 'Blind Box Started') && <Box>
+                <Button
+                  variant={"contained"}
+                  color={"error"}
+                  sx={{
+                    backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                    "&:hover": {
+                      backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                    },
+                  }}
+                  fullWidth
+                  onClick={onShared}
+                >
+                  Share with Friends
+                  {/* {t("labelRedPacketGrab")} */}
+                </Button>
+              </Box>}
+            </Box >
+          )
+      }      
+    </BlindBoxDetailBoxStyle>
+  );
 };

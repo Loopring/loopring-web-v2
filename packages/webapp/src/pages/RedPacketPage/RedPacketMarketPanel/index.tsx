@@ -3,6 +3,7 @@ import {
   AccountStep,
   EmptyDefault,
   FormControlLabel,
+  RedPacketBlindBoxDetail,
   RedPacketPrepare,
   RedPacketViewStep,
   TablePagination,

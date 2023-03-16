@@ -299,13 +299,23 @@ export const useMyRedPacketReceiveTransaction = <
   );
 
   const onItemClick = (item: sdk.LuckTokenHistory) => {
-    setShowRedPacket({
-      isShow: true,
-      info: {
-        ...item.luckyToken,
-      },
-      step: RedPacketViewStep.DetailPanel,
-    });
+    if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.BlindBoxDetail,
+        info: {
+          ...item.luckyToken,
+        },
+      });
+    } else {
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.DetailPanel,
+        info: {
+          ...item.luckyToken,
+        },
+      });
+    }
   };
   return {
     onItemClick,
@@ -376,56 +386,27 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
           } else {
             setRedPacketReceiveTotal((response as any)?.totalNum);
             // @ts-ignore
+            // debugger
 
-            let result = (response as any)?.list.reduce(
-              (prev: R[], item: sdk.LuckTokenHistory) => {
+            let result = (response as any)?.list.map(
+              (item: sdk.LuckTokenHistory) => {
                 // @ts-ignore
                 const { luckyToken, claim: myClaim } = item;
-
-                let amount, tokenInfo;
-                if (luckyToken.isNft) {
-                  amount = amountStrNFTCallback(
-                    luckyToken.nftTokenInfo as any,
-                    myClaim?.amount?.toString() ?? 0
-                  ).amount;
-                  tokenInfo = {
-                    ...luckyToken.nftTokenInfo,
-                    type: TokenType.nft,
-                  };
-                } else {
-                  const token = tokenMap[idIndex[luckyToken.tokenId]];
-                  tokenInfo = {
-                    ...coinMap[token.symbol ?? ""],
-                    name: token.name,
-                    type: TokenType.single,
-                  };
-                  amount = amountStrCallback(
-                    tokenMap,
-                    idIndex,
-                    luckyToken.tokenId,
-                    myClaim?.amount?.toString() ?? 0
-                  ).amount;
-                }
-
-                prev.push();
-                return [
-                  ...prev,
-                  {
-                    token: {
-                      ...tokenInfo,
-                    } as any,
-                    amount,
-                    type: luckyToken.type, //sdk.LuckyTokenItemStatus
-                    status: luckyToken.status,
-                    claimAt: myClaim?.createdAt,
-                    sender: luckyToken?.sender?.ens
-                      ? luckyToken?.sender?.ens
-                      : getShortAddr(luckyToken?.sender?.address),
-                    rawData: item,
-                  },
-                ];
-              },
-              [] as R[]
+                
+                return {
+                  // token: {
+                  //   ...tokenInfo,
+                  // } as any,
+                  // amount,
+                  type: luckyToken.type, //sdk.LuckyTokenItemStatus
+                  status: luckyToken.status,
+                  claimAt: myClaim?.createdAt,
+                  sender: luckyToken?.sender?.ens
+                    ? luckyToken?.sender?.ens
+                    : getShortAddr(luckyToken?.sender?.address),
+                  rawData: item,
+                };
+              }
             );
 
             setRedPacketReceiveList(result);
@@ -438,13 +419,23 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
   );
 
   const onItemClick = (item: sdk.LuckTokenHistory) => {
-    setShowRedPacket({
-      isShow: true,
-      info: {
-        ...item.luckyToken,
-      },
-      step: RedPacketViewStep.DetailPanel,
-    });
+    if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.BlindBoxDetail,
+        info: {
+          ...item.luckyToken,
+        },
+      });
+    } else {
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.DetailPanel,
+        info: {
+          ...item.luckyToken,
+        },
+      });
+    }
   };
   return {
     onItemClick,

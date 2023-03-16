@@ -45,40 +45,62 @@ export function useOpenRedpacket() {
       });
     } else {
       try {
-        let response =
-          await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
-            request: {
-              hash: _info?.hash,
-              claimer: account.accAddress,
-              referrer:
-                _info.isShouldSharedRely && _info?.referrer
-                  ? _info?.referrer
-                  : "",
+        if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+          
+          let response =
+            await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimBlindBox({
+              request: {
+                hash: _info?.hash,
+                claimer: account.accAddress,
+                referrer:
+                  _info.isShouldSharedRely && _info?.referrer
+                    ? _info?.referrer
+                    : "",
+              },
+              eddsaKey: account.eddsaKey.sk,
+              apiKey: account.apiKey,
+            } as any);
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
+          }
+          // const response2 = await LoopringAPI.luckTokenAPI!.getBlindBoxDetail({
+          //   hash: _info.hash,
+          // }, account.apiKey)
+          // debugger
+          setShowAccount({
+            isShow: false,
+          });
+          setShowRedPacket({
+            isShow: true,
+            step: RedPacketViewStep.BlindBoxDetail,
+            info: {
+              ..._info,
             },
-            eddsaKey: account.eddsaKey.sk,
-            apiKey: account.apiKey,
-          } as any);
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          throw response;
-        }
+          });
+        } else {
+          let response =
+            await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
+              request: {
+                hash: _info?.hash,
+                claimer: account.accAddress,
+                referrer:
+                  _info.isShouldSharedRely && _info?.referrer
+                    ? _info?.referrer
+                    : "",
+              },
+              eddsaKey: account.eddsaKey.sk,
+              apiKey: account.apiKey,
+            } as any);
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
+          }
 
-        setShowAccount({
-          isShow: false,
-        });
-        setShowRedPacket({
-          isShow: true,
-          step: RedPacketViewStep.DetailPanel,
-          info: {
-            ..._info,
-            response,
-            claimAmount: (response as any).amount,
-          },
-        });
-      } catch (error: any) {
-        if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
           setShowAccount({
             isShow: false,
           });
@@ -87,8 +109,33 @@ export function useOpenRedpacket() {
             step: RedPacketViewStep.DetailPanel,
             info: {
               ..._info,
+              response,
+              claimAmount: (response as any).amount,
             },
           });
+        }
+      } catch (error: any) {
+        if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
+          setShowAccount({
+            isShow: false,
+          });
+          if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.BlindBoxDetail,
+              info: {
+                ..._info,
+              },
+            });
+          } else {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.DetailPanel,
+              info: {
+                ..._info,
+              },
+            });
+          }
         } else if (
           [
             UIERROR_CODE.ERROR_REDPACKET_CLAIM_TIMEOUT,
@@ -187,7 +234,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
         const luckTokenInfo: sdk.LuckyTokenItemForReceive = detail.luckyToken;
         let difference =
           new Date(luckTokenInfo.validSince).getTime() - Date.now();
-
+        
         if (luckTokenInfo) {
           setShowAccount({ isShow: false });
           if (response.detail?.claimAmount.toString() !== "0") {
@@ -221,6 +268,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
               step: RedPacketViewStep.TimeOutPanel,
             });
           } else {
+            
             setShowRedPacket({
               isShow: true,
               info: {
