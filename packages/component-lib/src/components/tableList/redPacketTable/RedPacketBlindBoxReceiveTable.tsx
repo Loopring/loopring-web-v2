@@ -29,6 +29,8 @@ import _ from "lodash";
 import moment from "moment";
 import { ColumnCoinDeep } from "../assetsTable";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { setShowRedPacket } from "../../../stores";
+import { RedPacketViewStep } from "../../modal";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -159,18 +161,15 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
           // row.rawData.luckyToken.status
           // return <Button variant={"text"}>Open</Button>
           // <>Start time: {moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')}</>
-          if (row.rawData.luckyToken.validSince > Date.now()) {
+          if (row.rawData.luckyToken.validUntil > Date.now()) {
             return <>Start time: {moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')}</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
-            return <>Opend</>
+            return <Typography onClick={() => onItemClick(row.rawData)}>Opend</Typography>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
-            return <>Expired</>
+            return <Typography>Expired</Typography>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) { 
-            return <Button variant={"outlined"}>Open</Button>
+            return <Button onClick={() => onItemClick(row.rawData)} variant={"outlined"}>Open</Button>
           }
-          // return (
-          //   <>{moment(row.rawData.luckyToken.validUntil).format('YYYY.MM.DD HH:MM')}</>
-          // );
         },
       },
     ] as Column<R, unknown>[];
@@ -189,7 +188,17 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
           }
           rowHeight={RowConfig.rowHeight}
           onRowClick={(_index: number, row: R) => {
-            onItemClick(row.rawData);
+            // debugger
+            setShowRedPacket({
+              isShow: true,
+              info: {
+                // ...luckTokenInfo,
+                sender: row.rawData.luckyToken.sender,
+                hash: row.rawData.luckyToken.hash,
+              },
+              step: RedPacketViewStep.BlindBoxDetail,
+            });
+            // onItemClick(row.rawData);
           }}
           sortMethod={React.useCallback(
             (_sortedRows, sortColumn) => {

@@ -102,7 +102,7 @@ export function useRedPacketModal() {
   const amountStr = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
     let symbol;
-    if (isShow && _info && _info.tokenAmount) {
+    if (isShow && _info && _info.tokenAmount && _info.type.mode !== sdk.LuckyTokenClaimType.BLIND_BOX) {
       if (_info.isNft) {
         symbol = "NFT";
         // @ ts-ignore
@@ -530,7 +530,6 @@ export function useRedPacketModal() {
             isShow: true,
             step: AccountStep.RedPacketOpen_In_Progress,
           });
-          debugger
           const response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
             {
               accountId: account.accountId,
@@ -624,6 +623,7 @@ export function useRedPacketModal() {
               },
             });
           } else {
+            debugger
             if (
               response.detail?.claimAmount?.toString() !== "0" &&
               _info?.type.scope === sdk.LuckyTokenViewType.PUBLIC
@@ -908,7 +908,6 @@ export function useRedPacketModal() {
           });
         },
         onClickViewDetail: () => {
-          debugger
           setBlindBoxType('BlindBox Claime Detail')
         },
         NFTClaimList: detail!.claims.map(x => {

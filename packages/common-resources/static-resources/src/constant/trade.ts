@@ -651,7 +651,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     showInNFTS: true,
     value: {
       value: 3,
-      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
       mode: sdk.LuckyTokenClaimType.BLIND_BOX,
     },
   },

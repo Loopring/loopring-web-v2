@@ -17,6 +17,7 @@ import {
   RawDataRedPacketReceivesItem,
   RawDataRedPacketRecordsItem,
   RedPacketViewStep,
+  setShowAccount,
   useOpenModals,
 } from "@loopring-web/component-lib";
 
@@ -299,23 +300,13 @@ export const useMyRedPacketReceiveTransaction = <
   );
 
   const onItemClick = (item: sdk.LuckTokenHistory) => {
-    if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-      setShowRedPacket({
-        isShow: true,
-        step: RedPacketViewStep.BlindBoxDetail,
-        info: {
-          ...item.luckyToken,
-        },
-      });
-    } else {
-      setShowRedPacket({
-        isShow: true,
-        step: RedPacketViewStep.DetailPanel,
-        info: {
-          ...item.luckyToken,
-        },
-      });
-    }
+    setShowRedPacket({
+      isShow: true,
+      step: RedPacketViewStep.DetailPanel,
+      info: {
+        ...item.luckyToken,
+      },
+    });
   };
   return {
     onItemClick,
@@ -338,7 +329,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
   const { t } = useTranslation(["error"]);
 
   const {
-    account: { accountId, apiKey, accAddress },
+    account: { accountId, apiKey, accAddress, eddsaKey },
   } = useAccount();
 
   const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>(
@@ -389,7 +380,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
             // debugger
 
             let result = (response as any)?.list.map(
-              (item: sdk.LuckTokenHistory) => {
+              (item: sdk.LuckyTokenBlindBoxItemReceive) => {
                 // @ts-ignore
                 const { luckyToken, claim: myClaim } = item;
                 
@@ -418,24 +409,94 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
 
-  const onItemClick = (item: sdk.LuckTokenHistory) => {
-    if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+  const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
+    // debugger
+    // if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+    if (item.luckyToken.validUntil > Date.now()) {
+      // return <>Start time: {moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')}</>
+    } else if (item.claim.status === sdk.BlindBoxStatus.OPENED) {
+      // LoopringAPI.luckTokenAPI?.getLuckTokenDetail({hash: item.luckyToken})
       setShowRedPacket({
         isShow: true,
         step: RedPacketViewStep.BlindBoxDetail,
         info: {
-          ...item.luckyToken,
+          ...item.luckyToken
+
+          // hash: item.luckyToken.hash,
+          // sender: item.luckyToken.sender,
+          // type: item.luckyToken.type,
+          // type: item.luckyToken.info.memo,
+          // ...item.luckyToken,
+          // ..._info,
         },
       });
-    } else {
-      setShowRedPacket({
-        isShow: true,
-        step: RedPacketViewStep.DetailPanel,
-        info: {
-          ...item.luckyToken,
-        },
-      });
+    } else if (item.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
+      // setShowRedPacket({
+      //       isShow: true,
+      //       step: RedPacketViewStep.BlindBoxDetail,
+      //       info: {
+      //         ...item.luckyToken,
+      //         // ..._info,
+      //       },
+      //     });
+    } else if (item.claim.status === sdk.BlindBoxStatus.NOT_OPENED) { 
+      // item.
+      let response =
+          await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
+              request: {
+                hash: item.luckyToken.hash,
+                claimer: accAddress,
+              },
+              eddsaKey: eddsaKey.sk,
+              apiKey: apiKey,
+            } as any);
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
+          }
+          // const response2 = await LoopringAPI.luckTokenAPI!.getBlindBoxDetail({
+          //   hash: _info.hash,
+          // }, account.apiKey)
+          // debugger
+          // setShowAccount({
+          //   isShow: false,
+          // });
+          setShowRedPacket({
+            isShow: true,
+            step: RedPacketViewStep.BlindBoxDetail,
+            info: {
+              ...item.luckyToken,
+              // ..._info,
+            },
+          });
+      
+      // await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimBlindBox({
+
+      // })
+      
+      
+      // setShowRedPacket({
+      //   isShow: true,
+      //   step: RedPacketViewStep.BlindBoxDetail,
+      //   info: {
+      //     ...item.luckyToken,
+      //   },
+      // });
+
+      // return <Button onClick={() => onItemClick(row.rawData)} variant={"outlined"}>Open</Button>
     }
+    
+    // } else {
+    //   setShowRedPacket({
+    //     isShow: true,
+    //     step: RedPacketViewStep.DetailPanel,
+    //     info: {
+    //       ...item.luckyToken,
+    //     },
+    //   });
+    // }
   };
   return {
     onItemClick,

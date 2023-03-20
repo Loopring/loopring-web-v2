@@ -144,7 +144,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
 
         [RedPacketViewStep.PreparePanel]: { view: <></> },
         [RedPacketViewStep.BlindBoxDetail]: { 
-          view: true ? (
+          view: redPacketBlindBoxDetailProps ? (
             <Box
               minHeight={RedPacketSize.large.height}
               height={"80vh"}
@@ -154,7 +154,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
               alignItems={"start"}
             >
               <RedPacketBlindBoxDetail
-                {...(redPacketBlindBoxDetailProps ?? {})}
+                {...(redPacketBlindBoxDetailProps)}
               />
             </Box>
           )
@@ -176,8 +176,8 @@ export const ModalRedPacketPanel = withTranslation("common")(
           setShowRedPacket({ isShow: false });
         }}
         etherscanBaseUrl={etherscanBaseUrl}
-        step={7
-          // isShowRedPacket.step
+        step={
+          isShowRedPacket.step
         }
         open={isShowRedPacket.isShow}
         panelList={redPacketList}

@@ -120,6 +120,7 @@ export type RedPacketBlindBoxDetailTypes = 'Not Started'
 export type RedPacketBlindBoxDetailProps = {
   sender: string;
   memo: string;
+  NFTURL?: string;
   // Not Started: Phase 1, can't get blind boxs, only red packet sender can view this detail
   // Blind Box Started: Phase 2, can get blind boxs, everyone can view this detail
   // Lottery Started: Phase 3, users can participate in lottery if they have blind boxs, everyone can view this detail

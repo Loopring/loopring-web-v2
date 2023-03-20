@@ -49,6 +49,7 @@ import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 import temp1 from "./temp1.png";
 import temp2 from "./temp2.png";
+import temp3 from "./temp3.png";
 
 export const RedPacketBg = styled(Box)<
   BoxProps & { imageSrc?: string; type: string }
@@ -1389,6 +1390,7 @@ export const RedPacketBlindBoxDetail = ({
   sender,
   memo,
   type,
+  NFTURL,
   blindBoxStartTime,
   lotteryStartTime,
   lotteryEndTime,
@@ -1422,8 +1424,7 @@ export const RedPacketBlindBoxDetail = ({
       flexDirection={"column"}
     >
       <Modal
-        open
-        // ={showOpenLottery === true}
+        open={showOpenLottery === true}
         onClose={onCloseOpenModal}
       >
         <>
@@ -1485,6 +1486,7 @@ export const RedPacketBlindBoxDetail = ({
           Blind Box Red Packet
         </Typography>
       </Box>
+
 
       {
         type === 'BlindBox Claime Detail' 
@@ -1588,7 +1590,13 @@ export const RedPacketBlindBoxDetail = ({
                   }}
                   dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
                 />
-                {imageEle}
+                <Box marginY={1} width={"60%"}>
+                  {
+                    NFTURL
+                      ? <img style={{width: '100%'}} src={NFTURL} />
+                      : <img style={{width: '100%'}} src={temp3} />
+                  }
+                </Box>
                 <Typography
                   variant={"body1"}
                   color={theme.colorBase.textSecondary}
