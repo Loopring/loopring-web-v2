@@ -277,8 +277,6 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers &&
       redPacketOrder.numbers > 0 &&
       redPacketOrder.validUntil &&
-      // Number(redPacketOrder.validUntil) >= 1 &&
-      // Number(redPacketOrder.validUntil) <= DAYS &&
       redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
       _tradeData.tradeValue &&
       redPacketOrder.memo &&
@@ -291,9 +289,6 @@ export const useCreateRedPacket = <
         isExceedBalance,
         tooSmall,
         tooLarge;
-        // giftNumbersLargerThanNumbers;
-      // const giftNumbersLessThanNumbers = 
-      //   redPacketOrder.giftNumbers <= redPacketOrder.numbers
       const feeToken = tokenMap[redPacketOrder.fee.belong];
       const feeRaw =
         redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
@@ -667,8 +662,6 @@ export const useCreateRedPacket = <
         redPacketOrder.type &&
         redPacketOrder.memo &&
         redPacketOrder?.validUntil &&
-        // redPacketOrder?.validUntil >= 1 &&
-        // redPacketOrder?.validUntil <= DAYS &&
         redPacketConfigs?.luckTokenAgents &&
         redPacketOrder.memo?.trim().length > 0 &&
         eddsaKey?.sk

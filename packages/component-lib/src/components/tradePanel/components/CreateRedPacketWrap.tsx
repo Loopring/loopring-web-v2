@@ -41,8 +41,6 @@ import {
   SoursURL,
   TRADE_TYPE,
   TradeBtnStatus,
-  CheckBoxIcon,
-  CircleIcon,
   GoodIcon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
@@ -60,7 +58,6 @@ import { BtnMain } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import moment, { Moment } from "moment";
 import { NFTInput } from "./BasicANFTTrade";
-// import { DateTimeRangePicker } from " components/datetimerangepicker";
 import { DateTimeRangePicker } from "../../datetimerangepicker";
 
 const RedPacketBoxStyle = styled(Box)`
@@ -249,86 +246,6 @@ export const CreateRedPacketStepWrap = withTranslation()(
       coinMap,
       tradeType,
     ]);
-    // const inputSplitProps2 = React.useMemo(() => {
-    //   const inputSplitProps: any = {
-    //     label: '有礼物的红包个数',
-    //     placeholderText: t("labelQuantity"),
-    //     isHideError: true,
-    //     isShowCoinInfo: false,
-    //     handleCountChange: (ibData: IBData<any>, _name: string, _ref: any) => {
-    //       handleOnDataChange({
-    //         numbers: ibData.tradeValue,
-    //       } as unknown as Partial<T>);
-    //     },
-    //     fullWidth: true,
-    //   };
-    //   let inputSplitExtendProps = {},
-    //     balance: any = undefined;
-    //   // if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
-    //   //   if (selectedType.value.partition === sdk.LuckyTokenAmountType.AVERAGE) {
-    //   //     balance = sdk
-    //   //       .toBig(tradeData?.balance ?? 0)
-    //   //       .div(tradeData.tradeValue)
-    //   //       .toFixed(0, 1);
-    //   //   } else {
-    //   //     balance = sdk
-    //   //       .toBig(tradeData.tradeValue)
-    //   //       .div(Number(minimum) ?? 1)
-    //   //       .toFixed(0, 1);
-    //   //   }
-
-    //   //   balance = sdk.toBig(balance).lte(REDPACKET_ORDER_LIMIT)
-    //   //     ? balance
-    //   //     : REDPACKET_ORDER_LIMIT;
-
-    //   //   inputSplitExtendProps = {
-    //   //     maxAllow: true,
-    //   //     subLabel: t("labelAvailable"),
-    //   //     handleError: (data: any) => {
-    //   //       if (data.tradeValue && data.tradeValue > data.balance) {
-    //   //         return {
-    //   //           error: true,
-    //   //         };
-    //   //       }
-    //   //       return {
-    //   //         error: false,
-    //   //       };
-    //   //     },
-    //   //     inputData: {
-    //   //       belong:
-    //   //         selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-    //   //           ? t("labelQuantity")
-    //   //           : t("labelSplit"),
-    //   //       tradeValue: tradeData?.numbers,
-    //   //       balance: balance,
-    //   //     },
-    //   //   };
-    //   // } else {
-    //   //   inputSplitExtendProps = {
-    //   //     maxAllow: false,
-    //   //     subLabel: "",
-    //   //     handleError: () => undefined,
-    //   //     inputData: {
-    //   //       belong:
-    //   //         selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-    //   //           ? t("labelAmountEach")
-    //   //           : t("labelSplit"),
-    //   //       tradeValue: tradeData?.numbers,
-    //   //       // count: tradeData?.numbers,
-    //   //     },
-    //   //   };
-    //   // }
-    //   return {
-    //     ...inputSplitProps,
-    //     // ...inputSplitExtendProps,
-    //   };
-    // }, [
-    //   tradeData?.tradeValue,
-    //   selectedType.value.partition,
-    //   maximum,
-    //   minimum,
-    //   tradeType,
-    // ]);
     const inputSplitProps = React.useMemo(() => {
       const inputSplitProps: any = {
         label:
@@ -474,16 +391,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
       }
     }, [selectedType.value.partition, tradeData.balance, tradeData?.numbers]);
     const { isMobile } = useSettings();
-    // tradeData.validSince
 
     const startDateTime = tradeData.validSince 
       ? moment(tradeData.validSince)
       : null 
-      // as Moment | null
     const endDateTime = tradeData.validUntil 
       ? moment(tradeData.validUntil )
       : null
-      // as Moment | null
     const now = moment()
 
     const startMinDateTime = endDateTime
@@ -759,43 +673,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               }}
             />
           </Box>
-          {/* <Box marginTop={1}>
-            <DateTimePicker
-              value={dayValue}
-              fullWidth={true}
-              disableFuture={false}
-              minDate={moment()}
-              maxDateTime={moment().add(1, "days")}
-              onChange={(monent: any) => {
-                setDayValue(monent);
-                handleOnDataChange({
-                  validSince: monent.toDate().getTime(),
-                } as unknown as Partial<T>);
-              }}
-              textFiledProps={{ size: "large" }}
-              disabled={disabled}
-            />
-          </Box>
-          <Box marginTop={1}>
-            <InputCoin
-              {...{
-                ...(durationProps as any),
-                name: "numbers",
-                order: "right",
-                handleCountChange: (data) => {
-                  // @ts-ignore
-                  setDurationValue(data.tradeValue ?? "");
-                  handleOnDataChange({
-                    validUntil: data.tradeValue,
-                  } as unknown as Partial<T>);
-                },
-                size: "middle" as any,
-                coinMap: {},
-                coinPrecision: undefined,
-              }}
-              disabled={disabled}
-            />
-          </Box> */}
+
         </Box>
         <Box
           marginY={1}
@@ -1047,7 +925,6 @@ export const CreateRedPacketStepType = withTranslation()(
           {LuckyRedPacketList.filter(item => tradeType == TRADE_TYPE.NFT ? item.showInNFTS : item.showInERC20).map((item: LuckyRedPacketItem, index) => {
             return (
               <React.Fragment key={index}>
-                {/* {!(tradeType == TRADE_TYPE.NFT && index == 0) && ( */}
                   <Box key={item.value.value} marginBottom={1}>
                     <MenuBtnStyled
                       variant={"outlined"}
@@ -1089,7 +966,6 @@ export const CreateRedPacketStepType = withTranslation()(
                       </Typography>
                     </MenuBtnStyled>
                   </Box>
-                {/* )} */}
               </React.Fragment>
             );
           })}

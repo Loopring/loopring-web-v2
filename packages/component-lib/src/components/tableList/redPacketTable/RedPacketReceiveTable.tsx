@@ -114,7 +114,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         updateData.cancel();
       };
     }, [pagination?.pageSize, tokenType]);
-    // console.log
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {

@@ -931,38 +931,7 @@ export function useRedPacketModal() {
         }),
         showOpenLottery: blindBoxType === 'Lottery Started and Win Lottery' || blindBoxType === 'Lottery Started and Not Win Lottery', // require if (type === 'Lottery Started')
         wonNFTInfo: wonNFTInfo,
-        // onClickClaim?: () => void;
         onCloseOpenModal: () => setBlindBoxType('Lottery Started'),
-
-        // ImageEle,
-        // totalCount: detail.luckyToken.tokenAmount.totalCount,
-        // remainCount: detail.luckyToken.tokenAmount.remainCount,
-        // memo: _info.info.memo,
-        // amountStr,
-        // amountClaimStr,
-        // sender: _info.sender?.ens
-        //   ? _info.sender?.ens
-        //   : getShortAddr(_info.sender?.address),
-        // claimList: list,
-        // detail,
-        // myAmountStr,
-        // relyAmount: relyAmount ? relyAmount?.toString() : undefined,
-        // relyNumber: relyNumber ? relyNumber?.toString() : undefined,
-        // isShouldSharedRely,
-        // handlePageChange: (page: number = 1) => {
-        //   redPacketDetailCall({ offset: page - 1 });
-        // },
-        // onShared: () => {
-        //   setShowRedPacket({
-        //     isShow: true,
-        //     step: RedPacketViewStep.QRCodePanel,
-        //     info: {
-        //       ...detail.luckyToken,
-        //       referrer: account.accountId,
-        //       isShouldSharedRely,
-        //     },
-        //   });
-        // },
       } as RedPacketBlindBoxDetailProps;
     } else {
       return undefined;
