@@ -416,7 +416,7 @@ export const useCreateRedPacket = <
               : { value: REDPACKET_ORDER_NFT_LIMIT, symbol: "NFT" }
           );
         } else if (giftsLargerThanPackets) {
-          setLabelAndParams("todo label", {});
+          setLabelAndParams("labelRedPacketsGiftsLargerThanPackets", {});
         }
       }
     }
@@ -728,7 +728,6 @@ export const useCreateRedPacket = <
             ),
             validUntil: Math.round(
               (redPacketOrder.validUntil ?? Date.now()) / 1000 
-              // + 86400 * (redPacketOrder.validUntil ?? 1)
             ),
             luckyToken: {
               exchange: exchangeInfo.exchangeAddress,

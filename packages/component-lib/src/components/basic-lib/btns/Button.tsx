@@ -310,7 +310,6 @@ export const ModalCloseButtonPosition = ({
         aria-label={t("labelClose")}
         color={"inherit"}
         onClick={(event) => {
-          // myLog("IconButton escapeKeyDown");
           onClose && onClose(event, "escapeKeyDown");
         }}
       >

@@ -66,7 +66,6 @@ export const RedPacketClaimPanel = () => {
     if (height) {
       const pageSize = Math.floor(height / RowConfig.rowHeight) - 3;
       setPageSize(pageSize);
-      // handleTabChange(currentTab);
     }
   }, [container?.current?.offsetHeight]);
   return (
@@ -148,7 +147,7 @@ export const RedPacketClaimPanel = () => {
         >
           <DialogTitle>
           <Typography variant={"h3"} textAlign={"center"}>
-          Received NFT Red Packets
+            {t("labelBlindBoxRecievedRedPackets")}
           </Typography>
           <IconButton
             size={"medium"}

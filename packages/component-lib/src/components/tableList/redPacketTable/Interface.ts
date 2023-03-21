@@ -119,7 +119,7 @@ export interface RedPacketBlindBoxReceiveTableProps<R, C = sdk.Currency> {
     pageSize: number;
     total: number;
   };
-  onItemClick: (item: sdk.LuckTokenHistory) => void;
+  onItemClick: (item: sdk.LuckTokenHistory) => any;
   getRedPacketReceiveList: (props: any) => void;
 }
 

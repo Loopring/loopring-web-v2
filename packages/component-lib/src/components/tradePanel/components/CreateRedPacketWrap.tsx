@@ -547,7 +547,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
           >
             <InputCoin<any, I, any>
               // ref={inputSplitRef}
-              label={'有礼物的红包个数'}
+              label={t("labelBlindBoxRedPacketWithGift")}
               placeholderText={t("labelQuantity")}
               isHideError={false}
               isShowCoinInfo={false}
@@ -869,8 +869,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
           >
             {
               tradeType === TRADE_TYPE.TOKEN
-                ? 'Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned'
-                : "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet."
+                ? t("labelBlindBoxExpirationExplainationForToken") 
+                : t("labelBlindBoxExpirationExplainationForNFT")
             }
           </Typography>
         </Box>
@@ -998,7 +998,7 @@ export const CreateRedPacketStepType = withTranslation()(
                     component={"span"}
                     style={{cursor: "pointer"}}
                   >
-                    Private Red Packet
+                    {t("labelBlindBoxPrivate")}
                   </Typography>
                   <Typography
                     variant={"body1"}
@@ -1007,12 +1007,12 @@ export const CreateRedPacketStepType = withTranslation()(
                     component={"span"}
                     color={"var(--color-text-secondary)"}
                   >
-                    Your Red Packet is shared privately with others via a custom QR code.
+                    {t("labelBlindBoxPrivateDes")}
                   </Typography>
                 </Box>
               </Box>
               <Typography marginBottom={3} color={"var(--color-text-secondary)"}>
-                Note：For NFT red packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.
+                {t("labelBlindBoxClaimWarning")}
               </Typography>
               </>
             )

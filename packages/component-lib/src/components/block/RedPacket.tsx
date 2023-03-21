@@ -1471,7 +1471,7 @@ export const RedPacketBlindBoxDetail = ({
                   fullWidth
                   onClick={onClickClaim}
                 >
-                  Claim
+                  {t("labelClaimBtn")}
                 </Button>
               }
 
@@ -1506,7 +1506,7 @@ export const RedPacketBlindBoxDetail = ({
           color={RedPacketColorConfig.default.fontColor}
           textAlign={"center"}
         >
-          Blind Box Red Packet
+          {t("labelLuckyBlindBox")}
         </Typography>
         <Box flex={"1 1 0"}/>
       </Box>
@@ -1530,7 +1530,11 @@ export const RedPacketBlindBoxDetail = ({
                 marginY={1}
                 paddingX={1}
               >
-                Received Blind Box {opendBlindBoxAmount}/{totalBlindBoxAmount}
+                {t("labelLuckyRecievedBlindBox", {
+                  opendBlindBoxAmount,
+                  totalBlindBoxAmount
+                })}
+                {/* Received Blind Box {opendBlindBoxAmount}/{totalBlindBoxAmount} */}
               </Typography>
 
               <Box flex={1} overflow={"scroll"}>
@@ -1628,7 +1632,8 @@ export const RedPacketBlindBoxDetail = ({
 
                   textAlign={"center"}
                 >
-                  The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.
+                  {t("labelBlindBoxExplaination")}
+                  {/* The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet. */}
                 </Typography>
                 <Typography
                   variant={"body1"}
@@ -1638,7 +1643,13 @@ export const RedPacketBlindBoxDetail = ({
 
                   textAlign={"center"}
                 >
-                  {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered.
+                  {t("labelBlindBoxExplaination2", {
+                    opendBlindBoxAmount,
+                    totalBlindBoxAmount,
+                    deliverdGiftsAmount,
+                    totalGiftsAmount
+                  })}
+                  {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
                 </Typography>
                 <Typography
                   variant={"body1"}
@@ -1647,10 +1658,10 @@ export const RedPacketBlindBoxDetail = ({
                   textAlign={"center"}
                 >
                   {type === 'Not Started'
-                    ? `Blindbox can be opened after: ${moment(blindBoxStartTime).format('YYYY.MM.DD HH:mm')}`
+                    ? t("labelBlindBoxNotStarted", {time: moment(blindBoxStartTime).format('YYYY.MM.DD HH:mm')}) 
                     : type === 'Blind Box Started'
-                      ? `Blindbox will be ended after: ${moment(lotteryStartTime).format('YYYY.MM.DD HH:mm')}`
-                      : `The NFTs Claimed will be ended after: ${moment(lotteryEndTime).format('YYYY.MM.DD HH:mm')}`
+                      ? t("labelBlindBoxStarted", {time: moment(lotteryStartTime).format('YYYY.MM.DD HH:mm')})
+                      : t("labelBlindBoxClaimStarted", {time: moment(lotteryEndTime).format('YYYY.MM.DD HH:mm')})
                   }
                 </Typography>
                 {
@@ -1683,7 +1694,10 @@ export const RedPacketBlindBoxDetail = ({
                         marginY={1}
                         paddingX={1}
                       >
-                        Received NFT {deliverdGiftsAmount}/{totalGiftsAmount}
+                        {t("labelBlindBoxRecievedNFT", {
+                          deliverdGiftsAmount,
+                          totalGiftsAmount,
+                        })}
                       </Typography>
 
                       <Box flex={1} overflow={"scroll"}>
@@ -1755,8 +1769,7 @@ export const RedPacketBlindBoxDetail = ({
                   fullWidth
                   onClick={onShared}
                 >
-                  Share with Friends
-                  {/* {t("labelRedPacketGrab")} */}
+                  {t("labelRedPacketGrab")}
                 </Button>
               </Box>}
             </Box >

@@ -10,6 +10,7 @@ import {
 import styled from "@emotion/styled";
 import {useState} from "react";
 import moment from "moment";
+import { TranslationProps, useTranslation, WithTranslation } from "react-i18next";
 
 const StyledDateTimeRangePicker = styled(Box)`
   background-color: var(--field-opacity);
@@ -50,6 +51,7 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
     onEndChange,
     onEndOpen,
   } = props;
+  const {t} = useTranslation()
   // const [] = useState(undefined,)
   return <StyledDateTimeRangePicker >
     <MobileDateTimePicker
@@ -58,7 +60,7 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
       onChange={onStartChange ?? (() => {})}
       minDateTime={startMinDateTime}
       maxDateTime={startMaxDateTime}
-      renderInput={(params) => <TextField placeholder="Start date" {...params} />}
+      renderInput={(params) => <TextField placeholder={t("labelBlindBoxStartDate")} {...params} />}
     />
     <ToRightIcon />
     <MobileDateTimePicker
@@ -67,7 +69,7 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
       onChange={onEndChange ?? (() => {})}
       minDateTime={endMinDateTime} 
       maxDateTime={endMaxDateTime} 
-      renderInput={(params) => <TextField placeholder="End date" {...params}  />}
+      renderInput={(params) => <TextField placeholder={t("labelBlindBoxEndDate")} {...params}  />}
     />
   </StyledDateTimeRangePicker>
 }

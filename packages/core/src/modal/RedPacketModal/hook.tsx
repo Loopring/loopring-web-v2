@@ -861,8 +861,6 @@ export function useRedPacketModal() {
     step,
   ]);
   const {setShowClaimWithdraw} = useOpenModals()
-
-  
   const redPacketBlindBoxDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string;
@@ -879,7 +877,6 @@ export function useRedPacketModal() {
       blinBoxDetail &&
       blindBoxType
     ) {
-      // const opendBlindBoxAmount = blinBoxDetail.claims.reduce((acc: number, cur: string) => acc + (isNaN(Number(cur)) ? 0 : Number(cur)), 0)
       
       return {
         sender: _info.sender?.ens

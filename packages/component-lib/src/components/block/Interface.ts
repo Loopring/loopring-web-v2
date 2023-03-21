@@ -127,27 +127,27 @@ export type RedPacketBlindBoxDetailProps = {
   // Lottery Started And Open: Phase 3, Same as 'Lottery Started' but one more popup to show if win NFTs
   // BlindBox Claime Detail: Phase 2 or Phase 3, shows detail of blindboxs distribution.
   type: RedPacketBlindBoxDetailTypes; 
-  blindBoxStartTime?: number; // require if (type === 'Not Started')
-  lotteryStartTime?: number; // require if (type === 'Blind Box Started')
-  lotteryEndTime?: number; // require if (type === 'Lottery Started')
+  blindBoxStartTime?: number; 
+  lotteryStartTime?: number; 
+  lotteryEndTime?: number; 
   opendBlindBoxAmount: number;
   totalBlindBoxAmount: number;
   deliverdGiftsAmount: number;
   totalGiftsAmount: number;
   imageEle?: JSX.Element | undefined; 
-  onShared?: () => void;// require if (type === 'Not Started' || type === 'Blind Box Started')
-  onClickViewDetail?: () => void;// require if (type === 'Blind Box Started' || type === 'Lottery Started')
-  NFTClaimList?: { // require if (type === 'Lottery Started')
+  onShared?: () => void;
+  onClickViewDetail?: () => void;
+  NFTClaimList?: { 
     who: string,
     when: number,
     amount: number
   }[]; 
-  BlindBoxClaimList?: { // require if (type === 'Lottery Started')
+  BlindBoxClaimList?: { 
     who: string,
     when: number,
     amount: number
   }[]; 
-  showOpenLottery?: boolean; // require if (type === 'Lottery Started')
+  showOpenLottery?: boolean; 
   wonNFTInfo?: { 
     name: string;
     url: string;

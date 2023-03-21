@@ -236,7 +236,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
               sortable: true,
               cellClass: "textAlignRight",
               headerCellClass: "textAlignRight",
-              name: "End Time",
+              name: t("labelBlindBoxEndTime"),
               formatter: ({ row }: FormatterProps<R>) => {
 
                 return (
@@ -255,11 +255,11 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                   return <Button onClick={e => {
                     e.stopPropagation()
                     onClaimItem(row.rawData)
-                  }}>Claim</Button>
+                  }}>{t("labelClaimBtn")}</Button>
                 } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.EXPIRED) {
-                  return <Box>Expired</Box>
+                  return <Box>{t("labelBlindBoxExpired")}</Box>
                 } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
-                  return <Box>Claimed</Box>
+                  return <Box>{t("labelBlindBoxClaimed")}</Box>
                 } else {
                   return <></>
                 }

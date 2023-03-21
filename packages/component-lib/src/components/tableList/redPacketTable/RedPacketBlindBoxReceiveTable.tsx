@@ -1,11 +1,9 @@
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import {
-  BoxNFT,
   Button,
   Column,
-  NftImage,
   Table,
   TablePagination,
 } from "../../basic-lib";
@@ -18,19 +16,14 @@ import {
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   RawDataRedPacketBlindBoxReceivesItem,
-  RawDataRedPacketReceivesItem,
   RedPacketBlindBoxReceiveTableProps,
-  RedPacketReceiveTableProps,
 } from "./Interface";
 import { useHistory } from "react-router-dom";
 import React from "react";
 import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
 import moment from "moment";
-import { ColumnCoinDeep } from "../assetsTable";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { setShowRedPacket } from "../../../stores";
-import { RedPacketViewStep } from "../../modal";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -86,8 +79,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
       t,
       onItemClick,
     } = props;
-    // const { isMobile, upColor } = useSettings();
-    const history = useHistory();
     const [page, setPage] = React.useState(1);
 
     const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
@@ -111,7 +102,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
     React.useEffect(() => {
       updateData.cancel();
       handlePageChange({ page: 1 });
-      // updateData({});
       return () => {
         updateData.cancel();
       };
@@ -142,7 +132,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
         sortable: true,
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
-        name: "End Time",
+        name: t("labelBlindBoxEndTime"),
         formatter: ({ row }: FormatterProps<R>) => {
           return (
             <>{moment(row.rawData.luckyToken.validUntil).format('YYYY.MM.DD HH:MM')}</>
@@ -157,13 +147,13 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
         name: "Action",
         formatter: ({ row }: FormatterProps<R>) => {
           if (row.rawData.luckyToken.validUntil > Date.now()) {
-            return <>Start time: {moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')}</>
+            return <>{t("labelBlindBoxStartTime", {time: moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')})} </>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
-            return <>Opend</>
+            return <>{t("labelBlindBoxOpend")}</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
-            return <>Expired</>
+            return <>{t("labelBlindBoxExpired")}</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) { 
-            return <Button onClick={() => onItemClick(row.rawData)} variant={"outlined"}>Open</Button>
+            return <Button onClick={() => onItemClick(row.rawData)} variant={"outlined"}>{t("labelRedPacketOpen")}</Button>
           }
         },
       },

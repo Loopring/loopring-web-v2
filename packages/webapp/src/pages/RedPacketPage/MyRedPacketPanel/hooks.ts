@@ -361,10 +361,9 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
   R extends RawDataRedPacketReceivesItem
 >({
   setToastOpen,
-}: // tabType,
+}: 
 {
   setToastOpen: (props: any) => void;
-  // tabType: TabTokenTypeIndex;
 }) => {
   const { t } = useTranslation(["error"]);
 
@@ -425,11 +424,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
                 const { luckyToken, claim: myClaim } = item;
                 
                 return {
-                  // token: {
-                  //   ...tokenInfo,
-                  // } as any,
-                  // amount,
-                  type: luckyToken.type, //sdk.LuckyTokenItemStatus
+                  type: luckyToken.type, 
                   status: luckyToken.status,
                   claimAt: myClaim?.createdAt,
                   sender: luckyToken?.sender?.ens

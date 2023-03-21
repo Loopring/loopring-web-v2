@@ -103,7 +103,6 @@ export const MyRedPacketPanel = ({
     : [TabIndex.NFTReceived, TabIndex.NFTSend].includes(currentTab) 
       ? 'NFTs'
       : 'blindBox'
-  // const theme = useTheme()
 
   // @ts-ignore
   return (
@@ -183,20 +182,20 @@ export const MyRedPacketPanel = ({
             selected={[TabIndex.Send, TabIndex.Received].includes(currentTab)}
             style={{ marginRight: `${theme.unit}px` }}
             variant={"outlined"}>
-            Tokens
+            {t("labelRedpacketTokensShort")}
           </SelectButton>
           <SelectButton
             onClick={() => { isRecieve ? handleTabChange(TabIndex.NFTReceived) : handleTabChange(TabIndex.NFTSend) }}
             selected={[TabIndex.NFTReceived, TabIndex.NFTSend].includes(currentTab)}
             style={{ marginRight: `${theme.unit}px` }}
             variant={"outlined"}>
-            NFTs
+            {t("labelRedpacketNFTS")}
           </SelectButton>
           {isRecieve && <SelectButton
             onClick={() => { handleTabChange(TabIndex.BlindBoxReceived) }}
             selected={[TabIndex.BlindBoxReceived].includes(currentTab)}
             variant={"outlined"}>
-            Blind Box
+              {t("labelRedpacketBlindBox")}
           </SelectButton>}
         </Box>
         {[TabIndex.Received, TabIndex.NFTReceived].includes(currentTab) && (
