@@ -88,6 +88,7 @@ export const useHebaoMain = <
         guardian,
         guardianoperationlog,
       ]: any = await Promise.all([
+        // @ts-ignore
         LoopringAPI.walletAPI.getHebaoConfig(),
         LoopringAPI.walletAPI
           .getProtectors(
