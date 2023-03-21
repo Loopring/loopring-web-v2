@@ -6,7 +6,8 @@ import {
   Divider,
   Link,
   Typography,
-  Modal
+  Modal,
+  IconButton
 } from "@mui/material";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -23,6 +24,7 @@ import {
   RedPacketQRCodeSvg,
   RedPacketWrapSVG,
   SoursURL,
+  BackIcon,
 } from "@loopring-web/common-resources";
 import QRCode from "qrcode-svg";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -1256,11 +1258,23 @@ export const RedPacketPrepare = ({
           amountStr={amountStr}
           myAmountStr={myAmountStr}
           viewDetail={() => {
-            setShowRedPacket({
-              isShow: true,
-              step: RedPacketViewStep.DetailPanel,
-              info: _info,
-            });
+            if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.BlindBoxDetail,
+                info: {
+                  ..._info,
+                },
+              });
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.DetailPanel,
+                info: {
+                  ..._info,
+                },
+              });
+            }
           }}
           sender={
             props?.sender?.ens
@@ -1398,7 +1412,6 @@ export const RedPacketBlindBoxDetail = ({
   totalBlindBoxAmount,
   deliverdGiftsAmount,
   totalGiftsAmount,
-  imageEle,
   onShared,
   onClickViewDetail,
   NFTClaimList,
@@ -1406,7 +1419,8 @@ export const RedPacketBlindBoxDetail = ({
   showOpenLottery,
   wonNFTInfo,
   onClickClaim,
-  onCloseOpenModal
+  onCloseOpenModal,
+  onClickClaimDetailBack
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme()
@@ -1428,9 +1442,7 @@ export const RedPacketBlindBoxDetail = ({
         onClose={onCloseOpenModal}
       >
         <>
-          
-          <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-            
+          <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>  
             <Box
               padding={5}
               bgcolor={"var(--color-box)"}
@@ -1456,7 +1468,6 @@ export const RedPacketBlindBoxDetail = ({
               {
                 wonNFTInfo && <Button
                   variant={"contained"}
-
                   fullWidth
                   onClick={onClickClaim}
                 >
@@ -1477,14 +1488,27 @@ export const RedPacketBlindBoxDetail = ({
         }}
         display={"flex"}
         alignItems={"center"}
-        justifyContent={"center"}
+        justifyContent={"space-between"}
       >
+        
+        <Box flex={"1 1 0"}>
+          {
+            type === 'BlindBox Claime Detail' && (
+              <IconButton onClick={onClickClaimDetailBack!} sx={{ marginLeft: 3 }}>
+                <BackIcon htmlColor={RedPacketColorConfig.default.fontColor} />
+              </IconButton>
+            )
+          }
+        </Box>
         <Typography
+          flex={"2 1 0"}
           variant={"body1"}
           color={RedPacketColorConfig.default.fontColor}
+          textAlign={"center"}
         >
           Blind Box Red Packet
         </Typography>
+        <Box flex={"1 1 0"}/>
       </Box>
 
 
