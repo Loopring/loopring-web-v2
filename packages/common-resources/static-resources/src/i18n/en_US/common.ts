@@ -1315,6 +1315,7 @@ export default {
   labelBlindBoxPrivate: "Private Red Packet",
   labelBlindBoxPrivateDes: "Your Red Packet is shared privately with others via a custom QR code.",
   labelBlindBoxClaimWarning: "Note：For NFT red packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
+  labelBlindBoxRecievedRedPackets: "Received NFT Red Packets",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
     "If the recipient of the Red Packet also re-shares the packet, they receive half of whatever the next person receives.",
@@ -1443,7 +1444,9 @@ export default {
   labelRedPacketMy: "My red packet",
   labelRedpacketNotActive: "Hide the redpacket received",
   labelRedpacketTokens: "ERC20 Tokens",
+  labelRedpacketTokensShort: "Tokens",
   labelRedpacketNFTS: "NFTs",
+  labelRedpacketBlindBox: "Blind Box",
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
   labelChooseNFTTooltips: "",
   tokenSelectNFTToken: "Select NFT",

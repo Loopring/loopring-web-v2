@@ -66,10 +66,6 @@ export function useOpenRedpacket() {
           ) {
             throw response;
           }
-          // const response2 = await LoopringAPI.luckTokenAPI!.getBlindBoxDetail({
-          //   hash: _info.hash,
-          // }, account.apiKey)
-          // debugger
           setShowAccount({
             isShow: false,
           });
