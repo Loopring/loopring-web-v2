@@ -154,6 +154,7 @@ export type RedPacketBlindBoxDetailProps = {
   }
   onClickClaim?: () => void;
   onCloseOpenModal?: () => void;
+  onClickClaimDetailBack?: () => void;
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

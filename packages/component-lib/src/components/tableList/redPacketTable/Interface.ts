@@ -106,6 +106,7 @@ export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {
     total: number;
   };
   onItemClick: (item: sdk.LuckTokenHistory) => void;
+  onClaimItem: (item: sdk.LuckTokenHistory) => void;
   getRedPacketReceiveList: (props: any) => void;
 }
 

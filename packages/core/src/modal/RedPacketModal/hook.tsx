@@ -18,6 +18,7 @@ import {
 } from "@loopring-web/component-lib";
 import React from "react";
 import {
+  CLAIM_TYPE,
   CustomError,
   ErrorMap,
   Exchange,
@@ -507,6 +508,7 @@ export function useRedPacketModal() {
   );
 
   const [blindBoxType, setBlindBoxType] = React.useState(undefined as RedPacketBlindBoxDetailTypes | undefined)
+  const [viewDetailFrom, setViewDetailFrom] = React.useState(undefined as RedPacketBlindBoxDetailTypes | undefined)
   const [wonNFTInfo, setWonNFTInfo] = React.useState(undefined as {name: string, url: string} | undefined)
   const redPacketBlindBoxDetailCall = React.useCallback(
     async ({
@@ -623,7 +625,6 @@ export function useRedPacketModal() {
               },
             });
           } else {
-            debugger
             if (
               response.detail?.claimAmount?.toString() !== "0" &&
               _info?.type.scope === sdk.LuckyTokenViewType.PUBLIC
@@ -859,6 +860,7 @@ export function useRedPacketModal() {
     isShow,
     step,
   ]);
+  const {setShowClaimWithdraw} = useOpenModals()
 
   
   const redPacketBlindBoxDetailProps = React.useMemo(() => {
@@ -877,25 +879,21 @@ export function useRedPacketModal() {
       blinBoxDetail &&
       blindBoxType
     ) {
-      const opendBlindBoxAmount = blinBoxDetail.claims.reduce((acc: number, cur: string) => acc + (isNaN(Number(cur)) ? 0 : Number(cur)), 0)
+      // const opendBlindBoxAmount = blinBoxDetail.claims.reduce((acc: number, cur: string) => acc + (isNaN(Number(cur)) ? 0 : Number(cur)), 0)
+      
       return {
         sender: _info.sender?.ens
           ? _info.sender?.ens
           : getShortAddr(_info.sender?.address),
         memo: _info.info.memo,
         type: blindBoxType,
-          // | 'Blind Box Started' 
-          // | 'Lottery Started' 
-          // | 'Lottery Started and Win Lottery' 
-          // | 'Lottery Started and Not Win Lottery' 
-          // | 'BlindBox Claime Detail'; 
         blindBoxStartTime: detail!.luckyToken.validSince,
-        lotteryStartTime: detail!.luckyToken.validUntil, // require if (type === 'Blind Box Started')
-        lotteryEndTime: moment(detail!.luckyToken.validUntil).add(3, 'days').toDate().getTime(), // require if (type === 'Lottery Started')
-        opendBlindBoxAmount: opendBlindBoxAmount,
-        totalBlindBoxAmount: -1,
-        deliverdGiftsAmount: detail!.luckyToken.tokenAmount.totalCount - detail!.luckyToken.tokenAmount.remainCount,
-        totalGiftsAmount: detail!.luckyToken.tokenAmount.totalCount,
+        lotteryStartTime: detail!.luckyToken.validUntil, 
+        lotteryEndTime: moment(detail!.luckyToken.validUntil).add(3, 'days').toDate().getTime(), 
+        opendBlindBoxAmount: detail!.luckyToken.tokenAmount.claimedBoxCount,
+        totalBlindBoxAmount: detail!.luckyToken.tokenAmount.totalCount,
+        deliverdGiftsAmount: Number(detail!.luckyToken.tokenAmount.totalAmount) - Number(detail!.luckyToken.tokenAmount.remainAmount),
+        totalGiftsAmount: Number(detail!.luckyToken.tokenAmount.totalAmount),
         // imageEle?: JSX.Element | undefined; 
         onShared: () => {
           setShowRedPacket({
@@ -908,6 +906,7 @@ export function useRedPacketModal() {
           });
         },
         onClickViewDetail: () => {
+          setViewDetailFrom(blindBoxType)
           setBlindBoxType('BlindBox Claime Detail')
         },
         NFTClaimList: detail!.claims.map(x => {
@@ -932,6 +931,35 @@ export function useRedPacketModal() {
         showOpenLottery: blindBoxType === 'Lottery Started and Win Lottery' || blindBoxType === 'Lottery Started and Not Win Lottery', // require if (type === 'Lottery Started')
         wonNFTInfo: wonNFTInfo,
         onCloseOpenModal: () => setBlindBoxType('Lottery Started'),
+        onClickClaimDetailBack: () => {
+          setBlindBoxType(viewDetailFrom)
+        },
+        onClickClaim: async () => {
+          const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances({
+            accountId: account.accountId,
+            isNft: _info.isNft,
+            tokens: [_info.tokenId],
+          }, account.apiKey)
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+
+          } else {
+            setShowClaimWithdraw({
+              isShow: true,
+              claimToken: {
+                tokenId: response!.tokenBalance[0].tokenId,
+                total: response!.tokenBalance[0].total,
+                locked: response!.tokenBalance[0].locked,
+                pending: response!.tokenBalance[0].pending,
+                nftTokenInfo: _info.nftTokenInfo,
+                isNft: _info.isNft
+              },
+              claimType: CLAIM_TYPE.redPacket,
+            });
+          }
+        }
       } as RedPacketBlindBoxDetailProps;
     } else {
       return undefined;

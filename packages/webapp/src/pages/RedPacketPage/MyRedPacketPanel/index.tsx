@@ -79,6 +79,7 @@ export const MyRedPacketPanel = ({
     redPacketReceiveList,
     redPacketReceiveTotal,
     onItemClick: onReceiveItemClick,
+    onClaimItem: onReceiveClaimItem,
   } = useMyRedPacketReceiveTransaction({
     setToastOpen,
   });
@@ -206,6 +207,7 @@ export const MyRedPacketPanel = ({
                   ? TokenType.nft
                   : TokenType.single,
                 onItemClick: onReceiveItemClick,
+                onClaimItem: onReceiveClaimItem,
                 showloading: showloadingReceive,
                 forexMap,
                 etherscanBaseUrl,

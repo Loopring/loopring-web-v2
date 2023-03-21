@@ -9,6 +9,7 @@ import {
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
+  CLAIM_TYPE,
   getShortAddr,
   SDK_ERROR_MAP_TO_UI,
   TokenType,
@@ -17,7 +18,6 @@ import {
   RawDataRedPacketReceivesItem,
   RawDataRedPacketRecordsItem,
   RedPacketViewStep,
-  setShowAccount,
   useOpenModals,
 } from "@loopring-web/component-lib";
 
@@ -197,7 +197,7 @@ export const useMyRedPacketReceiveTransaction = <
   const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>(
     []
   );
-  const { setShowRedPacket } = useOpenModals();
+  const { setShowRedPacket, setShowClaimWithdraw } = useOpenModals();
 
   const { idIndex, coinMap, tokenMap } = useTokenMap();
   const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0);
@@ -308,12 +308,52 @@ export const useMyRedPacketReceiveTransaction = <
       },
     });
   };
+  const onClaimItem = async (item: sdk.LuckTokenHistory) => {
+    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances({
+      accountId: accountId,
+      isNft: item.luckyToken.isNft,
+      tokens: [item.luckyToken.tokenId],
+    }, apiKey)
+    if (
+      (response as sdk.RESULT_INFO).code ||
+      (response as sdk.RESULT_INFO).message
+    ) {
+      const errorItem =
+        SDK_ERROR_MAP_TO_UI[
+          (response as sdk.RESULT_INFO)?.code ?? 700001
+        ];
+      if (setToastOpen) {
+        setToastOpen({
+          open: true,
+          type: "error",
+          content:
+            "error : " + errorItem
+              ? t(errorItem.messageKey)
+              : (response as sdk.RESULT_INFO).message,
+        });
+      }
+    } else {
+      setShowClaimWithdraw({
+        isShow: true,
+        claimToken: {
+          tokenId: response!.tokenBalance[0].tokenId,
+          total: response!.tokenBalance[0].total,
+          locked: response!.tokenBalance[0].locked,
+          pending: response!.tokenBalance[0].pending,
+          nftTokenInfo: item.luckyToken.nftTokenInfo,
+          isNft: item.luckyToken.isNft
+        },
+        claimType: CLAIM_TYPE.redPacket,
+      });
+    }
+  };
   return {
     onItemClick,
     redPacketReceiveList,
     showLoading,
     getRedPacketReceiveList,
     redPacketReceiveTotal,
+    onClaimItem
   };
 };
 
@@ -410,93 +450,30 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
   );
 
   const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
-    // debugger
-    // if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-    if (item.luckyToken.validUntil > Date.now()) {
-      // return <>Start time: {moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')}</>
-    } else if (item.claim.status === sdk.BlindBoxStatus.OPENED) {
-      // LoopringAPI.luckTokenAPI?.getLuckTokenDetail({hash: item.luckyToken})
-      setShowRedPacket({
-        isShow: true,
-        step: RedPacketViewStep.BlindBoxDetail,
-        info: {
-          ...item.luckyToken
-
-          // hash: item.luckyToken.hash,
-          // sender: item.luckyToken.sender,
-          // type: item.luckyToken.type,
-          // type: item.luckyToken.info.memo,
-          // ...item.luckyToken,
-          // ..._info,
-        },
-      });
-    } else if (item.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
-      // setShowRedPacket({
-      //       isShow: true,
-      //       step: RedPacketViewStep.BlindBoxDetail,
-      //       info: {
-      //         ...item.luckyToken,
-      //         // ..._info,
-      //       },
-      //     });
-    } else if (item.claim.status === sdk.BlindBoxStatus.NOT_OPENED) { 
-      // item.
+    if (item.claim.status === sdk.BlindBoxStatus.NOT_OPENED) {
       let response =
-          await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
-              request: {
-                hash: item.luckyToken.hash,
-                claimer: accAddress,
-              },
-              eddsaKey: eddsaKey.sk,
-              apiKey: apiKey,
-            } as any);
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            throw response;
-          }
-          // const response2 = await LoopringAPI.luckTokenAPI!.getBlindBoxDetail({
-          //   hash: _info.hash,
-          // }, account.apiKey)
-          // debugger
-          // setShowAccount({
-          //   isShow: false,
-          // });
-          setShowRedPacket({
-            isShow: true,
-            step: RedPacketViewStep.BlindBoxDetail,
-            info: {
-              ...item.luckyToken,
-              // ..._info,
-            },
-          });
-      
-      // await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimBlindBox({
-
-      // })
-      
-      
-      // setShowRedPacket({
-      //   isShow: true,
-      //   step: RedPacketViewStep.BlindBoxDetail,
-      //   info: {
-      //     ...item.luckyToken,
-      //   },
-      // });
-
-      // return <Button onClick={() => onItemClick(row.rawData)} variant={"outlined"}>Open</Button>
+        await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
+          request: {
+            hash: item.luckyToken.hash,
+            claimer: accAddress,
+          },
+          eddsaKey: eddsaKey.sk,
+          apiKey: apiKey,
+        } as any);
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        throw response;
+      }
     }
-    
-    // } else {
-    //   setShowRedPacket({
-    //     isShow: true,
-    //     step: RedPacketViewStep.DetailPanel,
-    //     info: {
-    //       ...item.luckyToken,
-    //     },
-    //   });
-    // }
+    setShowRedPacket({
+      isShow: true,
+      step: RedPacketViewStep.BlindBoxDetail,
+      info: {
+        ...item.luckyToken
+      },
+    });
   };
   return {
     onItemClick,

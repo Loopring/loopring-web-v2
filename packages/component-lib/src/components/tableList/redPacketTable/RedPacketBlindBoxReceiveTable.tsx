@@ -42,7 +42,7 @@ const TableWrapperStyled = styled(Box)`
 `;
 const TableStyled = styled(Table)`
   &.rdg {
-    --template-columns: 20% 20% 30% auto auto !important;
+    --template-columns: 20% 20% 30% 30% !important;
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -156,17 +156,12 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
         headerCellClass: "textAlignRight",
         name: "Action",
         formatter: ({ row }: FormatterProps<R>) => {
-          // const status = row.rawData.luckyToken.validSince < Date.now() 
-          //   ? 
-          // row.rawData.luckyToken.status
-          // return <Button variant={"text"}>Open</Button>
-          // <>Start time: {moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')}</>
           if (row.rawData.luckyToken.validUntil > Date.now()) {
             return <>Start time: {moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')}</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
-            return <Typography onClick={() => onItemClick(row.rawData)}>Opend</Typography>
+            return <>Opend</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
-            return <Typography>Expired</Typography>
+            return <>Expired</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) { 
             return <Button onClick={() => onItemClick(row.rawData)} variant={"outlined"}>Open</Button>
           }
@@ -188,17 +183,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
           }
           rowHeight={RowConfig.rowHeight}
           onRowClick={(_index: number, row: R) => {
-            // debugger
-            setShowRedPacket({
-              isShow: true,
-              info: {
-                // ...luckTokenInfo,
-                sender: row.rawData.luckyToken.sender,
-                hash: row.rawData.luckyToken.hash,
-              },
-              step: RedPacketViewStep.BlindBoxDetail,
-            });
-            // onItemClick(row.rawData);
+            onItemClick(row.rawData);
           }}
           sortMethod={React.useCallback(
             (_sortedRows, sortColumn) => {

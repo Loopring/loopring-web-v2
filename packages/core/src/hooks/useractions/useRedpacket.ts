@@ -238,13 +238,23 @@ export const useRedPacketScanQrcodeSuccess = () => {
         if (luckTokenInfo) {
           setShowAccount({ isShow: false });
           if (response.detail?.claimAmount.toString() !== "0") {
-            setShowRedPacket({
-              isShow: true,
-              step: RedPacketViewStep.DetailPanel,
-              info: {
-                ...luckTokenInfo,
-              },
-            });
+            if (response.detail?.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.BlindBoxDetail ,
+                info: {
+                  ...luckTokenInfo,
+                },
+              });
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.DetailPanel ,
+                info: {
+                  ...luckTokenInfo,
+                },
+              });
+            }
           } else if (difference > 0) {
             setShowRedPacket({
               isShow: true,

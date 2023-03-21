@@ -216,8 +216,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
                 return <Box display={"flex"}>
                   <CountDown date={Date.now() + 5000}>
                     <Completionist/>
-                  </CountDown>
-                  
+                  </CountDown>  
                 </Box>;
               },
             },

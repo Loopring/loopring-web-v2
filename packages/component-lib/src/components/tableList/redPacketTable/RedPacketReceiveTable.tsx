@@ -36,9 +36,9 @@ const TableWrapperStyled = styled(Box)`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 `;
-const TableStyled = styled(Table)`
+const TableStyled = styled(Table)<{isNFT: boolean}>`
   &.rdg {
-    --template-columns: 20% 20% 30% auto auto !important;
+    --template-columns: ${({isNFT}) => isNFT ? '--template-columns: 20% 8% 26% 8% 10% 15% 8% !important' : '20% 20% 30% auto auto !important'};
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -82,6 +82,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       showloading,
       t,
       onItemClick,
+      onClaimItem
     } = props;
     // const { isMobile, upColor } = useSettings();
     const history = useHistory();
@@ -237,9 +238,9 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
               headerCellClass: "textAlignRight",
               name: "End Time",
               formatter: ({ row }: FormatterProps<R>) => {
-                
+
                 return (
-                  <>{moment(new Date(row.rawData.validUntil), "YYYYMMDDHHMM").fromNow()}</>
+                  <>{moment(new Date(row.rawData.luckyToken.validUntil), "YYYYMMDDHHMM").fromNow()}</>
                 );
               },
             },
@@ -250,18 +251,15 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
               headerCellClass: "textAlignRight",
               name: "Action",
               formatter: ({ row }: FormatterProps<R>) => {
-                if (row.status === sdk.LuckyTokenItemStatus.PENDING) {
-                  return <Button onClick={() => {
-                    history.push('/redPacket/markets/NFT')
+                if (row.rawData.claim.status === sdk.ClaimRecordStatus.WAITING_CLAIM) {
+                  return <Button onClick={e => {
+                    e.stopPropagation()
+                    onClaimItem(row.rawData)
                   }}>Claim</Button>
-                } else if (row.status === sdk.LuckyTokenItemStatus.OVER_DUE) {
-                  return <Button onClick={() => {
-                    history.push('/redPacket/markets/NFT')
-                  }}>Expired</Button>
-                } else if (row.status === sdk.LuckyTokenItemStatus.COMPLETED) {
-                  return <Button onClick={()=> {
-                    history.push('/redPacket/markets/NFT')
-                  }}>Claimed</Button>
+                } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.EXPIRED) {
+                  return <Box>Expired</Box>
+                } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
+                  return <Box>Claimed</Box>
                 } else {
                   return <></>
                 }
@@ -284,6 +282,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
     return (
       <TableWrapperStyled>
         <TableStyled
+          isNFT={tokenType === TokenType.nft}
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
