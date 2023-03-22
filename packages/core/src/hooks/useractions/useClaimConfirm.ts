@@ -1,10 +1,11 @@
 import {
   AccountStatus,
+  CLAIM_TYPE,
   getValuePrecisionThousand,
   IBData,
   LIVE_FEE_TIMES,
   myLog,
-  SUBMIT_PANEL_AUTO_CLOSE,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TRADE_TYPE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
@@ -30,10 +31,7 @@ import {
   walletLayer2Service,
 } from "../../services";
 import * as sdk from "@loopring-web/loopring-sdk";
-import {
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
+import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "../../api_wrapper";
 import { isAccActivated } from "./useCheckAccStatus";
 import Web3 from "web3";
@@ -145,7 +143,9 @@ export const useClaimConfirm = <
   }, [isShow]);
   const processRequest = React.useCallback(
     async (
-      request: sdk.OriginLuckTokenWithdrawsRequestV3,
+      request:
+        | sdk.OriginLuckTokenWithdrawsRequestV3
+        | sdk.OriginStakeClaimRequestV3,
       isHardwareWallet: boolean = false
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
@@ -164,13 +164,14 @@ export const useClaimConfirm = <
           }
 
           myLog("ClaimConfirm processRequest:", isHWAddr, isHardwareWallet);
-          const response =
-            await LoopringAPI.luckTokenAPI.sendLuckTokenWithdraws(
+          let response;
+          if (claimValue.claimType === CLAIM_TYPE.redPacket) {
+            response = await LoopringAPI.luckTokenAPI.sendLuckTokenWithdraws(
               {
-                request: request,
+                request: request as sdk.OriginLuckTokenWithdrawsRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId: chainId === "unknown" ? 1 : chainId,
-                walletType: (ConnectProvidersSignMap[connectName] ??
+                walletType: (ConnectProviders[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
@@ -181,7 +182,26 @@ export const useClaimConfirm = <
                 counterFactualInfo: eddsaKey.counterFactualInfo,
               }
             );
-          myLog("submitNFTWithdraw:", response);
+          } else if (claimValue.claimType === CLAIM_TYPE.lrcStaking) {
+            response = await LoopringAPI.defiAPI?.sendStakeClaim(
+              {
+                request: request as sdk.OriginStakeClaimRequestV3,
+                web3: connectProvides.usedWeb3 as unknown as Web3,
+                chainId: chainId === "unknown" ? 1 : chainId,
+                walletType: (ConnectProviders[connectName] ??
+                  connectName) as unknown as sdk.ConnectorNames,
+                eddsaKey: eddsaKey.sk,
+                apiKey,
+                isHWAddr,
+              },
+              {
+                accountId: account.accountId,
+                counterFactualInfo: eddsaKey.counterFactualInfo,
+              }
+            );
+          }
+
+          myLog("claim submitted :", claimValue.claimType, response);
 
           if (
             (response as sdk.RESULT_INFO).code ||
@@ -206,7 +226,7 @@ export const useClaimConfirm = <
           }
           walletLayer2Service.sendUserUpdate();
           setShowClaimWithdraw({ isShow: false });
-          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
           if (
             store.getState().modals.isShowAccount.isShow &&
             store.getState().modals.isShowAccount.step ==
@@ -316,32 +336,72 @@ export const useClaimConfirm = <
             },
             apiKey
           );
+          let brokerType = undefined;
+          switch (claimValue.claimType) {
+            case CLAIM_TYPE.redPacket:
+              brokerType = 2;
+              break;
+            case CLAIM_TYPE.lrcStaking:
+              brokerType = 0;
+              break;
+          }
+          claimValue.claimType === CLAIM_TYPE.redPacket;
           const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
-            type: 2,
+            type: brokerType,
           });
-          const request: sdk.OriginLuckTokenWithdrawsRequestV3 = {
-            tokenId: token.tokenId,
-            feeTokenId: feeToken.tokenId,
-            amount: amount.toString(),
-            nftData,
-            claimer: accAddress,
-            transfer: {
-              exchange: exchangeInfo.exchangeAddress,
-              payerAddr: accAddress,
-              payerId: accountId,
-              payeeAddr: broker,
-              storageId: storageId.offchainId,
-              maxFee: {
-                tokenId: 0,
-                volume: "0",
+          let request:
+            | sdk.OriginLuckTokenWithdrawsRequestV3
+            | sdk.OriginStakeClaimRequestV3 = {} as any;
+
+          if (claimValue.claimType === CLAIM_TYPE.redPacket) {
+            request = {
+              tokenId: token.tokenId,
+              feeTokenId: feeToken.tokenId,
+              amount: amount.toString(),
+              nftData,
+              claimer: accAddress,
+              transfer: {
+                exchange: exchangeInfo.exchangeAddress,
+                payerAddr: accAddress,
+                payerId: accountId,
+                payeeAddr: broker,
+                storageId: storageId.offchainId,
+                maxFee: {
+                  tokenId: 0,
+                  volume: "0",
+                },
+                token: {
+                  tokenId: feeToken.tokenId,
+                  volume: fee.toFixed(), // TEST: fee.toString(),
+                },
+                validUntil: getTimestampDaysLater(DAYS),
               },
+            };
+          } else if (claimValue.claimType === CLAIM_TYPE.lrcStaking) {
+            request = {
+              accountId: account.accountId,
               token: {
-                tokenId: feeToken.tokenId,
-                volume: fee.toFixed(), // TEST: fee.toString(),
+                tokenId: token.tokenId,
+                volume: amount.toString(),
               },
-              validUntil: getTimestampDaysLater(DAYS),
-            },
-          };
+              transfer: {
+                exchange: exchangeInfo.exchangeAddress,
+                payerAddr: accAddress,
+                payerId: accountId,
+                payeeAddr: broker,
+                storageId: storageId.offchainId,
+                maxFee: {
+                  tokenId: 0,
+                  volume: "0",
+                },
+                token: {
+                  tokenId: feeToken.tokenId,
+                  volume: fee.toFixed(), // TEST: fee.toString(),
+                },
+                validUntil: getTimestampDaysLater(DAYS),
+              },
+            };
+          }
 
           myLog("claimWithdrawals request:", request);
 
@@ -427,10 +487,13 @@ export const useClaimConfirm = <
   );
   return {
     retryBtn,
+
     claimProps: {
       btnStatus,
       btnInfo,
       disabled: !(legalEnable === true),
+      claimType: claimValue.claimType,
+      tradeType: claimValue.tradeType,
       tradeData: {
         tradeValue: claimValue?.tradeValue,
         belong: claimValue?.belong,
@@ -443,6 +506,7 @@ export const useClaimConfirm = <
           false
         ),
       },
+
       chargeFeeTokenList,
       isFeeNotEnough,
       handleFeeChange,

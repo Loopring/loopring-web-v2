@@ -180,6 +180,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     const [dropdownStatus, setDropdownStatus] =
       React.useState<"up" | "down">("down");
     const { isMobile } = useSettings();
+
     return (
       <Box
         flex={1}
@@ -249,7 +250,6 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                           )
                         }
                       >
-                        {/*{`${t("labelErrorTitle")}`}*/}
                         <TransErrorHelp error={error} options={errorOptions} />
                         <DropdownIconStyled
                           status={dropdownStatus}
@@ -272,23 +272,11 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                         }}
                       />
                     ) : (
-                      <Typography
-                        color={"var(--color-error)"}
-                        component={"span"}
-                        variant={"inherit"}
-                        display={"inline-flex"}
-                        onClick={() =>
-                          setDropdownStatus((prev) =>
-                            prev === "up" ? "down" : "up"
-                          )
-                        }
-                      >
-                        {describe1}
-                      </Typography>
+                      <>{describe1}</>
                     )}
                     {dropdownStatus === "up" && (
                       <TextareaAutosizeStyled
-                        aria-label="NFT Description"
+                        aria-label="Error Description"
                         minRows={5}
                         style={{ maxHeight: "90px", overflow: "scroll" }}
                         disabled={true}
@@ -457,9 +445,11 @@ export const RetrieveAccountBase = (props: PanelProps) => {
 
 export const UnlockAccountBase = (props: PanelProps) => {
   const propsPatch = {
+    ...props,
     title: "labelUnlockAccount",
   };
-  return <BasicPanel {...propsPatch} {...props} />;
+
+  return <BasicPanel {...propsPatch} />;
 };
 
 export const UpdateAccountBase = (props: PanelProps) => {

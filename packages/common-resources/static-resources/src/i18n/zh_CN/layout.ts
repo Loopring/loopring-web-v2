@@ -113,6 +113,7 @@ export default {
   labelDepositNFT: "Receive NFT",
   labelMyCollection: "My Collections",
   labelMyCollectionDes: "Create, curate, and \n manage my NFT collections",
-
+  labelInvestStackLRC: "LRC Staking",
+  labelInvestStackLRCDes: "Earn LRC staking rewards",
   // labelDepositNFTDes:"Receive NFT"
 };

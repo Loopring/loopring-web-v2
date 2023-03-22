@@ -208,11 +208,15 @@ const makeAsCard = <
     return [];
   }
 };
-type Value = undefined | number;
+type Value = undefined | number | string;
 export type SummaryMyInvest = {
   rewardDollar: Value;
   feeDollar: Value;
   investDollar?: Value;
+  ammPoolDollar?: Value;
+  stakeETHDollar?: Value;
+  stakeLRCDollar?: Value;
+  dualStakeDollar?: Value;
 };
 export const makeSummaryMyAmm = <_C extends { [key: string]: any }>({
   userRewardsMap,

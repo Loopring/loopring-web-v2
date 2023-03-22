@@ -4,16 +4,17 @@ import { InputProps } from "@mui/material";
 import { XOR } from "../../../../types/lib";
 // import styled from '@emotion/styled';
 // import CurrencyInput from 'react-currency-input-field';
-
-export type InputButtonProps<T, R, I> = {
-  inputData?: T | undefined;
-  label: string;
+export type defaultProps<R, I> = {
+  label: string | JSX.Element;
   subLabel?: string;
-  emptyText: string;
   coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>;
   placeholderText?: string;
-  decimalsLimit?: number;
   allowDecimals?: boolean;
+};
+export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
+  inputData?: T | undefined;
+  emptyText: string;
+  decimalsLimit?: number;
   isAllowBalanceClick?: boolean;
   maxAllow?: boolean;
   disableInputValue?: boolean;
@@ -41,25 +42,20 @@ export type InputButtonProps<T, R, I> = {
   name?: string;
   fullwidth?: boolean;
 } & XOR<
-  { isShowCoinInfo?: true } & XOR<
-    { isShowCoinIcon: true },
-    { isShowCoinIcon: false; CoinIconElement?: JSX.Element }
-  >,
-  { isShowCoinInfo: false }
->;
+    { isShowCoinInfo?: true } & XOR<
+      { isShowCoinIcon: true },
+      { isShowCoinIcon: false; CoinIconElement?: JSX.Element }
+    >,
+    { isShowCoinInfo: false }
+  >;
 
 export enum InputSize {
   middle = "middle",
   small = "small",
 }
 
-export type InputCoinProps<T, R, I> = {
+export type InputCoinProps<T, R, I> = defaultProps<R, I> & {
   inputData?: T | undefined;
-  label: string | JSX.Element;
-  subLabel?: string;
-  coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>;
-  placeholderText?: string;
-  allowDecimals?: boolean;
   maxAllow?: boolean;
   minimum?: number | string;
   // isBalanceLimit?: boolean;
@@ -82,16 +78,15 @@ export type InputCoinProps<T, R, I> = {
   size?: InputSize;
   order?: "left" | "right";
   name?: string;
-
   coinLabelStyle?: React.CSSProperties;
   coinPrecision?: number;
 } & XOR<
-  { isShowCoinInfo: true } & XOR<
-    { isShowCoinIcon: true },
-    { CoinIconElement?: JSX.Element | undefined; isShowCoinIcon: false }
-  >,
-  { isShowCoinInfo: false }
->;
+    { isShowCoinInfo: true } & XOR<
+      { isShowCoinIcon: true },
+      { CoinIconElement?: JSX.Element | undefined; isShowCoinIcon: false }
+    >,
+    { isShowCoinInfo: false }
+  >;
 export type InputSelectProps<T, I = CoinKey<T>> = {
   // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,
   // walletMap: WalletMap<R,I extends CoinInfo?WalletCoin:WalletCoin> | {},

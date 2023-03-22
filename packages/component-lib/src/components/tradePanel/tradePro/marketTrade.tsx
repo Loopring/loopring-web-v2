@@ -1,6 +1,8 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { MarketTradeData, TradeBaseType, TradeMarketProps } from "../Interface";
 import {
+  CheckBoxIcon,
+  CheckedIcon,
   CoinInfo,
   CoinKey,
   CoinMap,
@@ -14,7 +16,15 @@ import {
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import { TradeProType } from "./Interface";
-import { Box, Grid, Tab, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel as MuiFormControlLabel,
+  Grid,
+  Tab,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import {
   BtnPercentage,
   InputCoin,
@@ -97,14 +107,6 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
         customSlippage: number | string | undefined
       ) => {
         popupState.close();
-        // handleCountChange(({
-        //         ...tradeData,
-        //         slippage: slippage,
-        //         __cache__: {
-        //             ...tradeData.__cache__,
-        //             customSlippage: customSlippage
-        //         }
-        //     },TradeBaseType.slippage));
         onChangeEvent(
           {
             ...tradeData,
@@ -119,6 +121,10 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
       },
       [tradeData, onChangeEvent]
     );
+    const [symbolSell, symbolBuy] =
+      tradeData.type == TradeProType.sell
+        ? [tradeData.base, tradeData.quote]
+        : [tradeData.quote, tradeData.base];
     const priceImpactColor = tradeCalcProData?.priceImpactColor
       ? tradeCalcProData.priceImpactColor
       : "textPrimary";
@@ -288,7 +294,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
             spacing={1}
             alignItems={"stretch"}
           >
-            <Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>
+            <Grid item marginBottom={1} sx={{ color: "text.secondary" }}>
               <Grid
                 container
                 justifyContent={"space-between"}
@@ -473,6 +479,58 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                 </Typography>
               </Grid>
             </Grid>
+            {/*<Grid item >*/}
+            {/*  isNotMatchMarketPrice*/}
+            {/*  marketPrice*/}
+            {/*  marketRatePrice*/}
+            {/*  */}
+            {/*</Grid>*/}
+            {tradeCalcProData.isNotMatchMarketPrice && (
+              <Grid item marginBottom={1}>
+                <MuiFormControlLabel
+                  sx={{ alignItems: "flex-start" }}
+                  control={
+                    <Checkbox
+                      checked={tradeCalcProData?.isChecked ? true : false}
+                      onChange={() => {
+                        onChangeEvent(
+                          {
+                            ...tradeData,
+                            isChecked: !tradeCalcProData?.isChecked,
+                          },
+                          TradeBaseType.base
+                        );
+                      }}
+                      checkedIcon={<CheckedIcon />}
+                      icon={<CheckBoxIcon />}
+                      color="default"
+                    />
+                  }
+                  label={
+                    <Typography variant={"body2"}>
+                      <Trans
+                        i18nKey={"labelExpectSettlementPrice"}
+                        interpolation={{ escapeValue: false }}
+                        tOptions={{
+                          // ,symbolBuy
+                          symbolSell: symbolSell?.belong,
+                          symbolBuy: symbolBuy?.belong,
+                          stob: tradeCalcProData.StoB,
+                          marketPrice: tradeCalcProData.marketPrice,
+                          marketRatePrice: tradeCalcProData.marketRatePrice,
+                        }}
+                      >
+                        The expected settlement price from this order is symbol
+                        = value, while the current market price from a trusted
+                        oracle is symbol= marketPrice. There is marketRatePrice%
+                        variance observed. Please acknowledge the risk if you
+                        still want to continue.
+                      </Trans>
+                    </Typography>
+                  }
+                />
+              </Grid>
+            )}
           </Grid>
         </Box>
         <Box paddingTop={2} paddingX={2}>

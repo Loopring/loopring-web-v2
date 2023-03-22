@@ -6,6 +6,7 @@ import {
 } from "@loopring-web/loopring-sdk";
 import {
   BanxaOrder,
+  CLAIM_TYPE,
   CollectionMeta,
   FeeInfo,
   IBData,
@@ -54,6 +55,7 @@ export type ClaimData = {
   address: string | undefined;
   volume: string | undefined;
   tradeType: TRADE_TYPE;
+  claimType: CLAIM_TYPE;
   __request__: sdk.OriginLuckTokenWithdrawsRequestV3 | undefined;
 } & XOR<
   {

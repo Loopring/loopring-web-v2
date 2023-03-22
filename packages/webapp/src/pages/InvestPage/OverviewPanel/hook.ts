@@ -83,11 +83,14 @@ export function useOverview<R extends RowInvest>() {
     setMyMapLoading(false);
   }, [walletLayer2, investTokenTypeMap]);
   React.useEffect(() => {
-    if (walletLayer2Status === "UNSET") {
+    if (
+      walletLayer2Status === "UNSET" &&
+      investTokenTypeMapStatus === "UNSET"
+    ) {
       setMyMapLoading(true);
       getMyInvestTokenMap();
     }
-  }, [walletLayer2Status]);
+  }, [walletLayer2Status, investTokenTypeMapStatus]);
   return {
     filteredData,
     filterValue,

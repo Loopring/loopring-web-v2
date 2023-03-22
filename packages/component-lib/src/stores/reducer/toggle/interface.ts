@@ -17,4 +17,6 @@ export type ToggleState = {
   dualInvest: { enable: boolean; reason?: string };
   collectionNFT: { enable: boolean; reason?: string };
   claim: { enable: boolean; reason?: string };
+  redPacketNFTV1: { enable: boolean; reason?: string };
+  LRCStackInvest: { enable: boolean; reason?: string };
 };

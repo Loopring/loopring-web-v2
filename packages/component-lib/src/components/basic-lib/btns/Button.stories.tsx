@@ -292,7 +292,7 @@ export const LButton: Story<ButtonProps> = withTranslation()(
                     checked={switched}
                     color="default"
                     onChange={(e) => setSwitched(e.target.checked)}
-                  />{" "}
+                  />
                 </Grid>
                 <Grid item>
                   <Switch

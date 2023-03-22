@@ -8,6 +8,7 @@ import {
   setHideLpToken,
   setHideSmallBalances,
   setIsMobile,
+  setIsTaikoTest,
   setLanguage,
   setLayouts,
   setPlatform,
@@ -44,11 +45,16 @@ export function useSettings(): SettingsState & {
   setFeeChargeOrder(value: string[]): void;
   setIsMobile(value: boolean): void;
   setSwapSecondConfirmation(value: boolean): void;
+  setIsTaikoTest(value: boolean): void;
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings);
   const dispatch = useDispatch();
   return {
     ...settings,
+    setIsTaikoTest: React.useCallback(
+      (value: boolean) => dispatch(setIsTaikoTest(value)),
+      [dispatch]
+    ),
     setTheme: React.useCallback(
       (value: keyof typeof ThemeType) => dispatch(setTheme(value)),
       [dispatch]

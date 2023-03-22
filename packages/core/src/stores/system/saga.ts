@@ -32,8 +32,11 @@ import { getTokenPrices } from "../tokenPrices/reducer";
 import { getDefiMap } from "../invest/DefiMap/reducer";
 import { getInvestTokenTypeMap } from "../invest/InvestTokenTypeMap/reducer";
 import { getDualMap } from "../invest/DualMap/reducer";
+import { getStakingMap } from "../invest/StakingMap/reducer";
+
 import * as sdk from "@loopring-web/loopring-sdk";
 import { getRedPacketConfigs } from "../redPacket/reducer";
+import { AvaiableNetwork } from "@loopring-web/web3-provider";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
@@ -240,10 +243,12 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   store.dispatch(getNotify(undefined));
   store.dispatch(getDefiMap(undefined));
   store.dispatch(getDualMap(undefined));
+  store.dispatch(getStakingMap(undefined));
 
   yield all([
     take("defiMap/getDefiMapStatus"),
     take("dualMap/getDualMapStatus"),
+    take("stakingMap/getStakingMapStatus"),
   ]);
   store.dispatch(getInvestTokenTypeMap(undefined));
   yield delay(5);
@@ -305,37 +310,58 @@ const should15MinutesUpdateDataGroup = async (
 const getSystemsApi = async <_R extends { [key: string]: any }>(
   chainId: any
 ) => {
+  const extendsChain: string[] = (AvaiableNetwork ?? []).filter(
+    (item) => ![1, 5].includes(Number(item))
+  );
+
   const env =
     window.location.hostname === "localhost"
       ? ENV.DEV
       : ChainId.GOERLI === chainId
       ? ENV.UAT
       : ENV.PROD;
-  chainId =
-    ChainId.GOERLI === chainId
-      ? ChainId.GOERLI
-      : ChainId.MAINNET === chainId
-      ? ChainId.MAINNET
-      : NETWORKEXTEND.NONETWORK;
-
+  chainId = AvaiableNetwork.includes(chainId.toString())
+    ? chainId
+    : NETWORKEXTEND.NONETWORK;
+  // chainId =
+  //   ChainId.GOERLI === chainId
+  //     ? ChainId.GOERLI
+  //     : ChainId.MAINNET === chainId
+  //     ? ChainId.MAINNET
+  //     : NETWORKEXTEND.NONETWORK;
   if (chainId === NETWORKEXTEND.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR);
   } else {
     LoopringAPI.InitApi(chainId as ChainId);
 
     if (LoopringAPI.exchangeAPI) {
-      const baseURL =
-        ChainId.MAINNET === chainId
+      let baseURL, socketURL, etherscanBaseUrl;
+      if (extendsChain.includes(chainId.toString())) {
+        const { isTaikoTest } = store.getState().settings;
+        baseURL = !isTaikoTest
           ? `https://${process.env.REACT_APP_API_URL}`
           : `https://${process.env.REACT_APP_API_URL_UAT}`;
-      const socketURL =
-        ChainId.MAINNET === chainId
+        socketURL = !isTaikoTest
           ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
           : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
-      const etherscanBaseUrl =
-        ChainId.MAINNET === chainId
+        etherscanBaseUrl = !isTaikoTest
           ? `https://etherscan.io/`
           : `https://goerli.etherscan.io/`;
+      } else {
+        baseURL =
+          ChainId.MAINNET === chainId
+            ? `https://${process.env.REACT_APP_API_URL}`
+            : `https://${process.env.REACT_APP_API_URL_UAT}`;
+        socketURL =
+          ChainId.MAINNET === chainId
+            ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
+            : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
+        etherscanBaseUrl =
+          ChainId.MAINNET === chainId
+            ? `https://etherscan.io/`
+            : `https://goerli.etherscan.io/`;
+      }
+
       LoopringAPI.userAPI?.setBaseUrl(baseURL);
       LoopringAPI.exchangeAPI?.setBaseUrl(baseURL);
       LoopringAPI.globalAPI?.setBaseUrl(baseURL);

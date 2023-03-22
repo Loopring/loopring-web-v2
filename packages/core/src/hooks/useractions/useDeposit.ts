@@ -19,10 +19,7 @@ import {
   UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
-import {
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
+import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
@@ -391,7 +388,7 @@ export const useDeposit = <
           web3: connectProvides.usedWeb3 as unknown as Web3,
           address: account.accAddress,
           keySeed,
-          walletType: (ConnectProvidersSignMap[account.connectName] ??
+          walletType: (ConnectProviders[account.connectName] ??
             account.connectName) as unknown as sdk.ConnectorNames,
           chainId: chainId as any,
           accountId: account.accountId,

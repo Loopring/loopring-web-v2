@@ -33,6 +33,7 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
     handleFeeChange,
     chargeFeeTokenList,
     disabled,
+    claimType,
     onClaimClick,
   }: ClaimProps<T, I, Fee> & WithTranslation & { assetsData: any[] }) => {
     const { isMobile } = useSettings();
@@ -107,7 +108,7 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
             variant={"body1"}
             color={"var(--color-text-primary)"}
           >
-            {t("labelRedPacketMy")}
+            {t(`labelClaim${claimType}`)}
           </Typography>
         </Grid>
 

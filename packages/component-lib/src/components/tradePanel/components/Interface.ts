@@ -17,6 +17,7 @@ import {
   AddressError,
   AssetsRawDataItem,
   BanxaOrder,
+  CLAIM_TYPE,
   CoinInfo,
   CoinKey,
   CoinMap,
@@ -601,6 +602,8 @@ export type ClaimExtendProps<T, Fee> = {
   onClaimClick: (data: Partial<T>, isHardwareRetry?: boolean) => void;
   tradeData: Partial<T>;
   lastFailed: boolean;
+  tradeType: TRADE_TYPE;
+  claimType: CLAIM_TYPE;
   handleFeeChange: (value: Fee) => void;
 } & ClaimInfoProps<Fee>;
 

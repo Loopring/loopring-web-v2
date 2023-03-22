@@ -1,13 +1,10 @@
 import { Trans } from "react-i18next";
 import { Box, Typography } from "@mui/material";
-import { useSettings } from "../../../stores";
 import { QRCodeUpload } from "../../basic-lib/panel/QRCodeUpload";
 import React from "react";
 
 export const ImportRedPacketWrap = React.forwardRef(
   ({}, _ref: React.ForwardedRef<any>) => {
-    // const { t } = useTranslation(["common"]);
-    const { isMobile } = useSettings();
     // @ts-ignore
     return (
       <Box

@@ -2,10 +2,7 @@ import React, { ChangeEvent, useCallback } from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
-import {
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
+import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 
 import {
   AccountStep,
@@ -314,7 +311,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: (ConnectProvidersSignMap[connectName] ??
+              walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,

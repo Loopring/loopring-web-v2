@@ -15,14 +15,14 @@ import {
 import { ChainId, RESULT_INFO, sleep } from "@loopring-web/loopring-sdk";
 
 import { accountReducer, useAccount } from "./stores/account";
-import { useSystem } from "./stores/system";
-import { networkUpdate } from "./services/account/networkUpdate";
-import { checkAccount } from "./services/account/checkAccount";
+import { useSystem } from "./stores";
+import { networkUpdate } from "./services";
+import { checkAccount } from "./services";
 import { REFRESH_RATE } from "./defs";
-import { resetLayer12Data } from "./services/account/resetAccount";
+import { resetLayer12Data } from "./services";
 import { store, WalletConnectL2Btn } from "./index";
-import { useModalData } from "./stores/router";
-import { useConnectHook } from "./services/connect/useConnectHook";
+import { useModalData } from "./stores";
+import { useConnectHook } from "./services";
 import { useTranslation } from "react-i18next";
 import { Box, Typography } from "@mui/material";
 

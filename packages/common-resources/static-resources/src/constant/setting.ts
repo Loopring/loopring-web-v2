@@ -75,8 +75,34 @@ export const sizeNFTConfig = (size: "large" | "medium" | "small") => {
       break;
   }
 };
+
 export enum TradeBtnStatus {
   AVAILABLE = "AVAILABLE",
   DISABLED = "DISABLED",
   LOADING = "LOADING",
 }
+
+export const MapChainId = {
+  167004: "TAIKO",
+  1: "ETHEREUM",
+  5: "GOERLI",
+};
+
+export enum ChainIdExtends {
+  TAIKO_A2 = 167004,
+}
+
+// getUserAssets
+// getTokenPrices
+// getGuardianApproveList
+// getProtectors
+// getHebaoOperationLogs
+// getHebaoConfig
+// getWalletType
+// getWalletModules
+// getContractType
+// getAddressByENS
+// getEnsByAddress
+// submitApproveSignature
+// rejectHebao
+// sendMetaTx

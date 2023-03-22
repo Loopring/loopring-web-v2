@@ -354,7 +354,7 @@ export const useDefiTrade = <
           };
 
       if (account.readyState === AccountStatus.ACTIVATED) {
-        if (clearTrade === true) {
+        if (clearTrade) {
           walletLayer2Service.sendUserUpdate();
         }
         walletMap = makeWalletLayer2(true).walletMap ?? {};

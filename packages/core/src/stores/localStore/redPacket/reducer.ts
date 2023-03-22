@@ -9,6 +9,7 @@ import {
 } from "@loopring-web/common-resources";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import * as sdk from "@loopring-web/loopring-sdk";
+
 export type updateRedpacketHashProps = {
   hash: TX_HASH;
   luckToken: { validSince: number; hash: string };

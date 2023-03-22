@@ -3,3 +3,4 @@ export * from "./swap_utils";
 export * from "./dt_tools";
 export * from "./formatter_tool";
 export * from "./makeMeta";
+export * from "./genAvatar";

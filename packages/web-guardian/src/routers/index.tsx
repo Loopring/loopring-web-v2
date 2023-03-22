@@ -1,7 +1,7 @@
 import { Route, Switch, useLocation } from "react-router-dom";
 import React from "react";
 import { Box, Container } from "@mui/material";
-import { ModalGroup, useDeposit } from "@loopring-web/core";
+import { ModalGroup, ModalGroupL1, useDeposit } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import {
   SagaStatus,
@@ -22,13 +22,7 @@ export const useWrapModal = () => {
   const { depositProps } = useDeposit(true, { token, owner: l2account });
   return {
     depositProps,
-    view: (
-      <ModalGroup
-        assetsRawData={[]}
-        depositProps={depositProps}
-        isLayer1Only={true}
-      />
-    ),
+    view: <ModalGroupL1 assetsRawData={[]} depositProps={depositProps} />,
   };
 };
 const RouterView = ({ state }: { state: SagaStatus }) => {

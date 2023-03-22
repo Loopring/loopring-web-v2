@@ -58,5 +58,5 @@ export default {
   errorRedpacketClaimed: "You already opened Red Packet",
   errorRedpacketClaimOut: "You opened the Red Packet Too Later",
   errorRedpacketClaimTimeOut: "You opened the Red Packet Too Later",
-  errorOffRampExpired: "The order has expired. please create a neworder ",
+  errorOffRampExpired: "The order has expired. please create a new order ",
 };

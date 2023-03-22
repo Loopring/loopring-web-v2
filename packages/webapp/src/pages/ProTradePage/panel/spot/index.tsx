@@ -285,7 +285,14 @@ export const SpotView = withTranslation("common")(
               : "labelPriceCompareLess"
           }
         />
-        <Box display={"flex"} flexDirection={"column"} alignItems={"stretch"}>
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"stretch"}
+          height={"inherit"}
+          sx={{ overflowY: "scroll" }}
+          marginBottom={2}
+        >
           <Box component={"header"} width={"100%"}>
             <Tabs variant={"fullWidth"} value={tabIndex} onChange={onTabChange}>
               <Tab value={TabIndex.limit} label={limitLabel} />
@@ -294,7 +301,7 @@ export const SpotView = withTranslation("common")(
           </Box>
 
           <Divider style={{ marginTop: "-1px" }} />
-          <Box flex={1} component={"section"}>
+          <Box display={"flex"} flex={1} component={"section"}>
             {tabIndex === TabIndex.limit && (
               <LimitTrade
                 // disabled={false}

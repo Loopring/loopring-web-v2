@@ -7,11 +7,7 @@ import {
   EddsaKey,
 } from "../../index";
 import { FeeInfo, myLog, UIERROR_CODE } from "@loopring-web/common-resources";
-import {
-  ConnectProviders,
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
+import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
 import Web3 from "web3";
 
@@ -73,7 +69,7 @@ export async function activateAccount({
         web3: connectProvides.usedWeb3 as unknown as Web3,
         address: accInfo.owner,
         keySeed,
-        walletType: (ConnectProvidersSignMap[connectName] ??
+        walletType: (ConnectProviders[connectName] ??
           connectName) as unknown as sdk.ConnectorNames,
         chainId: system.chainId as any,
         counterFactualInfo: counterFactualInfo ?? undefined,
@@ -103,7 +99,7 @@ export async function activateAccount({
           request,
           web3: connectProvides.usedWeb3 as unknown as Web3,
           chainId: system.chainId,
-          walletType: (ConnectProvidersSignMap[connectName] ??
+          walletType: (ConnectProviders[connectName] ??
             connectName) as unknown as sdk.ConnectorNames,
           isHWAddr,
         },

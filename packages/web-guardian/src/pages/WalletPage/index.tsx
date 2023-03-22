@@ -14,6 +14,8 @@ import {
   FailedIcon,
   HelpIcon,
   LockGuardianIcon,
+  MapChainId,
+  myLog,
   RefuseIcon,
   RoundAddIcon,
   ViewHistoryIcon,
@@ -24,7 +26,7 @@ import {
   QRCodePanel,
   useSettings,
 } from "@loopring-web/component-lib";
-import { BtnConnectL1, useAccount } from "@loopring-web/core";
+import { BtnConnectL1, useAccount, useSystem } from "@loopring-web/core";
 import { useRouteMatch } from "react-router-dom";
 import { useHebaoMain } from "./hook";
 import { ModalLock } from "./modal";
@@ -35,6 +37,8 @@ import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { walletServices } from "@loopring-web/web3-provider";
 import { GuardianModal } from "./GuardianModal";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { ChainId } from "@loopring-web/loopring-sdk";
 
 const WrongStatusStyled = styled(Box)`
   display: flex;
@@ -85,8 +89,8 @@ const WrongStatus = ({
 
 const SectionStyled = styled(Box)<{ isMobile?: boolean }>`
   padding: ${({ theme }) => theme.unit * 4}px;
-  padding-top: auto;
-  padding-bottom: auto;
+  padding-top: initial;
+  padding-bottom: initial;
   background: ${({ theme }) => theme.colorBase.box};
   margin-bottom: ${({ theme }) => theme.unit * 2}px;
   width: ${({ theme, isMobile }) =>
@@ -141,6 +145,17 @@ const ContainerStyled = styled(Box)`
 export const GuardianPage = withTranslation(["common"])(
   ({ t, ..._rest }: WithTranslation) => {
     const { account } = useAccount();
+    const { chainId } = useSystem();
+    const network = React.useMemo(() => {
+      switch (chainId) {
+        case ChainId.GOERLI:
+        case ChainId.MAINNET:
+          return sdk.NetworkWallet[MapChainId[ChainId.MAINNET]];
+        default:
+          return sdk.NetworkWallet[MapChainId[chainId]];
+      }
+    }, [chainId]);
+
     let match = useRouteMatch("/guardian/:item");
     const [openQRCode, setOpenQRCode] = React.useState(false);
     const onOpenAdd = React.useCallback((open: boolean) => {
@@ -160,7 +175,7 @@ export const GuardianPage = withTranslation(["common"])(
     const onOpenLockWallet = React.useCallback((open: boolean) => {
       setShowLockWallet(open);
     }, []);
-    const [showCodeInput, setShowCodeInput] = React.useState(false);
+    const [_showCodeInput, setShowCodeInput] = React.useState(false);
     const onOpenCodeInput = React.useCallback((open: boolean) => {
       setShowCodeInput(open);
     }, []);
@@ -175,7 +190,6 @@ export const GuardianPage = withTranslation(["common"])(
       operationLogList,
       setOpenHebao,
       loadData,
-      isLoading,
       loopringSmartContractWallet,
       nonLoopringSmartContractWallet,
     } = useHebaoMain();
@@ -204,6 +218,7 @@ export const GuardianPage = withTranslation(["common"])(
       copyToClipBoard(str);
     }, []);
     const theme = useTheme();
+    myLog();
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
         return (
@@ -228,7 +243,7 @@ export const GuardianPage = withTranslation(["common"])(
               color={"textSecondary"}
               target="_blank"
               rel="noopener noreferrer"
-              href={"./#/document/walletdesign_en.md"}
+              href={"https://loopring.io/#/document/walletdesign_en.md"}
             >
               {t("describeWhatIsGuardian")}
             </Link>
@@ -342,7 +357,7 @@ export const GuardianPage = withTranslation(["common"])(
                 </Button>
               }
               size={260}
-              url={`ethereum:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
+              url={`${network}:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
             />
           }
         />

@@ -67,6 +67,7 @@ export const ModalAccountInfo = withTranslation("common")(
       activeAccountProps,
       exportAccountProps,
       // dualTradeProps,
+      sideStackRedeemProps,
       copyToastOpen,
       openQRCode,
       accountList,
@@ -89,6 +90,12 @@ export const ModalAccountInfo = withTranslation("common")(
     // );
     return (
       <>
+        <Toast
+          alertText={toastOpen?.content ?? ""}
+          open={toastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={closeToast}
+        />
         <Toast
           alertText={exportAccountAlertText as string}
           open={exportAccountToastOpen}
@@ -143,11 +150,12 @@ export const ModalAccountInfo = withTranslation("common")(
           // nftMintAdvanceProps={nftMintAdvanceProps as any}
           // nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
-          activeAccountProps={activeAccountProps}
+          activeAccountProps={activeAccountProps as any}
           exportAccountProps={exportAccountProps}
           assetsData={assetsRawData}
           setExportAccountToastOpen={setExportAccountToastOpen}
           account={account}
+          sideStackRedeemProps={sideStackRedeemProps as any}
           {...{ _height: "var(--modal-height)", _width: "var(--modal-width)" }}
         />
 
@@ -180,40 +188,6 @@ export const ModalAccountInfo = withTranslation("common")(
           etherscanBaseUrl={etherscanBaseUrl}
           isLayer2Only={isLayer1Only}
         />
-        {/*<MuiModal*/}
-        {/*  open={isShowNFTDetail.isShow}*/}
-        {/*  onClose={() => {*/}
-        {/*    setShowNFTDetail({ isShow: false });*/}
-        {/*  }}*/}
-        {/*  aria-labelledby="modal-modal-title"*/}
-        {/*  aria-describedby="modal-modal-description"*/}
-        {/*>*/}
-        {/*  <SwitchPanelStyled*/}
-        {/*    // width={"80%"}*/}
-        {/*    width={isMobile ? "360px" : "80%"}*/}
-        {/*    position={"relative"}*/}
-        {/*    minWidth={isMobile ? "initial" : 1000}*/}
-        {/*    style={{ alignItems: "stretch" }}*/}
-        {/*  >*/}
-        {/*    <Box display={"flex"} width={"100%"} flexDirection={"column"}>*/}
-        {/*      <ModalCloseButton*/}
-        {/*        onClose={() => {*/}
-        {/*          setShowNFTDetail({ isShow: false });*/}
-        {/*        }}*/}
-        {/*        t={t}*/}
-        {/*        {...rest}*/}
-        {/*      />*/}
-        {/*    </Box>*/}
-        {/*    <Box*/}
-        {/*      display={"flex"}*/}
-        {/*      flexDirection={isMobile ? "column" : "row"}*/}
-        {/*      flex={1}*/}
-        {/*      justifyContent={"stretch"}*/}
-        {/*    >*/}
-
-        {/*    </Box>*/}
-        {/*  </SwitchPanelStyled>*/}
-        {/*</MuiModal>*/}
       </>
     );
   }

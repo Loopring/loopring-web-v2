@@ -1,8 +1,11 @@
 import {
+  ButtonComponentsMap,
   CloseIcon,
   headerRoot,
   hexToRGB,
   myLog,
+  toolBarAvailableItem,
+  toolBarMobileAvailableItem,
 } from "@loopring-web/common-resources";
 
 import { Box, IconButton, Toolbar, Typography } from "@mui/material";
@@ -39,7 +42,7 @@ const Header = withTranslation("common")(
       const { isMobile } = useSettings();
       const { pathname } = useLocation();
       const { confirmWrapper } = confirmation.useConfirmation();
-      const { allowTrade } = useSystem();
+      const { allowTrade, chainId } = useSystem();
       const { account } = useAccount();
       const [view, setView] = React.useState(false);
       return (
@@ -49,6 +52,7 @@ const Header = withTranslation("common")(
               <HeaderUI
                 account={account}
                 isWrap={isLandPage}
+                chainId={chainId}
                 {...rest}
                 isLandPage={isLandPage}
                 isMobile={isMobile}
@@ -58,6 +62,10 @@ const Header = withTranslation("common")(
                     ? headerMenuLandingData
                     : headerMenuData
                 }
+                toolBarAvailableItem={
+                  isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem
+                }
+                toolBarMap={ButtonComponentsMap}
                 headerToolBarData={headerToolBarData}
                 notification={notifyMap}
                 selected={
@@ -71,11 +79,16 @@ const Header = withTranslation("common")(
               account={account}
               allowTrade={allowTrade}
               isMobile={isMobile}
+              chainId={chainId}
               headerMenuData={
                 /(guardian)|(depositto)/gi.test(pathname)
                   ? headerMenuLandingData
                   : headerMenuData
               }
+              toolBarAvailableItem={
+                isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem
+              }
+              toolBarMap={ButtonComponentsMap}
               headerToolBarData={headerToolBarData}
               notification={notifyMap}
               selected={

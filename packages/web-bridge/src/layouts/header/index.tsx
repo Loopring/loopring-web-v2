@@ -22,7 +22,7 @@ const Header = withTranslation("common")(
     const { isMobile } = useSettings();
     const { pathname } = useLocation();
     const { confirmWrapper } = confirmation.useConfirmation();
-    const { allowTrade } = useSystem();
+    const { allowTrade, chainId } = useSystem();
     const { account } = useAccount();
     return (
       <>
@@ -31,6 +31,7 @@ const Header = withTranslation("common")(
             account={account}
             isWrap={false}
             {...rest}
+            chainId={chainId}
             isLandPage={true}
             isMobile={isMobile}
             allowTrade={allowTrade}
