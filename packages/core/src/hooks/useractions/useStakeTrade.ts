@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  AccountStep,
   DeFiSideWrapProps,
   useOpenModals,
   useToggle,
@@ -14,6 +15,7 @@ import {
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
+  SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
   TradeStack,
 } from "@loopring-web/common-resources";
@@ -60,6 +62,7 @@ export const useStakeTradeJOIN = <
   const [isLoading, setIsLoading] = React.useState(false);
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
+  const { setShowAccount } = useOpenModals();
   const {
     status: stakingMapStatus,
     marketMap: stakingMap,
@@ -276,11 +279,45 @@ export const useStakeTradeJOIN = <
             SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
           throw new CustomErrorWithCode(errorItem);
         } else {
-          setToastOpen({
-            open: true,
-            type: "success",
-            content: t("labelInvestSuccess"),
+          const response1 = await LoopringAPI.defiAPI.getStakeSummary(
+            {
+              accountId: account.accountId,
+              hashes: response.hash,
+              tokenId: tradeStack.sellToken.tokenId,
+            },
+            account.apiKey
+          );
+          let item: any;
+          if (
+            (response1 as sdk.RESULT_INFO).code ||
+            (response1 as sdk.RESULT_INFO).message
+          ) {
+          } else {
+            item = (response1 as any).list[0];
+          }
+
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Staking_Success,
+            info: {
+              symbol: tradeStack.sellToken.symbol,
+              amount: tradeStack.deFiSideCalcData.coinSell.tradeValue,
+              daysDuration: Math.ceil(
+                Number(
+                  tradeStack?.deFiSideCalcData?.stackViewInfo?.rewardPeriod ?? 0
+                ) / 86400000
+              ),
+              ...item,
+            },
           });
+          await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE);
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step ==
+              AccountStep.Staking_Success
+          ) {
+            setShowAccount({ isShow: false });
+          }
         }
       } else {
         throw new Error("api not ready");
@@ -291,6 +328,7 @@ export const useStakeTradeJOIN = <
         type: "error",
         content:
           t("labelInvestFailed") +
+            " " +
             (reason as CustomErrorWithCode)?.messageKey ??
           ` error: ${t((reason as CustomErrorWithCode)?.messageKey)}`,
       });
@@ -445,6 +483,7 @@ export const useStakeTradeJOIN = <
       resetDefault(true);
     } else if (
       stakingMapStatus === SagaStatus.UNSET &&
+      stakingMap &&
       !stakingMap[coinSellSymbol]
     ) {
       // setToastOpen({

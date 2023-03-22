@@ -159,13 +159,15 @@ export const DeFiStackRedeemWrap = <
     // .div(remainAmount)
     return {
       currentTotalEarnings:
-        getValuePrecisionThousand(
-          sdk.toBig(totalRewards).div("1e" + tokenSell.decimals),
-          tokenSell.precision,
-          tokenSell.precision,
-          tokenSell.precision,
-          false
-        ) +
+        (totalRewards !== "0"
+          ? getValuePrecisionThousand(
+              sdk.toBig(totalRewards).div("1e" + tokenSell.decimals),
+              tokenSell.precision,
+              tokenSell.precision,
+              tokenSell.precision,
+              false
+            )
+          : EmptyValueTag) +
         " " +
         deFiSideRedeemCalcData.coinSell.belong,
       ...(tradeVol.gt(remainAmount) ||
@@ -177,14 +179,16 @@ export const DeFiStackRedeemWrap = <
         : {
             forfeitedEarnColor: "var(--color-error)",
             forfeitedEarn:
-              "-" +
-              getValuePrecisionThousand(
-                rateEarn.div("1e" + tokenSell.decimals),
-                tokenSell.precision,
-                tokenSell.precision,
-                tokenSell.precision,
-                false
-              ) +
+              (rateEarn.gt(0)
+                ? "-" +
+                  getValuePrecisionThousand(
+                    rateEarn.div("1e" + tokenSell.decimals),
+                    tokenSell.precision,
+                    tokenSell.precision,
+                    tokenSell.precision,
+                    false
+                  )
+                : EmptyValueTag) +
               " " +
               deFiSideRedeemCalcData.coinSell.belong,
           }),
