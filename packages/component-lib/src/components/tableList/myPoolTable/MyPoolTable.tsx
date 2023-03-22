@@ -26,7 +26,7 @@ import { IconColumn } from "../poolsTable";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { bindHover } from "material-ui-popup-state/es";
 import { useSettings } from "../../../stores";
-import { Currency } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 import { Filter } from "./components/Filter";
 import { AmmAPRDetail, AmmPairDetail, AmmRewardsDetail } from "../../block";
 import { ActionPopContent } from "./components/ActionPop";
@@ -76,7 +76,7 @@ const PoolStyle = styled(Box)`
 ` as typeof Box;
 const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
   { t, handleWithdraw, handleDeposit, allowTrade }: WithTranslation & Method<R>,
-  currency: Currency,
+  currency: sdk.Currency,
   getPopoverState: any,
   getPopoverAprState: any,
   getPopoverRewardState: any,
@@ -84,7 +84,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
   tokenMap: { [key: string]: any },
   _idIndex: { [key: string]: string },
   _tokenPrices: { [key in keyof R]: number },
-  forexMap: ForexMap<Currency>
+  forexMap: ForexMap<sdk.Currency>
 ): Column<R, unknown>[] => {
   return [
     {
@@ -388,7 +388,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
 };
 const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
   { t, handleWithdraw, handleDeposit, allowTrade }: WithTranslation & Method<R>,
-  currency: Currency,
+  currency: sdk.Currency,
   _getPopoverState: any,
   _getPopoverAprState: any,
   _getPopoverRewardState: any,
@@ -396,7 +396,7 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
   _tokenMap: { [key: string]: any },
   _idIndex: { [key: string]: string },
   _tokenPrices: { [key in keyof R]: number },
-  forexMap: ForexMap<Currency>
+  forexMap: ForexMap<sdk.Currency>
 ): Column<R, unknown>[] => {
   return [
     {
@@ -553,6 +553,7 @@ export const MyPoolTable = withTranslation("tables")(
     allowTrade,
     handleFilterChange,
     filter,
+    totalDollar,
     showFilter = true,
     rawData,
     account,
@@ -562,7 +563,7 @@ export const MyPoolTable = withTranslation("tables")(
     hideSmallBalances = false,
     setHideSmallBalances,
     // wait = globalSetup.wait,
-    currency = Currency.usd,
+    currency = sdk.Currency.usd,
     showloading,
     tableHeight,
     tokenMap,
@@ -617,6 +618,23 @@ export const MyPoolTable = withTranslation("tables")(
             )}
           </TableFilterStyled>
         }
+        {totalDollar !== undefined ? (
+          <Typography component={"h4"} variant={"h3"} marginX={3}>
+            {totalDollar
+              ? PriceTag[CurrencyToTag[currency]] +
+                getValuePrecisionThousand(
+                  sdk.toBig(totalDollar).times(forexMap[currency] ?? 0),
+                  undefined,
+                  undefined,
+                  2,
+                  true,
+                  { isFait: true, floor: true }
+                )
+              : EmptyValueTag}
+          </Typography>
+        ) : (
+          ""
+        )}
 
         <Table
           rowHeight={rowConfig.rowHeight}

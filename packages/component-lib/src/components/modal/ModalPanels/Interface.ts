@@ -23,19 +23,10 @@ export type AccountBaseProps = {
 } & Account;
 
 export enum AccountStep {
-  ContinuousBanxaOrder,
-  CheckingActive,
-  AddAssetGateway,
-  SendAssetGateway,
-  SendNFTGateway,
-  PayWithCard,
+  //l1 should be at top
   NoAccount,
   QRCode,
-  QRCodeScanner,
   HadAccount,
-  ThirdPanelReturn,
-  // new
-  // Deposit,
   Deposit_Sign_WaitForRefer,
   Deposit_Approve_WaitForAuth,
   Deposit_Approve_Denied,
@@ -43,6 +34,19 @@ export enum AccountStep {
   Deposit_Denied,
   Deposit_Failed,
   Deposit_Submit,
+
+  //L2
+
+  ContinuousBanxaOrder,
+  CheckingActive,
+  AddAssetGateway,
+  SendAssetGateway,
+  SendNFTGateway,
+  PayWithCard,
+  QRCodeScanner,
+  ThirdPanelReturn,
+  // new
+  // Deposit,
 
   NFTDeposit_Approve_WaitForAuth,
   NFTDeposit_Approve_Denied,

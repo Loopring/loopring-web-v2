@@ -354,7 +354,7 @@ export const SettingPanel = withTranslation(["common", "layout"], {
             checked={themeMode === ThemeType.dark}
             aria-label={t("change theme")}
             onClick={handleThemeClick}
-          ></StyledSwitch>
+          />
         </Grid>
       </Grid>
     </BoxStyle>

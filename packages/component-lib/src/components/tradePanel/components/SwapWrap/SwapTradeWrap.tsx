@@ -1,5 +1,7 @@
 import { SwapTradeData } from "../../Interface";
 import {
+  CheckBoxIcon,
+  CheckedIcon,
   CoinInfo,
   CoinMap,
   defalutSlipage,
@@ -13,9 +15,16 @@ import {
   TradeBtnStatus,
   TradeCalcData,
 } from "@loopring-web/common-resources";
-import { WithTranslation } from "react-i18next";
+import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel as MuiFormControlLabel,
+  Grid,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { InputButton } from "../../../basic-lib";
 
 import { SwapTradeProps } from "./Interface";
@@ -44,12 +53,7 @@ export const SwapTradeWrap = <
 }: SwapTradeProps<T, I, TCD> & WithTranslation) => {
   const sellRef = React.useRef();
   const buyRef = React.useRef();
-  // const { slippage } = useSettings();
   let tradeData = swapData.tradeData;
-
-  // const _slippageArray: Array<number | string> = SlippageTolerance.concat(
-  //   `slippage:${slippage}`
-  // ) as Array<number | string>;
 
   const [_isStoB, setIsStoB] = React.useState(
     typeof isStob !== "undefined" ? isStob : true
@@ -109,28 +113,6 @@ export const SwapTradeWrap = <
       to: "button",
     });
   }, [swapData, onChangeEvent]);
-  // const _onSlippageChange = React.useCallback(
-  //   (
-  //     slippage: number | string,
-  //     customSlippage: number | string | undefined
-  //   ) => {
-  //     popupState.close();
-  //     onChangeEvent(0, {
-  //       ...swapData,
-  //       tradeData: {
-  //         ...swapData.tradeData,
-  //         slippage: slippage,
-  //         __cache__: {
-  //           ...swapData.tradeData.__cache__,
-  //           customSlippage: customSlippage,
-  //         },
-  //       },
-  //       type: "sell",
-  //       to: "button",
-  //     });
-  //   },
-  //   [swapData, onChangeEvent]
-  // );
 
   if (typeof handleError !== "function") {
     handleError = ({ belong, balance, tradeValue }: any) => {
@@ -187,15 +169,6 @@ export const SwapTradeWrap = <
     } else {
       return t(`swapBtn`);
     }
-    // if (error.error) {
-    //   if (typeof error.message === "string") {
-    //     return t(error.message);
-    //   } else if (error.message !== undefined) {
-    //     return error.message;
-    //   } else {
-    //     return t("labelError");
-    //   }
-    // }
   }, [t, swapBtnI18nKey]);
   const showVal =
     tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB;
@@ -244,6 +217,7 @@ export const SwapTradeWrap = <
       ? `${tradeCalcData.minimumReceived}  ${tradeData.buy?.belong}`
       : EmptyValueTag;
   const { isMobile } = useSettings();
+  myLog("tradeCalcData?.isChecked", tradeCalcData?.isChecked);
   return (
     <Grid
       className={tradeCalcData ? "trade-panel" : "trade-panel loading"}
@@ -476,6 +450,52 @@ export const SwapTradeWrap = <
               </Typography>
             </Grid>
           </Grid>
+          {tradeCalcData.isNotMatchMarketPrice && (
+            <Grid item>
+              <MuiFormControlLabel
+                sx={{ alignItems: "flex-start" }}
+                control={
+                  <Checkbox
+                    checked={tradeCalcData?.isChecked ? true : false}
+                    onChange={() => {
+                      onChangeEvent(0, {
+                        tradeData: {
+                          ...swapData.tradeData,
+                          isChecked: !tradeCalcData?.isChecked,
+                        } as SwapTradeData<T>,
+                        type: "buy",
+                        to: "button",
+                      });
+                    }}
+                    checkedIcon={<CheckedIcon />}
+                    icon={<CheckBoxIcon />}
+                    color="default"
+                  />
+                }
+                label={
+                  <Typography variant={"body2"}>
+                    <Trans
+                      i18nKey={"labelExpectSettlementPrice"}
+                      interpolation={{ escapeValue: false }}
+                      tOptions={{
+                        symbolSell: tradeData.sell?.belong,
+                        symbolBuy: tradeData.buy?.belong,
+                        stob: tradeCalcData.StoB,
+                        marketPrice: tradeCalcData.marketPrice,
+                        marketRatePrice: tradeCalcData.marketRatePrice,
+                      }}
+                    >
+                      The expected settlement price from this order is symbol =
+                      value, while the current market price from a trusted
+                      oracle is symbol= marketPrice. There is marketRatePrice%
+                      variance observed. Please acknowledge the risk if you
+                      still want to continue.
+                    </Trans>
+                  </Typography>
+                }
+              />
+            </Grid>
+          )}
           <Grid item>
             <ButtonStyle
               variant={"contained"}

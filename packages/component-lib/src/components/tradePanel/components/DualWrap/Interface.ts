@@ -2,11 +2,22 @@ import { BtnInfo, InputButtonProps } from "../../../basic-lib";
 import {
   AccountStatus,
   CoinInfo,
+  DualCurrentPrice,
+  DualViewBase,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
 import React from "react";
 
+export type DualDetailType = {
+  dualViewInfo: DualViewBase;
+  currentPrice: DualCurrentPrice;
+  lessEarnView: string;
+  greaterEarnView: string;
+  lessEarnTokenSymbol: string;
+  greaterEarnTokenSymbol: string;
+  isOrder?: boolean;
+};
 export type DualChgData<T> = {
   tradeData?: undefined | T;
 };

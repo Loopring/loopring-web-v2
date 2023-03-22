@@ -1,24 +1,36 @@
-import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import React from "react";
-import { AmmRecordRow, MyPoolRow } from "@loopring-web/component-lib";
 import {
-  makeWalletLayer2,
-  useAmmMap,
-  useTokenMap,
-  useWalletLayer2,
-  useUserRewards,
+  AmmRecordRow,
+  MyPoolRow,
+  RawDataDefiSideStakingItem,
+} from "@loopring-web/component-lib";
+import {
   getUserAmmTransaction,
+  LoopringAPI,
+  makeDefiInvestReward,
   makeMyAmmMarketArray,
   makeMyPoolRowWithPoolState,
-  makeSummaryMyAmm,
-  useWalletLayer2Socket,
-  useTokenPrices,
+  makeWalletLayer2,
   SummaryMyInvest,
+  useAccount,
+  useAmmMap,
   useDefiMap,
-  makeDefiInvestReward,
+  useStakingMap,
+  useTokenMap,
+  useTokenPrices,
+  useUserRewards,
+  useWalletLayer2,
+  useWalletLayer2Socket,
   volumeToCountAsBigNumber,
 } from "@loopring-web/core";
-import { RowInvestConfig, SagaStatus } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  CustomError,
+  ErrorMap,
+  RowInvestConfig,
+  SagaStatus,
+  STAKING_INVEST_LIMIT,
+} from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export const useOverview = <
@@ -29,7 +41,9 @@ export const useOverview = <
   rowConfig = RowInvestConfig,
   hideSmallBalances,
 }: {
-  ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
+  ammActivityMap:
+    | sdk.LoopringMap<sdk.LoopringMap<sdk.AmmPoolActivityRule[]>>
+    | undefined;
   dualOnInvestAsset: any; //RawDataDualAssetItem[];
   rowConfig?: any;
   hideSmallBalances: boolean;
@@ -41,13 +55,24 @@ export const useOverview = <
   filter: { searchValue: string };
   tableHeight: number;
   handleFilterChange: (props: { searchValue: string }) => void;
+  stakingList: RawDataDefiSideStakingItem[];
+  getStakingList: (props: { limit?: number; offset?: number }) => Promise<void>;
+  stakeShowLoading: boolean;
+  stakingTotal: number;
+  totalStaked: string;
+  totalStakedRewards: string;
+  totalLastDayPendingRewards: string;
+  totalClaimableRewards: string;
+  stakedSymbol: string;
 } => {
+  const { account } = useAccount();
   const { status: walletLayer2Status } = useWalletLayer2();
   const { status: userRewardsStatus, userRewardsMap } = useUserRewards();
   const { tokenMap, idIndex } = useTokenMap();
   const { marketCoins: defiCoinArray } = useDefiMap();
   const { status: ammMapStatus, ammMap } = useAmmMap();
   const { tokenPrices } = useTokenPrices();
+  const { status: stakingMapStatus, marketMap: stakingMap } = useStakingMap();
 
   const [summaryMyInvest, setSummaryMyInvest] = React.useState<
     Partial<SummaryMyInvest>
@@ -55,6 +80,36 @@ export const useOverview = <
   const [filter, setFilter] = React.useState({
     searchValue: "",
   });
+  const [stakeShowLoading, setStakeShowLoading] = React.useState(false);
+  const [
+    {
+      stakingList,
+      total: stakingTotal,
+      totalStaked,
+      totalLastDayPendingRewards,
+      totalStakedRewards,
+      totalClaimableRewards,
+      stakedSymbol,
+    },
+    setStakingProps,
+  ] = React.useState<{
+    stakingList: RawDataDefiSideStakingItem[];
+    totalStaked: string;
+    totalLastDayPendingRewards: string;
+    totalStakedRewards: string;
+    totalClaimableRewards: string;
+    total: number;
+    stakedSymbol: string;
+  }>({
+    stakingList: [],
+    total: 0,
+    totalStaked: "0",
+    totalLastDayPendingRewards: "0",
+    totalStakedRewards: "0",
+    totalClaimableRewards: "0",
+    stakedSymbol: "LRC",
+  });
+
   const [totalData, setTotalData] = React.useState<MyPoolRow<R>[]>([]);
   const [myPoolRow, setMyPoolRow] = React.useState<MyPoolRow<R>[]>([]);
   const [tableHeight, setTableHeight] = React.useState(0);
@@ -121,7 +176,8 @@ export const useOverview = <
   const makeMyPoolRow = React.useCallback(
     async (_walletMap): Promise<MyPoolRow<R>[]> => {
       let totalCurrentInvest = {
-        investDollar: 0,
+        ammPoolDollar: 0,
+        stakeETHDollar: 0,
       };
       if (_walletMap && ammMap && userRewardsMap && tokenPrices) {
         // @ts-ignore
@@ -155,7 +211,8 @@ export const useOverview = <
           const coinB = o.ammDetail?.coinBInfo?.simpleName;
           const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined;
           const precisionB = tokenMap ? tokenMap[coinB]?.precision : undefined;
-          totalCurrentInvest.investDollar += Number(o.balanceDollar ?? 0);
+          // totalCurrentInvest.investDollar += Number(o.balanceDollar ?? 0);
+          totalCurrentInvest.ammPoolDollar += Number(o.balanceDollar ?? 0);
           return {
             ...o,
             totalAmmValueDollar,
@@ -164,27 +221,33 @@ export const useOverview = <
           };
         });
         defiCoinArray?.forEach((defiCoinKey) => {
-          totalCurrentInvest.investDollar += Number(
+          totalCurrentInvest.stakeETHDollar += Number(
             (_walletMap[defiCoinKey]?.count.replace(sdk.SEP, "") ?? 0) *
               tokenPrices[defiCoinKey] ?? 0
           );
         }, []);
-        if (dualOnInvestAsset) {
-          Object.keys(dualOnInvestAsset).forEach((key) => {
-            const item = dualOnInvestAsset[key];
-            const { amount, tokenId } = item;
-            const tokenInfo = tokenMap[idIndex[tokenId]];
-            totalCurrentInvest.investDollar +=
-              volumeToCountAsBigNumber(tokenInfo.symbol, amount)
-                ?.times(tokenPrices[tokenInfo.symbol] ?? 0)
-                .toNumber() ?? 0;
-          });
-        }
+        // if (dualOnInvestAsset) {
+        //   Object.keys(dualOnInvestAsset).forEach((key) => {
+        //     const item = dualOnInvestAsset[key];
+        //     const { amount, tokenId } = item;
+        //     const tokenInfo = tokenMap[idIndex[tokenId]];
+        //     totalCurrentInvest.dualStakeDollar +=
+        //       volumeToCountAsBigNumber(tokenInfo.symbol, amount)
+        //         ?.times(tokenPrices[tokenInfo.symbol] ?? 0)
+        //         .toNumber() ?? 0;
+        //   });
+        // }
 
         setSummaryMyInvest((state) => {
           return {
             ...state,
             ...totalCurrentInvest,
+            investDollar: sdk
+              .toBig(totalCurrentInvest.ammPoolDollar ?? 0)
+              .plus(state.dualStakeDollar ?? 0)
+              .plus(totalCurrentInvest.stakeETHDollar ?? 0)
+              .plus(state.stakeLRCDollar ?? 0)
+              .toString(),
           };
         });
         return formattedPoolRow as any;
@@ -225,16 +288,22 @@ export const useOverview = <
 
   React.useEffect(() => {
     if (userRewardsStatus === SagaStatus.UNSET) {
-      let summaryReward: any = makeSummaryMyAmm({ userRewardsMap }) ?? {};
+      // let summaryReward: any = makeSummaryMyAmm({ userRewardsMap }) ?? {};
       makeDefiInvestReward().then((summaryDefiReward) => {
-        summaryReward.rewardDollar = sdk
-          .toBig(summaryReward?.rewardDollar ?? 0)
-          .plus(summaryDefiReward ?? 0)
-          .toString();
+        const dualStakeDollar = sdk.toBig(summaryDefiReward);
+        // summaryReward.rewardDollar = dualStakeDollar
+        //   .plus(summaryReward?.rewardDollar ?? 0)
+        //   .toString();
         setSummaryMyInvest((state) => {
           return {
             ...state,
-            ...summaryReward,
+            investDollar: sdk
+              .toBig(state.ammPoolDollar ?? 0)
+              .plus(dualStakeDollar ?? 0)
+              .plus(state.stakeETHDollar ?? 0)
+              .plus(state.stakeLRCDollar ?? 0)
+              .toString(),
+            dualStakeDollar: dualStakeDollar.toString(),
           };
         });
       });
@@ -242,6 +311,99 @@ export const useOverview = <
       walletLayer2Callback();
     }
   }, [userRewardsStatus]);
+
+  const getStakingList = React.useCallback(
+    async ({
+      limit = STAKING_INVEST_LIMIT,
+      offset = 0,
+    }: {
+      limit?: number;
+      offset?: number;
+    }) => {
+      setStakeShowLoading(true);
+      const LRCStakingSymbol = "LRC";
+      if (
+        LoopringAPI.defiAPI &&
+        account.readyState === AccountStatus.ACTIVATED
+      ) {
+        const [response] = await Promise.all([
+          LoopringAPI.defiAPI.getStakeSummary(
+            {
+              accountId: account.accountId,
+              limit,
+              offset,
+              statuses: "locked,partial_unlocked",
+              tokenId: tokenMap[LRCStakingSymbol].tokenId,
+            },
+            account.apiKey
+          ),
+        ]);
+        if (
+          (response &&
+            ((response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message)) ||
+          !stakingMap[LRCStakingSymbol]
+        ) {
+          throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+        } else {
+          let {
+            totalNum,
+            totalStaked,
+            totalStakedRewards,
+            totalLastDayPendingRewards,
+            totalClaimableRewards,
+            list,
+          } = response as any;
+
+          list = list.map((item: sdk.StakeInfoOrigin) => {
+            return {
+              ...stakingMap[LRCStakingSymbol],
+              ...item,
+              status_product: stakingMap[LRCStakingSymbol].status,
+            };
+          });
+
+          setStakingProps({
+            total: totalNum,
+            stakingList: list,
+            totalStaked,
+            totalStakedRewards,
+            totalLastDayPendingRewards,
+            totalClaimableRewards,
+            stakedSymbol: LRCStakingSymbol,
+          });
+
+          const totalDollar = sdk
+            .toBig(totalStaked)
+            .div("1e" + tokenMap[LRCStakingSymbol].decimals)
+            .times(tokenPrices[LRCStakingSymbol]);
+
+          setSummaryMyInvest((state) => {
+            return {
+              ...state,
+              stakeLRCDollar: totalDollar.toString(),
+              investDollar: sdk
+                .toBig(state.ammPoolDollar ?? 0)
+                .plus(state.dualStakeDollar ?? 0)
+                .plus(state.stakeETHDollar ?? 0)
+                .plus(totalDollar ?? 0)
+                .toString(),
+            };
+          });
+        }
+      }
+      setStakeShowLoading(false);
+    },
+    [account, tokenPrices]
+  );
+  React.useEffect(() => {
+    if (
+      walletLayer2Status === SagaStatus.UNSET &&
+      stakingMapStatus === SagaStatus.UNSET
+    ) {
+      getStakingList({});
+    }
+  }, [account.readyState, stakingMapStatus, walletLayer2Status]);
   return {
     myAmmMarketArray,
     summaryMyInvest,
@@ -250,5 +412,14 @@ export const useOverview = <
     filter,
     tableHeight,
     handleFilterChange,
+    stakingList,
+    getStakingList,
+    stakeShowLoading,
+    stakingTotal,
+    totalStaked,
+    totalStakedRewards,
+    totalLastDayPendingRewards,
+    totalClaimableRewards,
+    stakedSymbol,
   };
 };

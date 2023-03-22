@@ -1,6 +1,5 @@
 import { Box, Modal, Typography } from "@mui/material";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { Guardian } from "@loopring-web/loopring-sdk";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
@@ -15,7 +14,10 @@ import { LoopringAPI, useAccount, useSystem } from "@loopring-web/core";
 import Web3 from "web3";
 
 import { connectProvides } from "@loopring-web/web3-provider";
-import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
+import {
+  MapChainId,
+  SDK_ERROR_MAP_TO_UI,
+} from "@loopring-web/common-resources";
 
 const VCODE_UNIT = 6;
 export const WalletValidationInfo = ({
@@ -25,7 +27,7 @@ export const WalletValidationInfo = ({
   isContractAddress,
   handleOpenModal,
 }: {
-  guardiansList: Guardian[];
+  guardiansList: sdk.Guardian[];
   guardianConfig: any;
   isContractAddress: boolean;
   loadData: () => Promise<void>;
@@ -35,10 +37,12 @@ export const WalletValidationInfo = ({
   const { account } = useAccount();
   const { chainId } = useSystem();
   const [isFirstTime, setIsFirstTime] = React.useState<boolean>(true);
-  const [selected, setSelected] = React.useState<Guardian | undefined>();
+  const [selected, setSelected] = React.useState<sdk.Guardian | undefined>();
   const [openCode, setOpenCode] = React.useState(false);
   const [notSupportOpen, setNotSupportOpen] = React.useState(false);
-  const submitApprove = async (code: string, selected: Guardian) => {
+  const network = sdk.NetworkWallet[MapChainId[chainId]];
+
+  const submitApprove = async (code: string, selected: sdk.Guardian) => {
     setOpenCode(false);
     handleOpenModal({
       step: GuardianStep.Approve_WaitForAuth,
@@ -51,6 +55,7 @@ export const WalletValidationInfo = ({
     if (LoopringAPI.walletAPI && selected) {
       const { contractType } = await LoopringAPI.walletAPI.getContractType({
         wallet: selected.address,
+        network,
       });
       let isContract1XAddress = undefined,
         guardianModuleAddress = undefined,
@@ -72,6 +77,7 @@ export const WalletValidationInfo = ({
         securityNumber: code,
         signer: account.accAddress,
         signature: "",
+        network,
       };
       LoopringAPI.walletAPI
         .submitApproveSignature(
@@ -119,7 +125,7 @@ export const WalletValidationInfo = ({
         });
     }
   };
-  const handleReject = (guardian: Guardian) => {
+  const handleReject = (guardian: sdk.Guardian) => {
     handleOpenModal({
       step: GuardianStep.Reject_WaitForAuth,
       options: {
@@ -132,6 +138,7 @@ export const WalletValidationInfo = ({
       const request = {
         approveRecordId: guardian.id,
         signer: account.accAddress,
+        network,
       };
       LoopringAPI.walletAPI
         .rejectHebao({
@@ -173,7 +180,7 @@ export const WalletValidationInfo = ({
         });
     }
   };
-  const handleOpenApprove = (guardian: Guardian) => {
+  const handleOpenApprove = (guardian: sdk.Guardian) => {
     if (isContractAddress && guardian.type !== "recovery") {
       setNotSupportOpen(true);
       return;

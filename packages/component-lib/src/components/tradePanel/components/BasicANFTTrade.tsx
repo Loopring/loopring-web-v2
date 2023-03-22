@@ -7,7 +7,7 @@ import {
   TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import { Trans, useTranslation } from "react-i18next";
-import React from "react";
+import React, { ForwardedRef } from "react";
 import { BasicANFTTradeProps } from "./Interface";
 import {
   InputButton,
@@ -26,26 +26,27 @@ const BoxInput = styled(Box)`
     font-size: ${({ theme }) => theme.fontDefault.body1};
   }
 ` as typeof Box;
-export const _BasicANFTTrade = <
-  T extends IBData<I> & Partial<NFTWholeINFO>,
-  I extends any
->({
-  tradeData,
-  onChangeEvent,
-  disabled,
-  isBalanceLimit,
-  handleError: _handleError,
-  inputNFTRef,
-  baseURL,
-  getIPFSString,
-  inputNFTProps,
-  inputNFTDefaultProps,
-  // isSelected = false,
-  // isRequired = false,
-  isThumb,
-  ...rest
-}: BasicANFTTradeProps<T, I>) => {
-  const { t } = useTranslation("common");
+export const _BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>,
+  I extends any>(
+  {
+    tradeData,
+    onChangeEvent,
+    disabled,
+    isBalanceLimit,
+    handleError: _handleError,
+    inputNFTRef,
+    baseURL,
+    getIPFSString,
+    inputNFTProps,
+    inputNFTDefaultProps,
+    // isSelected = false,
+    // isRequired = false,
+    isThumb,
+    ...rest
+  }: BasicANFTTradeProps<T, I>,
+  _ref: ForwardedRef<any>
+) => {
+  const {t} = useTranslation("common");
   const getDisabled = () => {
     return disabled || tradeData === undefined;
   };
@@ -54,7 +55,7 @@ export const _BasicANFTTrade = <
       //const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
       if ((tradeData as T)?.tradeValue !== _tradeData.tradeValue) {
         onChangeEvent &&
-          onChangeEvent(0, {
+        onChangeEvent(0, {
             tradeData: { ...tradeData, ..._tradeData },
             to: "button",
           });
@@ -217,7 +218,8 @@ export const BasicANFTTrade = React.memo(React.forwardRef(_BasicANFTTrade)) as <
   T extends IBData<I> & Partial<NFTWholeINFO>,
   I extends any
 >(
-  props: BasicANFTTradeProps<T, I>
+  props: BasicANFTTradeProps<T, I>,
+  ref: ForwardedRef<any>
 ) => JSX.Element;
 
 export const NFTInput = React.memo(
@@ -347,7 +349,7 @@ export const NFTInput = React.memo(
         )}
       </>
     );
-  }
+  };
 ) as <T extends IBData<I> & Partial<NFTWholeINFO>, I extends any>(
   props: BasicANFTTradeProps<T, I> & {
     onCopy?: (content: string) => Promise<void>;

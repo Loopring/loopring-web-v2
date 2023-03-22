@@ -21,6 +21,8 @@ const initialState: ToggleState = {
   defiInvest: { enable: true },
   dualInvest: { enable: true },
   claim: { enable: true },
+  redPacketNFTV1: { enable: true },
+  LRCStackInvest: { enable: true },
 };
 
 export const toggleSlice: Slice<ToggleState> = createSlice<

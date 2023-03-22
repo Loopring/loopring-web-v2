@@ -1,11 +1,12 @@
 import React from "react";
 
 import {
-  ButtonComponentsMap,
+  GuardianToolBarComponentsMap,
   fnType,
+  headerGuardianToolBarData,
   headerMenuLandingData,
-  headerToolBarData as _initHeaderToolBarData,
   myLog,
+  ChainIdExtends,
 } from "@loopring-web/common-resources";
 
 import {
@@ -15,41 +16,65 @@ import {
   store,
   useAccount,
   useNotify,
+  useSystem,
 } from "@loopring-web/core";
 
-import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
+import {
+  AccountStep,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
 
 import _ from "lodash";
-import { storeForL1 } from "../../index";
 
 export const useHeader = () => {
   const accountTotal = useAccount();
   const { account, setShouldShow, status: accountStatus } = accountTotal;
+  const { chainId, updateSystem } = useSystem();
+  const { isTaikoTest } = useSettings();
+
   const { setShowAccount } = useOpenModals();
   const accountState = React.useMemo(() => {
     return { account };
   }, [account]);
 
-  const [headerToolBarData, setHeaderToolBarData] = React.useState<
-    typeof _initHeaderToolBarData
-  >(_initHeaderToolBarData);
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.ACTIVATED]: [
       function () {
-        storeForL1.dispatch(
-          accountReducer.changeShowModel({ _userOnModel: true })
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        store.dispatch(
+          setShowAccount({ isShow: true, step: AccountStep.HadAccount })
         );
-        storeForL1.dispatch(
+      },
+    ],
+    [fnType.NO_ACCOUNT]: [
+      function () {
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        store.dispatch(
+          setShowAccount({ isShow: true, step: AccountStep.HadAccount })
+        );
+      },
+    ],
+    [fnType.DEPOSITING]: [
+      function () {
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        store.dispatch(
+          setShowAccount({ isShow: true, step: AccountStep.HadAccount })
+        );
+      },
+    ],
+    [fnType.NOT_ACTIVE]: [
+      function () {
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        store.dispatch(
           setShowAccount({ isShow: true, step: AccountStep.HadAccount })
         );
       },
     ],
     [fnType.LOCKED]: [
       function () {
-        storeForL1.dispatch(
-          accountReducer.changeShowModel({ _userOnModel: true })
-        );
-        storeForL1.dispatch(
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        store.dispatch(
           setShowAccount({ isShow: true, step: AccountStep.HadAccount })
         );
       },
@@ -60,36 +85,48 @@ export const useHeader = () => {
     myLog(`onWalletBtnConnect click: ${account.readyState}`);
     accountStaticCallBack(_btnClickMap, []);
   }, [account, setShouldShow, _btnClickMap]);
+  const [headerToolBarData, setHeaderToolBarData] = React.useState<
+    typeof headerGuardianToolBarData
+  >(() => {
+    headerGuardianToolBarData[GuardianToolBarComponentsMap.Notification] = {
+      ...headerGuardianToolBarData[GuardianToolBarComponentsMap.Notification],
+    };
+    headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet] = {
+      ...headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet],
+      // isTestOpen: isTestNet,
+      onTestOpen: (isTestNet: boolean) => {
+        const chainId = store.getState().system.chainId;
+        updateSystem({ chainId });
+        // debugger;
+        // setTestNet(isTestNet);
+      },
+      isShow: (chainId as any) === ChainIdExtends.TAIKO_A2,
+    };
+    headerGuardianToolBarData[GuardianToolBarComponentsMap.WalletConnect] = {
+      ...headerGuardianToolBarData[GuardianToolBarComponentsMap.WalletConnect],
+      accountState,
+      isLayer1Only: true,
+      handleClick: onWalletBtnConnect,
+    };
+    return headerGuardianToolBarData;
+  });
   React.useEffect(() => {
     setHeaderToolBarData((headerToolBarData) => {
-      headerToolBarData[ButtonComponentsMap.Notification] = {
-        ...headerToolBarData[ButtonComponentsMap.Notification],
-      };
-      headerToolBarData[ButtonComponentsMap.WalletConnect] = {
-        ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-        accountState,
-        handleClick: onWalletBtnConnect,
+      myLog("isTestNet", isTaikoTest, chainId);
+      headerToolBarData[GuardianToolBarComponentsMap.TestNet] = {
+        ...headerToolBarData[GuardianToolBarComponentsMap.TestNet],
+        isShow: (chainId as any) == ChainIdExtends.TAIKO_A2,
       };
       return headerToolBarData;
-      // return {
-      //   ...headerToolBarData,
-      //   // [ButtonComponentsMap.Notification]: {
-      //   //   ...headerToolBarData[ButtonComponentsMap.Notification],
-      //   // },
-      //   [ButtonComponentsMap.WalletConnect]: {
-      //     ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-      //     accountState,
-      //     handleClick: onWalletBtnConnect,
-      //   },
-      // } as HeaderToolBarInterface[];
     });
-  }, []);
+  }, [chainId]);
 
   React.useEffect(() => {
     if (accountStatus && accountStatus === "UNSET") {
       setHeaderToolBarData((headerToolBarData) => {
-        headerToolBarData[ButtonComponentsMap.WalletConnect] = {
-          ...headerToolBarData[ButtonComponentsMap.WalletConnect],
+        headerToolBarData[GuardianToolBarComponentsMap.WalletConnect] = {
+          ...headerToolBarData[GuardianToolBarComponentsMap.WalletConnect],
+          isLayer1Only: true,
           accountState,
         };
         return headerToolBarData;

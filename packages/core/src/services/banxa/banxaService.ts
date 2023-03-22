@@ -265,7 +265,7 @@ export const banxaService = {
     store.dispatch(resetTransferBanxaData(undefined));
     const parentsNode: any =
       window.document.querySelector("#iframeBanxaTarget");
-    const items = parentsNode.getElementsByTagName("iframe");
+    const items = parentsNode?.getElementsByTagName("iframe");
     if (items && items[0]) {
       [].slice.call(items).forEach((item) => parentsNode.removeChild(item));
     }

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import {
   AccountStatus,
+  ChainIdExtends,
   CircleIcon,
   getShortAddr,
   LoadingIcon,
@@ -14,10 +15,11 @@ import {
 import { Typography } from "@mui/material";
 import { Button } from "../../basic-lib";
 import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
-import { ChainId } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
+import * as sdk from "@loopring-web/loopring-sdk";
 
+// type ChainId = sdk.ChainId | ChainIdExtends;
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
@@ -146,7 +148,7 @@ export const WalletConnectBtn = ({
         default:
       }
 
-      if (account && account._chainId === ChainId.GOERLI) {
+      if (account && account._chainId === sdk.ChainId.GOERLI) {
         setNetworkLabel(isMobile ? "G ö" : "Görli");
       } else {
         setNetworkLabel("");
@@ -270,7 +272,7 @@ export const WalletConnectUI = ({
       default:
     }
 
-    if (account && account._chainId === ChainId.GOERLI) {
+    if (account && account._chainId === sdk.ChainId.GOERLI) {
       setNetworkLabel("Görli");
     } else {
       setNetworkLabel("");
@@ -281,6 +283,167 @@ export const WalletConnectUI = ({
       update();
     }
   }, [accountState.status]);
+
+  const _handleClick = (event: React.MouseEvent) => {
+    // debounceCount(event)
+    if (handleClick) {
+      handleClick(event);
+    }
+  };
+
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: `popupId: 'wallet-connect-notification'`,
+  });
+  return (
+    <>
+      {networkLabel ? (
+        <TestNetworkStyle
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          paddingX={1}
+          component={"span"}
+          color={"var(--vip-text)"}
+          marginRight={1}
+        >
+          {networkLabel}
+        </TestNetworkStyle>
+      ) : (
+        <></>
+      )}
+      <WalletConnectBtnStyled
+        variant={
+          ["un-connect", "wrong-network"].findIndex(
+            (ele) => btnClassname === ele
+          ) !== -1
+            ? "contained"
+            : "outlined"
+        }
+        size={
+          ["un-connect", "wrong-network"].findIndex(
+            (ele) => btnClassname === ele
+          ) !== -1
+            ? "small"
+            : "medium"
+        }
+        color={"primary"}
+        className={`wallet-btn ${btnClassname}`}
+        onClick={_handleClick}
+        {...bindHover(popupState)}
+      >
+        {icon ? (
+          <Typography component={"i"} marginLeft={-1}>
+            {icon}
+          </Typography>
+        ) : (
+          <></>
+        )}
+        <Typography
+          component={"span"}
+          variant={"body1"}
+          lineHeight={1}
+          color={"inherit"}
+        >
+          {t(label)}
+        </Typography>
+      </WalletConnectBtnStyled>
+    </>
+  );
+};
+export const WalletConnectL1Btn = ({
+  accountState,
+  handleClick,
+}: WalletConnectBtnProps) => {
+  const { t, i18n } = useTranslation(["layout", "common"]);
+  const { isMobile } = useSettings();
+  const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
+  const [networkLabel, setNetworkLabel] =
+    React.useState<string | undefined>(undefined);
+  const [btnClassname, setBtnClassname] =
+    React.useState<string | undefined>("");
+  const [icon, setIcon] = React.useState<JSX.Element | undefined>();
+
+  React.useEffect(() => {
+    const account = accountState?.account;
+    if (account) {
+      const addressShort = account.accAddress
+        ? getShortAddr(account?.accAddress)
+        : undefined;
+      if (addressShort) {
+        setLabel(addressShort);
+      }
+      setIcon(undefined);
+
+      myLog("wallet connect account.readyState:", account.readyState);
+
+      switch (account.readyState) {
+        case AccountStatus.UN_CONNECT:
+          setBtnClassname("un-connect");
+          setLabel("labelConnectWallet");
+          break;
+        case AccountStatus.LOCKED:
+        case AccountStatus.ACTIVATED:
+        case AccountStatus.NO_ACCOUNT:
+        case AccountStatus.DEPOSITING:
+        case AccountStatus.NOT_ACTIVE:
+          setBtnClassname("unlocked");
+          const chainId = account._chainId as any;
+          switch (chainId) {
+            case sdk.ChainId.MAINNET:
+              setIcon(
+                <Typography
+                  paddingRight={1}
+                  color={"var(--color-text-third)"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <CircleIcon
+                    fontSize={"large"}
+                    htmlColor={"var(--color-success)"}
+                  />
+                  L1
+                </Typography>
+                // <CircleIcon fontSize={"large"} ChainIdhtmlColor={"var(--color-success)"} />
+              );
+              break;
+            case sdk.ChainId.GOERLI:
+            case ChainIdExtends.TAIKO_A2:
+              setIcon(
+                <Typography paddingRight={1} color={"var(--color-text-third)"}>
+                  Test
+                </Typography>
+                // <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
+              );
+              break;
+            // setIcon(
+            //   <Typography color={'--color-text-third'>{ChainIdExtends[account._chainId]}</Typography>
+            //   // <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
+            // );
+          }
+          break;
+        case AccountStatus.ERROR_NETWORK:
+          setBtnClassname("wrong-network");
+          setLabel("labelWrongNetwork");
+          setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />);
+          break;
+        default:
+      }
+
+      if (account && account._chainId === sdk.ChainId.GOERLI) {
+        setNetworkLabel(isMobile ? "G ö" : "Görli");
+      } else if (
+        account &&
+        (account._chainId as any) == ChainIdExtends.TAIKO_A2
+      ) {
+        setNetworkLabel(isMobile ? "Taiko" : "Taiko");
+      } else {
+        setNetworkLabel("");
+      }
+    } else {
+      setLabel("labelConnectWallet");
+    }
+  }, [accountState?.account?.readyState, i18n]);
 
   const _handleClick = (event: React.MouseEvent) => {
     // debounceCount(event)

@@ -162,6 +162,7 @@ import {
   useRampTransPost,
   useRedPacketScanQrcodeSuccess,
   useReset,
+  useStakeTradeExit,
   useSystem,
   useToast,
   useTransfer,
@@ -248,6 +249,9 @@ export function useAccountModalForUI({
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
+  const { stackWrapProps } = useStakeTradeExit({
+    setToastOpen,
+  });
   const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
   const { claimProps, retryBtn: claimRetryBtn } = useClaimConfirm();
   const { resetProps } = useReset();
@@ -2947,6 +2951,7 @@ export function useAccountModalForUI({
     depositProps,
     resetProps,
     collectionAdvanceProps,
+    sideStackRedeemProps: stackWrapProps,
     activeAccountProps,
     exportAccountProps,
     exportAccountAlertText,

@@ -42,4 +42,5 @@ export interface SettingsState {
   proLayout: Layouts;
   feeChargeOrder: string[];
   swapSecondConfirmation: boolean | undefined;
+  isTaikoTest?: boolean | undefined;
 }

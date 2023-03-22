@@ -18,7 +18,6 @@ import { useClaimNFTRedPacket, useClaimRedPacket } from "./hooks";
 import { Box, Button, Tab, Tabs } from "@mui/material";
 import {
   RedPacketIcon,
-  RowConfig,
   SagaStatus,
   TabTokenTypeIndex,
   TOAST_TIME,
@@ -46,8 +45,9 @@ export const RedPacketClaimPanel = () => {
   let match: any = useRouteMatch("/l2assets/assets/RedPacket/:item");
 
   React.useEffect(() => {
-    if (getClaimRedPacket && walletLayer2Status === SagaStatus.UNSET) {
+    if (walletLayer2Status === SagaStatus.UNSET) {
       getClaimRedPacket();
+      getClaimNFTRedPacket({});
     }
   }, [walletLayer2Status]);
   //TODO:

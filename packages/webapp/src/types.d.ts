@@ -13,6 +13,7 @@ declare global {
     __renderReportCall__: () => void;
     rampInstance: RampInstantSDK | undefined;
   }
+
   namespace JSX {
     interface IntrinsicElements {
       "model-viewer": MyElementAttributes;

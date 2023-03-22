@@ -32,10 +32,7 @@ import {
 } from "@loopring-web/common-resources";
 import { useBtnStatus } from "../common/useBtnStatus";
 
-import {
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
+import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
@@ -111,7 +108,7 @@ export function useNFTDeploy<
                   chainId !== sdk.ChainId.GOERLI
                     ? sdk.ChainId.MAINNET
                     : chainId,
-                walletType: (ConnectProvidersSignMap[connectName] ??
+                walletType: (ConnectProviders[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
@@ -131,7 +128,7 @@ export function useNFTDeploy<
                   chainId !== sdk.ChainId.GOERLI
                     ? sdk.ChainId.MAINNET
                     : chainId,
-                walletType: (ConnectProvidersSignMap[connectName] ??
+                walletType: (ConnectProviders[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
@@ -179,8 +176,9 @@ export function useNFTDeploy<
           if (nftDeployValue.nftData) {
             updateWalletLayer2NFT({
               page: Number(searchParams.get("collectionPage")) ?? 1,
-              collectionId: nftDeployValue?.collectionMeta?.id, 
-              collectionContractAddress: nftDeployValue?.collectionMeta?.contractAddress, 
+              collectionId: nftDeployValue?.collectionMeta?.id,
+              collectionContractAddress:
+                nftDeployValue?.collectionMeta?.contractAddress,
             });
             setShowNFTDetail({
               ...isShowNFTDetail,

@@ -80,7 +80,7 @@ export const AssetTitle = withTranslation("common")(
             justifyContent={"flex-start"}
             marginTop={1}
           >
-            <Typography component={"span"} paddingRight={1} variant={"h1"}>
+            <Typography component={"span"} variant={"h1"}>
               {assetInfo.priceTag}
             </Typography>
             {!hideL2Assets ? (

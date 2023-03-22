@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 
 import { HashRouter as Router, useLocation } from "react-router-dom";
 import { store } from "@loopring-web/core";
+import { ContactAPI } from "@loopring-web/loopring-sdk";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -66,22 +67,52 @@ const App = () => {
 
           body:before {
             ${
-              theme.mode === "dark"
-                ? `
+                    theme.mode === "dark"
+                            ? `
             background: var(--color-global-bg);
        `
-                : ""
+                            : ""
             }
-      }
-    }`}
+          }
+        }`}
       />
 
       <Router>
-        <ScrollToTop />
-        <RouterView state={state} />
+        <ScrollToTop/>
+        <RouterView state={state}/>
       </Router>
     </>
   );
 };
-
+const h = new Headers();
 export default App;
+
+// new ContactAPI({chainId: 1, baseUrl: 'https://uat2.loopring.io'})
+// .getContacts({
+//   isHebao: false,
+//   accountId: 10086,
+// })
+// .then(x => {
+//   debugger
+// })
+// .catch(x => {
+//   debugger
+// })
+
+// curl -v 'https://uat2.loopring.io/api/v3/user/contact?accountId=10083&isHebao=false' \
+//   -H 'Accept: application/json, text/plain, */*' \
+//   -H 'Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7' \
+//   -H 'Connection: keep-alive' \
+//   -H 'Origin: https://localhost:3000' \
+//   -H 'Referer: https://localhost:3000/' \
+//   -H 'Sec-Fetch-Dest: empty' \
+//   -H 'Sec-Fetch-Mode: cors' \
+//   -H 'Sec-Fetch-Site: cross-site' \
+//   -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36' \
+//   -H 'X-API-KEY: 2PYgTOZwXHkPXtJMlOMG06ZX1QKJInpoky6iYIbtMgmkbfdL4PvxyEOj0LPOfgYX' \
+//   -H 'feeVersion: v2' \
+//   -H 'pf: web' \
+//   -H 'sec-ch-ua: "Chromium";v="110", "Not A(Brand";v="24", "Google Chrome";v="110"' \
+//   -H 'sec-ch-ua-mobile: ?0' \
+//   -H 'sec-ch-ua-platform: "macOS"' \
+//   --compressed

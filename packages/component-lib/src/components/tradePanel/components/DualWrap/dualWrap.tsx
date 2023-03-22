@@ -2,7 +2,6 @@ import React from "react";
 import moment from "moment";
 import {
   DualCalcData,
-  DualCurrentPrice,
   DualViewBase,
   DualViewInfo,
   EmptyValueTag,
@@ -15,7 +14,7 @@ import {
   UpColor,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
-import { DualWrapProps } from "./Interface";
+import { DualDetailType, DualWrapProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 
 import { Box, Divider, Grid, Tooltip, Typography } from "@mui/material";
@@ -127,15 +126,6 @@ enum DisplayMode {
   beginnerModeStep2,
 }
 
-export type DualDetailType = {
-  dualViewInfo: DualViewBase;
-  currentPrice: DualCurrentPrice;
-  lessEarnView: string;
-  greaterEarnView: string;
-  lessEarnTokenSymbol: string;
-  greaterEarnTokenSymbol: string;
-  isOrder?: boolean;
-};
 export const DualDetail = ({
   dualViewInfo,
   currentPrice,

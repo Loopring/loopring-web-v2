@@ -5,6 +5,7 @@ import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { useTranslation, withTranslation } from "react-i18next";
 import {
   ConfirmInvestDualRisk,
+  ConfirmInvestLRCStakeRisk,
   useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -15,6 +16,11 @@ import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
 import { DualListPanel } from "./DualPanel/DualListPanel";
+import { StackTradePanel } from "./StakePanel/StackTradePanel";
+import {
+  defiRETHAdvice,
+  defiWSTETHAdvice,
+} from "@loopring-web/common-resources";
 
 export enum InvestType {
   MyBalance = 0,
@@ -22,9 +28,17 @@ export enum InvestType {
   DeFi = 2,
   Overview = 3,
   Dual = 4,
+  Stack = 5,
 }
 
-export const InvestRouter = ["balance", "ammpool", "defi", "overview", "dual"];
+export const InvestRouter = [
+  "balance",
+  "ammpool",
+  "defi",
+  "overview",
+  "dual",
+  "stacklrc",
+];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
   return (
@@ -104,13 +118,18 @@ export const DefiTitle = () => {
 export const InvestPage = withTranslation("common", { withRef: true })(() => {
   let match: any = useRouteMatch("/invest/:item?");
   const history = useHistory();
-  const { confirmDualInvest: confirmDualInvestFun } =
-    confirmation.useConfirmation();
+  const {
+    confirmDualInvest: confirmDualInvestFun,
+    confirmedLRCStakeInvest: confirmedLRCInvestFun,
+  } = confirmation.useConfirmation();
+  const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
+  const [confirmedLRCStakeInvest, setConfirmedLRCStakeInvestInvest] =
+    React.useState<boolean>(false);
+
   const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false);
   const onShowBeginnerModeHelp = React.useCallback((show: boolean) => {
     setShowBeginnerModeHelp(show);
   }, []);
-  const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     (InvestRouter.includes(match?.params?.item)
       ? InvestType[match?.params?.item]
@@ -135,6 +154,10 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         return;
       case InvestRouter[InvestType.Dual]:
         setTabIndex(InvestType.Dual);
+        setIsShowTab(false);
+        return;
+      case InvestRouter[InvestType.Stack]:
+        setTabIndex(InvestType.Stack);
         setIsShowTab(false);
         return;
       case InvestRouter[InvestType.Overview]:
@@ -194,6 +217,11 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
             <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
           </Box>
         )}
+        {tabIndex === InvestType.Stack && (
+          <StackTradePanel
+            setConfirmedLRCStakeInvestInvest={setConfirmedLRCStakeInvestInvest}
+          />
+        )}
       </Box>
 
       <ConfirmInvestDualRisk
@@ -207,6 +235,17 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
             setTimeout(() => {
               onShowBeginnerModeHelp(false);
             }, 5 * 1000);
+          }
+        }}
+      />
+      <ConfirmInvestLRCStakeRisk
+        open={confirmedLRCStakeInvest}
+        handleClose={(_e, isAgree) => {
+          setConfirmedLRCStakeInvestInvest(false);
+          if (!isAgree) {
+            history.goBack();
+          } else {
+            confirmedLRCInvestFun();
           }
         }}
       />

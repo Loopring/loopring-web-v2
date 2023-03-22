@@ -193,7 +193,7 @@ export const useSwap = <
     tradeBtnStatus: TradeBtnStatus;
     label: string | undefined;
   } => {
-    if (!tokenMap) {
+    if (!tokenMap && !tokenPrices) {
       // setSwapBtnStatus();
       // return {tradeBtnStatus:TradeBtnStatus.DISABLED};
       return {
@@ -317,10 +317,17 @@ export const useSwap = <
             }
           }
         } else {
-          return {
-            label: undefined,
-            tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-          };
+          if (tradeCalcData.isNotMatchMarketPrice && !tradeCalcData.isChecked) {
+            return {
+              label: undefined,
+              tradeBtnStatus: TradeBtnStatus.DISABLED,
+            };
+          } else {
+            return {
+              label: undefined,
+              tradeBtnStatus: TradeBtnStatus.AVAILABLE,
+            };
+          }
         }
       } else {
         return {
@@ -331,6 +338,8 @@ export const useSwap = <
     }
   }, [
     tokenMap,
+    tradeCalcData.isChecked,
+    tradeCalcData.isNotMatchMarketPrice,
     tradeData?.sell.belong,
     tradeData?.buy.belong,
     pageTradeLite,
@@ -731,7 +740,6 @@ export const useSwap = <
 
   useSwapSocket();
   useWalletLayer2Socket({ walletLayer2Callback });
-  /*** account related end ***/
 
   /*** user Action function ***/
   //High: effect by wallet state update
@@ -739,8 +747,6 @@ export const useSwap = <
     swapData: SwapData<SwapTradeData<IBData<C>>>,
     swapType: any
   ): Promise<void> => {
-    // myLog('handleSwapPanelEvent...')
-
     const { tradeData } = swapData;
     resetSwap(swapType, tradeData);
   };
@@ -776,41 +782,6 @@ export const useSwap = <
   const refreshAmmPoolSnapshot = React.useCallback(() => {
     const { ticker, ammPoolSnapshot, depth, lastStepAt, tradePair, market } =
       pageTradeLite;
-    //@ts-ignore
-    //(tickMap || ammPoolSnapshot) &&
-    if (
-      `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
-      `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market
-    ) {
-      let { stob, btos, close } = calcPriceByAmmTickMapDepth({
-        market: market as any,
-        tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
-        dependencyData: { ticker, ammPoolSnapshot, depth },
-      });
-
-      // setTradeFloat({ ...ticker, close: close } as TradeFloat);
-
-      const result = reCalcStoB(
-        market,
-        tradeData as SwapTradeData<IBData<unknown>>,
-        tradePair as any
-      );
-      if (result) {
-        setTradeCalcData((state) => {
-          state.StoB = result.stob;
-          state.BtoS = result.btos;
-          return { ...state };
-        });
-      } else {
-        setTradeCalcData((state) => {
-          state.StoB = stob;
-          state.BtoS = btos;
-          return { ...state };
-        });
-      }
-      updatePageTradeLite({ market, close });
-    }
-
     if (
       tradeData &&
       lastStepAt &&
@@ -820,6 +791,30 @@ export const useSwap = <
       tradeData[lastStepAt].tradeValue !== 0
     ) {
       reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
+    } else if (
+      tradeCalcData.coinSell &&
+      tradeCalcData.coinBuy &&
+      (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
+        `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
+    ) {
+      let { stob, btos, close } = calcPriceByAmmTickMapDepth({
+        market: market as any,
+        tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
+        dependencyData: { ticker, ammPoolSnapshot, depth },
+      });
+      const result = reCalcStoB(
+        market,
+        tradeData as SwapTradeData<IBData<unknown>>,
+        tradePair as any
+      );
+
+      setTradeCalcData((state) => {
+        state.StoB = result ? result.stob : stob;
+        state.BtoS = result ? result.btos : btos;
+        return { ...state };
+      });
+
+      updatePageTradeLite({ market, close });
     }
   }, [market, pageTradeLite, tradeData, tradeCalcData, setTradeCalcData]);
 
@@ -889,7 +884,6 @@ export const useSwap = <
           };
         });
         setTradeData({ ...tradeDataTmp });
-
         let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
         setMarket(market);
         history.push("/trade/lite/" + _market);
@@ -946,10 +940,6 @@ export const useSwap = <
         _tradePair,
         type
       );
-
-      // @ts-ignore
-      // myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
-      //checkMarketDataValid(ammPoolSnapshot, tickMap, market, depth) &&
       if (depth && market && _tradePair === tradePair) {
         const coinA = _tradeData.sell.belong;
         const coinB = _tradeData.buy.belong;
@@ -1174,30 +1164,30 @@ export const useSwap = <
           calcTradeParams && (calcTradeParams.priceImpact = "0");
         }
 
-        myLog(
-          "hookSwap:calcTradeParams input:",
-          input.toString(),
-          ", calcTradeParams Price: ",
-          sdk
-            .toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
-            .div(input.toString())
-            .toNumber(),
-          `isAtoB:${isAtoB}, ${
-            isAtoB ? input.toString() : calcTradeParams?.output
-          } tradePrice: `,
-          tradePrice.toString(),
-          "basePrice: ",
-          basePrice?.toString(),
-          "toBig(tradePrice).div(basePrice)",
-          sdk
-            .toBig(tradePrice)
-            .div(basePrice ?? 1)
-            .toNumber(),
-          "priceImpact (1-tradePrice/basePrice) - 0.001",
-          priceImpact.toNumber(),
-          "priceImpact view",
-          calcTradeParams?.priceImpact
-        );
+        // myLog(
+        //   "hookSwap:calcTradeParams input:",
+        //   input.toString(),
+        //   ", calcTradeParams Price: ",
+        //   sdk
+        //     .toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+        //     .div(input.toString())
+        //     .toNumber(),
+        //   `isAtoB:${isAtoB}, ${
+        //     isAtoB ? input.toString() : calcTradeParams?.output
+        //   } tradePrice: `,
+        //   tradePrice.toString(),
+        //   "basePrice: ",
+        //   basePrice?.toString(),
+        //   "toBig(tradePrice).div(basePrice)",
+        //   sdk
+        //     .toBig(tradePrice)
+        //     .div(basePrice ?? 1)
+        //     .toNumber(),
+        //   "priceImpact (1-tradePrice/basePrice) - 0.001",
+        //   priceImpact.toNumber(),
+        //   "priceImpact view",
+        //   calcTradeParams?.priceImpact
+        // );
 
         if (
           tradeCost &&
@@ -1282,7 +1272,6 @@ export const useSwap = <
           );
 
           myLog("hookSwap:totalFee view value:", totalFee, tradeCost);
-          myLog("hookSwap:tradeCost view value:", tradeCost);
         }
 
         const minimumReceived = getValuePrecisionThousand(
@@ -1311,8 +1300,6 @@ export const useSwap = <
           feeTakerRate,
           tradeCost,
         };
-
-        // myLog('calcTradeParams?.output:', calcTradeParams?.output, getShowStr(calcTradeParams?.output))
         _tradeData[isAtoB ? "buy" : "sell"].tradeValue = getShowStr(
           calcTradeParams?.output
         );
@@ -1346,7 +1333,34 @@ export const useSwap = <
             }
           }
         }
-        myLog("hookSwap:updatePageTradeLite feeBips:", feeBips, _tradeCalcData);
+        if (tokenPrices) {
+          const marketPrice = sdk
+            .toBig(tokenPrices[_tradeData.sell.belong])
+            .div(tokenPrices[_tradeData.buy.belong]);
+          const marketRatePrice = marketPrice.div(
+            _tradeCalcData.StoB?.replace(sdk.SEP, "") ?? 1
+          );
+          const isNotMatchMarketPrice = marketRatePrice.gt(1.05);
+          _tradeCalcData.isNotMatchMarketPrice = isNotMatchMarketPrice;
+          _tradeCalcData.marketPrice = getValuePrecisionThousand(
+            marketPrice.toString(),
+            tokenMap[_tradeData.buy.belong].precision,
+            tokenMap[_tradeData.buy.belong].precision,
+            tokenMap[_tradeData.buy.belong].precision
+          );
+          _tradeCalcData.marketRatePrice = marketRatePrice
+            .minus(1)
+            .times(100)
+            .toFixed(2);
+          myLog(
+            "stob",
+            _tradeCalcData.StoB,
+            marketPrice.toString(),
+            "marketPriceRate",
+            _tradeCalcData.marketRatePrice,
+            isNotMatchMarketPrice
+          );
+        }
 
         updatePageTradeLite({
           market,
@@ -1371,8 +1385,18 @@ export const useSwap = <
           _tradeCalcData.priceImpact = undefined;
           _tradeCalcData.minimumReceived = undefined;
         }
-        setTradeCalcData({ ...tradeCalcData, ..._tradeCalcData });
-        setTradeData({ ...tradeData, ..._tradeData });
+        if (_tradeData?.isChecked !== undefined) {
+          myLog("tradeCalcData?.isChecked", _tradeData);
+          _tradeCalcData.isChecked = _tradeData.isChecked;
+        }
+        setTradeCalcData((state) => ({
+          ...state,
+          ..._tradeCalcData,
+        }));
+        setTradeData((state) => ({
+          ...state,
+          ..._tradeData,
+        }));
       }
     },
     [
@@ -1448,6 +1472,8 @@ export const useSwap = <
             true
           ); // .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
         }
+        if (_tradeData?.isChecked) {
+        }
         const _tradeCalcData = {
           ...tradeCalcData,
           coinSell: tradeCalcData.coinBuy,
@@ -1497,8 +1523,10 @@ export const useSwap = <
         // should15sRefresh();
         break;
     }
+
+    // if(isChecked)
   };
-  myLog("hookSwap: tradeData", tradeData);
+  // myLog("hookSwap: tradeData", tradeData);
 
   return {
     toastOpen,
@@ -1526,4 +1554,4 @@ export const useSwap = <
     secondConfirmationOpen,
     setToastOpen,
   };
-};
+};;
