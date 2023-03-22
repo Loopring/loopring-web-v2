@@ -5,6 +5,7 @@ import {
   ModalPanel,
   ModalQRCode,
   Toast,
+  ToastType,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import { useSystem } from "@loopring-web/core";
@@ -30,18 +31,12 @@ export const ModalAccountInfo = withTranslation("common")(
     isLayer1Only?: boolean;
     account: Account;
     depositProps: DepositProps<any, any>;
-    // onClose?: (e: MouseEvent) => void;
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
-    // const { isMobile } = useSettings();
     const { baseURL } = useSystem();
     const {
-      modals: {
-        // isShowNFTDetail,
-        isShowAccount,
-      },
-      // setShowNFTDetail,
+      modals: { isShowAccount },
       setShowAccount,
       setShowDeposit,
       setShowTransfer,
@@ -60,13 +55,12 @@ export const ModalAccountInfo = withTranslation("common")(
       nftTransferProps,
       nftWithdrawProps,
       nftDeployProps,
-      // nftMintAdvanceProps,
-      // checkActiveStatusProps,
       resetProps,
       claimProps,
       activeAccountProps,
       exportAccountProps,
       // dualTradeProps,
+      sideStackRedeemProps,
       copyToastOpen,
       openQRCode,
       accountList,
@@ -83,12 +77,15 @@ export const ModalAccountInfo = withTranslation("common")(
       isLayer1Only,
       ...rest,
     });
-    // myLog(
-    //   "resetProps.chargeFeeTokenList",
-    //   activeAccountProps.chargeFeeTokenList
-    // );
+
     return (
       <>
+        <Toast
+          alertText={toastOpen?.content ?? ""}
+          open={toastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={closeToast}
+        />
         <Toast
           alertText={exportAccountAlertText as string}
           open={exportAccountToastOpen}
@@ -96,11 +93,11 @@ export const ModalAccountInfo = withTranslation("common")(
           onClose={() => {
             setExportAccountToastOpen(false);
           }}
-          severity={"success"}
+          severity={ToastType.success}
         />
         <Toast
           alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
+          severity={toastOpen?.type ?? ToastType.success}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
@@ -110,17 +107,24 @@ export const ModalAccountInfo = withTranslation("common")(
           baseURL={baseURL}
           transferProps={{
             ...transferProps,
-
             onBack: () => {
-              setShowTransfer({ isShow: false });
-              onBackSend();
+              if (transferProps.isFromContact) {
+                setShowTransfer({ isShow: false });
+              } else {
+                setShowTransfer({ isShow: false });
+                onBackSend();
+              }
             },
           }}
           withdrawProps={{
             ...withdrawProps,
             onBack: () => {
-              setShowWithdraw({ isShow: false });
-              onBackSend();
+              if (withdrawProps.isFromContact) {
+                setShowWithdraw({ isShow: false });
+              } else {
+                setShowWithdraw({ isShow: false });
+                onBackSend();
+              }
             },
           }}
           depositProps={{
@@ -139,15 +143,13 @@ export const ModalAccountInfo = withTranslation("common")(
           nftWithdrawProps={nftWithdrawProps as any}
           nftDeployProps={nftDeployProps as any}
           claimProps={claimProps as any}
-          // dualTradeProps={dualTradeProps as any}
-          // nftMintAdvanceProps={nftMintAdvanceProps as any}
-          // nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
-          activeAccountProps={activeAccountProps}
+          activeAccountProps={activeAccountProps as any}
           exportAccountProps={exportAccountProps}
           assetsData={assetsRawData}
           setExportAccountToastOpen={setExportAccountToastOpen}
           account={account}
+          sideStackRedeemProps={sideStackRedeemProps as any}
           {...{ _height: "var(--modal-height)", _width: "var(--modal-width)" }}
         />
 
@@ -158,7 +160,7 @@ export const ModalAccountInfo = withTranslation("common")(
           onClose={() => {
             setCopyToastOpen(false);
           }}
-          severity={"success"}
+          severity={ToastType.success}
         />
         <ModalQRCode
           open={openQRCode}
@@ -180,40 +182,6 @@ export const ModalAccountInfo = withTranslation("common")(
           etherscanBaseUrl={etherscanBaseUrl}
           isLayer2Only={isLayer1Only}
         />
-        {/*<MuiModal*/}
-        {/*  open={isShowNFTDetail.isShow}*/}
-        {/*  onClose={() => {*/}
-        {/*    setShowNFTDetail({ isShow: false });*/}
-        {/*  }}*/}
-        {/*  aria-labelledby="modal-modal-title"*/}
-        {/*  aria-describedby="modal-modal-description"*/}
-        {/*>*/}
-        {/*  <SwitchPanelStyled*/}
-        {/*    // width={"80%"}*/}
-        {/*    width={isMobile ? "360px" : "80%"}*/}
-        {/*    position={"relative"}*/}
-        {/*    minWidth={isMobile ? "initial" : 1000}*/}
-        {/*    style={{ alignItems: "stretch" }}*/}
-        {/*  >*/}
-        {/*    <Box display={"flex"} width={"100%"} flexDirection={"column"}>*/}
-        {/*      <ModalCloseButton*/}
-        {/*        onClose={() => {*/}
-        {/*          setShowNFTDetail({ isShow: false });*/}
-        {/*        }}*/}
-        {/*        t={t}*/}
-        {/*        {...rest}*/}
-        {/*      />*/}
-        {/*    </Box>*/}
-        {/*    <Box*/}
-        {/*      display={"flex"}*/}
-        {/*      flexDirection={isMobile ? "column" : "row"}*/}
-        {/*      flex={1}*/}
-        {/*      justifyContent={"stretch"}*/}
-        {/*    >*/}
-
-        {/*    </Box>*/}
-        {/*  </SwitchPanelStyled>*/}
-        {/*</MuiModal>*/}
       </>
     );
   }

@@ -279,6 +279,46 @@ export const ModalCloseButton = ({
     </Box>
   );
 };
+
+export const ModalCloseButtonPosition = ({
+  onClose,
+  className = "",
+  closeIcon = <CloseIcon />,
+  t,
+  right,
+  top,
+}: {
+  className?: string;
+  closeIcon?: JSX.Element;
+  onClose?: {
+    bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
+  }["bivarianceHack"];
+  right?: number;
+  top?: number;
+} & { t: TFunction }) => {
+  return (
+    <Box
+      className={`close-button ${className}`}
+      alignSelf={"flex-end"}
+      position={"absolute"}
+      zIndex={99}
+      right={right}
+      top={top}
+    >
+      <IconButton
+        size={"large"}
+        aria-label={t("labelClose")}
+        color={"inherit"}
+        onClick={(event) => {
+          onClose && onClose(event, "escapeKeyDown");
+        }}
+      >
+        {closeIcon}
+      </IconButton>
+    </Box>
+  );
+};
+
 export const ModalBackButton = ({
   onBack,
   t,
@@ -322,9 +362,9 @@ const QRStyle = styled(Box)`
     //z-index: -1;
     background-image: ${({ theme }) => {
       if (theme.mode === "dark") {
-        return `url('https://static.loopring.io/assets/images/qr_code_dark.png')`;
+        return `url('${SoursURL}images/qr_code_dark.png')`;
       } else {
-        return `url('https://static.loopring.io/assets/images/qr_code_light.png')`;
+        return `url('${SoursURL}images/qr_code_light.png')`;
       }
     }};
   }

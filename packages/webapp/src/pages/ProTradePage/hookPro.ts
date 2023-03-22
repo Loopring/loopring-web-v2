@@ -26,7 +26,11 @@ import { useProSocket, useSocketProService } from "./proService";
 import { useHistory } from "react-router-dom";
 import { useGetAssets } from "../AssetPage/AssetPanel/hook";
 
-export const usePro = <C extends { [key: string]: any }>(): {
+export const usePro = <C extends { [key: string]: any }>({
+  path = "/trade/pro",
+}: {
+  path?: string;
+}): {
   [key: string]: any;
   market: MarketType | undefined;
   resetTradeCalcData: (props: {
@@ -36,7 +40,7 @@ export const usePro = <C extends { [key: string]: any }>(): {
   // marketTicker: MarketBlockProps<C> |undefined,
 } => {
   //High: No not Move!!!!!!
-  let { realMarket } = usePairMatch("/trade/pro");
+  let { realMarket } = usePairMatch({ path });
   const history = useHistory();
   const { updatePageTradePro } = usePageTradePro();
   const [market, setMarket] = React.useState<MarketType>(
@@ -46,7 +50,7 @@ export const usePro = <C extends { [key: string]: any }>(): {
   const { account, status: accountStatus } = useAccount();
   const { status: walletLayer2Status } = useWalletLayer2();
   const { assetBtnStatus } = useGetAssets();
-  const { getOrderList } = useOrderList();
+  const { getOrderList } = useOrderList({});
   const { coinMap, tokenMap, marketArray, marketCoins, marketMap } =
     useTokenMap();
   useProSocket({ market });
@@ -111,7 +115,7 @@ export const usePro = <C extends { [key: string]: any }>(): {
   const handleOnMarketChange = React.useCallback(
     async (newMarket: MarketType) => {
       setMarket(newMarket);
-      history.push("/trade/pro/" + newMarket);
+      history.push(`${path}/${newMarket}`);
     },
     []
   );
@@ -139,7 +143,9 @@ export const usePro = <C extends { [key: string]: any }>(): {
     (props: { tradeData?: any; market: MarketType | string }) => {
       const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
       if (coinMap && tokenMap && marketMap && marketArray) {
-        const { tradePair } = marketInitCheck(props.market as string);
+        const { tradePair } = marketInitCheck({
+          market: props.market as string,
+        });
         // @ts-ignore
         let [, coinA, coinB] = tradePair.match(/([\w]+)-([\w]+)/i);
         let { market: _market } = sdk.getExistedMarket(
@@ -152,7 +158,7 @@ export const usePro = <C extends { [key: string]: any }>(): {
           history.push("/trade/pro/" + _market);
         }
         // @ts-ignore
-        [, coinA, coinB] = _market.match(/([\w]+)-([\w]+)/i);
+        [, coinA, coinB] = _market?.match(/([\w]+)-([\w]+)/i);
         let tradeCalcProData = pageTradePro.tradeCalcProData;
         tradeCalcProData = {
           ...tradeCalcProData,

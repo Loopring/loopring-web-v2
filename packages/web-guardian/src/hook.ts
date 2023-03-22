@@ -8,8 +8,9 @@ import {
   useTokenPrices,
 } from "@loopring-web/core";
 import { ChainId } from "@loopring-web/loopring-sdk";
-import { SagaStatus, ThemeType } from "@loopring-web/common-resources";
+import { myLog, SagaStatus, ThemeType } from "@loopring-web/common-resources";
 import {
+  AvaiableNetwork,
   ConnectProviders,
   ConnectProvides,
   connectProvides,
@@ -80,11 +81,13 @@ export function useInit() {
           });
           updateAccount({});
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-            let chainId =
+            let chainId = Number(
               // @ts-ignore
-              Number(connectProvides.usedProvide?.connection?.chainId) ??
-              Number(await connectProvides.usedWeb3.eth.getChainId());
-            if (ChainId[chainId] === undefined) {
+              connectProvides.usedProvide?.connection?.chainId ??
+                (await connectProvides.usedWeb3.eth.getChainId())
+            );
+            myLog("AvaiableNetwork", AvaiableNetwork);
+            if (!AvaiableNetwork.includes(chainId.toString())) {
               chainId =
                 account._chainId && account._chainId !== "unknown"
                   ? account._chainId

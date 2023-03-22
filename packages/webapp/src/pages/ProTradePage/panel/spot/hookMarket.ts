@@ -1,19 +1,19 @@
 import {
   AccountStatus,
-  defalutSlipage,
+  defaultSlipage,
   getValuePrecisionThousand,
   IBData,
   MarketType,
   myLog,
   TradeBtnStatus,
+  TradeProType,
+  TradeBaseType,
 } from "@loopring-web/common-resources";
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { toBig } from "@loopring-web/loopring-sdk";
 import {
   MarketTradeData,
-  TradeBaseType,
-  TradeProType,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -23,6 +23,7 @@ import {
   getPriceImpactInfo,
   LoopringAPI,
   PriceLevel,
+  reCalcStoB,
   store,
   useAccount,
   useAmount,
@@ -30,6 +31,7 @@ import {
   usePlaceOrder,
   useSubmitBtn,
   useSystem,
+  useTicker,
   useToast,
   useTokenMap,
   useTokenPrices,
@@ -40,21 +42,21 @@ import * as _ from "lodash";
 
 export const useMarket = <C extends { [key: string]: any }>({
   market,
-  resetTradeCalcData,
 }: { market: MarketType } & any): {
   [key: string]: any;
-  // market: MarketType|undefined;
-  // marketTicker: MarketBlockProps<C> |undefined,
 } => {
   const { t } = useTranslation();
   const { getAmount } = useAmount();
   const { tokenMap, marketArray, marketMap } = useTokenMap();
+  const { tokenPrices } = useTokenPrices();
+  const { tickerMap } = useTicker();
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { account } = useAccount();
   const { slippage, isMobile } = useSettings();
   const { exchangeInfo, allowTrade } = useSystem();
+
   const {
     toggle: { order },
   } = useToggle();
@@ -66,7 +68,7 @@ export const useMarket = <C extends { [key: string]: any }>({
     updatePageTradePro,
     __SUBMIT_LOCK_TIMER__,
     __TOAST_AUTO_CLOSE_TIMER__,
-    __AUTO_RECALC__,
+    __AUTO_RE_CALC__,
   } = usePageTradePro();
 
   // @ts-ignore
@@ -87,7 +89,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         belong: quoteSymbol,
         balance: walletMap ? walletMap[quoteSymbol as string]?.count : 0,
       } as IBData<any>,
-      slippage: slippage && slippage !== "N" ? slippage : defalutSlipage,
+      slippage: slippage && slippage !== "N" ? slippage : defaultSlipage,
       type: TradeProType.buy,
     }
   );
@@ -102,7 +104,7 @@ export const useMarket = <C extends { [key: string]: any }>({
     resetTradeData();
   }, [pageTradePro.market, pageTradePro.tradeCalcProData.walletMap]);
 
-  const autoRecalc = React.useCallback(() => {
+  const autoReCalc = React.useCallback(() => {
     const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
     if (autoRefresh.current !== -1) {
       clearTimeout(autoRefresh.current as NodeJS.Timeout);
@@ -149,8 +151,8 @@ export const useMarket = <C extends { [key: string]: any }>({
         }
         autoRefresh.current = setTimeout(() => {
           // myLog('autoUpdate',marketTradeData)
-          autoRecalc();
-        }, __AUTO_RECALC__);
+          autoReCalc();
+        }, __AUTO_RE_CALC__);
       }
 
       // myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
@@ -158,7 +160,7 @@ export const useMarket = <C extends { [key: string]: any }>({
       // setMarketTradeData(tradeData)
 
       let slippage = sdk
-        .toBig(tradeData.slippage ? tradeData.slippage : defalutSlipage)
+        .toBig(tradeData.slippage ? tradeData.slippage : defaultSlipage)
         .times(100)
         .toString();
 
@@ -193,6 +195,19 @@ export const useMarket = <C extends { [key: string]: any }>({
         ammPoolSnapshot: pageTradePro.ammPoolSnapshot,
         slippage,
       });
+      let _tradeData = {
+        ...tradeData,
+      };
+      // let baseValue = undefined;
+      // let quoteValue = undefined;
+      if (calcTradeParams) {
+        _tradeData.base.tradeValue = calcTradeParams.isReverse
+          ? Number(calcTradeParams.buyAmt)
+          : Number(calcTradeParams.sellAmt);
+        _tradeData.quote.tradeValue = calcTradeParams.isReverse
+          ? Number(calcTradeParams.sellAmt)
+          : Number(calcTradeParams.buyAmt);
+      }
 
       // myLog('depth:',pageTradePro.depth)
       const minSymbol =
@@ -200,7 +215,8 @@ export const useMarket = <C extends { [key: string]: any }>({
           ? tradeData.base.belong
           : tradeData.quote.belong;
       const minimumReceived = getValuePrecisionThousand(
-        toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+        sdk
+          .toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
           .minus(totalFee)
           .toString(),
         tokenMap[minSymbol].precision,
@@ -213,6 +229,55 @@ export const useMarket = <C extends { [key: string]: any }>({
         calcTradeParams,
         account.readyState
       );
+      const [sell, buy] =
+        _tradeData.type === TradeProType.sell
+          ? ["base", "quote"]
+          : ["quote", "base"];
+      let { stob } = reCalcStoB({
+        market,
+        tradeData: {
+          sell: _tradeData[sell],
+          buy: _tradeData[buy],
+          ...(_tradeData as any),
+        },
+        tradePair: `${_tradeData[sell].belong}-${_tradeData[buy].belong}`,
+      }) ?? { stob: undefined };
+
+      const { close } = tickerMap[market];
+
+      if (!stob || sdk.toBig(stob?.replaceAll(sdk.SEP, "") ?? 0).eq(0)) {
+        if (close) {
+          // @ts-ignore
+          // const [, _coinA] = market.match(/(\w+)-(\w+)/i);
+          if (_tradeData.type === TradeProType.sell) {
+            stob = close.toString().replaceAll(sdk.SEP, "");
+          } else {
+            stob = getValuePrecisionThousand(
+              1 / Number(close.toString().replaceAll(sdk.SEP, "")),
+              tokenMap[quoteSymbol].precision,
+              tokenMap[quoteSymbol].precision,
+              tokenMap[quoteSymbol].precision,
+              true
+            );
+          }
+        }
+      }
+      let isNotMatchMarketPrice, marketPrice, marketRatePrice;
+      if (tokenPrices && stob) {
+        marketPrice = sdk
+          .toBig(tokenPrices[_tradeData[sell].belong])
+          .div(tokenPrices[_tradeData[buy].belong]);
+        marketRatePrice = marketPrice.div(stob?.replaceAll(sdk.SEP, "") ?? 1);
+        isNotMatchMarketPrice = marketRatePrice.gt(1.05);
+        marketPrice = getValuePrecisionThousand(
+          marketPrice.toString(),
+          tokenMap[_tradeData[buy].belong].precision,
+          tokenMap[_tradeData[buy].belong].precision,
+          tokenMap[_tradeData[buy].belong].precision
+        );
+        marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2);
+      }
+
       updatePageTradePro({
         market,
         sellUserOrderInfo,
@@ -228,6 +293,13 @@ export const useMarket = <C extends { [key: string]: any }>({
             : undefined,
           priceImpact: priceImpactObj ? priceImpactObj.value : undefined,
           priceImpactColor: priceImpactObj?.priceImpactColor,
+          isNotMatchMarketPrice,
+          marketPrice,
+          marketRatePrice,
+          StoB: stob,
+          isChecked:
+            tradeData.isChecked !== undefined ? tradeData.isChecked : undefined,
+          lastStepAt,
         },
         lastStepAt,
         totalFee,
@@ -237,38 +309,34 @@ export const useMarket = <C extends { [key: string]: any }>({
       });
 
       setMarketTradeData((state) => {
-        let baseValue = undefined;
-        let quoteValue = undefined;
-        if (calcTradeParams) {
-          baseValue = calcTradeParams.isReverse
-            ? Number(calcTradeParams.buyAmt)
-            : Number(calcTradeParams.sellAmt);
-          quoteValue = calcTradeParams.isReverse
-            ? Number(calcTradeParams.sellAmt)
-            : Number(calcTradeParams.buyAmt);
-        }
         return {
           ...state,
-          ...tradeData,
-          // slippage: tradeData.slippage,
+          // ...tradeData,
+          ..._tradeData,
           base: {
             ...state.base,
-            tradeValue:
-              baseValue &&
-              Number(baseValue.toFixed(tokenMap[state.base.belong].precision)),
+            tradeValue: _tradeData.base?.tradeValue
+              ? Number(
+                  _tradeData.base?.tradeValue?.toFixed(
+                    tokenMap[state.base.belong].precision
+                  )
+                )
+              : undefined,
           },
           quote: {
             ...state.quote,
-            tradeValue:
-              quoteValue &&
-              Number(
-                quoteValue.toFixed(tokenMap[state.quote.belong].precision)
-              ),
+            tradeValue: _tradeData.quote.tradeValue
+              ? Number(
+                  _tradeData.quote.tradeValue.toFixed(
+                    tokenMap[state.quote.belong].precision
+                  )
+                )
+              : undefined,
           },
         };
       });
     },
-    [autoRecalc, account.readyState]
+    [autoReCalc, account.readyState, tickerMap]
   );
 
   const resetTradeData = React.useCallback(
@@ -285,6 +353,7 @@ export const useMarket = <C extends { [key: string]: any }>({
             balance: walletMap ? walletMap[baseSymbol as string]?.count : 0,
             tradeValue: undefined,
           } as IBData<any>,
+          isChecked: undefined,
           quote: {
             ...state.quote,
             balance: walletMap ? walletMap[quoteSymbol as string]?.count : 0,
@@ -309,6 +378,10 @@ export const useMarket = <C extends { [key: string]: any }>({
           priceImpactColor: undefined,
           minimumReceived: undefined,
           fee: undefined,
+          isNotMatchMarketPrice: undefined,
+          marketPrice: undefined,
+          marketRatePrice: undefined,
+          StoB: undefined,
         },
         totalFee: undefined,
         maxFeeBips: undefined,
@@ -334,7 +407,7 @@ export const useMarket = <C extends { [key: string]: any }>({
     ) {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: t("labelSwapFailed"),
       });
       setIsMarketLoading(false);
@@ -342,8 +415,6 @@ export const useMarket = <C extends { [key: string]: any }>({
       return;
     }
 
-    // const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
-    // const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
     try {
       const req: sdk.GetNextStorageIdRequest = {
         accountId: account.accountId,
@@ -380,7 +451,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         }
         setToastOpen({
           open: true,
-          type: "error",
+          type: ToastType.error,
           content: t("labelSwapFailed") + " : " + response.message,
         });
       } else {
@@ -418,13 +489,13 @@ export const useMarket = <C extends { [key: string]: any }>({
               if (percentage1 === 0 || percentage2 === 0) {
                 setToastOpen({
                   open: true,
-                  type: "warning",
+                  type: ToastType.warning,
                   content: t("labelSwapCancelled"),
                 });
               } else {
                 setToastOpen({
                   open: true,
-                  type: "success",
+                  type: ToastType.success,
                   content: t("labelSwapSuccess"),
                 });
               }
@@ -432,21 +503,21 @@ export const useMarket = <C extends { [key: string]: any }>({
             case sdk.OrderStatus.processed:
               setToastOpen({
                 open: true,
-                type: "success",
+                type: ToastType.success,
                 content: t("labelSwapSuccess"),
               });
               break;
             case sdk.OrderStatus.processing:
               setToastOpen({
                 open: true,
-                type: "success",
+                type: ToastType.success,
                 content: t("labelOrderProcessing"),
               });
               break;
             default:
               setToastOpen({
                 open: true,
-                type: "error",
+                type: ToastType.error,
                 content: t("labelSwapFailed"),
               });
               break;
@@ -459,7 +530,7 @@ export const useMarket = <C extends { [key: string]: any }>({
       sdk.dumpError400(reason);
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: t("labelSwapFailed"),
       });
     }
@@ -534,7 +605,20 @@ export const useMarket = <C extends { [key: string]: any }>({
       ) {
         return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
       } else {
-        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
+        if (
+          pageTradePro?.tradeCalcProData?.isNotMatchMarketPrice &&
+          !pageTradePro?.tradeCalcProData?.isChecked
+        ) {
+          return {
+            label: "",
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+          };
+        } else {
+          return {
+            label: "",
+            tradeBtnStatus: TradeBtnStatus.AVAILABLE,
+          };
+        }
       }
     }
 
@@ -544,7 +628,6 @@ export const useMarket = <C extends { [key: string]: any }>({
     React.useState<boolean>(false);
   const [secondConfirmationOpen, setSecondConfirmationOpen] =
     React.useState<boolean>(false);
-  const { tokenPrices } = useTokenPrices();
   const isSmallOrder =
     marketTradeData && marketTradeData.quote.tradeValue
       ? tokenPrices[marketTradeData.quote.belong] *

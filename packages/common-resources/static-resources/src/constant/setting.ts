@@ -6,6 +6,9 @@ export enum UpColor {
 }
 
 export const SlippageTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1];
+export const SlippageBtradeTolerance: Array<0.1 | 0.5 | 1 | string> = [
+  0.1, 0.5, 1,
+];
 
 export const RowConfig = {
   rowHeight: IsMobile.any() ? 48 : 44,
@@ -32,11 +35,11 @@ export const FeeChargeOrderUATDefault = ["USDT", "ETH", "LRC", "DAI"];
 export const Explorer = "https://explorer.loopring.io/";
 export const Bridge = "https://bridge.loopring.io/#/";
 export const Exchange = "https://loopring.io/#/";
-// export const maintainceStatTime = 1639980000000
-// export const maintainceEndTime = 1639987200000
+
 export const YEAR_PROMATE = "YYYY";
 export const DAY_FORMAT = "MM/DD";
 export const MINUTE_FORMAT = "HH:mm";
+export const DAY_MINUTE_FORMAT = `${DAY_FORMAT} ${MINUTE_FORMAT}`;
 export const DAT_STRING_FORMAT = "MMM DD [UTC]Z";
 export const SECOND_FORMAT = `${MINUTE_FORMAT}:ss`;
 export const YEAR_DAY_FORMAT = `${YEAR_PROMATE}/${DAY_FORMAT}`;
@@ -75,8 +78,41 @@ export const sizeNFTConfig = (size: "large" | "medium" | "small") => {
       break;
   }
 };
+
 export enum TradeBtnStatus {
   AVAILABLE = "AVAILABLE",
   DISABLED = "DISABLED",
   LOADING = "LOADING",
 }
+
+const MapChainIdMap = new Map([
+  [1, "ETHEREUM"],
+  [5, "GOERLI"],
+]);
+export const ChainIdExtends = {};
+
+export const ChainTests: any[] = [5];
+export const MapChainId = {};
+
+(function () {
+  process.env.REACT_APP_RPC_URL_OTHERS?.split(",").forEach((item, index) => {
+    let [name, isTest] = process.env[`REACT_APP_RPC_CHAINNAME_${item}`]?.split(
+      "|"
+    ) ?? [""];
+    if (name) {
+      ChainIdExtends[name] = Number(item);
+      MapChainIdMap.set(Number(item), name);
+      if (isTest) {
+        ChainTests.push(item);
+      }
+    } else {
+      ChainIdExtends["unknown" + index] = item;
+      MapChainIdMap.set(Number(item), "unknown");
+    }
+  });
+
+  [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
+    prev[key] = value;
+    return prev;
+  }, MapChainId);
+})();

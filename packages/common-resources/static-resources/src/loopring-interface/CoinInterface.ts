@@ -7,6 +7,8 @@ import {
 } from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
+import { AmmPoolInfoV3, TickerData } from "@loopring-web/loopring-sdk";
+import { AmmPoolStat } from "@loopring-web/loopring-sdk/dist/defs";
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -65,15 +67,15 @@ export type WalletMap<R, I = WalletCoin<R>> = {
   [K in CoinKey<R>]?: I;
 };
 
-export type TradeCalcData<T> = {
+export interface TradeCalcData<T> {
   coinSell: keyof T; //name
   coinBuy: keyof T;
   buyPrecision: number;
   sellPrecision: number;
   // tokenA: sdk.TokenInfo,
   // tokenB: sdk.TokenInfo,
-  StoB: string;
-  BtoS: string;
+  StoB: string | undefined;
+  BtoS: string | undefined;
   // marketPrecision: number,
   coinInfoMap?: CoinMap<T, CoinInfo<T>>;
   sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>;
@@ -81,30 +83,71 @@ export type TradeCalcData<T> = {
   walletMap?: WalletMap<T, WalletCoin<T>>;
   slippage: number | string;
   // slippageTolerance: Array<number | string>,
-  priceImpact: string;
-  priceImpactColor: string;
-  minimumReceived: string;
+  minimumReceived: string | undefined;
   fee: string;
+  isReverse: boolean;
   feeTakerRate?: number;
   tradeCost?: string;
+  lastStepAt?: "sell" | "buy";
+  isBtrade: undefined | boolean;
+  totalQuota: string;
+}
+
+export type SwapTradeCalcData<T> = TradeCalcData<T> & {
+  isNotMatchMarketPrice?: boolean;
+  marketPrice?: string;
+  marketRatePrice?: string;
+  isChecked?: boolean;
+  slippage: number | string;
+  priceImpact: string;
+  priceImpactColor: string;
+  feeTakerRate?: number;
+  tradeCost?: string;
+  showLargeVolumeSwapInfo?: boolean;
+  isBtrade: undefined | false;
 };
+
+export enum BtradeType {
+  Quantity = "Quantity",
+  Speed = "Speed",
+}
+
+export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
+  isBtrade: true;
+  maxFeeBips: number;
+  lockedNotification: true;
+  volumeSell: string | undefined;
+  volumeBuy: string | undefined;
+  sellMinAmtStr: string | undefined;
+  sellMaxL2AmtStr: string | undefined;
+  sellMaxAmtStr: string | undefined;
+  l1Pool: string;
+  l2Pool: string;
+  slippage: number | string;
+  btradeType: BtradeType;
+  // totalPool: string;
+};
+
 export type TradeCalcProData<T> = {
   coinBase: keyof T; //name
   coinQuote: keyof T;
   StoB: string;
   BtoS: string;
   coinInfoMap?: CoinMap<T, CoinInfo<T>>;
-  // sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
-  // buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
   walletMap?: WalletMap<T, WalletCoin<T>>;
   slippage: number | string;
-  // slippageTolerance: Array<number | string>,
   priceImpact: string;
   priceImpactColor: string;
   minimumReceived: string;
   fee: string;
   feeTakerRate?: number;
   tradeCost?: string;
+  lastStepAt?: "base" | "quote";
+  stopRange?: [string | undefined, string | undefined];
+  isNotMatchMarketPrice?: boolean;
+  marketPrice?: string;
+  marketRatePrice?: string;
+  isChecked?: boolean;
 };
 
 /**
@@ -116,6 +159,7 @@ export type TradeCalcProData<T> = {
 export type AmmJoinData<C extends IBData<I>, I = any> = {
   coinA: C;
   coinB: C;
+  coinLP: C;
   slippage: number | string;
   __cache__?: {
     [key: string]: any;
@@ -137,6 +181,31 @@ export type DeFiCalcData<T> = {
   AtoB: string;
   BtoA: string;
   fee: string;
+};
+export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
+  coinSell: T;
+  stakeViewInfo: R & {
+    dalyEarn?: string;
+    maxSellAmount?: string;
+    minSellAmount?: string;
+    maxSellVol?: string;
+    minSellVol?: string;
+  };
+};
+type RedeemInfo = sdk.StakeInfoOrigin &
+  Omit<sdk.STACKING_PRODUCT, "status"> & {
+    status_product: number;
+
+    maxSellAmount?: string;
+    minSellAmount?: string;
+    maxSellVol?: string;
+    minSellVol?: string;
+    minAmount: string;
+    maxAmount: string;
+  };
+export type DeFiSideRedeemCalcData<T, _R = RedeemInfo> = {
+  coinSell: T;
+  stakeViewInfo: _R;
 };
 
 export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {
@@ -162,22 +231,35 @@ export type AmmInData<T> = {
   slippage: number | string;
   // slippageTolerance: Array<number | string>,
   fee: string;
+  fees: any;
   percentage: string;
 };
 
 export type AmmDetailBase<T> = {
   // name?: string,
-  amountDollar?: number;
+  market: string;
+  coinA: CoinKey<T>;
+  coinB: CoinKey<T>;
+  coinAInfo: CoinInfo<T>;
+  coinBInfo: CoinInfo<T>;
+  address: string;
+  amountU?: string;
   totalLPToken?: number;
   totalA?: number;
   totalB?: number;
-  rewardValue?: number;
+  totalAStr?: string;
+  totalBStr?: string;
+  totalAU?: number;
+  totalBU?: number;
   rewardToken?: CoinKey<T>;
-  rewardValue2?: number;
+  rewardA?: number;
+  rewardB?: number;
+  rewardAU?: number;
+  rewardBU?: number;
   rewardToken2?: CoinKey<T>;
   feeA?: number;
   feeB?: number;
-  feeDollar?: number;
+  feeU?: number;
   isNew?: boolean;
   isActivity?: boolean;
   APR?: number;
@@ -189,9 +271,17 @@ export type AmmDetailBase<T> = {
 };
 
 export type AmmDetail<T> = AmmDetailBase<T> & {
-  coinAInfo: CoinInfo<T>;
-  coinBInfo: CoinInfo<T>;
-};
+  exitDisable: boolean;
+  joinDisable: boolean;
+  swapDisable: boolean;
+  showDisable: boolean;
+  isRiskyMarket: boolean;
+  stob: string;
+  btos: string;
+  tradeFloat: Partial<TradeFloat>;
+  __rawConfig__: AmmPoolInfoV3;
+  __ammPoolState__: AmmPoolStat;
+} & AmmPoolInfoV3;
 
 export type AmmCardProps<T> = AmmDetail<T> & {
   activity: AmmActivity<T>;
@@ -202,14 +292,10 @@ export type AmmCardProps<T> = AmmDetail<T> & {
   popoverIdx: number;
   precisionA?: number;
   precisionB?: number;
-  coinAPriceDollar: number;
-  coinBPriceDollar: number;
-  ammRewardRecordList: {
-    amount: string;
-    time: number;
-  }[];
+  coinAPriceU: number;
+  coinBPriceUr: number;
   getLiquidityMining: (market: string, size?: number) => Promise<void>;
-  getMiningLinkList: (market: string) => { [key: string]: string };
+  // getMiningLinkList: (market: string) => { [key: string]: string };
   setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>;
   setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>;
   ammInfo: any;
@@ -227,7 +313,7 @@ export type AmmActivity<I> = {
     to: Date;
   };
   isPass?: boolean;
-  rewardTokenDollar?: number;
+  rewardTokenU?: number;
   maxSpread?: number;
 };
 export type Amount<T> = {
@@ -264,7 +350,6 @@ export type OrderTrade<T> = TradeBasic<T> & {
   status: keyof typeof TradeStatus;
 };
 
-//ACD extends AmmInData<any>
 export type AmmDetailExtend<ACD, T> = {
   ammCalcData: ACD;
 } & AmmDetail<T>;
@@ -277,23 +362,25 @@ export type MyAmmLP<T> = {
   smallBalance?: boolean;
   balanceA: number | undefined;
   balanceB: number | undefined;
-  balanceDollar: number | undefined;
+  balanceAStr: string | undefined;
+  balanceBStr: string | undefined;
+  balanceU: number | undefined;
   feeA: number | undefined;
   feeB: number | undefined;
-  feeDollar?: number | undefined;
+  feeU: number | undefined;
   reward?: number | undefined;
   rewardToken: CoinInfo<T> | undefined;
   reward2?: number | undefined;
   rewardToken2?: CoinInfo<T> | undefined;
-  rewardDollar?: number | undefined;
+  rewardU?: number | undefined;
   totalLpAmount?: number | undefined;
   feeA24: number | undefined;
   feeB24: number | undefined;
-  feeDollar24: number | undefined;
+  feeU24: number | undefined;
   reward24: number | undefined;
   reward224: number | undefined;
-  rewardDollar24: number | undefined;
-  extraDollar24: number | undefined;
+  rewardU24: number | undefined;
+  extraU24: number | undefined;
   extraRewards24: {
     tokenSymbol: string;
     amount: number;
@@ -304,16 +391,17 @@ export type TradeFloat = {
   // value: number,
   change?: any;
   timeUnit: "24h" | "all";
-  priceDollar: number;
   floatTag: keyof typeof FloatTag;
   reward?: number;
   rewardToken?: string;
   volume?: number;
+  volumeView?: string;
   close?: number;
   high?: number;
   low?: number;
-  changeDollar?: number;
-  closeDollar?: number;
+  priceU: number;
+  changeU?: number;
+  closeU?: number;
 };
 
 export enum EXPLORE_TYPE {
@@ -324,6 +412,9 @@ export enum EXPLORE_TYPE {
   NFTMINT = "nftMint",
   NFTWITHDRAW = "nftWithdraw",
   NFTTRANSFER = "nftTransfer",
+  NFTSEND_BACK_LUCKY_TOKEN = "nftTransfer",
+  NFTSEND_LUCKY_TOKEN = "nftTransfer",
+  NFTWITHDRAW_LUCKY_TOKEN = "nftWithdraw",
 }
 
 /**
@@ -395,9 +486,58 @@ export type RedPacketSend = {
 export type LuckyRedPacketItem = {
   labelKey: string;
   desKey: string;
+  showInNFTS?: boolean;
+  showInERC20?: boolean;
+  defaultForERC20?: boolean;
+  defaultForNFT?: boolean;
   value: {
     value: number;
     partition: sdk.LuckyTokenAmountType;
     mode: sdk.LuckyTokenClaimType;
   };
 };
+
+export type Ticker = TradeFloat & {
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  change: number;
+  volume: number | string;
+  base: string;
+  quote: string;
+  __rawTicker__: TickerData;
+};
+export type NetworkItemInfo = {
+  label: string;
+  chainId: string;
+  RPC?: string;
+  link?: string;
+};
+
+export const NetworkMap: { [key: string]: NetworkItemInfo } = {
+  "1": {
+    label: "Ethereum",
+    chainId: "1",
+  },
+  "5": {
+    label: "Görli test",
+    chainId: "",
+  },
+  "42161": {
+    label: "Arbitrum",
+    chainId: "",
+    RPC: "https://arb1.arbitrum.io/rpc",
+  },
+  "": {
+    label: "Taiko",
+    chainId: "xxx",
+    RPC: "",
+  },
+  // "xxx":{
+  //
+  // }
+};
+
+export const url_path = "https://static.loopring.io/events";
+export const url_test_path = "https://static.loopring.io/events/testEvents";

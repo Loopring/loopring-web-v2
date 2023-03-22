@@ -8,6 +8,8 @@ import {
   setHideLpToken,
   setHideSmallBalances,
   setIsMobile,
+  setIsShowTestToggle,
+  setIsTaikoTest,
   setLanguage,
   setLayouts,
   setPlatform,
@@ -15,6 +17,7 @@ import {
   setSwapSecondConfirmation,
   setTheme,
   setUpColor,
+  setStopLimitLayouts,
 } from "./reducer";
 import { PlatFormType, SettingsState } from "./interface";
 import {
@@ -41,14 +44,25 @@ export function useSettings(): SettingsState & {
   setHideLpToken(value: boolean): void;
   setHideSmallBalances(value: boolean): void;
   setLayouts(value: Layouts): void;
+  setStopLimitLayouts(value: Layouts): void;
   setFeeChargeOrder(value: string[]): void;
   setIsMobile(value: boolean): void;
   setSwapSecondConfirmation(value: boolean): void;
+  setIsTaikoTest(value: boolean): void;
+  setIsShowTestToggle(value: boolean): void;
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings);
   const dispatch = useDispatch();
   return {
     ...settings,
+    setIsShowTestToggle: React.useCallback(
+      (value: boolean) => dispatch(setIsShowTestToggle(value)),
+      [dispatch]
+    ),
+    setIsTaikoTest: React.useCallback(
+      (value: boolean) => dispatch(setIsTaikoTest(value)),
+      [dispatch]
+    ),
     setTheme: React.useCallback(
       (value: keyof typeof ThemeType) => dispatch(setTheme(value)),
       [dispatch]
@@ -95,6 +109,10 @@ export function useSettings(): SettingsState & {
     ),
     setLayouts: React.useCallback(
       (value: Layouts) => dispatch(setLayouts(value)),
+      [dispatch]
+    ),
+    setStopLimitLayouts: React.useCallback(
+      (value: Layouts) => dispatch(setStopLimitLayouts(value)),
       [dispatch]
     ),
     setFeeChargeOrder: React.useCallback(

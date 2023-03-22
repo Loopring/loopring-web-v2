@@ -21,7 +21,7 @@ export const NftImage = (props: NftImageProps & any) => {
   );
 };
 
-export const cssBackground = ({ theme }: { theme: Theme }) => {
+export const cssBackground = (_props: { theme: Theme }) => {
   // const fillColor = theme.colorBase.textDisable.replace("#", "%23");
   // const _svg =
   //   encodeURI(`<svg width="24" height="24" viewBox="0 0 24 24" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">

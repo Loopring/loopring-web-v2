@@ -22,6 +22,8 @@ import {
   CloseIcon,
   CloseRedPacketIcon,
   CompleteIcon,
+  ContactIcon,
+  ConvertToIcon,
   CopyIcon,
   DarkIcon,
   DeleteIcon,
@@ -34,6 +36,7 @@ import {
   DragIcon,
   DragListIcon,
   DropDownIcon,
+  EditIcon,
   EmptyIcon,
   ErrorIcon,
   ExchangeAIcon,
@@ -112,6 +115,7 @@ import {
   UnConnectIcon,
   UnlikeIcon,
   UpIcon,
+  UploadedIcon,
   VideoIcon,
   ViewHistoryIcon,
   ViewIcon,
@@ -124,6 +128,7 @@ import {
   WithdrawIcon,
   YoutubeIcon,
   ZoomIcon,
+  ContactIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -258,6 +263,10 @@ const listIcon = [
   <ScanQRIcon />,
   <CloseRedPacketIcon />,
   <ClockIcon />,
+  <ContactIcon />,
+  <UploadedIcon />,
+  <EditIcon />,
+  <ConvertToIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

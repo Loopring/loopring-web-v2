@@ -6,8 +6,9 @@ import {
   MarketType,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
-import { TokenInfo } from "@loopring-web/loopring-sdk";
 import React from "react";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { RawDataDefiSideStakingItem } from "../../../tableList";
 
 export type DeFiChgData<T> = {
   type: DeFiChgType;
@@ -34,9 +35,50 @@ export type DeFiWrapProps<T, I, ACD> = {
   tokenSellProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
   tokenBuyProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
   deFiCalcData: ACD;
-  tokenSell: TokenInfo;
-  tokenBuy: TokenInfo;
+  tokenSell: sdk.TokenInfo;
+  tokenBuy: sdk.TokenInfo;
   btnStatus?: keyof typeof TradeBtnStatus | undefined;
   accStatus?: AccountStatus;
   type: string;
+};
+
+export type DeFiSideType<R = RawDataDefiSideStakingItem> = {
+  tokenSell: sdk.TokenInfo;
+  order: R;
+  onRedeem: (item: R) => void;
+};
+export type DeFiSideWrapProps<T, I, ACD> = {
+  isJoin: true;
+  disabled?: boolean;
+  btnInfo?: BtnInfo;
+  isLoading: boolean;
+  minSellAmount: string;
+  maxSellAmount: string;
+  onSubmitClick: () => void;
+  switchStobEvent?: (_isStoB: boolean) => void;
+  onChangeEvent: (data: { tradeData?: undefined | T }) => void;
+  handleError?: (data: T) => void;
+  tokenSellProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
+  deFiSideCalcData: ACD;
+  tokenSell: sdk.TokenInfo;
+  btnStatus?: keyof typeof TradeBtnStatus | undefined;
+  accStatus?: AccountStatus;
+};
+
+export type DeFiStakeRedeemWrapProps<T, _I, ACD> = {
+  isJoin: false;
+  isFullTime: boolean;
+  disabled?: boolean;
+  btnInfo?: BtnInfo;
+  isLoading: boolean;
+  minSellAmount: string;
+  maxSellAmount: string;
+  onSubmitClick: () => void;
+  switchStobEvent?: (_isStoB: boolean) => void;
+  onChangeEvent: (data: { tradeData?: undefined | T }) => void;
+  handleError?: (data: T) => void;
+  deFiSideRedeemCalcData: ACD;
+  tokenSell: sdk.TokenInfo;
+  btnStatus?: keyof typeof TradeBtnStatus | undefined;
+  accStatus?: AccountStatus;
 };

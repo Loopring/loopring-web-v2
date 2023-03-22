@@ -1,6 +1,12 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import {
+  Contact,
+  ModalState,
+  ModalStatePlayLoad,
+  Transaction,
+} from "./interface";
+import {
+  CLAIM_TYPE,
   ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
@@ -26,6 +32,7 @@ const initialState: ModalState = {
   isShowConnect: { isShow: false, step: 0 },
   isShowAccount: { isShow: false, step: 0 },
   isShowLayerSwapNotice: { isShow: false },
+  isShowAnotherNetwork: { isShow: false },
   isShowFeeSetting: { isShow: false },
   isShowTradeIsFrozen: { isShow: false, type: "" },
   isShowIFrame: { isShow: false, url: "" },
@@ -37,7 +44,12 @@ const initialState: ModalState = {
   isShowCollectionAdvance: { isShow: false },
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
-  isShowClaimWithdraw: { isShow: false, claimToken: undefined },
+  isShowClaimWithdraw: {
+    isShow: false,
+    claimToken: undefined,
+    claimType: undefined,
+  },
+  isShowSideStakingRedeem: { isShow: false, symbol: undefined },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -216,24 +228,32 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowTransfer(
       state,
-      action: PayloadAction<ModalStatePlayLoad & Transaction>
+      action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
     ) {
-      const { isShow, symbol, info } = action.payload;
+      const { isShow, symbol, info, name, address, addressType } =
+        action.payload;
       state.isShowTransfer = {
         isShow,
         symbol,
         info,
+        name,
+        address,
+        addressType,
       };
     },
     setShowWithdraw(
       state,
-      action: PayloadAction<ModalStatePlayLoad & Transaction>
+      action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
     ) {
-      const { isShow, symbol, info } = action.payload;
+      const { isShow, symbol, info, name, address, addressType } =
+        action.payload;
       state.isShowWithdraw = {
         isShow,
         symbol,
         info,
+        name,
+        address,
+        addressType,
       };
     },
     setShowDeposit(
@@ -322,6 +342,15 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
       };
     },
+    setShowAnotherNetworkNotice(
+      state,
+      action: PayloadAction<{ isShow: boolean }>
+    ) {
+      const { isShow } = action.payload;
+      state.isShowAnotherNetwork = {
+        isShow,
+      };
+    },
     setShowTradeIsFrozen(
       state,
       action: PayloadAction<{
@@ -339,12 +368,30 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowClaimWithdraw(
       state,
-      action: PayloadAction<ModalStatePlayLoad & { claimToken: ClaimToken }>
+      action: PayloadAction<
+        ModalStatePlayLoad & {
+          claimToken: ClaimToken;
+          claimType: CLAIM_TYPE;
+          successCallback?: () => void;
+        }
+      >
     ) {
-      const { isShow, claimToken } = action.payload;
+      const { isShow, claimToken, claimType, successCallback } = action.payload;
       state.isShowClaimWithdraw = {
         isShow,
         claimToken,
+        claimType,
+        successCallback,
+      };
+    },
+    setShowSideStakingRedeem(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & { symbol?: string }>
+    ) {
+      const { isShow, symbol } = action.payload;
+      state.isShowSideStakingRedeem = {
+        isShow,
+        symbol,
       };
     },
   },
@@ -378,4 +425,6 @@ export const {
   setShowClaimWithdraw,
   setShowRedPacket,
   setNFTMetaNotReady,
+  setShowSideStakingRedeem,
+  setShowAnotherNetworkNotice,
 } = modalsSlice.actions;

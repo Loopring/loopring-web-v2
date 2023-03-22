@@ -6,6 +6,8 @@ import {
   Box,
   FormControlLabel,
   Grid,
+  IconButton,
+  InputAdornment,
   Radio,
   RadioGroup,
   Typography,
@@ -14,6 +16,7 @@ import {
   AddressError,
   AssetsRawDataItem,
   CloseIcon,
+  ContactIcon,
   copyToClipBoard,
   DropDownIcon,
   EmptyValueTag,
@@ -25,19 +28,16 @@ import {
   NFTWholeINFO,
   TOAST_TIME,
   TradeBtnStatus,
+  WALLET_TYPE,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
   FeeTokenItemWrapper,
   PopoverPure,
   Toast,
+  ToastType,
 } from "../..";
-import {
-  Button,
-  IconClearStyled,
-  TextField,
-  useSettings,
-} from "../../../index";
+import { Button, TextField, useSettings } from "../../../index";
 import { WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { NFTInput } from "./BasicANFTTrade";
@@ -45,15 +45,6 @@ import { FeeToggle } from "./tool/FeeList";
 import { WithdrawAddressType } from "./AddressType";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-// const LinkStyle = styled(Link)`
-//   text-decoration: underline dotted;
-//   cursor: pointer;
-//   color: var(--color-text-secondary);
-//   font-size: ${({ theme }) => theme.fontDefault.body2};
-//   &:hover {
-//     color: var(--color-primary);
-//   }
-// `;
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTWholeINFO & IBData<I>),
   I,
@@ -82,6 +73,7 @@ export const WithdrawWrap = <
   handleOnAddressChange,
   isAddressCheckLoading,
   isCFAddress,
+  isLoopringAddress,
   isContractAddress,
   isFastWithdrawAmountLimit,
   addrStatus,
@@ -94,6 +86,10 @@ export const WithdrawWrap = <
   isToMyself = false,
   sureIsAllowAddress,
   handleSureIsAllowAddress,
+  contact,
+  isFromContact,
+  onClickContact,
+  loopringSmartWalletVersion,
   ...rest
 }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
@@ -166,6 +162,11 @@ export const WithdrawWrap = <
       );
     }
   }, [t, tradeData, withdrawI18nKey]);
+  const detectedWalletType = loopringSmartWalletVersion?.isLoopringSmartWallet
+    ? WALLET_TYPE.Loopring
+    : isContractAddress
+    ? WALLET_TYPE.OtherSmart
+    : WALLET_TYPE.EOA;
 
   return (
     <Grid
@@ -283,28 +284,48 @@ export const WithdrawWrap = <
               label={t("labelL2toL1Address")}
               SelectProps={{ IconComponent: DropDownIcon }}
               fullWidth={true}
+              InputProps={{
+                style: {
+                  paddingRight: "0",
+                },
+                endAdornment: isFromContact ? undefined : (
+                  <InputAdornment
+                    style={{
+                      cursor: "pointer",
+                      paddingRight: "0",
+                    }}
+                    position="end"
+                  >
+                    {addressDefault !== "" ? (
+                      isAddressCheckLoading ? (
+                        <LoadingIcon width={24} />
+                      ) : (
+                        <IconButton
+                          color={"inherit"}
+                          size={"small"}
+                          aria-label="Clear"
+                          onClick={() => handleOnAddressChange("")}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      )
+                    ) : (
+                      ""
+                    )}
+                    <IconButton
+                      color={"inherit"}
+                      size={"large"}
+                      aria-label="Clear"
+                      onClick={() => {
+                        onClickContact!();
+                      }}
+                    >
+                      <ContactIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-
-            {addressDefault !== "" ? (
-              isAddressCheckLoading ? (
-                <LoadingIcon
-                  width={24}
-                  style={{ top: 48, right: "8px", position: "absolute" }}
-                />
-              ) : (
-                <IconClearStyled
-                  color={"inherit"}
-                  size={"small"}
-                  style={{ top: 46 }}
-                  aria-label="Clear"
-                  onClick={() => handleOnAddressChange("")}
-                >
-                  <CloseIcon />
-                </IconClearStyled>
-              )
-            ) : (
-              ""
-            )}
           </>
         ) : (
           <Typography
@@ -366,6 +387,7 @@ export const WithdrawWrap = <
       {!isToMyself && (
         <Grid item alignSelf={"stretch"} position={"relative"}>
           <WithdrawAddressType
+            detectedWalletType={detectedWalletType}
             selectedValue={sureIsAllowAddress}
             handleSelected={handleSureIsAllowAddress}
             disabled={allowToClickIsSure}
@@ -515,7 +537,6 @@ export const WithdrawWrap = <
           {label}
         </Button>
       </Grid>
-
       <Toast
         alertText={t("labelCopyAddClip")}
         open={copyToastOpen}
@@ -523,7 +544,7 @@ export const WithdrawWrap = <
         onClose={() => {
           setCopyToastOpen(false);
         }}
-        severity={"success"}
+        severity={ToastType.success}
       />
     </Grid>
   );

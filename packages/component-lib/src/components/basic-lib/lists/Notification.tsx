@@ -18,6 +18,7 @@ import {
 import { css, Theme } from "@emotion/react";
 import { useHistory } from "react-router-dom";
 import { useSettings } from "../../../stores";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const cssBackground = ({
   theme,
@@ -137,7 +138,10 @@ const NotificationListItemStyled = styled(ListItem)<
 ) => JSX.Element;
 
 export const NotificationListItem = (
-  props: Partial<NOTIFICATION_ITEM> & { account?: Account }
+  props: Partial<NOTIFICATION_ITEM> & {
+    account?: Account;
+    chainId: sdk.ChainId;
+  }
 ) => {
   const history = useHistory();
   const { language } = useSettings();
@@ -151,12 +155,32 @@ export const NotificationListItem = (
     bannerDark,
     webRouter,
     link,
+    linkParam,
+    chainId,
   } = props;
   return (
     <NotificationListItemStyled
       {...{ lng, banner, bannerDark }}
       alignItems="flex-start"
       onClick={() => {
+        const hasParamTag = /\?/.test(link ?? "");
+        let params = "";
+        if (linkParam) {
+          params = linkParam.split("&").reduce((pre, ele) => {
+            const [key, value] = ele.split("=");
+            const [_, valueKey] = value.match(/\{(.*)\}/) ?? [];
+            let _value: any = "";
+            switch (valueKey) {
+              case "chainId":
+                _value = chainId;
+                break;
+              case "l2address":
+                _value = account?.accAddress;
+                break;
+            }
+            return `${pre}&${key}=${_value}`;
+          }, "");
+        }
         if (webRouter) {
           const [_, target, router] = webRouter.match(/\[(.*)\](.*)/i) ?? [];
           if (router && target === "self") {
@@ -165,20 +189,16 @@ export const NotificationListItem = (
             window.open(
               router
                 ? `https://loopring.io/#/${router}`
-                : `${link}` + `&l2account=${account?.accAddress}`,
+                : `${link}${hasParamTag ? "" : "?"}` + `${params}`,
               "_blank"
             );
             window.opener = null;
           }
         } else if (link) {
-          if (props.link && !!account?.accAddress) {
-            props.link = /\?/.test(props.link)
-              ? `&l2account=${account?.accAddress}`
-              : `?l2account=${account?.accAddress}`;
-          }
-          props.link?.startsWith("http")
-            ? window.open(props.link, "_blank")
-            : history.replace(`/notification/${props.link}`);
+          window.open(
+            `${link}${hasParamTag ? "" : "?"}` + `${params}`,
+            "_blank"
+          );
           window.opener = null;
         }
       }}
@@ -249,7 +269,9 @@ const ListItemActivityStyle = styled(NotificationListItemStyled)<
 ` as (
   props: ListItemProps & Partial<ACTIVITY> & { lng: string }
 ) => JSX.Element;
-export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
+export const ListItemActivity = (
+  props: ACTIVITY & { account?: Account; chainId: sdk.ChainId }
+) => {
   const {
     type,
     title,
@@ -261,6 +283,8 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
     banner,
     color,
     webRouter,
+    linkParam,
+    chainId,
   } = props;
   const { language } = useSettings();
   const lng = languageMap[language];
@@ -275,6 +299,23 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
         // }
         onClick={() => {
           const hasParamTag = /\?/.test(link);
+          let params = "";
+          if (linkParam) {
+            params = linkParam.split("&").reduce((pre, ele) => {
+              const [key, value] = ele.split("=");
+              const [_, valueKey] = value.match(/\{(.*)\}/) ?? [];
+              let _value: any = "";
+              switch (valueKey) {
+                case "chainId":
+                  _value = chainId;
+                  break;
+                case "l2address":
+                  _value = account?.accAddress;
+                  break;
+              }
+              return `${pre}&${key}=${_value}`;
+            }, "");
+          }
           if (webRouter) {
             const [_, target, router] = webRouter.match(/\[(.*)\](.*)/i) ?? [];
             if (router && target === "self") {
@@ -283,17 +324,14 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
               window.open(
                 router
                   ? `https://loopring.io/#/${router}`
-                  : `${link}${hasParamTag ? "" : "?"}` +
-                      `&l2account=${account?.accAddress}`,
+                  : `${link}${hasParamTag ? "" : "?"}` + `${params}`,
                 "_blank"
               );
               window.opener = null;
             }
           } else if (link) {
             window.open(
-              `${link}${hasParamTag ? "" : "?"}&l2account=${
-                account?.accAddress
-              }`,
+              `${link}${hasParamTag ? "" : "?"}` + `${params}`,
               "_blank"
             );
             window.opener = null;

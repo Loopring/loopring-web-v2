@@ -9,8 +9,6 @@ const {
 } = require("customize-cra");
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin"); //installed via npm
-
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 // const rewireLess = require('react-app-rewire-less')
@@ -41,17 +39,6 @@ function getCommitHash() {
 
 module.exports = override(
   addWebpackAlias({}),
-
-  /*
-  addWebpackPlugin(
-    new DuplicatePackageCheckerPlugin({
-      verbose: false,
-      emitError: false,
-      strict: true,
-    }),
-  ),
-  */
-
   addWebpackPlugin(
     new CopyWebpackPlugin({
       patterns: [
@@ -72,11 +59,6 @@ module.exports = override(
         '/SH"',
     })
   ),
-  // addWebpackPlugin(
-  //   new HtmlWebpackPlugin({
-  //     template: 'html!src/index.html',
-  //   }),
-  // ),
   fixBabelImports("import", {
     libraryName: "antd",
     libraryDirectory: "es",
@@ -107,7 +89,6 @@ module.exports = override(
 
   (config) => {
     config.output.publicPath = ASSET_PATH;
-    // 增加处理less module配置 customize-cra 不提供 less.module 只提供css.module
     console.log(path.resolve(__dirname, "..", "assets/"));
     console.log("-----> enter config!!!!!!!");
 
@@ -117,6 +98,23 @@ module.exports = override(
       babelLoader.include = babelLoader.include.replace(
         "/web-guardian/src",
         ""
+      );
+      babelLoader.include = [
+        babelLoader.include,
+        ...(process.env.NODE_ENV === "development"
+          ? [
+              // path.resolve(__dirname, "../../node_modules/@web3modal"),
+              // path.resolve(__dirname, "../../node_modules/@walletconnect"),
+              // path.resolve(
+              //   __dirname,
+              //   "../../node_modules/@walletconnect/ethereum-provider/"
+              // ),
+            ]
+          : []),
+      ];
+      console.log(
+        "-----> enter setConfig!!!!!!! include:",
+        babelLoader.include
       );
       config.module.rules[1].oneOf[index] = babelLoader;
     };

@@ -4,11 +4,13 @@ import {
   ModalBackButton,
   ModalCloseButton,
   ModalRedPacketProps,
+  RedPacketViewStep,
 } from "../../../index";
 import SwipeableViews from "react-swipeable-views";
 import { CloseRedPacketIcon } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
+import { isEmpty } from "lodash";
 
 const BoxStyle = styled(Box)`
   .redPacketClose {
@@ -19,8 +21,8 @@ const BoxStyle = styled(Box)`
 
     //transform: translateY(-50%) translateX(-50%);
     //left: 50%;
-    top: ${({ theme }) => 4 * theme.unit}px;
-    right: -${({ theme }) => theme.unit}px;
+    top: ${({ theme }) => 3.5 * theme.unit}px;
+    right: ${({ theme }) => 16 * theme.unit}px;
   }
 `;
 
@@ -36,6 +38,8 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
     ...rest
   }: ModalRedPacketProps & WithTranslation) => {
     const theme = useTheme();
+    // console.log('isEmpty(panelList[step].view.props', isEmpty(panelList[step].view.props))
+    // console.log('isEmpty(panelList[step].view.props', panelList[step].view.props)
 
     return (
       <Modal
@@ -57,14 +61,18 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
             transform: "translateY(-50%) translateX(-50%)",
           }}
         >
-          <ModalCloseButton
-            closeIcon={
-              <CloseRedPacketIcon htmlColor={"var(--color-text-button)"} />
-            }
-            onClose={onClose}
-            className={"redPacketClose"}
-            {...rest}
-          />
+          {/* hide close button if view redpacket view not rendered */}
+          {step !== RedPacketViewStep.Loading &&
+            !isEmpty(panelList[step].view.props) && (
+              <ModalCloseButton
+                closeIcon={
+                  <CloseRedPacketIcon htmlColor={"var(--color-text-button)"} />
+                }
+                onClose={onClose}
+                className={"redPacketClose"}
+                {...rest}
+              />
+            )}
           {onBack ? <ModalBackButton onBack={onBack} {...rest} /> : <></>}
           <SwipeableViews
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}

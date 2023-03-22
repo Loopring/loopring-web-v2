@@ -49,6 +49,8 @@ const TableStyled = styled(Box)<
     & > .rdg-row.child_row {
       background-color: var(--color-global-bg);
       border-top: 1px solid var(--color-box-hover);
+      border-left: 1px solid var(--color-box-hover);
+      border-right: 1px solid var(--color-box-hover);
 
       .rdg-cell:first-of-type {
         margin-left: ${({ theme }) => 2 * theme.unit}px;
@@ -264,6 +266,11 @@ export const InvestOverviewTable = <R extends RowInvest>({
                         return;
                       case InvestMapType.DUAL:
                         history.push(`/invest/dual/${row.token.symbol}-null`);
+                        return;
+                      case InvestMapType.STAKELRC:
+                        history.push(
+                          `/invest/stakelrc/${row.token.symbol}-null`
+                        );
                         return;
                     }
                   }}

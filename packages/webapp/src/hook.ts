@@ -14,10 +14,14 @@ import {
   useDefiMap,
   useInvestTokenTypeMap,
   useDualMap,
+  useStakingMap,
+  useBtradeSwap,
+  useBtradeMap,
 } from "@loopring-web/core";
 import { ChainId } from "@loopring-web/loopring-sdk";
-import { SagaStatus, ThemeType } from "@loopring-web/common-resources";
+import { myLog, SagaStatus, ThemeType } from "@loopring-web/common-resources";
 import {
+  AvaiableNetwork,
   ConnectProviders,
   ConnectProvides,
   connectProvides,
@@ -26,7 +30,6 @@ import {
 import { useAccountInit } from "./hookAccountInit";
 import { useSettings } from "@loopring-web/component-lib";
 import { useTheme } from "@emotion/react";
-import moment from "moment";
 
 /**
  * @description
@@ -69,6 +72,11 @@ export function useInit() {
     useDefiMap();
   const { status: dualMapStatus, statusUnset: dualMapStatusUnset } =
     useDualMap();
+  const { status: stakingMapStatus, statusUnset: stakingMapStatusUnset } =
+    useStakingMap();
+  const { status: btradeMapStatus, statusUnset: btradeMapStatusUnset } =
+    useBtradeMap();
+
   const {
     status: investTokenTypeMapStatus,
     statusUnset: investTokenTypeMapStatusUnset,
@@ -104,11 +112,13 @@ export function useInit() {
           });
           updateAccount({});
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-            let chainId =
+            let chainId = Number(
               // @ts-ignore
-              Number(connectProvides.usedProvide?.connection?.chainId) ??
-              Number(await connectProvides.usedWeb3.eth.getChainId());
-            if (ChainId[chainId] === undefined) {
+              connectProvides.usedProvide?.connection?.chainId ??
+                (await connectProvides.usedWeb3.eth.getChainId())
+            );
+            myLog("AvaiableNetwork", AvaiableNetwork);
+            if (!AvaiableNetwork.includes(chainId.toString())) {
               chainId =
                 account._chainId && account._chainId !== "unknown"
                   ? account._chainId
@@ -322,6 +332,32 @@ export function useInit() {
         break;
     }
   }, [dualMapStatus]);
+  React.useEffect(() => {
+    switch (stakingMapStatus) {
+      case SagaStatus.ERROR:
+        stakingMapStatusUnset();
+        // setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        stakingMapStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [stakingMapStatus]);
+  React.useEffect(() => {
+    switch (btradeMapStatus) {
+      case SagaStatus.ERROR:
+        btradeMapStatusUnset();
+        // setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        btradeMapStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [btradeMapStatus]);
 
   React.useEffect(() => {
     switch (investTokenTypeMapStatus) {

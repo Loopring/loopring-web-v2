@@ -1,7 +1,4 @@
-import {
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
+import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI, store } from "../../index";
 import { accountServices } from "./accountServices";
 import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
@@ -25,7 +22,7 @@ export async function unlockAccount() {
   ) {
     let walletType, account;
     try {
-      const connectName = (ConnectProvidersSignMap[accounStore.connectName] ??
+      const connectName = (ConnectProviders[accounStore.connectName] ??
         accounStore.connectName) as unknown as sdk.ConnectorNames;
       const walletTypePromise: Promise<{ walletType: any }> =
         window.ethereum &&
@@ -61,7 +58,6 @@ export async function unlockAccount() {
               exchangeInfo.exchangeAddress
             ).replace("${nonce}", (nonce - 1).toString());
 
-      myLog("generateKeyPair:", msg, chainId, isMobile);
       const response = await LoopringAPI.userAPI.unLockAccount(
         {
           keyPair: {

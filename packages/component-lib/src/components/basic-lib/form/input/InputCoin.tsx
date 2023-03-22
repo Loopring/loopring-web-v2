@@ -18,6 +18,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     label = "Amount",
     handleError,
     subLabel,
+    className,
     // wait = globalSetup.wait,
     // coinMap,
     // isBalanceLimit = true,
@@ -145,7 +146,13 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   );
   return (
     <>
-      <IWrap isMobile={isMobile} size={size} component={"div"} ref={ref}>
+      <IWrap
+        className={className}
+        isMobile={isMobile}
+        size={size}
+        component={"div"}
+        ref={ref}
+      >
         <Grid
           container
           component={"div"}
@@ -280,7 +287,11 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
             justifyContent={"flex-end"}
           >
             <Grid item>
-              <FormHelperText>{error.message}</FormHelperText>
+              <FormHelperText
+                sx={{ whiteSpace: "pre-line", wordBreak: "break-all" }}
+              >
+                {error.message}
+              </FormHelperText>
             </Grid>
           </Grid>
         )}

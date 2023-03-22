@@ -80,9 +80,22 @@ export const CreateRedPacketPanel = <
         setPanelIndex(0);
         break;
       case RedPacketStep.ChooseType:
+        handleOnDataChange({
+          collectionInfo: undefined,
+          tokenId: undefined,
+          tradeValue: undefined,
+          balance: undefined,
+          nftData: undefined,
+          belong: undefined,
+          tokenAddress: undefined,
+          image: undefined,
+        } as any);
         setPanelIndex(1);
         break;
       case RedPacketStep.Main:
+        handleOnDataChange({
+          validSince: Date.now(),
+        } as any);
         setPanelIndex(2);
         break;
       case RedPacketStep.NFTList:
@@ -111,23 +124,23 @@ export const CreateRedPacketPanel = <
     });
     return clonedWalletMap;
   }, [walletMap]);
-  const [selectedType, setSelectType] = React.useState(LuckyRedPacketList[0]);
+
+  const [selectedType, setSelectType] = React.useState(
+    tradeData.tradeType === TRADE_TYPE.NFT
+      ? LuckyRedPacketList.find((x) => x.defaultForNFT)
+      : LuckyRedPacketList.find((x) => x.defaultForERC20)
+  );
   React.useEffect(() => {
     setSelectType(() => {
-      if (tradeData?.type) {
-        if (
-          tradeData.type.partition == LuckyRedPacketList[0].value.partition &&
-          tradeData.type.mode == LuckyRedPacketList[0].value.mode
-        ) {
-          return LuckyRedPacketList[0];
-        } else if (
-          tradeData.type.partition == LuckyRedPacketList[1].value.partition &&
-          tradeData.type.mode == LuckyRedPacketList[1].value.mode
-        ) {
-          return LuckyRedPacketList[1];
-        } else {
-          return LuckyRedPacketList[2];
-        }
+      if (tradeData && tradeData.type) {
+        // if (tradeData.)
+        const found = LuckyRedPacketList.find(
+          (x) =>
+            tradeData.type?.partition == x.value.partition &&
+            tradeData.type?.mode == x.value.mode
+        );
+        // found?.value.mode ===
+        return found ?? LuckyRedPacketList[2];
       } else {
         return LuckyRedPacketList[2];
       }
@@ -135,9 +148,28 @@ export const CreateRedPacketPanel = <
     // setScope();
   }, [
     tradeData?.type?.partition,
-    tradeData?.type?.scope,
+    // tradeData?.type?.scope,
     tradeData?.type?.mode,
   ]);
+
+  // tradeData.tradeType === TRADE_TYPE.NFT
+  React.useEffect(() => {
+    const found =
+      tradeData.tradeType === TRADE_TYPE.NFT
+        ? LuckyRedPacketList.find((x) => x.defaultForNFT)
+        : LuckyRedPacketList.find((x) => x.defaultForERC20);
+
+    setSelectType(found);
+    handleOnDataChange({
+      type: {
+        ...tradeData?.type,
+        partition: found!.value.partition,
+        mode: found!.value.mode,
+      },
+    } as any);
+  }, [tradeData.tradeType]);
+
+  const [privateChecked, setPrivateChecked] = React.useState(false);
 
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     return {
@@ -176,6 +208,16 @@ export const CreateRedPacketPanel = <
                 setActiveStep,
                 activeStep: RedPacketStep.ChooseType,
               } as any)}
+              privateChecked={privateChecked}
+              onChangePrivateChecked={() => {
+                handleOnDataChange({
+                  type: {
+                    ...tradeData?.type,
+                    scope: !privateChecked ? 1 : 0,
+                  },
+                } as any);
+                setPrivateChecked(!privateChecked);
+              }}
             />
           ),
           toolBarItem: undefined,
@@ -266,7 +308,7 @@ export const CreateRedPacketPanel = <
       alignItems={"center"}
     >
       <HorizontalLabelPositionBelowStepper
-        activeStep={panelIndex === 0 ? 0 : 1}
+        activeStep={panelIndex === 2 || panelIndex === 3 ? 2 : panelIndex}
         steps={steps}
       />
       <Box

@@ -10,6 +10,7 @@ import {
   UserAPI,
   WalletAPI,
   WsAPI,
+  ContactAPI,
 } from "@loopring-web/loopring-sdk";
 
 export class LoopringAPI {
@@ -23,6 +24,7 @@ export class LoopringAPI {
   public static globalAPI: GlobalAPI | undefined = undefined;
   public static defiAPI: DefiAPI | undefined = undefined;
   public static luckTokenAPI: LuckTokenAPI | undefined = undefined;
+  public static contactAPI: ContactAPI | undefined = undefined;
   public static __chainId__: ChainId | undefined = undefined;
   public static InitApi = (chainId: ChainId) => {
     LoopringAPI.userAPI = new UserAPI({ chainId }, 6000);
@@ -35,6 +37,7 @@ export class LoopringAPI {
     LoopringAPI.nftAPI = new NFTAPI({ chainId }, 6000);
     LoopringAPI.delegate = new DelegateAPI({ chainId }, 6000);
     LoopringAPI.defiAPI = new DefiAPI({ chainId }, 6000);
+    LoopringAPI.contactAPI = new ContactAPI({ chainId }, 6000);
     LoopringAPI.__chainId__ = chainId;
   };
 }

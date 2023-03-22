@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { PageTradePro, PageTradeProStatus } from "./interface";
-import { TradeProType } from "@loopring-web/component-lib";
-import { RequireOne } from "@loopring-web/common-resources";
+import { RequireOne, TradeProType } from "@loopring-web/common-resources";
 import { MAPFEEBIPS } from "../../../defs";
 
 const initState = {
@@ -21,7 +20,7 @@ const initialState: PageTradeProStatus<{ [key: string]: any }> = {
   __API_REFRESH__: 15000,
   __SUBMIT_LOCK_TIMER__: 1000,
   __TOAST_AUTO_CLOSE_TIMER__: 3000,
-  __AUTO_RECALC__: 3000,
+  __AUTO_RE_CALC__: 3000,
 };
 const pageTradeProSlice: Slice<PageTradeProStatus<{ [key: string]: any }>> =
   createSlice({
@@ -50,6 +49,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [key: string]: any }>> =
           ammPoolSnapshot,
           calcTradeParams,
           limitCalcTradeParams,
+          stopLimitCalcTradeParams,
           priceImpactObj,
           feeBips,
           tradeArray,
@@ -75,6 +75,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [key: string]: any }>> =
             request,
             calcTradeParams,
             limitCalcTradeParams,
+            stopLimitCalcTradeParams,
             depth,
             depthForCalc,
             ticker,
@@ -140,6 +141,10 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [key: string]: any }>> =
           if (limitCalcTradeParams !== undefined) {
             state.pageTradePro.limitCalcTradeParams = limitCalcTradeParams;
           }
+          if (stopLimitCalcTradeParams !== undefined) {
+            state.pageTradePro.stopLimitCalcTradeParams =
+              stopLimitCalcTradeParams;
+          }
 
           if (tradeArray) {
             state.pageTradePro.tradeArray = tradeArray;
@@ -171,6 +176,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [key: string]: any }>> =
           if (maxFeeBips) {
             state.pageTradePro.maxFeeBips = maxFeeBips;
           }
+
           state.pageTradePro.tradeCost = tradeCost;
           state.pageTradePro.feeTakerRate = feeTakerRate;
         }

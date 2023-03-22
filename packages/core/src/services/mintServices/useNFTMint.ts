@@ -38,10 +38,7 @@ import {
   SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import {
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
+import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 import { useHistory } from "react-router-dom";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -212,7 +209,7 @@ export function useNFTMint<
                   chainId !== sdk.ChainId.GOERLI
                     ? sdk.ChainId.MAINNET
                     : chainId,
-                walletType: (ConnectProvidersSignMap[connectName] ??
+                walletType: (ConnectProviders[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,

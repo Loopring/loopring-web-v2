@@ -115,17 +115,20 @@ export const CoinIcons = React.memo(
 
 export const ColumnCoinDeep = React.memo(
   ({
-    token: { type = TokenType.single, ...token },
-  }: {
-    token: CoinInfo<any> & { type?: TokenType };
-  }) => {
+     token: {type = TokenType.single, ...token},
+     isNotRequiredName = false,
+   }: {
+    token: CoinInfo<any> & {
+      type?: TokenType;
+    };
+  } & { isNotRequiredName?: boolean }) => {
     let tokenIcon: [any, any] = [undefined, undefined];
     const [head, middle, tail] = token.simpleName.split("-");
-    const { coinJson } = useSettings();
+    const {coinJson} = useSettings();
     if (type === "lp" && middle && tail) {
       tokenIcon =
-        coinJson[middle] && coinJson[tail]
-          ? [coinJson[middle], coinJson[tail]]
+        coinJson[ middle ] && coinJson[ tail ]
+          ? [coinJson[ middle ], coinJson[ tail ]]
           : [undefined, undefined];
     }
     if (type !== "lp" && head && head !== "lp") {
@@ -135,20 +138,22 @@ export const ColumnCoinDeep = React.memo(
     }
     return (
       <Box height={"100%"} display={"inline-flex"} alignItems={"center"}>
-        <CoinIcons type={type} tokenIcon={tokenIcon} />
+        <CoinIcons type={type} tokenIcon={tokenIcon}/>
         <Typography marginLeft={1} component={"span"} color={"textPrimary"}>
           {token?.simpleName}
         </Typography>
-        <Typography
-          marginLeft={1 / 2}
-          component={"span"}
-          variant={"body2"}
-          className={"next-company"}
-          color={"textSecondary"}
-        >
-          {token?.name}
-        </Typography>
+        {!isNotRequiredName && (
+          <Typography
+            marginLeft={1 / 2}
+            component={"span"}
+            variant={"body2"}
+            className={"next-company"}
+            color={"textSecondary"}
+          >
+            {token?.name}
+          </Typography>
+        )}
       </Box>
     );
-  }
+  };
 );

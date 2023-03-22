@@ -20,7 +20,7 @@ export const ErrorPage = ({ messageKey }: ErrorObject) => {
   const message = `labelConnectUs`;
   return (
     <>
-      <Container style={{ flex: 1 }}>
+      <Container style={{ flex: 1, display: "flex" }}>
         {/*style={{height: '100%' }}*/}
         <StyleBox
           flex={1}

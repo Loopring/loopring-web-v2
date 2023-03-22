@@ -1,8 +1,12 @@
 import { SwapTradeData } from "../../Interface";
 import {
+  BtradeTradeCalcData,
+  BtradeType,
+  CheckBoxIcon,
+  CheckedIcon,
   CoinInfo,
   CoinMap,
-  defalutSlipage,
+  defaultSlipage,
   EmptyValueTag,
   ExchangeIcon,
   getValuePrecisionThousand,
@@ -10,22 +14,33 @@ import {
   Info2Icon,
   myLog,
   ReverseIcon,
+  SwapTradeCalcData,
   TradeBtnStatus,
-  TradeCalcData,
 } from "@loopring-web/common-resources";
-import { WithTranslation } from "react-i18next";
+import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel as MuiFormControlLabel,
+  Grid,
+  Tooltip,
+  Typography,
+  Link,
+  Tab,
+} from "@mui/material";
 import { InputButton } from "../../../basic-lib";
 
 import { SwapTradeProps } from "./Interface";
 import { useSettings } from "../../../../stores";
-import { ButtonStyle, IconButtonStyled } from "../Styled";
+import { ButtonStyle, IconButtonStyled, TabsStyle } from "../Styled";
+import { useHistory } from "react-router-dom";
 
 export const SwapTradeWrap = <
   T extends IBData<I>,
   I,
-  TCD extends TradeCalcData<I>
+  TCD extends BtradeTradeCalcData<I>,
+  SCD extends SwapTradeCalcData<I>
 >({
   t,
   onChangeEvent,
@@ -41,15 +56,11 @@ export const SwapTradeWrap = <
   tokenSellProps,
   tokenBuyProps,
   ...rest
-}: SwapTradeProps<T, I, TCD> & WithTranslation) => {
+}: SwapTradeProps<T, I, TCD | SCD> & WithTranslation) => {
   const sellRef = React.useRef();
   const buyRef = React.useRef();
-  // const { slippage } = useSettings();
+  const history = useHistory();
   let tradeData = swapData.tradeData;
-
-  // const _slippageArray: Array<number | string> = SlippageTolerance.concat(
-  //   `slippage:${slippage}`
-  // ) as Array<number | string>;
 
   const [_isStoB, setIsStoB] = React.useState(
     typeof isStob !== "undefined" ? isStob : true
@@ -109,28 +120,6 @@ export const SwapTradeWrap = <
       to: "button",
     });
   }, [swapData, onChangeEvent]);
-  // const _onSlippageChange = React.useCallback(
-  //   (
-  //     slippage: number | string,
-  //     customSlippage: number | string | undefined
-  //   ) => {
-  //     popupState.close();
-  //     onChangeEvent(0, {
-  //       ...swapData,
-  //       tradeData: {
-  //         ...swapData.tradeData,
-  //         slippage: slippage,
-  //         __cache__: {
-  //           ...swapData.tradeData.__cache__,
-  //           customSlippage: customSlippage,
-  //         },
-  //       },
-  //       type: "sell",
-  //       to: "button",
-  //     });
-  //   },
-  //   [swapData, onChangeEvent]
-  // );
 
   if (typeof handleError !== "function") {
     handleError = ({ belong, balance, tradeValue }: any) => {
@@ -185,18 +174,9 @@ export const SwapTradeWrap = <
         return t(swapBtnI18nKey);
       }
     } else {
-      return t(`swapBtn`);
+      return t(tradeCalcData.isBtrade ? `labelBtradeSwapBtn` : `swapBtn`);
     }
-    // if (error.error) {
-    //   if (typeof error.message === "string") {
-    //     return t(error.message);
-    //   } else if (error.message !== undefined) {
-    //     return error.message;
-    //   } else {
-    //     return t("labelError");
-    //   }
-    // }
-  }, [t, swapBtnI18nKey]);
+  }, [t, swapBtnI18nKey, tradeCalcData.isBtrade]);
   const showVal =
     tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB;
 
@@ -211,13 +191,13 @@ export const SwapTradeWrap = <
           ? tradeCalcData.BtoS
           : EmptyValueTag
       } ${tradeData.sell?.belong}`;
-  const priceImpactColor = tradeCalcData?.priceImpactColor
-    ? tradeCalcData.priceImpactColor
+  const priceImpactColor = (tradeCalcData as SCD)?.priceImpactColor
+    ? (tradeCalcData as SCD).priceImpactColor
     : "textPrimary";
   const priceImpact =
-    tradeCalcData?.priceImpact !== undefined
+    (tradeCalcData as SCD)?.priceImpact !== undefined
       ? getValuePrecisionThousand(
-          tradeCalcData.priceImpact,
+          (tradeCalcData as SCD).priceImpact,
           undefined,
           undefined,
           2,
@@ -244,6 +224,7 @@ export const SwapTradeWrap = <
       ? `${tradeCalcData.minimumReceived}  ${tradeData.buy?.belong}`
       : EmptyValueTag;
   const { isMobile } = useSettings();
+
   return (
     <Grid
       className={tradeCalcData ? "trade-panel" : "trade-panel loading"}
@@ -256,15 +237,53 @@ export const SwapTradeWrap = <
       flex={isMobile ? "1" : "initial"}
       height={"100%"}
     >
+      {tradeCalcData.isBtrade && (
+        <Box
+          className={"tool-bar"}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          <Box component={"header"} width={"100%"}>
+            <TabsStyle
+              className={"trade-tabs swap"}
+              variant={"fullWidth"}
+              value={tradeData.btradeType}
+              onChange={(_e, value) =>
+                onChangeEvent(0, {
+                  tradeData: {
+                    ...swapData.tradeData,
+                    btradeType: value,
+                  } as SwapTradeData<T>,
+                  type: (tradeCalcData as unknown as SCD)?.lastStepAt ?? "sell",
+                  to: "button",
+                })
+              }
+            >
+              <Tab
+                className={"trade-tab-quantity"}
+                value={BtradeType.Quantity}
+                label={t("labelBtrade" + BtradeType.Quantity)}
+              />
+              <Tab
+                className={"trade-tab-speed"}
+                value={BtradeType.Speed}
+                label={t("labelBtrade" + BtradeType.Speed)}
+              />
+            </TabsStyle>
+          </Box>
+        </Box>
+      )}
       <Grid
         item
-        marginTop={3}
+        marginTop={tradeCalcData.isBtrade ? 1 : 3}
         display={"flex"}
         alignSelf={"stretch"}
         justifyContent={"flex-start"}
         alignItems={"stretch"}
         flexDirection={"column"}
         flexBasis={"initial"}
+        position={"relative"}
       >
         <InputButton<any, I, CoinInfo<I>>
           ref={sellRef}
@@ -279,9 +298,25 @@ export const SwapTradeWrap = <
                 : ({} as CoinMap<I, CoinInfo<I>>),
           }}
         />
-        <Box alignSelf={"center"} marginY={1}>
+        <Box
+          alignSelf={"center"}
+          marginY={1}
+          position={"absolute"}
+          zIndex={99}
+          top={60}
+          sx={{
+            boxSizing: "border-box",
+            border: "3px solid var(--color-pop-bg)",
+            background: "var(--color-box-secondary)",
+            borderRadius: "50%",
+          }}
+        >
           <IconButtonStyled
             size={"large"}
+            sx={{
+              height: "var(--btn-icon-size-large) !important",
+              width: "var(--btn-icon-size-large) !important",
+            }}
             onClick={covertOnClick}
             aria-label={t("tokenExchange")}
           >
@@ -291,8 +326,7 @@ export const SwapTradeWrap = <
             />
           </IconButtonStyled>
         </Box>
-        {/*</Grid>*/}
-        {/*<Grid item>*/}
+
         <InputButton<any, I, CoinInfo<I>>
           ref={buyRef}
           disabled={getDisabled()}
@@ -307,16 +341,103 @@ export const SwapTradeWrap = <
                 : ({} as CoinMap<I, CoinInfo<I>>),
           }}
         />
-        {/*</Grid>*/}
-        {/*</Grid>*/}
+        {tradeCalcData.isBtrade ? (
+          <Typography
+            variant={"body1"}
+            display={"inline-flex"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            paddingTop={1}
+            paddingBottom={2}
+          >
+            <Tooltip title={t("labelBtradeQuoteDes").toString()}>
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                alignItems={"center"}
+                display={"inline-flex"}
+                color={"textSecondary"}
+              >
+                <Info2Icon
+                  fontSize={"small"}
+                  color={"inherit"}
+                  sx={{ marginX: 1 / 2 }}
+                />
+                {t("labelBtradeQuote")}
+              </Typography>
+            </Tooltip>
+
+            <Typography
+              component={"span"}
+              variant={"inherit"}
+              color={"textPrimary"}
+            >
+              {tradeCalcData?.totalQuota
+                ? tradeCalcData?.totalQuota + " " + tradeData?.sell?.belong
+                : EmptyValueTag}
+            </Typography>
+          </Typography>
+        ) : (
+          <></>
+        )}
       </Grid>
-      <Grid item>
+      {!tradeCalcData.isBtrade && tradeCalcData.showLargeVolumeSwapInfo && (
+        <Grid
+          item
+          marginTop={3}
+          display={"flex"}
+          alignSelf={"stretch"}
+          justifyContent={"flex-start"}
+          alignItems={"stretch"}
+          flexDirection={"column"}
+          flexBasis={"initial"}
+        >
+          <Typography
+            variant={"body2"}
+            color={"textSecondary"}
+            border={"1px solid var(--color-warning)"}
+            borderRadius={1}
+            paddingY={2}
+            paddingX={1}
+          >
+            <Trans
+              i18nKey={"labelGoBtradeSwap"}
+              components={{
+                link: (
+                  <Link
+                    onClick={() => {
+                      history.push("/trade/btrade");
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant={"inherit"}
+                    color={"textPrimary"}
+                  />
+                ),
+              }}
+            >
+              Swapping on the DEX will result in a large Price Impact (loss of
+              assets). We recommend using the <Link>Btrade Swap</Link> option to
+              help minimize potential losses.
+            </Trans>
+          </Typography>
+        </Grid>
+      )}
+
+      <Grid
+        item
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+      >
         <Typography
-          component={"p"}
           variant="body1"
           textAlign={"center"}
           lineHeight={"24px"}
           paddingY={2}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
         >
           {showVal ? (
             <>
@@ -335,8 +456,8 @@ export const SwapTradeWrap = <
           )}
         </Typography>
       </Grid>
-      <Grid item alignSelf={"stretch"}>
-        <Grid container direction={"column"} spacing={1} alignItems={"stretch"}>
+      {!tradeCalcData.isBtrade && (
+        <>
           <Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>
             <Grid
               container
@@ -384,10 +505,10 @@ export const SwapTradeWrap = <
                 placement={"top"}
               >
                 <Typography
-                  component={"p"}
+                  display={"inline-flex"}
+                  component={"span"}
                   variant="body2"
                   color={"textSecondary"}
-                  display={"inline-flex"}
                   alignItems={"center"}
                 >
                   <Info2Icon
@@ -471,34 +592,194 @@ export const SwapTradeWrap = <
                       ? tradeData.slippage
                       : tradeCalcData.slippage
                       ? tradeCalcData.slippage
-                      : defalutSlipage) + "%"
+                      : defaultSlipage) + "%"
                   : EmptyValueTag}
               </Typography>
             </Grid>
           </Grid>
-          <Grid item>
-            <ButtonStyle
-              variant={"contained"}
-              size={"large"}
-              color={"primary"}
-              onClick={() => {
-                onSwapClick(swapData.tradeData);
-              }}
-              loading={
-                !getDisabled() && swapBtnStatus === TradeBtnStatus.LOADING
-                  ? "true"
-                  : "false"
-              }
-              disabled={
-                getDisabled() ||
-                swapBtnStatus === TradeBtnStatus.DISABLED ||
-                swapBtnStatus === TradeBtnStatus.LOADING
-              }
-              fullWidth={true}
+          {(tradeCalcData as SCD).isNotMatchMarketPrice && (
+            <Grid item>
+              <MuiFormControlLabel
+                sx={{ alignItems: "flex-start" }}
+                control={
+                  <Checkbox
+                    checked={(tradeCalcData as SCD)?.isChecked ? true : false}
+                    onChange={() => {
+                      onChangeEvent(0, {
+                        tradeData: {
+                          ...swapData.tradeData,
+                          isChecked: !(tradeCalcData as SCD)?.isChecked,
+                        } as SwapTradeData<T>,
+                        type: (tradeCalcData as SCD)?.lastStepAt ?? "sell",
+                        to: "button",
+                      });
+                    }}
+                    checkedIcon={<CheckedIcon />}
+                    icon={<CheckBoxIcon />}
+                    color="default"
+                  />
+                }
+                label={
+                  <Typography variant={"body2"}>
+                    <Trans
+                      i18nKey={"labelExpectSettlementPrice"}
+                      interpolation={{ escapeValue: false }}
+                      tOptions={{
+                        symbolSell: tradeData.sell?.belong,
+                        symbolBuy: tradeData.buy?.belong,
+                        stob: tradeCalcData.StoB,
+                        marketPrice: (tradeCalcData as SCD).marketPrice,
+                        marketRatePrice: (tradeCalcData as SCD).marketRatePrice,
+                      }}
+                    >
+                      The expected settlement price from this order is symbol =
+                      value, while the current market price from a trusted
+                      oracle is symbol= marketPrice. There is marketRatePrice%
+                      variance observed. Please acknowledge the risk if you
+                      still want to continue.
+                    </Trans>
+                  </Typography>
+                }
+              />
+            </Grid>
+          )}
+        </>
+      )}
+
+      {tradeCalcData.isBtrade && (
+        <>
+          <Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>
+            <Grid
+              container
+              justifyContent={"space-between"}
+              direction={"row"}
+              alignItems={"center"}
+              marginTop={1 / 2}
             >
-              {label}
-            </ButtonStyle>
+              <Tooltip
+                title={t("labelBtradeFeeTooltips", {
+                  rate: userTakerRate,
+                  value: tradeCostMin,
+                }).toString()}
+                placement={"top"}
+              >
+                <Typography
+                  component={"p"}
+                  variant="body2"
+                  color={"textSecondary"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <Info2Icon
+                    fontSize={"small"}
+                    color={"inherit"}
+                    sx={{ marginX: 1 / 2 }}
+                  />
+                  {" " + t("swapFee")}
+                </Typography>
+              </Tooltip>
+              <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                {fee}
+              </Typography>
+            </Grid>
+
+            {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
+
+            <Grid
+              container
+              justifyContent={"space-between"}
+              direction={"row"}
+              alignItems={"center"}
+              marginTop={1 / 2}
+            >
+              <Tooltip
+                title={t("labelBtradeMinReceiveTooltips").toString()}
+                placement={"top"}
+              >
+                <Typography
+                  component={"p"}
+                  variant="body2"
+                  color={"textSecondary"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <Info2Icon
+                    fontSize={"small"}
+                    color={"inherit"}
+                    sx={{ marginX: 1 / 2 }}
+                  />
+                  {t("swapMinReceive")}
+                </Typography>
+              </Tooltip>
+              <Typography component={"p"} variant="body2" color={"textPrimary"}>
+                {minimumReceived}
+              </Typography>
+            </Grid>
+
+            <Grid
+              container
+              justifyContent={"space-between"}
+              direction={"row"}
+              alignItems={"center"}
+              height={24}
+            >
+              <Tooltip
+                title={t("labelBtradeToleranceTooltips").toString()}
+                placement={"top"}
+              >
+                <Typography
+                  component={"p"}
+                  variant="body2"
+                  color={"textSecondary"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <Info2Icon
+                    fontSize={"small"}
+                    color={"inherit"}
+                    sx={{ marginX: 1 / 2 }}
+                  />
+                  {" " + t("swapTolerance")}
+                </Typography>
+              </Tooltip>
+
+              <Typography component={"p"} variant="body2">
+                {tradeCalcData
+                  ? (tradeData.slippage
+                      ? tradeData.slippage
+                      : tradeCalcData.slippage
+                      ? tradeCalcData.slippage
+                      : defaultSlipage) + "%"
+                  : EmptyValueTag}
+              </Typography>
+            </Grid>
           </Grid>
+        </>
+      )}
+
+      <Grid item alignSelf={"stretch"}>
+        <Grid item>
+          <ButtonStyle
+            variant={"contained"}
+            size={"large"}
+            color={"primary"}
+            onClick={() => {
+              onSwapClick(swapData.tradeData);
+            }}
+            loading={
+              !getDisabled() && swapBtnStatus === TradeBtnStatus.LOADING
+                ? "true"
+                : "false"
+            }
+            disabled={
+              getDisabled() ||
+              swapBtnStatus === TradeBtnStatus.DISABLED ||
+              swapBtnStatus === TradeBtnStatus.LOADING
+            }
+            fullWidth={true}
+          >
+            {label}
+          </ButtonStyle>
         </Grid>
       </Grid>
     </Grid>

@@ -1,10 +1,10 @@
 import { Box, Typography } from "@mui/material";
-import styled from "@emotion/styled";
 import { MenuBtnStyled } from "../../styled";
 import { AddAssetProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import {
   AddAssetList,
+  AnotherIcon,
   BackIcon,
   CardIcon,
   ExchangeAIcon,
@@ -13,9 +13,7 @@ import {
   L2l2Icon,
   OutputIcon,
 } from "@loopring-web/common-resources";
-import { useSettings } from "../../../stores";
-
-const BoxStyled = styled(Box)`` as typeof Box;
+import { useSettings, useToggle } from "../../../stores";
 
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   switch (svgIcon) {
@@ -31,6 +29,8 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
       return <ExchangeAIcon color={"inherit"} sx={{ marginRight: 1 }} />;
     case "OutputIcon":
       return <OutputIcon color={"inherit"} sx={{ marginRight: 1 }} />;
+    case "AnotherIcon":
+      return <AnotherIcon color={"inherit"} sx={{ marginRight: 1 }} />;
   }
 };
 export const AddAsset = ({
@@ -41,13 +41,17 @@ export const AddAsset = ({
 }: AddAssetProps) => {
   const { t } = useTranslation("common");
   const { isMobile } = useSettings();
+  const {
+    toggle: { receive },
+  } = useToggle();
+
   const isLp: boolean = symbol?.startsWith("LP-") ?? false;
   const lpDisaList = [
     AddAssetList.BuyWithCard.key,
     AddAssetList.FromExchange.key,
   ];
   return (
-    <BoxStyled
+    <Box
       flex={1}
       display={"flex"}
       alignItems={"center"}
@@ -85,48 +89,57 @@ export const AddAsset = ({
           {t("labelAddAssetHowto")}
         </Typography>
         <>
-          {addAssetList.map((item) => (
-            <Box key={item.key} marginTop={1.5}>
-              <MenuBtnStyled
-                variant={"outlined"}
-                size={"large"}
-                className={`addAsset ${isMobile ? "isMobile" : ""}`}
-                fullWidth
-                disabled={
-                  !!(
-                    item.enableKey &&
-                    allowTrade[item.enableKey]?.enable === false
-                  ) ||
-                  (isLp && lpDisaList.includes(item.key))
-                }
-                endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
-                onClick={(e) => {
-                  item.handleSelect(e);
-                }}
-              >
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"inherit"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  lineHeight={"1.2em"}
-                  sx={{
-                    textIndent: 0,
-                    textAlign: "left",
-                  }}
-                >
-                  <>{IconItem({ svgIcon: item.svgIcon })}</>
-                  {t("label" + item.key)}
-                </Typography>
-              </MenuBtnStyled>
-            </Box>
-          ))}
+          {addAssetList.reduce((prev, item) => {
+            if (
+              !symbol ||
+              (item.key == "FromAnotherNet" &&
+                receive["orbiter"]?.includes(symbol)) ||
+              (item.key == "FromExchange" &&
+                receive["layerSwap"]?.includes(symbol)) ||
+              !["FromAnotherNet", "FromExchange"].includes(item.key)
+            ) {
+              prev.push(
+                <Box key={item.key} marginTop={1.5}>
+                  <MenuBtnStyled
+                    variant={"outlined"}
+                    size={"large"}
+                    className={`addAsset ${isMobile ? "isMobile" : ""}`}
+                    fullWidth
+                    disabled={
+                      !!(
+                        item.enableKey &&
+                        allowTrade[item.enableKey]?.enable === false
+                      ) ||
+                      (isLp && lpDisaList.includes(item.key))
+                    }
+                    endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
+                    onClick={(e) => {
+                      item.handleSelect(e);
+                    }}
+                  >
+                    <Typography
+                      component={"span"}
+                      variant={"inherit"}
+                      color={"inherit"}
+                      display={"inline-flex"}
+                      alignItems={"center"}
+                      lineHeight={"1.2em"}
+                      sx={{
+                        textIndent: 0,
+                        textAlign: "left",
+                      }}
+                    >
+                      <>{IconItem({ svgIcon: item.svgIcon })}</>
+                      {t("label" + item.key)}
+                    </Typography>
+                  </MenuBtnStyled>
+                </Box>
+              );
+            }
+            return prev;
+          }, [] as JSX.Element[])}
         </>
       </Box>
-    </BoxStyled>
+    </Box>
   );
-  {
-    /*</WalletConnectPanelStyled>*/
-  }
 };

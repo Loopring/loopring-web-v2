@@ -15,20 +15,27 @@ import {
   getShortAddr,
   ImageIcon,
   Info2Icon,
+  LoadingIcon,
   MakeMeta,
   myLog,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {
+  Button,
   CollectionCardList,
   CollectionListProps,
   DropdownIconStyled,
+  MenuItem,
   SwitchPanelStyled,
+  // TextField,
   Toast,
+  ToastType,
 } from "../../../index";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
+import { useHistory } from "react-router";
+import { TextField } from "../../../basic-lib";
 
 const SizeCss = {
   small: `
@@ -52,7 +59,6 @@ const BoxStyle = styled(Box)<BoxProps & { size: "small" | "large" | "medium" }>`
   &:hover,
   &:active {
     color: var(--color-text-primary);
-    background: var(--color-box-hover);
     ${({ theme }) =>
       theme.border.defaultFrame({
         c_key: "var(--color-border-hover)",
@@ -106,7 +112,14 @@ export const CollectionInput = <Co extends CollectionMeta>({
   const { t } = useTranslation("common");
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
-  const { onPageChange } = collectionListProps;
+  const {
+    onPageChange,
+    collectionList,
+    isLoading: isLoadingCollectionList,
+  } = collectionListProps;
+  const history = useHistory();
+  const noCollectionAndSelected =
+    collectionList.length === 0 && collection === undefined;
   myLog("collectionList", collectionListProps.collectionList);
   return (
     <Box
@@ -171,118 +184,158 @@ export const CollectionInput = <Co extends CollectionMeta>({
           </Typography>
         </Tooltip>
       </Box>
-      <BoxStyle
-        width={"100%"}
-        display={"flex"}
-        alignItems={"center"}
-        fontSize={"1.6rem"}
-        size={size}
-        className={collection ? "selected" : ""}
-        justifyContent={"space-between"}
-        onClick={(_e: any) => {
-          _e.stopPropagation();
-          setDropdownStatus((prev) => (prev === "up" ? "down" : "up"));
-          setModalState(true);
-          onPageChange(1, { isMintable: true });
-        }}
-        style={{ cursor: "pointer", whiteSpace: "nowrap" }}
-      >
-        <Box flex={1} display={"flex"} flexDirection={"row"}>
-          {collection ? (
-            <>
-              {(
-                collection?.cached?.tileUri ??
-                collectionListProps.getIPFSString(
-                  collection?.tileUri ?? "",
-                  collectionListProps.baseURL
-                )
-              ).startsWith("http") ? (
-                <Avatar
-                  sx={{
-                    bgcolor: "var(--color-border-disable2)",
-                    marginRight: 1,
-                    width:
-                      size === "large"
-                        ? "var(--svg-size-huge2)"
-                        : "var(--svg-size-large)",
-                    height:
-                      size === "large"
-                        ? "var(--svg-size-huge2)"
-                        : "var(--svg-size-large)",
-                  }}
-                  variant={"rounded"}
-                  src={
-                    collection?.cached?.tileUri ??
-                    collectionListProps.getIPFSString(
-                      collection?.tileUri ?? "",
-                      collectionListProps.baseURL
-                    )
-                  }
-                />
-              ) : (
-                <Avatar
-                  sx={{
-                    bgcolor: "var(--color-border-disable2)",
-                    marginRight: 1,
-                    width:
-                      size === "large"
-                        ? "var(--svg-size-huge2)"
-                        : "var(--svg-size-medium)",
-                    height:
-                      size === "large"
-                        ? "var(--svg-size-huge2)"
-                        : "var(--svg-size-medium)",
-                  }}
-                  variant={"rounded"}
-                >
-                  <ImageIcon />
-                </Avatar>
-              )}
+      {dropdownStatus === "up" && noCollectionAndSelected ? (
+        <TextField
+          select
+          size={size}
+          SelectProps={{
+            open: true,
+            IconComponent: () => (
+              <DropdownIconStyled
+                sx={{ color: "white!important" }}
+                status={dropdownStatus}
+                fontSize={size}
+              />
+            ),
+          }}
+          sx={{ width: "100%", maxWidth: "none!important" }}
+          onClick={(_e: any) => {
+            _e.stopPropagation();
+            setDropdownStatus((prev) => (prev === "up" ? "down" : "up"));
+          }}
+        >
+          <MenuItem
+            onClick={() => {
+              history.push("/nft/addCollection");
+            }}
+          >
+            {t("labelNFTCreateCollection")}
+          </MenuItem>
+        </TextField>
+      ) : (
+        <BoxStyle
+          width={"100%"}
+          display={"flex"}
+          alignItems={"center"}
+          fontSize={"1.6rem"}
+          size={size}
+          className={collection ? "selected" : ""}
+          justifyContent={"space-between"}
+          onClick={(_e: any) => {
+            if (isLoadingCollectionList) return;
+            if (noCollectionAndSelected) {
+              _e.stopPropagation();
+              setDropdownStatus((prev) => (prev === "up" ? "down" : "up"));
+            } else {
+              setModalState(true);
+              onPageChange(1, { isMintable: true });
+            }
+          }}
+          style={{ cursor: "pointer", whiteSpace: "nowrap" }}
+          position={"relative"}
+        >
+          <Box flex={1} display={"flex"} flexDirection={"row"}>
+            {collection ? (
+              <>
+                {(
+                  collection?.cached?.tileUri ??
+                  collectionListProps.getIPFSString(
+                    collection?.tileUri ?? "",
+                    collectionListProps.baseURL
+                  )
+                ).startsWith("http") ? (
+                  <Avatar
+                    sx={{
+                      bgcolor: "var(--color-border-disable2)",
+                      marginRight: 1,
+                      width:
+                        size === "large"
+                          ? "var(--svg-size-huge2)"
+                          : "var(--svg-size-large)",
+                      height:
+                        size === "large"
+                          ? "var(--svg-size-huge2)"
+                          : "var(--svg-size-large)",
+                    }}
+                    variant={"rounded"}
+                    src={
+                      collection?.cached?.tileUri ??
+                      collectionListProps.getIPFSString(
+                        collection?.tileUri ?? "",
+                        collectionListProps.baseURL
+                      )
+                    }
+                  />
+                ) : (
+                  <Avatar
+                    sx={{
+                      bgcolor: "var(--color-border-disable2)",
+                      marginRight: 1,
+                      width:
+                        size === "large"
+                          ? "var(--svg-size-huge2)"
+                          : "var(--svg-size-medium)",
+                      height:
+                        size === "large"
+                          ? "var(--svg-size-huge2)"
+                          : "var(--svg-size-medium)",
+                    }}
+                    variant={"rounded"}
+                  >
+                    <ImageIcon />
+                  </Avatar>
+                )}
 
-              <Box
-                flex={1}
-                display={"flex"}
-                flexDirection={size === "large" ? "column" : "row"}
-                alignItems={size === "large" ? "stretch" : "center"}
-              >
-                <Typography
-                  component={"span"}
-                  variant={"body1"}
-                  color={"textPrimary"}
-                  textOverflow={"ellipsis"}
-                  overflow={"hidden"}
-                  display={"inline-flex"}
-                  whiteSpace={"pre"}
-                  sx={
-                    size !== "large"
-                      ? {
-                          maxWidth: "160px",
-                          wordBreak: "break-all",
-                        }
-                      : {}
-                  }
+                <Box
+                  flex={1}
+                  display={"flex"}
+                  flexDirection={size === "large" ? "column" : "row"}
+                  alignItems={size === "large" ? "stretch" : "center"}
                 >
-                  {collection.name}
-                </Typography>
-                <Typography
-                  component={"span"}
-                  marginLeft={size === "large" ? 0 : 1}
-                  variant={"body2"}
-                  color={"var(--color-text-third)"}
-                >
-                  {size === "large"
-                    ? collection.contractAddress
-                    : " " +
-                      getShortAddr(collection.contractAddress ?? "", true)}
-                </Typography>
-              </Box>
-            </>
+                  <Typography
+                    component={"span"}
+                    variant={"body1"}
+                    color={"textPrimary"}
+                    textOverflow={"ellipsis"}
+                    overflow={"hidden"}
+                    display={"inline-flex"}
+                    whiteSpace={"pre"}
+                    sx={
+                      size !== "large"
+                        ? {
+                            maxWidth: "160px",
+                            wordBreak: "break-all",
+                          }
+                        : {}
+                    }
+                  >
+                    {collection.name}
+                  </Typography>
+                  <Typography
+                    component={"span"}
+                    marginLeft={size === "large" ? 0 : 1}
+                    variant={"body2"}
+                    color={"var(--color-text-third)"}
+                  >
+                    {size === "large"
+                      ? collection.contractAddress
+                      : " " +
+                        getShortAddr(collection.contractAddress ?? "", true)}
+                  </Typography>
+                </Box>
+              </>
+            ) : (
+              <></>
+            )}
+          </Box>
+          {isLoadingCollectionList ? (
+            <LoadingIcon />
           ) : (
-            <></>
+            <DropdownIconStyled status={dropdownStatus} fontSize={size} />
           )}
-        </Box>
-        <DropdownIconStyled status={dropdownStatus} fontSize={size} />
-      </BoxStyle>
+        </BoxStyle>
+      )}
+
       {collection && showCopy && (
         <Typography display={"inline-flex"} alignItems={"center"} marginY={1}>
           collection_metadata:
@@ -317,7 +370,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
       <Modal
         open={_modalState}
         onClose={() => {
-          setDropdownStatus((prev) => (prev === "up" ? "down" : "up"));
+          // setDropdownStatus((prev) => (prev === "up" ? "down" : "up"));
           setModalState(false);
         }}
       >
@@ -333,11 +386,18 @@ export const CollectionInput = <Co extends CollectionMeta>({
           <Box
             display={"flex"}
             alignItems={"center"}
-            justifyContent={"flex-start"}
-            marginRight={3}
+            justifyContent={"space-between"}
             marginBottom={2}
           >
             <Typography variant={"h5"}>{t("labelChooseCollection")}</Typography>
+            <Button
+              variant={"contained"}
+              onClick={() => {
+                history.push("/nft/addCollection");
+              }}
+            >
+              {t("labelNFTCreateCollection")}
+            </Button>
           </Box>
           <Divider style={{ marginTop: "-1px" }} />
           <CollectionCardList
@@ -364,7 +424,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
             onClose={() => {
               collectionListProps.setCopyToastOpen({ isShow: false, type: "" });
             }}
-            severity={"success"}
+            severity={ToastType.success}
           />
         </SwitchPanelStyled>
       </Modal>

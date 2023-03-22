@@ -11,6 +11,7 @@ import {
   Layer1Action,
   LoadingIcon,
   LockIcon,
+  MapChainId,
   myLog,
   SDK_ERROR_MAP_TO_UI,
 } from "@loopring-web/common-resources";
@@ -22,7 +23,6 @@ import {
 } from "@loopring-web/core";
 import { connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { HEBAO_LOCK_STATUS, Protector } from "@loopring-web/loopring-sdk";
 
 const useHebaoProtector = <T extends sdk.Protector>({
   guardianConfig,
@@ -38,6 +38,11 @@ const useHebaoProtector = <T extends sdk.Protector>({
   const { chainId, gasPrice } = useSystem();
   const { t } = useTranslation(["error"]);
   const { setOneItem } = layer1Store.useLayer1Store();
+  const network =
+    sdk.NetworkWallet[
+      MapChainId[[1, 5].includes(Number(chainId) ?? 1) ? 1 : chainId]
+    ];
+  myLog("network", network);
   const onLock = React.useCallback(
     async (item: T) => {
       //
@@ -53,6 +58,7 @@ const useHebaoProtector = <T extends sdk.Protector>({
           LoopringAPI.walletAPI
             .getWalletType({
               wallet: item.address, //account.accAddress,
+              network,
             })
             .then(({ walletType }) => {
               if (
@@ -134,7 +140,7 @@ export const WalletProtector = ({
   loadData,
   guardianConfig,
 }: {
-  protectorList: Protector[];
+  protectorList: sdk.Protector[];
   handleOpenModal: (info: { step: GuardianStep; options?: any }) => void;
   loadData: () => Promise<void>;
   guardianConfig: any;
@@ -170,7 +176,7 @@ export const WalletProtector = ({
       status,
       onClickLock,
     }: {
-      status: HEBAO_LOCK_STATUS;
+      status: sdk.HEBAO_LOCK_STATUS;
       onClickLock: () => void;
     }) => {
       switch (status) {

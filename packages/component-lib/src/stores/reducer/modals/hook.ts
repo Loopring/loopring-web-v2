@@ -1,10 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
-import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
+import {
+  Contact,
+  ModalState,
+  ModalStatePlayLoad,
+  Transaction,
+} from "./interface";
 import {
   setNFTMetaNotReady,
   setShowAccount,
   setShowActiveAccount,
   setShowAmm,
+  setShowAnotherNetworkNotice,
   setShowClaimWithdraw,
   setShowCollectionAdvance,
   setShowConnect,
@@ -23,6 +29,7 @@ import {
   setShowOtherExchange,
   setShowRedPacket,
   setShowResetAccount,
+  setShowSideStakingRedeem,
   setShowSupport,
   setShowSwap,
   setShowTradeIsFrozen,
@@ -33,6 +40,7 @@ import {
 
 import React from "react";
 import {
+  CLAIM_TYPE,
   ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
@@ -85,7 +93,7 @@ export const useOpenModals = () => {
     ),
 
     setShowTransfer: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) => {
+      (state: ModalStatePlayLoad & Transaction & Contact) => {
         if (toggle.transfer.enable) {
           dispatch(setShowTransfer(state));
         } else {
@@ -111,7 +119,7 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowWithdraw: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) => {
+      (state: ModalStatePlayLoad & Transaction & Contact) => {
         if (toggle.withdraw.enable) {
           dispatch(setShowWithdraw(state));
         } else {
@@ -228,7 +236,13 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowClaimWithdraw: React.useCallback(
-      (state: ModalStatePlayLoad & { claimToken?: ClaimToken }) => {
+      (
+        state: ModalStatePlayLoad & {
+          claimToken?: ClaimToken;
+          claimType?: CLAIM_TYPE;
+          successCallback?: () => void;
+        }
+      ) => {
         if (toggle.claim.enable) {
           dispatch(setShowClaimWithdraw(state));
         } else {
@@ -259,9 +273,19 @@ export const useOpenModals = () => {
       (state: ModalStatePlayLoad) => dispatch(setShowLayerSwapNotice(state)),
       [dispatch]
     ),
+    setShowAnotherNetworkNotice: React.useCallback(
+      (state: ModalStatePlayLoad) =>
+        dispatch(setShowAnotherNetworkNotice(state)),
+      [dispatch]
+    ),
     setShowTradeIsFrozen: React.useCallback(
       (state: ModalStatePlayLoad & { type?: string; messageKey?: string }) =>
         dispatch(setShowTradeIsFrozen(state)),
+      [dispatch]
+    ),
+    setShowSideStakingRedeem: React.useCallback(
+      (state: ModalStatePlayLoad & { symbol?: string }) =>
+        dispatch(setShowSideStakingRedeem(state)),
       [dispatch]
     ),
   };

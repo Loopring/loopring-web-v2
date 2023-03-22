@@ -2,8 +2,9 @@ import styled from "@emotion/styled";
 import { Meta, Story } from "@storybook/react/types-6-0";
 import { withTranslation } from "react-i18next";
 import { MemoryRouter } from "react-router-dom";
-import { RawDataTradeItem, TradePro } from "./index";
-import { TradeTypes } from "@loopring-web/common-resources";
+import { TradePro } from "./index";
+import { RawDataTradeItem } from "../tradeTable";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const Style = styled.div`
   flex: 1;
@@ -13,7 +14,7 @@ const Style = styled.div`
 
 const rawData: RawDataTradeItem[] = [
   {
-    side: TradeTypes.Buy,
+    role: sdk.OrderMakerType.maker,
     amount: {
       from: {
         key: "LRC",
@@ -34,32 +35,10 @@ const rawData: RawDataTradeItem[] = [
       value: 2.55,
     },
     time: 0,
+    __raw__: {},
   },
   {
-    side: TradeTypes.Sell,
-    amount: {
-      from: {
-        key: "BTC",
-        value: 0.59,
-      },
-      to: {
-        key: "ETH",
-        value: 25.73,
-      },
-      volume: 1111,
-    },
-    price: {
-      key: "ETH",
-      value: 1785.65,
-    },
-    fee: {
-      key: "LRC",
-      value: 2.55,
-    },
-    time: 3,
-  },
-  {
-    side: TradeTypes.Buy,
+    role: sdk.OrderMakerType.maker,
     amount: {
       from: {
         key: "LRC",
@@ -80,9 +59,10 @@ const rawData: RawDataTradeItem[] = [
       value: 2.55,
     },
     time: 0,
+    __raw__: {},
   },
   {
-    side: TradeTypes.Buy,
+    role: sdk.OrderMakerType.maker,
     amount: {
       from: {
         key: "LRC",
@@ -103,9 +83,10 @@ const rawData: RawDataTradeItem[] = [
       value: 2.55,
     },
     time: 0,
+    __raw__: {},
   },
   {
-    side: TradeTypes.Buy,
+    role: sdk.OrderMakerType.maker,
     amount: {
       from: {
         key: "LRC",
@@ -126,9 +107,10 @@ const rawData: RawDataTradeItem[] = [
       value: 2.55,
     },
     time: 0,
+    __raw__: {},
   },
   {
-    side: TradeTypes.Buy,
+    role: sdk.OrderMakerType.maker,
     amount: {
       from: {
         key: "LRC",
@@ -149,29 +131,7 @@ const rawData: RawDataTradeItem[] = [
       value: 2.55,
     },
     time: 0,
-  },
-  {
-    side: TradeTypes.Buy,
-    amount: {
-      from: {
-        key: "LRC",
-        value: 2333,
-      },
-      to: {
-        key: "ETH",
-        value: 1.05,
-      },
-      volume: 1111,
-    },
-    price: {
-      key: "ETH",
-      value: 1785.65,
-    },
-    fee: {
-      key: "LRC",
-      value: 2.55,
-    },
-    time: 0,
+    __raw__: {},
   },
 ];
 

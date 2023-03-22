@@ -7,7 +7,7 @@ import {
   TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import { Trans, useTranslation } from "react-i18next";
-import React from "react";
+import React, { ForwardedRef } from "react";
 import { BasicANFTTradeProps } from "./Interface";
 import {
   InputButton,
@@ -29,26 +29,30 @@ const BoxInput = styled(Box)`
 export const _BasicANFTTrade = <
   T extends IBData<I> & Partial<NFTWholeINFO>,
   I extends any
->({
-  tradeData,
-  onChangeEvent,
-  disabled,
-  isBalanceLimit,
-  handleError: _handleError,
-  inputNFTRef,
-  baseURL,
-  getIPFSString,
-  inputNFTProps,
-  inputNFTDefaultProps,
-  // isSelected = false,
-  // isRequired = false,
-  isThumb,
-  ...rest
-}: BasicANFTTradeProps<T, I>) => {
+>(
+  {
+    tradeData,
+    onChangeEvent,
+    disabled,
+    isBalanceLimit,
+    handleError: _handleError,
+    inputNFTRef,
+    baseURL,
+    getIPFSString,
+    inputNFTProps,
+    inputNFTDefaultProps,
+    // isSelected = false,
+    // isRequired = false,
+    isThumb,
+    ...rest
+  }: BasicANFTTradeProps<T, I>,
+  _ref: ForwardedRef<any>
+) => {
   const { t } = useTranslation("common");
   const getDisabled = () => {
     return disabled || tradeData === undefined;
   };
+
   const handleCountChange: any = React.useCallback(
     (_tradeData: T, _name: string, _ref: any) => {
       //const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
@@ -80,8 +84,7 @@ export const _BasicANFTTrade = <
           typeof tradeValue !== "undefined" &&
           isBalanceLimit &&
           sdk.toBig(balance).lt(tradeValue)) ||
-        !tradeValue ||
-        Number(tradeValue) < 1
+        (typeof tradeValue !== "undefined" && Number(tradeValue) < 1)
       ) {
         return {
           error: true,
@@ -217,7 +220,8 @@ export const BasicANFTTrade = React.memo(React.forwardRef(_BasicANFTTrade)) as <
   T extends IBData<I> & Partial<NFTWholeINFO>,
   I extends any
 >(
-  props: BasicANFTTradeProps<T, I>
+  props: BasicANFTTradeProps<T, I>,
+  ref: ForwardedRef<any>
 ) => JSX.Element;
 
 export const NFTInput = React.memo(
@@ -246,7 +250,7 @@ export const NFTInput = React.memo(
             display={"inline-flex"}
             alignItems={"center"}
             justifyContent={"space-between"}
-            height={80}
+            height={"auto"}
             width={"100%"}
           >
             <BasicANFTTrade

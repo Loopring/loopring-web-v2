@@ -2,13 +2,14 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { walletLayer2Service } from "./services/walletLayer2Service";
 import { tickerService } from "./services/tickerService";
 import { ammPoolService } from "./services/ammPoolService";
-import { CustomError, ErrorMap } from "@loopring-web/common-resources";
+import { CustomError, ErrorMap, myLog } from "@loopring-web/common-resources";
 import { LoopringAPI, SocketMap } from "../../index";
 import { bookService } from "./services/bookService";
 import { orderbookService } from "./services/orderbookService";
 import { tradeService } from "./services/tradeService";
 import { mixorderService } from "./services/mixorderService";
 import { mixtradeService } from "./services/mixtradeService";
+import { btradeOrderbookService } from "./services/btradeOrderbookService";
 
 export type SocketEvent = (e: any, ...props: any[]) => any;
 
@@ -51,12 +52,12 @@ export class LoopringSocket {
     [sdk.WsTopicType.mixorder]: (data: sdk.DepthData, topic: any) => {
       if (
         (window as any)?.loopringSocket?.socketKeyMap &&
-        (window as any).loopringSocket?.socketKeyMap[sdk.WsTopicType.mixorder]
+        (window as any).loopringSocket?.socketKeyMap[ sdk.WsTopicType.mixorder ]
           ?.level === topic.level
       ) {
         const timestamp = Date.now();
         mixorderService.sendMixorder({
-          [topic.market]: {
+          [ topic.market ]: {
             ...data,
             timestamp: timestamp,
             symbol: topic.market,
@@ -64,7 +65,24 @@ export class LoopringSocket {
         });
       }
     },
-    [sdk.WsTopicType.trade]: (datas: string[][]) => {
+    [ sdk.WsTopicType.btradedepth ]: (data: sdk.DepthData, topic: any) => {
+      if (
+        (window as any)?.loopringSocket?.socketKeyMap &&
+        (window as any).loopringSocket?.socketKeyMap[
+          sdk.WsTopicType.btradedepth
+          ]?.level === topic.level
+      ) {
+        const timestamp = Date.now();
+        btradeOrderbookService.sendBtradeOrderBook({
+          [ topic.market ]: {
+            ...data,
+            timestamp: timestamp,
+            symbol: topic.market,
+          } as any,
+        });
+      }
+    },
+    [ sdk.WsTopicType.trade ]: (datas: string[][]) => {
       const marketTrades: sdk.MarketTradeInfo[] = datas.map((data) => {
         const [market, tradeTime, tradeId, side, volume, price, fee] = data;
         return {
@@ -225,6 +243,8 @@ export class LoopringSocket {
         this.resetSocketEvents();
         this._socketKeyMap = socket;
         const { topics } = this.makeMessageArray({ socket });
+        myLog("makeMessageArray", socket, topics);
+
         if (!this.isConnectSocket()) {
           await this.socketConnect({ topics, apiKey });
         } else {
@@ -315,7 +335,6 @@ export class LoopringSocket {
           }
 
           break;
-
         case sdk.WsTopicType.orderbook:
           const orderbookSocket = socket[sdk.WsTopicType.orderbook];
           if (orderbookSocket) {
@@ -357,10 +376,31 @@ export class LoopringSocket {
               topics = [...topics, ...list];
             }
           }
+          break;
 
+        case sdk.WsTopicType.btradedepth:
+          const btradeOrderSocket = socket[ sdk.WsTopicType.btradedepth ];
+          if (btradeOrderSocket) {
+            const level = btradeOrderSocket.level ?? 0;
+            const snapshot = btradeOrderSocket.snapshot ?? true;
+            const count = btradeOrderSocket.count ?? 50;
+            list = btradeOrderSocket.markets.map((key) => {
+              return sdk.getBtradeOrderBook({
+                market: key,
+                level,
+                count,
+                snapshot,
+                showOverlap: false,
+              });
+            });
+            if (list && list.length) {
+              this.addSocketEvents(sdk.WsTopicType.btradedepth);
+              topics = [...topics, ...list];
+            }
+          }
           break;
         case sdk.WsTopicType.trade:
-          const tradeSocket = socket[sdk.WsTopicType.trade];
+          const tradeSocket = socket[ sdk.WsTopicType.trade ];
           if (tradeSocket) {
             list = tradeSocket.map((key) => sdk.getTradeArg(key));
             if (list && list.length) {

@@ -14,6 +14,12 @@ import {
 import React from "react";
 import { cloneDeep } from "lodash";
 import { WithdrawConfirm } from "../../tradePanel/components/WithdrawConfirm";
+import { ContactSelection } from "../../tradePanel/components/ContactSelection";
+import { RootState, useAccount } from "@loopring-web/core";
+import { useDispatch, useSelector } from "react-redux";
+import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
+import { getAllContacts } from "./TransferPanel";
+import { useTheme } from "@emotion/react";
 
 export const WithdrawPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -27,6 +33,8 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
     walletMap = {},
     coinMap = {},
     onBack,
+    isFromContact,
+    contact,
     ...rest
   }: WithdrawProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
@@ -57,122 +65,190 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       });
       return clonedWalletMap;
     }, [walletMap]);
-    const props: SwitchPanelProps<string> = {
-      index: panelIndex, // show default show
-      panelList: [
-        {
-          key: "confirm",
-          element: React.useMemo(
-            () => (
-              <WithdrawConfirm
-                {...{
-                  ...rest,
-                  onWithdrawClick,
-                  type,
-                  tradeData: switchData.tradeData,
-                  handleConfirm,
-                }}
-              />
-            ),
-            [onWithdrawClick, rest, switchData.tradeData, type]
-          ),
-          toolBarItem: (
-            <ModalBackButton
-              marginTop={0}
-              marginLeft={-2}
-              onBack={() => {
-                setPanelIndex(1);
-              }}
-              {...rest}
-            />
-          ),
-        },
-        {
-          key: "trade",
-          element: React.useMemo(
-            () => (
-              // @ts-ignore
-              <WithdrawWrap
-                key={"transfer"}
-                {...{
-                  ...rest,
-                  type,
-                  handleConfirm,
-                  chargeFeeTokenList: chargeFeeTokenList
-                    ? chargeFeeTokenList
-                    : [],
-                  tradeData: switchData.tradeData,
-                  onChangeEvent,
-                  coinMap,
-                  disabled: !!rest.disabled,
-                  // onWithdrawClick,
-                  withdrawBtnStatus,
-                  assetsData,
-                  walletMap,
-                }}
-              />
-            ),
-            [
-              rest,
+    type DisplayContact = {
+      name: string;
+      address: string;
+      avatarURL: string;
+      editing: boolean;
+    };
+    // const [contacts, setContacts] = React.useState([] as DisplayContact[]);
+    const dispatch = useDispatch();
+    const contacts = useSelector((state: RootState) => state.contacts.contacts);
+    const {
+      account: { accountId, apiKey, accAddress },
+    } = useAccount();
+    const theme = useTheme();
+    const loadContacts = async () => {
+      dispatch(updateContacts(undefined));
+      try {
+        const allContacts = await getAllContacts(
+          0,
+          accountId,
+          apiKey,
+          accAddress,
+          theme.colorBase.warning
+        );
+        dispatch(updateContacts(allContacts));
+      } catch (e) {
+        dispatch(updateContacts([]));
+      }
+    };
+    React.useEffect(() => {
+      loadContacts();
+    }, [accountId]);
+    const confirmPanel = {
+      key: "confirm",
+      element: React.useMemo(
+        () => (
+          <WithdrawConfirm
+            {...{
+              ...rest,
+              onWithdrawClick,
               type,
-              chargeFeeTokenList,
-              switchData.tradeData,
+              tradeData: switchData.tradeData,
+              handleConfirm,
+            }}
+          />
+        ),
+        [onWithdrawClick, rest, switchData.tradeData, type]
+      ),
+      toolBarItem: (
+        <ModalBackButton
+          marginTop={0}
+          marginLeft={-2}
+          onBack={() => {
+            setPanelIndex(1);
+          }}
+          {...rest}
+        />
+      ),
+    };
+    const tradePanel = {
+      key: "trade",
+      element: React.useMemo(
+        () => (
+          // @ts-ignore
+          <WithdrawWrap
+            key={"transfer"}
+            {...{
+              ...rest,
+              type,
+              handleConfirm,
+              chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
+              tradeData: switchData.tradeData,
               onChangeEvent,
               coinMap,
-              onWithdrawClick,
+              disabled: !!rest.disabled,
+              // onWithdrawClick,
               withdrawBtnStatus,
               assetsData,
               walletMap,
-            ]
-          ),
-          toolBarItem: React.useMemo(
-            () => (
-              <>
-                {onBack ? (
-                  <ModalBackButton
-                    marginTop={0}
-                    marginLeft={-2}
-                    onBack={() => {
-                      onBack();
-                    }}
-                    {...rest}
-                  />
-                ) : (
-                  <></>
-                )}
-              </>
-            ),
-            [onBack]
-          ),
-        },
-      ].concat(
-        type === "TOKEN"
-          ? ([
-              {
-                key: "tradeMenuList",
-                element: React.useMemo(
-                  () => (
-                    <TradeMenuList
-                      {...{
-                        nonZero: true,
-                        sorted: true,
-                        ...rest,
-                        onChangeEvent,
-                        coinMap,
-                        selected: switchData.tradeData.belong,
-                        tradeData: switchData.tradeData,
-                        walletMap: getWalletMapWithoutLP(),
-                        //oinMap
-                      }}
-                    />
-                  ),
-                  [switchData, rest, onChangeEvent, getWalletMapWithoutLP]
-                ),
-                toolBarItem: undefined,
+
+              isFromContact,
+              contact,
+              onClickContact: () => {
+                setPanelIndex(3); // todo handle tradeMenuList
+                // rest.handleOnAddressChange(address)
               },
-            ] as any)
-          : []
+            }}
+          />
+        ),
+        [
+          rest,
+          type,
+          chargeFeeTokenList,
+          switchData.tradeData,
+          onChangeEvent,
+          coinMap,
+          onWithdrawClick,
+          withdrawBtnStatus,
+          assetsData,
+          walletMap,
+        ]
       ),
+      toolBarItem: React.useMemo(
+        () => (
+          <>
+            {/* {(onBack && !isFromContact ) ? ( */}
+            {onBack ? (
+              <ModalBackButton
+                marginTop={0}
+                marginLeft={-2}
+                onBack={() => {
+                  onBack();
+                }}
+                {...rest}
+              />
+            ) : (
+              <></>
+            )}
+          </>
+        ),
+        [onBack]
+      ),
+    };
+    const tokenSelectionPanel = {
+      key: "tradeMenuList",
+      element: React.useMemo(
+        () => (
+          <TradeMenuList
+            {...{
+              nonZero: true,
+              sorted: true,
+              ...rest,
+              onChangeEvent,
+              coinMap,
+              selected: switchData.tradeData.belong,
+              tradeData: switchData.tradeData,
+              walletMap: getWalletMapWithoutLP(),
+              //oinMap
+            }}
+          />
+        ),
+        [switchData, rest, onChangeEvent, getWalletMapWithoutLP]
+      ),
+      toolBarItem: undefined,
+    };
+
+    const contactSelectionPanel = {
+      key: "contactSelection",
+      element: React.useMemo(
+        () => (
+          <ContactSelection
+            key={"contactSelection"}
+            contacts={contacts}
+            onSelect={(address) => {
+              setPanelIndex(1);
+              rest.handleOnAddressChange(address, true);
+            }}
+            scrollHeight={"320px"}
+          />
+        ),
+        [contacts]
+      ),
+      toolBarItem: React.useMemo(
+        () => (
+          <ModalBackButton
+            marginTop={0}
+            marginLeft={-2}
+            onBack={() => {
+              setPanelIndex(1);
+            }}
+            {...rest}
+          />
+        ),
+        [onBack]
+      ),
+    };
+
+    const props: SwitchPanelProps<string> = {
+      index: panelIndex, // show default show
+      panelList: [
+        confirmPanel,
+        tradePanel,
+        tokenSelectionPanel,
+        contactSelectionPanel,
+      ],
     };
     return <SwitchPanel {...{ ...rest, ...props }} />;
   }

@@ -39,14 +39,16 @@ export const getUserReceiveList = (
         : getShortAddr(item.claimer?.address ?? ""),
       isSelf: accountId === item.claimer.accountId,
       amountStr,
-      helper: (item.referrer?.address
-        ? item.referrer?.ens
-          ? item.referrer.ens
-          : getShortAddr(item.referrer.address.toString())
+      helper: (item.helper?.address
+        ? item.helper?.ens
+          ? item.helper.ens
+          : getShortAddr(item.helper.address.toString())
         : ""
       ).toString(),
       createdAt: item.createdAt,
-      isMax: champion?.amount == item.amount,
+      isMax:
+        champion?.accountId === item.claimer.accountId &&
+        champion.amount === item.amount,
       rawData: item,
     };
     return [...prev, redPacketDetailItem];
@@ -64,23 +66,14 @@ export const getUserNFTReceiveList = (
     amount: string | number;
   }
 ): { list: RawDataRedPacketDetailItem[] } => {
-  // const {idIndex,tokenMap} = store.getState().tokenMap
   const { accountId } = store.getState().account;
-  // let _max = 0,
-  //   _index = -1;
   const list: RawDataRedPacketDetailItem[] = claimList.reduce((prev, item) => {
-    // _nftInfo?.metadata?.base?.name ?? "NFT";
     const amountStr =
+      "x " +
       getValuePrecisionThousand(item.amount, 0, 0, undefined, false, {
         floor: false,
-        // isTrade: true,
-      }) +
-      " " +
-      "NFT";
-    // if (sdk.toBig(item.amount).gte(_max)) {
-    //   _max = item.amount;
-    //   _index = index;
-    // }
+      });
+
     const redPacketDetailItem: RawDataRedPacketDetailItem = {
       accountStr: item.claimer?.ens
         ? item.claimer.ens
@@ -137,7 +130,7 @@ export const amountStrNFTCallback = (
   tokenAmount: string
 ) => {
   if (nftInfo && tokenAmount) {
-    const symbol = "NFT"; // nftInfo?.metadata?.base?.name ?? "NFT";
+    const symbol = "NFT(s)"; // nftInfo?.metadata?.base?.name ?? "NFT";
     const amount = getValuePrecisionThousand(
       tokenAmount,
       0,
@@ -188,7 +181,7 @@ export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
           idIndex,
           luckToken.tokenId,
           luckToken.tokenAmount.totalAmount
-        ).amount,
+        ).amountStr,
     myAmountStr:
       claim &&
       (luckToken.isNft

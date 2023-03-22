@@ -17,7 +17,7 @@ export function useOverview<R extends RowInvest>() {
   const [myMapLoading, setMyMapLoading] = React.useState(false);
 
   const [myRawData, setMyRawData] = React.useState<R[]>([]);
-  const [myFilteredData, setMyFilteredData] = React.useState<R[]>(rawData);
+  // const [myFilteredData, setMyFilteredData] = React.useState<R[]>(rawData);
 
   const filterData = (rawData: R[], value: string) => {
     return rawData.filter((item) => {
@@ -71,23 +71,20 @@ export function useOverview<R extends RowInvest>() {
           return b.apr[1] - a.apr[1];
         });
       setMyRawData(_rawData);
-      setMyFilteredData(
-        _rawData.filter((a) => {
-          return !!a.apr[1];
-        })
-      );
     } else {
       setMyRawData([]);
-      setMyFilteredData([]);
     }
     setMyMapLoading(false);
   }, [walletLayer2, investTokenTypeMap]);
   React.useEffect(() => {
-    if (walletLayer2Status === "UNSET") {
+    if (
+      walletLayer2Status === "UNSET" &&
+      investTokenTypeMapStatus === "UNSET"
+    ) {
       setMyMapLoading(true);
       getMyInvestTokenMap();
     }
-  }, [walletLayer2Status]);
+  }, [walletLayer2Status, investTokenTypeMapStatus]);
   return {
     filteredData,
     filterValue,

@@ -3,13 +3,10 @@ import {
   DepthViewData,
   MarketType,
   TradeCalcProData,
-} from "@loopring-web/common-resources";
-import { Ticker } from "../../ticker";
-import {
-  DepthType,
-  RawDataTradeItem,
   TradeProType,
-} from "@loopring-web/component-lib";
+  Ticker,
+} from "@loopring-web/common-resources";
+import { DepthType, RawDataTradeItem } from "@loopring-web/component-lib";
 
 export type MarketCalcParams = {
   exceedDepth: boolean;
@@ -40,6 +37,9 @@ export type limitCalcParams = {
   quoteVol: string;
   quoteVolShow: string | number;
 };
+export type stopLimitCalcParams = limitCalcParams & {
+  stopPrice: string;
+};
 
 export type OrderInfoPatch = {
   minAmtShow?: number | string;
@@ -54,6 +54,7 @@ export type PageTradePro<C> = {
   tradeCalcProData: Partial<TradeCalcProData<keyof C>>;
   calcTradeParams?: Partial<MarketCalcParams> | null | undefined;
   limitCalcTradeParams?: Partial<limitCalcParams> | null | undefined;
+  stopLimitCalcTradeParams?: Partial<stopLimitCalcParams> | null | undefined;
   priceImpactObj?:
     | {
         // account has activated or undefined
@@ -93,5 +94,5 @@ export type PageTradeProStatus<C extends { [key: string]: any }> = {
   __API_REFRESH__: 15000;
   __SUBMIT_LOCK_TIMER__: 1000;
   __TOAST_AUTO_CLOSE_TIMER__: 3000;
-  __AUTO_RECALC__: 3000;
+  __AUTO_RE_CALC__: 3000;
 };

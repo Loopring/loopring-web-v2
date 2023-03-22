@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, ListItemText, MenuItem } from "@mui/material";
+import { Box, Grid, ListItemText, MenuItem, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import {
   Button,
@@ -7,11 +7,17 @@ import {
   PopoverType,
   PopoverWrapProps,
 } from "../../../basic-lib";
-import { MoreIcon } from "@loopring-web/common-resources";
+import {
+  EmptyValueTag,
+  getValuePrecisionThousand,
+  HiddenTag,
+  MoreIcon,
+} from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import { TFunction } from "i18next";
 import { useOpenModals, useSettings, useToggle } from "../../../../stores";
 import { AmmPanelType } from "../../../tradePanel";
+import { RawDataAssetsItem } from "../AssetsTable";
 
 const GridStyled = styled(Grid)`
   .MuiGrid-item {
@@ -91,36 +97,24 @@ const ActionPopContent = React.memo(
           <>
             <MenuItem
               disabled={!_allowTrade?.joinAmm?.enable}
-              onClick={
-                () => {
-                  // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
-                  setShowAmm({
-                    isShow: true,
-                    type: AmmPanelType.Join,
-                    symbol: market,
-                  });
-                }
-                // () => undefined
-                // history.push(
-                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
-                // )
-              }
+              onClick={() => {
+                setShowAmm({
+                  isShow: true,
+                  type: AmmPanelType.Join,
+                  symbol: market,
+                });
+              }}
             >
               <ListItemText>{t("labelPoolTableAddLiquidity")}</ListItemText>
             </MenuItem>
             <MenuItem
-              onClick={
-                () => {
-                  setShowAmm({
-                    isShow: true,
-                    type: AmmPanelType.Exit,
-                    symbol: market,
-                  });
-                }
-                // history.push(
-                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.remove}`
-                // )
-              }
+              onClick={() => {
+                setShowAmm({
+                  isShow: true,
+                  type: AmmPanelType.Exit,
+                  symbol: market,
+                });
+              }}
             >
               <ListItemText>{t("labelPoolTableRemoveLiquidity")}</ListItemText>
             </MenuItem>
@@ -292,3 +286,57 @@ const ActionMemo = React.memo((props: ActionProps) => {
   );
 });
 export default ActionMemo;
+
+export const LockedMemo = React.memo(
+  (
+    props: RawDataAssetsItem & {
+      hideAssets?: boolean;
+      onTokenLockHold?: (item: any) => void;
+      tokenLockDetail?:
+        | undefined
+        | {
+            list: any[];
+            row: any;
+          };
+    }
+  ) => {
+    const { onTokenLockHold, tokenLockDetail, ...row } = props;
+    const value = row["locked"];
+    const precision = row["precision"];
+    // myLog(tokenLockDetail);
+    if (!Number(value)) {
+      return <Box className={"textAlignRight"}>{EmptyValueTag}</Box>;
+    } else {
+      return (
+        <Box className={"textAlignRight"}>
+          <Typography
+            display={"inline-flex"}
+            alignItems={"center"}
+            component={"span"}
+            sx={{
+              textDecoration: onTokenLockHold ? "underline dotted" : "",
+              cursor: "pointer",
+            }}
+            // @ts-ignore
+            onClick={(e) => {
+              if (onTokenLockHold) {
+                onTokenLockHold(row);
+              }
+            }}
+          >
+            {props.hideAssets
+              ? HiddenTag
+              : getValuePrecisionThousand(
+                  value,
+                  precision,
+                  precision,
+                  undefined,
+                  false,
+                  { floor: true }
+                )}
+          </Typography>
+        </Box>
+      );
+    }
+  }
+);

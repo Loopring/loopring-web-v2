@@ -422,7 +422,10 @@ export const useDualTrade = <
           fee: tradeDual.feeVol ?? "0",
           baseProfit: profit,
           productId,
-          settleRatio: tradeDual.dualViewInfo.settleRatio.replace(sdk.SEP, ""), //sdk.toBig(tradeDual.dualViewInfo.settleRatio).f,
+          settleRatio: tradeDual.dualViewInfo.settleRatio.replaceAll(
+            sdk.SEP,
+            ""
+          ), //sdk.toBig(tradeDual.dualViewInfo.settleRatio).f,
           expireTime: tradeDual.dualViewInfo.expireTime,
         };
         myLog("DualTrade request:", request);

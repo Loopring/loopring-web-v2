@@ -3,6 +3,7 @@ import { WithTranslation } from "react-i18next";
 import React from "react";
 import { BasicACoinTradeProps } from "./Interface";
 import { InputButton, InputButtonProps } from "../../basic-lib";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
   t,
@@ -57,6 +58,7 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
     handleError = ({ belong, balance, tradeValue }: T) => {
       const minimum =
         inputButtonProps?.minimum ?? inputButtonDefaultProps?.minimum;
+      const maxValue = inputButtonProps?.maxValue;
       if (
         (typeof tradeValue !== "undefined" &&
           balance &&
@@ -76,6 +78,18 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
           error: true,
           message: t("errorMinError", {
             value: minimum,
+            ns: ["error", "common"],
+          }),
+        };
+      } else if (
+        typeof tradeValue !== "undefined" &&
+        maxValue !== undefined &&
+        sdk.toBig(tradeValue).gt(maxValue)
+      ) {
+        return {
+          error: true,
+          message: t("errorMaxError", {
+            value: maxValue,
             ns: ["error", "common"],
           }),
         };

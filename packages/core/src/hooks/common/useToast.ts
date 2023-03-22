@@ -1,18 +1,18 @@
 import React from "react";
-import { TOASTOPEN, TOSTOBJECT } from "@loopring-web/component-lib";
+import { TOASTOPEN, ToastType, TOSTOBJECT } from "@loopring-web/component-lib";
 
 export const useToast = (): TOSTOBJECT => {
   const [toastOpen, setToastOpen] = React.useState<TOASTOPEN>({
     open: false,
     content: "",
-    type: "info",
+    type: ToastType.info,
   });
 
   const closeToast = React.useCallback(() => {
     setToastOpen({
       open: false,
       content: "",
-      type: "info",
+      type: ToastType.info,
     });
   }, [setToastOpen]);
 

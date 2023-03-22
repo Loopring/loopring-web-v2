@@ -51,7 +51,7 @@ import {
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
-import { Toast } from "../../toast";
+import { Toast, ToastType } from "../../toast";
 import { BtnMain, HorizontalLabelPositionBelowStepper } from "./tool";
 
 export enum AdMethod {
@@ -617,7 +617,7 @@ export const MintAdvanceNFTWrap = <
                           color="default"
                         />
                       }
-                      label={t("labelCEXUnderstand")}
+                      label={t("labelBtradeUnderstand")}
                     />
                   </Box>
                 ) : (
@@ -1188,7 +1188,7 @@ export const MintAdvanceNFTWrap = <
               type: "",
             });
           }}
-          severity={"success"}
+          severity={ToastType.success}
         />
       )}
     </Box>

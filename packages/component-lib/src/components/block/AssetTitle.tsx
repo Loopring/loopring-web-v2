@@ -2,6 +2,7 @@ import { Box, Grid, IconButton, Typography } from "@mui/material";
 import {
   getValuePrecisionThousand,
   HeaderMenuItemInterface,
+  HiddenTag,
   HideIcon,
   subMenuLayer2,
   TradeBtnStatus,
@@ -80,8 +81,8 @@ export const AssetTitle = withTranslation("common")(
             justifyContent={"flex-start"}
             marginTop={1}
           >
-            <Typography component={"span"} paddingRight={1} variant={"h1"}>
-              {assetInfo.priceTag}
+            <Typography component={"span"} variant={"h1"}>
+              {!hideL2Assets && assetInfo.priceTag}
             </Typography>
             {!hideL2Assets ? (
               <Typography component={"span"} variant={"h1"}>
@@ -98,7 +99,7 @@ export const AssetTitle = withTranslation("common")(
               </Typography>
             ) : (
               <Typography component={"span"} variant={"h1"}>
-                &#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;
+                {HiddenTag}
               </Typography>
             )}
           </Typography>

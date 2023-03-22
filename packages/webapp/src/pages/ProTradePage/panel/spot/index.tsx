@@ -9,7 +9,7 @@ import {
   PopoverPure,
   SmallOrderAlert,
   Toast,
-  TradeProType,
+  ToastType,
 } from "@loopring-web/component-lib";
 import {
   EmptyValueTag,
@@ -17,6 +17,7 @@ import {
   Info2Icon,
   MarketType,
   TOAST_TIME,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import { usePageTradePro, useTokenMap } from "@loopring-web/core";
 import { useMarket } from "./hookMarket";
@@ -79,16 +80,12 @@ export const SpotView = withTranslation("common")(
       tradeMarketI18nKey,
       tradeMarketBtnStatus,
       tradeMarketBtnStyle,
-      marketSubmit,
       resetMarketData,
       marketBtnClick,
       isMarketLoading,
       priceAlertCallBack,
       smallOrderAlertCallBack,
-      secondConfirmationCallBack,
       smallOrderAlertOpen,
-      secondConfirmationOpen,
-      setToastOpen,
     } = useMarket({ market, resetTradeCalcData });
     const onTabChange = React.useCallback(
       (_e, value) => {
@@ -240,7 +237,7 @@ export const SpotView = withTranslation("common")(
       <>
         <Toast
           alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
+          severity={toastOpen?.type ?? ToastType.success}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
@@ -251,7 +248,7 @@ export const SpotView = withTranslation("common")(
               ? marketUnavailableConent
               : toastOpenL?.content ?? ""
           }
-          severity={toastOpenL?.type ?? "success"}
+          severity={toastOpenL?.type ?? ToastType.success}
           open={toastOpenL?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToastL}
@@ -285,7 +282,14 @@ export const SpotView = withTranslation("common")(
               : "labelPriceCompareLess"
           }
         />
-        <Box display={"flex"} flexDirection={"column"} alignItems={"stretch"}>
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"stretch"}
+          height={"inherit"}
+          sx={{ overflowY: "scroll" }}
+          marginBottom={2}
+        >
           <Box component={"header"} width={"100%"}>
             <Tabs variant={"fullWidth"} value={tabIndex} onChange={onTabChange}>
               <Tab value={TabIndex.limit} label={limitLabel} />
@@ -294,7 +298,7 @@ export const SpotView = withTranslation("common")(
           </Box>
 
           <Divider style={{ marginTop: "-1px" }} />
-          <Box flex={1} component={"section"}>
+          <Box display={"flex"} flex={1} component={"section"}>
             {tabIndex === TabIndex.limit && (
               <LimitTrade
                 // disabled={false}

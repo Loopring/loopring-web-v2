@@ -2,6 +2,7 @@ import { FormHelperText, Grid, Typography } from "@mui/material";
 import {
   CoinInfo,
   DropDownIcon,
+  EmptyValueTag,
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
@@ -176,7 +177,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
               <span>
                 {balance
                   ? getValuePrecisionThousand(balance, 8, 8, 8, false)
-                  : "0.00"}
+                  : EmptyValueTag}
               </span>
             </Typography>
           ) : null}

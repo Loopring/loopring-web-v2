@@ -22,6 +22,7 @@ export type MyPoolTableProps<R> = {
   rawData: R[];
   account: Account;
   title: string | (() => JSX.Element) | JSX.Element;
+  totalDollar?: string | number | undefined;
   pagination?: {
     pageSize: number;
   };
@@ -40,4 +41,5 @@ export type MyPoolTableProps<R> = {
   currency?: Currency;
   rowConfig?: typeof RowConfig;
   setHideSmallBalances?: (value: boolean) => void;
+  hideAssets?: boolean;
 } & Method<R>;

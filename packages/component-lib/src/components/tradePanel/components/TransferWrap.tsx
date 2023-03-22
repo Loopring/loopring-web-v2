@@ -5,6 +5,8 @@ import {
   Checkbox,
   FormControlLabel as MuiFormControlLabel,
   Grid,
+  IconButton,
+  InputAdornment,
   Typography,
 } from "@mui/material";
 import { bindHover } from "material-ui-popup-state/es";
@@ -15,25 +17,29 @@ import {
   CheckBoxIcon,
   CheckedIcon,
   CloseIcon,
+  ContactIcon,
   copyToClipBoard,
   DropDownIcon,
   EmptyValueTag,
+  EXCHANGE_TYPE,
   FeeInfo,
   globalSetup,
   IBData,
   Info2Icon,
   LoadingIcon,
+  myLog,
   NFTWholeINFO,
   TOAST_TIME,
   TradeBtnStatus,
+  WALLET_TYPE,
 } from "@loopring-web/common-resources";
 import {
   Button,
   DropdownIconStyled,
   FeeTokenItemWrapper,
-  IconClearStyled,
   TextField,
   Toast,
+  ToastType,
 } from "../../index";
 import { PopoverPure } from "../../";
 import { TransferViewProps } from "./Interface";
@@ -78,19 +84,27 @@ export const TransferWrap = <
   handleOnMemoChange,
   isAddressCheckLoading,
   isSameAddress,
+  isSmartContractAddress,
   baseURL,
   isActiveAccount,
   isActiveAccountFee,
   feeWithActive,
   handleOnFeeWithActive,
+  contact,
+  isFromContact,
+  onClickContact,
+  loopringSmartWalletVersion,
+  // addressType,
   ...rest
 }: TransferViewProps<T, I, C> &
   WithTranslation & {
     assetsData: any[];
     handleConfirm: (index: number) => void;
   }) => {
+  contact;
   const inputBtnRef = React.useRef();
   const { isMobile } = useSettings();
+  // addressType
 
   const inputButtonDefaultProps = {
     label: t("labelL2toL2EnterToken"),
@@ -108,11 +122,6 @@ export const TransferWrap = <
     return disabled || transferBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, transferBtnStatus]);
 
-  // const activeFee = React.useMemo(() => {
-  //   // return activeAccountFeeList?.find(
-  //   //   (item: any) => item.belong == feeInfo.belong
-  //   // );
-  // }, [feeInfo, activeAccountFeeList]);
   const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const onCopy = React.useCallback(
     async (content: string) => {
@@ -132,6 +141,166 @@ export const TransferWrap = <
     [AddressError.InvalidAddr, AddressError.IsNotLoopringContract].includes(
       addrStatus
     );
+  const detectedWalletType =
+    loopringSmartWalletVersion === undefined
+      ? undefined
+      : loopringSmartWalletVersion.isLoopringSmartWallet
+      ? WALLET_TYPE.Loopring
+      : isSmartContractAddress
+      ? WALLET_TYPE.OtherSmart
+      : WALLET_TYPE.EOA;
+
+  const isExchange = React.useMemo(() => {
+    return !!(sureItsLayer2 && sureItsLayer2 in EXCHANGE_TYPE);
+  }, [sureItsLayer2, sureItsLayer2]);
+
+  const isExchangeEOA = detectedWalletType === WALLET_TYPE.EOA && isExchange;
+  const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart;
+  myLog("transferWrap", realAddr);
+  const view = React.useMemo(() => {
+    if (isInvalidAddressOrENS) {
+      return (
+        <Typography
+          color={"var(--color-error)"}
+          variant={"body2"}
+          marginTop={1 / 4}
+          alignSelf={"stretch"}
+          position={"relative"}
+        >
+          {t(`labelL2toL2${addrStatus}`)}
+        </Typography>
+      );
+    } else if (isExchangeEOA) {
+      return (
+        <Typography
+          color={"var(--color-error)"}
+          variant={"body2"}
+          marginTop={1 / 4}
+          alignSelf={"stretch"}
+          position={"relative"}
+        >
+          {t("labelNotExchangeEOA")}
+        </Typography>
+      );
+    } else if (isOtherSmartWallet) {
+      return (
+        <Typography
+          color={"var(--color-error)"}
+          variant={"body2"}
+          marginTop={1 / 4}
+          alignSelf={"stretch"}
+          position={"relative"}
+        >
+          {t("labelNotOtherSmartWallet")}
+        </Typography>
+      );
+    } else if (isSameAddress) {
+      return (
+        <Typography
+          color={"var(--color-error)"}
+          variant={"body2"}
+          marginTop={1 / 4}
+          alignSelf={"stretch"}
+          position={"relative"}
+        >
+          {t("labelInvalidisSameAddress", {
+            way: t("labelL2toL2"),
+          })}
+        </Typography>
+      );
+    } else {
+      return (
+        <>
+          {addressDefault && realAddr && !isAddressCheckLoading && (
+            <Typography
+              color={"var(--color-text-primary)"}
+              variant={"body2"}
+              marginTop={1 / 4}
+              whiteSpace={"pre-line"}
+              style={{ wordBreak: "break-all" }}
+            >
+              {realAddr}
+            </Typography>
+          )}
+          {!isAddressCheckLoading &&
+            addressDefault &&
+            addrStatus === AddressError.NoError &&
+            (!isLoopringAddress || !isActiveAccount) && (
+              <Box>
+                {(!isLoopringAddress || !isActiveAccount) && realAddr && (
+                  <Typography
+                    color={"var(--color-error)"}
+                    lineHeight={1.2}
+                    variant={"body2"}
+                    marginTop={1 / 2}
+                    marginLeft={"-2px"}
+                    display={"inline-flex"}
+                  >
+                    <Trans i18nKey={"labelL2toL2AddressNotLoopring"}>
+                      <AlertIcon
+                        color={"inherit"}
+                        fontSize={"medium"}
+                        sx={{ marginRight: 1 }}
+                      />
+                      This address does not have an activated Loopring L2.
+                      Please ensure the recipient can access Loopring L2 before
+                      sending.
+                    </Trans>
+                  </Typography>
+                )}
+                {!isActiveAccountFee && realAddr ? (
+                  <MuiFormControlLabel
+                    sx={{
+                      alignItems: "flex-start",
+                      marginTop: 1 / 2,
+                    }}
+                    control={
+                      <Checkbox
+                        checked={feeWithActive}
+                        onChange={(_event: any, state: boolean) => {
+                          handleOnFeeWithActive(state);
+                        }}
+                        checkedIcon={<CheckedIcon />}
+                        icon={<CheckBoxIcon />}
+                        color="default"
+                      />
+                    }
+                    label={
+                      <Typography
+                        whiteSpace={"pre-line"}
+                        component={"span"}
+                        variant={"body1"}
+                        display={"block"}
+                        color={"textSecondary"}
+                        paddingTop={1 / 2}
+                      >
+                        {t("labelL2toL2AddressFeeActiveFee", {
+                          value: activeAccountPrice,
+                        })}
+                      </Typography>
+                    }
+                  />
+                ) : (
+                  <></>
+                )}
+              </Box>
+            )}
+        </>
+      );
+    }
+  }, [
+    addressDefault,
+    isActiveAccount,
+    feeWithActive,
+    addrStatus,
+    realAddr,
+    isAddressCheckLoading,
+    activeAccountPrice,
+    isInvalidAddressOrENS,
+    isExchangeEOA,
+    isOtherSmartWallet,
+    isSameAddress,
+  ]);
 
   return (
     <Grid
@@ -243,142 +412,54 @@ export const TransferWrap = <
           disabled={!chargeFeeTokenList.length}
           SelectProps={{ IconComponent: DropDownIcon }}
           fullWidth={true}
-        />
-
-        {addressDefault !== "" ? (
-          isAddressCheckLoading ? (
-            <LoadingIcon
-              width={24}
-              style={{ top: 48, right: "8px", position: "absolute" }}
-            />
-          ) : (
-            <IconClearStyled
-              color={"inherit"}
-              size={"small"}
-              style={{ top: 46 }}
-              aria-label="Clear"
-              onClick={() => handleOnAddressChange("")}
-            >
-              <CloseIcon />
-            </IconClearStyled>
-          )
-        ) : (
-          ""
-        )}
-        <Box marginLeft={1 / 2}>
-          {isInvalidAddressOrENS ? (
-            <Typography
-              color={"var(--color-error)"}
-              variant={"body2"}
-              marginTop={1 / 4}
-              alignSelf={"stretch"}
-              position={"relative"}
-            >
-              {t(`labelL2toL2${addrStatus}`)}
-            </Typography>
-          ) : isSameAddress ? (
-            <Typography
-              color={"var(--color-error)"}
-              variant={"body2"}
-              marginTop={1 / 4}
-              alignSelf={"stretch"}
-              position={"relative"}
-            >
-              {t("labelInvalidisSameAddress", {
-                way: t("labelL2toL2"),
-              })}
-            </Typography>
-          ) : (
-            <>
-              {addressDefault && realAddr && !isAddressCheckLoading && (
-                <Typography
-                  color={"var(--color-text-primary)"}
-                  variant={"body2"}
-                  marginTop={1 / 4}
-                  whiteSpace={"pre-line"}
-                  style={{ wordBreak: "break-all" }}
-                >
-                  {realAddr}
-                </Typography>
-              )}
-              {!isAddressCheckLoading &&
-                addressDefault &&
-                addrStatus === AddressError.NoError &&
-                (!isLoopringAddress || !isActiveAccount) && (
-                  <Box>
-                    {(!isLoopringAddress || !isActiveAccount) && realAddr && (
-                      <Typography
-                        color={"var(--color-error)"}
-                        lineHeight={1.2}
-                        variant={"body2"}
-                        marginTop={1 / 2}
-                        marginLeft={"-2px"}
-                        display={"inline-flex"}
-                      >
-                        <Trans i18nKey={"labelL2toL2AddressNotLoopring"}>
-                          <AlertIcon
-                            color={"inherit"}
-                            fontSize={"medium"}
-                            sx={{ marginRight: 1 }}
-                          />
-                          This address does not have an activated Loopring L2.
-                          Please ensure the recipient can access Loopring L2
-                          before sending.
-                        </Trans>
-                      </Typography>
-                    )}
-                    {!isActiveAccountFee && realAddr ? (
-                      <MuiFormControlLabel
-                        sx={{
-                          alignItems: "flex-start",
-                          marginTop: 1 / 2,
-                        }}
-                        control={
-                          <Checkbox
-                            checked={feeWithActive}
-                            onChange={(_event: any, state: boolean) => {
-                              handleOnFeeWithActive(state);
-                            }}
-                            checkedIcon={<CheckedIcon />}
-                            icon={<CheckBoxIcon />}
-                            color="default"
-                          />
-                        }
-                        label={
-                          <Typography
-                            whiteSpace={"pre-line"}
-                            component={"span"}
-                            variant={"body1"}
-                            display={"block"}
-                            color={"textSecondary"}
-                            paddingTop={1 / 2}
-                          >
-                            {t("labelL2toL2AddressFeeActiveFee", {
-                              value: activeAccountPrice,
-                            })}
-                          </Typography>
-                        }
-                      />
-                    ) : (
-                      <></>
-                      // <Typography
-                      //   color={"var(--color-text-secondary)"}
-                      //   lineHeight={1}
-                      //   variant={"body2"}
-                      //   marginTop={1 / 4}
-                      // >
-                      //   {t("labelL2toL2AddressFeePaid")}
-                      // </Typography>
-                    )}
-                  </Box>
+          InputProps={{
+            style: {
+              paddingRight: "0",
+            },
+            endAdornment: isFromContact ? undefined : (
+              <InputAdornment
+                style={{
+                  cursor: "pointer",
+                  paddingRight: "0",
+                }}
+                position="end"
+              >
+                {addressDefault !== "" ? (
+                  isAddressCheckLoading ? (
+                    <LoadingIcon width={24} />
+                  ) : (
+                    <IconButton
+                      color={"inherit"}
+                      size={"small"}
+                      aria-label="Clear"
+                      onClick={() => handleOnAddressChange("")}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  )
+                ) : (
+                  ""
                 )}
-            </>
-          )}
-        </Box>
+                <IconButton
+                  color={"inherit"}
+                  size={"large"}
+                  aria-label="Clear"
+                  onClick={() => {
+                    onClickContact!();
+                  }}
+                >
+                  <ContactIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Box marginLeft={1 / 2}>{view}</Box>
       </Grid>
 
       <Grid item alignSelf={"stretch"} position={"relative"}>
         <TransferAddressType
+          detectedWalletType={detectedWalletType!}
           selectedValue={sureItsLayer2}
           handleSelected={handleSureItsLayer2}
           disabled={
@@ -393,7 +474,6 @@ export const TransferWrap = <
       <Grid item alignSelf={"stretch"} position={"relative"}>
         <TextField
           value={memo}
-          // error={addressError && addressError.error ? true : false}
           label={t("labelL2toL2Memo")}
           placeholder={t("labelL2toL2MemoPlaceholder")}
           onChange={handleOnMemoChange}
@@ -504,7 +584,12 @@ export const TransferWrap = <
               ? "true"
               : "false"
           }
-          disabled={getDisabled || transferBtnStatus === TradeBtnStatus.LOADING}
+          disabled={
+            getDisabled ||
+            transferBtnStatus === TradeBtnStatus.LOADING ||
+            isExchangeEOA ||
+            isOtherSmartWallet
+          }
         >
           {t(transferI18nKey ?? `labelL2toL2Btn`)}
         </Button>
@@ -517,7 +602,7 @@ export const TransferWrap = <
         onClose={() => {
           setCopyToastOpen(false);
         }}
-        severity={"success"}
+        severity={ToastType.success}
       />
     </Grid>
   );

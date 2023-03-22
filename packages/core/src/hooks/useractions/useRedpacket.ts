@@ -11,7 +11,6 @@ import { store, useAccount, useSystem } from "../../stores";
 import {
   CustomError,
   ErrorMap,
-  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 
@@ -21,10 +20,10 @@ export function useOpenRedpacket() {
   const { account } = useAccount();
 
   const callOpen = React.useCallback(async () => {
-    setShowAccount({
-      isShow: true,
-      step: AccountStep.RedPacketOpen_Claim_In_Progress,
-    });
+    // setShowAccount({
+    //   isShow: true,
+    //   step: AccountStep.RedPacketOpen_Claim_In_Progress,
+    // });
     const _info = store.getState().modals.isShowRedPacket
       .info as sdk.LuckyTokenItemForReceive & {
       referrer?: string;
@@ -45,59 +44,101 @@ export function useOpenRedpacket() {
       });
     } else {
       try {
-        let response =
-          await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
-            request: {
-              hash: _info?.hash,
-              claimer: account.accAddress,
-              referrer:
-                _info.isShouldSharedRely && _info?.referrer
-                  ? _info?.referrer
-                  : "",
+        if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+          let response =
+            await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimBlindBox({
+              request: {
+                hash: _info?.hash,
+                claimer: account.accAddress,
+                referrer:
+                  _info.isShouldSharedRely && _info?.referrer
+                    ? _info?.referrer
+                    : "",
+              },
+              eddsaKey: account.eddsaKey.sk,
+              apiKey: account.apiKey,
+            } as any);
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
+          }
+          // setShowAccount({
+          //   isShow: false,
+          // });
+          setShowRedPacket({
+            isShow: true,
+            step: RedPacketViewStep.BlindBoxDetail,
+            info: {
+              ..._info,
             },
-            eddsaKey: account.eddsaKey.sk,
-            apiKey: account.apiKey,
-          } as any);
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          throw response;
-        }
-
-        setShowAccount({
-          isShow: false,
-        });
-        setShowRedPacket({
-          isShow: true,
-          step: RedPacketViewStep.DetailPanel,
-          info: {
-            ..._info,
-            response,
-            claimAmount: (response as any).amount,
-          },
-        });
-      } catch (error: any) {
-        if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
-          setShowAccount({
-            isShow: false,
           });
+        } else {
+          let response =
+            await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
+              request: {
+                hash: _info?.hash,
+                claimer: account.accAddress,
+                referrer:
+                  _info.isShouldSharedRely && _info?.referrer
+                    ? _info?.referrer
+                    : "",
+              },
+              eddsaKey: account.eddsaKey.sk,
+              apiKey: account.apiKey,
+            } as any);
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            throw response;
+          }
+
+          // setShowAccount({
+          //   isShow: false,
+          // });
           setShowRedPacket({
             isShow: true,
             step: RedPacketViewStep.DetailPanel,
             info: {
               ..._info,
+              response,
+              claimAmount: (response as any).amount,
             },
           });
+        }
+      } catch (error: any) {
+        if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
+          // setShowAccount({
+          //   isShow: false,
+          // });
+          if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.BlindBoxDetail,
+              info: {
+                ..._info,
+              },
+            });
+          } else {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.DetailPanel,
+              info: {
+                ..._info,
+              },
+            });
+          }
         } else if (
           [
             UIERROR_CODE.ERROR_REDPACKET_CLAIM_TIMEOUT,
             UIERROR_CODE.ERROR_REDPACKET_CLAIM_OUT,
           ].includes(error?.code)
         ) {
-          setShowAccount({
-            isShow: false,
-          });
+          // setShowAccount({
+          //   isShow: false,
+          // });
           setShowRedPacket({
             isShow: true,
             step: RedPacketViewStep.TimeOutPanel,
@@ -144,7 +185,6 @@ export const useRedPacketScanQrcodeSuccess = () => {
   const {
     account: { apiKey, accountId },
   } = useAccount();
-  const { callOpen } = useOpenRedpacket();
 
   const [redPacketInfo, setRedPacketInfo] =
     React.useState<{ hash: string; referrer: string } | undefined>(undefined);
@@ -191,45 +231,125 @@ export const useRedPacketScanQrcodeSuccess = () => {
         if (luckTokenInfo) {
           setShowAccount({ isShow: false });
           if (response.detail?.claimAmount.toString() !== "0") {
-            setShowRedPacket({
-              isShow: true,
-              step: RedPacketViewStep.DetailPanel,
-              info: {
-                ...luckTokenInfo,
-              },
-            });
+            if (
+              response.detail?.luckyToken.type.mode ===
+              sdk.LuckyTokenClaimType.BLIND_BOX
+            ) {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.BlindBoxDetail,
+                info: {
+                  ...luckTokenInfo,
+                },
+              });
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.DetailPanel,
+                info: {
+                  ...luckTokenInfo,
+                },
+              });
+            }
           } else if (difference > 0) {
-            setShowRedPacket({
-              isShow: true,
-              info: {
-                ...luckTokenInfo,
-                referrer: redPacketInfo.referrer,
-              },
-              step: RedPacketViewStep.RedPacketClock,
-            });
+            // change here
+            if (luckTokenInfo.sender.accountId === accountId) {
+              if (
+                luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+              ) {
+                setShowRedPacket({
+                  isShow: true,
+                  info: {
+                    ...luckTokenInfo,
+                    referrer: redPacketInfo.referrer,
+                  },
+                  step: RedPacketViewStep.BlindBoxDetail,
+                });
+              } else {
+                setShowRedPacket({
+                  isShow: true,
+                  info: {
+                    ...luckTokenInfo,
+                    referrer: redPacketInfo.referrer,
+                  },
+                  step: RedPacketViewStep.DetailPanel,
+                });
+              }
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                  referrer: redPacketInfo.referrer,
+                },
+                step: RedPacketViewStep.RedPacketClock,
+              });
+            }
           } else if (
             luckTokenInfo.status == LuckyTokenItemStatus.COMPLETED ||
             luckTokenInfo.status == LuckyTokenItemStatus.OVER_DUE ||
             // difference + 86400000 < 0 ||
             luckTokenInfo.tokenAmount.remainCount === 0
           ) {
-            setShowRedPacket({
-              isShow: true,
-              info: {
-                ...luckTokenInfo,
-              },
-              step: RedPacketViewStep.TimeOutPanel,
-            });
+            if (luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                },
+                step: RedPacketViewStep.BlindBoxDetail,
+              });
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                },
+                step: RedPacketViewStep.TimeOutPanel,
+              });
+            }
           } else {
-            setShowRedPacket({
-              isShow: true,
-              info: {
-                ...luckTokenInfo,
-                referrer: redPacketInfo.referrer,
-              },
-              step: RedPacketViewStep.OpenPanel,
-            });
-            callOpen();
+            const canOpenBlindbox =
+              luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
+              luckTokenInfo.status === sdk.LuckyTokenItemStatus.PENDING &&
+              detail.blindBoxStatus === "";
+            const canOpenLuckyToken =
+              luckTokenInfo.type.mode !== sdk.LuckyTokenClaimType.BLIND_BOX &&
+              luckTokenInfo.status === sdk.LuckyTokenItemStatus.PENDING &&
+              !detail.claimStatus;
+            if (canOpenBlindbox || canOpenLuckyToken) {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                  referrer: redPacketInfo.referrer,
+                  hideViewDetail: accountId !== luckTokenInfo.sender.accountId,
+                },
+                step: RedPacketViewStep.OpenPanel,
+              });
+            } else {
+              if (
+                luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+              ) {
+                setShowRedPacket({
+                  isShow: true,
+                  info: {
+                    ...luckTokenInfo,
+                    referrer: redPacketInfo.referrer,
+                  },
+                  step: RedPacketViewStep.BlindBoxDetail,
+                });
+              } else {
+                setShowRedPacket({
+                  isShow: true,
+                  info: {
+                    ...luckTokenInfo,
+                    referrer: redPacketInfo.referrer,
+                  },
+                  step: RedPacketViewStep.DetailPanel,
+                });
+              }
+            }
           }
           setShowAccount({
             isShow: false,

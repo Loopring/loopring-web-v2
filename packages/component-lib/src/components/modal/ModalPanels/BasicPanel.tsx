@@ -19,6 +19,7 @@ import { ConnectProviders } from "@loopring-web/web3-provider";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
 import { sanitize } from "dompurify";
+import styled from "@emotion/styled";
 
 export enum IconType {
   LoadingIcon,
@@ -61,7 +62,24 @@ export interface PanelProps {
   error?: RESULT_INFO;
   errorOptions?: any;
   updateDepositHash?: any;
+  className?: string;
 }
+
+const BoxStyle = styled(Box)`
+  &.btrade-panel {
+    .status-icon {
+      margin-top: ${({ theme }) => theme.unit * 2}px;
+    }
+
+    .content-main {
+      align-self: stretch;
+
+      & > div {
+        align-self: stretch;
+      }
+    }
+  }
+`;
 
 export const BasicPanel = withTranslation("common", { withRef: true })(
   ({
@@ -75,6 +93,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     providerName,
     error,
     errorOptions,
+    className,
     link,
   }: PanelProps) => {
     const isLoading = iconType === IconType.LoadingIcon;
@@ -180,14 +199,16 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     const [dropdownStatus, setDropdownStatus] =
       React.useState<"up" | "down">("down");
     const { isMobile } = useSettings();
+
     return (
-      <Box
+      <BoxStyle
         flex={1}
         display={"flex"}
         alignItems={"center"}
         flexDirection={"column"}
         paddingBottom={4}
         width={"100%"}
+        className={className}
       >
         <Typography
           component={"h3"}
@@ -202,6 +223,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
           flexDirection={"column"}
           alignItems={"center"}
           justifyContent={"space-between"}
+          className={"content-main"}
         >
           <Box
             display={"flex"}
@@ -215,6 +237,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               display={"flex"}
               alignItems={"flex-start"}
               flexDirection={"column"}
+              className={"status-icon"}
             >
               {iconDiv}
             </Typography>
@@ -249,7 +272,6 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                           )
                         }
                       >
-                        {/*{`${t("labelErrorTitle")}`}*/}
                         <TransErrorHelp error={error} options={errorOptions} />
                         <DropdownIconStyled
                           status={dropdownStatus}
@@ -272,23 +294,11 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                         }}
                       />
                     ) : (
-                      <Typography
-                        color={"var(--color-error)"}
-                        component={"span"}
-                        variant={"inherit"}
-                        display={"inline-flex"}
-                        onClick={() =>
-                          setDropdownStatus((prev) =>
-                            prev === "up" ? "down" : "up"
-                          )
-                        }
-                      >
-                        {describe1}
-                      </Typography>
+                      <>{describe1}</>
                     )}
                     {dropdownStatus === "up" && (
                       <TextareaAutosizeStyled
-                        aria-label="NFT Description"
+                        aria-label="Error Description"
                         minRows={5}
                         style={{ maxHeight: "90px", overflow: "scroll" }}
                         disabled={true}
@@ -429,7 +439,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             )}
           </Box>
         )}
-      </Box>
+      </BoxStyle>
     );
   }
 );
@@ -457,9 +467,11 @@ export const RetrieveAccountBase = (props: PanelProps) => {
 
 export const UnlockAccountBase = (props: PanelProps) => {
   const propsPatch = {
+    ...props,
     title: "labelUnlockAccount",
   };
-  return <BasicPanel {...propsPatch} {...props} />;
+
+  return <BasicPanel {...propsPatch} />;
 };
 
 export const UpdateAccountBase = (props: PanelProps) => {
@@ -525,6 +537,10 @@ export const WithdrawBase = (props: PanelProps) => {
   return <BasicPanel {...propsPatch} {...props} />;
 };
 
+export const AmmBase = (props: PanelProps) => {
+  return <BasicPanel title={"labelAMMTitle"} {...props} />;
+};
+
 export const DualBase = (props: PanelProps & { showTitle: boolean }) => {
   const { showTitle } = props;
   return (
@@ -544,4 +560,12 @@ export const RedPacketOpenBase = (props: PanelProps) => {
     title: "labelRedPacketOpen",
   };
   return <BasicPanel {...propsPatch} {...props} />;
+};
+
+export const BtradeBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelBtradeTitle",
+  };
+
+  return <BasicPanel className={"btrade-panel"} {...props} {...propsPatch} />;
 };

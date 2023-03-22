@@ -6,28 +6,17 @@ import {
   ChainId,
   LoopringMap,
 } from "@loopring-web/loopring-sdk";
+import { AmmPoolStat } from "@loopring-web/loopring-sdk/dist/defs";
 
-const initialState: Required<AmmMapStates<object, object>> = {
-  ammMap: undefined,
+const initialState: Required<AmmMapStates<any, any>> = {
+  ammMap: {},
+  ammArrayEnable: [],
   __timer__: -1,
   status: SagaStatus.PENDING,
   errorMessage: null,
 };
-const ammMapStoreLocal = (ammpoolsRaw: any, chainId?: any) => {
-  // const system = store.getState().system;
-  myLog("system", chainId);
-  const ammpoolsChain = JSON.parse(
-    window.localStorage.getItem("ammpools") ?? "{}"
-  );
-  localStorage.setItem(
-    "ammpools",
-    JSON.stringify({
-      ...ammpoolsChain,
-      [chainId ?? 1]: ammpoolsRaw,
-    })
-  );
-};
-const ammMapSlice: Slice = createSlice({
+// @ts-ignore
+const ammMapSlice: Slice<AmmMapStates<any, any>> = createSlice({
   name: "ammMap",
   initialState,
   reducers: {
@@ -35,16 +24,12 @@ const ammMapSlice: Slice = createSlice({
       state,
       action: PayloadAction<{
         ammpools: LoopringMap<AmmPoolInfoV3>;
-        ammpoolsRaw?: any;
+        // ammpoolsRaw?: any;
         chainId: ChainId;
       }>
     ) {
       const ammpools = action.payload.ammpools;
-      const ammpoolsRaw = action.payload.ammpoolsRaw;
-
-      const ammMap: { [key: string]: string } = Reflect.ownKeys(
-        ammpools
-      ).reduce((prev, key) => {
+      const ammMap = Reflect.ownKeys(ammpools).reduce((prev, key) => {
         let status: any = ammpools[key.toString()].status ?? 0;
         status = ("00000" + status.toString(2)).split("");
         let exitDisable = status[status.length - 1] === "0";
@@ -62,16 +47,18 @@ const ammMapSlice: Slice = createSlice({
             showDisable,
             isRiskyMarket,
             __rawConfig__: ammpools[key as string],
+            market: key.toString().replace("AMM-", ""),
           },
         };
       }, {});
       state.ammMap = ammMap;
-
-      if (ammpoolsRaw) {
-        ammMapStoreLocal(ammpoolsRaw, action.payload.chainId);
-      }
     },
-    getAmmMap(state, _action: PayloadAction<GetAmmMapParams>) {
+    getAmmMap(
+      state,
+      _action: PayloadAction<
+        GetAmmMapParams & { ammpoolsRaw?: any; chainId?: ChainId }
+      >
+    ) {
       state.status = SagaStatus.PENDING;
     },
     getAmmMapStatus(state, action: PayloadAction<AmmMapStates<any, any>>) {
@@ -80,17 +67,25 @@ const ammMapSlice: Slice = createSlice({
         state.status = SagaStatus.ERROR;
         // @ts-ignore
         state.errorMessage = action.error;
+      } else {
+        const { ammMap, ammArrayEnable, __timer__ } = action.payload;
+        if (ammMap) {
+          // myLog(ammMap["AMM-LRC-USDT"].tokens, "ammMap");
+          state.ammMap = ammMap;
+        }
+        if (ammArrayEnable) {
+          state.ammArrayEnable = ammArrayEnable;
+        }
+        if (__timer__) {
+          state.__timer__ = __timer__;
+        }
+        state.status = SagaStatus.DONE;
       }
-      const { ammMap, __timer__ } = action.payload;
-      if (ammMap) {
-        state.ammMap = ammMap;
-      }
-      if (__timer__) {
-        state.__timer__ = __timer__;
-      }
-      state.status = SagaStatus.DONE;
     },
-    updateRealTimeAmmMap(state, _action: PayloadAction<undefined>) {
+    updateRealTimeAmmMap(
+      state,
+      _action: PayloadAction<{ ammPoolStats?: LoopringMap<AmmPoolStat> }>
+    ) {
       state.status = SagaStatus.PENDING;
     },
     statusUnset: (state) => {

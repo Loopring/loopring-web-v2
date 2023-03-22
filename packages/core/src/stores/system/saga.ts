@@ -9,7 +9,7 @@ import {
 } from "redux-saga/effects";
 import { getSystemStatus, updateRealTimeObj, updateSystem } from "./reducer";
 import { ENV, NETWORKEXTEND } from "./interface";
-import { store, LoopringSocket, LoopringAPI } from "../../index";
+import { store, LoopringSocket, LoopringAPI, toggleCheck } from "../../index";
 import {
   CustomError,
   ErrorMap,
@@ -17,12 +17,7 @@ import {
   myLog,
 } from "@loopring-web/common-resources";
 import { statusUnset as accountStatusUnset } from "../account/reducer";
-import { ChainId, Currency } from "@loopring-web/loopring-sdk";
-import {
-  getAmmMap,
-  initAmmMap,
-  updateRealTimeAmmMap,
-} from "../Amm/AmmMap/reducer";
+import { getAmmMap, initAmmMap } from "../Amm/AmmMap/reducer";
 import { getTickers } from "../ticker/reducer";
 import { getAmmActivityMap } from "../Amm/AmmActivityMap/reducer";
 import { updateWalletLayer1 } from "../walletLayer1/reducer";
@@ -32,11 +27,15 @@ import { getTokenPrices } from "../tokenPrices/reducer";
 import { getDefiMap } from "../invest/DefiMap/reducer";
 import { getInvestTokenTypeMap } from "../invest/InvestTokenTypeMap/reducer";
 import { getDualMap } from "../invest/DualMap/reducer";
+import { getStakingMap } from "../invest/StakingMap/reducer";
+
 import * as sdk from "@loopring-web/loopring-sdk";
 import { getRedPacketConfigs } from "../redPacket/reducer";
+import { AvaiableNetwork } from "@loopring-web/web3-provider";
+import { getBtradeMap } from "../invest/BtradeMap/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
-  _chainId: ChainId | "unknown"
+  _chainId: sdk.ChainId | "unknown"
 ) {
   const { chainId } = store.getState().system;
   const _tokenMap = JSON.parse(window.localStorage.getItem("tokenMap") ?? "{}")[
@@ -106,6 +105,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       yield take("tokenPrices/getTokenPricesStatus");
     }
     store.dispatch(getTickers({ tickerKeys: marketArr }));
+    yield take("tickerMap/getTickerStatus");
     store.dispatch(getAmmMap({ ammpools }));
     yield take("ammMap/getAmmMapStatus");
     store.dispatch(getAmmActivityMap({ ammpools }));
@@ -150,7 +150,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
             marketRaw,
           })
         );
-        store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
         store.dispatch(
           getTokenMap({
             tokensMap,
@@ -171,8 +170,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
         // myLog(
         //   "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList update from server-side update"
         // );
-        store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
-        store.dispatch(getAmmMap({ ammpools }));
+        store.dispatch(getAmmMap({ ammpools, ammpoolsRaw, chainId }));
         store.dispatch(getAmmActivityMap({ ammpools }));
       }
     );
@@ -229,6 +227,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     store.dispatch(getTokenPrices(undefined));
     yield take("tokenPrices/getTokenPricesStatus");
     store.dispatch(getTickers({ tickerKeys: marketArr }));
+    yield take("tickerMap/getTickerStatus");
     store.dispatch(getAmmMap({ ammpools }));
     yield take("ammMap/getAmmMapStatus");
     store.dispatch(getAmmActivityMap({ ammpools }));
@@ -240,10 +239,13 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   store.dispatch(getNotify(undefined));
   store.dispatch(getDefiMap(undefined));
   store.dispatch(getDualMap(undefined));
+  store.dispatch(getStakingMap(undefined));
+  store.dispatch(getBtradeMap(undefined));
 
   yield all([
     take("defiMap/getDefiMapStatus"),
     take("dualMap/getDualMapStatus"),
+    take("stakingMap/getStakingMapStatus"),
   ]);
   store.dispatch(getInvestTokenTypeMap(undefined));
   yield delay(5);
@@ -254,19 +256,19 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   store.dispatch(accountStatusUnset(undefined));
 };
 const should15MinutesUpdateDataGroup = async (
-  chainId: ChainId
+  chainId: sdk.ChainId
 ): Promise<{
   gasPrice: number | undefined;
-  forexMap: ForexMap<Currency>;
+  forexMap: ForexMap<sdk.Currency>;
 }> => {
   if (LoopringAPI.exchangeAPI) {
     let indexUSD = 0;
     const tokenId =
-      chainId === ChainId.GOERLI
+      chainId === sdk.ChainId.GOERLI
         ? "0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a"
         : "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
-    const promiseArray = Reflect.ownKeys(Currency).map((key, index) => {
-      if (key.toString().toUpperCase() === Currency.usd.toUpperCase()) {
+    const promiseArray = Reflect.ownKeys(sdk.Currency).map((key, index) => {
+      if (key.toString().toUpperCase() === sdk.Currency.usd.toUpperCase()) {
         indexUSD = index;
       }
       return (
@@ -282,14 +284,14 @@ const should15MinutesUpdateDataGroup = async (
       ...promiseArray,
     ]);
     const baseUsd = restForexs[indexUSD].tokenPrices[tokenId] ?? 1;
-    const forexMap: ForexMap<Currency> = Reflect.ownKeys(Currency).reduce<
-      ForexMap<Currency>
-    >((prev, key, index) => {
+    const forexMap: ForexMap<sdk.Currency> = Reflect.ownKeys(
+      sdk.Currency
+    ).reduce<ForexMap<sdk.Currency>>((prev, key, index) => {
       if (restForexs[index] && key && restForexs[index].tokenPrices) {
         prev[key] = restForexs[index].tokenPrices[tokenId] / baseUsd;
       }
       return prev;
-    }, {} as ForexMap<Currency>);
+    }, {} as ForexMap<sdk.Currency>);
 
     return {
       gasPrice,
@@ -297,7 +299,7 @@ const should15MinutesUpdateDataGroup = async (
     };
   }
   return {
-    forexMap: {} as ForexMap<Currency>,
+    forexMap: {} as ForexMap<sdk.Currency>,
     gasPrice: undefined,
   };
 };
@@ -305,37 +307,58 @@ const should15MinutesUpdateDataGroup = async (
 const getSystemsApi = async <_R extends { [key: string]: any }>(
   chainId: any
 ) => {
+  const extendsChain: string[] = (AvaiableNetwork ?? []).filter(
+    (item) => ![1, 5].includes(Number(item))
+  );
+
   const env =
     window.location.hostname === "localhost"
       ? ENV.DEV
-      : ChainId.GOERLI === chainId
+      : sdk.ChainId.GOERLI === chainId
       ? ENV.UAT
       : ENV.PROD;
-  chainId =
-    ChainId.GOERLI === chainId
-      ? ChainId.GOERLI
-      : ChainId.MAINNET === chainId
-      ? ChainId.MAINNET
-      : NETWORKEXTEND.NONETWORK;
-
+  chainId = AvaiableNetwork.includes(chainId.toString())
+    ? chainId
+    : NETWORKEXTEND.NONETWORK;
+  // chainId =
+  //   ChainId.GOERLI === chainId
+  //     ? ChainId.GOERLI
+  //     : ChainId.MAINNET === chainId
+  //     ? ChainId.MAINNET
+  //     : NETWORKEXTEND.NONETWORK;
   if (chainId === NETWORKEXTEND.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR);
   } else {
-    LoopringAPI.InitApi(chainId as ChainId);
+    LoopringAPI.InitApi(chainId as sdk.ChainId);
 
     if (LoopringAPI.exchangeAPI) {
-      const baseURL =
-        ChainId.MAINNET === chainId
+      let baseURL, socketURL, etherscanBaseUrl;
+      if (extendsChain.includes(chainId.toString())) {
+        const { isTaikoTest } = store.getState().settings;
+        baseURL = !isTaikoTest
           ? `https://${process.env.REACT_APP_API_URL}`
           : `https://${process.env.REACT_APP_API_URL_UAT}`;
-      const socketURL =
-        ChainId.MAINNET === chainId
+        socketURL = !isTaikoTest
           ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
           : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
-      const etherscanBaseUrl =
-        ChainId.MAINNET === chainId
+        etherscanBaseUrl = !isTaikoTest
           ? `https://etherscan.io/`
           : `https://goerli.etherscan.io/`;
+      } else {
+        baseURL =
+          sdk.ChainId.MAINNET === chainId
+            ? `https://${process.env.REACT_APP_API_URL}`
+            : `https://${process.env.REACT_APP_API_URL_UAT}`;
+        socketURL =
+          sdk.ChainId.MAINNET === chainId
+            ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
+            : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
+        etherscanBaseUrl =
+          sdk.ChainId.MAINNET === chainId
+            ? `https://etherscan.io/`
+            : `https://goerli.etherscan.io/`;
+      }
+
       LoopringAPI.userAPI?.setBaseUrl(baseURL);
       LoopringAPI.exchangeAPI?.setBaseUrl(baseURL);
       LoopringAPI.globalAPI?.setBaseUrl(baseURL);
@@ -348,24 +371,33 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
       let allowTrade, exchangeInfo, gasPrice, forexMap;
       if (
         /dev\.loopring\.io/.test(baseURL) &&
-        ChainId.MAINNET !== chainId &&
+        sdk.ChainId.MAINNET !== chainId &&
         process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION
       ) {
-        sdk.NFTFactory_Collection[ChainId.GOERLI] =
+        sdk.NFTFactory_Collection[sdk.ChainId.GOERLI] =
           process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION;
       }
       try {
         const _exchangeInfo = JSON.parse(
           window.localStorage.getItem("exchangeInfo") ?? "{}"
         );
-        // const _allowTrade = JSON.parse(window.localStorage.getItem("allowTrade") ?? "{}")[
-        //   chainId
-        //   ];
-        if (_exchangeInfo[chainId]) {
-          myLog("exchangeInfo from localstorage");
-          exchangeInfo = _exchangeInfo[chainId];
-          // const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(chainId)
-          [{ forexMap, gasPrice }, allowTrade] = await Promise.all([
+        [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
+          await Promise.all([
+            _exchangeInfo[chainId]
+              ? Promise.resolve({ exchangeInfo: _exchangeInfo[chainId] })
+              : LoopringAPI.exchangeAPI
+                  .getExchangeInfo()
+                  .then(({ exchangeInfo }) => {
+                    myLog("exchangeInfo from service because no localstorage ");
+                    window.localStorage.setItem(
+                      "exchangeInfo",
+                      JSON.stringify({
+                        ..._exchangeInfo,
+                        [exchangeInfo.chainId]: exchangeInfo,
+                      })
+                    );
+                    return { exchangeInfo };
+                  }),
             should15MinutesUpdateDataGroup(chainId),
             LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
               return {
@@ -373,8 +405,9 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
                 legal: (result as any)?.raw_data?.legal ?? { enable: false },
               };
             }),
+            toggleCheck(chainId, process.env.REACT_APP_DEX_TOGGLE),
           ]);
-
+        if (_exchangeInfo[chainId]) {
           LoopringAPI.exchangeAPI
             .getExchangeInfo()
             .then(({ exchangeInfo }: any) => {
@@ -387,26 +420,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
               );
               myLog("exchangeInfo from service");
             });
-        } else {
-          [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
-            await Promise.all([
-              LoopringAPI.exchangeAPI.getExchangeInfo(),
-              should15MinutesUpdateDataGroup(chainId),
-              LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
-                return {
-                  ...result,
-                  legal: (result as any)?.raw_data?.legal ?? { enable: false },
-                };
-              }),
-            ]);
-          myLog("exchangeInfo from service because no localstorage ");
-          window.localStorage.setItem(
-            "exchangeInfo",
-            JSON.stringify({
-              ..._exchangeInfo,
-              [exchangeInfo.chainId]: exchangeInfo,
-            })
-          );
         }
       } catch (e: any) {
         allowTrade = {
@@ -434,7 +447,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
             const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(
               chainId
             );
-            store.dispatch(updateRealTimeAmmMap(undefined));
             store.dispatch(updateRealTimeObj({ forexMap, gasPrice }));
           }
         }, 300000); //
@@ -473,6 +485,7 @@ export function* getUpdateSystem({ payload }: any) {
     yield put(
       getSystemStatus({
         env,
+        dexToggleUrl: process.env.REACT_APP_DEX_TOGGLE,
         baseURL,
         allowTrade,
         fiatPrices,

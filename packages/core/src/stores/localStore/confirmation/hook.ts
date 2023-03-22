@@ -3,19 +3,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../index";
 import { Confirmation } from "./interface";
 
-import { confirm,
+import {
+  confirm,
   confirmedRETHDefiInvest,
   confirmedWSETHDefiInvest,
-  confirmDualInvest,
   showDualBeginnerHelp,
-  hidDualBeginnerHelp } from "./reducer";
+  hidDualBeginnerHelp,
+  confirmedLRCStakeInvest,
+  confirmedBtradeSwap,
+  confirmDualInvestV2,
+} from "./reducer";
 
 export const useConfirmation = (): {
   confirmation: Confirmation;
   confirmWrapper: () => void;
   confirmedRETHDefiInvest: () => void;
   confirmedWSETHDefiInvest: () => void;
+  confirmedLRCStakeInvest: () => void;
   confirmDualInvest: () => void;
+  confirmedBtradeSwap: () => void;
 } => {
   const confirmation: Confirmation = useSelector(
     (state: RootState) => state.localStore.confirmation
@@ -28,10 +34,10 @@ export const useConfirmation = (): {
       dispatch(confirm(undefined));
     }, [dispatch]),
     confirmDualInvest: React.useCallback(() => {
-      dispatch(confirmDualInvest(undefined));
+      dispatch(confirmDualInvestV2(undefined));
       dispatch(showDualBeginnerHelp(undefined));
       setTimeout(() => {
-        dispatch(hidDualBeginnerHelp(undefined))
+        dispatch(hidDualBeginnerHelp(undefined));
       }, 5 * 1000);
     }, [dispatch]),
     confirmedRETHDefiInvest: React.useCallback(() => {
@@ -39,6 +45,12 @@ export const useConfirmation = (): {
     }, [dispatch]),
     confirmedWSETHDefiInvest: React.useCallback(() => {
       dispatch(confirmedWSETHDefiInvest(undefined));
+    }, [dispatch]),
+    confirmedLRCStakeInvest: React.useCallback(() => {
+      dispatch(confirmedLRCStakeInvest(undefined));
+    }, [dispatch]),
+    confirmedBtradeSwap: React.useCallback(() => {
+      dispatch(confirmedBtradeSwap(undefined));
     }, [dispatch]),
   };
 };

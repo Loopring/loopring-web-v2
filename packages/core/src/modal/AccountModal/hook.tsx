@@ -29,6 +29,8 @@ import {
   DepositProps,
   Dual_Failed,
   Dual_Success,
+  Staking_Failed,
+  Staking_Success,
   ExportAccount_Approve_WaitForAuth,
   ExportAccount_Failed,
   ExportAccount_Success,
@@ -112,6 +114,13 @@ import {
   Withdraw_Success,
   Withdraw_User_Denied,
   Withdraw_WaitForAuth,
+  Staking_Redeem_Success,
+  Staking_Redeem_Failed,
+  BtradeSwap_Settled,
+  BtradeSwap_Delivering,
+  BtradeSwap_Failed,
+  BtradeSwap_Pending,
+  AMM_Pending,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -162,6 +171,7 @@ import {
   useRampTransPost,
   useRedPacketScanQrcodeSuccess,
   useReset,
+  useStakeTradeExit,
   useSystem,
   useToast,
   useTransfer,
@@ -248,6 +258,9 @@ export function useAccountModalForUI({
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
+  const { stakeWrapProps } = useStakeTradeExit({
+    setToastOpen,
+  });
   const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
   const { claimProps, retryBtn: claimRetryBtn } = useClaimConfirm();
   const { resetProps } = useReset();
@@ -437,7 +450,8 @@ export function useAccountModalForUI({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
   }, [account.accAddress, chainInfos?.depositHashes]);
-  const { setShowLayerSwapNotice } = useOpenModals();
+  const { setShowLayerSwapNotice, setShowAnotherNetworkNotice } =
+    useOpenModals();
 
   const addAssetList: AddAssetItem[] = React.useMemo(
     () => [
@@ -476,6 +490,7 @@ export function useAccountModalForUI({
             step: AccountStep.ThirdPanelReturn,
             info: { title: t("labelAddAssetTitleBridge"), description: t(dex) },
           });
+
           window.open(
             Bridge +
               `?l2account=${account.accAddress}&token=${
@@ -523,6 +538,34 @@ export function useAccountModalForUI({
           setShowLayerSwapNotice({ isShow: true });
         },
       },
+      {
+        ...AddAssetList.FromAnotherNet,
+        handleSelect: () => {
+          let dex = "labelAddAssetTitleAnotherNetDes";
+          if (
+            account.readyState &&
+            [
+              AccountStatus.DEPOSITING,
+              AccountStatus.NOT_ACTIVE,
+              AccountStatus.NO_ACCOUNT,
+            ].includes(
+              // @ts-ignore
+              account?.readyState
+            )
+          ) {
+            dex = "labelAddAssetTitleAnotherNetDesActive";
+          }
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.ThirdPanelReturn,
+            info: {
+              title: t("labelFromAnotherNet"),
+              description: t(dex),
+            },
+          });
+          setShowAnotherNetworkNotice({ isShow: true });
+        },
+      },
     ],
     [
       account.accAddress,
@@ -564,6 +607,18 @@ export function useAccountModalForUI({
             info: { isToMyself: false },
             symbol: isShowAccount?.info?.symbol,
           });
+        },
+      },
+      {
+        ...SendAssetList.SendAssetToAnotherNet,
+        handleSelect: () => {
+          setShowAccount({
+            isShow: false,
+          });
+          window.open(
+            "https://www.orbiter.finance/?source=Loopring&dest=Ethereum"
+          );
+          window.opener = null;
         },
       },
     ],
@@ -693,6 +748,7 @@ export function useAccountModalForUI({
         ),
         height: "auto",
       },
+
       [AccountStep.CheckingActive]: {
         view: (
           <CheckActiveStatus
@@ -709,6 +765,7 @@ export function useAccountModalForUI({
         height: "auto",
       },
       [AccountStep.AddAssetGateway]: {
+        height: "auto",
         view: (
           <AddAsset
             symbol={isShowAccount?.info?.symbol}
@@ -2880,6 +2937,133 @@ export function useAccountModalForUI({
           />
         ),
       },
+      [AccountStep.Staking_Redeem_Failed]: {
+        view: (
+          <Staking_Redeem_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Staking_Redeem_Success]: {
+        view: (
+          <Staking_Redeem_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              info: isShowAccount?.info ?? {},
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Staking_Success]: {
+        view: (
+          <Staking_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              info: isShowAccount?.info ?? {},
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Staking_Failed]: {
+        view: (
+          <Staking_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.BtradeSwap_Delivering]: {
+        view: (
+          <BtradeSwap_Delivering
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.BtradeSwap_Pending]: {
+        view: (
+          <BtradeSwap_Pending
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+
+      [AccountStep.BtradeSwap_Settled]: {
+        view: (
+          <BtradeSwap_Settled
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.BtradeSwap_Failed]: {
+        view: (
+          <BtradeSwap_Failed
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.AMM_Pending]: {
+        view: (
+          <AMM_Pending
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
     });
   }, [
     activeAccountProps,
@@ -2947,6 +3131,7 @@ export function useAccountModalForUI({
     depositProps,
     resetProps,
     collectionAdvanceProps,
+    sideStackRedeemProps: stakeWrapProps,
     activeAccountProps,
     exportAccountProps,
     exportAccountAlertText,

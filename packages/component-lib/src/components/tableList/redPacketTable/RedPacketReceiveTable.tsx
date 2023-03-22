@@ -3,16 +3,19 @@ import { Box, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import {
   BoxNFT,
+  Button,
   Column,
   NftImage,
   Table,
   TablePagination,
 } from "../../basic-lib";
 import {
+  CoinInfo,
   globalSetup,
   myLog,
   RowConfig,
   TokenType,
+  YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -35,9 +38,12 @@ const TableWrapperStyled = styled(Box)`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 `;
-const TableStyled = styled(Table)`
+const TableStyled = styled(Table)<{ isNFT: boolean }>`
   &.rdg {
-    --template-columns: 20% 20% 30% auto auto !important;
+    --template-columns: ${({ isNFT }) =>
+      isNFT
+        ? "20% 7% auto 12% 10% 15% 10% !important"
+        : "20% 20% 30% auto auto !important"};
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -81,6 +87,8 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       showloading,
       t,
       onItemClick,
+      onClaimItem,
+      showActionableRecords,
     } = props;
     // const { isMobile, upColor } = useSettings();
     const history = useHistory();
@@ -88,9 +96,15 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
 
     const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
       await getRedPacketReceiveList({
-        offset: (page - 1) * (pagination?.pageSize ?? 10),
-        limit: pagination?.pageSize ?? 10,
-        filter,
+        offset: (page - 1) * (pagination?.pageSize ?? 12),
+        limit: pagination?.pageSize ?? 12,
+        filter: {
+          ...filter,
+          statuses:
+            tokenType === TokenType.nft && showActionableRecords
+              ? [0]
+              : undefined,
+        },
       });
     }, globalSetup.wait);
 
@@ -108,22 +122,28 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
     React.useEffect(() => {
       updateData.cancel();
       handlePageChange({ page: 1 });
-      // updateData({});
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize, tokenType]);
+    }, [tokenType, showActionableRecords]);
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
           key: "Token",
-          sortable: true,
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
           formatter: ({ row: { token } }: FormatterProps<R, unknown>) => {
             if (token.type === TokenType.single) {
-              return <ColumnCoinDeep token={token as any} />;
+              const _token = token as CoinInfo<any> & { type: TokenType };
+              return (
+                <ColumnCoinDeep
+                  token={{
+                    ..._token,
+                    name: "", // for not displaying name here
+                  }}
+                />
+              );
             } else {
               const { metadata } = token as sdk.UserNFTBalanceInfo;
               return (
@@ -163,7 +183,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                   <Typography
                     color={"inherit"}
                     flex={1}
-                    display={"inline-flex"}
+                    display={"inline-block"}
                     alignItems={"center"}
                     paddingLeft={1}
                     overflow={"hidden"}
@@ -179,7 +199,8 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Amount",
-          sortable: true,
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
           name: t("labelAmount"),
           formatter: ({ row }: FormatterProps<R>) => {
             return <>{`${row.amount}`}</>;
@@ -187,13 +208,16 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Type",
-          sortable: false,
           name: t("labelType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <>
                 {t(
-                  row.type.partition == sdk.LuckyTokenAmountType.AVERAGE
+                  row.type.mode === sdk.LuckyTokenClaimType.RELAY
+                    ? "labelLuckyRelayToken"
+                    : row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                    ? "labelLuckyBlindBox"
+                    : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
                     ? "labelRedPacketSendCommonTitle"
                     : "labelRedPacketSenRandomTitle",
                   { ns: "common" }
@@ -208,7 +232,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Address",
-          sortable: false,
           name: t("labelAddress"),
           formatter: ({ row }: FormatterProps<R>) => {
             return <>{row.sender}</>;
@@ -216,18 +239,72 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Time",
-          sortable: true,
           cellClass: "textAlignRight",
           headerCellClass: "textAlignRight",
-          name: t("labelRecordTime"),
+          name: t("labelReceiveTime"),
           formatter: ({ row }: FormatterProps<R>) => {
             return (
               <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>
             );
           },
         },
+        // ...[tokenType === TokenType.nft?]
+        ...(tokenType === TokenType.nft
+          ? [
+              {
+                key: "End Time",
+                cellClass: "textAlignRight",
+                headerCellClass: "textAlignRight",
+                name: t("labelBlindBoxEndTime"),
+                formatter: ({ row }: FormatterProps<R>) => {
+                  return (
+                    <>
+                      {moment(
+                        new Date(row.rawData.luckyToken.validUntil)
+                      ).format(YEAR_DAY_MINUTE_FORMAT)}
+                    </>
+                  );
+                },
+              },
+              {
+                key: "Action",
+                cellClass: "textAlignRight",
+                headerCellClass: "textAlignRight",
+                name: "Action",
+                formatter: ({ row }: FormatterProps<R>) => {
+                  if (
+                    row.rawData.claim.status ===
+                    sdk.ClaimRecordStatus.WAITING_CLAIM
+                  ) {
+                    return (
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onClaimItem(row.rawData, () => {
+                            handlePageChange({ page });
+                          });
+                        }}
+                      >
+                        {t("labelBlindBoxCalim")}
+                      </Button>
+                    );
+                  } else if (
+                    row.rawData.claim.status === sdk.ClaimRecordStatus.EXPIRED
+                  ) {
+                    return <Box>{t("labelBlindBoxExpired")}</Box>;
+                  } else if (
+                    row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED
+                  ) {
+                    return <Box>{t("labelBlindBoxClaimed")}</Box>;
+                  } else {
+                    return <></>;
+                  }
+                },
+              },
+            ]
+          : []),
       ],
-      [history, t]
+      [history, t, tokenType]
     );
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),
@@ -239,12 +316,15 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
     return (
       <TableWrapperStyled>
         <TableStyled
+          isNFT={tokenType === TokenType.nft}
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
           rowHeight={RowConfig.rowHeight}
           onRowClick={(_index: number, row: R) => {
-            onItemClick(row.rawData);
+            onItemClick(row.rawData, () => {
+              handlePageChange({ page });
+            });
           }}
           sortMethod={React.useCallback(
             (_sortedRows, sortColumn) => {

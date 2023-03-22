@@ -1,5 +1,7 @@
 import { ClaimWithdrawBase, IconType, PanelProps } from "./BasicPanel";
 import { NFTWholeINFO } from "@loopring-web/common-resources";
+import { Typography } from "@mui/material";
+import { useSettings } from "../../../stores";
 
 export const ClaimWithdraw_WaitForAuth = (
   props: PanelProps & Partial<NFTWholeINFO>
@@ -69,12 +71,28 @@ export const ClaimWithdraw_Failed = (
 export const ClaimWithdraw_Submit = (
   props: PanelProps & Partial<NFTWholeINFO>
 ) => {
+  const { isMobile } = useSettings();
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelClaimWithdrawSubmit", {
       symbol: props.symbol,
       value: props.value,
     }),
+    describe2: (
+      <Typography
+        justifySelf={"stretch"}
+        display={"flex"}
+        flexDirection={"column"}
+        minWidth={340}
+        justifyContent={"center"}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 5}
+        color={"var(--color-text-third)"}
+        marginBottom={2}
+      >
+        {props.t("labelTransferDelayConfirm")}
+      </Typography>
+    ),
   };
   return <ClaimWithdrawBase {...propsPatch} {...props} />;
 };

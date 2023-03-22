@@ -15,6 +15,7 @@ import {
   SCENARIO,
   StarHollowIcon,
   StarSolidIcon,
+  Ticker,
 } from "@loopring-web/common-resources";
 import { Column, Table } from "../../basic-lib";
 import { TablePaddingX } from "../../styled";
@@ -71,22 +72,14 @@ const TableStyled = styled(Table)`
   }
 ` as any;
 
-export type QuoteTableRawDataItem = {
+export type QuoteTableRawDataItem = Ticker & {
   pair: {
     coinA: string;
     coinB: string;
   };
-  close: number;
-  change: number;
-  high: number;
-  low: number;
   floatTag: keyof typeof FloatTag;
-  volume: number;
-  changeDollar: number;
-  closeDollar: number;
-  coinAPriceDollar: number;
+  coinApriceU: number;
   precision?: number;
-  priceDollar?: number;
   reward?: number;
   rewardToken?: string;
   timeUnit?: "24h";
@@ -245,7 +238,7 @@ export const QuoteTable = withTranslation("tables")(
               const faitPrice = Number.isFinite(value)
                 ? PriceTag[CurrencyToTag[currency]] +
                   getValuePrecisionThousand(
-                    row.coinAPriceDollar * (forexMap[currency] ?? 0),
+                    row.coinApriceU * (forexMap[currency] ?? 0),
                     undefined,
                     undefined,
                     2,
@@ -309,7 +302,7 @@ export const QuoteTable = withTranslation("tables")(
             headerCellClass: "textAlignRight",
             formatter: ({ row, column }: any) => {
               const value = row[column.key];
-              const precision = row["precision"] || 6;
+              const precision = row.precision || 6;
               const price = Number.isFinite(value)
                 ? getValuePrecisionThousand(
                     value,
@@ -333,7 +326,7 @@ export const QuoteTable = withTranslation("tables")(
             headerCellClass: "textAlignRight",
             formatter: ({ row, column }: any) => {
               const value = row[column.key];
-              const precision = row["precision"] || 6;
+              const precision = row.precision || 6;
               const price = Number.isFinite(value)
                 ? getValuePrecisionThousand(
                     value,
@@ -358,18 +351,19 @@ export const QuoteTable = withTranslation("tables")(
             // resizable: true,
             sortable: true,
             formatter: ({ row }: any) => {
-              const value = row["volume"];
-              const precision = row["precision"] || 6;
-              const price = Number.isFinite(value)
-                ? getValuePrecisionThousand(
-                    value,
-                    precision,
-                    undefined,
-                    undefined,
-                    true,
-                    { isTrade: true }
-                  )
-                : EmptyValueTag;
+              const value = row.volume;
+              const precision = row.volume || 6;
+              const price =
+                value && value !== "0"
+                  ? getValuePrecisionThousand(
+                      value,
+                      precision,
+                      undefined,
+                      undefined,
+                      true,
+                      { isTrade: true }
+                    )
+                  : EmptyValueTag;
               return (
                 <div className="rdg-cell-value textAlignRight">
                   <span>{price}</span>

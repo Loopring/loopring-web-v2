@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Card,
   CardActions,
@@ -7,7 +6,7 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import { AvatarCoin, Button } from "../";
+import { Button, CoinIcons } from "../";
 import React from "react";
 import moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -20,7 +19,7 @@ import {
   getValuePrecisionThousand,
   myLog,
   PriceTag,
-  SoursURL,
+  TokenType,
   YEAR_DAY_FORMAT,
 } from "@loopring-web/common-resources";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
@@ -66,20 +65,12 @@ const CardActionBoxStyled = styled(Box)`
   position: relative;
 `;
 
-const BoxStyled = styled(Box)`` as typeof Box;
-// const BoxBg = styled(Box)`
-//   ${({theme}) => boxLiner({theme})}
-//   ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2})};
-// ` as typeof Box
-
 const DetailWrapperStyled = styled(Box)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: ${({ theme }) => theme.unit}px;
 `;
-
-const DividerWrapperStyled = styled(Box)``;
 
 const ViewDetailStyled = styled(Typography)`
   &:hover {
@@ -95,9 +86,11 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           t,
           coinAInfo,
           coinBInfo,
-          amountDollar,
+          amountU,
           account,
           APR,
+          coinA,
+          coinB,
           activity: {
             duration,
             myRewards,
@@ -105,7 +98,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
             isPass,
             ruleType,
             totalRewards,
-            rewardTokenDollar,
+            rewardTokenU,
             maxSpread,
           },
           handleClick,
@@ -114,29 +107,23 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           totalB,
           precisionA,
           precisionB,
-          ammRewardRecordList, //: RewardItem[]
           getLiquidityMining, //: (market: string, size?: number) => Promise<void>
-          getMiningLinkList,
           setShowRewardDetail,
           setChosenCardInfo,
           ammInfo,
           forexMap,
-          ...rest
-        }: AmmCardProps<T> & WithTranslation,
+          rewardB,
+          rewardAU,
+          rewardBU,
+        }: // ...rest
+        AmmCardProps<T> & WithTranslation,
         ref: React.ForwardedRef<any>
       ) => {
         const isOrderbook = ruleType === "ORDERBOOK_MINING";
         const isAmm = ruleType === "AMM_MINING";
-        const {
-          rewardValue,
-          rewardValue2,
-          coinAPriceDollar,
-          coinBPriceDollar,
-          rewardToken2,
-        } = rest;
+
         const { coinJson, currency } = useSettings();
-        const coinAIcon: any = coinJson[coinAInfo?.simpleName] || "";
-        const coinBIcon: any = coinJson[coinBInfo?.simpleName] || "";
+
         const pathname = `${coinAInfo?.simpleName}-${coinBInfo?.simpleName}`;
         const pair = `${coinAInfo?.simpleName} / ${coinBInfo?.simpleName}`;
 
@@ -146,10 +133,8 @@ export const AmmCard = withTranslation("common", { withRef: true })(
         const totalAmmReward =
           PriceTag[CurrencyToTag[currency]] +
           getValuePrecisionThousand(
-            (rewardValue || 0) *
-              ((coinAPriceDollar || 0) * (forexMap[currency] ?? 0)) +
-              (rewardValue2 || 0) *
-                ((coinBPriceDollar || 0) * (forexMap[currency] ?? 0)),
+            (rewardAU ?? 0) * (forexMap[currency] ?? 0) +
+              (rewardBU ?? 0) * (forexMap[currency] ?? 0),
             undefined,
             undefined,
             2,
@@ -159,16 +144,12 @@ export const AmmCard = withTranslation("common", { withRef: true })(
 
         myLog({
           totalAmmReward,
-          rewardValue,
-          rewardValue2,
-          coinAPriceDollar,
-          coinBPriceDollar,
         });
         const orderbookReward =
           CurrencyToTag[currency] +
           getValuePrecisionThousand(
             (totalRewards || 0) *
-              ((rewardTokenDollar || 0) * (forexMap[currency] ?? 0)),
+              ((rewardTokenU || 0) * (forexMap[currency] ?? 0)),
             undefined,
             undefined,
             2,
@@ -223,7 +204,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
               {isOrderbook ? "Orderbook" : "AMM Pool"}
             </LabelStyled>
             <CardContent style={{ paddingBottom: 0 }}>
-              <BoxStyled
+              <Box
                 display={"flex"}
                 flexDirection={"row"}
                 justifyContent={"space-between"}
@@ -254,33 +235,20 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                     alignItems={"center"}
                     justifyContent={"center"}
                   >
-                    {coinAIcon ? (
-                      <AvatarCoin
-                        imgx={coinAIcon.x}
-                        imgy={coinAIcon.y}
-                        imgheight={coinAIcon.h}
-                        imgwidth={coinAIcon.w}
-                        size={28}
-                        variant="circular"
-                        alt={coinAInfo?.simpleName as string}
-                        // src={sellData?.icon}
-                        src={
-                          "data:image/svg+xml;utf8," +
-                          '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                        }
-                      />
-                    ) : (
-                      <Avatar
-                        variant="circular"
-                        alt={coinAInfo?.simpleName as string}
-                        style={{
-                          height: "var(--chart-title-coin-size)",
-                          width: "var(--chart-title-coin-size)",
-                        }}
-                        // src={sellData?.icon}
-                        src={SoursURL + "images/icon-default.png"}
-                      />
-                    )}
+                    <CoinIcons
+                      type={TokenType.single}
+                      tokenIcon={[coinJson[coinA]]}
+                    />
+                    <Typography
+                      component={"span"}
+                      color={"var(--color-text-primary)"}
+                      variant={"body2"}
+                      marginLeft={1 / 2}
+                      height={20}
+                      lineHeight={"20px"}
+                    >
+                      {coinA}
+                    </Typography>
                   </Box>
 
                   <Box
@@ -294,36 +262,25 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                     alignItems={"center"}
                     justifyContent={"center"}
                   >
-                    {coinBIcon ? (
-                      <AvatarCoin
-                        imgx={coinBIcon.x}
-                        imgy={coinBIcon.y}
-                        imgheight={coinBIcon.h}
-                        imgwidth={coinBIcon.w}
-                        size={28}
-                        variant="circular"
-                        alt={coinBInfo?.simpleName as string}
-                        // src={sellData?.icon}
-                        src={
-                          "data:image/svg+xml;utf8," +
-                          '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                        }
-                      />
-                    ) : (
-                      <Avatar
-                        variant="circular"
-                        alt={coinBInfo?.simpleName as string}
-                        style={{
-                          height: "var(--chart-title-coin-size)",
-                          width: "var(--chart-title-coin-size)",
-                        }}
-                        // src={sellData?.icon}
-                        src={SoursURL + "images/icon-default.png"}
-                      />
-                    )}
+                    <CoinIcons
+                      type={TokenType.single}
+                      tokenIcon={[coinJson[coinA]]}
+                    />
+                    <Typography
+                      variant={"body2"}
+                      color={"var(--color-text-primary)"}
+                      component={"span"}
+                      marginRight={5}
+                      marginLeft={1 / 2}
+                      alignSelf={"right"}
+                      height={20}
+                      lineHeight={"20px"}
+                    >
+                      {coinB}
+                    </Typography>
                   </Box>
                 </Box>
-              </BoxStyled>
+              </Box>
               <Typography
                 display={"flex"}
                 flexDirection={"column"}
@@ -365,9 +322,9 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                 </Typography>
               </Typography>
 
-              <DividerWrapperStyled marginTop={3} marginBottom={2}>
+              <Box marginTop={3} marginBottom={2}>
                 <Divider />
-              </DividerWrapperStyled>
+              </Box>
 
               <DetailWrapperStyled>
                 <Typography
@@ -410,17 +367,9 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                         borderBottom: "1px dashed var(--color-text-primary)",
                       }}
                     >
-                      {t("labelLiquidity") + " " + amountDollar === undefined
+                      {t("labelLiquidity") + " " + amountU === undefined
                         ? EmptyValueTag
-                        : PriceTag[CurrencyToTag[currency]] +
-                          getValuePrecisionThousand(
-                            (amountDollar || 0) * (forexMap[currency] ?? 0),
-                            undefined,
-                            undefined,
-                            undefined,
-                            true,
-                            { isFait: true }
-                          )}
+                        : PriceTag[CurrencyToTag[currency]] + amountU}
                     </Typography>
                     <PopoverPure
                       className={"arrow-top-center"}
@@ -453,32 +402,10 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             alignItems={"center"}
                             justifyContent={"flex-start"}
                           >
-                            {coinAIcon ? (
-                              <AvatarCoin
-                                imgx={coinAIcon.x}
-                                imgy={coinAIcon.y}
-                                imgheight={coinAIcon.h}
-                                imgwidth={coinAIcon.w}
-                                size={20}
-                                variant="circular"
-                                style={{ marginTop: 2 }}
-                                alt={coinAInfo?.simpleName as string}
-                                src={
-                                  "data:image/svg+xml;utf8," +
-                                  '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                                }
-                              />
-                            ) : (
-                              <Avatar
-                                variant="circular"
-                                alt={coinAInfo?.simpleName as string}
-                                style={{
-                                  height: "var(--list-menu-coin-size))",
-                                  width: "var(--list-menu-coin-size)",
-                                }}
-                                src={SoursURL + "images/icon-default.png"}
-                              />
-                            )}
+                            <CoinIcons
+                              type={TokenType.single}
+                              tokenIcon={[coinJson[coinA]]}
+                            />
                             <Typography
                               component={"span"}
                               color={"var(--color-text-primary)"}
@@ -487,7 +414,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                               height={20}
                               lineHeight={"20px"}
                             >
-                              {coinAInfo?.simpleName}
+                              {coinA}
                             </Typography>
                           </Box>
 
@@ -527,32 +454,10 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             alignItems={"center"}
                             justifyContent={"flex-start"}
                           >
-                            {coinBIcon ? (
-                              <AvatarCoin
-                                style={{ marginTop: 2 }}
-                                imgx={coinBIcon.x}
-                                imgy={coinBIcon.y}
-                                imgheight={coinBIcon.h}
-                                imgwidth={coinBIcon.w}
-                                size={20}
-                                variant="circular"
-                                alt={coinBInfo?.simpleName as string}
-                                src={
-                                  "data:image/svg+xml;utf8," +
-                                  '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                                }
-                              />
-                            ) : (
-                              <Avatar
-                                variant="circular"
-                                alt={coinBInfo?.simpleName as string}
-                                style={{
-                                  height: "var(--list-menu-coin-size)",
-                                  width: "var(--list-menu-coin-size)",
-                                }}
-                                src={SoursURL + "images/icon-default.png"}
-                              />
-                            )}
+                            <CoinIcons
+                              type={TokenType.single}
+                              tokenIcon={[coinJson[coinB]]}
+                            />
                             <Typography
                               variant={"body2"}
                               color={"var(--color-text-primary)"}
@@ -563,7 +468,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                               height={20}
                               lineHeight={"20px"}
                             >
-                              {coinBInfo?.simpleName}
+                              {coinB}
                             </Typography>
                           </Box>
 
@@ -693,7 +598,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             : orderbookReward}
                         </Typography>
                       </Typography>
-                      {rewardToken2 && (
+                      {coinB && (
                         <Typography
                           component={"span"}
                           display={"flex"}
@@ -712,32 +617,11 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             alignItems={"center"}
                             justifyContent={"flex-start"}
                           >
-                            {coinBIcon ? (
-                              <AvatarCoin
-                                style={{ marginTop: 2 }}
-                                imgx={coinBIcon.x}
-                                imgy={coinBIcon.y}
-                                imgheight={coinBIcon.h}
-                                imgwidth={coinBIcon.w}
-                                size={20}
-                                variant="circular"
-                                alt={coinBInfo?.simpleName as string}
-                                src={
-                                  "data:image/svg+xml;utf8," +
-                                  '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                                }
-                              />
-                            ) : (
-                              <Avatar
-                                variant="circular"
-                                alt={coinBInfo?.simpleName as string}
-                                style={{
-                                  height: "var(--list-menu-coin-size)",
-                                  width: "var(--list-menu-coin-size)",
-                                }}
-                                src={SoursURL + "images/icon-default.png"}
-                              />
-                            )}
+                            <CoinIcons
+                              type={TokenType.single}
+                              tokenIcon={[coinJson[coinB]]}
+                            />
+
                             <Typography
                               variant={"body2"}
                               color={"var(--color-text-primary)"}
@@ -748,7 +632,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                               height={20}
                               lineHeight={"20px"}
                             >
-                              {coinBInfo?.simpleName}
+                              {coinB}
                             </Typography>
                           </Box>
 
@@ -761,7 +645,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             lineHeight={"20px"}
                           >
                             {getValuePrecisionThousand(
-                              rewardValue2,
+                              rewardB,
                               undefined,
                               undefined,
                               precisionB,
@@ -845,32 +729,10 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                           alignItems={"center"}
                           justifyContent={"flex-start"}
                         >
-                          {coinAIcon ? (
-                            <AvatarCoin
-                              imgx={coinAIcon.x}
-                              imgy={coinAIcon.y}
-                              imgheight={coinAIcon.h}
-                              imgwidth={coinAIcon.w}
-                              size={20}
-                              variant="circular"
-                              style={{ marginTop: 2 }}
-                              alt={coinAInfo?.simpleName as string}
-                              src={
-                                "data:image/svg+xml;utf8," +
-                                '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                              }
-                            />
-                          ) : (
-                            <Avatar
-                              variant="circular"
-                              alt={coinAInfo?.simpleName as string}
-                              style={{
-                                height: "var(--list-menu-coin-size))",
-                                width: "var(--list-menu-coin-size)",
-                              }}
-                              src={SoursURL + "images/icon-default.png"}
-                            />
-                          )}
+                          <CoinIcons
+                            type={TokenType.single}
+                            tokenIcon={[coinJson[coinA]]}
+                          />
                           <Typography
                             component={"span"}
                             color={"var(--color-text-primary)"}
@@ -879,7 +741,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             height={20}
                             lineHeight={"20px"}
                           >
-                            {coinAInfo?.simpleName}
+                            {coinA}
                           </Typography>
                         </Box>
 
@@ -919,32 +781,10 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                           alignItems={"center"}
                           justifyContent={"flex-start"}
                         >
-                          {coinBIcon ? (
-                            <AvatarCoin
-                              style={{ marginTop: 2 }}
-                              imgx={coinBIcon.x}
-                              imgy={coinBIcon.y}
-                              imgheight={coinBIcon.h}
-                              imgwidth={coinBIcon.w}
-                              size={20}
-                              variant="circular"
-                              alt={coinBInfo?.simpleName as string}
-                              src={
-                                "data:image/svg+xml;utf8," +
-                                '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                              }
-                            />
-                          ) : (
-                            <Avatar
-                              variant="circular"
-                              alt={coinBInfo?.simpleName as string}
-                              style={{
-                                height: "var(--list-menu-coin-size)",
-                                width: "var(--list-menu-coin-size)",
-                              }}
-                              src={SoursURL + "images/icon-default.png"}
-                            />
-                          )}
+                          <CoinIcons
+                            type={TokenType.single}
+                            tokenIcon={[coinJson[coinB]]}
+                          />
                           <Typography
                             variant={"body2"}
                             color={"var(--color-text-primary)"}
@@ -955,7 +795,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                             height={20}
                             lineHeight={"20px"}
                           >
-                            {coinBInfo?.simpleName}
+                            {coinB}
                           </Typography>
                         </Box>
 

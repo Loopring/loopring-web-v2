@@ -122,7 +122,7 @@ export const ForceWithdrawConfirm = <
         onClose={() => {
           setOpen(false);
         }}
-        severity={"error"}
+        severity={ToastType.error}
       />
     </Grid>
   );

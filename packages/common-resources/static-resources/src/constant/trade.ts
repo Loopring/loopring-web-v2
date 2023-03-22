@@ -7,6 +7,8 @@
 import {
   CollectionMeta,
   DeFiCalcData,
+  DeFiSideCalcData,
+  DeFiSideRedeemCalcData,
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
@@ -180,6 +182,7 @@ export enum NFT_TYPE_STRING {
 }
 
 export const EmptyValueTag = "--";
+export const HiddenTag = "*****";
 export const DEAULT_NFTID_STRING =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
 export const MINT_LIMIT = 100000;
@@ -190,9 +193,11 @@ export const TOAST_TIME = 3000;
 
 export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;
+export const STAKING_INVEST_LIMIT = 5;
 export const PROPERTY_Value_LIMIT = 40;
 export const REDPACKET_ORDER_LIMIT = 10000;
 export const REDPACKET_ORDER_NFT_LIMIT = 20000;
+export const BLINDBOX_REDPACKET_LIMIT = 10000;
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: "name",
   image: "image",
@@ -234,6 +239,11 @@ export const AddAssetList = {
     svgIcon: "ExchangeAIcon",
     enableKey: null,
   },
+  FromAnotherNet: {
+    key: "FromAnotherNet",
+    svgIcon: "AnotherIcon",
+    enableKey: null,
+  },
 };
 
 export const SendAssetList = {
@@ -250,6 +260,11 @@ export const SendAssetList = {
   SendAssetToOtherL1: {
     key: "SendToOtherL1",
     svgIcon: "L1l2Icon",
+    enableKey: "withdraw",
+  },
+  SendAssetToAnotherNet: {
+    key: "SendAssetToAnotherNet",
+    svgIcon: "AnotherIcon",
     enableKey: "withdraw",
   },
 };
@@ -304,6 +319,14 @@ export type AddressItemType<T> = {
   maxWidth?: string | number;
 };
 
+// export enum AddressItemType<T> = {
+//   value: T;
+//   label: string;
+//   description: string;
+//   disabled?: boolean;
+//   maxWidth?: string | number;
+// };
+
 export const useAddressTypeLists = <
   T extends WALLET_TYPE | EXCHANGE_TYPE
 >() => {
@@ -338,6 +361,55 @@ export const useAddressTypeLists = <
       description: t(`label${WALLET_TYPE.Exchange}Des`),
     },
   ];
+  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (
+    type: WALLET_TYPE
+  ) => {
+    if (type === WALLET_TYPE.Exchange) throw "wrong type";
+    return [
+      {
+        label: t("labelWalletTypeOptions", {
+          type: t(`labelWalletType${WALLET_TYPE.EOA}`),
+        }),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: WALLET_TYPE.EOA as T,
+        description: t(`label${WALLET_TYPE.EOA}Des`),
+      },
+      {
+        label: t("labelWalletTypeOptions", {
+          type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
+        }),
+        disabled: type === WALLET_TYPE.Loopring ? false : true,
+        value: WALLET_TYPE.Loopring as T,
+        description: t(`label${WALLET_TYPE.Loopring}Des`),
+      },
+      {
+        label: t("labelWalletTypeOptions", {
+          type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
+        }),
+        disabled: type === WALLET_TYPE.OtherSmart ? false : true,
+        value: WALLET_TYPE.OtherSmart as T,
+        description: t(`label${WALLET_TYPE.OtherSmart}Des`),
+      },
+      {
+        label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: EXCHANGE_TYPE.Binance as T,
+        description: t("labelContactsBinanceNotSupportted"),
+      },
+      {
+        label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: EXCHANGE_TYPE.Huobi as T,
+        description: t("labelContactsHuobiNotSupportted"),
+      },
+      {
+        label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: EXCHANGE_TYPE.Others as T,
+        description: t("labelContactsOtherExchangesNotSupportted"),
+      },
+    ];
+  };
   const nonExchangeList: AddressItemType<T>[] = [
     {
       label: t(`labelNonExchangeType`),
@@ -371,12 +443,15 @@ export const useAddressTypeLists = <
   ];
   return {
     walletList,
+    walletListFn,
     nonExchangeList,
     exchangeList,
   };
 };
 
-export const defalutSlipage = 0.1;
+export const defaultSlipage = 0.1;
+export const defaultBlockTradeSlipage = 0.1;
+
 export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 
 export const enum InvestMapType {
@@ -384,12 +459,16 @@ export const enum InvestMapType {
   AMM = "AMM",
   STAKE = "STAKE",
   DUAL = "DUAL",
+  STAKELRC = "STAKELRC",
+  // BTradeInvest = "BTradeInvest",
 }
 
 export const InvestOpenType = [
   InvestMapType.AMM,
   InvestMapType.STAKE,
   InvestMapType.DUAL,
+  InvestMapType.STAKELRC,
+  // InvestMapType.BTradeInvest,
 ];
 
 export const enum InvestDuration {
@@ -443,6 +522,27 @@ export type TradeDefi<C> = {
   request?: sdk.DefiOrderRequest;
   defiBalances?: { [key: string]: string };
   lastInput?: DeFiChgType;
+};
+export type TradeStake<C> = {
+  sellToken: sdk.TokenInfo;
+  sellVol: string;
+  deFiSideCalcData?: DeFiSideCalcData<C>;
+  request?: {
+    accountId: number;
+    hash: string;
+    token: sdk.TokenVolumeV3;
+  };
+};
+
+export type RedeemStake<C> = {
+  sellToken: sdk.TokenInfo;
+  sellVol?: string;
+  deFiSideRedeemCalcData: DeFiSideRedeemCalcData<C>;
+  request?: {
+    accountId: number;
+    hash: string;
+    token: sdk.TokenVolumeV3;
+  };
 };
 
 export type L2CollectionFilter = {
@@ -499,6 +599,7 @@ export type DualViewInfo = DualViewBase & {
 export type ClaimToken = sdk.UserBalanceInfo & {
   isNft?: boolean;
   nftTokenInfo?: sdk.UserNFTBalanceInfo;
+  luckyTokenHash?: string;
 };
 export type DualViewOrder = DualViewBase & {
   __raw__: {
@@ -509,6 +610,11 @@ export type DualViewOrder = DualViewBase & {
 export enum TRADE_TYPE {
   TOKEN = "TOKEN",
   NFT = "NFT",
+}
+
+export enum CLAIM_TYPE {
+  redPacket = "redPacket",
+  lrcStaking = "lrcStaking",
 }
 export type BanxaOrder = {
   id: string;
@@ -544,6 +650,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyRelayToken",
     desKey: "labelLuckyRelayTokenDes",
+    showInERC20: true,
     value: {
       value: 0,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -551,8 +658,22 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
+    labelKey: "labelLuckyBlindBox",
+    desKey: "labelLuckyBlindBoxDes",
+    defaultForNFT: true,
+    showInNFTS: true,
+    value: {
+      value: 3,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
     labelKey: "labelLuckyRandomToken",
-    desKey: "labelLuckyRandomTokenDes",
+    desKey: "labelRedPacketsSplitLuckyDetail",
+    showInNFTS: true,
+    showInERC20: true,
+    defaultForERC20: true,
     value: {
       value: 1,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -562,6 +683,8 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyCommonToken",
     desKey: "labelLuckyCommonTokenDes",
+    showInNFTS: true,
+    showInERC20: true,
     value: {
       value: 2,
       partition: sdk.LuckyTokenAmountType.AVERAGE,
@@ -645,3 +768,25 @@ export interface SnackbarMessage {
   key: number | string;
   svgIcon?: string;
 }
+
+export const BTRDE_PRE = "BTRADE-";
+
+export enum TradeProType {
+  sell = "sell",
+  buy = "buy",
+}
+
+export enum TradeBaseType {
+  price = "price",
+  quote = "quote",
+  base = "base",
+  tab = "tab",
+  slippage = "slippage",
+  stopPrice = "stopPrice",
+  checkMarketPrice = "checkMarketPrice",
+}
+
+export type AmmHistoryItem = {
+  close: number;
+  timeStamp: number;
+};

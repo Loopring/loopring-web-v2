@@ -27,6 +27,8 @@ export function useChargeFees({
   tokenSymbol,
   requestType: _requestType,
   amount,
+  extraType,
+  isNFT = false,
   tokenAddress,
   updateData,
   needAmountRefresh,
@@ -36,11 +38,13 @@ export function useChargeFees({
 }: {
   tokenAddress?: string | undefined;
   tokenSymbol?: string | undefined;
+  isNFT?: boolean;
   requestType:
     | sdk.OffchainFeeReqType
     | sdk.OffchainNFTFeeReqType
     | "UPDATE_ACCOUNT_BY_NEW"
     | "TRANSFER_ACTIVE";
+  extraType?: number;
   amount?: number;
   intervalTime?: number;
   updateData?:
@@ -124,7 +128,7 @@ export function useChargeFees({
       sdk
         // @ts-ignore
         .toBig(walletMap[value.belong].count)
-        .gte(sdk.toBig(value.fee.toString().replace(sdk.SEP, "")))
+        .gte(sdk.toBig(value.fee.toString().replaceAll(sdk.SEP, "")))
     ) {
       isFeeNotEnough = {
         isFeeNotEnough: false,
@@ -189,6 +193,7 @@ export function useChargeFees({
             accountId: account.accountId,
             tokenSymbol,
             tokenAddress,
+            extraType,
             requestType: requestType as any,
             amount:
               tokenInfo && _amount.amount && _amount.needAmountRefresh
@@ -221,13 +226,15 @@ export function useChargeFees({
             }
           } else if (
             requestType !== undefined &&
-            [
+            ([
               sdk.OffchainNFTFeeReqType.NFT_MINT,
               sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
               sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT,
               sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
               sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
-            ].includes(requestType as any) &&
+            ].includes(requestType as any) ||
+              (sdk.OffchainNFTFeeReqType.EXTRA_TYPES == requestType &&
+                isNFT)) &&
             account.accountId &&
             account.accountId !== -1 &&
             account.apiKey
@@ -293,7 +300,7 @@ export function useChargeFees({
                   if (
                     sdk
                       .toBig(count)
-                      .gte(sdk.toBig(fee.toString().replace(sdk.SEP, "")))
+                      .gte(sdk.toBig(fee.toString().replaceAll(sdk.SEP, "")))
                   ) {
                     _feeInfo = _.cloneDeep(feeInfoTemplate);
                   }
@@ -386,7 +393,9 @@ export function useChargeFees({
                       isFeeNotEnough: sdk
                         .toBig(walletMap[state.belong]?.count ?? 0)
                         .lt(
-                          sdk.toBig(feeInfo.fee.toString().replace(sdk.SEP, ""))
+                          sdk.toBig(
+                            feeInfo.fee.toString().replaceAll(sdk.SEP, "")
+                          )
                         ),
                       isOnLoading: false,
                     };
@@ -412,7 +421,11 @@ export function useChargeFees({
           if ((reason as sdk.RESULT_INFO).code) {
           }
         }
-        if (isSame) {
+        if (
+          isSame &&
+          Number.isFinite(_intervalTime) &&
+          !Number.isNaN(_intervalTime)
+        ) {
           nodeTimer.current = setTimeout(() => {
             getFeeList();
           }, _intervalTime);
@@ -477,7 +490,7 @@ export function useChargeFees({
         if (
           sdk
             .toBig(count)
-            .gte(sdk.toBig(feeInfo.fee.toString().replace(sdk.SEP, "")))
+            .gte(sdk.toBig(feeInfo.fee.toString().replaceAll(sdk.SEP, "")))
         ) {
           setIsFeeNotEnough({ isFeeNotEnough: false, isOnLoading: false });
           return;
@@ -510,9 +523,11 @@ export function useChargeFees({
           sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
           sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
           sdk.OffchainFeeReqType.TRANSFER,
+          sdk.OffchainFeeReqType.EXTRA_TYPES,
           sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT,
           sdk.OffchainFeeReqType.FORCE_WITHDRAWAL,
           sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+          sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
           sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT,
           sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
         ].includes(Number(requestType))) ||
@@ -569,7 +584,7 @@ export function useChargeFees({
     chargeFeeTokenList,
     isFeeNotEnough,
     resetIntervalTime: () => {
-      setIntervalTime(INTERVAL_TIME);
+      setIntervalTime(intervalTime);
     },
     checkFeeIsEnough,
     handleFeeChange,

@@ -2,8 +2,11 @@ import { Box, BoxProps, Modal as MuiModal } from "@mui/material";
 import {
   AccountStep,
   ActiveAccountPanel,
+  AnotherNetworkNotice,
   ClaimProps,
   CollectionAdvanceProps,
+  DeFiStackRedeemWrap,
+  DeFiStakeRedeemWrapProps,
   DeployNFTWrap,
   DepositPanel,
   DepositProps,
@@ -144,6 +147,8 @@ export const ModalPanel = <
   activeAccountProps,
   collectionAdvanceProps,
   // dualTradeProps,
+
+  sideStackRedeemProps,
   assetsData,
   account,
   baseURL,
@@ -159,6 +164,7 @@ export const ModalPanel = <
   nftWithdrawProps: WithdrawProps<N, I>;
   nftDeployProps: NFTDeployProps<N & { broker: string }, I, F>;
   depositProps: DepositProps<T, I>;
+  sideStackRedeemProps: DeFiStakeRedeemWrapProps<T, I, any>;
   // depositGroupProps: DepositGroupProps<T, I>;
   // nftDepositProps: NFTDepositProps<T, I>;
   collectionAdvanceProps: CollectionAdvanceProps<C>;
@@ -174,8 +180,6 @@ export const ModalPanel = <
   const { isMobile } = useSettings();
   const {
     modals,
-    // setShowAmm,
-    // setShowSwap,
     setShowTransfer,
     setShowDeposit,
     setShowWithdraw,
@@ -188,6 +192,7 @@ export const ModalPanel = <
     setShowAccount,
     setShowClaimWithdraw,
     setShowCollectionAdvance,
+    setShowSideStakingRedeem,
     // setShowDual,
   } = useOpenModals();
   const {
@@ -203,7 +208,9 @@ export const ModalPanel = <
     isShowActiveAccount,
     isShowCollectionAdvance,
     isShowLayerSwapNotice,
+    isShowAnotherNetwork,
     isShowClaimWithdraw,
+    isShowSideStakingRedeem,
     // isShowDual,
   } = modals;
   const theme = useTheme();
@@ -231,7 +238,11 @@ export const ModalPanel = <
       <Modal
         open={isShowTransfer.isShow}
         contentClassName={"trade-wrap"}
-        onClose={() => setShowTransfer({ isShow: false })}
+        onClose={() => {
+          isShowTransfer.info?.onCloseCallBack &&
+            isShowTransfer.info?.onCloseCallBack();
+          setShowTransfer({ isShow: false });
+        }}
         content={
           <TransferPanel<any, any>
             {...{
@@ -248,15 +259,26 @@ export const ModalPanel = <
       <Modal
         open={isShowWithdraw.isShow}
         contentClassName={"trade-wrap"}
-        onClose={() => setShowWithdraw({ isShow: false })}
+        onClose={() => {
+          isShowWithdraw.info?.onCloseCallBack &&
+            isShowWithdraw.info?.onCloseCallBack();
+          setShowWithdraw({ isShow: false });
+        }}
         content={
           <WithdrawPanel<any, any>
             {...{
               ...rest,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: "auto",
+              _height: isMobile ? "auto" : 500,
               ...withdrawProps,
               assetsData,
+              isFromContact: isShowWithdraw.address ? true : false,
+              contact: isShowWithdraw.address
+                ? {
+                    address: isShowWithdraw.address!,
+                    name: isShowWithdraw.name!,
+                  }
+                : undefined,
             }}
           />
         }
@@ -308,12 +330,19 @@ export const ModalPanel = <
               // _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
-              _height: "auto",
+              _height: isMobile ? "auto" : 500,
               isThumb: false,
               ...nftWithdrawProps,
               type: TRADE_TYPE.NFT,
               baseURL,
               assetsData,
+              isFromContact: isShowNFTWithdraw.address ? true : false,
+              contact: isShowNFTWithdraw.address
+                ? {
+                    address: isShowNFTWithdraw.address!,
+                    name: isShowNFTWithdraw.name!,
+                  }
+                : undefined,
             }}
             onBack={() => {
               setShowNFTWithdraw({ isShow: false });
@@ -436,6 +465,10 @@ export const ModalPanel = <
         }
       />
       <LayerswapNotice open={isShowLayerSwapNotice.isShow} account={account} />
+      <AnotherNetworkNotice
+        open={isShowAnotherNetwork.isShow}
+        account={account}
+      />
       <Modal
         open={isShowCollectionAdvance?.isShow}
         onClose={() => setShowCollectionAdvance({ isShow: false })}
@@ -448,6 +481,25 @@ export const ModalPanel = <
               ...collectionAdvanceProps,
             }}
           />
+        }
+      />
+      <Modal
+        open={isShowSideStakingRedeem.isShow}
+        contentClassName={"trade-wrap hasLinerBg"}
+        onClose={() => setShowSideStakingRedeem({ isShow: false })}
+        content={
+          <Box
+            maxWidth="var(--modal-width)"
+            flex={1}
+            display={"flex"}
+            paddingX={5 / 2}
+            paddingBottom={5 / 2}
+          >
+            <DeFiStackRedeemWrap
+              isJoin={false}
+              {...(sideStackRedeemProps as any)}
+            />
+          </Box>
         }
       />
     </>

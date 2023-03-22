@@ -47,6 +47,7 @@ import {
   AccountStep,
   EmptyDefault,
   Toast,
+  ToastType,
 } from "@loopring-web/component-lib";
 import { nftRefresh, store, useAccount, useSystem } from "../../../stores";
 import React from "react";
@@ -176,7 +177,7 @@ export const NFTDetail = withTranslation("common")(
           } else {
             setToastOpen({
               open: true,
-              type: "success",
+              type: ToastType.success,
               content: t(`labelFavouriteSuccess`, {
                 favorite: !popItem?.preference?.favourite
                   ? t("labelfavourite")
@@ -194,7 +195,7 @@ export const NFTDetail = withTranslation("common")(
         } catch (error) {
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               t(`labelFavouriteFailed`, {
                 favorite: !popItem?.preference?.favourite
@@ -243,7 +244,7 @@ export const NFTDetail = withTranslation("common")(
           } else {
             setToastOpen({
               open: true,
-              type: "success",
+              type: ToastType.success,
               content: t(`labelHideSuccess`, {
                 hide: !popItem?.preference?.hide
                   ? t("labelhide")
@@ -261,7 +262,7 @@ export const NFTDetail = withTranslation("common")(
         } catch (error) {
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               t(`labelHideFailed`, {
                 hide: !popItem?.preference?.hide
@@ -282,7 +283,7 @@ export const NFTDetail = withTranslation("common")(
       setShowFresh("loading");
       setToastOpen({
         open: true,
-        type: "success",
+        type: ToastType.success,
         content: t("labelNFTServerRefreshSubmit"),
       });
       if (popItem && popItem.nftData) {
@@ -295,7 +296,7 @@ export const NFTDetail = withTranslation("common")(
         });
         setToastOpen({
           open: true,
-          type: "success",
+          type: ToastType.success,
           content: t("labelNFTServerRefreshSubmit"),
         });
       }
@@ -630,7 +631,7 @@ export const NFTDetail = withTranslation("common")(
               <Box
                 paddingLeft={3}
                 display={"flex"}
-                flexDirection={isMobile ? "column" : "row"}
+                flexDirection={"row"}
                 justifyContent={"space-between"}
                 marginBottom={isMobile ? 2 : 5}
                 paddingRight={3}
@@ -1010,7 +1011,7 @@ export const NFTDetail = withTranslation("common")(
         />
         <Toast
           alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
+          severity={toastOpen?.type ?? ToastType.success}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}

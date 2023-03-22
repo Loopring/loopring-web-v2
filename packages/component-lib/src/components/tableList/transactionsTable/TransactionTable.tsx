@@ -95,7 +95,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 136px auto auto auto 120px 120px !important;`
+        ? `--template-columns: 175px auto auto auto 120px 120px !important;`
         : `--template-columns: 60% 40% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -307,6 +307,14 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? "+"
                 : /chain_withdrawal/i.test(row.side.toLowerCase()) //TransactionTradeTypes.withdraw
                 ? "-"
+                : row.side.toLowerCase() === sdk.UserTxTypes.SEND_LUCKY_TOKEN
+                ? "-"
+                : row.side.toLowerCase() ===
+                  sdk.UserTxTypes.SEND_BACK_LUCKY_TOKEN
+                ? "+"
+                : row.side.toLowerCase() ===
+                  sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
+                ? "+"
                 : "";
 
             const renderValue = hasValue
@@ -370,7 +378,9 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               row.side.toLowerCase()
             )
               ? // row.side.toLowerCase() === sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL
-                getShortAddr(row.withdrawalInfo.recipient, isMobile)
+                row.withdrawalInfo
+                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
+                : ""
               : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
             // myLog("receiverAddress", row.receiverAddress);
@@ -385,7 +395,13 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                     }),
                     "",
                   ]
-                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER
+                : [
+                    sdk.UserTxTypes.L2_STAKING,
+                    sdk.UserTxTypes.DUAL_INVESTMENT,
+                    sdk.UserTxTypes.SEND_LUCKY_TOKEN,
+                    sdk.UserTxTypes.TRANSFER,
+                    sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN,
+                  ].includes(row.side.toLowerCase())
                 ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
@@ -407,11 +423,27 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   ]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
-            const path =
-              row.txHash !== ""
-                ? etherscanBaseUrl + `/tx/${row.txHash}`
-                : Explorer +
-                  `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+            let path: string;
+            if (
+              [
+                sdk.UserTxTypes.L2_STAKING,
+                sdk.UserTxTypes.DUAL_INVESTMENT,
+                sdk.UserTxTypes.SEND_LUCKY_TOKEN,
+                sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN,
+              ].includes(row.side.toLowerCase())
+            ) {
+              path =
+                row.txHash !== ""
+                  ? etherscanBaseUrl + `/tx/${row.txHash}`
+                  : Explorer +
+                    `tx/${row.hash}-transfer-${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`;
+            } else {
+              path =
+                row.txHash !== ""
+                  ? etherscanBaseUrl + `/tx/${row.txHash}`
+                  : Explorer +
+                    `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+            }
             return (
               <Box
                 className="rdg-cell-value textAlignRight"
@@ -442,7 +474,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 </Box>
               </Box>
             );
-          },
+          };,
         },
         {
           key: "status",
@@ -520,9 +552,17 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT
                 ? "+"
                 : row.side.toLowerCase() ===
-                  sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
-                ? "-"
-                : "";
+                    sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
+                      ? "-"
+                      : row.side.toLowerCase() === sdk.UserTxTypes.SEND_LUCKY_TOKEN
+                        ? "-"
+                        : row.side.toLowerCase() ===
+                        sdk.UserTxTypes.SEND_BACK_LUCKY_TOKEN
+                          ? "+"
+                          : row.side.toLowerCase() ===
+                          sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
+                            ? "+"
+                            : "";
             const sideIcon =
               row.side.toLowerCase() ===
               sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW ? (
