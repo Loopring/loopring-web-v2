@@ -2,16 +2,19 @@ import {
   AccountStatus,
   CustomErrorWithCode,
   DeFiSideRedeemCalcData,
+  EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
   IBData,
   myLog,
   RedeemStack,
   SDK_ERROR_MAP_TO_UI,
+  SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 import {
+  AccountStep,
   DeFiStakeRedeemWrapProps,
   RawDataDefiSideStakingItem,
   useOpenModals,
@@ -83,6 +86,7 @@ export const useStakeTradeExit = <
   const { exchangeInfo, allowTrade } = useSystem();
   const { toggle } = useToggle();
   const [isLoading, setIsLoading] = React.useState(false);
+  const { setShowAccount } = useOpenModals();
 
   const coinSellSymbol = redeemStack?.sellToken?.symbol;
   const availableTradeCheck = React.useCallback((): {
@@ -255,11 +259,30 @@ export const useStakeTradeExit = <
           );
           history.replace({ search: searchParams.toString() });
           setShowSideStakingRedeem({ isShow: false });
-          setToastOpen({
-            open: true,
-            type: "success",
-            content: t("labelInvestSuccess"),
+          const remainAmount =
+            Number(redeemStack?.deFiSideRedeemCalcData?.coinSell?.balance) -
+            Number(
+              redeemStack?.deFiSideRedeemCalcData?.coinSell?.tradeValue ?? 0
+            );
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Staking_Redeem_Success,
+            info: {
+              productId:
+                redeemStack?.deFiSideRedeemCalcData?.stackViewInfo?.productId,
+              symbol: redeemStack.sellToken.symbol,
+              amount: redeemStack?.deFiSideRedeemCalcData?.coinSell?.tradeValue,
+              remainAmount: remainAmount ? remainAmount : EmptyValueTag,
+            },
           });
+          await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE);
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step ==
+              AccountStep.Staking_Redeem_Success
+          ) {
+            setShowAccount({ isShow: false });
+          }
         }
       } else {
         throw new Error("api not ready");

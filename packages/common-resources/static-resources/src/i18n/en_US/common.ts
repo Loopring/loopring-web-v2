@@ -1511,4 +1511,10 @@ export default {
   labelClaimlrcStaking: "My LRC Staking",
   labelExpectSettlementPrice:
     "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}} = {{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}} = {{marketPrice}}. There is {{marketRatePrice}}% variance observed. Please acknowledge the risk if you still want to continue.",
+  labelStakingSuccess: "{{symbol}} Staking Successful",
+  labelStakingFailed: "{{symbol}} Staking failed",
+  labelStakingRedeemFailed: "Redeem {{symbol}} failed",
+  labelStakingRedeemSuccess: "Redeem {{symbol} Successful",
+  labelStakingRedeemRemaining: "Remaining Amount",
+  labelStakingRedeemDate: "Redeem Time",
 };

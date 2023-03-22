@@ -157,7 +157,9 @@ export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
   };
 };
 type RedeemInfo = sdk.StakeInfoOrigin &
-  sdk.STACKING_PRODUCT & {
+  Omit<sdk.STACKING_PRODUCT, "status"> & {
+    status_product: number;
+
     maxSellAmount?: string;
     minSellAmount?: string;
     maxSellVol?: string;

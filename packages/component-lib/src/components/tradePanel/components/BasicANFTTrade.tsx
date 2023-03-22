@@ -26,8 +26,10 @@ const BoxInput = styled(Box)`
     font-size: ${({ theme }) => theme.fontDefault.body1};
   }
 ` as typeof Box;
-export const _BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>,
-  I extends any>(
+export const _BasicANFTTrade = <
+  T extends IBData<I> & Partial<NFTWholeINFO>,
+  I extends any
+>(
   {
     tradeData,
     onChangeEvent,
@@ -46,7 +48,7 @@ export const _BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>,
   }: BasicANFTTradeProps<T, I>,
   _ref: ForwardedRef<any>
 ) => {
-  const {t} = useTranslation("common");
+  const { t } = useTranslation("common");
   const getDisabled = () => {
     return disabled || tradeData === undefined;
   };
@@ -55,7 +57,7 @@ export const _BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>,
       //const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
       if ((tradeData as T)?.tradeValue !== _tradeData.tradeValue) {
         onChangeEvent &&
-        onChangeEvent(0, {
+          onChangeEvent(0, {
             tradeData: { ...tradeData, ..._tradeData },
             to: "button",
           });
@@ -349,7 +351,7 @@ export const NFTInput = React.memo(
         )}
       </>
     );
-  };
+  }
 ) as <T extends IBData<I> & Partial<NFTWholeINFO>, I extends any>(
   props: BasicANFTTradeProps<T, I> & {
     onCopy?: (content: string) => Promise<void>;
