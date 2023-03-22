@@ -286,5 +286,13 @@ export default {
   labelStakeTransactionTypesubscribe: "subscribe",
   labelStakeTransactionTyperedeem: "redeem",
   labelStakeTransactionTypeclaim: "claim",
+
+  labelBlindBoxOpend: "Opend",
+  labelBlindBoxEndTime: "End Time",
+  labelBlindBoxCalim: "Claim",
+  labelBlindBoxExpired: "Expired",
+  labelBlindBoxClaimed: "Claimed",
+  labelBlindBoxStartTime: "Start time: {{time}}",
+  
   // labelRecordAction: "Action",
 };

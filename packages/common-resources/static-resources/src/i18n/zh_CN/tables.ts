@@ -263,5 +263,12 @@ export default {
   labelClaim: "Claim",
   labelAddress: "Address",
   labelType: "Type",
+
+  labelBlindBoxOpend: "Opend",
+  labelBlindBoxEndTime: "End Time",
+  labelBlindBoxCalim: "Claim",
+  labelBlindBoxExpired: "Expired",
+  labelBlindBoxClaimed: "Claimed",
+  labelBlindBoxStartTime: "Start time: {{time}}",
   // labelRecordAction: "Action",
 };

@@ -255,7 +255,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                   return <Button onClick={e => {
                     e.stopPropagation()
                     onClaimItem(row.rawData)
-                  }}>{t("labelClaimBtn")}</Button>
+                  }}>{t("labelBlindBoxCalim")}</Button>
                 } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.EXPIRED) {
                   return <Box>{t("labelBlindBoxExpired")}</Box>
                 } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
