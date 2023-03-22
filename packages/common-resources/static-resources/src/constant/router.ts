@@ -160,14 +160,6 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
-      id: "cex",
-      i18nKey: "labelCexTrade",
-      description: "labelCexTradeDescription",
-    },
-    router: { path: "/trade/cex/${pair}" },
-  },
-  {
-    label: {
       id: "fiat",
       i18nKey: "labelFiat",
       description: "labelFiatDescription",
@@ -291,11 +283,11 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: "/invest/stakelrc" },
+    router: { path: "/invest/stacklrc" },
     label: {
       id: "stackonesided",
-      i18nKey: "labelInvestStakeLRC",
-      description: "labelInvestStakeLRCDes",
+      i18nKey: "labelInvestStackLRC",
+      description: "labelInvestStackLRCDes",
     },
   },
 ];
@@ -558,12 +550,12 @@ export const dualAdvice: InvestAdvice = {
   desI18n: "labelInvestDualDes",
   enable: true,
 };
-export const stakeAdvice: InvestAdvice = {
+export const stackAdvice: InvestAdvice = {
   type: InvestMapType.STAKELRC,
-  router: "/invest/stakelrc",
+  router: "/invest/stacklrc",
   notification: "",
-  banner: SoursURL + "images/icon-stake-lrc.svg",
-  titleI18n: "labelInvestStakeLRC",
-  desI18n: "labelInvestStakeLRCDes",
+  banner: SoursURL + "images/icon-stack-lrc.svg",
+  titleI18n: "labelInvestStackLRC",
+  desI18n: "labelInvestStackLRCDes",
   enable: true,
 };

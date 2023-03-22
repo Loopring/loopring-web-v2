@@ -1,46 +1,19 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  IconButton,
-  OutlinedInput,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Button, OutlinedInput, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import {
-  InputSearch,
-  Toast,
-  TablePagination,
-  ToastType,
-} from "@loopring-web/component-lib";
-import {
-  CopyIcon,
-  EditIcon,
-  SoursURL,
-  TOAST_TIME,
-} from "@loopring-web/common-resources";
+import { InputSearch, Toast } from "@loopring-web/component-lib";
+import { EditIcon, TOAST_TIME } from "@loopring-web/common-resources";
 import { Add } from "./add";
 import { Delete } from "./delete";
 import { Send } from "./send";
-import {
-  useContact,
-  useContactAdd,
-  viewHeightOffset,
-  viewHeightRatio,
-} from "./hooks";
+import { useContact } from "./hooks";
 import { useHistory } from "react-router";
-import { ViewAccountTemplate, WalletConnectL2Btn } from "@loopring-web/core";
-import { useTranslation } from "react-i18next";
-import { AddressType } from "@loopring-web/loopring-sdk";
-import React from "react";
 
 const ContactPageStyle = styled(Box)`
   background: var(--color-box);
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  height: 85vh;
-  /* padding-bottom: 5%  */
+  height: 100%;
   width: 100%;
   border-radius: ${({ theme }) => theme.unit}px;
 `;
@@ -78,186 +51,41 @@ export const ContactPage = () => {
     onCloseSend,
     sendInfo,
     onCloseToast,
-    setToastInfo,
-
-    pagination,
-    onPageChange,
-    loading,
-    showPagination,
-    // onScroll
   } = useContact();
-  const { t } = useTranslation();
   let totastText = "";
-  if (toastInfo.customerText) {
-    totastText = toastInfo.customerText;
-  } else if (toastInfo.isSuccess) {
+  if (toastInfo.isSuccess) {
     switch (toastInfo.type) {
       case "Add":
-        totastText = t("labelContactsAddSuccess");
+        totastText = "Add Contact Succeed";
         break;
       case "Delete":
-        totastText = t("labelContactsDeleteSuccess");
+        totastText = "Delete Contact Succeed";
         break;
       case "Edit":
-        totastText = t("labelContactsEditSuccess");
+        totastText = "Edit Contact Succeed";
         break;
       case "Send":
-        totastText = t("labelContactsSendSuccess");
-        break;
-      case "Copy":
-        totastText = t("labelContactsCopySuccess");
+        totastText = "Send Succeed";
         break;
     }
   } else {
     switch (toastInfo.type) {
       case "Add":
-        totastText = t("labelContactsAddFailed");
+        totastText = "Add Contact Failed";
         break;
       case "Delete":
-        totastText = t("labelContactsDeleteFailed");
+        totastText = "Delete Contact Failed";
         break;
       case "Edit":
-        totastText = t("labelContactsEditFailed");
+        totastText = "Edit Contact Failed";
         break;
       case "Send":
-        totastText = t("labelContactsSendFailed");
+        totastText = "Send Failed";
         break;
     }
   }
   const history = useHistory();
-
-  const noContact = (
-    <Box
-      height={"80vh"}
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
-    >
-      <Typography color={"var(--color-text-third)"}>
-        {t("labelContactsNoContact")}
-      </Typography>
-    </Box>
-  );
-  const loadingView = (
-    <Box
-      height={"80vh"}
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
-    >
-      <img
-        className="loading-gif"
-        alt={"loading"}
-        width="36"
-        src={`${SoursURL}images/loading-line.gif`}
-      />
-    </Box>
-  );
-  const normalView = (
-    <>
-      <Box
-        height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`}
-        overflow={"scroll"}
-      >
-        {contacts &&
-          contacts.map((data) => {
-            const { editing, name, address, avatarURL, addressType } = data;
-            return (
-              <Box
-                key={address}
-                paddingY={2}
-                display={addressType === AddressType.OFFICIAL ? "none" : "flex"}
-                justifyContent={"space-between"}
-              >
-                <Box display={"flex"}>
-                  <Avatar sizes={"32px"} src={avatarURL}></Avatar>
-                  <Box marginLeft={1}>
-                    {editing ? (
-                      <OutlinedInput
-                        size={"small"}
-                        value={name}
-                        onChange={(e) => {
-                          onChangeInput(address, e.target.value);
-                        }}
-                        onBlur={() => {
-                          onInputBlue(address);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.currentTarget.blur();
-                          }
-                        }}
-                      />
-                    ) : (
-                      <Typography>
-                        {name}
-                        <EditIcon onClick={() => onClickEditing(address)} />
-                      </Typography>
-                    )}
-                    <Typography>
-                      {address}
-                      <IconButton
-                        onClick={() => {
-                          navigator.clipboard.writeText(address);
-                          setToastInfo({
-                            open: true,
-                            isSuccess: true,
-                            type: "Copy",
-                          });
-                        }}
-                      >
-                        <CopyIcon></CopyIcon>
-                      </IconButton>
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box display={"flex"}>
-                  <Box marginRight={2}>
-                    <Button
-                      onClick={() => onClickSend(address, name, addressType)}
-                      variant={"contained"}
-                      size={"small"}
-                    >
-                      {t("labelContactsSend")}
-                    </Button>
-                  </Box>
-                  <Box marginRight={2}>
-                    <Button
-                      variant={"outlined"}
-                      size={"medium"}
-                      onClick={() => {
-                        history.push("/contact/transactions/" + address);
-                      }}
-                    >
-                      {t("labelContactsTransactions")}
-                    </Button>
-                  </Box>
-                  <Button
-                    variant={"outlined"}
-                    size={"medium"}
-                    onClick={() => {
-                      onClickDelete(address, name);
-                    }}
-                  >
-                    {t("labelContactsDeleteContactBtn")}
-                  </Button>
-                </Box>
-              </Box>
-            );
-          })}
-      </Box>
-      {showPagination && pagination && (
-        <TablePagination
-          page={pagination.page}
-          pageSize={pagination.pageSize}
-          total={pagination.total}
-          onPageChange={onPageChange}
-        />
-      )}
-    </>
-  );
-
-  const activeView = (
+  return (
     <ContactPageStyle
       className={"MuiPaper-elevation2"}
       paddingX={4}
@@ -265,16 +93,14 @@ export const ContactPage = () => {
     >
       <Toast
         alertText={totastText}
-        severity={toastInfo.isSuccess ? ToastType.success : ToastType.error}
+        severity={toastInfo.isSuccess ? "success" : "error"}
         open={toastInfo.open}
         autoHideDuration={TOAST_TIME}
         onClose={() => onCloseToast()}
       />
       <Add
         loading={addLoading}
-        submitAddingContact={(address, name, cb) => {
-          submitAddContact(address, name, cb);
-        }}
+        submitAddingContact={submitAddContact}
         addOpen={addOpen}
         setAddOpen={setAddOpen}
       />
@@ -286,7 +112,7 @@ export const ContactPage = () => {
       />
       <Send sendInfo={sendInfo} onCloseSend={onCloseSend} />
       <Box display={"flex"} justifyContent={"space-between"}>
-        <Typography variant={"h2"}>{t("labelContacts")}</Typography>
+        <Typography variant={"h2"}>Contacts</Typography>
         <Box display={"flex"}>
           <InputSearch
             value={searchValue}
@@ -302,22 +128,86 @@ export const ContactPage = () => {
                 setAddOpen(true);
               }}
             >
-              {t("labelContactsAddContactBtn")}
+              Add
             </Button>
           </Box>
         </Box>
       </Box>
       <Box className="table-divide">
         <Line />
-        <Box>
-          {loading
-            ? loadingView
-            : !contacts || contacts.length === 0
-            ? noContact
-            : normalView}
-        </Box>
+        {contacts.map((data) => {
+          const { editing, name, address, avatarURL, addressType } = data;
+          return (
+            <Box
+              key={address}
+              paddingY={2}
+              display={"flex"}
+              justifyContent={"space-between"}
+            >
+              <Box display={"flex"}>
+                <Avatar sizes={"32px"} src={avatarURL}></Avatar>
+                <Box marginLeft={1}>
+                  {editing ? (
+                    <OutlinedInput
+                      size={"small"}
+                      value={name}
+                      onChange={(e) => {
+                        onChangeInput(address, e.target.value);
+                      }}
+                      onBlur={() => {
+                        onInputBlue(address);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.currentTarget.blur();
+                        }
+                      }}
+                    />
+                  ) : (
+                    <Typography>
+                      {name}
+                      <EditIcon onClick={() => onClickEditing(address)} />
+                      {/* todo color */}
+                    </Typography>
+                  )}
+                  <Typography>{address}</Typography>
+                </Box>
+              </Box>
+              <Box display={"flex"}>
+                <Box marginRight={2}>
+                  <Button
+                    onClick={() => onClickSend(address, name, addressType)}
+                    variant={"contained"}
+                    size={"small"}
+                  >
+                    Send
+                  </Button>
+                </Box>
+                <Box marginRight={2}>
+                  <Button
+                    variant={"outlined"}
+                    size={"medium"}
+                    onClick={() => {
+                      history.push("/contact/transactions/" + address);
+                    }}
+                  >
+                    Transactions
+                  </Button>
+                </Box>
+                <Button
+                  variant={"outlined"}
+                  size={"medium"}
+                  onClick={() => {
+                    onClickDelete(address, name);
+                  }}
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Box>
+          );
+        })}
       </Box>
     </ContactPageStyle>
   );
-  return <ViewAccountTemplate activeViewTemplate={activeView} />;
 };

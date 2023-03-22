@@ -40,9 +40,7 @@ export interface SettingsState {
   isMobile: boolean;
   hideSmallBalances: boolean;
   proLayout: Layouts;
-  stopLimitLayout: Layouts;
   feeChargeOrder: string[];
   swapSecondConfirmation: boolean | undefined;
   isTaikoTest?: boolean | undefined;
-  isShowTestToggle?: boolean | undefined;
 }

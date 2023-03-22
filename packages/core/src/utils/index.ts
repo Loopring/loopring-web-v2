@@ -4,4 +4,3 @@ export * from "./dt_tools";
 export * from "./formatter_tool";
 export * from "./makeMeta";
 export * from "./genAvatar";
-export * from "./addressTypeMap";

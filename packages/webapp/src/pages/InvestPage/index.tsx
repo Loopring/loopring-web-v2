@@ -6,15 +6,21 @@ import { useTranslation, withTranslation } from "react-i18next";
 import {
   ConfirmInvestDualRisk,
   ConfirmInvestLRCStakeRisk,
+  useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { confirmation, ViewAccountTemplate } from "@loopring-web/core";
+import { usePopupState } from "material-ui-popup-state/hooks";
 import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
 import { DualListPanel } from "./DualPanel/DualListPanel";
 import { StackTradePanel } from "./StakePanel/StackTradePanel";
+import {
+  defiRETHAdvice,
+  defiWSTETHAdvice,
+} from "@loopring-web/common-resources";
 
 export enum InvestType {
   MyBalance = 0,
@@ -31,7 +37,7 @@ export const InvestRouter = [
   "defi",
   "overview",
   "dual",
-  "stakelrc",
+  "stacklrc",
 ];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
@@ -67,6 +73,11 @@ export const OverviewTitle = () => {
 };
 export const AmmTitle = () => {
   const { t } = useTranslation();
+  const { isMobile } = useSettings();
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: `popupId-deposit`,
+  });
   return (
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
@@ -84,7 +95,11 @@ export const AmmTitle = () => {
 
 export const DefiTitle = () => {
   const { t } = useTranslation();
-
+  const { isMobile } = useSettings();
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: `popupId-deposit`,
+  });
   return (
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
@@ -107,9 +122,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
     confirmDualInvest: confirmDualInvestFun,
     confirmedLRCStakeInvest: confirmedLRCInvestFun,
   } = confirmation.useConfirmation();
-  const [confirmDualInvest, setConfirmDualInvest] = React.useState(
-    "hidden" as "hidden" | "all" | "USDCOnly"
-  );
+  const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
   const [confirmedLRCStakeInvest, setConfirmedLRCStakeInvestInvest] =
     React.useState<boolean>(false);
 
@@ -212,8 +225,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       </Box>
 
       <ConfirmInvestDualRisk
-        open={confirmDualInvest !== "hidden"}
-        USDCOnly={confirmDualInvest === "USDCOnly"}
+        open={confirmDualInvest}
         handleClose={(_e, isAgree) => {
           if (!isAgree) {
             history.goBack();

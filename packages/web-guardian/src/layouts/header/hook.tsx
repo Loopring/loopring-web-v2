@@ -31,7 +31,7 @@ export const useHeader = () => {
   const accountTotal = useAccount();
   const { account, setShouldShow, status: accountStatus } = accountTotal;
   const { chainId, updateSystem } = useSystem();
-  const { isTaikoTest, isShowTestToggle, setIsShowTestToggle } = useSettings();
+  const { isTaikoTest } = useSettings();
 
   const { setShowAccount } = useOpenModals();
   const accountState = React.useMemo(() => {
@@ -80,11 +80,7 @@ export const useHeader = () => {
       },
     ],
   });
-  const onkeypress = (e: KeyboardEvent) => {
-    if (e.altKey && e.shiftKey && e.code == "KeyX") {
-      console.log(e.altKey && e.shiftKey && e.code && e.timeStamp);
-    }
-  };
+
   const onWalletBtnConnect = React.useCallback(async () => {
     myLog(`onWalletBtnConnect click: ${account.readyState}`);
     accountStaticCallBack(_btnClickMap, []);
@@ -97,11 +93,14 @@ export const useHeader = () => {
     };
     headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet] = {
       ...headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet],
+      // isTestOpen: isTestNet,
       onTestOpen: (isTestNet: boolean) => {
         const chainId = store.getState().system.chainId;
         updateSystem({ chainId });
+        // debugger;
+        // setTestNet(isTestNet);
       },
-      isShow: (chainId as any) === ChainIdExtends["TAIKO"],
+      isShow: (chainId as any) === ChainIdExtends.TAIKO_A2,
     };
     headerGuardianToolBarData[GuardianToolBarComponentsMap.WalletConnect] = {
       ...headerGuardianToolBarData[GuardianToolBarComponentsMap.WalletConnect],
@@ -116,7 +115,7 @@ export const useHeader = () => {
       myLog("isTestNet", isTaikoTest, chainId);
       headerToolBarData[GuardianToolBarComponentsMap.TestNet] = {
         ...headerToolBarData[GuardianToolBarComponentsMap.TestNet],
-        isShow: (chainId as any) == ChainIdExtends["TAIKO"],
+        isShow: (chainId as any) == ChainIdExtends.TAIKO_A2,
       };
       return headerToolBarData;
     });
@@ -142,6 +141,5 @@ export const useHeader = () => {
     headerMenuLandingData,
     account,
     notifyMap,
-    onkeypress,
   };
 };

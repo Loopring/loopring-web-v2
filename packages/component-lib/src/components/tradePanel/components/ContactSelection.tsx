@@ -6,18 +6,11 @@ import {
   OutlinedInput,
   Typography,
 } from "@mui/material";
-import {
-  SearchIcon,
-  CloseIcon,
-  SoursURL,
-} from "@loopring-web/common-resources";
+import { SearchIcon, CloseIcon } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { createImageFromInitials } from "@loopring-web/core";
-import { AddressType } from "@loopring-web/loopring-sdk";
-import { useTranslation } from "react-i18next";
 
 type SingleContactProps = {
   editing: boolean;
@@ -25,16 +18,15 @@ type SingleContactProps = {
   address: string;
   avatarURL: string;
   onSelect: (address: string) => void;
-  hidden: boolean;
 };
 
 export const SingleContact = (props: SingleContactProps) => {
-  const { editing, name, address, avatarURL, hidden, onSelect } = props;
+  const { editing, name, address, avatarURL, onSelect } = props;
   return (
     <Box
       style={{ cursor: "pointer" }}
       paddingY={2}
-      display={hidden ? "none" : "flex"}
+      display={"flex"}
       justifyContent={"space-between"}
       onClick={() => {
         onSelect(address);
@@ -67,50 +59,73 @@ const CloseIconStyled = styled(CloseIcon)`
 // OutlinedInput
 type ContactSelectionProps = {
   onSelect: (address: string) => void;
-  contacts:
-    | {
-        name: string;
-        address: string;
-        addressType: AddressType;
-      }[]
-    | undefined;
-  scrollHeight: string;
+  contacts: {
+    name: string;
+    address: string;
+  }[];
 };
 export const ContactSelection = (props: ContactSelectionProps) => {
   // const { t } = useTranslation();
-  const { onSelect, contacts, scrollHeight } = props;
+  const { onSelect, contacts } = props;
   const { isMobile } = useSettings();
   const theme = useTheme();
-  const displayContacts =
-    contacts &&
-    contacts.map((contact) => {
-      return {
-        name: contact.name,
-        address: contact.address,
-        avatarURL: createImageFromInitials(
-          32,
-          contact.name,
-          theme.colorBase.warning
-        )!,
-        editing: false,
-        addressType: contact.addressType,
-      };
-    });
+  // [contacts, setContacts] = useState([] )
+
+  // useEffect(() => {
+
+  // }, [])
+  const displayContacts = contacts.map((x) => {
+    return {
+      name: x.name,
+      address: x.address,
+      avatarURL:
+        "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png", // todo
+      editing: false,
+    };
+  });
 
   const [inputValue, setInputValue] = useState("");
-  const filteredContacts =
-    displayContacts &&
-    displayContacts.filter((contact) => {
-      return inputValue
-        ? contact.address.toLowerCase().includes(inputValue.toLowerCase()) ||
-            contact.name.toLowerCase().includes(inputValue.toLowerCase())
-        : true;
-    });
-  const { t } = useTranslation();
+  const filteredContacts = displayContacts.filter((x) => {
+    return inputValue
+      ? x.address.toLowerCase().includes(inputValue.toLowerCase()) ||
+          x.avatarURL.toLowerCase().includes(inputValue.toLowerCase())
+      : true;
+  });
+  // const [open, setOpen] = React.useState(false);
+  // const { nonExchangeList, exchangeList } = useAddressTypeLists();
 
-  const normalView = (
-    <>
-      <Box width={"100%"}>
+  return (
+    <Grid
+      container
+      paddingLeft={isMobile ? 2 : 5}
+      paddingRight={isMobile ? 2 : 5}
+      direction={"column"}
+      alignItems={"stretch"}
+      flex={1}
+      height={"100%"}
+      minWidth={240}
+      flexWrap={"nowrap"}
+      spacing={2}
+    >
+      <Grid item>
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          marginBottom={2}
+        >
+          <Typography
+            component={"h4"}
+            variant={isMobile ? "h4" : "h3"}
+            whiteSpace={"pre"}
+            marginRight={1}
+          >
+            Select the Recipient
+          </Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={12} width={"100%"}>
         <OutlinedInput
           style={{
             background: theme.colorBase.box,
@@ -139,89 +154,18 @@ export const ContactSelection = (props: ContactSelectionProps) => {
             setInputValue(e.target.value);
           }}
         ></OutlinedInput>
-        <Box overflow={"scroll"} height={scrollHeight}>
-          {filteredContacts &&
-            filteredContacts.map((contact) => {
-              return (
-                <SingleContact
-                  key={contact.address}
-                  name={contact.name}
-                  address={contact.address}
-                  avatarURL={contact.avatarURL}
-                  editing={false}
-                  onSelect={onSelect}
-                  hidden={contact.addressType === AddressType.OFFICIAL}
-                />
-              );
-            })}
-        </Box>
-      </Box>
-    </>
-  );
-  const loadingView = (
-    <Box
-      height={"100%"}
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
-    >
-      <img
-        className="loading-gif"
-        alt={"loading"}
-        width="36"
-        src={`${SoursURL}images/loading-line.gif`}
-      />
-    </Box>
-  );
-  const emptyView = (
-    <Box
-      height={"100%"}
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
-    >
-      <Typography color={"var(--color-text-third)"}>
-        {t("labelContactsNoContact")}
-      </Typography>
-    </Box>
-  );
-
-  return (
-    <Box
-      // container
-      paddingLeft={isMobile ? 2 : 5}
-      paddingRight={isMobile ? 2 : 5}
-      // fle direction={"column"}
-      alignItems={"stretch"}
-      flex={1}
-      height={"100%"}
-      minWidth={240}
-      flexWrap={"nowrap"}
-      // spacing={2}
-    >
-      <Box>
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          marginBottom={2}
-        >
-          <Typography
-            component={"h4"}
-            variant={isMobile ? "h4" : "h3"}
-            whiteSpace={"pre"}
-            marginRight={1}
-          >
-            {t("labelContactsSelectReciepient")}
-          </Typography>
-        </Box>
-      </Box>
-      {contacts === undefined
-        ? loadingView
-        : contacts.length === 0
-        ? emptyView
-        : normalView}
-    </Box>
+        {filteredContacts.map((c) => {
+          return (
+            <SingleContact
+              name={c.name}
+              address={c.address}
+              avatarURL={c.avatarURL}
+              editing={false}
+              onSelect={onSelect}
+            />
+          );
+        })}
+      </Grid>
+    </Grid>
   );
 };

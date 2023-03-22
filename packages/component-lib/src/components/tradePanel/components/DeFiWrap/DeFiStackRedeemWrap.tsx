@@ -148,7 +148,7 @@ export const DeFiStackRedeemWrap = <
     forfeitedEarn,
     forfeitedEarnColor,
   } = React.useMemo(() => {
-    const { remainAmount, totalRewards } = deFiSideRedeemCalcData.stakeViewInfo;
+    const { remainAmount, totalRewards } = deFiSideRedeemCalcData.stackViewInfo;
     const tradeVol = sdk
       .toBig(deFiSideRedeemCalcData.coinSell.tradeValue ?? 0)
       .times("1e" + tokenSell.decimals);
@@ -159,17 +159,15 @@ export const DeFiStackRedeemWrap = <
     // .div(remainAmount)
     return {
       currentTotalEarnings:
-        totalRewards !== "0"
-          ? getValuePrecisionThousand(
-              sdk.toBig(totalRewards).div("1e" + tokenSell.decimals),
-              tokenSell.precision,
-              tokenSell.precision,
-              undefined,
-              false
-            ) +
-            " " +
-            deFiSideRedeemCalcData.coinSell.belong
-          : EmptyValueTag,
+        getValuePrecisionThousand(
+          sdk.toBig(totalRewards).div("1e" + tokenSell.decimals),
+          tokenSell.precision,
+          tokenSell.precision,
+          tokenSell.precision,
+          false
+        ) +
+        " " +
+        deFiSideRedeemCalcData.coinSell.belong,
       ...(tradeVol.gt(remainAmount) ||
       deFiSideRedeemCalcData.coinSell.tradeValue == undefined
         ? {
@@ -178,24 +176,21 @@ export const DeFiStackRedeemWrap = <
           }
         : {
             forfeitedEarnColor: "var(--color-error)",
-            forfeitedEarn: rateEarn.gt(0)
-              ? "-" +
-                getValuePrecisionThousand(
-                  rateEarn.div("1e" + tokenSell.decimals),
-                  tokenSell.precision,
-                  tokenSell.precision,
-                  undefined,
-                  false
-                ) +
-                " " +
-                deFiSideRedeemCalcData.coinSell.belong
-              : EmptyValueTag,
+            forfeitedEarn:
+              "-" +
+              getValuePrecisionThousand(
+                rateEarn.div("1e" + tokenSell.decimals),
+                tokenSell.precision,
+                tokenSell.precision,
+                tokenSell.precision,
+                false
+              ) +
+              " " +
+              deFiSideRedeemCalcData.coinSell.belong,
           }),
 
       remainingEarn:
-        tradeVol.lte(remainAmount) &&
-        rateEarn.gt(0) &&
-        sdk.toBig(totalRewards).minus(rateEarn).gt(0)
+        tradeVol.lte(remainAmount) && rateEarn.gt(0)
           ? getValuePrecisionThousand(
               sdk
                 .toBig(totalRewards)
@@ -203,7 +198,7 @@ export const DeFiStackRedeemWrap = <
                 .div("1e" + tokenSell.decimals),
               tokenSell.precision,
               tokenSell.precision,
-              undefined,
+              tokenSell.precision,
               false
             ) +
             " " +
@@ -211,12 +206,12 @@ export const DeFiStackRedeemWrap = <
           : EmptyValueTag,
     };
   }, [
-    deFiSideRedeemCalcData.stakeViewInfo,
+    deFiSideRedeemCalcData.stackViewInfo,
     deFiSideRedeemCalcData.coinSell.tradeValue,
   ]);
   myLog(
-    "deFiSideRedeemCalcData.stakeViewInfo",
-    deFiSideRedeemCalcData.stakeViewInfo,
+    "deFiSideRedeemCalcData.stackViewInfo",
+    deFiSideRedeemCalcData.stackViewInfo,
     deFiSideRedeemCalcData.coinSell
   );
   return (
@@ -290,7 +285,7 @@ export const DeFiStackRedeemWrap = <
               {t("labelLRCStakeProduct")}
             </Typography>
             <Typography component={"p"} variant={"body2"} color={"textPrimary"}>
-              {(deFiSideRedeemCalcData?.stakeViewInfo as any)?.productId}
+              {(deFiSideRedeemCalcData?.stackViewInfo as any)?.productId}
             </Typography>
           </Grid>
           <Grid item alignSelf={"stretch"} marginTop={3}>
@@ -399,7 +394,7 @@ export const DeFiStackRedeemWrap = <
               {t("labelLRCStakeProduct")}
             </Typography>
             <Typography component={"p"} variant={"body2"} color={"textPrimary"}>
-              {(deFiSideRedeemCalcData?.stakeViewInfo as any)?.productId}
+              {(deFiSideRedeemCalcData?.stackViewInfo as any)?.productId}
             </Typography>
           </Grid>
           <Grid
@@ -410,10 +405,6 @@ export const DeFiStackRedeemWrap = <
             marginTop={5}
           >
             <MuiFormControlLabel
-              sx={{
-                alignItems: "flex-start",
-                marginTop: 1 / 2,
-              }}
               control={
                 <Checkbox
                   checked={agree}

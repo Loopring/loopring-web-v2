@@ -4,7 +4,6 @@ import {
   ModalAccount,
   ModalQRCode,
   Toast,
-  ToastType,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import { useAccountModalForL1UI } from "./hook";
@@ -74,7 +73,7 @@ export const ModalAccountL1Info = withTranslation("common")(
         />
         <Toast
           alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? ToastType.success}
+          severity={toastOpen?.type ?? "success"}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
@@ -94,7 +93,7 @@ export const ModalAccountL1Info = withTranslation("common")(
           onClose={() => {
             setCopyToastOpen(false);
           }}
-          severity={ToastType.success}
+          severity={"success"}
         />
         <ModalQRCode
           open={openQRCode}

@@ -64,10 +64,15 @@ export const BtnDownload = ({
   );
 };
 export const BtnNetworkSwitch = ({
+  isTestOpen,
   onTestOpen,
   isShow = false,
-}: {
+}: // i18nTitle,
+{
+  // i18nTitle: string;
+  // i18nDescription: string;
   isShow: boolean;
+  isTestOpen: boolean;
   onTestOpen: (boolean: boolean) => void;
 } & WithTranslation) => {
   const { setIsTaikoTest, isTaikoTest } = useSettings();

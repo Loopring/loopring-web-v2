@@ -22,8 +22,6 @@ import {
   CloseIcon,
   CloseRedPacketIcon,
   CompleteIcon,
-  ContactIcon,
-  ConvertToIcon,
   CopyIcon,
   DarkIcon,
   DeleteIcon,
@@ -36,7 +34,6 @@ import {
   DragIcon,
   DragListIcon,
   DropDownIcon,
-  EditIcon,
   EmptyIcon,
   ErrorIcon,
   ExchangeAIcon,
@@ -115,7 +112,6 @@ import {
   UnConnectIcon,
   UnlikeIcon,
   UpIcon,
-  UploadedIcon,
   VideoIcon,
   ViewHistoryIcon,
   ViewIcon,
@@ -264,9 +260,6 @@ const listIcon = [
   <CloseRedPacketIcon />,
   <ClockIcon />,
   <ContactIcon />,
-  <UploadedIcon />,
-  <EditIcon />,
-  <ConvertToIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

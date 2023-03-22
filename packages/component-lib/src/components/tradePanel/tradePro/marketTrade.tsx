@@ -1,22 +1,21 @@
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { MarketTradeData, TradeMarketProps } from "../Interface";
+import { MarketTradeData, TradeBaseType, TradeMarketProps } from "../Interface";
 import {
   CheckBoxIcon,
   CheckedIcon,
   CoinInfo,
   CoinKey,
   CoinMap,
-  defaultSlipage,
+  defalutSlipage,
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
   Info2Icon,
   SlippageTolerance,
-  TradeBaseType,
   TradeBtnStatus,
   TradeCalcProData,
-  TradeProType,
 } from "@loopring-web/common-resources";
+import { TradeProType } from "./Interface";
 import {
   Box,
   Checkbox,
@@ -60,10 +59,17 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
       t,
       // disabled,
       tradeMarketI18nKey,
+      // tradeCalcProData,
       tradeMarketBtnStyle,
       tradeType,
       tradeMarketBtnStatus,
+      // handleCountChange,
+      // tokenBaseProps,
+      // tokenQuoteProps,
+      // tradeData,
+      // handleError,
       handleSubmitEvent,
+      // handleChangeIndex,
       onChangeEvent,
       // ...rest
     } = props;
@@ -115,7 +121,10 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
       },
       [tradeData, onChangeEvent]
     );
-
+    const [symbolSell, symbolBuy] =
+      tradeData.type == TradeProType.sell
+        ? [tradeData.base, tradeData.quote]
+        : [tradeData.quote, tradeData.base];
     const priceImpactColor = tradeCalcProData?.priceImpactColor
       ? tradeCalcProData.priceImpactColor
       : "textPrimary";
@@ -130,6 +139,11 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
             { floor: true }
           ) + " %"
         : EmptyValueTag;
+
+    // const fee =
+    //   tradeCalcProData && tradeCalcProData.fee
+    //     ? (parseFloat(tradeCalcProData.fee) / 100).toString() + "%"
+    //     : EmptyValueTag;
 
     const fee =
       tradeCalcProData && tradeCalcProData.fee
@@ -357,7 +371,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                             ? tradeData.slippage
                             : tradeCalcProData.slippage
                             ? tradeCalcProData.slippage
-                            : defaultSlipage}
+                            : defalutSlipage}
                           %
                         </LinkActionStyle>
                         <PopoverPure
@@ -383,7 +397,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                                 ? tradeData.slippage
                                 : tradeCalcProData.slippage
                                 ? tradeCalcProData.slippage
-                                : defaultSlipage,
+                                : defalutSlipage,
                             }}
                           />
                         </PopoverPure>
@@ -484,9 +498,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                             ...tradeData,
                             isChecked: !tradeCalcProData?.isChecked,
                           },
-                          tradeCalcProData?.lastStepAt === TradeBaseType.quote
-                            ? TradeBaseType.quote
-                            : TradeBaseType.base
+                          TradeBaseType.base
                         );
                       }}
                       checkedIcon={<CheckedIcon />}
@@ -501,12 +513,9 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                         interpolation={{ escapeValue: false }}
                         tOptions={{
                           // ,symbolBuy
-                          symbolSell: tradeData.base.belong,
-                          symbolBuy: tradeData.quote.belong,
-                          stob:
-                            tradeType === TradeProType.sell
-                              ? tradeCalcProData.StoB
-                              : tradeCalcProData.BtoS,
+                          symbolSell: symbolSell?.belong,
+                          symbolBuy: symbolBuy?.belong,
+                          stob: tradeCalcProData.StoB,
                           marketPrice: tradeCalcProData.marketPrice,
                           marketRatePrice: tradeCalcProData.marketRatePrice,
                         }}

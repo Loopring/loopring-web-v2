@@ -15,7 +15,6 @@ import { Contact } from "./hooks";
 import { CloseIcon, LoadingIcon } from "@loopring-web/common-resources";
 import { TextField } from "@loopring-web/component-lib";
 import { useTheme } from "@emotion/react";
-import { useTranslation } from "react-i18next";
 
 interface DeleteDialogProps {
   deleteInfo: {
@@ -31,7 +30,6 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
   const { deleteInfo, onCloseDelete, submitDeleteContact, loading } = props;
 
   const theme = useTheme();
-  const { t } = useTranslation();
 
   return (
     <div>
@@ -43,7 +41,7 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
       >
         <DialogTitle>
           <Typography variant={"h3"} textAlign={"center"}>
-            {t("labelContactsDeleteContact")}
+            Delete Contact
           </Typography>
           <IconButton
             size={"medium"}
@@ -55,6 +53,10 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
             color={"inherit"}
             onClick={() => {
               onCloseDelete();
+              // setDeleteInfo({
+              //   open: false,
+              //   selected: undefined
+              // })
             }}
           >
             <CloseIcon />
@@ -63,7 +65,8 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
         <DialogContent style={{ width: "var(--modal-width)" }}>
           <Box marginBottom={12} marginTop={6}>
             <TextField
-              label={t("labelDeleteContactInfo")}
+              label={"Contact"}
+              placeholder={"Enter wallet address or ENS"}
               style={{
                 backgroundColor: "var(--box-card-decorate)",
               }}
@@ -72,12 +75,37 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
                 style: {
                   background: "var(--field-opacity)",
                   height: `${theme.unit * 6}px`,
+                  // color: ''
                 },
               }}
               fullWidth
+              // disabled
               value={`${deleteInfo.selected?.name}\/${deleteInfo.selected?.address}`}
+              // onChange={e => {
+              //   setAddAddress(e.target.value)
+              // }}
             />
           </Box>
+          {/* <Box marginBottom={10} marginTop={3}>
+            <TextField
+              label={"Name"}
+              placeholder={"Enter name for the contact"}
+              style={{
+                backgroundColor: "var(--box-card-decorate)"
+              }}
+              InputProps={{
+                style: {
+                  background: "var(--field-opacity)",
+                  height: `${theme.unit * 6}px`
+                }
+              }}
+              fullWidth
+              value={addName}
+              onChange={e => {
+                setAddName(e.target.value)
+              }}
+            />
+          </Box> */}
         </DialogContent>
         <DialogActions>
           <Box width={"100%"} flexDirection={"column"} display={"flex"}>
@@ -91,11 +119,7 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
               }}
               fullWidth
             >
-              {loading ? (
-                <LoadingIcon></LoadingIcon>
-              ) : (
-                t("labelContactsDeleteContactBtn")
-              )}
+              {loading ? <LoadingIcon></LoadingIcon> : "Delete"}
             </Button>
             <Box></Box>
             <Button
@@ -109,11 +133,25 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
                 onCloseDelete();
               }}
             >
-              {t("labelCancel")}
+              Cancel
             </Button>
           </Box>
         </DialogActions>
       </Dialog>
+      {/* <Toast
+        alertText={toastStatus === 'Succuss' 
+          ? 'Add Contact Succeed' 
+          : toastStatus === 'Error' 
+            ? 'Add Contact Failed'
+            : ''
+        }
+        severity={toastStatus === 'Succuss' ? 'success' : 'error'}
+        open={toastStatus !== 'Init'}
+        autoHideDuration={TOAST_TIME}
+        onClose={()=> setToastStatus('Init')}
+      /> */}
+
+      {/* <toastStatus></toastStatus> */}
     </div>
   );
 };

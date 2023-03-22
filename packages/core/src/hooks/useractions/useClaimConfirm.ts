@@ -5,7 +5,7 @@ import {
   IBData,
   LIVE_FEE_TIMES,
   myLog,
-  SUBMIT_PANEL_AUTO_CLOSE,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TRADE_TYPE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
@@ -31,10 +31,7 @@ import {
   walletLayer2Service,
 } from "../../services";
 import * as sdk from "@loopring-web/loopring-sdk";
-import {
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
+import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "../../api_wrapper";
 import { isAccActivated } from "./useCheckAccStatus";
 import Web3 from "web3";
@@ -58,7 +55,7 @@ export const useClaimConfirm = <
     setShowAccount,
     setShowClaimWithdraw,
     modals: {
-      isShowClaimWithdraw: { claimToken, isShow, claimType, successCallback },
+      isShowClaimWithdraw: { claimToken, isShow },
       isShowAccount: { info },
     },
   } = useOpenModals();
@@ -66,20 +63,12 @@ export const useClaimConfirm = <
   const { btnStatus, enableBtn, disableBtn, btnInfo } = useBtnStatus();
   const feeProps =
     claimValue.tradeType === TRADE_TYPE.TOKEN
-      ? claimType === CLAIM_TYPE.lrcStaking
-        ? {
-            requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
-            extraType: 3,
-          }
-        : {
-            requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
-            extraType: 2,
-          }
+      ? {
+          requestType: sdk.OffchainFeeReqType.TRANSFER,
+        }
       : {
-          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
           tokenAddress: claimValue?.tokenAddress,
-          extraType: 2,
-          isNFT: true,
         };
   const {
     chargeFeeTokenList,
@@ -90,21 +79,16 @@ export const useClaimConfirm = <
     resetIntervalTime,
   } = useChargeFees({
     ...feeProps,
-    intervalTime: undefined,
     updateData: ({ fee }) => {
       const claimValue = store.getState()._router_modalData.claimValue;
-      if (
-        (claimValue.tradeType === TRADE_TYPE.TOKEN &&
-          claimValue.claimType === CLAIM_TYPE.lrcStaking &&
-          feeProps.extraType === 3) ||
-        (claimValue.tradeType === TRADE_TYPE.TOKEN &&
-          claimType === CLAIM_TYPE.redPacket &&
-          feeProps.extraType === 2 &&
-          !feeProps.isNFT) ||
-        (claimValue.tradeType === TRADE_TYPE.NFT &&
-          claimType === CLAIM_TYPE.redPacket &&
-          feeProps.extraType === 2 &&
-          feeProps.isNFT)
+      if (claimValue.tradeType === TRADE_TYPE.TOKEN) {
+        updateClaimData({
+          ...(claimValue as any),
+          fee: fee,
+        });
+      } else if (
+        claimValue.tradeType === TRADE_TYPE.NFT &&
+        claimValue.tokenAddress
       ) {
         updateClaimData({ ...claimValue, fee: fee });
       }
@@ -112,13 +96,13 @@ export const useClaimConfirm = <
   });
 
   useWalletLayer2Socket({ walletLayer2Callback: undefined });
-  // calim
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
       checkFeeIsEnough();
       return;
     }
-    // claimToken
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
+
     if (claimToken) {
       if (claimToken?.isNft) {
         updateClaimData({
@@ -131,9 +115,6 @@ export const useClaimConfirm = <
           tradeValue: Number(claimToken.total),
           volume: claimToken.total,
           balance: Number(claimToken.total),
-          claimType,
-          luckyTokenHash: claimToken.luckyTokenHash,
-          successCallback,
         } as any);
       } else {
         const token = tokenMap[idIndex[claimToken.tokenId]];
@@ -143,8 +124,6 @@ export const useClaimConfirm = <
           tradeValue: volumeToCount(token.symbol, claimToken.total),
           volume: claimToken.total,
           balance: volumeToCount(token.symbol, claimToken.total),
-          claimType,
-          successCallback,
         });
       }
     } else {
@@ -155,18 +134,13 @@ export const useClaimConfirm = <
     if (isShow) {
       resetDefault();
       walletLayer2Service.sendUserUpdate();
-    }
-  }, [isShow]);
-  React.useEffect(() => {
-    if (isShow) {
-      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     } else {
       resetIntervalTime();
     }
     return () => {
       resetIntervalTime();
     };
-  }, [isShow, claimValue.claimType, claimValue.tradeType]);
+  }, [isShow]);
   const processRequest = React.useCallback(
     async (
       request:
@@ -176,7 +150,6 @@ export const useClaimConfirm = <
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
       const claimValue = store.getState()._router_modalData.claimValue;
-      // const claimValue = store.getState()._router_modalData.c;
 
       try {
         if (
@@ -198,7 +171,7 @@ export const useClaimConfirm = <
                 request: request as sdk.OriginLuckTokenWithdrawsRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId: chainId === "unknown" ? 1 : chainId,
-                walletType: (ConnectProvidersSignMap[connectName] ??
+                walletType: (ConnectProviders[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
@@ -215,7 +188,7 @@ export const useClaimConfirm = <
                 request: request as sdk.OriginStakeClaimRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId: chainId === "unknown" ? 1 : chainId,
-                walletType: (ConnectProvidersSignMap[connectName] ??
+                walletType: (ConnectProviders[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
@@ -236,8 +209,6 @@ export const useClaimConfirm = <
           ) {
             throw response;
           }
-          claimValue.successCallback && claimValue.successCallback();
-
           setShowAccount({
             isShow: true,
             step: AccountStep.ClaimWithdraw_In_Progress,
@@ -255,7 +226,7 @@ export const useClaimConfirm = <
           }
           walletLayer2Service.sendUserUpdate();
           setShowClaimWithdraw({ isShow: false });
-          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
           if (
             store.getState().modals.isShowAccount.isShow &&
             store.getState().modals.isShowAccount.step ==
@@ -345,11 +316,13 @@ export const useClaimConfirm = <
           const fee = sdk.toBig(feeRaw);
 
           let token: any;
+          let nftData = undefined;
           let amount: any = 0;
           if (claimValue?.nftData) {
             token = {
               tokenId: claimValue.tokenId,
             };
+            nftData = claimValue.nftData;
             amount = claimValue.volume;
           } else {
             token = tokenMap[claimValue?.belong];
@@ -372,13 +345,12 @@ export const useClaimConfirm = <
               brokerType = 0;
               break;
           }
+          claimValue.claimType === CLAIM_TYPE.redPacket;
           const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
             type: brokerType,
           });
           let request:
-            | (sdk.OriginLuckTokenWithdrawsRequestV3 & {
-                luckyTokenHash?: string;
-              })
+            | sdk.OriginLuckTokenWithdrawsRequestV3
             | sdk.OriginStakeClaimRequestV3 = {} as any;
 
           if (claimValue.claimType === CLAIM_TYPE.redPacket) {
@@ -386,7 +358,7 @@ export const useClaimConfirm = <
               tokenId: token.tokenId,
               feeTokenId: feeToken.tokenId,
               amount: amount.toString(),
-              nftData: token.type === "ERC20" ? undefined : claimValue.nftData,
+              nftData,
               claimer: accAddress,
               transfer: {
                 exchange: exchangeInfo.exchangeAddress,
@@ -395,7 +367,7 @@ export const useClaimConfirm = <
                 payeeAddr: broker,
                 storageId: storageId.offchainId,
                 maxFee: {
-                  tokenId: feeToken.tokenId,
+                  tokenId: 0,
                   volume: "0",
                 },
                 token: {
@@ -404,7 +376,6 @@ export const useClaimConfirm = <
                 },
                 validUntil: getTimestampDaysLater(DAYS),
               },
-              luckyTokenHash: claimToken?.luckyTokenHash,
             };
           } else if (claimValue.claimType === CLAIM_TYPE.lrcStaking) {
             request = {
@@ -433,6 +404,7 @@ export const useClaimConfirm = <
           }
 
           myLog("claimWithdrawals request:", request);
+
           processRequest(request, isHardwareRetry);
         } catch (e: any) {
           // sdk.dumpError400(e);
@@ -513,13 +485,15 @@ export const useClaimConfirm = <
     },
     [setShowAccount]
   );
-  claimToken?.luckyTokenHash;
   return {
     retryBtn,
+
     claimProps: {
       btnStatus,
       btnInfo,
       disabled: !(legalEnable === true),
+      claimType: claimValue.claimType,
+      tradeType: claimValue.tradeType,
       tradeData: {
         tradeValue: claimValue?.tradeValue,
         belong: claimValue?.belong,
@@ -532,21 +506,13 @@ export const useClaimConfirm = <
           false
         ),
       },
+
       chargeFeeTokenList,
       isFeeNotEnough,
       handleFeeChange,
       feeInfo,
       checkFeeIsEnough,
       onClaimClick,
-      claimType,
-      isNFT: claimToken?.isNft ? true : false,
-      nftIMGURL: claimToken?.nftTokenInfo?.metadata?.imageSize.original,
-      // luckyTokenHash: claimToken?.luckyTokenHash
-
-      // nftIMGURL: claimValue.tradeType === TRADE_TYPE.NFT
-      //   ? claimValue
-      //   : undefined
-      // true,
     } as any as ClaimProps<any, any>,
   };
 };

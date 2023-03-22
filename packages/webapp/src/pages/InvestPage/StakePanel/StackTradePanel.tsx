@@ -5,9 +5,7 @@ import {
   DeFiSideWrap,
   LoadingBlock,
   Toast,
-  ToastType,
   useSettings,
-  useToggle,
 } from "@loopring-web/component-lib";
 import { Box } from "@mui/material";
 import React from "react";
@@ -15,7 +13,6 @@ import { BackIcon, TOAST_TIME } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { StyleWrapper } from "../DeFiPanel/";
-import { ErrorPage } from "@loopring-web/web-bridge/src/pages/ErrorPage";
 
 export const StackTradePanel = ({
   setConfirmedLRCStakeInvestInvest,
@@ -29,12 +26,11 @@ export const StackTradePanel = ({
   const {
     confirmation: { confirmedLRCStakeInvest },
   } = confirmation.useConfirmation();
-  const { toggle } = useToggle();
 
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { t } = useTranslation();
   const history = useHistory();
-  const { stakeWrapProps } = useStakeTradeJOIN({ setToastOpen, symbol });
+  const { stackWrapProps } = useStakeTradeJOIN({ setToastOpen, symbol });
 
   const { isMobile } = useSettings();
 
@@ -46,80 +42,71 @@ export const StackTradePanel = ({
     <>
       <Toast
         alertText={toastOpen?.content ?? ""}
-        severity={toastOpen?.type ?? ToastType.success}
+        severity={toastOpen?.type ?? "success"}
         open={toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
       />
-      {toggle?.LRCStackInvest.enable ? (
+      <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
         <Box
+          marginBottom={2}
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={isMobile ? "left" : "center"}
+          flexDirection={isMobile ? "column" : "row"}
+        >
+          <Button
+            startIcon={<BackIcon fontSize={"small"} />}
+            variant={"text"}
+            size={"medium"}
+            sx={
+              isMobile
+                ? {
+                    color: "var(--color-text-secondary)",
+                    justifyContent: "left",
+                  }
+                : { color: "var(--color-text-secondary)" }
+            }
+            color={"inherit"}
+            onClick={() => history.push("/invest/overview")}
+          >
+            {t("labelInvestLRCStakingTitle")}
+          </Button>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={() => history.push("/invest/balance/sideStake")}
+            sx={{ color: "var(--color-text-secondary)" }}
+          >
+            {t("labelMyInvestLRCStaking")}
+          </Button>
+        </Box>
+        <StyleWrapper
           display={"flex"}
           flexDirection={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
           flex={1}
-          marginBottom={2}
         >
-          <Box
-            marginBottom={2}
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={isMobile ? "left" : "center"}
-            flexDirection={isMobile ? "column" : "row"}
-          >
-            <Button
-              startIcon={<BackIcon fontSize={"small"} />}
-              variant={"text"}
-              size={"medium"}
-              sx={
-                isMobile
-                  ? {
-                      color: "var(--color-text-secondary)",
-                      justifyContent: "left",
-                    }
-                  : { color: "var(--color-text-secondary)" }
-              }
-              color={"inherit"}
-              onClick={() => history.push("/invest/overview")}
+          {stackWrapProps.deFiSideCalcData ? (
+            <Box
+              className={"hasLinerBg"}
+              display={"flex"}
+              style={styles}
+              justifyContent={"center"}
+              padding={5 / 2}
             >
-              {t("labelInvestLRCStakingTitle")}
-            </Button>
-            <Button
-              variant={"outlined"}
-              size={"medium"}
-              onClick={() => history.push("/invest/balance/sideStake")}
-              sx={{ color: "var(--color-text-secondary)" }}
-            >
-              {t("labelMyInvestLRCStaking")}
-            </Button>
-          </Box>
-          <StyleWrapper
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            flex={1}
-          >
-            {stakeWrapProps.deFiSideCalcData ? (
-              <Box
-                className={"hasLinerBg"}
-                display={"flex"}
-                style={styles}
-                justifyContent={"center"}
-                padding={5 / 2}
-              >
-                <DeFiSideWrap
-                  isJoin={isJoin}
-                  symbol={"LRC"}
-                  {...(stakeWrapProps as any)}
-                />
-              </Box>
-            ) : (
-              <LoadingBlock />
-            )}
-          </StyleWrapper>
-        </Box>
-      ) : (
-        <ErrorPage messageKey={"errorBase"} />
-      )}
+              <DeFiSideWrap
+                isJoin={isJoin}
+                symbol={"LRC"}
+                {...(stackWrapProps as any)}
+              />
+            </Box>
+          ) : (
+            <LoadingBlock />
+          )}
+        </StyleWrapper>
+      </Box>
     </>
   );
 };

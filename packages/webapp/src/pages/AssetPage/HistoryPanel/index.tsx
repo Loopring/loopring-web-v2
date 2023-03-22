@@ -12,7 +12,6 @@ import {
   TradeTable,
   TransactionTable,
   useSettings,
-  CexSwapTable
 } from "@loopring-web/component-lib";
 import {
   StylePaper,
@@ -49,7 +48,6 @@ enum TabIndex {
   defiRecords = "defiRecords",
   dualRecords = "dualRecords",
   sideStakingRecords = "sideStakingRecords",
-  cexSwapRecords = "sideStakingCexSwap",
 }
 
 enum TabOrderIndex {
@@ -227,10 +225,6 @@ const HistoryPanel = withTranslation("common")(
                 label={t("labelSideStakingTable")}
                 value={TabIndex.sideStakingRecords}
               />
-              <Tab
-                label={t("labelCexSwapTitle")}
-                value={TabIndex.cexSwapRecords}
-              />
             </Tabs>
           </Box>
           <Box
@@ -342,7 +336,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : currentTab === TabIndex.sideStakingRecords ? (
+            ) : (
               <Box
                 flex={1}
                 display={"flex"}
@@ -396,55 +390,6 @@ const HistoryPanel = withTranslation("common")(
                     isOpenOrder:
                       currentOrderTab === TabOrderIndex.orderOpenTable,
                     cancelOrder,
-                  }}
-                />
-              </Box>
-            ) : (
-              <Box
-                flex={1}
-                display={"flex"}
-                flexDirection={"column"}
-                marginTop={-2}
-              >
-                <CexSwapTable
-                  rawData={[
-                    {
-                      type: 'Settled',
-                      fromAmount: '10',
-                      fromSymbol: 'ETH',
-                      toAmount: '11000.93',
-                      toSymbol: 'DAI',
-                      price: '1800.2',
-                      feeAmount: '10.1',
-                      feeSymbol: 'DAI',
-                      time: 1679913235883
-                    },
-                    {
-                      type: 'Delivering',
-                      fromAmount: '10',
-                      fromSymbol: 'ETH',
-                      toAmount: '11000.93',
-                      toSymbol: 'DAI',
-                      price: '1800.2',
-                      feeAmount: '10.1',
-                      feeSymbol: 'DAI',
-                      time: 1679913235883
-                    },
-                    {
-                      type: 'Settled',
-                      fromAmount: '10',
-                      fromSymbol: 'ETH',
-                      toAmount: '11000.93',
-                      toSymbol: 'DAI',
-                      price: '1800.2',
-                      feeAmount: '10.1',
-                      feeSymbol: 'DAI',
-                      time: 1679913235883
-                    },
-                  ]}
-                  showloading={false}
-                  onItemClick={(item) => {
-
                   }}
                 />
               </Box>

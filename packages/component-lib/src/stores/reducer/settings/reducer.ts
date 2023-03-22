@@ -5,7 +5,6 @@ import {
   i18n,
   LanguageKeys,
   layoutConfigs,
-  stopLimitLayoutConfigs,
   ThemeKeys,
   ThemeType,
   UpColor,
@@ -14,6 +13,7 @@ import moment from "moment";
 import { Slice } from "@reduxjs/toolkit/src/createSlice";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Layouts } from "react-grid-layout";
+import { action } from "@storybook/addon-actions";
 
 const initialState: SettingsState = {
   themeMode: ThemeType.dark, //localStore.getItem('ThemeType')?localStore.getItem('ThemeType') as ThemeKeys :ThemeType.dark,
@@ -30,10 +30,8 @@ const initialState: SettingsState = {
   hideSmallBalances: true,
   isMobile: false,
   proLayout: layoutConfigs[0].layouts,
-  stopLimitLayout: stopLimitLayoutConfigs[0].layouts,
   swapSecondConfirmation: true,
   isTaikoTest: false,
-  isShowTestToggle: false,
 };
 
 export const settingsSlice: Slice<SettingsState> = createSlice({
@@ -42,9 +40,6 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
   reducers: {
     setIsTaikoTest(state, action: PayloadAction<boolean>) {
       state.isTaikoTest = action.payload;
-    },
-    setIsShowTestToggle(state, action: PayloadAction<boolean>) {
-      state.isShowTestToggle = action.payload;
     },
     setTheme(state, action: PayloadAction<ThemeKeys>) {
       // localStore.setItem('ThemeType',action.payload)
@@ -173,14 +168,6 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
       // }
       // myLog(action.payload,state.proLayout )
     },
-    setStopLimitLayouts(state, action: PayloadAction<Layouts>) {
-      // localStore.setItem('UpColor',action.payload)
-      const result: Layouts = {
-        ...state.stopLimitLayout,
-        ...action.payload,
-      };
-      state.stopLimitLayout = result;
-    },
     setSwapSecondConfirmation(state, action: PayloadAction<boolean>) {
       state.swapSecondConfirmation = action.payload;
     },
@@ -188,7 +175,6 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
 });
 export const {
   setLayouts,
-  setStopLimitLayouts,
   setIsTaikoTest,
   setTheme,
   setLanguage,
@@ -204,6 +190,5 @@ export const {
   setHideSmallBalances,
   setIsMobile,
   setSwapSecondConfirmation,
-  setIsShowTestToggle,
 } = settingsSlice.actions;
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

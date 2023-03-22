@@ -15,8 +15,6 @@ import {
   useInvestTokenTypeMap,
   useDualMap,
   useStakingMap,
-  useBtradeSwap,
-  useBtradeMap,
 } from "@loopring-web/core";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { myLog, SagaStatus, ThemeType } from "@loopring-web/common-resources";
@@ -74,8 +72,6 @@ export function useInit() {
     useDualMap();
   const { status: stakingMapStatus, statusUnset: stakingMapStatusUnset } =
     useStakingMap();
-  const { status: btradeMapStatus, statusUnset: btradeMapStatusUnset } =
-    useBtradeMap();
 
   const {
     status: investTokenTypeMapStatus,
@@ -345,19 +341,6 @@ export function useInit() {
         break;
     }
   }, [stakingMapStatus]);
-  React.useEffect(() => {
-    switch (btradeMapStatus) {
-      case SagaStatus.ERROR:
-        btradeMapStatusUnset();
-        // setState("ERROR");
-        break;
-      case SagaStatus.DONE:
-        btradeMapStatusUnset();
-        break;
-      default:
-        break;
-    }
-  }, [btradeMapStatus]);
 
   React.useEffect(() => {
     switch (investTokenTypeMapStatus) {

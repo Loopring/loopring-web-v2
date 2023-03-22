@@ -14,7 +14,6 @@ import {
   FailedIcon,
   HelpIcon,
   LockGuardianIcon,
-  LOOPRING_DOCUMENT,
   MapChainId,
   myLog,
   RefuseIcon,
@@ -147,10 +146,15 @@ export const GuardianPage = withTranslation(["common"])(
   ({ t, ..._rest }: WithTranslation) => {
     const { account } = useAccount();
     const { chainId } = useSystem();
-    const network =
-      sdk.NetworkWallet[
-        MapChainId[[1, 5].includes(Number(chainId) ?? 1) ? 1 : chainId]
-      ];
+    const network = React.useMemo(() => {
+      switch (chainId) {
+        case ChainId.GOERLI:
+        case ChainId.MAINNET:
+          return sdk.NetworkWallet[MapChainId[ChainId.MAINNET]];
+        default:
+          return sdk.NetworkWallet[MapChainId[chainId]];
+      }
+    }, [chainId]);
 
     let match = useRouteMatch("/guardian/:item");
     const [openQRCode, setOpenQRCode] = React.useState(false);
@@ -239,7 +243,7 @@ export const GuardianPage = withTranslation(["common"])(
               color={"textSecondary"}
               target="_blank"
               rel="noopener noreferrer"
-              href={LOOPRING_DOCUMENT + "walletdesign_en.md"}
+              href={"https://loopring.io/#/document/walletdesign_en.md"}
             >
               {t("describeWhatIsGuardian")}
             </Link>

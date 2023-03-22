@@ -29,7 +29,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: auto 20% 180px auto !important;`
-        : `--template-columns: 24% auto 20% !important;`}
+        : `--template-columns: 100% !important;`}
     .rdgCellCenter {
       height: 100%;
       justify-content: center;
@@ -269,7 +269,7 @@ export const DefiStakingTxTable = withTranslation(["tables", "common"])(
             return (
               <Typography
                 component={"span"}
-                flexDirection={"row"}
+                flexDirection={"column"}
                 display={"flex"}
                 height={"100%"}
                 alignItems={"center"}
@@ -279,9 +279,14 @@ export const DefiStakingTxTable = withTranslation(["tables", "common"])(
                   sx={{ textTransform: "capitalize" }}
                   color={side.color}
                   display={"inline"}
-                  minWidth={86}
+                  minWidth={180}
                 >
                   {t(side.type)}
+                </Typography>
+                <Typography component={"span"} textAlign={"right"}>
+                  {typeof row.createdAt === "undefined"
+                    ? EmptyValueTag
+                    : moment(new Date(row.createdAt), "YYYYMMDDHHMM").fromNow()}
                 </Typography>
               </Typography>
             );
@@ -299,22 +304,21 @@ export const DefiStakingTxTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
-            const amountStr =
-              row.amount && row.amount != "0"
-                ? getValuePrecisionThousand(
-                    sdk.toBig(row.amount).div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  ) +
-                  " " +
-                  tokenInfo.symbol
-                : EmptyValueTag;
+            const amountStr = row.amount
+              ? getValuePrecisionThousand(
+                  sdk.toBig(row.amount).div("1e" + tokenInfo.decimals),
+                  tokenInfo.precision,
+                  tokenInfo.precision,
+                  undefined,
+                  false,
+                  {
+                    floor: false,
+                    // isTrade: true,
+                  }
+                ) +
+                " " +
+                tokenInfo.symbol
+              : EmptyValueTag;
             return (
               <Typography
                 component={"span"}
@@ -322,32 +326,14 @@ export const DefiStakingTxTable = withTranslation(["tables", "common"])(
                 display={"flex"}
                 height={"100%"}
                 textAlign={"right"}
-                alignItems={"flex-end"}
+                alignItems={"center"}
               >
                 <Typography component={"span"} display={"inline"}>
                   {amountStr}
                 </Typography>
                 <Typography component={"span"} display={"inline"}>
-                  {row.productId}
-                  {/*+ "/" + getShortAddr(row.hash)*/}
+                  {row.productId + "/" + getShortAddr(row.hash)}
                 </Typography>
-              </Typography>
-            );
-          },
-        },
-        {
-          key: "SubscribeTime",
-          sortable: false,
-          width: "auto",
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelDefiStakingTxRewardsMobileDate"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Typography component={"span"} textAlign={"right"}>
-                {typeof row.createdAt === "undefined"
-                  ? EmptyValueTag
-                  : moment(new Date(row.createdAt), "YYYYMMDDHHMM").fromNow()}
               </Typography>
             );
           },

@@ -20,7 +20,6 @@ export const useConfirmation = (): {
   confirmedWSETHDefiInvest: () => void;
   confirmedLRCStakeInvest: () => void;
   confirmDualInvest: () => void;
-  confirmedCexSwap: () => void;
 } => {
   const confirmation: Confirmation = useSelector(
     (state: RootState) => state.localStore.confirmation
@@ -47,9 +46,6 @@ export const useConfirmation = (): {
     }, [dispatch]),
     confirmedLRCStakeInvest: React.useCallback(() => {
       dispatch(confirmedLRCStakeInvest(undefined));
-    }, [dispatch]),
-    confirmedCexSwap: React.useCallback(() => {
-      dispatch(confirmedCexSwap(undefined));
     }, [dispatch]),
   };
 };

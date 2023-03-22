@@ -25,7 +25,7 @@ const GridStyle = styled(Grid)`
 `;
 
 export const DeFiSideDetail = ({
-  // stakeViewInfo,
+  // stackViewInfo,
   tokenSell,
   order,
   onRedeem,
@@ -70,7 +70,7 @@ export const DeFiSideDetail = ({
             <Trans i18nKey={"labelDeFiSideAmount"}>Amount</Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {order.remainAmount && order.remainAmount != "0"
+            {order.remainAmount
               ? getValuePrecisionThousand(
                   sdk.toBig(order.remainAmount).div("1e" + tokenSell.decimals),
                   tokenSell.precision,
@@ -78,10 +78,8 @@ export const DeFiSideDetail = ({
                   tokenSell.precision,
                   false,
                   { floor: false, isAbbreviate: true }
-                ) +
-                " " +
-                tokenSell.symbol
-              : EmptyValueTag}
+                )
+              : EmptyValueTag + " " + tokenSell.symbol}
           </Typography>
         </Typography>
         <Typography
@@ -125,7 +123,7 @@ export const DeFiSideDetail = ({
               ? getValuePrecisionThousand(
                   sdk.toBig(order.remainAmount).div(order.staked).times(100),
                   2,
-                  2,
+                  undefined,
                   undefined
                 ) + "%"
               : EmptyValueTag}
@@ -172,18 +170,18 @@ export const DeFiSideDetail = ({
             </Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {order.totalRewards && order.totalRewards != "0"
+            {(order.totalRewards
               ? getValuePrecisionThousand(
                   sdk.toBig(order.totalRewards).div("1e" + tokenSell.decimals),
                   tokenSell.precision,
                   tokenSell.precision,
-                  undefined,
+                  tokenSell.precision,
                   false,
                   { floor: false, isAbbreviate: true }
-                ) +
-                " " +
-                tokenSell.symbol
-              : EmptyValueTag}
+                )
+              : EmptyValueTag) +
+              " " +
+              tokenSell.symbol}
           </Typography>
         </Typography>
         <Typography
@@ -205,20 +203,20 @@ export const DeFiSideDetail = ({
             </Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {order.lastDayPendingRewards && order.lastDayPendingRewards != "0"
+            {(order.lastDayPendingRewards
               ? getValuePrecisionThousand(
                   sdk
                     .toBig(order.lastDayPendingRewards)
                     .div("1e" + tokenSell.decimals),
                   tokenSell.precision,
                   tokenSell.precision,
-                  undefined,
+                  tokenSell.precision,
                   false,
                   { floor: false, isAbbreviate: true }
-                ) +
-                " " +
-                tokenSell.symbol
-              : EmptyValueTag}
+                )
+              : EmptyValueTag) +
+              " " +
+              tokenSell.symbol}
           </Typography>
         </Typography>
         <Typography
@@ -415,12 +413,12 @@ export const DeFiSideWrap = <
   }, [isJoin, t, btnInfo]);
 
   const daysDuration = Math.ceil(
-    Number(deFiSideCalcData?.stakeViewInfo?.rewardPeriod ?? 0) / 86400000
+    Number(deFiSideCalcData?.stackViewInfo?.rewardPeriod ?? 0) / 86400000
   );
-  let dalyEarn = deFiSideCalcData?.stakeViewInfo?.dalyEarn
+  let dalyEarn = deFiSideCalcData?.stackViewInfo?.dalyEarn
     ? getValuePrecisionThousand(
         sdk
-          .toBig(deFiSideCalcData.stakeViewInfo.dalyEarn)
+          .toBig(deFiSideCalcData.stackViewInfo.dalyEarn)
           .div("1e" + tokenSell.decimals)
           .div(100),
         tokenSell.precision,
@@ -433,7 +431,7 @@ export const DeFiSideWrap = <
     dalyEarn && dalyEarn !== "0"
       ? dalyEarn + " " + tokenSell.symbol
       : EmptyValueTag;
-  myLog("deFiSideCalcData.stakeViewInfo", deFiSideCalcData.stakeViewInfo);
+  myLog("deFiSideCalcData.stackViewInfo", deFiSideCalcData.stackViewInfo);
   return (
     <GridStyle
       className={deFiSideCalcData ? "" : "loading"}
@@ -530,9 +528,9 @@ export const DeFiSideWrap = <
             </Typography>
           </Tooltip>
           <Typography component={"p"} variant={"body2"} color={"textPrimary"}>
-            {deFiSideCalcData?.stakeViewInfo?.apr &&
-            deFiSideCalcData?.stakeViewInfo?.apr !== "0.00"
-              ? deFiSideCalcData.stakeViewInfo.apr + "%"
+            {deFiSideCalcData?.stackViewInfo?.apr &&
+            deFiSideCalcData?.stackViewInfo?.apr !== "0.00"
+              ? deFiSideCalcData.stackViewInfo.apr + "%"
               : EmptyValueTag}
           </Typography>
         </Grid>

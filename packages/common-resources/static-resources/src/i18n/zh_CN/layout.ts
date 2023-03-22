@@ -44,7 +44,6 @@ export default {
   labelSetting: "高级设置",
   labelSecurity: "安全设置",
   labelVipPanel: "VIP",
-  labelContactsPanel: "联系人",
   titleLoopring: "路印协议",
   labelLoopringDescribe: "零知卷叠交易与支付协议",
   labelWrongNetwork: "未识别网络",
@@ -114,14 +113,7 @@ export default {
   labelDepositNFT: "Receive NFT",
   labelMyCollection: "My Collections",
   labelMyCollectionDes: "Create, curate, and \n manage my NFT collections",
-  labelInvestStakeLRC: "LRC Staking",
-  labelInvestStakeLRCDes: "Earn LRC staking rewards",
-  labelBtradeTrade: "Block Trade",
-  labelBtradeTradeDescription: "Trade via CEX liquidity",
-  labelStopLimit: "Stop-Limit",
-  labelStopLimitDescription: "Control trading, like a pro",
-  labelCopyRightBeta:
-    "This site is not released yet and could contain bugs. Please use it with caution!",
-  labelReferralReward: "Referrals Reward",
+  labelInvestStackLRC: "LRC Staking",
+  labelInvestStackLRCDes: "Earn LRC staking rewards",
   // labelDepositNFTDes:"Receive NFT"
 };

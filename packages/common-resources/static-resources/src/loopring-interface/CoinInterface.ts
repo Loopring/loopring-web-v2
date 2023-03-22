@@ -72,8 +72,8 @@ export type TradeCalcData<T> = {
   sellPrecision: number;
   // tokenA: sdk.TokenInfo,
   // tokenB: sdk.TokenInfo,
-  StoB: string | undefined;
-  BtoS: string | undefined;
+  StoB: string;
+  BtoS: string;
   // marketPrecision: number,
   coinInfoMap?: CoinMap<T, CoinInfo<T>>;
   sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>;
@@ -81,53 +81,6 @@ export type TradeCalcData<T> = {
   walletMap?: WalletMap<T, WalletCoin<T>>;
   slippage: number | string;
   // slippageTolerance: Array<number | string>,
-  priceImpact: string | undefined;
-  priceImpactColor: string | undefined;
-  minimumReceived: string | undefined;
-  fee: string;
-  isReverse: boolean;
-  feeTakerRate?: number;
-  tradeCost?: string;
-  lastStepAt?: "sell" | "buy";
-} & sdk.XOR<
-  {
-    isNotMatchMarketPrice?: boolean;
-    marketPrice?: string;
-    marketRatePrice?: string;
-    isChecked?: boolean;
-    lastStepAt?: "base" | "quote";
-    slippage: number | string;
-    // slippageTolerance: Array<number | string>,
-    priceImpact: string;
-    priceImpactColor: string;
-    feeTakerRate?: number;
-    tradeCost?: string;
-    showLargeVolumeSwapInfo?: boolean;
-    isCex: undefined | false;
-  },
-  {
-    isCex: true;
-    maxFeeBips: string;
-    lockedNotification: true;
-    isLockedNotificationChecked?: boolean;
-    amountS: string | undefined;
-    amountB: string | undefined;
-    sellMinAmtStr: string | undefined;
-    sellMaxL2AmtStr: string | undefined;
-    sellMaxAmtStr: string | undefined;
-    l1Pool: string;
-    l2Pool: string;
-    totalPool: string;
-  }
->;
-export type TradeCalcProData<T> = {
-  coinBase: keyof T; //name
-  coinQuote: keyof T;
-  StoB: string;
-  BtoS: string;
-  coinInfoMap?: CoinMap<T, CoinInfo<T>>;
-  walletMap?: WalletMap<T, WalletCoin<T>>;
-  slippage: number | string;
   priceImpact: string;
   priceImpactColor: string;
   minimumReceived: string;
@@ -138,7 +91,28 @@ export type TradeCalcProData<T> = {
   marketPrice?: string;
   marketRatePrice?: string;
   isChecked?: boolean;
-  lastStepAt?: "base" | "quote";
+};
+export type TradeCalcProData<T> = {
+  coinBase: keyof T; //name
+  coinQuote: keyof T;
+  StoB: string;
+  BtoS: string;
+  coinInfoMap?: CoinMap<T, CoinInfo<T>>;
+  // sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
+  // buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
+  walletMap?: WalletMap<T, WalletCoin<T>>;
+  slippage: number | string;
+  // slippageTolerance: Array<number | string>,
+  priceImpact: string;
+  priceImpactColor: string;
+  minimumReceived: string;
+  fee: string;
+  feeTakerRate?: number;
+  tradeCost?: string;
+  isNotMatchMarketPrice?: boolean;
+  marketPrice?: string;
+  marketRatePrice?: string;
+  isChecked?: boolean;
 };
 
 /**
@@ -174,7 +148,7 @@ export type DeFiCalcData<T> = {
 };
 export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
   coinSell: T;
-  stakeViewInfo: R & {
+  stackViewInfo: R & {
     dalyEarn?: string;
     maxSellAmount?: string;
     minSellAmount?: string;
@@ -183,9 +157,7 @@ export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
   };
 };
 type RedeemInfo = sdk.StakeInfoOrigin &
-  Omit<sdk.STACKING_PRODUCT, "status"> & {
-    status_product: number;
-
+  sdk.STACKING_PRODUCT & {
     maxSellAmount?: string;
     minSellAmount?: string;
     maxSellVol?: string;
@@ -195,7 +167,7 @@ type RedeemInfo = sdk.StakeInfoOrigin &
   };
 export type DeFiSideRedeemCalcData<T, _R = RedeemInfo> = {
   coinSell: T;
-  stakeViewInfo: _R;
+  stackViewInfo: _R;
 };
 
 export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {
