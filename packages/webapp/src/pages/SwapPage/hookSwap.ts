@@ -1309,7 +1309,7 @@ export const useSwap = <
           _tradeData as SwapTradeData<IBData<unknown>>,
           tradePair as any
         );
-        if (result && result.stob) {
+        if (result && result.stob && sdk.toBig(result.stob).gt(0)) {
           _tradeCalcData.StoB = result.stob;
           _tradeCalcData.BtoS = result.btos;
         } else {
