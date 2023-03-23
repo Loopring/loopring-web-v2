@@ -125,7 +125,7 @@ export const DeFiSideDetail = ({
               ? getValuePrecisionThousand(
                   sdk.toBig(order.remainAmount).div(order.staked).times(100),
                   2,
-                  undefined,
+                  2,
                   undefined
                 ) + "%"
               : EmptyValueTag}
@@ -177,7 +177,7 @@ export const DeFiSideDetail = ({
                   sdk.toBig(order.totalRewards).div("1e" + tokenSell.decimals),
                   tokenSell.precision,
                   tokenSell.precision,
-                  tokenSell.precision,
+                  undefined,
                   false,
                   { floor: false, isAbbreviate: true }
                 ) +
