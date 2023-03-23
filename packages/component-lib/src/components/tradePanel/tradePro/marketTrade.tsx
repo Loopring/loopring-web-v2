@@ -498,7 +498,9 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                             ...tradeData,
                             isChecked: !tradeCalcProData?.isChecked,
                           },
-                          TradeBaseType.base
+                          tradeCalcProData?.lastStepAt === TradeBaseType.quote
+                            ? TradeBaseType.quote
+                            : TradeBaseType.base
                         );
                       }}
                       checkedIcon={<CheckedIcon />}

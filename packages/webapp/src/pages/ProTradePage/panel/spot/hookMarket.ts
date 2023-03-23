@@ -298,6 +298,7 @@ export const useMarket = <C extends { [key: string]: any }>({
           StoB: stob,
           isChecked:
             tradeData.isChecked !== undefined ? tradeData.isChecked : undefined,
+          lastStepAt,
         },
         lastStepAt,
         totalFee,

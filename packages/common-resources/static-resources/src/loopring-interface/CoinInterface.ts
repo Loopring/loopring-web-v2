@@ -91,6 +91,7 @@ export type TradeCalcData<T> = {
   marketPrice?: string;
   marketRatePrice?: string;
   isChecked?: boolean;
+  lastStepAt?: "sell" | "buy";
 };
 export type TradeCalcProData<T> = {
   coinBase: keyof T; //name
@@ -113,6 +114,7 @@ export type TradeCalcProData<T> = {
   marketPrice?: string;
   marketRatePrice?: string;
   isChecked?: boolean;
+  lastStepAt?: "base" | "quote";
 };
 
 /**
