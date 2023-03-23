@@ -78,8 +78,10 @@ export const DeFiSideDetail = ({
                   tokenSell.precision,
                   false,
                   { floor: false, isAbbreviate: true }
-                )
-              : EmptyValueTag + " " + tokenSell.symbol}
+                ) +
+                " " +
+                tokenSell.symbol
+              : EmptyValueTag}
           </Typography>
         </Typography>
         <Typography
