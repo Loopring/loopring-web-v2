@@ -70,7 +70,7 @@ export const DeFiSideDetail = ({
             <Trans i18nKey={"labelDeFiSideAmount"}>Amount</Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {order.remainAmount && order.remainAmount == "0"
+            {order.remainAmount && order.remainAmount != "0"
               ? getValuePrecisionThousand(
                   sdk.toBig(order.remainAmount).div("1e" + tokenSell.decimals),
                   tokenSell.precision,
@@ -205,7 +205,7 @@ export const DeFiSideDetail = ({
             </Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {order.lastDayPendingRewards && order.lastDayPendingRewards == "0"
+            {order.lastDayPendingRewards && order.lastDayPendingRewards != "0"
               ? getValuePrecisionThousand(
                   sdk
                     .toBig(order.lastDayPendingRewards)
