@@ -185,7 +185,7 @@ export const Staking_Redeem_Success = (props: PanelProps) => {
     describe1: (
       <Typography variant={"h5"} color={"var(--color-primary)"}>
         {props.t("labelStakingRedeemSuccess", {
-          symbol: info.symbol,
+          symbol: info?.symbol,
         })}
       </Typography>
     ),
