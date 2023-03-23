@@ -15,7 +15,7 @@ import {
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
-  SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
   TradeStack,
 } from "@loopring-web/common-resources";
@@ -310,7 +310,7 @@ export const useStakeTradeJOIN = <
               ...item,
             },
           });
-          await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE);
+          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
           if (
             store.getState().modals.isShowAccount.isShow &&
             store.getState().modals.isShowAccount.step ==

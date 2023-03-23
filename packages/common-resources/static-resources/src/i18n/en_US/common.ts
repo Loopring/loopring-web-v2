@@ -1497,7 +1497,7 @@ export default {
   labelDefiStakingRedeem: "Redeem",
   labelDays: "day(s)",
   labelRemainingAmount:
-    "Remaining amount should be greater than {{symbol}}, Please redeem all.",
+    "Remaining amount should be greater than {{symbol}},\n Please redeem all.",
   labelRemainingBtnAmount: "Remaining amount is insufficient",
   labelStakingCumulativeEarnings: "Cumulative Earnings",
   labelStakingClaimableEarnings: "Claimable Earnings",
@@ -1510,7 +1510,7 @@ export default {
   labelClaimredPacket: "My Red Packet",
   labelClaimlrcStaking: "My LRC Staking",
   labelExpectSettlementPrice:
-    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}} = {{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}} = {{marketPrice}}. There is {{marketRatePrice}}% variance observed. Please acknowledge the risk if you still want to continue.",
+    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
   labelStakingSuccess: "{{symbol}} Staking Successful",
   labelStakingFailed: "{{symbol}} Staking failed",
   labelStakingRedeemFailed: "Redeem {{symbol}} failed",

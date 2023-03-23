@@ -9,7 +9,7 @@ import {
   myLog,
   RedeemStack,
   SDK_ERROR_MAP_TO_UI,
-  SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
@@ -34,6 +34,7 @@ import { calcRedeemStaking } from "../help";
 import { LoopringAPI } from "../../api_wrapper";
 import { useSubmitBtn } from "../common";
 import { useHistory } from "react-router-dom";
+import moment from "moment";
 
 export const useStakeRedeemClick = () => {
   const { tokenMap, idIndex } = useTokenMap();
@@ -275,7 +276,7 @@ export const useStakeTradeExit = <
               remainAmount: remainAmount ? remainAmount : EmptyValueTag,
             },
           });
-          await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE);
+          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
           if (
             store.getState().modals.isShowAccount.isShow &&
             store.getState().modals.isShowAccount.step ==
@@ -392,12 +393,19 @@ export const useStakeTradeExit = <
     submitCallback: onSubmitBtnClick,
   });
   const stackWrapProps = React.useMemo(() => {
+    const stackViewInfo = redeemStack?.deFiSideRedeemCalcData?.stackViewInfo;
+    const requiredHoldDay =
+      (stackViewInfo?.claimableTime - stackViewInfo?.stakeAt) / 86400000;
+    const holdDay = moment(Date.now()).diff(
+      moment(new Date(stackViewInfo?.stakeAt ?? ""))
+        .utc()
+        .startOf("days"),
+      "days",
+      false
+    );
     return {
       isJoin: false,
-      isFullTime:
-        Date.now() >=
-          (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
-            ?.claimableTime ?? 0,
+      isFullTime: holdDay >= requiredHoldDay,
       disabled: account.readyState !== AccountStatus.ACTIVATED,
       btnInfo: {
         label: tradeMarketI18nKey,

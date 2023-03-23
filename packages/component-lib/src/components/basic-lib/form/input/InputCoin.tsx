@@ -280,7 +280,11 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
             justifyContent={"flex-end"}
           >
             <Grid item>
-              <FormHelperText>{error.message}</FormHelperText>
+              <FormHelperText
+                sx={{ whiteSpace: "pre-line", wordBreak: "break-all" }}
+              >
+                {error.message}
+              </FormHelperText>
             </Grid>
           </Grid>
         )}
