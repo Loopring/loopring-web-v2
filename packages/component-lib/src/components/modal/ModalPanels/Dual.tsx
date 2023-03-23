@@ -171,7 +171,7 @@ export const Staking_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelStakingFailed", {
-      symbol: props.info.symbol,
+      symbol: props.info?.symbol,
     }),
   };
   return <DualBase showTitle={true} {...propsPatch} {...props} />;
@@ -297,7 +297,7 @@ export const Staking_Redeem_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelStakingFailed", {
-      symbol: props.info.symbol,
+      symbol: props.info?.symbol,
     }),
   };
   return <DualBase showTitle={true} {...propsPatch} {...props} />;
