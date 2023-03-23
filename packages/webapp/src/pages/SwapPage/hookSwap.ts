@@ -1309,7 +1309,7 @@ export const useSwap = <
           _tradeData as SwapTradeData<IBData<unknown>>,
           tradePair as any
         );
-        if (result) {
+        if (result && result.stob) {
           _tradeCalcData.StoB = result.stob;
           _tradeCalcData.BtoS = result.btos;
         } else {
@@ -1496,6 +1496,10 @@ export const useSwap = <
           fee: undefined,
           feeTakerRate: undefined,
           tradeCost: undefined,
+          isNotMatchMarketPrice: undefined,
+          marketPrice: undefined,
+          marketRatePrice: undefined,
+          isChecked: undefined,
         };
 
         myLog(
@@ -1554,4 +1558,4 @@ export const useSwap = <
     secondConfirmationOpen,
     setToastOpen,
   };
-};;
+};
