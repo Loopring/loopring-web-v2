@@ -463,7 +463,7 @@ export const SwapTradeWrap = <
                           ...swapData.tradeData,
                           isChecked: !tradeCalcData?.isChecked,
                         } as SwapTradeData<T>,
-                        type: "buy",
+                        type: tradeCalcData?.lastStepAt ?? "sell",
                         to: "button",
                       });
                     }}

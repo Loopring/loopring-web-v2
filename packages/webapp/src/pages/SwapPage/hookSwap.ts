@@ -1392,6 +1392,7 @@ export const useSwap = <
         setTradeCalcData((state) => ({
           ...state,
           ..._tradeCalcData,
+          lastStepAt: type,
         }));
         setTradeData((state) => ({
           ...state,
