@@ -275,12 +275,13 @@ export const useMarket = <C extends { [key: string]: any }>({
           tokenMap[_tradeData[buy].belong].precision
         );
         marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2);
-        myLog(
+        console.log(
           "stob",
           stob,
           marketPrice.toString(),
           "marketPriceRate",
           marketRatePrice,
+
           isNotMatchMarketPrice
         );
       }
