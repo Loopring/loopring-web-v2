@@ -198,10 +198,12 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  )
+                  ) +
+                  " " +
+                  tokenInfo.symbol
                 : EmptyValueTag;
 
-            return <> {amountStr + " " + tokenInfo.symbol}</>;
+            return <> {amountStr}</>;
           },
         },
         {
@@ -225,9 +227,11 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  )
+                  ) +
+                  " " +
+                  tokenInfo.symbol
                 : EmptyValueTag;
-            return <> {amountStr + " " + tokenInfo.symbol}</>;
+            return <> {amountStr}</>;
           },
         },
         {
@@ -253,9 +257,11 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  )
+                  ) +
+                  " " +
+                  tokenInfo.symbol
                 : EmptyValueTag;
-            return <> {amountStr + " " + tokenInfo.symbol}</>;
+            return <> {amountStr}</>;
           },
         },
         {
@@ -346,7 +352,9 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  )
+                  ) +
+                  " " +
+                  tokenInfo.symbol
                 : EmptyValueTag;
 
             return (
@@ -358,7 +366,7 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                 alignItems={"center"}
               >
                 <Typography color={"textPrimary"} variant={"body1"}>
-                  {amountStr + " " + tokenInfo.symbol}
+                  {amountStr}
                 </Typography>
                 <Typography color={"textSecondary"} variant={"body2"}>
                   {row.productId}
