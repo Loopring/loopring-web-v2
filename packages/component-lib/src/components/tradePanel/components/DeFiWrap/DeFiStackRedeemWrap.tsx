@@ -159,17 +159,17 @@ export const DeFiStackRedeemWrap = <
     // .div(remainAmount)
     return {
       currentTotalEarnings:
-        (totalRewards !== "0"
+        totalRewards !== "0"
           ? getValuePrecisionThousand(
               sdk.toBig(totalRewards).div("1e" + tokenSell.decimals),
               tokenSell.precision,
               tokenSell.precision,
-              tokenSell.precision,
+              undefined,
               false
-            )
-          : EmptyValueTag) +
-        " " +
-        deFiSideRedeemCalcData.coinSell.belong,
+            ) +
+            " " +
+            deFiSideRedeemCalcData.coinSell.belong
+          : EmptyValueTag,
       ...(tradeVol.gt(remainAmount) ||
       deFiSideRedeemCalcData.coinSell.tradeValue == undefined
         ? {
@@ -178,23 +178,24 @@ export const DeFiStackRedeemWrap = <
           }
         : {
             forfeitedEarnColor: "var(--color-error)",
-            forfeitedEarn:
-              (rateEarn.gt(0)
-                ? "-" +
-                  getValuePrecisionThousand(
-                    rateEarn.div("1e" + tokenSell.decimals),
-                    tokenSell.precision,
-                    tokenSell.precision,
-                    tokenSell.precision,
-                    false
-                  )
-                : EmptyValueTag) +
-              " " +
-              deFiSideRedeemCalcData.coinSell.belong,
+            forfeitedEarn: rateEarn.gt(0)
+              ? "-" +
+                getValuePrecisionThousand(
+                  rateEarn.div("1e" + tokenSell.decimals),
+                  tokenSell.precision,
+                  tokenSell.precision,
+                  undefined,
+                  false
+                ) +
+                " " +
+                deFiSideRedeemCalcData.coinSell.belong
+              : EmptyValueTag,
           }),
 
       remainingEarn:
-        tradeVol.lte(remainAmount) && rateEarn.gt(0)
+        tradeVol.lte(remainAmount) &&
+        rateEarn.gt(0) &&
+        sdk.toBig(totalRewards).minus(rateEarn).gt(0)
           ? getValuePrecisionThousand(
               sdk
                 .toBig(totalRewards)
@@ -202,7 +203,7 @@ export const DeFiStackRedeemWrap = <
                 .div("1e" + tokenSell.decimals),
               tokenSell.precision,
               tokenSell.precision,
-              tokenSell.precision,
+              undefined,
               false
             ) +
             " " +
@@ -409,6 +410,10 @@ export const DeFiStackRedeemWrap = <
             marginTop={5}
           >
             <MuiFormControlLabel
+              sx={{
+                alignItems: "flex-start",
+                marginTop: 1 / 2,
+              }}
               control={
                 <Checkbox
                   checked={agree}

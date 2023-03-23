@@ -238,7 +238,9 @@ export const Staking_Redeem_Success = (props: PanelProps) => {
             component={"span"}
             color={"var(--color-text-primary)"}
           >
-            {info.remainAmount + " " + info.symbol}
+            {info.remainAmount && info.remainAmount != "0"
+              ? info.remainAmount + " " + info.symbol
+              : EmptyValueTag}
           </Typography>
         </Typography>
 

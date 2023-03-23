@@ -112,7 +112,15 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
     const [page, setPage] = React.useState(1);
     const redeemItemClick = (item: R) => {
       setDetail(item);
-      if (Date.now() < item.claimableTime) {
+      const requiredHoldDay = (item.claimableTime - item.stakeAt) / 86400000;
+      const holdDay = moment(Date.now()).diff(
+        moment(new Date(item.stakeAt ?? ""))
+          .utc()
+          .startOf("days"),
+        "days",
+        false
+      );
+      if (requiredHoldDay < holdDay) {
         setOpenAlert(true);
       } else {
         setOpenDetail(false);
