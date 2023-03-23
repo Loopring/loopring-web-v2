@@ -25,11 +25,11 @@ const GridStyle = styled(Grid)`
 `;
 
 export const DeFiSideDetail = ({
-                                 // stackViewInfo,
-                                 tokenSell,
-                                 order,
-                                 onRedeem,
-                               }: DeFiSideType) => {
+  // stackViewInfo,
+  tokenSell,
+  order,
+  onRedeem,
+}: DeFiSideType) => {
   const { t } = useTranslation();
   // myLog(
   //   moment(new Date(order.stakeAt ?? ""))
@@ -70,17 +70,17 @@ export const DeFiSideDetail = ({
             <Trans i18nKey={"labelDeFiSideAmount"}>Amount</Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {order.remainAmount && order.remainAmount = "0"
+            {order.remainAmount && order.remainAmount == "0"
               ? getValuePrecisionThousand(
-                sdk.toBig(order.remainAmount).div("1e" + tokenSell.decimals),
-                tokenSell.precision,
-                tokenSell.precision,
-                tokenSell.precision,
-                false,
-                { floor: false, isAbbreviate: true }
-              ) +
-              " " +
-              tokenSell.symbol
+                  sdk.toBig(order.remainAmount).div("1e" + tokenSell.decimals),
+                  tokenSell.precision,
+                  tokenSell.precision,
+                  tokenSell.precision,
+                  false,
+                  { floor: false, isAbbreviate: true }
+                ) +
+                " " +
+                tokenSell.symbol
               : EmptyValueTag}
           </Typography>
         </Typography>
@@ -123,11 +123,11 @@ export const DeFiSideDetail = ({
           <Typography component={"span"} variant={"inherit"}>
             {order?.remainAmount && order?.staked && order.staked != "0"
               ? getValuePrecisionThousand(
-              sdk.toBig(order.remainAmount).div(order.staked).times(100),
-              2,
-              undefined,
-              undefined
-            ) + "%"
+                  sdk.toBig(order.remainAmount).div(order.staked).times(100),
+                  2,
+                  undefined,
+                  undefined
+                ) + "%"
               : EmptyValueTag}
           </Typography>
         </Typography>
@@ -172,15 +172,18 @@ export const DeFiSideDetail = ({
             </Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {(order.totalRewards && order.totalRewards!='0'
+            {order.totalRewards && order.totalRewards != "0"
               ? getValuePrecisionThousand(
-              sdk.toBig(order.totalRewards).div("1e" + tokenSell.decimals),
-              tokenSell.precision,
-              tokenSell.precision,
-              tokenSell.precision,
-              false,
-              { floor: false, isAbbreviate: true }
-            ) + " " + tokenSell.symbol: EmptyValueTag) }
+                  sdk.toBig(order.totalRewards).div("1e" + tokenSell.decimals),
+                  tokenSell.precision,
+                  tokenSell.precision,
+                  tokenSell.precision,
+                  false,
+                  { floor: false, isAbbreviate: true }
+                ) +
+                " " +
+                tokenSell.symbol
+              : EmptyValueTag}
           </Typography>
         </Typography>
         <Typography
@@ -202,16 +205,20 @@ export const DeFiSideDetail = ({
             </Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            { order.lastDayPendingRewards && order.lastDayPendingRewards = '0'
-              ?( getValuePrecisionThousand(
-                sdk
-                  .toBig(order.lastDayPendingRewards)
-                  .div("1e" + tokenSell.decimals),
-                tokenSell.precision,
-                tokenSell.precision, undefined,
-                false,
-                { floor: false, isAbbreviate: true }
-              ) + " " + tokenSell.symbol): EmptyValueTag }
+            {order.lastDayPendingRewards && order.lastDayPendingRewards == "0"
+              ? getValuePrecisionThousand(
+                  sdk
+                    .toBig(order.lastDayPendingRewards)
+                    .div("1e" + tokenSell.decimals),
+                  tokenSell.precision,
+                  tokenSell.precision,
+                  undefined,
+                  false,
+                  { floor: false, isAbbreviate: true }
+                ) +
+                " " +
+                tokenSell.symbol
+              : EmptyValueTag}
           </Typography>
         </Typography>
         <Typography
@@ -310,24 +317,24 @@ export const DeFiSideWrap = <
   T extends IBData<I>,
   I,
   ACD extends DeFiSideCalcData<T>
-  >({
-      disabled,
-      isJoin,
-      btnInfo,
-      onSubmitClick,
-      switchStobEvent,
-      onChangeEvent,
-      handleError,
-      deFiSideCalcData,
-      accStatus,
-      tokenSell,
-      isLoading,
-      btnStatus,
-      tokenSellProps,
-      minSellAmount,
-      maxSellAmount,
-      ...rest
-    }: DeFiSideWrapProps<T, I, ACD>) => {
+>({
+  disabled,
+  isJoin,
+  btnInfo,
+  onSubmitClick,
+  switchStobEvent,
+  onChangeEvent,
+  handleError,
+  deFiSideCalcData,
+  accStatus,
+  tokenSell,
+  isLoading,
+  btnStatus,
+  tokenSellProps,
+  minSellAmount,
+  maxSellAmount,
+  ...rest
+}: DeFiSideWrapProps<T, I, ACD>) => {
   // @ts-ignore
   const coinSellRef = React.useRef();
 
@@ -354,27 +361,27 @@ export const DeFiSideWrap = <
     placeholderText:
       minSellAmount && maxSellAmount
         ? t("labelInvestMaxDefi", {
-          minValue: getValuePrecisionThousand(
-            minSellAmount,
-            tokenSell.precision,
-            tokenSell.precision,
-            tokenSell.precision,
-            false,
-            { floor: false, isAbbreviate: true }
-          ),
-          maxValue: getValuePrecisionThousand(
-            maxSellAmount,
-            tokenSell.precision,
-            tokenSell.precision,
-            tokenSell.precision,
-            false,
-            { floor: false, isAbbreviate: true }
-          ),
-        })
+            minValue: getValuePrecisionThousand(
+              minSellAmount,
+              tokenSell.precision,
+              tokenSell.precision,
+              tokenSell.precision,
+              false,
+              { floor: false, isAbbreviate: true }
+            ),
+            maxValue: getValuePrecisionThousand(
+              maxSellAmount,
+              tokenSell.precision,
+              tokenSell.precision,
+              tokenSell.precision,
+              false,
+              { floor: false, isAbbreviate: true }
+            ),
+          })
         : // <Typography variant={"body1"} color={"var(--color-text-third)"}>
           //
           // </Typography>
-        "0.00",
+          "0.00",
     isShowCoinInfo: true,
     isShowCoinIcon: true,
     maxAllow: true,
@@ -412,15 +419,15 @@ export const DeFiSideWrap = <
   );
   let dalyEarn = deFiSideCalcData?.stackViewInfo?.dalyEarn
     ? getValuePrecisionThousand(
-      sdk
-        .toBig(deFiSideCalcData.stackViewInfo.dalyEarn)
-        .div("1e" + tokenSell.decimals)
-        .div(100),
-      tokenSell.precision,
-      tokenSell.precision,
-      tokenSell.precision,
-      false
-    )
+        sdk
+          .toBig(deFiSideCalcData.stackViewInfo.dalyEarn)
+          .div("1e" + tokenSell.decimals)
+          .div(100),
+        tokenSell.precision,
+        tokenSell.precision,
+        tokenSell.precision,
+        false
+      )
     : undefined;
   dalyEarn =
     dalyEarn && dalyEarn !== "0"
