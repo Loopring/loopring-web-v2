@@ -32,6 +32,8 @@ import { getTokenPrices } from "../tokenPrices/reducer";
 import { getDefiMap } from "../invest/DefiMap/reducer";
 import { getInvestTokenTypeMap } from "../invest/InvestTokenTypeMap/reducer";
 import { getDualMap } from "../invest/DualMap/reducer";
+import { getStakingMap } from "../invest/StakingMap/reducer";
+
 import * as sdk from "@loopring-web/loopring-sdk";
 import { getRedPacketConfigs } from "../redPacket/reducer";
 
@@ -240,10 +242,12 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   store.dispatch(getNotify(undefined));
   store.dispatch(getDefiMap(undefined));
   store.dispatch(getDualMap(undefined));
+  store.dispatch(getStakingMap(undefined));
 
   yield all([
     take("defiMap/getDefiMapStatus"),
     take("dualMap/getDualMapStatus"),
+    take("stakingMap/getStakingMapStatus"),
   ]);
   store.dispatch(getInvestTokenTypeMap(undefined));
   yield delay(5);

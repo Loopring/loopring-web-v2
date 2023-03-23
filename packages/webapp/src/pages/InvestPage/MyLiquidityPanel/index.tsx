@@ -33,6 +33,7 @@ import {
   EmptyValueTag,
   FailedIcon,
   getValuePrecisionThousand,
+  myLog,
   PriceTag,
   RowInvestConfig,
   STAKING_INVEST_LIMIT,
@@ -142,6 +143,7 @@ const MyLiquidity: any = withTranslation("common")(
       hideSmallBalances,
       // dualList,
     });
+    myLog("summaryMyInvest", summaryMyInvest, forexMap[currency]);
 
     React.useEffect(() => {
       if (match?.params?.type) {

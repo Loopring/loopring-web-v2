@@ -261,6 +261,7 @@ export const useContactAdd = () => {
   const {
     account: { accountId, apiKey },
   } = useAccount();
+  
   const submitAddingContact = React.useCallback((address: string, name: string) => {
     setAddLoading(true)
     LoopringAPI.contactAPI!.createContact({
@@ -270,7 +271,13 @@ export const useContactAdd = () => {
       contactName: name,
     }, apiKey)
     .then(x => {
+      debugger
       setToastStatus("Succuss")
+      // todo 隐藏弹窗
+    })
+    .catch(x => {
+      debugger
+      setToastStatus("Error")
       // todo 隐藏弹窗
     })
     .finally(() => {

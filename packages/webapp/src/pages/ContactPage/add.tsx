@@ -35,6 +35,8 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
     <div>
       <Dialog  maxWidth={"lg"} open={addOpen} onClose={() => {
         setAddOpen(false)
+        setAddAddress('')
+        setAddName('')
       }}>
         <DialogTitle>
           <Typography variant={"h3"} textAlign={"center"}>
@@ -50,6 +52,8 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
             color={"inherit"}
             onClick={() => {
               setAddOpen(false)
+              setAddAddress('')
+              setAddName('')
             }}
           >
             <CloseIcon />

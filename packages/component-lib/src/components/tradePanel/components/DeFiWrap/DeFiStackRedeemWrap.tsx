@@ -206,24 +206,6 @@ export const DeFiStackRedeemWrap = <
     deFiSideRedeemCalcData.stackViewInfo,
     deFiSideRedeemCalcData.coinSell.tradeValue,
   ]);
-  // const daysDuration = Math.ceil(
-  //   Number(deFiSideRedeemCalcData?.stackViewInfo?.rewardPeriod ?? 0) / 86400000
-  // );
-  // let dalyEarn = deFiSideRedeemCalcData?.stackViewInfo?.dalyEarn
-  //   ? getValuePrecisionThousand(
-  //       sdk
-  //         .toBig(deFiSideRedeemCalcData.stackViewInfo.dalyEarn)
-  //         .div("1e" + tokenSell.decimals),
-  //       tokenSell.precision,
-  //       tokenSell.precision,
-  //       tokenSell.precision,
-  //       false
-  //     )
-  //   : undefined;
-  // dalyEarn =
-  //   dalyEarn && dalyEarn !== "0"
-  //     ? dalyEarn + " " + tokenSell.symbol
-  //     : EmptyValueTag;
   myLog(
     "deFiSideRedeemCalcData.stackViewInfo",
     deFiSideRedeemCalcData.stackViewInfo,

@@ -12,6 +12,7 @@ import {
   globalSetup,
   IBData,
   myLog,
+  SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   TradeBtnStatus,
   TradeStack,
@@ -20,6 +21,7 @@ import {
 import {
   calcSideStaking,
   makeWalletLayer2,
+  useStakingMap,
   useSubmitBtn,
   useWalletLayer2Socket,
 } from "@loopring-web/core";
@@ -55,10 +57,15 @@ export const useStakeTradeJOIN = <
 }) => {
   const { t } = useTranslation(["common"]);
   const refreshRef = React.createRef();
-
   const [isLoading, setIsLoading] = React.useState(false);
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
+  const {
+    status: stakingMapStatus,
+    marketMap: stakingMap,
+    getStakingMap,
+  } = useStakingMap();
+
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { tradeStack, updateTradeStack, resetTradeStack } = useTradeStack();
   const { exchangeInfo, allowTrade } = useSystem();
@@ -128,69 +135,52 @@ export const useStakeTradeJOIN = <
         },
       };
       try {
-        if (LoopringAPI.defiAPI) {
-          const [response] = await Promise.all([
-            LoopringAPI.defiAPI.getStakeProducts(),
-          ]);
+        // if (LoopringAPI.defiAPI) {
+        // const [response] = await Promise.all([
+        //   LoopringAPI.defiAPI.getStakeProducts(),
+        // ]);
 
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            throw response;
-          } else {
-            if ((response as any)?.products?.markets?.length) {
-              let item = (response as any)?.products?.markets.find(
-                (ele: sdk.STACKING_PRODUCT) =>
-                  ele.symbol?.toLowerCase() === coinSellSymbol?.toLowerCase()
-              );
-              if (item) {
-                deFiSideCalcDataInit.stackViewInfo = { ...item };
-              } else {
-                throw new Error("no product");
-              }
-            } else {
-              throw new Error("no product");
-            }
-          }
-
-          if (account.readyState === AccountStatus.ACTIVATED) {
-            if (clearTrade === true) {
-              walletLayer2Service.sendUserUpdate();
-            }
-            walletMap = makeWalletLayer2(true).walletMap ?? {};
-
-            deFiSideCalcDataInit.coinSell.balance =
-              walletMap[coinSellSymbol]?.count;
-          }
-
-          if (
-            clearTrade ||
-            tradeStack.deFiSideCalcData?.coinSell?.tradeValue === undefined
-          ) {
-            deFiSideCalcDataInit.coinSell.tradeValue = undefined;
-            updateTradeStack({
-              sellVol: "0",
-              sellToken: tokenMap[coinSellSymbol],
-              deFiSideCalcData: {
-                ...deFiSideCalcDataInit,
-                coinSell: {
-                  ...deFiSideCalcDataInit.coinSell,
-                  tradeValue: undefined,
-                },
-              } as DeFiSideCalcData<T>,
-            });
-            myLog("resetDefault defi clearTrade", deFiSideCalcDataInit);
-          } else {
-            const tradeData = {
-              ...deFiSideCalcDataInit.coinSell,
-              tradeValue:
-                tradeStack.deFiSideCalcData?.coinSell?.tradeValue ?? undefined,
-            };
-            handleOnchange({ tradeData });
-          }
+        let item = stakingMap[coinSellSymbol];
+        if (item && stakingMap) {
+          deFiSideCalcDataInit.stackViewInfo = { ...item };
         } else {
-          throw new Error("api not ready");
+          throw new Error("no product");
+        }
+
+        if (account.readyState === AccountStatus.ACTIVATED) {
+          if (clearTrade === true) {
+            walletLayer2Service.sendUserUpdate();
+          }
+          walletMap = makeWalletLayer2(true).walletMap ?? {};
+
+          deFiSideCalcDataInit.coinSell.balance =
+            walletMap[coinSellSymbol]?.count;
+        }
+
+        if (
+          clearTrade ||
+          tradeStack.deFiSideCalcData?.coinSell?.tradeValue === undefined
+        ) {
+          deFiSideCalcDataInit.coinSell.tradeValue = undefined;
+          updateTradeStack({
+            sellVol: "0",
+            sellToken: tokenMap[coinSellSymbol],
+            deFiSideCalcData: {
+              ...deFiSideCalcDataInit,
+              coinSell: {
+                ...deFiSideCalcDataInit.coinSell,
+                tradeValue: undefined,
+              },
+            } as DeFiSideCalcData<T>,
+          });
+          myLog("resetDefault defi clearTrade", deFiSideCalcDataInit);
+        } else {
+          const tradeData = {
+            ...deFiSideCalcDataInit.coinSell,
+            tradeValue:
+              tradeStack.deFiSideCalcData?.coinSell?.tradeValue ?? undefined,
+          };
+          handleOnchange({ tradeData });
         }
       } catch (error) {
         setToastOpen({
@@ -439,21 +429,38 @@ export const useStakeTradeJOIN = <
     isLoading,
     submitCallback: onSubmitBtnClick,
   });
-  // React.useEffect(() => {
-  //   availableTradeCheck();
-  // }, [
-  //   tradeStack.miniSellVol,
-  //   tradeStack.sellVol,
-  //   tradeStack.sellToken,
-  //
-  // ]);
   React.useEffect(() => {
-    resetDefault(true);
+    getStakingMap();
+    walletLayer2Service.sendUserUpdate();
+  }, []);
+  React.useEffect(() => {
+    const {
+      _router_tradeStack: { tradeStack },
+      invest: {
+        stakingMap: { marketMap: stakingMap },
+      },
+    } = store.getState();
+
+    if (
+      stakingMapStatus === SagaStatus.UNSET &&
+      stakingMap &&
+      stakingMap[coinSellSymbol]?.symbol == coinSellSymbol &&
+      !(tradeStack?.deFiSideCalcData?.coinSell?.belong == coinSellSymbol)
+    ) {
+      resetDefault(true);
+    } else if (
+      stakingMapStatus === SagaStatus.UNSET &&
+      !stakingMap[coinSellSymbol]
+    ) {
+      // setToastOpen({
+      //
+      // })
+    }
     return () => {
       resetTradeStack();
       handleOnchange.cancel();
     };
-  }, [coinSellSymbol]);
+  }, [stakingMapStatus]);
   myLog("isLoading", isLoading);
   const stackWrapProps = React.useMemo(() => {
     return {

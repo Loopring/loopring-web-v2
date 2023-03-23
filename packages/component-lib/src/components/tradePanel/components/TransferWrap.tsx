@@ -458,7 +458,6 @@ export const TransferWrap = <
       </Grid>
 
       <Grid item alignSelf={"stretch"} position={"relative"}>
-        1
         <TransferAddressType
           detectedWalletType={detectedWalletType}
           selectedValue={sureItsLayer2}
