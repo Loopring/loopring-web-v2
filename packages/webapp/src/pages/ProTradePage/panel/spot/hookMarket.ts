@@ -244,7 +244,7 @@ export const useMarket = <C extends { [key: string]: any }>({
 
       const { close } = tickerMap[market];
 
-      if (!stob) {
+      if (!stob || sdk.toBig(stob?.replace(sdk.SEP, "") ?? 0).eq(0)) {
         if (close) {
           // @ts-ignore
           // const [, _coinA] = market.match(/(\w+)-(\w+)/i);
