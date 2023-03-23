@@ -2,7 +2,6 @@ import {
   AccountStatus,
   CustomErrorWithCode,
   DeFiSideRedeemCalcData,
-  EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
   IBData,
@@ -260,11 +259,12 @@ export const useStakeTradeExit = <
           );
           history.replace({ search: searchParams.toString() });
           setShowSideStakingRedeem({ isShow: false });
-          const remainAmount =
-            Number(redeemStack?.deFiSideRedeemCalcData?.coinSell?.balance) -
-            Number(
+          const remainAmount = sdk
+            .toBig(redeemStack?.deFiSideRedeemCalcData?.coinSell?.balance)
+            .minus(
               redeemStack?.deFiSideRedeemCalcData?.coinSell?.tradeValue ?? 0
-            );
+            )
+            .toString();
           setShowAccount({
             isShow: true,
             step: AccountStep.Staking_Redeem_Success,
@@ -273,7 +273,7 @@ export const useStakeTradeExit = <
                 redeemStack?.deFiSideRedeemCalcData?.stackViewInfo?.productId,
               symbol: redeemStack.sellToken.symbol,
               amount: redeemStack?.deFiSideRedeemCalcData?.coinSell?.tradeValue,
-              remainAmount: remainAmount ? remainAmount : EmptyValueTag,
+              remainAmount,
             },
           });
           await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
