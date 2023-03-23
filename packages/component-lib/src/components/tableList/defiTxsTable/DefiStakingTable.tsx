@@ -120,7 +120,7 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
         "days",
         false
       );
-      if (requiredHoldDay < holdDay) {
+      if (requiredHoldDay > holdDay) {
         setOpenAlert(true);
       } else {
         setOpenDetail(false);
