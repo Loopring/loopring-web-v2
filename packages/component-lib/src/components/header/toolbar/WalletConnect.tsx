@@ -253,6 +253,7 @@ export const WalletConnectUI = ({
   handleClick,
 }: WalletConnectBtnProps) => {
   const { t } = useTranslation(["layout", "common"]);
+  const { isMobile } = useSettings();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
   const [networkLabel, setNetworkLabel] =
     React.useState<string | undefined>(undefined);
