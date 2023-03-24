@@ -704,6 +704,7 @@ export const useCreateRedPacket = <
             numbers: redPacketOrder.numbers,
             memo: redPacketOrder.memo ?? "",
             signerFlag: false as any,
+            // @ts-ignore
             nftData:
               redPacketOrder.tradeType === TRADE_TYPE.NFT
                 ? redPacketOrder.nftData
