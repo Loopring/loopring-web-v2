@@ -2,7 +2,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { EmptyIcon } from "@loopring-web/common-resources";
 import { Box, BoxProps, Typography } from "@mui/material";
-import React from "react";
 
 export type EmptyProps = {
   height?: number | string;
@@ -68,13 +67,12 @@ export const ComingSoonPanel = withTranslation(["common", "layout"])(
   ({ t }: WithTranslation) => {
     return (
       <Box
-        spacing={2}
         flex={1}
         alignItems={"center"}
         justifyContent={"center"}
         textAlign={"center"}
-        // className={"MuiPaper-elevation2"}
         marginBottom={2}
+        display={"flex"}
       >
         <Typography component={"h6"} variant={"h1"} padding={3}>
           {t("labelComingSoon")}

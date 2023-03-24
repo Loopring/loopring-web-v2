@@ -5,6 +5,7 @@ import {
   AccountStatus,
   ChainIdExtends,
   CircleIcon,
+  gatewayList,
   getShortAddr,
   LoadingIcon,
   LockIcon,
@@ -12,14 +13,13 @@ import {
   SagaStatus,
   UnConnectIcon,
 } from "@loopring-web/common-resources";
-import { Typography } from "@mui/material";
-import { Button } from "../../basic-lib";
+import { Typography, Box } from "@mui/material";
+import { Button, ButtonProps } from "../../basic-lib";
 import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-// type ChainId = sdk.ChainId | ChainIdExtends;
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
@@ -54,6 +54,27 @@ const WalletConnectBtnStyled = styled(Button)`
     color: var(--color-text-primary);
   }
 `;
+const ProviderBox = styled<ButtonProps & { account: any }>(Box)`
+  display: none;
+  background-image: none;
+  height: 100%;
+  width: 48px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  ${({ account }) => {
+    if (account && account.connectName) {
+      const item = gatewayList.find(({ key }) => key === account.connectName);
+      // connectName: keyof typeof ConnectProviders;
+      return item?.imgSrc
+        ? `
+         display: flex;
+         background-image:url(${item.imgSrc});
+        `
+        : "";
+    }
+  }};
+` as (props: ButtonProps & { account: any }) => JSX.Element;
 const TestNetworkStyle = styled(Typography)`
   // display: inline-flex;
   position: relative;
@@ -179,13 +200,14 @@ export const WalletConnectBtn = ({
           paddingX={1}
           component={"span"}
           color={"var(--vip-text)"}
-          marginRight={1}
+          marginRight={1 / 2}
         >
           {networkLabel}
         </TestNetworkStyle>
       ) : (
         <></>
       )}
+      <ProviderBox account={accountState?.account} />
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(
@@ -305,13 +327,14 @@ export const WalletConnectUI = ({
           paddingX={1}
           component={"span"}
           color={"var(--vip-text)"}
-          marginRight={1}
+          marginRight={1 / 2}
         >
           {networkLabel}
         </TestNetworkStyle>
       ) : (
         <></>
       )}
+      <ProviderBox account={accountState?.account} />
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(
@@ -466,13 +489,14 @@ export const WalletConnectL1Btn = ({
           paddingX={1}
           component={"span"}
           color={"var(--vip-text)"}
-          marginRight={1}
+          marginRight={1 / 2}
         >
           {networkLabel}
         </TestNetworkStyle>
       ) : (
         <></>
       )}
+      <ProviderBox account={accountState?.account} />
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(
