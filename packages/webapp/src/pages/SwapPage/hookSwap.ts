@@ -160,6 +160,7 @@ export const useSwap = <
         ...state,
         sell: { ...state?.sell, tradeValue: 0 },
         buy: { ...state?.buy, tradeValue: 0 },
+        isChecked: undefined,
       } as T;
     });
     setTradeCalcData((state) => {

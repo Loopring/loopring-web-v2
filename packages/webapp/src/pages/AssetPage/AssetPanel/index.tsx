@@ -15,7 +15,7 @@ import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
 import { RedPacketClaimPanel } from "../../RedPacketPage/RedPacketClaimPanel";
-import { TradeBtnStatus, UploadedIcon } from "@loopring-web/common-resources";
+import { TradeBtnStatus } from "@loopring-web/common-resources";
 
 enum TabIndex {
   Tokens = "Tokens",
@@ -108,9 +108,9 @@ export const AssetPanel = withTranslation("common")(
         >
           <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
           <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
-          {!isMobile && (
-            <Tab label={t("labelAssetRedPackets")} value={TabIndex.RedPacket} />
-          )}
+          {/*{!isMobile && (*/}
+          {/*  <Tab label={t("labelAssetRedPackets")} value={TabIndex.RedPacket} />*/}
+          {/*)}*/}
         </Tabs>
         {currentTab === TabIndex.Tokens && (
           <StylePaper
