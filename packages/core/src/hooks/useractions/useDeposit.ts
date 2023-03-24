@@ -155,7 +155,7 @@ export const useDeposit = <
         ) ?? -1;
       if (
         isAllowInputToAddress ||
-        (isNewAccount && (index !== -1 || /dev/gi.test(baseURL))) ||
+        (isNewAccount && (index !== -1 || /dev|uat/gi.test(baseURL))) ||
         !isNewAccount
       ) {
         enableBtn();
