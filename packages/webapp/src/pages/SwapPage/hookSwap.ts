@@ -168,6 +168,10 @@ export const useSwap = <
         minimumReceived: undefined,
         priceImpact: undefined,
         fee: undefined,
+        isNotMatchMarketPrice: undefined,
+        marketPrice: undefined,
+        marketRatePrice: undefined,
+        isChecked: undefined,
       };
     });
     updatePageTradeLite({
