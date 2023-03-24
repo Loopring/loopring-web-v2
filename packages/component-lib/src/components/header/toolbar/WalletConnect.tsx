@@ -54,7 +54,7 @@ const WalletConnectBtnStyled = styled(Button)`
     color: var(--color-text-primary);
   }
 `;
-const ProviderBox = styled<ButtonProps & { account: any }>(Box)`
+const ProviderBox = styled(Box)<ButtonProps & { account?: any }>`
   display: none;
   background-image: none;
   height: 100%;
@@ -207,7 +207,7 @@ export const WalletConnectBtn = ({
       ) : (
         <></>
       )}
-      <ProviderBox account={accountState?.account} />
+      {!isMobile && <ProviderBox account={accountState?.account} />}
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(
@@ -334,7 +334,7 @@ export const WalletConnectUI = ({
       ) : (
         <></>
       )}
-      <ProviderBox account={accountState?.account} />
+      {!isMobile && <ProviderBox account={accountState?.account} />}
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(
@@ -496,7 +496,7 @@ export const WalletConnectL1Btn = ({
       ) : (
         <></>
       )}
-      <ProviderBox account={accountState?.account} />
+      {!isMobile && <ProviderBox account={accountState?.account} />}
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(
