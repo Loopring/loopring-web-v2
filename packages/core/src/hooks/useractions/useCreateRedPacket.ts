@@ -790,6 +790,7 @@ export const useCreateRedPacket = <
             giftNumbers: redPacketOrder.giftNumbers!,
             memo: redPacketOrder.memo ? redPacketOrder.memo : "Best wishes",
             signerFlag: false as any,
+            // @ts-ignore
             nftData:
               redPacketOrder.tradeType === TRADE_TYPE.NFT
                 ? redPacketOrder.nftData
