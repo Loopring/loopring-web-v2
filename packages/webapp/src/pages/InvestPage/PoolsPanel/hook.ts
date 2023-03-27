@@ -2,8 +2,6 @@ import React from "react";
 import _ from "lodash";
 import {
   AmmDetail,
-  CustomError,
-  ErrorMap,
   RowInvestConfig,
   SagaStatus,
   TradeFloat,

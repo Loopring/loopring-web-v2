@@ -76,7 +76,6 @@ export const useStakeTradeExit = <
   }) => void;
 }) => {
   const { t } = useTranslation();
-
   const { setShowSupport, setShowTradeIsFrozen, setShowSideStakingRedeem } =
     useOpenModals();
   const history = useHistory();

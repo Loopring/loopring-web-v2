@@ -23,7 +23,6 @@ import {
 } from "@loopring-web/core";
 import { BackIcon, RowInvestConfig } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
-import { useTheme } from "@emotion/react";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
