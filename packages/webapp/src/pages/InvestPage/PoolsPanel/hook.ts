@@ -1,118 +1,232 @@
 import React from "react";
-import { SagaStatus } from "@loopring-web/common-resources";
-
-import { store, useAmmMap, useSystem } from "@loopring-web/core";
-
-import { useLocation } from "react-router-dom";
-import {
-  AccountStep,
-  AmmPanelType,
-  PoolRow,
-  useOpenModals,
-} from "@loopring-web/component-lib";
-import { useTranslation } from "react-i18next";
 import _ from "lodash";
+import {
+  AmmDetail,
+  RowInvestConfig,
+  SagaStatus,
+  TradeFloat,
+} from "@loopring-web/common-resources";
 
-// type Row<R> = AmmDetail<R> & { tradeFloat: TradeFloat };
+import {
+  makeTickView,
+  useAmmMap,
+  useSocket,
+  useTicker,
+  useTokenMap,
+  useTokenPrices,
+} from "@loopring-web/core";
+
+import { WsTopicType } from "@loopring-web/loopring-sdk";
+import { useHistory, useLocation } from "react-router-dom";
+
+// import { tickerService } from 'services/tickerService';
+type Row<R> = AmmDetail<R> & { tradeFloat: TradeFloat };
 
 export function useAmmMapUI<
-  R extends PoolRow<any>,
+  R extends { [key: string]: any },
   I extends { [key: string]: any }
 >() {
   const location = useLocation();
-  const { t } = useTranslation();
-  const {
-    setShowAmm,
-    setShowTradeIsFrozen,
-    setShowAccount,
-    // modals: { isShowAmm, isShowTradeIsFrozen },
-  } = useOpenModals();
+  const history = useHistory();
   const searchParams = new URLSearchParams(location.search);
-  const [showLoading, setShowLoading] = React.useState(true);
-  const [filteredData, setFilteredData] = React.useState<R[]>([]);
-  // const { status: tokenMapStatus } = useTokenMap();
-  const { status: ammStatus } = useAmmMap();
-  const { allowTrade } = useSystem();
+  const search = searchParams.get("search");
+
+  const [rawData, setRawData] = React.useState<Array<Row<R>> | []>([]);
+  const [filteredData, setFilteredData] = React.useState<Array<Row<R>> | []>(
+    []
+  );
+
+  const { coinMap, marketArray, status: tokenMapStatus } = useTokenMap();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-  const nodePopTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+  const [filterValue, setFilterValue] = React.useState("");
+  const [tableHeight, setTableHeight] = React.useState(0);
+  const { ammMap, status: ammStatus } = useAmmMap();
+  const { tokenPrices } = useTokenPrices();
+  const { tickerMap, status: tickerStatus } = useTicker();
+  const { sendSocketTopic, socketEnd } = useSocket();
 
-  const getFilteredData = (_value?: string) => {
-    const value = _value ? _value : searchParams.get("search");
-    if (nodeTimer.current !== -1) {
-      clearTimeout(nodeTimer.current as NodeJS.Timeout);
-    }
-    setShowLoading(false);
-    const { ammArrayEnable } = store.getState().amm.ammMap;
-    let rawData = _.cloneDeep(ammArrayEnable) as unknown as R[];
-    if (value && value.trim() !== "") {
-      rawData = ammArrayEnable.reduce((prev, ammInfo) => {
-        if (
-          value &&
-          ([ammInfo.coinA].includes(value.toUpperCase()) ||
-            [ammInfo.coinB].includes(value.toUpperCase()))
-        ) {
-          prev.push({
-            ...ammInfo,
-          } as unknown as R);
-        }
-        return prev;
-      }, [] as R[]);
-    }
-
-    setFilteredData(rawData);
-
-    nodeTimer.current = setTimeout(() => {
-      getFilteredData();
-    }, 60000);
-  };
-
-  const handleWithdraw = React.useCallback((row: R) => {
-    setShowAccount({ isShow: true, step: AccountStep.AMM_Pending });
-    if (nodePopTimer.current !== -1) {
-      clearTimeout(nodePopTimer.current as NodeJS.Timeout);
-    }
-    nodePopTimer.current = _.delay(() => {
-      setShowAmm({
-        isShow: true,
-        type: AmmPanelType.Exit,
-        symbol: row.market,
-      });
-    }, 10) as any;
-  }, []);
-  const handleDeposit = React.useCallback((row: R) => {
-    if (allowTrade.joinAmm) {
-      setShowAccount({ isShow: true, step: AccountStep.AMM_Pending });
-
-      nodePopTimer.current = _.delay(() => {
-        setShowAmm({
-          isShow: true,
-          type: AmmPanelType.Join,
-          symbol: row.market,
-        });
-      }, 10) as any;
-    } else {
-      setShowTradeIsFrozen({
-        isShow: true,
-        type: t("labelAmmJoin") + ` ${row?.market}`,
-      });
-    }
-  }, []);
   React.useEffect(() => {
-    if (ammStatus === SagaStatus.UNSET) {
-      getFilteredData();
+    socketSendTicker();
+    return () => {
+      socketEnd();
+    };
+  }, []);
+  const socketSendTicker = React.useCallback(() => {
+    sendSocketTopic({ [WsTopicType.ticker]: marketArray });
+  }, [marketArray, sendSocketTopic]);
+
+  const resetTableData = React.useCallback(
+    (tableData) => {
+      if (tokenPrices) {
+        setFilteredData(tableData);
+        setTableHeight(
+          RowInvestConfig.rowHeaderHeight +
+            tableData.length * RowInvestConfig.rowHeight
+        );
+      }
+    },
+    [setFilteredData, setTableHeight, tokenPrices]
+  );
+  const updateRawData = React.useCallback(() => {
+    try {
+      const _ammMap: any = _.cloneDeep(ammMap);
+      if (_ammMap && tickerMap) {
+        for (let tickerMapKey in tickerMap) {
+          if (_ammMap["AMM-" + tickerMapKey]) {
+            _ammMap["AMM-" + tickerMapKey].tradeFloat = {
+              ..._ammMap["AMM-" + tickerMapKey].tradeFloat,
+              ...tickerMap[tickerMapKey],
+              // APR: _ammMap['AMM-' + tickerMapKey ].APR
+            };
+          }
+        }
+        const rawData = Object.keys(_ammMap).reduce((prev, ammKey: string) => {
+          const [_, coinA, coinB] = ammKey.split("-");
+          const realMarket = `${coinA}-${coinB}`;
+          const _tickerMap = tickerMap[realMarket]?.__rawTicker__;
+          const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {});
+          if (coinMap) {
+            _ammMap[ammKey].coinAInfo = coinMap[_ammMap[ammKey].coinA];
+            _ammMap[ammKey].coinBInfo = coinMap[_ammMap[ammKey].coinB];
+          }
+          if (!_ammMap[ammKey].showDisable) {
+            prev.push({
+              ..._ammMap[ammKey],
+              tradeFloat: {
+                ..._ammMap[ammKey].tradtradeFloat,
+                volume: tickerFloat?.volume || 0,
+              },
+            });
+          }
+          return prev;
+        }, [] as Array<Row<R>>);
+        setRawData(rawData);
+        getFilteredData(search ?? "", rawData);
+      }
+    } catch (error: any) {
+      // new CustomError({ ...ErrorMap?.NO_TOKEN_MAP, options: error });
     }
+  }, [ammMap, coinMap, resetTableData, tickerMap, search]);
+  const sortMethod = React.useCallback(
+    (_sortedRows, sortColumn) => {
+      let _rawData: Row<R>[] = [];
+      switch (sortColumn) {
+        case "pools":
+          _rawData = filteredData.sort((a, b) => {
+            const valueA = a.coinAInfo.simpleName;
+            const valueB = b.coinAInfo.simpleName;
+            return valueB.localeCompare(valueA);
+          });
+          break;
+        case "liquidity":
+          _rawData = filteredData.sort((a, b) => {
+            const valueA = a.amountDollar;
+            const valueB = b.amountDollar;
+            if (valueA && valueB) {
+              return valueB - valueA;
+            }
+            if (valueA && !valueB) {
+              return -1;
+            }
+            if (!valueA && valueB) {
+              return 1;
+            }
+            return 0;
+          });
+          break;
+        case "volume24":
+          _rawData = filteredData.sort((a, b) => {
+            const priceDollarA = tokenPrices[a.coinAInfo.simpleName] || 0;
+            const priceDollarB = tokenPrices[b.coinAInfo.simpleName] || 0;
+            const valueA = (a.tradeFloat.volume || 0) * priceDollarA;
+            const valueB = (b.tradeFloat.volume || 0) * priceDollarB;
+            if (valueA && valueB) {
+              return valueB - valueA;
+            }
+            if (valueA && !valueB) {
+              return -1;
+            }
+            if (!valueA && valueB) {
+              return 1;
+            }
+            return 0;
+          });
+          break;
+        case "APR":
+          _rawData = filteredData.sort((a, b) => {
+            const valueA = a.APR || 0;
+            const valueB = b.APR || 0;
+            if (valueA && valueB) {
+              return valueB - valueA;
+            }
+            if (valueA && !valueB) {
+              return -1;
+            }
+            if (!valueA && valueB) {
+              return 1;
+            }
+            return 0;
+          });
+          break;
+        default:
+          _rawData = rawData;
+      }
+      // resetTableData(_rawData)
+      return _rawData;
+    },
+    [filteredData, rawData, tokenPrices]
+  );
+
+  React.useEffect(() => {
     return () => {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
-      clearTimeout(nodePopTimer.current as NodeJS.Timeout);
     };
-  }, [ammStatus]);
+  }, [nodeTimer.current]);
+
+  React.useEffect(() => {
+    if (
+      tickerStatus === SagaStatus.UNSET &&
+      ammStatus === SagaStatus.UNSET &&
+      tokenMapStatus === SagaStatus.UNSET
+    ) {
+      updateRawData();
+    }
+  }, [tickerStatus, ammStatus, tokenMapStatus, search]);
+
+  const getFilteredData = React.useCallback(
+    (value: string, rawData: Row<R>[]) => {
+      setFilterValue(value);
+      if (value) {
+        const _rawData = rawData.filter((o) => {
+          const coinA = o.coinAInfo.simpleName?.toLowerCase();
+          const coinB = o.coinBInfo.simpleName?.toLowerCase();
+          const formattedValue = value.toLowerCase();
+          return (
+            [coinA].includes(formattedValue) || [coinB].includes(formattedValue)
+          );
+        });
+        resetTableData(_rawData);
+      } else {
+        resetTableData(rawData);
+      }
+      // return rawData;
+      // setRawData((rawData) => {
+      //
+      // });
+    },
+    [rawData, resetTableData]
+  );
 
   return {
-    rawData: filteredData,
-    filterValue: searchParams.get("search") ?? "",
-    showLoading,
-    getFilteredData,
-    handleWithdraw,
-    handleDeposit,
+    rawData,
+    filterValue,
+    tableHeight,
+    getFilteredData: (value: string) => {
+      searchParams.set("search", value ?? "");
+      history.replace({ search: searchParams.toString() });
+      getFilteredData(value, rawData);
+    },
+    filteredData,
+    sortMethod,
   };
 }

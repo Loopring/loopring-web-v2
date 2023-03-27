@@ -23,6 +23,7 @@ import {
   SwitchPanelStyled,
   useOpenModals,
   useSettings,
+  useToggle,
 } from "@loopring-web/component-lib";
 import {
   CheckBoxIcon,

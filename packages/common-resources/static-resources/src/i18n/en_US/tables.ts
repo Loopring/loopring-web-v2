@@ -285,9 +285,11 @@ export default {
   labelDefiStakingDetail: "Detail",
   labelDefiStakingRedeem: "Redeem",
   labelDays: "day(s)",
-
   labelStakeTransactionTypesubscribe: "subscribe",
   labelStakeTransactionTyperedeem: "redeem",
   labelStakeTransactionTypeclaim: "claim",
+  labelDefiStakingAndPreviousEarn: "Cumulative & Previous Day's Earnings",
+  labelDefiStakingTxRewardsMobileDate: "Date",
+
   // labelRecordAction: "Action",
 };

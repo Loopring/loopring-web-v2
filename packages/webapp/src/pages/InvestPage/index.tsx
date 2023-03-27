@@ -17,10 +17,6 @@ import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
 import { DualListPanel } from "./DualPanel/DualListPanel";
 import { StackTradePanel } from "./StakePanel/StackTradePanel";
-import {
-  defiRETHAdvice,
-  defiWSTETHAdvice,
-} from "@loopring-web/common-resources";
 
 export enum InvestType {
   MyBalance = 0,
@@ -73,11 +69,6 @@ export const OverviewTitle = () => {
 };
 export const AmmTitle = () => {
   const { t } = useTranslation();
-  const { isMobile } = useSettings();
-  const popupState = usePopupState({
-    variant: "popover",
-    popupId: `popupId-deposit`,
-  });
   return (
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
@@ -95,11 +86,7 @@ export const AmmTitle = () => {
 
 export const DefiTitle = () => {
   const { t } = useTranslation();
-  const { isMobile } = useSettings();
-  const popupState = usePopupState({
-    variant: "popover",
-    popupId: `popupId-deposit`,
-  });
+
   return (
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
