@@ -8,6 +8,7 @@ import {
   setHideLpToken,
   setHideSmallBalances,
   setIsMobile,
+  setIsShowTestToggle,
   setIsTaikoTest,
   setLanguage,
   setLayouts,
@@ -46,11 +47,16 @@ export function useSettings(): SettingsState & {
   setIsMobile(value: boolean): void;
   setSwapSecondConfirmation(value: boolean): void;
   setIsTaikoTest(value: boolean): void;
+  setIsShowTestToggle(value: boolean): void;
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings);
   const dispatch = useDispatch();
   return {
     ...settings,
+    setIsShowTestToggle: React.useCallback(
+      (value: boolean) => dispatch(setIsShowTestToggle(value)),
+      [dispatch]
+    ),
     setIsTaikoTest: React.useCallback(
       (value: boolean) => dispatch(setIsTaikoTest(value)),
       [dispatch]

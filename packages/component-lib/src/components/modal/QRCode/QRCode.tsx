@@ -1,11 +1,11 @@
 import { WithTranslation, withTranslation } from "react-i18next";
+import QRCode, { BaseQRCodeProps } from "qrcode.react";
 import styled from "@emotion/styled";
 import { Box, Modal, Typography } from "@mui/material";
-import { ModalQRCodeProps, QRCodePanelProps } from "./Interface";
+import { ModalQRCodeProps, QRCodeProps } from "./Interface";
 import { ModalCloseButton } from "../../basic-lib";
-import QRCodeStyling from "qr-code-styling";
-import { SoursURL } from "@loopring-web/common-resources";
-import React from "react";
+import { SoursURL } from "@loopring-web/loopring-sdk";
+import { myLog } from "@loopring-web/common-resources";
 
 const ModalContentStyled = styled(Box)`
   & > div {
@@ -22,81 +22,24 @@ const ModalContentStyled = styled(Box)`
   }
 `;
 
-export type QCodeProps = {
-  url: string;
-  size?: number;
-  fgColor1?: string;
-  fgColor2?: string;
-  bgColor?: string;
-  imageInfo?: { imageSrc?: string; size?: number };
-};
-export const QRCode = ({
-  size = 160,
-  fgColor1 = "var(--color-primary)",
-  fgColor2 = "#000",
-  bgColor = "#fff",
-  url = "https://exchange.loopring.io/",
-  imageInfo = {
-    imageSrc: `${SoursURL + "svg/loopring.svg"}`,
-    size: 40,
-  },
-}: QCodeProps & QRCodePanelProps) => {
-  const qrCode = new QRCodeStyling({
-    type: "svg",
-    data: url,
-    width: size,
-    height: size,
-    image: imageInfo.imageSrc,
-    dotsOptions: {
-      gradient: {
-        rotation: 45,
-        type: 'linear',
-        colorStops: [{
-          offset: 0,
-          color: fgColor1,
-        },
-        {
-          offset: 1,
-          color: fgColor2
-        }
-      ]
-      },
-      type: "dots",
-    },
-    backgroundOptions: {
-      color: bgColor,
-    },
-    imageOptions: {
-      crossOrigin: "anonymous",
-      margin: 8,
-    },
-    cornersSquareOptions: {
-      type: 'extra-rounded'
-    },
-    cornersDotOptions: {
-      type: 'square'
-    }
-  });
-  const ref = React.useRef();
-  React.useEffect(() => {
-    qrCode.append(ref.current);
-  }, []);
-  return <Box ref={ref} />;
-};
 export const QRCodePanel = ({
+  size = 160,
   title,
   description,
-  ...rest
-}: // imageSettings = {
-//   height: 80,
-//   width: 80,
-//   src: `${SoursURL + "svg/loopring.svg"}`,
-// },
-// handleClick
-QCodeProps & QRCodePanelProps) => {
-  if (rest.url === undefined) {
-    rest.url = "";
+  fgColor = "#4169FF",
+  bgColor = "#fff",
+  url = "https://exchange.loopring.io/",
+  imageSettings = {
+    height: 8,
+    width: 8,
+    src: `${SoursURL + "svg/loopring.svg"}`,
+  },
+}: // handleClick
+QRCodeProps & Partial<BaseQRCodeProps>) => {
+  if (url === undefined) {
+    url = "";
   }
+  myLog("QRCodePanel", imageSettings);
   return (
     <Box
       display={"flex"}
@@ -114,7 +57,15 @@ QCodeProps & QRCodePanelProps) => {
           {title}
         </Typography>
       )}
-      <QRCode {...rest} />
+      <QRCode
+        value={url}
+        size={size}
+        fgColor={fgColor}
+        bgColor={bgColor}
+        style={{ padding: 8, background: bgColor }}
+        aria-label={`link:${url}`}
+        imageSettings={imageSettings}
+      />
       {description && (
         <Typography variant={"body1"} marginBottom={3} marginTop={1}>
           {description}
@@ -130,7 +81,10 @@ export const ModalQRCode = withTranslation("common")(
     open,
     t,
     ...rest
-  }: QCodeProps & ModalQRCodeProps & WithTranslation) => {
+  }: ModalQRCodeProps &
+    QRCodeProps &
+    Partial<BaseQRCodeProps> &
+    WithTranslation) => {
     return (
       <Modal
         open={open}
@@ -142,7 +96,7 @@ export const ModalQRCode = withTranslation("common")(
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
-          className={rest?.className}
+          className={rest.className}
         >
           <Box
             className={"content"}
