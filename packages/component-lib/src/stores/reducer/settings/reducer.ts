@@ -13,7 +13,6 @@ import moment from "moment";
 import { Slice } from "@reduxjs/toolkit/src/createSlice";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Layouts } from "react-grid-layout";
-import { action } from "@storybook/addon-actions";
 
 const initialState: SettingsState = {
   themeMode: ThemeType.dark, //localStore.getItem('ThemeType')?localStore.getItem('ThemeType') as ThemeKeys :ThemeType.dark,
@@ -32,6 +31,7 @@ const initialState: SettingsState = {
   proLayout: layoutConfigs[0].layouts,
   swapSecondConfirmation: true,
   isTaikoTest: false,
+  isShowTestToggle: false,
 };
 
 export const settingsSlice: Slice<SettingsState> = createSlice({
@@ -40,6 +40,9 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
   reducers: {
     setIsTaikoTest(state, action: PayloadAction<boolean>) {
       state.isTaikoTest = action.payload;
+    },
+    setIsShowTestToggle(state, action: PayloadAction<boolean>) {
+      state.isShowTestToggle = action.payload;
     },
     setTheme(state, action: PayloadAction<ThemeKeys>) {
       // localStore.setItem('ThemeType',action.payload)
@@ -190,5 +193,6 @@ export const {
   setHideSmallBalances,
   setIsMobile,
   setSwapSecondConfirmation,
+  setIsShowTestToggle,
 } = settingsSlice.actions;
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

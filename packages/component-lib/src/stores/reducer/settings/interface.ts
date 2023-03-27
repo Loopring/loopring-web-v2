@@ -43,4 +43,5 @@ export interface SettingsState {
   feeChargeOrder: string[];
   swapSecondConfirmation: boolean | undefined;
   isTaikoTest?: boolean | undefined;
+  isShowTestToggle?: boolean | undefined;
 }

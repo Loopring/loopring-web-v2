@@ -458,6 +458,7 @@ export const WalletConnectL1Btn = ({
         setNetworkLabel(isMobile ? "G ö" : "Görli");
       } else if (
         account &&
+        account.readyState !== AccountStatus.ERROR_NETWORK &&
         (account._chainId as any) == ChainIdExtends.TAIKO_A2
       ) {
         setNetworkLabel(isMobile ? "Taiko" : "Taiko");
