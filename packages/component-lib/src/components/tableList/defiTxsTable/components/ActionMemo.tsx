@@ -42,7 +42,6 @@ const ActionPopContent = React.memo(
           {t("labelDefiStakingRedeem", { ns: "tables" })}
         </ListItemText>
       </MenuItem>,
-      ,
     ];
 
     return (
