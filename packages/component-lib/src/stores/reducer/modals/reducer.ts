@@ -1,12 +1,18 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import {
+  Contact,
+  ModalState,
+  ModalStatePlayLoad,
+  Transaction,
+} from "./interface";
+import {
+  CLAIM_TYPE,
   ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
 } from "@loopring-web/common-resources";
-import { RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { AddressType, RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { AmmPanelType } from "../../../components";
 
 const initialState: ModalState = {
@@ -37,7 +43,12 @@ const initialState: ModalState = {
   isShowCollectionAdvance: { isShow: false },
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
-  isShowClaimWithdraw: { isShow: false, claimToken: undefined },
+  isShowClaimWithdraw: {
+    isShow: false,
+    claimToken: undefined,
+    claimType: undefined,
+  },
+  isShowSideStakingRedeem: { isShow: false, symbol: undefined },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -216,24 +227,30 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowTransfer(
       state,
-      action: PayloadAction<ModalStatePlayLoad & Transaction>
+      action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
     ) {
-      const { isShow, symbol, info } = action.payload;
+      const { isShow, symbol, info, name, address } = action.payload;
       state.isShowTransfer = {
         isShow,
         symbol,
         info,
+        name,
+        address,
+        addressType: AddressType.EOA,
       };
     },
     setShowWithdraw(
       state,
-      action: PayloadAction<ModalStatePlayLoad & Transaction>
+      action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
     ) {
-      const { isShow, symbol, info } = action.payload;
+      const { isShow, symbol, info, name, address } = action.payload;
       state.isShowWithdraw = {
         isShow,
         symbol,
         info,
+        name,
+        address,
+        addressType: AddressType.EOA,
       };
     },
     setShowDeposit(
@@ -339,12 +356,25 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowClaimWithdraw(
       state,
-      action: PayloadAction<ModalStatePlayLoad & { claimToken: ClaimToken }>
+      action: PayloadAction<
+        ModalStatePlayLoad & { claimToken: ClaimToken; claimType: CLAIM_TYPE }
+      >
     ) {
-      const { isShow, claimToken } = action.payload;
+      const { isShow, claimToken, claimType } = action.payload;
       state.isShowClaimWithdraw = {
         isShow,
         claimToken,
+        claimType,
+      };
+    },
+    setShowSideStakingRedeem(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & { symbol?: string }>
+    ) {
+      const { isShow, symbol } = action.payload;
+      state.isShowSideStakingRedeem = {
+        isShow,
+        symbol,
       };
     },
   },
@@ -378,4 +408,5 @@ export const {
   setShowClaimWithdraw,
   setShowRedPacket,
   setNFTMetaNotReady,
+  setShowSideStakingRedeem,
 } = modalsSlice.actions;

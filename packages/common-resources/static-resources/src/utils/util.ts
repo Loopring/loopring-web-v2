@@ -213,12 +213,6 @@ export const getValuePrecisionThousand = (
     }
   }
   if (result.isGreaterThan(1)) {
-    // if (minDigit < 3) {
-    // } else {
-    //     result = Number(value).toLocaleString('en', {
-    //         minimumFractionDigits: minDigit
-    //     })
-    // }
     let formattedValue = null;
     if (floor === true) {
       formattedValue = getFloatFloor(result, fixed || minDigit);

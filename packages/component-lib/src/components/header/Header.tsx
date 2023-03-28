@@ -36,15 +36,16 @@ import {
   MenuIcon,
   SoursURL,
   subMenuLayer2,
-  toolBarAvailableItem,
-  toolBarMobileAvailableItem,
+  toolBarAvailableItem as _toolBarAvailableItem,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
+  BtnNetworkSwitch,
   BtnNotification,
   BtnSetting,
   ProfileMenu,
   WalletConnectBtn,
+  WalletConnectL1Btn,
 } from "./toolbar";
 import React from "react";
 import { bindPopper } from "material-ui-popup-state/es";
@@ -149,6 +150,9 @@ const ToolBarItem = ({
   buttonComponent,
   notification,
   account,
+  chainId,
+  isLayer1Only = false,
+  ButtonComponentsMap,
   ...props
 }: any) => {
   const match = useRouteMatch("/:l1/:l2?");
@@ -168,14 +172,21 @@ const ToolBarItem = ({
             {...props}
             notification={notification}
             account={account}
+            chainId={chainId}
           />
         );
       case ButtonComponentsMap.Setting:
         return <BtnSetting {...props} />;
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />;
+      case ButtonComponentsMap.TestNet:
+        return <BtnNetworkSwitch {...props} />;
       case ButtonComponentsMap.WalletConnect:
-        return <WalletConnectBtn {...props} />;
+        return isLayer1Only ? (
+          <WalletConnectL1Btn {...props} />
+        ) : (
+          <WalletConnectBtn {...props} />
+        );
       default:
         return undefined;
     }
@@ -245,9 +256,12 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         allowTrade,
         selected,
         account,
+        chainId,
         isWrap = true,
         isLandPage = false,
         isMobile = false,
+        toolBarAvailableItem = _toolBarAvailableItem,
+        toolBarMap = ButtonComponentsMap,
         i18n,
         t,
         ...rest
@@ -276,12 +290,17 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         }: {
           toolbarList: { [key: number]: R };
         } & WithTranslation) => {
-          return [
-            ...(isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem),
-          ].map((index: number) => {
+          return toolBarAvailableItem.map((index: number) => {
             return (
               <ToolBarItem
-                {...{ ...toolbarList[index], account, notification, ...rest }}
+                {...{
+                  ...toolbarList[index],
+                  account,
+                  chainId,
+                  notification,
+                  ButtonComponentsMap: toolBarMap,
+                  ...rest,
+                }}
                 key={index}
               />
             );

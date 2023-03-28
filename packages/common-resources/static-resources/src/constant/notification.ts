@@ -5,6 +5,7 @@ import { AMMMarketType, MarketType } from "./market";
 
 import { Account } from "./account";
 import { InvestAdvice } from "../loopring-interface";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 /**
  * export enum RuleType {
@@ -53,6 +54,7 @@ export type NOTIFICATION_ITEM = {
   versionIosMax: string;
   versionAndroidMin: string;
   versionAndroidMax: string;
+  linkParam: string;
 };
 export type ACTIVITY = NOTIFICATION_ITEM;
 export type CAMPAIGN_TAG = {
@@ -90,6 +92,7 @@ export type NOTIFICATION = {
     STAKE: InvestAdvice[];
   };
   account?: Account;
+  chainId: sdk.ChainId;
   prev?: {
     endDate: number;
     // prevMonth: string;

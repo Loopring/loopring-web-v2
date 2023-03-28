@@ -4,6 +4,7 @@ import { Box, Tab, Tabs } from "@mui/material";
 import {
   AmmTable,
   Button,
+  DefiStakingTxTable,
   DefiTxsTable,
   DualTxsTable,
   OrderHistoryTable,
@@ -22,6 +23,7 @@ import {
   useTokenMap,
 } from "@loopring-web/core";
 import {
+  useDefiSideRecord,
   useDualTransaction,
   useGetAmmRecord,
   useGetDefiRecord,
@@ -45,6 +47,7 @@ enum TabIndex {
   // orderHistoryTable = "orderHistoryTable",
   defiRecords = "defiRecords",
   dualRecords = "dualRecords",
+  sideStakingRecords = "sideStakingRecords",
 }
 
 enum TabOrderIndex {
@@ -114,6 +117,12 @@ const HistoryPanel = withTranslation("common")(
       dualMarketMap,
       dualTotal,
     } = useDualTransaction(setToastOpen);
+    const {
+      sideStakingList,
+      showLoading: showDefiSideStakingLoading,
+      getSideStakingTxList,
+      sideStakingTotal,
+    } = useDefiSideRecord(setToastOpen);
 
     const { userOrderDetailList, getUserOrderDetailTradeList } =
       useGetOrderHistorys();
@@ -212,6 +221,10 @@ const HistoryPanel = withTranslation("common")(
                 label={t("labelDualOrderTable")}
                 value={TabIndex.dualRecords}
               />
+              <Tab
+                label={t("labelSideStakingTable")}
+                value={TabIndex.sideStakingRecords}
+              />
             </Tabs>
           </Box>
           <Box
@@ -287,6 +300,21 @@ const HistoryPanel = withTranslation("common")(
                   },
                   getDefiTxList,
                   showloading: showDefiLoading,
+                  ...rest,
+                }}
+                tokenMap={tokenMap}
+                idIndex={idIndex}
+              />
+            ) : currentTab === TabIndex.sideStakingRecords ? (
+              <DefiStakingTxTable
+                {...{
+                  rawData: sideStakingList as any[],
+                  pagination: {
+                    pageSize: pageSize,
+                    total: sideStakingTotal,
+                  },
+                  getSideStakingTxList,
+                  showloading: showDefiSideStakingLoading,
                   ...rest,
                 }}
                 tokenMap={tokenMap}

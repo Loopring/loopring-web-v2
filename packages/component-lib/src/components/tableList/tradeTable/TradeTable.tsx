@@ -27,11 +27,7 @@ import { Currency, MarketTradeInfo } from "@loopring-web/loopring-sdk";
 import { XOR } from "../../../types/lib";
 import { useLocation } from "react-router-dom";
 import _ from "lodash";
-
-export enum TradeItemRole {
-  maker = "Maker",
-  taker = "Taker",
-}
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export enum TradeItemCounterparty {
   orderbook = "Orderbook",
@@ -40,7 +36,7 @@ export enum TradeItemCounterparty {
 
 export type RawDataTradeItem = {
   // side: keyof typeof TradeTypes;
-  role: TradeItemRole;
+  role: sdk.OrderMakerType;
   amount: {
     from: {
       key: string;
@@ -158,7 +154,7 @@ const getColumnModeAssets = (
         formatter: ({ row }) => {
           const value = row["role"];
           const renderValue =
-            value === TradeItemRole.maker
+            value === sdk.OrderMakerType.maker
               ? t("labelTradeRoleMaker")
               : t("labelTradeRoleTaker");
           return <Box className="rdg-cell-value">{renderValue}</Box>;
@@ -365,7 +361,7 @@ const getColumnModeMobileAssets = (
             formatter: ({ row }) => {
               const value = row["role"];
               const renderValue =
-                value === TradeItemRole.maker
+                value === sdk.OrderMakerType.maker
                   ? t("labelTradeRoleMaker")
                   : t("labelTradeRoleTaker");
               const counterParty =

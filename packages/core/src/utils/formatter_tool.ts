@@ -10,7 +10,6 @@ import {
   TradeTypes,
 } from "@loopring-web/common-resources";
 import { volumeToCountAsBigNumber } from "../hooks/help";
-import { TradeItemRole } from "@loopring-web/component-lib";
 
 const getTokenInfo = (symbol: string) => {
   const tokenMap = store.getState().tokenMap.tokenMap;
@@ -129,7 +128,7 @@ export function tradeItemToTableDataItem(tradeItem: any) {
   // myLog ('....',tokenMap[base].precision)
   return {
     side,
-    role: tradeItem.side === "BUY" ? TradeItemRole.taker : TradeItemRole.maker,
+    role: tradeItem.type,
     counterparty: counterparty,
     price: {
       key: sellToken,

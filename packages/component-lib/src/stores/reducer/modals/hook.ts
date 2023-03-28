@@ -1,5 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
+import {
+  Contact,
+  ModalState,
+  ModalStatePlayLoad,
+  Transaction,
+} from "./interface";
 import {
   setNFTMetaNotReady,
   setShowAccount,
@@ -23,6 +28,7 @@ import {
   setShowOtherExchange,
   setShowRedPacket,
   setShowResetAccount,
+  setShowSideStakingRedeem,
   setShowSupport,
   setShowSwap,
   setShowTradeIsFrozen,
@@ -33,6 +39,7 @@ import {
 
 import React from "react";
 import {
+  CLAIM_TYPE,
   ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
@@ -85,7 +92,7 @@ export const useOpenModals = () => {
     ),
 
     setShowTransfer: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) => {
+      (state: ModalStatePlayLoad & Transaction & Contact) => {
         if (toggle.transfer.enable) {
           dispatch(setShowTransfer(state));
         } else {
@@ -111,7 +118,7 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowWithdraw: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) => {
+      (state: ModalStatePlayLoad & Transaction & Contact) => {
         if (toggle.withdraw.enable) {
           dispatch(setShowWithdraw(state));
         } else {
@@ -228,7 +235,12 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowClaimWithdraw: React.useCallback(
-      (state: ModalStatePlayLoad & { claimToken?: ClaimToken }) => {
+      (
+        state: ModalStatePlayLoad & {
+          claimToken?: ClaimToken;
+          claimType?: CLAIM_TYPE;
+        }
+      ) => {
         if (toggle.claim.enable) {
           dispatch(setShowClaimWithdraw(state));
         } else {
@@ -262,6 +274,11 @@ export const useOpenModals = () => {
     setShowTradeIsFrozen: React.useCallback(
       (state: ModalStatePlayLoad & { type?: string; messageKey?: string }) =>
         dispatch(setShowTradeIsFrozen(state)),
+      [dispatch]
+    ),
+    setShowSideStakingRedeem: React.useCallback(
+      (state: ModalStatePlayLoad & { symbol?: string }) =>
+        dispatch(setShowSideStakingRedeem(state)),
       [dispatch]
     ),
   };

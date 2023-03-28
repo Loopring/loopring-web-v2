@@ -51,6 +51,9 @@ const getAccount = async (): Promise<{
         mintNFT: { enable: false, reason: "account frozen" },
         deployNFT: { enable: false, reason: "account frozen" },
         updateAccount: { enable: false, reason: "account frozen" },
+        LRCStackInvest: { enable: false, reason: "account frozen" },
+        redPacketNFTV1: { enable: false, reason: "account frozen" },
+        claim: { enable: false, reason: "account frozen" },
       })
     );
     __timer__ = ((__timer__) => {
@@ -92,6 +95,9 @@ const getAccount = async (): Promise<{
         mintNFT: { enable: true, reason: undefined },
         deployNFT: { enable: true, reason: undefined },
         updateAccount: { enable: true, reason: undefined },
+        LRCStackInvest: { enable: true, reason: undefined },
+        redPacketNFTV1: { enable: true, reason: undefined },
+        claim: { enable: true, reason: undefined },
         ...toggle,
       })
     );

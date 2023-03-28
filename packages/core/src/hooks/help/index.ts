@@ -13,3 +13,4 @@ export * from "./marketPairHelp";
 export * from "./makeInvest";
 export * from "./makeDual";
 export * from "./marketRedPacket";
+export * from "./makeDefiSideStaking";

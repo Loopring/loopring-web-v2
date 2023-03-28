@@ -87,6 +87,11 @@ export type TradeCalcData<T> = {
   fee: string;
   feeTakerRate?: number;
   tradeCost?: string;
+  isNotMatchMarketPrice?: boolean;
+  marketPrice?: string;
+  marketRatePrice?: string;
+  isChecked?: boolean;
+  lastStepAt?: "sell" | "buy";
 };
 export type TradeCalcProData<T> = {
   coinBase: keyof T; //name
@@ -105,6 +110,11 @@ export type TradeCalcProData<T> = {
   fee: string;
   feeTakerRate?: number;
   tradeCost?: string;
+  isNotMatchMarketPrice?: boolean;
+  marketPrice?: string;
+  marketRatePrice?: string;
+  isChecked?: boolean;
+  lastStepAt?: "base" | "quote";
 };
 
 /**
@@ -137,6 +147,31 @@ export type DeFiCalcData<T> = {
   AtoB: string;
   BtoA: string;
   fee: string;
+};
+export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
+  coinSell: T;
+  stakeViewInfo: R & {
+    dalyEarn?: string;
+    maxSellAmount?: string;
+    minSellAmount?: string;
+    maxSellVol?: string;
+    minSellVol?: string;
+  };
+};
+type RedeemInfo = sdk.StakeInfoOrigin &
+  Omit<sdk.STACKING_PRODUCT, "status"> & {
+    status_product: number;
+
+    maxSellAmount?: string;
+    minSellAmount?: string;
+    maxSellVol?: string;
+    minSellVol?: string;
+    minAmount: string;
+    maxAmount: string;
+  };
+export type DeFiSideRedeemCalcData<T, _R = RedeemInfo> = {
+  coinSell: T;
+  stakeViewInfo: _R;
 };
 
 export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {

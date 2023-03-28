@@ -21,20 +21,22 @@ const BoxStyle = styled(Box)`
   }
 ` as typeof Box;
 export const NotificationPanel = ({
-  notification = {
-    activities: [],
-    activitiesInvest: [],
-    notifications: [],
-    invest: {} as any,
-    campaignTagConfig: {
-      ORDERBOOK: [],
-      MARKET: [],
-      AMM: [],
-      FIAT: [],
-      SWAP: [],
-    },
-  },
-}: {
+  notification,
+}: //   = {
+//   activities: [],
+//   activitiesInvest: [],
+//   notifications: [],
+//   invest: {} as any,
+//   chainId: 0 as any,
+//   campaignTagConfig: {
+//     ORDERBOOK: [],
+//     MARKET: [],
+//     AMM: [],
+//     FIAT: [],
+//     SWAP: [],
+//   },
+// },
+{
   notification: NOTIFICATION;
 }) => {
   // myLog("notifications", notification.notifications);
@@ -107,6 +109,7 @@ export const NotificationPanel = ({
                 <ListItemActivity
                   key={activity.type + index}
                   {...activity}
+                  chainId={notification.chainId}
                   account={notification.account}
                 />
               ))}
@@ -123,6 +126,7 @@ export const NotificationPanel = ({
                   <NotificationListItem
                     key={notify.name.toString() + index}
                     {...notify}
+                    chainId={notification.chainId}
                     account={notification.account}
                   />
                 ))}

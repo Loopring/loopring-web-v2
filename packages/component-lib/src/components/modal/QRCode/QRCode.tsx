@@ -4,6 +4,8 @@ import styled from "@emotion/styled";
 import { Box, Modal, Typography } from "@mui/material";
 import { ModalQRCodeProps, QRCodeProps } from "./Interface";
 import { ModalCloseButton } from "../../basic-lib";
+import { SoursURL } from "@loopring-web/loopring-sdk";
+import { myLog } from "@loopring-web/common-resources";
 
 const ModalContentStyled = styled(Box)`
   & > div {
@@ -27,11 +29,17 @@ export const QRCodePanel = ({
   fgColor = "#4169FF",
   bgColor = "#fff",
   url = "https://exchange.loopring.io/",
+  imageSettings = {
+    height: 8,
+    width: 8,
+    src: `${SoursURL + "svg/loopring.svg"}`,
+  },
 }: // handleClick
 QRCodeProps & Partial<BaseQRCodeProps>) => {
   if (url === undefined) {
     url = "";
   }
+  myLog("QRCodePanel", imageSettings);
   return (
     <Box
       display={"flex"}
@@ -56,6 +64,7 @@ QRCodeProps & Partial<BaseQRCodeProps>) => {
         bgColor={bgColor}
         style={{ padding: 8, background: bgColor }}
         aria-label={`link:${url}`}
+        imageSettings={imageSettings}
       />
       {description && (
         <Typography variant={"body1"} marginBottom={3} marginTop={1}>

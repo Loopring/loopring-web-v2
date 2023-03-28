@@ -62,3 +62,22 @@ export const EmptyDefault = withTranslation(["layout", "common"])(
     );
   }
 ) as (props: EmptyProps & BoxProps) => JSX.Element;
+
+export const ComingSoonPanel = withTranslation(["common", "layout"])(
+  ({ t }: WithTranslation) => {
+    return (
+      <Box
+        flex={1}
+        alignItems={"center"}
+        justifyContent={"center"}
+        textAlign={"center"}
+        marginBottom={2}
+        display={"flex"}
+      >
+        <Typography component={"h6"} variant={"h1"} padding={3}>
+          {t("labelComingSoon")}
+        </Typography>
+      </Box>
+    );
+  }
+);

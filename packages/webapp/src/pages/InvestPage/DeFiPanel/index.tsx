@@ -41,7 +41,7 @@ import {
   UpColor,
 } from "@loopring-web/common-resources";
 
-const StyleWrapper = styled(Box)`
+export const StyleWrapper = styled(Box)`
   position: relative;
   border-radius: ${({ theme }) => theme.unit}px;
 
@@ -55,16 +55,19 @@ const StyleWrapper = styled(Box)`
 
   border-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Grid;
-const StyleCardContent = styled(CardContent)`
+export const StyleCardContent = styled(CardContent)`
   display: flex;
+
   &.tableLap {
     display: block;
     width: 100%;
     cursor: pointer;
+
     .content {
       flex-direction: column;
       align-items: center;
       padding-top: ${({ theme }) => 4 * theme.unit}px;
+
       .des {
         align-items: center;
         margin: ${({ theme }) => 3 * theme.unit}px 0;
@@ -213,9 +216,11 @@ const LandDefiInvest = ({
                               flexDirection={"column"}
                               alignItems={"center"}
                               marginTop={2}
+                              component={"span"}
                             >
                               <Typography
                                 variant={"h3"}
+                                component={"span"}
                                 color={
                                   upColor === UpColor.green
                                     ? "var(--color-success)"
@@ -229,6 +234,7 @@ const LandDefiInvest = ({
                               >
                                 <Typography
                                   variant={"body2"}
+                                  component={"span"}
                                   display={"inline-flex"}
                                   alignItems={"center"}
                                   color={"var(--color-text-third)"}
@@ -337,7 +343,7 @@ export const DeFiPanel: any = withTranslation("common")(
           <Button
             variant={"outlined"}
             sx={{ marginLeft: 2 }}
-            onClick={() => history.push("/invest/balance/stack")}
+            onClick={() => history.push("/invest/balance/stake")}
           >
             {t("labelInvestMyDefi")}
           </Button>

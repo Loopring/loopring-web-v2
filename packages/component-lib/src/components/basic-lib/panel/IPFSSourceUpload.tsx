@@ -309,6 +309,8 @@ export const MediaSVGToggle = ({
                 position={"absolute"}
                 left={"50%"}
                 top={"50%"}
+                width={"100%"}
+                height={"100%"}
                 zIndex={100}
                 sx={{
                   transform: "translate(-50% , -50%)",
@@ -316,11 +318,18 @@ export const MediaSVGToggle = ({
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setPlay(true);
+                  // setPlay(true);
                 }}
                 className={"media-content"}
               >
-                <NftImage alt={"image"} onError={() => undefined} src={url} />
+                <NftImage
+                  alt={"image"}
+                  onError={(e: any) => {
+                    e?.target?.style?.setItem("opacity", "0.3");
+                    e?.target?.setItem("alt", "image loaded failed");
+                  }}
+                  src={getIPFSString(url, baseURL)}
+                />
               </Box>
             )}
           </>

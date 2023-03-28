@@ -410,6 +410,66 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
   };
 }
 
+export function useDefiSideRecord(setToastOpen: (props: any) => void) {
+  const { t } = useTranslation(["error"]);
+  const { tokenMap } = useTokenMap();
+  const [sideStakingList, setSideStakingRecordList] = React.useState<
+    sdk.STACKING_TRANSACTIONS[]
+  >([]);
+  const [sideStakingTotal, setSideStakingTotal] = React.useState(0);
+  const [showLoading, setShowLoading] = React.useState(true);
+  const { accountId, apiKey } = store.getState().account;
+  const getSideStakingTxList = React.useCallback(
+    async ({ start, end, offset, limit }: any) => {
+      setShowLoading(true);
+      if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const response = await LoopringAPI.defiAPI.getStakeTransactions(
+          {
+            accountId,
+            tokenId: tokenMap["LRC"].tokenId,
+            start,
+            end,
+            limit,
+            offset,
+          } as any,
+          apiKey
+        );
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          const errorItem =
+            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          setToastOpen({
+            open: true,
+            type: "error",
+            content:
+              "error : " + errorItem
+                ? t(errorItem.messageKey)
+                : (response as sdk.RESULT_INFO).message,
+          });
+        } else {
+          const result = response.list;
+          setSideStakingRecordList(result);
+          setShowLoading(false);
+          setSideStakingTotal(response.totalNum);
+          // }
+        }
+      }
+
+      setShowLoading(false);
+    },
+    [accountId, apiKey, setToastOpen, t]
+  );
+
+  return {
+    sideStakingList,
+    showLoading,
+    getSideStakingTxList,
+    sideStakingTotal,
+  };
+}
+
 export const useOrderList = (setToastOpen?: (props: any) => void) => {
   const { t } = useTranslation(["error"]);
 

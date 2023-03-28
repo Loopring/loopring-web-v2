@@ -1,7 +1,6 @@
 import { useDefiMap, useDefiTrade } from "@loopring-web/core";
 import {
   DEFI_ADVICE_MAP,
-  defiWSTETHAdvice,
   MarketType,
   myLog,
 } from "@loopring-web/common-resources";
