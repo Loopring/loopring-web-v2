@@ -25,7 +25,7 @@ const GridStyle = styled(Grid)`
 `;
 
 export const DeFiSideDetail = ({
-  // stackViewInfo,
+  // stakeViewInfo,
   tokenSell,
   order,
   onRedeem,
@@ -415,12 +415,12 @@ export const DeFiSideWrap = <
   }, [isJoin, t, btnInfo]);
 
   const daysDuration = Math.ceil(
-    Number(deFiSideCalcData?.stackViewInfo?.rewardPeriod ?? 0) / 86400000
+    Number(deFiSideCalcData?.stakeViewInfo?.rewardPeriod ?? 0) / 86400000
   );
-  let dalyEarn = deFiSideCalcData?.stackViewInfo?.dalyEarn
+  let dalyEarn = deFiSideCalcData?.stakeViewInfo?.dalyEarn
     ? getValuePrecisionThousand(
         sdk
-          .toBig(deFiSideCalcData.stackViewInfo.dalyEarn)
+          .toBig(deFiSideCalcData.stakeViewInfo.dalyEarn)
           .div("1e" + tokenSell.decimals)
           .div(100),
         tokenSell.precision,
@@ -433,7 +433,7 @@ export const DeFiSideWrap = <
     dalyEarn && dalyEarn !== "0"
       ? dalyEarn + " " + tokenSell.symbol
       : EmptyValueTag;
-  myLog("deFiSideCalcData.stackViewInfo", deFiSideCalcData.stackViewInfo);
+  myLog("deFiSideCalcData.stakeViewInfo", deFiSideCalcData.stakeViewInfo);
   return (
     <GridStyle
       className={deFiSideCalcData ? "" : "loading"}
@@ -530,9 +530,9 @@ export const DeFiSideWrap = <
             </Typography>
           </Tooltip>
           <Typography component={"p"} variant={"body2"} color={"textPrimary"}>
-            {deFiSideCalcData?.stackViewInfo?.apr &&
-            deFiSideCalcData?.stackViewInfo?.apr !== "0.00"
-              ? deFiSideCalcData.stackViewInfo.apr + "%"
+            {deFiSideCalcData?.stakeViewInfo?.apr &&
+            deFiSideCalcData?.stakeViewInfo?.apr !== "0.00"
+              ? deFiSideCalcData.stakeViewInfo.apr + "%"
               : EmptyValueTag}
           </Typography>
         </Grid>

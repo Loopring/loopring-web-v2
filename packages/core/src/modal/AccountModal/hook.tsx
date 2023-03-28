@@ -253,7 +253,7 @@ export function useAccountModalForUI({
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
-  const { stackWrapProps } = useStakeTradeExit({
+  const { stakeWrapProps } = useStakeTradeExit({
     setToastOpen,
   });
   const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
@@ -3009,7 +3009,7 @@ export function useAccountModalForUI({
     depositProps,
     resetProps,
     collectionAdvanceProps,
-    sideStackRedeemProps: stackWrapProps,
+    sideStackRedeemProps: stakeWrapProps,
     activeAccountProps,
     exportAccountProps,
     exportAccountAlertText,

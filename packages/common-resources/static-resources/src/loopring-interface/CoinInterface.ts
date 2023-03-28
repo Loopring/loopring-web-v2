@@ -150,7 +150,7 @@ export type DeFiCalcData<T> = {
 };
 export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
   coinSell: T;
-  stackViewInfo: R & {
+  stakeViewInfo: R & {
     dalyEarn?: string;
     maxSellAmount?: string;
     minSellAmount?: string;
@@ -171,7 +171,7 @@ type RedeemInfo = sdk.StakeInfoOrigin &
   };
 export type DeFiSideRedeemCalcData<T, _R = RedeemInfo> = {
   coinSell: T;
-  stackViewInfo: _R;
+  stakeViewInfo: _R;
 };
 
 export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {

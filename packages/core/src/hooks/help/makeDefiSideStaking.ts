@@ -146,51 +146,51 @@ export const calcSideStaking = <T>({
   let dalyEarn: undefined | string = undefined;
   if (
     inputValue &&
-    deFiSideCalcData.stackViewInfo.apr &&
-    deFiSideCalcData.stackViewInfo.apr !== "" &&
-    deFiSideCalcData.stackViewInfo.apr !== "0.00"
+    deFiSideCalcData.stakeViewInfo.apr &&
+    deFiSideCalcData.stakeViewInfo.apr !== "" &&
+    deFiSideCalcData.stakeViewInfo.apr !== "0.00"
   ) {
     dalyEarn = sdk
       .toBig(sellVol)
-      .times(deFiSideCalcData.stackViewInfo.apr)
+      .times(deFiSideCalcData.stakeViewInfo.apr)
       .div(365)
       .toString();
   } else {
     dalyEarn = undefined;
   }
   const maxSellAmount = sdk
-    .toBig(deFiSideCalcData.stackViewInfo.maxAmount)
+    .toBig(deFiSideCalcData.stakeViewInfo.maxAmount)
     .div("1e" + tokenSell.decimals)
     .toString();
   const minSellAmount = sdk
-    .toBig(deFiSideCalcData.stackViewInfo.minAmount)
+    .toBig(deFiSideCalcData.stakeViewInfo.minAmount)
     .div("1e" + tokenSell.decimals)
     .toString();
-  if (deFiSideCalcData.stackViewInfo.symbol) {
+  if (deFiSideCalcData.stakeViewInfo.symbol) {
     return {
       sellVol: sellVol.toString(),
       deFiSideCalcData: {
         ...deFiSideCalcData,
-        stackViewInfo: {
-          ...deFiSideCalcData.stackViewInfo,
-          minSellVol: deFiSideCalcData.stackViewInfo.minAmount,
-          maxSellVol: deFiSideCalcData.stackViewInfo.maxAmount,
+        stakeViewInfo: {
+          ...deFiSideCalcData.stakeViewInfo,
+          minSellVol: deFiSideCalcData.stakeViewInfo.minAmount,
+          maxSellVol: deFiSideCalcData.stakeViewInfo.maxAmount,
           maxSellAmount,
           minSellAmount,
           dalyEarn,
         },
       },
       isJoin: true,
-      minSellVol: deFiSideCalcData.stackViewInfo.minAmount,
-      maxSellVol: deFiSideCalcData.stackViewInfo.maxAmount,
+      minSellVol: deFiSideCalcData.stakeViewInfo.minAmount,
+      maxSellVol: deFiSideCalcData.stakeViewInfo.maxAmount,
     };
   } else {
     return {
       sellVol: sellVol.toString(),
       deFiSideCalcData: {
         ...deFiSideCalcData,
-        stackViewInfo: {
-          ...deFiSideCalcData?.stackViewInfo,
+        stakeViewInfo: {
+          ...deFiSideCalcData?.stakeViewInfo,
           minSellVol: undefined,
           maxSellVol: undefined,
           maxSellAmount,
@@ -208,7 +208,7 @@ export const calcSideStaking = <T>({
 export const calcRedeemStaking = <T extends IBData<any>, R>({
   inputValue,
   // isJoin,
-  deFiSideRedeemCalcData: { stackViewInfo, coinSell, ...rest },
+  deFiSideRedeemCalcData: { stakeViewInfo, coinSell, ...rest },
   tokenSell,
 }: {
   inputValue: string;
@@ -224,7 +224,7 @@ export const calcRedeemStaking = <T extends IBData<any>, R>({
 } => {
   let sellVol;
   if (inputValue?.toString() == coinSell.balance?.toString()) {
-    sellVol = (stackViewInfo as any).remainAmount;
+    sellVol = (stakeViewInfo as any).remainAmount;
   } else {
     sellVol = sdk
       .toBig(inputValue ? inputValue : 0)
@@ -232,31 +232,31 @@ export const calcRedeemStaking = <T extends IBData<any>, R>({
   }
 
   const maxSellAmount = sdk
-    .toBig((stackViewInfo as any)?.maxAmount)
+    .toBig((stakeViewInfo as any)?.maxAmount)
     .div("1e" + tokenSell.decimals)
     .toString();
   const minSellAmount = sdk
-    .toBig((stackViewInfo as any).minAmount)
+    .toBig((stakeViewInfo as any).minAmount)
     .div("1e" + tokenSell.decimals)
     .toString();
 
-  if ((stackViewInfo as any).symbol) {
+  if ((stakeViewInfo as any).symbol) {
     return {
       sellVol: sellVol.toString(),
       deFiSideRedeemCalcData: {
         ...rest,
         coinSell,
-        stackViewInfo: {
-          ...(stackViewInfo as any),
-          minSellVol: (stackViewInfo as any).minAmount,
-          maxSellVol: (stackViewInfo as any).maxAmount,
+        stakeViewInfo: {
+          ...(stakeViewInfo as any),
+          minSellVol: (stakeViewInfo as any).minAmount,
+          maxSellVol: (stakeViewInfo as any).maxAmount,
           maxSellAmount,
           minSellAmount,
         },
       },
       isJoin: true,
-      minSellVol: (stackViewInfo as any).minAmount,
-      maxSellVol: (stackViewInfo as any).maxAmount,
+      minSellVol: (stakeViewInfo as any).minAmount,
+      maxSellVol: (stakeViewInfo as any).maxAmount,
     };
   } else {
     return {
@@ -264,8 +264,8 @@ export const calcRedeemStaking = <T extends IBData<any>, R>({
       deFiSideRedeemCalcData: {
         ...rest,
         coinSell,
-        stackViewInfo: {
-          ...(stackViewInfo as any),
+        stakeViewInfo: {
+          ...(stakeViewInfo as any),
           minSellVol: undefined,
           maxSellVol: undefined,
           maxSellAmount,

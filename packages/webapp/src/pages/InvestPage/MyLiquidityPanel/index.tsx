@@ -82,7 +82,7 @@ const MyLiquidity: any = withTranslation("common")(
     const searchParams = new URLSearchParams(search);
 
     const ammPoolRef = React.useRef(null);
-    const stackingRef = React.useRef(null);
+    const stakingRef = React.useRef(null);
     const dualRef = React.useRef(null);
     const sideStakeRef = React.useRef(null);
 
@@ -153,9 +153,9 @@ const MyLiquidity: any = withTranslation("common")(
             // @ts-ignore
             window.scrollTo(0, dualRef?.current?.offsetTop);
             break;
-          case "stack":
+          case "stake":
             // @ts-ignore
-            window.scrollTo(0, stackingRef?.current?.offsetTop);
+            window.scrollTo(0, stakingRef?.current?.offsetTop);
 
             break;
           case "amm":
@@ -581,7 +581,7 @@ const MyLiquidity: any = withTranslation("common")(
               )}
               {!!(lidoAssets?.length > 0) && (
                 <TableWrapStyled
-                  ref={stackingRef}
+                  ref={stakingRef}
                   className={`table-divide-short MuiPaper-elevation2 ${
                     lidoAssets?.length > 0 ? "min-height" : ""
                   }`}

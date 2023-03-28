@@ -148,7 +148,7 @@ export const DeFiStackRedeemWrap = <
     forfeitedEarn,
     forfeitedEarnColor,
   } = React.useMemo(() => {
-    const { remainAmount, totalRewards } = deFiSideRedeemCalcData.stackViewInfo;
+    const { remainAmount, totalRewards } = deFiSideRedeemCalcData.stakeViewInfo;
     const tradeVol = sdk
       .toBig(deFiSideRedeemCalcData.coinSell.tradeValue ?? 0)
       .times("1e" + tokenSell.decimals);
@@ -211,12 +211,12 @@ export const DeFiStackRedeemWrap = <
           : EmptyValueTag,
     };
   }, [
-    deFiSideRedeemCalcData.stackViewInfo,
+    deFiSideRedeemCalcData.stakeViewInfo,
     deFiSideRedeemCalcData.coinSell.tradeValue,
   ]);
   myLog(
-    "deFiSideRedeemCalcData.stackViewInfo",
-    deFiSideRedeemCalcData.stackViewInfo,
+    "deFiSideRedeemCalcData.stakeViewInfo",
+    deFiSideRedeemCalcData.stakeViewInfo,
     deFiSideRedeemCalcData.coinSell
   );
   return (
@@ -290,7 +290,7 @@ export const DeFiStackRedeemWrap = <
               {t("labelLRCStakeProduct")}
             </Typography>
             <Typography component={"p"} variant={"body2"} color={"textPrimary"}>
-              {(deFiSideRedeemCalcData?.stackViewInfo as any)?.productId}
+              {(deFiSideRedeemCalcData?.stakeViewInfo as any)?.productId}
             </Typography>
           </Grid>
           <Grid item alignSelf={"stretch"} marginTop={3}>
@@ -399,7 +399,7 @@ export const DeFiStackRedeemWrap = <
               {t("labelLRCStakeProduct")}
             </Typography>
             <Typography component={"p"} variant={"body2"} color={"textPrimary"}>
-              {(deFiSideRedeemCalcData?.stackViewInfo as any)?.productId}
+              {(deFiSideRedeemCalcData?.stakeViewInfo as any)?.productId}
             </Typography>
           </Grid>
           <Grid

@@ -269,7 +269,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
                         return;
                       case InvestMapType.STAKELRC:
                         history.push(
-                          `/invest/stacklrc/${row.token.symbol}-null`
+                          `/invest/stakelrc/${row.token.symbol}-null`
                         );
                         return;
                     }

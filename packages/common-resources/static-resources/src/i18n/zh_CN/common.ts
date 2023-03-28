@@ -1429,8 +1429,8 @@ export default {
   labelHaveAnBanxaCancel: "Create a new order from scratch.",
   labelBanxaConfirmSubmit:
     "Token has been sent to Banxa wallet. You can save/click below link to check the payment status anytime.",
-  labelInvestStackLRC: "LRC STAKING",
-  labelInvestStackLRCDES: "Earn LRC staking rewards",
+  labelInvestStakeLRC: "LRC STAKING",
+  labelInvestStakeLRCDES: "Earn LRC staking rewards",
   labelFriendsPayActivation: "Your friend has paid for your L2 activation fee.",
   labelLRCStakingTitle: "What's LRC Staking",
   labelLRCStakingRisk:

@@ -283,11 +283,11 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: "/invest/stacklrc" },
+    router: { path: "/invest/stakelrc" },
     label: {
       id: "stackonesided",
-      i18nKey: "labelInvestStackLRC",
-      description: "labelInvestStackLRCDes",
+      i18nKey: "labelInvestStakeLRC",
+      description: "labelInvestStakeLRCDes",
     },
   },
 ];
@@ -550,12 +550,12 @@ export const dualAdvice: InvestAdvice = {
   desI18n: "labelInvestDualDes",
   enable: true,
 };
-export const stackAdvice: InvestAdvice = {
+export const stakeAdvice: InvestAdvice = {
   type: InvestMapType.STAKELRC,
-  router: "/invest/stacklrc",
+  router: "/invest/stakelrc",
   notification: "",
-  banner: SoursURL + "images/icon-stack-lrc.svg",
-  titleI18n: "labelInvestStackLRC",
-  desI18n: "labelInvestStackLRCDes",
+  banner: SoursURL + "images/icon-stake-lrc.svg",
+  titleI18n: "labelInvestStakeLRC",
+  desI18n: "labelInvestStakeLRCDes",
   enable: true,
 };

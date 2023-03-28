@@ -53,7 +53,7 @@ export const useStakeRedeemClick = () => {
             .toString(),
           tradeValue: undefined,
         },
-        stackViewInfo: { ...item } as never,
+        stakeViewInfo: { ...item } as never,
       },
     });
     setShowSideStakingRedeem({ isShow: true, symbol: tokenInfo.symbol });
@@ -110,7 +110,7 @@ export const useStakeTradeExit = <
         sdk
           .toBig(redeemStack?.sellVol)
           .minus(
-            (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+            (redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo as any)
               ?.minSellVol ?? 0
           )
           .lt(0)
@@ -119,7 +119,7 @@ export const useStakeTradeExit = <
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDefiMin| ${getValuePrecisionThousand(
             sdk.toBig(
-              (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+              (redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo as any)
                 ?.minSellAmount ?? 0
             ),
             tokenMap[coinSellSymbol].precision,
@@ -133,7 +133,7 @@ export const useStakeTradeExit = <
         sdk
           .toBig(redeemStack?.sellVol)
           .gt(
-            (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+            (redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo as any)
               ?.remainAmount
           )
       ) {
@@ -145,17 +145,17 @@ export const useStakeTradeExit = <
         !sdk
           .toBig(redeemStack?.sellVol)
           .eq(
-            (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+            (redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo as any)
               ?.remainAmount
           ) &&
         sdk
           .toBig(
-            (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+            (redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo as any)
               ?.remainAmount ?? 0
           )
           .minus(redeemStack?.sellVol)
           .minus(
-            (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+            (redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo as any)
               ?.minSellVol ?? 0
           )
           .lt(0)
@@ -235,7 +235,7 @@ export const useStakeTradeExit = <
             tokenId: redeemStack.sellToken?.tokenId ?? 0,
             volume: redeemStack.sellVol,
           },
-          hash: (redeemStack.deFiSideRedeemCalcData.stackViewInfo as any)?.hash,
+          hash: (redeemStack.deFiSideRedeemCalcData.stakeViewInfo as any)?.hash,
         };
         myLog("DefiTrade request:", request);
         const response = await LoopringAPI.defiAPI.sendStakeRedeem(
@@ -254,7 +254,7 @@ export const useStakeTradeExit = <
           const searchParams = new URLSearchParams();
           searchParams.set(
             "refreshStake",
-            (redeemStack.deFiSideRedeemCalcData.stackViewInfo as any).hash
+            (redeemStack.deFiSideRedeemCalcData.stakeViewInfo as any).hash
           );
           history.replace({ search: searchParams.toString() });
           setShowSideStakingRedeem({ isShow: false });
@@ -269,7 +269,7 @@ export const useStakeTradeExit = <
             step: AccountStep.Staking_Redeem_Success,
             info: {
               productId:
-                redeemStack?.deFiSideRedeemCalcData?.stackViewInfo?.productId,
+                redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo?.productId,
               symbol: redeemStack.sellToken.symbol,
               amount: redeemStack?.deFiSideRedeemCalcData?.coinSell?.tradeValue,
               remainAmount,
@@ -344,23 +344,23 @@ export const useStakeTradeExit = <
   const onSubmitBtnClick = React.useCallback(async () => {
     const tradeStack = store.getState()._router_tradeStack.tradeStack;
     if (
-      tradeStack?.deFiSideCalcData?.stackViewInfo?.maxSellVol &&
+      tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellVol &&
       tradeStack?.sellVol &&
       sdk
         .toBig(tradeStack.sellVol)
-        .gte(tradeStack?.deFiSideCalcData?.stackViewInfo?.maxSellVol)
+        .gte(tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellVol)
     ) {
       if (
         sdk
-          .toBig(tradeStack?.deFiSideCalcData?.stackViewInfo?.maxSellVol ?? 0)
-          .minus(tradeStack?.deFiSideCalcData?.stackViewInfo?.minSellVol ?? 0)
+          .toBig(tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellVol ?? 0)
+          .minus(tradeStack?.deFiSideCalcData?.stakeViewInfo?.minSellVol ?? 0)
           .toString()
           .startsWith("-")
       ) {
       } else {
         const tradeValue = getValuePrecisionThousand(
           sdk
-            .toBig(tradeStack?.deFiSideCalcData?.stackViewInfo?.maxSellVol)
+            .toBig(tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellVol)
             .div("1e" + tokenMap[coinSellSymbol]?.decimals),
           tokenMap[coinSellSymbol].precision,
           tokenMap[coinSellSymbol].precision,
@@ -391,12 +391,12 @@ export const useStakeTradeExit = <
     isLoading,
     submitCallback: onSubmitBtnClick,
   });
-  const stackWrapProps = React.useMemo(() => {
-    const stackViewInfo = redeemStack?.deFiSideRedeemCalcData?.stackViewInfo;
+  const stakeWrapProps = React.useMemo(() => {
+    const stakeViewInfo = redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo;
     const requiredHoldDay =
-      (stackViewInfo?.claimableTime - stackViewInfo?.stakeAt) / 86400000;
+      (stakeViewInfo?.claimableTime - stakeViewInfo?.stakeAt) / 86400000;
     const holdDay = moment(Date.now()).diff(
-      moment(new Date(stackViewInfo?.stakeAt ?? ""))
+      moment(new Date(stakeViewInfo?.stakeAt ?? ""))
         .utc()
         .startOf("days"),
       "days",
@@ -411,9 +411,9 @@ export const useStakeTradeExit = <
         params: {},
       },
       isLoading,
-      minSellAmount: (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+      minSellAmount: (redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo as any)
         ?.minSellAmount,
-      maxSellAmount: (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)
+      maxSellAmount: (redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo as any)
         ?.maxSellAmount,
       onSubmitClick: onBtnClick as () => void,
       switchStobEvent: (
@@ -428,8 +428,8 @@ export const useStakeTradeExit = <
   }, [
     sendRequest,
     redeemStack?.deFiSideRedeemCalcData,
-    (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)?.claimableTime,
-    (redeemStack?.deFiSideRedeemCalcData?.stackViewInfo as any)?.maxSellVol,
+    (redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo as any)?.claimableTime,
+    (redeemStack?.deFiSideRedeemCalcData?.stakeViewInfo as any)?.maxSellVol,
     account.readyState,
     tradeMarketI18nKey,
     onBtnClick,
@@ -439,7 +439,7 @@ export const useStakeTradeExit = <
     btnStatus,
   ]); // as ForceWithdrawProps<any, any>;
   return {
-    stackWrapProps: stackWrapProps as unknown as DeFiStakeRedeemWrapProps<
+    stakeWrapProps: stakeWrapProps as unknown as DeFiStakeRedeemWrapProps<
       T,
       I,
       ACD
