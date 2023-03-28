@@ -33,7 +33,7 @@ export const InvestRouter = [
   "defi",
   "overview",
   "dual",
-  "stacklrc",
+  "stakelrc",
 ];
 export const BalanceTitle = () => {
   const { t } = useTranslation();

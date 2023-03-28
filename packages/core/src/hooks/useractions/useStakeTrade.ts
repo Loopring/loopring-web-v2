@@ -140,7 +140,7 @@ export const useStakeTradeJOIN = <
       try {
         let item = stakingMap[coinSellSymbol];
         if (item && stakingMap) {
-          deFiSideCalcDataInit.stackViewInfo = { ...item };
+          deFiSideCalcDataInit.stakeViewInfo = { ...item };
         } else {
           throw new Error("no product");
         }
@@ -304,7 +304,7 @@ export const useStakeTradeJOIN = <
               amount: tradeStack.deFiSideCalcData.coinSell.tradeValue,
               daysDuration: Math.ceil(
                 Number(
-                  tradeStack?.deFiSideCalcData?.stackViewInfo?.rewardPeriod ?? 0
+                  tradeStack?.deFiSideCalcData?.stakeViewInfo?.rewardPeriod ?? 0
                 ) / 86400000
               ),
               ...item,
@@ -392,14 +392,14 @@ export const useStakeTradeJOIN = <
       } else if (
         sdk
           .toBig(tradeStack?.sellVol)
-          .minus(tradeStack?.deFiSideCalcData?.stackViewInfo?.minSellVol ?? 0)
+          .minus(tradeStack?.deFiSideCalcData?.stakeViewInfo?.minSellVol ?? 0)
           .lt(0)
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDefiMin| ${getValuePrecisionThousand(
             sdk.toBig(
-              tradeStack?.deFiSideCalcData?.stackViewInfo?.minSellAmount ?? 0
+              tradeStack?.deFiSideCalcData?.stakeViewInfo?.minSellAmount ?? 0
             ),
             tokenMap[coinSellSymbol].precision,
             tokenMap[coinSellSymbol].precision,
@@ -411,13 +411,13 @@ export const useStakeTradeJOIN = <
       } else if (
         sdk
           .toBig(tradeStack?.sellVol)
-          .gt(tradeStack?.deFiSideCalcData?.stackViewInfo?.maxSellVol ?? 0)
+          .gt(tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellVol ?? 0)
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDefiMax| ${getValuePrecisionThousand(
             sdk.toBig(
-              tradeStack?.deFiSideCalcData?.stackViewInfo?.maxSellAmount ?? 0
+              tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellAmount ?? 0
             ),
             tokenMap[coinSellSymbol].precision,
             tokenMap[coinSellSymbol].precision,
@@ -446,7 +446,7 @@ export const useStakeTradeJOIN = <
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
   }, [
-    tradeStack?.deFiSideCalcData?.stackViewInfo?.minSellVol,
+    tradeStack?.deFiSideCalcData?.stakeViewInfo?.minSellVol,
     tradeStack.sellVol,
     tradeStack.sellToken,
     tradeStack.deFiSideCalcData,
@@ -495,7 +495,7 @@ export const useStakeTradeJOIN = <
       handleOnchange.cancel();
     };
   }, [stakingMapStatus]);
-  const stackWrapProps = React.useMemo(() => {
+  const stakeWrapProps = React.useMemo(() => {
     return {
       disabled: false,
       btnInfo: {
@@ -512,12 +512,12 @@ export const useStakeTradeJOIN = <
       deFiSideCalcData: {
         ...tradeStack.deFiSideCalcData,
       },
-      minSellAmount: tradeStack?.deFiSideCalcData?.stackViewInfo?.minSellAmount,
-      maxSellAmount: tradeStack?.deFiSideCalcData?.stackViewInfo?.maxSellAmount,
+      minSellAmount: tradeStack?.deFiSideCalcData?.stakeViewInfo?.minSellAmount,
+      maxSellAmount: tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellAmount,
       tokenSell: {
         ...tokenMap[coinSellSymbol],
-        decimals: tradeStack?.deFiSideCalcData?.stackViewInfo?.decimals,
-        precision: tradeStack?.deFiSideCalcData?.stackViewInfo?.precision,
+        decimals: tradeStack?.deFiSideCalcData?.stakeViewInfo?.decimals,
+        precision: tradeStack?.deFiSideCalcData?.stakeViewInfo?.precision,
       },
       btnStatus,
       accStatus: account.readyState,
@@ -526,7 +526,7 @@ export const useStakeTradeJOIN = <
     refreshRef,
     sendRequest,
     tradeStack.deFiSideCalcData,
-    tradeStack?.deFiSideCalcData?.stackViewInfo?.maxSellVol,
+    tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellVol,
     account.readyState,
     tradeMarketI18nKey,
     isLoading,
@@ -537,6 +537,6 @@ export const useStakeTradeJOIN = <
     btnStatus,
   ]); // as ForceWithdrawProps<any, any>;
   return {
-    stackWrapProps: stackWrapProps as unknown as DeFiSideWrapProps<T, I, ACD>,
+    stakeWrapProps: stakeWrapProps as unknown as DeFiSideWrapProps<T, I, ACD>,
   };
 };

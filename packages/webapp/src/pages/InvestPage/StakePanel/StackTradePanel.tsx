@@ -33,7 +33,7 @@ export const StackTradePanel = ({
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { t } = useTranslation();
   const history = useHistory();
-  const { stackWrapProps } = useStakeTradeJOIN({ setToastOpen, symbol });
+  const { stakeWrapProps } = useStakeTradeJOIN({ setToastOpen, symbol });
 
   const { isMobile } = useSettings();
 
@@ -97,7 +97,7 @@ export const StackTradePanel = ({
             alignItems={"center"}
             flex={1}
           >
-            {stackWrapProps.deFiSideCalcData ? (
+            {stakeWrapProps.deFiSideCalcData ? (
               <Box
                 className={"hasLinerBg"}
                 display={"flex"}
@@ -108,7 +108,7 @@ export const StackTradePanel = ({
                 <DeFiSideWrap
                   isJoin={isJoin}
                   symbol={"LRC"}
-                  {...(stackWrapProps as any)}
+                  {...(stakeWrapProps as any)}
                 />
               </Box>
             ) : (

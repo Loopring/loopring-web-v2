@@ -12,7 +12,7 @@ const initState: TradeStack<any> = {
   sellVol: "0",
   deFiSideCalcData: {
     coinSell: {},
-    stackViewInfo: {} as any,
+    stakeViewInfo: {} as any,
   },
 };
 type R = { [key: string]: any };

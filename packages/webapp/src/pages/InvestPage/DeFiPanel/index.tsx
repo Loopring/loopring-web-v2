@@ -343,7 +343,7 @@ export const DeFiPanel: any = withTranslation("common")(
           <Button
             variant={"outlined"}
             sx={{ marginLeft: 2 }}
-            onClick={() => history.push("/invest/balance/stack")}
+            onClick={() => history.push("/invest/balance/stake")}
           >
             {t("labelInvestMyDefi")}
           </Button>
