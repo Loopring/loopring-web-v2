@@ -346,6 +346,7 @@ export const useAmmJoin = ({
           );
         }
       }
+      setIsLoading(false);
     },
     [
       updatePageAmmJoin,
@@ -632,7 +633,6 @@ export const useAmmJoin = ({
     if (pair?.coinBInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
       const { walletMap } = makeWalletLayer2(false);
       updateJoinFee(walletMap);
-      setIsLoading(false);
     }
   }, [pair?.coinBInfo?.simpleName, snapShotData?.ammPoolSnapshot]);
 
