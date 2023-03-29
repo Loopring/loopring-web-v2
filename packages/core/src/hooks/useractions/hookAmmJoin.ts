@@ -7,7 +7,6 @@ import {
   getValuePrecisionThousand,
   IBData,
   myLog,
-  SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
@@ -89,7 +88,7 @@ export const useAmmJoin = ({
   const {
     toggle: { joinAmm },
   } = useToggle();
-  const { account, status: accountStatus } = useAccount();
+  const { account } = useAccount();
   const [baseToken, setBaseToken] = React.useState<sdk.TokenInfo>();
   const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
   const [baseMinAmt, setBaseMinAmt] = React.useState<any>();
@@ -210,14 +209,14 @@ export const useAmmJoin = ({
   });
 
   const initAmmData = React.useCallback(
-    (pair: any, walletMap: any, isReset: boolean = false) => {
+    async (isReset: boolean = false) => {
       const _ammCalcData = ammPairInit({
         fee: undefined,
         pair,
         _ammCalcData: {},
         coinMap,
         tokenMap,
-        walletMap,
+        walletMap: {},
         ammMap,
         stob,
         btos,
@@ -269,6 +268,7 @@ export const useAmmJoin = ({
       }
     },
     [
+      pair,
       snapShotData,
       coinMap,
       tokenMap,
@@ -621,11 +621,12 @@ export const useAmmJoin = ({
     [onAmmClickMap]
   );
   React.useEffect(() => {
-    if (isShow && pair) {
-      initAmmData(pair, undefined, true);
-      walletLayer2Callback();
+    if (isShow) {
+      // const { walletMap } = makeWalletLayer2(false);
+      setIsLoading(true);
+      initAmmData(true);
     }
-  }, [isShow && pair]);
+  }, [isShow]);
   const walletLayer2Callback = React.useCallback(async () => {
     if (pair?.coinBInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
       const { walletMap } = makeWalletLayer2(false);
@@ -635,13 +636,6 @@ export const useAmmJoin = ({
   }, [pair?.coinBInfo?.simpleName, snapShotData?.ammPoolSnapshot]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
-
-  React.useEffect(() => {
-    const { isShow } = store.getState().modals.isShowAmm;
-    if (isShow && accountStatus === SagaStatus.UNSET) {
-      walletLayer2Service.sendUserUpdate();
-    }
-  }, [accountStatus]);
 
   return {
     ammCalcData,

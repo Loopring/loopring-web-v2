@@ -37,7 +37,7 @@ export function useAmmMapUI<
   );
 
   const { coinMap, marketArray, status: tokenMapStatus } = useTokenMap();
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+  // const nodeTimer = React.useRef<NodeJS.Timeout | Timeout-1>(-1);
   const [filterValue, setFilterValue] = React.useState("");
   const [tableHeight, setTableHeight] = React.useState(0);
   const { ammMap, status: ammStatus } = useAmmMap();
@@ -177,11 +177,11 @@ export function useAmmMapUI<
     [filteredData, rawData, tokenPrices]
   );
 
-  React.useEffect(() => {
-    return () => {
-      clearTimeout(nodeTimer.current as NodeJS.Timeout);
-    };
-  }, [nodeTimer.current]);
+  // React.useEffect(() => {
+  //   return () => {
+  //     clearTimeout(nodeTimer.current as NodeJS.Timeout);
+  //   };
+  // }, [nodeTimer.current]);
 
   React.useEffect(() => {
     if (
