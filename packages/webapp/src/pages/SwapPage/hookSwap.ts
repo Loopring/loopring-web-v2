@@ -35,7 +35,7 @@ import {
 import {
   AccountStatus,
   CoinMap,
-  defaultSlipage,
+  defalutSlipage,
   EmptyValueTag,
   getShowStr,
   getValuePrecisionThousand,
@@ -44,7 +44,6 @@ import {
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
-  SwapTradeCalcData,
   TradeBtnStatus,
   TradeCalcData,
   WalletMap,
@@ -53,7 +52,6 @@ import {
   SwapData,
   SwapTradeData,
   SwapType,
-  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -81,14 +79,14 @@ const useSwapSocket = () => {
 export const useSwap = <
   T extends SwapTradeData<IBData<C>>,
   C extends { [key: string]: any },
-  CAD extends SwapTradeCalcData<T>
+  CAD extends TradeCalcData<T>
 >({
   path,
 }: {
   path: string;
 }) => {
   //High: No not Move!!!!!!
-  const { realPair, realMarket } = usePairMatch({ path });
+  const { realPair, realMarket } = usePairMatch(path);
   const { t } = useTranslation(["common", "error"]);
   const history = useHistory();
   const refreshRef = React.createRef();
@@ -203,6 +201,8 @@ export const useSwap = <
     label: string | undefined;
   } => {
     if (!tokenMap && !tokenPrices) {
+      // setSwapBtnStatus();
+      // return {tradeBtnStatus:TradeBtnStatus.DISABLED};
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -295,7 +295,7 @@ export const useSwap = <
           //!validAmt) {
           const sellSymbol = tradeData?.sell.belong;
 
-          if (sellMinAmt === undefined || !sellSymbol || sellMinAmt === "NaN") {
+          if (sellMinAmt === undefined || !sellSymbol) {
             return {
               label: "labelEnterAmount",
               tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -370,7 +370,7 @@ export const useSwap = <
     ) {
       setToastOpen({
         open: true,
-        type: ToastType.error,
+        type: "error",
         content: t("labelSwapFailed"),
       });
       setIsSwapLoading(false);
@@ -428,7 +428,7 @@ export const useSwap = <
         }
         setToastOpen({
           open: true,
-          type: ToastType.error,
+          type: "error",
           content:
             t("labelSwapFailed") +
             " error: " +
@@ -476,13 +476,13 @@ export const useSwap = <
               if (percentage1 === 0 || percentage2 === 0) {
                 setToastOpen({
                   open: true,
-                  type: ToastType.warning,
+                  type: "warning",
                   content: t("labelSwapCancelled"),
                 });
               } else {
                 setToastOpen({
                   open: true,
-                  type: ToastType.success,
+                  type: "success",
                   content: t("labelSwapSuccess"),
                 });
               }
@@ -490,14 +490,14 @@ export const useSwap = <
             case sdk.OrderStatus.processed:
               setToastOpen({
                 open: true,
-                type: ToastType.success,
+                type: "success",
                 content: t("labelSwapSuccess"),
               });
               break;
             default:
               setToastOpen({
                 open: true,
-                type: ToastType.error,
+                type: "error",
                 content: t("labelSwapFailed"),
               });
           }
@@ -509,7 +509,7 @@ export const useSwap = <
       sdk.dumpError400(reason);
       setToastOpen({
         open: true,
-        type: ToastType.error,
+        type: "error",
         content: t("labelSwapFailed"),
       });
     }
@@ -812,11 +812,11 @@ export const useSwap = <
         tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
         dependencyData: { ticker, ammPoolSnapshot, depth },
       });
-      const result = reCalcStoB({
+      const result = reCalcStoB(
         market,
-        tradeData: tradeData as SwapTradeData<IBData<unknown>>,
-        tradePair: tradePair as any,
-      });
+        tradeData as SwapTradeData<IBData<unknown>>,
+        tradePair as any
+      );
 
       setTradeCalcData((state) => {
         state.StoB = result ? result.stob : stob;
@@ -833,7 +833,7 @@ export const useSwap = <
       myLog("hookSwap: resetTradeCalcData", type, _tradeData);
 
       if (coinMap && tokenMap && marketMap && marketArray) {
-        const { tradePair } = marketInitCheck({ market: _market, type });
+        const { tradePair } = marketInitCheck(_market, type);
         // @ts-ignore
         const [, coinA, coinB] = tradePair.match(/([\w,#]+)-([\w,#]+)/i);
         let walletMap: WalletMap<any> | undefined;
@@ -966,7 +966,7 @@ export const useSwap = <
           .toBig(
             _tradeData.slippage && !isNaN(_tradeData.slippage)
               ? _tradeData.slippage
-              : defaultSlipage
+              : defalutSlipage
           )
           .times(100)
           .toString();
@@ -1174,6 +1174,31 @@ export const useSwap = <
           calcTradeParams && (calcTradeParams.priceImpact = "0");
         }
 
+        // myLog(
+        //   "hookSwap:calcTradeParams input:",
+        //   input.toString(),
+        //   ", calcTradeParams Price: ",
+        //   sdk
+        //     .toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+        //     .div(input.toString())
+        //     .toNumber(),
+        //   `isAtoB:${isAtoB}, ${
+        //     isAtoB ? input.toString() : calcTradeParams?.output
+        //   } tradePrice: `,
+        //   tradePrice.toString(),
+        //   "basePrice: ",
+        //   basePrice?.toString(),
+        //   "toBig(tradePrice).div(basePrice)",
+        //   sdk
+        //     .toBig(tradePrice)
+        //     .div(basePrice ?? 1)
+        //     .toNumber(),
+        //   "priceImpact (1-tradePrice/basePrice) - 0.001",
+        //   priceImpact.toNumber(),
+        //   "priceImpact view",
+        //   calcTradeParams?.priceImpact
+        // );
+
         if (
           tradeCost &&
           calcTradeParams &&
@@ -1289,15 +1314,15 @@ export const useSwap = <
           calcTradeParams?.output
         );
 
-        const result = reCalcStoB({
+        const result = reCalcStoB(
           market,
-          tradeData: _tradeData as SwapTradeData<IBData<unknown>>,
-          tradePair: tradePair as any,
-        });
+          _tradeData as SwapTradeData<IBData<unknown>>,
+          tradePair as any
+        );
         if (
           result &&
           result.stob &&
-          sdk.toBig(result.stob?.replaceAll(sdk.SEP, "")).gt(0)
+          sdk.toBig(result.stob?.replace(sdk.SEP, "")).gt(0)
         ) {
           _tradeCalcData.StoB = result.stob;
           _tradeCalcData.BtoS = result.btos;
@@ -1306,7 +1331,7 @@ export const useSwap = <
             // @ts-ignore
             const [, _coinA] = market.match(/(\w+)-(\w+)/i);
             let _btos = getValuePrecisionThousand(
-              1 / Number(close.replaceAll(sdk.SEP, "")),
+              1 / Number(close.replace(sdk.SEP, "")),
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
@@ -1327,7 +1352,7 @@ export const useSwap = <
             .toBig(tokenPrices[_tradeData.sell.belong])
             .div(tokenPrices[_tradeData.buy.belong]);
           const marketRatePrice = marketPrice.div(
-            _tradeCalcData.StoB?.replaceAll(sdk.SEP, "") ?? 1
+            _tradeCalcData.StoB?.replace(sdk.SEP, "") ?? 1
           );
           const isNotMatchMarketPrice = marketRatePrice.gt(1.05);
           _tradeCalcData.isNotMatchMarketPrice = isNotMatchMarketPrice;
@@ -1456,12 +1481,14 @@ export const useSwap = <
           // @ts-ignore
           const [, _coinA] = market.match(/(\w+)-(\w+)/i);
           btos = getValuePrecisionThousand(
-            1 / Number(close.replaceAll(sdk.SEP, "")),
+            1 / Number(close.replace(sdk.SEP, "")),
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
             true
           ); // .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
+        }
+        if (_tradeData?.isChecked) {
         }
         const _tradeCalcData = {
           ...tradeCalcData,

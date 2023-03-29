@@ -12,10 +12,7 @@ import {
   TradeTable,
   TransactionTable,
   useSettings,
-  BtradeSwapTable,
-  ToastType,
-  useToggle,
-  ComingSoonPanel,
+  CexSwapTable
 } from "@loopring-web/component-lib";
 import {
   StylePaper,
@@ -27,7 +24,6 @@ import {
   useTokenMap,
 } from "@loopring-web/core";
 import {
-  useBtradeTransaction,
   useDefiSideRecord,
   useDualTransaction,
   useGetAmmRecord,
@@ -38,11 +34,23 @@ import {
 } from "./hooks";
 import {
   BackIcon,
-  RecordTabIndex,
   RowConfig,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+
+enum TabIndex {
+  transactions = "transactions",
+  trades = "trades",
+  ammRecords = "ammRecords",
+  orders = "orders",
+  // orderOpenTable = "orderOpenTable",
+  // orderHistoryTable = "orderHistoryTable",
+  defiRecords = "defiRecords",
+  dualRecords = "dualRecords",
+  sideStakingRecords = "sideStakingRecords",
+  cexSwapRecords = "sideStakingCexSwap",
+}
 
 enum TabOrderIndex {
   orderOpenTable = "orderOpenTable",
@@ -54,13 +62,14 @@ const HistoryPanel = withTranslation("common")(
     const history = useHistory();
     const { search } = useLocation();
     const { isMobile } = useSettings();
-    const {
-      toggle: { StopLimit },
-    } = useToggle();
     const match: any = useRouteMatch("/l2assets/:history/:tab/:orderTab?");
+    // const orderTabMatch: any = useRouteMatch(
+    //   "/l2assets/:history/:tab/:orderTab"
+    // );
+
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState(() => {
-      return match?.params.tab ?? RecordTabIndex.transactions;
+      return match?.params.tab ?? TabIndex.transactions;
     });
     const [currentOrderTab, setCurrentOrderTab] = React.useState(() => {
       return match?.params?.orderTab ?? TabOrderIndex.orderOpenTable;
@@ -104,13 +113,6 @@ const HistoryPanel = withTranslation("common")(
       cancelOrder,
     } = useOrderList(setToastOpen);
     const {
-      rawData: stopLimitRawData,
-      getOrderList: getStopLimitOrderList,
-      totalNum: totalNumStopLimit,
-      showLoading: showLoadingStopLimit,
-      cancelOrder: cancelOrderStopLimit,
-    } = useOrderList(setToastOpen);
-    const {
       dualList,
       showLoading: showDualLoading,
       getDualTxList,
@@ -127,13 +129,6 @@ const HistoryPanel = withTranslation("common")(
     const { userOrderDetailList, getUserOrderDetailTradeList } =
       useGetOrderHistorys();
     const { etherscanBaseUrl } = useSystem();
-    const {
-      getBtradeOrderList,
-      btradeOrderData,
-      onDetail,
-      totalNum: btradeTotalNum,
-      showLoading: showBtradeLoading,
-    } = useBtradeTransaction(setToastOpen);
 
     const {
       account: { accAddress, accountId },
@@ -143,7 +138,7 @@ const HistoryPanel = withTranslation("common")(
     const container = React.useRef<HTMLDivElement>(null);
 
     const handleTabChange = React.useCallback(
-      (value: RecordTabIndex, _pageSize?: number) => {
+      (value: TabIndex, _pageSize?: number) => {
         setCurrentTab(value);
         history.replace(
           `/l2assets/history/${value}?${search.replace("?", "")}`
@@ -190,7 +185,7 @@ const HistoryPanel = withTranslation("common")(
         <StylePaper ref={container} flex={1}>
           <Toast
             alertText={toastOpen?.content ?? ""}
-            severity={toastOpen?.type ?? ToastType.success}
+            severity={toastOpen?.type ?? "success"}
             open={toastOpen?.open ?? false}
             autoHideDuration={TOAST_TIME}
             onClose={closeToast}
@@ -209,37 +204,32 @@ const HistoryPanel = withTranslation("common")(
             >
               <Tab
                 label={t("labelLayer2HistoryTransactions")}
-                value={RecordTabIndex.transactions}
+                value={TabIndex.transactions}
               />
               <Tab
                 label={t("labelLayer2HistoryTrades")}
-                value={RecordTabIndex.trades}
+                value={TabIndex.trades}
               />
-              <Tab label={t("labelOrderGroup")} value={RecordTabIndex.orders} />
-              <Tab
-                label={t("labelStopLimitOrderGroup")}
-                value={RecordTabIndex.stopLimitRecords}
-              />
-
+              <Tab label={t("labelOrderGroup")} value={TabIndex.orders} />
               <Tab
                 label={t("labelLayer2HistoryAmmRecords")}
-                value={RecordTabIndex.ammRecords}
+                value={TabIndex.ammRecords}
               />
               <Tab
                 label={t("labelDefiOrderTable")}
-                value={RecordTabIndex.defiRecords}
+                value={TabIndex.defiRecords}
               />
               <Tab
                 label={t("labelDualOrderTable")}
-                value={RecordTabIndex.dualRecords}
+                value={TabIndex.dualRecords}
               />
               <Tab
                 label={t("labelSideStakingTable")}
-                value={RecordTabIndex.sideStakingRecords}
+                value={TabIndex.sideStakingRecords}
               />
               <Tab
-                label={t("labelBtradeSwapTitle")}
-                value={RecordTabIndex.btradeSwapRecords}
+                label={t("labelCexSwapTitle")}
+                value={TabIndex.cexSwapRecords}
               />
             </Tabs>
           </Box>
@@ -249,7 +239,7 @@ const HistoryPanel = withTranslation("common")(
             flex={1}
             overflow={"scroll"}
           >
-            {currentTab === RecordTabIndex.transactions ? (
+            {currentTab === TabIndex.transactions ? (
               <TransactionTable
                 {...{
                   etherscanBaseUrl,
@@ -269,7 +259,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : currentTab === RecordTabIndex.trades ? (
+            ) : currentTab === TabIndex.trades ? (
               <TradeTable
                 getUserTradeList={getUserTradeList}
                 {...{
@@ -289,7 +279,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : currentTab === RecordTabIndex.ammRecords ? (
+            ) : currentTab === TabIndex.ammRecords ? (
               <AmmTable
                 {...{
                   rawData: ammRecordList,
@@ -306,7 +296,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : currentTab === RecordTabIndex.defiRecords ? (
+            ) : currentTab === TabIndex.defiRecords ? (
               <DefiTxsTable
                 {...{
                   rawData: defiList,
@@ -321,7 +311,7 @@ const HistoryPanel = withTranslation("common")(
                 tokenMap={tokenMap}
                 idIndex={idIndex}
               />
-            ) : currentTab === RecordTabIndex.sideStakingRecords ? (
+            ) : currentTab === TabIndex.sideStakingRecords ? (
               <DefiStakingTxTable
                 {...{
                   rawData: sideStakingList as any[],
@@ -336,7 +326,7 @@ const HistoryPanel = withTranslation("common")(
                 tokenMap={tokenMap}
                 idIndex={idIndex}
               />
-            ) : currentTab === RecordTabIndex.dualRecords ? (
+            ) : currentTab === TabIndex.dualRecords ? (
               <DualTxsTable
                 rawData={dualList}
                 getDualTxList={getDualTxList}
@@ -352,7 +342,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : currentTab === RecordTabIndex.orders ? (
+            ) : currentTab === TabIndex.sideStakingRecords ? (
               <Box
                 flex={1}
                 display={"flex"}
@@ -409,94 +399,55 @@ const HistoryPanel = withTranslation("common")(
                   }}
                 />
               </Box>
-            ) : currentTab === RecordTabIndex.stopLimitRecords ? (
+            ) : (
               <Box
                 flex={1}
                 display={"flex"}
                 flexDirection={"column"}
                 marginTop={-2}
               >
-                {StopLimit.enable == false && StopLimit.reason === "no view" ? (
-                  <>
-                    <ComingSoonPanel />
-                  </>
-                ) : (
-                  <>
-                    <Box marginBottom={2} marginLeft={3}>
-                      <Tabs
-                        value={currentOrderTab}
-                        onChange={(_event, value) => {
-                          setCurrentOrderTab(value);
-                          history.replace(
-                            `/l2assets/history/stopLimitOrder/${value}?${search.replace(
-                              "?",
-                              ""
-                            )}`
-                          );
-                        }}
-                        aria-label="l2-history-tabs"
-                        variant="scrollable"
-                      >
-                        <Tab
-                          label={t("labelOrderTableOpenOrder")}
-                          value={TabOrderIndex.orderOpenTable}
-                        />
-                        <Tab
-                          label={t("labelOrderTableOrderHistory")}
-                          value={TabOrderIndex.orderHistoryTable}
-                        />
-                      </Tabs>
-                    </Box>
+                <CexSwapTable
+                  rawData={[
+                    {
+                      type: 'Settled',
+                      fromAmount: '10',
+                      fromSymbol: 'ETH',
+                      toAmount: '11000.93',
+                      toSymbol: 'DAI',
+                      price: '1800.2',
+                      feeAmount: '10.1',
+                      feeSymbol: 'DAI',
+                      time: 1679913235883
+                    },
+                    {
+                      type: 'Delivering',
+                      fromAmount: '10',
+                      fromSymbol: 'ETH',
+                      toAmount: '11000.93',
+                      toSymbol: 'DAI',
+                      price: '1800.2',
+                      feeAmount: '10.1',
+                      feeSymbol: 'DAI',
+                      time: 1679913235883
+                    },
+                    {
+                      type: 'Settled',
+                      fromAmount: '10',
+                      fromSymbol: 'ETH',
+                      toAmount: '11000.93',
+                      toSymbol: 'DAI',
+                      price: '1800.2',
+                      feeAmount: '10.1',
+                      feeSymbol: 'DAI',
+                      time: 1679913235883
+                    },
+                  ]}
+                  showloading={false}
+                  onItemClick={(item) => {
 
-                    <OrderHistoryTable
-                      {...{
-                        pagination:
-                          currentOrderTab === TabOrderIndex.orderOpenTable
-                            ? undefined
-                            : {
-                                pageSize: pageSize - 1,
-                                total: totalNumStopLimit,
-                              },
-                        isStopLimit: true,
-                        rawData: stopLimitRawData,
-                        showFilter: true,
-                        getOrderList: getStopLimitOrderList,
-                        marketArray: orderRaw,
-                        showDetailLoading: false,
-                        userOrderDetailList,
-                        getUserOrderDetailTradeList,
-                        ...rest,
-                        showLoading: showLoadingStopLimit,
-                        isOpenOrder:
-                          currentOrderTab === TabOrderIndex.orderOpenTable,
-                        cancelOrder: cancelOrderStopLimit,
-                      }}
-                    />
-                  </>
-                )}
-              </Box>
-            ) : currentTab === RecordTabIndex.btradeSwapRecords ? (
-              <Box
-                flex={1}
-                display={"flex"}
-                flexDirection={"column"}
-                marginTop={-2}
-              >
-                <BtradeSwapTable
-                  {...{
-                    showloading: showBtradeLoading,
-                    getBtradeOrderList,
-                    rawData: btradeOrderData,
                   }}
-                  pagination={{
-                    pageSize: pageSize,
-                    total: btradeTotalNum,
-                  }}
-                  onItemClick={onDetail}
                 />
               </Box>
-            ) : (
-              <></>
             )}
           </Box>
         </StylePaper>

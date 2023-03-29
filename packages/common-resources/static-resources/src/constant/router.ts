@@ -1,12 +1,10 @@
 import {
   AssetsIcon,
-  ContactIcon,
   ImageIcon,
   L2MyLiquidityIcon,
   MintIcon,
   ProfileIcon,
   RecordIcon,
-  // RewardIcon,
   SecurityIcon,
   VipIcon,
   WaitApproveIcon,
@@ -32,7 +30,6 @@ export const BANXA_URLS = {
   1: "https://loopring.banxa.com",
   5: "https://loopring.banxa-sandbox.com",
 };
-export const LOOPRING_DOCUMENT = "https://loopring.io/#/document/";
 
 //
 //
@@ -47,16 +44,6 @@ export const profile = {
       },
     },
   ],
-  // reward: [
-  //   {
-  //     icon: RewardIcon,
-  //     router: { path: "/layer2/rewards" },
-  //     label: {
-  //       id: "rewards",
-  //       i18nKey: "labelReward",
-  //     },
-  //   },
-  // ],
   vip: [
     {
       icon: VipIcon,
@@ -64,16 +51,6 @@ export const profile = {
       label: {
         id: "vip",
         i18nKey: "labelVipPanel",
-      },
-    },
-  ],
-  contact: [
-    {
-      icon: ContactIcon,
-      router: { path: "/contact" },
-      label: {
-        id: "contact",
-        i18nKey: "labelContactsPanel",
       },
     },
   ],
@@ -133,7 +110,10 @@ export let headerToolBarData: Array<{
 }> = [
   {
     buttonComponent: ButtonComponentsMap.Download,
-    url: "https://wallet.loopring.io",
+    url: "https://loopring.io/#/wallet",
+    // i18nTitle: "labelDownloadAppTitle",
+    // handleClick: undefined,
+    // i18nDescription: "labelDownloadBtn",
   },
   {
     buttonComponent: ButtonComponentsMap.Notification,
@@ -161,13 +141,6 @@ export const toolBarMobileAvailableItem = [
   ButtonComponentsMap.WalletConnect,
 ];
 
-export enum RouterPath {
-  lite = "/trade/lite",
-  pro = "/trade/pro",
-  stoplimit = "/trade/stoplimit",
-  btrade = "/trade/btrade",
-  fiat = "/trade/fiat",
-}
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -175,7 +148,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelClassic",
       description: "labelClassicDescription",
     },
-    router: { path: RouterPath.lite + "/${pair}" },
+    router: { path: "/trade/lite/${pair}" },
   },
   {
     label: {
@@ -183,32 +156,23 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelAdvanced",
       description: "labelAdvancedDescription",
     },
-    router: { path: RouterPath.pro + "/${pair}" },
+    router: { path: "/trade/pro/${pair}" },
   },
   {
     label: {
-      id: "stopLimit",
-      i18nKey: "labelStopLimit",
-      description: "labelStopLimitDescription",
+      id: "cex",
+      i18nKey: "labelCexTrade",
+      description: "labelCexTradeDescription",
     },
-    router: { path: RouterPath.stoplimit + "/${pair}" },
+    router: { path: "/trade/cex/${pair}" },
   },
-  {
-    label: {
-      id: "btrade",
-      i18nKey: "labelBtradeTrade",
-      description: "labelBtradeTradeDescription",
-    },
-    router: { path: RouterPath.btrade + "/${pair}" },
-  },
-
   {
     label: {
       id: "fiat",
       i18nKey: "labelFiat",
       description: "labelFiatDescription",
     },
-    router: { path: RouterPath.fiat },
+    router: { path: "/trade/fiat" },
   },
 ];
 
@@ -221,14 +185,14 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "Landing-page",
       i18nKey: "labelZkRollupLayer2",
     },
-    router: { path: "https://loopring.io/#/" },
+    router: { path: "https://loopring.io/#/", pathName: "/" },
   },
   {
     label: {
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "https://wallet.loopring.io" },
+    router: { path: "https://loopring.io/#/wallet", pathName: "/wallet" },
   },
   // {
   //   label: {
@@ -407,17 +371,17 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: "Privacy", //Privacy policy
-      linkHref: LOOPRING_DOCUMENT + "privacy_en.md",
+      linkHref: "https://loopring.io/#/document/privacy_en.md",
     },
     {
       linkName: "Risks", //Risks Disclosure
-      linkHref: LOOPRING_DOCUMENT + "risks_en.md",
+      linkHref: "https://loopring.io/#/document/risks_en.md",
     },
   ],
   Platform: [
     {
       linkName: "Fees", //Fees
-      linkHref: LOOPRING_DOCUMENT + "dex_fees_en.md",
+      linkHref: "https://loopring.io/#/document/dex_fees_en.md",
     },
     {
       linkName: "VIP", //VIP
@@ -453,7 +417,7 @@ export const FOOTER_LIST_MAP = {
   Developers: [
     {
       linkName: "SmartContract", // Smart Contract
-      linkHref: LOOPRING_DOCUMENT + "contracts_en.md",
+      linkHref: "https://loopring.io/#/document/contracts_en.md",
     },
 
     {
@@ -466,7 +430,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: "BugBounty", //BugBounty
-      linkHref: LOOPRING_DOCUMENT + "bug_bounty_en.md",
+      linkHref: "https://loopring.io/#/document/bug_bounty_en.md",
     },
     {
       linkName: "Subgraph", //Subgraph
@@ -603,15 +567,3 @@ export const stakeAdvice: InvestAdvice = {
   desI18n: "labelInvestStakeLRCDes",
   enable: true,
 };
-
-export enum RecordTabIndex {
-  transactions = "transactions",
-  trades = "trades",
-  ammRecords = "ammRecords",
-  orders = "orders",
-  defiRecords = "defiRecords",
-  dualRecords = "dualRecords",
-  sideStakingRecords = "sideStakingRecords",
-  btradeSwapRecords = "BtradeSwap",
-  stopLimitRecords = "stopLimitRecords",
-}

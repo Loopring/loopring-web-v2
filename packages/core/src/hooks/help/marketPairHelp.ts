@@ -1,8 +1,8 @@
 import {
-  ammMapReducer,
-  LoopringAPI,
   store,
+  Ticker,
   tickerReducer,
+  LoopringAPI,
   volumeToCountAsBigNumber,
 } from "../../index";
 
@@ -12,7 +12,6 @@ import {
   getValuePrecisionThousand,
   IBData,
   MarketType,
-  Ticker,
 } from "@loopring-web/common-resources";
 import BigNumber from "bignumber.js";
 import { SwapTradeData } from "@loopring-web/component-lib";
@@ -34,31 +33,10 @@ export const swapDependAsync = (
     if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
       Promise.all([
         LoopringAPI.exchangeAPI.getMixDepth({ market, level, limit }),
-        poolAddress
-          ? LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({ poolAddress })
-          : Promise.resolve({ ammPoolSnapshot: undefined }),
+        LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({ poolAddress }),
         LoopringAPI.exchangeAPI.getMixTicker({ market: market }),
       ]).then(([{ depth }, { ammPoolSnapshot }, { tickMap }]) => {
         store.dispatch(tickerReducer.updateTicker(tickMap));
-        const { ammMap } = store.getState().amm.ammMap;
-        const ammInfo = ammMap["AMM-" + market];
-        if (ammPoolSnapshot && ammInfo) {
-          store.dispatch(
-            ammMapReducer.updateRealTimeAmmMap({
-              ammPoolStats: {
-                ["AMM-" + market]: {
-                  ...ammInfo.__rawConfig__,
-                  liquidity: [
-                    ammPoolSnapshot.pooled[0].volume,
-                    ammPoolSnapshot.pooled[1].volume,
-                  ],
-                  lpLiquidity: ammPoolSnapshot.lp.volume,
-                },
-              },
-            })
-          );
-        }
-
         resolve({
           ammPoolSnapshot: ammPoolSnapshot,
           tickMap,
@@ -71,35 +49,27 @@ export const swapDependAsync = (
   });
 };
 
-export const dexSwapDependAsync = ({
-  market,
-  level = 0,
-  limit,
-  //TODO
-  tokenMap,
-}: {
-  market: MarketType;
-  level?: number;
-  limit?: number;
-  //TODO
-  tokenMap?: any;
-}): Promise<{
-  depth: sdk.DepthData | undefined;
+export const dexSwapDependAsync = (
+  market: MarketType,
+  level: number = 0,
+  limit?: number
+): Promise<{
+  depth: sdk.DepthData;
 }> => {
   return new Promise((resolve, reject) => {
     if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
       Promise.all([
-        LoopringAPI.defiAPI?.getBtradeDepth({
+        LoopringAPI.defiAPI?.getCefiDepth({
+          apiKey: "",
           request: {
             market,
             level,
             limit,
           },
-          tokenMap,
         }),
-      ]).then(([responseDepth]) => {
+      ]).then(([{ depth }]) => {
         resolve({
-          depth: responseDepth?.depth,
+          depth,
         });
       });
     } else {
@@ -248,30 +218,12 @@ export const calcPriceByAmmTickMapDepth = <_C>({
     close: undefined,
   };
 };
-export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>({
-  tokenMap,
-  market,
-  tradeData,
-  tradePair,
-  marketMap,
-}: {
-  market: MarketType;
-  tradeData: T;
-  tradePair: MarketType;
-  marketMap?: any;
-  tokenMap?: any;
-}): { stob: string; btos: string } | undefined => {
-  const {
-    marketMap: _marketMap,
-    // marketArray: _marketArray,
-    tokenMap: _tokenMap,
-  } = store.getState().tokenMap;
-  if (tokenMap && marketMap) {
-  } else {
-    // marketArray = _marketArray;
-    tokenMap = _tokenMap;
-    marketMap = _marketMap;
-  }
+export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>(
+  market: MarketType,
+  tradeData: T,
+  tradePair: MarketType
+): { stob: string; btos: string } | undefined => {
+  const { tokenMap, marketMap } = store.getState().tokenMap;
   // const marketPrecision =  ? marketMap[market].precisionForPrice : 4;
   //@ts-ignore
   const [, coinA, coinB] = market.match(/([\w,#]+)-([\w,#]+)/i);
@@ -327,34 +279,13 @@ export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>({
   }
 };
 
-export const marketInitCheck = ({
-  market,
-  type,
-  defaultValue = "LRC-ETH",
-  marketArray,
-  tokenMap,
-  marketMap,
-}: {
-  market: string;
-  type?: "sell" | "buy";
-  defaultValue?: string;
-  marketArray?: any;
-  tokenMap?: any;
-  marketMap?: any;
-}): { tradePair: MarketType } => {
-  const {
-    coinMap,
-    marketMap: _marketMap,
-    marketArray: _marketArray,
-    tokenMap: _tokenMap,
-  } = store.getState().tokenMap;
-  if (marketArray) {
-  } else {
-    marketArray = _marketArray;
-    tokenMap = _tokenMap;
-    marketMap = _marketMap;
-  }
-  const { ammMap } = store.getState().amm.ammMap;
+export const marketInitCheck = (
+  market: string,
+  type?: "sell" | "buy"
+): { tradePair: MarketType } => {
+  const { coinMap, tokenMap, marketMap, marketArray } =
+    store.getState().tokenMap;
+  const { ammMap } = store.getState().amm;
   if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
     let coinA: string = "#null",
       coinB: string = "#null";
@@ -391,7 +322,7 @@ export const marketInitCheck = ({
     return { tradePair: `${coinA}-${coinB}` };
   }
 
-  return { tradePair: defaultValue as MarketType };
+  return { tradePair: "LRC-ETH" };
 };
 
 export const Limit = 14;

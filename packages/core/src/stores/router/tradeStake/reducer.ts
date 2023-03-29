@@ -24,7 +24,7 @@ const initialState: TradeStakeStatus<IBData<R>> = {
   __TOAST_AUTO_CLOSE_TIMER__: 3000,
 };
 const tradeStakeSlice: Slice<TradeStakeStatus<IBData<R>>> = createSlice({
-  name: "router_tradeStake",
+  name: "_router_tradeStake",
   initialState,
   reducers: {
     resetTradeStake(state) {

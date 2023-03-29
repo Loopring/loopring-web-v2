@@ -22,7 +22,7 @@ export type SocketMap = {
     count?: number;
     snapshot?: boolean;
   };
-  [sdk.WsTopicType.btradedepth]?: {
+  [sdk.WsTopicType.cefiOrderBook]?: {
     showOverlap?: boolean;
     markets: any[];
     level?: number;

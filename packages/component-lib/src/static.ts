@@ -173,7 +173,7 @@ export const coinType = {
 };
 
 export const tradeCalcData: TradeCalcData<CoinType> = {
-  isBtrade: false,
+  isCex: false,
   coinSell: "ETH", //name
   coinBuy: "LRC",
   BtoS: "1,11",
@@ -189,7 +189,7 @@ export const tradeCalcData: TradeCalcData<CoinType> = {
   priceImpactColor: "var(--color-success)",
   minimumReceived: "1%",
   fee: "1%",
-} as any;
+};
 export const ammCalcData: AmmInData<CoinType> = {
   myCoinA: { belong: "ETH", balance: 1000, tradeValue: 0 },
   myCoinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
@@ -201,7 +201,6 @@ export const ammCalcData: AmmInData<CoinType> = {
   coinInfoMap: coinMap,
   slippage: 0.5,
   fee: "0.01",
-  fees: {},
   percentage: "0.01",
 };
 

@@ -1,10 +1,4 @@
-import {
-  AmmBase,
-  BtradeBase,
-  DualBase,
-  IconType,
-  PanelProps,
-} from "./BasicPanel";
+import { BasicPanel, DualBase, IconType, PanelProps } from "./BasicPanel";
 import { Box, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 import {
@@ -21,11 +15,7 @@ export const Dual_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.PendingIcon,
     describe1: (
-      <Typography
-        variant={"h5"}
-        color={"var(--color-primary)"}
-        component={"span"}
-      >
+      <Typography variant={"h5"} color={"var(--color-primary)"}>
         {props.t("labelDualProcessing", {
           symbol: props.symbol,
           value: props.value,
@@ -43,7 +33,6 @@ export const Dual_Success = (props: PanelProps) => {
         paddingX={isMobile ? 1 : 5}
         whiteSpace={"pre-line"}
         color={"textSecondary"}
-        component={"span"}
       >
         {props.t("labelDualProcessingDes")}
       </Typography>
@@ -70,11 +59,7 @@ export const Staking_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: (
-      <Typography
-        variant={"h5"}
-        color={"var(--color-primary)"}
-        component={"span"}
-      >
+      <Typography variant={"h5"} color={"var(--color-primary)"}>
         {props.t("labelStakingSuccess", {
           symbol: info.symbol,
         })}
@@ -322,75 +307,69 @@ export const Staking_Redeem_Failed = (props: PanelProps) => {
   return <DualBase showTitle={true} {...propsPatch} {...props} />;
 };
 
-export const BtradeDetail = (props: any) => {
+export const CexSwap_Delivering = (props: PanelProps) => {
+  const { info, t } = props;
   const { isMobile } = useSettings();
-  const { info } = props;
-  return info?.buyToken && info?.sellToken ? (
-    <Box
-      justifySelf={"stretch"}
-      display={"flex"}
-      flexDirection={"column"}
-      minWidth={340}
-      justifyContent={"center"}
-      marginTop={1}
-      paddingX={isMobile ? 1 : 5}
-      alignSelf={"stretch"}
-    >
+  const propsPatch = {
+    iconType: IconType.SubmitIcon,
+    describe1: (
+      <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+        {t("labelCexSwapSettled")}
+      </Typography>
+    ),
+    describe2: (
       <Box
-        flexDirection={"row"}
-        alignItems={"center"}
-        justifyContent={"space-evenly"}
+        justifySelf={"stretch"}
         display={"flex"}
-        flex={1}
+        flexDirection={"column"}
+        minWidth={340}
+        justifyContent={"center"}
         marginTop={2}
-        sx={{ background: "var(--color-box-hover)" }}
-        paddingY={2}
+        paddingX={isMobile ? 1 : 0}
       >
-        <Typography
-          flexDirection={"column"}
+        <Typography color={"var(--color-text-secondary)"} marginTop={2}>
+          {t("labelCexSwapPanelDes")}
+        </Typography>
+        <Box
+          flexDirection={"row"}
           alignItems={"center"}
-          justifyContent={"center"}
+          justifyContent={"space-evenly"}
           display={"flex"}
+          flex={1}
         >
-          <ListItemIcon style={{ minWidth: "40px" }}>
-            <CoinIcon symbol={info?.sellToken.symbol} size={32} />
-          </ListItemIcon>
-
-          {info?.sellFStr && (
+          <Typography
+            flexDirection={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            display={"flex"}
+          >
+            <ListItemIcon style={{ minWidth: "40px" }}>
+              <CoinIcon symbol={info?.sellToken.symbol} size={32} />
+            </ListItemIcon>
             <ListItemText>
-              <Typography variant={"h5"} component={"span"}>
-                {info?.sellFStr + " " + info.sellToken.symbol}
+              <Typography marginLeft={1} variant={"h5"}>
+                {info?.sellStr}
               </Typography>
             </ListItemText>
-          )}
-        </Typography>
-        <Box>
-          <ConvertToIcon
-            fontSize={"large"}
-            htmlColor={"var(--color-text-primary)"}
-          />
+          </Typography>
+          <Box>
+            <ConvertToIcon
+              fontSize={"large"}
+              htmlColor={"var(--color-text-primary)"}
+            />
+          </Box>
+          <Typography>
+            <ListItemIcon style={{ minWidth: "40px" }}>
+              <CoinIcon symbol={info?.buyToken.symbol} size={32} />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography marginLeft={1} variant={"h5"}>
+                {info?.buyStr}
+              </Typography>
+            </ListItemText>
+          </Typography>
         </Box>
-        <Typography
-          flexDirection={"column"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          display={"flex"}
-          component={"span"}
-        >
-          <ListItemIcon style={{ minWidth: "40px" }}>
-            <CoinIcon symbol={info?.buyToken.symbol} size={32} />
-          </ListItemIcon>
-          {info?.buyFStr && (
-            <ListItemText>
-              <Typography variant={"h5"} component={"span"}>
-                {info?.buyFStr + " " + info?.buyToken.symbol}
-              </Typography>
-            </ListItemText>
-          )}
-        </Typography>
-      </Box>
 
-      <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
         <Typography
           display={"inline-flex"}
           justifyContent={"space-between"}
@@ -409,7 +388,7 @@ export const BtradeDetail = (props: any) => {
             component={"span"}
             color={"var(--color-text-primary)"}
           >
-            {props.t("labelBtradeTrade")}
+            {props.t("labelCexTrade")}
           </Typography>
         </Typography>
         <Typography
@@ -433,6 +412,7 @@ export const BtradeDetail = (props: any) => {
             {info?.convertStr}
           </Typography>
         </Typography>
+
         <Typography
           display={"inline-flex"}
           justifyContent={"space-between"}
@@ -450,26 +430,8 @@ export const BtradeDetail = (props: any) => {
             variant={"body1"}
             component={"span"}
             color={"var(--color-text-primary)"}
-            display={"inline-flex"}
-            alignItems={"center"}
           >
-            <Typography variant={"inherit"} component={"span"}>
-              {info?.sellFStr ?? EmptyValueTag}
-            </Typography>
-            <Typography
-              variant={"inherit"}
-              component={"span"}
-              color={"var(--color-text-secondary)"}
-            >
-              /{info?.sellStr}
-            </Typography>
-            <Typography
-              variant={"inherit"}
-              marginLeft={1 / 2}
-              component={"span"}
-            >
-              {info?.sellToken.symbol}
-            </Typography>
+            {info?.sellStr}
           </Typography>
         </Typography>
         <Typography
@@ -489,61 +451,10 @@ export const BtradeDetail = (props: any) => {
             variant={"body1"}
             component={"span"}
             color={"var(--color-text-primary)"}
-            display={"inline-flex"}
-            alignItems={"center"}
           >
-            <Typography variant={"inherit"} component={"span"}>
-              {info?.buyFStr ?? EmptyValueTag}
-            </Typography>
-            <Typography
-              variant={"inherit"}
-              component={"span"}
-              color={"var(--color-text-secondary)"}
-            >
-              /{info?.buyStr}
-            </Typography>
-            <Typography
-              variant={"inherit"}
-              marginLeft={1 / 2}
-              component={"span"}
-            >
-              {info?.buyToken.symbol}
-            </Typography>
+            {info?.buyStr}
           </Typography>
         </Typography>
-        {props.isDelivering && (
-          <Typography
-            component={"span"}
-            display={"inline-flex"}
-            justifyContent={"space-between"}
-            marginTop={2}
-          >
-            <Typography
-              variant={"body1"}
-              component={"span"}
-              color={"var(--color-text-secondary)"}
-            >
-              {props.t("labelBtradeSettled")}
-            </Typography>
-            <Typography
-              variant={"body1"}
-              component={"span"}
-              color={"var(--color-text-primary)"}
-              display={"inline-flex"}
-              alignItems={"center"}
-            >
-              <Typography
-                variant={"inherit"}
-                marginLeft={1 / 2}
-                component={"span"}
-              >
-                {info?.settledToAmount
-                  ? info?.settledToAmount + " " + info?.buyToken.symbol
-                  : EmptyValueTag}
-              </Typography>
-            </Typography>
-          </Typography>
-        )}
         <Typography
           component={"span"}
           display={"inline-flex"}
@@ -562,142 +473,361 @@ export const BtradeDetail = (props: any) => {
             component={"span"}
             color={"var(--color-text-primary)"}
           >
-            {info?.feeStr
-              ? info?.feeStr + " " + info.buyToken.symbol
-              : EmptyValueTag}
+            {info?.feeStr}
           </Typography>
         </Typography>
-        {info?.time && (
-          <Typography
-            component={"span"}
-            display={"inline-flex"}
-            justifyContent={"space-between"}
-            marginTop={2}
-          >
-            <Typography
-              variant={"body1"}
-              component={"span"}
-              color={"var(--color-text-secondary)"}
-            >
-              {props.t("labelBtradeTime")}
-            </Typography>
-            <Typography
-              variant={"body1"}
-              component={"span"}
-              color={"var(--color-text-primary)"}
-            >
-              {moment(new Date(info.time)).format(YEAR_DAY_MINUTE_FORMAT)}
-            </Typography>
-          </Typography>
-        )}
       </Box>
-    </Box>
-  ) : (
-    <></>
-  );
+    ),
+  };
+  return <BasicPanel {...propsPatch} {...props} />;
 };
 
-export const BtradeSwap_Delivering = (props: PanelProps) => {
-  const { t } = props;
+export const CexSwap_Settled = (props: PanelProps) => {
+  const { info, t } = props;
   const { isMobile } = useSettings();
-
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: (
+      <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+        {t("labelCexSwapSettled")}
+      </Typography>
+    ),
+    describe2: (
       <Box
-        paddingX={isMobile ? 1 : 5}
+        justifySelf={"stretch"}
         display={"flex"}
         flexDirection={"column"}
-        alignItems={"center"}
+        minWidth={340}
+        justifyContent={"center"}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 0}
       >
-        <Typography
-          color={"var(--color-text-primary)"}
-          variant={"h5"}
-          component={"span"}
-        >
-          {t("labelBtradeSwapDelivering")}
+        <Typography color={"var(--color-text-secondary)"} marginTop={2}>
+          {t("labelCexSwapPanelDes")}
         </Typography>
+        <Box
+          flexDirection={"row"}
+          alignItems={"center"}
+          justifyContent={"space-evenly"}
+          display={"flex"}
+          flex={1}
+        >
+          <Typography
+            flexDirection={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            display={"flex"}
+          >
+            <ListItemIcon style={{ minWidth: "40px" }}>
+              <CoinIcon symbol={info?.sellToken.symbol} size={32} />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography marginLeft={1} variant={"h5"}>
+                {info?.sellStr}
+              </Typography>
+            </ListItemText>
+          </Typography>
+          <Box>
+            <ConvertToIcon
+              fontSize={"large"}
+              htmlColor={"var(--color-text-primary)"}
+            />
+          </Box>
+          <Typography>
+            <ListItemIcon style={{ minWidth: "40px" }}>
+              <CoinIcon symbol={info?.buyToken.symbol} size={32} />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography marginLeft={1} variant={"h5"}>
+                {info?.buyStr}
+              </Typography>
+            </ListItemText>
+          </Typography>
+        </Box>
+
         <Typography
-          color={"var(--color-text-secondary)"}
+          display={"inline-flex"}
+          justifyContent={"space-between"}
           marginTop={2}
           component={"span"}
-          whiteSpace={"pre-line"}
-          sx={{ wordBreak: "break-word" }}
         >
-          {t("labelBtradeSwapDeliverDes")}
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelType")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {props.t("labelCexTrade")}
+          </Typography>
+        </Typography>
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+          component={"span"}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelPrice")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.convertStr}
+          </Typography>
+        </Typography>
+
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+          component={"span"}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelSell")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.sellStr}
+          </Typography>
+        </Typography>
+        <Typography
+          component={"span"}
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelBuy")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.buyStr}
+          </Typography>
+        </Typography>
+        <Typography
+          component={"span"}
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelFee")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.feeStr}
+          </Typography>
         </Typography>
       </Box>
     ),
-    describe2: <BtradeDetail {...props} />,
   };
-  return <BtradeBase {...propsPatch} {...props} />;
-};
-export const BtradeSwap_Pending = (props: PanelProps) => {
-  const { t } = props;
-  const propsPatch = {
-    iconType: IconType.PendingIcon,
-    describe1: (
-      <Typography
-        color={"var(--color-text-primary)"}
-        variant={"h5"}
-        component={"span"}
-      >
-        {t("labelBtradeSwapPending")}
-      </Typography>
-    ),
-    describe2: <BtradeDetail {...props} />,
-  };
-  return <BtradeBase {...propsPatch} {...props} />;
+  return <BasicPanel {...propsPatch} {...props} />;
 };
 
-export const BtradeSwap_Settled = (props: PanelProps) => {
-  const { t } = props;
-  const propsPatch = {
-    iconType: IconType.DoneIcon,
-    describe1: (
-      <Typography
-        color={"var(--color-text-primary)"}
-        variant={"h5"}
-        component={"span"}
-      >
-        {t("labelBtradeSwapSettled")}
-      </Typography>
-    ),
-    describe2: <BtradeDetail {...props} />,
-  };
-  return <BtradeBase {...propsPatch} {...props} />;
-};
-
-export const BtradeSwap_Failed = (props: PanelProps) => {
-  const { t } = props;
+export const CexSwap_Failed = (props: PanelProps) => {
+  const { info, t } = props;
+  const { isMobile } = useSettings();
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: (
-      <Typography
-        color={"var(--color-text-primary)"}
-        variant={"h5"}
-        component={"span"}
-      >
-        {t("labelBtradeSwapFailed")}
+      <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+        {t("labelCexSwapFailed")}
       </Typography>
     ),
-    describe2: <BtradeDetail {...props} />,
-  };
-  return <BtradeBase {...propsPatch} {...props} />;
-};
+    describe2: (
+      <Box
+        justifySelf={"stretch"}
+        display={"flex"}
+        flexDirection={"column"}
+        minWidth={340}
+        justifyContent={"center"}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 0}
+      >
+        <Typography color={"var(--color-text-secondary)"} marginTop={2}>
+          {t("labelCexSwapPanelDes")}
+        </Typography>
+        <Box
+          flexDirection={"row"}
+          alignItems={"center"}
+          justifyContent={"space-evenly"}
+          display={"flex"}
+          flex={1}
+        >
+          <Typography
+            flexDirection={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            display={"flex"}
+          >
+            <ListItemIcon style={{ minWidth: "40px" }}>
+              <CoinIcon symbol={info?.sellToken.symbol} size={32} />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography marginLeft={1} variant={"h5"}>
+                {info?.sellStr}
+              </Typography>
+            </ListItemText>
+          </Typography>
+          <Box>
+            <ConvertToIcon
+              fontSize={"large"}
+              htmlColor={"var(--color-text-primary)"}
+            />
+          </Box>
+          <Typography>
+            <ListItemIcon style={{ minWidth: "40px" }}>
+              <CoinIcon symbol={info?.buyToken.symbol} size={32} />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography marginLeft={1} variant={"h5"}>
+                {info?.buyStr}
+              </Typography>
+            </ListItemText>
+          </Typography>
+        </Box>
 
-export const AMM_Pending = (props: PanelProps) => {
-  const propsPatch = {
-    iconType: IconType.PendingIcon,
-    // describe1: (
-    //   <Typography
-    //     color={"var(--color-text-primary)"}
-    //     variant={"h5"}
-    //     component={"span"}
-    //   >
-    //     {t("labelAMMPending")}
-    //   </Typography>
-    // ),
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+          component={"span"}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelType")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {props.t("labelCexTrade")}
+          </Typography>
+        </Typography>
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+          component={"span"}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelPrice")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.convertStr}
+          </Typography>
+        </Typography>
+
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+          component={"span"}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelSell")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.sellStr}
+          </Typography>
+        </Typography>
+        <Typography
+          component={"span"}
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelBuy")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.buyStr}
+          </Typography>
+        </Typography>
+        <Typography
+          component={"span"}
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelFee")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.feeStr}
+          </Typography>
+        </Typography>
+      </Box>
+    ),
   };
-  return <AmmBase {...{ ...props, ...propsPatch }} />;
+  return <BasicPanel {...propsPatch} {...props} />;
 };

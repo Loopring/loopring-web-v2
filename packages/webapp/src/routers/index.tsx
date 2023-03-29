@@ -1,6 +1,6 @@
 import { Route, Switch, useLocation } from "react-router-dom";
 import React from "react";
-import { Box, Container, Link } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import Header from "layouts/header";
 import { QuotePage } from "pages/QuotePage";
 import { SwapPage } from "pages/SwapPage";
@@ -8,20 +8,18 @@ import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
 import {
-  ModalCoinPairPanel,
-  ModalGroup,
-  ModalRedPacketPanel,
-  useDeposit,
-  useOffFaitModal,
-  useSystem,
   useTicker,
-  useTokenMap,
+  ModalGroup,
+  useDeposit,
+  useSystem,
+  ModalCoinPairPanel,
+  ModalRedPacketPanel,
+  useOffFaitModal,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
-  RouterPath,
   SagaStatus,
   setMyLog,
   ThemeType,
@@ -29,12 +27,11 @@ import {
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
 import {
-  ComingSoonPanel,
+  useSettings,
   LoadingBlock,
   NoticePanelSnackBar,
   NoticeSnack,
-  useSettings,
-  useToggle,
+  ComingSoonPanel,
 } from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
@@ -50,12 +47,11 @@ import { InvestPage } from "../pages/InvestPage";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { AssetPage } from "../pages/AssetPage";
 import { FiatPage } from "../pages/FiatPage";
-import { RedPacketPage } from "../pages/RedPacketPage";
 import { useTranslation } from "react-i18next";
 import { ContactPage } from "pages/ContactPage";
 import { ContactTransactionsPage } from "pages/ContactPage/transactions";
-import { BtradeSwapPage } from "../pages/BtradeSwapPage";
-import { StopLimitPage } from "../pages/ProTradePage/stopLimtPage";
+import { RewardPanel } from "../pages/Layer2Page/RewardPanel";
+import { CexSwapPage } from "../pages/CexSwapPage";
 
 const ContentWrap = ({
   children,
@@ -135,12 +131,10 @@ const WrapModal = () => {
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const proFlag =
+    process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
-  const { marketArray } = useTokenMap();
   const { setTheme } = useSettings();
-  const {
-    toggle: { BTradeInvest, StopLimit },
-  } = useToggle();
 
   React.useEffect(() => {
     if (searchParams.has("theme")) {
@@ -166,25 +160,18 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     pathname: window.location.pathname,
     query: searchParams,
   });
-  React.useEffect(() => {
-    if (/^\/?wallet/.test(location.pathname)) {
-      window.open("https://wallet.loopring.io", "_self");
-      window.opener = null;
-    }
-  }, [location.pathname]);
 
   return (
     <>
       <Switch>
-        {/*<Route exact path="/wallet">*/}
-        {/*  {searchParams && searchParams.has("noheader") ? (*/}
-        {/*    <></>*/}
-        {/*  ) : (*/}
-        {/*    <Header isHideOnScroll={true} isLandPage />*/}
-        {/*  )}*/}
-        {/*  <Link></Link>*/}
-        {/*  /!*<WalletPage />*!/*/}
-        {/*</Route>*/}
+        <Route exact path="/wallet">
+          {searchParams && searchParams.has("noheader") ? (
+            <></>
+          ) : (
+            <Header isHideOnScroll={true} isLandPage />
+          )}
+          <WalletPage />
+        </Route>
 
         <Route exact path="/loading">
           <LoadingPage />
@@ -223,7 +210,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
           <LandPage />
         </Route>
-        <Route path="/document">
+        <Route exact path="/document/:path">
           {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
@@ -302,7 +289,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <Header isHideOnScroll={true} />
           )}
 
-          {state === "PENDING" && tickerMap ? (
+          {state === "PENDING" && proFlag && tickerMap ? (
             <LoadingBlock />
           ) : (
             <Box display={"flex"} flexDirection={"column"} flex={1}>
@@ -315,37 +302,21 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <SwapPage />
           </ContentWrap>
         </Route>
-        <Route path="/trade/btrade">
+        <Route path="/trade/cex">
           <ContentWrap state={state}>
-            {!BTradeInvest.enable && BTradeInvest.reason === "no view" ? (
-              <ComingSoonPanel />
-            ) : (
-              <BtradeSwapPage />
-            )}
+            <CexSwapPage />
           </ContentWrap>
-        </Route>
-        <Route path="/trade/stopLimit">
-          {searchParams && searchParams.has("noheader") ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} />
-          )}
-
-          {state === "PENDING" ||
-          !marketArray.length ||
-          !Object.keys(tickerMap ?? {}).length ? (
-            <LoadingBlock />
-          ) : StopLimit.enable == false && StopLimit.reason === "no view" ? (
-            <ComingSoonPanel />
-          ) : (
-            <Box display={"flex"} flexDirection={"column"} flex={1}>
-              <StopLimitPage />
-            </Box>
-          )}
         </Route>
         <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
           <ContentWrap state={state}>
-            <FiatPage />
+            <FiatPage
+            // vendorListBuy={vendorListBuy}
+            // vendorListSell={vendorListSell}
+            // sellPanel={sellPanel}
+            // setSellPanel={setSellPanel}
+            // banxaViewProps={banxaViewProps}
+            // offBanxaValue={offBanxaValue}
+            />
           </ContentWrap>
         </Route>
         <Route exact path="/markets">
@@ -360,7 +331,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         </Route>
         <Route exact path={["/redPacket", "/redPacket/*"]}>
           <ContentWrap state={state}>
-            <RedPacketPage />
+            {/*<RedPacketPage />*/}
+            {<ComingSoonPanel />}
           </ContentWrap>
         </Route>
         <Route exact path={["/l2assets", "/l2assets/*"]}>

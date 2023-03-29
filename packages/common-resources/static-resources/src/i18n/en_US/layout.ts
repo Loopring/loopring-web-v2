@@ -35,7 +35,7 @@ export default {
   labelTrades: "Trade History",
   labelHistory: "Transactions",
   labelOrder: "Orders",
-  labelReward: "Rewards",
+  labelReward: "Reward",
   labelRedPacket: "RedPacket",
   labelAmmRecords: "AMM records",
   labelAmmRecordsDes: "(Add & Remove)",
@@ -50,7 +50,6 @@ export default {
   labelSetting: "Setting",
   labelSecurity: "Security",
   labelVipPanel: "VIP",
-  labelContactsPanel: "Contacts",
   titleLoopring: "Loopring",
   labelLoopringDescribe: "zkRollup Exchange and Payment Protocol",
   labelWrongNetwork: "Wrong network",
@@ -121,12 +120,7 @@ export default {
   labelMyCollectionDes: "Create, curate, and \n manage my NFT collections",
   labelInvestStakeLRC: "LRC Staking",
   labelInvestStakeLRCDes: "Earn LRC staking rewards",
-  labelBtradeTrade: "Block Trade",
-  labelBtradeTradeDescription: "Trade via CEX liquidity",
-  labelStopLimit: "Stop-Limit",
-  labelStopLimitDescription: "Control trading, like a pro",
-  labelCopyRightBeta:
-    "This site is not released yet and could contain bugs. Please use it with caution!",
-  labelReferralReward: "Referrals Reward",
+  labelCexTrade: "CEX Swap",
+  labelCexTradeDescription: "More investments, higher returns",
   // labelDepositNFTDes:"Receive NFT"
 };
