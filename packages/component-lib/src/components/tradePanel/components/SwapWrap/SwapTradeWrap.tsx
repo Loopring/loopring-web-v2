@@ -329,7 +329,7 @@ export const SwapTradeWrap = <
                 link: (
                   <Link
                     onClick={() => {
-                      history.push("/trade/cexswap");
+                      history.push("/trade/cex");
                     }}
                     target="_blank"
                     rel="noopener noreferrer"

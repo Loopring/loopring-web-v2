@@ -8,7 +8,12 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/common-resources";
-import { confirmation, useCexMap, useCexSwap } from "@loopring-web/core";
+import {
+  confirmation,
+  useCexMap,
+  useCexSwap,
+  useNotify,
+} from "@loopring-web/core";
 import React from "react";
 import { useHistory } from "react-router-dom";
 
@@ -21,10 +26,26 @@ export const CexSwapPage = withTranslation("common")(
     const [_confirmedCexSwap, setConfirmedCexSwap] = React.useState<boolean>(
       !confirmedCexSwapStore
     );
+    const { campaignTagConfig } = useNotify().notifyMap ?? {};
+
     const history = useHistory();
     const { isMobile } = useSettings();
     const { marketArray } = useCexMap();
-    const { toastOpen, closeToast } = useCexSwap({ path: "/trade/cex" });
+    const {
+      toastOpen,
+      closeToast,
+      setToastOpen,
+      refreshRef,
+      tradeData,
+      tradeCalcData,
+      onSwapClick,
+      swapBtnStatus,
+      swapBtnI18nKey,
+      handleSwapPanelEvent,
+      isSwapLoading,
+      market,
+      should15sRefresh,
+    } = useCexSwap({ path: "/trade/cex" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     return (
       <Box
@@ -42,25 +63,25 @@ export const CexSwapPage = withTranslation("common")(
         >
           {marketArray && marketArray.length ? (
             <SwapPanel
-            // tokenBuyProps={{
-            //   disabled: isSwapLoading,
-            //   decimalsLimit: tradeCalcData.buyPrecision,
-            // }}
-            // tokenSellProps={{
-            //   disabled: isSwapLoading,
-            //   decimalsLimit: tradeCalcData.sellPrecision,
-            // }}
-            // campaignTagConfig={campaignTagConfig ?? ({} as any)}
-            // market={market}
-            // onRefreshData={should15sRefresh}
-            // refreshRef={refreshRef}
-            // tradeData={tradeData as any}
-            // tradeCalcData={tradeCalcData as any}
-            // onSwapClick={onSwapClick}
-            // swapBtnI18nKey={swapBtnI18nKey}
-            // swapBtnStatus={swapBtnStatus}
-            // setToastOpen={setToastOpen}
-            // {...{ handleSwapPanelEvent, ...rest }}
+              tokenBuyProps={{
+                disabled: isSwapLoading,
+                decimalsLimit: tradeCalcData.buyPrecision,
+              }}
+              tokenSellProps={{
+                disabled: isSwapLoading,
+                decimalsLimit: tradeCalcData.sellPrecision,
+              }}
+              campaignTagConfig={campaignTagConfig ?? ({} as any)}
+              market={market}
+              onRefreshData={should15sRefresh}
+              refreshRef={refreshRef}
+              tradeData={tradeData as any}
+              tradeCalcData={tradeCalcData as any}
+              onSwapClick={onSwapClick}
+              swapBtnI18nKey={swapBtnI18nKey}
+              swapBtnStatus={swapBtnStatus}
+              setToastOpen={setToastOpen}
+              {...{ handleSwapPanelEvent, ...rest }}
             />
           ) : (
             <LoadingBlock />

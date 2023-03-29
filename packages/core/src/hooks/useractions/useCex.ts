@@ -689,20 +689,26 @@ export const useCexSwap = <
             buyPrecision: tokenMap[coinB as string].precision,
             sellCoinInfoMap,
             buyCoinInfoMap,
-            priceImpact: "",
-            priceImpactColor: "inherit",
-            minimumReceived: undefined,
             StoB: undefined,
             BtoS: undefined,
             fee: undefined,
-            feeTakerRate: undefined,
             tradeCost: undefined,
+            lockedNotification: true,
+            isLockedNotificationChecked: false,
+            amountS: undefined,
+            amountB: undefined,
+            sellMinAmtStr: undefined,
+            sellMaxL2AmtStr: undefined,
+            sellMaxAmtStr: undefined,
+            l1Pool: undefined,
+            l2Pool: undefined,
+            totalPool: undefined,
           };
         });
         setTradeData({ ...tradeDataTmp });
         let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
         setMarket(market);
-        history.push("/trade/lite/" + _market);
+        history.push("/trade/cex/" + _market);
         updateTradeCex({ market, tradePair });
 
         myLog("Market change getAmount", market);

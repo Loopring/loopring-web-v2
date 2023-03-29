@@ -56,6 +56,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
     campaignTagConfig,
     refreshRef,
     setToastOpen,
+    scenario = SCENARIO.SWAP,
     ...rest
   }: SwapProps<T, I, TCD> & WithTranslation & {}) => {
     // useSettings()
@@ -316,7 +317,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                     alignItems={"center"}
                   >
                     <TagIconList
-                      scenario={SCENARIO.SWAP}
+                      scenario={scenario}
                       campaignTagConfig={campaignTagConfig}
                       symbol={market as string}
                     />
