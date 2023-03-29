@@ -292,4 +292,11 @@ export default {
   labelDefiStakingTxRewardsMobileDate: "Date",
 
   // labelRecordAction: "Action",
+
+  labelCexSwapType: "Type",
+  labelCexSwapFee: "Fee",
+  labelCexSwapTime: "Time",
+  labelCexSwapPrice: "Price",
+  labelCexSwapSettled: "Settled",
+  labelCexSwapDelivering: "Delivering",
 };

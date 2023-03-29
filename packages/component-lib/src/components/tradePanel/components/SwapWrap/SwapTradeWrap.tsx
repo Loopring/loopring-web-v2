@@ -24,12 +24,14 @@ import {
   Grid,
   Tooltip,
   Typography,
+  Link,
 } from "@mui/material";
 import { InputButton } from "../../../basic-lib";
 
 import { SwapTradeProps } from "./Interface";
 import { useSettings } from "../../../../stores";
 import { ButtonStyle, IconButtonStyled } from "../Styled";
+import { useHistory } from "react-router-dom";
 
 export const SwapTradeWrap = <
   T extends IBData<I>,
@@ -53,6 +55,7 @@ export const SwapTradeWrap = <
 }: SwapTradeProps<T, I, TCD> & WithTranslation) => {
   const sellRef = React.useRef();
   const buyRef = React.useRef();
+  const history = useHistory();
   let tradeData = swapData.tradeData;
 
   const [_isStoB, setIsStoB] = React.useState(
@@ -217,7 +220,7 @@ export const SwapTradeWrap = <
       ? `${tradeCalcData.minimumReceived}  ${tradeData.buy?.belong}`
       : EmptyValueTag;
   const { isMobile } = useSettings();
-  myLog("tradeCalcData?.isChecked", tradeCalcData?.isChecked);
+
   return (
     <Grid
       className={tradeCalcData ? "trade-panel" : "trade-panel loading"}
@@ -239,6 +242,7 @@ export const SwapTradeWrap = <
         alignItems={"stretch"}
         flexDirection={"column"}
         flexBasis={"initial"}
+        position={"relative"}
       >
         <InputButton<any, I, CoinInfo<I>>
           ref={sellRef}
@@ -253,9 +257,25 @@ export const SwapTradeWrap = <
                 : ({} as CoinMap<I, CoinInfo<I>>),
           }}
         />
-        <Box alignSelf={"center"} marginY={1}>
+        <Box
+          alignSelf={"center"}
+          marginY={1}
+          position={"absolute"}
+          zIndex={99}
+          top={60}
+          sx={{
+            boxSizing: "border-box",
+            border: "3px solid #2e2c52",
+            background: "var(--color-box-secondary)",
+            borderRadius: "50%",
+          }}
+        >
           <IconButtonStyled
             size={"large"}
+            sx={{
+              height: "var(--btn-icon-size-large) !important",
+              width: "var(--btn-icon-size-large) !important",
+            }}
             onClick={covertOnClick}
             aria-label={t("tokenExchange")}
           >
@@ -284,6 +304,49 @@ export const SwapTradeWrap = <
         {/*</Grid>*/}
         {/*</Grid>*/}
       </Grid>
+      {!tradeCalcData.isCex && tradeCalcData.showLargeVolumeSwapInfo && (
+        <Grid
+          item
+          marginTop={3}
+          display={"flex"}
+          alignSelf={"stretch"}
+          justifyContent={"flex-start"}
+          alignItems={"stretch"}
+          flexDirection={"column"}
+          flexBasis={"initial"}
+        >
+          <Typography
+            variant={"body2"}
+            color={"textSecondary"}
+            border={"1px solid var(--color-warning)"}
+            borderRadius={1}
+            paddingY={2}
+            paddingX={1}
+          >
+            <Trans
+              i18nKey={"labelGoCexSwap"}
+              components={{
+                link: (
+                  <Link
+                    onClick={() => {
+                      history.push("/trade/cexswap");
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant={"inherit"}
+                    color={"textPrimary"}
+                  />
+                ),
+              }}
+            >
+              Swapping on the DEX will result in a large Price Impact (loss of
+              assets). We recommend using the <Link>CEX Swap</Link> option to
+              help minimize potential losses.
+            </Trans>
+          </Typography>
+        </Grid>
+      )}
+
       <Grid item>
         <Typography
           component={"p"}
@@ -311,146 +374,156 @@ export const SwapTradeWrap = <
       </Grid>
       <Grid item alignSelf={"stretch"}>
         <Grid container direction={"column"} spacing={1} alignItems={"stretch"}>
-          <Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>
-            <Grid
-              container
-              justifyContent={"space-between"}
-              direction={"row"}
-              alignItems={"center"}
-              marginTop={1 / 2}
-            >
-              <Tooltip
-                title={t("labelSwapFeeTooltips", {
-                  rate: userTakerRate,
-                  value: tradeCostMin,
-                }).toString()}
-                placement={"top"}
+          {!tradeCalcData.isCex && (
+            <Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                marginTop={1 / 2}
               >
+                <Tooltip
+                  title={t("labelSwapFeeTooltips", {
+                    rate: userTakerRate,
+                    value: tradeCostMin,
+                  }).toString()}
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapFee")}
+                  </Typography>
+                </Tooltip>
                 <Typography
                   component={"p"}
                   variant="body2"
-                  color={"textSecondary"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
+                  color={"textPrimary"}
                 >
-                  <Info2Icon
-                    fontSize={"small"}
-                    color={"inherit"}
-                    sx={{ marginX: 1 / 2 }}
-                  />
-                  {" " + t("swapFee")}
+                  {fee}
                 </Typography>
-              </Tooltip>
-              <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {fee}
-              </Typography>
-            </Grid>
+              </Grid>
 
-            <Grid
-              container
-              justifyContent={"space-between"}
-              direction={"row"}
-              alignItems={"center"}
-              marginTop={1 / 2}
-            >
-              <Tooltip
-                title={t("labelSwapPriceImpactTooltips").toString()}
-                placement={"top"}
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                marginTop={1 / 2}
               >
+                <Tooltip
+                  title={t("labelSwapPriceImpactTooltips").toString()}
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapPriceImpact")}
+                  </Typography>
+                </Tooltip>
                 <Typography
                   component={"p"}
+                  color={priceImpactColor}
                   variant="body2"
-                  color={"textSecondary"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
                 >
-                  <Info2Icon
-                    fontSize={"small"}
-                    color={"inherit"}
-                    sx={{ marginX: 1 / 2 }}
-                  />
-                  {" " + t("swapPriceImpact")}
+                  {priceImpact}
                 </Typography>
-              </Tooltip>
-              <Typography
-                component={"p"}
-                color={priceImpactColor}
-                variant="body2"
-              >
-                {priceImpact}
-              </Typography>
-            </Grid>
-            {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
+              </Grid>
+              {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
 
-            <Grid
-              container
-              justifyContent={"space-between"}
-              direction={"row"}
-              alignItems={"center"}
-              marginTop={1 / 2}
-            >
-              <Tooltip
-                title={t("labelSwapMinReceiveTooltips").toString()}
-                placement={"top"}
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                marginTop={1 / 2}
               >
+                <Tooltip
+                  title={t("labelSwapMinReceiveTooltips").toString()}
+                  placement={"top"}
+                >
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapMinReceive")}
+                  </Typography>
+                </Tooltip>
                 <Typography
                   component={"p"}
                   variant="body2"
-                  color={"textSecondary"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
+                  color={"textPrimary"}
                 >
-                  <Info2Icon
-                    fontSize={"small"}
-                    color={"inherit"}
-                    sx={{ marginX: 1 / 2 }}
-                  />
-                  {" " + t("swapMinReceive")}
+                  {minimumReceived}
                 </Typography>
-              </Tooltip>
-              <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {minimumReceived}
-              </Typography>
-            </Grid>
-            <Grid
-              container
-              justifyContent={"space-between"}
-              direction={"row"}
-              alignItems={"center"}
-              height={24}
-            >
-              <Tooltip
-                title={t("labelSwapToleranceTooltips").toString()}
-                placement={"top"}
+              </Grid>
+              <Grid
+                container
+                justifyContent={"space-between"}
+                direction={"row"}
+                alignItems={"center"}
+                height={24}
               >
-                <Typography
-                  component={"p"}
-                  variant="body2"
-                  color={"textSecondary"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
+                <Tooltip
+                  title={t("labelSwapToleranceTooltips").toString()}
+                  placement={"top"}
                 >
-                  <Info2Icon
-                    fontSize={"small"}
-                    color={"inherit"}
-                    sx={{ marginX: 1 / 2 }}
-                  />
-                  {" " + t("swapTolerance")}
-                </Typography>
-              </Tooltip>
+                  <Typography
+                    component={"p"}
+                    variant="body2"
+                    color={"textSecondary"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
+                    {" " + t("swapTolerance")}
+                  </Typography>
+                </Tooltip>
 
-              <Typography component={"p"} variant="body2">
-                {tradeCalcData
-                  ? (tradeData.slippage
-                      ? tradeData.slippage
-                      : tradeCalcData.slippage
-                      ? tradeCalcData.slippage
-                      : defalutSlipage) + "%"
-                  : EmptyValueTag}
-              </Typography>
+                <Typography component={"p"} variant="body2">
+                  {tradeCalcData
+                    ? (tradeData.slippage
+                        ? tradeData.slippage
+                        : tradeCalcData.slippage
+                        ? tradeCalcData.slippage
+                        : defalutSlipage) + "%"
+                    : EmptyValueTag}
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
-          {tradeCalcData.isNotMatchMarketPrice && (
+          )}
+          {!tradeCalcData.isCex && tradeCalcData.isNotMatchMarketPrice && (
             <Grid item>
               <MuiFormControlLabel
                 sx={{ alignItems: "flex-start" }}
@@ -490,6 +563,47 @@ export const SwapTradeWrap = <
                       oracle is symbol= marketPrice. There is marketRatePrice%
                       variance observed. Please acknowledge the risk if you
                       still want to continue.
+                    </Trans>
+                  </Typography>
+                }
+              />
+            </Grid>
+          )}
+          {tradeCalcData.isCex && tradeCalcData.lockedNotification && (
+            <Grid item>
+              <MuiFormControlLabel
+                sx={{ alignItems: "flex-start" }}
+                control={
+                  <Checkbox
+                    checked={
+                      tradeCalcData?.isLockedNotificationChecked ? true : false
+                    }
+                    onChange={() => {
+                      onChangeEvent(0, {
+                        tradeData: {
+                          ...swapData.tradeData,
+                          isChecked:
+                            !tradeCalcData?.isLockedNotificationChecked,
+                        } as SwapTradeData<T>,
+                        type: tradeCalcData?.lastStepAt ?? "sell",
+                        to: "button",
+                      });
+                    }}
+                    checkedIcon={<CheckedIcon />}
+                    icon={<CheckBoxIcon />}
+                    color="default"
+                  />
+                }
+                label={
+                  <Typography variant={"body2"}>
+                    <Trans
+                      i18nKey={"labelCexSwapPanelDes"}
+                      interpolation={{ escapeValue: false }}
+                    >
+                      It may not be possible for the Loopring pool to completely
+                      fulfill your swap at this time. If you proceed, the token
+                      you’ve sold will be locked until it is fully converted
+                      into the purchased token.
                     </Trans>
                   </Typography>
                 }

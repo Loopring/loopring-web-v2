@@ -25,6 +25,7 @@ export type System = {
   allowTrade: {
     register: { enable: boolean; reason?: string };
     order: { enable: boolean; reason?: string };
+    cexOrder: { enable: boolean; reason?: string };
     joinAmm: { enable: boolean; reason?: string };
     defi: { enable: boolean; reason?: string };
     dAppTrade: { enable: boolean; reason?: string };

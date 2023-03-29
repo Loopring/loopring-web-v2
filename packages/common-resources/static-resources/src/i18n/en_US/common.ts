@@ -1517,4 +1517,20 @@ export default {
   labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
   labelStakingRedeemRemaining: "Remaining Amount",
   labelStakingRedeemDate: "Redeem Time",
+
+  labelCexSwapTitle: "CEX Swap",
+  labelCexSwapType: "Type",
+  labelCexSwapFee: "Fee",
+  labelCexSwapTime: "Time",
+  labelCexSwapPrice: "Price",
+  labelCexSwapSettled: "Settled",
+  labelCexSwapDelivering: "Delivering",
+  labelCexSwapPanelDes:
+    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
+  labelGoCexSwap:
+    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>CEX Swap</link> option to help minimize potential losses.",
+  labelCexSwap: "CEX Swap",
+  labelCexSwapFailed: "CEX Swap failed!",
+  labelCexSwapTitleDes: "What is CEX Swap?",
+  labelCexSwapContentDes: "What is CEX Swap?",
 };

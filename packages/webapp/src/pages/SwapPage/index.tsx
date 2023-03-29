@@ -32,7 +32,6 @@ export const SwapPage = withTranslation("common")(
       alertOpen,
       confirmOpen,
       refreshRef,
-      swapFunc,
       isSwapLoading,
       pageTradeLite,
       toPro,

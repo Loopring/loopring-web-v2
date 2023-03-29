@@ -9,6 +9,7 @@ import { orderbookService } from "./services/orderbookService";
 import { tradeService } from "./services/tradeService";
 import { mixorderService } from "./services/mixorderService";
 import { mixtradeService } from "./services/mixtradeService";
+import { cexOrderbookService } from "./services/cexOrderbookService";
 
 export type SocketEvent = (e: any, ...props: any[]) => any;
 
@@ -56,6 +57,23 @@ export class LoopringSocket {
       ) {
         const timestamp = Date.now();
         mixorderService.sendMixorder({
+          [topic.market]: {
+            ...data,
+            timestamp: timestamp,
+            symbol: topic.market,
+          } as any,
+        });
+      }
+    },
+    [sdk.WsTopicType.cefiOrderBook]: (data: sdk.DepthData, topic: any) => {
+      if (
+        (window as any)?.loopringSocket?.socketKeyMap &&
+        (window as any).loopringSocket?.socketKeyMap[
+          sdk.WsTopicType.cefiOrderBook
+        ]?.level === topic.level
+      ) {
+        const timestamp = Date.now();
+        cexOrderbookService.sendCexOrderBook({
           [topic.market]: {
             ...data,
             timestamp: timestamp,
@@ -315,7 +333,6 @@ export class LoopringSocket {
           }
 
           break;
-
         case sdk.WsTopicType.orderbook:
           const orderbookSocket = socket[sdk.WsTopicType.orderbook];
           if (orderbookSocket) {
@@ -357,7 +374,27 @@ export class LoopringSocket {
               topics = [...topics, ...list];
             }
           }
-
+          break;
+        case sdk.WsTopicType.cefiOrderBook:
+          const cexOrderSocket = socket[sdk.WsTopicType.cefiOrderBook];
+          if (cexOrderSocket) {
+            const level = cexOrderSocket.level ?? 0;
+            const snapshot = cexOrderSocket.snapshot ?? true;
+            const count = cexOrderSocket.count ?? 50;
+            list = cexOrderSocket.markets.map((key) =>
+              sdk.getCefiOrderBook({
+                market: key,
+                level,
+                count,
+                snapshot,
+                showOverlap: false,
+              })
+            );
+            if (list && list.length) {
+              this.addSocketEvents(sdk.WsTopicType.cefiOrderBook);
+              topics = [...topics, ...list];
+            }
+          }
           break;
         case sdk.WsTopicType.trade:
           const tradeSocket = socket[sdk.WsTopicType.trade];

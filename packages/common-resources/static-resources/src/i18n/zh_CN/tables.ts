@@ -290,4 +290,11 @@ export default {
   labelStakeTransactionTyperedeem: "redeem",
   labelStakeTransactionTypeclaim: "claim",
   // labelRecordAction: "Action",
+
+  labelCexSwapType: "Type",
+  labelCexSwapFee: "Fee",
+  labelCexSwapTime: "Time",
+  labelCexSwapPrice: "Price",
+  labelCexSwapSettled: "Settled",
+  labelCexSwapDelivering: "Delivering",
 };

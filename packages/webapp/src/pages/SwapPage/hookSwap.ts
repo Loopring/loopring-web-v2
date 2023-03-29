@@ -78,7 +78,8 @@ const useSwapSocket = () => {
 
 export const useSwap = <
   T extends SwapTradeData<IBData<C>>,
-  C extends { [key: string]: any }
+  C extends { [key: string]: any },
+  CAD extends TradeCalcData<T>
 >({
   path,
 }: {
@@ -111,12 +112,12 @@ export const useSwap = <
   const [sellMinAmt, setSellMinAmt] = React.useState<string>();
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined);
   const [tradeCalcData, setTradeCalcData] = React.useState<
-    Partial<TradeCalcData<C>>
+    CAD & { [key: string]: any }
   >({
     coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
       return { ...prev, [item]: coinMap ? coinMap[item] : {} };
     }, {} as CoinMap<C>),
-  });
+  } as CAD);
 
   /** redux storage **/
   const {
@@ -194,6 +195,7 @@ export const useSwap = <
     });
   };
 
+  // @ts-ignore
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus;
     label: string | undefined;
@@ -322,7 +324,10 @@ export const useSwap = <
             }
           }
         } else {
-          if (tradeCalcData.isNotMatchMarketPrice && !tradeCalcData.isChecked) {
+          if (
+            tradeCalcData?.isNotMatchMarketPrice &&
+            !tradeCalcData?.isChecked
+          ) {
             return {
               label: undefined,
               tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -343,8 +348,8 @@ export const useSwap = <
     }
   }, [
     tokenMap,
-    tradeCalcData.isChecked,
-    tradeCalcData.isNotMatchMarketPrice,
+    tradeCalcData?.isChecked,
+    tradeCalcData?.isNotMatchMarketPrice,
     tradeData?.sell.belong,
     tradeData?.buy.belong,
     pageTradeLite,
@@ -647,13 +652,13 @@ export const useSwap = <
     if (
       tradeCalcData?.coinSell &&
       tokenMap &&
-      tokenMap[tradeCalcData?.coinSell] &&
+      tokenMap[tradeCalcData.coinSell] &&
       LoopringAPI.userAPI
     ) {
       const storageId = await LoopringAPI.userAPI.getNextStorageId(
         {
           accountId: account.accountId,
-          sellTokenId: tokenMap[tradeCalcData?.coinSell].tokenId,
+          sellTokenId: tokenMap[tradeCalcData.coinSell].tokenId,
         },
         account.apiKey
       );
@@ -701,7 +706,7 @@ export const useSwap = <
         },
       } as T);
       setTradeCalcData((tradeCalcData) => {
-        return { ...tradeCalcData, walletMap } as TradeCalcData<C>;
+        return { ...tradeCalcData, walletMap } as CAD;
       });
     } else {
       if (tradeCalcData.coinSell && tradeCalcData.coinBuy) {
@@ -1295,7 +1300,7 @@ export const useSwap = <
           calcTradeParams,
           account.readyState
         );
-        const _tradeCalcData: Partial<TradeCalcData<C>> = {
+        let _tradeCalcData: CAD & { [key: string]: any } = {
           priceImpact: priceImpactObj.value.toString(),
           priceImpactColor: priceImpactObj.priceImpactColor,
           minimumReceived: !minimumReceived?.toString().startsWith("-")
@@ -1304,7 +1309,7 @@ export const useSwap = <
           fee: totalFee,
           feeTakerRate,
           tradeCost,
-        };
+        } as CAD;
         _tradeData[isAtoB ? "buy" : "sell"].tradeValue = getShowStr(
           calcTradeParams?.output
         );
@@ -1391,6 +1396,7 @@ export const useSwap = <
         });
         //setOutput(calcTradeParams)
         if (account.readyState !== AccountStatus.ACTIVATED) {
+          // @ts-ignore
           _tradeCalcData.priceImpact = undefined;
           _tradeCalcData.minimumReceived = undefined;
         }

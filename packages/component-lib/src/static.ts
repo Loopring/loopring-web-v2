@@ -173,6 +173,7 @@ export const coinType = {
 };
 
 export const tradeCalcData: TradeCalcData<CoinType> = {
+  isCex: false,
   coinSell: "ETH", //name
   coinBuy: "LRC",
   BtoS: "1,11",

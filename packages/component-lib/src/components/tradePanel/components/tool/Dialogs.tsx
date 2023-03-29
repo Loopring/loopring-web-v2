@@ -1998,3 +1998,72 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
     );
   }
 );
+
+export const ConfirmCexSwapRisk = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  }) => {
+    const [agree, setAgree] = React.useState(false);
+    React.useEffect(() => {
+      if (!open) {
+        setAgree(false);
+      }
+    }, [open]);
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t(`labelCexSwapTitleDes`)}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-defiRisk2">
+            <Typography
+              whiteSpace={"pre-line"}
+              component={"span"}
+              variant={"body1"}
+              display={"block"}
+              marginBottom={1}
+              color={"textSecondary"}
+            >
+              {t("labelCexSwapContentDes")}
+            </Typography>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelLRCStakingAgree")}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);

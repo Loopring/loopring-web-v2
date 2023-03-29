@@ -49,6 +49,35 @@ export const swapDependAsync = (
   });
 };
 
+export const dexSwapDependAsync = (
+  market: MarketType,
+  level: number = 0,
+  limit?: number
+): Promise<{
+  depth: sdk.DepthData;
+}> => {
+  return new Promise((resolve, reject) => {
+    if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
+      Promise.all([
+        LoopringAPI.defiAPI?.getCefiDepth({
+          apiKey: "",
+          request: {
+            market,
+            level,
+            limit,
+          },
+        }),
+      ]).then(([{ depth }]) => {
+        resolve({
+          depth,
+        });
+      });
+    } else {
+      reject(new CustomError(ErrorMap.NO_SDK));
+    }
+  });
+};
+
 export const calcPriceByAmmTickMapDepth = <_C>({
   market,
   tradePair,

@@ -72,8 +72,8 @@ export type TradeCalcData<T> = {
   sellPrecision: number;
   // tokenA: sdk.TokenInfo,
   // tokenB: sdk.TokenInfo,
-  StoB: string;
-  BtoS: string;
+  StoB: string | undefined;
+  BtoS: string | undefined;
   // marketPrecision: number,
   coinInfoMap?: CoinMap<T, CoinInfo<T>>;
   sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>;
@@ -81,29 +81,46 @@ export type TradeCalcData<T> = {
   walletMap?: WalletMap<T, WalletCoin<T>>;
   slippage: number | string;
   // slippageTolerance: Array<number | string>,
-  priceImpact: string;
-  priceImpactColor: string;
-  minimumReceived: string;
+  priceImpact: string | undefined;
+  priceImpactColor: string | undefined;
+  minimumReceived: string | undefined;
   fee: string;
   feeTakerRate?: number;
   tradeCost?: string;
-  isNotMatchMarketPrice?: boolean;
-  marketPrice?: string;
-  marketRatePrice?: string;
-  isChecked?: boolean;
   lastStepAt?: "sell" | "buy";
-};
+} & sdk.XOR<
+  {
+    isNotMatchMarketPrice?: boolean;
+    marketPrice?: string;
+    marketRatePrice?: string;
+    isChecked?: boolean;
+    lastStepAt?: "base" | "quote";
+    slippage: number | string;
+    // slippageTolerance: Array<number | string>,
+    priceImpact: string;
+    priceImpactColor: string;
+    feeTakerRate?: number;
+    tradeCost?: string;
+    showLargeVolumeSwapInfo?: boolean;
+    isCex: undefined | false;
+  },
+  {
+    lockedNotification: true;
+    isCex: true;
+    maxFeeBips: string;
+    isLockedNotificationChecked?: boolean;
+    amountS: string | undefined;
+    amountB: string | undefined;
+  }
+>;
 export type TradeCalcProData<T> = {
   coinBase: keyof T; //name
   coinQuote: keyof T;
   StoB: string;
   BtoS: string;
   coinInfoMap?: CoinMap<T, CoinInfo<T>>;
-  // sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
-  // buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
   walletMap?: WalletMap<T, WalletCoin<T>>;
   slippage: number | string;
-  // slippageTolerance: Array<number | string>,
   priceImpact: string;
   priceImpactColor: string;
   minimumReceived: string;

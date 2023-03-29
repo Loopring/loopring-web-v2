@@ -3,11 +3,18 @@ import { useTokenMap } from "../../stores/token";
 import { getExistedMarket } from "@loopring-web/loopring-sdk";
 import { MarketType } from "@loopring-web/common-resources";
 
-export function usePairMatch(path: string): {
+export function usePairMatch(
+  path: string,
+  marketArray?: string[]
+): {
   realMarket: MarketType | undefined;
   realPair: any;
 } {
-  const { coinMap, tokenMap, marketArray } = useTokenMap();
+  const { coinMap, tokenMap, marketArray: _marketArray } = useTokenMap();
+  if (marketArray) {
+  } else {
+    marketArray = _marketArray;
+  }
   const match: any = useRouteMatch(`${path}/:market`);
 
   // const [pair, setPair] = useState<{ coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined }>({ coinAInfo: undefined, coinBInfo: undefined})

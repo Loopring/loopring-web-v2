@@ -120,5 +120,7 @@ export default {
   labelMyCollectionDes: "Create, curate, and \n manage my NFT collections",
   labelInvestStakeLRC: "LRC Staking",
   labelInvestStakeLRCDes: "Earn LRC staking rewards",
+  labelCexTrade: "CEX Swap",
+  labelCexTradeDescription: "More investments, higher returns",
   // labelDepositNFTDes:"Receive NFT"
 };

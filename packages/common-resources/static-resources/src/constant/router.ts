@@ -160,6 +160,14 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
+      id: "cex",
+      i18nKey: "labelCexTrade",
+      description: "labelCexTradeDescription",
+    },
+    router: { path: "/trade/cex/${pair}" },
+  },
+  {
+    label: {
       id: "fiat",
       i18nKey: "labelFiat",
       description: "labelFiatDescription",

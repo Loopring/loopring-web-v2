@@ -51,6 +51,7 @@ import { useTranslation } from "react-i18next";
 import { ContactPage } from "pages/ContactPage";
 import { ContactTransactionsPage } from "pages/ContactPage/transactions";
 import { RewardPanel } from "../pages/Layer2Page/RewardPanel";
+import { CexSwapPage } from "../pages/CexSwapPage";
 
 const ContentWrap = ({
   children,
@@ -299,6 +300,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route path="/trade/lite">
           <ContentWrap state={state}>
             <SwapPage />
+          </ContentWrap>
+        </Route>
+        <Route path="/trade/cex">
+          <ContentWrap state={state}>
+            <CexSwapPage />
           </ContentWrap>
         </Route>
         <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
