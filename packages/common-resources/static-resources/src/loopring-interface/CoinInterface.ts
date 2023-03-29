@@ -85,6 +85,7 @@ export type TradeCalcData<T> = {
   priceImpactColor: string | undefined;
   minimumReceived: string | undefined;
   fee: string;
+  isReverse: boolean;
   feeTakerRate?: number;
   tradeCost?: string;
   lastStepAt?: "sell" | "buy";
@@ -105,12 +106,18 @@ export type TradeCalcData<T> = {
     isCex: undefined | false;
   },
   {
-    lockedNotification: true;
     isCex: true;
+    lockedNotification: true;
     maxFeeBips: string;
     isLockedNotificationChecked?: boolean;
     amountS: string | undefined;
     amountB: string | undefined;
+    sellMinAmtStr: string | undefined;
+    sellMaxL2AmtStr: string | undefined;
+    sellMaxAmtStr: string | undefined;
+    l1Pool: string;
+    l2Pool: string;
+    totalPool: string;
   }
 >;
 export type TradeCalcProData<T> = {
