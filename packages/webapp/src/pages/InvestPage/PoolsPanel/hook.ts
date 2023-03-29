@@ -86,14 +86,14 @@ export function useAmmMapUI<
           const _tickerMap = tickerMap[realMarket]?.__rawTicker__;
           const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {});
           if (coinMap) {
-            _ammMap[ammKey].coinAInfo = coinMap[_ammMap[ammKey].coinA];
-            _ammMap[ammKey].coinBInfo = coinMap[_ammMap[ammKey].coinB];
+            _ammMap[ammKey].coinAInfo = coinMap[coinA];
+            _ammMap[ammKey].coinBInfo = coinMap[coinB];
           }
           if (!_ammMap[ammKey].showDisable) {
             prev.push({
               ..._ammMap[ammKey],
               tradeFloat: {
-                ..._ammMap[ammKey].tradtradeFloat,
+                ..._ammMap[ammKey].tradeFloat,
                 volume: tickerFloat?.volume || 0,
               },
             });

@@ -2,11 +2,30 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getAmmMap, getAmmMapStatus, updateRealTimeAmmMap } from "./reducer";
 import { AmmDetail, myLog } from "@loopring-web/common-resources";
 import { store } from "../../index";
-import { AmmPoolInfoV3, AmmPoolStat, toBig } from "@loopring-web/loopring-sdk";
+import {
+  AmmPoolInfoV3,
+  AmmPoolStat,
+  ChainId,
+  toBig,
+} from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../../api_wrapper";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { AmmDetailStore, GetAmmMapParams } from "./interface";
 import { volumeToCount, volumeToCountAsBigNumber } from "../../../hooks/help";
+const ammMapStoreLocal = (ammpoolsRaw: any, chainId?: any) => {
+  // const system = store.getState().system;
+  myLog("system", chainId);
+  const ammpoolsChain = JSON.parse(
+    window.localStorage.getItem("ammpools") ?? "{}"
+  );
+  localStorage.setItem(
+    "ammpools",
+    JSON.stringify({
+      ...ammpoolsChain,
+      [chainId ?? 1]: ammpoolsRaw,
+    })
+  );
+};
 
 type AmmMap<R extends { [key: string]: any }> =
   | { [key: string]: AmmDetail<R> }
@@ -92,32 +111,18 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({
   if (!LoopringAPI.ammpoolAPI) {
     return undefined;
   }
-
-  let ammMap: AmmMap<R> = {};
+  let ammMap: AmmMap<R> | undefined = {}; //
+  const { ammMap: _ammMap } = store.getState().amm.ammMap;
   myLog("loop get ammPoolStats");
 
-  const { ammPoolStats } = await LoopringAPI.ammpoolAPI?.getAmmPoolStats();
-
-  let { __timer__ } = store.getState().amm.ammMap;
-  __timer__ = (() => {
-    if (__timer__ && __timer__ !== -1) {
-      clearInterval(__timer__);
-    }
-    return setInterval(async () => {
-      if (!LoopringAPI.ammpoolAPI) {
-        return undefined;
-      }
-
-      let ammPoolStats: { [key in keyof R]: AmmPoolStat } = (
-        await LoopringAPI.ammpoolAPI.getAmmPoolStats()
-      ).ammPoolStats as { [key in keyof R]: AmmPoolStat };
-      store.dispatch(updateRealTimeAmmMap({ ammPoolStats }));
-    }, 900000); //15*60*1000 //900000
-  })();
-  const {
-    tokenMap: { idIndex },
-  } = store.getState();
-
+  const { idIndex } = store.getState().tokenMap;
+  let ammPoolStats: any = {};
+  try {
+    ammPoolStats = (await LoopringAPI.ammpoolAPI?.getAmmPoolStats())
+      .ammPoolStats;
+  } catch (e) {
+    // throw e;
+  }
   Reflect.ownKeys(ammpools).forEach(async (key) => {
     const item: AmmPoolInfoV3 = ammpools[key as string];
     if (item.market === key && item.tokens.pooled && idIndex) {
@@ -137,10 +142,12 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({
         isNew:
           Date.now() - Number(item.createdAt) > 3 * 86400 * 1000 ? false : true, //3*24*60*60*1000,
         isActivity: item.status === 7 ? true : false,
-        ...setAmmState({
-          ammPoolState: ammPoolStats[key],
-          keyPair: `${coinA}-${coinB}`,
-        }),
+        ...(ammPoolStats[key]
+          ? setAmmState({
+              ammPoolState: ammPoolStats[key],
+              keyPair: `${coinA}-${coinB}`,
+            })
+          : { ..._ammMap[key] }),
         exitDisable,
         joinDisable,
         swapDisable,
@@ -152,16 +159,42 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({
       ammMap[item.market] = dataItem;
     }
   });
+
+  let { __timer__ } = store.getState().amm.ammMap;
+  __timer__ = ((ammpools) => {
+    if (__timer__ && __timer__ !== -1) {
+      clearInterval(__timer__);
+    }
+    return setInterval(() => {
+      store.dispatch(getAmmMap({ ammpools }));
+      // dispatchEvent()
+      // try {
+
+      //   let ammPoolStats: { [key in keyof R]: AmmPoolStat } = (
+      //     await LoopringAPI.ammpoolAPI.getAmmPoolStats()
+      //   ).ammPoolStats as { [key in keyof R]: AmmPoolStat };
+      //   if (ammPoolStats) {
+      //     store.dispatch(updateRealTimeAmmMap({ ammPoolStats }));
+      //   }
+      // } catch (error) {}
+    }, 900000); //15*60*1000 //900000
+  })(ammpools);
+
   return { ammMap, __timer__ };
 };
 
-export function* getPostsSaga({ payload }: PayloadAction<GetAmmMapParams>) {
+export function* getPostsSaga({
+  payload,
+}: PayloadAction<GetAmmMapParams & { ammpoolsRaw?: any; chainId?: ChainId }>) {
   try {
     const { ammpools } = payload;
+    if (payload?.ammpoolsRaw && payload.chainId) {
+      ammMapStoreLocal(payload?.ammpoolsRaw, payload.chainId);
+    }
     const { ammMap, __timer__ } = yield call(getAmmMapApi, { ammpools });
     yield put(getAmmMapStatus({ ammMap, __timer__ }));
   } catch (err) {
-    yield put(getAmmMapStatus(err));
+    yield put(getAmmMapStatus({ error: err }));
   }
 }
 
@@ -172,6 +205,7 @@ export function* updateRealTimeSaga({ payload }: any) {
     if (ammPoolStats) {
       Reflect.ownKeys(ammPoolStats).map((key) => {
         const keyPair = (key as string).replace("AMM-", "");
+
         // @ts-ignore
         ammMap[key] = {
           // @ts-ignore
@@ -186,7 +220,7 @@ export function* updateRealTimeSaga({ payload }: any) {
     }
     yield put(getAmmMapStatus({ ammMap }));
   } catch (err) {
-    yield put(getAmmMapStatus(err));
+    yield put(getAmmMapStatus({ error: err }));
   }
 }
 

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { AmmMapStates, GetAmmMapParams } from "./interface";
-import { myLog, SagaStatus } from "@loopring-web/common-resources";
+import { SagaStatus } from "@loopring-web/common-resources";
 import {
   AmmPoolInfoV3,
   ChainId,
@@ -13,20 +13,6 @@ const initialState: Required<AmmMapStates<object, object>> = {
   status: SagaStatus.PENDING,
   errorMessage: null,
 };
-const ammMapStoreLocal = (ammpoolsRaw: any, chainId?: any) => {
-  // const system = store.getState().system;
-  myLog("system", chainId);
-  const ammpoolsChain = JSON.parse(
-    window.localStorage.getItem("ammpools") ?? "{}"
-  );
-  localStorage.setItem(
-    "ammpools",
-    JSON.stringify({
-      ...ammpoolsChain,
-      [chainId ?? 1]: ammpoolsRaw,
-    })
-  );
-};
 const ammMapSlice: Slice = createSlice({
   name: "ammMap",
   initialState,
@@ -35,13 +21,11 @@ const ammMapSlice: Slice = createSlice({
       state,
       action: PayloadAction<{
         ammpools: LoopringMap<AmmPoolInfoV3>;
-        ammpoolsRaw?: any;
+        // ammpoolsRaw?: any;
         chainId: ChainId;
       }>
     ) {
       const ammpools = action.payload.ammpools;
-      const ammpoolsRaw = action.payload.ammpoolsRaw;
-
       const ammMap: { [key: string]: string } = Reflect.ownKeys(
         ammpools
       ).reduce((prev, key) => {
@@ -66,12 +50,13 @@ const ammMapSlice: Slice = createSlice({
         };
       }, {});
       state.ammMap = ammMap;
-
-      if (ammpoolsRaw) {
-        ammMapStoreLocal(ammpoolsRaw, action.payload.chainId);
-      }
     },
-    getAmmMap(state, _action: PayloadAction<GetAmmMapParams>) {
+    getAmmMap(
+      state,
+      _action: PayloadAction<
+        GetAmmMapParams & { ammpoolsRaw?: any; chainId?: ChainId }
+      >
+    ) {
       state.status = SagaStatus.PENDING;
     },
     getAmmMapStatus(state, action: PayloadAction<AmmMapStates<any, any>>) {
@@ -80,15 +65,16 @@ const ammMapSlice: Slice = createSlice({
         state.status = SagaStatus.ERROR;
         // @ts-ignore
         state.errorMessage = action.error;
+      } else {
+        const { ammMap, __timer__ } = action.payload;
+        if (ammMap) {
+          state.ammMap = ammMap;
+        }
+        if (__timer__) {
+          state.__timer__ = __timer__;
+        }
+        state.status = SagaStatus.DONE;
       }
-      const { ammMap, __timer__ } = action.payload;
-      if (ammMap) {
-        state.ammMap = ammMap;
-      }
-      if (__timer__) {
-        state.__timer__ = __timer__;
-      }
-      state.status = SagaStatus.DONE;
     },
     updateRealTimeAmmMap(state, _action: PayloadAction<undefined>) {
       state.status = SagaStatus.PENDING;
