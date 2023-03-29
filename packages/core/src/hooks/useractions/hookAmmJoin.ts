@@ -623,10 +623,8 @@ export const useAmmJoin = ({
   React.useEffect(() => {
     if (isShow && pair) {
       initAmmData(pair, undefined, true);
+      walletLayer2Callback();
     }
-    // if(account.readyState === AccountStatus.ACTIVATED){
-    //   walletLayer2Service.sendUserUpdate()
-    // }
   }, [isShow && pair]);
   const walletLayer2Callback = React.useCallback(async () => {
     if (pair?.coinBInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
@@ -640,10 +638,7 @@ export const useAmmJoin = ({
 
   React.useEffect(() => {
     const { isShow } = store.getState().modals.isShowAmm;
-    if (
-      isShow &&
-      accountStatus === SagaStatus.UNSET
-    ) {
+    if (isShow && accountStatus === SagaStatus.UNSET) {
       walletLayer2Service.sendUserUpdate();
     }
   }, [accountStatus]);
