@@ -11,6 +11,7 @@ export type TradeCex = {
   totalFee?: number | string;
   maxFeeBips?: number;
   sellMinAmtInfo?: string;
+  sellMaxL2AmtInfo?: string;
   sellMaxAmtInfo?: string;
   lastStepAt: "sell" | "buy";
 } & Omit<sdk.CEX_MARKET, "market">;

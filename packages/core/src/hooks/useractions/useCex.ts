@@ -2,9 +2,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
 import {
   DAYS,
-  DefaultFeeBips,
   dexSwapDependAsync,
-  getPriceImpactInfo,
   getTimestampDaysLater,
   LoopringAPI,
   makeWalletLayer2,
@@ -30,9 +28,7 @@ import {
   AccountStatus,
   CoinMap,
   CustomErrorWithCode,
-  defalutSlipage,
   EmptyValueTag,
-  getShowStr,
   getValuePrecisionThousand,
   IBData,
   MarketType,
@@ -55,12 +51,10 @@ import {
   useToggle,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { useTradeCex } from "../../stores/router/tradeCex";
-import { getCexMap } from "../../stores/invest/CexMap/reducer";
 import BigNumber from "bignumber.js";
-import { walletServices } from "@loopring-web/web3-provider";
 
 const useCexSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket();
@@ -94,7 +88,7 @@ export const useCexSwap = <
 }: {
   path: string;
 }) => {
-  const { marketCoins, marketArray, marketMap } = useCexMap();
+  const { marketCoins, marketArray, marketMap, getCexMap } = useCexMap();
   //High: No not Move!!!!!!
   const { realMarket } = usePairMatch(path, marketArray);
   const { t } = useTranslation(["common", "error"]);
@@ -116,8 +110,6 @@ export const useCexSwap = <
   /** get store value **/
   /** after unlock **/
   const { status: walletLayer2Status } = useWalletLayer2();
-
-  const [sellMinAmt, setSellMinAmt] = React.useState<string>();
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined);
   const [tradeCalcData, setTradeCalcData] = React.useState<
     Partial<TradeCalcData<C>>
@@ -126,7 +118,7 @@ export const useCexSwap = <
     coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
       return { ...prev, [item]: coinMap ? coinMap[item] : {} };
     }, {} as CoinMap<C>),
-  });
+  } as any);
 
   /** redux storage **/
   const {
@@ -145,40 +137,38 @@ export const useCexSwap = <
 
   const { tokenPrices } = useTokenPrices();
 
-  const clearData = (
-    tradeCalcData: Partial<TradeCalcData<any>> | null | undefined
-  ) => {
-    let _tradeCalcData: any = {};
-    setTradeData((state) => {
-      return {
-        ...state,
-        sell: { ...state?.sell, tradeValue: 0 },
-        buy: { ...state?.buy, tradeValue: 0 },
-        isChecked: undefined,
-      } as T;
-    });
+  const clearData = () =>
+    // tradeCalcData: Partial<TradeCalcData<any>> | null | undefined
+    {
+      let _tradeCalcData: any = {};
+      setTradeData((state) => {
+        return {
+          ...state,
+          sell: { ...state?.sell, tradeValue: 0 },
+          buy: { ...state?.buy, tradeValue: 0 },
+          isChecked: undefined,
+        } as T;
+      });
 
-    setTradeCalcData((state) => {
-      _tradeCalcData = {
-        ...state,
-        maxFeeBips: undefined,
-        lockedNotification: false,
-        isLockedNotificationChecked: false,
-        amountS: undefined,
-        amountB: undefined,
-      };
-      return {
-        _tradeCalcData,
-      };
-    });
-    updateTradeCex({
-      market,
-      maxFeeBips: MAPFEEBIPS,
-      tradeCalcData: {
-        ..._tradeCalcData,
-      },
-    });
-  };
+      setTradeCalcData((state) => {
+        _tradeCalcData = {
+          ...(state ?? {}),
+          maxFeeBips: undefined,
+          lockedNotification: false,
+          isLockedNotificationChecked: false,
+          amountS: undefined,
+          amountB: undefined,
+        };
+        return _tradeCalcData;
+      });
+      updateTradeCex({
+        market,
+        maxFeeBips: MAPFEEBIPS,
+        tradeCalcData: {
+          ..._tradeCalcData,
+        },
+      });
+    };
 
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus;
@@ -196,9 +186,16 @@ export const useCexSwap = <
     const sellToken = tokenMap[tradeData?.sell.belong as string];
     const buyToken = tokenMap[tradeData?.buy.belong as string];
 
-    const { tradeCalcData, product } = tradeCex;
+    const {
+      tradeCalcData,
+      // totalFeeRaw,
+      sellMinAmtInfo,
+      // sellMaxL2AmtInfo,
+      sellMaxAmtInfo,
+      // ...product
+    } = tradeCex;
 
-    if (!sellToken || !buyToken || !tradeCalcData) {
+    if (!sellToken || !buyToken || !tradeCalcData || !sellMaxAmtInfo) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -206,123 +203,114 @@ export const useCexSwap = <
     }
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
 
-    // let validAmt = !!(
-    //   tradeCalcData?.amountS &&
-    //   sellMinAmt &&
-    //   sdk.toBig(tradeCalcData?.amountS).gte(sdk.toBig(sellMinAmt))
-    // );
+    let validAmt = !!(
+      tradeCalcData?.amountS &&
+      sellMinAmtInfo &&
+      sdk.toBig(tradeCalcData?.amountS).gte(sdk.toBig(sellMinAmtInfo))
+    );
 
-    const sellExceed = sdk
-      .toBig(sellToken?.orderAmounts?.maximum)
-      .lt(tradeCalcData.amountS ?? 0);
-
+    const sellExceed = sdk.toBig(sellMaxAmtInfo).lt(tradeCalcData.amountS ?? 0);
+    //
     // const buyExceed = sdk
     //   .toBig(buyToken?.orderAmounts?.maximum)
     //   .lt(tradeCalcData?.amountBOutSlip?.minReceived ?? 0);
 
-    if (sellExceed || buyExceed) {
+    if (sellExceed) {
       validAmt = false;
     }
 
     const notEnough = sdk
       .toBig(walletMap[sellToken.symbol]?.count ?? 0)
-      .lt(tradeCalcData.sellAmt ?? 0);
+      .lt(tradeData?.sell?.tradeValue ?? 0);
 
-    // const sellMaxVal = sdk
-    //   .toBig(sellToken?.orderAmounts?.maximum)
-    //   .div("1e" + sellToken.decimals);
+    // const sellMaxVal = sellMaxAmtInfo;
     // const buyMaxVal = sdk
     //   .toBig(buyToken?.orderAmounts?.maximum)
     //   .div("1e" + buyToken.decimals);
     //
-    // if (isSwapLoading) {
-    //   return {
-    //     label: undefined,
-    //     tradeBtnStatus: TradeBtnStatus.LOADING,
-    //   };
-    // } else {
-    //   if (account.readyState === AccountStatus.ACTIVATED) {
-    //     if (!tradeCalcData || !tradeCalcData.sellAmt || !tradeCalcData.buyAmt) {
-    //       myLog(
-    //         "useCexSwap:tradeCalcData.baseAmt:",
-    //         tradeCalcData.sellAmt,
-    //         " tradeCalcData.quoteAmt:",
-    //         tradeCalcData.buyAmt
-    //       );
-    //
-    //       return {
-    //         label: "labelEnterAmount",
-    //         tradeBtnStatus: TradeBtnStatus.DISABLED,
-    //       };
-    //     } else if (notEnough) {
-    //       return {
-    //         label: "tokenNotEnough",
-    //         tradeBtnStatus: TradeBtnStatus.DISABLED,
-    //       };
-    //     } else if (sellExceed) {
-    //       const maxOrderSize = sellMaxVal + " " + tradeData?.sell.belong;
-    //       return {
-    //         label: `labelLimitMax| ${maxOrderSize}`,
-    //         tradeBtnStatus: TradeBtnStatus.DISABLED,
-    //       };
-    //     } else if (buyExceed) {
-    //       const maxOrderSize = buyMaxVal + " " + tradeData?.buy.belong;
-    //       return {
-    //         label: `labelLimitMax| ${maxOrderSize}`,
-    //         tradeBtnStatus: TradeBtnStatus.DISABLED,
-    //       };
-    //     } else if (!validAmt) {
-    //       //!validAmt) {
-    //       const sellSymbol = tradeData?.sell.belong;
-    //
-    //       if (sellMinAmt === undefined || !sellSymbol) {
-    //         return {
-    //           label: "labelEnterAmount",
-    //           tradeBtnStatus: TradeBtnStatus.DISABLED,
-    //         };
-    //       } else {
-    //         const sellToken = tokenMap[sellSymbol];
-    //         // //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
-    //         const minOrderSize = getValuePrecisionThousand(
-    //           sdk.toBig(sellMinAmt ?? 0).div("1e" + sellToken.decimals),
-    //           sellToken.precision,
-    //           sellToken.precision,
-    //           sellToken.precision,
-    //           false,
-    //           { floor: false, isAbbreviate: true }
-    //         );
-    //         if (isNaN(Number(minOrderSize))) {
-    //           return {
-    //             label: `labelLimitMin| ${EmptyValueTag + " " + sellSymbol}`,
-    //             tradeBtnStatus: TradeBtnStatus.DISABLED,
-    //           };
-    //         } else {
-    //           return {
-    //             label: `labelLimitMin| ${minOrderSize + " " + sellSymbol}`,
-    //             tradeBtnStatus: TradeBtnStatus.DISABLED,
-    //           };
-    //         }
-    //       }
-    //     } else {
-    //       return {
-    //         label: undefined,
-    //         tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-    //       };
-    //     }
-    //   } else {
-    //     return {
-    //       label: undefined,
-    //       tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-    //     };
-    //   }
-    // }
+    if (isSwapLoading) {
+      return {
+        label: undefined,
+        tradeBtnStatus: TradeBtnStatus.LOADING,
+      };
+    } else {
+      if (account.readyState === AccountStatus.ACTIVATED) {
+        if (
+          !tradeCalcData ||
+          !tradeCalcData.amountS ||
+          !tradeCalcData.amountB
+        ) {
+          return {
+            label: "labelEnterAmount",
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+          };
+        } else if (notEnough) {
+          return {
+            label: "tokenNotEnough",
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+          };
+        } else if (sellExceed) {
+          const maxOrderSize =
+            tradeCalcData.sellMaxAmtStr + " " + tradeData?.sell.belong;
+          return {
+            label: `labelLimitMax| ${maxOrderSize}`,
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+          };
+          // }
+          // else if (buyExceed) {
+          //         const maxOrderSize = buyMaxVal + " " + tradeData?.buy.belong;
+          //         return {
+          //           label: `labelLimitMax| ${maxOrderSize}`,
+          //           tradeBtnStatus: TradeBtnStatus.DISABLED,
+          //         };
+        } else if (!validAmt) {
+          const sellSymbol = tradeData?.sell.belong;
+          if (sellMinAmtInfo === undefined || !sellSymbol) {
+            return {
+              label: "labelEnterAmount",
+              tradeBtnStatus: TradeBtnStatus.DISABLED,
+            };
+          } else {
+            const sellToken = tokenMap[sellSymbol];
+            const minOrderSize = getValuePrecisionThousand(
+              sdk.toBig(sellMinAmtInfo ?? 0).div("1e" + sellToken.decimals),
+              sellToken.precision,
+              sellToken.precision,
+              sellToken.precision,
+              false,
+              { floor: false, isAbbreviate: true }
+            );
+            if (isNaN(Number(minOrderSize))) {
+              return {
+                label: `labelLimitMin| ${EmptyValueTag + " " + sellSymbol}`,
+                tradeBtnStatus: TradeBtnStatus.DISABLED,
+              };
+            } else {
+              return {
+                label: `labelLimitMin| ${minOrderSize + " " + sellSymbol}`,
+                tradeBtnStatus: TradeBtnStatus.DISABLED,
+              };
+            }
+          }
+        } else {
+          return {
+            label: undefined,
+            tradeBtnStatus: TradeBtnStatus.AVAILABLE,
+          };
+        }
+      } else {
+        return {
+          label: undefined,
+          tradeBtnStatus: TradeBtnStatus.AVAILABLE,
+        };
+      }
+    }
   }, [
     account,
     tokenMap,
     tradeData?.sell.belong,
     tradeData?.buy.belong,
     tradeCex,
-    sellMinAmt,
     isSwapLoading,
   ]);
   const sendRequest = React.useCallback(async () => {
@@ -600,7 +588,6 @@ export const useCexSwap = <
         market: market as MarketType,
         feeBips: 0,
         totalFee: 0,
-        takerRate: 0,
         tradeCalcData: {},
       });
       // setFeeBips('0')
@@ -772,7 +759,7 @@ export const useCexSwap = <
         const coinB = _tradeData.buy.belong;
         const sellToken = tokenMap[coinA as string];
         const buyToken = tokenMap[coinB as string];
-
+        const sellBuyStr = `${sellToken.symbol}-${buyToken.symbol}`;
         const isAtoB = type === "sell";
 
         let input: any = isAtoB
@@ -786,6 +773,7 @@ export const useCexSwap = <
         let minimumReceived = undefined;
         let sellMinAmtInfo = undefined;
         let sellMaxAmtInfo = undefined;
+        let sellMaxL2AmtInfo = undefined;
         let tradeCost = undefined;
         let totalFeeRaw = undefined;
         const info: sdk.CEX_MARKET = cexMap[market];
@@ -805,7 +793,7 @@ export const useCexSwap = <
           );
           const poolToVol =
             sdk
-              .toBig(_tradePair == market ? cefiQuota.quote : cefiQuota.base)
+              .toBig(sellBuyStr == market ? cefiQuota.quote : cefiQuota.base)
               .div("1e" + buyToken.decimals)
               .toString() ?? "0";
           const calcPoolToSell = sdk.calcDex({
@@ -821,12 +809,37 @@ export const useCexSwap = <
             feeBips: maxFeeBips.toString(),
           });
 
-          sellMaxAmtInfo = BigNumber.min(
-            calcPoolToSell?.amountS ?? 0,
-            _tradePair == market ? cefiQuota.base : cefiQuota.quote
-          )
+          const poolL2ToVol =
+            sdk
+              .toBig(sellBuyStr == market ? l2Quota.quote : l2Quota.base)
+              .div("1e" + buyToken.decimals)
+              .toString() ?? "0";
+
+          const calcPoolL2ToSell = sdk.calcDex({
+            info,
+            input: poolL2ToVol,
+            sell: sellToken.symbol,
+            buy: buyToken.symbol,
+            isAtoB: false,
+            marketArr: marketArray,
+            tokenMap,
+            marketMap,
+            depth,
+            feeBips: maxFeeBips.toString(),
+          });
+
+          sellMaxL2AmtInfo = sdk
+            .toBig(calcPoolL2ToSell?.amountS ?? 0)
             .div("1e" + sellToken.decimals)
             .toString();
+
+          // 总量 是不是1+2 的总量
+          sellMaxAmtInfo = sdk
+            .toBig(calcPoolToSell?.amountS ?? 0)
+            .plus(calcPoolL2ToSell?.amountS ?? 0)
+            .div("1e" + sellToken.decimals)
+            .toString();
+
           tradeCost = amountMarket[buyToken.symbol].tradeCost;
 
           const calcCostToSell = sdk.calcDex({
@@ -895,7 +908,57 @@ export const useCexSwap = <
           amountS: tradeCalcData?.amountS as any,
           fee: totalFee,
           tradeCost,
+          isReverse: calcDexOutput?.isReverse,
           lastStepAt: type,
+          sellMinAmtStr: getValuePrecisionThousand(
+            sdk.toBig(sellMinAmtInfo ?? 0).div("1e" + sellToken.decimals),
+            sellToken.precision,
+            sellToken.precision,
+            undefined,
+            false
+          ),
+          sellMaxL2AmtStr: getValuePrecisionThousand(
+            sdk.toBig(sellMaxL2AmtInfo ?? 0).div("1e" + sellToken.decimals),
+            sellToken.precision,
+            sellToken.precision,
+            undefined,
+            false
+          ),
+          sellMaxAmtStr: getValuePrecisionThousand(
+            sdk.toBig(sellMaxAmtInfo ?? 0).div("1e" + sellToken.decimals),
+            sellToken.precision,
+            sellToken.precision,
+            undefined,
+            false
+          ),
+          l1Pool: getValuePrecisionThousand(
+            sdk
+              .toBig((sellBuyStr == market ? cexMap.quote : cexMap.base) ?? 0)
+              .div("1e" + buyToken.decimals),
+            buyToken.precision,
+            buyToken.precision,
+            undefined,
+            false
+          ),
+          l2Pool: getValuePrecisionThousand(
+            sdk
+              .toBig((sellBuyStr == market ? l2Quota.quote : l2Quota.base) ?? 0)
+              .div("1e" + buyToken.decimals),
+            buyToken.precision,
+            buyToken.precision,
+            undefined,
+            false
+          ),
+          totalPool: getValuePrecisionThousand(
+            sdk
+              .toBig((sellBuyStr == market ? cexMap.quote : cexMap.base) ?? 0)
+              .plus((sellBuyStr == market ? l2Quota.quote : l2Quota.base) ?? 0)
+              .div("1e" + buyToken.decimals),
+            buyToken.precision,
+            buyToken.precision,
+            undefined,
+            false
+          ),
         };
 
         setTradeCalcData((state) => {
@@ -923,6 +986,7 @@ export const useCexSwap = <
           totalFeeRaw: totalFeeRaw?.toString(),
           lastStepAt: type,
           sellMinAmtInfo: sellMinAmtInfo as any,
+          sellMaxL2AmtInfo: sellMaxL2AmtInfo as any,
           sellMaxAmtInfo: sellMaxAmtInfo as any,
           tradeCalcData: _tradeCalcData,
         });
@@ -944,6 +1008,7 @@ export const useCexSwap = <
     _tradeData: SwapTradeData<IBData<C>> | undefined
   ) => {
     myLog("useCexSwap: resetSwap", swapType, _tradeData);
+    const depth = store.getState()._router_tradeCex.tradeCex?.depth;
     switch (swapType) {
       case SwapType.SEll_CLICK:
       case SwapType.BUY_CLICK:
@@ -986,25 +1051,42 @@ export const useCexSwap = <
         }
         break;
       case SwapType.EXCHANGE_CLICK:
-        let btos: string = "0";
-        if (_tradeData?.isChecked) {
+        let StoB, BtoS;
+        if (depth && depth.mid_price) {
+          debugger;
+          const pr1 = sdk.toBig(1).div(depth.mid_price).toString();
+          const pr2 = depth.mid_price;
+          [StoB, BtoS] =
+            market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
+              ? [pr1, pr2]
+              : [pr2, pr1];
         }
+        const sellPrecision =
+          tokenMap[tradeCalcData.coinBuy as string].precision;
+        const buyPrecision =
+          tokenMap[tradeCalcData.coinSell as string].precision;
         const _tradeCalcData = {
           ...tradeCalcData,
           coinSell: tradeCalcData.coinBuy,
-          sellPrecision: tokenMap[tradeCalcData.coinBuy as string].precision,
           coinBuy: tradeCalcData.coinSell,
-          buyPrecision: tokenMap[tradeCalcData.coinSell as string].precision,
+          sellPrecision,
+          buyPrecision,
           sellCoinInfoMap: tradeCalcData.buyCoinInfoMap,
           buyCoinInfoMap: tradeCalcData.sellCoinInfoMap,
-          StoB:
-            market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
-              ? close
-              : btos,
-          BtoS:
-            market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
-              ? btos
-              : close,
+          StoB: getValuePrecisionThousand(
+            StoB,
+            buyPrecision,
+            buyPrecision,
+            undefined,
+            false
+          ),
+          BtoS: getValuePrecisionThousand(
+            BtoS,
+            sellPrecision,
+            sellPrecision,
+            undefined,
+            false
+          ),
         };
 
         myLog(
@@ -1018,12 +1100,10 @@ export const useCexSwap = <
           tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`,
           tradeCalcData: {
             ...tradeCex.tradeCalcData,
-            isReverse: undefined, //todo
-            amountS: undefined,
-            output: undefined,
+            // amountS: undefined,
+            // output: undefined,
           },
         });
-        setSellMinAmt(undefined);
         setTradeCalcData(_tradeCalcData);
         break;
       default:
