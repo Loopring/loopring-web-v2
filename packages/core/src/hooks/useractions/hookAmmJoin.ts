@@ -625,6 +625,7 @@ export const useAmmJoin = ({
       // const { walletMap } = makeWalletLayer2(false);
       setIsLoading(true);
       initAmmData(true);
+      walletLayer2Service.sendUserUpdate();
     }
   }, [isShow]);
   const walletLayer2Callback = React.useCallback(async () => {
