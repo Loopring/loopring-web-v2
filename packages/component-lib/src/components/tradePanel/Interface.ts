@@ -5,6 +5,7 @@ import {
   IBData,
   MarketType,
   NFTWholeINFO,
+  SCENARIO,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import {
@@ -175,6 +176,7 @@ export type SwapProps<T, I, TCD> = {
     data: SwapData<SwapTradeData<T>>
   ) => SwapData<SwapTradeData<T>>;
   setToastOpen?: (state: TOASTOPEN) => void;
+  scenario?: SCENARIO;
 } & SwapInfoProps<T, I, TCD> &
   SwapTradeBaseEventProps<T, I> &
   SwapTradeBaseProps<T, I, TCD>;

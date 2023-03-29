@@ -189,7 +189,7 @@ export const tradeCalcData: TradeCalcData<CoinType> = {
   priceImpactColor: "var(--color-success)",
   minimumReceived: "1%",
   fee: "1%",
-};
+} as any;
 export const ammCalcData: AmmInData<CoinType> = {
   myCoinA: { belong: "ETH", balance: 1000, tradeValue: 0 },
   myCoinB: { belong: "LRC", balance: 1000, tradeValue: 0 },

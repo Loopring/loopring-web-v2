@@ -107,8 +107,8 @@ export type TradeCalcData<T> = {
   },
   {
     isCex: true;
-    lockedNotification: true;
     maxFeeBips: string;
+    lockedNotification: true;
     isLockedNotificationChecked?: boolean;
     amountS: string | undefined;
     amountB: string | undefined;
