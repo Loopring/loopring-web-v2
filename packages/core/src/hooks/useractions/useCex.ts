@@ -105,7 +105,7 @@ export const useCexSwap = <
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { isMobile } = useSettings();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
-  const { account, status: accountStatus } = useAccount();
+  const { account } = useAccount();
   const {
     toggle: { cexOrder },
   } = useToggle();
@@ -543,29 +543,15 @@ export const useCexSwap = <
   }, [market]);
 
   React.useEffect(() => {
-    if (
-      accountStatus === SagaStatus.UNSET &&
-      tradeCalcData?.coinSell &&
-      tradeCalcData?.coinBuy
-    ) {
-      walletLayer2Callback();
-    }
-  }, [
-    account.readyState,
-    accountStatus,
-    market,
-    tradeCalcData?.coinSell,
-    tradeCalcData?.coinBuy,
-  ]);
-  React.useEffect(() => {
-    debugger;
-    if (tradeCex.depth && tradeCex.depth.symbol == market) {
+    const { depth, lastStepAt, tradePair, market } = tradeCex;
+    if (depth && depth.symbol == market) {
       setIsSwapLoading(false);
-      refreshWhenDepthUp();
+      // refreshWhenDepthUp();
+      reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
     } else {
       setIsSwapLoading(true);
     }
-  }, [tradeCex.depth, tradeCalcData.coinBuy, account.readyState, market]);
+  }, [tradeCex.depth, account.readyState, market]);
 
   const walletLayer2Callback = React.useCallback(async () => {
     let walletMap: WalletMap<any> | undefined = undefined;
@@ -640,6 +626,7 @@ export const useCexSwap = <
       if (refreshRef.current) {
         // @ts-ignore
         refreshRef.current.firstElementChild.click();
+        walletLayer2Service.sendUserUpdate();
       }
       if (
         (tradeData && tradeData.sell.belong == undefined) ||
@@ -750,11 +737,12 @@ export const useCexSwap = <
     if (market && LoopringAPI.defiAPI) {
       try {
         const { depth } = await dexSwapDependAsync(market);
-        const { markets } = store.getState().invest.cexMap;
+        const { marketMap } = store.getState().invest.cexMap;
+        // debugger;
         updateTradeCex({
           market,
           depth,
-          ...markets[market],
+          ...marketMap[market],
         });
         myLog("useCexSwap:", market, depth?.symbol);
       } catch (error: any) {
@@ -769,7 +757,7 @@ export const useCexSwap = <
         tradeCex: { depth, tradePair },
       } = store.getState()._router_tradeCex;
 
-      const { cexMap } = store.getState().invest.cexMap;
+      const { marketMap } = store.getState().invest.cexMap;
       const { amountMap } = store.getState().amountMap;
 
       myLog(
@@ -800,10 +788,15 @@ export const useCexSwap = <
         let sellMaxL2AmtInfo = undefined;
         let tradeCost = undefined;
         let totalFeeRaw = undefined;
-        const info: sdk.CEX_MARKET = cexMap[market];
-        const { cefiQuota, l2Quota } = info;
+        const info: sdk.CEX_MARKET = marketMap[market];
+        const { cefiAmount, minAmount, l2Amount } = info;
 
-        if (amountMap && amountMap[market as string] && cefiQuota && l2Quota) {
+        if (
+          amountMap &&
+          amountMap[market as string] &&
+          cefiAmount &&
+          l2Amount
+        ) {
           // let buyMinAmtInfo = undefined;
           const amountMarket = amountMap[market as string];
           tradeCost = amountMap[market][buyToken.symbol].tradeCost;
@@ -817,7 +810,7 @@ export const useCexSwap = <
           );
           const poolToVol =
             sdk
-              .toBig(sellBuyStr == market ? cefiQuota.quote : cefiQuota.base)
+              .toBig(sellBuyStr == market ? cefiAmount.quote : cefiAmount.base)
               .div("1e" + buyToken.decimals)
               .toString() ?? "0";
           const calcPoolToSell = sdk.calcDex({
@@ -835,7 +828,7 @@ export const useCexSwap = <
 
           const poolL2ToVol =
             sdk
-              .toBig(sellBuyStr == market ? l2Quota.quote : l2Quota.base)
+              .toBig(sellBuyStr == market ? l2Amount.quote : l2Amount.base)
               .div("1e" + buyToken.decimals)
               .toString() ?? "0";
 
@@ -869,7 +862,7 @@ export const useCexSwap = <
           const calcCostToSell = sdk.calcDex({
             info,
             input: sdk
-              .toBig(tradeCost)
+              .toBig(sellBuyStr == market ? minAmount.quote : minAmount.base)
               .div("1e" + buyToken.decimals)
               .toString(),
             sell: sellToken.symbol,
@@ -882,7 +875,7 @@ export const useCexSwap = <
             feeBips: maxFeeBips.toString(),
           });
           // calcForMinCost = ()
-          //TODO：先用dust 在看接口   _tradePair == market ? info.cefiQuota.quote : cefiQuota.base
+          //TODO：先用dust 在看接口   _tradePair == market ? info.cefiAmount.quote : cefiAmount.base
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,
             calcCostToSell?.amountS ?? 0
@@ -957,7 +950,9 @@ export const useCexSwap = <
           ),
           l1Pool: getValuePrecisionThousand(
             sdk
-              .toBig((sellBuyStr == market ? cexMap.quote : cexMap.base) ?? 0)
+              .toBig(
+                (sellBuyStr == market ? cefiAmount.quote : cefiAmount.base) ?? 0
+              )
               .div("1e" + buyToken.decimals),
             buyToken.precision,
             buyToken.precision,
@@ -966,7 +961,9 @@ export const useCexSwap = <
           ),
           l2Pool: getValuePrecisionThousand(
             sdk
-              .toBig((sellBuyStr == market ? l2Quota.quote : l2Quota.base) ?? 0)
+              .toBig(
+                (sellBuyStr == market ? l2Amount.quote : l2Amount.base) ?? 0
+              )
               .div("1e" + buyToken.decimals),
             buyToken.precision,
             buyToken.precision,
@@ -976,7 +973,7 @@ export const useCexSwap = <
           // totalPool: getValuePrecisionThousand(
           //   sdk
           //     .toBig((sellBuyStr == market ? cexMap.quote : cexMap.base) ?? 0)
-          //     // .plus((sellBuyStr == market ? l2Quota.quote : l2Quota.base) ?? 0)
+          //     // .plus((sellBuyStr == market ? l2Amount.quote : l2Amount.base) ?? 0)
           //     .div("1e" + buyToken.decimals),
           //   buyToken.precision,
           //   buyToken.precision,
@@ -1027,52 +1024,48 @@ export const useCexSwap = <
     ]
   );
 
-  const refreshWhenDepthUp = React.useCallback(() => {
-    const { depth, lastStepAt, tradePair, market } = tradeCex;
-    if (
-      tradeData &&
-      lastStepAt &&
-      tradeCalcData.coinSell === tradeData["sell"].belong &&
-      tradeCalcData.coinBuy === tradeData["buy"].belong &&
-      tradeData[lastStepAt].tradeValue &&
-      tradeData[lastStepAt].tradeValue !== 0
-    ) {
-      reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
-    } else if (
-      depth &&
-      tradeCalcData.coinSell &&
-      tradeCalcData.coinBuy &&
-      (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
-        `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
-    ) {
-      //TODO:
-      // let { stob, btos, close } = calcPriceByAmmTickMapDepth({
-      //   market: market as any,
-      //   tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
-      //   dependencyData: { ticker, ammPoolSnapshot, depth },
-      // });
-
-      const result = reCalcStoB(
-        market,
-        tradeData as SwapTradeData<IBData<unknown>>,
-        tradePair as any
-      );
-
-      setTradeCalcData((state) => {
-        const pr1 = sdk.toBig(1).div(depth.mid_price).toString();
-        const pr2 = depth.mid_price;
-        const [StoB, BtoS] =
-          market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
-            ? [pr1, pr2]
-            : [pr2, pr1];
-        state.StoB = result ? result.stob : StoB.toString();
-        state.BtoS = result ? result.btos : BtoS.toString();
-        return { ...state };
-      });
-
-      updateTradeCex({ market });
-    }
-  }, [market, tradeCex, tradeData, tradeCalcData, setTradeCalcData]);
+  // const refreshWhenDepthUp = React.useCallback(() => {
+  //   const { depth, lastStepAt, tradePair, market } = tradeCex;
+  //     if(depth && depth.symbol === market){
+  //       reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
+  //     }
+  //     // if (
+  //     //   tradeData &&
+  //     //   lastStepAt &&
+  //     //   tradeCalcData.coinSell === tradeData["sell"].belong &&
+  //     //   tradeCalcData.coinBuy === tradeData["buy"].belong &&
+  //     //   tradeData[lastStepAt].tradeValue &&
+  //     //   tradeData[lastStepAt].tradeValue !== 0
+  //     // ) {
+  //     //   reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
+  //     // } else if (
+  //     //   depth &&
+  //     //   tradeCalcData.coinSell &&
+  //     //   tradeCalcData.coinBuy &&
+  //     //   (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
+  //     //     `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
+  //     // ) {
+  //       // const result = reCalcStoB(
+  //       //   market,
+  //       //   tradeData as SwapTradeData<IBData<unknown>>,
+  //       //   tradePair as any
+  //       // );
+  //       //
+  //       // setTradeCalcData((state) => {
+  //       //   const pr1 = sdk.toBig(1).div(depth.mid_price).toString();
+  //       //   const pr2 = depth.mid_price;
+  //       //   const [StoB, BtoS] =
+  //       //     market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
+  //       //       ? [pr1, pr2]
+  //       //       : [pr2, pr1];
+  //       //   state.StoB = result ? result.stob : StoB.toString();
+  //       //   state.BtoS = result ? result.btos : BtoS.toString();
+  //       //   return { ...state };
+  //       // });
+  //       //
+  //       // updateTradeCex({ market });
+  //     }
+  //   }, [market, tradeCex, tradeData, tradeCalcData, setTradeCalcData]);
 
   const resetSwap = (
     swapType: SwapType | undefined,
@@ -1124,7 +1117,6 @@ export const useCexSwap = <
       case SwapType.EXCHANGE_CLICK:
         let StoB, BtoS;
         if (depth && depth.mid_price) {
-          debugger;
           const pr1 = sdk.toBig(1).div(depth.mid_price).toString();
           const pr2 = depth.mid_price;
           [StoB, BtoS] =
