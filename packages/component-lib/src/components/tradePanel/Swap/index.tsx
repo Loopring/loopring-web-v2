@@ -4,6 +4,7 @@ import React, { useCallback, useState } from "react";
 import { Box, Grid, Popover, Switch, Tooltip, Typography } from "@mui/material";
 import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
 import {
+  CexTradeCalcData,
   defalutSlipage,
   IBData,
   Info2Icon,
@@ -12,6 +13,7 @@ import {
   SCENARIO,
   SlippageTolerance,
   SwapSettingIcon,
+  SwapTradeCalcData,
   TradeCalcData,
 } from "@loopring-web/common-resources";
 import {
@@ -41,7 +43,12 @@ const PopoverStyled = styled(Popover)`
 `;
 
 export const SwapPanel = withTranslation("common", { withRef: true })(
-  <T extends IBData<I>, I, TCD extends TradeCalcData<I>>({
+  <
+    T extends IBData<I>,
+    I,
+    TCD extends CexTradeCalcData<I>,
+    SCD extends SwapTradeCalcData<I>
+  >({
     disabled,
     tradeCalcData,
     swapBtnStatus,
@@ -56,6 +63,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
     campaignTagConfig,
     refreshRef,
     setToastOpen,
+    titleI8nKey = "swapTitle",
     scenario = SCENARIO.SWAP,
     ...rest
   }: SwapProps<T, I, TCD> & WithTranslation & {}) => {
@@ -266,7 +274,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
           key: "trade",
           element: React.useMemo(
             () => (
-              <SwapTradeWrap<T, I, TCD>
+              <SwapTradeWrap<T, I, TCD, SCD>
                 key={"trade"}
                 {...{
                   ...rest,
@@ -309,7 +317,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   alignItems={"center"}
                   alignSelf={"self-start"}
                 >
-                  {rest.t("swapTitle")}
+                  {rest.t(titleI8nKey)}
                   <Typography
                     component={"span"}
                     paddingLeft={1}
@@ -471,7 +479,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
           key: "tradeMenuList",
           element: React.useMemo(
             () => (
-              <SwapMenuList<T, I, TCD>
+              <SwapMenuList<T, I, TCD | SCD>
                 key={"tradeMenuList"}
                 {...{
                   ...rest,

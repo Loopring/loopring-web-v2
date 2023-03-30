@@ -3,16 +3,45 @@ import { getCexMap, getCexMapStatus, updateCexSyncMap } from "./reducer";
 import { CexMap, store } from "../../index";
 import { LoopringAPI } from "../../../api_wrapper";
 import { PayloadAction } from "@reduxjs/toolkit";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const getCexMapApi = async () => {
   if (!LoopringAPI.defiAPI) {
     return undefined;
   }
+  // const { idIndex } = store.getState().tokenMap;
+  const {
+    // markets: marketMap,
+    // tokenArr: marketCoins,
+    // marketArr: marketArray,
+    raw_data,
+  } = await LoopringAPI.defiAPI?.getCefiMarkets();
+  const reformat = (raw_data as sdk.CEX_MARKET[]).reduce((prev, ele) => {
+    if (/-/gi.test(ele.market)) {
+      return [...prev, ele];
+    } else {
+      return prev;
+      // return [...prev,{
+      //   ...ele,
+      //   marketServer: ele.market,
+      //   market: `${idIndex[ele.baseTokenId]}-${idIndex[ele.quoteTokenId]}`,
+      // }];
+    }
+  }, [] as sdk.CEX_MARKET[]);
   const {
     markets: marketMap,
-    tokenArr: marketCoins,
+    pairs,
     marketArr: marketArray,
-  } = await LoopringAPI.defiAPI?.getCefiMarkets();
+    tokenArr: marketCoins,
+  } = sdk.makeMarkets({ markets: reformat });
+  const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
+    const tradePairs = pairs[key as string]?.tokenList?.sort();
+    prev[key] = {
+      ...pairs[key as string],
+      tradePairs,
+    };
+    return prev;
+  }, {});
 
   // const resultTokenMap = sdk.makeMarket(_tokenMap);
 
@@ -33,10 +62,11 @@ const getCexMapApi = async () => {
   })();
 
   return {
-    CexMap: {
+    cexMap: {
       marketArray,
       marketCoins,
       marketMap,
+      tradeMap,
     },
     __timer__,
   };
@@ -44,18 +74,18 @@ const getCexMapApi = async () => {
 
 export function* getPostsSaga() {
   try {
-    const { CexMap, __timer__ } = yield call(getCexMapApi);
-    yield put(getCexMapStatus({ ...CexMap, __timer__ }));
+    const { cexMap, __timer__ } = yield call(getCexMapApi);
+    yield put(getCexMapStatus({ ...cexMap, __timer__ }));
   } catch (err) {
     yield put(getCexMapStatus(err));
   }
 }
 export function* getCexSyncSaga({
   payload,
-}: PayloadAction<{ CexMap: CexMap }>) {
+}: PayloadAction<{ cexMap: CexMap }>) {
   try {
-    if (payload.CexMap) {
-      yield put(getCexMapStatus({ ...payload.CexMap }));
+    if (payload.cexMap) {
+      yield put(getCexMapStatus({ ...payload.cexMap }));
     }
   } catch (err) {
     yield put(getCexMapStatus(err));

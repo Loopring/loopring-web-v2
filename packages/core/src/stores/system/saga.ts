@@ -37,6 +37,7 @@ import { getStakingMap } from "../invest/StakingMap/reducer";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { getRedPacketConfigs } from "../redPacket/reducer";
 import { AvaiableNetwork } from "@loopring-web/web3-provider";
+import { getCexMap } from "../invest/CexMap/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
@@ -242,6 +243,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   store.dispatch(getDefiMap(undefined));
   store.dispatch(getDualMap(undefined));
   store.dispatch(getStakingMap(undefined));
+  store.dispatch(getCexMap(undefined));
 
   yield all([
     take("defiMap/getDefiMapStatus"),

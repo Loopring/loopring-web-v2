@@ -36,7 +36,7 @@ export const usePro = <C extends { [key: string]: any }>(): {
   // marketTicker: MarketBlockProps<C> |undefined,
 } => {
   //High: No not Move!!!!!!
-  let { realMarket } = usePairMatch("/trade/pro");
+  let { realMarket } = usePairMatch({ path: "/trade/pro" });
   const history = useHistory();
   const { updatePageTradePro } = usePageTradePro();
   const [market, setMarket] = React.useState<MarketType>(

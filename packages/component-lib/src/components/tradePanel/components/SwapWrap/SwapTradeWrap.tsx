@@ -1,5 +1,6 @@
 import { SwapTradeData } from "../../Interface";
 import {
+  CexTradeCalcData,
   CheckBoxIcon,
   CheckedIcon,
   CoinInfo,
@@ -12,8 +13,8 @@ import {
   Info2Icon,
   myLog,
   ReverseIcon,
+  SwapTradeCalcData,
   TradeBtnStatus,
-  TradeCalcData,
 } from "@loopring-web/common-resources";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
@@ -36,7 +37,8 @@ import { useHistory } from "react-router-dom";
 export const SwapTradeWrap = <
   T extends IBData<I>,
   I,
-  TCD extends TradeCalcData<I>
+  TCD extends CexTradeCalcData<I>,
+  SCD extends SwapTradeCalcData<I>
 >({
   t,
   onChangeEvent,
@@ -52,7 +54,7 @@ export const SwapTradeWrap = <
   tokenSellProps,
   tokenBuyProps,
   ...rest
-}: SwapTradeProps<T, I, TCD> & WithTranslation) => {
+}: SwapTradeProps<T, I, TCD | SCD> & WithTranslation) => {
   const sellRef = React.useRef();
   const buyRef = React.useRef();
   const history = useHistory();
@@ -187,13 +189,13 @@ export const SwapTradeWrap = <
           ? tradeCalcData.BtoS
           : EmptyValueTag
       } ${tradeData.sell?.belong}`;
-  const priceImpactColor = tradeCalcData?.priceImpactColor
-    ? tradeCalcData.priceImpactColor
+  const priceImpactColor = (tradeCalcData as SCD)?.priceImpactColor
+    ? (tradeCalcData as SCD).priceImpactColor
     : "textPrimary";
   const priceImpact =
-    tradeCalcData?.priceImpact !== undefined
+    (tradeCalcData as SCD)?.priceImpact !== undefined
       ? getValuePrecisionThousand(
-          tradeCalcData.priceImpact,
+          (tradeCalcData as SCD).priceImpact,
           undefined,
           undefined,
           2,
@@ -523,93 +525,98 @@ export const SwapTradeWrap = <
               </Grid>
             </Grid>
           )}
-          {!tradeCalcData.isCex && tradeCalcData.isNotMatchMarketPrice && (
-            <Grid item>
-              <MuiFormControlLabel
-                sx={{ alignItems: "flex-start" }}
-                control={
-                  <Checkbox
-                    checked={tradeCalcData?.isChecked ? true : false}
-                    onChange={() => {
-                      onChangeEvent(0, {
-                        tradeData: {
-                          ...swapData.tradeData,
-                          isChecked: !tradeCalcData?.isChecked,
-                        } as SwapTradeData<T>,
-                        type: tradeCalcData?.lastStepAt ?? "sell",
-                        to: "button",
-                      });
-                    }}
-                    checkedIcon={<CheckedIcon />}
-                    icon={<CheckBoxIcon />}
-                    color="default"
-                  />
-                }
-                label={
-                  <Typography variant={"body2"}>
-                    <Trans
-                      i18nKey={"labelExpectSettlementPrice"}
-                      interpolation={{ escapeValue: false }}
-                      tOptions={{
-                        symbolSell: tradeData.sell?.belong,
-                        symbolBuy: tradeData.buy?.belong,
-                        stob: tradeCalcData.StoB,
-                        marketPrice: tradeCalcData.marketPrice,
-                        marketRatePrice: tradeCalcData.marketRatePrice,
+          {!(tradeCalcData as SCD).isCex &&
+            (tradeCalcData as SCD).isNotMatchMarketPrice && (
+              <Grid item>
+                <MuiFormControlLabel
+                  sx={{ alignItems: "flex-start" }}
+                  control={
+                    <Checkbox
+                      checked={(tradeCalcData as SCD)?.isChecked ? true : false}
+                      onChange={() => {
+                        onChangeEvent(0, {
+                          tradeData: {
+                            ...swapData.tradeData,
+                            isChecked: !(tradeCalcData as SCD)?.isChecked,
+                          } as SwapTradeData<T>,
+                          type: (tradeCalcData as SCD)?.lastStepAt ?? "sell",
+                          to: "button",
+                        });
                       }}
-                    >
-                      The expected settlement price from this order is symbol =
-                      value, while the current market price from a trusted
-                      oracle is symbol= marketPrice. There is marketRatePrice%
-                      variance observed. Please acknowledge the risk if you
-                      still want to continue.
-                    </Trans>
-                  </Typography>
-                }
-              />
-            </Grid>
-          )}
-          {tradeCalcData.isCex && tradeCalcData.lockedNotification && (
-            <Grid item>
-              <MuiFormControlLabel
-                sx={{ alignItems: "flex-start" }}
-                control={
-                  <Checkbox
-                    checked={
-                      tradeCalcData?.isLockedNotificationChecked ? true : false
-                    }
-                    onChange={() => {
-                      onChangeEvent(0, {
-                        tradeData: {
-                          ...swapData.tradeData,
-                          isChecked:
-                            !tradeCalcData?.isLockedNotificationChecked,
-                        } as SwapTradeData<T>,
-                        type: tradeCalcData?.lastStepAt ?? "sell",
-                        to: "button",
-                      });
-                    }}
-                    checkedIcon={<CheckedIcon />}
-                    icon={<CheckBoxIcon />}
-                    color="default"
-                  />
-                }
-                label={
-                  <Typography variant={"body2"}>
-                    <Trans
-                      i18nKey={"labelCexSwapPanelDes"}
-                      interpolation={{ escapeValue: false }}
-                    >
-                      It may not be possible for the Loopring pool to completely
-                      fulfill your swap at this time. If you proceed, the token
-                      you’ve sold will be locked until it is fully converted
-                      into the purchased token.
-                    </Trans>
-                  </Typography>
-                }
-              />
-            </Grid>
-          )}
+                      checkedIcon={<CheckedIcon />}
+                      icon={<CheckBoxIcon />}
+                      color="default"
+                    />
+                  }
+                  label={
+                    <Typography variant={"body2"}>
+                      <Trans
+                        i18nKey={"labelExpectSettlementPrice"}
+                        interpolation={{ escapeValue: false }}
+                        tOptions={{
+                          symbolSell: tradeData.sell?.belong,
+                          symbolBuy: tradeData.buy?.belong,
+                          stob: tradeCalcData.StoB,
+                          marketPrice: (tradeCalcData as SCD).marketPrice,
+                          marketRatePrice: (tradeCalcData as SCD)
+                            .marketRatePrice,
+                        }}
+                      >
+                        The expected settlement price from this order is symbol
+                        = value, while the current market price from a trusted
+                        oracle is symbol= marketPrice. There is marketRatePrice%
+                        variance observed. Please acknowledge the risk if you
+                        still want to continue.
+                      </Trans>
+                    </Typography>
+                  }
+                />
+              </Grid>
+            )}
+          {(tradeCalcData as TCD).isCex &&
+            (tradeCalcData as TCD).lockedNotification && (
+              <Grid item>
+                <MuiFormControlLabel
+                  sx={{ alignItems: "flex-start" }}
+                  control={
+                    <Checkbox
+                      checked={
+                        (tradeCalcData as TCD)?.isLockedNotificationChecked
+                          ? true
+                          : false
+                      }
+                      onChange={() => {
+                        onChangeEvent(0, {
+                          tradeData: {
+                            ...swapData.tradeData,
+                            isChecked: !(tradeCalcData as TCD)
+                              ?.isLockedNotificationChecked,
+                          } as SwapTradeData<T>,
+                          type: tradeCalcData?.lastStepAt ?? "sell",
+                          to: "button",
+                        });
+                      }}
+                      checkedIcon={<CheckedIcon />}
+                      icon={<CheckBoxIcon />}
+                      color="default"
+                    />
+                  }
+                  label={
+                    <Typography variant={"body2"}>
+                      <Trans
+                        i18nKey={"labelCexSwapPanelDes"}
+                        interpolation={{ escapeValue: false }}
+                      >
+                        It may not be possible for the Loopring pool to
+                        completely fulfill your swap at this time. If you
+                        proceed, the token you’ve sold will be locked until it
+                        is fully converted into the purchased token.
+                      </Trans>
+                    </Typography>
+                  }
+                />
+              </Grid>
+            )}
           <Grid item>
             <ButtonStyle
               variant={"contained"}

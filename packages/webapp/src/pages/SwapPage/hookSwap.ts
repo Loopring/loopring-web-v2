@@ -44,6 +44,7 @@ import {
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
+  SwapTradeCalcData,
   TradeBtnStatus,
   TradeCalcData,
   WalletMap,
@@ -79,14 +80,14 @@ const useSwapSocket = () => {
 export const useSwap = <
   T extends SwapTradeData<IBData<C>>,
   C extends { [key: string]: any },
-  CAD extends TradeCalcData<T>
+  CAD extends SwapTradeCalcData<T>
 >({
   path,
 }: {
   path: string;
 }) => {
   //High: No not Move!!!!!!
-  const { realPair, realMarket } = usePairMatch(path);
+  const { realPair, realMarket } = usePairMatch({ path });
   const { t } = useTranslation(["common", "error"]);
   const history = useHistory();
   const refreshRef = React.createRef();

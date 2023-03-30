@@ -1,11 +1,12 @@
-import { MarketType, TradeCalcData } from "@loopring-web/common-resources";
+import { CexTradeCalcData, MarketType } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { OrderInfoPatch } from "../tradePro";
 
 export type TradeCex = {
   market: MarketType;
   tradePair?: MarketType; //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
   request?: sdk.OriginCEXV3OrderRequest | null | undefined;
-  tradeCalcData: Partial<TradeCalcData<any>>;
+  tradeCalcData: Partial<CexTradeCalcData<any>>;
   depth?: sdk.DepthData | undefined;
   totalFeeRaw?: number | string;
   totalFee?: number | string;
@@ -13,7 +14,10 @@ export type TradeCex = {
   sellMinAmtInfo?: string;
   sellMaxL2AmtInfo?: string;
   sellMaxAmtInfo?: string;
-  lastStepAt: "sell" | "buy";
+  lastStepAt: "sell" | "buy" | undefined;
+  sellUserOrderInfo?: undefined | null | sdk.OrderInfo;
+  buyUserOrderInfo?: undefined | null | sdk.OrderInfo;
+  minOrderInfo?: undefined | null | Partial<sdk.OrderInfo & OrderInfoPatch>;
 } & Omit<sdk.CEX_MARKET, "market">;
 
 export type TradeCexStatus = {

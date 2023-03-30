@@ -65,7 +65,7 @@ export type WalletMap<R, I = WalletCoin<R>> = {
   [K in CoinKey<R>]?: I;
 };
 
-export type TradeCalcData<T> = {
+export interface TradeCalcData<T> {
   coinSell: keyof T; //name
   coinBuy: keyof T;
   buyPrecision: number;
@@ -81,45 +81,42 @@ export type TradeCalcData<T> = {
   walletMap?: WalletMap<T, WalletCoin<T>>;
   slippage: number | string;
   // slippageTolerance: Array<number | string>,
-  priceImpact: string | undefined;
-  priceImpactColor: string | undefined;
   minimumReceived: string | undefined;
   fee: string;
   isReverse: boolean;
   feeTakerRate?: number;
   tradeCost?: string;
   lastStepAt?: "sell" | "buy";
-} & sdk.XOR<
-  {
-    isNotMatchMarketPrice?: boolean;
-    marketPrice?: string;
-    marketRatePrice?: string;
-    isChecked?: boolean;
-    lastStepAt?: "base" | "quote";
-    slippage: number | string;
-    // slippageTolerance: Array<number | string>,
-    priceImpact: string;
-    priceImpactColor: string;
-    feeTakerRate?: number;
-    tradeCost?: string;
-    showLargeVolumeSwapInfo?: boolean;
-    isCex: undefined | false;
-  },
-  {
-    isCex: true;
-    maxFeeBips: string;
-    lockedNotification: true;
-    isLockedNotificationChecked?: boolean;
-    amountS: string | undefined;
-    amountB: string | undefined;
-    sellMinAmtStr: string | undefined;
-    sellMaxL2AmtStr: string | undefined;
-    sellMaxAmtStr: string | undefined;
-    l1Pool: string;
-    l2Pool: string;
-    totalPool: string;
-  }
->;
+  isCex: undefined | boolean;
+}
+export type SwapTradeCalcData<T> = TradeCalcData<T> & {
+  isNotMatchMarketPrice?: boolean;
+  marketPrice?: string;
+  marketRatePrice?: string;
+  isChecked?: boolean;
+  slippage: number | string;
+  priceImpact: string;
+  priceImpactColor: string;
+  feeTakerRate?: number;
+  tradeCost?: string;
+  showLargeVolumeSwapInfo?: boolean;
+  isCex: undefined | false;
+};
+export type CexTradeCalcData<T> = TradeCalcData<T> & {
+  isCex: true;
+  maxFeeBips: number;
+  lockedNotification: true;
+  isLockedNotificationChecked?: boolean;
+  amountS: string | undefined;
+  amountB: string | undefined;
+  sellMinAmtStr: string | undefined;
+  sellMaxL2AmtStr: string | undefined;
+  sellMaxAmtStr: string | undefined;
+  l1Pool: string;
+  l2Pool: string;
+  // totalPool: string;
+};
+
 export type TradeCalcProData<T> = {
   coinBase: keyof T; //name
   coinQuote: keyof T;
