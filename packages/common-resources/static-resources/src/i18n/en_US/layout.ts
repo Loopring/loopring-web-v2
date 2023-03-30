@@ -35,7 +35,7 @@ export default {
   labelTrades: "Trade History",
   labelHistory: "Transactions",
   labelOrder: "Orders",
-  labelReward: "Reward",
+  labelReward: "Rewards",
   labelRedPacket: "RedPacket",
   labelAmmRecords: "AMM records",
   labelAmmRecordsDes: "(Add & Remove)",

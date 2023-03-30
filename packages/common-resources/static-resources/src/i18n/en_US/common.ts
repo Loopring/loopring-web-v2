@@ -1533,4 +1533,8 @@ export default {
   labelCexSwapFailed: "CEX Swap failed!",
   labelCexSwapTitleDes: "What is CEX Swap?",
   labelCexSwapContentDes: "What is CEX Swap?",
+  labelRefereeRewards: "Referee Rewards",
+  labelReferralRewards: "Referral Rewards",
+  labelRewardLRC: "Rewards LRC",
+  labelPrice: "Price",
 };
