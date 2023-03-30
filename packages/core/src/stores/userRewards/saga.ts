@@ -5,20 +5,17 @@ import {
   resetUserRewards,
 } from "./reducer";
 
-import { store, LoopringAPI, makeSummaryMyAmm } from "../../index";
-import {
-  AccountStatus,
-  CustomError,
-  ErrorMap,
-} from "@loopring-web/common-resources";
+import { store, LoopringAPI } from "../../index";
+import { CustomError, ErrorMap } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-const getUserRewardsApi = async () => {
+const getUserRewardsApi = async <R extends { [key: string]: any }>(
+  _list: Array<keyof R>
+) => {
   const { accountId } = store.getState().account;
   let { __timer__ } = store.getState().userRewardsMap;
   if (LoopringAPI.ammpoolAPI && accountId) {
-    let ammUserRewardMap = {},
-      result: any = {};
+    let ammUserRewardMap = {};
     try {
       const response = await LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({
         owner: accountId,
@@ -31,14 +28,6 @@ const getUserRewardsApi = async () => {
         throw new CustomError(ErrorMap.ERROR_UNKNOWN);
       }
       ammUserRewardMap = response.ammUserRewardMap;
-
-      const { readyState } = store.getState().account;
-      if (readyState === AccountStatus.ACTIVATED) {
-        result = makeSummaryMyAmm({
-          userRewardsMap: ammUserRewardMap,
-        });
-      }
-
       __timer__ = ((__timer__) => {
         if (__timer__ && __timer__ !== -1) {
           clearInterval(__timer__);
@@ -51,22 +40,20 @@ const getUserRewardsApi = async () => {
       ammUserRewardMap = {};
     }
 
-    return {
-      data: { userRewardsMap: ammUserRewardMap, ...result },
-      __timer__,
-    };
+    return { data: ammUserRewardMap, __timer__ };
   } else {
     if (__timer__ && __timer__ !== -1) {
       clearInterval(__timer__);
     }
-    return Promise.resolve({ data: {}, __timer__: -1 });
+    return Promise.resolve({ data: undefined, __timer__: -1 });
   }
 };
 
 export function* getPostsSaga() {
   try {
+    // @ts-ignore
     const { data, __timer__ } = yield call(getUserRewardsApi);
-    yield put(getUserRewardsStatus({ ...data, __timer__ }));
+    yield put(getUserRewardsStatus({ userRewardsMap: data, __timer__ }));
   } catch (err) {
     yield put(getUserRewardsStatus(err));
   }

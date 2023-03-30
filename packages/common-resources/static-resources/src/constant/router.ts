@@ -5,6 +5,7 @@ import {
   MintIcon,
   ProfileIcon,
   RecordIcon,
+  RewardIcon,
   SecurityIcon,
   VipIcon,
   WaitApproveIcon,
@@ -41,6 +42,16 @@ export const profile = {
       label: {
         id: "security",
         i18nKey: "labelSecurity",
+      },
+    },
+  ],
+  reward: [
+    {
+      icon: RewardIcon,
+      router: { path: "/layer2/rewards" },
+      label: {
+        id: "rewards",
+        i18nKey: "labelReward",
       },
     },
   ],

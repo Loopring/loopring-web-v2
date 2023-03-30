@@ -1497,5 +1497,31 @@ export default {
   labelClaimredPacket: "My Red Packet",
   labelClaimlrcStaking: "My LRC Staking",
   labelExpectSettlementPrice:
-    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}} = {{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}} = {{marketPrice}}. There is {{marketRatePrice}}% variance observed. Please acknowledge the risk if you still want to continue.",
+    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
+  labelStakingSuccess: "{{symbol}} Staking Successful",
+  labelStakingFailed: "{{symbol}} Staking failed",
+  labelStakingRedeemFailed: "Redeem {{symbol}} failed",
+  labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
+  labelStakingRedeemRemaining: "Remaining Amount",
+  labelStakingRedeemDate: "Redeem Time",
+
+  labelCexSwapTitle: "CEX Swap",
+  labelCexSwapType: "Type",
+  labelCexSwapFee: "Fee",
+  labelCexSwapTime: "Time",
+  labelCexSwapPrice: "Price",
+  labelCexSwapSettled: "Settled",
+  labelCexSwapDelivering: "Delivering",
+  labelCexSwapPanelDes:
+    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
+  labelGoCexSwap:
+    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>CEX Swap</link> option to help minimize potential losses.",
+  labelCexSwap: "CEX Swap",
+  labelCexSwapFailed: "CEX Swap failed!",
+  labelCexSwapTitleDes: "What is CEX Swap?",
+  labelCexSwapContentDes: "What is CEX Swap?",
+  labelRefereeRewards: "Referee Rewards",
+  labelReferralRewards: "Referral Rewards",
+  labelRewardLRC: "Rewards LRC",
+  labelPrice: "Price",
 };
