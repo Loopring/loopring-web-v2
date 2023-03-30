@@ -54,22 +54,21 @@ export const dexSwapDependAsync = (
   level: number = 0,
   limit?: number
 ): Promise<{
-  depth: sdk.DepthData;
+  depth: sdk.DepthData | undefined;
 }> => {
   return new Promise((resolve, reject) => {
     if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
       Promise.all([
         LoopringAPI.defiAPI?.getCefiDepth({
-          apiKey: "",
           request: {
             market,
             level,
             limit,
           },
         }),
-      ]).then(([{ depth }]) => {
+      ]).then(([resopnseDepth]) => {
         resolve({
-          depth,
+          depth: resopnseDepth?.depth,
         });
       });
     } else {

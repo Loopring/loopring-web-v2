@@ -28,33 +28,32 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
       const {
         market,
         tradePair,
-        sellUserOrderInfo,
-        buyUserOrderInfo,
         request,
         tradeCalcData,
         depth,
-        feeBips,
-        takerRate,
+        sellUserOrderInfo,
+        buyUserOrderInfo,
         minOrderInfo,
         lastStepAt,
         totalFee,
         maxFeeBips,
+        ...rest
       } = action.payload;
       if (market !== state.tradeCex.market && market) {
+        // @ts-ignore
         state.tradeCex = {
           market,
           tradePair, //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
           request,
           depth,
-          feeBips,
           totalFee,
-          takerRate,
           minOrderInfo,
           tradeCalcData: tradeCalcData as any,
           sellUserOrderInfo,
           buyUserOrderInfo,
           lastStepAt: undefined,
           maxFeeBips: MAPFEEBIPS,
+          ...rest,
         };
       } else {
         if (lastStepAt) {
@@ -67,15 +66,15 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
         if (depth) {
           state.tradeCex.depth = depth;
         }
-        if (feeBips) {
-          state.tradeCex.feeBips = feeBips;
-        }
+        // if (feeBips) {
+        //   state.tradeCex.feeBips = feeBips;
+        // }
         if (totalFee) {
           state.tradeCex.totalFee = totalFee;
         }
-        if (takerRate) {
-          state.tradeCex.takerRate = takerRate;
-        }
+        // if (takerRate) {
+        //   state.tradeCex.takerRate = takerRate;
+        // }
         if (minOrderInfo) {
           state.tradeCex.minOrderInfo = minOrderInfo;
         }

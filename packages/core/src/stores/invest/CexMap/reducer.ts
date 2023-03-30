@@ -6,6 +6,7 @@ const initialState: Required<CexMapStates> = {
   marketArray: [],
   marketCoins: [],
   marketMap: {},
+  tradeMap: {},
   __timer__: -1,
   status: SagaStatus.PENDING,
   errorMessage: null,
@@ -24,11 +25,12 @@ const cexMapSlice: Slice = createSlice({
         // @ts-ignore
         state.errorMessage = action.error;
       }
-      const { __timer__, ...CexMap } = action.payload;
-      if (CexMap) {
-        state.marketArray = CexMap.marketArray;
-        state.marketCoins = CexMap.marketCoins;
-        state.marketMap = CexMap.marketMap;
+      const { __timer__, ...cexMap } = action.payload;
+      if (cexMap) {
+        state.marketArray = cexMap.marketArray;
+        state.marketCoins = cexMap.marketCoins;
+        state.marketMap = cexMap.marketMap;
+        state.tradeMap = cexMap.tradeMap;
         // , marketCoins, marketMap
         // state.marketArray = { ...state, ...CexMap };
       }

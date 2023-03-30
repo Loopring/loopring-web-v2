@@ -158,6 +158,7 @@ export type ForceWithdrawProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<
 export type SwapProps<T, I, TCD> = {
   refreshRef: React.Ref<any>;
   onRefreshData?: () => void;
+  titleI8nKey?: string;
   toPro?: () => void;
   tradeData: SwapTradeData<T> | undefined;
   campaignTagConfig: CAMPAIGNTAGCONFIG;

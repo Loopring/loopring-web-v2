@@ -3,17 +3,31 @@ import { useTokenMap } from "../../stores/token";
 import { getExistedMarket } from "@loopring-web/loopring-sdk";
 import { MarketType } from "@loopring-web/common-resources";
 
-export function usePairMatch(
-  path: string,
-  marketArray?: string[]
-): {
+export function usePairMatch({
+  path,
+  coinA = "LRC",
+  coinB = "ETH",
+  marketArray = undefined,
+  tokenMap = undefined,
+}: {
+  path: string;
+  coinA?: string;
+  coinB?: string;
+  marketArray?: string[];
+  tokenMap?: any;
+}): {
   realMarket: MarketType | undefined;
   realPair: any;
 } {
-  const { coinMap, tokenMap, marketArray: _marketArray } = useTokenMap();
+  const {
+    coinMap,
+    tokenMap: _tokenMap,
+    marketArray: _marketArray,
+  } = useTokenMap();
   if (marketArray) {
   } else {
     marketArray = _marketArray;
+    tokenMap = _tokenMap;
   }
   const match: any = useRouteMatch(`${path}/:market`);
 
@@ -28,9 +42,9 @@ export function usePairMatch(
 
   let market = match?.params?.market;
   // myLog('router pair',market)
-  let coinA = "LRC";
-
-  let coinB = "ETH";
+  // let coinA = "LRC";
+  //
+  // let coinB = "ETH";
 
   let realMarket: MarketType | undefined = `${coinA}-${coinB}`;
 
@@ -49,7 +63,6 @@ export function usePairMatch(
       coinA = matchRes[1];
       coinB = matchRes[2];
     }
-
     const marketTemp = getExistedMarket(marketArray, coinA, coinB).market;
     if (marketTemp) {
       realMarket = marketTemp;
