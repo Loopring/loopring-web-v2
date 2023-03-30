@@ -11,6 +11,7 @@ import {
   showDualBeginnerHelp,
   hidDualBeginnerHelp,
   confirmedLRCStakeInvest,
+  confirmedCexSwap,
 } from "./reducer";
 
 export const useConfirmation = (): {
