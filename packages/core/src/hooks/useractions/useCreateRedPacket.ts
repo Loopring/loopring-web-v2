@@ -280,8 +280,7 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
       _tradeData.tradeValue &&
       redPacketOrder.memo &&
-      redPacketOrder.memo?.trim().length > 0 &&
-      redPacketOrder.giftNumbers
+      redPacketOrder.memo?.trim().length > 0 
     ) {
       let tradeToken: any = {},
         balance,
@@ -293,7 +292,10 @@ export const useCreateRedPacket = <
       const feeRaw =
         redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
       const fee = sdk.toBig(feeRaw);
-      const giftsLargerThanPackets = sdk.toBig(redPacketOrder.giftNumbers).isGreaterThan(redPacketOrder.numbers)
+      const blindBoxGiftsLargerThanPackets = 
+        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
+        redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
+        sdk.toBig(redPacketOrder.giftNumbers ?? "0").isGreaterThan(redPacketOrder.numbers)
       if (
         (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
         redPacketOrder.belong &&
@@ -336,7 +338,7 @@ export const useCreateRedPacket = <
           // @ts-ignore
           redPacketOrder.tradeType === TRADE_TYPE.TOKEN) &&
         redPacketConfigs?.luckTokenAgents &&
-        !giftsLargerThanPackets
+        !blindBoxGiftsLargerThanPackets
       ) {
         enableBtn();
         return;
@@ -415,7 +417,7 @@ export const useCreateRedPacket = <
                 }
               : { value: REDPACKET_ORDER_NFT_LIMIT, symbol: "NFT" }
           );
-        } else if (giftsLargerThanPackets) {
+        } else if (blindBoxGiftsLargerThanPackets) {
           setLabelAndParams("labelRedPacketsGiftsLargerThanPackets", {});
         }
       }
