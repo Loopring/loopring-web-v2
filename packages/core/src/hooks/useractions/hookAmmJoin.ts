@@ -504,6 +504,12 @@ export const useAmmJoin = ({
 
   useWalletLayer2Socket({ walletLayer2Callback });
 
+  React.useEffect(() => {
+    if (isShow) {
+      setIsLoading(true);
+      initAmmData(true);
+    }
+  }, [isShow]);
   return {
     ammCalcData,
     ammData,
