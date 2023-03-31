@@ -16,7 +16,7 @@ const getCexMapApi = async () => {
     // marketArr: marketArray,
     raw_data,
   } = await LoopringAPI.defiAPI?.getCefiMarkets();
-  const reformat = (raw_data as sdk.CEX_MARKET[]).reduce((prev, ele) => {
+  const reformat: any = (raw_data as sdk.CEX_MARKET[]).reduce((prev, ele) => {
     if (/-/gi.test(ele.market)) {
       return [
         ...prev,
@@ -24,8 +24,8 @@ const getCexMapApi = async () => {
           ...ele,
           cexMarket: ele.market,
           market: ele.market.replace("CEFI-", ""),
-          enabled: true,
-        },
+          // enabled: true,
+        } as sdk.CEX_MARKET,
       ];
     } else {
       return prev;
