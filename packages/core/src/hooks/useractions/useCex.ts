@@ -758,7 +758,6 @@ export const useCexSwap = <
       } = store.getState()._router_tradeCex;
 
       const { marketMap } = store.getState().invest.cexMap;
-      const { amountMap } = store.getState().amountMap;
 
       myLog(
         "useCexSwap:reCalculateDataWhenValueChange",
@@ -792,14 +791,11 @@ export const useCexSwap = <
         const { cefiAmount, minAmount, l2Amount } = info;
 
         if (
-          amountMap &&
-          amountMap[market as string] &&
+          // amountMap &&
+          // amountMap[market as string] &&
           cefiAmount &&
           l2Amount
         ) {
-          // let buyMinAmtInfo = undefined;
-          const amountMarket = amountMap[market as string];
-          tradeCost = amountMap[market][buyToken.symbol].tradeCost;
           totalFeeRaw = sdk.toBig(tradeCost ?? 0);
           totalFee = getValuePrecisionThousand(
             sdk.toBig(totalFeeRaw).div("1e" + buyToken.decimals),
@@ -857,28 +853,26 @@ export const useCexSwap = <
             .div("1e" + sellToken.decimals)
             .toString();
 
-          tradeCost = amountMarket[buyToken.symbol].tradeCost;
-
-          const calcCostToSell = sdk.calcDex({
-            info,
-            input: sdk
-              .toBig(sellBuyStr == market ? minAmount.quote : minAmount.base)
-              .div("1e" + buyToken.decimals)
-              .toString(),
-            sell: sellToken.symbol,
-            buy: buyToken.symbol,
-            isAtoB: false,
-            marketArr: marketArray,
-            tokenMap,
-            marketMap,
-            depth,
-            feeBips: maxFeeBips.toString(),
-          });
+          // const calcMiniToSell = sdk.calcDex({
+          //   info,
+          //   input: sdk
+          //     .toBig(sellBuyStr == market ? minAmount.quote : minAmount.base)
+          //     .div("1e" + buyToken.decimals)
+          //     .toString(),
+          //   sell: sellToken.symbol,
+          //   buy: buyToken.symbol,
+          //   isAtoB: false,
+          //   marketArr: marketArray,
+          //   tokenMap,
+          //   marketMap,
+          //   depth,
+          //   feeBips: maxFeeBips.toString(),
+          // });
           // calcForMinCost = ()
           //TODO：先用dust 在看接口   _tradePair == market ? info.cefiAmount.quote : cefiAmount.base
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,
-            calcCostToSell?.amountS ?? 0
+            sellBuyStr == market ? minAmount.quote : minAmount.base
           )
             .div("1e" + sellToken.decimals)
             .toString();
@@ -951,7 +945,13 @@ export const useCexSwap = <
           l1Pool: getValuePrecisionThousand(
             sdk
               .toBig(
-                (sellBuyStr == market ? cefiAmount.quote : cefiAmount.base) ?? 0
+                sellBuyStr == market
+                  ? cefiAmount.quote
+                    ? cefiAmount.quote
+                    : 0
+                  : cefiAmount.base
+                  ? cefiAmount.base
+                  : 0
               )
               .div("1e" + buyToken.decimals),
             buyToken.precision,
