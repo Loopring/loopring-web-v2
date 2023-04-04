@@ -100,6 +100,7 @@ export const RedPacketMarketPanel = ({
       <>
         {list?.length ? (
           list.map((item, index) => {
+            // item.isOfficial
             if (
               isShowRedPacket.step === RedPacketViewStep.TimeOutPanel &&
               isShowRedPacket.info &&
@@ -120,6 +121,7 @@ export const RedPacketMarketPanel = ({
               tokenInfo,
               claim,
             } = makeViewCard(item);
+            // alert(amountStr)
 
             return !(hideOpen && claim) ? (
               <Grid
@@ -143,7 +145,7 @@ export const RedPacketMarketPanel = ({
                   tokenInfo={tokenInfo}
                   getIPFSString={getIPFSString}
                   baseURL={baseURL}
-                  _type="official"
+                  _type={item.isOfficial ? "official" : "default"}
                 />
               </Grid>
             ) : (
@@ -159,8 +161,8 @@ export const RedPacketMarketPanel = ({
   const listERC20 = React.useMemo(() => {
     return (
       <>
-        {listMemo(luckTokenList.officialList)}
-        {listMemo(luckTokenList.publicList)}
+        {listMemo(luckTokenList.officialList.map(x => ({...x, isOfficial: true, info: {...x.info, memo: 'skr'}})))}
+        {listMemo(luckTokenList.publicList.map(x => ({...x, isOfficial: false})))}
       </>
     );
   }, [

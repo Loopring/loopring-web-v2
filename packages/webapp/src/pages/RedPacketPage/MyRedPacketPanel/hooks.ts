@@ -44,7 +44,6 @@ export const useMyRedPacketRecordTransaction = <
   const [myRedPacketRecordTotal, setMyRedPacketRecordTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
   // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
-
   const getMyRedPacketRecordTxList = React.useCallback(
     async ({ offset, limit, filter }: any) => {
       setShowLoading(true);

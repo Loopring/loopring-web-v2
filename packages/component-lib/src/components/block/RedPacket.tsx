@@ -223,7 +223,7 @@ export const BoxClaim = styled(Box)`
 
 export const RedPacketSize = {
   middle: {
-    height: 400,
+    height: 414,
     width: 260,
   },
   large: {
@@ -373,9 +373,11 @@ export const RedPacketBgDefault = ({
         zIndex={100}
         display={"flex"}
         justifyContent={"center"}
+        marginTop={1}
       >
         <RedPacketWrapSVG
           {...{ ...RedPacketCssColorConfig[type] }}
+          
           height={"100%"}
           width={"100%"}
           type={type}
@@ -848,7 +850,7 @@ export const RedPacketOpened = ({
         </Box>
       </Box>
     );
-  }, []);
+  }, [type]);
   return <RedPacketBgOpened type={type} content={content} size={size} />;
 };
 
@@ -950,6 +952,7 @@ const BoxStyle = styled(Box)`
 `;
 
 export const RedPacketDetail = ({
+  redPacketType,
   sender,
   amountStr,
   // _amountClaimStr,
@@ -983,6 +986,7 @@ export const RedPacketDetail = ({
       return <></>;
     }
   }, []);
+  // console.log('isLuckyRedPacket', isLuckyRedPacket)
 
   return (
     <BoxStyle
@@ -1008,7 +1012,13 @@ export const RedPacketDetail = ({
           variant={"body1"}
           color={RedPacketColorConfig.default.fontColor}
         >
-          {t("labelLuckyRedPacket")}
+          {
+            redPacketType === 'normal'
+              ? t("labelNormalRedPacket")
+              : redPacketType === 'lucky'
+                ? t("labelLuckyRedPacket")
+                : t("labelRelayRedPacket")
+          }
         </Typography>
       </Box>
       <Box
@@ -1074,7 +1084,7 @@ export const RedPacketDetail = ({
           sx={{ borderWidth: 1, paddingX: 1 }}
         />
         <Box flex={1} overflow={"scroll"}>
-          {claimList.map((item) => {
+          {claimList && claimList.map((item) => {
             return (
               <BoxClaim
                 className={item.isSelf ? "self claim" : "claim"}
@@ -1134,7 +1144,7 @@ export const RedPacketDetail = ({
                         {item.helper}
                       </Typography>
                     )}
-                    {item.isMax && (
+                    {redPacketType === 'lucky' && item.isMax && (
                       <Typography
                         component={"span"}
                         color={"var(--color-warning)"}
@@ -1284,7 +1294,6 @@ export const RedPacketPrepare = ({
             ...props,
           }}
           ImageEle={ImageEle}
-          type={_type ? _type : "default"}
           amountStr={amountStr}
           myAmountStr={myAmountStr}
           viewDetail={() => {
@@ -1312,6 +1321,7 @@ export const RedPacketPrepare = ({
               : getShortAddr(props?.sender?.address)
           }
           memo={props?.info?.memo}
+          type={_type}
         />
       );
     } else if (difference > 180000) {
@@ -1326,6 +1336,7 @@ export const RedPacketPrepare = ({
           ImageEle={ImageEle}
           amountStr={amountStr}
           validSince={_info.validSince}
+          type={_type}
         />
       );
     } else if (difference > 0) {
@@ -1347,6 +1358,7 @@ export const RedPacketPrepare = ({
           }}
           amountStr={amountStr}
           validSince={_info.validSince}
+          type={_type}
         />
       );
     } else if (
@@ -1364,6 +1376,7 @@ export const RedPacketPrepare = ({
               ? props?.sender?.ens
               : getShortAddr(props?.sender?.address)
           }
+          type={_type ?? "default"}
           // viewDetail={() => {
           //   setShowRedPacket({
           //     isShow: true,
@@ -1380,7 +1393,7 @@ export const RedPacketPrepare = ({
             ...props,
           }}
           ImageEle={ImageEle ?? undefined}
-          type={_type ? _type : "default"}
+          type={_type}
           amountStr={amountStr}
           sender={
             props?.sender?.ens
@@ -1396,6 +1409,29 @@ export const RedPacketPrepare = ({
             });
             onOpen();
           }}
+          viewDetail={
+            _info.sender.accountId === account.accountId
+              ? () => {
+                if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+                  setShowRedPacket({
+                    isShow: true,
+                    step: RedPacketViewStep.BlindBoxDetail,
+                    info: {
+                      ..._info,
+                    },
+                  });
+                } else {
+                  setShowRedPacket({
+                    isShow: true,
+                    step: RedPacketViewStep.DetailPanel,
+                    info: {
+                      ..._info,
+                    },
+                  });
+                }
+              }
+              : undefined
+          }
         />
       );
     }

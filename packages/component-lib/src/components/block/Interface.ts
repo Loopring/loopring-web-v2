@@ -94,6 +94,7 @@ export type RedPacketOpenedProps = {
 };
 export const RedPacketDetailLimit = 5;
 export type RedPacketDetailProps = {
+  redPacketType: 'normal' | 'lucky' | 'relay';
   sender: string;
   amountStr: string;
   amountClaimStr: string;

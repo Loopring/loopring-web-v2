@@ -720,6 +720,15 @@ export function useRedPacketModal() {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string;
     };
+    const redPacketType = _info 
+      ? (_info.type.mode === sdk.LuckyTokenClaimType.RELAY 
+        ? 'relay'
+        : _info.type.partition === sdk.LuckyTokenAmountType.RANDOM 
+          ? 'lucky'
+          : 'normal')
+      : 'normal'
+    
+    // _info && _info.type && console.log('_info.type.partition', _info.type.partition)
     if (
       isShow &&
       info &&
@@ -818,6 +827,7 @@ export function useRedPacketModal() {
       }
 
       return {
+        redPacketType,
         ImageEle,
         totalCount: detail.luckyToken.tokenAmount.totalCount,
         remainCount: detail.luckyToken.tokenAmount.remainCount,

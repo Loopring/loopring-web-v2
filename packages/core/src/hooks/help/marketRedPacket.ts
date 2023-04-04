@@ -46,7 +46,7 @@ export const getUserReceiveList = (
         : ""
       ).toString(),
       createdAt: item.createdAt,
-      isMax: champion?.amount == item.amount,
+      isMax: champion?.accountId === item.claimer.accountId,
       rawData: item,
     };
     return [...prev, redPacketDetailItem];
@@ -188,7 +188,7 @@ export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
           idIndex,
           luckToken.tokenId,
           luckToken.tokenAmount.totalAmount
-        ).amount,
+        ).amountStr,
     myAmountStr:
       claim &&
       (luckToken.isNft
