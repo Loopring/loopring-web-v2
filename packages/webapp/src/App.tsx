@@ -67,24 +67,24 @@ const App = () => {
 
           body:before {
             ${
-                    theme.mode === "dark"
-                            ? `
+              theme.mode === "dark"
+                ? `
             background: var(--color-global-bg);
        `
-                            : ""
+                : ""
             }
-          }
-        }`}
+      }
+    }`}
       />
 
       <Router>
-        <ScrollToTop/>
-        <RouterView state={state}/>
+        <ScrollToTop />
+        <RouterView state={state} />
       </Router>
     </>
   );
 };
-const h = new Headers();
+const h=new Headers()
 export default App;
 
 // new ContactAPI({chainId: 1, baseUrl: 'https://uat2.loopring.io'})

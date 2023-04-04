@@ -56,7 +56,7 @@ const initialRedPacketState: RedPacketOrderData<any> = {
   tradeValue: 0,
   balance: 0,
   fee: undefined,
-  validUntil: 1,
+  validSince: Date.now(),
   type: {
     partition: sdk.LuckyTokenAmountType.AVERAGE,
     mode: sdk.LuckyTokenClaimType.COMMON,
@@ -69,7 +69,7 @@ const initialRedPacketNFTState: RedPacketOrderData<any> = {
   belong: undefined as any,
   tradeValue: 0,
   fee: undefined,
-  validUntil: 1,
+  validSince: Date.now(),
   type: {
     partition: sdk.LuckyTokenAmountType.AVERAGE,
     mode: sdk.LuckyTokenClaimType.RELAY,

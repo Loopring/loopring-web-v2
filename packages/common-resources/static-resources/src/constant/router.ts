@@ -1,5 +1,6 @@
 import {
   AssetsIcon,
+  ContactIcon,
   ImageIcon,
   L2MyLiquidityIcon,
   MintIcon,
@@ -62,6 +63,16 @@ export const profile = {
       label: {
         id: "vip",
         i18nKey: "labelVipPanel",
+      },
+    },
+  ],
+  contact: [
+    {
+      icon: ContactIcon,
+      router: { path: "/contact" },
+      label: {
+        id: "contact",
+        i18nKey: "labelContactsPanel",
       },
     },
   ],
@@ -196,14 +207,14 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "Landing-page",
       i18nKey: "labelZkRollupLayer2",
     },
-    router: { path: "https://loopring.io/#/", pathName: "/" },
+    router: { path: "https://loopring.io/#/" },
   },
   {
     label: {
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "https://loopring.io/#/wallet", pathName: "/wallet" },
+    router: { path: "https://loopring.io/#/wallet" },
   },
   // {
   //   label: {

@@ -15,8 +15,9 @@ import {
 import { Trans, useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useClaimNFTRedPacket, useClaimRedPacket } from "./hooks";
-import { Box, Button, Tab, Tabs } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, Tab, Tabs, Typography } from "@mui/material";
 import {
+  CloseIcon,
   RedPacketIcon,
   SagaStatus,
   TabTokenTypeIndex,
@@ -32,8 +33,15 @@ export const RedPacketClaimPanel = () => {
   const { isMobile } = useSettings();
   const history = useHistory();
 
-  const { redPacketClaimList, showLoading, getClaimRedPacket, onItemClick } =
-    useClaimRedPacket(setToastOpen);
+  const { 
+    redPacketClaimList, 
+    showNFTsPanel, 
+    showLoading, 
+    getClaimRedPacket, 
+    onItemClick, 
+    onViewMoreNFTsClick,
+    onCloseNFts
+  } = useClaimRedPacket(setToastOpen);
   const {
     page,
     onItemClick: onItemNFTClick,
@@ -53,32 +61,13 @@ export const RedPacketClaimPanel = () => {
   //TODO:
   const [pageSize, setPageSize] = React.useState(500);
 
-  // React.useEffect(() => {
-  //   let height = container?.current?.offsetHeight;
-  //   if (height) {
-  //     const pageSize = Math.floor(height / RowConfig.rowHeight) - 3;
-  //     setPageSize(pageSize);
-  //     handleTabChange(currentTab);
-  //   }
-  // }, [container?.current?.offsetHeight]);
-  const [currentTab, setCurrentTab] = React.useState<TabTokenTypeIndex>(
-    match?.params.item ?? TabTokenTypeIndex.ERC20
-  );
-
-  const handleTabChange = (value: TabTokenTypeIndex) => {
-    switch (value) {
-      case TabTokenTypeIndex.ERC20:
-        history.push("/l2assets/assets/RedPacket/ERC20");
-        setCurrentTab(TabTokenTypeIndex.ERC20);
-        break;
-      case TabTokenTypeIndex.NFT:
-      default:
-        history.replace("/l2assets/assets/RedPacket/NFT");
-        setCurrentTab(TabTokenTypeIndex.NFT);
-        break;
+  React.useEffect(() => {
+    let height = container?.current?.offsetHeight;
+    if (height) {
+      const pageSize = Math.floor(height / RowConfig.rowHeight) - 3;
+      setPageSize(pageSize);
     }
-  };
-
+  }, [container?.current?.offsetHeight]);
   return (
     <Box
       flex={1}
@@ -123,70 +112,70 @@ export const RedPacketClaimPanel = () => {
         display={"flex"}
         flexDirection={"column"}
       >
-        <Tabs
-          value={currentTab}
-          onChange={(_event, value) => handleTabChange(value)}
-          aria-label="l2-history-tabs"
-          variant="scrollable"
-        >
-          <Tab
-            label={t("labelRedPacketClaim" + TabTokenTypeIndex.ERC20)}
-            value={TabTokenTypeIndex.ERC20}
-          />
-          <Tab
-            label={t("labelRedPacketClaim" + TabTokenTypeIndex.NFT)}
-            value={TabTokenTypeIndex.NFT}
-          />
-        </Tabs>
-        {currentTab === TabTokenTypeIndex.ERC20 && (
-          <>
-            {!!redPacketClaimList.length ? (
-              <Box className="tableWrapper table-divide-short">
-                <RedPacketClaimTable
-                  {...{
-                    rawData: redPacketClaimList,
-                    showloading: showLoading,
-                    forexMap,
-                    onItemClick,
-                    etherscanBaseUrl,
-                    getClaimRedPacket,
-                  }}
-                />
-              </Box>
-            ) : (
-              <Box flex={1} height={"100%"} width={"100%"}>
-                <EmptyDefault
-                  height={"calc(100% - 35px)"}
-                  message={() => {
-                    return (
-                      <Trans i18nKey="labelNoContent">Content is Empty</Trans>
-                    );
-                  }}
-                />
-              </Box>
-            )}
-          </>
-        )}
-        {currentTab === TabTokenTypeIndex.NFT && (
-          <>
+        {!!redPacketClaimList.length ? (
+          <Box className="tableWrapper table-divide-short">
             <RedPacketClaimTable
               {...{
-                isNFT: true,
-                rawData: redPacketNFTClaimList,
-                showloading: showNFTLoading,
+                rawData: redPacketClaimList,
+                showloading: showLoading,
                 forexMap,
-                onItemClick: onItemNFTClick,
+                onItemClick,
                 etherscanBaseUrl,
-                getClaimRedPacket: getClaimNFTRedPacket,
-                // page,
-                // pagination: {
-                //   pageSize: pageSize,
-                //   total: redPacketNFTClaimTotal,
-                // },
+                getClaimRedPacket,
+                onViewMoreNFTsClick,
               }}
             />
-          </>
+          </Box>
+        ) : (
+          <Box flex={1} height={"100%"} width={"100%"}>
+            <EmptyDefault
+              height={"calc(100% - 35px)"}
+              message={() => {
+                return (
+                  <Trans i18nKey="labelNoContent">Content is Empty</Trans>
+                );
+              }}
+            />
+          </Box>
         )}
+        <Dialog
+          maxWidth={"lg"}
+          open={showNFTsPanel}
+          onClose={() => {
+            onCloseNFts()
+          }}
+        >
+          <DialogTitle>
+          <Typography variant={"h3"} textAlign={"center"}>
+            {t("labelBlindBoxRecievedRedPackets")}
+          </Typography>
+          <IconButton
+            size={"medium"}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+            }}
+            color={"inherit"}
+            onClick={() => {
+              onCloseNFts()
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+          <DialogContent style={{ width: "960px" }}>
+            <RedPacketClaimTable
+              isNFT
+              rawData={redPacketNFTClaimList}
+              showloading={showNFTLoading}
+              forexMap={forexMap}
+              onItemClick={onItemNFTClick}
+              etherscanBaseUrl={etherscanBaseUrl}
+              getClaimRedPacket={getClaimNFTRedPacket}
+            />
+          </DialogContent>
+        </Dialog>
       </StylePaper>
       <Toast
         alertText={toastOpen?.content ?? ""}

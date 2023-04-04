@@ -24,6 +24,7 @@ import {
   globalSetup,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
+  WALLET_TYPE,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -54,7 +55,14 @@ import _ from "lodash";
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
     modals: {
-      isShowWithdraw: { symbol, isShow, info },
+      isShowWithdraw: {
+        symbol,
+        isShow,
+        info,
+        address: contactAddress,
+        name: contactName,
+        addressType: contactAddressType,
+      },
     },
     setShowAccount,
     setShowWithdraw,
@@ -69,8 +77,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const [walletMap2, setWalletMap2] = React.useState(
     makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>)
   );
-  const [sureIsAllowAddress, setSureIsAllowAddress] =
-    React.useState<EXCHANGE_TYPE | undefined>(undefined);
+
+  const [sureIsAllowAddress, setSureIsAllowAddress] = React.useState<
+    WALLET_TYPE | EXCHANGE_TYPE | undefined
+  >(WALLET_TYPE.EOA);
 
   const [isFastWithdrawAmountLimit, setIsFastWithdrawAmountLimit] =
     React.useState<boolean>(false);
@@ -134,6 +144,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isContractAddress,
     setAddress,
     addrStatus,
+    isLoopringAddress,
     isAddressCheckLoading,
   } = useAddressCheck();
 
@@ -349,6 +360,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
     if (info?.isToMyself) {
       setAddress(account.accAddress);
+    } else if (contactAddress) {
+      setAddress(contactAddress);
     } else {
       setAddress("");
     }
@@ -363,6 +376,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     feeInfo,
     withdrawValue.belong,
     info?.isRetry,
+    contactAddress,
   ]);
 
   React.useEffect(() => {
@@ -644,9 +658,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
+  // console.log('address ?? contactAddress', contactAddress)
 
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
+    isLoopringAddress,
     isAddressCheckLoading,
     isCFAddress,
     isToMyself: info?.isToMyself,
@@ -668,7 +684,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     lastFailed:
       store.getState().modals.isShowAccount.info?.lastFailed ===
       LAST_STEP.withdraw,
-    handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => {
+    handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => {
       setSureIsAllowAddress(value);
     },
     onWithdrawClick: () => {
@@ -723,6 +739,15 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     handleOnAddressChange: (value: any) => {
       setAddress(value);
     },
+
+    isFromContact: contactAddress ? true : false,
+    contact: contactAddress
+      ? {
+          address: contactAddress,
+          name: contactName!,
+          addressType: contactAddressType!,
+        }
+      : undefined,
   };
 
   return {

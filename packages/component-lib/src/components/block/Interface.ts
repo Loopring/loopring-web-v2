@@ -111,6 +111,51 @@ export type RedPacketDetailProps = {
   handlePageChange: (page: number, limit?: number) => void;
   ImageEle?: JSX.Element | undefined;
 };
+export type RedPacketBlindBoxDetailTypes = 'Not Started' 
+  | 'Blind Box Started' 
+  | 'Lottery Started' 
+  | 'Lottery Started and Win Lottery' 
+  | 'Lottery Started and Not Win Lottery' 
+  | 'BlindBox Claime Detail'; 
+export type RedPacketBlindBoxDetailProps = {
+  sender: string;
+  memo: string;
+  NFTURL?: string;
+  // Not Started: Phase 1, can't get blind boxs, only red packet sender can view this detail
+  // Blind Box Started: Phase 2, can get blind boxs, everyone can view this detail
+  // Lottery Started: Phase 3, users can participate in lottery if they have blind boxs, everyone can view this detail
+  // Lottery Started And Open: Phase 3, Same as 'Lottery Started' but one more popup to show if win NFTs
+  // BlindBox Claime Detail: Phase 2 or Phase 3, shows detail of blindboxs distribution.
+  type: RedPacketBlindBoxDetailTypes; 
+  blindBoxStartTime?: number; 
+  lotteryStartTime?: number; 
+  lotteryEndTime?: number; 
+  opendBlindBoxAmount: number;
+  totalBlindBoxAmount: number;
+  deliverdGiftsAmount: number;
+  totalGiftsAmount: number;
+  imageEle?: JSX.Element | undefined; 
+  onShared?: () => void;
+  onClickViewDetail?: () => void;
+  NFTClaimList?: { 
+    who: string,
+    when: number,
+    amount: number
+  }[]; 
+  BlindBoxClaimList?: { 
+    who: string,
+    when: number,
+    amount: number
+  }[]; 
+  showOpenLottery?: boolean; 
+  wonNFTInfo?: { 
+    name: string;
+    url: string;
+  }
+  onClickClaim?: () => void;
+  onCloseOpenModal?: () => void;
+  onClickClaimDetailBack?: () => void;
+};
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;
   sender: string;

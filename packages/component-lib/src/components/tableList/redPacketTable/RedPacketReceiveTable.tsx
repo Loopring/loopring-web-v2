@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import {
   BoxNFT,
+  Button,
   Column,
   NftImage,
   Table,
@@ -35,9 +36,9 @@ const TableWrapperStyled = styled(Box)`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 `;
-const TableStyled = styled(Table)`
+const TableStyled = styled(Table)<{isNFT: boolean}>`
   &.rdg {
-    --template-columns: 20% 20% 30% auto auto !important;
+    --template-columns: ${({isNFT}) => isNFT ? '--template-columns: 20% 8% 26% 8% 10% 15% 8% !important' : '20% 20% 30% auto auto !important'};
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -81,6 +82,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       showloading,
       t,
       onItemClick,
+      onClaimItem
     } = props;
     // const { isMobile, upColor } = useSettings();
     const history = useHistory();
@@ -226,8 +228,49 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
             );
           },
         },
+        // ...[tokenType === TokenType.nft?]
+        ...(tokenType === TokenType.nft
+          ? [
+            {
+              key: "End Time",
+              sortable: true,
+              cellClass: "textAlignRight",
+              headerCellClass: "textAlignRight",
+              name: t("labelBlindBoxEndTime"),
+              formatter: ({ row }: FormatterProps<R>) => {
+
+                return (
+                  <>{moment(new Date(row.rawData.luckyToken.validUntil), "YYYYMMDDHHMM").fromNow()}</>
+                );
+              },
+            },
+            {
+              key: "Action",
+              sortable: true,
+              cellClass: "textAlignRight",
+              headerCellClass: "textAlignRight",
+              name: "Action",
+              formatter: ({ row }: FormatterProps<R>) => {
+                if (row.rawData.claim.status === sdk.ClaimRecordStatus.WAITING_CLAIM) {
+                  return <Button onClick={e => {
+                    e.stopPropagation()
+                    onClaimItem(row.rawData)
+                  }}>{t("labelBlindBoxCalim")}</Button>
+                } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.EXPIRED) {
+                  return <Box>{t("labelBlindBoxExpired")}</Box>
+                } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
+                  return <Box>{t("labelBlindBoxClaimed")}</Box>
+                } else {
+                  return <></>
+                }
+              },
+            }
+          ]
+          : []
+        )
+        
       ],
-      [history, t]
+      [history, t, tokenType]
     );
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),
@@ -239,6 +282,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
     return (
       <TableWrapperStyled>
         <TableStyled
+          isNFT={tokenType === TokenType.nft}
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }

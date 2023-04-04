@@ -279,6 +279,46 @@ export const ModalCloseButton = ({
     </Box>
   );
 };
+
+export const ModalCloseButtonPosition = ({
+  onClose,
+  className = "",
+  closeIcon = <CloseIcon />,
+  t,
+  right,
+  top
+}: {
+  className?: string;
+  closeIcon?: JSX.Element;
+  onClose?: {
+    bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
+  }["bivarianceHack"];
+  right?: number;
+  top?: number;
+} & { t: TFunction }) => {
+  return (
+    <Box
+      className={`close-button ${className}`}
+      alignSelf={"flex-end"}
+      position={"absolute"}
+      zIndex={99}
+      right={right}
+      top={top}
+    >
+      <IconButton
+        size={"large"}
+        aria-label={t("labelClose")}
+        color={"inherit"}
+        onClick={(event) => {
+          onClose && onClose(event, "escapeKeyDown");
+        }}
+      >
+        {closeIcon}
+      </IconButton>
+    </Box>
+  );
+};
+
 export const ModalBackButton = ({
   onBack,
   t,

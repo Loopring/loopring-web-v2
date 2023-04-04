@@ -50,6 +50,7 @@ export default {
   labelSetting: "Setting",
   labelSecurity: "Security",
   labelVipPanel: "VIP",
+  labelContactsPanel: "Contacts",
   titleLoopring: "Loopring",
   labelLoopringDescribe: "zkRollup Exchange and Payment Protocol",
   labelWrongNetwork: "Wrong network",

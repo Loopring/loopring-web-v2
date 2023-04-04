@@ -331,8 +331,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         </Route>
         <Route exact path={["/redPacket", "/redPacket/*"]}>
           <ContentWrap state={state}>
-            {/*<RedPacketPage />*/}
-            {<ComingSoonPanel />}
+            <RedPacketPage />
           </ContentWrap>
         </Route>
         <Route exact path={["/l2assets", "/l2assets/*"]}>

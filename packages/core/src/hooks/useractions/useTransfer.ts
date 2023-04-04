@@ -30,6 +30,7 @@ import {
   getValuePrecisionThousand,
   EmptyValueTag,
   TRADE_TYPE,
+  EXCHANGE_TYPE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -61,7 +62,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
   const {
     modals: {
-      isShowTransfer: { symbol, isShow, info },
+      isShowTransfer: { symbol, isShow, info, address: contactAddress, name: contactName, addressType: contactAddressType },
     },
   } = useOpenModals();
   const [memo, setMemo] = React.useState("");
@@ -78,7 +79,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
   const [sureItsLayer2, setSureItsLayer2] =
-    React.useState<WALLET_TYPE | undefined>(undefined);
+    React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(undefined);
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const [feeWithActive, setFeeWithActive] = React.useState(false);
 
@@ -130,6 +131,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isAddressCheckLoading,
     isActiveAccountFee,
     isSameAddress,
+    isContractAddress
   } = useAddressCheck();
   React.useEffect(() => {
     setSureItsLayer2(undefined);
@@ -248,7 +250,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       }
     }
     setMemo("");
-    setAddress("");
+    if (contactAddress) {
+      setAddress(contactAddress)
+    } else {
+      setAddress("");
+    }
   }, [
     checkFeeIsEnough,
     symbol,
@@ -257,6 +263,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     feeInfo,
     transferValue.belong,
     info?.isRetry,
+    contactAddress
   ]);
 
   React.useEffect(() => {
@@ -668,6 +675,15 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         });
       }
     },
+    isSmartContractAddress: isContractAddress,
+    isFromContact: contactAddress ? true : false,
+    contact: contactAddress 
+      ? {
+        address: contactAddress, 
+        name: contactName!,
+        addressType: contactAddressType!
+      }
+      : undefined,
   };
 
   return {

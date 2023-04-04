@@ -6,6 +6,8 @@ import {
   Box,
   FormControlLabel,
   Grid,
+  IconButton,
+  InputAdornment,
   Radio,
   RadioGroup,
   Typography,
@@ -25,6 +27,8 @@ import {
   NFTWholeINFO,
   TOAST_TIME,
   TradeBtnStatus,
+  WALLET_TYPE,
+  ContactIcon,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -32,12 +36,7 @@ import {
   PopoverPure,
   Toast,
 } from "../..";
-import {
-  Button,
-  IconClearStyled,
-  TextField,
-  useSettings,
-} from "../../../index";
+import { Button, TextField, useSettings } from "../../../index";
 import { WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { NFTInput } from "./BasicANFTTrade";
@@ -82,6 +81,7 @@ export const WithdrawWrap = <
   handleOnAddressChange,
   isAddressCheckLoading,
   isCFAddress,
+  isLoopringAddress,
   isContractAddress,
   isFastWithdrawAmountLimit,
   addrStatus,
@@ -94,6 +94,9 @@ export const WithdrawWrap = <
   isToMyself = false,
   sureIsAllowAddress,
   handleSureIsAllowAddress,
+  contact,
+  isFromContact,
+  onClickContact,
   ...rest
 }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
@@ -166,6 +169,12 @@ export const WithdrawWrap = <
       );
     }
   }, [t, tradeData, withdrawI18nKey]);
+
+  const detectedWalletType = isLoopringAddress
+    ? WALLET_TYPE.Loopring
+    : isContractAddress
+    ? WALLET_TYPE.OtherSmart
+    : WALLET_TYPE.EOA;
 
   return (
     <Grid
@@ -283,28 +292,45 @@ export const WithdrawWrap = <
               label={t("labelL2toL1Address")}
               SelectProps={{ IconComponent: DropDownIcon }}
               fullWidth={true}
+              InputProps={{
+                style: {
+                  paddingRight: "8px",
+                },
+                endAdornment: isFromContact ? undefined : (
+                  <InputAdornment
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    position="end"
+                  >
+                    {addressDefault !== "" ? (
+                      isAddressCheckLoading ? (
+                        <LoadingIcon width={24} />
+                      ) : (
+                        <IconButton
+                          color={"inherit"}
+                          size={"small"}
+                          aria-label="Clear"
+                          onClick={() => handleOnAddressChange("")}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      )
+                    ) : (
+                      ""
+                    )}
+                    <IconButton>
+                      <ContactIcon
+                        onClick={() => {
+                          onClickContact!();
+                        }}
+                        fontSize={"large"}
+                      />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-
-            {addressDefault !== "" ? (
-              isAddressCheckLoading ? (
-                <LoadingIcon
-                  width={24}
-                  style={{ top: 48, right: "8px", position: "absolute" }}
-                />
-              ) : (
-                <IconClearStyled
-                  color={"inherit"}
-                  size={"small"}
-                  style={{ top: 46 }}
-                  aria-label="Clear"
-                  onClick={() => handleOnAddressChange("")}
-                >
-                  <CloseIcon />
-                </IconClearStyled>
-              )
-            ) : (
-              ""
-            )}
           </>
         ) : (
           <Typography
@@ -366,6 +392,7 @@ export const WithdrawWrap = <
       {!isToMyself && (
         <Grid item alignSelf={"stretch"} position={"relative"}>
           <WithdrawAddressType
+            detectedWalletType={detectedWalletType}
             selectedValue={sureIsAllowAddress}
             handleSelected={handleSureIsAllowAddress}
             disabled={allowToClickIsSure}
@@ -516,6 +543,7 @@ export const WithdrawWrap = <
         </Button>
       </Grid>
 
+      {/* <Diag></> */}
       <Toast
         alertText={t("labelCopyAddClip")}
         open={copyToastOpen}

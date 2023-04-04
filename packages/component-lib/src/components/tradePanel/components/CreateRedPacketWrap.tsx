@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   CardContent,
+  Checkbox,
   FormControlLabel,
   FormLabel,
   Grid,
@@ -40,6 +41,7 @@ import {
   SoursURL,
   TRADE_TYPE,
   TradeBtnStatus,
+  GoodIcon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -56,6 +58,7 @@ import { BtnMain } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
 import moment, { Moment } from "moment";
 import { NFTInput } from "./BasicANFTTrade";
+import { DateTimeRangePicker } from "../../datetimerangepicker";
 
 const RedPacketBoxStyle = styled(Box)`
   padding-top: ${({ theme }) => theme.unit}px;
@@ -88,6 +91,7 @@ const RedPacketBoxStyle = styled(Box)`
     }
   }
 `;
+
 export const CreateRedPacketStepWrap = withTranslation()(
   <T extends Partial<RedPacketOrderData<I>>, I, F extends FeeInfo>({
     btnStatus,
@@ -281,6 +285,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
           maxAllow: true,
           subLabel: t("labelAvailable"),
           handleError: (data: any) => {
+            handleOnDataChange({
+              numbers: data.tradeValue,
+            } as unknown as Partial<T>);
             if (data.tradeValue && data.tradeValue > data.balance) {
               return {
                 error: true,
@@ -384,6 +391,28 @@ export const CreateRedPacketStepWrap = withTranslation()(
       }
     }, [selectedType.value.partition, tradeData.balance, tradeData?.numbers]);
     const { isMobile } = useSettings();
+
+    const startDateTime = tradeData.validSince 
+      ? moment(tradeData.validSince)
+      : null 
+    const endDateTime = tradeData.validUntil 
+      ? moment(tradeData.validUntil )
+      : null
+    const now = moment()
+
+    const startMinDateTime = endDateTime
+      ? moment.max(now, endDateTime.clone().subtract(7, 'days'))
+      : now
+    const startMaxDateTime = endDateTime 
+      ? endDateTime.clone()
+      : undefined
+
+    const endMinDateTime = startDateTime 
+      ? moment.max(now, startDateTime.clone())
+      : now
+    const endMaxDateTime = startDateTime 
+      ? startDateTime.clone().add(7, 'days') 
+      : undefined
 
     // @ts-ignore
     return (
@@ -507,6 +536,56 @@ export const CreateRedPacketStepWrap = withTranslation()(
             </Typography>
           )}
         </Box>
+        {
+          tradeType === TRADE_TYPE.NFT && <Box
+            marginY={1}
+            display={"flex"}
+            alignSelf={"stretch"}
+            justifyContent={"stretch"}
+            flexDirection={"column"}
+            position={"relative"}
+          >
+            <InputCoin<any, I, any>
+              // ref={inputSplitRef}
+              label={t("labelBlindBoxRedPacketWithGift")}
+              placeholderText={t("labelQuantity")}
+              isHideError={false}
+              isShowCoinInfo={false}
+              handleError={(data: any) => {
+                handleOnDataChange({
+                  giftNumbers: data.tradeValue,
+                } as unknown as Partial<T>);
+                return {
+                  error: (tradeData.giftNumbers && tradeData.numbers && tradeData.giftNumbers > tradeData.numbers)
+                    ? true
+                    : false
+                }
+              }}
+              name={"giftnumbers"}
+              order={"right"}
+              handleCountChange={(data) => {
+                handleOnDataChange({
+                  giftNumbers: data.tradeValue,
+                } as unknown as Partial<T>);
+              }}
+              inputData={{
+                belong:
+                  selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+                    ? t("labelQuantity")
+                    : t("labelSplit"),
+                tradeValue: tradeData?.giftNumbers,
+              }}
+              coinMap={{}}
+              coinPrecision={undefined}
+              disabled={disabled}
+              inputError={
+                (tradeData.giftNumbers && tradeData.numbers && tradeData.giftNumbers > tradeData.numbers)
+                  ? { error: true }
+                  : { error: false }
+              }
+            />
+          </Box>
+        }
         <Box
           marginY={1}
           display={"flex"}
@@ -565,46 +644,36 @@ export const CreateRedPacketStepWrap = withTranslation()(
               className={"main-label"}
               color={"var(--color-text-third)"}
             >
-              <Trans i18nKey={"labelRedPacketStart"}>Active Time</Trans>
+              <Trans i18nKey={"labelRedPacketStart111"}>Active Time</Trans>
             </Typography>
           </FormLabel>
           <Box marginTop={1}>
-            <DateTimePicker
-              value={dayValue}
-              fullWidth={true}
-              disableFuture={false}
-              minDate={moment()}
-              maxDateTime={moment().add(1, "days")}
-              onChange={(monent: any) => {
-                setDayValue(monent);
+            <DateTimeRangePicker 
+              startValue={startDateTime} 
+              startMinDateTime={startMinDateTime}
+              startMaxDateTime={startMaxDateTime}
+              onStartChange={(m) => {
                 handleOnDataChange({
-                  validSince: monent.toDate().getTime(),
+                  validSince: m ? m.toDate().getTime() : undefined,
                 } as unknown as Partial<T>);
               }}
-              textFiledProps={{ size: "large" }}
-              disabled={disabled}
-            />
-          </Box>
-          <Box marginTop={1}>
-            <InputCoin
-              {...{
-                ...(durationProps as any),
-                name: "numbers",
-                order: "right",
-                handleCountChange: (data) => {
-                  // @ts-ignore
-                  setDurationValue(data.tradeValue ?? "");
-                  handleOnDataChange({
-                    validUntil: data.tradeValue,
-                  } as unknown as Partial<T>);
-                },
-                size: "middle" as any,
-                coinMap: {},
-                coinPrecision: undefined,
+              onStartOpen={() => {
+                handleOnDataChange({
+                  validUntil: undefined,
+                } as unknown as Partial<T>);
               }}
-              disabled={disabled}
+              
+              endValue={endDateTime}
+              endMinDateTime={endMinDateTime}
+              endMaxDateTime={endMaxDateTime}
+              onEndChange={(m) => {
+                handleOnDataChange({
+                  validUntil: m ? m.toDate().getTime() : undefined,
+                } as unknown as Partial<T>);
+              }}
             />
           </Box>
+
         </Box>
         <Box
           marginY={1}
@@ -785,7 +854,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
             </Button>
           </Box>
         </Box>
-        <Box display={"flex"} alignSelf={"stretch"}>
+
+        <Box marginTop={4} display={"flex"} alignSelf={"stretch"}>
           <Typography
             paddingBottom={0}
             display={"inline-flex"}
@@ -797,7 +867,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
             width={"100%"}
             textAlign={"center"}
           >
-            {t("labelRedPacketsExpireDes")}
+            {
+              tradeType === TRADE_TYPE.TOKEN
+                ? t("labelBlindBoxExpirationExplainationForToken") 
+                : t("labelBlindBoxExpirationExplainationForNFT")
+            }
           </Typography>
         </Box>
       </RedPacketBoxStyle>
@@ -819,11 +893,14 @@ export const CreateRedPacketStepType = withTranslation()(
     selectedType,
     disabled = false,
     btnInfo,
+    privateChecked,
+    onChangePrivateChecked,
     t,
   }: Omit<CreateRedPacketViewProps<T, I, C>, "tokenMap"> & {
     selectedType: LuckyRedPacketItem;
     // setSelectType: (value: LuckyRedPacketItem) => void;
   } & WithTranslation) => {
+    
     const { isMobile } = useSettings();
     const getDisabled = React.useMemo(() => {
       return disabled;
@@ -845,10 +922,9 @@ export const CreateRedPacketStepType = withTranslation()(
           alignSelf={"stretch"}
           marginY={2}
         >
-          {LuckyRedPacketList.map((item: LuckyRedPacketItem, index) => {
+          {LuckyRedPacketList.filter(item => tradeType == TRADE_TYPE.NFT ? item.showInNFTS : item.showInERC20).map((item: LuckyRedPacketItem, index) => {
             return (
               <React.Fragment key={index}>
-                {!(tradeType == TRADE_TYPE.NFT && index == 0) && (
                   <Box key={item.value.value} marginBottom={1}>
                     <MenuBtnStyled
                       variant={"outlined"}
@@ -890,47 +966,95 @@ export const CreateRedPacketStepType = withTranslation()(
                       </Typography>
                     </MenuBtnStyled>
                   </Box>
-                )}
               </React.Fragment>
             );
           })}
         </Box>
-        <Box marginBottom={2} display={"flex"} alignItems={"stretch"}>
-          <RadioGroup
-            aria-label="withdraw"
-            name="withdraw"
-            value={tradeData?.type?.scope as sdk.LuckyTokenViewType}
-            onChange={(_e, value) => {
-              handleOnDataChange({
-                type: {
-                  ...tradeData.type,
-                  scope: value,
-                },
-              } as any);
-            }}
-          >
-            {[1, 0].map((key) => {
-              return (
-                <FormControlLabel
-                  key={key}
-                  sx={{ marginTop: 2 }}
-                  value={key.toString()}
-                  control={<Radio />}
-                  label={
-                    <>
-                      <Typography component={"span"}>
-                        {t("labelLuckyTokenViewType" + key)}
-                      </Typography>
-                      <Typography component={"span"}>
-                        {t("labelLuckyTokenViewTypeDes" + key)}
-                      </Typography>
-                    </>
-                  }
-                />
-              );
-            })}
-          </RadioGroup>
-        </Box>
+        {
+          tradeType === TRADE_TYPE.NFT
+            ? (
+              <>
+              <Box  onClick={() => {
+                onChangePrivateChecked!();
+              }} style={{cursor: "pointer"}} position={"relative"} marginBottom={10} display={"flex"} alignItems={"start"}>
+                <Box position={"absolute"} left={8} top={5}>
+                  <Checkbox
+                    style={{
+                      padding: '0'
+                    }}
+                    checked={privateChecked}
+                    checkedIcon={<GoodIcon htmlColor={"var(--color-primary)"}></GoodIcon>}
+                    icon={<GoodIcon htmlColor={"var(--color-third)"}></GoodIcon>}
+                    color="default"
+                  />
+                </Box>
+                {/* <GoodIcon htmlColor={"var(--color-third)"}></GoodIcon> */}
+                <Box display={"flex"} marginLeft={4} flexDirection={"column"}>
+                  <Typography
+                    variant={"h5"}
+                    display={"inline-flex"}
+                    marginBottom={1 / 2}
+                    alignItems={"flex-start"}
+                    component={"span"}
+                    style={{cursor: "pointer"}}
+                  >
+                    {t("labelBlindBoxPrivate")}
+                  </Typography>
+                  <Typography
+                    variant={"body1"}
+                    display={"inline-flex"}
+                    justifyContent={"flex-start"}
+                    component={"span"}
+                    color={"var(--color-text-secondary)"}
+                  >
+                    {t("labelBlindBoxPrivateDes")}
+                  </Typography>
+                </Box>
+              </Box>
+              <Typography marginBottom={3} color={"var(--color-text-secondary)"}>
+                {t("labelBlindBoxClaimWarning")}
+              </Typography>
+              </>
+            )
+            : (
+              <Box marginBottom={2} display={"flex"} alignItems={"stretch"}>
+                <RadioGroup
+                  aria-label="withdraw"
+                  name="withdraw"
+                  value={tradeData?.type?.scope as sdk.LuckyTokenViewType}
+                  onChange={(_e, value) => {
+                    handleOnDataChange({
+                      type: {
+                        ...tradeData.type,
+                        scope: value,
+                      },
+                    } as any);
+                  }}
+                >
+                  {[1, 0].map((key) => {
+                    return (
+                      <FormControlLabel
+                        key={key}
+                        sx={{ marginTop: 2 }}
+                        value={key.toString()}
+                        control={<Radio />}
+                        label={
+                          <>
+                            <Typography component={"span"}>
+                              {t("labelLuckyTokenViewType" + key)}
+                            </Typography>
+                            <Typography component={"span"}>
+                              {t("labelLuckyTokenViewTypeDes" + key)}
+                            </Typography>
+                          </>
+                        }
+                      />
+                    );
+                  })}
+                </RadioGroup>
+              </Box>
+            )
+        }
         <Box
           width={"100%"}
           alignSelf={"stretch"}

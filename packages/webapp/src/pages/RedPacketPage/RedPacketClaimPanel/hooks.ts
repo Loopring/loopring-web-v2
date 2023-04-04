@@ -109,13 +109,26 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
       claimType: CLAIM_TYPE.redPacket,
     });
   };
+  const [showNFTsPanel, setShowNFTsPanel] = React.useState(
+    false
+  );
+  const onViewMoreNFTsClick = () => {
+    setShowNFTsPanel(true)
+  };
+  const onCloseNFts = () => {
+    setShowNFTsPanel(false)
+    
+  };
 
   return {
+    onViewMoreNFTsClick,
     onItemClick,
     redPacketClaimList,
     showLoading,
     redPacketClaimTotal,
     getClaimRedPacket,
+    showNFTsPanel,
+    onCloseNFts
   };
 };
 

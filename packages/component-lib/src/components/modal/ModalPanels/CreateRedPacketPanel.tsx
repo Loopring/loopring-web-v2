@@ -111,23 +111,13 @@ export const CreateRedPacketPanel = <
     });
     return clonedWalletMap;
   }, [walletMap]);
+  
   const [selectedType, setSelectType] = React.useState(LuckyRedPacketList[0]);
   React.useEffect(() => {
     setSelectType(() => {
-      if (tradeData?.type) {
-        if (
-          tradeData.type.partition == LuckyRedPacketList[0].value.partition &&
-          tradeData.type.mode == LuckyRedPacketList[0].value.mode
-        ) {
-          return LuckyRedPacketList[0];
-        } else if (
-          tradeData.type.partition == LuckyRedPacketList[1].value.partition &&
-          tradeData.type.mode == LuckyRedPacketList[1].value.mode
-        ) {
-          return LuckyRedPacketList[1];
-        } else {
-          return LuckyRedPacketList[2];
-        }
+      if (tradeData && tradeData.type) {
+        const found = LuckyRedPacketList.find(x => tradeData.type?.partition == x.value.partition && tradeData.type?.mode == x.value.mode)
+        return found ?? LuckyRedPacketList[2]
       } else {
         return LuckyRedPacketList[2];
       }
@@ -138,6 +128,14 @@ export const CreateRedPacketPanel = <
     tradeData?.type?.scope,
     tradeData?.type?.mode,
   ]);
+  React.useEffect(() => {
+    const found = LuckyRedPacketList.find(x => tradeData.tradeType === TRADE_TYPE.NFT ? x.showInNFTS : x.showInERC20)
+    setSelectType(found!);
+  }, [
+    tradeData.tradeType
+  ]);
+
+  const [privateChecked, setPrivateChecked] = React.useState(false)
 
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     return {
@@ -176,6 +174,16 @@ export const CreateRedPacketPanel = <
                 setActiveStep,
                 activeStep: RedPacketStep.ChooseType,
               } as any)}
+              privateChecked={privateChecked}
+              onChangePrivateChecked={() => {
+                handleOnDataChange({
+                  type: {
+                    ...tradeData?.type,  
+                    scope: !privateChecked ? 1 : 0,
+                  },
+                } as any);
+                setPrivateChecked(!privateChecked)
+              }}
             />
           ),
           toolBarItem: undefined,

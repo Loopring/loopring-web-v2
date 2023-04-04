@@ -88,6 +88,7 @@ export const ModalAccountInfo = withTranslation("common")(
     //   "resetProps.chargeFeeTokenList",
     //   activeAccountProps.chargeFeeTokenList
     // );
+
     return (
       <>
         <Toast

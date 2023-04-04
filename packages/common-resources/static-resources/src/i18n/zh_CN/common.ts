@@ -905,11 +905,9 @@ export default {
     "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
     "<1></1>",
   labelDefiAgree: "I have read and understand the risk warning.",
-
   labelDefiInvest: "Defi Earn",
   labelLRCStakingInvest: "LRC staking",
   labelLRCStakingRedeemInvest: "LRC staking Redeem",
-
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
   labelCreateCollection: "Create Collection",
@@ -1280,6 +1278,25 @@ export default {
     "Your Red Packet is public, and everyone can try to claim a share of it.",
   labelLuckyTokenViewTypeDesPrivate:
     "Your Red Packet is shared privately with others via a custom QR code.",
+  labelLuckyBlindBox: "Blind Box Red Packet",
+  labelLuckyBlindBoxDes: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
+  labelLuckyRecievedBlindBox: "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
+  labelBlindBoxExplaination: "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExplaination2: "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
+  labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
+  labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
+  labelBlindBoxClaimStarted: "The NFTs Claimed will be ended after: {{time}}",
+  labelBlindBoxRecievedNFT: "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
+  labelBlindBoxStartDate: "Start date",
+  labelBlindBoxEndDate: "End date",
+  labelBlindBoxEndTime: "End Time",
+  labelBlindBoxRedPacketWithGift: "有礼物的红包个数",
+  labelBlindBoxExpirationExplainationForToken: "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
+  labelBlindBoxExpirationExplainationForNFT: "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
+  labelBlindBoxPrivate: "Private Red Packet",
+  labelBlindBoxPrivateDes: "Your Red Packet is shared privately with others via a custom QR code.",
+  labelBlindBoxClaimWarning: "Note：For NFT red packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
+  labelBlindBoxRecievedRedPackets: "Received NFT Red Packets",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
     "If the recipient of the Red Packet also re-shares the packet, they receive half of whatever the next person receives.",
@@ -1343,6 +1360,7 @@ export default {
   labelRedPacketsMaxRange: "Max {{value}}",
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
   labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
+  labelRedPacketsGiftsLargerThanPackets: "Number of gifts is larger than number of packets",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:

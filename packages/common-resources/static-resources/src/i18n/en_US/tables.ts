@@ -290,9 +290,13 @@ export default {
   labelStakeTransactionTypeclaim: "claim",
   labelDefiStakingAndPreviousEarn: "Cumulative & Previous Day's Earnings",
   labelDefiStakingTxRewardsMobileDate: "Date",
-
+  labelBlindBoxOpend: "Opend",
+  labelBlindBoxEndTime: "End Time",
+  labelBlindBoxCalim: "Claim",
+  labelBlindBoxExpired: "Expired",
+  labelBlindBoxClaimed: "Claimed",
+  labelBlindBoxStartTime: "Start time: {{time}}",
   // labelRecordAction: "Action",
-
   labelCexSwapType: "Type",
   labelCexSwapFee: "Fee",
   labelCexSwapTime: "Time",

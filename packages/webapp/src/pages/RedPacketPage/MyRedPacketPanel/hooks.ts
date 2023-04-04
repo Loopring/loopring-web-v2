@@ -9,6 +9,7 @@ import {
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
+  CLAIM_TYPE,
   getShortAddr,
   SDK_ERROR_MAP_TO_UI,
   TokenType,
@@ -134,7 +135,7 @@ export const useMyRedPacketRecordTransaction = <
                   type: item.type, //sdk.LuckyTokenItemStatus
                   status: item.status,
                   validSince: item.validSince,
-                  validUntil: item.validSince,
+                  validUntil: item.validUntil,
                   totalCount: item.tokenAmount.totalCount,
                   remainCount: item.tokenAmount.remainCount,
                   totalAmount,
@@ -196,7 +197,7 @@ export const useMyRedPacketReceiveTransaction = <
   const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>(
     []
   );
-  const { setShowRedPacket } = useOpenModals();
+  const { setShowRedPacket, setShowClaimWithdraw } = useOpenModals();
 
   const { idIndex, coinMap, tokenMap } = useTokenMap();
   const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0);
@@ -301,10 +302,172 @@ export const useMyRedPacketReceiveTransaction = <
   const onItemClick = (item: sdk.LuckTokenHistory) => {
     setShowRedPacket({
       isShow: true,
+      step: RedPacketViewStep.DetailPanel,
       info: {
         ...item.luckyToken,
       },
-      step: RedPacketViewStep.DetailPanel,
+    });
+  };
+  const onClaimItem = async (item: sdk.LuckTokenHistory) => {
+    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances({
+      accountId: accountId,
+      isNft: item.luckyToken.isNft,
+      tokens: [item.luckyToken.tokenId],
+    }, apiKey)
+    if (
+      (response as sdk.RESULT_INFO).code ||
+      (response as sdk.RESULT_INFO).message
+    ) {
+      const errorItem =
+        SDK_ERROR_MAP_TO_UI[
+          (response as sdk.RESULT_INFO)?.code ?? 700001
+        ];
+      if (setToastOpen) {
+        setToastOpen({
+          open: true,
+          type: "error",
+          content:
+            "error : " + errorItem
+              ? t(errorItem.messageKey)
+              : (response as sdk.RESULT_INFO).message,
+        });
+      }
+    } else {
+      setShowClaimWithdraw({
+        isShow: true,
+        claimToken: {
+          tokenId: response!.tokenBalance[0].tokenId,
+          total: response!.tokenBalance[0].total,
+          locked: response!.tokenBalance[0].locked,
+          pending: response!.tokenBalance[0].pending,
+          nftTokenInfo: item.luckyToken.nftTokenInfo,
+          isNft: item.luckyToken.isNft
+        },
+        claimType: CLAIM_TYPE.redPacket,
+      });
+    }
+  };
+  return {
+    onItemClick,
+    redPacketReceiveList,
+    showLoading,
+    getRedPacketReceiveList,
+    redPacketReceiveTotal,
+    onClaimItem
+  };
+};
+
+export const useMyRedPacketBlindBoxReceiveTransaction = <
+  R extends RawDataRedPacketReceivesItem
+>({
+  setToastOpen,
+}: 
+{
+  setToastOpen: (props: any) => void;
+}) => {
+  const { t } = useTranslation(["error"]);
+
+  const {
+    account: { accountId, apiKey, accAddress, eddsaKey },
+  } = useAccount();
+
+  const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>(
+    []
+  );
+  const { setShowRedPacket } = useOpenModals();
+
+  const { idIndex, coinMap, tokenMap } = useTokenMap();
+  const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0);
+  const [showLoading, setShowLoading] = React.useState(true);
+  // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
+
+  const getRedPacketReceiveList = React.useCallback(
+    async ({ offset, limit, filter }: any) => {
+      setShowLoading(true);
+      if (LoopringAPI.luckTokenAPI && accountId) {
+        if (apiKey) {
+          const response =
+            await LoopringAPI.luckTokenAPI.getLuckTokenClaimedBlindBox(
+              {
+                offset,
+                limit,
+                ...filter,
+              } as any,
+              apiKey
+            );
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            const errorItem =
+              SDK_ERROR_MAP_TO_UI[
+                (response as sdk.RESULT_INFO)?.code ?? 700001
+              ];
+            if (setToastOpen) {
+              setToastOpen({
+                open: true,
+                type: "error",
+                content:
+                  "error : " + errorItem
+                    ? t(errorItem.messageKey)
+                    : (response as sdk.RESULT_INFO).message,
+              });
+            }
+          } else {
+            setRedPacketReceiveTotal((response as any)?.totalNum);
+            // @ts-ignore
+            // debugger
+
+            let result = (response as any)?.list.map(
+              (item: sdk.LuckyTokenBlindBoxItemReceive) => {
+                // @ts-ignore
+                const { luckyToken, claim: myClaim } = item;
+                
+                return {
+                  type: luckyToken.type, 
+                  status: luckyToken.status,
+                  claimAt: myClaim?.createdAt,
+                  sender: luckyToken?.sender?.ens
+                    ? luckyToken?.sender?.ens
+                    : getShortAddr(luckyToken?.sender?.address),
+                  rawData: item,
+                };
+              }
+            );
+
+            setRedPacketReceiveList(result);
+          }
+        }
+      }
+      setShowLoading(false);
+    },
+    [accountId, apiKey, setToastOpen, t, idIndex]
+  );
+
+  const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
+    if (item.claim.status === sdk.BlindBoxStatus.NOT_OPENED) {
+      let response =
+        await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
+          request: {
+            hash: item.luckyToken.hash,
+            claimer: accAddress,
+          },
+          eddsaKey: eddsaKey.sk,
+          apiKey: apiKey,
+        } as any);
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        throw response;
+      }
+    }
+    setShowRedPacket({
+      isShow: true,
+      step: RedPacketViewStep.BlindBoxDetail,
+      info: {
+        ...item.luckyToken
+      },
     });
   };
   return {

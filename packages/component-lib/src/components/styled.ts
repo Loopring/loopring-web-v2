@@ -415,7 +415,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     height: auto;
     text-indent: 0em;
     text-align: left;
-    padding: ${({ theme }) => theme.unit * 2}px;
+    padding: ${({ theme }) => theme.unit * 2}px ${({ theme }) => theme.unit * 4}px;
 
     .mainTitlte {
     }
