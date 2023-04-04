@@ -27,6 +27,7 @@ import {
 import {
   AccountStatus,
   CexTradeCalcData,
+  CEX_MARKET,
   CoinMap,
   CustomErrorWithCode,
   EmptyValueTag,
@@ -66,7 +67,7 @@ const useCexSocket = () => {
         [sdk.WsTopicType.account]: true,
         [sdk.WsTopicType.cefiOrderBook]: {
           showOverlap: false,
-          markets: [tradeCex.market],
+          markets: [tradeCex.cexMarket], //[tradeCex.market],
           level: 0,
           snapshot: true,
         },
@@ -544,7 +545,8 @@ export const useCexSwap = <
 
   React.useEffect(() => {
     const { depth, lastStepAt, tradePair, market } = tradeCex;
-    if (depth && depth.symbol == market) {
+
+    if (depth && new RegExp(market).test(depth?.symbol)) {
       setIsSwapLoading(false);
       // refreshWhenDepthUp();
       reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
@@ -734,10 +736,11 @@ export const useCexSwap = <
   );
 
   const callPairDetailInfoAPIs = React.useCallback(async () => {
-    if (market && LoopringAPI.defiAPI) {
+    const { marketMap } = store.getState().invest.cexMap;
+
+    if (market && LoopringAPI.defiAPI && marketMap[market]) {
       try {
-        const { depth } = await dexSwapDependAsync(market);
-        const { marketMap } = store.getState().invest.cexMap;
+        const { depth } = await dexSwapDependAsync(marketMap[market].cexMarket);
         // debugger;
         updateTradeCex({
           market,
@@ -750,7 +753,7 @@ export const useCexSwap = <
         resetTradeCalcData(undefined, market);
       }
     }
-  }, [market]);
+  }, [market, marketMap]);
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
       const {
@@ -785,10 +788,23 @@ export const useCexSwap = <
         let sellMinAmtInfo = undefined;
         let sellMaxAmtInfo = undefined;
         let sellMaxL2AmtInfo = undefined;
-        let tradeCost = undefined;
+        // let tradeCost = undefined;
         let totalFeeRaw = undefined;
-        const info: sdk.CEX_MARKET = marketMap[market];
+        const info: CEX_MARKET = marketMap[market];
         const { cefiAmount, minAmount, l2Amount } = info;
+
+        const calcDexOutput = sdk.calcDex({
+          info,
+          input: input.toString(),
+          sell: sellToken.symbol,
+          buy: buyToken.symbol,
+          isAtoB,
+          marketArr: marketArray,
+          tokenMap,
+          marketMap,
+          depth,
+          feeBips: maxFeeBips.toString(),
+        });
 
         //buy token pool can not be empty
         if (
@@ -797,17 +813,7 @@ export const useCexSwap = <
           cefiAmount && l2Amount && sellBuyStr == market
             ? cefiAmount.quote !== "0"
             : cefiAmount.base !== "0"
-          // cefiAmount.quote !=='' &&
-          // cefiAmount.base
         ) {
-          totalFeeRaw = sdk.toBig(tradeCost ?? 0);
-          totalFee = getValuePrecisionThousand(
-            sdk.toBig(totalFeeRaw).div("1e" + buyToken.decimals),
-            buyToken.precision,
-            buyToken.precision,
-            undefined,
-            false
-          );
           if (
             (sellBuyStr == market ? cefiAmount.quote : cefiAmount.base) !== ""
           ) {
@@ -890,25 +896,8 @@ export const useCexSwap = <
             .div("1e" + sellToken.decimals)
             .toString();
         }
-        totalFee = sdk
-          .toBig(tradeCost ?? 0)
-          .div("1e" + buyToken.decimals)
-          .toString();
 
-        const calcDexOutput = sdk.calcDex({
-          info,
-          input: input.toString(),
-          sell: sellToken.symbol,
-          buy: buyToken.symbol,
-          isAtoB,
-          marketArr: marketArray,
-          tokenMap,
-          marketMap,
-          depth,
-          feeBips: maxFeeBips.toString(),
-        });
-
-        if (tradeCost && calcDexOutput) {
+        if (calcDexOutput) {
           minimumReceived = sdk
             .toBig(calcDexOutput?.amountB ?? 0)
             .minus(totalFeeRaw ?? 0)
@@ -931,7 +920,6 @@ export const useCexSwap = <
           amountB: tradeCalcData?.amountB as any,
           amountS: tradeCalcData?.amountS as any,
           fee: totalFee,
-          tradeCost,
           isReverse: calcDexOutput?.isReverse,
           lastStepAt: type,
           sellMinAmtStr: getValuePrecisionThousand(
@@ -986,21 +974,45 @@ export const useCexSwap = <
             undefined,
             false
           ),
-          // totalPool: getValuePrecisionThousand(
-          //   sdk
-          //     .toBig((sellBuyStr == market ? cexMap.quote : cexMap.base) ?? 0)
-          //     // .plus((sellBuyStr == market ? l2Amount.quote : l2Amount.base) ?? 0)
-          //     .div("1e" + buyToken.decimals),
-          //   buyToken.precision,
-          //   buyToken.precision,
-          //   undefined,
-          //   false
-          // ),
         };
+        totalFeeRaw = sdk
+          .toBig(calcDexOutput?.amountB ?? 0)
+          .times(info.feeBips);
+        totalFee = getValuePrecisionThousand(
+          sdk.toBig(totalFeeRaw).div("1e" + buyToken.decimals),
+          buyToken.precision,
+          buyToken.precision,
+          undefined,
+          false
+        );
 
         setTradeCalcData((state) => {
-          stob = stob ? stob : state.StoB;
-          btos = btos ? btos : state.StoB;
+          const [mid_price, _mid_price_convert] = calcDexOutput
+            ? [
+                depth.mid_price,
+                getValuePrecisionThousand(
+                  1 / depth.mid_price,
+                  buyToken.precision,
+                  buyToken.precision,
+                  buyToken.precision
+                ),
+              ]
+            : [undefined, undefined];
+
+          stob = stob
+            ? stob
+            : state?.StoB
+            ? state.StoB
+            : !calcDexOutput?.isReverse
+            ? mid_price
+            : _mid_price_convert;
+          btos = btos
+            ? btos
+            : state?.BtoS
+            ? state.BtoS
+            : calcDexOutput?.isReverse
+            ? mid_price
+            : _mid_price_convert;
           _tradeCalcData = {
             ...state,
             ..._tradeCalcData,

@@ -342,8 +342,10 @@ export const useAddressTypeLists = <
       description: t(`label${WALLET_TYPE.Exchange}Des`),
     },
   ];
-  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (type: WALLET_TYPE) => {
-    if (type === WALLET_TYPE.Exchange) throw 'wrong type'
+  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (
+    type: WALLET_TYPE
+  ) => {
+    if (type === WALLET_TYPE.Exchange) throw "wrong type";
     return [
       {
         label: t("labelWalletTypeOptions", {
@@ -374,7 +376,8 @@ export const useAddressTypeLists = <
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Binance as T,
         // todo translation
-        description: 'Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.'
+        description:
+          "Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
         // t(`label${WALLET_TYPE.OtherSmart}Des`),
       },
       {
@@ -382,7 +385,8 @@ export const useAddressTypeLists = <
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Huobi as T,
         // todo translation
-        description: 'Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.'
+        description:
+          "Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.",
         // t(`label${WALLET_TYPE.OtherSmart}Des`),
       },
       {
@@ -390,11 +394,12 @@ export const useAddressTypeLists = <
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Others as T,
         // todo translation
-        description: 'The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.'
+        description:
+          "The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
         // t(`label${WALLET_TYPE.OtherSmart}Des`),
       },
     ];
-  }
+  };
   const nonExchangeList: AddressItemType<T>[] = [
     {
       label: t(`labelNonExchangeType`),
@@ -639,7 +644,6 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
-
     labelKey: "labelLuckyBlindBox",
     desKey: "labelLuckyBlindBoxDes",
     showInNFTS: true,
@@ -671,7 +675,6 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
       mode: sdk.LuckyTokenClaimType.COMMON,
     },
   },
-
 ];
 
 export const QRCODE_REGION_ID = "qrcodeRegionId";
@@ -749,3 +752,5 @@ export interface SnackbarMessage {
   key: number | string;
   svgIcon?: string;
 }
+
+export type CEX_MARKET = sdk.CEX_MARKET & { cexMarket: string };
