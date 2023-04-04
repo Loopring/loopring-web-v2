@@ -15,10 +15,21 @@ import {
 import { Trans, useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useClaimNFTRedPacket, useClaimRedPacket } from "./hooks";
-import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import {
   CloseIcon,
   RedPacketIcon,
+  RowConfig,
   SagaStatus,
   TabTokenTypeIndex,
   TOAST_TIME,
@@ -33,14 +44,14 @@ export const RedPacketClaimPanel = () => {
   const { isMobile } = useSettings();
   const history = useHistory();
 
-  const { 
-    redPacketClaimList, 
-    showNFTsPanel, 
-    showLoading, 
-    getClaimRedPacket, 
-    onItemClick, 
+  const {
+    redPacketClaimList,
+    showNFTsPanel,
+    showLoading,
+    getClaimRedPacket,
+    onItemClick,
     onViewMoreNFTsClick,
-    onCloseNFts
+    onCloseNFts,
   } = useClaimRedPacket(setToastOpen);
   const {
     page,
@@ -131,9 +142,7 @@ export const RedPacketClaimPanel = () => {
             <EmptyDefault
               height={"calc(100% - 35px)"}
               message={() => {
-                return (
-                  <Trans i18nKey="labelNoContent">Content is Empty</Trans>
-                );
+                return <Trans i18nKey="labelNoContent">Content is Empty</Trans>;
               }}
             />
           </Box>
@@ -142,28 +151,28 @@ export const RedPacketClaimPanel = () => {
           maxWidth={"lg"}
           open={showNFTsPanel}
           onClose={() => {
-            onCloseNFts()
+            onCloseNFts();
           }}
         >
           <DialogTitle>
-          <Typography variant={"h3"} textAlign={"center"}>
-            {t("labelBlindBoxRecievedRedPackets")}
-          </Typography>
-          <IconButton
-            size={"medium"}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-            }}
-            color={"inherit"}
-            onClick={() => {
-              onCloseNFts()
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
+            <Typography variant={"h3"} textAlign={"center"}>
+              {t("labelBlindBoxRecievedRedPackets")}
+            </Typography>
+            <IconButton
+              size={"medium"}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+              }}
+              color={"inherit"}
+              onClick={() => {
+                onCloseNFts();
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
           <DialogContent style={{ width: "960px" }}>
             <RedPacketClaimTable
               isNFT
