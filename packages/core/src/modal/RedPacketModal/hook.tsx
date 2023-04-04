@@ -407,16 +407,8 @@ export function useRedPacketModal() {
       const _info = info as sdk.LuckyTokenItemForReceive & {
         claimAmount?: string;
       };
-      setShowAccount({
-        isShow: true,
-        step: AccountStep.RedPacketOpen_Claim_In_Progress,
-      });
       if (_info?.hash && LoopringAPI.luckTokenAPI) {
         try {
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.RedPacketOpen_In_Progress,
-          });
           const response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
             {
               accountId: account.accountId,
@@ -469,9 +461,6 @@ export function useRedPacketModal() {
               //   isShow: true,
               //   step: RedPacketViewStep.DetailPanel,
               // });
-              setShowAccount({
-                isShow: false,
-              });
             } else {
               const error = new CustomError(ErrorMap.ERROR_REDPACKET_EMPTY);
               setShowAccount({
@@ -720,7 +709,7 @@ export function useRedPacketModal() {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string;
     };
-    const redPacketType = _info 
+    const redPacketType = (_info && _info.type)
       ? (_info.type.mode === sdk.LuckyTokenClaimType.RELAY 
         ? 'relay'
         : _info.type.partition === sdk.LuckyTokenAmountType.RANDOM 

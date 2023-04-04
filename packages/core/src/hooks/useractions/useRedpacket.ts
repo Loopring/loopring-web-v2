@@ -20,10 +20,10 @@ export function useOpenRedpacket() {
   const { account } = useAccount();
 
   const callOpen = React.useCallback(async () => {
-    setShowAccount({
-      isShow: true,
-      step: AccountStep.RedPacketOpen_Claim_In_Progress,
-    });
+    // setShowAccount({
+    //   isShow: true,
+    //   step: AccountStep.RedPacketOpen_Claim_In_Progress,
+    // });
     const _info = store.getState().modals.isShowRedPacket
       .info as sdk.LuckyTokenItemForReceive & {
       referrer?: string;
@@ -64,9 +64,9 @@ export function useOpenRedpacket() {
           ) {
             throw response;
           }
-          setShowAccount({
-            isShow: false,
-          });
+          // setShowAccount({
+          //   isShow: false,
+          // });
           setShowRedPacket({
             isShow: true,
             step: RedPacketViewStep.BlindBoxDetail,
@@ -95,9 +95,9 @@ export function useOpenRedpacket() {
             throw response;
           }
 
-          setShowAccount({
-            isShow: false,
-          });
+          // setShowAccount({
+          //   isShow: false,
+          // });
           setShowRedPacket({
             isShow: true,
             step: RedPacketViewStep.DetailPanel,
@@ -110,9 +110,9 @@ export function useOpenRedpacket() {
         }
       } catch (error: any) {
         if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
-          setShowAccount({
-            isShow: false,
-          });
+          // setShowAccount({
+          //   isShow: false,
+          // });
           if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
             setShowRedPacket({
               isShow: true,
@@ -136,9 +136,9 @@ export function useOpenRedpacket() {
             UIERROR_CODE.ERROR_REDPACKET_CLAIM_OUT,
           ].includes(error?.code)
         ) {
-          setShowAccount({
-            isShow: false,
-          });
+          // setShowAccount({
+          //   isShow: false,
+          // });
           setShowRedPacket({
             isShow: true,
             step: RedPacketViewStep.TimeOutPanel,
