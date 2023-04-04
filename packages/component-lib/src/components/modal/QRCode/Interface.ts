@@ -9,17 +9,14 @@ export interface GatewayItemQRCode {
 /**
  * @param handleSelect default hanldeSelect, if item have no private handleSelect function
  */
-export interface QRCodeProps {
+export interface QRCodePanelProps {
   title?: string | JSX.Element;
-  size?: number;
-  url: string;
-  className?: string;
-
   description?: string | JSX.Element;
 }
 
-export type ModalQRCodeProps = QRCodeProps & {
+export type ModalQRCodeProps = QRCodePanelProps & {
   open: boolean;
+  className?: string;
   onClose: {
     bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
   }["bivarianceHack"];

@@ -1,4 +1,3 @@
-import QRCode from "qrcode.react";
 import { Box, Link, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -12,6 +11,7 @@ import { useSettings } from "../../../stores";
 import { Button } from "../../basic-lib";
 import React from "react";
 import { Toast } from "../../toast";
+import { QRCode } from "../QRCode";
 
 const BoxStyle = styled(Box)`
   ${({ theme }) =>
@@ -37,7 +37,6 @@ export const QRAddressPanel = withTranslation("common")(
   } & Account) => {
     const { feeChargeOrder } = useSettings();
     const [copyToastOpen, setCopyToastOpen] = React.useState(false);
-
     //     const etherscanLink = etherscanUrl + 'address/' + accAddress;
     return (
       <Box
@@ -71,12 +70,7 @@ export const QRAddressPanel = withTranslation("common")(
             </Typography>
           </BoxStyle>
         )}
-        <QRCode
-          value={accAddress}
-          size={240}
-          style={{ padding: 8, backgroundColor: "#fff" }}
-          aria-label={`address:${accAddress}`}
-        />
+        <QRCode size={240} url={accAddress} />
         <Link
           marginTop={3}
           variant={"body2"}
@@ -94,7 +88,7 @@ export const QRAddressPanel = withTranslation("common")(
           <CopyIcon
             sx={{ paddingLeft: 1 }}
             color={"inherit"}
-            fontSize={"medium"}
+            fontSize={"large"}
           />
         </Link>
         <Typography
