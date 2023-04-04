@@ -36,6 +36,7 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
         minOrderInfo,
         lastStepAt,
         totalFee,
+        // cexMarket,
         maxFeeBips,
         ...rest
       } = action.payload;
@@ -52,6 +53,7 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
           sellUserOrderInfo,
           buyUserOrderInfo,
           lastStepAt: undefined,
+          // cexMarket,
           maxFeeBips: MAPFEEBIPS,
           ...rest,
         };
@@ -66,6 +68,9 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
         if (depth) {
           state.tradeCex.depth = depth;
         }
+        // if(cexMarket){
+        //   state.cexMarket.cexMarket = cexMarket;
+        // }
         // if (feeBips) {
         //   state.tradeCex.feeBips = feeBips;
         // }

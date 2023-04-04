@@ -4,6 +4,7 @@ import { CexMap, store } from "../../index";
 import { LoopringAPI } from "../../../api_wrapper";
 import { PayloadAction } from "@reduxjs/toolkit";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { CEX_MARKET } from "@loopring-web/common-resources";
 
 const getCexMapApi = async () => {
   if (!LoopringAPI.defiAPI) {
@@ -16,7 +17,7 @@ const getCexMapApi = async () => {
     // marketArr: marketArray,
     raw_data,
   } = await LoopringAPI.defiAPI?.getCefiMarkets();
-  const reformat: any = (raw_data as sdk.CEX_MARKET[]).reduce((prev, ele) => {
+  const reformat: any = (raw_data as CEX_MARKET[]).reduce((prev, ele) => {
     if (/-/gi.test(ele.market)) {
       return [
         ...prev,
@@ -25,7 +26,7 @@ const getCexMapApi = async () => {
           cexMarket: ele.market,
           market: ele.market.replace("CEFI-", ""),
           // enabled: true,
-        } as sdk.CEX_MARKET,
+        } as CEX_MARKET,
       ];
     } else {
       return prev;
@@ -35,7 +36,7 @@ const getCexMapApi = async () => {
       //   market: `${idIndex[ele.baseTokenId]}-${idIndex[ele.quoteTokenId]}`,
       // }];
     }
-  }, [] as sdk.CEX_MARKET[]);
+  }, [] as CEX_MARKET[]);
   const {
     markets: marketMap,
     pairs,

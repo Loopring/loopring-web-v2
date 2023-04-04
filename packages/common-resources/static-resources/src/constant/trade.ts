@@ -342,6 +342,64 @@ export const useAddressTypeLists = <
       description: t(`label${WALLET_TYPE.Exchange}Des`),
     },
   ];
+  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (
+    type: WALLET_TYPE
+  ) => {
+    if (type === WALLET_TYPE.Exchange) throw "wrong type";
+    return [
+      {
+        label: t("labelWalletTypeOptions", {
+          type: t(`labelWalletType${WALLET_TYPE.EOA}`),
+        }),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: WALLET_TYPE.EOA as T,
+        description: t(`label${WALLET_TYPE.EOA}Des`),
+      },
+      {
+        label: t("labelWalletTypeOptions", {
+          type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
+        }),
+        disabled: type === WALLET_TYPE.Loopring ? false : true,
+        value: WALLET_TYPE.Loopring as T,
+        description: t(`label${WALLET_TYPE.Loopring}Des`),
+      },
+      {
+        label: t("labelWalletTypeOptions", {
+          type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
+        }),
+        disabled: type === WALLET_TYPE.OtherSmart ? false : true,
+        value: WALLET_TYPE.OtherSmart as T,
+        description: t(`label${WALLET_TYPE.OtherSmart}Des`),
+      },
+      {
+        label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: EXCHANGE_TYPE.Binance as T,
+        // todo translation
+        description:
+          "Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
+        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+      },
+      {
+        label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: EXCHANGE_TYPE.Huobi as T,
+        // todo translation
+        description:
+          "Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.",
+        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+      },
+      {
+        label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: EXCHANGE_TYPE.Others as T,
+        // todo translation
+        description:
+          "The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
+        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+      },
+    ];
+  };
   const nonExchangeList: AddressItemType<T>[] = [
     {
       label: t(`labelNonExchangeType`),
@@ -375,6 +433,7 @@ export const useAddressTypeLists = <
   ];
   return {
     walletList,
+    walletListFn,
     nonExchangeList,
     exchangeList,
   };
@@ -450,7 +509,7 @@ export type TradeDefi<C> = {
   defiBalances?: { [key: string]: string };
   lastInput?: DeFiChgType;
 };
-export type TradeStack<C> = {
+export type TradeStake<C> = {
   sellToken: sdk.TokenInfo;
   sellVol: string;
   deFiSideCalcData?: DeFiSideCalcData<C>;
@@ -461,7 +520,7 @@ export type TradeStack<C> = {
   };
 };
 
-export type RedeemStack<C> = {
+export type RedeemStake<C> = {
   sellToken: sdk.TokenInfo;
   sellVol?: string;
   deFiSideRedeemCalcData: DeFiSideRedeemCalcData<C>;
@@ -482,7 +541,6 @@ export type MyNFTFilter = {
   favourite?: boolean;
   hidden?: boolean;
 };
-
 export enum MY_NFT_VIEW {
   LIST_COLLECTION = "byCollection",
   LIST_NFT = "byList",
@@ -578,6 +636,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyRelayToken",
     desKey: "labelLuckyRelayTokenDes",
+    showInERC20: true,
     value: {
       value: 0,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -585,8 +644,20 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
+    labelKey: "labelLuckyBlindBox",
+    desKey: "labelLuckyBlindBoxDes",
+    showInNFTS: true,
+    value: {
+      value: 3,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
     labelKey: "labelLuckyRandomToken",
     desKey: "labelLuckyRandomTokenDes",
+    showInNFTS: true,
+    showInERC20: true,
     value: {
       value: 1,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -596,6 +667,8 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyCommonToken",
     desKey: "labelLuckyCommonTokenDes",
+    showInNFTS: true,
+    showInERC20: true,
     value: {
       value: 2,
       partition: sdk.LuckyTokenAmountType.AVERAGE,
@@ -679,3 +752,5 @@ export interface SnackbarMessage {
   key: number | string;
   svgIcon?: string;
 }
+
+export type CEX_MARKET = sdk.CEX_MARKET & { cexMarket: string };
