@@ -790,11 +790,15 @@ export const useCexSwap = <
         const info: sdk.CEX_MARKET = marketMap[market];
         const { cefiAmount, minAmount, l2Amount } = info;
 
+        //buy token pool can not be empty
         if (
           // amountMap &&
           // amountMap[market as string] &&
-          cefiAmount &&
-          l2Amount
+          cefiAmount && l2Amount && sellBuyStr == market
+            ? cefiAmount.quote !== "0"
+            : cefiAmount.base !== "0"
+          // cefiAmount.quote !=='' &&
+          // cefiAmount.base
         ) {
           totalFeeRaw = sdk.toBig(tradeCost ?? 0);
           totalFee = getValuePrecisionThousand(
@@ -804,27 +808,41 @@ export const useCexSwap = <
             undefined,
             false
           );
-          const poolToVol =
-            sdk
-              .toBig(sellBuyStr == market ? cefiAmount.quote : cefiAmount.base)
-              .div("1e" + buyToken.decimals)
-              .toString() ?? "0";
-          const calcPoolToSell = sdk.calcDex({
-            info,
-            input: poolToVol,
-            sell: sellToken.symbol,
-            buy: buyToken.symbol,
-            isAtoB: false,
-            marketArr: marketArray,
-            tokenMap,
-            marketMap,
-            depth,
-            feeBips: maxFeeBips.toString(),
-          });
+          if (
+            (sellBuyStr == market ? cefiAmount.quote : cefiAmount.base) !== ""
+          ) {
+            const poolToVol =
+              sdk
+                .toBig(
+                  sellBuyStr == market ? cefiAmount.quote : cefiAmount.base
+                )
+                .div("1e" + buyToken.decimals)
+                .toString() ?? "0";
+
+            const calcPoolToSell = sdk.calcDex({
+              info,
+              input: poolToVol,
+              sell: sellToken.symbol,
+              buy: buyToken.symbol,
+              isAtoB: false,
+              marketArr: marketArray,
+              tokenMap,
+              marketMap,
+              depth,
+              feeBips: maxFeeBips.toString(),
+            });
+            sellMaxAmtInfo = sdk
+              .toBig(calcPoolToSell?.amountS ?? 0)
+              // .plus(calcPoolL2ToSell?.amountS ?? 0)
+              .div("1e" + sellToken.decimals)
+              .toString();
+          }
 
           const poolL2ToVol =
             sdk
-              .toBig(sellBuyStr == market ? l2Amount.quote : l2Amount.base)
+              .toBig(
+                sellBuyStr == market ? l2Amount.quote ?? 0 : l2Amount.base ?? 0
+              )
               .div("1e" + buyToken.decimals)
               .toString() ?? "0";
 
@@ -847,11 +865,6 @@ export const useCexSwap = <
             .toString();
 
           // 总量 是不是1+2 的总量
-          sellMaxAmtInfo = sdk
-            .toBig(calcPoolToSell?.amountS ?? 0)
-            // .plus(calcPoolL2ToSell?.amountS ?? 0)
-            .div("1e" + sellToken.decimals)
-            .toString();
 
           // const calcMiniToSell = sdk.calcDex({
           //   info,
@@ -922,26 +935,29 @@ export const useCexSwap = <
           isReverse: calcDexOutput?.isReverse,
           lastStepAt: type,
           sellMinAmtStr: getValuePrecisionThousand(
-            sdk.toBig(sellMinAmtInfo ?? 0).div("1e" + sellToken.decimals),
+            sdk.toBig(sellMinAmtInfo ?? 0),
             sellToken.precision,
             sellToken.precision,
-            undefined,
+            sellToken.precision,
             false
           ),
           sellMaxL2AmtStr: getValuePrecisionThousand(
-            sdk.toBig(sellMaxL2AmtInfo ?? 0).div("1e" + sellToken.decimals),
+            sdk.toBig(sellMaxL2AmtInfo ?? 0),
             sellToken.precision,
             sellToken.precision,
-            undefined,
+            sellToken.precision,
             false
           ),
-          sellMaxAmtStr: getValuePrecisionThousand(
-            sdk.toBig(sellMaxAmtInfo ?? 0).div("1e" + sellToken.decimals),
-            sellToken.precision,
-            sellToken.precision,
-            undefined,
-            false
-          ),
+          sellMaxAmtStr:
+            sellMaxAmtInfo !== undefined
+              ? getValuePrecisionThousand(
+                  sdk.toBig(sellMaxAmtInfo ?? 0),
+                  sellToken.precision,
+                  sellToken.precision,
+                  sellToken.precision,
+                  false
+                )
+              : undefined,
           l1Pool: getValuePrecisionThousand(
             sdk
               .toBig(
