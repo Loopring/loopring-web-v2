@@ -1294,7 +1294,7 @@ export default {
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyRandomTokenDes: "Each recipient will get a random amount of.",
   labelLuckyCommonToken: "Normal Red Packet",
-  labelLuckyCommonTokenDes: "Each recipient will receive a pre-set split of.",
+  labelLuckyCommonTokenDes: "Each recipient will receive a pre-set split of the total Red Packet shared.",
   labelL1toL2NFTAmount: "NFT Amount",
   labelInputRedPacketBtnLabel: "Select Token",
   labelCreateRedPacket: "Send Red Packet",
@@ -1308,7 +1308,7 @@ export default {
   labelLuckyTokenViewTypeDes0:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelSplit: "Red Packet Count",
-  labelRedPacketMemo: "Best Wishes",
+  labelRedPacketMemo: "Memo",
   labelRedPacketStart: "Available in",
   labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",

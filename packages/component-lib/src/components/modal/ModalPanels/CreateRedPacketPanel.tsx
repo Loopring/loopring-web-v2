@@ -125,7 +125,7 @@ export const CreateRedPacketPanel = <
     // setScope();
   }, [
     tradeData?.type?.partition,
-    tradeData?.type?.scope,
+    // tradeData?.type?.scope,
     tradeData?.type?.mode,
   ]);
   React.useEffect(() => {
@@ -274,7 +274,11 @@ export const CreateRedPacketPanel = <
       alignItems={"center"}
     >
       <HorizontalLabelPositionBelowStepper
-        activeStep={panelIndex === 0 ? 0 : 1}
+        activeStep={
+          (panelIndex === 2 || panelIndex === 3)
+            ? 2
+            : panelIndex
+        }
         steps={steps}
       />
       <Box

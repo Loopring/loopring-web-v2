@@ -317,7 +317,7 @@ export const useCreateRedPacket = <
         tooLarge = tradeValue.gt(tradeToken.luckyTokenAmounts.maximum);
       } else {
         balance = redPacketOrder.balance ?? 0;
-        tradeValue = sdk.toBig(redPacketOrder.tradeValue);
+        tradeValue = sdk.toBig(redPacketOrder.tradeValue ?? 0);
         isExceedBalance = tradeValue.gt(balance);
         const eachValue = sdk.toBig(_tradeData.eachValue ?? 0);
         tooSmall = eachValue.lt(1);

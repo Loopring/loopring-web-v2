@@ -657,7 +657,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   },
   {
     labelKey: "labelLuckyRandomToken",
-    desKey: "labelLuckyRandomTokenDes",
+    desKey: "labelRedPacketsSplitLuckyDetail",
     showInNFTS: true,
     showInERC20: true,
     value: {

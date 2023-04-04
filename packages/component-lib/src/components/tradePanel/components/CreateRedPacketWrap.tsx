@@ -432,9 +432,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
               marginRight={1}
             >
               {t(
-                selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-                  ? "labelRedPacketSendCommonTitle"
-                  : "labelRedPacketSenRandomTitle"
+                selectedType.value.mode == sdk.LuckyTokenClaimType.RELAY 
+                  ? "labelRelayRedPacket"
+                  :selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+                    ? "labelRedPacketSendCommonTitle"
+                    : "labelRedPacketSenRandomTitle"
               ) +
                 " — " +
                 t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
@@ -1039,14 +1041,14 @@ export const CreateRedPacketStepType = withTranslation()(
                         value={key.toString()}
                         control={<Radio />}
                         label={
-                          <>
+                          <Box display={"flex"} flexDirection={"column"}>
                             <Typography component={"span"}>
                               {t("labelLuckyTokenViewType" + key)}
                             </Typography>
-                            <Typography component={"span"}>
+                            <Typography color={"var(--color-text-secondary)"} variant={"body2"} component={"span"}>
                               {t("labelLuckyTokenViewTypeDes" + key)}
                             </Typography>
-                          </>
+                          </Box>
                         }
                       />
                     );

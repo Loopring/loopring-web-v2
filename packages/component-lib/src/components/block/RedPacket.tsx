@@ -1144,7 +1144,7 @@ export const RedPacketDetail = ({
                         {item.helper}
                       </Typography>
                     )}
-                    {redPacketType === 'lucky' && item.isMax && (
+                    {(redPacketType === 'lucky' || redPacketType === 'relay') && item.isMax && (
                       <Typography
                         component={"span"}
                         color={"var(--color-warning)"}
