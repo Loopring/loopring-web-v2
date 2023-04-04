@@ -259,17 +259,14 @@ export const RedPacketQRCode = ({
       margin: 4,
     },
   });
-  const [qrCodeG, setQrCodeG] =
-    React.useState<QRCodeStyling | undefined>(undefined);
+  const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined);
 
   const updateSvg = React.useCallback(async () => {
     qrCode.update({
       data: url,
     });
     const svgEle = await qrCode._getElement("svg");
-    setQrCodeG((state) => {
-      return svgEle?.innerHTML;
-    });
+    setQrCodeG(svgEle?.innerHTML ?? "");
     // setQrCodeG(() => {
     //   // const dom = document.createElement("div");
     //   // qrcode.append(dom);

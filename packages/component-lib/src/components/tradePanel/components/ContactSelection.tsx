@@ -10,7 +10,7 @@ import { SearchIcon, CloseIcon } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type SingleContactProps = {
   editing: boolean;
