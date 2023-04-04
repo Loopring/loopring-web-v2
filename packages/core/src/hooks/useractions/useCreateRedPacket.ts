@@ -148,7 +148,6 @@ export const useCreateRedPacket = <
   }, [redPacketOrder, accountStatus]);
   const handleOnDataChange = React.useCallback(
     (tradeData: Partial<T>) => {
-      
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
       myLog("redPacketOrder handleOnDataChange", redPacketOrder, tradeData);
       if (tradeData.tradeType) {
@@ -280,7 +279,7 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
       _tradeData.tradeValue &&
       redPacketOrder.memo &&
-      redPacketOrder.memo?.trim().length > 0 
+      redPacketOrder.memo?.trim().length > 0
     ) {
       let tradeToken: any = {},
         balance,
@@ -292,7 +291,7 @@ export const useCreateRedPacket = <
       const feeRaw =
         redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
       const fee = sdk.toBig(feeRaw);
-      const blindBoxGiftsLargerThanPackets = 
+      const blindBoxGiftsLargerThanPackets =
         redPacketOrder.tradeType === TRADE_TYPE.NFT &&
         redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
         sdk.toBig(redPacketOrder.giftNumbers ?? "0").isGreaterThan(redPacketOrder.numbers)

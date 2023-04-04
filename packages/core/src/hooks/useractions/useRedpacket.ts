@@ -11,7 +11,6 @@ import { store, useAccount, useSystem } from "../../stores";
 import {
   CustomError,
   ErrorMap,
-  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 
@@ -46,7 +45,6 @@ export function useOpenRedpacket() {
     } else {
       try {
         if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-          
           let response =
             await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimBlindBox({
               request: {
@@ -230,14 +228,17 @@ export const useRedPacketScanQrcodeSuccess = () => {
         const luckTokenInfo: sdk.LuckyTokenItemForReceive = detail.luckyToken;
         let difference =
           new Date(luckTokenInfo.validSince).getTime() - Date.now();
-        
+
         if (luckTokenInfo) {
           setShowAccount({ isShow: false });
           if (response.detail?.claimAmount.toString() !== "0") {
-            if (response.detail?.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+            if (
+              response.detail?.luckyToken.type.mode ===
+              sdk.LuckyTokenClaimType.BLIND_BOX
+            ) {
               setShowRedPacket({
                 isShow: true,
-                step: RedPacketViewStep.BlindBoxDetail ,
+                step: RedPacketViewStep.BlindBoxDetail,
                 info: {
                   ...luckTokenInfo,
                 },
@@ -245,7 +246,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
             } else {
               setShowRedPacket({
                 isShow: true,
-                step: RedPacketViewStep.DetailPanel ,
+                step: RedPacketViewStep.DetailPanel,
                 info: {
                   ...luckTokenInfo,
                 },
@@ -274,7 +275,6 @@ export const useRedPacketScanQrcodeSuccess = () => {
               step: RedPacketViewStep.TimeOutPanel,
             });
           } else {
-            
             setShowRedPacket({
               isShow: true,
               info: {
