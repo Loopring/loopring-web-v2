@@ -116,7 +116,9 @@ export const CreateRedPacketPanel = <
   React.useEffect(() => {
     setSelectType(() => {
       if (tradeData && tradeData.type) {
+        // if (tradeData.)
         const found = LuckyRedPacketList.find(x => tradeData.type?.partition == x.value.partition && tradeData.type?.mode == x.value.mode)
+        // found?.value.mode === 
         return found ?? LuckyRedPacketList[2]
       } else {
         return LuckyRedPacketList[2];
@@ -128,9 +130,27 @@ export const CreateRedPacketPanel = <
     // tradeData?.type?.scope,
     tradeData?.type?.mode,
   ]);
+
+  // tradeData.tradeType === TRADE_TYPE.NFT
   React.useEffect(() => {
-    const found = LuckyRedPacketList.find(x => tradeData.tradeType === TRADE_TYPE.NFT ? x.showInNFTS : x.showInERC20)
-    setSelectType(found!);
+    const found = LuckyRedPacketList.find(x => tradeData.tradeType === TRADE_TYPE.NFT ? x.showInNFTS : x.showInERC20)!
+    setSelectType(found);
+    // debugger
+    handleOnDataChange({
+      type: {
+        ...tradeData?.type,  
+        partition: found.value.partition,
+        mode: found.value.mode,
+      },
+    } as any);
+    // handleOnDataChange({
+    //   // ...tradeData,
+    //   type: {
+    //     ...tradeData.type,
+    //     partition: found.value.partition,
+    //     mode: found.value.mode,
+    //   }
+    // } as any)
   }, [
     tradeData.tradeType
   ]);

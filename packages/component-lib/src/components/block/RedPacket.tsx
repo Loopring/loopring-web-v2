@@ -49,7 +49,7 @@ import {
   BoxNFT,
   ModalCloseButtonPosition,
 } from "../basic-lib";
-import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
+import { LuckyTokenItemStatus, toBig } from "@loopring-web/loopring-sdk";
 import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
@@ -970,6 +970,8 @@ export const RedPacketDetail = ({
   relyNumber,
   relyAmount,
   ImageEle,
+  isMyRedPacket,
+  tokenSymbol
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const pageNation = React.useMemo(() => {
@@ -986,7 +988,6 @@ export const RedPacketDetail = ({
       return <></>;
     }
   }, []);
-  // console.log('isLuckyRedPacket', isLuckyRedPacket)
 
   return (
     <BoxStyle
@@ -1184,38 +1185,41 @@ export const RedPacketDetail = ({
           >
             {t("labelRedPacketGrab")}
           </Button>
-          <Typography
-            color={"textSecondary"}
-            variant={"body2"}
-            textAlign={"center"}
-            paddingTop={1}
-            component={"span"}
-          >
-            <Trans
-              i18nKey={"labelRedpacketHavePeopleHelp"}
-              tOptions={{
-                number: relyNumber ? relyNumber : EmptyValueTag,
-                amount: relyAmount ? relyAmount : EmptyValueTag,
-              }}
+          {!isMyRedPacket && (
+            <Typography
+              color={"textSecondary"}
+              variant={"body2"}
+              textAlign={"center"}
+              paddingTop={1}
+              component={"span"}
             >
-              have
-              <Typography
-                variant={"inherit"}
-                component={"span"}
-                color={RedPacketColorConfig.default.startColor}
+              <Trans
+                i18nKey={"labelRedpacketHavePeopleHelp"}
+                
+                tOptions={{
+                  number: relyNumber ? relyNumber : EmptyValueTag,
+                  amount: relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : '')
+                }}
               >
-                {relyNumber ?? EmptyValueTag}
-              </Typography>
-              friends help you pick up Redpacket, you extends reward:
-              <Typography
-                variant={"inherit"}
-                component={"span"}
-                color={RedPacketColorConfig.default.fontColor}
-              >
-                {relyAmount ?? EmptyValueTag}
-              </Typography>
-            </Trans>
-          </Typography>
+                have
+                <Typography
+                  variant={"inherit"}
+                  component={"span"}
+                  color={RedPacketColorConfig.default.startColor}
+                >
+                  {relyNumber ?? EmptyValueTag}
+                </Typography>
+                friends help you pick up Redpacket, you extends reward:
+                <Typography
+                  variant={"inherit"}
+                  component={"span"}
+                  color={RedPacketColorConfig.default.fontColor}
+                >
+                  {relyAmount ?? EmptyValueTag}
+                </Typography>
+              </Trans>
+            </Typography>
+          )}
         </Box>
       )}
     </BoxStyle>

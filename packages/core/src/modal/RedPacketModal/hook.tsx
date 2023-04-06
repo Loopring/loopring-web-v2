@@ -735,6 +735,7 @@ export function useRedPacketModal() {
           sdk.LuckyTokenItemStatus.FAILED,
           sdk.LuckyTokenItemStatus.COMPLETED,
         ].includes(detail.luckyToken.status);
+      
       let myAmountStr: string | undefined = undefined;
       const relyNumber = detail.helpers?.length;
       const value =
@@ -846,6 +847,10 @@ export function useRedPacketModal() {
             },
           });
         },
+        isMyRedPacket: account.accountId === _info.sender.accountId,
+        tokenSymbol: _info.isNft 
+          ? undefined
+          : (tokenMap[idIndex[_info?.tokenId] ?? ""]).symbol
       } as RedPacketDetailProps;
     } else {
       return undefined;

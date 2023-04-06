@@ -111,6 +111,7 @@ export type RedPacketDetailProps = {
   relyNumber?: string;
   handlePageChange: (page: number, limit?: number) => void;
   ImageEle?: JSX.Element | undefined;
+  isMyRedPacket: boolean;
 };
 export type RedPacketBlindBoxDetailTypes = 'Not Started' 
   | 'Blind Box Started' 
