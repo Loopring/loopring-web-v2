@@ -40,7 +40,10 @@ export const WalletValidationInfo = ({
   const [selected, setSelected] = React.useState<sdk.Guardian | undefined>();
   const [openCode, setOpenCode] = React.useState(false);
   const [notSupportOpen, setNotSupportOpen] = React.useState(false);
-  const network = sdk.NetworkWallet[MapChainId[chainId]];
+  const network =
+    sdk.NetworkWallet[
+      MapChainId[[1, 5].includes(Number(chainId) ?? 1) ? 1 : chainId]
+    ];
 
   const submitApprove = async (code: string, selected: sdk.Guardian) => {
     setOpenCode(false);

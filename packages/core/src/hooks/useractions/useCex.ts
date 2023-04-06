@@ -768,9 +768,9 @@ export const useCexSwap = <
         _tradePair,
         type
       );
-      if (depth && market && _tradePair === tradePair) {
-        const coinA = _tradeData.sell.belong;
-        const coinB = _tradeData.buy.belong;
+      if (depth && market && _tradePair === tradePair && _tradeData?.sell) {
+        const coinA = _tradeData?.sell.belong;
+        const coinB = _tradeData?.buy.belong;
         const sellToken = tokenMap[coinA as string];
         const buyToken = tokenMap[coinB as string];
         const sellBuyStr = `${sellToken.symbol}-${buyToken.symbol}`;
@@ -792,7 +792,6 @@ export const useCexSwap = <
         let totalFeeRaw = undefined;
         const info: CEX_MARKET = marketMap[market];
         const { cefiAmount, minAmount, l2Amount } = info;
-
         const calcDexOutput = sdk.calcDex({
           info,
           input: input.toString(),
@@ -805,7 +804,6 @@ export const useCexSwap = <
           depth,
           feeBips: maxFeeBips.toString(),
         });
-
         //buy token pool can not be empty
         if (
           // amountMap &&
@@ -869,8 +867,6 @@ export const useCexSwap = <
             .toBig(calcPoolL2ToSell?.amountS ?? 0)
             .div("1e" + sellToken.decimals)
             .toString();
-
-          // 总量 是不是1+2 的总量
 
           // const calcMiniToSell = sdk.calcDex({
           //   info,
