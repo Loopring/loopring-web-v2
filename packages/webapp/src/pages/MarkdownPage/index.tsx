@@ -1,5 +1,5 @@
 import { Box, Grid } from "@mui/material";
-import { useRouteMatch } from "react-router-dom";
+import { useRouteMatch, useLocation } from "react-router-dom";
 import React from "react";
 import { EmptyDefault, LoadingBlock } from "@loopring-web/component-lib";
 import Template from "easy-template-string";
@@ -59,15 +59,17 @@ const list = [
   "dex_fees_zh.md",
 ];
 export const MarkdownPage = () => {
-  const match = useRouteMatch("/document/:path");
-  const path = match?.params['path']
+  const location = useLocation();
+  const path = location.pathname
+    .split('/')
+    .slice(2)
+    .join('/')
   const [input, setInput] = React.useState<string>("");
   const { t } = useTranslation("common");
   React.useEffect(() => {
     if (path) {
       try {
-        const _path = path.split("/").length > 1 ? path : `markdown/${path}`;
-
+        const _path = `markdown/${path}`;
         fetch(url_path + "/" + _path)
           .then((response) => response.text())
           .then((input) => {
