@@ -735,6 +735,13 @@ export function useRedPacketModal() {
           sdk.LuckyTokenItemStatus.FAILED,
           sdk.LuckyTokenItemStatus.COMPLETED,
         ].includes(detail.luckyToken.status);
+      const showRelayText = detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.RELAY && 
+        account.accountId !== _info.sender.accountId
+      const showShareBtn = ![
+        sdk.LuckyTokenItemStatus.OVER_DUE,
+        sdk.LuckyTokenItemStatus.FAILED,
+        sdk.LuckyTokenItemStatus.COMPLETED,
+      ].includes(detail.luckyToken.status)
       
       let myAmountStr: string | undefined = undefined;
       const relyNumber = detail.helpers?.length;
@@ -847,10 +854,11 @@ export function useRedPacketModal() {
             },
           });
         },
-        isMyRedPacket: account.accountId === _info.sender.accountId,
         tokenSymbol: _info.isNft 
           ? undefined
-          : (tokenMap[idIndex[_info?.tokenId] ?? ""]).symbol
+          : (tokenMap[idIndex[_info?.tokenId] ?? ""]).symbol,
+        showRelayText,
+        showShareBtn
       } as RedPacketDetailProps;
     } else {
       return undefined;
@@ -1019,10 +1027,14 @@ export function useRedPacketModal() {
                   qrcode.tokenAmount.totalAmount
                 ).amountStr,
             textSendBy,
-            textType:
-              qrcode.type.mode == sdk.LuckyTokenClaimType.RELAY
+            textType: (info && info.type)
+              ? (info.type.mode === sdk.LuckyTokenClaimType.RELAY
                 ? t("labelRelayRedPacket")
-                : t("labelLuckyRedPacket"),
+                : info.type.partition === sdk.LuckyTokenAmountType.RANDOM
+                  ? t("labelLuckyRedPacket")
+                  : t("labelNormalRedPacket")
+              )
+              : t("labelNormalRedPacket"),
             textShared: t("labelShare"),
             textDes: t("labelRedpacketScanDes"),
             isShouldSharedRely:

@@ -108,6 +108,7 @@ export const useCreateRedPacket = <
   } = useChargeFees({
     ...feeProps,
     updateData: ({ fee }) => {
+      // debugger
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
       if (redPacketOrder.tradeType === TRADE_TYPE.TOKEN) {
         updateRedPacketOrder({

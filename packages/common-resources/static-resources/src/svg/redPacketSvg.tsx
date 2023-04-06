@@ -309,6 +309,7 @@ export type RedPacketQRPropsExtends = {
   textNo: string;
   textDes: string;
   imageEleUrl?: string;
+  onClickShareButton?: (e: React.MouseEvent<SVGGElement, MouseEvent>) => void
 };
 export type ColorConfig = {
   colorTop: string;
@@ -356,6 +357,7 @@ export const RedPacketQRCodeSvg = React.memo(
         textNo,
         textDes,
         imageEleUrl,
+        onClickShareButton
       }: ColorConfig & {
         type: "default" | "official";
         qrcodeRef: React.Ref<SVGGElement>;
@@ -400,6 +402,7 @@ export const RedPacketQRCodeSvg = React.memo(
             fill={`url(#paintQRCode${type}0)`}
           />
           <path
+            onClick={onClickShareButton}
             d="M108 537C108 527.059 116.059 519 126 519H208C217.941 519 226 527.059 226 537V537C226 546.941 217.941 555 208 555H126C116.059 555 108 546.941 108 537V537Z"
             fill={bgColor}
           />
@@ -566,7 +569,7 @@ export const RedPacketQRCodeSvg = React.memo(
               style={{
                 dominantBaseline: "central",
                 textAnchor: "middle",
-                fontSize: "12px",
+                fontSize: "11px",
               }}
             >
               {textType}
@@ -603,7 +606,7 @@ export const RedPacketQRCodeSvg = React.memo(
               dangerouslySetInnerHTML={{ __html: textSendBy }}
             />
           </g>
-          <g transform={"translate(167 535)"}>
+          <g onClick={onClickShareButton} transform={"translate(167 535)"}>
             <text
               className={"textShared"}
               strokeWidth="0"

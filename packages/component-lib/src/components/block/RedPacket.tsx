@@ -290,7 +290,7 @@ export const RedPacketQRCode = ({
   React.useEffect(() => {
     updateSvg();
   }, [url]);
-  const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const onClick = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
     try {
       // @ts-ignore-start
       const svg: SVGElement = ref.current as SVGElement;
@@ -333,7 +333,7 @@ export const RedPacketQRCode = ({
   return (
     <>
       {qrCodeG && (
-        <Box onClick={onClick}>
+        <Box>
           <RedPacketQRCodeSvg
             ref={ref}
             {...{ ...RedPacketColorConfig[type], ...rest }}
@@ -341,6 +341,7 @@ export const RedPacketQRCode = ({
             imageEleUrl={imageEleUrl}
             qrCodeG={qrCodeG}
             type={type}
+            onClickShareButton={onClick}
           />
         </Box>
       )}
@@ -963,14 +964,14 @@ export const RedPacketDetail = ({
   // detail,
   handlePageChange,
   myAmountStr,
-  isShouldSharedRely,
   totalCount,
   remainCount,
   onShared,
   relyNumber,
   relyAmount,
   ImageEle,
-  isMyRedPacket,
+  showRelayText,
+  showShareBtn,
   tokenSymbol
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
@@ -1169,7 +1170,7 @@ export const RedPacketDetail = ({
         </Box>
         {pageNation}
       </Box>
-      {isShouldSharedRely && (
+      {showShareBtn && (
         <Box paddingX={1} display={"flex"} flexDirection={"column"}>
           <Button
             variant={"contained"}
@@ -1185,7 +1186,7 @@ export const RedPacketDetail = ({
           >
             {t("labelRedPacketGrab")}
           </Button>
-          {!isMyRedPacket && (
+          {showRelayText && (
             <Typography
               color={"textSecondary"}
               variant={"body2"}
