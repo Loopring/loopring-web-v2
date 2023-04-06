@@ -39,7 +39,7 @@ export const WalletValidationInfo = ({
   const [isFirstTime, setIsFirstTime] = React.useState<boolean>(true);
   const [selected, setSelected] = React.useState<sdk.Guardian | undefined>();
   const [openCode, setOpenCode] = React.useState(false);
-  const [ notSupportOpen,setNotSupportOpen] = React.useState(false);
+  const [notSupportOpen, setNotSupportOpen] = React.useState(false);
   const network =
     sdk.NetworkWallet[
       MapChainId[[1, 5].includes(Number(chainId) ?? 1) ? 1 : chainId]
