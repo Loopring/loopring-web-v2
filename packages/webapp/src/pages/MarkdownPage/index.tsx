@@ -59,8 +59,8 @@ const list = [
   "dex_fees_zh.md",
 ];
 export const MarkdownPage = () => {
-  let match: any = useRouteMatch("/document/:path");
-  const [path, setPath] = React.useState<null | string>(match?.params.path);
+  const match = useRouteMatch("/document/:path");
+  const path = match?.params['path']
   const [input, setInput] = React.useState<string>("");
   const { t } = useTranslation("common");
   React.useEffect(() => {
@@ -81,10 +81,8 @@ export const MarkdownPage = () => {
             setInput(input);
           })
           .catch(() => {
-            setPath(null);
           });
       } catch (e: any) {
-        setPath(null);
       }
     }
   }, [path]);
