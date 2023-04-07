@@ -107,8 +107,8 @@ export type CexTradeCalcData<T> = TradeCalcData<T> & {
   maxFeeBips: number;
   lockedNotification: true;
   isLockedNotificationChecked?: boolean;
-  amountS: string | undefined;
-  amountB: string | undefined;
+  volumeSell: string | undefined;
+  volumeBuy: string | undefined;
   sellMinAmtStr: string | undefined;
   sellMaxL2AmtStr: string | undefined;
   sellMaxAmtStr: string | undefined;
