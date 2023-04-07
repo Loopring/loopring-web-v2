@@ -49,11 +49,19 @@ export const swapDependAsync = (
   });
 };
 
-export const dexSwapDependAsync = (
-  market: MarketType,
-  level: number = 0,
-  limit?: number
-): Promise<{
+export const dexSwapDependAsync = ({
+  market,
+  level = 0,
+  limit,
+  //TODO
+  tokenMap,
+}: {
+  market: MarketType;
+  level?: number;
+  limit?: number;
+  //TODO
+  tokenMap?: any;
+}): Promise<{
   depth: sdk.DepthData | undefined;
 }> => {
   return new Promise((resolve, reject) => {
@@ -65,10 +73,11 @@ export const dexSwapDependAsync = (
             level,
             limit,
           },
+          tokenMap,
         }),
-      ]).then(([resopnseDepth]) => {
+      ]).then(([responseDepth]) => {
         resolve({
-          depth: resopnseDepth?.depth,
+          depth: responseDepth?.depth,
         });
       });
     } else {
