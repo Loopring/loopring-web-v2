@@ -1005,7 +1005,6 @@ export function useRedPacketModal() {
           });
         } else if (qrcode?.hash) {
           const url = `${Exchange}wallet?redpacket&id=${qrcode?.hash}&referrer=${account.accAddress}`;
-
           return {
             url,
             imageEleUrl:
@@ -1039,8 +1038,7 @@ export function useRedPacketModal() {
             textDes: t("labelRedpacketScanDes"),
             isShouldSharedRely:
               qrcode.type.mode == sdk.LuckyTokenClaimType.RELAY,
-            // @ts-ignore
-            textNo: t("labelRedPacketNo", { value: qrcode?.id?.toString() }),
+            textNo: t("labelRedPacketNo", { value: qrcode?.hash.slice(-8) }),
           } as RedPacketQRCodeProps;
         }
       }

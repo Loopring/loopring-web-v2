@@ -378,7 +378,7 @@ export const RedPacketQRCodeSvg = React.memo(
           setTextContent([str1, str2]);
         } else if (textContent && textContent.length > 12) {
           const value = textContent.substring(0, 12);
-          let _textContent2 = textContent.substring(12, textContent.length - 1);
+          let _textContent2 = textContent.substring(12, textContent.length);
           const textArray = value.split(" ");
           _textContent2 =
             (textArray.length > 2 ? textArray.pop() : "") + _textContent2;

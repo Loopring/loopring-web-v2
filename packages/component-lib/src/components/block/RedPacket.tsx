@@ -734,9 +734,7 @@ RedPacketDefault & RedPacketUnreadyProps) => {
             marginTop={3}
             top={0}
           >
-            {t("labelOpenAfter", {
-              time: moment(validSince).fromNow(),
-            })}
+            {`${moment(validSince).format("MM/DD HH:mm")} ${t("labelOpenStart")}`}
           </Typography>
           {ImageEle}
           <Typography
@@ -1613,7 +1611,7 @@ export const RedPacketBlindBoxDetail = ({
           </Typography>
 
           <Box flex={1} overflow={"scroll"}>
-            {BlindBoxClaimList!.map((info) => {
+            {BlindBoxClaimList && BlindBoxClaimList.map((info) => {
               return (
                 <BoxClaim
                   className={"claim"}
@@ -1794,7 +1792,7 @@ export const RedPacketBlindBoxDetail = ({
                   </Typography>
 
                   <Box flex={1} overflow={"scroll"}>
-                    {NFTClaimList!.map((info) => {
+                    {NFTClaimList && NFTClaimList.map((info) => {
                       return (
                         <BoxClaim
                           className={"claim"}

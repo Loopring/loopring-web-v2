@@ -405,7 +405,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
       : now
     const startMaxDateTime = endDateTime 
       ? endDateTime.clone()
-      : undefined
+      : now.add(1, 'days')
 
     const endMinDateTime = startDateTime 
       ? moment.max(now, startDateTime.clone())

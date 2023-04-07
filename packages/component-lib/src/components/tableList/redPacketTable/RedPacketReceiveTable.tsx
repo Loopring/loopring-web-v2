@@ -10,6 +10,7 @@ import {
   TablePagination,
 } from "../../basic-lib";
 import {
+  CoinInfo,
   globalSetup,
   myLog,
   RowConfig,
@@ -125,7 +126,11 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           name: t("labelToken"),
           formatter: ({ row: { token } }: FormatterProps<R, unknown>) => {
             if (token.type === TokenType.single) {
-              return <ColumnCoinDeep token={token as any} />;
+              const _token = token as CoinInfo<any> & {type: TokenType;}
+              return <ColumnCoinDeep token={{
+                ..._token,
+                name: '' // for not displaying name here
+              }} />
             } else {
               const { metadata } = token as sdk.UserNFTBalanceInfo;
               return (
