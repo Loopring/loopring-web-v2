@@ -384,6 +384,7 @@ export function useRedPacketModal() {
             : getShortAddr(_info.sender?.address),
           validSince: _info.validSince,
           showRedPacket: () => {
+            alert('skkkk')
             setShowRedPacket({
               isShow: true,
               step: RedPacketViewStep.OpenPanel,
@@ -841,7 +842,7 @@ export function useRedPacketModal() {
         relyNumber: relyNumber ? relyNumber?.toString() : undefined,
         isShouldSharedRely,
         handlePageChange: (page: number = 1) => {
-          redPacketDetailCall({ offset: page - 1 });
+          redPacketDetailCall({ offset: RedPacketDetailLimit * (page - 1) });
         },
         onShared: () => {
           setShowRedPacket({

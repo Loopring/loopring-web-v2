@@ -58,7 +58,7 @@ export const useClaimConfirm = <
     setShowAccount,
     setShowClaimWithdraw,
     modals: {
-      isShowClaimWithdraw: { claimToken, isShow },
+      isShowClaimWithdraw: { claimToken, isShow, claimType },
       isShowAccount: { info },
     },
   } = useOpenModals();
@@ -99,14 +99,16 @@ export const useClaimConfirm = <
   });
 
   useWalletLayer2Socket({ walletLayer2Callback: undefined });
+  // calim
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
       checkFeeIsEnough();
       return;
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
-
+    // claimToken
     if (claimToken) {
+      
       if (claimToken?.isNft) {
         updateClaimData({
           ...claimToken.nftTokenInfo,
@@ -118,6 +120,7 @@ export const useClaimConfirm = <
           tradeValue: Number(claimToken.total),
           volume: claimToken.total,
           balance: Number(claimToken.total),
+          claimType
         } as any);
       } else {
         const token = tokenMap[idIndex[claimToken.tokenId]];
@@ -127,6 +130,8 @@ export const useClaimConfirm = <
           tradeValue: volumeToCount(token.symbol, claimToken.total),
           volume: claimToken.total,
           balance: volumeToCount(token.symbol, claimToken.total),
+          claimType,
+          // claimType: info.
         });
       }
     } else {
@@ -294,6 +299,7 @@ export const useClaimConfirm = <
 
   const onClaimClick = React.useCallback(
     async (_data: Partial<T>, isHardwareRetry = false) => {
+      debugger
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
       const claimValue = store.getState()._router_modalData.claimValue;
       if (

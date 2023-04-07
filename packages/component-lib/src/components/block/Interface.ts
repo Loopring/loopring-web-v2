@@ -92,7 +92,7 @@ export type RedPacketOpenedProps = {
   memo: string;
   viewDetail: () => void;
 };
-export const RedPacketDetailLimit = 5;
+export const RedPacketDetailLimit = 20;
 export type RedPacketDetailProps = {
   redPacketType: 'normal' | 'lucky' | 'relay';
   sender: string;

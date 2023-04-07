@@ -271,6 +271,9 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
+          onRowClick={(_index: number, row: R) => {
+            onItemClick(row.rawData);
+          }}
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
           sortMethod={React.useCallback(

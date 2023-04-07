@@ -49,6 +49,11 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
       const statuses = [
         sdk.LuckyTokenWithdrawStatus.PROCESSING,
         sdk.LuckyTokenWithdrawStatus.PROCESSED,
+        
+        // to remove following
+        sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED,
+        sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED,
+        sdk.LuckyTokenWithdrawStatus.RECEIVED,
       ];
       if (LoopringAPI.luckTokenAPI && accountId && apiKey) {
         const isNft = match?.params?.item?.toUpperCase() === "NFT";

@@ -1288,6 +1288,22 @@ export const RedPacketPrepare = ({
       <></>
     );
   }, [props]);
+  
+  // following code is for triggering rerender
+  const getDifferenceStatus = () => {
+    const difference = new Date(_info.validSince).getTime() - Date.now();
+    return difference > 180000
+      ? 0
+      : difference > 0
+        ? 1
+        : 2
+  }
+  const [differenceStatus, setDifferenceStatus] = React.useState(getDifferenceStatus())
+  React.useEffect(() => {
+    setInterval(() => {
+      setDifferenceStatus(getDifferenceStatus)
+    }, 1000)
+  },[])
   const viewItem = React.useMemo(() => {
     let difference = new Date(_info.validSince).getTime() - Date.now();
     if (claim) {
@@ -1353,11 +1369,13 @@ export const RedPacketPrepare = ({
               : getShortAddr(props?.sender?.address)
           }
           showRedPacket={() => {
-            setShowRedPacket({
-              isShow: false,
-              step: RedPacketViewStep.OpenPanel,
-              info: _info,
-            });
+
+            // do nothing
+            // setShowRedPacket({
+            //   isShow: true,
+            //   step: RedPacketViewStep.OpenPanel,
+            //   info: _info,
+            // });
           }}
           amountStr={amountStr}
           validSince={_info.validSince}
@@ -1380,13 +1398,25 @@ export const RedPacketPrepare = ({
               : getShortAddr(props?.sender?.address)
           }
           type={_type ?? "default"}
-          // viewDetail={() => {
-          //   setShowRedPacket({
-          //     isShow: true,
-          //     step: RedPacketViewStep.DetailPanel,
-          //     info: props,
-          //   });
-          // }}
+          viewDetail={() => {
+            if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.BlindBoxDetail,
+                info: {
+                  ..._info,
+                },
+              });
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.DetailPanel,
+                info: {
+                  ..._info,
+                },
+              });
+            }
+          }}
         />
       );
     } else {
@@ -1438,7 +1468,7 @@ export const RedPacketPrepare = ({
         />
       );
     }
-  }, [amountStr, claim, myAmountStr, onOpen, _info]);
+  }, [amountStr, claim, myAmountStr, onOpen, _info, differenceStatus]);
   return <Box>{viewItem}</Box>;
 };
 

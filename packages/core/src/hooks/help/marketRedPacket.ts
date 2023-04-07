@@ -39,10 +39,10 @@ export const getUserReceiveList = (
         : getShortAddr(item.claimer?.address ?? ""),
       isSelf: accountId === item.claimer.accountId,
       amountStr,
-      helper: (item.referrer?.address
-        ? item.referrer?.ens
-          ? item.referrer.ens
-          : getShortAddr(item.referrer.address.toString())
+      helper: (item.helper?.address
+        ? item.helper?.ens
+          ? item.helper.ens
+          : getShortAddr(item.helper.address.toString())
         : ""
       ).toString(),
       createdAt: item.createdAt,

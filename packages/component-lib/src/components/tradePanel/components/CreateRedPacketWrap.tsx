@@ -405,7 +405,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
       : now
     const startMaxDateTime = endDateTime 
       ? endDateTime.clone()
-      : now.add(1, 'days')
+      : now.clone().add(1, 'days')
 
     const endMinDateTime = startDateTime 
       ? moment.max(now, startDateTime.clone())
@@ -826,7 +826,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   numbers: undefined,
                   tradeValue: undefined,
                   validSince: Date.now(),
-                  validUntil: 1,
+                  validUntil: undefined,
                   memo: "",
                 } as any);
               }}
