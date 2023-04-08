@@ -551,7 +551,6 @@ export const useCexSwap = <
     if (depth && new RegExp(market).test(depth?.symbol)) {
       setIsSwapLoading(false);
       refreshWhenDepthUp();
-      // reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
     } else {
       setIsSwapLoading(true);
     }
@@ -894,6 +893,7 @@ export const useCexSwap = <
         } else {
           minimumReceived = undefined;
         }
+
         let _tradeCalcData: any = {
           minimumReceived,
           volumeBuy: tradeCalcData?.volumeBuy as any,
@@ -1097,7 +1097,15 @@ export const useCexSwap = <
           ..._tradeCalcData,
         };
       });
-      walletLayer2Callback();
+      reCalculateDataWhenValueChange(
+        {
+          sell: { belong: tradeCalcData.coinSell },
+          buy: { belong: tradeCalcData.coinBuy },
+        },
+        `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`
+      );
+      //
+      // walletLayer2Callback();
       updateTradeCex({ market, tradeCalcData: _tradeCalcData });
     }
   }, [market, tradeCex, tradeData, tradeCalcData, setTradeCalcData]);
