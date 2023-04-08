@@ -1175,31 +1175,6 @@ export const useSwap = <
           calcTradeParams && (calcTradeParams.priceImpact = "0");
         }
 
-        // myLog(
-        //   "hookSwap:calcTradeParams input:",
-        //   input.toString(),
-        //   ", calcTradeParams Price: ",
-        //   sdk
-        //     .toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
-        //     .div(input.toString())
-        //     .toNumber(),
-        //   `isAtoB:${isAtoB}, ${
-        //     isAtoB ? input.toString() : calcTradeParams?.output
-        //   } tradePrice: `,
-        //   tradePrice.toString(),
-        //   "basePrice: ",
-        //   basePrice?.toString(),
-        //   "toBig(tradePrice).div(basePrice)",
-        //   sdk
-        //     .toBig(tradePrice)
-        //     .div(basePrice ?? 1)
-        //     .toNumber(),
-        //   "priceImpact (1-tradePrice/basePrice) - 0.001",
-        //   priceImpact.toNumber(),
-        //   "priceImpact view",
-        //   calcTradeParams?.priceImpact
-        // );
-
         if (
           tradeCost &&
           calcTradeParams &&
@@ -1488,8 +1463,6 @@ export const useSwap = <
             tokenMap[_coinA].precision,
             true
           ); // .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
-        }
-        if (_tradeData?.isChecked) {
         }
         const _tradeCalcData = {
           ...tradeCalcData,

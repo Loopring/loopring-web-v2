@@ -546,12 +546,12 @@ export const useCexSwap = <
   }, [market]);
 
   React.useEffect(() => {
-    const { depth, lastStepAt, tradePair, market } = tradeCex;
+    const { depth, market } = store.getState()._router_tradeCex.tradeCex;
 
     if (depth && new RegExp(market).test(depth?.symbol)) {
       setIsSwapLoading(false);
-      // refreshWhenDepthUp();
-      reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
+      refreshWhenDepthUp();
+      // reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
     } else {
       setIsSwapLoading(true);
     }
@@ -561,7 +561,6 @@ export const useCexSwap = <
     let walletMap: WalletMap<any> | undefined = undefined;
     if (account.readyState === AccountStatus.ACTIVATED) {
       walletMap = makeWalletLayer2(true).walletMap;
-      // myLog('--ACTIVATED tradeCalcData:', tradeCalcData)
       setTradeData({
         ...tradeData,
         sell: {
@@ -621,7 +620,7 @@ export const useCexSwap = <
     swapType: any
   ): Promise<void> => {
     const { tradeData } = swapData;
-    resetSwap(swapType, tradeData);
+    resetCex(swapType, tradeData);
   };
 
   React.useEffect(() => {
@@ -636,7 +635,7 @@ export const useCexSwap = <
         (tradeData && tradeData.sell.belong == undefined) ||
         tradeData === undefined
       ) {
-        resetSwap(undefined, undefined);
+        resetCex(undefined, undefined);
       }
     }
   }, [market]);
@@ -654,10 +653,10 @@ export const useCexSwap = <
           account.readyState === AccountStatus.ACTIVATED &&
           walletLayer2Status === SagaStatus.UNSET
         ) {
-          if (!Object.keys(tradeCalcData.walletMap ?? {}).length) {
+          if (!Object.keys(tradeCalcData?.walletMap ?? {}).length) {
             walletMap = makeWalletLayer2(true).walletMap as WalletMap<any>;
           }
-          walletMap = tradeCalcData.walletMap as WalletMap<any>;
+          walletMap = tradeCalcData?.walletMap as WalletMap<any>;
         }
         const tradeDataTmp: any = {
           sell: {
@@ -685,9 +684,9 @@ export const useCexSwap = <
           },
           {} as CoinMap<C>
         );
-
+        let _tradeCalcData = {};
         setTradeCalcData((state) => {
-          return {
+          _tradeCalcData = {
             ...state,
             walletMap,
             coinSell: coinA,
@@ -711,17 +710,13 @@ export const useCexSwap = <
             l2Pool: undefined,
             // totalPool: undefined,
           };
+          return _tradeCalcData;
         });
         setTradeData({ ...tradeDataTmp });
         let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
         setMarket(market);
         history.push("/trade/cex/" + _market);
-        updateTradeCex({ market, tradePair });
-        // myLog("Market change getAmount", market);
-        // if (account.readyState === AccountStatus.ACTIVATED) {
-        //   getAmount({ market });
-        // }
-        // setIsSwapLoading(true);
+        updateTradeCex({ market, tradePair, tradeCalcData: _tradeCalcData });
       }
     },
     [
@@ -872,23 +867,6 @@ export const useCexSwap = <
             .div("1e" + sellToken.decimals)
             .toString();
 
-          // const calcMiniToSell = sdk.calcDex({
-          //   info,
-          //   input: sdk
-          //     .toBig(sellBuyStr == market ? minAmount.quote : minAmount.base)
-          //     .div("1e" + buyToken.decimals)
-          //     .toString(),
-          //   sell: sellToken.symbol,
-          //   buy: buyToken.symbol,
-          //   isAtoB: false,
-          //   marketArr: marketArray,
-          //   tokenMap,
-          //   marketMap,
-          //   depth,
-          //   feeBips: maxFeeBips.toString(),
-          // });
-          // calcForMinCost = ()
-          //TODO：先用dust 在看接口   _tradePair == market ? info.cefiAmount.quote : cefiAmount.base
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,
             sellBuyStr == market ? minAmount.quote : minAmount.base
@@ -1060,51 +1038,71 @@ export const useCexSwap = <
       marketArray,
     ]
   );
+  const refreshWhenDepthUp = React.useCallback(() => {
+    const { depth, lastStepAt, tradePair, market } = tradeCex;
+    if (depth && depth.symbol === market) {
+      reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
+    }
+    if (
+      tradeData &&
+      lastStepAt &&
+      tradeCalcData.coinSell === tradeData["sell"].belong &&
+      tradeCalcData.coinBuy === tradeData["buy"].belong &&
+      tradeData[lastStepAt].tradeValue &&
+      tradeData[lastStepAt].tradeValue !== 0
+    ) {
+      reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
+    } else if (
+      depth &&
+      tradeCalcData.coinSell &&
+      tradeCalcData.coinBuy &&
+      (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
+        `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
+    ) {
+      const result = reCalcStoB(
+        market,
+        tradeData as SwapTradeData<IBData<unknown>>,
+        tradePair as any
+      );
+      const buyToken = tokenMap[tradeCalcData.coinBuy];
+      const sellToken = tokenMap[tradeCalcData.coinSell];
 
-  // const refreshWhenDepthUp = React.useCallback(() => {
-  //   const { depth, lastStepAt, tradePair, market } = tradeCex;
-  //     if(depth && depth.symbol === market){
-  //       reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
-  //     }
-  //     // if (
-  //     //   tradeData &&
-  //     //   lastStepAt &&
-  //     //   tradeCalcData.coinSell === tradeData["sell"].belong &&
-  //     //   tradeCalcData.coinBuy === tradeData["buy"].belong &&
-  //     //   tradeData[lastStepAt].tradeValue &&
-  //     //   tradeData[lastStepAt].tradeValue !== 0
-  //     // ) {
-  //     //   reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
-  //     // } else if (
-  //     //   depth &&
-  //     //   tradeCalcData.coinSell &&
-  //     //   tradeCalcData.coinBuy &&
-  //     //   (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
-  //     //     `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
-  //     // ) {
-  //       // const result = reCalcStoB(
-  //       //   market,
-  //       //   tradeData as SwapTradeData<IBData<unknown>>,
-  //       //   tradePair as any
-  //       // );
-  //       //
-  //       // setTradeCalcData((state) => {
-  //       //   const pr1 = sdk.toBig(1).div(depth.mid_price).toString();
-  //       //   const pr2 = depth.mid_price;
-  //       //   const [StoB, BtoS] =
-  //       //     market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
-  //       //       ? [pr1, pr2]
-  //       //       : [pr2, pr1];
-  //       //   state.StoB = result ? result.stob : StoB.toString();
-  //       //   state.BtoS = result ? result.btos : BtoS.toString();
-  //       //   return { ...state };
-  //       // });
-  //       //
-  //       // updateTradeCex({ market });
-  //     }
-  //   }, [market, tradeCex, tradeData, tradeCalcData, setTradeCalcData]);
+      let _tradeCalcData: any = {};
+      setTradeCalcData((state) => {
+        const pr1 = sdk.toBig(1).div(depth.mid_price).toString();
+        const pr2 = depth.mid_price;
+        const [StoB, BtoS] =
+          market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
+            ? [pr1, pr2]
+            : [pr2, pr1];
+        // state.;
+        // state.BtoS = ;
+        _tradeCalcData = {
+          ...state,
+          ...tradeCalcData,
+          StoB: getValuePrecisionThousand(
+            result ? result?.stob : StoB.toString(),
+            buyToken.precision,
+            buyToken.precision,
+            undefined
+          ),
+          BtoS: getValuePrecisionThousand(
+            result ? result?.btos : BtoS.toString(),
+            sellToken.precision,
+            sellToken.precision,
+            undefined
+          ),
+        };
+        return {
+          ..._tradeCalcData,
+        };
+      });
+      walletLayer2Callback();
+      updateTradeCex({ market, tradeCalcData: _tradeCalcData });
+    }
+  }, [market, tradeCex, tradeData, tradeCalcData, setTradeCalcData]);
 
-  const resetSwap = (
+  const resetCex = (
     swapType: SwapType | undefined,
     _tradeData: SwapTradeData<IBData<C>> | undefined
   ) => {
@@ -1191,6 +1189,7 @@ export const useCexSwap = <
 
         myLog(
           "useCexSwap:Exchange,tradeCalcData,_tradeCalcData",
+          tradeData,
           tradeCalcData,
           _tradeCalcData
         );
@@ -1198,11 +1197,7 @@ export const useCexSwap = <
         updateTradeCex({
           market,
           tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`,
-          tradeCalcData: {
-            ...tradeCex.tradeCalcData,
-            // amountS: undefined,
-            // output: undefined,
-          },
+          tradeCalcData: _tradeCalcData,
         });
         setTradeCalcData(_tradeCalcData);
         break;
