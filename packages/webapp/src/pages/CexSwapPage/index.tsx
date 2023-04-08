@@ -1,5 +1,9 @@
 import { Box } from "@mui/material";
-import { WithTranslation, withTranslation } from "react-i18next";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 import {
   ConfirmCexSwapRisk,
   LoadingBlock,
@@ -19,6 +23,7 @@ import { useHistory } from "react-router-dom";
 
 const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
+  const { t } = useTranslation();
   const {
     toastOpen,
     closeToast,
@@ -45,6 +50,15 @@ const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
         tokenSellProps={{
           disabled: isSwapLoading,
           decimalsLimit: tradeCalcData.sellPrecision,
+          placeholderText:
+            tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ""
+              ? t("labelCexSwapMiniMax", {
+                  minValue: tradeCalcData.sellMinAmtStr,
+                  maxValue: tradeCalcData.sellMaxAmtStr,
+                })
+              : t("labelCexSwapMini", {
+                  minValue: tradeCalcData.sellMinAmtStr,
+                }),
         }}
         campaignTagConfig={campaignTagConfig ?? ({} as any)}
         market={market}
