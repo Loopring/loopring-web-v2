@@ -118,8 +118,10 @@ export const ColumnCoinDeep = React.memo(
     token: { type = TokenType.single, ...token },
     isNotRequiredName = false,
   }: {
-    token: CoinInfo<any>;
-  } & { type?: TokenType; isNotRequiredName?: boolean }) => {
+    token: CoinInfo<any> & {
+      type?: TokenType;
+    };
+  } & { isNotRequiredName?: boolean }) => {
     let tokenIcon: [any, any] = [undefined, undefined];
     const [head, middle, tail] = token.simpleName.split("-");
     const { coinJson } = useSettings();
