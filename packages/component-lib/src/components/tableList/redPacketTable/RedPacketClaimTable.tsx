@@ -77,8 +77,6 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
   <R extends RawDataRedPacketClaimItem | RawDataNFTRedPacketClaimItem>(
     props: RedPacketClaimTableProps<R> & WithTranslation
   ) => {
-    const { coinJson } = useSettings();
-
     const {
       rawData,
       forexMap,
