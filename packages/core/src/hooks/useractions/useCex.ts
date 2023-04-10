@@ -797,9 +797,11 @@ export const useCexSwap = <
         if (
           // amountMap &&
           // amountMap[market as string] &&
-          cefiAmount && l2Amount && sellBuyStr == market
+          cefiAmount &&
+          l2Amount &&
+          (sellBuyStr == market
             ? cefiAmount.quote !== "0"
-            : cefiAmount.base !== "0"
+            : cefiAmount.base !== "0")
         ) {
           if (
             (sellBuyStr == market ? cefiAmount.quote : cefiAmount.base) !== ""
@@ -811,7 +813,6 @@ export const useCexSwap = <
                 )
                 .div("1e" + buyToken.decimals)
                 .toString() ?? "0";
-            debugger;
             const calcPoolToSell = sdk.calcDex({
               info,
               input: poolToVol,
@@ -824,11 +825,7 @@ export const useCexSwap = <
               depth,
               feeBips: maxFeeBips.toString(),
             });
-            sellMaxAmtInfo = sdk
-              .toBig(calcPoolToSell?.amountS ?? 0)
-              // .plus(calcPoolL2ToSell?.amountS ?? 0)
-              .div("1e" + sellToken.decimals)
-              .toString();
+            sellMaxAmtInfo = calcPoolToSell?.amountS;
           }
 
           const poolL2ToVol =
@@ -854,7 +851,6 @@ export const useCexSwap = <
 
           sellMaxL2AmtInfo = sdk
             .toBig(calcPoolL2ToSell?.amountS ?? 0)
-            .div("1e" + sellToken.decimals)
             .toString();
 
           sellMinAmtInfo = BigNumber.max(
@@ -908,7 +904,8 @@ export const useCexSwap = <
             sellToken.precision,
             sellToken.precision,
             sellToken.precision,
-            false
+            false,
+            { isAbbreviate: true }
           ),
           sellMaxAmtStr:
             sellMaxAmtInfo !== undefined
@@ -916,8 +913,9 @@ export const useCexSwap = <
                   sdk.toBig(sellMaxAmtInfo ?? 0),
                   sellToken.precision,
                   sellToken.precision,
-                  sellToken.precision,
-                  false
+                  undefined,
+                  false,
+                  { isAbbreviate: true, floor: false }
                 )
               : undefined,
           l1Pool: getValuePrecisionThousand(
