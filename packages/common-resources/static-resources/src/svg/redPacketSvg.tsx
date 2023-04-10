@@ -357,20 +357,7 @@ export const RedPacketQRCodeSvg = React.memo(
           myLog("read error", error);
         }
       };
-      // function convertImageToBase64(imgUrl, callback) {
-      //   const image = new Image();
-      //   image.crossOrigin='anonymous';
-      //   image.onload = () => {
-      //     const canvas = document.createElement('canvas');
-      //     const ctx = canvas.getContext('2d');
-      //     canvas.height = image.naturalHeight;
-      //     canvas.width = image.naturalWidth;
-      //     ctx.drawImage(image, 0, 0);
-      //     const dataUrl = canvas.toDataURL();
-      //     callback && callback(dataUrl)
-      //   }
-      //   image.src = imgUrl;
-      // }
+
       React.useEffect(() => {
         const [str1, str2] = textContent?.split("\n");
         if (textContent && str2) {
@@ -392,7 +379,7 @@ export const RedPacketQRCodeSvg = React.memo(
         <>
           {imageEleUrl && (
             <img
-              crossOrigin={"anonymous"}
+              // crossOrigin={"anonymous"}
               src={imageEleUrl}
               onLoad={onLoad}
               ref={imageRef}
@@ -499,8 +486,6 @@ export const RedPacketQRCodeSvg = React.memo(
             </g>
             {imageEleUrl && (
               <image
-                onLoad={onLoad}
-                // crossOrigin={"anonymous"}
                 transform={"translate(128 110)"}
                 href={imageBase64}
                 height="80"
