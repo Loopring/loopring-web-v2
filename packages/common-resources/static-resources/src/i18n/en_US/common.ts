@@ -1375,7 +1375,7 @@ export default {
   labelAmountEach: "Amount Each",
   labelRedPacketTotalAmount: "Total Amount",
   labelQuantity: "Quantity",
-  labelAssetAmount: "Asset Amounts: {{value}}",
+  labelAssetAmount: "Total Asset Amounts: {{value}}",
   labelCreateRedPacketBtn: "Prepare Red Packet",
   labelRedPacketsExpireDes:
     "Unclaimed tokens remaining after the expiration will be returned within 24h",
@@ -1385,7 +1385,7 @@ export default {
   labelRedPacketsMinRange: "Min {{value}}",
   labelRedPacketsMaxRange: "Max {{value}}",
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
-  labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
+  labelRedPacketsMax: "Maximum of {{value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
     "Number of gifts is larger than number of packets",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
@@ -1399,6 +1399,9 @@ export default {
   labelShare: "Share",
   labelRelayRedPacket: "Relay Red Packet",
   labelNormalRedPacket: "Normal Red Packet",
+  labelluckyRedPacket: "Lucky Red Packet",
+  labelrelayRedPacket: "Relay Red Packet",
+  labelnormalRedPacket: "Normal Red Packet",
   labelLuckyRedPacket: "Lucky Red Packet",
   labelLuckyRedPacketStart: "Starts in: {{value}}",
   labelLuckyRedPacketTimeout: "Red Packet has been \n taken out",
@@ -1543,4 +1546,7 @@ export default {
   labelStakeNoEnough: "Insufficient {{belong}} balance",
   labelDefiRemindMin: "Please redeem all Balance",
   labelInvestType_LRCSTAKE: "LRC Staking",
+  labelNFTs_one: "\u2A09{{count}} NFT",
+  labelNFTs_other: "\u2A09{{count}} NFTs",
+  tokenNFTMaxRedPack: "Max:",
 };

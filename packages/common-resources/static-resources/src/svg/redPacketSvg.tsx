@@ -327,9 +327,11 @@ export const RedPacketQRCodeSvg = React.memo(
         textContent,
         "",
       ]);
-      const imageRef = React.useRef<any>();
+      // const imageRef = React.useRef<any>();
 
-      const [imageBase64, setImageBase64] = React.useState<string>(imageEleUrl);
+      const [imageBase64, setImageBase64] = React.useState<string>(
+        imageEleUrl ?? ""
+      );
       React.useEffect(() => {
         if (imageEleUrl) {
           fetch(

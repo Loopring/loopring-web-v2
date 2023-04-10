@@ -1270,23 +1270,32 @@ export default {
   labelLuckyTokenViewTypeDesPrivate:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyBlindBox: "Blind Box Red Packet",
-  labelLuckyBlindBoxDes: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
-  labelLuckyRecievedBlindBox: "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
-  labelBlindBoxExplaination: "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
-  labelBlindBoxExplaination2: "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
+  labelLuckyBlindBoxDes:
+    "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
+  labelLuckyRecievedBlindBox:
+    "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
+  labelBlindBoxExplaination:
+    "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExplaination2:
+    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
   labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
   labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
   labelBlindBoxClaimStarted: "The NFTs Claimed will be ended after: {{time}}",
-  labelBlindBoxRecievedNFT: "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
+  labelBlindBoxRecievedNFT:
+    "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
   labelBlindBoxEndDate: "End date",
   labelBlindBoxEndTime: "End Time",
   labelBlindBoxRedPacketWithGift: "有礼物的红包个数",
-  labelBlindBoxExpirationExplainationForToken: "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
-  labelBlindBoxExpirationExplainationForNFT: "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
+  labelBlindBoxExpirationExplainationForToken:
+    "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
+  labelBlindBoxExpirationExplainationForNFT:
+    "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
-  labelBlindBoxPrivateDes: "Your Red Packet is shared privately with others via a custom QR code.",
-  labelBlindBoxClaimWarning: "Note：For NFT red packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
+  labelBlindBoxPrivateDes:
+    "Your Red Packet is shared privately with others via a custom QR code.",
+  labelBlindBoxClaimWarning:
+    "Note：For NFT red packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
   labelBlindBoxRecievedRedPackets: "Received NFT Red Packets",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
@@ -1294,7 +1303,8 @@ export default {
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyRandomTokenDes: "Each recipient will get a random amount of.",
   labelLuckyCommonToken: "Normal Red Packet",
-  labelLuckyCommonTokenDes: "Each recipient will receive a pre-set split of the total Red Packet shared.",
+  labelLuckyCommonTokenDes:
+    "Each recipient will receive a pre-set split of the total Red Packet shared.",
   labelL1toL2NFTAmount: "NFT Amount",
   labelInputRedPacketBtnLabel: "Select Token",
   labelCreateRedPacket: "Send Red Packet",
@@ -1340,7 +1350,7 @@ export default {
   labelAmountEach: "Amount Each",
   labelRedPacketTotalAmount: "Total Amount",
   labelQuantity: "Quantity",
-  labelAssetAmount: "Asset Amounts: {{value}}",
+  labelAssetAmount: "Total Asset Amounts: {{value}}",
   labelCreateRedPacketBtn: "Prepare Red Packet",
   labelRedPacketsExpireDes:
     "Unclaimed tokens remaining after the expiration will be returned within 24h",
@@ -1351,7 +1361,8 @@ export default {
   labelRedPacketsMaxRange: "Max {{value}}",
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
   labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
-  labelRedPacketsGiftsLargerThanPackets: "Number of gifts is larger than number of packets",
+  labelRedPacketsGiftsLargerThanPackets:
+    "Number of gifts is larger than number of packets",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:

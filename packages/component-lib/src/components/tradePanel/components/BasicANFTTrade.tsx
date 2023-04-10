@@ -246,7 +246,7 @@ export const NFTInput = React.memo(
             display={"inline-flex"}
             alignItems={"center"}
             justifyContent={"space-between"}
-            height={80}
+            height={"auto"}
             width={"100%"}
           >
             <BasicANFTTrade

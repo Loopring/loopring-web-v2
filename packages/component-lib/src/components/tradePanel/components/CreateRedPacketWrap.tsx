@@ -39,6 +39,7 @@ import {
   TRADE_TYPE,
   TradeBtnStatus,
   GoodIcon,
+  REDPACKET_ORDER_NFT_LIMIT,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -56,6 +57,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import moment from "moment";
 import { NFTInput } from "./BasicANFTTrade";
 import { DateTimeRangePicker } from "../../datetimerangepicker";
+import BigNumber from "bignumber.js";
 
 const RedPacketBoxStyle = styled(Box)`
   padding-top: ${({ theme }) => theme.unit}px;
@@ -329,39 +331,6 @@ export const CreateRedPacketStepWrap = withTranslation()(
       minimum,
       tradeType,
     ]);
-    // const durationProps: Partial<InputCoinProps<T, CoinInfo<I>, I>> = {
-    //   label: (
-    //     <Typography component={"span"} color={"var(--color-text-third)"}>
-    //       {t("labelRedpacketDurationTitle")}
-    //     </Typography>
-    //   ),
-    //   placeholderText: t("labelRedpacketDurationPlaceHold"),
-    //   isHideError: true,
-    //   isShowCoinInfo: false,
-    //   handleCountChange: (ibData: T, _name: string, _ref: any) => {
-    //     handleOnDataChange({
-    //       numbers: ibData.tradeValue,
-    //     } as unknown as Partial<T>);
-    //   },
-    //   handleError: (data: any) => {
-    //     if (data.tradeValue && data.tradeValue > data.balance) {
-    //       return {
-    //         error: true,
-    //       };
-    //     }
-    //     return {
-    //       error: false,
-    //     };
-    //   },
-    //   size: InputSize.middle,
-    //   maxAllow: true,
-    //   subLabel: t("labelAvailable"),
-    //   inputData: {
-    //     belong: "Split",
-    //     tradeValue: durationValue as any,
-    //     balance: 30,
-    //   } as any,
-    // };
     const handleToggleChange = (value: F) => {
       if (handleFeeChange) {
         handleFeeChange(value);
@@ -369,20 +338,41 @@ export const CreateRedPacketStepWrap = withTranslation()(
     };
     const _balance = React.useMemo(() => {
       if (
+        tradeData.belong !== undefined &&
+        // tradeData?.numbers &&
+        // @ts-ignore
+        // tradeData.numbers !== "0" &&
+        tradeData.balance &&
+        tradeType === TRADE_TYPE.NFT
+      ) {
+        if (selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE) {
+          const value = BigNumber.min(
+            tradeData.balance,
+            REDPACKET_ORDER_NFT_LIMIT
+          ).toString();
+          return sdk
+            .toBig(value)
+            .div(
+              tradeData?.numbers && tradeData?.numbers != 0
+                ? tradeData?.numbers
+                : 1
+            )
+            .toFixed(0, 1);
+        } else {
+          return BigNumber.min(
+            tradeData.balance,
+            REDPACKET_ORDER_NFT_LIMIT
+          ).toString();
+        }
+      } else if (
         selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE &&
+        tradeData.belong !== undefined &&
         tradeData?.numbers &&
         // @ts-ignore
         tradeData.numbers !== "0" &&
         tradeData.balance
       ) {
-        if (tradeType === TRADE_TYPE.NFT) {
-          return sdk
-            .toBig(tradeData.balance)
-            .div(tradeData.numbers)
-            .toFixed(0, 1);
-        } else {
-          return sdk.toBig(tradeData.balance).div(tradeData.numbers).toString();
-        }
+        return sdk.toBig(tradeData.balance).div(tradeData.numbers).toString();
       } else {
         return tradeData.balance;
       }
@@ -479,15 +469,50 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 isThumb: true,
                 isSelected: true,
                 type: tradeType,
+                subLabel: "tokenNFTMaxRedPack",
                 disabled,
-                tradeData:
-                  selectedType.value.partition ==
-                    sdk.LuckyTokenAmountType.AVERAGE && tradeData?.numbers
-                    ? {
-                        ...tradeData,
-                        balance: _balance,
-                      }
-                    : (tradeData as T),
+                tradeData: {
+                  ...tradeData,
+                  balance: _balance,
+                },
+                handleError: ({ belong, balance: _balance, tradeValue }: T) => {
+                  if (
+                    (typeof tradeValue !== "undefined" &&
+                      tradeData.balance &&
+                      tradeData.balance < tradeValue) ||
+                    (tradeValue && !tradeData?.balance)
+                  ) {
+                    return {
+                      error: true,
+                      message: t("tokenNotEnough", { belong: belong }),
+                    };
+                  } else if (
+                    typeof tradeValue !== "undefined" &&
+                    tradeData.balance &&
+                    sdk
+                      .toBig(tradeValue)
+                      .times(tradeData?.numbers ?? 1)
+                      .gt(REDPACKET_ORDER_NFT_LIMIT)
+                  ) {
+                    return {
+                      error: true,
+                      message: t("errorNFTRedPacketMaxError", {
+                        value: REDPACKET_ORDER_NFT_LIMIT,
+                        ns: ["error", "common"],
+                      }),
+                    };
+                  } else if (
+                    typeof tradeValue !== "undefined" &&
+                    sdk.toBig(tradeValue).gt(_balance ?? 0)
+                  ) {
+                    return {
+                      error: true,
+                      message: t("tokenNotEnough", { belong: belong }),
+                    };
+                  }
+                  return { error: false, message: "" };
+                },
+
                 onChangeEvent: (
                   _index: 0 | 1,
                   { to, tradeData: newTradeData }: SwitchData<T>
@@ -507,7 +532,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                     handleOnDataChange({
                       tradeValue: newTradeData.tradeValue,
                       belong: newTradeData.belong,
-                      balance: newTradeData.balance,
+                      balance: tradeData.balance,
                       nftData: newTradeData.nftData,
                     } as any);
                   }
@@ -517,24 +542,23 @@ export const CreateRedPacketStepWrap = withTranslation()(
               } as any)}
             />
           )}
-          {selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE && (
-            <Typography
-              display={"inline-flex"}
-              width={"100%"}
-              justifyContent={"flex-end"}
-              color={"textSecondary"}
-            >
-              {t("labelAssetAmount", {
-                value: getValuePrecisionThousand(
-                  tradeData.balance,
-                  8,
-                  8,
-                  8,
-                  false
-                ),
-              })}
-            </Typography>
-          )}
+
+          <Typography
+            display={"flex"}
+            width={"100%"}
+            justifyContent={"flex-end"}
+            color={"textSecondary"}
+          >
+            {t("labelAssetAmount", {
+              value: getValuePrecisionThousand(
+                tradeData.balance,
+                8,
+                8,
+                8,
+                false
+              ),
+            })}
+          </Typography>
         </Box>
         {tradeType === TRADE_TYPE.NFT && (
           <Box

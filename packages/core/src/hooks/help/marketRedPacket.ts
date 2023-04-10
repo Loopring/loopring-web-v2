@@ -137,7 +137,7 @@ export const amountStrNFTCallback = (
   tokenAmount: string
 ) => {
   if (nftInfo && tokenAmount) {
-    const symbol = "NFT"; // nftInfo?.metadata?.base?.name ?? "NFT";
+    const symbol = "NFT(s)"; // nftInfo?.metadata?.base?.name ?? "NFT";
     const amount = getValuePrecisionThousand(
       tokenAmount,
       0,

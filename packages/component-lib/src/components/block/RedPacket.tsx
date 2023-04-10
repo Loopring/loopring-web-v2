@@ -266,22 +266,6 @@ export const RedPacketQRCode = ({
     });
     const svgEle = await qrCode._getElement("svg");
     setQrCodeG(svgEle?.innerHTML);
-    // setQrCodeG(() => {
-    //   // const dom = document.createElement("div");
-    //   // qrcode.append(dom);
-    //   // @ts-ignore
-    //   return dom.getElementsByTagName("svg").innerHTML;
-    //   // const g = document.createElement("g");
-    //   // var qrCodeGEle = dom.getElementsByTagName('sv').innerHTML`;
-    //   //   new DOMParser().parseFromString(qrCodeG, "text/xml");
-    //   //
-    //   // let qrCodeG = dom.firstChild.innerHTML ?? ""; //qrCodeG.replace(/qrmodule/g, `qrmodule${type}`);
-    //   // debugger;
-    //   // let qrCodeG = qrcode.svg({ container: "g" });
-    //   // let qrCodeG = qrcode._svg?.innerHTML ?? ""; //qrCodeG.replace(/qrmodule/g, `qrmodule${type}`);
-    //   // // @ts-ignore
-    //   // return qrCodeGEle?.innerHTML ?? "";
-    // });
   }, [url]);
   React.useEffect(() => {
     updateSvg();
@@ -968,8 +952,13 @@ export const RedPacketDetail = ({
   showRelayText,
   showShareBtn,
   tokenSymbol,
+  detail,
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
+  const showLucky = [
+    sdk.LuckyTokenItemStatus.OVER_DUE,
+    sdk.LuckyTokenItemStatus.COMPLETED,
+  ].includes(detail.luckyToken.status);
   const pageNation = React.useMemo(() => {
     if (totalCount - remainCount - RedPacketDetailLimit > 0) {
       return (
@@ -1009,11 +998,7 @@ export const RedPacketDetail = ({
           variant={"body1"}
           color={RedPacketColorConfig.default.fontColor}
         >
-          {redPacketType === "normal"
-            ? t("labelNormalRedPacket")
-            : redPacketType === "lucky"
-            ? t("labelLuckyRedPacket")
-            : t("labelRelayRedPacket")}
+          {t(`label${redPacketType}RedPacket`)}
         </Typography>
       </Box>
       <Box
@@ -1143,8 +1128,9 @@ export const RedPacketDetail = ({
                           {item.helper}
                         </Typography>
                       )}
-                      {(redPacketType === "lucky" ||
-                        redPacketType === "relay") &&
+                      {showLucky &&
+                        (redPacketType === "lucky" ||
+                          redPacketType === "relay") &&
                         item.isMax && (
                           <Typography
                             component={"span"}
