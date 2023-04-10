@@ -569,7 +569,7 @@ export const RedPacketQRCodeSvg = React.memo(
               style={{
                 dominantBaseline: "central",
                 textAnchor: "middle",
-                fontSize: "11px",
+                fontSize: "10px",
               }}
             >
               {textType}

@@ -114,6 +114,8 @@ export type RedPacketDetailProps = {
   showRelayText: boolean;
   showShareBtn: boolean;
   tokenSymbol?: string;
+  ended: boolean;
+  bottomButton: 'ended' | 'share'
 };
 export type RedPacketBlindBoxDetailTypes = 'Not Started' 
   | 'Blind Box Started' 
@@ -159,6 +161,9 @@ export type RedPacketBlindBoxDetailProps = {
   onClickClaim?: () => void;
   onCloseOpenModal?: () => void;
   onClickClaimDetailBack?: () => void;
+  description: string;
+  shareButton: 'hidden' | 'share';
+  claimButton: 'claimed' | 'claim' | 'claiming' | 'expired' | 'hidden';
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

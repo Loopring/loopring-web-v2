@@ -969,8 +969,9 @@ export const RedPacketDetail = ({
   relyAmount,
   ImageEle,
   showRelayText,
-  showShareBtn,
-  tokenSymbol
+  // showShareBtn,
+  tokenSymbol,
+  bottomButton
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const pageNation = React.useMemo(() => {
@@ -1168,59 +1169,81 @@ export const RedPacketDetail = ({
         </Box>
         {pageNation}
       </Box>
-      {showShareBtn && (
-        <Box paddingX={1} display={"flex"} flexDirection={"column"}>
-          <Button
-            variant={"contained"}
-            color={"error"}
-            sx={{
-              backgroundColor: RedPacketColorConfig.default.colorTop as any,
-              "&:hover": {
+      {/* {showShareBtn && ( */}
+      <Box paddingX={1} display={"flex"} flexDirection={"column"}>
+        {bottomButton === 'ended'
+          ? (
+            <Button
+              variant={"contained"}
+              color={"error"}
+              sx={{
                 backgroundColor: RedPacketColorConfig.default.colorTop as any,
-              },
-            }}
-            fullWidth={true}
-            onClick={onShared}
-          >
-            {t("labelRedPacketGrab")}
-          </Button>
-          {showRelayText && (
-            <Typography
-              color={"textSecondary"}
-              variant={"body2"}
-              textAlign={"center"}
-              paddingTop={1}
-              component={"span"}
+                "&:hover": {
+                  backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                },
+              }}
+              fullWidth={true}
+              disabled
             >
-              <Trans
-                i18nKey={"labelRedpacketHavePeopleHelp"}
-                
-                tOptions={{
-                  number: relyNumber ? relyNumber : EmptyValueTag,
-                  amount: relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : '')
-                }}
+              {t("labelRedPacketEnded")}
+            </Button>
+          )
+          : (
+            <Button
+              variant={"contained"}
+              color={"error"}
+              sx={{
+                backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                "&:hover": {
+                  backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                },
+              }}
+              fullWidth={true}
+              onClick={onShared}
+            >
+
+              {t("labelRedPacketGrab")}
+
+            </Button>)
+        }
+
+        {showRelayText && (
+          <Typography
+            color={"textSecondary"}
+            variant={"body2"}
+            textAlign={"center"}
+            paddingTop={1}
+            component={"span"}
+          >
+            <Trans
+              i18nKey={"labelRedpacketHavePeopleHelp"}
+
+              tOptions={{
+                number: relyNumber ? relyNumber : EmptyValueTag,
+                amount: relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : '')
+              }}
+            >
+              have
+              <Typography
+                variant={"inherit"}
+                component={"span"}
+                color={RedPacketColorConfig.default.startColor}
               >
-                have
-                <Typography
-                  variant={"inherit"}
-                  component={"span"}
-                  color={RedPacketColorConfig.default.startColor}
-                >
-                  {relyNumber ?? EmptyValueTag}
-                </Typography>
-                friends help you pick up Redpacket, you extends reward:
-                <Typography
-                  variant={"inherit"}
-                  component={"span"}
-                  color={RedPacketColorConfig.default.fontColor}
-                >
-                  {relyAmount ?? EmptyValueTag}
-                </Typography>
-              </Trans>
-            </Typography>
-          )}
-        </Box>
-      )}
+                {relyNumber ?? EmptyValueTag}
+              </Typography>
+              friends help you pick up Redpacket, you extends reward:
+              <Typography
+                variant={"inherit"}
+                component={"span"}
+                color={RedPacketColorConfig.default.fontColor}
+              >
+                {relyAmount ?? EmptyValueTag}
+              </Typography>
+            </Trans>
+          </Typography>
+        )}
+      </Box>
+      {/* )} */}
     </BoxStyle>
   );
 };
@@ -1517,6 +1540,9 @@ export const RedPacketBlindBoxDetail = ({
   onClickClaim,
   onCloseOpenModal,
   onClickClaimDetailBack,
+  description,
+  shareButton,
+  claimButton
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
@@ -1557,10 +1583,10 @@ export const RedPacketBlindBoxDetail = ({
                 onClose={onCloseOpenModal!}
               />
               <Typography marginBottom={3} variant={"h3"}>
-                {wonNFTInfo ? "恭喜获得" : "很遗憾"}{" "}
+                {wonNFTInfo ? t("labelBlindBoxCongratulations") : t("labelBlindBoxSorry")}{" "}
               </Typography>
               <Typography variant={"h5"}>
-                {wonNFTInfo ? wonNFTInfo.name : "您没有获得奖励"}{" "}
+                {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
               </Typography>
               {wonNFTInfo ? (
                 <img width={"40%"} src={wonNFTInfo.url}></img>
@@ -1576,6 +1602,9 @@ export const RedPacketBlindBoxDetail = ({
               >
                 <u>{"View Red Packet Detail >"}</u>
               </Link>
+              {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+                {t("labelClaimBtn")}
+              </Button> */}
               {wonNFTInfo && (
                 <Button variant={"contained"} fullWidth onClick={onClickClaim}>
                   {t("labelClaimBtn")}
@@ -1670,7 +1699,7 @@ export const RedPacketBlindBoxDetail = ({
                       component={"span"}
                       color={"textPrimary"}
                     >
-                      *{info.amount}
+                      * 1
                     </Typography>
                   </Typography>
                   <Typography
@@ -1741,8 +1770,7 @@ export const RedPacketBlindBoxDetail = ({
               marginTop={1}
               textAlign={"center"}
             >
-              {t("labelBlindBoxExplaination")}
-              {/* The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet. */}
+              {description}
             </Typography>
             <Typography
               variant={"body1"}
@@ -1878,25 +1906,49 @@ export const RedPacketBlindBoxDetail = ({
               </>
             )}
           </Box>
-          {(type === "Not Started" || type === "Blind Box Started") && (
+          {/* {(type === "Not Started" || type === "Blind Box Started") && ( */}
             <Box>
-              <Button
-                variant={"contained"}
-                color={"error"}
-                sx={{
-                  backgroundColor: RedPacketColorConfig.default.colorTop as any,
-                  "&:hover": {
-                    backgroundColor: RedPacketColorConfig.default
-                      .colorTop as any,
-                  },
-                }}
-                fullWidth
-                onClick={onShared}
-              >
-                {t("labelRedPacketGrab")}
-              </Button>
+              {shareButton === 'share' && (
+                <Button
+                  variant={"contained"}
+                  color={"error"}
+                  sx={{
+                    backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                    "&:hover": {
+                      backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                    },
+                  }}
+                  fullWidth={true}
+                  onClick={onShared}
+                >
+                  {t("labelRedPacketGrab")}
+                </Button>
+              )}
+              {
+                claimButton === 'claim'
+                  ? (
+                    <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+                      {t("labelClaimBtn")}
+                    </Button>
+                  )
+                  : claimButton === 'claimed'
+                    ? (
+                      <Button disabled variant={"contained"} fullWidth>
+                        {t("labelClaimBtnClaimed")}
+                      </Button>
+                    )
+                    : claimButton === 'expired'
+                      ? (
+                        <Button disabled variant={"contained"} fullWidth>
+                          {t("Expired")}
+                        </Button>
+                      )
+                      : undefined
+
+              }
+              
             </Box>
-          )}
+          {/* )} */}
         </Box>
       )}
     </BlindBoxDetailBoxStyle>

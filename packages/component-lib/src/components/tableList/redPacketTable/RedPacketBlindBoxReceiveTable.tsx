@@ -147,13 +147,13 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
         name: "Action",
         formatter: ({ row }: FormatterProps<R>) => {
           if (row.rawData.luckyToken.validUntil > Date.now()) {
-            return <>{t("labelBlindBoxStartTime", {time: moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')})} </>
+            return <>{t("labelBlindBoxStartTime", {time: moment(row.rawData.luckyToken.validUntil).format('YYYY.MM.DD HH:MM')})} </>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
             return <>{t("labelBlindBoxOpend")}</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
             return <>{t("labelBlindBoxExpired")}</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) { 
-            return <Button onClick={() => onItemClick(row.rawData)} variant={"outlined"}>{t("labelRedPacketOpen")}</Button>
+            return <Button onClick={() => onItemClick(row.rawData)} variant={"outlined"}>{t("labelRedPacketOpen", {ns: "common"})}</Button>
           }
         },
       },

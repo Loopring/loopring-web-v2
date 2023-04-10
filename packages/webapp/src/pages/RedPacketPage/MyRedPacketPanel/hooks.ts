@@ -20,6 +20,7 @@ import {
   RedPacketViewStep,
   useOpenModals,
 } from "@loopring-web/component-lib";
+import { url } from "inspector";
 
 export const useMyRedPacketRecordTransaction = <
   R extends RawDataRedPacketRecordsItem
@@ -54,7 +55,7 @@ export const useMyRedPacketRecordTransaction = <
               {
                 senderId: accountId,
                 scopes: "0,1",
-                modes: "0,1",
+                modes: "0,1,2",
                 partitions: "0,1",
                 statuses: "0,1,2,3,4",
                 official: false,
@@ -444,6 +445,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
   );
 
   const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
+    let openBlindBoxInfo = undefined as undefined | {wonLottery: boolean, url?: string, name?: string}
     if (item.claim.status === sdk.BlindBoxStatus.NOT_OPENED) {
       let response =
         await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
@@ -454,18 +456,34 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
           eddsaKey: eddsaKey.sk,
           apiKey: apiKey,
         } as any);
+      
       if (
         (response as sdk.RESULT_INFO).code ||
         (response as sdk.RESULT_INFO).message
       ) {
-        throw response;
+        openBlindBoxInfo = {
+          wonLottery: false
+        }
+      } else {
+        const response2 = await LoopringAPI.luckTokenAPI?.getBlindBoxDetail({
+          hash: item.luckyToken.hash,
+          showHelper: false
+        }, apiKey);
+        const raw_data = response2?.raw_data as any
+
+        openBlindBoxInfo = {
+          wonLottery: true,
+          name: raw_data.luckyToken.nftTokenInfo?.metadata?.base.name ?? '',
+          url: raw_data.luckyToken.nftTokenInfo?.metadata?.imageSize.original ?? '',
+        }
       }
     }
     setShowRedPacket({
       isShow: true,
       step: RedPacketViewStep.BlindBoxDetail,
       info: {
-        ...item.luckyToken
+        ...item.luckyToken,
+        openBlindBoxInfo
       },
     });
   };
