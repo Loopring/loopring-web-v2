@@ -224,6 +224,7 @@ export const MyRedPacketPanel = ({
             {currentTab == TabIndex.NFTReceived && (
               <Typography
                 component={"h4"}
+                paddingX={2}
                 variant={"body1"}
                 color={"textSecondary"}
               >
@@ -263,6 +264,7 @@ export const MyRedPacketPanel = ({
               component={"h4"}
               variant={"body1"}
               color={"textSecondary"}
+              paddingX={2}
             >
               {t("labelNFTRedPackAskClaim")}
             </Typography>

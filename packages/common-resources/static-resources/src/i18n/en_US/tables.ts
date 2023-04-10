@@ -263,6 +263,7 @@ export default {
   labelRecordStatus: "Status",
   labelRecordNumber: "Number",
   labelRecordTime: "Time",
+  labelReceiveTime: "Receive Time",
   labelValue: "Value",
   labelClaim: "Claim",
   labelAddress: "Address",
@@ -296,7 +297,8 @@ export default {
   labelBlindBoxCalim: "Claim",
   labelBlindBoxExpired: "Expired",
   labelBlindBoxClaimed: "Claimed",
-  labelBlindBoxStartTime: "Start time: {{time}}",
+  labelBlindBoxStartTime: "Start time:",
+  labelRedPacketOpen: "Open",
 
   // labelRecordAction: "Action",
 };

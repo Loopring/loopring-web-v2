@@ -42,7 +42,7 @@ const TableStyled = styled(Table)<{ isNFT: boolean }>`
   &.rdg {
     --template-columns: ${({ isNFT }) =>
       isNFT
-        ? "--template-columns: 20% 8% 26% 8% 10% 15% 8% !important"
+        ? "--template-columns: 20% 6% 38% 6% 10% 15% 8% !important"
         : "20% 20% 30% auto auto !important"};
 
     height: ${(props: any) => {
@@ -234,7 +234,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           sortable: true,
           cellClass: "textAlignRight",
           headerCellClass: "textAlignRight",
-          name: t("labelRecordTime"),
+          name: t("labelReceiveTime"),
           formatter: ({ row }: FormatterProps<R>) => {
             return (
               <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>

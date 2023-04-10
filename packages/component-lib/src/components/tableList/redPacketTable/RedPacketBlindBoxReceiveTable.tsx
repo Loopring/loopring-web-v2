@@ -149,11 +149,11 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
           if (row.rawData.luckyToken.validUntil > Date.now()) {
             return (
               <>
-                {t("labelBlindBoxStartTime", {
-                  time: moment(row.rawData.luckyToken.validSince).format(
+                {t("labelBlindBoxStartTime") +
+                  " " +
+                  moment(row.rawData.luckyToken.validSince).format(
                     YEAR_DAY_MINUTE_FORMAT
-                  ),
-                })}{" "}
+                  )}
               </>
             );
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
