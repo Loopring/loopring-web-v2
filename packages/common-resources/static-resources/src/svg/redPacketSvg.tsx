@@ -1,5 +1,6 @@
 import { sanitize } from "dompurify";
 import React from "react";
+import { myLog } from "../utils";
 
 export const RedPacketColorConfig: {
   default: ColorConfig;
@@ -326,6 +327,21 @@ export const RedPacketQRCodeSvg = React.memo(
         textContent,
         "",
       ]);
+      const [imageBase64, setImageBase64] = React.useState<string>(imageEleUrl);
+      // function convertImageToBase64(imgUrl, callback) {
+      //   const image = new Image();
+      //   image.crossOrigin='anonymous';
+      //   image.onload = () => {
+      //     const canvas = document.createElement('canvas');
+      //     const ctx = canvas.getContext('2d');
+      //     canvas.height = image.naturalHeight;
+      //     canvas.width = image.naturalWidth;
+      //     ctx.drawImage(image, 0, 0);
+      //     const dataUrl = canvas.toDataURL();
+      //     callback && callback(dataUrl)
+      //   }
+      //   image.src = imgUrl;
+      // }
       React.useEffect(() => {
         const [str1, str2] = textContent?.split("\n");
         if (textContent && str2) {
@@ -339,7 +355,22 @@ export const RedPacketQRCodeSvg = React.memo(
           const _textContent1 = textArray.join(" ");
           setTextContent([_textContent1, _textContent2]);
         }
+        if (imageEleUrl) {
+          fetch(imageEleUrl)
+            .then((response) => response.blob())
+            .then((blob) => {
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                myLog("read image", reader.result);
+                setImageBase64((state) => reader?.result?.toString() ?? state);
+                // Logs wL2dvYWwgbW9yZ...
+              };
+              reader.readAsDataURL(blob);
+            });
+          setImageBase64;
+        }
       }, [textContent]);
+
       const station = imageEleUrl ? [36, 68, 86, 208] : [56, 88, 106, 186];
       // const qrcodeRef = React.createRef();
       return (
@@ -444,7 +475,7 @@ export const RedPacketQRCodeSvg = React.memo(
           {imageEleUrl && (
             <image
               transform={"translate(128 110)"}
-              href={imageEleUrl}
+              href={imageBase64}
               height="80"
               width="80"
             />

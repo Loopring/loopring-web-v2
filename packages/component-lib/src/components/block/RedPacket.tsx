@@ -49,7 +49,6 @@ import {
   BoxNFT,
   ModalCloseButtonPosition,
 } from "../basic-lib";
-import { LuckyTokenItemStatus, toBig } from "@loopring-web/loopring-sdk";
 import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
@@ -266,9 +265,7 @@ export const RedPacketQRCode = ({
       data: url,
     });
     const svgEle = await qrCode._getElement("svg");
-    setQrCodeG((state: any) => {
-      return svgEle?.innerHTML;
-    });
+    setQrCodeG(svgEle?.innerHTML);
     // setQrCodeG(() => {
     //   // const dom = document.createElement("div");
     //   // qrcode.append(dom);
@@ -1384,8 +1381,8 @@ export const RedPacketPrepare = ({
       );
     } else if (
       // difference + 86400000 < 0 ||
-      _info.status == LuckyTokenItemStatus.COMPLETED ||
-      _info.status == LuckyTokenItemStatus.OVER_DUE ||
+      _info.status == sdk.LuckyTokenItemStatus.COMPLETED ||
+      _info.status == sdk.LuckyTokenItemStatus.OVER_DUE ||
       _info.tokenAmount.remainCount === 0
     ) {
       return (
