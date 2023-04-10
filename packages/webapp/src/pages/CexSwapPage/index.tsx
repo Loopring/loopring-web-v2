@@ -20,7 +20,16 @@ import {
 } from "@loopring-web/core";
 import React from "react";
 import { useHistory } from "react-router-dom";
-
+import styled from "@emotion/styled";
+const BoxStyle = styled(Box)`
+  &.cexPage {
+    .input-wrap {
+      input::placeholder {
+        font-size: 0.65em;
+      }
+    }
+  }
+`;
 const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
   const { t } = useTranslation();
@@ -98,7 +107,8 @@ export const CexSwapPage = withTranslation("common")(
 
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     return (
-      <Box
+      <BoxStyle
+        className={"cexPage"}
         display={"flex"}
         flexDirection={"column"}
         justifyContent={"center"}
@@ -125,7 +135,7 @@ export const CexSwapPage = withTranslation("common")(
             }
           }}
         />
-      </Box>
+      </BoxStyle>
     );
   }
 );

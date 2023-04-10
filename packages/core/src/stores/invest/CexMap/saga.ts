@@ -12,7 +12,9 @@ const getCexMapApi = async () => {
   }
   // const { idIndex } = store.getState().tokenMap;
   const {
-    // markets: marketMap,
+    //TODO: moc
+    // pairs,
+    // markets:marketMap,
     // tokenArr: marketCoins,
     // marketArr: marketArray,
     raw_data,
@@ -25,16 +27,10 @@ const getCexMapApi = async () => {
           ...ele,
           cexMarket: ele.market,
           market: ele.market.replace("CEFI-", ""),
-          // enabled: true,
         } as CEX_MARKET,
       ];
     } else {
       return prev;
-      // return [...prev,{
-      //   ...ele,
-      //   marketServer: ele.market,
-      //   market: `${idIndex[ele.baseTokenId]}-${idIndex[ele.quoteTokenId]}`,
-      // }];
     }
   }, [] as CEX_MARKET[]);
   const {
