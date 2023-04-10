@@ -828,30 +828,30 @@ export const useCexSwap = <
             sellMaxAmtInfo = calcPoolToSell?.amountS;
           }
 
-          const poolL2ToVol =
-            sdk
-              .toBig(
-                sellBuyStr == market ? l2Amount.quote ?? 0 : l2Amount.base ?? 0
-              )
-              .div("1e" + buyToken.decimals)
-              .toString() ?? "0";
+          // const poolL2ToVol =
+          //   sdk
+          //     .toBig(
+          //       sellBuyStr == market ? l2Amount.quote ?? 0 : l2Amount.base ?? 0
+          //     )
+          //     .div("1e" + buyToken.decimals)
+          //     .toString() ?? "0";
 
-          const calcPoolL2ToSell = sdk.calcDex({
-            info,
-            input: poolL2ToVol,
-            sell: sellToken.symbol,
-            buy: buyToken.symbol,
-            isAtoB: false,
-            marketArr: marketArray,
-            tokenMap,
-            marketMap,
-            depth,
-            feeBips: maxFeeBips.toString(),
-          });
+          // const calcPoolL2ToSell = sdk.calcDex({
+          //   info,
+          //   input: poolL2ToVol,
+          //   sell: sellToken.symbol,
+          //   buy: buyToken.symbol,
+          //   isAtoB: false,
+          //   marketArr: marketArray,
+          //   tokenMap,
+          //   marketMap,
+          //   depth,
+          //   feeBips: maxFeeBips.toString(),
+          // });
 
-          sellMaxL2AmtInfo = sdk
-            .toBig(calcPoolL2ToSell?.amountS ?? 0)
-            .toString();
+          // sellMaxL2AmtInfo = sdk
+          //   .toBig(calcPoolL2ToSell?.amountS ?? 0)
+          //   .toString();
 
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,
