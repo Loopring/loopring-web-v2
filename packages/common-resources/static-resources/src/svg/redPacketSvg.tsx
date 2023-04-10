@@ -72,16 +72,10 @@ export const RedPacketWrapSVG = ({
 }) => {
   return (
     <svg width={274} height={414} viewBox="0 0 274 414" aria-hidden="true">
-      <g filter={`url(#filterWrap${type}0)`}>
-        <rect
-          x="7"
-          y="3"
-          width="260"
-          height="400"
-          rx="10"
-          fill={`url(#paint_linear_${type})`}
-        />
-      </g>
+      <path
+        d="M7 13C7 7.47714 11.4772 3 17 3H257C262.523 3 267 7.47715 267 13V393C267 398.523 262.523 403 257 403H17C11.4772 403 7 398.523 7 393V13Z"
+        fill={`url(#paint_linear_${type})`}
+      />
       <g filter={`url(#filterWrap${type}1)`}>
         <path
           d="M17 3C11.4771 3 7 7.47716 7 13V108.095C7 112.092 9.3688 115.728 13.1024 117.154C43.3399 128.709 87.6387 136 137 136C186.361 136 230.66 128.709 260.898 117.154C264.631 115.728 267 112.092 267 108.095V13C267 7.47716 262.523 3 257 3H17Z"
@@ -90,11 +84,11 @@ export const RedPacketWrapSVG = ({
       </g>
       <defs>
         <filter
-          id={`filterWrap${type}0`}
+          id={`filterWrap${type}1`}
           x="0"
           y="0"
           width="274"
-          height="414"
+          height="147"
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
@@ -124,46 +118,6 @@ export const RedPacketWrapSVG = ({
             result="shape"
           />
         </filter>
-        <filter
-          id={`filterWrap${type}1`}
-          x="0"
-          y="0"
-          width="274"
-          height="147"
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset dy="4" />
-          <feGaussianBlur stdDeviation="3.5" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values={
-              type == "official"
-                ? "0 0 0 0 0.745276 0 0 0 0 0.402449 0 0 0 0 0 0 0 0 0.25 0"
-                : "0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-            }
-            // values="0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_8955_1158"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_8955_1158"
-            result="shape"
-          />
-        </filter>
         <linearGradient
           id={`paint_linear_${type}`}
           x1="137"
@@ -172,8 +126,8 @@ export const RedPacketWrapSVG = ({
           y2="403"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor={startColor} />
-          <stop offset="1" stopColor={endColor} />
+          <stop stop-color={startColor} />
+          <stop offset="1" stop-color={endColor} />
         </linearGradient>
       </defs>
     </svg>
@@ -309,7 +263,7 @@ export type RedPacketQRPropsExtends = {
   textNo: string;
   textDes: string;
   imageEleUrl?: string;
-  onClickShareButton?: (e: React.MouseEvent<SVGGElement, MouseEvent>) => void
+  onClickShareButton?: (e: React.MouseEvent<SVGGElement, MouseEvent>) => void;
 };
 export type ColorConfig = {
   colorTop: string;
@@ -357,7 +311,7 @@ export const RedPacketQRCodeSvg = React.memo(
         textNo,
         textDes,
         imageEleUrl,
-        onClickShareButton
+        onClickShareButton,
       }: ColorConfig & {
         type: "default" | "official";
         qrcodeRef: React.Ref<SVGGElement>;

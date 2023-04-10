@@ -259,8 +259,7 @@ export const RedPacketQRCode = ({
       margin: 4,
     },
   });
-  const [qrCodeG, setQrCodeG] =
-    React.useState<string | undefined>(undefined);
+  const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined);
 
   const updateSvg = React.useCallback(async () => {
     qrCode.update({
@@ -378,7 +377,6 @@ export const RedPacketBgDefault = ({
       >
         <RedPacketWrapSVG
           {...{ ...RedPacketCssColorConfig[type] }}
-          
           height={"100%"}
           width={"100%"}
           type={type}
@@ -734,7 +732,9 @@ RedPacketDefault & RedPacketUnreadyProps) => {
             marginTop={3}
             top={0}
           >
-            {`${moment(validSince).format("MM/DD HH:mm")} ${t("labelOpenStart")}`}
+            {`${moment(validSince).format("MM/DD HH:mm")} ${t(
+              "labelOpenStart"
+            )}`}
           </Typography>
           {ImageEle}
           <Typography
@@ -970,7 +970,7 @@ export const RedPacketDetail = ({
   ImageEle,
   showRelayText,
   showShareBtn,
-  tokenSymbol
+  tokenSymbol,
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const pageNation = React.useMemo(() => {
@@ -1012,13 +1012,11 @@ export const RedPacketDetail = ({
           variant={"body1"}
           color={RedPacketColorConfig.default.fontColor}
         >
-          {
-            redPacketType === 'normal'
-              ? t("labelNormalRedPacket")
-              : redPacketType === 'lucky'
-                ? t("labelLuckyRedPacket")
-                : t("labelRelayRedPacket")
-          }
+          {redPacketType === "normal"
+            ? t("labelNormalRedPacket")
+            : redPacketType === "lucky"
+            ? t("labelLuckyRedPacket")
+            : t("labelRelayRedPacket")}
         </Typography>
       </Box>
       <Box
@@ -1084,87 +1082,93 @@ export const RedPacketDetail = ({
           sx={{ borderWidth: 1, paddingX: 1 }}
         />
         <Box flex={1} overflow={"scroll"}>
-          {claimList && claimList.map((item) => {
-            return (
-              <BoxClaim
-                className={item.isSelf ? "self claim" : "claim"}
-                display={"flex"}
-                justifyContent={"stretch"}
-                flexDirection={"column"}
-                paddingY={1}
-                paddingX={2}
-              >
-                <Typography
-                  component={"span"}
-                  display={"inline-flex"}
-                  flexDirection={"row"}
-                  justifyContent={"space-between"}
-                  alignItems={"center"}
+          {claimList &&
+            claimList.map((item) => {
+              return (
+                <BoxClaim
+                  className={item.isSelf ? "self claim" : "claim"}
+                  display={"flex"}
+                  justifyContent={"stretch"}
+                  flexDirection={"column"}
+                  paddingY={1}
+                  paddingX={2}
                 >
                   <Typography
-                    variant={"body1"}
                     component={"span"}
-                    color={item.isSelf ? "success" : "textPrimary"}
+                    display={"inline-flex"}
+                    flexDirection={"row"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
                   >
-                    {item.isSelf
-                      ? t("labelMyRedPacketReward")
-                      : item.accountStr}
+                    <Typography
+                      variant={"body1"}
+                      component={"span"}
+                      color={item.isSelf ? "success" : "textPrimary"}
+                    >
+                      {item.isSelf
+                        ? t("labelMyRedPacketReward")
+                        : item.accountStr}
+                    </Typography>
+                    <Typography
+                      variant={"body1"}
+                      component={"span"}
+                      color={"textPrimary"}
+                    >
+                      {item.amountStr}
+                    </Typography>
                   </Typography>
                   <Typography
-                    variant={"body1"}
                     component={"span"}
-                    color={"textPrimary"}
+                    display={"inline-flex"}
+                    flexDirection={"row"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
                   >
-                    {item.amountStr}
+                    <Typography
+                      variant={"body2"}
+                      component={"span"}
+                      color={"textThird"}
+                    >
+                      {moment(
+                        new Date(item.createdAt),
+                        "YYYYMMDDHHMM"
+                      ).fromNow()}
+                    </Typography>
+                    <Typography display={"inline"}>
+                      {item.helper && (
+                        <Typography
+                          component={"span"}
+                          color={"var(--color-primary)"}
+                          display={"inline-flex"}
+                          alignItems={"center"}
+                          variant={"body2"}
+                        >
+                          {item.helper}
+                        </Typography>
+                      )}
+                      {(redPacketType === "lucky" ||
+                        redPacketType === "relay") &&
+                        item.isMax && (
+                          <Typography
+                            component={"span"}
+                            color={"var(--color-warning)"}
+                            display={"inline-flex"}
+                            alignItems={"center"}
+                            variant={"body2"}
+                            marginLeft={1}
+                          >
+                            <FirstPlaceIcon
+                              fontSize={"medium"}
+                              sx={{ paddingRight: 1 / 2 }}
+                            />
+                            {t("labelLuckDraw")}
+                          </Typography>
+                        )}
+                    </Typography>
                   </Typography>
-                </Typography>
-                <Typography
-                  component={"span"}
-                  display={"inline-flex"}
-                  flexDirection={"row"}
-                  justifyContent={"space-between"}
-                  alignItems={"center"}
-                >
-                  <Typography
-                    variant={"body2"}
-                    component={"span"}
-                    color={"textThird"}
-                  >
-                    {moment(new Date(item.createdAt), "YYYYMMDDHHMM").fromNow()}
-                  </Typography>
-                  <Typography display={"inline"}>
-                    {item.helper && (
-                      <Typography
-                        component={"span"}
-                        color={"var(--color-primary)"}
-                        display={"inline-flex"}
-                        alignItems={"center"}
-                        variant={"body2"}
-                      >
-                        {item.helper}
-                      </Typography>
-                    )}
-                    {(redPacketType === 'lucky' || redPacketType === 'relay') && item.isMax && (
-                      <Typography
-                        component={"span"}
-                        color={"var(--color-warning)"}
-                        display={"inline-flex"}
-                        alignItems={"center"}
-                        variant={"body2"}
-                        marginLeft={1}
-                      >
-                        <FirstPlaceIcon
-                          fontSize={"medium"}
-                          sx={{ paddingRight: 1 / 2 }}
-                        />
-                        {t("labelLuckDraw")}
-                      </Typography>
-                    )}
-                  </Typography>
-                </Typography>
-              </BoxClaim>
-            );
-          })}
+                </BoxClaim>
+              );
+            })}
         </Box>
         {pageNation}
       </Box>
@@ -1194,10 +1198,9 @@ export const RedPacketDetail = ({
             >
               <Trans
                 i18nKey={"labelRedpacketHavePeopleHelp"}
-                
                 tOptions={{
                   number: relyNumber ? relyNumber : EmptyValueTag,
-                  amount: relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : '')
+                  amount: relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : ""),
                 }}
               >
                 have
@@ -1288,22 +1291,20 @@ export const RedPacketPrepare = ({
       <></>
     );
   }, [props]);
-  
+
   // following code is for triggering rerender
   const getDifferenceStatus = () => {
     const difference = new Date(_info.validSince).getTime() - Date.now();
-    return difference > 180000
-      ? 0
-      : difference > 0
-        ? 1
-        : 2
-  }
-  const [differenceStatus, setDifferenceStatus] = React.useState(getDifferenceStatus())
+    return difference > 180000 ? 0 : difference > 0 ? 1 : 2;
+  };
+  const [differenceStatus, setDifferenceStatus] = React.useState(
+    getDifferenceStatus()
+  );
   React.useEffect(() => {
     setInterval(() => {
-      setDifferenceStatus(getDifferenceStatus)
-    }, 1000)
-  },[])
+      setDifferenceStatus(getDifferenceStatus);
+    }, 1000);
+  }, []);
   const viewItem = React.useMemo(() => {
     let difference = new Date(_info.validSince).getTime() - Date.now();
     if (claim) {
@@ -1369,7 +1370,6 @@ export const RedPacketPrepare = ({
               : getShortAddr(props?.sender?.address)
           }
           showRedPacket={() => {
-
             // do nothing
             // setShowRedPacket({
             //   isShow: true,
@@ -1445,24 +1445,24 @@ export const RedPacketPrepare = ({
           viewDetail={
             _info.sender.accountId === account.accountId
               ? () => {
-                if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-                  setShowRedPacket({
-                    isShow: true,
-                    step: RedPacketViewStep.BlindBoxDetail,
-                    info: {
-                      ..._info,
-                    },
-                  });
-                } else {
-                  setShowRedPacket({
-                    isShow: true,
-                    step: RedPacketViewStep.DetailPanel,
-                    info: {
-                      ..._info,
-                    },
-                  });
+                  if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+                    setShowRedPacket({
+                      isShow: true,
+                      step: RedPacketViewStep.BlindBoxDetail,
+                      info: {
+                        ..._info,
+                      },
+                    });
+                  } else {
+                    setShowRedPacket({
+                      isShow: true,
+                      step: RedPacketViewStep.DetailPanel,
+                      info: {
+                        ..._info,
+                      },
+                    });
+                  }
                 }
-              }
               : undefined
           }
         />
@@ -1641,57 +1641,58 @@ export const RedPacketBlindBoxDetail = ({
           </Typography>
 
           <Box flex={1} overflow={"scroll"}>
-            {BlindBoxClaimList && BlindBoxClaimList.map((info) => {
-              return (
-                <BoxClaim
-                  className={"claim"}
-                  display={"flex"}
-                  justifyContent={"stretch"}
-                  flexDirection={"column"}
-                  paddingY={1}
-                  paddingX={1}
-                >
-                  <Typography
-                    component={"span"}
-                    display={"inline-flex"}
-                    flexDirection={"row"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
+            {BlindBoxClaimList &&
+              BlindBoxClaimList.map((info) => {
+                return (
+                  <BoxClaim
+                    className={"claim"}
+                    display={"flex"}
+                    justifyContent={"stretch"}
+                    flexDirection={"column"}
+                    paddingY={1}
+                    paddingX={1}
                   >
                     <Typography
-                      variant={"body1"}
                       component={"span"}
-                      color={"textPrimary"}
+                      display={"inline-flex"}
+                      flexDirection={"row"}
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
                     >
-                      {info.who}
+                      <Typography
+                        variant={"body1"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      >
+                        {info.who}
+                      </Typography>
+                      <Typography
+                        variant={"body1"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      >
+                        *{info.amount}
+                      </Typography>
                     </Typography>
                     <Typography
-                      variant={"body1"}
                       component={"span"}
-                      color={"textPrimary"}
+                      display={"inline-flex"}
+                      flexDirection={"row"}
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
                     >
-                      *{info.amount}
+                      <Typography
+                        variant={"body2"}
+                        component={"span"}
+                        color={"textThird"}
+                      >
+                        {moment(info.when).fromNow()}
+                      </Typography>
+                      <Typography display={"inline"}></Typography>
                     </Typography>
-                  </Typography>
-                  <Typography
-                    component={"span"}
-                    display={"inline-flex"}
-                    flexDirection={"row"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
-                  >
-                    <Typography
-                      variant={"body2"}
-                      component={"span"}
-                      color={"textThird"}
-                    >
-                      {moment(info.when).fromNow()}
-                    </Typography>
-                    <Typography display={"inline"}></Typography>
-                  </Typography>
-                </BoxClaim>
-              );
-            })}
+                  </BoxClaim>
+                );
+              })}
           </Box>
         </Box>
       ) : (
@@ -1822,57 +1823,58 @@ export const RedPacketBlindBoxDetail = ({
                   </Typography>
 
                   <Box flex={1} overflow={"scroll"}>
-                    {NFTClaimList && NFTClaimList.map((info) => {
-                      return (
-                        <BoxClaim
-                          className={"claim"}
-                          display={"flex"}
-                          justifyContent={"stretch"}
-                          flexDirection={"column"}
-                          paddingY={1}
-                          paddingX={1}
-                        >
-                          <Typography
-                            component={"span"}
-                            display={"inline-flex"}
-                            flexDirection={"row"}
-                            justifyContent={"space-between"}
-                            alignItems={"center"}
+                    {NFTClaimList &&
+                      NFTClaimList.map((info) => {
+                        return (
+                          <BoxClaim
+                            className={"claim"}
+                            display={"flex"}
+                            justifyContent={"stretch"}
+                            flexDirection={"column"}
+                            paddingY={1}
+                            paddingX={1}
                           >
                             <Typography
-                              variant={"body1"}
                               component={"span"}
-                              color={"textPrimary"}
+                              display={"inline-flex"}
+                              flexDirection={"row"}
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
                             >
-                              {info.who}
+                              <Typography
+                                variant={"body1"}
+                                component={"span"}
+                                color={"textPrimary"}
+                              >
+                                {info.who}
+                              </Typography>
+                              <Typography
+                                variant={"body1"}
+                                component={"span"}
+                                color={"textPrimary"}
+                              >
+                                *{info.amount}
+                              </Typography>
                             </Typography>
                             <Typography
-                              variant={"body1"}
                               component={"span"}
-                              color={"textPrimary"}
+                              display={"inline-flex"}
+                              flexDirection={"row"}
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
                             >
-                              *{info.amount}
+                              <Typography
+                                variant={"body2"}
+                                component={"span"}
+                                color={"textThird"}
+                              >
+                                {moment(info.when).fromNow()}
+                              </Typography>
+                              <Typography display={"inline"}></Typography>
                             </Typography>
-                          </Typography>
-                          <Typography
-                            component={"span"}
-                            display={"inline-flex"}
-                            flexDirection={"row"}
-                            justifyContent={"space-between"}
-                            alignItems={"center"}
-                          >
-                            <Typography
-                              variant={"body2"}
-                              component={"span"}
-                              color={"textThird"}
-                            >
-                              {moment(info.when).fromNow()}
-                            </Typography>
-                            <Typography display={"inline"}></Typography>
-                          </Typography>
-                        </BoxClaim>
-                      );
-                    })}
+                          </BoxClaim>
+                        );
+                      })}
                   </Box>
                 </Box>
               </>
