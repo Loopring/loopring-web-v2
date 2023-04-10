@@ -268,13 +268,6 @@ export const useCexSwap = <
             label: `labelLimitMax| ${maxOrderSize}`,
             tradeBtnStatus: TradeBtnStatus.DISABLED,
           };
-          // }
-          // else if (buyExceed) {
-          //         const maxOrderSize = buyMaxVal + " " + tradeData?.buy.belong;
-          //         return {
-          //           label: `labelLimitMax| ${maxOrderSize}`,
-          //           tradeBtnStatus: TradeBtnStatus.DISABLED,
-          //         };
         } else if (!validAmt) {
           const sellSymbol = tradeData?.sell.belong;
           if (sellMinAmtInfo === undefined || !sellSymbol) {
@@ -594,9 +587,7 @@ export const useCexSwap = <
         totalFee: 0,
         tradeCalcData: {},
       });
-      // setFeeBips('0')
-      // setTotalFee('0')
-      // setTakerRate('0')
+
       setTradeCalcData((state) => {
         return {
           ...state,
@@ -820,7 +811,7 @@ export const useCexSwap = <
                 )
                 .div("1e" + buyToken.decimals)
                 .toString() ?? "0";
-
+            debugger;
             const calcPoolToSell = sdk.calcDex({
               info,
               input: poolToVol,
@@ -868,7 +859,7 @@ export const useCexSwap = <
 
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,
-            sellBuyStr == market ? minAmount.quote : minAmount.base
+            sellBuyStr == market ? minAmount.base : minAmount.quote
           )
             .div("1e" + sellToken.decimals)
             .toString();
@@ -880,9 +871,13 @@ export const useCexSwap = <
             .minus(totalFeeRaw ?? 0)
             .div("1e" + buyToken.decimals)
             .toString();
-          //TODO: result
           _tradeData[isAtoB ? "buy" : "sell"].tradeValue =
-            calcDexOutput[`amount${isAtoB ? "B" : "S"}`];
+            getValuePrecisionThousand(
+              calcDexOutput[`amount${isAtoB ? "B" : "S"}`],
+              isAtoB ? buyToken.precision : sellToken.precision,
+              isAtoB ? buyToken.precision : sellToken.precision,
+              isAtoB ? buyToken.precision : sellToken.precision
+            );
           let result = reCalcStoB(
             market,
             _tradeData as SwapTradeData<IBData<unknown>>,
@@ -1097,15 +1092,20 @@ export const useCexSwap = <
           ..._tradeCalcData,
         };
       });
+      const walletMap = makeWalletLayer2(true).walletMap;
       reCalculateDataWhenValueChange(
         {
-          sell: { belong: tradeCalcData.coinSell },
+          sell: {
+            belong: tradeCalcData.coinSell,
+            balance: walletMap ? walletMap[tradeCalcData.coinSell]?.count : 0,
+          },
           buy: { belong: tradeCalcData.coinBuy },
         },
-        `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`
+        `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
+        "sell"
       );
       //
-      // walletLayer2Callback();
+      //
       updateTradeCex({ market, tradeCalcData: _tradeCalcData });
     }
   }, [market, tradeCex, tradeData, tradeCalcData, setTradeCalcData]);
