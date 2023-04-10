@@ -38,7 +38,6 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     coinLabelStyle = undefined,
     coinPrecision = 6,
     CoinIconElement,
-    inputError
   }: InputCoinProps<T, C, I>,
   ref: React.ForwardedRef<any>
 ) {
@@ -64,7 +63,6 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     error: false,
     message: "",
   });
-  const innerErrorOrInputError = inputError ?? error 
   const _handleError = React.useCallback(
     (value: any) => {
       if (handleError) {
@@ -148,7 +146,6 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   return (
     <>
       <IWrap isMobile={isMobile} size={size} component={"div"} ref={ref}>
-        
         <Grid
           container
           component={"div"}
@@ -166,7 +163,6 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
               {label}
             </Typography>
           </Grid>
-          
           <Grid item xs={9} className={"sub-label"}>
             {subLabel && belong ? (
               <Typography
@@ -187,7 +183,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
           container
           className={`coinInput-wrap
          ${(belong && belong.length) >= FORMAT_STRING_LEN ? "text-small" : ""} 
-         ${innerErrorOrInputError.error ? "error" : ""}`}
+         ${error.error ? "error" : ""}`}
           wrap={"nowrap"}
           alignItems={"stretch"}
           alignContent={"stretch"}
@@ -284,7 +280,11 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
             justifyContent={"flex-end"}
           >
             <Grid item>
-              <FormHelperText>{innerErrorOrInputError.message}</FormHelperText>
+              <FormHelperText
+                sx={{ whiteSpace: "pre-line", wordBreak: "break-all" }}
+              >
+                {error.message}
+              </FormHelperText>
             </Grid>
           </Grid>
         )}

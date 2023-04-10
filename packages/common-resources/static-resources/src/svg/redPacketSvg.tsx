@@ -328,35 +328,54 @@ export const RedPacketQRCodeSvg = React.memo(
         "",
       ]);
       const imageRef = React.useRef<any>();
-      const [imageBase64, setImageBase64] = React.useState<string>(
-        imageEleUrl ?? ""
-      );
-      const onLoad = (event: any) => {
-        try {
-          let canvas: HTMLCanvasElement = document.createElement(
-            "CANVAS"
-          ) as HTMLCanvasElement;
-          let ctx: CanvasRenderingContext2D = canvas.getContext("2d") as any;
-          let dataURL: any;
-          canvas.height = imageRef.current.naturalHeight;
-          canvas.width = imageRef.current.naturalWidth;
-          ctx.drawImage(event.target, 0, 0);
-          dataURL = canvas.toDataURL();
-          myLog("read image", dataURL);
-          // fetch(event.target.href.baseVal, { mode: "no-cors" })
-          //   .then((result) => result.blob())
-          //   .then((result) => {
-          //
-          //   });
-          // if(event.target){
-          //
-          // }
 
-          // setImageBase64((state) => dataURL ?? state);
-        } catch (error) {
-          myLog("read error", error);
+      const [imageBase64, setImageBase64] = React.useState<string>(imageEleUrl);
+      React.useEffect(() => {
+        if (imageEleUrl) {
+          fetch(
+            imageEleUrl
+              .replace(
+                /d12jj0pnkw1mbj\.cloudfront\.net/gi,
+                "uatmetadatas.loopring.io"
+              )
+              .replace(
+                /d2y691019xyzhi\.cloudfront\.net/gi,
+                "metadatas.loopring.io"
+              )
+          )
+            .then((result) => result.blob())
+            .then((result) => {
+              myLog("blob", result);
+              setImageBase64(result);
+            });
         }
-      };
+      }, [imageEleUrl]);
+      // const onLoad = (event: any) => {
+      //   try {
+      //     let canvas: HTMLCanvasElement = document.createElement(
+      //       "CANVAS"
+      //     ) as HTMLCanvasElement;
+      //     let ctx: CanvasRenderingContext2D = canvas.getContext("2d") as any;
+      //     let dataURL: any;
+      //     canvas.height = imageRef.current.naturalHeight;
+      //     canvas.width = imageRef.current.naturalWidth;
+      //     ctx.drawImage(event.target, 0, 0);
+      //     dataURL = canvas.toDataURL();
+      //     myLog("read image", dataURL);
+      //     // fetch(event.target.href.baseVal, { mode: "no-cors" })
+      //     //   .then((result) => result.blob())
+      //     //   .then((result) => {
+      //     //
+      //     //   });
+      //     // if(event.target){
+      //     //
+      //     // }
+      //
+      //     // setImageBase64((state) => dataURL ?? state);
+      //   } catch (error) {
+      //     myLog("read error", error);
+      //   }
+      // };
 
       React.useEffect(() => {
         const [str1, str2] = textContent?.split("\n");
@@ -377,15 +396,15 @@ export const RedPacketQRCodeSvg = React.memo(
       // const qrcodeRef = React.createRef();
       return (
         <>
-          {imageEleUrl && (
-            <img
-              // crossOrigin={"anonymous"}
-              src={imageEleUrl}
-              onLoad={onLoad}
-              ref={imageRef}
-              style={{ display: "none" }}
-            />
-          )}
+          {/*{imageBase64 && (*/}
+          {/*  <img*/}
+          {/*    crossOrigin={"anonymous"}*/}
+          {/*    src={imageBase64}*/}
+          {/*    onLoad={onLoad}*/}
+          {/*    ref={imageRef}*/}
+          {/*    style={{ display: "none" }}*/}
+          {/*  />*/}
+          {/*)}*/}
           <svg
             ref={ref}
             width="334"

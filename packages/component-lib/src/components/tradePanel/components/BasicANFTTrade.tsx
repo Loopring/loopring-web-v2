@@ -83,8 +83,6 @@ export const _BasicANFTTrade = <
           sdk.toBig(balance).lt(tradeValue)) ||
         (typeof tradeValue !== "undefined" && Number(tradeValue) < 1)
       ) {
-        debugger;
-
         return {
           error: true,
           message: t("tokenNotEnough", { belong: "NFT" }),
