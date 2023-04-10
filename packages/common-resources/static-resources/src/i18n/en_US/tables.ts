@@ -165,6 +165,9 @@ export default {
   labelNFTTypeTRANSFER: "Transfer",
   labelNFTTypeWITHDRAWAL: "Withdraw",
   labelNFTTypeWITHDRAW: "Withdraw",
+  labelNFTTypeWITHDRAW_LUCKY_TOKEN: "Red Packet Claim",
+  labelNFTTypeSEND_BACK_LUCKY_TOKEN: "Red Packet Send Back",
+  labelNFTTypeSEND_LUCKY_TOKEN: "Red Packet Send",
   labelMint: "Mint",
   labelNFTTypeMINT: "Mint",
   labelTxNFTFilterALL: "All Types",
@@ -191,6 +194,7 @@ export default {
   labelTypeOFFCHAIN_WITHDRAWAL: "Send",
   labelTypeTRANSFER: "Send",
   labelTypeWITHDRAW_LUCKY_TOKEN: "Red Packet Claim",
+  labelTypeSEND_BACK_LUCKY_TOKEN: "Red Packet Send Back",
   labelTypeSEND_LUCKY_TOKEN: "Red Packet Send",
   labelTxNFTFilterMINT: "Mint",
   labelShowFilter: "Show Filter",
@@ -293,6 +297,6 @@ export default {
   labelBlindBoxExpired: "Expired",
   labelBlindBoxClaimed: "Claimed",
   labelBlindBoxStartTime: "Start time: {{time}}",
-  
+
   // labelRecordAction: "Action",
 };
