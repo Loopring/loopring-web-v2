@@ -25,6 +25,7 @@ import {
   RedPacketWrapSVG,
   SoursURL,
   BackIcon,
+  YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import QRCodeStyling from "qr-code-styling";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -1751,14 +1752,18 @@ export const RedPacketBlindBoxDetail = ({
             >
               {type === "Not Started"
                 ? t("labelBlindBoxNotStarted", {
-                    time: moment(blindBoxStartTime).format("YYYY.MM.DD HH:mm"),
+                    time: moment(blindBoxStartTime).format(
+                      YEAR_DAY_MINUTE_FORMAT
+                    ),
                   })
                 : type === "Blind Box Started"
                 ? t("labelBlindBoxStarted", {
-                    time: moment(lotteryStartTime).format("YYYY.MM.DD HH:mm"),
+                    time: moment(lotteryStartTime).format(
+                      YEAR_DAY_MINUTE_FORMAT
+                    ),
                   })
                 : t("labelBlindBoxClaimStarted", {
-                    time: moment(lotteryEndTime).format("YYYY.MM.DD HH:mm"),
+                    time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
                   })}
             </Typography>
             {(type === "Blind Box Started" || type === "Lottery Started") && (

@@ -1,24 +1,19 @@
 import styled from "@emotion/styled";
 import { Box } from "@mui/material";
 import { TablePaddingX } from "../../styled";
-import {
-  Button,
-  Column,
-  Table,
-  TablePagination,
-} from "../../basic-lib";
+import { Button, Column, Table, TablePagination } from "../../basic-lib";
 import {
   globalSetup,
   myLog,
   RowConfig,
   TokenType,
+  YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   RawDataRedPacketBlindBoxReceivesItem,
   RedPacketBlindBoxReceiveTableProps,
 } from "./Interface";
-import { useHistory } from "react-router-dom";
 import React from "react";
 import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
@@ -67,7 +62,10 @@ const TableStyled = styled(Table)`
     text-align: center;
   }
 ` as any;
-export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"])(
+export const RedPacketBlindBoxReceiveTable = withTranslation([
+  "tables",
+  "common",
+])(
   <R extends RawDataRedPacketBlindBoxReceivesItem>(
     props: RedPacketBlindBoxReceiveTableProps<R> & WithTranslation
   ) => {
@@ -122,9 +120,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
         headerCellClass: "textAlignRight",
         name: t("labelRecordTime"),
         formatter: ({ row }: FormatterProps<R>) => {
-          return (
-            <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>
-          );
+          return <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>;
         },
       },
       {
@@ -135,7 +131,11 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
         name: t("labelBlindBoxEndTime"),
         formatter: ({ row }: FormatterProps<R>) => {
           return (
-            <>{moment(row.rawData.luckyToken.validUntil).format('YYYY.MM.DD HH:MM')}</>
+            <>
+              {moment(row.rawData.luckyToken.validUntil).format(
+                YEAR_DAY_MINUTE_FORMAT
+              )}
+            </>
           );
         },
       },
@@ -147,13 +147,30 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(["tables", "common"
         name: "Action",
         formatter: ({ row }: FormatterProps<R>) => {
           if (row.rawData.luckyToken.validUntil > Date.now()) {
-            return <>{t("labelBlindBoxStartTime", {time: moment(row.rawData.luckyToken.validSince).format('YYYY.MM.DD HH:MM')})} </>
+            return (
+              <>
+                {t("labelBlindBoxStartTime", {
+                  time: moment(row.rawData.luckyToken.validSince).format(
+                    YEAR_DAY_MINUTE_FORMAT
+                  ),
+                })}{" "}
+              </>
+            );
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
-            return <>{t("labelBlindBoxOpend")}</>
-          } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
-            return <>{t("labelBlindBoxExpired")}</>
-          } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) { 
-            return <Button onClick={() => onItemClick(row.rawData)} variant={"outlined"}>{t("labelRedPacketOpen")}</Button>
+            return <>{t("labelBlindBoxOpend")}</>;
+          } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) {
+            return <>{t("labelBlindBoxExpired")}</>;
+          } else if (
+            row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED
+          ) {
+            return (
+              <Button
+                onClick={() => onItemClick(row.rawData)}
+                variant={"outlined"}
+              >
+                {t("labelRedPacketOpen")}
+              </Button>
+            );
           }
         },
       },
