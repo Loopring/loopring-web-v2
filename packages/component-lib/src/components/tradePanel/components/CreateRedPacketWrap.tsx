@@ -53,7 +53,7 @@ import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { FeeToggle } from "./tool/FeeList";
 import { BtnMain } from "./tool";
 import * as sdk from "@loopring-web/loopring-sdk";
-import moment, { Moment } from "moment";
+import moment from "moment";
 import { NFTInput } from "./BasicANFTTrade";
 import { DateTimeRangePicker } from "../../datetimerangepicker";
 
