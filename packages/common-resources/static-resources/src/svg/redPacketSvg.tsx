@@ -1,6 +1,5 @@
 import { sanitize } from "dompurify";
 import React from "react";
-import { myLog } from "../utils";
 
 export const RedPacketColorConfig: {
   default: ColorConfig;
@@ -337,10 +336,21 @@ export const RedPacketQRCodeSvg = React.memo(
           fetch(imageEleUrl)
             .then((result) => result.blob())
             .then((result) => {
-              myLog("blob", result);
-              if (result) {
-                setImageBase64(result.toString());
-              }
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                // @ts-ignore
+                setImageBase64((state) => reader?.result ?? state);
+              };
+
+              reader.onerror = () => {
+                console.log("reader error");
+              };
+              reader.readAsDataURL(result);
+
+              // myLog("blob", result.stream());
+              // if (result) {
+              //   setImageBase64(result.toString());
+              // }
             });
         }
       }, [imageEleUrl]);
