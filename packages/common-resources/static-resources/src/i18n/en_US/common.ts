@@ -1548,7 +1548,7 @@ export default {
   labelInvestType_LRCSTAKE: "LRC Staking",
   labelNFTs_one: "\u2A09{{count}} NFT",
   labelNFTs_other: "\u2A09{{count}} NFTs",
-  tokenNFTMaxRedPack: "Max:",
+  labelTokenNFTMaxRedPack: "Max: ",
   labelNFTRedPackAskClaim:
     "Please claim your NFT gifts immediately as they will be returned back to Sender 3 days after the expiration date.",
 };

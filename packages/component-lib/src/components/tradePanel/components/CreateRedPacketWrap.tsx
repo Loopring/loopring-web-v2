@@ -471,7 +471,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 isThumb: true,
                 isSelected: true,
                 type: tradeType,
-                subLabel: "tokenNFTMaxRedPack",
+                subLabel: t("labelTokenNFTMaxRedPack"),
                 disabled,
                 tradeData: {
                   ...tradeData,
