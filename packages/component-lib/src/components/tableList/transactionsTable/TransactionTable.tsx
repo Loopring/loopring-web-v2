@@ -307,6 +307,14 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? "+"
                 : /chain_withdrawal/i.test(row.side.toLowerCase()) //TransactionTradeTypes.withdraw
                 ? "-"
+                : row.side.toLowerCase() === sdk.UserTxTypes.SEND_LUCKY_TOKEN
+                ? "-"
+                : row.side.toLowerCase() ===
+                  sdk.UserTxTypes.SEND_BACK_LUCKY_TOKEN
+                ? "+"
+                : row.side.toLowerCase() ===
+                  sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
+                ? "+"
                 : "";
 
             const renderValue = hasValue
@@ -522,6 +530,14 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 : row.side.toLowerCase() ===
                   sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
                 ? "-"
+                : row.side.toLowerCase() === sdk.UserTxTypes.SEND_LUCKY_TOKEN
+                ? "-"
+                : row.side.toLowerCase() ===
+                  sdk.UserTxTypes.SEND_BACK_LUCKY_TOKEN
+                ? "+"
+                : row.side.toLowerCase() ===
+                  sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
+                ? "+"
                 : "";
             const sideIcon =
               row.side.toLowerCase() ===

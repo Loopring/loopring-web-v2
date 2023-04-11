@@ -212,6 +212,7 @@ export const useCreateRedPacket = <
           belong: redPacketOrder.belong,
           tradeValue: undefined,
           balance: undefined,
+          giftNumbers: undefined,
           memo: "",
           numbers: undefined,
           validSince: Date.now(),
@@ -295,7 +296,9 @@ export const useCreateRedPacket = <
       const blindBoxGiftsLargerThanPackets =
         redPacketOrder.tradeType === TRADE_TYPE.NFT &&
         redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
-        sdk.toBig(redPacketOrder.giftNumbers ?? "0").isGreaterThan(redPacketOrder.numbers)
+        sdk
+          .toBig(redPacketOrder.giftNumbers ?? "0")
+          .isGreaterThan(redPacketOrder.numbers);
       if (
         (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
         redPacketOrder.belong &&
@@ -715,7 +718,10 @@ export const useCreateRedPacket = <
               ...redPacketOrder.type,
               mode:
                 redPacketOrder.tradeType === TRADE_TYPE.NFT
-                  ? (redPacketOrder.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) ? sdk.LuckyTokenClaimType.BLIND_BOX : sdk.LuckyTokenClaimType.COMMON
+                  ? redPacketOrder.type.mode ===
+                    sdk.LuckyTokenClaimType.BLIND_BOX
+                    ? sdk.LuckyTokenClaimType.BLIND_BOX
+                    : sdk.LuckyTokenClaimType.COMMON
                   : // @ts-ignore
                     redPacketOrder.type?.mode ?? sdk.LuckyTokenClaimType.COMMON,
             },
@@ -733,7 +739,7 @@ export const useCreateRedPacket = <
               (redPacketOrder.validSince ?? Date.now()) / 1000
             ),
             validUntil: Math.round(
-              (redPacketOrder.validUntil ?? Date.now()) / 1000 
+              (redPacketOrder.validUntil ?? Date.now()) / 1000
             ),
             luckyToken: {
               exchange: exchangeInfo.exchangeAddress,

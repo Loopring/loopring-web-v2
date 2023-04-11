@@ -15,7 +15,7 @@ import {
   useMyRedPacketRecordTransaction,
 } from "./hooks";
 import { BackIcon, RowConfig, TokenType } from "@loopring-web/common-resources";
-import { Box, Button, Tab, Tabs } from "@mui/material";
+import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 
 enum TabIndex {
@@ -26,11 +26,14 @@ enum TabIndex {
   BlindBoxReceived = "BlindBoxReceived",
 }
 
-const SelectButton = styled(Button)<{selected?: boolean}>`
-  color: ${({selected, theme}) => selected ? theme.colorBase.textPrimary : 'auto'} ;
-  border-color: ${({selected, theme}) => selected ? theme.colorBase.textButtonSelect : 'auto'} ;
-  background-color: ${({selected, theme}) => selected ? theme.colorBase.box : 'auto'} ;
-`
+const SelectButton = styled(Button)<{ selected?: boolean }>`
+  color: ${({ selected, theme }) =>
+    selected ? theme.colorBase.textPrimary : "auto"};
+  border-color: ${({ selected, theme }) =>
+    selected ? theme.colorBase.textButtonSelect : "auto"};
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.colorBase.box : "auto"};
+`;
 
 export const MyRedPacketPanel = ({
   setToastOpen,
@@ -97,12 +100,16 @@ export const MyRedPacketPanel = ({
     setCurrentTab(value);
   };
 
-  const isRecieve = [TabIndex.Received, TabIndex.BlindBoxReceived, TabIndex.NFTReceived].includes(currentTab)
-  const tabType = [TabIndex.Received, TabIndex.Send].includes(currentTab) 
-    ? 'tokens'
-    : [TabIndex.NFTReceived, TabIndex.NFTSend].includes(currentTab) 
-      ? 'NFTs'
-      : 'blindBox'
+  const isRecieve = [
+    TabIndex.Received,
+    TabIndex.BlindBoxReceived,
+    TabIndex.NFTReceived,
+  ].includes(currentTab);
+  const tabType = [TabIndex.Received, TabIndex.Send].includes(currentTab)
+    ? "tokens"
+    : [TabIndex.NFTReceived, TabIndex.NFTSend].includes(currentTab)
+    ? "NFTs"
+    : "blindBox";
 
   // @ts-ignore
   return (
@@ -146,65 +153,91 @@ export const MyRedPacketPanel = ({
         {/*  />*/}
         {/*</Tabs>*/}
         <Tabs
-          value={isRecieve ? 'Received' : 'Sent'}
+          value={isRecieve ? "Received" : "Sent"}
           onChange={(_event, value) => {
-            if (tabType === 'tokens' && value === 'Received') {
-              handleTabChange(TabIndex.Received)
-            } else if (tabType === 'tokens' && value === 'Sent') {
-              handleTabChange(TabIndex.Send)
-            } else if (tabType === 'NFTs' && value === 'Received') {
-              handleTabChange(TabIndex.NFTReceived)
-            } else if (tabType === 'NFTs' && value === 'Sent') {
-              handleTabChange(TabIndex.NFTSend)
-            } else if (tabType === 'blindBox' && value === 'Received') {
-              handleTabChange(TabIndex.BlindBoxReceived)
-            } else if (tabType === 'blindBox' && value === 'Sent') {
-              handleTabChange(TabIndex.Send)
+            if (tabType === "tokens" && value === "Received") {
+              handleTabChange(TabIndex.Received);
+            } else if (tabType === "tokens" && value === "Sent") {
+              handleTabChange(TabIndex.Send);
+            } else if (tabType === "NFTs" && value === "Received") {
+              handleTabChange(TabIndex.NFTReceived);
+            } else if (tabType === "NFTs" && value === "Sent") {
+              handleTabChange(TabIndex.NFTSend);
+            } else if (tabType === "blindBox" && value === "Received") {
+              handleTabChange(TabIndex.BlindBoxReceived);
+            } else if (tabType === "blindBox" && value === "Sent") {
+              handleTabChange(TabIndex.Send);
             }
-          } }
+          }}
           aria-label="l2-history-tabs"
           variant="scrollable"
         >
-          <Tab
-            key={"Received"}
-            label={"Received"}
-            value={"Received"}
-          />
-          <Tab
-            key={"Sent"}
-            label={"Sent"}
-            value={"Sent"}
-          />
+          <Tab key={"Received"} label={"Received"} value={"Received"} />
+          <Tab key={"Sent"} label={"Sent"} value={"Sent"} />
         </Tabs>
         <Box marginLeft={2} marginTop={3}>
           <SelectButton
-            onClick={() => { isRecieve ? handleTabChange(TabIndex.Received) : handleTabChange(TabIndex.Send) }}
+            onClick={() => {
+              isRecieve
+                ? handleTabChange(TabIndex.Received)
+                : handleTabChange(TabIndex.Send);
+            }}
             selected={[TabIndex.Send, TabIndex.Received].includes(currentTab)}
             style={{ marginRight: `${theme.unit}px` }}
-            variant={"outlined"}>
+            variant={"outlined"}
+          >
             {t("labelRedpacketTokensShort")}
           </SelectButton>
           <SelectButton
-            onClick={() => { isRecieve ? handleTabChange(TabIndex.NFTReceived) : handleTabChange(TabIndex.NFTSend) }}
-            selected={[TabIndex.NFTReceived, TabIndex.NFTSend].includes(currentTab)}
+            onClick={() => {
+              isRecieve
+                ? handleTabChange(TabIndex.NFTReceived)
+                : handleTabChange(TabIndex.NFTSend);
+            }}
+            selected={[TabIndex.NFTReceived, TabIndex.NFTSend].includes(
+              currentTab
+            )}
             style={{ marginRight: `${theme.unit}px` }}
-            variant={"outlined"}>
+            variant={"outlined"}
+          >
             {t("labelRedpacketNFTS")}
           </SelectButton>
-          {isRecieve && <SelectButton
-            onClick={() => { handleTabChange(TabIndex.BlindBoxReceived) }}
-            selected={[TabIndex.BlindBoxReceived].includes(currentTab)}
-            variant={"outlined"}>
+          {isRecieve && (
+            <SelectButton
+              onClick={() => {
+                handleTabChange(TabIndex.BlindBoxReceived);
+              }}
+              selected={[TabIndex.BlindBoxReceived].includes(currentTab)}
+              variant={"outlined"}
+            >
               {t("labelRedpacketBlindBox")}
-          </SelectButton>}
+            </SelectButton>
+          )}
         </Box>
         {[TabIndex.Received, TabIndex.NFTReceived].includes(currentTab) && (
-          <Box className="tableWrapper table-divide-short">
+          <Box
+            className="tableWrapper table-divide-short"
+            display={"flex"}
+            flexDirection={"column"}
+            flex={1}
+          >
+            {currentTab == TabIndex.NFTReceived && (
+              <Typography
+                component={"h4"}
+                paddingX={2}
+                variant={"body1"}
+                color={"textSecondary"}
+              >
+                {t("labelNFTRedPackAskClaim")}
+              </Typography>
+            )}
             <RedPacketReceiveTable
               {...{
-                tokenType: (currentTab === TabIndex.NFTReceived || currentTab === TabIndex.NFTSend)
-                  ? TokenType.nft
-                  : TokenType.single,
+                tokenType:
+                  currentTab === TabIndex.NFTReceived ||
+                  currentTab === TabIndex.NFTSend
+                    ? TokenType.nft
+                    : TokenType.single,
                 onItemClick: onReceiveItemClick,
                 onClaimItem: onReceiveClaimItem,
                 showloading: showloadingReceive,
@@ -221,19 +254,32 @@ export const MyRedPacketPanel = ({
           </Box>
         )}
         {currentTab === TabIndex.BlindBoxReceived && (
-          <Box className="tableWrapper table-divide-short">
-          <RedPacketBlindBoxReceiveTable
-            onItemClick={onReceiveItemClick_BlindBox}
-            showloading={showloadingReceive_BlindBox}
-            forexMap={forexMap}
-            etherscanBaseUrl={etherscanBaseUrl}
-            rawData={redPacketReceiveList_BlindBox}
-            getRedPacketReceiveList={getRedPacketReceiveList_BlindBox}
-            pagination= {{
-              pageSize: pageSize,
-              total: redPacketReceiveTotal_BlindBox,
-            }}
-          />
+          <Box
+            className="tableWrapper table-divide-short"
+            display={"flex"}
+            flexDirection={"column"}
+            flex={1}
+          >
+            <Typography
+              component={"h4"}
+              variant={"body1"}
+              color={"textSecondary"}
+              paddingX={2}
+            >
+              {t("labelNFTRedPackAskClaim")}
+            </Typography>
+            <RedPacketBlindBoxReceiveTable
+              onItemClick={onReceiveItemClick_BlindBox}
+              showloading={showloadingReceive_BlindBox}
+              forexMap={forexMap}
+              etherscanBaseUrl={etherscanBaseUrl}
+              rawData={redPacketReceiveList_BlindBox}
+              getRedPacketReceiveList={getRedPacketReceiveList_BlindBox}
+              pagination={{
+                pageSize: pageSize,
+                total: redPacketReceiveTotal_BlindBox,
+              }}
+            />
           </Box>
         )}
         {[TabIndex.Send, TabIndex.NFTSend].includes(currentTab) && (
