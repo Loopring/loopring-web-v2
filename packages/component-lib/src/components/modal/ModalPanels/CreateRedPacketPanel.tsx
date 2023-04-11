@@ -111,15 +111,19 @@ export const CreateRedPacketPanel = <
     });
     return clonedWalletMap;
   }, [walletMap]);
-  
+
   const [selectedType, setSelectType] = React.useState(LuckyRedPacketList[0]);
   React.useEffect(() => {
     setSelectType(() => {
       if (tradeData && tradeData.type) {
         // if (tradeData.)
-        const found = LuckyRedPacketList.find(x => tradeData.type?.partition == x.value.partition && tradeData.type?.mode == x.value.mode)
-        // found?.value.mode === 
-        return found ?? LuckyRedPacketList[2]
+        const found = LuckyRedPacketList.find(
+          (x) =>
+            tradeData.type?.partition == x.value.partition &&
+            tradeData.type?.mode == x.value.mode
+        );
+        // found?.value.mode ===
+        return found ?? LuckyRedPacketList[2];
       } else {
         return LuckyRedPacketList[2];
       }
@@ -133,29 +137,22 @@ export const CreateRedPacketPanel = <
 
   // tradeData.tradeType === TRADE_TYPE.NFT
   React.useEffect(() => {
-    const found = LuckyRedPacketList.find(x => tradeData.tradeType === TRADE_TYPE.NFT ? x.showInNFTS : x.showInERC20)!
+    const found =
+      LuckyRedPacketList.find((x) =>
+        tradeData.tradeType === TRADE_TYPE.NFT ? x.showInNFTS : x.showInERC20
+      ) ?? LuckyRedPacketList[2];
     setSelectType(found);
     // debugger
     handleOnDataChange({
       type: {
-        ...tradeData?.type,  
+        ...tradeData?.type,
         partition: found.value.partition,
         mode: found.value.mode,
       },
     } as any);
-    // handleOnDataChange({
-    //   // ...tradeData,
-    //   type: {
-    //     ...tradeData.type,
-    //     partition: found.value.partition,
-    //     mode: found.value.mode,
-    //   }
-    // } as any)
-  }, [
-    tradeData.tradeType
-  ]);
+  }, [tradeData.tradeType]);
 
-  const [privateChecked, setPrivateChecked] = React.useState(false)
+  const [privateChecked, setPrivateChecked] = React.useState(false);
 
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     return {
@@ -198,11 +195,11 @@ export const CreateRedPacketPanel = <
               onChangePrivateChecked={() => {
                 handleOnDataChange({
                   type: {
-                    ...tradeData?.type,  
+                    ...tradeData?.type,
                     scope: !privateChecked ? 1 : 0,
                   },
                 } as any);
-                setPrivateChecked(!privateChecked)
+                setPrivateChecked(!privateChecked);
               }}
             />
           ),
@@ -294,11 +291,7 @@ export const CreateRedPacketPanel = <
       alignItems={"center"}
     >
       <HorizontalLabelPositionBelowStepper
-        activeStep={
-          (panelIndex === 2 || panelIndex === 3)
-            ? 2
-            : panelIndex
-        }
+        activeStep={panelIndex === 2 || panelIndex === 3 ? 2 : panelIndex}
         steps={steps}
       />
       <Box

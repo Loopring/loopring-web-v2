@@ -108,7 +108,6 @@ export const useClaimConfirm = <
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     // claimToken
     if (claimToken) {
-      
       if (claimToken?.isNft) {
         updateClaimData({
           ...claimToken.nftTokenInfo,
@@ -121,7 +120,7 @@ export const useClaimConfirm = <
           volume: claimToken.total,
           balance: Number(claimToken.total),
           claimType,
-          luckyTokenHash: claimToken.luckyTokenHash
+          luckyTokenHash: claimToken.luckyTokenHash,
         } as any);
       } else {
         const token = tokenMap[idIndex[claimToken.tokenId]];
@@ -359,7 +358,9 @@ export const useClaimConfirm = <
             type: brokerType,
           });
           let request:
-            | sdk.OriginLuckTokenWithdrawsRequestV3
+            | (sdk.OriginLuckTokenWithdrawsRequestV3 & {
+                luckyTokenHash?: string;
+              })
             | sdk.OriginStakeClaimRequestV3 = {} as any;
 
           if (claimValue.claimType === CLAIM_TYPE.redPacket) {
@@ -369,7 +370,6 @@ export const useClaimConfirm = <
               amount: amount.toString(),
               nftData,
               claimer: accAddress,
-              luckyTokenHash: (claimValue as any)?.luckyTokenHash,
               transfer: {
                 exchange: exchangeInfo.exchangeAddress,
                 payerAddr: accAddress,
