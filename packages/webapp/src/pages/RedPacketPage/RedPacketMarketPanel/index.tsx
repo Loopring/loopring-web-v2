@@ -145,7 +145,7 @@ export const RedPacketMarketPanel = ({
                   tokenInfo={tokenInfo}
                   getIPFSString={getIPFSString}
                   baseURL={baseURL}
-                  _type={item.isOfficial ? "official" : "default"}
+                  _type={(item as any)?.isOfficial ? "official" : "default"}
                 />
               </Grid>
             ) : (
@@ -161,8 +161,16 @@ export const RedPacketMarketPanel = ({
   const listERC20 = React.useMemo(() => {
     return (
       <>
-        {listMemo(luckTokenList.officialList.map(x => ({...x, isOfficial: true, info: {...x.info, memo: 'skr'}})))}
-        {listMemo(luckTokenList.publicList.map(x => ({...x, isOfficial: false})))}
+        {listMemo(
+          luckTokenList.officialList.map((x) => ({
+            ...x,
+            isOfficial: true,
+            info: { ...x.info, memo: "skr" },
+          }))
+        )}
+        {listMemo(
+          luckTokenList.publicList.map((x) => ({ ...x, isOfficial: false }))
+        )}
       </>
     );
   }, [
