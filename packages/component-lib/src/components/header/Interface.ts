@@ -1,5 +1,6 @@
 import {
   Account,
+  ButtonComponentsMap,
   HeaderMenuItemInterface,
   Notify,
 } from "@loopring-web/common-resources";
@@ -28,4 +29,6 @@ export interface HeaderProps<R> {
   selected: string;
   className?: string;
   isLandPage?: boolean;
+  toolBarAvailableItem?: number[];
+  toolBarMap?: typeof ButtonComponentsMap;
 }

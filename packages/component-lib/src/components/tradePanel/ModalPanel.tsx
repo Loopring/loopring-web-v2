@@ -4,8 +4,6 @@ import {
   ActiveAccountPanel,
   ClaimProps,
   CollectionAdvanceProps,
-  DeFiStackRedeemWrap,
-  DeFiStakeRedeemWrapProps,
   DeployNFTWrap,
   DepositPanel,
   DepositProps,
@@ -146,8 +144,6 @@ export const ModalPanel = <
   activeAccountProps,
   collectionAdvanceProps,
   // dualTradeProps,
-
-  sideStackRedeemProps,
   assetsData,
   account,
   baseURL,
@@ -163,7 +159,6 @@ export const ModalPanel = <
   nftWithdrawProps: WithdrawProps<N, I>;
   nftDeployProps: NFTDeployProps<N & { broker: string }, I, F>;
   depositProps: DepositProps<T, I>;
-  sideStackRedeemProps: DeFiStakeRedeemWrapProps<T, I, any>;
   // depositGroupProps: DepositGroupProps<T, I>;
   // nftDepositProps: NFTDepositProps<T, I>;
   collectionAdvanceProps: CollectionAdvanceProps<C>;
@@ -193,7 +188,6 @@ export const ModalPanel = <
     setShowAccount,
     setShowClaimWithdraw,
     setShowCollectionAdvance,
-    setShowSideStakingRedeem,
     // setShowDual,
   } = useOpenModals();
   const {
@@ -210,7 +204,6 @@ export const ModalPanel = <
     isShowCollectionAdvance,
     isShowLayerSwapNotice,
     isShowClaimWithdraw,
-    isShowSideStakingRedeem,
     // isShowDual,
   } = modals;
   const theme = useTheme();
@@ -265,13 +258,12 @@ export const ModalPanel = <
               ...withdrawProps,
               assetsData,
               isFromContact: isShowWithdraw.address ? true : false,
-              contact: isShowWithdraw.address 
+              contact: isShowWithdraw.address
                 ? {
-                  address: isShowWithdraw.address!,
-                  name: isShowWithdraw.name!,
-                }
+                    address: isShowWithdraw.address!,
+                    name: isShowWithdraw.name!,
+                  }
                 : undefined,
-              
             }}
           />
         }
@@ -470,7 +462,13 @@ export const ModalPanel = <
         contentClassName={"trade-wrap hasLinerBg"}
         onClose={() => setShowSideStakingRedeem({ isShow: false })}
         content={
-          <Box flex={1} display={"flex"} paddingX={5 / 2} paddingBottom={5 / 2}>
+          <Box
+            maxWidth="var(--modal-width)"
+            flex={1}
+            display={"flex"}
+            paddingX={5 / 2}
+            paddingBottom={5 / 2}
+          >
             <DeFiStackRedeemWrap
               isJoin={false}
               {...(sideStackRedeemProps as any)}

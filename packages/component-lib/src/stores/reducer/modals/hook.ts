@@ -1,5 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Contact, ModalState, ModalStatePlayLoad, Transaction } from "./interface";
+import {
+  Contact,
+  ModalState,
+  ModalStatePlayLoad,
+  Transaction,
+} from "./interface";
 import {
   setNFTMetaNotReady,
   setShowAccount,

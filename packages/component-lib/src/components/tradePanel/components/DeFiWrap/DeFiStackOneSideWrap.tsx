@@ -6,6 +6,7 @@ import {
   Info2Icon,
   myLog,
   TradeBtnStatus,
+  YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { DeFiSideType, DeFiSideWrapProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
@@ -24,13 +25,25 @@ const GridStyle = styled(Grid)`
 `;
 
 export const DeFiSideDetail = ({
-  // stackViewInfo,
+  // stakeViewInfo,
   tokenSell,
   order,
   onRedeem,
 }: DeFiSideType) => {
   const { t } = useTranslation();
-
+  // myLog(
+  //   moment(new Date(order.stakeAt ?? ""))
+  //     .utc()
+  //     .startOf("days")
+  //     .toString()
+  // );
+  const diff = moment(Date.now()).diff(
+    moment(new Date(order.stakeAt ?? ""))
+      .utc()
+      .startOf("days"),
+    "days",
+    false
+  );
   return (
     <Box flex={1}>
       <Box
@@ -57,7 +70,7 @@ export const DeFiSideDetail = ({
             <Trans i18nKey={"labelDeFiSideAmount"}>Amount</Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {order.remainAmount
+            {order.remainAmount && order.remainAmount != "0"
               ? getValuePrecisionThousand(
                   sdk.toBig(order.remainAmount).div("1e" + tokenSell.decimals),
                   tokenSell.precision,
@@ -65,8 +78,10 @@ export const DeFiSideDetail = ({
                   tokenSell.precision,
                   false,
                   { floor: false, isAbbreviate: true }
-                )
-              : EmptyValueTag + " " + tokenSell.symbol}
+                ) +
+                " " +
+                tokenSell.symbol
+              : EmptyValueTag}
           </Typography>
         </Typography>
         <Typography
@@ -87,6 +102,33 @@ export const DeFiSideDetail = ({
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
             {order?.productId ?? EmptyValueTag}
+          </Typography>
+        </Typography>
+        <Typography
+          variant={"body1"}
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          paddingBottom={2}
+        >
+          <Typography
+            component={"span"}
+            variant={"inherit"}
+            color={"textSecondary"}
+            display={"inline-flex"}
+            alignItems={"center"}
+          >
+            {t("labelDeFiSidePoolShare")}
+          </Typography>
+          <Typography component={"span"} variant={"inherit"}>
+            {order?.remainAmount && order?.staked && order.staked != "0"
+              ? getValuePrecisionThousand(
+                  sdk.toBig(order.remainAmount).div(order.staked).times(100),
+                  2,
+                  2,
+                  undefined
+                ) + "%"
+              : EmptyValueTag}
           </Typography>
         </Typography>
         <Typography
@@ -130,16 +172,18 @@ export const DeFiSideDetail = ({
             </Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {order.totalRewards
+            {order.totalRewards && order.totalRewards != "0"
               ? getValuePrecisionThousand(
                   sdk.toBig(order.totalRewards).div("1e" + tokenSell.decimals),
                   tokenSell.precision,
                   tokenSell.precision,
-                  tokenSell.precision,
+                  undefined,
                   false,
                   { floor: false, isAbbreviate: true }
-                )
-              : EmptyValueTag + " " + tokenSell.symbol}
+                ) +
+                " " +
+                tokenSell.symbol
+              : EmptyValueTag}
           </Typography>
         </Typography>
         <Typography
@@ -161,18 +205,20 @@ export const DeFiSideDetail = ({
             </Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {order.lastDayPendingRewards
+            {order.lastDayPendingRewards && order.lastDayPendingRewards != "0"
               ? getValuePrecisionThousand(
                   sdk
                     .toBig(order.lastDayPendingRewards)
                     .div("1e" + tokenSell.decimals),
                   tokenSell.precision,
                   tokenSell.precision,
-                  tokenSell.precision,
+                  undefined,
                   false,
                   { floor: false, isAbbreviate: true }
-                )
-              : EmptyValueTag + " " + tokenSell.symbol}
+                ) +
+                " " +
+                tokenSell.symbol
+              : EmptyValueTag}
           </Typography>
         </Typography>
         <Typography
@@ -194,7 +240,7 @@ export const DeFiSideDetail = ({
             </Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {"≥" +
+            {"≥ " +
               (order.claimableTime - order.stakeAt) / 86400000 +
               " " +
               t("labelDay")}
@@ -217,7 +263,10 @@ export const DeFiSideDetail = ({
             <Trans i18nKey={"labelDeFiSideSubscribeTime"}>Subscribe Time</Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {moment(new Date(order.stakeAt), "YYYYMMDDHHMM").fromNow()}
+            {moment(new Date(order.stakeAt))
+              // .utc()
+              // .startOf("days")
+              .format(YEAR_DAY_MINUTE_FORMAT)}
           </Typography>
         </Typography>
         <Typography
@@ -237,7 +286,7 @@ export const DeFiSideDetail = ({
             <Trans i18nKey={"labelDeFiSideHoldingTime"}>Holding Time</Trans>
           </Typography>
           <Typography component={"span"} variant={"inherit"}>
-            {moment(Date.now() - new Date(order.stakeAt).getTime()).days()}
+            {diff ? diff + " " + t("labelDays") : "< 1" + " " + t("labelDays")}
           </Typography>
         </Typography>
         <Typography
@@ -366,13 +415,14 @@ export const DeFiSideWrap = <
   }, [isJoin, t, btnInfo]);
 
   const daysDuration = Math.ceil(
-    Number(deFiSideCalcData?.stackViewInfo?.rewardPeriod ?? 0) / 86400000
+    Number(deFiSideCalcData?.stakeViewInfo?.rewardPeriod ?? 0) / 86400000
   );
-  let dalyEarn = deFiSideCalcData?.stackViewInfo?.dalyEarn
+  let dalyEarn = deFiSideCalcData?.stakeViewInfo?.dalyEarn
     ? getValuePrecisionThousand(
         sdk
-          .toBig(deFiSideCalcData.stackViewInfo.dalyEarn)
-          .div("1e" + tokenSell.decimals),
+          .toBig(deFiSideCalcData.stakeViewInfo.dalyEarn)
+          .div("1e" + tokenSell.decimals)
+          .div(100),
         tokenSell.precision,
         tokenSell.precision,
         tokenSell.precision,
@@ -383,7 +433,7 @@ export const DeFiSideWrap = <
     dalyEarn && dalyEarn !== "0"
       ? dalyEarn + " " + tokenSell.symbol
       : EmptyValueTag;
-  myLog("deFiSideCalcData.stackViewInfo", deFiSideCalcData.stackViewInfo);
+  myLog("deFiSideCalcData.stakeViewInfo", deFiSideCalcData.stakeViewInfo);
   return (
     <GridStyle
       className={deFiSideCalcData ? "" : "loading"}
@@ -446,9 +496,6 @@ export const DeFiSideWrap = <
             variant={"body2"}
           >
             <Trans i18nKey={"labelInvestLRCStakingLockAlert"}>
-              <Typography component={"span"} paddingRight={1}>
-                *
-              </Typography>
               Your assets for investment will be locked until your redemption.
             </Trans>
           </Typography>
@@ -483,9 +530,9 @@ export const DeFiSideWrap = <
             </Typography>
           </Tooltip>
           <Typography component={"p"} variant={"body2"} color={"textPrimary"}>
-            {deFiSideCalcData?.stackViewInfo?.apr &&
-            deFiSideCalcData?.stackViewInfo?.apr !== "0.00"
-              ? deFiSideCalcData.stackViewInfo.apr + "%"
+            {deFiSideCalcData?.stakeViewInfo?.apr &&
+            deFiSideCalcData?.stakeViewInfo?.apr !== "0.00"
+              ? deFiSideCalcData.stakeViewInfo.apr + "%"
               : EmptyValueTag}
           </Typography>
         </Grid>
@@ -522,27 +569,6 @@ export const DeFiSideWrap = <
             {dalyEarn}
           </Typography>
         </Grid>
-        {/*<Grid*/}
-        {/*  container*/}
-        {/*  justifyContent={"space-between"}*/}
-        {/*  direction={"row"}*/}
-        {/*  alignItems={"center"}*/}
-        {/*  marginTop={1}*/}
-        {/*>*/}
-        {/*  <Typography*/}
-        {/*    component={"p"}*/}
-        {/*    variant={"body2"}*/}
-        {/*    color={"textSecondary"}*/}
-        {/*    display={"inline-flex"}*/}
-        {/*    alignItems={"center"}*/}
-        {/*  >*/}
-        {/*    {t("labelLRCStakeSubTime")}*/}
-        {/*  </Typography>*/}
-        {/*  <Typography component={"p"} variant={"body2"} color={"textPrimary"}>*/}
-        {/*    /!*{moment(Date.now()}*!/*/}
-        {/*    {'now'}*/}
-        {/*  </Typography>*/}
-        {/*</Grid>*/}
         <Grid
           container
           justifyContent={"space-between"}
@@ -574,7 +600,9 @@ export const DeFiSideWrap = <
             </Typography>
           </Tooltip>
           <Typography component={"p"} variant={"body2"} color={"textPrimary"}>
-            {daysDuration ? daysDuration + " " + t("labelDay") : EmptyValueTag}
+            {daysDuration
+              ? "≥ " + daysDuration + " " + t("labelDay")
+              : EmptyValueTag}
           </Typography>
         </Grid>
         <Grid item alignSelf={"stretch"} marginTop={3}>

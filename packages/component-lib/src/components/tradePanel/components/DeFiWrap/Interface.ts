@@ -8,8 +8,6 @@ import {
 } from "@loopring-web/common-resources";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
 import React from "react";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { RawDataDefiSideStakingItem } from "../../../tableList";
 
 export type DeFiChgData<T> = {
   type: DeFiChgType;
@@ -44,8 +42,8 @@ export type DeFiWrapProps<T, I, ACD> = {
 };
 
 export type DeFiSideType<R = RawDataDefiSideStakingItem> = {
-  tokenSell: TokenInfo;
-  order: sdk.StakeInfoOrigin;
+  tokenSell: sdk.TokenInfo;
+  order: R;
   onRedeem: (item: R) => void;
 };
 export type DeFiSideWrapProps<T, I, ACD> = {
@@ -61,7 +59,7 @@ export type DeFiSideWrapProps<T, I, ACD> = {
   handleError?: (data: T) => void;
   tokenSellProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
   deFiSideCalcData: ACD;
-  tokenSell: TokenInfo;
+  tokenSell: sdk.TokenInfo;
   btnStatus?: keyof typeof TradeBtnStatus | undefined;
   accStatus?: AccountStatus;
 };
@@ -79,7 +77,7 @@ export type DeFiStakeRedeemWrapProps<T, _I, ACD> = {
   onChangeEvent: (data: { tradeData?: undefined | T }) => void;
   handleError?: (data: T) => void;
   deFiSideRedeemCalcData: ACD;
-  tokenSell: TokenInfo;
+  tokenSell: sdk.TokenInfo;
   btnStatus?: keyof typeof TradeBtnStatus | undefined;
   accStatus?: AccountStatus;
 };

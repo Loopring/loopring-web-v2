@@ -2,5 +2,24 @@
   "name": "@loopring-web/common-resources",
   "version": "1.0.0",
   "description": "Common package for code sharing",
-  "main": "index.ts"
+  "main": "index.ts",
+  "build": {
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "publish": {
+      "provider": "custom",
+      "repo": "https://github.com/Loopring/loopring-web-v2",
+      "owner": "Loopring Dev Team"
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p tsconfig.json",
+    "build": "tsdx build",
+    "prepublishOnly": "NODE_ENV=production tsdx build"
+  },
+  "devDependencies": {
+    "tsc": "^2.0.4"
+  }
 }

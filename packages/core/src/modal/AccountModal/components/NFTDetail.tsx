@@ -630,7 +630,7 @@ export const NFTDetail = withTranslation("common")(
               <Box
                 paddingLeft={3}
                 display={"flex"}
-                flexDirection={isMobile ? "column" : "row"}
+                flexDirection={"row"}
                 justifyContent={"space-between"}
                 marginBottom={isMobile ? 2 : 5}
                 paddingRight={3}

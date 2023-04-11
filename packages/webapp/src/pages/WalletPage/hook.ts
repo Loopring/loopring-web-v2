@@ -9,16 +9,11 @@ import {
 
 import {
   Layer1Action,
+  MapChainId,
   myLog,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import {
-  ChainId,
-  Guardian,
-  HEBAO_LOCK_STATUS,
-  HebaoOperationLog,
-  Protector,
-} from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 import { GuardianStep } from "@loopring-web/component-lib";
 
 export enum TxGuardianHistoryType {
@@ -42,9 +37,9 @@ export enum TxHebaoAction {
 }
 
 export const useHebaoMain = <
-  T extends Protector,
-  G extends Guardian,
-  H extends HebaoOperationLog
+  T extends sdk.Protector,
+  G extends sdk.Guardian,
+  H extends sdk.HebaoOperationLog
 >() => {
   const { account, status: accountStatus } = useAccount();
   const [loopringSmartContractWallet, setLoopringSmartContractWallet] =
@@ -78,6 +73,8 @@ export const useHebaoMain = <
   const { clearOneItem } = layer1Store.useLayer1Store();
   const { chainId } = useSystem();
   const [isLoading, setIsLoading] = React.useState(false);
+  const network = sdk.NetworkWallet[MapChainId[chainId]];
+
   const loadData = React.useCallback(async () => {
     const layer1ActionHistory = store.getState().localStore.layer1ActionHistory;
     if (LoopringAPI.walletAPI && account.accAddress) {
@@ -88,12 +85,12 @@ export const useHebaoMain = <
         guardian,
         guardianoperationlog,
       ]: any = await Promise.all([
-        // @ts-ignore
-        LoopringAPI.walletAPI.getHebaoConfig(),
+        LoopringAPI.walletAPI.getHebaoConfig({ network }),
         LoopringAPI.walletAPI
           .getProtectors(
             {
               guardian: account.accAddress,
+              network,
             },
             account.apiKey
           )
@@ -105,12 +102,12 @@ export const useHebaoMain = <
                 layer1ActionHistory[chainId][Layer1Action.GuardianLock][
                   props.address
                 ] &&
-                props.lockStatus === HEBAO_LOCK_STATUS.CREATED
+                props.lockStatus === sdk.HEBAO_LOCK_STATUS.CREATED
               ) {
-                props.lockStatus = HEBAO_LOCK_STATUS.LOCK_WAITING;
+                props.lockStatus = sdk.HEBAO_LOCK_STATUS.LOCK_WAITING;
               } else {
                 clearOneItem({
-                  chainId: chainId as ChainId,
+                  chainId: chainId as sdk.ChainId,
                   uniqueId: props.address,
                   domain: Layer1Action.GuardianLock,
                 });
@@ -137,12 +134,7 @@ export const useHebaoMain = <
           fromTime: 0,
           offset: 0,
           limit: 50,
-          // to?: string;
-          // offset?: number;
-          // network?: 'ETHEREUM';
-          // statues?: string;
-          // guardianTxType?: string;
-          // limit?: number;
+          network,
         }),
       ])
         .catch((error) => {

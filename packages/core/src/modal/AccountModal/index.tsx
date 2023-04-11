@@ -189,40 +189,6 @@ export const ModalAccountInfo = withTranslation("common")(
           etherscanBaseUrl={etherscanBaseUrl}
           isLayer2Only={isLayer1Only}
         />
-        {/*<MuiModal*/}
-        {/*  open={isShowNFTDetail.isShow}*/}
-        {/*  onClose={() => {*/}
-        {/*    setShowNFTDetail({ isShow: false });*/}
-        {/*  }}*/}
-        {/*  aria-labelledby="modal-modal-title"*/}
-        {/*  aria-describedby="modal-modal-description"*/}
-        {/*>*/}
-        {/*  <SwitchPanelStyled*/}
-        {/*    // width={"80%"}*/}
-        {/*    width={isMobile ? "360px" : "80%"}*/}
-        {/*    position={"relative"}*/}
-        {/*    minWidth={isMobile ? "initial" : 1000}*/}
-        {/*    style={{ alignItems: "stretch" }}*/}
-        {/*  >*/}
-        {/*    <Box display={"flex"} width={"100%"} flexDirection={"column"}>*/}
-        {/*      <ModalCloseButton*/}
-        {/*        onClose={() => {*/}
-        {/*          setShowNFTDetail({ isShow: false });*/}
-        {/*        }}*/}
-        {/*        t={t}*/}
-        {/*        {...rest}*/}
-        {/*      />*/}
-        {/*    </Box>*/}
-        {/*    <Box*/}
-        {/*      display={"flex"}*/}
-        {/*      flexDirection={isMobile ? "column" : "row"}*/}
-        {/*      flex={1}*/}
-        {/*      justifyContent={"stretch"}*/}
-        {/*    >*/}
-
-        {/*    </Box>*/}
-        {/*  </SwitchPanelStyled>*/}
-        {/*</MuiModal>*/}
       </>
     );
   }

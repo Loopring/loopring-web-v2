@@ -79,7 +79,6 @@ export type InputCoinProps<T, R, I> = defaultProps<R, I> & {
   size?: InputSize;
   order?: "left" | "right";
   name?: string;
-
   coinLabelStyle?: React.CSSProperties;
   coinPrecision?: number;
   inputError?: { error: boolean; message?: string };

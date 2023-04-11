@@ -12,7 +12,7 @@ import {
   accountReducer,
   accountStaticCallBack,
   btnClickMap,
-  storeForL1 as store,
+  store,
   useAccount,
   useNotify,
 } from "@loopring-web/core";

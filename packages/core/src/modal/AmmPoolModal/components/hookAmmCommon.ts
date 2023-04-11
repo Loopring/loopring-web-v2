@@ -17,7 +17,6 @@ import {
   store,
   walletLayer2Service,
 } from "../../../index";
-import { useOpenModals } from "@loopring-web/component-lib";
 
 export const useAmmCommon = ({
   pair,
@@ -29,15 +28,11 @@ export const useAmmCommon = ({
 }) => {
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { sendSocketTopic, socketEnd } = useSocket();
-  const { account } = useAccount();
+  const { account, status: accountStatus } = useAccount();
   const { marketArray, marketMap, tokenMap } = useTokenMap();
   const { ammMap } = useAmmMap();
 
-  const {
-    updatePageAmmCommon,
-    resetAmmPool,
-    common: { ammPoolSnapshot },
-  } = usePageAmmPool();
+  const { updatePageAmmCommon, resetAmmPool } = usePageAmmPool();
 
   const updateAmmPoolSnapshot = React.useCallback(async () => {
     if (
@@ -146,28 +141,20 @@ export const useAmmCommon = ({
       };
     }
   };
-  const {
-    modals: {
-      isShowAmm: { isShow },
-    },
-    // setShowAmm,
-  } = useOpenModals();
   React.useEffect(() => {
-    if (
-      isShow &&
-      pair.coinBInfo?.simpleName &&
-      pair.coinAInfo?.simpleName &&
-      tokenMap &&
-      ammPoolSnapshot &&
-      ammPoolSnapshot?.poolAddress.toLowerCase() ===
-        tokenMap[
-          `LP-${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`
-        ].address.toLowerCase()
-    ) {
+    const { isShow } = store.getState().modals.isShowAmm;
+    if (isShow && accountStatus === SagaStatus.UNSET) {
       walletLayer2Service.sendUserUpdate();
     }
-  }, [isShow, pair, ammPoolSnapshot?.poolAddress]);
+  }, [accountStatus]);
   //&& pair && ammPoolSnapshot?.poolAddress
+
+  // React.useEffect(() => {
+  //   const { isShow } = store.getState().modals.isShowAmm;
+  //   if (isShow && accountStatus === SagaStatus.UNSET) {
+  //     walletLayer2Service.sendUserUpdate();
+  //   }
+  // }, [accountStatus]);
   return {
     accountStatus: account.readyState,
     toastOpen,

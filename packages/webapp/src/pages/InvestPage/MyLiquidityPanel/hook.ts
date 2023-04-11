@@ -322,7 +322,10 @@ export const useOverview = <
     }) => {
       setStakeShowLoading(true);
       const LRCStakingSymbol = "LRC";
-      if (LoopringAPI.defiAPI) {
+      if (
+        LoopringAPI.defiAPI &&
+        account.readyState === AccountStatus.ACTIVATED
+      ) {
         const [response] = await Promise.all([
           LoopringAPI.defiAPI.getStakeSummary(
             {
@@ -356,6 +359,7 @@ export const useOverview = <
             return {
               ...stakingMap[LRCStakingSymbol],
               ...item,
+              status_product: stakingMap[LRCStakingSymbol].status,
             };
           });
 
@@ -394,12 +398,12 @@ export const useOverview = <
   );
   React.useEffect(() => {
     if (
-      account.readyState === AccountStatus.ACTIVATED &&
+      walletLayer2Status === SagaStatus.UNSET &&
       stakingMapStatus === SagaStatus.UNSET
     ) {
       getStakingList({});
     }
-  }, [account.readyState, stakingMapStatus]);
+  }, [account.readyState, stakingMapStatus, walletLayer2Status]);
   return {
     myAmmMarketArray,
     summaryMyInvest,

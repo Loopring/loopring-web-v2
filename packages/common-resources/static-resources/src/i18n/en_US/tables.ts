@@ -287,10 +287,11 @@ export default {
   labelDefiStakingDetail: "Detail",
   labelDefiStakingRedeem: "Redeem",
   labelDays: "day(s)",
-
   labelStakeTransactionTypesubscribe: "subscribe",
   labelStakeTransactionTyperedeem: "redeem",
   labelStakeTransactionTypeclaim: "claim",
+  labelDefiStakingAndPreviousEarn: "Cumulative & Previous Day's Earnings",
+  labelDefiStakingTxRewardsMobileDate: "Date",
 
   labelBlindBoxOpend: "Opend",
   labelBlindBoxEndTime: "End Time",
@@ -299,6 +300,4 @@ export default {
   labelBlindBoxClaimed: "Claimed",
   labelBlindBoxStartTime: "Start time:",
   labelRedPacketOpen: "Open",
-
-  // labelRecordAction: "Action",
 };

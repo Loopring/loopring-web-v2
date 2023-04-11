@@ -19,6 +19,7 @@ import {
   AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import { Box, Modal as MuiModal } from "@mui/material";
+import { ModalAccountL1Info } from "./AccountL1Modal";
 
 export const ModalGroup = withTranslation("common")(
   ({
@@ -141,6 +142,58 @@ export const ModalGroup = withTranslation("common")(
             <iframe src={isShowIFrame.url} />
           </SwitchPanelStyled>
         </MuiModal>
+      </>
+    );
+  }
+);
+export const ModalGroupL1 = withTranslation("common")(
+  ({
+    onWalletConnectPanelClose,
+    depositProps,
+    assetsRawData,
+    ...rest
+  }: WithTranslation & {
+    depositProps: DepositProps<any, any>;
+    assetsRawData: AssetsRawDataItem[];
+    onWalletConnectPanelClose?: (event: MouseEvent) => void;
+  }) => {
+    const { etherscanBaseUrl } = useSystem();
+
+    useAccountModal();
+
+    const {
+      modals: { isShowAccount, isShowConnect, isShowSupport },
+      setShowSupport,
+    } = useOpenModals();
+    const { account } = useAccount();
+
+    return (
+      <>
+        <AlertNotSupport
+          open={isShowSupport.isShow}
+          handleClose={() => {
+            setShowSupport({ isShow: false });
+          }}
+        />
+        {/*<ModalRedPacketPanel etherscanBaseUrl={etherscanBaseUrl} />*/}
+        <ModalWalletConnectPanel
+          {...{
+            ...rest,
+            open: isShowConnect.isShow,
+            onClose: onWalletConnectPanelClose,
+          }}
+        />
+
+        <ModalAccountL1Info
+          {...{
+            ...rest,
+            assetsRawData,
+            etherscanBaseUrl,
+            account,
+            open: isShowAccount.isShow,
+            depositProps,
+          }}
+        />
       </>
     );
   }

@@ -218,27 +218,29 @@ export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>(
         buyBig.div(sellBig).toString(),
         marketPrecision,
         marketPrecision,
-        marketPrecision,
+        undefined,
         true
       );
       btos = getValuePrecisionThousand(
         sellBig.div(buyBig).toString(),
         tokenPrecision,
         tokenPrecision,
-        tokenPrecision
+        undefined,
+        true
       );
     } else {
       stob = getValuePrecisionThousand(
         buyBig.div(sellBig).toString(),
         tokenPrecision,
         tokenPrecision,
-        tokenPrecision
+        undefined,
+        true
       );
       btos = getValuePrecisionThousand(
         sellBig.div(buyBig).toString(),
         marketPrecision,
         marketPrecision,
-        marketPrecision,
+        undefined,
         true
       );
     }

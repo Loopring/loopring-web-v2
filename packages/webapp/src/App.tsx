@@ -84,7 +84,7 @@ const App = () => {
     </>
   );
 };
-const h=new Headers()
+const h = new Headers();
 export default App;
 
 // new ContactAPI({chainId: 1, baseUrl: 'https://uat2.loopring.io'})

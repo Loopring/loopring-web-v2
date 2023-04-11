@@ -2,12 +2,9 @@ import styled from "@emotion/styled";
 import { Meta, Story } from "@storybook/react/types-6-0";
 import { withTranslation } from "react-i18next";
 import { MemoryRouter } from "react-router-dom";
-import {
-  RawDataTradeItem,
-  TradeItemCounterparty,
-  TradeItemRole,
-  TradeTable,
-} from "./index";
+import * as sdk from "@loopring-web/loopring-sdk";
+
+import { RawDataTradeItem, TradeItemCounterparty, TradeTable } from "./index";
 
 const Style = styled.div`
   flex: 1;
@@ -17,7 +14,7 @@ const Style = styled.div`
 
 const rawData: RawDataTradeItem[] = [
   {
-    role: TradeItemRole.maker,
+    role: sdk.OrderMakerType.maker,
     amount: {
       from: {
         key: "eth",
@@ -42,7 +39,7 @@ const rawData: RawDataTradeItem[] = [
     __raw__: {} as any,
   },
   {
-    role: TradeItemRole.maker,
+    role: sdk.OrderMakerType.maker,
     amount: {
       from: {
         key: "eth",
@@ -67,7 +64,7 @@ const rawData: RawDataTradeItem[] = [
     __raw__: {} as any,
   },
   {
-    role: TradeItemRole.maker,
+    role: sdk.OrderMakerType.maker,
     amount: {
       from: {
         key: "eth",
@@ -93,7 +90,7 @@ const rawData: RawDataTradeItem[] = [
     __raw__: {} as any,
   },
   {
-    role: TradeItemRole.maker,
+    role: sdk.OrderMakerType.maker,
     amount: {
       from: {
         key: "eth",

@@ -321,7 +321,7 @@ export const CollectionItem = React.memo(
               <Typography
                 className={"content"}
                 component={"span"}
-                marginLeft={1}
+                marginLeft={size === "small" ? 0 : 1}
                 color={"var(--color-text-button)"}
                 whiteSpace={"pre"}
                 overflow={"hidden"}
@@ -339,7 +339,7 @@ export const CollectionItem = React.memo(
                   textOverflow={"ellipsis"}
                   variant={size == "small" ? "body2" : "body1"}
                   component={"span"}
-                  paddingRight={1}
+                  paddingRight={size === "small" ? 1 / 2 : 1}
                   width={"100%"}
                   dangerouslySetInnerHTML={{
                     __html:
@@ -386,13 +386,18 @@ export const CollectionItem = React.memo(
                     whiteSpace={"pre"}
                     overflow={"hidden"}
                     textOverflow={"ellipsis"}
+                    width={"fit-content"}
+                    minWidth={"36px"}
                   >
                     {t(
                       size == "small"
                         ? "labelCollectionItemSimpleValue"
                         : "labelCollectionItemValue",
                       {
-                        value: item?.extends?.count,
+                        value:
+                          item?.extends?.count?.toString()?.length > 2
+                            ? "99+"
+                            : item?.extends?.count,
                       }
                     )}
                   </Typography>

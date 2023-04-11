@@ -203,12 +203,16 @@ export const WalletConnectL1Btn = ({
 export const BtnConnectL1 = withTranslation(["common", "layout"], {
   withRef: true,
 })(({ t }: any) => {
-  const { status: accountStatus } = useAccount();
+  const {
+    status: accountStatus,
+    account: { readyState },
+  } = useAccount();
   const [label, setLabel] = React.useState("labelConnectWallet");
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel));
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET) {
+      myLog("readyState", readyState);
       setLabel(accountStaticCallBack(_btnLabel));
     }
   }, [accountStatus]);

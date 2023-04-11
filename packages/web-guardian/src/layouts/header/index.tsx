@@ -1,4 +1,8 @@
-import { headerRoot } from "@loopring-web/common-resources";
+import {
+  GuardianToolBarAvailableItem,
+  GuardianToolBarComponentsMap,
+  headerRoot,
+} from "@loopring-web/common-resources";
 
 import { Toolbar } from "@mui/material";
 
@@ -12,7 +16,7 @@ import {
   HideOnScroll,
   useSettings,
 } from "@loopring-web/component-lib";
-import { useLocation, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import React from "react";
 
@@ -24,15 +28,19 @@ const Header = withTranslation("common")(
       isLandPage = false,
       ...rest
     }: any & RouteComponentProps) => {
-      const { headerToolBarData, notifyMap, headerMenuLandingData } =
-        useHeader();
+      const {
+        headerToolBarData,
+        notifyMap,
+        headerMenuLandingData,
+        onkeypress,
+      } = useHeader();
       const { isMobile } = useSettings();
       const { confirmWrapper } = confirmation.useConfirmation();
       const { allowTrade, chainId } = useSystem();
       const { account } = useAccount();
       return (
         <>
-          <HideOnScroll window={undefined}>
+          <HideOnScroll window={undefined} onkeypress={onkeypress}>
             <HeaderUI
               {...rest}
               account={account}
@@ -41,6 +49,8 @@ const Header = withTranslation("common")(
               chainId={chainId}
               // isLandPage={true}
               // isWrap={false}
+              toolBarMap={GuardianToolBarComponentsMap}
+              toolBarAvailableItem={GuardianToolBarAvailableItem}
               headerMenuData={headerMenuLandingData}
               headerToolBarData={headerToolBarData}
               notification={notifyMap}

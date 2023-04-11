@@ -659,8 +659,14 @@ export default {
   depositLabelTo: "To address, Account ID or ENS.",
   labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
-  labelIPFSUploadTitle: "Cover Image (Dimensions: 1:1) <1>\uFE61</1> ",
-  labelIPFSUploadMediaTitle: " NFT Media (mp3,mp4,3d,image)",
+  labelIPFSUploadTitle:
+    "Preview Image (Dimensions: 1:1) <1>\uFE61</1><2>\u2139</2>",
+  labelIPFSUploadTooltips:
+    "The file uploaded here will be used as the cover image when displaying NFT item.",
+  labelIPFSUploadMediaTitle:
+    "Multimedia Content (image, audio, video and 3D)<1>\u2139</1>",
+  labelIPFSUploadMediaTooltips:
+    "If no file is uploaded here, it will use the same content as “Preview Image”.",
   labelLoadDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelUpload: "upload",
@@ -675,7 +681,7 @@ export default {
   labelMintCollection: "Choose Collection <1>{{required}}</1><2></2>",
   labelMintCollectionTooltips:
     "This is the collection where your NFT will appear.",
-  labelMintRoyaltyPercentage: "Royalty (%) <1>\u2139</1>",
+  labelMintRoyaltyPercentage: "Royalty (%) <1>\uFE61</1><2>\u2139</2>",
   labelMintRoyaltyPercentageRange: "Max Int:",
   labelMintRoyaltyPercentageTooltips:
     "Represents the percentage to be received from each subsequent resale (max 10%).",
@@ -873,6 +879,7 @@ export default {
   labelInvestType_AMM: "AMM Pool",
   labelInvestType_STAKE: "ETH Staking",
   labelInvestType_DUAL: "Dual Investment",
+  labelInvestType_STAKELRC: "LRC Staking",
   labelInvestAll: "Mixed",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
@@ -898,7 +905,11 @@ export default {
     "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
     "<1></1>",
   labelDefiAgree: "I have read and understand the risk warning.",
+
   labelDefiInvest: "Defi Earn",
+  labelLRCStakingInvest: "LRC staking",
+  labelLRCStakingRedeemInvest: "LRC staking Redeem",
+
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
   labelCreateCollection: "Create Collection",
@@ -1313,7 +1324,7 @@ export default {
   labelRedPacketQRCodeImport: "Receive Red Packet",
   labelLuckyTokenViewType1: "Private Red Packet",
   labelLuckyTokenViewTypeDes1:
-    "Your gift packet is shared privately by you via your custom QR code for others to receive.",
+    "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyTokenViewType0: "Public Red Packet",
   labelLuckyTokenViewTypeDes0:
     "Your Red Packet is shared privately with others via a custom QR code.",
@@ -1446,13 +1457,81 @@ export default {
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
     "The crypto selling order is ready. Please continue.",
-  labelBanxaContinuous: "Continuous preview order",
-  labelBanxaCreate: "Create a new order",
-  labelBanxaTitleCreateAgain: "You still having an order in progressing:",
+  labelBanxaContinuous: "Proceed existing order",
+  labelBanxaCreate: "Create new order",
+  labelBanxaTitleCreateAgain: "",
   labelYouAlreadyHaveAnBanxa:
-    "If you have already submitted KYC and entered your bank account, you can continue to wait and <1>status on the Banxa website</1>, or you can create a new order instead.\n",
-  labelHaveAnBanxaCancel: "", //"Or cancel it create a new order",
+    "Existing <1>order</1> detected, send token to complete order.",
+  labelHaveAnBanxaCancel: "Create a new order from scratch.",
   labelBanxaConfirmSubmit:
-    "The sell order payment submitted. You can save/click below link to check the payment status anytime.",
-  labelStakeNoEnough: "Insufficient balance",
+    "Token has been sent to Banxa wallet. You can save/click below link to check the payment status anytime.",
+  labelInvestStakeLRC: "LRC STAKING",
+  labelInvestStakeLRCDES: "Earn LRC staking rewards",
+  labelFriendsPayActivation: "Your friend has paid for your L2 activation fee.",
+  labelLRCStakingTitle: "What's LRC Staking",
+  labelLRCStakingRisk:
+    "<p>LRC staking is incentivized through an allocated portion of the Loopring protocol fee; the exact percentage is determined by the Loopring DAO. The APY is updated daily based on the allocated amount from previous day’s fee. Any LRC holder can participate in LRC staking via L2 to accumulate daily rewards. The assets must be staked for a minimum of 90 days to receive rewards.</p>",
+  labelLRCStakingAgree: "I have read and understand the risk warning.",
+  labelLRCStakingRisk2:
+    "<0>The staked LRC will be locked in Loopring L2, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.</0>",
+  labelInvestLRCStakingTitle: "LRC Staking",
+  labelMyInvestLRCStaking: "My Investment",
+  labelInvestLRCStakingLockAlert:
+    "Your assets for investment will be locked until your redemption.",
+  labelLRCStakeAPRTooltips:
+    "APR is adjusted daily based on the on-chain staking rewards; APR does not represent the actual or predicted returns in fiat currency.",
+  labelLRCStakeAPR: "APR <1></1>",
+  labelLRCStakeEarn: "Daily Earnings (est.) <1></1>",
+  labelLRCStakeEarnTooltips:
+    "Once funds are successfully locked for staking, earnings will begin calculating at 00:00 (UTC) the following day.",
+  labelLRCStakeSubTime: "Subscribe Time",
+  labelLRCStakeDurationTooltips:
+    "Staking Duration refers to the minimum amount of time that staked assets must be locked in order to be entitled to claim rewards. LRC staking requires the minimum Locked Duration.",
+  labelLRCStakeDuration: "Lock duration to claim reward<1></1>",
+  labelInvestLRCTitle: "LRC Staking",
+  labelLRCStakeRiskDes:
+    "              The staked LRC will be locked in Loopring L2, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.",
+  labelAgreeRedeem: "Redeem",
+  labelStackingAgreeRedeemTitle: "Redeem In Advance",
+  labelStackingAgreeRedeem:
+    "Redeeming staked assets before the minimum Locked Duration will forfeit the accumulated rewards. Are you sure you still want to redeem?",
+  labelLRCStakeProduct: "Product",
+  labelLRCStakeRedeemDes:
+    "This product has met the minimum Locked Duration. You can now redeem any portion of the subscription amount without deducting from your earnings. The remaining subscription amount will continue to generate income.",
+  labelLRCStakeRedeemAgree:
+    "I acknowledge the early redemption will forfeit the accumulated reward",
+  labelLRCStakeCurrentEarn: "Current Total Earnings",
+  labelLRCStakeForfeitedReward: "Forfeited Reward",
+  labelLRCStakeRemainingEarnings: "Remaining Earnings",
+  labelDeFiSideAmount: "Amount",
+  labelDeFiSideProduct: "Product",
+  labelDeFiSidePoolShare: "Pool Share",
+  labelDeFiSideAPR: "APR",
+  labelDeFiSideCumulativeEarnings: "Cumulative Earnings",
+  labelDeFiSidePreviousEarnings: "Previous Day's Earnings",
+  labelDeFiSideLockDuration: "Lock duration to claim reward",
+  labelDeFiSideSubscribeTime: "Subscribe Time",
+  labelDeFiSideHoldingTime: "Holding Time",
+  labelDeFiSideInvestmentDetails: "{{symbol}} Staking Details",
+  labelSideStakingTable: "LRC Staking",
+  labelInvestMaxDefi: "Min {{minValue}} - Max {{maxValue}}",
+  labelDefiMax: "Allowable maximum is {{arg}}",
+  labelDefiStakingDetail: "Detail",
+  labelDefiStakingRedeem: "Redeem",
+  labelDays: "day(s)",
+  labelRemainingAmount:
+    "Remaining amount should be greater than {{symbol}}, Please redeem all.",
+  labelRemainingBtnAmount: "Remaining amount is insufficient",
+  labelStakingCumulativeEarnings: "Cumulative Earnings",
+  labelStakingClaimableEarnings: "Claimable Earnings",
+  labelClaimBtn: "Claim",
+  labelStakeNoEnough: "Insufficient {{arg}} balance",
+  labelDefiRemindMin: "Please redeem all Balance",
+  labelInvestType_LRCSTAKE: "LRC Staking",
+  labelTransferDelayConfirm:
+    "Your claim request has been received. Loopring will transfer the token into your L2 account soon. Please verify it.",
+  labelClaimredPacket: "My Red Packet",
+  labelClaimlrcStaking: "My LRC Staking",
+  labelExpectSettlementPrice:
+    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}} = {{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}} = {{marketPrice}}. There is {{marketRatePrice}}% variance observed. Please acknowledge the risk if you still want to continue.",
 };

@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 import {
   Box,
-  Button,
   Checkbox,
   FormControlLabel,
   Grid,
@@ -10,11 +9,10 @@ import {
   Typography,
 } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import {
   AmmPanelType,
   AssetsTable,
-  DefiStakingTable,
   DualAssetTable,
   DualDetail,
   EmptyDefault,
@@ -27,39 +25,31 @@ import {
 import {
   CheckBoxIcon,
   CheckedIcon,
-  CLAIM_TYPE,
   CurrencyToTag,
   DualViewBase,
   EmptyValueTag,
   FailedIcon,
   getValuePrecisionThousand,
-  myLog,
   PriceTag,
   RowInvestConfig,
-  STAKING_INVEST_LIMIT,
   TokenType,
-  TRADE_TYPE,
 } from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { useOverview } from "./hook";
 import {
-  TableWrapStyled,
-  useAccount,
-  useAmmActivityMap,
-  useDualMap,
-  useModalData,
-  useStakeRedeemClick,
   useSystem,
+  useAmmActivityMap,
+  useAccount,
+  TableWrapStyled,
   useTokenMap,
+  useDualMap,
+  store,
   useTokenPrices,
-  volumeToCount,
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
 import { useDualAsset } from "../../AssetPage/HistoryPanel/useDualAsset";
 import React from "react";
-
 const StyleWrapper = styled(Grid)`
   position: relative;
   width: 100%;
@@ -77,22 +67,14 @@ const MyLiquidity: any = withTranslation("common")(
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
     let match: any = useRouteMatch("/invest/balance/:type");
-    const { search } = useLocation();
-    const searchParams = new URLSearchParams(search);
-
     const ammPoolRef = React.useRef(null);
     const stackingRef = React.useRef(null);
     const dualRef = React.useRef(null);
-    const sideStakeRef = React.useRef(null);
-
-    const { updateClaimData } = useModalData();
-    const { setShowClaimWithdraw } = useOpenModals();
-
     const { ammActivityMap } = useAmmActivityMap();
     const { forexMap } = useSystem();
     const { tokenMap, disableWithdrawList, idIndex } = useTokenMap();
     const { tokenPrices } = useTokenPrices();
-    const { redeemItemClick } = useStakeRedeemClick();
+
     const { marketMap: dualMarketMap } = useDualMap();
     const {
       assetsRawData,
@@ -112,38 +94,15 @@ const MyLiquidity: any = withTranslation("common")(
       pagination,
       showDetail,
       showLoading: dualLoading,
-      open: dualOpen,
-      detail: dualDetail,
-      setOpen: setDualOpen,
+      open,
+      detail,
+      setOpen,
       getDetail,
       refresh,
       setShowRefreshError,
       showRefreshError,
       refreshErrorInfo,
     } = useDualAsset();
-    const {
-      summaryMyInvest,
-      myPoolRow,
-      showLoading,
-      filter,
-      tableHeight,
-      handleFilterChange,
-      stakingList,
-      getStakingList,
-      stakeShowLoading,
-      stakingTotal,
-      // totalStaked,
-      totalStakedRewards,
-      totalLastDayPendingRewards,
-      totalClaimableRewards,
-      stakedSymbol,
-    } = useOverview({
-      ammActivityMap,
-      dualOnInvestAsset,
-      hideSmallBalances,
-      // dualList,
-    });
-    myLog("summaryMyInvest", summaryMyInvest, forexMap[currency]);
 
     React.useEffect(() => {
       if (match?.params?.type) {
@@ -152,30 +111,37 @@ const MyLiquidity: any = withTranslation("common")(
             // @ts-ignore
             window.scrollTo(0, dualRef?.current?.offsetTop);
             break;
-          case "stack":
+          case "stake":
             // @ts-ignore
-            window.scrollTo(0, stackingRef?.current?.offsetTop);
+            window.scrollTo(0, stakingRef?.current?.offsetTop);
 
             break;
           case "amm":
             // @ts-ignore
             window.scrollTo(0, ammPoolRef?.current?.offsetTop);
             break;
-          case "sideStake":
-            // @ts-ignore
-            window.scrollTo(0, sideStakeRef?.current?.offsetTop);
         }
       }
-      if (searchParams?.get("refreshStake")) {
-        getStakingList({});
-      }
-    }, [match?.params?.type, searchParams?.get("refreshStake")]);
+    }, [match?.params?.type]);
 
     React.useEffect(() => {
       if (account.accountId) {
         getDualTxList({});
       }
     }, [account.accountId]);
+    const {
+      summaryMyInvest,
+      myPoolRow,
+      showLoading,
+      filter,
+      tableHeight,
+      handleFilterChange,
+    } = useOverview({
+      ammActivityMap,
+      dualOnInvestAsset,
+      hideSmallBalances,
+      // dualList,
+    });
 
     const theme = useTheme();
     const { isMobile } = useSettings();
@@ -199,6 +165,20 @@ const MyLiquidity: any = withTranslation("common")(
         (hideSmallBalances ? !o.smallBalance : true)
       );
     });
+    const totalClaimableRewardsAmount =
+      totalClaimableRewards && totalClaimableRewards !== "0"
+        ? getValuePrecisionThousand(
+            sdk
+              .toBig(totalClaimableRewards ?? 0)
+              .div("1e" + tokenMap[stakedSymbol].decimals),
+            tokenMap[stakedSymbol].precision,
+            tokenMap[stakedSymbol].precision,
+            tokenMap[stakedSymbol].precision,
+            false,
+            { floor: true, isAbbreviate: true }
+          )
+        : "0";
+
     // const stakingList: sdk.STACKING_SUMMARY[] = [];
     return (
       <Box
@@ -270,13 +250,16 @@ const MyLiquidity: any = withTranslation("common")(
               <Typography variant={fontSize.title} color={"textSecondary"}>
                 {t("labelTotalPositionValue")}
               </Typography>
-              <Typography variant={fontSize.count} marginTop={1}>
+              <Typography
+                variant={fontSize.count}
+                marginTop={1}
+                fontFamily={"Roboto"}
+              >
                 {summaryMyInvest?.investDollar
                   ? PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      sdk
-                        .toBig(summaryMyInvest.investDollar)
-                        .times(forexMap[currency] ?? 0),
+                      (summaryMyInvest.investDollar || 0) *
+                        (forexMap[currency] ?? 0),
                       undefined,
                       undefined,
                       2,
@@ -322,7 +305,6 @@ const MyLiquidity: any = withTranslation("common")(
         <Box marginBottom={3} flex={1}>
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
-          !(stakingList?.length > 0) &&
           !(dualList?.length > 0) ? (
             <TableWrapStyled
               flex={1}
@@ -372,7 +354,6 @@ const MyLiquidity: any = withTranslation("common")(
                           {t("labelMyAmm")}
                         </Typography>
                       }
-                      totalDollar={summaryMyInvest.ammPoolDollar}
                       tableHeight={tableHeight}
                       filter={filter}
                       handleFilterChange={handleFilterChange}
@@ -407,173 +388,6 @@ const MyLiquidity: any = withTranslation("common")(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {!!(stakingList?.length > 0) && (
-                <TableWrapStyled
-                  ref={sideStakeRef}
-                  className={`table-divide-short MuiPaper-elevation2 min-height`}
-                  marginTop={2}
-                  paddingY={2}
-                  paddingX={0}
-                  flex={1}
-                >
-                  <Grid container>
-                    <Grid item xs={6}>
-                      <Typography variant={"h5"} marginBottom={2} marginX={3}>
-                        {t("labelInvestType_LRCSTAKE")}
-                      </Typography>
-                      {summaryMyInvest?.stakeLRCDollar !== undefined ? (
-                        <Typography component={"h4"} variant={"h3"} marginX={3}>
-                          {summaryMyInvest?.stakeLRCDollar
-                            ? PriceTag[CurrencyToTag[currency]] +
-                              getValuePrecisionThousand(
-                                sdk
-                                  .toBig(summaryMyInvest?.stakeLRCDollar)
-                                  .times(forexMap[currency] ?? 0),
-                                undefined,
-                                undefined,
-                                2,
-                                true,
-                                { isFait: true, floor: true }
-                              )
-                            : EmptyValueTag}
-                        </Typography>
-                      ) : (
-                        ""
-                      )}
-                    </Grid>
-                    <Grid
-                      item
-                      xs={3}
-                      justifyContent={"flex-end"}
-                      flexDirection={"column"}
-                      alignItems={"flex-end"}
-                      display={"flex "}
-                    >
-                      <Typography
-                        variant={"body1"}
-                        marginBottom={1}
-                        marginX={3}
-                        component={"span"}
-                      >
-                        {t("labelStakingCumulativeEarnings")}
-                      </Typography>
-                      <Typography
-                        variant={"body1"}
-                        marginBottom={1}
-                        marginX={3}
-                        component={"span"}
-                      >
-                        {totalStakedRewards && totalStakedRewards !== "0"
-                          ? getValuePrecisionThousand(
-                              sdk
-                                .toBig(totalStakedRewards ?? 0)
-                                .div("1e" + tokenMap[stakedSymbol].decimals),
-                              tokenMap[stakedSymbol].precision,
-                              tokenMap[stakedSymbol].precision,
-                              tokenMap[stakedSymbol].precision,
-                              false,
-                              { floor: true, isAbbreviate: true }
-                            ) +
-                            " " +
-                            stakedSymbol
-                          : EmptyValueTag}
-                      </Typography>
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={3}
-                      justifyContent={"flex-end"}
-                      flexDirection={"column"}
-                      alignItems={"flex-end"}
-                      display={"flex"}
-                    >
-                      <Typography
-                        variant={"body1"}
-                        marginBottom={1}
-                        marginX={3}
-                        component={"span"}
-                      >
-                        {t("labelStakingClaimableEarnings")}
-                      </Typography>
-                      <Typography
-                        component={"span"}
-                        variant={"body1"}
-                        marginBottom={1}
-                        marginX={3}
-                      >
-                        {totalClaimableRewards &&
-                        totalClaimableRewards !== "0" ? (
-                          <>
-                            <Typography
-                              component={"span"}
-                              display={"inline-flex"}
-                              paddingRight={2}
-                            >
-                              {getValuePrecisionThousand(
-                                sdk
-                                  .toBig(totalClaimableRewards ?? 0)
-                                  .div("1e" + tokenMap[stakedSymbol].decimals),
-                                tokenMap[stakedSymbol].precision,
-                                tokenMap[stakedSymbol].precision,
-                                tokenMap[stakedSymbol].precision,
-                                false,
-                                { floor: true, isAbbreviate: true }
-                              ) +
-                                " " +
-                                stakedSymbol}
-                            </Typography>
-                            <Button
-                              variant={"contained"}
-                              size={"small"}
-                              onClick={() => {
-                                updateClaimData({
-                                  belong: stakedSymbol,
-                                  tradeValue: volumeToCount(
-                                    stakedSymbol,
-                                    totalClaimableRewards
-                                  ),
-                                  balance: volumeToCount(
-                                    stakedSymbol,
-                                    totalClaimableRewards
-                                  ),
-                                  volume: totalClaimableRewards,
-                                  tradeType: TRADE_TYPE.TOKEN,
-                                  claimType: CLAIM_TYPE.lrcStaking,
-                                });
-                                setShowClaimWithdraw({
-                                  isShow: true,
-                                  claimType: CLAIM_TYPE.lrcStaking,
-                                });
-                              }}
-                            >
-                              {t("labelClaimBtn")}
-                            </Button>
-                          </>
-                        ) : (
-                          EmptyValueTag
-                        )}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-
-                  <DefiStakingTable
-                    {...{
-                      rawData: stakingList,
-                      pagination: {
-                        pageSize: STAKING_INVEST_LIMIT,
-                        total: stakingTotal,
-                      },
-                      idIndex,
-                      tokenMap,
-                      redeemItemClick,
-                      geDefiSideStakingList: getStakingList,
-                      showloading: stakeShowLoading,
-                      ...rest,
-                    }}
-                  />
-                </TableWrapStyled>
-              )}
               {!!(lidoAssets?.length > 0) && (
                 <TableWrapStyled
                   ref={stackingRef}
@@ -596,27 +410,7 @@ const MyLiquidity: any = withTranslation("common")(
                     display={"flex"}
                     flexDirection={"column"}
                     flex={1}
-                    marginX={0}
                   >
-                    {summaryMyInvest?.stakeETHDollar !== undefined ? (
-                      <Typography component={"h4"} variant={"h3"} marginX={3}>
-                        {summaryMyInvest?.stakeETHDollar
-                          ? PriceTag[CurrencyToTag[currency]] +
-                            getValuePrecisionThousand(
-                              sdk
-                                .toBig(summaryMyInvest?.stakeETHDollar)
-                                .times(forexMap[currency] ?? 0),
-                              undefined,
-                              undefined,
-                              2,
-                              true,
-                              { isFait: true, floor: true }
-                            )
-                          : EmptyValueTag}
-                      </Typography>
-                    ) : (
-                      ""
-                    )}
                     <AssetsTable
                       {...{
                         disableWithdrawList,
@@ -655,27 +449,7 @@ const MyLiquidity: any = withTranslation("common")(
                     display={"flex"}
                     flexDirection={"column"}
                     flex={1}
-                    margin={0}
                   >
-                    {summaryMyInvest?.dualStakeDollar !== undefined ? (
-                      <Typography component={"h4"} variant={"h3"} marginX={3}>
-                        {summaryMyInvest?.dualStakeDollar
-                          ? PriceTag[CurrencyToTag[currency]] +
-                            getValuePrecisionThousand(
-                              sdk
-                                .toBig(summaryMyInvest?.dualStakeDollar)
-                                .times(forexMap[currency] ?? 0),
-                              undefined,
-                              undefined,
-                              2,
-                              true,
-                              { isFait: true, floor: true }
-                            )
-                          : EmptyValueTag}
-                      </Typography>
-                    ) : (
-                      ""
-                    )}
                     <DualAssetTable
                       rawData={dualList}
                       getDetail={getDetail}
@@ -689,17 +463,17 @@ const MyLiquidity: any = withTranslation("common")(
                       refresh={refresh}
                     />
                     <Modal
-                      open={dualOpen}
-                      onClose={(_e: any) => setDualOpen(false)}
+                      open={open}
+                      onClose={(_e: any) => setOpen(false)}
                       aria-labelledby="modal-modal-title"
                       aria-describedby="modal-modal-description"
                     >
                       <SwitchPanelStyled width={"var(--modal-width)"}>
                         <ModalCloseButton
-                          onClose={(_e: any) => setDualOpen(false)}
+                          onClose={(_e: any) => setOpen(false)}
                           t={t}
                         />
-                        {dualDetail && (
+                        {detail && (
                           <Box
                             flex={1}
                             paddingY={2}
@@ -717,21 +491,15 @@ const MyLiquidity: any = withTranslation("common")(
                             </Typography>
                             <DualDetail
                               isOrder={true}
-                              dualViewInfo={
-                                dualDetail.dualViewInfo as DualViewBase
-                              }
-                              currentPrice={
-                                dualDetail.dualViewInfo.currentPrice
-                              }
+                              dualViewInfo={detail.dualViewInfo as DualViewBase}
+                              currentPrice={detail.dualViewInfo.currentPrice}
                               tokenMap={tokenMap}
-                              lessEarnTokenSymbol={
-                                dualDetail.lessEarnTokenSymbol
-                              }
+                              lessEarnTokenSymbol={detail.lessEarnTokenSymbol}
                               greaterEarnTokenSymbol={
-                                dualDetail.greaterEarnTokenSymbol
+                                detail.greaterEarnTokenSymbol
                               }
-                              lessEarnView={dualDetail.lessEarnView}
-                              greaterEarnView={dualDetail.greaterEarnView}
+                              lessEarnView={detail.lessEarnView}
+                              greaterEarnView={detail.greaterEarnView}
                             />
                           </Box>
                         )}

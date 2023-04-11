@@ -1,8 +1,11 @@
 import {
+  ButtonComponentsMap,
   CloseIcon,
   headerRoot,
   hexToRGB,
   myLog,
+  toolBarAvailableItem,
+  toolBarMobileAvailableItem,
 } from "@loopring-web/common-resources";
 
 import { Box, IconButton, Toolbar, Typography } from "@mui/material";
@@ -59,6 +62,10 @@ const Header = withTranslation("common")(
                     ? headerMenuLandingData
                     : headerMenuData
                 }
+                toolBarAvailableItem={
+                  isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem
+                }
+                toolBarMap={ButtonComponentsMap}
                 headerToolBarData={headerToolBarData}
                 notification={notifyMap}
                 selected={
@@ -78,6 +85,10 @@ const Header = withTranslation("common")(
                   ? headerMenuLandingData
                   : headerMenuData
               }
+              toolBarAvailableItem={
+                isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem
+              }
+              toolBarMap={ButtonComponentsMap}
               headerToolBarData={headerToolBarData}
               notification={notifyMap}
               selected={

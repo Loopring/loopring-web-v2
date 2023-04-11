@@ -9,10 +9,7 @@ import React from "react";
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-import {
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
+import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 
 import Web3 from "web3";
 
@@ -52,7 +49,7 @@ export function useExportAccountInfo() {
 
   const exportAccount = React.useCallback(async () => {
     const _account = store.getState().account;
-    const connectName = (ConnectProvidersSignMap[_account.connectName] ??
+    const connectName = (ConnectProviders[_account.connectName] ??
       _account.connectName) as unknown as sdk.ConnectorNames;
     const { exchangeInfo, chainId } = store.getState().system;
     const { isMobile } = store.getState().settings;

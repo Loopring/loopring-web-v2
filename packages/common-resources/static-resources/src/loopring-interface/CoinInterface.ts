@@ -87,6 +87,11 @@ export type TradeCalcData<T> = {
   fee: string;
   feeTakerRate?: number;
   tradeCost?: string;
+  isNotMatchMarketPrice?: boolean;
+  marketPrice?: string;
+  marketRatePrice?: string;
+  isChecked?: boolean;
+  lastStepAt?: "sell" | "buy";
 };
 export type TradeCalcProData<T> = {
   coinBase: keyof T; //name
@@ -105,6 +110,11 @@ export type TradeCalcProData<T> = {
   fee: string;
   feeTakerRate?: number;
   tradeCost?: string;
+  isNotMatchMarketPrice?: boolean;
+  marketPrice?: string;
+  marketRatePrice?: string;
+  isChecked?: boolean;
+  lastStepAt?: "base" | "quote";
 };
 
 /**
@@ -140,7 +150,7 @@ export type DeFiCalcData<T> = {
 };
 export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
   coinSell: T;
-  stackViewInfo: R & {
+  stakeViewInfo: R & {
     dalyEarn?: string;
     maxSellAmount?: string;
     minSellAmount?: string;
@@ -149,7 +159,9 @@ export type DeFiSideCalcData<T, R = sdk.STACKING_PRODUCT> = {
   };
 };
 type RedeemInfo = sdk.StakeInfoOrigin &
-  sdk.STACKING_PRODUCT & {
+  Omit<sdk.STACKING_PRODUCT, "status"> & {
+    status_product: number;
+
     maxSellAmount?: string;
     minSellAmount?: string;
     maxSellVol?: string;
@@ -159,7 +171,7 @@ type RedeemInfo = sdk.StakeInfoOrigin &
   };
 export type DeFiSideRedeemCalcData<T, _R = RedeemInfo> = {
   coinSell: T;
-  stackViewInfo: _R;
+  stakeViewInfo: _R;
 };
 
 export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {

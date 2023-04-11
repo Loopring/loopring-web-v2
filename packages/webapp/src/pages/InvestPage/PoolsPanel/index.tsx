@@ -23,7 +23,6 @@ import {
 } from "@loopring-web/core";
 import { BackIcon, RowInvestConfig } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
-import { useTheme } from "@emotion/react";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -136,7 +135,7 @@ export const PoolsPanel = withTranslation("common")(
                 forexMap: forexMap as any,
                 rowConfig: RowInvestConfig,
                 handleWithdraw: (row) => {
-                  const pair = `${row.coinAInfo.simpleName}-${row.coinBInfo.simpleName}`;
+                  const pair = `${row.coinAInfo?.simpleName}-${row.coinBInfo?.simpleName}`;
                   setShowAmm({
                     isShow: true,
                     type: AmmPanelType.Exit,
@@ -144,7 +143,7 @@ export const PoolsPanel = withTranslation("common")(
                   });
                 },
                 handleDeposit: (row) => {
-                  const pair = `${row.coinAInfo.simpleName}-${row.coinBInfo.simpleName}`;
+                  const pair = `${row.coinAInfo?.simpleName}-${row.coinBInfo?.simpleName}`;
                   setShowAmm({
                     isShow: true,
                     type: AmmPanelType.Join,

@@ -17,6 +17,7 @@ import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
 import { DualListPanel } from "./DualPanel/DualListPanel";
 import { StackTradePanel } from "./StakePanel/StackTradePanel";
+import { StackTradePanel } from "./StakePanel/StackTradePanel";
 import {
   defiRETHAdvice,
   defiWSTETHAdvice,
@@ -28,7 +29,6 @@ export enum InvestType {
   DeFi = 2,
   Overview = 3,
   Dual = 4,
-  Stack = 5,
 }
 
 export const InvestRouter = [
@@ -37,7 +37,7 @@ export const InvestRouter = [
   "defi",
   "overview",
   "dual",
-  "stacklrc",
+  "stakelrc",
 ];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
@@ -118,18 +118,13 @@ export const DefiTitle = () => {
 export const InvestPage = withTranslation("common", { withRef: true })(() => {
   let match: any = useRouteMatch("/invest/:item?");
   const history = useHistory();
-  const {
-    confirmDualInvest: confirmDualInvestFun,
-    confirmedLRCStakeInvest: confirmedLRCInvestFun,
-  } = confirmation.useConfirmation();
-  const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
-  const [confirmedLRCStakeInvest, setConfirmedLRCStakeInvestInvest] =
-    React.useState<boolean>(false);
-
+  const { confirmDualInvest: confirmDualInvestFun } =
+    confirmation.useConfirmation();
   const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false);
   const onShowBeginnerModeHelp = React.useCallback((show: boolean) => {
     setShowBeginnerModeHelp(show);
   }, []);
+  const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     (InvestRouter.includes(match?.params?.item)
       ? InvestType[match?.params?.item]
@@ -154,10 +149,6 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         return;
       case InvestRouter[InvestType.Dual]:
         setTabIndex(InvestType.Dual);
-        setIsShowTab(false);
-        return;
-      case InvestRouter[InvestType.Stack]:
-        setTabIndex(InvestType.Stack);
         setIsShowTab(false);
         return;
       case InvestRouter[InvestType.Overview]:
@@ -217,11 +208,6 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
             <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
           </Box>
         )}
-        {tabIndex === InvestType.Stack && (
-          <StackTradePanel
-            setConfirmedLRCStakeInvestInvest={setConfirmedLRCStakeInvestInvest}
-          />
-        )}
       </Box>
 
       <ConfirmInvestDualRisk
@@ -241,6 +227,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       <ConfirmInvestLRCStakeRisk
         open={confirmedLRCStakeInvest}
         handleClose={(_e, isAgree) => {
+          setConfirmedLRCStakeInvestInvest(false);
           if (!isAgree) {
             history.goBack();
           } else {

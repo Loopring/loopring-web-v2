@@ -2,7 +2,7 @@
   "name": "@loopring-web/web-guardian",
   "version": "1.0.0",
   "author": "Loopring L2 App Frontend Team",
-  "description": "dexwebapp new version",
+  "description": "Guardian new version",
   "private": true,
   "dependencies": {
     "@loopring-web/common-resources": "1.0.0",

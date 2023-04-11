@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-
 export default {
   labelErrorTitle: "Error Detail: ",
   labelNoContent: "No Content",
@@ -1478,14 +1477,14 @@ export default {
     "The crypto selling order is ready. Please continue.",
   labelBanxaContinuous: "Proceed existing order",
   labelBanxaCreate: "Create new order",
-  labelBanxaTitleCreateAgain: "", //You still having an order in progressing:
+  labelBanxaTitleCreateAgain: "",
   labelYouAlreadyHaveAnBanxa:
     "Existing <1>order</1> detected, send token to complete order.",
-  labelHaveAnBanxaCancel: "Create a new order from scratch.", //"Or cancel it create a new order",
+  labelHaveAnBanxaCancel: "Create a new order from scratch.",
   labelBanxaConfirmSubmit:
     "Token has been sent to Banxa wallet. You can save/click below link to check the payment status anytime.",
-  labelInvestStackLRC: "LRC STAKING",
-  labelInvestStackLRCDES: "Earn LRC staking rewards",
+  labelInvestStakeLRC: "LRC STAKING",
+  labelInvestStakeLRCDES: "Earn LRC staking rewards",
   labelFriendsPayActivation: "Your friend has paid for your L2 activation fee.",
   labelLRCStakingTitle: "What's LRC Staking",
   labelLRCStakingRisk:
@@ -1496,27 +1495,27 @@ export default {
   labelInvestLRCStakingTitle: "LRC Staking",
   labelMyInvestLRCStaking: "My Investment",
   labelInvestLRCStakingLockAlert:
-    "<0>*</0> Your assets for investment will be locked until your redemption.",
+    "Your assets for investment will be locked until your redemption.",
   labelLRCStakeAPRTooltips:
     "APR is adjusted daily based on the on-chain staking rewards; APR does not represent the actual or predicted returns in fiat currency.",
   labelLRCStakeAPR: "APR <1></1>",
   labelLRCStakeEarn: "Daily Earnings (est.) <1></1>",
   labelLRCStakeEarnTooltips:
-    "Once funds are successfully locked for staking, earnings will begin calculating at 08:00 (UTC) the following day.",
+    "Once funds are successfully locked for staking, earnings will begin calculating at 00:00 (UTC) the following day.",
   labelLRCStakeSubTime: "Subscribe Time",
   labelLRCStakeDurationTooltips:
     "Staking Duration refers to the minimum amount of time that staked assets must be locked in order to be entitled to claim rewards. LRC staking requires the minimum Locked Duration.",
   labelLRCStakeDuration: "Lock duration to claim reward<1></1>",
   labelInvestLRCTitle: "LRC Staking",
   labelLRCStakeRiskDes:
-    "The staked LRC is locked in Loopring L2 and won't be able to used for other purpose although it can be redeemed any time; while if the staking is redeemed before the minimum Locked Duration, the accumulated reward will be dismissed.",
+    "The staked LRC will be locked in Loopring L2, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.",
   labelAgreeRedeem: "Redeem",
   labelStackingAgreeRedeemTitle: "Redeem In Advance",
   labelStackingAgreeRedeem:
     "Redeeming staked assets before the minimum Locked Duration will forfeit the accumulated rewards. Are you sure you still want to redeem?",
   labelLRCStakeProduct: "Product",
   labelLRCStakeRedeemDes:
-    "The staking time of this product has exceeded the minimum Locked Duration, you can redeem any amount at any time without deducting your earnings, and you can still continue to enjoy the income of the remaining part.",
+    "This product has meet the minimum Locked Duration. You can now redeem any portion of the subscription amount without deducting from your earnings. The remaining subscription amount will continue to generate income.",
   labelLRCStakeRedeemAgree:
     "I acknowledge the early redemption will forfeit the accumulated reward",
   labelLRCStakeCurrentEarn: "Current Total Earnings",
@@ -1538,12 +1537,13 @@ export default {
   labelDefiStakingDetail: "Detail",
   labelDefiStakingRedeem: "Redeem",
   labelDays: "day(s)",
-  labelRemainingAmount: "Remaining amount should be greater than {{symbol}}",
+  labelRemainingAmount:
+    "Remaining amount should be greater than {{symbol}},\n Please redeem all.",
   labelRemainingBtnAmount: "Remaining amount is insufficient",
   labelStakingCumulativeEarnings: "Cumulative Earnings",
   labelStakingClaimableEarnings: "Claimable Earnings",
   labelClaimBtn: "Claim",
-  labelStakeNoEnough: "Insufficient {{belong}} balance",
+  labelStakeNoEnough: "Insufficient {{arg}} balance",
   labelDefiRemindMin: "Please redeem all Balance",
   labelInvestType_LRCSTAKE: "LRC Staking",
   labelNFTs_one: "\u2A09{{count}} NFT",
@@ -1551,4 +1551,16 @@ export default {
   labelTokenNFTMaxRedPack: "Max: ",
   labelNFTRedPackAskClaim:
     "Please claim your NFT gifts immediately as they will be returned back to Sender 3 days after the expiration date.",
+  labelTransferDelayConfirm:
+    "Your claim request has been received. Loopring will transfer the token into your L2 account soon. Please verify it.",
+  labelClaimredPacket: "My Red Packet",
+  labelClaimlrcStaking: "My LRC Staking",
+  labelExpectSettlementPrice:
+    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
+  labelStakingSuccess: "{{symbol}} Staking Successful",
+  labelStakingFailed: "{{symbol}} Staking failed",
+  labelStakingRedeemFailed: "Redeem {{symbol}} failed",
+  labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
+  labelStakingRedeemRemaining: "Remaining Amount",
+  labelStakingRedeemDate: "Redeem Time",
 };

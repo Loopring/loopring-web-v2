@@ -18,6 +18,7 @@ import { NotificationPanel } from "../../block/NotificationPanel";
 import React from "react";
 import { DownloadPanel } from "../../block/DownloadPanel";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { useSettings } from "../../../stores";
 
 export const BtnDownload = ({
   t,
@@ -66,11 +67,9 @@ export const BtnDownload = ({
 export const BtnNotification = ({
   notification,
   account,
-  chainId,
 }: {
   notification: Notify;
   account: Account;
-  chainId: sdk.ChainId;
 }) => {
   const popupState = usePopupState({
     variant: "popover",
@@ -110,9 +109,7 @@ export const BtnNotification = ({
           horizontal: "center",
         }}
       >
-        <NotificationPanel
-          notification={{ ...notification, account, chainId }}
-        />
+        <NotificationPanel notification={{ ...notification, account }} />
       </PopoverPure>
     </Box>
   );

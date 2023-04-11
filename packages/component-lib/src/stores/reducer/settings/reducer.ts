@@ -30,12 +30,20 @@ const initialState: SettingsState = {
   isMobile: false,
   proLayout: layoutConfigs[0].layouts,
   swapSecondConfirmation: true,
+  isTaikoTest: false,
+  isShowTestToggle: false,
 };
 
 export const settingsSlice: Slice<SettingsState> = createSlice({
   name: "settings",
   initialState,
   reducers: {
+    setIsTaikoTest(state, action: PayloadAction<boolean>) {
+      state.isTaikoTest = action.payload;
+    },
+    setIsShowTestToggle(state, action: PayloadAction<boolean>) {
+      state.isShowTestToggle = action.payload;
+    },
     setTheme(state, action: PayloadAction<ThemeKeys>) {
       // localStore.setItem('ThemeType',action.payload)
       state.themeMode = action.payload;
@@ -170,6 +178,7 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
 });
 export const {
   setLayouts,
+  setIsTaikoTest,
   setTheme,
   setLanguage,
   setPlatform,
@@ -184,5 +193,6 @@ export const {
   setHideSmallBalances,
   setIsMobile,
   setSwapSecondConfirmation,
+  setIsShowTestToggle,
 } = settingsSlice.actions;
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

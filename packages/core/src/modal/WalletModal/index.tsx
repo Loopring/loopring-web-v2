@@ -31,7 +31,7 @@ import {
   TOAST_TIME,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { ConnectProviders } from "@loopring-web/web3-provider";
+import { AvaiableNetwork, ConnectProviders } from "@loopring-web/web3-provider";
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 import {
   accountReducer,
@@ -49,10 +49,10 @@ const providerCallback = async () => {
     let chainId: ChainId = Number(
       await connectProvides.usedWeb3?.eth.getChainId()
     );
-    chainId =
-      chainId && chainId === ChainId.GOERLI
-        ? (chainId as ChainId)
-        : ChainId.MAINNET;
+    if (!AvaiableNetwork.includes(chainId.toString())) {
+      chainId = ChainId.MAINNET;
+    }
+
     if (chainId !== _chainId) {
       store.dispatch(updateSystem({ chainId }));
     }

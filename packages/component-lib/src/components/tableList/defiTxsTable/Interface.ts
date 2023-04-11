@@ -20,7 +20,11 @@ export interface DefiTxsTableProps<R = RawDataDefiTxsItem> {
   // accountId: number;
 }
 
-export type RawDataDefiSideStakingItem = sdk.StakeInfoOrigin;
+export interface RawDataDefiSideStakingItem
+  extends sdk.StakeInfoOrigin,
+    Omit<sdk.STACKING_PRODUCT, "status"> {
+  status_product: number;
+}
 
 export interface DefiSideStakingTableProps<R = RawDataDefiSideStakingItem> {
   // etherscanBaseUrl?: string;
