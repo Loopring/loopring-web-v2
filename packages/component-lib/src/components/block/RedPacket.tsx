@@ -956,10 +956,12 @@ export const RedPacketDetail = ({
   detail,
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
-  const showLucky = [
-    sdk.LuckyTokenItemStatus.OVER_DUE,
-    sdk.LuckyTokenItemStatus.COMPLETED,
-  ].includes(detail.luckyToken.status);
+  const showLucky =
+    [
+      sdk.LuckyTokenItemStatus.OVER_DUE,
+      sdk.LuckyTokenItemStatus.COMPLETED,
+    ].includes(detail.luckyToken.status) ||
+    detail.luckyToken.tokenAmount.remainCount == 0;
   const pageNation = React.useMemo(() => {
     if (totalCount - remainCount - RedPacketDetailLimit > 0) {
       return (

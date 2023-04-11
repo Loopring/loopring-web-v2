@@ -348,7 +348,9 @@ export const RedPacketQRCodeSvg = React.memo(
             .then((result) => result.blob())
             .then((result) => {
               myLog("blob", result);
-              setImageBase64(result);
+              if (result) {
+                setImageBase64(result.toString);
+              }
             });
         }
       }, [imageEleUrl]);
