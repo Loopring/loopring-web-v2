@@ -283,21 +283,21 @@ export const CreateRedPacketStepWrap = withTranslation()(
           : REDPACKET_ORDER_LIMIT;
 
         inputSplitExtendProps = {
-          maxAllow: true,
-          subLabel: t("labelAvailable"),
-          handleError: (data: any) => {
-            handleOnDataChange({
-              numbers: data.tradeValue,
-            } as unknown as Partial<T>);
-            if (data.tradeValue && data.tradeValue > data.balance) {
-              return {
-                error: true,
-              };
-            }
-            return {
-              error: false,
-            };
-          },
+          // maxAllow: true,
+          // subLabel: t("labelAvailable"),
+          // handleError: (data: any) => {
+          //   handleOnDataChange({
+          //     numbers: data.tradeValue,
+          //   } as unknown as Partial<T>);
+          //   if (data.tradeValue && data.tradeValue > data.balance) {
+          //     return {
+          //       error: true,
+          //     };
+          //   }
+          //   return {
+          //     error: false,
+          //   };
+          // },
           inputData: {
             belong:
               selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
@@ -309,9 +309,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
         };
       } else {
         inputSplitExtendProps = {
-          maxAllow: false,
-          subLabel: "",
-          handleError: () => undefined,
+          // maxAllow: false,
+          // subLabel: "",
+          // handleError: () => undefined,
           inputData: {
             belong:
               selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE

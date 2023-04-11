@@ -319,7 +319,7 @@ export const useCreateRedPacket = <
       } else {
         balance = redPacketOrder.balance ?? 0;
         tradeValue = sdk.toBig(redPacketOrder.tradeValue ?? 0);
-        isExceedBalance = tradeValue.gt(balance);
+        isExceedBalance = false 
         const eachValue = sdk.toBig(_tradeData.eachValue ?? 0);
         tooSmall = eachValue.lt(1);
         tooLarge = tradeValue
@@ -551,10 +551,14 @@ export const useCreateRedPacket = <
             (response as sdk.TX_HASH_API)?.hash
           ) {
             setShowAccount({ isShow: false });
+            const blindBoxRepspnse = await LoopringAPI.luckTokenAPI.getBlindBoxDetail({
+              hash: (response as sdk.TX_HASH_API).hash!,
+              showHelper: false
+            }, apiKey) as any
             setShowRedPacket({
               isShow: true,
               info: {
-                // ...luckTokenInfo,
+                ...blindBoxRepspnse.raw_data.luckyToken,
                 sender: account.accountId,
                 hash: (response as sdk.TX_HASH_API).hash,
               },

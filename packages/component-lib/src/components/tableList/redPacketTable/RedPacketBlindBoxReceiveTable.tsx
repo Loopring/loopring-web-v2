@@ -146,31 +146,21 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         headerCellClass: "textAlignRight",
         name: "Action",
         formatter: ({ row }: FormatterProps<R>) => {
-          if (row.rawData.luckyToken.validUntil > Date.now()) {
-            return (
-              <>
-                {t("labelBlindBoxStartTime") +
-                  " " +
-                  moment(row.rawData.luckyToken.validSince).format(
-                    YEAR_DAY_MINUTE_FORMAT
-                  )}
-              </>
-            );
+          if (row.rawData.luckyToken.validUntil > Date.now() && row.rawData.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED) {
+            return <>{t("labelBlindBoxStartTime", {time: moment(row.rawData.luckyToken.validUntil).format('YYYY.MM.DD HH:mm')})} </>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
-            return <>{t("labelBlindBoxOpend")}</>;
-          } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) {
-            return <>{t("labelBlindBoxExpired")}</>;
-          } else if (
-            row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED
-          ) {
-            return (
-              <Button
-                onClick={() => onItemClick(row.rawData)}
-                variant={"outlined"}
-              >
-                {t("labelRedPacketOpen")}
-              </Button>
-            );
+            return <>{t("labelBlindBoxOpend")}</>
+          } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
+            return <>{t("labelBlindBoxExpired")}</>
+          } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) { 
+            return <Button onClick={(e) => {
+              // e.preventDefault()
+              // onItemClick(row.rawData,  {
+              //   offset: (page - 1) * (pagination?.pageSize ?? 10),
+              //   limit: pagination?.pageSize ?? 10,
+              //   filter: { },
+              // })
+            }} variant={"outlined"}>{t("labelRedPacketOpen", {ns: "common"})}</Button>
           }
         },
       },
@@ -189,8 +179,12 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
           rowHeight={RowConfig.rowHeight}
-          onRowClick={(_index: number, row: R) => {
-            onItemClick(row.rawData);
+          onRowClick={(_index: number, row: R, ) => {
+            onItemClick(row.rawData, {
+              offset: (page - 1) * (pagination?.pageSize ?? 10),
+              limit: pagination?.pageSize ?? 10,
+              filter: {},
+            })
           }}
           sortMethod={React.useCallback(
             (_sortedRows, sortColumn) => {

@@ -1294,14 +1294,11 @@ export default {
   labelLuckyTokenViewTypeDesPrivate:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyBlindBox: "Blind Box Red Packet",
-  labelLuckyBlindBoxDes:
-    "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
-  labelLuckyRecievedBlindBox:
-    "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
-  labelBlindBoxExplaination:
-    "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
-  labelBlindBoxExplaination2:
-    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
+  labelLuckyBlindBoxDes: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
+  labelLuckyRecievedBlindBox: "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
+  labelBlindBoxExplainationNotEnded: "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExplainationEnded: "Please claim within 3 days or it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExplaination2: "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
   labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
   labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
   labelBlindBoxClaimStarted: "The NFTs Claimed will be ended after: {{time}}",
@@ -1310,17 +1307,20 @@ export default {
   labelBlindBoxStartDate: "Start date",
   labelBlindBoxEndDate: "End date",
   labelBlindBoxEndTime: "End Time",
-  labelBlindBoxRedPacketWithGift: "有礼物的红包个数",
-  labelBlindBoxExpirationExplainationForToken:
-    "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
-  labelBlindBoxExpirationExplainationForNFT:
-    "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
+  labelBlindBoxRedPacketWithGift: "Gift Red Packet",
+  labelBlindBoxExpirationExplainationForToken: "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
+  labelBlindBoxExpirationExplainationForNFT: "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelBlindBoxClaimWarning:
     "Note：For NFT Red Packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
   labelBlindBoxRecievedRedPackets: "Received NFT Red Packets",
+  labelBlindBoxCongratulations: "Congratulations",
+  labelBlindBoxSorry: "Sorry",
+  labelBlindBoxNoRewards: "You have not received a reward",
+  labelBlindBoxCongratulationsBlindBox: "Congratulations on receiving a Blind Box",
+  labelBlindBoxSorryBlindBox: "Sorry, you did not win a prize",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
     "If the recipient of the Red Packet also re-shares the packet, they receive half of whatever the next person receives.",
@@ -1436,6 +1436,7 @@ export default {
   labelReceived: "Received",
   labelGoodLuck: "Good Luck",
   labelRedPacketGrab: "Share with Friends",
+  labelRedPacketEnded: "Ended",
   labelLuckDraw: "Luckiest Draw",
   labelMyLuckReward: "(My reward)",
   labelRedPacketClaimTitle: "Claim to Loopring L2",
@@ -1544,6 +1545,8 @@ export default {
   labelStakingClaimableEarnings: "Claimable Earnings",
   labelClaimBtn: "Claim",
   labelStakeNoEnough: "Insufficient {{arg}} balance",
+  labelClaimBtnClaimed: "Claimed",
+  labelClaimBtnExpired: "Expired",
   labelDefiRemindMin: "Please redeem all Balance",
   labelInvestType_LRCSTAKE: "LRC Staking",
   labelNFTs_one: "\u2A09{{count}} NFT",

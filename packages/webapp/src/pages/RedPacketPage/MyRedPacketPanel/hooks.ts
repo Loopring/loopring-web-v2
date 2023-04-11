@@ -20,6 +20,7 @@ import {
   RedPacketViewStep,
   useOpenModals,
 } from "@loopring-web/component-lib";
+import { url } from "inspector";
 
 export const useMyRedPacketRecordTransaction = <
   R extends RawDataRedPacketRecordsItem
@@ -54,7 +55,7 @@ export const useMyRedPacketRecordTransaction = <
               {
                 senderId: accountId,
                 scopes: "0,1",
-                modes: "0,1",
+                modes: "0,1,2",
                 partitions: "0,1",
                 statuses: "0,1,2,3,4",
                 official: false,
@@ -340,7 +341,8 @@ export const useMyRedPacketReceiveTransaction = <
           locked: response!.tokenBalance[0].locked,
           pending: response!.tokenBalance[0].pending,
           nftTokenInfo: item.luckyToken.nftTokenInfo,
-          isNft: item.luckyToken.isNft
+          isNft: item.luckyToken.isNft,
+          luckyTokenHash: item.luckyToken.hash
         },
         claimType: CLAIM_TYPE.redPacket,
       });
@@ -443,29 +445,16 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
 
-  const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
-    if (item.claim.status === sdk.BlindBoxStatus.NOT_OPENED) {
-      let response =
-        await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
-          request: {
-            hash: item.luckyToken.hash,
-            claimer: accAddress,
-          },
-          eddsaKey: eddsaKey.sk,
-          apiKey: apiKey,
-        } as any);
-      if (
-        (response as sdk.RESULT_INFO).code ||
-        (response as sdk.RESULT_INFO).message
-      ) {
-        throw response;
-      }
+  const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive, pageInfo?: {offset: number, limit: number, filter: any}) => {
+    const refreshCallback = () => {
+      getRedPacketReceiveList(pageInfo)
     }
     setShowRedPacket({
       isShow: true,
       step: RedPacketViewStep.BlindBoxDetail,
       info: {
-        ...item.luckyToken
+        ...item.luckyToken,
+        refreshCallback
       },
     });
   };

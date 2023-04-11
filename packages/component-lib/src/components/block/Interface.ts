@@ -114,6 +114,8 @@ export type RedPacketDetailProps = {
   showRelayText: boolean;
   showShareBtn: boolean;
   tokenSymbol?: string;
+  ended: boolean;
+  bottomButton: 'ended' | 'share'
 };
 export type RedPacketBlindBoxDetailTypes = 'Not Started' 
   | 'Blind Box Started' 
@@ -144,7 +146,8 @@ export type RedPacketBlindBoxDetailProps = {
   NFTClaimList?: { 
     who: string,
     when: number,
-    amount: number
+    amount: number,
+    showLuckiest?: boolean,
   }[]; 
   BlindBoxClaimList?: { 
     who: string,
@@ -159,6 +162,16 @@ export type RedPacketBlindBoxDetailProps = {
   onClickClaim?: () => void;
   onCloseOpenModal?: () => void;
   onClickClaimDetailBack?: () => void;
+  description: string;
+  shareButton: 'hidden' | 'share';
+  claimButton: 'claimed' | 'claim' | 'claiming' | 'expired' | 'hidden';
+  didClaimABlindBox: boolean;
+  wonInfo: {
+    participated: boolean;
+    won: boolean;
+    amount: number;
+  }
+  // didClaimABlindBox: boolean;
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;
