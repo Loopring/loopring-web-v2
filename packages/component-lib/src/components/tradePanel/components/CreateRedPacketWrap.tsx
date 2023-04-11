@@ -216,7 +216,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 // { isFait: true }
               ) +
               " " +
-              "NFT",
+              total.gt(1)
+                ? "NFTs"
+                : "NFT",
             splitValue:
               getValuePrecisionThousand(
                 splitValue.toFixed(0, 1),
@@ -469,7 +471,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 isThumb: true,
                 isSelected: true,
                 type: tradeType,
-                subLabel: "tokenNFTMaxRedPack",
+                subLabel: t("labelTokenNFTMaxRedPack"),
                 disabled,
                 tradeData: {
                   ...tradeData,

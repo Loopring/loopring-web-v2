@@ -1391,7 +1391,7 @@ export default {
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
-    "Each recipient will get a random amount of the total Red Packet shared.",
+    "Token amount for each Red Packet is randomized.",
   labelSendRedPacketTitle: "Send Red Packet",
   labelSendRedPacketTitlePublic: "Send Red Packet -- Public",
   labelSendRedPacketTitlePrivate: "Send Red Packet -- Private",
@@ -1409,7 +1409,7 @@ export default {
   labelRedPacketOpenInProgress: "Processing...",
   labelRedPacketOpenFailed: "Read red packet failed!",
   labelRedPacketShowQR: "Share red packet",
-  labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
+  labelRedPacketReceivedRecord: "Opened {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:
@@ -1446,7 +1446,7 @@ export default {
   labelSeal: "Seal",
   labelOpenAfter: "Open after {{time}}",
   labelOpenStart: "Start",
-  labelTotalRedPacket: "Total {{value}}",
+  labelTotalRedPacket: "Quantity in total: {{value}}",
   labelMyRedPacketReward: "My Rewards",
   labelRedpacketScanDes: "Using Loopring Wallet, scan the QR code.",
   labelLuckyRedPacketStarted: "Red Packet is Started",
@@ -1551,7 +1551,7 @@ export default {
   labelInvestType_LRCSTAKE: "LRC Staking",
   labelNFTs_one: "\u2A09{{count}} NFT",
   labelNFTs_other: "\u2A09{{count}} NFTs",
-  tokenNFTMaxRedPack: "Max:",
+  labelTokenNFTMaxRedPack: "Max: ",
   labelNFTRedPackAskClaim:
     "Please claim your NFT gifts immediately as they will be returned back to Sender 3 days after the expiration date.",
 };

@@ -9,6 +9,7 @@ import { orderbookService } from "./services/orderbookService";
 import { tradeService } from "./services/tradeService";
 import { mixorderService } from "./services/mixorderService";
 import { mixtradeService } from "./services/mixtradeService";
+import { cexOrderbookService } from "./services/cexOrderbookService";
 
 export type SocketEvent = (e: any, ...props: any[]) => any;
 
@@ -56,6 +57,23 @@ export class LoopringSocket {
       ) {
         const timestamp = Date.now();
         mixorderService.sendMixorder({
+          [topic.market]: {
+            ...data,
+            timestamp: timestamp,
+            symbol: topic.market,
+          } as any,
+        });
+      }
+    },
+    [sdk.WsTopicType.cefiOrderBook]: (data: sdk.DepthData, topic: any) => {
+      if (
+        (window as any)?.loopringSocket?.socketKeyMap &&
+        (window as any).loopringSocket?.socketKeyMap[
+          sdk.WsTopicType.cefiOrderBook
+        ]?.level === topic.level
+      ) {
+        const timestamp = Date.now();
+        cexOrderbookService.sendCexOrderBook({
           [topic.market]: {
             ...data,
             timestamp: timestamp,
