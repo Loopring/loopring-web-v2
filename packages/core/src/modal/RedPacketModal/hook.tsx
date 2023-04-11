@@ -45,7 +45,7 @@ import { LoopringAPI } from "../../api_wrapper";
 import { useRedPacketHistory } from "../../stores/localStore/redPacket";
 import { Box } from "@mui/material";
 import { getIPFSString } from "../../utils";
-import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
+import { NFT_IMAGE_SIZES, toBig } from "@loopring-web/loopring-sdk";
 
 export function useRedPacketModal() {
   const ref = React.createRef();
@@ -522,7 +522,7 @@ export function useRedPacketModal() {
             isShow: true,
             step: AccountStep.RedPacketOpen_In_Progress,
           });
-          const response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
+          let response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
             {
               accountId: account.accountId,
               hash: _info.hash,
@@ -542,53 +542,7 @@ export function useRedPacketModal() {
             } as any,
             account.apiKey
           );
-          const now = new Date().getTime()
-          if (info?.openBlindBoxInfo) {
-            const openBlindBoxInfo = info.openBlindBoxInfo as {wonLottery: boolean, url?: string, name?: string}
-
-            if (openBlindBoxInfo.wonLottery) {
-              setBlindBoxType('Lottery Started and Win Lottery');
-              setWonNFTInfo({
-                name: openBlindBoxInfo.name!,
-                url: openBlindBoxInfo.url!,
-              })
-            } else {
-              setBlindBoxType('Lottery Started and Not Win Lottery');
-              
-            }
-          } else if (now < response.detail.luckyToken.validSince) {
-            setBlindBoxType('Not Started')
-          } else if (now >= response.detail.luckyToken.validSince && now < response.detail.luckyToken.validUntil && response.detail.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED) {
-            setBlindBoxType('Blind Box Started')
-          } else if (now > response.detail.luckyToken.validUntil || response.detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED) { 
-            if ((response2.raw_data as any).blindBoxStatus === sdk.BlindBoxStatus.NOT_OPENED) {
-              const claimLuckyTokenResponse = await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
-                request: {
-                  hash: _info.hash,
-                  claimer: account.accAddress,
-                  referrer: "",
-                },
-                eddsaKey: account.eddsaKey.sk,
-                apiKey: account.apiKey,
-              } as any)
-              if (
-                (claimLuckyTokenResponse as sdk.RESULT_INFO).code ||
-                (claimLuckyTokenResponse as sdk.RESULT_INFO).message
-              ) {
-                setBlindBoxType('Lottery Started and Not Win Lottery');
-              } else {
-                setBlindBoxType('Lottery Started and Win Lottery');
-                setWonNFTInfo({
-                  name: detail?.luckyToken.nftTokenInfo?.metadata?.base.name ?? '',
-                  url: detail?.luckyToken.nftTokenInfo?.metadata?.imageSize.original ?? '',
-                })
-              }
-
-            } else {
-              setBlindBoxType('Lottery Started')
-            }
-          }
-
+          
           if (
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message 
@@ -626,6 +580,54 @@ export function useRedPacketModal() {
               },
             });
           } else {
+            const now = new Date().getTime()
+            if (now < response.detail.luckyToken.validSince) {
+              setBlindBoxType('Not Started')
+            } else if (now >= response.detail.luckyToken.validSince && now < response.detail.luckyToken.validUntil && response.detail.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED) {
+              setBlindBoxType('Blind Box Started')
+            } else if (now > response.detail.luckyToken.validUntil || response.detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED) {
+              if ((response2.raw_data as any).blindBoxStatus === sdk.BlindBoxStatus.NOT_OPENED) {
+                const claimLuckyTokenResponse = await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
+                  request: {
+                    hash: _info.hash,
+                    claimer: account.accAddress,
+                    referrer: "",
+                  },
+                  eddsaKey: account.eddsaKey.sk,
+                  apiKey: account.apiKey,
+                } as any)
+                if (
+                  (claimLuckyTokenResponse as sdk.RESULT_INFO).code ||
+                  (claimLuckyTokenResponse as sdk.RESULT_INFO).message ||
+                  (claimLuckyTokenResponse as any).amount === "0"
+                ) {
+                  setBlindBoxType('Lottery Started and Not Win Lottery');
+                } else {
+                  setBlindBoxType('Lottery Started and Win Lottery');
+                  setWonNFTInfo({
+                    name: response.detail.luckyToken.nftTokenInfo?.metadata?.base.name ?? '',
+                    url: response.detail.luckyToken.nftTokenInfo?.metadata?.imageSize.original ?? '',
+                  })
+                }
+                // refetch
+                response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
+                  {
+                    accountId: account.accountId,
+                    hash: _info.hash,
+                    limit,
+                    offset,
+                    // fromId: 0,
+                    showHelper: true,
+                  } as any,
+                  account.apiKey
+                );
+                info?.refreshCallback && info?.refreshCallback()
+              } else {
+                setBlindBoxType('Lottery Started')
+              }
+            }
+            // info?.refreshCallback && info?.refreshCallback()
+
             if (
               response.detail?.claimAmount?.toString() !== "0" &&
               _info?.type.scope === sdk.LuckyTokenViewType.PUBLIC
@@ -641,8 +643,6 @@ export function useRedPacketModal() {
             const detail = (response as any).detail;
             const luckTokenInfo: sdk.LuckyTokenItemForReceive =
               detail.luckyToken;
-            // const 
-            // debugger
             if (luckTokenInfo && response2.raw_data) {
               setDetail(detail);
               setBlindBoxDetail(response2.raw_data)
@@ -1000,7 +1000,8 @@ export function useRedPacketModal() {
               ? x.claimer?.ens
               : getShortAddr(x.claimer?.address),
             when: x.createdAt,
-            amount: x.amount
+            amount: x.amount,
+            showLuckiest: detail.claims.length >= 2 && detail.champion?.accountId === x.claimer.accountId,
           }
         }),
         // to change
@@ -1022,8 +1023,8 @@ export function useRedPacketModal() {
         onClickClaim: async () => {
           const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances({
             accountId: account.accountId,
-            isNft: _info.isNft,
-            tokens: [_info.tokenId],
+            isNft: detail.luckyToken.isNft,
+            tokens: [detail.luckyToken.tokenId],
           }, account.apiKey)
           if (
             (response as sdk.RESULT_INFO).code ||
@@ -1038,8 +1039,9 @@ export function useRedPacketModal() {
                 total: response!.tokenBalance[0].total,
                 locked: response!.tokenBalance[0].locked,
                 pending: response!.tokenBalance[0].pending,
-                nftTokenInfo: _info.nftTokenInfo,
-                isNft: _info.isNft
+                nftTokenInfo: detail.luckyToken.nftTokenInfo,
+                isNft: detail.luckyToken.isNft,
+                luckyTokenHash: detail.luckyToken.hash,
               },
               claimType: CLAIM_TYPE.redPacket,
             });
@@ -1052,8 +1054,13 @@ export function useRedPacketModal() {
           ? t("labelBlindBoxExplainationEnded")
           : t("labelBlindBoxExplainationNotEnded"),
         claimButton,
-        shareButton
-          
+        shareButton,
+        didClaimABlindBox: blinBoxDetail.blindBoxStatus !== "",
+        wonInfo: {
+          participated: blinBoxDetail.blindBoxStatus !== "",
+          won: detail.claimAmount && toBig(detail.claimAmount).isGreaterThan(0),
+          amount: detail.claimAmount
+        }
       } as RedPacketBlindBoxDetailProps;
     } else {
       return undefined;

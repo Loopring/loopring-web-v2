@@ -120,7 +120,8 @@ export const useClaimConfirm = <
           tradeValue: Number(claimToken.total),
           volume: claimToken.total,
           balance: Number(claimToken.total),
-          claimType
+          claimType,
+          luckyTokenHash: claimToken.luckyTokenHash
         } as any);
       } else {
         const token = tokenMap[idIndex[claimToken.tokenId]];
@@ -299,7 +300,6 @@ export const useClaimConfirm = <
 
   const onClaimClick = React.useCallback(
     async (_data: Partial<T>, isHardwareRetry = false) => {
-      debugger
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
       const claimValue = store.getState()._router_modalData.claimValue;
       if (
@@ -369,6 +369,7 @@ export const useClaimConfirm = <
               amount: amount.toString(),
               nftData,
               claimer: accAddress,
+              luckyTokenHash: (claimValue as any)?.luckyTokenHash,
               transfer: {
                 exchange: exchangeInfo.exchangeAddress,
                 payerAddr: accAddress,

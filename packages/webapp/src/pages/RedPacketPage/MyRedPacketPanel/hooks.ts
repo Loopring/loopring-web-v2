@@ -341,7 +341,8 @@ export const useMyRedPacketReceiveTransaction = <
           locked: response!.tokenBalance[0].locked,
           pending: response!.tokenBalance[0].pending,
           nftTokenInfo: item.luckyToken.nftTokenInfo,
-          isNft: item.luckyToken.isNft
+          isNft: item.luckyToken.isNft,
+          luckyTokenHash: item.luckyToken.hash
         },
         claimType: CLAIM_TYPE.redPacket,
       });
@@ -444,46 +445,16 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
 
-  const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
-    let openBlindBoxInfo = undefined as undefined | {wonLottery: boolean, url?: string, name?: string}
-    if (item.claim.status === sdk.BlindBoxStatus.NOT_OPENED) {
-      let response =
-        await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
-          request: {
-            hash: item.luckyToken.hash,
-            claimer: accAddress,
-          },
-          eddsaKey: eddsaKey.sk,
-          apiKey: apiKey,
-        } as any);
-      
-      if (
-        (response as sdk.RESULT_INFO).code ||
-        (response as sdk.RESULT_INFO).message
-      ) {
-        openBlindBoxInfo = {
-          wonLottery: false
-        }
-      } else {
-        const response2 = await LoopringAPI.luckTokenAPI?.getBlindBoxDetail({
-          hash: item.luckyToken.hash,
-          showHelper: false
-        }, apiKey);
-        const raw_data = response2?.raw_data as any
-
-        openBlindBoxInfo = {
-          wonLottery: true,
-          name: raw_data.luckyToken.nftTokenInfo?.metadata?.base.name ?? '',
-          url: raw_data.luckyToken.nftTokenInfo?.metadata?.imageSize.original ?? '',
-        }
-      }
+  const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive, pageInfo?: {offset: number, limit: number, filter: any}) => {
+    const refreshCallback = () => {
+      getRedPacketReceiveList(pageInfo)
     }
     setShowRedPacket({
       isShow: true,
       step: RedPacketViewStep.BlindBoxDetail,
       info: {
         ...item.luckyToken,
-        openBlindBoxInfo
+        refreshCallback
       },
     });
   };
