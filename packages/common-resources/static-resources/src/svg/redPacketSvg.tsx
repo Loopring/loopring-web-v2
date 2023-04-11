@@ -334,22 +334,12 @@ export const RedPacketQRCodeSvg = React.memo(
       );
       React.useEffect(() => {
         if (imageEleUrl) {
-          fetch(
-            imageEleUrl
-              .replace(
-                /d12jj0pnkw1mbj\.cloudfront\.net/gi,
-                "uatmetadatas.loopring.io"
-              )
-              .replace(
-                /d2y691019xyzhi\.cloudfront\.net/gi,
-                "metadatas.loopring.io"
-              )
-          )
+          fetch(imageEleUrl)
             .then((result) => result.blob())
             .then((result) => {
               myLog("blob", result);
               if (result) {
-                setImageBase64(result.toString);
+                setImageBase64(result.toString());
               }
             });
         }
