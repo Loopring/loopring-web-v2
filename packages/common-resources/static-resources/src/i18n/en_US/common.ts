@@ -1561,6 +1561,4 @@ export default {
   labelStakingFailed: "{{symbol}} Staking failed",
   labelStakingRedeemFailed: "Redeem {{symbol}} failed",
   labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
-  labelStakingRedeemRemaining: "Remaining Amount",
-  labelStakingRedeemDate: "Redeem Time",
 };

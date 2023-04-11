@@ -62,14 +62,45 @@ export enum ButtonComponentsMap {
   Setting,
   ProfileMenu,
   WalletConnect,
+  TestNet,
 }
 
-export const toolBarAvailableItem = [
+export const toolBarAvailableItem: number[] = [
   ButtonComponentsMap.Download,
   ButtonComponentsMap.Notification,
   ButtonComponentsMap.Setting,
   ButtonComponentsMap.ProfileMenu,
   ButtonComponentsMap.WalletConnect,
+  ButtonComponentsMap.TestNet,
+];
+
+export enum GuardianToolBarComponentsMap {
+  Notification,
+  TestNet,
+  WalletConnect,
+}
+
+export const GuardianToolBarAvailableItem = [
+  GuardianToolBarComponentsMap.Notification,
+  GuardianToolBarComponentsMap.TestNet,
+  GuardianToolBarComponentsMap.WalletConnect,
+];
+export let headerGuardianToolBarData: Array<{
+  buttonComponent: number;
+  handleClick?: (props: any) => void;
+  [key: string]: any;
+}> = [
+  {
+    buttonComponent: GuardianToolBarComponentsMap.Notification,
+    label: "labelNotification",
+  },
+  { buttonComponent: GuardianToolBarComponentsMap.TestNet },
+  {
+    buttonComponent: GuardianToolBarComponentsMap.WalletConnect,
+    label: "labelConnectWallet",
+    accountState: undefined,
+    handleClick: undefined,
+  },
 ];
 
 export let headerToolBarData: Array<{
@@ -146,14 +177,14 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "Landing-page",
       i18nKey: "labelZkRollupLayer2",
     },
-    router: { path: "https://loopring.io/#/" },
+    router: { path: "https://loopring.io/#/", pathName: "/" },
   },
   {
     label: {
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "https://loopring.io/#/wallet" },
+    router: { path: "https://loopring.io/#/wallet", pathName: "/wallet" },
   },
   // {
   //   label: {
@@ -505,6 +536,7 @@ export const defiRETHAdvice: InvestAdvice = {
   project: "Rocket Pool",
   market: "RETH-ETH",
 };
+
 export const DEFI_ADVICE_MAP = {
   WSTETH: defiWSTETHAdvice,
   RETH: defiRETHAdvice,

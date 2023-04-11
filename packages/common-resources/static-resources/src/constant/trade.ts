@@ -7,12 +7,13 @@
 import {
   CollectionMeta,
   DeFiCalcData,
+  DeFiSideCalcData,
+  DeFiSideRedeemCalcData,
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
 } from "../loopring-interface";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useTranslation } from "react-i18next";
 import { MarketType } from "./market";
 import { XOR } from "@loopring-web/loopring-sdk";
 import { VendorProviders } from "./vendor";
@@ -22,6 +23,7 @@ export enum DeFiChgType {
   coinBuy = "coinBuy",
   exchange = "exchange",
 }
+
 export type WithdrawType =
   | sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
   | sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
@@ -190,6 +192,7 @@ export const TOAST_TIME = 3000;
 
 export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;
+export const STAKING_INVEST_LIMIT = 5;
 export const PROPERTY_Value_LIMIT = 40;
 export const REDPACKET_ORDER_LIMIT = 10000;
 export const REDPACKET_ORDER_NFT_LIMIT = 20000;
@@ -304,78 +307,6 @@ export type AddressItemType<T> = {
   maxWidth?: string | number;
 };
 
-export const useAddressTypeLists = <
-  T extends WALLET_TYPE | EXCHANGE_TYPE
->() => {
-  const { t } = useTranslation("common");
-  const walletList: AddressItemType<T>[] = [
-    {
-      label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.EOA}`),
-      }),
-      value: WALLET_TYPE.EOA as T,
-      description: t(`label${WALLET_TYPE.EOA}Des`),
-    },
-    {
-      label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
-      }),
-      value: WALLET_TYPE.Loopring as T,
-      description: t(`label${WALLET_TYPE.Loopring}Des`),
-    },
-    {
-      label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
-      }),
-      disabled: true,
-      value: WALLET_TYPE.OtherSmart as T,
-      description: t(`label${WALLET_TYPE.OtherSmart}Des`),
-    },
-    {
-      label: t(WALLET_TYPE.Exchange),
-      value: WALLET_TYPE.Exchange as T,
-      disabled: true,
-      description: t(`label${WALLET_TYPE.Exchange}Des`),
-    },
-  ];
-  const nonExchangeList: AddressItemType<T>[] = [
-    {
-      label: t(`labelNonExchangeType`),
-      value: EXCHANGE_TYPE.NonExchange as T,
-      disabled: false,
-      description: t(`labelNonExchangeTypeDes`),
-    },
-  ];
-  const exchangeList: AddressItemType<T>[] = [
-    {
-      label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
-      value: EXCHANGE_TYPE.Binance as T,
-      disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Binance}Des`),
-      maxWidth: "initial",
-    },
-    {
-      label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
-      value: EXCHANGE_TYPE.Huobi as T,
-      disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Huobi}Des`),
-      maxWidth: "initial",
-    },
-    {
-      label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
-      value: EXCHANGE_TYPE.Others as T,
-      disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Others}Des`),
-      maxWidth: "initial",
-    },
-  ];
-  return {
-    walletList,
-    nonExchangeList,
-    exchangeList,
-  };
-};
-
 export const defalutSlipage = 0.1;
 export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 
@@ -384,12 +315,14 @@ export const enum InvestMapType {
   AMM = "AMM",
   STAKE = "STAKE",
   DUAL = "DUAL",
+  STAKELRC = "STAKELRC",
 }
 
 export const InvestOpenType = [
   InvestMapType.AMM,
   InvestMapType.STAKE,
   InvestMapType.DUAL,
+  InvestMapType.STAKELRC,
 ];
 
 export const enum InvestDuration {
@@ -444,6 +377,27 @@ export type TradeDefi<C> = {
   defiBalances?: { [key: string]: string };
   lastInput?: DeFiChgType;
 };
+export type TradeStack<C> = {
+  sellToken: sdk.TokenInfo;
+  sellVol: string;
+  deFiSideCalcData?: DeFiSideCalcData<C>;
+  request?: {
+    accountId: number;
+    hash: string;
+    token: sdk.TokenVolumeV3;
+  };
+};
+
+export type RedeemStack<C> = {
+  sellToken: sdk.TokenInfo;
+  sellVol?: string;
+  deFiSideRedeemCalcData: DeFiSideRedeemCalcData<C>;
+  request?: {
+    accountId: number;
+    hash: string;
+    token: sdk.TokenVolumeV3;
+  };
+};
 
 export type L2CollectionFilter = {
   isMintable?: boolean;
@@ -455,6 +409,7 @@ export type MyNFTFilter = {
   favourite?: boolean;
   hidden?: boolean;
 };
+
 export enum MY_NFT_VIEW {
   LIST_COLLECTION = "byCollection",
   LIST_NFT = "byList",

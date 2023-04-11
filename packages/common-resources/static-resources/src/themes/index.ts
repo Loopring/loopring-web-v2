@@ -25,8 +25,8 @@ export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
       imgy,
       imgheight = 72,
       imgwidth = 73,
-      size = 24,
-    }: AvatarCoinProps) => {
+    }: // size = 24,
+    AvatarCoinProps) => {
       return `
              background-position-x: -${imgx}px ;
              background-position-y: -${imgy}px ;

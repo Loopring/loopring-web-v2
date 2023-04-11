@@ -225,11 +225,7 @@ const TransactionTable = withTranslation(["tables", "common"])(
       DateRange<Date | string>
     >(["", ""]);
     const [filterToken, setFilterToken] = React.useState<string>("all");
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> released
     const updateData = debounce(
       ({
         tableType,
@@ -854,10 +850,6 @@ const TransactionTable = withTranslation(["tables", "common"])(
   }
 );
 
-<<<<<<< HEAD
-
-=======
->>>>>>> released
 export const ContactTransactionsPage = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const history = useHistory();
@@ -940,19 +932,11 @@ export const ContactTransactionsPage = withTranslation("common")(
       txsTotal,
       showLoading: showTxsLoading,
       getUserTxnList,
-<<<<<<< HEAD
-    } = useTransactions()
-    useEffect(() => {
-      getUserTxnList({})
-    }, [])
-    
-=======
     } = useTransactions();
     useEffect(() => {
       getUserTxnList({});
     }, []);
 
->>>>>>> released
     return (
       <Box flex={1} display={"flex"} flexDirection={"column"}>
         <Box marginBottom={2}>
@@ -980,12 +964,7 @@ export const ContactTransactionsPage = withTranslation("common")(
             marginLeft={2}
             display={"flex"}
             sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
-<<<<<<< HEAD
-          >
-          </Box>
-=======
           ></Box>
->>>>>>> released
           <Box
             className="tableWrapper table-divide-short"
             display={"flex"}

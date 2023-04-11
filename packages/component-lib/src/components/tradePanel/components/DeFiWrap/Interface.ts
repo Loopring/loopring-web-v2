@@ -6,8 +6,9 @@ import {
   MarketType,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
-import { TokenInfo } from "@loopring-web/loopring-sdk";
 import React from "react";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { RawDataDefiSideStakingItem } from "../../../tableList";
 
 export type DeFiChgData<T> = {
   type: DeFiChgType;
@@ -34,8 +35,8 @@ export type DeFiWrapProps<T, I, ACD> = {
   tokenSellProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
   tokenBuyProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
   deFiCalcData: ACD;
-  tokenSell: TokenInfo;
-  tokenBuy: TokenInfo;
+  tokenSell: sdk.TokenInfo;
+  tokenBuy: sdk.TokenInfo;
   btnStatus?: keyof typeof TradeBtnStatus | undefined;
   accStatus?: AccountStatus;
   type: string;

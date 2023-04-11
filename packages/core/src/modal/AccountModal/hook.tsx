@@ -253,6 +253,9 @@ export function useAccountModalForUI({
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
+  const { stakeWrapProps } = useStakeTradeExit({
+    setToastOpen,
+  });
   const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
   const { claimProps, retryBtn: claimRetryBtn } = useClaimConfirm();
   const { resetProps } = useReset();
