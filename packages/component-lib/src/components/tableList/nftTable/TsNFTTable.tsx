@@ -204,10 +204,13 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 ? "+"
                 : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
                 ? "-"
+                // @ts-ignore
                 : row.nftTxType === TxNFTType[TxNFTType.SEND_LUCKY_TOKEN]
                 ? "-"
+                // @ts-ignore
                 : row.nftTxType === TxNFTType[TxNFTType.SEND_BACK_LUCKY_TOKEN]
                 ? "+"
+                // @ts-ignore
                 : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW_LUCKY_TOKEN]
                 ? "+"
                 : "";
@@ -251,10 +254,13 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 ? ["L2 Mint", "L2"]
                 : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
                 ? ["L2", receiverAddress]
+                // @ts-ignore
                 : row.nftTxType === TxNFTType[TxNFTType.SEND_BACK_LUCKY_TOKEN]
                 ? ["L2 Red Packet", "L2"]
+                // @ts-ignore
                 : row.nftTxType === TxNFTType[TxNFTType.SEND_LUCKY_TOKEN]
                 ? ["L2", "L2 Red Packet"]
+                // @ts-ignore
                 : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW_LUCKY_TOKEN]
                 ? ["L2 Red Packet", "L2"]
                 : ["", ""];
@@ -391,16 +397,19 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 sideIcon = <MintIcon fontSize={"inherit"} />;
                 hasSymbol = "+";
                 break;
+                // @ts-ignore
               case TxNFTType[TxNFTType.SEND_LUCKY_TOKEN]:
                 side = t("labelNFTTypeSEND_LUCKY_TOKEN");
                 sideIcon = <RedPacketIcon fontSize={"inherit"} />;
                 hasSymbol = "-";
                 break;
+                // @ts-ignore
               case TxNFTType[TxNFTType.SEND_BACK_LUCKY_TOKEN]:
                 side = t("labelNFTTypeSEND_BACK_LUCKY_TOKEN");
                 sideIcon = <RedPacketIcon fontSize={"inherit"} />;
                 hasSymbol = "+";
                 break;
+                // @ts-ignore
               case TxNFTType[TxNFTType.WITHDRAW_LUCKY_TOKEN]:
                 side = t("labelNFTTypeWITHDRAW_LUCKY_TOKEN");
                 sideIcon = <RedPacketIcon fontSize={"inherit"} />;
