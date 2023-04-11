@@ -774,7 +774,7 @@ export function useRedPacketModal() {
       let symbol, list;
       if (detail.claimAmount.toString() !== "0") {
         if (_info.isNft) {
-          symbol = "NFT";
+          symbol = detail.claimAmount == 1 ? "NFT" : "NFTs";
           // @ts-ignore
           // const symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
           myAmountStr =
