@@ -1381,7 +1381,7 @@ export default {
   labelRedPacketOpenInProgress: "Processing...",
   labelRedPacketOpenFailed: "Read red packet failed!",
   labelRedPacketShowQR: "Share red packet",
-  labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
+  labelRedPacketReceivedRecord: "Opened {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:

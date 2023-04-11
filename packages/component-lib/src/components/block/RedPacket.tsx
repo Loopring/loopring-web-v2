@@ -1044,7 +1044,7 @@ export const RedPacketDetail = ({
           {t("labelTotalRedPacket", { value: amountStr })}
         </Typography>
       </Box>
-      <Divider orientation={"horizontal"} sx={{ borderWidth: 3 }} />
+      {/*<Divider orientation={"horizontal"} sx={{ borderWidth: 3 }} />*/}
       <Box
         flex={1}
         display={"flex"}
@@ -1056,27 +1056,29 @@ export const RedPacketDetail = ({
           color={"textThird"}
           marginY={1}
           paddingX={1}
+          paddingY={1}
+          sx={{ background: "var(--color-divide)" }}
         >
           {t("labelRedPacketReceivedRecord", {
             value: totalCount - remainCount,
             count: totalCount,
           })}
         </Typography>
-        <Divider
-          orientation={"horizontal"}
-          sx={{ borderWidth: 1, paddingX: 1 }}
-        />
+        {/*<Divider*/}
+        {/*  orientation={"horizontal"}*/}
+        {/*  sx={{ borderWidth: 1, paddingX: 1 }}*/}
+        {/*/>*/}
         <Box flex={1} overflow={"scroll"}>
           {claimList &&
-            claimList.map((item) => {
+            claimList.map((item, index) => {
               return (
                 <BoxClaim
                   className={item.isSelf ? "self claim" : "claim"}
                   display={"flex"}
                   justifyContent={"stretch"}
                   flexDirection={"column"}
-                  paddingY={1}
-                  paddingX={2}
+                  paddingTop={1 / 2}
+                  paddingX={1}
                 >
                   <Typography
                     component={"span"}
@@ -1084,6 +1086,7 @@ export const RedPacketDetail = ({
                     flexDirection={"row"}
                     justifyContent={"space-between"}
                     alignItems={"center"}
+                    paddingX={1}
                   >
                     <Typography
                       variant={"body1"}
@@ -1108,6 +1111,7 @@ export const RedPacketDetail = ({
                     flexDirection={"row"}
                     justifyContent={"space-between"}
                     alignItems={"center"}
+                    paddingX={1}
                   >
                     <Typography
                       variant={"body2"}
@@ -1152,6 +1156,17 @@ export const RedPacketDetail = ({
                         )}
                     </Typography>
                   </Typography>
+
+                  {index + 1 !== claimList.length && (
+                    <Divider
+                      orientation={"horizontal"}
+                      sx={{
+                        borderWidth: 1 / 2,
+                        paddingX: 1,
+                        marginTop: 1 / 2,
+                      }}
+                    />
+                  )}
                 </BoxClaim>
               );
             })}

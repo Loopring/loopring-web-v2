@@ -1391,7 +1391,7 @@ export default {
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
-    "Each recipient will get a random amount of the total Red Packet shared.",
+    "Token amount for each Red Packet is randomized.",
   labelSendRedPacketTitle: "Send Red Packet",
   labelSendRedPacketTitlePublic: "Send Red Packet -- Public",
   labelSendRedPacketTitlePrivate: "Send Red Packet -- Private",
@@ -1409,7 +1409,7 @@ export default {
   labelRedPacketOpenInProgress: "Processing...",
   labelRedPacketOpenFailed: "Read red packet failed!",
   labelRedPacketShowQR: "Share red packet",
-  labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
+  labelRedPacketReceivedRecord: "Opened {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:

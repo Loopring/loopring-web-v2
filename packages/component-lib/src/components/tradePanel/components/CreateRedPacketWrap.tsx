@@ -216,7 +216,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 // { isFait: true }
               ) +
               " " +
-              "NFT",
+              total.gt(1)
+                ? "NFTs"
+                : "NFT",
             splitValue:
               getValuePrecisionThousand(
                 splitValue.toFixed(0, 1),
