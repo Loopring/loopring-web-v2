@@ -409,7 +409,6 @@ export type MyNFTFilter = {
   favourite?: boolean;
   hidden?: boolean;
 };
-
 export enum MY_NFT_VIEW {
   LIST_COLLECTION = "byCollection",
   LIST_NFT = "byList",
@@ -454,7 +453,7 @@ export type DualViewInfo = DualViewBase & {
 export type ClaimToken = sdk.UserBalanceInfo & {
   isNft?: boolean;
   nftTokenInfo?: sdk.UserNFTBalanceInfo;
-  luckyTokenHash?: string
+  luckyTokenHash?: string;
 };
 export type DualViewOrder = DualViewBase & {
   __raw__: {
@@ -471,7 +470,6 @@ export enum CLAIM_TYPE {
   redPacket = "redPacket",
   lrcStaking = "lrcStaking",
 }
-
 export type BanxaOrder = {
   id: string;
   account_id: string;
@@ -506,6 +504,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyRelayToken",
     desKey: "labelLuckyRelayTokenDes",
+    showInERC20: true,
     value: {
       value: 0,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -513,8 +512,20 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
+    labelKey: "labelLuckyBlindBox",
+    desKey: "labelLuckyBlindBoxDes",
+    showInNFTS: true,
+    value: {
+      value: 3,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
     labelKey: "labelLuckyRandomToken",
-    desKey: "labelLuckyRandomTokenDes",
+    desKey: "labelRedPacketsSplitLuckyDetail",
+    showInNFTS: true,
+    showInERC20: true,
     value: {
       value: 1,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -524,6 +535,8 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyCommonToken",
     desKey: "labelLuckyCommonTokenDes",
+    showInNFTS: true,
+    showInERC20: true,
     value: {
       value: 2,
       partition: sdk.LuckyTokenAmountType.AVERAGE,
