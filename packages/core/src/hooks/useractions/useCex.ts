@@ -41,6 +41,7 @@ import {
   TradeBtnStatus,
   UIERROR_CODE,
   WalletMap,
+  defalutSlipage,
 } from "@loopring-web/common-resources";
 import {
   AccountStep,
@@ -792,6 +793,7 @@ export const useCexSwap = <
           marketMap,
           depth,
           feeBips: maxFeeBips.toString(),
+          slipBips: sdk.toBig(defalutSlipage).times(100).toString(),
         });
         //buy token pool can not be empty
         if (
@@ -824,6 +826,7 @@ export const useCexSwap = <
               marketMap,
               depth,
               feeBips: maxFeeBips.toString(),
+              slipBips: sdk.toBig(defalutSlipage).times(100).toString(),
             });
             sellMaxAmtInfo = calcPoolToSell?.amountS;
           }
@@ -863,7 +866,7 @@ export const useCexSwap = <
 
         if (calcDexOutput) {
           minimumReceived = sdk
-            .toBig(calcDexOutput?.buyVol ?? 0)
+            .toBig(calcDexOutput?.amountBSlipped?.minReceived ?? 0)
             .minus(totalFeeRaw ?? 0)
             .div("1e" + buyToken.decimals)
             .toString();
