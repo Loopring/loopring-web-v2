@@ -144,7 +144,7 @@ export const useCexSwap = <
   const [market, setMarket] = React.useState<MarketType>(
     realMarket as MarketType
   );
-  const [isSwapLoading, setIsSwapLoading] = React.useState(false);
+  const [isCexLoading, setIsCexLoading] = React.useState(false);
 
   const { tokenPrices } = useTokenPrices();
 
@@ -236,12 +236,8 @@ export const useCexSwap = <
       .toBig(walletMap[sellToken.symbol]?.count ?? 0)
       .lt(tradeData?.sell?.tradeValue ?? 0);
 
-    // const sellMaxVal = sellMaxAmtInfo;
-    // const buyMaxVal = sdk
-    //   .toBig(buyToken?.orderAmounts?.maximum)
-    //   .div("1e" + buyToken.decimals);
-    //
-    if (isSwapLoading) {
+
+    if (isCexLoading) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.LOADING,
@@ -317,10 +313,10 @@ export const useCexSwap = <
     tradeData?.sell.belong,
     tradeData?.buy.belong,
     tradeCex,
-    isSwapLoading,
+    isCexLoading,
   ]);
   const sendRequest = React.useCallback(async () => {
-    setIsSwapLoading(true);
+    setIsCexLoading(true);
     try {
       if (
         account.readyState !== AccountStatus.ACTIVATED &&
@@ -483,7 +479,7 @@ export const useCexSwap = <
         content,
       });
     }
-    setIsSwapLoading(false);
+    setIsCexLoading(false);
   }, [
     tradeCex,
     tokenMap,
@@ -507,14 +503,14 @@ export const useCexSwap = <
   const cexSwapSubmit = React.useCallback(async () => {
     if (!allowTrade?.cexOrder?.enable) {
       setShowSupport({ isShow: true });
-      setIsSwapLoading(false);
+      setIsCexLoading(false);
       return;
     } else if (!cexOrder.enable) {
       setShowTradeIsFrozen({
         isShow: true,
         type: t("labelCexSwap"),
       });
-      setIsSwapLoading(false);
+      setIsCexLoading(false);
       return;
     } else {
       sendRequest();
@@ -527,7 +523,7 @@ export const useCexSwap = <
     btnLabel: swapBtnI18nKey,
   } = useSubmitBtn({
     availableTradeCheck,
-    isLoading: isSwapLoading,
+    isLoading: isCexLoading,
     submitCallback: cexSwapSubmit,
   });
 
@@ -543,10 +539,10 @@ export const useCexSwap = <
     const { depth, market } = store.getState()._router_tradeCex.tradeCex;
 
     if (depth && new RegExp(market).test(depth?.symbol)) {
-      setIsSwapLoading(false);
+      setIsCexLoading(false);
       refreshWhenDepthUp();
     } else {
-      setIsSwapLoading(true);
+      setIsCexLoading(true);
     }
   }, [tradeCex.depth, account.readyState, market]);
 
@@ -1233,7 +1229,7 @@ export const useCexSwap = <
     refreshRef,
     cexSwapSubmit,
     tradeCex,
-    isSwapLoading,
+    isSwapLoading:isCexLoading,
     market,
     isMobile,
     setToastOpen,
