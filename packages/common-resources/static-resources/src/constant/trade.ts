@@ -14,6 +14,7 @@ import {
   LuckyRedPacketItem,
 } from "../loopring-interface";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { useTranslation } from "react-i18next";
 import { MarketType } from "./market";
 import { XOR } from "@loopring-web/loopring-sdk";
 import { VendorProviders } from "./vendor";
@@ -23,7 +24,6 @@ export enum DeFiChgType {
   coinBuy = "coinBuy",
   exchange = "exchange",
 }
-
 export type WithdrawType =
   | sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
   | sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
@@ -307,6 +307,78 @@ export type AddressItemType<T> = {
   maxWidth?: string | number;
 };
 
+export const useAddressTypeLists = <
+  T extends WALLET_TYPE | EXCHANGE_TYPE
+>() => {
+  const { t } = useTranslation("common");
+  const walletList: AddressItemType<T>[] = [
+    {
+      label: t("labelWalletTypeOptions", {
+        type: t(`labelWalletType${WALLET_TYPE.EOA}`),
+      }),
+      value: WALLET_TYPE.EOA as T,
+      description: t(`label${WALLET_TYPE.EOA}Des`),
+    },
+    {
+      label: t("labelWalletTypeOptions", {
+        type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
+      }),
+      value: WALLET_TYPE.Loopring as T,
+      description: t(`label${WALLET_TYPE.Loopring}Des`),
+    },
+    {
+      label: t("labelWalletTypeOptions", {
+        type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
+      }),
+      disabled: true,
+      value: WALLET_TYPE.OtherSmart as T,
+      description: t(`label${WALLET_TYPE.OtherSmart}Des`),
+    },
+    {
+      label: t(WALLET_TYPE.Exchange),
+      value: WALLET_TYPE.Exchange as T,
+      disabled: true,
+      description: t(`label${WALLET_TYPE.Exchange}Des`),
+    },
+  ];
+  const nonExchangeList: AddressItemType<T>[] = [
+    {
+      label: t(`labelNonExchangeType`),
+      value: EXCHANGE_TYPE.NonExchange as T,
+      disabled: false,
+      description: t(`labelNonExchangeTypeDes`),
+    },
+  ];
+  const exchangeList: AddressItemType<T>[] = [
+    {
+      label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
+      value: EXCHANGE_TYPE.Binance as T,
+      disabled: false,
+      description: t(`labelExchange${EXCHANGE_TYPE.Binance}Des`),
+      maxWidth: "initial",
+    },
+    {
+      label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
+      value: EXCHANGE_TYPE.Huobi as T,
+      disabled: false,
+      description: t(`labelExchange${EXCHANGE_TYPE.Huobi}Des`),
+      maxWidth: "initial",
+    },
+    {
+      label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
+      value: EXCHANGE_TYPE.Others as T,
+      disabled: false,
+      description: t(`labelExchange${EXCHANGE_TYPE.Others}Des`),
+      maxWidth: "initial",
+    },
+  ];
+  return {
+    walletList,
+    nonExchangeList,
+    exchangeList,
+  };
+};
+
 export const defalutSlipage = 0.1;
 export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 
@@ -504,7 +576,6 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyRelayToken",
     desKey: "labelLuckyRelayTokenDes",
-    showInERC20: true,
     value: {
       value: 0,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -512,20 +583,8 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
-    labelKey: "labelLuckyBlindBox",
-    desKey: "labelLuckyBlindBoxDes",
-    showInNFTS: true,
-    value: {
-      value: 3,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
-    },
-  },
-  {
     labelKey: "labelLuckyRandomToken",
-    desKey: "labelRedPacketsSplitLuckyDetail",
-    showInNFTS: true,
-    showInERC20: true,
+    desKey: "labelLuckyRandomTokenDes",
     value: {
       value: 1,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -535,8 +594,6 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyCommonToken",
     desKey: "labelLuckyCommonTokenDes",
-    showInNFTS: true,
-    showInERC20: true,
     value: {
       value: 2,
       partition: sdk.LuckyTokenAmountType.AVERAGE,
