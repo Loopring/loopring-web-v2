@@ -14,7 +14,7 @@ import {
   FeeToggle,
   FeeTokenItemWrapper,
 } from "../../tradePanel";
-import { Box, Grid, Typography } from "@mui/material";
+import { Avatar, Box, Grid, Typography } from "@mui/material";
 import { Button } from "../../basic-lib";
 import { useSettings } from "../../../stores";
 import { Toast } from "../../toast";
@@ -35,6 +35,8 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
     disabled,
     claimType,
     onClaimClick,
+    isNFT,
+    nftIMGURL
   }: ClaimProps<T, I, Fee> & WithTranslation & { assetsData: any[] }) => {
     const { isMobile } = useSettings();
     const [open, setOpen] = React.useState(false);
@@ -83,15 +85,32 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <Typography
-            component={"h5"}
-            color={"textPrimary"}
-            marginTop={1}
-            variant={"h2"}
-            textAlign={"center"}
-          >
-            {tradeData?.tradeValueView + " " + tradeData?.belong}
-          </Typography>
+          {
+            isNFT
+              ? (
+                <Box display={"flex"} flexDirection={"column"} alignItems="center">
+                  <img height={8 * theme.unit} src={nftIMGURL} />
+                  <Typography
+                    color={"textSecondary"}
+                    marginTop={1}
+                    variant={"body2"}
+                  >
+                    {tradeData?.tradeValueView + " NFTs"}
+                  </Typography>
+                </Box>
+              )
+              : (
+                <Typography
+                  component={"h5"}
+                  color={"textSecondary"}
+                  marginTop={1}
+                  variant={"body2"}
+                  textAlign={"center"}
+                >
+                  {tradeData?.tradeValueView + " " + tradeData?.belong}
+                </Typography>
+              )
+          }
         </Grid>
         {/*<Grid item xs={12}>*/}
         {/*  <Typography color={"var(--color-text-third)"} variant={"body1"}>*/}

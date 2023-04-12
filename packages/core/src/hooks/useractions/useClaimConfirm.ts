@@ -353,7 +353,6 @@ export const useClaimConfirm = <
               brokerType = 0;
               break;
           }
-          claimValue.claimType === CLAIM_TYPE.redPacket;
           const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
             type: brokerType,
           });
@@ -386,6 +385,7 @@ export const useClaimConfirm = <
                 },
                 validUntil: getTimestampDaysLater(DAYS),
               },
+              luckyTokenHash: claimToken?.luckyTokenHash,
             };
           } else if (claimValue.claimType === CLAIM_TYPE.lrcStaking) {
             request = {
@@ -495,6 +495,7 @@ export const useClaimConfirm = <
     },
     [setShowAccount]
   );
+  claimToken?.luckyTokenHash
   return {
     retryBtn,
     claimProps: {
@@ -519,6 +520,15 @@ export const useClaimConfirm = <
       feeInfo,
       checkFeeIsEnough,
       onClaimClick,
+      claimType,
+      isNFT: claimToken?.isNft ? true : false,
+      nftIMGURL: claimToken?.nftTokenInfo?.metadata?.imageSize.original,
+      // luckyTokenHash: claimToken?.luckyTokenHash
+
+      // nftIMGURL: claimValue.tradeType === TRADE_TYPE.NFT
+      //   ? claimValue
+      //   : undefined
+      // true,
     } as any as ClaimProps<any, any>,
   };
 };

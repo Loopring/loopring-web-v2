@@ -1471,6 +1471,7 @@ export const RedPacketPrepare = ({
             _info.sender.accountId === account.accountId
               ? () => {
                   if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+                    _info
                     setShowRedPacket({
                       isShow: true,
                       step: RedPacketViewStep.BlindBoxDetail,
@@ -1797,8 +1798,9 @@ export const RedPacketBlindBoxDetail = ({
               {t("labelBlindBoxExplaination2", {
                 opendBlindBoxAmount,
                 totalBlindBoxAmount,
-                deliverdGiftsAmount,
-                totalGiftsAmount,
+                // deliverdGiftsAmount,
+                // totalGiftsAmount,
+                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount
               })}
               {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
             </Typography>
@@ -1813,15 +1815,24 @@ export const RedPacketBlindBoxDetail = ({
                     time: moment(blindBoxStartTime).format(
                       YEAR_DAY_MINUTE_FORMAT
                     ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
                   })
                 : type === "Blind Box Started"
                 ? t("labelBlindBoxStarted", {
                     time: moment(lotteryStartTime).format(
                       YEAR_DAY_MINUTE_FORMAT
                     ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
                   })
                 : t("labelBlindBoxClaimStarted", {
                     time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
+                    interpolation: {
+                      escapeValue: false,
+                    }
                   })}
             </Typography>
             {(type === "Blind Box Started" || type === "Lottery Started") && (

@@ -421,12 +421,14 @@ export const CreateRedPacketStepWrap = withTranslation()(
               marginRight={1}
             >
               {t(
-                selectedType.value.mode == sdk.LuckyTokenClaimType.RELAY
-                  ? "labelRelayRedPacket"
-                  : selectedType.value.partition ==
-                    sdk.LuckyTokenAmountType.AVERAGE
-                  ? "labelRedPacketSendCommonTitle"
-                  : "labelRedPacketSenRandomTitle"
+                selectedType.value.mode == sdk.LuckyTokenClaimType.BLIND_BOX
+                  ? "labelLuckyBlindBox"
+                  : selectedType.value.mode == sdk.LuckyTokenClaimType.RELAY
+                    ? "labelRelayRedPacket"
+                    : selectedType.value.partition ==
+                      sdk.LuckyTokenAmountType.AVERAGE
+                      ? "labelRedPacketSendCommonTitle"
+                      : "labelRedPacketSenRandomTitle"
               ) +
                 " — " +
                 t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
@@ -562,7 +564,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
             })}
           </Typography>
         </Box>
-        {tradeType === TRADE_TYPE.NFT && (
+        {tradeType === TRADE_TYPE.NFT && selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
           <Box
             marginY={1}
             display={"flex"}
@@ -1003,9 +1005,9 @@ export const CreateRedPacketStepType = withTranslation()(
         {tradeType === TRADE_TYPE.NFT ? (
           <>
             <Box
-              onClick={() => {
-                onChangePrivateChecked!();
-              }}
+              // onClick={() => {
+              //   onChangePrivateChecked!();
+              // }}
               style={{ cursor: "pointer" }}
               position={"relative"}
               marginBottom={10}
@@ -1017,7 +1019,7 @@ export const CreateRedPacketStepType = withTranslation()(
                   style={{
                     padding: "0",
                   }}
-                  checked={privateChecked}
+                  checked
                   checkedIcon={
                     <GoodIcon htmlColor={"var(--color-primary)"}></GoodIcon>
                   }

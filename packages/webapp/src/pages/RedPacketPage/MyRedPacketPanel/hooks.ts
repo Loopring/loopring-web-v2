@@ -336,8 +336,8 @@ export const useMyRedPacketReceiveTransaction = <
       setShowClaimWithdraw({
         isShow: true,
         claimToken: {
-          tokenId: response!.tokenBalance[0].tokenId,
-          total: response!.tokenBalance[0].total,
+          tokenId: item.luckyToken.tokenId,
+          total: item.claim.amount.toString(),
           locked: response!.tokenBalance[0].locked,
           pending: response!.tokenBalance[0].pending,
           nftTokenInfo: item.luckyToken.nftTokenInfo,

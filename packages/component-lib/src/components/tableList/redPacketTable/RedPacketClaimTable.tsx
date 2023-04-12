@@ -21,6 +21,7 @@ import React from "react";
 import { FormatterProps } from "react-data-grid";
 import {
   CurrencyToTag,
+  EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
   myLog,
@@ -87,6 +88,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       pagination,
       page,
       isNFT = false,
+      totalLuckyTokenNFTBalance,
       t,
     } = props;
     const history = useHistory();
@@ -127,60 +129,50 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
           formatter: ({ row: { token } }: FormatterProps<R>) => {
+            // if (token.)
             if (token.type !== TokenType.nft) {
-              return (
-                <ColumnCoinDeep isNotRequiredName={true} token={token as any} />
-              );
-            } else {
-              const { metadata } = token as sdk.UserNFTBalanceInfo;
-              return (
-                <Box
+              if (token.icon && token.simpleName === "NFTs") {
+                return <Box
                   className="rdg-cell-value"
                   height={"100%"}
                   display={"flex"}
                   alignItems={"center"}
                 >
-                  {metadata?.imageSize ? (
-                    <Box
-                      display={"flex"}
-                      alignItems={"center"}
-                      justifyContent={"center"}
-                      height={RowConfig.rowHeight + "px"}
-                      width={RowConfig.rowHeight + "px"}
-                      padding={1 / 4}
-                      style={{ background: "var(--field-opacity)" }}
-                    >
-                      {metadata?.imageSize && (
-                        <NftImage
-                          alt={metadata?.base?.name}
-                          onError={() => undefined}
-                          src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
-                        />
-                      )}
-                    </Box>
-                  ) : (
-                    <BoxNFT
-                      display={"flex"}
-                      alignItems={"center"}
-                      justifyContent={"center"}
-                      height={RowConfig.rowHeight + "px"}
-                      width={RowConfig.rowHeight + "px"}
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    height={"28px"}
+                    width={"28px"}
+                    padding={1 / 4}
+                    // style={{ background: "var(--field-opacity)" }}
+                  >
+                    <NftImage
+                      alt={token.simpleName}
+                      onError={() => undefined}
+                      src={token.icon}
                     />
-                  )}
+                  </Box>
                   <Typography
                     color={"inherit"}
                     flex={1}
                     display={"inline-flex"}
                     alignItems={"center"}
-                    paddingLeft={1}
+                    paddingLeft={0.5}
                     overflow={"hidden"}
                     textOverflow={"ellipsis"}
                     component={"span"}
                   >
-                    {metadata?.base?.name ?? "NFT"}
+                    {token.simpleName}
                   </Typography>
                 </Box>
-              );
+              } else {
+                return (
+                  <ColumnCoinDeep isNotRequiredName={true} token={token as any} />
+                );
+              }
+            } else {
+              return <></>;
             }
           },
         },
@@ -199,15 +191,19 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: FormatterProps<R>) => {
             return (
               <Box display="flex">
-                {PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    (row.volume || 0) * (forexMap[currency] ?? 0),
-                    2,
-                    2,
-                    2,
-                    true,
-                    { isFait: true }
-                  )}
+                {
+                  row.volume !== undefined ?
+                    PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      (row.volume || 0) * (forexMap[currency] ?? 0),
+                      2,
+                      2,
+                      2,
+                      true,
+                      { isFait: true }
+                    )
+                    : EmptyValueTag
+                }
               </Box>
             );
           },
@@ -236,16 +232,17 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
         },
       ];
     }, [history, t]);
+
     const NFTrow = {
       token: {
-        icon: "https://static.loopring.io/assets/ethereum/assets/0x0000000000000000000000000000000000000000/logo.png", // todo
+        icon: "https://static.loopring.io/assets/svg/NFT-logo.svg",
         name: "NFTs",
-        simpleName: "",
+        simpleName: "NFTs",
         description: "ETH",
         company: "Ethereum",
-        type: "single",
+        type: TokenType.single
       },
-      amountStr: "todo",
+      amountStr: totalLuckyTokenNFTBalance ? totalLuckyTokenNFTBalance.toString() : EmptyValueTag,
       volume: undefined,
     };
     const defaultArgs: any = {

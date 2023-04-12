@@ -70,6 +70,7 @@ export type RedPacketClaimTableProps<R, C = sdk.Currency> = {
   etherscanBaseUrl: string;
   isNFT?: boolean;
   getClaimRedPacket: (props: any) => void;
+  totalLuckyTokenNFTBalance?: number;
 } & XOR<
   {
     pagination?: {

@@ -1,6 +1,8 @@
 import React from "react";
 import {
+  LoopringAPI,
   StylePaper,
+  useAccount,
   useSystem,
   useToast,
   useWalletLayer2,
@@ -34,6 +36,7 @@ import {
   TabTokenTypeIndex,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 export const RedPacketClaimPanel = () => {
   const container = React.useRef<HTMLDivElement>(null);
@@ -78,6 +81,20 @@ export const RedPacketClaimPanel = () => {
       setPageSize(pageSize);
     }
   }, [container?.current?.offsetHeight]);
+  const {account} = useAccount()
+  const [totalLuckyTokenNFTBalance, setTotalLuckyTokenNFTBalance] = React.useState(undefined as number | undefined)
+  React.useEffect(() => {
+    LoopringAPI.luckTokenAPI?.getLuckTokenBalances({
+      accountId: account.accountId,
+      isNft: true,
+    }, account.apiKey).then(response => {
+      const total = (response.raw_data as any)
+        .reduce((acc: string, pre: any) => {
+          return toBig(pre.total).plus(acc).toString()
+        }, "0")
+      setTotalLuckyTokenNFTBalance(Number(total) )
+    })
+  }, []);
   return (
     <Box
       flex={1}
@@ -134,6 +151,7 @@ export const RedPacketClaimPanel = () => {
                 getClaimRedPacket,
                 onViewMoreNFTsClick,
               }}
+              totalLuckyTokenNFTBalance={totalLuckyTokenNFTBalance}
             />
           </Box>
         ) : (

@@ -606,6 +606,8 @@ export type ClaimExtendProps<T, Fee> = {
   tradeType: TRADE_TYPE;
   claimType: CLAIM_TYPE;
   handleFeeChange: (value: Fee) => void;
+  isNFT: boolean;
+  nftIMGURL?: string;
 } & ClaimInfoProps<Fee>;
 
 export type CreateRedPacketInfoProps<Fee = FeeInfo> = {

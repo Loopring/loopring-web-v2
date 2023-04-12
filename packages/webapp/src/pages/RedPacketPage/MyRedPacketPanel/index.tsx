@@ -45,10 +45,9 @@ export const MyRedPacketPanel = ({
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const { etherscanBaseUrl, forexMap } = useSystem();
-  let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
+  let match: any = useRouteMatch("/redPacket/records/:item/:type?");
 
   const container = React.useRef<HTMLDivElement>(null);
-
   const [currentTab, setCurrentTab] = React.useState<TabIndex>(
     match?.params.item ?? TabIndex.Received
   );
