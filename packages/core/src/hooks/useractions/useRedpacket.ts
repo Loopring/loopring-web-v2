@@ -253,6 +253,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
               });
             }
           } else if (difference > 0) {
+            debugger
             setShowRedPacket({
               isShow: true,
               info: {
