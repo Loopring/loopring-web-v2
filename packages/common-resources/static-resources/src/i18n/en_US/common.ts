@@ -1571,4 +1571,6 @@ export default {
   labelPrice: "Price",
   labelCexSwapMiniMax: "Min {{minValue}} - Max {{maxValue}}",
   labelCexSwapMini: "Min {{minValue}}",
+  labelCexConfirm: "Please check the checkbox",
+  labelCexSwapBtn: "CEX Swap",
 };

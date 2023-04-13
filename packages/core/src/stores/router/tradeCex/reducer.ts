@@ -36,6 +36,9 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
         minOrderInfo,
         lastStepAt,
         totalFee,
+        sellMinAmtInfo,
+        sellMaxL2AmtInfo,
+        sellMaxAmtInfo,
         // cexMarket,
         maxFeeBips,
         ...rest
@@ -52,6 +55,9 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
           tradeCalcData: tradeCalcData as any,
           sellUserOrderInfo,
           buyUserOrderInfo,
+          sellMinAmtInfo,
+          sellMaxL2AmtInfo,
+          sellMaxAmtInfo,
           lastStepAt: undefined,
           // cexMarket,
           maxFeeBips: MAPFEEBIPS,
@@ -68,12 +74,7 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
         if (depth) {
           state.tradeCex.depth = depth;
         }
-        // if(cexMarket){
-        //   state.cexMarket.cexMarket = cexMarket;
-        // }
-        // if (feeBips) {
-        //   state.tradeCex.feeBips = feeBips;
-        // }
+
         if (totalFee) {
           state.tradeCex.totalFee = totalFee;
         }
@@ -94,6 +95,16 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
         }
         if (buyUserOrderInfo !== undefined) {
           state.tradeCex.buyUserOrderInfo = buyUserOrderInfo;
+        }
+
+        if (sellMinAmtInfo !== undefined) {
+          state.tradeCex.sellMinAmtInfo = sellMinAmtInfo;
+        }
+        if (sellMaxL2AmtInfo !== undefined) {
+          state.tradeCex.sellMaxL2AmtInfo = sellMaxL2AmtInfo;
+        }
+        if (sellMaxAmtInfo !== undefined) {
+          state.tradeCex.sellMaxAmtInfo = sellMaxAmtInfo;
         }
       }
     },
