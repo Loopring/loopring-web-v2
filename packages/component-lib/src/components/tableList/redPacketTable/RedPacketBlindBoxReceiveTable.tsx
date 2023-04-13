@@ -76,14 +76,19 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
       showloading,
       t,
       onItemClick,
+      showActionableRecords
     } = props;
     const [page, setPage] = React.useState(1);
-
     const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
       await getRedPacketReceiveList({
         offset: (page - 1) * (pagination?.pageSize ?? 10),
         limit: pagination?.pageSize ?? 10,
-        filter,
+        filter: {
+          ...filter,
+          statuses: showActionableRecords 
+            ? [0] // 0 is for sdk.BlindBoxStatus.NOT_OPENED
+            : undefined
+        }
       });
     }, globalSetup.wait);
 
@@ -103,7 +108,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize]);
+    }, [showActionableRecords]);
     const columnModeTransaction = [
       {
         key: "Address",

@@ -227,7 +227,7 @@ export const RedPacketSize = {
     width: 260,
   },
   large: {
-    height: 600,
+    height: 680,
     width: 320,
   },
 };
@@ -1010,6 +1010,7 @@ export const RedPacketDetail = ({
         flexDirection={"column"}
         alignItems={"center"}
         marginY={2}
+        overflow={"scroll"}
       >
         <Typography variant={"body1"}>{sender}</Typography>
         <Typography
@@ -1069,7 +1070,7 @@ export const RedPacketDetail = ({
         {/*  orientation={"horizontal"}*/}
         {/*  sx={{ borderWidth: 1, paddingX: 1 }}*/}
         {/*/>*/}
-        <Box flex={1} overflow={"scroll"}>
+        <Box flex={1}  >
           {claimList &&
             claimList.map((item, index) => {
               return (
@@ -1206,9 +1207,7 @@ export const RedPacketDetail = ({
               fullWidth={true}
               onClick={onShared}
             >
-
               {t("labelRedPacketGrab")}
-
             </Button>)
         }
 

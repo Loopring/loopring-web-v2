@@ -196,6 +196,7 @@ export const STAKING_INVEST_LIMIT = 5;
 export const PROPERTY_Value_LIMIT = 40;
 export const REDPACKET_ORDER_LIMIT = 10000;
 export const REDPACKET_ORDER_NFT_LIMIT = 20000;
+export const BLINDBOX_REDPACKET_LIMIT = 10000;
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: "name",
   image: "image",
