@@ -1305,7 +1305,9 @@ export default {
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
+  labelBlindBoxStartTime: "Start Time",
   labelBlindBoxEndDate: "End date",
+  labelBlindBoxEndDate2: "Blindbox reveal time",
   labelBlindBoxEndTime: "End Time",
   labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
   labelBlindBoxExpirationExplainationForToken: "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",

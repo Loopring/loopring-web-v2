@@ -711,6 +711,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   validUntil: m ? m.toDate().getTime() : undefined,
                 } as unknown as Partial<T>);
               }}
+              customeEndInputPlaceHolder={
+                tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
+                  ? t("labelBlindBoxEndDate2")
+                  : undefined
+              } 
             />
           </Box>
         </Box>

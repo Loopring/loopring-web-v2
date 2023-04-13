@@ -1803,7 +1803,56 @@ export const RedPacketBlindBoxDetail = ({
               })}
               {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
             </Typography>
-            <Typography
+              <Box>
+                {type === "Not Started" && <Typography
+                  variant={"body2"}
+                  color={theme.colorBase.warning}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {t("labelBlindBoxNotStarted", {
+                    time: moment(blindBoxStartTime).format(
+                      YEAR_DAY_MINUTE_FORMAT
+                    ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
+                  })
+                  }
+                </Typography>}
+                {(type === "Not Started" || type === "Blind Box Started") && <Typography
+                  variant={"body2"}
+                  color={type === "Blind Box Started" ? theme.colorBase.warning : theme.colorBase.textSecondary}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {t("labelBlindBoxStarted", {
+                    time: moment(lotteryStartTime).format(
+                      YEAR_DAY_MINUTE_FORMAT
+                    ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
+                  })}
+
+                </Typography>
+                }
+                <Typography
+                  variant={"body2"}
+                  color={(type !== "Blind Box Started" && type !== "Not Started") ? theme.colorBase.warning : theme.colorBase.textSecondary}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {t("labelBlindBoxClaimStarted", {
+                    time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
+                    interpolation: {
+                      escapeValue: false,
+                    }
+                  })}
+                </Typography>
+
+              </Box>
+            {/* <Typography
               variant={"body2"}
               color={theme.colorBase.warning}
               marginTop={1}
@@ -1833,7 +1882,7 @@ export const RedPacketBlindBoxDetail = ({
                       escapeValue: false,
                     }
                   })}
-            </Typography>
+            </Typography> */}
             {(type === "Blind Box Started" || type === "Lottery Started") && (
               <Link
                 className={"viewDetail"}

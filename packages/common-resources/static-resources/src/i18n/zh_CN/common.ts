@@ -1295,7 +1295,9 @@ export default {
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
+  labelBlindBoxStartTime: "Start Time",
   labelBlindBoxEndDate: "End date",
+  labelBlindBoxEndDate2: "Blindbox reveal time",
   labelBlindBoxEndTime: "End Time",
   labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
   labelBlindBoxExpirationExplainationForToken:
