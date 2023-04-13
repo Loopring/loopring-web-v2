@@ -318,24 +318,24 @@ export const useCexSwap = <
     } = store.getState()._router_tradeCex;
     try {
       if (
-        (account.readyState !== AccountStatus.ACTIVATED &&
-          tradeCalcData.coinSel &&
-         tradeCalcData.coinBuy &&
+        account.readyState !== AccountStatus.ACTIVATED &&
+        tradeCalcData.coinSell &&
+        tradeCalcData.coinBuy &&
         // tradeData?.sell.belong &&
         // tradeData?.buy.belong &&
-         tokenMap &&
-          exchangeInfo &&
-          tradeCalcData &&
-          tradeCalcData?.volumeSell &&
-          tradeCalcData?.volumeBuy &&
-          tradeCalcData.maxFeeBips &&
-          LoopringAPI.userAPI &&
-          LoopringAPI.defiAPI)
+        tokenMap &&
+        exchangeInfo &&
+        tradeCalcData &&
+        tradeCalcData?.volumeSell &&
+        tradeCalcData?.volumeBuy &&
+        tradeCalcData.maxFeeBips &&
+        LoopringAPI.userAPI &&
+        LoopringAPI.defiAPI
       ) {
         // const sell = tradeData?.sell.belong as string;
         // const buy = tradeData?.buy.belong as string;
         const sellToken = tokenMap[tradeCalcData.coinSell.toString()];
-        const buyToken = tokenMap[tradeCalcData.coinBuy..toString()];
+        const buyToken = tokenMap[tradeCalcData.coinBuy.toString()];
         const storageId = await LoopringAPI.userAPI.getNextStorageId(
           {
             accountId: account.accountId,
@@ -426,7 +426,7 @@ export const useCexSwap = <
           step: AccountStep.CexSwap_Delivering,
           info,
         });
-        await sdk.sleep(1000);
+        await sdk.sleep(2000);
         const orderConfirm: { hash: string } | any =
           await LoopringAPI.defiAPI.getCefiOrders({
             request: {
