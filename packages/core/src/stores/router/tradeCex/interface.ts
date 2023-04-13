@@ -1,8 +1,4 @@
-import {
-  CEX_MARKET,
-  CexTradeCalcData,
-  MarketType,
-} from "@loopring-web/common-resources";
+import { CexTradeCalcData, MarketType } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { OrderInfoPatch } from "../tradePro";
 
@@ -22,7 +18,8 @@ export type TradeCex = {
   sellUserOrderInfo?: undefined | null | sdk.OrderInfo;
   buyUserOrderInfo?: undefined | null | sdk.OrderInfo;
   minOrderInfo?: undefined | null | Partial<sdk.OrderInfo & OrderInfoPatch>;
-} & Omit<CEX_MARKET, "market">;
+  info: sdk.CEX_MARKET;
+};
 
 export type TradeCexStatus = {
   tradeCex: TradeCex;

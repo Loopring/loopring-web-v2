@@ -41,7 +41,6 @@ export type System = {
     mintNFT?: { enable: boolean; reason?: string };
     deployNFT?: { enable: boolean; reason?: string };
     forceWithdraw?: { enable: boolean; reason?: string };
-    cexOrder?: { enable: boolean; reason?: string };
   };
 };
 
