@@ -314,19 +314,15 @@ export const useCexSwap = <
   const sendRequest = React.useCallback(async () => {
     setIsCexLoading(true);
     const {
-      tradeCex: { tradeCalcData, sellToken: _sellToken, buyToken: _buyToken },
+      tradeCex: { tradeCalcData },
     } = store.getState()._router_tradeCex;
-    myLog(
-      "exchangeInfo",
-      exchangeInfo,
-      LoopringAPI.userAPI,
-      LoopringAPI.defiAPI
-    );
     try {
       if (
-        account.readyState == AccountStatus.ACTIVATED &&
-        _sellToken &&
-        _buyToken &&
+        account.readyState !== AccountStatus.ACTIVATED &&
+        tradeCalcData.coinSell &&
+        tradeCalcData.coinBuy &&
+        // tradeData?.sell.belong &&
+        // tradeData?.buy.belong &&
         tokenMap &&
         exchangeInfo &&
         tradeCalcData &&
@@ -338,8 +334,8 @@ export const useCexSwap = <
       ) {
         // const sell = tradeData?.sell.belong as string;
         // const buy = tradeData?.buy.belong as string;
-        const sellToken = tokenMap[_sellToken];
-        const buyToken = tokenMap[_buyToken];
+        const sellToken = tokenMap[tradeCalcData.coinSell.toString()];
+        const buyToken = tokenMap[tradeCalcData.coinBuy.toString()];
         const storageId = await LoopringAPI.userAPI.getNextStorageId(
           {
             accountId: account.accountId,
@@ -360,9 +356,10 @@ export const useCexSwap = <
             volume: tradeCalcData.volumeBuy,
           },
           validUntil: getTimestampDaysLater(DAYS),
-          maxFeeBips: tradeCalcData.maxFeeBips,
+          maxFeeBips:
+            tradeCalcData.maxFeeBips <= 5 ? 5 : tradeCalcData.maxFeeBips,
           fillAmountBOrS: false,
-          allOrNone: false,
+          allOrNone: true,
           eddsaSignature: "",
           clientOrderId: "",
           orderType: sdk.OrderTypeResp.TakerOnly,
@@ -397,9 +394,7 @@ export const useCexSwap = <
           buyToken,
           sellStr:
             getValuePrecisionThousand(
-              sdk
-                .toBig(tradeCalcData.volumeSell)
-                .div("1e" + sellToken.decimals),
+              sdk.toBig(tradeCalcData.volumeSell).div(sellToken.precision),
               sellToken.precision,
               sellToken.precision,
               sellToken.precision,
@@ -410,7 +405,7 @@ export const useCexSwap = <
             sellToken.symbol,
           buyStr:
             getValuePrecisionThousand(
-              sdk.toBig(tradeCalcData.volumeBuy).div("1e" + buyToken.decimals),
+              sdk.toBig(tradeCalcData.volumeBuy).div(buyToken.precision),
               buyToken.precision,
               buyToken.precision,
               buyToken.precision,
@@ -921,7 +916,6 @@ export const useCexSwap = <
 
         let _tradeCalcData: any = {
           minimumReceived,
-          maxFeeBips,
           volumeSell: calcDexOutput?.sellVol as any,
           volumeBuy: calcDexOutput?.amountBSlipped?.minReceived, //tradeCalcData?.volumeBuy as any,
           fee: totalFee,
@@ -1048,7 +1042,6 @@ export const useCexSwap = <
           sellMaxL2AmtInfo: sellMaxL2AmtInfo as any,
           sellMaxAmtInfo: sellMaxAmtInfo as any,
           tradeCalcData: _tradeCalcData,
-          maxFeeBips,
         });
       }
     },
