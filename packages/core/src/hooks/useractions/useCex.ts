@@ -314,28 +314,32 @@ export const useCexSwap = <
   const sendRequest = React.useCallback(async () => {
     setIsCexLoading(true);
     const {
-      tradeCex: { tradeCalcData },
+      tradeCex: { tradeCalcData, sellToken: _sellToken, buyToken: _buyToken },
     } = store.getState()._router_tradeCex;
+    myLog(
+      "exchangeInfo",
+      exchangeInfo,
+      LoopringAPI.userAPI,
+      LoopringAPI.defiAPI
+    );
     try {
       if (
-        (account.readyState !== AccountStatus.ACTIVATED &&
-          tradeCalcData.coinSel &&
-         tradeCalcData.coinBuy &&
-        // tradeData?.sell.belong &&
-        // tradeData?.buy.belong &&
-         tokenMap &&
-          exchangeInfo &&
-          tradeCalcData &&
-          tradeCalcData?.volumeSell &&
-          tradeCalcData?.volumeBuy &&
-          tradeCalcData.maxFeeBips &&
-          LoopringAPI.userAPI &&
-          LoopringAPI.defiAPI)
+        account.readyState == AccountStatus.ACTIVATED &&
+        _sellToken &&
+        _buyToken &&
+        tokenMap &&
+        exchangeInfo &&
+        tradeCalcData &&
+        tradeCalcData?.volumeSell &&
+        tradeCalcData?.volumeBuy &&
+        tradeCalcData.maxFeeBips &&
+        LoopringAPI.userAPI &&
+        LoopringAPI.defiAPI
       ) {
         // const sell = tradeData?.sell.belong as string;
         // const buy = tradeData?.buy.belong as string;
-        const sellToken = tokenMap[tradeCalcData.coinSell.toString()];
-        const buyToken = tokenMap[tradeCalcData.coinBuy..toString()];
+        const sellToken = tokenMap[_sellToken];
+        const buyToken = tokenMap[_buyToken];
         const storageId = await LoopringAPI.userAPI.getNextStorageId(
           {
             accountId: account.accountId,
@@ -356,10 +360,9 @@ export const useCexSwap = <
             volume: tradeCalcData.volumeBuy,
           },
           validUntil: getTimestampDaysLater(DAYS),
-          maxFeeBips:
-            tradeCalcData.maxFeeBips <= 5 ? 5 : tradeCalcData.maxFeeBips,
+          maxFeeBips: tradeCalcData.maxFeeBips,
           fillAmountBOrS: false,
-          allOrNone: true,
+          allOrNone: false,
           eddsaSignature: "",
           clientOrderId: "",
           orderType: sdk.OrderTypeResp.TakerOnly,
@@ -394,7 +397,9 @@ export const useCexSwap = <
           buyToken,
           sellStr:
             getValuePrecisionThousand(
-              sdk.toBig(tradeCalcData.volumeSell).div(sellToken.precision),
+              sdk
+                .toBig(tradeCalcData.volumeSell)
+                .div("1e" + sellToken.decimals),
               sellToken.precision,
               sellToken.precision,
               sellToken.precision,
@@ -405,7 +410,7 @@ export const useCexSwap = <
             sellToken.symbol,
           buyStr:
             getValuePrecisionThousand(
-              sdk.toBig(tradeCalcData.volumeBuy).div(buyToken.precision),
+              sdk.toBig(tradeCalcData.volumeBuy).div("1e" + buyToken.decimals),
               buyToken.precision,
               buyToken.precision,
               buyToken.precision,
@@ -426,7 +431,7 @@ export const useCexSwap = <
           step: AccountStep.CexSwap_Delivering,
           info,
         });
-        await sdk.sleep(1000);
+        await sdk.sleep(2000);
         const orderConfirm: { hash: string } | any =
           await LoopringAPI.defiAPI.getCefiOrders({
             request: {
@@ -916,6 +921,7 @@ export const useCexSwap = <
 
         let _tradeCalcData: any = {
           minimumReceived,
+          maxFeeBips,
           volumeSell: calcDexOutput?.sellVol as any,
           volumeBuy: calcDexOutput?.amountBSlipped?.minReceived, //tradeCalcData?.volumeBuy as any,
           fee: totalFee,
@@ -1042,6 +1048,7 @@ export const useCexSwap = <
           sellMaxL2AmtInfo: sellMaxL2AmtInfo as any,
           sellMaxAmtInfo: sellMaxAmtInfo as any,
           tradeCalcData: _tradeCalcData,
+          maxFeeBips,
         });
       }
     },

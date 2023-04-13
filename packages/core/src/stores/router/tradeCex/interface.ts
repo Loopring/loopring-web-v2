@@ -8,6 +8,8 @@ export type TradeCex = {
   request?: sdk.OriginCEXV3OrderRequest | null | undefined;
   tradeCalcData: Partial<CexTradeCalcData<any>>;
   depth?: sdk.DepthData | undefined;
+  sellToken: string;
+  buyToken: string;
   totalFeeRaw?: number | string;
   totalFee?: number | string;
   maxFeeBips?: number;

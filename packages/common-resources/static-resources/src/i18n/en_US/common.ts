@@ -1573,4 +1573,6 @@ export default {
   labelCexSwapMini: "Min {{minValue}}",
   labelCexConfirm: "Please check the checkbox",
   labelCexSwapBtn: "CEX Swap",
+  labelType: "Type",
+  labelCexTrade: "CEX Swap",
 };

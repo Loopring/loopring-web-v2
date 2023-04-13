@@ -17,7 +17,6 @@ import {
   myLog,
 } from "@loopring-web/common-resources";
 import { statusUnset as accountStatusUnset } from "../account/reducer";
-import { ChainId, Currency } from "@loopring-web/loopring-sdk";
 import {
   getAmmMap,
   initAmmMap,
@@ -40,7 +39,7 @@ import { AvaiableNetwork } from "@loopring-web/web3-provider";
 import { getCexMap } from "../invest/CexMap/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
-  _chainId: ChainId | "unknown"
+  _chainId: sdk.ChainId | "unknown"
 ) {
   const { chainId } = store.getState().system;
   const _tokenMap = JSON.parse(window.localStorage.getItem("tokenMap") ?? "{}")[
@@ -261,19 +260,19 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   store.dispatch(accountStatusUnset(undefined));
 };
 const should15MinutesUpdateDataGroup = async (
-  chainId: ChainId
+  chainId: sdk.ChainId
 ): Promise<{
   gasPrice: number | undefined;
-  forexMap: ForexMap<Currency>;
+  forexMap: ForexMap<sdk.Currency>;
 }> => {
   if (LoopringAPI.exchangeAPI) {
     let indexUSD = 0;
     const tokenId =
-      chainId === ChainId.GOERLI
+      chainId === sdk.ChainId.GOERLI
         ? "0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a"
         : "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
-    const promiseArray = Reflect.ownKeys(Currency).map((key, index) => {
-      if (key.toString().toUpperCase() === Currency.usd.toUpperCase()) {
+    const promiseArray = Reflect.ownKeys(sdk.Currency).map((key, index) => {
+      if (key.toString().toUpperCase() === sdk.Currency.usd.toUpperCase()) {
         indexUSD = index;
       }
       return (
@@ -289,14 +288,14 @@ const should15MinutesUpdateDataGroup = async (
       ...promiseArray,
     ]);
     const baseUsd = restForexs[indexUSD].tokenPrices[tokenId] ?? 1;
-    const forexMap: ForexMap<Currency> = Reflect.ownKeys(Currency).reduce<
-      ForexMap<Currency>
-    >((prev, key, index) => {
+    const forexMap: ForexMap<sdk.Currency> = Reflect.ownKeys(
+      sdk.Currency
+    ).reduce<ForexMap<sdk.Currency>>((prev, key, index) => {
       if (restForexs[index] && key && restForexs[index].tokenPrices) {
         prev[key] = restForexs[index].tokenPrices[tokenId] / baseUsd;
       }
       return prev;
-    }, {} as ForexMap<Currency>);
+    }, {} as ForexMap<sdk.Currency>);
 
     return {
       gasPrice,
@@ -304,7 +303,7 @@ const should15MinutesUpdateDataGroup = async (
     };
   }
   return {
-    forexMap: {} as ForexMap<Currency>,
+    forexMap: {} as ForexMap<sdk.Currency>,
     gasPrice: undefined,
   };
 };
@@ -319,7 +318,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
   const env =
     window.location.hostname === "localhost"
       ? ENV.DEV
-      : ChainId.GOERLI === chainId
+      : sdk.ChainId.GOERLI === chainId
       ? ENV.UAT
       : ENV.PROD;
   chainId = AvaiableNetwork.includes(chainId.toString())
@@ -334,7 +333,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
   if (chainId === NETWORKEXTEND.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR);
   } else {
-    LoopringAPI.InitApi(chainId as ChainId);
+    LoopringAPI.InitApi(chainId as sdk.ChainId);
 
     if (LoopringAPI.exchangeAPI) {
       let baseURL, socketURL, etherscanBaseUrl;
@@ -351,15 +350,15 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
           : `https://goerli.etherscan.io/`;
       } else {
         baseURL =
-          ChainId.MAINNET === chainId
+          sdk.ChainId.MAINNET === chainId
             ? `https://${process.env.REACT_APP_API_URL}`
             : `https://${process.env.REACT_APP_API_URL_UAT}`;
         socketURL =
-          ChainId.MAINNET === chainId
+          sdk.ChainId.MAINNET === chainId
             ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
             : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
         etherscanBaseUrl =
-          ChainId.MAINNET === chainId
+          sdk.ChainId.MAINNET === chainId
             ? `https://etherscan.io/`
             : `https://goerli.etherscan.io/`;
       }
@@ -376,10 +375,10 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
       let allowTrade, exchangeInfo, gasPrice, forexMap;
       if (
         /dev\.loopring\.io/.test(baseURL) &&
-        ChainId.MAINNET !== chainId &&
+        sdk.ChainId.MAINNET !== chainId &&
         process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION
       ) {
-        sdk.NFTFactory_Collection[ChainId.GOERLI] =
+        sdk.NFTFactory_Collection[sdk.ChainId.GOERLI] =
           process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION;
       }
       try {

@@ -45,6 +45,10 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
       } = action.payload;
       if (market !== state.tradeCex.market && market) {
         // @ts-ignore
+        const [_, sellToken, buyToken] = (tradePair ?? "").match(
+          /(\w+)-(\w+)/i
+        );
+        // @ts-ignore
         state.tradeCex = {
           market,
           tradePair, //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
@@ -52,6 +56,8 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
           depth,
           totalFee,
           minOrderInfo,
+          sellToken,
+          buyToken,
           tradeCalcData: tradeCalcData as any,
           sellUserOrderInfo,
           buyUserOrderInfo,
@@ -60,7 +66,7 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
           sellMaxAmtInfo,
           lastStepAt: undefined,
           // cexMarket,
-          maxFeeBips: MAPFEEBIPS,
+          maxFeeBips,
           ...rest,
         };
       } else {
@@ -68,7 +74,10 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
           state.tradeCex.lastStepAt = lastStepAt;
         }
         if (tradePair && tradePair) {
+          const [_, sellToken, buyToken] = tradePair.match(/(\w+)-(\w+)/i);
           state.tradeCex.tradePair = tradePair;
+          state.tradeCex.sellToken = sellToken;
+          state.tradeCex.buyToken = buyToken;
           state.tradeCex.lastStepAt = undefined;
         }
         if (depth) {
@@ -84,7 +93,7 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
         if (minOrderInfo) {
           state.tradeCex.minOrderInfo = minOrderInfo;
         }
-        if (maxFeeBips) {
+        if (maxFeeBips !== undefined) {
           state.tradeCex.maxFeeBips = maxFeeBips;
         }
         if (tradeCalcData) {
