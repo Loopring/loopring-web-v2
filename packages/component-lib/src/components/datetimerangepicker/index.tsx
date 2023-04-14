@@ -62,7 +62,7 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
           <TextField placeholder={t("labelBlindBoxStartTime")} {...params} />
         )}
       />
-      <ToRightIcon htmlColor={"var(--color-text-third)"} />
+      <ToRightIcon fontSize={"large"} htmlColor={"var(--color-text-third)"} />
       <MobileDateTimePicker
         onOpen={onEndOpen}
         value={endValue}
