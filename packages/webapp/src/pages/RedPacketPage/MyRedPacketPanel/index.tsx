@@ -15,7 +15,7 @@ import {
   useMyRedPacketRecordTransaction,
 } from "./hooks";
 import { BackIcon, RowConfig, TokenType } from "@loopring-web/common-resources";
-import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, Tab, Tabs, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 
 enum TabIndex {
@@ -45,24 +45,25 @@ export const MyRedPacketPanel = ({
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const { etherscanBaseUrl, forexMap } = useSystem();
-  let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
+  let match: any = useRouteMatch("/redPacket/records/:item/:type?");
 
   const container = React.useRef<HTMLDivElement>(null);
-
   const [currentTab, setCurrentTab] = React.useState<TabIndex>(
     match?.params.item ?? TabIndex.Received
   );
+  // let height = container?.current?.offsetHeight;
+  // const [pageSize, setPageSize] = React.useState(Math.floor((height - 120) / RowConfig.rowHeight - 1));
+  const pageSize = 10
 
-  const [pageSize, setPageSize] = React.useState(0);
-
-  React.useEffect(() => {
-    let height = container?.current?.offsetHeight;
-    if (height) {
-      const pageSize = Math.floor((height - 120) / RowConfig.rowHeight - 1);
-      setPageSize(pageSize);
-      handleTabChange(currentTab);
-    }
-  }, [container?.current?.offsetHeight]);
+  // React.useEffect(() => {
+  //   let height = container?.current?.offsetHeight;
+  //   if (height) {
+  //     const pageSize = Math.floor((height - 120) / RowConfig.rowHeight - 1);
+  //     setPageSize(pageSize);
+  //     handleTabChange(currentTab);
+  //   }
+  //   console.log('container?.current?.offsetHeight', container?.current?.offsetHeight)
+  // }, [container?.current?.offsetHeight]);
 
   // getRedPacketReceiveList({ offset: 0, limit: pageSize });
   // getMyRedPacketRecordTxList({ offset: 0, limit: pageSize });
@@ -76,6 +77,11 @@ export const MyRedPacketPanel = ({
     setToastOpen,
     // tabType: currentTokenTab,
   });
+
+  const [showActionableRecords, setShowActionableRecords] = React.useState(true)
+  const onChangeShowActionableRecords = React.useCallback(() => {
+    setShowActionableRecords(!showActionableRecords)
+  }, [showActionableRecords]) 
   const {
     showLoading: showloadingReceive,
     getRedPacketReceiveList,
@@ -85,6 +91,7 @@ export const MyRedPacketPanel = ({
     onClaimItem: onReceiveClaimItem,
   } = useMyRedPacketReceiveTransaction({
     setToastOpen,
+    // showActionableRecords
   });
   const {
     showLoading: showloadingReceive_BlindBox,
@@ -94,6 +101,7 @@ export const MyRedPacketPanel = ({
     onItemClick: onReceiveItemClick_BlindBox,
   } = useMyRedPacketBlindBoxReceiveTransaction({
     setToastOpen,
+    // showActionableRecords
   });
   const handleTabChange = (value: TabIndex) => {
     history.push(`/redPacket/records/${value}`);
@@ -110,6 +118,8 @@ export const MyRedPacketPanel = ({
     : [TabIndex.NFTReceived, TabIndex.NFTSend].includes(currentTab)
     ? "NFTs"
     : "blindBox";
+  // const showActionableRecords = true
+  // const onChangeShowActionableRecords = () => {}
 
   // @ts-ignore
   return (
@@ -175,45 +185,55 @@ export const MyRedPacketPanel = ({
           <Tab key={"Received"} label={"Received"} value={"Received"} />
           <Tab key={"Sent"} label={"Sent"} value={"Sent"} />
         </Tabs>
-        <Box marginLeft={2} marginTop={3}>
-          <SelectButton
-            onClick={() => {
-              isRecieve
-                ? handleTabChange(TabIndex.Received)
-                : handleTabChange(TabIndex.Send);
-            }}
-            selected={[TabIndex.Send, TabIndex.Received].includes(currentTab)}
-            style={{ marginRight: `${theme.unit}px` }}
-            variant={"outlined"}
-          >
-            {t("labelRedpacketTokensShort")}
-          </SelectButton>
-          <SelectButton
-            onClick={() => {
-              isRecieve
-                ? handleTabChange(TabIndex.NFTReceived)
-                : handleTabChange(TabIndex.NFTSend);
-            }}
-            selected={[TabIndex.NFTReceived, TabIndex.NFTSend].includes(
-              currentTab
-            )}
-            style={{ marginRight: `${theme.unit}px` }}
-            variant={"outlined"}
-          >
-            {t("labelRedpacketNFTS")}
-          </SelectButton>
-          {isRecieve && (
+        <Box paddingX={2} marginTop={3} display={"flex"} justifyContent="space-between" >
+          <Box >
             <SelectButton
               onClick={() => {
-                handleTabChange(TabIndex.BlindBoxReceived);
+                isRecieve
+                  ? handleTabChange(TabIndex.Received)
+                  : handleTabChange(TabIndex.Send);
               }}
-              selected={[TabIndex.BlindBoxReceived].includes(currentTab)}
+              selected={[TabIndex.Send, TabIndex.Received].includes(currentTab)}
+              style={{ marginRight: `${theme.unit}px` }}
               variant={"outlined"}
             >
-              {t("labelRedpacketBlindBox")}
+              {t("labelRedpacketTokensShort")}
             </SelectButton>
+            <SelectButton
+              onClick={() => {
+                isRecieve
+                  ? handleTabChange(TabIndex.NFTReceived)
+                  : handleTabChange(TabIndex.NFTSend);
+              }}
+              selected={[TabIndex.NFTReceived, TabIndex.NFTSend].includes(
+                currentTab
+              )}
+              style={{ marginRight: `${theme.unit}px` }}
+              variant={"outlined"}
+            >
+              {t("labelRedpacketNFTS")}
+            </SelectButton>
+            {isRecieve && (
+              <SelectButton
+                onClick={() => {
+                  handleTabChange(TabIndex.BlindBoxReceived);
+                }}
+                selected={[TabIndex.BlindBoxReceived].includes(currentTab)}
+                variant={"outlined"}
+              >
+                {t("labelRedpacketBlindBox")}
+              </SelectButton>
+            )}
+
+
+          </Box>
+          {isRecieve && (tabType === 'NFTs' || tabType === 'blindBox') && (
+            <FormControlLabel control={<Checkbox checked={showActionableRecords} onChange={() => {
+              onChangeShowActionableRecords()
+            }} />} label="Show actionable records" />
           )}
         </Box>
+        
         {[TabIndex.Received, TabIndex.NFTReceived].includes(currentTab) && (
           <Box
             className="tableWrapper table-divide-short"
@@ -249,6 +269,7 @@ export const MyRedPacketPanel = ({
                   pageSize: pageSize,
                   total: redPacketReceiveTotal,
                 },
+                showActionableRecords
               }}
             />
           </Box>
@@ -279,6 +300,7 @@ export const MyRedPacketPanel = ({
                 pageSize: pageSize,
                 total: redPacketReceiveTotal_BlindBox,
               }}
+              showActionableRecords={showActionableRecords}
             />
           </Box>
         )}

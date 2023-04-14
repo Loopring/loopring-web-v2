@@ -253,27 +253,59 @@ export const useRedPacketScanQrcodeSuccess = () => {
               });
             }
           } else if (difference > 0) {
-            setShowRedPacket({
-              isShow: true,
-              info: {
-                ...luckTokenInfo,
-                referrer: redPacketInfo.referrer,
-              },
-              step: RedPacketViewStep.RedPacketClock,
-            });
+            if (luckTokenInfo.sender.accountId === accountId) {
+              if (luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+                setShowRedPacket({
+                  isShow: true,
+                  info: {
+                    ...luckTokenInfo,
+                    referrer: redPacketInfo.referrer,
+                  },
+                  step: RedPacketViewStep.BlindBoxDetail,
+                });
+              } else {
+                setShowRedPacket({
+                  isShow: true,
+                  info: {
+                    ...luckTokenInfo,
+                    referrer: redPacketInfo.referrer,
+                  },
+                  step: RedPacketViewStep.DetailPanel,
+                });
+              }
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                  referrer: redPacketInfo.referrer,
+                },
+                step: RedPacketViewStep.RedPacketClock,
+              });
+            }
           } else if (
             luckTokenInfo.status == LuckyTokenItemStatus.COMPLETED ||
             luckTokenInfo.status == LuckyTokenItemStatus.OVER_DUE ||
             // difference + 86400000 < 0 ||
             luckTokenInfo.tokenAmount.remainCount === 0
           ) {
-            setShowRedPacket({
-              isShow: true,
-              info: {
-                ...luckTokenInfo,
-              },
-              step: RedPacketViewStep.TimeOutPanel,
-            });
+            if (luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                },
+                step: RedPacketViewStep.BlindBoxDetail,
+              });
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                },
+                step: RedPacketViewStep.TimeOutPanel,
+              });
+            }
           } else {
             setShowRedPacket({
               isShow: true,

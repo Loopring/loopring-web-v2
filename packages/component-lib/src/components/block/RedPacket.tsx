@@ -227,7 +227,7 @@ export const RedPacketSize = {
     width: 260,
   },
   large: {
-    height: 600,
+    height: 680,
     width: 320,
   },
 };
@@ -1010,6 +1010,7 @@ export const RedPacketDetail = ({
         flexDirection={"column"}
         alignItems={"center"}
         marginY={2}
+        overflow={"scroll"}
       >
         <Typography variant={"body1"}>{sender}</Typography>
         <Typography
@@ -1069,7 +1070,7 @@ export const RedPacketDetail = ({
         {/*  orientation={"horizontal"}*/}
         {/*  sx={{ borderWidth: 1, paddingX: 1 }}*/}
         {/*/>*/}
-        <Box flex={1} overflow={"scroll"}>
+        <Box flex={1}  >
           {claimList &&
             claimList.map((item, index) => {
               return (
@@ -1206,9 +1207,7 @@ export const RedPacketDetail = ({
               fullWidth={true}
               onClick={onShared}
             >
-
               {t("labelRedPacketGrab")}
-
             </Button>)
         }
 
@@ -1471,6 +1470,7 @@ export const RedPacketPrepare = ({
             _info.sender.accountId === account.accountId
               ? () => {
                   if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+                    _info
                     setShowRedPacket({
                       isShow: true,
                       step: RedPacketViewStep.BlindBoxDetail,
@@ -1797,12 +1797,62 @@ export const RedPacketBlindBoxDetail = ({
               {t("labelBlindBoxExplaination2", {
                 opendBlindBoxAmount,
                 totalBlindBoxAmount,
-                deliverdGiftsAmount,
-                totalGiftsAmount,
+                // deliverdGiftsAmount,
+                // totalGiftsAmount,
+                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount
               })}
               {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
             </Typography>
-            <Typography
+              <Box>
+                {type === "Not Started" && <Typography
+                  variant={"body2"}
+                  color={theme.colorBase.warning}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {t("labelBlindBoxNotStarted", {
+                    time: moment(blindBoxStartTime).format(
+                      YEAR_DAY_MINUTE_FORMAT
+                    ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
+                  })
+                  }
+                </Typography>}
+                {(type === "Not Started" || type === "Blind Box Started") && <Typography
+                  variant={"body2"}
+                  color={type === "Blind Box Started" ? theme.colorBase.warning : theme.colorBase.textSecondary}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {t("labelBlindBoxStarted", {
+                    time: moment(lotteryStartTime).format(
+                      YEAR_DAY_MINUTE_FORMAT
+                    ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
+                  })}
+
+                </Typography>
+                }
+                <Typography
+                  variant={"body2"}
+                  color={(type !== "Blind Box Started" && type !== "Not Started") ? theme.colorBase.warning : theme.colorBase.textSecondary}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {t("labelBlindBoxClaimStarted", {
+                    time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
+                    interpolation: {
+                      escapeValue: false,
+                    }
+                  })}
+                </Typography>
+
+              </Box>
+            {/* <Typography
               variant={"body2"}
               color={theme.colorBase.warning}
               marginTop={1}
@@ -1813,17 +1863,26 @@ export const RedPacketBlindBoxDetail = ({
                     time: moment(blindBoxStartTime).format(
                       YEAR_DAY_MINUTE_FORMAT
                     ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
                   })
                 : type === "Blind Box Started"
                 ? t("labelBlindBoxStarted", {
                     time: moment(lotteryStartTime).format(
                       YEAR_DAY_MINUTE_FORMAT
                     ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
                   })
                 : t("labelBlindBoxClaimStarted", {
                     time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
+                    interpolation: {
+                      escapeValue: false,
+                    }
                   })}
-            </Typography>
+            </Typography> */}
             {(type === "Blind Box Started" || type === "Lottery Started") && (
               <Link
                 className={"viewDetail"}

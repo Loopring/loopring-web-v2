@@ -15,6 +15,7 @@ import {
   TRADE_TYPE,
   UIERROR_CODE,
   WalletMap,
+  BLINDBOX_REDPACKET_LIMIT,
 } from "@loopring-web/common-resources";
 import {
   store,
@@ -296,6 +297,12 @@ export const useCreateRedPacket = <
         sdk
           .toBig(redPacketOrder.giftNumbers ?? "0")
           .isGreaterThan(redPacketOrder.numbers);
+      const blindBoxPacketsNumberTooLarge =
+        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
+        redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
+        sdk
+          .toBig(redPacketOrder.numbers)
+          .isGreaterThan(BLINDBOX_REDPACKET_LIMIT);
       if (
         (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
         redPacketOrder.belong &&
@@ -320,11 +327,16 @@ export const useCreateRedPacket = <
         balance = redPacketOrder.balance ?? 0;
         tradeValue = sdk.toBig(redPacketOrder.tradeValue ?? 0);
         isExceedBalance = false 
-        const eachValue = sdk.toBig(_tradeData.eachValue ?? 0);
+        const eachValue =  redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+          ? sdk.toBig(redPacketOrder.tradeValue ?? 0).div(redPacketOrder.giftNumbers ?? 1)
+          : sdk.toBig(_tradeData.eachValue ?? 0);
         tooSmall = eachValue.lt(1);
         tooLarge = tradeValue
-          // @ts-ignore
-          .div(tradeValue?.numbers ?? 1)
+          .div(
+            redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+            ? (redPacketOrder.giftNumbers ?? 1)
+            : (redPacketOrder.numbers ?? 1)
+          )
           .gt(REDPACKET_ORDER_NFT_LIMIT);
       }
 
@@ -338,7 +350,8 @@ export const useCreateRedPacket = <
           // @ts-ignore
           redPacketOrder.tradeType === TRADE_TYPE.TOKEN) &&
         redPacketConfigs?.luckTokenAgents &&
-        !blindBoxGiftsLargerThanPackets
+        !blindBoxGiftsLargerThanPackets &&
+        !blindBoxPacketsNumberTooLarge
       ) {
         enableBtn();
         return;
@@ -419,6 +432,8 @@ export const useCreateRedPacket = <
           );
         } else if (blindBoxGiftsLargerThanPackets) {
           setLabelAndParams("labelRedPacketsGiftsLargerThanPackets", {});
+        } else if (blindBoxPacketsNumberTooLarge) {
+          setLabelAndParams("labelBlindBoxNumberOverMaximun", {});
         }
       }
     }

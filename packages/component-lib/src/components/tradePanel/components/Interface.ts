@@ -80,11 +80,10 @@ export type TransferInfoProps<C> = {
 export type TransferExtendProps<T, I, C> = {
   isThumb?: boolean;
   addressDefault?: string;
-  sureItsLayer2: WALLET_TYPE | EXCHANGE_TYPE | undefined;
-  handleSureItsLayer2: (sure: WALLET_TYPE | EXCHANGE_TYPE) => void;
+  sureItsLayer2: WALLET_TYPE | undefined;
+  handleSureItsLayer2: (sure: WALLET_TYPE) => void;
   realAddr?: string;
   isLoopringAddress?: boolean;
-  isSmartContractAddress?: boolean;
   isAddressCheckLoading?: boolean;
   isSameAddress?: boolean;
   isActiveAccountFee?: boolean;
@@ -99,9 +98,6 @@ export type TransferExtendProps<T, I, C> = {
   onBack?: () => void;
   memo: string;
   handleOnMemoChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  contact?: {address: string, name: string, addressType: sdk.AddressType}
-  isFromContact?: boolean
-  onClickContact?: () => void
 } & TransferInfoProps<C>;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
@@ -230,11 +226,8 @@ export type WithdrawExtendProps<T, I, C> = {
   wait?: number;
   onBack?: () => void;
   isToMyself?: boolean;
-  sureIsAllowAddress: WALLET_TYPE | EXCHANGE_TYPE | undefined;
-  handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => void;
-  contact?: {address: string, name: string, addressType?: sdk.AddressType}
-  isFromContact?: boolean
-  onClickContact?: () => void
+  sureIsAllowAddress: EXCHANGE_TYPE | undefined;
+  handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => void;
 } & WithdrawInfoProps<C>;
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =
@@ -613,6 +606,8 @@ export type ClaimExtendProps<T, Fee> = {
   tradeType: TRADE_TYPE;
   claimType: CLAIM_TYPE;
   handleFeeChange: (value: Fee) => void;
+  isNFT: boolean;
+  nftIMGURL?: string;
 } & ClaimInfoProps<Fee>;
 
 export type CreateRedPacketInfoProps<Fee = FeeInfo> = {

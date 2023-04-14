@@ -1127,8 +1127,9 @@ export function useRedPacketModal() {
             setShowClaimWithdraw({
               isShow: true,
               claimToken: {
-                tokenId: response!.tokenBalance[0].tokenId,
-                total: response!.tokenBalance[0].total,
+                tokenId: detail.luckyToken.tokenId,
+                // response!.tokenBalance[0].tokenId,
+                total: detail.claimAmount.toString(),
                 locked: response!.tokenBalance[0].locked,
                 pending: response!.tokenBalance[0].pending,
                 nftTokenInfo: detail.luckyToken.nftTokenInfo,

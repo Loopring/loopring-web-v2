@@ -6,7 +6,7 @@ import {
   useAccount,
   useTokenMap,
 } from "@loopring-web/core";
-import React from "react";
+import React, { useEffect } from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   CLAIM_TYPE,
@@ -183,9 +183,11 @@ export const useMyRedPacketReceiveTransaction = <
   R extends RawDataRedPacketReceivesItem
 >({
   setToastOpen,
+  // showActionableRecords
 }: // tabType,
 {
   setToastOpen: (props: any) => void;
+  // showActionableRecords: boolean
   // tabType: TabTokenTypeIndex;
 }) => {
   const { t } = useTranslation(["error"]);
@@ -336,8 +338,8 @@ export const useMyRedPacketReceiveTransaction = <
       setShowClaimWithdraw({
         isShow: true,
         claimToken: {
-          tokenId: response!.tokenBalance[0].tokenId,
-          total: response!.tokenBalance[0].total,
+          tokenId: item.luckyToken.tokenId,
+          total: item.claim.amount.toString(),
           locked: response!.tokenBalance[0].locked,
           pending: response!.tokenBalance[0].pending,
           nftTokenInfo: item.luckyToken.nftTokenInfo,
@@ -362,9 +364,11 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
   R extends RawDataRedPacketReceivesItem
 >({
   setToastOpen,
+  // showActionableRecords
 }: 
 {
   setToastOpen: (props: any) => void;
+  // showActionableRecords: boolean
 }) => {
   const { t } = useTranslation(["error"]);
 
@@ -384,6 +388,12 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
 
   const getRedPacketReceiveList = React.useCallback(
     async ({ offset, limit, filter }: any) => {
+      const _filer = {
+        ...filter,
+        // statuses: showActionableRecords 
+        //   ? [sdk.BlindBoxStatus.NOT_OPENED]
+        //   : undefined
+      }
       setShowLoading(true);
       if (LoopringAPI.luckTokenAPI && accountId) {
         if (apiKey) {
@@ -392,7 +402,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
               {
                 offset,
                 limit,
-                ...filter,
+                ..._filer,
               } as any,
               apiKey
             );

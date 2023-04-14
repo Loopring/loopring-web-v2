@@ -88,6 +88,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       t,
       onItemClick,
       onClaimItem,
+      showActionableRecords
     } = props;
     // const { isMobile, upColor } = useSettings();
     const history = useHistory();
@@ -95,9 +96,14 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
 
     const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
       await getRedPacketReceiveList({
-        offset: (page - 1) * (pagination?.pageSize ?? 10),
-        limit: pagination?.pageSize ?? 10,
-        filter,
+        offset: (page - 1) * (pagination?.pageSize ?? 12),
+        limit: pagination?.pageSize ?? 12,
+        filter: {
+          ...filter,
+          statuses: (tokenType === TokenType.nft && showActionableRecords)
+            ? [0]
+            : undefined
+        }
       });
     }, globalSetup.wait);
 
@@ -115,11 +121,10 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
     React.useEffect(() => {
       updateData.cancel();
       handlePageChange({ page: 1 });
-      // updateData({});
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize, tokenType]);
+    }, [tokenType, showActionableRecords]);
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {

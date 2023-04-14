@@ -1298,16 +1298,18 @@ export default {
   labelLuckyRecievedBlindBox: "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
   labelBlindBoxExplainationNotEnded: "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxExplainationEnded: "Please claim within 3 days or it will be forfeited and returned to the Sender's wallet.",
-  labelBlindBoxExplaination2: "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
+  labelBlindBoxExplaination2: "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{remainingGiftsAmount}} gifts available for grabbing.",
   labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
   labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
-  labelBlindBoxClaimStarted: "The NFTs Claimed will be ended after: {{time}}",
+  labelBlindBoxClaimStarted: "Unclaimed NFT will be returned back to sender after: {{time}}",
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
+  labelBlindBoxStartTime: "Start Time",
   labelBlindBoxEndDate: "End date",
+  labelBlindBoxEndDate2: "Blindbox reveal time",
   labelBlindBoxEndTime: "End Time",
-  labelBlindBoxRedPacketWithGift: "Gift Red Packet",
+  labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
   labelBlindBoxExpirationExplainationForToken: "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
   labelBlindBoxExpirationExplainationForNFT: "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
@@ -1387,6 +1389,8 @@ export default {
   labelRedPacketsMax: "Maximum of {{value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
     "Number of gifts is larger than number of packets",
+  labelBlindBoxNumberOverMaximun: 
+    "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:

@@ -83,6 +83,9 @@ export const CreateRedPacketPanel = <
         setPanelIndex(1);
         break;
       case RedPacketStep.Main:
+        handleOnDataChange({
+          validSince: Date.now()
+        } as any)
         setPanelIndex(2);
         break;
       case RedPacketStep.NFTList:

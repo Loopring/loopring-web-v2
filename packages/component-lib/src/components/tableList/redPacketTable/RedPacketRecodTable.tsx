@@ -259,7 +259,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize, tokenType]);
+    }, [ tokenType]);
 
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),

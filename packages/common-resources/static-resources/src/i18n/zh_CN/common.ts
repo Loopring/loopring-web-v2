@@ -1287,17 +1287,19 @@ export default {
     "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
   labelBlindBoxExplaination:
     "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
-  labelBlindBoxExplaination2:
-    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
+  labelBlindBoxExplaination2: 
+    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{remainingGiftsAmount}} gifts available for grabbing.",
   labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
   labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
-  labelBlindBoxClaimStarted: "The NFTs Claimed will be ended after: {{time}}",
+  labelBlindBoxClaimStarted: "Unclaimed NFT will be returned back to sender after: {{time}}",
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
+  labelBlindBoxStartTime: "Start Time",
   labelBlindBoxEndDate: "End date",
+  labelBlindBoxEndDate2: "Blindbox reveal time",
   labelBlindBoxEndTime: "End Time",
-  labelBlindBoxRedPacketWithGift: "有礼物的红包个数",
+  labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
   labelBlindBoxExpirationExplainationForToken:
     "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
   labelBlindBoxExpirationExplainationForNFT:
@@ -1374,6 +1376,8 @@ export default {
   labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
     "Number of gifts is larger than number of packets",
+  labelBlindBoxNumberOverMaximun: 
+    "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
