@@ -59,6 +59,11 @@ import { NFTInput } from "./BasicANFTTrade";
 import { DateTimeRangePicker } from "../../datetimerangepicker";
 import BigNumber from "bignumber.js";
 
+const StyledTextFiled = styled(TextField)`
+
+  
+`
+
 const RedPacketBoxStyle = styled(Box)`
   padding-top: ${({ theme }) => theme.unit}px;
 
@@ -652,7 +657,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
           />
         </Box>
         <Box marginY={1} display={"flex"} alignSelf={"stretch"}>
-          <TextField
+          <StyledTextFiled
             label={
               <Typography component={"span"} color={"var(--color-text-third)"}>
                 {t("labelRedPacketMemo")}
@@ -665,7 +670,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
               } as unknown as Partial<T>)
             }
             size={"large"}
-            inputProps={{ maxLength: 25 }}
+            inputProps={{ 
+              placeholder: t("labelRedPacketMemoPlaceholder"),
+              maxLength: 25
+            }}
             fullWidth={true}
           />
         </Box>
@@ -783,19 +791,21 @@ export const CreateRedPacketStepWrap = withTranslation()(
               </Typography>
               {dropdownStatus === "up" && (
                 <FeeTokenItemWrapper padding={2}>
-                  <Typography
-                    component={"span"}
-                    variant={"body2"}
-                    color={"var(--color-text-third)"}
-                    marginBottom={1}
-                  >
-                    {t("labelL2toL2FeeChoose")}
-                  </Typography>
-                  <FeeToggle
-                    chargeFeeTokenList={chargeFeeTokenList}
-                    handleToggleChange={handleToggleChange}
-                    feeInfo={feeInfo}
-                  />
+                  <Box display={"flex"} flexDirection={"column"}>
+                    <Typography
+                      component={"span"}
+                      variant={"body2"}
+                      color={"var(--color-text-third)"}
+                      marginBottom={1}
+                    >
+                      {t("labelL2toL2FeeChoose")}
+                    </Typography>
+                    <FeeToggle
+                      chargeFeeTokenList={chargeFeeTokenList}
+                      handleToggleChange={handleToggleChange}
+                      feeInfo={feeInfo}
+                    />
+                  </Box>
                 </FeeTokenItemWrapper>
               )}
             </>

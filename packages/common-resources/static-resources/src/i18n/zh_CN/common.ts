@@ -1326,12 +1326,13 @@ export default {
   labelRedPacketQRCodeImport: "Receive Red Packet",
   labelLuckyTokenViewType1: "Private Red Packet",
   labelLuckyTokenViewTypeDes1:
-    "Your Red Packet is shared privately with others via a custom QR code.",
+    "Your Red Packet is public, and everyone can try to claim a share of it.",
   labelLuckyTokenViewType0: "Public Red Packet",
   labelLuckyTokenViewTypeDes0:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelSplit: "Red Packet Count",
   labelRedPacketMemo: "Memo",
+  labelRedPacketMemoPlaceholder: "Best wishes",
   labelRedPacketStart: "Available in",
   labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
@@ -1415,7 +1416,7 @@ export default {
   labelRedPacketStatusOVER_DUE: "Over Due", // OVER_DUE = 4,
   labelRedPacketStatusFAILED: "Failed", // FAILED = 5
   labelRedPacketStatusNotStarted: "Hasn’t started",
-  labelRedPacketStatusStarted: "Opened",
+  labelRedPacketStatusStarted: "Started",
   labelRedPacketStatusEnded: "Ended",
   labelRedPacketNo: "NO.{{value}}",
   labelRedPacketClaimInProgress: "Processing...",
@@ -1434,7 +1435,7 @@ export default {
   labelOpenStart: "Start",
   labelTotalRedPacket: "Total {{value}}",
   labelMyRedPacketReward: "My Rewards",
-  labelRedpacketScanDes: "Using Loopring Wallet, scan the QR code.",
+  labelRedpacketScanDes: "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
   labelLuckyRedPacketStarted: "Red Packet is Started",
   labelNFTRedpacketBtn: "Send Red Packet",
   labelRedpacketDurationTitle: "Expires after",
@@ -1457,6 +1458,7 @@ export default {
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
+  labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:

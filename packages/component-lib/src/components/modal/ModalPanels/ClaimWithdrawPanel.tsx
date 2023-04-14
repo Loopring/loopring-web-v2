@@ -94,6 +94,7 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
                     color={"textSecondary"}
                     marginTop={1}
                     variant={"body2"}
+                    
                   >
                     {tradeData?.tradeValueView + " NFTs"}
                   </Typography>
@@ -102,10 +103,10 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
               : (
                 <Typography
                   component={"h5"}
-                  color={"textSecondary"}
                   marginTop={1}
-                  variant={"body2"}
                   textAlign={"center"}
+                  color={"textPrimary"}
+                  variant={"h2"}
                 >
                   {tradeData?.tradeValueView + " " + tradeData?.belong}
                 </Typography>

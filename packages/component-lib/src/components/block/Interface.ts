@@ -92,7 +92,8 @@ export type RedPacketOpenedProps = {
   memo: string;
   viewDetail: () => void;
 };
-export const RedPacketDetailLimit = 3;
+export const RedPacketDetailLimit = 6;
+export const RedPacketNFTDetailLimit = 3;
 export type RedPacketDetailProps = {
   redPacketType: 'normal' | 'lucky' | 'relay';
   sender: string;
@@ -171,6 +172,12 @@ export type RedPacketBlindBoxDetailProps = {
     won: boolean;
     amount: number;
   }
+  page: number
+  totalCount: number
+  remainCount: number
+  handlePageChange: (page: number, limit?: number) => void;
+  totalClaimedNFTsCount: number
+  totalBlindboxCount: number
   // didClaimABlindBox: boolean;
 };
 export type RedPacketClockProps = RedPacketDefault & {

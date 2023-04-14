@@ -9,7 +9,7 @@ import {
   Modal,
   IconButton,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   Account,
@@ -39,6 +39,7 @@ import {
   RedPacketDefaultBg,
   RedPacketDetailLimit,
   RedPacketDetailProps,
+  RedPacketNFTDetailLimit,
   RedPacketOpenedProps,
   RedPacketOpenProps,
   RedPacketQRCodeProps,
@@ -813,6 +814,7 @@ export const RedPacketOpened = ({
               "-webkit-box-orient": "vertical",
             }}
             dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+            width={300}
           />
         </Box>
         <Box display={"flex"} className={"footer"}>
@@ -938,7 +940,7 @@ export const RedPacketDetail = ({
   amountStr,
   // _amountClaimStr,
   memo,
-  page = 1,
+  // page = 1,
   claimList,
   // detail,
   // detail,
@@ -954,29 +956,41 @@ export const RedPacketDetail = ({
   showShareBtn,
   tokenSymbol,
   detail,
-  bottomButton
+  bottomButton,
+  page
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const showLucky =
-    [
-      sdk.LuckyTokenItemStatus.OVER_DUE,
-      sdk.LuckyTokenItemStatus.COMPLETED,
-    ].includes(detail.luckyToken.status) ||
     detail.luckyToken.tokenAmount.remainCount == 0;
-  const pageNation = React.useMemo(() => {
-    if (totalCount - remainCount - RedPacketDetailLimit > 0) {
-      return (
-        <TablePagination
-          page={page}
-          pageSize={RedPacketDetailLimit}
-          total={totalCount - remainCount}
-          onPageChange={handlePageChange}
-        />
-      );
-    } else {
-      return <></>;
-    }
-  }, []);
+  const limit = detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit;
+  
+  const pageNation = (totalCount - remainCount - limit > 0) && (
+    <TablePagination
+      page={page}
+      pageSize={limit}
+      total={totalCount - remainCount}
+      onPageChange={(_page) => {
+        handlePageChange(_page)
+      }}
+    />
+  )
+    // if (totalCount - remainCount -  limit > 0) {
+    //   return (
+    //     <TablePagination
+    //       page={page}
+    //       pageSize={limit}
+    //       total={totalCount - remainCount}
+    //       onPageChange={(_page) => {
+    //         debugger
+    //         setPage(_page)
+    //         handlePageChange(_page)
+    //       }}
+    //     />
+    //   );
+    // } else {
+    //   return <></>;
+    // }
+  // }, [page, setPage]);
 
   return (
     <BoxStyle
@@ -1546,11 +1560,28 @@ export const RedPacketBlindBoxDetail = ({
   shareButton,
   claimButton,
   didClaimABlindBox,
-  wonInfo
+  wonInfo,
+  page,
+  totalCount,
+  remainCount,
+  handlePageChange,
+  totalClaimedNFTsCount
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
   const emptyImg = theme.mode === "dark" ? temp1 : temp2;
+
+  
+  const pageNation = (totalClaimedNFTsCount - RedPacketNFTDetailLimit > 0) && (
+    <TablePagination
+      page={page}
+      pageSize={RedPacketNFTDetailLimit}
+      total={totalClaimedNFTsCount}
+      onPageChange={(_page) => {
+        handlePageChange(_page)
+      }}
+    />
+  )
 
   return (
     <BlindBoxDetailBoxStyle
@@ -2021,6 +2052,7 @@ export const RedPacketBlindBoxDetail = ({
                       );
                     })}
                   </Box>
+                  {pageNation}
                 </Box>
               </>
             )}

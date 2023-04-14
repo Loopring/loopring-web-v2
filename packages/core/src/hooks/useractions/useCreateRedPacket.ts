@@ -277,9 +277,10 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers > 0 &&
       redPacketOrder.validUntil &&
       redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
-      _tradeData.tradeValue &&
-      redPacketOrder.memo &&
-      redPacketOrder.memo?.trim().length > 0
+      _tradeData.tradeValue 
+      // &&
+      // redPacketOrder.memo &&
+      // redPacketOrder.memo?.trim().length > 0
     ) {
       let tradeToken: any = {},
         balance,
@@ -681,10 +682,10 @@ export const useCreateRedPacket = <
         redPacketOrder.numbers > 0 &&
         _tradeData.tradeValue &&
         redPacketOrder.type &&
-        redPacketOrder.memo &&
+        // redPacketOrder.memo &&
         redPacketOrder?.validUntil &&
         redPacketConfigs?.luckTokenAgents &&
-        redPacketOrder.memo?.trim().length > 0 &&
+        // redPacketOrder.memo?.trim().length > 0 &&
         eddsaKey?.sk
       ) {
         try {
@@ -739,7 +740,7 @@ export const useCreateRedPacket = <
             },
             numbers: redPacketOrder.numbers,
             giftNumbers: redPacketOrder.giftNumbers!,
-            memo: redPacketOrder.memo ?? "",
+            memo: redPacketOrder.memo ? redPacketOrder.memo : "Best wishes",
             signerFlag: false as any,
             // @ts-ignore
             nftData:

@@ -156,15 +156,31 @@ export const useMyRedPacketRecordTransaction = <
     },
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
-  const onItemClick = (item: sdk.LuckyTokenItemForReceive) => {
-    setShowRedPacket({
-      isShow: true,
-      info: {
-        ...item,
-        hash: item.hash,
-      },
-      step: RedPacketViewStep.QRCodePanel,
-    });
+  const onItemClick = async (item: sdk.LuckyTokenItemForReceive) => {
+    const resposne = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
+      hash: item.hash,
+    }, apiKey)
+    item.status
+    if (resposne?.detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM) {
+      setShowRedPacket({
+        isShow: true,
+        info: {
+          ...item,
+          hash: item.hash,
+        },
+        step: RedPacketViewStep.OpenPanel,
+      });
+
+    } else {
+      setShowRedPacket({
+        isShow: true,
+        info: {
+          ...item,
+          hash: item.hash,
+        },
+        step: RedPacketViewStep.DetailPanel,
+      });
+    }
   };
 
   return {

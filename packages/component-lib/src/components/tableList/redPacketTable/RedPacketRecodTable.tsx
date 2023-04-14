@@ -192,11 +192,13 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             return (
               <>
                 {t(
-                  row.type.mode == sdk.LuckyTokenClaimType.BLIND_BOX
-                    ? "labelLuckyBlindBox"
-                    : row.type.partition == sdk.LuckyTokenAmountType.AVERAGE
-                      ? "labelRedPacketSendCommonTitle"
-                      : "labelRedPacketSenRandomTitle",
+                  row.type.mode === sdk.LuckyTokenClaimType.RELAY
+                    ? "labelLuckyRelayToken"
+                    : row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                      ? "labelLuckyBlindBox"
+                      : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
+                        ? "labelRedPacketSendCommonTitle"
+                        : "labelRedPacketSenRandomTitle",
                   
                   { ns: "common" }
                 ) +
