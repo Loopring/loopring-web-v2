@@ -1525,8 +1525,8 @@ export const EditIcon = (props: SvgIconProps) => {
 };
 export const ToRightIcon = (props: SvgIconProps) => {
   return (
-    <SvgIcon {...props} viewBox="0 0 16 12" aria-hidden="true">
-      <path d="M12.17 7L8.59 10.59L10 12L16 6L10 -6.79865e-08L8.59 1.41L12.17 5L3.39933e-08 5L4.75906e-08 7L12.17 7Z" fill="#687295"/>
+    <SvgIcon {...props} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M16.17 13L12.59 16.59L14 18L20 12L14 6L12.59 7.41L16.17 11H4L4 13H16.17Z" />
     </SvgIcon>
   );
 };
