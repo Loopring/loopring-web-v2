@@ -450,7 +450,7 @@ export type TradeDefi<C> = {
   defiBalances?: { [key: string]: string };
   lastInput?: DeFiChgType;
 };
-export type TradeStack<C> = {
+export type TradeStake<C> = {
   sellToken: sdk.TokenInfo;
   sellVol: string;
   deFiSideCalcData?: DeFiSideCalcData<C>;
@@ -461,7 +461,7 @@ export type TradeStack<C> = {
   };
 };
 
-export type RedeemStack<C> = {
+export type RedeemStake<C> = {
   sellToken: sdk.TokenInfo;
   sellVol?: string;
   deFiSideRedeemCalcData: DeFiSideRedeemCalcData<C>;

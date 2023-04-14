@@ -29,7 +29,6 @@ import {
   TradeNFT,
   UIERROR_CODE,
   WALLET_TYPE,
-  EXCHANGE_TYPE,
 } from "@loopring-web/common-resources";
 
 import {

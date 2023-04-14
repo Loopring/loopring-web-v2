@@ -298,7 +298,6 @@ export default {
   labelBlindBoxCalim: "Claim",
   labelBlindBoxExpired: "Expired",
   labelBlindBoxClaimed: "Claimed",
-  labelBlindBoxStartTime: "Start time: {{time}}",
   labelBlindBoxStartTime: "Start time:",
   labelRedPacketOpen: "Open",
   // labelRecordAction: "Action",
@@ -308,5 +307,4 @@ export default {
   labelCexSwapPrice: "Price",
   labelCexSwapSettled: "Settled",
   labelCexSwapDelivering: "Delivering",
-
 };

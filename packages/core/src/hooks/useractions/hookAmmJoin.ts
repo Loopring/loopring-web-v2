@@ -621,7 +621,14 @@ export const useAmmJoin = ({
     },
     [onAmmClickMap]
   );
-
+  React.useEffect(() => {
+    if (isShow) {
+      // const { walletMap } = makeWalletLayer2(false);
+      setIsLoading(true);
+      initAmmData(true);
+      walletLayer2Service.sendUserUpdate();
+    }
+  }, [isShow]);
   const walletLayer2Callback = React.useCallback(async () => {
     if (pair?.coinBInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
       const { walletMap } = makeWalletLayer2(false);
@@ -631,12 +638,6 @@ export const useAmmJoin = ({
 
   useWalletLayer2Socket({ walletLayer2Callback });
 
-  React.useEffect(() => {
-    if (isShow) {
-      setIsLoading(true);
-      initAmmData(true);
-    }
-  }, [isShow]);
   return {
     ammCalcData,
     ammData,

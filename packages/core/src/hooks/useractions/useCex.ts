@@ -27,7 +27,6 @@ import {
 import {
   AccountStatus,
   CexTradeCalcData,
-  CEX_MARKET,
   CoinMap,
   CustomErrorWithCode,
   EmptyValueTag,
@@ -780,7 +779,7 @@ export const useCexSwap = <
         let sellMaxL2AmtInfo = undefined;
         // let tradeCost = undefined;
         let totalFeeRaw = undefined;
-        const info: CEX_MARKET = marketMap[market];
+        const info: sdk.CEX_MARKET = marketMap[market];
         let maxFeeBips = info.feeBips ?? MAPFEEBIPS;
 
         const { cefiAmount, minAmount, l2Amount } = info;
