@@ -160,7 +160,6 @@ export const useMyRedPacketRecordTransaction = <
     const resposne = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
       hash: item.hash,
     }, apiKey)
-    item.status
     if (resposne?.detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM) {
       setShowRedPacket({
         isShow: true,
