@@ -930,6 +930,19 @@ export function useRedPacketModal() {
           ).list;
         }
       }
+      const claimButton:
+        | "claimed"
+        | "claim"
+        | "claiming"
+        | "expired"
+        | "hidden" =
+        detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
+            ? "claim"
+            : (detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED || detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING)
+              ? "claimed"
+              : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
+                ? "expired"
+                : "hidden"
 
       return {
         redPacketType,
@@ -968,7 +981,41 @@ export function useRedPacketModal() {
           : tokenMap[idIndex[_info?.tokenId] ?? ""].symbol,
         showRelayText,
         bottomButton,
-        page
+        page,
+        claimButton,
+        onClickClaim: () => {
+          LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
+            {
+              accountId: account.accountId,
+              isNft: detail.luckyToken.isNft,
+              tokens: [detail.luckyToken.tokenId],
+            },
+            account.apiKey
+          ).then(response => {
+            if (
+              (response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message
+            ) {
+            } else {
+              setShowClaimWithdraw({
+                isShow: true,
+                claimToken: {
+                  tokenId: detail.luckyToken.tokenId,
+                  // response!.tokenBalance[0].tokenId,
+                  total: detail.claimAmount.toString(),
+                  locked: response!.tokenBalance[0].locked,
+                  pending: response!.tokenBalance[0].pending,
+                  nftTokenInfo: detail.luckyToken.nftTokenInfo,
+                  isNft: detail.luckyToken.isNft,
+                  luckyTokenHash: detail.luckyToken.hash,
+                },
+                claimType: CLAIM_TYPE.redPacket,
+              });
+            }
+
+          })
+          
+        },
       } as RedPacketDetailProps;
     } else {
       return undefined;

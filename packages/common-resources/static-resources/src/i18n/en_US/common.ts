@@ -1316,7 +1316,7 @@ export default {
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelBlindBoxClaimWarning:
-    "Note：For NFT Red Packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
+    "If the recipients of the NFT Red Packets do not claim their received NFT within 3 days, the NFT will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxRecievedRedPackets: "Received NFT Red Packets",
   labelBlindBoxCongratulations: "Congratulations",
   labelBlindBoxSorry: "Sorry",
@@ -1450,7 +1450,7 @@ export default {
   labelSeal: "Seal",
   labelOpenAfter: "Open after {{time}}",
   labelOpenStart: "Start",
-  labelTotalRedPacket: "Quantity in total: {{value}}",
+  labelTotalRedPacket: "Total Quantity: {{value}}",
   labelMyRedPacketReward: "My Rewards",
   labelRedpacketScanDes: "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
   labelLuckyRedPacketStarted: "Red Packet is Started",
@@ -1468,6 +1468,7 @@ export default {
   labelRedpacketTokensShort: "Tokens",
   labelRedpacketNFTS: "NFTs",
   labelRedpacketBlindBox: "Blind Box",
+  labelRedpacketHideInactionable:  "Hide inactionable records",
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
   labelChooseNFTTooltips: "",
   tokenSelectNFTToken: "Select NFT",

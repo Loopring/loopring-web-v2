@@ -80,11 +80,21 @@ export const CreateRedPacketPanel = <
         setPanelIndex(0);
         break;
       case RedPacketStep.ChooseType:
+        handleOnDataChange({
+          collectionInfo: undefined,
+          tokenId: undefined,
+          tradeValue: undefined,
+          balance: undefined,
+          nftData: undefined,
+          belong: undefined,
+          tokenAddress: undefined,
+          image: undefined,
+        } as any)
         setPanelIndex(1);
         break;
       case RedPacketStep.Main:
         handleOnDataChange({
-          validSince: Date.now()
+          validSince: Date.now(),
         } as any)
         setPanelIndex(2);
         break;
@@ -115,7 +125,11 @@ export const CreateRedPacketPanel = <
     return clonedWalletMap;
   }, [walletMap]);
 
-  const [selectedType, setSelectType] = React.useState(LuckyRedPacketList[0]);
+  const [selectedType, setSelectType] = React.useState(
+    tradeData.tradeType === TRADE_TYPE.NFT 
+      ? LuckyRedPacketList.find(x=>x.defaultForNFT)
+      : LuckyRedPacketList.find(x=>x.defaultForERC20)
+  );
   React.useEffect(() => {
     setSelectType(() => {
       if (tradeData && tradeData.type) {
@@ -140,17 +154,20 @@ export const CreateRedPacketPanel = <
 
   // tradeData.tradeType === TRADE_TYPE.NFT
   React.useEffect(() => {
-    const found =
-      LuckyRedPacketList.find((x) =>
-        tradeData.tradeType === TRADE_TYPE.NFT ? x.showInNFTS : x.showInERC20
-      ) ?? LuckyRedPacketList[2];
+    const found = tradeData.tradeType === TRADE_TYPE.NFT 
+      ? LuckyRedPacketList.find(x=>x.defaultForNFT)
+      : LuckyRedPacketList.find(x=>x.defaultForERC20)
+    // const found =
+    //   LuckyRedPacketList.find((x) =>
+    //     tradeData.tradeType === TRADE_TYPE.NFT ? x.showInNFTS : x.showInERC20
+    //   ) ?? LuckyRedPacketList[2];
     setSelectType(found);
     // debugger
     handleOnDataChange({
       type: {
         ...tradeData?.type,
-        partition: found.value.partition,
-        mode: found.value.mode,
+        partition: found!.value.partition,
+        mode: found!.value.mode,
       },
     } as any);
   }, [tradeData.tradeType]);

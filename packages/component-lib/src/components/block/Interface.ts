@@ -117,6 +117,8 @@ export type RedPacketDetailProps = {
   tokenSymbol?: string;
   ended: boolean;
   bottomButton: 'ended' | 'share'
+  claimButton: 'claim' | 'claimed' | 'expired' | 'hidden'
+  onClickClaim?: () => void;
 };
 export type RedPacketBlindBoxDetailTypes = 'Not Started' 
   | 'Blind Box Started' 

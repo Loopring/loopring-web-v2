@@ -957,7 +957,9 @@ export const RedPacketDetail = ({
   tokenSymbol,
   detail,
   bottomButton,
-  page
+  page,
+  onClickClaim,
+  claimButton
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const showLucky =
@@ -991,6 +993,7 @@ export const RedPacketDetail = ({
     //   return <></>;
     // }
   // }, [page, setPage]);
+  // const claimButton = "claim"
 
   return (
     <BoxStyle
@@ -1045,14 +1048,16 @@ export const RedPacketDetail = ({
           }}
           dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
         />
-        {ImageEle}
-        <Typography
-          variant={"h3"}
-          color={RedPacketColorConfig.default.colorTop}
-          marginTop={1}
-        >
-          {myAmountStr ? myAmountStr : EmptyValueTag}
-        </Typography>
+        <Box display={"flex"} alignItems={"end"}>
+          {ImageEle}
+          <Typography
+            marginBottom={1.5}
+            marginLeft={1}
+            // marginTop={1}
+          > 
+            *{myAmountStr.slice(0, myAmountStr.length - 5)}
+          </Typography>
+        </Box>
         <Typography
           variant={"body2"}
           color={RedPacketColorConfig.default.colorTop}
@@ -1191,8 +1196,50 @@ export const RedPacketDetail = ({
       </Box>
       {/* {showShareBtn && ( */}
       <Box paddingX={1} display={"flex"} flexDirection={"column"}>
-        {bottomButton === 'ended'
+        {
+          claimButton === 'claim' 
+            ? <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+              {t("labelClaimBtn")}
+            </Button>
+            : (claimButton === 'expired' && bottomButton === 'ended')
+            ? <Button variant={"contained"} fullWidth disabled>
+              {t("labelClaimBtn")}
+            </Button>
+            : (claimButton === 'claimed' && bottomButton === 'ended')
+            ? <Button variant={"contained"} fullWidth disabled>
+              {t("labelClaimBtn")}
+            </Button>
+            : <></>
+        }
+        {bottomButton === 'share'
           ? (
+            claimButton === 'claim'
+            ?  (
+            <Button
+              variant={"text"}
+              size={"small"}
+              onClick={onShared}
+            >
+              {t("labelRedPacketGrab")}
+            </Button>)
+            : (
+              <Button
+                variant={"contained"}
+                color={"error"}
+                sx={{
+                  backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                  "&:hover": {
+                    backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                  },
+                }}
+                fullWidth={true}
+                onClick={onShared}
+              >
+                {t("labelRedPacketGrab")}
+              </Button>
+              )
+            ) 
+          : (
             <Button
               variant={"contained"}
               color={"error"}
@@ -1208,21 +1255,6 @@ export const RedPacketDetail = ({
               {t("labelRedPacketEnded")}
             </Button>
           )
-          : (
-            <Button
-              variant={"contained"}
-              color={"error"}
-              sx={{
-                backgroundColor: RedPacketColorConfig.default.colorTop as any,
-                "&:hover": {
-                  backgroundColor: RedPacketColorConfig.default.colorTop as any,
-                },
-              }}
-              fullWidth={true}
-              onClick={onShared}
-            >
-              {t("labelRedPacketGrab")}
-            </Button>)
         }
 
         {showRelayText && (

@@ -527,7 +527,6 @@ export const useCreateRedPacket = <
             step: AccountStep.RedPacketSend_In_Progress,
           });
           await sdk.sleep(TOAST_TIME);
-
           setShowAccount({
             isShow: true,
             step: AccountStep.RedPacketSend_Success,
@@ -542,8 +541,7 @@ export const useCreateRedPacket = <
                       setShowRedPacket({
                         isShow: true,
                         info: {
-                          // ...luckTokenInfo,
-                          sender: account.accountId,
+                          sender: account,
                           hash: (response as sdk.TX_HASH_API).hash,
                         },
                         step: RedPacketViewStep.QRCodePanel,
@@ -575,7 +573,6 @@ export const useCreateRedPacket = <
               isShow: true,
               info: {
                 ...blindBoxRepspnse.raw_data.luckyToken,
-                sender: account.accountId,
                 hash: (response as sdk.TX_HASH_API).hash,
               },
               step: RedPacketViewStep.QRCodePanel,

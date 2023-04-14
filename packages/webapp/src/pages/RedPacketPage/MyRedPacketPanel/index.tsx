@@ -230,7 +230,7 @@ export const MyRedPacketPanel = ({
           {isRecieve && (tabType === 'NFTs' || tabType === 'blindBox') && (
             <FormControlLabel control={<Checkbox checked={showActionableRecords} onChange={() => {
               onChangeShowActionableRecords()
-            }} />} label="Show actionable records" />
+            }} />} label={t("labelRedpacketHideInactionable")}/>
           )}
         </Box>
         
