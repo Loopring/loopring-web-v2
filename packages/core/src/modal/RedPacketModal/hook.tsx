@@ -935,14 +935,18 @@ export function useRedPacketModal() {
         | "claim"
         | "claiming"
         | "expired"
-        | "hidden" =
-        detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
-            ? "claim"
-            : (detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED || detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING)
-              ? "claimed"
-              : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
-                ? "expired"
-                : "hidden"
+        | "hidden" = 
+        detail.luckyToken.isNft
+          ? (
+            detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
+              ? "claim"
+              : (detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED || detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING)
+                ? "claimed"
+                : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
+                  ? "expired"
+                  : "hidden"
+          )
+          : "hidden"
 
       return {
         redPacketType,

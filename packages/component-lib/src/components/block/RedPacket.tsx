@@ -1048,16 +1048,14 @@ export const RedPacketDetail = ({
           }}
           dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
         />
-        <Box display={"flex"} alignItems={"end"}>
-          {ImageEle}
-          <Typography
-            marginBottom={1.5}
-            marginLeft={1}
-            // marginTop={1}
-          > 
-            *{myAmountStr.slice(0, myAmountStr.length - 5)}
-          </Typography>
-        </Box>
+        {ImageEle}
+        <Typography
+          variant={"h3"}
+          color={RedPacketColorConfig.default.colorTop}
+          marginTop={1}
+        >
+          {myAmountStr ? myAmountStr : EmptyValueTag}
+        </Typography>
         <Typography
           variant={"body2"}
           color={RedPacketColorConfig.default.colorTop}
@@ -1203,11 +1201,11 @@ export const RedPacketDetail = ({
             </Button>
             : (claimButton === 'expired' && bottomButton === 'ended')
             ? <Button variant={"contained"} fullWidth disabled>
-              {t("labelClaimBtn")}
+              {t("labelClaimBtnExpired")}
             </Button>
             : (claimButton === 'claimed' && bottomButton === 'ended')
             ? <Button variant={"contained"} fullWidth disabled>
-              {t("labelClaimBtn")}
+              {t("labelClaimBtnClaimed")}
             </Button>
             : <></>
         }
@@ -1239,7 +1237,7 @@ export const RedPacketDetail = ({
               </Button>
               )
             ) 
-          : (
+          : (claimButton === 'hidden' && (
             <Button
               variant={"contained"}
               color={"error"}
@@ -1254,7 +1252,7 @@ export const RedPacketDetail = ({
             >
               {t("labelRedPacketEnded")}
             </Button>
-          )
+          ))
         }
 
         {showRelayText && (
