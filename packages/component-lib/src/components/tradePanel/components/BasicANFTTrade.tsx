@@ -52,6 +52,7 @@ export const _BasicANFTTrade = <
   const getDisabled = () => {
     return disabled || tradeData === undefined;
   };
+
   const handleCountChange: any = React.useCallback(
     (_tradeData: T, _name: string, _ref: any) => {
       //const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
@@ -83,8 +84,7 @@ export const _BasicANFTTrade = <
           typeof tradeValue !== "undefined" &&
           isBalanceLimit &&
           sdk.toBig(balance).lt(tradeValue)) ||
-        !tradeValue ||
-        Number(tradeValue) < 1
+        (typeof tradeValue !== "undefined" && Number(tradeValue) < 1)
       ) {
         return {
           error: true,
@@ -250,7 +250,7 @@ export const NFTInput = React.memo(
             display={"inline-flex"}
             alignItems={"center"}
             justifyContent={"space-between"}
-            height={80}
+            height={"auto"}
             width={"100%"}
           >
             <BasicANFTTrade

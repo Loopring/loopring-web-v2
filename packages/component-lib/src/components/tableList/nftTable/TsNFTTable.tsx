@@ -21,6 +21,7 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   MintIcon,
+  RedPacketIcon,
   RowConfig,
   TransferIcon,
   WaitingIcon,
@@ -203,6 +204,15 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 ? "+"
                 : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
                 ? "-"
+                // @ts-ignore
+                : row.nftTxType === TxNFTType[TxNFTType.SEND_LUCKY_TOKEN]
+                ? "-"
+                // @ts-ignore
+                : row.nftTxType === TxNFTType[TxNFTType.SEND_BACK_LUCKY_TOKEN]
+                ? "+"
+                // @ts-ignore
+                : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW_LUCKY_TOKEN]
+                ? "+"
                 : "";
             return (
               <>
@@ -244,6 +254,15 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 ? ["L2 Mint", "L2"]
                 : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
                 ? ["L2", receiverAddress]
+                // @ts-ignore
+                : row.nftTxType === TxNFTType[TxNFTType.SEND_BACK_LUCKY_TOKEN]
+                ? ["L2 Red Packet", "L2"]
+                // @ts-ignore
+                : row.nftTxType === TxNFTType[TxNFTType.SEND_LUCKY_TOKEN]
+                ? ["L2", "L2 Red Packet"]
+                // @ts-ignore
+                : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW_LUCKY_TOKEN]
+                ? ["L2 Red Packet", "L2"]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
             let path =
@@ -272,8 +291,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   href={path}
                   title={hash}
                 >
-                  {from + ` ${DirectionTag} ` + to}
-                  {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
+                  {from && to ? from + ` ${DirectionTag} ` + to : ""}
                 </Link>
                 <Box marginLeft={1}>
                   <CellStatus {...{ row }} />
@@ -377,6 +395,24 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
               case TxNFTType[TxNFTType.MINT]:
                 side = t("labelMint");
                 sideIcon = <MintIcon fontSize={"inherit"} />;
+                hasSymbol = "+";
+                break;
+                // @ts-ignore
+              case TxNFTType[TxNFTType.SEND_LUCKY_TOKEN]:
+                side = t("labelNFTTypeSEND_LUCKY_TOKEN");
+                sideIcon = <RedPacketIcon fontSize={"inherit"} />;
+                hasSymbol = "-";
+                break;
+                // @ts-ignore
+              case TxNFTType[TxNFTType.SEND_BACK_LUCKY_TOKEN]:
+                side = t("labelNFTTypeSEND_BACK_LUCKY_TOKEN");
+                sideIcon = <RedPacketIcon fontSize={"inherit"} />;
+                hasSymbol = "+";
+                break;
+                // @ts-ignore
+              case TxNFTType[TxNFTType.WITHDRAW_LUCKY_TOKEN]:
+                side = t("labelNFTTypeWITHDRAW_LUCKY_TOKEN");
+                sideIcon = <RedPacketIcon fontSize={"inherit"} />;
                 hasSymbol = "+";
                 break;
               case TxNFTType[TxNFTType.WITHDRAW]:

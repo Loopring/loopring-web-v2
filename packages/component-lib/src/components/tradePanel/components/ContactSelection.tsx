@@ -1,52 +1,46 @@
+import { Avatar, Box, Grid, InputAdornment, OutlinedInput, Typography } from "@mui/material";
 import {
-  Avatar,
-  Box,
-  Grid,
-  InputAdornment,
-  OutlinedInput,
-  Typography,
-} from "@mui/material";
-import { SearchIcon, CloseIcon } from "@loopring-web/common-resources";
+  SearchIcon,
+  CloseIcon,
+} from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type SingleContactProps = {
-  editing: boolean;
-  name: string;
-  address: string;
-  avatarURL: string;
-  onSelect: (address: string) => void;
-};
+  editing: boolean, 
+  name:string, 
+  address:string, 
+  avatarURL:string,
+  onSelect: (address: string) => void
+}
 
 export const SingleContact = (props: SingleContactProps) => {
   const { editing, name, address, avatarURL, onSelect } = props;
-  return (
-    <Box
-      style={{ cursor: "pointer" }}
-      paddingY={2}
-      display={"flex"}
-      justifyContent={"space-between"}
-      onClick={() => {
-        onSelect(address);
-      }}
-      // onCl
+  return <Box 
+    style={{cursor: "pointer"}} 
+    paddingY={2} 
+    display={"flex"} 
+    justifyContent={"space-between"}
+    onClick={() => {
+      onSelect(address)
+    }}
+    // onCl
     >
-      <Box display={"flex"}>
-        <Avatar sizes={"32px"} src={avatarURL}></Avatar>
-        <Box marginLeft={1}>
-          {editing ? (
-            <OutlinedInput size={"small"} value={name} />
-          ) : (
-            <Typography>{name}</Typography>
-          )}
-          <Typography>{address}</Typography>
-        </Box>
+    <Box display={"flex"}>
+      <Avatar sizes={"32px"} src={avatarURL}></Avatar>
+      <Box marginLeft={1}>
+        {
+          editing
+            ? <OutlinedInput size={"small"} value={name} />
+            : <Typography>{name}</Typography>
+        }
+        <Typography>{address}</Typography>
       </Box>
     </Box>
-  );
-};
+  </Box>
+}
 
 const CloseIconStyled = styled(CloseIcon)`
   position: absolute;
@@ -56,44 +50,43 @@ const CloseIconStyled = styled(CloseIcon)`
   cursor: pointer;
 `;
 
+
 // OutlinedInput
 type ContactSelectionProps = {
-  onSelect: (address: string) => void;
+  onSelect: (address: string) => void
   contacts: {
-    name: string;
-    address: string;
-  }[];
-};
+    name: string,
+    address: string,
+  }[]
+}
 export const ContactSelection = (props: ContactSelectionProps) => {
   // const { t } = useTranslation();
-  const { onSelect, contacts } = props;
+  const { onSelect, contacts } = props
   const { isMobile } = useSettings();
-  const theme = useTheme();
+  const theme = useTheme()
   // [contacts, setContacts] = useState([] )
 
   // useEffect(() => {
 
   // }, [])
-  const displayContacts = contacts.map((x) => {
+  const displayContacts = contacts.map(x => {
     return {
       name: x.name,
       address: x.address,
-      avatarURL:
-        "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png", // todo
-      editing: false,
-    };
-  });
+      avatarURL: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png', // todo
+      editing: false
+    }
+  })
 
-  const [inputValue, setInputValue] = useState("");
-  const filteredContacts = displayContacts.filter((x) => {
+  const [inputValue, setInputValue] = useState('')
+  const filteredContacts = displayContacts.filter(x => {
     return inputValue
-      ? x.address.toLowerCase().includes(inputValue.toLowerCase()) ||
-          x.avatarURL.toLowerCase().includes(inputValue.toLowerCase())
-      : true;
-  });
+      ? x.address.toLowerCase().includes(inputValue.toLowerCase()) || x.avatarURL.toLowerCase().includes(inputValue.toLowerCase())
+      : true
+  })
   // const [open, setOpen] = React.useState(false);
   // const { nonExchangeList, exchangeList } = useAddressTypeLists();
-
+  
   return (
     <Grid
       container
@@ -107,7 +100,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       flexWrap={"nowrap"}
       spacing={2}
     >
-      <Grid item>
+      <Grid item >
         <Box
           display={"flex"}
           flexDirection={"column"}
@@ -129,7 +122,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
         <OutlinedInput
           style={{
             background: theme.colorBase.box,
-            borderColor: theme.colorBase.border,
+            borderColor: theme.colorBase.border
           }}
           fullWidth
           className={"search"}
@@ -146,24 +139,22 @@ export const ContactSelection = (props: ContactSelectionProps) => {
               htmlColor={"var(--color-text-third)"}
               style={{ visibility: inputValue ? "visible" : "hidden" }}
               onClick={() => {
-                setInputValue("");
+                setInputValue('')
               }}
             />
           }
           onChange={(e) => {
-            setInputValue(e.target.value);
+            setInputValue(e.target.value)
           }}
         ></OutlinedInput>
-        {filteredContacts.map((c) => {
-          return (
-            <SingleContact
-              name={c.name}
-              address={c.address}
-              avatarURL={c.avatarURL}
-              editing={false}
-              onSelect={onSelect}
-            />
-          );
+        {filteredContacts.map(c => {
+          return <SingleContact 
+            name={c.name}
+            address={c.address}
+            avatarURL={c.avatarURL}
+            editing={false}
+            onSelect={onSelect}
+          />
         })}
       </Grid>
     </Grid>

@@ -116,9 +116,12 @@ export const CoinIcons = React.memo(
 export const ColumnCoinDeep = React.memo(
   ({
     token: { type = TokenType.single, ...token },
+    isNotRequiredName = false,
   }: {
-    token: CoinInfo<any> & { type?: TokenType };
-  }) => {
+    token: CoinInfo<any> & {
+      type?: TokenType;
+    };
+  } & { isNotRequiredName?: boolean }) => {
     let tokenIcon: [any, any] = [undefined, undefined];
     const [head, middle, tail] = token.simpleName.split("-");
     const { coinJson } = useSettings();
@@ -139,15 +142,17 @@ export const ColumnCoinDeep = React.memo(
         <Typography marginLeft={1} component={"span"} color={"textPrimary"}>
           {token?.simpleName}
         </Typography>
-        <Typography
-          marginLeft={1 / 2}
-          component={"span"}
-          variant={"body2"}
-          className={"next-company"}
-          color={"textSecondary"}
-        >
-          {token?.name}
-        </Typography>
+        {!isNotRequiredName && (
+          <Typography
+            marginLeft={1 / 2}
+            component={"span"}
+            variant={"body2"}
+            className={"next-company"}
+            color={"textSecondary"}
+          >
+            {token?.name}
+          </Typography>
+        )}
       </Box>
     );
   }

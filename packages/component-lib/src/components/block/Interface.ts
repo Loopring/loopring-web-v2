@@ -92,8 +92,9 @@ export type RedPacketOpenedProps = {
   memo: string;
   viewDetail: () => void;
 };
-export const RedPacketDetailLimit = 5;
+export const RedPacketDetailLimit = 3;
 export type RedPacketDetailProps = {
+  redPacketType: 'normal' | 'lucky' | 'relay';
   sender: string;
   amountStr: string;
   amountClaimStr: string;
@@ -110,6 +111,11 @@ export type RedPacketDetailProps = {
   relyNumber?: string;
   handlePageChange: (page: number, limit?: number) => void;
   ImageEle?: JSX.Element | undefined;
+  showRelayText: boolean;
+  showShareBtn: boolean;
+  tokenSymbol?: string;
+  ended: boolean;
+  bottomButton: 'ended' | 'share'
 };
 export type RedPacketBlindBoxDetailTypes = 'Not Started' 
   | 'Blind Box Started' 
@@ -140,7 +146,8 @@ export type RedPacketBlindBoxDetailProps = {
   NFTClaimList?: { 
     who: string,
     when: number,
-    amount: number
+    amount: number,
+    showLuckiest?: boolean,
   }[]; 
   BlindBoxClaimList?: { 
     who: string,
@@ -155,6 +162,16 @@ export type RedPacketBlindBoxDetailProps = {
   onClickClaim?: () => void;
   onCloseOpenModal?: () => void;
   onClickClaimDetailBack?: () => void;
+  description: string;
+  shareButton: 'hidden' | 'share';
+  claimButton: 'claimed' | 'claim' | 'claiming' | 'expired' | 'hidden';
+  didClaimABlindBox: boolean;
+  wonInfo: {
+    participated: boolean;
+    won: boolean;
+    amount: number;
+  }
+  // didClaimABlindBox: boolean;
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

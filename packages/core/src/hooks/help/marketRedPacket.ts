@@ -39,14 +39,14 @@ export const getUserReceiveList = (
         : getShortAddr(item.claimer?.address ?? ""),
       isSelf: accountId === item.claimer.accountId,
       amountStr,
-      helper: (item.referrer?.address
-        ? item.referrer?.ens
-          ? item.referrer.ens
-          : getShortAddr(item.referrer.address.toString())
+      helper: (item.helper?.address
+        ? item.helper?.ens
+          ? item.helper.ens
+          : getShortAddr(item.helper.address.toString())
         : ""
       ).toString(),
       createdAt: item.createdAt,
-      isMax: champion?.amount == item.amount,
+      isMax: champion?.accountId === item.claimer.accountId,
       rawData: item,
     };
     return [...prev, redPacketDetailItem];
@@ -137,7 +137,7 @@ export const amountStrNFTCallback = (
   tokenAmount: string
 ) => {
   if (nftInfo && tokenAmount) {
-    const symbol = "NFT"; // nftInfo?.metadata?.base?.name ?? "NFT";
+    const symbol = "NFT(s)"; // nftInfo?.metadata?.base?.name ?? "NFT";
     const amount = getValuePrecisionThousand(
       tokenAmount,
       0,
@@ -188,7 +188,7 @@ export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
           idIndex,
           luckToken.tokenId,
           luckToken.tokenAmount.totalAmount
-        ).amount,
+        ).amountStr,
     myAmountStr:
       claim &&
       (luckToken.isNft

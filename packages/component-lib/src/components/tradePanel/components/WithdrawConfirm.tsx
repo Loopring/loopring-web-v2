@@ -6,9 +6,8 @@ import {
   IBData,
   NFTWholeINFO,
   TOAST_TIME,
-  useAddressTypeLists,
 } from "@loopring-web/common-resources";
-import { Button, Toast } from "../../index";
+import { Button, Toast, useAddressTypeLists } from "../../index";
 import { WithdrawViewProps } from "./Interface";
 import { useSettings } from "../../../stores";
 import React from "react";

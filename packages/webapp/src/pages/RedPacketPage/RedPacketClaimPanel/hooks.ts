@@ -23,6 +23,7 @@ import {
   SDK_ERROR_MAP_TO_UI,
   TokenType,
 } from "@loopring-web/common-resources";
+import { useHistory } from "react-router";
 
 export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   setToastOpen: (props: any) => void
@@ -112,12 +113,12 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   const [showNFTsPanel, setShowNFTsPanel] = React.useState(
     false
   );
+  const history = useHistory()
   const onViewMoreNFTsClick = () => {
-    setShowNFTsPanel(true)
+    history.push("/redPacket/records/NFTReceived")
   };
   const onCloseNFts = () => {
     setShowNFTsPanel(false)
-    
   };
 
   return {

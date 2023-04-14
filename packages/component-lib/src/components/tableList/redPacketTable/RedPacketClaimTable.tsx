@@ -21,6 +21,7 @@ import React from "react";
 import { FormatterProps } from "react-data-grid";
 import {
   CurrencyToTag,
+  EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
   myLog,
@@ -87,6 +88,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       pagination,
       page,
       isNFT = false,
+      totalLuckyTokenNFTBalance,
       t,
     } = props;
     const history = useHistory();
@@ -119,197 +121,79 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       R,
       unknown
     >[] => {
-      if (isNFT) {
-        return [
-          {
-            key: "Token",
-            sortable: true,
-            cellClass: "textAlignLeft",
-            headerCellClass: "textAlignLeft",
-            name: t("labelToken"),
-            formatter: ({ row: { token } }: FormatterProps<R>) => {
-              if (token.type === TokenType.single) {
-                return <ColumnCoinDeep token={token as any} />;
-              } else {
-                const { metadata } = token as sdk.UserNFTBalanceInfo;
-                return (
+      return [
+        {
+          key: "Token",
+          sortable: true,
+          cellClass: "textAlignLeft",
+          headerCellClass: "textAlignLeft",
+          name: t("labelToken"),
+          formatter: ({ row: { token } }: FormatterProps<R>) => {
+            // if (token.)
+            if (token.type !== TokenType.nft) {
+              if (token.icon && token.simpleName === "NFTs") {
+                return <Box
+                  className="rdg-cell-value"
+                  height={"100%"}
+                  display={"flex"}
+                  alignItems={"center"}
+                >
                   <Box
-                    className="rdg-cell-value"
-                    height={"100%"}
                     display={"flex"}
                     alignItems={"center"}
+                    justifyContent={"center"}
+                    height={"28px"}
+                    width={"28px"}
+                    padding={1 / 4}
+                    // style={{ background: "var(--field-opacity)" }}
                   >
-                    {metadata?.imageSize ? (
-                      <Box
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        height={RowConfig.rowHeight + "px"}
-                        width={RowConfig.rowHeight + "px"}
-                        padding={1 / 4}
-                        style={{ background: "var(--field-opacity)" }}
-                      >
-                        {metadata?.imageSize && (
-                          <NftImage
-                            alt={metadata?.base?.name}
-                            onError={() => undefined}
-                            src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
-                          />
-                        )}
-                      </Box>
-                    ) : (
-                      <BoxNFT
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        height={RowConfig.rowHeight + "px"}
-                        width={RowConfig.rowHeight + "px"}
-                      />
-                    )}
-                    <Typography
-                      color={"inherit"}
-                      flex={1}
-                      display={"inline-flex"}
-                      alignItems={"center"}
-                      paddingLeft={1}
-                      overflow={"hidden"}
-                      textOverflow={"ellipsis"}
-                      component={"span"}
-                    >
-                      {metadata?.base?.name ?? "NFT"}
-                    </Typography>
+                    <NftImage
+                      alt={token.simpleName}
+                      onError={() => undefined}
+                      src={token.icon}
+                    />
                   </Box>
-                );
-              }
-            },
-          },
-          {
-            key: "Amount",
-            sortable: true,
-            name: t("labelAmount"),
-            formatter: ({ row }: FormatterProps<R>) => {
-              return <Box display={"flex"}>{row.amountStr}</Box>;
-            },
-          },
-          {
-            key: "Time",
-            sortable: true,
-            name: "Time",
-            formatter: () => {
-              return <Box display={"flex"}>{"todo"}</Box>;
-            },
-          },
-          {
-            key: "Expired Time",
-            sortable: true,
-            name: "Expired Time",
-            formatter: () => {
-              return <Box display={"flex"}>{"todo"}</Box>;
-            },
-          },
-          {
-            key: "Actions",
-            name: t("labelActions"),
-            headerCellClass: "textAlignRight",
-            cellClass: "textAlignRight",
-            formatter: ({ row }) => {
-              if (
-                row.token.type === TokenType.single &&
-                row.token.name === "NFTs"
-              ) {
-                return (
-                  <Link onClick={() => onViewMoreNFTsClick!()}>View More</Link>
-                );
-              } else {
-                return (
-                  <Link onClick={() => onItemClick(row.rawData)}>
-                    {t("labelClaim")}
-                  </Link>
-                );
-              }
-            },
-          },
-        ];
-      } else {
-        return [
-          {
-            key: "Token",
-            sortable: true,
-            cellClass: "textAlignLeft",
-            headerCellClass: "textAlignLeft",
-            name: t("labelToken"),
-            formatter: ({ row: { token } }: FormatterProps<R>) => {
-              if (token.type === TokenType.single) {
-                return <ColumnCoinDeep token={token as any} />;
-              } else {
-                const { metadata } = token as sdk.UserNFTBalanceInfo;
-                return (
-                  <Box
-                    className="rdg-cell-value"
-                    height={"100%"}
-                    display={"flex"}
+                  <Typography
+                    color={"inherit"}
+                    flex={1}
+                    display={"inline-flex"}
                     alignItems={"center"}
+                    paddingLeft={0.5}
+                    overflow={"hidden"}
+                    textOverflow={"ellipsis"}
+                    component={"span"}
                   >
-                    {metadata?.imageSize ? (
-                      <Box
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        height={RowConfig.rowHeight + "px"}
-                        width={RowConfig.rowHeight + "px"}
-                        padding={1 / 4}
-                        style={{ background: "var(--field-opacity)" }}
-                      >
-                        {metadata?.imageSize && (
-                          <NftImage
-                            alt={metadata?.base?.name}
-                            onError={() => undefined}
-                            src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
-                          />
-                        )}
-                      </Box>
-                    ) : (
-                      <BoxNFT
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        height={RowConfig.rowHeight + "px"}
-                        width={RowConfig.rowHeight + "px"}
-                      />
-                    )}
-                    <Typography
-                      color={"inherit"}
-                      flex={1}
-                      display={"inline-flex"}
-                      alignItems={"center"}
-                      paddingLeft={1}
-                      overflow={"hidden"}
-                      textOverflow={"ellipsis"}
-                      component={"span"}
-                    >
-                      {metadata?.base?.name ?? "NFT"}
-                    </Typography>
-                  </Box>
+                    {token.simpleName}
+                  </Typography>
+                </Box>
+              } else {
+                return (
+                  <ColumnCoinDeep isNotRequiredName={true} token={token as any} />
                 );
               }
-            },
+            } else {
+              return <></>;
+            }
           },
-          {
-            key: "Amount",
-            sortable: true,
-            name: t("labelAmount"),
-            formatter: ({ row }: FormatterProps<R>) => {
-              return <Box display={"flex"}>{row.amountStr}</Box>;
-            },
+        },
+        {
+          key: "Amount",
+          sortable: true,
+          name: t("labelAmount"),
+          formatter: ({ row }: FormatterProps<R>) => {
+            return <Box display={"flex"}>{row.amountStr}</Box>;
           },
-          {
-            key: "Value",
-            sortable: true,
-            name: t("labelValue"),
-            formatter: ({ row }: FormatterProps<R>) => {
-              return (
-                <Box display="flex">
-                  {PriceTag[CurrencyToTag[currency]] +
+        },
+        {
+          key: "Value",
+          sortable: true,
+          name: t("labelValue"),
+          formatter: ({ row }: FormatterProps<R>) => {
+            return (
+              <Box display="flex">
+                {
+                  row.volume !== undefined ?
+                    PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
                       (row.volume || 0) * (forexMap[currency] ?? 0),
                       2,
@@ -317,46 +201,48 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
                       2,
                       true,
                       { isFait: true }
-                    )}
-                </Box>
+                    )
+                    : EmptyValueTag
+                }
+              </Box>
+            );
+          },
+        },
+        {
+          key: "Actions",
+          name: t("labelActions"),
+          headerCellClass: "textAlignRight",
+          cellClass: "textAlignRight",
+          formatter: ({ row }) => {
+            if (
+              row.token.type === TokenType.single &&
+              row.token.name === "NFTs"
+            ) {
+              return (
+                <Link onClick={() => onViewMoreNFTsClick!()}>View More</Link>
               );
-            },
+            } else {
+              return (
+                <Link onClick={() => onItemClick(row.rawData)}>
+                  {t("labelClaim")}
+                </Link>
+              );
+            }
           },
-          {
-            key: "Actions",
-            name: t("labelActions"),
-            headerCellClass: "textAlignRight",
-            cellClass: "textAlignRight",
-            formatter: ({ row }) => {
-              if (
-                row.token.type === TokenType.single &&
-                row.token.name === "NFTs"
-              ) {
-                return (
-                  <Link onClick={() => onViewMoreNFTsClick!()}>View More</Link>
-                );
-              } else {
-                return (
-                  <Link onClick={() => onItemClick(row.rawData)}>
-                    {t("labelClaim")}
-                  </Link>
-                );
-              }
-            },
-          },
-        ];
-      }
+        },
+      ];
     }, [history, t]);
+
     const NFTrow = {
       token: {
-        icon: "https://static.loopring.io/assets/ethereum/assets/0x0000000000000000000000000000000000000000/logo.png", // todo
+        icon: "https://static.loopring.io/assets/svg/NFT-logo.svg",
         name: "NFTs",
-        simpleName: "",
+        simpleName: "NFTs",
         description: "ETH",
         company: "Ethereum",
-        type: "single",
+        type: TokenType.single
       },
-      amountStr: "todo",
+      amountStr: totalLuckyTokenNFTBalance ? totalLuckyTokenNFTBalance.toString() : EmptyValueTag,
       volume: undefined,
     };
     const defaultArgs: any = {

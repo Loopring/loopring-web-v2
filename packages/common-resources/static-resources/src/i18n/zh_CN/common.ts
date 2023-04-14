@@ -905,9 +905,11 @@ export default {
     "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
     "<1></1>",
   labelDefiAgree: "I have read and understand the risk warning.",
+
   labelDefiInvest: "Defi Earn",
   labelLRCStakingInvest: "LRC staking",
   labelLRCStakingRedeemInvest: "LRC staking Redeem",
+
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
   labelCreateCollection: "Create Collection",
@@ -1279,23 +1281,34 @@ export default {
   labelLuckyTokenViewTypeDesPrivate:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyBlindBox: "Blind Box Red Packet",
-  labelLuckyBlindBoxDes: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
-  labelLuckyRecievedBlindBox: "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
-  labelBlindBoxExplaination: "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
-  labelBlindBoxExplaination2: "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
+  labelLuckyBlindBoxDes:
+    "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
+  labelLuckyRecievedBlindBox:
+    "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
+  labelBlindBoxExplaination:
+    "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExplaination2: 
+    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{remainingGiftsAmount}} gifts available for grabbing.",
   labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
   labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
-  labelBlindBoxClaimStarted: "The NFTs Claimed will be ended after: {{time}}",
-  labelBlindBoxRecievedNFT: "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
+  labelBlindBoxClaimStarted: "Unclaimed NFT will be returned back to sender after: {{time}}",
+  labelBlindBoxRecievedNFT:
+    "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
+  labelBlindBoxStartTime: "Start Time",
   labelBlindBoxEndDate: "End date",
+  labelBlindBoxEndDate2: "Blindbox reveal time",
   labelBlindBoxEndTime: "End Time",
-  labelBlindBoxRedPacketWithGift: "有礼物的红包个数",
-  labelBlindBoxExpirationExplainationForToken: "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
-  labelBlindBoxExpirationExplainationForNFT: "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
+  labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
+  labelBlindBoxExpirationExplainationForToken:
+    "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
+  labelBlindBoxExpirationExplainationForNFT:
+    "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
-  labelBlindBoxPrivateDes: "Your Red Packet is shared privately with others via a custom QR code.",
-  labelBlindBoxClaimWarning: "Note：For NFT red packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
+  labelBlindBoxPrivateDes:
+    "Your Red Packet is shared privately with others via a custom QR code.",
+  labelBlindBoxClaimWarning:
+    "Note：For NFT red packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
   labelBlindBoxRecievedRedPackets: "Received NFT Red Packets",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
@@ -1303,7 +1316,8 @@ export default {
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyRandomTokenDes: "Each recipient will get a random amount of.",
   labelLuckyCommonToken: "Normal Red Packet",
-  labelLuckyCommonTokenDes: "Each recipient will receive a pre-set split of.",
+  labelLuckyCommonTokenDes:
+    "Each recipient will receive a pre-set split of the total Red Packet shared.",
   labelL1toL2NFTAmount: "NFT Amount",
   labelInputRedPacketBtnLabel: "Select Token",
   labelCreateRedPacket: "Send Red Packet",
@@ -1317,7 +1331,7 @@ export default {
   labelLuckyTokenViewTypeDes0:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelSplit: "Red Packet Count",
-  labelRedPacketMemo: "Best Wishes",
+  labelRedPacketMemo: "Memo",
   labelRedPacketStart: "Available in",
   labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
@@ -1349,7 +1363,7 @@ export default {
   labelAmountEach: "Amount Each",
   labelRedPacketTotalAmount: "Total Amount",
   labelQuantity: "Quantity",
-  labelAssetAmount: "Asset Amounts: {{value}}",
+  labelAssetAmount: "Total Asset Amounts: {{value}}",
   labelCreateRedPacketBtn: "Prepare Red Packet",
   labelRedPacketsExpireDes:
     "Unclaimed tokens remaining after the expiration will be returned within 24h",
@@ -1360,7 +1374,10 @@ export default {
   labelRedPacketsMaxRange: "Max {{value}}",
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
   labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
-  labelRedPacketsGiftsLargerThanPackets: "Number of gifts is larger than number of packets",
+  labelRedPacketsGiftsLargerThanPackets:
+    "Number of gifts is larger than number of packets",
+  labelBlindBoxNumberOverMaximun: 
+    "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
@@ -1371,14 +1388,15 @@ export default {
   labelRedPacketWaitingBlock: "Block is not ready",
   labelShare: "Share",
   labelRelayRedPacket: "Relay Red Packet",
+  labelNormalRedPacket: "Normal Red Packet",
   labelLuckyRedPacket: "Lucky Red Packet",
   labelLuckyRedPacketStart: "Starts in: {{value}}",
-  labelLuckyRedPacketTimeout: "Red packet has been \n taken out",
-  labelLuckyRedPacketDetail: "View red packet details",
+  labelLuckyRedPacketTimeout: "Red Packet has been \n taken out",
+  labelLuckyRedPacketDetail: "View Red Packet details >",
   labelRedPacketOpenInProgress: "Processing...",
   labelRedPacketOpenFailed: "Read red packet failed!",
   labelRedPacketShowQR: "Share red packet",
-  labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
+  labelRedPacketReceivedRecord: "Opened {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:
@@ -1396,7 +1414,10 @@ export default {
   labelRedPacketStatusCOMPLETED: "Completed", // COMPLETED = 3,
   labelRedPacketStatusOVER_DUE: "Over Due", // OVER_DUE = 4,
   labelRedPacketStatusFAILED: "Failed", // FAILED = 5
-  labelRedPacketNo: "NO.{{value}}", // FAILED = 5
+  labelRedPacketStatusNotStarted: "Hasn’t started",
+  labelRedPacketStatusStarted: "Opened",
+  labelRedPacketStatusEnded: "Ended",
+  labelRedPacketNo: "NO.{{value}}",
   labelRedPacketClaimInProgress: "Processing...",
   labelRedPacketClaimFailed: "Open red packet failed!",
   labelRedPacketClaimSuccess: "",
@@ -1410,6 +1431,7 @@ export default {
   labelShareQRCode: "Generate QR Code for share",
   labelSeal: "Seal",
   labelOpenAfter: "Open after {{time}}",
+  labelOpenStart: "Start",
   labelTotalRedPacket: "Total {{value}}",
   labelMyRedPacketReward: "My Rewards",
   labelRedpacketScanDes: "Using Loopring Wallet, scan the QR code.",
@@ -1422,8 +1444,8 @@ export default {
     "<1>{{number}}</1> friends relayed this red packet, you extend reward: <3>{{amount}}</3>.",
   labelRedPacketFrom: "From",
   labelRedPacketTo: "To Loopring L2",
-  labelRedPacketMy: "My red packet",
-  labelRedpacketNotActive: "Hide the redpacket received",
+  labelRedPacketMy: "My Red packet",
+  labelRedpacketNotActive: "Hide received Red Packets",
   labelRedpacketTokens: "ERC20 Tokens",
   labelRedpacketNFTS: "NFTs",
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
@@ -1515,31 +1537,5 @@ export default {
   labelClaimredPacket: "My Red Packet",
   labelClaimlrcStaking: "My LRC Staking",
   labelExpectSettlementPrice:
-    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
-  labelStakingSuccess: "{{symbol}} Staking Successful",
-  labelStakingFailed: "{{symbol}} Staking failed",
-  labelStakingRedeemFailed: "Redeem {{symbol}} failed",
-  labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
-  labelStakingRedeemRemaining: "Remaining Amount",
-  labelStakingRedeemDate: "Redeem Time",
-
-  labelCexSwapTitle: "CEX Swap",
-  labelCexSwapType: "Type",
-  labelCexSwapFee: "Fee",
-  labelCexSwapTime: "Time",
-  labelCexSwapPrice: "Price",
-  labelCexSwapSettled: "Settled",
-  labelCexSwapDelivering: "Delivering",
-  labelCexSwapPanelDes:
-    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
-  labelGoCexSwap:
-    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>CEX Swap</link> option to help minimize potential losses.",
-  labelCexSwap: "CEX Swap",
-  labelCexSwapFailed: "CEX Swap failed!",
-  labelCexSwapTitleDes: "What is CEX Swap?",
-  labelCexSwapContentDes: "What is CEX Swap?",
-  labelRefereeRewards: "Referee Rewards",
-  labelReferralRewards: "Referral Rewards",
-  labelRewardLRC: "Rewards LRC",
-  labelPrice: "Price",
+    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}} = {{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}} = {{marketPrice}}. There is {{marketRatePrice}}% variance observed. Please acknowledge the risk if you still want to continue.",
 };

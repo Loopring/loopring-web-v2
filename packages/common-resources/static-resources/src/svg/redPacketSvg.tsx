@@ -72,16 +72,10 @@ export const RedPacketWrapSVG = ({
 }) => {
   return (
     <svg width={274} height={414} viewBox="0 0 274 414" aria-hidden="true">
-      <g filter={`url(#filterWrap${type}0)`}>
-        <rect
-          x="7"
-          y="3"
-          width="260"
-          height="400"
-          rx="10"
-          fill={`url(#paint_linear_${type})`}
-        />
-      </g>
+      <path
+        d="M7 13C7 7.47714 11.4772 3 17 3H257C262.523 3 267 7.47715 267 13V393C267 398.523 262.523 403 257 403H17C11.4772 403 7 398.523 7 393V13Z"
+        fill={`url(#paint_linear_${type})`}
+      />
       <g filter={`url(#filterWrap${type}1)`}>
         <path
           d="M17 3C11.4771 3 7 7.47716 7 13V108.095C7 112.092 9.3688 115.728 13.1024 117.154C43.3399 128.709 87.6387 136 137 136C186.361 136 230.66 128.709 260.898 117.154C264.631 115.728 267 112.092 267 108.095V13C267 7.47716 262.523 3 257 3H17Z"
@@ -90,11 +84,11 @@ export const RedPacketWrapSVG = ({
       </g>
       <defs>
         <filter
-          id={`filterWrap${type}0`}
+          id={`filterWrap${type}1`}
           x="0"
           y="0"
           width="274"
-          height="414"
+          height="147"
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
@@ -124,46 +118,6 @@ export const RedPacketWrapSVG = ({
             result="shape"
           />
         </filter>
-        <filter
-          id={`filterWrap${type}1`}
-          x="0"
-          y="0"
-          width="274"
-          height="147"
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset dy="4" />
-          <feGaussianBlur stdDeviation="3.5" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values={
-              type == "official"
-                ? "0 0 0 0 0.745276 0 0 0 0 0.402449 0 0 0 0 0 0 0 0 0.25 0"
-                : "0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-            }
-            // values="0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_8955_1158"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_8955_1158"
-            result="shape"
-          />
-        </filter>
         <linearGradient
           id={`paint_linear_${type}`}
           x1="137"
@@ -172,8 +126,8 @@ export const RedPacketWrapSVG = ({
           y2="403"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor={startColor} />
-          <stop offset="1" stopColor={endColor} />
+          <stop stop-color={startColor} />
+          <stop offset="1" stop-color={endColor} />
         </linearGradient>
       </defs>
     </svg>
@@ -309,6 +263,7 @@ export type RedPacketQRPropsExtends = {
   textNo: string;
   textDes: string;
   imageEleUrl?: string;
+  onClickShareButton?: (e: React.MouseEvent<SVGGElement, MouseEvent>) => void;
 };
 export type ColorConfig = {
   colorTop: string;
@@ -356,6 +311,7 @@ export const RedPacketQRCodeSvg = React.memo(
         textNo,
         textDes,
         imageEleUrl,
+        onClickShareButton,
       }: ColorConfig & {
         type: "default" | "official";
         qrcodeRef: React.Ref<SVGGElement>;
@@ -370,13 +326,68 @@ export const RedPacketQRCodeSvg = React.memo(
         textContent,
         "",
       ]);
+      // const imageRef = React.useRef<any>();
+
+      const [imageBase64, setImageBase64] = React.useState<string>(
+        imageEleUrl ?? ""
+      );
+      React.useEffect(() => {
+        if (imageEleUrl) {
+          fetch(imageEleUrl)
+            .then((result) => result.blob())
+            .then((result) => {
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                // @ts-ignore
+                setImageBase64((state) => reader?.result ?? state);
+              };
+
+              reader.onerror = () => {
+                console.log("reader error");
+              };
+              reader.readAsDataURL(result);
+
+              // myLog("blob", result.stream());
+              // if (result) {
+              //   setImageBase64(result.toString());
+              // }
+            });
+        }
+      }, [imageEleUrl]);
+      // const onLoad = (event: any) => {
+      //   try {
+      //     let canvas: HTMLCanvasElement = document.createElement(
+      //       "CANVAS"
+      //     ) as HTMLCanvasElement;
+      //     let ctx: CanvasRenderingContext2D = canvas.getContext("2d") as any;
+      //     let dataURL: any;
+      //     canvas.height = imageRef.current.naturalHeight;
+      //     canvas.width = imageRef.current.naturalWidth;
+      //     ctx.drawImage(event.target, 0, 0);
+      //     dataURL = canvas.toDataURL();
+      //     myLog("read image", dataURL);
+      //     // fetch(event.target.href.baseVal, { mode: "no-cors" })
+      //     //   .then((result) => result.blob())
+      //     //   .then((result) => {
+      //     //
+      //     //   });
+      //     // if(event.target){
+      //     //
+      //     // }
+      //
+      //     // setImageBase64((state) => dataURL ?? state);
+      //   } catch (error) {
+      //     myLog("read error", error);
+      //   }
+      // };
+
       React.useEffect(() => {
         const [str1, str2] = textContent?.split("\n");
         if (textContent && str2) {
           setTextContent([str1, str2]);
         } else if (textContent && textContent.length > 12) {
           const value = textContent.substring(0, 12);
-          let _textContent2 = textContent.substring(12, textContent.length - 1);
+          let _textContent2 = textContent.substring(12, textContent.length);
           const textArray = value.split(" ");
           _textContent2 =
             (textArray.length > 2 ? textArray.pop() : "") + _textContent2;
@@ -384,258 +395,271 @@ export const RedPacketQRCodeSvg = React.memo(
           setTextContent([_textContent1, _textContent2]);
         }
       }, [textContent]);
+
       const station = imageEleUrl ? [36, 68, 86, 208] : [56, 88, 106, 186];
       // const qrcodeRef = React.createRef();
       return (
-        <svg
-          ref={ref}
-          width="334"
-          height="603"
-          viewBox="0 0 334 603"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M7 13C7 7.47714 11.4772 3 17 3H317C322.523 3 327 7.47715 327 13V593C327 598.523 322.523 603 317 603H17C11.4772 603 7 598.523 7 593V13Z"
-            fill={`url(#paintQRCode${type}0)`}
-          />
-          <path
-            d="M108 537C108 527.059 116.059 519 126 519H208C217.941 519 226 527.059 226 537V537C226 546.941 217.941 555 208 555H126C116.059 555 108 546.941 108 537V537Z"
-            fill={bgColor}
-          />
-          {!!textSendBy && (
+        <>
+          {/*{imageBase64 && (*/}
+          {/*  <img*/}
+          {/*    crossOrigin={"anonymous"}*/}
+          {/*    src={imageBase64}*/}
+          {/*    onLoad={onLoad}*/}
+          {/*    ref={imageRef}*/}
+          {/*    style={{ display: "none" }}*/}
+          {/*  />*/}
+          {/*)}*/}
+          <svg
+            ref={ref}
+            width="334"
+            height="603"
+            viewBox="0 0 334 603"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7 13C7 7.47714 11.4772 3 17 3H317C322.523 3 327 7.47715 327 13V593C327 598.523 322.523 603 317 603H17C11.4772 603 7 598.523 7 593V13Z"
+              fill={`url(#paintQRCode${type}0)`}
+            />
+            <path
+              onClick={onClickShareButton}
+              d="M108 537C108 527.059 116.059 519 126 519H208C217.941 519 226 527.059 226 537V537C226 546.941 217.941 555 208 555H126C116.059 555 108 546.941 108 537V537Z"
+              fill={bgColor}
+            />
+            {!!textSendBy && (
+              <path
+                opacity="0.16"
+                d="M31 428C31 423.582 34.5817 420 39 420H295C299.418 420 303 423.582 303 428V477C303 481.418 299.418 485 295 485H39C34.5817 485 31 481.418 31 477V428Z"
+                fill="white"
+              />
+            )}
+            <g filter={`url(#filterQRCode${type}0)`}>
+              <path
+                d="M19.3077 3C12.5103 3 7 8.52071 7 15.3308V134.131C7 138.126 9.36023 141.753 13.0801 143.208C50.3215 157.777 105.464 167 167 167C228.536 167 283.679 157.777 320.92 143.208C324.64 141.753 327 138.126 327 134.131V15.3308C327 8.52071 321.49 3 314.692 3H19.3077Z"
+                fill={colorTop}
+              />
+            </g>
             <path
               opacity="0.16"
-              d="M31 428C31 423.582 34.5817 420 39 420H295C299.418 420 303 423.582 303 428V477C303 481.418 299.418 485 295 485H39C34.5817 485 31 481.418 31 477V428Z"
+              d="M225 3H319C323.418 3 327 6.58172 327 11V30H233C228.582 30 225 26.4183 225 22V3Z"
               fill="white"
             />
-          )}
-          <g filter={`url(#filterQRCode${type}0)`}>
-            <path
-              d="M19.3077 3C12.5103 3 7 8.52071 7 15.3308V134.131C7 138.126 9.36023 141.753 13.0801 143.208C50.3215 157.777 105.464 167 167 167C228.536 167 283.679 157.777 320.92 143.208C324.64 141.753 327 138.126 327 134.131V15.3308C327 8.52071 321.49 3 314.692 3H19.3077Z"
-              fill={colorTop}
-            />
-          </g>
-          <path
-            opacity="0.16"
-            d="M225 3H319C323.418 3 327 6.58172 327 11V30H233C228.582 30 225 26.4183 225 22V3Z"
-            fill="white"
-          />
-          <defs>
-            <filter
-              id={`filterQRCode${type}0`}
-              x="0"
-              y="0"
-              width="334"
-              height="178"
-              filterUnits="userSpaceOnUse"
-              colorInterpolationFilters="sRGB"
+            <defs>
+              <filter
+                id={`filterQRCode${type}0`}
+                x="0"
+                y="0"
+                width="334"
+                height="178"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+              >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feColorMatrix
+                  in="SourceAlpha"
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  result="hardAlpha"
+                />
+                <feOffset dy="4" />
+                <feGaussianBlur stdDeviation="3.5" />
+                <feComposite in2="hardAlpha" operator="out" />
+                <feColorMatrix
+                  type="matrix"
+                  values={
+                    type == "official"
+                      ? "0 0 0 0 0.745276 0 0 0 0 0.402449 0 0 0 0 0 0 0 0 0.25 0"
+                      : "0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                  }
+                  // values="0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                />
+                <feBlend
+                  mode="normal"
+                  in2="BackgroundImageFix"
+                  result="effect1_dropShadow_8960_1241"
+                />
+                <feBlend
+                  mode="normal"
+                  in="SourceGraphic"
+                  in2="effect1_dropShadow_8960_1241"
+                  result="shape"
+                />
+              </filter>
+              <linearGradient
+                id={`paintQRCode${type}0`}
+                x1="167"
+                y1="2.99995"
+                x2="451.393"
+                y2="207.498"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor={startColor} />
+                <stop offset="1" stopColor={endColor} />
+              </linearGradient>
+            </defs>
+            <g
+              ref={qrcodeRef}
+              transform={"translate(87 236)"}
+              width="160"
+              height="160"
+              dangerouslySetInnerHTML={{ __html: qrCodeG ?? "" }}
             >
-              <feFlood floodOpacity="0" result="BackgroundImageFix" />
-              <feColorMatrix
-                in="SourceAlpha"
-                type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                result="hardAlpha"
+              {/*<rect className={"qrcode"} width="160" height="160" fill="#D9D9D9" />*/}
+              {/*{qrCodeG}*/}
+            </g>
+            {imageEleUrl && (
+              <image
+                transform={"translate(128 110)"}
+                href={imageBase64}
+                height="80"
+                width="80"
               />
-              <feOffset dy="4" />
-              <feGaussianBlur stdDeviation="3.5" />
-              <feComposite in2="hardAlpha" operator="out" />
-              <feColorMatrix
-                type="matrix"
-                values={
-                  type == "official"
-                    ? "0 0 0 0 0.745276 0 0 0 0 0.402449 0 0 0 0 0 0 0 0 0.25 0"
-                    : "0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-                }
-                // values="0 0 0 0 0.745276 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-              />
-              <feBlend
-                mode="normal"
-                in2="BackgroundImageFix"
-                result="effect1_dropShadow_8960_1241"
-              />
-              <feBlend
-                mode="normal"
-                in="SourceGraphic"
-                in2="effect1_dropShadow_8960_1241"
-                result="shape"
-              />
-            </filter>
-            <linearGradient
-              id={`paintQRCode${type}0`}
-              x1="167"
-              y1="2.99995"
-              x2="451.393"
-              y2="207.498"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stopColor={startColor} />
-              <stop offset="1" stopColor={endColor} />
-            </linearGradient>
-          </defs>
-          <g
-            ref={qrcodeRef}
-            transform={"translate(87 236)"}
-            width="160"
-            height="160"
-            dangerouslySetInnerHTML={{ __html: qrCodeG ?? "" }}
-          >
-            {/*<rect className={"qrcode"} width="160" height="160" fill="#D9D9D9" />*/}
-            {/*{qrCodeG}*/}
-          </g>
-          {imageEleUrl && (
-            <image
-              transform={"translate(128 110)"}
-              href={imageEleUrl}
-              height="80"
-              width="80"
-            />
-          )}
+            )}
 
-          <g transform={`translate(167 ${station[0]})`}>
-            {/*<rect x="15.5" y="45.5" width="280" height="21" />*/}
-            <text
-              className={"textAddress"}
-              strokeWidth="0"
-              fill={fontColor}
-              x="1"
-              y="1"
-              style={{
-                dominantBaseline: "central",
-                textAnchor: "middle",
-                fontSize: "14px",
-              }}
-            >
-              {textAddress}
-            </text>
-          </g>
-          <g transform={`translate(167 ${station[1]})`}>
-            <text
-              className={"textContent1"}
-              strokeWidth="0"
-              fill={fontColor}
-              x="1"
-              y="1"
-              style={{
-                dominantBaseline: "central",
-                textAnchor: "middle",
-                fontSize: "14px",
-              }}
-              dangerouslySetInnerHTML={{ __html: sanitize(textContent1) }}
-            />
-          </g>
-          <g transform={`translate(167 ${station[2]})`}>
-            <text
-              className={"textContent2"}
-              strokeWidth="0"
-              fill={fontColor}
-              x="1"
-              y="1"
-              style={{
-                dominantBaseline: "central",
-                textAnchor: "middle",
-                fontSize: "14px",
-              }}
-              dangerouslySetInnerHTML={{ __html: sanitize(textContent2) }}
-            />
-          </g>
-          <g transform={`translate(167 ${station[3]})`}>
-            <text
-              id={"amountStr"}
-              strokeWidth="0"
-              fill={fontColor}
-              x="1"
-              y="1"
-              style={{
-                dominantBaseline: "central",
-                textAnchor: "middle",
-                fontSize: "28px",
-              }}
-            >
-              {amountStr}
-            </text>
-          </g>
-          <g transform={"translate(276 14)"}>
-            <text
-              className={"textType"}
-              strokeWidth="0"
-              fill={fontColor}
-              x="1"
-              y="1"
-              style={{
-                dominantBaseline: "central",
-                textAnchor: "middle",
-                fontSize: "12px",
-              }}
-            >
-              {textType}
-            </text>
-          </g>
-          <g transform={"translate(167 438)"}>
-            <text
-              id={"textSendBy"}
-              strokeWidth="0"
-              fill={fontColor}
-              x="1"
-              y="1"
-              style={{
-                dominantBaseline: "central",
-                textAnchor: "middle",
-                fontSize: "14px",
-              }}
-            >
-              {textDes}
-            </text>
-          </g>
-          <g transform={"translate(167 466)"}>
-            <text
-              id={"textSendBy"}
-              strokeWidth="0"
-              fill={fontColor}
-              x="1"
-              y="1"
-              style={{
-                dominantBaseline: "central",
-                textAnchor: "middle",
-                fontSize: "14px",
-              }}
-              dangerouslySetInnerHTML={{ __html: textSendBy }}
-            />
-          </g>
-          <g transform={"translate(167 535)"}>
-            <text
-              className={"textShared"}
-              strokeWidth="0"
-              fill={btnColor}
-              x="1"
-              y="1"
-              style={{
-                dominantBaseline: "central",
-                textAnchor: "middle",
-                fontSize: "16px",
-              }}
-            >
-              {textShared}
-            </text>
-          </g>
-          <g transform={"translate(167 568)"}>
-            <text
-              className={"textNo"}
-              strokeWidth="0"
-              fill={fontColor}
-              x="1"
-              y="1"
-              style={{
-                dominantBaseline: "central",
-                textAnchor: "middle",
-                fontSize: "12px",
-              }}
-            >
-              {textNo}
-            </text>
-          </g>
-        </svg>
+            <g transform={`translate(167 ${station[0]})`}>
+              {/*<rect x="15.5" y="45.5" width="280" height="21" />*/}
+              <text
+                className={"textAddress"}
+                strokeWidth="0"
+                fill={fontColor}
+                x="1"
+                y="1"
+                style={{
+                  dominantBaseline: "central",
+                  textAnchor: "middle",
+                  fontSize: "14px",
+                }}
+              >
+                {textAddress}
+              </text>
+            </g>
+            <g transform={`translate(167 ${station[1]})`}>
+              <text
+                className={"textContent1"}
+                strokeWidth="0"
+                fill={fontColor}
+                x="1"
+                y="1"
+                style={{
+                  dominantBaseline: "central",
+                  textAnchor: "middle",
+                  fontSize: "14px",
+                }}
+                dangerouslySetInnerHTML={{ __html: sanitize(textContent1) }}
+              />
+            </g>
+            <g transform={`translate(167 ${station[2]})`}>
+              <text
+                className={"textContent2"}
+                strokeWidth="0"
+                fill={fontColor}
+                x="1"
+                y="1"
+                style={{
+                  dominantBaseline: "central",
+                  textAnchor: "middle",
+                  fontSize: "14px",
+                }}
+                dangerouslySetInnerHTML={{ __html: sanitize(textContent2) }}
+              />
+            </g>
+            <g transform={`translate(167 ${station[3]})`}>
+              <text
+                id={"amountStr"}
+                strokeWidth="0"
+                fill={fontColor}
+                x="1"
+                y="1"
+                style={{
+                  dominantBaseline: "central",
+                  textAnchor: "middle",
+                  fontSize: "28px",
+                }}
+              >
+                {amountStr}
+              </text>
+            </g>
+            <g transform={"translate(276 14)"}>
+              <text
+                className={"textType"}
+                strokeWidth="0"
+                fill={fontColor}
+                x="1"
+                y="1"
+                style={{
+                  dominantBaseline: "central",
+                  textAnchor: "middle",
+                  fontSize: "11px",
+                }}
+              >
+                {textType}
+              </text>
+            </g>
+            <g transform={"translate(167 438)"}>
+              <text
+                id={"textSendBy"}
+                strokeWidth="0"
+                fill={fontColor}
+                x="1"
+                y="1"
+                style={{
+                  dominantBaseline: "central",
+                  textAnchor: "middle",
+                  fontSize: "14px",
+                }}
+              >
+                {textDes}
+              </text>
+            </g>
+            <g transform={"translate(167 466)"}>
+              <text
+                id={"textSendBy"}
+                strokeWidth="0"
+                fill={fontColor}
+                x="1"
+                y="1"
+                style={{
+                  dominantBaseline: "central",
+                  textAnchor: "middle",
+                  fontSize: "14px",
+                }}
+                dangerouslySetInnerHTML={{ __html: textSendBy }}
+              />
+            </g>
+            <g onClick={onClickShareButton} transform={"translate(167 535)"}>
+              <text
+                className={"textShared"}
+                strokeWidth="0"
+                fill={btnColor}
+                x="1"
+                y="1"
+                style={{
+                  dominantBaseline: "central",
+                  textAnchor: "middle",
+                  fontSize: "16px",
+                }}
+              >
+                {textShared}
+              </text>
+            </g>
+            <g transform={"translate(167 568)"}>
+              <text
+                className={"textNo"}
+                strokeWidth="0"
+                fill={fontColor}
+                x="1"
+                y="1"
+                style={{
+                  dominantBaseline: "central",
+                  textAnchor: "middle",
+                  fontSize: "12px",
+                }}
+              >
+                {textNo}
+              </text>
+            </g>
+          </svg>
+        </>
       );
     }
   )

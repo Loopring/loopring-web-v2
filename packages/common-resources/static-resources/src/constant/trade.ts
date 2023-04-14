@@ -24,7 +24,6 @@ export enum DeFiChgType {
   coinBuy = "coinBuy",
   exchange = "exchange",
 }
-
 export type WithdrawType =
   | sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
   | sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
@@ -197,6 +196,7 @@ export const STAKING_INVEST_LIMIT = 5;
 export const PROPERTY_Value_LIMIT = 40;
 export const REDPACKET_ORDER_LIMIT = 10000;
 export const REDPACKET_ORDER_NFT_LIMIT = 20000;
+export const BLINDBOX_REDPACKET_LIMIT = 10000;
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: "name",
   image: "image",
@@ -342,64 +342,6 @@ export const useAddressTypeLists = <
       description: t(`label${WALLET_TYPE.Exchange}Des`),
     },
   ];
-  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (
-    type: WALLET_TYPE
-  ) => {
-    if (type === WALLET_TYPE.Exchange) throw "wrong type";
-    return [
-      {
-        label: t("labelWalletTypeOptions", {
-          type: t(`labelWalletType${WALLET_TYPE.EOA}`),
-        }),
-        disabled: type === WALLET_TYPE.EOA ? false : true,
-        value: WALLET_TYPE.EOA as T,
-        description: t(`label${WALLET_TYPE.EOA}Des`),
-      },
-      {
-        label: t("labelWalletTypeOptions", {
-          type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
-        }),
-        disabled: type === WALLET_TYPE.Loopring ? false : true,
-        value: WALLET_TYPE.Loopring as T,
-        description: t(`label${WALLET_TYPE.Loopring}Des`),
-      },
-      {
-        label: t("labelWalletTypeOptions", {
-          type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
-        }),
-        disabled: type === WALLET_TYPE.OtherSmart ? false : true,
-        value: WALLET_TYPE.OtherSmart as T,
-        description: t(`label${WALLET_TYPE.OtherSmart}Des`),
-      },
-      {
-        label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
-        disabled: type === WALLET_TYPE.EOA ? false : true,
-        value: EXCHANGE_TYPE.Binance as T,
-        // todo translation
-        description:
-          "Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
-        // t(`label${WALLET_TYPE.OtherSmart}Des`),
-      },
-      {
-        label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
-        disabled: type === WALLET_TYPE.EOA ? false : true,
-        value: EXCHANGE_TYPE.Huobi as T,
-        // todo translation
-        description:
-          "Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.",
-        // t(`label${WALLET_TYPE.OtherSmart}Des`),
-      },
-      {
-        label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
-        disabled: type === WALLET_TYPE.EOA ? false : true,
-        value: EXCHANGE_TYPE.Others as T,
-        // todo translation
-        description:
-          "The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
-        // t(`label${WALLET_TYPE.OtherSmart}Des`),
-      },
-    ];
-  };
   const nonExchangeList: AddressItemType<T>[] = [
     {
       label: t(`labelNonExchangeType`),
@@ -433,7 +375,6 @@ export const useAddressTypeLists = <
   ];
   return {
     walletList,
-    walletListFn,
     nonExchangeList,
     exchangeList,
   };
@@ -509,7 +450,7 @@ export type TradeDefi<C> = {
   defiBalances?: { [key: string]: string };
   lastInput?: DeFiChgType;
 };
-export type TradeStake<C> = {
+export type TradeStack<C> = {
   sellToken: sdk.TokenInfo;
   sellVol: string;
   deFiSideCalcData?: DeFiSideCalcData<C>;
@@ -520,7 +461,7 @@ export type TradeStake<C> = {
   };
 };
 
-export type RedeemStake<C> = {
+export type RedeemStack<C> = {
   sellToken: sdk.TokenInfo;
   sellVol?: string;
   deFiSideRedeemCalcData: DeFiSideRedeemCalcData<C>;
@@ -585,6 +526,7 @@ export type DualViewInfo = DualViewBase & {
 export type ClaimToken = sdk.UserBalanceInfo & {
   isNft?: boolean;
   nftTokenInfo?: sdk.UserNFTBalanceInfo;
+  luckyTokenHash?: string;
 };
 export type DualViewOrder = DualViewBase & {
   __raw__: {
@@ -601,7 +543,6 @@ export enum CLAIM_TYPE {
   redPacket = "redPacket",
   lrcStaking = "lrcStaking",
 }
-
 export type BanxaOrder = {
   id: string;
   account_id: string;
@@ -655,7 +596,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   },
   {
     labelKey: "labelLuckyRandomToken",
-    desKey: "labelLuckyRandomTokenDes",
+    desKey: "labelRedPacketsSplitLuckyDetail",
     showInNFTS: true,
     showInERC20: true,
     value: {
@@ -752,5 +693,3 @@ export interface SnackbarMessage {
   key: number | string;
   svgIcon?: string;
 }
-
-export type CEX_MARKET = sdk.CEX_MARKET & { cexMarket: string };

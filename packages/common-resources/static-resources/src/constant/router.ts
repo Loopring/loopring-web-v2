@@ -1,6 +1,5 @@
 import {
   AssetsIcon,
-  ContactIcon,
   ImageIcon,
   L2MyLiquidityIcon,
   MintIcon,
@@ -63,16 +62,6 @@ export const profile = {
       label: {
         id: "vip",
         i18nKey: "labelVipPanel",
-      },
-    },
-  ],
-  contact: [
-    {
-      icon: ContactIcon,
-      router: { path: "/contact" },
-      label: {
-        id: "contact",
-        i18nKey: "labelContactsPanel",
       },
     },
   ],

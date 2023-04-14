@@ -24,7 +24,6 @@ import {
   globalSetup,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
-  WALLET_TYPE,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -58,10 +57,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       isShowWithdraw: {
         symbol,
         isShow,
-        info,
-        address: contactAddress,
-        name: contactName,
-        addressType: contactAddressType,
+        info
       },
     },
     setShowAccount,
@@ -79,8 +75,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   );
 
   const [sureIsAllowAddress, setSureIsAllowAddress] = React.useState<
-    WALLET_TYPE | EXCHANGE_TYPE | undefined
-  >(WALLET_TYPE.EOA);
+    EXCHANGE_TYPE | undefined
+  >(undefined);
 
   const [isFastWithdrawAmountLimit, setIsFastWithdrawAmountLimit] =
     React.useState<boolean>(false);
@@ -360,8 +356,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
     if (info?.isToMyself) {
       setAddress(account.accAddress);
-    } else if (contactAddress) {
-      setAddress(contactAddress);
     } else {
       setAddress("");
     }
@@ -376,7 +370,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     feeInfo,
     withdrawValue.belong,
     info?.isRetry,
-    contactAddress,
   ]);
 
   React.useEffect(() => {
@@ -684,9 +677,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     lastFailed:
       store.getState().modals.isShowAccount.info?.lastFailed ===
       LAST_STEP.withdraw,
-    handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => {
+    handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => {
       setSureIsAllowAddress(value);
     },
+
     onWithdrawClick: () => {
       if (withdrawValue && withdrawValue.belong) {
         handleWithdraw(withdrawValue, realAddr ? realAddr : address);
@@ -740,14 +734,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setAddress(value);
     },
 
-    isFromContact: contactAddress ? true : false,
-    contact: contactAddress
-      ? {
-          address: contactAddress,
-          name: contactName!,
-          addressType: contactAddressType!,
-        }
-      : undefined,
   };
 
   return {

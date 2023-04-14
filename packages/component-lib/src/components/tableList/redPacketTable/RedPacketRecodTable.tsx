@@ -9,6 +9,7 @@ import {
   TablePagination,
 } from "../../basic-lib";
 import {
+  CoinInfo,
   globalSetup,
   myLog,
   RowConfig,
@@ -117,7 +118,11 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           name: t("labelRecordToken"),
           formatter: ({ row: { token } }: FormatterProps<R, unknown>) => {
             if (token.type === TokenType.single) {
-              return <ColumnCoinDeep token={token as any} />;
+              const _token = token as CoinInfo<any> & {type: TokenType;}
+              return <ColumnCoinDeep token={{
+                ..._token,
+                name: '' // for not displaying name here
+              }}/>;
             } else {
               const { metadata } = token as sdk.UserNFTBalanceInfo;
               return (
@@ -176,7 +181,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           sortable: true,
           name: t("labelRecordAmount"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{`${row.remainAmount}/${row.totalAmount}`}</>;
+            return <>{`${row.totalAmount}`}</>;
           },
         },
         {
@@ -187,9 +192,12 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             return (
               <>
                 {t(
-                  row.type.partition == sdk.LuckyTokenAmountType.AVERAGE
-                    ? "labelRedPacketSendCommonTitle"
-                    : "labelRedPacketSenRandomTitle",
+                  row.type.mode == sdk.LuckyTokenClaimType.BLIND_BOX
+                    ? "labelLuckyBlindBox"
+                    : row.type.partition == sdk.LuckyTokenAmountType.AVERAGE
+                      ? "labelRedPacketSendCommonTitle"
+                      : "labelRedPacketSenRandomTitle",
+                  
                   { ns: "common" }
                 ) +
                   " — " +
@@ -205,27 +213,16 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           sortable: false,
           name: t("labelRecordStatus"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            if (
-              // row.type.scope === sdk.LuckyTokenViewType.PRIVATE &&
-              [0, 1, 2].includes(LuckyTokenItemStatusMap[row.status])
-            ) {
-              return (
-                <Link
-                  height={"100%"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  onClick={() =>
-                    onItemClick(row.rawData as sdk.LuckyTokenItemForReceive)
-                  }
-                >
-                  {t(`labelRedPacketShowQR`, { ns: "common" })}
-                </Link>
-              );
-            } else {
-              return (
-                <>{t(`labelRedPacketStatus${row.status}`, { ns: "common" })}</>
-              );
-            }
+            const statusMap = [
+              [0, t(`labelRedPacketStatusNotStarted`, { ns: "common" })],
+              [1, t(`labelRedPacketStatusNotStarted`, { ns: "common" })],
+              [2, t(`labelRedPacketStatusStarted`, { ns: "common" })],
+              [3, t(`labelRedPacketStatusEnded`, { ns: "common" })],
+              [4, t(`labelRedPacketStatusEnded`, { ns: "common" })],
+              [5, t(`labelRedPacketStatusEnded`, { ns: "common" })],
+            ] as [number, string][]
+            const found = statusMap.find(x => x[0] === LuckyTokenItemStatusMap[row.status])
+            return <>{found ? found[1] : ''}</> 
           },
         },
         {
@@ -262,7 +259,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize, tokenType]);
+    }, [ tokenType]);
 
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),
@@ -277,6 +274,9 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
+          onRowClick={(_index: number, row: R) => {
+            onItemClick(row.rawData);
+          }}
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
           sortMethod={React.useCallback(

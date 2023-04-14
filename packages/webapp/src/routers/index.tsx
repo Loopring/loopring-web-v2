@@ -31,7 +31,6 @@ import {
   LoadingBlock,
   NoticePanelSnackBar,
   NoticeSnack,
-  ComingSoonPanel,
 } from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
@@ -47,6 +46,7 @@ import { InvestPage } from "../pages/InvestPage";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { AssetPage } from "../pages/AssetPage";
 import { FiatPage } from "../pages/FiatPage";
+import { RedPacketPage } from "../pages/RedPacketPage";
 import { useTranslation } from "react-i18next";
 import { ContactPage } from "pages/ContactPage";
 import { ContactTransactionsPage } from "pages/ContactPage/transactions";
@@ -353,16 +353,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={["/invest", "/invest/*"]}>
           <ContentWrap state={state}>
             <InvestPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={["/contact"]}>
-          <ContentWrap state={state}>
-            <ContactPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={["/contact/transactions/*"]}>
-          <ContentWrap state={state}>
-            <ContactTransactionsPage />
           </ContentWrap>
         </Route>
         <Route

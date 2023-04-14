@@ -25,6 +25,7 @@ import {
   RedPacketWrapSVG,
   SoursURL,
   BackIcon,
+  YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import QRCodeStyling from "qr-code-styling";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -49,7 +50,6 @@ import {
   BoxNFT,
   ModalCloseButtonPosition,
 } from "../basic-lib";
-import { LuckyTokenItemStatus } from "@loopring-web/loopring-sdk";
 import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
@@ -223,11 +223,11 @@ export const BoxClaim = styled(Box)`
 
 export const RedPacketSize = {
   middle: {
-    height: 400,
+    height: 414,
     width: 260,
   },
   large: {
-    height: 600,
+    height: 680,
     width: 320,
   },
 };
@@ -266,28 +266,12 @@ export const RedPacketQRCode = ({
       data: url,
     });
     const svgEle = await qrCode._getElement("svg");
-    setQrCodeG(svgEle?.innerHTML ?? "");
-    // setQrCodeG(() => {
-    //   // const dom = document.createElement("div");
-    //   // qrcode.append(dom);
-    //   // @ts-ignore
-    //   return dom.getElementsByTagName("svg").innerHTML;
-    //   // const g = document.createElement("g");
-    //   // var qrCodeGEle = dom.getElementsByTagName('sv').innerHTML`;
-    //   //   new DOMParser().parseFromString(qrCodeG, "text/xml");
-    //   //
-    //   // let qrCodeG = dom.firstChild.innerHTML ?? ""; //qrCodeG.replace(/qrmodule/g, `qrmodule${type}`);
-    //   // debugger;
-    //   // let qrCodeG = qrcode.svg({ container: "g" });
-    //   // let qrCodeG = qrcode._svg?.innerHTML ?? ""; //qrCodeG.replace(/qrmodule/g, `qrmodule${type}`);
-    //   // // @ts-ignore
-    //   // return qrCodeGEle?.innerHTML ?? "";
-    // });
+    setQrCodeG(svgEle?.innerHTML);
   }, [url]);
   React.useEffect(() => {
     updateSvg();
   }, [url]);
-  const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const onClick = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
     try {
       // @ts-ignore-start
       const svg: SVGElement = ref.current as SVGElement;
@@ -330,7 +314,7 @@ export const RedPacketQRCode = ({
   return (
     <>
       {qrCodeG && (
-        <Box onClick={onClick}>
+        <Box>
           <RedPacketQRCodeSvg
             ref={ref}
             {...{ ...RedPacketColorConfig[type], ...rest }}
@@ -338,6 +322,7 @@ export const RedPacketQRCode = ({
             imageEleUrl={imageEleUrl}
             qrCodeG={qrCodeG}
             type={type}
+            onClickShareButton={onClick}
           />
         </Box>
       )}
@@ -370,6 +355,7 @@ export const RedPacketBgDefault = ({
         zIndex={100}
         display={"flex"}
         justifyContent={"center"}
+        marginTop={1}
       >
         <RedPacketWrapSVG
           {...{ ...RedPacketCssColorConfig[type] }}
@@ -728,9 +714,9 @@ RedPacketDefault & RedPacketUnreadyProps) => {
             marginTop={3}
             top={0}
           >
-            {t("labelOpenAfter", {
-              time: moment(validSince).fromNow(),
-            })}
+            {`${moment(validSince).format("MM/DD HH:mm")} ${t(
+              "labelOpenStart"
+            )}`}
           </Typography>
           {ImageEle}
           <Typography
@@ -845,7 +831,7 @@ export const RedPacketOpened = ({
         </Box>
       </Box>
     );
-  }, []);
+  }, [type]);
   return <RedPacketBgOpened type={type} content={content} size={size} />;
 };
 
@@ -947,6 +933,7 @@ const BoxStyle = styled(Box)`
 `;
 
 export const RedPacketDetail = ({
+  redPacketType,
   sender,
   amountStr,
   // _amountClaimStr,
@@ -957,15 +944,25 @@ export const RedPacketDetail = ({
   // detail,
   handlePageChange,
   myAmountStr,
-  isShouldSharedRely,
   totalCount,
   remainCount,
   onShared,
   relyNumber,
   relyAmount,
   ImageEle,
+  showRelayText,
+  showShareBtn,
+  tokenSymbol,
+  detail,
+  bottomButton
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
+  const showLucky =
+    [
+      sdk.LuckyTokenItemStatus.OVER_DUE,
+      sdk.LuckyTokenItemStatus.COMPLETED,
+    ].includes(detail.luckyToken.status) ||
+    detail.luckyToken.tokenAmount.remainCount == 0;
   const pageNation = React.useMemo(() => {
     if (totalCount - remainCount - RedPacketDetailLimit > 0) {
       return (
@@ -1005,7 +1002,7 @@ export const RedPacketDetail = ({
           variant={"body1"}
           color={RedPacketColorConfig.default.fontColor}
         >
-          {t("labelLuckyRedPacket")}
+          {t(`label${redPacketType}RedPacket`)}
         </Typography>
       </Box>
       <Box
@@ -1013,6 +1010,7 @@ export const RedPacketDetail = ({
         flexDirection={"column"}
         alignItems={"center"}
         marginY={2}
+        overflow={"scroll"}
       >
         <Typography variant={"body1"}>{sender}</Typography>
         <Typography
@@ -1048,7 +1046,7 @@ export const RedPacketDetail = ({
           {t("labelTotalRedPacket", { value: amountStr })}
         </Typography>
       </Box>
-      <Divider orientation={"horizontal"} sx={{ borderWidth: 3 }} />
+      {/*<Divider orientation={"horizontal"} sx={{ borderWidth: 3 }} />*/}
       <Box
         flex={1}
         display={"flex"}
@@ -1060,117 +1058,160 @@ export const RedPacketDetail = ({
           color={"textThird"}
           marginY={1}
           paddingX={1}
+          paddingY={1}
+          sx={{ background: "var(--color-divide)" }}
         >
           {t("labelRedPacketReceivedRecord", {
             value: totalCount - remainCount,
             count: totalCount,
           })}
         </Typography>
-        <Divider
-          orientation={"horizontal"}
-          sx={{ borderWidth: 1, paddingX: 1 }}
-        />
-        <Box flex={1} overflow={"scroll"}>
-          {claimList.map((item) => {
-            return (
-              <BoxClaim
-                className={item.isSelf ? "self claim" : "claim"}
-                display={"flex"}
-                justifyContent={"stretch"}
-                flexDirection={"column"}
-                paddingY={1}
-                paddingX={2}
-              >
-                <Typography
-                  component={"span"}
-                  display={"inline-flex"}
-                  flexDirection={"row"}
-                  justifyContent={"space-between"}
-                  alignItems={"center"}
+        {/*<Divider*/}
+        {/*  orientation={"horizontal"}*/}
+        {/*  sx={{ borderWidth: 1, paddingX: 1 }}*/}
+        {/*/>*/}
+        <Box flex={1}  >
+          {claimList &&
+            claimList.map((item, index) => {
+              return (
+                <BoxClaim
+                  className={item.isSelf ? "self claim" : "claim"}
+                  display={"flex"}
+                  justifyContent={"stretch"}
+                  flexDirection={"column"}
+                  paddingTop={1 / 2}
+                  paddingX={1}
                 >
                   <Typography
-                    variant={"body1"}
                     component={"span"}
-                    color={item.isSelf ? "success" : "textPrimary"}
+                    display={"inline-flex"}
+                    flexDirection={"row"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                    paddingX={1}
                   >
-                    {item.isSelf
-                      ? t("labelMyRedPacketReward")
-                      : item.accountStr}
+                    <Typography
+                      variant={"body1"}
+                      component={"span"}
+                      color={item.isSelf ? "success" : "textPrimary"}
+                    >
+                      {item.isSelf
+                        ? t("labelMyRedPacketReward")
+                        : item.accountStr}
+                    </Typography>
+                    <Typography
+                      variant={"body1"}
+                      component={"span"}
+                      color={"textPrimary"}
+                    >
+                      {item.amountStr}
+                    </Typography>
                   </Typography>
                   <Typography
-                    variant={"body1"}
                     component={"span"}
-                    color={"textPrimary"}
+                    display={"inline-flex"}
+                    flexDirection={"row"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                    paddingX={1}
                   >
-                    {item.amountStr}
+                    <Typography
+                      variant={"body2"}
+                      component={"span"}
+                      color={"textThird"}
+                    >
+                      {moment(
+                        new Date(item.createdAt),
+                        "YYYYMMDDHHMM"
+                      ).fromNow()}
+                    </Typography>
+                    <Typography display={"inline"}>
+                      {item.helper && (
+                        <Typography
+                          component={"span"}
+                          color={"var(--color-primary)"}
+                          display={"inline-flex"}
+                          alignItems={"center"}
+                          variant={"body2"}
+                        >
+                          {item.helper}
+                        </Typography>
+                      )}
+                      {showLucky &&
+                        (redPacketType === "lucky" ||
+                          redPacketType === "relay") &&
+                        item.isMax && (
+                          <Typography
+                            component={"span"}
+                            color={"var(--color-warning)"}
+                            display={"inline-flex"}
+                            alignItems={"center"}
+                            variant={"body2"}
+                            marginLeft={1}
+                          >
+                            <FirstPlaceIcon
+                              fontSize={"medium"}
+                              sx={{ paddingRight: 1 / 2 }}
+                            />
+                            {t("labelLuckDraw")}
+                          </Typography>
+                        )}
+                    </Typography>
                   </Typography>
-                </Typography>
-                <Typography
-                  component={"span"}
-                  display={"inline-flex"}
-                  flexDirection={"row"}
-                  justifyContent={"space-between"}
-                  alignItems={"center"}
-                >
-                  <Typography
-                    variant={"body2"}
-                    component={"span"}
-                    color={"textThird"}
-                  >
-                    {moment(new Date(item.createdAt), "YYYYMMDDHHMM").fromNow()}
-                  </Typography>
-                  <Typography display={"inline"}>
-                    {item.helper && (
-                      <Typography
-                        component={"span"}
-                        color={"var(--color-primary)"}
-                        display={"inline-flex"}
-                        alignItems={"center"}
-                        variant={"body2"}
-                      >
-                        {item.helper}
-                      </Typography>
-                    )}
-                    {item.isMax && (
-                      <Typography
-                        component={"span"}
-                        color={"var(--color-warning)"}
-                        display={"inline-flex"}
-                        alignItems={"center"}
-                        variant={"body2"}
-                        marginLeft={1}
-                      >
-                        <FirstPlaceIcon
-                          fontSize={"medium"}
-                          sx={{ paddingRight: 1 / 2 }}
-                        />
-                        {t("labelLuckDraw")}
-                      </Typography>
-                    )}
-                  </Typography>
-                </Typography>
-              </BoxClaim>
-            );
-          })}
+
+                  {index + 1 !== claimList.length && (
+                    <Divider
+                      orientation={"horizontal"}
+                      sx={{
+                        borderWidth: 1 / 2,
+                        paddingX: 1,
+                        marginTop: 1 / 2,
+                      }}
+                    />
+                  )}
+                </BoxClaim>
+              );
+            })}
         </Box>
         {pageNation}
       </Box>
-      {isShouldSharedRely && (
-        <Box paddingX={1} display={"flex"} flexDirection={"column"}>
-          <Button
-            variant={"contained"}
-            color={"error"}
-            sx={{
-              backgroundColor: RedPacketColorConfig.default.colorTop as any,
-              "&:hover": {
+      {/* {showShareBtn && ( */}
+      <Box paddingX={1} display={"flex"} flexDirection={"column"}>
+        {bottomButton === 'ended'
+          ? (
+            <Button
+              variant={"contained"}
+              color={"error"}
+              sx={{
                 backgroundColor: RedPacketColorConfig.default.colorTop as any,
-              },
-            }}
-            fullWidth={true}
-            onClick={onShared}
-          >
-            {t("labelRedPacketGrab")}
-          </Button>
+                "&:hover": {
+                  backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                },
+              }}
+              fullWidth={true}
+              disabled
+            >
+              {t("labelRedPacketEnded")}
+            </Button>
+          )
+          : (
+            <Button
+              variant={"contained"}
+              color={"error"}
+              sx={{
+                backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                "&:hover": {
+                  backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                },
+              }}
+              fullWidth={true}
+              onClick={onShared}
+            >
+              {t("labelRedPacketGrab")}
+            </Button>)
+        }
+
+        {showRelayText && (
           <Typography
             color={"textSecondary"}
             variant={"body2"}
@@ -1180,9 +1221,10 @@ export const RedPacketDetail = ({
           >
             <Trans
               i18nKey={"labelRedpacketHavePeopleHelp"}
+
               tOptions={{
                 number: relyNumber ? relyNumber : EmptyValueTag,
-                amount: relyAmount ? relyAmount : EmptyValueTag,
+                amount: relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : '')
               }}
             >
               have
@@ -1203,8 +1245,9 @@ export const RedPacketDetail = ({
               </Typography>
             </Trans>
           </Typography>
-        </Box>
-      )}
+        )}
+      </Box>
+      {/* )} */}
     </BoxStyle>
   );
 };
@@ -1272,6 +1315,20 @@ export const RedPacketPrepare = ({
       <></>
     );
   }, [props]);
+
+  // following code is for triggering rerender
+  const getDifferenceStatus = () => {
+    const difference = new Date(_info.validSince).getTime() - Date.now();
+    return difference > 180000 ? 0 : difference > 0 ? 1 : 2;
+  };
+  const [differenceStatus, setDifferenceStatus] = React.useState(
+    getDifferenceStatus()
+  );
+  React.useEffect(() => {
+    setInterval(() => {
+      setDifferenceStatus(getDifferenceStatus);
+    }, 1000);
+  }, []);
   const viewItem = React.useMemo(() => {
     let difference = new Date(_info.validSince).getTime() - Date.now();
     if (claim) {
@@ -1281,7 +1338,6 @@ export const RedPacketPrepare = ({
             ...props,
           }}
           ImageEle={ImageEle}
-          type={_type ? _type : "default"}
           amountStr={amountStr}
           myAmountStr={myAmountStr}
           viewDetail={() => {
@@ -1309,6 +1365,7 @@ export const RedPacketPrepare = ({
               : getShortAddr(props?.sender?.address)
           }
           memo={props?.info?.memo}
+          type={_type}
         />
       );
     } else if (difference > 180000) {
@@ -1323,6 +1380,7 @@ export const RedPacketPrepare = ({
           ImageEle={ImageEle}
           amountStr={amountStr}
           validSince={_info.validSince}
+          type={_type}
         />
       );
     } else if (difference > 0) {
@@ -1336,20 +1394,22 @@ export const RedPacketPrepare = ({
               : getShortAddr(props?.sender?.address)
           }
           showRedPacket={() => {
-            setShowRedPacket({
-              isShow: false,
-              step: RedPacketViewStep.OpenPanel,
-              info: _info,
-            });
+            // do nothing
+            // setShowRedPacket({
+            //   isShow: true,
+            //   step: RedPacketViewStep.OpenPanel,
+            //   info: _info,
+            // });
           }}
           amountStr={amountStr}
           validSince={_info.validSince}
+          type={_type}
         />
       );
     } else if (
       // difference + 86400000 < 0 ||
-      _info.status == LuckyTokenItemStatus.COMPLETED ||
-      _info.status == LuckyTokenItemStatus.OVER_DUE ||
+      _info.status == sdk.LuckyTokenItemStatus.COMPLETED ||
+      _info.status == sdk.LuckyTokenItemStatus.OVER_DUE ||
       _info.tokenAmount.remainCount === 0
     ) {
       return (
@@ -1361,13 +1421,26 @@ export const RedPacketPrepare = ({
               ? props?.sender?.ens
               : getShortAddr(props?.sender?.address)
           }
-          // viewDetail={() => {
-          //   setShowRedPacket({
-          //     isShow: true,
-          //     step: RedPacketViewStep.DetailPanel,
-          //     info: props,
-          //   });
-          // }}
+          type={_type ?? "default"}
+          viewDetail={() => {
+            if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.BlindBoxDetail,
+                info: {
+                  ..._info,
+                },
+              });
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.DetailPanel,
+                info: {
+                  ..._info,
+                },
+              });
+            }
+          }}
         />
       );
     } else {
@@ -1377,7 +1450,7 @@ export const RedPacketPrepare = ({
             ...props,
           }}
           ImageEle={ImageEle ?? undefined}
-          type={_type ? _type : "default"}
+          type={_type}
           amountStr={amountStr}
           sender={
             props?.sender?.ens
@@ -1393,10 +1466,34 @@ export const RedPacketPrepare = ({
             });
             onOpen();
           }}
+          viewDetail={
+            _info.sender.accountId === account.accountId
+              ? () => {
+                  if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+                    _info
+                    setShowRedPacket({
+                      isShow: true,
+                      step: RedPacketViewStep.BlindBoxDetail,
+                      info: {
+                        ..._info,
+                      },
+                    });
+                  } else {
+                    setShowRedPacket({
+                      isShow: true,
+                      step: RedPacketViewStep.DetailPanel,
+                      info: {
+                        ..._info,
+                      },
+                    });
+                  }
+                }
+              : undefined
+          }
         />
       );
     }
-  }, [amountStr, claim, myAmountStr, onOpen, _info]);
+  }, [amountStr, claim, myAmountStr, onOpen, _info, differenceStatus]);
   return <Box>{viewItem}</Box>;
 };
 
@@ -1445,6 +1542,11 @@ export const RedPacketBlindBoxDetail = ({
   onClickClaim,
   onCloseOpenModal,
   onClickClaimDetailBack,
+  description,
+  shareButton,
+  claimButton,
+  didClaimABlindBox,
+  wonInfo
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
@@ -1485,10 +1587,10 @@ export const RedPacketBlindBoxDetail = ({
                 onClose={onCloseOpenModal!}
               />
               <Typography marginBottom={3} variant={"h3"}>
-                {wonNFTInfo ? "恭喜获得" : "很遗憾"}{" "}
+                {wonNFTInfo ? t("labelBlindBoxCongratulations") : t("labelBlindBoxSorry")}{" "}
               </Typography>
               <Typography variant={"h5"}>
-                {wonNFTInfo ? wonNFTInfo.name : "您没有获得奖励"}{" "}
+                {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
               </Typography>
               {wonNFTInfo ? (
                 <img width={"40%"} src={wonNFTInfo.url}></img>
@@ -1497,13 +1599,16 @@ export const RedPacketBlindBoxDetail = ({
               )}
               <Link
                 marginBottom={3}
-                onClick={onClickViewDetail}
+                onClick={onCloseOpenModal!}
                 variant={"body1"}
                 color={theme.colorBase.textSecondary}
                 marginTop={5}
               >
-                <u>{"View Red Packet Detail >"}</u>
+                <u>{t("labelLuckyRedPacketDetail")}</u>
               </Link>
+              {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+                {t("labelClaimBtn")}
+              </Button> */}
               {wonNFTInfo && (
                 <Button variant={"contained"} fullWidth onClick={onClickClaim}>
                   {t("labelClaimBtn")}
@@ -1569,57 +1674,58 @@ export const RedPacketBlindBoxDetail = ({
           </Typography>
 
           <Box flex={1} overflow={"scroll"}>
-            {BlindBoxClaimList!.map((info) => {
-              return (
-                <BoxClaim
-                  className={"claim"}
-                  display={"flex"}
-                  justifyContent={"stretch"}
-                  flexDirection={"column"}
-                  paddingY={1}
-                  paddingX={1}
-                >
-                  <Typography
-                    component={"span"}
-                    display={"inline-flex"}
-                    flexDirection={"row"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
+            {BlindBoxClaimList &&
+              BlindBoxClaimList.map((info) => {
+                return (
+                  <BoxClaim
+                    className={"claim"}
+                    display={"flex"}
+                    justifyContent={"stretch"}
+                    flexDirection={"column"}
+                    paddingY={1}
+                    paddingX={1}
                   >
                     <Typography
-                      variant={"body1"}
                       component={"span"}
-                      color={"textPrimary"}
+                      display={"inline-flex"}
+                      flexDirection={"row"}
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
                     >
-                      {info.who}
+                      <Typography
+                        variant={"body1"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      >
+                        {info.who}
+                      </Typography>
+                      <Typography
+                        variant={"body1"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      >
+                        *{info.amount}
+                      </Typography>
                     </Typography>
                     <Typography
-                      variant={"body1"}
                       component={"span"}
-                      color={"textPrimary"}
+                      display={"inline-flex"}
+                      flexDirection={"row"}
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
                     >
-                      *{info.amount}
+                      <Typography
+                        variant={"body2"}
+                        component={"span"}
+                        color={"textThird"}
+                      >
+                        {moment(info.when).fromNow()}
+                      </Typography>
+                      <Typography display={"inline"}></Typography>
                     </Typography>
-                  </Typography>
-                  <Typography
-                    component={"span"}
-                    display={"inline-flex"}
-                    flexDirection={"row"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
-                  >
-                    <Typography
-                      variant={"body2"}
-                      component={"span"}
-                      color={"textThird"}
-                    >
-                      {moment(info.when).fromNow()}
-                    </Typography>
-                    <Typography display={"inline"}></Typography>
-                  </Typography>
-                </BoxClaim>
-              );
-            })}
+                  </BoxClaim>
+                );
+              })}
           </Box>
         </Box>
       ) : (
@@ -1636,6 +1742,7 @@ export const RedPacketBlindBoxDetail = ({
             flexDirection={"column"}
             alignItems={"center"}
             marginY={2}
+            overflow={"scroll"}
           >
             <Typography variant={"body1"}>{sender}</Typography>
             <Typography
@@ -1663,17 +1770,25 @@ export const RedPacketBlindBoxDetail = ({
                 <img style={{ width: "100%" }} src={temp3} />
               )}
             </Box>
+            {type === "Blind Box Started" && didClaimABlindBox &&
+              <Typography>{t("labelBlindBoxCongratulationsBlindBox")}</Typography>
+            }
+            {(type === "Lottery Started" || type === "Lottery Started and Not Win Lottery" || type === "Lottery Started and Win Lottery") && wonInfo.participated &&
+              (wonInfo.won 
+                ? <Typography>{wonInfo.amount} NFTs</Typography>
+                : <Typography color={"var(--color-error)"}>{t("labelBlindBoxSorryBlindBox")}</Typography>
+              )
+            }
             <Typography
-              variant={"body1"}
+              variant={"body2"}
               color={theme.colorBase.textSecondary}
               marginTop={1}
               textAlign={"center"}
             >
-              {t("labelBlindBoxExplaination")}
-              {/* The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet. */}
+              {description}
             </Typography>
             <Typography
-              variant={"body1"}
+              variant={"body2"}
               color={theme.colorBase.textSecondary}
               // color={RedPacketColorConfig.default.fontColor}
               marginTop={1}
@@ -1682,29 +1797,92 @@ export const RedPacketBlindBoxDetail = ({
               {t("labelBlindBoxExplaination2", {
                 opendBlindBoxAmount,
                 totalBlindBoxAmount,
-                deliverdGiftsAmount,
-                totalGiftsAmount,
+                // deliverdGiftsAmount,
+                // totalGiftsAmount,
+                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount
               })}
               {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
             </Typography>
-            <Typography
-              variant={"body1"}
+              <Box>
+                {type === "Not Started" && <Typography
+                  variant={"body2"}
+                  color={theme.colorBase.warning}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {t("labelBlindBoxNotStarted", {
+                    time: moment(blindBoxStartTime).format(
+                      YEAR_DAY_MINUTE_FORMAT
+                    ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
+                  })
+                  }
+                </Typography>}
+                {(type === "Not Started" || type === "Blind Box Started") && <Typography
+                  variant={"body2"}
+                  color={type === "Blind Box Started" ? theme.colorBase.warning : theme.colorBase.textSecondary}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {t("labelBlindBoxStarted", {
+                    time: moment(lotteryStartTime).format(
+                      YEAR_DAY_MINUTE_FORMAT
+                    ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
+                  })}
+
+                </Typography>
+                }
+                <Typography
+                  variant={"body2"}
+                  color={(type !== "Blind Box Started" && type !== "Not Started") ? theme.colorBase.warning : theme.colorBase.textSecondary}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {t("labelBlindBoxClaimStarted", {
+                    time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
+                    interpolation: {
+                      escapeValue: false,
+                    }
+                  })}
+                </Typography>
+
+              </Box>
+            {/* <Typography
+              variant={"body2"}
               color={theme.colorBase.warning}
               marginTop={1}
               textAlign={"center"}
             >
               {type === "Not Started"
                 ? t("labelBlindBoxNotStarted", {
-                    time: moment(blindBoxStartTime).format("YYYY.MM.DD HH:mm"),
+                    time: moment(blindBoxStartTime).format(
+                      YEAR_DAY_MINUTE_FORMAT
+                    ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
                   })
                 : type === "Blind Box Started"
                 ? t("labelBlindBoxStarted", {
-                    time: moment(lotteryStartTime).format("YYYY.MM.DD HH:mm"),
+                    time: moment(lotteryStartTime).format(
+                      YEAR_DAY_MINUTE_FORMAT
+                    ),
+                    interpolation: {
+                      escapeValue: false,
+                    }
                   })
                 : t("labelBlindBoxClaimStarted", {
-                    time: moment(lotteryEndTime).format("YYYY.MM.DD HH:mm"),
+                    time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
+                    interpolation: {
+                      escapeValue: false,
+                    }
                   })}
-            </Typography>
+            </Typography> */}
             {(type === "Blind Box Started" || type === "Lottery Started") && (
               <Link
                 className={"viewDetail"}
@@ -1750,7 +1928,7 @@ export const RedPacketBlindBoxDetail = ({
                   </Typography>
 
                   <Box flex={1} overflow={"scroll"}>
-                    {NFTClaimList!.map((info) => {
+                    {NFTClaimList && NFTClaimList.map((info) => {
                       return (
                         <BoxClaim
                           className={"claim"}
@@ -1768,18 +1946,42 @@ export const RedPacketBlindBoxDetail = ({
                             alignItems={"center"}
                           >
                             <Typography
-                              variant={"body1"}
                               component={"span"}
-                              color={"textPrimary"}
+                              display={"inline-flex"}
+                              flexDirection={"row"}
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
                             >
-                              {info.who}
+                              <Typography
+                                variant={"body1"}
+                                component={"span"}
+                                color={"textPrimary"}
+                              >
+                                {info.who}
+                              </Typography>
+                              <Typography
+                                variant={"body1"}
+                                component={"span"}
+                                color={"textPrimary"}
+                              >
+                                *{info.amount}
+                              </Typography>
                             </Typography>
                             <Typography
-                              variant={"body1"}
                               component={"span"}
-                              color={"textPrimary"}
+                              display={"inline-flex"}
+                              flexDirection={"row"}
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
                             >
-                              *{info.amount}
+                              <Typography
+                                variant={"body2"}
+                                component={"span"}
+                                color={"textThird"}
+                              >
+                                {moment(info.when).fromNow()}
+                              </Typography>
+                              <Typography display={"inline"}></Typography>
                             </Typography>
                           </Typography>
                           <Typography
@@ -1796,7 +1998,24 @@ export const RedPacketBlindBoxDetail = ({
                             >
                               {moment(info.when).fromNow()}
                             </Typography>
-                            <Typography display={"inline"}></Typography>
+                            <Typography display={"inline"}>
+                              {info.showLuckiest && (
+                                <Typography
+                                  component={"span"}
+                                  color={"var(--color-warning)"}
+                                  display={"inline-flex"}
+                                  alignItems={"center"}
+                                  variant={"body2"}
+                                  marginLeft={1}
+                                >
+                                  <FirstPlaceIcon
+                                    fontSize={"medium"}
+                                    sx={{ paddingRight: 1 / 2 }}
+                                  />
+                                  {t("labelLuckDraw")}
+                                </Typography>
+                              )}
+                            </Typography>
                           </Typography>
                         </BoxClaim>
                       );
@@ -1806,25 +2025,47 @@ export const RedPacketBlindBoxDetail = ({
               </>
             )}
           </Box>
-          {(type === "Not Started" || type === "Blind Box Started") && (
-            <Box>
-              <Button
-                variant={"contained"}
-                color={"error"}
-                sx={{
-                  backgroundColor: RedPacketColorConfig.default.colorTop as any,
-                  "&:hover": {
-                    backgroundColor: RedPacketColorConfig.default
-                      .colorTop as any,
-                  },
-                }}
-                fullWidth
-                onClick={onShared}
-              >
-                {t("labelRedPacketGrab")}
-              </Button>
+          {/* {(type === "Not Started" || type === "Blind Box Started") && ( */}
+            <Box marginBottom={1}>
+              {shareButton === 'share' && (
+                <Button
+                  variant={"contained"}
+                  color={"error"}
+                  sx={{
+                    backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                    "&:hover": {
+                      backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                    },
+                  }}
+                  fullWidth={true}
+                  onClick={onShared}
+                >
+                  {t("labelRedPacketGrab")}
+                </Button>
+              )}
+              {
+                claimButton === 'claim'
+                  ? (
+                    <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+                      {t("labelClaimBtn")}
+                    </Button>
+                  )
+                  : claimButton === 'claimed'
+                    ? (
+                      <Button disabled variant={"contained"} fullWidth>
+                        {t("labelClaimBtnClaimed")}
+                      </Button>
+                    )
+                    : claimButton === 'expired'
+                      ? (
+                        <Button disabled variant={"contained"} fullWidth>
+                          {t("Expired")}
+                        </Button>
+                      )
+                      : undefined
+              }
             </Box>
-          )}
+          {/* )} */}
         </Box>
       )}
     </BlindBoxDetailBoxStyle>

@@ -35,6 +35,7 @@ type DateTimeRangePickerProps = {
   endMaxDateTime?: moment.Moment,
   onEndChange?: (m: moment.Moment | null) => void
   onEndOpen?: () => void
+  customeEndInputPlaceHolder?: string
 }
 
 export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
@@ -50,6 +51,8 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
     endMaxDateTime,
     onEndChange,
     onEndOpen,
+
+    customeEndInputPlaceHolder
   } = props;
   const {t} = useTranslation()
   // const [] = useState(undefined,)
@@ -60,7 +63,7 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
       onChange={onStartChange ?? (() => {})}
       minDateTime={startMinDateTime}
       maxDateTime={startMaxDateTime}
-      renderInput={(params) => <TextField placeholder={t("labelBlindBoxStartDate")} {...params} />}
+      renderInput={(params) => <TextField placeholder={t("labelBlindBoxStartTime")} {...params} />}
     />
     <ToRightIcon />
     <MobileDateTimePicker
@@ -69,7 +72,7 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
       onChange={onEndChange ?? (() => {})}
       minDateTime={endMinDateTime} 
       maxDateTime={endMaxDateTime} 
-      renderInput={(params) => <TextField placeholder={t("labelBlindBoxEndDate")} {...params}  />}
+      renderInput={(params) => <TextField placeholder={customeEndInputPlaceHolder ?? t("labelBlindBoxEndTime")} {...params}  />}
     />
   </StyledDateTimeRangePicker>
 }
