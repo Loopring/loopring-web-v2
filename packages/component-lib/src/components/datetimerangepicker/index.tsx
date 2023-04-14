@@ -1,42 +1,36 @@
 import { ToRightIcon } from "@loopring-web/common-resources";
-import {
-  MobileDateTimePicker,
-  MobileDateTimePickerProps,
-} from "@mui/lab";
-import {
-  TextField,
-  Box
-} from "@mui/material";
+import { MobileDateTimePicker } from "@mui/lab";
+import { TextField, Box } from "@mui/material";
 import styled from "@emotion/styled";
-import {useState} from "react";
 import moment from "moment";
-import { TranslationProps, useTranslation, WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const StyledDateTimeRangePicker = styled(Box)`
   background-color: var(--field-opacity);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  .MuiOutlinedInput-root{
-    background-color: transparent!important;
+
+  .MuiOutlinedInput-root {
+    background-color: transparent !important;
     height: var(--input-height-large);
   }
-`
+`;
 
 type DateTimeRangePickerProps = {
-  startValue: moment.Moment | null,
-  startMinDateTime?: moment.Moment,
-  startMaxDateTime?: moment.Moment,
-  onStartChange?: (m: moment.Moment | null) => void
-  onStartOpen?: () => void
-  
-  endValue: moment.Moment | null,
-  endMinDateTime?: moment.Moment,
-  endMaxDateTime?: moment.Moment,
-  onEndChange?: (m: moment.Moment | null) => void
-  onEndOpen?: () => void
-  customeEndInputPlaceHolder?: string
-}
+  startValue: moment.Moment | null;
+  startMinDateTime?: moment.Moment;
+  startMaxDateTime?: moment.Moment;
+  onStartChange?: (m: moment.Moment | null) => void;
+  onStartOpen?: () => void;
+
+  endValue: moment.Moment | null;
+  endMinDateTime?: moment.Moment;
+  endMaxDateTime?: moment.Moment;
+  onEndChange?: (m: moment.Moment | null) => void;
+  onEndOpen?: () => void;
+  customeEndInputPlaceHolder?: string;
+};
 
 export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
   const {
@@ -52,27 +46,38 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
     onEndChange,
     onEndOpen,
 
-    customeEndInputPlaceHolder
+    customeEndInputPlaceHolder,
   } = props;
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   // const [] = useState(undefined,)
-  return <StyledDateTimeRangePicker >
-    <MobileDateTimePicker
-      onOpen={onStartOpen}
-      value={startValue}
-      onChange={onStartChange ?? (() => {})}
-      minDateTime={startMinDateTime}
-      maxDateTime={startMaxDateTime}
-      renderInput={(params) => <TextField placeholder={t("labelBlindBoxStartTime")} {...params} />}
-    />
-    <ToRightIcon />
-    <MobileDateTimePicker
-      onOpen={onEndOpen}
-      value={endValue}
-      onChange={onEndChange ?? (() => {})}
-      minDateTime={endMinDateTime} 
-      maxDateTime={endMaxDateTime} 
-      renderInput={(params) => <TextField placeholder={customeEndInputPlaceHolder ?? t("labelBlindBoxEndTime")} {...params}  />}
-    />
-  </StyledDateTimeRangePicker>
-}
+  return (
+    <StyledDateTimeRangePicker>
+      <MobileDateTimePicker
+        onOpen={onStartOpen}
+        value={startValue}
+        onChange={onStartChange ?? (() => {})}
+        minDateTime={startMinDateTime}
+        maxDateTime={startMaxDateTime}
+        renderInput={(params) => (
+          <TextField placeholder={t("labelBlindBoxStartTime")} {...params} />
+        )}
+      />
+      <ToRightIcon htmlColor={"var(--color-text-third)"} />
+      <MobileDateTimePicker
+        onOpen={onEndOpen}
+        value={endValue}
+        onChange={onEndChange ?? (() => {})}
+        minDateTime={endMinDateTime}
+        maxDateTime={endMaxDateTime}
+        renderInput={(params) => (
+          <TextField
+            placeholder={
+              customeEndInputPlaceHolder ?? t("labelBlindBoxEndTime")
+            }
+            {...params}
+          />
+        )}
+      />
+    </StyledDateTimeRangePicker>
+  );
+};
