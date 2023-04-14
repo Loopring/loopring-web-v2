@@ -42,7 +42,11 @@ import {
 import { useTranslation } from "react-i18next";
 import { useTradeStake } from "../../stores";
 
-export const useStakeTradeJOIN = <T extends IBData<I>, I, ACD extends DeFiSideCalcData<T>>({
+export const useStakeTradeJOIN = <
+  T extends IBData<I>,
+  I,
+  ACD extends DeFiSideCalcData<T>
+>({
   setToastOpen,
   symbol: coinSellSymbol,
 }: {
@@ -535,4 +539,4 @@ export const useStakeTradeJOIN = <T extends IBData<I>, I, ACD extends DeFiSideCa
   return {
     stakeWrapProps: stakeWrapProps as unknown as DeFiSideWrapProps<T, I, ACD>,
   };
-};;
+};
