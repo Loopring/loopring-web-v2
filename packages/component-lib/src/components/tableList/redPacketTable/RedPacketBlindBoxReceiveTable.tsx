@@ -1,16 +1,8 @@
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { TablePaddingX } from "../../styled";
+import { Button, Column, Table, TablePagination } from "../../basic-lib";
 import {
-  BoxNFT,
-  Button,
-  Column,
-  NftImage,
-  Table,
-  TablePagination,
-} from "../../basic-lib";
-import {
-  EmptyValueTag,
   globalSetup,
   myLog,
   RowConfig,
@@ -38,7 +30,7 @@ const TableWrapperStyled = styled(Box)`
 `;
 const TableStyled = styled(Table)`
   &.rdg {
-    --template-columns: 20% 20% 15% 15% 30% !important;
+    --template-columns: 20% 20% 30% 30% !important;
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -70,7 +62,6 @@ const TableStyled = styled(Table)`
     text-align: center;
   }
 ` as any;
-const RowHeight = 55;
 export const RedPacketBlindBoxReceiveTable = withTranslation([
   "tables",
   "common",
@@ -120,94 +111,45 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
     }, [showActionableRecords]);
     const columnModeTransaction = [
       {
-        key: "Token",
-        name: t("labelToken"),
-        formatter: ({ row }: FormatterProps<R>) => {
-          const metadata = row.rawData.luckyToken.nftTokenInfo.metadata;
-          return (
-            <Box
-              className="rdg-cell-value"
-              height={"100%"}
-              display={"flex"}
-              alignItems={"center"}
-            >
-              {metadata?.imageSize ? (
-                <Box
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  height={RowConfig.rowHeight + "px"}
-                  width={RowConfig.rowHeight + "px"}
-                  padding={1 / 4}
-                  style={{ background: "var(--field-opacity)" }}
-                >
-                  {metadata?.imageSize && (
-                    <NftImage
-                      alt={metadata?.base?.name}
-                      onError={() => undefined}
-                      src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
-                    />
-                  )}
-                </Box>
-              ) : (
-                <BoxNFT
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  height={RowConfig.rowHeight + "px"}
-                  width={RowConfig.rowHeight + "px"}
-                />
-              )}
-              <Typography
-                color={"inherit"}
-                flex={1}
-                display={"inline-block"}
-                alignItems={"center"}
-                paddingLeft={1}
-                overflow={"hidden"}
-                textOverflow={"ellipsis"}
-                component={"span"}
-              >
-                {metadata?.base?.name ?? "NFT"}
-              </Typography>
-            </Box>
-          );
-        },
-      },
-      {
         key: "Address",
-        name: t("labelRedPacketSenderAddress"),
+        sortable: false,
+        name: t("labelAddress"),
         formatter: ({ row }: FormatterProps<R>) => {
           return <>{row.sender}</>;
         },
       },
       {
-        key: "Amount",
-        name: t("labelAmount"),
-        formatter: ({ row }: FormatterProps<R>) => {
-          return (
-            <>
-              {row.rawData.claim.amount
-                ? row.rawData.claim.amount
-                : EmptyValueTag}
-            </>
-          );
-        },
-      },
-      {
-        key: "Receive Time",
+        key: "Time",
+        sortable: true,
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
-        name: t("labelReceiveTime"),
+        name: t("labelRecordTime"),
         formatter: ({ row }: FormatterProps<R>) => {
           return <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>;
         },
       },
       {
-        key: "Status",
+        key: "End Time",
+        sortable: true,
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
-        name: t("labelRecordStatus"),
+        name: t("labelBlindBoxEndTime"),
+        formatter: ({ row }: FormatterProps<R>) => {
+          return (
+            <>
+              {moment(row.rawData.luckyToken.validUntil).format(
+                YEAR_DAY_MINUTE_FORMAT
+              )}
+            </>
+          );
+        },
+      },
+      {
+        key: "Action",
+        sortable: true,
+        cellClass: "textAlignRight",
+        headerCellClass: "textAlignRight",
+        name: "Action",
         formatter: ({ row }: FormatterProps<R>) => {
           if (
             row.rawData.luckyToken.validUntil > Date.now() &&
@@ -215,43 +157,35 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
           ) {
             return (
               <>
-                {t("labelBlindBoxStartTime", {
-                  time: moment(row.rawData.luckyToken.validUntil).format(
+                {t("labelBlindBoxStartTime") +
+                  " " +
+                  moment(row.rawData.luckyToken.validUntil).format(
                     YEAR_DAY_MINUTE_FORMAT
-                  ),
-                  interpolation: {
-                    escapeValue: false,
-                  },
-                })}
+                  )}
+                ){" "}
               </>
             );
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
             return <>{t("labelBlindBoxOpend")}</>;
-            // return <Box height={"100%"} display={"flex"} flexDirection={"column"} alignItems={"end"} justifyContent={"center"}>
-            //   <Typography>{t("labelBlindBoxOpend")}</Typography>
-            //   {/* <Typography>x {row.rawData.claim.amount}</Typography> */}
-            // </Box>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) {
             return <>{t("labelBlindBoxExpired")}</>;
           } else if (
             row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED
           ) {
             return (
-              <Box display={"flex"} flexDirection={"column"} alignItems={"end"}>
-                <Button size={"small"} onClick={(_e) => {}} variant={"text"}>
-                  {t("labelRedPacketOpen", { ns: "common" })}
-                </Button>
-                <Typography>
-                  {t("labelBlindBoxExpiredTime", {
-                    time: moment(row.rawData.luckyToken.nftExpireTime).format(
-                      YEAR_DAY_MINUTE_FORMAT
-                    ),
-                    interpolation: {
-                      escapeValue: false,
-                    },
-                  })}
-                </Typography>
-              </Box>
+              <Button
+                onClick={(e) => {
+                  // e.preventDefault()
+                  // onItemClick(row.rawData,  {
+                  //   offset: (page - 1) * (pagination?.pageSize ?? 10),
+                  //   limit: pagination?.pageSize ?? 10,
+                  //   filter: { },
+                  // })
+                }}
+                variant={"outlined"}
+              >
+                {t("labelRedPacketOpen", { ns: "common" })}
+              </Button>
             );
           }
         },
@@ -267,17 +201,15 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
     return (
       <TableWrapperStyled>
         <TableStyled
-          currentheight={RowConfig.rowHeaderHeight + rawData.length * RowHeight}
-          rowHeight={RowHeight}
+          currentheight={
+            RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
+          }
+          rowHeight={RowConfig.rowHeight}
           onRowClick={(_index: number, row: R) => {
             onItemClick(row.rawData, {
               offset: (page - 1) * (pagination?.pageSize ?? 10),
               limit: pagination?.pageSize ?? 10,
-              filter: {
-                statuses: showActionableRecords
-                  ? [0] // 0 is for sdk.BlindBoxStatus.NOT_OPENED
-                  : undefined,
-              },
+              filter: {},
             });
           }}
           sortMethod={React.useCallback(

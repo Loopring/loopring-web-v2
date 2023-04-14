@@ -17,7 +17,7 @@ import {
   SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
-  TradeStack,
+  TradeStake,
 } from "@loopring-web/common-resources";
 
 import {
@@ -40,13 +40,9 @@ import {
   walletLayer2Service,
 } from "../../index";
 import { useTranslation } from "react-i18next";
-import { useTradeStack } from "../../stores";
+import { useTradeStake } from "../../stores";
 
-export const useStakeTradeJOIN = <
-  T extends IBData<I>,
-  I,
-  ACD extends DeFiSideCalcData<T>
->({
+export const useStakeTradeJOIN = <T extends IBData<I>, I, ACD extends DeFiSideCalcData<T>>({
   setToastOpen,
   symbol: coinSellSymbol,
 }: {
@@ -70,28 +66,28 @@ export const useStakeTradeJOIN = <
   } = useStakingMap();
 
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
-  const { tradeStack, updateTradeStack, resetTradeStack } = useTradeStack();
+  const { tradeStake, updateTradeStake, resetTradeStake } = useTradeStake();
   const { exchangeInfo, allowTrade } = useSystem();
   const { toggle } = useToggle();
 
   const handleOnchange = _.debounce(
     ({
       tradeData,
-      _tradeStack = {},
+      _tradeStake = {},
     }: {
       tradeData: T;
-      _tradeStack?: Partial<TradeStack<T>>;
+      _tradeStake?: Partial<TradeStake<T>>;
     }) => {
-      const tradeStack = store.getState()._router_tradeStack.tradeStack;
+      const tradeStake = store.getState()._router_tradeStake.tradeStake;
       let _deFiSideCalcData: DeFiSideCalcData<T> = {
-        ...tradeStack.deFiSideCalcData,
+        ...tradeStake.deFiSideCalcData,
       } as unknown as DeFiSideCalcData<T>;
-      let _oldTradeStack = {
-        ...tradeStack,
-        ..._tradeStack,
+      let _oldTradeStake = {
+        ...tradeStake,
+        ..._tradeStake,
       };
-      //_.cloneDeep({ ...tradeStack, ..._tradeStack });
-      myLog("defi handleOnchange", _oldTradeStack);
+      //_.cloneDeep({ ...tradeStake, ..._tradeStake });
+      myLog("defi handleOnchange", _oldTradeStake);
 
       if (tradeData && coinSellSymbol) {
         const inputValue = tradeData?.tradeValue?.toString() ?? "0";
@@ -111,7 +107,7 @@ export const useStakeTradeJOIN = <
             tradeValue: tradeData?.tradeValue?.toString(),
           },
         };
-        updateTradeStack({
+        updateTradeStake({
           sellToken: tokenSell,
           sellVol,
           deFiSideCalcData: {
@@ -127,13 +123,13 @@ export const useStakeTradeJOIN = <
     async (clearTrade: boolean = false) => {
       let walletMap: any = {};
       let deFiSideCalcDataInit: Partial<DeFiSideCalcData<any>> = {
-        ...tradeStack.deFiSideCalcData,
+        ...tradeStake.deFiSideCalcData,
         coinSell: {
           belong: coinSellSymbol,
           balance: undefined,
           tradeValue:
-            tradeStack.deFiSideCalcData?.coinSell?.belong === coinSellSymbol
-              ? tradeStack.deFiSideCalcData?.coinSell?.tradeValue
+            tradeStake.deFiSideCalcData?.coinSell?.belong === coinSellSymbol
+              ? tradeStake.deFiSideCalcData?.coinSell?.tradeValue
               : undefined,
         },
       };
@@ -157,10 +153,10 @@ export const useStakeTradeJOIN = <
 
         if (
           clearTrade ||
-          tradeStack.deFiSideCalcData?.coinSell?.tradeValue === undefined
+          tradeStake.deFiSideCalcData?.coinSell?.tradeValue === undefined
         ) {
           deFiSideCalcDataInit.coinSell.tradeValue = undefined;
-          updateTradeStack({
+          updateTradeStake({
             sellVol: "0",
             sellToken: tokenMap[coinSellSymbol],
             deFiSideCalcData: {
@@ -176,7 +172,7 @@ export const useStakeTradeJOIN = <
           const tradeData = {
             ...deFiSideCalcDataInit.coinSell,
             tradeValue:
-              tradeStack.deFiSideCalcData?.coinSell?.tradeValue ?? undefined,
+              tradeStake.deFiSideCalcData?.coinSell?.tradeValue ?? undefined,
           };
           handleOnchange({ tradeData });
         }
@@ -198,8 +194,8 @@ export const useStakeTradeJOIN = <
       handleOnchange,
       coinSellSymbol,
       tokenMap,
-      tradeStack.deFiSideCalcData,
-      updateTradeStack,
+      tradeStake.deFiSideCalcData,
+      updateTradeStake,
     ]
   );
 
@@ -210,11 +206,11 @@ export const useStakeTradeJOIN = <
         belong: coinSellSymbol,
         balance: undefined,
       },
-      ...(tradeStack?.deFiSideCalcData ?? {}),
+      ...(tradeStake?.deFiSideCalcData ?? {}),
     };
-    if (tradeStack.deFiSideCalcData) {
+    if (tradeStake.deFiSideCalcData) {
       tradeValue =
-        tradeStack?.deFiSideCalcData?.coinSell?.tradeValue ?? undefined;
+        tradeStake?.deFiSideCalcData?.coinSell?.tradeValue ?? undefined;
     }
     if (deFiSideCalcDataInit?.coinSell?.belong) {
       let walletMap: any;
@@ -241,27 +237,27 @@ export const useStakeTradeJOIN = <
     account.readyState,
     coinSellSymbol,
     handleOnchange,
-    tradeStack.deFiSideCalcData,
+    tradeStake.deFiSideCalcData,
   ]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
   const sendRequest = React.useCallback(async () => {
-    const tradeStack = store.getState()._router_tradeStack.tradeStack;
+    const tradeStake = store.getState()._router_tradeStake.tradeStake;
     try {
       setIsLoading(true);
       if (
         LoopringAPI.userAPI &&
         LoopringAPI.defiAPI &&
-        tradeStack.deFiSideCalcData?.coinSell &&
-        tradeStack.sellToken?.tokenId !== undefined &&
+        tradeStake.deFiSideCalcData?.coinSell &&
+        tradeStake.sellToken?.tokenId !== undefined &&
         exchangeInfo
       ) {
         const request = {
           accountId: account.accountId,
           timestamp: Date.now(),
           token: {
-            tokenId: tradeStack.sellToken?.tokenId,
-            volume: tradeStack.sellVol,
+            tokenId: tradeStake.sellToken?.tokenId,
+            volume: tradeStake.sellVol,
           },
         };
         myLog("Stake Trade request:", request);
@@ -283,7 +279,7 @@ export const useStakeTradeJOIN = <
             {
               accountId: account.accountId,
               hashes: response.hash,
-              tokenId: tradeStack.sellToken.tokenId,
+              tokenId: tradeStake.sellToken.tokenId,
             },
             account.apiKey
           );
@@ -300,11 +296,11 @@ export const useStakeTradeJOIN = <
             isShow: true,
             step: AccountStep.Staking_Success,
             info: {
-              symbol: tradeStack.sellToken.symbol,
-              amount: tradeStack.deFiSideCalcData.coinSell.tradeValue,
+              symbol: tradeStake.sellToken.symbol,
+              amount: tradeStake.deFiSideCalcData.coinSell.tradeValue,
               daysDuration: Math.ceil(
                 Number(
-                  tradeStack?.deFiSideCalcData?.stakeViewInfo?.rewardPeriod ?? 0
+                  tradeStake?.deFiSideCalcData?.stakeViewInfo?.rewardPeriod ?? 0
                 ) / 86400000
               ),
               ...item,
@@ -346,7 +342,7 @@ export const useStakeTradeJOIN = <
   ]);
 
   const onSubmitBtnClick = React.useCallback(async () => {
-    // const tradeStack = store.getState()._router_tradeStack.tradeStack;
+    // const tradeStake = store.getState().router_tradeStake.tradeStake;
     if (
       account.readyState === AccountStatus.ACTIVATED &&
       tokenMap &&
@@ -378,12 +374,12 @@ export const useStakeTradeJOIN = <
     label: string;
   } => {
     const account = store.getState().account;
-    const tradeStack = store.getState()._router_tradeStack.tradeStack;
-    myLog("tradeStack", tradeStack);
+    const tradeStake = store.getState()._router_tradeStake.tradeStake;
+    myLog("tradeStake", tradeStake);
     if (account.readyState === AccountStatus.ACTIVATED) {
       if (
-        tradeStack?.sellVol === undefined ||
-        sdk.toBig(tradeStack?.sellVol).lte(0)
+        tradeStake?.sellVol === undefined ||
+        sdk.toBig(tradeStake?.sellVol).lte(0)
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -391,15 +387,15 @@ export const useStakeTradeJOIN = <
         };
       } else if (
         sdk
-          .toBig(tradeStack?.sellVol)
-          .minus(tradeStack?.deFiSideCalcData?.stakeViewInfo?.minSellVol ?? 0)
+          .toBig(tradeStake?.sellVol)
+          .minus(tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellVol ?? 0)
           .lt(0)
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDefiMin| ${getValuePrecisionThousand(
             sdk.toBig(
-              tradeStack?.deFiSideCalcData?.stakeViewInfo?.minSellAmount ?? 0
+              tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellAmount ?? 0
             ),
             tokenMap[coinSellSymbol].precision,
             tokenMap[coinSellSymbol].precision,
@@ -410,14 +406,14 @@ export const useStakeTradeJOIN = <
         };
       } else if (
         sdk
-          .toBig(tradeStack?.sellVol)
-          .gt(tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellVol ?? 0)
+          .toBig(tradeStake?.sellVol)
+          .gt(tradeStake?.deFiSideCalcData?.stakeViewInfo?.maxSellVol ?? 0)
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDefiMax| ${getValuePrecisionThousand(
             sdk.toBig(
-              tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellAmount ?? 0
+              tradeStake?.deFiSideCalcData?.stakeViewInfo?.maxSellAmount ?? 0
             ),
             tokenMap[coinSellSymbol].precision,
             tokenMap[coinSellSymbol].precision,
@@ -431,10 +427,10 @@ export const useStakeTradeJOIN = <
         //   label: `labelDefiNoEnough| ${coinSellSymbol}`,
         // };
       } else if (
-        tradeStack?.deFiSideCalcData?.coinSell?.tradeValue &&
+        tradeStake?.deFiSideCalcData?.coinSell?.tradeValue &&
         sdk
-          .toBig(tradeStack.deFiSideCalcData.coinSell.tradeValue)
-          .gt(tradeStack.deFiSideCalcData?.coinSell.balance ?? 0)
+          .toBig(tradeStake.deFiSideCalcData.coinSell.tradeValue)
+          .gt(tradeStake.deFiSideCalcData?.coinSell.balance ?? 0)
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -446,10 +442,10 @@ export const useStakeTradeJOIN = <
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
   }, [
-    tradeStack?.deFiSideCalcData?.stakeViewInfo?.minSellVol,
-    tradeStack.sellVol,
-    tradeStack.sellToken,
-    tradeStack.deFiSideCalcData,
+    tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellVol,
+    tradeStake.sellVol,
+    tradeStake.sellToken,
+    tradeStake.deFiSideCalcData,
     tokenMap,
     coinSellSymbol,
   ]);
@@ -468,7 +464,7 @@ export const useStakeTradeJOIN = <
   }, []);
   React.useEffect(() => {
     const {
-      _router_tradeStack: { tradeStack },
+      _router_tradeStake: { tradeStake },
       invest: {
         stakingMap: { marketMap: stakingMap },
       },
@@ -478,7 +474,7 @@ export const useStakeTradeJOIN = <
       stakingMapStatus === SagaStatus.UNSET &&
       stakingMap &&
       stakingMap[coinSellSymbol]?.symbol == coinSellSymbol &&
-      !(tradeStack?.deFiSideCalcData?.coinSell?.belong == coinSellSymbol)
+      !(tradeStake?.deFiSideCalcData?.coinSell?.belong == coinSellSymbol)
     ) {
       resetDefault(true);
     } else if (
@@ -491,7 +487,7 @@ export const useStakeTradeJOIN = <
       // })
     }
     return () => {
-      resetTradeStack();
+      resetTradeStake();
       handleOnchange.cancel();
     };
   }, [stakingMapStatus]);
@@ -510,14 +506,14 @@ export const useStakeTradeJOIN = <
       onSubmitClick: onBtnClick as () => void,
       onChangeEvent: handleOnchange,
       deFiSideCalcData: {
-        ...tradeStack.deFiSideCalcData,
+        ...tradeStake.deFiSideCalcData,
       },
-      minSellAmount: tradeStack?.deFiSideCalcData?.stakeViewInfo?.minSellAmount,
-      maxSellAmount: tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellAmount,
+      minSellAmount: tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellAmount,
+      maxSellAmount: tradeStake?.deFiSideCalcData?.stakeViewInfo?.maxSellAmount,
       tokenSell: {
         ...tokenMap[coinSellSymbol],
-        decimals: tradeStack?.deFiSideCalcData?.stakeViewInfo?.decimals,
-        precision: tradeStack?.deFiSideCalcData?.stakeViewInfo?.precision,
+        decimals: tradeStake?.deFiSideCalcData?.stakeViewInfo?.decimals,
+        precision: tradeStake?.deFiSideCalcData?.stakeViewInfo?.precision,
       },
       btnStatus,
       accStatus: account.readyState,
@@ -525,8 +521,8 @@ export const useStakeTradeJOIN = <
   }, [
     refreshRef,
     sendRequest,
-    tradeStack.deFiSideCalcData,
-    tradeStack?.deFiSideCalcData?.stakeViewInfo?.maxSellVol,
+    tradeStake.deFiSideCalcData,
+    tradeStake?.deFiSideCalcData?.stakeViewInfo?.maxSellVol,
     account.readyState,
     tradeMarketI18nKey,
     isLoading,
@@ -539,4 +535,4 @@ export const useStakeTradeJOIN = <
   return {
     stakeWrapProps: stakeWrapProps as unknown as DeFiSideWrapProps<T, I, ACD>,
   };
-};
+};;

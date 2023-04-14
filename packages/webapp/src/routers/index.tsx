@@ -48,11 +48,7 @@ import { getAnalytics, logEvent } from "firebase/analytics";
 import { AssetPage } from "../pages/AssetPage";
 import { FiatPage } from "../pages/FiatPage";
 import { useTranslation } from "react-i18next";
-import { ContactPage } from "pages/ContactPage";
-import { ContactTransactionsPage } from "pages/ContactPage/transactions";
-import { RewardPanel } from "../pages/Layer2Page/RewardPanel";
 import { CexSwapPage } from "../pages/CexSwapPage";
-import { RedPacketPage } from "../pages/RedPacketPage";
 
 const ContentWrap = ({
   children,

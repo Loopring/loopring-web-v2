@@ -476,7 +476,14 @@ export const useAmmJoin = ({
     },
     [market]
   );
-
+  React.useEffect(() => {
+    if (isShow) {
+      // const { walletMap } = makeWalletLayer2(false);
+      setIsLoading(true);
+      initAmmData(true);
+      walletLayer2Service.sendUserUpdate();
+    }
+  }, [isShow]);
   const walletLayer2Callback = React.useCallback(async () => {
     updateJoinFee();
     const account = store.getState().account;
@@ -504,12 +511,6 @@ export const useAmmJoin = ({
 
   useWalletLayer2Socket({ walletLayer2Callback });
 
-  React.useEffect(() => {
-    if (isShow) {
-      setIsLoading(true);
-      initAmmData(true);
-    }
-  }, [isShow]);
   return {
     ammCalcData,
     ammData,
