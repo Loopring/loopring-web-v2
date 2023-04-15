@@ -137,7 +137,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         formatter: ({ row }: FormatterProps<R>) => {
           return (
             <>
-              {moment(row.rawData.luckyToken.validUntil).format(
+              {moment(row.rawData.luckyToken.nftExpireTime).format(
                 YEAR_DAY_MINUTE_FORMAT
               )}
             </>
@@ -165,7 +165,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
               //   limit: pagination?.pageSize ?? 10,
               //   filter: { },
               // })
-            }} variant={"outlined"}>{t("labelRedPacketOpen", {ns: "common"})}</Button>
+            }} variant={"text"}>{t("labelRedPacketOpen", {ns: "common"})}</Button>
           }
         },
       },

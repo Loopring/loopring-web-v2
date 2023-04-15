@@ -588,19 +588,19 @@ export const CreateRedPacketStepWrap = withTranslation()(
               placeholderText={t("labelQuantity")}
               isHideError={false}
               isShowCoinInfo={false}
-              handleError={(data: any) => {
-                handleOnDataChange({
-                  giftNumbers: data.tradeValue,
-                } as unknown as Partial<T>);
-                return {
-                  error:
-                    tradeData.giftNumbers &&
-                    tradeData.numbers &&
-                    tradeData.giftNumbers > tradeData.numbers
-                      ? true
-                      : false,
-                };
-              }}
+              // handleError={(data: any) => {
+              //   handleOnDataChange({
+              //     giftNumbers: data.tradeValue,
+              //   } as unknown as Partial<T>);
+              //   return {
+              //     error:
+              //       tradeData.giftNumbers &&
+              //       tradeData.numbers &&
+              //       tradeData.giftNumbers > tradeData.numbers
+              //         ? true
+              //         : false,
+              //   };
+              // }}
               name={"giftnumbers"}
               order={"right"}
               handleCountChange={(data) => {
@@ -619,13 +619,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
               coinMap={{}}
               coinPrecision={undefined}
               disabled={disabled}
-              inputError={
-                tradeData.giftNumbers &&
-                tradeData.numbers &&
-                tradeData.giftNumbers > tradeData.numbers
-                  ? { error: true }
-                  : { error: false }
-              }
+              // inputError={
+              //   tradeData.giftNumbers &&
+              //   tradeData.numbers &&
+              //   tradeData.giftNumbers > tradeData.numbers
+              //     ? { error: true }
+              //     : { error: false }
+              // }
             />
           </Box>
         )}

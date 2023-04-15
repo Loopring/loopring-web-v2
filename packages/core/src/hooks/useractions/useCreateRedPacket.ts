@@ -328,15 +328,17 @@ export const useCreateRedPacket = <
         balance = redPacketOrder.balance ?? 0;
         tradeValue = sdk.toBig(redPacketOrder.tradeValue ?? 0);
         isExceedBalance = false 
-        const eachValue =  redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+        const eachValue = redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
           ? sdk.toBig(redPacketOrder.tradeValue ?? 0).div(redPacketOrder.giftNumbers ?? 1)
           : sdk.toBig(_tradeData.eachValue ?? 0);
         tooSmall = eachValue.lt(1);
         tooLarge = tradeValue
           .div(
-            redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-            ? (redPacketOrder.giftNumbers ?? 1)
-            : (redPacketOrder.numbers ?? 1)
+            redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE 
+            ? 1
+            : redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+              ? (redPacketOrder.giftNumbers ?? 1)
+              : (redPacketOrder.numbers ?? 1)
           )
           .gt(REDPACKET_ORDER_NFT_LIMIT);
       }
@@ -419,7 +421,7 @@ export const useCreateRedPacket = <
               ? {
                   value: getValuePrecisionThousand(
                     sdk
-                      .toBig(tradeToken.luckyTokenAmounts.maximum ?? 0)
+                      .toBig(tradeToken.luckyTokenAmounts.maximu ?? 0)
                       .div("1e" + tradeToken.decimals),
                     tradeToken.precision,
                     tradeToken.precision,
@@ -429,7 +431,12 @@ export const useCreateRedPacket = <
                   ),
                   symbol: tradeToken.symbol,
                 }
-              : { value: REDPACKET_ORDER_NFT_LIMIT, symbol: "NFT" }
+              : { value: sdk.toBig(REDPACKET_ORDER_NFT_LIMIT).times(
+                redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                  ? (redPacketOrder.giftNumbers ?? 1)
+                  : (redPacketOrder.numbers ?? 1)
+                ), symbol: "NFT"
+              }
           );
         } else if (blindBoxGiftsLargerThanPackets) {
           setLabelAndParams("labelRedPacketsGiftsLargerThanPackets", {});

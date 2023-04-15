@@ -194,7 +194,7 @@ export function useRedPacketModal() {
 
   const textSendBy = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive;
-    if (isShow && info && _info.validSince > Date.now()) {
+    if (isShow && _info && _info.validSince > Date.now()) {
       const date = moment(new Date(_info.validSince)).format(
         YEAR_DAY_MINUTE_FORMAT
       );
@@ -202,7 +202,11 @@ export function useRedPacketModal() {
         time: date,
       });
     } else {
-      return t("labelLuckyRedPacketStarted");
+      if (_info && _info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+        return "";
+      } else {
+        return t("labelLuckyRedPacketStarted");
+      }
     }
   }, [info?.validSince, info?.createdAt]);
 
@@ -807,7 +811,6 @@ export function useRedPacketModal() {
     }
   }, [step, isShow]);
 
-  
   const redPacketDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string;
@@ -1020,6 +1023,7 @@ export function useRedPacketModal() {
           })
           
         },
+        totalNumber: (detail as any).totalNum
       } as RedPacketDetailProps;
     } else {
       return undefined;
@@ -1050,13 +1054,11 @@ export function useRedPacketModal() {
       blinBoxDetail &&
       blindBoxType
     ) {
-      const shareButton: "hidden" | "share" = [
-        sdk.LuckyTokenItemStatus.OVER_DUE,
-        sdk.LuckyTokenItemStatus.FAILED,
-        sdk.LuckyTokenItemStatus.COMPLETED,
-      ].includes(detail.luckyToken.status)
-        ? "hidden"
-        : "share";
+      // detail.luckyToken.status === sdk.LuckyTokenItemStatus.
+      
+      const shareButton: "hidden" | "share" = (blindBoxType === 'Not Started' || blindBoxType === 'Blind Box Started')
+        ? "share"
+        : "hidden";
 
       const claimButton:
         | "claimed"
@@ -1196,7 +1198,8 @@ export function useRedPacketModal() {
         remainCount: detail.luckyToken.tokenAmount.remainCount,
         page,
         totalClaimedNFTsCount: blindBoxClaimedGiftsCount,
-        totalBlindboxCount: detail.luckyToken.tokenAmount.giftCount - detail.luckyToken.tokenAmount.remainCount
+        totalBlindboxCount: (blinBoxDetail as any).totalNum
+        // detail.luckyToken.tokenAmount.giftCount - detail.luckyToken.tokenAmount.remainCount
       } as RedPacketBlindBoxDetailProps;
     } else {
       return undefined;

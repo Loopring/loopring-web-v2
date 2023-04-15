@@ -227,18 +227,18 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             return <>{found ? found[1] : ''}</> 
           },
         },
-        {
-          key: "Number",
-          sortable: true,
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          name: t("labelRecordNumber"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
-            );
-          },
-        },
+        // {
+        //   key: "Number",
+        //   sortable: true,
+        //   cellClass: "textAlignCenter",
+        //   headerCellClass: "textAlignCenter",
+        //   name: t("labelRecordNumber"),
+        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
+        //     return (
+        //       <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
+        //     );
+        //   },
+        // },
         {
           key: "Time",
           sortable: true,

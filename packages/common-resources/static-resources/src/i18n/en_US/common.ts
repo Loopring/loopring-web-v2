@@ -1450,7 +1450,7 @@ export default {
   labelSeal: "Seal",
   labelOpenAfter: "Open after {{time}}",
   labelOpenStart: "Start",
-  labelTotalRedPacket: "Total Quantity: {{value}}",
+  labelTotalRedPacket: "Quantity in total: {{value}}",
   labelMyRedPacketReward: "My Rewards",
   labelRedpacketScanDes: "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
   labelLuckyRedPacketStarted: "Red Packet is Started",

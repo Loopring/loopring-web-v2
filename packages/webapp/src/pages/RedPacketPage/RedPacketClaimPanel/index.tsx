@@ -84,15 +84,10 @@ export const RedPacketClaimPanel = () => {
   const {account} = useAccount()
   const [totalLuckyTokenNFTBalance, setTotalLuckyTokenNFTBalance] = React.useState(undefined as number | undefined)
   React.useEffect(() => {
-    LoopringAPI.luckTokenAPI?.getLuckTokenBalances({
+    LoopringAPI.luckTokenAPI?.getLuckTokenNFTBalances({
       accountId: account.accountId,
-      isNft: true,
     }, account.apiKey).then(response => {
-      const total = (response.raw_data as any)
-        .reduce((acc: string, pre: any) => {
-          return toBig(pre.total).plus(acc).toString()
-        }, "0")
-      setTotalLuckyTokenNFTBalance(Number(total) )
+      setTotalLuckyTokenNFTBalance(response.amount)
     })
   }, []);
   return (

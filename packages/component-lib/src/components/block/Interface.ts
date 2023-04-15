@@ -119,6 +119,7 @@ export type RedPacketDetailProps = {
   bottomButton: 'ended' | 'share'
   claimButton: 'claim' | 'claimed' | 'expired' | 'hidden'
   onClickClaim?: () => void;
+  totalNumber: number;
 };
 export type RedPacketBlindBoxDetailTypes = 'Not Started' 
   | 'Blind Box Started' 

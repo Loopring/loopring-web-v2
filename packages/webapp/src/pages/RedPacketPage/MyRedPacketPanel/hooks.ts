@@ -57,7 +57,7 @@ export const useMyRedPacketRecordTransaction = <
                 scopes: "0,1",
                 modes: "0,1,2",
                 partitions: "0,1",
-                statuses: "0,1,2,3,4",
+                statuses: "1,2,3,4",
                 official: false,
                 offset,
                 limit,

@@ -561,7 +561,7 @@ export const RedPacketQRCodeSvg = React.memo(
                   textAnchor: "middle",
                   fontSize: "14px",
                 }}
-                dangerouslySetInnerHTML={{ __html: sanitize(textContent2.length > 12 ? (textContent2.slice(0, 12) + "...") : textContent2 ) }}
+                dangerouslySetInnerHTML={{ __html: textContent2 && sanitize(textContent2.length > 12 ? (textContent2.slice(0, 12) + "...") : textContent2 ) }}
               />
             </g>
             <g transform={`translate(167 ${station[3]})`}>
@@ -590,7 +590,7 @@ export const RedPacketQRCodeSvg = React.memo(
                 style={{
                   dominantBaseline: "central",
                   textAnchor: "middle",
-                  fontSize: "11px",
+                  fontSize: "10px",
                 }}
               >
                 {textType}

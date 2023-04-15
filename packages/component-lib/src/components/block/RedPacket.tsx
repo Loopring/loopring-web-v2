@@ -959,18 +959,18 @@ export const RedPacketDetail = ({
   bottomButton,
   page,
   onClickClaim,
-  claimButton
+  claimButton,
+  totalNumber
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const showLucky =
     detail.luckyToken.tokenAmount.remainCount == 0;
   const limit = detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit;
-  
-  const pageNation = (totalCount - remainCount - limit > 0) && (
+  const pageNation = (totalNumber - limit > 0) && (
     <TablePagination
       page={page}
       pageSize={limit}
-      total={totalCount - remainCount}
+      total={totalNumber}
       onPageChange={(_page) => {
         handlePageChange(_page)
       }}
@@ -1601,7 +1601,6 @@ export const RedPacketBlindBoxDetail = ({
   const theme = useTheme();
   const emptyImg = theme.mode === "dark" ? temp1 : temp2;
 
-  
   const pageNation = (totalClaimedNFTsCount - RedPacketNFTDetailLimit > 0) && (
     <TablePagination
       page={page}
@@ -2020,13 +2019,13 @@ export const RedPacketBlindBoxDetail = ({
                               >
                                 {info.who}
                               </Typography>
-                              <Typography
+                              {/* <Typography
                                 variant={"body1"}
                                 component={"span"}
                                 color={"textPrimary"}
                               >
                                 *{info.amount}
-                              </Typography>
+                              </Typography> */}
                             </Typography>
                             <Typography
                               component={"span"}
@@ -2038,9 +2037,9 @@ export const RedPacketBlindBoxDetail = ({
                               <Typography
                                 variant={"body2"}
                                 component={"span"}
-                                color={"textThird"}
+                                color={"textPrimary"}
                               >
-                                {moment(info.when).fromNow()}
+                                x {info.amount}
                               </Typography>
                               <Typography display={"inline"}></Typography>
                             </Typography>
