@@ -169,16 +169,28 @@ export const useMyRedPacketRecordTransaction = <
         },
         step: RedPacketViewStep.OpenPanel,
       });
-
     } else {
-      setShowRedPacket({
-        isShow: true,
-        info: {
-          ...item,
-          hash: item.hash,
-        },
-        step: RedPacketViewStep.DetailPanel,
-      });
+      if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+        setShowRedPacket({
+          isShow: true,
+          info: {
+            ...item,
+            hash: item.hash,
+          },
+          step: RedPacketViewStep.BlindBoxDetail,
+        });
+      } else {
+        setShowRedPacket({
+          isShow: true,
+          info: {
+            ...item,
+            hash: item.hash,
+          },
+          step: RedPacketViewStep.DetailPanel,
+        });
+
+      }
+      
     }
   };
 
@@ -317,13 +329,24 @@ export const useMyRedPacketReceiveTransaction = <
   );
 
   const onItemClick = (item: sdk.LuckTokenHistory) => {
-    setShowRedPacket({
-      isShow: true,
-      step: RedPacketViewStep.DetailPanel,
-      info: {
-        ...item.luckyToken,
-      },
-    });
+    if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.BlindBoxDetail,
+        info: {
+          ...item.luckyToken,
+        },
+      });
+    } else {
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.DetailPanel,
+        info: {
+          ...item.luckyToken,
+        },
+      });
+    }
+    
   };
   const onClaimItem = async (item: sdk.LuckTokenHistory) => {
     const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances({

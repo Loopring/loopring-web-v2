@@ -327,7 +327,12 @@ export const useCreateRedPacket = <
       } else {
         balance = redPacketOrder.balance ?? 0;
         tradeValue = sdk.toBig(redPacketOrder.tradeValue ?? 0);
-        isExceedBalance = false 
+        if (redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE) {
+          // console.log('isExceedBalance = tradeValue.times(redPacketOrder.giftNumbers ?? 1).gt(balance)', redPacketOrder.numbers, balance, tradeValue.toString())
+          isExceedBalance = tradeValue.times(redPacketOrder.numbers ?? 1).gt(balance)
+        } else {
+          isExceedBalance = tradeValue.gt(balance)
+        }
         const eachValue = redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
           ? sdk.toBig(redPacketOrder.tradeValue ?? 0).div(redPacketOrder.giftNumbers ?? 1)
           : sdk.toBig(_tradeData.eachValue ?? 0);
@@ -362,7 +367,7 @@ export const useCreateRedPacket = <
         disableBtn();
         if (!redPacketConfigs?.luckTokenAgents) {
           setLabelAndParams("labelRedPacketWaitingBlock", {});
-        } else if (isExceedBalance && tradeValue.gt(balance)) {
+        } else if (isExceedBalance) {
           setLabelAndParams("labelRedPacketsInsufficient", {
             symbol:
               (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN

@@ -1326,10 +1326,10 @@ export default {
   labelRedPacketQRCodeImport: "Receive Red Packet",
   labelLuckyTokenViewType1: "Private Red Packet",
   labelLuckyTokenViewTypeDes1:
-    "Your Red Packet is public, and everyone can try to claim a share of it.",
+    "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyTokenViewType0: "Public Red Packet",
   labelLuckyTokenViewTypeDes0:
-    "Your Red Packet is shared privately with others via a custom QR code.",
+    "Your Red Packet is public, and everyone can try to claim a share of it.",
   labelSplit: "Red Packet Count",
   labelRedPacketMemo: "Memo",
   labelRedPacketMemoPlaceholder: "Best wishes",

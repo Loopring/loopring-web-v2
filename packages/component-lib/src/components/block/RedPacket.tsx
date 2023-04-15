@@ -1151,7 +1151,7 @@ export const RedPacketDetail = ({
                           alignItems={"center"}
                           variant={"body2"}
                         >
-                          {item.helper}
+                          {item.helper} Help
                         </Typography>
                       )}
                       {showLucky &&
@@ -1268,7 +1268,9 @@ export const RedPacketDetail = ({
 
               tOptions={{
                 number: relyNumber ? relyNumber : EmptyValueTag,
-                amount: relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : '')
+                amount: (relyAmount && !sdk.toBig(relyAmount).isZero())
+                  ? relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : '')
+                  : EmptyValueTag
               }}
             >
               have

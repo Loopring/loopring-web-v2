@@ -1066,19 +1066,18 @@ export function useRedPacketModal() {
         | "claiming"
         | "expired"
         | "hidden" =
-        Date.now() > detail.luckyToken.validUntil ||
-        detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED
-          ? // @ts-ignore
+        Date.now() > detail.luckyToken.validUntil || detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED
+          ? (
             detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
-            ? "claim"
-            : // @ts-ignore
-            detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED
-            ? "claimed"
-            : // @ts-ignore
-
-            detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
-            ? "claiming"
-            : "expired"
+              ? "claim"
+              : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED
+                ? "claimed"
+                : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
+                  ? "claiming"
+                  : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED 
+                    ? "expired"
+                    : "hidden"
+          )
           : "hidden";
 
       return {

@@ -46,7 +46,7 @@ export const getUserReceiveList = (
         : ""
       ).toString(),
       createdAt: item.createdAt,
-      isMax: champion?.accountId === item.claimer.accountId,
+      isMax: champion?.accountId === item.claimer.accountId && champion.amount === item.amount,
       rawData: item,
     };
     return [...prev, redPacketDetailItem];
