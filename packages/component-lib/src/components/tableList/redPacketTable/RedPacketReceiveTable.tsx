@@ -326,7 +326,9 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           }
           rowHeight={RowConfig.rowHeight}
           onRowClick={(_index: number, row: R) => {
-            onItemClick(row.rawData);
+            onItemClick(row.rawData, () => {
+              handlePageChange({page})
+            });
           }}
           sortMethod={React.useCallback(
             (_sortedRows, sortColumn) => {

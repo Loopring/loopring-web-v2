@@ -58,7 +58,7 @@ export const useClaimConfirm = <
     setShowAccount,
     setShowClaimWithdraw,
     modals: {
-      isShowClaimWithdraw: { claimToken, isShow, claimType },
+      isShowClaimWithdraw: { claimToken, isShow, claimType, successCallback},
       isShowAccount: { info },
     },
   } = useOpenModals();
@@ -109,6 +109,7 @@ export const useClaimConfirm = <
     // claimToken
     if (claimToken) {
       if (claimToken?.isNft) {
+        
         updateClaimData({
           ...claimToken.nftTokenInfo,
           tradeType: TRADE_TYPE.NFT,
@@ -121,6 +122,7 @@ export const useClaimConfirm = <
           balance: Number(claimToken.total),
           claimType,
           luckyTokenHash: claimToken.luckyTokenHash,
+          successCallback
         } as any);
       } else {
         const token = tokenMap[idIndex[claimToken.tokenId]];
@@ -131,7 +133,7 @@ export const useClaimConfirm = <
           volume: claimToken.total,
           balance: volumeToCount(token.symbol, claimToken.total),
           claimType,
-          // claimType: info.
+          successCallback
         });
       }
     } else {
@@ -158,6 +160,8 @@ export const useClaimConfirm = <
     ) => {
       const { apiKey, connectName, eddsaKey } = account;
       const claimValue = store.getState()._router_modalData.claimValue;
+      // const claimValue = store.getState()._router_modalData.c;
+      
 
       try {
         if (
@@ -217,6 +221,8 @@ export const useClaimConfirm = <
           ) {
             throw response;
           }
+          claimValue.successCallback && claimValue.successCallback()
+          
           setShowAccount({
             isShow: true,
             step: AccountStep.ClaimWithdraw_In_Progress,

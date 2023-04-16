@@ -906,6 +906,7 @@ export const RedPacketTimeout = ({
               color={"inherit"}
               variant={"body1"}
               onClick={(e) => {
+                debugger
                 e.stopPropagation();
                 viewDetail();
               }}
@@ -1588,6 +1589,7 @@ export const RedPacketBlindBoxDetail = ({
   showOpenLottery,
   wonNFTInfo,
   onClickClaim,
+  onClickClaim2,
   onCloseOpenModal,
   onClickClaimDetailBack,
   description,
@@ -1674,7 +1676,7 @@ export const RedPacketBlindBoxDetail = ({
                 {t("labelClaimBtn")}
               </Button> */}
               {wonNFTInfo && (
-                <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+                <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
                   {t("labelClaimBtn")}
                 </Button>
               )}

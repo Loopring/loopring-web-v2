@@ -164,6 +164,7 @@ export type RedPacketBlindBoxDetailProps = {
     url: string;
   }
   onClickClaim?: () => void;
+  onClickClaim2?: () => void;
   onCloseOpenModal?: () => void;
   onClickClaimDetailBack?: () => void;
   description: string;

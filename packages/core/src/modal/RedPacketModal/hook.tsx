@@ -1032,11 +1032,13 @@ export function useRedPacketModal() {
                   luckyTokenHash: detail.luckyToken.hash,
                 },
                 claimType: CLAIM_TYPE.redPacket,
+                successCallback: () => {
+                  redPacketDetailCall({ offset: 0 });
+                  info.refreshCallback && info.refreshCallback()
+                },
               });
             }
-
           })
-          
         },
         totalNumber: (detail as any).totalNum
       } as RedPacketDetailProps;
@@ -1052,7 +1054,6 @@ export function useRedPacketModal() {
     isShow,
     step,
   ]);
-  console.log('redPacketDetailProps', redPacketDetailProps)
   const { setShowClaimWithdraw } = useOpenModals();
   const redPacketBlindBoxDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
@@ -1185,6 +1186,45 @@ export function useRedPacketModal() {
                 luckyTokenHash: detail.luckyToken.hash,
               },
               claimType: CLAIM_TYPE.redPacket,
+              successCallback: () => {
+                redPacketBlindBoxDetailCall({ offset: 0 });
+                info.refreshCallback && info.refreshCallback()
+              },
+            });
+          }
+        },
+        onClickClaim2: async () => {
+          const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
+            {
+              accountId: account.accountId,
+              isNft: detail.luckyToken.isNft,
+              tokens: [detail.luckyToken.tokenId],
+            },
+            account.apiKey
+          );
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+          } else {
+            setShowClaimWithdraw({
+              isShow: true,
+              claimToken: {
+                tokenId: detail.luckyToken.tokenId,
+                // response!.tokenBalance[0].tokenId,
+                total: detail.claimAmount.toString(),
+                locked: response!.tokenBalance[0].locked,
+                pending: response!.tokenBalance[0].pending,
+                nftTokenInfo: detail.luckyToken.nftTokenInfo,
+                isNft: detail.luckyToken.isNft,
+                luckyTokenHash: detail.luckyToken.hash,
+              },
+              claimType: CLAIM_TYPE.redPacket,
+              successCallback: () => {
+                redPacketBlindBoxDetailCall({ offset: 0 });
+                setBlindBoxType("Lottery Started")
+                info.refreshCallback && info.refreshCallback()
+              },
             });
           }
         },
@@ -1207,7 +1247,8 @@ export function useRedPacketModal() {
         },
         handlePageChange: (page: number = 1) => {
           setPage(page)
-          redPacketDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
+          redPacketBlindBoxDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
+          // redPacketDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
         },
         totalCount: detail.luckyToken.tokenAmount.giftCount,
         remainCount: detail.luckyToken.tokenAmount.remainCount,

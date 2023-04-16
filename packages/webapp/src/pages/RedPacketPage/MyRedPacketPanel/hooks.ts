@@ -328,13 +328,14 @@ export const useMyRedPacketReceiveTransaction = <
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
 
-  const onItemClick = (item: sdk.LuckTokenHistory) => {
+  const onItemClick = (item: sdk.LuckTokenHistory, refreshCallback?: () => void) => {
     if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
       setShowRedPacket({
         isShow: true,
         step: RedPacketViewStep.BlindBoxDetail,
         info: {
           ...item.luckyToken,
+          refreshCallback
         },
       });
     } else {
@@ -343,6 +344,7 @@ export const useMyRedPacketReceiveTransaction = <
         step: RedPacketViewStep.DetailPanel,
         info: {
           ...item.luckyToken,
+          refreshCallback
         },
       });
     }
