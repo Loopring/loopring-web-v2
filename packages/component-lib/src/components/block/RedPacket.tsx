@@ -1612,14 +1612,16 @@ export const RedPacketBlindBoxDetail = ({
   const emptyImg = theme.mode === "dark" ? temp1 : temp2;
 
   const pageNation = (totalClaimedNFTsCount - RedPacketNFTDetailLimit > 0) && (
-    <TablePagination
-      page={page}
-      pageSize={RedPacketNFTDetailLimit}
-      total={totalClaimedNFTsCount}
-      onPageChange={(_page) => {
-        handlePageChange(_page)
-      }}
-    />
+    <Box width={"100%"}>
+      <TablePagination
+        page={page}
+        pageSize={RedPacketNFTDetailLimit}
+        total={totalClaimedNFTsCount}
+        onPageChange={(_page) => {
+          handlePageChange(_page)
+        }}
+      />
+    </Box>
   )
   const pageNationBlindBox = (totalBlindboxCount - RedPacketBlindBoxLimit > 0) && (
     <TablePagination

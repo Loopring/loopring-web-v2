@@ -160,17 +160,18 @@ export const useMyRedPacketRecordTransaction = <
     const resposne = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
       hash: item.hash,
     }, apiKey)
-    if (resposne?.detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM) {
-      setShowRedPacket({
-        isShow: true,
-        info: {
-          ...item,
-          hash: item.hash,
-        },
-        step: RedPacketViewStep.OpenPanel,
-      });
-    } else {
-      if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+    if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+      if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING && !resposne?.detail.claimStatus) {
+        setShowRedPacket({
+          isShow: true,
+          info: {
+            ...item,
+            hash: item.hash,
+          },
+          step: RedPacketViewStep.OpenPanel,
+        });
+
+      } else {
         setShowRedPacket({
           isShow: true,
           info: {
@@ -179,6 +180,20 @@ export const useMyRedPacketRecordTransaction = <
           },
           step: RedPacketViewStep.BlindBoxDetail,
         });
+
+      }
+      
+    } else {
+      if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING && !resposne?.detail.claimStatus) {
+        setShowRedPacket({
+          isShow: true,
+          info: {
+            ...item,
+            hash: item.hash,
+          },
+          step: RedPacketViewStep.OpenPanel,
+        });
+
       } else {
         setShowRedPacket({
           isShow: true,
@@ -188,10 +203,43 @@ export const useMyRedPacketRecordTransaction = <
           },
           step: RedPacketViewStep.DetailPanel,
         });
-
       }
-      
     }
+    // if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING) {
+
+    // }
+    // if (resposne?.detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM) {
+    //   setShowRedPacket({
+    //     isShow: true,
+    //     info: {
+    //       ...item,
+    //       hash: item.hash,
+    //     },
+    //     step: RedPacketViewStep.OpenPanel,
+    //   });
+    // } else {
+    //   if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+    //     setShowRedPacket({
+    //       isShow: true,
+    //       info: {
+    //         ...item,
+    //         hash: item.hash,
+    //       },
+    //       step: RedPacketViewStep.BlindBoxDetail,
+    //     });
+    //   } else {
+    //     setShowRedPacket({
+    //       isShow: true,
+    //       info: {
+    //         ...item,
+    //         hash: item.hash,
+    //       },
+    //       step: RedPacketViewStep.DetailPanel,
+    //     });
+
+    //   }
+      
+    // }
   };
 
   return {
