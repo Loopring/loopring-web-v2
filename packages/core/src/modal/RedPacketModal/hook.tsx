@@ -221,6 +221,7 @@ export function useRedPacketModal() {
         // (_info.status === sdk.LuckyTokenItemStatus.COMPLETED ||
         //   _info.status === sdk.LuckyTokenItemStatus.OVER_DUE)
       ) {
+        
         return {
           ImageEle,
           memo: _info.info.memo,
@@ -228,18 +229,30 @@ export function useRedPacketModal() {
             ? _info.sender?.ens
             : getShortAddr(_info.sender?.address),
           viewDetail: () => {
+            // debugger
             if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
               setShowRedPacket({
                 isShow,
                 step: RedPacketViewStep.BlindBoxDetail,
-                info: _info,
+                info: {
+                  hash: _info.hash,
+                  // type: _info.type,
+                }
               });
             } else {
-              setShowRedPacket({
-                isShow,
-                step: RedPacketViewStep.DetailPanel,
-                info: _info,
-              });
+              LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
+                hash: _info.hash,
+              }, account.apiKey).then(response => {
+                setShowRedPacket({
+                  isShow,
+                  step: RedPacketViewStep.DetailPanel,
+                  info: {
+                    ...response.detail.luckyToken
+                  } ,
+                });
+
+              })
+              
             }
           },
         };
@@ -864,27 +877,14 @@ export function useRedPacketModal() {
         }, sdk.toBig(0)) ?? 0;
       let relyAmount: string | undefined = undefined;
       let symbol, list;
-      if (detail.claimAmount.toString() !== "0") {
-        if (_info.isNft) {
-          symbol = detail.claimAmount == 1 ? "NFT" : "NFTs";
-          // @ts-ignore
-          // const symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
-          myAmountStr =
-            getValuePrecisionThousand(
-              detail.claimAmount,
-              0,
-              0,
-              undefined,
-              false,
-              {
-                floor: false,
-                // isTrade: true,
-              }
-            ) +
-            " " +
-            symbol;
-          relyAmount = getValuePrecisionThousand(
-            value,
+      // if (detail.claimAmount.toString() !== "0") {
+      if (_info.isNft) {
+        symbol = detail.claimAmount == 1 ? "NFT" : "NFTs";
+        // @ts-ignore
+        // const symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
+        myAmountStr =
+          getValuePrecisionThousand(
+            detail.claimAmount,
             0,
             0,
             undefined,
@@ -893,31 +893,31 @@ export function useRedPacketModal() {
               floor: false,
               // isTrade: true,
             }
-          );
-          list = getUserNFTReceiveList(
-            detail.claims as any,
-            _info.nftTokenInfo as any,
-            detail.champion
-          ).list;
-        } else {
-          let tokenInfo = tokenMap[idIndex[_info?.tokenId] ?? ""];
-          symbol = tokenInfo.symbol;
-          myAmountStr =
-            getValuePrecisionThousand(
-              volumeToCountAsBigNumber(symbol, detail.claimAmount as any),
-              tokenInfo.precision,
-              tokenInfo.precision,
-              undefined,
-              false,
-              {
-                floor: false,
-                // isTrade: true,
-              }
-            ) +
-            " " +
-            symbol;
-          relyAmount = getValuePrecisionThousand(
-            volumeToCountAsBigNumber(symbol, value),
+          ) +
+          " " +
+          symbol;
+        relyAmount = getValuePrecisionThousand(
+          value,
+          0,
+          0,
+          undefined,
+          false,
+          {
+            floor: false,
+            // isTrade: true,
+          }
+        );
+        list = getUserNFTReceiveList(
+          detail.claims as any,
+          _info.nftTokenInfo as any,
+          detail.champion
+        ).list;
+      } else {
+        let tokenInfo = tokenMap[idIndex[_info?.tokenId] ?? ""];
+        symbol = tokenInfo.symbol;
+        myAmountStr =
+          getValuePrecisionThousand(
+            volumeToCountAsBigNumber(symbol, detail.claimAmount as any),
             tokenInfo.precision,
             tokenInfo.precision,
             undefined,
@@ -926,14 +926,28 @@ export function useRedPacketModal() {
               floor: false,
               // isTrade: true,
             }
-          );
-          list = getUserReceiveList(
-            detail.claims as any,
-            tokenInfo,
-            detail.champion
-          ).list;
-        }
+          ) +
+          " " +
+          symbol;
+        relyAmount = getValuePrecisionThousand(
+          volumeToCountAsBigNumber(symbol, value),
+          tokenInfo.precision,
+          tokenInfo.precision,
+          undefined,
+          false,
+          {
+            floor: false,
+            // isTrade: true,
+          }
+        );
+        list = getUserReceiveList(
+          detail.claims as any,
+          tokenInfo,
+          detail.champion
+        ).list;
       }
+      // }
+
       const claimButton:
         | "claimed"
         | "claim"
@@ -1038,6 +1052,7 @@ export function useRedPacketModal() {
     isShow,
     step,
   ]);
+  console.log('redPacketDetailProps', redPacketDetailProps)
   const { setShowClaimWithdraw } = useOpenModals();
   const redPacketBlindBoxDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {

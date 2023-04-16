@@ -403,7 +403,14 @@ export const useCreateRedPacket = <
                     ),
                     symbol: tradeToken.symbol,
                   }
-                : { value: 1, symbol: "NFT" }
+                : { value: 
+                    redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
+                      ? redPacketOrder.giftNumbers
+                      : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE 
+                        ? 1 
+                        : redPacketOrder.numbers, 
+                    symbol: "NFT" 
+                  }
             );
           } else {
             let value =
