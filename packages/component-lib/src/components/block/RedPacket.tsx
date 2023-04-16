@@ -507,6 +507,7 @@ export const RedPacketClock = ({
   amountStr,
   memo,
   showRedPacket,
+  ImageEle
 }: RedPacketDefault & RedPacketClockProps) => {
   const { t } = useTranslation("common");
   const anchorRef = React.useRef();
@@ -643,6 +644,7 @@ export const RedPacketClock = ({
           <Typography color={"inherit"}>{sender}</Typography>
         </Box>
         <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+          {ImageEle}
           <Typography
             color={"inherit"}
             variant={"h4"}
@@ -1766,7 +1768,7 @@ export const RedPacketBlindBoxDetail = ({
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        *{info.amount}
+                        *1
                       </Typography>
                     </Typography>
                     <Typography

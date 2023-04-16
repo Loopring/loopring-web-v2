@@ -49,6 +49,7 @@ import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRedPacketConfig } from "../../stores/redPacket";
 import { useHistory } from "react-router-dom";
+import { LuckTokenAPI } from "@loopring-web/loopring-sdk";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
@@ -549,15 +550,22 @@ export const useCreateRedPacket = <
               shared:
                 request.type.scope == sdk.LuckyTokenViewType.PUBLIC
                   ? () => {
+                    LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
+                      hash: (response as sdk.TX_HASH_API).hash!,
+                    }, apiKey).then(response => {
                       setShowAccount({ isShow: false });
                       setShowRedPacket({
                         isShow: true,
                         info: {
-                          sender: account,
-                          hash: (response as sdk.TX_HASH_API).hash,
+                          ...response.detail.luckyToken,
+                          // sender: account,
+                          // hash: (response as sdk.TX_HASH_API).hash,
                         },
                         step: RedPacketViewStep.QRCodePanel,
                       });
+
+                    })
+                      
                     }
                   : undefined,
             },

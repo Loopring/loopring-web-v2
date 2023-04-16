@@ -40,6 +40,7 @@ import {
   TradeBtnStatus,
   GoodIcon,
   REDPACKET_ORDER_NFT_LIMIT,
+  REDPACKET_SHOW_NFTS,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -713,8 +714,16 @@ export const CreateRedPacketStepWrap = withTranslation()(
               endMinDateTime={endMinDateTime}
               endMaxDateTime={endMaxDateTime}
               onEndChange={(m) => {
+                // debugger
+                const maximunTimestamp = startDateTime 
+                  ? moment(startDateTime).add(7, 'days').toDate().getTime()
+                  : 0
                 handleOnDataChange({
-                  validUntil: m ? m.toDate().getTime() : undefined,
+                  validUntil: m 
+                    ? m.toDate().getTime() > maximunTimestamp
+                      ? maximunTimestamp
+                      : m.toDate().getTime()
+                    : undefined,
                 } as unknown as Partial<T>);
               }}
               customeEndInputPlaceHolder={
@@ -1219,7 +1228,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
             </CardStyleItem>
           </Grid>
           <Grid item xs={6} display={"flex"} marginBottom={2}>
-            <CardStyleItem
+            {REDPACKET_SHOW_NFTS && <CardStyleItem
               className={
                 tradeType === "NFT"
                   ? "btnCard column selected"
@@ -1248,7 +1257,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                   {t("labelRedpacketNFTS")}
                 </Typography>
               </CardContent>
-            </CardStyleItem>
+            </CardStyleItem>}
           </Grid>
         </Grid>
         <Box width={"100%"}>

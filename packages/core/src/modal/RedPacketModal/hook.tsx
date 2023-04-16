@@ -384,7 +384,6 @@ export function useRedPacketModal() {
       ) {
         myLog("redPacketClockProps", _info);
         return {
-          ImageEle,
           memo: _info.info.memo,
           amountStr,
           amountClaimStr,
@@ -400,6 +399,7 @@ export function useRedPacketModal() {
               info: _info,
             });
           },
+          ImageEle
         };
       }
 
@@ -596,7 +596,8 @@ export function useRedPacketModal() {
                 } as any);
               if (
                 (claimLuckyTokenResponse as sdk.RESULT_INFO).code ||
-                (claimLuckyTokenResponse as sdk.RESULT_INFO).message
+                (claimLuckyTokenResponse as sdk.RESULT_INFO).message ||
+                (claimLuckyTokenResponse as any).amount === "0"
               ) {
                 setBlindBoxType("Lottery Started and Not Win Lottery");
               } else {

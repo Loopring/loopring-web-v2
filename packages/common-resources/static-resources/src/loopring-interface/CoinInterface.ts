@@ -359,6 +359,9 @@ export enum EXPLORE_TYPE {
   NFTMINT = "nftMint",
   NFTWITHDRAW = "nftWithdraw",
   NFTTRANSFER = "nftTransfer",
+  NFTSEND_BACK_LUCKY_TOKEN = "nftTransfer",
+  NFTSEND_LUCKY_TOKEN = "nftTransfer",
+  NFTWITHDRAW_LUCKY_TOKEN = "nftWithdraw",
 }
 
 /**

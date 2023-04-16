@@ -152,7 +152,9 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         name: "Action",
         formatter: ({ row }: FormatterProps<R>) => {
           if (row.rawData.luckyToken.validUntil > Date.now() && row.rawData.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED) {
-            return <>{t("labelBlindBoxStartTime", {time: moment(row.rawData.luckyToken.validUntil).format('YYYY.MM.DD HH:mm')})} </>
+            return <>{t("labelBlindBoxStartTime", {
+              time: moment(row.rawData.luckyToken.validUntil).format('YYYY.MM.DD HH:mm')
+            })} </>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
             return <>{t("labelBlindBoxOpend")}</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
@@ -188,7 +190,11 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
             onItemClick(row.rawData, {
               offset: (page - 1) * (pagination?.pageSize ?? 10),
               limit: pagination?.pageSize ?? 10,
-              filter: {},
+              filter: {
+                statuses: showActionableRecords 
+                  ? [0] // 0 is for sdk.BlindBoxStatus.NOT_OPENED
+                  : undefined
+              },
             })
           }}
           sortMethod={React.useCallback(

@@ -115,7 +115,7 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   );
   const history = useHistory()
   const onViewMoreNFTsClick = () => {
-    history.push("/redPacket/records/NFTReceived")
+    history.push("/redPacket/records/NFTReceived?noTabs=true&fromViewMore=true")
   };
   const onCloseNFts = () => {
     setShowNFTsPanel(false)

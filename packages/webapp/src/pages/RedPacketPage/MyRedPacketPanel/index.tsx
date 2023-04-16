@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   RedPacketReceiveTable,
@@ -14,7 +14,7 @@ import {
   useMyRedPacketReceiveTransaction,
   useMyRedPacketRecordTransaction,
 } from "./hooks";
-import { BackIcon, RowConfig, TokenType } from "@loopring-web/common-resources";
+import { BackIcon, REDPACKET_SHOW_NFTS, RowConfig, TokenType } from "@loopring-web/common-resources";
 import { Box, Button, Checkbox, FormControlLabel, Tab, Tabs, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 
@@ -46,12 +46,16 @@ export const MyRedPacketPanel = ({
   const { isMobile } = useSettings();
   const { etherscanBaseUrl, forexMap } = useSystem();
   let match: any = useRouteMatch("/redPacket/records/:item/:type?");
+  const location = useLocation()
+  const search =new URLSearchParams(location.search)
+  const noTabs = search.get('noTabs') === 'true'
+  const fromViewMore = search.get('fromViewMore') === 'true'
 
   const container = React.useRef<HTMLDivElement>(null);
   const [currentTab, setCurrentTab] = React.useState<TabIndex>(
     match?.params.item ?? TabIndex.Received
   );
-  // let height = container?.current?.offsetHeight;
+   let height = container?.current?.offsetHeight;
   // const [pageSize, setPageSize] = React.useState(Math.floor((height - 120) / RowConfig.rowHeight - 1));
   const pageSize = 10
 
@@ -140,9 +144,15 @@ export const MyRedPacketPanel = ({
           size={"medium"}
           sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
-          onClick={() => history.push("/redPacket/markets")}
+          onClick={() => {
+            if (fromViewMore) {
+              history.push("/l2assets/assets/RedPacket")
+            } else {
+              history.push("/redPacket/markets")
+            }
+          }}
         >
-          {t("labelRedPacketRecordTitle")}
+          {fromViewMore ? t("labelViewMore") : t("labelRedPacketRecordTitle")}
         </Button>
       </Box>
 
@@ -162,77 +172,83 @@ export const MyRedPacketPanel = ({
         {/*    value={TabTokenTypeIndex.NFT}*/}
         {/*  />*/}
         {/*</Tabs>*/}
-        <Tabs
-          value={isRecieve ? "Received" : "Sent"}
-          onChange={(_event, value) => {
-            if (tabType === "tokens" && value === "Received") {
-              handleTabChange(TabIndex.Received);
-            } else if (tabType === "tokens" && value === "Sent") {
-              handleTabChange(TabIndex.Send);
-            } else if (tabType === "NFTs" && value === "Received") {
-              handleTabChange(TabIndex.NFTReceived);
-            } else if (tabType === "NFTs" && value === "Sent") {
-              handleTabChange(TabIndex.NFTSend);
-            } else if (tabType === "blindBox" && value === "Received") {
-              handleTabChange(TabIndex.BlindBoxReceived);
-            } else if (tabType === "blindBox" && value === "Sent") {
-              handleTabChange(TabIndex.Send);
-            }
-          }}
-          aria-label="l2-history-tabs"
-          variant="scrollable"
-        >
-          <Tab key={"Received"} label={"Received"} value={"Received"} />
-          <Tab key={"Sent"} label={"Sent"} value={"Sent"} />
-        </Tabs>
-        <Box paddingX={2} marginTop={3} display={"flex"} justifyContent="space-between" >
-          <Box >
-            <SelectButton
-              onClick={() => {
-                isRecieve
-                  ? handleTabChange(TabIndex.Received)
-                  : handleTabChange(TabIndex.Send);
-              }}
-              selected={[TabIndex.Send, TabIndex.Received].includes(currentTab)}
-              style={{ marginRight: `${theme.unit}px` }}
-              variant={"outlined"}
-            >
-              {t("labelRedpacketTokensShort")}
-            </SelectButton>
-            <SelectButton
-              onClick={() => {
-                isRecieve
-                  ? handleTabChange(TabIndex.NFTReceived)
-                  : handleTabChange(TabIndex.NFTSend);
-              }}
-              selected={[TabIndex.NFTReceived, TabIndex.NFTSend].includes(
-                currentTab
-              )}
-              style={{ marginRight: `${theme.unit}px` }}
-              variant={"outlined"}
-            >
-              {t("labelRedpacketNFTS")}
-            </SelectButton>
-            {isRecieve && (
+        {!noTabs && <>
+          <Tabs
+            value={isRecieve ? "Received" : "Sent"}
+            onChange={(_event, value) => {
+              if (tabType === "tokens" && value === "Received") {
+                handleTabChange(TabIndex.Received);
+              } else if (tabType === "tokens" && value === "Sent") {
+                handleTabChange(TabIndex.Send);
+              } else if (tabType === "NFTs" && value === "Received") {
+                handleTabChange(TabIndex.NFTReceived);
+              } else if (tabType === "NFTs" && value === "Sent") {
+                handleTabChange(TabIndex.NFTSend);
+              } else if (tabType === "blindBox" && value === "Received") {
+                handleTabChange(TabIndex.BlindBoxReceived);
+              } else if (tabType === "blindBox" && value === "Sent") {
+                handleTabChange(TabIndex.Send);
+              }
+            }}
+            aria-label="l2-history-tabs"
+            variant="scrollable"
+          >
+            <Tab key={"Received"} label={"Received"} value={"Received"} />
+            <Tab key={"Sent"} label={"Sent"} value={"Sent"} />
+          </Tabs>
+          <Box paddingX={2} marginTop={3} display={"flex"} justifyContent="space-between" >
+            <Box >
               <SelectButton
                 onClick={() => {
-                  handleTabChange(TabIndex.BlindBoxReceived);
+                  isRecieve
+                    ? handleTabChange(TabIndex.Received)
+                    : handleTabChange(TabIndex.Send);
                 }}
-                selected={[TabIndex.BlindBoxReceived].includes(currentTab)}
+                selected={[TabIndex.Send, TabIndex.Received].includes(currentTab)}
+                style={{ marginRight: `${theme.unit}px` }}
                 variant={"outlined"}
               >
-                {t("labelRedpacketBlindBox")}
+                {t("labelRedpacketTokensShort")}
               </SelectButton>
+              {REDPACKET_SHOW_NFTS && <>
+                <SelectButton
+                  onClick={() => {
+                    isRecieve
+                      ? handleTabChange(TabIndex.NFTReceived)
+                      : handleTabChange(TabIndex.NFTSend);
+                  }}
+                  selected={[TabIndex.NFTReceived, TabIndex.NFTSend].includes(
+                    currentTab
+                  )}
+                  style={{ marginRight: `${theme.unit}px` }}
+                  variant={"outlined"}
+                >
+                  {t("labelRedpacketNFTS")}
+                </SelectButton>
+                {isRecieve && (
+                  <SelectButton
+                    onClick={() => {
+                      handleTabChange(TabIndex.BlindBoxReceived);
+                    }}
+                    selected={[TabIndex.BlindBoxReceived].includes(currentTab)}
+                    variant={"outlined"}
+                  >
+                    {t("labelRedpacketBlindBox")}
+                  </SelectButton>
+                )}
+              </>}
+
+
+
+            </Box>
+            {isRecieve && (tabType === 'NFTs' || tabType === 'blindBox') && (
+              <FormControlLabel control={<Checkbox checked={showActionableRecords} onChange={() => {
+                onChangeShowActionableRecords()
+              }} />} label={t("labelRedpacketHideInactionable")} />
             )}
-
-
           </Box>
-          {isRecieve && (tabType === 'NFTs' || tabType === 'blindBox') && (
-            <FormControlLabel control={<Checkbox checked={showActionableRecords} onChange={() => {
-              onChangeShowActionableRecords()
-            }} />} label={t("labelRedpacketHideInactionable")}/>
-          )}
-        </Box>
+        </>}
+        
         
         {[TabIndex.Received, TabIndex.NFTReceived].includes(currentTab) && (
           <Box
