@@ -34,6 +34,7 @@ import { ModalStatePlayLoad } from "../../stores";
 import moment from "moment";
 import {
   RedPacketBlindBoxDetailProps,
+  RedPacketBlindBoxLimit,
   RedPacketClockProps,
   RedPacketDefault,
   RedPacketDefaultBg,
@@ -1601,7 +1602,10 @@ export const RedPacketBlindBoxDetail = ({
   totalCount,
   remainCount,
   handlePageChange,
-  totalClaimedNFTsCount
+  totalClaimedNFTsCount,
+  handlePageChange_BlindBox,
+  pageForBlindbox,
+  totalBlindboxCount
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
@@ -1617,6 +1621,17 @@ export const RedPacketBlindBoxDetail = ({
       }}
     />
   )
+  const pageNationBlindBox = (totalBlindboxCount - RedPacketBlindBoxLimit > 0) && (
+    <TablePagination
+      page={pageForBlindbox}
+      pageSize={RedPacketBlindBoxLimit}
+      total={totalBlindboxCount}
+      onPageChange={(_page) => {
+        handlePageChange_BlindBox(_page)
+      }}
+    />
+  )
+  console.log('totalBlindboxCount', totalBlindboxCount)
 
   return (
     <BlindBoxDetailBoxStyle
@@ -1792,6 +1807,7 @@ export const RedPacketBlindBoxDetail = ({
                   </BoxClaim>
                 );
               })}
+            {pageNationBlindBox}
           </Box>
         </Box>
       ) : (

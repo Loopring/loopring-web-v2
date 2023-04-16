@@ -16,6 +16,7 @@ import {
   RedPacketBlindBoxDetailProps,
   RedPacketBlindBoxDetailTypes,
   RedPacketNFTDetailLimit,
+  RedPacketBlindBoxLimit,
 } from "@loopring-web/component-lib";
 import React, { useState } from "react";
 import {
@@ -806,6 +807,7 @@ export function useRedPacketModal() {
     }
   }, [isShow, step, info]);
   const [page, setPage] = useState(1)
+  const [pageForBlindbox, setPageForBlindbox] = useState(1)
   React.useEffect(() => {
     if (isShow) {
       const info = store.getState().modals.isShowRedPacket.info;
@@ -1247,14 +1249,33 @@ export function useRedPacketModal() {
         },
         handlePageChange: (page: number = 1) => {
           setPage(page)
-          redPacketBlindBoxDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
-          // redPacketDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
+          // redPacketBlindBoxDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
+          redPacketDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
         },
         totalCount: detail.luckyToken.tokenAmount.giftCount,
         remainCount: detail.luckyToken.tokenAmount.remainCount,
         page,
-        totalClaimedNFTsCount: blindBoxClaimedGiftsCount,
-        totalBlindboxCount: (blinBoxDetail as any).totalNum
+        totalClaimedNFTsCount: (detail as any).totalNum,
+        totalBlindboxCount: (blinBoxDetail as any).totalNum,
+        handlePageChange_BlindBox: (page: number = 1) => {
+          setPageForBlindbox(page)
+          // setPage(page)
+          LoopringAPI.luckTokenAPI?.getBlindBoxDetail(
+            {
+              accountId: account.accountId,
+              hash: _info.hash,
+              limit: RedPacketBlindBoxLimit,
+              offset: (page - 1) * RedPacketBlindBoxLimit,
+            } as any,
+            account.apiKey
+          ).then(response2=> {
+            setBlindBoxDetail(response2.raw_data)
+          })
+          // redPacketDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
+        },
+        pageForBlindbox,
+        // totalBlindBoxCount
+        // totalBlindBoxCount: blinBoxDetail.totalNum
         // detail.luckyToken.tokenAmount.giftCount - detail.luckyToken.tokenAmount.remainCount
       } as RedPacketBlindBoxDetailProps;
     } else {
