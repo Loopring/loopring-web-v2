@@ -420,7 +420,7 @@ export function useRedPacketModal() {
       return undefined;
     }, [info, amountClaimStr, amountStr, account.accAddress, isShow, step]);
     
-  const [blindBoxClaimedGiftsCount, setBlindBoxClaimedGiftsCount] = React.useState(0)
+  const [opendBlindBoxCount, setOpendBlindBoxCount] = React.useState(0)
     React.useState<undefined | sdk.LuckTokenClaimDetail>(undefined);
   const redPacketDetailCall = React.useCallback(
     async ({
@@ -534,7 +534,7 @@ export function useRedPacketModal() {
   );
   const redPacketBlindBoxDetailCall = React.useCallback(
     async ({
-      limit = RedPacketNFTDetailLimit,
+      limit = RedPacketBlindBoxLimit,
       offset = 0,
     }: {
       limit?: number;
@@ -554,7 +554,7 @@ export function useRedPacketModal() {
             isShow: true,
             step: AccountStep.RedPacketOpen_In_Progress,
           });
-          const responseTemp = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
+          const responseTemp = await LoopringAPI.luckTokenAPI.getBlindBoxDetail(
             {
               accountId: account.accountId,
               hash: _info.hash,
@@ -564,12 +564,13 @@ export function useRedPacketModal() {
             } as any,
             account.apiKey
           );
-          setBlindBoxClaimedGiftsCount(responseTemp.detail.claims.length)
+          // debugger
+          setOpendBlindBoxCount((responseTemp.raw_data as any).claims.length)
           let response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
             {
               accountId: account.accountId,
               hash: _info.hash,
-              limit,
+              limit: RedPacketNFTDetailLimit,
               offset,
               // fromId: 0,
               showHelper: true,
@@ -580,7 +581,7 @@ export function useRedPacketModal() {
             {
               accountId: account.accountId,
               hash: _info.hash,
-              limit,
+              limit: RedPacketBlindBoxLimit,
               offset,
             } as any,
             account.apiKey
@@ -1250,13 +1251,13 @@ export function useRedPacketModal() {
         handlePageChange: (page: number = 1) => {
           setPage(page)
           // redPacketBlindBoxDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
-          redPacketDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
+          redPacketBlindBoxDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
         },
         totalCount: detail.luckyToken.tokenAmount.giftCount,
         remainCount: detail.luckyToken.tokenAmount.remainCount,
         page,
         totalClaimedNFTsCount: (detail as any).totalNum,
-        totalBlindboxCount: (blinBoxDetail as any).totalNum,
+        totalBlindboxCount: opendBlindBoxCount,
         handlePageChange_BlindBox: (page: number = 1) => {
           setPageForBlindbox(page)
           // setPage(page)
