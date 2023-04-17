@@ -13,8 +13,10 @@ import {
 } from "@loopring-web/core";
 import {
   AmmSideTypes,
+  CexSwapsType,
   OrderHistoryRawDataItem,
   RawDataAmmItem,
+  RawDataCexSwapsItem,
   RawDataDualAssetItem,
   RawDataDualTxsItem,
   RawDataTradeItem,
@@ -24,6 +26,7 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE, GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
 import {
+  getValuePrecisionThousand,
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
@@ -787,5 +790,142 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
     dualMarketMap,
     // pagination,
     // updateTickersUI,
+  };
+};
+
+export const useCexTransaction = <R extends RawDataCexSwapsItem>(
+  setToastOpen: (props: any) => void
+) => {
+  const { t } = useTranslation(["error"]);
+
+  const [cexOrderData, setCexOrderData] = React.useState<R[]>([]);
+  const [totalNum, setTotalNum] = React.useState(0);
+  const [showLoading, setShowLoading] = React.useState(false);
+  const {
+    account: { accountId, apiKey },
+  } = useAccount();
+  const {
+    tokenMap: { marketArray, tokenMap, marketMap },
+    idIndex,
+  } = useTokenMap();
+
+  const jointPairs = marketArray || []; //.concat([...ammPairList]); //
+
+  const getCexOrderList = React.useCallback(
+    async (props: Omit<GetOrdersRequest, "accountId">) => {
+      if (LoopringAPI && LoopringAPI.defiAPI && accountId && apiKey) {
+        setShowLoading(true);
+        const userOrders = await LoopringAPI.defiAPI.getCefiOrders({
+          request: { accountId },
+          apiKey,
+        });
+        if (
+          (userOrders as sdk.RESULT_INFO).code ||
+          (userOrders as sdk.RESULT_INFO).message
+        ) {
+          const errorItem =
+            SDK_ERROR_MAP_TO_UI[
+              (userOrders as sdk.RESULT_INFO)?.code ?? 700001
+            ];
+          if (setToastOpen) {
+            setToastOpen({
+              open: true,
+              type: "error",
+              content:
+                "error : " + errorItem
+                  ? t(errorItem.messageKey)
+                  : (userOrders as sdk.RESULT_INFO).message,
+            });
+          }
+        } else {
+          if (userOrders && Array.isArray(userOrders.orders)) {
+            setTotalNum(userOrders.totalNum);
+            const data = userOrders.list.map((item: any) => {
+              const { status, market, price, createdAt, tokenInfos } = item;
+              let { amountIn, amountOut, tokenIn, tokenOut, fee } = tokenInfos;
+
+              const [_, baseToken, quoteTokenSymbol] =
+                market.match(/(CEFI-)?(\w+)-(\w+)/i);
+              const fromToken = tokenMap[idIndex[tokenIn]];
+              const toToken = tokenMap[idIndex[tokenOut]];
+              const quoteToken = tokenMap[idIndex[quoteTokenSymbol]];
+              const fromSymbol = fromToken?.symbol;
+              const toSymbol = toToken?.symbol;
+              const fromAmount = getValuePrecisionThousand(
+                sdk.toBig(amountIn).div("1e" + fromToken.decimals),
+                fromToken.precision,
+                fromToken.precision,
+                undefined
+              );
+
+              const toAmount = getValuePrecisionThousand(
+                sdk.toBig(amountOut).div("1e" + toToken.decimals),
+                toToken.precision,
+                toToken.precision,
+                undefined
+              );
+              const feeAmount = getValuePrecisionThousand(
+                sdk.toBig(fee).div("1e" + toToken.decimals),
+                toToken.precision,
+                toToken.precision,
+                undefined
+              );
+              const feeSymbol = toSymbol;
+              const _price = {
+                key: quoteToken,
+                value: getValuePrecisionThousand(
+                  price,
+                  quoteToken.precision,
+                  quoteToken.precision,
+                  undefined
+                ),
+              };
+              let type;
+              switch (status) {
+                case "processed":
+                  type = CexSwapsType.Settled;
+                  break;
+                case "processing":
+                  type = CexSwapsType.Delivering;
+                  break;
+                case "failed":
+                  type = CexSwapsType.Failed;
+                  break;
+                case "cancelled":
+                  type = CexSwapsType.Cancelled;
+                  break;
+                case "unsettled":
+                default:
+                  type = CexSwapsType.Pending;
+                  break;
+              }
+              return {
+                type,
+                price: _price,
+                fromAmount,
+                fromSymbol,
+                toAmount,
+                toSymbol,
+                time: createdAt,
+                rawData: item,
+                feeSymbol,
+                feeAmount,
+              };
+            }, []);
+            setCexOrderData(data);
+          }
+        }
+        setShowLoading(false);
+      }
+    },
+    [accountId, apiKey, marketMap, setToastOpen, t, tokenMap]
+  );
+
+  return {
+    getCexOrderList,
+    cexOrderData,
+    onDetail: () => {},
+    totalNum,
+    showLoading,
   };
 };

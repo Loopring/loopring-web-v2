@@ -12,7 +12,7 @@ import {
   TradeTable,
   TransactionTable,
   useSettings,
-  CexSwapTable
+  CexSwapTable,
 } from "@loopring-web/component-lib";
 import {
   StylePaper,
@@ -24,6 +24,7 @@ import {
   useTokenMap,
 } from "@loopring-web/core";
 import {
+  useCexTransaction,
   useDefiSideRecord,
   useDualTransaction,
   useGetAmmRecord,
@@ -129,6 +130,13 @@ const HistoryPanel = withTranslation("common")(
     const { userOrderDetailList, getUserOrderDetailTradeList } =
       useGetOrderHistorys();
     const { etherscanBaseUrl } = useSystem();
+    const {
+      getCexOrderList,
+      cexOrderData,
+      onDetail,
+      totalNum: cexTotalNum,
+      showLoading: showCexLoading,
+    } = useCexTransaction(setToastOpen);
 
     const {
       account: { accAddress, accountId },
@@ -407,45 +415,16 @@ const HistoryPanel = withTranslation("common")(
                 marginTop={-2}
               >
                 <CexSwapTable
-                  rawData={[
-                    {
-                      type: 'Settled',
-                      fromAmount: '10',
-                      fromSymbol: 'ETH',
-                      toAmount: '11000.93',
-                      toSymbol: 'DAI',
-                      price: '1800.2',
-                      feeAmount: '10.1',
-                      feeSymbol: 'DAI',
-                      time: 1679913235883
-                    },
-                    {
-                      type: 'Delivering',
-                      fromAmount: '10',
-                      fromSymbol: 'ETH',
-                      toAmount: '11000.93',
-                      toSymbol: 'DAI',
-                      price: '1800.2',
-                      feeAmount: '10.1',
-                      feeSymbol: 'DAI',
-                      time: 1679913235883
-                    },
-                    {
-                      type: 'Settled',
-                      fromAmount: '10',
-                      fromSymbol: 'ETH',
-                      toAmount: '11000.93',
-                      toSymbol: 'DAI',
-                      price: '1800.2',
-                      feeAmount: '10.1',
-                      feeSymbol: 'DAI',
-                      time: 1679913235883
-                    },
-                  ]}
-                  showloading={false}
-                  onItemClick={(item) => {
-
+                  {...{
+                    showloading: showCexLoading,
+                    getCexOrderList,
+                    rawData: cexOrderData,
                   }}
+                  pagination={{
+                    pageSize: pageSize + 2,
+                    total: cexTotalNum,
+                  }}
+                  onItemClick={onDetail}
                 />
               </Box>
             )}
