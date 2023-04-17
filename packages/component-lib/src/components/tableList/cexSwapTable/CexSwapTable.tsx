@@ -2,7 +2,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
 import { Column, Table, TablePagination } from "../../basic-lib";
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
@@ -18,13 +18,20 @@ import moment from "moment/moment";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-const TableWrapperStyled = styled(Box)`
+const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
   height: 100%;
+
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+  &.rdg {
+    ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: auto 20% 20px auto !important;`
+        : `--template-columns: auto 20% 20px auto !important;`}
+  }
 `;
 const TableStyled = styled(Table)`
   &.rdg {
@@ -107,9 +114,11 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
                 display={"flex"}
                 justifyContent={"space-between"}
                 paddingRight={3}
+                alignItems={"center"}
+                height={"100%"}
               >
                 <Typography color={found ? found[1].toString() : ""}>
-                  {row?.type ?? EmptyValueTag}
+                  {row?.type ? t("labelCex" + row?.type) : EmptyValueTag}
                 </Typography>
                 <Typography>
                   {row ? (
@@ -138,20 +147,22 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
           name: t("labelCexSwapFee"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <Box>
-                {row.feeAmount} {row.feeSymbol}
-              </Box>
+              <>
+                {row.feeAmount != "0"
+                  ? row.feeAmount + " " + row.feeSymbol
+                  : EmptyValueTag}
+              </>
             );
           },
         },
         {
           key: "Time",
           sortable: true,
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
           name: t("labelCexSwapTime"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Box display="flex">{moment(new Date(row.time)).fromNow()}</Box>
-            );
+            return <>{moment(new Date(row.time)).fromNow()}</>;
           },
         },
       ],

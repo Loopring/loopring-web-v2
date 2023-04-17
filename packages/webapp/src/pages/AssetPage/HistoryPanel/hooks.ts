@@ -804,12 +804,7 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
   const {
     account: { accountId, apiKey },
   } = useAccount();
-  const {
-    tokenMap: { marketArray, tokenMap, marketMap },
-    idIndex,
-  } = useTokenMap();
-
-  const jointPairs = marketArray || []; //.concat([...ammPairList]); //
+  const { tokenMap, idIndex } = useTokenMap();
 
   const getCexOrderList = React.useCallback(
     async (props: Omit<GetOrdersRequest, "accountId">) => {
@@ -838,17 +833,24 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
             });
           }
         } else {
-          if (userOrders && Array.isArray(userOrders.orders)) {
+          if (userOrders && Array.isArray(userOrders.list)) {
             setTotalNum(userOrders.totalNum);
             const data = userOrders.list.map((item: any) => {
-              const { status, market, price, createdAt, tokenInfos } = item;
-              let { amountIn, amountOut, tokenIn, tokenOut, fee } = tokenInfos;
+              const {
+                status,
+                market,
+                price,
+                cefiExtraInfo: tokenInfos,
+                volumes: { fee },
+                validity: { start },
+              } = item;
+              let { amountIn, amountOut, tokenIn, tokenOut } = tokenInfos;
 
               const [_, baseToken, quoteTokenSymbol] =
                 market.match(/(CEFI-)?(\w+)-(\w+)/i);
               const fromToken = tokenMap[idIndex[tokenIn]];
               const toToken = tokenMap[idIndex[tokenOut]];
-              const quoteToken = tokenMap[idIndex[quoteTokenSymbol]];
+              const quoteToken = tokenMap[quoteTokenSymbol];
               const fromSymbol = fromToken?.symbol;
               const toSymbol = toToken?.symbol;
               const fromAmount = getValuePrecisionThousand(
@@ -865,14 +867,14 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
                 undefined
               );
               const feeAmount = getValuePrecisionThousand(
-                sdk.toBig(fee).div("1e" + toToken.decimals),
+                sdk.toBig(fee ?? 0).div("1e" + toToken.decimals),
                 toToken.precision,
                 toToken.precision,
                 undefined
               );
               const feeSymbol = toSymbol;
               const _price = {
-                key: quoteToken,
+                key: quoteTokenSymbol,
                 value: getValuePrecisionThousand(
                   price,
                   quoteToken.precision,
@@ -906,7 +908,7 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
                 fromSymbol,
                 toAmount,
                 toSymbol,
-                time: createdAt,
+                time: start,
                 rawData: item,
                 feeSymbol,
                 feeAmount,
@@ -918,7 +920,7 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
         setShowLoading(false);
       }
     },
-    [accountId, apiKey, marketMap, setToastOpen, t, tokenMap]
+    [accountId, apiKey, setToastOpen, t, tokenMap]
   );
 
   return {

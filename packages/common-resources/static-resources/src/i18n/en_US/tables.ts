@@ -307,4 +307,8 @@ export default {
   labelCexSwapPrice: "Price",
   labelCexSwapSettled: "Settled",
   labelCexSwapDelivering: "Delivering",
+  labelCexSettled: "Settled",
+  labelCexDelivering: "Delivering",
+  labelCexFailed: "Failed",
+  labelCexPending: "Pending",
 };
