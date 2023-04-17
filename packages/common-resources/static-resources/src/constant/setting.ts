@@ -91,4 +91,4 @@ export const MapChainId = {
 export enum ChainIdExtends {
   TAIKO_A2 = 167004,
 }
-export const REDPACKET_SHOW_NFTS = false; // Toogle to hide or show NFT Red Packet
+export const REDPACKET_SHOW_NFTS = true; // Toogle to hide or show NFT Red Packet
