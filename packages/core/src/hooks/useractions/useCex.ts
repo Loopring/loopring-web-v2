@@ -38,6 +38,9 @@ import {
   TradeBtnStatus,
   WalletMap,
   defalutSlipage,
+  CustomErrorWithCode,
+  SDK_ERROR_MAP_TO_UI,
+  UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import {
   AccountStep,
@@ -363,6 +366,26 @@ export const useCexSwap = <
           // new BN(ethUtil.toBuffer(request.taker)).toString(),
         };
         myLog("useCexSwap: submitOrder request", request);
+        const response: { hash: string } | any =
+          await LoopringAPI.defiAPI.sendCefiOrder({
+            request,
+            privateKey: account.eddsaKey.sk,
+            apiKey: account.apiKey,
+          });
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          throw new CustomErrorWithCode({
+            code: (response as sdk.RESULT_INFO).code,
+            message: (response as sdk.RESULT_INFO).message,
+            ...SDK_ERROR_MAP_TO_UI[
+              (response as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN
+            ],
+          });
+        } else {
+          clearData();
+        }
 
         walletLayer2Service.sendUserUpdate();
 

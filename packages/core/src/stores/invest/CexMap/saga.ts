@@ -73,7 +73,7 @@ const getCexMapApi = async () => {
     },
     __timer__,
   };
-};;
+};
 
 export function* getPostsSaga() {
   try {
