@@ -116,6 +116,9 @@ import {
   Withdraw_WaitForAuth,
   Staking_Redeem_Success,
   Staking_Redeem_Failed,
+  CexSwap_Settled,
+  CexSwap_Delivering,
+  CexSwap_Failed,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -2941,6 +2944,51 @@ export function useAccountModalForUI({
             }}
           />
         ),
+      },
+      [AccountStep.CexSwap_Delivering]: {
+        view: (
+          <CexSwap_Delivering
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.CexSwap_Settled]: {
+        view: (
+          <CexSwap_Settled
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.CexSwap_Failed]: {
+        view: (
+          <CexSwap_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
       },
     });
   }, [

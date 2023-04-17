@@ -155,6 +155,9 @@ export const SwitchPanelStyled: any = styled(Box)<
     }
   }
 
+  .cexPanel {
+  }
+
   .trade-panel {
     .react-swipeable-view-container {
       & > div {

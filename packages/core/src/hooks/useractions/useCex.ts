@@ -28,17 +28,14 @@ import {
   AccountStatus,
   CexTradeCalcData,
   CoinMap,
-  CustomErrorWithCode,
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
   MarketType,
   myLog,
   SagaStatus,
-  SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
-  UIERROR_CODE,
   WalletMap,
   defalutSlipage,
 } from "@loopring-web/common-resources";
@@ -366,26 +363,7 @@ export const useCexSwap = <
           // new BN(ethUtil.toBuffer(request.taker)).toString(),
         };
         myLog("useCexSwap: submitOrder request", request);
-        const response: { hash: string } | any =
-          await LoopringAPI.defiAPI.sendCefiOrder({
-            request,
-            privateKey: account.eddsaKey.sk,
-            apiKey: account.apiKey,
-          });
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          throw new CustomErrorWithCode({
-            code: (response as sdk.RESULT_INFO).code,
-            message: (response as sdk.RESULT_INFO).message,
-            ...SDK_ERROR_MAP_TO_UI[
-              (response as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN
-            ],
-          });
-        } else {
-          clearData();
-        }
+
         walletLayer2Service.sendUserUpdate();
 
         const info = {
@@ -447,7 +425,7 @@ export const useCexSwap = <
         } else {
           setShowAccount({
             isShow: true,
-            step: AccountStep.CexSwap_Settled,
+            step: AccountStep.CexSwap_Delivering,
             info,
           });
         }
@@ -768,11 +746,10 @@ export const useCexSwap = <
         let totalFee = undefined;
         let stob: string | undefined = undefined;
         let btos: string | undefined = undefined;
-        let minimumReceived = undefined;
+        let minimumReceived;
         let sellMinAmtInfo = undefined;
         let sellMaxAmtInfo = undefined;
         let sellMaxL2AmtInfo = undefined;
-        // let tradeCost = undefined;
         let totalFeeRaw = undefined;
         const info: sdk.CEX_MARKET = marketMap[market];
         let maxFeeBips = info.feeBips ?? MAPFEEBIPS;
@@ -827,30 +804,6 @@ export const useCexSwap = <
             sellMaxAmtInfo = calcPoolToSell?.amountS;
           }
 
-          // const poolL2ToVol =
-          //   sdk
-          //     .toBig(
-          //       sellBuyStr == market ? l2Amount.quote ?? 0 : l2Amount.base ?? 0
-          //     )
-          //     .div("1e" + buyToken.decimals)
-          //     .toString() ?? "0";
-          // const calcPoolL2ToSell = sdk.calcDex({
-          //   info,
-          //   input: poolL2ToVol,
-          //   sell: sellToken.symbol,
-          //   buy: buyToken.symbol,
-          //   isAtoB: false,
-          //   marketArr: marketArray,
-          //   tokenMap,
-          //   marketMap,
-          //   depth,
-          //   feeBips: maxFeeBips.toString(),
-          // });
-
-          // sellMaxL2AmtInfo = sdk
-          //   .toBig(calcPoolL2ToSell?.amountS ?? 0)
-          //   .toString();
-
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,
             sellBuyStr == market ? minAmount.base : minAmount.quote
@@ -875,12 +828,6 @@ export const useCexSwap = <
                 undefined
               )
             : 0;
-          // maxFeeBips = Math.ceil(
-          //   totalFeeRaw
-          //     .times(10000)
-          //     .div(calcTradeParams.amountBOutSlip?.minReceived)
-          //     .toNumber()
-          // );
           minimumReceived = sdk
             .toBig(calcDexOutput?.amountBSlipped?.minReceived ?? 0)
             .gt(0)

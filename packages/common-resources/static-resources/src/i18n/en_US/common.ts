@@ -1304,13 +1304,16 @@ export default {
     "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
   labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
   labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
-  labelBlindBoxClaimStarted: "The NFTs Claimed will be ended after: {{time}}",
+  labelBlindBoxClaimStarted:
+    "Unclaimed NFT will be returned back to sender after: {{time}}",
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
+  labelBlindBoxStartTime: "Start Time",
   labelBlindBoxEndDate: "End date",
+  labelBlindBoxEndDate2: "Blindbox reveal time",
   labelBlindBoxEndTime: "End Time",
-  labelBlindBoxRedPacketWithGift: "有礼物的红包个数",
+  labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
   labelBlindBoxExpirationExplainationForToken:
     "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
   labelBlindBoxExpirationExplainationForNFT:
@@ -1319,15 +1322,22 @@ export default {
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelBlindBoxClaimWarning:
-    "Note：For NFT red packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
+    "Note：For NFT Red Packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
   labelBlindBoxRecievedRedPackets: "Received NFT Red Packets",
+  labelBlindBoxCongratulations: "Congratulations",
+  labelBlindBoxSorry: "Sorry",
+  labelBlindBoxNoRewards: "You have not received a reward",
+  labelBlindBoxCongratulationsBlindBox:
+    "Congratulations on receiving a Blind Box",
+  labelBlindBoxSorryBlindBox: "Sorry, you did not win a prize",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
     "If the recipient of the Red Packet also re-shares the packet, they receive half of whatever the next person receives.",
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyRandomTokenDes: "Each recipient will get a random amount of.",
   labelLuckyCommonToken: "Normal Red Packet",
-  labelLuckyCommonTokenDes: "Each recipient will receive a pre-set split of.",
+  labelLuckyCommonTokenDes:
+    "Each recipient will receive a pre-set split of the total Red Packet shared.",
   labelL1toL2NFTAmount: "NFT Amount",
   labelInputRedPacketBtnLabel: "Select Token",
   labelCreateRedPacket: "Send Red Packet",
@@ -1341,7 +1351,7 @@ export default {
   labelLuckyTokenViewTypeDes0:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelSplit: "Red Packet Count",
-  labelRedPacketMemo: "Best Wishes",
+  labelRedPacketMemo: "Memo",
   labelRedPacketStart: "Available in",
   labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
@@ -1373,7 +1383,7 @@ export default {
   labelAmountEach: "Amount Each",
   labelRedPacketTotalAmount: "Total Amount",
   labelQuantity: "Quantity",
-  labelAssetAmount: "Asset Amounts: {{value}}",
+  labelAssetAmount: "Total Asset Amounts: {{value}}",
   labelCreateRedPacketBtn: "Prepare Red Packet",
   labelRedPacketsExpireDes:
     "Unclaimed tokens remaining after the expiration will be returned within 24h",
@@ -1383,27 +1393,32 @@ export default {
   labelRedPacketsMinRange: "Min {{value}}",
   labelRedPacketsMaxRange: "Max {{value}}",
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
-  labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
+  labelRedPacketsMax: "Maximum of {{value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
     "Number of gifts is larger than number of packets",
+  labelBlindBoxNumberOverMaximun: "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
-    "Each recipient will get a random amount of the total Red Packet shared.",
+    "Token amount for each Red Packet is randomized.",
   labelSendRedPacketTitle: "Send Red Packet",
   labelSendRedPacketTitlePublic: "Send Red Packet -- Public",
   labelSendRedPacketTitlePrivate: "Send Red Packet -- Private",
   labelRedPacketWaitingBlock: "Block is not ready",
   labelShare: "Share",
   labelRelayRedPacket: "Relay Red Packet",
+  labelNormalRedPacket: "Normal Red Packet",
+  labelluckyRedPacket: "Lucky Red Packet",
+  labelrelayRedPacket: "Relay Red Packet",
+  labelnormalRedPacket: "Normal Red Packet",
   labelLuckyRedPacket: "Lucky Red Packet",
   labelLuckyRedPacketStart: "Starts in: {{value}}",
-  labelLuckyRedPacketTimeout: "Red packet has been \n taken out",
-  labelLuckyRedPacketDetail: "View red packet details",
+  labelLuckyRedPacketTimeout: "Red Packet has been \n taken out",
+  labelLuckyRedPacketDetail: "View Red Packet details >",
   labelRedPacketOpenInProgress: "Processing...",
   labelRedPacketOpenFailed: "Read red packet failed!",
   labelRedPacketShowQR: "Share red packet",
-  labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
+  labelRedPacketReceivedRecord: "Opened {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:
@@ -1421,13 +1436,17 @@ export default {
   labelRedPacketStatusCOMPLETED: "Completed", // COMPLETED = 3,
   labelRedPacketStatusOVER_DUE: "Over Due", // OVER_DUE = 4,
   labelRedPacketStatusFAILED: "Failed", // FAILED = 5
-  labelRedPacketNo: "NO.{{value}}", // FAILED = 5
+  labelRedPacketStatusNotStarted: "Hasn’t started",
+  labelRedPacketStatusStarted: "Opened",
+  labelRedPacketStatusEnded: "Ended",
+  labelRedPacketNo: "NO.{{value}}",
   labelRedPacketClaimInProgress: "Processing...",
   labelRedPacketClaimFailed: "Open red packet failed!",
   labelRedPacketClaimSuccess: "",
   labelReceived: "Received",
   labelGoodLuck: "Good Luck",
   labelRedPacketGrab: "Share with Friends",
+  labelRedPacketEnded: "Ended",
   labelLuckDraw: "Luckiest Draw",
   labelMyLuckReward: "(My reward)",
   labelRedPacketClaimTitle: "Claim to Loopring L2",
@@ -1435,7 +1454,8 @@ export default {
   labelShareQRCode: "Generate QR Code for share",
   labelSeal: "Seal",
   labelOpenAfter: "Open after {{time}}",
-  labelTotalRedPacket: "Total {{value}}",
+  labelOpenStart: "Start",
+  labelTotalRedPacket: "Quantity in total: {{value}}",
   labelMyRedPacketReward: "My Rewards",
   labelRedpacketScanDes: "Using Loopring Wallet, scan the QR code.",
   labelLuckyRedPacketStarted: "Red Packet is Started",
@@ -1447,8 +1467,8 @@ export default {
     "<1>{{number}}</1> friends relayed this red packet, you extend reward: <3>{{amount}}</3>.",
   labelRedPacketFrom: "From",
   labelRedPacketTo: "To Loopring L2",
-  labelRedPacketMy: "My red packet",
-  labelRedpacketNotActive: "Hide the redpacket received",
+  labelRedPacketMy: "My Red packet",
+  labelRedpacketNotActive: "Hide received Red Packets",
   labelRedpacketTokens: "ERC20 Tokens",
   labelRedpacketTokensShort: "Tokens",
   labelRedpacketNFTS: "NFTs",
@@ -1499,14 +1519,14 @@ export default {
   labelLRCStakeDuration: "Lock duration to claim reward<1></1>",
   labelInvestLRCTitle: "LRC Staking",
   labelLRCStakeRiskDes:
-    "              The staked LRC will be locked in Loopring L2, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.",
+    "The staked LRC will be locked in Loopring L2, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.",
   labelAgreeRedeem: "Redeem",
   labelStackingAgreeRedeemTitle: "Redeem In Advance",
   labelStackingAgreeRedeem:
     "Redeeming staked assets before the minimum Locked Duration will forfeit the accumulated rewards. Are you sure you still want to redeem?",
   labelLRCStakeProduct: "Product",
   labelLRCStakeRedeemDes:
-    "This product has met the minimum Locked Duration. You can now redeem any portion of the subscription amount without deducting from your earnings. The remaining subscription amount will continue to generate income.",
+    "This product has meet the minimum Locked Duration. You can now redeem any portion of the subscription amount without deducting from your earnings. The remaining subscription amount will continue to generate income.",
   labelLRCStakeRedeemAgree:
     "I acknowledge the early redemption will forfeit the accumulated reward",
   labelLRCStakeCurrentEarn: "Current Total Earnings",
@@ -1535,8 +1555,15 @@ export default {
   labelStakingClaimableEarnings: "Claimable Earnings",
   labelClaimBtn: "Claim",
   labelStakeNoEnough: "Insufficient {{arg}} balance",
+  labelClaimBtnClaimed: "Claimed",
+  labelClaimBtnExpired: "Expired",
   labelDefiRemindMin: "Please redeem all Balance",
   labelInvestType_LRCSTAKE: "LRC Staking",
+  labelNFTs_one: "\u2A09{{count}} NFT",
+  labelNFTs_other: "\u2A09{{count}} NFTs",
+  labelTokenNFTMaxRedPack: "Max: ",
+  labelNFTRedPackAskClaim:
+    "Please claim your NFT gifts immediately as they will be returned back to Sender 3 days after the expiration date.",
   labelTransferDelayConfirm:
     "Your claim request has been received. Loopring will transfer the token into your L2 account soon. Please verify it.",
   labelClaimredPacket: "My Red Packet",
@@ -1549,7 +1576,6 @@ export default {
   labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
   labelStakingRedeemRemaining: "Remaining Amount",
   labelStakingRedeemDate: "Redeem Time",
-
   labelCexSwapTitle: "CEX Swap",
   labelCexSwapType: "Type",
   labelCexSwapFee: "Fee",
@@ -1575,4 +1601,5 @@ export default {
   labelCexSwapBtn: "CEX Swap",
   labelType: "Type",
   labelCexTrade: "CEX Swap",
+  labelCexTitle: "CEX Swap",
 };

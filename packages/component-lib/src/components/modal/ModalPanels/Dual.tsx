@@ -1,11 +1,13 @@
-import { DualBase, IconType, PanelProps } from "./BasicPanel";
-import { Box, Typography } from "@mui/material";
+import { CexBase, DualBase, IconType, PanelProps } from "./BasicPanel";
+import { Box, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 import {
+  ConvertToIcon,
   EmptyValueTag,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import moment from "moment";
+import { CoinIcon } from "../../basic-lib";
 
 // value symbol
 export const Dual_Success = (props: PanelProps) => {
@@ -303,4 +305,215 @@ export const Staking_Redeem_Failed = (props: PanelProps) => {
     }),
   };
   return <DualBase showTitle={true} {...propsPatch} {...props} />;
+};
+
+export const CexDetail = (props: any) => {
+  const { isMobile } = useSettings();
+  const { t, info } = props;
+  return (
+    <Box
+      justifySelf={"stretch"}
+      display={"flex"}
+      flexDirection={"column"}
+      minWidth={340}
+      justifyContent={"center"}
+      marginTop={1}
+      paddingX={isMobile ? 1 : 5 / 2}
+    >
+      <Typography color={"var(--color-text-secondary)"} marginTop={2}>
+        {t("labelCexSwapPanelDes")}
+      </Typography>
+      <Box
+        flexDirection={"row"}
+        alignItems={"center"}
+        justifyContent={"space-evenly"}
+        display={"flex"}
+        flex={1}
+        marginTop={2}
+      >
+        <Typography
+          flexDirection={"column"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          display={"flex"}
+        >
+          <ListItemIcon style={{ minWidth: "40px" }}>
+            <CoinIcon symbol={info?.sellToken.symbol} size={32} />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography variant={"h5"}>{info?.sellStr}</Typography>
+          </ListItemText>
+        </Typography>
+        <Box>
+          <ConvertToIcon
+            fontSize={"large"}
+            htmlColor={"var(--color-text-primary)"}
+          />
+        </Box>
+        <Typography
+          flexDirection={"column"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          display={"flex"}
+        >
+          <ListItemIcon style={{ minWidth: "40px" }}>
+            <CoinIcon symbol={info?.buyToken.symbol} size={32} />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography variant={"h5"}>{info?.buyStr}</Typography>
+          </ListItemText>
+        </Typography>
+      </Box>
+
+      <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+          component={"span"}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelType")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {props.t("labelCexTrade")}
+          </Typography>
+        </Typography>
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+          component={"span"}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelPrice")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.convertStr}
+          </Typography>
+        </Typography>
+
+        <Typography
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+          component={"span"}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelSell")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.sellStr}
+          </Typography>
+        </Typography>
+        <Typography
+          component={"span"}
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelBuy")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.buyStr}
+          </Typography>
+        </Typography>
+        <Typography
+          component={"span"}
+          display={"inline-flex"}
+          justifyContent={"space-between"}
+          marginTop={2}
+        >
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-secondary)"}
+          >
+            {props.t("labelFee")}
+          </Typography>
+          <Typography
+            variant={"body1"}
+            component={"span"}
+            color={"var(--color-text-primary)"}
+          >
+            {info?.feeStr}
+          </Typography>
+        </Typography>
+      </Box>
+    </Box>
+  );
+};
+export const CexSwap_Delivering = (props: PanelProps) => {
+  const { t } = props;
+  const propsPatch = {
+    iconType: IconType.SubmitIcon,
+    describe1: (
+      <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+        {t("labelCexSwapSettled")}
+      </Typography>
+    ),
+    describe2: <CexDetail {...props} />,
+  };
+  return <CexBase {...propsPatch} {...props} />;
+};
+
+export const CexSwap_Settled = (props: PanelProps) => {
+  const { t } = props;
+  const propsPatch = {
+    iconType: IconType.SubmitIcon,
+    describe1: (
+      <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+        {t("labelCexSwapSettled")}
+      </Typography>
+    ),
+    describe2: <CexDetail {...props} />,
+  };
+  return <CexBase {...propsPatch} {...props} />;
+};
+
+export const CexSwap_Failed = (props: PanelProps) => {
+  const { t } = props;
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: (
+      <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+        {t("labelCexSwapFailed")}
+      </Typography>
+    ),
+    describe2: <CexDetail {...props} />,
+  };
+  return <CexBase {...propsPatch} {...props} />;
 };
