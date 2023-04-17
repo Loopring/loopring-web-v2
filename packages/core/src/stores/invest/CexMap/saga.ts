@@ -3,17 +3,40 @@ import { getCexMap, getCexMapStatus, updateCexSyncMap } from "./reducer";
 import { CexMap, store } from "../../index";
 import { LoopringAPI } from "../../../api_wrapper";
 import { PayloadAction } from "@reduxjs/toolkit";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const getCexMapApi = async () => {
   if (!LoopringAPI.defiAPI) {
     return undefined;
   }
+  // const { idIndex } = store.getState().tokenMap;
+  const {
+    // markets: marketMap,
+    // pairs,
+    // marketArr: marketArray,
+    // tokenArr: marketCoins,
+    raw_data,
+  } = await LoopringAPI.defiAPI?.getCefiMarkets();
+  const reformat: any = (raw_data as sdk.CEX_MARKET[]).reduce((prev, ele) => {
+    if (/-/gi.test(ele.market)) {
+      return [
+        ...prev,
+        {
+          ...ele,
+          cexMarket: ele.market,
+          market: ele.market.replace("CEFI-", ""),
+        } as sdk.CEX_MARKET,
+      ];
+    } else {
+      return prev;
+    }
+  }, [] as sdk.CEX_MARKET[]);
   const {
     markets: marketMap,
     pairs,
     marketArr: marketArray,
     tokenArr: marketCoins,
-  } = await LoopringAPI.defiAPI?.getCefiMarkets();
+  } = sdk.makeMarkets({ markets: reformat });
   const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
     const tradePairs = pairs[key as string]?.tokenList?.sort();
     prev[key] = {
@@ -50,7 +73,7 @@ const getCexMapApi = async () => {
     },
     __timer__,
   };
-};
+};;
 
 export function* getPostsSaga() {
   try {

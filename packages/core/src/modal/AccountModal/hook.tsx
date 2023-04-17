@@ -2958,6 +2958,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
+        height: "auto",
       },
       [AccountStep.CexSwap_Settled]: {
         view: (
@@ -2972,6 +2973,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
+        height: "auto",
       },
       [AccountStep.CexSwap_Failed]: {
         view: (
@@ -2986,6 +2988,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
+        height: "auto",
       },
     });
   }, [

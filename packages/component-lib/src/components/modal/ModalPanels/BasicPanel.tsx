@@ -61,6 +61,7 @@ export interface PanelProps {
   error?: RESULT_INFO;
   errorOptions?: any;
   updateDepositHash?: any;
+  className?: string;
 }
 
 export const BasicPanel = withTranslation("common", { withRef: true })(
@@ -75,6 +76,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     providerName,
     error,
     errorOptions,
+    className,
     link,
   }: PanelProps) => {
     const isLoading = iconType === IconType.LoadingIcon;
@@ -189,6 +191,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
         flexDirection={"column"}
         paddingBottom={4}
         width={"100%"}
+        className={className}
       >
         <Typography
           component={"h3"}
@@ -534,4 +537,12 @@ export const RedPacketOpenBase = (props: PanelProps) => {
     title: "labelRedPacketOpen",
   };
   return <BasicPanel {...propsPatch} {...props} />;
+};
+
+export const CexBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelCexTitle",
+  };
+
+  return <BasicPanel className={"cexPanel"} {...props} {...propsPatch} />;
 };

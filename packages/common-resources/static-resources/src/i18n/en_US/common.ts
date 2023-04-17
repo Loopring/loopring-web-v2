@@ -1304,7 +1304,8 @@ export default {
     "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
   labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
   labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
-  labelBlindBoxClaimStarted: "Unclaimed NFT will be returned back to sender after: {{time}}",
+  labelBlindBoxClaimStarted:
+    "Unclaimed NFT will be returned back to sender after: {{time}}",
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
@@ -1313,8 +1314,10 @@ export default {
   labelBlindBoxEndDate2: "Blindbox reveal time",
   labelBlindBoxEndTime: "End Time",
   labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
-  labelBlindBoxExpirationExplainationForToken: "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
-  labelBlindBoxExpirationExplainationForNFT: "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
+  labelBlindBoxExpirationExplainationForToken:
+    "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
+  labelBlindBoxExpirationExplainationForNFT:
+    "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
@@ -1324,7 +1327,8 @@ export default {
   labelBlindBoxCongratulations: "Congratulations",
   labelBlindBoxSorry: "Sorry",
   labelBlindBoxNoRewards: "You have not received a reward",
-  labelBlindBoxCongratulationsBlindBox: "Congratulations on receiving a Blind Box",
+  labelBlindBoxCongratulationsBlindBox:
+    "Congratulations on receiving a Blind Box",
   labelBlindBoxSorryBlindBox: "Sorry, you did not win a prize",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
@@ -1392,8 +1396,7 @@ export default {
   labelRedPacketsMax: "Maximum of {{value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
     "Number of gifts is larger than number of packets",
-  labelBlindBoxNumberOverMaximun:
-    "Number of Blind Box exceeds maximum",
+  labelBlindBoxNumberOverMaximun: "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
@@ -1598,4 +1601,5 @@ export default {
   labelCexSwapBtn: "CEX Swap",
   labelType: "Type",
   labelCexTrade: "CEX Swap",
+  labelCexTitle: "CEX Swap",
 };

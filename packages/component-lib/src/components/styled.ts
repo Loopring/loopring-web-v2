@@ -149,9 +149,13 @@ export const SwitchPanelStyled: any = styled(Box)<
     .react-swipeable-view-container > div {
       background: var(--opacity);
     }
+
     .container {
       padding-bottom: 0;
     }
+  }
+
+  .cexPanel {
   }
 
   .trade-panel {
@@ -415,7 +419,8 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     height: auto;
     text-indent: 0em;
     text-align: left;
-    padding: ${({ theme }) => theme.unit * 2}px ${({ theme }) => theme.unit * 4}px;
+    padding: ${({ theme }) => theme.unit * 2}px
+      ${({ theme }) => theme.unit * 4}px;
 
     .mainTitlte {
     }
