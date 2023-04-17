@@ -14,9 +14,9 @@ export type RawDataCexSwapsItem = {
 };
 
 export enum CexSwapsType {
-  Settled,
-  Delivering,
-  Failed,
-  Pending,
-  Cancelled,
+  Settled = "Settled",
+  Delivering = "Delivering",
+  Failed = "Failed",
+  Pending = "Pending",
+  Cancelled = "Cancelled",
 }
