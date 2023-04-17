@@ -406,7 +406,6 @@ export function useRedPacketModal() {
             : getShortAddr(_info.sender?.address),
           validSince: _info.validSince,
           showRedPacket: () => {
-            alert("skkkk");
             setShowRedPacket({
               isShow: true,
               step: RedPacketViewStep.OpenPanel,

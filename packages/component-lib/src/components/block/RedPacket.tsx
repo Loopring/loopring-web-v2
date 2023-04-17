@@ -907,7 +907,6 @@ export const RedPacketTimeout = ({
               color={"inherit"}
               variant={"body1"}
               onClick={(e) => {
-                debugger
                 e.stopPropagation();
                 viewDetail();
               }}
