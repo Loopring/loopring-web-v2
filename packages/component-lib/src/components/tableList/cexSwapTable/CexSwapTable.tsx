@@ -1,15 +1,22 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
-import { Column, Table } from "../../basic-lib";
-import { Box } from "@mui/material";
+import { Column, Table, TablePagination } from "../../basic-lib";
+import { Box, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
-import { RawDataCexSwapsItem } from "./Interface";
-import { EmptyValueTag, RowInvestConfig } from "@loopring-web/common-resources";
+import { CexSwapsType, RawDataCexSwapsItem } from "./Interface";
+import {
+  EmptyValueTag,
+  globalSetup,
+  RowInvestConfig,
+  TableType,
+} from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import moment from "moment/moment";
+import _ from "lodash";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -54,13 +61,29 @@ export interface CexSwapsTableProps<R> {
   rawData: R[];
   showloading: boolean;
   onItemClick: (item: R) => void;
+  pagination: {
+    pageSize: number;
+    total: number;
+  };
+  getCexOrderList: (
+    props: Omit<sdk.GetOrdersRequest, "accountId">
+  ) => Promise<any>;
 }
 
 export const CexSwapTable = withTranslation(["tables", "common"])(
   <R extends RawDataCexSwapsItem>(
     props: CexSwapsTableProps<R> & WithTranslation
   ) => {
-    const { rawData, showloading, onItemClick, t } = props;
+    const {
+      rawData,
+      showloading,
+      onItemClick,
+      pagination,
+      getCexOrderList,
+      t,
+    } = props;
+    const [page, setPage] = React.useState(1);
+
     const { isMobile, upColor } = useSettings();
     const history = useHistory();
     const getColumnModeTransaction = React.useCallback(
@@ -71,10 +94,12 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelCexSwapType"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R>) => {
             const colorMap = [
-              ["Settled", "var(--color-success)"],
-              ["Delivering", "var(--color-warning)"],
+              [CexSwapsType.Settled, "var(--color-success)"],
+              [CexSwapsType.Delivering, "var(--color-warning)"],
+              [CexSwapsType.Failed, "var(--color-error)"],
+              [CexSwapsType.Pending, "var(--color-warning)"],
             ];
             const found = colorMap.find((x) => x[0] === row?.type);
             return (
@@ -83,18 +108,18 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
                 justifyContent={"space-between"}
                 paddingRight={3}
               >
-                <Box color={found ? found[1] : ""}>
+                <Typography color={found ? found[1].toString() : ""}>
                   {row?.type ?? EmptyValueTag}
-                </Box>
-                <Box>
+                </Typography>
+                <Typography>
                   {row ? (
                     <>
-                      {`${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`}{" "}
+                      {`${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`}
                     </>
                   ) : (
                     EmptyValueTag
                   )}
-                </Box>
+                </Typography>
               </Box>
             );
           },
@@ -104,7 +129,7 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
           sortable: true,
           name: t("labelCexSwapPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <> {row.price}</>;
+            return <> {row.price?.value + " " + row.price?.key} </>;
           },
         },
         {
@@ -132,6 +157,19 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
       ],
       [history, upColor, t]
     );
+    const updateData = _.debounce(async ({ currPage = page }) => {
+      await getCexOrderList({
+        limit: pagination?.pageSize ?? 10,
+        offset: (currPage - 1) * (pagination?.pageSize ?? 10),
+      });
+    }, globalSetup.wait);
+    const handlePageChange = React.useCallback(
+      async (page: number) => {
+        setPage(page);
+        await updateData({ actionType: TableType.page, currPage: page });
+      },
+      [updateData]
+    );
 
     const getColumnMobileTransaction = getColumnModeTransaction;
 
@@ -143,6 +181,13 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
+    React.useEffect(() => {
+      updateData.cancel();
+      handlePageChange(1);
+      return () => {
+        updateData.cancel();
+      };
+    }, [pagination?.pageSize]);
 
     return (
       <TableWrapperStyled>
@@ -165,6 +210,14 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
             showloading,
           }}
         />
+        {pagination && !!rawData.length && (
+          <TablePagination
+            page={page}
+            pageSize={pagination.pageSize}
+            total={pagination.total}
+            onPageChange={handlePageChange}
+          />
+        )}
       </TableWrapperStyled>
     );
   }

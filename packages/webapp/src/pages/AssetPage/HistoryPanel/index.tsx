@@ -12,6 +12,7 @@ import {
   TradeTable,
   TransactionTable,
   useSettings,
+  CexSwapTable,
 } from "@loopring-web/component-lib";
 import {
   StylePaper,
@@ -23,6 +24,7 @@ import {
   useTokenMap,
 } from "@loopring-web/core";
 import {
+  useCexTransaction,
   useDefiSideRecord,
   useDualTransaction,
   useGetAmmRecord,
@@ -48,6 +50,7 @@ enum TabIndex {
   defiRecords = "defiRecords",
   dualRecords = "dualRecords",
   sideStakingRecords = "sideStakingRecords",
+  cexSwapRecords = "sideStakingCexSwap",
 }
 
 enum TabOrderIndex {
@@ -127,6 +130,13 @@ const HistoryPanel = withTranslation("common")(
     const { userOrderDetailList, getUserOrderDetailTradeList } =
       useGetOrderHistorys();
     const { etherscanBaseUrl } = useSystem();
+    const {
+      getCexOrderList,
+      cexOrderData,
+      onDetail,
+      totalNum: cexTotalNum,
+      showLoading: showCexLoading,
+    } = useCexTransaction(setToastOpen);
 
     const {
       account: { accAddress, accountId },
@@ -224,6 +234,10 @@ const HistoryPanel = withTranslation("common")(
               <Tab
                 label={t("labelSideStakingTable")}
                 value={TabIndex.sideStakingRecords}
+              />
+              <Tab
+                label={t("labelCexSwapTitle")}
+                value={TabIndex.cexSwapRecords}
               />
             </Tabs>
           </Box>
@@ -336,7 +350,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : (
+            ) : currentTab === TabIndex.sideStakingRecords ? (
               <Box
                 flex={1}
                 display={"flex"}
@@ -391,6 +405,26 @@ const HistoryPanel = withTranslation("common")(
                       currentOrderTab === TabOrderIndex.orderOpenTable,
                     cancelOrder,
                   }}
+                />
+              </Box>
+            ) : (
+              <Box
+                flex={1}
+                display={"flex"}
+                flexDirection={"column"}
+                marginTop={-2}
+              >
+                <CexSwapTable
+                  {...{
+                    showloading: showCexLoading,
+                    getCexOrderList,
+                    rawData: cexOrderData,
+                  }}
+                  pagination={{
+                    pageSize: pageSize + 2,
+                    total: cexTotalNum,
+                  }}
+                  onItemClick={onDetail}
                 />
               </Box>
             )}
