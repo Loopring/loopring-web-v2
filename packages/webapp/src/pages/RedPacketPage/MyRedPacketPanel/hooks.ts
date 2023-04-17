@@ -161,7 +161,7 @@ export const useMyRedPacketRecordTransaction = <
       hash: item.hash,
     }, apiKey)
     if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-      if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING && !resposne?.detail.claimStatus) {
+      if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING && (resposne?.raw_data as any).blindBoxStatus === "") {
         setShowRedPacket({
           isShow: true,
           info: {
@@ -170,7 +170,6 @@ export const useMyRedPacketRecordTransaction = <
           },
           step: RedPacketViewStep.OpenPanel,
         });
-
       } else {
         setShowRedPacket({
           isShow: true,
@@ -180,9 +179,7 @@ export const useMyRedPacketRecordTransaction = <
           },
           step: RedPacketViewStep.BlindBoxDetail,
         });
-
       }
-      
     } else {
       if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING && !resposne?.detail.claimStatus) {
         setShowRedPacket({
