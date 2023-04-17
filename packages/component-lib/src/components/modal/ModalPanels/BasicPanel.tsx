@@ -19,6 +19,7 @@ import { ConnectProviders } from "@loopring-web/web3-provider";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
 import { sanitize } from "dompurify";
+import styled from "@emotion/styled";
 
 export enum IconType {
   LoadingIcon,
@@ -63,6 +64,14 @@ export interface PanelProps {
   updateDepositHash?: any;
   className?: string;
 }
+
+const BoxStyle = styled(Box)`
+  &.cex-panel {
+    .status-icon {
+      margin-top: ${({ theme }) => theme.unit * 2}px;
+    }
+  }
+`;
 
 export const BasicPanel = withTranslation("common", { withRef: true })(
   ({
@@ -184,7 +193,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     const { isMobile } = useSettings();
 
     return (
-      <Box
+      <BoxStyle
         flex={1}
         display={"flex"}
         alignItems={"center"}
@@ -219,6 +228,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               display={"flex"}
               alignItems={"flex-start"}
               flexDirection={"column"}
+              className={"status-icon"}
             >
               {iconDiv}
             </Typography>
@@ -420,7 +430,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             )}
           </Box>
         )}
-      </Box>
+      </BoxStyle>
     );
   }
 );
@@ -544,5 +554,5 @@ export const CexBase = (props: PanelProps) => {
     title: "labelCexTitle",
   };
 
-  return <BasicPanel className={"cexPanel"} {...props} {...propsPatch} />;
+  return <BasicPanel className={"cex-panel"} {...props} {...propsPatch} />;
 };
