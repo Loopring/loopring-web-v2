@@ -318,7 +318,7 @@ export const CexDetail = (props: any) => {
       minWidth={340}
       justifyContent={"center"}
       marginTop={1}
-      paddingX={isMobile ? 1 : 5 / 2}
+      paddingX={isMobile ? 1 : 5}
     >
       <Typography color={"var(--color-text-secondary)"} marginTop={2}>
         {t("labelCexSwapPanelDes")}

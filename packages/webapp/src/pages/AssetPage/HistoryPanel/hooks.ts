@@ -456,7 +456,6 @@ export function useDefiSideRecord(setToastOpen: (props: any) => void) {
           // }
         }
       }
-
       setShowLoading(false);
     },
     [accountId, apiKey, setToastOpen, t]
