@@ -178,6 +178,11 @@ export enum AccountStep {
   Staking_Failed,
   Staking_Redeem_Success,
   Staking_Redeem_Failed,
+
+  CexSwap_Pending,
+  CexSwap_Delivering,
+  CexSwap_Settled,
+  CexSwap_Failed,
 }
 
 /**

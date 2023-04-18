@@ -34,13 +34,14 @@ import {
   MarketType,
   myLog,
   SagaStatus,
-  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
   WalletMap,
   defalutSlipage,
   CustomErrorWithCode,
   SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
+  SUBMIT_PANEL_AUTO_CLOSE,
+  SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import {
   AccountStep,
@@ -164,7 +165,7 @@ export const useCexSwap = <
         _tradeCalcData = {
           ...(state ?? {}),
           maxFeeBips: undefined,
-          lockedNotification: false,
+          lockedNotification: true,
           isLockedNotificationChecked: false,
           volumeSell: undefined,
           volumeBuy: undefined,
@@ -313,15 +314,19 @@ export const useCexSwap = <
   const sendRequest = React.useCallback(async () => {
     setIsCexLoading(true);
     const {
-      tradeCex: { tradeCalcData },
+      tradeCex: { tradeCalcData, sellToken: _sellToken, buyToken: _buyToken },
     } = store.getState()._router_tradeCex;
+    myLog(
+      "exchangeInfo",
+      exchangeInfo,
+      LoopringAPI.userAPI,
+      LoopringAPI.defiAPI
+    );
     try {
       if (
-        account.readyState !== AccountStatus.ACTIVATED &&
-        tradeCalcData.coinSell &&
-        tradeCalcData.coinBuy &&
-        // tradeData?.sell.belong &&
-        // tradeData?.buy.belong &&
+        account.readyState == AccountStatus.ACTIVATED &&
+        _sellToken &&
+        _buyToken &&
         tokenMap &&
         exchangeInfo &&
         tradeCalcData &&
@@ -333,8 +338,8 @@ export const useCexSwap = <
       ) {
         // const sell = tradeData?.sell.belong as string;
         // const buy = tradeData?.buy.belong as string;
-        const sellToken = tokenMap[tradeCalcData.coinSell.toString()];
-        const buyToken = tokenMap[tradeCalcData.coinBuy.toString()];
+        const sellToken = tokenMap[_sellToken];
+        const buyToken = tokenMap[_buyToken];
         const storageId = await LoopringAPI.userAPI.getNextStorageId(
           {
             accountId: account.accountId,
@@ -355,10 +360,9 @@ export const useCexSwap = <
             volume: tradeCalcData.volumeBuy,
           },
           validUntil: getTimestampDaysLater(DAYS),
-          maxFeeBips:
-            tradeCalcData.maxFeeBips <= 5 ? 5 : tradeCalcData.maxFeeBips,
+          maxFeeBips: tradeCalcData.maxFeeBips,
           fillAmountBOrS: false,
-          allOrNone: true,
+          allOrNone: false,
           eddsaSignature: "",
           clientOrderId: "",
           orderType: sdk.OrderTypeResp.TakerOnly,
@@ -392,41 +396,37 @@ export const useCexSwap = <
         const info = {
           sellToken,
           buyToken,
-          sellStr:
-            getValuePrecisionThousand(
-              sdk.toBig(tradeCalcData.volumeSell).div(sellToken.precision),
-              sellToken.precision,
-              sellToken.precision,
-              sellToken.precision,
-              false,
-              { floor: false }
-            ) +
-            " " +
-            sellToken.symbol,
-          buyStr:
-            getValuePrecisionThousand(
-              sdk.toBig(tradeCalcData.volumeBuy).div(buyToken.precision),
-              buyToken.precision,
-              buyToken.precision,
-              buyToken.precision,
-              false,
-              { floor: false }
-            ) +
-            " " +
-            buyToken.symbol,
+          sellStr: getValuePrecisionThousand(
+            sdk.toBig(tradeCalcData.volumeSell).div("1e" + sellToken.decimals),
+            sellToken.precision,
+            sellToken.precision,
+            sellToken.precision,
+            false,
+            { floor: false }
+          ),
+          buyStr: getValuePrecisionThousand(
+            sdk.toBig(tradeCalcData.volumeBuy).div("1e" + buyToken.decimals),
+            buyToken.precision,
+            buyToken.precision,
+            buyToken.precision,
+            false,
+            { floor: false }
+          ),
+          sellFStr: undefined,
+          buyFStr: undefined,
           convertStr: `1${sellToken.symbol} \u2248 ${
             tradeCalcData.StoB && tradeCalcData.StoB != "NaN"
               ? tradeCalcData.StoB
               : EmptyValueTag
           } ${buyToken.symbol}`,
-          feeStr: tradeCalcData?.fee + " " + buyToken.symbol,
+          feeStr: tradeCalcData?.fee,
         };
         setShowAccount({
           isShow: true,
-          step: AccountStep.CexSwap_Delivering,
+          step: AccountStep.CexSwap_Pending,
           info,
         });
-        await sdk.sleep(2000);
+        await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE);
         const orderConfirm: { hash: string } | any =
           await LoopringAPI.defiAPI.getCefiOrders({
             request: {
@@ -440,19 +440,28 @@ export const useCexSwap = <
           (orderConfirm as sdk.RESULT_INFO).code ||
           (orderConfirm as sdk.RESULT_INFO).message
         ) {
+          // await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          // if (store.getState().modals.isShowAccount.isShow) {
+          //   setShowAccount({ isShow: false });
+          // }
+        } else if (["failed", "cancelled"].includes(orderConfirm.status)) {
           setShowAccount({
             isShow: true,
             step: AccountStep.CexSwap_Failed,
             info,
           });
-        } else {
+        } else if (store.getState().modals.isShowAccount.isShow) {
           setShowAccount({
             isShow: true,
-            step: AccountStep.CexSwap_Delivering,
+            step: AccountStep.CexSwap_Pending,
             info,
           });
         }
-        await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+
+        await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+        if (store.getState().modals.isShowAccount.isShow) {
+          setShowAccount({ isShow: false });
+        }
       } else {
         throw new Error("api not ready");
       }
@@ -885,6 +894,7 @@ export const useCexSwap = <
 
         let _tradeCalcData: any = {
           minimumReceived,
+          maxFeeBips,
           volumeSell: calcDexOutput?.sellVol as any,
           volumeBuy: calcDexOutput?.amountBSlipped?.minReceived, //tradeCalcData?.volumeBuy as any,
           fee: totalFee,
@@ -1011,6 +1021,7 @@ export const useCexSwap = <
           sellMaxL2AmtInfo: sellMaxL2AmtInfo as any,
           sellMaxAmtInfo: sellMaxAmtInfo as any,
           tradeCalcData: _tradeCalcData,
+          maxFeeBips,
         });
       }
     },

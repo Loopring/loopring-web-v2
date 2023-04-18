@@ -1578,6 +1578,7 @@ export default {
   labelStakingRedeemDate: "Redeem Time",
   labelCexSwapTitle: "CEX Swap",
   labelCexSwapType: "Type",
+  labelCexSwapFilled: "Filled",
   labelCexSwapFee: "Fee",
   labelCexSwapTime: "Time",
   labelCexSwapPrice: "Price",
@@ -1602,4 +1603,5 @@ export default {
   labelType: "Type",
   labelCexTrade: "CEX Swap",
   labelCexTitle: "CEX Swap",
+  labelCexSwapPending: "Pending",
 };

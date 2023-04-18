@@ -309,7 +309,7 @@ export const Staking_Redeem_Failed = (props: PanelProps) => {
 
 export const CexDetail = (props: any) => {
   const { isMobile } = useSettings();
-  const { t, info } = props;
+  const { info } = props;
   return (
     <Box
       justifySelf={"stretch"}
@@ -320,9 +320,6 @@ export const CexDetail = (props: any) => {
       marginTop={1}
       paddingX={isMobile ? 1 : 5}
     >
-      <Typography color={"var(--color-text-secondary)"} marginTop={2}>
-        {t("labelCexSwapPanelDes")}
-      </Typography>
       <Box
         flexDirection={"row"}
         alignItems={"center"}
@@ -340,9 +337,14 @@ export const CexDetail = (props: any) => {
           <ListItemIcon style={{ minWidth: "40px" }}>
             <CoinIcon symbol={info?.sellToken.symbol} size={32} />
           </ListItemIcon>
-          <ListItemText>
-            <Typography variant={"h5"}>{info?.sellStr}</Typography>
-          </ListItemText>
+
+          {info.sellFStr && (
+            <ListItemText>
+              <Typography variant={"h5"}>
+                {info?.sellFStr + " " + info.sellToken.symbol}
+              </Typography>
+            </ListItemText>
+          )}
         </Typography>
         <Box>
           <ConvertToIcon
@@ -359,9 +361,13 @@ export const CexDetail = (props: any) => {
           <ListItemIcon style={{ minWidth: "40px" }}>
             <CoinIcon symbol={info?.buyToken.symbol} size={32} />
           </ListItemIcon>
-          <ListItemText>
-            <Typography variant={"h5"}>{info?.buyStr}</Typography>
-          </ListItemText>
+          {info.buyFStr && (
+            <ListItemText>
+              <Typography variant={"h5"}>
+                {info?.buyFStr + " " + info.buyToken.symbol}
+              </Typography>
+            </ListItemText>
+          )}
         </Typography>
       </Box>
 
@@ -422,12 +428,32 @@ export const CexDetail = (props: any) => {
           >
             {props.t("labelSell")}
           </Typography>
+          {/*<Typography*/}
+          {/*  variant={"body1"}*/}
+          {/*  component={"span"}*/}
+          {/*  color={"var(--color-text-primary)"}*/}
+          {/*>*/}
+          {/*  {info?.sellStr}*/}
+          {/*</Typography>*/}
           <Typography
             variant={"body1"}
             component={"span"}
             color={"var(--color-text-primary)"}
+            display={"inline-flex"}
+            alignItems={"center"}
           >
-            {info?.sellStr}
+            <Typography variant={"inherit"}>
+              {info?.sellFStr ?? EmptyValueTag}
+            </Typography>
+            <Typography
+              variant={"inherit"}
+              color={"var(--color-text-secondary)"}
+            >
+              /{info?.sellStr}
+            </Typography>
+            <Typography variant={"inherit"} marginLeft={1 / 2}>
+              {info.sellToken.symbol}
+            </Typography>
           </Typography>
         </Typography>
         <Typography
@@ -447,8 +473,21 @@ export const CexDetail = (props: any) => {
             variant={"body1"}
             component={"span"}
             color={"var(--color-text-primary)"}
+            display={"inline-flex"}
+            alignItems={"center"}
           >
-            {info?.buyStr}
+            <Typography variant={"inherit"}>
+              {info?.buyFStr ?? EmptyValueTag}
+            </Typography>
+            <Typography
+              variant={"inherit"}
+              color={"var(--color-text-secondary)"}
+            >
+              /{info?.buyStr}
+            </Typography>
+            <Typography variant={"inherit"} marginLeft={1 / 2}>
+              {info.buyToken.symbol}
+            </Typography>
           </Typography>
         </Typography>
         <Typography
@@ -469,20 +508,41 @@ export const CexDetail = (props: any) => {
             component={"span"}
             color={"var(--color-text-primary)"}
           >
-            {info?.feeStr}
+            {info?.feeStr + " " + info.buyToken.symbol}
           </Typography>
         </Typography>
       </Box>
     </Box>
   );
 };
+
 export const CexSwap_Delivering = (props: PanelProps) => {
   const { t } = props;
+  const { isMobile } = useSettings();
+
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: (
+      <Box paddingX={isMobile ? 1 : 5}>
+        <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+          {t("labelCexSwapDelivering")}
+        </Typography>
+        <Typography color={"var(--color-text-secondary)"} marginTop={2}>
+          {t("labelCexSwapPanelDes")}
+        </Typography>
+      </Box>
+    ),
+    describe2: <CexDetail {...props} />,
+  };
+  return <CexBase {...propsPatch} {...props} />;
+};
+export const CexSwap_Pending = (props: PanelProps) => {
+  const { t } = props;
+  const propsPatch = {
+    iconType: IconType.PendingIcon,
+    describe1: (
       <Typography color={"var(--color-text-primary)"} variant={"h5"}>
-        {t("labelCexSwapSettled")}
+        {t("labelCexSwapPending")}
       </Typography>
     ),
     describe2: <CexDetail {...props} />,
