@@ -112,7 +112,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
     const columnModeTransaction = [
       {
         key: "Address",
-        sortable: false,
         name: t("labelAddress"),
         formatter: ({ row }: FormatterProps<R>) => {
           return <>{row.sender}</>;
@@ -120,7 +119,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
       },
       {
         key: "Time",
-        sortable: true,
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
         name: t("labelRecordTime"),
@@ -130,7 +128,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
       },
       {
         key: "End Time",
-        sortable: true,
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
         name: t("labelBlindBoxEndTime"),
@@ -146,7 +143,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
       },
       {
         key: "Action",
-        sortable: true,
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
         name: "Action",

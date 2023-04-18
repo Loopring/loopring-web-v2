@@ -1606,7 +1606,8 @@ export const RedPacketBlindBoxDetail = ({
   totalClaimedNFTsCount,
   handlePageChange_BlindBox,
   pageForBlindbox,
-  totalBlindboxCount
+  totalBlindboxCount,
+  onClickClaimPopViewDetail
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
@@ -1636,7 +1637,67 @@ export const RedPacketBlindBoxDetail = ({
       size={"small"}
     />
   )
-  console.log('totalBlindboxCount', totalBlindboxCount)
+  const LooteryModal = <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
+    <>
+      <Box
+        height={"100%"}
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <Box
+          padding={5}
+          bgcolor={"var(--color-box)"}
+          width={"var(--modal-width)"}
+          borderRadius={1}
+          display={"flex"}
+          alignItems={"center"}
+          flexDirection={"column"}
+          position={"relative"}
+        >
+          {/* <Box></Box> */}
+          <ModalCloseButtonPosition
+            right={2}
+            top={2}
+            t={t}
+            onClose={onCloseOpenModal!}
+          />
+          <Typography marginBottom={3} variant={"h3"}>
+            {wonNFTInfo ? t("labelBlindBoxCongratulations") : t("labelBlindBoxSorry")}{" "}
+          </Typography>
+          <Typography variant={"h5"}>
+            {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
+          </Typography>
+          {wonNFTInfo ? (
+            <img width={"40%"} src={wonNFTInfo.url}></img>
+          ) : (
+            <img src={emptyImg}></img>
+          )}
+          <Link
+            marginBottom={3}
+            onClick={onClickClaimPopViewDetail}
+            variant={"body1"}
+            color={theme.colorBase.textSecondary}
+            marginTop={5}
+          >
+            <u>{t("labelLuckyRedPacketDetail")}</u>
+          </Link>
+          {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+          {t("labelClaimBtn")}
+        </Button> */}
+          {wonNFTInfo && (
+            <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
+              {t("labelClaimBtn")}
+            </Button>
+          )}
+        </Box>
+      </Box>
+    </>
+  </Modal>
+
+  if (type ===  "Lottery Started and Not Win Lottery" || type === "Lottery Started and Win Lottery") {
+    return LooteryModal
+  }
 
   return (
     <BlindBoxDetailBoxStyle
@@ -1648,63 +1709,8 @@ export const RedPacketBlindBoxDetail = ({
       flexDirection={"column"}
       overflow={"scroll"}
     >
-      <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
-        <>
-          <Box
-            height={"100%"}
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Box
-              padding={5}
-              bgcolor={"var(--color-box)"}
-              width={"var(--modal-width)"}
-              borderRadius={1}
-              display={"flex"}
-              alignItems={"center"}
-              flexDirection={"column"}
-              position={"relative"}
-            >
-              {/* <Box></Box> */}
-              <ModalCloseButtonPosition
-                right={2}
-                top={2}
-                t={t}
-                onClose={onCloseOpenModal!}
-              />
-              <Typography marginBottom={3} variant={"h3"}>
-                {wonNFTInfo ? t("labelBlindBoxCongratulations") : t("labelBlindBoxSorry")}{" "}
-              </Typography>
-              <Typography variant={"h5"}>
-                {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
-              </Typography>
-              {wonNFTInfo ? (
-                <img width={"40%"} src={wonNFTInfo.url}></img>
-              ) : (
-                <img src={emptyImg}></img>
-              )}
-              <Link
-                marginBottom={3}
-                onClick={onCloseOpenModal!}
-                variant={"body1"}
-                color={theme.colorBase.textSecondary}
-                marginTop={5}
-              >
-                <u>{t("labelLuckyRedPacketDetail")}</u>
-              </Link>
-              {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
-                {t("labelClaimBtn")}
-              </Button> */}
-              {wonNFTInfo && (
-                <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
-                  {t("labelClaimBtn")}
-                </Button>
-              )}
-            </Box>
-          </Box>
-        </>
-      </Modal>
+      {LooteryModal}
+      
       <Box
         className={"top"}
         width={"100%"}

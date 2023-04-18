@@ -127,7 +127,7 @@ export type RedPacketBlindBoxDetailTypes = 'Not Started'
   | 'Lottery Started' 
   | 'Lottery Started and Win Lottery' 
   | 'Lottery Started and Not Win Lottery' 
-  | 'BlindBox Claime Detail'; 
+  | 'BlindBox Claime Detail';
 export type RedPacketBlindBoxDetailProps = {
   sender: string;
   memo: string;
@@ -187,6 +187,7 @@ export type RedPacketBlindBoxDetailProps = {
   pageForBlindbox: number
   handlePageChange_BlindBox: (page: number, limit?: number) => void;
   // didClaimABlindBox: boolean;
+  onClickClaimPopViewDetail: () => void
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

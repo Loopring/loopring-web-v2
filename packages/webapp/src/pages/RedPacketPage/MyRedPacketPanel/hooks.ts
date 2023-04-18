@@ -380,7 +380,7 @@ export const useMyRedPacketReceiveTransaction = <
         step: RedPacketViewStep.BlindBoxDetail,
         info: {
           ...item.luckyToken,
-          refreshCallback
+          refreshCallback,
         },
       });
     } else {

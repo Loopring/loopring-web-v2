@@ -1088,8 +1088,10 @@ export function useRedPacketModal() {
           });
         },
         onClickViewDetail: () => {
-          setViewDetailFrom(blindBoxType);
-          setBlindBoxType("BlindBox Claime Detail");
+          redPacketBlindBoxDetailCall({}).then(() => {
+            setViewDetailFrom(blindBoxType);
+            setBlindBoxType("BlindBox Claime Detail");
+          })
         },
         NFTClaimList: detail!.claims.map((x) => {
           return {
@@ -1116,7 +1118,7 @@ export function useRedPacketModal() {
         }),
         showOpenLottery:
           blindBoxType === "Lottery Started and Win Lottery" ||
-          blindBoxType === "Lottery Started and Not Win Lottery", // require if (type === 'Lottery Started')
+          blindBoxType === "Lottery Started and Not Win Lottery",
         wonNFTInfo: wonNFTInfo,
         onCloseOpenModal: () => setBlindBoxType("Lottery Started"),
         onClickClaimDetailBack: () => {
@@ -1232,12 +1234,13 @@ export function useRedPacketModal() {
           ).then(response2=> {
             setBlindBoxDetail(response2.raw_data)
           })
-          // redPacketDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
         },
         pageForBlindbox,
-        // totalBlindBoxCount
-        // totalBlindBoxCount: blinBoxDetail.totalNum
-        // detail.luckyToken.tokenAmount.giftCount - detail.luckyToken.tokenAmount.remainCount
+        onClickClaimPopViewDetail: () => {
+          redPacketBlindBoxDetailCall({}).then(() => {
+            setBlindBoxType("Lottery Started")
+          })
+        }
       } as RedPacketBlindBoxDetailProps;
     } else {
       return undefined;
