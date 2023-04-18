@@ -22,6 +22,7 @@ import React, { useState } from "react";
 import {
   CLAIM_TYPE,
   CustomError,
+  EmptyValueTag,
   ErrorMap,
   Exchange,
   getShortAddr,
@@ -884,8 +885,9 @@ export function useRedPacketModal() {
         symbol = detail.claimAmount == 1 ? "NFT" : "NFTs";
         // @ts-ignore
         // const symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
-        myAmountStr =
-          getValuePrecisionThousand(
+        myAmountStr = sdk.toBig(detail.claimAmount).isZero()
+          ? EmptyValueTag
+          : getValuePrecisionThousand(
             detail.claimAmount,
             0,
             0,
@@ -917,8 +919,9 @@ export function useRedPacketModal() {
       } else {
         let tokenInfo = tokenMap[idIndex[_info?.tokenId] ?? ""];
         symbol = tokenInfo.symbol;
-        myAmountStr =
-          getValuePrecisionThousand(
+        myAmountStr = sdk.toBig(detail.claimAmount).isZero()
+          ? EmptyValueTag
+          : getValuePrecisionThousand(
             volumeToCountAsBigNumber(symbol, detail.claimAmount as any),
             tokenInfo.precision,
             tokenInfo.precision,
