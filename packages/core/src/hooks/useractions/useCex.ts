@@ -34,13 +34,14 @@ import {
   MarketType,
   myLog,
   SagaStatus,
-  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
   WalletMap,
   defalutSlipage,
   CustomErrorWithCode,
   SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
+  SUBMIT_PANEL_AUTO_CLOSE,
+  SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE,
 } from "@loopring-web/common-resources";
 import {
   AccountStep,
@@ -164,7 +165,7 @@ export const useCexSwap = <
         _tradeCalcData = {
           ...(state ?? {}),
           maxFeeBips: undefined,
-          lockedNotification: false,
+          lockedNotification: true,
           isLockedNotificationChecked: false,
           volumeSell: undefined,
           volumeBuy: undefined,
@@ -395,43 +396,37 @@ export const useCexSwap = <
         const info = {
           sellToken,
           buyToken,
-          sellStr:
-            getValuePrecisionThousand(
-              sdk
-                .toBig(tradeCalcData.volumeSell)
-                .div("1e" + sellToken.decimals),
-              sellToken.precision,
-              sellToken.precision,
-              sellToken.precision,
-              false,
-              { floor: false }
-            ) +
-            " " +
-            sellToken.symbol,
-          buyStr:
-            getValuePrecisionThousand(
-              sdk.toBig(tradeCalcData.volumeBuy).div("1e" + buyToken.decimals),
-              buyToken.precision,
-              buyToken.precision,
-              buyToken.precision,
-              false,
-              { floor: false }
-            ) +
-            " " +
-            buyToken.symbol,
+          sellStr: getValuePrecisionThousand(
+            sdk.toBig(tradeCalcData.volumeSell).div("1e" + sellToken.decimals),
+            sellToken.precision,
+            sellToken.precision,
+            sellToken.precision,
+            false,
+            { floor: false }
+          ),
+          buyStr: getValuePrecisionThousand(
+            sdk.toBig(tradeCalcData.volumeBuy).div("1e" + buyToken.decimals),
+            buyToken.precision,
+            buyToken.precision,
+            buyToken.precision,
+            false,
+            { floor: false }
+          ),
+          sellFStr: undefined,
+          buyFStr: undefined,
           convertStr: `1${sellToken.symbol} \u2248 ${
             tradeCalcData.StoB && tradeCalcData.StoB != "NaN"
               ? tradeCalcData.StoB
               : EmptyValueTag
           } ${buyToken.symbol}`,
-          feeStr: tradeCalcData?.fee + " " + buyToken.symbol,
+          feeStr: tradeCalcData?.fee,
         };
         setShowAccount({
           isShow: true,
-          step: AccountStep.CexSwap_Delivering,
+          step: AccountStep.CexSwap_Pending,
           info,
         });
-        await sdk.sleep(2000);
+        await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE);
         const orderConfirm: { hash: string } | any =
           await LoopringAPI.defiAPI.getCefiOrders({
             request: {
@@ -445,19 +440,28 @@ export const useCexSwap = <
           (orderConfirm as sdk.RESULT_INFO).code ||
           (orderConfirm as sdk.RESULT_INFO).message
         ) {
+          // await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+          // if (store.getState().modals.isShowAccount.isShow) {
+          //   setShowAccount({ isShow: false });
+          // }
+        } else if (["failed", "cancelled"].includes(orderConfirm.status)) {
           setShowAccount({
             isShow: true,
             step: AccountStep.CexSwap_Failed,
             info,
           });
-        } else {
+        } else if (store.getState().modals.isShowAccount.isShow) {
           setShowAccount({
             isShow: true,
-            step: AccountStep.CexSwap_Delivering,
+            step: AccountStep.CexSwap_Pending,
             info,
           });
         }
-        await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+
+        await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+        if (store.getState().modals.isShowAccount.isShow) {
+          setShowAccount({ isShow: false });
+        }
       } else {
         throw new Error("api not ready");
       }

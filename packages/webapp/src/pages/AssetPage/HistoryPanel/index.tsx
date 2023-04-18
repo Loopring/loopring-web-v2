@@ -50,8 +50,10 @@ enum TabIndex {
   defiRecords = "defiRecords",
   dualRecords = "dualRecords",
   sideStakingRecords = "sideStakingRecords",
-  cexSwapRecords = "sideStakingCexSwap",
+  cexSwapRecords = "CexSwap",
 }
+
+export const RecordTabIndex = TabIndex;
 
 enum TabOrderIndex {
   orderOpenTable = "orderOpenTable",
@@ -407,7 +409,7 @@ const HistoryPanel = withTranslation("common")(
                   }}
                 />
               </Box>
-            ) : (
+            ) : currentTab === TabIndex.cexSwapRecords ? (
               <Box
                 flex={1}
                 display={"flex"}
@@ -427,6 +429,8 @@ const HistoryPanel = withTranslation("common")(
                   onItemClick={onDetail}
                 />
               </Box>
+            ) : (
+              <></>
             )}
           </Box>
         </StylePaper>

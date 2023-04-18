@@ -2,7 +2,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../stores";
 import React from "react";
 import { Column, Table, TablePagination } from "../../basic-lib";
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, BoxProps, Tooltip, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
@@ -10,6 +10,7 @@ import { CexSwapsType, RawDataCexSwapsItem } from "./Interface";
 import {
   EmptyValueTag,
   globalSetup,
+  Info2Icon,
   RowInvestConfig,
   TableType,
 } from "@loopring-web/common-resources";
@@ -25,12 +26,13 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   height: 100%;
 
   ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-  &.rdg {
+    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })};
+
+  & .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: auto 20% 20px auto !important;`
-        : `--template-columns: auto 20% 20px auto !important;`}
+        ? `--template-columns: 33% 20% auto auto auto !important;`
+        : `--template-columns: 33% 20% auto auto auto !important;`}
   }
 `;
 const TableStyled = styled(Table)`
@@ -97,7 +99,6 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
       (): Column<R, unknown>[] => [
         {
           key: "Type",
-          sortable: true,
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelCexSwapType"),
@@ -106,6 +107,7 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
               [CexSwapsType.Settled, "var(--color-success)"],
               [CexSwapsType.Delivering, "var(--color-warning)"],
               [CexSwapsType.Failed, "var(--color-error)"],
+              [CexSwapsType.Cancelled, "var(--color-error)"],
               [CexSwapsType.Pending, "var(--color-warning)"],
             ];
             const found = colorMap.find((x) => x[0] === row?.type);
@@ -117,9 +119,30 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
                 alignItems={"center"}
                 height={"100%"}
               >
-                <Typography color={found ? found[1].toString() : ""}>
-                  {row?.type ? t("labelCex" + row?.type) : EmptyValueTag}
-                </Typography>
+                {row?.type === CexSwapsType.Delivering ? (
+                  <Tooltip title={t("labelCexDeliveringDes").toString()}>
+                    <Typography
+                      color={found ? found[1].toString() : ""}
+                      marginLeft={1}
+                      display={"inline-flex"}
+                      alignItems={"center"}
+                    >
+                      {t("labelCex" + row?.type)}
+                      <Info2Icon
+                        fontSize={"small"}
+                        color={"inherit"}
+                        sx={{ marginX: 1 / 2 }}
+                      />
+                    </Typography>
+                  </Tooltip>
+                ) : (
+                  <Typography
+                    color={found ? found[1].toString() : ""}
+                    marginLeft={1}
+                  >
+                    {t("labelCex" + row?.type)}
+                  </Typography>
+                )}
                 <Typography>
                   {row ? (
                     <>
@@ -134,8 +157,18 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
           },
         },
         {
+          key: "Filled",
+          name: t("labelCexSwapFailed"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <>
+                {row.filledPercent ? row.filledPercent + "%" : EmptyValueTag}{" "}
+              </>
+            );
+          },
+        },
+        {
           key: "Price",
-          sortable: true,
           name: t("labelCexSwapPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return <> {row.price?.value + " " + row.price?.key} </>;
@@ -143,7 +176,6 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Fee",
-          sortable: true,
           name: t("labelCexSwapFee"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
@@ -157,11 +189,10 @@ export const CexSwapTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Time",
-          sortable: true,
           cellClass: "textAlignRight",
           headerCellClass: "textAlignRight",
           name: t("labelCexSwapTime"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R>) => {
             return <>{moment(new Date(row.time)).fromNow()}</>;
           },
         },

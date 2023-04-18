@@ -30,6 +30,7 @@ import { TagIconList } from "../../block";
 import { useSettings } from "../../../stores";
 import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
+import { RecordTabIndex } from "@loopring-web/webapp/src/pages/AssetPage/HistoryPanel";
 
 const PopoverStyled = styled(Popover)`
   .MuiPaper-elevation2 {
@@ -443,10 +444,10 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                       onClick={() => {
                         !tradeCalcData.isCex
                           ? history.push(
-                              `/l2assets/history/trades?market=${market}`
+                              `/l2assets/history/${RecordTabIndex.trades}?market=${market}`
                             )
                           : history.push(
-                              `/l2assets/history/cexswap?market=${market}`
+                              `/l2assets/history/${RecordTabIndex.cexSwapRecords}?market=${market}`
                             );
                       }}
                       sx={{ backgroundColor: "var(--field-opacity)" }}

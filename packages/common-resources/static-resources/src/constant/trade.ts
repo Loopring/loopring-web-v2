@@ -693,3 +693,4 @@ export interface SnackbarMessage {
   key: number | string;
   svgIcon?: string;
 }
+export const CEXNAME = "CEFI-";

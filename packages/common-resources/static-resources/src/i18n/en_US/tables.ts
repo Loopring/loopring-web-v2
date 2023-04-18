@@ -309,6 +309,10 @@ export default {
   labelCexSwapDelivering: "Delivering",
   labelCexSettled: "Settled",
   labelCexDelivering: "Delivering",
+  labelCexDeliveringDes:
+    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
   labelCexFailed: "Failed",
+  labelCexCancelled: "Cancelled",
   labelCexPending: "Pending",
+  labelCexSwapFailed: "Filled",
 };

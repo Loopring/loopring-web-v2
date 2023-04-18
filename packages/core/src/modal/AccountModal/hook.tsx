@@ -119,6 +119,7 @@ import {
   CexSwap_Settled,
   CexSwap_Delivering,
   CexSwap_Failed,
+  CexSwap_Pending,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -2960,6 +2961,22 @@ export function useAccountModalForUI({
         ),
         height: "auto",
       },
+      [AccountStep.CexSwap_Pending]: {
+        view: (
+          <CexSwap_Pending
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+
       [AccountStep.CexSwap_Settled]: {
         view: (
           <CexSwap_Settled
