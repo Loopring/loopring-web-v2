@@ -1867,7 +1867,7 @@ export const RedPacketBlindBoxDetail = ({
             {type === "Blind Box Started" && didClaimABlindBox &&
               <Typography>{t("labelBlindBoxCongratulationsBlindBox")}</Typography>
             }
-            {(type === "Lottery Started" || type === "Lottery Started and Not Win Lottery" || type === "Lottery Started and Win Lottery") && wonInfo.participated &&
+            {(type === "Lottery Started") && wonInfo.participated &&
               (wonInfo.won 
                 ? <Typography>{wonInfo.amount} NFTs</Typography>
                 : <Typography color={"var(--color-error)"}>{t("labelBlindBoxSorryBlindBox")}</Typography>
