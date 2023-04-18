@@ -83,7 +83,7 @@ export type RedPacketUnreadyProps = {
   memo: string;
   validSince: number;
   // viewDetail: () => void;
-  // onOpen: () => void;
+  onClickOpen: () => void;
 };
 export type RedPacketOpenedProps = {
   sender: string;
@@ -92,8 +92,8 @@ export type RedPacketOpenedProps = {
   memo: string;
   viewDetail: () => void;
 };
-export const RedPacketDetailLimit = 6;
-export const RedPacketNFTDetailLimit = 3;
+export const RedPacketDetailLimit = 5;
+export const RedPacketNFTDetailLimit = 5;
 export const RedPacketBlindBoxLimit = 8;
 export type RedPacketDetailProps = {
   redPacketType: 'normal' | 'lucky' | 'relay';

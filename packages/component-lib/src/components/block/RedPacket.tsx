@@ -229,7 +229,7 @@ export const RedPacketSize = {
     width: 260,
   },
   large: {
-    height: 680,
+    height: 600,
     width: 320,
   },
 };
@@ -688,19 +688,16 @@ export const RedPacketUnready = ({
   amountStr,
   memo,
   ImageEle,
+  onClickOpen
 }: // ImageEle,
 RedPacketDefault & RedPacketUnreadyProps) => {
   const { t } = useTranslation();
   const content = React.useMemo(() => {
     return (
       <Box display={"flex"} flex={1} flexDirection={"column"}>
-        <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
-          <Box
-            display={"flex"}
-            position={"absolute"}
-            className={"open openUnready"}
-          >
-            {t("labelSeal")}
+        <Box onClick={onClickOpen} display={"flex"} className={"betweenEle"} position={"absolute"}>
+          <Box display={"flex"} position={"absolute"} className={"open"}>
+            {t("labelRedPacketOpen")}
           </Box>
         </Box>
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
@@ -990,6 +987,7 @@ export const RedPacketDetail = ({
       display={"flex"}
       paddingBottom={1}
       flexDirection={"column"}
+      overflow={"scroll"}
     >
       <Box
         className={"top"}
@@ -1014,7 +1012,6 @@ export const RedPacketDetail = ({
         flexDirection={"column"}
         alignItems={"center"}
         marginY={2}
-        overflow={"scroll"}
       >
         <Typography variant={"body1"}>{sender}</Typography>
         <Typography
@@ -1415,6 +1412,26 @@ export const RedPacketPrepare = ({
           amountStr={amountStr}
           validSince={_info.validSince}
           type={_type}
+          onClickOpen={() => {
+            // if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+              setShowRedPacket({
+                isShow: true,
+                step: RedPacketViewStep.RedPacketClock,
+                info: {
+                  ..._info,
+                },
+              });
+            // } else {
+            //   setShowRedPacket({
+            //     isShow: true,
+            //     step: RedPacketViewStep.DetailPanel,
+            //     info: {
+            //       ..._info,
+            //     },
+            //   });
+            // }
+
+          }}
         />
       );
     } else if (difference > 0) {
@@ -1629,6 +1646,7 @@ export const RedPacketBlindBoxDetail = ({
       display={"flex"}
       paddingBottom={1}
       flexDirection={"column"}
+      overflow={"scroll"}
     >
       <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
         <>
@@ -1773,7 +1791,7 @@ export const RedPacketBlindBoxDetail = ({
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        *1
+                        x 1
                       </Typography>
                     </Typography>
                     <Typography
