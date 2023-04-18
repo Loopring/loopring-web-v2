@@ -1120,7 +1120,9 @@ export function useRedPacketModal() {
           blindBoxType === "Lottery Started and Win Lottery" ||
           blindBoxType === "Lottery Started and Not Win Lottery",
         wonNFTInfo: wonNFTInfo,
-        onCloseOpenModal: () => setBlindBoxType("Lottery Started"),
+        onCloseOpenModal: () => {
+          setShowRedPacket({isShow: false})
+        },
         onClickClaimDetailBack: () => {
           setBlindBoxType(viewDetailFrom);
         },
