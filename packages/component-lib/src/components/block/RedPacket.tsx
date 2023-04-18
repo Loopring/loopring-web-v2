@@ -979,24 +979,7 @@ export const RedPacketDetail = ({
       }}
     />
   )
-    // if (totalCount - remainCount -  limit > 0) {
-    //   return (
-    //     <TablePagination
-    //       page={page}
-    //       pageSize={limit}
-    //       total={totalCount - remainCount}
-    //       onPageChange={(_page) => {
-    //         debugger
-    //         setPage(_page)
-    //         handlePageChange(_page)
-    //       }}
-    //     />
-    //   );
-    // } else {
-    //   return <></>;
-    // }
-  // }, [page, setPage]);
-  // const claimButton = "claim"
+  console.log('claimList', claimList)
 
   return (
     <BoxStyle
@@ -1115,9 +1098,10 @@ export const RedPacketDetail = ({
                       component={"span"}
                       color={item.isSelf ? "success" : "textPrimary"}
                     >
+                      {item.accountStr}
                       {item.isSelf
-                        ? t("labelMyRedPacketReward")
-                        : item.accountStr}
+                        ? ` (${t("labelRedPacketMe")})` 
+                        : ''}
                     </Typography>
                     <Typography
                       variant={"body1"}
@@ -2041,6 +2025,9 @@ export const RedPacketBlindBoxDetail = ({
                                 color={"textPrimary"}
                               >
                                 {info.who}
+                                {info.isMe
+                                  ? ` (${t("labelRedPacketMe")})` 
+                                  : ''}
                               </Typography>
                               {/* <Typography
                                 variant={"body1"}

@@ -1397,7 +1397,7 @@ export default {
   labelRedPacketOpenInProgress: "Processing...",
   labelRedPacketOpenFailed: "Read red packet failed!",
   labelRedPacketShowQR: "Share red packet",
-  labelRedPacketReceivedRecord: "Opened {{value}}/{{count}}",
+  labelRedPacketReceivedRecord: "Receive Red Packet {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:
@@ -1433,7 +1433,7 @@ export default {
   labelSeal: "Seal",
   labelOpenAfter: "Open after {{time}}",
   labelOpenStart: "Start",
-  labelTotalRedPacket: "Quantity in total: {{value}}",
+  labelTotalRedPacket: "Total Quantity: {{value}}",
   labelMyRedPacketReward: "My Rewards",
   labelRedpacketScanDes: "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
   labelLuckyRedPacketStarted: "Red Packet is Started",
@@ -1533,6 +1533,7 @@ export default {
   labelStakingCumulativeEarnings: "Cumulative Earnings",
   labelStakingClaimableEarnings: "Claimable Earnings",
   labelClaimBtn: "Claim",
+  labelRedPacketMe: "Me",
   labelStakeNoEnough: "Insufficient {{arg}} balance",
   labelDefiRemindMin: "Please redeem all Balance",
   labelInvestType_LRCSTAKE: "LRC Staking",

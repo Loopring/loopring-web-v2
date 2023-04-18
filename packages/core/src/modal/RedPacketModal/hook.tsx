@@ -1136,6 +1136,7 @@ export function useRedPacketModal() {
         },
         NFTClaimList: detail!.claims.map((x) => {
           return {
+            isMe: x.claimer.accountId === account.accountId,
             who: x.claimer?.ens
               ? x.claimer?.ens
               : getShortAddr(x.claimer?.address),

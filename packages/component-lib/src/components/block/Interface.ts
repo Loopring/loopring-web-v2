@@ -150,6 +150,7 @@ export type RedPacketBlindBoxDetailProps = {
   onClickViewDetail?: () => void;
   NFTClaimList?: { 
     who: string,
+    isMe: boolean,
     when: number,
     amount: number,
     showLuckiest?: boolean,
