@@ -586,49 +586,6 @@ export function useRedPacketModal() {
             } as any,
             account.apiKey
           );
-          const now = new Date().getTime();
-          if (now < response.detail.luckyToken.validSince) {
-            setBlindBoxType("Not Started");
-          } else if (
-            now >= response.detail.luckyToken.validSince &&
-            now < response.detail.luckyToken.validUntil
-          ) {
-            setBlindBoxType("Blind Box Started");
-          } else if (now > response.detail.luckyToken.validUntil) {
-            if (
-              (response2.raw_data as any).blindBoxStatus ===
-              sdk.BlindBoxStatus.NOT_OPENED
-            ) {
-              const claimLuckyTokenResponse =
-                await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
-                  request: {
-                    hash: _info.hash,
-                    claimer: account.accAddress,
-                    referrer: "",
-                  },
-                  eddsaKey: account.eddsaKey.sk,
-                  apiKey: account.apiKey,
-                } as any);
-              if (
-                (claimLuckyTokenResponse as sdk.RESULT_INFO).code ||
-                (claimLuckyTokenResponse as sdk.RESULT_INFO).message ||
-                (claimLuckyTokenResponse as any).amount === "0"
-              ) {
-                setBlindBoxType("Lottery Started and Not Win Lottery");
-              } else {
-                setBlindBoxType("Lottery Started and Win Lottery");
-                setWonNFTInfo({
-                  name:
-                    detail?.luckyToken.nftTokenInfo?.metadata?.base.name ?? "",
-                  url:
-                    detail?.luckyToken.nftTokenInfo?.metadata?.imageSize
-                      .original ?? "",
-                });
-              }
-            } else {
-              setBlindBoxType("Lottery Started");
-            }
-          }
 
           if (
             (response as sdk.RESULT_INFO).code ||
