@@ -971,6 +971,7 @@ export const RedPacketDetail = ({
   const limit = detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit;
   const pageNation = (totalNumber - limit > 0) && (
     <TablePagination
+      size={"small"}
       page={page}
       pageSize={limit}
       total={totalNumber}
@@ -979,7 +980,7 @@ export const RedPacketDetail = ({
       }}
     />
   )
-  console.log('claimList', claimList)
+
 
   return (
     <BoxStyle
@@ -1603,6 +1604,7 @@ export const RedPacketBlindBoxDetail = ({
         onPageChange={(_page) => {
           handlePageChange(_page)
         }}
+        size={"small"}
       />
     </Box>
   )
@@ -1614,6 +1616,7 @@ export const RedPacketBlindBoxDetail = ({
       onPageChange={(_page) => {
         handlePageChange_BlindBox(_page)
       }}
+      size={"small"}
     />
   )
   console.log('totalBlindboxCount', totalBlindboxCount)
