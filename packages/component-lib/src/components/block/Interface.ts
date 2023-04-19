@@ -157,6 +157,7 @@ export type RedPacketBlindBoxDetailProps = {
   }[]; 
   BlindBoxClaimList?: { 
     who: string,
+    isMe: boolean,
     when: number,
     amount: number
   }[]; 

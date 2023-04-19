@@ -1461,6 +1461,14 @@ export default {
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
   labelRedPacketStartWithTime: "{{time}} Start",
+  labelRedPacketTimeRange:
+    "Start / End Time",
+  labelRedPacketTimeRangeDes:
+    "The Red Packet expires after the end date",
+  labelRedPacketTimeRangeBlindbox:
+    "Start / Reveal Time",
+  labelRedPacketTimeRangeBlindboxDes:
+    "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:

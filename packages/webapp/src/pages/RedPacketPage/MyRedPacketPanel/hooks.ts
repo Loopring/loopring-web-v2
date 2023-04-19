@@ -488,6 +488,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
               {
                 offset,
                 limit,
+                isNft: true,
                 ..._filer,
               } as any,
               apiKey

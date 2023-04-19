@@ -320,6 +320,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
                 info: {
                   ...luckTokenInfo,
                   referrer: redPacketInfo.referrer,
+                  hideViewDetail: true
                 },
                 step: RedPacketViewStep.OpenPanel,
               });

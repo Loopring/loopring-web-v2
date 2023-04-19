@@ -284,21 +284,23 @@ export function useRedPacketModal() {
             sender: _info.sender?.ens
               ? _info.sender?.ens
               : getShortAddr(_info.sender?.address),
-            viewDetail: () => {
-              if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-                setShowRedPacket({
-                  isShow,
-                  step: RedPacketViewStep.BlindBoxDetail,
-                  info: _info,
-                });
-              } else {
-                setShowRedPacket({
-                  isShow,
-                  step: RedPacketViewStep.DetailPanel,
-                  info: _info,
-                });
-              }
-            },
+            viewDetail: info['hideViewDetail']
+              ? undefined
+              : () => {
+                if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+                  setShowRedPacket({
+                    isShow,
+                    step: RedPacketViewStep.BlindBoxDetail,
+                    info: _info,
+                  });
+                } else {
+                  setShowRedPacket({
+                    isShow,
+                    step: RedPacketViewStep.DetailPanel,
+                    info: _info,
+                  });
+                }
+              },
 
             onOpen: callOpen,
           };
@@ -1114,6 +1116,7 @@ export function useRedPacketModal() {
               : getShortAddr(x.claimer?.address),
             when: x.createdAt,
             amount: x.amount ? x.amount : 0,
+            isMe: x.claimer.accountId === account.accountId
           };
         }),
         showOpenLottery:
@@ -1188,9 +1191,11 @@ export function useRedPacketModal() {
               },
               claimType: CLAIM_TYPE.redPacket,
               successCallback: () => {
-                redPacketBlindBoxDetailCall({ offset: 0 });
-                setBlindBoxType("Lottery Started")
                 info.refreshCallback && info.refreshCallback()
+                redPacketBlindBoxDetailCall({ offset: 0 }).then(x => {
+                  setShowRedPacket({isShow: false})
+                })
+                // setBlindBoxType("Lottery Started")
               },
             });
           }

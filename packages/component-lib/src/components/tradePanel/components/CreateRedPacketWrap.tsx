@@ -6,8 +6,10 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
+  IconButton,
   Radio,
   RadioGroup,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -41,6 +43,7 @@ import {
   GoodIcon,
   REDPACKET_ORDER_NFT_LIMIT,
   REDPACKET_SHOW_NFTS,
+  Info2Icon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -123,6 +126,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
     selectedType: LuckyRedPacketItem;
   } & WithTranslation) => {
     const { t } = useTranslation("common");
+    
 
     const inputButtonDefaultProps = {
       label:
@@ -692,7 +696,20 @@ export const CreateRedPacketStepWrap = withTranslation()(
               className={"main-label"}
               color={"var(--color-text-third)"}
             >
-              <Trans i18nKey={"labelRedPacketStart111"}>Active Time</Trans>
+              {
+                selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                  ? t("labelRedPacketTimeRangeBlindbox")
+                  : t("labelRedPacketTimeRange")
+              }
+              <Tooltip title={
+                selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                  ? t("labelRedPacketTimeRangeBlindboxDes")!
+                  : t("labelRedPacketTimeRangeDes")!
+              }>
+                <IconButton>
+                  <Info2Icon />
+                </IconButton>
+              </Tooltip>
             </Typography>
           </FormLabel>
           <Box marginTop={1}>

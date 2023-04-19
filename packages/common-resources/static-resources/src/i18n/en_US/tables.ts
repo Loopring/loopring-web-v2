@@ -298,6 +298,8 @@ export default {
   labelBlindBoxCalim: "Claim",
   labelBlindBoxExpired: "Expired",
   labelBlindBoxClaimed: "Claimed",
-  labelBlindBoxStartTime: "Start time: {{time}}",
+  labelBlindBoxStartTime: "Reveal Time: {{time}}",
+  labelBlindBoxExpiredTime: "Expiration Time: {{time}}",
   labelRedPacketOpen: "Open",
+  labelRedPacketSenderAddress: "Sender Address",
 };
