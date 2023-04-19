@@ -56,7 +56,9 @@ import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 
-export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
+export const RedPacketBg = styled(Box)<
+  BoxProps & { imageSrc?: string; type: string }
+>`
   display: flex;
   align-items: center;
   position: relative;
@@ -951,7 +953,6 @@ export const RedPacketDetail = ({
   relyAmount,
   ImageEle,
   showRelayText,
-  showShareBtn,
   tokenSymbol,
   detail,
   bottomButton,
@@ -1588,8 +1589,6 @@ export const RedPacketBlindBoxDetail = ({
   didClaimABlindBox,
   wonInfo,
   page,
-  totalCount,
-  remainCount,
   handlePageChange,
   totalClaimedNFTsCount,
   handlePageChange_BlindBox,
