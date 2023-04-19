@@ -408,7 +408,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const endMinDateTime = startDateTime
       ? moment.max(now, startDateTime.clone())
       : now;
-    const timeRangeMaxInSeconds = useNotify().notifyMap?.redPacket.timeRangeMaxInSeconds ?? 14 * 24 * 60 * 60;
+      
+    const timeRangeMaxInSeconds = tradeType === TRADE_TYPE.TOKEN 
+      ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken 
+      : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT
+      // ?? 14 * 24 * 60 * 60;
     const endMaxDateTime = startDateTime
       ? startDateTime.clone().add(timeRangeMaxInSeconds, 'seconds')
       : undefined;
