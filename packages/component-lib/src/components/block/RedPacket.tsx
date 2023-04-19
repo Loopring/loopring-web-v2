@@ -1511,7 +1511,6 @@ export const RedPacketPrepare = ({
             _info.sender.accountId === account.accountId
               ? () => {
                   if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-                    _info;
                     setShowRedPacket({
                       isShow: true,
                       step: RedPacketViewStep.BlindBoxDetail,
