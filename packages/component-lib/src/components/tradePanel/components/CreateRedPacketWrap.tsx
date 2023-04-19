@@ -493,7 +493,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   ...tradeData,
                   balance: tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
                     ? Math.min((tradeData.giftNumbers ?? 1) * REDPACKET_ORDER_NFT_LIMIT, tradeData.balance ?? 0)
-                    : Math.min((tradeData.numbers ?? 1) * REDPACKET_ORDER_NFT_LIMIT, tradeData.balance ?? 0),
+                    : tradeData.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
+                      ? Math.min(REDPACKET_ORDER_NFT_LIMIT, tradeData.balance ?? 0)
+                      : Math.min((tradeData.numbers ?? 1) * REDPACKET_ORDER_NFT_LIMIT, tradeData.balance ?? 0),
                 },
                 handleError: ({ belong, balance: _balance, tradeValue }: T) => {
                   // if (
