@@ -55,6 +55,7 @@ export type NFTMedaProps = {
 };
 export type RedPacketDefaultBg = RedPacketDefault & {
   content: JSX.Element;
+  className?: string;
 };
 export type RedPacketDefault = {
   type?: "default" | "official";
@@ -189,6 +190,7 @@ export type RedPacketBlindBoxDetailProps = {
   handlePageChange_BlindBox: (page: number, limit?: number) => void;
   // didClaimABlindBox: boolean;
   onClickClaimPopViewDetail: () => void
+  expired: boolean
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

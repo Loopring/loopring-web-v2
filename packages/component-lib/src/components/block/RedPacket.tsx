@@ -189,6 +189,23 @@ export const RedPacketBg = styled(Box)<
       heigh: 56px;
     }
   }
+  &.RedPacketClock {
+    .top {
+      height: 40px;
+      margin-top: 50px;
+    }
+    .middle {
+      margin-top: 40px;
+      height: 128px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .betweenEle {
+      top: 328px;
+    }
+  }
+  
 
   &.redPacketOpened {
     .top {
@@ -335,6 +352,7 @@ export const RedPacketQRCode = ({
 export const RedPacketBgDefault = ({
   type = "default",
   size = "middle",
+  className,
   content,
 }: RedPacketDefaultBg & any) => {
   const scale = RedPacketSize[size].width / 260;
@@ -345,7 +363,7 @@ export const RedPacketBgDefault = ({
       sx={{
         transform: `scale(${scale})`,
       }}
-      className={"redPacketOpen"}
+      className={className ?? "redPacketOpen"}
     >
       <Box
         className={"bg"}
@@ -641,22 +659,11 @@ export const RedPacketClock = ({
             </Box>
           </Box>
         </Box>
+        
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
           <Typography color={"inherit"}>{sender}</Typography>
         </Box>
-        <Box display={"flex"} className={"middle"} flexDirection={"column"}>
-          {ImageEle}
-          <Typography
-            color={"inherit"}
-            variant={"h4"}
-            whiteSpace={"pre-line"}
-            textAlign={"center"}
-            paddingX={2}
-            paddingTop={1}
-          >
-            {amountStr}
-          </Typography>
-          <Typography
+        <Typography
             color={"inherit"}
             variant={"body1"}
             whiteSpace={"pre-line"}
@@ -673,11 +680,13 @@ export const RedPacketClock = ({
             }}
             dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
           ></Typography>
+        <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+          {ImageEle}
         </Box>
       </>
     );
   }, [countDown]);
-  return <RedPacketBgDefault type={type} size={size} content={content} />;
+  return <RedPacketBgDefault className={"RedPacketClock"} type={type} size={size} content={content} />;
 };
 
 export const RedPacketUnready = ({
@@ -1607,7 +1616,8 @@ export const RedPacketBlindBoxDetail = ({
   handlePageChange_BlindBox,
   pageForBlindbox,
   totalBlindboxCount,
-  onClickClaimPopViewDetail
+  onClickClaimPopViewDetail,
+  expired
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
@@ -1839,7 +1849,6 @@ export const RedPacketBlindBoxDetail = ({
             flexDirection={"column"}
             alignItems={"center"}
             marginY={2}
-            overflow={"scroll"}
           >
             <Typography variant={"body1"}>{sender}</Typography>
             <Typography
@@ -1936,7 +1945,11 @@ export const RedPacketBlindBoxDetail = ({
                 }
                 <Typography
                   variant={"body2"}
-                  color={(type !== "Blind Box Started" && type !== "Not Started") ? theme.colorBase.warning : theme.colorBase.textSecondary}
+                  color={
+                    (type !== "Blind Box Started" && type !== "Not Started") 
+                      ? (expired ? theme.colorBase.textDisable : theme.colorBase.warning)
+                      : theme.colorBase.textSecondary
+                  }
                   marginTop={1}
                   textAlign={"center"}
                 >

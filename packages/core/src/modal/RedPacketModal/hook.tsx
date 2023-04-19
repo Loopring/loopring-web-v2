@@ -1205,10 +1205,10 @@ export function useRedPacketModal() {
           detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED
             ? detail.luckyToken.nftTokenInfo?.metadata?.imageSize.original
             : undefined,
-        description:
-          Date.now() > detail!.luckyToken.validUntil
-            ? t("labelBlindBoxExplainationEnded")
-            : t("labelBlindBoxExplainationNotEnded"),
+        description: "",
+          // Date.now() > detail!.luckyToken.validUntil
+          //   ? t("labelBlindBoxExplainationEnded")
+          //   : t("labelBlindBoxExplainationNotEnded"),
         claimButton,
         shareButton,
         didClaimABlindBox: blinBoxDetail.blindBoxStatus !== "",
@@ -1247,7 +1247,8 @@ export function useRedPacketModal() {
           redPacketBlindBoxDetailCall({}).then(() => {
             setBlindBoxType("Lottery Started")
           })
-        }
+        },
+        expired: Date.now() > detail!.luckyToken.nftExpireTime
       } as RedPacketBlindBoxDetailProps;
     } else {
       return undefined;

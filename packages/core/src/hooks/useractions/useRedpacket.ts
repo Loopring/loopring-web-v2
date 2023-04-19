@@ -254,6 +254,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
               });
             }
           } else if (difference > 0) {
+            // change here
             if (luckTokenInfo.sender.accountId === accountId) {
               if (luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
                 setShowRedPacket({
