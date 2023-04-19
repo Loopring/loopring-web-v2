@@ -2,7 +2,7 @@ import {
   AccountStatus,
   AmmInData,
   AmmJoinData,
-  defalutSlipage,
+  defaultSlipage,
   EmptyValueTag,
   IBData,
   LinkedIcon,
@@ -317,7 +317,7 @@ export const AmmDepositWrap = <
                             ? ammData.slippage
                             : ammCalcData.slippage
                             ? ammCalcData.slippage
-                            : defalutSlipage,
+                            : defaultSlipage,
                         }}
                       />
                     </PopoverPure>

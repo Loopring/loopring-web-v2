@@ -5,7 +5,7 @@ import {
   CheckedIcon,
   CoinInfo,
   CoinMap,
-  defalutSlipage,
+  defaultSlipage,
   EmptyValueTag,
   ExchangeIcon,
   getValuePrecisionThousand,
@@ -510,7 +510,7 @@ export const SwapTradeWrap = <
                       ? tradeData.slippage
                       : tradeCalcData.slippage
                       ? tradeCalcData.slippage
-                      : defalutSlipage) + "%"
+                      : defaultSlipage) + "%"
                   : EmptyValueTag}
               </Typography>
             </Grid>

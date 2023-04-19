@@ -5,7 +5,7 @@ import { Box, Grid, Popover, Switch, Tooltip, Typography } from "@mui/material";
 import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
 import {
   CexTradeCalcData,
-  defalutSlipage,
+  defaultSlipage,
   IBData,
   Info2Icon,
   myLog,
@@ -149,7 +149,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
             },
             type === "exchange" ? "exchange" : (`${type}To${to}` as any)
           );
-        myLog("hookswap panelEventNext", slippage, swapData.tradeData);
+        myLog("hookSwap panelEventNext", slippage, swapData.tradeData);
 
         if (typeof rest.onChangeEvent == "function") {
           setSwapData(rest.onChangeEvent(_index, { to, tradeData, type }));
@@ -208,13 +208,13 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
       // pipe(debounceTime(200))
 
       panelEventSubject.subscribe((result) => {
-        myLog("hookswap panelEventSubject", panelEventSubject);
+        myLog("hookSwap panelEventSubject", panelEventSubject);
         if (result) {
           panelEventNext(result);
         }
       });
       return () => {
-        // myLog("hookswap panelEventSubject unsubscribe", panelEventSubject);
+        // myLog("hookSwap panelEventSubject unsubscribe", panelEventSubject);
 
         panelEventSubject.unsubscribe();
       };
@@ -246,7 +246,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
         slippage: number | string,
         customSlippage: number | string | undefined
       ) => {
-        myLog("hookswap slippage", slippage, swapData.tradeData);
+        myLog("hookSwap slippage", slippage, swapData.tradeData);
         panelEventNext({
           _index: 0,
           swapData: {
@@ -382,7 +382,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                                 ? tradeData.slippage
                                 : tradeCalcData.slippage
                                 ? tradeCalcData.slippage
-                                : defalutSlipage
+                                : defaultSlipage
                             }
                             handleChange={(slippage, customSlippage) => {
                               onSlippageChangeCallBack(
