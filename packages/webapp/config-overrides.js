@@ -9,6 +9,8 @@ const {
 } = require("customize-cra");
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin"); //installed via npm
+
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 // const rewireLess = require('react-app-rewire-less')
@@ -89,25 +91,14 @@ module.exports = override(
 
   (config) => {
     config.output.publicPath = ASSET_PATH;
-    console.log(path.resolve(__dirname, "..", "assets/"));
-    console.log("-----> enter config!!!!!!!", process.env.NODE_ENV);
-
     const setConfig = (index) => {
       console.log("-----> enter setConfig!!!!!!! index:", index);
       let babelLoader = config.module.rules[1].oneOf[index];
       babelLoader.include = babelLoader.include.replace("/webapp/src", "");
       babelLoader.include = [
         babelLoader.include,
-        ...(process.env.NODE_ENV === "development"
-          ? [
-              // path.resolve(__dirname, "../../node_modules/@web3modal"),
-              // path.resolve(__dirname, "../../node_modules/@walletconnect"),
-              // path.resolve(
-              //   __dirname,
-              //   "../../node_modules/@walletconnect/ethereum-provider/"
-              // ),
-            ]
-          : []),
+        path.resolve(__dirname, "../../node_modules/@walletconnect"),
+        path.resolve(__dirname, "../../node_modules/@web3modal"),
       ];
       console.log(
         "-----> enter setConfig!!!!!!! include:",
@@ -115,7 +106,6 @@ module.exports = override(
       );
       config.module.rules[1].oneOf[index] = babelLoader;
     };
-
     setConfig(4);
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -123,7 +113,6 @@ module.exports = override(
       "@material-ui/core": "@mui/material",
       "@material-ui/core/Popover": "@mui/material/Popover",
     };
-
     return config;
   }
 );
