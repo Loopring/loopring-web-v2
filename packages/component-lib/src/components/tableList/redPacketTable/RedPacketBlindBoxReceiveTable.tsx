@@ -214,10 +214,11 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
               time: moment(row.rawData.luckyToken.validUntil).format('YYYY.MM.DD HH:mm')
             })} </>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
-            return <Box height={"100%"} display={"flex"} flexDirection={"column"} alignItems={"end"} justifyContent={"center"}>
-              <Typography>{t("labelBlindBoxOpend")}</Typography>
-              <Typography>x {row.rawData.claim.amount}</Typography>
-            </Box>
+            return <>{t("labelBlindBoxOpend")}</>
+            // return <Box height={"100%"} display={"flex"} flexDirection={"column"} alignItems={"end"} justifyContent={"center"}>
+            //   <Typography>{t("labelBlindBoxOpend")}</Typography>
+            //   {/* <Typography>x {row.rawData.claim.amount}</Typography> */}
+            // </Box>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) { 
             return <>{t("labelBlindBoxExpired")}</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) { 

@@ -321,7 +321,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
                 info: {
                   ...luckTokenInfo,
                   referrer: redPacketInfo.referrer,
-                  hideViewDetail: true
+                  hideViewDetail: accountId !== luckTokenInfo.sender.accountId
                 },
                 step: RedPacketViewStep.OpenPanel,
               });
