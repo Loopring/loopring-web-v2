@@ -1,4 +1,4 @@
-import { ToRightIcon } from "@loopring-web/common-resources";
+import { ConvertToIcon } from "@loopring-web/common-resources";
 import { MobileDateTimePicker } from "@mui/lab";
 import { TextField, Box } from "@mui/material";
 import styled from "@emotion/styled";
@@ -62,7 +62,7 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
           <TextField placeholder={t("labelBlindBoxStartTime")} {...params} />
         )}
       />
-      <ToRightIcon fontSize={"large"} htmlColor={"var(--color-text-third)"} />
+      <ConvertToIcon fontSize={"large"} htmlColor={"var(--color-text-third)"} />
       <MobileDateTimePicker
         onOpen={onEndOpen}
         value={endValue}
