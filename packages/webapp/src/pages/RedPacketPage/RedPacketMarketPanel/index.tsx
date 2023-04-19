@@ -165,7 +165,7 @@ export const RedPacketMarketPanel = ({
           luckTokenList.officialList.map((x) => ({
             ...x,
             isOfficial: true,
-            info: { ...x.info, memo: "skr" },
+            info: { ...x.info },
           }))
         )}
         {listMemo(
@@ -276,7 +276,7 @@ export const RedPacketMarketPanel = ({
                 size={"medium"}
                 color={"primary"}
                 onClick={() => {
-                  handlePageChange({ page: 0 });
+                  handlePageChange({ page: 1 });
                 }}
               >
                 {t("labelRefreshRedPacket")}

@@ -9,6 +9,7 @@ import SwipeableViews from "react-swipeable-views";
 import { CloseRedPacketIcon } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
+import { isEmpty } from "lodash";
 
 const BoxStyle = styled(Box)`
   .redPacketClose {
@@ -36,6 +37,10 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
     ...rest
   }: ModalRedPacketProps & WithTranslation) => {
     const theme = useTheme();
+    // console.log('isEmpty(panelList[step].view.props', isEmpty(panelList[step].view.props))
+    // console.log('isEmpty(panelList[step].view.props', panelList[step].view.props)
+    
+    
 
     return (
       <Modal
@@ -57,14 +62,17 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
             transform: "translateY(-50%) translateX(-50%)",
           }}
         >
-          <ModalCloseButton
+          
+          
+          {/* hide close button if view redpacket view not rendered */}
+          {!isEmpty(panelList[step].view.props) && <ModalCloseButton
             closeIcon={
               <CloseRedPacketIcon htmlColor={"var(--color-text-button)"} />
             }
             onClose={onClose}
             className={"redPacketClose"}
             {...rest}
-          />
+          />} 
           {onBack ? <ModalBackButton onBack={onBack} {...rest} /> : <></>}
           <SwipeableViews
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}

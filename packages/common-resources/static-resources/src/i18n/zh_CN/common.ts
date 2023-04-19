@@ -1308,7 +1308,7 @@ export default {
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelBlindBoxClaimWarning:
-    "Note：For NFT red packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
+    "If the recipients of the NFT Red Packets do not claim their received NFT within 3 days, the NFT will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxRecievedRedPackets: "Received NFT Red Packets",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
@@ -1329,9 +1329,10 @@ export default {
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyTokenViewType0: "Public Red Packet",
   labelLuckyTokenViewTypeDes0:
-    "Your Red Packet is shared privately with others via a custom QR code.",
+    "Your Red Packet is public, and everyone can try to claim a share of it.",
   labelSplit: "Red Packet Count",
   labelRedPacketMemo: "Memo",
+  labelRedPacketMemoPlaceholder: "Best wishes",
   labelRedPacketStart: "Available in",
   labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
@@ -1415,7 +1416,7 @@ export default {
   labelRedPacketStatusOVER_DUE: "Over Due", // OVER_DUE = 4,
   labelRedPacketStatusFAILED: "Failed", // FAILED = 5
   labelRedPacketStatusNotStarted: "Hasn’t started",
-  labelRedPacketStatusStarted: "Opened",
+  labelRedPacketStatusStarted: "Started",
   labelRedPacketStatusEnded: "Ended",
   labelRedPacketNo: "NO.{{value}}",
   labelRedPacketClaimInProgress: "Processing...",
@@ -1432,9 +1433,9 @@ export default {
   labelSeal: "Seal",
   labelOpenAfter: "Open after {{time}}",
   labelOpenStart: "Start",
-  labelTotalRedPacket: "Total {{value}}",
+  labelTotalRedPacket: "Quantity in total: {{value}}",
   labelMyRedPacketReward: "My Rewards",
-  labelRedpacketScanDes: "Using Loopring Wallet, scan the QR code.",
+  labelRedpacketScanDes: "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
   labelLuckyRedPacketStarted: "Red Packet is Started",
   labelNFTRedpacketBtn: "Send Red Packet",
   labelRedpacketDurationTitle: "Expires after",
@@ -1448,6 +1449,8 @@ export default {
   labelRedpacketNotActive: "Hide received Red Packets",
   labelRedpacketTokens: "ERC20 Tokens",
   labelRedpacketNFTS: "NFTs",
+  labelRedpacketBlindBox: "Blind Box",
+  labelRedpacketHideInactionable:  "Hide inactionable records",
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
   labelChooseNFTTooltips: "",
   tokenSelectNFTToken: "Select NFT",
@@ -1457,6 +1460,7 @@ export default {
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
+  labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:

@@ -357,14 +357,15 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     setShowClaimWithdraw(
       state,
       action: PayloadAction<
-        ModalStatePlayLoad & { claimToken: ClaimToken; claimType: CLAIM_TYPE }
+        ModalStatePlayLoad & { claimToken: ClaimToken; claimType: CLAIM_TYPE, successCallback?: () => void }
       >
     ) {
-      const { isShow, claimToken, claimType } = action.payload;
+      const { isShow, claimToken, claimType, successCallback } = action.payload;
       state.isShowClaimWithdraw = {
         isShow,
         claimToken,
         claimType,
+        successCallback
       };
     },
     setShowSideStakingRedeem(

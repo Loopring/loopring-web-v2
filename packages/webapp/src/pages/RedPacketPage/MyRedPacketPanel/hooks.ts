@@ -57,7 +57,7 @@ export const useMyRedPacketRecordTransaction = <
                 scopes: "0,1",
                 modes: "0,1,2",
                 partitions: "0,1",
-                statuses: "0,1,2,3,4",
+                statuses: "1,2,3,4",
                 official: false,
                 offset,
                 limit,
@@ -156,15 +156,87 @@ export const useMyRedPacketRecordTransaction = <
     },
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
-  const onItemClick = (item: sdk.LuckyTokenItemForReceive) => {
-    setShowRedPacket({
-      isShow: true,
-      info: {
-        ...item,
-        hash: item.hash,
-      },
-      step: RedPacketViewStep.QRCodePanel,
-    });
+  const onItemClick = async (item: sdk.LuckyTokenItemForReceive) => {
+    const resposne = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
+      hash: item.hash,
+    }, apiKey)
+    if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+      if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING && (resposne?.raw_data as any).blindBoxStatus === "") {
+        setShowRedPacket({
+          isShow: true,
+          info: {
+            ...item,
+            hash: item.hash,
+          },
+          step: RedPacketViewStep.OpenPanel,
+        });
+      } else {
+        setShowRedPacket({
+          isShow: true,
+          info: {
+            ...item,
+            hash: item.hash,
+          },
+          step: RedPacketViewStep.BlindBoxDetail,
+        });
+      }
+    } else {
+      if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING && !resposne?.detail.claimStatus) {
+        setShowRedPacket({
+          isShow: true,
+          info: {
+            ...item,
+            hash: item.hash,
+          },
+          step: RedPacketViewStep.OpenPanel,
+        });
+
+      } else {
+        setShowRedPacket({
+          isShow: true,
+          info: {
+            ...item,
+            hash: item.hash,
+          },
+          step: RedPacketViewStep.DetailPanel,
+        });
+      }
+    }
+    // if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING) {
+
+    // }
+    // if (resposne?.detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM) {
+    //   setShowRedPacket({
+    //     isShow: true,
+    //     info: {
+    //       ...item,
+    //       hash: item.hash,
+    //     },
+    //     step: RedPacketViewStep.OpenPanel,
+    //   });
+    // } else {
+    //   if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+    //     setShowRedPacket({
+    //       isShow: true,
+    //       info: {
+    //         ...item,
+    //         hash: item.hash,
+    //       },
+    //       step: RedPacketViewStep.BlindBoxDetail,
+    //     });
+    //   } else {
+    //     setShowRedPacket({
+    //       isShow: true,
+    //       info: {
+    //         ...item,
+    //         hash: item.hash,
+    //       },
+    //       step: RedPacketViewStep.DetailPanel,
+    //     });
+
+    //   }
+      
+    // }
   };
 
   return {
@@ -301,14 +373,27 @@ export const useMyRedPacketReceiveTransaction = <
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
 
-  const onItemClick = (item: sdk.LuckTokenHistory) => {
-    setShowRedPacket({
-      isShow: true,
-      step: RedPacketViewStep.DetailPanel,
-      info: {
-        ...item.luckyToken,
-      },
-    });
+  const onItemClick = (item: sdk.LuckTokenHistory, refreshCallback?: () => void) => {
+    if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.BlindBoxDetail,
+        info: {
+          ...item.luckyToken,
+          refreshCallback
+        },
+      });
+    } else {
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.DetailPanel,
+        info: {
+          ...item.luckyToken,
+          refreshCallback
+        },
+      });
+    }
+    
   };
   const onClaimItem = async (item: sdk.LuckTokenHistory) => {
     const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances({

@@ -215,9 +215,13 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
             return (
               <>
                 {t(
-                  row.type.partition == sdk.LuckyTokenAmountType.AVERAGE
-                    ? "labelRedPacketSendCommonTitle"
-                    : "labelRedPacketSenRandomTitle",
+                  row.type.mode === sdk.LuckyTokenClaimType.RELAY
+                    ? "labelLuckyRelayToken"
+                    : row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                      ? "labelLuckyBlindBox"
+                      : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
+                        ? "labelRedPacketSendCommonTitle"
+                        : "labelRedPacketSenRandomTitle",
                   { ns: "common" }
                 ) +
                   " — " +
@@ -322,7 +326,9 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           }
           rowHeight={RowConfig.rowHeight}
           onRowClick={(_index: number, row: R) => {
-            onItemClick(row.rawData);
+            onItemClick(row.rawData, () => {
+              handlePageChange({page})
+            });
           }}
           sortMethod={React.useCallback(
             (_sortedRows, sortColumn) => {

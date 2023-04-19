@@ -92,7 +92,9 @@ export type RedPacketOpenedProps = {
   memo: string;
   viewDetail: () => void;
 };
-export const RedPacketDetailLimit = 3;
+export const RedPacketDetailLimit = 6;
+export const RedPacketNFTDetailLimit = 3;
+export const RedPacketBlindBoxLimit = 8;
 export type RedPacketDetailProps = {
   redPacketType: 'normal' | 'lucky' | 'relay';
   sender: string;
@@ -116,6 +118,9 @@ export type RedPacketDetailProps = {
   tokenSymbol?: string;
   ended: boolean;
   bottomButton: 'ended' | 'share'
+  claimButton: 'claim' | 'claimed' | 'expired' | 'hidden'
+  onClickClaim?: () => void;
+  totalNumber: number;
 };
 export type RedPacketBlindBoxDetailTypes = 'Not Started' 
   | 'Blind Box Started' 
@@ -160,6 +165,7 @@ export type RedPacketBlindBoxDetailProps = {
     url: string;
   }
   onClickClaim?: () => void;
+  onClickClaim2?: () => void;
   onCloseOpenModal?: () => void;
   onClickClaimDetailBack?: () => void;
   description: string;
@@ -171,6 +177,14 @@ export type RedPacketBlindBoxDetailProps = {
     won: boolean;
     amount: number;
   }
+  page: number
+  totalCount: number
+  remainCount: number
+  handlePageChange: (page: number, limit?: number) => void;
+  totalClaimedNFTsCount: number
+  totalBlindboxCount: number
+  pageForBlindbox: number
+  handlePageChange_BlindBox: (page: number, limit?: number) => void;
   // didClaimABlindBox: boolean;
 };
 export type RedPacketClockProps = RedPacketDefault & {

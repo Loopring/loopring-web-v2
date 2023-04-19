@@ -9,7 +9,7 @@ import {
   Modal,
   IconButton,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   Account,
@@ -34,11 +34,13 @@ import { ModalStatePlayLoad } from "../../stores";
 import moment from "moment";
 import {
   RedPacketBlindBoxDetailProps,
+  RedPacketBlindBoxLimit,
   RedPacketClockProps,
   RedPacketDefault,
   RedPacketDefaultBg,
   RedPacketDetailLimit,
   RedPacketDetailProps,
+  RedPacketNFTDetailLimit,
   RedPacketOpenedProps,
   RedPacketOpenProps,
   RedPacketQRCodeProps,
@@ -506,6 +508,7 @@ export const RedPacketClock = ({
   amountStr,
   memo,
   showRedPacket,
+  ImageEle
 }: RedPacketDefault & RedPacketClockProps) => {
   const { t } = useTranslation("common");
   const anchorRef = React.useRef();
@@ -642,6 +645,7 @@ export const RedPacketClock = ({
           <Typography color={"inherit"}>{sender}</Typography>
         </Box>
         <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+          {ImageEle}
           <Typography
             color={"inherit"}
             variant={"h4"}
@@ -813,6 +817,7 @@ export const RedPacketOpened = ({
               "-webkit-box-orient": "vertical",
             }}
             dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+            width={300}
           />
         </Box>
         <Box display={"flex"} className={"footer"}>
@@ -938,7 +943,7 @@ export const RedPacketDetail = ({
   amountStr,
   // _amountClaimStr,
   memo,
-  page = 1,
+  // page = 1,
   claimList,
   // detail,
   // detail,
@@ -954,29 +959,44 @@ export const RedPacketDetail = ({
   showShareBtn,
   tokenSymbol,
   detail,
-  bottomButton
+  bottomButton,
+  page,
+  onClickClaim,
+  claimButton,
+  totalNumber
 }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const showLucky =
-    [
-      sdk.LuckyTokenItemStatus.OVER_DUE,
-      sdk.LuckyTokenItemStatus.COMPLETED,
-    ].includes(detail.luckyToken.status) ||
     detail.luckyToken.tokenAmount.remainCount == 0;
-  const pageNation = React.useMemo(() => {
-    if (totalCount - remainCount - RedPacketDetailLimit > 0) {
-      return (
-        <TablePagination
-          page={page}
-          pageSize={RedPacketDetailLimit}
-          total={totalCount - remainCount}
-          onPageChange={handlePageChange}
-        />
-      );
-    } else {
-      return <></>;
-    }
-  }, []);
+  const limit = detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit;
+  const pageNation = (totalNumber - limit > 0) && (
+    <TablePagination
+      page={page}
+      pageSize={limit}
+      total={totalNumber}
+      onPageChange={(_page) => {
+        handlePageChange(_page)
+      }}
+    />
+  )
+    // if (totalCount - remainCount -  limit > 0) {
+    //   return (
+    //     <TablePagination
+    //       page={page}
+    //       pageSize={limit}
+    //       total={totalCount - remainCount}
+    //       onPageChange={(_page) => {
+    //         debugger
+    //         setPage(_page)
+    //         handlePageChange(_page)
+    //       }}
+    //     />
+    //   );
+    // } else {
+    //   return <></>;
+    // }
+  // }, [page, setPage]);
+  // const claimButton = "claim"
 
   return (
     <BoxStyle
@@ -1134,7 +1154,7 @@ export const RedPacketDetail = ({
                           alignItems={"center"}
                           variant={"body2"}
                         >
-                          {item.helper}
+                          {item.helper} Help
                         </Typography>
                       )}
                       {showLucky &&
@@ -1177,8 +1197,50 @@ export const RedPacketDetail = ({
       </Box>
       {/* {showShareBtn && ( */}
       <Box paddingX={1} display={"flex"} flexDirection={"column"}>
-        {bottomButton === 'ended'
+        {
+          claimButton === 'claim' 
+            ? <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+              {t("labelClaimBtn")}
+            </Button>
+            : (claimButton === 'expired' && bottomButton === 'ended')
+            ? <Button variant={"contained"} fullWidth disabled>
+              {t("labelClaimBtnExpired")}
+            </Button>
+            : (claimButton === 'claimed' && bottomButton === 'ended')
+            ? <Button variant={"contained"} fullWidth disabled>
+              {t("labelClaimBtnClaimed")}
+            </Button>
+            : <></>
+        }
+        {bottomButton === 'share'
           ? (
+            claimButton === 'claim'
+            ?  (
+            <Button
+              variant={"text"}
+              size={"small"}
+              onClick={onShared}
+            >
+              {t("labelRedPacketGrab")}
+            </Button>)
+            : (
+              <Button
+                variant={"contained"}
+                color={"error"}
+                sx={{
+                  backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                  "&:hover": {
+                    backgroundColor: RedPacketColorConfig.default.colorTop as any,
+                  },
+                }}
+                fullWidth={true}
+                onClick={onShared}
+              >
+                {t("labelRedPacketGrab")}
+              </Button>
+              )
+            ) 
+          : (claimButton === 'hidden' && (
             <Button
               variant={"contained"}
               color={"error"}
@@ -1193,22 +1255,7 @@ export const RedPacketDetail = ({
             >
               {t("labelRedPacketEnded")}
             </Button>
-          )
-          : (
-            <Button
-              variant={"contained"}
-              color={"error"}
-              sx={{
-                backgroundColor: RedPacketColorConfig.default.colorTop as any,
-                "&:hover": {
-                  backgroundColor: RedPacketColorConfig.default.colorTop as any,
-                },
-              }}
-              fullWidth={true}
-              onClick={onShared}
-            >
-              {t("labelRedPacketGrab")}
-            </Button>)
+          ))
         }
 
         {showRelayText && (
@@ -1224,7 +1271,9 @@ export const RedPacketDetail = ({
 
               tOptions={{
                 number: relyNumber ? relyNumber : EmptyValueTag,
-                amount: relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : '')
+                amount: (relyAmount && !sdk.toBig(relyAmount).isZero())
+                  ? relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : '')
+                  : EmptyValueTag
               }}
             >
               have
@@ -1540,17 +1589,50 @@ export const RedPacketBlindBoxDetail = ({
   showOpenLottery,
   wonNFTInfo,
   onClickClaim,
+  onClickClaim2,
   onCloseOpenModal,
   onClickClaimDetailBack,
   description,
   shareButton,
   claimButton,
   didClaimABlindBox,
-  wonInfo
+  wonInfo,
+  page,
+  totalCount,
+  remainCount,
+  handlePageChange,
+  totalClaimedNFTsCount,
+  handlePageChange_BlindBox,
+  pageForBlindbox,
+  totalBlindboxCount
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
   const emptyImg = theme.mode === "dark" ? temp1 : temp2;
+
+  const pageNation = (totalClaimedNFTsCount - RedPacketNFTDetailLimit > 0) && (
+    <Box width={"100%"}>
+      <TablePagination
+        page={page}
+        pageSize={RedPacketNFTDetailLimit}
+        total={totalClaimedNFTsCount}
+        onPageChange={(_page) => {
+          handlePageChange(_page)
+        }}
+      />
+    </Box>
+  )
+  const pageNationBlindBox = (totalBlindboxCount - RedPacketBlindBoxLimit > 0) && (
+    <TablePagination
+      page={pageForBlindbox}
+      pageSize={RedPacketBlindBoxLimit}
+      total={totalBlindboxCount}
+      onPageChange={(_page) => {
+        handlePageChange_BlindBox(_page)
+      }}
+    />
+  )
+  console.log('totalBlindboxCount', totalBlindboxCount)
 
   return (
     <BlindBoxDetailBoxStyle
@@ -1610,7 +1692,7 @@ export const RedPacketBlindBoxDetail = ({
                 {t("labelClaimBtn")}
               </Button> */}
               {wonNFTInfo && (
-                <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+                <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
                   {t("labelClaimBtn")}
                 </Button>
               )}
@@ -1704,7 +1786,7 @@ export const RedPacketBlindBoxDetail = ({
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        *{info.amount}
+                        *1
                       </Typography>
                     </Typography>
                     <Typography
@@ -1726,6 +1808,7 @@ export const RedPacketBlindBoxDetail = ({
                   </BoxClaim>
                 );
               })}
+            {pageNationBlindBox}
           </Box>
         </Box>
       ) : (
@@ -1959,13 +2042,13 @@ export const RedPacketBlindBoxDetail = ({
                               >
                                 {info.who}
                               </Typography>
-                              <Typography
+                              {/* <Typography
                                 variant={"body1"}
                                 component={"span"}
                                 color={"textPrimary"}
                               >
                                 *{info.amount}
-                              </Typography>
+                              </Typography> */}
                             </Typography>
                             <Typography
                               component={"span"}
@@ -1977,9 +2060,9 @@ export const RedPacketBlindBoxDetail = ({
                               <Typography
                                 variant={"body2"}
                                 component={"span"}
-                                color={"textThird"}
+                                color={"textPrimary"}
                               >
-                                {moment(info.when).fromNow()}
+                                x {info.amount}
                               </Typography>
                               <Typography display={"inline"}></Typography>
                             </Typography>
@@ -2021,6 +2104,7 @@ export const RedPacketBlindBoxDetail = ({
                       );
                     })}
                   </Box>
+                  {pageNation}
                 </Box>
               </>
             )}

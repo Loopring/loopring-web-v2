@@ -380,6 +380,9 @@ export enum EXPLORE_TYPE {
   NFTMINT = "nftMint",
   NFTWITHDRAW = "nftWithdraw",
   NFTTRANSFER = "nftTransfer",
+  NFTSEND_BACK_LUCKY_TOKEN = "nftTransfer",
+  NFTSEND_LUCKY_TOKEN = "nftTransfer",
+  NFTWITHDRAW_LUCKY_TOKEN = "nftWithdraw",
 }
 
 /**
@@ -453,6 +456,8 @@ export type LuckyRedPacketItem = {
   desKey: string;
   showInNFTS?: boolean;
   showInERC20?: boolean;
+  defaultForERC20?: boolean;
+  defaultForNFT?: boolean;
   value: {
     value: number;
     partition: sdk.LuckyTokenAmountType;

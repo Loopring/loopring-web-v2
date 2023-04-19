@@ -324,6 +324,7 @@ export const RedPacketQRCodeSvg = React.memo(
     ) => {
       const [[textContent1, textContent2], setTextContent] = React.useState([
         textContent,
+        // "textContentdaskdjhkas jhdkjashdkjhaskjdhsakjhdkashd",
         "",
       ]);
       // const imageRef = React.useRef<any>();
@@ -560,7 +561,7 @@ export const RedPacketQRCodeSvg = React.memo(
                   textAnchor: "middle",
                   fontSize: "14px",
                 }}
-                dangerouslySetInnerHTML={{ __html: sanitize(textContent2) }}
+                dangerouslySetInnerHTML={{ __html: textContent2 && sanitize(textContent2.length > 12 ? (textContent2.slice(0, 12) + "...") : textContent2 ) }}
               />
             </g>
             <g transform={`translate(167 ${station[3]})`}>
@@ -589,13 +590,13 @@ export const RedPacketQRCodeSvg = React.memo(
                 style={{
                   dominantBaseline: "central",
                   textAnchor: "middle",
-                  fontSize: "11px",
+                  fontSize: "10px",
                 }}
               >
                 {textType}
               </text>
             </g>
-            <g transform={"translate(167 438)"}>
+            <g transform={"translate(167 434)"}>
               <text
                 id={"textSendBy"}
                 strokeWidth="0"
@@ -605,13 +606,13 @@ export const RedPacketQRCodeSvg = React.memo(
                 style={{
                   dominantBaseline: "central",
                   textAnchor: "middle",
-                  fontSize: "14px",
+                  fontSize: "12px",
                 }}
               >
-                {textDes}
+                {textDes.split(" ").slice(0, Math.ceil(textDes.split(" ").length / 2)).join(" ")}
               </text>
             </g>
-            <g transform={"translate(167 466)"}>
+            <g transform={"translate(167 452)"}>
               <text
                 id={"textSendBy"}
                 strokeWidth="0"
@@ -621,7 +622,23 @@ export const RedPacketQRCodeSvg = React.memo(
                 style={{
                   dominantBaseline: "central",
                   textAnchor: "middle",
-                  fontSize: "14px",
+                  fontSize: "12px",
+                }}
+              >
+                {textDes.split(" ").slice(Math.ceil(textDes.split(" ").length / 2)).join(" ")}
+              </text>
+            </g>
+            <g transform={"translate(167 470)"}>
+              <text
+                id={"textSendBy"}
+                strokeWidth="0"
+                fill={fontColor}
+                x="1"
+                y="1"
+                style={{
+                  dominantBaseline: "central",
+                  textAnchor: "middle",
+                  fontSize: "12px",
                 }}
                 dangerouslySetInnerHTML={{ __html: textSendBy }}
               />

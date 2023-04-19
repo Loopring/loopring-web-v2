@@ -192,11 +192,13 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             return (
               <>
                 {t(
-                  row.type.mode == sdk.LuckyTokenClaimType.BLIND_BOX
-                    ? "labelLuckyBlindBox"
-                    : row.type.partition == sdk.LuckyTokenAmountType.AVERAGE
-                      ? "labelRedPacketSendCommonTitle"
-                      : "labelRedPacketSenRandomTitle",
+                  row.type.mode === sdk.LuckyTokenClaimType.RELAY
+                    ? "labelLuckyRelayToken"
+                    : row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                      ? "labelLuckyBlindBox"
+                      : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
+                        ? "labelRedPacketSendCommonTitle"
+                        : "labelRedPacketSenRandomTitle",
                   
                   { ns: "common" }
                 ) +
@@ -225,18 +227,18 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             return <>{found ? found[1] : ''}</> 
           },
         },
-        {
-          key: "Number",
-          sortable: true,
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          name: t("labelRecordNumber"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
-            );
-          },
-        },
+        // {
+        //   key: "Number",
+        //   sortable: true,
+        //   cellClass: "textAlignCenter",
+        //   headerCellClass: "textAlignCenter",
+        //   name: t("labelRecordNumber"),
+        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
+        //     return (
+        //       <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
+        //     );
+        //   },
+        // },
         {
           key: "Time",
           sortable: true,

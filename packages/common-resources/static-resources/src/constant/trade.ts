@@ -587,6 +587,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyBlindBox",
     desKey: "labelLuckyBlindBoxDes",
+    defaultForNFT: true,
     showInNFTS: true,
     value: {
       value: 3,
@@ -599,6 +600,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     desKey: "labelRedPacketsSplitLuckyDetail",
     showInNFTS: true,
     showInERC20: true,
+    defaultForERC20: true,
     value: {
       value: 1,
       partition: sdk.LuckyTokenAmountType.RANDOM,

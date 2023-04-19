@@ -40,6 +40,7 @@ import {
   TradeBtnStatus,
   GoodIcon,
   REDPACKET_ORDER_NFT_LIMIT,
+  REDPACKET_SHOW_NFTS,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -58,6 +59,11 @@ import moment from "moment";
 import { NFTInput } from "./BasicANFTTrade";
 import { DateTimeRangePicker } from "../../datetimerangepicker";
 import BigNumber from "bignumber.js";
+
+const StyledTextFiled = styled(TextField)`
+
+  
+`
 
 const RedPacketBoxStyle = styled(Box)`
   padding-top: ${({ theme }) => theme.unit}px;
@@ -216,9 +222,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 // { isFait: true }
               ) +
               " " +
-              total.gt(1)
-                ? "NFTs"
-                : "NFT",
+              (total.gt(1) ? "NFTs" : "NFT"),
             splitValue:
               getValuePrecisionThousand(
                 splitValue.toFixed(0, 1),
@@ -585,19 +589,19 @@ export const CreateRedPacketStepWrap = withTranslation()(
               placeholderText={t("labelQuantity")}
               isHideError={false}
               isShowCoinInfo={false}
-              handleError={(data: any) => {
-                handleOnDataChange({
-                  giftNumbers: data.tradeValue,
-                } as unknown as Partial<T>);
-                return {
-                  error:
-                    tradeData.giftNumbers &&
-                    tradeData.numbers &&
-                    tradeData.giftNumbers > tradeData.numbers
-                      ? true
-                      : false,
-                };
-              }}
+              // handleError={(data: any) => {
+              //   handleOnDataChange({
+              //     giftNumbers: data.tradeValue,
+              //   } as unknown as Partial<T>);
+              //   return {
+              //     error:
+              //       tradeData.giftNumbers &&
+              //       tradeData.numbers &&
+              //       tradeData.giftNumbers > tradeData.numbers
+              //         ? true
+              //         : false,
+              //   };
+              // }}
               name={"giftnumbers"}
               order={"right"}
               handleCountChange={(data) => {
@@ -616,13 +620,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
               coinMap={{}}
               coinPrecision={undefined}
               disabled={disabled}
-              inputError={
-                tradeData.giftNumbers &&
-                tradeData.numbers &&
-                tradeData.giftNumbers > tradeData.numbers
-                  ? { error: true }
-                  : { error: false }
-              }
+              // inputError={
+              //   tradeData.giftNumbers &&
+              //   tradeData.numbers &&
+              //   tradeData.giftNumbers > tradeData.numbers
+              //     ? { error: true }
+              //     : { error: false }
+              // }
             />
           </Box>
         )}
@@ -652,7 +656,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
           />
         </Box>
         <Box marginY={1} display={"flex"} alignSelf={"stretch"}>
-          <TextField
+          <StyledTextFiled
             label={
               <Typography component={"span"} color={"var(--color-text-third)"}>
                 {t("labelRedPacketMemo")}
@@ -665,7 +669,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
               } as unknown as Partial<T>)
             }
             size={"large"}
-            inputProps={{ maxLength: 25 }}
+            inputProps={{ 
+              placeholder: t("labelRedPacketMemoPlaceholder"),
+              maxLength: 25
+            }}
             fullWidth={true}
           />
         </Box>
@@ -707,8 +714,16 @@ export const CreateRedPacketStepWrap = withTranslation()(
               endMinDateTime={endMinDateTime}
               endMaxDateTime={endMaxDateTime}
               onEndChange={(m) => {
+                // debugger
+                const maximunTimestamp = startDateTime 
+                  ? moment(startDateTime).add(7, 'days').toDate().getTime()
+                  : 0
                 handleOnDataChange({
-                  validUntil: m ? m.toDate().getTime() : undefined,
+                  validUntil: m 
+                    ? m.toDate().getTime() > maximunTimestamp
+                      ? maximunTimestamp
+                      : m.toDate().getTime()
+                    : undefined,
                 } as unknown as Partial<T>);
               }}
               customeEndInputPlaceHolder={
@@ -783,19 +798,21 @@ export const CreateRedPacketStepWrap = withTranslation()(
               </Typography>
               {dropdownStatus === "up" && (
                 <FeeTokenItemWrapper padding={2}>
-                  <Typography
-                    component={"span"}
-                    variant={"body2"}
-                    color={"var(--color-text-third)"}
-                    marginBottom={1}
-                  >
-                    {t("labelL2toL2FeeChoose")}
-                  </Typography>
-                  <FeeToggle
-                    chargeFeeTokenList={chargeFeeTokenList}
-                    handleToggleChange={handleToggleChange}
-                    feeInfo={feeInfo}
-                  />
+                  <Box display={"flex"} flexDirection={"column"}>
+                    <Typography
+                      component={"span"}
+                      variant={"body2"}
+                      color={"var(--color-text-third)"}
+                      marginBottom={1}
+                    >
+                      {t("labelL2toL2FeeChoose")}
+                    </Typography>
+                    <FeeToggle
+                      chargeFeeTokenList={chargeFeeTokenList}
+                      handleToggleChange={handleToggleChange}
+                      feeInfo={feeInfo}
+                    />
+                  </Box>
                 </FeeTokenItemWrapper>
               )}
             </>
@@ -1211,7 +1228,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
             </CardStyleItem>
           </Grid>
           <Grid item xs={6} display={"flex"} marginBottom={2}>
-            <CardStyleItem
+            {REDPACKET_SHOW_NFTS && <CardStyleItem
               className={
                 tradeType === "NFT"
                   ? "btnCard column selected"
@@ -1240,7 +1257,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                   {t("labelRedpacketNFTS")}
                 </Typography>
               </CardContent>
-            </CardStyleItem>
+            </CardStyleItem>}
           </Grid>
         </Grid>
         <Box width={"100%"}>

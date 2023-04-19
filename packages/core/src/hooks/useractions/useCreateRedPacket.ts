@@ -52,6 +52,7 @@ import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRedPacketConfig } from "../../stores/redPacket";
 import { useHistory } from "react-router-dom";
+import { LuckTokenAPI } from "@loopring-web/loopring-sdk";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
@@ -280,9 +281,10 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers > 0 &&
       redPacketOrder.validUntil &&
       redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
-      _tradeData.tradeValue &&
-      redPacketOrder.memo &&
-      redPacketOrder.memo?.trim().length > 0
+      _tradeData.tradeValue 
+      // &&
+      // redPacketOrder.memo &&
+      // redPacketOrder.memo?.trim().length > 0
     ) {
       let tradeToken: any = {},
         balance,
@@ -329,16 +331,23 @@ export const useCreateRedPacket = <
       } else {
         balance = redPacketOrder.balance ?? 0;
         tradeValue = sdk.toBig(redPacketOrder.tradeValue ?? 0);
-        isExceedBalance = false 
-        const eachValue =  redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+        if (redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE) {
+          // console.log('isExceedBalance = tradeValue.times(redPacketOrder.giftNumbers ?? 1).gt(balance)', redPacketOrder.numbers, balance, tradeValue.toString())
+          isExceedBalance = tradeValue.times(redPacketOrder.numbers ?? 1).gt(balance)
+        } else {
+          isExceedBalance = tradeValue.gt(balance)
+        }
+        const eachValue = redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
           ? sdk.toBig(redPacketOrder.tradeValue ?? 0).div(redPacketOrder.giftNumbers ?? 1)
           : sdk.toBig(_tradeData.eachValue ?? 0);
         tooSmall = eachValue.lt(1);
         tooLarge = tradeValue
           .div(
-            redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-            ? (redPacketOrder.giftNumbers ?? 1)
-            : (redPacketOrder.numbers ?? 1)
+            redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE 
+            ? 1
+            : redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+              ? (redPacketOrder.giftNumbers ?? 1)
+              : (redPacketOrder.numbers ?? 1)
           )
           .gt(REDPACKET_ORDER_NFT_LIMIT);
       }
@@ -362,7 +371,7 @@ export const useCreateRedPacket = <
         disableBtn();
         if (!redPacketConfigs?.luckTokenAgents) {
           setLabelAndParams("labelRedPacketWaitingBlock", {});
-        } else if (isExceedBalance && tradeValue.gt(balance)) {
+        } else if (isExceedBalance) {
           setLabelAndParams("labelRedPacketsInsufficient", {
             symbol:
               (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN
@@ -397,7 +406,14 @@ export const useCreateRedPacket = <
                     ),
                     symbol: tradeToken.symbol,
                   }
-                : { value: 1, symbol: "NFT" }
+                : { value: 
+                    redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
+                      ? redPacketOrder.giftNumbers
+                      : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE 
+                        ? 1 
+                        : redPacketOrder.numbers, 
+                    symbol: "NFT" 
+                  }
             );
           } else {
             let value =
@@ -421,7 +437,7 @@ export const useCreateRedPacket = <
               ? {
                   value: getValuePrecisionThousand(
                     sdk
-                      .toBig(tradeToken.luckyTokenAmounts.maximum ?? 0)
+                      .toBig(tradeToken.luckyTokenAmounts.maximu ?? 0)
                       .div("1e" + tradeToken.decimals),
                     tradeToken.precision,
                     tradeToken.precision,
@@ -431,7 +447,12 @@ export const useCreateRedPacket = <
                   ),
                   symbol: tradeToken.symbol,
                 }
-              : { value: REDPACKET_ORDER_NFT_LIMIT, symbol: "NFT" }
+              : { value: sdk.toBig(REDPACKET_ORDER_NFT_LIMIT).times(
+                redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                  ? (redPacketOrder.giftNumbers ?? 1)
+                  : (redPacketOrder.numbers ?? 1)
+                ), symbol: "NFT"
+              }
           );
         } else if (blindBoxGiftsLargerThanPackets) {
           setLabelAndParams("labelRedPacketsGiftsLargerThanPackets", {});
@@ -529,7 +550,6 @@ export const useCreateRedPacket = <
             step: AccountStep.RedPacketSend_In_Progress,
           });
           await sdk.sleep(TOAST_TIME);
-
           setShowAccount({
             isShow: true,
             step: AccountStep.RedPacketSend_Success,
@@ -540,16 +560,22 @@ export const useCreateRedPacket = <
               shared:
                 request.type.scope == sdk.LuckyTokenViewType.PUBLIC
                   ? () => {
+                    LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
+                      hash: (response as sdk.TX_HASH_API).hash!,
+                    }, apiKey).then(response => {
                       setShowAccount({ isShow: false });
                       setShowRedPacket({
                         isShow: true,
                         info: {
-                          // ...luckTokenInfo,
-                          sender: account.accountId,
-                          hash: (response as sdk.TX_HASH_API).hash,
+                          ...response.detail.luckyToken,
+                          // sender: account,
+                          // hash: (response as sdk.TX_HASH_API).hash,
                         },
                         step: RedPacketViewStep.QRCodePanel,
                       });
+
+                    })
+                      
                     }
                   : undefined,
             },
@@ -577,7 +603,6 @@ export const useCreateRedPacket = <
               isShow: true,
               info: {
                 ...blindBoxRepspnse.raw_data.luckyToken,
-                sender: account.accountId,
                 hash: (response as sdk.TX_HASH_API).hash,
               },
               step: RedPacketViewStep.QRCodePanel,
@@ -684,10 +709,10 @@ export const useCreateRedPacket = <
         redPacketOrder.numbers > 0 &&
         _tradeData.tradeValue &&
         redPacketOrder.type &&
-        redPacketOrder.memo &&
+        // redPacketOrder.memo &&
         redPacketOrder?.validUntil &&
         redPacketConfigs?.luckTokenAgents &&
-        redPacketOrder.memo?.trim().length > 0 &&
+        // redPacketOrder.memo?.trim().length > 0 &&
         eddsaKey?.sk
       ) {
         try {
@@ -742,7 +767,7 @@ export const useCreateRedPacket = <
             },
             numbers: redPacketOrder.numbers,
             giftNumbers: redPacketOrder.giftNumbers!,
-            memo: redPacketOrder.memo ?? "",
+            memo: redPacketOrder.memo ? redPacketOrder.memo : "Best wishes",
             signerFlag: false as any,
             nftData:
               redPacketOrder.tradeType === TRADE_TYPE.NFT
