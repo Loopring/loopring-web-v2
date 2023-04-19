@@ -99,7 +99,8 @@ export type NOTIFICATION = {
   };
   campaignTagConfig?: CAMPAIGNTAGCONFIG;
   redPacket: {
-    timeRangeMaxInSeconds: number;
+    timeRangeMaxInSecondsToken: number;
+    timeRangeMaxInSecondsNFT: number;
     showNFT: boolean
   }
 };
