@@ -70,6 +70,7 @@ export type RedPacketTimeoutProps = RedPacketDefault & {
 export type RedPacketQRCodeProps = {
   url: string;
   imageEleUrl?: string;
+  qrCodeG?: string
 } & RedPacketQRPropsExtends;
 export type RedPacketOpenProps = {
   sender: string;

@@ -30,7 +30,7 @@ import {
 import QRCodeStyling from "qr-code-styling";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { RedPacketViewStep } from "../modal";
-import { ModalStatePlayLoad } from "../../stores";
+import { ModalStatePlayLoad, setShowRedPacket } from "../../stores";
 import moment from "moment";
 import {
   RedPacketBlindBoxDetailProps,
@@ -255,41 +255,24 @@ export const RedPacketQRCode = ({
   type = "default",
   imageEleUrl,
   url,
+  qrCodeG,
   ...rest
 }: RedPacketDefault & RedPacketQRCodeProps) => {
   const qrcodeRef = React.createRef<SVGGElement>();
   const ref = React.useRef();
-  const colorConfig = RedPacketColorConfig[type];
-  const qrCode = new QRCodeStyling({
-    type: "svg",
-    // data: url,
-    width: 160,
-    height: 160,
-    image: `${SoursURL + "svg/loopring.svg"}`,
-    dotsOptions: {
-      color: colorConfig.qrColor,
-      type: "dots",
-    },
-    backgroundOptions: {
-      color: "#ffffff", //colorConfig.bgColor
-    },
-    imageOptions: {
-      crossOrigin: "anonymous",
-      margin: 4,
-    },
-  });
-  const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined);
+  
+  // const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined);
 
-  const updateSvg = React.useCallback(async () => {
-    qrCode.update({
-      data: url,
-    });
-    const svgEle = await qrCode._getElement("svg");
-    setQrCodeG(svgEle?.innerHTML);
-  }, [url]);
-  React.useEffect(() => {
-    updateSvg();
-  }, [url]);
+  // const updateSvg = React.useCallback(async () => {
+  //   qrCode.update({
+  //     data: url,
+  //   });
+  //   const svgEle = await qrCode._getElement("svg");
+  //   setQrCodeG(svgEle?.innerHTML);
+  // }, [url]);
+  // React.useEffect(() => {
+  //   updateSvg();
+  // }, [url]);
   const onClick = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
     try {
       // @ts-ignore-start
@@ -1521,7 +1504,7 @@ export const RedPacketPrepare = ({
           onOpen={() => {
             setShowRedPacket({
               isShow: true,
-              step: RedPacketViewStep.OpenPanel,
+              step: RedPacketViewStep.Loading,
               info: _info,
             });
             onOpen();

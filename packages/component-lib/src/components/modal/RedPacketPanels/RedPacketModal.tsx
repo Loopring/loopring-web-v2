@@ -4,6 +4,7 @@ import {
   ModalBackButton,
   ModalCloseButton,
   ModalRedPacketProps,
+  RedPacketViewStep,
 } from "../../../index";
 import SwipeableViews from "react-swipeable-views";
 import { CloseRedPacketIcon } from "@loopring-web/common-resources";
@@ -20,8 +21,8 @@ const BoxStyle = styled(Box)`
 
     //transform: translateY(-50%) translateX(-50%);
     //left: 50%;
-    top: ${({ theme }) => 4 * theme.unit}px;
-    right: -${({ theme }) => theme.unit}px;
+    top: ${({ theme }) => 3.5 * theme.unit}px;
+    right: ${({ theme }) => 16 * theme.unit}px;
   }
 `;
 
@@ -65,7 +66,7 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
           
           
           {/* hide close button if view redpacket view not rendered */}
-          {!isEmpty(panelList[step].view.props) && <ModalCloseButton
+          {(step !== RedPacketViewStep.Loading && !isEmpty(panelList[step].view.props)) && <ModalCloseButton
             closeIcon={
               <CloseRedPacketIcon htmlColor={"var(--color-text-button)"} />
             }
