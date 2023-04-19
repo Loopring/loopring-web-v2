@@ -10,6 +10,7 @@ import {
   Info2Icon,
   myLog,
   OrderListIcon,
+  RecordTabIndex,
   SCENARIO,
   SlippageTolerance,
   SwapSettingIcon,
@@ -30,7 +31,6 @@ import { TagIconList } from "../../block";
 import { useSettings } from "../../../stores";
 import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
-import { RecordTabIndex } from "@loopring-web/webapp/src/pages/AssetPage/HistoryPanel";
 
 const PopoverStyled = styled(Popover)`
   .MuiPaper-elevation2 {

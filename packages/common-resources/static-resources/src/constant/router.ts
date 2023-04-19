@@ -570,3 +570,16 @@ export const stakeAdvice: InvestAdvice = {
   desI18n: "labelInvestStakeLRCDes",
   enable: true,
 };
+
+export enum RecordTabIndex {
+  transactions = "transactions",
+  trades = "trades",
+  ammRecords = "ammRecords",
+  orders = "orders",
+  // orderOpenTable = "orderOpenTable",
+  // orderHistoryTable = "orderHistoryTable",
+  defiRecords = "defiRecords",
+  dualRecords = "dualRecords",
+  sideStakingRecords = "sideStakingRecords",
+  cexSwapRecords = "CexSwap",
+}
