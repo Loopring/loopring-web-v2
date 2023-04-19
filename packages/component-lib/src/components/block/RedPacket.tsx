@@ -56,9 +56,7 @@ import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -115,7 +113,6 @@ export const RedPacketBg = styled(Box)<
         font-size: 28px;
         font-weight: 900;
         transform: translate(-50%, -50%);
-        z-index: 100;
         left: 50%;
         top: -50%;
         .hours,
@@ -183,7 +180,7 @@ export const RedPacketBg = styled(Box)<
       display: flex;
       align-items: center;
       justify-content: center;
-      heigh: 56px;
+      height: 56px;
     }
   }
 
@@ -669,7 +666,7 @@ export const RedPacketClock = ({
               "-webkit-box-orient": "vertical",
             }}
             dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
-          ></Typography>
+          />
         </Box>
       </>
     );
@@ -746,7 +743,7 @@ RedPacketDefault & RedPacketUnreadyProps) => {
               "-webkit-box-orient": "vertical",
             }}
             dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
-          ></Typography>
+          />
         </Box>
       </Box>
     );
@@ -1670,9 +1667,9 @@ export const RedPacketBlindBoxDetail = ({
                 {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
               </Typography>
               {wonNFTInfo ? (
-                <img width={"40%"} src={wonNFTInfo.url}></img>
+                <img width={"40%"} alt={""} src={wonNFTInfo.url} />
               ) : (
-                <img src={emptyImg}></img>
+                <img src={emptyImg} alt={""} />
               )}
               <Link
                 marginBottom={3}
@@ -1798,7 +1795,7 @@ export const RedPacketBlindBoxDetail = ({
                       >
                         {moment(info.when).fromNow()}
                       </Typography>
-                      <Typography display={"inline"}></Typography>
+                      <Typography display={"inline"} />
                     </Typography>
                   </BoxClaim>
                 );
@@ -1843,9 +1840,10 @@ export const RedPacketBlindBoxDetail = ({
             />
             <Box marginY={1} width={"60%"}>
               {NFTURL ? (
-                <img style={{ width: "100%" }} src={NFTURL} />
+                <img style={{ width: "100%" }} alt={""} src={NFTURL} />
               ) : (
                 <img
+                  alt={""}
                   style={{ width: "100%" }}
                   src={SoursURL + "images/redpackBlind3.webp"}
                 />
@@ -2078,7 +2076,7 @@ export const RedPacketBlindBoxDetail = ({
                                 >
                                   x {info.amount}
                                 </Typography>
-                                <Typography display={"inline"}></Typography>
+                                <Typography display={"inline"} />
                               </Typography>
                             </Typography>
                             <Typography
