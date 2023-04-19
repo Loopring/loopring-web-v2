@@ -1892,6 +1892,22 @@ export const RedPacketBlindBoxDetail = ({
               })}
               {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
             </Typography>
+            <Typography
+              variant={"body2"}
+              color={theme.colorBase.textSecondary}
+              // color={RedPacketColorConfig.default.fontColor}
+              marginTop={1}
+              textAlign={"center"}
+            >
+              {t("labelBlindBoxExplaination3", {
+                opendBlindBoxAmount,
+                totalBlindBoxAmount,
+                // deliverdGiftsAmount,
+                // totalGiftsAmount,
+                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount
+              })}
+              {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
+            </Typography>
               <Box>
                 {type === "Not Started" && <Typography
                   variant={"body2"}

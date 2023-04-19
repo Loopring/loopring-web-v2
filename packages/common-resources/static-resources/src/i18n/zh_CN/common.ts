@@ -1288,10 +1288,11 @@ export default {
   labelBlindBoxExplaination:
     "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxExplaination2: 
-    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{remainingGiftsAmount}} gifts available for grabbing.",
-  labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
-  labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
-  labelBlindBoxClaimStarted: "Unclaimed NFT will be returned back to sender after: {{time}}",
+    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened.",
+  labelBlindBoxExplaination3: "{{remainingGiftsAmount}} gifts available for grabbing.",
+  labelBlindBoxNotStarted: "Red Packet is available to grab after: {{time}}",
+  labelBlindBoxStarted: "Blind Box Reveal time after: {{time}}",
+  labelBlindBoxClaimStarted: "Any unclaimed NFTs will be returned to the Sender after: {{time}}",
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
