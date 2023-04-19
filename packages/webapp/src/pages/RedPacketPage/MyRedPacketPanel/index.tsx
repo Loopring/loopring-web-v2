@@ -257,7 +257,7 @@ export const MyRedPacketPanel = ({
             flexDirection={"column"}
             flex={1}
           >
-            {currentTab == TabIndex.NFTReceived && (
+            {currentTab == TabIndex.NFTReceived && fromViewMore && (
               <Typography
                 component={"h4"}
                 paddingX={2}
@@ -297,14 +297,14 @@ export const MyRedPacketPanel = ({
             flexDirection={"column"}
             flex={1}
           >
-            <Typography
+            {/* <Typography
               component={"h4"}
               variant={"body1"}
               color={"textSecondary"}
               paddingX={2}
             >
               {t("labelNFTRedPackAskClaim")}
-            </Typography>
+            </Typography> */}
             <RedPacketBlindBoxReceiveTable
               onItemClick={onReceiveItemClick_BlindBox}
               showloading={showloadingReceive_BlindBox}

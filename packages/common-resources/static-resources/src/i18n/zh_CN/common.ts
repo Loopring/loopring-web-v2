@@ -1282,7 +1282,7 @@ export default {
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyBlindBox: "Blind Box Red Packet",
   labelLuckyBlindBoxDes:
-    "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
+    "Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.",
   labelLuckyRecievedBlindBox:
     "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
   labelBlindBoxExplaination:
@@ -1301,9 +1301,9 @@ export default {
   labelBlindBoxEndTime: "End Time",
   labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
   labelBlindBoxExpirationExplainationForToken:
-    "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
+    "After expiration, any unopened Red Packets will be forfeited and sent back to the Sender",
   labelBlindBoxExpirationExplainationForNFT:
-    "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
+    "If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
@@ -1376,7 +1376,7 @@ export default {
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
   labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
-    "Number of gifts is larger than number of packets",
+    "The number of Red Packets containing gifts cannot exceed the total number of Red Packets",
   labelBlindBoxNumberOverMaximun: 
     "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",

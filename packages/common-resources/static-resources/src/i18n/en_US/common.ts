@@ -1294,7 +1294,7 @@ export default {
   labelLuckyTokenViewTypeDesPrivate:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyBlindBox: "Blind Box Red Packet",
-  labelLuckyBlindBoxDes: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
+  labelLuckyBlindBoxDes: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.",
   labelLuckyRecievedBlindBox: "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
   labelBlindBoxExplainationNotEnded: "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxExplainationEnded: "Please claim within 3 days or it will be forfeited and returned to the Sender's wallet.",
@@ -1310,8 +1310,8 @@ export default {
   labelBlindBoxEndDate2: "Blindbox reveal time",
   labelBlindBoxEndTime: "End Time",
   labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
-  labelBlindBoxExpirationExplainationForToken: "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
-  labelBlindBoxExpirationExplainationForNFT: "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
+  labelBlindBoxExpirationExplainationForToken: "After expiration, any unopened Red Packets will be forfeited and sent back to the Sender",
+  labelBlindBoxExpirationExplainationForNFT: "If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
@@ -1389,7 +1389,7 @@ export default {
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
   labelRedPacketsMax: "Maximum of {{value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
-    "Number of gifts is larger than number of packets",
+    "The number of Red Packets containing gifts cannot exceed the total number of Red Packets",
   labelBlindBoxNumberOverMaximun: 
     "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
@@ -1568,7 +1568,7 @@ export default {
   labelNFTs_other: "\u2A09{{count}} NFTs",
   labelTokenNFTMaxRedPack: "Max: ",
   labelNFTRedPackAskClaim:
-    "Please claim your NFT gifts immediately as they will be returned back to Sender 3 days after the expiration date.",
+    "Note: After expiration, all the unclaimed NFTs will be returned back to sender. Please claim as soon as possible if you want to hold them.",
   labelTransferDelayConfirm:
     "Your claim request has been received. Loopring will transfer the token into your L2 account soon. Please verify it.",
   labelClaimredPacket: "My Red Packet",
