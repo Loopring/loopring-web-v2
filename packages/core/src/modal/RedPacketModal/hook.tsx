@@ -754,7 +754,7 @@ export function useRedPacketModal() {
   const [qrCodeG, setQrCodeG] = React.useState(undefined as string | undefined)
   const redPacketQrCodeCall = React.useCallback(async () => {
     setQrcode(undefined);
-    const url = `${Exchange}wallet?redpacket&id=${qrcode?.hash}&referrer=${account.accAddress}`;
+    const url = `${Exchange}wallet?redpacket&id=${info?.hash}&referrer=${account.accAddress}`;
     const colorConfig = RedPacketColorConfig["default"];
     const qrCode = new QRCodeStyling({
       type: "svg",
