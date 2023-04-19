@@ -36,7 +36,7 @@ import {
   SagaStatus,
   TradeBtnStatus,
   WalletMap,
-  defalutSlipage,
+  defaultSlipage,
   CustomErrorWithCode,
   SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
@@ -798,7 +798,7 @@ export const useCexSwap = <
           marketMap,
           depth,
           feeBips: maxFeeBips.toString(),
-          slipBips: sdk.toBig(defalutSlipage).times(100).toString(),
+          slipBips: sdk.toBig(defaultSlipage).times(100).toString(),
         });
         //buy token pool can not be empty
         if (
@@ -831,7 +831,7 @@ export const useCexSwap = <
               marketMap,
               depth,
               feeBips: maxFeeBips.toString(),
-              slipBips: sdk.toBig(defalutSlipage).times(100).toString(),
+              slipBips: sdk.toBig(defaultSlipage).times(100).toString(),
             });
             sellMaxAmtInfo = calcPoolToSell?.amountS;
           }

@@ -1,6 +1,6 @@
 import {
   AccountStatus,
-  defalutSlipage,
+  defaultSlipage,
   getValuePrecisionThousand,
   IBData,
   MarketType,
@@ -88,7 +88,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         belong: quoteSymbol,
         balance: walletMap ? walletMap[quoteSymbol as string]?.count : 0,
       } as IBData<any>,
-      slippage: slippage && slippage !== "N" ? slippage : defalutSlipage,
+      slippage: slippage && slippage !== "N" ? slippage : defaultSlipage,
       type: TradeProType.buy,
     }
   );
@@ -159,7 +159,7 @@ export const useMarket = <C extends { [key: string]: any }>({
       // setMarketTradeData(tradeData)
 
       let slippage = sdk
-        .toBig(tradeData.slippage ? tradeData.slippage : defalutSlipage)
+        .toBig(tradeData.slippage ? tradeData.slippage : defaultSlipage)
         .times(100)
         .toString();
 
