@@ -29,8 +29,6 @@ import {
   getValuePrecisionThousand,
   myLog,
   NFTWholeINFO,
-  RedPacketColorConfig,
-  SoursURL,
   UIERROR_CODE,
   YEAR_DAY_MINUTE_FORMAT,
   YEAR_DAY_SECOND_FORMAT,
@@ -52,7 +50,6 @@ import { useRedPacketHistory } from "../../stores/localStore/redPacket";
 import { Box } from "@mui/material";
 import { getIPFSString } from "../../utils";
 import { NFT_IMAGE_SIZES, toBig } from "@loopring-web/loopring-sdk";
-import QRCodeStyling from "qr-code-styling";
 
 export function useRedPacketModal() {
   const ref = React.createRef();
@@ -751,34 +748,9 @@ export function useRedPacketModal() {
     },
     [isShow, step, info]
   );
-  const [qrCodeG, setQrCodeG] = React.useState(undefined as string | undefined)
+
   const redPacketQrCodeCall = React.useCallback(async () => {
     setQrcode(undefined);
-    const url = `${Exchange}wallet?redpacket&id=${info?.hash}&referrer=${account.accAddress}`;
-    const colorConfig = RedPacketColorConfig["default"];
-    const qrCode = new QRCodeStyling({
-      type: "svg",
-      // data: url,
-      width: 160,
-      height: 160,
-      image: `${SoursURL + "svg/loopring.svg"}`,
-      dotsOptions: {
-        color: colorConfig.qrColor,
-        type: "dots",
-      },
-      backgroundOptions: {
-        color: "#ffffff", //colorConfig.bgColor
-      },
-      imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 4,
-      },
-    });
-    qrCode.update({
-      data: url,
-    });
-    const svgEle = await qrCode._getElement("svg");
-    setQrCodeG(svgEle?.innerHTML);
     if (info?.hash && LoopringAPI.luckTokenAPI) {
       const response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
         {
@@ -806,14 +778,11 @@ export function useRedPacketModal() {
         setPage(1)
         redPacketBlindBoxDetailCall({});
       } else if (step === RedPacketViewStep.QRCodePanel && info?.hash) {
-        if(!qrCodeG) {
+        if (info?.id) {
+          setQrcode(info as any);
+        } else {
           redPacketQrCodeCall();
         }
-        // if (info?.id) {
-        //   setQrcode(info as any);
-        // } else {
-        
-        // }
       }
     }
   }, [step, isShow]);
@@ -1361,7 +1330,6 @@ export function useRedPacketModal() {
             isShouldSharedRely:
               qrcode.type.mode == sdk.LuckyTokenClaimType.RELAY,
             textNo: t("labelRedPacketNo", { value: qrcode?.hash.slice(-8) }),
-            qrCodeG
           } as RedPacketQRCodeProps;
         }
       }
