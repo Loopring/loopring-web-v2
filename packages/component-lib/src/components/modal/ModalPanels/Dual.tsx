@@ -310,7 +310,7 @@ export const Staking_Redeem_Failed = (props: PanelProps) => {
 export const CexDetail = (props: any) => {
   const { isMobile } = useSettings();
   const { info } = props;
-  return (
+  return info?.buyToken && info?.sellToken ? (
     <Box
       justifySelf={"stretch"}
       display={"flex"}
@@ -513,6 +513,8 @@ export const CexDetail = (props: any) => {
         </Typography>
       </Box>
     </Box>
+  ) : (
+    <></>
   );
 };
 

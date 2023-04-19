@@ -41,17 +41,6 @@ function getCommitHash() {
 
 module.exports = override(
   addWebpackAlias({}),
-
-  /*
-  addWebpackPlugin(
-    new DuplicatePackageCheckerPlugin({
-      verbose: false,
-      emitError: false,
-      strict: true,
-    }),
-  ),
-  */
-
   addWebpackPlugin(
     new CopyWebpackPlugin({
       patterns: [
@@ -72,11 +61,6 @@ module.exports = override(
         '/SH"',
     })
   ),
-  // addWebpackPlugin(
-  //   new HtmlWebpackPlugin({
-  //     template: 'html!src/index.html',
-  //   }),
-  // ),
   fixBabelImports("import", {
     libraryName: "antd",
     libraryDirectory: "es",
@@ -107,17 +91,21 @@ module.exports = override(
 
   (config) => {
     config.output.publicPath = ASSET_PATH;
-    // 增加处理less module配置 customize-cra 不提供 less.module 只提供css.module
-    console.log(path.resolve(__dirname, "..", "assets/"));
-    console.log("-----> enter config!!!!!!!");
-
     const setConfig = (index) => {
       console.log("-----> enter setConfig!!!!!!! index:", index);
       let babelLoader = config.module.rules[1].oneOf[index];
       babelLoader.include = babelLoader.include.replace("/webapp/src", "");
+      babelLoader.include = [
+        babelLoader.include,
+        path.resolve(__dirname, "../../node_modules/@walletconnect"),
+        path.resolve(__dirname, "../../node_modules/@web3modal"),
+      ];
+      console.log(
+        "-----> enter setConfig!!!!!!! include:",
+        babelLoader.include
+      );
       config.module.rules[1].oneOf[index] = babelLoader;
     };
-
     setConfig(4);
     config.resolve.alias = {
       ...config.resolve.alias,
