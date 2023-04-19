@@ -23,6 +23,7 @@ import {
   CloseRedPacketIcon,
   CompleteIcon,
   ContactIcon,
+  ConvertToIcon,
   CopyIcon,
   DarkIcon,
   DeleteIcon,
@@ -264,6 +265,7 @@ const listIcon = [
   <ContactIcon />,
   <UploadedIcon />,
   <EditIcon />,
+  <ConvertToIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(
