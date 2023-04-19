@@ -338,7 +338,7 @@ export const CexDetail = (props: any) => {
             <CoinIcon symbol={info?.sellToken.symbol} size={32} />
           </ListItemIcon>
 
-          {info.sellFStr && (
+          {info?.sellFStr && (
             <ListItemText>
               <Typography variant={"h5"}>
                 {info?.sellFStr + " " + info.sellToken.symbol}
@@ -361,10 +361,10 @@ export const CexDetail = (props: any) => {
           <ListItemIcon style={{ minWidth: "40px" }}>
             <CoinIcon symbol={info?.buyToken.symbol} size={32} />
           </ListItemIcon>
-          {info.buyFStr && (
+          {info?.buyFStr && (
             <ListItemText>
               <Typography variant={"h5"}>
-                {info?.buyFStr + " " + info.buyToken.symbol}
+                {info?.buyFStr + " " + info?.buyToken.symbol}
               </Typography>
             </ListItemText>
           )}
@@ -452,7 +452,7 @@ export const CexDetail = (props: any) => {
               /{info?.sellStr}
             </Typography>
             <Typography variant={"inherit"} marginLeft={1 / 2}>
-              {info.sellToken.symbol}
+              {info?.sellToken.symbol}
             </Typography>
           </Typography>
         </Typography>
@@ -486,7 +486,7 @@ export const CexDetail = (props: any) => {
               /{info?.buyStr}
             </Typography>
             <Typography variant={"inherit"} marginLeft={1 / 2}>
-              {info.buyToken.symbol}
+              {info?.buyToken.symbol}
             </Typography>
           </Typography>
         </Typography>
