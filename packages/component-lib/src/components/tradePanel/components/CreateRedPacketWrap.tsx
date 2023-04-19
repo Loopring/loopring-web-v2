@@ -62,6 +62,7 @@ import moment from "moment";
 import { NFTInput } from "./BasicANFTTrade";
 import { DateTimeRangePicker } from "../../datetimerangepicker";
 import BigNumber from "bignumber.js";
+import {useNotify} from "@loopring-web/core";
 
 const StyledTextFiled = styled(TextField)`
 
@@ -407,8 +408,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const endMinDateTime = startDateTime
       ? moment.max(now, startDateTime.clone())
       : now;
+    const timeRangeMaxInSeconds = useNotify().notifyMap?.redPacket.timeRangeMaxInSeconds ?? 14 * 24 * 60 * 60;
     const endMaxDateTime = startDateTime
-      ? startDateTime.clone().add(7, "days")
+      ? startDateTime.clone().add(timeRangeMaxInSeconds, 'seconds')
       : undefined;
 
     // @ts-ignore
@@ -733,7 +735,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               onEndChange={(m) => {
                 // debugger
                 const maximunTimestamp = startDateTime 
-                  ? moment(startDateTime).add(7, 'days').toDate().getTime()
+                  ? moment(startDateTime).add(timeRangeMaxInSeconds, 'seconds').toDate().getTime()
                   : 0
                 handleOnDataChange({
                   validUntil: m 
@@ -1198,7 +1200,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     const getDisabled = React.useMemo(() => {
       return disabled;
     }, [disabled]);
-
+    const showNFT = useNotify().notifyMap?.redPacket.showNFT;
     return (
       <RedPacketBoxStyle
         display={"flex"}
@@ -1245,7 +1247,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
             </CardStyleItem>
           </Grid>
           <Grid item xs={6} display={"flex"} marginBottom={2}>
-            {REDPACKET_SHOW_NFTS && <CardStyleItem
+            {showNFT && <CardStyleItem
               className={
                 tradeType === "NFT"
                   ? "btnCard column selected"
