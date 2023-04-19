@@ -56,9 +56,7 @@ import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -69,7 +67,7 @@ export const RedPacketBg = styled(Box)<
 
     .betweenEle {
       left: 50%;
-      top: 128px;
+      top: 138px;
       position: absolute;
 
       .open {
@@ -165,7 +163,7 @@ export const RedPacketBg = styled(Box)<
     }
 
     .top {
-      height: 140px;
+      height: 150px;
       display: flex;
       align-items: center;
       justify-content: center;
