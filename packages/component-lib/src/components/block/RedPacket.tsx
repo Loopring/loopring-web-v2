@@ -56,9 +56,7 @@ import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -186,6 +184,24 @@ export const RedPacketBg = styled(Box)<
     }
   }
 
+  &.RedPacketClock {
+    .top {
+      height: 40px;
+      margin-top: 50px;
+    }
+
+    .middle {
+      margin-top: 40px;
+      height: 128px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .betweenEle {
+      top: 328px;
+    }
+  }
+
   &.redPacketOpened {
     .top {
       color: ${({ type }) => RedPacketCssColorConfig[type]?.highLightColor};
@@ -225,7 +241,7 @@ export const RedPacketSize = {
     width: 260,
   },
   large: {
-    height: 680,
+    height: 600,
     width: 320,
   },
 };
@@ -331,6 +347,7 @@ export const RedPacketQRCode = ({
 export const RedPacketBgDefault = ({
   type = "default",
   size = "middle",
+  className,
   content,
 }: RedPacketDefaultBg & any) => {
   const scale = RedPacketSize[size].width / 260;
@@ -341,7 +358,7 @@ export const RedPacketBgDefault = ({
       sx={{
         transform: `scale(${scale})`,
       }}
-      className={"redPacketOpen"}
+      className={className ?? "redPacketOpen"}
     >
       <Box
         className={"bg"}
@@ -637,43 +654,41 @@ export const RedPacketClock = ({
             </Box>
           </Box>
         </Box>
+
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
           <Typography color={"inherit"}>{sender}</Typography>
         </Box>
+        <Typography
+          color={"inherit"}
+          variant={"body1"}
+          whiteSpace={"pre-line"}
+          textAlign={"center"}
+          overflow={"hidden"}
+          textOverflow={"ellipsis"}
+          paddingX={4}
+          sx={{
+            wordBreak: "break-all",
+            display: "-webkit-box",
+            "-webkit-line-clamp": "2",
+            lineClamp: "2",
+            "-webkit-box-orient": "vertical",
+          }}
+          dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+        />
         <Box display={"flex"} className={"middle"} flexDirection={"column"}>
           {ImageEle}
-          <Typography
-            color={"inherit"}
-            variant={"h4"}
-            whiteSpace={"pre-line"}
-            textAlign={"center"}
-            paddingX={2}
-            paddingTop={1}
-          >
-            {amountStr}
-          </Typography>
-          <Typography
-            color={"inherit"}
-            variant={"body1"}
-            whiteSpace={"pre-line"}
-            textAlign={"center"}
-            overflow={"hidden"}
-            textOverflow={"ellipsis"}
-            paddingX={4}
-            sx={{
-              wordBreak: "break-all",
-              display: "-webkit-box",
-              "-webkit-line-clamp": "2",
-              lineClamp: "2",
-              "-webkit-box-orient": "vertical",
-            }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
-          />
         </Box>
       </>
     );
   }, [countDown]);
-  return <RedPacketBgDefault type={type} size={size} content={content} />;
+  return (
+    <RedPacketBgDefault
+      className={"RedPacketClock"}
+      type={type}
+      size={size}
+      content={content}
+    />
+  );
 };
 
 export const RedPacketUnready = ({
@@ -684,19 +699,21 @@ export const RedPacketUnready = ({
   amountStr,
   memo,
   ImageEle,
+  onClickOpen,
 }: // ImageEle,
 RedPacketDefault & RedPacketUnreadyProps) => {
   const { t } = useTranslation();
   const content = React.useMemo(() => {
     return (
       <Box display={"flex"} flex={1} flexDirection={"column"}>
-        <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
-          <Box
-            display={"flex"}
-            position={"absolute"}
-            className={"open openUnready"}
-          >
-            {t("labelSeal")}
+        <Box
+          onClick={onClickOpen}
+          display={"flex"}
+          className={"betweenEle"}
+          position={"absolute"}
+        >
+          <Box display={"flex"} position={"absolute"} className={"open"}>
+            {t("labelRedPacketOpen")}
           </Box>
         </Box>
         <Box display={"flex"} className={"top"} flexDirection={"column"}>
@@ -948,18 +965,18 @@ export const RedPacketDetail = ({
   totalCount,
   remainCount,
   onShared,
-  relyNumber,
-  relyAmount,
-  ImageEle,
-  showRelayText,
-  tokenSymbol,
-  detail,
-  bottomButton,
-  page,
-  onClickClaim,
-  claimButton,
-  totalNumber,
-}: RedPacketDetailProps) => {
+                                  relyNumber,
+                                  relyAmount,
+                                  ImageEle,
+                                  showRelayText,
+                                  tokenSymbol,
+                                  detail,
+                                  bottomButton,
+                                  page,
+                                  onClickClaim,
+                                  claimButton,
+                                  totalNumber,
+                                }: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const showLucky = detail.luckyToken.tokenAmount.remainCount == 0;
   const limit = detail.luckyToken.isNft
@@ -967,6 +984,7 @@ export const RedPacketDetail = ({
     : RedPacketDetailLimit;
   const pageNation = totalNumber - limit > 0 && (
     <TablePagination
+      size={"small"}
       page={page}
       pageSize={limit}
       total={totalNumber}
@@ -975,24 +993,6 @@ export const RedPacketDetail = ({
       }}
     />
   );
-  // if (totalCount - remainCount -  limit > 0) {
-  //   return (
-  //     <TablePagination
-  //       page={page}
-  //       pageSize={limit}
-  //       total={totalCount - remainCount}
-  //       onPageChange={(_page) => {
-  //         debugger
-  //         setPage(_page)
-  //         handlePageChange(_page)
-  //       }}
-  //     />
-  //   );
-  // } else {
-  //   return <></>;
-  // }
-  // }, [page, setPage]);
-  // const claimButton = "claim"
 
   return (
     <BoxStyle
@@ -1002,6 +1002,7 @@ export const RedPacketDetail = ({
       display={"flex"}
       paddingBottom={1}
       flexDirection={"column"}
+      overflow={"scroll"}
     >
       <Box
         className={"top"}
@@ -1026,7 +1027,6 @@ export const RedPacketDetail = ({
         flexDirection={"column"}
         alignItems={"center"}
         marginY={2}
-        overflow={"scroll"}
       >
         <Typography variant={"body1"}>{sender}</Typography>
         <Typography
@@ -1111,9 +1111,8 @@ export const RedPacketDetail = ({
                       component={"span"}
                       color={item.isSelf ? "success" : "textPrimary"}
                     >
-                      {item.isSelf
-                        ? t("labelMyRedPacketReward")
-                        : item.accountStr}
+                      {item.accountStr}
+                      {item.isSelf ? ` (${t("labelRedPacketMe")})` : ""}
                     </Typography>
                     <Typography
                       variant={"body1"}
@@ -1420,6 +1419,25 @@ export const RedPacketPrepare = ({
           amountStr={amountStr}
           validSince={_info.validSince}
           type={_type}
+          onClickOpen={() => {
+            // if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.RedPacketClock,
+              info: {
+                ..._info,
+              },
+            });
+            // } else {
+            //   setShowRedPacket({
+            //     isShow: true,
+            //     step: RedPacketViewStep.DetailPanel,
+            //     info: {
+            //       ..._info,
+            //     },
+            //   });
+            // }
+          }}
         />
       );
     } else if (difference > 0) {
@@ -1500,7 +1518,7 @@ export const RedPacketPrepare = ({
           onOpen={() => {
             setShowRedPacket({
               isShow: true,
-              step: RedPacketViewStep.OpenPanel,
+              step: RedPacketViewStep.Loading,
               info: _info,
             });
             onOpen();
@@ -1593,6 +1611,8 @@ export const RedPacketBlindBoxDetail = ({
   handlePageChange_BlindBox,
   pageForBlindbox,
   totalBlindboxCount,
+  onClickClaimPopViewDetail,
+  expired,
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
@@ -1610,6 +1630,7 @@ export const RedPacketBlindBoxDetail = ({
         onPageChange={(_page) => {
           handlePageChange(_page);
         }}
+        size={"small"}
       />
     </Box>
   );
@@ -1622,9 +1643,77 @@ export const RedPacketBlindBoxDetail = ({
       onPageChange={(_page) => {
         handlePageChange_BlindBox(_page);
       }}
+      size={"small"}
     />
   );
-  console.log("totalBlindboxCount", totalBlindboxCount);
+  const LooteryModal = (
+    <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
+      <>
+        <Box
+          height={"100%"}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          <Box
+            padding={5}
+            bgcolor={"var(--color-box)"}
+            width={"var(--modal-width)"}
+            borderRadius={1}
+            display={"flex"}
+            alignItems={"center"}
+            flexDirection={"column"}
+            position={"relative"}
+          >
+            {/* <Box></Box> */}
+            <ModalCloseButtonPosition
+              right={2}
+              top={2}
+              t={t}
+              onClose={onCloseOpenModal!}
+            />
+            <Typography marginBottom={3} variant={"h3"}>
+              {wonNFTInfo
+                ? t("labelBlindBoxCongratulations")
+                : t("labelBlindBoxSorry")}{" "}
+            </Typography>
+            <Typography variant={"h5"}>
+              {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
+            </Typography>
+            {wonNFTInfo ? (
+              <img width={"40%"} alt={""} src={wonNFTInfo.url} />
+            ) : (
+              <img src={emptyImg} alt={""} />
+            )}
+            <Link
+              marginBottom={3}
+              onClick={onClickClaimPopViewDetail}
+              variant={"body1"}
+              color={theme.colorBase.textSecondary}
+              marginTop={5}
+            >
+              <u>{t("labelLuckyRedPacketDetail")}</u>
+            </Link>
+            {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+          {t("labelClaimBtn")}
+        </Button> */}
+            {wonNFTInfo && (
+              <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
+                {t("labelClaimBtn")}
+              </Button>
+            )}
+          </Box>
+        </Box>
+      </>
+    </Modal>
+  );
+
+  if (
+    type === "Lottery Started and Not Win Lottery" ||
+    type === "Lottery Started and Win Lottery"
+  ) {
+    return LooteryModal;
+  }
 
   return (
     <BlindBoxDetailBoxStyle
@@ -1634,66 +1723,10 @@ export const RedPacketBlindBoxDetail = ({
       display={"flex"}
       paddingBottom={1}
       flexDirection={"column"}
+      overflow={"scroll"}
     >
-      <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
-        <>
-          <Box
-            height={"100%"}
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Box
-              padding={5}
-              bgcolor={"var(--color-box)"}
-              width={"var(--modal-width)"}
-              borderRadius={1}
-              display={"flex"}
-              alignItems={"center"}
-              flexDirection={"column"}
-              position={"relative"}
-            >
-              {/* <Box></Box> */}
-              <ModalCloseButtonPosition
-                right={2}
-                top={2}
-                t={t}
-                onClose={onCloseOpenModal!}
-              />
-              <Typography marginBottom={3} variant={"h3"}>
-                {wonNFTInfo
-                  ? t("labelBlindBoxCongratulations")
-                  : t("labelBlindBoxSorry")}{" "}
-              </Typography>
-              <Typography variant={"h5"}>
-                {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
-              </Typography>
-              {wonNFTInfo ? (
-                <img width={"40%"} alt={""} src={wonNFTInfo.url} />
-              ) : (
-                <img src={emptyImg} alt={""} />
-              )}
-              <Link
-                marginBottom={3}
-                onClick={onCloseOpenModal!}
-                variant={"body1"}
-                color={theme.colorBase.textSecondary}
-                marginTop={5}
-              >
-                <u>{t("labelLuckyRedPacketDetail")}</u>
-              </Link>
-              {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
-                {t("labelClaimBtn")}
-              </Button> */}
-              {wonNFTInfo && (
-                <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
-                  {t("labelClaimBtn")}
-                </Button>
-              )}
-            </Box>
-          </Box>
-        </>
-      </Modal>
+      {LooteryModal}
+
       <Box
         className={"top"}
         width={"100%"}
@@ -1774,13 +1807,14 @@ export const RedPacketBlindBoxDetail = ({
                         color={"textPrimary"}
                       >
                         {info.who}
+                        {info.isMe ? ` (${t("labelRedPacketMe")})` : ""}
                       </Typography>
                       <Typography
                         variant={"body1"}
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        *1
+                        x 1
                       </Typography>
                     </Typography>
                     <Typography
@@ -1797,7 +1831,6 @@ export const RedPacketBlindBoxDetail = ({
                       >
                         {moment(info.when).fromNow()}
                       </Typography>
-                      <Typography display={"inline"} />
                     </Typography>
                   </BoxClaim>
                 );
@@ -1819,7 +1852,6 @@ export const RedPacketBlindBoxDetail = ({
             flexDirection={"column"}
             alignItems={"center"}
             marginY={2}
-            overflow={"scroll"}
           >
             <Typography variant={"body1"}>{sender}</Typography>
             <Typography
@@ -1856,9 +1888,7 @@ export const RedPacketBlindBoxDetail = ({
                 {t("labelBlindBoxCongratulationsBlindBox")}
               </Typography>
             )}
-            {(type === "Lottery Started" ||
-              type === "Lottery Started and Not Win Lottery" ||
-              type === "Lottery Started and Win Lottery") &&
+            {type === "Lottery Started" &&
               wonInfo.participated &&
               (wonInfo.won ? (
                 <Typography>{wonInfo.amount} NFTs</Typography>
@@ -1883,6 +1913,22 @@ export const RedPacketBlindBoxDetail = ({
               textAlign={"center"}
             >
               {t("labelBlindBoxExplaination2", {
+                opendBlindBoxAmount,
+                totalBlindBoxAmount,
+                // deliverdGiftsAmount,
+                // totalGiftsAmount,
+                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount,
+              })}
+              {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
+            </Typography>
+            <Typography
+              variant={"body2"}
+              color={theme.colorBase.textSecondary}
+              // color={RedPacketColorConfig.default.fontColor}
+              marginTop={1}
+              textAlign={"center"}
+            >
+              {t("labelBlindBoxExplaination3", {
                 opendBlindBoxAmount,
                 totalBlindBoxAmount,
                 // deliverdGiftsAmount,
@@ -1934,7 +1980,9 @@ export const RedPacketBlindBoxDetail = ({
                 variant={"body2"}
                 color={
                   type !== "Blind Box Started" && type !== "Not Started"
-                    ? theme.colorBase.warning
+                    ? expired
+                      ? theme.colorBase.textDisable
+                      : theme.colorBase.warning
                     : theme.colorBase.textSecondary
                 }
                 marginTop={1}
@@ -2055,6 +2103,9 @@ export const RedPacketBlindBoxDetail = ({
                                   color={"textPrimary"}
                                 >
                                   {info.who}
+                                  {info.isMe
+                                    ? ` (${t("labelRedPacketMe")})`
+                                    : ""}
                                 </Typography>
                                 {/* <Typography
                                 variant={"body1"}
@@ -2078,7 +2129,6 @@ export const RedPacketBlindBoxDetail = ({
                                 >
                                   x {info.amount}
                                 </Typography>
-                                <Typography display={"inline"} />
                               </Typography>
                             </Typography>
                             <Typography
