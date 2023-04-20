@@ -764,6 +764,7 @@ export const useBtradeSwap = <
       } = store.getState()._router_tradeBtrade;
 
       const { marketMap } = store.getState().invest.btradeMap;
+      const walletMap = tradeCalcData?.walletMap as WalletMap<any>;
 
       myLog(
         "useBtradeSwap:reCalculateDataWhenValueChange",
@@ -1018,6 +1019,13 @@ export const useBtradeSwap = <
         setTradeData((state) => ({
           ...state,
           ..._tradeData,
+          sell: {
+            ...state?.sell,
+            ..._tradeData?.sell,
+            balance: walletMap
+              ? walletMap[_tradeData?.sell?.belong ?? ""]?.count
+              : 0,
+          },
         }));
 
         updateTradeBtrade({
