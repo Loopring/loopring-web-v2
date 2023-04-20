@@ -129,7 +129,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       (): Column<R, unknown>[] => [
         {
           key: "Token",
-          sortable: true,
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
@@ -183,7 +182,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                   <Typography
                     color={"inherit"}
                     flex={1}
-                    display={"inline-flex"}
+                    display={"inline-block"}
                     alignItems={"center"}
                     paddingLeft={1}
                     overflow={"hidden"}
@@ -201,7 +200,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           key: "Amount",
           cellClass: "textAlignCenter",
           headerCellClass: "textAlignCenter",
-          sortable: true,
           name: t("labelAmount"),
           formatter: ({ row }: FormatterProps<R>) => {
             return <>{`${row.amount}`}</>;
@@ -209,7 +207,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Type",
-          sortable: false,
           name: t("labelType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
@@ -234,7 +231,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Address",
-          sortable: false,
           name: t("labelAddress"),
           formatter: ({ row }: FormatterProps<R>) => {
             return <>{row.sender}</>;
@@ -242,7 +238,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Time",
-          sortable: true,
           cellClass: "textAlignRight",
           headerCellClass: "textAlignRight",
           name: t("labelReceiveTime"),
@@ -257,7 +252,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           ? [
               {
                 key: "End Time",
-                sortable: true,
                 cellClass: "textAlignRight",
                 headerCellClass: "textAlignRight",
                 name: t("labelBlindBoxEndTime"),
@@ -273,7 +267,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
               },
               {
                 key: "Action",
-                sortable: true,
                 cellClass: "textAlignRight",
                 headerCellClass: "textAlignRight",
                 name: "Action",
@@ -286,7 +279,9 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                       <Button
                         onClick={(e) => {
                           e.stopPropagation();
-                          onClaimItem(row.rawData);
+                          onClaimItem(row.rawData, () => {
+                            handlePageChange({ page })
+                          });
                         }}
                       >
                         {t("labelBlindBoxCalim")}

@@ -450,7 +450,9 @@ export const useCreateRedPacket = <
               : { value: sdk.toBig(REDPACKET_ORDER_NFT_LIMIT).times(
                 redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
                   ? (redPacketOrder.giftNumbers ?? 1)
-                  : (redPacketOrder.numbers ?? 1)
+                  : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE 
+                    ? 1
+                    : (redPacketOrder.numbers ?? 1)
                 ), symbol: "NFT"
               }
           );

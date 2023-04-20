@@ -55,6 +55,7 @@ export type NFTMedaProps = {
 };
 export type RedPacketDefaultBg = RedPacketDefault & {
   content: JSX.Element;
+  className?: string;
 };
 export type RedPacketDefault = {
   type?: "default" | "official";
@@ -83,7 +84,7 @@ export type RedPacketUnreadyProps = {
   memo: string;
   validSince: number;
   // viewDetail: () => void;
-  // onOpen: () => void;
+  onClickOpen: () => void;
 };
 export type RedPacketOpenedProps = {
   sender: string;
@@ -92,8 +93,8 @@ export type RedPacketOpenedProps = {
   memo: string;
   viewDetail: () => void;
 };
-export const RedPacketDetailLimit = 6;
-export const RedPacketNFTDetailLimit = 3;
+export const RedPacketDetailLimit = 5;
+export const RedPacketNFTDetailLimit = 5;
 export const RedPacketBlindBoxLimit = 8;
 export type RedPacketDetailProps = {
   redPacketType: 'normal' | 'lucky' | 'relay';
@@ -127,7 +128,7 @@ export type RedPacketBlindBoxDetailTypes = 'Not Started'
   | 'Lottery Started' 
   | 'Lottery Started and Win Lottery' 
   | 'Lottery Started and Not Win Lottery' 
-  | 'BlindBox Claime Detail'; 
+  | 'BlindBox Claime Detail';
 export type RedPacketBlindBoxDetailProps = {
   sender: string;
   memo: string;
@@ -150,12 +151,14 @@ export type RedPacketBlindBoxDetailProps = {
   onClickViewDetail?: () => void;
   NFTClaimList?: { 
     who: string,
+    isMe: boolean,
     when: number,
     amount: number,
     showLuckiest?: boolean,
   }[]; 
   BlindBoxClaimList?: { 
     who: string,
+    isMe: boolean,
     when: number,
     amount: number
   }[]; 
@@ -186,6 +189,8 @@ export type RedPacketBlindBoxDetailProps = {
   pageForBlindbox: number
   handlePageChange_BlindBox: (page: number, limit?: number) => void;
   // didClaimABlindBox: boolean;
+  onClickClaimPopViewDetail: () => void
+  expired: boolean
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

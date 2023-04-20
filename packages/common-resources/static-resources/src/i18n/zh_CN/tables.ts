@@ -295,7 +295,10 @@ export default {
   labelBlindBoxCalim: "Claim",
   labelBlindBoxExpired: "Expired",
   labelBlindBoxClaimed: "Claimed",
-  labelBlindBoxStartTime: "Start time:",
+  labelBlindBoxStartTime: "Reveal Time: {{time}}",
+  labelBlindBoxExpiredTime: "Expiration Time: {{time}}",
+  labelRedPacketOpen: "Open",
+  labelRedPacketSenderAddress: "Sender Address",
   // labelRecordAction: "Action",
 
   labelBtradeSwapType: "Type",
