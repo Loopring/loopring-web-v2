@@ -98,11 +98,11 @@ module.exports = override(
       babelLoader.include = [
         babelLoader.include,
         // path.resolve(__dirname, "../../node_modules/@walletconnect"),
-        path.resolve(__dirname, "../../node_modules/@web3modal/standalone"),
-        path.resolve(
-          __dirname,
-          "../../node_modules/@walletconnect/universal-provider"
-        ),
+        // path.resolve(__dirname, "../../node_modules/@web3modal/standalone"),
+        // path.resolve(
+        //   __dirname,
+        //   "../../node_modules/@walletconnect/universal-provider"
+        // ),
       ];
       console.log(
         "-----> enter setConfig!!!!!!! include:",
