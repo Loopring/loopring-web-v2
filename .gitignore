@@ -96,7 +96,7 @@ typings/
 .DS_Store
 .env.local
 .env.test.local
-**/.env.development
+.env.development
 # .env.prod_for_dev
 
 npm-debug.log*
