@@ -56,7 +56,9 @@ import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 
-export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
+export const RedPacketBg = styled(Box)<
+  BoxProps & { imageSrc?: string; type: string }
+>`
   display: flex;
   align-items: center;
   position: relative;
@@ -965,18 +967,18 @@ export const RedPacketDetail = ({
   totalCount,
   remainCount,
   onShared,
-                                  relyNumber,
-                                  relyAmount,
-                                  ImageEle,
-                                  showRelayText,
-                                  tokenSymbol,
-                                  detail,
-                                  bottomButton,
-                                  page,
-                                  onClickClaim,
-                                  claimButton,
-                                  totalNumber,
-                                }: RedPacketDetailProps) => {
+  relyNumber,
+  relyAmount,
+  ImageEle,
+  showRelayText,
+  tokenSymbol,
+  detail,
+  bottomButton,
+  page,
+  onClickClaim,
+  claimButton,
+  totalNumber,
+}: RedPacketDetailProps) => {
   const { t } = useTranslation("common");
   const showLucky = detail.luckyToken.tokenAmount.remainCount == 0;
   const limit = detail.luckyToken.isNft
