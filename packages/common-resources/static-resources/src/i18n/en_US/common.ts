@@ -809,11 +809,11 @@ export default {
   labelExchangeOthers: "Others",
   labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
-  labelConfirmBtrade: "Confirm Btrade Support",
+  labelConfirmBtrade: "Confirm Block Trade Support",
   labelConfirmDetail:
-    "<0>Before withdrawing, please confirm with your Btrade support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is performed via a smart contract. The Btrade depositing address may not be able to automatically acknowledge the deposit.</1>" +
-    "<2>If the deposit does not appear at the Btrade address within 24 hours, please contact your Btrade support and ask they manually acknowledge the transaction.</2>",
+    "<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>",
   labelBtradeUnderstand: "I understand and acknowledge the risk",
   labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
@@ -846,7 +846,7 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Btrade address using Loopring L2. Since the Btrade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Block Trade address using Loopring L2. Since the Block Trade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
   labelForceWithdrawConfirm1:
@@ -1295,17 +1295,21 @@ export default {
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyBlindBox: "Blind Box Red Packet",
   labelLuckyBlindBoxDes:
-    "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
+    "Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.",
   labelLuckyRecievedBlindBox:
     "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
-  labelBlindBoxExplaination:
+  labelBlindBoxExplainationNotEnded:
     "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExplainationEnded:
+    "Please claim within 3 days or it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxExplaination2:
-    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{deliverdGiftsAmount}} out of {{totalGiftsAmount}} gifts delivered.",
-  labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
-  labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
+    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened.",
+  labelBlindBoxExplaination3:
+    "{{remainingGiftsAmount}} gifts available for grabbing.",
+  labelBlindBoxNotStarted: "Red Packet is available to grab after: {{time}}",
+  labelBlindBoxStarted: "Blind Box Reveal time after: {{time}}",
   labelBlindBoxClaimStarted:
-    "Unclaimed NFT will be returned back to sender after: {{time}}",
+    "Any unclaimed NFTs will be returned to the Sender after: {{time}}",
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
@@ -1315,9 +1319,9 @@ export default {
   labelBlindBoxEndTime: "End Time",
   labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
   labelBlindBoxExpirationExplainationForToken:
-    "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
+    "After expiration, any unopened Red Packets will be forfeited and sent back to the Sender",
   labelBlindBoxExpirationExplainationForNFT:
-    "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
+    "If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
@@ -1396,7 +1400,7 @@ export default {
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
   labelRedPacketsMax: "Maximum of {{value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
-    "Number of gifts is larger than number of packets",
+    "The number of Red Packets containing gifts cannot exceed the total number of Red Packets",
   labelBlindBoxNumberOverMaximun: "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
@@ -1419,7 +1423,7 @@ export default {
   labelRedPacketOpenInProgress: "Processing...",
   labelRedPacketOpenFailed: "Read red packet failed!",
   labelRedPacketShowQR: "Share red packet",
-  labelRedPacketReceivedRecord: "Opened {{value}}/{{count}}",
+  labelRedPacketReceivedRecord: "Receive Red Packet {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:
@@ -1456,7 +1460,7 @@ export default {
   labelSeal: "Seal",
   labelOpenAfter: "Open after {{time}}",
   labelOpenStart: "Start",
-  labelTotalRedPacket: "Quantity in total: {{value}}",
+  labelTotalRedPacket: "Total Quantity: {{value}}",
   labelMyRedPacketReward: "My Rewards",
   labelRedpacketScanDes:
     "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
@@ -1485,6 +1489,11 @@ export default {
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
+  labelRedPacketTimeRange: "Start / End Time",
+  labelRedPacketTimeRangeDes: "The Red Packet expires after the end date",
+  labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
+  labelRedPacketTimeRangeBlindboxDes:
+    "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
   labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
@@ -1567,10 +1576,11 @@ export default {
   labelNFTs_other: "\u2A09{{count}} NFTs",
   labelTokenNFTMaxRedPack: "Max: ",
   labelNFTRedPackAskClaim:
-    "Please claim your NFT gifts immediately as they will be returned back to Sender 3 days after the expiration date.",
+    "Note: After expiration, all the unclaimed NFTs will be returned back to sender. Please claim as soon as possible if you want to hold them.",
   labelTransferDelayConfirm:
     "Your claim request has been received. Loopring will transfer the token into your L2 account soon. Please verify it.",
   labelClaimredPacket: "My Red Packet",
+  labelRedPacketMe: "Me",
   labelClaimlrcStaking: "My LRC Staking",
   labelExpectSettlementPrice:
     "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
@@ -1580,7 +1590,7 @@ export default {
   labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
   labelStakingRedeemRemaining: "Remaining Amount",
   labelStakingRedeemDate: "Redeem Time",
-  labelBtradeSwapTitle: "Btrade Swap",
+  labelBtradeSwapTitle: "Block Trade",
   labelBtradeSwapType: "Type",
   labelBtradeSwapFilled: "Filled",
   labelBtradeSwapFee: "Fee",
@@ -1591,11 +1601,13 @@ export default {
   labelBtradeSwapPanelDes:
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
   labelGoBtradeSwap:
-    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Btrade Swap</link> option to help minimize potential losses.",
-  labelBtradeSwap: "Btrade Swap",
-  labelBtradeSwapFailed: "Btrade Swap failed!",
-  labelBtradeSwapTitleDes: "What is Btrade Swap?",
-  labelBtradeSwapContentDes: "What is Btrade Swap?",
+    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
+  labelBtradeSwap: "Block Trade",
+  labelBtradeSwapFailed: "Block Trade failed!",
+  labelBtradeSwapTitleDes: "What is Block Trade?",
+  labelBtradeSwapContentDes:
+    "<p>Block Trade offers a secure and trustless way for users to swap tokens using CEX liquidity. The trades happen exclusively between designated entities, ensuring that the existing liquidity of the DEX remains unaffected. There is no price impact to other DEX users as a result of the transaction.</p>" +
+    "<p>This is similar to the traditional stock market’s Block Trade System. A block trade is a large, privately negotiated transaction, which can be made outside the open market through a private purchase agreement.<p>",
   labelRefereeRewards: "Referee Rewards",
   labelReferralRewards: "Referral Rewards",
   labelRewardLRC: "Rewards LRC",
@@ -1603,9 +1615,9 @@ export default {
   labelBtradeSwapMiniMax: "Min {{minValue}} - Max {{maxValue}}",
   labelBtradeSwapMini: "Min {{minValue}}",
   labelBtradeConfirm: "Please check the checkbox",
-  labelBtradeSwapBtn: "Btrade Swap",
+  labelBtradeSwapBtn: "Swap",
   labelType: "Type",
-  labelBtradeTrade: "Btrade Swap",
-  labelBtradeTitle: "Btrade Swap",
+  labelBtradeTrade: "Block Trade",
+  labelBtradeTitle: " Block Trade",
   labelBtradeSwapPending: "Pending",
 };
