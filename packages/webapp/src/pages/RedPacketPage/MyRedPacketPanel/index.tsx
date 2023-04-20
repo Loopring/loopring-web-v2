@@ -127,7 +127,8 @@ export const MyRedPacketPanel = ({
   // const onChangeShowActionableRecords = () => {}
 
   // @ts-ignore
-  const showNFT = useNotify().notifyMap?.redPacket.showNFT;
+  const showNFT = true
+  // useNotify().notifyMap?.redPacket.showNFT;
   return (
     <Box
       flex={1}
