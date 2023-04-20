@@ -12,6 +12,7 @@ import {
   globalSetup,
   Info2Icon,
   RowInvestConfig,
+  TableType,
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import moment from "moment/moment";
@@ -31,7 +32,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 33% 20% auto auto auto !important;`
-        : `--template-columns: 33% 32% auto !important;`}
+        : `--template-columns: 33% 20% auto auto auto !important;`}
   }
 `;
 const TableStyled = styled(Table)`
@@ -53,7 +54,6 @@ const TableStyled = styled(Table)`
       align-items: center;
     }
   }
-
   .textAlignRight {
     text-align: right;
 
@@ -61,7 +61,6 @@ const TableStyled = styled(Table)`
       justify-content: flex-end;
     }
   }
-
   .textAlignCenter {
     text-align: center;
   }
@@ -92,8 +91,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
       getBtradeOrderList,
       t,
     } = props;
-    const [page, setPage] = React.useState(0);
-    // const [_pageSize, setPageSize] = React.useState(pagination?.pageSize);
+    const [page, setPage] = React.useState(1);
 
     const { isMobile, upColor } = useSettings();
     const history = useHistory();
@@ -113,7 +111,6 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
               [BtradeSwapsType.Pending, "var(--color-warning)"],
             ];
             const found = colorMap.find((x) => x[0] === row?.type);
-
             return (
               <Box
                 display={"flex"}
@@ -123,28 +120,14 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
                 height={"100%"}
               >
                 {row?.type === BtradeSwapsType.Delivering ? (
-                  <Tooltip
-                    title={
-                      <Typography whiteSpace={"pre-line"}>
-                        {t("labelBtradeDeliveringDes").toString()}
-                      </Typography>
-                    }
-                  >
+                  <Tooltip title={t("labelBtradeDeliveringDes").toString()}>
                     <Typography
                       color={found ? found[1].toString() : ""}
                       marginLeft={1}
                       display={"inline-flex"}
                       alignItems={"center"}
                     >
-                      {t(
-                        "labelBtrade" +
-                          // @ts-ignore
-                          (row?.type == BtradeSwapsType.Failed ||
-                          // @ts-ignore
-                          row?.type == BtradeSwapsType.Cancelled
-                            ? BtradeSwapsType.Failed.toString()
-                            : row?.type)
-                      )}
+                      {t("labelBtrade" + row?.type)}
                       <Info2Icon
                         fontSize={"small"}
                         color={"inherit"}
@@ -160,10 +143,14 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
                     {t("labelBtrade" + row?.type)}
                   </Typography>
                 )}
-                <Typography component={"span"} display={"inline-flex"}>
-                  {row
-                    ? `${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`
-                    : EmptyValueTag}
+                <Typography>
+                  {row ? (
+                    <>
+                      {`${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`}
+                    </>
+                  ) : (
+                    EmptyValueTag
+                  )}
                 </Typography>
               </Box>
             );
@@ -174,7 +161,9 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
           name: t("labelBtradeSwapFailed"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <>{row.filledPercent ? row.filledPercent + "%" : EmptyValueTag}</>
+              <>
+                {row.filledPercent ? row.filledPercent + "%" : EmptyValueTag}{" "}
+              </>
             );
           },
         },
@@ -191,7 +180,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <>
-                {row.feeAmount !== undefined
+                {row.feeAmount != "0"
                   ? row.feeAmount + " " + row.feeSymbol
                   : EmptyValueTag}
               </>
@@ -210,162 +199,21 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
       ],
       [history, upColor, t]
     );
-    const getColumnMobileTransaction = React.useCallback(
-      (): Column<R, unknown>[] => [
-        {
-          key: "Type",
-          cellClass: "textAlignLeft",
-          headerCellClass: "textAlignLeft",
-          name: t("labelBtradeSwapType"),
-          formatter: ({ row }: FormatterProps<R>) => {
-            const colorMap = [
-              [BtradeSwapsType.Settled, "var(--color-success)"],
-              [BtradeSwapsType.Delivering, "var(--color-warning)"],
-              [BtradeSwapsType.Failed, "var(--color-error)"],
-              [BtradeSwapsType.Cancelled, "var(--color-error)"],
-              [BtradeSwapsType.Pending, "var(--color-warning)"],
-            ];
-            const found = colorMap.find((x) => x[0] === row?.type);
-
-            return (
-              <Box
-                display={"flex"}
-                justifyContent={"space-between"}
-                paddingRight={3}
-                flexDirection={"column"}
-                alignItems={"flex-start"}
-                height={"100%"}
-              >
-                {row?.type === BtradeSwapsType.Delivering ? (
-                  <Tooltip title={t("labelBtradeDeliveringDes").toString()}>
-                    <Typography
-                      color={found ? found[1].toString() : ""}
-                      component={"span"}
-                      display={"flex"}
-                    >
-                      {t(
-                        "labelBtrade" +
-                          // @ts-ignore
-                          (row?.type == BtradeSwapsType.Failed ||
-                          // @ts-ignore
-                          row?.type == BtradeSwapsType.Cancelled
-                            ? BtradeSwapsType.Failed.toString()
-                            : row?.type)
-                      )}
-                      <Info2Icon
-                        fontSize={"small"}
-                        color={"inherit"}
-                        sx={{ marginX: 1 / 2 }}
-                      />
-                    </Typography>
-                  </Tooltip>
-                ) : (
-                  <Typography
-                    color={found ? found[1].toString() : ""}
-                    component={"span"}
-                    display={"flex"}
-                  >
-                    {t("labelBtrade" + row?.type)}
-                  </Typography>
-                )}
-                <Typography component={"span"} display={"flex"}>
-                  {row
-                    ? `${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`
-                    : EmptyValueTag}
-                </Typography>
-              </Box>
-            );
-          },
-        },
-        {
-          key: "Price",
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelBtradeSwapPrice") + "/" + t("labelBtradeSwapFailed"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Box
-                display={"flex"}
-                justifyContent={"space-between"}
-                paddingRight={3}
-                flexDirection={"column"}
-                alignItems={"flex-end"}
-                height={"100%"}
-              >
-                <Typography component={"span"} display={"flex"}>
-                  {row.price?.value + " " + row.price?.key}
-                </Typography>
-                <Typography
-                  component={"span"}
-                  display={"flex"}
-                  color={"textSecondary"}
-                >
-                  {row.filledPercent ? row.filledPercent + "%" : EmptyValueTag}
-                </Typography>
-              </Box>
-            );
-          },
-        },
-        {
-          key: "Fee",
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelBtradeSwapFee") + "/" + t("labelBtradeSwapTime"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Box
-                display={"flex"}
-                justifyContent={"space-between"}
-                paddingRight={3}
-                flexDirection={"column"}
-                alignItems={"flex-end"}
-                height={"100%"}
-              >
-                <Typography component={"span"} display={"flex"}>
-                  {row.feeAmount !== undefined
-                    ? row.feeAmount + " " + row.feeSymbol
-                    : EmptyValueTag}
-                </Typography>
-
-                <Typography
-                  component={"span"}
-                  display={"flex"}
-                  color={"textSecondary"}
-                >
-                  {moment(new Date(row.time)).fromNow()}
-                </Typography>
-              </Box>
-            );
-          },
-        },
-      ],
-      [history, upColor, t]
-    );
-    const updateData = _.debounce(
-      ({
-        // tableType,
-        currPage = page,
-        pageSize = pagination.pageSize,
-      }: {
-        // tableType: TableType;
-        currPage?: number;
-        pageSize?: number;
-      }) => {
-        getBtradeOrderList({
-          limit: pageSize,
-          offset: (currPage - 1) * pageSize,
-        });
-      },
-      globalSetup.wait
-    );
+    const updateData = _.debounce(async ({ currPage = page }) => {
+      await getBtradeOrderList({
+        limit: pagination?.pageSize ?? 10,
+        offset: (currPage - 1) * (pagination?.pageSize ?? 10),
+      });
+    }, globalSetup.wait);
     const handlePageChange = React.useCallback(
-      async (currPage: number) => {
-        // if (currPage === page) return;
-        setPage(currPage);
-        updateData({ currPage: currPage });
+      async (page: number) => {
+        setPage(page);
+        await updateData({ actionType: TableType.page, currPage: page });
       },
       [updateData]
     );
+
+    const getColumnMobileTransaction = getColumnModeTransaction;
 
     const defaultArgs: any = {
       columnMode: isMobile
@@ -375,15 +223,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
-    // React.useEffect(() => {
-    //   updateData.cancel();
-    //   handlePageChange(1);
-    //   return () => {
-    //     updateData.cancel();
-    //   };
-    // }, [pagination?.pageSize]);
     React.useEffect(() => {
-      // setPageSize(pagination?.pageSize);
       updateData.cancel();
       handlePageChange(1);
       return () => {
@@ -392,7 +232,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
     }, [pagination?.pageSize]);
 
     return (
-      <TableWrapperStyled isMobile={isMobile}>
+      <TableWrapperStyled>
         <TableStyled
           currentheight={
             RowInvestConfig.rowHeaderHeight +

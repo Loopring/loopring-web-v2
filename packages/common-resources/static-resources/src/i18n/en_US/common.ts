@@ -809,12 +809,12 @@ export default {
   labelExchangeOthers: "Others",
   labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
-  labelConfirmCEX: "Confirm CEX Support",
+  labelConfirmBtrade: "Confirm Btrade Support",
   labelConfirmDetail:
-    "<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>" +
-    "<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>",
-  labelCEXUnderstand: "I understand and acknowledge the risk",
+    "<0>Before withdrawing, please confirm with your Btrade support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The Btrade depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the Btrade address within 24 hours, please contact your Btrade support and ask they manually acknowledge the transaction.</2>",
+  labelBtradeUnderstand: "I understand and acknowledge the risk",
   labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
   labelMintFeeChoose: "Select payment token",
@@ -846,7 +846,7 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a CEX address using Loopring L2. Since the CEX does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Btrade address using Loopring L2. Since the Btrade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
   labelForceWithdrawConfirm1:
@@ -1322,7 +1322,7 @@ export default {
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelBlindBoxClaimWarning:
-    "Note：For NFT Red Packets, after expiration date, the red packet holders have to claim the received NFT gift within 3 days else those NFT gifts will be returned back to Sender's wallet.",
+    "If the recipients of the NFT Red Packets do not claim their received NFT within 3 days, the NFT will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxRecievedRedPackets: "Received NFT Red Packets",
   labelBlindBoxCongratulations: "Congratulations",
   labelBlindBoxSorry: "Sorry",
@@ -1349,9 +1349,10 @@ export default {
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyTokenViewType0: "Public Red Packet",
   labelLuckyTokenViewTypeDes0:
-    "Your Red Packet is shared privately with others via a custom QR code.",
+    "Your Red Packet is public, and everyone can try to claim a share of it.",
   labelSplit: "Red Packet Count",
   labelRedPacketMemo: "Memo",
+  labelRedPacketMemoPlaceholder: "Best wishes",
   labelRedPacketStart: "Available in",
   labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
@@ -1437,7 +1438,7 @@ export default {
   labelRedPacketStatusOVER_DUE: "Over Due", // OVER_DUE = 4,
   labelRedPacketStatusFAILED: "Failed", // FAILED = 5
   labelRedPacketStatusNotStarted: "Hasn’t started",
-  labelRedPacketStatusStarted: "Opened",
+  labelRedPacketStatusStarted: "Started",
   labelRedPacketStatusEnded: "Ended",
   labelRedPacketNo: "NO.{{value}}",
   labelRedPacketClaimInProgress: "Processing...",
@@ -1457,7 +1458,8 @@ export default {
   labelOpenStart: "Start",
   labelTotalRedPacket: "Quantity in total: {{value}}",
   labelMyRedPacketReward: "My Rewards",
-  labelRedpacketScanDes: "Using Loopring Wallet, scan the QR code.",
+  labelRedpacketScanDes:
+    "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
   labelLuckyRedPacketStarted: "Red Packet is Started",
   labelNFTRedpacketBtn: "Send Red Packet",
   labelRedpacketDurationTitle: "Expires after",
@@ -1473,6 +1475,7 @@ export default {
   labelRedpacketTokensShort: "Tokens",
   labelRedpacketNFTS: "NFTs",
   labelRedpacketBlindBox: "Blind Box",
+  labelRedpacketHideInactionable: "Hide inactionable records",
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
   labelChooseNFTTooltips: "",
   tokenSelectNFTToken: "Select NFT",
@@ -1482,6 +1485,7 @@ export default {
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
+  labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
@@ -1576,32 +1580,32 @@ export default {
   labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
   labelStakingRedeemRemaining: "Remaining Amount",
   labelStakingRedeemDate: "Redeem Time",
-  labelCexSwapTitle: "CEX Swap",
-  labelCexSwapType: "Type",
-  labelCexSwapFilled: "Filled",
-  labelCexSwapFee: "Fee",
-  labelCexSwapTime: "Time",
-  labelCexSwapPrice: "Price",
-  labelCexSwapSettled: "Settled",
-  labelCexSwapDelivering: "Delivering",
-  labelCexSwapPanelDes:
+  labelBtradeSwapTitle: "Btrade Swap",
+  labelBtradeSwapType: "Type",
+  labelBtradeSwapFilled: "Filled",
+  labelBtradeSwapFee: "Fee",
+  labelBtradeSwapTime: "Time",
+  labelBtradeSwapPrice: "Price",
+  labelBtradeSwapSettled: "Settled",
+  labelBtradeSwapDelivering: "Delivering",
+  labelBtradeSwapPanelDes:
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
-  labelGoCexSwap:
-    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>CEX Swap</link> option to help minimize potential losses.",
-  labelCexSwap: "CEX Swap",
-  labelCexSwapFailed: "CEX Swap failed!",
-  labelCexSwapTitleDes: "What is CEX Swap?",
-  labelCexSwapContentDes: "What is CEX Swap?",
+  labelGoBtradeSwap:
+    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Btrade Swap</link> option to help minimize potential losses.",
+  labelBtradeSwap: "Btrade Swap",
+  labelBtradeSwapFailed: "Btrade Swap failed!",
+  labelBtradeSwapTitleDes: "What is Btrade Swap?",
+  labelBtradeSwapContentDes: "What is Btrade Swap?",
   labelRefereeRewards: "Referee Rewards",
   labelReferralRewards: "Referral Rewards",
   labelRewardLRC: "Rewards LRC",
   labelPrice: "Price",
-  labelCexSwapMiniMax: "Min {{minValue}} - Max {{maxValue}}",
-  labelCexSwapMini: "Min {{minValue}}",
-  labelCexConfirm: "Please check the checkbox",
-  labelCexSwapBtn: "CEX Swap",
+  labelBtradeSwapMiniMax: "Min {{minValue}} - Max {{maxValue}}",
+  labelBtradeSwapMini: "Min {{minValue}}",
+  labelBtradeConfirm: "Please check the checkbox",
+  labelBtradeSwapBtn: "Btrade Swap",
   labelType: "Type",
-  labelCexTrade: "CEX Swap",
-  labelCexTitle: "CEX Swap",
-  labelCexSwapPending: "Pending",
+  labelBtradeTrade: "Btrade Swap",
+  labelBtradeTitle: "Btrade Swap",
+  labelBtradeSwapPending: "Pending",
 };

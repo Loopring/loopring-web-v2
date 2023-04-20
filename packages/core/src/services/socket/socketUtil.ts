@@ -9,7 +9,7 @@ import { orderbookService } from "./services/orderbookService";
 import { tradeService } from "./services/tradeService";
 import { mixorderService } from "./services/mixorderService";
 import { mixtradeService } from "./services/mixtradeService";
-import { cexOrderbookService } from "./services/cexOrderbookService";
+import { btradeOrderbookService } from "./services/btradeOrderbookService";
 
 export type SocketEvent = (e: any, ...props: any[]) => any;
 
@@ -65,15 +65,15 @@ export class LoopringSocket {
         });
       }
     },
-    [sdk.WsTopicType.cefiOrderBook]: (data: sdk.DepthData, topic: any) => {
+    [sdk.WsTopicType.btradeOrderBook]: (data: sdk.DepthData, topic: any) => {
       if (
         (window as any)?.loopringSocket?.socketKeyMap &&
         (window as any).loopringSocket?.socketKeyMap[
-          sdk.WsTopicType.cefiOrderBook
+          sdk.WsTopicType.btradeOrderBook
         ]?.level === topic.level
       ) {
         const timestamp = Date.now();
-        cexOrderbookService.sendCexOrderBook({
+        btradeOrderbookService.sendBtradeOrderBook({
           [topic.market]: {
             ...data,
             timestamp: timestamp,
@@ -375,14 +375,14 @@ export class LoopringSocket {
             }
           }
           break;
-        case sdk.WsTopicType.cefiOrderBook:
-          const cexOrderSocket = socket[sdk.WsTopicType.cefiOrderBook];
-          if (cexOrderSocket) {
-            const level = cexOrderSocket.level ?? 0;
-            const snapshot = cexOrderSocket.snapshot ?? true;
-            const count = cexOrderSocket.count ?? 50;
-            list = cexOrderSocket.markets.map((key) =>
-              sdk.getCefiOrderBook({
+        case sdk.WsTopicType.btradeOrderBook:
+          const btradeOrderSocket = socket[sdk.WsTopicType.btradeOrderBook];
+          if (btradeOrderSocket) {
+            const level = btradeOrderSocket.level ?? 0;
+            const snapshot = btradeOrderSocket.snapshot ?? true;
+            const count = btradeOrderSocket.count ?? 50;
+            list = btradeOrderSocket.markets.map((key) =>
+              sdk.getBtradeOrderBook({
                 market: key,
                 level,
                 count,
@@ -391,7 +391,7 @@ export class LoopringSocket {
               })
             );
             if (list && list.length) {
-              this.addSocketEvents(sdk.WsTopicType.cefiOrderBook);
+              this.addSocketEvents(sdk.WsTopicType.btradeOrderBook);
               topics = [...topics, ...list];
             }
           }

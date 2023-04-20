@@ -1,6 +1,5 @@
 import {
   BtradeTradeCalcData,
-  BtradeType,
   MarketType,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -25,7 +24,6 @@ export type TradeBtrade = {
   buyUserOrderInfo?: undefined | null | sdk.OrderInfo;
   minOrderInfo?: undefined | null | Partial<sdk.OrderInfo & OrderInfoPatch>;
   info: sdk.BTRADE_MARKET;
-  btradeType: undefined | BtradeType;
 };
 
 export type TradeBtradeStatus = {

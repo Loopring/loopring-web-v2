@@ -12,7 +12,7 @@ import {
   TradeTable,
   TransactionTable,
   useSettings,
-  CexSwapTable,
+  BtradeSwapTable,
 } from "@loopring-web/component-lib";
 import {
   StylePaper,
@@ -24,7 +24,7 @@ import {
   useTokenMap,
 } from "@loopring-web/core";
 import {
-  useCexTransaction,
+  useBtradeTransaction,
   useDefiSideRecord,
   useDualTransaction,
   useGetAmmRecord,
@@ -119,12 +119,12 @@ const HistoryPanel = withTranslation("common")(
       useGetOrderHistorys();
     const { etherscanBaseUrl } = useSystem();
     const {
-      getCexOrderList,
-      cexOrderData,
+      getBtradeOrderList,
+      btradeOrderData,
       onDetail,
-      totalNum: cexTotalNum,
-      showLoading: showCexLoading,
-    } = useCexTransaction(setToastOpen);
+      totalNum: btradeTotalNum,
+      showLoading: showBtradeLoading,
+    } = useBtradeTransaction(setToastOpen);
 
     const {
       account: { accAddress, accountId },
@@ -224,8 +224,8 @@ const HistoryPanel = withTranslation("common")(
                 value={RecordTabIndex.sideStakingRecords}
               />
               <Tab
-                label={t("labelCexSwapTitle")}
-                value={RecordTabIndex.cexSwapRecords}
+                label={t("labelBtradeSwapTitle")}
+                value={RecordTabIndex.btradeSwapRecords}
               />
             </Tabs>
           </Box>
@@ -395,22 +395,22 @@ const HistoryPanel = withTranslation("common")(
                   }}
                 />
               </Box>
-            ) : currentTab === RecordTabIndex.cexSwapRecords ? (
+            ) : currentTab === RecordTabIndex.btradeSwapRecords ? (
               <Box
                 flex={1}
                 display={"flex"}
                 flexDirection={"column"}
                 marginTop={-2}
               >
-                <CexSwapTable
+                <BtradeSwapTable
                   {...{
-                    showloading: showCexLoading,
-                    getCexOrderList,
-                    rawData: cexOrderData,
+                    showloading: showBtradeLoading,
+                    getBtradeOrderList,
+                    rawData: btradeOrderData,
                   }}
                   pagination={{
                     pageSize: pageSize + 2,
-                    total: cexTotalNum,
+                    total: btradeTotalNum,
                   }}
                   onItemClick={onDetail}
                 />

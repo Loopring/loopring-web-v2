@@ -17,12 +17,9 @@ export type RawDataBtradeSwapsItem = {
   price: {
     key: string;
     value: string;
-    from: string;
   };
   feeAmount: string;
   feeSymbol: string;
   time: number;
   filledPercent: string;
-  settledFromAmount: string;
-  settledToAmount: string;
 };

@@ -50,6 +50,7 @@ export default {
   labelSetting: "Setting",
   labelSecurity: "Security",
   labelVipPanel: "VIP",
+  labelContactsPanel: "Contacts",
   titleLoopring: "Loopring",
   labelLoopringDescribe: "zkRollup Exchange and Payment Protocol",
   labelWrongNetwork: "Wrong network",
@@ -120,5 +121,7 @@ export default {
   labelMyCollectionDes: "Create, curate, and \n manage my NFT collections",
   labelInvestStakeLRC: "LRC Staking",
   labelInvestStakeLRCDes: "Earn LRC staking rewards",
+  labelBtradeTrade: "Btrade Swap",
+  labelBtradeTradeDescription: "More investments, higher returns",
   // labelDepositNFTDes:"Receive NFT"
 };

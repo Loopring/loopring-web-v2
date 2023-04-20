@@ -66,7 +66,7 @@ export interface PanelProps {
 }
 
 const BoxStyle = styled(Box)`
-  &.cex-panel {
+  &.btrade-panel {
     .status-icon {
       margin-top: ${({ theme }) => theme.unit * 2}px;
     }
@@ -549,10 +549,10 @@ export const RedPacketOpenBase = (props: PanelProps) => {
   return <BasicPanel {...propsPatch} {...props} />;
 };
 
-export const CexBase = (props: PanelProps) => {
+export const BtradeBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelCexTitle",
+    title: "labelBtradeTitle",
   };
 
-  return <BasicPanel className={"cex-panel"} {...props} {...propsPatch} />;
+  return <BasicPanel className={"btrade-panel"} {...props} {...propsPatch} />;
 };

@@ -87,7 +87,7 @@ export interface TradeCalcData<T> {
   feeTakerRate?: number;
   tradeCost?: string;
   lastStepAt?: "sell" | "buy";
-  isCex: undefined | boolean;
+  isBtrade: undefined | boolean;
 }
 export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   isNotMatchMarketPrice?: boolean;
@@ -100,10 +100,10 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   feeTakerRate?: number;
   tradeCost?: string;
   showLargeVolumeSwapInfo?: boolean;
-  isCex: undefined | false;
+  isBtrade: undefined | false;
 };
-export type CexTradeCalcData<T> = TradeCalcData<T> & {
-  isCex: true;
+export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
+  isBtrade: true;
   maxFeeBips: number;
   lockedNotification: true;
   isLockedNotificationChecked?: boolean;

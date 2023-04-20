@@ -48,7 +48,7 @@ import { getAnalytics, logEvent } from "firebase/analytics";
 import { AssetPage } from "../pages/AssetPage";
 import { FiatPage } from "../pages/FiatPage";
 import { useTranslation } from "react-i18next";
-import { CexSwapPage } from "../pages/CexSwapPage";
+import { BtradeSwapPage } from "../pages/BtradeSwapPage";
 
 const ContentWrap = ({
   children,
@@ -299,9 +299,9 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <SwapPage />
           </ContentWrap>
         </Route>
-        <Route path="/trade/cex">
+        <Route path="/trade/btrade">
           <ContentWrap state={state}>
-            <CexSwapPage />
+            <BtradeSwapPage />
           </ContentWrap>
         </Route>
         <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>

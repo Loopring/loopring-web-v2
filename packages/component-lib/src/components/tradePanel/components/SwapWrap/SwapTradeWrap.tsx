@@ -1,6 +1,6 @@
 import { SwapTradeData } from "../../Interface";
 import {
-  CexTradeCalcData,
+  BtradeTradeCalcData,
   CheckBoxIcon,
   CheckedIcon,
   CoinInfo,
@@ -37,7 +37,7 @@ import { useHistory } from "react-router-dom";
 export const SwapTradeWrap = <
   T extends IBData<I>,
   I,
-  TCD extends CexTradeCalcData<I>,
+  TCD extends BtradeTradeCalcData<I>,
   SCD extends SwapTradeCalcData<I>
 >({
   t,
@@ -172,9 +172,9 @@ export const SwapTradeWrap = <
         return t(swapBtnI18nKey);
       }
     } else {
-      return t(tradeCalcData.isCex ? `labelCexSwapBtn` : `swapBtn`);
+      return t(tradeCalcData.isBtrade ? `labelBtradeSwapBtn` : `swapBtn`);
     }
-  }, [t, swapBtnI18nKey, tradeCalcData.isCex]);
+  }, [t, swapBtnI18nKey, tradeCalcData.isBtrade]);
   const showVal =
     tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB;
 
@@ -306,7 +306,7 @@ export const SwapTradeWrap = <
         {/*</Grid>*/}
         {/*</Grid>*/}
       </Grid>
-      {!tradeCalcData.isCex && tradeCalcData.showLargeVolumeSwapInfo && (
+      {!tradeCalcData.isBtrade && tradeCalcData.showLargeVolumeSwapInfo && (
         <Grid
           item
           marginTop={3}
@@ -326,12 +326,12 @@ export const SwapTradeWrap = <
             paddingX={1}
           >
             <Trans
-              i18nKey={"labelGoCexSwap"}
+              i18nKey={"labelGoBtradeSwap"}
               components={{
                 link: (
                   <Link
                     onClick={() => {
-                      history.push("/trade/cex");
+                      history.push("/trade/btrade");
                     }}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -342,7 +342,7 @@ export const SwapTradeWrap = <
               }}
             >
               Swapping on the DEX will result in a large Price Impact (loss of
-              assets). We recommend using the <Link>CEX Swap</Link> option to
+              assets). We recommend using the <Link>Btrade Swap</Link> option to
               help minimize potential losses.
             </Trans>
           </Typography>
@@ -374,7 +374,7 @@ export const SwapTradeWrap = <
           )}
         </Typography>
       </Grid>
-      {!tradeCalcData.isCex && (
+      {!tradeCalcData.isBtrade && (
         <>
           <Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>
             <Grid
@@ -564,7 +564,7 @@ export const SwapTradeWrap = <
         </>
       )}
 
-      {tradeCalcData.isCex && (
+      {tradeCalcData.isBtrade && (
         <>
           <Grid item paddingBottom={3} sx={{ color: "text.secondary" }}>
             <Grid
@@ -671,7 +671,7 @@ export const SwapTradeWrap = <
                     label={
                       <Typography variant={"body2"}>
                         <Trans
-                          i18nKey={"labelCexSwapPanelDes"}
+                          i18nKey={"labelBtradeSwapPanelDes"}
                           interpolation={{ escapeValue: false }}
                         >
                           It may not be possible for the Loopring pool to

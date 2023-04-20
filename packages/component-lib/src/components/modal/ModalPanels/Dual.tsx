@@ -1,4 +1,4 @@
-import { CexBase, DualBase, IconType, PanelProps } from "./BasicPanel";
+import { BtradeBase, DualBase, IconType, PanelProps } from "./BasicPanel";
 import { Box, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 import {
@@ -307,7 +307,7 @@ export const Staking_Redeem_Failed = (props: PanelProps) => {
   return <DualBase showTitle={true} {...propsPatch} {...props} />;
 };
 
-export const CexDetail = (props: any) => {
+export const BtradeDetail = (props: any) => {
   const { isMobile } = useSettings();
   const { info } = props;
   return info?.buyToken && info?.sellToken ? (
@@ -390,7 +390,7 @@ export const CexDetail = (props: any) => {
             component={"span"}
             color={"var(--color-text-primary)"}
           >
-            {props.t("labelCexTrade")}
+            {props.t("labelBtradeTrade")}
           </Typography>
         </Typography>
         <Typography
@@ -518,7 +518,7 @@ export const CexDetail = (props: any) => {
   );
 };
 
-export const CexSwap_Delivering = (props: PanelProps) => {
+export const BtradeSwap_Delivering = (props: PanelProps) => {
   const { t } = props;
   const { isMobile } = useSettings();
 
@@ -527,55 +527,55 @@ export const CexSwap_Delivering = (props: PanelProps) => {
     describe1: (
       <Box paddingX={isMobile ? 1 : 5}>
         <Typography color={"var(--color-text-primary)"} variant={"h5"}>
-          {t("labelCexSwapDelivering")}
+          {t("labelBtradeSwapDelivering")}
         </Typography>
         <Typography color={"var(--color-text-secondary)"} marginTop={2}>
-          {t("labelCexSwapPanelDes")}
+          {t("labelBtradeSwapPanelDes")}
         </Typography>
       </Box>
     ),
-    describe2: <CexDetail {...props} />,
+    describe2: <BtradeDetail {...props} />,
   };
-  return <CexBase {...propsPatch} {...props} />;
+  return <BtradeBase {...propsPatch} {...props} />;
 };
-export const CexSwap_Pending = (props: PanelProps) => {
+export const BtradeSwap_Pending = (props: PanelProps) => {
   const { t } = props;
   const propsPatch = {
     iconType: IconType.PendingIcon,
     describe1: (
       <Typography color={"var(--color-text-primary)"} variant={"h5"}>
-        {t("labelCexSwapPending")}
+        {t("labelBtradeSwapPending")}
       </Typography>
     ),
-    describe2: <CexDetail {...props} />,
+    describe2: <BtradeDetail {...props} />,
   };
-  return <CexBase {...propsPatch} {...props} />;
+  return <BtradeBase {...propsPatch} {...props} />;
 };
 
-export const CexSwap_Settled = (props: PanelProps) => {
+export const BtradeSwap_Settled = (props: PanelProps) => {
   const { t } = props;
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: (
       <Typography color={"var(--color-text-primary)"} variant={"h5"}>
-        {t("labelCexSwapSettled")}
+        {t("labelBtradeSwapSettled")}
       </Typography>
     ),
-    describe2: <CexDetail {...props} />,
+    describe2: <BtradeDetail {...props} />,
   };
-  return <CexBase {...propsPatch} {...props} />;
+  return <BtradeBase {...propsPatch} {...props} />;
 };
 
-export const CexSwap_Failed = (props: PanelProps) => {
+export const BtradeSwap_Failed = (props: PanelProps) => {
   const { t } = props;
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: (
       <Typography color={"var(--color-text-primary)"} variant={"h5"}>
-        {t("labelCexSwapFailed")}
+        {t("labelBtradeSwapFailed")}
       </Typography>
     ),
-    describe2: <CexDetail {...props} />,
+    describe2: <BtradeDetail {...props} />,
   };
-  return <CexBase {...propsPatch} {...props} />;
+  return <BtradeBase {...propsPatch} {...props} />;
 };

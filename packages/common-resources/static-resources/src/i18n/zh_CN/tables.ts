@@ -298,10 +298,10 @@ export default {
   labelBlindBoxStartTime: "Start time:",
   // labelRecordAction: "Action",
 
-  labelCexSwapType: "Type",
-  labelCexSwapFee: "Fee",
-  labelCexSwapTime: "Time",
-  labelCexSwapPrice: "Price",
-  labelCexSwapSettled: "Settled",
-  labelCexSwapDelivering: "Delivering",
+  labelBtradeSwapType: "Type",
+  labelBtradeSwapFee: "Fee",
+  labelBtradeSwapTime: "Time",
+  labelBtradeSwapPrice: "Price",
+  labelBtradeSwapSettled: "Settled",
+  labelBtradeSwapDelivering: "Delivering",
 };

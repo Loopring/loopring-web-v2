@@ -20,4 +20,4 @@ export * from "./dualTxsTable";
 export * from "./dualTable";
 export * from "./tradeRaceTable";
 export * from "./redPacketTable";
-export * from "./cexSwapTable";
+export * from "./btradeSwapTable";

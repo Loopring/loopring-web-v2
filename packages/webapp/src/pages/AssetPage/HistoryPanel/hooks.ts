@@ -14,10 +14,10 @@ import {
 import {
   AccountStep,
   AmmSideTypes,
-  CexSwapsType,
+  BtradeSwapsType,
   OrderHistoryRawDataItem,
   RawDataAmmItem,
-  RawDataCexSwapsItem,
+  RawDataBtradeSwapsItem,
   RawDataDualAssetItem,
   RawDataDualTxsItem,
   RawDataTradeItem,
@@ -28,7 +28,7 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE, GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
 import {
-  CEXNAME,
+  BTRDE_PRE,
   EmptyValueTag,
   getValuePrecisionThousand,
   SDK_ERROR_MAP_TO_UI,
@@ -797,12 +797,12 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
   };
 };
 
-export const useCexTransaction = <R extends RawDataCexSwapsItem>(
+export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
   setToastOpen: (props: any) => void
 ) => {
   const { t } = useTranslation(["error"]);
 
-  const [cexOrderData, setCexOrderData] = React.useState<R[]>([]);
+  const [btradeOrderData, setBtradeOrderData] = React.useState<R[]>([]);
   const [totalNum, setTotalNum] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(false);
   const {
@@ -810,11 +810,11 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
   } = useAccount();
   const { tokenMap, idIndex } = useTokenMap();
   const { setShowAccount } = useOpenModals();
-  const getCexOrderList = React.useCallback(
+  const getBtradeOrderList = React.useCallback(
     async (props: Omit<GetOrdersRequest, "accountId">) => {
       if (LoopringAPI && LoopringAPI.defiAPI && accountId && apiKey) {
         setShowLoading(true);
-        const userOrders = await LoopringAPI.defiAPI.getCefiOrders({
+        const userOrders = await LoopringAPI.defiAPI.getBtradeOrders({
           request: { accountId },
           apiKey,
         });
@@ -844,7 +844,7 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
                 status,
                 market,
                 price,
-                cefiExtraInfo: tokenInfos,
+                btradeExtraInfo: tokenInfos,
                 volumes: {
                   fee,
                   baseAmount,
@@ -858,7 +858,7 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
               } = item;
               //@ts-ignore
               const [, baseTokenSymbol, quoteTokenSymbol] = market
-                .replace(CEXNAME, "")
+                .replace(BTRDE_PRE, "")
                 .match(/(\w+)-(\w+)/i);
               let amountIn,
                 amountOut,
@@ -945,20 +945,20 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
               let type;
               switch (status) {
                 case "processed":
-                  type = CexSwapsType.Settled;
+                  type = BtradeSwapsType.Settled;
                   break;
                 case "failed":
-                  type = CexSwapsType.Failed;
+                  type = BtradeSwapsType.Failed;
                   break;
                 case "cancelled":
-                  type = CexSwapsType.Cancelled;
+                  type = BtradeSwapsType.Cancelled;
                   break;
                 case "filled":
-                  type = CexSwapsType.Delivering;
+                  type = BtradeSwapsType.Delivering;
                   break;
                 case "processing":
                 default:
-                  type = CexSwapsType.Pending;
+                  type = BtradeSwapsType.Pending;
                   break;
               }
               return {
@@ -981,7 +981,7 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
                   .toFormat(2),
               };
             }, []);
-            setCexOrderData(data);
+            setBtradeOrderData(data);
           }
         }
         setShowLoading(false);
@@ -991,8 +991,8 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
   );
 
   return {
-    getCexOrderList,
-    cexOrderData,
+    getBtradeOrderList,
+    btradeOrderData,
     onDetail: (item: R) => {
       const info = {
         sellToken: tokenMap[item.fromSymbol],
@@ -1009,34 +1009,34 @@ export const useCexTransaction = <R extends RawDataCexSwapsItem>(
         feeStr: item?.feeAmount,
       };
       switch (item.type) {
-        case CexSwapsType.Delivering:
+        case BtradeSwapsType.Delivering:
           setShowAccount({
             isShow: true,
-            step: AccountStep.CexSwap_Delivering,
+            step: AccountStep.BtradeSwap_Delivering,
             info,
           });
           break;
 
-        case CexSwapsType.Settled:
+        case BtradeSwapsType.Settled:
           setShowAccount({
             isShow: true,
-            step: AccountStep.CexSwap_Settled,
+            step: AccountStep.BtradeSwap_Settled,
             info,
           });
           break;
-        case CexSwapsType.Cancelled:
-        case CexSwapsType.Failed:
+        case BtradeSwapsType.Cancelled:
+        case BtradeSwapsType.Failed:
           setShowAccount({
             isShow: true,
-            step: AccountStep.CexSwap_Failed,
+            step: AccountStep.BtradeSwap_Failed,
             info,
           });
           break;
-        case CexSwapsType.Pending:
+        case BtradeSwapsType.Pending:
         default:
           setShowAccount({
             isShow: true,
-            step: AccountStep.CexSwap_Pending,
+            step: AccountStep.BtradeSwap_Pending,
             info,
           });
           break;

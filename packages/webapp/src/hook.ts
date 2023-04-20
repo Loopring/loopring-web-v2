@@ -15,8 +15,8 @@ import {
   useInvestTokenTypeMap,
   useDualMap,
   useStakingMap,
-  useCexSwap,
-  useCexMap,
+  useBtradeSwap,
+  useBtradeMap,
 } from "@loopring-web/core";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { myLog, SagaStatus, ThemeType } from "@loopring-web/common-resources";
@@ -74,7 +74,8 @@ export function useInit() {
     useDualMap();
   const { status: stakingMapStatus, statusUnset: stakingMapStatusUnset } =
     useStakingMap();
-  const { status: cexMapStatus, statusUnset: cexMapStatusUnset } = useCexMap();
+  const { status: btradeMapStatus, statusUnset: btradeMapStatusUnset } =
+    useBtradeMap();
 
   const {
     status: investTokenTypeMapStatus,
@@ -345,18 +346,18 @@ export function useInit() {
     }
   }, [stakingMapStatus]);
   React.useEffect(() => {
-    switch (cexMapStatus) {
+    switch (btradeMapStatus) {
       case SagaStatus.ERROR:
-        cexMapStatusUnset();
+        btradeMapStatusUnset();
         // setState("ERROR");
         break;
       case SagaStatus.DONE:
-        cexMapStatusUnset();
+        btradeMapStatusUnset();
         break;
       default:
         break;
     }
-  }, [cexMapStatus]);
+  }, [btradeMapStatus]);
 
   React.useEffect(() => {
     switch (investTokenTypeMapStatus) {

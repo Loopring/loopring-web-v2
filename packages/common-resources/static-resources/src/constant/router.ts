@@ -171,6 +171,14 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
+      id: "btrade",
+      i18nKey: "labelBtradeTrade",
+      description: "labelBtradeTradeDescription",
+    },
+    router: { path: "/trade/btrade/${pair}" },
+  },
+  {
+    label: {
       id: "fiat",
       i18nKey: "labelFiat",
       description: "labelFiatDescription",
@@ -188,14 +196,14 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "Landing-page",
       i18nKey: "labelZkRollupLayer2",
     },
-    router: { path: "https://loopring.io/#/", pathName: "/" },
+    router: { path: "https://loopring.io/#/" },
   },
   {
     label: {
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "https://loopring.io/#/wallet", pathName: "/wallet" },
+    router: { path: "https://loopring.io/#/wallet" },
   },
   // {
   //   label: {
@@ -581,5 +589,5 @@ export enum RecordTabIndex {
   defiRecords = "defiRecords",
   dualRecords = "dualRecords",
   sideStakingRecords = "sideStakingRecords",
-  cexSwapRecords = "CexSwap",
+  btradeSwapRecords = "BtradeSwap",
 }
