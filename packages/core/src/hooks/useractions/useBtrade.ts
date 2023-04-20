@@ -107,7 +107,7 @@ export const useBtradeSwap = <
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { isMobile } = useSettings();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
-  const { account } = useAccount();
+  const { account, status: accountStatus } = useAccount();
   const {
     toggle: { btradeOrder },
   } = useToggle();
@@ -629,7 +629,6 @@ export const useBtradeSwap = <
       if (refreshRef.current) {
         // @ts-ignore
         refreshRef.current.firstElementChild.click();
-        walletLayer2Service.sendUserUpdate();
       }
       if (
         (tradeData && tradeData.sell.belong == undefined) ||
@@ -639,6 +638,11 @@ export const useBtradeSwap = <
       }
     }
   }, [market]);
+  React.useEffect(() => {
+    if (accountStatus === SagaStatus.UNSET) {
+      walletLayer2Service.sendUserUpdate();
+    }
+  }, [accountStatus]);
 
   const resetTradeCalcData = React.useCallback(
     (_tradeData, _market?, type?: "sell" | "buy") => {
