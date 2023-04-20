@@ -633,6 +633,44 @@ export const SwapTradeWrap = <
                 {minimumReceived}
               </Typography>
             </Grid>
+
+            <Grid
+              container
+              justifyContent={"space-between"}
+              direction={"row"}
+              alignItems={"center"}
+              height={24}
+            >
+              <Tooltip
+                title={t("labelSwapToleranceTooltips").toString()}
+                placement={"top"}
+              >
+                <Typography
+                  component={"p"}
+                  variant="body2"
+                  color={"textSecondary"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <Info2Icon
+                    fontSize={"small"}
+                    color={"inherit"}
+                    sx={{ marginX: 1 / 2 }}
+                  />
+                  {" " + t("swapTolerance")}
+                </Typography>
+              </Tooltip>
+
+              <Typography component={"p"} variant="body2">
+                {tradeCalcData
+                  ? (tradeData.slippage
+                      ? tradeData.slippage
+                      : tradeCalcData.slippage
+                      ? tradeCalcData.slippage
+                      : defaultSlipage) + "%"
+                  : EmptyValueTag}
+              </Typography>
+            </Grid>
           </Grid>
           <Grid item marginBottom={2} alignSelf={"stretch"}>
             <Grid
