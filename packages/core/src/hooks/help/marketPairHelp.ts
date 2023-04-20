@@ -67,7 +67,7 @@ export const dexSwapDependAsync = ({
   return new Promise((resolve, reject) => {
     if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
       Promise.all([
-        LoopringAPI.defiAPI?.getCefiDepth({
+        LoopringAPI.defiAPI?.getBtradeDepth({
           request: {
             market,
             level,

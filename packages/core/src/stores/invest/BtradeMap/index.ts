@@ -1,3 +1,3 @@
 export * from "./hook";
-export * as cexReducer from "./reducer";
+export * as btradeReducer from "./reducer";
 export * from "./interface";

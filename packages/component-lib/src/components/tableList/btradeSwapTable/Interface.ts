@@ -1,12 +1,13 @@
-export enum CexSwapsType {
+export enum BtradeSwapsType {
   Settled = "Settled",
   Delivering = "Delivering",
   Failed = "Failed",
   Pending = "Pending",
   Cancelled = "Cancelled",
 }
-export type RawDataCexSwapsItem = {
-  type: CexSwapsType;
+
+export type RawDataBtradeSwapsItem = {
+  type: BtradeSwapsType;
   fromAmount: string;
   fromSymbol: string;
   toAmount: string;

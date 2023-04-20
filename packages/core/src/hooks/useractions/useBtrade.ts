@@ -11,7 +11,7 @@ import {
   reCalcStoB,
   store,
   useAccount,
-  useCexMap,
+  useBtradeMap,
   usePairMatch,
   useSocket,
   useSubmitBtn,
@@ -26,7 +26,7 @@ import {
 
 import {
   AccountStatus,
-  CexTradeCalcData,
+  BtradeTradeCalcData,
   CoinMap,
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -55,20 +55,20 @@ import {
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { useTradeCex } from "../../stores/router/tradeCex";
+import { useTradeBtrade } from "../../stores/router/tradeBtrade";
 import BigNumber from "bignumber.js";
 
-const useCexSocket = () => {
+const useBtradeSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket();
   const { account } = useAccount();
-  const { tradeCex } = useTradeCex();
+  const { tradeBtrade } = useTradeBtrade();
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED && tradeCex.info) {
+    if (account.readyState === AccountStatus.ACTIVATED && tradeBtrade.info) {
       sendSocketTopic({
         [sdk.WsTopicType.account]: true,
-        [sdk.WsTopicType.cefiOrderBook]: {
+        [sdk.WsTopicType.btradeOrderBook]: {
           showOverlap: false,
-          markets: [tradeCex.info.cexMarket], //[tradeCex.market],
+          markets: [tradeBtrade.info.btradeMarket], //[tradeBtrade.market],
           level: 0,
           snapshot: true,
         },
@@ -82,17 +82,17 @@ const useCexSocket = () => {
   }, [account.readyState]);
 };
 
-export const useCexSwap = <
+export const useBtradeSwap = <
   T extends SwapTradeData<IBData<C>>,
   C extends { [key: string]: any },
-  CAD extends CexTradeCalcData<C>
+  CAD extends BtradeTradeCalcData<C>
 >({
   path,
 }: {
   path: string;
 }) => {
-  const { marketCoins, marketArray, marketMap, tradeMap, getCexMap } =
-    useCexMap();
+  const { marketCoins, marketArray, marketMap, tradeMap, getBtradeMap } =
+    useBtradeMap();
   //High: No not Move!!!!!!
   const { realMarket } = usePairMatch({
     path,
@@ -109,7 +109,7 @@ export const useCexSwap = <
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { account } = useAccount();
   const {
-    toggle: { cexOrder },
+    toggle: { btradeOrder },
   } = useToggle();
 
   /** loaded from loading **/
@@ -124,7 +124,7 @@ export const useCexSwap = <
   const { status: walletLayer2Status } = useWalletLayer2();
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined);
   const [tradeCalcData, setTradeCalcData] = React.useState<Partial<CAD>>({
-    isCex: true,
+    isBtrade: true,
     lockedNotification: true,
     coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
       return { ...prev, [item]: coinMap ? coinMap[item] : {} };
@@ -133,18 +133,18 @@ export const useCexSwap = <
 
   /** redux storage **/
   const {
-    tradeCex,
-    updateTradeCex,
+    tradeBtrade,
+    updateTradeBtrade,
     __SUBMIT_LOCK_TIMER__,
     __TOAST_AUTO_CLOSE_TIMER__,
     __DAYS__,
-  } = useTradeCex();
+  } = useTradeBtrade();
 
   /*** api prepare ***/
   const [market, setMarket] = React.useState<MarketType>(
     realMarket as MarketType
   );
-  const [isCexLoading, setIsCexLoading] = React.useState(false);
+  const [isBtradeLoading, setisBtradeLoading] = React.useState(false);
 
   const { tokenPrices } = useTokenPrices();
 
@@ -172,7 +172,7 @@ export const useCexSwap = <
         };
         return _tradeCalcData;
       });
-      updateTradeCex({
+      updateTradeBtrade({
         market,
         maxFeeBips: 0,
         tradeCalcData: {
@@ -197,7 +197,7 @@ export const useCexSwap = <
     const sellToken = tokenMap[tradeData?.sell.belong as string];
     const buyToken = tokenMap[tradeData?.buy.belong as string];
 
-    const { tradeCalcData, sellMinAmtInfo, sellMaxAmtInfo } = tradeCex;
+    const { tradeCalcData, sellMinAmtInfo, sellMaxAmtInfo } = tradeBtrade;
 
     if (!sellToken || !buyToken || !tradeCalcData) {
       return {
@@ -225,7 +225,7 @@ export const useCexSwap = <
       .toBig(walletMap[sellToken.symbol]?.count ?? 0)
       .lt(tradeData?.sell?.tradeValue ?? 0);
     // debugger;
-    if (isCexLoading) {
+    if (isBtradeLoading) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.LOADING,
@@ -284,7 +284,7 @@ export const useCexSwap = <
           }
         } else if (!tradeCalcData?.isLockedNotificationChecked) {
           return {
-            label: `labelCexConfirm`,
+            label: `labelBtradeConfirm`,
             tradeBtnStatus: TradeBtnStatus.DISABLED,
           };
         } else {
@@ -306,16 +306,20 @@ export const useCexSwap = <
     tradeData?.sell.belong,
     tradeData?.buy.belong,
     tradeCalcData?.isLockedNotificationChecked,
-    tradeCex.maxFeeBips,
+    tradeBtrade.maxFeeBips,
     tradeData?.sell.tradeValue,
     tradeData?.buy.tradeValue,
-    isCexLoading,
+    isBtradeLoading,
   ]);
   const sendRequest = React.useCallback(async () => {
-    setIsCexLoading(true);
+    setisBtradeLoading(true);
     const {
-      tradeCex: { tradeCalcData, sellToken: _sellToken, buyToken: _buyToken },
-    } = store.getState()._router_tradeCex;
+      tradeBtrade: {
+        tradeCalcData,
+        sellToken: _sellToken,
+        buyToken: _buyToken,
+      },
+    } = store.getState()._router_tradeBtrade;
     myLog(
       "exchangeInfo",
       exchangeInfo,
@@ -347,7 +351,7 @@ export const useCexSwap = <
           },
           account.apiKey
         );
-        const request: sdk.OriginCEXV3OrderRequest = {
+        const request: sdk.OriginBTRADEV3OrderRequest = {
           exchange: exchangeInfo.exchangeAddress,
           storageId: storageId.orderId,
           accountId: account.accountId,
@@ -369,9 +373,9 @@ export const useCexSwap = <
           // taker:
           // new BN(ethUtil.toBuffer(request.taker)).toString(),
         };
-        myLog("useCexSwap: submitOrder request", request);
+        myLog("useBtradeSwap: submitOrder request", request);
         const response: { hash: string } | any =
-          await LoopringAPI.defiAPI.sendCefiOrder({
+          await LoopringAPI.defiAPI.sendBtradeOrder({
             request,
             privateKey: account.eddsaKey.sk,
             apiKey: account.apiKey,
@@ -423,12 +427,12 @@ export const useCexSwap = <
         };
         setShowAccount({
           isShow: true,
-          step: AccountStep.CexSwap_Pending,
+          step: AccountStep.BtradeSwap_Pending,
           info,
         });
         await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE);
         const orderConfirm: { hash: string } | any =
-          await LoopringAPI.defiAPI.getCefiOrders({
+          await LoopringAPI.defiAPI.getBtradeOrders({
             request: {
               accountId: account.accountId,
               // @ts-ignore
@@ -447,13 +451,13 @@ export const useCexSwap = <
         } else if (["failed", "cancelled"].includes(orderConfirm.status)) {
           setShowAccount({
             isShow: true,
-            step: AccountStep.CexSwap_Failed,
+            step: AccountStep.BtradeSwap_Failed,
             info,
           });
         } else if (store.getState().modals.isShowAccount.isShow) {
           setShowAccount({
             isShow: true,
-            step: AccountStep.CexSwap_Pending,
+            step: AccountStep.BtradeSwap_Pending,
             info,
           });
         }
@@ -469,7 +473,7 @@ export const useCexSwap = <
       let content: string = "";
       if ([102024, 102025, 114001, 114002].includes(error?.code || 0)) {
         content =
-          t("labelCexSwapFailed") +
+          t("labelBtradeSwapFailed") +
           " error: " +
           (error
             ? t(error.messageKey, { ns: "error" })
@@ -477,7 +481,7 @@ export const useCexSwap = <
       } else {
         sdk.dumpError400(error);
         content =
-          t("labelCexSwapFailed") +
+          t("labelBtradeSwapFailed") +
           " error: " +
           (error
             ? t(error.messageKey, { ns: "error" })
@@ -489,9 +493,9 @@ export const useCexSwap = <
         content,
       });
     }
-    setIsCexLoading(false);
+    setisBtradeLoading(false);
   }, [
-    tradeCex,
+    tradeBtrade,
     tradeData,
     tokenMap,
     exchangeInfo,
@@ -505,21 +509,21 @@ export const useCexSwap = <
     __DAYS__,
     market,
     __TOAST_AUTO_CLOSE_TIMER__,
-    updateTradeCex,
+    updateTradeBtrade,
   ]);
 
   /*** Btn related function ***/
-  const cexSwapSubmit = React.useCallback(async () => {
+  const btradeSwapSubmit = React.useCallback(async () => {
     if (!allowTrade?.order?.enable) {
       setShowSupport({ isShow: true });
-      setIsCexLoading(false);
+      setisBtradeLoading(false);
       return;
-    } else if (!cexOrder.enable) {
+    } else if (!btradeOrder.enable) {
       setShowTradeIsFrozen({
         isShow: true,
-        type: t("labelCexSwap"),
+        type: t("labelBtradeSwap"),
       });
-      setIsCexLoading(false);
+      setisBtradeLoading(false);
       return;
     } else {
       sendRequest();
@@ -532,28 +536,28 @@ export const useCexSwap = <
     btnLabel: swapBtnI18nKey,
   } = useSubmitBtn({
     availableTradeCheck,
-    isLoading: isCexLoading,
-    submitCallback: cexSwapSubmit,
+    isLoading: isBtradeLoading,
+    submitCallback: btradeSwapSubmit,
   });
 
   const should15sRefresh = React.useCallback(() => {
-    myLog("useCexSwap: should15sRefresh", market);
+    myLog("useBtradeSwap: should15sRefresh", market);
     if (market) {
-      getCexMap();
+      getBtradeMap();
       callPairDetailInfoAPIs();
     }
   }, [market]);
 
   React.useEffect(() => {
-    const { depth, market } = store.getState()._router_tradeCex.tradeCex;
+    const { depth, market } = store.getState()._router_tradeBtrade.tradeBtrade;
 
     if (depth && new RegExp(market).test(depth?.symbol)) {
-      setIsCexLoading(false);
+      setisBtradeLoading(false);
       refreshWhenDepthUp();
     } else {
-      setIsCexLoading(true);
+      setisBtradeLoading(true);
     }
-  }, [tradeCex.depth, account.readyState, market]);
+  }, [tradeBtrade.depth, account.readyState, market]);
 
   const walletLayer2Callback = React.useCallback(async () => {
     let walletMap: WalletMap<any> | undefined = undefined;
@@ -587,7 +591,7 @@ export const useCexSwap = <
           } as T;
         });
       }
-      updateTradeCex({
+      updateTradeBtrade({
         market: market as MarketType,
         maxFeeBips: 0,
         totalFee: 0,
@@ -606,7 +610,7 @@ export const useCexSwap = <
     }
   }, [tradeData, market, tradeCalcData, marketArray, account.readyState]);
 
-  useCexSocket();
+  useBtradeSocket();
   useWalletLayer2Socket({ walletLayer2Callback });
 
   /*** user Action function ***/
@@ -616,7 +620,7 @@ export const useCexSwap = <
     swapType: any
   ): Promise<void> => {
     const { tradeData } = swapData;
-    resetCex(swapType, tradeData);
+    resetBtrade(swapType, tradeData);
   };
 
   React.useEffect(() => {
@@ -631,14 +635,14 @@ export const useCexSwap = <
         (tradeData && tradeData.sell.belong == undefined) ||
         tradeData === undefined
       ) {
-        resetCex(undefined, undefined);
+        resetBtrade(undefined, undefined);
       }
     }
   }, [market]);
 
   const resetTradeCalcData = React.useCallback(
     (_tradeData, _market?, type?: "sell" | "buy") => {
-      myLog("useCexSwap: resetTradeCalcData", type, _tradeData);
+      myLog("useBtradeSwap: resetTradeCalcData", type, _tradeData);
 
       if (coinMap && tokenMap && marketMap && marketArray) {
         const { tradePair } = marketInitCheck(_market, type);
@@ -711,8 +715,8 @@ export const useCexSwap = <
         setTradeData({ ...tradeDataTmp });
         let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
         setMarket(market);
-        history.push("/trade/cex/" + _market);
-        updateTradeCex({ market, tradePair, tradeCalcData: _tradeCalcData });
+        history.push("/trade/btrade/" + _market);
+        updateTradeBtrade({ market, tradePair, tradeCalcData: _tradeCalcData });
       }
     },
     [
@@ -729,22 +733,22 @@ export const useCexSwap = <
   );
 
   const callPairDetailInfoAPIs = React.useCallback(async () => {
-    const { marketMap } = store.getState().invest.cexMap;
+    const { marketMap } = store.getState().invest.btradeMap;
 
     if (market && LoopringAPI.defiAPI && marketMap[market]) {
       try {
         const { depth } = await dexSwapDependAsync({
-          market: marketMap[market].cexMarket,
+          market: marketMap[market].btradeMarket,
           tokenMap,
         });
-        updateTradeCex({
+        updateTradeBtrade({
           market,
           depth,
           ...marketMap[market],
         });
-        myLog("useCexSwap:", market, depth?.symbol);
+        myLog("useBtradeSwap:", market, depth?.symbol);
       } catch (error: any) {
-        myLog("useCexSwap:", error, "go to LRC-USDT");
+        myLog("useBtradeSwap:", error, "go to LRC-USDT");
         resetTradeCalcData(undefined, market);
       }
     }
@@ -752,13 +756,13 @@ export const useCexSwap = <
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
       const {
-        tradeCex: { depth, tradePair },
-      } = store.getState()._router_tradeCex;
+        tradeBtrade: { depth, tradePair },
+      } = store.getState()._router_tradeBtrade;
 
-      const { marketMap } = store.getState().invest.cexMap;
+      const { marketMap } = store.getState().invest.btradeMap;
 
       myLog(
-        "useCexSwap:reCalculateDataWhenValueChange",
+        "useBtradeSwap:reCalculateDataWhenValueChange",
         tradeData,
         _tradePair,
         type
@@ -783,10 +787,10 @@ export const useCexSwap = <
         let sellMaxAmtInfo = undefined;
         let sellMaxL2AmtInfo = undefined;
         let totalFeeRaw = undefined;
-        const info: sdk.CEX_MARKET = marketMap[market];
+        const info: sdk.BTRADE_MARKET = marketMap[market];
         let maxFeeBips = info.feeBips ?? MAPFEEBIPS;
 
-        const { cefiAmount, minAmount, l2Amount } = info;
+        const { btradeAmount, minAmount, l2Amount } = info;
         const calcDexOutput = sdk.calcDex({
           info,
           input: input.toString(),
@@ -804,19 +808,20 @@ export const useCexSwap = <
         if (
           // amountMap &&
           // amountMap[market as string] &&
-          cefiAmount &&
+          btradeAmount &&
           l2Amount &&
           (sellBuyStr == market
-            ? cefiAmount.quote !== "0"
-            : cefiAmount.base !== "0")
+            ? btradeAmount.quote !== "0"
+            : btradeAmount.base !== "0")
         ) {
           if (
-            (sellBuyStr == market ? cefiAmount.quote : cefiAmount.base) !== ""
+            (sellBuyStr == market ? btradeAmount.quote : btradeAmount.base) !==
+            ""
           ) {
             const poolToVol =
               sdk
                 .toBig(
-                  sellBuyStr == market ? cefiAmount.quote : cefiAmount.base
+                  sellBuyStr == market ? btradeAmount.quote : btradeAmount.base
                 )
                 .div("1e" + buyToken.decimals)
                 .toString() ?? "0";
@@ -930,11 +935,11 @@ export const useCexSwap = <
             sdk
               .toBig(
                 sellBuyStr == market
-                  ? cefiAmount.quote
-                    ? cefiAmount.quote
+                  ? btradeAmount.quote
+                    ? btradeAmount.quote
                     : 0
-                  : cefiAmount.base
-                  ? cefiAmount.base
+                  : btradeAmount.base
+                  ? btradeAmount.base
                   : 0
               )
               .div("1e" + buyToken.decimals),
@@ -1011,7 +1016,7 @@ export const useCexSwap = <
           ..._tradeData,
         }));
 
-        updateTradeCex({
+        updateTradeBtrade({
           info: info,
           market: market as any,
           totalFee: totalFee,
@@ -1027,7 +1032,7 @@ export const useCexSwap = <
     },
     [
       account.readyState,
-      tradeCex,
+      tradeBtrade,
       tradeCalcData,
       tradeData,
       coinMap,
@@ -1036,7 +1041,7 @@ export const useCexSwap = <
     ]
   );
   const refreshWhenDepthUp = React.useCallback(() => {
-    const { depth, lastStepAt, tradePair, market } = tradeCex;
+    const { depth, lastStepAt, tradePair, market } = tradeBtrade;
     if (depth && depth.symbol === market) {
       reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
     }
@@ -1108,16 +1113,16 @@ export const useCexSwap = <
       );
       //
       //
-      updateTradeCex({ market, tradeCalcData: _tradeCalcData });
+      updateTradeBtrade({ market, tradeCalcData: _tradeCalcData });
     }
-  }, [market, tradeCex, tradeData, tradeCalcData, setTradeCalcData]);
+  }, [market, tradeBtrade, tradeData, tradeCalcData, setTradeCalcData]);
 
-  const resetCex = (
+  const resetBtrade = (
     swapType: SwapType | undefined,
     _tradeData: SwapTradeData<IBData<C>> | undefined
   ) => {
-    myLog("useCexSwap: resetSwap", swapType, _tradeData);
-    const depth = store.getState()._router_tradeCex.tradeCex?.depth;
+    myLog("useBtradeSwap: resetSwap", swapType, _tradeData);
+    const depth = store.getState()._router_tradeBtrade.tradeBtrade?.depth;
     switch (swapType) {
       case SwapType.SEll_CLICK:
       case SwapType.BUY_CLICK:
@@ -1198,13 +1203,13 @@ export const useCexSwap = <
         };
 
         myLog(
-          "useCexSwap:Exchange,tradeCalcData,_tradeCalcData",
+          "useBtradeSwap:Exchange,tradeCalcData,_tradeCalcData",
           tradeData,
           tradeCalcData,
           _tradeCalcData
         );
         callPairDetailInfoAPIs();
-        updateTradeCex({
+        updateTradeBtrade({
           market,
           tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`,
           tradeCalcData: _tradeCalcData,
@@ -1212,14 +1217,14 @@ export const useCexSwap = <
         setTradeCalcData(_tradeCalcData);
         break;
       default:
-        myLog("useCexSwap:resetSwap default");
+        myLog("useBtradeSwap:resetSwap default");
         resetTradeCalcData(undefined, market);
         break;
     }
 
     // if(isChecked)
   };
-  // myLog("useCexSwap: tradeData", tradeData);
+  // myLog("useBtradeSwap: tradeData", tradeData);
 
   return {
     toastOpen,
@@ -1232,11 +1237,11 @@ export const useCexSwap = <
     handleSwapPanelEvent,
     should15sRefresh,
     refreshRef,
-    cexSwapSubmit,
-    tradeCex,
-    isSwapLoading: isCexLoading,
+    btradeSwapSubmit,
+    tradeBtrade,
+    isSwapLoading: isBtradeLoading,
     market,
     isMobile,
     setToastOpen,
   };
-};
+};;;

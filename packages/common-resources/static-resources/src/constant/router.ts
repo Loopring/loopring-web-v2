@@ -171,11 +171,11 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
-      id: "cex",
-      i18nKey: "labelCexTrade",
-      description: "labelCexTradeDescription",
+      id: "btrade",
+      i18nKey: "labelBtradeTrade",
+      description: "labelBtradeTradeDescription",
     },
-    router: { path: "/trade/cex/${pair}" },
+    router: { path: "/trade/btrade/${pair}" },
   },
   {
     label: {
@@ -589,5 +589,5 @@ export enum RecordTabIndex {
   defiRecords = "defiRecords",
   dualRecords = "dualRecords",
   sideStakingRecords = "sideStakingRecords",
-  cexSwapRecords = "CexSwap",
+  btradeSwapRecords = "BtradeSwap",
 }

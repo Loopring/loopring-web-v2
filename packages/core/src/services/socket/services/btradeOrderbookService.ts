@@ -2,21 +2,21 @@ import { Subject } from "rxjs";
 import { DepthData, getMidPrice } from "@loopring-web/loopring-sdk";
 
 const subject = new Subject<{
-  cexOrderbookMap: CexOrderbookMap<{ [key: string]: any }>;
+  btradeOrderbookMap: BtradeOrderbookMap<{ [key: string]: any }>;
 }>();
 
-export type CexOrderbookMap<R> = {
+export type BtradeOrderbookMap<R> = {
   [key in keyof R]: DepthData;
 };
 // <R extends {[key:string]:any}>
 
-export const cexOrderbookService = {
-  sendCexOrderBook: (
-    cexOrderbookMap: CexOrderbookMap<{ [key: string]: any }>
+export const btradeOrderbookService = {
+  sendBtradeOrderBook: (
+    btradeOrderbookMap: BtradeOrderbookMap<{ [key: string]: any }>
   ) => {
-    const _orderbookMap = Reflect.ownKeys(cexOrderbookMap).reduce(
+    const _orderbookMap = Reflect.ownKeys(btradeOrderbookMap).reduce(
       (pre, key) => {
-        const data = cexOrderbookMap[key as string];
+        const data = btradeOrderbookMap[key as string];
         const { bids, asks, mid_price } = getMidPrice({
           _asks: data["asks"],
           _bids: data["bids"],
@@ -45,7 +45,7 @@ export const cexOrderbookService = {
       {}
     );
 
-    subject.next({ cexOrderbookMap: _orderbookMap });
+    subject.next({ btradeOrderbookMap: _orderbookMap });
   },
   // clearMessages: () => subject.next(),
   onSocket: () => subject.asObservable(),

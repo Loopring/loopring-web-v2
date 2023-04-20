@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react";
 import { Box, Grid, Popover, Switch, Tooltip, Typography } from "@mui/material";
 import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
 import {
-  CexTradeCalcData,
+  BtradeTradeCalcData,
   defaultSlipage,
   IBData,
   Info2Icon,
@@ -47,7 +47,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
   <
     T extends IBData<I>,
     I,
-    TCD extends CexTradeCalcData<I>,
+    TCD extends BtradeTradeCalcData<I>,
     SCD extends SwapTradeCalcData<I>
   >({
     disabled,
@@ -334,7 +334,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                 </Typography>
 
                 <Box alignSelf={"flex-end"} display={"flex"}>
-                  {!tradeCalcData.isCex ? (
+                  {!tradeCalcData.isBtrade ? (
                     <Typography display={"inline-block"} marginLeft={2}>
                       <IconButtonStyled
                         onClick={(e) => {
@@ -442,12 +442,12 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   <Typography display={"inline-block"} marginLeft={2}>
                     <IconButtonStyled
                       onClick={() => {
-                        !tradeCalcData.isCex
+                        !tradeCalcData.isBtrade
                           ? history.push(
                               `/l2assets/history/${RecordTabIndex.trades}?market=${market}`
                             )
                           : history.push(
-                              `/l2assets/history/${RecordTabIndex.cexSwapRecords}?market=${market}`
+                              `/l2assets/history/${RecordTabIndex.btradeSwapRecords}?market=${market}`
                             );
                       }}
                       sx={{ backgroundColor: "var(--field-opacity)" }}

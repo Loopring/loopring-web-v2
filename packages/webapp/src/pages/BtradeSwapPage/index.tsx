@@ -5,7 +5,7 @@ import {
   withTranslation,
 } from "react-i18next";
 import {
-  ConfirmCexSwapRisk,
+  ConfirmBtradeSwapRisk,
   LoadingBlock,
   SwapPanel,
   Toast,
@@ -14,15 +14,15 @@ import {
 import { TOAST_TIME } from "@loopring-web/common-resources";
 import {
   confirmation,
-  useCexMap,
-  useCexSwap,
+  useBtradeMap,
+  useBtradeSwap,
   useNotify,
 } from "@loopring-web/core";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "@emotion/styled";
 const BoxStyle = styled(Box)`
-  &.cexPage {
+  &.btradePage {
     .input-wrap {
       input::placeholder {
         font-size: 0.65em;
@@ -47,11 +47,11 @@ const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
     isSwapLoading,
     market,
     should15sRefresh,
-  } = useCexSwap({ path: "/trade/cex" });
+  } = useBtradeSwap({ path: "/trade/btrade" });
   return (
     <>
       <SwapPanel
-        titleI8nKey={"labelCexSwapTitle"}
+        titleI8nKey={"labelBtradeSwapTitle"}
         tokenBuyProps={{
           disabled: isSwapLoading,
           decimalsLimit: tradeCalcData.buyPrecision,
@@ -61,11 +61,11 @@ const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
           decimalsLimit: tradeCalcData.sellPrecision,
           placeholderText:
             tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ""
-              ? t("labelCexSwapMiniMax", {
+              ? t("labelBtradeSwapMiniMax", {
                   minValue: tradeCalcData.sellMinAmtStr,
                   maxValue: tradeCalcData.sellMaxAmtStr,
                 })
-              : t("labelCexSwapMini", {
+              : t("labelBtradeSwapMini", {
                   minValue: tradeCalcData.sellMinAmtStr,
                 }),
         }}
@@ -91,24 +91,23 @@ const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
     </>
   );
 });
-export const CexSwapPage = withTranslation("common")(
+export const BtradeSwapPage = withTranslation("common")(
   ({ ...rest }: WithTranslation) => {
     const {
-      confirmation: { confirmedCexSwap: confirmedCexSwapStore },
-      confirmedCexSwap: confirmedCexSwapFunc,
+      confirmation: { confirmedBtradeSwap: confirmedBtradeSwapStore },
+      confirmedBtradeSwap: confirmedBtradeSwapFunc,
     } = confirmation.useConfirmation();
-    const [_confirmedCexSwap, setConfirmedCexSwap] = React.useState<boolean>(
-      !confirmedCexSwapStore
-    );
+    const [_confirmedBtradeSwap, setConfirmedBtradeSwap] =
+      React.useState<boolean>(!confirmedBtradeSwapStore);
 
     const { isMobile } = useSettings();
-    const { marketArray } = useCexMap();
+    const { marketArray } = useBtradeMap();
     const history = useHistory();
 
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     return (
       <BoxStyle
-        className={"cexPage"}
+        className={"btradePage"}
         display={"flex"}
         flexDirection={"column"}
         justifyContent={"center"}
@@ -124,14 +123,14 @@ export const CexSwapPage = withTranslation("common")(
           {marketArray && marketArray.length ? <Content /> : <LoadingBlock />}
         </Box>
 
-        <ConfirmCexSwapRisk
-          open={_confirmedCexSwap}
+        <ConfirmBtradeSwapRisk
+          open={_confirmedBtradeSwap}
           handleClose={(_e, isAgree) => {
-            setConfirmedCexSwap(false);
+            setConfirmedBtradeSwap(false);
             if (!isAgree) {
               history.goBack();
             } else {
-              confirmedCexSwapFunc();
+              confirmedBtradeSwapFunc();
             }
           }}
         />

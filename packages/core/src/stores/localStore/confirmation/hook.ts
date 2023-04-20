@@ -11,7 +11,7 @@ import {
   showDualBeginnerHelp,
   hidDualBeginnerHelp,
   confirmedLRCStakeInvest,
-  confirmedCexSwap,
+  confirmedBtradeSwap,
 } from "./reducer";
 
 export const useConfirmation = (): {
@@ -21,7 +21,7 @@ export const useConfirmation = (): {
   confirmedWSETHDefiInvest: () => void;
   confirmedLRCStakeInvest: () => void;
   confirmDualInvest: () => void;
-  confirmedCexSwap: () => void;
+  confirmedBtradeSwap: () => void;
 } => {
   const confirmation: Confirmation = useSelector(
     (state: RootState) => state.localStore.confirmation
@@ -49,8 +49,8 @@ export const useConfirmation = (): {
     confirmedLRCStakeInvest: React.useCallback(() => {
       dispatch(confirmedLRCStakeInvest(undefined));
     }, [dispatch]),
-    confirmedCexSwap: React.useCallback(() => {
-      dispatch(confirmedCexSwap(undefined));
+    confirmedBtradeSwap: React.useCallback(() => {
+      dispatch(confirmedBtradeSwap(undefined));
     }, [dispatch]),
   };
 };

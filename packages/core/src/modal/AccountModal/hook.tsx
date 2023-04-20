@@ -116,10 +116,10 @@ import {
   Withdraw_WaitForAuth,
   Staking_Redeem_Success,
   Staking_Redeem_Failed,
-  CexSwap_Settled,
-  CexSwap_Delivering,
-  CexSwap_Failed,
-  CexSwap_Pending,
+  BtradeSwap_Settled,
+  BtradeSwap_Delivering,
+  BtradeSwap_Failed,
+  BtradeSwap_Pending,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -2946,9 +2946,9 @@ export function useAccountModalForUI({
           />
         ),
       },
-      [AccountStep.CexSwap_Delivering]: {
+      [AccountStep.BtradeSwap_Delivering]: {
         view: (
-          <CexSwap_Delivering
+          <BtradeSwap_Delivering
             btnInfo={closeBtnInfo()}
             {...{
               ...rest,
@@ -2961,9 +2961,9 @@ export function useAccountModalForUI({
         ),
         height: "auto",
       },
-      [AccountStep.CexSwap_Pending]: {
+      [AccountStep.BtradeSwap_Pending]: {
         view: (
-          <CexSwap_Pending
+          <BtradeSwap_Pending
             btnInfo={closeBtnInfo()}
             {...{
               ...rest,
@@ -2977,9 +2977,9 @@ export function useAccountModalForUI({
         height: "auto",
       },
 
-      [AccountStep.CexSwap_Settled]: {
+      [AccountStep.BtradeSwap_Settled]: {
         view: (
-          <CexSwap_Settled
+          <BtradeSwap_Settled
             btnInfo={closeBtnInfo()}
             {...{
               ...rest,
@@ -2992,9 +2992,9 @@ export function useAccountModalForUI({
         ),
         height: "auto",
       },
-      [AccountStep.CexSwap_Failed]: {
+      [AccountStep.BtradeSwap_Failed]: {
         view: (
-          <CexSwap_Failed
+          <BtradeSwap_Failed
             btnInfo={closeBtnInfo()}
             {...{
               ...rest,

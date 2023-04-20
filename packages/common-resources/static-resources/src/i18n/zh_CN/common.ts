@@ -796,12 +796,12 @@ export default {
   labelExchangeOthers: "Others",
   labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
-  labelConfirmCEX: "Confirm CEX Support",
+  labelConfirmBtrade: "Confirm Btrade Support",
   labelConfirmDetail:
-    "<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>" +
-    "<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>",
-  labelCEXUnderstand: "I understand and acknowledge the risk",
+    "<0>Before withdrawing, please confirm with your Btrade support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The Btrade depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the Btrade address within 24 hours, please contact your Btrade support and ask they manually acknowledge the transaction.</2>",
+  labelBtradeUnderstand: "I understand and acknowledge the risk",
   labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
   labelMintFeeChoose: "Select payment token",
@@ -833,7 +833,7 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a CEX address using Loopring L2. Since the CEX does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Btrade address using Loopring L2. Since the Btrade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
   labelForceWithdrawConfirm1:
@@ -1287,11 +1287,12 @@ export default {
     "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
   labelBlindBoxExplaination:
     "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
-  labelBlindBoxExplaination2: 
+  labelBlindBoxExplaination2:
     "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{remainingGiftsAmount}} gifts available for grabbing.",
   labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
   labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
-  labelBlindBoxClaimStarted: "Unclaimed NFT will be returned back to sender after: {{time}}",
+  labelBlindBoxClaimStarted:
+    "Unclaimed NFT will be returned back to sender after: {{time}}",
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
@@ -1377,8 +1378,7 @@ export default {
   labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
     "Number of gifts is larger than number of packets",
-  labelBlindBoxNumberOverMaximun: 
-    "Number of Blind Box exceeds maximum",
+  labelBlindBoxNumberOverMaximun: "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
@@ -1435,7 +1435,8 @@ export default {
   labelOpenStart: "Start",
   labelTotalRedPacket: "Quantity in total: {{value}}",
   labelMyRedPacketReward: "My Rewards",
-  labelRedpacketScanDes: "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
+  labelRedpacketScanDes:
+    "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
   labelLuckyRedPacketStarted: "Red Packet is Started",
   labelNFTRedpacketBtn: "Send Red Packet",
   labelRedpacketDurationTitle: "Expires after",
@@ -1450,7 +1451,7 @@ export default {
   labelRedpacketTokens: "ERC20 Tokens",
   labelRedpacketNFTS: "NFTs",
   labelRedpacketBlindBox: "Blind Box",
-  labelRedpacketHideInactionable:  "Hide inactionable records",
+  labelRedpacketHideInactionable: "Hide inactionable records",
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
   labelChooseNFTTooltips: "",
   tokenSelectNFTToken: "Select NFT",

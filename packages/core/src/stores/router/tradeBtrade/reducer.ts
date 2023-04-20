@@ -1,30 +1,30 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { TradeCex, TradeCexStatus } from "./interface";
+import { TradeBtrade, TradeBtradeStatus } from "./interface";
 import { MAPFEEBIPS } from "../../../defs";
 
-const initState: TradeCex = {
+const initState: TradeBtrade = {
   market: undefined,
   tradePair: undefined,
   tradeCalcData: {
-    isCex: true,
+    isBtrade: true,
   },
   maxFeeBips: MAPFEEBIPS,
-} as unknown as TradeCex;
-const initialState: TradeCexStatus = {
+} as unknown as TradeBtrade;
+const initialState: TradeBtradeStatus = {
   // pageTradePro: initState,
-  tradeCex: initState,
+  tradeBtrade: initState,
   __DAYS__: 30,
   __SUBMIT_LOCK_TIMER__: 1000,
   __TOAST_AUTO_CLOSE_TIMER__: 3000,
 };
-const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
-  name: "_router_tradeCex",
+const tradeBtradeSlice: Slice<TradeBtradeStatus> = createSlice({
+  name: "_router_tradeBtrade",
   initialState,
   reducers: {
-    resetCexSwap(state) {
-      state.tradeCex = initState;
+    resetBtradeSwap(state) {
+      state.tradeBtrade = initState;
     },
-    updateCexTrade(state, action: PayloadAction<Partial<TradeCex>>) {
+    updateBtradeTrade(state, action: PayloadAction<Partial<TradeBtrade>>) {
       const {
         market,
         tradePair,
@@ -39,17 +39,17 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
         sellMinAmtInfo,
         sellMaxL2AmtInfo,
         sellMaxAmtInfo,
-        // cexMarket,
+        // btradeMarket,
         maxFeeBips,
         ...rest
       } = action.payload;
-      if (market !== state.tradeCex.market && market) {
+      if (market !== state.tradeBtrade.market && market) {
         // @ts-ignore
         const [_, sellToken, buyToken] = (tradePair ?? "").match(
           /(\w+)-(\w+)/i
         );
         // @ts-ignore
-        state.tradeCex = {
+        state.tradeBtrade = {
           market,
           tradePair, //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
           request,
@@ -65,60 +65,60 @@ const tradeCexSlice: Slice<TradeCexStatus> = createSlice({
           sellMaxL2AmtInfo,
           sellMaxAmtInfo,
           lastStepAt: undefined,
-          // cexMarket,
+          // btradeMarket,
           maxFeeBips,
           ...rest,
         };
       } else {
         if (lastStepAt) {
-          state.tradeCex.lastStepAt = lastStepAt;
+          state.tradeBtrade.lastStepAt = lastStepAt;
         }
         if (tradePair && tradePair) {
           const [_, sellToken, buyToken] = tradePair.match(/(\w+)-(\w+)/i);
-          state.tradeCex.tradePair = tradePair;
-          state.tradeCex.sellToken = sellToken;
-          state.tradeCex.buyToken = buyToken;
-          state.tradeCex.lastStepAt = undefined;
+          state.tradeBtrade.tradePair = tradePair;
+          state.tradeBtrade.sellToken = sellToken;
+          state.tradeBtrade.buyToken = buyToken;
+          state.tradeBtrade.lastStepAt = undefined;
         }
         if (depth) {
-          state.tradeCex.depth = depth;
+          state.tradeBtrade.depth = depth;
         }
 
         if (totalFee) {
-          state.tradeCex.totalFee = totalFee;
+          state.tradeBtrade.totalFee = totalFee;
         }
         // if (takerRate) {
-        //   state.tradeCex.takerRate = takerRate;
+        //   state.tradeBtrade.takerRate = takerRate;
         // }
         if (minOrderInfo) {
-          state.tradeCex.minOrderInfo = minOrderInfo;
+          state.tradeBtrade.minOrderInfo = minOrderInfo;
         }
         if (maxFeeBips !== undefined) {
-          state.tradeCex.maxFeeBips = maxFeeBips;
+          state.tradeBtrade.maxFeeBips = maxFeeBips;
         }
         if (tradeCalcData) {
-          state.tradeCex.tradeCalcData = tradeCalcData;
+          state.tradeBtrade.tradeCalcData = tradeCalcData;
         }
         if (sellUserOrderInfo !== undefined) {
-          state.tradeCex.sellUserOrderInfo = sellUserOrderInfo;
+          state.tradeBtrade.sellUserOrderInfo = sellUserOrderInfo;
         }
         if (buyUserOrderInfo !== undefined) {
-          state.tradeCex.buyUserOrderInfo = buyUserOrderInfo;
+          state.tradeBtrade.buyUserOrderInfo = buyUserOrderInfo;
         }
 
         if (sellMinAmtInfo !== undefined) {
-          state.tradeCex.sellMinAmtInfo = sellMinAmtInfo;
+          state.tradeBtrade.sellMinAmtInfo = sellMinAmtInfo;
         }
         if (sellMaxL2AmtInfo !== undefined) {
-          state.tradeCex.sellMaxL2AmtInfo = sellMaxL2AmtInfo;
+          state.tradeBtrade.sellMaxL2AmtInfo = sellMaxL2AmtInfo;
         }
         if (sellMaxAmtInfo !== undefined) {
-          state.tradeCex.sellMaxAmtInfo = sellMaxAmtInfo;
+          state.tradeBtrade.sellMaxAmtInfo = sellMaxAmtInfo;
         }
       }
     },
   },
 });
 
-export { tradeCexSlice };
-export const { resetCexSwap, updateCexTrade } = tradeCexSlice.actions;
+export { tradeBtradeSlice };
+export const { resetBtradeSwap, updateBtradeTrade } = tradeBtradeSlice.actions;
