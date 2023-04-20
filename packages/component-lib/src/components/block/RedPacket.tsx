@@ -520,7 +520,6 @@ export const RedPacketClock = ({
   size,
   validSince,
   sender,
-  amountStr,
   memo,
   showRedPacket,
   ImageEle,
