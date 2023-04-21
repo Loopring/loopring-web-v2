@@ -28,20 +28,20 @@ import {
   AccountStatus,
   BtradeTradeCalcData,
   CoinMap,
+  CustomErrorWithCode,
+  defaultSlipage,
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
   MarketType,
   myLog,
   SagaStatus,
-  TradeBtnStatus,
-  WalletMap,
-  defaultSlipage,
-  CustomErrorWithCode,
   SDK_ERROR_MAP_TO_UI,
-  UIERROR_CODE,
   SUBMIT_PANEL_AUTO_CLOSE,
   SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE,
+  TradeBtnStatus,
+  UIERROR_CODE,
+  WalletMap,
 } from "@loopring-web/common-resources";
 import {
   AccountStep,
@@ -648,8 +648,14 @@ export const useBtradeSwap = <
     (_tradeData, _market?, type?: "sell" | "buy") => {
       myLog("useBtradeSwap: resetTradeCalcData", type, _tradeData);
 
-      if (coinMap && tokenMap && marketMap && marketArray) {
-        const { tradePair } = marketInitCheck(_market, type);
+      if (coinMap && tokenMap && tradeMap && marketMap && marketArray) {
+        const { tradePair } = marketInitCheck({
+          market: _market,
+          type,
+          defaultValue: "LRC-USDC",
+          marketArray,
+          tokenMap: tradeMap,
+        });
         // @ts-ignore
         const [, coinA, coinB] = tradePair.match(/([\w,#]+)-([\w,#]+)/i);
         let walletMap: WalletMap<any> | undefined;

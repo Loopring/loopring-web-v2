@@ -834,7 +834,7 @@ export const useSwap = <
       myLog("hookSwap: resetTradeCalcData", type, _tradeData);
 
       if (coinMap && tokenMap && marketMap && marketArray) {
-        const { tradePair } = marketInitCheck(_market, type);
+        const { tradePair } = marketInitCheck({ market: _market, type });
         // @ts-ignore
         const [, coinA, coinB] = tradePair.match(/([\w,#]+)-([\w,#]+)/i);
         let walletMap: WalletMap<any> | undefined;
