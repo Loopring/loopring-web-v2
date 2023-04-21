@@ -226,12 +226,30 @@ export const calcPriceByAmmTickMapDepth = <_C>({
     close: undefined,
   };
 };
-export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>(
-  market: MarketType,
-  tradeData: T,
-  tradePair: MarketType
-): { stob: string; btos: string } | undefined => {
-  const { tokenMap, marketMap } = store.getState().tokenMap;
+export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>({
+  tokenMap,
+  market,
+  tradeData,
+  tradePair,
+  marketMap,
+}: {
+  market: MarketType;
+  tradeData: T;
+  tradePair: MarketType;
+  marketMap?: any;
+  tokenMap?: any;
+}): { stob: string; btos: string } | undefined => {
+  const {
+    marketMap: _marketMap,
+    // marketArray: _marketArray,
+    tokenMap: _tokenMap,
+  } = store.getState().tokenMap;
+  if (tokenMap && marketMap) {
+  } else {
+    // marketArray = _marketArray;
+    tokenMap = _tokenMap;
+    marketMap = _marketMap;
+  }
   // const marketPrecision =  ? marketMap[market].precisionForPrice : 4;
   //@ts-ignore
   const [, coinA, coinB] = market.match(/([\w,#]+)-([\w,#]+)/i);
@@ -293,16 +311,18 @@ export const marketInitCheck = ({
   defaultValue = "LRC-ETH",
   marketArray,
   tokenMap,
+  marketMap,
 }: {
   market: string;
   type?: "sell" | "buy";
   defaultValue?: string;
   marketArray?: any;
   tokenMap?: any;
+  marketMap?: any;
 }): { tradePair: MarketType } => {
   const {
     coinMap,
-    marketMap,
+    marketMap: _marketMap,
     marketArray: _marketArray,
     tokenMap: _tokenMap,
   } = store.getState().tokenMap;
@@ -310,6 +330,7 @@ export const marketInitCheck = ({
   } else {
     marketArray = _marketArray;
     tokenMap = _tokenMap;
+    marketMap = _marketMap;
   }
   const { ammMap } = store.getState().amm;
   if (coinMap && tokenMap && marketMap && marketArray && ammMap) {

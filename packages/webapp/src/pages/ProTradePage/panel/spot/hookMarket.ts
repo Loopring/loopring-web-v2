@@ -232,15 +232,15 @@ export const useMarket = <C extends { [key: string]: any }>({
         _tradeData.type === TradeProType.sell
           ? ["base", "quote"]
           : ["quote", "base"];
-      let { stob } = reCalcStoB(
+      let { stob } = reCalcStoB({
         market,
-        {
+        tradeData: {
           sell: _tradeData[sell],
           buy: _tradeData[buy],
           ...(_tradeData as any),
         },
-        `${_tradeData[sell].belong}-${_tradeData[buy].belong}`
-      ) ?? { stob: undefined };
+        tradePair: `${_tradeData[sell].belong}-${_tradeData[buy].belong}`,
+      }) ?? { stob: undefined };
 
       const { close } = tickerMap[market];
 

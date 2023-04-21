@@ -655,6 +655,7 @@ export const useBtradeSwap = <
           type,
           defaultValue: "LRC-USDC",
           marketArray,
+          marketMap,
           tokenMap: tradeMap,
         });
         // @ts-ignore
@@ -672,12 +673,18 @@ export const useBtradeSwap = <
         const tradeDataTmp: any = {
           sell: {
             belong: coinA,
-            tradeValue: _tradeData?.tradeValue ?? 0,
+            tradeValue:
+              _tradeData?.belong !== coinA
+                ? undefined
+                : _tradeData?.tradeValue ?? 0,
             balance: walletMap ? walletMap[coinA]?.count : 0,
           },
           buy: {
             belong: coinB,
-            tradeValue: _tradeData?.tradeValue ?? 0,
+            tradeValue:
+              _tradeData?.belong !== coinB
+                ? undefined
+                : _tradeData?.tradeValue ?? 0,
             balance: walletMap ? walletMap[coinB]?.count : 0,
           },
         };
@@ -737,6 +744,7 @@ export const useBtradeSwap = <
       coinMap,
       tokenMap,
       tradeMap,
+      marketMap,
       marketArray,
       setTradeCalcData,
       setTradeData,
@@ -746,15 +754,15 @@ export const useBtradeSwap = <
   );
 
   const callPairDetailInfoAPIs = React.useCallback(async () => {
-    const { marketMap } = store.getState().invest.btradeMap;
-
-    if (market && LoopringAPI.defiAPI && marketMap[market]) {
+    if (market && LoopringAPI.defiAPI && marketMap && marketMap[market]) {
       try {
         const { depth } = await dexSwapDependAsync({
-          market: marketMap[market].btradeMarket,
+          // @ts-ignore
+          market: marketMap[market]?.btradeMarket,
           tokenMap,
         });
         updateTradeBtrade({
+          // @ts-ignore
           market,
           depth,
           ...marketMap[market],
@@ -772,7 +780,6 @@ export const useBtradeSwap = <
         tradeBtrade: { depth, tradePair },
       } = store.getState()._router_tradeBtrade;
 
-      const { marketMap } = store.getState().invest.btradeMap;
       const walletMap = tradeCalcData?.walletMap as WalletMap<any>;
 
       myLog(
@@ -900,11 +907,13 @@ export const useBtradeSwap = <
               isAtoB ? buyToken.precision : sellToken.precision,
               isAtoB ? buyToken.precision : sellToken.precision
             );
-          let result = reCalcStoB(
+          let result = reCalcStoB({
             market,
-            _tradeData as SwapTradeData<IBData<unknown>>,
-            tradePair as any
-          );
+            tradeData: _tradeData as SwapTradeData<IBData<unknown>>,
+            tradePair: tradePair as any,
+            marketMap,
+            tokenMap: tradeMap,
+          });
           stob = result?.stob;
           btos = result?.btos;
         } else {
@@ -1092,11 +1101,14 @@ export const useBtradeSwap = <
       (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
         `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
     ) {
-      const result = reCalcStoB(
+      const result = reCalcStoB({
         market,
-        tradeData as SwapTradeData<IBData<unknown>>,
-        tradePair as any
-      );
+        tradeData: tradeData as SwapTradeData<IBData<unknown>>,
+        tradePair: tradePair as any,
+
+        marketMap,
+        tokenMap: tradeMap,
+      });
       const buyToken = tokenMap[tradeCalcData.coinBuy];
       const sellToken = tokenMap[tradeCalcData.coinSell];
 
@@ -1246,6 +1258,29 @@ export const useBtradeSwap = <
           tradeCalcData: _tradeCalcData,
         });
         setTradeCalcData(_tradeCalcData);
+        // @ts-ignore
+        setTradeData((state) => {
+          const walletMap = makeWalletLayer2(true).walletMap;
+
+          return {
+            ...(state ?? {}),
+            sell: {
+              belong: _tradeCalcData.coinSell,
+              tradeValue: undefined,
+              balance: walletMap
+                ? walletMap[_tradeCalcData.coinSell as string]?.count
+                : 0,
+            },
+            buy: {
+              belong: _tradeCalcData.coinBuy,
+              tradeValue: undefined,
+              balance: walletMap
+                ? walletMap[_tradeCalcData.coinBuy as string]?.count
+                : 0,
+            },
+            isChecked: undefined,
+          };
+        });
         break;
       default:
         myLog("useBtradeSwap:resetSwap default");
