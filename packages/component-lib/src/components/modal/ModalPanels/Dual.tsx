@@ -327,6 +327,7 @@ export const BtradeDetail = (props: any) => {
         display={"flex"}
         flex={1}
         marginTop={2}
+        sx={{ background: "var(--color-box-hover)" }}
       >
         <Typography
           flexDirection={"column"}
