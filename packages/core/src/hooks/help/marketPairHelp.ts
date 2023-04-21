@@ -3,7 +3,6 @@ import {
   store,
   Ticker,
   tickerReducer,
-  useTokenMap,
   volumeToCountAsBigNumber,
 } from "../../index";
 
@@ -301,13 +300,17 @@ export const marketInitCheck = ({
   marketArray?: any;
   tokenMap?: any;
 }): { tradePair: MarketType } => {
-  const { tokenMap: _tokenMap, marketArray: _marketArray } = useTokenMap();
+  const {
+    coinMap,
+    marketMap,
+    marketArray: _marketArray,
+    tokenMap: _tokenMap,
+  } = store.getState().tokenMap;
   if (marketArray) {
   } else {
     marketArray = _marketArray;
     tokenMap = _tokenMap;
   }
-  const { coinMap, marketMap } = store.getState().tokenMap;
   const { ammMap } = store.getState().amm;
   if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
     let coinA: string = "#null",
