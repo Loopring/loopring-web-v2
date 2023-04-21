@@ -301,11 +301,7 @@ export const marketInitCheck = ({
   marketArray?: any;
   tokenMap?: any;
 }): { tradePair: MarketType } => {
-  const {
-    coinMap,
-    tokenMap: _tokenMap,
-    marketArray: _marketArray,
-  } = useTokenMap();
+  const { tokenMap: _tokenMap, marketArray: _marketArray } = useTokenMap();
   if (marketArray) {
   } else {
     marketArray = _marketArray;
@@ -349,7 +345,7 @@ export const marketInitCheck = ({
     return { tradePair: `${coinA}-${coinB}` };
   }
 
-  return { tradePair: defaultValue };
+  return { tradePair: defaultValue as MarketType };
 };
 
 export const Limit = 14;
