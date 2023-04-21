@@ -134,31 +134,20 @@ export const RedPacketClaimPanel = () => {
         display={"flex"}
         flexDirection={"column"}
       >
-        {!!redPacketClaimList.length ? (
-          <Box className="tableWrapper table-divide-short">
-            <RedPacketClaimTable
-              {...{
-                rawData: redPacketClaimList,
-                showloading: showLoading,
-                forexMap,
-                onItemClick,
-                etherscanBaseUrl,
-                getClaimRedPacket,
-                onViewMoreNFTsClick,
-              }}
-              totalLuckyTokenNFTBalance={totalLuckyTokenNFTBalance}
-            />
-          </Box>
-        ) : (
-          <Box flex={1} height={"100%"} width={"100%"}>
-            <EmptyDefault
-              height={"calc(100% - 35px)"}
-              message={() => {
-                return <Trans i18nKey="labelNoContent">Content is Empty</Trans>;
-              }}
-            />
-          </Box>
-        )}
+        <Box className="tableWrapper table-divide-short">
+          <RedPacketClaimTable
+            {...{
+              rawData: redPacketClaimList,
+              showloading: showLoading,
+              forexMap,
+              onItemClick,
+              etherscanBaseUrl,
+              getClaimRedPacket,
+              onViewMoreNFTsClick,
+            }}
+            totalLuckyTokenNFTBalance={totalLuckyTokenNFTBalance}
+          />
+        </Box>
         <Dialog
           maxWidth={"lg"}
           open={showNFTsPanel}
