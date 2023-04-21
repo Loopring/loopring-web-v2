@@ -1599,7 +1599,7 @@ export default {
   labelBtradeSwapSettled: "Settled",
   labelBtradeSwapDelivering: "Delivering",
   labelBtradeSwapPanelDes:
-    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
+    "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
   labelGoBtradeSwap:
     "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",
@@ -1620,4 +1620,14 @@ export default {
   labelBtradeTrade: "Block Trade",
   labelBtradeTitle: " Block Trade",
   labelBtradeSwapPending: "Pending",
+  labelBtradeQuote: "Total Quote:",
+  labelBtradeQuoteDes: "Total Quota is the maximum allowable trading amount.",
+  labelBtradePoolDes: "Loopring Pool:",
+  labelBtradePool: "Loopring Pool",
+  labelBtradeToleranceTooltips:
+    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade. Here is fixed at 0.1%.",
+  labelBtradeFeeTooltips: "The trading fee is fixed at 0.3%.",
+  labelBtradeMinReceiveTooltips:
+    "The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
+  labelBtradeInsufficient: "Insufficient",
 };

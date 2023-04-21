@@ -144,7 +144,7 @@ export const useBtradeSwap = <
   const [market, setMarket] = React.useState<MarketType>(
     realMarket as MarketType
   );
-  const [isBtradeLoading, setisBtradeLoading] = React.useState(false);
+  const [isBtradeLoading, setIsBtradeLoading] = React.useState(false);
 
   const { tokenPrices } = useTokenPrices();
 
@@ -312,7 +312,7 @@ export const useBtradeSwap = <
     isBtradeLoading,
   ]);
   const sendRequest = React.useCallback(async () => {
-    setisBtradeLoading(true);
+    setIsBtradeLoading(true);
     const {
       tradeBtrade: {
         tradeCalcData,
@@ -493,7 +493,7 @@ export const useBtradeSwap = <
         content,
       });
     }
-    setisBtradeLoading(false);
+    setIsBtradeLoading(false);
   }, [
     tradeBtrade,
     tradeData,
@@ -516,14 +516,14 @@ export const useBtradeSwap = <
   const btradeSwapSubmit = React.useCallback(async () => {
     if (!allowTrade?.order?.enable) {
       setShowSupport({ isShow: true });
-      setisBtradeLoading(false);
+      setIsBtradeLoading(false);
       return;
     } else if (!btradeOrder.enable) {
       setShowTradeIsFrozen({
         isShow: true,
         type: t("labelBtradeSwap"),
       });
-      setisBtradeLoading(false);
+      setIsBtradeLoading(false);
       return;
     } else {
       sendRequest();
@@ -552,10 +552,10 @@ export const useBtradeSwap = <
     const { depth, market } = store.getState()._router_tradeBtrade.tradeBtrade;
 
     if (depth && new RegExp(market).test(depth?.symbol)) {
-      setisBtradeLoading(false);
+      setIsBtradeLoading(false);
       refreshWhenDepthUp();
     } else {
-      setisBtradeLoading(true);
+      setIsBtradeLoading(true);
     }
   }, [tradeBtrade.depth, account.readyState, market]);
 
@@ -710,6 +710,7 @@ export const useBtradeSwap = <
             sellMinAmtStr: undefined,
             sellMaxL2AmtStr: undefined,
             sellMaxAmtStr: undefined,
+            totalQuota: undefined,
             l1Pool: undefined,
             l2Pool: undefined,
             // totalPool: undefined,
@@ -902,6 +903,23 @@ export const useBtradeSwap = <
           minimumReceived = undefined;
         }
 
+        const l1Pool = getValuePrecisionThousand(
+          sdk
+            .toBig(
+              sellBuyStr == market
+                ? btradeAmount.quote
+                  ? btradeAmount.quote
+                  : 0
+                : btradeAmount.base
+                ? btradeAmount.base
+                : 0
+            )
+            .div("1e" + buyToken.decimals),
+          buyToken.precision,
+          buyToken.precision,
+          undefined,
+          false
+        );
         let _tradeCalcData: any = {
           minimumReceived,
           maxFeeBips,
@@ -936,23 +954,16 @@ export const useBtradeSwap = <
                   { isAbbreviate: true, floor: false }
                 )
               : undefined,
-          l1Pool: getValuePrecisionThousand(
-            sdk
-              .toBig(
-                sellBuyStr == market
-                  ? btradeAmount.quote
-                    ? btradeAmount.quote
-                    : 0
-                  : btradeAmount.base
-                  ? btradeAmount.base
-                  : 0
-              )
-              .div("1e" + buyToken.decimals),
-            buyToken.precision,
-            buyToken.precision,
-            undefined,
-            false
-          ),
+          totalQuota: (
+            sellBuyStr == market
+              ? btradeAmount.quote !== "0"
+              : btradeAmount.base !== "0"
+          )
+            ? l1Pool != 0
+              ? l1Pool + " " + buyToken.symbol
+              : EmptyValueTag
+            : t("labelBtradeInsufficient"),
+          l1Pool,
           l2Pool: getValuePrecisionThousand(
             sdk
               .toBig(

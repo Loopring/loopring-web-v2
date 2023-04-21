@@ -88,6 +88,7 @@ export interface TradeCalcData<T> {
   tradeCost?: string;
   lastStepAt?: "sell" | "buy";
   isBtrade: undefined | boolean;
+  totalQuota: string;
 }
 export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   isNotMatchMarketPrice?: boolean;

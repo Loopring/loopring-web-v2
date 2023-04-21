@@ -303,8 +303,43 @@ export const SwapTradeWrap = <
                 : ({} as CoinMap<I, CoinInfo<I>>),
           }}
         />
-        {/*</Grid>*/}
-        {/*</Grid>*/}
+        {tradeCalcData.isBtrade ? (
+          <Typography
+            variant={"body1"}
+            display={"inline-flex"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            paddingTop={1}
+            paddingBottom={2}
+          >
+            <Tooltip title={t("labelBtradeQuoteDes").toString()}>
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                alignItems={"center"}
+                display={"inline-flex"}
+                color={"textSecondary"}
+              >
+                <Info2Icon
+                  fontSize={"small"}
+                  color={"inherit"}
+                  sx={{ marginX: 1 / 2 }}
+                />
+                {t("labelBtradeQuote")}
+              </Typography>
+            </Tooltip>
+
+            <Typography
+              component={"span"}
+              variant={"inherit"}
+              color={"textPrimary"}
+            >
+              {tradeCalcData?.totalQuota ?? EmptyValueTag}
+            </Typography>
+          </Typography>
+        ) : (
+          <></>
+        )}
       </Grid>
       {!tradeCalcData.isBtrade && tradeCalcData.showLargeVolumeSwapInfo && (
         <Grid
@@ -423,10 +458,10 @@ export const SwapTradeWrap = <
                 placement={"top"}
               >
                 <Typography
-                  component={"p"}
+                  display={"inline-flex"}
+                  component={"span"}
                   variant="body2"
                   color={"textSecondary"}
-                  display={"inline-flex"}
                   alignItems={"center"}
                 >
                   <Info2Icon
@@ -575,7 +610,7 @@ export const SwapTradeWrap = <
               marginTop={1 / 2}
             >
               <Tooltip
-                title={t("labelSwapFeeTooltips", {
+                title={t("labelBtradeFeeTooltips", {
                   rate: userTakerRate,
                   value: tradeCostMin,
                 }).toString()}
@@ -611,7 +646,7 @@ export const SwapTradeWrap = <
               marginTop={1 / 2}
             >
               <Tooltip
-                title={t("labelSwapMinReceiveTooltips").toString()}
+                title={t("labelBtradeMinReceiveTooltips").toString()}
                 placement={"top"}
               >
                 <Typography
@@ -626,7 +661,7 @@ export const SwapTradeWrap = <
                     color={"inherit"}
                     sx={{ marginX: 1 / 2 }}
                   />
-                  {" " + t("swapMinReceive")}
+                  {t("swapMinReceive")}
                 </Typography>
               </Tooltip>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
@@ -642,7 +677,7 @@ export const SwapTradeWrap = <
               height={24}
             >
               <Tooltip
-                title={t("labelSwapToleranceTooltips").toString()}
+                title={t("labelBtradeToleranceTooltips").toString()}
                 placement={"top"}
               >
                 <Typography
