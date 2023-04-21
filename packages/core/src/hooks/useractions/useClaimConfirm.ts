@@ -6,6 +6,7 @@ import {
   LIVE_FEE_TIMES,
   myLog,
   SUBMIT_PANEL_AUTO_CLOSE,
+  TokenType,
   TRADE_TYPE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
@@ -367,13 +368,15 @@ export const useClaimConfirm = <
                 luckyTokenHash?: string;
               })
             | sdk.OriginStakeClaimRequestV3 = {} as any;
-
+          
           if (claimValue.claimType === CLAIM_TYPE.redPacket) {
             request = {
               tokenId: token.tokenId,
               feeTokenId: feeToken.tokenId,
               amount: amount.toString(),
-              nftData,
+              nftData: token.type === "ERC20" 
+                ? undefined 
+                : claimValue.nftData,
               claimer: accAddress,
               transfer: {
                 exchange: exchangeInfo.exchangeAddress,
@@ -382,7 +385,7 @@ export const useClaimConfirm = <
                 payeeAddr: broker,
                 storageId: storageId.offchainId,
                 maxFee: {
-                  tokenId: 0,
+                  tokenId: feeToken.tokenId,
                   volume: "0",
                 },
                 token: {
@@ -420,7 +423,6 @@ export const useClaimConfirm = <
           }
 
           myLog("claimWithdrawals request:", request);
-
           processRequest(request, isHardwareRetry);
         } catch (e: any) {
           // sdk.dumpError400(e);
