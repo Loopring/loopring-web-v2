@@ -813,11 +813,11 @@ export const useSwap = <
         tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
         dependencyData: { ticker, ammPoolSnapshot, depth },
       });
-      const result = reCalcStoB(
+      const result = reCalcStoB({
         market,
-        tradeData as SwapTradeData<IBData<unknown>>,
-        tradePair as any
-      );
+        tradeData: tradeData as SwapTradeData<IBData<unknown>>,
+        tradePair: tradePair as any,
+      });
 
       setTradeCalcData((state) => {
         state.StoB = result ? result.stob : stob;
@@ -1290,11 +1290,11 @@ export const useSwap = <
           calcTradeParams?.output
         );
 
-        const result = reCalcStoB(
+        const result = reCalcStoB({
           market,
-          _tradeData as SwapTradeData<IBData<unknown>>,
-          tradePair as any
-        );
+          tradeData: _tradeData as SwapTradeData<IBData<unknown>>,
+          tradePair: tradePair as any,
+        });
         if (
           result &&
           result.stob &&
