@@ -906,7 +906,7 @@ export const useBtradeSwap = <
               isAtoB ? buyToken.precision : sellToken.precision,
               isAtoB ? buyToken.precision : sellToken.precision,
               isAtoB ? buyToken.precision : sellToken.precision
-            );
+            ).replace(sdk.SEP, "");
           let result = reCalcStoB({
             market,
             tradeData: _tradeData as SwapTradeData<IBData<unknown>>,
