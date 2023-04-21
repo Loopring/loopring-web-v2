@@ -2026,7 +2026,7 @@ export const ConfirmBtradeSwapRisk = withTranslation("common")(
           <DialogContentText id="alert-dialog-defiRisk2">
             <Trans
               i18nKey={`labelBtradeSwapContentDes`}
-              tOptions={{
+              components={{
                 p: (
                   <Typography
                     whiteSpace={"pre-line"}
