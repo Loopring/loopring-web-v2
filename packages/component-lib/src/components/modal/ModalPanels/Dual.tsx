@@ -15,7 +15,11 @@ export const Dual_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.PendingIcon,
     describe1: (
-      <Typography variant={"h5"} color={"var(--color-primary)"}>
+      <Typography
+        variant={"h5"}
+        color={"var(--color-primary)"}
+        component={"span"}
+      >
         {props.t("labelDualProcessing", {
           symbol: props.symbol,
           value: props.value,
@@ -33,6 +37,7 @@ export const Dual_Success = (props: PanelProps) => {
         paddingX={isMobile ? 1 : 5}
         whiteSpace={"pre-line"}
         color={"textSecondary"}
+        component={"span"}
       >
         {props.t("labelDualProcessingDes")}
       </Typography>
@@ -59,7 +64,11 @@ export const Staking_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: (
-      <Typography variant={"h5"} color={"var(--color-primary)"}>
+      <Typography
+        variant={"h5"}
+        color={"var(--color-primary)"}
+        component={"span"}
+      >
         {props.t("labelStakingSuccess", {
           symbol: info.symbol,
         })}
@@ -341,7 +350,7 @@ export const BtradeDetail = (props: any) => {
 
           {info?.sellFStr && (
             <ListItemText>
-              <Typography variant={"h5"}>
+              <Typography variant={"h5"} component={"span"}>
                 {info?.sellFStr + " " + info.sellToken.symbol}
               </Typography>
             </ListItemText>
@@ -358,13 +367,14 @@ export const BtradeDetail = (props: any) => {
           alignItems={"center"}
           justifyContent={"center"}
           display={"flex"}
+          component={"span"}
         >
           <ListItemIcon style={{ minWidth: "40px" }}>
             <CoinIcon symbol={info?.buyToken.symbol} size={32} />
           </ListItemIcon>
           {info?.buyFStr && (
             <ListItemText>
-              <Typography variant={"h5"}>
+              <Typography variant={"h5"} component={"span"}>
                 {info?.buyFStr + " " + info?.buyToken.symbol}
               </Typography>
             </ListItemText>
@@ -443,16 +453,21 @@ export const BtradeDetail = (props: any) => {
             display={"inline-flex"}
             alignItems={"center"}
           >
-            <Typography variant={"inherit"}>
+            <Typography variant={"inherit"} component={"span"}>
               {info?.sellFStr ?? EmptyValueTag}
             </Typography>
             <Typography
               variant={"inherit"}
+              component={"span"}
               color={"var(--color-text-secondary)"}
             >
               /{info?.sellStr}
             </Typography>
-            <Typography variant={"inherit"} marginLeft={1 / 2}>
+            <Typography
+              variant={"inherit"}
+              marginLeft={1 / 2}
+              component={"span"}
+            >
               {info?.sellToken.symbol}
             </Typography>
           </Typography>
@@ -477,16 +492,21 @@ export const BtradeDetail = (props: any) => {
             display={"inline-flex"}
             alignItems={"center"}
           >
-            <Typography variant={"inherit"}>
+            <Typography variant={"inherit"} component={"span"}>
               {info?.buyFStr ?? EmptyValueTag}
             </Typography>
             <Typography
               variant={"inherit"}
+              component={"span"}
               color={"var(--color-text-secondary)"}
             >
               /{info?.buyStr}
             </Typography>
-            <Typography variant={"inherit"} marginLeft={1 / 2}>
+            <Typography
+              variant={"inherit"}
+              marginLeft={1 / 2}
+              component={"span"}
+            >
               {info?.buyToken.symbol}
             </Typography>
           </Typography>
@@ -527,10 +547,18 @@ export const BtradeSwap_Delivering = (props: PanelProps) => {
     iconType: IconType.SubmitIcon,
     describe1: (
       <Box paddingX={isMobile ? 1 : 5}>
-        <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+        <Typography
+          color={"var(--color-text-primary)"}
+          variant={"h5"}
+          component={"span"}
+        >
           {t("labelBtradeSwapDelivering")}
         </Typography>
-        <Typography color={"var(--color-text-secondary)"} marginTop={2}>
+        <Typography
+          color={"var(--color-text-secondary)"}
+          marginTop={2}
+          component={"span"}
+        >
           {t("labelBtradeSwapPanelDes")}
         </Typography>
       </Box>
@@ -544,7 +572,11 @@ export const BtradeSwap_Pending = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.PendingIcon,
     describe1: (
-      <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+      <Typography
+        color={"var(--color-text-primary)"}
+        variant={"h5"}
+        component={"span"}
+      >
         {t("labelBtradeSwapPending")}
       </Typography>
     ),
@@ -558,7 +590,11 @@ export const BtradeSwap_Settled = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: (
-      <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+      <Typography
+        color={"var(--color-text-primary)"}
+        variant={"h5"}
+        component={"span"}
+      >
         {t("labelBtradeSwapSettled")}
       </Typography>
     ),
@@ -572,7 +608,11 @@ export const BtradeSwap_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: (
-      <Typography color={"var(--color-text-primary)"} variant={"h5"}>
+      <Typography
+        color={"var(--color-text-primary)"}
+        variant={"h5"}
+        component={"span"}
+      >
         {t("labelBtradeSwapFailed")}
       </Typography>
     ),

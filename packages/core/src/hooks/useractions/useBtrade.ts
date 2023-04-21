@@ -648,6 +648,7 @@ export const useBtradeSwap = <
     (_tradeData, _market?, type?: "sell" | "buy") => {
       myLog("useBtradeSwap: resetTradeCalcData", type, _tradeData);
 
+      // const { marketArray, tradeMap } = store.getState().invest.btradeMap;
       if (coinMap && tokenMap && tradeMap && marketMap && marketArray) {
         const { tradePair } = marketInitCheck({
           market: _market,
@@ -735,6 +736,7 @@ export const useBtradeSwap = <
       tradeData,
       coinMap,
       tokenMap,
+      tradeMap,
       marketArray,
       setTradeCalcData,
       setTradeData,
