@@ -859,6 +859,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
               //@ts-ignore
               const [, baseTokenSymbol, quoteTokenSymbol] = market
                 .replace(BTRDE_PRE, "")
+                .replace(/CEFI-/gi, "")
                 .match(/(\w+)-(\w+)/i);
               let amountIn,
                 amountOut,
