@@ -1,8 +1,9 @@
 import {
+  LoopringAPI,
   store,
   Ticker,
   tickerReducer,
-  LoopringAPI,
+  useTokenMap,
   volumeToCountAsBigNumber,
 } from "../../index";
 
@@ -287,12 +288,30 @@ export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>(
   }
 };
 
-export const marketInitCheck = (
-  market: string,
-  type?: "sell" | "buy"
-): { tradePair: MarketType } => {
-  const { coinMap, tokenMap, marketMap, marketArray } =
-    store.getState().tokenMap;
+export const marketInitCheck = ({
+  market,
+  type,
+  defaultValue = "LRC-ETH",
+  marketArray,
+  tokenMap,
+}: {
+  market: string;
+  type?: "sell" | "buy";
+  defaultValue?: string;
+  marketArray?: any;
+  tokenMap?: any;
+}): { tradePair: MarketType } => {
+  const {
+    coinMap,
+    tokenMap: _tokenMap,
+    marketArray: _marketArray,
+  } = useTokenMap();
+  if (marketArray) {
+  } else {
+    marketArray = _marketArray;
+    tokenMap = _tokenMap;
+  }
+  const { coinMap, marketMap } = store.getState().tokenMap;
   const { ammMap } = store.getState().amm;
   if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
     let coinA: string = "#null",
@@ -330,7 +349,7 @@ export const marketInitCheck = (
     return { tradePair: `${coinA}-${coinB}` };
   }
 
-  return { tradePair: "LRC-ETH" };
+  return { tradePair: defaultValue };
 };
 
 export const Limit = 14;
