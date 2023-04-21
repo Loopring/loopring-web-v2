@@ -70,6 +70,14 @@ const BoxStyle = styled(Box)`
     .status-icon {
       margin-top: ${({ theme }) => theme.unit * 2}px;
     }
+
+    .content-main {
+      align-self: stretch;
+
+      & > div {
+        align-self: stretch;
+      }
+    }
   }
 `;
 
@@ -215,6 +223,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
           flexDirection={"column"}
           alignItems={"center"}
           justifyContent={"space-between"}
+          className={"content-main"}
         >
           <Box
             display={"flex"}

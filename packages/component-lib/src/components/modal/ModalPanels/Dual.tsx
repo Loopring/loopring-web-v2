@@ -328,6 +328,7 @@ export const BtradeDetail = (props: any) => {
       justifyContent={"center"}
       marginTop={1}
       paddingX={isMobile ? 1 : 5}
+      alignSelf={"stretch"}
     >
       <Box
         flexDirection={"row"}
@@ -337,6 +338,7 @@ export const BtradeDetail = (props: any) => {
         flex={1}
         marginTop={2}
         sx={{ background: "var(--color-box-hover)" }}
+        paddingY={2}
       >
         <Typography
           flexDirection={"column"}
