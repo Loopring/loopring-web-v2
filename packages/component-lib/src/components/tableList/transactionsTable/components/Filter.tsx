@@ -170,3 +170,5 @@ export const Filter = withTranslation("tables", { withRef: true })(
     );
   }
 );
+
+export const Filter2 = Filter

@@ -127,6 +127,7 @@ import {
   WithdrawIcon,
   YoutubeIcon,
   ZoomIcon,
+  ContactIcon
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`

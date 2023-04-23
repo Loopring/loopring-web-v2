@@ -7,6 +7,7 @@ import { useSettings } from "../../../stores";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
+import { createImageFromInitials } from "@loopring-web/core";
 
 type SingleContactProps = {
   editing: boolean, 
@@ -73,7 +74,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
     return {
       name: x.name,
       address: x.address,
-      avatarURL: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png', // todo
+      avatarURL: createImageFromInitials(32, x.name, "#FFC178")!, // todo
       editing: false
     }
   })
@@ -84,8 +85,54 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       ? x.address.toLowerCase().includes(inputValue.toLowerCase()) || x.avatarURL.toLowerCase().includes(inputValue.toLowerCase())
       : true
   })
-  // const [open, setOpen] = React.useState(false);
-  // const { nonExchangeList, exchangeList } = useAddressTypeLists();
+  const isEmpty = !filteredContacts || filteredContacts.length === 0
+  const normalView = <>
+    <Grid item xs={12} width={"100%"}>
+      <OutlinedInput
+        style={{
+          background: theme.colorBase.box,
+          borderColor: theme.colorBase.border
+        }}
+        fullWidth
+        className={"search"}
+        aria-label={"search"}
+        placeholder={"Search"}
+        startAdornment={
+          <InputAdornment position="start">
+            <SearchIcon color={"inherit"} />
+          </InputAdornment>
+        }
+        value={inputValue}
+        endAdornment={
+          <CloseIconStyled
+            htmlColor={"var(--color-text-third)"}
+            style={{ visibility: inputValue ? "visible" : "hidden" }}
+            onClick={() => {
+              setInputValue('')
+            }}
+          />
+        }
+        onChange={(e) => {
+          setInputValue(e.target.value)
+        }}
+      ></OutlinedInput>
+      {filteredContacts.map(c => {
+        return <SingleContact
+          name={c.name}
+          address={c.address}
+          avatarURL={c.avatarURL}
+          editing={false}
+          onSelect={onSelect}
+        />
+      })}
+    </Grid>
+  </>
+  const emptyView =
+    <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+      <Typography color={"var(--color-text-third)"}>
+        No Contact
+      </Typography>
+    </Box>
   
   return (
     <Grid
@@ -118,45 +165,8 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           </Typography>
         </Box>
       </Grid>
-      <Grid item xs={12} width={"100%"}>
-        <OutlinedInput
-          style={{
-            background: theme.colorBase.box,
-            borderColor: theme.colorBase.border
-          }}
-          fullWidth
-          className={"search"}
-          aria-label={"search"}
-          placeholder={"Search"}
-          startAdornment={
-            <InputAdornment position="start">
-              <SearchIcon color={"inherit"} />
-            </InputAdornment>
-          }
-          value={inputValue}
-          endAdornment={
-            <CloseIconStyled
-              htmlColor={"var(--color-text-third)"}
-              style={{ visibility: inputValue ? "visible" : "hidden" }}
-              onClick={() => {
-                setInputValue('')
-              }}
-            />
-          }
-          onChange={(e) => {
-            setInputValue(e.target.value)
-          }}
-        ></OutlinedInput>
-        {filteredContacts.map(c => {
-          return <SingleContact 
-            name={c.name}
-            address={c.address}
-            avatarURL={c.avatarURL}
-            editing={false}
-            onSelect={onSelect}
-          />
-        })}
-      </Grid>
+      {isEmpty ? emptyView : normalView}
+      
     </Grid>
   );
 };
