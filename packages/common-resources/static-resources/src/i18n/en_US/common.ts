@@ -1630,4 +1630,5 @@ export default {
   labelBtradeMinReceiveTooltips:
     "The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
   labelBtradeInsufficient: "Insufficient",
+  labelBtradeTime: "Time",
 };

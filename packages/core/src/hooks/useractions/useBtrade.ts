@@ -397,7 +397,7 @@ export const useBtradeSwap = <
 
         walletLayer2Service.sendUserUpdate();
 
-        const info = {
+        let info: any = {
           sellToken,
           buyToken,
           sellStr: getValuePrecisionThousand(
@@ -424,6 +424,7 @@ export const useBtradeSwap = <
               : EmptyValueTag
           } ${buyToken.symbol}`,
           feeStr: tradeCalcData?.fee,
+          time: undefined,
         };
         setShowAccount({
           isShow: true,
@@ -449,16 +450,15 @@ export const useBtradeSwap = <
           //   setShowAccount({ isShow: false });
           // }
         } else if (["failed", "cancelled"].includes(orderConfirm.status)) {
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.BtradeSwap_Failed,
-            info,
-          });
+          throw "orderConfirm   failed";
         } else if (store.getState().modals.isShowAccount.isShow) {
           setShowAccount({
             isShow: true,
             step: AccountStep.BtradeSwap_Pending,
-            info,
+            info: {
+              ...info,
+              time: Number(orderConfirm.list[0]?.validity?.start + "000"),
+            },
           });
         }
 
@@ -487,6 +487,9 @@ export const useBtradeSwap = <
             ? t(error.messageKey, { ns: "error" })
             : (error as sdk.RESULT_INFO).message);
       }
+      setShowAccount({
+        isShow: false,
+      });
       setToastOpen({
         open: true,
         type: "error",
