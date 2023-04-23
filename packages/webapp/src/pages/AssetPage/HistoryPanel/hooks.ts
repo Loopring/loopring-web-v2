@@ -1008,6 +1008,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         buyStr: item.toAmount,
         convertStr: `1${item.fromSymbol} \u2248 ${item.price.value} ${item.toSymbol}`,
         feeStr: item?.feeAmount,
+        time: item?.time ?? undefined,
       };
       switch (item.type) {
         case BtradeSwapsType.Delivering:

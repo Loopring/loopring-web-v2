@@ -441,13 +441,6 @@ export const BtradeDetail = (props: any) => {
           >
             {props.t("labelSell")}
           </Typography>
-          {/*<Typography*/}
-          {/*  variant={"body1"}*/}
-          {/*  component={"span"}*/}
-          {/*  color={"var(--color-text-primary)"}*/}
-          {/*>*/}
-          {/*  {info?.sellStr}*/}
-          {/*</Typography>*/}
           <Typography
             variant={"body1"}
             component={"span"}
@@ -534,6 +527,29 @@ export const BtradeDetail = (props: any) => {
             {info?.feeStr + " " + info.buyToken.symbol}
           </Typography>
         </Typography>
+        {info?.time && (
+          <Typography
+            component={"span"}
+            display={"inline-flex"}
+            justifyContent={"space-between"}
+            marginTop={2}
+          >
+            <Typography
+              variant={"body1"}
+              component={"span"}
+              color={"var(--color-text-secondary)"}
+            >
+              {props.t("labelBtradeTime")}
+            </Typography>
+            <Typography
+              variant={"body1"}
+              component={"span"}
+              color={"var(--color-text-primary)"}
+            >
+              {info?.time + " " + info.buyToken.symbol}
+            </Typography>
+          </Typography>
+        )}
       </Box>
     </Box>
   ) : (
