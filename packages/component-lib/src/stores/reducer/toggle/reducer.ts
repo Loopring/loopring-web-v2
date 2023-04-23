@@ -24,7 +24,6 @@ const initialState: ToggleState = {
   redPacketNFTV1: { enable: true },
   LRCStackInvest: { enable: true },
   BTradeInvest: { enable: true },
-  StopLimit: { enable: true },
 };
 
 export const toggleSlice: Slice<ToggleState> = createSlice<

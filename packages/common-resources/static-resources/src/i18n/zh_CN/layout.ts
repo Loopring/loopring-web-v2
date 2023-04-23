@@ -44,6 +44,7 @@ export default {
   labelSetting: "高级设置",
   labelSecurity: "安全设置",
   labelVipPanel: "VIP",
+  labelContactsPanel: "联系人",
   titleLoopring: "路印协议",
   labelLoopringDescribe: "零知卷叠交易与支付协议",
   labelWrongNetwork: "未识别网络",
@@ -117,8 +118,5 @@ export default {
   labelInvestStakeLRCDes: "Earn LRC staking rewards",
   labelBtradeTrade: "Block Trade",
   labelBtradeTradeDescription: "Trade via CEX liquidity",
-  labelStopLimit: "Stop Limit",
-  labelStopLimitDescription: "Stop Limit",
-
   // labelDepositNFTDes:"Receive NFT"
 };

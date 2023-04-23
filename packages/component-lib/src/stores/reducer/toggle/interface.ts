@@ -20,5 +20,4 @@ export type ToggleState = {
   redPacketNFTV1: { enable: boolean; reason?: string };
   LRCStackInvest: { enable: boolean; reason?: string };
   BTradeInvest: { enable: boolean; reason?: string };
-  StopLimit: { enable: boolean; reason?: string };
 };

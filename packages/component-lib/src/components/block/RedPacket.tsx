@@ -27,6 +27,7 @@ import {
   RedPacketWrapSVG,
   SoursURL,
   YEAR_DAY_MINUTE_FORMAT,
+  DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import QRCodeStyling from "qr-code-styling";
 import * as sdk from "@loopring-web/loopring-sdk";

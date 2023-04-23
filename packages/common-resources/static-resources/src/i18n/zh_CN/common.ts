@@ -793,14 +793,14 @@ export default {
   labelExchangeHuobi: "Huobi",
   labelExchangeHuobiDes: "Transactions need to wait 24 hours",
   labelExchangeCoinbase: "Coinbase",
-  labelExchangeOthers: "Other Exchanges",
+  labelExchangeOthers: "Others",
   labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
-  labelConfirmBtrade: "Confirm Block Trade Support",
+  labelConfirmBtrade: "Confirm Btrade Support",
   labelConfirmDetail:
-    "<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>" +
-    "<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>",
+    "<0>Before withdrawing, please confirm with your Btrade support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The Btrade depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the Btrade address within 24 hours, please contact your Btrade support and ask they manually acknowledge the transaction.</2>",
   labelBtradeUnderstand: "I understand and acknowledge the risk",
   labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
@@ -833,7 +833,7 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Block Trade address using Loopring L2. Since the Block Trade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Btrade address using Loopring L2. Since the Btrade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
   labelForceWithdrawConfirm1:
@@ -1025,9 +1025,7 @@ export default {
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
   labelDualInvestDes:
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
-  labelDualCurrentPriceTip:
-    "Current Price is based on USDT derived from some leading exchanges.",
-  labelDualCurrentPrice: "{{symbol}} Current Price:<1>{{price}}</1>  USDT",
+  labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
   labelDualSuccess: "Subscription {{symbol}} Successfully",
   labelDualProcessing: "Waiting for completion",
   labelDualProcessingDes:
@@ -1048,7 +1046,7 @@ export default {
   labelDualTargetPrice3: "Target Price",
 
   labelDualTargetPriceDes:
-    "Target Price is a benchmark price based on USDT. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
+    "Target Price is a benchmark price. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
   labelDualRiskDes:
     "Your investment will be locked up until settlement date after investing and cannot be redeemed before settlement. \n As we make profit ratio a top priority, the total opened position might vary with your initial investment.",
   labelDualReturn: "Return \n {{symbol}}",
@@ -1071,9 +1069,7 @@ export default {
     "I understand that subscribed assets are locked and users aren’t able to cancel or redeem before the Settlement Date.",
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
-  labelInvestDualTutorialCheck4:
-    "Please be aware that the target price in Dual Investment portfolio is USDT. If you subscribe USDC-related product with another token, that token may be converted to USDC if the target price is reached. If you want to completely avoid the USDC depegging risk, you can select USDT-related products instead.",
-  labelInvestDualTutorialCheck5: "I have read and understand the risk warning.",
+  labelInvestDualTutorialCheck4: "I have read and understand the risk warning.",
   labelInvestDualBeginerMode: "Beginner Mode",
   labelInvestDualBeginerModeDesLine1: "What is Dual Investment?",
   labelInvestDualBeginerModeDesLine2:
@@ -1111,7 +1107,6 @@ export default {
   labelDualTitle: "Dual Investment",
   labelDualDesSuccess:
     "Your token for investment is just locked but still in your account as Loopring is a DEX. \n When the transaction expires, if the settlement price is not reached, you will get a profit and the frozen token will also be unlocked; if the settlement price is reached, your investment and interest income will be converted into the target token at the Target price.",
-  labelDualRefresh: "Refresh",
   labelNoticeForMarketFrozen:
     "{{ type }} is not supported, If you believe this is indeed a bug, please contact us.",
   labelInvestRangeDay: "{{arg}} Days",
@@ -1582,36 +1577,6 @@ export default {
   labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
   labelStakingRedeemRemaining: "Remaining Amount",
   labelStakingRedeemDate: "Redeem Time",
-
-  labelContactsAddContact: "Add Contact",
-  labelContactsAddressTitle: "Address",
-  labelContactsAddressDes: "Enter wallet address or ENS",
-  labelContactsAddressInvalid: "Invalid address or ENS",
-  labelContactsNameTitle: "Name",
-  labelContactsNameDes: "Enter name for the contact",
-  labelContactsAddContactBtn: "Add",
-  labelContactsDeleteContact: "Delete Contact",
-  labelDeleteContactInfo: "Contact",
-  labelContactsDeleteContactBtn: "Delete",
-  labelContactsAddSuccess: "Add Contact Succeed",
-  labelContactsDeleteSuccess: "Delete Contact Succeed",
-  labelContactsEditSuccess: "Edit Contact Succeed",
-  labelContactsSendSuccess: "Send Succeed",
-  labelContactsCopySuccess: "Copied to Clipboard",
-  labelContactsAddFailed: "Add Contact Failed",
-  labelContactsDeleteFailed: "Delete Contact Failed",
-  labelContactsEditFailed: "Edit Contact Failed",
-  labelContactsSendFailed: "Send Failed",
-  labelContacts: "Contacts",
-  labelContactsSend: "Send",
-  labelContactsTransactions: "Transactions",
-  labelContactsNetworkChoose: "Choose L2 or L1 Account",
-  labelContactsNext: "Next",
-  labelContactsContactExisted: "Contact Already Existed",
-  labelNotExchangeEOA:
-    "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
-  labelNotOtherSmartWallet:
-    "This wallet binds with smart contract that does not support Loopring L2. You will need to send funds to the L1 account.",
   labelBtradeSwapTitle: "Block Trade",
   labelBtradeSwapType: "Type",
   labelBtradeSwapFilled: "Filled",
@@ -1662,8 +1627,4 @@ export default {
   labelStopLimitCancel: "Cancel",
   labelStopLimitConfirm: "Confirm",
   labelBtradeSwapPending: "Pending",
-  labelStopLimitTitle: "Stop-Limit",
-  labelStopPrice: "Price",
-  labelStopStopPrice: "Stop Price",
-  labelStopLimitWhatIs: "What's Stop Limit?",
 };

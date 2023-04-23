@@ -16,7 +16,6 @@ import {
   ModalRedPacketPanel,
   useOffFaitModal,
   useNotify,
-  useTokenMap,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
@@ -57,9 +56,6 @@ import { FiatPage } from "../pages/FiatPage";
 import { RedPacketPage } from "../pages/RedPacketPage";
 import { useTranslation } from "react-i18next";
 import { BtradeSwapPage } from "../pages/BtradeSwapPage";
-import { StopLimitPage } from "../pages/ProTradePage/stopLimtPage";
-import { ContactPage } from "pages/ContactPage";
-import { ContactTransactionsPage } from "pages/ContactPage/transactions";
 
 const ContentWrap = ({
   children,
@@ -139,11 +135,13 @@ const WrapModal = () => {
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const proFlag =
+    process.env.REACT_APP_WITrH_PRO &&
+    process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
-  const { marketArray } = useTokenMap();
   const { setTheme } = useSettings();
   const {
-    toggle: { BTradeInvest, StopLimit },
+    toggle: { BTradeInvest },
   } = useToggle();
 
   React.useEffect(() => {
@@ -299,9 +297,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <Header isHideOnScroll={true} />
           )}
 
-          {state === "PENDING" ||
-          !marketArray.length ||
-          !Object.keys(tickerMap ?? {}).length ? (
+          {state === "PENDING" && proFlag && tickerMap ? (
             <LoadingBlock />
           ) : (
             <Box display={"flex"} flexDirection={"column"} flex={1}>
@@ -323,25 +319,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
               <BtradeSwapPage />
             )}
           </ContentWrap>
-        </Route>
-        <Route path="/trade/stopLimit">
-          {searchParams && searchParams.has("noheader") ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} />
-          )}
-
-          {state === "PENDING" ||
-          !marketArray.length ||
-          !Object.keys(tickerMap ?? {}).length ? (
-            <LoadingBlock />
-          ) : StopLimit.enable == false && BTradeInvest.reason === "no view" ? (
-            <ComingSoonPanel />
-          ) : (
-            <Box display={"flex"} flexDirection={"column"} flex={1}>
-              <StopLimitPage />
-            </Box>
-          )}
         </Route>
         <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
           <ContentWrap state={state}>
@@ -381,16 +358,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={["/invest", "/invest/*"]}>
           <ContentWrap state={state}>
             <InvestPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={["/contact"]}>
-          <ContentWrap state={state}>
-            <ContactPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={["/contact/transactions/*"]}>
-          <ContentWrap state={state}>
-            <ContactTransactionsPage />
           </ContentWrap>
         </Route>
         <Route
