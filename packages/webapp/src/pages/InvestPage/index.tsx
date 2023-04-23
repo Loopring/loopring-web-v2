@@ -10,7 +10,6 @@ import {
 } from "@loopring-web/component-lib";
 import React from "react";
 import { confirmation, ViewAccountTemplate } from "@loopring-web/core";
-import { usePopupState } from "material-ui-popup-state/hooks";
 import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";

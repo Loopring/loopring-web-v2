@@ -409,7 +409,7 @@ const HistoryPanel = withTranslation("common")(
                     rawData: btradeOrderData,
                   }}
                   pagination={{
-                    pageSize: pageSize + 2,
+                    pageSize: pageSize,
                     total: btradeTotalNum,
                   }}
                   onItemClick={onDetail}

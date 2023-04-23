@@ -441,13 +441,6 @@ export const BtradeDetail = (props: any) => {
           >
             {props.t("labelSell")}
           </Typography>
-          {/*<Typography*/}
-          {/*  variant={"body1"}*/}
-          {/*  component={"span"}*/}
-          {/*  color={"var(--color-text-primary)"}*/}
-          {/*>*/}
-          {/*  {info?.sellStr}*/}
-          {/*</Typography>*/}
           <Typography
             variant={"body1"}
             component={"span"}
@@ -531,9 +524,34 @@ export const BtradeDetail = (props: any) => {
             component={"span"}
             color={"var(--color-text-primary)"}
           >
-            {info?.feeStr + " " + info.buyToken.symbol}
+            {info?.feeStr
+              ? info?.feeStr + " " + info.buyToken.symbol
+              : EmptyValueTag}
           </Typography>
         </Typography>
+        {info?.time && (
+          <Typography
+            component={"span"}
+            display={"inline-flex"}
+            justifyContent={"space-between"}
+            marginTop={2}
+          >
+            <Typography
+              variant={"body1"}
+              component={"span"}
+              color={"var(--color-text-secondary)"}
+            >
+              {props.t("labelBtradeTime")}
+            </Typography>
+            <Typography
+              variant={"body1"}
+              component={"span"}
+              color={"var(--color-text-primary)"}
+            >
+              {moment(new Date(info.time)).format(YEAR_DAY_MINUTE_FORMAT)}
+            </Typography>
+          </Typography>
+        )}
       </Box>
     </Box>
   ) : (
@@ -548,7 +566,12 @@ export const BtradeSwap_Delivering = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: (
-      <Box paddingX={isMobile ? 1 : 5}>
+      <Box
+        paddingX={isMobile ? 1 : 5}
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
+      >
         <Typography
           color={"var(--color-text-primary)"}
           variant={"h5"}
@@ -590,7 +613,7 @@ export const BtradeSwap_Pending = (props: PanelProps) => {
 export const BtradeSwap_Settled = (props: PanelProps) => {
   const { t } = props;
   const propsPatch = {
-    iconType: IconType.SubmitIcon,
+    iconType: IconType.DoneIcon,
     describe1: (
       <Typography
         color={"var(--color-text-primary)"}

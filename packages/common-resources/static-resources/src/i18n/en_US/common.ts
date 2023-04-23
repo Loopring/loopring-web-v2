@@ -1599,11 +1599,11 @@ export default {
   labelBtradeSwapSettled: "Settled",
   labelBtradeSwapDelivering: "Delivering",
   labelBtradeSwapPanelDes:
-    "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
+    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
   labelGoBtradeSwap:
     "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",
-  labelBtradeSwapFailed: "Block Trade failed!",
+  labelBtradeSwapFailed: "Failed!",
   labelBtradeSwapTitleDes: "What is Block Trade?",
   labelBtradeSwapContentDes:
     "<p>Block Trade offers a secure and trustless way for users to swap tokens using CEX liquidity. The trades happen exclusively between designated entities, ensuring that the existing liquidity of the DEX remains unaffected. There is no price impact to other DEX users as a result of the transaction.</p>" +
@@ -1618,8 +1618,7 @@ export default {
   labelBtradeSwapBtn: "Swap",
   labelType: "Type",
   labelBtradeTrade: "Block Trade",
-  labelBtradeTitle: " Block Trade",
-  labelBtradeSwapPending: "Pending",
+  labelBtradeTitle: "Block Trade Details",
   labelBtradeQuote: "Total Quote:",
   labelBtradeQuoteDes: "Total Quota is the maximum allowable trading amount.",
   labelBtradePoolDes: "Loopring Pool:",
@@ -1630,4 +1629,15 @@ export default {
   labelBtradeMinReceiveTooltips:
     "The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
   labelBtradeInsufficient: "Insufficient",
+  labelBtradeTime: "Time",
+  labelStopLimit: "Stop-Limit {{tradeType}} {{symbol1}}",
+  labelStopLimitDes:
+    "If the last price goes up to or above {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {symbol1}} at a price of {{price}} {{symbol2}} will be placed.",
+  labelStopLimitType: "Stop Limit / {{tradeType}}",
+  labelStopLimitStopPrice: "Stop Price",
+  labelStopLimitPriceLimitPrice: "Limit Price",
+  labelStopLimitAmount: "labelStopLimit",
+  labelStopLimitCancel: "Cancel",
+  labelStopLimitConfirm: "Confirm",
+  labelBtradeSwapPending: "Pending",
 };

@@ -109,7 +109,7 @@ export const useBtradeSwap = <
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { account, status: accountStatus } = useAccount();
   const {
-    toggle: { btradeOrder },
+    toggle: { BTradeInvest },
   } = useToggle();
 
   /** loaded from loading **/
@@ -224,7 +224,6 @@ export const useBtradeSwap = <
     const notEnough = sdk
       .toBig(walletMap[sellToken.symbol]?.count ?? 0)
       .lt(tradeData?.sell?.tradeValue ?? 0);
-    // debugger;
     if (isBtradeLoading) {
       return {
         label: undefined,
@@ -357,11 +356,11 @@ export const useBtradeSwap = <
           accountId: account.accountId,
           sellToken: {
             tokenId: sellToken?.tokenId ?? 0,
-            volume: tradeCalcData.volumeSell,
+            volume: sdk.toBig(tradeCalcData.volumeSell).toFixed(0),
           },
           buyToken: {
             tokenId: buyToken?.tokenId ?? 0,
-            volume: tradeCalcData.volumeBuy,
+            volume: sdk.toBig(tradeCalcData.volumeBuy).toFixed(0),
           },
           validUntil: getTimestampDaysLater(DAYS),
           maxFeeBips: tradeCalcData.maxFeeBips,
@@ -397,7 +396,7 @@ export const useBtradeSwap = <
 
         walletLayer2Service.sendUserUpdate();
 
-        const info = {
+        let info: any = {
           sellToken,
           buyToken,
           sellStr: getValuePrecisionThousand(
@@ -424,6 +423,7 @@ export const useBtradeSwap = <
               : EmptyValueTag
           } ${buyToken.symbol}`,
           feeStr: tradeCalcData?.fee,
+          time: undefined,
         };
         setShowAccount({
           isShow: true,
@@ -449,16 +449,14 @@ export const useBtradeSwap = <
           //   setShowAccount({ isShow: false });
           // }
         } else if (["failed", "cancelled"].includes(orderConfirm.status)) {
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.BtradeSwap_Failed,
-            info,
-          });
+          throw "orderConfirm   failed";
         } else if (store.getState().modals.isShowAccount.isShow) {
           setShowAccount({
             isShow: true,
             step: AccountStep.BtradeSwap_Pending,
-            info,
+            info: {
+              ...info,
+            },
           });
         }
 
@@ -487,6 +485,9 @@ export const useBtradeSwap = <
             ? t(error.messageKey, { ns: "error" })
             : (error as sdk.RESULT_INFO).message);
       }
+      setShowAccount({
+        isShow: false,
+      });
       setToastOpen({
         open: true,
         type: "error",
@@ -518,7 +519,7 @@ export const useBtradeSwap = <
       setShowSupport({ isShow: true });
       setIsBtradeLoading(false);
       return;
-    } else if (!btradeOrder.enable) {
+    } else if (!marketMap[market]?.enabled || !BTradeInvest.enable) {
       setShowTradeIsFrozen({
         isShow: true,
         type: t("labelBtradeSwap"),
@@ -528,7 +529,7 @@ export const useBtradeSwap = <
     } else {
       sendRequest();
     }
-  }, []);
+  }, [market, marketMap, BTradeInvest]);
 
   const {
     btnStatus: swapBtnStatus,
@@ -901,12 +902,15 @@ export const useBtradeSwap = <
               )
             : 0;
           _tradeData[isAtoB ? "buy" : "sell"].tradeValue =
-            getValuePrecisionThousand(
-              calcDexOutput[`amount${isAtoB ? "B" : "S"}`],
-              isAtoB ? buyToken.precision : sellToken.precision,
-              isAtoB ? buyToken.precision : sellToken.precision,
-              isAtoB ? buyToken.precision : sellToken.precision
-            ).replace(sdk.SEP, "");
+            !_tradeData[isAtoB ? "sell" : "buy"].tradeValue &&
+            _tradeData[isAtoB ? "sell" : "buy"].tradeValue != "0"
+              ? (undefined as any)
+              : getValuePrecisionThousand(
+                  calcDexOutput[`amount${isAtoB ? "B" : "S"}`],
+                  isAtoB ? buyToken.precision : sellToken.precision,
+                  isAtoB ? buyToken.precision : sellToken.precision,
+                  isAtoB ? buyToken.precision : sellToken.precision
+                ).replace(sdk.SEP, "");
           let result = reCalcStoB({
             market,
             tradeData: _tradeData as SwapTradeData<IBData<unknown>>,
