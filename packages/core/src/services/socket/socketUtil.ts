@@ -27,6 +27,7 @@ export type SocketEventMap = {
 };
 
 export class LoopringSocket {
+  // @ts-ignore
   private static SocketEventMap: SocketEventMap = {
     [sdk.WsTopicType.account]: (_data: { [key: string]: any }) => {
       walletLayer2Service.sendUserUpdate();
@@ -65,10 +66,12 @@ export class LoopringSocket {
         });
       }
     },
+    // @ts-ignore
     [sdk.WsTopicType.cefiOrderBook]: (data: sdk.DepthData, topic: any) => {
       if (
         (window as any)?.loopringSocket?.socketKeyMap &&
         (window as any).loopringSocket?.socketKeyMap[
+          // @ts-ignore
           sdk.WsTopicType.cefiOrderBook
         ]?.level === topic.level
       ) {
