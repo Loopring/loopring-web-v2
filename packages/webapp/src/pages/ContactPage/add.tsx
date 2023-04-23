@@ -1,7 +1,7 @@
 // import { Dialog } from "@mui/material";
 
 import React from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, IconButton, OutlinedInput } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, IconButton, OutlinedInput, FormHelperText } from '@mui/material';
 import { useContactAdd } from './hooks';
 import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources';
 import { TextField } from '@loopring-web/component-lib';
@@ -63,61 +63,55 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
         </DialogTitle>
         <DialogContent style={{width: "var(--modal-width)"}}>
           <Box marginTop={6}>
-            <TextField
+            <Typography marginBottom={0.5} color={"var(--color-text-third)"}>{t("labelContactsAddressTitle")}</Typography>
+            <OutlinedInput
               label={t("labelContactsAddressTitle")}
               placeholder={t("labelContactsAddressDes")}
               style={{
-                backgroundColor: "var(--box-card-decorate)"
+                // backgroundColor: "var(--box-card-decorate)",
+                background: "var(--field-opacity)",
+                height: `${theme.unit * 6}px`
               }}
-              InputProps={{
-                style: {
-                  background: "var(--field-opacity)",
-                  height: `${theme.unit * 6}px`
-                },
-                endAdornment: <CloseIcon
-                  cursor={"pointer"}
-                  fontSize={"large"}
-                  htmlColor={"var(--color-text-third)"}
-                  style={{ visibility: addAddress ? "visible" : "hidden" }}
-                  onClick={() => {
-                    setAddAddress("")
-                  }}
-                />
-              }}
-              helperText={addShowInvalidAddress
-                ? <Typography variant={"body2"} textAlign={"left"} color="var(--color-error)">{t("labelContactsAddressInvalid")}</Typography>
-                : <Typography>&nbsp;</Typography>
-              }
-
+              endAdornment={<CloseIcon
+                cursor={"pointer"}
+                fontSize={"large"}
+                htmlColor={"var(--color-text-third)"}
+                style={{ visibility: addAddress ? "visible" : "hidden" }}
+                onClick={() => {
+                  setAddAddress("")
+                }}
+              />} 
               fullWidth={true}
               value={addAddress}
               onChange={e => {
                 setAddAddress(e.target.value)
               }}
             />
+            <FormHelperText>{addShowInvalidAddress
+                ? <Typography variant={"body2"} textAlign={"left"} color="var(--color-error)">{t("labelContactsAddressInvalid")}</Typography>
+                : <Typography>&nbsp;</Typography>}</FormHelperText>
           </Box>
           <Box marginBottom={10} marginTop={3}>
-            <TextField
+            {/* <OutlinedInput></> */}
+            <Typography marginBottom={0.5} color={"var(--color-text-third)"}>{t("labelContactsNameTitle")}</Typography>
+            <OutlinedInput
               label={t("labelContactsNameTitle")}
               placeholder={t("labelContactsNameDes")}
               style={{
-                backgroundColor: "var(--box-card-decorate)"
+                // backgroundColor: "var(--box-card-decorate)",
+                background: "var(--field-opacity)",
+                height: `${theme.unit * 6}px`
               }}
-              InputProps={{
-                style: {
-                  background: "var(--field-opacity)",
-                  height: `${theme.unit * 6}px`
-                },
-                endAdornment: <CloseIcon
-                  cursor={"pointer"}
-                  fontSize={"large"}
-                  htmlColor={"var(--color-text-third)"}
-                  style={{ visibility: addName ? "visible" : "hidden" }}
-                  onClick={() => {
-                    onChangeName("")
-                  }}
-                />
-              }}
+
+              endAdornment={<CloseIcon
+                cursor={"pointer"}
+                fontSize={"large"}
+                htmlColor={"var(--color-text-third)"}
+                style={{ visibility: addName ? "visible" : "hidden" }}
+                onClick={() => {
+                  onChangeName("")
+                }}
+              />}
               fullWidth
               value={addName}
               onChange={e => {
