@@ -1,7 +1,7 @@
 // import { Dialog } from "@mui/material";
 
 import React from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, IconButton } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, IconButton, OutlinedInput } from '@mui/material';
 import { useContactAdd } from './hooks';
 import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources';
 import { TextField } from '@loopring-web/component-lib';
@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 interface AddDialogProps {
   addOpen: boolean
   setAddOpen: (open: boolean) => void
-  submitAddingContact: (address: string, name: string) => void
+  submitAddingContact: (address: string, name: string, callback: (s: boolean) => void) => void
   loading: boolean
 }
 
@@ -25,7 +25,7 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
     addAddress,
     setAddAddress,
     addName,
-    setAddName,
+    onChangeName,
     addButtonDisable,
     // submitAddingContact,
     // toastStatus,
@@ -38,7 +38,7 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
       <Dialog  maxWidth={"lg"} open={addOpen} onClose={() => {
         setAddOpen(false)
         setAddAddress('')
-        setAddName('')
+        onChangeName('')
       }}>
         <DialogTitle>
           <Typography variant={"h3"} textAlign={"center"}>
@@ -55,7 +55,7 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
             onClick={() => {
               setAddOpen(false)
               setAddAddress('')
-              setAddName('')
+              onChangeName('')
             }}
           >
             <CloseIcon />
@@ -74,11 +74,21 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
                   background: "var(--field-opacity)",
                   height: `${theme.unit * 6}px`
                 },
+                endAdornment: <CloseIcon
+                  cursor={"pointer"}
+                  fontSize={"large"}
+                  htmlColor={"var(--color-text-third)"}
+                  style={{ visibility: addAddress ? "visible" : "hidden" }}
+                  onClick={() => {
+                    setAddAddress("")
+                  }}
+                />
               }}
               helperText={addShowInvalidAddress
                 ? <Typography variant={"body2"} textAlign={"left"} color="var(--color-error)">{t("labelContactsAddressInvalid")}</Typography>
                 : <Typography>&nbsp;</Typography>
               }
+
               fullWidth={true}
               value={addAddress}
               onChange={e => {
@@ -97,12 +107,21 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
                 style: {
                   background: "var(--field-opacity)",
                   height: `${theme.unit * 6}px`
-                }
+                },
+                endAdornment: <CloseIcon
+                  cursor={"pointer"}
+                  fontSize={"large"}
+                  htmlColor={"var(--color-text-third)"}
+                  style={{ visibility: addName ? "visible" : "hidden" }}
+                  onClick={() => {
+                    onChangeName("")
+                  }}
+                />
               }}
               fullWidth
               value={addName}
               onChange={e => {
-                setAddName(e.target.value)
+                onChangeName(e.target.value)
               }}
             />
           </Box>
@@ -112,7 +131,13 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
             variant="contained"
             disabled={addButtonDisable}
             onClick={() => {
-              submitAddingContact(addAddress, addName)
+              submitAddingContact(addAddress, addName, (success) => {
+                if (success) {
+                  onChangeName('')
+                  setAddAddress('')
+                }
+                
+              })
             }}
             fullWidth>
             {loading ? <LoadingIcon></LoadingIcon> : t("labelContactsAddContactBtn")}

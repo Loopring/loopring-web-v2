@@ -2,6 +2,7 @@ import { Avatar, Box, Grid, InputAdornment, OutlinedInput, Typography } from "@m
 import {
   SearchIcon,
   CloseIcon,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { useTheme } from "@emotion/react";
@@ -58,19 +59,14 @@ type ContactSelectionProps = {
   contacts: {
     name: string,
     address: string,
-  }[]
+  }[] | undefined
 }
 export const ContactSelection = (props: ContactSelectionProps) => {
   // const { t } = useTranslation();
   const { onSelect, contacts } = props
   const { isMobile } = useSettings();
   const theme = useTheme()
-  // [contacts, setContacts] = useState([] )
-
-  // useEffect(() => {
-
-  // }, [])
-  const displayContacts = contacts.map(x => {
+  const displayContacts = contacts && contacts.map(x => {
     return {
       name: x.name,
       address: x.address,
@@ -80,12 +76,12 @@ export const ContactSelection = (props: ContactSelectionProps) => {
   })
 
   const [inputValue, setInputValue] = useState('')
-  const filteredContacts = displayContacts.filter(x => {
+  const filteredContacts = displayContacts && displayContacts.filter(x => {
     return inputValue
-      ? x.address.toLowerCase().includes(inputValue.toLowerCase()) || x.avatarURL.toLowerCase().includes(inputValue.toLowerCase())
+      ? x.address.toLowerCase().includes(inputValue.toLowerCase()) || x.name.toLowerCase().includes(inputValue.toLowerCase())
       : true
   })
-  const isEmpty = !filteredContacts || filteredContacts.length === 0
+  
   const normalView = <>
     <Grid item xs={12} width={"100%"}>
       <OutlinedInput
@@ -116,7 +112,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           setInputValue(e.target.value)
         }}
       ></OutlinedInput>
-      {filteredContacts.map(c => {
+      {filteredContacts && filteredContacts.map(c => {
         return <SingleContact
           name={c.name}
           address={c.address}
@@ -127,6 +123,15 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       })}
     </Grid>
   </>
+  const loadingView =
+    <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+      <img
+        className="loading-gif"
+        alt={"loading"}
+        width="36"
+        src={`${SoursURL}images/loading-line.gif`}
+      />
+    </Box>
   const emptyView =
     <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
       <Typography color={"var(--color-text-third)"}>
@@ -142,10 +147,11 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       direction={"column"}
       alignItems={"stretch"}
       flex={1}
-      height={"100%"}
+      height={70}
       minWidth={240}
       flexWrap={"nowrap"}
       spacing={2}
+      overflow={"scroll"}
     >
       <Grid item >
         <Box
@@ -165,8 +171,13 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           </Typography>
         </Box>
       </Grid>
-      {isEmpty ? emptyView : normalView}
-      
+      {
+        contacts === undefined
+          ? loadingView
+          : contacts.length === 0
+            ? emptyView
+            : normalView
+      }
     </Grid>
   );
 };

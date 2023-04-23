@@ -15,7 +15,7 @@ import React, { useEffect } from "react";
 import { cloneDeep } from "lodash";
 import { WithdrawConfirm } from "../../tradePanel/components/WithdrawConfirm";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
-import { LoopringAPI, useAccount } from "@loopring-web/core";
+import { LoopringAPI, useAccount, useIsHebao } from "@loopring-web/core";
 import { createImageFromInitials } from "@loopring-web/core";
 
 export const WithdrawPanel = withTranslation(["common", "error"], {
@@ -72,27 +72,24 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
     const {
       account: { accountId, apiKey, accAddress},
     } = useAccount();
+    const { isHebao } = useIsHebao()
     useEffect(() => {
-      LoopringAPI.walletAPI?.getWalletType({
-        wallet: accAddress,
-      }).then(walletType => {
-        const isHebao = walletType?.walletType?.loopringWalletContractVersion !== ""
-        return LoopringAPI.contactAPI!.getContacts({
-          isHebao,
-          accountId
-        }, apiKey)
-      }).then(x => {
-          const displayContacts = x.contacts.map(xx => {
-            return {
-              name: xx.contactName,
-              address: xx.contactAddress,
-              avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), //todo
-              editing: false
-            } as DisplayContact
-          })
-          setContacts(displayContacts)
+      if (isHebao === undefined) return
+      LoopringAPI.contactAPI!.getContacts({
+        isHebao,
+        accountId
+      }, apiKey).then(x => {
+        const displayContacts = x.contacts.map(xx => {
+          return {
+            name: xx.contactName,
+            address: xx.contactAddress,
+            avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), //todo
+            editing: false
+          } as DisplayContact
         })
-    }, [])
+        setContacts(displayContacts)
+      })
+    }, [isHebao])
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(
@@ -114,6 +111,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
           marginTop={0}
           marginLeft={-2}
           onBack={() => {
+            alert(1)
             setPanelIndex(1);
           }}
           {...rest}
@@ -169,7 +167,8 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       toolBarItem: React.useMemo(
         () => (
           <>
-            {(onBack && !isFromContact) ? (
+            {/* {(onBack && !isFromContact ) ? ( */}
+            {onBack ? (
               <ModalBackButton
                 marginTop={0}
                 marginLeft={-2}
@@ -212,7 +211,6 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       key: "contactSelection",
       element: React.useMemo(
         () => (
-          // @ts-ignore
           <ContactSelection
             key={"contactSelection"}
             contacts={contacts}

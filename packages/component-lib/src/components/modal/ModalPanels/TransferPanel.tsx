@@ -13,7 +13,7 @@ import {
   useBasicTrade,
 } from "../../tradePanel/components";
 import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
-import { LoopringAPI, useAccount } from "@loopring-web/core";
+import { LoopringAPI, useAccount, useIsHebao } from "@loopring-web/core";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
 import { createImageFromInitials } from "@loopring-web/core";
 
@@ -56,21 +56,18 @@ export const TransferPanel = withTranslation(["common", "error"], {
       avatarURL: string
       editing: boolean
     }
-    const [contacts, setContacts] = React.useState([] as DisplayContact[]);
+    const [contacts, setContacts] = React.useState(undefined as DisplayContact[] | undefined);
     const {
       account: { accountId, apiKey, accAddress },
     } = useAccount()
+    const { isHebao } = useIsHebao()
     useEffect(() => {
-      LoopringAPI.walletAPI?.getWalletType({
-        wallet: accAddress,
-      }).then(walletType => {
-        const isHebao = walletType?.walletType?.loopringWalletContractVersion !== ""
-        return LoopringAPI.contactAPI!.getContacts({
-          isHebao,
-          accountId,
-          limit: 50,
-        }, apiKey)
-      }).then((x: any) => {
+      if (isHebao === undefined) return
+      LoopringAPI.contactAPI!.getContacts({
+        isHebao,
+        accountId,
+        limit: 50,
+      }, apiKey).then((x: any) => {
         const displayContacts = x.contacts.map((xx: any) => {
           return {
             name: xx.contactName,
@@ -80,8 +77,10 @@ export const TransferPanel = withTranslation(["common", "error"], {
           } as DisplayContact
         })
         setContacts(displayContacts)
+      }).catch(e => {
+        setContacts([])
       })
-    }, [])
+    }, [isHebao, accountId])
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(
@@ -203,7 +202,6 @@ export const TransferPanel = withTranslation(["common", "error"], {
       key: "contactSelection",
       element: React.useMemo(
         () => (
-          // @ts-ignore
           <ContactSelection
             key={"contactSelection"}
             contacts={contacts}

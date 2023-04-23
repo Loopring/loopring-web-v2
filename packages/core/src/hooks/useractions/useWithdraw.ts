@@ -56,7 +56,14 @@ import { AddressType } from "@loopring-web/loopring-sdk";
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
     modals: {
-      isShowWithdraw: { symbol, isShow, info, address: contactAddress, name: contactName, addressType: contactAddressType },
+      isShowWithdraw: { 
+        symbol, 
+        isShow, 
+        info, 
+        address: contactAddress, 
+        name: contactName, 
+        addressType: contactAddressType 
+      },
     },
     setShowAccount,
     setShowWithdraw,

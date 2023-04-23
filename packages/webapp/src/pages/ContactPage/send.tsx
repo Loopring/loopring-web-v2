@@ -3,7 +3,7 @@
 import React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box } from '@mui/material';
 import { Contact, useContactSend } from './hooks';
-import { CheckIcon } from '@loopring-web/common-resources';
+import { CheckIcon, CloseIcon } from '@loopring-web/common-resources';
 import { CoinIcon, TextField } from '@loopring-web/component-lib';
 import { useTheme } from '@emotion/react';
 import styled from "@emotion/styled";
@@ -63,8 +63,16 @@ interface SendDialogProps {
     open: boolean,
     selected: Contact | undefined;
   } 
-  
+
 }
+
+const CloseIconStyled = styled(CloseIcon)`
+  position: absolute;
+  top: 5%;
+  transform: translateY(-50%);
+  right: ${({ theme }) => theme.unit}px;
+  cursor: pointer;
+`;
 
 export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
   const {
@@ -80,43 +88,56 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
       <Dialog maxWidth={"lg"} open={sendInfo.open} onClose={() => {
         onCloseSend()
       }}>
+        <CloseIconStyled
+            htmlColor={"var(--color-text-third)"}
+            fontSize={"large"}
+            // style={{ visibility: inputValue ? "visible" : "hidden" }}
+            onClick={() => {
+              onCloseSend()
+              // setInputValue('')
+            }}
+        />
         <DialogTitle>
-          <Typography variant={"h3"} textAlign={"center"}>
-            
+          <Typography marginTop={3} variant={"h3"} textAlign={"center"}>
             {t("labelContactsNetworkChoose")}
           </Typography>
         </DialogTitle>
-        <DialogContent  style={{width: "var(--modal-width)"}}>
-          <Box marginTop={6}>
-            <TextField
-              label={"Send to"}
-              style={{
-                backgroundColor: "var(--box-card-decorate)"
-              }}
-              InputProps={{
-                style: {
-                  background: "var(--field-opacity)",
-                  height: `${theme.unit * 6}px`
-                },
-              }}
-              fullWidth
-              value={`${sendInfo.selected?.name}\/${sendInfo.selected?.address}`}
-            />
-          </Box>
-          <Box display={"flex"} marginBottom={10} marginTop={5}>
-            <SelectNetwork onClick={() => {setSendNetwork('L1')}} style={{marginRight: "4%", width: "48%"}} selected={sendNetwork === 'L1'} text={"Ethereum/L1"} icon={<CoinIcon size={32} symbol={"ETH"}></CoinIcon>}/>
-            <SelectNetwork onClick={() => {setSendNetwork('L2')}} style={{width: "48%"}} selected={sendNetwork === 'L2'} text={"Loopring/L2"} icon={<CoinIcon size={32} symbol={"LRC"}></CoinIcon>}/>
+        <DialogContent sx={{ paddingX: 4 }} style={{ width: "var(--modal-width)" }}>
+          <Box paddingX={2}>
+            <Box marginTop={6}>
+              <TextField
+                label={"Send to"}
+                style={{
+                  backgroundColor: "var(--box-card-decorate)"
+                }}
+                InputProps={{
+                  style: {
+                    background: "var(--field-opacity)",
+                    height: `${theme.unit * 6}px`
+                  },
+                }}
+                fullWidth
+                value={`${sendInfo.selected?.name}\/${sendInfo.selected?.address}`}
+              />
+            </Box>
+            <Box display={"flex"} marginBottom={10} marginTop={5}>
+              <SelectNetwork onClick={() => { setSendNetwork('L1') }} style={{ marginRight: "4%", width: "48%" }} selected={sendNetwork === 'L1'} text={"Ethereum/L1"} icon={<CoinIcon size={32} symbol={"ETH"}></CoinIcon>} />
+              <SelectNetwork onClick={() => { setSendNetwork('L2') }} style={{ width: "48%" }} selected={sendNetwork === 'L2'} text={"Loopring/L2"} icon={<CoinIcon size={32} symbol={"LRC"}></CoinIcon>} />
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            onClick={() => {
-              submitSendingContact(sendInfo.selected!, sendNetwork)
-            }}
-            fullWidth>
+          <Box width={"100%"} paddingX={2} paddingBottom={2}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                submitSendingContact(sendInfo.selected!, sendNetwork)
+              }}
+              fullWidth>
               {t("labelContactsNext")}
-          </Button>
+            </Button>
+          </Box>
+
         </DialogActions>
       </Dialog>
     </div>

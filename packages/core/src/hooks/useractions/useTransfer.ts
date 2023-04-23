@@ -53,6 +53,7 @@ import {
   LAST_STEP,
   volumeToCountAsBigNumber,
   useTokenPrices,
+  useIsHebao,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -634,6 +635,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   }, [isActiveAccount, realAddr]);
 
   // const A =  
+  const { isHebao } = useIsHebao()
 
   const transferProps: TransferProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
@@ -657,12 +659,14 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         [WALLET_TYPE.OtherSmart, AddressType.CONTRACT], // to do: is here AddressType.LOOPRING_HEBAO_CF?
       ]
       const found = map.find(x => x[0] === sure)![1]
-      LoopringAPI.contactAPI?.updateContact({
-        contactAddress: realAddr,
-        isHebao: false,
-        accountId: account.accountId,
-        addressType: found
-      }, account.apiKey)
+      if (isHebao && realAddr === contactAddress) {
+        LoopringAPI.contactAPI?.updateContact({
+          contactAddress: realAddr,
+          isHebao,
+          accountId: account.accountId,
+          addressType: found
+        }, account.apiKey)
+      }
       setSureItsLayer2(sure);
     },
     lastFailed:

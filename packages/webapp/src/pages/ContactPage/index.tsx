@@ -1,11 +1,11 @@
-import { Avatar, Box, Button, OutlinedInput, Typography } from "@mui/material";
+import { Avatar, Box, Button, IconButton, OutlinedInput, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { InputSearch, Toast } from "@loopring-web/component-lib";
-import { EditIcon, TOAST_TIME } from "@loopring-web/common-resources";
+import { CopyIcon, EditIcon, SoursURL, TOAST_TIME } from "@loopring-web/common-resources";
 import { Add } from "./add";
 import { Delete } from "./delete";
 import { Send } from "./send";
-import { useContact } from "./hooks";
+import { useContact, useContactAdd } from "./hooks";
 import { useHistory } from "react-router";
 import { ViewAccountTemplate, WalletConnectL2Btn } from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
@@ -16,6 +16,7 @@ const ContactPageStyle = styled(Box)`
   flex-direction: column;
   align-items: stretch;
   height: 100%;
+  /* padding-bottom: 5%  */
   width: 100%;
   border-radius: ${({ theme }) => theme.unit}px;
 `
@@ -88,6 +89,88 @@ export const ContactPage = () => {
     }
   }
   const history = useHistory();
+
+  const noContact = <Box height={"80vh"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+    <Typography color={"var(--color-text-third)"}>No Contact</Typography>
+  </Box>
+  const loadingView = <Box height={"80vh"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+    <img
+      className="loading-gif"
+      alt={"loading"}
+      width="36"
+      src={`${SoursURL}images/loading-line.gif`}
+    />
+  </Box>
+  const normalView = contacts && contacts.map(data => {
+    const { editing, name, address, avatarURL, addressType } = data;
+    return <Box key={address} paddingY={2} display={"flex"} justifyContent={"space-between"}>
+      <Box display={"flex"}>
+        <Avatar sizes={"32px"} src={avatarURL}></Avatar>
+        <Box marginLeft={1}>
+          {
+            editing
+              ? <OutlinedInput
+                size={"small"}
+                value={name}
+                onChange={e => {
+                  onChangeInput(address, e.target.value)
+                }}
+                onBlur={() => {
+                  onInputBlue(address)
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    e.currentTarget.blur()
+                  }
+                }}
+              />
+              : <Typography>
+                {name}
+                <EditIcon onClick={() => onClickEditing(address)} />
+              </Typography>
+          }
+          <Typography>
+            {address}
+            <IconButton onClick={() => {
+              navigator.clipboard.writeText(address);
+            }}>
+              <CopyIcon></CopyIcon>
+            </IconButton>
+          </Typography>
+        </Box>
+      </Box>
+      <Box display={"flex"}>
+        <Box marginRight={2}>
+          <Button
+            onClick={() => onClickSend(address, name, addressType)}
+            variant={"contained"}
+            size={"small"}>
+            {t("labelContactsSend")}
+          </Button>
+        </Box>
+        <Box marginRight={2}>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={() => {
+              history.push('/contact/transactions/' + address)
+            }}
+          >
+            {t("labelContactsTransactions")}
+          </Button>
+        </Box>
+        <Button
+          variant={"outlined"}
+          size={"medium"}
+          onClick={() => {
+            onClickDelete(address, name)
+          }}
+        >
+          {t("labelContactsDeleteContactBtn")}
+        </Button>
+      </Box>
+    </Box>
+  })
   
   const activeView = <ContactPageStyle
     className={"MuiPaper-elevation2"}
@@ -103,7 +186,9 @@ export const ContactPage = () => {
     />
     <Add
       loading={addLoading}
-      submitAddingContact={submitAddContact}
+      submitAddingContact={(address, name, cb) => {
+        submitAddContact(address, name, cb)
+      }}
       addOpen={addOpen}
       setAddOpen={setAddOpen}
     />
@@ -139,72 +224,17 @@ export const ContactPage = () => {
         </Box>
       </Box>
     </Box>
-    <Box className="table-divide">
+    <Box className="table-divide" >
       <Line />
-      {contacts.map(data => {
-        const { editing, name, address, avatarURL, addressType } = data;
-        return <Box key={address} paddingY={2} display={"flex"} justifyContent={"space-between"}>
-          <Box display={"flex"}>
-            <Avatar sizes={"32px"} src={avatarURL}></Avatar>
-            <Box marginLeft={1}>
-              {
-                editing
-                  ? <OutlinedInput
-                    size={"small"}
-                    value={name}
-                    onChange={e => {
-                      onChangeInput(address, e.target.value)
-                    }}
-                    onBlur={() => {
-                      onInputBlue(address)
-                    }}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter') {
-                        e.currentTarget.blur()
-                      }
-                    }}
-                  />
-                  : <Typography>
-                    {name}
-                    <EditIcon onClick={() => onClickEditing(address)} />
-                    {/* todo color */}
-                  </Typography>
-              }
-              <Typography>{address}</Typography>
-            </Box>
-          </Box>
-          <Box display={"flex"}>
-            <Box marginRight={2}>
-              <Button
-                onClick={() => onClickSend(address, name, addressType)}
-                variant={"contained"}
-                size={"small"}>
-                {t("labelContactsSend")}
-              </Button>
-            </Box>
-            <Box marginRight={2}>
-              <Button
-                variant={"outlined"}
-                size={"medium"}
-                onClick={() => {
-                  history.push('/contact/transactions/' + address)
-                }}
-              >
-                {t("labelContactsTransactions")}
-              </Button>
-            </Box>
-            <Button
-              variant={"outlined"}
-              size={"medium"}
-              onClick={() => {
-                onClickDelete(address, name)
-              }}
-            >
-              {t("labelContactsDeleteContactBtn")}
-            </Button>
-          </Box>
-        </Box>
-      })}
+      <Box overflow={"scroll"}>
+      {
+        contacts === undefined
+          ? loadingView
+          : contacts.length === 0
+            ? noContact
+            : normalView
+      }
+      </Box>
     </Box>
   </ContactPageStyle>
   return <ViewAccountTemplate unlockWording={"Unlock your account to view your contacts."} activeViewTemplate={activeView} />

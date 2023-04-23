@@ -806,7 +806,7 @@ export default {
   labelExchangeHuobi: "Huobi",
   labelExchangeHuobiDes: "Transactions need to wait 24 hours",
   labelExchangeCoinbase: "Coinbase",
-  labelExchangeOthers: "Others",
+  labelExchangeOthers: "Other Exchanges",
   labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
   labelConfirmCEX: "Confirm CEX Support",
