@@ -139,7 +139,7 @@ export const useContact = () => {
     )
     const found = contacts!.find(x => x.address === address)!;
     (
-      isHebao
+      isHebao !== undefined
         ? LoopringAPI.contactAPI!.updateContact({
           contactAddress: address,
           isHebao,
