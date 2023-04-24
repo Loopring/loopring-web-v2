@@ -97,6 +97,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       [AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0, WALLET_TYPE.Loopring],
       [AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0, WALLET_TYPE.Loopring],
       [AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0, WALLET_TYPE.Loopring],
+      [AddressType.CONTRACT, WALLET_TYPE.OtherSmart],
     ]
     const found = map.find(x => x[0] === contactAddressType)
     const intialSureIsAllowAddress = found

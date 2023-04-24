@@ -250,7 +250,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         info,
         name, 
         address, 
-        addressType: AddressType.EOA
+        addressType
       };
     },
     setShowDeposit(

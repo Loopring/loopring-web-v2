@@ -59,7 +59,8 @@ export const useContact = () => {
     if (isHebao === undefined) return
     LoopringAPI.contactAPI!.getContacts({
       isHebao,
-      accountId
+      accountId,
+      limit: 50
     }, apiKey).then(x => {
       const displayContacts = x.contacts.map(xx => {
         return {
@@ -250,8 +251,33 @@ export const useContact = () => {
       contactName: name,
     }, apiKey)
     .then((response) => {
-      
-
+      LoopringAPI.walletAPI?.getWalletType({
+        wallet: address,
+      }).then(response2 => {
+        let addressType: AddressType | undefined = undefined
+        if (response2.walletType?.loopringWalletContractVersion) {
+          const map: [string, AddressType][] = [
+            ['V2_1_0', AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
+            ['V2_0_0', AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
+            ['V1_2_0', AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
+            ['V1_1_6', AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
+          ]
+          addressType = map.find(x => x[0] === response2.walletType?.loopringWalletContractVersion)![1]
+        } else if (response2.walletType?.isInCounterFactualStatus) {
+          addressType = AddressType.LOOPRING_HEBAO_CF
+        } else if (response2.walletType?.isContract) {
+          addressType = AddressType.CONTRACT
+        }
+        if (addressType) {
+          LoopringAPI.contactAPI?.updateContact({
+            accountId: accountId,
+            isHebao,
+            addressType: addressType,
+            contactAddress: address,
+            contactName: name
+          }, apiKey)
+        }
+      })
       if (response === true) {
         loadContacts()
         setToastInfo({
@@ -414,6 +440,7 @@ export const useContactSend = () => {
   const { setShowTransfer, setShowWithdraw } = useOpenModals()
   const submitSendingContact = React.useCallback((contact: Contact, network: Network) => {
     if (network === 'L1') {
+      debugger
       setShowWithdraw({
         isShow: true,
         address: contact.address,
