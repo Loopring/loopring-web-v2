@@ -138,7 +138,6 @@ export const ContactSelection = (props: ContactSelectionProps) => {
         No Contact
       </Typography>
     </Box>
-  console.log('contacts', filteredContacts)
   
   return (
     <Grid

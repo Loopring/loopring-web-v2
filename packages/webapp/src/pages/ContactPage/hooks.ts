@@ -7,7 +7,7 @@ import {
   volumeToCount,
   volumeToCountAsBigNumber,
 } from "@loopring-web/core";
-import { utils } from "ethers";
+import { ethers, utils } from "ethers";
 import { RawDataTransactionItem, TransactionStatus, useOpenModals } from "@loopring-web/component-lib";
 import { createImageFromInitials } from "./genAvatar";
 import { AddressType, RESULT_INFO } from "@loopring-web/loopring-sdk";
@@ -15,6 +15,9 @@ import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useRouteMatch } from "react-router";
 import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
+import { connectProvides } from "@loopring-web/web3-provider";
+import { useDebounce } from "react-use";
+import { debounce } from "lodash";
 
 
 export type Contact = {
@@ -247,6 +250,8 @@ export const useContact = () => {
       contactName: name,
     }, apiKey)
     .then((response) => {
+      
+
       if (response === true) {
         loadContacts()
         setToastInfo({
@@ -318,10 +323,8 @@ export const useContactAdd = () => {
   const [addAddress, setAddAddress] = React.useState('');
   const [addName, setAddName] = React.useState('');
   const [toastStatus, setToastStatus] = React.useState('Succuss' as 'Succuss' | 'Error' | 'Init');
-  const addShowInvalidAddress = addAddress !== ''
-    ? !utils.isAddress(addAddress)
-    : false
-  const addButtonDisable = !utils.isAddress(addAddress) || addName === ''
+  
+  
   const {
     account: { accountId, apiKey },
   } = useAccount();
@@ -332,17 +335,45 @@ export const useContactAdd = () => {
     }
   }, [])
 
+  const [ensResolvedAddress, setEnsResolvedAddress] = useState(undefined as undefined | false | string)
+  const addButtonDisable = 
+    (!utils.isAddress(addAddress) && !ensResolvedAddress)  
+    || addName === ''
+  const debounceCheckEns = debounce((input: string) => {
+    (connectProvides.usedWeb3
+      ? connectProvides.usedWeb3.eth.ens.getAddress(input)
+      : Promise.reject('no web3'))
+      .then((addressResovled: string) => {
+        setEnsResolvedAddress(addressResovled)
+      }).catch(e => {
+        setEnsResolvedAddress(false)
+      })
+  }, 100)
+
+  const onChangeAddress = React.useCallback((input: string) => {
+    debounceCheckEns(input)
+    setAddAddress(input)
+  }, [])
+  console.log('ensResolvedAddress', ensResolvedAddress)
+  const addShowInvalidAddress = 
+    addAddress !== '' && !utils.isAddress(addAddress) && ensResolvedAddress === false
+  
+  const displayEnsResolvedAddress = (ensResolvedAddress !== undefined && ensResolvedAddress !== false)
+    ? ensResolvedAddress
+    : undefined
+
   return {
     addLoading,
     setAddLoading,
     addAddress,
-    setAddAddress,
+    onChangeAddress,
     addName,
     onChangeName,
     toastStatus,
     setToastStatus,
     addShowInvalidAddress,
     addButtonDisable,
+    displayEnsResolvedAddress
     // submitAddingContact,
   }
 };

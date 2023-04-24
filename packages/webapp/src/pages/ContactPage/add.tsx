@@ -7,6 +7,7 @@ import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources';
 import { TextField } from '@loopring-web/component-lib';
 import { useTheme } from '@emotion/react';
 import { useTranslation } from 'react-i18next';
+import { isAddress } from 'ethers/lib/utils';
 
 interface AddDialogProps {
   addOpen: boolean
@@ -23,21 +24,38 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
     // setAddLoading,
     addShowInvalidAddress,
     addAddress,
-    setAddAddress,
+    onChangeAddress,
     addName,
     onChangeName,
     addButtonDisable,
+    displayEnsResolvedAddress
     // submitAddingContact,
     // toastStatus,
     // setToastStatus
   } = useContactAdd()
   const {t} = useTranslation()
+  // web3.eth.ens
+  //             .getAddress(address)
+  //             .then((addressResovled: string) => {
+  //               myLog("addressResovled:", addressResovled);
+  //               resolve({
+  //                 realAddr: addressResovled,
+  //                 addressErr: AddressError.NoError,
+  //               });
+  //             })
+  //             .catch((e: any) => {
+  //               myLog("ens catch", e);
+  //               resolve({
+  //                 realAddr: "",
+  //                 addressErr: AddressError.InvalidAddr,
+  //               });
+  //             });
 
   return (
     <div>
       <Dialog  maxWidth={"lg"} open={addOpen} onClose={() => {
         setAddOpen(false)
-        setAddAddress('')
+        onChangeAddress('')
         onChangeName('')
       }}>
         <DialogTitle>
@@ -54,7 +72,7 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
             color={"inherit"}
             onClick={() => {
               setAddOpen(false)
-              setAddAddress('')
+              onChangeAddress('')
               onChangeName('')
             }}
           >
@@ -78,18 +96,24 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
                 htmlColor={"var(--color-text-third)"}
                 style={{ visibility: addAddress ? "visible" : "hidden" }}
                 onClick={() => {
-                  setAddAddress("")
+                  onChangeAddress("")
                 }}
               />} 
               fullWidth={true}
               value={addAddress}
               onChange={e => {
-                setAddAddress(e.target.value)
+                onChangeAddress(e.target.value)
               }}
             />
-            <FormHelperText>{addShowInvalidAddress
-                ? <Typography variant={"body2"} textAlign={"left"} color="var(--color-error)">{t("labelContactsAddressInvalid")}</Typography>
-                : <Typography>&nbsp;</Typography>}</FormHelperText>
+            <FormHelperText>
+              {
+                addShowInvalidAddress
+                  ? <Typography variant={"body2"} textAlign={"left"} color="var(--color-error)">{t("labelContactsAddressInvalid")}</Typography>
+                  : displayEnsResolvedAddress
+                    ? <Typography variant={"body2"} color="var(--color-text-primary)">{displayEnsResolvedAddress}</Typography>
+                    : <Typography>&nbsp;</Typography>
+              }
+            </FormHelperText>
           </Box>
           <Box marginBottom={10} marginTop={3}>
             {/* <OutlinedInput></> */}
@@ -125,12 +149,15 @@ export const Add: React.FC<AddDialogProps> = ({ setAddOpen, addOpen, submitAddin
             variant="contained"
             disabled={addButtonDisable}
             onClick={() => {
-              submitAddingContact(addAddress, addName, (success) => {
+              const address = isAddress(addAddress) 
+                ? addAddress
+                : displayEnsResolvedAddress!
+              
+              submitAddingContact(address, addName, (success) => {
                 if (success) {
                   onChangeName('')
-                  setAddAddress('')
+                  onChangeAddress('')
                 }
-                
               })
             }}
             fullWidth>
