@@ -49,10 +49,14 @@ import {
   store,
   LAST_STEP,
   useIsHebao,
+  RootState,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import _ from "lodash";
 import { AddressType } from "@loopring-web/loopring-sdk";
+import { useDispatch, useSelector } from "react-redux";
+import { updateContacts } from "../../stores/contacts/reducer";
+import { addressToExWalletMapFn, exWalletToAddressMapFn } from "@loopring-web/core";
 
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
@@ -84,27 +88,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
   const [sureIsAllowAddress, setSureIsAllowAddress] =
     React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(undefined);
-  React.useEffect(() => {
-    const map: [AddressType, EXCHANGE_TYPE | WALLET_TYPE][] = [
-      [AddressType.EXCHANGE_COINBASE, EXCHANGE_TYPE.Coinbase],
-      [AddressType.EXCHANGE_BINANCE, EXCHANGE_TYPE.Binance],
-      [AddressType.EXCHANGE_HUOBI, EXCHANGE_TYPE.Huobi],
-      [AddressType.EXCHANGE_OTHER, EXCHANGE_TYPE.Others],
-      [AddressType.EOA, WALLET_TYPE.EOA],
-      [AddressType.LOOPRING_DEX_EOA, WALLET_TYPE.EOA],
-      [AddressType.LOOPRING_HEBAO_CF, WALLET_TYPE.Loopring],
-      [AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6, WALLET_TYPE.Loopring],
-      [AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0, WALLET_TYPE.Loopring],
-      [AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0, WALLET_TYPE.Loopring],
-      [AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0, WALLET_TYPE.Loopring],
-      [AddressType.CONTRACT, WALLET_TYPE.OtherSmart],
-    ]
-    const found = map.find(x => x[0] === contactAddressType)
-    const intialSureIsAllowAddress = found
-      ? found[1]
-      : undefined
-    setSureIsAllowAddress(intialSureIsAllowAddress)
-  }, [contactAddressType])
+  
 
   const [isFastWithdrawAmountLimit, setIsFastWithdrawAmountLimit] =
     React.useState<boolean>(false);
@@ -387,6 +371,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setAddress(account.accAddress);
     } else if (contactAddress) {
       setAddress(contactAddress)
+      setIsContactSelection(true)
     } else {
       setAddress("");
     }
@@ -684,7 +669,19 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     [lastRequest, processRequest, setShowAccount]
   );
   const { isHebao } = useIsHebao()
-  const [isContactSelection, setIsContactSelection] = React.useState(false)
+  const [isContactSelection, setIsContactSelection] = React.useState(contactAddress !== undefined ? true : false)
+  const contacts = useSelector((state: RootState) => state.contacts.contacts);
+  const dispatch = useDispatch()
+  React.useEffect(() => {
+    const addressType = contacts?.find(x => x.address === realAddr)?.addressType
+    if (addressType) {
+      const found = addressType 
+      ? addressToExWalletMapFn(addressType)
+      : undefined
+      setSureIsAllowAddress(found)
+    }
+    
+  }, [realAddr, isShow, contacts])
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     isLoopringAddress,
@@ -710,22 +707,25 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       store.getState().modals.isShowAccount.info?.lastFailed ===
       LAST_STEP.withdraw,
     handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => {
-      const map: [WALLET_TYPE| EXCHANGE_TYPE, AddressType][] = [
-        [WALLET_TYPE.EOA, AddressType.EOA],
-        [EXCHANGE_TYPE.Binance, AddressType.EXCHANGE_BINANCE],
-        [EXCHANGE_TYPE.Huobi, AddressType.EXCHANGE_HUOBI],
-        [EXCHANGE_TYPE.Others, AddressType.EXCHANGE_OTHER],
-        [WALLET_TYPE.Loopring, AddressType.LOOPRING_HEBAO_CF], // to do: is here AddressType.LOOPRING_HEBAO_CF?
-        [WALLET_TYPE.OtherSmart, AddressType.CONTRACT], // to do: is here AddressType.LOOPRING_HEBAO_CF?
-      ]
-      const found = map.find(x => x[0] === value)![1]
-      if (isHebao !== undefined && isContactSelection) {
+      const found = exWalletToAddressMapFn(value)
+      // const found = map.find(x => x[0] === value)![1]
+      const contact = contacts?.find(x => x.address === realAddr)
+      if (isHebao !== undefined && contact) {
         LoopringAPI.contactAPI?.updateContact({
           contactAddress: realAddr,
           isHebao,
           accountId: account.accountId,
-          addressType: found
-        }, account.apiKey)
+          addressType: found,
+          contactName: contact.name
+        }, account.apiKey).then(() => {
+          dispatch(updateContacts(contacts?.map(x => {
+            if (x.address === realAddr) {
+              return {...x, addressType: found}
+            } else {
+              return x
+            }
+          })))
+        })
       }
       setSureIsAllowAddress(value);
     },
@@ -782,7 +782,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     handleOnAddressChange: (value: any, isContactSelection? : boolean) => {
       setIsContactSelection(isContactSelection ? true : false)
       setAddress(value);
-      setSureIsAllowAddress(undefined)
+      if (isContactSelection) {
+        const contact = contacts?.find(x => x.address === value)
+        const v = contact && addressToExWalletMapFn(contact.addressType)
+        v && setSureIsAllowAddress(v)
+      } else {
+        setSureIsAllowAddress(undefined)
+      }
     },
     isFromContact: contactAddress ? true : false,
     contact: contactAddress 

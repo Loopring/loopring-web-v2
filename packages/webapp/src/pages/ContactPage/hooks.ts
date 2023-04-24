@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   LoopringAPI,
+  RootState,
   store,
   useAccount,
+  useAppDispatch,
   useIsHebao,
   volumeToCount,
   volumeToCountAsBigNumber,
@@ -18,6 +20,8 @@ import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useDebounce } from "react-use";
 import { debounce, throttle } from "lodash";
+import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
+import { DefaultRootState, RootStateOrAny, useDispatch, useSelector } from "react-redux";
 
 
 export type Contact = {
@@ -46,13 +50,17 @@ export const useContact = () => {
     addressType: AddressType
   }
   const [searchValue, setSearchValue] = React.useState('');
-  const [contacts, setContacts] = React.useState(undefined as DisplayContact[] | undefined);
+  
+  // const [contacts, setContacts] = React.useState(undefined as DisplayContact[] | undefined);
   const {
     account: { accountId, apiKey, accAddress },
   } = useAccount();
   const { isHebao } = useIsHebao();
+  const dispatch = useDispatch()
+  const contacts = useSelector((state: RootState) => state.contacts.contacts);
+
   const loadContacts = () => {
-    setContacts(undefined)
+    dispatch(updateContacts(undefined))
     if (isHebao === undefined || !apiKey || accountId == -1) {
       return
     }
@@ -71,9 +79,10 @@ export const useContact = () => {
           addressType: xx.addressType
         } as DisplayContact
       })
-      setContacts(displayContacts)
+      dispatch(updateContacts(displayContacts))
+      // setContacts(displayContacts)
     }).catch(x => {
-      setContacts([])
+      dispatch(updateContacts([]))
     })
   }
   useEffect(loadContacts, [isHebao, accountId, apiKey])
@@ -85,14 +94,12 @@ export const useContact = () => {
     setSearchValue('')
   },[])
   const onClickEditing = React.useCallback((address: string) => {
-    setContacts(
-      contacts!.map(x => {
-        return {
-          ...x,
-          editing: x.address === address
-        }
-      })
-    )
+    dispatch(updateContacts(contacts!.map(x => {
+      return {
+        ...x,
+        editing: x.address === address
+      }
+    })))
   },[contacts])
   const onClickDelete = React.useCallback((address: string, name: string) => {
     setDeleteInfo({
@@ -133,13 +140,15 @@ export const useContact = () => {
   });
   
   const onInputBlue = React.useCallback((address: string) => {
-    setContacts(
-      contacts!.map(x => {
-        return {
-          ...x,
-          editing: false
-        }
-      })
+    dispatch(
+      updateContacts(
+        contacts!.map(x => {
+          return {
+            ...x,
+            editing: false
+          }
+        })
+      )
     )
     const found = contacts!.find(x => x.address === address)!;
     (
@@ -153,7 +162,6 @@ export const useContact = () => {
         : Promise.reject('no hebao')
     ).then(response => {
       if (response === true) {
-        loadContacts()
         setToastInfo({
           open: true,
           isSuccess: true,
@@ -179,15 +187,18 @@ export const useContact = () => {
     })
   },[contacts, isHebao])
   const onChangeInput = React.useCallback((address: string, inputValue) => {
-    setContacts(
-      contacts!.map(x => {
-        return {
-          ...x,
-          name: x.address === address 
-            ? inputValue
-            : x.name
-        }
-      })
+    // updateContacts
+    dispatch(
+      updateContacts(
+        contacts!.map(x => {
+          return {
+            ...x,
+            name: x.address === address 
+              ? inputValue
+              : x.name
+          }
+        })
+      )
     )
   },[contacts])
   const [deleteLoading, setDeleteLoading] = React.useState(false);
@@ -323,17 +334,20 @@ export const useContact = () => {
         offset: contacts?.length,
         limit: 10
       }, apiKey).then((response) => {
-        setContacts([
-          ...(contacts ? contacts : []), 
-          ...response.contacts.map(xx => {
-            return {
-              name: xx.contactName,
-              address: xx.contactAddress,
-              avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
-              editing: false,
-              addressType: xx.addressType
-            } as DisplayContact
-          })]
+        
+        dispatch(
+          updateContacts([
+            ...(contacts ? contacts : []),
+            ...response.contacts.map(xx => {
+              return {
+                name: xx.contactName,
+                address: xx.contactAddress,
+                avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
+                editing: false,
+                addressType: xx.addressType
+              } as DisplayContact
+            })]
+          )
         )
       })
     }
@@ -470,15 +484,17 @@ export const useContactSend = () => {
   const{}=useContact()
   const [sendNetwork, setSendNetwork] = React.useState('L1' as Network);
   const { setShowTransfer, setShowWithdraw } = useOpenModals()
-  const submitSendingContact = React.useCallback((contact: Contact, network: Network) => {
+  const submitSendingContact = React.useCallback((contact: Contact, network: Network, onClose: () => void) => {
     if (network === 'L1') {
-
       setShowWithdraw({
         isShow: true,
         address: contact.address,
         name: contact.name,
         addressType: contact.addressType,
         symbol: "ETH",
+        info: {
+          onCloseCallBack: onClose
+        }
       })
     } else {
       setShowTransfer({
@@ -486,7 +502,10 @@ export const useContactSend = () => {
         address: contact.address,
         name: contact.name,
         addressType: contact.addressType,
-        symbol: "ETH"
+        symbol: "ETH",
+        info: {
+          onCloseCallBack: onClose
+        }
       })
     }
   }, [])

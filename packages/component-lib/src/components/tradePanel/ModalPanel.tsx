@@ -238,7 +238,10 @@ export const ModalPanel = <
       <Modal
         open={isShowTransfer.isShow}
         contentClassName={"trade-wrap"}
-        onClose={() => setShowTransfer({ isShow: false })}
+        onClose={() => {
+          isShowTransfer.info?.onCloseCallBack && isShowTransfer.info?.onCloseCallBack()
+          setShowTransfer({ isShow: false })
+        }}
         content={
           <TransferPanel<any, any>
             {...{
@@ -255,7 +258,10 @@ export const ModalPanel = <
       <Modal
         open={isShowWithdraw.isShow}
         contentClassName={"trade-wrap"}
-        onClose={() => setShowWithdraw({ isShow: false })}
+        onClose={() => {
+          isShowWithdraw.info?.onCloseCallBack && isShowWithdraw.info?.onCloseCallBack()
+          setShowWithdraw({ isShow: false })
+        }}
         content={
           <WithdrawPanel<any, any>
             {...{

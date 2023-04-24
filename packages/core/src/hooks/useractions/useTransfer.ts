@@ -54,10 +54,14 @@ import {
   volumeToCountAsBigNumber,
   useTokenPrices,
   useIsHebao,
+  RootState,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
 import { AddressType } from "@loopring-web/loopring-sdk";
+import { useDispatch, useSelector } from "react-redux";
+import { updateContacts } from "../../stores/contacts/reducer";
+import { addressToExWalletMapFn, exWalletToAddressMapFn } from "@loopring-web/core";
 
 export const useTransfer = <R extends IBData<T>, T>() => {
   const { setShowAccount, setShowTransfer } = useOpenModals();
@@ -84,27 +88,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
  
   const [sureItsLayer2, setSureItsLayer2] =
     React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(undefined);
-  useEffect(() => {
-    const map: [AddressType, EXCHANGE_TYPE | WALLET_TYPE][] = [
-      [AddressType.EXCHANGE_COINBASE, EXCHANGE_TYPE.Coinbase],
-      [AddressType.EXCHANGE_BINANCE, EXCHANGE_TYPE.Binance],
-      [AddressType.EXCHANGE_HUOBI, EXCHANGE_TYPE.Huobi],
-      [AddressType.EXCHANGE_OTHER, EXCHANGE_TYPE.Others],
-      [AddressType.EOA, WALLET_TYPE.EOA],
-      [AddressType.LOOPRING_DEX_EOA, WALLET_TYPE.EOA],
-      [AddressType.LOOPRING_HEBAO_CF, WALLET_TYPE.Loopring],
-      [AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6, WALLET_TYPE.Loopring],
-      [AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0, WALLET_TYPE.Loopring],
-      [AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0, WALLET_TYPE.Loopring],
-      [AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0, WALLET_TYPE.Loopring],
-      [AddressType.CONTRACT, WALLET_TYPE.OtherSmart],
-    ]
-    const found = map.find(x => x[0] === contactAddressType)
-    const intialSureIsAllowAddress = found
-      ? found[1]
-      : undefined
-    setSureItsLayer2(intialSureIsAllowAddress)
-  }, [contactAddressType])
+  
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const [feeWithActive, setFeeWithActive] = React.useState(false);
 
@@ -163,6 +147,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     // setSureItsLayer2(undefined);
     // debugger
   }, [realAddr]);
+
+  
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
@@ -279,6 +265,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     setMemo("");
     if (contactAddress) {
       setAddress(contactAddress)
+      setIsContactSelection(true)
     } else {
       setAddress("");
     }
@@ -637,6 +624,17 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
   const { isHebao } = useIsHebao()
   const [isContactSelection, setIsContactSelection] = React.useState(false)
+  const contacts = useSelector((state: RootState) => state.contacts.contacts);
+  const dispatch = useDispatch()
+  useEffect(() => {
+    const addressType = contacts?.find(x => x.address === realAddr)?.addressType
+    if (addressType) {
+      const found = addressType 
+      ? addressToExWalletMapFn(addressType)
+      : undefined
+      setSureItsLayer2(found)
+    }
+  }, [realAddr, isShow, contacts])
   const transferProps: TransferProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     addressDefault: address,
@@ -650,22 +648,24 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handleFeeChange,
     feeInfo,
     handleSureItsLayer2: (sure) => {
-      const map: [WALLET_TYPE| EXCHANGE_TYPE, AddressType][] = [
-        [WALLET_TYPE.EOA, AddressType.EOA],
-        [EXCHANGE_TYPE.Binance, AddressType.EXCHANGE_BINANCE],
-        [EXCHANGE_TYPE.Huobi, AddressType.EXCHANGE_HUOBI],
-        [EXCHANGE_TYPE.Others, AddressType.EXCHANGE_OTHER],
-        [WALLET_TYPE.Loopring, AddressType.LOOPRING_HEBAO_CF], // to do: is here AddressType.LOOPRING_HEBAO_CF?
-        [WALLET_TYPE.OtherSmart, AddressType.CONTRACT], // to do: is here AddressType.LOOPRING_HEBAO_CF?
-      ]
-      const found = map.find(x => x[0] === sure)![1]
-      if (isHebao !== undefined && isContactSelection) {
+      const found = exWalletToAddressMapFn(sure)!
+      const contact = contacts?.find(x => x.address === realAddr)
+      if (isHebao !== undefined && contact) {
         LoopringAPI.contactAPI?.updateContact({
           contactAddress: realAddr,
           isHebao,
           accountId: account.accountId,
-          addressType: found
-        }, account.apiKey)
+          addressType: found,
+          contactName: contact.name
+        }, account.apiKey).then(() => {
+          dispatch(updateContacts(contacts?.map(x => {
+            if (x.address === realAddr) {
+              return {...x, addressType: found}
+            } else {
+              return x
+            }
+          })))
+        })
       }
       setSureItsLayer2(sure);
     },
@@ -684,13 +684,21 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     memo,
     handleOnMemoChange,
     handleOnAddressChange: (value: any, isContactSelection? : boolean) => {
-      setIsContactSelection(isContactSelection ? true : false)
+      
+      // setIsContactSelection(isContactSelection ? true : false)
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
         requestType: undefined as any,
       });
       setAddress((state) => {
-        setSureItsLayer2(undefined)
+        debugger
+        if (isContactSelection) {
+          const contact = contacts?.find(x => x.address === value)
+          const v = contact && addressToExWalletMapFn(contact.addressType)
+          v && setSureItsLayer2(v)
+        } else {
+          setSureItsLayer2(undefined)
+        }
         if (state !== value || "") {
           // flag = true;
           setFeeWithActive((state) => {
@@ -703,6 +711,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             return false;
           });
         }
+        
         return value || "";
       });
     },

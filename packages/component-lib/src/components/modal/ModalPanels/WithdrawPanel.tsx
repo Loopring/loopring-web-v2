@@ -15,8 +15,10 @@ import React, { useEffect, useRef } from "react";
 import { cloneDeep, debounce } from "lodash";
 import { WithdrawConfirm } from "../../tradePanel/components/WithdrawConfirm";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
-import { LoopringAPI, useAccount, useIsHebao } from "@loopring-web/core";
+import { LoopringAPI, RootState, useAccount, useIsHebao } from "@loopring-web/core";
 import { createImageFromInitials } from "@loopring-web/core";
+import { useDispatch, useSelector } from "react-redux";
+import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
 
 export const WithdrawPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -68,7 +70,9 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       avatarURL: string
       editing: boolean
     }
-    const [contacts, setContacts] = React.useState([] as DisplayContact[]);
+    // const [contacts, setContacts] = React.useState([] as DisplayContact[]);
+    const dispatch = useDispatch()
+    const contacts = useSelector((state: RootState) => state.contacts.contacts);
     const {
       account: { accountId, apiKey, accAddress},
     } = useAccount();
@@ -84,24 +88,27 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
           offset: contacts?.length,
           limit: 10
         }, apiKey).then((response) => {
-          setContacts([
-            ...(contacts ? contacts : []), 
-            ...response.contacts.map(xx => {
-              return {
-                name: xx.contactName,
-                address: xx.contactAddress,
-                avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
-                editing: false,
-                addressType: xx.addressType
-              } as DisplayContact
-            })]
+          dispatch(
+            updateContacts([
+              ...(contacts ? contacts : []), 
+              ...response.contacts.map(xx => {
+                return {
+                  name: xx.contactName,
+                  address: xx.contactAddress,
+                  avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
+                  editing: false,
+                  addressType: xx.addressType
+                } as DisplayContact
+              })]
+            )
           )
+          
         })
       }
     }, 1000))
   
     useEffect(() => {
-      if (isHebao === undefined) return
+      if (isHebao === undefined || (contacts && contacts?.length > 0)) return
       LoopringAPI.contactAPI!.getContacts({
         isHebao,
         accountId,
@@ -112,10 +119,17 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
             name: xx.contactName,
             address: xx.contactAddress,
             avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), //todo
-            editing: false
+            editing: false,
+            addressType: xx.addressType
           } as DisplayContact
         })
-        setContacts(displayContacts)
+        dispatch(
+          updateContacts(displayContacts)
+        )
+      }).catch(e => {
+        dispatch(
+          updateContacts([])
+        )
       })
     }, [isHebao])
     const confirmPanel = {

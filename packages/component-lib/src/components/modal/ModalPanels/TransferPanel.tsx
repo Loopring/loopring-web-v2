@@ -13,10 +13,13 @@ import {
   useBasicTrade,
 } from "../../tradePanel/components";
 import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
-import { LoopringAPI, useAccount, useIsHebao } from "@loopring-web/core";
+import { LoopringAPI, RootState, useAccount, useIsHebao } from "@loopring-web/core";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
-import { createImageFromInitials } from "@loopring-web/core";
+import { createImageFromInitials, addressToExWalletMapFn } from "@loopring-web/core";
 import { debounce } from "lodash";
+import { useDispatch, useSelector } from "react-redux";
+import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
+import { AddressType } from "@loopring-web/loopring-sdk";
 
 export const TransferPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -55,9 +58,12 @@ export const TransferPanel = withTranslation(["common", "error"], {
       name: string
       address: string
       avatarURL: string
-      editing: boolean
+      editing: boolean,
+      addressType: AddressType
     }
-    const [contacts, setContacts] = React.useState(undefined as DisplayContact[] | undefined);
+    // const [contacts, setContacts] = React.useState(undefined as DisplayContact[] | undefined);
+    const contacts = useSelector((state: RootState) => state.contacts.contacts);
+    const dispatch = useDispatch()
     const {
       account: { accountId, apiKey, accAddress },
     } = useAccount()
@@ -66,7 +72,6 @@ export const TransferPanel = withTranslation(["common", "error"], {
     const throttled = useRef(debounce(({isHebao, contacts, eventTarget}) => {
       const _eventTarget = eventTarget as HTMLDivElement
       if (_eventTarget.scrollTop + _eventTarget.clientHeight >= _eventTarget.scrollHeight) {
-        console.log('dasjkdhakjshdkjashdkjashkjdh')
         if (isHebao === undefined) return
         LoopringAPI.contactAPI!.getContacts({
           isHebao,
@@ -74,24 +79,26 @@ export const TransferPanel = withTranslation(["common", "error"], {
           offset: contacts?.length,
           limit: 10
         }, apiKey).then((response) => {
-          setContacts([
-            ...(contacts ? contacts : []), 
-            ...response.contacts.map(xx => {
-              return {
-                name: xx.contactName,
-                address: xx.contactAddress,
-                avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
-                editing: false,
-                addressType: xx.addressType
-              } as DisplayContact
-            })]
+          dispatch(
+            updateContacts([
+              ...(contacts ? contacts : []), 
+              ...response.contacts.map(xx => {
+                return {
+                  name: xx.contactName,
+                  address: xx.contactAddress,
+                  avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
+                  editing: false,
+                  addressType: xx.addressType
+                } as DisplayContact
+              })]
+            )
           )
         })
       }
     }, 1000))
 
     useEffect(() => {
-      if (isHebao === undefined) return
+      if (isHebao === undefined || (contacts && contacts?.length > 0)) return
       LoopringAPI.contactAPI!.getContacts({
         isHebao,
         accountId,
@@ -102,12 +109,18 @@ export const TransferPanel = withTranslation(["common", "error"], {
             name: xx.contactName,
             address: xx.contactAddress,
             avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), //todo
-            editing: false
+            editing: false,
+            addressType: xx.addressType
           } as DisplayContact
         })
-        setContacts(displayContacts)
+        debugger
+        dispatch(
+          updateContacts(displayContacts)
+        )
       }).catch(e => {
-        setContacts([])
+        dispatch(
+          updateContacts([])
+        )
       })
     }, [isHebao, accountId])
     const confirmPanel = {
@@ -237,6 +250,17 @@ export const TransferPanel = withTranslation(["common", "error"], {
             onSelect={(address) => {
               setPanelIndex(1);
               rest.handleOnAddressChange(address, true)
+              // const contact = contacts?.find(x => x.address === address)
+              // // if (contact) {
+              // //   const v = addressToExWalletMapFn(contact.addressType)
+              // //   v && rest.handleSureItsLayer2(v)
+              // // } 
+              // && addressToExWalletMapFn(contact?.addressType)
+              
+              // addressTo
+              // contact?.addressType
+              // add
+              // address
             }}
             onScroll={(eventTarget) => {
               throttled.current({isHebao, contacts, eventTarget})

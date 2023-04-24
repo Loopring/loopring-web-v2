@@ -131,7 +131,9 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
             <Button
               variant="contained"
               onClick={() => {
-                submitSendingContact(sendInfo.selected!, sendNetwork)
+                submitSendingContact(sendInfo.selected!, sendNetwork, () => {
+                  onCloseSend()
+                })
               }}
               fullWidth>
               {t("labelContactsNext")}
