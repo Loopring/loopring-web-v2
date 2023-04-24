@@ -113,7 +113,6 @@ export const TransferPanel = withTranslation(["common", "error"], {
             addressType: xx.addressType
           } as DisplayContact
         })
-        debugger
         dispatch(
           updateContacts(displayContacts)
         )

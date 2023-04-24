@@ -83,7 +83,6 @@ export const TransferWrap = <
   handleOnMemoChange,
   isAddressCheckLoading,
   isSameAddress,
-  isContractAddress,
   isSmartContractAddress,
   baseURL,
   isActiveAccount,
@@ -146,11 +145,14 @@ export const TransferWrap = <
     [AddressError.InvalidAddr, AddressError.IsNotLoopringContract].includes(
       addrStatus
     );
-  const detectedWalletType = loopringSmartWalletVersion?.isLoopringSmartWallet 
-    ? WALLET_TYPE.Loopring
-    : isContractAddress
-      ? WALLET_TYPE.OtherSmart 
-      : WALLET_TYPE.EOA 
+  const detectedWalletType = 
+    loopringSmartWalletVersion === undefined 
+      ? undefined
+      : loopringSmartWalletVersion.isLoopringSmartWallet 
+        ? WALLET_TYPE.Loopring
+        : isSmartContractAddress
+        ? WALLET_TYPE.OtherSmart 
+        : WALLET_TYPE.EOA 
   let isExchange
   if (sureItsLayer2 && sureItsLayer2 in EXCHANGE_TYPE) {
     isExchange = true
@@ -465,7 +467,7 @@ export const TransferWrap = <
 
       <Grid item alignSelf={"stretch"} position={"relative"}>
         <TransferAddressType
-          detectedWalletType={detectedWalletType}
+          detectedWalletType={detectedWalletType!}
           selectedValue={sureItsLayer2}
           handleSelected={handleSureItsLayer2}
           disabled={
