@@ -1596,6 +1596,7 @@ export default {
   labelContactsDeleteSuccess:  'Delete Contact Succeed',
   labelContactsEditSuccess:  'Edit Contact Succeed',
   labelContactsSendSuccess:  'Send Succeed',
+  labelContactsCopySuccess:  'Copied to Clipboard',
   labelContactsAddFailed:  'Add Contact Failed',
   labelContactsDeleteFailed:  'Delete Contact Failed',
   labelContactsEditFailed:  'Edit Contact Failed',

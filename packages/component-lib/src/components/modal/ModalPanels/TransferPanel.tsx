@@ -207,7 +207,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
             contacts={contacts}
             onSelect={(address) => {
               setPanelIndex(1);
-              rest.handleOnAddressChange(address)
+              rest.handleOnAddressChange(address, true)
             }}
           />
         ),

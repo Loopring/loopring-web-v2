@@ -125,7 +125,7 @@ export const useContact = () => {
   const [toastInfo, setToastInfo] = React.useState({
     open: false,
     isSuccess: undefined as boolean | undefined,
-    type: undefined as 'Add' | 'Delete' | 'Edit' | 'Send' | undefined,
+    type: undefined as 'Add' | 'Delete' | 'Edit' | 'Send' | 'Copy' | undefined,
   });
   
   const onInputBlue = React.useCallback((address: string) => {
@@ -280,6 +280,7 @@ export const useContact = () => {
     })
    
   }, [isHebao])
+
   return {
     contacts: contacts && contacts.filter(x => {
       return searchValue !== ''
@@ -293,6 +294,7 @@ export const useContact = () => {
     onClearSearch,
     searchValue,
     toastInfo,
+    setToastInfo,
     onCloseToast,
     
     onClickDelete,

@@ -54,6 +54,7 @@ export const ContactPage = () => {
     onCloseSend,
     sendInfo,
     onCloseToast,
+    setToastInfo
   } = useContact()
   const {t} = useTranslation()
   let totastText = ''
@@ -70,6 +71,9 @@ export const ContactPage = () => {
         break
       case 'Send':
         totastText = t("labelContactsSendSuccess") 
+        break
+      case 'Copy':
+        totastText = t("labelContactsCopySuccess") 
         break
     }
   } else {
@@ -133,6 +137,18 @@ export const ContactPage = () => {
             {address}
             <IconButton onClick={() => {
               navigator.clipboard.writeText(address);
+              setToastInfo({
+                open: true,
+                isSuccess: true,
+                type: 'Copy'
+              })
+              setTimeout(() => {
+                setToastInfo({
+                  open: false,
+                  isSuccess: undefined,
+                  type: undefined
+                })
+              }, 3 * 1000);
             }}>
               <CopyIcon></CopyIcon>
             </IconButton>

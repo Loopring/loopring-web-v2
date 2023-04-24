@@ -148,7 +148,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       direction={"column"}
       alignItems={"stretch"}
       flex={1}
-      height={"100%"}
+      height={"100px"}
       minWidth={240}
       flexWrap={"nowrap"}
       spacing={2}

@@ -48,6 +48,7 @@ import {
   isAccActivated,
   store,
   LAST_STEP,
+  useIsHebao,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import _ from "lodash";
@@ -680,8 +681,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
-  // console.log('address ?? contactAddress', contactAddress)
-
+  const { isHebao } = useIsHebao()
+  const [isContactSelection, setIsContactSelection] = React.useState(false)
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     isLoopringAddress,
@@ -707,7 +708,23 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       store.getState().modals.isShowAccount.info?.lastFailed ===
       LAST_STEP.withdraw,
     handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => {
-      
+      const map: [WALLET_TYPE| EXCHANGE_TYPE, AddressType][] = [
+        [WALLET_TYPE.EOA, AddressType.EOA],
+        [EXCHANGE_TYPE.Binance, AddressType.EXCHANGE_BINANCE],
+        [EXCHANGE_TYPE.Huobi, AddressType.EXCHANGE_HUOBI],
+        [EXCHANGE_TYPE.Others, AddressType.EXCHANGE_OTHER],
+        [WALLET_TYPE.Loopring, AddressType.LOOPRING_HEBAO_CF], // to do: is here AddressType.LOOPRING_HEBAO_CF?
+        [WALLET_TYPE.OtherSmart, AddressType.CONTRACT], // to do: is here AddressType.LOOPRING_HEBAO_CF?
+      ]
+      const found = map.find(x => x[0] === value)![1]
+      if (isHebao !== undefined && isContactSelection) {
+        LoopringAPI.contactAPI?.updateContact({
+          contactAddress: realAddr,
+          isHebao,
+          accountId: account.accountId,
+          addressType: found
+        }, account.apiKey)
+      }
       setSureIsAllowAddress(value);
     },
 
@@ -760,7 +777,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     addrStatus,
     chargeFeeTokenList,
     isFeeNotEnough,
-    handleOnAddressChange: (value: any) => {
+    handleOnAddressChange: (value: any, isContactSelection? : boolean) => {
+      setIsContactSelection(isContactSelection ? true : false)
       setAddress(value);
       setSureIsAllowAddress(undefined)
     },

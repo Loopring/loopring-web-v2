@@ -634,9 +634,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     }
   }, [isActiveAccount, realAddr]);
 
-  // const A =  
   const { isHebao } = useIsHebao()
-
+  const [isContactSelection, setIsContactSelection] = React.useState(false)
   const transferProps: TransferProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     addressDefault: address,
@@ -659,7 +658,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         [WALLET_TYPE.OtherSmart, AddressType.CONTRACT], // to do: is here AddressType.LOOPRING_HEBAO_CF?
       ]
       const found = map.find(x => x[0] === sure)![1]
-      if (isHebao && realAddr === contactAddress) {
+      if (isHebao !== undefined && isContactSelection) {
         LoopringAPI.contactAPI?.updateContact({
           contactAddress: realAddr,
           isHebao,
@@ -683,7 +682,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     addrStatus,
     memo,
     handleOnMemoChange,
-    handleOnAddressChange: (value: any) => {
+    handleOnAddressChange: (value: any, isContactSelection? : boolean) => {
+      setIsContactSelection(isContactSelection ? true : false)
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
         requestType: undefined as any,
