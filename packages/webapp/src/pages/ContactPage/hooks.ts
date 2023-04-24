@@ -56,7 +56,10 @@ export const useContact = () => {
     //   wallet: accAddress,
     // }).then(walletType => {
       // const isHebao = walletType?.walletType?.loopringWalletContractVersion !== ""
-    if (isHebao === undefined) return
+    setContacts(undefined)
+    if (isHebao === undefined || !apiKey || accountId == -1) {
+      return
+    }
     LoopringAPI.contactAPI!.getContacts({
       isHebao,
       accountId,
@@ -76,7 +79,7 @@ export const useContact = () => {
       setContacts([])
     })
   }
-  useEffect(loadContacts, [isHebao])
+  useEffect(loadContacts, [isHebao, accountId, apiKey])
   
   const onChangeSearch = React.useCallback((input: string) => {
     setSearchValue(input)
