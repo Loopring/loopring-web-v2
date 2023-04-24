@@ -530,16 +530,19 @@ export function useTransactions() {
   // routeMatch.params[0]
   // debugger
 
-  const getTxnStatus = (status: string) =>
-    status === ""
+  const getTxnStatus = (status: string) => {
+    // debugger
+    return status === ""
       ? TransactionStatus.processing
-      : status === "processed"
-      ? TransactionStatus.processed
-      : status === "processing"
-      ? TransactionStatus.processing
-      : status === "received"
-      ? TransactionStatus.received
-      : TransactionStatus.failed;
+      : status === "PROCESSED"
+        ? TransactionStatus.processed
+        : status === "PROCESSING"
+          ? TransactionStatus.processing
+          : status === "RECEIVED"
+            ? TransactionStatus.received
+            : TransactionStatus.failed;
+  }
+    
 
   const getUserTxnList = useCallback(
     async ({

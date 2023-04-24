@@ -378,7 +378,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               row.side.toLowerCase()
             )
               ? // row.side.toLowerCase() === sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL
-                getShortAddr(row.withdrawalInfo.recipient, isMobile)
+              row.withdrawalInfo ? getShortAddr(row.withdrawalInfo.recipient, isMobile) : ""
               : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
             // myLog("receiverAddress", row.receiverAddress);

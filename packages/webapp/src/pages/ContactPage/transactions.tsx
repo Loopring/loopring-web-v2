@@ -87,6 +87,7 @@ const TYPE_COLOR_MAPPING = [
 ];
 const CellStatus = ({ row }: any) => {
   const status = row["status"];
+  // debugger
   const RenderValue = styled.div`
     display: flex;
     align-items: center;
@@ -414,8 +415,7 @@ const TransactionTable = withTranslation(["tables", "common"])(
             const receiverAddress = /chain_withdrawal/i.test(
               row.side.toLowerCase()
             )
-              ? // row.side.toLowerCase() === sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL
-                getShortAddr(row.withdrawalInfo.recipient, isMobile)
+              ? (row.withdrawalInfo ? getShortAddr(row.withdrawalInfo.recipient, isMobile) : "")
               : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
             // myLog("receiverAddress", row.receiverAddress);
