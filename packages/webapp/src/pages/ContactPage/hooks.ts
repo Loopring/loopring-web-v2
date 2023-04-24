@@ -472,19 +472,13 @@ export const useContactSend = () => {
   const { setShowTransfer, setShowWithdraw } = useOpenModals()
   const submitSendingContact = React.useCallback((contact: Contact, network: Network) => {
     if (network === 'L1') {
-      debugger
+
       setShowWithdraw({
         isShow: true,
         address: contact.address,
         name: contact.name,
         addressType: contact.addressType,
         symbol: "ETH",
-        // info: {
-        //   onCloseCallBack: () => {
-            
-
-        //   }
-        // }
       })
     } else {
       setShowTransfer({

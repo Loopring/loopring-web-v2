@@ -83,6 +83,7 @@ export const TransferWrap = <
   handleOnMemoChange,
   isAddressCheckLoading,
   isSameAddress,
+  isContractAddress,
   isSmartContractAddress,
   baseURL,
   isActiveAccount,
@@ -147,7 +148,7 @@ export const TransferWrap = <
     );
   const detectedWalletType = loopringSmartWalletVersion?.isLoopringSmartWallet 
     ? WALLET_TYPE.Loopring
-    : isSmartContractAddress 
+    : isContractAddress
       ? WALLET_TYPE.OtherSmart 
       : WALLET_TYPE.EOA 
   let isExchange
@@ -160,6 +161,7 @@ export const TransferWrap = <
     detectedWalletType === WALLET_TYPE.EOA && isExchange
   const isOtherSmartWallet = 
     detectedWalletType === WALLET_TYPE.OtherSmart
+  
 
   // console.log('sureItsLayer2', sureItsLayer2)
   let view
