@@ -138,6 +138,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
         No Contact
       </Typography>
     </Box>
+  console.log('contacts', filteredContacts)
   
   return (
     <Grid
@@ -147,11 +148,10 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       direction={"column"}
       alignItems={"stretch"}
       flex={1}
-      height={70}
+      height={"100%"}
       minWidth={240}
       flexWrap={"nowrap"}
       spacing={2}
-      overflow={"scroll"}
     >
       <Grid item >
         <Box
