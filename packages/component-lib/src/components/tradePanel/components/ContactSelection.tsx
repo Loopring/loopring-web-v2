@@ -56,14 +56,16 @@ const CloseIconStyled = styled(CloseIcon)`
 // OutlinedInput
 type ContactSelectionProps = {
   onSelect: (address: string) => void
+  onScroll: (e: HTMLDivElement) => void
   contacts: {
     name: string,
     address: string,
-  }[] | undefined
+  }[] | undefined,
+  scrollHeight: string
 }
 export const ContactSelection = (props: ContactSelectionProps) => {
   // const { t } = useTranslation();
-  const { onSelect, contacts } = props
+  const { onSelect, contacts, onScroll, scrollHeight } = props
   const { isMobile } = useSettings();
   const theme = useTheme()
   const displayContacts = contacts && contacts.map(x => {
@@ -81,6 +83,10 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       ? x.address.toLowerCase().includes(inputValue.toLowerCase()) || x.name.toLowerCase().includes(inputValue.toLowerCase())
       : true
   })
+
+  // <Box >
+
+  //     </Box>
   
   const normalView = <>
     <Grid item xs={12} width={"100%"}>
@@ -112,15 +118,17 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           setInputValue(e.target.value)
         }}
       ></OutlinedInput>
-      {filteredContacts && filteredContacts.map(c => {
-        return <SingleContact
-          name={c.name}
-          address={c.address}
-          avatarURL={c.avatarURL}
-          editing={false}
-          onSelect={onSelect}
-        />
-      })}
+      <Box overflow={"scroll"} height={scrollHeight} onScroll={e => onScroll(e.currentTarget)}>
+        {filteredContacts && filteredContacts.map(c => {
+          return <SingleContact
+            name={c.name}
+            address={c.address}
+            avatarURL={c.avatarURL}
+            editing={false}
+            onSelect={onSelect}
+          />
+        })}
+      </Box>
     </Grid>
   </>
   const loadingView =
@@ -147,7 +155,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       direction={"column"}
       alignItems={"stretch"}
       flex={1}
-      height={"100px"}
+      height={"100%"}
       minWidth={240}
       flexWrap={"nowrap"}
       spacing={2}
@@ -159,6 +167,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           justifyContent={"center"}
           alignItems={"center"}
           marginBottom={2}
+          
         >
           <Typography
             component={"h4"}

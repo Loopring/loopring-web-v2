@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   LoopringAPI,
   store,
@@ -17,7 +17,7 @@ import { useRouteMatch } from "react-router";
 import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useDebounce } from "react-use";
-import { debounce } from "lodash";
+import { debounce, throttle } from "lodash";
 
 
 export type Contact = {
@@ -52,10 +52,6 @@ export const useContact = () => {
   } = useAccount();
   const { isHebao } = useIsHebao();
   const loadContacts = () => {
-    // LoopringAPI.walletAPI?.getWalletType({
-    //   wallet: accAddress,
-    // }).then(walletType => {
-      // const isHebao = walletType?.walletType?.loopringWalletContractVersion !== ""
     setContacts(undefined)
     if (isHebao === undefined || !apiKey || accountId == -1) {
       return
@@ -63,7 +59,8 @@ export const useContact = () => {
     LoopringAPI.contactAPI!.getContacts({
       isHebao,
       accountId,
-      limit: 50
+      limit: 10,
+      offset: 0
     }, apiKey).then(x => {
       const displayContacts = x.contacts.map(xx => {
         return {
@@ -314,6 +311,37 @@ export const useContact = () => {
     })
    
   }, [isHebao])
+  
+  const throttled = useRef(debounce(({isHebao, contacts, eventTarget}) => {
+    const _eventTarget = eventTarget as HTMLDivElement
+    if (_eventTarget.scrollTop + _eventTarget.clientHeight >= _eventTarget.scrollHeight) {
+      console.log('dasjkdhakjshdkjashdkjashkjdh')
+      if (isHebao === undefined) return
+      LoopringAPI.contactAPI!.getContacts({
+        isHebao,
+        accountId,
+        offset: contacts?.length,
+        limit: 10
+      }, apiKey).then((response) => {
+        setContacts([
+          ...(contacts ? contacts : []), 
+          ...response.contacts.map(xx => {
+            return {
+              name: xx.contactName,
+              address: xx.contactAddress,
+              avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
+              editing: false,
+              addressType: xx.addressType
+            } as DisplayContact
+          })]
+        )
+      })
+    }
+  }, 1000))
+
+  const onScroll = React.useCallback((eventTarget: HTMLDivElement) => {
+    throttled.current({isHebao, contacts, eventTarget})
+  }, [isHebao, contacts])
 
   return {
     contacts: contacts && contacts.filter(x => {
@@ -345,6 +373,7 @@ export const useContact = () => {
     onClickSend,
     onCloseSend,
     sendInfo,
+    onScroll
   }
 }
 export const useContactAdd = () => {

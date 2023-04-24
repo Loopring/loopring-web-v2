@@ -11,8 +11,8 @@ import {
   useBasicTrade,
   WithdrawWrap,
 } from "../../tradePanel/components";
-import React, { useEffect } from "react";
-import { cloneDeep } from "lodash";
+import React, { useEffect, useRef } from "react";
+import { cloneDeep, debounce } from "lodash";
 import { WithdrawConfirm } from "../../tradePanel/components/WithdrawConfirm";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
 import { LoopringAPI, useAccount, useIsHebao } from "@loopring-web/core";
@@ -73,11 +73,39 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       account: { accountId, apiKey, accAddress},
     } = useAccount();
     const { isHebao } = useIsHebao()
+    const throttled = useRef(debounce(({isHebao, contacts, eventTarget}) => {
+      const _eventTarget = eventTarget as HTMLDivElement
+      if (_eventTarget.scrollTop + _eventTarget.clientHeight >= _eventTarget.scrollHeight) {
+        console.log('dasjkdhakjshdkjashdkjashkjdh')
+        if (isHebao === undefined) return
+        LoopringAPI.contactAPI!.getContacts({
+          isHebao,
+          accountId,
+          offset: contacts?.length,
+          limit: 10
+        }, apiKey).then((response) => {
+          setContacts([
+            ...(contacts ? contacts : []), 
+            ...response.contacts.map(xx => {
+              return {
+                name: xx.contactName,
+                address: xx.contactAddress,
+                avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
+                editing: false,
+                addressType: xx.addressType
+              } as DisplayContact
+            })]
+          )
+        })
+      }
+    }, 1000))
+  
     useEffect(() => {
       if (isHebao === undefined) return
       LoopringAPI.contactAPI!.getContacts({
         isHebao,
-        accountId
+        accountId,
+        limit: 10
       }, apiKey).then(x => {
         const displayContacts = x.contacts.map(xx => {
           return {
@@ -207,6 +235,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       ),
       toolBarItem: undefined,
     };
+    
     const contactSelectionPanel =  {
       key: "contactSelection",
       element: React.useMemo(
@@ -218,6 +247,10 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
               setPanelIndex(1);
               rest.handleOnAddressChange(address, true)
             }}
+            onScroll={(eventTarget) => {
+              throttled.current({isHebao, contacts, eventTarget})
+            }}
+            scrollHeight={"320px"}
           />
         ),
         [contacts]

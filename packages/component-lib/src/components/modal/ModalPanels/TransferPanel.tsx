@@ -5,7 +5,7 @@ import {
   SwitchPanelProps,
 } from "../../basic-lib";
 import { IBData, TRADE_TYPE } from "@loopring-web/common-resources";
-import React, { useEffect }from "react";
+import React, { useEffect, useRef }from "react";
 import { TransferProps } from "../../tradePanel";
 import {
   TradeMenuList,
@@ -16,6 +16,7 @@ import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
 import { LoopringAPI, useAccount, useIsHebao } from "@loopring-web/core";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
 import { createImageFromInitials } from "@loopring-web/core";
+import { debounce } from "lodash";
 
 export const TransferPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -61,12 +62,40 @@ export const TransferPanel = withTranslation(["common", "error"], {
       account: { accountId, apiKey, accAddress },
     } = useAccount()
     const { isHebao } = useIsHebao()
+
+    const throttled = useRef(debounce(({isHebao, contacts, eventTarget}) => {
+      const _eventTarget = eventTarget as HTMLDivElement
+      if (_eventTarget.scrollTop + _eventTarget.clientHeight >= _eventTarget.scrollHeight) {
+        console.log('dasjkdhakjshdkjashdkjashkjdh')
+        if (isHebao === undefined) return
+        LoopringAPI.contactAPI!.getContacts({
+          isHebao,
+          accountId,
+          offset: contacts?.length,
+          limit: 10
+        }, apiKey).then((response) => {
+          setContacts([
+            ...(contacts ? contacts : []), 
+            ...response.contacts.map(xx => {
+              return {
+                name: xx.contactName,
+                address: xx.contactAddress,
+                avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
+                editing: false,
+                addressType: xx.addressType
+              } as DisplayContact
+            })]
+          )
+        })
+      }
+    }, 1000))
+
     useEffect(() => {
       if (isHebao === undefined) return
       LoopringAPI.contactAPI!.getContacts({
         isHebao,
         accountId,
-        limit: 50,
+        limit: 10,
       }, apiKey).then((x: any) => {
         const displayContacts = x.contacts.map((xx: any) => {
           return {
@@ -209,6 +238,11 @@ export const TransferPanel = withTranslation(["common", "error"], {
               setPanelIndex(1);
               rest.handleOnAddressChange(address, true)
             }}
+            onScroll={(eventTarget) => {
+              throttled.current({isHebao, contacts, eventTarget})
+            }}
+            scrollHeight={"380px"}
+
           />
         ),
         [contacts]

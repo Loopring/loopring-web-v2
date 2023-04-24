@@ -54,7 +54,8 @@ export const ContactPage = () => {
     onCloseSend,
     sendInfo,
     onCloseToast,
-    setToastInfo
+    setToastInfo,
+    onScroll
   } = useContact()
   const {t} = useTranslation()
   let totastText = ''
@@ -242,7 +243,7 @@ export const ContactPage = () => {
     </Box>
     <Box className="table-divide" >
       <Line />
-      <Box overflow={"scroll"}>
+      <Box height={"calc(100vh - 200px)"} overflow={"scroll"} onScroll={e => onScroll(e.currentTarget)}>
       {
         contacts === undefined
           ? loadingView
