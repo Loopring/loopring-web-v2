@@ -335,6 +335,13 @@ export const ModalPanel = <
               type: TRADE_TYPE.NFT,
               baseURL,
               assetsData,
+              isFromContact: isShowNFTWithdraw.address ? true : false,
+              contact: isShowNFTWithdraw.address 
+                ? {
+                  address: isShowNFTWithdraw.address!,
+                  name: isShowNFTWithdraw.name!,
+                }
+                : undefined,
             }}
             onBack={() => {
               setShowNFTWithdraw({ isShow: false });
