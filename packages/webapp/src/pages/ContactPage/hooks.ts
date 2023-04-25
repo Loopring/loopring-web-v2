@@ -292,7 +292,15 @@ export const useContact = () => {
             addressType: addressType,
             contactAddress: address,
             contactName: name
-          }, apiKey)
+          }, apiKey).then(x => {
+            dispatch(updateContacts(contacts?.map(x => {
+              if (x.address === address) {
+                return {...x, addressType}
+              } else {
+                return x
+              }
+            })))
+          })
         }
       })
       if (response === true) {
