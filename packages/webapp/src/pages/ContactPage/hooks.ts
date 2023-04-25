@@ -135,7 +135,7 @@ export const useContact = () => {
     })
   },[])
   const [toastInfo, setToastInfo] = React.useState<{
-    open: Boolean,
+    open: boolean,
     isSuccess: boolean | undefined,
     type: 'Add' | 'Delete' | 'Edit' | 'Send' | 'Copy' | undefined,
     customerText?: string
