@@ -267,8 +267,8 @@ export const useContact = () => {
       contactAddress: address,
       contactName: name,
     }, apiKey)
-    .then((response) => {
-      LoopringAPI.walletAPI?.getWalletType({
+    .then(async (response) => {
+      await LoopringAPI.walletAPI?.getWalletType({
         wallet: address,
       }).then(response2 => {
         let addressType: AddressType | undefined = undefined
