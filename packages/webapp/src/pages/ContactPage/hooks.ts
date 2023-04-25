@@ -185,7 +185,7 @@ export const useContact = () => {
         })
       }, 3 * 1000);
     })
-  },[contacts, isHebao])
+  },[contacts, isHebao, apiKey])
   const onChangeInput = React.useCallback((address: string, inputValue) => {
     // updateContacts
     dispatch(
@@ -251,7 +251,7 @@ export const useContact = () => {
       setDeleteLoading(false)
     })
    
-  }, [isHebao])
+  }, [isHebao, apiKey])
   const [addLoading, setAddLoading] = React.useState(false);
   const submitAddContact = React.useCallback((address: string, name: string, callBack: (success: boolean) => void) => {
     setAddLoading(true)
@@ -321,7 +321,7 @@ export const useContact = () => {
       setAddLoading(false)
     })
    
-  }, [isHebao])
+  }, [isHebao, apiKey])
   
   const throttled = useRef(debounce(({isHebao, contacts, eventTarget}) => {
     const _eventTarget = eventTarget as HTMLDivElement
