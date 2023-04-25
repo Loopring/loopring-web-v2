@@ -224,7 +224,6 @@ export const useBtradeSwap = <
     const notEnough = sdk
       .toBig(walletMap[sellToken.symbol]?.count ?? 0)
       .lt(tradeData?.sell?.tradeValue ?? 0);
-    // debugger;
     if (isBtradeLoading) {
       return {
         label: undefined,
