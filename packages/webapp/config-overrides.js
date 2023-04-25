@@ -106,6 +106,14 @@ module.exports = override(
       );
       config.module.rules[1].oneOf[index] = babelLoader;
     };
+    config = {
+      ...config,
+      stats: {
+        ...config.stats,
+        moduleAssets: false,
+        // dependentModules: false,
+      },
+    };
     setConfig(4);
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -113,6 +121,7 @@ module.exports = override(
       "@material-ui/core": "@mui/material",
       "@material-ui/core/Popover": "@mui/material/Popover",
     };
+
     return config;
-  }
+  };
 );
