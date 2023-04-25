@@ -783,13 +783,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     handleOnAddressChange: (value: any, isContactSelection? : boolean) => {
       setIsContactSelection(isContactSelection ? true : false)
       setAddress(value);
-      // if (isContactSelection) {
-      //   const contact = contacts?.find(x => x.address === value)
-      //   const v = contact && addressToExWalletMapFn(contact.addressType)
-      //   v && setSureIsAllowAddress(v)
-      // } else {
-      //   setSureIsAllowAddress(undefined)
-      // }
     },
     isFromContact: contactAddress ? true : false,
     contact: contactAddress 

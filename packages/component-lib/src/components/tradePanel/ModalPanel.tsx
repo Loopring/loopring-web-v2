@@ -329,7 +329,7 @@ export const ModalPanel = <
               // _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
-              _height: "auto",
+              _height: isMobile ? "auto" : 500,
               isThumb: false,
               ...nftWithdrawProps,
               type: TRADE_TYPE.NFT,
