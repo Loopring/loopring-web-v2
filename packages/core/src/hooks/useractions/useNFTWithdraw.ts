@@ -541,7 +541,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     const addressType = contacts?.find(x => x.address === realAddr)?.addressType
     if (isShow === false) {
       setSureIsAllowAddress(undefined)
-    } else if (addressType) {
+    } else if (addressType !== undefined) {
       const found = addressType 
       ? addressToExWalletMapFn(addressType)
       : undefined

@@ -631,7 +631,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     const addressType = contacts?.find(x => x.address === realAddr)?.addressType
     if (isShow === false) {
       setSureItsLayer2(undefined)
-    } else if (addressType) {
+    } else if (addressType !== undefined) {
       const found = addressType 
       ? addressToExWalletMapFn(addressType)
       : undefined
