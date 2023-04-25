@@ -73,7 +73,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     setShowAccount,
     setShowWithdraw,
   } = useOpenModals();
-  console.log('contactAddressType', contactAddressType)
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();

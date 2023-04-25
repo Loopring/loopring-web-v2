@@ -323,7 +323,7 @@ export const useContact = () => {
    
   }, [isHebao, apiKey])
   
-  const throttled = useRef(debounce(({isHebao, contacts, eventTarget}) => {
+  const throttled = useRef(debounce(({isHebao, contacts, eventTarget, }) => {
     const _eventTarget = eventTarget as HTMLDivElement
     if (_eventTarget.scrollTop + _eventTarget.clientHeight >= _eventTarget.scrollHeight) {
       console.log('dasjkdhakjshdkjashdkjashkjdh')
@@ -355,7 +355,7 @@ export const useContact = () => {
 
   const onScroll = React.useCallback((eventTarget: HTMLDivElement) => {
     throttled.current({isHebao, contacts, eventTarget})
-  }, [isHebao, contacts])
+  }, [isHebao, contacts, apiKey])
 
   return {
     contacts: contacts && contacts.filter(x => {
@@ -426,7 +426,6 @@ export const useContactAdd = () => {
     debounceCheckEns(input)
     setAddAddress(input)
   }, [])
-  console.log('ensResolvedAddress', ensResolvedAddress)
   const addShowInvalidAddress = 
     addAddress !== '' && !utils.isAddress(addAddress) && ensResolvedAddress === false
   
