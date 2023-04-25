@@ -106,15 +106,16 @@ module.exports = override(
       );
       config.module.rules[1].oneOf[index] = babelLoader;
     };
-    config = {
-      ...config,
-      stats: {
-        ...config.stats,
-        moduleAssets: false,
-        // dependentModules: false,
-      },
-    };
+
     setConfig(4);
+    // config = {
+    //   ...config,
+    //   stats: {
+    //     ...config.stats,
+    //     moduleAssets: false,
+    //     // dependentModules: false,
+    //   },
+    // };
     config.resolve.alias = {
       ...config.resolve.alias,
       "@material-ui/core/Menu": "@mui/material/Menu",
