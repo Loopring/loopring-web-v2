@@ -58,6 +58,7 @@ export const useContact = () => {
   const { isHebao } = useIsHebao();
   const dispatch = useDispatch()
   const contacts = useSelector((state: RootState) => state.contacts.contacts);
+  const {t} = useTranslation()
 
   const loadContacts = () => {
     dispatch(updateContacts(undefined))
@@ -133,10 +134,15 @@ export const useContact = () => {
       selected: undefined
     })
   },[])
-  const [toastInfo, setToastInfo] = React.useState({
+  const [toastInfo, setToastInfo] = React.useState<{
+    open: Boolean,
+    isSuccess: boolean | undefined,
+    type: 'Add' | 'Delete' | 'Edit' | 'Send' | 'Copy' | undefined,
+    customerText?: string
+  }>({
     open: false,
-    isSuccess: undefined as boolean | undefined,
-    type: undefined as 'Add' | 'Delete' | 'Edit' | 'Send' | 'Copy' | undefined,
+    isSuccess: undefined,
+    type: undefined
   });
   
   const onInputBlue = React.useCallback((address: string) => {
@@ -302,13 +308,23 @@ export const useContact = () => {
         throw (response.resultInfo as RESULT_INFO).message
       }
     })
-    .catch(x => {
-      callBack(false)
-      setToastInfo({
-        open: true,
-        isSuccess: false,
-        type: 'Add'
-      })
+    .catch(e => {
+      if (e === 'contact already existed') {
+        callBack(false)
+        setToastInfo({
+          open: true,
+          isSuccess: false,
+          type: 'Add',
+          customerText: t("labelContactsContactExisted"),
+        })
+      } else {
+        callBack(false)
+        setToastInfo({
+          open: true,
+          isSuccess: false,
+          type: 'Add'
+        })
+      }
     })
     .finally(() => {
       setTimeout(() => {

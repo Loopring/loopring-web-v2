@@ -674,13 +674,14 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const dispatch = useDispatch()
   React.useEffect(() => {
     const addressType = contacts?.find(x => x.address === realAddr)?.addressType
-    if (addressType) {
+    if (isShow === false) {
+      setSureIsAllowAddress(undefined)
+    } else if (addressType) {
       const found = addressType 
       ? addressToExWalletMapFn(addressType)
       : undefined
       setSureIsAllowAddress(found)
     }
-    
   }, [realAddr, isShow, contacts])
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
@@ -782,13 +783,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     handleOnAddressChange: (value: any, isContactSelection? : boolean) => {
       setIsContactSelection(isContactSelection ? true : false)
       setAddress(value);
-      if (isContactSelection) {
-        const contact = contacts?.find(x => x.address === value)
-        const v = contact && addressToExWalletMapFn(contact.addressType)
-        v && setSureIsAllowAddress(v)
-      } else {
-        setSureIsAllowAddress(undefined)
-      }
+      // if (isContactSelection) {
+      //   const contact = contacts?.find(x => x.address === value)
+      //   const v = contact && addressToExWalletMapFn(contact.addressType)
+      //   v && setSureIsAllowAddress(v)
+      // } else {
+      //   setSureIsAllowAddress(undefined)
+      // }
     },
     isFromContact: contactAddress ? true : false,
     contact: contactAddress 

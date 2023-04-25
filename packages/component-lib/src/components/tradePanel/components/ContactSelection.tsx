@@ -9,6 +9,7 @@ import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { createImageFromInitials } from "@loopring-web/core";
+import { AddressType } from "@loopring-web/loopring-sdk";
 
 type SingleContactProps = {
   editing: boolean, 
@@ -16,10 +17,11 @@ type SingleContactProps = {
   address:string, 
   avatarURL:string,
   onSelect: (address: string) => void
+  hidden: boolean
 }
 
 export const SingleContact = (props: SingleContactProps) => {
-  const { editing, name, address, avatarURL, onSelect } = props;
+  const { editing, name, address, avatarURL, hidden, onSelect } = props;
   return <Box 
     style={{cursor: "pointer"}} 
     paddingY={2} 
@@ -28,6 +30,7 @@ export const SingleContact = (props: SingleContactProps) => {
     onClick={() => {
       onSelect(address)
     }}
+    visibility={hidden ? "hidden" : "visible"}
     // onCl
     >
     <Box display={"flex"}>
@@ -60,6 +63,7 @@ type ContactSelectionProps = {
   contacts: {
     name: string,
     address: string,
+    addressType: AddressType
   }[] | undefined,
   scrollHeight: string
 }
@@ -73,7 +77,8 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       name: x.name,
       address: x.address,
       avatarURL: createImageFromInitials(32, x.name, "#FFC178")!, // todo
-      editing: false
+      editing: false,
+      addressType: x.addressType
     }
   })
 
@@ -126,6 +131,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
             avatarURL={c.avatarURL}
             editing={false}
             onSelect={onSelect}
+            hidden={c.addressType === AddressType.OFFICIAL}
           />
         })}
       </Box>

@@ -1606,4 +1606,5 @@ export default {
   labelContactsTransactions: 'Transactions',
   labelContactsNetworkChoose: 'Choose L2 or L1 Account',
   labelContactsNext: 'Next',
+  labelContactsContactExisted: 'Contact Already Existed',
 };

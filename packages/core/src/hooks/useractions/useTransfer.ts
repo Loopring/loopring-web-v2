@@ -629,7 +629,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const dispatch = useDispatch()
   useEffect(() => {
     const addressType = contacts?.find(x => x.address === realAddr)?.addressType
-    if (addressType) {
+    if (isShow === false) {
+      setSureItsLayer2(undefined)
+    } else if (addressType) {
       const found = addressType 
       ? addressToExWalletMapFn(addressType)
       : undefined

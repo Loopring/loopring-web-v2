@@ -9,6 +9,7 @@ import { useContact, useContactAdd } from "./hooks";
 import { useHistory } from "react-router";
 import { ViewAccountTemplate, WalletConnectL2Btn } from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
+import { AddressType } from "@loopring-web/loopring-sdk";
 
 const ContactPageStyle = styled(Box)`
   background: var(--color-box);
@@ -59,7 +60,9 @@ export const ContactPage = () => {
   } = useContact()
   const {t} = useTranslation()
   let totastText = ''
-  if (toastInfo.isSuccess) {
+  if (toastInfo.customerText) {
+    totastText = toastInfo.customerText
+  } else if (toastInfo.isSuccess) {
     switch (toastInfo.type) {
       case 'Add':
         totastText = t("labelContactsAddSuccess")
@@ -108,7 +111,7 @@ export const ContactPage = () => {
   </Box>
   const normalView = contacts && contacts.map(data => {
     const { editing, name, address, avatarURL, addressType } = data;
-    return <Box key={address} paddingY={2} display={"flex"} justifyContent={"space-between"}>
+    return <Box visibility={addressType=== AddressType.OFFICIAL ? "hidden" : "visible"} key={address} paddingY={2} display={"flex"} justifyContent={"space-between"}>
       <Box display={"flex"}>
         <Avatar sizes={"32px"} src={avatarURL}></Avatar>
         <Box marginLeft={1}>
