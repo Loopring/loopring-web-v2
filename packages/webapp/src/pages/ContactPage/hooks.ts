@@ -286,7 +286,7 @@ export const useContact = () => {
           addressType = AddressType.CONTRACT
         }
         if (addressType) {
-          LoopringAPI.contactAPI?.updateContact({
+          return LoopringAPI.contactAPI?.updateContact({
             accountId: accountId,
             isHebao,
             addressType: addressType,
