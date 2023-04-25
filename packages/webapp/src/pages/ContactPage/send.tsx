@@ -117,7 +117,8 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
                   },
                 }}
                 fullWidth
-                value={`${sendInfo.selected?.name}\/${sendInfo.selected?.address}`}
+                multiline
+                value={`${ sendInfo.selected?.name}\n${sendInfo.selected?.address}`}
               />
             </Box>
             <Box display={"flex"} marginBottom={10} marginTop={5}>
