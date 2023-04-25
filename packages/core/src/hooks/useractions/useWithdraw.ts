@@ -465,6 +465,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           ) {
             throw response;
           }
+          info?.onCloseCallBack && info?.onCloseCallBack()
           setShowWithdraw({ isShow: false, info });
           setShowAccount({
             isShow: true,

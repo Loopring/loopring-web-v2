@@ -351,6 +351,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           ) {
             throw response;
           }
+          info?.onCloseCallBack && info?.onCloseCallBack()
           setShowTransfer({ isShow: false });
           setShowAccount({
             isShow: true,
