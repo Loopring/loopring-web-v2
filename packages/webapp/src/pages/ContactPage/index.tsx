@@ -111,7 +111,7 @@ export const ContactPage = () => {
   </Box>
   const normalView = contacts && contacts.map(data => {
     const { editing, name, address, avatarURL, addressType } = data;
-    return <Box visibility={addressType=== AddressType.OFFICIAL ? "hidden" : "visible"} key={address} paddingY={2} display={"flex"} justifyContent={"space-between"}>
+    return <Box key={address} paddingY={2} display={addressType === AddressType.OFFICIAL ? "none" : "flex"} justifyContent={"space-between"}>
       <Box display={"flex"}>
         <Avatar sizes={"32px"} src={avatarURL}></Avatar>
         <Box marginLeft={1}>

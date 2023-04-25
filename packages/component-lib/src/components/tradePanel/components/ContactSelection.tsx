@@ -25,12 +25,11 @@ export const SingleContact = (props: SingleContactProps) => {
   return <Box 
     style={{cursor: "pointer"}} 
     paddingY={2} 
-    display={"flex"} 
+    display={hidden ? "none" : "flex"} 
     justifyContent={"space-between"}
     onClick={() => {
       onSelect(address)
     }}
-    visibility={hidden ? "hidden" : "visible"}
     // onCl
     >
     <Box display={"flex"}>
