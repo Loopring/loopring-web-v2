@@ -153,7 +153,6 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
           marginTop={0}
           marginLeft={-2}
           onBack={() => {
-            alert(1)
             setPanelIndex(1);
           }}
           {...rest}
