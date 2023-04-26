@@ -356,11 +356,11 @@ export const useBtradeSwap = <
           accountId: account.accountId,
           sellToken: {
             tokenId: sellToken?.tokenId ?? 0,
-            volume: sdk.toBig(tradeCalcData.volumeSell).toFixed(0),
+            volume: tradeCalcData.volumeSell,
           },
           buyToken: {
             tokenId: buyToken?.tokenId ?? 0,
-            volume: sdk.toBig(tradeCalcData.volumeBuy).toFixed(0),
+            volume: tradeCalcData.volumeBuy,
           },
           validUntil: getTimestampDaysLater(DAYS),
           maxFeeBips: tradeCalcData.maxFeeBips,
@@ -456,6 +456,7 @@ export const useBtradeSwap = <
             step: AccountStep.BtradeSwap_Pending,
             info: {
               ...info,
+              time: Number(orderConfirm.list[0]?.validity?.start + "000"),
             },
           });
         }
@@ -519,7 +520,7 @@ export const useBtradeSwap = <
       setShowSupport({ isShow: true });
       setIsBtradeLoading(false);
       return;
-    } else if (!marketMap[market]?.enabled || !BTradeInvest.enable) {
+    } else if (!BTradeInvest.enable) {
       setShowTradeIsFrozen({
         isShow: true,
         type: t("labelBtradeSwap"),
@@ -529,7 +530,7 @@ export const useBtradeSwap = <
     } else {
       sendRequest();
     }
-  }, [market, marketMap, BTradeInvest]);
+  }, []);
 
   const {
     btnStatus: swapBtnStatus,
@@ -902,15 +903,12 @@ export const useBtradeSwap = <
               )
             : 0;
           _tradeData[isAtoB ? "buy" : "sell"].tradeValue =
-            !_tradeData[isAtoB ? "sell" : "buy"].tradeValue &&
-            _tradeData[isAtoB ? "sell" : "buy"].tradeValue != "0"
-              ? (undefined as any)
-              : getValuePrecisionThousand(
-                  calcDexOutput[`amount${isAtoB ? "B" : "S"}`],
-                  isAtoB ? buyToken.precision : sellToken.precision,
-                  isAtoB ? buyToken.precision : sellToken.precision,
-                  isAtoB ? buyToken.precision : sellToken.precision
-                ).replace(sdk.SEP, "");
+            getValuePrecisionThousand(
+              calcDexOutput[`amount${isAtoB ? "B" : "S"}`],
+              isAtoB ? buyToken.precision : sellToken.precision,
+              isAtoB ? buyToken.precision : sellToken.precision,
+              isAtoB ? buyToken.precision : sellToken.precision
+            ).replace(sdk.SEP, "");
           let result = reCalcStoB({
             market,
             tradeData: _tradeData as SwapTradeData<IBData<unknown>>,

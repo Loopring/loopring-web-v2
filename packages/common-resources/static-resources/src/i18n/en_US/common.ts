@@ -1599,11 +1599,11 @@ export default {
   labelBtradeSwapSettled: "Settled",
   labelBtradeSwapDelivering: "Delivering",
   labelBtradeSwapPanelDes:
-    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
+    "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
   labelGoBtradeSwap:
     "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",
-  labelBtradeSwapFailed: "Failed!",
+  labelBtradeSwapFailed: "Block Trade failed!",
   labelBtradeSwapTitleDes: "What is Block Trade?",
   labelBtradeSwapContentDes:
     "<p>Block Trade offers a secure and trustless way for users to swap tokens using CEX liquidity. The trades happen exclusively between designated entities, ensuring that the existing liquidity of the DEX remains unaffected. There is no price impact to other DEX users as a result of the transaction.</p>" +
@@ -1618,7 +1618,8 @@ export default {
   labelBtradeSwapBtn: "Swap",
   labelType: "Type",
   labelBtradeTrade: "Block Trade",
-  labelBtradeTitle: "Block Trade Details",
+  labelBtradeTitle: " Block Trade",
+  labelBtradeSwapPending: "Pending",
   labelBtradeQuote: "Total Quote:",
   labelBtradeQuoteDes: "Total Quota is the maximum allowable trading amount.",
   labelBtradePoolDes: "Loopring Pool:",
@@ -1639,5 +1640,4 @@ export default {
   labelStopLimitAmount: "labelStopLimit",
   labelStopLimitCancel: "Cancel",
   labelStopLimitConfirm: "Confirm",
-  labelBtradeSwapPending: "Pending",
 };
