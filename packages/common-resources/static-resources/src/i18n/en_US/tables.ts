@@ -310,7 +310,7 @@ export default {
   labelBtradeSettled: "Settled",
   labelBtradeDelivering: "Delivering",
   labelBtradeDeliveringDes:
-    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
+    "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
   labelBtradeFailed: "Failed",
   labelBtradeCancelled: "Cancelled",
   labelBtradePending: "Pending",

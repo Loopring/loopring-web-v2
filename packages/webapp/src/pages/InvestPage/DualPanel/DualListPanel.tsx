@@ -40,7 +40,6 @@ import {
   getValuePrecisionThousand,
   HelpIcon,
   Info2Icon,
-  LOOPRING_DOCUMENT,
   SoursURL,
   TokenType,
 } from "@loopring-web/common-resources";
@@ -205,7 +204,7 @@ export const DualListPanel: any = withTranslation("common")(
               variant={"text"}
               onClick={() => {
                 window.open(
-                  `${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`,
+                  `https://loopring.io/#/document/dual_investment_tutorial_en.md`,
                   "_blank"
                 );
                 window.opener = null;

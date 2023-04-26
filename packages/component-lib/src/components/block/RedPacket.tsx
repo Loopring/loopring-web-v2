@@ -4,15 +4,17 @@ import {
   BoxProps,
   Button,
   Divider,
-  Link,
-  Typography,
-  Modal,
   IconButton,
+  Link,
+  Modal,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   Account,
+  BackIcon,
+  DAY_MINUTE_FORMAT,
   EmptyValueTag,
   FirstPlaceIcon,
   GET_IPFS_STRING,
@@ -24,7 +26,6 @@ import {
   RedPacketQRCodeSvg,
   RedPacketWrapSVG,
   SoursURL,
-  BackIcon,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import QRCodeStyling from "qr-code-styling";
@@ -48,9 +49,9 @@ import {
   RedPacketUnreadyProps,
 } from "./Interface";
 import {
-  TablePagination,
   BoxNFT,
   ModalCloseButtonPosition,
+  TablePagination,
 } from "../basic-lib";
 import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
@@ -134,9 +135,11 @@ export const RedPacketBg = styled(Box)<
             width: 0;
           }
         }
+
         .hours,
         .minutes {
           position: relative;
+
           &:after {
             display: block;
             content: ":";
@@ -199,6 +202,7 @@ export const RedPacketBg = styled(Box)<
       align-items: center;
       justify-content: center;
     }
+
     .betweenEle {
       top: 328px;
     }
@@ -732,7 +736,7 @@ RedPacketDefault & RedPacketUnreadyProps) => {
             marginTop={3}
             top={0}
           >
-            {`${moment(validSince).format("MM/DD HH:mm")} ${t(
+            {`${moment(validSince).format(DAY_MINUTE_FORMAT)} ${t(
               "labelOpenStart"
             )}`}
           </Typography>
@@ -1429,15 +1433,6 @@ export const RedPacketPrepare = ({
                 ..._info,
               },
             });
-            // } else {
-            //   setShowRedPacket({
-            //     isShow: true,
-            //     step: RedPacketViewStep.DetailPanel,
-            //     info: {
-            //       ..._info,
-            //     },
-            //   });
-            // }
           }}
         />
       );
@@ -1528,7 +1523,6 @@ export const RedPacketPrepare = ({
             _info.sender.accountId === account.accountId
               ? () => {
                   if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-                    _info;
                     setShowRedPacket({
                       isShow: true,
                       step: RedPacketViewStep.BlindBoxDetail,
@@ -1676,7 +1670,7 @@ export const RedPacketBlindBoxDetail = ({
             <Typography marginBottom={3} variant={"h3"}>
               {wonNFTInfo
                 ? t("labelBlindBoxCongratulations")
-                : t("labelBlindBoxSorry")}{" "}
+                : t("labelBlindBoxSorry")}
             </Typography>
             <Typography variant={"h5"}>
               {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
@@ -2108,13 +2102,6 @@ export const RedPacketBlindBoxDetail = ({
                                     ? ` (${t("labelRedPacketMe")})`
                                     : ""}
                                 </Typography>
-                                {/* <Typography
-                                variant={"body1"}
-                                component={"span"}
-                                color={"textPrimary"}
-                              >
-                                *{info.amount}
-                              </Typography> */}
                               </Typography>
                               <Typography
                                 component={"span"}

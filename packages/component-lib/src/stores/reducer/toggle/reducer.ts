@@ -4,7 +4,6 @@ import { ToggleState } from "./interface";
 
 const initialState: ToggleState = {
   order: { enable: true },
-  btradeOrder: { enable: true },
   joinAmm: { enable: true },
   exitAmm: { enable: true },
   transfer: { enable: true },
@@ -24,6 +23,8 @@ const initialState: ToggleState = {
   claim: { enable: true },
   redPacketNFTV1: { enable: true },
   LRCStackInvest: { enable: true },
+  BTradeInvest: { enable: true },
+  StopLimit: { enable: true },
 };
 
 export const toggleSlice: Slice<ToggleState> = createSlice<

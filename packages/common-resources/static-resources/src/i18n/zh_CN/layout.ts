@@ -115,7 +115,10 @@ export default {
   labelMyCollectionDes: "Create, curate, and \n manage my NFT collections",
   labelInvestStakeLRC: "LRC Staking",
   labelInvestStakeLRCDes: "Earn LRC staking rewards",
-  labelBtradeTrade: "Btrade Swap",
-  labelBtradeTradeDescription: "More investments, higher returns",
+  labelBtradeTrade: "Block Trade",
+  labelBtradeTradeDescription: "Trade via CEX liquidity",
+  labelStopLimit: "Stop Limit",
+  labelStopLimitDescription: "Stop Limit",
+
   // labelDepositNFTDes:"Receive NFT"
 };

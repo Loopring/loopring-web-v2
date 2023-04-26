@@ -1,23 +1,36 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   LoopringAPI,
+  RootState,
   store,
   useAccount,
+  useAppDispatch,
+  useIsHebao,
   volumeToCount,
   volumeToCountAsBigNumber,
 } from "@loopring-web/core";
-import { utils } from "ethers";
+import { ethers, utils } from "ethers";
 import {
   RawDataTransactionItem,
   TransactionStatus,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import { createImageFromInitials } from "./genAvatar";
-import { AddressType } from "@loopring-web/loopring-sdk";
+import { AddressType, RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useRouteMatch } from "react-router";
 import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
+import { connectProvides } from "@loopring-web/web3-provider";
+import { useDebounce } from "react-use";
+import { debounce, throttle } from "lodash";
+import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
+import {
+  DefaultRootState,
+  RootStateOrAny,
+  useDispatch,
+  useSelector,
+} from "react-redux";
 
 export type Contact = {
   name: string;
@@ -45,31 +58,48 @@ export const useContact = () => {
     addressType: AddressType;
   };
   const [searchValue, setSearchValue] = React.useState("");
-  const [contacts, setContacts] = React.useState([] as DisplayContact[]);
+
+  // const [contacts, setContacts] = React.useState(undefined as DisplayContact[] | undefined);
   const {
-    account: { accountId, apiKey },
+    account: { accountId, apiKey, accAddress },
   } = useAccount();
+  const { isHebao } = useIsHebao();
+  const dispatch = useDispatch();
+  const contacts = useSelector((state: RootState) => state.contacts.contacts);
+  const { t } = useTranslation();
+
   const loadContacts = () => {
+    dispatch(updateContacts(undefined));
+    if (isHebao === undefined || !apiKey || accountId == -1) {
+      return;
+    }
     LoopringAPI.contactAPI!.getContacts(
       {
-        isHebao: false,
+        isHebao,
         accountId,
+        limit: 10,
+        offset: 0,
       },
       apiKey
-    ).then((x) => {
-      const displayContacts = x.contacts.map((xx) => {
-        return {
-          name: xx.contactName,
-          address: xx.contactAddress,
-          avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"),
-          editing: false,
-          addressType: xx.addressType,
-        } as DisplayContact;
+    )
+      .then((x) => {
+        const displayContacts = x.contacts.map((xx) => {
+          return {
+            name: xx.contactName,
+            address: xx.contactAddress,
+            avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"),
+            editing: false,
+            addressType: xx.addressType,
+          } as DisplayContact;
+        });
+        dispatch(updateContacts(displayContacts));
+        // setContacts(displayContacts)
+      })
+      .catch((x) => {
+        dispatch(updateContacts([]));
       });
-      setContacts(displayContacts);
-    });
   };
-  useEffect(loadContacts, []);
+  useEffect(loadContacts, [isHebao, accountId, apiKey]);
 
   const onChangeSearch = React.useCallback((input: string) => {
     setSearchValue(input);
@@ -79,13 +109,15 @@ export const useContact = () => {
   }, []);
   const onClickEditing = React.useCallback(
     (address: string) => {
-      setContacts(
-        contacts.map((x) => {
-          return {
-            ...x,
-            editing: x.address === address,
-          };
-        })
+      dispatch(
+        updateContacts(
+          contacts!.map((x) => {
+            return {
+              ...x,
+              editing: x.address === address,
+            };
+          })
+        )
       );
     },
     [contacts]
@@ -125,58 +157,89 @@ export const useContact = () => {
       selected: undefined,
     });
   }, []);
-  const [toastInfo, setToastInfo] = React.useState({
+  const [toastInfo, setToastInfo] = React.useState<{
+    open: boolean;
+    isSuccess: boolean | undefined;
+    type: "Add" | "Delete" | "Edit" | "Send" | "Copy" | undefined;
+    customerText?: string;
+  }>({
     open: false,
-    isSuccess: undefined as boolean | undefined,
-    type: undefined as "Add" | "Delete" | "Edit" | "Send" | undefined,
+    isSuccess: undefined,
+    type: undefined,
   });
 
   const onInputBlue = React.useCallback(
     (address: string) => {
-      setContacts(
-        contacts.map((x) => {
-          return {
-            ...x,
-            editing: false,
-          };
-        })
+      dispatch(
+        updateContacts(
+          contacts!.map((x) => {
+            return {
+              ...x,
+              editing: false,
+            };
+          })
+        )
       );
-      const found = contacts.find((x) => x.address === address)!;
-      LoopringAPI.contactAPI!.updateContact(
-        {
-          contactAddress: address,
-          isHebao: false, // todo
-          contactName: found.name,
-          accountId,
-        },
-        apiKey
-      ).then((x) => {
-        setToastInfo({
-          open: true,
-          isSuccess: true,
-          type: "Edit",
+      const found = contacts!.find((x) => x.address === address)!;
+      (isHebao !== undefined
+        ? LoopringAPI.contactAPI!.updateContact(
+            {
+              contactAddress: address,
+              isHebao,
+              contactName: found.name,
+              accountId,
+            },
+            apiKey
+          )
+        : Promise.reject("no hebao")
+      )
+        .then((response) => {
+          if (response === true) {
+            setToastInfo({
+              open: true,
+              isSuccess: true,
+              type: "Edit",
+            });
+          } else {
+            throw (response.resultInfo as RESULT_INFO).message;
+          }
+        })
+        .catch((e) => {
+          setToastInfo({
+            open: true,
+            isSuccess: false,
+            type: "Edit",
+          });
+        })
+        .finally(() => {
+          setTimeout(() => {
+            setToastInfo({
+              open: false,
+              type: undefined,
+              isSuccess: undefined,
+            });
+          }, 3 * 1000);
         });
-        // alert(JSON.stringify(x))
-      });
-      // found?.name
     },
-    [contacts]
+    [contacts, isHebao, apiKey]
   );
   const onChangeInput = React.useCallback(
     (address: string, inputValue) => {
-      setContacts(
-        contacts.map((x) => {
-          return {
-            ...x,
-            name: x.address === address ? inputValue : x.name,
-          };
-        })
+      // updateContacts
+      dispatch(
+        updateContacts(
+          contacts!.map((x) => {
+            return {
+              ...x,
+              name: x.address === address ? inputValue : x.name,
+            };
+          })
+        )
       );
     },
     [contacts]
   );
   const [deleteLoading, setDeleteLoading] = React.useState(false);
-
   const onCloseToast = React.useCallback(() => {
     setToastInfo({
       open: false,
@@ -187,68 +250,219 @@ export const useContact = () => {
   const submitDeleteContact = React.useCallback(
     (address: string, name: string) => {
       setDeleteLoading(true);
-      LoopringAPI.contactAPI!.deleteContact(
-        {
-          accountId,
-          isHebao: false, //todo
-          contactAddress: address,
-          contactName: name,
-        },
-        apiKey
-      )
-        .then(() => {
-          loadContacts();
-          setToastInfo({
-            open: true,
-            isSuccess: true,
-            type: "Delete",
+      isHebao !== undefined &&
+        LoopringAPI.contactAPI!.deleteContact(
+          {
+            accountId,
+            isHebao, //todo
+            contactAddress: address,
+            contactName: name,
+          },
+          apiKey
+        )
+          .then((response) => {
+            if (response === true) {
+              loadContacts();
+              setToastInfo({
+                open: true,
+                isSuccess: true,
+                type: "Delete",
+              });
+              setDeleteInfo({
+                open: false,
+                selected: undefined,
+              });
+            } else {
+              throw (response.resultInfo as RESULT_INFO).message;
+            }
+          })
+          .catch((e) => {
+            setToastInfo({
+              open: true,
+              isSuccess: false,
+              type: "Delete",
+            });
+          })
+          .finally(() => {
+            setTimeout(() => {
+              setToastInfo({
+                open: false,
+                type: undefined,
+                isSuccess: undefined,
+              });
+            }, 3 * 1000);
+            setDeleteLoading(false);
           });
-          setDeleteInfo({
-            open: false,
-            selected: undefined,
-          });
-        })
-        .finally(() => {
-          setDeleteLoading(false);
-        });
     },
-    []
+    [isHebao, apiKey]
   );
   const [addLoading, setAddLoading] = React.useState(false);
   const submitAddContact = React.useCallback(
-    (address: string, name: string) => {
+    (address: string, name: string, callBack: (success: boolean) => void) => {
       setAddLoading(true);
-      LoopringAPI.contactAPI!.createContact(
-        {
-          accountId,
-          isHebao: false, //todo
-          contactAddress: address,
-          contactName: name,
-        },
-        apiKey
-      )
-        .then(() => {
-          loadContacts();
-          setToastInfo({
-            open: true,
-            isSuccess: true,
-            type: "Add",
+      isHebao !== undefined &&
+        LoopringAPI.contactAPI!.createContact(
+          {
+            accountId,
+            isHebao,
+            contactAddress: address,
+            contactName: name,
+          },
+          apiKey
+        )
+          .then(async (response) => {
+            await LoopringAPI.walletAPI
+              ?.getWalletType({
+                wallet: address,
+              })
+              .then((response2) => {
+                let addressType: AddressType | undefined = undefined;
+                if (response2.walletType?.loopringWalletContractVersion) {
+                  const map: [string, AddressType][] = [
+                    ["V2_1_0", AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
+                    ["V2_0_0", AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
+                    ["V1_2_0", AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
+                    ["V1_1_6", AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
+                  ];
+                  addressType = map.find(
+                    (x) =>
+                      x[0] ===
+                      response2.walletType?.loopringWalletContractVersion
+                  )![1];
+                } else if (response2.walletType?.isInCounterFactualStatus) {
+                  addressType = AddressType.LOOPRING_HEBAO_CF;
+                } else if (response2.walletType?.isContract) {
+                  addressType = AddressType.CONTRACT;
+                }
+                if (addressType) {
+                  return LoopringAPI.contactAPI
+                    ?.updateContact(
+                      {
+                        accountId: accountId,
+                        isHebao,
+                        addressType: addressType,
+                        contactAddress: address,
+                        contactName: name,
+                      },
+                      apiKey
+                    )
+                    .then((x) => {
+                      dispatch(
+                        updateContacts(
+                          contacts?.map((x) => {
+                            if (x.address === address) {
+                              return { ...x, addressType };
+                            } else {
+                              return x;
+                            }
+                          })
+                        )
+                      );
+                    });
+                }
+              });
+            if (response === true) {
+              loadContacts();
+              setToastInfo({
+                open: true,
+                isSuccess: true,
+                type: "Add",
+              });
+              setAddOpen(false);
+              callBack(true);
+            } else {
+              throw (response.resultInfo as RESULT_INFO).message;
+            }
+          })
+          .catch((e) => {
+            if (e === "contact already existed") {
+              callBack(false);
+              setToastInfo({
+                open: true,
+                isSuccess: false,
+                type: "Add",
+                customerText: t("labelContactsContactExisted"),
+              });
+            } else {
+              callBack(false);
+              setToastInfo({
+                open: true,
+                isSuccess: false,
+                type: "Add",
+              });
+            }
+          })
+          .finally(() => {
+            setTimeout(() => {
+              setToastInfo({
+                open: false,
+                isSuccess: undefined,
+                type: undefined,
+              });
+            }, 3 * 1000);
+            setAddLoading(false);
           });
-          setAddOpen(false);
-        })
-        .finally(() => {
-          setAddLoading(false);
-        });
     },
-    []
+    [isHebao, apiKey]
   );
+
+  const throttled = useRef(
+    debounce(({ isHebao, contacts, eventTarget }) => {
+      const _eventTarget = eventTarget as HTMLDivElement;
+      if (
+        _eventTarget.scrollTop + _eventTarget.clientHeight >=
+        _eventTarget.scrollHeight
+      ) {
+        console.log("dasjkdhakjshdkjashdkjashkjdh");
+        if (isHebao === undefined) return;
+        LoopringAPI.contactAPI!.getContacts(
+          {
+            isHebao,
+            accountId,
+            offset: contacts?.length,
+            limit: 10,
+          },
+          apiKey
+        ).then((response) => {
+          dispatch(
+            updateContacts([
+              ...(contacts ? contacts : []),
+              ...response.contacts.map((xx) => {
+                return {
+                  name: xx.contactName,
+                  address: xx.contactAddress,
+                  avatarURL: createImageFromInitials(
+                    32,
+                    xx.contactName,
+                    "#FFC178"
+                  ),
+                  editing: false,
+                  addressType: xx.addressType,
+                } as DisplayContact;
+              }),
+            ])
+          );
+        });
+      }
+    }, 1000)
+  );
+
+  const onScroll = React.useCallback(
+    (eventTarget: HTMLDivElement) => {
+      throttled.current({ isHebao, contacts, eventTarget });
+    },
+    [isHebao, contacts, apiKey]
+  );
+
   return {
-    contacts: contacts.filter((x) => {
-      return searchValue !== ""
-        ? x.address.toLowerCase().includes(searchValue.toLowerCase()) ||
-            x.name.toLowerCase().includes(searchValue.toLowerCase())
-        : true;
-    }),
+    contacts:
+      contacts &&
+      contacts.filter((x) => {
+        return searchValue !== ""
+          ? x.address.toLowerCase().includes(searchValue.toLowerCase()) ||
+              x.name.toLowerCase().includes(searchValue.toLowerCase())
+          : true;
+      }),
     onClickEditing,
     onChangeInput,
     onInputBlue,
@@ -256,6 +470,7 @@ export const useContact = () => {
     onClearSearch,
     searchValue,
     toastInfo,
+    setToastInfo,
     onCloseToast,
 
     onClickDelete,
@@ -272,6 +487,7 @@ export const useContact = () => {
     onClickSend,
     onCloseSend,
     sendInfo,
+    onScroll,
   };
 };
 export const useContactAdd = () => {
@@ -281,47 +497,62 @@ export const useContactAdd = () => {
   const [toastStatus, setToastStatus] = React.useState(
     "Succuss" as "Succuss" | "Error" | "Init"
   );
-  const addShowInvalidAddress =
-    addAddress !== "" ? !utils.isAddress(addAddress) : false;
-  const addButtonDisable = !utils.isAddress(addAddress) || addName === "";
+
   const {
     account: { accountId, apiKey },
   } = useAccount();
-  const submitAddingContact = React.useCallback(
-    (address: string, name: string) => {
-      setAddLoading(true);
-      LoopringAPI.contactAPI!.createContact(
-        {
-          accountId,
-          isHebao: false, //todo
-          contactAddress: address,
-          contactName: name,
-        },
-        apiKey
-      )
-        .then((x) => {
-          setToastStatus("Succuss");
-          // todo 隐藏弹窗
-        })
-        .finally(() => {
-          setAddLoading(false);
-        });
-    },
-    []
+
+  const onChangeName = React.useCallback((input: string) => {
+    if (new TextEncoder().encode(input).length <= 48) {
+      setAddName(input);
+    }
+  }, []);
+
+  const [ensResolvedAddress, setEnsResolvedAddress] = useState(
+    undefined as undefined | false | string
   );
+  const addButtonDisable =
+    (!utils.isAddress(addAddress) && !ensResolvedAddress) || addName === "";
+  const debounceCheckEns = debounce((input: string) => {
+    (connectProvides.usedWeb3
+      ? connectProvides.usedWeb3.eth.ens.getAddress(input)
+      : Promise.reject("no web3")
+    )
+      .then((addressResovled: string) => {
+        setEnsResolvedAddress(addressResovled);
+      })
+      .catch((e) => {
+        setEnsResolvedAddress(false);
+      });
+  }, 100);
+
+  const onChangeAddress = React.useCallback((input: string) => {
+    debounceCheckEns(input);
+    setAddAddress(input);
+  }, []);
+  const addShowInvalidAddress =
+    addAddress !== "" &&
+    !utils.isAddress(addAddress) &&
+    ensResolvedAddress === false;
+
+  const displayEnsResolvedAddress =
+    ensResolvedAddress !== undefined && ensResolvedAddress !== false
+      ? ensResolvedAddress
+      : undefined;
 
   return {
     addLoading,
     setAddLoading,
     addAddress,
-    setAddAddress,
+    onChangeAddress,
     addName,
-    setAddName,
+    onChangeName,
     toastStatus,
     setToastStatus,
     addShowInvalidAddress,
     addButtonDisable,
-    submitAddingContact,
+    displayEnsResolvedAddress,
+    // submitAddingContact,
   };
 };
 // export const useContactDelete = () => {
@@ -356,23 +587,32 @@ export const useContactAdd = () => {
 // };
 
 export const useContactSend = () => {
+  const {} = useContact();
   const [sendNetwork, setSendNetwork] = React.useState("L1" as Network);
   const { setShowTransfer, setShowWithdraw } = useOpenModals();
   const submitSendingContact = React.useCallback(
-    (contact: Contact, network: Network) => {
+    (contact: Contact, network: Network, onClose: () => void) => {
       if (network === "L1") {
         setShowWithdraw({
           isShow: true,
           address: contact.address,
           name: contact.name,
+          addressType: contact.addressType,
           symbol: "ETH",
+          info: {
+            onCloseCallBack: onClose,
+          },
         });
       } else {
         setShowTransfer({
           isShow: true,
           address: contact.address,
           name: contact.name,
+          addressType: contact.addressType,
           symbol: "ETH",
+          info: {
+            onCloseCallBack: onClose,
+          },
         });
       }
     },
@@ -410,16 +650,18 @@ export function useTransactions() {
   // routeMatch.params[0]
   // debugger
 
-  const getTxnStatus = (status: string) =>
-    status === ""
+  const getTxnStatus = (status: string) => {
+    // debugger
+    return status === ""
       ? TransactionStatus.processing
-      : status === "processed"
+      : status === "PROCESSED"
       ? TransactionStatus.processed
-      : status === "processing"
+      : status === "PROCESSING"
       ? TransactionStatus.processing
-      : status === "received"
+      : status === "RECEIVED"
       ? TransactionStatus.received
       : TransactionStatus.failed;
+  };
 
   const getUserTxnList = useCallback(
     async ({

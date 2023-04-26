@@ -23,7 +23,6 @@ import {
   SwitchPanelStyled,
   useOpenModals,
   useSettings,
-  useToggle,
 } from "@loopring-web/component-lib";
 import {
   CheckBoxIcon,
@@ -214,7 +213,17 @@ const MyLiquidity: any = withTranslation("common")(
           )
         : "0";
 
-    // const stakingList: sdk.STACKING_SUMMARY[] = [];
+    const dualStakeDollar = dualOnInvestAsset
+      ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
+          const price = tokenPrices[idIndex[cur.tokenId]];
+          return sdk
+            .toBig(cur?.amount ?? 0)
+            .div("1e" + tokenMap[idIndex[cur.tokenId]].decimals)
+            .times(price)
+            .plus(pre)
+            .toString();
+        }, "0")
+      : undefined;
     return (
       <Box
         display={"flex"}
@@ -662,20 +671,14 @@ const MyLiquidity: any = withTranslation("common")(
                     flex={1}
                     margin={0}
                   >
-                    {summaryMyInvest?.dualStakeDollar !== undefined ? (
+                    {dualStakeDollar !== undefined ? (
                       <Typography component={"h4"} variant={"h3"} marginX={3}>
-                        {summaryMyInvest?.dualStakeDollar
+                        {dualStakeDollar
                           ? PriceTag[CurrencyToTag[currency]] +
-                            getValuePrecisionThousand(
-                              sdk
-                                .toBig(summaryMyInvest?.dualStakeDollar)
-                                .times(forexMap[currency] ?? 0),
-                              undefined,
-                              undefined,
-                              2,
-                              true,
-                              { isFait: true, floor: true }
-                            )
+                            sdk
+                              .toBig(dualStakeDollar)
+                              .times(forexMap[currency] ?? 0)
+                              .toFixed(2, 1)
                           : EmptyValueTag}
                       </Typography>
                     ) : (

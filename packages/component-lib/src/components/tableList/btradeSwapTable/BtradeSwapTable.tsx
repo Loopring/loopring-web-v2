@@ -12,7 +12,6 @@ import {
   globalSetup,
   Info2Icon,
   RowInvestConfig,
-  TableType,
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import moment from "moment/moment";
@@ -91,7 +90,8 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
       getBtradeOrderList,
       t,
     } = props;
-    const [page, setPage] = React.useState(1);
+    const [page, setPage] = React.useState(0);
+    // const [_pageSize, setPageSize] = React.useState(pagination?.pageSize);
 
     const { isMobile, upColor } = useSettings();
     const history = useHistory();
@@ -111,6 +111,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
               [BtradeSwapsType.Pending, "var(--color-warning)"],
             ];
             const found = colorMap.find((x) => x[0] === row?.type);
+
             return (
               <Box
                 display={"flex"}
@@ -127,7 +128,15 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
                       display={"inline-flex"}
                       alignItems={"center"}
                     >
-                      {t("labelBtrade" + row?.type)}
+                      {t(
+                        "labelBtrade" +
+                          // @ts-ignore
+                          (row?.type == BtradeSwapsType.Failed ||
+                          // @ts-ignore
+                          row?.type == BtradeSwapsType.Cancelled
+                            ? BtradeSwapsType.Failed.toString()
+                            : row?.type)
+                      )}
                       <Info2Icon
                         fontSize={"small"}
                         color={"inherit"}
@@ -180,7 +189,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <>
-                {row.feeAmount != "0"
+                {row.feeAmount !== undefined
                   ? row.feeAmount + " " + row.feeSymbol
                   : EmptyValueTag}
               </>
@@ -199,16 +208,28 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
       ],
       [history, upColor, t]
     );
-    const updateData = _.debounce(async ({ currPage = page }) => {
-      await getBtradeOrderList({
-        limit: pagination?.pageSize ?? 10,
-        offset: (currPage - 1) * (pagination?.pageSize ?? 10),
-      });
-    }, globalSetup.wait);
+    const updateData = _.debounce(
+      ({
+        // tableType,
+        currPage = page,
+        pageSize = pagination.pageSize,
+      }: {
+        // tableType: TableType;
+        currPage?: number;
+        pageSize?: number;
+      }) => {
+        getBtradeOrderList({
+          limit: pageSize,
+          offset: (currPage - 1) * pageSize,
+        });
+      },
+      globalSetup.wait
+    );
     const handlePageChange = React.useCallback(
-      async (page: number) => {
-        setPage(page);
-        await updateData({ actionType: TableType.page, currPage: page });
+      async (currPage: number) => {
+        // if (currPage === page) return;
+        setPage(currPage);
+        updateData({ currPage: currPage });
       },
       [updateData]
     );
@@ -223,7 +244,15 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
+    // React.useEffect(() => {
+    //   updateData.cancel();
+    //   handlePageChange(1);
+    //   return () => {
+    //     updateData.cancel();
+    //   };
+    // }, [pagination?.pageSize]);
     React.useEffect(() => {
+      // setPageSize(pagination?.pageSize);
       updateData.cancel();
       handlePageChange(1);
       return () => {

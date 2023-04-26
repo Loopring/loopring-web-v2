@@ -10,7 +10,6 @@ import {
   usePlaceOrder,
   useSubmitBtn,
   useSystem,
-  useTicker,
   useToast,
   useTokenMap,
   useTokenPrices,
@@ -23,12 +22,12 @@ import {
   MarketType,
   myLog,
   TradeBtnStatus,
-  TradeBaseType,
-  TradeProType,
 } from "@loopring-web/common-resources";
 import {
+  DepthType,
   StopLimitTradeData,
-  ToastType,
+  TradeBaseType,
+  TradeProType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -36,7 +35,6 @@ import {
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import * as _ from "lodash";
-import BigNumber from "bignumber.js";
 
 export const useStopLimit = <
   C extends { [key: string]: any },
@@ -44,7 +42,6 @@ export const useStopLimit = <
   I extends IBData<any>
 >({
   market,
-  setConfirmed,
 }: { market: MarketType } & any) => {
   const { pageTradePro, updatePageTradePro, __SUBMIT_LOCK_TIMER__ } =
     usePageTradePro();
@@ -53,9 +50,8 @@ export const useStopLimit = <
   const { forexMap, allowTrade } = useSystem();
   const { account } = useAccount();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
-  const { tickerMap } = useTicker();
   const {
-    toggle: { StopLimit },
+    toggle: { order },
   } = useToggle();
   const { currency, isMobile } = useSettings();
 
@@ -109,46 +105,93 @@ export const useStopLimit = <
   React.useEffect(() => {
     resetTradeData();
   }, [pageTradePro.tradeCalcProData.walletMap, pageTradePro.market, currency]);
-  React.useEffect(() => {
-    const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-    if (
-      pageTradePro?.depth?.symbol === pageTradePro.market &&
-      pageTradePro?.ticker?.close
-    ) {
-      const midStopPrice = pageTradePro.ticker.close;
-      const [, , _quoteSymbol] = market.match(/(\w+)-(\w+)/i);
-      const quoteTokenInfo = tokenMap[_quoteSymbol];
 
-      updatePageTradePro({
-        ...pageTradePro,
-        tradeCalcProData: {
-          ...pageTradePro.tradeCalcProData,
-          stopRange: [
-            getValuePrecisionThousand(
-              sdk.toBig(midStopPrice).div(10).toString(),
-              quoteTokenInfo.precision,
-              quoteTokenInfo.precision,
-              undefined,
-              false
-            ),
-            getValuePrecisionThousand(
-              sdk.toBig(midStopPrice).times(10).toString(),
-              quoteTokenInfo.precision,
-              quoteTokenInfo.precision,
-              undefined,
-              false
-            ),
-          ],
-        },
-      });
-    } else {
-      setToastOpen({
-        open: true,
-        type: ToastType.error,
-        content: t("labelLimitMarket"),
-      });
+  React.useEffect(() => {
+    if (pageTradePro.chooseDepth) {
+      const {
+        system: { forexMap },
+        settings: { currency },
+      } = store.getState();
+      //@ts-ignore
+      const [, baseSymbol, quoteSymbol] =
+        pageTradePro.market.match(/(\w+)-(\w+)/i);
+      const { decimals: baseDecimal, precision: basePrecision } =
+        tokenMap[baseSymbol];
+      const tradePrice = pageTradePro.chooseDepth
+        ? pageTradePro.chooseDepth.price
+        : pageTradePro.market === market && pageTradePro.ticker
+        ? pageTradePro.ticker.close
+          ? pageTradePro.ticker.close.toFixed(marketPrecision)
+          : pageTradePro?.depth?.mid_price.toFixed(marketPrecision)
+        : 0;
+      let balance =
+        tradePrice &&
+        tokenPrices &&
+        forexMap &&
+        Number(tradePrice) *
+          tokenPrices[quoteSymbol as string] *
+          (forexMap[currency] ?? 0);
+
+      if (
+        (pageTradePro.tradeType === TradeProType.buy &&
+          pageTradePro.chooseDepth.type === DepthType.ask) ||
+        (pageTradePro.tradeType === TradeProType.sell &&
+          pageTradePro.chooseDepth.type === DepthType.bid)
+      ) {
+        const amount = getValuePrecisionThousand(
+          sdk.toBig(pageTradePro.chooseDepth.amtTotal).div("1e" + baseDecimal),
+          undefined,
+          undefined,
+          basePrecision,
+          true
+        ).replace(sdk.SEP, "");
+        onChangeLimitEvent(
+          {
+            ...stopLimitTradeData,
+            base: {
+              ...stopLimitTradeData.base,
+              tradeValue: Number(amount),
+            },
+            price: {
+              ...stopLimitTradeData.price,
+              tradeValue: Number(tradePrice),
+              balance: Number(balance) ?? 0,
+            },
+          },
+          TradeBaseType.price
+        );
+        // if(account.readyState === 'ACTIVATED'){
+        //
+        // }else{
+        //
+        //
+        //     // const amtTotalForShow = pageTradePro.chooseDepth.amtTotalForShow;
+        //
+        // }
+      } else {
+        onChangeLimitEvent(
+          {
+            ...stopLimitTradeData,
+            price: {
+              ...stopLimitTradeData.price,
+              tradeValue: Number(tradePrice),
+              balance: getValuePrecisionThousand(
+                balance,
+                undefined,
+                undefined,
+                undefined,
+                true,
+                { isFait: true }
+              ),
+            },
+          },
+          TradeBaseType.price
+        );
+      }
+
+      // (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType)
     }
-  }, [pageTradePro?.ticker?.close]);
+  }, [pageTradePro.chooseDepth]);
 
   const resetTradeData = React.useCallback(
     (type?: TradeProType) => {
@@ -157,6 +200,20 @@ export const useStopLimit = <
       // @ts-ignore
       const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
       setStopLimitTradeData((state) => {
+        const tradePrice =
+          pageTradePro.market === market && pageTradePro.ticker
+            ? pageTradePro.ticker.close
+              ? pageTradePro.ticker.close.toFixed(marketPrecision)
+              : pageTradePro?.depth?.mid_price.toFixed(marketPrecision)
+            : 0;
+        let balance =
+          tradePrice &&
+          tokenPrices &&
+          forexMap &&
+          Number(tradePrice) *
+            tokenPrices[quoteSymbol as string] *
+            (forexMap[currency] ?? 0);
+
         return {
           ...state,
           type: type ?? pageTradePro.tradeType,
@@ -170,13 +227,8 @@ export const useStopLimit = <
           } as IBData<any>,
           price: {
             belong: quoteSymbol,
-            tradeValue: undefined,
-            balance: 0,
-          } as IBData<any>,
-          stopPrice: {
-            belong: quoteSymbol,
-            tradeValue: undefined,
-            balance: 0,
+            tradeValue: tradePrice,
+            balance,
           } as IBData<any>,
         };
       });
@@ -188,7 +240,7 @@ export const useStopLimit = <
         buyUserOrderInfo: null,
         request: null,
         calcTradeParams: null,
-        stopLimitCalcTradeParams: null,
+        limitCalcTradeParams: null,
         chooseDepth: null,
         tradeCalcProData: {
           ...pageTradePro.tradeCalcProData,
@@ -200,7 +252,14 @@ export const useStopLimit = <
         },
       });
     },
-    [market, marketPrecision, tokenPrices, forexMap, currency]
+    [
+      market,
+      updatePageTradePro,
+      marketPrecision,
+      tokenPrices,
+      forexMap,
+      currency,
+    ]
   );
 
   const limitSubmit = React.useCallback(
@@ -247,8 +306,8 @@ export const useStopLimit = <
           ) {
             setToastOpen({
               open: true,
-              type: ToastType.error,
-              content: t("labelLimitFailed") + " : " + response.message,
+              type: "error",
+              content: t("labelSwapFailed") + " : " + response.message,
             });
           } else {
             await sdk.sleep(__SUBMIT_LOCK_TIMER__);
@@ -294,13 +353,13 @@ export const useStopLimit = <
                   if (percentage1 === 0 || percentage2 === 0) {
                     setToastOpen({
                       open: true,
-                      type: ToastType.warning,
+                      type: "warning",
                       content: t("labelSwapCancelled"),
                     });
                   } else {
                     setToastOpen({
                       open: true,
-                      type: ToastType.success,
+                      type: "success",
                       content: t("labelSwapSuccess"),
                     });
                   }
@@ -308,22 +367,22 @@ export const useStopLimit = <
                 case sdk.OrderStatus.processed:
                   setToastOpen({
                     open: true,
-                    type: ToastType.success,
+                    type: "success",
                     content: t("labelSwapSuccess"),
                   });
                   break;
                 case sdk.OrderStatus.processing:
                   setToastOpen({
                     open: true,
-                    type: ToastType.success,
+                    type: "success",
                     content: t("labelOrderProcessing"),
                   });
                   break;
                 default:
                   setToastOpen({
                     open: true,
-                    type: ToastType.error,
-                    content: t("labelLimitFailed"),
+                    type: "error",
+                    content: t("labelSwapFailed"),
                   });
               }
             }
@@ -336,8 +395,8 @@ export const useStopLimit = <
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,
-            type: ToastType.error,
-            content: t("labelLimitFailed"),
+            type: "error",
+            content: t("labelSwapFailed"),
           });
         }
         setIsLimitLoading(false);
@@ -352,7 +411,7 @@ export const useStopLimit = <
   const onChangeLimitEvent = React.useCallback(
     (tradeData: T, formType: TradeBaseType) => {
       const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-      let dustCalcTradeParams: any;
+
       if (formType === TradeBaseType.tab) {
         resetTradeData(tradeData.type);
       } else {
@@ -365,10 +424,7 @@ export const useStopLimit = <
             ? tradeData.quote.tradeValue
             : undefined;
 
-        if (
-          formType === TradeBaseType.price ||
-          formType === TradeBaseType.stopPrice
-        ) {
+        if (formType === TradeBaseType.price) {
           amountBase =
             tradeData.base.tradeValue !== undefined
               ? tradeData.base.tradeValue
@@ -380,31 +436,8 @@ export const useStopLimit = <
               ? tradeData.quote.tradeValue
               : undefined;
         }
-        if (tradeData.price?.tradeValue) {
-          dustCalcTradeParams = makeStopLimitReqInHook({
-            isBuy: tradeData.type === "buy",
-            base: tradeData.base.belong,
-            quote: tradeData.quote.belong,
-            price: tradeData.price.tradeValue as number,
-            depth: pageTradePro.depthForCalc,
-            // @ts-ignore
-            amountBase:
-              tradeData.type === "buy"
-                ? undefined
-                : sdk
-                    .toBig(tokenMap[baseSymbol]?.orderAmounts.dust)
-                    .div("1e" + tokenMap[tradeData.base.belong]?.decimals)
-                    .toString(),
-            // @ts-ignore
-            amountQuote:
-              tradeData.type === "buy"
-                ? sdk
-                    .toBig(tokenMap[quoteSymbol]?.orderAmounts.dust)
-                    .div("1e" + tokenMap[tradeData.quote.belong]?.decimals)
-                    .toString()
-                : undefined,
-          }).calcTradeParams;
-        }
+
+        // myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type, amountBase, amountQuote)
 
         const {
           stopLimitRequest,
@@ -423,31 +456,13 @@ export const useStopLimit = <
           amountQuote,
         });
 
-        const minAmount = BigNumber.max(
-          minOrderInfo?.minAmount ?? 0,
-          dustCalcTradeParams?.baseVol ?? 0
-        ).toString();
-        const minAmtShow = sdk
-          .toBig(minAmount)
-          .div("1e" + tokenMap[minOrderInfo?.symbol ?? baseSymbol].decimals)
-          .toNumber();
         updatePageTradePro({
           market,
           sellUserOrderInfo,
           buyUserOrderInfo,
-          minOrderInfo: {
-            ...minOrderInfo,
-            minAmount,
-            minAmtShow,
-            minAmtCheck: sdk
-              .toBig(calcTradeParams?.baseVol ?? 0)
-              .gte(minAmount),
-          },
+          minOrderInfo,
           request: stopLimitRequest as sdk.SubmitOrderRequestV3,
-          stopLimitCalcTradeParams: {
-            ...calcTradeParams,
-            stopPrice: tradeData?.stopPrice?.tradeValue?.toString(),
-          },
+          limitCalcTradeParams: calcTradeParams,
           tradeCalcProData: {
             ...pageTradePro.tradeCalcProData,
             fee:
@@ -456,33 +471,16 @@ export const useStopLimit = <
                 : undefined,
           },
         });
-        myLog(
-          "stopLimit",
-          calcTradeParams?.baseVolShow as number,
-          calcTradeParams?.quoteVolShow as number
-        );
         setStopLimitTradeData((state) => {
           const tradePrice = tradeData.price.tradeValue;
           let balance =
             tradePrice &&
             tokenPrices &&
             forexMap &&
-            sdk
-              .toBig(tradePrice)
-              .times(tokenPrices[quoteSymbol as string])
-              .times(forexMap[currency] ?? 0)
-              .toFixed(2);
+            Number(tradePrice) *
+              tokenPrices[quoteSymbol as string] *
+              (forexMap[currency] ?? 0);
           const stopPrice = tradeData.stopPrice.tradeValue;
-          const stopPriceBalance =
-            stopPrice &&
-            tokenPrices &&
-            forexMap &&
-            sdk
-              .toBig(stopPrice)
-              .times(tokenPrices[quoteSymbol as string])
-              .times(forexMap[currency] ?? 0)
-              .toFixed(2);
-
           return {
             ...state,
             price: {
@@ -493,21 +491,15 @@ export const useStopLimit = <
             stopPrice: {
               belong: quoteSymbol,
               tradeValue: stopPrice,
-              balance: stopPriceBalance,
+              balance,
             } as IBData<any>,
             base: {
               ...state.base,
-              tradeValue:
-                calcTradeParams?.baseVolShow == Infinity
-                  ? undefined
-                  : (calcTradeParams?.baseVolShow as number),
+              tradeValue: calcTradeParams?.baseVolShow as number,
             },
             quote: {
               ...state.quote,
-              tradeValue:
-                calcTradeParams?.quoteVolShow == Infinity
-                  ? undefined
-                  : (calcTradeParams?.quoteVolShow as number),
+              tradeValue: calcTradeParams?.quoteVolShow as number,
             },
           };
         });
@@ -516,6 +508,7 @@ export const useStopLimit = <
     [
       resetTradeData,
       makeStopLimitReqInHook,
+      updatePageTradePro,
       market,
       tokenPrices,
       quoteSymbol,
@@ -561,8 +554,8 @@ export const useStopLimit = <
     if (!allowTrade?.order?.enable) {
       setShowSupport({ isShow: true });
       setIsLimitLoading(false);
-    } else if (!StopLimit.enable) {
-      setShowTradeIsFrozen({ isShow: true, type: "StopLimit" });
+    } else if (!order.enable) {
+      setShowTradeIsFrozen({ isShow: true, type: "Limit" });
       setIsLimitLoading(false);
     } else {
       switch (priceLevel) {
@@ -570,7 +563,7 @@ export const useStopLimit = <
           setAlertOpen(true);
           break;
         default:
-          setConfirmed(true);
+          limitSubmit(undefined as any, true);
           break;
       }
     }
@@ -578,7 +571,7 @@ export const useStopLimit = <
     account.readyState,
     allowTrade.order.enable,
     limitSubmit,
-    StopLimit.enable,
+    order.enable,
     setShowSupport,
     setShowTradeIsFrozen,
   ]);
@@ -590,8 +583,6 @@ export const useStopLimit = <
     const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
     const {
       minOrderInfo,
-      tradeCalcProData: { stopRange },
-      market,
       // calcTradeParams,
     } = pageTradePro;
     if (account.readyState === AccountStatus.ACTIVATED) {
@@ -605,11 +596,6 @@ export const useStopLimit = <
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: "labelEnterAmount",
-        };
-      } else if (!tickerMap[market].close) {
-        return {
-          tradeBtnStatus: TradeBtnStatus.DISABLED,
-          label: "labelStopLimitCurrentlyInsufficient",
         };
       } else if (!minOrderInfo?.minAmtCheck) {
         let minOrderSize = "Error";
@@ -644,39 +630,11 @@ export const useStopLimit = <
       ) {
         return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
       } else {
-        if (
-          // @ts-ignore
-          sdk
-            .toBig(stopLimitTradeData[TradeBaseType.stopPrice]?.tradeValue ?? 0)
-            .lte(0)
-        ) {
-          return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
-        } else if (
-          stopRange &&
-          stopRange[0] &&
-          stopRange[1] &&
-          (sdk
-            // @ts-ignore
-            .toBig(stopLimitTradeData[TradeBaseType.stopPrice]?.tradeValue ?? 0)
-            .lt(stopRange[0]) ||
-            sdk
-              // @ts-ignore
-              .toBig(
-                stopLimitTradeData[TradeBaseType.stopPrice]?.tradeValue ?? 0
-              )
-              .gt(stopRange[1]))
-        ) {
-          return {
-            tradeBtnStatus: TradeBtnStatus.DISABLED,
-            label: `labelLimitStopPriceMinMax| ${stopRange[0]}-${stopRange[1]}`,
-          };
-        } else {
-          return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
-        }
+        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [stopLimitTradeData, tokenMap, tickerMap]);
+  }, [stopLimitTradeData, tokenMap]);
 
   const {
     btnStatus: tradeLimitBtnStatus,
@@ -699,48 +657,6 @@ export const useStopLimit = <
     onChangeLimitEvent,
     tradeLimitI18nKey,
     tradeLimitBtnStatus,
-    confirmStopLimit: {
-      baseSymbol,
-      quoteSymbol,
-      tradeType: pageTradePro.tradeType,
-      limitPrice: getValuePrecisionThousand(
-        stopLimitTradeData?.price?.tradeValue,
-        tokenMap[quoteSymbol]?.precision,
-        tokenMap[quoteSymbol]?.precision,
-        undefined,
-        false
-      ),
-      stopPrice: getValuePrecisionThousand(
-        stopLimitTradeData?.stopPrice.tradeValue,
-        tokenMap[quoteSymbol]?.precision,
-        tokenMap[quoteSymbol]?.precision,
-        undefined,
-        false
-      ),
-      baseValue: getValuePrecisionThousand(
-        stopLimitTradeData?.base?.tradeValue,
-        tokenMap[baseSymbol]?.precision,
-        tokenMap[baseSymbol]?.precision,
-        undefined,
-        false
-      ),
-      quoteValue: getValuePrecisionThousand(
-        stopLimitTradeData?.quote?.tradeValue,
-        tokenMap[quoteSymbol]?.precision,
-        tokenMap[quoteSymbol]?.precision,
-        undefined,
-        false
-      ),
-      stopSide: pageTradePro.request?.stopSide,
-      handleClose: () => {
-        setIsLimitLoading(false);
-        setConfirmed(false);
-      },
-      onSubmit: (e: any) => {
-        setConfirmed(false);
-        limitSubmit(e as any, true);
-      },
-    },
     limitSubmit,
     limitBtnClick,
     handlePriceError,
@@ -754,5 +670,6 @@ export const useStopLimit = <
           : "1.6rem",
       },
     },
+    // marketTicker,
   };
 };

@@ -154,7 +154,7 @@ export const usePro = <C extends { [key: string]: any }>(): {
           history.push("/trade/pro/" + _market);
         }
         // @ts-ignore
-        [, coinA, coinB] = _market.match(/([\w]+)-([\w]+)/i);
+        [, coinA, coinB] = _market?.match(/([\w]+)-([\w]+)/i);
         let tradeCalcProData = pageTradePro.tradeCalcProData;
         tradeCalcProData = {
           ...tradeCalcProData,

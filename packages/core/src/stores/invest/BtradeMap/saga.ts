@@ -24,7 +24,7 @@ const getBtradeMapApi = async () => {
   } = await LoopringAPI.defiAPI?.getBtradeMarkets();
   const reformat: any = (raw_data as sdk.BTRADE_MARKET[]).reduce(
     (prev, ele) => {
-      if (/-/gi.test(ele.market)) {
+      if (/-/gi.test(ele.market) && ele.enabled) {
         return [
           ...prev,
           {

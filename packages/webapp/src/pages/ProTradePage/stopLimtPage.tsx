@@ -16,7 +16,7 @@ import {
   SoursURL,
   LayoutConfigInfo,
 } from "@loopring-web/common-resources";
-import { ChartView, OrderTableView, Toolbar } from "./panel";
+import { ChartView, OrderTableView, SpotView, Toolbar } from "./panel";
 import { boxLiner, useSettings } from "@loopring-web/component-lib";
 import styled from "@emotion/styled/";
 import { usePageTradePro } from "@loopring-web/core";
@@ -91,9 +91,7 @@ export const StopLimitPage = withTranslation("common")(<
   const {
     pageTradePro: { depthForCalc },
   } = usePageTradePro();
-  const { market, handleOnMarketChange, resetTradeCalcData } = usePro({
-    path: "/trade/stoplimit",
-  });
+  const { market, handleOnMarketChange, resetTradeCalcData } = usePro();
   const { unit } = useTheme();
   const { stopLimitLayout, setStopLimitLayouts } = useSettings();
   const history = useHistory();
@@ -199,7 +197,6 @@ export const StopLimitPage = withTranslation("common")(<
     orderTable: React.useMemo(
       () => (
         <OrderTableView
-          isStopLimit={true}
           market={market}
           handleOnMarketChange={handleOnMarketChange}
         />

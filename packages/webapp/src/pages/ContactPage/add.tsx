@@ -10,16 +10,24 @@ import {
   Typography,
   Box,
   IconButton,
+  OutlinedInput,
+  FormHelperText,
 } from "@mui/material";
 import { useContactAdd } from "./hooks";
 import { CloseIcon, LoadingIcon } from "@loopring-web/common-resources";
 import { TextField } from "@loopring-web/component-lib";
 import { useTheme } from "@emotion/react";
+import { useTranslation } from "react-i18next";
+import { isAddress } from "ethers/lib/utils";
 
 interface AddDialogProps {
   addOpen: boolean;
   setAddOpen: (open: boolean) => void;
-  submitAddingContact: (address: string, name: string) => void;
+  submitAddingContact: (
+    address: string,
+    name: string,
+    callback: (s: boolean) => void
+  ) => void;
   loading: boolean;
 }
 
@@ -35,14 +43,32 @@ export const Add: React.FC<AddDialogProps> = ({
     // setAddLoading,
     addShowInvalidAddress,
     addAddress,
-    setAddAddress,
+    onChangeAddress,
     addName,
-    setAddName,
+    onChangeName,
     addButtonDisable,
+    displayEnsResolvedAddress,
     // submitAddingContact,
     // toastStatus,
     // setToastStatus
   } = useContactAdd();
+  const { t } = useTranslation();
+  // web3.eth.ens
+  //             .getAddress(address)
+  //             .then((addressResovled: string) => {
+  //               myLog("addressResovled:", addressResovled);
+  //               resolve({
+  //                 realAddr: addressResovled,
+  //                 addressErr: AddressError.NoError,
+  //               });
+  //             })
+  //             .catch((e: any) => {
+  //               myLog("ens catch", e);
+  //               resolve({
+  //                 realAddr: "",
+  //                 addressErr: AddressError.InvalidAddr,
+  //               });
+  //             });
 
   return (
     <div>
@@ -51,11 +77,13 @@ export const Add: React.FC<AddDialogProps> = ({
         open={addOpen}
         onClose={() => {
           setAddOpen(false);
+          onChangeAddress("");
+          onChangeName("");
         }}
       >
         <DialogTitle>
           <Typography variant={"h3"} textAlign={"center"}>
-            Add Contact
+            {t("labelContactsAddContact")}
           </Typography>
           <IconButton
             size={"medium"}
@@ -67,6 +95,8 @@ export const Add: React.FC<AddDialogProps> = ({
             color={"inherit"}
             onClick={() => {
               setAddOpen(false);
+              onChangeAddress("");
+              onChangeName("");
             }}
           >
             <CloseIcon />
@@ -74,55 +104,80 @@ export const Add: React.FC<AddDialogProps> = ({
         </DialogTitle>
         <DialogContent style={{ width: "var(--modal-width)" }}>
           <Box marginTop={6}>
-            <TextField
-              label={"Address"}
-              placeholder={"Enter wallet address or ENS"}
+            <Typography marginBottom={0.5} color={"var(--color-text-third)"}>
+              {t("labelContactsAddressTitle")}
+            </Typography>
+            <OutlinedInput
+              label={t("labelContactsAddressTitle")}
+              placeholder={t("labelContactsAddressDes")}
               style={{
-                backgroundColor: "var(--box-card-decorate)",
+                // backgroundColor: "var(--box-card-decorate)",
+                background: "var(--field-opacity)",
+                height: `${theme.unit * 6}px`,
               }}
-              InputProps={{
-                style: {
-                  background: "var(--field-opacity)",
-                  height: `${theme.unit * 6}px`,
-                },
-              }}
-              helperText={
-                addShowInvalidAddress ? (
-                  <Typography
-                    variant={"body2"}
-                    textAlign={"left"}
-                    color="var(--color-error)"
-                  >
-                    Invalid address or ENS
-                  </Typography>
-                ) : (
-                  <Typography>&nbsp;</Typography>
-                )
+              endAdornment={
+                <CloseIcon
+                  cursor={"pointer"}
+                  fontSize={"large"}
+                  htmlColor={"var(--color-text-third)"}
+                  style={{ visibility: addAddress ? "visible" : "hidden" }}
+                  onClick={() => {
+                    onChangeAddress("");
+                  }}
+                />
               }
               fullWidth={true}
               value={addAddress}
               onChange={(e) => {
-                setAddAddress(e.target.value);
+                onChangeAddress(e.target.value);
               }}
             />
+            <FormHelperText>
+              {addShowInvalidAddress ? (
+                <Typography
+                  variant={"body2"}
+                  textAlign={"left"}
+                  color="var(--color-error)"
+                >
+                  {t("labelContactsAddressInvalid")}
+                </Typography>
+              ) : displayEnsResolvedAddress ? (
+                <Typography variant={"body2"} color="var(--color-text-primary)">
+                  {displayEnsResolvedAddress}
+                </Typography>
+              ) : (
+                <Typography>&nbsp;</Typography>
+              )}
+            </FormHelperText>
           </Box>
           <Box marginBottom={10} marginTop={3}>
-            <TextField
-              label={"Name"}
-              placeholder={"Enter name for the contact"}
+            {/* <OutlinedInput></> */}
+            <Typography marginBottom={0.5} color={"var(--color-text-third)"}>
+              {t("labelContactsNameTitle")}
+            </Typography>
+            <OutlinedInput
+              label={t("labelContactsNameTitle")}
+              placeholder={t("labelContactsNameDes")}
               style={{
-                backgroundColor: "var(--box-card-decorate)",
+                // backgroundColor: "var(--box-card-decorate)",
+                background: "var(--field-opacity)",
+                height: `${theme.unit * 6}px`,
               }}
-              InputProps={{
-                style: {
-                  background: "var(--field-opacity)",
-                  height: `${theme.unit * 6}px`,
-                },
-              }}
+              endAdornment={
+                <CloseIcon
+                  cursor={"pointer"}
+                  fontSize={"large"}
+                  htmlColor={"var(--color-text-third)"}
+                  style={{ visibility: addName ? "visible" : "hidden" }}
+                  onClick={() => {
+                    onChangeName("");
+                  }}
+                />
+              }
               fullWidth
               value={addName}
               onChange={(e) => {
-                setAddName(e.target.value);
+                onChangeName(e.target.value);
               }}
             />
           </Box>
@@ -132,12 +187,24 @@ export const Add: React.FC<AddDialogProps> = ({
             variant="contained"
             disabled={addButtonDisable}
             onClick={() => {
-              debugger;
-              submitAddingContact(addAddress, addName);
+              const address = isAddress(addAddress)
+                ? addAddress
+                : displayEnsResolvedAddress!;
+
+              submitAddingContact(address, addName, (success) => {
+                if (success) {
+                  onChangeName("");
+                  onChangeAddress("");
+                }
+              });
             }}
             fullWidth
           >
-            {loading ? <LoadingIcon></LoadingIcon> : "Add"}
+            {loading ? (
+              <LoadingIcon></LoadingIcon>
+            ) : (
+              t("labelContactsAddContactBtn")
+            )}
           </Button>
         </DialogActions>
       </Dialog>

@@ -2949,7 +2949,7 @@ export function useAccountModalForUI({
       [AccountStep.BtradeSwap_Delivering]: {
         view: (
           <BtradeSwap_Delivering
-            btnInfo={closeBtnInfo()}
+            btnInfo={undefined}
             {...{
               ...rest,
               account,
@@ -2964,7 +2964,7 @@ export function useAccountModalForUI({
       [AccountStep.BtradeSwap_Pending]: {
         view: (
           <BtradeSwap_Pending
-            btnInfo={closeBtnInfo()}
+            btnInfo={undefined}
             {...{
               ...rest,
               account,
@@ -2980,7 +2980,7 @@ export function useAccountModalForUI({
       [AccountStep.BtradeSwap_Settled]: {
         view: (
           <BtradeSwap_Settled
-            btnInfo={closeBtnInfo()}
+            btnInfo={undefined}
             {...{
               ...rest,
               account,
@@ -2995,7 +2995,7 @@ export function useAccountModalForUI({
       [AccountStep.BtradeSwap_Failed]: {
         view: (
           <BtradeSwap_Failed
-            btnInfo={closeBtnInfo()}
+            btnInfo={undefined}
             {...{
               ...rest,
               account,

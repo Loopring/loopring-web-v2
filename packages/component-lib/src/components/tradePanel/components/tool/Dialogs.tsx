@@ -38,6 +38,7 @@ import {
   Info2Icon,
   SoursURL,
   TradeDefi,
+  TradeTypes,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
@@ -1760,17 +1761,21 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
   ({
     t,
     open,
+    USDCOnly,
     handleClose,
   }: WithTranslation & {
     open: boolean;
+    USDCOnly: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
-    const [{ agree1, agree2, agree3, agree4 }, setAgree] = React.useState({
-      agree1: false,
-      agree2: false,
-      agree3: false,
-      agree4: false,
-    });
+    const [{ agree1, agree2, agree3, agree4, agree5 }, setAgree] =
+      React.useState({
+        agree1: false,
+        agree2: false,
+        agree3: false,
+        agree4: false,
+        agree5: false,
+      });
     // const { language } = useSettings();
 
     return (
@@ -1781,103 +1786,171 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("labelDualRiskTitle")}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelInvestDualTutorialContent"}>
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body1"}
-                display={"block"}
-                color={"textPrimary"}
-              >
-                Dual Investment offers you a chance to sell cryptocurrency high
-                or buy cryptocurrency low at your desired price on your desired
-                date. Once subscribed, users are not able to cancel or redeem
-                the subscription until the Settlement Date.\n You may be better
-                off holding your cryptocurrency, and may be required to trade
-                your cryptocurrency at a less favorable rate of exchange than
-                the market rate on Settlement Date. Cryptocurrency trading is
-                subject to high market risk. Please make your trades cautiously.
-                There may be no recourse for any losses.
-              </Typography>
-            </Trans>
-          </DialogContentText>
-          <MuiFormControlLabel
-            control={
-              <Checkbox
-                checked={agree1}
-                onChange={(_event: any, state: boolean) => {
-                  setAgree((_state) => ({
-                    ..._state,
-                    agree1: state,
-                  }));
-                }}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color="default"
-              />
-            }
-            label={t("labelInvestDualTutorialCheck1")}
-          />
-          <MuiFormControlLabel
-            control={
-              <Checkbox
-                checked={agree2}
-                onChange={(_event: any, state: boolean) => {
-                  setAgree((_state) => ({
-                    ..._state,
-                    agree2: state,
-                  }));
-                }}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color="default"
-              />
-            }
-            label={t("labelInvestDualTutorialCheck2")}
-          />
-          <MuiFormControlLabel
-            control={
-              <Checkbox
-                checked={agree3}
-                onChange={(_event: any, state: boolean) => {
-                  setAgree((_state) => ({
-                    ..._state,
-                    agree3: state,
-                  }));
-                }}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color="default"
-              />
-            }
-            label={t("labelInvestDualTutorialCheck3")}
-          />
-          <MuiFormControlLabel
-            control={
-              <Checkbox
-                checked={agree4}
-                onChange={(_event: any, state: boolean) => {
-                  setAgree((_state) => ({
-                    ..._state,
-                    agree4: state,
-                  }));
-                }}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color="default"
-              />
-            }
-            label={t("labelInvestDualTutorialCheck4")}
-          />
-        </DialogContent>
+        {USDCOnly ? (
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              <Trans i18nKey={"labelInvestDualTutorialCheck4"}>
+                <Typography
+                  whiteSpace={"pre-line"}
+                  component={"span"}
+                  variant={"body1"}
+                  display={"block"}
+                  color={"textPrimary"}
+                >
+                  Dual Investment offers you a chance to sell cryptocurrency
+                  high or buy cryptocurrency low at your desired price on your
+                  desired date. Once subscribed, users are not able to cancel or
+                  redeem the subscription until the Settlement Date.\n You may
+                  be better off holding your cryptocurrency, and may be required
+                  to trade your cryptocurrency at a less favorable rate of
+                  exchange than the market rate on Settlement Date.
+                  Cryptocurrency trading is subject to high market risk. Please
+                  make your trades cautiously. There may be no recourse for any
+                  losses.
+                </Typography>
+              </Trans>
+            </DialogContentText>
+            <MuiFormControlLabel
+              control={
+                <Checkbox
+                  checked={agree5}
+                  onChange={(_event: any, state: boolean) => {
+                    setAgree((_state) => ({
+                      ..._state,
+                      agree5: state,
+                    }));
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color="default"
+                />
+              }
+              label={t("labelInvestDualTutorialCheck5")}
+            />
+          </DialogContent>
+        ) : (
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              <Trans i18nKey={"labelInvestDualTutorialContent"}>
+                <Typography
+                  whiteSpace={"pre-line"}
+                  component={"span"}
+                  variant={"body1"}
+                  display={"block"}
+                  color={"textPrimary"}
+                >
+                  Dual Investment offers you a chance to sell cryptocurrency
+                  high or buy cryptocurrency low at your desired price on your
+                  desired date. Once subscribed, users are not able to cancel or
+                  redeem the subscription until the Settlement Date.\n You may
+                  be better off holding your cryptocurrency, and may be required
+                  to trade your cryptocurrency at a less favorable rate of
+                  exchange than the market rate on Settlement Date.
+                  Cryptocurrency trading is subject to high market risk. Please
+                  make your trades cautiously. There may be no recourse for any
+                  losses.
+                </Typography>
+              </Trans>
+            </DialogContentText>
+            <MuiFormControlLabel
+              control={
+                <Checkbox
+                  checked={agree1}
+                  onChange={(_event: any, state: boolean) => {
+                    setAgree((_state) => ({
+                      ..._state,
+                      agree1: state,
+                    }));
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color="default"
+                />
+              }
+              label={t("labelInvestDualTutorialCheck1")}
+            />
+            <MuiFormControlLabel
+              control={
+                <Checkbox
+                  checked={agree2}
+                  onChange={(_event: any, state: boolean) => {
+                    setAgree((_state) => ({
+                      ..._state,
+                      agree2: state,
+                    }));
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color="default"
+                />
+              }
+              label={t("labelInvestDualTutorialCheck2")}
+            />
+            <MuiFormControlLabel
+              sx={{ marginTop: 0.5 }}
+              control={
+                <Checkbox
+                  checked={agree3}
+                  onChange={(_event: any, state: boolean) => {
+                    setAgree((_state) => ({
+                      ..._state,
+                      agree3: state,
+                    }));
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color="default"
+                />
+              }
+              label={t("labelInvestDualTutorialCheck3")}
+            />
+            <MuiFormControlLabel
+              sx={{ marginTop: 1 }}
+              control={
+                <Checkbox
+                  checked={agree4}
+                  onChange={(_event: any, state: boolean) => {
+                    setAgree((_state) => ({
+                      ..._state,
+                      agree4: state,
+                    }));
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color="default"
+                />
+              }
+              label={t("labelInvestDualTutorialCheck4")}
+            />
+            <MuiFormControlLabel
+              control={
+                <Checkbox
+                  checked={agree5}
+                  onChange={(_event: any, state: boolean) => {
+                    setAgree((_state) => ({
+                      ..._state,
+                      agree5: state,
+                    }));
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color="default"
+                />
+              }
+              label={t("labelInvestDualTutorialCheck5")}
+            />
+          </DialogContent>
+        )}
 
         <DialogActions>
           <Button
             variant={"contained"}
             size={"small"}
-            disabled={!agree1 || !agree2 || !agree3 || !agree4}
+            disabled={
+              USDCOnly
+                ? !agree5
+                : !agree1 || !agree2 || !agree3 || !agree4 || !agree5
+            }
             onClick={(e) => {
               handleClose(e as any, true);
             }}
@@ -2094,6 +2167,199 @@ export const ConfirmBtradeSwapRisk = withTranslation("common")(
             color={"primary"}
           >
             {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+
+export const ConfirmStopLimitRisk = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+    baseSymbol,
+    quoteSymbol,
+    tradeType,
+    limitPrice,
+    stopPrice,
+    baseValue,
+    quoteValue,
+  }: // ...props
+  WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  } & {
+    baseSymbol: string;
+    quoteSymbol: string;
+    tradeType: TradeTypes;
+    baseValue: string;
+    quoteValue: string;
+    limitPrice: string;
+    stopPrice: string;
+  }) => {
+    // const [agree, setAgree] = React.useState(false);
+    // React.useEffect(() => {
+    //   if (!open) {
+    //     setAgree(false);
+    //   }
+    // }, [open]);
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>
+          {" "}
+          {t(`labelStopLimit`, {
+            symbol1: baseSymbol,
+            tradeType: tradeType,
+          })}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-stopLimit">
+            <Trans
+              i18nKey={`labelStopLimitDes`}
+              tOptions={{
+                value1: baseValue,
+                value2: quoteValue,
+                symbol2: quoteSymbol,
+                symbol1: baseSymbol,
+              }}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"span"}
+                    variant={"body1"}
+                    display={"block"}
+                    marginBottom={1}
+                    color={"textSecondary"}
+                  />
+                ),
+              }}
+            >
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                marginBottom={1}
+                color={"textSecondary"}
+              >
+                If the last price goes up to or above value Symbol2 , and order
+                to tradeType value2 Symbol1 at a price of price Symbol2 will be
+                placed.
+              </Typography>
+            </Trans>
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-stopLimit">
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {baseSymbol + " / " + quoteSymbol}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {t("labelStopLimitType", { tradeType })}
+              </Typography>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {t("labelStopLimitStopPrice")}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {stopPrice + " " + quoteSymbol}
+              </Typography>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {t("labelStopLimitPriceLimitPrice")}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {limitPrice + " " + quoteSymbol}
+              </Typography>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {t("labelStopLimitAmount")}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {baseValue + " " + baseSymbol}
+              </Typography>
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          {/*<Button*/}
+          {/*  variant={"outlined"}*/}
+          {/*  size={"medium"}*/}
+          {/*  onClick={(e) => handleClose(e as any)}*/}
+          {/*>*/}
+          {/*  {t("labelOrderCancel")}*/}
+          {/*</Button>*/}
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelStopLimitConfirm")}
           </Button>
         </DialogActions>
       </Dialog>

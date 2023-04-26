@@ -5,7 +5,7 @@ import {
   SwitchPanelProps,
 } from "../../basic-lib";
 import { IBData, TRADE_TYPE } from "@loopring-web/common-resources";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { TransferProps } from "../../tradePanel";
 import {
   TradeMenuList,
@@ -13,66 +13,21 @@ import {
   useBasicTrade,
 } from "../../tradePanel/components";
 import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
-import { LoopringAPI, RootState, useAccount } from "@loopring-web/core";
+import {
+  LoopringAPI,
+  RootState,
+  useAccount,
+  useIsHebao,
+} from "@loopring-web/core";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
-import { createImageFromInitials } from "@loopring-web/core";
+import {
+  createImageFromInitials,
+  addressToExWalletMapFn,
+} from "@loopring-web/core";
+import { debounce } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
 import { AddressType } from "@loopring-web/loopring-sdk";
-import { useTheme } from "@emotion/react";
-
-const checkIsHebao = (accountAddress: string) =>
-  LoopringAPI.walletAPI!.getWalletType({
-    wallet: accountAddress,
-  }).then((walletType) => {
-    return walletType?.walletType?.loopringWalletContractVersion !== "";
-  });
-type DisplayContact = {
-  name: string;
-  address: string;
-  avatarURL: string;
-  editing: boolean;
-  addressType: AddressType;
-};
-export const getAllContacts = async (
-  offset: number,
-  accountId: number,
-  apiKey: string,
-  accountAddress: string,
-  color: string
-) => {
-  const limit = 100;
-  const recursiveLoad = async (offset: number): Promise<DisplayContact[]> => {
-    const isHebao = await checkIsHebao(accountAddress);
-    const response = await LoopringAPI.contactAPI!.getContacts(
-      {
-        isHebao,
-        accountId,
-        limit,
-        offset,
-      },
-      apiKey
-    );
-    const displayContacts = response.contacts
-      .filter((contact) => contact.addressType !== AddressType.OFFICIAL)
-      .map((contact) => {
-        return {
-          name: contact.contactName,
-          address: contact.contactAddress,
-          avatarURL: createImageFromInitials(32, contact.contactName, color),
-          editing: false,
-          addressType: contact.addressType,
-        } as DisplayContact;
-      });
-    if (response.total > offset + limit) {
-      const rest = await recursiveLoad(offset + limit);
-      return displayContacts.concat(rest);
-    } else {
-      return displayContacts;
-    }
-  };
-  return recursiveLoad(offset);
-};
 
 export const TransferPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -107,30 +62,87 @@ export const TransferPanel = withTranslation(["common", "error"], {
     React.useEffect(() => {
       setPanelIndex(index + 1);
     }, [index]);
+    type DisplayContact = {
+      name: string;
+      address: string;
+      avatarURL: string;
+      editing: boolean;
+      addressType: AddressType;
+    };
+    // const [contacts, setContacts] = React.useState(undefined as DisplayContact[] | undefined);
     const contacts = useSelector((state: RootState) => state.contacts.contacts);
     const dispatch = useDispatch();
     const {
       account: { accountId, apiKey, accAddress },
     } = useAccount();
-    const theme = useTheme();
-    const loadContacts = async () => {
-      dispatch(updateContacts(undefined));
-      try {
-        const allContacts = await getAllContacts(
-          0,
+    const { isHebao } = useIsHebao();
+
+    const throttled = useRef(
+      debounce(({ isHebao, contacts, eventTarget }) => {
+        const _eventTarget = eventTarget as HTMLDivElement;
+        if (
+          _eventTarget.scrollTop + _eventTarget.clientHeight >=
+          _eventTarget.scrollHeight
+        ) {
+          if (isHebao === undefined) return;
+          LoopringAPI.contactAPI!.getContacts(
+            {
+              isHebao,
+              accountId,
+              offset: contacts?.length,
+              limit: 10,
+            },
+            apiKey
+          ).then((response) => {
+            dispatch(
+              updateContacts([
+                ...(contacts ? contacts : []),
+                ...response.contacts.map((xx) => {
+                  return {
+                    name: xx.contactName,
+                    address: xx.contactAddress,
+                    avatarURL: createImageFromInitials(
+                      32,
+                      xx.contactName,
+                      "#FFC178"
+                    ),
+                    editing: false,
+                    addressType: xx.addressType,
+                  } as DisplayContact;
+                }),
+              ])
+            );
+          });
+        }
+      }, 1000)
+    );
+
+    useEffect(() => {
+      if (isHebao === undefined || (contacts && contacts?.length > 0)) return;
+      LoopringAPI.contactAPI!.getContacts(
+        {
+          isHebao,
           accountId,
-          apiKey,
-          accAddress,
-          theme.colorBase.warning
-        );
-        dispatch(updateContacts(allContacts));
-      } catch (e) {
-        dispatch(updateContacts([]));
-      }
-    };
-    React.useEffect(() => {
-      loadContacts();
-    }, [accountId]);
+          limit: 10,
+        },
+        apiKey
+      )
+        .then((x: any) => {
+          const displayContacts = x.contacts.map((xx: any) => {
+            return {
+              name: xx.contactName,
+              address: xx.contactAddress,
+              avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), //todo
+              editing: false,
+              addressType: xx.addressType,
+            } as DisplayContact;
+          });
+          dispatch(updateContacts(displayContacts));
+        })
+        .catch((e) => {
+          dispatch(updateContacts([]));
+        });
+    }, [isHebao, accountId]);
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(
@@ -258,6 +270,20 @@ export const TransferPanel = withTranslation(["common", "error"], {
             onSelect={(address) => {
               setPanelIndex(1);
               rest.handleOnAddressChange(address, true);
+              // const contact = contacts?.find(x => x.address === address)
+              // // if (contact) {
+              // //   const v = addressToExWalletMapFn(contact.addressType)
+              // //   v && rest.handleSureItsLayer2(v)
+              // // }
+              // && addressToExWalletMapFn(contact?.addressType)
+
+              // addressTo
+              // contact?.addressType
+              // add
+              // address
+            }}
+            onScroll={(eventTarget) => {
+              throttled.current({ isHebao, contacts, eventTarget });
             }}
             scrollHeight={"380px"}
           />
@@ -288,6 +314,127 @@ export const TransferPanel = withTranslation(["common", "error"], {
       ],
     };
 
+    // const props: SwitchPanelProps<string> = {
+    //   index: panelIndex, // show default show
+    //   panelList: [
+    //     {
+    //       key: "confirm",
+    //       element: React.useMemo(
+    //         () => (
+    //           <TransferConfirm
+    //             {...{
+    //               ...rest,
+    //               onTransferClick,
+    //               type,
+    //               tradeData: switchData.tradeData,
+    //               isThumb,
+    //               handleConfirm,
+    //             }}
+    //           />
+    //         ),
+    //         [rest, onTransferClick, type, switchData.tradeData, isThumb]
+    //       ),
+    //       toolBarItem: (
+    //         <ModalBackButton
+    //           marginTop={0}
+    //           marginLeft={-2}
+    //           onBack={() => {
+    //             setPanelIndex(1);
+    //           }}
+    //           {...rest}
+    //         />
+    //       ),
+    //     },
+    //     {
+    //       key: "trade",
+    //       element: React.useMemo(
+    //         () => (
+    //           // @ts-ignore
+    //           <TransferWrap
+    //             key={"trade"}
+    //             {...{
+    //               ...rest,
+    //               type,
+    //               walletMap,
+    //               coinMap,
+    //               chargeFeeTokenList: chargeFeeTokenList || [],
+    //               tradeData: switchData.tradeData,
+    //               onChangeEvent,
+    //               isThumb,
+    //               disabled: !!rest.disabled,
+    //               handleConfirm,
+    //               // onTransferClick,
+    //               transferBtnStatus,
+    //               assetsData,
+    //               addrStatus,
+    //               isAddressCheckLoading,
+    //             }}
+    //           />
+    //         ),
+    //         [
+    //           rest,
+    //           type,
+    //           chargeFeeTokenList,
+    //           switchData.tradeData,
+    //           onChangeEvent,
+    //           isThumb,
+    //           onTransferClick,
+    //           transferBtnStatus,
+    //           assetsData,
+    //           addrStatus,
+    //           isAddressCheckLoading,
+    //         ]
+    //       ),
+    //       toolBarItem: React.useMemo(
+    //         () => (
+    //           <>
+    //             {onBack ? (
+    //               <ModalBackButton
+    //                 marginTop={0}
+    //                 marginLeft={-2}
+    //                 onBack={() => {
+    //                   onBack();
+    //                 }}
+    //                 {...rest}
+    //               />
+    //             ) : (
+    //               <></>
+    //             )}
+    //           </>
+    //         ),
+    //         [onBack]
+    //       ),
+    //     },
+    //   ].concat(
+    //     type === "TOKEN"
+    //       ? ([
+    //           {
+    //             key: "tradeMenuList",
+    //             element: React.useMemo(
+    //               () => (
+    //                 <TradeMenuList
+    //                   {...{
+    //                     nonZero: true,
+    //                     sorted: true,
+    //                     ...rest,
+    //                     onChangeEvent,
+    //                     walletMap,
+    //                     coinMap,
+    //                     selected: switchData.tradeData.belong,
+    //                     tradeData: switchData.tradeData,
+    //                     //oinMap
+    //                   }}
+    //                 />
+    //               ),
+    //               [switchData, rest, onChangeEvent]
+    //             ),
+    //             // toolBarItem: undefined,
+    //             toolBarItem: undefined,
+    //           },
+    //         ] as any)
+    //       : []
+    //   ),
+    // };
     return <SwitchPanel {...{ ...rest, ...props }} />;
   }
 ) as <T, I>(

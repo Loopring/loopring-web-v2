@@ -308,6 +308,14 @@ export type AddressItemType<T> = {
   maxWidth?: string | number;
 };
 
+// export enum AddressItemType<T> = {
+//   value: T;
+//   label: string;
+//   description: string;
+//   disabled?: boolean;
+//   maxWidth?: string | number;
+// };
+
 export const useAddressTypeLists = <
   T extends WALLET_TYPE | EXCHANGE_TYPE
 >() => {
@@ -342,6 +350,64 @@ export const useAddressTypeLists = <
       description: t(`label${WALLET_TYPE.Exchange}Des`),
     },
   ];
+  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (
+    type: WALLET_TYPE
+  ) => {
+    if (type === WALLET_TYPE.Exchange) throw "wrong type";
+    return [
+      {
+        label: t("labelWalletTypeOptions", {
+          type: t(`labelWalletType${WALLET_TYPE.EOA}`),
+        }),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: WALLET_TYPE.EOA as T,
+        description: t(`label${WALLET_TYPE.EOA}Des`),
+      },
+      {
+        label: t("labelWalletTypeOptions", {
+          type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
+        }),
+        disabled: type === WALLET_TYPE.Loopring ? false : true,
+        value: WALLET_TYPE.Loopring as T,
+        description: t(`label${WALLET_TYPE.Loopring}Des`),
+      },
+      {
+        label: t("labelWalletTypeOptions", {
+          type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
+        }),
+        disabled: type === WALLET_TYPE.OtherSmart ? false : true,
+        value: WALLET_TYPE.OtherSmart as T,
+        description: t(`label${WALLET_TYPE.OtherSmart}Des`),
+      },
+      {
+        label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: EXCHANGE_TYPE.Binance as T,
+        // todo translation
+        description:
+          "Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
+        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+      },
+      {
+        label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: EXCHANGE_TYPE.Huobi as T,
+        // todo translation
+        description:
+          "Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.",
+        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+      },
+      {
+        label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
+        disabled: type === WALLET_TYPE.EOA ? false : true,
+        value: EXCHANGE_TYPE.Others as T,
+        // todo translation
+        description:
+          "The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
+        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+      },
+    ];
+  };
   const nonExchangeList: AddressItemType<T>[] = [
     {
       label: t(`labelNonExchangeType`),
@@ -375,6 +441,7 @@ export const useAddressTypeLists = <
   ];
   return {
     walletList,
+    walletListFn,
     nonExchangeList,
     exchangeList,
   };
@@ -389,6 +456,7 @@ export const enum InvestMapType {
   STAKE = "STAKE",
   DUAL = "DUAL",
   STAKELRC = "STAKELRC",
+  // BTradeInvest = "BTradeInvest",
 }
 
 export const InvestOpenType = [
@@ -396,6 +464,7 @@ export const InvestOpenType = [
   InvestMapType.STAKE,
   InvestMapType.DUAL,
   InvestMapType.STAKELRC,
+  // InvestMapType.BTradeInvest,
 ];
 
 export const enum InvestDuration {

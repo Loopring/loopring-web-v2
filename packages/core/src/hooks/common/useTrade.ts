@@ -785,7 +785,7 @@ export function usePlaceOrder() {
   const makeStopLimitReqInHook = React.useCallback(
     <T extends ReqParams & { stopLimitPrice?: string | number }>(params: T) => {
       const { tokenAmtMap, feeBips } = getTokenAmtMap(params);
-      const { tickerMap } = store.getState().tickerMap;
+
       myLog("makeLimitReqInHook tokenAmtMap:", tokenAmtMap, feeBips);
       let sellUserOrderInfo = undefined,
         buyUserOrderInfo = undefined,
@@ -793,29 +793,21 @@ export function usePlaceOrder() {
         calcTradeParams = undefined,
         stopLimitRequest = undefined,
         stopSide = undefined;
-
-      if (exchangeInfo && params?.depth?.symbol && params.quote && tickerMap) {
-        const ticker = tickerMap[params.depth.symbol];
-
-        let midStopPrice = ticker?.close;
+      if (exchangeInfo && params.market) {
+        const { close } = tickerMap[params.market];
         if (params.stopLimitPrice == undefined) {
           params.stopLimitPrice = 0;
         }
-
-        stopSide = midStopPrice
-          ? sdk.toBig(params.stopLimitPrice).lte(midStopPrice)
+        if (params.isBuy) {
+          sdk.toBig(params.stopLimitPrice).gt(close);
+          stopSide = sdk.toBig(params.stopLimitPrice).gt(close)
             ? sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
-            : sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
-          : undefined;
-        myLog(
-          "stopSide",
-          stopSide,
-          "stopLimitPrice",
-          midStopPrice,
-          "stopLimitPrice",
-          params.stopLimitPrice
-        );
-
+            : sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL;
+        } else {
+          stopSide = sdk.toBig(params.stopLimitPrice).gt(close)
+            ? sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
+            : sdk.STOP_SIDE.LESS_THAN_AND_EQUAL;
+        }
         const fullParams: T = {
           ...params,
           exchangeAddress: exchangeInfo.exchangeAddress,
@@ -839,7 +831,6 @@ export function usePlaceOrder() {
         myLog("makeLimitReqInHook error no tokenAmtMap", tokenAmtMap);
       }
       return {
-        // stopRange,
         sellUserOrderInfo,
         buyUserOrderInfo,
         minOrderInfo,

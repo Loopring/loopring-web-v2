@@ -37,6 +37,7 @@ export const Exchange = "https://loopring.io/#/";
 export const YEAR_PROMATE = "YYYY";
 export const DAY_FORMAT = "MM/DD";
 export const MINUTE_FORMAT = "HH:mm";
+export const DAY_MINUTE_FORMAT = `${DAY_FORMAT} ${MINUTE_FORMAT}`;
 export const DAT_STRING_FORMAT = "MMM DD [UTC]Z";
 export const SECOND_FORMAT = `${MINUTE_FORMAT}:ss`;
 export const YEAR_DAY_FORMAT = `${YEAR_PROMATE}/${DAY_FORMAT}`;
@@ -91,3 +92,4 @@ export const MapChainId = {
 export enum ChainIdExtends {
   TAIKO_A2 = 167004,
 }
+export const REDPACKET_SHOW_NFTS = false; // Toogle to hide or show NFT Red Packet
