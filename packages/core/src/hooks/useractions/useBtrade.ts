@@ -903,12 +903,15 @@ export const useBtradeSwap = <
               )
             : 0;
           _tradeData[isAtoB ? "buy" : "sell"].tradeValue =
-            getValuePrecisionThousand(
-              calcDexOutput[`amount${isAtoB ? "B" : "S"}`],
-              isAtoB ? buyToken.precision : sellToken.precision,
-              isAtoB ? buyToken.precision : sellToken.precision,
-              isAtoB ? buyToken.precision : sellToken.precision
-            ).replace(sdk.SEP, "");
+            !_tradeData[isAtoB ? "sell" : "buy"].tradeValue &&
+            _tradeData[isAtoB ? "sell" : "buy"].tradeValue != "0"
+              ? (undefined as any)
+              : getValuePrecisionThousand(
+                  calcDexOutput[`amount${isAtoB ? "B" : "S"}`],
+                  isAtoB ? buyToken.precision : sellToken.precision,
+                  isAtoB ? buyToken.precision : sellToken.precision,
+                  isAtoB ? buyToken.precision : sellToken.precision
+                ).replace(sdk.SEP, "");
           let result = reCalcStoB({
             market,
             tradeData: _tradeData as SwapTradeData<IBData<unknown>>,

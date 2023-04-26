@@ -2112,8 +2112,10 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
     tradeType,
     limitPrice,
     stopPrice,
-    ...props
-  }: WithTranslation & {
+    baseValue,
+    quoteValue,
+  }: // ...props
+  WithTranslation & {
     open: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   } & {
@@ -2125,12 +2127,12 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
     limitPrice: string;
     stopPrice: string;
   }) => {
-    const [agree, setAgree] = React.useState(false);
-    React.useEffect(() => {
-      if (!open) {
-        setAgree(false);
-      }
-    }, [open]);
+    // const [agree, setAgree] = React.useState(false);
+    // React.useEffect(() => {
+    //   if (!open) {
+    //     setAgree(false);
+    //   }
+    // }, [open]);
     return (
       <Dialog
         open={open}
@@ -2176,9 +2178,9 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
                 marginBottom={1}
                 color={"textSecondary"}
               >
-                If the last price goes up to or above {{ value }} {{ Symbol2 }},
-                and order to {{ tradeType }} {{ value2 }} {{ Symbol1 }} at a
-                price of {{ price }} {{ Symbol2 }} will be placed.
+                If the last price goes up to or above value Symbol2 , and order
+                to tradeType value2 Symbol1 at a price of price Symbol2 will be
+                placed.
               </Typography>
             </Trans>
           </DialogContentText>
