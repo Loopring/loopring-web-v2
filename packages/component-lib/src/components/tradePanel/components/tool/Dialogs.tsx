@@ -38,6 +38,7 @@ import {
   Info2Icon,
   SoursURL,
   TradeDefi,
+  TradeTypes,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
@@ -2094,6 +2095,197 @@ export const ConfirmBtradeSwapRisk = withTranslation("common")(
             color={"primary"}
           >
             {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+
+export const ConfirmStopLimitRisk = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+    baseSymbol,
+    quoteSymbol,
+    tradeType,
+    limitPrice,
+    stopPrice,
+    ...props
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  } & {
+    baseSymbol: string;
+    quoteSymbol: string;
+    tradeType: TradeTypes;
+    baseValue: string;
+    quoteValue: string;
+    limitPrice: string;
+    stopPrice: string;
+  }) => {
+    const [agree, setAgree] = React.useState(false);
+    React.useEffect(() => {
+      if (!open) {
+        setAgree(false);
+      }
+    }, [open]);
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>
+          {" "}
+          {t(`labelStopLimit`, {
+            symbol1: baseSymbol,
+            tradeType: tradeType,
+          })}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-stopLimit">
+            <Trans
+              i18nKey={`labelStopLimitDes`}
+              tOptions={{
+                value1: baseValue,
+                value2: quoteValue,
+                symbol2: quoteSymbol,
+                symbol1: baseSymbol,
+              }}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"span"}
+                    variant={"body1"}
+                    display={"block"}
+                    marginBottom={1}
+                    color={"textSecondary"}
+                  />
+                ),
+              }}
+            >
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                marginBottom={1}
+                color={"textSecondary"}
+              >
+                If the last price goes up to or above {{ value }} {{ Symbol2 }},
+                and order to {{ tradeType }} {{ value2 }} {{ Symbol1 }} at a
+                price of {{ price }} {{ Symbol2 }} will be placed.
+              </Typography>
+            </Trans>
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-stopLimit">
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {baseSymbol + " / " + quoteSymbol}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {t("labelStopLimitType", { tradeType })}
+              </Typography>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {t("labelStopLimitStopPrice")}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {stopPrice + " " + quoteSymbol}
+              </Typography>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {t("labelStopLimitPriceLimitPrice")}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {limitPrice + " " + quoteSymbol}
+              </Typography>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {t("labelStopLimitAmount")}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {baseValue + " " + baseSymbol}
+              </Typography>
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          {/*<Button*/}
+          {/*  variant={"outlined"}*/}
+          {/*  size={"medium"}*/}
+          {/*  onClick={(e) => handleClose(e as any)}*/}
+          {/*>*/}
+          {/*  {t("labelOrderCancel")}*/}
+          {/*</Button>*/}
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelStopLimitConfirm")}
           </Button>
         </DialogActions>
       </Dialog>

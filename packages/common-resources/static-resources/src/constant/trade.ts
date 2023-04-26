@@ -389,6 +389,7 @@ export const enum InvestMapType {
   STAKE = "STAKE",
   DUAL = "DUAL",
   STAKELRC = "STAKELRC",
+  // BTradeInvest = "BTradeInvest",
 }
 
 export const InvestOpenType = [
@@ -396,6 +397,7 @@ export const InvestOpenType = [
   InvestMapType.STAKE,
   InvestMapType.DUAL,
   InvestMapType.STAKELRC,
+  // InvestMapType.BTradeInvest,
 ];
 
 export const enum InvestDuration {

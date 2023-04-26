@@ -1631,4 +1631,13 @@ export default {
     "The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
   labelBtradeInsufficient: "Insufficient",
   labelBtradeTime: "Time",
+  labelStopLimit: "Stop-Limit {{tradeType}} {{symbol1}}",
+  labelStopLimitDes:
+    "If the last price goes up to or above {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {symbol1}} at a price of {{price}} {{symbol2}} will be placed.",
+  labelStopLimitType: "Stop Limit / {{tradeType}}",
+  labelStopLimitStopPrice: "Stop Price",
+  labelStopLimitPriceLimitPrice: "Limit Price",
+  labelStopLimitAmount: "labelStopLimit",
+  labelStopLimitCancel: "Cancel",
+  labelStopLimitConfirm: "Confirm",
 };

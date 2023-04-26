@@ -109,7 +109,7 @@ export const useBtradeSwap = <
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { account, status: accountStatus } = useAccount();
   const {
-    toggle: { btradeOrder },
+    toggle: { BTradeInvest },
   } = useToggle();
 
   /** loaded from loading **/
@@ -520,7 +520,7 @@ export const useBtradeSwap = <
       setShowSupport({ isShow: true });
       setIsBtradeLoading(false);
       return;
-    } else if (!btradeOrder.enable) {
+    } else if (!BTradeInvest.enable) {
       setShowTradeIsFrozen({
         isShow: true,
         type: t("labelBtradeSwap"),
