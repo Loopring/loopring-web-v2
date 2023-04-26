@@ -10,7 +10,6 @@ import {
 } from "@loopring-web/component-lib";
 import React from "react";
 import { confirmation, ViewAccountTemplate } from "@loopring-web/core";
-import { usePopupState } from "material-ui-popup-state/hooks";
 import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
@@ -109,7 +108,9 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
     confirmDualInvest: confirmDualInvestFun,
     confirmedLRCStakeInvest: confirmedLRCInvestFun,
   } = confirmation.useConfirmation();
-  const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
+  const [confirmDualInvest, setConfirmDualInvest] = React.useState(
+    "hidden" as "hidden" | "all" | "USDCOnly"
+  );
   const [confirmedLRCStakeInvest, setConfirmedLRCStakeInvestInvest] =
     React.useState<boolean>(false);
 
@@ -212,7 +213,8 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       </Box>
 
       <ConfirmInvestDualRisk
-        open={confirmDualInvest}
+        open={confirmDualInvest !== "hidden"}
+        USDCOnly={confirmDualInvest === "USDCOnly"}
         handleClose={(_e, isAgree) => {
           if (!isAgree) {
             history.goBack();

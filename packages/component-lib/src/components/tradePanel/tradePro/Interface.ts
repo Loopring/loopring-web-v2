@@ -28,6 +28,9 @@ export type TradeLimitInfoProps<T, TCD extends TradeCalcProData<I>, I> = {
   tokenBaseProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
   tokenQuoteProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
 };
+export type StopTradeLimitInfoProps<T, TCD extends TradeCalcProData<I>, I> = {
+  stopPriceProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
+} & TradeLimitInfoProps<T, TCD, I>;
 
 export type TradeMarketInfoProps<T, TCD extends TradeCalcProData<I>, I> = {
   tradeMarketI18nKey?: string;

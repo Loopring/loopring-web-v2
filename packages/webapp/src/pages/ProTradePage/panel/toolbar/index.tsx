@@ -3,11 +3,12 @@ import { TFunction, withTranslation } from "react-i18next";
 import * as _ from "lodash";
 import {
   CoinInfo,
+  ConfigLayout,
   CurrencyToTag,
   DropDownIcon,
   EmptyValueTag,
   getValuePrecisionThousand,
-  layoutConfigs,
+  layoutConfigs as _layoutConfigs,
   MarketType,
   PriceTag,
   SagaStatus,
@@ -75,11 +76,13 @@ export const Toolbar = withTranslation("common")(
     market,
     handleLayoutChange,
     handleOnMarketChange,
+    layoutConfigs = _layoutConfigs,
     // ,marketTicker
     t,
   }: {
     t: TFunction<"translation">;
     market: MarketType;
+    layoutConfigs?: Array<ConfigLayout>;
     handleLayoutChange: (
       currentLayout: Layout[],
       allLayouts?: Layouts,
@@ -115,10 +118,6 @@ export const Toolbar = withTranslation("common")(
     const { currency } = useSettings();
     const { forexMap } = useSystem();
     const { tokenPrices } = useTokenPrices();
-    const history = useHistory();
-
-    const isUSD = currency === Currency.usd;
-
     const getMarketPrecision = React.useCallback(
       (market: string) => {
         if (marketMap) {

@@ -74,6 +74,7 @@ import { investReducer } from "./invest";
 import { walletL2CollectionSlice } from "./walletL2Collection/reducer";
 import { walletL2NFTCollectionSlice } from "./walletL2NFTCollection/reducer";
 import { tradeBtradeSlice } from "./router/tradeBtrade";
+import { contactsSlice } from "./contacts/reducer";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -160,6 +161,7 @@ const reducer = combineReducers({
   amountMap: amountMapSlice.reducer,
   notifyMap: notifyMapSlice.reducer,
   firebase: firebaseReducer,
+  contacts: contactsSlice.reducer,
   _router_tradeDefi: tradeDefiSlice.reducer,
   _router_tradeDual: tradeDualSlice.reducer,
   _router_tradeStake: tradeStakeSlice.reducer,
@@ -270,3 +272,4 @@ export * from "./walletL2Collection";
 export * from "./walletL2NFTCollection";
 
 export * from "./invest";
+export * from "./contacts";

@@ -5,6 +5,7 @@ import {
   i18n,
   LanguageKeys,
   layoutConfigs,
+  stopLimitLayoutConfigs,
   ThemeKeys,
   ThemeType,
   UpColor,
@@ -29,6 +30,7 @@ const initialState: SettingsState = {
   hideSmallBalances: true,
   isMobile: false,
   proLayout: layoutConfigs[0].layouts,
+  stopLimitLayout: stopLimitLayoutConfigs[0].layouts,
   swapSecondConfirmation: true,
   isTaikoTest: false,
   isShowTestToggle: false,
@@ -171,6 +173,14 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
       // }
       // myLog(action.payload,state.proLayout )
     },
+    setStopLimitLayouts(state, action: PayloadAction<Layouts>) {
+      // localStore.setItem('UpColor',action.payload)
+      const result: Layouts = {
+        ...state.stopLimitLayout,
+        ...action.payload,
+      };
+      state.stopLimitLayout = result;
+    },
     setSwapSecondConfirmation(state, action: PayloadAction<boolean>) {
       state.swapSecondConfirmation = action.payload;
     },
@@ -178,6 +188,7 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
 });
 export const {
   setLayouts,
+  setStopLimitLayouts,
   setIsTaikoTest,
   setTheme,
   setLanguage,

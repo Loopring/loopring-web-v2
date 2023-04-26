@@ -238,7 +238,11 @@ export const ModalPanel = <
       <Modal
         open={isShowTransfer.isShow}
         contentClassName={"trade-wrap"}
-        onClose={() => setShowTransfer({ isShow: false })}
+        onClose={() => {
+          isShowTransfer.info?.onCloseCallBack &&
+            isShowTransfer.info?.onCloseCallBack();
+          setShowTransfer({ isShow: false });
+        }}
         content={
           <TransferPanel<any, any>
             {...{
@@ -255,23 +259,26 @@ export const ModalPanel = <
       <Modal
         open={isShowWithdraw.isShow}
         contentClassName={"trade-wrap"}
-        onClose={() => setShowWithdraw({ isShow: false })}
+        onClose={() => {
+          isShowWithdraw.info?.onCloseCallBack &&
+            isShowWithdraw.info?.onCloseCallBack();
+          setShowWithdraw({ isShow: false });
+        }}
         content={
           <WithdrawPanel<any, any>
             {...{
               ...rest,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: "auto",
+              _height: isMobile ? "auto" : 500,
               ...withdrawProps,
               assetsData,
               isFromContact: isShowWithdraw.address ? true : false,
               contact: isShowWithdraw.address
                 ? {
-                  address: isShowWithdraw.address!,
-                  name: isShowWithdraw.name!,
-                }
+                    address: isShowWithdraw.address!,
+                    name: isShowWithdraw.name!,
+                  }
                 : undefined,
-
             }}
           />
         }
@@ -323,12 +330,19 @@ export const ModalPanel = <
               // _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
-              _height: "auto",
+              _height: isMobile ? "auto" : 500,
               isThumb: false,
               ...nftWithdrawProps,
               type: TRADE_TYPE.NFT,
               baseURL,
               assetsData,
+              isFromContact: isShowNFTWithdraw.address ? true : false,
+              contact: isShowNFTWithdraw.address
+                ? {
+                    address: isShowNFTWithdraw.address!,
+                    name: isShowNFTWithdraw.name!,
+                  }
+                : undefined,
             }}
             onBack={() => {
               setShowNFTWithdraw({ isShow: false });

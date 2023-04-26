@@ -69,7 +69,8 @@ export const TradePro = withTranslation("tables")(
   }: WithTranslation & TradeProTableProps) => {
     const { currency, isMobile } = useSettings();
     // @ts-ignore
-    const [, baseSymbol, quoteSymbol] = marketInfo.market.match(/(\w+)-(\w+)/i);
+    const [, baseSymbol, quoteSymbol] =
+      marketInfo?.market?.match(/(\w+)-(\w+)/i);
     const getColumnModeAssets = (
       t: TFunction,
       _currency: Currency,

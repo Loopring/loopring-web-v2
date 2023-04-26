@@ -815,7 +815,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
       if (LoopringAPI && LoopringAPI.defiAPI && accountId && apiKey) {
         setShowLoading(true);
         const userOrders = await LoopringAPI.defiAPI.getBtradeOrders({
-          request: { accountId },
+          request: { accountId, limit: props.limit, offset: props.offset },
           apiKey,
         });
         if (
@@ -935,12 +935,15 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 toToken.precision,
                 undefined
               );
-              const feeAmount = getValuePrecisionThousand(
-                sdk.toBig(fee ?? 0).div("1e" + toToken.decimals),
-                toToken.precision,
-                toToken.precision,
-                undefined
-              );
+              const feeAmount =
+                fee && fee != 0
+                  ? getValuePrecisionThousand(
+                      sdk.toBig(fee ?? 0).div("1e" + toToken.decimals),
+                      toToken.precision,
+                      toToken.precision,
+                      undefined
+                    )
+                  : undefined;
               const feeSymbol = toSymbol;
 
               let type;
@@ -1007,7 +1010,8 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
           item.toFAmount && item.toFAmount !== "0" ? item.toFAmount : undefined,
         buyStr: item.toAmount,
         convertStr: `1${item.fromSymbol} \u2248 ${item.price.value} ${item.toSymbol}`,
-        feeStr: item?.feeAmount,
+        // @ts-ignore
+        feeStr: item?.feeAmount == 0 ? undefined : item?.feeAmount,
         time: item?.time ?? undefined,
       };
       switch (item.type) {

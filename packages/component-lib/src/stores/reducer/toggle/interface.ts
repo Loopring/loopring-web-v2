@@ -1,6 +1,5 @@
 export type ToggleState = {
   order: { enable: boolean; reason?: string };
-  btradeOrder: { enable: boolean; reason?: string };
   joinAmm: { enable: boolean; reason?: string };
   exitAmm: { enable: boolean; reason?: string };
   transfer: { enable: boolean; reason?: string };
@@ -20,4 +19,6 @@ export type ToggleState = {
   claim: { enable: boolean; reason?: string };
   redPacketNFTV1: { enable: boolean; reason?: string };
   LRCStackInvest: { enable: boolean; reason?: string };
+  BTradeInvest: { enable: boolean; reason?: string };
+  StopLimit: { enable: boolean; reason?: string };
 };

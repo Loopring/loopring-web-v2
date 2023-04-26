@@ -1,5 +1,6 @@
 import {
   AssetsIcon,
+  ContactIcon,
   ImageIcon,
   L2MyLiquidityIcon,
   MintIcon,
@@ -62,6 +63,16 @@ export const profile = {
       label: {
         id: "vip",
         i18nKey: "labelVipPanel",
+      },
+    },
+  ],
+  contact: [
+    {
+      icon: ContactIcon,
+      router: { path: "/contact" },
+      label: {
+        id: "contact",
+        i18nKey: "labelContactsPanel",
       },
     },
   ],
@@ -171,12 +182,21 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
+      id: "stopLimit",
+      i18nKey: "labelStopLimit",
+      description: "labelStopLimitDescription",
+    },
+    router: { path: "/trade/stoplimit/${pair}" },
+  },
+  {
+    label: {
       id: "btrade",
       i18nKey: "labelBtradeTrade",
       description: "labelBtradeTradeDescription",
     },
     router: { path: "/trade/btrade/${pair}" },
   },
+
   {
     label: {
       id: "fiat",

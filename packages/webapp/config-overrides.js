@@ -9,8 +9,6 @@ const {
 } = require("customize-cra");
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin"); //installed via npm
-
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 // const rewireLess = require('react-app-rewire-less')
@@ -91,13 +89,16 @@ module.exports = override(
 
   (config) => {
     config.output.publicPath = ASSET_PATH;
+    console.log(path.resolve(__dirname, "..", "assets/"));
+    console.log("-----> enter config!!!!!!!", process.env.NODE_ENV);
+
     const setConfig = (index) => {
       console.log("-----> enter setConfig!!!!!!! index:", index);
       let babelLoader = config.module.rules[1].oneOf[index];
       babelLoader.include = babelLoader.include.replace("/webapp/src", "");
       babelLoader.include = [
         babelLoader.include,
-        ...(process.env.NODE_ENV === "dev"
+        ...(process.env.NODE_ENV === "development"
           ? [
               path.resolve(__dirname, "../../node_modules/@web3modal"),
               path.resolve(__dirname, "../../node_modules/@walletconnect"),
@@ -112,21 +113,12 @@ module.exports = override(
     };
 
     setConfig(4);
-    // config = {
-    //   ...config,
-    //   stats: {
-    //     ...config.stats,
-    //     moduleAssets: false,
-    //     // dependentModules: false,
-    //   },
-    // };
     config.resolve.alias = {
       ...config.resolve.alias,
       "@material-ui/core/Menu": "@mui/material/Menu",
       "@material-ui/core": "@mui/material",
       "@material-ui/core/Popover": "@mui/material/Popover",
     };
-
     return config;
   }
 );

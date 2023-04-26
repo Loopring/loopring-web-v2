@@ -396,6 +396,7 @@ export const BeginnerMode: any = withTranslation("common")(
                   variant={"body2"}
                   flexDirection={isMobile ? "column" : "row"}
                   alignItems={"center"}
+                  whiteSpace={"pre-wrap"}
                 >
                   {currentPrice &&
                     (!isMobile ? (
