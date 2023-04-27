@@ -456,7 +456,6 @@ export const useBtradeSwap = <
             step: AccountStep.BtradeSwap_Pending,
             info: {
               ...info,
-              time: Number(orderConfirm.list[0]?.validity?.start + "000"),
             },
           });
         }
