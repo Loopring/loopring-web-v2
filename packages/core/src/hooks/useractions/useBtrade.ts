@@ -520,7 +520,7 @@ export const useBtradeSwap = <
       setShowSupport({ isShow: true });
       setIsBtradeLoading(false);
       return;
-    } else if (!BTradeInvest.enable || !marketMap[market]?.enabled) {
+    } else if (!marketMap[market]?.enabled || !BTradeInvest.enable) {
       setShowTradeIsFrozen({
         isShow: true,
         type: t("labelBtradeSwap"),
@@ -530,7 +530,7 @@ export const useBtradeSwap = <
     } else {
       sendRequest();
     }
-  }, []);
+  }, [market]);
 
   const {
     btnStatus: swapBtnStatus,
