@@ -26,6 +26,7 @@ import {
   SoursURL,
   BackIcon,
   YEAR_DAY_MINUTE_FORMAT,
+  DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import QRCodeStyling from "qr-code-styling";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -732,7 +733,7 @@ RedPacketDefault & RedPacketUnreadyProps) => {
             marginTop={3}
             top={0}
           >
-            {`${moment(validSince).format("MM/DD HH:mm")} ${t(
+            {`${moment(validSince).format(DAY_MINUTE_FORMAT)} ${t(
               "labelOpenStart"
             )}`}
           </Typography>
