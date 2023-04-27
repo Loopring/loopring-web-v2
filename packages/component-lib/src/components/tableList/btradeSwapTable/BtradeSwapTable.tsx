@@ -111,6 +111,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
               [BtradeSwapsType.Pending, "var(--color-warning)"],
             ];
             const found = colorMap.find((x) => x[0] === row?.type);
+
             return (
               <Box
                 display={"flex"}
@@ -127,7 +128,15 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
                       display={"inline-flex"}
                       alignItems={"center"}
                     >
-                      {t("labelBtrade" + row?.type)}
+                      {t(
+                        "labelBtrade" +
+                          // @ts-ignore
+                          (row?.type == BtradeSwapsType.Failed ||
+                          // @ts-ignore
+                          row?.type == BtradeSwapsType.Cancelled
+                            ? BtradeSwapsType.Failed.toString()
+                            : row?.type)
+                      )}
                       <Info2Icon
                         fontSize={"small"}
                         color={"inherit"}
