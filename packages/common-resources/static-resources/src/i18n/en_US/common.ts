@@ -1599,7 +1599,7 @@ export default {
   labelBtradeSwapSettled: "Settled",
   labelBtradeSwapDelivering: "Delivering",
   labelBtradeSwapPanelDes:
-    "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
+    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
   labelGoBtradeSwap:
     "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",
