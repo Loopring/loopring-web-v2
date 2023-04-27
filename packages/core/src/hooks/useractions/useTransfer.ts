@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useEffect } from "react";
+import React, { ChangeEvent } from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -58,17 +58,26 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
-import { AddressType } from "@loopring-web/loopring-sdk";
 import { useDispatch, useSelector } from "react-redux";
 import { updateContacts } from "../../stores/contacts/reducer";
-import { addressToExWalletMapFn, exWalletToAddressMapFn } from "@loopring-web/core";
+import {
+  addressToExWalletMapFn,
+  exWalletToAddressMapFn,
+} from "@loopring-web/core";
 
 export const useTransfer = <R extends IBData<T>, T>() => {
   const { setShowAccount, setShowTransfer } = useOpenModals();
 
   const {
     modals: {
-      isShowTransfer: { symbol, isShow, info, address: contactAddress, name: contactName, addressType: contactAddressType },
+      isShowTransfer: {
+        symbol,
+        isShow,
+        info,
+        address: contactAddress,
+        name: contactName,
+        addressType: contactAddressType,
+      },
     },
   } = useOpenModals();
   const [memo, setMemo] = React.useState("");
@@ -84,11 +93,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-  
- 
+
   const [sureItsLayer2, setSureItsLayer2] =
     React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(undefined);
-  
+
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const [feeWithActive, setFeeWithActive] = React.useState(false);
 
@@ -141,14 +149,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isActiveAccountFee,
     isSameAddress,
     isContractAddress,
-    loopringSmartWalletVersion
+    loopringSmartWalletVersion,
   } = useAddressCheck();
   React.useEffect(() => {
     // setSureItsLayer2(undefined);
     // debugger
   }, [realAddr]);
-
-  
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
@@ -264,8 +270,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     }
     setMemo("");
     if (contactAddress) {
-      setAddress(contactAddress)
-      setIsContactSelection(true)
+      setAddress(contactAddress);
+      setIsContactSelection(true);
     } else {
       setAddress("");
     }
@@ -277,7 +283,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     feeInfo,
     transferValue.belong,
     info?.isRetry,
-    contactAddress
+    contactAddress,
   ]);
 
   React.useEffect(() => {
@@ -351,7 +357,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           ) {
             throw response;
           }
-          info?.onCloseCallBack && info?.onCloseCallBack()
+          info?.onCloseCallBack && info?.onCloseCallBack();
           setShowTransfer({ isShow: false });
           setShowAccount({
             isShow: true,
@@ -443,7 +449,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     ]
   );
 
-  const onTransferClick = useCallback(
+  const onTransferClick = React.useCallback(
     async (transferValue, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
 
@@ -540,7 +546,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     ]
   );
 
-  const handlePanelEvent = useCallback(
+  const handlePanelEvent = React.useCallback(
     async (data: SwitchData<R>) => {
       return new Promise<void>((res: any) => {
         if (data.to === "button") {
@@ -623,21 +629,23 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     }
   }, [isActiveAccount, realAddr]);
 
-  const { isHebao } = useIsHebao()
-  const [isContactSelection, setIsContactSelection] = React.useState(false)
+  const { isHebao } = useIsHebao();
+  const [isContactSelection, setIsContactSelection] = React.useState(false);
   const contacts = useSelector((state: RootState) => state.contacts.contacts);
-  const dispatch = useDispatch()
-  useEffect(() => {
-    const addressType = contacts?.find(x => x.address === realAddr)?.addressType
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    const addressType = contacts?.find(
+      (x) => x.address === realAddr
+    )?.addressType;
     if (isShow === false) {
-      setSureItsLayer2(undefined)
+      setSureItsLayer2(undefined);
     } else if (addressType !== undefined) {
-      const found = addressType 
-      ? addressToExWalletMapFn(addressType)
-      : undefined
-      setSureItsLayer2(found)
+      const found = addressType
+        ? addressToExWalletMapFn(addressType)
+        : undefined;
+      setSureItsLayer2(found);
     }
-  }, [realAddr, isShow, contacts])
+  }, [realAddr, isShow, contacts]);
   const transferProps: TransferProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     addressDefault: address,
@@ -651,24 +659,33 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handleFeeChange,
     feeInfo,
     handleSureItsLayer2: (sure) => {
-      const found = exWalletToAddressMapFn(sure)!
-      const contact = contacts?.find(x => x.address === realAddr)
+      const found = exWalletToAddressMapFn(sure)!;
+      const contact = contacts?.find((x) => x.address === realAddr);
       if (isHebao !== undefined && contact) {
-        LoopringAPI.contactAPI?.updateContact({
-          contactAddress: realAddr,
-          isHebao,
-          accountId: account.accountId,
-          addressType: found,
-          contactName: contact.name
-        }, account.apiKey).then(() => {
-          dispatch(updateContacts(contacts?.map(x => {
-            if (x.address === realAddr) {
-              return {...x, addressType: found}
-            } else {
-              return x
-            }
-          })))
-        })
+        LoopringAPI.contactAPI
+          ?.updateContact(
+            {
+              contactAddress: realAddr,
+              isHebao,
+              accountId: account.accountId,
+              addressType: found,
+              contactName: contact.name,
+            },
+            account.apiKey
+          )
+          .then(() => {
+            dispatch(
+              updateContacts(
+                contacts?.map((x) => {
+                  if (x.address === realAddr) {
+                    return { ...x, addressType: found };
+                  } else {
+                    return x;
+                  }
+                })
+              )
+            );
+          });
       }
       setSureItsLayer2(sure);
     },
@@ -686,21 +703,19 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     addrStatus,
     memo,
     handleOnMemoChange,
-    handleOnAddressChange: (value: any, isContactSelection? : boolean) => {
-      
+    handleOnAddressChange: (value: any, isContactSelection?: boolean) => {
       // setIsContactSelection(isContactSelection ? true : false)
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
         requestType: undefined as any,
       });
       setAddress((state) => {
-        debugger
         if (isContactSelection) {
-          const contact = contacts?.find(x => x.address === value)
-          const v = contact && addressToExWalletMapFn(contact.addressType)
-          v && setSureItsLayer2(v)
+          const contact = contacts?.find((x) => x.address === value);
+          const v = contact && addressToExWalletMapFn(contact.addressType);
+          v && setSureItsLayer2(v);
         } else {
-          setSureItsLayer2(undefined)
+          setSureItsLayer2(undefined);
         }
         if (state !== value || "") {
           // flag = true;
@@ -714,7 +729,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             return false;
           });
         }
-        
+
         return value || "";
       });
     },
@@ -726,7 +741,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       if (value && !isActiveAccountFee) {
         checkFeeIsEnough({
           isRequiredAPI: true,
-          
+
           requestType: sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT,
         });
       } else {
@@ -738,12 +753,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     },
     isSmartContractAddress: isContractAddress,
     isFromContact: contactAddress ? true : false,
-    contact: contactAddress 
+    contact: contactAddress
       ? {
-        address: contactAddress, 
-        name: contactName!,
-        addressType: contactAddressType!
-      }
+          address: contactAddress,
+          name: contactName!,
+          addressType: contactAddressType!,
+        }
       : undefined,
     loopringSmartWalletVersion,
   };
