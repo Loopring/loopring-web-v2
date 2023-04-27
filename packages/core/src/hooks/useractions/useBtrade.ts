@@ -356,11 +356,11 @@ export const useBtradeSwap = <
           accountId: account.accountId,
           sellToken: {
             tokenId: sellToken?.tokenId ?? 0,
-            volume: tradeCalcData.volumeSell,
+            volume: sdk.toBig(tradeCalcData.volumeSell).toFixed(0),
           },
           buyToken: {
             tokenId: buyToken?.tokenId ?? 0,
-            volume: tradeCalcData.volumeBuy,
+            volume: sdk.toBig(tradeCalcData.volumeBuy).toFixed(0),
           },
           validUntil: getTimestampDaysLater(DAYS),
           maxFeeBips: tradeCalcData.maxFeeBips,
