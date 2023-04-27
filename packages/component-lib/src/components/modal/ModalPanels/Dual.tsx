@@ -564,7 +564,12 @@ export const BtradeSwap_Delivering = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: (
-      <Box paddingX={isMobile ? 1 : 5}>
+      <Box
+        paddingX={isMobile ? 1 : 5}
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
+      >
         <Typography
           color={"var(--color-text-primary)"}
           variant={"h5"}
