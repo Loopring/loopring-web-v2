@@ -613,7 +613,7 @@ export const BtradeSwap_Pending = (props: PanelProps) => {
 export const BtradeSwap_Settled = (props: PanelProps) => {
   const { t } = props;
   const propsPatch = {
-    iconType: IconType.SubmitIcon,
+    iconType: IconType.DoneIcon,
     describe1: (
       <Typography
         color={"var(--color-text-primary)"}
