@@ -546,7 +546,7 @@ export const BtradeDetail = (props: any) => {
               component={"span"}
               color={"var(--color-text-primary)"}
             >
-              {moment(new Date(info.time)).fromNow()}
+              {moment(new Date(info.time)).format(YEAR_DAY_MINUTE_FORMAT)}
             </Typography>
           </Typography>
         )}
