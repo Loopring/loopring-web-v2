@@ -815,7 +815,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
       if (LoopringAPI && LoopringAPI.defiAPI && accountId && apiKey) {
         setShowLoading(true);
         const userOrders = await LoopringAPI.defiAPI.getBtradeOrders({
-          request: { accountId },
+          request: { accountId, limit: props.limit, offset: props.offset },
           apiKey,
         });
         if (
