@@ -665,17 +665,11 @@ const MyLiquidity: any = withTranslation("common")(
                     {summaryMyInvest?.dualStakeDollar !== undefined ? (
                       <Typography component={"h4"} variant={"h3"} marginX={3}>
                         {summaryMyInvest?.dualStakeDollar
-                          ? PriceTag[CurrencyToTag[currency]] +
-                            getValuePrecisionThousand(
-                              sdk
-                                .toBig(summaryMyInvest?.dualStakeDollar)
-                                .times(forexMap[currency] ?? 0),
-                              undefined,
-                              undefined,
-                              2,
-                              true,
-                              { isFait: true, floor: true }
-                            )
+                          ? PriceTag[CurrencyToTag[currency]] + 
+                            sdk
+                              .toBig(summaryMyInvest?.dualStakeDollar)
+                              .times(forexMap[currency] ?? 0)
+                              .toFixed(2, 1)
                           : EmptyValueTag}
                       </Typography>
                     ) : (
