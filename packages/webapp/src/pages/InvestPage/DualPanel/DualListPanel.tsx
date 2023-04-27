@@ -39,6 +39,7 @@ import {
   CloseIcon,
   getValuePrecisionThousand,
   HelpIcon,
+  Info2Icon,
   TokenType,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -375,9 +376,29 @@ export const DualListPanel: any = withTranslation("common")(
                         variant={"body2"}
                         flexDirection={isMobile ? "column" : "row"}
                         alignItems={"center"}
+                        whiteSpace={"pre-wrap"}
                       >
                         {currentPrice &&
                           (!isMobile ? (
+                            <>
+                              <Tooltip
+                                title={<>{t("labelDualCurrentPriceTip")}</>}
+                                placement={"top"}
+                              >
+                                <Typography
+                                  component={"p"}
+                                  variant="body2"
+                                  color={"textSecondary"}
+                                  display={"inline-flex"}
+                                  alignItems={"center"}
+                                >
+                                  <Info2Icon
+                                    fontSize={"small"}
+                                    color={"inherit"}
+                                    sx={{ marginX: 1 / 2 }}
+                                  />
+                                </Typography>
+                              </Tooltip>
                             <Trans
                               i18nKey={"labelDualCurrentPrice"}
                               tOptions={{
@@ -414,6 +435,8 @@ export const DualListPanel: any = withTranslation("common")(
                               </Typography>{" "}
                               :
                             </Trans>
+                            </>
+                            
                           ) : (
                             <>
                               <Typography

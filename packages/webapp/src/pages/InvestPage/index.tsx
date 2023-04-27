@@ -107,7 +107,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
     confirmDualInvest: confirmDualInvestFun,
     confirmedLRCStakeInvest: confirmedLRCInvestFun,
   } = confirmation.useConfirmation();
-  const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
+  const [confirmDualInvest, setConfirmDualInvest] = React.useState('hidden' as 'hidden' | 'all' | 'USDCOnly');
   const [confirmedLRCStakeInvest, setConfirmedLRCStakeInvestInvest] =
     React.useState<boolean>(false);
 
@@ -210,7 +210,8 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       </Box>
 
       <ConfirmInvestDualRisk
-        open={confirmDualInvest}
+        open={confirmDualInvest !== 'hidden'}
+        USDCOnly={confirmDualInvest === 'USDCOnly'}
         handleClose={(_e, isAgree) => {
           if (!isAgree) {
             history.goBack();
