@@ -524,7 +524,9 @@ export const BtradeDetail = (props: any) => {
             component={"span"}
             color={"var(--color-text-primary)"}
           >
-            {info?.feeStr + " " + info.buyToken.symbol}
+            {info?.feeStr
+              ? info?.feeStr + " " + info.buyToken.symbol
+              : EmptyValueTag}
           </Typography>
         </Typography>
         {info?.time && (
