@@ -22,7 +22,7 @@ const initialState: ModalState = {
   isShowOtherExchange: { isShow: false },
   isWrongNetworkGuide: { isShow: false },
   isShowTransfer: { isShow: false, symbol: undefined },
-  isShowWithdraw: { isShow: false, symbol: undefined },
+  isShowWithdraw: { isShow: false, symbol: undefined,  },
   isShowDeposit: { isShow: false, symbol: undefined },
   isShowResetAccount: { isShow: false },
   isShowActiveAccount: { isShow: false },
@@ -229,28 +229,28 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
     ) {
-      const { isShow, symbol, info, name, address } = action.payload;
+      const { isShow, symbol, info, name, address, addressType } = action.payload;
       state.isShowTransfer = {
         isShow,
         symbol,
         info,
-        name,
-        address,
-        addressType: AddressType.EOA,
+        name, 
+        address, 
+        addressType
       };
     },
     setShowWithdraw(
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
     ) {
-      const { isShow, symbol, info, name, address } = action.payload;
+      const { isShow, symbol, info, name, address, addressType} = action.payload;
       state.isShowWithdraw = {
         isShow,
         symbol,
         info,
-        name,
-        address,
-        addressType: AddressType.EOA,
+        name, 
+        address, 
+        addressType
       };
     },
     setShowDeposit(

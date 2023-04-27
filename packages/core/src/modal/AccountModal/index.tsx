@@ -117,18 +117,25 @@ export const ModalAccountInfo = withTranslation("common")(
           baseURL={baseURL}
           transferProps={{
             ...transferProps,
-
             onBack: () => {
-              setShowTransfer({ isShow: false });
-              onBackSend();
+              if (transferProps.isFromContact) {
+                setShowTransfer({ isShow: false });
+              } else {
+                setShowTransfer({ isShow: false });
+                onBackSend();
+              }
             },
           }}
           withdrawProps={{
             ...withdrawProps,
             onBack: () => {
-              setShowWithdraw({ isShow: false });
-              onBackSend();
-            },
+              if (withdrawProps.isFromContact) {
+                setShowWithdraw({ isShow: false });
+              } else {
+                setShowWithdraw({ isShow: false });
+                onBackSend();
+              }
+            }
           }}
           depositProps={{
             ...depositProps,

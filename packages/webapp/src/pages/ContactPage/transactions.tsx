@@ -1,8 +1,47 @@
+import React, { useEffect } from "react";
+import { Box, Tab, Tabs } from "@mui/material";
+import {
+  AmmTable,
+  Button,
+  DefiTxsTable,
+  DualTxsTable,
+  Filter,
+  OrderHistoryTable,
+  TablePagination,
+  Column,
+  Table,
+  Toast,
+  TradeTable,
+  // TransactionTable,
+  useSettings,
+  TransactionTradeViews,
+  TransactionTradeTypes,
+  TableFilterStyled,
+  TablePaddingX,
+  TransactionStatus,
+} from "@loopring-web/component-lib";
+import { StylePaper, useGetOrderHistorys } from "@loopring-web/core";
+import { useTransactions } from "./hooks";
+
+import {
+  useSystem,
+  useAccount,
+  useToast,
+  useTokenMap,
+  useAmmMap,
+} from "@loopring-web/core";
+import {
+  BackIcon,
+  RowConfig,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import styled from "@emotion/styled";
-import { Box, BoxProps, Link, Typography } from "@mui/material";
+import { BoxProps, Link, Typography } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
-import { Column, Table, TablePagination } from "../../basic-lib";
+// import { Column, Table, TablePagination } from "../../basic-lib";
+// Column
 import {
   CompleteIcon,
   DepositIcon,
@@ -13,7 +52,6 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   globalSetup,
-  RedPacketIcon,
   TableType,
   TransferIcon,
   UNIX_TIMESTAMP_FORMAT,
@@ -21,40 +59,35 @@ import {
   WarningIcon,
   WithdrawIcon,
 } from "@loopring-web/common-resources";
-import { Filter } from "./components/Filter";
-import { TableFilterStyled, TablePaddingX } from "../../styled";
-import {
-  RawDataTransactionItem,
-  TransactionStatus,
-  TransactionTradeTypes,
-  TransactionTradeViews,
-} from "./Interface";
+// import { Column, Table, TablePagination } from "../../basic-lib";
+// TablePagination
+// import { Filter } from "./components/Filter";
+// Filter
+// import { TableFilterStyled, TablePaddingX } from "../../styled";
+// import {
+//   RawDataTransactionItem,
+//   TransactionStatus,
+//   TransactionTradeTypes,
+//   TransactionTradeViews,
+// } from "./Interface";
 import { DateRange } from "@mui/lab";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { debounce } from "lodash";
+import { Filter2 } from "@loopring-web/component-lib/src/components/tableList/transactionsTable/components/Filter";
 
-import React from "react";
-import { useSettings } from "../../../stores";
-import { useLocation } from "react-router-dom";
-import _ from "lodash";
-
-export type TxsFilterProps = {
-  tokenSymbol?: string;
-  start?: number;
-  end?: number;
-  offset?: number;
-  limit?: number;
-  types?: sdk.UserTxTypes[] | string;
-};
-
+// import React from "react";
+// import { useSettings } from "../../../stores";
+// import { useLocation } from "react-router-dom";
+// import _ from "lodash";
 const TYPE_COLOR_MAPPING = [
   { type: TransactionStatus.processed, color: "success" },
   { type: TransactionStatus.processing, color: "warning" },
   { type: TransactionStatus.received, color: "warning" },
   { type: TransactionStatus.failed, color: "error" },
 ];
-
 const CellStatus = ({ row }: any) => {
   const status = row["status"];
+  // debugger
   const RenderValue = styled.div`
     display: flex;
     align-items: center;
@@ -79,14 +112,6 @@ const CellStatus = ({ row }: any) => {
   return <RenderValue>{svg}</RenderValue>;
 };
 
-const MemoCellStyled = styled(Box)`
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: right;
-`;
-
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
@@ -95,7 +120,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 136px auto auto auto 120px 120px !important;`
+        ? `--template-columns: 124px auto auto auto 120px 120px !important;`
         : `--template-columns: 60% 40% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -119,10 +144,42 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
+const MemoCellStyled = styled(Box)`
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+`;
 
-export interface TransactionTableProps {
+enum TabIndex {
+  transactions = "transactions",
+  trades = "trades",
+  ammRecords = "ammRecords",
+  orders = "orders",
+  // orderOpenTable = "orderOpenTable",
+  // orderHistoryTable = "orderHistoryTable",
+  defiRecords = "defiRecords",
+  dualRecords = "dualRecords",
+}
+
+enum TabOrderIndex {
+  orderOpenTable = "orderOpenTable",
+  orderHistoryTable = "orderHistoryTable",
+}
+
+type TxsFilterProps = {
+  tokenSymbol?: string;
+  start?: number;
+  end?: number;
+  offset?: number;
+  limit?: number;
+  types?: sdk.UserTxTypes[] | string;
+};
+
+interface TransactionTableProps {
   etherscanBaseUrl?: string;
-  rawData: RawDataTransactionItem[];
+  rawData: any[];
   pagination?: {
     pageSize: number;
     total: number;
@@ -142,7 +199,10 @@ export interface TransactionTableProps {
   accountId: number;
 }
 
-export const TransactionTable = withTranslation(["tables", "common"])(
+// Filter
+
+
+const TransactionTable = withTranslation(["tables", "common"])(
   (props: TransactionTableProps & WithTranslation) => {
     const {
       rawData,
@@ -167,8 +227,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       DateRange<Date | string>
     >(["", ""]);
     const [filterToken, setFilterToken] = React.useState<string>("all");
-
-    const updateData = _.debounce(
+  
+    const updateData = debounce(
       ({
         tableType,
         currFilterType = filterType,
@@ -266,21 +326,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               row.receiverAddress?.toUpperCase() === accAddress?.toUpperCase()
                 ? t(`labelTypeReceive`)
                 : t(`labelType${value?.toUpperCase()}`);
-            return (
-              <Box
-                className="rdg-cell-value"
-                flex={1}
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"flex-start"}
-                height={"100%"}
-              >
-                {/*{/_LUCKY_TOKEN/gi.test(value?.toUpperCase()) && (*/}
-                {/*  <RedPacketIcon fontSize={"inherit"} />*/}
-                {/*)}*/}
-                {renderValue}
-              </Box>
-            );
+            return <Box className="rdg-cell-value">{renderValue}</Box>;
           },
         },
         {
@@ -307,14 +353,6 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? "+"
                 : /chain_withdrawal/i.test(row.side.toLowerCase()) //TransactionTradeTypes.withdraw
                 ? "-"
-                : row.side.toLowerCase() === sdk.UserTxTypes.SEND_LUCKY_TOKEN
-                ? "-"
-                : row.side.toLowerCase() ===
-                  sdk.UserTxTypes.SEND_BACK_LUCKY_TOKEN
-                ? "+"
-                : row.side.toLowerCase() ===
-                  sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
-                ? "+"
                 : "";
 
             const renderValue = hasValue
@@ -377,8 +415,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const receiverAddress = /chain_withdrawal/i.test(
               row.side.toLowerCase()
             )
-              ? // row.side.toLowerCase() === sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL
-              row.withdrawalInfo ? getShortAddr(row.withdrawalInfo.recipient, isMobile) : ""
+              ? (row.withdrawalInfo ? getShortAddr(row.withdrawalInfo.recipient, isMobile) : "")
               : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
             // myLog("receiverAddress", row.receiverAddress);
@@ -506,6 +543,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           formatter: ({ row }) => {
             const { unit, value } = row["amount"];
             const hasValue = Number.isFinite(value);
+
             const side =
               row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER &&
               row.receiverAddress?.toUpperCase() === accAddress?.toUpperCase()
@@ -530,14 +568,6 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 : row.side.toLowerCase() ===
                   sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
                 ? "-"
-                : row.side.toLowerCase() === sdk.UserTxTypes.SEND_LUCKY_TOKEN
-                ? "-"
-                : row.side.toLowerCase() ===
-                  sdk.UserTxTypes.SEND_BACK_LUCKY_TOKEN
-                ? "+"
-                : row.side.toLowerCase() ===
-                  sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
-                ? "+"
                 : "";
             const sideIcon =
               row.side.toLowerCase() ===
@@ -547,10 +577,6 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 <DepositIcon fontSize={"inherit"} />
               ) : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER ? (
                 <TransferIcon fontSize={"inherit"} />
-              ) : row.side.toLowerCase() === "send_lucky_token" ? (
-                <RedPacketIcon fontSize={"inherit"} />
-              ) : row.side.toLowerCase() === "withdraw_lucky_token" ? (
-                <RedPacketIcon fontSize={"inherit"} />
               ) : (
                 <WithdrawIcon fontSize={"inherit"} />
               );
@@ -770,7 +796,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             </Link>
           ) : (
             <TableFilterStyled>
-              <Filter
+              <Filter2
                 filterTokens={filterTokens}
                 // originalData={rawData}
                 filterDate={filterDate}
@@ -824,3 +850,103 @@ export const TransactionTable = withTranslation(["tables", "common"])(
     );
   }
 );
+
+
+export const ContactTransactionsPage = withTranslation("common")(
+  (rest: WithTranslation<"common">) => {
+    const history = useHistory();
+    const { isMobile } = useSettings();
+
+    const [pageSize, setPageSize] = React.useState(0);
+
+    const { toastOpen, closeToast } = useToast();
+    const { totalCoinMap } = useTokenMap();
+
+    const { etherscanBaseUrl } = useSystem();
+
+    const {
+      account: { accAddress, accountId },
+    } = useAccount();
+
+    const container = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+      let height = container?.current?.offsetHeight;
+      if (height) {
+        const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
+        setPageSize(Math.floor((height - 120) / RowConfig.rowHeight) - 3);
+        // handleTabChange(currentTab, pageSize);
+      }
+    }, [container?.current?.offsetHeight]);
+    const {
+      txs: txTableData,
+      txsTotal,
+      showLoading: showTxsLoading,
+      getUserTxnList,
+    } = useTransactions()
+    useEffect(() => {
+      getUserTxnList({})
+    }, [])
+    
+    return (
+      <Box flex={1} display={"flex"} flexDirection={"column"}>
+        <Box marginBottom={2}>
+          <Button
+            startIcon={<BackIcon fontSize={"small"} />}
+            variant={"text"}
+            size={"medium"}
+            sx={{ color: "var(--color-text-secondary)" }}
+            color={"inherit"}
+            onClick={history.goBack}
+          >
+            Contacts
+          </Button>
+        </Box>
+        <StylePaper ref={container} flex={1}>
+          <Toast
+            alertText={toastOpen?.content ?? ""}
+            severity={toastOpen?.type ?? "success"}
+            open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={closeToast}
+          />
+          <Box
+            marginTop={2}
+            marginLeft={2}
+            display={"flex"}
+            sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
+          >
+          </Box>
+          <Box
+            className="tableWrapper table-divide-short"
+            display={"flex"}
+            flex={1}
+            overflow={"scroll"}
+          >
+            <TransactionTable
+              {...{
+                etherscanBaseUrl,
+                rawData: txTableData,
+                pagination: {
+                  pageSize: pageSize,
+                  total: txsTotal,
+                },
+                filterTokens: totalCoinMap
+                  ? (Reflect.ownKeys(totalCoinMap) as string[])
+                  : [],
+                showFilter: true,
+                showloading: showTxsLoading,
+                getTxnList: getUserTxnList,
+                accAddress,
+                accountId,
+                ...rest,
+              }}
+            />
+          </Box>
+        </StylePaper>
+      </Box>
+    );
+  }
+);
+
+// export default HistoryPanel;

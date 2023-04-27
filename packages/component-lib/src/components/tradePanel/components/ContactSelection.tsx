@@ -2,11 +2,14 @@ import { Avatar, Box, Grid, InputAdornment, OutlinedInput, Typography } from "@m
 import {
   SearchIcon,
   CloseIcon,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
+import { createImageFromInitials } from "@loopring-web/core";
+import { AddressType } from "@loopring-web/loopring-sdk";
 
 type SingleContactProps = {
   editing: boolean, 
@@ -14,14 +17,15 @@ type SingleContactProps = {
   address:string, 
   avatarURL:string,
   onSelect: (address: string) => void
+  hidden: boolean
 }
 
 export const SingleContact = (props: SingleContactProps) => {
-  const { editing, name, address, avatarURL, onSelect } = props;
+  const { editing, name, address, avatarURL, hidden, onSelect } = props;
   return <Box 
     style={{cursor: "pointer"}} 
     paddingY={2} 
-    display={"flex"} 
+    display={hidden ? "none" : "flex"} 
     justifyContent={"space-between"}
     onClick={() => {
       onSelect(address)
@@ -54,38 +58,99 @@ const CloseIconStyled = styled(CloseIcon)`
 // OutlinedInput
 type ContactSelectionProps = {
   onSelect: (address: string) => void
+  onScroll: (e: HTMLDivElement) => void
   contacts: {
     name: string,
     address: string,
-  }[]
+    addressType: AddressType
+  }[] | undefined,
+  scrollHeight: string
 }
 export const ContactSelection = (props: ContactSelectionProps) => {
   // const { t } = useTranslation();
-  const { onSelect, contacts } = props
+  const { onSelect, contacts, onScroll, scrollHeight } = props
   const { isMobile } = useSettings();
   const theme = useTheme()
-  // [contacts, setContacts] = useState([] )
-
-  // useEffect(() => {
-
-  // }, [])
-  const displayContacts = contacts.map(x => {
+  const displayContacts = contacts && contacts.map(x => {
     return {
       name: x.name,
       address: x.address,
-      avatarURL: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png', // todo
-      editing: false
+      avatarURL: createImageFromInitials(32, x.name, "#FFC178")!, // todo
+      editing: false,
+      addressType: x.addressType
     }
   })
 
   const [inputValue, setInputValue] = useState('')
-  const filteredContacts = displayContacts.filter(x => {
+  const filteredContacts = displayContacts && displayContacts.filter(x => {
     return inputValue
-      ? x.address.toLowerCase().includes(inputValue.toLowerCase()) || x.avatarURL.toLowerCase().includes(inputValue.toLowerCase())
+      ? x.address.toLowerCase().includes(inputValue.toLowerCase()) || x.name.toLowerCase().includes(inputValue.toLowerCase())
       : true
   })
-  // const [open, setOpen] = React.useState(false);
-  // const { nonExchangeList, exchangeList } = useAddressTypeLists();
+
+  // <Box >
+
+  //     </Box>
+  
+  const normalView = <>
+    <Grid item xs={12} width={"100%"}>
+      <OutlinedInput
+        style={{
+          background: theme.colorBase.box,
+          borderColor: theme.colorBase.border
+        }}
+        fullWidth
+        className={"search"}
+        aria-label={"search"}
+        placeholder={"Search"}
+        startAdornment={
+          <InputAdornment position="start">
+            <SearchIcon color={"inherit"} />
+          </InputAdornment>
+        }
+        value={inputValue}
+        endAdornment={
+          <CloseIconStyled
+            htmlColor={"var(--color-text-third)"}
+            style={{ visibility: inputValue ? "visible" : "hidden" }}
+            onClick={() => {
+              setInputValue('')
+            }}
+          />
+        }
+        onChange={(e) => {
+          setInputValue(e.target.value)
+        }}
+      ></OutlinedInput>
+      <Box overflow={"scroll"} height={scrollHeight} onScroll={e => onScroll(e.currentTarget)}>
+        {filteredContacts && filteredContacts.map(c => {
+          return <SingleContact
+            name={c.name}
+            address={c.address}
+            avatarURL={c.avatarURL}
+            editing={false}
+            onSelect={onSelect}
+            hidden={c.addressType === AddressType.OFFICIAL}
+          />
+        })}
+      </Box>
+    </Grid>
+  </>
+  const loadingView =
+    <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+      <img
+        className="loading-gif"
+        alt={"loading"}
+        width="36"
+        src={`${SoursURL}images/loading-line.gif`}
+      />
+    </Box>
+  const emptyView =
+    <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+      <Typography color={"var(--color-text-third)"}>
+        No Contact
+      </Typography>
+    </Box>
   
   return (
     <Grid
@@ -107,6 +172,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           justifyContent={"center"}
           alignItems={"center"}
           marginBottom={2}
+          
         >
           <Typography
             component={"h4"}
@@ -118,45 +184,13 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           </Typography>
         </Box>
       </Grid>
-      <Grid item xs={12} width={"100%"}>
-        <OutlinedInput
-          style={{
-            background: theme.colorBase.box,
-            borderColor: theme.colorBase.border
-          }}
-          fullWidth
-          className={"search"}
-          aria-label={"search"}
-          placeholder={"Search"}
-          startAdornment={
-            <InputAdornment position="start">
-              <SearchIcon color={"inherit"} />
-            </InputAdornment>
-          }
-          value={inputValue}
-          endAdornment={
-            <CloseIconStyled
-              htmlColor={"var(--color-text-third)"}
-              style={{ visibility: inputValue ? "visible" : "hidden" }}
-              onClick={() => {
-                setInputValue('')
-              }}
-            />
-          }
-          onChange={(e) => {
-            setInputValue(e.target.value)
-          }}
-        ></OutlinedInput>
-        {filteredContacts.map(c => {
-          return <SingleContact 
-            name={c.name}
-            address={c.address}
-            avatarURL={c.avatarURL}
-            editing={false}
-            onSelect={onSelect}
-          />
-        })}
-      </Grid>
+      {
+        contacts === undefined
+          ? loadingView
+          : contacts.length === 0
+            ? emptyView
+            : normalView
+      }
     </Grid>
   );
 };

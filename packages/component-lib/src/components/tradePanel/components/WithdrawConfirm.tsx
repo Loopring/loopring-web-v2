@@ -33,7 +33,7 @@ export const WithdrawConfirm = <
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const [open, setOpen] = React.useState(false);
-  const { nonExchangeList, exchangeList } = useAddressTypeLists();
+  const { walletList, exchangeList } = useAddressTypeLists();
   return (
     <Grid
       className={"confirm"}
@@ -114,7 +114,7 @@ export const WithdrawConfirm = <
           </Typography>
           <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
             {
-              [...nonExchangeList, ...exchangeList].find(
+              [...walletList, ...exchangeList].find(
                 (item) => item.value === sureIsAllowAddress
               )?.label
             }
