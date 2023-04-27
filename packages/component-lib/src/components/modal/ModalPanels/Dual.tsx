@@ -546,7 +546,7 @@ export const BtradeDetail = (props: any) => {
               component={"span"}
               color={"var(--color-text-primary)"}
             >
-              {info?.time + " " + info.buyToken.symbol}
+              {moment(new Date(info.time)).fromNow()}
             </Typography>
           </Typography>
         )}
