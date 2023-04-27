@@ -180,7 +180,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <>
-                {row.feeAmount != "0"
+                {row.feeAmount !== undefined
                   ? row.feeAmount + " " + row.feeSymbol
                   : EmptyValueTag}
               </>
