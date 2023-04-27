@@ -530,7 +530,7 @@ export const useBtradeSwap = <
     } else {
       sendRequest();
     }
-  }, [market]);
+  }, [market, marketMap, BTradeInvest]);
 
   const {
     btnStatus: swapBtnStatus,
