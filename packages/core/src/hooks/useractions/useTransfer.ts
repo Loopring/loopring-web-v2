@@ -694,7 +694,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         requestType: undefined as any,
       });
       setAddress((state) => {
-        debugger
         if (isContactSelection) {
           const contact = contacts?.find(x => x.address === value)
           const v = contact && addressToExWalletMapFn(contact.addressType)

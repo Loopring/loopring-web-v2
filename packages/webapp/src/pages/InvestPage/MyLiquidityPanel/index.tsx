@@ -214,7 +214,13 @@ const MyLiquidity: any = withTranslation("common")(
           )
         : "0";
 
-    // const stakingList: sdk.STACKING_SUMMARY[] = [];
+    const dualStakeDollar = dualList
+      ? dualList.reduce((pre, cur) => {
+        return sdk.toBig(cur.strike)
+          .times(cur.__raw__.order.filled)
+          .plus(pre)
+      }, sdk.toBig('0')).toString()
+      : undefined
     return (
       <Box
         display={"flex"}
@@ -662,12 +668,12 @@ const MyLiquidity: any = withTranslation("common")(
                     flex={1}
                     margin={0}
                   >
-                    {summaryMyInvest?.dualStakeDollar !== undefined ? (
+                    {dualStakeDollar !== undefined ? (
                       <Typography component={"h4"} variant={"h3"} marginX={3}>
-                        {summaryMyInvest?.dualStakeDollar
+                        {dualStakeDollar
                           ? PriceTag[CurrencyToTag[currency]] + 
                             sdk
-                              .toBig(summaryMyInvest?.dualStakeDollar)
+                              .toBig(dualStakeDollar)
                               .times(forexMap[currency] ?? 0)
                               .toFixed(2, 1)
                           : EmptyValueTag}
