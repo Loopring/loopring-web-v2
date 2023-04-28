@@ -1206,8 +1206,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     const getDisabled = React.useMemo(() => {
       return disabled;
     }, [disabled]);
-    const showNFT = true
-    // useNotify().notifyMap?.redPacket.showNFT;
+    const showNFT = useNotify().notifyMap?.redPacket.showNFT;
     return (
       <RedPacketBoxStyle
         display={"flex"}
