@@ -60,6 +60,7 @@ import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
 import { useDualAsset } from "../../AssetPage/HistoryPanel/useDualAsset";
 import React from "react";
+import { utils } from "ethers";
 
 const StyleWrapper = styled(Grid)`
   position: relative;
@@ -214,10 +215,13 @@ const MyLiquidity: any = withTranslation("common")(
           )
         : "0";
 
-    const dualStakeDollar = dualList
-      ? dualList.reduce((pre, cur) => {
-        return sdk.toBig(cur.strike)
-          .times(cur.__raw__.order.filled)
+    const dualStakeDollar = dualOnInvestAsset
+      ? dualOnInvestAsset.reduce((pre: any, cur: any) => {
+        const price = tokenPrices[idIndex[cur.tokenId]]
+        const token = tokenMap[idIndex[cur.tokenId]]
+        const amount = utils.formatUnits(cur.amount, token.decimals)
+        return sdk.toBig(amount)
+          .times(price)
           .plus(pre)
       }, sdk.toBig('0')).toString()
       : undefined
