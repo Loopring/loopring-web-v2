@@ -23,7 +23,6 @@ import {
   SwitchPanelStyled,
   useOpenModals,
   useSettings,
-  useToggle,
 } from "@loopring-web/component-lib";
 import {
   CheckBoxIcon,
@@ -60,7 +59,6 @@ import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
 import { useDualAsset } from "../../AssetPage/HistoryPanel/useDualAsset";
 import React from "react";
-import { utils } from "ethers";
 
 const StyleWrapper = styled(Grid)`
   position: relative;
@@ -216,15 +214,16 @@ const MyLiquidity: any = withTranslation("common")(
         : "0";
 
     const dualStakeDollar = dualOnInvestAsset
-      ? dualOnInvestAsset.reduce((pre: any, cur: any) => {
-        const price = tokenPrices[idIndex[cur.tokenId]]
-        const token = tokenMap[idIndex[cur.tokenId]]
-        const amount = utils.formatUnits(cur.amount, token.decimals)
-        return sdk.toBig(amount)
-          .times(price)
-          .plus(pre)
-      }, sdk.toBig('0')).toString()
-      : undefined
+      ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
+          const price = tokenPrices[idIndex[cur.tokenId]];
+          return sdk
+            .toBig(cur?.amount ?? 0)
+            .div("1e" + tokenMap[idIndex[cur.tokenId]].decimals)
+            .times(price)
+            .plus(pre)
+            .toString();
+        }, "0")
+      : undefined;
     return (
       <Box
         display={"flex"}
@@ -675,7 +674,7 @@ const MyLiquidity: any = withTranslation("common")(
                     {dualStakeDollar !== undefined ? (
                       <Typography component={"h4"} variant={"h3"} marginX={3}>
                         {dualStakeDollar
-                          ? PriceTag[CurrencyToTag[currency]] + 
+                          ? PriceTag[CurrencyToTag[currency]] +
                             sdk
                               .toBig(dualStakeDollar)
                               .times(forexMap[currency] ?? 0)

@@ -4,15 +4,16 @@ import {
   BoxProps,
   Button,
   Divider,
-  Link,
-  Typography,
-  Modal,
   IconButton,
+  Link,
+  Modal,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   Account,
+  BackIcon,
   EmptyValueTag,
   FirstPlaceIcon,
   GET_IPFS_STRING,
@@ -24,7 +25,6 @@ import {
   RedPacketQRCodeSvg,
   RedPacketWrapSVG,
   SoursURL,
-  BackIcon,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import QRCodeStyling from "qr-code-styling";
@@ -48,17 +48,15 @@ import {
   RedPacketUnreadyProps,
 } from "./Interface";
 import {
-  TablePagination,
   BoxNFT,
   ModalCloseButtonPosition,
+  TablePagination,
 } from "../basic-lib";
 import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -118,6 +116,7 @@ export const RedPacketBg = styled(Box)<
         z-index: 100;
         left: 50%;
         top: -50%;
+
         .hours,
         .minutes,
         .seconds {
@@ -129,15 +128,18 @@ export const RedPacketBg = styled(Box)<
           display: inline-flex;
           align-items: center;
           border-radius: ${({ theme }) => theme.unit + "px"};
+
           h4 {
             text-indent: -9999em;
             height: 0;
             width: 0;
           }
         }
+
         .hours,
         .minutes {
           position: relative;
+
           &:after {
             display: block;
             content: ":";
@@ -186,11 +188,13 @@ export const RedPacketBg = styled(Box)<
       heigh: 56px;
     }
   }
+
   &.RedPacketClock {
     .top {
       height: 40px;
       margin-top: 50px;
     }
+
     .middle {
       margin-top: 40px;
       height: 128px;
@@ -198,11 +202,11 @@ export const RedPacketBg = styled(Box)<
       align-items: center;
       justify-content: center;
     }
+
     .betweenEle {
       top: 328px;
     }
   }
-  
 
   &.redPacketOpened {
     .top {
@@ -520,7 +524,6 @@ export const RedPacketClock = ({
   size,
   validSince,
   sender,
-  amountStr,
   memo,
   showRedPacket,
   ImageEle,
@@ -661,29 +664,36 @@ export const RedPacketClock = ({
           <Typography color={"inherit"}>{sender}</Typography>
         </Box>
         <Typography
-            color={"inherit"}
-            variant={"body1"}
-            whiteSpace={"pre-line"}
-            textAlign={"center"}
-            overflow={"hidden"}
-            textOverflow={"ellipsis"}
-            paddingX={4}
-            sx={{
-              wordBreak: "break-all",
-              display: "-webkit-box",
-              "-webkit-line-clamp": "2",
-              lineClamp: "2",
-              "-webkit-box-orient": "vertical",
-            }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
-          ></Typography>
+          color={"inherit"}
+          variant={"body1"}
+          whiteSpace={"pre-line"}
+          textAlign={"center"}
+          overflow={"hidden"}
+          textOverflow={"ellipsis"}
+          paddingX={4}
+          sx={{
+            wordBreak: "break-all",
+            display: "-webkit-box",
+            "-webkit-line-clamp": "2",
+            lineClamp: "2",
+            "-webkit-box-orient": "vertical",
+          }}
+          dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+        ></Typography>
         <Box display={"flex"} className={"middle"} flexDirection={"column"}>
           {ImageEle}
         </Box>
       </>
     );
   }, [countDown]);
-  return <RedPacketBgDefault className={"RedPacketClock"} type={type} size={size} content={content} />;
+  return (
+    <RedPacketBgDefault
+      className={"RedPacketClock"}
+      type={type}
+      size={size}
+      content={content}
+    />
+  );
 };
 
 export const RedPacketUnready = ({
@@ -694,14 +704,19 @@ export const RedPacketUnready = ({
   amountStr,
   memo,
   ImageEle,
-  onClickOpen
+  onClickOpen,
 }: // ImageEle,
 RedPacketDefault & RedPacketUnreadyProps) => {
   const { t } = useTranslation();
   const content = React.useMemo(() => {
     return (
       <Box display={"flex"} flex={1} flexDirection={"column"}>
-        <Box onClick={onClickOpen} display={"flex"} className={"betweenEle"} position={"absolute"}>
+        <Box
+          onClick={onClickOpen}
+          display={"flex"}
+          className={"betweenEle"}
+          position={"absolute"}
+        >
           <Box display={"flex"} position={"absolute"} className={"open"}>
             {t("labelRedPacketOpen")}
           </Box>
@@ -959,7 +974,6 @@ export const RedPacketDetail = ({
   relyAmount,
   ImageEle,
   showRelayText,
-  showShareBtn,
   tokenSymbol,
   detail,
   bottomButton,
@@ -983,8 +997,7 @@ export const RedPacketDetail = ({
         handlePageChange(_page);
       }}
     />
-  )
-
+  );
 
   return (
     <BoxStyle
@@ -1104,9 +1117,7 @@ export const RedPacketDetail = ({
                       color={item.isSelf ? "success" : "textPrimary"}
                     >
                       {item.accountStr}
-                      {item.isSelf
-                        ? ` (${t("labelRedPacketMe")})`
-                        : ''}
+                      {item.isSelf ? ` (${t("labelRedPacketMe")})` : ""}
                     </Typography>
                     <Typography
                       variant={"body1"}
@@ -1415,14 +1426,13 @@ export const RedPacketPrepare = ({
           type={_type}
           onClickOpen={() => {
             // if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-              setShowRedPacket({
-                isShow: true,
-                step: RedPacketViewStep.RedPacketClock,
-                info: {
-                  ..._info,
-                },
-              });
-
+            setShowRedPacket({
+              isShow: true,
+              step: RedPacketViewStep.RedPacketClock,
+              info: {
+                ..._info,
+              },
+            });
           }}
         />
       );
@@ -1591,15 +1601,13 @@ export const RedPacketBlindBoxDetail = ({
   didClaimABlindBox,
   wonInfo,
   page,
-  totalCount,
-  remainCount,
   handlePageChange,
   totalClaimedNFTsCount,
   handlePageChange_BlindBox,
   pageForBlindbox,
   totalBlindboxCount,
   onClickClaimPopViewDetail,
-  expired
+  expired,
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
@@ -1632,69 +1640,74 @@ export const RedPacketBlindBoxDetail = ({
       }}
       size={"small"}
     />
-  )
-  const LooteryModal = <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
-    <>
-      <Box
-        height={"100%"}
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
+  );
+  const LooteryModal = (
+    <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
+      <>
         <Box
-          padding={5}
-          bgcolor={"var(--color-box)"}
-          width={"var(--modal-width)"}
-          borderRadius={1}
+          height={"100%"}
           display={"flex"}
+          justifyContent={"center"}
           alignItems={"center"}
-          flexDirection={"column"}
-          position={"relative"}
         >
-          {/* <Box></Box> */}
-          <ModalCloseButtonPosition
-            right={2}
-            top={2}
-            t={t}
-            onClose={onCloseOpenModal!}
-          />
-          <Typography marginBottom={3} variant={"h3"}>
-                {wonNFTInfo
-                  ? t("labelBlindBoxCongratulations")
-                  : t("labelBlindBoxSorry")}
-          </Typography>
-          <Typography variant={"h5"}>
-            {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
-          </Typography>
-          {wonNFTInfo ? (
-            <img width={"40%"} src={wonNFTInfo.url}></img>
-          ) : (
-            <img src={emptyImg}></img>
-          )}
-          <Link
-            marginBottom={3}
-            onClick={onClickClaimPopViewDetail}
-            variant={"body1"}
-            color={theme.colorBase.textSecondary}
-            marginTop={5}
+          <Box
+            padding={5}
+            bgcolor={"var(--color-box)"}
+            width={"var(--modal-width)"}
+            borderRadius={1}
+            display={"flex"}
+            alignItems={"center"}
+            flexDirection={"column"}
+            position={"relative"}
           >
-            <u>{t("labelLuckyRedPacketDetail")}</u>
-          </Link>
-          {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
+            {/* <Box></Box> */}
+            <ModalCloseButtonPosition
+              right={2}
+              top={2}
+              t={t}
+              onClose={onCloseOpenModal!}
+            />
+            <Typography marginBottom={3} variant={"h3"}>
+              {wonNFTInfo
+                ? t("labelBlindBoxCongratulations")
+                : t("labelBlindBoxSorry")}
+            </Typography>
+            <Typography variant={"h5"}>
+              {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
+            </Typography>
+            {wonNFTInfo ? (
+              <img width={"40%"} src={wonNFTInfo.url}></img>
+            ) : (
+              <img src={emptyImg}></img>
+            )}
+            <Link
+              marginBottom={3}
+              onClick={onClickClaimPopViewDetail}
+              variant={"body1"}
+              color={theme.colorBase.textSecondary}
+              marginTop={5}
+            >
+              <u>{t("labelLuckyRedPacketDetail")}</u>
+            </Link>
+            {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
           {t("labelClaimBtn")}
         </Button> */}
-          {wonNFTInfo && (
-            <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
-              {t("labelClaimBtn")}
-            </Button>
-          )}
+            {wonNFTInfo && (
+              <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
+                {t("labelClaimBtn")}
+              </Button>
+            )}
+          </Box>
         </Box>
-      </Box>
-    </>
-  </Modal>
+      </>
+    </Modal>
+  );
 
-  if (type ===  "Lottery Started and Not Win Lottery" || type === "Lottery Started and Win Lottery") {
-    return LooteryModal
+  if (
+    type === "Lottery Started and Not Win Lottery" ||
+    type === "Lottery Started and Win Lottery"
+  ) {
+    return LooteryModal;
   }
 
   return (
@@ -1789,9 +1802,7 @@ export const RedPacketBlindBoxDetail = ({
                         color={"textPrimary"}
                       >
                         {info.who}
-                        {info.isMe
-                          ? ` (${t("labelRedPacketMe")})`
-                          : ''}
+                        {info.isMe ? ` (${t("labelRedPacketMe")})` : ""}
                       </Typography>
                       <Typography
                         variant={"body1"}
@@ -1867,15 +1878,20 @@ export const RedPacketBlindBoxDetail = ({
                 />
               )}
             </Box>
-            {type === "Blind Box Started" && didClaimABlindBox &&
-              <Typography>{t("labelBlindBoxCongratulationsBlindBox")}</Typography>
-            }
-            {(type === "Lottery Started") && wonInfo.participated &&
-              (wonInfo.won 
-                ? <Typography>{wonInfo.amount} NFTs</Typography>
-                : <Typography color={"var(--color-error)"}>{t("labelBlindBoxSorryBlindBox")}</Typography>
-              )
-            }
+            {type === "Blind Box Started" && didClaimABlindBox && (
+              <Typography>
+                {t("labelBlindBoxCongratulationsBlindBox")}
+              </Typography>
+            )}
+            {type === "Lottery Started" &&
+              wonInfo.participated &&
+              (wonInfo.won ? (
+                <Typography>{wonInfo.amount} NFTs</Typography>
+              ) : (
+                <Typography color={"var(--color-error)"}>
+                  {t("labelBlindBoxSorryBlindBox")}
+                </Typography>
+              ))}
             <Typography
               variant={"body2"}
               color={theme.colorBase.textSecondary}
@@ -1896,7 +1912,7 @@ export const RedPacketBlindBoxDetail = ({
                 totalBlindBoxAmount,
                 // deliverdGiftsAmount,
                 // totalGiftsAmount,
-                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount
+                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount,
               })}
               {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
             </Typography>
@@ -1912,7 +1928,7 @@ export const RedPacketBlindBoxDetail = ({
                 totalBlindBoxAmount,
                 // deliverdGiftsAmount,
                 // totalGiftsAmount,
-                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount
+                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount,
               })}
               {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
             </Typography>
@@ -1957,11 +1973,13 @@ export const RedPacketBlindBoxDetail = ({
               )}
               <Typography
                 variant={"body2"}
-                  color={
-                    (type !== "Blind Box Started" && type !== "Not Started")
-                      ? (expired ? theme.colorBase.textDisable : theme.colorBase.warning)
-                      : theme.colorBase.textSecondary
-                  }
+                color={
+                  type !== "Blind Box Started" && type !== "Not Started"
+                    ? expired
+                      ? theme.colorBase.textDisable
+                      : theme.colorBase.warning
+                    : theme.colorBase.textSecondary
+                }
                 marginTop={1}
                 textAlign={"center"}
               >
@@ -2080,9 +2098,9 @@ export const RedPacketBlindBoxDetail = ({
                                   color={"textPrimary"}
                                 >
                                   {info.who}
-                                {info.isMe
-                                  ? ` (${t("labelRedPacketMe")})`
-                                  : ''}
+                                  {info.isMe
+                                    ? ` (${t("labelRedPacketMe")})`
+                                    : ""}
                                 </Typography>
                                 {/* <Typography
                                 variant={"body1"}
