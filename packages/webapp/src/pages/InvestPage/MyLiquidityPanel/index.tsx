@@ -60,6 +60,7 @@ import { useTheme } from "@emotion/react";
 import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
 import { useDualAsset } from "../../AssetPage/HistoryPanel/useDualAsset";
 import React from "react";
+import { utils } from "ethers";
 
 const StyleWrapper = styled(Grid)`
   position: relative;
@@ -214,7 +215,16 @@ const MyLiquidity: any = withTranslation("common")(
           )
         : "0";
 
-    // const stakingList: sdk.STACKING_SUMMARY[] = [];
+    const dualStakeDollar = dualOnInvestAsset
+      ? dualOnInvestAsset.reduce((pre: any, cur: any) => {
+        const price = tokenPrices[idIndex[cur.tokenId]]
+        const token = tokenMap[idIndex[cur.tokenId]]
+        const amount = utils.formatUnits(cur.amount, token.decimals)
+        return sdk.toBig(amount)
+          .times(price)
+          .plus(pre)
+      }, sdk.toBig('0')).toString()
+      : undefined
     return (
       <Box
         display={"flex"}
@@ -662,20 +672,14 @@ const MyLiquidity: any = withTranslation("common")(
                     flex={1}
                     margin={0}
                   >
-                    {summaryMyInvest?.dualStakeDollar !== undefined ? (
+                    {dualStakeDollar !== undefined ? (
                       <Typography component={"h4"} variant={"h3"} marginX={3}>
-                        {summaryMyInvest?.dualStakeDollar
-                          ? PriceTag[CurrencyToTag[currency]] +
-                            getValuePrecisionThousand(
-                              sdk
-                                .toBig(summaryMyInvest?.dualStakeDollar)
-                                .times(forexMap[currency] ?? 0),
-                              undefined,
-                              undefined,
-                              2,
-                              true,
-                              { isFait: true, floor: true }
-                            )
+                        {dualStakeDollar
+                          ? PriceTag[CurrencyToTag[currency]] + 
+                            sdk
+                              .toBig(dualStakeDollar)
+                              .times(forexMap[currency] ?? 0)
+                              .toFixed(2, 1)
                           : EmptyValueTag}
                       </Typography>
                     ) : (

@@ -112,7 +112,6 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       (): Column<R, unknown>[] => [
         {
           key: "Token",
-          sortable: true,
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelRecordToken"),
@@ -178,7 +177,6 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Amount",
-          sortable: true,
           name: t("labelRecordAmount"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return <>{`${row.totalAmount}`}</>;
@@ -186,7 +184,6 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Type",
-          sortable: false,
           name: t("labelRecordType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
@@ -212,7 +209,6 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Status",
-          sortable: false,
           name: t("labelRecordStatus"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const statusMap = [
@@ -241,7 +237,6 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
         // },
         {
           key: "Time",
-          sortable: true,
           cellClass: "textAlignRight",
           headerCellClass: "textAlignRight",
           name: t("labelRecordTime"),

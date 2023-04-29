@@ -14,7 +14,7 @@ import {
 } from "@loopring-web/component-lib";
 import React from "react";
 import { useRedPacketModal } from "./hook";
-import { myLog } from "@loopring-web/common-resources";
+import { myLog, SoursURL } from "@loopring-web/common-resources";
 import { Box } from "@mui/material";
 
 export const ModalRedPacketPanel = withTranslation("common")(
@@ -159,6 +159,25 @@ export const ModalRedPacketPanel = withTranslation("common")(
             </Box>
           )
           : <></>
+        },
+        [RedPacketViewStep.Loading]: { 
+          view: (
+            <Box
+              minHeight={RedPacketSize.large.height}
+              height={"80vh"}
+              width={RedPacketSize.large.width}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <img
+                className="loading-gif"
+                alt={"loading"}
+                width="36"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </Box>
+          )
         },
       });
     }, [

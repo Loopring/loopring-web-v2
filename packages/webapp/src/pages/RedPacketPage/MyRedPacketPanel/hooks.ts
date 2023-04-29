@@ -380,7 +380,7 @@ export const useMyRedPacketReceiveTransaction = <
         step: RedPacketViewStep.BlindBoxDetail,
         info: {
           ...item.luckyToken,
-          refreshCallback
+          refreshCallback,
         },
       });
     } else {
@@ -395,7 +395,7 @@ export const useMyRedPacketReceiveTransaction = <
     }
     
   };
-  const onClaimItem = async (item: sdk.LuckTokenHistory) => {
+  const onClaimItem = async (item: sdk.LuckTokenHistory, successCallback: () => void) => {
     const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances({
       accountId: accountId,
       isNft: item.luckyToken.isNft,
@@ -432,6 +432,7 @@ export const useMyRedPacketReceiveTransaction = <
           luckyTokenHash: item.luckyToken.hash
         },
         claimType: CLAIM_TYPE.redPacket,
+        successCallback: successCallback
       });
     }
   };
@@ -487,6 +488,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
               {
                 offset,
                 limit,
+                isNft: true,
                 ..._filer,
               } as any,
               apiKey

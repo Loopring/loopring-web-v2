@@ -7,4 +7,5 @@ export enum RedPacketViewStep {
   OpenedPanel,
   RedPacketClock,
   BlindBoxDetail,
+  Loading,
 }

@@ -17,6 +17,7 @@ import {
 import { BackIcon, REDPACKET_SHOW_NFTS, RowConfig, TokenType } from "@loopring-web/common-resources";
 import { Box, Button, Checkbox, FormControlLabel, Tab, Tabs, Typography } from "@mui/material";
 import styled from "@emotion/styled";
+import {useNotify} from "@loopring-web/core";
 
 enum TabIndex {
   Received = "Received",
@@ -126,6 +127,7 @@ export const MyRedPacketPanel = ({
   // const onChangeShowActionableRecords = () => {}
 
   // @ts-ignore
+  const showNFT = useNotify().notifyMap?.redPacket.showNFT;
   return (
     <Box
       flex={1}
@@ -210,7 +212,7 @@ export const MyRedPacketPanel = ({
               >
                 {t("labelRedpacketTokensShort")}
               </SelectButton>
-              {REDPACKET_SHOW_NFTS && <>
+              {showNFT && <>
                 <SelectButton
                   onClick={() => {
                     isRecieve
@@ -257,7 +259,7 @@ export const MyRedPacketPanel = ({
             flexDirection={"column"}
             flex={1}
           >
-            {currentTab == TabIndex.NFTReceived && (
+            {currentTab == TabIndex.NFTReceived && fromViewMore && (
               <Typography
                 component={"h4"}
                 paddingX={2}
@@ -297,14 +299,14 @@ export const MyRedPacketPanel = ({
             flexDirection={"column"}
             flex={1}
           >
-            <Typography
+            {/* <Typography
               component={"h4"}
               variant={"body1"}
               color={"textSecondary"}
               paddingX={2}
             >
               {t("labelNFTRedPackAskClaim")}
-            </Typography>
+            </Typography> */}
             <RedPacketBlindBoxReceiveTable
               onItemClick={onReceiveItemClick_BlindBox}
               showloading={showloadingReceive_BlindBox}

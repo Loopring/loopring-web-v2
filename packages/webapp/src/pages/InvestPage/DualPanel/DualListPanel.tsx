@@ -39,6 +39,8 @@ import {
   CloseIcon,
   getValuePrecisionThousand,
   HelpIcon,
+  Info2Icon,
+  SoursURL,
   TokenType,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -85,7 +87,7 @@ export const DualListPanel: any = withTranslation("common")(
     const { coinJson } = useSettings();
     const { forexMap } = useSystem();
     const theme = useTheme();
-    const { tradeMap, marketArray } = useDualMap();
+    const { tradeMap, marketArray, status, getDualMap } = useDualMap();
     const { tokenMap } = useTokenMap();
     const { setShowDual } = useOpenModals();
     const {
@@ -108,6 +110,8 @@ export const DualListPanel: any = withTranslation("common")(
     const dualType = new RegExp(pair).test(market ?? "")
       ? sdk.DUAL_TYPE.DUAL_BASE
       : sdk.DUAL_TYPE.DUAL_CURRENCY;
+    const marketsIsLoading = status === "PENDING"
+    // console.log('status111111', status)
 
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
@@ -221,7 +225,16 @@ export const DualListPanel: any = withTranslation("common")(
         {beginnerMode ? (
           <BeginnerMode setConfirmDualInvest={setConfirmDualInvest} />
         ) : (
-          !!marketArray?.length && (
+          marketsIsLoading ? (
+            <Box key={"loading"} flexDirection={"column"} display={"flex"} justifyContent={"center"} height={"100%"} alignItems={"center"}>
+              <img 
+                alt={"loading"}
+                width="36"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </Box>
+          // ) : false  ? (
+          ) : !!marketArray?.length ? (
             <>
               <StyleDual flexDirection={"column"} display={"flex"} flex={1}>
                 <Grid container spacing={2}>
@@ -375,9 +388,29 @@ export const DualListPanel: any = withTranslation("common")(
                         variant={"body2"}
                         flexDirection={isMobile ? "column" : "row"}
                         alignItems={"center"}
+                        whiteSpace={"pre-wrap"}
                       >
                         {currentPrice &&
                           (!isMobile ? (
+                            <>
+                              <Tooltip
+                                title={<>{t("labelDualCurrentPriceTip")}</>}
+                                placement={"top"}
+                              >
+                                <Typography
+                                  component={"p"}
+                                  variant="body2"
+                                  color={"textSecondary"}
+                                  display={"inline-flex"}
+                                  alignItems={"center"}
+                                >
+                                  <Info2Icon
+                                    fontSize={"small"}
+                                    color={"inherit"}
+                                    sx={{ marginX: 1 / 2 }}
+                                  />
+                                </Typography>
+                              </Tooltip>
                             <Trans
                               i18nKey={"labelDualCurrentPrice"}
                               tOptions={{
@@ -414,6 +447,8 @@ export const DualListPanel: any = withTranslation("common")(
                               </Typography>{" "}
                               :
                             </Trans>
+                            </>
+                            
                           ) : (
                             <>
                               <Typography
@@ -476,6 +511,13 @@ export const DualListPanel: any = withTranslation("common")(
                 </WrapperStyled>
               </StyleDual>
             </>
+          ) : (
+            <Box key={"empty"} flexDirection={"column"} display={"flex"} justifyContent={"center"} height={"100%"} alignItems={"center"}>
+              <img src={SoursURL + '/svg/dual-empty.svg'}/>
+              <Button onClick={getDualMap} variant={"contained"}>
+                {t("labelDualRefresh")}
+              </Button>
+            </Box>
           )
         )}
         <ModalDualPanel

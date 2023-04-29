@@ -806,7 +806,7 @@ export default {
   labelExchangeHuobi: "Huobi",
   labelExchangeHuobiDes: "Transactions need to wait 24 hours",
   labelExchangeCoinbase: "Coinbase",
-  labelExchangeOthers: "Others",
+  labelExchangeOthers: "Other Exchanges",
   labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
   labelConfirmCEX: "Confirm CEX Support",
@@ -1038,7 +1038,8 @@ export default {
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
   labelDualInvestDes:
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
-  labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
+  labelDualCurrentPriceTip: "Current Price is based on USDT derived from some leading exchanges.",
+  labelDualCurrentPrice: "{{symbol}} Current Price:<1>{{price}}</1>  USDT",
   labelDualSuccess: "Subscription {{symbol}} Successfully",
   labelDualProcessing: "Waiting for completion",
   labelDualProcessingDes:
@@ -1059,7 +1060,7 @@ export default {
   labelDualTargetPrice3: "Target Price",
 
   labelDualTargetPriceDes:
-    "Target Price is a benchmark price. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
+    "Target Price is a benchmark price based on USDT. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
   labelDualRiskDes:
     "Your investment will be locked up until settlement date after investing and cannot be redeemed before settlement. \n As we make profit ratio a top priority, the total opened position might vary with your initial investment.",
   labelDualReturn: "Return \n {{symbol}}",
@@ -1082,7 +1083,9 @@ export default {
     "I understand that subscribed assets are locked and users aren’t able to cancel or redeem before the Settlement Date.",
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
-  labelInvestDualTutorialCheck4: "I have read and understand the risk warning.",
+  labelInvestDualTutorialCheck4: 
+    "Please be aware that the target price in Dual Investment portfolio is USDT. If you subscribe USDC-related product with another token, that token may be converted to USDC if the target price is reached. If you want to completely avoid the USDC depegging risk, you can select USDT-related products instead.",
+  labelInvestDualTutorialCheck5: "I have read and understand the risk warning.",
   labelInvestDualBeginerMode: "Beginner Mode",
   labelInvestDualBeginerModeDesLine1: "What is Dual Investment?",
   labelInvestDualBeginerModeDesLine2:
@@ -1120,6 +1123,8 @@ export default {
   labelDualTitle: "Dual Investment",
   labelDualDesSuccess:
     "Your token for investment is just locked but still in your account as Loopring is a DEX. \n When the transaction expires, if the settlement price is not reached, you will get a profit and the frozen token will also be unlocked; if the settlement price is reached, your investment and interest income will be converted into the target token at the Target price.",
+  labelDualRefresh:
+    "Refresh",
   labelNoticeForMarketFrozen:
     "{{ type }} is not supported, If you believe this is indeed a bug, please contact us.",
   labelInvestRangeDay: "{{arg}} Days",
@@ -1294,14 +1299,15 @@ export default {
   labelLuckyTokenViewTypeDesPrivate:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyBlindBox: "Blind Box Red Packet",
-  labelLuckyBlindBoxDes: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiry date. While some recipients can receive valuable assets, others will need to try their luck next time.",
+  labelLuckyBlindBoxDes: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.",
   labelLuckyRecievedBlindBox: "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
   labelBlindBoxExplainationNotEnded: "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxExplainationEnded: "Please claim within 3 days or it will be forfeited and returned to the Sender's wallet.",
-  labelBlindBoxExplaination2: "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened; {{remainingGiftsAmount}} gifts available for grabbing.",
-  labelBlindBoxNotStarted: "Blindbox can be opened after: {{time}}",
-  labelBlindBoxStarted: "Blindbox will be ended after: {{time}}",
-  labelBlindBoxClaimStarted: "Unclaimed NFT will be returned back to sender after: {{time}}",
+  labelBlindBoxExplaination2: "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened.",
+  labelBlindBoxExplaination3: "{{remainingGiftsAmount}} gifts available for grabbing.",
+  labelBlindBoxNotStarted: "Red Packet is available to grab after: {{time}}",
+  labelBlindBoxStarted: "Blind Box Reveal time after: {{time}}",
+  labelBlindBoxClaimStarted: "Any unclaimed NFTs will be returned to the Sender after: {{time}}",
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
@@ -1310,8 +1316,8 @@ export default {
   labelBlindBoxEndDate2: "Blindbox reveal time",
   labelBlindBoxEndTime: "End Time",
   labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
-  labelBlindBoxExpirationExplainationForToken: "Red Packets expire within 24 hours. Any unclaimed tokens remaining after the expiration will be returned",
-  labelBlindBoxExpirationExplainationForNFT: "If the recipients of the NFT Red Packets do not claim their received NFT gifts within 3 days, the gifts will be forfeited and sent back to the Sender's wallet.",
+  labelBlindBoxExpirationExplainationForToken: "After expiration, any unopened Red Packets will be forfeited and sent back to the Sender",
+  labelBlindBoxExpirationExplainationForNFT: "If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
@@ -1389,7 +1395,7 @@ export default {
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
   labelRedPacketsMax: "Maximum of {{value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
-    "Number of gifts is larger than number of packets",
+    "The number of Red Packets containing gifts cannot exceed the total number of Red Packets",
   labelBlindBoxNumberOverMaximun: 
     "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
@@ -1413,7 +1419,7 @@ export default {
   labelRedPacketOpenInProgress: "Processing...",
   labelRedPacketOpenFailed: "Read red packet failed!",
   labelRedPacketShowQR: "Share red packet",
-  labelRedPacketReceivedRecord: "Opened {{value}}/{{count}}",
+  labelRedPacketReceivedRecord: "Receive Red Packet {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:
@@ -1450,7 +1456,7 @@ export default {
   labelSeal: "Seal",
   labelOpenAfter: "Open after {{time}}",
   labelOpenStart: "Start",
-  labelTotalRedPacket: "Quantity in total: {{value}}",
+  labelTotalRedPacket: "Total Quantity: {{value}}",
   labelMyRedPacketReward: "My Rewards",
   labelRedpacketScanDes: "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
   labelLuckyRedPacketStarted: "Red Packet is Started",
@@ -1478,6 +1484,14 @@ export default {
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
+  labelRedPacketTimeRange:
+    "Start / End Time",
+  labelRedPacketTimeRangeDes:
+    "The Red Packet expires after the end date",
+  labelRedPacketTimeRangeBlindbox:
+    "Start / Reveal Time",
+  labelRedPacketTimeRangeBlindboxDes:
+    "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
   labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
@@ -1560,10 +1574,11 @@ export default {
   labelNFTs_other: "\u2A09{{count}} NFTs",
   labelTokenNFTMaxRedPack: "Max: ",
   labelNFTRedPackAskClaim:
-    "Please claim your NFT gifts immediately as they will be returned back to Sender 3 days after the expiration date.",
+    "Note: After expiration, all the unclaimed NFTs will be returned back to sender. Please claim as soon as possible if you want to hold them.",
   labelTransferDelayConfirm:
     "Your claim request has been received. Loopring will transfer the token into your L2 account soon. Please verify it.",
   labelClaimredPacket: "My Red Packet",
+  labelRedPacketMe: "Me",
   labelClaimlrcStaking: "My LRC Staking",
   labelExpectSettlementPrice:
     "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
@@ -1571,4 +1586,32 @@ export default {
   labelStakingFailed: "{{symbol}} Staking failed",
   labelStakingRedeemFailed: "Redeem {{symbol}} failed",
   labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
+  labelStakingRedeemRemaining: "Remaining Amount",
+  labelStakingRedeemDate: "Redeem Time",
+  
+  labelContactsAddContact: "Add Contact",
+  labelContactsAddressTitle: "Address",
+  labelContactsAddressDes: "Enter wallet address or ENS",
+  labelContactsAddressInvalid: "Invalid address or ENS",
+  labelContactsNameTitle: "Name",
+  labelContactsNameDes: "Enter name for the contact",
+  labelContactsAddContactBtn: "Add",
+  labelContactsDeleteContact: "Delete Contact",
+  labelDeleteContactInfo: "Contact",
+  labelContactsDeleteContactBtn: "Delete",
+  labelContactsAddSuccess:  'Add Contact Succeed',
+  labelContactsDeleteSuccess:  'Delete Contact Succeed',
+  labelContactsEditSuccess:  'Edit Contact Succeed',
+  labelContactsSendSuccess:  'Send Succeed',
+  labelContactsCopySuccess:  'Copied to Clipboard',
+  labelContactsAddFailed:  'Add Contact Failed',
+  labelContactsDeleteFailed:  'Delete Contact Failed',
+  labelContactsEditFailed:  'Edit Contact Failed',
+  labelContactsSendFailed:  'Send Failed',
+  labelContacts: 'Contacts',
+  labelContactsSend: 'Send',
+  labelContactsTransactions: 'Transactions',
+  labelContactsNetworkChoose: 'Choose L2 or L1 Account',
+  labelContactsNext: 'Next',
+  labelContactsContactExisted: 'Contact Already Existed',
 };

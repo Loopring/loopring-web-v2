@@ -64,23 +64,12 @@ export const getUserNFTReceiveList = (
     amount: string | number;
   }
 ): { list: RawDataRedPacketDetailItem[] } => {
-  // const {idIndex,tokenMap} = store.getState().tokenMap
   const { accountId } = store.getState().account;
-  // let _max = 0,
-  //   _index = -1;
   const list: RawDataRedPacketDetailItem[] = claimList.reduce((prev, item) => {
-    // _nftInfo?.metadata?.base?.name ?? "NFT";
-    const amountStr =
-      getValuePrecisionThousand(item.amount, 0, 0, undefined, false, {
+    const amountStr =  "x " + getValuePrecisionThousand(item.amount, 0, 0, undefined, false, {
         floor: false,
-        // isTrade: true,
-      }) +
-      " " +
-      "NFT";
-    // if (sdk.toBig(item.amount).gte(_max)) {
-    //   _max = item.amount;
-    //   _index = index;
-    // }
+      })
+    
     const redPacketDetailItem: RawDataRedPacketDetailItem = {
       accountStr: item.claimer?.ens
         ? item.claimer.ens
