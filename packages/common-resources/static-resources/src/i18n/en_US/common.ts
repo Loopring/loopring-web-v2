@@ -1038,7 +1038,8 @@ export default {
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
   labelDualInvestDes:
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
-  labelDualCurrentPriceTip: "Current Price is based on USDT derived from some leading exchanges.",
+  labelDualCurrentPriceTip:
+    "Current Price is based on USDT derived from some leading exchanges.",
   labelDualCurrentPrice: "{{symbol}} Current Price:<1>{{price}}</1>  USDT",
   labelDualSuccess: "Subscription {{symbol}} Successfully",
   labelDualProcessing: "Waiting for completion",
@@ -1083,7 +1084,7 @@ export default {
     "I understand that subscribed assets are locked and users aren’t able to cancel or redeem before the Settlement Date.",
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
-  labelInvestDualTutorialCheck4: 
+  labelInvestDualTutorialCheck4:
     "Please be aware that the target price in Dual Investment portfolio is USDT. If you subscribe USDC-related product with another token, that token may be converted to USDC if the target price is reached. If you want to completely avoid the USDC depegging risk, you can select USDT-related products instead.",
   labelInvestDualTutorialCheck5: "I have read and understand the risk warning.",
   labelInvestDualBeginerMode: "Beginner Mode",
@@ -1123,8 +1124,7 @@ export default {
   labelDualTitle: "Dual Investment",
   labelDualDesSuccess:
     "Your token for investment is just locked but still in your account as Loopring is a DEX. \n When the transaction expires, if the settlement price is not reached, you will get a profit and the frozen token will also be unlocked; if the settlement price is reached, your investment and interest income will be converted into the target token at the Target price.",
-  labelDualRefresh:
-    "Refresh",
+  labelDualRefresh: "Refresh",
   labelNoticeForMarketFrozen:
     "{{ type }} is not supported, If you believe this is indeed a bug, please contact us.",
   labelInvestRangeDay: "{{arg}} Days",
@@ -1299,15 +1299,22 @@ export default {
   labelLuckyTokenViewTypeDesPrivate:
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyBlindBox: "Blind Box Red Packet",
-  labelLuckyBlindBoxDes: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.",
-  labelLuckyRecievedBlindBox: "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
-  labelBlindBoxExplainationNotEnded: "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
-  labelBlindBoxExplainationEnded: "Please claim within 3 days or it will be forfeited and returned to the Sender's wallet.",
-  labelBlindBoxExplaination2: "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened.",
-  labelBlindBoxExplaination3: "{{remainingGiftsAmount}} gifts available for grabbing.",
+  labelLuckyBlindBoxDes:
+    "Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.",
+  labelLuckyRecievedBlindBox:
+    "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
+  labelBlindBoxExplainationNotEnded:
+    "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExplainationEnded:
+    "Please claim within 3 days or it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExplaination2:
+    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened.",
+  labelBlindBoxExplaination3:
+    "{{remainingGiftsAmount}} gifts available for grabbing.",
   labelBlindBoxNotStarted: "Red Packet is available to grab after: {{time}}",
   labelBlindBoxStarted: "Blind Box Reveal time after: {{time}}",
-  labelBlindBoxClaimStarted: "Any unclaimed NFTs will be returned to the Sender after: {{time}}",
+  labelBlindBoxClaimStarted:
+    "Any unclaimed NFTs will be returned to the Sender after: {{time}}",
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
@@ -1316,8 +1323,10 @@ export default {
   labelBlindBoxEndDate2: "Blindbox reveal time",
   labelBlindBoxEndTime: "End Time",
   labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
-  labelBlindBoxExpirationExplainationForToken: "After expiration, any unopened Red Packets will be forfeited and sent back to the Sender",
-  labelBlindBoxExpirationExplainationForNFT: "If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExpirationExplainationForToken:
+    "After expiration, any unopened Red Packets will be forfeited and sent back to the Sender",
+  labelBlindBoxExpirationExplainationForNFT:
+    "If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
   labelBlindBoxPrivateDes:
     "Your Red Packet is shared privately with others via a custom QR code.",
@@ -1327,7 +1336,8 @@ export default {
   labelBlindBoxCongratulations: "Congratulations",
   labelBlindBoxSorry: "Sorry",
   labelBlindBoxNoRewards: "You have not received a reward",
-  labelBlindBoxCongratulationsBlindBox: "Congratulations on receiving a Blind Box",
+  labelBlindBoxCongratulationsBlindBox:
+    "Congratulations on receiving a Blind Box",
   labelBlindBoxSorryBlindBox: "Sorry, you did not win a prize",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
@@ -1396,8 +1406,7 @@ export default {
   labelRedPacketsMax: "Maximum of {{value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
     "The number of Red Packets containing gifts cannot exceed the total number of Red Packets",
-  labelBlindBoxNumberOverMaximun: 
-    "Number of Blind Box exceeds maximum",
+  labelBlindBoxNumberOverMaximun: "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
@@ -1458,7 +1467,8 @@ export default {
   labelOpenStart: "Start",
   labelTotalRedPacket: "Total Quantity: {{value}}",
   labelMyRedPacketReward: "My Rewards",
-  labelRedpacketScanDes: "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
+  labelRedpacketScanDes:
+    "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
   labelLuckyRedPacketStarted: "Red Packet is Started",
   labelNFTRedpacketBtn: "Send Red Packet",
   labelRedpacketDurationTitle: "Expires after",
@@ -1474,7 +1484,7 @@ export default {
   labelRedpacketTokensShort: "Tokens",
   labelRedpacketNFTS: "NFTs",
   labelRedpacketBlindBox: "Blind Box",
-  labelRedpacketHideInactionable:  "Hide inactionable records",
+  labelRedpacketHideInactionable: "Hide inactionable records",
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
   labelChooseNFTTooltips: "",
   tokenSelectNFTToken: "Select NFT",
@@ -1484,12 +1494,9 @@ export default {
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
-  labelRedPacketTimeRange:
-    "Start / End Time",
-  labelRedPacketTimeRangeDes:
-    "The Red Packet expires after the end date",
-  labelRedPacketTimeRangeBlindbox:
-    "Start / Reveal Time",
+  labelRedPacketTimeRange: "Start / End Time",
+  labelRedPacketTimeRangeDes: "The Red Packet expires after the end date",
+  labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
   labelRedPacketStartWithTime: "{{time}} Start",
@@ -1588,7 +1595,7 @@ export default {
   labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
   labelStakingRedeemRemaining: "Remaining Amount",
   labelStakingRedeemDate: "Redeem Time",
-  
+
   labelContactsAddContact: "Add Contact",
   labelContactsAddressTitle: "Address",
   labelContactsAddressDes: "Enter wallet address or ENS",
@@ -1599,19 +1606,23 @@ export default {
   labelContactsDeleteContact: "Delete Contact",
   labelDeleteContactInfo: "Contact",
   labelContactsDeleteContactBtn: "Delete",
-  labelContactsAddSuccess:  'Add Contact Succeed',
-  labelContactsDeleteSuccess:  'Delete Contact Succeed',
-  labelContactsEditSuccess:  'Edit Contact Succeed',
-  labelContactsSendSuccess:  'Send Succeed',
-  labelContactsCopySuccess:  'Copied to Clipboard',
-  labelContactsAddFailed:  'Add Contact Failed',
-  labelContactsDeleteFailed:  'Delete Contact Failed',
-  labelContactsEditFailed:  'Edit Contact Failed',
-  labelContactsSendFailed:  'Send Failed',
-  labelContacts: 'Contacts',
-  labelContactsSend: 'Send',
-  labelContactsTransactions: 'Transactions',
-  labelContactsNetworkChoose: 'Choose L2 or L1 Account',
-  labelContactsNext: 'Next',
-  labelContactsContactExisted: 'Contact Already Existed',
+  labelContactsAddSuccess: "Add Contact Succeed",
+  labelContactsDeleteSuccess: "Delete Contact Succeed",
+  labelContactsEditSuccess: "Edit Contact Succeed",
+  labelContactsSendSuccess: "Send Succeed",
+  labelContactsCopySuccess: "Copied to Clipboard",
+  labelContactsAddFailed: "Add Contact Failed",
+  labelContactsDeleteFailed: "Delete Contact Failed",
+  labelContactsEditFailed: "Edit Contact Failed",
+  labelContactsSendFailed: "Send Failed",
+  labelContacts: "Contacts",
+  labelContactsSend: "Send",
+  labelContactsTransactions: "Transactions",
+  labelContactsNetworkChoose: "Choose L2 or L1 Account",
+  labelContactsNext: "Next",
+  labelContactsContactExisted: "Contact Already Existed",
+  labelNotExchangeEOA:
+    "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+  labelNotOtherSmartWallet:
+    "This wallet binds with smart contract that does not support Loopring L2. You will need to send funds to the L1 account.",
 };
