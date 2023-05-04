@@ -119,22 +119,12 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     setAddress,
     addrStatus,
     isCFAddress,
-    // isContractAddress,
     isContract1XAddress,
     isAddressCheckLoading,
   } = useAddressCheck();
-  React.useEffect(() => {
-    // setSureIsAllowAddress(undefined);
-  }, [realAddr]);
-
   const isNotAvailableAddress =
-    // isCFAddress
-    //   ? "isCFAddress"
-    //   :
     isContract1XAddress ? "isContract1XAddress" : undefined;
-
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
-
   const checkBtnStatus = React.useCallback(() => {
     if (
       tokenMap &&
