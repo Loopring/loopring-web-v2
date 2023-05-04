@@ -7,7 +7,6 @@ import {
   confirm,
   confirmedRETHDefiInvest,
   confirmedWSETHDefiInvest,
-  confirmDualInvest,
   showDualBeginnerHelp,
   hidDualBeginnerHelp,
   confirmedLRCStakeInvest,
