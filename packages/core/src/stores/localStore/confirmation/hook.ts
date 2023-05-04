@@ -12,6 +12,7 @@ import {
   hidDualBeginnerHelp,
   confirmedLRCStakeInvest,
   confirmedBtradeSwap,
+  confirmDualInvestV2,
 } from "./reducer";
 
 export const useConfirmation = (): {
@@ -34,7 +35,7 @@ export const useConfirmation = (): {
       dispatch(confirm(undefined));
     }, [dispatch]),
     confirmDualInvest: React.useCallback(() => {
-      dispatch(confirmDualInvest(undefined));
+      dispatch(confirmDualInvestV2(undefined));
       dispatch(showDualBeginnerHelp(undefined));
       setTimeout(() => {
         dispatch(hidDualBeginnerHelp(undefined));

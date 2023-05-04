@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useEffect } from "react";
+import React from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -17,6 +17,7 @@ import {
   CoinMap,
   CurrencyToTag,
   EmptyValueTag,
+  EXCHANGE_TYPE,
   Explorer,
   FeeInfo,
   getValuePrecisionThousand,
@@ -61,7 +62,10 @@ import Web3 from "web3";
 import { useHistory, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateContacts } from "../../stores/contacts/reducer";
-import { addressToExWalletMapFn, exWalletToAddressMapFn } from "@loopring-web/core";
+import {
+  addressToExWalletMapFn,
+  exWalletToAddressMapFn,
+} from "@loopring-web/core";
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const [memo, setMemo] = React.useState("");
@@ -71,7 +75,13 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     setShowNFTDetail,
     modals: {
       isShowNFTDetail,
-      isShowNFTTransfer: { isShow, info, address: contactAddress, name: contactName, addressType: contactAddressType },
+      isShowNFTTransfer: {
+        isShow,
+        info,
+        address: contactAddress,
+        name: contactName,
+        addressType: contactAddressType,
+      },
     },
   } = useOpenModals();
 
@@ -157,7 +167,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     isAddressCheckLoading,
     isSameAddress,
     isContractAddress,
-    loopringSmartWalletVersion
+    loopringSmartWalletVersion,
   } = useAddressCheck();
 
   React.useEffect(() => {
@@ -166,7 +176,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const handleOnMemoChange = React.useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       setMemo(e.target.value);
     },
     []
@@ -254,7 +264,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       });
     }
     if (contactAddress) {
-      setAddress(contactAddress)
+      setAddress(contactAddress);
     } else {
       setAddress("");
     }
@@ -265,7 +275,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     updateNFTTransferData,
     feeInfo,
     address,
-    contactAddress
+    contactAddress,
   ]);
 
   React.useEffect(() => {
@@ -475,7 +485,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     ]
   );
 
-  const onTransferClick = useCallback(
+  const onTransferClick = React.useCallback(
     async (_nftTransferValue, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
       const nftTransferValue = {
@@ -611,7 +621,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     //   (item: any) => item.belong == feeInfo.belong
     // );
   }, [isActiveAccount, activeAccountFeeList, tokenPrices, currency]);
-  const handlePanelEvent = useCallback(
+  const handlePanelEvent = React.useCallback(
     async (data: SwitchData<R>, _switchType: "Tomenu" | "Tobutton") => {
       return new Promise<void>((res: any) => {
         if (data.to === "button") {
@@ -657,21 +667,22 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
-  const { isHebao } = useIsHebao()
-  const [isContactSelection, setIsContactSelection] = React.useState(false)
+  const { isHebao } = useIsHebao();
   const contacts = useSelector((state: RootState) => state.contacts.contacts);
-  const dispatch = useDispatch()
-  useEffect(() => {
-    const addressType = contacts?.find(x => x.address === realAddr)?.addressType
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    const addressType = contacts?.find(
+      (x) => x.address === realAddr
+    )?.addressType;
     if (isShow === false) {
-      setSureItsLayer2(undefined)
+      setSureItsLayer2(undefined);
     } else if (addressType !== undefined) {
-      const found = addressType 
-      ? addressToExWalletMapFn(addressType)
-      : undefined
-      setSureItsLayer2(found)
+      const found = addressType
+        ? addressToExWalletMapFn(addressType)
+        : undefined;
+      setSureItsLayer2(found);
     }
-  }, [realAddr, isShow, contacts])
+  }, [realAddr, isShow, contacts]);
   const nftTransferProps: TransferProps<R, T> = {
     handleOnMemoChange,
     memo,
@@ -682,24 +693,33 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       store.getState().modals.isShowAccount.info?.lastFailed ===
       LAST_STEP.nftTransfer,
     handleSureItsLayer2: (sure: WALLET_TYPE | EXCHANGE_TYPE) => {
-      const found = exWalletToAddressMapFn(sure)!
-      const contact = contacts?.find(x => x.address === realAddr)
+      const found = exWalletToAddressMapFn(sure)!;
+      const contact = contacts?.find((x) => x.address === realAddr);
       if (isHebao !== undefined && contact) {
-        LoopringAPI.contactAPI?.updateContact({
-          contactAddress: realAddr,
-          isHebao,
-          accountId: account.accountId,
-          addressType: found,
-          contactName: contact.name
-        }, account.apiKey).then(() => {
-          dispatch(updateContacts(contacts?.map(x => {
-            if (x.address === realAddr) {
-              return {...x, addressType: found}
-            } else {
-              return x
-            }
-          })))
-        })
+        LoopringAPI.contactAPI
+          ?.updateContact(
+            {
+              contactAddress: realAddr,
+              isHebao,
+              accountId: account.accountId,
+              addressType: found,
+              contactName: contact.name,
+            },
+            account.apiKey
+          )
+          .then(() => {
+            dispatch(
+              updateContacts(
+                contacts?.map((x) => {
+                  if (x.address === realAddr) {
+                    return { ...x, addressType: found };
+                  } else {
+                    return x;
+                  }
+                })
+              )
+            );
+          });
       }
       setSureItsLayer2(sure);
     },
@@ -765,12 +785,12 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     },
     isSmartContractAddress: isContractAddress,
     isFromContact: contactAddress ? true : false,
-    contact: contactAddress 
+    contact: contactAddress
       ? {
-        address: contactAddress, 
-        name: contactName!,
-        addressType: contactAddressType!
-      }
+          address: contactAddress,
+          name: contactName!,
+          addressType: contactAddressType!,
+        }
       : undefined,
     loopringSmartWalletVersion,
   };
