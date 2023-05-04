@@ -119,13 +119,22 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     setAddress,
     addrStatus,
     isCFAddress,
+    // isContractAddress,
     isContract1XAddress,
     isAddressCheckLoading,
   } = useAddressCheck();
-  const isNotAvailableAddress = isContract1XAddress
-    ? "isContract1XAddress"
-    : undefined;
+  React.useEffect(() => {
+    // setSureIsAllowAddress(undefined);
+  }, [realAddr]);
+
+  const isNotAvailableAddress =
+    // isCFAddress
+    //   ? "isCFAddress"
+    //   :
+    isContract1XAddress ? "isContract1XAddress" : undefined;
+
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
+
   const checkBtnStatus = React.useCallback(() => {
     if (
       tokenMap &&
@@ -527,7 +536,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     const addressType = contacts?.find(
       (x) => x.address === realAddr
     )?.addressType;
-    if (!isShow) {
+    if (isShow === false) {
       setSureIsAllowAddress(undefined);
     } else if (addressType !== undefined) {
       const found = addressType
