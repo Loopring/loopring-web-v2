@@ -120,6 +120,7 @@ export const StopLimitView = withTranslation("common")(
               tradeCalcProData={pageTradePro.tradeCalcProData}
               tradeData={stopLimitTradeData}
               onChangeEvent={onChangeLimitEvent as any}
+              // stopRange={pageTradePro.tradeCalcProData?.stopRange}
             />
           </Box>
         </Box>

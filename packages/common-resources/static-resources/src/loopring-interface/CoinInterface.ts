@@ -137,6 +137,7 @@ export type TradeCalcProData<T> = {
   marketRatePrice?: string;
   isChecked?: boolean;
   lastStepAt?: "base" | "quote";
+  stopRange?: [string | undefined, string | undefined];
 };
 
 /**
