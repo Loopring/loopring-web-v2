@@ -59,7 +59,6 @@ const CloseIconStyled = styled(CloseIcon)`
 // OutlinedInput
 type ContactSelectionProps = {
   onSelect: (address: string) => void
-  onScroll: (e: HTMLDivElement) => void
   contacts: {
     name: string,
     address: string,
@@ -69,7 +68,7 @@ type ContactSelectionProps = {
 }
 export const ContactSelection = (props: ContactSelectionProps) => {
   // const { t } = useTranslation();
-  const { onSelect, contacts, onScroll, scrollHeight } = props
+  const { onSelect, contacts, scrollHeight } = props
   const { isMobile } = useSettings();
   const theme = useTheme()
   const displayContacts = contacts && contacts.map(x => {
@@ -120,7 +119,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           setInputValue(e.target.value)
         }}
       ></OutlinedInput>
-      <Box overflow={"scroll"} height={scrollHeight} onScroll={e => onScroll(e.currentTarget)}>
+      <Box overflow={"scroll"} height={scrollHeight}>
         {filteredContacts && filteredContacts.map(c => {
           return <SingleContact
             name={c.name}

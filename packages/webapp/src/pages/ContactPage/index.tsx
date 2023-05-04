@@ -5,11 +5,12 @@ import { CopyIcon, EditIcon, SoursURL, TOAST_TIME } from "@loopring-web/common-r
 import { Add } from "./add";
 import { Delete } from "./delete";
 import { Send } from "./send";
-import { useContact, useContactAdd } from "./hooks";
+import { useContact, useContactAdd, viewHeightOffset, viewHeightRatio } from "./hooks";
 import { useHistory } from "react-router";
 import { ViewAccountTemplate, WalletConnectL2Btn } from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
 import { AddressType } from "@loopring-web/loopring-sdk";
+import React from "react";
 const ContactPageStyle = styled(Box)`
   background: var(--color-box);
   display: flex;
@@ -113,8 +114,10 @@ export const ContactPage = () => {
       src={`${SoursURL}images/loading-line.gif`}
     />
   </Box>
+  const nodeTimer = React.useRef<NodeJS.Timeout | undefined>(undefined);
+  
   const normalView = <>
-    <Box height={"calc(85vh - 130px)"} overflow={"scroll"}>
+    <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={"scroll"}>
       {contacts && contacts.map(data => {
         const { editing, name, address, avatarURL, addressType } = data;
         return <Box key={address + name} paddingY={2} display={addressType === AddressType.OFFICIAL ? "none" : "flex"} justifyContent={"space-between"}>
@@ -152,7 +155,8 @@ export const ContactPage = () => {
                     isSuccess: true,
                     type: 'Copy'
                   })
-                  setTimeout(() => {
+                  if (nodeTimer.current !== undefined) clearTimeout(nodeTimer.current)
+                  nodeTimer.current = setTimeout(() => {
                     setToastInfo({
                       open: false,
                       isSuccess: undefined,
