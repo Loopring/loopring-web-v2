@@ -3,13 +3,10 @@ import {
   DepthViewData,
   MarketType,
   TradeCalcProData,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import { Ticker } from "../../ticker";
-import {
-  DepthType,
-  RawDataTradeItem,
-  TradeProType,
-} from "@loopring-web/component-lib";
+import { DepthType, RawDataTradeItem } from "@loopring-web/component-lib";
 
 export type MarketCalcParams = {
   exceedDepth: boolean;

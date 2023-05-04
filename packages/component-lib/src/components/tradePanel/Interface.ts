@@ -6,7 +6,9 @@ import {
   MarketType,
   NFTWholeINFO,
   SCENARIO,
+  TradeBaseType,
   TradeCalcProData,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import {
   BasicACoinTradeHookProps,
@@ -35,16 +37,12 @@ import {
 } from "./components";
 import {
   StopTradeLimitInfoProps,
-  TradeBaseType,
   TradeLimitInfoProps,
   TradeMarketInfoProps,
   TradeProBaseEventProps,
-  TradeProType,
 } from "./tradePro/Interface";
 import React from "react";
 import { TOASTOPEN } from "../toast";
-
-export { TradeProType, TradeBaseType };
 
 export type SwapTradeData<T> = {
   sell: T;

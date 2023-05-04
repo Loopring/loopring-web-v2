@@ -9,7 +9,6 @@ import {
   PopoverPure,
   SmallOrderAlert,
   Toast,
-  TradeProType,
 } from "@loopring-web/component-lib";
 import {
   EmptyValueTag,
@@ -17,6 +16,7 @@ import {
   Info2Icon,
   MarketType,
   TOAST_TIME,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import { usePageTradePro, useTokenMap } from "@loopring-web/core";
 import { useMarket } from "./hookMarket";

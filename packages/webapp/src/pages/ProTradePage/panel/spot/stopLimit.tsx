@@ -4,9 +4,12 @@ import {
   AlertLimitPrice,
   StopLimitTrade,
   Toast,
-  TradeProType,
 } from "@loopring-web/component-lib";
-import { MarketType, TOAST_TIME } from "@loopring-web/common-resources";
+import {
+  MarketType,
+  TOAST_TIME,
+  TradeProType,
+} from "@loopring-web/common-resources";
 import { usePageTradePro, useTokenMap } from "@loopring-web/core";
 import { Box, Divider, Typography } from "@mui/material";
 import { useStopLimit } from "./hookStopLimit";

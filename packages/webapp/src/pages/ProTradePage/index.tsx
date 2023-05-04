@@ -89,7 +89,7 @@ export const OrderbookPage = withTranslation("common")(<
     pageTradePro: { depthLevel, depthForCalc },
   } = usePageTradePro();
   const { market, handleOnMarketChange, assetBtnStatus, resetTradeCalcData } =
-    usePro();
+    usePro({});
   const { unit } = useTheme();
   const { proLayout, setLayouts, isMobile } = useSettings();
 

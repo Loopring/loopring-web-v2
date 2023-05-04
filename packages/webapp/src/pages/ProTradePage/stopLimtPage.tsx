@@ -91,7 +91,9 @@ export const StopLimitPage = withTranslation("common")(<
   const {
     pageTradePro: { depthForCalc },
   } = usePageTradePro();
-  const { market, handleOnMarketChange, resetTradeCalcData } = usePro();
+  const { market, handleOnMarketChange, resetTradeCalcData } = usePro({
+    path: "/trade/stoplimit",
+  });
   const { unit } = useTheme();
   const { stopLimitLayout, setStopLimitLayouts } = useSettings();
   const history = useHistory();

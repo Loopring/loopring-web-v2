@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { PageTradePro, PageTradeProStatus } from "./interface";
-import { TradeProType } from "@loopring-web/component-lib";
-import { RequireOne } from "@loopring-web/common-resources";
+import { RequireOne, TradeProType } from "@loopring-web/common-resources";
 import { MAPFEEBIPS } from "../../../defs";
 
 const initState = {

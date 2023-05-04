@@ -10,9 +10,9 @@ import {
   PriceTag,
   TradeBtnStatus,
   TradeCalcProData,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import { Box, Tab } from "@mui/material";
-import { TradeProType } from "./Interface";
 import { TabsStyle } from "../components/Styled";
 import { useCommon } from "./hookCommon";
 import { Button } from "./../../index";

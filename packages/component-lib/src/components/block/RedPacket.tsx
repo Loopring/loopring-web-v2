@@ -14,7 +14,6 @@ import { Trans, useTranslation } from "react-i18next";
 import {
   Account,
   BackIcon,
-  DAY_MINUTE_FORMAT,
   EmptyValueTag,
   FirstPlaceIcon,
   GET_IPFS_STRING,

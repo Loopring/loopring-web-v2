@@ -22,12 +22,11 @@ import {
   MarketType,
   myLog,
   TradeBtnStatus,
-} from "@loopring-web/common-resources";
-import {
-  DepthType,
-  StopLimitTradeData,
   TradeBaseType,
   TradeProType,
+} from "@loopring-web/common-resources";
+import {
+  StopLimitTradeData,
   useOpenModals,
   useSettings,
   useToggle,
@@ -106,93 +105,6 @@ export const useStopLimit = <
     resetTradeData();
   }, [pageTradePro.tradeCalcProData.walletMap, pageTradePro.market, currency]);
 
-  React.useEffect(() => {
-    if (pageTradePro.chooseDepth) {
-      const {
-        system: { forexMap },
-        settings: { currency },
-      } = store.getState();
-      //@ts-ignore
-      const [, baseSymbol, quoteSymbol] =
-        pageTradePro.market.match(/(\w+)-(\w+)/i);
-      const { decimals: baseDecimal, precision: basePrecision } =
-        tokenMap[baseSymbol];
-      const tradePrice = pageTradePro.chooseDepth
-        ? pageTradePro.chooseDepth.price
-        : pageTradePro.market === market && pageTradePro.ticker
-        ? pageTradePro.ticker.close
-          ? pageTradePro.ticker.close.toFixed(marketPrecision)
-          : pageTradePro?.depth?.mid_price.toFixed(marketPrecision)
-        : 0;
-      let balance =
-        tradePrice &&
-        tokenPrices &&
-        forexMap &&
-        Number(tradePrice) *
-          tokenPrices[quoteSymbol as string] *
-          (forexMap[currency] ?? 0);
-
-      if (
-        (pageTradePro.tradeType === TradeProType.buy &&
-          pageTradePro.chooseDepth.type === DepthType.ask) ||
-        (pageTradePro.tradeType === TradeProType.sell &&
-          pageTradePro.chooseDepth.type === DepthType.bid)
-      ) {
-        const amount = getValuePrecisionThousand(
-          sdk.toBig(pageTradePro.chooseDepth.amtTotal).div("1e" + baseDecimal),
-          undefined,
-          undefined,
-          basePrecision,
-          true
-        ).replace(sdk.SEP, "");
-        onChangeLimitEvent(
-          {
-            ...stopLimitTradeData,
-            base: {
-              ...stopLimitTradeData.base,
-              tradeValue: Number(amount),
-            },
-            price: {
-              ...stopLimitTradeData.price,
-              tradeValue: Number(tradePrice),
-              balance: Number(balance) ?? 0,
-            },
-          },
-          TradeBaseType.price
-        );
-        // if(account.readyState === 'ACTIVATED'){
-        //
-        // }else{
-        //
-        //
-        //     // const amtTotalForShow = pageTradePro.chooseDepth.amtTotalForShow;
-        //
-        // }
-      } else {
-        onChangeLimitEvent(
-          {
-            ...stopLimitTradeData,
-            price: {
-              ...stopLimitTradeData.price,
-              tradeValue: Number(tradePrice),
-              balance: getValuePrecisionThousand(
-                balance,
-                undefined,
-                undefined,
-                undefined,
-                true,
-                { isFait: true }
-              ),
-            },
-          },
-          TradeBaseType.price
-        );
-      }
-
-      // (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType)
-    }
-  }, [pageTradePro.chooseDepth]);
-
   const resetTradeData = React.useCallback(
     (type?: TradeProType) => {
       const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
@@ -200,20 +112,6 @@ export const useStopLimit = <
       // @ts-ignore
       const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
       setStopLimitTradeData((state) => {
-        const tradePrice =
-          pageTradePro.market === market && pageTradePro.ticker
-            ? pageTradePro.ticker.close
-              ? pageTradePro.ticker.close.toFixed(marketPrecision)
-              : pageTradePro?.depth?.mid_price.toFixed(marketPrecision)
-            : 0;
-        let balance =
-          tradePrice &&
-          tokenPrices &&
-          forexMap &&
-          Number(tradePrice) *
-            tokenPrices[quoteSymbol as string] *
-            (forexMap[currency] ?? 0);
-
         return {
           ...state,
           type: type ?? pageTradePro.tradeType,
@@ -227,8 +125,13 @@ export const useStopLimit = <
           } as IBData<any>,
           price: {
             belong: quoteSymbol,
-            tradeValue: tradePrice,
-            balance,
+            tradeValue: undefined,
+            balance: 0,
+          } as IBData<any>,
+          stopPrice: {
+            belong: quoteSymbol,
+            tradeValue: undefined,
+            balance: 0,
           } as IBData<any>,
         };
       });
@@ -424,7 +327,10 @@ export const useStopLimit = <
             ? tradeData.quote.tradeValue
             : undefined;
 
-        if (formType === TradeBaseType.price) {
+        if (
+          formType === TradeBaseType.price ||
+          formType === TradeBaseType.stopPrice
+        ) {
           amountBase =
             tradeData.base.tradeValue !== undefined
               ? tradeData.base.tradeValue
@@ -436,6 +342,19 @@ export const useStopLimit = <
               ? tradeData.quote.tradeValue
               : undefined;
         }
+
+        // if () {
+        //   amountBase =
+        //     tradeData.base.tradeValue !== undefined
+        //       ? tradeData.base.tradeValue
+        //       : undefined;
+        //   amountQuote =
+        //     amountBase !== undefined
+        //       ? undefined
+        //       : tradeData.quote.tradeValue !== undefined
+        //       ? tradeData.quote.tradeValue
+        //       : undefined;
+        // }
 
         // myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type, amountBase, amountQuote)
 
@@ -477,10 +396,22 @@ export const useStopLimit = <
             tradePrice &&
             tokenPrices &&
             forexMap &&
-            Number(tradePrice) *
-              tokenPrices[quoteSymbol as string] *
-              (forexMap[currency] ?? 0);
+            sdk
+              .toBig(tradePrice)
+              .times(tokenPrices[quoteSymbol as string])
+              .times(forexMap[currency] ?? 0)
+              .toFixed(2);
           const stopPrice = tradeData.stopPrice.tradeValue;
+          const stopPriceBalance =
+            stopPrice &&
+            tokenPrices &&
+            forexMap &&
+            sdk
+              .toBig(stopPrice)
+              .times(tokenPrices[quoteSymbol as string])
+              .times(forexMap[currency] ?? 0)
+              .toFixed(2);
+
           return {
             ...state,
             price: {
@@ -491,7 +422,7 @@ export const useStopLimit = <
             stopPrice: {
               belong: quoteSymbol,
               tradeValue: stopPrice,
-              balance,
+              balance: stopPriceBalance,
             } as IBData<any>,
             base: {
               ...state.base,
