@@ -176,6 +176,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [key: string]: any }>> =
           if (maxFeeBips) {
             state.pageTradePro.maxFeeBips = maxFeeBips;
           }
+
           state.pageTradePro.tradeCost = tradeCost;
           state.pageTradePro.feeTakerRate = feeTakerRate;
         }

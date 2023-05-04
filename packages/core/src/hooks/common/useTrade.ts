@@ -793,18 +793,21 @@ export function usePlaceOrder() {
         calcTradeParams = undefined,
         stopLimitRequest = undefined,
         stopSide = undefined;
-      if (exchangeInfo && params.market) {
-        const { close } = tickerMap[params.market];
+
+      if (exchangeInfo && params.depth && params.quote) {
+        // const { close } = tickerMap[params.market];
+        let midStopPrice = params.depth.mid_price ?? 0;
         if (params.stopLimitPrice == undefined) {
           params.stopLimitPrice = 0;
         }
+
         if (params.isBuy) {
-          sdk.toBig(params.stopLimitPrice).gt(close);
-          stopSide = sdk.toBig(params.stopLimitPrice).gt(close)
+          sdk.toBig(params.stopLimitPrice).gt(midStopPrice);
+          stopSide = sdk.toBig(params.stopLimitPrice).gt(midStopPrice)
             ? sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
             : sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL;
         } else {
-          stopSide = sdk.toBig(params.stopLimitPrice).gt(close)
+          stopSide = sdk.toBig(params.stopLimitPrice).gt(midStopPrice)
             ? sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
             : sdk.STOP_SIDE.LESS_THAN_AND_EQUAL;
         }
@@ -831,6 +834,7 @@ export function usePlaceOrder() {
         myLog("makeLimitReqInHook error no tokenAmtMap", tokenAmtMap);
       }
       return {
+        // stopRange,
         sellUserOrderInfo,
         buyUserOrderInfo,
         minOrderInfo,

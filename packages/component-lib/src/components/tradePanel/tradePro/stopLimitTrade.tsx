@@ -24,6 +24,7 @@ import { useCommon } from "./hookCommon";
 import { Button } from "./../../index";
 import React from "react";
 import { useSettings } from "../../../stores";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export const StopLimitTrade = withTranslation("common", { withRef: true })(
   <
@@ -94,7 +95,15 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
         label: t("labelStopStopPrice"),
         subLabel: `\u2248 ${PriceTag[CurrencyToTag[currency]]}`,
         emptyText: t("tokenSelectToken"),
-        placeholderText: "0.00",
+        placeholderText:
+          tradeCalcProData.stopRange &&
+          tradeCalcProData.stopRange[0] &&
+          tradeCalcProData.stopRange[1]
+            ? t("labelStopLimitMinMax", {
+                minValue: tradeCalcProData.stopRange[0],
+                maxValue: tradeCalcProData.stopRange[1],
+              })
+            : "0.00",
         size: InputSize.small,
         order: '"right"' as any,
         coinPrecision: 2,
@@ -103,6 +112,20 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
         ...stopPriceProps,
         handleCountChange,
         maxAllow: false,
+        handleError: (data: T) => {
+          if (
+            data.tradeValue &&
+            (sdk.toBig(data.tradeValue).gt(tradeCalcProData.stopRange[1]) ||
+              sdk.toBig(data.tradeValue).lt(tradeCalcProData.stopRange[0]))
+          ) {
+            return {
+              error: true,
+            };
+          }
+          return {
+            error: false,
+          };
+        },
         t,
       };
     }, [tradeType, TradeProType, stopPriceProps, handleCountChange]);

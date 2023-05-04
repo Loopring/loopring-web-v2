@@ -19,6 +19,7 @@ export type TradeLimitInfoProps<T, TCD extends TradeCalcProData<I>, I> = {
 };
 export type StopTradeLimitInfoProps<T, TCD extends TradeCalcProData<I>, I> = {
   stopPriceProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
+  // stopRange: [string | undefined, string | undefined];
 } & TradeLimitInfoProps<T, TCD, I>;
 
 export type TradeMarketInfoProps<T, TCD extends TradeCalcProData<I>, I> = {

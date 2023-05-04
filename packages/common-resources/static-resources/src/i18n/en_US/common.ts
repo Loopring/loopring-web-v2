@@ -1679,4 +1679,6 @@ export default {
   labelStopPrice: "Price",
   labelStopStopPrice: "Stop Price",
   labelStopLimitWhatIs: "What's Stop Limit?",
+  labelStopLimitMinMax: "Min {{minValue}} - Max {{maxValue}}",
+  labelLimitStopPriceMinMax: "Stop Price Range {{arg}}",
 };
