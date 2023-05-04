@@ -1,23 +1,12 @@
 import { InputButtonProps } from "../../basic-lib";
 import {
   CoinInfo,
+  TradeBaseType,
   TradeBtnStatus,
   TradeCalcProData,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import React from "react";
-
-export enum TradeProType {
-  sell = "sell",
-  buy = "buy",
-}
-
-export enum TradeBaseType {
-  price = "price",
-  quote = "quote",
-  base = "base",
-  tab = "tab",
-  slippage = "slippage",
-}
 
 export type TradeLimitInfoProps<T, TCD extends TradeCalcProData<I>, I> = {
   tradeLimitI18nKey?: string;

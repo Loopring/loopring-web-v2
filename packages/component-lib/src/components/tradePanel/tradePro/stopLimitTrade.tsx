@@ -15,9 +15,10 @@ import {
   PriceTag,
   TradeBtnStatus,
   TradeCalcProData,
+  TradeProType,
+  TradeBaseType,
 } from "@loopring-web/common-resources";
 import { Box, Tab } from "@mui/material";
-import { TradeProType } from "./Interface";
 import { TabsStyle } from "../components/Styled";
 import { useCommon } from "./hookCommon";
 import { Button } from "./../../index";
@@ -144,7 +145,7 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={stopPriceRef as any}
-              name={"price"}
+              name={TradeBaseType.stopPrice}
               disabled={false}
               {...({
                 ...propsStopPrice,
@@ -163,7 +164,7 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={priceRef as any}
-              name={"price"}
+              name={TradeBaseType.price}
               disabled={false}
               {...({
                 ...propsPrice,
@@ -182,7 +183,7 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={baseRef as any}
-              name={"base"}
+              name={TradeBaseType.base}
               disabled={getDisabled()}
               {...{
                 ...propsBase,
@@ -237,7 +238,7 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={quoteRef}
-              name={"quote"}
+              name={TradeBaseType.quote}
               disabled={getDisabled()}
               {...{
                 ...propsQuote,

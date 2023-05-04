@@ -9,7 +9,6 @@ import {
   PopoverPure,
   SmallOrderAlert,
   Toast,
-  ToastType,
 } from "@loopring-web/component-lib";
 import {
   EmptyValueTag,
@@ -80,12 +79,16 @@ export const SpotView = withTranslation("common")(
       tradeMarketI18nKey,
       tradeMarketBtnStatus,
       tradeMarketBtnStyle,
+      marketSubmit,
       resetMarketData,
       marketBtnClick,
       isMarketLoading,
       priceAlertCallBack,
       smallOrderAlertCallBack,
+      secondConfirmationCallBack,
       smallOrderAlertOpen,
+      secondConfirmationOpen,
+      setToastOpen,
     } = useMarket({ market, resetTradeCalcData });
     const onTabChange = React.useCallback(
       (_e, value) => {
@@ -237,7 +240,7 @@ export const SpotView = withTranslation("common")(
       <>
         <Toast
           alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? ToastType.success}
+          severity={toastOpen?.type ?? "success"}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
@@ -248,7 +251,7 @@ export const SpotView = withTranslation("common")(
               ? marketUnavailableConent
               : toastOpenL?.content ?? ""
           }
-          severity={toastOpenL?.type ?? ToastType.success}
+          severity={toastOpenL?.type ?? "success"}
           open={toastOpenL?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToastL}

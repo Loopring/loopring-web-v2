@@ -26,7 +26,11 @@ import { useProSocket, useSocketProService } from "./proService";
 import { useHistory } from "react-router-dom";
 import { useGetAssets } from "../AssetPage/AssetPanel/hook";
 
-export const usePro = <C extends { [key: string]: any }>(): {
+export const usePro = <C extends { [key: string]: any }>({
+  path = "/trade/pro",
+}: {
+  path?: string;
+}): {
   [key: string]: any;
   market: MarketType | undefined;
   resetTradeCalcData: (props: {
@@ -36,7 +40,7 @@ export const usePro = <C extends { [key: string]: any }>(): {
   // marketTicker: MarketBlockProps<C> |undefined,
 } => {
   //High: No not Move!!!!!!
-  let { realMarket } = usePairMatch({ path: "/trade/pro" });
+  let { realMarket } = usePairMatch({ path });
   const history = useHistory();
   const { updatePageTradePro } = usePageTradePro();
   const [market, setMarket] = React.useState<MarketType>(
