@@ -31,7 +31,7 @@ export type Contact = {
   // id: string
 }
 type Network = 'L1' | 'L2'
-
+const RowHeight = 78
 export const useContact = () => {
   const [addOpen, setAddOpen] = React.useState(false);
   const [deleteInfo, setDeleteInfo] = React.useState({
@@ -59,16 +59,99 @@ export const useContact = () => {
   const dispatch = useDispatch()
   const contacts = useSelector((state: RootState) => state.contacts.contacts);
   const {t} = useTranslation()
+  const calcTableHeight = () => {
+    return window.innerHeight * 0.85 - 130;
+  }
+  const [tableHeight] = useState(calcTableHeight());
+  const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(undefined as number | undefined);
+  const [page, setPage] = useState(1);
+  const pageSize = Math.floor(tableHeight / RowHeight);
+  const pagination = total
+    ? {
+      page,
+      pageSize,
+      total
+    }
+    : undefined  
 
+  const loadContacts2 = (offset: number) => {
+    dispatch(updateContacts(undefined))
+    
+    if (isHebao === undefined || !apiKey || accountId == -1) {
+      return
+    }
+    setLoading(true)
+    const recursiveLoad = (offset: number) : Promise<void> => {
+      const limit = 100
+      return LoopringAPI.contactAPI!.getContacts({
+        isHebao,
+        accountId,
+        limit,
+        offset
+      }, apiKey).then((x: any) => {
+        const displayContacts = x.contacts.map((xx: any) => {
+          return {
+            name: xx.contactName,
+            address: xx.contactAddress,
+            avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), 
+            editing: false,
+            addressType: xx.addressType
+          } as DisplayContact
+        })
+        dispatch(
+          contacts 
+            ? updateContacts(contacts.concat(displayContacts))
+            : updateContacts(displayContacts)
+        )
+        setTotal(x.total)
+        if (x.total > offset + limit) {
+          return recursiveLoad(offset + limit)
+        }
+      })
+    }
+    recursiveLoad(offset)
+    .catch(e => {
+      dispatch(
+        updateContacts([])
+      )
+    }).finally(() => {
+      setLoading(false)
+    })
+    // LoopringAPI.contactAPI!.getContacts({
+    //   isHebao,
+    //   accountId,
+    //   limit: pageSize,
+    //   offset: 0
+    // }, apiKey).then(x => {
+    //   const displayContacts = x.contacts.map(xx => {
+    //     return {
+    //       name: xx.contactName,
+    //       address: xx.contactAddress,
+    //       avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
+    //       editing: false,
+    //       addressType: xx.addressType
+    //     } as DisplayContact
+    //   })
+    //   dispatch(updateContacts(displayContacts))
+    //   setTotal(x.total)
+    //   // setContacts(displayContacts)
+    // }).catch(x => {
+    //   dispatch(updateContacts([]))
+    // }).finally(() => {
+    //   setLoading(false)
+    // })
+  }
   const loadContacts = () => {
     dispatch(updateContacts(undefined))
+    setLoading(true)
     if (isHebao === undefined || !apiKey || accountId == -1) {
       return
     }
     LoopringAPI.contactAPI!.getContacts({
       isHebao,
       accountId,
-      limit: 10,
+      limit: pageSize,
       offset: 0
     }, apiKey).then(x => {
       const displayContacts = x.contacts.map(xx => {
@@ -81,12 +164,15 @@ export const useContact = () => {
         } as DisplayContact
       })
       dispatch(updateContacts(displayContacts))
+      setTotal(x.total)
       // setContacts(displayContacts)
     }).catch(x => {
       dispatch(updateContacts([]))
+    }).finally(() => {
+      setLoading(false)
     })
   }
-  useEffect(loadContacts, [isHebao, accountId, apiKey])
+  useEffect(() => loadContacts2(0), [isHebao, accountId, apiKey])
   
   const onChangeSearch = React.useCallback((input: string) => {
     setSearchValue(input)
@@ -219,13 +305,14 @@ export const useContact = () => {
     setDeleteLoading(true)
     isHebao !== undefined && LoopringAPI.contactAPI!.deleteContact({
       accountId,
-      isHebao,//todo
+      isHebao,
       contactAddress: address,
       contactName: name,
     }, apiKey)
     .then(response => {
       if (response === true) {
-        loadContacts()
+        loadContacts2(0)
+        // loadContacts()
         setToastInfo({
           open: true,
           isSuccess: true,
@@ -304,7 +391,7 @@ export const useContact = () => {
         }
       })
       if (response === true) {
-        loadContacts()
+        loadContacts2(total ?? 0)
         setToastInfo({
           open: true,
           isSuccess: true,
@@ -346,47 +433,84 @@ export const useContact = () => {
     })
    
   }, [isHebao, apiKey])
-  
-  const throttled = useRef(debounce(({isHebao, contacts, eventTarget, }) => {
-    const _eventTarget = eventTarget as HTMLDivElement
-    if (_eventTarget.scrollTop + _eventTarget.clientHeight >= _eventTarget.scrollHeight) {
-      console.log('dasjkdhakjshdkjashdkjashkjdh')
-      if (isHebao === undefined) return
-      LoopringAPI.contactAPI!.getContacts({
-        isHebao,
-        accountId,
-        offset: contacts?.length,
-        limit: 10
-      }, apiKey).then((response) => {
-        
-        dispatch(
-          updateContacts([
-            ...(contacts ? contacts : []),
-            ...response.contacts.map(xx => {
-              return {
-                name: xx.contactName,
-                address: xx.contactAddress,
-                avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
-                editing: false,
-                addressType: xx.addressType
-              } as DisplayContact
-            })]
-          )
-        )
-      })
-    }
-  }, 1000))
 
-  const onScroll = React.useCallback((eventTarget: HTMLDivElement) => {
-    throttled.current({isHebao, contacts, eventTarget})
-  }, [isHebao, contacts, apiKey])
+  const onPageChange = React.useCallback((page: number) => {
+    // if (isHebao === undefined) return
+    setSearchValue("")
+    setPage(page)
+    // setLoading(true)
+    // LoopringAPI.contactAPI!.getContacts({
+    //   isHebao,
+    //   accountId,
+    //   limit: pageSize,
+    //   offset: (page - 1) * pageSize,
+    // }, apiKey).then((response) => {
+    //   setPage(page)
+    //   dispatch(
+    //     updateContacts(
+    //       response.contacts.map(xx => {
+    //         return {
+    //           name: xx.contactName,
+    //           address: xx.contactAddress,
+    //           avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
+    //           editing: false,
+    //           addressType: xx.addressType
+    //         } as DisplayContact
+    //       })
+    //     )
+    //   )
+    // }).finally(() => {
+    //   setLoading(false)
+    // })
+  }, [isHebao, pageSize]) 
+  const showPagination = total !== undefined && searchValue === ""
+  // const throttled = useRef(debounce(({isHebao, contacts, eventTarget, }) => {
+  //   const _eventTarget = eventTarget as HTMLDivElement
+  //   if (_eventTarget.scrollTop + _eventTarget.clientHeight >= _eventTarget.scrollHeight) {
+  //     console.log('dasjkdhakjshdkjashdkjashkjdh')
+  //     if (isHebao === undefined) return
+  //     LoopringAPI.contactAPI!.getContacts({
+  //       isHebao,
+  //       accountId,
+  //       limit: pageSize,
+  //       offset: contacts?.length,
+  //     }, apiKey).then((response) => {
+        
+  //       dispatch(
+  //         updateContacts([
+  //           ...(contacts ? contacts : []),
+  //           ...response.contacts.map(xx => {
+  //             return {
+  //               name: xx.contactName,
+  //               address: xx.contactAddress,
+  //               avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
+  //               editing: false,
+  //               addressType: xx.addressType
+  //             } as DisplayContact
+  //           })]
+  //         )
+  //       )
+  //     })
+  //   }
+  // }, 1000))
+
+  // const onScroll = React.useCallback((eventTarget: HTMLDivElement) => {
+  //   throttled.current({isHebao, contacts, eventTarget})
+  // }, [isHebao, contacts, apiKey])
+  // console.log('contacts.slice((page - 1) * pageSize, page * pageSize)', (page - 1) * pageSize, page * pageSize)
+  // console.log('contacts.slice((page - 1) * pageSize, page * pageSize)', contacts && contacts.slice((page - 1) * pageSize, page * pageSize))
+  // console.log('contacts.slice((page - 1) * pageSize, page * pageSize)', contacts && contacts.slice((page - 1) * pageSize, page * pageSize).length)
 
   return {
-    contacts: contacts && contacts.filter(x => {
-      return searchValue !== ''
-        ? x.address.toLowerCase().includes(searchValue.toLowerCase()) || x.name.toLowerCase().includes(searchValue.toLowerCase())
-        : true
-    }),
+    contacts: contacts && (
+      searchValue === ''
+        ? contacts.slice((page - 1) * pageSize, page * pageSize)
+        : contacts.filter(x => {
+          return x.address.toLowerCase().includes(searchValue.toLowerCase()) || x.name.toLowerCase().includes(searchValue.toLowerCase())
+            // ? x.address.toLowerCase().includes(searchValue.toLowerCase()) || x.name.toLowerCase().includes(searchValue.toLowerCase())
+            // : true
+        })
+    ),
     onClickEditing,
     onChangeInput,
     onInputBlue,
@@ -411,7 +535,12 @@ export const useContact = () => {
     onClickSend,
     onCloseSend,
     sendInfo,
-    onScroll
+
+    pagination,
+    onPageChange,
+    loading,
+    showPagination
+    // onScroll
   }
 }
 export const useContactAdd = () => {
@@ -504,7 +633,6 @@ export const useContactAdd = () => {
 // };
 
 export const useContactSend = () => {
-  const{}=useContact()
   const [sendNetwork, setSendNetwork] = React.useState('L1' as Network);
   const { setShowTransfer, setShowWithdraw } = useOpenModals()
   const submitSendingContact = React.useCallback((contact: Contact, network: Network, onClose: () => void) => {

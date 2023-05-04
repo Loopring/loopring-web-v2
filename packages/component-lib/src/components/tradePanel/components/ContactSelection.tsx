@@ -10,6 +10,7 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { createImageFromInitials } from "@loopring-web/core";
 import { AddressType } from "@loopring-web/loopring-sdk";
+import { useTranslation } from "react-i18next";
 
 type SingleContactProps = {
   editing: boolean, 
@@ -75,7 +76,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
     return {
       name: x.name,
       address: x.address,
-      avatarURL: createImageFromInitials(32, x.name, "#FFC178")!, // todo
+      avatarURL: createImageFromInitials(32, x.name, "#FFC178")!, 
       editing: false,
       addressType: x.addressType
     }
@@ -87,13 +88,10 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       ? x.address.toLowerCase().includes(inputValue.toLowerCase()) || x.name.toLowerCase().includes(inputValue.toLowerCase())
       : true
   })
-
-  // <Box >
-
-  //     </Box>
+  const {t} = useTranslation()
   
   const normalView = <>
-    <Grid item xs={12} width={"100%"}>
+    <Box  width={"100%"}>
       <OutlinedInput
         style={{
           background: theme.colorBase.box,
@@ -134,7 +132,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           />
         })}
       </Box>
-    </Grid>
+    </Box>
   </>
   const loadingView =
     <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
@@ -148,24 +146,24 @@ export const ContactSelection = (props: ContactSelectionProps) => {
   const emptyView =
     <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
       <Typography color={"var(--color-text-third)"}>
-        No Contact
+        {t("labelContactsNoContact")}
       </Typography>
     </Box>
   
   return (
-    <Grid
-      container
+    <Box
+      // container
       paddingLeft={isMobile ? 2 : 5}
       paddingRight={isMobile ? 2 : 5}
-      direction={"column"}
+      // fle direction={"column"}
       alignItems={"stretch"}
       flex={1}
       height={"100%"}
       minWidth={240}
       flexWrap={"nowrap"}
-      spacing={2}
+      // spacing={2}
     >
-      <Grid item >
+      <Box >
         <Box
           display={"flex"}
           flexDirection={"column"}
@@ -180,10 +178,10 @@ export const ContactSelection = (props: ContactSelectionProps) => {
             whiteSpace={"pre"}
             marginRight={1}
           >
-            Select the Recipient
+            {t("labelContactsSelectReciepient")}
           </Typography>
         </Box>
-      </Grid>
+      </Box>
       {
         contacts === undefined
           ? loadingView
@@ -191,6 +189,6 @@ export const ContactSelection = (props: ContactSelectionProps) => {
             ? emptyView
             : normalView
       }
-    </Grid>
+    </Box>
   );
 };

@@ -69,58 +69,92 @@ export const TransferPanel = withTranslation(["common", "error"], {
     } = useAccount()
     const { isHebao } = useIsHebao()
 
-    const throttled = useRef(debounce(({isHebao, contacts, eventTarget}) => {
-      const _eventTarget = eventTarget as HTMLDivElement
-      if (_eventTarget.scrollTop + _eventTarget.clientHeight >= _eventTarget.scrollHeight) {
-        if (isHebao === undefined) return
-        LoopringAPI.contactAPI!.getContacts({
-          isHebao,
-          accountId,
-          offset: contacts?.length,
-          limit: 10
-        }, apiKey).then((response) => {
-          dispatch(
-            updateContacts([
-              ...(contacts ? contacts : []), 
-              ...response.contacts.map(xx => {
-                return {
-                  name: xx.contactName,
-                  address: xx.contactAddress,
-                  avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
-                  editing: false,
-                  addressType: xx.addressType
-                } as DisplayContact
-              })]
-            )
-          )
-        })
-      }
-    }, 1000))
+    // const throttled = useRef(debounce(({isHebao, contacts, eventTarget}) => {
+    //   const _eventTarget = eventTarget as HTMLDivElement
+    //   if (_eventTarget.scrollTop + _eventTarget.clientHeight >= _eventTarget.scrollHeight) {
+    //     if (isHebao === undefined) return
+    //     LoopringAPI.contactAPI!.getContacts({
+    //       isHebao,
+    //       accountId,
+    //       offset: contacts?.length,
+    //       limit: 10
+    //     }, apiKey).then((response) => {
+    //       dispatch(
+    //         updateContacts([
+    //           ...(contacts ? contacts : []), 
+    //           ...response.contacts.map(xx => {
+    //             return {
+    //               name: xx.contactName,
+    //               address: xx.contactAddress,
+    //               avatarURL: createImageFromInitials(32, xx.contactName, '#FFC178'),
+    //               editing: false,
+    //               addressType: xx.addressType
+    //             } as DisplayContact
+    //           })]
+    //         )
+    //       )
+    //     })
+    //   }
+    // }, 1000))
 
     useEffect(() => {
       if (isHebao === undefined || (contacts && contacts?.length > 0)) return
-      LoopringAPI.contactAPI!.getContacts({
-        isHebao,
-        accountId,
-        limit: 10,
-      }, apiKey).then((x: any) => {
-        const displayContacts = x.contacts.map((xx: any) => {
-          return {
-            name: xx.contactName,
-            address: xx.contactAddress,
-            avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), //todo
-            editing: false,
-            addressType: xx.addressType
-          } as DisplayContact
+      const recursiveLoad = (offset: number) : Promise<void> => {
+        const limit = 100
+        return LoopringAPI.contactAPI!.getContacts({
+          isHebao,
+          accountId,
+          limit,
+          offset
+        }, apiKey).then((x: any) => {
+          const displayContacts = x.contacts.map((xx: any) => {
+            return {
+              name: xx.contactName,
+              address: xx.contactAddress,
+              avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), 
+              editing: false,
+              addressType: xx.addressType
+            } as DisplayContact
+          })
+          dispatch(
+            contacts 
+              ? updateContacts(contacts.concat(displayContacts))
+              : updateContacts(displayContacts)
+          )
+          if (x.total > offset + limit) {
+            return recursiveLoad(offset + limit)
+          }
         })
-        dispatch(
-          updateContacts(displayContacts)
-        )
-      }).catch(e => {
+      }
+      recursiveLoad(0)
+      .catch(e => {
         dispatch(
           updateContacts([])
         )
       })
+
+      // LoopringAPI.contactAPI!.getContacts({
+      //   isHebao,
+      //   accountId,
+      //   limit: 10,
+      // }, apiKey).then((x: any) => {
+      //   const displayContacts = x.contacts.map((xx: any) => {
+      //     return {
+      //       name: xx.contactName,
+      //       address: xx.contactAddress,
+      //       avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), 
+      //       editing: false,
+      //       addressType: xx.addressType
+      //     } as DisplayContact
+      //   })
+      //   dispatch(
+      //     updateContacts(displayContacts)
+      //   )
+      // }).catch(e => {
+      //   dispatch(
+      //     updateContacts([])
+      //   )
+      // })
     }, [isHebao, accountId])
     const confirmPanel = {
       key: "confirm",
@@ -262,7 +296,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
               // address
             }}
             onScroll={(eventTarget) => {
-              throttled.current({isHebao, contacts, eventTarget})
+              // throttled.current({isHebao, contacts, eventTarget})
             }}
             scrollHeight={"380px"}
 
