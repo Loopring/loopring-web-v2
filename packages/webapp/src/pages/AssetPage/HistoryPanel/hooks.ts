@@ -895,7 +895,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 _price = {
                   key: toSymbol,
                   value: getValuePrecisionThousand(
-                    sdk.toBig(1).div(price ? price : 1),
+                    sdk.toBig(1).div(sdk.toBig(price).gt(0) ? price : 1),
                     tokenMap[toSymbol].precision,
                     tokenMap[toSymbol].precision,
                     undefined
