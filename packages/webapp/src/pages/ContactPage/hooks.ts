@@ -404,7 +404,10 @@ export const useContact = () => {
   return {
     contacts: contacts && (
       searchValue === ''
-        ? contacts.slice((page - 1) * pageSize, page * pageSize)
+        ? contacts.slice(
+          (page - 1) * pageSize, 
+          page * pageSize >= contacts.length ? contacts.length : page * pageSize
+        )
         : contacts.filter(x => {
           return x.address.toLowerCase().includes(searchValue.toLowerCase()) || x.name.toLowerCase().includes(searchValue.toLowerCase())
             // ? x.address.toLowerCase().includes(searchValue.toLowerCase()) || x.name.toLowerCase().includes(searchValue.toLowerCase())
