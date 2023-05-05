@@ -19,6 +19,7 @@ import { createImageFromInitials } from "@loopring-web/core";
 import { useDispatch, useSelector } from "react-redux";
 import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
 import { AddressType } from "@loopring-web/loopring-sdk";
+import { useTheme } from "@emotion/react";
 
 const checkIsHebao = (accountAddress: string) => LoopringAPI.walletAPI!.getWalletType({
   wallet: accountAddress,
@@ -32,7 +33,7 @@ type DisplayContact = {
   editing: boolean
   addressType: AddressType
 }
-export const getAllContacts = async (offset: number, accountId: number, apiKey: string, accountAddress: string) => {
+export const getAllContacts = async (offset: number, accountId: number, apiKey: string, accountAddress: string, color: string) => {
   const limit = 100
   const recursiveLoad = async (offset: number): Promise<DisplayContact[]> => {
     const isHebao = await checkIsHebao(accountAddress)
@@ -48,7 +49,7 @@ export const getAllContacts = async (offset: number, accountId: number, apiKey: 
         return {
           name: contact.contactName,
           address: contact.contactAddress,
-          avatarURL: createImageFromInitials(32, contact.contactName, "#FFC178"),
+          avatarURL: createImageFromInitials(32, contact.contactName, color),
           editing: false,
           addressType: contact.addressType
         } as DisplayContact
@@ -96,22 +97,15 @@ export const TransferPanel = withTranslation(["common", "error"], {
     React.useEffect(() => {
       setPanelIndex(index + 1);
     }, [index]);
-    type DisplayContact = {
-      name: string
-      address: string
-      avatarURL: string
-      editing: boolean,
-      addressType: AddressType
-    }
-    // const [contacts, setContacts] = React.useState(undefined as DisplayContact[] | undefined);
     const contacts = useSelector((state: RootState) => state.contacts.contacts);
     const dispatch = useDispatch()
     const {
       account: { accountId, apiKey, accAddress },
     } = useAccount()
+    const theme = useTheme()
     React.useEffect(() => {
       dispatch(updateContacts(undefined))
-      getAllContacts(0, accountId, apiKey, accAddress)
+      getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)
       .then(allContacts => {
         dispatch(updateContacts(allContacts))
       })

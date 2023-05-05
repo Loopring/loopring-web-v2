@@ -19,6 +19,7 @@ import { RootState, useAccount } from "@loopring-web/core";
 import { useDispatch, useSelector } from "react-redux";
 import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
 import { getAllContacts } from "./TransferPanel";
+import { useTheme } from "@emotion/react";
 
 export const WithdrawPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -76,9 +77,10 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
     const {
       account: { accountId, apiKey, accAddress},
     } = useAccount();
+    const theme = useTheme()
     React.useEffect(() => {
       dispatch(updateContacts(undefined))
-      getAllContacts(0, accountId, apiKey, accAddress)
+      getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)
       .then(allContacts => {
         dispatch(updateContacts(allContacts))
       })
