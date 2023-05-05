@@ -952,10 +952,8 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                   type = BtradeSwapsType.Settled;
                   break;
                 case "failed":
-                  type = BtradeSwapsType.Failed;
-                  break;
                 case "cancelled":
-                  type = BtradeSwapsType.Cancelled;
+                  type = BtradeSwapsType.Failed;
                   break;
                 case "filled":
                   type = BtradeSwapsType.Delivering;
