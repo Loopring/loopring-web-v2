@@ -71,13 +71,13 @@ export const ContactSelection = (props: ContactSelectionProps) => {
   const { onSelect, contacts, scrollHeight } = props
   const { isMobile } = useSettings();
   const theme = useTheme()
-  const displayContacts = contacts && contacts.map(x => {
+  const displayContacts = contacts && contacts.map(contact => {
     return {
-      name: x.name,
-      address: x.address,
-      avatarURL: createImageFromInitials(32, x.name, "#FFC178")!, 
+      name: contact.name,
+      address: contact.address,
+      avatarURL: createImageFromInitials(32, contact.name, "#FFC178")!, 
       editing: false,
-      addressType: x.addressType
+      addressType: contact.addressType
     }
   })
 
@@ -120,14 +120,15 @@ export const ContactSelection = (props: ContactSelectionProps) => {
         }}
       ></OutlinedInput>
       <Box overflow={"scroll"} height={scrollHeight}>
-        {filteredContacts && filteredContacts.map(c => {
+        {filteredContacts && filteredContacts.map(contact => {
           return <SingleContact
-            name={c.name}
-            address={c.address}
-            avatarURL={c.avatarURL}
+            key={contact.address}
+            name={contact.name}
+            address={contact.address}
+            avatarURL={contact.avatarURL}
             editing={false}
             onSelect={onSelect}
-            hidden={c.addressType === AddressType.OFFICIAL}
+            hidden={contact.addressType === AddressType.OFFICIAL}
           />
         })}
       </Box>
