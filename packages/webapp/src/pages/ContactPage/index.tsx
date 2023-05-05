@@ -120,7 +120,7 @@ export const ContactPage = () => {
     <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={"scroll"}>
       {contacts && contacts.map(data => {
         const { editing, name, address, avatarURL, addressType } = data;
-        return <Box key={address + name} paddingY={2} display={addressType === AddressType.OFFICIAL ? "none" : "flex"} justifyContent={"space-between"}>
+        return <Box key={address} paddingY={2} display={addressType === AddressType.OFFICIAL ? "none" : "flex"} justifyContent={"space-between"}>
           <Box display={"flex"}>
             <Avatar sizes={"32px"} src={avatarURL}></Avatar>
             <Box marginLeft={1}>
