@@ -574,25 +574,32 @@ export const useStopLimit = <
           )
       ) {
         return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
-      } else if (
-        sdk.toBig(stopLimitTradeData[TradeBaseType.stopPrice ?? 0]).lte(0)
-      ) {
-        return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
-      } else if (
-        stopRange &&
-        (sdk
-          .toBig(stopLimitTradeData[TradeBaseType.stopPrice ?? 0])
-          .lt(stopRange[0]) ||
-          sdk
-            .toBig(stopLimitTradeData[TradeBaseType.stopPrice ?? 0])
-            .gt(stopRange[1]))
-      ) {
-        return {
-          tradeBtnStatus: TradeBtnStatus.DISABLED,
-          label: `labelLimitStopPriceMinMax| ${stopRange[0]}-${stopRange[1]}`,
-        };
       } else {
-        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
+        if (
+          // @ts-ignore
+          sdk.toBig(stopLimitTradeData[TradeBaseType.stopPrice] ?? 0).lte(0)
+        ) {
+          return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
+        } else if (
+          stopRange &&
+          stopRange[0] &&
+          stopRange[1] &&
+          (sdk
+            // @ts-ignore
+            .toBig(stopLimitTradeData[TradeBaseType.stopPrice] ?? 0)
+            .lt(stopRange[0]) ||
+            sdk
+              // @ts-ignore
+              .toBig(stopLimitTradeData[TradeBaseType.stopPrice] ?? 0)
+              .gt(stopRange[1]))
+        ) {
+          return {
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+            label: `labelLimitStopPriceMinMax| ${stopRange[0]}-${stopRange[1]}`,
+          };
+        } else {
+          return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
+        }
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
