@@ -103,17 +103,19 @@ export const TransferPanel = withTranslation(["common", "error"], {
       account: { accountId, apiKey, accAddress },
     } = useAccount()
     const theme = useTheme()
-    React.useEffect(() => {
+    const loadContacts = async () => {
       dispatch(updateContacts(undefined))
-      getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)
-      .then(allContacts => {
+      try {
+        const allContacts = await getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)
         dispatch(updateContacts(allContacts))
-      })
-      .catch(e => {
+      } catch (e) {
         dispatch(
           updateContacts([])
         )
-      })
+      }
+    }
+    React.useEffect(() => {
+      loadContacts()
     }, [accountId])
     const confirmPanel = {
       key: "confirm",

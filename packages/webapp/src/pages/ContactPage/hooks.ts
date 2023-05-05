@@ -115,21 +115,20 @@ export const useContact = () => {
     dispatch(updateContacts(undefined))
     setLoading(true)
 
-    getAllContacts(offset, accountId, apiKey, accAddress, theme.colorBase.warning)
-      .then(allContacts => {
-        dispatch(
-          contacts
-            ? updateContacts(allContacts)
-            : updateContacts([])
-        )
-        setTotal(allContacts.length)
-      }).catch(e => {
-        dispatch(
-          updateContacts([])
-        )
-      }).finally(() => {
-        setLoading(false)
-      })
+    try {
+      const allContacts = await getAllContacts(offset, accountId, apiKey, accAddress, theme.colorBase.warning)
+      dispatch(
+        contacts
+          ? updateContacts(allContacts)
+          : updateContacts([])
+      )
+      setTotal(allContacts.length)
+    } catch {
+      dispatch(
+        updateContacts([])
+      )
+    }
+    setLoading(false)
   }
   useEffect(() => {
     loadContacts(0)
