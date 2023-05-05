@@ -170,9 +170,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
           name: t("labelBtradeSwapFailed"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <>
-                {row.filledPercent ? row.filledPercent + "%" : EmptyValueTag}{" "}
-              </>
+              <>{row.filledPercent ? row.filledPercent + "%" : EmptyValueTag}</>
             );
           },
         },
@@ -180,7 +178,13 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
           key: "Price",
           name: t("labelBtradeSwapPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <> {row.price?.value + " " + row.price?.key} </>;
+            return (
+              <>
+                {row.price?.value
+                  ? row.price?.value + " " + row.price?.key
+                  : EmptyValueTag}{" "}
+              </>
+            );
           },
         },
         {
