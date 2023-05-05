@@ -54,11 +54,11 @@ const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
       <SwapPanel
         titleI8nKey={"labelBtradeSwapTitle"}
         tokenBuyProps={{
-          disabled: isSwapLoading,
+          disableInputValue: isSwapLoading,
           decimalsLimit: tradeCalcData.buyPrecision,
         }}
         tokenSellProps={{
-          disabled: isSwapLoading,
+          disableInputValue: isSwapLoading,
           decimalsLimit: tradeCalcData.sellPrecision,
           placeholderText:
             tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ""
