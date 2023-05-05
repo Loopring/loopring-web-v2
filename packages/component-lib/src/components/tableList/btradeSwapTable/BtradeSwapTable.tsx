@@ -174,13 +174,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
           key: "Price",
           name: t("labelBtradeSwapPrice"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <>
-                {row.price?.value
-                  ? row.price?.value + " " + row.price?.key
-                  : EmptyValueTag}{" "}
-              </>
-            );
+            return <> {row.price?.value + " " + row.price?.key} </>;
           },
         },
         {
