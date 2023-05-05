@@ -13,10 +13,10 @@ import {
   CurrencyToTag,
   IBData,
   PriceTag,
+  TradeBaseType,
   TradeBtnStatus,
   TradeCalcProData,
   TradeProType,
-  TradeBaseType,
 } from "@loopring-web/common-resources";
 import { Box, Tab } from "@mui/material";
 import { TabsStyle } from "../components/Styled";
@@ -115,6 +115,9 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
         handleError: (data: T) => {
           if (
             data.tradeValue &&
+            tradeCalcProData.stopRange &&
+            tradeCalcProData.stopRange[1] &&
+            tradeCalcProData.stopRange[0] &&
             (sdk.toBig(data.tradeValue).gt(tradeCalcProData.stopRange[1]) ||
               sdk.toBig(data.tradeValue).lt(tradeCalcProData.stopRange[0]))
           ) {
@@ -277,10 +280,6 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
               }}
             />
           </Box>
-          {/*</Grid>*/}
-          {/*<Grid item>*/}
-
-          {/*< label={tradeCalcProData.baseToken} coinMap={tradeCalcProData.coinMap} />*/}
         </Box>
         <Box className={"info-panel"} paddingX={2} paddingTop={2}></Box>
         <Box paddingX={2} paddingTop={2}>
