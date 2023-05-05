@@ -152,14 +152,14 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
                     {t("labelBtrade" + row?.type)}
                   </Typography>
                 )}
-                <Typography>
-                  {row ? (
-                    <>
-                      {`${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`}
-                    </>
-                  ) : (
-                    EmptyValueTag
-                  )}
+                <Typography
+                  component={"span"}
+                  display={"flex"}
+                  display={"inline-flex"}
+                >
+                  {row
+                    ? `${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`
+                    : EmptyValueTag}
                 </Typography>
               </Box>
             );
@@ -212,6 +212,134 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
       ],
       [history, upColor, t]
     );
+    const getColumnMobileTransaction = React.useCallback(
+      (): Column<R, unknown>[] => [
+        {
+          key: "Type",
+          cellClass: "textAlignLeft",
+          headerCellClass: "textAlignLeft",
+          name: t("labelBtradeSwapType"),
+          formatter: ({ row }: FormatterProps<R>) => {
+            const colorMap = [
+              [BtradeSwapsType.Settled, "var(--color-success)"],
+              [BtradeSwapsType.Delivering, "var(--color-warning)"],
+              [BtradeSwapsType.Failed, "var(--color-error)"],
+              [BtradeSwapsType.Cancelled, "var(--color-error)"],
+              [BtradeSwapsType.Pending, "var(--color-warning)"],
+            ];
+            const found = colorMap.find((x) => x[0] === row?.type);
+
+            return (
+              <Box
+                display={"flex"}
+                justifyContent={"space-between"}
+                paddingRight={3}
+                flexDirection={"column"}
+                alignItems={"center"}
+                height={"100%"}
+              >
+                {row?.type === BtradeSwapsType.Delivering ? (
+                  <Tooltip title={t("labelBtradeDeliveringDes").toString()}>
+                    <Typography
+                      color={found ? found[1].toString() : ""}
+                      component={"span"}
+                      display={"flex"}
+                    >
+                      {t(
+                        "labelBtrade" +
+                          // @ts-ignore
+                          (row?.type == BtradeSwapsType.Failed ||
+                          // @ts-ignore
+                          row?.type == BtradeSwapsType.Cancelled
+                            ? BtradeSwapsType.Failed.toString()
+                            : row?.type)
+                      )}
+                      <Info2Icon
+                        fontSize={"small"}
+                        color={"inherit"}
+                        sx={{ marginX: 1 / 2 }}
+                      />
+                    </Typography>
+                  </Tooltip>
+                ) : (
+                  <Typography
+                    color={found ? found[1].toString() : ""}
+                    component={"span"}
+                    display={"flex"}
+                  >
+                    {t("labelBtrade" + row?.type)}
+                  </Typography>
+                )}
+                <Typography component={"span"} display={"flex"}>
+                  {row
+                    ? `${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`
+                    : EmptyValueTag}
+                </Typography>
+              </Box>
+            );
+          },
+        },
+
+        {
+          key: "Price",
+          name: t("labelBtradeSwapPrice") + "/" + t("labelBtradeSwapFailed"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <Box
+                display={"flex"}
+                justifyContent={"space-between"}
+                paddingRight={3}
+                flexDirection={"column"}
+                alignItems={"center"}
+                height={"100%"}
+              >
+                <Typography component={"span"} display={"flex"}>
+                  {row.price?.value + " " + row.price?.key}{" "}
+                </Typography>
+                <Typography
+                  component={"span"}
+                  display={"flex"}
+                  color={"textSecondary"}
+                >
+                  {row.filledPercent ? row.filledPercent + "%" : EmptyValueTag}
+                </Typography>
+              </Box>
+            );
+          },
+        },
+        {
+          key: "Fee",
+          name: t("labelBtradeSwapFee") + "/" + t("labelBtradeSwapTime"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <Box
+                display={"flex"}
+                justifyContent={"space-between"}
+                paddingRight={3}
+                flexDirection={"column"}
+                alignItems={"center"}
+                height={"100%"}
+              >
+                <Typography component={"span"} display={"flex"}>
+                  {row.feeAmount !== undefined
+                    ? row.feeAmount + " " + row.feeSymbol
+                    : EmptyValueTag}
+                </Typography>
+
+                <Typography
+                  component={"span"}
+                  display={"flex"}
+                  color={"textSecondary"}
+                >
+                  {moment(new Date(row.time)).fromNow()}
+                </Typography>
+              </Box>
+            );
+          },
+        },
+      ],
+      [history, upColor, t]
+    );
     const updateData = _.debounce(
       ({
         // tableType,
@@ -237,8 +365,6 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
       },
       [updateData]
     );
-
-    const getColumnMobileTransaction = getColumnModeTransaction;
 
     const defaultArgs: any = {
       columnMode: isMobile
