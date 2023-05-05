@@ -29,7 +29,6 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { DUAL_TYPE, GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
 import {
   BTRDE_PRE,
-  EmptyValueTag,
   getValuePrecisionThousand,
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
