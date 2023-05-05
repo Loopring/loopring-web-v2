@@ -75,7 +75,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
     return {
       name: contact.name,
       address: contact.address,
-      avatarURL: createImageFromInitials(32, contact.name, "#FFC178")!, 
+      avatarURL: createImageFromInitials(32, contact.name, theme.colorBase.warning)!, 
       editing: false,
       addressType: contact.addressType
     }
