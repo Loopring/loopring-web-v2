@@ -1032,13 +1032,13 @@ export const useBtradeSwap = <
             ...state,
             ..._tradeCalcData,
             StoB: getValuePrecisionThousand(
-              stob,
+              stob?.replace(sdk.SEP, ""),
               buyToken.precision,
               buyToken.precision,
               undefined
             ),
             BtoS: getValuePrecisionThousand(
-              btos,
+              btos?.replace(sdk.SEP, ""),
               sellToken.precision,
               sellToken.precision,
               undefined
@@ -1130,13 +1130,13 @@ export const useBtradeSwap = <
           ...state,
           ...tradeCalcData,
           StoB: getValuePrecisionThousand(
-            result ? result?.stob : StoB.toString(),
+            (result ? result?.stob : StoB.toString())?.replace(sdk.SEP, ""),
             buyToken.precision,
             buyToken.precision,
             undefined
           ),
           BtoS: getValuePrecisionThousand(
-            result ? result?.btos : BtoS.toString(),
+            (result ? result?.btos : BtoS.toString())?.replace(sdk.SEP, ""),
             sellToken.precision,
             sellToken.precision,
             undefined
