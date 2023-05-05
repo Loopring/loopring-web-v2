@@ -114,7 +114,6 @@ export const ContactPage = () => {
       src={`${SoursURL}images/loading-line.gif`}
     />
   </Box>
-  const nodeTimer = React.useRef<NodeJS.Timeout | undefined>(undefined);
   const normalView = <>
     <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={"scroll"}>
       {contacts && contacts.map(data => {
@@ -154,14 +153,6 @@ export const ContactPage = () => {
                     isSuccess: true,
                     type: 'Copy'
                   })
-                  if (nodeTimer.current !== undefined) clearTimeout(nodeTimer.current)
-                  nodeTimer.current = setTimeout(() => {
-                    setToastInfo({
-                      open: false,
-                      isSuccess: undefined,
-                      type: undefined
-                    })
-                  }, 3 * 1000);
                 }}>
                   <CopyIcon></CopyIcon>
                 </IconButton>

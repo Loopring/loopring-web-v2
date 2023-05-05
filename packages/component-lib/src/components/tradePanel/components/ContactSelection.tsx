@@ -82,9 +82,9 @@ export const ContactSelection = (props: ContactSelectionProps) => {
   })
 
   const [inputValue, setInputValue] = useState('')
-  const filteredContacts = displayContacts && displayContacts.filter(x => {
+  const filteredContacts = displayContacts && displayContacts.filter(contact => {
     return inputValue
-      ? x.address.toLowerCase().includes(inputValue.toLowerCase()) || x.name.toLowerCase().includes(inputValue.toLowerCase())
+      ? contact.address.toLowerCase().includes(inputValue.toLowerCase()) || contact.name.toLowerCase().includes(inputValue.toLowerCase())
       : true
   })
   const {t} = useTranslation()

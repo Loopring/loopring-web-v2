@@ -113,6 +113,7 @@ export const useContact = () => {
     }
     dispatch(updateContacts(undefined))
     setLoading(true)
+
     getAllContacts(offset, accountId, apiKey, accAddress)
       .then(allContacts => {
         dispatch(
@@ -189,7 +190,6 @@ export const useContact = () => {
     isSuccess: undefined,
     type: undefined
   });
-  const nodeTimer = React.useRef<NodeJS.Timeout | undefined>(undefined);
 
   const onInputBlue = React.useCallback(async (address: string) => {
     dispatch(
@@ -227,15 +227,6 @@ export const useContact = () => {
         isSuccess: false,
         type: 'Edit'
       })
-    }).finally(() => {
-      if (nodeTimer.current !== undefined) clearTimeout(nodeTimer.current)
-      nodeTimer.current = setTimeout(() => {
-        setToastInfo({
-          open: false,
-          type: undefined,
-          isSuccess: undefined
-        })
-      }, 3 * 1000);
     })
   },[contacts, apiKey, accAddress])
   const onChangeInput = React.useCallback((address: string, inputValue) => {
@@ -295,14 +286,6 @@ export const useContact = () => {
       })
     })
     .finally(() => {
-      if (nodeTimer.current !== undefined) clearTimeout(nodeTimer.current)
-      nodeTimer.current = setTimeout(() => {
-        setToastInfo({
-          open: false,
-          type: undefined,
-          isSuccess: undefined
-        })
-      }, 3 * 1000);
       setDeleteLoading(false)
     })
    
@@ -385,14 +368,7 @@ export const useContact = () => {
       }
     })
     .finally(() => {
-      if (nodeTimer.current !== undefined) clearTimeout(nodeTimer.current)
-      nodeTimer.current = setTimeout(() => {
-        setToastInfo({
-          open: false,
-          isSuccess: undefined,
-          type: undefined
-        })
-      }, 3 * 1000);
+      
       setAddLoading(false)
     })
    
