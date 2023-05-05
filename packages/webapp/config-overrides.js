@@ -102,10 +102,6 @@ module.exports = override(
           ? [
               path.resolve(__dirname, "../../node_modules/@web3modal"),
               path.resolve(__dirname, "../../node_modules/@walletconnect"),
-              path.resolve(
-                __dirname,
-                "../../node_modules/@walletconnect/ethereum-provider/"
-              ),
             ]
           : []),
       ];

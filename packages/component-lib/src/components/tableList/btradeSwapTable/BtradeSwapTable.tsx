@@ -31,7 +31,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 33% 20% auto auto auto !important;`
-        : `--template-columns: 33% 20% auto auto auto !important;`}
+        : `--template-columns: 33% 32% auto !important;`}
   }
 `;
 const TableStyled = styled(Table)`
@@ -225,7 +225,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
                 justifyContent={"space-between"}
                 paddingRight={3}
                 flexDirection={"column"}
-                alignItems={"center"}
+                alignItems={"flex-start"}
                 height={"100%"}
               >
                 {row?.type === BtradeSwapsType.Delivering ? (
@@ -269,9 +269,10 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
             );
           },
         },
-
         {
           key: "Price",
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
           name: t("labelBtradeSwapPrice") + "/" + t("labelBtradeSwapFailed"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
@@ -280,11 +281,11 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
                 justifyContent={"space-between"}
                 paddingRight={3}
                 flexDirection={"column"}
-                alignItems={"center"}
+                alignItems={"flex-end"}
                 height={"100%"}
               >
                 <Typography component={"span"} display={"flex"}>
-                  {row.price?.value + " " + row.price?.key}{" "}
+                  {row.price?.value + " " + row.price?.key}
                 </Typography>
                 <Typography
                   component={"span"}
@@ -299,6 +300,8 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
         },
         {
           key: "Fee",
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
           name: t("labelBtradeSwapFee") + "/" + t("labelBtradeSwapTime"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
@@ -307,7 +310,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
                 justifyContent={"space-between"}
                 paddingRight={3}
                 flexDirection={"column"}
-                alignItems={"center"}
+                alignItems={"flex-end"}
                 height={"100%"}
               >
                 <Typography component={"span"} display={"flex"}>
@@ -381,7 +384,7 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
     }, [pagination?.pageSize]);
 
     return (
-      <TableWrapperStyled>
+      <TableWrapperStyled isMobile={isMobile}>
         <TableStyled
           currentheight={
             RowInvestConfig.rowHeaderHeight +

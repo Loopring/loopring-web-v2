@@ -928,16 +928,16 @@ export const useBtradeSwap = <
           sdk
             .toBig(
               sellBuyStr == market
-                ? btradeAmount.quote
-                  ? btradeAmount.quote
-                  : 0
-                : btradeAmount.base
                 ? btradeAmount.base
+                  ? btradeAmount.base
+                  : 0
+                : btradeAmount.quote
+                ? btradeAmount.quote
                 : 0
             )
-            .div("1e" + buyToken.decimals),
-          buyToken.precision,
-          buyToken.precision,
+            .div("1e" + sellToken.decimals),
+          sellToken.precision,
+          sellToken.precision,
           undefined,
           false
         );
@@ -981,7 +981,7 @@ export const useBtradeSwap = <
               : btradeAmount.base !== "0"
           )
             ? l1Pool != 0
-              ? l1Pool + " " + buyToken.symbol
+              ? l1Pool + " " + sellToken.symbol
               : EmptyValueTag
             : t("labelBtradeInsufficient"),
           l1Pool,
