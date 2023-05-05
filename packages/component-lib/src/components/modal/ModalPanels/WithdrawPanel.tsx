@@ -12,13 +12,13 @@ import {
   WithdrawWrap,
 } from "../../tradePanel/components";
 import React from "react";
-import { cloneDeep, debounce } from "lodash";
+import { cloneDeep } from "lodash";
 import { WithdrawConfirm } from "../../tradePanel/components/WithdrawConfirm";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
-import { LoopringAPI, RootState, useAccount, useIsHebao } from "@loopring-web/core";
-import { createImageFromInitials } from "@loopring-web/core";
+import { RootState, useAccount } from "@loopring-web/core";
 import { useDispatch, useSelector } from "react-redux";
 import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
+import { getAllContacts } from "./TransferPanel";
 
 export const WithdrawPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -76,45 +76,18 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
     const {
       account: { accountId, apiKey, accAddress},
     } = useAccount();
-    const { isHebao } = useIsHebao()
-  
     React.useEffect(() => {
-      if (isHebao === undefined) return
       dispatch(updateContacts(undefined))
-      const recursiveLoad = (offset: number) : Promise<void> => {
-        const limit = 100
-        return LoopringAPI.contactAPI!.getContacts({
-          isHebao,
-          accountId,
-          limit,
-          offset
-        }, apiKey).then((x: any) => {
-          const displayContacts = x.contacts.map((xx: any) => {
-            return {
-              name: xx.contactName,
-              address: xx.contactAddress,
-              avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"),
-              editing: false,
-              addressType: xx.addressType
-            } as DisplayContact
-          })
-          dispatch(
-            contacts 
-              ? updateContacts(contacts.concat(displayContacts))
-              : updateContacts(displayContacts)
-          )
-          if (x.total > offset + limit) {
-            return recursiveLoad(offset + limit)
-          }
-        })
-      }
-      recursiveLoad(0)
+      getAllContacts(0, accountId, apiKey, accAddress)
+      .then(allContacts => {
+        dispatch(updateContacts(allContacts))
+      })
       .catch(e => {
         dispatch(
           updateContacts([])
         )
       })
-    }, [isHebao])
+    }, [accountId])
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(

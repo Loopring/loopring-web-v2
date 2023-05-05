@@ -5,7 +5,7 @@ import {
   SwitchPanelProps,
 } from "../../basic-lib";
 import { IBData, TRADE_TYPE } from "@loopring-web/common-resources";
-import React, { useEffect, useRef }from "react";
+import React from "react";
 import { TransferProps } from "../../tradePanel";
 import {
   TradeMenuList,
@@ -13,13 +13,55 @@ import {
   useBasicTrade,
 } from "../../tradePanel/components";
 import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
-import { LoopringAPI, RootState, useAccount, useIsHebao } from "@loopring-web/core";
+import { LoopringAPI, RootState, useAccount } from "@loopring-web/core";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
-import { createImageFromInitials, addressToExWalletMapFn } from "@loopring-web/core";
-import { debounce } from "lodash";
+import { createImageFromInitials } from "@loopring-web/core";
 import { useDispatch, useSelector } from "react-redux";
 import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
 import { AddressType } from "@loopring-web/loopring-sdk";
+
+const checkIsHebao = (accountAddress: string) => LoopringAPI.walletAPI!.getWalletType({
+  wallet: accountAddress,
+}).then(walletType => {
+  return walletType?.walletType?.loopringWalletContractVersion !== ""
+})
+type DisplayContact = {
+  name: string
+  address: string
+  avatarURL: string
+  editing: boolean
+  addressType: AddressType
+}
+export const getAllContacts = async (offset: number, accountId: number, apiKey: string, accountAddress: string) => {
+  const limit = 100
+  const recursiveLoad = async (offset: number): Promise<DisplayContact[]> => {
+    const isHebao = await checkIsHebao(accountAddress)
+    const response = await LoopringAPI.contactAPI!.getContacts({
+      isHebao,
+      accountId,
+      limit,
+      offset
+    }, apiKey)
+    const displayContacts = response.contacts
+      .filter(contact => contact.addressType !== AddressType.OFFICIAL)
+      .map((contact) => {
+        return {
+          name: contact.contactName,
+          address: contact.contactAddress,
+          avatarURL: createImageFromInitials(32, contact.contactName, "#FFC178"),
+          editing: false,
+          addressType: contact.addressType
+        } as DisplayContact
+      })
+    if (response.total > offset + limit) {
+      const rest = await recursiveLoad(offset + limit)
+      return displayContacts.concat(rest)
+    } else {
+      return displayContacts
+    }
+  }
+  return recursiveLoad(offset)
+}
 
 export const TransferPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -67,45 +109,18 @@ export const TransferPanel = withTranslation(["common", "error"], {
     const {
       account: { accountId, apiKey, accAddress },
     } = useAccount()
-    const { isHebao } = useIsHebao()
-
-    useEffect(() => {
-      if (isHebao === undefined) return
+    React.useEffect(() => {
       dispatch(updateContacts(undefined))
-      const recursiveLoad = async (offset: number): Promise<void> => {
-        const limit = 100
-        const response = await LoopringAPI.contactAPI!.getContacts({
-          isHebao,
-          accountId,
-          limit,
-          offset
-        }, apiKey)
-        const displayContacts = response.contacts.map((contact) => {
-          return {
-            name: contact.contactName,
-            address: contact.contactAddress,
-            avatarURL: createImageFromInitials(32, contact.contactName, "#FFC178"),
-            editing: false,
-            addressType: contact.addressType
-          } as DisplayContact
-        })
-        dispatch(
-          contacts
-            ? updateContacts(contacts.concat(displayContacts))
-            : updateContacts(displayContacts)
-        )
-        if (response.total > offset + limit) {
-          return recursiveLoad(offset + limit)
-        }
-
-      }
-      recursiveLoad(0)
+      getAllContacts(0, accountId, apiKey, accAddress)
+      .then(allContacts => {
+        dispatch(updateContacts(allContacts))
+      })
       .catch(e => {
         dispatch(
           updateContacts([])
         )
       })
-    }, [isHebao, accountId])
+    }, [accountId])
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(

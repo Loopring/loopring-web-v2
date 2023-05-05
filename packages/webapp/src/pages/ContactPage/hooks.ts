@@ -38,8 +38,45 @@ const checkIsHebao = (accountAddress: string) => LoopringAPI.walletAPI!.getWalle
   wallet: accountAddress,
 }).then(walletType => {
   return walletType?.walletType?.loopringWalletContractVersion !== ""
-  // setIsHebao(isHebao)
 })
+type DisplayContact = {
+  name: string
+  address: string
+  avatarURL: string
+  editing: boolean
+  addressType: AddressType
+}
+const getAllContacts = async (offset: number, accountId: number, apiKey: string, accountAddress: string) => {
+  const limit = 100
+  const recursiveLoad = async (offset: number): Promise<DisplayContact[]> => {
+    const isHebao = await checkIsHebao(accountAddress)
+    const response = await LoopringAPI.contactAPI!.getContacts({
+      isHebao,
+      accountId,
+      limit,
+      offset
+    }, apiKey)
+    const displayContacts = response.contacts
+      .filter(contact => contact.addressType !== AddressType.OFFICIAL)
+      .map((contact) => {
+        return {
+          name: contact.contactName,
+          address: contact.contactAddress,
+          avatarURL: createImageFromInitials(32, contact.contactName, "#FFC178"),
+          editing: false,
+          addressType: contact.addressType
+        } as DisplayContact
+      })
+    if (response.total > offset + limit) {
+      const rest = await recursiveLoad(offset + limit)
+      return displayContacts.concat(rest)
+    } else {
+      return displayContacts
+    }
+  }
+  return recursiveLoad(offset)
+}
+
 export const useContact = () => {
   const [addOpen, setAddOpen] = React.useState(false);
   const [deleteInfo, setDeleteInfo] = React.useState({
@@ -50,26 +87,13 @@ export const useContact = () => {
     open: false,
     selected: undefined as Contact | undefined
   });
-  type DisplayContact = {
-    name: string
-    address: string
-    avatarURL: string
-    editing: boolean
-    addressType: AddressType
-  }
   const [searchValue, setSearchValue] = React.useState('');
-  
-  // const [contacts, setContacts] = React.useState(undefined as DisplayContact[] | undefined);
   const {
     account: { accountId, apiKey, accAddress },
   } = useAccount();
-  // const { isHebao } = useIsHebao();
   const dispatch = useDispatch()
   const contacts = useSelector((state: RootState) => state.contacts.contacts);
   const {t} = useTranslation()
-  // const calcTableHeight = () => {
-  //   return window.innerHeight * 0.85 - 130;
-  // }
   const [tableHeight] = useState(window.innerHeight * viewHeightRatio - viewHeightOffset);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(undefined as number | undefined);
@@ -83,51 +107,30 @@ export const useContact = () => {
     }
     : undefined  
 
-  const loadContacts2 = async (offset: number) => {
-    dispatch(updateContacts(undefined))
+  const loadContacts = async (offset: number) => {
     if (!apiKey || accountId == -1) {
       return
     }
-    const isHebao = await checkIsHebao(accAddress)
+    dispatch(updateContacts(undefined))
     setLoading(true)
-    const recursiveLoad = async (offset: number) : Promise<void> => {
-      const limit = 100
-      const response = await LoopringAPI.contactAPI!.getContacts({
-        isHebao,
-        accountId,
-        limit,
-        offset
-      }, apiKey)
-      const displayContacts = response.contacts.map((contact) => {
-        return {
-          name: contact.contactName,
-          address: contact.contactAddress,
-          avatarURL: createImageFromInitials(32, contact.contactName, "#FFC178"),
-          editing: false,
-          addressType: contact.addressType
-        } as DisplayContact
+    getAllContacts(offset, accountId, apiKey, accAddress)
+      .then(allContacts => {
+        dispatch(
+          contacts
+            ? updateContacts(allContacts)
+            : updateContacts([])
+        )
+        setTotal(allContacts.length)
+      }).catch(e => {
+        dispatch(
+          updateContacts([])
+        )
+      }).finally(() => {
+        setLoading(false)
       })
-      dispatch(
-        contacts
-          ? updateContacts(contacts.concat(displayContacts))
-          : updateContacts(displayContacts)
-      )
-      setTotal(response.total)
-      if (response.total > offset + limit) {
-        return recursiveLoad(offset + limit)
-      }
-    }
-    recursiveLoad(offset)
-    .catch(e => {
-      dispatch(
-        updateContacts([])
-      )
-    }).finally(() => {
-      setLoading(false)
-    })
   }
   useEffect(() => {
-    loadContacts2(0)
+    loadContacts(0)
   }, [accountId, apiKey])
   
   const onChangeSearch = React.useCallback((input: string) => {
@@ -269,7 +272,7 @@ export const useContact = () => {
     }, apiKey)
     .then(response => {
       if (response === true) {
-        loadContacts2(0)
+        loadContacts(0)
         // loadContacts()
         setToastInfo({
           open: true,
@@ -351,7 +354,7 @@ export const useContact = () => {
         }
       })
       if (response === true) {
-        loadContacts2(total ?? 0)
+        loadContacts(total ?? 0)
         setToastInfo({
           open: true,
           isSuccess: true,

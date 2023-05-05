@@ -115,7 +115,6 @@ export const ContactPage = () => {
     />
   </Box>
   const nodeTimer = React.useRef<NodeJS.Timeout | undefined>(undefined);
-  
   const normalView = <>
     <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={"scroll"}>
       {contacts && contacts.map(data => {
