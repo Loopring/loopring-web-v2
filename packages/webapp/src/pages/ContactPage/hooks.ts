@@ -90,33 +90,32 @@ export const useContact = () => {
     }
     const isHebao = await checkIsHebao(accAddress)
     setLoading(true)
-    const recursiveLoad = (offset: number) : Promise<void> => {
+    const recursiveLoad = async (offset: number) : Promise<void> => {
       const limit = 100
-      return LoopringAPI.contactAPI!.getContacts({
+      const response = await LoopringAPI.contactAPI!.getContacts({
         isHebao,
         accountId,
         limit,
         offset
-      }, apiKey).then((x: any) => {
-        const displayContacts = x.contacts.map((xx: any) => {
-          return {
-            name: xx.contactName,
-            address: xx.contactAddress,
-            avatarURL: createImageFromInitials(32, xx.contactName, "#FFC178"), 
-            editing: false,
-            addressType: xx.addressType
-          } as DisplayContact
-        })
-        dispatch(
-          contacts 
-            ? updateContacts(contacts.concat(displayContacts))
-            : updateContacts(displayContacts)
-        )
-        setTotal(x.total)
-        if (x.total > offset + limit) {
-          return recursiveLoad(offset + limit)
-        }
+      }, apiKey)
+      const displayContacts = response.contacts.map((contact) => {
+        return {
+          name: contact.contactName,
+          address: contact.contactAddress,
+          avatarURL: createImageFromInitials(32, contact.contactName, "#FFC178"),
+          editing: false,
+          addressType: contact.addressType
+        } as DisplayContact
       })
+      dispatch(
+        contacts
+          ? updateContacts(contacts.concat(displayContacts))
+          : updateContacts(displayContacts)
+      )
+      setTotal(response.total)
+      if (response.total > offset + limit) {
+        return recursiveLoad(offset + limit)
+      }
     }
     recursiveLoad(offset)
     .catch(e => {
