@@ -4,7 +4,6 @@ import {
   getPriceImpactInfo,
   LoopringAPI,
   PriceLevel,
-  stopLimitCalcParams,
   store,
   useAccount,
   usePageTradePro,
@@ -577,7 +576,9 @@ export const useStopLimit = <
       } else {
         if (
           // @ts-ignore
-          sdk.toBig(stopLimitTradeData[TradeBaseType.stopPrice] ?? 0).lte(0)
+          sdk
+            .toBig(stopLimitTradeData[TradeBaseType.stopPrice]?.tradeValue ?? 0)
+            .lte(0)
         ) {
           return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
         } else if (
@@ -586,11 +587,13 @@ export const useStopLimit = <
           stopRange[1] &&
           (sdk
             // @ts-ignore
-            .toBig(stopLimitTradeData[TradeBaseType.stopPrice] ?? 0)
+            .toBig(stopLimitTradeData[TradeBaseType.stopPrice]?.tradeValue ?? 0)
             .lt(stopRange[0]) ||
             sdk
               // @ts-ignore
-              .toBig(stopLimitTradeData[TradeBaseType.stopPrice] ?? 0)
+              .toBig(
+                stopLimitTradeData[TradeBaseType.stopPrice]?.tradeValue ?? 0
+              )
               .gt(stopRange[1]))
         ) {
           return {
