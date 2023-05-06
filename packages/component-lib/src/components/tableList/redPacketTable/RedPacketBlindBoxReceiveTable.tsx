@@ -249,7 +249,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
           ) {
             return (
               <Box display={"flex"} flexDirection={"column"} alignItems={"end"}>
-                <Button size={"small"} onClick={(_e) => {}} variant={"text"}>
+                <Button size={"small"} onClick={(e) => {}} variant={"text"}>
                   {t("labelRedPacketOpen", { ns: "common" })}
                 </Button>
                 <Typography>
