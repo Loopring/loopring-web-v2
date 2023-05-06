@@ -173,7 +173,7 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
     }
 
     .middle {
-      height: 228px;
+      height: 218px;
       display: flex;
       align-items: center;
       justify-content: center;
