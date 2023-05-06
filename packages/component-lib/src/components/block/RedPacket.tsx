@@ -175,7 +175,7 @@ export const RedPacketBg = styled(Box)<
     }
 
     .middle {
-      height: 228px;
+      height: 218px;
       display: flex;
       align-items: center;
       justify-content: center;
