@@ -244,15 +244,15 @@ export const useMarket = <C extends { [key: string]: any }>({
 
       const { close } = tickerMap[market];
 
-      if (!stob || sdk.toBig(stob?.replace(sdk.SEP, "") ?? 0).eq(0)) {
+      if (!stob || sdk.toBig(stob?.replaceAll(sdk.SEP, "") ?? 0).eq(0)) {
         if (close) {
           // @ts-ignore
           // const [, _coinA] = market.match(/(\w+)-(\w+)/i);
           if (_tradeData.type === TradeProType.sell) {
-            stob = close.toString().replace(sdk.SEP, "");
+            stob = close.toString().replaceAll(sdk.SEP, "");
           } else {
             stob = getValuePrecisionThousand(
-              1 / Number(close.toString().replace(sdk.SEP, "")),
+              1 / Number(close.toString().replaceAll(sdk.SEP, "")),
               tokenMap[quoteSymbol].precision,
               tokenMap[quoteSymbol].precision,
               tokenMap[quoteSymbol].precision,
@@ -266,7 +266,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         marketPrice = sdk
           .toBig(tokenPrices[_tradeData[sell].belong])
           .div(tokenPrices[_tradeData[buy].belong]);
-        marketRatePrice = marketPrice.div(stob?.replace(sdk.SEP, "") ?? 1);
+        marketRatePrice = marketPrice.div(stob?.replaceAll(sdk.SEP, "") ?? 1);
         isNotMatchMarketPrice = marketRatePrice.gt(1.05);
         marketPrice = getValuePrecisionThousand(
           marketPrice.toString(),

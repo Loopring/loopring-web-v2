@@ -124,7 +124,7 @@ export function useChargeFees({
       sdk
         // @ts-ignore
         .toBig(walletMap[value.belong].count)
-        .gte(sdk.toBig(value.fee.toString().replace(sdk.SEP, "")))
+        .gte(sdk.toBig(value.fee.toString().replaceAll(sdk.SEP, "")))
     ) {
       isFeeNotEnough = {
         isFeeNotEnough: false,
@@ -293,7 +293,7 @@ export function useChargeFees({
                   if (
                     sdk
                       .toBig(count)
-                      .gte(sdk.toBig(fee.toString().replace(sdk.SEP, "")))
+                      .gte(sdk.toBig(fee.toString().replaceAll(sdk.SEP, "")))
                   ) {
                     _feeInfo = _.cloneDeep(feeInfoTemplate);
                   }
@@ -386,7 +386,9 @@ export function useChargeFees({
                       isFeeNotEnough: sdk
                         .toBig(walletMap[state.belong]?.count ?? 0)
                         .lt(
-                          sdk.toBig(feeInfo.fee.toString().replace(sdk.SEP, ""))
+                          sdk.toBig(
+                            feeInfo.fee.toString().replaceAll(sdk.SEP, "")
+                          )
                         ),
                       isOnLoading: false,
                     };
@@ -477,7 +479,7 @@ export function useChargeFees({
         if (
           sdk
             .toBig(count)
-            .gte(sdk.toBig(feeInfo.fee.toString().replace(sdk.SEP, "")))
+            .gte(sdk.toBig(feeInfo.fee.toString().replaceAll(sdk.SEP, "")))
         ) {
           setIsFeeNotEnough({ isFeeNotEnough: false, isOnLoading: false });
           return;
