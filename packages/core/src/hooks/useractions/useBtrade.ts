@@ -397,8 +397,6 @@ export const useBtradeSwap = <
           clearData();
         }
 
-        walletLayer2Service.sendUserUpdate();
-
         let info: any = {
           sellToken,
           buyToken,
@@ -433,7 +431,12 @@ export const useBtradeSwap = <
           step: AccountStep.BtradeSwap_Pending,
           info,
         });
+        walletLayer2Service.sendUserUpdate();
         await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE);
+        if (refreshRef.current) {
+          // @ts-ignore
+          refreshRef.current.firstElementChild.click();
+        }
         const orderConfirm: { hash: string } | any =
           await LoopringAPI.defiAPI.getBtradeOrders({
             request: {
@@ -452,7 +455,7 @@ export const useBtradeSwap = <
           //   setShowAccount({ isShow: false });
           // }
         } else if (["failed", "cancelled"].includes(orderConfirm.status)) {
-          throw "orderConfirm   failed";
+          throw "orderConfirm failed";
         } else if (store.getState().modals.isShowAccount.isShow) {
           setShowAccount({
             isShow: true,
