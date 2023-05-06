@@ -1298,7 +1298,7 @@ export const useSwap = <
         if (
           result &&
           result.stob &&
-          sdk.toBig(result.stob?.replace(sdk.SEP, "")).gt(0)
+          sdk.toBig(result.stob?.replaceAll(sdk.SEP, "")).gt(0)
         ) {
           _tradeCalcData.StoB = result.stob;
           _tradeCalcData.BtoS = result.btos;
@@ -1307,7 +1307,7 @@ export const useSwap = <
             // @ts-ignore
             const [, _coinA] = market.match(/(\w+)-(\w+)/i);
             let _btos = getValuePrecisionThousand(
-              1 / Number(close.replace(sdk.SEP, "")),
+              1 / Number(close.replaceAll(sdk.SEP, "")),
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
@@ -1328,7 +1328,7 @@ export const useSwap = <
             .toBig(tokenPrices[_tradeData.sell.belong])
             .div(tokenPrices[_tradeData.buy.belong]);
           const marketRatePrice = marketPrice.div(
-            _tradeCalcData.StoB?.replace(sdk.SEP, "") ?? 1
+            _tradeCalcData.StoB?.replaceAll(sdk.SEP, "") ?? 1
           );
           const isNotMatchMarketPrice = marketRatePrice.gt(1.05);
           _tradeCalcData.isNotMatchMarketPrice = isNotMatchMarketPrice;
@@ -1457,7 +1457,7 @@ export const useSwap = <
           // @ts-ignore
           const [, _coinA] = market.match(/(\w+)-(\w+)/i);
           btos = getValuePrecisionThousand(
-            1 / Number(close.replace(sdk.SEP, "")),
+            1 / Number(close.replaceAll(sdk.SEP, "")),
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,

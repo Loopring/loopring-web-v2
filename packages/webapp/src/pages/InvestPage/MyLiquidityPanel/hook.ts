@@ -222,7 +222,7 @@ export const useOverview = <
         });
         defiCoinArray?.forEach((defiCoinKey) => {
           totalCurrentInvest.stakeETHDollar += Number(
-            (_walletMap[defiCoinKey]?.count.replace(sdk.SEP, "") ?? 0) *
+            (_walletMap[defiCoinKey]?.count.replaceAll(sdk.SEP, "") ?? 0) *
               tokenPrices[defiCoinKey] ?? 0
           );
         }, []);

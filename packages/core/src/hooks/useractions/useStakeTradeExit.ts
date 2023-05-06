@@ -367,7 +367,7 @@ export const useStakeTradeExit = <
           tokenMap[coinSellSymbol].precision,
           false,
           { floor: true }
-        ).replace(sdk.SEP, "");
+        ).replaceAll(sdk.SEP, "");
         // @ts-ignore
         const oldTrade = (tradeStake?.deFiSideCalcData ?? {}) as unknown as T;
         handleOnchange({
