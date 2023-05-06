@@ -15,6 +15,7 @@ import {
   useOffFaitModal,
   useSystem,
   useTicker,
+  useTokenMap,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
@@ -54,6 +55,7 @@ import { useTranslation } from "react-i18next";
 import { ContactPage } from "pages/ContactPage";
 import { ContactTransactionsPage } from "pages/ContactPage/transactions";
 import { BtradeSwapPage } from "../pages/BtradeSwapPage";
+import { StopLimitPage } from "../pages/ProTradePage/stopLimtPage";
 
 const ContentWrap = ({
   children,
@@ -137,9 +139,10 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     process.env.REACT_APP_WITrH_PRO &&
     process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
+  const { marketArray } = useTokenMap();
   const { setTheme } = useSettings();
   const {
-    toggle: { BTradeInvest },
+    toggle: { BTradeInvest, StopLimit },
   } = useToggle();
 
   React.useEffect(() => {
@@ -317,6 +320,25 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
               <BtradeSwapPage />
             )}
           </ContentWrap>
+        </Route>
+        <Route path="/trade/stopLimit">
+          {searchParams && searchParams.has("noheader") ? (
+            <></>
+          ) : (
+            <Header isHideOnScroll={true} />
+          )}
+
+          {state === "PENDING" ||
+          !marketArray.length ||
+          !Object.keys(tickerMap ?? {}).length ? (
+            <LoadingBlock />
+          ) : StopLimit.enable == false && StopLimit.reason === "no view" ? (
+            <ComingSoonPanel />
+          ) : (
+            <Box display={"flex"} flexDirection={"column"} flex={1}>
+              <StopLimitPage />
+            </Box>
+          )}
         </Route>
         <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
           <ContentWrap state={state}>
