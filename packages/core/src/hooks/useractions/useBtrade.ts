@@ -214,7 +214,10 @@ export const useBtradeSwap = <
         .gte(sdk.toBig(sellMinAmtInfo).times("1e" + sellToken.decimals))
     );
     const sellExceed = sellMaxAmtInfo
-      ? sdk.toBig(sellMaxAmtInfo).lt(tradeCalcData.volumeSell ?? 0)
+      ? sdk
+          .toBig(sellMaxAmtInfo)
+          .times("1e" + sellToken.decimals)
+          .lt(tradeCalcData.volumeSell ?? 0)
       : false;
 
     if (sellExceed) {
@@ -826,10 +829,7 @@ export const useBtradeSwap = <
           feeBips: maxFeeBips.toString(),
           slipBips: sdk.toBig(defaultSlipage).times(100).toString(),
         });
-        //buy token pool can not be empty
         if (
-          // amountMap &&
-          // amountMap[market as string] &&
           btradeAmount &&
           l2Amount &&
           (sellBuyStr == market
@@ -843,24 +843,11 @@ export const useBtradeSwap = <
             const poolToVol =
               sdk
                 .toBig(
-                  sellBuyStr == market ? btradeAmount.quote : btradeAmount.base
+                  sellBuyStr == market ? btradeAmount.base : btradeAmount.quote
                 )
                 .div("1e" + buyToken.decimals)
                 .toString() ?? "0";
-            const calcPoolToSell = sdk.calcDex({
-              info,
-              input: poolToVol,
-              sell: sellToken.symbol,
-              buy: buyToken.symbol,
-              isAtoB: false,
-              marketArr: marketArray,
-              tokenMap,
-              marketMap,
-              depth,
-              feeBips: maxFeeBips.toString(),
-              slipBips: sdk.toBig(defaultSlipage).times(100).toString(),
-            });
-            sellMaxAmtInfo = calcPoolToSell?.amountS;
+            sellMaxAmtInfo = poolToVol;
           }
 
           sellMinAmtInfo = BigNumber.max(
