@@ -517,7 +517,6 @@ export const RedPacketOpen = ({
 };
 
 export const RedPacketClock = ({
-  
   type = "default",
   size,
   validSince,
