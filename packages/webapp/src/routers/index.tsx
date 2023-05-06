@@ -24,6 +24,7 @@ import {
   defiAdvice,
   dualAdvice,
   ErrorMap,
+  myLog,
   SagaStatus,
   setMyLog,
   stakeAdvice,
@@ -169,6 +170,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     query: searchParams,
   });
 
+  myLog("BTradeInvest", BTradeInvest);
   return (
     <>
       <Switch>
@@ -312,8 +314,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         </Route>
         <Route path="/trade/btrade">
           <ContentWrap state={state}>
-            {BTradeInvest.enable == false &&
-            BTradeInvest.reason === "no view" ? (
+            {BTradeInvest.reason}
+            {!BTradeInvest.enable && BTradeInvest.reason === "no view" ? (
               <ComingSoonPanel />
             ) : (
               <BtradeSwapPage />

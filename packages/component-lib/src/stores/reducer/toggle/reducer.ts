@@ -37,8 +37,6 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       const {
         order,
         joinAmm,
-        WSTETHInvest,
-        RETHInvest,
         exitAmm,
         transfer,
         transferNFT,
@@ -49,8 +47,16 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
         mintNFT,
         deployNFT,
         updateAccount,
+        defiInvest,
+        WSTETHInvest,
+        RETHInvest,
+        dualInvest,
         collectionNFT,
         claim,
+        redPacketNFTV1,
+        LRCStackInvest,
+        BTradeInvest,
+        StopLimit,
       } = action.payload;
       if (order !== undefined) {
         state.order = order;
@@ -99,8 +105,27 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       if (collectionNFT !== undefined) {
         state.collectionNFT = collectionNFT;
       }
+      if (defiInvest !== undefined) {
+        state.defiInvest = defiInvest;
+      }
       if (claim !== undefined) {
         state.claim = claim;
+      }
+      if (dualInvest !== undefined) {
+        state.dualInvest = dualInvest;
+      }
+      if (redPacketNFTV1 !== undefined) {
+        state.redPacketNFTV1 = redPacketNFTV1;
+      }
+      if (LRCStackInvest !== undefined) {
+        state.LRCStackInvest = LRCStackInvest;
+      }
+      if (StopLimit !== undefined) {
+        state.StopLimit = StopLimit;
+      }
+
+      if (BTradeInvest !== undefined) {
+        state.BTradeInvest = BTradeInvest;
       }
     },
   },

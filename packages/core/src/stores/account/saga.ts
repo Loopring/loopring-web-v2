@@ -5,57 +5,21 @@ import {
   updateAccountStatus,
 } from "./reducer";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { Account, AccountStatus, myLog } from "@loopring-web/common-resources";
+import { Account, AccountStatus } from "@loopring-web/common-resources";
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
-import { AccountInfo, ChainId, WalletType } from "@loopring-web/loopring-sdk";
+import { AccountInfo, WalletType } from "@loopring-web/loopring-sdk";
 import { store } from "../index";
 import { LoopringAPI } from "../../api_wrapper";
-import { updateToggleStatus } from "@loopring-web/component-lib";
+import { toggleCheck } from "../../services";
 
 const LoopFrozenFlag = true;
-export const DexToggle = "https://static.loopring.io/status/dexToggle.json";
 const getAccount = async (): Promise<{
   account: AccountInfo;
   walletType: WalletType;
   __timer__: NodeJS.Timer | -1;
 }> => {
-  let { accAddress, __timer__ } = store.getState().account;
-  let { chainId } = store.getState().system;
-  const [{ accInfo: account }, { walletType }] = await Promise.all([
-    LoopringAPI?.exchangeAPI?.getAccount({
-      owner: accAddress,
-    }) ?? Promise.resolve({ accInfo: {} } as any),
-    LoopringAPI?.walletAPI?.getWalletType({
-      wallet: accAddress, //realAddr != "" ? realAddr : address,
-    }) ?? Promise.resolve({ walletType: {} } as any),
-  ]);
-  // .then(({walletType})=>{
-  //    store.dispatch(updateAccountStatus({
-  //      ...walletType,
-  //    }));
-  //  })
-  if (account.frozen === LoopFrozenFlag) {
-    myLog("account.frozen ___timer___", account.accountId);
-    store.dispatch(
-      updateToggleStatus({
-        order: { enable: false, reason: "account frozen" },
-        joinAmm: { enable: false, reason: "account frozen" },
-        exitAmm: { enable: false, reason: "account frozen" },
-        transfer: { enable: false, reason: "account frozen" },
-        transferNFT: { enable: false, reason: "account frozen" },
-        defi: { enable: false, reason: "account frozen" },
-        // deposit: { enable: false, reason: "account frozen" },
-        // depositNFT: { enable: false, reason: "account frozen" },
-        withdraw: { enable: false, reason: "account frozen" },
-        withdrawNFT: { enable: false, reason: "account frozen" },
-        mintNFT: { enable: false, reason: "account frozen" },
-        deployNFT: { enable: false, reason: "account frozen" },
-        updateAccount: { enable: false, reason: "account frozen" },
-        LRCStackInvest: { enable: false, reason: "account frozen" },
-        redPacketNFTV1: { enable: false, reason: "account frozen" },
-        claim: { enable: false, reason: "account frozen" },
-      })
-    );
+  let { accAddress, __timer__, frozen } = store.getState().account;
+  if (frozen === LoopFrozenFlag) {
     __timer__ = ((__timer__) => {
       if (__timer__ && __timer__ !== -1) {
         clearTimeout(__timer__);
@@ -64,44 +28,16 @@ const getAccount = async (): Promise<{
         store.dispatch(updateAccountStatus({ frozen: account.frozen }));
       }, 1000 * 60);
     })(__timer__);
-    return {
-      account,
-      walletType,
-      __timer__,
-    };
-  } else {
-    let toggle = {};
-    if (chainId === ChainId.MAINNET) {
-      toggle = await fetch(DexToggle)
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .catch(() => ({}));
-    }
-    store.dispatch(
-      updateToggleStatus({
-        order: { enable: true, reason: undefined },
-        joinAmm: { enable: true, reason: undefined },
-        exitAmm: { enable: true, reason: undefined },
-        transfer: { enable: true, reason: undefined },
-        transferNFT: { enable: true, reason: undefined },
-        defi: { enable: true, reason: undefined },
-        deposit: { enable: true, reason: undefined },
-        depositNFT: { enable: true, reason: undefined },
-        withdraw: { enable: true, reason: undefined },
-        withdrawNFT: { enable: true, reason: undefined },
-        mintNFT: { enable: true, reason: undefined },
-        deployNFT: { enable: true, reason: undefined },
-        updateAccount: { enable: true, reason: undefined },
-        LRCStackInvest: { enable: true, reason: undefined },
-        redPacketNFTV1: { enable: true, reason: undefined },
-        claim: { enable: true, reason: undefined },
-        ...toggle,
-      })
-    );
   }
+  toggleCheck();
+  const [{ accInfo: account }, { walletType }] = await Promise.all([
+    LoopringAPI?.exchangeAPI?.getAccount({
+      owner: accAddress,
+    }) ?? Promise.resolve({ accInfo: {} } as any),
+    LoopringAPI?.walletAPI?.getWalletType({
+      wallet: accAddress, //realAddr != "" ? realAddr : address,
+    }) ?? Promise.resolve({ walletType: {} } as any),
+  ]);
 
   if (__timer__ && __timer__ !== -1) {
     clearTimeout(__timer__);
