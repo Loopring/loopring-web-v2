@@ -845,7 +845,7 @@ export const useBtradeSwap = <
                 .toBig(
                   sellBuyStr == market ? btradeAmount.base : btradeAmount.quote
                 )
-                .div("1e" + buyToken.decimals)
+                .div("1e" + sellToken.decimals)
                 .toString() ?? "0";
             sellMaxAmtInfo = poolToVol;
           }
@@ -959,7 +959,7 @@ export const useBtradeSwap = <
                   sellToken.precision,
                   undefined,
                   false,
-                  { isAbbreviate: true, floor: false }
+                  { isAbbreviate: true }
                 )
               : undefined,
           totalQuota: (
