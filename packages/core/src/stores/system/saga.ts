@@ -153,7 +153,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
             marketRaw,
           })
         );
-        store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
         store.dispatch(
           getTokenMap({
             tokensMap,
@@ -174,8 +173,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
         // myLog(
         //   "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList update from server-side update"
         // );
-        store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
-        store.dispatch(getAmmMap({ ammpools }));
+        store.dispatch(getAmmMap({ ammpools, ammpoolsRaw, chainId }));
         store.dispatch(getAmmActivityMap({ ammpools }));
       }
     );
@@ -388,7 +386,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
         [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
           await Promise.all([
             _exchangeInfo[chainId]
-              ? Promise.resolve({ exchangeInfo: _exchangeInfo[chainId] })
+              ? Promise.resolve(_exchangeInfo[chainId])
               : LoopringAPI.exchangeAPI
                   .getExchangeInfo()
                   .then(({ exchangeInfo }) => {

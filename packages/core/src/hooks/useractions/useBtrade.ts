@@ -826,8 +826,8 @@ export const useBtradeSwap = <
           btradeAmount &&
           l2Amount &&
           (sellBuyStr == market
-            ? btradeAmount.quote !== "0"
-            : btradeAmount.base !== "0")
+            ? btradeAmount.base !== "0"
+            : btradeAmount.quote !== "0")
         ) {
           if (
             (sellBuyStr == market ? btradeAmount.quote : btradeAmount.base) !==
@@ -862,7 +862,13 @@ export const useBtradeSwap = <
                 false,
                 { isAbbreviate: true }
               )
-            : t("labelBtradeInsufficient");
+            : (
+                sellBuyStr == market
+                  ? btradeAmount.base == "0"
+                  : btradeAmount.quote == "0"
+              )
+            ? t("labelBtradeInsufficient")
+            : EmptyValueTag;
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,
             sellBuyStr == market ? minAmount.base : minAmount.quote
