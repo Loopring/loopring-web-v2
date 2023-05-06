@@ -839,28 +839,31 @@ export const useBtradeSwap = <
             ? btradeAmount.quote !== "0"
             : btradeAmount.base !== "0")
         ) {
+          let poolToVol: any = undefined;
           if (
             (sellBuyStr == market ? btradeAmount.quote : btradeAmount.base) !==
             ""
           ) {
-            const poolToVol =
+            poolToVol =
               sdk
                 .toBig(
                   sellBuyStr == market ? btradeAmount.base : btradeAmount.quote
                 )
                 .div("1e" + sellToken.decimals)
                 .toString() ?? "0";
-            const sellDeepStr =
-              sdk
-                .toBig(
-                  sellBuyStr == market
-                    ? depth.bids_amtTotal
-                    : depth.asks_volTotal
-                )
-                .div("1e" + sellToken.decimals)
-                .toString() ?? "0";
-            sellMaxAmtInfo = BigNumber.min(sellDeepStr, poolToVol);
           }
+          const sellDeepStr =
+            sdk
+              .toBig(
+                sellBuyStr == market ? depth.bids_amtTotal : depth.asks_volTotal
+              )
+              .div("1e" + sellToken.decimals)
+              .times(0.99)
+              .toString() ?? "0";
+
+          sellMaxAmtInfo = poolToVol
+            ? BigNumber.min(sellDeepStr, poolToVol)
+            : sellDeepStr;
 
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,

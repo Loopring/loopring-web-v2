@@ -386,7 +386,6 @@ export const SwapTradeWrap = <
 
       <Grid item>
         <Typography
-          component={"p"}
           variant="body1"
           textAlign={"center"}
           lineHeight={"24px"}
