@@ -13,14 +13,13 @@ import { LoopringAPI } from "../../api_wrapper";
 import { updateToggleStatus } from "@loopring-web/component-lib";
 
 const LoopFrozenFlag = true;
-export const DexToggle = "https://static.loopring.io/status/dexToggle.json";
 const getAccount = async (): Promise<{
   account: AccountInfo;
   walletType: WalletType;
   __timer__: NodeJS.Timer | -1;
 }> => {
   let { accAddress, __timer__ } = store.getState().account;
-  let { chainId } = store.getState().system;
+  let { chainId, dexToggleUrl } = store.getState().system;
   const [{ accInfo: account }, { walletType }] = await Promise.all([
     LoopringAPI?.exchangeAPI?.getAccount({
       owner: accAddress,
@@ -72,7 +71,7 @@ const getAccount = async (): Promise<{
   } else {
     let toggle = {};
     if (chainId === ChainId.MAINNET) {
-      toggle = await fetch(DexToggle)
+      toggle = await fetch(dexToggleUrl)
         .then((response) => {
           if (response.ok) {
             return response.json();

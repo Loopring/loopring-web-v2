@@ -498,6 +498,7 @@ export function* getUpdateSystem({ payload }: any) {
     yield put(
       getSystemStatus({
         env,
+        dexToggleUrl: process.env.REACT_APP_DEX_TOGGLE,
         baseURL,
         allowTrade,
         fiatPrices,
