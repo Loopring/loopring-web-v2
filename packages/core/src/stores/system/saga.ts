@@ -9,7 +9,7 @@ import {
 } from "redux-saga/effects";
 import { getSystemStatus, updateRealTimeObj, updateSystem } from "./reducer";
 import { ENV, NETWORKEXTEND } from "./interface";
-import { store, LoopringSocket, LoopringAPI } from "../../index";
+import { store, LoopringSocket, LoopringAPI, toggleCheck } from "../../index";
 import {
   CustomError,
   ErrorMap,
@@ -383,14 +383,23 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
         const _exchangeInfo = JSON.parse(
           window.localStorage.getItem("exchangeInfo") ?? "{}"
         );
-        // const _allowTrade = JSON.parse(window.localStorage.getItem("allowTrade") ?? "{}")[
-        //   chainId
-        //   ];
-        if (_exchangeInfo[chainId]) {
-          myLog("exchangeInfo from localstorage");
-          exchangeInfo = _exchangeInfo[chainId];
-          // const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(chainId)
-          [{ forexMap, gasPrice }, allowTrade] = await Promise.all([
+        [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
+          await Promise.all([
+            _exchangeInfo[chainId]
+              ? Promise.resolve(_exchangeInfo[chainId])
+              : LoopringAPI.exchangeAPI
+                  .getExchangeInfo()
+                  .then(({ exchangeInfo }) => {
+                    myLog("exchangeInfo from service because no localstorage ");
+                    window.localStorage.setItem(
+                      "exchangeInfo",
+                      JSON.stringify({
+                        ..._exchangeInfo,
+                        [exchangeInfo.chainId]: exchangeInfo,
+                      })
+                    );
+                    return { exchangeInfo };
+                  }),
             should15MinutesUpdateDataGroup(chainId),
             LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
               return {
@@ -398,8 +407,9 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
                 legal: (result as any)?.raw_data?.legal ?? { enable: false },
               };
             }),
+            toggleCheck(chainId, process.env.REACT_APP_DEX_TOGGLE),
           ]);
-
+        if (_exchangeInfo[chainId]) {
           LoopringAPI.exchangeAPI
             .getExchangeInfo()
             .then(({ exchangeInfo }: any) => {
@@ -412,26 +422,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
               );
               myLog("exchangeInfo from service");
             });
-        } else {
-          [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
-            await Promise.all([
-              LoopringAPI.exchangeAPI.getExchangeInfo(),
-              should15MinutesUpdateDataGroup(chainId),
-              LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
-                return {
-                  ...result,
-                  legal: (result as any)?.raw_data?.legal ?? { enable: false },
-                };
-              }),
-            ]);
-          myLog("exchangeInfo from service because no localstorage ");
-          window.localStorage.setItem(
-            "exchangeInfo",
-            JSON.stringify({
-              ..._exchangeInfo,
-              [exchangeInfo.chainId]: exchangeInfo,
-            })
-          );
         }
       } catch (e: any) {
         allowTrade = {
@@ -498,6 +488,7 @@ export function* getUpdateSystem({ payload }: any) {
     yield put(
       getSystemStatus({
         env,
+        dexToggleUrl: process.env.REACT_APP_DEX_TOGGLE,
         baseURL,
         allowTrade,
         fiatPrices,

@@ -15,6 +15,7 @@ export type NETWORK = NETWORKEXTEND | sdk.ChainId;
 export type System = {
   env: keyof typeof ENV;
   chainId: NETWORK;
+  dexToggleUrl: string;
   // network: keyof typeof NETWORK,
   etherscanBaseUrl: string;
   socketURL: string;
