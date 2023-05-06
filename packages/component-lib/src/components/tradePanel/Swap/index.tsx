@@ -317,6 +317,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   variant={"h5"}
                   alignItems={"center"}
                   alignSelf={"self-start"}
+                  component={"span"}
                 >
                   {rest.t(titleI8nKey)}
                   <Typography
@@ -335,7 +336,11 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
 
                 <Box alignSelf={"flex-end"} display={"flex"}>
                   {!tradeCalcData.isBtrade ? (
-                    <Typography display={"inline-block"} marginLeft={2}>
+                    <Typography
+                      display={"inline-block"}
+                      marginLeft={2}
+                      component={"span"}
+                    >
                       <IconButtonStyled
                         onClick={(e) => {
                           setSettingPopoverOpen(true);
@@ -364,13 +369,14 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                         sx={{ background: "transparent" }}
                       >
                         <Box paddingX={2} paddingTop={2} paddingBottom={4}>
-                          <Typography marginBottom={1}>
+                          <Typography marginBottom={1} component={"span"}>
                             {rest.t("labelSwapSettingTitle")}
                           </Typography>
                           <Typography
                             marginBottom={1}
                             variant={"body2"}
                             color={"var(--color-text-third)"}
+                            component={"span"}
                           >
                             {rest.t("swapTolerance")}
                           </Typography>
@@ -406,7 +412,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                               placement={"bottom"}
                             >
                               <Typography
-                                component={"p"}
+                                component={"span"}
                                 variant="body2"
                                 color={"textSecondary"}
                                 display={"inline-flex"}
@@ -433,13 +439,21 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   ) : (
                     <></>
                   )}
-                  <Typography display={"inline-block"} marginLeft={2}>
+                  <Typography
+                    display={"inline-block"}
+                    marginLeft={2}
+                    component={"span"}
+                  >
                     <CountDownIcon
                       onRefreshData={onRefreshData}
                       ref={refreshRef}
                     />
                   </Typography>
-                  <Typography display={"inline-block"} marginLeft={2}>
+                  <Typography
+                    display={"inline-block"}
+                    marginLeft={2}
+                    component={"span"}
+                  >
                     <IconButtonStyled
                       onClick={() => {
                         !tradeCalcData.isBtrade

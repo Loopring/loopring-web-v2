@@ -43,7 +43,7 @@ const tradeBtradeSlice: Slice<TradeBtradeStatus> = createSlice({
         maxFeeBips,
         ...rest
       } = action.payload;
-      if (market !== state.tradeBtrade.market && market) {
+      if (market !== state.tradeBtrade.market && market && tradePair) {
         // @ts-ignore
         const [_, sellToken, buyToken] = (tradePair ?? "").match(
           /(\w+)-(\w+)/i
