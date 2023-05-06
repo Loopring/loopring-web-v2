@@ -8,37 +8,32 @@ import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
 import {
-  useTicker,
-  ModalGroup,
-  useDeposit,
-  useSystem,
   ModalCoinPairPanel,
+  ModalGroup,
   ModalRedPacketPanel,
+  useDeposit,
   useOffFaitModal,
-  useNotify,
+  useSystem,
+  useTicker,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
-  ammAdvice,
-  defiAdvice,
-  dualAdvice,
   ErrorMap,
   myLog,
   SagaStatus,
   setMyLog,
-  stakeAdvice,
   ThemeType,
   VendorProviders,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
 import {
-  useSettings,
+  ComingSoonPanel,
   LoadingBlock,
   NoticePanelSnackBar,
   NoticeSnack,
+  useSettings,
   useToggle,
-  ComingSoonPanel,
 } from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
@@ -56,6 +51,8 @@ import { AssetPage } from "../pages/AssetPage";
 import { FiatPage } from "../pages/FiatPage";
 import { RedPacketPage } from "../pages/RedPacketPage";
 import { useTranslation } from "react-i18next";
+import { ContactPage } from "pages/ContactPage";
+import { ContactTransactionsPage } from "pages/ContactPage/transactions";
 import { BtradeSwapPage } from "../pages/BtradeSwapPage";
 
 const ContentWrap = ({
@@ -359,6 +356,16 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={["/invest", "/invest/*"]}>
           <ContentWrap state={state}>
             <InvestPage />
+          </ContentWrap>
+        </Route>
+        <Route exact path={["/contact"]}>
+          <ContentWrap state={state}>
+            <ContactPage />
+          </ContentWrap>
+        </Route>
+        <Route exact path={["/contact/transactions/*"]}>
+          <ContentWrap state={state}>
+            <ContactTransactionsPage />
           </ContentWrap>
         </Route>
         <Route
