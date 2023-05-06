@@ -850,7 +850,16 @@ export const useBtradeSwap = <
                 )
                 .div("1e" + sellToken.decimals)
                 .toString() ?? "0";
-            sellMaxAmtInfo = poolToVol;
+            const sellDeepStr =
+              sdk
+                .toBig(
+                  sellBuyStr == market
+                    ? depth.bids_amtTotal
+                    : depth.asks_volTotal
+                )
+                .div("1e" + sellToken.decimals)
+                .toString() ?? "0";
+            sellMaxAmtInfo = BigNumber.min(sellDeepStr, poolToVol);
           }
 
           sellMinAmtInfo = BigNumber.max(
