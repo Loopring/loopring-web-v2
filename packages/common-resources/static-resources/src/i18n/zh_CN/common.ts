@@ -1025,7 +1025,8 @@ export default {
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
   labelDualInvestDes:
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
-  labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
+  labelDualCurrentPriceTip: "Current Price is based on USDT derived from some leading exchanges.",
+  labelDualCurrentPrice: "{{symbol}} Current Price: <1>{{price}}</1>  USDT",
   labelDualSuccess: "Subscription {{symbol}} Successfully",
   labelDualProcessing: "Waiting for completion",
   labelDualProcessingDes:
@@ -1046,7 +1047,7 @@ export default {
   labelDualTargetPrice3: "Target Price",
 
   labelDualTargetPriceDes:
-    "Target Price is a benchmark price. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
+    "Target Price is a benchmark price based on USDT. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
   labelDualRiskDes:
     "Your investment will be locked up until settlement date after investing and cannot be redeemed before settlement. \n As we make profit ratio a top priority, the total opened position might vary with your initial investment.",
   labelDualReturn: "Return \n {{symbol}}",
@@ -1069,7 +1070,9 @@ export default {
     "I understand that subscribed assets are locked and users aren’t able to cancel or redeem before the Settlement Date.",
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
-  labelInvestDualTutorialCheck4: "I have read and understand the risk warning.",
+  labelInvestDualTutorialCheck4: 
+    "Please be aware that the target price in Dual Investment portfolio is USDT. If you subscribe USDC-related product with another token, that token may be converted to USDC if the target price is reached. If you want to completely avoid the USDC depegging risk, you can select USDT-related products instead.",
+  labelInvestDualTutorialCheck5: "I have read and understand the risk warning.",
   labelInvestDualBeginerMode: "Beginner Mode",
   labelInvestDualBeginerModeDesLine1: "What is Dual Investment?",
   labelInvestDualBeginerModeDesLine2:
@@ -1107,6 +1110,8 @@ export default {
   labelDualTitle: "Dual Investment",
   labelDualDesSuccess:
     "Your token for investment is just locked but still in your account as Loopring is a DEX. \n When the transaction expires, if the settlement price is not reached, you will get a profit and the frozen token will also be unlocked; if the settlement price is reached, your investment and interest income will be converted into the target token at the Target price.",
+  labelDualRefresh:
+    "Refresh",
   labelNoticeForMarketFrozen:
     "{{ type }} is not supported, If you believe this is indeed a bug, please contact us.",
   labelInvestRangeDay: "{{arg}} Days",
@@ -1587,8 +1592,6 @@ export default {
   labelBtradeSwapDelivering: "Delivering",
   labelBtradeSwapPanelDes:
     "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
-  labelBtradeSwapDeliverDes:
-    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
   labelGoBtradeSwap:
     "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",

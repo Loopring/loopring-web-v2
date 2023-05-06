@@ -1635,8 +1635,6 @@ export default {
   labelBtradeSwapDelivering: "Delivering",
   labelBtradeSwapPanelDes:
     "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
-  labelBtradeSwapDeliverDes:
-    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
   labelGoBtradeSwap:
     "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",
@@ -1673,34 +1671,8 @@ export default {
   labelStopLimitType: "Stop Limit / {{tradeType}}",
   labelStopLimitStopPrice: "Stop Price",
   labelStopLimitPriceLimitPrice: "Limit Price",
-  labelStopLimitAmount: "Amount",
+  labelStopLimitAmount: "labelStopLimit",
   labelStopLimitCancel: "Cancel",
   labelStopLimitConfirm: "Confirm",
   labelBtradeSwapPending: "Pending",
-  labelStopLimitTitle: "Stop-Limit",
-  labelStopPrice: "Price",
-  labelStopStopPrice: "Stop Price",
-  labelStopLimitWhatIs: "What's Stop Limit?",
-  labelStopLimitMinMax: "Min {{minValue}} - Max {{maxValue}}",
-  labelLimitStopPriceMinMax: "Stop Price Range {{arg}}",
-  labelLimitMainContent:
-    "A stop-limit order is a limit order with a limit price and a stop price. When the stop price is reached, the limit order will be placed on the order book. Once the limit price is reached, the limit order will be executed.",
-  labelLimitStopPriceLabel: "Stop Price",
-  labelLimitStopPriceContent:
-    "When the current asset price reaches the given stop price, the stop-limit order is executed to buy or sell the asset at the given limit price or better.",
-  labelLimitLimitPriceLabel: "Limit Price",
-  labelLimitLimitPriceContent:
-    "The selected (or potentially better) price that the stop-limit order is executed at.",
-  labelLimitAmountLabel: "Amount",
-  labelLimitAmountContent:
-    "The quantity of assets to buy or sell in the stop-limit order.",
-  labelLimitDes:
-    "You can set the stop price and limit price at the same price. However, it’s recommended that the stop price for sell orders should be slightly higher than the limit price. This price difference will allow for a safety gap in price between the time the order is triggered and when it is fulfilled. You can set the stop price slightly lower than the limit price for buy orders. This will also reduce the risk of your order not being fulfilled.\n" +
-    "Please note that your order will be executed as a limit order after the market price reaches your limit price. If you set the stop-loss limit too high or the take-profit limit too low, your order may never be filled because the market price can’t reach the set limit price.",
-  labelLimitDemoTitle: "How does a stop-limit order work?",
-  labelLimitDemoDes:
-    "The current price is 2,400 (A). You can set the stop price above the current price, such as 3,000 (B), or below the current price, such as 1,500 (C). Once the price goes up to 3,000 (B) or drops to 1,500 (C), the stop-limit order will be triggered, and the limit order will be automatically placed on the order book.\n Note: <ol>" +
-    "<li>Limit price can be set above or below the stop price for both buy and sell orders. For example, stop price B can be placed along with a lower limit price B1 or a higher limit price B2.\n</li>" +
-    "<li>A limit order is invalid before the stop price is triggered, including when the limit price is reached ahead of the stop price.</li>" +
-    "<li>When the stop price is reached, it only indicates that a limit order is activated and will be submitted to the order book rather than the limit order being filled immediately. The limit order will be executed according to its own rules.</li></ol>",
 };
