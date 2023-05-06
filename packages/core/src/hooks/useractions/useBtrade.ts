@@ -815,6 +815,8 @@ export const useBtradeSwap = <
         let sellMaxAmtInfo = undefined;
         let sellMaxL2AmtInfo = undefined;
         let totalFeeRaw = undefined;
+        let totalQuote = undefined;
+        let poolToVol: any = undefined;
         const info: sdk.BTRADE_MARKET = marketMap[market];
         let maxFeeBips = info.feeBips ?? MAPFEEBIPS;
 
@@ -839,7 +841,6 @@ export const useBtradeSwap = <
             ? btradeAmount.quote !== "0"
             : btradeAmount.base !== "0")
         ) {
-          let poolToVol: any = undefined;
           if (
             (sellBuyStr == market ? btradeAmount.quote : btradeAmount.base) !==
             ""
@@ -864,7 +865,16 @@ export const useBtradeSwap = <
           sellMaxAmtInfo = poolToVol
             ? BigNumber.min(sellDeepStr, poolToVol)
             : sellDeepStr;
-
+          totalQuote = poolToVol
+            ? getValuePrecisionThousand(
+                BigNumber.min(sellDeepStr, poolToVol),
+                sellToken.decimals,
+                sellToken.decimals,
+                undefined,
+                false,
+                { isAbbreviate: true }
+              )
+            : t("labelBtradeInsufficient");
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,
             sellBuyStr == market ? minAmount.base : minAmount.quote
@@ -912,7 +922,7 @@ export const useBtradeSwap = <
                   isAtoB ? buyToken.precision : sellToken.precision,
                   isAtoB ? buyToken.precision : sellToken.precision,
                   isAtoB ? buyToken.precision : sellToken.precision
-                ).replace(sdk.SEP, "");
+                ).replaceAll(sdk.SEP, "");
           let result = reCalcStoB({
             market,
             tradeData: _tradeData as SwapTradeData<IBData<unknown>>,
@@ -926,23 +936,13 @@ export const useBtradeSwap = <
           minimumReceived = undefined;
         }
 
-        const l1Pool = getValuePrecisionThousand(
-          sdk
-            .toBig(
-              sellBuyStr == market
-                ? btradeAmount.base
-                  ? btradeAmount.base
-                  : 0
-                : btradeAmount.quote
-                ? btradeAmount.quote
-                : 0
-            )
-            .div("1e" + sellToken.decimals),
-          sellToken.precision,
-          sellToken.precision,
-          undefined,
-          false
-        );
+        //   getValuePrecisionThousand(
+        //   ,
+        //   sellToken.precision,
+        //   sellToken.precision,
+        //   undefined,
+        //   false
+        // );
         let _tradeCalcData: any = {
           minimumReceived,
           maxFeeBips,
@@ -977,16 +977,8 @@ export const useBtradeSwap = <
                   { isAbbreviate: true }
                 )
               : undefined,
-          totalQuota: (
-            sellBuyStr == market
-              ? btradeAmount.quote !== "0"
-              : btradeAmount.base !== "0"
-          )
-            ? l1Pool != 0
-              ? l1Pool + " " + sellToken.symbol
-              : EmptyValueTag
-            : t("labelBtradeInsufficient"),
-          l1Pool,
+          totalQuota: totalQuote,
+          l1Pool: poolToVol,
           l2Pool: getValuePrecisionThousand(
             sdk
               .toBig(
@@ -1034,13 +1026,13 @@ export const useBtradeSwap = <
             ...state,
             ..._tradeCalcData,
             StoB: getValuePrecisionThousand(
-              stob?.replace(sdk.SEP, ""),
+              stob?.replaceAll(sdk.SEP, ""),
               buyToken.precision,
               buyToken.precision,
               undefined
             ),
             BtoS: getValuePrecisionThousand(
-              btos?.replace(sdk.SEP, ""),
+              btos?.replaceAll(sdk.SEP, ""),
               sellToken.precision,
               sellToken.precision,
               undefined
@@ -1132,13 +1124,13 @@ export const useBtradeSwap = <
           ...state,
           ...tradeCalcData,
           StoB: getValuePrecisionThousand(
-            (result ? result?.stob : StoB.toString())?.replace(sdk.SEP, ""),
+            (result ? result?.stob : StoB.toString())?.replaceAll(sdk.SEP, ""),
             buyToken.precision,
             buyToken.precision,
             undefined
           ),
           BtoS: getValuePrecisionThousand(
-            (result ? result?.btos : BtoS.toString())?.replace(sdk.SEP, ""),
+            (result ? result?.btos : BtoS.toString())?.replaceAll(sdk.SEP, ""),
             sellToken.precision,
             sellToken.precision,
             undefined

@@ -105,7 +105,7 @@ export const DepositWrap = <
         );
       }
       const Max = sdk
-        .toBig(chargeFeeTokenList[index].fee.toString().replace(sdk.SEP, ""))
+        .toBig(chargeFeeTokenList[index].fee.toString().replaceAll(sdk.SEP, ""))
         .times(4);
       setMinFee({
         minFee: t("labelMinFeeForActive", {
