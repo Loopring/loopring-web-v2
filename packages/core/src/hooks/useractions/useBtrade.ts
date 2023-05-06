@@ -397,8 +397,6 @@ export const useBtradeSwap = <
           clearData();
         }
 
-        walletLayer2Service.sendUserUpdate();
-
         let info: any = {
           sellToken,
           buyToken,
@@ -433,7 +431,12 @@ export const useBtradeSwap = <
           step: AccountStep.BtradeSwap_Pending,
           info,
         });
+        walletLayer2Service.sendUserUpdate();
         await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE);
+        if (refreshRef.current) {
+          // @ts-ignore
+          refreshRef.current.firstElementChild.click();
+        }
         const orderConfirm: { hash: string } | any =
           await LoopringAPI.defiAPI.getBtradeOrders({
             request: {
@@ -836,19 +839,31 @@ export const useBtradeSwap = <
             ? btradeAmount.quote !== "0"
             : btradeAmount.base !== "0")
         ) {
+          let poolToVol: any = undefined;
           if (
             (sellBuyStr == market ? btradeAmount.quote : btradeAmount.base) !==
             ""
           ) {
-            const poolToVol =
+            poolToVol =
               sdk
                 .toBig(
                   sellBuyStr == market ? btradeAmount.base : btradeAmount.quote
                 )
                 .div("1e" + sellToken.decimals)
                 .toString() ?? "0";
-            sellMaxAmtInfo = poolToVol;
           }
+          const sellDeepStr =
+            sdk
+              .toBig(
+                sellBuyStr == market ? depth.bids_amtTotal : depth.asks_volTotal
+              )
+              .div("1e" + sellToken.decimals)
+              .times(0.99)
+              .toString() ?? "0";
+
+          sellMaxAmtInfo = poolToVol
+            ? BigNumber.min(sellDeepStr, poolToVol)
+            : sellDeepStr;
 
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,
