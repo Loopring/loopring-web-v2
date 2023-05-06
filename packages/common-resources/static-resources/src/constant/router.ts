@@ -32,6 +32,7 @@ export const BANXA_URLS = {
   1: "https://loopring.banxa.com",
   5: "https://loopring.banxa-sandbox.com",
 };
+export const LOOPRING_DOCUMENT = "https://loopring.io/#/document/";
 
 //
 //
@@ -393,17 +394,17 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: "Privacy", //Privacy policy
-      linkHref: "https://loopring.io/#/document/privacy_en.md",
+      linkHref: LOOPRING_DOCUMENT + "privacy_en.md",
     },
     {
       linkName: "Risks", //Risks Disclosure
-      linkHref: "https://loopring.io/#/document/risks_en.md",
+      linkHref: LOOPRING_DOCUMENT + "risks_en.md",
     },
   ],
   Platform: [
     {
       linkName: "Fees", //Fees
-      linkHref: "https://loopring.io/#/document/dex_fees_en.md",
+      linkHref: LOOPRING_DOCUMENT + "dex_fees_en.md",
     },
     {
       linkName: "VIP", //VIP
@@ -439,7 +440,7 @@ export const FOOTER_LIST_MAP = {
   Developers: [
     {
       linkName: "SmartContract", // Smart Contract
-      linkHref: "https://loopring.io/#/document/contracts_en.md",
+      linkHref: LOOPRING_DOCUMENT + "contracts_en.md",
     },
 
     {
@@ -452,7 +453,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: "BugBounty", //BugBounty
-      linkHref: "https://loopring.io/#/document/bug_bounty_en.md",
+      linkHref: LOOPRING_DOCUMENT + "bug_bounty_en.md",
     },
     {
       linkName: "Subgraph", //Subgraph
