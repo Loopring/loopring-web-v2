@@ -388,7 +388,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
         [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
           await Promise.all([
             _exchangeInfo[chainId]
-              ? Promise.resolve(_exchangeInfo[chainId])
+              ? Promise.resolve({ exchangeInfo: _exchangeInfo[chainId] })
               : LoopringAPI.exchangeAPI
                   .getExchangeInfo()
                   .then(({ exchangeInfo }) => {
