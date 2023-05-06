@@ -68,7 +68,7 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
 
     .betweenEle {
       left: 50%;
-      top: 138px;
+      top: 128px;
       position: absolute;
 
       .open {
@@ -165,7 +165,7 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
     }
 
     .top {
-      height: 150px;
+      height: 140px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -183,16 +183,13 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 56px;
     }
   }
-
   &.RedPacketClock {
     .top {
       height: 40px;
       margin-top: 50px;
     }
-
     .middle {
       margin-top: 40px;
       height: 128px;
@@ -518,6 +515,7 @@ export const RedPacketOpen = ({
 };
 
 export const RedPacketClock = ({
+  
   type = "default",
   size,
   validSince,
