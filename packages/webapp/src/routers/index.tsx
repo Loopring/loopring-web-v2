@@ -8,38 +8,32 @@ import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
 import {
-  useTicker,
-  ModalGroup,
-  useDeposit,
-  useSystem,
   ModalCoinPairPanel,
+  ModalGroup,
   ModalRedPacketPanel,
+  useDeposit,
   useOffFaitModal,
-  useNotify,
-  useTokenMap,
+  useSystem,
+  useTicker,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
-  ammAdvice,
-  defiAdvice,
-  dualAdvice,
   ErrorMap,
   myLog,
   SagaStatus,
   setMyLog,
-  stakeAdvice,
   ThemeType,
   VendorProviders,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
 import {
-  useSettings,
+  ComingSoonPanel,
   LoadingBlock,
   NoticePanelSnackBar,
   NoticeSnack,
+  useSettings,
   useToggle,
-  ComingSoonPanel,
 } from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
@@ -57,10 +51,9 @@ import { AssetPage } from "../pages/AssetPage";
 import { FiatPage } from "../pages/FiatPage";
 import { RedPacketPage } from "../pages/RedPacketPage";
 import { useTranslation } from "react-i18next";
-import { BtradeSwapPage } from "../pages/BtradeSwapPage";
-import { StopLimitPage } from "../pages/ProTradePage/stopLimtPage";
 import { ContactPage } from "pages/ContactPage";
 import { ContactTransactionsPage } from "pages/ContactPage/transactions";
+import { BtradeSwapPage } from "../pages/BtradeSwapPage";
 
 const ContentWrap = ({
   children,
@@ -140,11 +133,13 @@ const WrapModal = () => {
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const proFlag =
+    process.env.REACT_APP_WITrH_PRO &&
+    process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
-  const { marketArray } = useTokenMap();
   const { setTheme } = useSettings();
   const {
-    toggle: { BTradeInvest, StopLimit },
+    toggle: { BTradeInvest },
   } = useToggle();
 
   React.useEffect(() => {
@@ -301,9 +296,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <Header isHideOnScroll={true} />
           )}
 
-          {state === "PENDING" ||
-          !marketArray.length ||
-          !Object.keys(tickerMap ?? {}).length ? (
+          {state === "PENDING" && proFlag && tickerMap ? (
             <LoadingBlock />
           ) : (
             <Box display={"flex"} flexDirection={"column"} flex={1}>
@@ -324,25 +317,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
               <BtradeSwapPage />
             )}
           </ContentWrap>
-        </Route>
-        <Route path="/trade/stopLimit">
-          {searchParams && searchParams.has("noheader") ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} />
-          )}
-
-          {state === "PENDING" ||
-          !marketArray.length ||
-          !Object.keys(tickerMap ?? {}).length ? (
-            <LoadingBlock />
-          ) : StopLimit.enable == false && BTradeInvest.reason === "no view" ? (
-            <ComingSoonPanel />
-          ) : (
-            <Box display={"flex"} flexDirection={"column"} flex={1}>
-              <StopLimitPage />
-            </Box>
-          )}
         </Route>
         <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
           <ContentWrap state={state}>
