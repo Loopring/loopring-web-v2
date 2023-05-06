@@ -8,37 +8,32 @@ import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
 import {
-  useTicker,
-  ModalGroup,
-  useDeposit,
-  useSystem,
   ModalCoinPairPanel,
+  ModalGroup,
   ModalRedPacketPanel,
+  useDeposit,
   useOffFaitModal,
-  useNotify,
+  useSystem,
+  useTicker,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
-  ammAdvice,
-  defiAdvice,
-  dualAdvice,
   ErrorMap,
   myLog,
   SagaStatus,
   setMyLog,
-  stakeAdvice,
   ThemeType,
   VendorProviders,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
 import {
-  useSettings,
+  ComingSoonPanel,
   LoadingBlock,
   NoticePanelSnackBar,
   NoticeSnack,
+  useSettings,
   useToggle,
-  ComingSoonPanel,
 } from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
