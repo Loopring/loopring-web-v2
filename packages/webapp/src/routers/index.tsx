@@ -316,7 +316,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         </Route>
         <Route path="/trade/btrade">
           <ContentWrap state={state}>
-            {BTradeInvest.reason}
             {!BTradeInvest.enable && BTradeInvest.reason === "no view" ? (
               <ComingSoonPanel />
             ) : (
