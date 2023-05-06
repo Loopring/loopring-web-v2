@@ -746,10 +746,10 @@ export const SwapTradeWrap = <
                           i18nKey={"labelBtradeSwapPanelDes"}
                           interpolation={{ escapeValue: false }}
                         >
-                          It may not be possible for the Loopring pool to
-                          completely fulfill your swap at this time. If you
-                          proceed, the token you’ve sold will be locked until it
-                          is fully converted into the purchased token.
+                          You can trade as much as possible at the desired
+                          price, potentially waiting for Loopring pool to
+                          rebalance before receiving all tokens. while once the
+                          offer is confirmed, you won't be able to cancel it.
                         </Trans>
                       </Typography>
                     }
