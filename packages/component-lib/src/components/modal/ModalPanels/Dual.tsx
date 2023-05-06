@@ -584,7 +584,7 @@ export const BtradeSwap_Delivering = (props: PanelProps) => {
           marginTop={2}
           component={"span"}
         >
-          {t("labelBtradeSwapPanelDes")}
+          {t("labelBtradeSwapDeliverDes")}
         </Typography>
       </Box>
     ),
