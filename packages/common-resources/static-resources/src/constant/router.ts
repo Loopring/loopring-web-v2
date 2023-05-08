@@ -6,7 +6,7 @@ import {
   MintIcon,
   ProfileIcon,
   RecordIcon,
-  RewardIcon,
+  // RewardIcon,
   SecurityIcon,
   VipIcon,
   WaitApproveIcon,
