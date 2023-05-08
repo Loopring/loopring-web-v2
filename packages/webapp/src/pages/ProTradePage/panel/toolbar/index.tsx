@@ -182,13 +182,13 @@ export const Toolbar = withTranslation("common")(
       }
     }, [tickerStatus, market, setDefaultData]);
     const getFilteredTickList = React.useCallback(() => {
-      if (!!ammPoolBalances.length && tickList && !!tickList.length) {
+      if (tickList && !!tickList.length) {
         return tickList.filter((o: any) => {
           const pair = `${o.pair.coinA}-${o.pair.coinB}`;
-          if (ammPoolBalances.find((o) => o.poolName === pair)) {
-            return !ammPoolBalances.find((o) => o.poolName === pair).risky;
-          }
-          return true;
+          const status = ("00" + marketMap[pair]?.status?.toString(2)).split(
+            ""
+          );
+          return status[status.length - 2] === "1";
         });
       }
       return [];
@@ -204,7 +204,7 @@ export const Toolbar = withTranslation("common")(
     React.useEffect(() => {
       const data = getFilteredTickList();
       resetTableData(data);
-    }, [getFilteredTickList, resetTableData]);
+    }, [tickerStatus, tickList]);
 
     const handleTableFilterChange = React.useCallback(
       ({

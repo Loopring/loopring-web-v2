@@ -102,6 +102,13 @@ const HistoryPanel = withTranslation("common")(
       cancelOrder,
     } = useOrderList(setToastOpen);
     const {
+      rawData: stopLimitRawData,
+      getOrderList: getStopLimitOrderList,
+      totalNum: totalNumStopLimit,
+      showLoading: showLoadingStopLimit,
+      cancelOrder: cancelOrderStopLimit,
+    } = useOrderList(setToastOpen, true);
+    const {
       dualList,
       showLoading: showDualLoading,
       getDualTxList,
@@ -207,6 +214,11 @@ const HistoryPanel = withTranslation("common")(
                 value={RecordTabIndex.trades}
               />
               <Tab label={t("labelOrderGroup")} value={RecordTabIndex.orders} />
+              <Tab
+                label={t("labelStopLimitOrderGroup")}
+                value={RecordTabIndex.stopLimitRecords}
+              />
+
               <Tab
                 label={t("labelLayer2HistoryAmmRecords")}
                 value={RecordTabIndex.ammRecords}
@@ -338,7 +350,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : currentTab === RecordTabIndex.sideStakingRecords ? (
+            ) : currentTab === RecordTabIndex.orders ? (
               <Box
                 flex={1}
                 display={"flex"}
@@ -392,6 +404,64 @@ const HistoryPanel = withTranslation("common")(
                     isOpenOrder:
                       currentOrderTab === TabOrderIndex.orderOpenTable,
                     cancelOrder,
+                  }}
+                />
+              </Box>
+            ) : currentTab === RecordTabIndex.stopLimitRecords ? (
+              <Box
+                flex={1}
+                display={"flex"}
+                flexDirection={"column"}
+                marginTop={-2}
+              >
+                <Box marginBottom={2} marginLeft={3}>
+                  <Tabs
+                    value={currentOrderTab}
+                    onChange={(_event, value) => {
+                      setCurrentOrderTab(value);
+                      history.replace(
+                        `/l2assets/history/stopLimitOrder/${value}?${search.replace(
+                          "?",
+                          ""
+                        )}`
+                      );
+                    }}
+                    aria-label="l2-history-tabs"
+                    variant="scrollable"
+                  >
+                    <Tab
+                      label={t("labelOrderTableOpenOrder")}
+                      value={TabOrderIndex.orderOpenTable}
+                    />
+                    <Tab
+                      label={t("labelOrderTableOrderHistory")}
+                      value={TabOrderIndex.orderHistoryTable}
+                    />
+                  </Tabs>
+                </Box>
+
+                <OrderHistoryTable
+                  {...{
+                    pagination:
+                      currentOrderTab === TabOrderIndex.orderOpenTable
+                        ? undefined
+                        : {
+                            pageSize: pageSize - 1,
+                            total: totalNumStopLimit,
+                          },
+                    isStopLimit: true,
+                    rawData: stopLimitRawData,
+                    showFilter: true,
+                    getOrderList: getStopLimitOrderList,
+                    marketArray: orderRaw,
+                    showDetailLoading: false,
+                    userOrderDetailList,
+                    getUserOrderDetailTradeList,
+                    ...rest,
+                    showLoading: showLoadingStopLimit,
+                    isOpenOrder:
+                      currentOrderTab === TabOrderIndex.orderOpenTable,
+                    cancelOrder: cancelOrderStopLimit,
                   }}
                 />
               </Box>

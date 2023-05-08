@@ -195,6 +195,7 @@ export interface OrderHistoryTableProps {
     row: QuoteTableRawDataItem,
     column: any
   ) => void;
+  isStopLimit?: boolean;
 }
 
 export const OrderHistoryTable = withTranslation("tables")(
@@ -220,6 +221,7 @@ export const OrderHistoryTable = withTranslation("tables")(
       userOrderDetailList,
       getUserOrderDetailTradeList,
       onRowClick,
+      isStopLimit,
     } = props;
     const { isMobile } = useSettings();
     // const [tableHeight] = React.useState(() => {

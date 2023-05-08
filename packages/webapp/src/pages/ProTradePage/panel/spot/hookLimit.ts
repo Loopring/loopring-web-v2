@@ -305,7 +305,7 @@ export const useLimit = <C extends { [key: string]: any }>({
             setToastOpen({
               open: true,
               type: "error",
-              content: t("labelSwapFailed") + " : " + response.message,
+              content: t("labelLimitFailed") + " : " + response.message,
             });
           } else {
             await sdk.sleep(__SUBMIT_LOCK_TIMER__);
@@ -380,7 +380,7 @@ export const useLimit = <C extends { [key: string]: any }>({
                   setToastOpen({
                     open: true,
                     type: "error",
-                    content: t("labelSwapFailed"),
+                    content: t("labelLimitFailed"),
                   });
               }
             }
@@ -394,7 +394,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           setToastOpen({
             open: true,
             type: "error",
-            content: t("labelSwapFailed"),
+            content: t("labelLimitFailed"),
           });
         }
         setIsLimitLoading(false);

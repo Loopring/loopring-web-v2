@@ -106,12 +106,11 @@ export const useStopLimit = <
   }, [pageTradePro.tradeCalcProData.walletMap, pageTradePro.market, currency]);
   React.useEffect(() => {
     const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-
     if (
-      pageTradePro?.depth?.mid_price &&
-      pageTradePro?.depth?.symbol === pageTradePro.market
+      pageTradePro?.depth?.symbol === pageTradePro.market &&
+      pageTradePro?.ticker?.close
     ) {
-      const midStopPrice = pageTradePro?.depth?.mid_price;
+      const midStopPrice = pageTradePro.ticker.close;
       const [, , _quoteSymbol] = market.match(/(\w+)-(\w+)/i);
       const quoteTokenInfo = tokenMap[_quoteSymbol];
 
@@ -137,8 +136,14 @@ export const useStopLimit = <
           ],
         },
       });
+    } else {
+      setToastOpen({
+        open: true,
+        type: "error",
+        content: t("labelLimitMarket"),
+      });
     }
-  }, [pageTradePro?.depth?.mid_price]);
+  }, [pageTradePro?.ticker?.close]);
 
   const resetTradeData = React.useCallback(
     (type?: TradeProType) => {
@@ -238,7 +243,7 @@ export const useStopLimit = <
             setToastOpen({
               open: true,
               type: "error",
-              content: t("labelSwapFailed") + " : " + response.message,
+              content: t("labelLimitFailed") + " : " + response.message,
             });
           } else {
             await sdk.sleep(__SUBMIT_LOCK_TIMER__);
@@ -313,7 +318,7 @@ export const useStopLimit = <
                   setToastOpen({
                     open: true,
                     type: "error",
-                    content: t("labelSwapFailed"),
+                    content: t("labelLimitFailed"),
                   });
               }
             }
@@ -327,7 +332,7 @@ export const useStopLimit = <
           setToastOpen({
             open: true,
             type: "error",
-            content: t("labelSwapFailed"),
+            content: t("labelLimitFailed"),
           });
         }
         setIsLimitLoading(false);

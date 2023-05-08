@@ -1703,4 +1703,7 @@ export default {
     "<li>Limit price can be set above or below the stop price for both buy and sell orders. For example, stop price B can be placed along with a lower limit price B1 or a higher limit price B2.\n</li>" +
     "<li>A limit order is invalid before the stop price is triggered, including when the limit price is reached ahead of the stop price.</li>" +
     "<li>When the stop price is reached, it only indicates that a limit order is activated and will be submitted to the order book rather than the limit order being filled immediately. The limit order will be executed according to its own rules.</li></ol>",
+  labelLimitFailed: "Submitted failed",
+  labelLimitMarket: "Market data has issue",
+  labelStopLimitOrderGroup: "Stop-Limit Records",
 };

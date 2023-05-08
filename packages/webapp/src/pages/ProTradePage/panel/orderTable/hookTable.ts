@@ -21,7 +21,11 @@ import BigNumber from "bignumber.js";
 import { TFunction } from "react-i18next";
 import { cloneDeep } from "lodash";
 
-export const useOrderList = () => {
+export const useOrderList = ({
+  isStopLimit = false,
+}: {
+  isStopLimit?: boolean;
+}) => {
   const [orderOriginalData, setOrderOriginalData] = React.useState<
     OrderHistoryRawDataItem[]
   >([]);
@@ -49,7 +53,9 @@ export const useOrderList = () => {
   const jointPairs = (marketArray || []).concat(ammPairList);
 
   const getOrderList = React.useCallback(
-    async (props: Omit<GetOrdersRequest, "accountId">) => {
+    async (
+      props: Omit<GetOrdersRequest, "accountId"> & { extraOrderTypes?: string }
+    ) => {
       // const isOpenOrder = props.status && props.status === 'processing'
       setShowLoading(true);
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
@@ -155,7 +161,7 @@ export const useOrderList = () => {
       setShowLoading(false);
       return [];
     },
-    [accountId, apiKey, marketMap, tokenMap]
+    [accountId, apiKey, marketMap, tokenMap, isStopLimit]
   );
 
   React.useEffect(() => {
@@ -164,6 +170,7 @@ export const useOrderList = () => {
         const data = await getOrderList({
           limit: 50,
           status: ["processing"],
+          extraOrderTypes: isStopLimit ? "STOP_LIMIT" : "TRADITIONAL_ORDER",
         });
         setOrderOriginalData(data);
       }
@@ -195,11 +202,12 @@ export const useOrderList = () => {
         status: isOpen
           ? ["processing"]
           : ["processed", "failed", "cancelled", "cancelling", "expired"],
+        extraOrderTypes: isStopLimit ? "STOP_LIMIT" : "TRADITIONAL_ORDER",
       });
       const jointData = [...prevData, ...newData];
       setOrderOriginalData(jointData);
     },
-    [getOrderList, isAtBottom, orderOriginalData]
+    [getOrderList, isAtBottom, orderOriginalData, isStopLimit]
   );
 
   const cancelOrder = React.useCallback(
