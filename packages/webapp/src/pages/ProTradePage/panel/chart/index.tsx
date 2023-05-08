@@ -128,11 +128,11 @@ export const ChartView = withTranslation("common")(
       const formattedData = {
         bidsPrices: originalData.bids.map((o) => o.price).reverse(),
         bidsAmtTotals: originalData.bids
-          .map((o) => Number(o.amtTotalForShow.replace(sdk.SEP, "")))
+          .map((o) => Number(o.amtTotalForShow.replaceAll(sdk.SEP, "")))
           .reverse(),
         asksPrices: originalData.asks.map((o) => o.price).reverse(),
         asksAmtTotals: originalData.asks
-          .map((o) => Number(o.amtTotalForShow.replace(sdk.SEP, "")))
+          .map((o) => Number(o.amtTotalForShow.replaceAll(sdk.SEP, "")))
           .reverse(),
       };
       return formattedData;

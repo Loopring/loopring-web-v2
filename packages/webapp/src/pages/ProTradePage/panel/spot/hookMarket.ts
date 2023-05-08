@@ -1,6 +1,6 @@
 import {
   AccountStatus,
-  defalutSlipage,
+  defaultSlipage,
   getValuePrecisionThousand,
   IBData,
   MarketType,
@@ -88,7 +88,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         belong: quoteSymbol,
         balance: walletMap ? walletMap[quoteSymbol as string]?.count : 0,
       } as IBData<any>,
-      slippage: slippage && slippage !== "N" ? slippage : defalutSlipage,
+      slippage: slippage && slippage !== "N" ? slippage : defaultSlipage,
       type: TradeProType.buy,
     }
   );
@@ -159,7 +159,7 @@ export const useMarket = <C extends { [key: string]: any }>({
       // setMarketTradeData(tradeData)
 
       let slippage = sdk
-        .toBig(tradeData.slippage ? tradeData.slippage : defalutSlipage)
+        .toBig(tradeData.slippage ? tradeData.slippage : defaultSlipage)
         .times(100)
         .toString();
 
@@ -232,27 +232,27 @@ export const useMarket = <C extends { [key: string]: any }>({
         _tradeData.type === TradeProType.sell
           ? ["base", "quote"]
           : ["quote", "base"];
-      let { stob } = reCalcStoB(
+      let { stob } = reCalcStoB({
         market,
-        {
+        tradeData: {
           sell: _tradeData[sell],
           buy: _tradeData[buy],
           ...(_tradeData as any),
         },
-        `${_tradeData[sell].belong}-${_tradeData[buy].belong}`
-      ) ?? { stob: undefined };
+        tradePair: `${_tradeData[sell].belong}-${_tradeData[buy].belong}`,
+      }) ?? { stob: undefined };
 
       const { close } = tickerMap[market];
 
-      if (!stob || sdk.toBig(stob?.replace(sdk.SEP, "") ?? 0).eq(0)) {
+      if (!stob || sdk.toBig(stob?.replaceAll(sdk.SEP, "") ?? 0).eq(0)) {
         if (close) {
           // @ts-ignore
           // const [, _coinA] = market.match(/(\w+)-(\w+)/i);
           if (_tradeData.type === TradeProType.sell) {
-            stob = close.toString().replace(sdk.SEP, "");
+            stob = close.toString().replaceAll(sdk.SEP, "");
           } else {
             stob = getValuePrecisionThousand(
-              1 / Number(close.toString().replace(sdk.SEP, "")),
+              1 / Number(close.toString().replaceAll(sdk.SEP, "")),
               tokenMap[quoteSymbol].precision,
               tokenMap[quoteSymbol].precision,
               tokenMap[quoteSymbol].precision,
@@ -266,7 +266,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         marketPrice = sdk
           .toBig(tokenPrices[_tradeData[sell].belong])
           .div(tokenPrices[_tradeData[buy].belong]);
-        marketRatePrice = marketPrice.div(stob?.replace(sdk.SEP, "") ?? 1);
+        marketRatePrice = marketPrice.div(stob?.replaceAll(sdk.SEP, "") ?? 1);
         isNotMatchMarketPrice = marketRatePrice.gt(1.05);
         marketPrice = getValuePrecisionThousand(
           marketPrice.toString(),

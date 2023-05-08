@@ -35,7 +35,7 @@ export default {
   labelTrades: "Trade History",
   labelHistory: "Transactions",
   labelOrder: "Orders",
-  labelReward: "Reward",
+  labelReward: "Rewards",
   labelRedPacket: "RedPacket",
   labelAmmRecords: "AMM records",
   labelAmmRecordsDes: "(Add & Remove)",
@@ -121,5 +121,7 @@ export default {
   labelMyCollectionDes: "Create, curate, and \n manage my NFT collections",
   labelInvestStakeLRC: "LRC Staking",
   labelInvestStakeLRCDes: "Earn LRC staking rewards",
+  labelBtradeTrade: "Block Trade",
+  labelBtradeTradeDescription: "Trade via CEX liquidity",
   // labelDepositNFTDes:"Receive NFT"
 };

@@ -271,13 +271,13 @@ export const ModalPanel = <
               ...withdrawProps,
               assetsData,
               isFromContact: isShowWithdraw.address ? true : false,
-              contact: isShowWithdraw.address 
+              contact: isShowWithdraw.address
                 ? {
                   address: isShowWithdraw.address!,
                   name: isShowWithdraw.name!,
                 }
                 : undefined,
-              
+
             }}
           />
         }
@@ -336,7 +336,7 @@ export const ModalPanel = <
               baseURL,
               assetsData,
               isFromContact: isShowNFTWithdraw.address ? true : false,
-              contact: isShowNFTWithdraw.address 
+              contact: isShowNFTWithdraw.address
                 ? {
                   address: isShowNFTWithdraw.address!,
                   name: isShowNFTWithdraw.name!,
@@ -483,7 +483,13 @@ export const ModalPanel = <
         contentClassName={"trade-wrap hasLinerBg"}
         onClose={() => setShowSideStakingRedeem({ isShow: false })}
         content={
-          <Box flex={1} display={"flex"} paddingX={5 / 2} paddingBottom={5 / 2}>
+          <Box
+            maxWidth="var(--modal-width)"
+            flex={1}
+            display={"flex"}
+            paddingX={5 / 2}
+            paddingBottom={5 / 2}
+          >
             <DeFiStackRedeemWrap
               isJoin={false}
               {...(sideStackRedeemProps as any)}

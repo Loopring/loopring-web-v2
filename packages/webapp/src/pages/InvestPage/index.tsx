@@ -6,6 +6,7 @@ import { useTranslation, withTranslation } from "react-i18next";
 import {
   ConfirmInvestDualRisk,
   ConfirmInvestLRCStakeRisk,
+  useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { confirmation, ViewAccountTemplate } from "@loopring-web/core";

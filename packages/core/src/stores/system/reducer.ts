@@ -7,6 +7,7 @@ const initialState: SystemStatus = {
   chainId: NETWORKEXTEND.NONETWORK,
   baseURL: "",
   socketURL: "",
+  dexToggleUrl: "",
   etherscanBaseUrl: "",
   gasPrice: -1,
   forexMap: {} as ForexMap<any>,
@@ -62,6 +63,7 @@ const systemSlice: Slice<SystemStatus> = createSlice({
         forexMap,
         allowTrade,
         exchangeInfo,
+        dexToggleUrl,
         __timer__,
         // isMobile,
         etherscanBaseUrl,
@@ -81,6 +83,9 @@ const systemSlice: Slice<SystemStatus> = createSlice({
         state.baseURL = baseURL;
       }
 
+      if (dexToggleUrl) {
+        state.dexToggleUrl = dexToggleUrl;
+      }
       if (gasPrice) {
         state.gasPrice = gasPrice;
       }

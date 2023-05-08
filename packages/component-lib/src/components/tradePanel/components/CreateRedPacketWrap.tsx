@@ -64,10 +64,7 @@ import { DateTimeRangePicker } from "../../datetimerangepicker";
 import BigNumber from "bignumber.js";
 import {useNotify} from "@loopring-web/core";
 
-const StyledTextFiled = styled(TextField)`
-
-  
-`
+const StyledTextFiled = styled(TextField)``;
 
 const RedPacketBoxStyle = styled(Box)`
   padding-top: ${({ theme }) => theme.unit}px;
@@ -127,7 +124,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
     selectedType: LuckyRedPacketItem;
   } & WithTranslation) => {
     const { t } = useTranslation("common");
-    
+
 
     const inputButtonDefaultProps = {
       label:
@@ -408,9 +405,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const endMinDateTime = startDateTime
       ? moment.max(now, startDateTime.clone())
       : now;
-      
-    const timeRangeMaxInSeconds = tradeType === TRADE_TYPE.TOKEN 
-      ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken 
+
+    const timeRangeMaxInSeconds = tradeType === TRADE_TYPE.TOKEN
+      ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken
       : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT
       // ?? 14 * 24 * 60 * 60;
     const endMaxDateTime = startDateTime
@@ -438,11 +435,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 selectedType.value.mode == sdk.LuckyTokenClaimType.BLIND_BOX
                   ? "labelLuckyBlindBox"
                   : selectedType.value.mode == sdk.LuckyTokenClaimType.RELAY
-                    ? "labelRelayRedPacket"
-                    : selectedType.value.partition ==
-                      sdk.LuckyTokenAmountType.AVERAGE
-                      ? "labelRedPacketSendCommonTitle"
-                      : "labelRedPacketSenRandomTitle"
+                  ? "labelRelayRedPacket"
+                  : selectedType.value.partition ==
+                    sdk.LuckyTokenAmountType.AVERAGE
+                  ? "labelRedPacketSendCommonTitle"
+                  : "labelRedPacketSenRandomTitle"
               ) +
                 " — " +
                 t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
@@ -514,9 +511,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   //   sdk
                   //     .toBig(tradeValue)
                   //     .div(
-                  //       tradeData?.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
+                  //       tradeData?.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
                   //         ? (tradeData?.giftNumbers ?? 1)
-                  //         : (tradeData.numbers ?? 1) 
+                  //         : (tradeData.numbers ?? 1)
                   //       )
                   //     .gt(REDPACKET_ORDER_NFT_LIMIT)
                   // ) {
@@ -683,7 +680,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
             size={"large"}
             inputProps={{ 
               placeholder: t("labelRedPacketMemoPlaceholder"),
-              maxLength: 25
+              maxLength: 25,
             }}
             fullWidth={true}
           />
@@ -977,8 +974,6 @@ export const CreateRedPacketStepType = withTranslation()(
     selectedType,
     disabled = false,
     btnInfo,
-    privateChecked,
-    onChangePrivateChecked,
     t,
   }: Omit<CreateRedPacketViewProps<T, I, C>, "tokenMap"> & {
     selectedType: LuckyRedPacketItem;

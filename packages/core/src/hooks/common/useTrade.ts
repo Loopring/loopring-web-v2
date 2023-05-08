@@ -5,7 +5,7 @@ import { toBig } from "@loopring-web/loopring-sdk";
 
 import {
   AccountStatus,
-  defalutSlipage,
+  defaultSlipage,
   getValuePrecisionThousand,
   myError,
   myLog,
@@ -82,7 +82,7 @@ export function makeMarketReq({
   tokenMarketMap,
   depth,
   ammPoolSnapshot,
-  slippage = (defalutSlipage * 100).toString(),
+  slippage = (defaultSlipage * 100).toString(),
 }: ReqParams) {
   if (
     !tokenMap ||

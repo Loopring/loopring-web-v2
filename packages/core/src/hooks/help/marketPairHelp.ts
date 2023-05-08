@@ -1,8 +1,8 @@
 import {
+  LoopringAPI,
   store,
   Ticker,
   tickerReducer,
-  LoopringAPI,
   volumeToCountAsBigNumber,
 } from "../../index";
 
@@ -41,6 +41,43 @@ export const swapDependAsync = (
           ammPoolSnapshot: ammPoolSnapshot,
           tickMap,
           depth,
+        });
+      });
+    } else {
+      reject(new CustomError(ErrorMap.NO_SDK));
+    }
+  });
+};
+
+export const dexSwapDependAsync = ({
+  market,
+  level = 0,
+  limit,
+  //TODO
+  tokenMap,
+}: {
+  market: MarketType;
+  level?: number;
+  limit?: number;
+  //TODO
+  tokenMap?: any;
+}): Promise<{
+  depth: sdk.DepthData | undefined;
+}> => {
+  return new Promise((resolve, reject) => {
+    if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
+      Promise.all([
+        LoopringAPI.defiAPI?.getBtradeDepth({
+          request: {
+            market,
+            level,
+            limit,
+          },
+          tokenMap,
+        }),
+      ]).then(([responseDepth]) => {
+        resolve({
+          depth: responseDepth?.depth,
         });
       });
     } else {
@@ -189,12 +226,30 @@ export const calcPriceByAmmTickMapDepth = <_C>({
     close: undefined,
   };
 };
-export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>(
-  market: MarketType,
-  tradeData: T,
-  tradePair: MarketType
-): { stob: string; btos: string } | undefined => {
-  const { tokenMap, marketMap } = store.getState().tokenMap;
+export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>({
+  tokenMap,
+  market,
+  tradeData,
+  tradePair,
+  marketMap,
+}: {
+  market: MarketType;
+  tradeData: T;
+  tradePair: MarketType;
+  marketMap?: any;
+  tokenMap?: any;
+}): { stob: string; btos: string } | undefined => {
+  const {
+    marketMap: _marketMap,
+    // marketArray: _marketArray,
+    tokenMap: _tokenMap,
+  } = store.getState().tokenMap;
+  if (tokenMap && marketMap) {
+  } else {
+    // marketArray = _marketArray;
+    tokenMap = _tokenMap;
+    marketMap = _marketMap;
+  }
   // const marketPrecision =  ? marketMap[market].precisionForPrice : 4;
   //@ts-ignore
   const [, coinA, coinB] = market.match(/([\w,#]+)-([\w,#]+)/i);
@@ -250,12 +305,33 @@ export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>(
   }
 };
 
-export const marketInitCheck = (
-  market: string,
-  type?: "sell" | "buy"
-): { tradePair: MarketType } => {
-  const { coinMap, tokenMap, marketMap, marketArray } =
-    store.getState().tokenMap;
+export const marketInitCheck = ({
+  market,
+  type,
+  defaultValue = "LRC-ETH",
+  marketArray,
+  tokenMap,
+  marketMap,
+}: {
+  market: string;
+  type?: "sell" | "buy";
+  defaultValue?: string;
+  marketArray?: any;
+  tokenMap?: any;
+  marketMap?: any;
+}): { tradePair: MarketType } => {
+  const {
+    coinMap,
+    marketMap: _marketMap,
+    marketArray: _marketArray,
+    tokenMap: _tokenMap,
+  } = store.getState().tokenMap;
+  if (marketArray) {
+  } else {
+    marketArray = _marketArray;
+    tokenMap = _tokenMap;
+    marketMap = _marketMap;
+  }
   const { ammMap } = store.getState().amm;
   if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
     let coinA: string = "#null",
@@ -293,7 +369,7 @@ export const marketInitCheck = (
     return { tradePair: `${coinA}-${coinB}` };
   }
 
-  return { tradePair: "LRC-ETH" };
+  return { tradePair: defaultValue as MarketType };
 };
 
 export const Limit = 14;

@@ -36,7 +36,7 @@ export const usePro = <C extends { [key: string]: any }>(): {
   // marketTicker: MarketBlockProps<C> |undefined,
 } => {
   //High: No not Move!!!!!!
-  let { realMarket } = usePairMatch("/trade/pro");
+  let { realMarket } = usePairMatch({ path: "/trade/pro" });
   const history = useHistory();
   const { updatePageTradePro } = usePageTradePro();
   const [market, setMarket] = React.useState<MarketType>(
@@ -139,7 +139,9 @@ export const usePro = <C extends { [key: string]: any }>(): {
     (props: { tradeData?: any; market: MarketType | string }) => {
       const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
       if (coinMap && tokenMap && marketMap && marketArray) {
-        const { tradePair } = marketInitCheck(props.market as string);
+        const { tradePair } = marketInitCheck({
+          market: props.market as string,
+        });
         // @ts-ignore
         let [, coinA, coinB] = tradePair.match(/([\w]+)-([\w]+)/i);
         let { market: _market } = sdk.getExistedMarket(

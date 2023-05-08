@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import styled from "@emotion/styled";
 import { MenuBtnStyled } from "../../styled";
 import { AddAssetProps } from "./Interface";
 import { useTranslation } from "react-i18next";
@@ -14,8 +13,6 @@ import {
   OutputIcon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
-
-const BoxStyled = styled(Box)`` as typeof Box;
 
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   switch (svgIcon) {
@@ -47,7 +44,7 @@ export const AddAsset = ({
     AddAssetList.FromExchange.key,
   ];
   return (
-    <BoxStyled
+    <Box
       flex={1}
       display={"flex"}
       alignItems={"center"}
@@ -124,7 +121,7 @@ export const AddAsset = ({
           ))}
         </>
       </Box>
-    </BoxStyled>
+    </Box>
   );
   {
     /*</WalletConnectPanelStyled>*/

@@ -24,3 +24,4 @@ export * from "./useCreateRedPacket";
 export * from "./useRedpacket";
 export * from "./useStakeTrade";
 export * from "./useStakeTradeExit";
+export * from "./useBtrade";

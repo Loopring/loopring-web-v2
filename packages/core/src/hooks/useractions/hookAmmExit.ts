@@ -321,7 +321,7 @@ export const useAmmExit = ({
       const validAmt = ammData?.coinLP?.tradeValue
         ? sdk
             .toBig(ammData?.coinLP?.tradeValue ?? 0)
-            .gte(sdk.toBig(lpMinAmt?.replace(sdk.SEP, "") ?? 0))
+            .gte(sdk.toBig(lpMinAmt?.replaceAll(sdk.SEP, "") ?? 0))
         : false;
       myLog(
         "updateMiniTradeValue validAmt: fee, lpMinAmt",
