@@ -70,7 +70,7 @@ export const RedPacketBg = styled(Box)<
 
     .betweenEle {
       left: 50%;
-      top: 138px;
+      top: 128px;
       position: absolute;
 
       .open {
@@ -167,7 +167,7 @@ export const RedPacketBg = styled(Box)<
     }
 
     .top {
-      height: 150px;
+      height: 140px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -175,7 +175,7 @@ export const RedPacketBg = styled(Box)<
     }
 
     .middle {
-      height: 228px;
+      height: 218px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -185,16 +185,13 @@ export const RedPacketBg = styled(Box)<
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 56px;
     }
   }
-
   &.RedPacketClock {
     .top {
       height: 40px;
       margin-top: 50px;
     }
-
     .middle {
       margin-top: 40px;
       height: 128px;
