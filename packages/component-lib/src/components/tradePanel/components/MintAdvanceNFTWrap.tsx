@@ -617,7 +617,7 @@ export const MintAdvanceNFTWrap = <
                           color="default"
                         />
                       }
-                      label={t("labelCEXUnderstand")}
+                      label={t("labelBtradeUnderstand")}
                     />
                   </Box>
                 ) : (

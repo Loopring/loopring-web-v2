@@ -513,13 +513,6 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
         updateData.cancel();
         updateData({ currPage: 1 });
       }
-      // let filters: any = {};
-
-      // handlePageChange(1);
-      // if (searchParams.get("types")) {
-      //   filters.type = searchParams.get("types");
-      // }
-      // handleFilterChange(filters);
       return () => {
         updateData.cancel();
       };

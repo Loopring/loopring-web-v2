@@ -41,7 +41,10 @@ import {
 import { useBtnStatus } from "../common";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../api_wrapper";
-import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 import { getTimestampDaysLater } from "../../utils";
 import { DAYS } from "../../defs";
 import Web3 from "web3";
@@ -524,7 +527,7 @@ export const useCreateRedPacket = <
               web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: (ConnectProviders[connectName] ??
+              walletType: (ConnectProvidersSignMap[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
@@ -768,7 +771,6 @@ export const useCreateRedPacket = <
             giftNumbers: redPacketOrder.giftNumbers!,
             memo: redPacketOrder.memo ? redPacketOrder.memo : "Best wishes",
             signerFlag: false as any,
-            // @ts-ignore
             nftData:
               redPacketOrder.tradeType === TRADE_TYPE.NFT
                 ? redPacketOrder.nftData

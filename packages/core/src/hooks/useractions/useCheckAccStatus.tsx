@@ -94,13 +94,13 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
             if (walletMap[item.belong] && walletMap[item.belong]?.count) {
               return sdk
                 .toBig(walletMap[item.belong]?.count ?? 0)
-                .gte(sdk.toBig(item.fee.toString().replace(sdk.SEP, "")));
+                .gte(sdk.toBig(item.fee.toString().replaceAll(sdk.SEP, "")));
             } else {
               return (
                 item?.feeRaw !== undefined &&
                 Number(item.fee.toString()) == 0 &&
                 sdk
-                  .toBig((item.feeRaw ?? "").toString().replace(sdk.SEP, ""))
+                  .toBig((item.feeRaw ?? "").toString().replaceAll(sdk.SEP, ""))
                   .eq(0)
               );
             }

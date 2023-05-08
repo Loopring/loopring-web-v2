@@ -5,6 +5,7 @@ import {
   IBData,
   MarketType,
   NFTWholeINFO,
+  SCENARIO,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import {
@@ -157,6 +158,7 @@ export type ForceWithdrawProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<
 export type SwapProps<T, I, TCD> = {
   refreshRef: React.Ref<any>;
   onRefreshData?: () => void;
+  titleI8nKey?: string;
   toPro?: () => void;
   tradeData: SwapTradeData<T> | undefined;
   campaignTagConfig: CAMPAIGNTAGCONFIG;
@@ -175,6 +177,7 @@ export type SwapProps<T, I, TCD> = {
     data: SwapData<SwapTradeData<T>>
   ) => SwapData<SwapTradeData<T>>;
   setToastOpen?: (state: TOASTOPEN) => void;
+  scenario?: SCENARIO;
 } & SwapInfoProps<T, I, TCD> &
   SwapTradeBaseEventProps<T, I> &
   SwapTradeBaseProps<T, I, TCD>;

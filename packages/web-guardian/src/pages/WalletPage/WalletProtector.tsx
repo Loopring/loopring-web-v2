@@ -38,7 +38,10 @@ const useHebaoProtector = <T extends sdk.Protector>({
   const { chainId, gasPrice } = useSystem();
   const { t } = useTranslation(["error"]);
   const { setOneItem } = layer1Store.useLayer1Store();
-  const network = sdk.NetworkWallet[MapChainId[chainId]];
+  const network =
+    sdk.NetworkWallet[
+      MapChainId[[1, 5].includes(Number(chainId) ?? 1) ? 1 : chainId]
+    ];
   myLog("network", network);
   const onLock = React.useCallback(
     async (item: T) => {

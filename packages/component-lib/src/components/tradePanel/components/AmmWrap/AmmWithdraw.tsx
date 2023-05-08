@@ -2,7 +2,7 @@ import {
   AmmExitData,
   AmmInData,
   CoinInfo,
-  defalutSlipage,
+  defaultSlipage,
   EmptyValueTag,
   ExchangeIcon,
   getValuePrecisionThousand,
@@ -530,7 +530,7 @@ export const AmmWithdrawWrap = <
                             slippage:
                               ammData && ammData.slippage
                                 ? ammData.slippage
-                                : defalutSlipage,
+                                : defaultSlipage,
                           }}
                         />
                       </PopoverPure>

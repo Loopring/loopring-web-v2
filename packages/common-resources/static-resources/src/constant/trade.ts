@@ -442,7 +442,7 @@ export const useAddressTypeLists = <
   };
 };
 
-export const defalutSlipage = 0.1;
+export const defaultSlipage = 0.1;
 export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 
 export const enum InvestMapType {
@@ -451,6 +451,7 @@ export const enum InvestMapType {
   STAKE = "STAKE",
   DUAL = "DUAL",
   STAKELRC = "STAKELRC",
+  // BTradeInvest = "BTradeInvest",
 }
 
 export const InvestOpenType = [
@@ -458,6 +459,7 @@ export const InvestOpenType = [
   InvestMapType.STAKE,
   InvestMapType.DUAL,
   InvestMapType.STAKELRC,
+  // InvestMapType.BTradeInvest,
 ];
 
 export const enum InvestDuration {
@@ -512,7 +514,7 @@ export type TradeDefi<C> = {
   defiBalances?: { [key: string]: string };
   lastInput?: DeFiChgType;
 };
-export type TradeStack<C> = {
+export type TradeStake<C> = {
   sellToken: sdk.TokenInfo;
   sellVol: string;
   deFiSideCalcData?: DeFiSideCalcData<C>;
@@ -523,7 +525,7 @@ export type TradeStack<C> = {
   };
 };
 
-export type RedeemStack<C> = {
+export type RedeemStake<C> = {
   sellToken: sdk.TokenInfo;
   sellVol?: string;
   deFiSideRedeemCalcData: DeFiSideRedeemCalcData<C>;
@@ -757,3 +759,4 @@ export interface SnackbarMessage {
   key: number | string;
   svgIcon?: string;
 }
+export const BTRDE_PRE = "BTRADE-";

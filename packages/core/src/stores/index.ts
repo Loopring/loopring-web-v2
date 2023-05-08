@@ -59,8 +59,8 @@ import {
   pageAmmPoolSlice,
   pageTradeLiteSlice,
   pageTradeProSlice,
-  redeemStackSlice,
-  tradeStackSlice,
+  redeemStakeSlice,
+  tradeStakeSlice,
 } from "./router";
 import {
   firebaseReducer,
@@ -73,6 +73,7 @@ import { tradeDualSlice } from "./router/tradeDual";
 import { investReducer } from "./invest";
 import { walletL2CollectionSlice } from "./walletL2Collection/reducer";
 import { walletL2NFTCollectionSlice } from "./walletL2NFTCollection/reducer";
+import { tradeBtradeSlice } from "./router/tradeBtrade";
 import { contactsSlice } from "./contacts/reducer";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -163,8 +164,9 @@ const reducer = combineReducers({
   contacts: contactsSlice.reducer,
   _router_tradeDefi: tradeDefiSlice.reducer,
   _router_tradeDual: tradeDualSlice.reducer,
-  _router_tradeStack: tradeStackSlice.reducer,
-  _router_redeemStack: redeemStackSlice.reducer,
+  _router_tradeStake: tradeStakeSlice.reducer,
+  _router_tradeBtrade: tradeBtradeSlice.reducer,
+  _router_redeemStake: redeemStakeSlice.reducer,
   _router_pageTradeLite: pageTradeLiteSlice.reducer,
   _router_pageTradePro: pageTradeProSlice.reducer,
   _router_pageAmmPool: pageAmmPoolSlice.reducer,

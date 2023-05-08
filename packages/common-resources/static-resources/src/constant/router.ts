@@ -6,6 +6,7 @@ import {
   MintIcon,
   ProfileIcon,
   RecordIcon,
+  // RewardIcon,
   SecurityIcon,
   VipIcon,
   WaitApproveIcon,
@@ -46,6 +47,16 @@ export const profile = {
       },
     },
   ],
+  // reward: [
+  //   {
+  //     icon: RewardIcon,
+  //     router: { path: "/layer2/rewards" },
+  //     label: {
+  //       id: "rewards",
+  //       i18nKey: "labelReward",
+  //     },
+  //   },
+  // ],
   vip: [
     {
       icon: VipIcon,
@@ -172,6 +183,14 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
+      id: "btrade",
+      i18nKey: "labelBtradeTrade",
+      description: "labelBtradeTradeDescription",
+    },
+    router: { path: "/trade/btrade/${pair}" },
+  },
+  {
+    label: {
       id: "fiat",
       i18nKey: "labelFiat",
       description: "labelFiatDescription",
@@ -189,14 +208,14 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "Landing-page",
       i18nKey: "labelZkRollupLayer2",
     },
-    router: { path: "https://loopring.io/#/", pathName: "/" },
+    router: { path: "https://loopring.io/#/" },
   },
   {
     label: {
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "https://loopring.io/#/wallet", pathName: "/wallet" },
+    router: { path: "https://loopring.io/#/wallet" },
   },
   // {
   //   label: {
@@ -571,3 +590,16 @@ export const stakeAdvice: InvestAdvice = {
   desI18n: "labelInvestStakeLRCDes",
   enable: true,
 };
+
+export enum RecordTabIndex {
+  transactions = "transactions",
+  trades = "trades",
+  ammRecords = "ammRecords",
+  orders = "orders",
+  // orderOpenTable = "orderOpenTable",
+  // orderHistoryTable = "orderHistoryTable",
+  defiRecords = "defiRecords",
+  dualRecords = "dualRecords",
+  sideStakingRecords = "sideStakingRecords",
+  btradeSwapRecords = "BtradeSwap",
+}

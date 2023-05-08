@@ -38,6 +38,7 @@ import {
   Info2Icon,
   SoursURL,
   TradeDefi,
+  TradeTypes,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
@@ -1199,7 +1200,7 @@ export const OtherExchangeDialog = withTranslation("common", {
         onClose={(e: MouseEvent) => handleClose(e)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("labelConfirmCEX")}</DialogTitle>
+        <DialogTitle> {t("labelConfirmBtrade")}</DialogTitle>
         <DialogContent>
           <Trans i18nKey={"labelConfirmDetail"}>
             <Typography
@@ -1207,26 +1208,26 @@ export const OtherExchangeDialog = withTranslation("common", {
               variant={"body1"}
               color={"textSecondary"}
             >
-              Before withdrawing, please check with your CEX support that they
-              accept deposits from smart contracts.
+              Before withdrawing, please check with your Btrade support that
+              they accept deposits from smart contracts.
             </Typography>
             <Typography
               marginBottom={2}
               variant={"body1"}
               color={"textSecondary"}
             >
-              L2 to L1 withdrawing is via a smart contract. The CEX depositing
-              address may not be able to acknowledge the tokens deposited
-              automatically.
+              L2 to L1 withdrawing is via a smart contract. The Btrade
+              depositing address may not be able to acknowledge the tokens
+              deposited automatically.
             </Typography>
             <Typography
               marginBottom={2}
               variant={"body1"}
               color={"textSecondary"}
             >
-              If the deposited tokens do not appear at the CEX address within 24
-              hours, please contact your CEX support to manually acknowledge
-              this transaction.
+              If the deposited tokens do not appear at the Btrade address within
+              24 hours, please contact your Btrade support to manually
+              acknowledge this transaction.
             </Typography>
           </Trans>
           <MuiFormControlLabel
@@ -1241,7 +1242,7 @@ export const OtherExchangeDialog = withTranslation("common", {
                 color="default"
               />
             }
-            label={t("labelCEXUnderstand")}
+            label={t("labelBtradeUnderstand")}
           />
         </DialogContent>
         <DialogActions>
@@ -2069,6 +2070,301 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
             color={"primary"}
           >
             {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+
+export const ConfirmBtradeSwapRisk = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  }) => {
+    const [agree, setAgree] = React.useState(false);
+    React.useEffect(() => {
+      if (!open) {
+        setAgree(false);
+      }
+    }, [open]);
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t(`labelBtradeSwapTitleDes`)}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-defiRisk2">
+            <Trans
+              i18nKey={`labelBtradeSwapContentDes`}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"span"}
+                    variant={"body1"}
+                    display={"block"}
+                    marginBottom={1}
+                    color={"textSecondary"}
+                  />
+                ),
+              }}
+            >
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                marginBottom={1}
+                color={"textSecondary"}
+              >
+                Block Trade offers a secure and trustless way for users to swap
+                tokens using CEX liquidity. The trades happen exclusively
+                between designated entities, ensuring that the existing
+                liquidity of the DEX remains unaffected. There is no price
+                impact to other DEX users as a result of the transaction.
+              </Typography>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                marginBottom={1}
+                color={"textSecondary"}
+              >
+                This is similar to the traditional stock market’s Block Trade
+                System. A block trade is a large, privately negotiated
+                transaction, which can be made outside the open market through a
+                private purchase agreement.
+              </Typography>
+            </Trans>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelLRCStakingAgree")}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+
+export const ConfirmStopLimitRisk = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+    baseSymbol,
+    quoteSymbol,
+    tradeType,
+    limitPrice,
+    stopPrice,
+    baseValue,
+    quoteValue,
+  }: // ...props
+  WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  } & {
+    baseSymbol: string;
+    quoteSymbol: string;
+    tradeType: TradeTypes;
+    baseValue: string;
+    quoteValue: string;
+    limitPrice: string;
+    stopPrice: string;
+  }) => {
+    // const [agree, setAgree] = React.useState(false);
+    // React.useEffect(() => {
+    //   if (!open) {
+    //     setAgree(false);
+    //   }
+    // }, [open]);
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>
+          {" "}
+          {t(`labelStopLimit`, {
+            symbol1: baseSymbol,
+            tradeType: tradeType,
+          })}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-stopLimit">
+            <Trans
+              i18nKey={`labelStopLimitDes`}
+              tOptions={{
+                value1: baseValue,
+                value2: quoteValue,
+                symbol2: quoteSymbol,
+                symbol1: baseSymbol,
+              }}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"span"}
+                    variant={"body1"}
+                    display={"block"}
+                    marginBottom={1}
+                    color={"textSecondary"}
+                  />
+                ),
+              }}
+            >
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                marginBottom={1}
+                color={"textSecondary"}
+              >
+                If the last price goes up to or above value Symbol2 , and order
+                to tradeType value2 Symbol1 at a price of price Symbol2 will be
+                placed.
+              </Typography>
+            </Trans>
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-stopLimit">
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {baseSymbol + " / " + quoteSymbol}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {t("labelStopLimitType", { tradeType })}
+              </Typography>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {t("labelStopLimitStopPrice")}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {stopPrice + " " + quoteSymbol}
+              </Typography>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {t("labelStopLimitPriceLimitPrice")}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {limitPrice + " " + quoteSymbol}
+              </Typography>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {t("labelStopLimitAmount")}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-primary)"}
+              >
+                {baseValue + " " + baseSymbol}
+              </Typography>
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          {/*<Button*/}
+          {/*  variant={"outlined"}*/}
+          {/*  size={"medium"}*/}
+          {/*  onClick={(e) => handleClose(e as any)}*/}
+          {/*>*/}
+          {/*  {t("labelOrderCancel")}*/}
+          {/*</Button>*/}
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelStopLimitConfirm")}
           </Button>
         </DialogActions>
       </Dialog>

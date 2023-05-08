@@ -6,4 +6,5 @@ export interface Confirmation {
   confirmedDualInvestV2: boolean;
   showDualBeginnerHelp: boolean;
   confirmedLRCStakeInvest: boolean;
+  confirmedBtradeSwap: boolean;
 }

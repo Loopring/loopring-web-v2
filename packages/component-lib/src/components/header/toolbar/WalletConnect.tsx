@@ -20,6 +20,7 @@ import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import * as sdk from "@loopring-web/loopring-sdk";
 
+// type ChainId = sdk.ChainId | ChainIdExtends;
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
@@ -375,6 +376,7 @@ export const WalletConnectUI = ({
     </>
   );
 };
+
 export const WalletConnectL1Btn = ({
   accountState,
   handleClick,
@@ -458,7 +460,6 @@ export const WalletConnectL1Btn = ({
         setNetworkLabel(isMobile ? "G ö" : "Görli");
       } else if (
         account &&
-        account.readyState !== AccountStatus.ERROR_NETWORK &&
         (account._chainId as any) == ChainIdExtends.TAIKO_A2
       ) {
         setNetworkLabel(isMobile ? "Taiko" : "Taiko");
@@ -491,14 +492,13 @@ export const WalletConnectL1Btn = ({
           paddingX={1}
           component={"span"}
           color={"var(--vip-text)"}
-          marginRight={1 / 2}
+          marginRight={1}
         >
           {networkLabel}
         </TestNetworkStyle>
       ) : (
         <></>
       )}
-      {!isMobile && <ProviderBox account={accountState?.account} />}
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(

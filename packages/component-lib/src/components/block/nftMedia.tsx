@@ -291,6 +291,7 @@ export const ZoomMedia = withTranslation("common")(
               display={"flex"}
               alignItems={"center"}
               justifyContent={"center"}
+              zIndex={88}
             >
               <NFTMedia
                 ref={ref}

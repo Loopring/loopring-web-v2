@@ -70,7 +70,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   border-radius: ${({ theme }) => theme.unit}px;
 
   .react-swipeable-view-container {
-    height: 100%;
+    height: auto;
 
     & > div {
       .container {

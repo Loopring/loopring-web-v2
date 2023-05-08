@@ -116,6 +116,10 @@ import {
   Withdraw_WaitForAuth,
   Staking_Redeem_Success,
   Staking_Redeem_Failed,
+  BtradeSwap_Settled,
+  BtradeSwap_Delivering,
+  BtradeSwap_Failed,
+  BtradeSwap_Pending,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -2941,6 +2945,67 @@ export function useAccountModalForUI({
             }}
           />
         ),
+      },
+      [AccountStep.BtradeSwap_Delivering]: {
+        view: (
+          <BtradeSwap_Delivering
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.BtradeSwap_Pending]: {
+        view: (
+          <BtradeSwap_Pending
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+
+      [AccountStep.BtradeSwap_Settled]: {
+        view: (
+          <BtradeSwap_Settled
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.BtradeSwap_Failed]: {
+        view: (
+          <BtradeSwap_Failed
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
       },
     });
   }, [

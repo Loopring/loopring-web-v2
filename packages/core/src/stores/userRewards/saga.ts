@@ -6,7 +6,7 @@ import {
 } from "./reducer";
 
 import { store, LoopringAPI } from "../../index";
-import { CustomError, ErrorMap, myLog } from "@loopring-web/common-resources";
+import { CustomError, ErrorMap } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 const getUserRewardsApi = async <R extends { [key: string]: any }>(

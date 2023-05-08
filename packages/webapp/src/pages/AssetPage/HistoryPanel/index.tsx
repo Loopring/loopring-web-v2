@@ -12,6 +12,7 @@ import {
   TradeTable,
   TransactionTable,
   useSettings,
+  BtradeSwapTable,
 } from "@loopring-web/component-lib";
 import {
   StylePaper,
@@ -23,6 +24,7 @@ import {
   useTokenMap,
 } from "@loopring-web/core";
 import {
+  useBtradeTransaction,
   useDefiSideRecord,
   useDualTransaction,
   useGetAmmRecord,
@@ -33,22 +35,11 @@ import {
 } from "./hooks";
 import {
   BackIcon,
+  RecordTabIndex,
   RowConfig,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-
-enum TabIndex {
-  transactions = "transactions",
-  trades = "trades",
-  ammRecords = "ammRecords",
-  orders = "orders",
-  // orderOpenTable = "orderOpenTable",
-  // orderHistoryTable = "orderHistoryTable",
-  defiRecords = "defiRecords",
-  dualRecords = "dualRecords",
-  sideStakingRecords = "sideStakingRecords",
-}
 
 enum TabOrderIndex {
   orderOpenTable = "orderOpenTable",
@@ -67,7 +58,7 @@ const HistoryPanel = withTranslation("common")(
 
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState(() => {
-      return match?.params.tab ?? TabIndex.transactions;
+      return match?.params.tab ?? RecordTabIndex.transactions;
     });
     const [currentOrderTab, setCurrentOrderTab] = React.useState(() => {
       return match?.params?.orderTab ?? TabOrderIndex.orderOpenTable;
@@ -127,6 +118,13 @@ const HistoryPanel = withTranslation("common")(
     const { userOrderDetailList, getUserOrderDetailTradeList } =
       useGetOrderHistorys();
     const { etherscanBaseUrl } = useSystem();
+    const {
+      getBtradeOrderList,
+      btradeOrderData,
+      onDetail,
+      totalNum: btradeTotalNum,
+      showLoading: showBtradeLoading,
+    } = useBtradeTransaction(setToastOpen);
 
     const {
       account: { accAddress, accountId },
@@ -136,7 +134,7 @@ const HistoryPanel = withTranslation("common")(
     const container = React.useRef<HTMLDivElement>(null);
 
     const handleTabChange = React.useCallback(
-      (value: TabIndex, _pageSize?: number) => {
+      (value: RecordTabIndex, _pageSize?: number) => {
         setCurrentTab(value);
         history.replace(
           `/l2assets/history/${value}?${search.replace("?", "")}`
@@ -202,28 +200,32 @@ const HistoryPanel = withTranslation("common")(
             >
               <Tab
                 label={t("labelLayer2HistoryTransactions")}
-                value={TabIndex.transactions}
+                value={RecordTabIndex.transactions}
               />
               <Tab
                 label={t("labelLayer2HistoryTrades")}
-                value={TabIndex.trades}
+                value={RecordTabIndex.trades}
               />
-              <Tab label={t("labelOrderGroup")} value={TabIndex.orders} />
+              <Tab label={t("labelOrderGroup")} value={RecordTabIndex.orders} />
               <Tab
                 label={t("labelLayer2HistoryAmmRecords")}
-                value={TabIndex.ammRecords}
+                value={RecordTabIndex.ammRecords}
               />
               <Tab
                 label={t("labelDefiOrderTable")}
-                value={TabIndex.defiRecords}
+                value={RecordTabIndex.defiRecords}
               />
               <Tab
                 label={t("labelDualOrderTable")}
-                value={TabIndex.dualRecords}
+                value={RecordTabIndex.dualRecords}
               />
               <Tab
                 label={t("labelSideStakingTable")}
-                value={TabIndex.sideStakingRecords}
+                value={RecordTabIndex.sideStakingRecords}
+              />
+              <Tab
+                label={t("labelBtradeSwapTitle")}
+                value={RecordTabIndex.btradeSwapRecords}
               />
             </Tabs>
           </Box>
@@ -233,7 +235,7 @@ const HistoryPanel = withTranslation("common")(
             flex={1}
             overflow={"scroll"}
           >
-            {currentTab === TabIndex.transactions ? (
+            {currentTab === RecordTabIndex.transactions ? (
               <TransactionTable
                 {...{
                   etherscanBaseUrl,
@@ -253,7 +255,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : currentTab === TabIndex.trades ? (
+            ) : currentTab === RecordTabIndex.trades ? (
               <TradeTable
                 getUserTradeList={getUserTradeList}
                 {...{
@@ -273,7 +275,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : currentTab === TabIndex.ammRecords ? (
+            ) : currentTab === RecordTabIndex.ammRecords ? (
               <AmmTable
                 {...{
                   rawData: ammRecordList,
@@ -290,7 +292,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : currentTab === TabIndex.defiRecords ? (
+            ) : currentTab === RecordTabIndex.defiRecords ? (
               <DefiTxsTable
                 {...{
                   rawData: defiList,
@@ -305,7 +307,7 @@ const HistoryPanel = withTranslation("common")(
                 tokenMap={tokenMap}
                 idIndex={idIndex}
               />
-            ) : currentTab === TabIndex.sideStakingRecords ? (
+            ) : currentTab === RecordTabIndex.sideStakingRecords ? (
               <DefiStakingTxTable
                 {...{
                   rawData: sideStakingList as any[],
@@ -320,7 +322,7 @@ const HistoryPanel = withTranslation("common")(
                 tokenMap={tokenMap}
                 idIndex={idIndex}
               />
-            ) : currentTab === TabIndex.dualRecords ? (
+            ) : currentTab === RecordTabIndex.dualRecords ? (
               <DualTxsTable
                 rawData={dualList}
                 getDualTxList={getDualTxList}
@@ -336,7 +338,7 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
-            ) : (
+            ) : currentTab === RecordTabIndex.sideStakingRecords ? (
               <Box
                 flex={1}
                 display={"flex"}
@@ -393,6 +395,28 @@ const HistoryPanel = withTranslation("common")(
                   }}
                 />
               </Box>
+            ) : currentTab === RecordTabIndex.btradeSwapRecords ? (
+              <Box
+                flex={1}
+                display={"flex"}
+                flexDirection={"column"}
+                marginTop={-2}
+              >
+                <BtradeSwapTable
+                  {...{
+                    showloading: showBtradeLoading,
+                    getBtradeOrderList,
+                    rawData: btradeOrderData,
+                  }}
+                  pagination={{
+                    pageSize: pageSize,
+                    total: btradeTotalNum,
+                  }}
+                  onItemClick={onDetail}
+                />
+              </Box>
+            ) : (
+              <></>
             )}
           </Box>
         </StylePaper>

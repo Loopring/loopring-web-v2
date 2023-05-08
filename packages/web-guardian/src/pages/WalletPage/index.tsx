@@ -147,15 +147,10 @@ export const GuardianPage = withTranslation(["common"])(
   ({ t, ..._rest }: WithTranslation) => {
     const { account } = useAccount();
     const { chainId } = useSystem();
-    const network = React.useMemo(() => {
-      switch (chainId) {
-        case ChainId.GOERLI:
-        case ChainId.MAINNET:
-          return sdk.NetworkWallet[MapChainId[ChainId.MAINNET]];
-        default:
-          return sdk.NetworkWallet[MapChainId[chainId]];
-      }
-    }, [chainId]);
+    const network =
+      sdk.NetworkWallet[
+        MapChainId[[1, 5].includes(Number(chainId) ?? 1) ? 1 : chainId]
+      ];
 
     let match = useRouteMatch("/guardian/:item");
     const [openQRCode, setOpenQRCode] = React.useState(false);

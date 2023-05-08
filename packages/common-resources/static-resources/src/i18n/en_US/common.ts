@@ -809,12 +809,12 @@ export default {
   labelExchangeOthers: "Other Exchanges",
   labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
-  labelConfirmCEX: "Confirm CEX Support",
+  labelConfirmBtrade: "Confirm Block Trade Support",
   labelConfirmDetail:
-    "<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>" +
-    "<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>",
-  labelCEXUnderstand: "I understand and acknowledge the risk",
+    "<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>",
+  labelBtradeUnderstand: "I understand and acknowledge the risk",
   labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
   labelMintFeeChoose: "Select payment token",
@@ -846,7 +846,7 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a CEX address using Loopring L2. Since the CEX does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Block Trade address using Loopring L2. Since the Block Trade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
   labelForceWithdrawConfirm1:
@@ -1625,4 +1625,56 @@ export default {
     "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
   labelNotOtherSmartWallet:
     "This wallet binds with smart contract that does not support Loopring L2. You will need to send funds to the L1 account.",
+  labelBtradeSwapTitle: "Block Trade",
+  labelBtradeSwapType: "Type",
+  labelBtradeSwapFilled: "Filled",
+  labelBtradeSwapFee: "Fee",
+  labelBtradeSwapTime: "Time",
+  labelBtradeSwapPrice: "Price",
+  labelBtradeSwapSettled: "Settled",
+  labelBtradeSwapDelivering: "Delivering",
+  labelBtradeSwapPanelDes:
+    "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
+  labelBtradeSwapDeliverDes:
+    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
+  labelGoBtradeSwap:
+    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
+  labelBtradeSwap: "Block Trade",
+  labelBtradeSwapFailed: "Failed!",
+  labelBtradeSwapTitleDes: "What is Block Trade?",
+  labelBtradeSwapContentDes:
+    "<p>Block Trade offers a secure and trustless way for users to swap tokens using CEX liquidity. The trades happen exclusively between designated entities, ensuring that the existing liquidity of the DEX remains unaffected. There is no price impact to other DEX users as a result of the transaction.</p>" +
+    "<p>This is similar to the traditional stock market’s Block Trade System. A block trade is a large, privately negotiated transaction, which can be made outside the open market through a private purchase agreement.<p>",
+  labelRefereeRewards: "Referee Rewards",
+  labelReferralRewards: "Referral Rewards",
+  labelRewardLRC: "Rewards LRC",
+  labelPrice: "Price",
+  labelBtradeSwapMiniMax: "Min {{minValue}} - Max {{maxValue}}",
+  labelBtradeSwapMini: "Min {{minValue}}",
+  labelBtradeConfirm: "Please check the checkbox",
+  labelBtradeSwapBtn: "Swap",
+  labelType: "Type",
+  labelBtradeTrade: "Block Trade",
+  labelBtradeTitle: "Block Trade Details",
+  labelBtradeQuote: "Total Quote:",
+  labelBtradeQuoteDes: "Total Quota is the maximum allowable trading amount.",
+  labelBtradePoolDes: "Loopring Pool:",
+  labelBtradePool: "Loopring Pool",
+  labelBtradeToleranceTooltips:
+    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade. Here is fixed at 0.1%.",
+  labelBtradeFeeTooltips: "The trading fee is fixed at 0.3%.",
+  labelBtradeMinReceiveTooltips:
+    "The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
+  labelBtradeInsufficient: "Insufficient",
+  labelBtradeTime: "Time",
+  labelStopLimit: "Stop-Limit {{tradeType}} {{symbol1}}",
+  labelStopLimitDes:
+    "If the last price goes up to or above {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {symbol1}} at a price of {{price}} {{symbol2}} will be placed.",
+  labelStopLimitType: "Stop Limit / {{tradeType}}",
+  labelStopLimitStopPrice: "Stop Price",
+  labelStopLimitPriceLimitPrice: "Limit Price",
+  labelStopLimitAmount: "labelStopLimit",
+  labelStopLimitCancel: "Cancel",
+  labelStopLimitConfirm: "Confirm",
+  labelBtradeSwapPending: "Pending",
 };

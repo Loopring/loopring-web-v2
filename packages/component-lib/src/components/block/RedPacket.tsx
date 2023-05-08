@@ -26,6 +26,7 @@ import {
   RedPacketWrapSVG,
   SoursURL,
   YEAR_DAY_MINUTE_FORMAT,
+  DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import QRCodeStyling from "qr-code-styling";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -56,7 +57,9 @@ import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 
-export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
+export const RedPacketBg = styled(Box)<
+  BoxProps & { imageSrc?: string; type: string }
+>`
   display: flex;
   align-items: center;
   position: relative;
@@ -113,10 +116,8 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
         font-size: 28px;
         font-weight: 900;
         transform: translate(-50%, -50%);
-        z-index: 100;
         left: 50%;
         top: -50%;
-
         .hours,
         .minutes,
         .seconds {
@@ -128,7 +129,6 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
           display: inline-flex;
           align-items: center;
           border-radius: ${({ theme }) => theme.unit + "px"};
-
           h4 {
             text-indent: -9999em;
             height: 0;
@@ -175,7 +175,7 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
     }
 
     .middle {
-      height: 228px;
+      height: 218px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -185,16 +185,13 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
       display: flex;
       align-items: center;
       justify-content: center;
-      heigh: 56px;
     }
   }
-
   &.RedPacketClock {
     .top {
       height: 40px;
       margin-top: 50px;
     }
-
     .middle {
       margin-top: 40px;
       height: 128px;
@@ -679,7 +676,7 @@ export const RedPacketClock = ({
             "-webkit-box-orient": "vertical",
           }}
           dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
-        ></Typography>
+        />
         <Box display={"flex"} className={"middle"} flexDirection={"column"}>
           {ImageEle}
         </Box>
@@ -736,7 +733,7 @@ RedPacketDefault & RedPacketUnreadyProps) => {
             marginTop={3}
             top={0}
           >
-            {`${moment(validSince).format("MM/DD HH:mm")} ${t(
+            {`${moment(validSince).format(DAY_MINUTE_FORMAT)} ${t(
               "labelOpenStart"
             )}`}
           </Typography>
@@ -767,7 +764,7 @@ RedPacketDefault & RedPacketUnreadyProps) => {
               "-webkit-box-orient": "vertical",
             }}
             dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
-          ></Typography>
+          />
         </Box>
       </Box>
     );
@@ -1676,9 +1673,9 @@ export const RedPacketBlindBoxDetail = ({
               {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
             </Typography>
             {wonNFTInfo ? (
-              <img width={"40%"} src={wonNFTInfo.url}></img>
+              <img width={"40%"} alt={""} src={wonNFTInfo.url} />
             ) : (
-              <img src={emptyImg}></img>
+              <img src={emptyImg} alt={""} />
             )}
             <Link
               marginBottom={3}
@@ -1826,7 +1823,6 @@ export const RedPacketBlindBoxDetail = ({
                       >
                         {moment(info.when).fromNow()}
                       </Typography>
-                      <Typography display={"inline"}></Typography>
                     </Typography>
                   </BoxClaim>
                 );
@@ -1870,9 +1866,10 @@ export const RedPacketBlindBoxDetail = ({
             />
             <Box marginY={1} width={"60%"}>
               {NFTURL ? (
-                <img style={{ width: "100%" }} src={NFTURL} />
+                <img style={{ width: "100%" }} alt={""} src={NFTURL} />
               ) : (
                 <img
+                  alt={""}
                   style={{ width: "100%" }}
                   src={SoursURL + "images/redpackBlind3.webp"}
                 />
@@ -2124,7 +2121,6 @@ export const RedPacketBlindBoxDetail = ({
                                 >
                                   x {info.amount}
                                 </Typography>
-                                <Typography display={"inline"}></Typography>
                               </Typography>
                             </Typography>
                             <Typography

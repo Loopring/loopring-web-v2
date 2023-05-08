@@ -19,6 +19,7 @@ import { ConnectProviders } from "@loopring-web/web3-provider";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
 import { sanitize } from "dompurify";
+import styled from "@emotion/styled";
 
 export enum IconType {
   LoadingIcon,
@@ -61,7 +62,24 @@ export interface PanelProps {
   error?: RESULT_INFO;
   errorOptions?: any;
   updateDepositHash?: any;
+  className?: string;
 }
+
+const BoxStyle = styled(Box)`
+  &.btrade-panel {
+    .status-icon {
+      margin-top: ${({ theme }) => theme.unit * 2}px;
+    }
+
+    .content-main {
+      align-self: stretch;
+
+      & > div {
+        align-self: stretch;
+      }
+    }
+  }
+`;
 
 export const BasicPanel = withTranslation("common", { withRef: true })(
   ({
@@ -75,6 +93,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     providerName,
     error,
     errorOptions,
+    className,
     link,
   }: PanelProps) => {
     const isLoading = iconType === IconType.LoadingIcon;
@@ -182,13 +201,14 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     const { isMobile } = useSettings();
 
     return (
-      <Box
+      <BoxStyle
         flex={1}
         display={"flex"}
         alignItems={"center"}
         flexDirection={"column"}
         paddingBottom={4}
         width={"100%"}
+        className={className}
       >
         <Typography
           component={"h3"}
@@ -203,6 +223,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
           flexDirection={"column"}
           alignItems={"center"}
           justifyContent={"space-between"}
+          className={"content-main"}
         >
           <Box
             display={"flex"}
@@ -216,6 +237,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               display={"flex"}
               alignItems={"flex-start"}
               flexDirection={"column"}
+              className={"status-icon"}
             >
               {iconDiv}
             </Typography>
@@ -417,7 +439,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             )}
           </Box>
         )}
-      </Box>
+      </BoxStyle>
     );
   }
 );
@@ -534,4 +556,12 @@ export const RedPacketOpenBase = (props: PanelProps) => {
     title: "labelRedPacketOpen",
   };
   return <BasicPanel {...propsPatch} {...props} />;
+};
+
+export const BtradeBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelBtradeTitle",
+  };
+
+  return <BasicPanel className={"btrade-panel"} {...props} {...propsPatch} />;
 };
