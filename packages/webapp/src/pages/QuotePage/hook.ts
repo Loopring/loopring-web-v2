@@ -43,7 +43,7 @@ export function useTickList<C extends { [key: string]: string }>() {
             // @ts-ignore
             const [, coinA, coinB] = key.match(/(\w+)-(\w+)/i);
             const ticker = tickerMap[key as string];
-            const coinApriceU =
+            const coinAPriceDollar =
               ticker.close * (tokenPrices[coinB] ?? 0) ??
               tokenPrices[coinB] ??
               0;
@@ -53,7 +53,7 @@ export function useTickList<C extends { [key: string]: string }>() {
                 coinA,
                 coinB,
               },
-              coinApriceU,
+              coinAPriceDollar,
             } as QuoteTableRawDataItem;
 
             if (marketArray && marketArray.findIndex((m) => m === key) !== -1) {
@@ -221,6 +221,10 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
         ) {
           return !ammPoolBalances.find((o) => o.poolName === pair).risky;
         }
+        // if( == )
+        // return status[status.length - 2] === "1";
+        //
+        // return true;
       });
     }
     return [];
@@ -231,7 +235,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       // const data = getFilteredTickList();
       handleTableFilterChange({});
     }
-  }, [ammPoolBalances, tickerStatus, tickList]);
+  };, [ammPoolBalances, tickerStatus, tickList]);
 
   const handleTableFilterChange = React.useCallback(
     ({
@@ -242,7 +246,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       keyword?: string;
     }) => {
       let data = _.cloneDeep(tickList);
-      // myLog("tickList", data);
+      myLog("tickList", data);
       if (type === TableFilterParams.favourite) {
         data = data.filter((o: any) => {
           const pair = `${o.pair.coinA}-${o.pair.coinB}`;

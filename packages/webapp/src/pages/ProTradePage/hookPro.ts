@@ -50,7 +50,7 @@ export const usePro = <C extends { [key: string]: any }>({
   const { account, status: accountStatus } = useAccount();
   const { status: walletLayer2Status } = useWalletLayer2();
   const { assetBtnStatus } = useGetAssets();
-  const { getOrderList } = useOrderList();
+  const { getOrderList } = useOrderList({});
   const { coinMap, tokenMap, marketArray, marketCoins, marketMap } =
     useTokenMap();
   useProSocket({ market });

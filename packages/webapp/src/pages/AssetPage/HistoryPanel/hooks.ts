@@ -475,7 +475,10 @@ export function useDefiSideRecord(setToastOpen: (props: any) => void) {
   };
 }
 
-export const useOrderList = (setToastOpen?: (props: any) => void) => {
+export const useOrderList = (
+  setToastOpen?: (props: any) => void,
+  isStopLimit = false
+) => {
   const { t } = useTranslation(["error"]);
 
   const [orderOriginalData, setOrderOriginalData] = React.useState<

@@ -199,6 +199,7 @@ export const StopLimitPage = withTranslation("common")(<
     orderTable: React.useMemo(
       () => (
         <OrderTableView
+          isStopLimit={true}
           market={market}
           handleOnMarketChange={handleOnMarketChange}
         />

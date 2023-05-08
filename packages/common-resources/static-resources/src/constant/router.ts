@@ -610,4 +610,5 @@ export enum RecordTabIndex {
   dualRecords = "dualRecords",
   sideStakingRecords = "sideStakingRecords",
   btradeSwapRecords = "BtradeSwap",
+  stopLimitRecords = "stopLimitRecords",
 }

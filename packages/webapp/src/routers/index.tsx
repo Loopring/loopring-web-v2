@@ -167,7 +167,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     query: searchParams,
   });
 
-  myLog("BTradeInvest", BTradeInvest);
   return (
     <>
       <Switch>

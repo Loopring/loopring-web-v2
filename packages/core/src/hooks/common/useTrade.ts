@@ -785,7 +785,7 @@ export function usePlaceOrder() {
   const makeStopLimitReqInHook = React.useCallback(
     <T extends ReqParams & { stopLimitPrice?: string | number }>(params: T) => {
       const { tokenAmtMap, feeBips } = getTokenAmtMap(params);
-
+      const tickerMap = store.getState().tickerMap;
       myLog("makeLimitReqInHook tokenAmtMap:", tokenAmtMap, feeBips);
       let sellUserOrderInfo = undefined,
         buyUserOrderInfo = undefined,
@@ -795,22 +795,30 @@ export function usePlaceOrder() {
         stopSide = undefined;
 
       if (exchangeInfo && params.depth && params.quote) {
+        const ticker = tickerMap[params.depth.symbol];
         // const { close } = tickerMap[params.market];
-        let midStopPrice = params.depth.mid_price ?? 0;
+        let midStopPrice = ticker.close; // params.depth.mid_price ?? 0;
         if (params.stopLimitPrice == undefined) {
           params.stopLimitPrice = 0;
         }
-
-        if (params.isBuy) {
-          sdk.toBig(params.stopLimitPrice).gt(midStopPrice);
-          stopSide = sdk.toBig(params.stopLimitPrice).gt(midStopPrice)
-            ? sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
-            : sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL;
-        } else {
-          stopSide = sdk.toBig(params.stopLimitPrice).gt(midStopPrice)
-            ? sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
-            : sdk.STOP_SIDE.LESS_THAN_AND_EQUAL;
-        }
+        stopSide = sdk.toBig(params.stopLimitPrice).lt(midStopPrice)
+          ? sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
+          : sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL;
+        myLog(
+          "stopSide",
+          stopSide,
+          "stopLimitPrice",
+          midStopPrice,
+          "stopLimitPrice",
+          params.stopLimitPrice
+        );
+        // if (params.isBuy) {
+        //
+        // } else {
+        //   stopSide = sdk.toBig(params.stopLimitPrice).gt(midStopPrice)
+        //     ? sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
+        //     : sdk.STOP_SIDE.LESS_THAN_AND_EQUAL;
+        // }
         const fullParams: T = {
           ...params,
           exchangeAddress: exchangeInfo.exchangeAddress,

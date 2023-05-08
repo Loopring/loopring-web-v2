@@ -4,18 +4,9 @@ import styled from "@emotion/styled/macro";
 import { InputSearch, QuoteTable } from "@loopring-web/component-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { RowConfig } from "@loopring-web/common-resources";
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Box, Container, Divider, Grid, Tab, Tabs } from "@mui/material";
 import { useQuotePage } from "./hook";
 import { TableWrapStyled, useAccount, useSystem } from "@loopring-web/core";
-import * as sdk from "@loopring-web/loopring-sdk";
 
 const RowStyled = styled(Grid)`
   & .MuiGrid-root:not(:last-of-type) > div {
@@ -42,50 +33,8 @@ export const QuotePage = withTranslation("common")(
       campaignTagConfig,
       handleRowClick,
     } = useQuotePage({ tableRef });
-    // const onTest = () => {
-    //   console.log("100 EdDSASig" + performance.now());
-    //   for (let i = 0; i < 100; i++) {
-    //     const dataToSig = sdk.sortObjDictionary({
-    //       exchange: "0x12b7cccF30ba360e5041C6Ce239C9a188B709b2B",
-    //       accountId: "10111",
-    //       storageId: "111",
-    //       sellToken: {
-    //         tokenId: 1,
-    //         volume: "100",
-    //       },
-    //       buyToken: {
-    //         tokenId: 2,
-    //         volume: "100",
-    //       },
-    //       allOrNone: false,
-    //       validUntil: 100,
-    //       maxFeeBips: 50,
-    //       fillAmountBOrS: false, // amm only false
-    //       tradeChannel: "MIXED",
-    //       orderType: "amm",
-    //       eddsaSignature: "",
-    //     });
-    //     const sig = sdk.getEdDSASig(
-    //       "POST",
-    //       "https://loopring.io/",
-    //       "apiTest",
-    //       dataToSig,
-    //       account.eddsaKey.sk
-    //     );
-    //   }
-    //   console.log(performance.now());
-    //   // sdk.getEddsakey();
-    // };
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1}>
-        {/*<Button*/}
-        {/*  onClick={() => {*/}
-        {/*    onTest();*/}
-        {/*  }}*/}
-        {/*>*/}
-        {/*  test button*/}
-        {/*</Button>*/}
-
         <TableWrapStyled
           ref={tableRef as any}
           marginTop={1}
