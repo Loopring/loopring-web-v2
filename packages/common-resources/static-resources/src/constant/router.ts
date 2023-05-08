@@ -46,16 +46,16 @@ export const profile = {
       },
     },
   ],
-  reward: [
-    {
-      icon: RewardIcon,
-      router: { path: "/layer2/rewards" },
-      label: {
-        id: "rewards",
-        i18nKey: "labelReward",
-      },
-    },
-  ],
+  // reward: [
+  //   {
+  //     icon: RewardIcon,
+  //     router: { path: "/layer2/rewards" },
+  //     label: {
+  //       id: "rewards",
+  //       i18nKey: "labelReward",
+  //     },
+  //   },
+  // ],
   vip: [
     {
       icon: VipIcon,
