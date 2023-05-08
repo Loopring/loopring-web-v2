@@ -95,7 +95,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 136px auto auto auto 120px 120px !important;`
+        ? `--template-columns: 175px auto auto auto 120px 120px !important;`
         : `--template-columns: 60% 40% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -393,7 +393,13 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                     }),
                     "",
                   ]
-                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER
+                : [
+                  sdk.UserTxTypes.L2_STAKING,
+                  sdk.UserTxTypes.DUAL_INVESTMENT,
+                  sdk.UserTxTypes.SEND_LUCKY_TOKEN,
+                  sdk.UserTxTypes.TRANSFER, 
+                  sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
+                ].includes(row.side.toLowerCase())
                 ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
