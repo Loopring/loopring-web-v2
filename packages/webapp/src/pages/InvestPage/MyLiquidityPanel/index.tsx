@@ -300,7 +300,8 @@ const MyLiquidity: any = withTranslation("common")(
                     getValuePrecisionThousand(
                       sdk
                         .toBig(summaryMyInvest.investDollar)
-                        .times(forexMap[currency] ?? 0),
+                        .times(forexMap[currency] ?? 0)
+                        .toString(),
                       undefined,
                       undefined,
                       2,
