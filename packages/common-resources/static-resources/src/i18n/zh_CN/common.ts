@@ -574,8 +574,6 @@ export default {
   labelL2toL1Fast: "Fast",
   labelL2toL1Standard: "Standard",
   labelL2toL1LinkRecent: "Recent withdrawal history",
-  labelL2toL2ExchangeError: "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
-  labelL2toL2SmartWalletError: "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
   labelL2toL2Title: "Send to Another Loopring L2",
   labelL2toL2EnterToken: "Select Token",
   transferDescription:
@@ -1587,9 +1585,4 @@ export default {
   labelContactsNetworkChoose: 'Choose L2 or L1 Account',
   labelContactsNext: 'Next',
   labelContactsContactExisted: 'Contact Already Existed',
-  labelContactsNoContact: 'No Contact',
-  labelContactsSelectReciepient: 'Select the Recipient',
-  labelContactsBinanceNotSupportted: 'Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.',
-  labelContactsHuobiNotSupportted: 'Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.',
-  labelContactsOtherExchangesNotSupportted: 'The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.',
 };

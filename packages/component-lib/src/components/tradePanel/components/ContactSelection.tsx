@@ -10,7 +10,6 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { createImageFromInitials } from "@loopring-web/core";
 import { AddressType } from "@loopring-web/loopring-sdk";
-import { useTranslation } from "react-i18next";
 
 type SingleContactProps = {
   editing: boolean, 
@@ -59,6 +58,7 @@ const CloseIconStyled = styled(CloseIcon)`
 // OutlinedInput
 type ContactSelectionProps = {
   onSelect: (address: string) => void
+  onScroll: (e: HTMLDivElement) => void
   contacts: {
     name: string,
     address: string,
@@ -68,29 +68,32 @@ type ContactSelectionProps = {
 }
 export const ContactSelection = (props: ContactSelectionProps) => {
   // const { t } = useTranslation();
-  const { onSelect, contacts, scrollHeight } = props
+  const { onSelect, contacts, onScroll, scrollHeight } = props
   const { isMobile } = useSettings();
   const theme = useTheme()
-  const displayContacts = contacts && contacts.map(contact => {
+  const displayContacts = contacts && contacts.map(x => {
     return {
-      name: contact.name,
-      address: contact.address,
-      avatarURL: createImageFromInitials(32, contact.name, theme.colorBase.warning)!, 
+      name: x.name,
+      address: x.address,
+      avatarURL: createImageFromInitials(32, x.name, "#FFC178")!, // todo
       editing: false,
-      addressType: contact.addressType
+      addressType: x.addressType
     }
   })
 
   const [inputValue, setInputValue] = useState('')
-  const filteredContacts = displayContacts && displayContacts.filter(contact => {
+  const filteredContacts = displayContacts && displayContacts.filter(x => {
     return inputValue
-      ? contact.address.toLowerCase().includes(inputValue.toLowerCase()) || contact.name.toLowerCase().includes(inputValue.toLowerCase())
+      ? x.address.toLowerCase().includes(inputValue.toLowerCase()) || x.name.toLowerCase().includes(inputValue.toLowerCase())
       : true
   })
-  const {t} = useTranslation()
+
+  // <Box >
+
+  //     </Box>
   
   const normalView = <>
-    <Box  width={"100%"}>
+    <Grid item xs={12} width={"100%"}>
       <OutlinedInput
         style={{
           background: theme.colorBase.box,
@@ -119,20 +122,19 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           setInputValue(e.target.value)
         }}
       ></OutlinedInput>
-      <Box overflow={"scroll"} height={scrollHeight}>
-        {filteredContacts && filteredContacts.map(contact => {
+      <Box overflow={"scroll"} height={scrollHeight} onScroll={e => onScroll(e.currentTarget)}>
+        {filteredContacts && filteredContacts.map(c => {
           return <SingleContact
-            key={contact.address}
-            name={contact.name}
-            address={contact.address}
-            avatarURL={contact.avatarURL}
+            name={c.name}
+            address={c.address}
+            avatarURL={c.avatarURL}
             editing={false}
             onSelect={onSelect}
-            hidden={contact.addressType === AddressType.OFFICIAL}
+            hidden={c.addressType === AddressType.OFFICIAL}
           />
         })}
       </Box>
-    </Box>
+    </Grid>
   </>
   const loadingView =
     <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
@@ -146,24 +148,24 @@ export const ContactSelection = (props: ContactSelectionProps) => {
   const emptyView =
     <Box height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
       <Typography color={"var(--color-text-third)"}>
-        {t("labelContactsNoContact")}
+        No Contact
       </Typography>
     </Box>
   
   return (
-    <Box
-      // container
+    <Grid
+      container
       paddingLeft={isMobile ? 2 : 5}
       paddingRight={isMobile ? 2 : 5}
-      // fle direction={"column"}
+      direction={"column"}
       alignItems={"stretch"}
       flex={1}
       height={"100%"}
       minWidth={240}
       flexWrap={"nowrap"}
-      // spacing={2}
+      spacing={2}
     >
-      <Box >
+      <Grid item >
         <Box
           display={"flex"}
           flexDirection={"column"}
@@ -178,10 +180,10 @@ export const ContactSelection = (props: ContactSelectionProps) => {
             whiteSpace={"pre"}
             marginRight={1}
           >
-            {t("labelContactsSelectReciepient")}
+            Select the Recipient
           </Typography>
         </Box>
-      </Box>
+      </Grid>
       {
         contacts === undefined
           ? loadingView
@@ -189,6 +191,6 @@ export const ContactSelection = (props: ContactSelectionProps) => {
             ? emptyView
             : normalView
       }
-    </Box>
+    </Grid>
   );
 };
