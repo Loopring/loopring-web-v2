@@ -24,6 +24,7 @@ import {
   TradeBtnStatus,
   TradeBaseType,
   TradeProType,
+  TradeTypes,
 } from "@loopring-web/common-resources";
 import {
   StopLimitTradeData,
@@ -41,10 +42,12 @@ export const useStopLimit = <
   I extends IBData<any>
 >({
   market,
+  setConfirmed,
 }: { market: MarketType } & any) => {
   const { pageTradePro, updatePageTradePro, __SUBMIT_LOCK_TIMER__ } =
     usePageTradePro();
   const { marketMap, tokenMap } = useTokenMap();
+  const { setShowAccount } = useOpenModals();
   const { tokenPrices } = useTokenPrices();
   const { forexMap, allowTrade } = useSystem();
   const { account } = useAccount();
@@ -634,7 +637,20 @@ export const useStopLimit = <
     onChangeLimitEvent,
     tradeLimitI18nKey,
     tradeLimitBtnStatus,
-    limitSubmit,
+    confirmStopLimit: {
+      baseSymbol,
+      quoteSymbol,
+      tradeType: pageTradePro.tradeType,
+      limitPrice: stopLimitTradeData?.price,
+      stopPrice: pageTradePro.request?.stopPrice,
+      baseValue: stopLimitTradeData?.base?.tradeValue,
+      quoteValue: stopLimitTradeData?.quote?.tradeValue,
+      onSubmit: limitSubmit,
+    },
+    limitSubmit: () => {
+      setConfirmed(true);
+      // setShowAccount({isShow:true,step:})
+    },
     limitBtnClick,
     handlePriceError,
     tradeLimitBtnStyle: {
@@ -647,6 +663,7 @@ export const useStopLimit = <
           : "1.6rem",
       },
     },
+
     // marketTicker,
   };
 };

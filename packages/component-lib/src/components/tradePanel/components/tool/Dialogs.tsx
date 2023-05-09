@@ -2114,6 +2114,7 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
     stopPrice,
     baseValue,
     quoteValue,
+    onSubmit,
   }: // ...props
   WithTranslation & {
     open: boolean;
@@ -2284,6 +2285,7 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
             size={"small"}
             onClick={(e) => {
               handleClose(e as any, true);
+              onSubmit();
             }}
             color={"primary"}
           >

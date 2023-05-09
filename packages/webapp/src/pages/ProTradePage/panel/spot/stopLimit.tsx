@@ -2,6 +2,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
 import {
   AlertLimitPrice,
+  ConfirmStopLimitRisk,
   StopLimitTrade,
   Toast,
 } from "@loopring-web/component-lib";
@@ -30,6 +31,8 @@ export const StopLimitView = withTranslation("common")(
   } & WithTranslation) => {
     const { pageTradePro } = usePageTradePro();
     const { marketMap, tokenMap } = useTokenMap();
+    const [confirmed, setConfirmed] = React.useState<boolean>(false);
+
     //@ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const {
@@ -43,10 +46,10 @@ export const StopLimitView = withTranslation("common")(
       limitBtnClick,
       isLimitLoading,
       handlePriceError,
-      resetLimitData,
+      confirmStopLimit,
       limitAlertOpen,
       limitSubmit,
-    } = useStopLimit({ market, resetTradeCalcData });
+    } = useStopLimit({ market, resetTradeCalcData, setConfirmed });
 
     const isMarketUnavailable =
       marketMap && marketMap.market && (marketMap.market.status || 0) % 3 !== 0;
@@ -67,6 +70,13 @@ export const StopLimitView = withTranslation("common")(
           open={toastOpenL?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToastL}
+        />
+        <ConfirmStopLimitRisk
+          open={confirmed}
+          handleClose={(_e) => {
+            setConfirmed(false);
+          }}
+          {...{ ...confirmStopLimit }}
         />
 
         <AlertLimitPrice
@@ -120,7 +130,6 @@ export const StopLimitView = withTranslation("common")(
               tradeCalcProData={pageTradePro.tradeCalcProData}
               tradeData={stopLimitTradeData}
               onChangeEvent={onChangeLimitEvent as any}
-              // stopRange={pageTradePro.tradeCalcProData?.stopRange}
             />
           </Box>
         </Box>
