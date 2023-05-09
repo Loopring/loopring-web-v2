@@ -124,7 +124,7 @@ export default {
   labelBtradeTrade: "Block Trade",
   labelBtradeTradeDescription: "Trade via CEX liquidity",
   labelStopLimit: "Stop Limit",
-  labelStopLimitDescription: "Stop Limit",
+  labelStopLimitDescription: "Control trading, like a pro",
 
   // labelDepositNFTDes:"Receive NFT"
 };

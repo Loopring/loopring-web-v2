@@ -24,7 +24,6 @@ import {
   TradeBtnStatus,
   TradeBaseType,
   TradeProType,
-  TradeTypes,
 } from "@loopring-web/common-resources";
 import {
   StopLimitTradeData,
@@ -47,7 +46,6 @@ export const useStopLimit = <
   const { pageTradePro, updatePageTradePro, __SUBMIT_LOCK_TIMER__ } =
     usePageTradePro();
   const { marketMap, tokenMap } = useTokenMap();
-  const { setShowAccount } = useOpenModals();
   const { tokenPrices } = useTokenPrices();
   const { forexMap, allowTrade } = useSystem();
   const { account } = useAccount();
@@ -645,7 +643,9 @@ export const useStopLimit = <
       stopPrice: pageTradePro.request?.stopPrice,
       baseValue: stopLimitTradeData?.base?.tradeValue,
       quoteValue: stopLimitTradeData?.quote?.tradeValue,
-      onSubmit: limitSubmit,
+      onSubmit: (e: any) => {
+        limitSubmit(e as any, true);
+      },
     },
     limitSubmit: () => {
       setConfirmed(true);
