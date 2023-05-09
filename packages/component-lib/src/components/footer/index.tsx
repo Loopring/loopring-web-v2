@@ -237,9 +237,7 @@ export const Footer = withTranslation(["layout"])(
                 <Typography
                   fontSize={12}
                   component={"span"}
-                  color={
-                    isBeta ? "var(--color-warning)" : "var(--color-text-third)"
-                  }
+                  color={isBeta ? "warning" : "var(--color-text-third)"}
                   paddingLeft={2}
                   paddingTop={isMobile ? 2 : 0}
                 >
