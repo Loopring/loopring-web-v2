@@ -605,8 +605,6 @@ export enum RecordTabIndex {
   trades = "trades",
   ammRecords = "ammRecords",
   orders = "orders",
-  // orderOpenTable = "orderOpenTable",
-  // orderHistoryTable = "orderHistoryTable",
   defiRecords = "defiRecords",
   dualRecords = "dualRecords",
   sideStakingRecords = "sideStakingRecords",
