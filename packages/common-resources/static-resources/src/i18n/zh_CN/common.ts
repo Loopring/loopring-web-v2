@@ -1771,4 +1771,5 @@ export default {
     "If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the L2 account.",
   labelAnotherNetworkDes: "XXXXXXXXXXXXX <1>TOS</1>.",
   labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
+  labelExplorer: "Explorer",
 };

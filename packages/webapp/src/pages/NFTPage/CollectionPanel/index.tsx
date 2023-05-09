@@ -15,6 +15,7 @@ import {
   AddIcon,
   CollectionMeta,
   CreateCollectionStep,
+  Explorer,
   TOAST_TIME,
   TradeNFT,
 } from "@loopring-web/common-resources";
@@ -124,6 +125,16 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
                 color={"primary"}
               >
                 {t("labelCreateCollection")}
+              </Button>
+              <Button
+                onClick={() => {
+                  window?.open(`${Explorer}/account/${account.accountId}-nfts`, '_blank')?.focus();
+                }}
+                sx={isMobile ? { marginTop: 2 } : { marginLeft: 1 }}
+                variant={"outlined"}
+                color={"primary"}
+              >
+                {t("labelExplorer")}
               </Button>
             </Box>
           </Box>
