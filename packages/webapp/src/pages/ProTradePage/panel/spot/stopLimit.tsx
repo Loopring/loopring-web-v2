@@ -76,7 +76,7 @@ export const StopLimitView = withTranslation("common")(
           handleClose={(_e) => {
             setConfirmed(false);
           }}
-          {...{ ...confirmStopLimit }}
+          {...{ ...(confirmStopLimit as any) }}
         />
 
         <AlertLimitPrice

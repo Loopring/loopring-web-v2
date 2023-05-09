@@ -517,7 +517,7 @@ export const useBtradeSwap = <
     } else if (!marketMap[market]?.enabled || !BTradeInvest.enable) {
       setShowTradeIsFrozen({
         isShow: true,
-        type: t("labelBtradeSwap"),
+        type: "Btrade",
       });
       setIsBtradeLoading(false);
       return;
