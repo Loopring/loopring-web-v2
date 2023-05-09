@@ -1668,4 +1668,5 @@ export default {
   labelStopLimitCancel: "Cancel",
   labelStopLimitConfirm: "Confirm",
   labelBtradeSwapPending: "Pending",
+  labelExplorer: "Explorer",
 };

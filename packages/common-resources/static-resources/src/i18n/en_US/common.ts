@@ -1719,4 +1719,5 @@ export default {
   labelStopLimitLabelType: "Type",
   labelStopLimitNotSupport:
     "Sorry, there is currently insufficient liquidity in this token pair to execute stop-limit orders. Please try again later or consider using a market / limit order instead.",
+  labelExplorer: "Explorer",
 };
