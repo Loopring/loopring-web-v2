@@ -69,16 +69,17 @@ export const useOrderList = ({
         );
         if (userOrders && Array.isArray(userOrders.orders)) {
           setTotalNum(userOrders.totalNum);
-          const data = userOrders.orders.map((o) => {
+          const data = userOrders.orders.map((order) => {
             const { baseAmount, quoteAmount, baseFilled, quoteFilled } =
-              o.volumes;
+              order.volumes;
 
-            const marketList = o.market.split("-");
+            const marketList = order.market.split("-");
             if (marketList.length === 3) {
               marketList.shift();
             }
             // due to AMM case, we cannot use first index
-            const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
+            const side =
+              order.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
             const isBuy = side === TradeTypes.Buy;
             // const tokenFirst = marketList[marketList.length - 2]
             // const tokenLast = marketList[marketList.length - 1]
@@ -93,7 +94,7 @@ export const useOrderList = ({
             const quoteValue = isBuy
               ? volumeToCount(quoteToken, baseAmount)
               : (volumeToCount(baseToken, baseAmount) || 0) *
-                Number(o.price || 0);
+                Number(order.price || 0);
             const baseVolume = volumeToCountAsBigNumber(
               baseToken,
               actualBaseFilled
@@ -120,12 +121,13 @@ export const useOrderList = ({
               ? (tokenMap as any)[quoteToken]?.precisionForOrder
               : undefined;
             const precisionMarket = marketMap
-              ? marketMap[o.market]?.precisionForPrice
+              ? marketMap[order.market]?.precisionForPrice
               : undefined;
+
             return {
-              market: o.market,
-              side: o.side === "BUY" ? TradeTypes.Buy : TradeTypes.Sell,
-              orderType: o.orderType,
+              market: order.market,
+              side: order.side === "BUY" ? TradeTypes.Buy : TradeTypes.Sell,
+              orderType: order.orderType,
               amount: {
                 from: {
                   key: baseToken,
@@ -141,15 +143,18 @@ export const useOrderList = ({
               average: average,
               price: {
                 key: quoteToken,
-                value: Number(o.price),
+                value: Number(order.price),
               },
-              time: o.validity.start * 1000,
-              status: o.status as unknown as TradeStatus,
-              hash: o.hash,
-              orderId: o.clientOrderId,
-              tradeChannel: o.tradeChannel,
+              time: order.validity.start * 1000,
+              status: order.status as unknown as TradeStatus,
+              hash: order.hash,
+              orderId: order.clientOrderId,
+              tradeChannel: order.tradeChannel,
               completion: completion,
               precisionMarket: precisionMarket,
+              // @ts-ignore
+              extraOrderInfo: order.extraOrderInfo,
+              __raw__: order,
             };
           });
           setShowLoading(false);
@@ -268,15 +273,16 @@ export const useOrderList = ({
           },
           apiKey
         );
-        const formattedData = [response.orderDetail].map((o: any) => {
+        const formattedData = [response.orderDetail].map((order: any) => {
           const { baseAmount, quoteAmount, baseFilled, quoteFilled, fee } =
-            o.volumes;
-          const marketList = o.market.split("-");
+            order.volumes;
+          const marketList = order.market.split("-");
           if (marketList.length === 3) {
             marketList.shift();
           }
           // due to AMM case, we cannot use first index
-          const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
+          const side =
+            order.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
           const isBuy = side === TradeTypes.Buy;
           const role = isBuy
             ? t("labelOrderDetailMaker")
@@ -290,7 +296,7 @@ export const useOrderList = ({
           const quoteValue = isBuy
             ? volumeToCount(quoteToken, baseAmount)
             : (volumeToCount(baseToken, baseAmount) || 0) *
-              Number(o.price || 0);
+              Number(order.price || 0);
           const actualBaseFilled = isBuy ? quoteFilled : baseFilled;
           const actualQuoteFilled = isBuy ? baseFilled : quoteFilled;
           const baseVolume = volumeToCountAsBigNumber(
@@ -313,7 +319,7 @@ export const useOrderList = ({
             ? (tokenMap as any)[quoteToken]?.precisionForOrder
             : undefined;
           const precisionMarket = marketMap
-            ? marketMap[o.market]?.precisionForPrice
+            ? marketMap[order.market]?.precisionForPrice
             : undefined;
           const precisionFee = tokenMap
             ? (tokenMap as any)[quoteToken]?.precisionForOrder
@@ -342,9 +348,11 @@ export const useOrderList = ({
               precision: precisionFee,
             },
             role: role,
-            time: o.validity.start * 1000,
+            time: order.validity.start * 1000,
             volume: quoteVolume?.toNumber(),
-            orderId: o.clientOrderId,
+            orderId: order.clientOrderId,
+            extraOrderInfo: order.extraOrderInfo,
+            __raw__: order,
           };
         });
         setOrderDetailList(formattedData);

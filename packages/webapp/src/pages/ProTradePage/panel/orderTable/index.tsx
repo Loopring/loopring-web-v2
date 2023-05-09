@@ -177,6 +177,7 @@ export const OrderTableView = withTranslation("common")(
             {...{
               // height,
               // height: height-
+              isStopLimit,
               rawData: filteredData,
               getOrderList,
               getOrderDetail,

@@ -319,4 +319,5 @@ export default {
   labelBtradeCancelled: "Cancelled",
   labelBtradePending: "Pending",
   labelBtradeSwapFailed: "Filled",
+  labelStopLimitStopPrice: "Trigger Condition",
 };
