@@ -33,10 +33,12 @@ export const Footer = withTranslation(["layout"])(
     linkListMap,
     mediaList,
     isLandingPage,
+    isBeta = false,
   }: {
     isLandingPage: boolean;
     linkListMap: { [key: string]: FooterInterface[] };
     mediaList: FooterInterface[];
+    isBeta: boolean;
   } & WithTranslation) => {
     const { mode } = useTheme();
     const { isMobile } = useSettings();
@@ -235,11 +237,13 @@ export const Footer = withTranslation(["layout"])(
                 <Typography
                   fontSize={12}
                   component={"span"}
-                  color={"var(--color-text-third)"}
+                  color={isBeta ? "warning" : "var(--color-text-third)"}
                   paddingLeft={2}
                   paddingTop={isMobile ? 2 : 0}
                 >
-                  {t("labelCopyRight", { year: new Date().getFullYear() })}
+                  {isBeta
+                    ? t("labelCopyRightBeta")
+                    : t("labelCopyRight", { year: new Date().getFullYear() })}
                 </Typography>
                 <Box paddingY={isMobile ? 2 : 0}>{medias}</Box>
               </Box>

@@ -135,9 +135,6 @@ const WrapModal = () => {
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const proFlag =
-    process.env.REACT_APP_WITrH_PRO &&
-    process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
   const { marketArray } = useTokenMap();
   const { setTheme } = useSettings();
@@ -298,7 +295,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <Header isHideOnScroll={true} />
           )}
 
-          {state === "PENDING" && proFlag && tickerMap ? (
+          {state === "PENDING" && tickerMap ? (
             <LoadingBlock />
           ) : (
             <Box display={"flex"} flexDirection={"column"} flex={1}>
