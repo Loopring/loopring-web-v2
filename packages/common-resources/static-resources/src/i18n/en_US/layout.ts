@@ -123,5 +123,8 @@ export default {
   labelInvestStakeLRCDes: "Earn LRC staking rewards",
   labelBtradeTrade: "Block Trade",
   labelBtradeTradeDescription: "Trade via CEX liquidity",
+  labelStopLimit: "Stop Limit",
+  labelStopLimitDescription: "Control trading, like a pro",
+
   // labelDepositNFTDes:"Receive NFT"
 };
