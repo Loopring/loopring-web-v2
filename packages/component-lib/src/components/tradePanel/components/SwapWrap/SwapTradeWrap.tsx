@@ -384,12 +384,7 @@ export const SwapTradeWrap = <
         </Grid>
       )}
 
-      <Grid
-        item
-        display={"flex"}
-        alignItems={"center"}
-        justifyContent={"center"}
-      >
+      <Grid item display={"flex"} alignItems={"center"}>
         <Typography
           variant="body1"
           textAlign={"center"}
