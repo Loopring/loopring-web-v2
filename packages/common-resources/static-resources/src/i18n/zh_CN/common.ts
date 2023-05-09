@@ -1770,4 +1770,5 @@ export default {
   labelAnotherNetworkDes: "XXXXXXXXXXXXX <1>TOS</1>.",
   labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
   labelTutorial: "Tutorial",
+  labelExplorer: "Explorer",
 };
