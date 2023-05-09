@@ -1670,7 +1670,7 @@ export default {
   labelBtradeTime: "Time",
   labelStopLimit: "Stop-Limit {{tradeType}} {{symbol1}}",
   labelStopLimitDes:
-    "If the last price goes up to or above {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {symbol1}} at a price of {{price}} {{symbol2}} will be placed.",
+    "If the last price goes up to or above {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {{symbol1}} at a price of {{price}} {{symbol2}} will be placed.",
   labelStopLimitType: "Stop Limit / {{tradeType}}",
   labelStopLimitStopPrice: "Stop Price",
   labelStopLimitPriceLimitPrice: "Limit Price",
@@ -1707,4 +1707,7 @@ export default {
   labelLimitFailed: "Submitted failed",
   labelLimitMarket: "Market data has issue",
   labelStopLimitOrderGroup: "Stop-Limit Records",
+  labelStoplimit: "Stop limit",
+  labelStopLimitProduct: "Product",
+  labelStopLimitLabelType: "Type",
 };

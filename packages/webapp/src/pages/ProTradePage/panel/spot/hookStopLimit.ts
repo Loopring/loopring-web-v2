@@ -51,7 +51,7 @@ export const useStopLimit = <
   const { account } = useAccount();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const {
-    toggle: { order },
+    toggle: { StopLimit },
   } = useToggle();
   const { currency, isMobile } = useSettings();
 
@@ -361,7 +361,10 @@ export const useStopLimit = <
             ? tradeData.quote.tradeValue
             : undefined;
 
-        if (formType === TradeBaseType.price) {
+        if (
+          formType === TradeBaseType.price ||
+          formType === TradeBaseType.stopPrice
+        ) {
           amountBase =
             tradeData.base.tradeValue !== undefined
               ? tradeData.base.tradeValue
@@ -503,8 +506,8 @@ export const useStopLimit = <
     if (!allowTrade?.order?.enable) {
       setShowSupport({ isShow: true });
       setIsLimitLoading(false);
-    } else if (!order.enable) {
-      setShowTradeIsFrozen({ isShow: true, type: "Limit" });
+    } else if (!StopLimit.enable) {
+      setShowTradeIsFrozen({ isShow: true, type: "StopLimit" });
       setIsLimitLoading(false);
     } else {
       switch (priceLevel) {
@@ -512,7 +515,7 @@ export const useStopLimit = <
           setAlertOpen(true);
           break;
         default:
-          limitSubmit(undefined as any, true);
+          setConfirmed(true);
           break;
       }
     }
@@ -520,7 +523,7 @@ export const useStopLimit = <
     account.readyState,
     allowTrade.order.enable,
     limitSubmit,
-    order.enable,
+    StopLimit.enable,
     setShowSupport,
     setShowTradeIsFrozen,
   ]);
@@ -639,7 +642,7 @@ export const useStopLimit = <
       baseSymbol,
       quoteSymbol,
       tradeType: pageTradePro.tradeType,
-      limitPrice: stopLimitTradeData?.price,
+      limitPrice: stopLimitTradeData?.price?.tradeValue,
       stopPrice: pageTradePro.request?.stopPrice,
       baseValue: stopLimitTradeData?.base?.tradeValue,
       quoteValue: stopLimitTradeData?.quote?.tradeValue,
@@ -647,10 +650,7 @@ export const useStopLimit = <
         limitSubmit(e as any, true);
       },
     },
-    limitSubmit: () => {
-      setConfirmed(true);
-      // setShowAccount({isShow:true,step:})
-    },
+    limitSubmit,
     limitBtnClick,
     handlePriceError,
     tradeLimitBtnStyle: {

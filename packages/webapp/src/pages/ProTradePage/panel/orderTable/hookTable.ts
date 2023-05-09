@@ -81,8 +81,6 @@ export const useOrderList = ({
             const side =
               order.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
             const isBuy = side === TradeTypes.Buy;
-            // const tokenFirst = marketList[marketList.length - 2]
-            // const tokenLast = marketList[marketList.length - 1]
             const [tokenFirst, tokenLast] = marketList;
             const baseToken = isBuy ? tokenLast : tokenFirst;
             const quoteToken = isBuy ? tokenFirst : tokenLast;
