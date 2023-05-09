@@ -38,7 +38,7 @@ import {
   Info2Icon,
   SoursURL,
   TradeDefi,
-  TradeTypes,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
@@ -2190,22 +2190,17 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
   }: // ...props
   WithTranslation & {
     open: boolean;
-    handleClose: (event: any, isAgree?: boolean) => void;
-  } & {
-    baseSymbol: string;
-    quoteSymbol: string;
-    tradeType: TradeTypes;
-    baseValue: string;
-    quoteValue: string;
-    limitPrice: string;
-    stopPrice: string;
-  }) => {
-    // const [agree, setAgree] = React.useState(false);
-    // React.useEffect(() => {
-    //   if (!open) {
-    //     setAgree(false);
-    //   }
-    // }, [open]);
+    handleClose: (event: any) => void;
+  } & Partial<{
+      baseSymbol: string;
+      quoteSymbol: string;
+      tradeType: TradeProType;
+      baseValue: string;
+      quoteValue: string;
+      limitPrice: string;
+      stopPrice: string;
+      onSubmit: (event: any) => void;
+    }>) => {
     return (
       <Dialog
         open={open}
@@ -2356,8 +2351,10 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
             variant={"contained"}
             size={"small"}
             onClick={(e) => {
-              handleClose(e as any, true);
-              onSubmit();
+              handleClose(e as any);
+              if (typeof onSubmit === "function") {
+                onSubmit(e);
+              }
             }}
             color={"primary"}
           >

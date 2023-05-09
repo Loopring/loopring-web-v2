@@ -645,7 +645,9 @@ export const useStopLimit = <
       stopPrice: pageTradePro.request?.stopPrice,
       baseValue: stopLimitTradeData?.base?.tradeValue,
       quoteValue: stopLimitTradeData?.quote?.tradeValue,
-      onSubmit: limitSubmit,
+      onSubmit: (_e) => {
+        limitSubmit();
+      },
     },
     limitSubmit: () => {
       setConfirmed(true);
