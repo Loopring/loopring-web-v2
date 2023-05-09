@@ -1640,6 +1640,7 @@ export default {
   labelGoBtradeSwap:
     "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",
+  labelBtrade: "Block Trade",
   labelBtradeSwapFailed: "Failed!",
   labelBtradeSwapTitleDes: "What is Block Trade?",
   labelBtradeSwapContentDes:
