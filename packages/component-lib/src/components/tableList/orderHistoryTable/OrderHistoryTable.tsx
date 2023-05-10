@@ -22,7 +22,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
-  DAY_FORMAT,
   DirectionTag,
   DropDownIcon,
   EmptyValueTag,
@@ -418,7 +417,7 @@ export const OrderHistoryTable = withTranslation("tables")(
                             new Date(row.extraOrderInfo.triggerdTime)
                           ).format(YEAR_DAY_MINUTE_FORMAT)
                         : "",
-                    })}
+                    }).toString()}
                   >
                     <Typography component={"span"} paddingRight={1 / 2}>
                       {row.extraOrderInfo.stopSide ==

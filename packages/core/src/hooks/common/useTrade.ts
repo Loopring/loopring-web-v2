@@ -798,13 +798,16 @@ export function usePlaceOrder() {
         const ticker = tickerMap[params.depth.symbol];
 
         // const { close } = tickerMap[params.market];
-        let midStopPrice = ticker.close; // params.depth.mid_price ?? 0;
+        let midStopPrice = ticker?.close; // params.depth.mid_price ?? 0;
         if (params.stopLimitPrice == undefined) {
           params.stopLimitPrice = 0;
         }
-        stopSide = sdk.toBig(params.stopLimitPrice).lt(midStopPrice)
-          ? sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
-          : sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL;
+
+        stopSide = midStopPrice
+          ? sdk.toBig(params.stopLimitPrice).lt(midStopPrice)
+            ? sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
+            : sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
+          : undefined;
         myLog(
           "stopSide",
           stopSide,
@@ -813,13 +816,7 @@ export function usePlaceOrder() {
           "stopLimitPrice",
           params.stopLimitPrice
         );
-        // if (params.isBuy) {
-        //
-        // } else {
-        //   stopSide = sdk.toBig(params.stopLimitPrice).gt(midStopPrice)
-        //     ? sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
-        //     : sdk.STOP_SIDE.LESS_THAN_AND_EQUAL;
-        // }
+
         const fullParams: T = {
           ...params,
           exchangeAddress: exchangeInfo.exchangeAddress,

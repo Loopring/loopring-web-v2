@@ -51,6 +51,7 @@ export const useStopLimit = <
   const { forexMap, allowTrade } = useSystem();
   const { account } = useAccount();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
+  const { tickerMap } = useTicker();
   const {
     toggle: { StopLimit },
   } = useToggle();
@@ -537,6 +538,7 @@ export const useStopLimit = <
     const {
       minOrderInfo,
       tradeCalcProData: { stopRange },
+      market,
       // calcTradeParams,
     } = pageTradePro;
     if (account.readyState === AccountStatus.ACTIVATED) {
@@ -550,6 +552,11 @@ export const useStopLimit = <
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: "labelEnterAmount",
+        };
+      } else if (!tickerMap[market].close) {
+        return {
+          tradeBtnStatus: TradeBtnStatus.DISABLED,
+          label: "labelStopLimitCurrentlyInsufficient",
         };
       } else if (!minOrderInfo?.minAmtCheck) {
         let minOrderSize = "Error";
@@ -616,7 +623,7 @@ export const useStopLimit = <
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [stopLimitTradeData, tokenMap]);
+  }, [stopLimitTradeData, tokenMap, tickerMap]);
 
   const {
     btnStatus: tradeLimitBtnStatus,
