@@ -10,6 +10,7 @@ import {
   usePlaceOrder,
   useSubmitBtn,
   useSystem,
+  useTicker,
   useToast,
   useTokenMap,
   useTokenPrices,
