@@ -1712,7 +1712,4 @@ export default {
   labelStopLimitLabelType: "Type",
   labelStopLimitNotSupport:
     "Sorry, there is currently insufficient liquidity in this token pair to execute stop-limit orders. Please try again later or consider using a market / limit order instead.",
-  labelStopLimitTriggered:
-    " The market order has been submitted to the orderbook. Time: {{time}}",
-  labelStopLimitCurrentlyInsufficient: "Currently insufficient",
 };
