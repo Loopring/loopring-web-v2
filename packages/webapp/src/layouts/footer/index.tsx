@@ -1,20 +1,24 @@
 import React from "react";
 import {
-  FEED_BACK_LINK,
   FOOTER_LIST_MAP,
   MEDIA_LIST,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { useLocation } from "react-router-dom";
-import { Footer as FooterUI } from "@loopring-web/component-lib";
+import { Footer as FooterUI, Toast } from "@loopring-web/component-lib";
 import _ from "lodash";
+import { useTranslation } from "react-i18next";
 
 const linkListMap = _.cloneDeep(FOOTER_LIST_MAP);
 const mediaList = _.cloneDeep(MEDIA_LIST);
 export const Footer = () => {
-  // const [size, setSize] = React.useState<[number, number]>([1200, 0]);
   const location = useLocation();
+  const { t } = useTranslation();
   const isLandingPage =
     location.pathname === "/" || location.pathname === "/wallet";
+  const [showBeta, setShowBeta] = React.useState(
+    process.env?.REACT_APP_TEST_ENV == "true" ? true : false
+  );
   // const isWallet = location.pathname === '/wallet'
   React.useLayoutEffect(() => {
     function updateSize() {
@@ -25,12 +29,23 @@ export const Footer = () => {
     updateSize();
     return () => window.removeEventListener("resize", updateSize);
   }, []);
-
   return (
-    <FooterUI
-      isLandingPage={isLandingPage}
-      linkListMap={linkListMap}
-      mediaList={mediaList}
-    />
+    <>
+      <Toast
+        alertText={t("errorBetaEnv", { ns: "error" })}
+        open={showBeta}
+        autoHideDuration={TOAST_TIME}
+        onClose={() => {
+          setShowBeta(false);
+        }}
+        severity={"warning"}
+      />
+      <FooterUI
+        isBeta={process.env?.REACT_APP_TEST_ENV == "true"}
+        isLandingPage={isLandingPage}
+        linkListMap={linkListMap}
+        mediaList={mediaList}
+      />
+    </>
   );
 };
