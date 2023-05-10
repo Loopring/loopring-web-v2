@@ -14,6 +14,7 @@ import {
   Grid,
   Link,
   Modal,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { DateRange } from "@mui/lab";
@@ -21,16 +22,19 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
+  DAY_FORMAT,
   DirectionTag,
   DropDownIcon,
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
+  GoodIcon,
   RowConfig,
   TableType,
   TradeStatus,
   TradeTypes,
   UNIX_TIMESTAMP_FORMAT,
+  YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import { Filter, FilterOrderTypes } from "./components/Filter";
@@ -162,17 +166,17 @@ const TableStyled = styled(Box)<
         ? `--template-columns: ${
             isopen === "open"
               ? ispro === "pro"
-                ? `auto auto 250px auto auto ${
+                ? `auto auto ${isStopLimit ? 220 : 250}px auto auto ${
                     isStopLimit ? "auto" : ""
                   } auto auto`
-                : `auto auto 230px auto auto ${
+                : `auto auto ${isStopLimit ? 200 : 230}px auto auto ${
                     isStopLimit ? "auto" : ""
                   } 130px 140px`
               : ispro === "pro"
-              ? `auto auto 250px auto auto ${
+              ? `auto auto  ${isStopLimit ? 220 : 250}px auto auto ${
                   isStopLimit ? "auto" : ""
                 } auto auto`
-              : `auto auto 230px auto 130px ${
+              : `auto auto ${isStopLimit ? 200 : 230}px auto 130px ${
                   isStopLimit ? "auto" : ""
                 } 130px 130px`
           } !important;`
@@ -398,7 +402,35 @@ export const OrderHistoryTable = withTranslation("tables")(
             name: t("labelStopLimitStopPrice"),
             headerCellClass: "textAlignRight",
             formatter: ({ row }: any) => {
-              return (
+              return row.extraOrderInfo.isTriggerd ? (
+                <Box
+                  style={{ cursor: "pointer" }}
+                  className="rdg-cell-value textAlignRight"
+                  display={"inline-flex"}
+                  justifyContent={"center"}
+                >
+                  <Tooltip
+                    style={{ cursor: "pointer" }}
+                    className="rdg-cell-value textAlignRight"
+                    title={t("labelStopLimitTriggered", {
+                      time: row.extraOrderInfo.triggerdTime
+                        ? moment(
+                            new Date(row.extraOrderInfo.triggerdTime)
+                          ).format(YEAR_DAY_MINUTE_FORMAT)
+                        : "",
+                    })}
+                  >
+                    <Typography component={"span"} paddingRight={1 / 2}>
+                      {row.extraOrderInfo.stopSide ==
+                      sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
+                        ? "≤"
+                        : "≥"}
+                      {row.extraOrderInfo.stopPrice}
+                    </Typography>
+                    <GoodIcon />
+                  </Tooltip>
+                </Box>
+              ) : (
                 <Box
                   style={{ cursor: "pointer" }}
                   className="rdg-cell-value textAlignRight"
