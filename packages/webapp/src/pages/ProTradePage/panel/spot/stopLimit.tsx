@@ -11,7 +11,7 @@ import {
   TOAST_TIME,
   TradeProType,
 } from "@loopring-web/common-resources";
-import { usePageTradePro, useTokenMap } from "@loopring-web/core";
+import { usePageTradePro, useTicker, useTokenMap } from "@loopring-web/core";
 import { Box, Divider, Typography } from "@mui/material";
 import { useStopLimit } from "./hookStopLimit";
 
@@ -32,6 +32,7 @@ export const StopLimitView = withTranslation("common")(
     const { pageTradePro } = usePageTradePro();
     const { marketMap, tokenMap } = useTokenMap();
     const [confirmed, setConfirmed] = React.useState<boolean>(false);
+    const { tickerMap } = useTicker();
 
     //@ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
@@ -101,36 +102,47 @@ export const StopLimitView = withTranslation("common")(
               {t("labelStopLimitTitle")}
             </Typography>
           </Box>
-
           <Divider style={{ marginTop: "-1px" }} />
           <Box display={"flex"} flex={1} component={"section"}>
-            <StopLimitTrade
-              // @ts-ignore
-              stopPriceProps={{
-                handleError: handlePriceError as any,
-                decimalsLimit: marketMap[market]?.precisionForPrice,
-              }}
-              tokenPriceProps={{
-                handleError: handlePriceError as any,
-                decimalsLimit: marketMap[market]?.precisionForPrice,
-              }}
-              tradeType={pageTradePro.tradeType}
-              tokenBaseProps={{
-                disabled: isLimitLoading,
-                decimalsLimit: tokenMap[baseSymbol].precision,
-              }}
-              tokenQuoteProps={{
-                disabled: isLimitLoading,
-                decimalsLimit: tokenMap[quoteSymbol].precision,
-              }}
-              tradeLimitI18nKey={tradeLimitI18nKey}
-              tradeLimitBtnStyle={tradeLimitBtnStyle}
-              tradeLimitBtnStatus={tradeLimitBtnStatus as any}
-              handleSubmitEvent={limitBtnClick as any}
-              tradeCalcProData={pageTradePro.tradeCalcProData}
-              tradeData={stopLimitTradeData}
-              onChangeEvent={onChangeLimitEvent as any}
-            />
+            {pageTradePro.market && !tickerMap[pageTradePro.market].close && (
+              <Typography
+                variant={"body1"}
+                paddingX={2}
+                paddingTop={1}
+                color={"var(--color-warning)"}
+              >
+                {t("labelStopLimitNotSupport")}
+              </Typography>
+            )}
+            {pageTradePro.market && (
+              <StopLimitTrade
+                // @ts-ignore
+                stopPriceProps={{
+                  handleError: handlePriceError as any,
+                  decimalsLimit: marketMap[market]?.precisionForPrice,
+                }}
+                tokenPriceProps={{
+                  handleError: handlePriceError as any,
+                  decimalsLimit: marketMap[market]?.precisionForPrice,
+                }}
+                tradeType={pageTradePro.tradeType}
+                tokenBaseProps={{
+                  disabled: isLimitLoading,
+                  decimalsLimit: tokenMap[baseSymbol].precision,
+                }}
+                tokenQuoteProps={{
+                  disabled: isLimitLoading,
+                  decimalsLimit: tokenMap[quoteSymbol].precision,
+                }}
+                tradeLimitI18nKey={tradeLimitI18nKey}
+                tradeLimitBtnStyle={tradeLimitBtnStyle}
+                tradeLimitBtnStatus={tradeLimitBtnStatus as any}
+                handleSubmitEvent={limitBtnClick as any}
+                tradeCalcProData={pageTradePro.tradeCalcProData}
+                tradeData={stopLimitTradeData}
+                onChangeEvent={onChangeLimitEvent as any}
+              />
+            )}
           </Box>
         </Box>
       </>
