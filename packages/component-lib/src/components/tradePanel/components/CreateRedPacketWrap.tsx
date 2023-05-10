@@ -6,8 +6,10 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
+  IconButton,
   Radio,
   RadioGroup,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -19,7 +21,6 @@ import {
   TextField,
 } from "../../basic-lib";
 import {
-  Trans,
   useTranslation,
   WithTranslation,
   withTranslation,
@@ -40,7 +41,7 @@ import {
   TradeBtnStatus,
   GoodIcon,
   REDPACKET_ORDER_NFT_LIMIT,
-  REDPACKET_SHOW_NFTS,
+  Info2Icon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -59,6 +60,7 @@ import moment from "moment";
 import { NFTInput } from "./BasicANFTTrade";
 import { DateTimeRangePicker } from "../../datetimerangepicker";
 import BigNumber from "bignumber.js";
+import { useNotify } from "@loopring-web/core";
 
 const StyledTextFiled = styled(TextField)``;
 
@@ -400,8 +402,14 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const endMinDateTime = startDateTime
       ? moment.max(now, startDateTime.clone())
       : now;
+
+    const timeRangeMaxInSeconds =
+      tradeType === TRADE_TYPE.TOKEN
+        ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken
+        : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT;
+    // ?? 14 * 24 * 60 * 60;
     const endMaxDateTime = startDateTime
-      ? startDateTime.clone().add(7, "days")
+      ? startDateTime.clone().add(timeRangeMaxInSeconds, "seconds")
       : undefined;
 
     // @ts-ignore
@@ -485,51 +493,18 @@ export const CreateRedPacketStepWrap = withTranslation()(
                             REDPACKET_ORDER_NFT_LIMIT,
                           tradeData.balance ?? 0
                         )
+                      : tradeData.type?.partition ===
+                        sdk.LuckyTokenAmountType.AVERAGE
+                      ? Math.min(
+                          REDPACKET_ORDER_NFT_LIMIT,
+                          tradeData.balance ?? 0
+                        )
                       : Math.min(
                           (tradeData.numbers ?? 1) * REDPACKET_ORDER_NFT_LIMIT,
                           tradeData.balance ?? 0
                         ),
                 },
-                // @ts-ignore
-                handleError: ({ belong, balance: _balance, tradeValue }: T) => {
-                  // if (
-                  //   (typeof tradeValue !== "undefined" &&
-                  //     tradeData.balance &&
-                  //     tradeData.balance < tradeValue) ||
-                  //   (tradeValue && !tradeData?.balance)
-                  // ) {
-                  //   return {
-                  //     error: true,
-                  //     message: t("tokenNotEnough", { belong: belong }),
-                  //   };
-                  // } else if (
-                  //   typeof tradeValue !== "undefined" &&
-                  //   tradeData.balance &&
-                  //   sdk
-                  //     .toBig(tradeValue)
-                  //     .div(
-                  //       tradeData?.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                  //         ? (tradeData?.giftNumbers ?? 1)
-                  //         : (tradeData.numbers ?? 1)
-                  //       )
-                  //     .gt(REDPACKET_ORDER_NFT_LIMIT)
-                  // ) {
-                  //   return {
-                  //     error: true,
-                  //     message: t("errorNFTRedPacketMaxError", {
-                  //       value: REDPACKET_ORDER_NFT_LIMIT,
-                  //       ns: ["error", "common"],
-                  //     }),
-                  //   };
-                  // } else if (
-                  //   typeof tradeValue !== "undefined" &&
-                  //   sdk.toBig(tradeValue).gt(tradeData.balance ?? 0)
-                  // ) {
-                  //   return {
-                  //     error: true,
-                  //     message: t("tokenNotEnough", { belong: belong }),
-                  //   };
-                  // }
+                handleError: ({ balance: _balance }: T) => {
                   return { error: false, message: "" };
                 },
 
@@ -699,7 +674,20 @@ export const CreateRedPacketStepWrap = withTranslation()(
               className={"main-label"}
               color={"var(--color-text-third)"}
             >
-              <Trans i18nKey={"labelRedPacketStart111"}>Active Time</Trans>
+              {selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                ? t("labelRedPacketTimeRangeBlindbox")
+                : t("labelRedPacketTimeRange")}
+              <Tooltip
+                title={
+                  selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                    ? t("labelRedPacketTimeRangeBlindboxDes")!
+                    : t("labelRedPacketTimeRangeDes")!
+                }
+              >
+                <IconButton>
+                  <Info2Icon />
+                </IconButton>
+              </Tooltip>
             </Typography>
           </FormLabel>
           <Box marginTop={1}>
@@ -721,9 +709,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
               endMinDateTime={endMinDateTime}
               endMaxDateTime={endMaxDateTime}
               onEndChange={(m) => {
-                // debugger
                 const maximunTimestamp = startDateTime
-                  ? moment(startDateTime).add(7, "days").toDate().getTime()
+                  ? moment(startDateTime)
+                      .add(timeRangeMaxInSeconds, "seconds")
+                      .toDate()
+                      .getTime()
                   : 0;
                 handleOnDataChange({
                   validUntil: m
@@ -1186,7 +1176,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     const getDisabled = React.useMemo(() => {
       return disabled;
     }, [disabled]);
-
+    const showNFT = useNotify().notifyMap?.redPacket.showNFT;
     return (
       <RedPacketBoxStyle
         display={"flex"}
@@ -1233,7 +1223,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
             </CardStyleItem>
           </Grid>
           <Grid item xs={6} display={"flex"} marginBottom={2}>
-            {REDPACKET_SHOW_NFTS && (
+            {showNFT && (
               <CardStyleItem
                 className={
                   tradeType === "NFT"
