@@ -861,7 +861,7 @@ export const ConfirmLinkCopy = withTranslation("common", {
         </DialogActions>
         <DialogContent>
           <Typography component={"p"} marginY={2}>
-            Manually Selected & Copy:
+            {t("labelCopyManually")}
           </Typography>
           <TextField
             disabled={true}
@@ -2195,8 +2195,8 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
       baseSymbol: string;
       quoteSymbol: string;
       tradeType: TradeProType;
-      baseValue: string;
-      quoteValue: string;
+      baseValue: string | number;
+      quoteValue: string | number;
       limitPrice: string;
       stopPrice: string;
       onSubmit: (event: any) => void;
@@ -2207,12 +2207,14 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
         keepMounted
         onClose={(e: MouseEvent) => handleClose(e)}
         aria-describedby="alert-dialog-slide-description"
+        sx={{ width: "var(--swap-box-width)" }}
       >
         <DialogTitle>
-          {" "}
           {t(`labelStopLimit`, {
             symbol1: baseSymbol,
-            tradeType: tradeType,
+            tradeType: tradeType
+              ? tradeType[0].toUpperCase() + tradeType.substring(1)
+              : "", //tradeType,
           })}
         </DialogTitle>
         <DialogContent>
@@ -2252,7 +2254,10 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
               </Typography>
             </Trans>
           </DialogContentText>
-          <DialogContentText id="alert-dialog-stopLimit">
+          <DialogContentText
+            id="alert-dialog-stopLimit"
+            sx={{ display: "flex", flexDirection: "column" }}
+          >
             <Typography
               component={"span"}
               display={"inline-flex"}
@@ -2264,14 +2269,39 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
                 component={"span"}
                 color={"var(--color-text-secondary)"}
               >
+                {t("labelStopLimitProduct")}
+              </Typography>
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
                 {baseSymbol + " / " + quoteSymbol}
+              </Typography>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              marginTop={2}
+            >
+              <Typography
+                variant={"body1"}
+                component={"span"}
+                color={"var(--color-text-secondary)"}
+              >
+                {t("labelStopLimitLabelType")}
               </Typography>
               <Typography
                 variant={"body1"}
                 component={"span"}
                 color={"var(--color-text-primary)"}
               >
-                {t("labelStopLimitType", { tradeType })}
+                {t("labelStopLimitType", {
+                  tradeType: tradeType
+                    ? tradeType[0].toUpperCase() + tradeType.substring(1)
+                    : "",
+                })}
               </Typography>
             </Typography>
             <Typography
@@ -2340,16 +2370,10 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          {/*<Button*/}
-          {/*  variant={"outlined"}*/}
-          {/*  size={"medium"}*/}
-          {/*  onClick={(e) => handleClose(e as any)}*/}
-          {/*>*/}
-          {/*  {t("labelOrderCancel")}*/}
-          {/*</Button>*/}
           <Button
             variant={"contained"}
             size={"small"}
+            fullWidth={true}
             onClick={(e) => {
               handleClose(e as any);
               if (typeof onSubmit === "function") {
