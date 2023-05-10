@@ -21,7 +21,6 @@ import {
   TextField,
 } from "../../basic-lib";
 import {
-  Trans,
   useTranslation,
   WithTranslation,
   withTranslation,
@@ -42,7 +41,6 @@ import {
   TradeBtnStatus,
   GoodIcon,
   REDPACKET_ORDER_NFT_LIMIT,
-  REDPACKET_SHOW_NFTS,
   Info2Icon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
@@ -506,45 +504,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                           tradeData.balance ?? 0
                         ),
                 },
-                handleError: ({ belong, balance: _balance, tradeValue }: T) => {
-                  // if (
-                  //   (typeof tradeValue !== "undefined" &&
-                  //     tradeData.balance &&
-                  //     tradeData.balance < tradeValue) ||
-                  //   (tradeValue && !tradeData?.balance)
-                  // ) {
-                  //   return {
-                  //     error: true,
-                  //     message: t("tokenNotEnough", { belong: belong }),
-                  //   };
-                  // } else if (
-                  //   typeof tradeValue !== "undefined" &&
-                  //   tradeData.balance &&
-                  //   sdk
-                  //     .toBig(tradeValue)
-                  //     .div(
-                  //       tradeData?.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                  //         ? (tradeData?.giftNumbers ?? 1)
-                  //         : (tradeData.numbers ?? 1)
-                  //       )
-                  //     .gt(REDPACKET_ORDER_NFT_LIMIT)
-                  // ) {
-                  //   return {
-                  //     error: true,
-                  //     message: t("errorNFTRedPacketMaxError", {
-                  //       value: REDPACKET_ORDER_NFT_LIMIT,
-                  //       ns: ["error", "common"],
-                  //     }),
-                  //   };
-                  // } else if (
-                  //   typeof tradeValue !== "undefined" &&
-                  //   sdk.toBig(tradeValue).gt(tradeData.balance ?? 0)
-                  // ) {
-                  //   return {
-                  //     error: true,
-                  //     message: t("tokenNotEnough", { belong: belong }),
-                  //   };
-                  // }
+                handleError: ({ balance: _balance }: T) => {
                   return { error: false, message: "" };
                 },
 
