@@ -115,7 +115,7 @@ export const usePro = <C extends { [key: string]: any }>({
   const handleOnMarketChange = React.useCallback(
     async (newMarket: MarketType) => {
       setMarket(newMarket);
-      history.push("/trade/pro/" + newMarket);
+      history.push(`${path}/${newMarket}`);
     },
     []
   );

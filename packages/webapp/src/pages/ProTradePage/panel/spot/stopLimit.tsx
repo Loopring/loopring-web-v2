@@ -103,17 +103,12 @@ export const StopLimitView = withTranslation("common")(
             </Typography>
           </Box>
           <Divider style={{ marginTop: "-1px" }} />
-          <Box display={"flex"} flex={1} component={"section"}>
-            {pageTradePro.market && !tickerMap[pageTradePro.market].close && (
-              <Typography
-                variant={"body1"}
-                paddingX={2}
-                paddingTop={1}
-                color={"var(--color-warning)"}
-              >
-                {t("labelStopLimitNotSupport")}
-              </Typography>
-            )}
+          <Box
+            display={"flex"}
+            flex={1}
+            component={"section"}
+            flexDirection={"column"}
+          >
             {pageTradePro.market && (
               <StopLimitTrade
                 // @ts-ignore
@@ -142,6 +137,16 @@ export const StopLimitView = withTranslation("common")(
                 tradeData={stopLimitTradeData}
                 onChangeEvent={onChangeLimitEvent as any}
               />
+            )}
+            {pageTradePro.market && !tickerMap[pageTradePro.market].close && (
+              <Typography
+                variant={"body1"}
+                paddingX={2}
+                paddingTop={1}
+                color={"var(--color-warning)"}
+              >
+                {t("labelStopLimitNotSupport")}
+              </Typography>
             )}
           </Box>
         </Box>
