@@ -383,28 +383,19 @@ export const useAddressTypeLists = <
         label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Binance as T,
-        // todo translation
-        description:
-          "Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
-        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+        description: t('labelContactsBinanceNotSupportted'),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Huobi as T,
-        // todo translation
-        description:
-          "Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.",
-        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+        description: t('labelContactsHuobiNotSupportted')
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Others as T,
-        // todo translation
-        description:
-          "The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
-        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+        description: t('labelContactsOtherExchangesNotSupportted'),
       },
     ];
   };

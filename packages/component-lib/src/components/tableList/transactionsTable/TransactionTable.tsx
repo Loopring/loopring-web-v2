@@ -95,7 +95,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 136px auto auto auto 120px 120px !important;`
+        ? `--template-columns: 175px auto auto auto 120px 120px !important;`
         : `--template-columns: 60% 40% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -395,7 +395,13 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                     }),
                     "",
                   ]
-                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER
+                : [
+                  sdk.UserTxTypes.L2_STAKING,
+                  sdk.UserTxTypes.DUAL_INVESTMENT,
+                  sdk.UserTxTypes.SEND_LUCKY_TOKEN,
+                  sdk.UserTxTypes.TRANSFER, 
+                  sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
+                ].includes(row.side.toLowerCase())
                 ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
@@ -417,11 +423,25 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   ]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
-            const path =
-              row.txHash !== ""
-                ? etherscanBaseUrl + `/tx/${row.txHash}`
-                : Explorer +
+            let path: string
+            if ([
+              sdk.UserTxTypes.L2_STAKING,
+              sdk.UserTxTypes.DUAL_INVESTMENT,
+              sdk.UserTxTypes.SEND_LUCKY_TOKEN,
+              sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
+            ].includes(row.side.toLowerCase())) {
+              path =
+                row.txHash !== ""
+                  ? etherscanBaseUrl + `/tx/${row.txHash}`
+                  : Explorer +
+                  `tx/${row.hash}-transfer-${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`;
+            } else {
+              path =
+                row.txHash !== ""
+                  ? etherscanBaseUrl + `/tx/${row.txHash}`
+                  : Explorer +
                   `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+            }
             return (
               <Box
                 className="rdg-cell-value textAlignRight"

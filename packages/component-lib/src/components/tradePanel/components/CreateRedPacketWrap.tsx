@@ -62,7 +62,7 @@ import moment from "moment";
 import { NFTInput } from "./BasicANFTTrade";
 import { DateTimeRangePicker } from "../../datetimerangepicker";
 import BigNumber from "bignumber.js";
-import {useNotify} from "@loopring-web/core";
+import { useNotify } from "@loopring-web/core";
 
 const StyledTextFiled = styled(TextField)``;
 
@@ -124,7 +124,6 @@ export const CreateRedPacketStepWrap = withTranslation()(
     selectedType: LuckyRedPacketItem;
   } & WithTranslation) => {
     const { t } = useTranslation("common");
-
 
     const inputButtonDefaultProps = {
       label:
@@ -406,12 +405,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
       ? moment.max(now, startDateTime.clone())
       : now;
 
-    const timeRangeMaxInSeconds = tradeType === TRADE_TYPE.TOKEN
-      ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken
-      : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT
-      // ?? 14 * 24 * 60 * 60;
+    const timeRangeMaxInSeconds =
+      tradeType === TRADE_TYPE.TOKEN
+        ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken
+        : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT;
+    // ?? 14 * 24 * 60 * 60;
     const endMaxDateTime = startDateTime
-      ? startDateTime.clone().add(timeRangeMaxInSeconds, 'seconds')
+      ? startDateTime.clone().add(timeRangeMaxInSeconds, "seconds")
       : undefined;
 
     // @ts-ignore
@@ -488,11 +488,23 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 disabled,
                 tradeData: {
                   ...tradeData,
-                  balance: tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
-                    ? Math.min((tradeData.giftNumbers ?? 1) * REDPACKET_ORDER_NFT_LIMIT, tradeData.balance ?? 0)
-                    : tradeData.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
-                      ? Math.min(REDPACKET_ORDER_NFT_LIMIT, tradeData.balance ?? 0)
-                      : Math.min((tradeData.numbers ?? 1) * REDPACKET_ORDER_NFT_LIMIT, tradeData.balance ?? 0),
+                  balance:
+                    tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                      ? Math.min(
+                          (tradeData.giftNumbers ?? 1) *
+                            REDPACKET_ORDER_NFT_LIMIT,
+                          tradeData.balance ?? 0
+                        )
+                      : tradeData.type?.partition ===
+                        sdk.LuckyTokenAmountType.AVERAGE
+                      ? Math.min(
+                          REDPACKET_ORDER_NFT_LIMIT,
+                          tradeData.balance ?? 0
+                        )
+                      : Math.min(
+                          (tradeData.numbers ?? 1) * REDPACKET_ORDER_NFT_LIMIT,
+                          tradeData.balance ?? 0
+                        ),
                 },
                 handleError: ({ belong, balance: _balance, tradeValue }: T) => {
                   // if (
@@ -583,62 +595,63 @@ export const CreateRedPacketStepWrap = withTranslation()(
             })}
           </Typography>
         </Box>
-        {tradeType === TRADE_TYPE.NFT && selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
-          <Box
-            marginY={1}
-            display={"flex"}
-            alignSelf={"stretch"}
-            justifyContent={"stretch"}
-            flexDirection={"column"}
-            position={"relative"}
-          >
-            <InputCoin<any, I, any>
-              // ref={inputSplitRef}
-              label={t("labelBlindBoxRedPacketWithGift")}
-              placeholderText={t("labelQuantity")}
-              isHideError={false}
-              isShowCoinInfo={false}
-              // handleError={(data: any) => {
-              //   handleOnDataChange({
-              //     giftNumbers: data.tradeValue,
-              //   } as unknown as Partial<T>);
-              //   return {
-              //     error:
-              //       tradeData.giftNumbers &&
-              //       tradeData.numbers &&
-              //       tradeData.giftNumbers > tradeData.numbers
-              //         ? true
-              //         : false,
-              //   };
-              // }}
-              name={"giftnumbers"}
-              order={"right"}
-              handleCountChange={(data) => {
-                handleOnDataChange({
-                  giftNumbers: data.tradeValue,
-                } as unknown as Partial<T>);
-              }}
-              inputData={{
-                belong:
-                  selectedType.value.partition ==
-                  sdk.LuckyTokenAmountType.AVERAGE
-                    ? t("labelQuantity")
-                    : t("labelSplit"),
-                tradeValue: tradeData?.giftNumbers,
-              }}
-              coinMap={{}}
-              coinPrecision={undefined}
-              disabled={disabled}
-              // inputError={
-              //   tradeData.giftNumbers &&
-              //   tradeData.numbers &&
-              //   tradeData.giftNumbers > tradeData.numbers
-              //     ? { error: true }
-              //     : { error: false }
-              // }
-            />
-          </Box>
-        )}
+        {tradeType === TRADE_TYPE.NFT &&
+          selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
+            <Box
+              marginY={1}
+              display={"flex"}
+              alignSelf={"stretch"}
+              justifyContent={"stretch"}
+              flexDirection={"column"}
+              position={"relative"}
+            >
+              <InputCoin<any, I, any>
+                // ref={inputSplitRef}
+                label={t("labelBlindBoxRedPacketWithGift")}
+                placeholderText={t("labelQuantity")}
+                isHideError={false}
+                isShowCoinInfo={false}
+                // handleError={(data: any) => {
+                //   handleOnDataChange({
+                //     giftNumbers: data.tradeValue,
+                //   } as unknown as Partial<T>);
+                //   return {
+                //     error:
+                //       tradeData.giftNumbers &&
+                //       tradeData.numbers &&
+                //       tradeData.giftNumbers > tradeData.numbers
+                //         ? true
+                //         : false,
+                //   };
+                // }}
+                name={"giftnumbers"}
+                order={"right"}
+                handleCountChange={(data) => {
+                  handleOnDataChange({
+                    giftNumbers: data.tradeValue,
+                  } as unknown as Partial<T>);
+                }}
+                inputData={{
+                  belong:
+                    selectedType.value.partition ==
+                    sdk.LuckyTokenAmountType.AVERAGE
+                      ? t("labelQuantity")
+                      : t("labelSplit"),
+                  tradeValue: tradeData?.giftNumbers,
+                }}
+                coinMap={{}}
+                coinPrecision={undefined}
+                disabled={disabled}
+                // inputError={
+                //   tradeData.giftNumbers &&
+                //   tradeData.numbers &&
+                //   tradeData.giftNumbers > tradeData.numbers
+                //     ? { error: true }
+                //     : { error: false }
+                // }
+              />
+            </Box>
+          )}
         <Box
           marginY={1}
           display={"flex"}
@@ -678,7 +691,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               } as unknown as Partial<T>)
             }
             size={"large"}
-            inputProps={{ 
+            inputProps={{
               placeholder: t("labelRedPacketMemoPlaceholder"),
               maxLength: 25,
             }}
@@ -701,16 +714,16 @@ export const CreateRedPacketStepWrap = withTranslation()(
               className={"main-label"}
               color={"var(--color-text-third)"}
             >
-              {
-                selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                  ? t("labelRedPacketTimeRangeBlindbox")
-                  : t("labelRedPacketTimeRange")
-              }
-              <Tooltip title={
-                selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                  ? t("labelRedPacketTimeRangeBlindboxDes")!
-                  : t("labelRedPacketTimeRangeDes")!
-              }>
+              {selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                ? t("labelRedPacketTimeRangeBlindbox")
+                : t("labelRedPacketTimeRange")}
+              <Tooltip
+                title={
+                  selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                    ? t("labelRedPacketTimeRangeBlindboxDes")!
+                    : t("labelRedPacketTimeRangeDes")!
+                }
+              >
                 <IconButton>
                   <Info2Icon />
                 </IconButton>
@@ -736,12 +749,14 @@ export const CreateRedPacketStepWrap = withTranslation()(
               endMinDateTime={endMinDateTime}
               endMaxDateTime={endMaxDateTime}
               onEndChange={(m) => {
-                // debugger
-                const maximunTimestamp = startDateTime 
-                  ? moment(startDateTime).add(timeRangeMaxInSeconds, 'seconds').toDate().getTime()
-                  : 0
+                const maximunTimestamp = startDateTime
+                  ? moment(startDateTime)
+                      .add(timeRangeMaxInSeconds, "seconds")
+                      .toDate()
+                      .getTime()
+                  : 0;
                 handleOnDataChange({
-                  validUntil: m 
+                  validUntil: m
                     ? m.toDate().getTime() > maximunTimestamp
                       ? maximunTimestamp
                       : m.toDate().getTime()
@@ -749,10 +764,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 } as unknown as Partial<T>);
               }}
               customeEndInputPlaceHolder={
-                tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
+                tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
                   ? t("labelBlindBoxEndDate2")
                   : undefined
-              } 
+              }
             />
           </Box>
         </Box>
@@ -1248,36 +1263,38 @@ export const CreateRedPacketStepTokenType = withTranslation()(
             </CardStyleItem>
           </Grid>
           <Grid item xs={6} display={"flex"} marginBottom={2}>
-            {showNFT && <CardStyleItem
-              className={
-                tradeType === "NFT"
-                  ? "btnCard column selected"
-                  : "btnCard column"
-              }
-              sx={{ height: "100%" }}
-              onClick={() =>
-                handleOnDataChange({ tradeType: TRADE_TYPE.NFT } as any)
-              }
-            >
-              <CardContent sx={{ alignItems: "center" }}>
-                <Typography component={"span"} display={"inline-flex"}>
+            {showNFT && (
+              <CardStyleItem
+                className={
+                  tradeType === "NFT"
+                    ? "btnCard column selected"
+                    : "btnCard column"
+                }
+                sx={{ height: "100%" }}
+                onClick={() =>
+                  handleOnDataChange({ tradeType: TRADE_TYPE.NFT } as any)
+                }
+              >
+                <CardContent sx={{ alignItems: "center" }}>
                   <Typography component={"span"} display={"inline-flex"}>
-                    <Avatar
-                      variant="rounded"
-                      style={{
-                        height: "var(--redPacket-avatar)",
-                        width: "var(--redPacket-avatar)",
-                      }}
-                      // src={sellData?.icon}
-                      src={SoursURL + "images/redPacketNFT.webp"}
-                    />
+                    <Typography component={"span"} display={"inline-flex"}>
+                      <Avatar
+                        variant="rounded"
+                        style={{
+                          height: "var(--redPacket-avatar)",
+                          width: "var(--redPacket-avatar)",
+                        }}
+                        // src={sellData?.icon}
+                        src={SoursURL + "images/redPacketNFT.webp"}
+                      />
+                    </Typography>
                   </Typography>
-                </Typography>
-                <Typography component={"span"} variant={"h5"} marginTop={2}>
-                  {t("labelRedpacketNFTS")}
-                </Typography>
-              </CardContent>
-            </CardStyleItem>}
+                  <Typography component={"span"} variant={"h5"} marginTop={2}>
+                    {t("labelRedpacketNFTS")}
+                  </Typography>
+                </CardContent>
+              </CardStyleItem>
+            )}
           </Grid>
         </Grid>
         <Box width={"100%"}>

@@ -49,61 +49,63 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
       const statuses = [
         sdk.LuckyTokenWithdrawStatus.PROCESSING,
         sdk.LuckyTokenWithdrawStatus.PROCESSED,
-        
       ];
       if (LoopringAPI.luckTokenAPI && accountId && apiKey) {
         const isNft = match?.params?.item?.toUpperCase() === "NFT";
-        let responses: any[]
+        let responses: any[];
         if (showOfficial) {
-          responses = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
-            {
-              senderId: 0,
-              hash: "",
-              partitions: "0,1",
-              modes: "0,1",
-              scopes: sdk.LuckyTokenViewType.PUBLIC,
-              statuses: statuses.join(","),
-              offset: 0,
-              limit: 50,
-              official: true,
-              isNft,
-            } as any,
-            apiKey
-          ).then(async resOfficial => {
-            const officialLength = resOfficial.list.length
-            const resNonOfficial = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
+          responses = await LoopringAPI.luckTokenAPI
+            ?.getLuckTokenLuckyTokens(
               {
                 senderId: 0,
                 hash: "",
                 partitions: "0,1",
                 modes: "0,1",
                 scopes: sdk.LuckyTokenViewType.PUBLIC,
-                statuses: statuses.join(','),
-                offset,
-                limit: pagination?.pageSize - officialLength,
+                statuses: statuses.join(","),
+                offset: 0,
+                limit: 50,
+                official: true,
                 isNft,
               } as any,
               apiKey
             )
-            return [resOfficial, resNonOfficial]
-          })
-
+            .then(async (resOfficial) => {
+              const officialLength = resOfficial.list.length;
+              const resNonOfficial =
+                await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
+                  {
+                    senderId: 0,
+                    hash: "",
+                    partitions: "0,1",
+                    modes: "0,1",
+                    scopes: sdk.LuckyTokenViewType.PUBLIC,
+                    statuses: statuses.join(","),
+                    offset,
+                    limit: pagination?.pageSize - officialLength,
+                    isNft,
+                  } as any,
+                  apiKey
+                );
+              return [resOfficial, resNonOfficial];
+            });
         } else {
-          const nonOfficialRes = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
-            {
-              senderId: 0,
-              hash: "",
-              partitions: "0,1",
-              modes: "0,1",
-              scopes: sdk.LuckyTokenViewType.PUBLIC,
-              statuses: statuses.join(','),
-              offset,
-              limit: pagination?.pageSize,
-              isNft,
-            } as any,
-            apiKey
-          )
-          responses = [{}, nonOfficialRes]
+          const nonOfficialRes =
+            await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
+              {
+                senderId: 0,
+                hash: "",
+                partitions: "0,1",
+                modes: "0,1",
+                scopes: sdk.LuckyTokenViewType.PUBLIC,
+                statuses: statuses.join(","),
+                offset,
+                limit: pagination?.pageSize,
+                isNft,
+              } as any,
+              apiKey
+            );
+          responses = [{}, nonOfficialRes];
         }
 
         if (
@@ -125,7 +127,6 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
             });
           }
         } else {
-          // debugger
           setLuckTokenList({
             officialList: (responses[0]?.list ?? []) as R[],
             publicList:

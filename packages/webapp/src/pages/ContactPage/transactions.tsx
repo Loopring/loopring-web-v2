@@ -87,7 +87,6 @@ const TYPE_COLOR_MAPPING = [
 ];
 const CellStatus = ({ row }: any) => {
   const status = row["status"];
-  // debugger
   const RenderValue = styled.div`
     display: flex;
     align-items: center;
