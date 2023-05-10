@@ -861,7 +861,7 @@ export const ConfirmLinkCopy = withTranslation("common", {
         </DialogActions>
         <DialogContent>
           <Typography component={"p"} marginY={2}>
-            Manually Selected & Copy:
+            {t("labelCopyManually")}
           </Typography>
           <TextField
             disabled={true}
@@ -2298,8 +2298,9 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
                 color={"var(--color-text-primary)"}
               >
                 {t("labelStopLimitType", {
-                  tradeType:
-                    tradeType[0].toUpperCase() + tradeType.substring(1),
+                  tradeType: tradeType
+                    ? tradeType[0].toUpperCase() + tradeType.substring(1)
+                    : "",
                 })}
               </Typography>
             </Typography>

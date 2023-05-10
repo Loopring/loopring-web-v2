@@ -92,7 +92,12 @@ export const StopLimitInfo = withTranslation("common")(
               {t("labelLimitAmountContent")}
             </Typography>
           </Box>
-          <Typography marginTop={2} variant={"body1"} color={"textPrimary"}>
+          <Typography
+            component={"p"}
+            marginTop={2}
+            variant={"body1"}
+            color={"textPrimary"}
+          >
             {t("labelLimitDes")}
           </Typography>
           <Box display={"flex"} flexDirection={"column"} marginTop={2}>
@@ -103,7 +108,7 @@ export const StopLimitInfo = withTranslation("common")(
             >
               {t("labelLimitDemoTitle")}
             </Typography>
-            <Typography marginTop={1}>
+            <Typography component={"span"} marginTop={1}>
               <Avatar
                 variant="rounded"
                 style={{
@@ -119,6 +124,7 @@ export const StopLimitInfo = withTranslation("common")(
           <Box display={"flex"} flexDirection={"column"} marginTop={2}>
             <Typography
               variant={"body1"}
+              component={"div"}
               color={"textPrimary"}
               sx={{ whiteSpace: "pre-line", wordBreak: "break-all" }}
             >
