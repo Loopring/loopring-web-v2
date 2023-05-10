@@ -559,21 +559,23 @@ export const useBtradeSwap = <
     let walletMap: WalletMap<any> | undefined = undefined;
     if (account.readyState === AccountStatus.ACTIVATED) {
       walletMap = makeWalletLayer2(true).walletMap;
-      setTradeData({
-        ...tradeData,
-        sell: {
-          belong: tradeCalcData.coinSell,
-          balance: walletMap
-            ? walletMap[tradeCalcData.coinSell as string]?.count
-            : 0,
-        },
-        buy: {
-          belong: tradeCalcData.coinBuy,
-          balance: walletMap
-            ? walletMap[tradeCalcData.coinBuy as string]?.count
-            : 0,
-        },
-      } as T);
+      setTradeData((tradeData) => {
+        return {
+          ...tradeData,
+          sell: {
+            belong: tradeCalcData.coinSell,
+            balance: walletMap
+              ? walletMap[tradeCalcData.coinSell as string]?.count
+              : 0,
+          },
+          buy: {
+            belong: tradeCalcData.coinBuy,
+            balance: walletMap
+              ? walletMap[tradeCalcData.coinBuy as string]?.count
+              : 0,
+          },
+        } as T;
+      });
       setTradeCalcData((tradeCalcData) => {
         return { ...tradeCalcData, walletMap } as CAD;
       });
@@ -726,7 +728,9 @@ export const useBtradeSwap = <
           };
           return _tradeCalcData;
         });
-        setTradeData({ ...tradeDataTmp });
+        setTradeData((state) => {
+          return { ...state, ...tradeDataTmp };
+        });
         let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
         setMarket(market);
         history.push("/trade/btrade/" + _market);
@@ -1202,6 +1206,7 @@ export const useBtradeSwap = <
           tokenMap[tradeCalcData.coinSell as string].precision;
         const _tradeCalcData = {
           ...tradeCalcData,
+          isLockedNotificationChecked: false,
           coinSell: tradeCalcData.coinBuy,
           coinBuy: tradeCalcData.coinSell,
           sellPrecision,
