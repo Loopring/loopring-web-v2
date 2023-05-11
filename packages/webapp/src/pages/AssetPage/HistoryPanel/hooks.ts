@@ -112,30 +112,27 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
           });
         } else {
           const formattedList: RawDataTransactionItem[] = response.userTxs.map(
-            (order) => {
+            (o) => {
               const feePrecision = tokenMap
-                ? tokenMap[order.feeTokenSymbol].precision
+                ? tokenMap[o.feeTokenSymbol].precision
                 : undefined;
               return {
-                ...order,
-                side: order.txType as any,
+                ...o,
+                side: o.txType as any,
                 amount: {
-                  unit: order.symbol || "",
-                  value: Number(volumeToCount(order.symbol, order.amount)),
+                  unit: o.symbol || "",
+                  value: Number(volumeToCount(o.symbol, o.amount)),
                 },
                 fee: {
-                  unit: order.feeTokenSymbol || "",
+                  unit: o.feeTokenSymbol || "",
                   value: Number(
-                    volumeToCountAsBigNumber(
-                      order.feeTokenSymbol,
-                      order.feeAmount || 0
-                    )
+                    volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0)
                   ),
                 },
-                memo: order.memo || "",
-                time: order.timestamp,
-                txnHash: order.hash,
-                status: getTxnStatus(order.status),
+                memo: o.memo || "",
+                time: o.timestamp,
+                txnHash: o.hash,
+                status: getTxnStatus(o.status),
                 feePrecision: feePrecision,
               } as RawDataTransactionItem;
             }
@@ -261,7 +258,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
       if (tokenMap) {
         const keys = Object.keys(tokenMap);
         const values = Object.values(tokenMap);
-        const index = values.findIndex((token) => token.tokenId === tokenId);
+        const index = values.findIndex((o) => o.tokenId === tokenId);
         if (index > -1) {
           return keys[index];
         }
@@ -304,45 +301,45 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
                 : (response as sdk.RESULT_INFO).message,
           });
         } else {
-          const result = response.userAmmPoolTxs.map((order) => ({
+          const result = response.userAmmPoolTxs.map((o) => ({
             side:
-              order.txType === sdk.AmmTxType.JOIN
+              o.txType === sdk.AmmTxType.JOIN
                 ? AmmSideTypes.Join
                 : AmmSideTypes.Exit,
             amount: {
               from: {
-                key: getTokenName(order.poolTokens[0]?.tokenId),
+                key: getTokenName(o.poolTokens[0]?.tokenId),
                 value: String(
                   volumeToCount(
-                    getTokenName(order.poolTokens[0]?.tokenId),
-                    order.poolTokens[0]?.actualAmount
+                    getTokenName(o.poolTokens[0]?.tokenId),
+                    o.poolTokens[0]?.actualAmount
                   )
                 ),
               },
               to: {
-                key: getTokenName(order.poolTokens[1]?.tokenId),
+                key: getTokenName(o.poolTokens[1]?.tokenId),
                 value: String(
                   volumeToCount(
-                    getTokenName(order.poolTokens[1]?.tokenId),
-                    order.poolTokens[1]?.actualAmount
+                    getTokenName(o.poolTokens[1]?.tokenId),
+                    o.poolTokens[1]?.actualAmount
                   )
                 ),
               },
             },
             lpTokenAmount: String(
               volumeToCount(
-                getTokenName(order.lpToken?.tokenId),
-                order.lpToken?.actualAmount
+                getTokenName(o.lpToken?.tokenId),
+                o.lpToken?.actualAmount
               )
             ),
             fee: {
-              key: getTokenName(order.poolTokens[1]?.tokenId),
+              key: getTokenName(o.poolTokens[1]?.tokenId),
               value: volumeToCount(
-                getTokenName(order.poolTokens[1]?.tokenId),
-                order.poolTokens[1]?.feeAmount
+                getTokenName(o.poolTokens[1]?.tokenId),
+                o.poolTokens[1]?.feeAmount
               )?.toFixed(6),
             },
-            time: order.updatedAt,
+            time: o.updatedAt,
           }));
           setAmmRecordList(result);
           setShowLoading(false);
@@ -478,10 +475,7 @@ export function useDefiSideRecord(setToastOpen: (props: any) => void) {
   };
 }
 
-export const useOrderList = (
-  setToastOpen?: (props: any) => void,
-  isStopLimit = false
-) => {
+export const useOrderList = (setToastOpen?: (props: any) => void) => {
   const { t } = useTranslation(["error"]);
 
   const [orderOriginalData, setOrderOriginalData] = React.useState<
@@ -537,16 +531,16 @@ export const useOrderList = (
         } else {
           if (userOrders && Array.isArray(userOrders.orders)) {
             setTotalNum(userOrders.totalNum);
-            const data = userOrders.orders.map((order) => {
+            const data = userOrders.orders.map((o) => {
               const { baseAmount, quoteAmount, baseFilled, quoteFilled } =
-                order.volumes;
+                o.volumes;
 
-              const marketList = order.market.split("-");
+              const marketList = o.market.split("-");
               if (marketList.length === 3) {
                 marketList.shift();
               }
               const side =
-                order.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
+                o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
               const isBuy = side === TradeTypes.Buy;
               const [tokenFirst, tokenLast] = marketList;
               const baseToken = isBuy ? tokenLast : tokenFirst;
@@ -563,7 +557,7 @@ export const useOrderList = (
               const quoteValue = isBuy
                 ? volumeToCount(quoteToken, baseAmount)
                 : (volumeToCount(baseToken, baseAmount) || 0) *
-                  Number(order.price || 0);
+                  Number(o.price || 0);
               const baseVolume = volumeToCountAsBigNumber(
                 baseToken,
                 actualBaseFilled
@@ -591,12 +585,12 @@ export const useOrderList = (
                 ? (tokenMap as any)[quoteToken]?.precisionForOrder
                 : undefined;
               const precisionMarket = marketMap
-                ? marketMap[order.market]?.precisionForPrice
+                ? marketMap[o.market]?.precisionForPrice
                 : undefined;
               return {
-                market: order.market,
-                side: order.side === "BUY" ? TradeTypes.Buy : TradeTypes.Sell,
-                orderType: order.orderType,
+                market: o.market,
+                side: o.side === "BUY" ? TradeTypes.Buy : TradeTypes.Sell,
+                orderType: o.orderType,
                 amount: {
                   from: {
                     key: baseToken,
@@ -613,18 +607,15 @@ export const useOrderList = (
 
                 price: {
                   key: quoteToken,
-                  value: Number(order.price),
+                  value: Number(o.price),
                 },
-                time: order.validity.start * 1000,
-                status: order.status as unknown as TradeStatus,
-                hash: order.hash,
-                orderId: order.clientOrderId,
-                tradeChannel: order.tradeChannel,
+                time: o.validity.start * 1000,
+                status: o.status as unknown as TradeStatus,
+                hash: o.hash,
+                orderId: o.clientOrderId,
+                tradeChannel: o.tradeChannel,
                 completion: completion,
                 precisionMarket: precisionMarket,
-                // @ts-ignore
-                extraOrderInfo: order.extraOrderInfo,
-                __raw__: order,
               };
             });
 
@@ -885,11 +876,11 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 amountIn = baseAmount;
                 amountOut = quoteAmount;
                 _price = {
-                  key: toSymbol,
+                  key: quoteTokenSymbol,
                   value: getValuePrecisionThousand(
                     price,
-                    tokenMap[toSymbol].precision,
-                    tokenMap[toSymbol].precision,
+                    tokenMap[quoteTokenSymbol].precision,
+                    tokenMap[quoteTokenSymbol].precision,
                     undefined
                   ),
                 };
@@ -901,11 +892,11 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 amountOut = baseAmount;
                 amountIn = quoteAmount;
                 _price = {
-                  key: toSymbol,
+                  key: quoteTokenSymbol,
                   value: getValuePrecisionThousand(
-                    sdk.toBig(1).div(sdk.toBig(price).gt(0) ? price : 1),
-                    tokenMap[toSymbol].precision,
-                    tokenMap[toSymbol].precision,
+                    price,
+                    tokenMap[quoteTokenSymbol].precision,
+                    tokenMap[quoteTokenSymbol].precision,
                     undefined
                   ),
                 };
