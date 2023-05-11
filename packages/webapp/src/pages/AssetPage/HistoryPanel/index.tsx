@@ -107,7 +107,7 @@ const HistoryPanel = withTranslation("common")(
       totalNum: totalNumStopLimit,
       showLoading: showLoadingStopLimit,
       cancelOrder: cancelOrderStopLimit,
-    } = useOrderList(setToastOpen, true);
+    } = useOrderList(setToastOpen);
     const {
       dualList,
       showLoading: showDualLoading,
