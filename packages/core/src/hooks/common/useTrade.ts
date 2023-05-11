@@ -804,7 +804,7 @@ export function usePlaceOrder() {
         }
 
         stopSide = midStopPrice
-          ? sdk.toBig(params.stopLimitPrice).lt(midStopPrice)
+          ? sdk.toBig(params.stopLimitPrice).lte(midStopPrice)
             ? sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
             : sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
           : undefined;
