@@ -117,13 +117,13 @@ export const MyRedPacketPanel = ({
       <Tabs
         value={currentTab}
         onChange={(_event, value) => {
-          setCurrentTab(value)
+          handleTabChange(value)
         }}
         aria-label="l2-history-tabs"
         variant="scrollable"
       >
         <Tab key={"NFTs"} label={t("labelRedPacketTabNFTs")} value={TabIndex.NFTsUnClaimed} />
-        <Tab key={"Blind Box"} label={t("labelRedPacketTabNFTs")} value={TabIndex.BlindBoxUnClaimed} />
+        <Tab key={"Blind Box"} label={t("labelRedPacketTabBlindBox")} value={TabIndex.BlindBoxUnClaimed} />
       </Tabs>
     )
     : (
