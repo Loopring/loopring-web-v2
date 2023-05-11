@@ -1502,6 +1502,10 @@ export default {
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
   labelRedPacketStartWithTime: "{{time}} Start",
+  labelRedPacketTabReceived: "Received",
+  labelRedPacketTabSent: "Sent",
+  labelRedPacketTabNFTs: "NFTs",
+  labelRedPacketTabBlindBox: "Blind Box",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
