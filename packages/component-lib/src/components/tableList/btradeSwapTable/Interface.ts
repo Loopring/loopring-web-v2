@@ -17,6 +17,7 @@ export type RawDataBtradeSwapsItem = {
   price: {
     key: string;
     value: string;
+    from: string;
   };
   feeAmount: string;
   feeSymbol: string;
