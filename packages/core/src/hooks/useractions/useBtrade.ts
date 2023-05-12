@@ -193,7 +193,7 @@ export const useBtradeSwap = <
     // const account = store.getState().account;
     const sellToken = tokenMap[tradeData?.sell.belong as string];
     const buyToken = tokenMap[tradeData?.buy.belong as string];
-    const { account } = store.getState().account;
+    const account = store.getState().account;
     const { tradeCalcData, sellMinAmtInfo, sellMaxAmtInfo } = tradeBtrade;
 
     if (!sellToken || !buyToken || !tradeCalcData) {
