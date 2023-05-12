@@ -300,6 +300,7 @@ export const useBtradeSwap = <
       }
     }
   }, [
+    account.readyState,
     account,
     tokenMap,
     tradeData?.sell.belong,
@@ -490,10 +491,7 @@ export const useBtradeSwap = <
     tradeData,
     tokenMap,
     exchangeInfo,
-    account.readyState,
-    account.accountId,
-    account.apiKey,
-    account.eddsaKey.sk,
+    account,
     __SUBMIT_LOCK_TIMER__,
     setToastOpen,
     t,
