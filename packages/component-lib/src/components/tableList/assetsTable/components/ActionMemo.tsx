@@ -3,7 +3,6 @@ import { Box, Grid, ListItemText, MenuItem, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import {
   Button,
-  IconButtonStyle,
   Popover,
   PopoverPure,
   PopoverType,
@@ -13,7 +12,6 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   MoreIcon,
-  ViewMoreIcon,
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import { TFunction } from "i18next";
@@ -308,8 +306,8 @@ export default ActionMemo;
 export const LockedMemo = React.memo(
   (
     props: RawDataAssetsItem & {
-      onTokenLockHold: (item: any) => void;
-      tokenLockDetail: any[] | undefined;
+      onTokenLockHold?: (item: any) => void;
+      tokenLockDetail?: any[] | undefined;
     }
   ) => {
     const { t } = useTranslation(["tables", "common"]);
@@ -330,11 +328,13 @@ export const LockedMemo = React.memo(
             display={"inline-flex"}
             alignItems={"center"}
             component={"span"}
-            sx={{ textDecoration: "underline dotted" }}
+            sx={{ textDecoration: onTokenLockHold ? "underline dotted" : "" }}
             // @ts-ignore
             onClick={(e) => {
-              onTokenLockHold(row);
-              bindAction.onClick(e as any);
+              if (onTokenLockHold) {
+                onTokenLockHold(row);
+                bindAction.onClick(e as any);
+              }
             }}
           >
             {getValuePrecisionThousand(
