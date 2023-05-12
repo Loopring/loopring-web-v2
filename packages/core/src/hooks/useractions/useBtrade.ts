@@ -29,7 +29,7 @@ import {
   BtradeTradeCalcData,
   CoinMap,
   CustomErrorWithCode,
-  defaultSlipage,
+  defaultBlockTradeSlipage,
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
@@ -193,7 +193,7 @@ export const useBtradeSwap = <
     // const account = store.getState().account;
     const sellToken = tokenMap[tradeData?.sell.belong as string];
     const buyToken = tokenMap[tradeData?.buy.belong as string];
-
+    const account = store.getState().account;
     const { tradeCalcData, sellMinAmtInfo, sellMaxAmtInfo } = tradeBtrade;
 
     if (!sellToken || !buyToken || !tradeCalcData) {
@@ -319,12 +319,8 @@ export const useBtradeSwap = <
         buyToken: _buyToken,
       },
     } = store.getState()._router_tradeBtrade;
-    myLog(
-      "exchangeInfo",
-      exchangeInfo,
-      LoopringAPI.userAPI,
-      LoopringAPI.defiAPI
-    );
+    const account = store.getState().account;
+
     try {
       if (
         account.readyState == AccountStatus.ACTIVATED &&
@@ -463,12 +459,13 @@ export const useBtradeSwap = <
         throw new Error("api not ready");
       }
     } catch (error: any) {
+      console.log(error, error?.message, error?.stack);
       let content: string = "";
       if ([102024, 102025, 114001, 114002].includes(error?.code || 0)) {
         content =
           t("labelBtradeSwapFailed") +
           " error: " +
-          (error
+          (error && error.messageKey
             ? t(error.messageKey, { ns: "error" })
             : (error as sdk.RESULT_INFO).message);
       } else {
@@ -476,7 +473,7 @@ export const useBtradeSwap = <
         content =
           t("labelBtradeSwapFailed") +
           " error: " +
-          (error
+          (error && error.messageKey
             ? t(error.messageKey, { ns: "error" })
             : (error as sdk.RESULT_INFO).message);
       }
@@ -495,10 +492,6 @@ export const useBtradeSwap = <
     tradeData,
     tokenMap,
     exchangeInfo,
-    account.readyState,
-    account.accountId,
-    account.apiKey,
-    account.eddsaKey.sk,
     __SUBMIT_LOCK_TIMER__,
     setToastOpen,
     t,
@@ -812,6 +805,14 @@ export const useBtradeSwap = <
         const info: sdk.BTRADE_MARKET = marketMap[market];
         let maxFeeBips = info.feeBips ?? MAPFEEBIPS;
 
+        let slippage = sdk
+          .toBig(
+            _tradeData.slippage && !isNaN(_tradeData.slippage)
+              ? _tradeData.slippage
+              : defaultBlockTradeSlipage
+          )
+          .times(100)
+          .toString();
         const { btradeAmount, minAmount, l2Amount } = info;
         const calcDexOutput = sdk.calcDex({
           info,
@@ -824,7 +825,7 @@ export const useBtradeSwap = <
           marketMap,
           depth,
           feeBips: maxFeeBips.toString(),
-          slipBips: sdk.toBig(defaultSlipage).times(100).toString(),
+          slipBips: slippage,
         });
         if (
           btradeAmount &&
@@ -939,6 +940,7 @@ export const useBtradeSwap = <
           volumeSell: calcDexOutput?.sellVol as any,
           volumeBuy: calcDexOutput?.amountBSlipped?.minReceived,
           fee: totalFee,
+          slippage: sdk.toBig(slippage).div(100).toString(),
           isReverse: calcDexOutput?.isReverse,
           lastStepAt: type,
           sellMinAmtStr: getValuePrecisionThousand(
