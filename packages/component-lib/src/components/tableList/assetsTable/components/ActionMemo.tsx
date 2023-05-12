@@ -321,7 +321,7 @@ export const LockedMemo = React.memo(
     const bindAction = bindTrigger(popupState);
     const value = row["locked"];
     const precision = row["precision"];
-    if (!value) {
+    if (!Number(value)) {
       return <Box className={"textAlignRight"}>{EmptyValueTag}</Box>;
     } else {
       return (
@@ -330,6 +330,8 @@ export const LockedMemo = React.memo(
             display={"inline-flex"}
             alignItems={"center"}
             component={"span"}
+            sx={{ textDecoration: "underline dotted" }}
+            // @ts-ignore
             onClick={(e) => {
               onTokenLockHold(row);
               bindAction.onClick(e as any);
@@ -343,9 +345,9 @@ export const LockedMemo = React.memo(
               false,
               { floor: true }
             )}
-            <IconButtonStyle size={"large"} edge={"end"}>
-              <ViewMoreIcon />
-            </IconButtonStyle>
+            {/*<IconButtonStyle size={"large"} edge={"end"}>*/}
+            {/*  <ViewMoreIcon />*/}
+            {/*</IconButtonStyle>*/}
           </Typography>
           <PopoverPure
             className={"arrow-right"}

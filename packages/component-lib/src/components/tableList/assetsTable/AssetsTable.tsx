@@ -414,6 +414,7 @@ export const AssetsTable = withTranslation("tables")(
         headerCellClass: "textAlignRight",
         formatter: ({ row }) => {
           return (
+            // @ts-ignore
             <LockedMemo
               {...{
                 ...row,
