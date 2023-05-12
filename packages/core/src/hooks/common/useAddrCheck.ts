@@ -29,7 +29,12 @@ export const useAddressCheck = () => {
   const [isCFAddress, setIsCFAddress] = React.useState(false);
   const [isContractAddress, setIsContractAddress] = React.useState(false);
   const [isContract1XAddress, setIsContract1XAddress] = React.useState(false);
-  const [loopringSmartWalletVersion, setLoopringSmartWalletVersion] = React.useState(undefined as {isLoopringSmartWallet: boolean, version?: string} | undefined);
+  const [loopringSmartWalletVersion, setLoopringSmartWalletVersion] =
+    React.useState(
+      undefined as
+        | { isLoopringSmartWallet: boolean; version?: string }
+        | undefined
+    );
 
   const {
     account: { accAddress },
@@ -86,14 +91,17 @@ export const useAddressCheck = () => {
               } else {
                 setIsContractAddress(false);
               }
-              if (walletType && walletType.loopringWalletContractVersion !== "") {
+              if (
+                walletType &&
+                walletType.loopringWalletContractVersion !== ""
+              ) {
                 setLoopringSmartWalletVersion({
                   isLoopringSmartWallet: true,
-                  version: walletType.loopringWalletContractVersion
+                  version: walletType.loopringWalletContractVersion,
                 });
               } else {
                 setLoopringSmartWalletVersion({
-                  isLoopringSmartWallet: false
+                  isLoopringSmartWallet: false,
                 });
               }
               if (
@@ -182,6 +190,6 @@ export const useAddressCheck = () => {
     isContract1XAddress,
     isContractAddress,
     isActiveAccountFee,
-    loopringSmartWalletVersion
+    loopringSmartWalletVersion,
   };
 };

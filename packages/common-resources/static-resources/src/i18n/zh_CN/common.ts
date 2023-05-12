@@ -795,14 +795,14 @@ export default {
   labelExchangeHuobi: "Huobi",
   labelExchangeHuobiDes: "Transactions need to wait 24 hours",
   labelExchangeCoinbase: "Coinbase",
-  labelExchangeOthers: "Others",
+  labelExchangeOthers: "Other Exchanges",
   labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
-  labelConfirmBtrade: "Confirm Btrade Support",
+  labelConfirmBtrade: "Confirm Block Trade Support",
   labelConfirmDetail:
-    "<0>Before withdrawing, please confirm with your Btrade support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is performed via a smart contract. The Btrade depositing address may not be able to automatically acknowledge the deposit.</1>" +
-    "<2>If the deposit does not appear at the Btrade address within 24 hours, please contact your Btrade support and ask they manually acknowledge the transaction.</2>",
+    "<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>",
   labelBtradeUnderstand: "I understand and acknowledge the risk",
   labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
@@ -835,7 +835,7 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Btrade address using Loopring L2. Since the Btrade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Block Trade address using Loopring L2. Since the Block Trade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
   labelForceWithdrawConfirm1:
@@ -1029,7 +1029,7 @@ export default {
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
   labelDualCurrentPriceTip:
     "Current Price is based on USDT derived from some leading exchanges.",
-  labelDualCurrentPrice: "{{symbol}} Current Price: <1>{{price}}</1>  USDT",
+  labelDualCurrentPrice: "{{symbol}} Current Price:<1>{{price}}</1>  USDT",
   labelDualSuccess: "Subscription {{symbol}} Successfully",
   labelDualProcessing: "Waiting for completion",
   labelDualProcessingDes:
@@ -1609,13 +1609,43 @@ export default {
   labelContactsBinanceNotSupportted: 'Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.',
   labelContactsHuobiNotSupportted: 'Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.',
   labelContactsOtherExchangesNotSupportted: 'The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.',
-    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
+  "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
   labelStakingSuccess: "{{symbol}} Staking Successful",
   labelStakingFailed: "{{symbol}} Staking failed",
   labelStakingRedeemFailed: "Redeem {{symbol}} failed",
   labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
   labelStakingRedeemRemaining: "Remaining Amount",
   labelStakingRedeemDate: "Redeem Time",
+
+  labelContactsAddContact: "Add Contact",
+  labelContactsAddressTitle: "Address",
+  labelContactsAddressDes: "Enter wallet address or ENS",
+  labelContactsAddressInvalid: "Invalid address or ENS",
+  labelContactsNameTitle: "Name",
+  labelContactsNameDes: "Enter name for the contact",
+  labelContactsAddContactBtn: "Add",
+  labelContactsDeleteContact: "Delete Contact",
+  labelDeleteContactInfo: "Contact",
+  labelContactsDeleteContactBtn: "Delete",
+  labelContactsAddSuccess: "Add Contact Succeed",
+  labelContactsDeleteSuccess: "Delete Contact Succeed",
+  labelContactsEditSuccess: "Edit Contact Succeed",
+  labelContactsSendSuccess: "Send Succeed",
+  labelContactsCopySuccess: "Copied to Clipboard",
+  labelContactsAddFailed: "Add Contact Failed",
+  labelContactsDeleteFailed: "Delete Contact Failed",
+  labelContactsEditFailed: "Edit Contact Failed",
+  labelContactsSendFailed: "Send Failed",
+  labelContacts: "Contacts",
+  labelContactsSend: "Send",
+  labelContactsTransactions: "Transactions",
+  labelContactsNetworkChoose: "Choose L2 or L1 Account",
+  labelContactsNext: "Next",
+  labelContactsContactExisted: "Contact Already Existed",
+  labelNotExchangeEOA:
+    "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+  labelNotOtherSmartWallet:
+    "This wallet binds with smart contract that does not support Loopring L2. You will need to send funds to the L1 account.",
   labelBtradeSwapTitle: "Block Trade",
   labelBtradeSwapType: "Type",
   labelBtradeSwapFilled: "Filled",
@@ -1652,7 +1682,7 @@ export default {
   labelBtradePoolDes: "Loopring Pool:",
   labelBtradePool: "Loopring Pool",
   labelBtradeToleranceTooltips:
-    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade. Here is fixed at 0.1%.",
+    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade.",
   labelBtradeFeeTooltips: "The trading fee is fixed at 0.3%.",
   labelBtradeMinReceiveTooltips:
     "The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
@@ -1660,7 +1690,7 @@ export default {
   labelBtradeTime: "Time",
   labelStopLimit: "Stop-Limit {{tradeType}} {{symbol1}}",
   labelStopLimitDes:
-    "If the last price goes up to or above {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {symbol1}} at a price of {{price}} {{symbol2}} will be placed.",
+    "If the last price goes up to or above {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {{symbol1}} at a price of {{price}} {{symbol2}} will be placed.",
   labelStopLimitType: "Stop Limit / {{tradeType}}",
   labelStopLimitStopPrice: "Stop Price",
   labelStopLimitPriceLimitPrice: "Limit Price",
@@ -1668,4 +1698,8 @@ export default {
   labelStopLimitCancel: "Cancel",
   labelStopLimitConfirm: "Confirm",
   labelBtradeSwapPending: "Pending",
+  labelStopLimitTitle: "Stop-Limit",
+  labelStopPrice: "Price",
+  labelStopStopPrice: "Stop Price",
+  labelStopLimitWhatIs: "What's Stop Limit?",
 };

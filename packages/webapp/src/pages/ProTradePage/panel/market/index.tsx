@@ -303,7 +303,7 @@ export const MarketView = withTranslation("common")(
 
       return (
         <>
-          {pageTradePro.tradeArray ? (
+          {pageTradePro.tradeArray && market && marketMap ? (
             <TradePro
               // rowHeight={MarketRowHeight}
               // headerRowHeight={20}

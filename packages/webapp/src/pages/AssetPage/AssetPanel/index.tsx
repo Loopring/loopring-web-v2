@@ -44,6 +44,8 @@ export const AssetPanel = withTranslation("common")(
       allowTrade,
       setHideLpToken,
       setHideSmallBalances,
+      onTokenLockHold,
+      tokenLockDetail,
     },
     ...rest
   }: {
@@ -127,6 +129,8 @@ export const AssetPanel = withTranslation("common")(
                   showFilter: true,
                   allowTrade,
                   onSend,
+                  onTokenLockHold: onTokenLockHold as any,
+                  tokenLockDetail,
                   onReceive,
                   isLoading: assetBtnStatus === TradeBtnStatus.LOADING,
                   getMarketArrayListCallback: getTokenRelatedMarketArray,

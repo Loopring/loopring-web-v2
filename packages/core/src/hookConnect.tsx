@@ -180,7 +180,13 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 }
 
 export const ViewAccountTemplate = React.memo(
-  ({ activeViewTemplate, unlockWording }: { activeViewTemplate: JSX.Element, unlockWording?: string }) => {
+  ({
+    activeViewTemplate,
+    unlockWording,
+  }: {
+    activeViewTemplate: JSX.Element;
+    unlockWording?: string;
+  }) => {
     const { account } = useAccount();
     const { t } = useTranslation(["common", "layout"]);
     const { isMobile } = useSettings();

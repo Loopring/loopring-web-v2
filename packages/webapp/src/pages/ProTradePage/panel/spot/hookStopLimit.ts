@@ -10,6 +10,7 @@ import {
   usePlaceOrder,
   useSubmitBtn,
   useSystem,
+  useTicker,
   useToast,
   useTokenMap,
   useTokenPrices,
@@ -21,13 +22,12 @@ import {
   IBData,
   MarketType,
   myLog,
-  TradeProType,
-  TradeBaseType,
   TradeBtnStatus,
+  TradeBaseType,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import {
-  DepthType,
-  LimitTradeData,
+  StopLimitTradeData,
   useOpenModals,
   useSettings,
   useToggle,
@@ -36,23 +36,24 @@ import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import * as _ from "lodash";
 
-export const useLimit = <C extends { [key: string]: any }>({
+export const useStopLimit = <
+  C extends { [key: string]: any },
+  T extends StopLimitTradeData<I>,
+  I extends IBData<any>
+>({
   market,
+  setConfirmed,
 }: { market: MarketType } & any) => {
-  const {
-    pageTradePro,
-    updatePageTradePro,
-    // __DAYS__,
-    __SUBMIT_LOCK_TIMER__,
-    // __TOAST_AUTO_CLOSE_TIMER__
-  } = usePageTradePro();
+  const { pageTradePro, updatePageTradePro, __SUBMIT_LOCK_TIMER__ } =
+    usePageTradePro();
   const { marketMap, tokenMap } = useTokenMap();
   const { tokenPrices } = useTokenPrices();
   const { forexMap, allowTrade } = useSystem();
   const { account } = useAccount();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
+  const { tickerMap } = useTicker();
   const {
-    toggle: { order },
+    toggle: { StopLimit },
   } = useToggle();
   const { currency, isMobile } = useSettings();
 
@@ -78,24 +79,27 @@ export const useLimit = <C extends { [key: string]: any }>({
       tokenPrices[quoteSymbol as string] *
       (forexMap[currency] ?? 0);
 
-  const [limitTradeData, setLimitTradeData] = React.useState<
-    LimitTradeData<IBData<any>>
-  >({
+  const [stopLimitTradeData, setStopLimitTradeData] = React.useState<T>({
     base: {
       belong: baseSymbol,
       balance: walletMap ? walletMap[baseSymbol as string]?.count : 0,
-    } as IBData<any>,
+    } as I,
     quote: {
       belong: quoteSymbol,
       balance: walletMap ? walletMap[quoteSymbol as string]?.count : 0,
-    } as IBData<any>,
+    } as I,
     price: {
       belong: pageTradePro.tradeCalcProData.coinQuote,
-      tradeValue: tradePrice,
+      tradeValue: undefined,
       balance,
-    } as IBData<any>,
+    } as I,
+    stopPrice: {
+      belong: pageTradePro.tradeCalcProData.coinQuote,
+      tradeValue: undefined,
+      balance,
+    } as I,
     type: pageTradePro.tradeType ?? TradeProType.buy,
-  });
+  } as T);
   const [isLimitLoading, setIsLimitLoading] = React.useState(false);
 
   const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -103,93 +107,46 @@ export const useLimit = <C extends { [key: string]: any }>({
   React.useEffect(() => {
     resetTradeData();
   }, [pageTradePro.tradeCalcProData.walletMap, pageTradePro.market, currency]);
-
   React.useEffect(() => {
-    if (pageTradePro.chooseDepth) {
-      const {
-        system: { forexMap },
-        settings: { currency },
-      } = store.getState();
-      //@ts-ignore
-      const [, baseSymbol, quoteSymbol] =
-        pageTradePro.market.match(/(\w+)-(\w+)/i);
-      const { decimals: baseDecimal, precision: basePrecision } =
-        tokenMap[baseSymbol];
-      const tradePrice = pageTradePro.chooseDepth
-        ? pageTradePro.chooseDepth.price
-        : pageTradePro.market === market && pageTradePro.ticker
-        ? pageTradePro.ticker.close
-          ? pageTradePro.ticker.close.toFixed(marketPrecision)
-          : pageTradePro?.depth?.mid_price.toFixed(marketPrecision)
-        : 0;
-      let balance =
-        tradePrice &&
-        tokenPrices &&
-        forexMap &&
-        Number(tradePrice) *
-          tokenPrices[quoteSymbol as string] *
-          (forexMap[currency] ?? 0);
+    const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+    if (
+      pageTradePro?.depth?.symbol === pageTradePro.market &&
+      pageTradePro?.ticker?.close
+    ) {
+      const midStopPrice = pageTradePro.ticker.close;
+      const [, , _quoteSymbol] = market.match(/(\w+)-(\w+)/i);
+      const quoteTokenInfo = tokenMap[_quoteSymbol];
 
-      if (
-        (pageTradePro.tradeType === TradeProType.buy &&
-          pageTradePro.chooseDepth.type === DepthType.ask) ||
-        (pageTradePro.tradeType === TradeProType.sell &&
-          pageTradePro.chooseDepth.type === DepthType.bid)
-      ) {
-        const amount = getValuePrecisionThousand(
-          sdk.toBig(pageTradePro.chooseDepth.amtTotal).div("1e" + baseDecimal),
-          undefined,
-          undefined,
-          basePrecision,
-          true
-        ).replaceAll(sdk.SEP, "");
-        onChangeLimitEvent(
-          {
-            ...limitTradeData,
-            base: {
-              ...limitTradeData.base,
-              tradeValue: Number(amount),
-            },
-            price: {
-              ...limitTradeData.price,
-              tradeValue: Number(tradePrice),
-              balance: Number(balance) ?? 0,
-            },
-          },
-          TradeBaseType.price
-        );
-        // if(account.readyState === 'ACTIVATED'){
-        //
-        // }else{
-        //
-        //
-        //     // const amtTotalForShow = pageTradePro.chooseDepth.amtTotalForShow;
-        //
-        // }
-      } else {
-        onChangeLimitEvent(
-          {
-            ...limitTradeData,
-            price: {
-              ...limitTradeData.price,
-              tradeValue: Number(tradePrice),
-              balance: getValuePrecisionThousand(
-                balance,
-                undefined,
-                undefined,
-                undefined,
-                true,
-                { isFait: true }
-              ),
-            },
-          },
-          TradeBaseType.price
-        );
-      }
-
-      // (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType)
+      updatePageTradePro({
+        ...pageTradePro,
+        tradeCalcProData: {
+          ...pageTradePro.tradeCalcProData,
+          stopRange: [
+            getValuePrecisionThousand(
+              sdk.toBig(midStopPrice).div(10).toString(),
+              quoteTokenInfo.precision,
+              quoteTokenInfo.precision,
+              undefined,
+              false
+            ),
+            getValuePrecisionThousand(
+              sdk.toBig(midStopPrice).times(10).toString(),
+              quoteTokenInfo.precision,
+              quoteTokenInfo.precision,
+              undefined,
+              false
+            ),
+          ],
+        },
+      });
+    } else {
+      setToastOpen({
+        open: true,
+        type: "error",
+        content: t("labelLimitMarket"),
+      });
     }
-  }, [pageTradePro.chooseDepth]);
+  }, [pageTradePro?.ticker?.close]);
 
   const resetTradeData = React.useCallback(
     (type?: TradeProType) => {
@@ -197,21 +154,7 @@ export const useLimit = <C extends { [key: string]: any }>({
       const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
       // @ts-ignore
       const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
-      setLimitTradeData((state) => {
-        const tradePrice =
-          pageTradePro.market === market && pageTradePro.ticker
-            ? pageTradePro.ticker.close
-              ? pageTradePro.ticker.close.toFixed(marketPrecision)
-              : pageTradePro?.depth?.mid_price.toFixed(marketPrecision)
-            : 0;
-        let balance =
-          tradePrice &&
-          tokenPrices &&
-          forexMap &&
-          Number(tradePrice) *
-            tokenPrices[quoteSymbol as string] *
-            (forexMap[currency] ?? 0);
-
+      setStopLimitTradeData((state) => {
         return {
           ...state,
           type: type ?? pageTradePro.tradeType,
@@ -225,8 +168,13 @@ export const useLimit = <C extends { [key: string]: any }>({
           } as IBData<any>,
           price: {
             belong: quoteSymbol,
-            tradeValue: tradePrice,
-            balance,
+            tradeValue: undefined,
+            balance: 0,
+          } as IBData<any>,
+          stopPrice: {
+            belong: quoteSymbol,
+            tradeValue: undefined,
+            balance: 0,
           } as IBData<any>,
         };
       });
@@ -238,7 +186,7 @@ export const useLimit = <C extends { [key: string]: any }>({
         buyUserOrderInfo: null,
         request: null,
         calcTradeParams: null,
-        limitCalcTradeParams: null,
+        stopLimitCalcTradeParams: null,
         chooseDepth: null,
         tradeCalcProData: {
           ...pageTradePro.tradeCalcProData,
@@ -250,14 +198,7 @@ export const useLimit = <C extends { [key: string]: any }>({
         },
       });
     },
-    [
-      market,
-      updatePageTradePro,
-      marketPrecision,
-      tokenPrices,
-      forexMap,
-      currency,
-    ]
+    [market, marketPrecision, tokenPrices, forexMap, currency]
   );
 
   const limitSubmit = React.useCallback(
@@ -291,8 +232,8 @@ export const useLimit = <C extends { [key: string]: any }>({
           myLog(requestClone);
 
           const response: { hash: string } | any =
-            await LoopringAPI.userAPI.submitOrder(
-              requestClone,
+            await LoopringAPI.userAPI.submitStopOrder(
+              requestClone as any,
               account.eddsaKey.sk,
               account.apiKey
             );
@@ -405,9 +346,9 @@ export const useLimit = <C extends { [key: string]: any }>({
     [__SUBMIT_LOCK_TIMER__, resetTradeData, setToastOpen, t]
   );
 
-  const { makeLimitReqInHook } = usePlaceOrder();
+  const { makeStopLimitReqInHook } = usePlaceOrder();
   const onChangeLimitEvent = React.useCallback(
-    (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType) => {
+    (tradeData: T, formType: TradeBaseType) => {
       const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
 
       if (formType === TradeBaseType.tab) {
@@ -422,7 +363,10 @@ export const useLimit = <C extends { [key: string]: any }>({
             ? tradeData.quote.tradeValue
             : undefined;
 
-        if (formType === TradeBaseType.price) {
+        if (
+          formType === TradeBaseType.price ||
+          formType === TradeBaseType.stopPrice
+        ) {
           amountBase =
             tradeData.base.tradeValue !== undefined
               ? tradeData.base.tradeValue
@@ -435,18 +379,17 @@ export const useLimit = <C extends { [key: string]: any }>({
               : undefined;
         }
 
-        // myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type, amountBase, amountQuote)
-
         const {
-          limitRequest,
+          stopLimitRequest,
           calcTradeParams,
           sellUserOrderInfo,
           buyUserOrderInfo,
           minOrderInfo,
-        } = makeLimitReqInHook({
+        } = makeStopLimitReqInHook({
           isBuy: tradeData.type === "buy",
           base: tradeData.base.belong,
           quote: tradeData.quote.belong,
+          stopLimitPrice: tradeData.stopPrice.tradeValue as number,
           price: tradeData.price.tradeValue as number,
           depth: pageTradePro.depthForCalc,
           amountBase,
@@ -458,8 +401,11 @@ export const useLimit = <C extends { [key: string]: any }>({
           sellUserOrderInfo,
           buyUserOrderInfo,
           minOrderInfo,
-          request: limitRequest as sdk.SubmitOrderRequestV3,
-          limitCalcTradeParams: calcTradeParams,
+          request: stopLimitRequest as sdk.SubmitOrderRequestV3,
+          stopLimitCalcTradeParams: {
+            ...calcTradeParams,
+            stopPrice: tradeData?.stopPrice?.tradeValue?.toString(),
+          },
           tradeCalcProData: {
             ...pageTradePro.tradeCalcProData,
             fee:
@@ -468,15 +414,27 @@ export const useLimit = <C extends { [key: string]: any }>({
                 : undefined,
           },
         });
-        setLimitTradeData((state) => {
+        setStopLimitTradeData((state) => {
           const tradePrice = tradeData.price.tradeValue;
           let balance =
             tradePrice &&
             tokenPrices &&
             forexMap &&
-            Number(tradePrice) *
-              tokenPrices[quoteSymbol as string] *
-              (forexMap[currency] ?? 0);
+            sdk
+              .toBig(tradePrice)
+              .times(tokenPrices[quoteSymbol as string])
+              .times(forexMap[currency] ?? 0)
+              .toFixed(2);
+          const stopPrice = tradeData.stopPrice.tradeValue;
+          const stopPriceBalance =
+            stopPrice &&
+            tokenPrices &&
+            forexMap &&
+            sdk
+              .toBig(stopPrice)
+              .times(tokenPrices[quoteSymbol as string])
+              .times(forexMap[currency] ?? 0)
+              .toFixed(2);
 
           return {
             ...state,
@@ -484,6 +442,11 @@ export const useLimit = <C extends { [key: string]: any }>({
               belong: quoteSymbol,
               tradeValue: tradePrice,
               balance,
+            } as IBData<any>,
+            stopPrice: {
+              belong: quoteSymbol,
+              tradeValue: stopPrice,
+              balance: stopPriceBalance,
             } as IBData<any>,
             base: {
               ...state.base,
@@ -499,8 +462,7 @@ export const useLimit = <C extends { [key: string]: any }>({
     },
     [
       resetTradeData,
-      makeLimitReqInHook,
-      updatePageTradePro,
+      makeStopLimitReqInHook,
       market,
       tokenPrices,
       quoteSymbol,
@@ -546,8 +508,8 @@ export const useLimit = <C extends { [key: string]: any }>({
     if (!allowTrade?.order?.enable) {
       setShowSupport({ isShow: true });
       setIsLimitLoading(false);
-    } else if (!order.enable) {
-      setShowTradeIsFrozen({ isShow: true, type: "Limit" });
+    } else if (!StopLimit.enable) {
+      setShowTradeIsFrozen({ isShow: true, type: "StopLimit" });
       setIsLimitLoading(false);
     } else {
       switch (priceLevel) {
@@ -555,7 +517,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           setAlertOpen(true);
           break;
         default:
-          limitSubmit(undefined as any, true);
+          setConfirmed(true);
           break;
       }
     }
@@ -563,7 +525,7 @@ export const useLimit = <C extends { [key: string]: any }>({
     account.readyState,
     allowTrade.order.enable,
     limitSubmit,
-    order.enable,
+    StopLimit.enable,
     setShowSupport,
     setShowTradeIsFrozen,
   ]);
@@ -575,19 +537,26 @@ export const useLimit = <C extends { [key: string]: any }>({
     const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
     const {
       minOrderInfo,
+      tradeCalcProData: { stopRange },
+      market,
       // calcTradeParams,
     } = pageTradePro;
     if (account.readyState === AccountStatus.ACTIVATED) {
       // const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
       if (
-        limitTradeData?.base.tradeValue === undefined ||
-        limitTradeData?.quote.tradeValue === undefined ||
-        limitTradeData?.base.tradeValue === 0 ||
-        limitTradeData?.quote.tradeValue === 0
+        stopLimitTradeData?.base.tradeValue === undefined ||
+        stopLimitTradeData?.quote.tradeValue === undefined ||
+        stopLimitTradeData?.base.tradeValue === 0 ||
+        stopLimitTradeData?.quote.tradeValue === 0
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: "labelEnterAmount",
+        };
+      } else if (!tickerMap[market].close) {
+        return {
+          tradeBtnStatus: TradeBtnStatus.DISABLED,
+          label: "labelStopLimitCurrentlyInsufficient",
         };
       } else if (!minOrderInfo?.minAmtCheck) {
         let minOrderSize = "Error";
@@ -610,23 +579,51 @@ export const useLimit = <C extends { [key: string]: any }>({
       } else if (
         sdk
           .toBig(
-            limitTradeData[
-              limitTradeData.type === TradeProType.buy ? "quote" : "base"
+            stopLimitTradeData[
+              stopLimitTradeData.type === TradeProType.buy ? "quote" : "base"
             ]?.tradeValue ?? ""
           )
           .gt(
-            limitTradeData[
-              limitTradeData.type === TradeProType.buy ? "quote" : "base"
+            stopLimitTradeData[
+              stopLimitTradeData.type === TradeProType.buy ? "quote" : "base"
             ].balance
           )
       ) {
         return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
       } else {
-        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
+        if (
+          // @ts-ignore
+          sdk
+            .toBig(stopLimitTradeData[TradeBaseType.stopPrice]?.tradeValue ?? 0)
+            .lte(0)
+        ) {
+          return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
+        } else if (
+          stopRange &&
+          stopRange[0] &&
+          stopRange[1] &&
+          (sdk
+            // @ts-ignore
+            .toBig(stopLimitTradeData[TradeBaseType.stopPrice]?.tradeValue ?? 0)
+            .lt(stopRange[0]) ||
+            sdk
+              // @ts-ignore
+              .toBig(
+                stopLimitTradeData[TradeBaseType.stopPrice]?.tradeValue ?? 0
+              )
+              .gt(stopRange[1]))
+        ) {
+          return {
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+            label: `labelLimitStopPriceMinMax| ${stopRange[0]}-${stopRange[1]}`,
+          };
+        } else {
+          return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
+        }
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [limitTradeData, tokenMap]);
+  }, [stopLimitTradeData, tokenMap, tickerMap]);
 
   const {
     btnStatus: tradeLimitBtnStatus,
@@ -645,10 +642,22 @@ export const useLimit = <C extends { [key: string]: any }>({
     limitAlertOpen: alertOpen,
     resetLimitData: resetTradeData,
     isLimitLoading: false,
-    limitTradeData,
+    stopLimitTradeData,
     onChangeLimitEvent,
     tradeLimitI18nKey,
     tradeLimitBtnStatus,
+    confirmStopLimit: {
+      baseSymbol,
+      quoteSymbol,
+      tradeType: pageTradePro.tradeType,
+      limitPrice: stopLimitTradeData?.price?.tradeValue,
+      stopPrice: pageTradePro.request?.stopPrice,
+      baseValue: stopLimitTradeData?.base?.tradeValue,
+      quoteValue: stopLimitTradeData?.quote?.tradeValue,
+      onSubmit: (e: any) => {
+        limitSubmit(e as any, true);
+      },
+    },
     limitSubmit,
     limitBtnClick,
     handlePriceError,
@@ -662,6 +671,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           : "1.6rem",
       },
     },
+
     // marketTicker,
   };
 };

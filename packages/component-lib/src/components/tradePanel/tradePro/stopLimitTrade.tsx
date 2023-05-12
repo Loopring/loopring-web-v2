@@ -1,6 +1,11 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import { BtnPercentage, InputCoin, InputSize } from "../../basic-lib";
-import { LimitTradeData, TradeLimitProps } from "../Interface";
+import {
+  LimitTradeData,
+  StopLimitTradeData,
+  TradeLimitProps,
+  TradeStopLimitProps,
+} from "../Interface";
 import {
   CoinInfo,
   CoinKey,
@@ -8,6 +13,7 @@ import {
   CurrencyToTag,
   IBData,
   PriceTag,
+  TradeBaseType,
   TradeBtnStatus,
   TradeCalcProData,
   TradeProType,
@@ -18,17 +24,18 @@ import { useCommon } from "./hookCommon";
 import { Button } from "./../../index";
 import React from "react";
 import { useSettings } from "../../../stores";
+import * as sdk from "@loopring-web/loopring-sdk";
 
-export const LimitTrade = withTranslation("common", { withRef: true })(
+export const StopLimitTrade = withTranslation("common", { withRef: true })(
   <
-    L extends LimitTradeData<T>,
+    L extends StopLimitTradeData<T>,
     T extends IBData<I>,
     TCD extends TradeCalcProData<I>,
     I = CoinKey<any>
   >({
     tradeData = { type: TradeProType.sell } as L,
     ...props
-  }: TradeLimitProps<L, T, TCD, I> & WithTranslation) => {
+  }: TradeStopLimitProps<L, T, TCD, I> & WithTranslation) => {
     const {
       t,
       tradeType,
@@ -36,11 +43,13 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
       tradeLimitBtnStatus,
       tradeLimitBtnStyle,
       tokenPriceProps,
+      stopPriceProps,
       handleSubmitEvent,
       onChangeEvent,
     } = props;
     const { currency } = useSettings();
     const priceRef = React.useRef();
+    const stopPriceRef = React.useRef();
     const {
       quoteRef,
       baseRef,
@@ -66,7 +75,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
     });
     const propsPrice = React.useMemo(() => {
       return {
-        label: t("labelProPrice"),
+        label: t("labelStopPrice"),
         subLabel: `\u2248 ${PriceTag[CurrencyToTag[currency]]}`,
         emptyText: t("tokenSelectToken"),
         placeholderText: "0.00",
@@ -81,11 +90,48 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
         t,
       };
     }, [tradeType, TradeProType, tokenPriceProps, handleCountChange]);
-
-    // const fee =
-    //   tradeCalcProData && tradeCalcProData.fee
-    //     ? (parseFloat(tradeCalcProData.fee) / 100).toString() + "%"
-    //     : EmptyValueTag;
+    const propsStopPrice = React.useMemo(() => {
+      return {
+        label: t("labelStopStopPrice"),
+        subLabel: `\u2248 ${PriceTag[CurrencyToTag[currency]]}`,
+        emptyText: t("tokenSelectToken"),
+        placeholderText:
+          tradeCalcProData.stopRange &&
+          tradeCalcProData.stopRange[0] &&
+          tradeCalcProData.stopRange[1]
+            ? t("labelStopLimitMinMax", {
+                minValue: tradeCalcProData.stopRange[0],
+                maxValue: tradeCalcProData.stopRange[1],
+              })
+            : "0.00",
+        size: InputSize.small,
+        order: '"right"' as any,
+        coinPrecision: 2,
+        coinLabelStyle: { color: "var(--color-text-secondary)" },
+        isShowCoinIcon: false,
+        ...stopPriceProps,
+        handleCountChange,
+        maxAllow: false,
+        handleError: (data: T) => {
+          if (
+            data.tradeValue &&
+            tradeCalcProData.stopRange &&
+            tradeCalcProData.stopRange[1] &&
+            tradeCalcProData.stopRange[0] &&
+            (sdk.toBig(data.tradeValue).gt(tradeCalcProData.stopRange[1]) ||
+              sdk.toBig(data.tradeValue).lt(tradeCalcProData.stopRange[0]))
+          ) {
+            return {
+              error: true,
+            };
+          }
+          return {
+            error: false,
+          };
+        },
+        t,
+      };
+    }, [tradeType, TradeProType, stopPriceProps, handleCountChange]);
 
     return (
       <Box
@@ -124,8 +170,27 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
         <Box className={"trade-panel"} paddingX={2} paddingTop={2}>
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
+              ref={stopPriceRef as any}
+              name={TradeBaseType.stopPrice}
+              disabled={false}
+              {...({
+                ...propsStopPrice,
+                isShowCoinInfo: true,
+                isShowCoinIcon: false,
+                maxAllow: false,
+                isHideError: true,
+                inputData: tradeData ? tradeData.stopPrice : ({} as any),
+                coinMap:
+                  tradeCalcProData && tradeCalcProData.coinInfoMap
+                    ? tradeCalcProData.coinInfoMap
+                    : ({} as CoinMap<I, CoinInfo<I>>),
+              } as any)}
+            />
+          </Box>
+          <Box paddingTop={2}>
+            <InputCoin<any, I, CoinInfo<I>>
               ref={priceRef as any}
-              name={"price"}
+              name={TradeBaseType.price}
               disabled={false}
               {...({
                 ...propsPrice,
@@ -144,7 +209,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={baseRef as any}
-              name={"base"}
+              name={TradeBaseType.base}
               disabled={getDisabled()}
               {...{
                 ...propsBase,
@@ -199,7 +264,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={quoteRef}
-              name={"quote"}
+              name={TradeBaseType.quote}
               disabled={getDisabled()}
               {...{
                 ...propsQuote,
@@ -215,10 +280,6 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               }}
             />
           </Box>
-          {/*</Grid>*/}
-          {/*<Grid item>*/}
-
-          {/*< label={tradeCalcProData.baseToken} coinMap={tradeCalcProData.coinMap} />*/}
         </Box>
         <Box className={"info-panel"} paddingX={2} paddingTop={2}></Box>
         <Box paddingX={2} paddingTop={2}>

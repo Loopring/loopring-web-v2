@@ -87,7 +87,6 @@ const TYPE_COLOR_MAPPING = [
 ];
 const CellStatus = ({ row }: any) => {
   const status = row["status"];
-  // debugger
   const RenderValue = styled.div`
     display: flex;
     align-items: center;
@@ -201,7 +200,6 @@ interface TransactionTableProps {
 
 // Filter
 
-
 const TransactionTable = withTranslation(["tables", "common"])(
   (props: TransactionTableProps & WithTranslation) => {
     const {
@@ -227,7 +225,7 @@ const TransactionTable = withTranslation(["tables", "common"])(
       DateRange<Date | string>
     >(["", ""]);
     const [filterToken, setFilterToken] = React.useState<string>("all");
-  
+
     const updateData = debounce(
       ({
         tableType,
@@ -415,7 +413,9 @@ const TransactionTable = withTranslation(["tables", "common"])(
             const receiverAddress = /chain_withdrawal/i.test(
               row.side.toLowerCase()
             )
-              ? (row.withdrawalInfo ? getShortAddr(row.withdrawalInfo.recipient, isMobile) : "")
+              ? row.withdrawalInfo
+                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
+                : ""
               : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
             // myLog("receiverAddress", row.receiverAddress);
@@ -851,7 +851,6 @@ const TransactionTable = withTranslation(["tables", "common"])(
   }
 );
 
-
 export const ContactTransactionsPage = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const history = useHistory();
@@ -883,11 +882,11 @@ export const ContactTransactionsPage = withTranslation("common")(
       txsTotal,
       showLoading: showTxsLoading,
       getUserTxnList,
-    } = useTransactions()
+    } = useTransactions();
     useEffect(() => {
-      getUserTxnList({})
-    }, [])
-    
+      getUserTxnList({});
+    }, []);
+
     return (
       <Box flex={1} display={"flex"} flexDirection={"column"}>
         <Box marginBottom={2}>
@@ -915,8 +914,7 @@ export const ContactTransactionsPage = withTranslation("common")(
             marginLeft={2}
             display={"flex"}
             sx={isMobile ? { maxWidth: "calc(100vw - 32px)" } : {}}
-          >
-          </Box>
+          ></Box>
           <Box
             className="tableWrapper table-divide-short"
             display={"flex"}

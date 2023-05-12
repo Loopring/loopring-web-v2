@@ -135,7 +135,7 @@ export const ModalAccountInfo = withTranslation("common")(
                 setShowWithdraw({ isShow: false });
                 onBackSend();
               }
-            }
+            },
           }}
           depositProps={{
             ...depositProps,

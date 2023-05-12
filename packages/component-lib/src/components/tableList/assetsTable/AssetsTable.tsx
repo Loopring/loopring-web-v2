@@ -16,7 +16,7 @@ import {
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { CoinIcons } from "./components/CoinIcons";
-import ActionMemo from "./components/ActionMemo";
+import ActionMemo, { LockedMemo } from "./components/ActionMemo";
 import { Currency, XOR } from "@loopring-web/loopring-sdk";
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
@@ -103,8 +103,8 @@ export type RawDataAssetsItem = {
   tokenValueDollar: number;
 };
 
-export type AssetsTableProps = {
-  rawData: RawDataAssetsItem[];
+export type AssetsTableProps<R = RawDataAssetsItem> = {
+  rawData: R[];
   isInvest?: boolean;
   pagination?: {
     pageSize: number;
@@ -120,6 +120,8 @@ export type AssetsTableProps = {
   rowConfig?: typeof RowConfig;
   disableWithdrawList: string[];
   forexMap: ForexMap<Currency>;
+  onTokenLockHold?: (item: R) => void;
+  tokenLockDetail?: any[] | undefined;
 } & XOR<
   {
     hideInvestToken: boolean;
@@ -149,6 +151,8 @@ export const AssetsTable = withTranslation("tables")(
       setHideSmallBalances,
       forexMap,
       rowConfig = RowConfig,
+      onTokenLockHold,
+      tokenLockDetail,
       ...rest
     } = props;
 
@@ -273,19 +277,14 @@ export const AssetsTable = withTranslation("tables")(
         name: t("labelLocked"),
         headerCellClass: "textAlignRight",
         formatter: ({ row }) => {
-          const value = row["locked"];
-          const precision = row["precision"];
           return (
-            <Box className={"textAlignRight"}>
-              {getValuePrecisionThousand(
-                value,
-                precision,
-                precision,
-                undefined,
-                false,
-                { floor: true }
-              )}
-            </Box>
+            <LockedMemo
+              {...{
+                ...row,
+                onTokenLockHold,
+                tokenLockDetail,
+              }}
+            />
           );
         },
       },
@@ -414,19 +413,15 @@ export const AssetsTable = withTranslation("tables")(
         name: t("labelLocked"),
         headerCellClass: "textAlignRight",
         formatter: ({ row }) => {
-          const value = row["locked"];
-          const precision = row["precision"];
           return (
-            <Box className={"textAlignRight"}>
-              {getValuePrecisionThousand(
-                value,
-                precision,
-                precision,
-                undefined,
-                false,
-                { floor: true }
-              )}
-            </Box>
+            // @ts-ignore
+            <LockedMemo
+              {...{
+                ...row,
+                onTokenLockHold,
+                tokenLockDetail,
+              }}
+            />
           );
         },
       },

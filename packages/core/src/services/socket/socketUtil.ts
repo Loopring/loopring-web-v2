@@ -57,7 +57,7 @@ export class LoopringSocket {
       ) {
         const timestamp = Date.now();
         mixorderService.sendMixorder({
-          [ topic.market ]: {
+          [topic.market]: {
             ...data,
             timestamp: timestamp,
             symbol: topic.market,
@@ -65,16 +65,12 @@ export class LoopringSocket {
         });
       }
     },
-    //TODO: sdk.WsTopicType.btradeOrderBook
-    // @ts-ignore
-    [ "binancedepth" ]: (data: sdk.DepthData, topic: any) => {
+    [sdk.WsTopicType.btradedepth]: (data: sdk.DepthData, topic: any) => {
       if (
         (window as any)?.loopringSocket?.socketKeyMap &&
         (window as any).loopringSocket?.socketKeyMap[
-          //TODO: sdk.WsTopicType.btradeOrderBook
-          // @ts-ignore
-          "binancedepth"
-          ]?.level === topic.level
+          sdk.WsTopicType.btradedepth
+        ]?.level === topic.level
       ) {
         const timestamp = Date.now();
         btradeOrderbookService.sendBtradeOrderBook({
@@ -381,33 +377,24 @@ export class LoopringSocket {
             }
           }
           break;
-        //TODO: sdk.WsTopicType.btradeOrderBook
-        // @ts-ignore
-        case "binancedepth":
-          //TODO: sdk.WsTopicType.btradeOrderBook
-          // @ts-ignore
-          const btradeOrderSocket = socket[ "binancedepth" ];
+
+        case sdk.WsTopicType.btradedepth:
+          const btradeOrderSocket = socket[sdk.WsTopicType.btradedepth];
           if (btradeOrderSocket) {
             const level = btradeOrderSocket.level ?? 0;
             const snapshot = btradeOrderSocket.snapshot ?? true;
             const count = btradeOrderSocket.count ?? 50;
             list = btradeOrderSocket.markets.map((key) => {
-              return {
-                ...sdk.getBtradeOrderBook({
-                  market: key,
-                  level,
-                  count,
-                  snapshot,
-                  showOverlap: false,
-                }),
-                //TODO: sdk.WsTopicType.btradeOrderBook
-                topic: "binancedepth",
-              };
+              return sdk.getBtradeOrderBook({
+                market: key,
+                level,
+                count,
+                snapshot,
+                showOverlap: false,
+              });
             });
             if (list && list.length) {
-              //TODO: sdk.WsTopicType.btradeOrderBook
-              // @ts-ignore
-              this.addSocketEvents("binancedepth");
+              this.addSocketEvents(sdk.WsTopicType.btradedepth);
               topics = [...topics, ...list];
             }
           }

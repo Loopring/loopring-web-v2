@@ -9,27 +9,20 @@ import { Box, IconButton } from "@mui/material";
 import {
   BreakPoint,
   DragIcon,
-  LayoutConfig,
-  LayoutConfigInfo,
-  layoutConfigs,
+  stopLimitLayoutConfigs,
   myLog,
   ResizeIcon,
   RowConfig,
   SoursURL,
+  LayoutConfigInfo,
 } from "@loopring-web/common-resources";
-import {
-  ChartView,
-  MarketView,
-  OrderTableView,
-  SpotView,
-  TabMarketIndex,
-  Toolbar,
-  WalletInfo,
-} from "./panel";
+import { ChartView, OrderTableView, SpotView, Toolbar } from "./panel";
 import { boxLiner, useSettings } from "@loopring-web/component-lib";
 import styled from "@emotion/styled/";
 import { usePageTradePro } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
+import { StopLimitView } from "./panel/spot/stopLimit";
+import { StopLimitInfo } from "./panel/walletInfo/stopLimitInfo";
 
 const MARKET_ROW_LENGTH: number = 8;
 // const MARKET_ROW_LENGTH_LG: number = 11;
@@ -64,58 +57,59 @@ const BoxStyle = styled(Box)`
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const initBreakPoint = (): BreakPoint => {
-  if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xlg]) {
+  if (
+    window.innerWidth >= stopLimitLayoutConfigs[0].breakpoints[BreakPoint.xlg]
+  ) {
     return BreakPoint.xlg;
-  } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.lg]) {
+  } else if (
+    window.innerWidth >= stopLimitLayoutConfigs[0].breakpoints[BreakPoint.lg]
+  ) {
     return BreakPoint.lg;
-  } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.md]) {
+  } else if (
+    window.innerWidth >= stopLimitLayoutConfigs[0].breakpoints[BreakPoint.md]
+  ) {
     return BreakPoint.md;
-  } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.sm]) {
+  } else if (
+    window.innerWidth >= stopLimitLayoutConfigs[0].breakpoints[BreakPoint.sm]
+  ) {
     return BreakPoint.sm;
-  } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xs]) {
+  } else if (
+    window.innerWidth >= stopLimitLayoutConfigs[0].breakpoints[BreakPoint.xs]
+  ) {
     return BreakPoint.xs;
   } else if (
-    window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xxs]
+    window.innerWidth >= stopLimitLayoutConfigs[0].breakpoints[BreakPoint.xxs]
   ) {
     return BreakPoint.xxs;
   } else {
     return BreakPoint.md;
   }
 };
-export const OrderbookPage = withTranslation("common")(<
+export const StopLimitPage = withTranslation("common")(<
   Config extends LayoutConfigInfo
 >() => {
   const {
-    pageTradePro: { depthLevel, depthForCalc },
+    pageTradePro: { depthForCalc },
   } = usePageTradePro();
-  const { market, handleOnMarketChange, assetBtnStatus, resetTradeCalcData } =
-    usePro({});
-  const { unit } = useTheme();
-  const { proLayout, setLayouts, isMobile } = useSettings();
-
-  const history = useHistory();
-
-  const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
-  const [tradeTableLengths, setTradeTableLengths] = React.useState<{
-    market: number;
-    market2: number;
-  }>({
-    market: MARKET_TRADES_LENGTH,
-    market2: MARKET_TRADES_LENGTH,
+  const { market, handleOnMarketChange, resetTradeCalcData } = usePro({
+    path: "/trade/stoplimit",
   });
+  const { unit } = useTheme();
+  const { stopLimitLayout, setStopLimitLayouts } = useSettings();
+  const history = useHistory();
 
   const [configLayout, setConfigLayout] = React.useState<Config>({
     // @ts-ignore
     compactType: "vertical",
     currentBreakpoint: initBreakPoint(),
     mounted: false,
-    layouts: proLayout ?? layoutConfigs[0].layouts,
+    layouts: stopLimitLayout ?? stopLimitLayoutConfigs[0].layouts,
   });
   const sportMemo = React.useMemo(() => {
     return (
       <>
         {depthForCalc ? (
-          <SpotView
+          <StopLimitView
             market={market as any}
             resetTradeCalcData={resetTradeCalcData}
           />
@@ -140,46 +134,9 @@ export const OrderbookPage = withTranslation("common")(<
     );
   }, [market, depthForCalc]);
 
-  const onRestDepthTableLength = React.useCallback(
-    (h: number) => {
-      if (h) {
-        const i = Math.floor((h * unit - (isMobile ? 88 : 144)) / 40);
-        if (i <= 40) {
-          setRowLength(i);
-        } else {
-          setRowLength(48);
-        }
-      }
-    },
-    [isMobile]
-  );
-  const onRestMarketTableLength = React.useCallback(
-    (layout: Layout | undefined) => {
-      if (layout && layout.h) {
-        const h = layout.h;
-        const i = Math.floor((h * unit - (isMobile ? 88 : 144)) / 20);
-        setTradeTableLengths((state) => {
-          if (i <= 30) {
-            //32
-            return {
-              ...state,
-              [layout.i]: i,
-            };
-          } else {
-            return {
-              ...state,
-              [layout.i]: MARKET_TRADES_LENGTH + 30,
-            };
-          }
-        });
-      }
-    },
-    [isMobile]
-  );
-
   const onBreakpointChange = React.useCallback(
     (breakpoint: BreakPoint) => {
-      setConfigLayout((state) => {
+      setConfigLayout((state: Config) => {
         return {
           ...state,
           currentBreakpoint: breakpoint,
@@ -197,17 +154,10 @@ export const OrderbookPage = withTranslation("common")(<
   );
 
   const onResize = React.useCallback(
-    (layout: Layout[], oldLayoutItem, layoutItem) => {
-      if (layoutItem.i === "market") {
-        onRestDepthTableLength(layoutItem.h);
-        onRestMarketTableLength(layoutItem);
-      }
-      if (layoutItem.i === "market2") {
-        onRestMarketTableLength(layoutItem);
-      }
-      setLayouts({ [configLayout.currentBreakpoint]: layout });
+    (layout: Layout[], _oldLayoutItem, _layoutItem) => {
+      setStopLimitLayouts({ [configLayout.currentBreakpoint]: layout });
     },
-    [configLayout, setRowLength]
+    [configLayout]
   );
 
   const handleLayoutChange = React.useCallback(
@@ -217,7 +167,7 @@ export const OrderbookPage = withTranslation("common")(<
       defaultlayouts?: Layouts
     ) => {
       if (defaultlayouts) {
-        setLayouts(defaultlayouts);
+        setStopLimitLayouts(defaultlayouts);
         history.push("/loading");
         setTimeout(() => {
           history.go(-1);
@@ -226,76 +176,30 @@ export const OrderbookPage = withTranslation("common")(<
       }
       myLog(currentLayout);
     },
-    [configLayout, proLayout, setConfigLayout, setLayouts]
+    [configLayout, stopLimitLayout, setConfigLayout, setStopLimitLayouts]
   );
   const ViewList = {
     toolbar: React.useMemo(
       () => (
         <Toolbar
           market={market as any}
+          layoutConfigs={stopLimitLayoutConfigs}
           handleLayoutChange={handleLayoutChange}
           handleOnMarketChange={handleOnMarketChange}
         />
       ),
       [market, handleLayoutChange, handleOnMarketChange]
     ),
-    walletInfo: React.useMemo(
-      () => (
-        <WalletInfo market={market as any} assetBtnStatus={assetBtnStatus} />
-      ),
-      [market, assetBtnStatus]
-    ),
     spot: sportMemo,
-    market: React.useMemo(
-      () => (
-        <>
-          {depthLevel && (
-            <MarketView
-              market={market as any}
-              rowLength={rowLength}
-              tableLength={tradeTableLengths.market}
-              main={TabMarketIndex.Orderbook}
-              breakpoint={configLayout.currentBreakpoint}
-            />
-          )}
-        </>
-      ),
-      [
-        market,
-        rowLength,
-        configLayout.currentBreakpoint,
-        depthLevel,
-        tradeTableLengths.market,
-      ]
-    ),
-    market2: React.useMemo(
-      () => (
-        <>
-          <MarketView
-            isOnlyTrade={true}
-            market={market as any}
-            main={TabMarketIndex.Trades}
-            tableLength={tradeTableLengths.market2}
-            rowLength={0}
-            breakpoint={configLayout.currentBreakpoint}
-          />
-        </>
-      ),
-      [
-        market,
-        rowLength,
-        configLayout.currentBreakpoint,
-        depthLevel,
-        tradeTableLengths.market2,
-      ]
-    ), //<MarketView market={market as any}/>, [market])
+    markdown: <StopLimitInfo />,
     chart: React.useMemo(
-      () => <ChartView market={market} rowLength={rowLength} />,
-      [market, rowLength]
+      () => <ChartView market={market} rowLength={0} isShowDepth={false} />,
+      [market]
     ),
     orderTable: React.useMemo(
       () => (
         <OrderTableView
+          isStopLimit={true}
           market={market}
           handleOnMarketChange={handleOnMarketChange}
         />
@@ -338,8 +242,8 @@ export const OrderbookPage = withTranslation("common")(<
             </IconButton>
           }
           draggableHandle={".drag-holder"}
-          breakpoints={layoutConfigs[0].breakpoints}
-          cols={layoutConfigs[0].cols}
+          breakpoints={stopLimitLayoutConfigs[0].breakpoints}
+          cols={stopLimitLayoutConfigs[0].cols}
           rowHeight={unit / 2}
           margin={[unit / 2, unit / 2]}
         >

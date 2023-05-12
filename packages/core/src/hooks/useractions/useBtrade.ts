@@ -70,9 +70,7 @@ const useBtradeSocket = () => {
     ) {
       sendSocketTopic({
         [sdk.WsTopicType.account]: true,
-        //TODO: sdk.WsTopicType.btradeOrderBook
-        // @ts-ignore
-        ["binancedepth"]: {
+        [sdk.WsTopicType.btradedepth]: {
           showOverlap: false,
           markets: [tradeBtrade?.depth?.symbol],
           level: 0,
@@ -81,9 +79,7 @@ const useBtradeSocket = () => {
       });
     } else if (tradeBtrade?.depth?.symbol) {
       sendSocketTopic({
-        //TODO: sdk.WsTopicType.btradeOrderBook
-        // @ts-ignore
-        ["binancedepth"]: {
+        [sdk.WsTopicType.btradedepth]: {
           showOverlap: false,
           markets: [tradeBtrade?.depth?.symbol],
           level: 0,
@@ -208,7 +204,7 @@ export const useBtradeSwap = <
     // const account = store.getState().account;
     const sellToken = tokenMap[tradeData?.sell.belong as string];
     const buyToken = tokenMap[tradeData?.buy.belong as string];
-
+    const account = store.getState().account;
     const { tradeCalcData, sellMinAmtInfo, sellMaxAmtInfo } = tradeBtrade;
 
     if (!sellToken || !buyToken || !tradeCalcData) {
@@ -455,7 +451,7 @@ export const useBtradeSwap = <
           (orderConfirm as sdk.RESULT_INFO).message
         ) {
         } else if (["failed", "cancelled"].includes(orderConfirm.status)) {
-          throw "orderConfirm   failed";
+          throw "orderConfirm failed";
         } else if (store.getState().modals.isShowAccount.isShow) {
           setShowAccount({
             isShow: true,
@@ -1068,6 +1064,7 @@ export const useBtradeSwap = <
               sellToken.precision,
               undefined
             ),
+
             lastStepAt: type,
           };
           return _tradeCalcData;
@@ -1332,4 +1329,4 @@ export const useBtradeSwap = <
     isMobile,
     setToastOpen,
   };
-};;
+};

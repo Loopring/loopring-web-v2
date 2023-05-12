@@ -759,3 +759,17 @@ export interface SnackbarMessage {
 }
 
 export const BTRDE_PRE = "BTRADE-";
+
+export enum TradeProType {
+  sell = "sell",
+  buy = "buy",
+}
+
+export enum TradeBaseType {
+  price = "price",
+  quote = "quote",
+  base = "base",
+  tab = "tab",
+  slippage = "slippage",
+  stopPrice = "stopPrice",
+}

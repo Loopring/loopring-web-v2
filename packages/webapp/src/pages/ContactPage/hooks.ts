@@ -544,10 +544,8 @@ export function useTransactions() {
   // const [showLoading, setShowLoading] = user(false);
   const routeMatch = useRouteMatch()
   // routeMatch.params[0]
-  // debugger
 
   const getTxnStatus = (status: string) => {
-    // debugger
     return status === ""
       ? TransactionStatus.processing
       : status === "PROCESSED"

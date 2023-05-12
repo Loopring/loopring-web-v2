@@ -9,8 +9,6 @@ const {
 } = require("customize-cra");
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin"); //installed via npm
-
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 // const rewireLess = require('react-app-rewire-less')

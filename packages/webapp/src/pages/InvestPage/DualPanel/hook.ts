@@ -20,7 +20,7 @@ const DUALLimit = 20;
 export const useDualHook = ({
   setConfirmDualInvest,
 }: {
-  setConfirmDualInvest: (state: 'hidden' | 'all' | 'USDCOnly') => void;
+  setConfirmDualInvest: (state: "hidden" | "all" | "USDCOnly") => void;
 }) => {
   const match: any = useRouteMatch("/invest/dual/:market?");
   const { search } = useLocation();
@@ -39,11 +39,9 @@ export const useDualHook = ({
   const {
     confirmation: { confirmedDualInvest, confirmedDualInvestV2 },
   } = confirmation.useConfirmation();
-  setConfirmDualInvest(confirmedDualInvestV2 
-    ? 'hidden'
-    : confirmedDualInvest 
-      ? 'USDCOnly'
-      : 'all');
+  setConfirmDualInvest(
+    confirmedDualInvestV2 ? "hidden" : confirmedDualInvest ? "USDCOnly" : "all"
+  );
   const history = useHistory();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 

@@ -6,13 +6,13 @@ import {
   MarketType,
   myLog,
   TradeBtnStatus,
+  TradeProType,
+  TradeBaseType,
 } from "@loopring-web/common-resources";
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   MarketTradeData,
-  TradeBaseType,
-  TradeProType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -724,12 +724,13 @@ export const useMarket = <C extends { [key: string]: any }>({
     closeToast,
     isMarketLoading,
     marketSubmit,
+    marketBtnClick,
     marketTradeData,
     resetMarketData: resetTradeData,
     onChangeMarketEvent,
     tradeMarketBtnStatus,
     tradeMarketI18nKey,
-    marketBtnClick,
+
     tradeMarketBtnStyle: {
       ...tradeMarketBtnStyle,
       ...{ fontSize: isMobile ? "1.4rem" : "1.6rem" },

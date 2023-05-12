@@ -22,9 +22,7 @@ export type SocketMap = {
     count?: number;
     snapshot?: boolean;
   };
-  //TODO: sdk.WsTopicType.btradeOrderBook
-  // @ts-ignore
-  ["binancedepth"]?: {
+  [sdk.WsTopicType.btradedepth]?: {
     showOverlap?: boolean;
     markets: any[];
     level?: number;

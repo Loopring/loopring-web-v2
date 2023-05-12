@@ -101,8 +101,6 @@ export const useHeader = () => {
       onTestOpen: (isTestNet: boolean) => {
         const chainId = store.getState().system.chainId;
         updateSystem({ chainId });
-        // debugger;
-        // setTestNet(isTestNet);
       },
       isShow: (chainId as any) === ChainIdExtends.TAIKO_A2,
     };

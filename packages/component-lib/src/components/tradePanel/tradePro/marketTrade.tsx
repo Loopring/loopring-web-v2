@@ -1,5 +1,5 @@
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { MarketTradeData, TradeBaseType, TradeMarketProps } from "../Interface";
+import { MarketTradeData, TradeMarketProps } from "../Interface";
 import {
   CheckBoxIcon,
   CheckedIcon,
@@ -12,10 +12,11 @@ import {
   IBData,
   Info2Icon,
   SlippageTolerance,
+  TradeBaseType,
   TradeBtnStatus,
   TradeCalcProData,
+  TradeProType,
 } from "@loopring-web/common-resources";
-import { TradeProType } from "./Interface";
 import {
   Box,
   Checkbox,
