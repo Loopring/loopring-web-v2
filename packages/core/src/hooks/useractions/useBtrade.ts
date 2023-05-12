@@ -942,7 +942,7 @@ export const useBtradeSwap = <
           volumeSell: calcDexOutput?.sellVol as any,
           volumeBuy: calcDexOutput?.amountBSlipped?.minReceived,
           fee: totalFee,
-          slippage: sdk.toBig(slippage / 100).toString(),
+          slippage: sdk.toBig(slippage).div(100).toString(),
           isReverse: calcDexOutput?.isReverse,
           lastStepAt: type,
           sellMinAmtStr: getValuePrecisionThousand(
