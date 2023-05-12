@@ -300,7 +300,6 @@ export const useBtradeSwap = <
       }
     }
   }, [
-    account.readyState,
     account,
     tokenMap,
     tradeData?.sell.belong,
