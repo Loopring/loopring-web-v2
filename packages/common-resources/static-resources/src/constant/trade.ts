@@ -383,28 +383,19 @@ export const useAddressTypeLists = <
         label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Binance as T,
-        // todo translation
-        description:
-          "Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
-        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+        description: t("labelContactsBinanceNotSupportted"),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Huobi as T,
-        // todo translation
-        description:
-          "Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.",
-        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+        description: t("labelContactsHuobiNotSupportted"),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Others as T,
-        // todo translation
-        description:
-          "The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
-        // t(`label${WALLET_TYPE.OtherSmart}Des`),
+        description: t("labelContactsOtherExchangesNotSupportted"),
       },
     ];
   };
@@ -448,6 +439,8 @@ export const useAddressTypeLists = <
 };
 
 export const defaultSlipage = 0.1;
+export const defaultBlockTradeSlipage = 0.2;
+
 export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 
 export const enum InvestMapType {
@@ -656,6 +649,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: "labelLuckyBlindBox",
     desKey: "labelLuckyBlindBoxDes",
+    defaultForNFT: true,
     showInNFTS: true,
     value: {
       value: 3,
@@ -668,6 +662,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     desKey: "labelRedPacketsSplitLuckyDetail",
     showInNFTS: true,
     showInERC20: true,
+    defaultForERC20: true,
     value: {
       value: 1,
       partition: sdk.LuckyTokenAmountType.RANDOM,

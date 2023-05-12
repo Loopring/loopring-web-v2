@@ -115,6 +115,8 @@ export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   sellMaxAmtStr: string | undefined;
   l1Pool: string;
   l2Pool: string;
+  slippage: number | string;
+
   // totalPool: string;
 };
 
