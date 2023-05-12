@@ -29,7 +29,7 @@ import {
   BtradeTradeCalcData,
   CoinMap,
   CustomErrorWithCode,
-  defaultSlipage,
+  defaultBlockTradeSlipage,
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
@@ -824,7 +824,7 @@ export const useBtradeSwap = <
           marketMap,
           depth,
           feeBips: maxFeeBips.toString(),
-          slipBips: sdk.toBig(defaultSlipage).times(100).toString(),
+          slipBips: sdk.toBig(defaultBlockTradeSlipage).times(100).toString(),
         });
         if (
           btradeAmount &&
