@@ -202,21 +202,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
           return <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>;
         },
       },
-      // {
-      //   key: "End Time",
-      //   cellClass: "textAlignRight",
-      //   headerCellClass: "textAlignRight",
-      //   name: t("labelBlindBoxEndTime"),
-      //   formatter: ({ row }: FormatterProps<R>) => {
-      //     return (
-      //       <>
-      //         {moment(row.rawData.luckyToken.nftExpireTime).format(
-      //           YEAR_DAY_MINUTE_FORMAT
-      //         )}
-      //       </>
-      //     );
-      //   },
-      // },
       {
         key: "Status",
         cellClass: "textAlignRight",
