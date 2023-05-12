@@ -300,7 +300,6 @@ export const useBtradeSwap = <
       }
     }
   }, [
-    account.readyState,
     account,
     tokenMap,
     tradeData?.sell.belong,
@@ -320,6 +319,8 @@ export const useBtradeSwap = <
         buyToken: _buyToken,
       },
     } = store.getState()._router_tradeBtrade;
+    const account = store.getState().account;
+
     try {
       if (
         account.readyState == AccountStatus.ACTIVATED &&
@@ -491,7 +492,6 @@ export const useBtradeSwap = <
     tradeData,
     tokenMap,
     exchangeInfo,
-    account,
     __SUBMIT_LOCK_TIMER__,
     setToastOpen,
     t,
