@@ -1618,7 +1618,7 @@ export default {
   labelBtradePoolDes: "Loopring Pool:",
   labelBtradePool: "Loopring Pool",
   labelBtradeToleranceTooltips:
-    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade. Here is fixed at 0.1%.",
+    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade.",
   labelBtradeFeeTooltips: "The trading fee is fixed at 0.3%.",
   labelBtradeMinReceiveTooltips:
     "The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",

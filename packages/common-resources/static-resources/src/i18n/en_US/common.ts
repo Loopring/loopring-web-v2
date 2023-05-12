@@ -601,6 +601,10 @@ export default {
   labelL2toL2FeeNotEnough: "Insufficient balance",
   labelL2toL2FeeFastNotAllowEnough: "Please choose Standard!",
   labelL2toL2LinkRecent: "Recent send history",
+  labelL2toL2ExchangeError:
+    "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+  labelL2toL2SmartWalletError:
+    "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
   labelActiveLayer2: "Activate Loopring L2",
   labelAddAsset: "Receive",
   labelAddAssetBtn: "Receive",
@@ -1625,6 +1629,14 @@ export default {
     "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
   labelNotOtherSmartWallet:
     "This wallet binds with smart contract that does not support Loopring L2. You will need to send funds to the L1 account.",
+  labelContactsNoContact: "No Contact",
+  labelContactsSelectReciepient: "Select the Recipient",
+  labelContactsBinanceNotSupportted:
+    "Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
+  labelContactsHuobiNotSupportted:
+    "Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.",
+  labelContactsOtherExchangesNotSupportted:
+    "The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
   labelBtradeSwapTitle: "Block Trade",
   labelBtradeSwapType: "Type",
   labelBtradeSwapFilled: "Filled",
@@ -1662,7 +1674,7 @@ export default {
   labelBtradePoolDes: "Loopring Pool:",
   labelBtradePool: "Loopring Pool",
   labelBtradeToleranceTooltips:
-    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade. Here is fixed at 0.1%.",
+    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade.",
   labelBtradeFeeTooltips: "The trading fee is fixed at 0.3%.",
   labelBtradeMinReceiveTooltips:
     "The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
@@ -1712,4 +1724,7 @@ export default {
   labelStopLimitLabelType: "Type",
   labelStopLimitNotSupport:
     "Sorry, there is currently insufficient liquidity in this token pair to execute stop-limit orders. Please try again later or consider using a market / limit order instead.",
+  labelStopLimitTriggered:
+    " The market order has been submitted to the orderbook. Time: {{time}}",
+  labelStopLimitCurrentlyInsufficient: "Currently insufficient",
 };
