@@ -9,7 +9,6 @@ import {
   CurrencyToTag,
   ForexMap,
   getValuePrecisionThousand,
-  HiddenTag,
   MarketType,
   PriceTag,
   RowConfig,
@@ -18,8 +17,7 @@ import {
 import { useSettings } from "../../../stores";
 import { CoinIcons } from "./components/CoinIcons";
 import ActionMemo, { LockedMemo } from "./components/ActionMemo";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { XOR } from "../../../types/lib";
+import { Currency, XOR } from "@loopring-web/loopring-sdk";
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -121,10 +119,9 @@ export type AssetsTableProps<R = RawDataAssetsItem> = {
   getMarketArrayListCallback: (token: string) => string[];
   rowConfig?: typeof RowConfig;
   disableWithdrawList: string[];
-  forexMap: ForexMap<sdk.Currency>;
-  onTokenLockHold?: (item: R) => void;
-  tokenLockDetail?: any[] | undefined;
-  hideAssets?: boolean;
+  forexMap: ForexMap<Currency>;
+  onTokenLockHold: (item: R) => void;
+  tokenLockDetail: any[] | undefined;
 } & XOR<
   {
     hideInvestToken: boolean;
@@ -154,7 +151,6 @@ export const AssetsTable = withTranslation("tables")(
       setHideSmallBalances,
       forexMap,
       rowConfig = RowConfig,
-      hideAssets,
       onTokenLockHold,
       tokenLockDetail,
       ...rest
@@ -264,16 +260,14 @@ export const AssetsTable = withTranslation("tables")(
           const precision = row["precision"];
           return (
             <Box className={"textAlignRight"}>
-              {hideAssets
-                ? HiddenTag
-                : getValuePrecisionThousand(
-                    value,
-                    precision,
-                    precision,
-                    undefined,
-                    false,
-                    { floor: true }
-                  )}
+              {getValuePrecisionThousand(
+                value,
+                precision,
+                precision,
+                undefined,
+                false,
+                { floor: true }
+              )}
             </Box>
           );
         },
@@ -287,7 +281,6 @@ export const AssetsTable = withTranslation("tables")(
             <LockedMemo
               {...{
                 ...row,
-                hideAssets,
                 onTokenLockHold,
                 tokenLockDetail,
               }}
@@ -302,17 +295,15 @@ export const AssetsTable = withTranslation("tables")(
         formatter: ({ row }) => {
           return (
             <Box className={"textAlignRight"}>
-              {hideAssets
-                ? HiddenTag
-                : PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
-                    undefined,
-                    undefined,
-                    undefined,
-                    true,
-                    { isFait: true, floor: true }
-                  )}
+              {PriceTag[CurrencyToTag[currency]] +
+                getValuePrecisionThousand(
+                  (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
+                  undefined,
+                  undefined,
+                  undefined,
+                  true,
+                  { isFait: true, floor: true }
+                )}
             </Box>
           );
         },
@@ -396,23 +387,21 @@ export const AssetsTable = withTranslation("tables")(
                 flex={1}
               >
                 <Typography display={"flex"}>
-                  {hideAssets
-                    ? HiddenTag
-                    : getValuePrecisionThousand(
-                        value,
-                        precision,
-                        precision,
-                        undefined,
-                        false,
-                        { floor: true }
-                      )}
+                  {getValuePrecisionThousand(
+                    value,
+                    precision,
+                    precision,
+                    undefined,
+                    false,
+                    { floor: true }
+                  )}
                 </Typography>
                 <Typography
                   display={"flex"}
                   color={"textSecondary"}
                   marginLeft={1}
                 >
-                  {hideAssets ? HiddenTag : token.value}
+                  {token.value}
                 </Typography>
               </Typography>
             </>
@@ -425,11 +414,9 @@ export const AssetsTable = withTranslation("tables")(
         headerCellClass: "textAlignRight",
         formatter: ({ row }) => {
           return (
-            // @ts-ignore
             <LockedMemo
               {...{
                 ...row,
-                HiddenTag,
                 onTokenLockHold,
                 tokenLockDetail,
               }}

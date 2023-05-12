@@ -2,7 +2,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { walletLayer2Service } from "./services/walletLayer2Service";
 import { tickerService } from "./services/tickerService";
 import { ammPoolService } from "./services/ammPoolService";
-import { CustomError, ErrorMap } from "@loopring-web/common-resources";
+import { CustomError, ErrorMap, myLog } from "@loopring-web/common-resources";
 import { LoopringAPI, SocketMap } from "../../index";
 import { bookService } from "./services/bookService";
 import { orderbookService } from "./services/orderbookService";
@@ -65,11 +65,11 @@ export class LoopringSocket {
         });
       }
     },
-    [sdk.WsTopicType.btradeOrderBook]: (data: sdk.DepthData, topic: any) => {
+    [sdk.WsTopicType.btradedepth]: (data: sdk.DepthData, topic: any) => {
       if (
         (window as any)?.loopringSocket?.socketKeyMap &&
         (window as any).loopringSocket?.socketKeyMap[
-          sdk.WsTopicType.btradeOrderBook
+          sdk.WsTopicType.btradedepth
         ]?.level === topic.level
       ) {
         const timestamp = Date.now();
@@ -243,6 +243,8 @@ export class LoopringSocket {
         this.resetSocketEvents();
         this._socketKeyMap = socket;
         const { topics } = this.makeMessageArray({ socket });
+        myLog("makeMessageArray", socket, topics);
+
         if (!this.isConnectSocket()) {
           await this.socketConnect({ topics, apiKey });
         } else {
@@ -375,23 +377,24 @@ export class LoopringSocket {
             }
           }
           break;
-        case sdk.WsTopicType.btradeOrderBook:
-          const btradeOrderSocket = socket[sdk.WsTopicType.btradeOrderBook];
+
+        case sdk.WsTopicType.btradedepth:
+          const btradeOrderSocket = socket[sdk.WsTopicType.btradedepth];
           if (btradeOrderSocket) {
             const level = btradeOrderSocket.level ?? 0;
             const snapshot = btradeOrderSocket.snapshot ?? true;
             const count = btradeOrderSocket.count ?? 50;
-            list = btradeOrderSocket.markets.map((key) =>
-              sdk.getBtradeOrderBook({
+            list = btradeOrderSocket.markets.map((key) => {
+              return sdk.getBtradeOrderBook({
                 market: key,
                 level,
                 count,
                 snapshot,
                 showOverlap: false,
-              })
-            );
+              });
+            });
             if (list && list.length) {
-              this.addSocketEvents(sdk.WsTopicType.btradeOrderBook);
+              this.addSocketEvents(sdk.WsTopicType.btradedepth);
               topics = [...topics, ...list];
             }
           }

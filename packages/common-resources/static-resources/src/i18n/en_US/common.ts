@@ -1727,4 +1727,9 @@ export default {
   labelStopLimitTriggered:
     " The market order has been submitted to the orderbook. Time: {{time}}",
   labelStopLimitCurrentlyInsufficient: "Currently insufficient",
+  labelDUAL_CURRENCY: "DUAL CURRENCY",
+  labelDUAL_BASE: "DUAL BASE",
+  labelBTRADE: "Block Trade",
+  labelL2STAKING: "Staking",
+  labelSTOP_LIMIT: "Stop Limit",
 };

@@ -3,6 +3,7 @@ import { Box, Grid, ListItemText, MenuItem, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import {
   Button,
+  IconButtonStyle,
   Popover,
   PopoverPure,
   PopoverType,
@@ -11,8 +12,8 @@ import {
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
-  HiddenTag,
   MoreIcon,
+  ViewMoreIcon,
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import { TFunction } from "i18next";
@@ -102,24 +103,36 @@ const ActionPopContent = React.memo(
           <>
             <MenuItem
               disabled={!_allowTrade?.joinAmm?.enable}
-              onClick={() => {
-                setShowAmm({
-                  isShow: true,
-                  type: AmmPanelType.Join,
-                  symbol: market,
-                });
-              }}
+              onClick={
+                () => {
+                  // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                  setShowAmm({
+                    isShow: true,
+                    type: AmmPanelType.Join,
+                    symbol: market,
+                  });
+                }
+                // () => undefined
+                // history.push(
+                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
+                // )
+              }
             >
               <ListItemText>{t("labelPoolTableAddLiquidity")}</ListItemText>
             </MenuItem>
             <MenuItem
-              onClick={() => {
-                setShowAmm({
-                  isShow: true,
-                  type: AmmPanelType.Exit,
-                  symbol: market,
-                });
-              }}
+              onClick={
+                () => {
+                  setShowAmm({
+                    isShow: true,
+                    type: AmmPanelType.Exit,
+                    symbol: market,
+                  });
+                }
+                // history.push(
+                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.remove}`
+                // )
+              }
             >
               <ListItemText>{t("labelPoolTableRemoveLiquidity")}</ListItemText>
             </MenuItem>
@@ -295,9 +308,8 @@ export default ActionMemo;
 export const LockedMemo = React.memo(
   (
     props: RawDataAssetsItem & {
-      hideAssets?: boolean;
-      onTokenLockHold?: (item: any) => void;
-      tokenLockDetail?: any[] | undefined;
+      onTokenLockHold: (item: any) => void;
+      tokenLockDetail: any[] | undefined;
     }
   ) => {
     const { t } = useTranslation(["tables", "common"]);
@@ -309,7 +321,7 @@ export const LockedMemo = React.memo(
     const bindAction = bindTrigger(popupState);
     const value = row["locked"];
     const precision = row["precision"];
-    if (!Number(value)) {
+    if (!value) {
       return <Box className={"textAlignRight"}>{EmptyValueTag}</Box>;
     } else {
       return (
@@ -318,25 +330,22 @@ export const LockedMemo = React.memo(
             display={"inline-flex"}
             alignItems={"center"}
             component={"span"}
-            sx={{ textDecoration: onTokenLockHold ? "underline dotted" : "" }}
-            // @ts-ignore
             onClick={(e) => {
-              if (onTokenLockHold) {
-                onTokenLockHold(row);
-                bindAction.onClick(e as any);
-              }
+              onTokenLockHold(row);
+              bindAction.onClick(e as any);
             }}
           >
-            {props.hideAssets
-              ? HiddenTag
-              : getValuePrecisionThousand(
-                  value,
-                  precision,
-                  precision,
-                  undefined,
-                  false,
-                  { floor: true }
-                )}
+            {getValuePrecisionThousand(
+              value,
+              precision,
+              precision,
+              undefined,
+              false,
+              { floor: true }
+            )}
+            <IconButtonStyle size={"large"} edge={"end"}>
+              <ViewMoreIcon />
+            </IconButtonStyle>
           </Typography>
           <PopoverPure
             className={"arrow-right"}
