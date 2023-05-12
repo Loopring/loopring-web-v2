@@ -57,29 +57,44 @@ import { useHistory } from "react-router-dom";
 
 import { useTradeBtrade } from "../../stores/router/tradeBtrade";
 import BigNumber from "bignumber.js";
+import { btradeOrderbookService } from "../../services/socket/services/btradeOrderbookService";
 
 const useBtradeSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket();
   const { account } = useAccount();
   const { tradeBtrade } = useTradeBtrade();
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED && tradeBtrade.info) {
+    if (
+      account.readyState === AccountStatus.ACTIVATED &&
+      tradeBtrade?.depth?.symbol
+    ) {
       sendSocketTopic({
         [sdk.WsTopicType.account]: true,
-        [sdk.WsTopicType.btradeOrderBook]: {
+        //TODO: sdk.WsTopicType.btradeOrderBook
+        // @ts-ignore
+        ["binancedepth"]: {
           showOverlap: false,
-          markets: [tradeBtrade.info.btradeMarket],
+          markets: [tradeBtrade?.depth?.symbol],
           level: 0,
           snapshot: true,
         },
       });
-    } else {
-      socketEnd();
+    } else if (tradeBtrade?.depth?.symbol) {
+      sendSocketTopic({
+        //TODO: sdk.WsTopicType.btradeOrderBook
+        // @ts-ignore
+        ["binancedepth"]: {
+          showOverlap: false,
+          markets: [tradeBtrade?.depth?.symbol],
+          level: 0,
+          snapshot: true,
+        },
+      });
     }
     return () => {
       socketEnd();
     };
-  }, [account.readyState]);
+  }, [account.readyState, tradeBtrade?.depth?.symbol]);
 };
 
 export const useBtradeSwap = <
@@ -600,7 +615,31 @@ export const useBtradeSwap = <
       });
     }
   }, [tradeData, market, tradeCalcData, marketArray, account.readyState]);
+  const subject = React.useMemo(() => btradeOrderbookService.onSocket(), []);
+  React.useEffect(() => {
+    // const tradeBtrade = store.getState()._router_tradeBtrade
+    const subscription = subject.subscribe(({ btradeOrderbookMap }) => {
+      const { depth } = store.getState()._router_tradeBtrade.tradeBtrade;
+      if (
+        depth?.symbol &&
+        btradeOrderbookMap &&
+        btradeOrderbookMap[depth?.symbol]
+      ) {
+        updateTradeBtrade({
+          depth: {
+            ...depth,
+            ...btradeOrderbookMap[depth.symbol],
+            timestamp: Date.now(),
+          },
+        });
+      }
 
+      // const walletLayer2Status = store.getState().walletLayer2.status;
+      // const walletLayer1Status = store.getState().walletLayer1.status;
+      // _socketUpdate({ walletLayer2Status, walletLayer1Status });
+    });
+    return () => subscription.unsubscribe();
+  }, [subject]);
   useBtradeSocket();
   useWalletLayer2Socket({ walletLayer2Callback });
 
@@ -1294,4 +1333,4 @@ export const useBtradeSwap = <
     isMobile,
     setToastOpen,
   };
-};
+};;
