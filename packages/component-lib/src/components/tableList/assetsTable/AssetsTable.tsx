@@ -120,8 +120,8 @@ export type AssetsTableProps<R = RawDataAssetsItem> = {
   rowConfig?: typeof RowConfig;
   disableWithdrawList: string[];
   forexMap: ForexMap<Currency>;
-  onTokenLockHold: (item: R) => void;
-  tokenLockDetail: any[] | undefined;
+  onTokenLockHold?: (item: R) => void;
+  tokenLockDetail?: any[] | undefined;
 } & XOR<
   {
     hideInvestToken: boolean;

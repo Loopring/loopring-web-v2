@@ -129,7 +129,7 @@ export const AssetPanel = withTranslation("common")(
                   showFilter: true,
                   allowTrade,
                   onSend,
-                  onTokenLockHold,
+                  onTokenLockHold: onTokenLockHold as any,
                   tokenLockDetail,
                   onReceive,
                   isLoading: assetBtnStatus === TradeBtnStatus.LOADING,
@@ -138,7 +138,6 @@ export const AssetPanel = withTranslation("common")(
                   forexMap: forexMap as any,
                   hideSmallBalances,
                   setHideLpToken,
-
                   setHideSmallBalances,
                   ...rest,
                 }}
