@@ -12,6 +12,7 @@ import {
   OrderListIcon,
   RecordTabIndex,
   SCENARIO,
+  SlippageBtradeTolerance,
   SlippageTolerance,
   SwapSettingIcon,
   SwapTradeCalcData,
@@ -72,6 +73,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
     let history = useHistory();
 
     const [index, setIndex] = React.useState(0);
+
     const [swapData, setSwapData] = React.useState<SwapData<SwapTradeData<T>>>(
       () => {
         let swapTradeData: SwapTradeData<T>;
@@ -225,9 +227,6 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
     const settingPopoverId = settingPopoverOpen ? "setting-popover" : undefined;
     const { slippage, swapSecondConfirmation, setSwapSecondConfirmation } =
       useSettings();
-    const slippageArray = SlippageTolerance.concat(
-      `slippage:${slippage}`
-    ) as Array<number | string>;
     const tradeData = swapData.tradeData;
 
     const onSwitchChangeCallback = useCallback(() => {
@@ -381,7 +380,16 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                         </Typography>
                         <SlippagePanel
                           t={rest.t}
-                          slippageList={slippageArray}
+                          max={5}
+                          slippageList={
+                            tradeCalcData.isBtrade
+                              ? (SlippageBtradeTolerance.concat(
+                                  `slippage:${slippage}`
+                                ) as Array<number | string>)
+                              : (SlippageTolerance.concat(
+                                  `slippage:${slippage}`
+                                ) as Array<number | string>)
+                          }
                           slippage={
                             tradeData.slippage
                               ? tradeData.slippage
