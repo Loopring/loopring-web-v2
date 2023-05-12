@@ -70,9 +70,7 @@ const useBtradeSocket = () => {
     ) {
       sendSocketTopic({
         [sdk.WsTopicType.account]: true,
-        //TODO: sdk.WsTopicType.btradeOrderBook
-        // @ts-ignore
-        ["binancedepth"]: {
+        [sdk.WsTopicType.btradedepth]: {
           showOverlap: false,
           markets: [tradeBtrade?.depth?.symbol],
           level: 0,
@@ -81,9 +79,7 @@ const useBtradeSocket = () => {
       });
     } else if (tradeBtrade?.depth?.symbol) {
       sendSocketTopic({
-        //TODO: sdk.WsTopicType.btradeOrderBook
-        // @ts-ignore
-        ["binancedepth"]: {
+        [sdk.WsTopicType.btradedepth]: {
           showOverlap: false,
           markets: [tradeBtrade?.depth?.symbol],
           level: 0,

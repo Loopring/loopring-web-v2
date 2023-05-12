@@ -320,4 +320,9 @@ export default {
   labelBtradePending: "Pending",
   labelBtradeSwapFailed: "Filled",
   labelStopLimitStopPrice: "Trigger Condition",
+  labelDUAL_CURRENCY: "DUAL CURRENCY",
+  labelDUAL_BASE: "DUAL BASE",
+  labelBTRADE: "Block Trade",
+  labelL2STAKING: "Staking",
+  labelSTOP_LIMIT: "Stop Limit",
 };
