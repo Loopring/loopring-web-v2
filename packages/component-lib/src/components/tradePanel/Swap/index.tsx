@@ -486,7 +486,6 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
               onSwitchChangeCallback,
               onSlippageChangeCallBack,
               tradeData,
-              slippageArray,
               theme,
             ]
           ),
