@@ -9,6 +9,7 @@ import {
   CurrencyToTag,
   ForexMap,
   getValuePrecisionThousand,
+  HiddenTag,
   MarketType,
   PriceTag,
   RowConfig,
@@ -120,6 +121,7 @@ export type AssetsTableProps = {
   rowConfig?: typeof RowConfig;
   disableWithdrawList: string[];
   forexMap: ForexMap<Currency>;
+  hideAssets?: boolean;
 } & XOR<
   {
     hideInvestToken: boolean;
@@ -149,6 +151,7 @@ export const AssetsTable = withTranslation("tables")(
       setHideSmallBalances,
       forexMap,
       rowConfig = RowConfig,
+      hideAssets,
       ...rest
     } = props;
 
@@ -256,14 +259,16 @@ export const AssetsTable = withTranslation("tables")(
           const precision = row["precision"];
           return (
             <Box className={"textAlignRight"}>
-              {getValuePrecisionThousand(
-                value,
-                precision,
-                precision,
-                undefined,
-                false,
-                { floor: true }
-              )}
+              {hideAssets
+                ? HiddenTag
+                : getValuePrecisionThousand(
+                  value,
+                  precision,
+                  precision,
+                  undefined,
+                  false,
+                  { floor: true }
+                )}
             </Box>
           );
         },
@@ -277,14 +282,16 @@ export const AssetsTable = withTranslation("tables")(
           const precision = row["precision"];
           return (
             <Box className={"textAlignRight"}>
-              {getValuePrecisionThousand(
-                value,
-                precision,
-                precision,
-                undefined,
-                false,
-                { floor: true }
-              )}
+              {hideAssets
+                ? HiddenTag
+                : getValuePrecisionThousand(
+                  value,
+                  precision,
+                  precision,
+                  undefined,
+                  false,
+                  { floor: true }
+                )}
             </Box>
           );
         },
@@ -297,14 +304,16 @@ export const AssetsTable = withTranslation("tables")(
           return (
             <Box className={"textAlignRight"}>
               {PriceTag[CurrencyToTag[currency]] +
-                getValuePrecisionThousand(
-                  (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
-                  undefined,
-                  undefined,
-                  undefined,
-                  true,
-                  { isFait: true, floor: true }
-                )}
+                (hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
+                    (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
+                    undefined,
+                    undefined,
+                    undefined,
+                    true,
+                    { isFait: true, floor: true }
+                  ))}
             </Box>
           );
         },
@@ -388,21 +397,25 @@ export const AssetsTable = withTranslation("tables")(
                 flex={1}
               >
                 <Typography display={"flex"}>
-                  {getValuePrecisionThousand(
-                    value,
-                    precision,
-                    precision,
-                    undefined,
-                    false,
-                    { floor: true }
-                  )}
+                  {hideAssets
+                    ? HiddenTag
+                    : getValuePrecisionThousand(
+                      value,
+                      precision,
+                      precision,
+                      undefined,
+                      false,
+                      { floor: true }
+                    )}
                 </Typography>
                 <Typography
                   display={"flex"}
                   color={"textSecondary"}
                   marginLeft={1}
                 >
-                  {token.value}
+                  {hideAssets
+                    ? HiddenTag
+                    : token.value}
                 </Typography>
               </Typography>
             </>
@@ -418,14 +431,16 @@ export const AssetsTable = withTranslation("tables")(
           const precision = row["precision"];
           return (
             <Box className={"textAlignRight"}>
-              {getValuePrecisionThousand(
-                value,
-                precision,
-                precision,
-                undefined,
-                false,
-                { floor: true }
-              )}
+              {hideAssets
+                ? HiddenTag
+                : getValuePrecisionThousand(
+                  value,
+                  precision,
+                  precision,
+                  undefined,
+                  false,
+                  { floor: true }
+                )}
             </Box>
           );
         },

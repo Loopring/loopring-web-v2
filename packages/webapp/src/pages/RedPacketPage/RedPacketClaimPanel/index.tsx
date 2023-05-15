@@ -38,7 +38,7 @@ import {
 } from "@loopring-web/common-resources";
 import { toBig } from "@loopring-web/loopring-sdk";
 
-export const RedPacketClaimPanel = () => {
+export const RedPacketClaimPanel = ({hideAssets} : {hideAssets?: boolean}) => {
   const container = React.useRef<HTMLDivElement>(null);
   const { etherscanBaseUrl, forexMap } = useSystem();
   const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -136,6 +136,7 @@ export const RedPacketClaimPanel = () => {
       >
         <Box className="tableWrapper table-divide-short">
           <RedPacketClaimTable
+
             {...{
               rawData: redPacketClaimList,
               showloading: showLoading,
@@ -144,6 +145,7 @@ export const RedPacketClaimPanel = () => {
               etherscanBaseUrl,
               getClaimRedPacket,
               onViewMoreNFTsClick,
+              hideAssets,
             }}
             totalLuckyTokenNFTBalance={totalLuckyTokenNFTBalance}
           />

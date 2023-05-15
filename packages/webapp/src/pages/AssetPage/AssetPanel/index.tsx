@@ -80,6 +80,7 @@ export const AssetPanel = withTranslation("common")(
     React.useEffect(() => {
       handleTabChange(match?.params.item ?? TabIndex.Tokens);
     }, [match?.params.item]);
+    const hideAssets = assetTitleProps.hideL2Assets
 
     return (
       <>
@@ -135,15 +136,16 @@ export const AssetPanel = withTranslation("common")(
                   hideSmallBalances,
                   setHideLpToken,
                   setHideSmallBalances,
+                  hideAssets,
                   ...rest,
                 }}
               />
             </Box>
           </StylePaper>
         )}
-        {currentTab === TabIndex.Invests && <MyLiquidity isHideTotal={true} />}
+        {currentTab === TabIndex.Invests && <MyLiquidity isHideTotal={true} hideAssets={hideAssets} />}
         {!isMobile && currentTab === TabIndex.RedPacket && (
-          <RedPacketClaimPanel />
+          <RedPacketClaimPanel hideAssets={hideAssets}/>
         )}
       </>
     );
