@@ -662,8 +662,8 @@ export const OrderHistoryTable = withTranslation("tables")(
                 undefined,
                 precisionMarket,
                 true,
-              {isPrice: true}
-            )
+                { isPrice: true }
+              )
             : EmptyValueTag;
           return (
             <div className="rdg-cell-value textAlignRight">
@@ -677,10 +677,10 @@ export const OrderHistoryTable = withTranslation("tables")(
         key: "time",
         name: t("labelOrderTime"),
         headerCellClass: "textAlignRight",
-        formatter: ({row, column}) => {
-          const value = row[ column.key ];
+        formatter: ({ row, column }) => {
+          const value = row[column.key];
           const renderValue = Number.isFinite(value)
-            ? moment(new Date(row[ "time" ]), "YYYYMMDDHHMM").fromNow()
+            ? moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow()
             : EmptyValueTag;
           return (
             <div className="rdg-cell-value textAlignRight">
@@ -801,8 +801,8 @@ export const OrderHistoryTable = withTranslation("tables")(
         key: "completion",
         name: t("labelOrderCompletion"),
         headerCellClass: "textAlignRight",
-        formatter: ({row}) => {
-          const rawValue = row[ "completion" ];
+        formatter: ({ row }) => {
+          const rawValue = row["completion"];
           const renderValue = `${(rawValue * 100).toFixed(2)}%`;
           return (
             <div className="rdg-cell-value textAlignRight">{renderValue}</div>
@@ -814,10 +814,10 @@ export const OrderHistoryTable = withTranslation("tables")(
         key: "time",
         name: t("labelOrderTime"),
         headerCellClass: "textAlignRight",
-        formatter: ({row, column}) => {
-          const value = row[ column.key ];
+        formatter: ({ row, column }) => {
+          const value = row[column.key];
           const renderValue = Number.isFinite(value)
-            ? moment(new Date(row[ "time" ]), "YYYYMMDDHHMM").fromNow()
+            ? moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow()
             : EmptyValueTag;
           return (
             <div className="rdg-cell-value textAlignRight">

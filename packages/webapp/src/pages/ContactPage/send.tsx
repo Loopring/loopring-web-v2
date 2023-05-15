@@ -23,18 +23,18 @@ const BoxWithTriangle = styled(Box)<{ selected: boolean }>`
   align-items: center;
   border: 1px solid;
   cursor: pointer;
-  border-color: ${({theme, selected}) =>
-          selected ? theme.colorBase.borderSelect : theme.colorBase.border};
+  border-color: ${({ theme, selected }) =>
+    selected ? theme.colorBase.borderSelect : theme.colorBase.border};
 
   ::before {
     content: "";
     position: absolute;
     top: 0;
     right: 0;
-    display: ${({selected}) => (selected ? "" : "none")};
+    display: ${({ selected }) => (selected ? "" : "none")};
     border-bottom: 12px solid transparent;
-    border-right: 12px solid ${({theme}) => theme.colorBase.borderSelect};
-    border-top: 12px solid ${({theme}) => theme.colorBase.borderSelect};
+    border-right: 12px solid ${({ theme }) => theme.colorBase.borderSelect};
+    border-top: 12px solid ${({ theme }) => theme.colorBase.borderSelect};
     border-left: 12px solid transparent;
   }
 
@@ -42,7 +42,7 @@ const BoxWithTriangle = styled(Box)<{ selected: boolean }>`
     position: absolute;
     top: 0;
     right: 0;
-    color: ${({theme}) => (theme.mode === "dark" ? "black" : "white")};
+    color: ${({ theme }) => (theme.mode === "dark" ? "black" : "white")};
   }
 `;
 const SelectNetwork = (props: {
@@ -53,7 +53,7 @@ const SelectNetwork = (props: {
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }) => {
   // const theme = useTheme()
-  const {icon, selected, text, style, onClick} = props;
+  const { icon, selected, text, style, onClick } = props;
   return (
     <BoxWithTriangle
       selected={selected}
