@@ -149,7 +149,6 @@ export const useCreateRedPacket = <
   const handleOnDataChange = React.useCallback(
     (tradeData: Partial<T>) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      myLog("redPacketOrder handleOnDataChange", redPacketOrder, tradeData);
       if (tradeData.tradeType) {
         resetDefault(tradeData.tradeType);
       } else {
