@@ -115,7 +115,7 @@ export const useGetAssets = (): AssetPanelProps & {
 
   React.useEffect(() => {
     if (walletL2Status === SagaStatus.DONE || assetsRawData.length) {
-      myLog("setLoadingBtn enableBtn");
+      // myLog("setLoadingBtn enableBtn");
       enableBtn();
     }
   }, [walletL2Status, assetsRawData]);
