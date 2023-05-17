@@ -17,7 +17,7 @@ import { LoopringAPI, RootState, useAccount } from "@loopring-web/core";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
 import { createImageFromInitials } from "@loopring-web/core";
 import { useDispatch, useSelector } from "react-redux";
-import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
+import { updateAccountId, updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
 import { AddressType } from "@loopring-web/loopring-sdk";
 import { useTheme } from "@emotion/react";
 
@@ -98,25 +98,28 @@ export const TransferPanel = withTranslation(["common", "error"], {
       setPanelIndex(index + 1);
     }, [index]);
     const contacts = useSelector((state: RootState) => state.contacts.contacts);
+    const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId);
     const dispatch = useDispatch()
     const {
       account: { accountId, apiKey, accAddress },
     } = useAccount()
     const theme = useTheme()
-    const loadContacts = async () => {
+    const loadContacts = React.useCallback(async (accountId: number) => {
+      if (accountId === cachedForAccountId) return
       dispatch(updateContacts(undefined))
       try {
         const allContacts = await getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)
         dispatch(updateContacts(allContacts))
+        dispatch(updateAccountId(accountId))
       } catch (e) {
         dispatch(
           updateContacts([])
         )
       }
-    }
+    }, [cachedForAccountId]) 
     React.useEffect(() => {
-      loadContacts()
-    }, [accountId])
+      loadContacts(accountId)
+    }, [accountId, apiKey])
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(
