@@ -1669,7 +1669,7 @@ export default {
   labelType: "Type",
   labelBtradeTrade: "Block Trade",
   labelBtradeTitle: "Block Trade Details",
-  labelBtradeQuote: "Total Quote:",
+  labelBtradeQuote: "Total Quota:",
   labelBtradeQuoteDes: "Total Quota is the maximum allowable trading amount.",
   labelBtradePoolDes: "Loopring Pool:",
   labelBtradePool: "Loopring Pool",
