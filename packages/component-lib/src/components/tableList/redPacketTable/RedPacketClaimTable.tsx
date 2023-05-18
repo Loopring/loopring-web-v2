@@ -189,10 +189,9 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
             return (
               <Box display="flex">
                 {row.volume !== undefined
-                  ? PriceTag[CurrencyToTag[currency]] +
-                  (hideAssets
+                  ? (hideAssets
                     ? HiddenTag
-                    : getValuePrecisionThousand(
+                    : PriceTag[CurrencyToTag[currency]] + getValuePrecisionThousand(
                       (row.volume || 0) * (forexMap[currency] ?? 0),
                       2,
                       2,

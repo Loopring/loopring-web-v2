@@ -202,9 +202,8 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  )) +
-                " " +
-                tokenInfo.symbol
+                  ) + " " + tokenInfo.symbol
+                  ) 
                 : EmptyValueTag;
 
             return <> {amountStr}</>;
@@ -233,9 +232,8 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  )) +
-                " " +
-                tokenInfo.symbol
+                  )+ " " + tokenInfo.symbol
+                ) 
                 : EmptyValueTag;
             return <> {amountStr}</>;
           },
@@ -265,9 +263,8 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  )) +
-                  " " +
-                  tokenInfo.symbol
+                  )+ " " + tokenInfo.symbol
+                ) 
                 : EmptyValueTag;
             return <> {amountStr}</>;
           },

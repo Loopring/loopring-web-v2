@@ -303,17 +303,17 @@ export const AssetsTable = withTranslation("tables")(
         formatter: ({ row }) => {
           return (
             <Box className={"textAlignRight"}>
-              {PriceTag[CurrencyToTag[currency]] +
-                (hideAssets
-                  ? HiddenTag
-                  : getValuePrecisionThousand(
-                    (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
-                    undefined,
-                    undefined,
-                    undefined,
-                    true,
-                    { isFait: true, floor: true }
-                  ))}
+              {hideAssets
+                ? HiddenTag
+                : PriceTag[CurrencyToTag[currency]] +
+                getValuePrecisionThousand(
+                  (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
+                  undefined,
+                  undefined,
+                  undefined,
+                  true,
+                  { isFait: true, floor: true }
+                )}
             </Box>
           );
         },
