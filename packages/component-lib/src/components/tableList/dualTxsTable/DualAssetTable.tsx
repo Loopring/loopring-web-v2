@@ -5,6 +5,7 @@ import {
   ClockIcon,
   EmptyValueTag,
   globalSetup,
+  HiddenTag,
   MoreIcon,
   RowConfig,
   TokenType,
@@ -81,6 +82,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       showloading,
       showDetail,
       refresh,
+      hideAssets,
       t,
     } = props;
 
@@ -191,7 +193,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             if (!row?.amount) {
               return <>{"-- " + row.sellSymbol}</>;
             } else {
-              return <>{row?.amount + " " + row.sellSymbol}</>;
+              return <>{(hideAssets ? HiddenTag : row?.amount) + " " + row.sellSymbol}</>;
             }
           },
         },
