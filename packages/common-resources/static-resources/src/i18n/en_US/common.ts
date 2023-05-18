@@ -601,8 +601,10 @@ export default {
   labelL2toL2FeeNotEnough: "Insufficient balance",
   labelL2toL2FeeFastNotAllowEnough: "Please choose Standard!",
   labelL2toL2LinkRecent: "Recent send history",
-  labelL2toL2ExchangeError: "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
-  labelL2toL2SmartWalletError: "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
+  labelL2toL2ExchangeError:
+    "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+  labelL2toL2SmartWalletError:
+    "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
   labelActiveLayer2: "Activate Loopring L2",
   labelAddAsset: "Receive",
   labelAddAssetBtn: "Receive",
@@ -1631,11 +1633,14 @@ export default {
     "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
   labelNotOtherSmartWallet:
     "This wallet binds with smart contract that does not support Loopring L2. You will need to send funds to the L1 account.",
-  labelContactsNoContact: 'No Contact',
-  labelContactsSelectReciepient: 'Select the Recipient',
-  labelContactsBinanceNotSupportted: 'Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.',
-  labelContactsHuobiNotSupportted: 'Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.',
-  labelContactsOtherExchangesNotSupportted: 'The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.',
+  labelContactsNoContact: "No Contact",
+  labelContactsSelectReciepient: "Select the Recipient",
+  labelContactsBinanceNotSupportted:
+    "Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
+  labelContactsHuobiNotSupportted:
+    "Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.",
+  labelContactsOtherExchangesNotSupportted:
+    "The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
   labelBtradeSwapTitle: "Block Trade",
   labelBtradeSwapType: "Type",
   labelBtradeSwapFilled: "Filled",
@@ -1668,7 +1673,7 @@ export default {
   labelType: "Type",
   labelBtradeTrade: "Block Trade",
   labelBtradeTitle: "Block Trade Details",
-  labelBtradeQuote: "Total Quote:",
+  labelBtradeQuote: "Total Quota:",
   labelBtradeQuoteDes: "Total Quota is the maximum allowable trading amount.",
   labelBtradePoolDes: "Loopring Pool:",
   labelBtradePool: "Loopring Pool",

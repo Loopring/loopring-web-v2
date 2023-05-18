@@ -807,7 +807,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
   const {
     account: { accountId, apiKey },
   } = useAccount();
-  const { tokenMap, idIndex } = useTokenMap();
+  const { tokenMap } = useTokenMap();
   const { setShowAccount } = useOpenModals();
   const getBtradeOrderList = React.useCallback(
     async (props: Omit<GetOrdersRequest, "accountId">) => {
@@ -876,11 +876,12 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 amountIn = baseAmount;
                 amountOut = quoteAmount;
                 _price = {
-                  key: toSymbol,
+                  from: baseTokenSymbol,
+                  key: quoteTokenSymbol,
                   value: getValuePrecisionThousand(
                     price,
-                    tokenMap[toSymbol].precision,
-                    tokenMap[toSymbol].precision,
+                    tokenMap[quoteTokenSymbol].precision,
+                    tokenMap[quoteTokenSymbol].precision,
                     undefined
                   ),
                 };
@@ -892,11 +893,12 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 amountOut = baseAmount;
                 amountIn = quoteAmount;
                 _price = {
-                  key: toSymbol,
+                  from: baseTokenSymbol,
+                  key: quoteTokenSymbol,
                   value: getValuePrecisionThousand(
-                    sdk.toBig(1).div(price ? price : 1),
-                    tokenMap[toSymbol].precision,
-                    tokenMap[toSymbol].precision,
+                    price,
+                    tokenMap[quoteTokenSymbol].precision,
+                    tokenMap[quoteTokenSymbol].precision,
                     undefined
                   ),
                 };
@@ -1006,7 +1008,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         buyFStr:
           item.toFAmount && item.toFAmount !== "0" ? item.toFAmount : undefined,
         buyStr: item.toAmount,
-        convertStr: `1${item.fromSymbol} \u2248 ${item.price.value} ${item.toSymbol}`,
+        convertStr: `1${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
         // @ts-ignore
         feeStr: item?.feeAmount == 0 ? undefined : item?.feeAmount,
         time: item?.time ?? undefined,

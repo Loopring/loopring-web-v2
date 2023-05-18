@@ -350,8 +350,10 @@ export const useAddressTypeLists = <
       description: t(`label${WALLET_TYPE.Exchange}Des`),
     },
   ];
-  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (type: WALLET_TYPE) => {
-    if (type === WALLET_TYPE.Exchange) throw 'wrong type'
+  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (
+    type: WALLET_TYPE
+  ) => {
+    if (type === WALLET_TYPE.Exchange) throw "wrong type";
     return [
       {
         label: t("labelWalletTypeOptions", {
@@ -381,22 +383,22 @@ export const useAddressTypeLists = <
         label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Binance as T,
-        description: t('labelContactsBinanceNotSupportted'),
+        description: t("labelContactsBinanceNotSupportted"),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Huobi as T,
-        description: t('labelContactsHuobiNotSupportted') 
+        description: t("labelContactsHuobiNotSupportted"),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Others as T,
-        description: t('labelContactsOtherExchangesNotSupportted'),
+        description: t("labelContactsOtherExchangesNotSupportted"),
       },
     ];
-  } 
+  };
   const nonExchangeList: AddressItemType<T>[] = [
     {
       label: t(`labelNonExchangeType`),
@@ -437,6 +439,8 @@ export const useAddressTypeLists = <
 };
 
 export const defaultSlipage = 0.1;
+export const defaultBlockTradeSlipage = 0.2;
+
 export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 
 export const enum InvestMapType {
