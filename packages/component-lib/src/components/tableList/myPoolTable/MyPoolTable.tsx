@@ -15,6 +15,7 @@ import {
   EmptyValueTag,
   ForexMap,
   getValuePrecisionThousand,
+  HiddenTag,
   MoreIcon,
   PriceTag,
   RowConfig,
@@ -84,7 +85,8 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
   tokenMap: { [key: string]: any },
   _idIndex: { [key: string]: string },
   _tokenPrices: { [key in keyof R]: number },
-  forexMap: ForexMap<sdk.Currency>
+  forexMap: ForexMap<sdk.Currency>,
+  hideAssets: boolean
 ): Column<R, unknown>[] => {
   return [
     {
@@ -205,8 +207,9 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
               >
                 {typeof balanceDollar === "undefined"
                   ? EmptyValueTag
-                  : PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
+                  : hideAssets
+                    ? HiddenTag
+                    : PriceTag[CurrencyToTag[currency]] + getValuePrecisionThousand(
                       (balanceDollar || 0) * (forexMap[currency] ?? 0),
                       undefined,
                       undefined,
@@ -291,8 +294,9 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
             >
               {dollarReward24 === 0
                 ? EmptyValueTag
-                : PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
+                : hideAssets
+                  ? HiddenTag
+                  : PriceTag[CurrencyToTag[currency]] + getValuePrecisionThousand(
                     (dollarReward24 || 0) * (forexMap[currency] ?? 0),
                     undefined,
                     undefined,
@@ -396,7 +400,8 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
   _tokenMap: { [key: string]: any },
   _idIndex: { [key: string]: string },
   _tokenPrices: { [key in keyof R]: number },
-  forexMap: ForexMap<sdk.Currency>
+  forexMap: ForexMap<sdk.Currency>,
+  hideAssets: boolean
 ): Column<R, unknown>[] => {
   return [
     {
@@ -455,7 +460,9 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
             <Typography component={"span"}>
               {typeof balanceDollar === "undefined"
                 ? EmptyValueTag
-                : PriceTag[CurrencyToTag[currency]] +
+                : hideAssets
+                  ? HiddenTag
+                  : PriceTag[CurrencyToTag[currency]] +
                   getValuePrecisionThousand(
                     (balanceDollar || 0) * (forexMap[currency] ?? 0),
                     undefined,
@@ -470,7 +477,9 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
               variant={"body2"}
               color={"textSecondary"}
             >
-              {getValuePrecisionThousand(balanceA, undefined, 2, 2, true, {
+              {hideAssets 
+              ? HiddenTag + `  +  ` + HiddenTag
+              : getValuePrecisionThousand(balanceA, undefined, 2, 2, true, {
                 isAbbreviate: true,
                 abbreviate: 3,
               }) +
@@ -571,6 +580,7 @@ export const MyPoolTable = withTranslation("tables")(
     forexMap,
     tokenPrices,
     rowConfig = RowConfig,
+    hideAssets,
   }: MyPoolTableProps<R> & WithTranslation) => {
     const { isMobile } = useSettings();
 
@@ -621,7 +631,9 @@ export const MyPoolTable = withTranslation("tables")(
         {totalDollar !== undefined ? (
           <Typography component={"h4"} variant={"h3"} marginX={3}>
             {totalDollar
-              ? PriceTag[CurrencyToTag[currency]] +
+              ? (hideAssets
+                ? HiddenTag
+                : PriceTag[CurrencyToTag[currency]] +
                 getValuePrecisionThousand(
                   sdk.toBig(totalDollar).times(forexMap[currency] ?? 0),
                   undefined,
@@ -629,7 +641,7 @@ export const MyPoolTable = withTranslation("tables")(
                   2,
                   true,
                   { isFait: true, floor: true }
-                )
+                ))
               : EmptyValueTag}
           </Typography>
         ) : (
@@ -652,6 +664,7 @@ export const MyPoolTable = withTranslation("tables")(
                     handleWithdraw,
                     handleDeposit,
                     allowTrade,
+                    
                   },
                   currency,
                   getPopoverState,
@@ -661,7 +674,8 @@ export const MyPoolTable = withTranslation("tables")(
                   tokenMap,
                   idIndex,
                   tokenPrices,
-                  forexMap
+                  forexMap,
+                  hideAssets === true
                   // coinJson
                 ) as any)
               : (columnMode(
@@ -681,7 +695,8 @@ export const MyPoolTable = withTranslation("tables")(
                   tokenMap,
                   idIndex,
                   tokenPrices,
-                  forexMap
+                  forexMap,
+                  hideAssets === true
                 ) as any)
           }
           sortDefaultKey={"liquidity"}

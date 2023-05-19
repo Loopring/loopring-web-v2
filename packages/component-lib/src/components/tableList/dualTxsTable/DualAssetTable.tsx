@@ -5,6 +5,7 @@ import {
   ClockIcon,
   EmptyValueTag,
   globalSetup,
+  HiddenTag,
   MoreIcon,
   RowConfig,
   TokenType,
@@ -81,6 +82,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       showloading,
       showDetail,
       refresh,
+      hideAssets,
       t,
     } = props;
 
@@ -188,10 +190,12 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignCenter",
           name: t("labelDualAssetFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            if (!row?.amount) {
+            if (hideAssets) {
+              return <>{HiddenTag}</>
+            } else if (!row?.amount) {
               return <>{"-- " + row.sellSymbol}</>;
             } else {
-              return <>{row?.amount + " " + row.sellSymbol}</>;
+              return <>{(row?.amount + " " + row.sellSymbol)}</>;
             }
           },
         },
@@ -208,7 +212,9 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             const { base, quote } = currentPrice;
             return (
               <>
-                {(lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
+                {hideAssets 
+                ? (HiddenTag)
+                : (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
                   " " +
                   base +
                   "/" +
@@ -285,7 +291,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [coinJson, t]
+      [coinJson, t, hideAssets]
     );
 
     const getColumnMobile = React.useCallback(
@@ -386,7 +392,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                     variant={"body2"}
                     color={"textSecondary"}
                   >
-                    {row?.amount + " " + row.sellSymbol}
+                    {hideAssets ? HiddenTag : row?.amount + " " + row.sellSymbol}
                   </Typography>
                 </Box>
               </>
@@ -404,7 +410,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [coinJson, t]
+      [coinJson, t, hideAssets]
     );
 
     const sortMethod = React.useCallback(

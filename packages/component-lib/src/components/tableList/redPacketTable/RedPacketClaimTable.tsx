@@ -18,6 +18,7 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
+  HiddenTag,
   myLog,
   PriceTag,
   RowConfig,
@@ -82,6 +83,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       page,
       isNFT = false,
       totalLuckyTokenNFTBalance,
+      hideAssets,
       t,
     } = props;
     const history = useHistory();
@@ -176,7 +178,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           sortable: true,
           name: t("labelAmount"),
           formatter: ({ row }: FormatterProps<R>) => {
-            return <Box display={"flex"}>{row.amountStr}</Box>;
+            return <Box display={"flex"}>{hideAssets ? HiddenTag : row.amountStr}</Box>;
           },
         },
         {
@@ -187,15 +189,16 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
             return (
               <Box display="flex">
                 {row.volume !== undefined
-                  ? PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
+                  ? (hideAssets
+                    ? HiddenTag
+                    : PriceTag[CurrencyToTag[currency]] + getValuePrecisionThousand(
                       (row.volume || 0) * (forexMap[currency] ?? 0),
                       2,
                       2,
                       2,
                       true,
                       { isFait: true }
-                    )
+                    ))
                   : EmptyValueTag}
               </Box>
             );
@@ -224,7 +227,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           },
         },
       ];
-    }, [history, t]);
+    }, [history, t, hideAssets]);
 
     const NFTrow = {
       token: {
