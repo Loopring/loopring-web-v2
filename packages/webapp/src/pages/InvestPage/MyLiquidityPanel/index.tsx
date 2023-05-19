@@ -431,6 +431,7 @@ const MyLiquidity: any = withTranslation("common")(
                         });
                       }}
                       rowConfig={RowInvestConfig}
+                      hideAssets={hideAssets}
                     />
                   </Grid>
                 </TableWrapStyled>
@@ -683,11 +684,13 @@ const MyLiquidity: any = withTranslation("common")(
                     {dualStakeDollar !== undefined ? (
                       <Typography component={"h4"} variant={"h3"} marginX={3}>
                         {dualStakeDollar
-                          ? PriceTag[CurrencyToTag[currency]] +
+                          ? (hideAssets 
+                            ? HiddenTag 
+                            : PriceTag[CurrencyToTag[currency]] +
                             sdk
                               .toBig(dualStakeDollar)
                               .times(forexMap[currency] ?? 0)
-                              .toFixed(2, 1)
+                              .toFixed(2, 1))
                           : EmptyValueTag}
                       </Typography>
                     ) : (
