@@ -415,6 +415,7 @@ export default {
   labelNFTMinter: "Minter:",
   labelNFTMetadata: "Metadata:",
   labelNFTMint: "Create NFT",
+  labelNFTCreateCollection: "+ Create Collection",
   labelNFTTitleMyNFT: "My NFTs",
   labelNFTTOTAL: "Amount:",
   labelInformation: "Notification",
