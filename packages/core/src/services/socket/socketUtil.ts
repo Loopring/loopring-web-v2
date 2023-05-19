@@ -27,6 +27,7 @@ export type SocketEventMap = {
 };
 
 export class LoopringSocket {
+  // @ts-ignore
   private static SocketEventMap: SocketEventMap = {
     [sdk.WsTopicType.account]: (_data: { [key: string]: any }) => {
       walletLayer2Service.sendUserUpdate();
@@ -65,10 +66,12 @@ export class LoopringSocket {
         });
       }
     },
+    // @ts-ignore
     [sdk.WsTopicType.btradeOrderBook]: (data: sdk.DepthData, topic: any) => {
       if (
         (window as any)?.loopringSocket?.socketKeyMap &&
         (window as any).loopringSocket?.socketKeyMap[
+          // @ts-ignore
           sdk.WsTopicType.btradeOrderBook
         ]?.level === topic.level
       ) {
@@ -375,12 +378,15 @@ export class LoopringSocket {
             }
           }
           break;
+        // @ts-ignore
         case sdk.WsTopicType.btradeOrderBook:
+          // @ts-ignore
           const btradeOrderSocket = socket[sdk.WsTopicType.btradeOrderBook];
           if (btradeOrderSocket) {
             const level = btradeOrderSocket.level ?? 0;
             const snapshot = btradeOrderSocket.snapshot ?? true;
             const count = btradeOrderSocket.count ?? 50;
+            // @ts-ignore
             list = btradeOrderSocket.markets.map((key) =>
               sdk.getBtradeOrderBook({
                 market: key,
@@ -391,6 +397,7 @@ export class LoopringSocket {
               })
             );
             if (list && list.length) {
+              // @ts-ignore
               this.addSocketEvents(sdk.WsTopicType.btradeOrderBook);
               topics = [...topics, ...list];
             }

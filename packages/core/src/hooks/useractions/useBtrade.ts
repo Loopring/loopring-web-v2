@@ -66,6 +66,7 @@ const useBtradeSocket = () => {
     if (account.readyState === AccountStatus.ACTIVATED && tradeBtrade.info) {
       sendSocketTopic({
         [sdk.WsTopicType.account]: true,
+        // @ts-ignore
         [sdk.WsTopicType.btradeOrderBook]: {
           showOverlap: false,
           markets: [tradeBtrade.info.btradeMarket],
