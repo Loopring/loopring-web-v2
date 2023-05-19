@@ -213,7 +213,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             return (
               <>
                 {hideAssets 
-                ? (HiddenTag + "/" + HiddenTag)
+                ? (HiddenTag)
                 : (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
                   " " +
                   base +
@@ -291,7 +291,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [coinJson, t]
+      [coinJson, t, hideAssets]
     );
 
     const getColumnMobile = React.useCallback(
@@ -410,7 +410,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [coinJson, t]
+      [coinJson, t, hideAssets]
     );
 
     const sortMethod = React.useCallback(
