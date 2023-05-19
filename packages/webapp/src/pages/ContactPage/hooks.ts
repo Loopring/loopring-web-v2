@@ -19,8 +19,8 @@ import { useRouteMatch } from "react-router";
 import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useDebounce } from "react-use";
-import { debounce, filter, throttle, uniqBy } from "lodash";
-import { updateAccountId, updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
+import { debounce, throttle } from "lodash";
+import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
 import { DefaultRootState, RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 
@@ -94,11 +94,10 @@ export const useContact = () => {
   } = useAccount();
   const dispatch = useDispatch()
   const contacts = useSelector((state: RootState) => state.contacts.contacts);
-  const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId);
-  const { t } = useTranslation()
+  const {t} = useTranslation()
   const [tableHeight] = useState(window.innerHeight * viewHeightRatio - viewHeightOffset);
-  const [loading, setLoading] = useState(false);
-  const total = contacts?.length
+  const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(undefined as number | undefined);
   const [page, setPage] = useState(1);
   const pageSize = Math.floor(tableHeight / RowHeight);
   const pagination = total
@@ -109,31 +108,30 @@ export const useContact = () => {
     }
     : undefined  
   const theme = useTheme()
-  const getContacts = useCallback(async (accountId: number) => {
-    if (cachedForAccountId === accountId) return
-    if (!apiKey || accountId == -1) return
-    // if (contacts && contacts.length > 0) return // Not refetch contacts if contacts were fetched and 'useCache' is true
+  const loadContacts = async (offset: number) => {
+    if (!apiKey || accountId == -1) {
+      return
+    }
     dispatch(updateContacts(undefined))
     setLoading(true)
+
     try {
-      const allContacts = await getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)
+      const allContacts = await getAllContacts(offset, accountId, apiKey, accAddress, theme.colorBase.warning)
       dispatch(
-        allContacts
+        contacts
           ? updateContacts(allContacts)
           : updateContacts([])
       )
-      dispatch(
-        updateAccountId(accountId)
-      )
+      setTotal(allContacts.length)
     } catch {
       dispatch(
         updateContacts([])
       )
     }
     setLoading(false)
-  }, [accountId, apiKey, contacts, cachedForAccountId])
+  }
   useEffect(() => {
-    getContacts(accountId)
+    loadContacts(0)
   }, [accountId, apiKey])
   
   const onChangeSearch = React.useCallback((input: string) => {
@@ -265,9 +263,8 @@ export const useContact = () => {
     }, apiKey)
     .then(response => {
       if (response === true) {
-        dispatch(
-          updateContacts(contacts!.filter(contact => contact.address !== address))
-        )
+        loadContacts(0)
+        // loadContacts()
         setToastInfo({
           open: true,
           isSuccess: true,
@@ -292,11 +289,9 @@ export const useContact = () => {
       setDeleteLoading(false)
     })
    
-  }, [apiKey, contacts])
+  }, [apiKey])
   const [addLoading, setAddLoading] = React.useState(false);
   const submitAddContact = React.useCallback(async (address: string, name: string, callBack: (success: boolean) => void) => {
-    
-
     setAddLoading(true)
     const isHebao = await checkIsHebao(accAddress)
     LoopringAPI.contactAPI!.createContact({
@@ -342,19 +337,7 @@ export const useContact = () => {
         }
       })
       if (response === true) {
-        setLoading(true)
-        try {
-          const newContacts = await getAllContacts((total ?? 0) + 1, accountId, apiKey, accAddress, theme.colorBase.warning)
-          const all = contacts 
-            ? contacts.concat(newContacts)
-            : newContacts
-          dispatch(
-            updateContacts(
-              uniqBy(all, contact => contact.address)
-            )
-          )
-        } catch {}
-        setLoading(false)
+        loadContacts(total ?? 0)
         setToastInfo({
           open: true,
           isSuccess: true,
@@ -385,10 +368,11 @@ export const useContact = () => {
       }
     })
     .finally(() => {
+      
       setAddLoading(false)
     })
    
-  }, [apiKey, contacts, total])
+  }, [apiKey])
 
   const onPageChange = React.useCallback((page: number) => {
     setSearchValue("")
@@ -405,6 +389,8 @@ export const useContact = () => {
         )
         : contacts.filter(x => {
           return x.address.toLowerCase().includes(searchValue.toLowerCase()) || x.name.toLowerCase().includes(searchValue.toLowerCase())
+            // ? x.address.toLowerCase().includes(searchValue.toLowerCase()) || x.name.toLowerCase().includes(searchValue.toLowerCase())
+            // : true
         })
     ),
     onClickEditing,
@@ -555,9 +541,13 @@ export function useTransactions() {
   const [txs, setTxs] = useState<RawDataTransactionItem[]>([]);
   const [txsTotal, setTxsTotal] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
+  // const [showLoading, setShowLoading] = user(false);
   const routeMatch = useRouteMatch()
+  // routeMatch.params[0]
+  // debugger
 
   const getTxnStatus = (status: string) => {
+    // debugger
     return status === ""
       ? TransactionStatus.processing
       : status === "PROCESSED"
@@ -644,6 +634,74 @@ export function useTransactions() {
         setTxsTotal(response.totalNum);
         setShowLoading(false);
       }
+      // .then(x => {
+        
+      //   debugger
+      // })
+      // .catch(x => {
+      //   debugger
+      // })
+
+      // if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
+      //   setShowLoading(true);
+      //   const response = await LoopringAPI.userAPI.getUserTxs(
+      //     {
+      //       accountId,
+      //       limit,
+      //       tokenSymbol,
+      //       start,
+      //       end,
+      //       offset,
+      //       types,
+      //     },
+      //     apiKey
+      //   );
+      //   if (
+      //     (response as sdk.RESULT_INFO).code ||
+      //     (response as sdk.RESULT_INFO).message
+      //   ) {
+      //     const errorItem =
+      //       SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+      //     setToastOpen({
+      //       open: true,
+      //       type: "error",
+      //       content:
+      //         "error : " + errorItem
+      //           ? t(errorItem.messageKey)
+      //           : (response as sdk.RESULT_INFO).message,
+      //     });
+      //   } else {
+      //     const formattedList: RawDataTransactionItem[] = response.userTxs.map(
+      //       (o) => {
+      //         const feePrecision = tokenMap
+      //           ? tokenMap[o.feeTokenSymbol].precision
+      //           : undefined;
+      //         return {
+      //           ...o,
+      //           side: o.txType as any,
+      //           amount: {
+      //             unit: o.symbol || "",
+      //             value: Number(volumeToCount(o.symbol, o.amount)),
+      //           },
+      //           fee: {
+      //             unit: o.feeTokenSymbol || "",
+      //             value: Number(
+      //               volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0)
+      //             ),
+      //           },
+      //           memo: o.memo || "",
+      //           time: o.timestamp,
+      //           txnHash: o.hash,
+      //           status: getTxnStatus(o.status),
+      //           feePrecision: feePrecision,
+      //         } as RawDataTransactionItem;
+      //       }
+      //     );
+      //     setTxs(formattedList);
+      //     setTxsTotal(response.totalNum);
+      //     setShowLoading(false);
+      //   }
+      // }
     },
     [accountId, apiKey, t, tokenMap]
   );

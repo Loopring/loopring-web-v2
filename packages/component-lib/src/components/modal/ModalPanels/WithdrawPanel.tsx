@@ -17,7 +17,7 @@ import { WithdrawConfirm } from "../../tradePanel/components/WithdrawConfirm";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
 import { RootState, useAccount } from "@loopring-web/core";
 import { useDispatch, useSelector } from "react-redux";
-import { updateAccountId, updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
+import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
 import { getAllContacts } from "./TransferPanel";
 import { useTheme } from "@emotion/react";
 
@@ -65,29 +65,33 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       });
       return clonedWalletMap;
     }, [walletMap]);
+    type DisplayContact = {
+      name: string
+      address: string
+      avatarURL: string
+      editing: boolean
+    }
+    // const [contacts, setContacts] = React.useState([] as DisplayContact[]);
     const dispatch = useDispatch()
     const contacts = useSelector((state: RootState) => state.contacts.contacts);
-    const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId);
     const {
       account: { accountId, apiKey, accAddress},
     } = useAccount();
     const theme = useTheme()
-    const loadContacts = React.useCallback(async (accountId: number) => {
-      if (accountId === cachedForAccountId) return
+    const loadContacts = async () => {
       dispatch(updateContacts(undefined))
       try {
         const allContacts = await getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)  
         dispatch(updateContacts(allContacts))
-        dispatch(updateAccountId(accountId))
       } catch (e) {
         dispatch(
           updateContacts([])
         )
       }
-    }, [cachedForAccountId])
+    }
     React.useEffect(() => {
-      loadContacts(accountId)
-    }, [accountId, apiKey])
+      loadContacts()
+    }, [accountId])
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(
