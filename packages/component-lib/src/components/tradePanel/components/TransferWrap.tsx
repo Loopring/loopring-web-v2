@@ -152,7 +152,6 @@ export const TransferWrap = <
     return !!(sureItsLayer2 && sureItsLayer2 in EXCHANGE_TYPE);
   }, [sureItsLayer2, sureItsLayer2]);
 
-  const isExchangeEOA = detectedWalletType === WALLET_TYPE.EOA && isExchange;
   const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart;
 
   const view = React.useMemo(() => {
@@ -168,7 +167,7 @@ export const TransferWrap = <
           {t(`labelL2toL2${addrStatus}`)}
         </Typography>
       );
-    } else if (isExchangeEOA) {
+    } else if (isExchange) {
       return (
         <Typography
           color={"var(--color-error)"}
@@ -294,7 +293,7 @@ export const TransferWrap = <
     realAddr,
     activeAccountPrice,
     isInvalidAddressOrENS,
-    isExchangeEOA,
+    isExchange,
     isOtherSmartWallet,
     isSameAddress,
   ]);
@@ -584,7 +583,7 @@ export const TransferWrap = <
           disabled={
             getDisabled ||
             transferBtnStatus === TradeBtnStatus.LOADING ||
-            isExchangeEOA ||
+            isExchange ||
             isOtherSmartWallet
           }
         >

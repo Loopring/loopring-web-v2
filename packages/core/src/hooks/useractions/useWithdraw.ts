@@ -50,6 +50,7 @@ import {
   LAST_STEP,
   useIsHebao,
   RootState,
+  useAddressCheckWithContacts,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import _ from "lodash";
@@ -154,7 +155,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isLoopringAddress,
     isAddressCheckLoading,
     loopringSmartWalletVersion,
-  } = useAddressCheck();
+  } = useAddressCheckWithContacts(false);
 
   React.useEffect(() => {
     // setSureIsAllowAddress(undefined);

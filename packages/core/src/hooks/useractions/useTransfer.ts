@@ -55,6 +55,7 @@ import {
   useTokenPrices,
   useIsHebao,
   RootState,
+  useAddressCheckWithContacts,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
@@ -150,7 +151,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSameAddress,
     isContractAddress,
     loopringSmartWalletVersion,
-  } = useAddressCheck();
+  } = useAddressCheckWithContacts(true);
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
