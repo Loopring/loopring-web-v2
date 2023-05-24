@@ -22,7 +22,7 @@ import {
   useToast,
   useWalletL2Collection,
 } from "../../index";
-import { IpfsFile, useToggle } from "@loopring-web/component-lib";
+import { IpfsFile, ToastType, useToggle } from "@loopring-web/component-lib";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { AddResult } from "ipfs-core-types/src/root";
@@ -241,7 +241,7 @@ export const useEditCollection = <T extends CollectionMeta>({
           } else {
             setCollectionToastOpen({
               open: true,
-              type: "success",
+              type: ToastType.success,
               content: t("labelEditCollectionSuccess"),
             });
             updateWalletL2Collection({ page: 1 });
@@ -258,7 +258,7 @@ export const useEditCollection = <T extends CollectionMeta>({
         } catch (error) {
           setCollectionToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               t("labelEditCollectionFailed") +
               `: ${
@@ -304,7 +304,7 @@ export const useEditCollection = <T extends CollectionMeta>({
           } else {
             setCollectionToastOpen({
               open: true,
-              type: "success",
+              type: ToastType.success,
               content: t("labelCreateCollectionSuccess"),
             });
             updateWalletL2Collection({ page: 1 });
@@ -323,7 +323,7 @@ export const useEditCollection = <T extends CollectionMeta>({
         } catch (error) {
           setCollectionToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               t("labelCreateCollectionFailed") +
               `: ${
@@ -365,7 +365,7 @@ export const useEditCollection = <T extends CollectionMeta>({
           } else {
             setCollectionToastOpen({
               open: true,
-              type: "success",
+              type: ToastType.success,
               content: t("labelCreateCollectionSuccess"),
             });
             updateWalletL2Collection({ page: 1 });
@@ -382,7 +382,7 @@ export const useEditCollection = <T extends CollectionMeta>({
         } catch (error) {
           setCollectionToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               t("labelCreateCollectionFailed") +
               `: ${

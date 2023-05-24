@@ -6,7 +6,7 @@ import {
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { PageAmmCommon } from "./index";
+// import { PageAmmCommon } from "./index";
 import { PageAmmExit, PageAmmJoin, PageAmmPoolStatus } from "./interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { BIGO } from "../../../defs";
@@ -21,6 +21,7 @@ const initJoinState: PageAmmJoin = {
   btnStatus: TradeBtnStatus.AVAILABLE,
   ammCalcData: undefined,
   ammData: {
+    coinLP: { belong: undefined } as unknown as IBData<string>,
     coinA: { belong: undefined } as unknown as IBData<string>,
     coinB: { belong: undefined } as unknown as IBData<string>,
     slippage: initSlippage,
@@ -40,19 +41,21 @@ const initExitState: PageAmmExit = {
   ammCalcData: undefined,
   ammData: {
     coinLP: { belong: undefined } as unknown as IBData<string>,
+    coinA: { belong: undefined } as unknown as IBData<string>,
+    coinB: { belong: undefined } as unknown as IBData<string>,
     slippage: initSlippage,
   } as AmmExitData<IBData<string>, string>,
 };
 
-const initCommonState: PageAmmCommon = {
-  ammInfo: undefined,
-  ammPoolSnapshot: undefined,
-};
+// const initCommonState: PageAmmCommon = {
+//   ammInfo: undefined,
+//   ammPoolSnapshot: undefined,
+// };
 
 const initialState: PageAmmPoolStatus = {
   ammJoin: initJoinState,
   ammExit: initExitState,
-  common: initCommonState,
+  // common: initCommonState,
   __SUBMIT_LOCK_TIMER__: 1000,
   __TOAST_AUTO_CLOSE_TIMER__: 3000,
 };
@@ -64,20 +67,20 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
     resetAmmPool(state) {
       state.ammJoin = initJoinState;
       state.ammExit = initExitState;
-      state.common = initCommonState;
+      // state.common = initCommonState;
     },
 
-    updatePageAmmCommon(state, action: PayloadAction<Partial<PageAmmCommon>>) {
-      const { ammInfo, ammPoolSnapshot } = action.payload;
-
-      if (ammInfo) {
-        state.common.ammInfo = ammInfo;
-      }
-
-      if (ammPoolSnapshot) {
-        state.common.ammPoolSnapshot = ammPoolSnapshot;
-      }
-    },
+    // updatePageAmmCommon(state, action: PayloadAction<Partial<PageAmmCommon>>) {
+    //   const { ammInfo } = action.payload;
+    //
+    //   if (ammInfo) {
+    //     state.common.ammInfo = ammInfo;
+    //   }
+    //
+    //   // if (ammPoolSnapshot) {
+    //   //   state.common.ammPoolSnapshot = ammPoolSnapshot;
+    //   // }
+    // },
 
     updatePageAmmJoinBtn(state, action: PayloadAction<Partial<PageAmmJoin>>) {
       const { btnI18nKey, btnStatus } = action.payload;
@@ -188,6 +191,6 @@ export const {
   updatePageAmmJoinBtn,
   updatePageAmmExit,
   updatePageAmmExitBtn,
-  updatePageAmmCommon,
+  // updatePageAmmCommon,
   resetAmmPool,
 } = pageAmmPoolSlice.actions;

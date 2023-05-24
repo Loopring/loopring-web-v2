@@ -1488,6 +1488,10 @@ export default {
   labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
+  labelRedPacketTabReceived: "Received",
+  labelRedPacketTabSent: "Sent",
+  labelRedPacketTabNFTs: "NFTs",
+  labelRedPacketTabBlindBox: "Blind Box",
   labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
@@ -1702,4 +1706,5 @@ export default {
   labelStopPrice: "Price",
   labelStopStopPrice: "Stop Price",
   labelStopLimitWhatIs: "What's Stop Limit?",
+
 };

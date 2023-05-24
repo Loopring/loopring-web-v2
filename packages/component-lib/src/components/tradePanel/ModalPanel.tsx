@@ -179,8 +179,6 @@ export const ModalPanel = <
   const { isMobile } = useSettings();
   const {
     modals,
-    // setShowAmm,
-    // setShowSwap,
     setShowTransfer,
     setShowDeposit,
     setShowWithdraw,

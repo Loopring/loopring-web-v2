@@ -6,6 +6,7 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
+  HiddenTag,
   RowInvestConfig,
 } from "@loopring-web/common-resources";
 import {
@@ -103,6 +104,7 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
       showloading,
       // onDetailClick,
       redeemItemClick: _redeemItemClick,
+      hideAssets,
       t,
     } = props;
     const [openDetail, setOpenDetail] = React.useState(false);
@@ -188,7 +190,9 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.remainAmount && row.remainAmount !== "0"
-                ? getValuePrecisionThousand(
+                ? (hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
                     sdk.toBig(row.remainAmount).div("1e" + tokenInfo.decimals),
                     tokenInfo.precision,
                     tokenInfo.precision,
@@ -198,9 +202,8 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  ) +
-                  " " +
-                  tokenInfo.symbol
+                  ) + " " + tokenInfo.symbol
+                  ) 
                 : EmptyValueTag;
 
             return <> {amountStr}</>;
@@ -217,7 +220,9 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.totalRewards && row.totalRewards !== "0"
-                ? getValuePrecisionThousand(
+                ? (hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
                     sdk.toBig(row.totalRewards).div("1e" + tokenInfo.decimals),
                     tokenInfo.precision,
                     tokenInfo.precision,
@@ -227,9 +232,8 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  ) +
-                  " " +
-                  tokenInfo.symbol
+                  )+ " " + tokenInfo.symbol
+                ) 
                 : EmptyValueTag;
             return <> {amountStr}</>;
           },
@@ -245,7 +249,9 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.lastDayPendingRewards && row.lastDayPendingRewards !== "0"
-                ? getValuePrecisionThousand(
+                ? (hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
                     sdk
                       .toBig(row.lastDayPendingRewards)
                       .div("1e" + tokenInfo.decimals),
@@ -257,9 +263,8 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  ) +
-                  " " +
-                  tokenInfo.symbol
+                  )+ " " + tokenInfo.symbol
+                ) 
                 : EmptyValueTag;
             return <> {amountStr}</>;
           },
@@ -325,7 +330,7 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [t, tokenMap, idIndex]
+      [t, tokenMap, idIndex, hideAssets]
     );
 
     const getColumnMobileTransaction = React.useCallback(
@@ -342,7 +347,9 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.remainAmount && row.remainAmount !== "0"
-                ? getValuePrecisionThousand(
+                ? (hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
                     sdk.toBig(row.remainAmount).div("1e" + tokenInfo.decimals),
                     tokenInfo.precision,
                     tokenInfo.precision,
@@ -352,9 +359,9 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  ) +
-                  " " +
-                  tokenInfo.symbol
+                  )) +
+                " " +
+                tokenInfo.symbol
                 : EmptyValueTag;
 
             return (
@@ -386,7 +393,9 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.lastDayPendingRewards && row.lastDayPendingRewards !== "0"
-                ? getValuePrecisionThousand(
+                ? (hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
                     sdk
                       .toBig(row.lastDayPendingRewards)
                       .div("1e" + tokenInfo.decimals),
@@ -398,11 +407,13 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  )
+                  ))
                 : EmptyValueTag;
             const amountPreviousEarnStr =
               row.totalRewards && row.totalRewards != "0"
-                ? getValuePrecisionThousand(
+                ? (hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
                     sdk.toBig(row.totalRewards).div("1e" + tokenInfo.decimals),
                     tokenInfo.precision,
                     tokenInfo.precision,
@@ -412,9 +423,9 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                       floor: false,
                       // isTrade: true,
                     }
-                  ) +
-                  " " +
-                  tokenInfo.symbol
+                  )) +
+                " " +
+                tokenInfo.symbol
                 : EmptyValueTag;
             return <>{amountStr + "/" + amountPreviousEarnStr}</>;
           },

@@ -10,6 +10,7 @@ import {
   ModalWalletConnect,
   ProviderMenu,
   Toast,
+  ToastType,
   useOpenModals,
   useSettings,
   WalletConnectConnectInProgress,
@@ -510,7 +511,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           onClose={() => {
             setCopyToastOpen(false);
           }}
-          severity={"success"}
+          severity={ToastType.success}
         />
       </>
     );

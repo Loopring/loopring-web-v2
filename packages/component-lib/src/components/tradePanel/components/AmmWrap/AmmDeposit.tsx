@@ -1,5 +1,4 @@
 import {
-  AccountStatus,
   AmmInData,
   AmmJoinData,
   defaultSlipage,
@@ -41,9 +40,10 @@ export const AmmDepositWrap = <
   onAddChangeEvent,
   handleError,
   ammData,
-  accStatus,
-  coinAPrecision,
-  coinBPrecision,
+  propsAExtends = {},
+  propsBExtends = {},
+  // coinAPrecision,
+  // coinBPrecision,
   ...rest
 }: AmmDepositWrapProps<T, I, ACD, C> & WithTranslation) => {
   const coinARef = React.useRef();
@@ -92,11 +92,7 @@ export const AmmDepositWrap = <
 
   if (typeof handleError !== "function") {
     handleError = ({ belong, balance, tradeValue }: any) => {
-      if (
-        accStatus === AccountStatus.ACTIVATED &&
-        ammCalcData?.myCoinA?.belong &&
-        ammCalcData?.myCoinB?.belong
-      ) {
+      if (ammCalcData?.myCoinA?.belong && ammCalcData?.myCoinB?.belong) {
         const isCoinA = belong === ammCalcData.myCoinA.belong;
         if (balance < tradeValue || (tradeValue && !balance)) {
           const _error = {
@@ -221,7 +217,8 @@ export const AmmDepositWrap = <
             order: "right",
             inputData: ammData ? ammData.coinA : ({} as any),
             coinMap: ammCalcData ? ammCalcData.coinInfoMap : ({} as any),
-            coinPrecision: coinAPrecision,
+            ...propsAExtends,
+            // coinPrecision: coinAPrecision,
           }}
         />
         <Box alignSelf={"center"} marginY={1}>
@@ -245,7 +242,8 @@ export const AmmDepositWrap = <
             order: "right",
             inputData: ammData ? ammData.coinB : ({} as any),
             coinMap: ammCalcData ? ammCalcData.coinInfoMap : ({} as any),
-            coinPrecision: coinBPrecision,
+            ...propsBExtends,
+            // coinPrecision: coinBPrecision,
           }}
         />
       </Grid>
@@ -343,7 +341,9 @@ export const AmmDepositWrap = <
                 {t("swapFee")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {t(ammCalcData ? ammCalcData.fee : EmptyValueTag)}
+                {ammCalcData?.fee && ammCalcData?.fee != "0"
+                  ? ammCalcData.fee + " " + ammCalcData.myCoinB.belong
+                  : EmptyValueTag}
               </Typography>
             </Grid>
           </Grid>
@@ -361,12 +361,9 @@ export const AmmDepositWrap = <
                   : "false"
               }
               disabled={
-                accStatus === AccountStatus.ACTIVATED &&
-                (getDisabled() ||
-                  ammDepositBtnStatus === TradeBtnStatus.DISABLED ||
-                  ammDepositBtnStatus === TradeBtnStatus.LOADING ||
-                  errorA.error ||
-                  errorB.error)
+                getDisabled() ||
+                ammDepositBtnStatus === TradeBtnStatus.DISABLED ||
+                ammDepositBtnStatus === TradeBtnStatus.LOADING
               }
               fullWidth={true}
             >

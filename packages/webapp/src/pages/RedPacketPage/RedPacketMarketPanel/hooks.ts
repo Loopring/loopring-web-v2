@@ -9,6 +9,7 @@ import {
 } from "@loopring-web/common-resources";
 import _ from "lodash";
 import { useRouteMatch } from "react-router-dom";
+import { ToastType } from "@loopring-web/component-lib";
 
 export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
   setToastOpen,
@@ -119,7 +120,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
           if (setToastOpen) {
             setToastOpen({
               open: true,
-              type: "error",
+              type: ToastType.error,
               content:
                 "error : " + errorItem
                   ? t(errorItem.messageKey)

@@ -1,14 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
   resetAmmPool,
-  updatePageAmmCommon,
+  // updatePageAmmCommon,
   updatePageAmmExit,
   updatePageAmmExitBtn,
   updatePageAmmJoin,
   updatePageAmmJoinBtn,
 } from "./reducer";
 import {
-  PageAmmCommon,
+  // PageAmmCommon,
   PageAmmExit,
   PageAmmJoin,
   PageAmmPoolStatus,
@@ -18,7 +18,7 @@ import { RequireOne } from "@loopring-web/common-resources";
 import { RootState } from "../../index";
 
 export function usePageAmmPool(): PageAmmPoolStatus & {
-  updatePageAmmCommon: (pageAmmPool: RequireOne<PageAmmCommon, never>) => void;
+  // updatePageAmmCommon: (pageAmmPool: RequireOne<PageAmmCommon, never>) => void;
   updatePageAmmJoin: (pageAmmPool: RequireOne<PageAmmJoin, never>) => void;
   updatePageAmmJoinBtn: (pageAmmPool: RequireOne<PageAmmJoin, never>) => void;
   updatePageAmmExit: (pageAmmPool: RequireOne<PageAmmExit, never>) => void;
@@ -34,12 +34,7 @@ export function usePageAmmPool(): PageAmmPoolStatus & {
     resetAmmPool: React.useCallback(() => {
       dispatch(resetAmmPool({}));
     }, [dispatch]),
-    updatePageAmmCommon: React.useCallback(
-      (pageAmmJoin: RequireOne<PageAmmCommon, never>) => {
-        dispatch(updatePageAmmCommon(pageAmmJoin));
-      },
-      [dispatch]
-    ),
+
     updatePageAmmJoin: React.useCallback(
       (pageAmmJoin: RequireOne<PageAmmJoin, never>) => {
         dispatch(updatePageAmmJoin(pageAmmJoin));

@@ -8,8 +8,6 @@
     "@loopring-web/common-resources": "1.0.0",
     "@loopring-web/component-lib": "1.0.0",
     "@loopring-web/core": "1.0.0",
-    "@walletconnect/ethereum-provider": "2.7.0",
-    "@walletconnect/universal-provider": "2.7.0",
     "@manaflair/redux-batch": "^1.0.0",
     "clipboard": "^2.0.8",
     "ethers": "^5.5.4",

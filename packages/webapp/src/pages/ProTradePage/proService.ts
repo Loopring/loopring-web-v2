@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import {
+  ammMapReducer,
   ammPoolService,
   bookService,
   LoopringAPI,
@@ -126,6 +127,20 @@ export const useSocketProService = ({
           };
           store.dispatch(
             updatePageTradePro({ market, ammPoolSnapshot: ammPoolSnapshot })
+          );
+          store.dispatch(
+            ammMapReducer.updateRealTimeAmmMap({
+              ammPoolStats: {
+                ["AMM-" + market]: {
+                  ...ammMap["AMM-" + market].__rawConfig__,
+                  liquidity: [
+                    ammPoolSnapshot.pooled[0].volume,
+                    ammPoolSnapshot.pooled[1].volume,
+                  ],
+                  lpLiquidity: ammPoolSnapshot.lp.volume,
+                },
+              },
+            })
           );
         }
       }

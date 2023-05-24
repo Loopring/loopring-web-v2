@@ -53,6 +53,7 @@ export const AmmWithdrawWrap = <
   ammWithdrawBtnI18nKey,
   onRemoveChangeEvent,
   handleError,
+  propsLPExtends = {},
   ammData,
   ...rest
 }: AmmWithdrawWrapProps<T, I, ACD, C> & WithTranslation) => {
@@ -557,7 +558,9 @@ export const AmmWithdrawWrap = <
                 {t("swapFee")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {ammCalcData ? ammCalcData?.fee.toString() : EmptyValueTag}
+                {ammCalcData?.fee && ammCalcData?.fee != "0"
+                  ? ammCalcData.fee + " " + ammCalcData.myCoinB.belong
+                  : EmptyValueTag}
               </Typography>
             </Grid>
           </Grid>
@@ -579,8 +582,7 @@ export const AmmWithdrawWrap = <
               disabled={
                 getDisabled() ||
                 ammWithdrawBtnStatus === TradeBtnStatus.DISABLED ||
-                ammWithdrawBtnStatus === TradeBtnStatus.LOADING ||
-                error.error
+                ammWithdrawBtnStatus === TradeBtnStatus.LOADING
               }
               fullWidth={true}
             >

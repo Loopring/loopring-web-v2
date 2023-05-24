@@ -11,6 +11,7 @@ import {
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  HiddenTag,
   MoreIcon,
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
@@ -101,36 +102,24 @@ const ActionPopContent = React.memo(
           <>
             <MenuItem
               disabled={!_allowTrade?.joinAmm?.enable}
-              onClick={
-                () => {
-                  // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
-                  setShowAmm({
-                    isShow: true,
-                    type: AmmPanelType.Join,
-                    symbol: market,
-                  });
-                }
-                // () => undefined
-                // history.push(
-                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
-                // )
-              }
+              onClick={() => {
+                setShowAmm({
+                  isShow: true,
+                  type: AmmPanelType.Join,
+                  symbol: market,
+                });
+              }}
             >
               <ListItemText>{t("labelPoolTableAddLiquidity")}</ListItemText>
             </MenuItem>
             <MenuItem
-              onClick={
-                () => {
-                  setShowAmm({
-                    isShow: true,
-                    type: AmmPanelType.Exit,
-                    symbol: market,
-                  });
-                }
-                // history.push(
-                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.remove}`
-                // )
-              }
+              onClick={() => {
+                setShowAmm({
+                  isShow: true,
+                  type: AmmPanelType.Exit,
+                  symbol: market,
+                });
+              }}
             >
               <ListItemText>{t("labelPoolTableRemoveLiquidity")}</ListItemText>
             </MenuItem>
@@ -306,6 +295,7 @@ export default ActionMemo;
 export const LockedMemo = React.memo(
   (
     props: RawDataAssetsItem & {
+      hideAssets?: boolean;
       onTokenLockHold?: (item: any) => void;
       tokenLockDetail?: any[] | undefined;
     }
@@ -337,17 +327,16 @@ export const LockedMemo = React.memo(
               }
             }}
           >
-            {getValuePrecisionThousand(
-              value,
-              precision,
-              precision,
-              undefined,
-              false,
-              { floor: true }
-            )}
-            {/*<IconButtonStyle size={"large"} edge={"end"}>*/}
-            {/*  <ViewMoreIcon />*/}
-            {/*</IconButtonStyle>*/}
+            {props.hideAssets
+              ? HiddenTag
+              : getValuePrecisionThousand(
+                  value,
+                  precision,
+                  precision,
+                  undefined,
+                  false,
+                  { floor: true }
+                )}
           </Typography>
           <PopoverPure
             className={"arrow-right"}

@@ -32,6 +32,7 @@ import { TagIconList } from "../../block";
 import { useSettings } from "../../../stores";
 import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
+import { ToastType } from "../../toast";
 
 const PopoverStyled = styled(Popover)`
   .MuiPaper-elevation2 {
@@ -236,7 +237,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
           content: rest.t("labelSwapSettingToggleSuccess", {
             onOrOff: !swapSecondConfirmation ? "on" : "off",
           }),
-          type: "success",
+          type: ToastType.success,
         });
       setSwapSecondConfirmation(!swapSecondConfirmation);
     }, [swapSecondConfirmation, setSwapSecondConfirmation, setToastOpen]);

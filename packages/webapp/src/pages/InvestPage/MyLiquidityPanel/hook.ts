@@ -9,7 +9,7 @@ import {
   LoopringAPI,
   makeDefiInvestReward,
   makeMyAmmMarketArray,
-  makeMyPoolRowWithPoolState,
+  // makeMyPoolRowWithPoolState,
   makeWalletLayer2,
   SummaryMyInvest,
   useAccount,
@@ -21,7 +21,7 @@ import {
   useUserRewards,
   useWalletLayer2,
   useWalletLayer2Socket,
-  volumeToCountAsBigNumber,
+  // volumeToCountAsBigNumber,
 } from "@loopring-web/core";
 import {
   AccountStatus,
@@ -67,7 +67,11 @@ export const useOverview = <
 } => {
   const { account } = useAccount();
   const { status: walletLayer2Status } = useWalletLayer2();
-  const { status: userRewardsStatus, userRewardsMap } = useUserRewards();
+  const {
+    status: userRewardsStatus,
+    userRewardsMap,
+    myAmmLPMap,
+  } = useUserRewards();
   const { tokenMap, idIndex } = useTokenMap();
   const { marketCoins: defiCoinArray } = useDefiMap();
   const { status: ammMapStatus, ammMap } = useAmmMap();
@@ -179,7 +183,7 @@ export const useOverview = <
         ammPoolDollar: 0,
         stakeETHDollar: 0,
       };
-      if (_walletMap && ammMap && userRewardsMap && tokenPrices) {
+      if (_walletMap && ammMap && userRewardsMap && tokenPrices && myAmmLPMap) {
         // @ts-ignore
         const _myPoolRow: MyPoolRow<R>[] = Reflect.ownKeys(_walletMap).reduce(
           (prev, walletKey) => {
@@ -187,12 +191,16 @@ export const useOverview = <
               const ammKey = walletKey.toString().replace("LP-", "AMM-");
               const marketKey = walletKey.toString().replace("LP-", "");
               let rowData: MyPoolRow<R> | undefined;
-              rowData = makeMyPoolRowWithPoolState({
+              rowData = {
                 ammDetail: ammMap[ammKey],
-                walletMap: _walletMap,
-                market: marketKey,
-                ammUserRewardMap: userRewardsMap,
-              }) as any;
+                ...myAmmLPMap[marketKey],
+              };
+              // rowData = makeMyPoolRowWithPoolState({
+              //   ammDetail: ammMap[ammKey],
+              //   walletMap: _walletMap,
+              //   market: marketKey,
+              //   ammUserRewardMap: userRewardsMap,
+              // }) as any;
               if (rowData !== undefined) {
                 prev.push(rowData);
               }
@@ -211,8 +219,8 @@ export const useOverview = <
           const coinB = o.ammDetail?.coinBInfo?.simpleName;
           const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined;
           const precisionB = tokenMap ? tokenMap[coinB]?.precision : undefined;
-          // totalCurrentInvest.investDollar += Number(o.balanceDollar ?? 0);
-          totalCurrentInvest.ammPoolDollar += Number(o.balanceDollar ?? 0);
+          // totalCurrentInvest.investDollar += Number(o.balanceU ?? 0);
+          totalCurrentInvest.ammPoolDollar += Number(o.balanceU ?? 0);
           return {
             ...o,
             totalAmmValueDollar,
@@ -288,12 +296,8 @@ export const useOverview = <
 
   React.useEffect(() => {
     if (userRewardsStatus === SagaStatus.UNSET) {
-      // let summaryReward: any = makeSummaryMyAmm({ userRewardsMap }) ?? {};
       makeDefiInvestReward().then((summaryDefiReward) => {
         const dualStakeDollar = sdk.toBig(summaryDefiReward);
-        // summaryReward.rewardDollar = dualStakeDollar
-        //   .plus(summaryReward?.rewardDollar ?? 0)
-        //   .toString();
         setSummaryMyInvest((state) => {
           return {
             ...state,

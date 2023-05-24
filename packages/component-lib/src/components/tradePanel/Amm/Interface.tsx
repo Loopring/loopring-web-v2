@@ -57,5 +57,7 @@ export type AmmProps<
   accStatus?: AccountStatus;
   coinAPrecision?: number;
   coinBPrecision?: number;
+  ammType: AmmPanelType;
+  handleTabChange: (index: AmmPanelType) => void;
 } & AmmWithdrawBaseProps<TW, I> &
   AmmDepositBaseProps<T, I>;

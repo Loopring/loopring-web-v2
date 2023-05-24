@@ -53,6 +53,7 @@ import {
   SwapData,
   SwapTradeData,
   SwapType,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -371,7 +372,7 @@ export const useSwap = <
     ) {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: t("labelSwapFailed"),
       });
       setIsSwapLoading(false);
@@ -429,7 +430,7 @@ export const useSwap = <
         }
         setToastOpen({
           open: true,
-          type: "error",
+          type: ToastType.error,
           content:
             t("labelSwapFailed") +
             " error: " +
@@ -477,13 +478,13 @@ export const useSwap = <
               if (percentage1 === 0 || percentage2 === 0) {
                 setToastOpen({
                   open: true,
-                  type: "warning",
+                  type: ToastType.warning,
                   content: t("labelSwapCancelled"),
                 });
               } else {
                 setToastOpen({
                   open: true,
-                  type: "success",
+                  type: ToastType.success,
                   content: t("labelSwapSuccess"),
                 });
               }
@@ -491,14 +492,14 @@ export const useSwap = <
             case sdk.OrderStatus.processed:
               setToastOpen({
                 open: true,
-                type: "success",
+                type: ToastType.success,
                 content: t("labelSwapSuccess"),
               });
               break;
             default:
               setToastOpen({
                 open: true,
-                type: "error",
+                type: ToastType.error,
                 content: t("labelSwapFailed"),
               });
           }
@@ -510,7 +511,7 @@ export const useSwap = <
       sdk.dumpError400(reason);
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: t("labelSwapFailed"),
       });
     }

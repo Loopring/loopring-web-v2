@@ -6,8 +6,6 @@ import {
   AmmWithdrawWrap,
 } from "../components";
 import { Box, BoxProps, Grid, Tab, Tabs, Toolbar } from "@mui/material";
-import { useLocation } from "react-router-dom";
-import qs from "query-string";
 import {
   AmmExitData,
   AmmInData,
@@ -16,7 +14,6 @@ import {
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
-import { useDeepCompareEffect } from "react-use";
 import { useTheme } from "@emotion/react";
 import { CountDownIcon } from "../components/tool/Refresh";
 import styled from "@emotion/styled";
@@ -24,13 +21,6 @@ import { boxLiner, toolBarPanel } from "../../styled";
 import { AmmPanelType, AmmProps } from "./Interface";
 import { useSettings } from "../../../stores";
 
-// ${
-//         typeof _height === "string"
-//           ? _height
-//           : typeof _height === "number"
-//           ? _height + "px"
-//           : `var(--swap-box-height)`
-//       };
 const WrapStyle = styled(Box)<
   BoxProps & {
     _height?: number | string;
@@ -114,64 +104,20 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
     height,
     width,
     anchors,
-    accStatus,
-    coinAPrecision,
-    coinBPrecision,
+    propsLPExtends,
+    propsAExtends,
+    propsBExtends,
+    ammType,
+    handleTabChange,
+    // coinAPrecision,
+    // coinBPrecision,
     ...rest
   }: AmmProps<T, TW, I, ACD, C> & WithTranslation) => {
-    const [index, setIndex] = React.useState(tabSelected);
-    const [ammChgDepositData, setAmmChgDepositData] = React.useState<
-      AmmChgData<T>
-    >({
-      tradeData: ammDepositData,
-      type: "coinA",
-    });
-
-    const [ammChgWithdrawData, setAmmChgWithdrawData] = React.useState<
-      AmmWithdrawChgData<TW>
-    >({
-      tradeData: ammWithdrawData,
-      type: "lp",
-    });
-    let routerLocation = useLocation();
-
-    React.useEffect(() => {
-      if (routerLocation) {
-        const search = routerLocation?.search;
-        const customType = qs.parse(search)?.type;
-        const index =
-          customType === "remove" ? AmmPanelType.Exit : AmmPanelType.Join;
-        setIndex(index);
-      }
-    }, [routerLocation]);
-    React.useEffect(() => {
-      setIndex(tabSelected);
-    }, [tabSelected]);
-    //
-    useDeepCompareEffect(() => {
-      if (ammDepositData !== ammChgDepositData.tradeData) {
-        setAmmChgDepositData({
-          ...ammChgDepositData,
-          tradeData: ammDepositData,
-        });
-      }
-      if (ammWithdrawData !== ammChgWithdrawData.tradeData) {
-        setAmmChgWithdrawData({
-          ...ammChgWithdrawData,
-          tradeData: ammWithdrawData,
-        });
-      }
-    }, [ammDepositData, ammWithdrawData]);
-
     const _onChangeAddEvent = React.useCallback(
       async ({ tradeData, type }: AmmChgData<T>) => {
         await handleAmmAddChangeEvent(tradeData, type);
         if (typeof onAmmAddChangeEvent == "function") {
-          setAmmChgDepositData(
-            onAmmAddChangeEvent({ tradeData, type } as AmmChgData<T>)
-          );
-        } else {
-          setAmmChgDepositData({ tradeData, type });
+          onAmmAddChangeEvent({ tradeData, type } as AmmChgData<T>);
         }
       },
       [handleAmmAddChangeEvent, onAmmAddChangeEvent]
@@ -185,26 +131,10 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
       { tradeData: TW } & { type: "lp"; percentage?: number }) => {
         await handleAmmRemoveChangeEvent(tradeData);
         if (typeof onRemoveChangeEvent == "function") {
-          setAmmChgWithdrawData(
-            onRemoveChangeEvent({
-              tradeData,
-              type: "lp",
-            } as AmmWithdrawChgData<TW>)
-          );
-        } else {
-          setAmmChgWithdrawData({ tradeData, type });
+          onRemoveChangeEvent({ tradeData, type } as AmmWithdrawChgData<TW>);
         }
       },
       [handleAmmRemoveChangeEvent, onRemoveChangeEvent]
-    );
-
-    const handleTabChange = React.useCallback(
-      (_event: any, newValue: any) => {
-        if (index !== newValue) {
-          setIndex(newValue);
-        }
-      },
-      [index]
     );
 
     const panelList: Pick<
@@ -231,9 +161,8 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
                 ammData: ammDepositData,
                 tokenAProps: { ...tokenDepositAProps },
                 tokenBProps: { ...tokenDepositBProps },
-                accStatus,
-                coinAPrecision,
-                coinBPrecision,
+                propsAExtends,
+                propsBExtends,
               }}
             />
           ),
@@ -251,9 +180,6 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
             ammDepositData,
             tokenDepositAProps,
             tokenDepositBProps,
-            accStatus,
-            coinAPrecision,
-            coinBPrecision,
           ]
         ),
       },
@@ -273,6 +199,7 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
                 ammCalcData: ammCalcDataWithDraw,
                 onAmmRemoveClick,
                 handleError,
+                propsLPExtends,
                 selectedPercentage: -1,
                 onRemoveChangeEvent: _onChangeRemoveEvent,
                 ammData: ammWithdrawData,
@@ -320,7 +247,12 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
             marginLeft={-2}
           >
             <TabPanelBtn
-              {...{ t, value: index, handleChange: handleTabChange, ...rest }}
+              {...{
+                t,
+                value: ammType,
+                handleChange: (_e: any, value: any) => handleTabChange(value),
+                ...rest,
+              }}
             />
           </Box>
           <Box alignSelf={"center"}>
@@ -331,7 +263,7 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
         <Box flex={1} className={"trade-panel"}>
           <SwipeableViewsStyled
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-            index={index}
+            index={ammType}
             {...{
               _height: "auto",
               _width: "auto",

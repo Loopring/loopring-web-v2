@@ -11,7 +11,7 @@ import {
   PriceTag,
   SCENARIO,
   SoursURL,
-  TradeFloat,
+  Ticker,
   UpColor,
 } from "@loopring-web/common-resources";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
@@ -38,14 +38,7 @@ export const TradeTitle = <I extends object>({
   coinAInfo,
   coinBInfo,
   // t,
-  tradeFloat = {
-    volume: 0,
-    change: 0,
-    timeUnit: "24h",
-    priceDollar: 0,
-    floatTag: FloatTag.none,
-    close: 0,
-  },
+  ticker,
   isNew,
   forexMap,
   campaignTagConfig,
@@ -55,7 +48,7 @@ export const TradeTitle = <I extends object>({
   quoteShow: string;
   coinAInfo: CoinInfo<I>;
   coinBInfo: CoinInfo<I>;
-  tradeFloat: TradeFloat;
+  ticker: Ticker;
   isNew: boolean;
   forexMap: ForexMap<Currency>;
   campaignTagConfig: CAMPAIGNTAGCONFIG;
@@ -65,21 +58,19 @@ export const TradeTitle = <I extends object>({
   const buyCoinIcon: any = coinJson[coinBInfo?.simpleName];
 
   const tradeFloatType =
-    tradeFloat?.changeDollar === 0
+    ticker?.changeU === 0 || !ticker?.changeU
       ? FloatTag.none
-      : tradeFloat && tradeFloat.changeDollar && tradeFloat.changeDollar < 0
+      : ticker.changeU < 0
       ? FloatTag.decrease
       : FloatTag.increase;
   const { currency, upColor } = useSettings();
-  const close: any = tradeFloat.close;
+  const close: any = ticker.close;
 
   const value =
     "\u2248 " +
     PriceTag[CurrencyToTag[currency]] +
     getValuePrecisionThousand(
-      tradeFloat && tradeFloat.closeDollar
-        ? tradeFloat.closeDollar * (forexMap[currency] ?? 0)
-        : 0,
+      ticker?.closeU ? ticker?.closeU * (forexMap[currency] ?? 0) : 0,
       undefined,
       undefined,
       undefined,
@@ -88,12 +79,7 @@ export const TradeTitle = <I extends object>({
     );
 
   const pair = `${coinAInfo?.simpleName}-${coinBInfo?.simpleName}`;
-  const change =
-    tradeFloat?.change &&
-    tradeFloat.change.toFixed &&
-    !Number.isNaN(tradeFloat?.change)
-      ? tradeFloat.change.toFixed(2) + "%"
-      : "0.00%";
+  const change = ticker?.change ? ticker?.change.toFixed(2) + "%" : "0.00%";
   return (
     // @ts-ignore
     <TradeTitleStyled custom={{ chg: upColor }}>
