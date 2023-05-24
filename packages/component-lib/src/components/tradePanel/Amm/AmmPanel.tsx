@@ -313,4 +313,4 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
   C = IBData<I>
 >(
   props: AmmProps<T, TW, I, ACD, C> & React.RefAttributes<any>
-) => JSX.Element;;
+) => JSX.Element;
