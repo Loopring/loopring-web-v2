@@ -1,6 +1,12 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getAmmMap, getAmmMapStatus, updateRealTimeAmmMap } from "./reducer";
 import * as sdk from "@loopring-web/loopring-sdk";
+import {
+  AmmPoolInfoV3,
+  AmmPoolStat,
+  ChainId,
+  toBig,
+} from "@loopring-web/loopring-sdk";
 
 import {
   AmmDetail,
@@ -8,16 +14,11 @@ import {
   myLog,
 } from "@loopring-web/common-resources";
 import { store } from "../../index";
-import {
-  AmmPoolInfoV3,
-  AmmPoolStat,
-  ChainId,
-  toBig,
-} from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../../api_wrapper";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { AmmDetailStore, GetAmmMapParams } from "./interface";
-import { volumeToCount, volumeToCountAsBigNumber } from "../../../hooks/help";
+import { volumeToCount, volumeToCountAsBigNumber } from "../../../hooks";
+
 const ammMapStoreLocal = (ammpoolsRaw: any, chainId?: any) => {
   // const system = store.getState().system;
   myLog("system", chainId);
