@@ -152,10 +152,23 @@ export const TransferWrap = <
     return !!(sureItsLayer2 && sureItsLayer2 in EXCHANGE_TYPE);
   }, [sureItsLayer2, sureItsLayer2]);
 
-  const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart;
+  const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart || isSmartContractAddress;
+  
 
   const view = React.useMemo(() => {
-    if (isInvalidAddressOrENS) {
+    if (isOtherSmartWallet) {
+      return (
+        <Typography
+          color={"var(--color-error)"}
+          variant={"body2"}
+          marginTop={1 / 4}
+          alignSelf={"stretch"}
+          position={"relative"}
+        >
+          {t("labelNotOtherSmartWallet")}
+        </Typography>
+      );
+    } else if (isInvalidAddressOrENS) {
       return (
         <Typography
           color={"var(--color-error)"}
@@ -177,18 +190,6 @@ export const TransferWrap = <
           position={"relative"}
         >
           {t("labelNotExchangeEOA")}
-        </Typography>
-      );
-    } else if (isOtherSmartWallet) {
-      return (
-        <Typography
-          color={"var(--color-error)"}
-          variant={"body2"}
-          marginTop={1 / 4}
-          alignSelf={"stretch"}
-          position={"relative"}
-        >
-          {t("labelNotOtherSmartWallet")}
         </Typography>
       );
     } else if (isSameAddress) {

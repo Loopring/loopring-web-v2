@@ -328,7 +328,7 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
   );
 
   const debounceCheck = _.debounce(
-    (address) => {
+    async (address) => {
       const found = contacts?.find(contact => contact.address === address)
       const listNoCheckRequired = [
         sdk.AddressType.LOOPRING_HEBAO_CF,
@@ -353,8 +353,6 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0:{
             setIsLoopringAddress(true)
             setIsActiveAccount(true)
-            // setIsActiveAccountFee()
-            // setIsSameAddress()
             setIsCFAddress(found.addressType === sdk.AddressType.LOOPRING_HEBAO_CF)
             setIsContractAddress(true)
             setIsContract1XAddress(
@@ -374,9 +372,8 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
           case sdk.AddressType.EXCHANGE_HUOBI:
           case sdk.AddressType.EXCHANGE_COINBASE:{
             setIsLoopringAddress(false)
-            setIsActiveAccount(true)
-            // setIsActiveAccountFee()
-            // setIsSameAddress()
+            setIsActiveAccount(false)
+            setIsActiveAccountFee(false)
             setIsCFAddress(false)
             setIsContractAddress(false)
             setIsContract1XAddress(false)
@@ -387,8 +384,7 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
           case sdk.AddressType.CONTRACT: {
             setIsLoopringAddress(false)
             setIsActiveAccount(false)
-            // setIsActiveAccountFee()
-            // setIsSameAddress()
+            setIsActiveAccountFee(false)
             setIsCFAddress(false)
             setIsContractAddress(true)
             setIsContract1XAddress(false)
@@ -398,18 +394,34 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
           }
           case sdk.AddressType.EOA: {
             setIsLoopringAddress(false)
-            // setIsActiveAccount(false)
-            // setIsActiveAccountFee()
-            // setIsSameAddress()
             setIsCFAddress(false)
             setIsContractAddress(false)
             setIsContract1XAddress(false)
             setLoopringSmartWalletVersion(undefined)
             setAddrStatus(AddressError.NoError)
+            if (checkEOA) {
+              setIsAddressCheckLoading(true)
+              const response = await LoopringAPI.exchangeAPI?.getAccount({
+                owner: address, //realAddr != "" ? realAddr : address,
+              })
+              if (
+                (response && ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message))
+                || !response
+              ) {
+                setIsActiveAccount(false);
+                setIsActiveAccountFee(false);
+              } else {
+                setIsActiveAccount(response.accInfo.nonce !== 0);
+                setIsActiveAccountFee(
+                  response.accInfo.nonce === 0 &&
+                    /FirstUpdateAccountPaid/gi.test(response.accInfo.tags ?? "")
+                );
+              }
+              setIsAddressCheckLoading(false)
+            }
             break
-
           }
-        }
+        }        
       } else {
         check(address, connectProvides.usedWeb3);
       }
@@ -419,7 +431,6 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
   );
 
   React.useEffect(() => {
-    // myLog("checkAddress", address, _address.current, isAddressCheckLoading);
     if (_address.current !== address && isAddressCheckLoading === false) {
       debounceCheck(address);
     }
