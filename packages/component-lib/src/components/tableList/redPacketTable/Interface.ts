@@ -71,6 +71,7 @@ export type RedPacketClaimTableProps<R, C = sdk.Currency> = {
   isNFT?: boolean;
   getClaimRedPacket: (props: any) => void;
   totalLuckyTokenNFTBalance?: number;
+  hideAssets?: boolean
 } & XOR<
   {
     pagination?: {

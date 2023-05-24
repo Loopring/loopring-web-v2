@@ -1504,6 +1504,10 @@ export default {
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
   labelRedPacketStartWithTime: "{{time}} Start",
+  labelRedPacketTabReceived: "Received",
+  labelRedPacketTabSent: "Sent",
+  labelRedPacketTabNFTs: "NFTs",
+  labelRedPacketTabBlindBox: "Blind Box",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
@@ -1669,7 +1673,7 @@ export default {
   labelType: "Type",
   labelBtradeTrade: "Block Trade",
   labelBtradeTitle: "Block Trade Details",
-  labelBtradeQuote: "Total Quote:",
+  labelBtradeQuote: "Total Quota:",
   labelBtradeQuoteDes: "Total Quota is the maximum allowable trading amount.",
   labelBtradePoolDes: "Loopring Pool:",
   labelBtradePool: "Loopring Pool",

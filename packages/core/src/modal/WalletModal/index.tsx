@@ -17,7 +17,7 @@ import {
   WalletConnectStep,
   WrongNetworkGuide,
 } from "@loopring-web/component-lib";
-import { ChainId } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
 import {
   AccountStatus,
@@ -28,29 +28,34 @@ import {
   globalSetup,
   myLog,
   SagaStatus,
-  TOAST_TIME,
   SoursURL,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { AvaiableNetwork, ConnectProviders } from "@loopring-web/web3-provider";
-import { connectProvides, walletServices } from "@loopring-web/web3-provider";
+import {
+  AvaiableNetwork,
+  ConnectProviders,
+  connectProvides,
+  walletServices,
+} from "@loopring-web/web3-provider";
 import {
   accountReducer,
-  useAccount,
   RootState,
   store,
+  useAccount,
 } from "@loopring-web/core";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { updateSystem } from "../../stores/system/reducer";
+
 const providerCallback = async () => {
   const { _chainId } = store.getState().system;
   // statusAccountUnset();
   if (connectProvides.usedProvide) {
-    let chainId: ChainId = Number(
+    let chainId: sdk.ChainId = Number(
       await connectProvides.usedWeb3?.eth.getChainId()
     );
     if (!AvaiableNetwork.includes(chainId.toString())) {
-      chainId = ChainId.MAINNET;
+      chainId = sdk.ChainId.MAINNET;
     }
 
     if (chainId !== _chainId) {
@@ -151,10 +156,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     const handleCloseDialog = React.useCallback(
       (_event: any, state?: boolean) => {
         setIsOpenUnknownProvider(false);
-        localStorage.setItem(
-          "useKnowCoinBaseWalletInstall",
-          String(state ? true : false)
-        );
+        localStorage.setItem("useKnowCoinBaseWalletInstall", String(!!state));
       },
       []
     );
@@ -163,7 +165,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
       React.useState<{ callback: () => Promise<void> } | undefined>(undefined);
     React.useEffect(() => {
       if (
-        stateCheck === true &&
+        stateCheck &&
         [SagaStatus.UNSET].findIndex((ele: string) => ele === accountStatus) !==
           -1
       ) {
