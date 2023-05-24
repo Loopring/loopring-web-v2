@@ -1,6 +1,6 @@
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { BtnPercentage, InputCoin, InputSize } from "../../basic-lib";
-import { LimitTradeData, SwapTradeData, TradeLimitProps } from "../Interface";
+import { LimitTradeData, TradeLimitProps } from "../Interface";
 import {
   CheckBoxIcon,
   CheckedIcon,
@@ -19,7 +19,6 @@ import {
   Box,
   Checkbox,
   FormControlLabel as MuiFormControlLabel,
-  Grid,
   Tab,
   Typography,
 } from "@mui/material";
@@ -244,21 +243,21 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               label={
                 <Typography variant={"body2"}>
                   <Trans
-                    i18nKey={"labelExpectSettlementPrice"}
+                    i18nKey={"labelExpectSettlementLimitPrice"}
                     interpolation={{ escapeValue: false }}
                     tOptions={{
-                      symbolBase: tradeData.base?.belong,
-                      symbolQuote: tradeData.quote?.belong,
-                      price: tradeData.price,
+                      symbolBase: tradeCalcProData.coinBase,
+                      symbolQuote: tradeCalcProData.coinQuote,
+                      price: tradeData.price.tradeValue,
                       marketPrice: tradeCalcProData.marketPrice,
                       marketRatePrice: tradeCalcProData.marketRatePrice,
                     }}
                   >
                     The expected settlement price from this order is symbol =
-                    1234.12, while the current market price from a trusted
-                    oracle is symbol = 1674.34. There is a 10.45% variance
-                    observed. To proceed, tap here to confirm you understand and
-                    acknowledge the risk.
+                    xxxx, while the current market price from a trusted oracle
+                    is symbol = xxx. There is a 10.45% variance observed. To
+                    proceed, tap here to confirm you understand and acknowledge
+                    the risk.
                   </Trans>
                 </Typography>
               }

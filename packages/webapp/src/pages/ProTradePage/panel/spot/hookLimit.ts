@@ -240,11 +240,11 @@ export const useLimit = <C extends { [key: string]: any }>({
           minimumReceived: undefined,
           priceImpact: undefined,
           priceImpactColor: "inherit",
+          isNotMatchMarketPrice: false,
+          marketPrice: undefined,
+          marketRatePrice: undefined,
+          isChecked: undefined,
         },
-        isNotMatchMarketPrice: false,
-        marketPrice: undefined,
-        marketRatePrice: undefined,
-        isChecked: undefined,
       });
     },
     [
@@ -458,23 +458,27 @@ export const useLimit = <C extends { [key: string]: any }>({
         if (
           tokenPrices &&
           tradeData?.price?.tradeValue &&
+          // @ts-ignore
           tradeData.price.tradeValue !== "0"
         ) {
           marketPrice = sdk
             .toBig(tokenPrices[tradeData.base.belong])
             .div(tokenPrices[tradeData.quote.belong]);
-          marketRatePrice =
-            tradeData.type === "buy"
-              ? sdk.toBig(1).div(marketPrice).div(tradeData.price.tradeValue)
-              : marketPrice.div(tradeData.price.tradeValue);
-          isNotMatchMarketPrice = marketRatePrice.gt(1.05); //tradeData.type === "buy"? marketRatePrice.gt(1.05):marketRatePrice.lt(0.95);
+          marketRatePrice = marketPrice.div(tradeData.price.tradeValue);
+          isNotMatchMarketPrice =
+            tradeData.type === "sell"
+              ? marketRatePrice.gt(1.05)
+              : marketRatePrice.lt(0.95);
           marketPrice = getValuePrecisionThousand(
             marketPrice.toString(),
             tokenMap[tradeData.quote.belong].precision,
             tokenMap[tradeData.quote.belong].precision,
             tokenMap[tradeData.quote.belong].precision
           );
-          marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2);
+          marketRatePrice =
+            tradeData.type === "sell"
+              ? marketRatePrice.minus(1).times(100).toFixed(2)
+              : sdk.toBig(1).minus(marketRatePrice).times(100).toFixed(2);
         }
         updatePageTradePro({
           market,
@@ -489,11 +493,11 @@ export const useLimit = <C extends { [key: string]: any }>({
               calcTradeParams && calcTradeParams.maxFeeBips
                 ? calcTradeParams.maxFeeBips?.toString()
                 : undefined,
+            isNotMatchMarketPrice,
+            marketPrice,
+            marketRatePrice,
+            isChecked,
           },
-          isNotMatchMarketPrice,
-          marketPrice,
-          marketRatePrice,
-          isChecked,
         });
         setLimitTradeData((state) => {
           const tradePrice = tradeData.price.tradeValue;
@@ -649,21 +653,24 @@ export const useLimit = <C extends { [key: string]: any }>({
       ) {
         return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
       } else {
-        if (pageTradePro?.isNotMatchMarketPrice && !pageTradePro.isChecked) {
+        if (
+          pageTradePro?.tradeCalcProData.isNotMatchMarketPrice &&
+          !pageTradePro.tradeCalcProData.isChecked
+        ) {
           return {
-            label: undefined,
+            label: "",
             tradeBtnStatus: TradeBtnStatus.DISABLED,
           };
         } else {
           return {
-            label: undefined,
+            label: "",
             tradeBtnStatus: TradeBtnStatus.AVAILABLE,
           };
         }
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [limitTradeData, tokenMap, pageTradePro.isChecked]);
+  }, [limitTradeData, tokenMap, pageTradePro.tradeCalcProData?.isChecked]);
 
   const {
     btnStatus: tradeLimitBtnStatus,
