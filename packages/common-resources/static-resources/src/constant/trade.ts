@@ -773,4 +773,5 @@ export enum TradeBaseType {
   tab = "tab",
   slippage = "slippage",
   stopPrice = "stopPrice",
+  checkMarketPrice = "checkMarketPrice",
 }

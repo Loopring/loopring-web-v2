@@ -5,9 +5,9 @@ import {
   IBData,
   MarketType,
   myLog,
+  TradeBaseType,
   TradeBtnStatus,
   TradeProType,
-  TradeBaseType,
 } from "@loopring-web/common-resources";
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -414,8 +414,6 @@ export const useMarket = <C extends { [key: string]: any }>({
       return;
     }
 
-    // const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
-    // const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
     try {
       const req: sdk.GetNextStorageIdRequest = {
         accountId: account.accountId,

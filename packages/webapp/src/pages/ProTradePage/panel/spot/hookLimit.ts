@@ -21,9 +21,9 @@ import {
   IBData,
   MarketType,
   myLog,
-  TradeProType,
   TradeBaseType,
   TradeBtnStatus,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import {
   DepthType,
@@ -95,6 +95,7 @@ export const useLimit = <C extends { [key: string]: any }>({
       balance,
     } as IBData<any>,
     type: pageTradePro.tradeType ?? TradeProType.buy,
+    isChecked: undefined,
   });
   const [isLimitLoading, setIsLimitLoading] = React.useState(false);
 
@@ -158,14 +159,6 @@ export const useLimit = <C extends { [key: string]: any }>({
           },
           TradeBaseType.price
         );
-        // if(account.readyState === 'ACTIVATED'){
-        //
-        // }else{
-        //
-        //
-        //     // const amtTotalForShow = pageTradePro.chooseDepth.amtTotalForShow;
-        //
-        // }
       } else {
         onChangeLimitEvent(
           {
@@ -248,6 +241,10 @@ export const useLimit = <C extends { [key: string]: any }>({
           priceImpact: undefined,
           priceImpactColor: "inherit",
         },
+        isNotMatchMarketPrice: false,
+        marketPrice: undefined,
+        marketRatePrice: undefined,
+        isChecked: undefined,
       });
     },
     [
@@ -421,6 +418,10 @@ export const useLimit = <C extends { [key: string]: any }>({
           formType === TradeBaseType.quote
             ? tradeData.quote.tradeValue
             : undefined;
+        let isChecked =
+          formType === TradeBaseType.checkMarketPrice
+            ? tradeData.isChecked
+            : undefined;
 
         if (formType === TradeBaseType.price) {
           amountBase =
@@ -453,6 +454,28 @@ export const useLimit = <C extends { [key: string]: any }>({
           amountQuote,
         });
 
+        let isNotMatchMarketPrice, marketPrice, marketRatePrice;
+        if (
+          tokenPrices &&
+          tradeData?.price?.tradeValue &&
+          tradeData.price.tradeValue !== "0"
+        ) {
+          marketPrice = sdk
+            .toBig(tokenPrices[tradeData.base.belong])
+            .div(tokenPrices[tradeData.quote.belong]);
+          marketRatePrice =
+            tradeData.type === "buy"
+              ? sdk.toBig(1).div(marketPrice).div(tradeData.price.tradeValue)
+              : marketPrice.div(tradeData.price.tradeValue);
+          isNotMatchMarketPrice = marketRatePrice.gt(1.05); //tradeData.type === "buy"? marketRatePrice.gt(1.05):marketRatePrice.lt(0.95);
+          marketPrice = getValuePrecisionThousand(
+            marketPrice.toString(),
+            tokenMap[tradeData.quote.belong].precision,
+            tokenMap[tradeData.quote.belong].precision,
+            tokenMap[tradeData.quote.belong].precision
+          );
+          marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2);
+        }
         updatePageTradePro({
           market,
           sellUserOrderInfo,
@@ -467,6 +490,10 @@ export const useLimit = <C extends { [key: string]: any }>({
                 ? calcTradeParams.maxFeeBips?.toString()
                 : undefined,
           },
+          isNotMatchMarketPrice,
+          marketPrice,
+          marketRatePrice,
+          isChecked,
         });
         setLimitTradeData((state) => {
           const tradePrice = tradeData.price.tradeValue;
@@ -622,11 +649,21 @@ export const useLimit = <C extends { [key: string]: any }>({
       ) {
         return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
       } else {
-        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
+        if (pageTradePro?.isNotMatchMarketPrice && !pageTradePro.isChecked) {
+          return {
+            label: undefined,
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+          };
+        } else {
+          return {
+            label: undefined,
+            tradeBtnStatus: TradeBtnStatus.AVAILABLE,
+          };
+        }
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [limitTradeData, tokenMap]);
+  }, [limitTradeData, tokenMap, pageTradePro.isChecked]);
 
   const {
     btnStatus: tradeLimitBtnStatus,

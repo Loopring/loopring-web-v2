@@ -60,17 +60,10 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
       t,
       // disabled,
       tradeMarketI18nKey,
-      // tradeCalcProData,
       tradeMarketBtnStyle,
       tradeType,
       tradeMarketBtnStatus,
-      // handleCountChange,
-      // tokenBaseProps,
-      // tokenQuoteProps,
-      // tradeData,
-      // handleError,
       handleSubmitEvent,
-      // handleChangeIndex,
       onChangeEvent,
       // ...rest
     } = props;
@@ -140,11 +133,6 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
             { floor: true }
           ) + " %"
         : EmptyValueTag;
-
-    // const fee =
-    //   tradeCalcProData && tradeCalcProData.fee
-    //     ? (parseFloat(tradeCalcProData.fee) / 100).toString() + "%"
-    //     : EmptyValueTag;
 
     const fee =
       tradeCalcProData && tradeCalcProData.fee

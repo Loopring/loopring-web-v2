@@ -1736,4 +1736,6 @@ export default {
   labelBTRADE: "Block Trade",
   labelL2STAKING: "Staking",
   labelSTOP_LIMIT: "Stop Limit",
+  labelExpectSettlementLimitPrice:
+    "The expected settlement price from this order is {{symbolBase}}/{{symbolQuote}} = {{price}}, while the current market price from a trusted oracle is {{symbolBase}}/{{symbolQuote}} = {{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
 };
