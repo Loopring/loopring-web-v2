@@ -7,17 +7,11 @@ import {
 } from "@loopring-web/component-lib";
 
 import { Grid } from "@mui/material";
-import {
-  useAccount,
-  useAmmMap,
-  usePageAmmPool,
-  walletLayer2Service,
-} from "../../../index";
+import { useAmmMap } from "../../../index";
 import styled from "@emotion/styled";
 import { useLocation } from "react-router-dom";
 import { useAmmJoin } from "../../../hooks/useractions/hookAmmJoin";
 import { useAmmExit } from "../../../hooks/useractions/hookAmmExit";
-import { SagaStatus } from "@loopring-web/common-resources";
 
 export const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);
@@ -115,23 +109,6 @@ export const AmmPanelView = ({
     // ammDataDefault: ammExit.ammData,
     setConfirmExitSmallOrder,
   });
-  const { resetAmmPool } = usePageAmmPool();
-  const { status: accountStatus } = useAccount();
-
-  React.useEffect(() => {
-    if (refreshRef.current) {
-      // @ts-ignore
-      refreshRef.current.firstElementChild.click();
-    }
-    return () => {
-      resetAmmPool();
-    };
-  }, []);
-  React.useEffect(() => {
-    if (accountStatus === SagaStatus.UNSET) {
-      walletLayer2Service.sendUserUpdate();
-    }
-  }, [accountStatus]);
 
   return (
     <>

@@ -44,10 +44,10 @@ export const setAmmState = ({
   market: string;
 }) => {
   const { idIndex, tokenMap } = store.getState().tokenMap;
-  const { tokenPrices } = store.getState().tokenPrices;
-  const { tickerMap } = store.getState().tickerMap;
   // @ts-ignore
   const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
+  const { tokenPrices } = store.getState().tokenPrices;
+  const { tickerMap } = store.getState().tickerMap;
   if (idIndex && coinA && coinB && tokenPrices) {
     const totalA = volumeToCountAsBigNumber(coinA, ammPoolState.liquidity[0]); //parseInt(ammPoolState.liquidity[ 0 ]),
     const totalB = volumeToCountAsBigNumber(coinB, ammPoolState.liquidity[1]); //parseInt(ammPoolState.liquidity[ 1 ]),
@@ -91,9 +91,9 @@ export const setAmmState = ({
     const feeB = volumeToCountAsBigNumber(coinB, ammPoolState.fees[1]);
     const feeU =
       tokenPrices[coinA] && tokenPrices[coinB]
-        ? toBig(feeA ?? 0)
+        ? toBig(feeA || 0)
             .times(tokenPrices[coinA])
-            .plus(toBig(feeB ?? 0).times(tokenPrices[coinB]))
+            .plus(toBig(feeB || 0).times(tokenPrices[coinB]))
         : undefined;
     const APRs = {
       self:
@@ -246,7 +246,7 @@ export function* getPostsSaga({
 export function* updateRealTimeSaga({ payload }: any) {
   try {
     const { ammPoolStats } = payload;
-    let { ammMap, ammArrayEnable } = store.getState().amm.ammMap;
+    const { ammMap, ammArrayEnable } = store.getState().amm.ammMap;
     if (ammPoolStats) {
       // @ts-ignore
       Reflect.ownKeys(ammPoolStats).map((key: string) => {
@@ -276,7 +276,29 @@ export function* updateRealTimeSaga({ payload }: any) {
         }
         return ammMap;
       });
+    } else {
+      // @ts-ignore
+      Reflect.ownKeys(ammMap).map((key: string) => {
+        const market = key.replace("AMM-", "");
+        // @ts-ignore
+        ammMap[key] = {
+          ...ammMap[key],
+          ...setAmmState({
+            ammPoolState: {
+              ...ammMap[key]?.__ammPoolState__,
+              liquidity: ammMap["AMM-" + market].tokens.pooled,
+              lpLiquidity: ammMap["AMM-" + market].tokens.lp as any,
+            },
+            market,
+          }),
+          market,
+        };
+      });
     }
+    // const { readyState } = store.getState().account;
+    // if (readyState === AccountStatus.ACTIVATED) {
+    //   store.dispatch(getUserAMM(undefined));
+    // }
     yield put(getAmmMapStatus({ ammMap, ammArrayEnable }));
   } catch (err) {
     yield put(getAmmMapStatus({ error: err }));

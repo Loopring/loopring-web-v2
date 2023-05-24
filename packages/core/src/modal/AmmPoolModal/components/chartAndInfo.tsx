@@ -16,6 +16,7 @@ import {
   AmmHistoryItem,
   CurrencyToTag,
   CustomError,
+  EmptyIcon,
   EmptyValueTag,
   FloatTag,
   getValuePrecisionThousand,
@@ -26,7 +27,7 @@ import {
   TokenType,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import {
   useAmmMap,
   useSystem,

@@ -1,5 +1,11 @@
-import { AmmChgData, AmmDepositWrap, AmmWithdrawWrap } from "../components";
-import { Box, BoxProps, Tab, Tabs, Toolbar } from "@mui/material";
+import { PanelContent, SwipeableViewsStyled } from "../../basic-lib";
+import {
+  AmmChgData,
+  AmmDepositWrap,
+  AmmWithdrawChgData,
+  AmmWithdrawWrap,
+} from "../components";
+import { Box, BoxProps, Grid, Tab, Tabs, Toolbar } from "@mui/material";
 import {
   AmmExitData,
   AmmInData,
@@ -8,6 +14,7 @@ import {
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
+import { useTheme } from "@emotion/react";
 import { CountDownIcon } from "../components/tool/Refresh";
 import styled from "@emotion/styled";
 import { boxLiner, toolBarPanel } from "../../styled";
@@ -91,8 +98,8 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
     refreshRef,
     onAmmAddClick,
     onAmmRemoveClick,
-    // onAmmAddChangeEvent,
-    // onRemoveChangeEvent,
+    onAmmAddChangeEvent,
+    onRemoveChangeEvent,
     handleError,
     height,
     width,
@@ -108,80 +115,118 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
   }: AmmProps<T, TW, I, ACD, C> & WithTranslation) => {
     const _onChangeAddEvent = React.useCallback(
       async ({ tradeData, type }: AmmChgData<T>) => {
-        handleAmmAddChangeEvent(tradeData, type);
-        // if (typeof onAmmAddChangeEvent == "function") {
-        //   onAmmAddChangeEvent({ tradeData, type } as AmmChgData<T>);
-        // }
+        await handleAmmAddChangeEvent(tradeData, type);
+        if (typeof onAmmAddChangeEvent == "function") {
+          onAmmAddChangeEvent({ tradeData, type } as AmmChgData<T>);
+        }
       },
-      [handleAmmAddChangeEvent]
+      [handleAmmAddChangeEvent, onAmmAddChangeEvent]
     );
 
     const _onChangeRemoveEvent = React.useCallback(
       async ({
         tradeData,
-      }: // type,
-      // percentage
+        type,
+      }: // percentage
       { tradeData: TW } & { type: "lp"; percentage?: number }) => {
-        handleAmmRemoveChangeEvent(tradeData);
-        // if (typeof onRemoveChangeEvent == "function") {
-        //   onRemoveChangeEvent({ tradeData, type } as AmmWithdrawChgData<TW>);
-        // }
+        await handleAmmRemoveChangeEvent(tradeData);
+        if (typeof onRemoveChangeEvent == "function") {
+          onRemoveChangeEvent({ tradeData, type } as AmmWithdrawChgData<TW>);
+        }
       },
-      [handleAmmRemoveChangeEvent]
+      [handleAmmRemoveChangeEvent, onRemoveChangeEvent]
     );
 
-    // const panelList: Pick<
-    //   PanelContent<"ammJoin" | "ammExit">,
-    //   "key" | "element"
-    // >[] = [
-    //   {
-    //     key: "ammJoin",
-    //     element: React.useMemo(
-    //       () => (
-    //
-    //       ),
-    //       [
-    //         t,
-    //         rest,
-    //         anchors,
-    //         disableDeposit,
-    //         ammDepositBtnStatus,
-    //         ammDepositBtnI18nKey,
-    //         ammCalcDataDeposit,
-    //         // onAmmAddClick,
-    //         handleError,
-    //         // _onChangeAddEvent,
-    //         ammDepositData,
-    //         tokenDepositAProps,
-    //         tokenDepositBProps,
-    //       ]
-    //     ),
-    //   },
-    //   {
-    //     key: "ammExit",
-    //     element: React.useMemo(
-    //       () => (
-    //
-    //       ),
-    //       [
-    //         t,
-    //         rest,
-    //         anchors,
-    //         disableWithdraw,
-    //         ammWithdrawBtnStatus,
-    //         ammWithdrawBtnI18nKey,
-    //         ammCalcDataWithDraw,
-    //         // onAmmRemoveClick,
-    //         // handleError,
-    //         // _onChangeRemoveEvent,
-    //         ammWithdrawData,
-    //         tokenWithDrawAProps,
-    //         tokenWithDrawBProps,
-    //       ]
-    //     ),
-    //   },
-    // ];
-    // const theme = useTheme();
+    const panelList: Pick<
+      PanelContent<"ammJoin" | "ammExit">,
+      "key" | "element"
+    >[] = [
+      {
+        key: "ammJoin",
+        element: React.useMemo(
+          () => (
+            <AmmDepositWrap<T, I, ACD, C>
+              key={"ammJoin"}
+              {...{
+                t,
+                ...rest,
+                anchors,
+                disableDeposit,
+                ammDepositBtnStatus,
+                ammDepositBtnI18nKey,
+                ammCalcData: ammCalcDataDeposit,
+                onAmmAddClick,
+                handleError,
+                onAddChangeEvent: _onChangeAddEvent,
+                ammData: ammDepositData,
+                tokenAProps: { ...tokenDepositAProps },
+                tokenBProps: { ...tokenDepositBProps },
+                propsAExtends,
+                propsBExtends,
+              }}
+            />
+          ),
+          [
+            t,
+            rest,
+            anchors,
+            disableDeposit,
+            ammDepositBtnStatus,
+            ammDepositBtnI18nKey,
+            ammCalcDataDeposit,
+            onAmmAddClick,
+            handleError,
+            _onChangeAddEvent,
+            ammDepositData,
+            tokenDepositAProps,
+            tokenDepositBProps,
+          ]
+        ),
+      },
+      {
+        key: "ammExit",
+        element: React.useMemo(
+          () => (
+            <AmmWithdrawWrap<TW, I, ACD, C>
+              key={"ammExit"}
+              {...{
+                t,
+                ...rest,
+                anchors,
+                disableWithdraw,
+                ammWithdrawBtnStatus,
+                ammWithdrawBtnI18nKey,
+                ammCalcData: ammCalcDataWithDraw,
+                onAmmRemoveClick,
+                handleError,
+                propsLPExtends,
+                selectedPercentage: -1,
+                onRemoveChangeEvent: _onChangeRemoveEvent,
+                ammData: ammWithdrawData,
+                tokenAProps: { ...tokenWithDrawAProps },
+                tokenBProps: { ...tokenWithDrawBProps },
+              }}
+            />
+          ),
+          [
+            t,
+            rest,
+            anchors,
+            disableWithdraw,
+            ammWithdrawBtnStatus,
+            ammWithdrawBtnI18nKey,
+            ammCalcDataWithDraw,
+            onAmmRemoveClick,
+            handleError,
+            _onChangeRemoveEvent,
+            ammWithdrawData,
+            tokenWithDrawAProps,
+            tokenWithDrawBProps,
+          ]
+        ),
+      },
+    ];
+    const theme = useTheme();
     const { isMobile } = useSettings();
 
     return (
@@ -216,91 +261,28 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
         </Toolbar>
 
         <Box flex={1} className={"trade-panel"}>
-          {ammType === AmmPanelType.Join && (
-            <Box
-              display={"flex"}
-              justifyContent={"space-evenly"}
-              alignItems={"stretch"}
-              height={"100%"}
-              padding={5 / 2}
-              // key={panelList[0].key}
-            >
-              <AmmDepositWrap<T, I, ACD, C>
-                key={"ammJoin"}
-                {...{
-                  t,
-                  ...rest,
-                  anchors,
-                  disableDeposit,
-                  ammDepositBtnStatus,
-                  ammDepositBtnI18nKey,
-                  ammCalcData: ammCalcDataDeposit,
-                  onAmmAddClick,
-                  handleError,
-                  onAddChangeEvent: _onChangeAddEvent,
-                  ammData: ammDepositData,
-                  tokenAProps: { ...tokenDepositAProps },
-                  tokenBProps: { ...tokenDepositBProps },
-                  propsAExtends,
-                  propsBExtends,
-                }}
-              />
-              {/*{panelList[0].element}*/}
-            </Box>
-          )}
-          {ammType === AmmPanelType.Exit && (
-            <Box
-              display={"flex"}
-              justifyContent={"space-evenly"}
-              alignItems={"stretch"}
-              height={"100%"}
-              padding={5 / 2}
-            >
-              <AmmWithdrawWrap<TW, I, ACD, C>
-                key={"ammExit"}
-                {...{
-                  t,
-                  ...rest,
-                  anchors,
-                  disableWithdraw,
-                  ammWithdrawBtnStatus,
-                  ammWithdrawBtnI18nKey,
-                  ammCalcData: ammCalcDataWithDraw,
-                  onAmmRemoveClick,
-                  handleError,
-                  propsLPExtends,
-                  selectedPercentage: -1,
-                  onRemoveChangeEvent: _onChangeRemoveEvent,
-                  ammData: ammWithdrawData,
-                  tokenAProps: { ...tokenWithDrawAProps },
-                  tokenBProps: { ...tokenWithDrawBProps },
-                }}
-              />
-            </Box>
-          )}
-
-          {/*<SwipeableViewsStyled*/}
-          {/*  axis={theme.direction === "rtl" ? "x-reverse" : "x"}*/}
-          {/*  index={ammType}*/}
-          {/*  {...{*/}
-          {/*    _height: "auto",*/}
-          {/*    _width: "auto",*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  {panelList.map((panel, index) => {*/}
-          {/*    return (*/}
-          {/*      <Grid*/}
-          {/*        item*/}
-          {/*        justifyContent={"space-evenly"}*/}
-          {/*        alignItems={"stretch"}*/}
-          {/*        height={"100%"}*/}
-          {/*        key={index}*/}
-          {/*      >*/}
-          {/*        {panel.element}*/}
-          {/*      </Grid>*/}
-          {/*    );*/}
-          {/*  })}*/}
-          {/*</SwipeableViewsStyled>*/}
+          <SwipeableViewsStyled
+            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+            index={ammType}
+            {...{
+              _height: "auto",
+              _width: "auto",
+            }}
+          >
+            {panelList.map((panel, index) => {
+              return (
+                <Grid
+                  item
+                  justifyContent={"space-evenly"}
+                  alignItems={"stretch"}
+                  height={"100%"}
+                  key={index}
+                >
+                  {panel.element}
+                </Grid>
+              );
+            })}
+          </SwipeableViewsStyled>
         </Box>
       </WrapStyle>
     );

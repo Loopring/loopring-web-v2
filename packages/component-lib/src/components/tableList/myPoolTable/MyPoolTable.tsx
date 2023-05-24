@@ -97,7 +97,7 @@ export const MyPoolTable = withTranslation("tables")(
     tokenMap,
     forexMap,
     rowConfig = RowConfig,
-    hideAssets,
+                                                  hideAssets,
   }: MyPoolTableProps<R> & WithTranslation) => {
     const { isMobile, coinJson } = useSettings();
 
@@ -131,9 +131,9 @@ export const MyPoolTable = withTranslation("tables")(
             return (
               <PoolStyle
                 display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-                justifyContent={"flex-start"}
+                flexDirection={"column"}
+                alignContent={"flex-start"}
+                justifyContent={"center"}
                 height={"100%"}
               >
                 <CoinIcons
@@ -279,8 +279,7 @@ export const MyPoolTable = withTranslation("tables")(
                     {typeof balanceU === "undefined"
                       ? EmptyValueTag
                       : hideAssets
-                      ? HiddenTag
-                      : PriceTag[CurrencyToTag[currency]] +
+                        ? HiddenTag :PriceTag[CurrencyToTag[currency]] +
                         getValuePrecisionThousand(
                           (balanceU || 0) * (forexMap[currency] ?? 0),
                           undefined,
@@ -357,10 +356,9 @@ export const MyPoolTable = withTranslation("tables")(
                 >
                   {dollarReward24 === 0
                     ? EmptyValueTag
-                    : hideAssets
-                    ? HiddenTag
-                    : PriceTag[CurrencyToTag[currency]] +
-                      getValuePrecisionThousand(
+                : hideAssets
+                  ? HiddenTag
+                  : PriceTag[CurrencyToTag[currency]] + getValuePrecisionThousand(
                         (dollarReward24 || 0) * (forexMap[currency] ?? 0),
                         undefined,
                         undefined,
@@ -547,8 +545,8 @@ export const MyPoolTable = withTranslation("tables")(
                 <Typography component={"span"}>
                   {typeof balanceU === "undefined"
                     ? EmptyValueTag
-                    : hideAssets
-                    ? HiddenTag
+                : hideAssets
+                  ? HiddenTag
                     : PriceTag[CurrencyToTag[currency]] +
                       getValuePrecisionThousand(
                         (balanceU || 0) * (forexMap[currency] ?? 0),
@@ -564,35 +562,21 @@ export const MyPoolTable = withTranslation("tables")(
                   variant={"body2"}
                   color={"textSecondary"}
                 >
-                  {hideAssets
-                    ? HiddenTag + `  +  ` + HiddenTag
-                    : getValuePrecisionThousand(
-                        balanceA,
-                        undefined,
-                        2,
-                        2,
-                        true,
-                        {
-                          isAbbreviate: true,
-                          abbreviate: 3,
-                        }
-                      ) +
-                      " " +
-                      coinAInfo.simpleName +
-                      `  +  ` +
-                      getValuePrecisionThousand(
-                        balanceB,
-                        undefined,
-                        2,
-                        2,
-                        true,
-                        {
-                          isAbbreviate: true,
-                          abbreviate: 3,
-                        }
-                      ) +
-                      " " +
-                      coinBInfo.simpleName}
+              {hideAssets
+              ? HiddenTag + `  +  ` + HiddenTag
+              : getValuePrecisionThousand(balanceA, undefined, 2, 2, true, {
+                    isAbbreviate: true,
+                    abbreviate: 3,
+                  }) +
+                    " " +
+                    coinAInfo.simpleName +
+                    `  +  ` +
+                    getValuePrecisionThousand(balanceB, undefined, 2, 2, true, {
+                      isAbbreviate: true,
+                      abbreviate: 3,
+                    }) +
+                    " " +
+                    coinBInfo.simpleName}
                 </Typography>
               </Box>
             );
@@ -683,17 +667,17 @@ export const MyPoolTable = withTranslation("tables")(
         {totalDollar !== undefined ? (
           <Typography component={"h4"} variant={"h3"} marginX={3}>
             {totalDollar
-              ? hideAssets
+              ? (hideAssets
                 ? HiddenTag
                 : PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    sdk.toBig(totalDollar).times(forexMap[currency] ?? 0),
-                    undefined,
-                    undefined,
-                    2,
-                    true,
-                    { isFait: true, floor: true }
-                  )
+                getValuePrecisionThousand(
+                  sdk.toBig(totalDollar).times(forexMap[currency] ?? 0),
+                  undefined,
+                  undefined,
+                  2,
+                  true,
+                  { isFait: true, floor: true }
+                ))
               : EmptyValueTag}
           </Typography>
         ) : (

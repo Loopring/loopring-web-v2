@@ -15,6 +15,7 @@ import {
   useToast,
   usePageAmmPool,
   store,
+  walletLayer2Service,
   useAmmMap,
   AmmDetailStore,
   useTicker,
@@ -162,10 +163,11 @@ export const useAmmCommon = ({ market }: { market: string }) => {
   const { getUserRewards } = useUserRewards();
 
   const { toastOpen, setToastOpen, closeToast } = useToast();
+  const { status: accountStatus } = useAccount();
   const { updateRealTimeAmmMap, ammMap } = useAmmMap();
   const { marketArray, tokenMap } = useTokenMap();
   const { setShowAccount } = useOpenModals();
-
+  const { resetAmmPool } = usePageAmmPool();
   const { updatePageAmmExit, updatePageAmmJoin } = usePageAmmPool();
   const ammInfo = ammMap["AMM-" + market];
   const { ammExit, ammJoin } = usePairInit({
@@ -176,35 +178,33 @@ export const useAmmCommon = ({ market }: { market: string }) => {
     myLog("ammCommon", "market", market);
     if (market && market && LoopringAPI.ammpoolAPI) {
       const ammInfo: any = ammMap["AMM-" + market];
-      LoopringAPI.ammpoolAPI
-        .getAmmPoolSnapshot({
-          poolAddress: ammInfo.address,
-        })
-        .then((response) => {
-          if (
-            !response ||
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            throw (response as sdk.RESULT_INFO).message;
-          }
-          const { ammPoolSnapshot } = response;
-          updateRealTimeAmmMap({
-            ammPoolStats: {
-              ["AMM-" + market]: {
-                ...ammMap["AMM-" + market].__rawConfig__,
-                liquidity: [
-                  ammPoolSnapshot.pooled[0].volume,
-                  ammPoolSnapshot.pooled[1].volume,
-                ],
-                lpLiquidity: ammPoolSnapshot.lp.volume,
-              },
-            } as any,
-          });
-        });
+      setShowAccount({ isShow: false });
+      const response = await LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({
+        poolAddress: ammInfo.address,
+      });
+      if (
+        !response ||
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        throw (response as sdk.RESULT_INFO).message;
+      }
+      const { ammPoolSnapshot } = response;
+      updateRealTimeAmmMap({
+        ammPoolStats: {
+          ["AMM-" + market]: {
+            ...ammMap["AMM-" + market].__rawConfig__,
+            liquidity: [
+              ammPoolSnapshot.pooled[0].volume,
+              ammPoolSnapshot.pooled[1].volume,
+            ],
+            lpLiquidity: ammPoolSnapshot.lp.volume,
+          },
+        } as any,
+      });
     }
-    await Promise.race([updateExitFee, updateJoinFee]);
-    setShowAccount({ isShow: false });
+    updateExitFee();
+    updateJoinFee();
   }, [marketArray, market]);
   const refreshRef = React.createRef();
   const getFee = async (
@@ -428,6 +428,20 @@ export const useAmmCommon = ({ market }: { market: string }) => {
   }, []);
 
   useWalletLayer2Socket({ walletLayer2Callback });
+  React.useEffect(() => {
+    if (refreshRef.current) {
+      // @ts-ignore
+      refreshRef.current.firstElementChild.click();
+    }
+    return () => {
+      resetAmmPool();
+    };
+  }, []);
+  React.useEffect(() => {
+    if (accountStatus === SagaStatus.UNSET) {
+      walletLayer2Service.sendUserUpdate();
+    }
+  }, [accountStatus]);
   useAmmSocket({ market });
 
   return {
