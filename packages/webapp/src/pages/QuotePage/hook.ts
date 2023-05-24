@@ -231,7 +231,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       // const data = getFilteredTickList();
       handleTableFilterChange({});
     }
-  };, [ammPoolBalances, tickerStatus, tickList]);
+  }, [ammPoolBalances, tickerStatus, tickList]);
 
   const handleTableFilterChange = React.useCallback(
     ({

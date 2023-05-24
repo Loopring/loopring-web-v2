@@ -86,6 +86,10 @@ export type PageTradePro<C> = {
   maxFeeBips?: number;
   feeTakerRate?: number;
   tradeCost?: string;
+  isNotMatchMarketPrice?: boolean;
+  marketPrice?: string;
+  marketRatePrice?: string;
+  isChecked?: boolean;
 };
 
 export type PageTradeProStatus<C extends { [key: string]: any }> = {
