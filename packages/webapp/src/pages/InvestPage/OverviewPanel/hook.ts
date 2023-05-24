@@ -71,8 +71,14 @@ export function useOverview<R extends RowInvest>() {
           return b.apr[1] - a.apr[1];
         });
       setMyRawData(_rawData);
+      // setMyFilteredData(
+      //   _rawData.filter((a) => {
+      //     return !!a.apr[1];
+      //   })
+      // );
     } else {
       setMyRawData([]);
+      // setMyFilteredData([]);
     }
     setMyMapLoading(false);
   }, [walletLayer2, investTokenTypeMap]);

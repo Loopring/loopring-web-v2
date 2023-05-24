@@ -40,14 +40,12 @@ export const useAmmJoin = ({
   updateJoinFee,
   setToastOpen,
   market,
-  refreshRef,
 }: // ammCalcDefault,
 // ammDataDefault,
 {
   market: string;
   updateJoinFee: () => Promise<void>;
   setToastOpen: any;
-  refreshRef: React.Ref<any>;
   // ammCalcDefault: Partial<AmmInData<any>>;
   // ammDataDefault: Partial<AmmJoinData<IBData<string>, string>>;
 }) => {
@@ -55,10 +53,6 @@ export const useAmmJoin = ({
     ammJoin: { request, ammCalcData, ammData },
     updatePageAmmJoin,
   } = usePageAmmPool();
-  const [[maxCoinA, maxCoinB], setMaxLp] = React.useState<[any, any]>([
-    Infinity,
-    Infinity,
-  ]);
 
   const { t } = useTranslation(["common", "error"]);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -112,20 +106,6 @@ export const useAmmJoin = ({
               tradeBtnStatus: TradeBtnStatus.DISABLED,
               label: "labelEnterAmount",
             };
-          } else if (
-            sdk.toBig(ammData.coinA.tradeValue).gt(ammData.coinA.balance)
-          ) {
-            return {
-              tradeBtnStatus: TradeBtnStatus.DISABLED,
-              label: `labelAMMNoEnough|${ammData.coinA.belong}`,
-            };
-          } else if (
-            sdk.toBig(ammData.coinB.tradeValue).gt(ammData.coinB.balance)
-          ) {
-            return {
-              tradeBtnStatus: TradeBtnStatus.DISABLED,
-              label: `labelAMMNoEnough|${ammData.coinB.belong}`,
-            };
           } else if (!validAmt1 || !validAmt2) {
             const tokenA = tokenMap[ammInfo.coinA ?? ""];
             const tokenB = tokenMap[ammInfo.coinB ?? ""];
@@ -153,19 +133,6 @@ export const useAmmJoin = ({
                 ammData?.coinB.belong
               }`,
             };
-          } else if (
-            !Number.isFinite(maxCoinA) &&
-            !Number.isFinite(maxCoinB) &&
-            (sdk.toBig(ammData.coinA.tradeValue).gt(maxCoinA) ||
-              sdk.toBig(ammData.coinB.tradeValue).gt(maxCoinB))
-          ) {
-            return {
-              tradeBtnStatus: TradeBtnStatus.DISABLED,
-              label: `labelAMMMax| ${t("labelAMMMaxAND", {
-                coinA: `${maxCoinA} ${ammData.coinA.belong}`,
-                coinB: `${maxCoinB} ${ammData.coinB.belong}`,
-              })}`,
-            };
           }
           return {
             tradeBtnStatus: TradeBtnStatus.AVAILABLE,
@@ -179,16 +146,7 @@ export const useAmmJoin = ({
       };
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [
-    account.readyState,
-    ammMap,
-    ammInfo,
-    isLoading,
-    baseMinAmt,
-    quoteMinAmt,
-    maxCoinA,
-    maxCoinB,
-  ]);
+  }, [account.readyState, ammMap, ammInfo, isLoading, baseMinAmt, quoteMinAmt]);
 
   const onAmmClick = React.useCallback(
     async function (props) {
@@ -217,7 +175,7 @@ export const useAmmJoin = ({
           !account?.eddsaKey?.sk
         ) {
           myLog(
-            "onAmmJoin ammpoolAPI:",
+            " onAmmJoin ammpoolAPI:",
             LoopringAPI.ammpoolAPI,
             "joinRequest:",
             request
@@ -269,22 +227,12 @@ export const useAmmJoin = ({
           }
 
           myLog("join ammpool req:", req);
-          let response;
-          if (
-            store.getState().system.chainId === 5 &&
-            /CLRC-USDT/gi.test(ammInfo.name)
-          ) {
-            console.log(
-              "Test case for new amm join, please do not submit request",
-              req
-            );
-          } else {
-            response = await LoopringAPI.ammpoolAPI.joinAmmPool(
-              req,
-              patch,
-              account.apiKey
-            );
-          }
+
+          const response = await LoopringAPI.ammpoolAPI.joinAmmPool(
+            req,
+            patch,
+            account.apiKey
+          );
 
           myLog("join ammpool response:", response);
 
@@ -333,8 +281,6 @@ export const useAmmJoin = ({
         } finally {
           setIsLoading(false);
           walletLayer2Service.sendUserUpdate();
-          // @ts-ignore
-          refreshRef?.current?.firstElementChild.click();
         }
 
         if (props.__cache__) {
@@ -359,7 +305,6 @@ export const useAmmJoin = ({
       const {
         ammJoin: { ammCalcData },
       } = store.getState()._router_pageAmmPool;
-      const { ammMap } = store.getState().amm.ammMap;
       const ammInfo = ammMap["AMM-" + market];
       const { slippage } = data;
 
@@ -428,37 +373,9 @@ export const useAmmJoin = ({
             rawB !== "0"
               ? (sdk
                   .toBig(request.joinTokens.pooled[0].volume)
-                  .div("1e" + tokenCoinA.decimals)
+                  .div("1e" + tokenCoinB.decimals)
                   .toFixed(marketMap[ammInfo.market].precisionForPrice) as any)
               : undefined;
-        }
-      }
-
-      if (ammCalcData?.fee) {
-        const { request: maxResult } = sdk.makeJoinAmmPoolRequest(
-          sdk.toBig(data.coinB.balance).minus(ammCalcData?.fee).toString(),
-          false,
-          slippageReal,
-          account.accAddress,
-          ammCalcData?.fees,
-          ammPoolSnapshot,
-          tokenMap as any,
-          idIndex as any,
-          0,
-          0,
-          undefined
-        );
-        if (ammInfo.tokens?.lp && sdk.toBig(ammInfo.tokens?.lp ?? 0).gt(0)) {
-          setMaxLp([
-            sdk
-              .toBig(maxResult.joinTokens.pooled[0].volume)
-              .div("1e" + tokenCoinA.decimals)
-              .toFixed(marketMap[ammInfo.market].precisionForPrice),
-            sdk
-              .toBig(maxResult.joinTokens.pooled[1].volume)
-              .div("1e" + tokenCoinB.decimals)
-              .toFixed(marketMap[ammInfo.market].precisionForPrice),
-          ]);
         }
       }
 
@@ -476,14 +393,7 @@ export const useAmmJoin = ({
     },
     [market]
   );
-  React.useEffect(() => {
-    if (isShow) {
-      // const { walletMap } = makeWalletLayer2(false);
-      setIsLoading(true);
-      initAmmData(true);
-      walletLayer2Service.sendUserUpdate();
-    }
-  }, [isShow]);
+
   const walletLayer2Callback = React.useCallback(async () => {
     updateJoinFee();
     const account = store.getState().account;

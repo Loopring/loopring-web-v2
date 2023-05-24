@@ -46,8 +46,8 @@ export const makeTickerMap = <R extends { [key: string]: any }>({
 
   return Reflect.ownKeys(tickerMap).reduce((prev, key) => {
     const item = tickerMap[key as any];
-    if (item && item.quote && forexMap && tokenPrices[item.quote]) {
-      const price = tokenPrices[item.quote];
+    if (item && item.base && forexMap && tokenPrices[item.base]) {
+      const price = tokenPrices[item.base];
       const volume = volumeToCount(
         item.symbol.split("-")[1],
         item.quote_token_volume

@@ -16,6 +16,7 @@ import {
   AccountStep,
   DeFiStakeRedeemWrapProps,
   RawDataDefiSideStakingItem,
+  ToastType,
   useOpenModals,
   useToggle,
 } from "@loopring-web/component-lib";
@@ -72,7 +73,7 @@ export const useStakeTradeExit = <
   setToastOpen: (props: {
     open: boolean;
     content: JSX.Element | string;
-    type: "success" | "error" | "warning" | "info";
+    type: ToastType;
   }) => void;
 }) => {
   const { t } = useTranslation();
@@ -290,7 +291,7 @@ export const useStakeTradeExit = <
     } catch (reason) {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content:
           t("labelInvestFailed") +
             (reason as CustomErrorWithCode)?.messageKey ??

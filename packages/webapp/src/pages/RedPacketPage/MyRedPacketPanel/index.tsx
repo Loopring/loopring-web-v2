@@ -15,17 +15,9 @@ import {
   useMyRedPacketRecordTransaction,
 } from "./hooks";
 import { BackIcon, TokenType } from "@loopring-web/common-resources";
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, Tab, Tabs, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { useNotify } from "@loopring-web/core";
+import {useNotify} from "@loopring-web/core";
 
 enum TabIndex {
   Received = "Received",
@@ -57,15 +49,14 @@ export const MyRedPacketPanel = ({
   const { isMobile } = useSettings();
   const { etherscanBaseUrl, forexMap } = useSystem();
   let match: any = useRouteMatch("/redPacket/records/:item/:type?");
+  
 
   const container = React.useRef<HTMLDivElement>(null);
   const [currentTab, setCurrentTab] = React.useState<TabIndex>(
     match?.params.item ?? TabIndex.Received
   );
-  const isUnClaimed =
-    currentTab === TabIndex.BlindBoxUnClaimed ||
-    currentTab === TabIndex.NFTsUnClaimed;
-  const pageSize = 10;
+  const isUnClaimed = currentTab === TabIndex.BlindBoxUnClaimed || currentTab === TabIndex.NFTsUnClaimed
+  const pageSize = 10
 
   const {
     showLoading: showloadingRecord,
@@ -77,11 +68,10 @@ export const MyRedPacketPanel = ({
     setToastOpen,
   });
 
-  const [showActionableRecords, setShowActionableRecords] =
-    React.useState(true);
+  const [showActionableRecords, setShowActionableRecords] = React.useState(true)
   const onChangeShowActionableRecords = React.useCallback(() => {
-    setShowActionableRecords(!showActionableRecords);
-  }, [showActionableRecords]);
+    setShowActionableRecords(!showActionableRecords)
+  }, [showActionableRecords]) 
   const {
     showLoading: showloadingReceive,
     getRedPacketReceiveList,
@@ -121,77 +111,61 @@ export const MyRedPacketPanel = ({
     ? "NFTs"
     : "blindBox";
 
-  const showNFT = useNotify().notifyMap?.redPacket.showNFT;
-  const tabsView = isUnClaimed ? (
-    <Tabs
-      value={currentTab}
-      onChange={(_event, value) => {
-        handleTabChange(value);
-      }}
-      aria-label="l2-history-tabs"
-      variant="scrollable"
-    >
-      <Tab
-        key={"NFTs"}
-        label={t("labelRedPacketTabNFTs")}
-        value={TabIndex.NFTsUnClaimed}
-      />
-      <Tab
-        key={"Blind Box"}
-        label={t("labelRedPacketTabBlindBox")}
-        value={TabIndex.BlindBoxUnClaimed}
-      />
-    </Tabs>
-  ) : (
-    <>
+  const showNFT = useNotify().notifyMap?.redPacket.showNFT;  
+  const tabsView = isUnClaimed
+    ? (
       <Tabs
-        value={isRecieve ? "Received" : "Sent"}
+        value={currentTab}
         onChange={(_event, value) => {
-          if (tabType === "tokens" && value === "Received") {
-            handleTabChange(TabIndex.Received);
-          } else if (tabType === "tokens" && value === "Sent") {
-            handleTabChange(TabIndex.Send);
-          } else if (tabType === "NFTs" && value === "Received") {
-            handleTabChange(TabIndex.NFTReceived);
-          } else if (tabType === "NFTs" && value === "Sent") {
-            handleTabChange(TabIndex.NFTSend);
-          } else if (tabType === "blindBox" && value === "Received") {
-            handleTabChange(TabIndex.BlindBoxReceived);
-          } else if (tabType === "blindBox" && value === "Sent") {
-            handleTabChange(TabIndex.Send);
-          }
+          handleTabChange(value)
         }}
         aria-label="l2-history-tabs"
         variant="scrollable"
       >
-        <Tab
-          key={"Received"}
-          label={t("labelRedPacketTabReceived")}
-          value={"Received"}
-        />
-        <Tab key={"Sent"} label={t("labelRedPacketTabSent")} value={"Sent"} />
+        <Tab key={"NFTs"} label={t("labelRedPacketTabNFTs")} value={TabIndex.NFTsUnClaimed} />
+        <Tab key={"Blind Box"} label={t("labelRedPacketTabBlindBox")} value={TabIndex.BlindBoxUnClaimed} />
       </Tabs>
-      <Box
-        paddingX={2}
-        marginTop={3}
-        display={"flex"}
-        justifyContent="space-between"
-      >
-        <Box>
-          <SelectButton
-            onClick={() => {
-              isRecieve
-                ? handleTabChange(TabIndex.Received)
-                : handleTabChange(TabIndex.Send);
-            }}
-            selected={[TabIndex.Send, TabIndex.Received].includes(currentTab)}
-            style={{ marginRight: `${theme.unit}px` }}
-            variant={"outlined"}
-          >
-            {t("labelRedpacketTokensShort")}
-          </SelectButton>
-          {showNFT && (
-            <>
+    )
+    : (
+      <>
+        <Tabs
+          value={isRecieve ? "Received" : "Sent"}
+          onChange={(_event, value) => {
+            if (tabType === "tokens" && value === "Received") {
+              handleTabChange(TabIndex.Received);
+            } else if (tabType === "tokens" && value === "Sent") {
+              handleTabChange(TabIndex.Send);
+            } else if (tabType === "NFTs" && value === "Received") {
+              handleTabChange(TabIndex.NFTReceived);
+            } else if (tabType === "NFTs" && value === "Sent") {
+              handleTabChange(TabIndex.NFTSend);
+            } else if (tabType === "blindBox" && value === "Received") {
+              handleTabChange(TabIndex.BlindBoxReceived);
+            } else if (tabType === "blindBox" && value === "Sent") {
+              handleTabChange(TabIndex.Send);
+            }
+          }}
+          aria-label="l2-history-tabs"
+          variant="scrollable"
+        >
+          <Tab key={"Received"} label={t("labelRedPacketTabReceived")} value={"Received"} />
+          <Tab key={"Sent"} label={t("labelRedPacketTabSent")} value={"Sent"} />
+        </Tabs>
+        <Box paddingX={2} marginTop={3} display={"flex"} justifyContent="space-between" >
+          <Box >
+            <SelectButton
+              onClick={() => {
+                isRecieve
+                  ? handleTabChange(TabIndex.Received)
+                  : handleTabChange(TabIndex.Send);
+              }}
+              selected={[TabIndex.Send, TabIndex.Received].includes(currentTab)}
+              style={{ marginRight: `${theme.unit}px` }}
+              variant={"outlined"}
+            >
+              {t("labelRedpacketTokensShort")}
+            </SelectButton>
+            {showNFT && <>
               <SelectButton
                 onClick={() => {
                   isRecieve
@@ -217,26 +191,17 @@ export const MyRedPacketPanel = ({
                   {t("labelRedpacketBlindBox")}
                 </SelectButton>
               )}
-            </>
+            </>}
+          </Box>
+          {isRecieve && (tabType === 'NFTs' || tabType === 'blindBox') && (
+            <FormControlLabel control={<Checkbox checked={showActionableRecords} onChange={() => {
+              onChangeShowActionableRecords()
+            }} />} label={t("labelRedpacketHideInactionable")} />
           )}
         </Box>
-        {isRecieve && (tabType === "NFTs" || tabType === "blindBox") && (
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={showActionableRecords}
-                onChange={() => {
-                  onChangeShowActionableRecords();
-                }}
-              />
-            }
-            label={t("labelRedpacketHideInactionable")}
-          />
-        )}
-      </Box>
-    </>
-  );
-
+      </>
+    )
+  
   return (
     <Box
       flex={1}
@@ -257,9 +222,9 @@ export const MyRedPacketPanel = ({
           color={"inherit"}
           onClick={() => {
             if (isUnClaimed) {
-              history.push("/l2assets/assets/RedPacket");
+              history.push("/l2assets/assets/RedPacket")
             } else {
-              history.push("/redPacket/markets");
+              history.push("/redPacket/markets")
             }
           }}
         >
@@ -269,11 +234,7 @@ export const MyRedPacketPanel = ({
 
       <StylePaper overflow={"scroll"} ref={container} flex={1}>
         {tabsView}
-        {[
-          TabIndex.Received,
-          TabIndex.NFTReceived,
-          TabIndex.NFTsUnClaimed,
-        ].includes(currentTab) && (
+        {[TabIndex.Received, TabIndex.NFTReceived, TabIndex.NFTsUnClaimed].includes(currentTab) && (
           <Box
             className="tableWrapper table-divide-short"
             display={"flex"}
@@ -309,13 +270,12 @@ export const MyRedPacketPanel = ({
                   pageSize: pageSize,
                   total: redPacketReceiveTotal,
                 },
-                showActionableRecords,
+                showActionableRecords
               }}
             />
           </Box>
         )}
-        {(currentTab === TabIndex.BlindBoxReceived ||
-          currentTab === TabIndex.BlindBoxUnClaimed) && (
+        {(currentTab === TabIndex.BlindBoxReceived || currentTab === TabIndex.BlindBoxUnClaimed) && (
           <Box
             className="tableWrapper table-divide-short"
             display={"flex"}

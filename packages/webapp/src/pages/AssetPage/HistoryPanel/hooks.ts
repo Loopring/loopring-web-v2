@@ -22,6 +22,7 @@ import {
   RawDataDualTxsItem,
   RawDataTradeItem,
   RawDataTransactionItem,
+  ToastType,
   TransactionStatus,
   useOpenModals,
 } from "@loopring-web/component-lib";
@@ -104,7 +105,7 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
             SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               "error : " + errorItem
                 ? t(errorItem.messageKey)
@@ -214,7 +215,7 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
             SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               "error : " + errorItem
                 ? t(errorItem.messageKey)
@@ -294,7 +295,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
             SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               "error : " + errorItem
                 ? t(errorItem.messageKey)
@@ -389,7 +390,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
             SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               "error : " + errorItem
                 ? t(errorItem.messageKey)
@@ -448,7 +449,7 @@ export function useDefiSideRecord(setToastOpen: (props: any) => void) {
             SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               "error : " + errorItem
                 ? t(errorItem.messageKey)
@@ -521,7 +522,7 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
           if (setToastOpen) {
             setToastOpen({
               open: true,
-              type: "error",
+              type: ToastType.error,
               content:
                 "error : " + errorItem
                   ? t(errorItem.messageKey)
@@ -729,7 +730,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
           if (setToastOpen) {
             setToastOpen({
               open: true,
-              type: "error",
+              type: ToastType.error,
               content:
                 "error : " + errorItem
                   ? t(errorItem.messageKey)
@@ -828,7 +829,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
           if (setToastOpen) {
             setToastOpen({
               open: true,
-              type: "error",
+              type: ToastType.error,
               content:
                 "error : " + errorItem
                   ? t(errorItem.messageKey)
@@ -843,7 +844,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 status,
                 market,
                 price,
-                btradeExtraInfo: tokenInfos,
+                // btradeExtraInfo: tokenInfos,
                 volumes: {
                   fee,
                   baseAmount,

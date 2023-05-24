@@ -102,6 +102,10 @@ module.exports = override(
           ? [
               path.resolve(__dirname, "../../node_modules/@web3modal"),
               path.resolve(__dirname, "../../node_modules/@walletconnect"),
+              path.resolve(
+                __dirname,
+                "../../node_modules/@walletconnect/ethereum-provider/"
+              ),
             ]
           : []),
       ];
@@ -119,6 +123,7 @@ module.exports = override(
       "@material-ui/core": "@mui/material",
       "@material-ui/core/Popover": "@mui/material/Popover",
     };
+
     return config;
   }
 );

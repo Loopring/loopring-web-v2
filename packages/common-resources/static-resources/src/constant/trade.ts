@@ -182,6 +182,7 @@ export enum NFT_TYPE_STRING {
 }
 
 export const EmptyValueTag = "--";
+export const HiddenTag = "*****";
 export const DEAULT_NFTID_STRING =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
 export const MINT_LIMIT = 100000;
@@ -773,3 +774,8 @@ export enum TradeBaseType {
   slippage = "slippage",
   stopPrice = "stopPrice",
 }
+
+export type AmmHistoryItem = {
+  close: number;
+  timeStamp: number;
+};

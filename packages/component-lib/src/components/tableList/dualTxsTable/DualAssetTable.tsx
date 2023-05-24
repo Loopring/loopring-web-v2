@@ -191,11 +191,11 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           name: t("labelDualAssetFrozen"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             if (hideAssets) {
-              return <>{HiddenTag}</>;
+              return <>{HiddenTag}</>
             } else if (!row?.amount) {
               return <>{"-- " + row.sellSymbol}</>;
             } else {
-              return <>{row?.amount + " " + row.sellSymbol}</>;
+              return <>{(row?.amount + " " + row.sellSymbol)}</>;
             }
           },
         },
@@ -212,17 +212,15 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
             const { base, quote } = currentPrice;
             return (
               <>
-                {hideAssets
-                  ? HiddenTag
-                  : (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
-                    " " +
-                    base +
-                    "/" +
-                    (greaterEarnView === "0"
-                      ? EmptyValueTag
-                      : greaterEarnView) +
-                    " " +
-                    quote}
+                {hideAssets 
+                ? (HiddenTag)
+                : (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
+                  " " +
+                  base +
+                  "/" +
+                  (greaterEarnView === "0" ? EmptyValueTag : greaterEarnView) +
+                  " " +
+                  quote}
               </>
             );
           },
@@ -394,9 +392,7 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
                     variant={"body2"}
                     color={"textSecondary"}
                   >
-                    {hideAssets
-                      ? HiddenTag
-                      : row?.amount + " " + row.sellSymbol}
+                    {hideAssets ? HiddenTag : row?.amount + " " + row.sellSymbol}
                   </Typography>
                 </Box>
               </>

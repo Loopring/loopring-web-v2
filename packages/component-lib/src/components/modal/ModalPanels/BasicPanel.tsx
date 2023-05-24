@@ -537,6 +537,10 @@ export const WithdrawBase = (props: PanelProps) => {
   return <BasicPanel {...propsPatch} {...props} />;
 };
 
+export const AmmBase = (props: PanelProps) => {
+  return <BasicPanel title={"labelAMMTitle"} {...props} />;
+};
+
 export const DualBase = (props: PanelProps & { showTitle: boolean }) => {
   const { showTitle } = props;
   return (

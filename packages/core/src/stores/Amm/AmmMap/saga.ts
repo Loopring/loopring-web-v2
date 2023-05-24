@@ -1,12 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getAmmMap, getAmmMapStatus, updateRealTimeAmmMap } from "./reducer";
 import * as sdk from "@loopring-web/loopring-sdk";
-import {
-  AmmPoolInfoV3,
-  AmmPoolStat,
-  ChainId,
-  toBig,
-} from "@loopring-web/loopring-sdk";
 
 import {
   AmmDetail,
@@ -14,12 +8,16 @@ import {
   myLog,
 } from "@loopring-web/common-resources";
 import { store } from "../../index";
+import {
+  AmmPoolInfoV3,
+  AmmPoolStat,
+  ChainId,
+  toBig,
+} from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../../api_wrapper";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { AmmDetailStore, GetAmmMapParams } from "./interface";
-import { volumeToCount, volumeToCountAsBigNumber } from "../../../hooks";
-import _ from "lodash";
-
+import { volumeToCount, volumeToCountAsBigNumber } from "../../../hooks/help";
 const ammMapStoreLocal = (ammpoolsRaw: any, chainId?: any) => {
   // const system = store.getState().system;
   myLog("system", chainId);
@@ -46,16 +44,11 @@ export const setAmmState = ({
   market: string;
 }) => {
   const { idIndex, tokenMap } = store.getState().tokenMap;
-  const { chainId } = store.getState().system;
   const { tokenPrices } = store.getState().tokenPrices;
   const { tickerMap } = store.getState().tickerMap;
   // @ts-ignore
   const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
   if (idIndex && coinA && coinB && tokenPrices) {
-    if (chainId === 5 && market == "CLRC-USDT") {
-      ammPoolState.liquidity = ["0", "0"];
-      ammPoolState.lpLiquidity = "0";
-    }
     const totalA = volumeToCountAsBigNumber(coinA, ammPoolState.liquidity[0]); //parseInt(ammPoolState.liquidity[ 0 ]),
     const totalB = volumeToCountAsBigNumber(coinB, ammPoolState.liquidity[1]); //parseInt(ammPoolState.liquidity[ 1 ]),
     const totalAU = totalA?.times(tokenPrices[coinA]) ?? sdk.toBig(0);
@@ -128,7 +121,7 @@ export const setAmmState = ({
         tokenMap[coinA].precision,
         tokenMap[coinA].precision,
         false,
-        { isFait: true }
+        { isAbbreviate: true }
       ),
       totalBStr: getValuePrecisionThousand(
         result.totalB,
@@ -160,7 +153,6 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({
   }
   let ammMap: AmmMap<R> = {}; //
   let ammArrayEnable: AmmDetailStore<R>[] = [];
-  const { chainId } = store.getState().system;
   const { ammMap: _ammMap } = store.getState().amm.ammMap;
   myLog("loop get ammPoolStats");
 
@@ -173,16 +165,7 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({
     // throw e;
   }
   Reflect.ownKeys(ammpools).forEach(async (key) => {
-    let item: AmmPoolInfoV3 = ammpools[key as string];
-    if (chainId === 5 && key == "AMM-CLRC-USDT") {
-      item = {
-        ...ammpools[key as string],
-        tokens: {
-          pooled: ["0", "0"],
-          lp: "0" as any,
-        },
-      };
-    }
+    const item: AmmPoolInfoV3 = ammpools[key as string];
     if (item.market === key && item.tokens.pooled && idIndex) {
       const coinA = idIndex[item.tokens.pooled[0] as any];
       const coinB = idIndex[item.tokens.pooled[1] as any];
@@ -263,38 +246,36 @@ export function* getPostsSaga({
 export function* updateRealTimeSaga({ payload }: any) {
   try {
     const { ammPoolStats } = payload;
-    let { ammMap: _ammMap, ammArrayEnable: _ammArrayEnable } =
-      store.getState().amm.ammMap;
-    let ammMap;
-    let ammArrayEnable = _.cloneDeep(_ammArrayEnable);
+    let { ammMap, ammArrayEnable } = store.getState().amm.ammMap;
     if (ammPoolStats) {
-      ammMap = Reflect.ownKeys(ammPoolStats).reduce((_ammMap, key) => {
+      // @ts-ignore
+      Reflect.ownKeys(ammPoolStats).map((key: string) => {
         const market = (key as string).replace("AMM-", "");
-        const ammMarket = "AMM-" + market;
-        myLog("ammPoolStats[ammMarket]", ammPoolStats[ammMarket]);
-        const result = setAmmState({
-          ammPoolState: {
-            ..._ammMap[ammMarket]?.__ammPoolState__,
-            ...ammPoolStats[ammMarket],
-          },
-          market,
-        });
         // @ts-ignore
-        _ammMap[ammMarket] = {
-          ..._ammMap[ammMarket],
-          ...result,
+        ammMap[key] = {
+          ...ammMap[key],
+          ...setAmmState({
+            ammPoolState: {
+              ...ammMap[key]?.__ammPoolState__,
+              ...ammPoolStats[key as string],
+            },
+            market,
+          }),
           market,
         };
-        if (!_ammMap[ammMarket].showDisable) {
+        // @ts-ignore
+        if (!ammMap[key].showDisable) {
           const index = ammArrayEnable.findIndex(
-            (item) => _ammMap[ammMarket].market === item.market
+            // @ts-ignore
+            (item) => ammMap[key].market === item.market
           );
           if (index != -1) {
-            ammArrayEnable[index] = _ammMap[ammMarket];
+            // @ts-ignore
+            ammArrayEnable[index] = ammMap[key];
           }
         }
-        return _ammMap;
-      }, _.cloneDeep(_ammMap));
+        return ammMap;
+      });
     }
     yield put(getAmmMapStatus({ ammMap, ammArrayEnable }));
   } catch (err) {

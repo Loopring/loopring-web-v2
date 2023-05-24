@@ -17,7 +17,6 @@ import {
 // import * as sdk from "@loopring-web/loopring-sdk";
 // import { useAmmCommon } from "../../hooks/useractions/hookAmmCommon";
 import { AmmPoolTx, UserAmmPoolTx } from "@loopring-web/loopring-sdk";
-import { RowConfig } from "@loopring-web/common-resources";
 // import moment from "moment";
 
 export type AwardItme = {
@@ -37,8 +36,6 @@ export const useAmmRecord = <R extends { [key: string]: any }>({
   market: string;
 }) => {
   const { ammMap } = useAmmMap();
-  const container = React.useRef(null);
-
   const [isMyAmmLoading, setIsMyAmmLoading] = React.useState(false);
   const [isRecentLoading, setIsRecentLoading] = React.useState(false);
   const [ammMarketArray, setAmmMarketArray] = React.useState<AmmRecordRow<R>[]>(
@@ -51,17 +48,6 @@ export const useAmmRecord = <R extends { [key: string]: any }>({
   const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<
     AmmRecordRow<R>[]
   >([]);
-  React.useEffect(() => {
-    // @ts-ignore
-    let height = container?.current?.offsetHeight;
-    if (height) {
-      // const pageSize =
-      setPageSize(
-        Math.floor((height - RowConfig.rowHeight * 2) / RowConfig.rowHeight) - 1
-      );
-      // getUserAmmPoolTxs()
-    }
-  }, [container]);
   const getUserAmmPoolTxs = React.useCallback(
     ({ limit = pageSize, offset = 0 }) => {
       // limit = pageSize;
@@ -154,7 +140,6 @@ export const useAmmRecord = <R extends { [key: string]: any }>({
     [ammMap, market, tokenPrices]
   );
   return {
-    container,
     isMyAmmLoading,
     isRecentLoading,
     ammMarketArray,

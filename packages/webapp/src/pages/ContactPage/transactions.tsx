@@ -19,6 +19,7 @@ import {
   TableFilterStyled,
   TablePaddingX,
   TransactionStatus,
+  ToastType,
 } from "@loopring-web/component-lib";
 import { StylePaper, useGetOrderHistorys } from "@loopring-web/core";
 import { useTransactions } from "./hooks";
@@ -905,7 +906,7 @@ export const ContactTransactionsPage = withTranslation("common")(
         <StylePaper ref={container} flex={1}>
           <Toast
             alertText={toastOpen?.content ?? ""}
-            severity={toastOpen?.type ?? "success"}
+            severity={toastOpen?.type ?? ToastType.success}
             open={toastOpen?.open ?? false}
             autoHideDuration={TOAST_TIME}
             onClose={closeToast}

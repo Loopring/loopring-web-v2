@@ -5,6 +5,7 @@ import {
   DeFiSideWrap,
   LoadingBlock,
   Toast,
+  ToastType,
   useSettings,
   useToggle,
 } from "@loopring-web/component-lib";
@@ -45,7 +46,7 @@ export const StackTradePanel = ({
     <>
       <Toast
         alertText={toastOpen?.content ?? ""}
-        severity={toastOpen?.type ?? "success"}
+        severity={toastOpen?.type ?? ToastType.success}
         open={toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}

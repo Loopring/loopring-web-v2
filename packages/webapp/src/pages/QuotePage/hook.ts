@@ -43,7 +43,7 @@ export function useTickList<C extends { [key: string]: string }>() {
             // @ts-ignore
             const [, coinA, coinB] = key.match(/(\w+)-(\w+)/i);
             const ticker = tickerMap[key as string];
-            const coinAPriceDollar =
+            const coinApriceU =
               ticker.close * (tokenPrices[coinB] ?? 0) ??
               tokenPrices[coinB] ??
               0;
@@ -53,7 +53,7 @@ export function useTickList<C extends { [key: string]: string }>() {
                 coinA,
                 coinB,
               },
-              coinAPriceDollar,
+              coinApriceU,
             } as QuoteTableRawDataItem;
 
             if (marketArray && marketArray.findIndex((m) => m === key) !== -1) {

@@ -1,4 +1,10 @@
-import { BtradeBase, DualBase, IconType, PanelProps } from "./BasicPanel";
+import {
+  AmmBase,
+  BtradeBase,
+  DualBase,
+  IconType,
+  PanelProps,
+} from "./BasicPanel";
 import { Box, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 import {
@@ -644,4 +650,20 @@ export const BtradeSwap_Failed = (props: PanelProps) => {
     describe2: <BtradeDetail {...props} />,
   };
   return <BtradeBase {...propsPatch} {...props} />;
+};
+
+export const AMM_Pending = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.PendingIcon,
+    // describe1: (
+    //   <Typography
+    //     color={"var(--color-text-primary)"}
+    //     variant={"h5"}
+    //     component={"span"}
+    //   >
+    //     {t("labelAMMPending")}
+    //   </Typography>
+    // ),
+  };
+  return <AmmBase {...{ ...props, ...propsPatch }} />;
 };

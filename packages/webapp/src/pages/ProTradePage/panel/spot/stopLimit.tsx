@@ -5,6 +5,7 @@ import {
   ConfirmStopLimitRisk,
   StopLimitTrade,
   Toast,
+  ToastType,
 } from "@loopring-web/component-lib";
 import {
   MarketType,
@@ -67,7 +68,7 @@ export const StopLimitView = withTranslation("common")(
               ? marketUnavailableConent
               : toastOpenL?.content ?? ""
           }
-          severity={toastOpenL?.type ?? "success"}
+          severity={toastOpenL?.type ?? ToastType.success}
           open={toastOpenL?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToastL}

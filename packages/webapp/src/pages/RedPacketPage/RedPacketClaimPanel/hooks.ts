@@ -114,7 +114,7 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   const [showNFTsPanel, setShowNFTsPanel] = React.useState(false);
   const history = useHistory();
   const onViewMoreNFTsClick = () => {
-    history.push("/redPacket/records/NFTsUnClaimed");
+    history.push("/redPacket/records/NFTsUnClaimed")
   };
   const onCloseNFts = () => {
     setShowNFTsPanel(false);

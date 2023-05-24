@@ -29,6 +29,7 @@ import {
 } from "@loopring-web/common-resources";
 import {
   StopLimitTradeData,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -144,7 +145,7 @@ export const useStopLimit = <
     } else {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: t("labelLimitMarket"),
       });
     }
@@ -247,7 +248,7 @@ export const useStopLimit = <
           ) {
             setToastOpen({
               open: true,
-              type: "error",
+              type: ToastType.error,
               content: t("labelLimitFailed") + " : " + response.message,
             });
           } else {
@@ -294,13 +295,13 @@ export const useStopLimit = <
                   if (percentage1 === 0 || percentage2 === 0) {
                     setToastOpen({
                       open: true,
-                      type: "warning",
+                      type: ToastType.warning,
                       content: t("labelSwapCancelled"),
                     });
                   } else {
                     setToastOpen({
                       open: true,
-                      type: "success",
+                      type: ToastType.success,
                       content: t("labelSwapSuccess"),
                     });
                   }
@@ -308,21 +309,21 @@ export const useStopLimit = <
                 case sdk.OrderStatus.processed:
                   setToastOpen({
                     open: true,
-                    type: "success",
+                    type: ToastType.success,
                     content: t("labelSwapSuccess"),
                   });
                   break;
                 case sdk.OrderStatus.processing:
                   setToastOpen({
                     open: true,
-                    type: "success",
+                    type: ToastType.success,
                     content: t("labelOrderProcessing"),
                   });
                   break;
                 default:
                   setToastOpen({
                     open: true,
-                    type: "error",
+                    type: ToastType.error,
                     content: t("labelLimitFailed"),
                   });
               }
@@ -336,7 +337,7 @@ export const useStopLimit = <
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content: t("labelLimitFailed"),
           });
         }

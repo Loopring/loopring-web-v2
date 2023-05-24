@@ -9,6 +9,7 @@ import {
   CurrencyToTag,
   ForexMap,
   getValuePrecisionThousand,
+  HiddenTag,
   MarketType,
   PriceTag,
   RowConfig,
@@ -122,6 +123,7 @@ export type AssetsTableProps<R = RawDataAssetsItem> = {
   forexMap: ForexMap<Currency>;
   onTokenLockHold?: (item: R) => void;
   tokenLockDetail?: any[] | undefined;
+  hideAssets?: boolean;
 } & XOR<
   {
     hideInvestToken: boolean;
@@ -151,6 +153,7 @@ export const AssetsTable = withTranslation("tables")(
       setHideSmallBalances,
       forexMap,
       rowConfig = RowConfig,
+      hideAssets,
       onTokenLockHold,
       tokenLockDetail,
       ...rest
@@ -260,14 +263,16 @@ export const AssetsTable = withTranslation("tables")(
           const precision = row["precision"];
           return (
             <Box className={"textAlignRight"}>
-              {getValuePrecisionThousand(
-                value,
-                precision,
-                precision,
-                undefined,
-                false,
-                { floor: true }
-              )}
+              {hideAssets
+                ? HiddenTag
+                : getValuePrecisionThousand(
+                    value,
+                    precision,
+                    precision,
+                    undefined,
+                    false,
+                    { floor: true }
+                  )}
             </Box>
           );
         },
@@ -281,6 +286,7 @@ export const AssetsTable = withTranslation("tables")(
             <LockedMemo
               {...{
                 ...row,
+                hideAssets,
                 onTokenLockHold,
                 tokenLockDetail,
               }}
@@ -295,15 +301,17 @@ export const AssetsTable = withTranslation("tables")(
         formatter: ({ row }) => {
           return (
             <Box className={"textAlignRight"}>
-              {PriceTag[CurrencyToTag[currency]] +
-                getValuePrecisionThousand(
-                  (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
-                  undefined,
-                  undefined,
-                  undefined,
-                  true,
-                  { isFait: true, floor: true }
-                )}
+              {hideAssets
+                ? HiddenTag
+                : PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
+                    undefined,
+                    undefined,
+                    undefined,
+                    true,
+                    { isFait: true, floor: true }
+                  )}
             </Box>
           );
         },
@@ -387,21 +395,23 @@ export const AssetsTable = withTranslation("tables")(
                 flex={1}
               >
                 <Typography display={"flex"}>
-                  {getValuePrecisionThousand(
-                    value,
-                    precision,
-                    precision,
-                    undefined,
-                    false,
-                    { floor: true }
-                  )}
+                  {hideAssets
+                    ? HiddenTag
+                    : getValuePrecisionThousand(
+                        value,
+                        precision,
+                        precision,
+                        undefined,
+                        false,
+                        { floor: true }
+                      )}
                 </Typography>
                 <Typography
                   display={"flex"}
                   color={"textSecondary"}
                   marginLeft={1}
                 >
-                  {token.value}
+                  {hideAssets ? HiddenTag : token.value}
                 </Typography>
               </Typography>
             </>
@@ -418,6 +428,7 @@ export const AssetsTable = withTranslation("tables")(
             <LockedMemo
               {...{
                 ...row,
+                HiddenTag,
                 onTokenLockHold,
                 tokenLockDetail,
               }}

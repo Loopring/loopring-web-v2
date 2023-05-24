@@ -48,7 +48,7 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 240px auto auto auto 200px !important;`
-        : ` --template-columns: 16% 50% auto 8% !important;
+        : ` --template-columns: 16% 60% auto 8% !important;
 `}
     .rdg-cell.action {
       display: flex;
@@ -109,7 +109,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         });
         updateData({ searchValue });
       },
-      []
+      [getFilteredData]
     );
 
     const sortMethod = React.useCallback(
@@ -126,25 +126,19 @@ export const PoolsTable = withTranslation(["tables", "common"])(
           case "liquidity":
             _rawData = rawData.sort((a, b) => {
               return sdk
-                .toBig(b.amountU?.replaceAll(sdk.SEP, "") ?? 0)
-                .minus(a.amountU?.replaceAll(sdk.SEP, "") ?? 0)
+                .toBig(b.amountU ?? 0)
+                .minus(a.amountU ?? 0)
                 .toNumber();
             });
             break;
           case "volume24":
             _rawData = rawData.sort((a, b) => {
-              return sdk
-                .toBig(b?.tradeFloat?.priceU ?? 0)
-                .minus(a?.tradeFloat?.priceU ?? 0)
-                .toNumber();
+              return b?.tradeFloat?.volume ?? 0 - (a?.tradeFloat?.volume ?? 0);
             });
             break;
           case "APR":
             _rawData = rawData.sort((a, b) => {
-              return sdk
-                .toBig(b.APR ?? 0)
-                .minus(a.APR ?? 0)
-                .toNumber();
+              return b.APR ?? 0 - (a.APR ?? 0);
             });
             break;
           default:
@@ -421,49 +415,48 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               height={"100%"}
               alignContent={"center"}
               display={"flex"}
-              alignItems={"center"}
             >
               <CoinIcons
                 type={TokenType.lp}
-                tokenIcon={[coinJson[row.coinA], coinJson[row.coinB]]}
+                tokenIcon={[row.coinAInfo, row.coinBInfo]}
               />
-              {/*<Typography*/}
-              {/*  variant={"inherit"}*/}
-              {/*  color={"textPrimary"}*/}
-              {/*  display={"flex"}*/}
-              {/*  flexDirection={"column"}*/}
-              {/*  marginLeft={2}*/}
-              {/*  component={"span"}*/}
-              {/*  paddingRight={1}*/}
-              {/*>*/}
-              {/*  <Typography component={"span"} className={"next-coin"}>*/}
-              {/*    <Typography*/}
-              {/*      variant="inherit"*/}
-              {/*      component={"span"}*/}
-              {/*      className={"next-coin"}*/}
-              {/*    >*/}
-              {/*      {row.coinAInfo?.simpleName}*/}
-              {/*    </Typography>*/}
-              {/*    <Typography variant="inherit" component={"i"}>*/}
-              {/*      /*/}
-              {/*    </Typography>*/}
-              {/*    <Typography*/}
-              {/*      variant="inherit"*/}
-              {/*      component={"span"}*/}
-              {/*      title={"buy"}*/}
-              {/*    >*/}
-              {/*      {row.coinBInfo?.simpleName}*/}
-              {/*    </Typography>*/}
-              {/*  </Typography>*/}
-              {/*  {campaignTagConfig && (*/}
-              {/*    <TagIconList*/}
-              {/*      scenario={SCENARIO.AMM}*/}
-              {/*      campaignTagConfig={campaignTagConfig}*/}
-              {/*      symbol={row.market}*/}
-              {/*    />*/}
-              {/*  )}*/}
-              {/*  {row.isNew && <NewTagIcon />}*/}
-              {/*</Typography>*/}
+              <Typography
+                variant={"inherit"}
+                color={"textPrimary"}
+                display={"flex"}
+                flexDirection={"column"}
+                marginLeft={2}
+                component={"span"}
+                paddingRight={1}
+              >
+                <Typography component={"span"} className={"next-coin"}>
+                  <Typography
+                    variant="inherit"
+                    component={"span"}
+                    className={"next-coin"}
+                  >
+                    {row.coinAInfo?.simpleName}
+                  </Typography>
+                  <Typography variant="inherit" component={"i"}>
+                    /
+                  </Typography>
+                  <Typography
+                    variant="inherit"
+                    component={"span"}
+                    title={"buy"}
+                  >
+                    {row.coinBInfo?.simpleName}
+                  </Typography>
+                </Typography>
+                {campaignTagConfig && (
+                  <TagIconList
+                    scenario={SCENARIO.AMM}
+                    campaignTagConfig={campaignTagConfig}
+                    symbol={row.market}
+                  />
+                )}
+                {row.isNew && <NewTagIcon />}
+              </Typography>
             </Box>
           );
         },
@@ -484,17 +477,9 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               justifyContent={"center"}
             >
               <Typography component={"span"}>
-                {typeof amountU === "undefined" || !Number(amountU)
+                {typeof amountU === "undefined"
                   ? EmptyValueTag
-                  : PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
-                      sdk.toBig(amountU).times(forexValue),
-                      undefined,
-                      undefined,
-                      2,
-                      true,
-                      { isFait: true }
-                    )}
+                  : PriceTag[CurrencyToTag[currency]] + amountU}
               </Typography>
               <Typography
                 component={"span"}
@@ -537,20 +522,11 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               flexDirection={"column"}
               justifyContent={"center"}
               height={"100%"}
-              alignItems={"flex-end"}
             >
-              <Box className={"textAlignRight"} display={"inline-flex"}>
+              <Box className={"textAlignRight"}>
                 <Typography component={"span"}>
                   {priceU
-                    ? PriceTag[CurrencyToTag[currency]] +
-                      getValuePrecisionThousand(
-                        sdk.toBig(priceU).times(forexValue),
-                        undefined,
-                        undefined,
-                        2,
-                        true,
-                        { isFait: true }
-                      )
+                    ? PriceTag[CurrencyToTag[currency]] + priceU
                     : EmptyValueTag}
                 </Typography>
               </Box>
@@ -619,7 +595,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
             marginBottom={3}
             display={"inline-flex"}
             flexDirection={"row"}
-            justifyContent={"flex-end"}
+            justifyContent={"space-between"}
             paddingX={3}
             paddingTop={3}
             alignItems={"center"}

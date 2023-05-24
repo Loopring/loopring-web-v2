@@ -1504,6 +1504,10 @@ export default {
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
   labelRedPacketStartWithTime: "{{time}} Start",
+  labelRedPacketTabReceived: "Received",
+  labelRedPacketTabSent: "Sent",
+  labelRedPacketTabNFTs: "NFTs",
+  labelRedPacketTabBlindBox: "Blind Box",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
@@ -1732,4 +1736,7 @@ export default {
   labelBTRADE: "Block Trade",
   labelL2STAKING: "Staking",
   labelSTOP_LIMIT: "Stop Limit",
+  labelAMMPending: "Pending",
+  labelAMMTitle: "AMM Investment",
+  labelAMMChartFailed: "Failed load data",
 };

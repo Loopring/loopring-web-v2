@@ -1,6 +1,8 @@
 import React from "react";
 import {
+  LoopringAPI,
   StylePaper,
+  useAccount,
   useSystem,
   useToast,
   useWalletLayer2,
@@ -9,6 +11,7 @@ import {
   EmptyDefault,
   RedPacketClaimTable,
   Toast,
+  ToastType,
   TransactionTradeViews,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -34,8 +37,9 @@ import {
   TabTokenTypeIndex,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
+import { toBig } from "@loopring-web/loopring-sdk";
 
-export const RedPacketClaimPanel = () => {
+export const RedPacketClaimPanel = ({hideAssets} : {hideAssets?: boolean}) => {
   const container = React.useRef<HTMLDivElement>(null);
   const { etherscanBaseUrl, forexMap } = useSystem();
   const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -64,9 +68,8 @@ export const RedPacketClaimPanel = () => {
   let match: any = useRouteMatch("/l2assets/assets/RedPacket/:item");
 
   React.useEffect(() => {
-    if (walletLayer2Status === SagaStatus.UNSET) {
+    if (getClaimRedPacket && walletLayer2Status === SagaStatus.UNSET) {
       getClaimRedPacket();
-      getClaimNFTRedPacket({});
     }
   }, [walletLayer2Status]);
   //TODO:
@@ -79,6 +82,16 @@ export const RedPacketClaimPanel = () => {
       setPageSize(pageSize);
     }
   }, [container?.current?.offsetHeight]);
+  const { account } = useAccount();
+  const [totalLuckyTokenNFTBalance, setTotalLuckyTokenNFTBalance] =
+    React.useState(undefined as number | undefined);
+  React.useEffect(() => {
+    LoopringAPI.luckTokenAPI?.getLuckTokenUnclaimNFTBlindboxCnt({
+      accountId: account.accountId,
+    }, account.apiKey).then(response => {
+      setTotalLuckyTokenNFTBalance(response.count)
+    })
+  }, []);
   return (
     <Box
       flex={1}
@@ -123,30 +136,21 @@ export const RedPacketClaimPanel = () => {
         display={"flex"}
         flexDirection={"column"}
       >
-        {!!redPacketClaimList.length ? (
-          <Box className="tableWrapper table-divide-short">
-            <RedPacketClaimTable
-              {...{
-                rawData: redPacketClaimList,
-                showloading: showLoading,
-                forexMap,
-                onItemClick,
-                etherscanBaseUrl,
-                getClaimRedPacket,
-                onViewMoreNFTsClick,
-              }}
-            />
-          </Box>
-        ) : (
-          <Box flex={1} height={"100%"} width={"100%"}>
-            <EmptyDefault
-              height={"calc(100% - 35px)"}
-              message={() => {
-                return <Trans i18nKey="labelNoContent">Content is Empty</Trans>;
-              }}
-            />
-          </Box>
-        )}
+        <Box className="tableWrapper table-divide-short">
+          <RedPacketClaimTable
+            {...{
+              rawData: redPacketClaimList,
+              showloading: showLoading,
+              forexMap,
+              onItemClick,
+              etherscanBaseUrl,
+              getClaimRedPacket,
+              onViewMoreNFTsClick,
+              hideAssets,
+            }}
+            totalLuckyTokenNFTBalance={totalLuckyTokenNFTBalance}
+          />
+        </Box>
         <Dialog
           maxWidth={"lg"}
           open={showNFTsPanel}
@@ -188,7 +192,7 @@ export const RedPacketClaimPanel = () => {
       </StylePaper>
       <Toast
         alertText={toastOpen?.content ?? ""}
-        severity={toastOpen?.type ?? "success"}
+        severity={toastOpen?.type ?? ToastType.success}
         open={toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}

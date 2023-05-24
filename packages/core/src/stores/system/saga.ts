@@ -17,11 +17,7 @@ import {
   myLog,
 } from "@loopring-web/common-resources";
 import { statusUnset as accountStatusUnset } from "../account/reducer";
-import {
-  getAmmMap,
-  initAmmMap,
-  updateRealTimeAmmMap,
-} from "../Amm/AmmMap/reducer";
+import { getAmmMap, initAmmMap } from "../Amm/AmmMap/reducer";
 import { getTickers } from "../ticker/reducer";
 import { getAmmActivityMap } from "../Amm/AmmActivityMap/reducer";
 import { updateWalletLayer1 } from "../walletLayer1/reducer";
@@ -109,6 +105,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       yield take("tokenPrices/getTokenPricesStatus");
     }
     store.dispatch(getTickers({ tickerKeys: marketArr }));
+    yield take("tickerMap/getTickerStatus");
     store.dispatch(getAmmMap({ ammpools }));
     yield take("ammMap/getAmmMapStatus");
     store.dispatch(getAmmActivityMap({ ammpools }));
@@ -230,6 +227,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     store.dispatch(getTokenPrices(undefined));
     yield take("tokenPrices/getTokenPricesStatus");
     store.dispatch(getTickers({ tickerKeys: marketArr }));
+    yield take("tickerMap/getTickerStatus");
     store.dispatch(getAmmMap({ ammpools }));
     yield take("ammMap/getAmmMapStatus");
     store.dispatch(getAmmActivityMap({ ammpools }));
@@ -449,7 +447,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
             const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(
               chainId
             );
-            store.dispatch(updateRealTimeAmmMap(undefined));
             store.dispatch(updateRealTimeObj({ forexMap, gasPrice }));
           }
         }, 300000); //

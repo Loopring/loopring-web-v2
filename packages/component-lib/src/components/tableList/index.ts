@@ -7,7 +7,6 @@ export * from "./tradeTable";
 export * from "./tradeRroTable";
 export * from "./poolsTable";
 export * from "./ammRecordTable";
-export * from "./tradeFilterTable";
 export * from "./myPoolTable";
 export * from "./ammTable";
 export * from "./rewardTable";
