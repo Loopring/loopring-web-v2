@@ -3,6 +3,7 @@ import { TOAST_TIME } from "@loopring-web/common-resources";
 import {
   CollectionCardList,
   Toast,
+  ToastType,
   useSettings,
 } from "@loopring-web/component-lib";
 import { useAccount, useMyNFTCollection } from "@loopring-web/core";
@@ -77,7 +78,7 @@ export const MyNFTCollectionList = withTranslation("common")(
           onClose={() => {
             collectionListProps.setCopyToastOpen({ isShow: false, type: "" });
           }}
-          severity={"success"}
+          severity={ToastType.success}
         />
       </Box>
     );

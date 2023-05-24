@@ -13,7 +13,6 @@ import {
   UNIX_TIMESTAMP_FORMAT,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
-import { Row } from "../poolsTable/Interface";
 import { AmmSideTypes } from "./interface";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { DateRange } from "@mui/lab";
@@ -349,8 +348,7 @@ export const AmmTable = withTranslation("tables")(
         ? getColumnModeMobileAssets(t, currency)
         : getColumnModeAssets(t, currency),
       generateRows: (rawData: any) => rawData,
-      generateColumns: ({ columnsRaw }: any) =>
-        columnsRaw as Column<Row<any>, unknown>[],
+      generateColumns: ({ columnsRaw }: any) => columnsRaw,
       style: {
         backgroundColor: ({ colorBase }: any) => `${colorBase.box}`,
       },

@@ -41,4 +41,5 @@ export type MyPoolTableProps<R> = {
   currency?: Currency;
   rowConfig?: typeof RowConfig;
   setHideSmallBalances?: (value: boolean) => void;
+  hideAssets?: boolean;
 } & Method<R>;

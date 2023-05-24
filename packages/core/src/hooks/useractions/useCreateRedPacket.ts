@@ -52,7 +52,6 @@ import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRedPacketConfig } from "../../stores/redPacket";
 import { useHistory } from "react-router-dom";
-import { LuckTokenAPI } from "@loopring-web/loopring-sdk";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,

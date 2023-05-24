@@ -9,6 +9,7 @@ import {
   SwitchPanelStyled,
   Toast,
   TOASTOPEN,
+  ToastType,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -166,7 +167,7 @@ export const ModalDualPanel = withTranslation("common")(
           </Box>
           <Toast
             alertText={dualToastOpen?.content ?? ""}
-            severity={dualToastOpen?.type ?? "success"}
+            severity={dualToastOpen?.type ?? ToastType.success}
             open={dualToastOpen?.open ?? false}
             autoHideDuration={TOAST_TIME}
             onClose={() => {

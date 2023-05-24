@@ -120,6 +120,7 @@ import {
   BtradeSwap_Delivering,
   BtradeSwap_Failed,
   BtradeSwap_Pending,
+  AMM_Pending,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -3001,6 +3002,18 @@ export function useAccountModalForUI({
               account,
               info: isShowAccount?.info,
               error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.AMM_Pending]: {
+        view: (
+          <AMM_Pending
+            btnInfo={undefined}
+            {...{
+              ...rest,
               t,
             }}
           />

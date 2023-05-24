@@ -14,6 +14,7 @@ import {
 import {
   DualDetailType,
   RawDataDualAssetItem,
+  ToastType,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -213,7 +214,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         if (setToastOpen) {
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               "error : " + errorItem
                 ? t(errorItem.messageKey)
@@ -336,7 +337,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           if (setToastOpen) {
             setToastOpen({
               open: true,
-              type: "error",
+              type: ToastType.error,
               content:
                 "error : " + errorItem
                   ? t(errorItem.messageKey)

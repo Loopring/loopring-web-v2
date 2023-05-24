@@ -14,7 +14,7 @@ import { Button, NFTList } from "../../basic-lib";
 import { CollectionManageProps, CollectionMethod } from "./Interface";
 import styled from "@emotion/styled";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { Toast } from "../../toast";
+import { Toast, ToastType } from "../../toast";
 import { sanitize } from "dompurify";
 
 const BoxStyle = styled(Box)`
@@ -279,7 +279,7 @@ export const CollectionManageWrap = <
       )}
       <Toast
         alertText={toastObj.toastOpen?.content ?? ""}
-        severity={toastObj.toastOpen?.type ?? "success"}
+        severity={toastObj.toastOpen?.type ?? ToastType.success}
         open={toastObj.toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={toastObj.closeToast}

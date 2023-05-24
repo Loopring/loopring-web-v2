@@ -8,6 +8,7 @@ import {
   getValuePrecisionThousand,
   IBData,
   myLog,
+  ReverseIcon,
   SlippageTolerance,
   SoursURL,
   TradeBtnStatus,
@@ -21,6 +22,7 @@ import {
   AvatarCoin,
   BtnPercentage,
   ButtonStyle,
+  IconButtonStyled,
   InputCoin,
   LinkActionStyle,
   PopoverPure,
@@ -30,8 +32,6 @@ import { SlippagePanel } from "../tool";
 import { useSettings } from "../../../../stores";
 import { SvgStyled } from "./styled";
 import * as sdk from "@loopring-web/loopring-sdk";
-
-import { useAmmViewData } from "./ammViewHook";
 
 import _ from "lodash";
 
@@ -53,6 +53,7 @@ export const AmmWithdrawWrap = <
   ammWithdrawBtnI18nKey,
   onRemoveChangeEvent,
   handleError,
+  propsLPExtends = {},
   ammData,
   ...rest
 }: AmmWithdrawWrapProps<T, I, ACD, C> & WithTranslation) => {
@@ -77,34 +78,49 @@ export const AmmWithdrawWrap = <
       : 0;
   }, [ammData?.coinLP?.tradeValue, ammData.coinLP.balance]);
 
-  // const [_selectedPercentage, setSelectedPercentage] =
-  //   React.useState(percentage);
-  // myLog(
-  //   "_selectedPercentage",
-  //   ammData?.coinLP?.tradeValue,
-  //   ammData.coinLP.balance,
-  //   percentage
-  // );
+  const label = React.useMemo(() => {
+    if (ammWithdrawBtnI18nKey) {
+      const key = ammWithdrawBtnI18nKey.split("|");
+      return t(key[0], key && key[1] ? { arg: key[1].toString() } : undefined);
+    } else {
+      return t(`labelRemoveLiquidityBtn`);
+    }
+  }, [ammWithdrawBtnI18nKey]);
 
-  const [_isStoB, setIsStoB] = React.useState(
-    typeof isStob !== "undefined" ? isStob : true
-  );
-  const [error, setError] = React.useState<{
-    error: boolean;
-    message?: string | JSX.Element;
-  }>({
-    error: false,
-    message: "",
-  });
-  const _onSwitchStob = React.useCallback(
-    (_event: any) => {
-      setIsStoB(!_isStoB);
-      if (typeof switchStobEvent === "function") {
-        switchStobEvent(!_isStoB);
+  const [_isStoB, setIsStoB] = React.useState(isStob ?? true);
+  const stob = React.useMemo(() => {
+    if (
+      ammCalcData &&
+      ammCalcData?.lpCoinA &&
+      ammCalcData?.lpCoinB &&
+      ammCalcData.AtoB
+    ) {
+      let price: string;
+      if (_isStoB) {
+        price = `1 ${ammCalcData?.lpCoinA?.belong} \u2248 ${
+          ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag
+        } ${ammCalcData?.lpCoinB?.belong}`;
+      } else {
+        price = `1 ${ammCalcData?.lpCoinB?.belong} \u2248 ${
+          ammCalcData.BtoA ? ammCalcData.BtoA : EmptyValueTag
+        } ${ammCalcData?.lpCoinA?.belong}`;
       }
-    },
-    [switchStobEvent, _isStoB]
-  );
+      return (
+        <>
+          {price}
+          <IconButtonStyled
+            size={"small"}
+            aria-label={t("tokenExchange")}
+            onClick={() => setIsStoB(!_isStoB)}
+          >
+            <ReverseIcon />
+          </IconButtonStyled>
+        </>
+      );
+    } else {
+      return EmptyValueTag;
+    }
+  }, [_isStoB, ammCalcData]);
 
   const getDisabled = () => {
     return (
@@ -113,20 +129,6 @@ export const AmmWithdrawWrap = <
       ammCalcData.coinInfoMap === undefined
     );
   };
-  if (typeof handleError !== "function") {
-    handleError = ({ belong, balance, tradeValue }: any) => {
-      if (balance < tradeValue || (tradeValue && !balance)) {
-        const _error = {
-          error: true,
-          message: t("tokenNotEnough", { belong: belong }),
-        };
-        setError(_error);
-        return _error;
-      }
-      setError({ error: false, message: "" });
-      return { error: false, message: "" };
-    };
-  }
 
   const handleCountChange = React.useCallback(
     (ibData: IBData<I>, _ref: any) => {
@@ -136,14 +138,6 @@ export const AmmWithdrawWrap = <
           ammData?.coinLP.tradeValue !== ibData.tradeValue &&
           ammData?.coinLP.balance
         ) {
-          // const percentageValue = toBig(ibData.tradeValue ?? 0)
-          //   .div(ammData.coinLP.balance)
-          //   .times(100)
-          //   .toFixed(2);
-          // if (!isNaN(Number(percentageValue))) {
-          //   myLog("selected", Number(percentageValue));
-          //   setSelectedPercentage(Number(percentageValue));
-          // }
           onRemoveChangeEvent({
             tradeData: { ...ammData, coinLP: ibData },
             type: "lp",
@@ -212,15 +206,14 @@ export const AmmWithdrawWrap = <
     popupId: "slippagePop",
   });
 
-  const { label, stob } = useAmmViewData({
-    error,
-    i18nKey: ammWithdrawBtnI18nKey,
-    t,
-    _isStoB,
-    ammCalcData,
-    _onSwitchStob,
-    isAdd: false,
-  });
+  // const { label, stob } = useAmmViewData({
+  //   i18nKey: ammWithdrawBtnI18nKey,
+  //   t,
+  //   _isStoB,
+  //   ammCalcData,
+  //   _onSwitchStob,
+  //   isAdd: false,
+  // });
 
   const showPercentage =
     percentage < 0 || percentage > 100 ? EmptyValueTag + "%" : `${percentage}%`;
@@ -557,7 +550,9 @@ export const AmmWithdrawWrap = <
                 {t("swapFee")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {ammCalcData ? ammCalcData?.fee.toString() : EmptyValueTag}
+                {ammCalcData?.fee && ammCalcData?.fee != "0"
+                  ? ammCalcData.fee + " " + ammCalcData.myCoinB.belong
+                  : EmptyValueTag}
               </Typography>
             </Grid>
           </Grid>
@@ -579,8 +574,7 @@ export const AmmWithdrawWrap = <
               disabled={
                 getDisabled() ||
                 ammWithdrawBtnStatus === TradeBtnStatus.DISABLED ||
-                ammWithdrawBtnStatus === TradeBtnStatus.LOADING ||
-                error.error
+                ammWithdrawBtnStatus === TradeBtnStatus.LOADING
               }
               fullWidth={true}
             >

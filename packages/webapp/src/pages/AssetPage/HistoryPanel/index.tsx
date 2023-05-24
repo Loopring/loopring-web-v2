@@ -13,6 +13,7 @@ import {
   TransactionTable,
   useSettings,
   BtradeSwapTable,
+  ToastType,
 } from "@loopring-web/component-lib";
 import {
   StylePaper,
@@ -188,7 +189,7 @@ const HistoryPanel = withTranslation("common")(
         <StylePaper ref={container} flex={1}>
           <Toast
             alertText={toastOpen?.content ?? ""}
-            severity={toastOpen?.type ?? "success"}
+            severity={toastOpen?.type ?? ToastType.success}
             open={toastOpen?.open ?? false}
             autoHideDuration={TOAST_TIME}
             onClose={closeToast}

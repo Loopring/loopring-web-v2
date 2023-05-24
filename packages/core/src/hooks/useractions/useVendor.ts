@@ -155,7 +155,7 @@ export const useVendor = () => {
             });
             if (legalEnable) {
               window.open(
-                "https://loopring.banxa.com/iframe?code=1fe263e17175561954c6&buyMode&walletAddress=" +
+                "https://loopring.banxa.com/?code=1fe263e17175561954c6&buyMode&walletAddress=" +
                   account.accAddress,
                 "_blank"
               );

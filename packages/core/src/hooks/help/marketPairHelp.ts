@@ -1,7 +1,7 @@
 import {
+  ammMapReducer,
   LoopringAPI,
   store,
-  Ticker,
   tickerReducer,
   volumeToCountAsBigNumber,
 } from "../../index";
@@ -12,6 +12,7 @@ import {
   getValuePrecisionThousand,
   IBData,
   MarketType,
+  Ticker,
 } from "@loopring-web/common-resources";
 import BigNumber from "bignumber.js";
 import { SwapTradeData } from "@loopring-web/component-lib";
@@ -37,6 +38,20 @@ export const swapDependAsync = (
         LoopringAPI.exchangeAPI.getMixTicker({ market: market }),
       ]).then(([{ depth }, { ammPoolSnapshot }, { tickMap }]) => {
         store.dispatch(tickerReducer.updateTicker(tickMap));
+        store.dispatch(
+          ammMapReducer.updateRealTimeAmmMap({
+            ammPoolStats: {
+              ["AMM-" + market]: {
+                ...ammMap["AMM-" + market].__rawConfig__,
+                liquidity: [
+                  ammPoolSnapshot.pooled[0].volume,
+                  ammPoolSnapshot.pooled[1].volume,
+                ],
+                lpLiquidity: ammPoolSnapshot.lp.volume,
+              },
+            },
+          })
+        );
         resolve({
           ammPoolSnapshot: ammPoolSnapshot,
           tickMap,
@@ -332,7 +347,7 @@ export const marketInitCheck = ({
     tokenMap = _tokenMap;
     marketMap = _marketMap;
   }
-  const { ammMap } = store.getState().amm;
+  const { ammMap } = store.getState().amm.ammMap;
   if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
     let coinA: string = "#null",
       coinB: string = "#null";

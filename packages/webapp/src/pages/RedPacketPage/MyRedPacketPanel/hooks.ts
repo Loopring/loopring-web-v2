@@ -18,6 +18,7 @@ import {
   RawDataRedPacketReceivesItem,
   RawDataRedPacketRecordsItem,
   RedPacketViewStep,
+  ToastType,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import { url } from "inspector";
@@ -76,7 +77,7 @@ export const useMyRedPacketRecordTransaction = <
             if (setToastOpen) {
               setToastOpen({
                 open: true,
-                type: "error",
+                type: ToastType.error,
                 content:
                   "error : " + errorItem
                     ? t(errorItem.messageKey)
@@ -316,7 +317,7 @@ export const useMyRedPacketReceiveTransaction = <
             if (setToastOpen) {
               setToastOpen({
                 open: true,
-                type: "error",
+                type: ToastType.error,
                 content:
                   "error : " + errorItem
                     ? t(errorItem.messageKey)
@@ -431,7 +432,7 @@ export const useMyRedPacketReceiveTransaction = <
       if (setToastOpen) {
         setToastOpen({
           open: true,
-          type: "error",
+          type: ToastType.error,
           content:
             "error : " + errorItem
               ? t(errorItem.messageKey)
@@ -522,7 +523,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
             if (setToastOpen) {
               setToastOpen({
                 open: true,
-                type: "error",
+                type: ToastType.error,
                 content:
                   "error : " + errorItem
                     ? t(errorItem.messageKey)

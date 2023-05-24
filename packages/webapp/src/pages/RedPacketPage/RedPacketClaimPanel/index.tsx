@@ -11,6 +11,7 @@ import {
   EmptyDefault,
   RedPacketClaimTable,
   Toast,
+  ToastType,
   TransactionTradeViews,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -38,7 +39,7 @@ import {
 } from "@loopring-web/common-resources";
 import { toBig } from "@loopring-web/loopring-sdk";
 
-export const RedPacketClaimPanel = () => {
+export const RedPacketClaimPanel = ({hideAssets} : {hideAssets?: boolean}) => {
   const container = React.useRef<HTMLDivElement>(null);
   const { etherscanBaseUrl, forexMap } = useSystem();
   const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -81,13 +82,14 @@ export const RedPacketClaimPanel = () => {
       setPageSize(pageSize);
     }
   }, [container?.current?.offsetHeight]);
-  const {account} = useAccount()
-  const [totalLuckyTokenNFTBalance, setTotalLuckyTokenNFTBalance] = React.useState(undefined as number | undefined)
+  const { account } = useAccount();
+  const [totalLuckyTokenNFTBalance, setTotalLuckyTokenNFTBalance] =
+    React.useState(undefined as number | undefined);
   React.useEffect(() => {
-    LoopringAPI.luckTokenAPI?.getLuckTokenNFTBalances({
+    LoopringAPI.luckTokenAPI?.getLuckTokenUnclaimNFTBlindboxCnt({
       accountId: account.accountId,
     }, account.apiKey).then(response => {
-      setTotalLuckyTokenNFTBalance(response.amount)
+      setTotalLuckyTokenNFTBalance(response.count)
     })
   }, []);
   return (
@@ -144,6 +146,7 @@ export const RedPacketClaimPanel = () => {
               etherscanBaseUrl,
               getClaimRedPacket,
               onViewMoreNFTsClick,
+              hideAssets,
             }}
             totalLuckyTokenNFTBalance={totalLuckyTokenNFTBalance}
           />
@@ -189,7 +192,7 @@ export const RedPacketClaimPanel = () => {
       </StylePaper>
       <Toast
         alertText={toastOpen?.content ?? ""}
-        severity={toastOpen?.type ?? "success"}
+        severity={toastOpen?.type ?? ToastType.success}
         open={toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
