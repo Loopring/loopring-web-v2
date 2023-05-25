@@ -152,8 +152,7 @@ export const TransferWrap = <
     return !!(sureItsLayer2 && sureItsLayer2 in EXCHANGE_TYPE);
   }, [sureItsLayer2, sureItsLayer2]);
 
-  const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart || isSmartContractAddress;
-  
+  const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart;
 
   const view = React.useMemo(() => {
     if (isOtherSmartWallet) {

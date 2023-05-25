@@ -377,7 +377,9 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
             setIsCFAddress(false)
             setIsContractAddress(false)
             setIsContract1XAddress(false)
-            setLoopringSmartWalletVersion(undefined)
+            setLoopringSmartWalletVersion({
+              isLoopringSmartWallet: false
+            })
             setAddrStatus(AddressError.NoError)
             break
           }
@@ -388,7 +390,9 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
             setIsCFAddress(false)
             setIsContractAddress(true)
             setIsContract1XAddress(false)
-            setLoopringSmartWalletVersion(undefined)
+            setLoopringSmartWalletVersion({
+              isLoopringSmartWallet: false
+            })
             setAddrStatus(AddressError.IsNotLoopringContract)
             break
           }
@@ -397,7 +401,9 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
             setIsCFAddress(false)
             setIsContractAddress(false)
             setIsContract1XAddress(false)
-            setLoopringSmartWalletVersion(undefined)
+            setLoopringSmartWalletVersion({
+              isLoopringSmartWallet: false
+            })
             setAddrStatus(AddressError.NoError)
             if (checkEOA) {
               setIsAddressCheckLoading(true)
