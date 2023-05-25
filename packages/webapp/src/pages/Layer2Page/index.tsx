@@ -15,8 +15,8 @@ export const Layer2Page = () => {
   const selected = match?.params.item ?? "assets";
   const layer2Router = React.useMemo(() => {
     switch (selected.toLocaleLowerCase()) {
-      case Layer2RouterID.referralRewards:
-        return <ReferralRewardsPanel />;
+      // case Layer2RouterID.referralRewards:
+      //   return <ReferralRewardsPanel />;
       case Layer2RouterID.forcewithdraw:
         return <ForcewithdrawPanel />;
       case Layer2RouterID.security:

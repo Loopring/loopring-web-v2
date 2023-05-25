@@ -368,10 +368,19 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <Layer2Page />
           </ContentWrap>
         </Route>
-        <Route exact path={"/layer2/referralRewards"}>
-          <ContentWrap state={state}>
-            <ReferralRewardsPanel />
-          </ContentWrap>
+        <Route exact path={"/referralrewards"}>
+          {searchParams && searchParams.has("noheader") ? (
+            <></>
+          ) : (
+            <Header isHideOnScroll={true} />
+          )}
+          {state === "PENDING" ? (
+            <LoadingBlock />
+          ) : (
+            <Box display={"flex"} flexDirection={"column"} flex={1}>
+              <ReferralRewardsPanel />
+            </Box>
+          )}
         </Route>
         <Route exact path={["/nft", "/nft/*"]}>
           <ContentWrap state={state}>
