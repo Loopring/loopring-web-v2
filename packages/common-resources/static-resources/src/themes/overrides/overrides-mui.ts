@@ -882,7 +882,7 @@ export const MuiDialog = ({ colorBase }: any) => {
     styleOverrides: {
       root: {
         " .MuiPaper-root": {
-          background: colorBase.box,
+          background: colorBase.popBg,
           borderRadius: pxToRem(4),
         },
         " .MuiDialogContent-root": {
