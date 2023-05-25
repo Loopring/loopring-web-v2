@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Box, Container, Typography, TypographyProps } from "@mui/material";
-import { ThemeType } from "@loopring-web/common-resources";
+import { SoursURL, ThemeType } from "@loopring-web/common-resources";
 import { ContainerProps } from "@mui/material/Container/Container";
 import { LAYOUT } from "@loopring-web/core";
 
@@ -14,7 +14,7 @@ export const ContainerStyle = styled(Box)`
 
   ${({ theme }) => {
     let result = `
-       --img-banner-url: url("https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png");
+       --img-banner-url: url("${SoursURL}landPage/img_home_banner_${theme.mode}@2x.png");
       `;
     if (theme.mode === ThemeType.dark) {
       result += `
