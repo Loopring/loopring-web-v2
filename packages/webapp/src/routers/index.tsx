@@ -15,12 +15,14 @@ import {
   useOffFaitModal,
   useSystem,
   useTicker,
+  useTokenMap,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
   myLog,
+  RouterPath,
   SagaStatus,
   setMyLog,
   ThemeType,
@@ -54,6 +56,8 @@ import { useTranslation } from "react-i18next";
 import { ContactPage } from "pages/ContactPage";
 import { ContactTransactionsPage } from "pages/ContactPage/transactions";
 import { BtradeSwapPage } from "../pages/BtradeSwapPage";
+import { StopLimitPage } from "../pages/ProTradePage/stopLimtPage";
+import { ReferralRewardsPanel } from "../pages/Layer2Page/ReferralRewardsPanel";
 
 const ContentWrap = ({
   children,
@@ -134,9 +138,10 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const { tickerMap } = useTicker();
+  const { marketArray } = useTokenMap();
   const { setTheme } = useSettings();
   const {
-    toggle: { BTradeInvest },
+    toggle: { BTradeInvest, StopLimit },
   } = useToggle();
 
   React.useEffect(() => {
@@ -285,7 +290,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <TradeRacePage />
         </Route>
 
-        <Route path="/trade/pro">
+        <Route path={RouterPath.pro}>
           {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
@@ -300,12 +305,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             </Box>
           )}
         </Route>
-        <Route path="/trade/lite">
+        <Route path={RouterPath.lite}>
           <ContentWrap state={state}>
             <SwapPage />
           </ContentWrap>
         </Route>
-        <Route path="/trade/btrade">
+        <Route path={RouterPath.btrade}>
           <ContentWrap state={state}>
             {!BTradeInvest.enable && BTradeInvest.reason === "no view" ? (
               <ComingSoonPanel />
@@ -314,7 +319,26 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             )}
           </ContentWrap>
         </Route>
-        <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
+        <Route path={RouterPath.stoplimit}>
+          {searchParams && searchParams.has("noheader") ? (
+            <></>
+          ) : (
+            <Header isHideOnScroll={true} />
+          )}
+
+          {state === "PENDING" ||
+          !marketArray.length ||
+          !Object.keys(tickerMap ?? {}).length ? (
+            <LoadingBlock />
+          ) : StopLimit.enable == false && StopLimit.reason === "no view" ? (
+            <ComingSoonPanel />
+          ) : (
+            <Box display={"flex"} flexDirection={"column"} flex={1}>
+              <StopLimitPage />
+            </Box>
+          )}
+        </Route>
+        <Route exact path={[RouterPath.fiat, RouterPath.fiat + "/fiat/*"]}>
           <ContentWrap state={state}>
             <FiatPage />
           </ContentWrap>
@@ -342,6 +366,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={["/layer2", "/layer2/*"]}>
           <ContentWrap state={state}>
             <Layer2Page />
+          </ContentWrap>
+        </Route>
+        <Route exact path={"/layer2/referralRewards"}>
+          <ContentWrap state={state}>
+            <ReferralRewardsPanel />
           </ContentWrap>
         </Route>
         <Route exact path={["/nft", "/nft/*"]}>
