@@ -418,12 +418,11 @@ export const useLimit = <C extends { [key: string]: any }>({
           formType === TradeBaseType.quote
             ? tradeData.quote.tradeValue
             : undefined;
-        let isChecked =
-          formType === TradeBaseType.checkMarketPrice
-            ? tradeData.isChecked
-            : undefined;
 
-        if (formType === TradeBaseType.price) {
+        if (
+          formType === TradeBaseType.price ||
+          formType === TradeBaseType.checkMarketPrice
+        ) {
           amountBase =
             tradeData.base.tradeValue !== undefined
               ? tradeData.base.tradeValue
@@ -496,7 +495,7 @@ export const useLimit = <C extends { [key: string]: any }>({
             isNotMatchMarketPrice,
             marketPrice,
             marketRatePrice,
-            isChecked,
+            isChecked: tradeData.isChecked !== undefined && tradeData.isChecked,
           },
         });
         setLimitTradeData((state) => {
@@ -524,6 +523,7 @@ export const useLimit = <C extends { [key: string]: any }>({
               ...state.quote,
               tradeValue: calcTradeParams?.quoteVolShow as number,
             },
+            isChecked: tradeData.isChecked !== undefined && tradeData.isChecked,
           };
         });
       }
@@ -613,8 +613,10 @@ export const useLimit = <C extends { [key: string]: any }>({
       if (
         limitTradeData?.base.tradeValue === undefined ||
         limitTradeData?.quote.tradeValue === undefined ||
+        limitTradeData?.price.tradeValue === undefined ||
         limitTradeData?.base.tradeValue === 0 ||
-        limitTradeData?.quote.tradeValue === 0
+        limitTradeData?.quote.tradeValue === 0 ||
+        limitTradeData?.price.tradeValue === 0
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
