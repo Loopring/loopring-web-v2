@@ -288,6 +288,7 @@ export const TransferWrap = <
   }, [
     addressDefault,
     isActiveAccount,
+    isActiveAccountFee,
     feeWithActive,
     addrStatus,
     realAddr,
@@ -296,6 +297,8 @@ export const TransferWrap = <
     isExchange,
     isOtherSmartWallet,
     isSameAddress,
+    isLoopringAddress,
+    isAddressCheckLoading
   ]);
 
   return (

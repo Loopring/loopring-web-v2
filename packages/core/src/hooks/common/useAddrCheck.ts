@@ -342,7 +342,7 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
         sdk.AddressType.EXCHANGE_HUOBI,
         sdk.AddressType.EXCHANGE_COINBASE,
         sdk.AddressType.CONTRACT,
-      ].concat(checkEOA ? [] : [sdk.AddressType.EOA])
+      ].concat(checkEOA ? [sdk.AddressType.EOA] : [])
       if (found && listNoCheckRequired.includes(found.addressType)) {
         setRealAddr(address) 
         switch (found.addressType) {
@@ -397,7 +397,6 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
             break
           }
           case sdk.AddressType.EOA: {
-            setIsLoopringAddress(false)
             setIsCFAddress(false)
             setIsContractAddress(false)
             setIsContract1XAddress(false)
@@ -407,22 +406,26 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
             setAddrStatus(AddressError.NoError)
             if (checkEOA) {
               setIsAddressCheckLoading(true)
-              const response = await LoopringAPI.exchangeAPI?.getAccount({
-                owner: address, //realAddr != "" ? realAddr : address,
-              })
-              if (
-                (response && ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message))
-                || !response
-              ) {
-                setIsActiveAccount(false);
-                setIsActiveAccountFee(false);
-              } else {
-                setIsActiveAccount(response.accInfo.nonce !== 0);
-                setIsActiveAccountFee(
-                  response.accInfo.nonce === 0 &&
-                    /FirstUpdateAccountPaid/gi.test(response.accInfo.tags ?? "")
-                );
-              }
+              try {
+                const response = await LoopringAPI.exchangeAPI?.getAccount({
+                  owner: address, //realAddr != "" ? realAddr : address,
+                })
+                if (
+                  (response && ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message))
+                  || !response
+                ) {
+                  setIsLoopringAddress(false)
+                  setIsActiveAccount(false);
+                  setIsActiveAccountFee(false);
+                } else {
+                  setIsLoopringAddress(true)
+                  setIsActiveAccount(response.accInfo.nonce !== 0);
+                  setIsActiveAccountFee(
+                    response.accInfo.nonce === 0 &&
+                      /FirstUpdateAccountPaid/gi.test(response.accInfo.tags ?? "")
+                  );
+                }
+              } catch {}
               setIsAddressCheckLoading(false)
             }
             break
