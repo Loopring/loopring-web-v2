@@ -52,7 +52,7 @@ export const ColorDarkDefault = Object.freeze({
   tag: "#6787FF",
   box: ColorBlack.dark, //"#2D2F4B",
   boxHover: `${hexToRGB("#ffffff", "0.05")}`,
-  popBg: ColorBlack.dark700, //"#393F64",
+  popBg: ColorBlack.dark800, //"#393F64",
 
   boxLinear: `linear-gradient(194.79deg, ${ColorBlack.dark} 17.96%, ${ColorBlack.dark900} 44.29%, ${ColorBlack.dark800} 96.93%)`,
   globalBg: ColorBlack.dark900, // "#1F2034",
@@ -69,11 +69,11 @@ export const ColorDarkDefault = Object.freeze({
   buttonIcon: "#A4ABC1",
 
   /********************CSS shadow *******************/
-  shadow: ` 0px 4px 4px ${hexToRGB("#000000", ".25")}`,
-  shadowHeader: `0px 4px 8px  ${hexToRGB("#000000", ".15")}`,
-  shadow2: `0px -4px 8px ${hexToRGB("#000000", ".15")}`,
-  shadowHover: `0px 10px 20px  ${hexToRGB("#000000", ".45")}`,
-  shadow3: `0px 10px 20px ${hexToRGB("#000000", ".15")}`,
+  shadow: ` 0px 4px 4px ${hexToRGB(ColorBlack.dark700, ".25")}`,
+  shadowHeader: `0px 4px 8px  ${hexToRGB(ColorBlack.dark700, ".15")}`,
+  shadow2: `0px -4px 8px ${hexToRGB(ColorBlack.dark700, ".15")}`,
+  shadowHover: `0px 10px 20px  ${hexToRGB(ColorBlack.dark700, ".45")}`,
+  shadow3: `0px 10px 20px ${hexToRGB(ColorBlack.dark700, ".15")}`,
 
   /********************Case for provider*******************/
   white: "#ffffff",
