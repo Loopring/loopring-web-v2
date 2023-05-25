@@ -41,7 +41,7 @@ export enum Layer2RouterID {
   security = "security",
   vip = "vip",
   contact = "contact",
-  referralRewards = "referralRewards",
+  referralrewards = "referralrewards",
   forcewithdraw = "forcewithdraw",
 }
 export const profile = {
@@ -75,12 +75,12 @@ export const profile = {
       },
     },
   ],
-  referralRewards: [
+  referralrewards: [
     {
       icon: RewardIcon,
-      router: { path: "/layer2/referralRewards" },
+      router: { path: "/referralrewards" },
       label: {
-        id: "referralRewards",
+        id: "referralrewards",
         i18nKey: "labelReferralReward",
       },
     },
