@@ -9,6 +9,22 @@ export const hexToRGB = (hex: string, alpha?: string | number) => {
     return "rgb(" + r + ", " + g + ", " + b + ")";
   }
 };
+export const ColorBlack = {
+  dark: "#000000",
+  dark900: "#141414",
+  dark800: "#1F1F1F",
+  dark700: "#262626",
+  dark600: "#434343",
+  dark500: "#595959",
+  dark400: "#8C8C8C",
+  light400: "#BFBFBF",
+  light500: "#D9D9D9",
+  light600: "#EBEBEB",
+  light700: "#F0F0F0",
+  light800: "#F5F5F5",
+  light900: "#FAFAFA",
+  light: "#FFFFFF",
+};
 
 export const ColorDarkDefault = Object.freeze({
   primary: "#4169FF",
@@ -34,13 +50,12 @@ export const ColorDarkDefault = Object.freeze({
   borderDisable: "#383C5C",
   borderDisable2: "#2D2F4B",
   tag: "#6787FF",
-  box: "#2D2F4B",
+  box: ColorBlack.dark, //"#2D2F4B",
   boxHover: `${hexToRGB("#ffffff", "0.05")}`,
-  popBg: "#393F64",
+  popBg: ColorBlack.dark700, //"#393F64",
 
-  boxLinear:
-    "linear-gradient(194.79deg, #322C53 17.96%, #262B50 44.29%, #32314F 96.93%)",
-  globalBg: "#1F2034",
+  boxLinear: `linear-gradient(194.79deg, ${ColorBlack.dark} 17.96%, ${ColorBlack.dark900} 44.29%, ${ColorBlack.dark800} 96.93%)`,
+  globalBg: ColorBlack.dark900, // "#1F2034",
   globalBgOpacity: `${hexToRGB("#1F2034", "0.5")}`,
   fieldOpacity: `${hexToRGB("#ffffff", "0.1")}`,
   divide: "#444C75",
