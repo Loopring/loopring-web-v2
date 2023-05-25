@@ -57,6 +57,7 @@ import { ContactPage } from "pages/ContactPage";
 import { ContactTransactionsPage } from "pages/ContactPage/transactions";
 import { BtradeSwapPage } from "../pages/BtradeSwapPage";
 import { StopLimitPage } from "../pages/ProTradePage/stopLimtPage";
+import { ReferralRewardsPanel } from "../pages/Layer2Page/ReferralRewardsPanel";
 
 const ContentWrap = ({
   children,
@@ -365,6 +366,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={["/layer2", "/layer2/*"]}>
           <ContentWrap state={state}>
             <Layer2Page />
+          </ContentWrap>
+        </Route>
+        <Route exact path={"/layer2/referralRewards"}>
+          <ContentWrap state={state}>
+            <ReferralRewardsPanel />
           </ContentWrap>
         </Route>
         <Route exact path={["/nft", "/nft/*"]}>

@@ -10,7 +10,7 @@ const StylePaper = styled(Grid)`
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 
-export const RewardPanel = withTranslation(["common", "layout"])(
+export const ReferralRewardsPanel = withTranslation(["common", "layout"])(
   ({ t }: WithTranslation) => {
     return (
       <StylePaper
