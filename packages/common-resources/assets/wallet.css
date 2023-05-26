@@ -1,0 +1,19 @@
+body {
+    backdrop: var(--color-global-Bg);
+}
+
+.Typography-root {
+
+}
+
+a.Typography-root,
+.MenuItem-root a.Typography-root {
+    color: var(--color-text-Secondary)
+}
+
+a.Typography-root:hover,
+.MenuItem-root a.Typography-root:hover {
+    color: var(--color-text-primary)
+}
+
+MenuItem-root

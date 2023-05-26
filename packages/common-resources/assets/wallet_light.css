@@ -1,0 +1,16 @@
+@import 'reset.css';
+
+html {
+    --color-primary: #446EFF;
+    --color-border: var(--color-primary);
+    --color-primary-hover: var(--light900) 20;
+    --color-primary-pressed: #2D49B2;
+    --color-disable: #343754;
+    --color-text-primary: var(--dark);
+    --color-border-hover: var(--dark900);
+    --color-text-Secondary: var(--dark500);
+    --color-text-Third: var(--light400);
+    --color-text-Button: var(--dark);
+    --color-text-ButtonSelect: var(--dark);
+    --color-text-Disable: var(--dark) 25;
+}
