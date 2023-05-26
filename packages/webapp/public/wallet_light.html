@@ -150,15 +150,15 @@
       $('.carousel-item').css('transform', 'scale(1)')
       $($('.carousel-item')[index]).css('transform', 'scale(1.3)')
     };
-    setTimeout(() => {
-      showIndex(2)
-    }, 4000);
+    // setTimeout(() => {
+    //   showIndex(2)
+    // }, 4000);
     (function ($) {
       $(function () {
-        $('.carousel-item').click((ele) => {
-          const index = $(".carousel-item").index(ele.currentTarget)
-          showIndex(index)
-        })
+        // $('.carousel-item').click((ele) => {
+        //   const index = $(".carousel-item").index(ele.currentTarget)
+        //   showIndex(index)
+        // })
 
         $('.css-n7royq-MuiTypography-root.main').click(() => {
           window.open('/#/', '_blank').focus("");
@@ -2607,8 +2607,8 @@
   </style>
   <style data-emotion="css" data-s="">
     .css-1x0d6mx-MuiTypography-root a.MuiButtonBase-root:hover {
-      background-color: inherit;
-      background: var(--color-logo);
+      /* background-color: inherit;
+      background: var(--color-logo); */
     }
   </style>
   <style data-emotion="css" data-s="">
@@ -5047,14 +5047,14 @@
   </style>
   <style data-emotion="css" data-s="">
     .css-yuc9ns-FooterDiv {
-      background: var(--color-global-bg);
+      background: white;
     }
 
     /*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9saWppbmdndW8vQ29kZXMvbG9vcHJpbmctd2ViLXYyL3BhY2thZ2VzL2NvbXBvbmVudC1saWIvc3JjL2NvbXBvbmVudHMvZm9vdGVyL2luZGV4LnRzeCJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUF5QjZCIiwiZmlsZSI6Ii9Vc2Vycy9saWppbmdndW8vQ29kZXMvbG9vcHJpbmctd2ViLXYyL3BhY2thZ2VzL2NvbXBvbmVudC1saWIvc3JjL2NvbXBvbmVudHMvZm9vdGVyL2luZGV4LnRzeCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBzdHlsZWQgZnJvbSBcIkBlbW90aW9uL3N0eWxlZC9tYWNyb1wiO1xuaW1wb3J0IHsgQm94LCBDb250YWluZXIsIExpbmssIExpc3QsIFR5cG9ncmFwaHkgfSBmcm9tIFwiQG11aS9tYXRlcmlhbFwiO1xuaW1wb3J0IFJlYWN0IGZyb20gXCJyZWFjdFwiO1xuaW1wb3J0IHtcbiAgRGlzY29yZEljb24sXG4gIEZvb3RlckludGVyZmFjZSxcbiAgTG9vcHJpbmdJY29uLFxuICBNZWRpdW1JY29uLFxuICBUd2l0dGVySWNvbixcbiAgWW91dHViZUljb24sXG59IGZyb20gXCJAbG9vcHJpbmctd2ViL2NvbW1vbi1yZXNvdXJjZXNcIjtcblxuaW1wb3J0IHsgV2l0aFRyYW5zbGF0aW9uLCB3aXRoVHJhbnNsYXRpb24gfSBmcm9tIFwicmVhY3QtaTE4bmV4dFwiO1xuaW1wb3J0IHsgdXNlVGhlbWUgfSBmcm9tIFwiQGVtb3Rpb24vcmVhY3RcIjtcbmltcG9ydCB7IHVzZVNldHRpbmdzIH0gZnJvbSBcIi4uLy4uL3N0b3Jlc1wiO1xuXG5jb25zdCBMaW5rU3R5bGUgPSBzdHlsZWQoTGluaylgXG4gIGNvbG9yOiB2YXIoLS1jb2xvci10ZXh0LXNlY29uZGFyeSk7XG4gIGxpbmUtaGVpZ2h0OiAyMHB4O1xuICBmb250LXNpemU6IDEycHg7XG5cbiAgJjpob3ZlciB7XG4gICAgY29sb3I6IHZhcigtLWNvbG9yLXRleHQtaG92ZXIpO1xuICB9XG5gIGFzIHR5cGVvZiBMaW5rO1xuY29uc3QgRm9vdGVyRGl2ID0gc3R5bGVkKEJveClgXG4gIGJhY2tncm91bmQ6IHZhcigtLWNvbG9yLWdsb2JhbC1iZyk7XG5gO1xuXG5leHBvcnQgY29uc3QgRm9vdGVyID0gd2l0aFRyYW5zbGF0aW9uKFtcImxheW91dFwiXSkoXG4gICh7XG4gICAgdCxcbiAgICBsaW5rTGlzdE1hcCxcbiAgICBtZWRpYUxpc3QsXG4gICAgaXNMYW5kaW5nUGFnZSxcbiAgICBpc0JldGEgPSBmYWxzZSxcbiAgfToge1xuICAgIGlzTGFuZGluZ1BhZ2U6IGJvb2xlYW47XG4gICAgbGlua0xpc3RNYXA6IHsgW2tleTogc3RyaW5nXTogRm9vdGVySW50ZXJmYWNlW10gfTtcbiAgICBtZWRpYUxpc3Q6IEZvb3RlckludGVyZmFjZVtdO1xuICAgIGlzQmV0YTogYm9vbGVhbjtcbiAgfSAmIFdpdGhUcmFuc2xhdGlvbikgPT4ge1xuICAgIGNvbnN0IHsgbW9kZSB9ID0gdXNlVGhlbWUoKTtcbiAgICBjb25zdCB7IGlzTW9iaWxlIH0gPSB1c2VTZXR0aW5ncygpO1xuICAgIFJlYWN0LnVzZUxheW91dEVmZmVjdCgoKSA9PiB7XG4gICAgICBmdW5jdGlvbiB1cGRhdGVTaXplKCkge31cblxuICAgICAgd2luZG93LmFkZEV2ZW50TGlzdGVuZXIoXCJyZXNpemVcIiwgdXBkYXRlU2l6ZSk7XG4gICAgICB1cGRhdGVTaXplKCk7XG4gICAgICByZXR1cm4gKCkgPT4gd2luZG93LnJlbW92ZUV2ZW50TGlzdGVuZXIoXCJyZXNpemVcIiwgdXBkYXRlU2l6ZSk7XG4gICAgfSwgW10pO1xuICAgIGNvbnN0IGxpbmtMaXN0TWFwUmVuZGVyID0gUmVhY3QudXNlTWVtbygoKSA9PiB7XG4gICAgICByZXR1cm4gUmVmbGVjdC5vd25LZXlzKGxpbmtMaXN0TWFwKS5tYXAoKGtleSkgPT4ge1xuICAgICAgICByZXR1cm4gKFxuICAgICAgICAgIDxCb3hcbiAgICAgICAgICAgIGtleT17a2V5LnRvU3RyaW5nKCl9XG4gICAgICAgICAgICBtaW5XaWR0aD17MTIwfVxuICAgICAgICAgICAgZGlzcGxheT17XCJmbGV4XCJ9XG4gICAgICAgICAgICBmbGV4RGlyZWN0aW9uPXtcImNvbHVtblwifVxuICAgICAgICAgICAganVzdGlmeUNvbnRlbnQ9e1wiY2VudGVyXCJ9IC8qIHBhZGRpbmc9ezN9ICovXG4gICAgICAgICAgPlxuICAgICAgICAgICAgPFR5cG9ncmFwaHlcbiAgICAgICAgICAgICAgY29sb3I9e1widmFyKC0tY29sb3ItdGV4dC10aGlyZClcIn1cbiAgICAgICAgICAgICAgc3g9e3sgbXQ6IDQsIG1iOiAyIH19XG4gICAgICAgICAgICAgIHZhcmlhbnQ9XCJib2R5MlwiXG4gICAgICAgICAgICAgIGNvbXBvbmVudD1cImRpdlwiXG4gICAgICAgICAgICA+XG4gICAgICAgICAgICAgIHt0KFwibGFiZWxGb290ZXJcIiArIGtleS50b1N0cmluZygpKX1cbiAgICAgICAgICAgIDwvVHlwb2dyYXBoeT5cbiAgICAgICAgICAgIDxCb3hcbiAgICAgICAgICAgICAgZGlzcGxheT17XCJmbGV4XCJ9XG4gICAgICAgICAgICAgIGZsZXhEaXJlY3Rpb249e1wiY29sdW1uXCJ9XG4gICAgICAgICAgICAgIGhlaWdodD17XCIxMDAlXCJ9XG4gICAgICAgICAgICAgIGp1c3RpZnlDb250ZW50PXtcImZsZXgtc3RhcnRcIn1cbiAgICAgICAgICAgID5cbiAgICAgICAgICAgICAge2xpbmtMaXN0TWFwW2tleS50b1N0cmluZygpXS5tYXAoKGl0ZW06IGFueSkgPT4ge1xuICAgICAgICAgICAgICAgIHJldHVybiAoXG4gICAgICAgICAgICAgICAgICA8TGlua1N0eWxlXG4gICAgICAgICAgICAgICAgICAgIGtleT17aXRlbS5saW5rTmFtZX1cbiAgICAgICAgICAgICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgICAgICAgICAgICAgcmVsPVwibm9vcGVuZXIgbm9yZWZlcnJlclwiXG4gICAgICAgICAgICAgICAgICAgIGhyZWY9e2l0ZW0ubGlua0hyZWZ9XG4gICAgICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgICAgIHt0KFwibGFiZWxcIiArIFwia2V5XCIgKyBpdGVtLmxpbmtOYW1lKX1cbiAgICAgICAgICAgICAgICAgIDwvTGlua1N0eWxlPlxuICAgICAgICAgICAgICAgICk7XG4gICAgICAgICAgICAgIH0pfVxuICAgICAgICAgICAgPC9Cb3g+XG4gICAgICAgICAgPC9Cb3g+XG4gICAgICAgICk7XG4gICAgICB9KTtcbiAgICB9LCBbbGlua0xpc3RNYXBdKTtcblxuICAgIGNvbnN0IG1lZGlhcyA9IFJlYWN0LnVzZU1lbW8oKCkgPT4ge1xuICAgICAgY29uc3QgcmVuZGVySWNvbiA9IChuYW1lOiBzdHJpbmcpID0+IHtcbiAgICAgICAgc3dpdGNoIChuYW1lKSB7XG4gICAgICAgICAgY2FzZSBcIkRpc2NvcmRcIjpcbiAgICAgICAgICAgIHJldHVybiAoXG4gICAgICAgICAgICAgIDxEaXNjb3JkSWNvblxuICAgICAgICAgICAgICAgIGZvbnRTaXplPXtcImxhcmdlXCJ9XG4gICAgICAgICAgICAgICAgaHRtbENvbG9yPXtcInZhcigtLWNvbG9yLXRleHQtdGhpcmQpXCJ9XG4gICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICApO1xuICAgICAgICAgIGNhc2UgXCJUd2l0dGVyXCI6XG4gICAgICAgICAgICByZXR1cm4gKFxuICAgICAgICAgICAgICA8VHdpdHRlckljb25cbiAgICAgICAgICAgICAgICBmb250U2l6ZT17XCJsYXJnZVwifVxuICAgICAgICAgICAgICAgIGh0bWxDb2xvcj17XCJ2YXIoLS1jb2xvci10ZXh0LXRoaXJkKVwifVxuICAgICAgICAgICAgICAvPlxuICAgICAgICAgICAgKTtcbiAgICAgICAgICBjYXNlIFwiWW91dHViZVwiOlxuICAgICAgICAgICAgcmV0dXJuIChcbiAgICAgICAgICAgICAgPFlvdXR1YmVJY29uXG4gICAgICAgICAgICAgICAgZm9udFNpemU9e1wibGFyZ2VcIn1cbiAgICAgICAgICAgICAgICBodG1sQ29sb3I9e1widmFyKC0tY29sb3ItdGV4dC10aGlyZClcIn1cbiAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICk7XG4gICAgICAgICAgY2FzZSBcIk1lZGl1bVwiOlxuICAgICAgICAgICAgcmV0dXJuIChcbiAgICAgICAgICAgICAgPE1lZGl1bUljb25cbiAgICAgICAgICAgICAgICBmb250U2l6ZT17XCJsYXJnZVwifVxuICAgICAgICAgICAgICAgIGh0bWxDb2xvcj17XCJ2YXIoLS1jb2xvci10ZXh0LXRoaXJkKVwifVxuICAgICAgICAgICAgICAvPlxuICAgICAgICAgICAgKTtcbiAgICAgICAgfVxuICAgICAgfTtcbiAgICAgIHJldHVybiAoXG4gICAgICAgIDxMaXN0XG4gICAgICAgICAgc3R5bGU9e3tcbiAgICAgICAgICAgIGRpc3BsYXk6IFwiZmxleFwiLFxuICAgICAgICAgICAgYWxpZ25JdGVtczogXCJmbGV4LXN0YXJ0XCIsXG4gICAgICAgICAgICBwYWRkaW5nVG9wOiAwLFxuICAgICAgICAgICAgcGFkZGluZ0JvdHRvbTogMCxcbiAgICAgICAgICB9fVxuICAgICAgICA+XG4gICAgICAgICAge21lZGlhTGlzdC5tYXAoKG8sIGluZGV4KSA9PiAoXG4gICAgICAgICAgICA8VHlwb2dyYXBoeSBwYWRkaW5nUmlnaHQ9ezJ9IGtleT17YCR7by5saW5rTmFtZX0tJHtpbmRleH1gfT5cbiAgICAgICAgICAgICAgPExpbmtTdHlsZVxuICAgICAgICAgICAgICAgIGZvbnRTaXplPXsyOH1cbiAgICAgICAgICAgICAgICBkaXNwbGF5PXtcImlubGluZS1ibG9ja1wifVxuICAgICAgICAgICAgICAgIHdpZHRoPXsyOH1cbiAgICAgICAgICAgICAgICBocmVmPXtvLmxpbmtIcmVmfVxuICAgICAgICAgICAgICAgIHRhcmdldD1cIl9ibGFua1wiXG4gICAgICAgICAgICAgICAgcmVsPVwibm9vcGVuZXIgbm9yZWZlcnJlclwiXG4gICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICB7cmVuZGVySWNvbihvLmxpbmtOYW1lKX1cbiAgICAgICAgICAgICAgPC9MaW5rU3R5bGU+XG4gICAgICAgICAgICA8L1R5cG9ncmFwaHk+XG4gICAgICAgICAgKSl9XG4gICAgICAgIDwvTGlzdD5cbiAgICAgICk7XG4gICAgfSwgW21lZGlhTGlzdF0pO1xuXG4gICAgcmV0dXJuIChcbiAgICAgIDxGb290ZXJEaXYgY29tcG9uZW50PXtcImZvb3RlclwifSBmb250U2l6ZT17XCJib2R5MVwifT5cbiAgICAgICAgey8qPERpdmlkZXIgLz4qL31cblxuICAgICAgICB7ISEoaXNMYW5kaW5nUGFnZSAmJiAhaXNNb2JpbGUpID8gKFxuICAgICAgICAgIDxDb250YWluZXI+XG4gICAgICAgICAgICA8PlxuICAgICAgICAgICAgICA8Qm94XG4gICAgICAgICAgICAgICAgcG9zaXRpb249e1wicmVsYXRpdmVcIn1cbiAgICAgICAgICAgICAgICAvLyBoZWlnaHQ9e3NpemVbIDEgXX1cbiAgICAgICAgICAgICAgICBmbGV4RGlyZWN0aW9uPVwicm93XCJcbiAgICAgICAgICAgICAgICBqdXN0aWZ5Q29udGVudD1cInNwYWNlLWJldHdlZW5cIlxuICAgICAgICAgICAgICAgIGFsaWduSXRlbXM9XCJjZW50ZXJcIlxuICAgICAgICAgICAgICAgIHdpZHRoPXtcIjEwMCVcIn1cbiAgICAgICAgICAgICAgICBwYWRkaW5nQm90dG9tPXs0fVxuICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgPEJveFxuICAgICAgICAgICAgICAgICAgZGlzcGxheT17XCJmbGV4XCJ9XG4gICAgICAgICAgICAgICAgICBqdXN0aWZ5Q29udGVudD17XCJzcGFjZS1iZXR3ZWVuXCJ9XG4gICAgICAgICAgICAgICAgICBhbGlnbkl0ZW1zPXtcImZsZXgtc3RhcnRcIn1cbiAgICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgICA8Qm94XG4gICAgICAgICAgICAgICAgICAgIG1hcmdpblRvcD17NH1cbiAgICAgICAgICAgICAgICAgICAgbWFyZ2luTGVmdD17LTN9XG4gICAgICAgICAgICAgICAgICAgIG1pbldpZHRoPXsxMDB9XG4gICAgICAgICAgICAgICAgICAgIGFsaWduU2VsZj17XCJmbGV4LXN0YXJ0XCJ9XG4gICAgICAgICAgICAgICAgICAgIGp1c3RpZnlTZWxmPXtcImNlbnRlclwifVxuICAgICAgICAgICAgICAgICAgICBkaXNwbGF5PXtcImlubGluZS1mbGV4XCJ9XG4gICAgICAgICAgICAgICAgICAgIGFsaWduSXRlbXM9e1wiY2VudGVyXCJ9XG4gICAgICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgICAgIDxMb29wcmluZ0ljb25cbiAgICAgICAgICAgICAgICAgICAgICBodG1sQ29sb3I9e1widmFyKC0tY29sb3ItdGV4dC10aGlyZClcIn1cbiAgICAgICAgICAgICAgICAgICAgICBzdHlsZT17eyBoZWlnaHQ6IFwiNDBweFwiLCB3aWR0aDogXCIxMjBweFwiIH19XG4gICAgICAgICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgICAgICA8L0JveD5cbiAgICAgICAgICAgICAgICAgIHtsaW5rTGlzdE1hcFJlbmRlcn1cbiAgICAgICAgICAgICAgICAgIDxCb3ggZGlzcGxheT17XCJmbGV4XCJ9IGZsZXhEaXJlY3Rpb249e1wiY29sdW1uXCJ9IHdpZHRoPXsxNjh9PlxuICAgICAgICAgICAgICAgICAgICA8VHlwb2dyYXBoeVxuICAgICAgICAgICAgICAgICAgICAgIGNvbG9yPVwidmFyKC0tY29sb3ItdGV4dC10aGlyZClcIlxuICAgICAgICAgICAgICAgICAgICAgIHZhcmlhbnQ9XCJib2R5MlwiXG4gICAgICAgICAgICAgICAgICAgICAgY29tcG9uZW50PVwicFwiXG4gICAgICAgICAgICAgICAgICAgICAgc3g9e3sgbXQ6IDQsIG1iOiAyIH19XG4gICAgICAgICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICAgICAgICBGb2xsb3cgdXNcbiAgICAgICAgICAgICAgICAgICAgPC9UeXBvZ3JhcGh5PlxuICAgICAgICAgICAgICAgICAgICA8Qm94PnttZWRpYXN9PC9Cb3g+XG4gICAgICAgICAgICAgICAgICA8L0JveD5cbiAgICAgICAgICAgICAgICA8L0JveD5cbiAgICAgICAgICAgICAgPC9Cb3g+XG4gICAgICAgICAgICAgIDxUeXBvZ3JhcGh5XG4gICAgICAgICAgICAgICAgZm9udFNpemU9ezEyfVxuICAgICAgICAgICAgICAgIGNvbXBvbmVudD17XCJwXCJ9XG4gICAgICAgICAgICAgICAgdGV4dEFsaWduPXtcImNlbnRlclwifVxuICAgICAgICAgICAgICAgIHBhZGRpbmdCb3R0b209ezJ9XG4gICAgICAgICAgICAgICAgY29sb3I9e1widmFyKC0tY29sb3ItdGV4dC10aGlyZClcIn1cbiAgICAgICAgICAgICAgPlxuICAgICAgICAgICAgICAgIHt0KFwibGFiZWxDb3B5UmlnaHRcIiwgeyB5ZWFyOiBuZXcgRGF0ZSgpLmdldEZ1bGxZZWFyKCkgfSl9XG4gICAgICAgICAgICAgIDwvVHlwb2dyYXBoeT5cbiAgICAgICAgICAgIDwvPlxuICAgICAgICAgIDwvQ29udGFpbmVyPlxuICAgICAgICApIDogKFxuICAgICAgICAgIDxCb3hcbiAgICAgICAgICAgIGhlaWdodD17aXNNb2JpbGUgPyBcImF1dG9cIiA6IDQ4fVxuICAgICAgICAgICAgZGlzcGxheT17XCJmbGV4XCJ9XG4gICAgICAgICAgICBqdXN0aWZ5Q29udGVudD17XCJjZW50ZXJcIn1cbiAgICAgICAgICAgIGFsaWduSXRlbXM9e1wiY2VudGVyXCJ9XG4gICAgICAgICAgICB3aWR0aD17XCIxMDAlXCJ9XG4gICAgICAgICAgICBzdHlsZT17e1xuICAgICAgICAgICAgICBiYWNrZ3JvdW5kQ29sb3I6XG4gICAgICAgICAgICAgICAgbW9kZSA9PT0gXCJsaWdodFwiXG4gICAgICAgICAgICAgICAgICA/IFwicmdiYSg1OSwgOTAsIDI0NCwgMC4wNSlcIlxuICAgICAgICAgICAgICAgICAgOiBcInJnYmEoMjU1LCAyNTUsIDI1NSwgMC4wNSlcIixcbiAgICAgICAgICAgIH19XG4gICAgICAgICAgPlxuICAgICAgICAgICAgPENvbnRhaW5lcj5cbiAgICAgICAgICAgICAgPEJveFxuICAgICAgICAgICAgICAgIGRpc3BsYXk9e1wiZmxleFwifVxuICAgICAgICAgICAgICAgIGZsZXg9ezF9XG4gICAgICAgICAgICAgICAgd2lkdGg9e1wiMTAwJVwifVxuICAgICAgICAgICAgICAgIGp1c3RpZnlDb250ZW50PXtcInNwYWNlLWJldHdlZW5cIn1cbiAgICAgICAgICAgICAgICBhbGlnbkl0ZW1zPXtcImNlbnRlclwifVxuICAgICAgICAgICAgICAgIGZsZXhEaXJlY3Rpb249e2lzTW9iaWxlID8gXCJjb2x1bW5cIiA6IFwicm93XCJ9XG4gICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICA8VHlwb2dyYXBoeVxuICAgICAgICAgICAgICAgICAgZm9udFNpemU9ezEyfVxuICAgICAgICAgICAgICAgICAgY29tcG9uZW50PXtcInNwYW5cIn1cbiAgICAgICAgICAgICAgICAgIGNvbG9yPXtcbiAgICAgICAgICAgICAgICAgICAgaXNCZXRhID8gXCJ2YXIoLS1jb2xvci13YXJuaW5nKVwiIDogXCJ2YXIoLS1jb2xvci10ZXh0LXRoaXJkKVwiXG4gICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICBwYWRkaW5nTGVmdD17Mn1cbiAgICAgICAgICAgICAgICAgIHBhZGRpbmdUb3A9e2lzTW9iaWxlID8gMiA6IDB9XG4gICAgICAgICAgICAgICAgPlxuICAgICAgICAgICAgICAgICAge2lzQmV0YVxuICAgICAgICAgICAgICAgICAgICA/IHQoXCJsYWJlbENvcHlSaWdodEJldGFcIilcbiAgICAgICAgICAgICAgICAgICAgOiB0KFwibGFiZWxDb3B5UmlnaHRcIiwgeyB5ZWFyOiBuZXcgRGF0ZSgpLmdldEZ1bGxZZWFyKCkgfSl9XG4gICAgICAgICAgICAgICAgPC9UeXBvZ3JhcGh5PlxuICAgICAgICAgICAgICAgIDxCb3ggcGFkZGluZ1k9e2lzTW9iaWxlID8gMiA6IDB9PnttZWRpYXN9PC9Cb3g+XG4gICAgICAgICAgICAgIDwvQm94PlxuICAgICAgICAgICAgPC9Db250YWluZXI+XG4gICAgICAgICAgPC9Cb3g+XG4gICAgICAgICl9XG4gICAgICA8L0Zvb3RlckRpdj5cbiAgICApO1xuICB9XG4pO1xuIl19 */
   </style>
   <style data-emotion="css" data-s="">
     .css-1arh0aq-FooterDiv {
-      background: var(--color-global-bg);
+      background: white;
     }
   </style>
   <style data-emotion="css" data-s="">
@@ -5243,7 +5243,7 @@
   </style>
   <style data-emotion="css" data-s="">
     .css-1uagx8q-MuiTypography-root-MuiLink-root-LinkStyle:hover {
-      color: var(--color-text-hover);
+      /* color: var(--color-text-hover); */
     }
   </style>
   <style data-emotion="css" data-s="">
@@ -5322,7 +5322,7 @@
   </style>
   <style data-emotion="css" data-s="">
     .css-s20ip4-MuiTypography-root-MuiLink-root-LinkStyle:hover {
-      color: var(--color-text-hover);
+      /* color: var(--color-text-hover); */
     }
   </style>
   <style data-emotion="css" data-s="">
@@ -7779,7 +7779,7 @@
         </div>
       </div>
     </div>
-    <footer class="e192q36a0 MuiBox-root css-1arh0aq-FooterDiv">
+    <footer class="e192q36a0 MuiBox-root css-1arh0aq-FooterDiv footer-desktop">
       <div class="MuiContainer-root MuiContainer-maxWidthLg css-1oqqzyl-MuiContainer-root">
         <div class="MuiBox-root css-mch0tu">
           <div class="MuiBox-root css-1qdyvok">
@@ -7900,6 +7900,59 @@
         </div>
         <p class="MuiTypography-root MuiTypography-body1 css-160d79v-MuiTypography-root">© 2017 Loopring Technology
           Limited. All rights reserved.</p>
+      </div>
+    </footer>
+    <footer class="e192q36a0 MuiBox-root css-1arh0aq-FooterDiv footer-mobile">
+      <div class="MuiContainer-root MuiContainer-maxWidthLg css-1oqqzyl-MuiContainer-root">
+        <p class="MuiTypography-root MuiTypography-body1 css-160d79v-MuiTypography-root">© 2017 Loopring Technology
+          Limited. All rights reserved.</p>
+        <div class="MuiBox-root css-mch0tu">
+          <div class="MuiBox-root css-1qdyvok">
+            <div class="MuiBox-root css-gkslkz">
+              <div class="MuiBox-root css-0">
+                <ul class="MuiList-root MuiList-padding css-1m8khb4-MuiList-root"
+                  style="display: flex; align-items: flex-start; padding-top: 0px; padding-bottom: 0px;">
+                  <p class="MuiTypography-root MuiTypography-body1 css-1d5k4es-MuiTypography-root"><a
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways e192q36a1 css-s20ip4-MuiTypography-root-MuiLink-root-LinkStyle"
+                      href="https://discord.com/invite/KkYccYp" target="_blank" rel="noopener noreferrer"><svg
+                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-em4pvf-MuiSvgIcon-root" focusable="false"
+                        color="" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M22.5417 12C22.5417 17.822 17.822 22.5417 12 22.5417C6.178 22.5417 1.45833 17.822 1.45833 12C1.45833 6.178 6.178 1.45833 12 1.45833C17.822 1.45833 22.5417 6.178 22.5417 12ZM23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12ZM10.7503 15.4042C10.6021 15.3766 10.4546 15.3449 10.3081 15.3092V15.3083L9.3882 16.3442C7.31174 16.2766 6.5124 14.8862 6.5124 14.8862C6.5124 11.7976 7.86626 9.29449 7.86626 9.29449C9.21828 8.25854 10.5064 8.28686 10.5064 8.28686L10.9101 8.76647C11.6111 8.66738 12.3223 8.66431 13.0241 8.75733C13.0583 8.75866 13.0924 8.76171 13.1264 8.76647L13.4945 8.28686C13.4945 8.28686 14.7817 8.25854 16.1346 9.29357C16.1346 9.29357 17.4876 11.7976 17.4876 14.8862C17.4876 14.8862 16.6983 16.2775 14.6218 16.3442L13.7805 15.2507C13.5238 15.3192 13.3246 15.3677 13.1839 15.3951C12.3806 15.5525 11.5547 15.5556 10.7503 15.4042ZM14.7972 12.9523C14.7972 12.4498 14.3633 12.0387 13.8143 12.0387C13.2652 12.0387 12.8231 12.4498 12.8322 12.9523C12.8322 13.4547 13.2661 13.8658 13.8143 13.8658C14.3542 13.8658 14.7972 13.4547 14.7972 12.9523ZM11.281 12.9523C11.281 12.4498 10.8471 12.0387 10.299 12.0387C9.74996 12.0387 9.31603 12.4498 9.31603 12.9523C9.31603 13.4547 9.74996 13.8658 10.299 13.8658C10.838 13.8658 11.281 13.4547 11.281 12.9523Z">
+                        </path>
+                      </svg></a></p>
+                  <p class="MuiTypography-root MuiTypography-body1 css-1d5k4es-MuiTypography-root"><a
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways e192q36a1 css-s20ip4-MuiTypography-root-MuiLink-root-LinkStyle"
+                      href="https://twitter.com/loopringorg" target="_blank" rel="noopener noreferrer"><svg
+                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-em4pvf-MuiSvgIcon-root" focusable="false"
+                        color="" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M22.5417 12C22.5417 17.822 17.822 22.5417 12 22.5417C6.178 22.5417 1.45833 17.822 1.45833 12C1.45833 6.178 6.178 1.45833 12 1.45833C17.822 1.45833 22.5417 6.178 22.5417 12ZM23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12ZM16.7095 9.93043C16.7145 10.0394 16.7165 10.1494 16.7165 10.2604C16.7165 13.6354 14.2725 17.5254 9.80347 17.5244C8.43047 17.5244 7.15347 17.0944 6.07747 16.3564C6.26747 16.3804 6.46147 16.3934 6.65747 16.3934C7.79547 16.3964 8.84347 15.9844 9.67547 15.2944C8.61247 15.2694 7.71447 14.5164 7.40547 13.4854C7.55347 13.5174 7.70547 13.5344 7.86247 13.5354C8.08347 13.5364 8.29847 13.5064 8.50247 13.4484C7.39047 13.2024 6.55247 12.1484 6.55247 10.8904V10.8574C6.88047 11.0554 7.25447 11.1764 7.65347 11.1944C7.00147 10.7224 6.57247 9.92243 6.57247 9.02243C6.57247 8.54643 6.69247 8.10243 6.90147 7.72243C8.09947 9.30843 9.89047 10.3604 11.9115 10.4904C11.8695 10.3014 11.8485 10.1054 11.8485 9.90343C11.8485 8.48243 12.9365 7.34843 14.2785 7.37043C14.9775 7.38243 15.6095 7.70343 16.0525 8.20743C16.6055 8.10143 17.1255 7.89743 17.5955 7.61243C17.4135 8.20543 17.0285 8.69943 16.5265 9.00843C17.0185 8.95343 17.4865 8.82243 17.9225 8.62643C17.5965 9.13343 17.1845 9.57643 16.7095 9.93043Z">
+                        </path>
+                      </svg></a></p>
+                  <p class="MuiTypography-root MuiTypography-body1 css-1d5k4es-MuiTypography-root"><a
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways e192q36a1 css-s20ip4-MuiTypography-root-MuiLink-root-LinkStyle"
+                      href="https://www.youtube.com/c/Loopring" target="_blank" rel="noopener noreferrer"><svg
+                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-em4pvf-MuiSvgIcon-root" focusable="false"
+                        color="" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M22.5417 12C22.5417 17.822 17.822 22.5417 12 22.5417C6.178 22.5417 1.45833 17.822 1.45833 12C1.45833 6.178 6.178 1.45833 12 1.45833C17.822 1.45833 22.5417 6.178 22.5417 12ZM23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12ZM18.1111 12C18.1111 12 18.1111 9.72667 17.8318 8.63767C17.6784 8.03756 17.225 7.56456 16.6475 7.402C15.6031 7.11111 12 7.11111 12 7.11111C12 7.11111 8.39872 7.11111 7.3525 7.402C6.77744 7.56211 6.32339 8.03572 6.16817 8.63767C5.88889 9.72667 5.88889 12 5.88889 12C5.88889 12 5.88889 14.2733 6.16817 15.3623C6.32156 15.9624 6.775 16.4354 7.3525 16.598C8.39872 16.8889 12 16.8889 12 16.8889C12 16.8889 15.6031 16.8889 16.6475 16.598C17.2226 16.4379 17.6766 15.9643 17.8318 15.3623C18.1111 14.2733 18.1111 12 18.1111 12ZM14.4444 12L10.7778 14.1389V9.86111L14.4444 12Z">
+                        </path>
+                      </svg></a></p>
+                  <p class="MuiTypography-root MuiTypography-body1 css-1d5k4es-MuiTypography-root"><a
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways e192q36a1 css-s20ip4-MuiTypography-root-MuiLink-root-LinkStyle"
+                      href="https://medium.com/loopring-protocol" target="_blank" rel="noopener noreferrer"><svg
+                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-em4pvf-MuiSvgIcon-root" focusable="false"
+                        color="" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M22.5417 12C22.5417 17.822 17.822 22.5417 12 22.5417C6.178 22.5417 1.45833 17.822 1.45833 12C1.45833 6.178 6.178 1.45833 12 1.45833C17.822 1.45833 22.5417 6.178 22.5417 12ZM23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12ZM17.7337 16.4862L16.8583 15.6117H16.8593C16.7676 15.5658 16.7217 15.4274 16.7217 15.3358V8.33883C16.7217 8.24717 16.7676 8.10875 16.8593 8.01708L17.7337 7.00417V6.95833H14.6033L12.2548 12.8965L9.5855 6.95833H6.36342V7.00417L7.193 8.15642C7.37633 8.33975 7.42217 8.61658 7.42217 8.84667V13.9085C7.468 14.1853 7.42217 14.508 7.28467 14.783L6.04167 16.4862V16.532H9.35633V16.4862L8.11333 14.8298C7.97583 14.5529 7.92908 14.277 7.97583 13.9543V9.35267C7.99111 9.38322 8.00639 9.40359 8.02167 9.42396C8.05222 9.4647 8.08278 9.50544 8.11333 9.62767L11.2438 16.6246H11.2896L14.3274 9.03C14.2807 9.30592 14.2807 9.62767 14.2807 9.85867V15.2899C14.2807 15.4283 14.2348 15.52 14.1432 15.6117L13.2228 16.4862V16.532H17.7337V16.4862Z">
+                        </path>
+                      </svg></a></p>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   </div>
@@ -8172,6 +8225,12 @@
     .img-container-even {
       justify-content: left;
     }
+    .footer-desktop {
+      display: block;
+    }
+    .footer-mobile {
+      display: none;
+    }
     @media only screen and (max-width: 767px) {
       /* Styles for mobile devices */
       .buttons {
@@ -8221,6 +8280,18 @@
       }
       .img-container-even {
         justify-content: center;
+      }
+      .css-160d79v-MuiTypography-root {
+        margin-top: 10px;
+      }
+      .css-1qdyvok {
+        justify-content: center;
+      }
+      .footer-desktop {
+        display: none;
+      }
+      .footer-mobile {
+        display: block;
       }
     }  
   </style>
