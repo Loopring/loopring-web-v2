@@ -1,6 +1,4 @@
 /* eslint-disable max-len */
-import React from "react";
-
 export default {
   labelErrorTitle: "Error Detail: ",
   labelNoContent: "No Content",
