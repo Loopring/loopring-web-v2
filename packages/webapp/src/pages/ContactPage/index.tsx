@@ -104,7 +104,7 @@ export const ContactPage = () => {
   const history = useHistory();
 
   const noContact = <Box height={"80vh"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-    <Typography color={"var(--color-text-third)"}>No Contact</Typography>
+    <Typography color={"var(--color-text-third)"}>{t("labelContactsNoContact")}</Typography>
   </Box>
   const loadingView = <Box height={"80vh"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
     <img
@@ -268,5 +268,5 @@ export const ContactPage = () => {
       </Box>
     </Box>
   </ContactPageStyle>
-  return <ViewAccountTemplate unlockWording={"Unlock your account to view your contacts."} activeViewTemplate={activeView} />
+  return <ViewAccountTemplate activeViewTemplate={activeView} />
 };
