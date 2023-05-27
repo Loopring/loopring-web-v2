@@ -4,12 +4,12 @@
 html {
     --color-global-Bg: var(--dark900);
     --color-primary: #446EFF;
-    --color-border: var(--color-primary);
-    --color-primary-hover: var(--light900) 20;
     --color-primary-pressed: #2D49B2;
     --color-disable: #343754;
     --color-text-primary: var(--light);
-    --color-border-hover: var(--light900);
+    --color-border: var(--light900);
+    --color-primary-hover: var(--light900);
+    --color-border-hover: var(--color-primary);
     --color-text-Secondary: var(--light500);
     --color-text-Third: var(--dark400);
     --color-text-Button: var(--light);

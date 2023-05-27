@@ -33,8 +33,8 @@
 </head>
 <body>
 <header>
-	<div class="Toolbar-root" style="padding: 0px 8px;">
-		<nav class="wrap">
+	<div class="Toolbar-root wrap" style="padding: 0px 8px;">
+		<nav>
 			<h1 class="Typography-root Typography-h6">
 				<a aria-label="menu"
 					 id="logo"
@@ -55,14 +55,14 @@
 				</li>
 			</ul>
 		</nav>
-	</div>
-	<div class="Box-root">
-		<button class="Button-root Button-contained Button-containedPrimary Button-sizeSmall Button-containedSizeSmall ButtonBase-root"
-						id='labelNavLanuch'
-						onclick="()=>onlanguagechange(value,this)"
-						type="button"
-						value="">
-		</button>
+		<div class="Box-root">
+			<button class="Button-root Button-contained Button-containedPrimary Button-sizeSmall Button-containedSizeSmall ButtonBase-root"
+							id='labelNavLanuch'
+							onclick="()=>onlanguagechange(value,this)"
+							type="button"
+							value="">
+			</button>
+		</div>
 	</div>
 </header>
 
@@ -221,15 +221,16 @@
 			</div>
 		</div>
 	</div>
-	<div class="Box-root bottom">
-		<div class="Box-root">
+
+</section>
+<footer class="Box-root">
+	<div class="Container-root flexBox center footerWallet">
+		<div class="Box-root" style="display: flex; align-items: center">
 			<img height="48"
 					 src="https://static.loopring.io/assets/images/landPage/wallet_appicon.png"
 					 style="object-fit: fill;"
 					 width="48">
-			<div class="Box-root">
-
-
+			<div class="Box-root" style="margin-left: 20px">
 				<p aria-label="Loopring Wallet" class="Typography-root Typography-body1" id="labelFeatureDes8"></p>
 				<p aria-label="Crypto exchange on the go" class="Typography-root Typography-body1"
 					 id="labelFeatureDes8_2"></p>
@@ -257,8 +258,6 @@
 			</button>
 		</div>
 	</div>
-</section>
-<footer class="Box-root">
 	<div class="Container-root Container-maxWidthLg">
 		<div class="Box-root content">
 			<div class="Box-root" id="logSvg">
