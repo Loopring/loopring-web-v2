@@ -1,19 +1,109 @@
 body {
-    backdrop: var(--color-global-Bg);
+    background: var(--color-global-Bg);
 }
 
 .Typography-root {
+    font-size: 14px;
+    color: var(--color-text-primary);
+}
+
+header {
+    background-color: var(--color-box);
+}
+
+header .Toolbar-root {
+    height: var(--header-height);
+    background-color: var(--color-box);
+
+}
+
+footer .Container-root {
+    display: flex;
+    flex-direction: column;
+}
+
+footer .content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.Container-root, .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#logSvg svg {
+    fill: var(--color-text-Secondary);
+}
+
+@media {
 
 }
 
 a.Typography-root,
-.MenuItem-root a.Typography-root {
+a.Typography-root:active,
+a.Typography-root:visited,
+.Link-root,
+.Link-root:active,
+.Link-root:visited,
+.MenuItem-root a.Typography-root,
+.MenuItem-root a.Typography-root:active,
+.MenuItem-root a.Typography-root:visited,
+.Link-root {
     color: var(--color-text-Secondary)
 }
 
 a.Typography-root:hover,
-.MenuItem-root a.Typography-root:hover {
+.MenuItem-root a.Typography-root:hover, .Link-root:hover {
     color: var(--color-text-primary)
 }
 
-MenuItem-root
+.Link-underlineAlways:hover {
+    text-decoration: underline;
+}
+
+.downLoadBtnGroup .Typography-roo {
+    display: inline-block;
+    margin-left: 8px;
+}
+
+
+#logo {
+    min-width: auto;
+    border-radius: 0px;
+    text-indent: -999999em;
+    background: var(--color-logo);
+    -webkit-mask: url(https://static.loopring.io/assets/svg/logo.svg) center center / contain space;
+    width: 105px;
+    height: 40px;
+    padding: 8px;
+    color: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    outline: 0px;
+    border: 0px;
+    margin: -10px 0px 0px -12px;
+    cursor: pointer;
+}
+
+#logo::after {
+    content: "beta";
+    position: absolute;
+    color: var(--color-logo);
+    display: block;
+    font-size: 1rem;
+    line-height: 0.8rem;
+    right: -24px;
+    top: 14px;
+    font-weight: 200;
+    opacity: 0;
+    box-shadow: 0 0 1px 0 var(--color-logo);
+    border-radius: 2px;
+    padding: 3px 2px;
+}
+
+

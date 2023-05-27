@@ -13,4 +13,8 @@ html {
     --color-text-Button: var(--dark);
     --color-text-ButtonSelect: var(--dark);
     --color-text-Disable: var(--dark) 25;
+    --color-box: var(--light);
+    --color-logo: #3B5AF4;
+
 }
+

@@ -1,5 +1,6 @@
 @import 'reset.css';
 
+
 html {
     --color-global-Bg: var(--dark900);
     --color-primary: #446EFF;
@@ -14,4 +15,7 @@ html {
     --color-text-Button: var(--light);
     --color-text-ButtonSelect: var(--light);
     --color-text-Disable: var(--light) 45;
+    --color-box: var(--dark);
+    --color-logo: #FFFFFF;
 }
+
