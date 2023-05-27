@@ -50,7 +50,7 @@ const resources = {
         "Your Gateway to Ethereum DeFi, \n NFTs, and Financial Freedom",
       labelIOS: "iOS",
       labelAndroid: "Android",
-      labelGooglePlay: "labelGooglePlay",
+      labelGooglePlay: "Google Play",
       labelFeature1: "Fast, Secure, and 100x Lower Fees",
       labelFeatureDes1:
         "Experience DeFi as it \n should be - fast and affordable. Built with zkRollups, Loopring provides instant transactions at 100x \n lower fees than Ethereum without sacrificing any of its security.",
