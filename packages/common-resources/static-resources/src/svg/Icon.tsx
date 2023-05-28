@@ -775,7 +775,6 @@ export const MediumIcon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
-
 export const DiscordIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon

@@ -2,12 +2,13 @@
 
 
 html {
-    --color-global-Bg: var(--dark900);
+    --color-global-Bg: var(--dark);
     --color-primary: #446EFF;
     --color-primary-pressed: #2D49B2;
     --color-disable: #343754;
     --color-text-primary: var(--light);
     --color-border: var(--light900);
+    --color-divide: var(--dark800);
     --color-primary-hover: var(--light900);
     --color-border-hover: var(--color-primary);
     --color-text-Secondary: var(--light500);
@@ -15,7 +16,7 @@ html {
     --color-text-Button: var(--light);
     --color-text-ButtonSelect: var(--light);
     --color-text-Disable: var(--light) 45;
-    --color-box: var(--dark);
+    --color-box: var(--dark900);
     --color-logo: #FFFFFF;
 }
 

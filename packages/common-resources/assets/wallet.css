@@ -1,5 +1,15 @@
 body {
     background: var(--color-global-Bg);
+    font-family: Roboto, Helvetica, Arial, "华文细黑", "Microsoft YaHei",
+    "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
+    -webkit-user-drag: none;
+    -moz-user-select: none; /* These user-select properties are inheritable, used to prevent text selection */
+    -webkit-user-select: none;
+    -ms-user-select: none; /* From IE10 only */
+    user-select: none; /* Not valid CSS yet, as of July 2012 */
+
+    -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
+    user-drag: none;
 }
 
 button {
@@ -62,21 +72,6 @@ footer .content {
     display: flex;
 }
 
-/* Ethereum Unleashed */
-
-#labelEthereumUnleashed {
-    width: 522px;
-    height: 72px;
-    font-weight: 700;
-    font-size: 56px;
-    line-height: 72px;
-    background: linear-gradient(90deg, #D7B2FF 0%, #77AAFF 53.24%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    /*background-clip: text;*/
-    border-radius: 2px;
-    text-fill-color: transparent;
-}
 
 /* Rectangle 1662 */
 
@@ -108,6 +103,7 @@ footer .content {
 
 }
 
+
 a.Typography-root,
 a.Typography-root:active,
 a.Typography-root:visited,
@@ -130,11 +126,16 @@ a.Typography-root:hover,
     text-decoration: underline;
 }
 
-.downLoadBtnGroup .Typography-roo {
-    display: inline-block;
-    margin-left: 8px;
+
+h3.Typography-root {
+    font-size: var(--h1)
 }
 
+h3 ~ p.Typography-root {
+    color: var(--color-text-Third);
+    font-size: var(--h5)
+
+}
 
 #logo {
     min-width: auto;
@@ -173,11 +174,19 @@ a.Typography-root:hover,
     padding: 3px 2px;
 }
 
+.downLoadBtnGroup .Typography-roo {
+    display: inline-block;
+    margin-left: 8px;
+}
+
+.downLoadBtnGroup svg {
+    fill: var(--color-text-Button);
+}
+
 .downLoadBtnGroup {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    margin-top: 24px;
     padding-left: 24px;
 }
 
@@ -192,10 +201,86 @@ a.Typography-root:hover,
     padding: 0 24px;
 }
 
+
+/* Ethereum Unleashed */
+
+#labelEthereumUnleashed {
+    width: 522px;
+    height: 72px;
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 72px;
+    background: linear-gradient(90deg, #D7B2FF 0%, #77AAFF 53.24%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /*background-clip: text;*/
+    border-radius: 2px;
+    text-fill-color: transparent;
+    margin-top: 40px;
+    margin-bottom: 16px;
+}
+
+#labelGatewayToEthereum {
+    margin-bottom: 32px;
+    font-size: var(--h4);
+
+}
+
+footer .group {
+    padding-top: 16px;
+}
+
+footer .group h6 {
+    font-size: var(--body2);
+    color: var(--color-text-Third);
+    line-height: 4em;
+    padding-bottom: 8px;
+}
+
+footer .group .Typography-root {
+    font-size: var(--body2);
+    line-height: 2em;
+
+}
+
+.groupIcon li {
+    padding-right: 8px;
+}
+
+.groupIcon .icon svg {
+    font-size: var(--h5);
+    fill: var(--color-text-Secondary);
+    width: 36px;
+    height: 36px;
+}
+
+.groupIcon a.icon:hover svg {
+    fill: var(--color-text-primary);
+}
+
+#labelCopyRight {
+    color: var(--color-text-Third);
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    border-top: 1px solid var(--color-divide);
+}
+
+
+footer .content {
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
 footer .footerWallet {
+    background: var(--color-box);
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+footer .footerWallet .wrap {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
 }
-
 
