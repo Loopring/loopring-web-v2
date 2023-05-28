@@ -208,8 +208,13 @@ html {
     --color-warning: #FBA95C;
     --color-error: #FF5677;
     /**** config pex ****/
+    --h1: 48px;
+    --h4: 24px;
+    --h5: 20px;
+    --body2: 12px;
     --header-row-height: 44px;
     --header-height: 64px;
+
     --header-submenu-item-height: 52px;
     --header-submenu-item-width: 250px;
 }
