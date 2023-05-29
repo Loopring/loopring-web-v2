@@ -377,6 +377,8 @@ export const useBtradeSwap = <
           eddsaSignature: "",
           clientOrderId: "",
           orderType: sdk.OrderTypeResp.TakerOnly,
+          fastMode:
+            tradeCalcData.btradeType === BtradeType.Speed ? true : false,
         };
         myLog("useBtradeSwap: submitOrder request", request);
         const response: { hash: string } | any =
