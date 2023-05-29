@@ -78,7 +78,7 @@ const resources = {
   en_US: {
     common: {
       labelNavZkRollupLayer2: "zkRollup Layer 2",
-      labelNavWallet: "Wallet",
+      labelNavWallet: "Wallet Guardian",
       labelNavLanuch: "Launch App",
       labelAbout: "About",
       labelLoopringOrg: "Loopring.org",
