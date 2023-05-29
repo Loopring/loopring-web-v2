@@ -2,13 +2,22 @@ body {
     background: var(--color-global-Bg);
     font-family: Roboto, Helvetica, Arial, "华文细黑", "Microsoft YaHei",
     "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
-    -webkit-user-drag: none;
-    -moz-user-select: none; /* These user-select properties are inheritable, used to prevent text selection */
-    -webkit-user-select: none;
-    -ms-user-select: none; /* From IE10 only */
-    user-select: none; /* Not valid CSS yet, as of July 2012 */
-    -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
-    user-drag: none;
+    /*-webkit-user-drag: none;*/
+    /*-moz-user-select: none; !* These user-select properties are inheritable, used to prevent text selection *!*/
+    /*-webkit-user-select: none;*/
+    /*-ms-user-select: none; !* From IE10 only *!*/
+    /*user-select: none; !* Not valid CSS yet, as of July 2012 *!*/
+    /*-webkit-user-drag: none; !* Prevents dragging of images/divs etc *!*/
+    /*user-drag: none;*/
+    /*-moz-user-select: -moz-none;*/
+    /*-khtml-user-select: none;*/
+    /*-webkit-user-select: none;*/
+    /*
+      Introduced in IE 10.
+      See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+    */
+    /*-ms-user-select: none;*/
+    /*user-select: none;*/
 }
 
 button {

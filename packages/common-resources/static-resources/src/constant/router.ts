@@ -182,14 +182,6 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
-      id: "stopLimit",
-      i18nKey: "labelStopLimit",
-      description: "labelStopLimitDescription",
-    },
-    router: { path: "/trade/stoplimit/${pair}" },
-  },
-  {
-    label: {
       id: "btrade",
       i18nKey: "labelBtradeTrade",
       description: "labelBtradeTradeDescription",
