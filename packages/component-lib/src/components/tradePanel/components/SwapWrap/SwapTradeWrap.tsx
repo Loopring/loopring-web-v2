@@ -241,16 +241,15 @@ export const SwapTradeWrap = <
       {tradeCalcData.isBtrade && (
         <Box
           className={"tool-bar"}
-          paddingX={2}
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
         >
           <Box component={"header"} width={"100%"}>
             <TabsStyle
-              className={"trade-tabs pro-tabs"}
+              className={"trade-tabs swap"}
               variant={"fullWidth"}
-              value={tradeCalcData.type}
+              value={tradeData.btradeType}
               onChange={(_e, value) =>
                 onChangeEvent(0, {
                   tradeData: {
@@ -263,14 +262,14 @@ export const SwapTradeWrap = <
               }
             >
               <Tab
-                className={"trade-tab-buy"}
-                value={TradeProType.buy}
+                className={"trade-tab-quantity"}
+                value={BtradeType.Quantity}
                 label={t("labelBtrade" + BtradeType.Quantity)}
               />
               <Tab
-                className={"trade-tab-sell"}
-                value={TradeProType.sell}
-                label={t("labelProSell" + BtradeType.Speed)}
+                className={"trade-tab-speed"}
+                value={BtradeType.Speed}
+                label={t("labelBtrade" + BtradeType.Speed)}
               />
             </TabsStyle>
           </Box>
@@ -278,7 +277,7 @@ export const SwapTradeWrap = <
       )}
       <Grid
         item
-        marginTop={3}
+        marginTop={tradeCalcData.isBtrade ? 1 : 3}
         display={"flex"}
         alignSelf={"stretch"}
         justifyContent={"flex-start"}

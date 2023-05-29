@@ -49,7 +49,6 @@ import {
   SwapData,
   SwapTradeData,
   SwapType,
-  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -59,7 +58,6 @@ import { useHistory } from "react-router-dom";
 
 import { useTradeBtrade } from "../../stores/router/tradeBtrade";
 import BigNumber from "bignumber.js";
-import { btradeOrderbookService } from "../../services/socket/services/btradeOrderbookService";
 
 const useBtradeSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket();
@@ -72,22 +70,24 @@ const useBtradeSocket = () => {
     ) {
       sendSocketTopic({
         [sdk.WsTopicType.account]: true,
-        [sdk.WsTopicType.btradedepth]: {
-          showOverlap: false,
-          markets: [tradeBtrade?.depth?.symbol],
-          level: 0,
-          snapshot: true,
-        },
+        // TODO: btrade Socket
+        // [sdk.WsTopicType.btradedepth]: {
+        //   showOverlap: false,
+        //   markets: [tradeBtrade?.depth?.symbol],
+        //   level: 0,
+        //   snapshot: true,
+        // },
       });
     } else if (tradeBtrade?.depth?.symbol) {
-      sendSocketTopic({
-        [sdk.WsTopicType.btradedepth]: {
-          showOverlap: false,
-          markets: [tradeBtrade?.depth?.symbol],
-          level: 0,
-          snapshot: true,
-        },
-      });
+      // TODO: btrade Socket
+      // sendSocketTopic({
+      //   [sdk.WsTopicType.btradedepth]: {
+      //     showOverlap: false,
+      //     markets: [tradeBtrade?.depth?.symbol],
+      //     level: 0,
+      //     snapshot: true,
+      //   },
+      // });
     }
     return () => {
       socketEnd();
@@ -377,7 +377,8 @@ export const useBtradeSwap = <
           eddsaSignature: "",
           clientOrderId: "",
           orderType: sdk.OrderTypeResp.TakerOnly,
-          fastMode: false,
+          fastMode:
+            tradeCalcData.btradeType === BtradeType.Speed ? true : false,
         };
         myLog("useBtradeSwap: submitOrder request", request);
         const response: { hash: string } | any =
@@ -497,7 +498,7 @@ export const useBtradeSwap = <
       });
       setToastOpen({
         open: true,
-        type: ToastType.error,
+        type: "error",
         content,
       });
     }
@@ -621,31 +622,32 @@ export const useBtradeSwap = <
       });
     }
   }, [tradeData, market, tradeCalcData, marketArray, account.readyState]);
-  const subject = React.useMemo(() => btradeOrderbookService.onSocket(), []);
-  React.useEffect(() => {
-    // const tradeBtrade = store.getState()._router_tradeBtrade
-    const subscription = subject.subscribe(({ btradeOrderbookMap }) => {
-      const { depth } = store.getState()._router_tradeBtrade.tradeBtrade;
-      if (
-        depth?.symbol &&
-        btradeOrderbookMap &&
-        btradeOrderbookMap[depth?.symbol]
-      ) {
-        updateTradeBtrade({
-          depth: {
-            ...depth,
-            ...btradeOrderbookMap[depth.symbol],
-            timestamp: Date.now(),
-          },
-        });
-      }
-
-      // const walletLayer2Status = store.getState().walletLayer2.status;
-      // const walletLayer1Status = store.getState().walletLayer1.status;
-      // _socketUpdate({ walletLayer2Status, walletLayer1Status });
-    });
-    return () => subscription.unsubscribe();
-  }, [subject]);
+  // TODO: btrade Socket
+  // const subject = React.useMemo(() => btradeOrderbookService.onSocket(), []);
+  // React.useEffect(() => {
+  //   // const tradeBtrade = store.getState()._router_tradeBtrade
+  //   const subscription = subject.subscribe(({ btradeOrderbookMap }) => {
+  //     const { depth } = store.getState()._router_tradeBtrade.tradeBtrade;
+  //     if (
+  //       depth?.symbol &&
+  //       btradeOrderbookMap &&
+  //       btradeOrderbookMap[depth?.symbol]
+  //     ) {
+  //       updateTradeBtrade({
+  //         depth: {
+  //           ...depth,
+  //           ...btradeOrderbookMap[depth.symbol],
+  //           timestamp: Date.now(),
+  //         },
+  //       });
+  //     }
+  //
+  //     // const walletLayer2Status = store.getState().walletLayer2.status;
+  //     // const walletLayer1Status = store.getState().walletLayer1.status;
+  //     // _socketUpdate({ walletLayer2Status, walletLayer1Status });
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [subject]);
   useBtradeSocket();
   useWalletLayer2Socket({ walletLayer2Callback });
 
@@ -1083,6 +1085,7 @@ export const useBtradeSwap = <
               sellToken.precision,
               undefined
             ),
+
             lastStepAt: type,
           };
           return _tradeCalcData;
