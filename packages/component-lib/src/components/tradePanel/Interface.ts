@@ -60,32 +60,14 @@ export type LimitTradeData<T> = {
   quote: T;
   type: TradeProType;
   isChecked?: boolean;
-  // slippage: number | string,
-  // __cache__?: {
-  //     [ key: string ]: any
-  // }
 };
+
 export type StopLimitTradeData<T> = {
   price: T;
   stopPrice: T;
   base: T;
   quote: T;
   type: TradeProType;
-  // slippage: number | string,
-  // __cache__?: {
-  //     [ key: string ]: any
-  // }
-};
-export type StopLimitTradeData<T> = {
-  price: T;
-  stopPrice: T;
-  base: T;
-  quote: T;
-  type: TradeProType;
-  // slippage: number | string,
-  // __cache__?: {
-  //     [ key: string ]: any
-  // }
 };
 export type MarketTradeData<T> = {
   // price: T,
