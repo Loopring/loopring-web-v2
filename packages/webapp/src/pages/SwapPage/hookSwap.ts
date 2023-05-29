@@ -203,8 +203,6 @@ export const useSwap = <
     label: string | undefined;
   } => {
     if (!tokenMap && !tokenPrices) {
-      // setSwapBtnStatus();
-      // return {tradeBtnStatus:TradeBtnStatus.DISABLED};
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,

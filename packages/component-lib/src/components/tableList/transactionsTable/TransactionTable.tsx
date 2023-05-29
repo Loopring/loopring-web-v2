@@ -396,12 +396,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                     "",
                   ]
                 : [
-                  sdk.UserTxTypes.L2_STAKING,
-                  sdk.UserTxTypes.DUAL_INVESTMENT,
-                  sdk.UserTxTypes.SEND_LUCKY_TOKEN,
-                  sdk.UserTxTypes.TRANSFER, 
-                  sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
-                ].includes(row.side.toLowerCase())
+                    sdk.UserTxTypes.L2_STAKING,
+                    sdk.UserTxTypes.DUAL_INVESTMENT,
+                    sdk.UserTxTypes.SEND_LUCKY_TOKEN,
+                    sdk.UserTxTypes.TRANSFER,
+                    sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN,
+                  ].includes(row.side.toLowerCase())
                 ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
@@ -423,24 +423,26 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   ]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
-            let path: string
-            if ([
-              sdk.UserTxTypes.L2_STAKING,
-              sdk.UserTxTypes.DUAL_INVESTMENT,
-              sdk.UserTxTypes.SEND_LUCKY_TOKEN,
-              sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
-            ].includes(row.side.toLowerCase())) {
+            let path: string;
+            if (
+              [
+                sdk.UserTxTypes.L2_STAKING,
+                sdk.UserTxTypes.DUAL_INVESTMENT,
+                sdk.UserTxTypes.SEND_LUCKY_TOKEN,
+                sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN,
+              ].includes(row.side.toLowerCase())
+            ) {
               path =
                 row.txHash !== ""
                   ? etherscanBaseUrl + `/tx/${row.txHash}`
                   : Explorer +
-                  `tx/${row.hash}-transfer-${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`;
+                    `tx/${row.hash}-transfer-${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`;
             } else {
               path =
                 row.txHash !== ""
                   ? etherscanBaseUrl + `/tx/${row.txHash}`
                   : Explorer +
-                  `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+                    `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
             }
             return (
               <Box

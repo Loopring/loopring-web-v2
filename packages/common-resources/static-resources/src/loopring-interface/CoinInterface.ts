@@ -136,12 +136,12 @@ export type TradeCalcProData<T> = {
   fee: string;
   feeTakerRate?: number;
   tradeCost?: string;
+  lastStepAt?: "base" | "quote";
+  stopRange?: [string | undefined, string | undefined];
   isNotMatchMarketPrice?: boolean;
   marketPrice?: string;
   marketRatePrice?: string;
   isChecked?: boolean;
-  lastStepAt?: "base" | "quote";
-  stopRange?: [string | undefined, string | undefined];
 };
 
 /**

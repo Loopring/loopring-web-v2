@@ -138,6 +138,7 @@ export const RedPacketClaimPanel = ({hideAssets} : {hideAssets?: boolean}) => {
       >
         <Box className="tableWrapper table-divide-short">
           <RedPacketClaimTable
+
             {...{
               rawData: redPacketClaimList,
               showloading: showLoading,

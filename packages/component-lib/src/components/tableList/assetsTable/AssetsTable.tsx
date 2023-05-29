@@ -120,7 +120,7 @@ export type AssetsTableProps<R = RawDataAssetsItem> = {
   getMarketArrayListCallback: (token: string) => string[];
   rowConfig?: typeof RowConfig;
   disableWithdrawList: string[];
-  forexMap: ForexMap<Currency>;
+  forexMap: ForexMap<sdk.Currency>;
   onTokenLockHold?: (item: R) => void;
   tokenLockDetail?: any[] | undefined;
   hideAssets?: boolean;
