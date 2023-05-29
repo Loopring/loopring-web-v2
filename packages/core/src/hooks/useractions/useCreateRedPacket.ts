@@ -90,10 +90,11 @@ export const useCreateRedPacket = <
   const feeProps =
     redPacketOrder.tradeType === "TOKEN"
       ? {
-          requestType: sdk.OffchainFeeReqType.TRANSFER,
+          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+          extraType: "",
         }
       : {
-          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
           tokenAddress: redPacketOrder?.tokenAddress,
         };
 

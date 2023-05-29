@@ -1,4 +1,5 @@
 import {
+  BtradeType,
   CAMPAIGNTAGCONFIG,
   CoinKey,
   FeeInfo,
@@ -52,6 +53,7 @@ export type SwapTradeData<T> = {
   __cache__?: {
     [key: string]: any;
   };
+  btradeType?: BtradeType;
 };
 
 export type LimitTradeData<T> = {

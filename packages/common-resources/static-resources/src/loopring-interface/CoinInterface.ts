@@ -105,6 +105,10 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   showLargeVolumeSwapInfo?: boolean;
   isBtrade: undefined | false;
 };
+export enum BtradeType {
+  Quantity = "Quantity",
+  Speed = "Speed",
+}
 export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: true;
   maxFeeBips: number;
@@ -118,7 +122,7 @@ export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   l1Pool: string;
   l2Pool: string;
   slippage: number | string;
-
+  btradeType: BtradeType;
   // totalPool: string;
 };
 

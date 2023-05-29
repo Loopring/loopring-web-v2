@@ -66,12 +66,18 @@ export const useClaimConfirm = <
   const { btnStatus, enableBtn, disableBtn, btnInfo } = useBtnStatus();
   const feeProps =
     claimValue.tradeType === TRADE_TYPE.TOKEN
-      ? {
-          requestType: sdk.OffchainFeeReqType.TRANSFER,
-        }
+      ? claimType === CLAIM_TYPE.lrcStaking
+        ? {
+            requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+            extraType: "",
+          }
+        : {
+            requestType: sdk.OffchainFeeReqType.TRANSFER,
+          }
       : {
-          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
           tokenAddress: claimValue?.tokenAddress,
+          extraType: "",
         };
   const {
     chargeFeeTokenList,
@@ -328,13 +334,11 @@ export const useClaimConfirm = <
           const fee = sdk.toBig(feeRaw);
 
           let token: any;
-          // let nftData: any = undefined;
           let amount: any = 0;
           if (claimValue?.nftData) {
             token = {
               tokenId: claimValue.tokenId,
             };
-            // nftData = claimValue.nftData;
             amount = claimValue.volume;
           } else {
             token = tokenMap[claimValue?.belong];

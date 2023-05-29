@@ -854,7 +854,8 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 },
                 validity: { start },
                 side,
-                // volumes,
+                baseSettled,
+                quoteSettled,
               } = item;
               //@ts-ignore
               const [, baseTokenSymbol, quoteTokenSymbol] = market
@@ -866,7 +867,9 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 toSymbol,
                 amountFOut,
                 _price,
-                amountFIn;
+                amountFIn,
+                settledIn,
+                settledOut;
 
               if (side === sdk.Side.Sell) {
                 fromSymbol = baseTokenSymbol;
@@ -875,6 +878,8 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 amountFOut = quoteFilled;
                 amountIn = baseAmount;
                 amountOut = quoteAmount;
+                settledIn = baseSettled;
+                settledOut = quoteSettled;
                 _price = {
                   from: baseTokenSymbol,
                   key: quoteTokenSymbol,
@@ -892,25 +897,23 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 amountFIn = quoteFilled;
                 amountOut = baseAmount;
                 amountIn = quoteAmount;
-                _price = {
-                  from: baseTokenSymbol,
-                  key: quoteTokenSymbol,
-                  value: getValuePrecisionThousand(
-                    price,
-                    tokenMap[quoteTokenSymbol].precision,
-                    tokenMap[quoteTokenSymbol].precision,
-                    undefined
-                  ),
-                };
+                settledOut = baseSettled;
+                (settledIn = quoteSettled),
+                  (_price = {
+                    from: baseTokenSymbol,
+                    key: quoteTokenSymbol,
+                    value: getValuePrecisionThousand(
+                      price,
+                      tokenMap[quoteTokenSymbol].precision,
+                      tokenMap[quoteTokenSymbol].precision,
+                      undefined
+                    ),
+                  });
               }
 
               const fromToken = tokenMap[fromSymbol];
               const toToken = tokenMap[toSymbol];
-              // let { amountIn, amountOut, tokenIn, tokenOut } = tokenInfos;
 
-              // const quoteToken = tokenMap[quoteTokenSymbol];
-              // const  = fromToken?.symbol;
-              // const toSymbol = toToken?.symbol;
               const fromAmount = getValuePrecisionThousand(
                 sdk.toBig(amountIn).div("1e" + fromToken.decimals),
                 fromToken.precision,
@@ -923,6 +926,12 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 fromToken.precision,
                 undefined
               );
+              const settledFromAmount = getValuePrecisionThousand(
+                sdk.toBig(settledIn).div("1e" + fromToken.decimals),
+                fromToken.precision,
+                fromToken.precision,
+                undefined
+              );
 
               const toAmount = getValuePrecisionThousand(
                 sdk.toBig(amountOut).div("1e" + toToken.decimals),
@@ -930,12 +939,20 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 toToken.precision,
                 undefined
               );
+
               const toFAmount = getValuePrecisionThousand(
                 sdk.toBig(amountFOut).div("1e" + toToken.decimals),
                 toToken.precision,
                 toToken.precision,
                 undefined
               );
+              const settledToAmount = getValuePrecisionThousand(
+                sdk.toBig(settledOut).div("1e" + toToken.decimals),
+                toToken.precision,
+                toToken.precision,
+                undefined
+              );
+
               const feeAmount =
                 fee && fee != 0
                   ? getValuePrecisionThousand(
@@ -972,6 +989,8 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 toAmount,
                 fromFAmount,
                 toFAmount,
+                settledFromAmount,
+                settledToAmount,
                 toSymbol,
                 time: Number(start + "000"),
                 rawData: item,

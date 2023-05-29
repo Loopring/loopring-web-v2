@@ -1,6 +1,7 @@
 import { SwapTradeData } from "../../Interface";
 import {
   BtradeTradeCalcData,
+  BtradeType,
   CheckBoxIcon,
   CheckedIcon,
   CoinInfo,
@@ -15,6 +16,7 @@ import {
   ReverseIcon,
   SwapTradeCalcData,
   TradeBtnStatus,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
@@ -26,12 +28,13 @@ import {
   Tooltip,
   Typography,
   Link,
+  Tab,
 } from "@mui/material";
 import { InputButton } from "../../../basic-lib";
 
 import { SwapTradeProps } from "./Interface";
 import { useSettings } from "../../../../stores";
-import { ButtonStyle, IconButtonStyled } from "../Styled";
+import { ButtonStyle, IconButtonStyled, TabsStyle } from "../Styled";
 import { useHistory } from "react-router-dom";
 
 export const SwapTradeWrap = <
@@ -235,6 +238,44 @@ export const SwapTradeWrap = <
       flex={isMobile ? "1" : "initial"}
       height={"100%"}
     >
+      {tradeCalcData.isBtrade && (
+        <Box
+          className={"tool-bar"}
+          paddingX={2}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          <Box component={"header"} width={"100%"}>
+            <TabsStyle
+              className={"trade-tabs pro-tabs"}
+              variant={"fullWidth"}
+              value={tradeCalcData.type}
+              onChange={(_e, value) =>
+                onChangeEvent(0, {
+                  tradeData: {
+                    ...swapData.tradeData,
+                    btradeType: value,
+                  } as SwapTradeData<T>,
+                  type: (tradeCalcData as unknown as SCD)?.lastStepAt ?? "sell",
+                  to: "button",
+                })
+              }
+            >
+              <Tab
+                className={"trade-tab-buy"}
+                value={TradeProType.buy}
+                label={t("labelBtrade" + BtradeType.Quantity)}
+              />
+              <Tab
+                className={"trade-tab-sell"}
+                value={TradeProType.sell}
+                label={t("labelProSell" + BtradeType.Speed)}
+              />
+            </TabsStyle>
+          </Box>
+        </Box>
+      )}
       <Grid
         item
         marginTop={3}

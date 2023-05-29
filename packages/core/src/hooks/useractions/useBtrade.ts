@@ -27,6 +27,7 @@ import {
 import {
   AccountStatus,
   BtradeTradeCalcData,
+  BtradeType,
   CoinMap,
   CustomErrorWithCode,
   defaultBlockTradeSlipage,
@@ -164,6 +165,7 @@ export const useBtradeSwap = <
     setTradeData((state) => {
       return {
         ...state,
+        btradeType: state?.btradeType ? state.btradeType : BtradeType.Quantity,
         sell: { ...state?.sell, tradeValue: undefined },
         buy: { ...state?.buy, tradeValue: undefined },
         isChecked: undefined,
@@ -568,6 +570,9 @@ export const useBtradeSwap = <
       setTradeData((tradeData) => {
         return {
           ...tradeData,
+          btradeType: tradeData?.btradeType
+            ? tradeData.btradeType
+            : BtradeType.Quantity,
           sell: {
             belong: tradeCalcData.coinSell,
             balance: walletMap
@@ -590,6 +595,9 @@ export const useBtradeSwap = <
         setTradeData((state) => {
           return {
             ...state,
+            btradeType: state?.btradeType
+              ? state.btradeType
+              : BtradeType.Quantity,
             sell: { belong: tradeCalcData.coinSell },
             buy: { belong: tradeCalcData.coinBuy },
           } as T;
@@ -755,11 +763,16 @@ export const useBtradeSwap = <
             totalQuota: undefined,
             l1Pool: undefined,
             l2Pool: undefined,
+            btradeType: BtradeType.Quantity,
           };
           return _tradeCalcData;
         });
         setTradeData((state) => {
-          return { ...state, ...tradeDataTmp };
+          return {
+            ...state,
+            btradeType: BtradeType.Quantity,
+            ...tradeDataTmp,
+          };
         });
         let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
         setMarket(market);
@@ -818,6 +831,9 @@ export const useBtradeSwap = <
         type
       );
       if (depth && market && _tradePair === tradePair && _tradeData?.sell) {
+        const btradeType = _tradeData.btradeType
+          ? _tradeData.btradeType
+          : BtradeType.Quantity;
         const coinA = _tradeData?.sell.belong;
         const coinB = _tradeData?.buy.belong;
         const sellToken = tokenMap[coinA as string];
@@ -974,6 +990,7 @@ export const useBtradeSwap = <
         let _tradeCalcData: any = {
           minimumReceived,
           maxFeeBips,
+          btradeType,
           volumeSell: calcDexOutput?.sellVol as any,
           volumeBuy: calcDexOutput?.amountBSlipped?.minReceived,
           fee: totalFee,

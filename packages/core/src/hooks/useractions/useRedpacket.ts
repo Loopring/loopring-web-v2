@@ -20,10 +20,10 @@ export function useOpenRedpacket() {
   const { account } = useAccount();
 
   const callOpen = React.useCallback(async () => {
-    setShowAccount({
-      isShow: true,
-      step: AccountStep.RedPacketOpen_Claim_In_Progress,
-    });
+    // setShowAccount({
+    //   isShow: true,
+    //   step: AccountStep.RedPacketOpen_Claim_In_Progress,
+    // });
     const _info = store.getState().modals.isShowRedPacket
       .info as sdk.LuckyTokenItemForReceive & {
       referrer?: string;
@@ -64,9 +64,9 @@ export function useOpenRedpacket() {
           ) {
             throw response;
           }
-          setShowAccount({
-            isShow: false,
-          });
+          // setShowAccount({
+          //   isShow: false,
+          // });
           setShowRedPacket({
             isShow: true,
             step: RedPacketViewStep.BlindBoxDetail,
@@ -95,9 +95,9 @@ export function useOpenRedpacket() {
             throw response;
           }
 
-          setShowAccount({
-            isShow: false,
-          });
+          // setShowAccount({
+          //   isShow: false,
+          // });
           setShowRedPacket({
             isShow: true,
             step: RedPacketViewStep.DetailPanel,
@@ -110,9 +110,9 @@ export function useOpenRedpacket() {
         }
       } catch (error: any) {
         if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
-          setShowAccount({
-            isShow: false,
-          });
+          // setShowAccount({
+          //   isShow: false,
+          // });
           if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
             setShowRedPacket({
               isShow: true,
@@ -136,9 +136,9 @@ export function useOpenRedpacket() {
             UIERROR_CODE.ERROR_REDPACKET_CLAIM_OUT,
           ].includes(error?.code)
         ) {
-          setShowAccount({
-            isShow: false,
-          });
+          // setShowAccount({
+          //   isShow: false,
+          // });
           setShowRedPacket({
             isShow: true,
             step: RedPacketViewStep.TimeOutPanel,
@@ -185,7 +185,6 @@ export const useRedPacketScanQrcodeSuccess = () => {
   const {
     account: { apiKey, accountId },
   } = useAccount();
-  const { callOpen } = useOpenRedpacket();
 
   const [redPacketInfo, setRedPacketInfo] =
     React.useState<{ hash: string; referrer: string } | undefined>(undefined);
@@ -253,37 +252,104 @@ export const useRedPacketScanQrcodeSuccess = () => {
               });
             }
           } else if (difference > 0) {
-            setShowRedPacket({
-              isShow: true,
-              info: {
-                ...luckTokenInfo,
-                referrer: redPacketInfo.referrer,
-              },
-              step: RedPacketViewStep.RedPacketClock,
-            });
+            // change here
+            if (luckTokenInfo.sender.accountId === accountId) {
+              if (
+                luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+              ) {
+                setShowRedPacket({
+                  isShow: true,
+                  info: {
+                    ...luckTokenInfo,
+                    referrer: redPacketInfo.referrer,
+                  },
+                  step: RedPacketViewStep.BlindBoxDetail,
+                });
+              } else {
+                setShowRedPacket({
+                  isShow: true,
+                  info: {
+                    ...luckTokenInfo,
+                    referrer: redPacketInfo.referrer,
+                  },
+                  step: RedPacketViewStep.DetailPanel,
+                });
+              }
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                  referrer: redPacketInfo.referrer,
+                },
+                step: RedPacketViewStep.RedPacketClock,
+              });
+            }
           } else if (
             luckTokenInfo.status == LuckyTokenItemStatus.COMPLETED ||
             luckTokenInfo.status == LuckyTokenItemStatus.OVER_DUE ||
             // difference + 86400000 < 0 ||
             luckTokenInfo.tokenAmount.remainCount === 0
           ) {
-            setShowRedPacket({
-              isShow: true,
-              info: {
-                ...luckTokenInfo,
-              },
-              step: RedPacketViewStep.TimeOutPanel,
-            });
+            if (luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                },
+                step: RedPacketViewStep.BlindBoxDetail,
+              });
+            } else {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                },
+                step: RedPacketViewStep.TimeOutPanel,
+              });
+            }
           } else {
-            setShowRedPacket({
-              isShow: true,
-              info: {
-                ...luckTokenInfo,
-                referrer: redPacketInfo.referrer,
-              },
-              step: RedPacketViewStep.OpenPanel,
-            });
-            callOpen();
+            const canOpenBlindbox =
+              luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
+              luckTokenInfo.status === sdk.LuckyTokenItemStatus.PENDING &&
+              detail.blindBoxStatus === "";
+            const canOpenLuckyToken =
+              luckTokenInfo.type.mode !== sdk.LuckyTokenClaimType.BLIND_BOX &&
+              luckTokenInfo.status === sdk.LuckyTokenItemStatus.PENDING &&
+              !detail.claimStatus;
+            if (canOpenBlindbox || canOpenLuckyToken) {
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...luckTokenInfo,
+                  referrer: redPacketInfo.referrer,
+                  hideViewDetail: accountId !== luckTokenInfo.sender.accountId,
+                },
+                step: RedPacketViewStep.OpenPanel,
+              });
+            } else {
+              if (
+                luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+              ) {
+                setShowRedPacket({
+                  isShow: true,
+                  info: {
+                    ...luckTokenInfo,
+                    referrer: redPacketInfo.referrer,
+                  },
+                  step: RedPacketViewStep.BlindBoxDetail,
+                });
+              } else {
+                setShowRedPacket({
+                  isShow: true,
+                  info: {
+                    ...luckTokenInfo,
+                    referrer: redPacketInfo.referrer,
+                  },
+                  step: RedPacketViewStep.DetailPanel,
+                });
+              }
+            }
           }
           setShowAccount({
             isShow: false,

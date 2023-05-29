@@ -53,7 +53,6 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import _ from "lodash";
-import { AddressType } from "@loopring-web/loopring-sdk";
 import { useDispatch, useSelector } from "react-redux";
 import { updateContacts } from "../../stores/contacts/reducer";
 import {
@@ -371,7 +370,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setAddress(account.accAddress);
     } else if (contactAddress) {
       setAddress(contactAddress);
-      setIsContactSelection(true);
     } else {
       setAddress("");
     }
@@ -670,9 +668,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     [lastRequest, processRequest, setShowAccount]
   );
   const { isHebao } = useIsHebao();
-  const [isContactSelection, setIsContactSelection] = React.useState(
-    contactAddress !== undefined ? true : false
-  );
+
   const contacts = useSelector((state: RootState) => state.contacts.contacts);
   const dispatch = useDispatch();
   React.useEffect(() => {
@@ -794,8 +790,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     addrStatus,
     chargeFeeTokenList,
     isFeeNotEnough,
-    handleOnAddressChange: (value: any, isContactSelection?: boolean) => {
-      setIsContactSelection(isContactSelection ? true : false);
+    handleOnAddressChange: (value: any) => {
       setAddress(value);
     },
     isFromContact: contactAddress ? true : false,
