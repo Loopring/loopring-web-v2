@@ -21,9 +21,9 @@ import {
   IBData,
   MarketType,
   myLog,
-  TradeProType,
   TradeBaseType,
   TradeBtnStatus,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import {
   DepthType,
@@ -96,6 +96,7 @@ export const useLimit = <C extends { [key: string]: any }>({
       balance,
     } as IBData<any>,
     type: pageTradePro.tradeType ?? TradeProType.buy,
+    isChecked: undefined,
   });
   const [isLimitLoading, setIsLimitLoading] = React.useState(false);
 
@@ -159,14 +160,6 @@ export const useLimit = <C extends { [key: string]: any }>({
           },
           TradeBaseType.price
         );
-        // if(account.readyState === 'ACTIVATED'){
-        //
-        // }else{
-        //
-        //
-        //     // const amtTotalForShow = pageTradePro.chooseDepth.amtTotalForShow;
-        //
-        // }
       } else {
         onChangeLimitEvent(
           {
@@ -248,6 +241,10 @@ export const useLimit = <C extends { [key: string]: any }>({
           minimumReceived: undefined,
           priceImpact: undefined,
           priceImpactColor: "inherit",
+          isNotMatchMarketPrice: false,
+          marketPrice: undefined,
+          marketRatePrice: undefined,
+          isChecked: undefined,
         },
       });
     },
@@ -423,7 +420,10 @@ export const useLimit = <C extends { [key: string]: any }>({
             ? tradeData.quote.tradeValue
             : undefined;
 
-        if (formType === TradeBaseType.price) {
+        if (
+          formType === TradeBaseType.price ||
+          formType === TradeBaseType.checkMarketPrice
+        ) {
           amountBase =
             tradeData.base.tradeValue !== undefined
               ? tradeData.base.tradeValue
@@ -454,6 +454,32 @@ export const useLimit = <C extends { [key: string]: any }>({
           amountQuote,
         });
 
+        let isNotMatchMarketPrice, marketPrice, marketRatePrice;
+        if (
+          tokenPrices &&
+          tradeData?.price?.tradeValue &&
+          // @ts-ignore
+          tradeData.price.tradeValue !== "0"
+        ) {
+          marketPrice = sdk
+            .toBig(tokenPrices[tradeData.base.belong])
+            .div(tokenPrices[tradeData.quote.belong]);
+          marketRatePrice = marketPrice.div(tradeData.price.tradeValue);
+          isNotMatchMarketPrice =
+            tradeData.type === "sell"
+              ? marketRatePrice.gt(1.05)
+              : marketRatePrice.lt(0.95);
+          marketPrice = getValuePrecisionThousand(
+            marketPrice.toString(),
+            tokenMap[tradeData.quote.belong].precision,
+            tokenMap[tradeData.quote.belong].precision,
+            tokenMap[tradeData.quote.belong].precision
+          );
+          marketRatePrice =
+            tradeData.type === "sell"
+              ? marketRatePrice.minus(1).times(100).toFixed(2)
+              : sdk.toBig(1).minus(marketRatePrice).times(100).toFixed(2);
+        }
         updatePageTradePro({
           market,
           sellUserOrderInfo,
@@ -467,6 +493,10 @@ export const useLimit = <C extends { [key: string]: any }>({
               calcTradeParams && calcTradeParams.maxFeeBips
                 ? calcTradeParams.maxFeeBips?.toString()
                 : undefined,
+            isNotMatchMarketPrice,
+            marketPrice,
+            marketRatePrice,
+            isChecked: tradeData.isChecked !== undefined && tradeData.isChecked,
           },
         });
         setLimitTradeData((state) => {
@@ -494,6 +524,7 @@ export const useLimit = <C extends { [key: string]: any }>({
               ...state.quote,
               tradeValue: calcTradeParams?.quoteVolShow as number,
             },
+            isChecked: tradeData.isChecked !== undefined && tradeData.isChecked,
           };
         });
       }
@@ -583,8 +614,10 @@ export const useLimit = <C extends { [key: string]: any }>({
       if (
         limitTradeData?.base.tradeValue === undefined ||
         limitTradeData?.quote.tradeValue === undefined ||
+        limitTradeData?.price.tradeValue === undefined ||
         limitTradeData?.base.tradeValue === 0 ||
-        limitTradeData?.quote.tradeValue === 0
+        limitTradeData?.quote.tradeValue === 0 ||
+        limitTradeData?.price.tradeValue === 0
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -623,11 +656,24 @@ export const useLimit = <C extends { [key: string]: any }>({
       ) {
         return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
       } else {
-        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
+        if (
+          pageTradePro?.tradeCalcProData.isNotMatchMarketPrice &&
+          !pageTradePro.tradeCalcProData.isChecked
+        ) {
+          return {
+            label: "",
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+          };
+        } else {
+          return {
+            label: "",
+            tradeBtnStatus: TradeBtnStatus.AVAILABLE,
+          };
+        }
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [limitTradeData, tokenMap]);
+  }, [limitTradeData, tokenMap, pageTradePro.tradeCalcProData?.isChecked]);
 
   const {
     btnStatus: tradeLimitBtnStatus,

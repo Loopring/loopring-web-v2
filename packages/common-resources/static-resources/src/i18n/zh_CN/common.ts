@@ -1693,18 +1693,30 @@ export default {
   labelBtradeInsufficient: "Insufficient",
   labelBtradeTime: "Time",
   labelStopLimit: "Stop-Limit {{tradeType}} {{symbol1}}",
-  labelStopLimitDes:
-    "If the last price goes up to or above {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {{symbol1}} at a price of {{price}} {{symbol2}} will be placed.",
-  labelStopLimitType: "Stop Limit / {{tradeType}}",
-  labelStopLimitStopPrice: "Stop Price",
-  labelStopLimitPriceLimitPrice: "Limit Price",
-  labelStopLimitAmount: "labelStopLimit",
-  labelStopLimitCancel: "Cancel",
-  labelStopLimitConfirm: "Confirm",
-  labelBtradeSwapPending: "Pending",
-  labelStopLimitTitle: "Stop-Limit",
-  labelStopPrice: "Price",
-  labelStopStopPrice: "Stop Price",
-  labelStopLimitWhatIs: "What's Stop Limit?",
-
+  labelLimitDemoDes:
+    "The current price is 2,400 (A). You can set the stop price above the current price, such as 3,000 (B), or below the current price, such as 1,500 (C). Once the price goes up to 3,000 (B) or drops to 1,500 (C), the stop-limit order will be triggered, and the limit order will be automatically placed on the order book.\n Note: <ol>" +
+    "<li>Limit price can be set above or below the stop price for both buy and sell orders. For example, stop price B can be placed along with a lower limit price B1 or a higher limit price B2.\n</li>" +
+    "<li>A limit order is invalid before the stop price is triggered, including when the limit price is reached ahead of the stop price.</li>" +
+    "<li>When the stop price is reached, it only indicates that a limit order is activated and will be submitted to the order book rather than the limit order being filled immediately. The limit order will be executed according to its own rules.</li></ol>",
+  labelLimitFailed: "Submitted failed",
+  labelLimitMarket: "Market data has issue",
+  labelStopLimitOrderGroup: "Stop-Limit Records",
+  labelStoplimit: "Stop limit",
+  labelStopLimitProduct: "Product",
+  labelStopLimitLabelType: "Type",
+  labelStopLimitNotSupport:
+    "Sorry, there is currently insufficient liquidity in this token pair to execute stop-limit orders. Please try again later or consider using a market / limit order instead.",
+  labelStopLimitTriggered:
+    " The market order has been submitted to the orderbook. Time: {{time}}",
+  labelStopLimitCurrentlyInsufficient: "Currently insufficient",
+  labelDUAL_CURRENCY: "DUAL CURRENCY",
+  labelDUAL_BASE: "DUAL BASE",
+  labelBTRADE: "Block Trade",
+  labelL2STAKING: "Staking",
+  labelSTOP_LIMIT: "Stop Limit",
+  labelAMMPending: "Pending",
+  labelAMMTitle: "AMM Investment",
+  labelAMMChartFailed: "Failed load data",
+  labelExpectSettlementLimitPrice:
+    "The expected settlement price from this order is {{symbolBase}}/{{symbolQuote}} = {{price}}, while the current market price from a trusted oracle is {{symbolBase}}/{{symbolQuote}} = {{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
 };

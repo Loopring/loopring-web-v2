@@ -18,7 +18,8 @@ import {
 import { useSettings } from "../../../stores";
 import { CoinIcons } from "./components/CoinIcons";
 import ActionMemo, { LockedMemo } from "./components/ActionMemo";
-import { Currency, XOR } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { XOR } from "../../../types/lib";
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
