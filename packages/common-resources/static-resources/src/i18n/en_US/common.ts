@@ -1751,4 +1751,6 @@ export default {
   labelReferralMethod1Step4: "Both of us receive rewards",
   labelReferralMyReferrals: "My Referrals",
   labelReferralReferralsRefunds: "Referee Refunds",
+  labelBtradeQuantity: "Prioritize Quantity",
+  labelBtradeSpeed: "Prioritize Speed",
 };

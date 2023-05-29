@@ -6,7 +6,6 @@ import {
   LIVE_FEE_TIMES,
   myLog,
   SUBMIT_PANEL_AUTO_CLOSE,
-  TokenType,
   TRADE_TYPE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
@@ -59,7 +58,7 @@ export const useClaimConfirm = <
     setShowAccount,
     setShowClaimWithdraw,
     modals: {
-      isShowClaimWithdraw: { claimToken, isShow, claimType, successCallback},
+      isShowClaimWithdraw: { claimToken, isShow, claimType, successCallback },
       isShowAccount: { info },
     },
   } = useOpenModals();
@@ -67,12 +66,18 @@ export const useClaimConfirm = <
   const { btnStatus, enableBtn, disableBtn, btnInfo } = useBtnStatus();
   const feeProps =
     claimValue.tradeType === TRADE_TYPE.TOKEN
-      ? {
-          requestType: sdk.OffchainFeeReqType.TRANSFER,
-        }
+      ? claimType === CLAIM_TYPE.lrcStaking
+        ? {
+            requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+            extraType: "",
+          }
+        : {
+            requestType: sdk.OffchainFeeReqType.TRANSFER,
+          }
       : {
-          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
           tokenAddress: claimValue?.tokenAddress,
+          extraType: "",
         };
   const {
     chargeFeeTokenList,
@@ -110,7 +115,6 @@ export const useClaimConfirm = <
     // claimToken
     if (claimToken) {
       if (claimToken?.isNft) {
-        
         updateClaimData({
           ...claimToken.nftTokenInfo,
           tradeType: TRADE_TYPE.NFT,
@@ -123,7 +127,7 @@ export const useClaimConfirm = <
           balance: Number(claimToken.total),
           claimType,
           luckyTokenHash: claimToken.luckyTokenHash,
-          successCallback
+          successCallback,
         } as any);
       } else {
         const token = tokenMap[idIndex[claimToken.tokenId]];
@@ -134,7 +138,7 @@ export const useClaimConfirm = <
           volume: claimToken.total,
           balance: volumeToCount(token.symbol, claimToken.total),
           claimType,
-          successCallback
+          successCallback,
         });
       }
     } else {
@@ -162,7 +166,6 @@ export const useClaimConfirm = <
       const { apiKey, connectName, eddsaKey } = account;
       const claimValue = store.getState()._router_modalData.claimValue;
       // const claimValue = store.getState()._router_modalData.c;
-      
 
       try {
         if (
@@ -222,8 +225,8 @@ export const useClaimConfirm = <
           ) {
             throw response;
           }
-          claimValue.successCallback && claimValue.successCallback()
-          
+          claimValue.successCallback && claimValue.successCallback();
+
           setShowAccount({
             isShow: true,
             step: AccountStep.ClaimWithdraw_In_Progress,
@@ -331,13 +334,11 @@ export const useClaimConfirm = <
           const fee = sdk.toBig(feeRaw);
 
           let token: any;
-          let nftData = undefined;
           let amount: any = 0;
           if (claimValue?.nftData) {
             token = {
               tokenId: claimValue.tokenId,
             };
-            nftData = claimValue.nftData;
             amount = claimValue.volume;
           } else {
             token = tokenMap[claimValue?.belong];
@@ -368,15 +369,13 @@ export const useClaimConfirm = <
                 luckyTokenHash?: string;
               })
             | sdk.OriginStakeClaimRequestV3 = {} as any;
-          
+
           if (claimValue.claimType === CLAIM_TYPE.redPacket) {
             request = {
               tokenId: token.tokenId,
               feeTokenId: feeToken.tokenId,
               amount: amount.toString(),
-              nftData: token.type === "ERC20" 
-                ? undefined 
-                : claimValue.nftData,
+              nftData: token.type === "ERC20" ? undefined : claimValue.nftData,
               claimer: accAddress,
               transfer: {
                 exchange: exchangeInfo.exchangeAddress,
@@ -503,7 +502,7 @@ export const useClaimConfirm = <
     },
     [setShowAccount]
   );
-  claimToken?.luckyTokenHash
+  claimToken?.luckyTokenHash;
   return {
     retryBtn,
     claimProps: {

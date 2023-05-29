@@ -13,7 +13,6 @@ import {
   ErrorMap,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { info } from "console";
 
 export function useOpenRedpacket() {
   const { setShowRedPacket, setShowAccount } = useOpenModals();
@@ -186,7 +185,6 @@ export const useRedPacketScanQrcodeSuccess = () => {
   const {
     account: { apiKey, accountId },
   } = useAccount();
-  const { callOpen } = useOpenRedpacket();
 
   const [redPacketInfo, setRedPacketInfo] =
     React.useState<{ hash: string; referrer: string } | undefined>(undefined);
@@ -256,7 +254,9 @@ export const useRedPacketScanQrcodeSuccess = () => {
           } else if (difference > 0) {
             // change here
             if (luckTokenInfo.sender.accountId === accountId) {
-              if (luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+              if (
+                luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+              ) {
                 setShowRedPacket({
                   isShow: true,
                   info: {
@@ -309,24 +309,28 @@ export const useRedPacketScanQrcodeSuccess = () => {
               });
             }
           } else {
-            const canOpenBlindbox = luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
-              && luckTokenInfo.status === sdk.LuckyTokenItemStatus.PENDING 
-              && detail.blindBoxStatus === ""
-            const canOpenLuckyToken = luckTokenInfo.type.mode !== sdk.LuckyTokenClaimType.BLIND_BOX 
-              && luckTokenInfo.status === sdk.LuckyTokenItemStatus.PENDING 
-              && !detail.claimStatus 
+            const canOpenBlindbox =
+              luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
+              luckTokenInfo.status === sdk.LuckyTokenItemStatus.PENDING &&
+              detail.blindBoxStatus === "";
+            const canOpenLuckyToken =
+              luckTokenInfo.type.mode !== sdk.LuckyTokenClaimType.BLIND_BOX &&
+              luckTokenInfo.status === sdk.LuckyTokenItemStatus.PENDING &&
+              !detail.claimStatus;
             if (canOpenBlindbox || canOpenLuckyToken) {
               setShowRedPacket({
                 isShow: true,
                 info: {
                   ...luckTokenInfo,
                   referrer: redPacketInfo.referrer,
-                  hideViewDetail: accountId !== luckTokenInfo.sender.accountId
+                  hideViewDetail: accountId !== luckTokenInfo.sender.accountId,
                 },
                 step: RedPacketViewStep.OpenPanel,
               });
             } else {
-              if (luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX ) {
+              if (
+                luckTokenInfo.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+              ) {
                 setShowRedPacket({
                   isShow: true,
                   info: {
@@ -344,7 +348,7 @@ export const useRedPacketScanQrcodeSuccess = () => {
                   },
                   step: RedPacketViewStep.DetailPanel,
                 });
-              }              
+              }
             }
           }
           setShowAccount({
