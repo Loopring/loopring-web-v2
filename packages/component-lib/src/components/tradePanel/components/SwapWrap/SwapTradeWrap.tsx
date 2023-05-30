@@ -16,7 +16,6 @@ import {
   ReverseIcon,
   SwapTradeCalcData,
   TradeBtnStatus,
-  TradeProType,
 } from "@loopring-web/common-resources";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
@@ -373,7 +372,9 @@ export const SwapTradeWrap = <
               variant={"inherit"}
               color={"textPrimary"}
             >
-              {tradeCalcData?.totalQuota ?? EmptyValueTag}
+              {(tradeCalcData?.totalQuota ?? EmptyValueTag) +
+                " " +
+                tradeData.sell?.belong}
             </Typography>
           </Typography>
         ) : (

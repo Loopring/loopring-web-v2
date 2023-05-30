@@ -427,7 +427,6 @@ export const BtradeDetail = (props: any) => {
             {info?.convertStr}
           </Typography>
         </Typography>
-
         <Typography
           display={"inline-flex"}
           justifyContent={"space-between"}
@@ -506,6 +505,39 @@ export const BtradeDetail = (props: any) => {
             </Typography>
           </Typography>
         </Typography>
+        {props.isDelivering && (
+          <Typography
+            component={"span"}
+            display={"inline-flex"}
+            justifyContent={"space-between"}
+            marginTop={2}
+          >
+            <Typography
+              variant={"body1"}
+              component={"span"}
+              color={"var(--color-text-secondary)"}
+            >
+              {props.t("labelBtradeSettled")}
+            </Typography>
+            <Typography
+              variant={"body1"}
+              component={"span"}
+              color={"var(--color-text-primary)"}
+              display={"inline-flex"}
+              alignItems={"center"}
+            >
+              <Typography
+                variant={"inherit"}
+                marginLeft={1 / 2}
+                component={"span"}
+              >
+                {info?.settledToAmount
+                  ? info?.settledToAmount + " " + info?.buyToken.symbol
+                  : EmptyValueTag}
+              </Typography>
+            </Typography>
+          </Typography>
+        )}
         <Typography
           component={"span"}
           display={"inline-flex"}
