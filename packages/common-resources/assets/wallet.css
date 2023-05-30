@@ -374,5 +374,57 @@ footer .footerWallet .wrap {
 .logoDex p:last-child {
     color: var(--color-text-third);
 }
+@media only screen
+and (max-device-width: 1024px) {
+    #logo {
+        min-width: auto;
+        /*border-radius: 0px;*/
+        /*text-indent: -999999em;*/
+        background: var(--color-logo);
+        -webkit-mask: url(https://static.loopring.io/assets/svg/loopring.svg) center center / contain space;
+        width: 40px;
+        height: 40px;
+        margin-left: 8px;
+        /*padding: 8px;*/
+        /*color: transparent;*/
+        /*display: inline-flex;*/
+        /*align-items: center;*/
+        /*justify-content: center;*/
+        /*position: relative;*/
+        /*box-sizing: border-box;*/
+        /*outline: 0px;*/
+        /*border: 0px;*/
+        /*margin: -10px 0px 0px -12px;*/
+        /*cursor: pointer;*/
+    }
+
+    header ul li:first-child {
+        display: none;
+    }
+
+    .downLoadBtnGroup {
+        flex-direction: column;
+        min-height: 200px;
+    }
+
+    footer .footerWallet .wrap {
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #labelEthereumUnleashed {
+        width: 100%;
+        font-size: 36px;
+    }
+
+    #logSvg {
+        display: none;
+    }
+
+    footer .content {
+        flex-direction: column;
+    }
+}
 
 
