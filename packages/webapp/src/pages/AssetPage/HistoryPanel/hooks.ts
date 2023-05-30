@@ -898,17 +898,17 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 amountOut = baseAmount;
                 amountIn = quoteAmount;
                 settledOut = baseSettled;
-                (settledIn = quoteSettled),
-                  (_price = {
-                    from: baseTokenSymbol,
-                    key: quoteTokenSymbol,
-                    value: getValuePrecisionThousand(
-                      price,
-                      tokenMap[quoteTokenSymbol].precision,
-                      tokenMap[quoteTokenSymbol].precision,
-                      undefined
-                    ),
-                  });
+                settledIn = quoteSettled;
+                _price = {
+                  from: baseTokenSymbol,
+                  key: quoteTokenSymbol,
+                  value: getValuePrecisionThousand(
+                    price,
+                    tokenMap[quoteTokenSymbol].precision,
+                    tokenMap[quoteTokenSymbol].precision,
+                    undefined
+                  ),
+                };
               }
 
               const fromToken = tokenMap[fromSymbol];
