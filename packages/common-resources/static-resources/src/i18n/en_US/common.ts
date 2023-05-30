@@ -1753,4 +1753,5 @@ export default {
   labelReferralReferralsRefunds: "Referee Refunds",
   labelBtradeQuantity: "Prioritize Quantity",
   labelBtradeSpeed: "Prioritize Speed",
+  labelBtradeSettled: "Settled",
 };

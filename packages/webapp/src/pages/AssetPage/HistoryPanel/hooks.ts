@@ -1030,6 +1030,8 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         convertStr: `1${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
         // @ts-ignore
         feeStr: item?.feeAmount == 0 ? undefined : item?.feeAmount,
+        settledToAmount: item.settledToAmount,
+        settledFromAmount: item.settledFromAmount,
         time: item?.time ?? undefined,
       };
       switch (item.type) {
@@ -1037,7 +1039,10 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
           setShowAccount({
             isShow: true,
             step: AccountStep.BtradeSwap_Delivering,
-            info,
+            info: {
+              ...info,
+              isDelivering: true,
+            },
           });
           break;
 
