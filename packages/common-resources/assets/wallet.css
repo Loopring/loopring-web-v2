@@ -163,6 +163,41 @@ body {
     height: 100%;
 }
 
+.sectionDetail h3 {
+    word-break: break-all;
+    white-space: pre;
+    line-height: 1.2em;
+    margin: 24px 0;
+}
+
+.sectionDetail p {
+    line-height: 1.2em;
+    word-break: break-all;
+    white-space: pre;
+}
+
+.sectionDetail {
+    justify-content: center;
+    display: flex;
+}
+
+.sectionDetail:nth-child(odd) .wrap {
+    flex-direction: row-reverse;
+
+}
+
+.sectionDetail:nth-child(even) .img-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sectionDetail .wrap {
+    justify-content: space-between;
+    display: flex;
+
+    align-items: center;
+}
+
 h3.Typography-root {
     font-size: var(--h1)
 }
@@ -280,6 +315,7 @@ footer .group .Typography-root {
 .groupIcon li {
     padding-right: 8px;
 }
+
 
 .groupIcon .icon svg {
     font-size: var(--h5);
