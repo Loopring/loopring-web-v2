@@ -107,9 +107,9 @@ const resources = {
       labelIOS: "iOS",
       labelAndroid: "Android",
       labelGooglePlay: "Google Play",
-      labelFeature1: "Fast, Secure, and 100x \nLower Fees",
+      labelFeature1: "Fast, Secure, and 100x Lower Fees",
       labelFeatureDes1:
-        "Experience DeFi as it should be - fast and affordable. Built with zkRollups,\n  Loopring provides instant transactions at 100x \n lower fees than Ethereum without sacrificing any of its security.",
+        "Experience DeFi as it \n should be - fast and affordable. Built with zkRollups, Loopring provides instant transactions at 100x \n lower fees than Ethereum without sacrificing any of its security.",
       labelFeature2: "Invest, Stake and Earn",
       labelFeatureDes2:
         "Easily earn yield on your \n crypto. Your funds never leave your wallet and can be accessed at any time.",
@@ -121,13 +121,13 @@ const resources = {
         "Use card, bank transfer,\nor Apple Pay without ever having to leave your wallet.",
       labelFeature5: "Your Personal Vault",
       labelFeatureDes5:
-        "Forget seed phrases.  Choose people, institutions, \nand hardware you trust to be your Guardians. Set limits on daily \n transfers or even lock your wallet if needed. You",
-      labelFeature6: "Manage and Display \nYour NFT Collection",
+        "Forget seed phrases. \n Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily \n transfers or even lock your wallet if needed. You",
+      labelFeature6: "Manage and Display Your NFT Collection",
       labelFeatureDes6:
-        "Immerse yourself in the world of unique digital assets. Safeguard\n your growing collection, all while enjoying easy access to\n your favorite marketplaces.",
+        "Immerse yourself in the \n world of unique digital assets. Safeguard your growing collection, all while enjoying easy access to\n your favorite marketplaces.",
       labelFeature7: "Digital Red Packets",
       labelFeatureDes7:
-        "Create memorable experiences for friends, family, \nand your community. Red Packets are perfect for gifts, \nsocial events, gaming rewards, airdrops, and more!",
+        "Create memorable \n experiences for friends, family, and your community. Red Packets are perfect for gifts, social events,\n gaming rewards, airdrops, and more!",
       labelFeatureDes8: "Loopring Wallet",
       labelFeatureDes8_2: "Crypto exchange on the go",
       labelCopyRight:
@@ -275,7 +275,6 @@ const settingPersist = "persist:settings";
     document.getElementById("labelCopyRight").innerHTML =
       i18next.t("labelCopyRight");
   };
-
   const upLoadSvg = () => {
     document.getElementById("logSvg").innerHTML = svgGroup.logSvg;
     document.getElementById("iconIos").innerHTML = svgGroup.ios;
@@ -289,6 +288,56 @@ const settingPersist = "persist:settings";
     document.getElementById("mediumIcon").innerHTML = svgGroup.mediumIcon;
     document.getElementById("discordIcon").innerHTML = svgGroup.discordIcon;
   };
+  const addScrollAnimation = () => {
+    const handleScroll = () => {
+      const imgs = document.getElementsByClassName('scroll-up-img');
+      for (let index = 0; index < imgs.length; index++) {
+        const img = imgs.item(index)
+        if (img.getBoundingClientRect().top < window.innerHeight) {
+          img.style.opacity = 1
+          img.style.transform = 'translateY(0)'
+        }
+      }
+    };
+    setTimeout(() => {
+      handleScroll()
+    }, 50);
+    window.addEventListener('scroll', handleScroll);
+    // Another animation. Do not delete. 
+    // var currentIndex = 1;
+    // const showIndex = (index) => {
+    //   const widthInNumber = 800;
+    //   const elementWidthRatioInNumber = 0.28
+    //   const width = `${widthInNumber}px`
+    //   const elementWidth = `${widthInNumber * elementWidthRatioInNumber}px`
+    //   const elementMarginInNumber = (1 - elementWidthRatioInNumber * 3) / 4
+    //   const elementMargin = `${elementMarginInNumber * 100}%`
+    //   const firstElementMarginLeftInNumber = (0.5 - elementWidthRatioInNumber / 2) - index * (elementWidthRatioInNumber + 2 * elementMarginInNumber)
+    //   const firstElementMarginLeft = `${firstElementMarginLeftInNumber * 100}%`
+    //   $('.first').css('margin-left', firstElementMarginLeft)
+    //   $('.carousel-item').css('transform', 'scale(1)')
+    //   $($('.carousel-item')[index]).css('transform', 'scale(1.3)')
+    // };
+    // (function ($) {
+    //   $(function () {
+    //     $('.css-n7royq-MuiTypography-root.main').click(() => {
+    //       window.open('/#/', '_blank').focus("");
+    //     })
+    //     $('.launch').click(() => {
+    //       window.open('/#/trade/lite/LRC-ETH', '_blank').focus("");
+    //     })
+    //     $('.ios').click(() => {
+    //       window.open('https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126', '_blank').focus("");
+    //     })
+    //     $('.android').click(() => {
+    //       window.open('https://download.loopring.io/LoopringWallet.apk', '_blank').focus("");
+    //     })
+    //     $('.google-play').click(() => {
+    //       window.open('https://play.google.com/store/apps/details?id=loopring.defi.wallet', '_blank').focus("");
+    //     })
+    //   });
+    // })(jQuery);
+  }
 
   window.onload = () => {
     i18next
@@ -319,20 +368,6 @@ const settingPersist = "persist:settings";
     }
     upLoadSvg();
     onlanguagechange(i18nLng);
-
-    const handleScroll = () => {
-      const imgs = document.getElementsByClassName("scroll-up-img");
-      for (let index = 0; index < imgs.length; index++) {
-        const img = imgs.item(index);
-        if (img.getBoundingClientRect().top < window.innerHeight) {
-          img.style.opacity = 1;
-          img.style.transform = "translateY(0)";
-        }
-      }
-    };
-    setTimeout(() => {
-      handleScroll();
-    }, 50);
-    window.addEventListener("scroll", handleScroll);
+    addScrollAnimation()
   };
 })();
