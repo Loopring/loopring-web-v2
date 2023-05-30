@@ -2,14 +2,22 @@ body {
     background: var(--color-global-Bg);
     font-family: Roboto, Helvetica, Arial, "华文细黑", "Microsoft YaHei",
     "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
-    -webkit-user-drag: none;
-    -moz-user-select: none; /* These user-select properties are inheritable, used to prevent text selection */
-    -webkit-user-select: none;
-    -ms-user-select: none; /* From IE10 only */
-    user-select: none; /* Not valid CSS yet, as of July 2012 */
-
-    -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
-    user-drag: none;
+    /*-webkit-user-drag: none;*/
+    /*-moz-user-select: none; !* These user-select properties are inheritable, used to prevent text selection *!*/
+    /*-webkit-user-select: none;*/
+    /*-ms-user-select: none; !* From IE10 only *!*/
+    /*user-select: none; !* Not valid CSS yet, as of July 2012 *!*/
+    /*-webkit-user-drag: none; !* Prevents dragging of images/divs etc *!*/
+    /*user-drag: none;*/
+    /*-moz-user-select: -moz-none;*/
+    /*-khtml-user-select: none;*/
+    /*-webkit-user-select: none;*/
+    /*
+      Introduced in IE 10.
+      See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+    */
+    /*-ms-user-select: none;*/
+    /*user-select: none;*/
 }
 
 button {
@@ -27,9 +35,11 @@ button:hover {
     color: var(--color-text-primary);
 }
 
-header {
+header .headerGg {
+    width: 100vw;
     background-color: var(--color-box);
 }
+
 
 header .Toolbar-root {
     height: var(--header-height);
@@ -72,6 +82,25 @@ footer .content {
     display: flex;
 }
 
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.sectionFull {
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.align-center {
+    align-items: center;
+}
+
 
 /* Rectangle 1662 */
 
@@ -91,7 +120,8 @@ footer .content {
 
 
 .Container-root, .wrap {
-    max-width: 1200px;
+    max-width: calc(1200px - 32px);
+    padding: 0 16px;
     margin: 0 auto;
 }
 
@@ -126,15 +156,55 @@ a.Typography-root:hover,
     text-decoration: underline;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+.sectionDetail h3 {
+    word-break: break-all;
+    white-space: pre;
+    line-height: 1.2em;
+    margin: 24px 0;
+}
+
+.sectionDetail p {
+    line-height: 1.2em;
+    word-break: break-all;
+    white-space: pre;
+}
+
+.sectionDetail {
+    justify-content: center;
+    display: flex;
+}
+
+.sectionDetail:nth-child(odd) .wrap {
+    flex-direction: row-reverse;
+
+}
+
+.sectionDetail:nth-child(even) .img-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sectionDetail .wrap {
+    justify-content: space-between;
+    display: flex;
+
+    align-items: center;
+}
 
 h3.Typography-root {
     font-size: var(--h1)
 }
 
 h3 ~ p.Typography-root {
-    color: var(--color-text-Third);
+    color: var(--color-text-third);
     font-size: var(--h5)
-
 }
 
 #logo {
@@ -187,11 +257,11 @@ h3 ~ p.Typography-root {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    padding-left: 24px;
 }
 
+
 .downLoadBtnGroup button {
-    margin-right: 24px;
+    margin-left: 24px;
     width: 180px;
     height: 48px;
     display: flex;
@@ -232,7 +302,7 @@ footer .group {
 
 footer .group h6 {
     font-size: var(--body2);
-    color: var(--color-text-Third);
+    color: var(--color-text-third);
     line-height: 4em;
     padding-bottom: 8px;
 }
@@ -240,12 +310,12 @@ footer .group h6 {
 footer .group .Typography-root {
     font-size: var(--body2);
     line-height: 2em;
-
 }
 
 .groupIcon li {
     padding-right: 8px;
 }
+
 
 .groupIcon .icon svg {
     font-size: var(--h5);
@@ -259,13 +329,19 @@ footer .group .Typography-root {
 }
 
 #labelCopyRight {
-    color: var(--color-text-Third);
+    color: var(--color-text-third);
     text-align: center;
     height: 40px;
     line-height: 40px;
     border-top: 1px solid var(--color-divide);
 }
 
+footer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
 
 footer .content {
     margin-top: 24px;
@@ -283,4 +359,20 @@ footer .footerWallet .wrap {
     align-items: center;
     justify-content: space-between;
 }
+
+.logoDex {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.logoDex p:first-child {
+    color: var(--color-text-primary);
+    font-size: var(--h5);
+}
+
+.logoDex p:last-child {
+    color: var(--color-text-third);
+}
+
 
