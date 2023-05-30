@@ -105,16 +105,75 @@ footer .content {
 /* Rectangle 1662 */
 
 #labelNavLanuch {
-    width: 112px;
+    /*width: 112px;*/
+    padding: 0 16px;
+    line-height: 36px;
     height: 36px;
     border-radius: 2px;
-    border: 1px solid;
-    border-image: linear-gradient(90deg, #D7B2FF 0%, #77AAFF 53.24%) 1;
+    border: 0;
+    /*border: 1px solid;*/
+    /*border-image: linear-gradient(90deg, #D7B2FF 0%, #77AAFF 53.24%) 1;*/
     color: var(--color-text-primary);
     border-image-repeat: round;
+    position: relative;
+    z-index: 99;
     box-sizing: border-box;
 }
 
+#labelNavLanuch:after {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    content: '';
+    border-radius: 2px;
+    z-index: -1;
+    border: 2px solid;
+    border-image: linear-gradient(90deg, #D7B2FF 0%, #77AAFF 53.24%) 1;
+    /*background-image: linear-gradient(90deg, #D7B2FF 0%, #77AAFF 53.24%);*/
+    /*mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABeSURBVHgB7dZBDYAwDIXhtgomAWdowAE4wF5PTMIMNOUtWFgv5P1Jk5329Vh1911V78xssraOORXAg8cmNQ0r/HzWTIojQIAAAQIEfgLgohhSV7eIOOQ7MZY2F8dcL/hCFFUPCYXoAAAAAElFTkSuQmCC);*/
+    /*-webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABeSURBVHgB7dZBDYAwDIXhtgomAWdowAE4wF5PTMIMNOUtWFgv5P1Jk5329Vh1911V78xssraOORXAg8cmNQ0r/HzWTIojQIAAAQIEfgLgohhSV7eIOOQ7MZY2F8dcL/hCFFUPCYXoAAAAAElFTkSuQmCC);*/
+    /*mask-size:99%;*/
+    /*-webkit-mask-size:99%;*/
+}
+
+#logo {
+    min-width: auto;
+    border-radius: 0px;
+    text-indent: -999999em;
+    background: var(--color-logo);
+    -webkit-mask: url(https://static.loopring.io/assets/svg/logo.svg) center center / contain space;
+    width: 105px;
+    height: 40px;
+    padding: 8px;
+    color: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    outline: 0px;
+    border: 0px;
+    margin: -10px 0px 0px -12px;
+    cursor: pointer;
+}
+
+#logo::after {
+    content: "beta";
+    position: absolute;
+    color: var(--color-logo);
+    display: block;
+    font-size: 1rem;
+    line-height: 0.8rem;
+    right: -24px;
+    top: 14px;
+    font-weight: 200;
+    opacity: 0;
+    box-shadow: 0 0 1px 0 var(--color-logo);
+    border-radius: 2px;
+    padding: 3px 2px;
+}
 
 /* identical to box height, or 129% */
 
@@ -207,42 +266,8 @@ h3 ~ p.Typography-root {
     font-size: var(--h5)
 }
 
-#logo {
-    min-width: auto;
-    border-radius: 0px;
-    text-indent: -999999em;
-    background: var(--color-logo);
-    -webkit-mask: url(https://static.loopring.io/assets/svg/logo.svg) center center / contain space;
-    width: 105px;
-    height: 40px;
-    padding: 8px;
-    color: transparent;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    box-sizing: border-box;
-    outline: 0px;
-    border: 0px;
-    margin: -10px 0px 0px -12px;
-    cursor: pointer;
-}
 
-#logo::after {
-    content: "beta";
-    position: absolute;
-    color: var(--color-logo);
-    display: block;
-    font-size: 1rem;
-    line-height: 0.8rem;
-    right: -24px;
-    top: 14px;
-    font-weight: 200;
-    opacity: 0;
-    box-shadow: 0 0 1px 0 var(--color-logo);
-    border-radius: 2px;
-    padding: 3px 2px;
-}
+
 
 .downLoadBtnGroup .Typography-roo {
     display: inline-block;
@@ -288,12 +313,13 @@ h3 ~ p.Typography-root {
     text-fill-color: transparent;
     margin-top: 40px;
     margin-bottom: 16px;
+    text-align: center;
 }
 
 #labelGatewayToEthereum {
     margin-bottom: 32px;
     font-size: var(--h4);
-
+    text-align: center;
 }
 
 footer .group {
@@ -374,8 +400,31 @@ footer .footerWallet .wrap {
 .logoDex p:last-child {
     color: var(--color-text-third);
 }
+
+.carousel-container {
+    display: flex;
+    overflow: hidden;
+    width: 800px;
+    height: 800px;
+}
+
 @media only screen
 and (max-device-width: 1024px) {
+    .Container-root, .wrap {
+        width: 100vw;
+        padding: 0 16px;
+        margin: 0 auto;
+    }
+
+    .carousel-container {
+        display: flex;
+        overflow: hidden;
+        align-items: center;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+    }
+
     #logo {
         min-width: auto;
         /*border-radius: 0px;*/
@@ -398,6 +447,19 @@ and (max-device-width: 1024px) {
         /*cursor: pointer;*/
     }
 
+    h3.Typography-root {
+        font-size: var(--h4);
+        text-align: center;
+    }
+
+    h3 ~ p.Typography-root {
+        font-size: var(--body);
+        white-space: initial;
+    }
+
+    /*.sectionDetail:nth-child(odd) .wrap{*/
+    /*    flex-direction: column;*/
+    /*}*/
     header ul li:first-child {
         display: none;
     }
@@ -405,6 +467,11 @@ and (max-device-width: 1024px) {
     .downLoadBtnGroup {
         flex-direction: column;
         min-height: 200px;
+        margin-left: 0;
+    }
+
+    .downLoadBtnGroup button {
+        margin-left: 0;
     }
 
     footer .footerWallet .wrap {
@@ -420,6 +487,23 @@ and (max-device-width: 1024px) {
 
     #logSvg {
         display: none;
+    }
+
+    .sectionFull {
+        align-items: flex-start;
+        justify-content: center;
+        height: initial;
+        margin: 24px 0;
+    }
+
+    .sectionDetail .wrap {
+        flex-direction: column !important;
+    }
+
+    .sectionDetail .img-container {
+        display: flex;
+        margin-top: 24px;
+        justify-content: center !important;
     }
 
     footer .content {
