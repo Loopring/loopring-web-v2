@@ -288,6 +288,56 @@ const settingPersist = "persist:settings";
     document.getElementById("mediumIcon").innerHTML = svgGroup.mediumIcon;
     document.getElementById("discordIcon").innerHTML = svgGroup.discordIcon;
   };
+  const addScrollAnimation = () => {
+    const handleScroll = () => {
+      const imgs = document.getElementsByClassName('scroll-up-img');
+      for (let index = 0; index < imgs.length; index++) {
+        const img = imgs.item(index)
+        if (img.getBoundingClientRect().top < window.innerHeight) {
+          img.style.opacity = 1
+          img.style.transform = 'translateY(0)'
+        }
+      }
+    };
+    setTimeout(() => {
+      handleScroll()
+    }, 50);
+    window.addEventListener('scroll', handleScroll);
+    // Another animation. Do not delete. 
+    // var currentIndex = 1;
+    // const showIndex = (index) => {
+    //   const widthInNumber = 800;
+    //   const elementWidthRatioInNumber = 0.28
+    //   const width = `${widthInNumber}px`
+    //   const elementWidth = `${widthInNumber * elementWidthRatioInNumber}px`
+    //   const elementMarginInNumber = (1 - elementWidthRatioInNumber * 3) / 4
+    //   const elementMargin = `${elementMarginInNumber * 100}%`
+    //   const firstElementMarginLeftInNumber = (0.5 - elementWidthRatioInNumber / 2) - index * (elementWidthRatioInNumber + 2 * elementMarginInNumber)
+    //   const firstElementMarginLeft = `${firstElementMarginLeftInNumber * 100}%`
+    //   $('.first').css('margin-left', firstElementMarginLeft)
+    //   $('.carousel-item').css('transform', 'scale(1)')
+    //   $($('.carousel-item')[index]).css('transform', 'scale(1.3)')
+    // };
+    // (function ($) {
+    //   $(function () {
+    //     $('.css-n7royq-MuiTypography-root.main').click(() => {
+    //       window.open('/#/', '_blank').focus("");
+    //     })
+    //     $('.launch').click(() => {
+    //       window.open('/#/trade/lite/LRC-ETH', '_blank').focus("");
+    //     })
+    //     $('.ios').click(() => {
+    //       window.open('https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126', '_blank').focus("");
+    //     })
+    //     $('.android').click(() => {
+    //       window.open('https://download.loopring.io/LoopringWallet.apk', '_blank').focus("");
+    //     })
+    //     $('.google-play').click(() => {
+    //       window.open('https://play.google.com/store/apps/details?id=loopring.defi.wallet', '_blank').focus("");
+    //     })
+    //   });
+    // })(jQuery);
+  }
 
   window.onload = () => {
     i18next
@@ -318,5 +368,6 @@ const settingPersist = "persist:settings";
     }
     upLoadSvg();
     onlanguagechange(i18nLng);
+    addScrollAnimation()
   };
 })();
