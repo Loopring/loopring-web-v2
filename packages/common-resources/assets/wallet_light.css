@@ -9,7 +9,7 @@ html {
     --color-text-primary: var(--dark);
     --color-border-hover: var(--dark900);
     --color-text-Secondary: var(--dark500);
-    --color-text-Third: var(--light400);
+    --color-text-third: var(--light400);
     --color-text-Button: var(--dark);
     --color-text-ButtonSelect: var(--dark);
     --color-text-Disable: var(--dark) 25;

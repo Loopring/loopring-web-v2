@@ -20,41 +20,41 @@
 	<script src="https://unpkg.com/i18next@22.5.0/dist/umd/i18next.min.js" type="application/javascript"/>
 	</script>
 	<script src="./wallet.js" type="application/javascript"></script>
-	<!--  <style link="./static/wallet_dark.css"></style>-->
-	<!--  <style link="./static/wallet.css"></style>-->
 	<title>Loopring - Ethereum Layer2</title>
 	<style></style>
 </head>
-<body ondragstart="return false;" ondrop="return false;" draggable="false">
+<body ondragstart="return false;" ondrop="return false;" draggable="false" onmousedown="return false">
 <header>
-	<div class="Toolbar-root wrap" style="padding: 0px 8px;">
-		<nav>
-			<h1 class="Typography-root Typography-h6">
-				<a aria-label="menu" id="logo" class="ButtonBase-root" href="#/" tabindex="0">Loopring 路印 loopring protocol 3.6
-					The first Layer2 Decentralized trading Platform</a>
-			</h1>
-			<ul class="Ul-root">
-				<li class="MenuItem-root MenuItem-gutters ButtonBase-root layer-0" role="menuitem" tabindex="-1">
-					<a class="Typography-root Typography-body1" href="./index.html" id="labelNavZkRollupLayer2"></a>
-				</li>
-				<li class="MenuItem-root MenuItem-gutters ButtonBase-root layer-0" role="menuitem" tabindex="-1">
-					<a class="Typography-root Typography-body1 selected" href="./wallet.html" id="labelNavWallet">
-						<!--							<script type="application/javascript">t(window.i18n.labelNavWallet) </script>-->
-					</a>
-				</li>
-			</ul>
-		</nav>
-		<div class="Box-root">
-			<button class="Button-root Button-contained Button-containedPrimary Button-sizeSmall Button-containedSizeSmall ButtonBase-root"
-							id='labelNavLanuch' onclick="()=>onlanguagechange(value,this)" type="button" value=""></button>
+	<div class="headerGg">
+		<div class="Toolbar-root wrap" style="padding: 0px 8px;">
+			<nav>
+				<h1 class="Typography-root Typography-h6">
+					<a aria-label="menu" id="logo" class="ButtonBase-root" href="https://loopring.io/#/" tabindex="0">Loopring 路印
+						loopring protocol
+						3.6
+						The first Layer2 Decentralized trading Platform</a>
+				</h1>
+				<ul class="Ul-root">
+					<li class="MenuItem-root MenuItem-gutters ButtonBase-root layer-0" role="menuitem" tabindex="-1">
+						<a class="Typography-root Typography-body1" href="https://loopring.io/#/" id="labelNavZkRollupLayer2"></a>
+					</li>
+					<li class="MenuItem-root MenuItem-gutters ButtonBase-root layer-0" role="menuitem" tabindex="-1">
+						<a class="Typography-root Typography-body1 selected" href="https://guardian.loopring.io/#/"
+							 id="labelNavWallet">
+							<!--							<script type="application/javascript">t(window.i18n.labelNavWallet) </script>-->
+						</a>
+					</li>
+				</ul>
+			</nav>
+			<div class="Box-root">
+				<button class="Button-root Button-contained Button-containedPrimary Button-sizeSmall Button-containedSizeSmall ButtonBase-root"
+								id='labelNavLanuch' onclick="()=>onlanguagechange(value,this)" type="button" value=""></button>
+			</div>
 		</div>
 	</div>
-</header>
-<section class="Box-root main wrap">
-	<div class="Box-root">
-		<section style="display: flex;
-				flex-direction: column;
-							align-items: center; justify-content: center;">
+	<div
+					class="Box-root ">
+		<section class="wrap flex-column flexBox align-center">
 			<p aria-label="Ethereum Unleashed" class="Typography-root Typography-body1 title" id="labelEthereumUnleashed"/>
 			<p aria-label="Your Gateway to Ethereum DeFi,  NFTs, and Financial Freedom"
 				 class="Typography-root Typography-body1 subtitle" id="labelGatewayToEthereum"/>
@@ -76,9 +76,7 @@
 					<span aria-label="Google Play" class="Typography-root Typography-body1" id="labelGooglePlay"></span>
 				</button>
 			</div>
-		</section>
-		<section style="display: flex; align-items: center; justify-content: center;">
-			<div class="carousel-container" style="display: flex; overflow: hidden; width: 800px; height: 800px; ">
+			<section class="carousel-container" style="display: flex; overflow: hidden; width: 800px; height: 800px; ">
 				<div class="carousel-item first"
 						 style="width: 224px; margin-left: 0%; margin-right: 4%; transition: all 1s ease-in-out 0s; transform: scale(1); cursor: pointer; display: flex; align-items: center;">
 					<img alt="Earn Investment Uer Interface"
@@ -95,60 +93,72 @@
 					<img alt="Loopring L2 orderbook" src="https://static.loopring.io/assets/images/landPage/wallet_banner3.png"
 							 style="width: 224px; object-fit: contain; border-radius: 32px;">
 				</div>
-			</div>
+			</section>
 		</section>
-		<div class="Box-root">
-			<div class="Box-root section">
+	</div>
+</header>
+<section class="Box-root" style="flex: 1">
+	<div class="Box-root">
+		<div class="Box-root sectionFull sectionDetail">
+			<section class="wrap flex-row flexBox">
 				<div class="Box-root">
 					<h3 aria-label="Fast, Secure, and 100x Lower Fees" class="Typography-root Typography-h1"
 							id="labelFeature1"></h3>
 					<p aria-label="Experience DeFi as it should be - fast and affordable. Built with zkRollups, Loopring provides instant transactions at 100x lower fees than Ethereum without sacrificing any of its security."
 						 class="Typography-root Typography-body1" id="labelFeatureDes1"/>
 				</div>
-				<div class="Box-root img-container-odd">
+				<div class="Box-root img-container img-container-odd">
 					<img alt="Scroll-up Image" class="scroll-up-img"
 							 src="https://static.loopring.io/assets/images/landPage/wallet_section1.png"
 							 style="opacity: 0; transform: translateY(100%); transition: opacity 1s ease 0s, transform 1s ease 0s; width: 80%;">
 				</div>
-			</div>
-			<div class="Box-root section">
+			</section>
+		</div>
+		<div class="Box-root sectionFull sectionDetail">
+			<section class="wrap flex-row flexBox">
 				<div class="Box-root">
 					<h3 aria-label="Invest, Stake and Earn" class="Typography-root Typography-h1" id="labelFeature2"></h3>
 					<p aria-label="Easily earn yield on your \n crypto. Your funds never leave your wallet and can be accessed at any time."
 						 class="Typography-root Typography-body1" id="labelFeatureDes2"/>
 					</p>
 				</div>
-				<div class="Box-root img-container-even">
+				<div class="Box-root img-container img-container-even">
 					<img alt="Scroll-up Image" class="scroll-up-img"
 							 src="https://static.loopring.io/assets/images/landPage/wallet_section2.png"
 							 style="opacity: 0; transform: translateY(100%); transition: opacity 1s ease 0s, transform 1s ease 0s; width: 80%;">
 				</div>
-			</div>
-			<div class="Box-root section">
+			</section>
+		</div>
+		<div class="Box-root sectionFull sectionDetail">
+			<section class="wrap flex-row flexBox">
 				<div class="Box-root">
 					<h3 Id="labelFeature3" aria-label="Dual Investment" class="Typography-root Typography-h1"></h3>
 					<p aria-label="Buy Low or Sell High. Get rewarded no matter which direction the market moves."
 						 class="Typography-root Typography-body1" id="labelFeatureDes3"></p>
 				</div>
-				<div class="Box-root img-container-odd">
+				<div class="Box-root img-container img-container-odd">
 					<img alt="Scroll-up Image" class="scroll-up-img"
 							 src="https://static.loopring.io/assets/images/landPage/wallet_section3.png"
 							 style="opacity: 0; transform: translateY(100%); transition: opacity 1s ease 0s, transform 1s ease 0s; width: 80%;">
 				</div>
-			</div>
-			<div class="Box-root section">
+			</section>
+		</div>
+		<div class="Box-root sectionFull sectionDetail">
+			<section class="wrap flex-row flexBox">
 				<div class="Box-root">
 					<h3 Id="labelFeature4" aria-label="Buy Crypto on L2" class="Typography-root Typography-h1"></h3>
 					<p aria-label="Use card, bank transfer, or Apple Pay without ever having to leave your wallet."
 						 class="Typography-root Typography-body1" id="labelFeatureDes4"></p>
 				</div>
-				<div class="Box-root img-container-even">
+				<div class="Box-root img-container img-container-even">
 					<img alt="Scroll-up Image" class="scroll-up-img"
 							 src="https://static.loopring.io/assets/images/landPage/wallet_section4.png"
 							 style="opacity: 0; transform: translateY(100%); transition: opacity 1s ease 0s, transform 1s ease 0s; width: 80%;">
 				</div>
-			</div>
-			<div class="Box-root section">
+			</section>
+		</div>
+		<div class="Box-root sectionFull sectionDetail">
+			<section class="wrap flex-row flexBox">
 				<div class="Box-root">
 					<h3 Id="labelFeature5" aria-label="Your Personal Vault" class="Typography-root Typography-h1"></h3>
 					<p aria-label="Forget seed phrases.
@@ -157,13 +167,15 @@
 										or even lock your wallet if needed. You’re always in control."
 						 class="Typography-root Typography-body1" id="labelFeatureDes5"></p>
 				</div>
-				<div class="Box-root img-container-odd">
+				<div class="Box-root img-container img-container-odd">
 					<img alt="Scroll-up Image" class="scroll-up-img"
 							 src="https://static.loopring.io/assets/images/landPage/wallet_section5.png"
 							 style="opacity: 0; transform: translateY(100%); transition: opacity 1s ease 0s, transform 1s ease 0s; width: 80%;">
 				</div>
-			</div>
-			<div class="Box-root section">
+			</section>
+		</div>
+		<div class="Box-root sectionFull sectionDetail">
+			<section class="wrap flex-row flexBox">
 				<div class="Box-root">
 					<h3 Id="labelFeature6" aria-label="Manage and Display Your NFT
 										Collection" class="Typography-root Typography-h1"></h3>
@@ -171,13 +183,15 @@
 										world of unique digital assets. Safeguard your growing collection, all while enjoying easy access to
 										your favorite marketplaces." class="Typography-root Typography-body1" id="labelFeatureDes6"></p>
 				</div>
-				<div class="Box-root img-container-even">
+				<div class="Box-root img-container img-container-even">
 					<img alt="Scroll-up Image" class="scroll-up-img"
 							 src="https://static.loopring.io/assets/images/landPage/wallet_section6.png"
 							 style="opacity: 0; transform: translateY(100%); transition: opacity 1s ease 0s, transform 1s ease 0s; width: 80%;">
 				</div>
-			</div>
-			<div class="Box-root section">
+			</section>
+		</div>
+		<div class="Box-root sectionFull sectionDetail">
+			<section class="wrap flex-row flexBox">
 				<div class="Box-root">
 					<h3 Id="labelFeature7" aria-label="Digital Red Packets" class="Typography-root Typography-h1"></h3>
 					<p aria-label="Create memorable
@@ -185,12 +199,12 @@
 										gaming rewards, airdrops, and more!" class="Typography-root Typography-body1"
 						 id="labelFeatureDes7"></p>
 				</div>
-				<div class="Box-root img-container-odd">
+				<div class="Box-root img-container img-container-odd">
 					<img alt="Scroll-up Image" class="scroll-up-img"
 							 src="https://static.loopring.io/assets/images/landPage/wallet_section7.png"
 							 style="opacity: 0; transform: translateY(100%); transition: opacity 1s ease 0s, transform 1s ease 0s; width: 80%;">
 				</div>
-			</div>
+			</section>
 		</div>
 	</div>
 </section>
@@ -200,7 +214,7 @@
 			<div class="Box-root" style="display: flex; align-items: center">
 				<img height="48" src="https://static.loopring.io/assets/images/landPage/wallet_appicon.png"
 						 style="object-fit: fill;" width="48">
-				<div class="Box-root" style="margin-left: 20px">
+				<div class="Box-root logoDex" style="margin-left: 20px; height: 48px">
 					<p aria-label="Loopring Wallet" class="Typography-root Typography-body1" id="labelFeatureDes8"></p>
 					<p aria-label="Crypto exchange on the go" class="Typography-root Typography-body1"
 						 id="labelFeatureDes8_2"></p>
@@ -241,12 +255,12 @@
 						<li>
 							<a aria-label="Loopring Terms" class="Typography-root Typography-inherit Link-root Link-underlineAlways"
 								 href="https://www.iubenda.com/terms-and-conditions/74969935" id="labelLoopringTerms"
-								 rel="noopener noreferrer" target="_blank"/>
+								 rel="noopener noreferrer" target="_blank"></a>
 						</li>
 						<li>
 							<a aria-label="Privacy Policy" class="Typography-root Typography-inherit Link-root Link-underlineAlways"
 								 href="https://loopring.io/#/document/privacy_en.md" id="labelPrivacyPolicy" rel="noopener noreferrer"
-								 target="_blank"/>
+								 target="_blank"></a>
 						</li>
 						<li>
 							<a aria-label="Risk Disclosure" class="Typography-root Typography-inherit Link-root Link-underlineAlways"
@@ -295,7 +309,8 @@
 						</li>
 						<li>
 							<a aria-label="Wallet Guardian" class="Typography-root Typography-inherit Link-root Link-underlineAlways"
-								 href="./#/guardian" id="labelWalletGuardian" rel="noopener noreferrer" target="_blank"/>
+								 href="https://loopring.io/#/guardian" id="labelWalletGuardian" rel="noopener noreferrer"
+								 target="_blank"/>
 						</li>
 					</ul>
 				</section>

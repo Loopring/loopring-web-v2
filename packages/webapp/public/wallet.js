@@ -78,7 +78,7 @@ const resources = {
   en_US: {
     common: {
       labelNavZkRollupLayer2: "zkRollup Layer 2",
-      labelNavWallet: "Wallet",
+      labelNavWallet: "Wallet Guardian",
       labelNavLanuch: "Launch App",
       labelAbout: "About",
       labelLoopringOrg: "Loopring.org",
@@ -107,9 +107,9 @@ const resources = {
       labelIOS: "iOS",
       labelAndroid: "Android",
       labelGooglePlay: "Google Play",
-      labelFeature1: "Fast, Secure, and 100x Lower Fees",
+      labelFeature1: "Fast, Secure, and 100x \nLower Fees",
       labelFeatureDes1:
-        "Experience DeFi as it \n should be - fast and affordable. Built with zkRollups, Loopring provides instant transactions at 100x \n lower fees than Ethereum without sacrificing any of its security.",
+        "Experience DeFi as it should be - fast and affordable. Built with zkRollups,\n  Loopring provides instant transactions at 100x \n lower fees than Ethereum without sacrificing any of its security.",
       labelFeature2: "Invest, Stake and Earn",
       labelFeatureDes2:
         "Easily earn yield on your \n crypto. Your funds never leave your wallet and can be accessed at any time.",
@@ -121,13 +121,13 @@ const resources = {
         "Use card, bank transfer,\nor Apple Pay without ever having to leave your wallet.",
       labelFeature5: "Your Personal Vault",
       labelFeatureDes5:
-        "Forget seed phrases. \n Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily \n transfers or even lock your wallet if needed. You",
-      labelFeature6: "Manage and Display Your NFT Collection",
+        "Forget seed phrases.  Choose people, institutions, \nand hardware you trust to be your Guardians. Set limits on daily \n transfers or even lock your wallet if needed. You",
+      labelFeature6: "Manage and Display \nYour NFT Collection",
       labelFeatureDes6:
-        "Immerse yourself in the \n world of unique digital assets. Safeguard your growing collection, all while enjoying easy access to\n your favorite marketplaces.",
+        "Immerse yourself in the world of unique digital assets. Safeguard\n your growing collection, all while enjoying easy access to\n your favorite marketplaces.",
       labelFeature7: "Digital Red Packets",
       labelFeatureDes7:
-        "Create memorable \n experiences for friends, family, and your community. Red Packets are perfect for gifts, social events,\n gaming rewards, airdrops, and more!",
+        "Create memorable experiences for friends, family, \nand your community. Red Packets are perfect for gifts, \nsocial events, gaming rewards, airdrops, and more!",
       labelFeatureDes8: "Loopring Wallet",
       labelFeatureDes8_2: "Crypto exchange on the go",
       labelCopyRight:
@@ -143,10 +143,12 @@ console.log("en_US");
 const settingPersist = "persist:settings";
 (function init() {
   let settings = JSON.parse(localStorage.getItem(settingPersist) ?? {});
-  const onColorChange = (value, _this) => {
-    // window.localStorage.set("themeMode", value);
-    let settings = JSON.parse(localStorage.getItem(settingPersist) ?? {});
-    settings.themeMode = value;
+  let themeMode = "dark";
+  if (settings.themeMode && JSON.parse(settings.themeMode)) {
+    themeMode = JSON.parse(settings.themeMode);
+  }
+  const onColorChange = (value = "dark", _this) => {
+    settings.themeMode = JSON.stringify(value);
     window.localStorage.setItem(settingPersist, JSON.stringify(settings));
     let link = document.getElementById("themeModeCss");
     link.setAttribute(
@@ -160,13 +162,8 @@ const settingPersist = "persist:settings";
     }
     // document.getElementById("themeModeCss").setAttribute("link", link);
   };
-  //
-  if (!settings?.themeMode) {
-    value = "dark";
-  } else {
-    value = settings?.themeMode;
-  }
-  onColorChange(value);
+
+  onColorChange(themeMode !== "dark" ? "light" : "dark");
 
   // Language now english only
   const onlanguagechange = (value) => {
@@ -278,6 +275,7 @@ const settingPersist = "persist:settings";
     document.getElementById("labelCopyRight").innerHTML =
       i18next.t("labelCopyRight");
   };
+
   const upLoadSvg = () => {
     document.getElementById("logSvg").innerHTML = svgGroup.logSvg;
     document.getElementById("iconIos").innerHTML = svgGroup.ios;
@@ -299,7 +297,7 @@ const settingPersist = "persist:settings";
       .init(
         {
           resources,
-          debug: true,
+          debug: false,
           ns: ["common"],
           defaultNS: "common",
           lng: initLng,
@@ -321,5 +319,20 @@ const settingPersist = "persist:settings";
     }
     upLoadSvg();
     onlanguagechange(i18nLng);
+
+    const handleScroll = () => {
+      const imgs = document.getElementsByClassName("scroll-up-img");
+      for (let index = 0; index < imgs.length; index++) {
+        const img = imgs.item(index);
+        if (img.getBoundingClientRect().top < window.innerHeight) {
+          img.style.opacity = 1;
+          img.style.transform = "translateY(0)";
+        }
+      }
+    };
+    setTimeout(() => {
+      handleScroll();
+    }, 50);
+    window.addEventListener("scroll", handleScroll);
   };
 })();

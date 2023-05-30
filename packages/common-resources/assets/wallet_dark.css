@@ -12,7 +12,7 @@ html {
     --color-primary-hover: var(--light900);
     --color-border-hover: var(--color-primary);
     --color-text-Secondary: var(--light500);
-    --color-text-Third: var(--dark400);
+    --color-text-third: var(--dark400);
     --color-text-Button: var(--light);
     --color-text-ButtonSelect: var(--light);
     --color-text-Disable: var(--light) 45;
