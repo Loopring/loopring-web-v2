@@ -663,7 +663,7 @@ export const useStopLimit = <
       quoteSymbol,
       tradeType: pageTradePro.tradeType,
       limitPrice: stopLimitTradeData?.price?.tradeValue,
-      stopPrice: pageTradePro.request?.stopPrice,
+      stopPrice: stopLimitTradeData?.stopPrice.tradeValue,
       baseValue: stopLimitTradeData?.base?.tradeValue,
       quoteValue: stopLimitTradeData?.quote?.tradeValue,
       onSubmit: (e: any) => {
