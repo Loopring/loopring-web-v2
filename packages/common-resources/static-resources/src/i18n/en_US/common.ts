@@ -1686,7 +1686,7 @@ export default {
   labelBtradeTime: "Time",
   labelStopLimit: "Stop-Limit {{tradeType}} {{symbol1}}",
   labelStopLimitDes:
-    "<p>If the last price {{from}} to or {{behavior}} {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {{symbol1}} at a price of {{price}} {{symbol2}} will be placed.</p>",
+    "<p>If the last price {{from}} to or {{behavior}} {{stopPrice}} {{symbol2}}, and order to {{tradeType}} {{value1}} {{symbol1}} at a price of {{limitPrice}} {{symbol2}} will be placed.</p>",
   labelStopLimitFromGoesUp: "goes up",
   labelStopLimitFromDropsDown: "drops down",
   labelStopLimitBehaviorAbove: "above",
