@@ -66,6 +66,7 @@ export const useAddressCheck = () => {
             setIsAddressCheckLoading(false);
           }, 6000);
 
+          // for debounce & promise clean   (next user input sync function will cover by async)
           if (_address.current == address) {
             setRealAddr(realAddr);
             setAddrStatus(addressErr);
@@ -75,12 +76,13 @@ export const useAddressCheck = () => {
             if (addressErr === AddressError.NoError) {
               const [{ walletType }, response] = await Promise.all([
                 LoopringAPI.walletAPI.getWalletType({
-                  wallet: realAddr, //realAddr != "" ? realAddr : address,
+                  wallet: realAddr,
                 }),
                 LoopringAPI.exchangeAPI.getAccount({
-                  owner: realAddr, //realAddr != "" ? realAddr : address,
+                  owner: realAddr,
                 }),
               ]);
+              // for debounce & promise clean  (next user input sync function will cover by async)
               if (_address.current == address) {
                 if (walletType && walletType?.isInCounterFactualStatus) {
                   setIsCFAddress(true);
