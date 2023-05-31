@@ -154,7 +154,7 @@ export const StopLimitInfo = withTranslation("common")(
                 The current price is 2,400 (A). You can set the stop price above
                 the current price, such as 3,000 (B), or below the current
                 price, such as 1,500 (C). Once the price goes up to 3,000 (B) or
-                drops to 1,500 (C), the stop-limit order will be triggered, and
+                drops to 1,500 (C), the Stop-Limit order will be triggered, and
                 the limit order will be automatically placed on the order book.
                 Note:
                 <List sx={{ marginTop: 1 }}>

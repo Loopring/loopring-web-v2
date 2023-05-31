@@ -324,5 +324,5 @@ export default {
   labelDUAL_BASE: "DUAL BASE",
   labelBTRADE: "Block Trade",
   labelL2STAKING: "Staking",
-  labelSTOP_LIMIT: "Stop Limit",
+  labelSTOP_LIMIT: "Stop-Limit",
 };
