@@ -23,6 +23,7 @@ import {
 import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "@emotion/styled";
+
 const BoxStyle = styled(Box)`
   &.btradePage {
     .input-wrap {

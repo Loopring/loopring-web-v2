@@ -39,7 +39,11 @@ import {
 } from "@loopring-web/common-resources";
 import { toBig } from "@loopring-web/loopring-sdk";
 
-export const RedPacketClaimPanel = ({hideAssets} : {hideAssets?: boolean}) => {
+export const RedPacketClaimPanel = ({
+  hideAssets,
+}: {
+  hideAssets?: boolean;
+}) => {
   const container = React.useRef<HTMLDivElement>(null);
   const { etherscanBaseUrl, forexMap } = useSystem();
   const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -86,11 +90,16 @@ export const RedPacketClaimPanel = ({hideAssets} : {hideAssets?: boolean}) => {
   const [totalLuckyTokenNFTBalance, setTotalLuckyTokenNFTBalance] =
     React.useState(undefined as number | undefined);
   React.useEffect(() => {
-    LoopringAPI.luckTokenAPI?.getLuckTokenUnclaimNFTBlindboxCnt({
-      accountId: account.accountId,
-    }, account.apiKey).then(response => {
-      setTotalLuckyTokenNFTBalance(response.count)
-    })
+    LoopringAPI.luckTokenAPI
+      ?.getLuckTokenUnclaimNFTBlindboxCnt(
+        {
+          accountId: account.accountId,
+        },
+        account.apiKey
+      )
+      .then((response) => {
+        setTotalLuckyTokenNFTBalance(response.count);
+      });
   }, []);
   return (
     <Box
@@ -138,7 +147,6 @@ export const RedPacketClaimPanel = ({hideAssets} : {hideAssets?: boolean}) => {
       >
         <Box className="tableWrapper table-divide-short">
           <RedPacketClaimTable
-
             {...{
               rawData: redPacketClaimList,
               showloading: showLoading,

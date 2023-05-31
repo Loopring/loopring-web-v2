@@ -595,7 +595,8 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                     <NodeMenuItem
                       {...{ ...headerMenuLandingData[1], ...rest, t }}
                       handleListKeyDown={() => {
-                        window.location.href = headerMenuLandingData[1].router!.path
+                        window.location.href =
+                          headerMenuLandingData[1].router!.path;
                       }}
                     />
                   )}

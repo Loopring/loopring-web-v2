@@ -40,8 +40,6 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
     const theme = useTheme();
     // console.log('isEmpty(panelList[step].view.props', isEmpty(panelList[step].view.props))
     // console.log('isEmpty(panelList[step].view.props', panelList[step].view.props)
-    
-    
 
     return (
       <Modal
@@ -63,17 +61,18 @@ export const ModalRedPacket = withTranslation("common", { withRef: true })(
             transform: "translateY(-50%) translateX(-50%)",
           }}
         >
-          
-          
           {/* hide close button if view redpacket view not rendered */}
-          {(step !== RedPacketViewStep.Loading && !isEmpty(panelList[step].view.props)) && <ModalCloseButton
-            closeIcon={
-              <CloseRedPacketIcon htmlColor={"var(--color-text-button)"} />
-            }
-            onClose={onClose}
-            className={"redPacketClose"}
-            {...rest}
-          />} 
+          {step !== RedPacketViewStep.Loading &&
+            !isEmpty(panelList[step].view.props) && (
+              <ModalCloseButton
+                closeIcon={
+                  <CloseRedPacketIcon htmlColor={"var(--color-text-button)"} />
+                }
+                onClose={onClose}
+                className={"redPacketClose"}
+                {...rest}
+              />
+            )}
           {onBack ? <ModalBackButton onBack={onBack} {...rest} /> : <></>}
           <SwipeableViews
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}

@@ -92,6 +92,7 @@ export interface TradeCalcData<T> {
   isBtrade: undefined | boolean;
   totalQuota: string;
 }
+
 export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   isNotMatchMarketPrice?: boolean;
   marketPrice?: string;

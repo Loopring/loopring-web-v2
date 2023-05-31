@@ -1,4 +1,5 @@
 @import 'reset.css';
+
 html {
     --color-global-Bg: var(--dark);
     --color-primary: #446EFF;

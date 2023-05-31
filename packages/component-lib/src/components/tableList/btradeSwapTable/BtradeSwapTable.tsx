@@ -53,6 +53,7 @@ const TableStyled = styled(Table)`
       align-items: center;
     }
   }
+
   .textAlignRight {
     text-align: right;
 
@@ -60,6 +61,7 @@ const TableStyled = styled(Table)`
       justify-content: flex-end;
     }
   }
+
   .textAlignCenter {
     text-align: center;
   }

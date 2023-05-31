@@ -50,12 +50,12 @@ export const WalletPage = withTranslation(["landPage", "common"])(
     const { isMobile } = useSettings();
     const { mode } = useTheme();
     useEffect(() => {
-      if (mode === 'dark') {
-        window.location.href = '/wallet_dark.html';
+      if (mode === "dark") {
+        window.location.href = "/wallet_dark.html";
       } else {
-        window.location.href = '/wallet_light.html';
+        window.location.href = "/wallet_light.html";
       }
-    }, [])
+    }, []);
     return (
       <ContainerStyle>
         <Box>

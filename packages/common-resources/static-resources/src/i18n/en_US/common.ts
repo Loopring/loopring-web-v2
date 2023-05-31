@@ -1654,14 +1654,14 @@ export default {
   labelBtradeSwapDeliverDes:
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
   labelGoBtradeSwap:
-    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
+    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade</link> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",
   labelBtrade: "Block Trade",
   labelBtradeSwapFailed: "Failed!",
   labelBtradeSwapTitleDes: "What is Block Trade?",
   labelBtradeSwapContentDes:
     "<p>Block Trade offers a secure and trustless way for users to swap tokens using CEX liquidity. The trades happen exclusively between designated entities, ensuring that the existing liquidity of the DEX remains unaffected. There is no price impact to other DEX users as a result of the transaction.</p>" +
-    "<p>This is similar to the traditional stock market’s Block Trade System. A block trade is a large, privately negotiated transaction, which can be made outside the open market through a private purchase agreement.<p>",
+    "<p>This is similar to the traditional stock market’s Block Trade System. A block trade is a large, privately negotiated transaction, which can be made outside the open market through a private purchase agreement.</p>",
   labelRefereeRewards: "Referee Rewards",
   labelReferralRewards: "Referral Rewards",
   labelRewardLRC: "Rewards LRC",
@@ -1686,7 +1686,12 @@ export default {
   labelBtradeTime: "Time",
   labelStopLimit: "Stop-Limit {{tradeType}} {{symbol1}}",
   labelStopLimitDes:
-    "If the last price goes up to or above {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {{symbol1}} at a price of {{price}} {{symbol2}} will be placed.",
+    "<p>If the last price {{from}} to or {{behavior}} {{stopPrice}} {{symbol2}}, and order to {{tradeType}} {{value1}} {{symbol1}} at a price of {{limitPrice}} {{symbol2}} will be placed.</p>",
+  labelStopLimitFromGoesUp: "goes up",
+  labelStopLimitFromDropsDown: "drops down",
+  labelStopLimitBehaviorAbove: "above",
+  labelStopLimitBehaviorBelow: "below",
+
   labelStopLimitType: "Stop-Limit / {{tradeType}}",
   labelStopLimitStopPrice: "Stop Price",
   labelStopLimitPriceLimitPrice: "Limit Price",
