@@ -667,7 +667,12 @@ export const useStopLimit = <
       baseValue: stopLimitTradeData?.base?.tradeValue,
       quoteValue: stopLimitTradeData?.quote?.tradeValue,
       stopSide: pageTradePro.request?.stopSide,
+      handleClose: () => {
+        setIsLimitLoading(false);
+        setConfirmed(false);
+      },
       onSubmit: (e: any) => {
+        setConfirmed(false);
         limitSubmit(e as any, true);
       },
     },

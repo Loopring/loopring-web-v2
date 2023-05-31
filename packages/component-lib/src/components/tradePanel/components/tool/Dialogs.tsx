@@ -2366,11 +2366,18 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
 
         <DialogActions>
           <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelStopLimitCancel")}
+          </Button>
+          <Button
             variant={"contained"}
             size={"small"}
-            fullWidth={true}
+            // fullWidth={true}
             onClick={(e) => {
-              handleClose(e as any);
+              // handleClose(e as any);
               if (typeof onSubmit === "function") {
                 onSubmit(e);
               }
