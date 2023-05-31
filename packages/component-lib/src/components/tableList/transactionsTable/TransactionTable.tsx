@@ -474,7 +474,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 </Box>
               </Box>
             );
-          };,
+          },
         },
         {
           key: "status",
@@ -552,17 +552,17 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT
                 ? "+"
                 : row.side.toLowerCase() ===
-                    sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
-                      ? "-"
-                      : row.side.toLowerCase() === sdk.UserTxTypes.SEND_LUCKY_TOKEN
-                        ? "-"
-                        : row.side.toLowerCase() ===
-                        sdk.UserTxTypes.SEND_BACK_LUCKY_TOKEN
-                          ? "+"
-                          : row.side.toLowerCase() ===
-                          sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
-                            ? "+"
-                            : "";
+                  sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
+                ? "-"
+                : row.side.toLowerCase() === sdk.UserTxTypes.SEND_LUCKY_TOKEN
+                ? "-"
+                : row.side.toLowerCase() ===
+                  sdk.UserTxTypes.SEND_BACK_LUCKY_TOKEN
+                ? "+"
+                : row.side.toLowerCase() ===
+                  sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
+                ? "+"
+                : "";
             const sideIcon =
               row.side.toLowerCase() ===
               sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW ? (

@@ -155,5 +155,5 @@ export const ColumnCoinDeep = React.memo(
         )}
       </Box>
     );
-  };
+  }
 );
