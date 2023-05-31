@@ -666,6 +666,7 @@ export const useStopLimit = <
       stopPrice: stopLimitTradeData?.stopPrice.tradeValue,
       baseValue: stopLimitTradeData?.base?.tradeValue,
       quoteValue: stopLimitTradeData?.quote?.tradeValue,
+      stopSide: pageTradePro.request?.stopSide,
       onSubmit: (e: any) => {
         limitSubmit(e as any, true);
       },
@@ -683,7 +684,5 @@ export const useStopLimit = <
           : "1.6rem",
       },
     },
-
-    // marketTicker,
   };
 };
