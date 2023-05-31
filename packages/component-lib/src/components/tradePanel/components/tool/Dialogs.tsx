@@ -2218,42 +2218,6 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
           })}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-stopLimit">
-            <Trans
-              i18nKey={`labelStopLimitDes`}
-              tOptions={{
-                value1: baseValue,
-                value2: quoteValue,
-                symbol2: quoteSymbol,
-                symbol1: baseSymbol,
-              }}
-              components={{
-                p: (
-                  <Typography
-                    whiteSpace={"pre-line"}
-                    component={"span"}
-                    variant={"body1"}
-                    display={"block"}
-                    marginBottom={1}
-                    color={"textSecondary"}
-                  />
-                ),
-              }}
-            >
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body1"}
-                display={"block"}
-                marginBottom={1}
-                color={"textSecondary"}
-              >
-                If the last price goes up to or above value Symbol2 , and order
-                to tradeType value2 Symbol1 at a price of price Symbol2 will be
-                placed.
-              </Typography>
-            </Trans>
-          </DialogContentText>
           <DialogContentText
             id="alert-dialog-stopLimit"
             sx={{ display: "flex", flexDirection: "column" }}
@@ -2368,7 +2332,44 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
               </Typography>
             </Typography>
           </DialogContentText>
+          <DialogContentText id="alert-dialog-stopLimit">
+            <Trans
+              i18nKey={`labelStopLimitDes`}
+              tOptions={{
+                value1: baseValue,
+                value2: quoteValue,
+                symbol2: quoteSymbol,
+                symbol1: baseSymbol,
+              }}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"span"}
+                    variant={"body1"}
+                    display={"block"}
+                    marginBottom={1}
+                    color={"textSecondary"}
+                  />
+                ),
+              }}
+            >
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                marginBottom={1}
+                color={"textSecondary"}
+              >
+                If the last price goes up to or above value Symbol2 , and order
+                to tradeType value2 Symbol1 at a price of price Symbol2 will be
+                placed.
+              </Typography>
+            </Trans>
+          </DialogContentText>
         </DialogContent>
+
         <DialogActions>
           <Button
             variant={"contained"}
