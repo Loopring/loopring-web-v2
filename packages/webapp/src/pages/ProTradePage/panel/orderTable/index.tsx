@@ -45,10 +45,12 @@ export const OrderTableView = withTranslation("common")(
     t,
     market,
     handleOnMarketChange,
+    isStopLimit = false,
   }: {
     t: TFunction<"translation">;
     market?: string;
     handleOnMarketChange: (newMarket: MarketType) => void;
+    isStopLimit?: boolean;
   }) => {
     const {
       getOrderDetail,
@@ -63,7 +65,7 @@ export const OrderTableView = withTranslation("common")(
       clearOrderDetail,
       showDetailLoading,
       cancelOrderByHashList,
-    } = useOrderList();
+    } = useOrderList({ isStopLimit });
     const { userOrderDetailList, getUserOrderDetailTradeList } =
       useGetOrderHistorys();
     const [tabValue, setTabValue] = React.useState(0);
@@ -89,6 +91,7 @@ export const OrderTableView = withTranslation("common")(
             currentTabIndex === 0
               ? ["processing"]
               : ["processed", "failed", "cancelled", "cancelling", "expired"],
+          extraOrderTypes: isStopLimit ? "STOP_LIMIT" : "TRADITIONAL_ORDER",
         });
         setOrderOriginalData(data);
       },
@@ -174,6 +177,7 @@ export const OrderTableView = withTranslation("common")(
             {...{
               // height,
               // height: height-
+              isStopLimit,
               rawData: filteredData,
               getOrderList,
               getOrderDetail,

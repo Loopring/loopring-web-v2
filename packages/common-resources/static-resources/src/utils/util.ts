@@ -5,7 +5,7 @@ export const DOT = ".";
 export function abbreviateNumber(value: number, precision?: number) {
   let newValue = value,
     result: string;
-  const suffixes = ["", "K", "M", "B", "T"];
+  const suffixes = ["", "K", "M", "B", "T", "Qa", "Qi"];
   let suffixNum = 0;
   while (newValue >= 1000) {
     newValue /= 1000;
@@ -213,12 +213,6 @@ export const getValuePrecisionThousand = (
     }
   }
   if (result.isGreaterThan(1)) {
-    // if (minDigit < 3) {
-    // } else {
-    //     result = Number(value).toLocaleString('en', {
-    //         minimumFractionDigits: minDigit
-    //     })
-    // }
     let formattedValue = null;
     if (floor === true) {
       formattedValue = getFloatFloor(result, fixed || minDigit);

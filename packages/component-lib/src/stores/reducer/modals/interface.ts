@@ -39,13 +39,14 @@ export interface ModalState {
   isShowClaimWithdraw: ModalStatePlayLoad & {
     claimToken: ClaimToken | undefined;
     claimType: CLAIM_TYPE | undefined;
+    successCallback?: () => void;
   };
   isShowTransfer: ModalStatePlayLoad & Transaction & Contact;
   isShowWithdraw: ModalStatePlayLoad & Transaction & Contact;
   isShowDeposit: ModalStatePlayLoad & Transaction & { partner?: boolean };
   isShowNFTDetail: ModalStatePlayLoad & Partial<NFTWholeINFO>;
-  isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-  isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any, any>> & Contact;
+  isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any, any>> & Contact;
   isShowNFTDeploy: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
   isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
   isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;

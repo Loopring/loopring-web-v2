@@ -9,6 +9,7 @@ import {
   CurrencyToTag,
   ForexMap,
   getValuePrecisionThousand,
+  HiddenTag,
   MarketType,
   PriceTag,
   RowConfig,
@@ -16,8 +17,9 @@ import {
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { CoinIcons } from "./components/CoinIcons";
-import ActionMemo from "./components/ActionMemo";
-import { Currency, XOR } from "@loopring-web/loopring-sdk";
+import ActionMemo, { LockedMemo } from "./components/ActionMemo";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { XOR } from "../../../types/lib";
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -103,8 +105,8 @@ export type RawDataAssetsItem = {
   tokenValueDollar: number;
 };
 
-export type AssetsTableProps = {
-  rawData: RawDataAssetsItem[];
+export type AssetsTableProps<R = RawDataAssetsItem> = {
+  rawData: R[];
   isInvest?: boolean;
   pagination?: {
     pageSize: number;
@@ -119,7 +121,10 @@ export type AssetsTableProps = {
   getMarketArrayListCallback: (token: string) => string[];
   rowConfig?: typeof RowConfig;
   disableWithdrawList: string[];
-  forexMap: ForexMap<Currency>;
+  forexMap: ForexMap<sdk.Currency>;
+  onTokenLockHold?: (item: R) => void;
+  tokenLockDetail?: any[] | undefined;
+  hideAssets?: boolean;
 } & XOR<
   {
     hideInvestToken: boolean;
@@ -149,6 +154,9 @@ export const AssetsTable = withTranslation("tables")(
       setHideSmallBalances,
       forexMap,
       rowConfig = RowConfig,
+      hideAssets,
+      onTokenLockHold,
+      tokenLockDetail,
       ...rest
     } = props;
 
@@ -256,14 +264,16 @@ export const AssetsTable = withTranslation("tables")(
           const precision = row["precision"];
           return (
             <Box className={"textAlignRight"}>
-              {getValuePrecisionThousand(
-                value,
-                precision,
-                precision,
-                undefined,
-                false,
-                { floor: true }
-              )}
+              {hideAssets
+                ? HiddenTag
+                : getValuePrecisionThousand(
+                    value,
+                    precision,
+                    precision,
+                    undefined,
+                    false,
+                    { floor: true }
+                  )}
             </Box>
           );
         },
@@ -273,19 +283,15 @@ export const AssetsTable = withTranslation("tables")(
         name: t("labelLocked"),
         headerCellClass: "textAlignRight",
         formatter: ({ row }) => {
-          const value = row["locked"];
-          const precision = row["precision"];
           return (
-            <Box className={"textAlignRight"}>
-              {getValuePrecisionThousand(
-                value,
-                precision,
-                precision,
-                undefined,
-                false,
-                { floor: true }
-              )}
-            </Box>
+            <LockedMemo
+              {...{
+                ...row,
+                hideAssets,
+                onTokenLockHold,
+                tokenLockDetail,
+              }}
+            />
           );
         },
       },
@@ -296,15 +302,17 @@ export const AssetsTable = withTranslation("tables")(
         formatter: ({ row }) => {
           return (
             <Box className={"textAlignRight"}>
-              {PriceTag[CurrencyToTag[currency]] +
-                getValuePrecisionThousand(
-                  (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
-                  undefined,
-                  undefined,
-                  undefined,
-                  true,
-                  { isFait: true, floor: true }
-                )}
+              {hideAssets
+                ? HiddenTag
+                : PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
+                    undefined,
+                    undefined,
+                    undefined,
+                    true,
+                    { isFait: true, floor: true }
+                  )}
             </Box>
           );
         },
@@ -388,21 +396,23 @@ export const AssetsTable = withTranslation("tables")(
                 flex={1}
               >
                 <Typography display={"flex"}>
-                  {getValuePrecisionThousand(
-                    value,
-                    precision,
-                    precision,
-                    undefined,
-                    false,
-                    { floor: true }
-                  )}
+                  {hideAssets
+                    ? HiddenTag
+                    : getValuePrecisionThousand(
+                        value,
+                        precision,
+                        precision,
+                        undefined,
+                        false,
+                        { floor: true }
+                      )}
                 </Typography>
                 <Typography
                   display={"flex"}
                   color={"textSecondary"}
                   marginLeft={1}
                 >
-                  {token.value}
+                  {hideAssets ? HiddenTag : token.value}
                 </Typography>
               </Typography>
             </>
@@ -414,19 +424,16 @@ export const AssetsTable = withTranslation("tables")(
         name: t("labelLocked"),
         headerCellClass: "textAlignRight",
         formatter: ({ row }) => {
-          const value = row["locked"];
-          const precision = row["precision"];
           return (
-            <Box className={"textAlignRight"}>
-              {getValuePrecisionThousand(
-                value,
-                precision,
-                precision,
-                undefined,
-                false,
-                { floor: true }
-              )}
-            </Box>
+            // @ts-ignore
+            <LockedMemo
+              {...{
+                ...row,
+                HiddenTag,
+                onTokenLockHold,
+                tokenLockDetail,
+              }}
+            />
           );
         },
       },

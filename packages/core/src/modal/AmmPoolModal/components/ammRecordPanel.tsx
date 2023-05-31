@@ -6,6 +6,7 @@ import { RowConfig } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 import { useSystem } from "../../../stores";
+import { useAmmRecord } from "../hooks";
 
 const TabsStyled = styled(Tabs)`
   padding-left: ${({ theme }) => theme.unit}px;
@@ -31,16 +32,19 @@ const applyProps = (index: number) => {
     "aria-controls": `tabpanel-${index}`,
   };
 };
-export const AmmRecordPanel = ({
-  ammMarketArray,
-  getUserAmmPoolTxs,
-  isMyAmmLoading,
-  ammUserTotal,
-  isRecentLoading,
-  myAmmMarketArray,
-  setPageSize,
-  pageSize,
-}: any) => {
+export const AmmRecordPanel = ({ market }: { market: string }) => {
+  const {
+    isMyAmmLoading,
+    isRecentLoading,
+    ammMarketArray,
+    // ammTotal,
+    myAmmMarketArray,
+    ammUserTotal,
+    getUserAmmPoolTxs,
+    // getRecentAmmPoolTxs,
+    pageSize,
+    setPageSize,
+  } = useAmmRecord({ market });
   const container = React.useRef(null);
 
   const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);

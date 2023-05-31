@@ -50,10 +50,10 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
 }: WithTranslation &
   MarketBlockProps<C> & { handleBlockClick: () => void }) => {
   const { upColor, currency } = useSettings();
-  const { volume, coinAPriceDollar, marketPrecision, coinBPrecision } =
+  const { volume, coinApriceU, marketPrecision, coinBPrecision } =
     tradeFloat as any;
   const baseFaitPrice = getValuePrecisionThousand(
-    coinAPriceDollar * (forexMap[currency] ?? 0),
+    coinApriceU * (forexMap[currency] ?? 0),
     undefined,
     undefined,
     undefined,

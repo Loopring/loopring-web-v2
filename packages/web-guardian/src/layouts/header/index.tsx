@@ -1,5 +1,4 @@
 import {
-  ButtonComponentsMap,
   GuardianToolBarAvailableItem,
   GuardianToolBarComponentsMap,
   headerRoot,
@@ -29,15 +28,19 @@ const Header = withTranslation("common")(
       isLandPage = false,
       ...rest
     }: any & RouteComponentProps) => {
-      const { headerToolBarData, notifyMap, headerMenuLandingData } =
-        useHeader();
+      const {
+        headerToolBarData,
+        notifyMap,
+        headerMenuLandingData,
+        onkeypress,
+      } = useHeader();
       const { isMobile } = useSettings();
       const { confirmWrapper } = confirmation.useConfirmation();
       const { allowTrade, chainId } = useSystem();
       const { account } = useAccount();
       return (
         <>
-          <HideOnScroll window={undefined}>
+          <HideOnScroll window={undefined} onkeypress={onkeypress}>
             <HeaderUI
               {...rest}
               account={account}

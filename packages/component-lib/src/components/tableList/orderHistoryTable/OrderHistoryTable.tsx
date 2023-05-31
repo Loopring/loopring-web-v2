@@ -14,6 +14,7 @@ import {
   Grid,
   Link,
   Modal,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { DateRange } from "@mui/lab";
@@ -26,16 +27,19 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
+  GoodIcon,
   RowConfig,
   TableType,
   TradeStatus,
   TradeTypes,
   UNIX_TIMESTAMP_FORMAT,
+  YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import { Filter, FilterOrderTypes } from "./components/Filter";
 import { OrderDetailPanel } from "./components/modal";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
+import * as sdk from "@loopring-web/loopring-sdk";
 import {
   GetOrdersRequest,
   GetUserTradesRequest,
@@ -78,6 +82,13 @@ export interface OrderHistoryRow {
   filterColumn: string;
   actionsStatus: object;
   tradeChannel: string;
+  extraOrderInfo: {
+    extraOrderType: string;
+    isTriggerd: boolean;
+    stopPrice: string;
+    stopSide: string;
+  };
+  __raw__: any;
 }
 
 export enum DetailRole {
@@ -127,34 +138,54 @@ export type OrderHistoryRawDataItem = {
   status: TradeStatus;
   hash: string;
   orderId: string;
+  extraOrderInfo?: {
+    extraOrderType: string;
+    isTriggerd: boolean;
+    stopPrice: string;
+    stopSide: string;
+  };
+  __raw__: any;
 };
 
 const TableStyled = styled(Box)<
-  BoxProps & { isMobile?: boolean; isopen?: string; ispro?: string }
+  BoxProps & {
+    isMobile?: boolean;
+    isopen?: string;
+    ispro?: string;
+    isStopLimit?: boolean;
+  }
 >`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    ${({ isMobile, isopen, ispro }) =>
+    ${({ isMobile, isopen, ispro, isStopLimit }) =>
       !isMobile
         ? `--template-columns: ${
             isopen === "open"
               ? ispro === "pro"
-                ? "auto auto 250px auto auto auto auto"
-                : "auto auto 230px auto auto 130px 140px"
+                ? `auto auto ${isStopLimit ? 220 : 250}px auto auto ${
+                    isStopLimit ? "auto" : ""
+                  } auto auto`
+                : `auto auto ${isStopLimit ? 200 : 230}px auto auto ${
+                    isStopLimit ? "auto" : ""
+                  } 130px 140px`
               : ispro === "pro"
-              ? "auto auto 250px auto auto auto auto"
-              : "auto auto 230px auto 130px 130px 130px"
+              ? `auto auto  ${isStopLimit ? 220 : 250}px auto auto ${
+                  isStopLimit ? "auto" : ""
+                } auto auto`
+              : `auto auto ${isStopLimit ? 200 : 230}px auto 130px ${
+                  isStopLimit ? "auto" : ""
+                } 130px 130px`
           } !important;`
         : `--template-columns: 14% 62% 24% !important;`}
-
     .rdg-cell:last-of-type {
       display: flex;
       justify-content: flex-end;
     }
   }
+
   .textAlignRight {
     text-align: right;
   }
@@ -162,7 +193,12 @@ const TableStyled = styled(Box)<
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (
-  props: { isMobile?: boolean; isopen?: string; ispro?: string } & BoxProps
+  props: {
+    isMobile?: boolean;
+    isopen?: string;
+    ispro?: string;
+    isStopLimit?: boolean;
+  } & BoxProps
 ) => JSX.Element;
 
 export interface OrderHistoryTableProps {
@@ -195,6 +231,7 @@ export interface OrderHistoryTableProps {
     row: QuoteTableRawDataItem,
     column: any
   ) => void;
+  isStopLimit?: boolean;
 }
 
 export const OrderHistoryTable = withTranslation("tables")(
@@ -220,6 +257,7 @@ export const OrderHistoryTable = withTranslation("tables")(
       userOrderDetailList,
       getUserOrderDetailTradeList,
       onRowClick,
+      isStopLimit,
     } = props;
     const { isMobile } = useSettings();
     // const [tableHeight] = React.useState(() => {
@@ -339,17 +377,6 @@ export const OrderHistoryTable = withTranslation("tables")(
       [clearOrderDetail, getUserOrderDetailTradeList]
     );
 
-    // React.useEffect(() => {
-    //   let filters: any = {};
-    //   updateData.cancel();
-    //   if (searchParams.get("pair")) {
-    //     filters.pair = searchParams.get("pair");
-    //   }
-    //   handleFilterChange(filters);
-    //   return () => {
-    //     updateData.cancel();
-    //   };
-    // }, [pagination?.pageSize]);
     React.useEffect(() => {
       let filters: any = {};
       updateData.cancel();
@@ -363,6 +390,68 @@ export const OrderHistoryTable = withTranslation("tables")(
       };
     }, [pagination?.pageSize, isOpenOrder]);
 
+    const stopLimitColumn = React.useCallback((): Column<
+      OrderHistoryRow,
+      unknown
+    >[] => {
+      if (isStopLimit) {
+        return [
+          {
+            key: "Condition",
+            name: t("labelStopLimitStopPrice"),
+            headerCellClass: "textAlignRight",
+            formatter: ({ row }: any) => {
+              return row.extraOrderInfo.isTriggerd ? (
+                <Box
+                  style={{ cursor: "pointer" }}
+                  className="rdg-cell-value textAlignRight"
+                  display={"inline-flex"}
+                  justifyContent={"center"}
+                >
+                  <Tooltip
+                    style={{ cursor: "pointer" }}
+                    className="rdg-cell-value textAlignRight"
+                    title={t("labelStopLimitTriggered", {
+                      time: row.extraOrderInfo.triggerdTime
+                        ? moment(
+                            new Date(row.extraOrderInfo.triggerdTime)
+                          ).format(YEAR_DAY_MINUTE_FORMAT)
+                        : "",
+                    }).toString()}
+                  >
+                    <>
+                      <Typography component={"span"} paddingRight={1 / 2}>
+                        {row.extraOrderInfo.stopSide ==
+                        sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
+                          ? "≤"
+                          : "≥"}
+                        {row.extraOrderInfo.stopPrice}
+                      </Typography>
+                      <GoodIcon />
+                    </>
+                  </Tooltip>
+                </Box>
+              ) : (
+                <Box
+                  style={{ cursor: "pointer" }}
+                  className="rdg-cell-value textAlignRight"
+                >
+                  <Typography component={"span"}>
+                    {row.extraOrderInfo.stopSide ==
+                    sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
+                      ? "≤"
+                      : "≥"}
+                    {row.extraOrderInfo.stopPrice}
+                  </Typography>
+                </Box>
+              );
+            },
+          },
+        ];
+      } else {
+        return [];
+      }
+    }, [isStopLimit]);
     const CellStatus = React.useCallback(
       ({ row, rowIdx }: any) => {
         const value = row.status;
@@ -386,6 +475,7 @@ export const OrderHistoryTable = withTranslation("tables")(
               : colorBase.textPrimary;
           }};
           height: 100%;
+
           & svg {
             font-size: 14px;
             transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -582,6 +672,7 @@ export const OrderHistoryTable = withTranslation("tables")(
           );
         },
       },
+      ...[].concat(stopLimitColumn() as never[]),
       {
         key: "time",
         name: t("labelOrderTime"),
@@ -718,6 +809,7 @@ export const OrderHistoryTable = withTranslation("tables")(
           );
         },
       },
+      ...[].concat(stopLimitColumn() as never[]),
       {
         key: "time",
         name: t("labelOrderTime"),
@@ -1208,6 +1300,7 @@ export const OrderHistoryTable = withTranslation("tables")(
     return (
       <TableStyled
         isMobile={isMobile}
+        isStopLimit={isStopLimit}
         isopen={isOpenOrder ? "open" : "history"}
         ispro={isPro ? "pro" : "lite"}
       >

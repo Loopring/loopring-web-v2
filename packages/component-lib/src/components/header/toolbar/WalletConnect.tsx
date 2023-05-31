@@ -5,6 +5,7 @@ import {
   AccountStatus,
   ChainIdExtends,
   CircleIcon,
+  gatewayList,
   getShortAddr,
   LoadingIcon,
   LockIcon,
@@ -12,8 +13,8 @@ import {
   SagaStatus,
   UnConnectIcon,
 } from "@loopring-web/common-resources";
-import { Typography } from "@mui/material";
-import { Button } from "../../basic-lib";
+import { Typography, Box } from "@mui/material";
+import { Button, ButtonProps } from "../../basic-lib";
 import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
@@ -54,6 +55,27 @@ const WalletConnectBtnStyled = styled(Button)`
     color: var(--color-text-primary);
   }
 `;
+const ProviderBox = styled(Box)<ButtonProps & { account?: any }>`
+  display: none;
+  background-image: none;
+  height: 100%;
+  width: 48px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  ${({ account }) => {
+    if (account && account.connectName) {
+      const item = gatewayList.find(({ key }) => key === account.connectName);
+      // connectName: keyof typeof ConnectProviders;
+      return item?.imgSrc
+        ? `
+         display: flex;
+         background-image:url(${item.imgSrc});
+        `
+        : "";
+    }
+  }};
+` as (props: ButtonProps & { account: any }) => JSX.Element;
 const TestNetworkStyle = styled(Typography)`
   // display: inline-flex;
   position: relative;
@@ -179,13 +201,14 @@ export const WalletConnectBtn = ({
           paddingX={1}
           component={"span"}
           color={"var(--vip-text)"}
-          marginRight={1}
+          marginRight={1 / 2}
         >
           {networkLabel}
         </TestNetworkStyle>
       ) : (
         <></>
       )}
+      {!isMobile && <ProviderBox account={accountState?.account} />}
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(
@@ -231,6 +254,7 @@ export const WalletConnectUI = ({
   handleClick,
 }: WalletConnectBtnProps) => {
   const { t } = useTranslation(["layout", "common"]);
+  const { isMobile } = useSettings();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
   const [networkLabel, setNetworkLabel] =
     React.useState<string | undefined>(undefined);
@@ -305,13 +329,14 @@ export const WalletConnectUI = ({
           paddingX={1}
           component={"span"}
           color={"var(--vip-text)"}
-          marginRight={1}
+          marginRight={1 / 2}
         >
           {networkLabel}
         </TestNetworkStyle>
       ) : (
         <></>
       )}
+      {!isMobile && <ProviderBox account={accountState?.account} />}
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(
@@ -351,6 +376,7 @@ export const WalletConnectUI = ({
     </>
   );
 };
+
 export const WalletConnectL1Btn = ({
   accountState,
   handleClick,

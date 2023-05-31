@@ -574,6 +574,8 @@ export default {
   labelL2toL1Fast: "Fast",
   labelL2toL1Standard: "Standard",
   labelL2toL1LinkRecent: "Recent withdrawal history",
+  labelL2toL2ExchangeError: "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+  labelL2toL2SmartWalletError: "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
   labelL2toL2Title: "Send to Another Loopring L2",
   labelL2toL2EnterToken: "Select Token",
   transferDescription:
@@ -793,15 +795,15 @@ export default {
   labelExchangeHuobi: "Huobi",
   labelExchangeHuobiDes: "Transactions need to wait 24 hours",
   labelExchangeCoinbase: "Coinbase",
-  labelExchangeOthers: "Others",
+  labelExchangeOthers: "Other Exchanges",
   labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
-  labelConfirmCEX: "Confirm CEX Support",
+  labelConfirmBtrade: "Confirm Block Trade Support",
   labelConfirmDetail:
-    "<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>" +
-    "<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>",
-  labelCEXUnderstand: "I understand and acknowledge the risk",
+    "<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>",
+  labelBtradeUnderstand: "I understand and acknowledge the risk",
   labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
   labelMintFeeChoose: "Select payment token",
@@ -833,7 +835,7 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a CEX address using Loopring L2. Since the CEX does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Block Trade address using Loopring L2. Since the Block Trade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
   labelForceWithdrawConfirm1:
@@ -1025,7 +1027,9 @@ export default {
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
   labelDualInvestDes:
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
-  labelDualCurrentPrice: "{{symbol}} Current price:  <1>{{price}}</1>",
+  labelDualCurrentPriceTip:
+    "Current Price is based on USDT derived from some leading exchanges.",
+  labelDualCurrentPrice: "{{symbol}} Current Price:<1>{{price}}</1>  USDT",
   labelDualSuccess: "Subscription {{symbol}} Successfully",
   labelDualProcessing: "Waiting for completion",
   labelDualProcessingDes:
@@ -1046,7 +1050,7 @@ export default {
   labelDualTargetPrice3: "Target Price",
 
   labelDualTargetPriceDes:
-    "Target Price is a benchmark price. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
+    "Target Price is a benchmark price based on USDT. On Settlement Date, the Settlement Price will be compared against this benchmark price.",
   labelDualRiskDes:
     "Your investment will be locked up until settlement date after investing and cannot be redeemed before settlement. \n As we make profit ratio a top priority, the total opened position might vary with your initial investment.",
   labelDualReturn: "Return \n {{symbol}}",
@@ -1069,7 +1073,9 @@ export default {
     "I understand that subscribed assets are locked and users aren’t able to cancel or redeem before the Settlement Date.",
   labelInvestDualTutorialCheck3:
     "I understand that I should review the possible scenarios of settlement amount and confirmed the subscription details.",
-  labelInvestDualTutorialCheck4: "I have read and understand the risk warning.",
+  labelInvestDualTutorialCheck4:
+    "Please be aware that the target price in Dual Investment portfolio is USDT. If you subscribe USDC-related product with another token, that token may be converted to USDC if the target price is reached. If you want to completely avoid the USDC depegging risk, you can select USDT-related products instead.",
+  labelInvestDualTutorialCheck5: "I have read and understand the risk warning.",
   labelInvestDualBeginerMode: "Beginner Mode",
   labelInvestDualBeginerModeDesLine1: "What is Dual Investment?",
   labelInvestDualBeginerModeDesLine2:
@@ -1107,6 +1113,7 @@ export default {
   labelDualTitle: "Dual Investment",
   labelDualDesSuccess:
     "Your token for investment is just locked but still in your account as Loopring is a DEX. \n When the transaction expires, if the settlement price is not reached, you will get a profit and the frozen token will also be unlocked; if the settlement price is reached, your investment and interest income will be converted into the target token at the Target price.",
+  labelDualRefresh: "Refresh",
   labelNoticeForMarketFrozen:
     "{{ type }} is not supported, If you believe this is indeed a bug, please contact us.",
   labelInvestRangeDay: "{{arg}} Days",
@@ -1280,13 +1287,55 @@ export default {
     "Your Red Packet is public, and everyone can try to claim a share of it.",
   labelLuckyTokenViewTypeDesPrivate:
     "Your Red Packet is shared privately with others via a custom QR code.",
+  labelLuckyBlindBox: "Blind Box Red Packet",
+  labelLuckyBlindBoxDes:
+    "Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.",
+  labelLuckyRecievedBlindBox:
+    "Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}",
+  labelBlindBoxExplainationNotEnded:
+    "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExplainationEnded:
+    "Please claim within 3 days or it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxExplaination2:
+    "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened.",
+  labelBlindBoxExplaination3:
+    "{{remainingGiftsAmount}} gifts available for grabbing.",
+  labelBlindBoxNotStarted: "Red Packet is available to grab after: {{time}}",
+  labelBlindBoxStarted: "Blind Box Reveal time after: {{time}}",
+  labelBlindBoxClaimStarted:
+    "Any unclaimed NFTs will be returned to the Sender after: {{time}}",
+  labelBlindBoxRecievedNFT:
+    "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
+  labelBlindBoxStartDate: "Start date",
+  labelBlindBoxStartTime: "Start Time",
+  labelBlindBoxEndDate: "End date",
+  labelBlindBoxEndDate2: "Blindbox reveal time",
+  labelBlindBoxEndTime: "End Time",
+  labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
+  labelBlindBoxExpirationExplainationForToken:
+    "After expiration, any unopened Red Packets will be forfeited and sent back to the Sender",
+  labelBlindBoxExpirationExplainationForNFT:
+    "If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender's wallet.",
+  labelBlindBoxPrivate: "Private Red Packet",
+  labelBlindBoxPrivateDes:
+    "Your Red Packet is shared privately with others via a custom QR code.",
+  labelBlindBoxClaimWarning:
+    "If the recipients of the NFT Red Packets do not claim their received NFT within 3 days, the NFT will be forfeited and sent back to the Sender's wallet.",
+  labelBlindBoxRecievedRedPackets: "Received NFT Red Packets",
+  labelBlindBoxCongratulations: "Congratulations",
+  labelBlindBoxSorry: "Sorry",
+  labelBlindBoxNoRewards: "You have not received a reward",
+  labelBlindBoxCongratulationsBlindBox:
+    "Congratulations on receiving a Blind Box",
+  labelBlindBoxSorryBlindBox: "Sorry, you did not win a prize",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
     "If the recipient of the Red Packet also re-shares the packet, they receive half of whatever the next person receives.",
   labelLuckyRandomToken: "Lucky Red Packet",
   labelLuckyRandomTokenDes: "Each recipient will get a random amount of.",
   labelLuckyCommonToken: "Normal Red Packet",
-  labelLuckyCommonTokenDes: "Each recipient will receive a pre-set split of.",
+  labelLuckyCommonTokenDes:
+    "Each recipient will receive a pre-set split of the total Red Packet shared.",
   labelL1toL2NFTAmount: "NFT Amount",
   labelInputRedPacketBtnLabel: "Select Token",
   labelCreateRedPacket: "Send Red Packet",
@@ -1298,9 +1347,10 @@ export default {
     "Your Red Packet is shared privately with others via a custom QR code.",
   labelLuckyTokenViewType0: "Public Red Packet",
   labelLuckyTokenViewTypeDes0:
-    "Your Red Packet is shared privately with others via a custom QR code.",
+    "Your Red Packet is public, and everyone can try to claim a share of it.",
   labelSplit: "Red Packet Count",
-  labelRedPacketMemo: "Best Wishes",
+  labelRedPacketMemo: "Memo",
+  labelRedPacketMemoPlaceholder: "Best wishes",
   labelRedPacketStart: "Available in",
   labelRedPacketSendWaitForAuth:
     "Please confirm to send red packet {{value}} {{symbol}}.",
@@ -1332,7 +1382,7 @@ export default {
   labelAmountEach: "Amount Each",
   labelRedPacketTotalAmount: "Total Amount",
   labelQuantity: "Quantity",
-  labelAssetAmount: "Asset Amounts: {{value}}",
+  labelAssetAmount: "Total Asset Amounts: {{value}}",
   labelCreateRedPacketBtn: "Prepare Red Packet",
   labelRedPacketsExpireDes:
     "Unclaimed tokens remaining after the expiration will be returned within 24h",
@@ -1342,25 +1392,32 @@ export default {
   labelRedPacketsMinRange: "Min {{value}}",
   labelRedPacketsMaxRange: "Max {{value}}",
   labelRedPacketsMin: "Minimum of {{value}} {{symbol}}",
-  labelRedPacketsMax: "Maximum of {value}} {{symbol}}",
+  labelRedPacketsMax: "Maximum of {{value}} {{symbol}}",
+  labelRedPacketsGiftsLargerThanPackets:
+    "The number of Red Packets containing gifts cannot exceed the total number of Red Packets",
+  labelBlindBoxNumberOverMaximun: "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:
-    "Each recipient will get a random amount of the total Red Packet shared.",
+    "Token amount for each Red Packet is randomized.",
   labelSendRedPacketTitle: "Send Red Packet",
   labelSendRedPacketTitlePublic: "Send Red Packet -- Public",
   labelSendRedPacketTitlePrivate: "Send Red Packet -- Private",
   labelRedPacketWaitingBlock: "Block is not ready",
   labelShare: "Share",
   labelRelayRedPacket: "Relay Red Packet",
+  labelNormalRedPacket: "Normal Red Packet",
+  labelluckyRedPacket: "Lucky Red Packet",
+  labelrelayRedPacket: "Relay Red Packet",
+  labelnormalRedPacket: "Normal Red Packet",
   labelLuckyRedPacket: "Lucky Red Packet",
   labelLuckyRedPacketStart: "Starts in: {{value}}",
-  labelLuckyRedPacketTimeout: "Red packet has been \n taken out",
-  labelLuckyRedPacketDetail: "View red packet details",
+  labelLuckyRedPacketTimeout: "Red Packet has been \n taken out",
+  labelLuckyRedPacketDetail: "View Red Packet details >",
   labelRedPacketOpenInProgress: "Processing...",
   labelRedPacketOpenFailed: "Read red packet failed!",
   labelRedPacketShowQR: "Share red packet",
-  labelRedPacketReceivedRecord: "Received {{value}}/{{count}}",
+  labelRedPacketReceivedRecord: "Receive Red Packet {{value}}/{{count}}",
   labelAmmExitMiniOrderDisabled:
     "Transaction fees will be greater than the value of the LP, which will cost you your assets.",
   labelAmmExitMiniOrderMini:
@@ -1378,13 +1435,17 @@ export default {
   labelRedPacketStatusCOMPLETED: "Completed", // COMPLETED = 3,
   labelRedPacketStatusOVER_DUE: "Over Due", // OVER_DUE = 4,
   labelRedPacketStatusFAILED: "Failed", // FAILED = 5
-  labelRedPacketNo: "NO.{{value}}", // FAILED = 5
+  labelRedPacketStatusNotStarted: "Hasn’t started",
+  labelRedPacketStatusStarted: "Started",
+  labelRedPacketStatusEnded: "Ended",
+  labelRedPacketNo: "NO.{{value}}",
   labelRedPacketClaimInProgress: "Processing...",
   labelRedPacketClaimFailed: "Open red packet failed!",
   labelRedPacketClaimSuccess: "",
   labelReceived: "Received",
   labelGoodLuck: "Good Luck",
   labelRedPacketGrab: "Share with Friends",
+  labelRedPacketEnded: "Ended",
   labelLuckDraw: "Luckiest Draw",
   labelMyLuckReward: "(My reward)",
   labelRedPacketClaimTitle: "Claim to Loopring L2",
@@ -1392,9 +1453,11 @@ export default {
   labelShareQRCode: "Generate QR Code for share",
   labelSeal: "Seal",
   labelOpenAfter: "Open after {{time}}",
-  labelTotalRedPacket: "Total {{value}}",
+  labelOpenStart: "Start",
+  labelTotalRedPacket: "Total Quantity: {{value}}",
   labelMyRedPacketReward: "My Rewards",
-  labelRedpacketScanDes: "Using Loopring Wallet, scan the QR code.",
+  labelRedpacketScanDes:
+    "Grab this Red Packet by scanning with your Loopring Wallet or importing to loopring.io",
   labelLuckyRedPacketStarted: "Red Packet is Started",
   labelNFTRedpacketBtn: "Send Red Packet",
   labelRedpacketDurationTitle: "Expires after",
@@ -1404,10 +1467,13 @@ export default {
     "<1>{{number}}</1> friends relayed this red packet, you extend reward: <3>{{amount}}</3>.",
   labelRedPacketFrom: "From",
   labelRedPacketTo: "To Loopring L2",
-  labelRedPacketMy: "My red packet",
-  labelRedpacketNotActive: "Hide the redpacket received",
+  labelRedPacketMy: "My Red packet",
+  labelRedpacketNotActive: "Hide received Red Packets",
   labelRedpacketTokens: "ERC20 Tokens",
+  labelRedpacketTokensShort: "Tokens",
   labelRedpacketNFTS: "NFTs",
+  labelRedpacketBlindBox: "Blind Box",
+  labelRedpacketHideInactionable: "Hide inactionable records",
   labelChooseNFT: "Choose NFT <1>{{required}}</1>",
   labelChooseNFTTooltips: "",
   tokenSelectNFTToken: "Select NFT",
@@ -1417,6 +1483,16 @@ export default {
   labelRedPacketMarketNFT: "NFT",
   labelRedPacketNotSupport:
     "Unfortunately Mobile Dapp does not support Red Packet feature, Please download Loopring wallet or try this feature on laptop browser.",
+  labelRedPacketTimeRange: "Start / End Time",
+  labelRedPacketTimeRangeDes: "The Red Packet expires after the end date",
+  labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
+  labelRedPacketTimeRangeBlindboxDes:
+    "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
+  labelRedPacketTabReceived: "Received",
+  labelRedPacketTabSent: "Sent",
+  labelRedPacketTabNFTs: "NFTs",
+  labelRedPacketTabBlindBox: "Blind Box",
+  labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
@@ -1429,8 +1505,8 @@ export default {
   labelHaveAnBanxaCancel: "Create a new order from scratch.",
   labelBanxaConfirmSubmit:
     "Token has been sent to Banxa wallet. You can save/click below link to check the payment status anytime.",
-  labelInvestStackLRC: "LRC STAKING",
-  labelInvestStackLRCDES: "Earn LRC staking rewards",
+  labelInvestStakeLRC: "LRC STAKING",
+  labelInvestStakeLRCDES: "Earn LRC staking rewards",
   labelFriendsPayActivation: "Your friend has paid for your L2 activation fee.",
   labelLRCStakingTitle: "What's LRC Staking",
   labelLRCStakingRisk:
@@ -1454,14 +1530,14 @@ export default {
   labelLRCStakeDuration: "Lock duration to claim reward<1></1>",
   labelInvestLRCTitle: "LRC Staking",
   labelLRCStakeRiskDes:
-    "              The staked LRC will be locked in Loopring L2, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.",
+    "The staked LRC will be locked in Loopring L2, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.",
   labelAgreeRedeem: "Redeem",
   labelStackingAgreeRedeemTitle: "Redeem In Advance",
   labelStackingAgreeRedeem:
     "Redeeming staked assets before the minimum Locked Duration will forfeit the accumulated rewards. Are you sure you still want to redeem?",
   labelLRCStakeProduct: "Product",
   labelLRCStakeRedeemDes:
-    "This product has met the minimum Locked Duration. You can now redeem any portion of the subscription amount without deducting from your earnings. The remaining subscription amount will continue to generate income.",
+    "This product has meet the minimum Locked Duration. You can now redeem any portion of the subscription amount without deducting from your earnings. The remaining subscription amount will continue to generate income.",
   labelLRCStakeRedeemAgree:
     "I acknowledge the early redemption will forfeit the accumulated reward",
   labelLRCStakeCurrentEarn: "Current Total Earnings",
@@ -1484,18 +1560,163 @@ export default {
   labelDefiStakingRedeem: "Redeem",
   labelDays: "day(s)",
   labelRemainingAmount:
-    "Remaining amount should be greater than {{symbol}}, Please redeem all.",
+    "Remaining amount should be greater than {{symbol}},\n Please redeem all.",
   labelRemainingBtnAmount: "Remaining amount is insufficient",
   labelStakingCumulativeEarnings: "Cumulative Earnings",
   labelStakingClaimableEarnings: "Claimable Earnings",
   labelClaimBtn: "Claim",
   labelStakeNoEnough: "Insufficient {{arg}} balance",
+  labelClaimBtnClaimed: "Claimed",
+  labelClaimBtnExpired: "Expired",
   labelDefiRemindMin: "Please redeem all Balance",
   labelInvestType_LRCSTAKE: "LRC Staking",
+  labelNFTs_one: "\u2A09{{count}} NFT",
+  labelNFTs_other: "\u2A09{{count}} NFTs",
+  labelTokenNFTMaxRedPack: "Max: ",
+  labelNFTRedPackAskClaim:
+    "Note: After expiration, all the unclaimed NFTs will be returned back to sender. Please claim as soon as possible if you want to hold them.",
   labelTransferDelayConfirm:
     "Your claim request has been received. Loopring will transfer the token into your L2 account soon. Please verify it.",
   labelClaimredPacket: "My Red Packet",
+  labelRedPacketMe: "Me",
   labelClaimlrcStaking: "My LRC Staking",
   labelExpectSettlementPrice:
     "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}} = {{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}} = {{marketPrice}}. There is {{marketRatePrice}}% variance observed. Please acknowledge the risk if you still want to continue.",
+
+  labelContactsAddContact: "Add Contact",
+  labelContactsAddressTitle: "Address",
+  labelContactsAddressDes: "Enter wallet address or ENS",
+  labelContactsAddressInvalid: "Invalid address or ENS",
+  labelContactsNameTitle: "Name",
+  labelContactsNameDes: "Enter name for the contact",
+  labelContactsAddContactBtn: "Add",
+  labelContactsDeleteContact: "Delete Contact",
+  labelDeleteContactInfo: "Contact",
+  labelContactsDeleteContactBtn: "Delete",
+  labelContactsAddSuccess: 'Add Contact Succeed',
+  labelContactsDeleteSuccess: 'Delete Contact Succeed',
+  labelContactsEditSuccess: 'Edit Contact Succeed',
+  labelContactsSendSuccess: 'Send Succeed',
+  labelContactsCopySuccess: 'Copied to Clipboard',
+  labelContactsAddFailed: 'Add Contact Failed',
+  labelContactsDeleteFailed: 'Delete Contact Failed',
+  labelContactsEditFailed: 'Edit Contact Failed',
+  labelContactsSendFailed: 'Send Failed',
+  labelContacts: 'Contacts',
+  labelContactsSend: 'Send',
+  labelContactsTransactions: 'Transactions',
+  labelContactsNetworkChoose: 'Choose L2 or L1 Account',
+  labelContactsNext: 'Next',
+  labelContactsContactExisted: 'Contact Already Existed',
+  labelContactsNoContact: 'No Contact',
+  labelContactsSelectReciepient: 'Select the Recipient',
+  labelContactsBinanceNotSupportted: 'Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.',
+  labelContactsHuobiNotSupportted: 'Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.',
+  labelContactsOtherExchangesNotSupportted: 'The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.',
+  "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
+  labelStakingSuccess: "{{symbol}} Staking Successful",
+  labelStakingFailed: "{{symbol}} Staking failed",
+  labelStakingRedeemFailed: "Redeem {{symbol}} failed",
+  labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
+  labelStakingRedeemRemaining: "Remaining Amount",
+  labelStakingRedeemDate: "Redeem Time",
+
+  labelContactsAddContact: "Add Contact",
+  labelContactsAddressTitle: "Address",
+  labelContactsAddressDes: "Enter wallet address or ENS",
+  labelContactsAddressInvalid: "Invalid address or ENS",
+  labelContactsNameTitle: "Name",
+  labelContactsNameDes: "Enter name for the contact",
+  labelContactsAddContactBtn: "Add",
+  labelContactsDeleteContact: "Delete Contact",
+  labelDeleteContactInfo: "Contact",
+  labelContactsDeleteContactBtn: "Delete",
+  labelContactsAddSuccess: "Add Contact Succeed",
+  labelContactsDeleteSuccess: "Delete Contact Succeed",
+  labelContactsEditSuccess: "Edit Contact Succeed",
+  labelContactsSendSuccess: "Send Succeed",
+  labelContactsCopySuccess: "Copied to Clipboard",
+  labelContactsAddFailed: "Add Contact Failed",
+  labelContactsDeleteFailed: "Delete Contact Failed",
+  labelContactsEditFailed: "Edit Contact Failed",
+  labelContactsSendFailed: "Send Failed",
+  labelContacts: "Contacts",
+  labelContactsSend: "Send",
+  labelContactsTransactions: "Transactions",
+  labelContactsNetworkChoose: "Choose L2 or L1 Account",
+  labelContactsNext: "Next",
+  labelContactsContactExisted: "Contact Already Existed",
+  labelNotExchangeEOA:
+    "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+  labelNotOtherSmartWallet:
+    "This wallet binds with smart contract that does not support Loopring L2. You will need to send funds to the L1 account.",
+  labelBtradeSwapTitle: "Block Trade",
+  labelBtradeSwapType: "Type",
+  labelBtradeSwapFilled: "Filled",
+  labelBtradeSwapFee: "Fee",
+  labelBtradeSwapTime: "Time",
+  labelBtradeSwapPrice: "Price",
+  labelBtradeSwapSettled: "Settled",
+  labelBtradeSwapDelivering: "Delivering",
+  labelBtradeSwapPanelDes:
+    "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
+  labelBtradeSwapDeliverDes:
+    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
+  labelGoBtradeSwap:
+    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
+  labelBtradeSwap: "Block Trade",
+  labelBtradeSwapFailed: "Block Trade failed!",
+  labelBtradeSwapTitleDes: "What is Block Trade?",
+  labelBtradeSwapContentDes:
+    "<p>Block Trade offers a secure and trustless way for users to swap tokens using CEX liquidity. The trades happen exclusively between designated entities, ensuring that the existing liquidity of the DEX remains unaffected. There is no price impact to other DEX users as a result of the transaction.</p>" +
+    "<p>This is similar to the traditional stock market’s Block Trade System. A block trade is a large, privately negotiated transaction, which can be made outside the open market through a private purchase agreement.<p>",
+  labelRefereeRewards: "Referee Rewards",
+  labelReferralRewards: "Referral Rewards",
+  labelRewardLRC: "Rewards LRC",
+  labelPrice: "Price",
+  labelBtradeSwapMiniMax: "Min {{minValue}} - Max {{maxValue}}",
+  labelBtradeSwapMini: "Min {{minValue}}",
+  labelBtradeConfirm: "Please check the checkbox",
+  labelBtradeSwapBtn: "Swap",
+  labelType: "Type",
+  labelBtradeTrade: "Block Trade",
+  labelBtradeTitle: "Block Trade Details",
+  labelBtradeQuote: "Total Quota:",
+  labelBtradeQuoteDes: "Total Quota is the maximum allowable trading amount.",
+  labelBtradePoolDes: "Loopring Pool:",
+  labelBtradePool: "Loopring Pool",
+  labelBtradeToleranceTooltips:
+    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade.",
+  labelBtradeFeeTooltips: "The trading fee is fixed at 0.3%.",
+  labelBtradeMinReceiveTooltips:
+    "The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
+  labelBtradeInsufficient: "Insufficient",
+  labelBtradeTime: "Time",
+  labelStopLimit: "Stop-Limit {{tradeType}} {{symbol1}}",
+  labelLimitDemoDes:
+    "The current price is 2,400 (A). You can set the stop price above the current price, such as 3,000 (B), or below the current price, such as 1,500 (C). Once the price goes up to 3,000 (B) or drops to 1,500 (C), the Stop-Limit order will be triggered, and the limit order will be automatically placed on the order book.\n Note: <ol>" +
+    "<li>Limit price can be set above or below the stop price for both buy and sell orders. For example, stop price B can be placed along with a lower limit price B1 or a higher limit price B2.\n</li>" +
+    "<li>A limit order is invalid before the stop price is triggered, including when the limit price is reached ahead of the stop price.</li>" +
+    "<li>When the stop price is reached, it only indicates that a limit order is activated and will be submitted to the order book rather than the limit order being filled immediately. The limit order will be executed according to its own rules.</li></ol>",
+  labelLimitFailed: "Submitted failed",
+  labelLimitMarket: "Market data has issue",
+  labelStopLimitOrderGroup: "Stop-Limit Records",
+  labelStoplimit: "Stop-Limit",
+  labelStopLimitProduct: "Product",
+  labelStopLimitLabelType: "Type",
+  labelStopLimitNotSupport:
+    "Sorry, there is currently insufficient liquidity in this token pair to execute Stop-Limit orders. Please try again later or consider using a market / limit order instead.",
+  labelStopLimitTriggered:
+    " The market order has been submitted to the orderbook. Time: {{time}}",
+  labelStopLimitCurrentlyInsufficient: "Currently insufficient",
+  labelDUAL_CURRENCY: "DUAL CURRENCY",
+  labelDUAL_BASE: "DUAL BASE",
+  labelBTRADE: "Block Trade",
+  labelL2STAKING: "Staking",
+  labelSTOP_LIMIT: "Stop-Limit",
+  labelAMMPending: "Pending",
+  labelAMMTitle: "AMM Investment",
+  labelAMMChartFailed: "Failed load data",
+  labelExpectSettlementLimitPrice:
+    "The expected settlement price from this order is {{symbolBase}}/{{symbolQuote}} = {{price}}, while the current market price from a trusted oracle is {{symbolBase}}/{{symbolQuote}} = {{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
 };

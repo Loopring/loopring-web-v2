@@ -29,6 +29,8 @@ import {
   DepositProps,
   Dual_Failed,
   Dual_Success,
+  Staking_Failed,
+  Staking_Success,
   ExportAccount_Approve_WaitForAuth,
   ExportAccount_Failed,
   ExportAccount_Success,
@@ -112,6 +114,13 @@ import {
   Withdraw_Success,
   Withdraw_User_Denied,
   Withdraw_WaitForAuth,
+  Staking_Redeem_Success,
+  Staking_Redeem_Failed,
+  BtradeSwap_Settled,
+  BtradeSwap_Delivering,
+  BtradeSwap_Failed,
+  BtradeSwap_Pending,
+  AMM_Pending,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -249,7 +258,7 @@ export function useAccountModalForUI({
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
-  const { stackWrapProps } = useStakeTradeExit({
+  const { stakeWrapProps } = useStakeTradeExit({
     setToastOpen,
   });
   const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
@@ -2884,6 +2893,133 @@ export function useAccountModalForUI({
           />
         ),
       },
+      [AccountStep.Staking_Redeem_Failed]: {
+        view: (
+          <Staking_Redeem_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Staking_Redeem_Success]: {
+        view: (
+          <Staking_Redeem_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              info: isShowAccount?.info ?? {},
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Staking_Success]: {
+        view: (
+          <Staking_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              info: isShowAccount?.info ?? {},
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Staking_Failed]: {
+        view: (
+          <Staking_Failed
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.BtradeSwap_Delivering]: {
+        view: (
+          <BtradeSwap_Delivering
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.BtradeSwap_Pending]: {
+        view: (
+          <BtradeSwap_Pending
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+
+      [AccountStep.BtradeSwap_Settled]: {
+        view: (
+          <BtradeSwap_Settled
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.BtradeSwap_Failed]: {
+        view: (
+          <BtradeSwap_Failed
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              account,
+              info: isShowAccount?.info,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.AMM_Pending]: {
+        view: (
+          <AMM_Pending
+            btnInfo={undefined}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
     });
   }, [
     activeAccountProps,
@@ -2951,7 +3087,7 @@ export function useAccountModalForUI({
     depositProps,
     resetProps,
     collectionAdvanceProps,
-    sideStackRedeemProps: stackWrapProps,
+    sideStackRedeemProps: stakeWrapProps,
     activeAccountProps,
     exportAccountProps,
     exportAccountAlertText,

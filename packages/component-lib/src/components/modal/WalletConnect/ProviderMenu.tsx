@@ -12,6 +12,7 @@ import {
   CheckBoxIcon,
   CheckedIcon,
   GatewayItem,
+  LOOPRING_DOCUMENT,
 } from "@loopring-web/common-resources";
 import React from "react";
 import { MenuBtnStyled, shake } from "../../styled";
@@ -137,14 +138,9 @@ export const ProviderMenu = ({
                   href={termUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={(event) => {
-                    //@ts-ignore
-                    window?._iub?.badges["0"].linkA.dispatchEvent(
-                      new Event("click")
-                    );
-                    event.preventDefault();
-                    // set
-                    // window?._iub?.loadPPContent({...e, path: termUrl});
+                  onClick={(_event) => {
+                    window.open(`${LOOPRING_DOCUMENT}terms_en.md`, "_blank");
+                    window.opener = null;
                   }}
                 >
                   Terms of Service

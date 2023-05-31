@@ -29,6 +29,16 @@ export type RawDataRedPacketReceivesItem = {
   sender: string;
   rawData: any;
 };
+export type RawDataRedPacketBlindBoxReceivesItem = {
+  token: (CoinInfo<any> | sdk.UserNFTBalanceInfo) & { type: TokenType };
+  amount: string;
+  type: sdk.LuckyTokenType;
+  status: sdk.LuckyTokenItemStatus;
+  claimAt: number;
+  sender: string;
+  rawData: any;
+};
+
 export type RawDataRedPacketClaimItem = {
   token: CoinInfo<any> & { type: TokenType };
   amountStr: string;
@@ -56,9 +66,12 @@ export type RedPacketClaimTableProps<R, C = sdk.Currency> = {
   showloading: boolean;
   forexMap: ForexMap<C>;
   onItemClick: (item: ClaimToken) => void;
+  onViewMoreNFTsClick?: () => void;
   etherscanBaseUrl: string;
   isNFT?: boolean;
   getClaimRedPacket: (props: any) => void;
+  totalLuckyTokenNFTBalance?: number;
+  hideAssets?: boolean;
 } & XOR<
   {
     pagination?: {
@@ -94,8 +107,33 @@ export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {
     pageSize: number;
     total: number;
   };
-  onItemClick: (item: sdk.LuckTokenHistory) => void;
+  onItemClick: (
+    item: sdk.LuckTokenHistory,
+    refreshCallback?: () => void
+  ) => void;
+  onClaimItem: (
+    item: sdk.LuckTokenHistory,
+    successCallback: () => void
+  ) => void;
   getRedPacketReceiveList: (props: any) => void;
+  showActionableRecords: boolean;
+}
+
+export interface RedPacketBlindBoxReceiveTableProps<R, C = sdk.Currency> {
+  rawData: R[];
+  showloading: boolean;
+  forexMap: ForexMap<C>;
+  etherscanBaseUrl: string;
+  pagination?: {
+    pageSize: number;
+    total: number;
+  };
+  onItemClick: (
+    item: sdk.LuckyTokenBlindBoxItemReceive,
+    pageInfo?: { offset: number; limit: number; filter: any }
+  ) => any;
+  getRedPacketReceiveList: (props: any) => void;
+  showActionableRecords: boolean;
 }
 
 export enum LuckyTokenItemStatusMap {

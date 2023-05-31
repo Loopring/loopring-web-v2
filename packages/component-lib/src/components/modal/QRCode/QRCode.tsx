@@ -1,9 +1,11 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import QRCode, { BaseQRCodeProps } from "qrcode.react";
 import styled from "@emotion/styled";
 import { Box, Modal, Typography } from "@mui/material";
-import { ModalQRCodeProps, QRCodeProps } from "./Interface";
+import { ModalQRCodeProps, QRCodePanelProps } from "./Interface";
 import { ModalCloseButton } from "../../basic-lib";
+import QRCodeStyling from "qr-code-styling";
+import { SoursURL } from "@loopring-web/common-resources";
+import React from "react";
 
 const ModalContentStyled = styled(Box)`
   & > div {
@@ -20,17 +22,60 @@ const ModalContentStyled = styled(Box)`
   }
 `;
 
-export const QRCodePanel = ({
+export type QCodeProps = {
+  url: string;
+  size?: number;
+  fgColor?: string;
+  bgColor?: string;
+  imageInfo?: { imageSrc?: string; size?: number };
+};
+export const QRCode = ({
   size = 160,
-  title,
-  description,
-  fgColor = "#4169FF",
+  fgColor = "#000",
   bgColor = "#fff",
   url = "https://exchange.loopring.io/",
-}: // handleClick
-QRCodeProps & Partial<BaseQRCodeProps>) => {
-  if (url === undefined) {
-    url = "";
+  imageInfo = {
+    imageSrc: `${SoursURL + "svg/loopring.svg"}`,
+    size: 40,
+  },
+}: QCodeProps & QRCodePanelProps) => {
+  const qrCode = new QRCodeStyling({
+    type: "svg",
+    data: url,
+    width: size,
+    height: size,
+    image: imageInfo.imageSrc,
+    dotsOptions: {
+      color: fgColor,
+      type: "rounded",
+    },
+    backgroundOptions: {
+      color: bgColor,
+    },
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 8,
+    },
+  });
+  const ref = React.useRef();
+  React.useEffect(() => {
+    qrCode.append(ref.current);
+  }, []);
+  return <Box ref={ref} />;
+};
+export const QRCodePanel = ({
+  title,
+  description,
+  ...rest
+}: // imageSettings = {
+//   height: 80,
+//   width: 80,
+//   src: `${SoursURL + "svg/loopring.svg"}`,
+// },
+// handleClick
+QCodeProps & QRCodePanelProps) => {
+  if (rest.url === undefined) {
+    rest.url = "";
   }
   return (
     <Box
@@ -49,14 +94,7 @@ QRCodeProps & Partial<BaseQRCodeProps>) => {
           {title}
         </Typography>
       )}
-      <QRCode
-        value={url}
-        size={size}
-        fgColor={fgColor}
-        bgColor={bgColor}
-        style={{ padding: 8, background: bgColor }}
-        aria-label={`link:${url}`}
-      />
+      <QRCode {...rest} />
       {description && (
         <Typography variant={"body1"} marginBottom={3} marginTop={1}>
           {description}
@@ -72,10 +110,7 @@ export const ModalQRCode = withTranslation("common")(
     open,
     t,
     ...rest
-  }: ModalQRCodeProps &
-    QRCodeProps &
-    Partial<BaseQRCodeProps> &
-    WithTranslation) => {
+  }: QCodeProps & ModalQRCodeProps & WithTranslation) => {
     return (
       <Modal
         open={open}
@@ -87,7 +122,7 @@ export const ModalQRCode = withTranslation("common")(
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
-          className={rest.className}
+          className={rest?.className}
         >
           <Box
             className={"content"}

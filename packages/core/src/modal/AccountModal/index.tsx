@@ -5,6 +5,7 @@ import {
   ModalPanel,
   ModalQRCode,
   Toast,
+  ToastType,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import { useSystem } from "@loopring-web/core";
@@ -103,11 +104,11 @@ export const ModalAccountInfo = withTranslation("common")(
           onClose={() => {
             setExportAccountToastOpen(false);
           }}
-          severity={"success"}
+          severity={ToastType.success}
         />
         <Toast
           alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
+          severity={toastOpen?.type ?? ToastType.success}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
@@ -117,17 +118,24 @@ export const ModalAccountInfo = withTranslation("common")(
           baseURL={baseURL}
           transferProps={{
             ...transferProps,
-
             onBack: () => {
-              setShowTransfer({ isShow: false });
-              onBackSend();
+              if (transferProps.isFromContact) {
+                setShowTransfer({ isShow: false });
+              } else {
+                setShowTransfer({ isShow: false });
+                onBackSend();
+              }
             },
           }}
           withdrawProps={{
             ...withdrawProps,
             onBack: () => {
-              setShowWithdraw({ isShow: false });
-              onBackSend();
+              if (withdrawProps.isFromContact) {
+                setShowWithdraw({ isShow: false });
+              } else {
+                setShowWithdraw({ isShow: false });
+                onBackSend();
+              }
             },
           }}
           depositProps={{
@@ -166,7 +174,7 @@ export const ModalAccountInfo = withTranslation("common")(
           onClose={() => {
             setCopyToastOpen(false);
           }}
-          severity={"success"}
+          severity={ToastType.success}
         />
         <ModalQRCode
           open={openQRCode}

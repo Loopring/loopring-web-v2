@@ -12,7 +12,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from "@loopring-web/common-resources";
-import { AddressType, RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { AmmPanelType } from "../../../components";
 
 const initialState: ModalState = {
@@ -229,28 +229,30 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
     ) {
-      const { isShow, symbol, info, name, address } = action.payload;
+      const { isShow, symbol, info, name, address, addressType } =
+        action.payload;
       state.isShowTransfer = {
         isShow,
         symbol,
         info,
         name,
         address,
-        addressType: AddressType.EOA,
+        addressType,
       };
     },
     setShowWithdraw(
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
     ) {
-      const { isShow, symbol, info, name, address } = action.payload;
+      const { isShow, symbol, info, name, address, addressType } =
+        action.payload;
       state.isShowWithdraw = {
         isShow,
         symbol,
         info,
         name,
         address,
-        addressType: AddressType.EOA,
+        addressType,
       };
     },
     setShowDeposit(
@@ -357,14 +359,19 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     setShowClaimWithdraw(
       state,
       action: PayloadAction<
-        ModalStatePlayLoad & { claimToken: ClaimToken; claimType: CLAIM_TYPE }
+        ModalStatePlayLoad & {
+          claimToken: ClaimToken;
+          claimType: CLAIM_TYPE;
+          successCallback?: () => void;
+        }
       >
     ) {
-      const { isShow, claimToken, claimType } = action.payload;
+      const { isShow, claimToken, claimType, successCallback } = action.payload;
       state.isShowClaimWithdraw = {
         isShow,
         claimToken,
         claimType,
+        successCallback,
       };
     },
     setShowSideStakingRedeem(

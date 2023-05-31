@@ -8,18 +8,20 @@ import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
 import {
-  useTicker,
-  ModalGroup,
-  useDeposit,
-  useSystem,
   ModalCoinPairPanel,
+  ModalGroup,
   ModalRedPacketPanel,
+  useDeposit,
   useOffFaitModal,
+  useSystem,
+  useTicker,
+  useTokenMap,
 } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
+  myLog,
   SagaStatus,
   setMyLog,
   ThemeType,
@@ -27,10 +29,12 @@ import {
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
 import {
-  useSettings,
+  ComingSoonPanel,
   LoadingBlock,
   NoticePanelSnackBar,
   NoticeSnack,
+  useSettings,
+  useToggle,
 } from "@loopring-web/component-lib";
 import {
   InvestMarkdownPage,
@@ -50,6 +54,8 @@ import { RedPacketPage } from "../pages/RedPacketPage";
 import { useTranslation } from "react-i18next";
 import { ContactPage } from "pages/ContactPage";
 import { ContactTransactionsPage } from "pages/ContactPage/transactions";
+import { BtradeSwapPage } from "../pages/BtradeSwapPage";
+import { StopLimitPage } from "../pages/ProTradePage/stopLimtPage";
 
 const ContentWrap = ({
   children,
@@ -129,10 +135,12 @@ const WrapModal = () => {
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const proFlag =
-    process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
+  const { marketArray } = useTokenMap();
   const { setTheme } = useSettings();
+  const {
+    toggle: { BTradeInvest, StopLimit },
+  } = useToggle();
 
   React.useEffect(() => {
     if (searchParams.has("theme")) {
@@ -287,7 +295,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <Header isHideOnScroll={true} />
           )}
 
-          {state === "PENDING" && proFlag && tickerMap ? (
+          {state === "PENDING" && tickerMap ? (
             <LoadingBlock />
           ) : (
             <Box display={"flex"} flexDirection={"column"} flex={1}>
@@ -300,16 +308,37 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <SwapPage />
           </ContentWrap>
         </Route>
+        <Route path="/trade/btrade">
+          <ContentWrap state={state}>
+            {!BTradeInvest.enable && BTradeInvest.reason === "no view" ? (
+              <ComingSoonPanel />
+            ) : (
+              <BtradeSwapPage />
+            )}
+          </ContentWrap>
+        </Route>
+        <Route path="/trade/stopLimit">
+          {searchParams && searchParams.has("noheader") ? (
+            <></>
+          ) : (
+            <Header isHideOnScroll={true} />
+          )}
+
+          {state === "PENDING" ||
+          !marketArray.length ||
+          !Object.keys(tickerMap ?? {}).length ? (
+            <LoadingBlock />
+          ) : StopLimit.enable == false && StopLimit.reason === "no view" ? (
+            <ComingSoonPanel />
+          ) : (
+            <Box display={"flex"} flexDirection={"column"} flex={1}>
+              <StopLimitPage />
+            </Box>
+          )}
+        </Route>
         <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
           <ContentWrap state={state}>
-            <FiatPage
-            // vendorListBuy={vendorListBuy}
-            // vendorListSell={vendorListSell}
-            // sellPanel={sellPanel}
-            // setSellPanel={setSellPanel}
-            // banxaViewProps={banxaViewProps}
-            // offBanxaValue={offBanxaValue}
-            />
+            <FiatPage />
           </ContentWrap>
         </Route>
         <Route exact path="/markets">

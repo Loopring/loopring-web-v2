@@ -1,6 +1,7 @@
 import React from "react";
 import {
   DeFiWrapProps,
+  ToastType,
   useOpenModals,
   useToggle,
 } from "@loopring-web/component-lib";
@@ -41,11 +42,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useDefiMap, useTradeDefi } from "../../stores";
 
-export const useDefiTrade = <
-  T extends IBData<I>,
-  I,
-  ACD extends DeFiCalcData<T>
->({
+export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   isJoin = true,
   market,
   setToastOpen,
@@ -63,7 +60,7 @@ export const useDefiTrade = <
   setToastOpen: (props: {
     open: boolean;
     content: JSX.Element | string;
-    type: "success" | "error" | "warning" | "info";
+    type: ToastType;
   }) => void;
 }) => {
   const { t } = useTranslation(["common"]);
@@ -209,7 +206,7 @@ export const useDefiTrade = <
                 tokenMap[coinSellSymbol].precision,
                 false,
                 { floor: false }
-              ).replace(sdk.SEP, "");
+              ).replaceAll(sdk.SEP, "");
         const buyAmount =
           tradeData?.tradeValue === undefined
             ? undefined
@@ -222,7 +219,7 @@ export const useDefiTrade = <
                 tokenMap[coinBuySymbol].precision,
                 true,
                 { floor: true }
-              ).replace(sdk.SEP, "");
+              ).replaceAll(sdk.SEP, "");
 
         // @ts-ignore
         _deFiCalcData = {
@@ -615,7 +612,7 @@ export const useDefiTrade = <
         } else {
           setToastOpen({
             open: true,
-            type: "success",
+            type: ToastType.success,
             content: t("labelInvestSuccess", {
               type: isJoin
                 ? t("labelInvestDefDeposit")
@@ -630,7 +627,7 @@ export const useDefiTrade = <
     } catch (reason) {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content:
           t("labelInvestFailed") +
             (reason as CustomErrorWithCode)?.messageKey ??
@@ -721,7 +718,7 @@ export const useDefiTrade = <
           tokenMap[coinSellSymbol].precision,
           false,
           { floor: true }
-        ).replace(sdk.SEP, "");
+        ).replaceAll(sdk.SEP, "");
         // @ts-ignore
         const oldTrade = (tradeDefi?.deFiCalcData[type] ?? {}) as unknown as T;
         handleOnchange({

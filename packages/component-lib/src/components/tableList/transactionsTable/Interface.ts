@@ -12,15 +12,6 @@ export enum TransactionStatus {
   failed = "failed",
 }
 
-// export enum TransactionTradeTypes {
-//   allTypes = "all",
-//   deposit = "DEPOSIT",
-//   withdraw = "OFFCHAIN_WITHDRAWAL",
-//   transfer = "TRANSFER",
-//   forceWithdraw = "DELEGATED_FORCE_WITHDRAW",
-// }
-`sss\
-  dddd`;
 export const TransactionTradeTypes = {
   allTypes:
     `${sdk.UserTxTypes.DEPOSIT},${sdk.UserTxTypes.TRANSFER},${sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW},${sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL},` +

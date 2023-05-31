@@ -19,6 +19,7 @@ import {
   TableFilterStyled,
   TablePaddingX,
   TransactionStatus,
+  ToastType,
 } from "@loopring-web/component-lib";
 import { StylePaper, useGetOrderHistorys } from "@loopring-web/core";
 import { useTransactions } from "./hooks";
@@ -413,8 +414,9 @@ const TransactionTable = withTranslation(["tables", "common"])(
             const receiverAddress = /chain_withdrawal/i.test(
               row.side.toLowerCase()
             )
-              ? // row.side.toLowerCase() === sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL
-                getShortAddr(row.withdrawalInfo.recipient, isMobile)
+              ? row.withdrawalInfo
+                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
+                : ""
               : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
             // myLog("receiverAddress", row.receiverAddress);
@@ -856,67 +858,16 @@ export const ContactTransactionsPage = withTranslation("common")(
     const { isMobile } = useSettings();
 
     const [pageSize, setPageSize] = React.useState(0);
-    // const [currentTab, setCurrentTab] = React.useState(() => {
-    //   return match?.params.tab ?? TabIndex.transactions;
-    // });
-    // const [currentOrderTab, setCurrentOrderTab] = React.useState(() => {
-    //   return match?.params?.orderTab ?? TabOrderIndex.orderOpenTable;
-    // });
 
     const { toastOpen, closeToast } = useToast();
     const { totalCoinMap } = useTokenMap();
-    // const { ammMap } = useAmmMap();
 
-    // const {
-    //   txs: txTableData,
-    //   txsTotal,
-    //   showLoading: showTxsLoading,
-    //   getUserTxnList,
-    // } = useGetTxs(setToastOpen);
-    // const {
-    //   userTrades,
-    //   getUserTradeList,
-    //   userTradesTotal,
-    //   page: tradePage,
-    //   showLoading: showTradeLoading,
-    // } = useGetTrades(setToastOpen);
-    // const {
-    //   defiList,
-    //   showLoading: showDefiLoading,
-    //   getDefiTxList,
-    //   defiTotal,
-    // } = useGetDefiRecord(setToastOpen);
-    // const {
-    //   ammRecordList,
-    //   showLoading: showAmmloading,
-    //   ammRecordTotal,
-    //   getAmmpoolList,
-    // } = useGetAmmRecord(setToastOpen);
-    // const {
-    //   rawData,
-    //   getOrderList,
-    //   totalNum,
-    //   showLoading,
-    //   marketArray: orderRaw,
-    //   cancelOrder,
-    // } = useOrderList(setToastOpen);
-    // const {
-    //   dualList,
-    //   showLoading: showDualLoading,
-    //   getDualTxList,
-    //   dualMarketMap,
-    //   dualTotal,
-    // } = useDualTransaction(setToastOpen);
-
-    // const { userOrderDetailList, getUserOrderDetailTradeList } =
-    //   useGetOrderHistorys();
     const { etherscanBaseUrl } = useSystem();
 
     const {
       account: { accAddress, accountId },
     } = useAccount();
 
-    // const { t } = rest;
     const container = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
@@ -948,13 +899,13 @@ export const ContactTransactionsPage = withTranslation("common")(
             color={"inherit"}
             onClick={history.goBack}
           >
-            Contacts
+            {rest.t("labelContacts")}
           </Button>
         </Box>
         <StylePaper ref={container} flex={1}>
           <Toast
             alertText={toastOpen?.content ?? ""}
-            severity={toastOpen?.type ?? "success"}
+            severity={toastOpen?.type ?? ToastType.success}
             open={toastOpen?.open ?? false}
             autoHideDuration={TOAST_TIME}
             onClose={closeToast}

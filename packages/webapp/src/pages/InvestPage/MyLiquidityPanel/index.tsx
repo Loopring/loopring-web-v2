@@ -33,6 +33,7 @@ import {
   EmptyValueTag,
   FailedIcon,
   getValuePrecisionThousand,
+  HiddenTag,
   myLog,
   PriceTag,
   RowInvestConfig,
@@ -71,17 +72,19 @@ const MyLiquidity: any = withTranslation("common")(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
     isHideTotal,
+    hideAssets,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
     isHideTotal?: boolean;
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
+    hideAssets?: boolean;
   }) => {
     let match: any = useRouteMatch("/invest/balance/:type");
     const { search } = useLocation();
     const searchParams = new URLSearchParams(search);
 
     const ammPoolRef = React.useRef(null);
-    const stackingRef = React.useRef(null);
+    const stakingRef = React.useRef(null);
     const dualRef = React.useRef(null);
     const sideStakeRef = React.useRef(null);
 
@@ -132,9 +135,7 @@ const MyLiquidity: any = withTranslation("common")(
       getStakingList,
       stakeShowLoading,
       stakingTotal,
-      // totalStaked,
       totalStakedRewards,
-      totalLastDayPendingRewards,
       totalClaimableRewards,
       stakedSymbol,
     } = useOverview({
@@ -152,9 +153,9 @@ const MyLiquidity: any = withTranslation("common")(
             // @ts-ignore
             window.scrollTo(0, dualRef?.current?.offsetTop);
             break;
-          case "stack":
+          case "stake":
             // @ts-ignore
-            window.scrollTo(0, stackingRef?.current?.offsetTop);
+            window.scrollTo(0, stakingRef?.current?.offsetTop);
 
             break;
           case "amm":
@@ -213,7 +214,17 @@ const MyLiquidity: any = withTranslation("common")(
           )
         : "0";
 
-    // const stakingList: sdk.STACKING_SUMMARY[] = [];
+    const dualStakeDollar = dualOnInvestAsset
+      ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
+          const price = tokenPrices[idIndex[cur.tokenId]];
+          return sdk
+            .toBig(cur?.amount ?? 0)
+            .div("1e" + tokenMap[idIndex[cur.tokenId]].decimals)
+            .times(price)
+            .plus(pre)
+            .toString();
+        }, "0")
+      : undefined;
     return (
       <Box
         display={"flex"}
@@ -290,7 +301,8 @@ const MyLiquidity: any = withTranslation("common")(
                     getValuePrecisionThousand(
                       sdk
                         .toBig(summaryMyInvest.investDollar)
-                        .times(forexMap[currency] ?? 0),
+                        .times(forexMap[currency] ?? 0)
+                        .toString(),
                       undefined,
                       undefined,
                       2,
@@ -317,10 +329,10 @@ const MyLiquidity: any = withTranslation("common")(
             {/*    marginTop={1}*/}
             {/*    fontFamily={"Roboto"}*/}
             {/*  >*/}
-            {/*    {summaryMyInvest?.feeDollar*/}
+            {/*    {summaryMyInvest?.feeU*/}
             {/*      ? PriceTag[CurrencyToTag[currency]] +*/}
             {/*        getValuePrecisionThousand(*/}
-            {/*          (summaryMyInvest.feeDollar || 0) **/}
+            {/*          (summaryMyInvest.feeU || 0) **/}
             {/*            (forexMap[currency] ?? 0),*/}
             {/*          undefined,*/}
             {/*          undefined,*/}
@@ -417,6 +429,7 @@ const MyLiquidity: any = withTranslation("common")(
                         });
                       }}
                       rowConfig={RowInvestConfig}
+                      hideAssets={hideAssets}
                     />
                   </Grid>
                 </TableWrapStyled>
@@ -438,17 +451,19 @@ const MyLiquidity: any = withTranslation("common")(
                       {summaryMyInvest?.stakeLRCDollar !== undefined ? (
                         <Typography component={"h4"} variant={"h3"} marginX={3}>
                           {summaryMyInvest?.stakeLRCDollar
-                            ? PriceTag[CurrencyToTag[currency]] +
-                              getValuePrecisionThousand(
-                                sdk
-                                  .toBig(summaryMyInvest?.stakeLRCDollar)
-                                  .times(forexMap[currency] ?? 0),
-                                undefined,
-                                undefined,
-                                2,
-                                true,
-                                { isFait: true, floor: true }
-                              )
+                            ? hideAssets
+                              ? HiddenTag
+                              : PriceTag[CurrencyToTag[currency]] +
+                                getValuePrecisionThousand(
+                                  sdk
+                                    .toBig(summaryMyInvest?.stakeLRCDollar)
+                                    .times(forexMap[currency] ?? 0),
+                                  undefined,
+                                  undefined,
+                                  2,
+                                  true,
+                                  { isFait: true, floor: true }
+                                )
                             : EmptyValueTag}
                         </Typography>
                       ) : (
@@ -478,18 +493,20 @@ const MyLiquidity: any = withTranslation("common")(
                         component={"span"}
                       >
                         {totalStakedRewards && totalStakedRewards !== "0"
-                          ? getValuePrecisionThousand(
-                              sdk
-                                .toBig(totalStakedRewards ?? 0)
-                                .div("1e" + tokenMap[stakedSymbol].decimals),
-                              tokenMap[stakedSymbol].precision,
-                              tokenMap[stakedSymbol].precision,
-                              tokenMap[stakedSymbol].precision,
-                              false,
-                              { floor: true, isAbbreviate: true }
-                            ) +
-                            " " +
-                            stakedSymbol
+                          ? hideAssets
+                            ? HiddenTag
+                            : getValuePrecisionThousand(
+                                sdk
+                                  .toBig(totalStakedRewards ?? 0)
+                                  .div("1e" + tokenMap[stakedSymbol].decimals),
+                                tokenMap[stakedSymbol].precision,
+                                tokenMap[stakedSymbol].precision,
+                                tokenMap[stakedSymbol].precision,
+                                false,
+                                { floor: true, isAbbreviate: true }
+                              ) +
+                              " " +
+                              stakedSymbol
                           : EmptyValueTag}
                       </Typography>
                     </Grid>
@@ -525,7 +542,11 @@ const MyLiquidity: any = withTranslation("common")(
                               display={"inline-flex"}
                               paddingRight={2}
                             >
-                              {totalClaimableRewardsAmount + " " + stakedSymbol}
+                              {hideAssets
+                                ? HiddenTag
+                                : totalClaimableRewardsAmount +
+                                  " " +
+                                  stakedSymbol}
                             </Typography>
                             <Button
                               variant={"contained"}
@@ -573,6 +594,7 @@ const MyLiquidity: any = withTranslation("common")(
                       redeemItemClick,
                       geDefiSideStakingList: getStakingList,
                       showloading: stakeShowLoading,
+                      hideAssets,
                       ...rest,
                     }}
                   />
@@ -580,7 +602,7 @@ const MyLiquidity: any = withTranslation("common")(
               )}
               {!!(lidoAssets?.length > 0) && (
                 <TableWrapStyled
-                  ref={stackingRef}
+                  ref={stakingRef}
                   className={`table-divide-short MuiPaper-elevation2 ${
                     lidoAssets?.length > 0 ? "min-height" : ""
                   }`}
@@ -605,17 +627,19 @@ const MyLiquidity: any = withTranslation("common")(
                     {summaryMyInvest?.stakeETHDollar !== undefined ? (
                       <Typography component={"h4"} variant={"h3"} marginX={3}>
                         {summaryMyInvest?.stakeETHDollar
-                          ? PriceTag[CurrencyToTag[currency]] +
-                            getValuePrecisionThousand(
-                              sdk
-                                .toBig(summaryMyInvest?.stakeETHDollar)
-                                .times(forexMap[currency] ?? 0),
-                              undefined,
-                              undefined,
-                              2,
-                              true,
-                              { isFait: true, floor: true }
-                            )
+                          ? hideAssets
+                            ? HiddenTag
+                            : PriceTag[CurrencyToTag[currency]] +
+                              getValuePrecisionThousand(
+                                sdk
+                                  .toBig(summaryMyInvest?.stakeETHDollar)
+                                  .times(forexMap[currency] ?? 0),
+                                undefined,
+                                undefined,
+                                2,
+                                true,
+                                { isFait: true, floor: true }
+                              )
                           : EmptyValueTag}
                       </Typography>
                     ) : (
@@ -633,6 +657,7 @@ const MyLiquidity: any = withTranslation("common")(
                         rowConfig: RowInvestConfig,
                         forexMap: forexMap as any,
                         isInvest: true,
+                        hideAssets,
                         ...rest,
                       }}
                     />
@@ -661,20 +686,16 @@ const MyLiquidity: any = withTranslation("common")(
                     flex={1}
                     margin={0}
                   >
-                    {summaryMyInvest?.dualStakeDollar !== undefined ? (
+                    {dualStakeDollar !== undefined ? (
                       <Typography component={"h4"} variant={"h3"} marginX={3}>
-                        {summaryMyInvest?.dualStakeDollar
-                          ? PriceTag[CurrencyToTag[currency]] +
-                            getValuePrecisionThousand(
+                        {dualStakeDollar
+                          ? hideAssets
+                            ? HiddenTag
+                            : PriceTag[CurrencyToTag[currency]] +
                               sdk
-                                .toBig(summaryMyInvest?.dualStakeDollar)
-                                .times(forexMap[currency] ?? 0),
-                              undefined,
-                              undefined,
-                              2,
-                              true,
-                              { isFait: true, floor: true }
-                            )
+                                .toBig(dualStakeDollar)
+                                .times(forexMap[currency] ?? 0)
+                                .toFixed(2, 1)
                           : EmptyValueTag}
                       </Typography>
                     ) : (
@@ -691,6 +712,7 @@ const MyLiquidity: any = withTranslation("common")(
                       getDualAssetList={getDualTxList}
                       showDetail={showDetail}
                       refresh={refresh}
+                      hideAssets={hideAssets}
                     />
                     <Modal
                       open={dualOpen}

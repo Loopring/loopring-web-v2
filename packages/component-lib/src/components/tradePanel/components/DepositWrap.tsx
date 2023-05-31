@@ -105,7 +105,7 @@ export const DepositWrap = <
         );
       }
       const Max = sdk
-        .toBig(chargeFeeTokenList[index].fee.toString().replace(sdk.SEP, ""))
+        .toBig(chargeFeeTokenList[index].fee.toString().replaceAll(sdk.SEP, ""))
         .times(4);
       setMinFee({
         minFee: t("labelMinFeeForActive", {
@@ -118,18 +118,6 @@ export const DepositWrap = <
       } else {
         return (
           <>
-            {/*<Typography*/}
-            {/*  color={"var(--color-error)"}*/}
-            {/*  component={"p"}*/}
-            {/*  display={"inline-flex"}*/}
-            {/*  justifyContent={"space-between"}*/}
-            {/*  variant={"body1"}*/}
-            {/*  marginBottom={1}*/}
-            {/*  width={"100"}*/}
-            {/*>*/}
-            {/*  <Typography>{}</Typography>*/}
-            {/*  <Typography>{}</Typography>*/}
-            {/*</Typography>*/}
             <Typography
               color={"var(--color-error)"}
               component={"p"}

@@ -20,10 +20,6 @@ export const QuotePage = withTranslation("common")(
     const { account } = useAccount();
     const { forexMap } = useSystem();
     const {
-      // recommendations,
-      // formattedRecommendations,
-      // getTradeFloatVolumeToCount,
-      // handleRecommendBoxClick,
       tableTabValue,
       handleTabChange,
       searchValue,
@@ -34,12 +30,9 @@ export const QuotePage = withTranslation("common")(
       tableHeight,
       filteredData,
       showLoading,
-      // tickList,
       campaignTagConfig,
       handleRowClick,
     } = useQuotePage({ tableRef });
-    // const showLoading = !tickList?.length;
-    // myLog("showLoading", showLoading);
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1}>
         <TableWrapStyled

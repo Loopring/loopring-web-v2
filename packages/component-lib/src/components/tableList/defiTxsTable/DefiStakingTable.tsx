@@ -6,6 +6,7 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
+  HiddenTag,
   RowInvestConfig,
 } from "@loopring-web/common-resources";
 import {
@@ -37,7 +38,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 14% auto 16% 16% 11% 10% 160px !important;`
-        : `--template-columns: 20% 20% 20% 8% !important;`}
+        : `--template-columns: 24% auto auto 8% !important;`}
     .rdgCellCenter {
       height: 100%;
       justify-content: center;
@@ -103,6 +104,7 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
       showloading,
       // onDetailClick,
       redeemItemClick: _redeemItemClick,
+      hideAssets,
       t,
     } = props;
     const [openDetail, setOpenDetail] = React.useState(false);
@@ -112,7 +114,15 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
     const [page, setPage] = React.useState(1);
     const redeemItemClick = (item: R) => {
       setDetail(item);
-      if (Date.now() < item.claimableTime) {
+      const requiredHoldDay = (item.claimableTime - item.stakeAt) / 86400000;
+      const holdDay = moment(Date.now()).diff(
+        moment(new Date(item.stakeAt ?? ""))
+          .utc()
+          .startOf("days"),
+        "days",
+        false
+      );
+      if (requiredHoldDay > holdDay) {
         setOpenAlert(true);
       } else {
         setOpenDetail(false);
@@ -180,20 +190,26 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.remainAmount && row.remainAmount !== "0"
-                ? getValuePrecisionThousand(
-                    sdk.toBig(row.remainAmount).div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  )
+                ? hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
+                      sdk
+                        .toBig(row.remainAmount)
+                        .div("1e" + tokenInfo.decimals),
+                      tokenInfo.precision,
+                      tokenInfo.precision,
+                      undefined,
+                      false,
+                      {
+                        floor: false,
+                        // isTrade: true,
+                      }
+                    ) +
+                    " " +
+                    tokenInfo.symbol
                 : EmptyValueTag;
 
-            return <> {amountStr + " " + tokenInfo.symbol}</>;
+            return <> {amountStr}</>;
           },
         },
         {
@@ -207,19 +223,25 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.totalRewards && row.totalRewards !== "0"
-                ? getValuePrecisionThousand(
-                    sdk.toBig(row.totalRewards).div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  )
+                ? hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
+                      sdk
+                        .toBig(row.totalRewards)
+                        .div("1e" + tokenInfo.decimals),
+                      tokenInfo.precision,
+                      tokenInfo.precision,
+                      undefined,
+                      false,
+                      {
+                        floor: false,
+                        // isTrade: true,
+                      }
+                    ) +
+                    " " +
+                    tokenInfo.symbol
                 : EmptyValueTag;
-            return <> {amountStr + " " + tokenInfo.symbol}</>;
+            return <> {amountStr}</>;
           },
         },
         {
@@ -233,21 +255,25 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.lastDayPendingRewards && row.lastDayPendingRewards !== "0"
-                ? getValuePrecisionThousand(
-                    sdk
-                      .toBig(row.lastDayPendingRewards)
-                      .div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  )
+                ? hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
+                      sdk
+                        .toBig(row.lastDayPendingRewards)
+                        .div("1e" + tokenInfo.decimals),
+                      tokenInfo.precision,
+                      tokenInfo.precision,
+                      undefined,
+                      false,
+                      {
+                        floor: false,
+                        // isTrade: true,
+                      }
+                    ) +
+                    " " +
+                    tokenInfo.symbol
                 : EmptyValueTag;
-            return <> {amountStr + " " + tokenInfo.symbol}</>;
+            return <> {amountStr}</>;
           },
         },
         {
@@ -311,7 +337,7 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [t, tokenMap, idIndex]
+      [t, tokenMap, idIndex, hideAssets]
     );
 
     const getColumnMobileTransaction = React.useCallback(
@@ -328,17 +354,23 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.remainAmount && row.remainAmount !== "0"
-                ? getValuePrecisionThousand(
-                    sdk.toBig(row.remainAmount).div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  )
+                ? (hideAssets
+                    ? HiddenTag
+                    : getValuePrecisionThousand(
+                        sdk
+                          .toBig(row.remainAmount)
+                          .div("1e" + tokenInfo.decimals),
+                        tokenInfo.precision,
+                        tokenInfo.precision,
+                        undefined,
+                        false,
+                        {
+                          floor: false,
+                          // isTrade: true,
+                        }
+                      )) +
+                  " " +
+                  tokenInfo.symbol
                 : EmptyValueTag;
 
             return (
@@ -350,7 +382,7 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
                 alignItems={"center"}
               >
                 <Typography color={"textPrimary"} variant={"body1"}>
-                  {amountStr + " " + tokenInfo.symbol}
+                  {amountStr}
                 </Typography>
                 <Typography color={"textSecondary"} variant={"body2"}>
                   {row.productId}
@@ -365,48 +397,48 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
           width: "auto",
           cellClass: "textAlignCenter",
           headerCellClass: "textAlignCenter",
-          name:
-            t("labelDefiStakingEarn") + "/" + t("labelDefiStakingPreviousEarn"),
+          name: t("labelDefiStakingAndPreviousEarn"),
           formatter: ({ row }) => {
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.lastDayPendingRewards && row.lastDayPendingRewards !== "0"
-                ? getValuePrecisionThousand(
-                    sdk
-                      .toBig(row.lastDayPendingRewards)
-                      .div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  )
+                ? hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
+                      sdk
+                        .toBig(row.lastDayPendingRewards)
+                        .div("1e" + tokenInfo.decimals),
+                      tokenInfo.precision,
+                      tokenInfo.precision,
+                      undefined,
+                      false,
+                      {
+                        floor: false,
+                        // isTrade: true,
+                      }
+                    )
                 : EmptyValueTag;
-            const amountPreviousEarnStr = row.totalRewards
-              ? getValuePrecisionThousand(
-                  sdk.toBig(row.totalRewards).div("1e" + tokenInfo.decimals),
-                  tokenInfo.precision,
-                  tokenInfo.precision,
-                  undefined,
-                  false,
-                  {
-                    floor: false,
-                    // isTrade: true,
-                  }
-                )
-              : EmptyValueTag;
-            return (
-              <>
-                {amountStr +
-                  "/" +
-                  amountPreviousEarnStr +
+            const amountPreviousEarnStr =
+              row.totalRewards && row.totalRewards != "0"
+                ? (hideAssets
+                    ? HiddenTag
+                    : getValuePrecisionThousand(
+                        sdk
+                          .toBig(row.totalRewards)
+                          .div("1e" + tokenInfo.decimals),
+                        tokenInfo.precision,
+                        tokenInfo.precision,
+                        undefined,
+                        false,
+                        {
+                          floor: false,
+                          // isTrade: true,
+                        }
+                      )) +
                   " " +
-                  tokenInfo.symbol}
-              </>
-            );
+                  tokenInfo.symbol
+                : EmptyValueTag;
+            return <>{amountStr + "/" + amountPreviousEarnStr}</>;
           },
         },
         {
@@ -426,11 +458,10 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             );
             return (
               <Typography component={"span"} textAlign={"right"}>
-                {(diff
+                {diff
                   ? diff + " " + t("labelDays")
-                  : "< 1" + " " + t("labelDays")) +
-                  "/" +
-                  row.apr && row.apr !== "0.00"
+                  : "< 1" + " " + t("labelDays") + "/"}
+                {row.apr && row.apr !== "0.00" && Number(row.apr) !== 0
                   ? row.apr + "%"
                   : EmptyValueTag}
               </Typography>

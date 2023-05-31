@@ -3,6 +3,7 @@ import {
   CollectionDetailView,
   StyledPaperBg,
   Toast,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -251,7 +252,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         onClose={() => {
           collectionListProps.setCopyToastOpen({ isShow: false, type: "" });
         }}
-        severity={"success"}
+        severity={ToastType.success}
       />
     </Box>
   );

@@ -38,6 +38,7 @@ export interface DefiSideStakingTableProps<R = RawDataDefiSideStakingItem> {
   geDefiSideStakingList: (props: any) => Promise<void>;
   showloading: boolean;
   redeemItemClick: (item: R) => void;
+  hideAssets?: boolean;
 }
 
 export type RawDataDefiSideStakingTxItem = sdk.STACKING_TRANSACTIONS & {

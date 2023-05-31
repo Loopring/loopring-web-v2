@@ -21,6 +21,7 @@ export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
   disabled?: boolean;
   logoColor?: string;
   wait?: number;
+  maxValue?: string | number | undefined;
   minimum?: string | number | undefined;
   size?: InputSize;
   isHideError?: boolean;
@@ -80,6 +81,7 @@ export type InputCoinProps<T, R, I> = defaultProps<R, I> & {
   name?: string;
   coinLabelStyle?: React.CSSProperties;
   coinPrecision?: number;
+  // inputError?: { error: boolean; message?: string };
 } & XOR<
     { isShowCoinInfo: true } & XOR<
       { isShowCoinIcon: true },

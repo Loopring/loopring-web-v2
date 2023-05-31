@@ -1,6 +1,7 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   ModalRedPacket,
+  RedPacketBlindBoxDetail,
   RedPacketClock,
   RedPacketDetail,
   RedPacketOpen,
@@ -13,7 +14,7 @@ import {
 } from "@loopring-web/component-lib";
 import React from "react";
 import { useRedPacketModal } from "./hook";
-import { myLog } from "@loopring-web/common-resources";
+import { myLog, SoursURL } from "@loopring-web/common-resources";
 import { Box } from "@mui/material";
 
 export const ModalRedPacketPanel = withTranslation("common")(
@@ -33,6 +34,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
       redPacketOpenedProps,
       redPacketDetailProps,
       redPacketClockProps,
+      redPacketBlindBoxDetailProps,
     } = useRedPacketModal();
     // const { redPacketProps } = useRedPacketDetail();
     // const theme = useTheme();
@@ -141,6 +143,41 @@ export const ModalRedPacketPanel = withTranslation("common")(
         },
 
         [RedPacketViewStep.PreparePanel]: { view: <></> },
+        [RedPacketViewStep.BlindBoxDetail]: {
+          view: redPacketBlindBoxDetailProps ? (
+            <Box
+              minHeight={RedPacketSize.large.height}
+              height={"80vh"}
+              width={RedPacketSize.large.width}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"start"}
+            >
+              <RedPacketBlindBoxDetail {...redPacketBlindBoxDetailProps} />
+            </Box>
+          ) : (
+            <></>
+          ),
+        },
+        [RedPacketViewStep.Loading]: {
+          view: (
+            <Box
+              minHeight={RedPacketSize.large.height}
+              height={"80vh"}
+              width={RedPacketSize.large.width}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <img
+                className="loading-gif"
+                alt={"loading"}
+                width="36"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </Box>
+          ),
+        },
       });
     }, [
       redPacketQRCodeProps,
@@ -149,6 +186,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
       redPacketTimeoutProps,
       redPacketOpenedProps,
       redPacketClockProps,
+      redPacketBlindBoxDetailProps,
     ]);
     return (
       <ModalRedPacket

@@ -22,7 +22,7 @@ export interface ScaleAreaChartProps {
   riseColor?: "green" | "red";
   showTooltip?: boolean;
   showArea?: boolean;
-  extraInfo?: string;
+  quoteSymbol?: string;
   showXAxis?: boolean;
   isHeadTailCompare?: boolean;
   marketPrecision?: number;

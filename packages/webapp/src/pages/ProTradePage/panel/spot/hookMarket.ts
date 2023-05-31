@@ -1,18 +1,19 @@
 import {
   AccountStatus,
-  defalutSlipage,
+  defaultSlipage,
   getValuePrecisionThousand,
   IBData,
   MarketType,
   myLog,
   TradeBtnStatus,
+  TradeProType,
+  TradeBaseType,
 } from "@loopring-web/common-resources";
 import React from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   MarketTradeData,
-  TradeBaseType,
-  TradeProType,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -44,20 +45,20 @@ export const useMarket = <C extends { [key: string]: any }>({
 }: { market: MarketType } & any): {
   [key: string]: any;
 } => {
-  const {t} = useTranslation();
-  const {getAmount} = useAmount();
-  const {tokenMap, marketArray, marketMap} = useTokenMap();
-  const {tokenPrices} = useTokenPrices();
-  const {tickerMap} = useTicker();
+  const { t } = useTranslation();
+  const { getAmount } = useAmount();
+  const { tokenMap, marketArray, marketMap } = useTokenMap();
+  const { tokenPrices } = useTokenPrices();
+  const { tickerMap } = useTicker();
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
-  const {toastOpen, setToastOpen, closeToast} = useToast();
-  const {account} = useAccount();
-  const {slippage, isMobile} = useSettings();
-  const {exchangeInfo, allowTrade} = useSystem();
+  const { toastOpen, setToastOpen, closeToast } = useToast();
+  const { account } = useAccount();
+  const { slippage, isMobile } = useSettings();
+  const { exchangeInfo, allowTrade } = useSystem();
 
   const {
-    toggle: {order},
+    toggle: { order },
   } = useToggle();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const autoRefresh = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -88,7 +89,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         belong: quoteSymbol,
         balance: walletMap ? walletMap[quoteSymbol as string]?.count : 0,
       } as IBData<any>,
-      slippage: slippage && slippage !== "N" ? slippage : defalutSlipage,
+      slippage: slippage && slippage !== "N" ? slippage : defaultSlipage,
       type: TradeProType.buy,
     }
   );
@@ -110,7 +111,7 @@ export const useMarket = <C extends { [key: string]: any }>({
     }
     if (
       pageTradePro.lastStepAt &&
-      marketTradeData[ pageTradePro.lastStepAt ].tradeValue
+      marketTradeData[pageTradePro.lastStepAt].tradeValue
     ) {
       myLog("autoUpdate", marketTradeData);
       onChangeMarketEvent(
@@ -159,7 +160,7 @@ export const useMarket = <C extends { [key: string]: any }>({
       // setMarketTradeData(tradeData)
 
       let slippage = sdk
-        .toBig(tradeData.slippage ? tradeData.slippage : defalutSlipage)
+        .toBig(tradeData.slippage ? tradeData.slippage : defaultSlipage)
         .times(100)
         .toString();
 
@@ -218,11 +219,11 @@ export const useMarket = <C extends { [key: string]: any }>({
           .toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
           .minus(totalFee)
           .toString(),
-        tokenMap[ minSymbol ].precision,
-        tokenMap[ minSymbol ].precision,
-        tokenMap[ minSymbol ].precision,
+        tokenMap[minSymbol].precision,
+        tokenMap[minSymbol].precision,
+        tokenMap[minSymbol].precision,
         false,
-        {floor: true}
+        { floor: true }
       );
       const priceImpactObj = getPriceImpactInfo(
         calcTradeParams,
@@ -232,30 +233,30 @@ export const useMarket = <C extends { [key: string]: any }>({
         _tradeData.type === TradeProType.sell
           ? ["base", "quote"]
           : ["quote", "base"];
-      let {stob} = reCalcStoB(
+      let { stob } = reCalcStoB({
         market,
-        {
-          sell: _tradeData[ sell ],
-          buy: _tradeData[ buy ],
+        tradeData: {
+          sell: _tradeData[sell],
+          buy: _tradeData[buy],
           ...(_tradeData as any),
         },
-        `${_tradeData[ sell ].belong}-${_tradeData[ buy ].belong}`
-      ) ?? {stob: undefined};
+        tradePair: `${_tradeData[sell].belong}-${_tradeData[buy].belong}`,
+      }) ?? { stob: undefined };
 
-      const {close} = tickerMap[ market ];
+      const { close } = tickerMap[market];
 
-      if (stob) {
+      if (!stob || sdk.toBig(stob?.replaceAll(sdk.SEP, "") ?? 0).eq(0)) {
         if (close) {
           // @ts-ignore
           // const [, _coinA] = market.match(/(\w+)-(\w+)/i);
           if (_tradeData.type === TradeProType.sell) {
-            stob = close.toString().replace(sdk.SEP, "");
+            stob = close.toString().replaceAll(sdk.SEP, "");
           } else {
             stob = getValuePrecisionThousand(
-              1 / Number(close.toString().replace(sdk.SEP, "")),
-              tokenMap[ quoteSymbol ].precision,
-              tokenMap[ quoteSymbol ].precision,
-              tokenMap[ quoteSymbol ].precision,
+              1 / Number(close.toString().replaceAll(sdk.SEP, "")),
+              tokenMap[quoteSymbol].precision,
+              tokenMap[quoteSymbol].precision,
+              tokenMap[quoteSymbol].precision,
               true
             );
           }
@@ -264,25 +265,17 @@ export const useMarket = <C extends { [key: string]: any }>({
       let isNotMatchMarketPrice, marketPrice, marketRatePrice;
       if (tokenPrices && stob) {
         marketPrice = sdk
-          .toBig(tokenPrices[ _tradeData[ sell ].belong ])
-          .div(tokenPrices[ _tradeData[ buy ].belong ]);
-        marketRatePrice = marketPrice.div(stob?.replace(sdk.SEP, "") ?? 1);
+          .toBig(tokenPrices[_tradeData[sell].belong])
+          .div(tokenPrices[_tradeData[buy].belong]);
+        marketRatePrice = marketPrice.div(stob?.replaceAll(sdk.SEP, "") ?? 1);
         isNotMatchMarketPrice = marketRatePrice.gt(1.05);
         marketPrice = getValuePrecisionThousand(
           marketPrice.toString(),
-          tokenMap[ _tradeData[ buy ].belong ].precision,
-          tokenMap[ _tradeData[ buy ].belong ].precision,
-          tokenMap[ _tradeData[ buy ].belong ].precision
+          tokenMap[_tradeData[buy].belong].precision,
+          tokenMap[_tradeData[buy].belong].precision,
+          tokenMap[_tradeData[buy].belong].precision
         );
         marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2);
-        myLog(
-          "stob",
-          stob,
-          marketPrice.toString(),
-          "marketPriceRate",
-          marketRatePrice,
-          isNotMatchMarketPrice
-        );
       }
 
       updatePageTradePro({
@@ -306,6 +299,7 @@ export const useMarket = <C extends { [key: string]: any }>({
           StoB: stob,
           isChecked:
             tradeData.isChecked !== undefined ? tradeData.isChecked : undefined,
+          lastStepAt,
         },
         lastStepAt,
         totalFee,
@@ -323,20 +317,20 @@ export const useMarket = <C extends { [key: string]: any }>({
             ...state.base,
             tradeValue: _tradeData.base?.tradeValue
               ? Number(
-                _tradeData.base?.tradeValue?.toFixed(
-                  tokenMap[ state.base.belong ].precision
+                  _tradeData.base?.tradeValue?.toFixed(
+                    tokenMap[state.base.belong].precision
+                  )
                 )
-              )
               : undefined,
           },
           quote: {
             ...state.quote,
             tradeValue: _tradeData.quote.tradeValue
               ? Number(
-                _tradeData.quote.tradeValue.toFixed(
-                  tokenMap[ state.quote.belong ].precision
+                  _tradeData.quote.tradeValue.toFixed(
+                    tokenMap[state.quote.belong].precision
+                  )
                 )
-              )
               : undefined,
           },
         };
@@ -356,18 +350,17 @@ export const useMarket = <C extends { [key: string]: any }>({
           base: {
             ...state.base,
             // belong: baseSymbol,
-            balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
+            balance: walletMap ? walletMap[baseSymbol as string]?.count : 0,
             tradeValue: undefined,
           } as IBData<any>,
           isChecked: undefined,
           quote: {
             ...state.quote,
-            balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
+            balance: walletMap ? walletMap[quoteSymbol as string]?.count : 0,
             tradeValue: undefined,
           } as IBData<any>,
         };
-      };
-    )
+      });
       updatePageTradePro({
         market,
         tradeType: type ?? pageTradePro.tradeType,
@@ -414,7 +407,7 @@ export const useMarket = <C extends { [key: string]: any }>({
     ) {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: t("labelSwapFailed"),
       });
       setIsMarketLoading(false);
@@ -422,8 +415,6 @@ export const useMarket = <C extends { [key: string]: any }>({
       return;
     }
 
-    // const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
-    // const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
     try {
       const req: sdk.GetNextStorageIdRequest = {
         accountId: account.accountId,
@@ -460,7 +451,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         }
         setToastOpen({
           open: true,
-          type: "error",
+          type: ToastType.error,
           content: t("labelSwapFailed") + " : " + response.message,
         });
       } else {
@@ -498,13 +489,13 @@ export const useMarket = <C extends { [key: string]: any }>({
               if (percentage1 === 0 || percentage2 === 0) {
                 setToastOpen({
                   open: true,
-                  type: "warning",
+                  type: ToastType.warning,
                   content: t("labelSwapCancelled"),
                 });
               } else {
                 setToastOpen({
                   open: true,
-                  type: "success",
+                  type: ToastType.success,
                   content: t("labelSwapSuccess"),
                 });
               }
@@ -512,21 +503,21 @@ export const useMarket = <C extends { [key: string]: any }>({
             case sdk.OrderStatus.processed:
               setToastOpen({
                 open: true,
-                type: "success",
+                type: ToastType.success,
                 content: t("labelSwapSuccess"),
               });
               break;
             case sdk.OrderStatus.processing:
               setToastOpen({
                 open: true,
-                type: "success",
+                type: ToastType.success,
                 content: t("labelOrderProcessing"),
               });
               break;
             default:
               setToastOpen({
                 open: true,
-                type: "error",
+                type: ToastType.error,
                 content: t("labelSwapFailed"),
               });
               break;
@@ -539,7 +530,7 @@ export const useMarket = <C extends { [key: string]: any }>({
       sdk.dumpError400(reason);
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: t("labelSwapFailed"),
       });
     }
@@ -732,12 +723,13 @@ export const useMarket = <C extends { [key: string]: any }>({
     closeToast,
     isMarketLoading,
     marketSubmit,
+    marketBtnClick,
     marketTradeData,
     resetMarketData: resetTradeData,
     onChangeMarketEvent,
     tradeMarketBtnStatus,
     tradeMarketI18nKey,
-    marketBtnClick,
+
     tradeMarketBtnStyle: {
       ...tradeMarketBtnStyle,
       ...{ fontSize: isMobile ? "1.4rem" : "1.6rem" },

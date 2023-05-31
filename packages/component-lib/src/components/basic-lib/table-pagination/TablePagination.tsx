@@ -22,6 +22,7 @@ export type PaginationProps = {
   alignItems?: string;
   justifyContent?: string;
   onPageChange: (page: number) => void;
+  size?: "small" | "medium" | "large" | undefined;
 };
 
 export const TablePagination = ({
@@ -32,6 +33,7 @@ export const TablePagination = ({
   alignItems = "center",
   pageSize,
   total,
+  size,
 }: PaginationProps) => {
   const getCount = React.useCallback(() => {
     if (!total) return 0;
@@ -60,6 +62,7 @@ export const TablePagination = ({
         count={getCount()}
         page={page}
         onChange={handleChange}
+        size={size}
       />
     </Box>
   );

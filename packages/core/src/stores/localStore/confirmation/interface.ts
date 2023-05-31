@@ -3,6 +3,8 @@ export interface Confirmation {
   confirmedRETHDefiInvest: boolean;
   confirmedWSETHDefiInvest: boolean;
   confirmedDualInvest: boolean;
+  confirmedDualInvestV2: boolean;
   showDualBeginnerHelp: boolean;
   confirmedLRCStakeInvest: boolean;
+  confirmedBtradeSwap: boolean;
 }

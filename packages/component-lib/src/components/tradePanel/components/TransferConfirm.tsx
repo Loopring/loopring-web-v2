@@ -7,9 +7,8 @@ import {
   IBData,
   NFTWholeINFO,
   TOAST_TIME,
-  useAddressTypeLists,
 } from "@loopring-web/common-resources";
-import { Button, Toast } from "../../index";
+import { Button, Toast, ToastType, useAddressTypeLists } from "../../index";
 import { TransferViewProps } from "./Interface";
 import { useSettings } from "../../../stores";
 import React from "react";
@@ -176,7 +175,7 @@ export const TransferConfirm = <
         onClose={() => {
           setOpen(false);
         }}
-        severity={"error"}
+        severity={ToastType.error}
       />
     </Grid>
   );

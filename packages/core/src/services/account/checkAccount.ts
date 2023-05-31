@@ -1,5 +1,5 @@
 import { accountServices } from "./accountServices";
-import { store } from "../../index";
+import { store, toggleCheck } from "../../index";
 import { myLog } from "@loopring-web/common-resources";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { cleanAccountStatus } from "../../stores/account/reducer";
@@ -32,6 +32,7 @@ export const checkAccount = (
         isInCounterFactualStatus: account.isInCounterFactualStatus,
         isContract: account.isContract,
       });
+      toggleCheck();
     } else {
       myLog("After connect >>,checkAccount: step1 account locked");
       accountServices.sendAccountLock();

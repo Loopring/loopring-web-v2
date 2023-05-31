@@ -24,10 +24,10 @@ const ammActivityMapSlice: Slice = createSlice({
       action: PayloadAction<AmmActivityMapStates>
     ) {
       // @ts-ignore
-      if (action.error) {
+      if (action.payload?.error) {
         state.status = SagaStatus.ERROR;
         // @ts-ignore
-        state.errorMessage = action.error;
+        state.errorMessage = action.payload.error;
       }
       state.ammActivityMap = { ...action.payload.groupByRuleTypeAndStatus };
       state.activityInProgressRules = {

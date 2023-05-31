@@ -35,7 +35,7 @@ import {
 import {
   AccountStatus,
   CoinMap,
-  defalutSlipage,
+  defaultSlipage,
   EmptyValueTag,
   getShowStr,
   getValuePrecisionThousand,
@@ -44,6 +44,7 @@ import {
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
+  SwapTradeCalcData,
   TradeBtnStatus,
   TradeCalcData,
   WalletMap,
@@ -52,6 +53,7 @@ import {
   SwapData,
   SwapTradeData,
   SwapType,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -78,14 +80,15 @@ const useSwapSocket = () => {
 
 export const useSwap = <
   T extends SwapTradeData<IBData<C>>,
-  C extends { [key: string]: any }
+  C extends { [key: string]: any },
+  CAD extends SwapTradeCalcData<T>
 >({
   path,
 }: {
   path: string;
 }) => {
   //High: No not Move!!!!!!
-  const { realPair, realMarket } = usePairMatch(path);
+  const { realPair, realMarket } = usePairMatch({ path });
   const { t } = useTranslation(["common", "error"]);
   const history = useHistory();
   const refreshRef = React.createRef();
@@ -111,12 +114,12 @@ export const useSwap = <
   const [sellMinAmt, setSellMinAmt] = React.useState<string>();
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined);
   const [tradeCalcData, setTradeCalcData] = React.useState<
-    Partial<TradeCalcData<C>>
+    CAD & { [key: string]: any }
   >({
     coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
       return { ...prev, [item]: coinMap ? coinMap[item] : {} };
     }, {} as CoinMap<C>),
-  });
+  } as CAD);
 
   /** redux storage **/
   const {
@@ -160,6 +163,7 @@ export const useSwap = <
         ...state,
         sell: { ...state?.sell, tradeValue: 0 },
         buy: { ...state?.buy, tradeValue: 0 },
+        isChecked: undefined,
       } as T;
     });
     setTradeCalcData((state) => {
@@ -168,6 +172,10 @@ export const useSwap = <
         minimumReceived: undefined,
         priceImpact: undefined,
         fee: undefined,
+        isNotMatchMarketPrice: undefined,
+        marketPrice: undefined,
+        marketRatePrice: undefined,
+        isChecked: undefined,
       };
     });
     updatePageTradeLite({
@@ -189,13 +197,12 @@ export const useSwap = <
     });
   };
 
+  // @ts-ignore
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus;
     label: string | undefined;
   } => {
     if (!tokenMap && !tokenPrices) {
-      // setSwapBtnStatus();
-      // return {tradeBtnStatus:TradeBtnStatus.DISABLED};
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -317,7 +324,10 @@ export const useSwap = <
             }
           }
         } else {
-          if (tradeCalcData.isNotMatchMarketPrice && !tradeCalcData.isChecked) {
+          if (
+            tradeCalcData?.isNotMatchMarketPrice &&
+            !tradeCalcData?.isChecked
+          ) {
             return {
               label: undefined,
               tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -338,8 +348,8 @@ export const useSwap = <
     }
   }, [
     tokenMap,
-    tradeCalcData.isChecked,
-    tradeCalcData.isNotMatchMarketPrice,
+    tradeCalcData?.isChecked,
+    tradeCalcData?.isNotMatchMarketPrice,
     tradeData?.sell.belong,
     tradeData?.buy.belong,
     pageTradeLite,
@@ -360,7 +370,7 @@ export const useSwap = <
     ) {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: t("labelSwapFailed"),
       });
       setIsSwapLoading(false);
@@ -418,7 +428,7 @@ export const useSwap = <
         }
         setToastOpen({
           open: true,
-          type: "error",
+          type: ToastType.error,
           content:
             t("labelSwapFailed") +
             " error: " +
@@ -466,13 +476,13 @@ export const useSwap = <
               if (percentage1 === 0 || percentage2 === 0) {
                 setToastOpen({
                   open: true,
-                  type: "warning",
+                  type: ToastType.warning,
                   content: t("labelSwapCancelled"),
                 });
               } else {
                 setToastOpen({
                   open: true,
-                  type: "success",
+                  type: ToastType.success,
                   content: t("labelSwapSuccess"),
                 });
               }
@@ -480,14 +490,14 @@ export const useSwap = <
             case sdk.OrderStatus.processed:
               setToastOpen({
                 open: true,
-                type: "success",
+                type: ToastType.success,
                 content: t("labelSwapSuccess"),
               });
               break;
             default:
               setToastOpen({
                 open: true,
-                type: "error",
+                type: ToastType.error,
                 content: t("labelSwapFailed"),
               });
           }
@@ -499,7 +509,7 @@ export const useSwap = <
       sdk.dumpError400(reason);
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: t("labelSwapFailed"),
       });
     }
@@ -642,13 +652,13 @@ export const useSwap = <
     if (
       tradeCalcData?.coinSell &&
       tokenMap &&
-      tokenMap[tradeCalcData?.coinSell] &&
+      tokenMap[tradeCalcData.coinSell] &&
       LoopringAPI.userAPI
     ) {
       const storageId = await LoopringAPI.userAPI.getNextStorageId(
         {
           accountId: account.accountId,
-          sellTokenId: tokenMap[tradeCalcData?.coinSell].tokenId,
+          sellTokenId: tokenMap[tradeCalcData.coinSell].tokenId,
         },
         account.apiKey
       );
@@ -696,7 +706,7 @@ export const useSwap = <
         },
       } as T);
       setTradeCalcData((tradeCalcData) => {
-        return { ...tradeCalcData, walletMap } as TradeCalcData<C>;
+        return { ...tradeCalcData, walletMap } as CAD;
       });
     } else {
       if (tradeCalcData.coinSell && tradeCalcData.coinBuy) {
@@ -802,11 +812,11 @@ export const useSwap = <
         tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
         dependencyData: { ticker, ammPoolSnapshot, depth },
       });
-      const result = reCalcStoB(
+      const result = reCalcStoB({
         market,
-        tradeData as SwapTradeData<IBData<unknown>>,
-        tradePair as any
-      );
+        tradeData: tradeData as SwapTradeData<IBData<unknown>>,
+        tradePair: tradePair as any,
+      });
 
       setTradeCalcData((state) => {
         state.StoB = result ? result.stob : stob;
@@ -823,7 +833,7 @@ export const useSwap = <
       myLog("hookSwap: resetTradeCalcData", type, _tradeData);
 
       if (coinMap && tokenMap && marketMap && marketArray) {
-        const { tradePair } = marketInitCheck(_market, type);
+        const { tradePair } = marketInitCheck({ market: _market, type });
         // @ts-ignore
         const [, coinA, coinB] = tradePair.match(/([\w,#]+)-([\w,#]+)/i);
         let walletMap: WalletMap<any> | undefined;
@@ -956,7 +966,7 @@ export const useSwap = <
           .toBig(
             _tradeData.slippage && !isNaN(_tradeData.slippage)
               ? _tradeData.slippage
-              : defalutSlipage
+              : defaultSlipage
           )
           .times(100)
           .toString();
@@ -1164,31 +1174,6 @@ export const useSwap = <
           calcTradeParams && (calcTradeParams.priceImpact = "0");
         }
 
-        // myLog(
-        //   "hookSwap:calcTradeParams input:",
-        //   input.toString(),
-        //   ", calcTradeParams Price: ",
-        //   sdk
-        //     .toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
-        //     .div(input.toString())
-        //     .toNumber(),
-        //   `isAtoB:${isAtoB}, ${
-        //     isAtoB ? input.toString() : calcTradeParams?.output
-        //   } tradePrice: `,
-        //   tradePrice.toString(),
-        //   "basePrice: ",
-        //   basePrice?.toString(),
-        //   "toBig(tradePrice).div(basePrice)",
-        //   sdk
-        //     .toBig(tradePrice)
-        //     .div(basePrice ?? 1)
-        //     .toNumber(),
-        //   "priceImpact (1-tradePrice/basePrice) - 0.001",
-        //   priceImpact.toNumber(),
-        //   "priceImpact view",
-        //   calcTradeParams?.priceImpact
-        // );
-
         if (
           tradeCost &&
           calcTradeParams &&
@@ -1290,7 +1275,7 @@ export const useSwap = <
           calcTradeParams,
           account.readyState
         );
-        const _tradeCalcData: Partial<TradeCalcData<C>> = {
+        let _tradeCalcData: CAD & { [key: string]: any } = {
           priceImpact: priceImpactObj.value.toString(),
           priceImpactColor: priceImpactObj.priceImpactColor,
           minimumReceived: !minimumReceived?.toString().startsWith("-")
@@ -1299,17 +1284,21 @@ export const useSwap = <
           fee: totalFee,
           feeTakerRate,
           tradeCost,
-        };
+        } as CAD;
         _tradeData[isAtoB ? "buy" : "sell"].tradeValue = getShowStr(
           calcTradeParams?.output
         );
 
-        const result = reCalcStoB(
+        const result = reCalcStoB({
           market,
-          _tradeData as SwapTradeData<IBData<unknown>>,
-          tradePair as any
-        );
-        if (result) {
+          tradeData: _tradeData as SwapTradeData<IBData<unknown>>,
+          tradePair: tradePair as any,
+        });
+        if (
+          result &&
+          result.stob &&
+          sdk.toBig(result.stob?.replaceAll(sdk.SEP, "")).gt(0)
+        ) {
           _tradeCalcData.StoB = result.stob;
           _tradeCalcData.BtoS = result.btos;
         } else {
@@ -1317,7 +1306,7 @@ export const useSwap = <
             // @ts-ignore
             const [, _coinA] = market.match(/(\w+)-(\w+)/i);
             let _btos = getValuePrecisionThousand(
-              1 / Number(close.replace(sdk.SEP, "")),
+              1 / Number(close.replaceAll(sdk.SEP, "")),
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
               tokenMap[_coinA].precision,
@@ -1338,7 +1327,7 @@ export const useSwap = <
             .toBig(tokenPrices[_tradeData.sell.belong])
             .div(tokenPrices[_tradeData.buy.belong]);
           const marketRatePrice = marketPrice.div(
-            _tradeCalcData.StoB?.replace(sdk.SEP, "") ?? 1
+            _tradeCalcData.StoB?.replaceAll(sdk.SEP, "") ?? 1
           );
           const isNotMatchMarketPrice = marketRatePrice.gt(1.05);
           _tradeCalcData.isNotMatchMarketPrice = isNotMatchMarketPrice;
@@ -1382,6 +1371,7 @@ export const useSwap = <
         });
         //setOutput(calcTradeParams)
         if (account.readyState !== AccountStatus.ACTIVATED) {
+          // @ts-ignore
           _tradeCalcData.priceImpact = undefined;
           _tradeCalcData.minimumReceived = undefined;
         }
@@ -1392,6 +1382,7 @@ export const useSwap = <
         setTradeCalcData((state) => ({
           ...state,
           ..._tradeCalcData,
+          lastStepAt: type,
         }));
         setTradeData((state) => ({
           ...state,
@@ -1465,14 +1456,12 @@ export const useSwap = <
           // @ts-ignore
           const [, _coinA] = market.match(/(\w+)-(\w+)/i);
           btos = getValuePrecisionThousand(
-            1 / Number(close.replace(sdk.SEP, "")),
+            1 / Number(close.replaceAll(sdk.SEP, "")),
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
             true
           ); // .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
-        }
-        if (_tradeData?.isChecked) {
         }
         const _tradeCalcData = {
           ...tradeCalcData,
@@ -1496,6 +1485,10 @@ export const useSwap = <
           fee: undefined,
           feeTakerRate: undefined,
           tradeCost: undefined,
+          isNotMatchMarketPrice: undefined,
+          marketPrice: undefined,
+          marketRatePrice: undefined,
+          isChecked: undefined,
         };
 
         myLog(
@@ -1554,4 +1547,4 @@ export const useSwap = <
     secondConfirmationOpen,
     setToastOpen,
   };
-};;
+};

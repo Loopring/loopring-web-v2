@@ -6,9 +6,8 @@ import {
   IBData,
   NFTWholeINFO,
   TOAST_TIME,
-  useAddressTypeLists,
 } from "@loopring-web/common-resources";
-import { Button, Toast } from "../../index";
+import { Button, Toast, ToastType, useAddressTypeLists } from "../../index";
 import { WithdrawViewProps } from "./Interface";
 import { useSettings } from "../../../stores";
 import React from "react";
@@ -34,7 +33,7 @@ export const WithdrawConfirm = <
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const [open, setOpen] = React.useState(false);
-  const { nonExchangeList, exchangeList } = useAddressTypeLists();
+  const { walletList, exchangeList } = useAddressTypeLists();
   return (
     <Grid
       className={"confirm"}
@@ -115,7 +114,7 @@ export const WithdrawConfirm = <
           </Typography>
           <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
             {
-              [...nonExchangeList, ...exchangeList].find(
+              [...walletList, ...exchangeList].find(
                 (item) => item.value === sureIsAllowAddress
               )?.label
             }
@@ -171,7 +170,7 @@ export const WithdrawConfirm = <
         onClose={() => {
           setOpen(false);
         }}
-        severity={"error"}
+        severity={ToastType.error}
       />
     </Grid>
   );

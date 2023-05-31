@@ -1,21 +1,22 @@
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { MarketTradeData, TradeBaseType, TradeMarketProps } from "../Interface";
+import { MarketTradeData, TradeMarketProps } from "../Interface";
 import {
   CheckBoxIcon,
   CheckedIcon,
   CoinInfo,
   CoinKey,
   CoinMap,
-  defalutSlipage,
+  defaultSlipage,
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
   Info2Icon,
   SlippageTolerance,
+  TradeBaseType,
   TradeBtnStatus,
   TradeCalcProData,
+  TradeProType,
 } from "@loopring-web/common-resources";
-import { TradeProType } from "./Interface";
 import {
   Box,
   Checkbox,
@@ -59,17 +60,10 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
       t,
       // disabled,
       tradeMarketI18nKey,
-      // tradeCalcProData,
       tradeMarketBtnStyle,
       tradeType,
       tradeMarketBtnStatus,
-      // handleCountChange,
-      // tokenBaseProps,
-      // tokenQuoteProps,
-      // tradeData,
-      // handleError,
       handleSubmitEvent,
-      // handleChangeIndex,
       onChangeEvent,
       // ...rest
     } = props;
@@ -139,11 +133,6 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
             { floor: true }
           ) + " %"
         : EmptyValueTag;
-
-    // const fee =
-    //   tradeCalcProData && tradeCalcProData.fee
-    //     ? (parseFloat(tradeCalcProData.fee) / 100).toString() + "%"
-    //     : EmptyValueTag;
 
     const fee =
       tradeCalcProData && tradeCalcProData.fee
@@ -371,7 +360,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                             ? tradeData.slippage
                             : tradeCalcProData.slippage
                             ? tradeCalcProData.slippage
-                            : defalutSlipage}
+                            : defaultSlipage}
                           %
                         </LinkActionStyle>
                         <PopoverPure
@@ -397,7 +386,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                                 ? tradeData.slippage
                                 : tradeCalcProData.slippage
                                 ? tradeCalcProData.slippage
-                                : defalutSlipage,
+                                : defaultSlipage,
                             }}
                           />
                         </PopoverPure>
@@ -498,7 +487,9 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                             ...tradeData,
                             isChecked: !tradeCalcProData?.isChecked,
                           },
-                          TradeBaseType.base
+                          tradeCalcProData?.lastStepAt === TradeBaseType.quote
+                            ? TradeBaseType.quote
+                            : TradeBaseType.base
                         );
                       }}
                       checkedIcon={<CheckedIcon />}

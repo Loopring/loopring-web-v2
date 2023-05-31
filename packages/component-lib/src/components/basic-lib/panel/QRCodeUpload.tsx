@@ -50,6 +50,10 @@ const BoxStyle = styled(Box)`
     color: ${({ theme }) => theme.colorBase.error} !important;
     border: 0 !important;;
   }
+
+  //button#html5-qrcode-button-camera-permission{
+  //  display: none;
+  //}
   button.html5-qrcode-element {
     position: relative;
     color: var(--color-text-button);
@@ -80,6 +84,7 @@ const BoxStyle = styled(Box)`
       color:  ${({ theme }) => theme.colorBase.textDisable}
     }
   }
+
   .MuiFormHelperText-sizeMedium {
     font-size: ${({ theme }) => theme.fontDefault.body2};
     color: var(--color-error);

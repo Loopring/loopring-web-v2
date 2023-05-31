@@ -7,13 +7,13 @@ import {
 import React from "react";
 import {
   LoopringAPI,
-  makeMyPoolRowWithPoolState,
   makeUIAmmActivityMap,
   makeWalletLayer2,
   store,
   useAmmMap,
   useUserRewards,
 } from "@loopring-web/core";
+import { MyPoolRow } from "@loopring-web/component-lib";
 
 export type RewardListItem = {
   amount: string;
@@ -37,7 +37,7 @@ export const useAmmMiningUI = <
   getMyAmmShare: (market: string) => any;
 } => {
   const userRewardsMapState = useUserRewards(); // store.getState().userRewardsMap
-  const { userRewardsMap } = useUserRewards();
+  const { userRewardsMap, myAmmLPMap } = useUserRewards();
   const { apiKey, accountId } = store.getState().account;
   const { tokenPrices } = store.getState().tokenPrices;
   const { tokenMap } = store.getState().tokenMap;
@@ -80,34 +80,40 @@ export const useAmmMiningUI = <
 
   const getMyAmmShare = React.useCallback(
     (market: string) => {
-      if (_walletMap && ammMap && userRewardsMap && tokenPrices && tokenMap) {
+      if (
+        _walletMap &&
+        ammMap &&
+        userRewardsMap &&
+        myAmmLPMap &&
+        tokenPrices &&
+        tokenMap
+      ) {
         const ammKey = market.replace("LP-", "AMM-");
         const marketKey = market.replace("LP-", "");
-        const rawData = makeMyPoolRowWithPoolState({
+        let rowData: MyPoolRow<R> = {
           ammDetail: ammMap[ammKey],
-          walletMap: _walletMap,
-          market: marketKey,
-          ammUserRewardMap: userRewardsMap,
-        }) as any;
-        const formattedPoolRow = [rawData].map((o: any) => {
-          const market = `LP-${o?.ammDetail?.coinAInfo.simpleName}-${o?.ammDetail?.coinBInfo.simpleName}`;
-          const totalAmount = o.totalLpAmount;
-          const totalAmmValueDollar = (tokenPrices[market] || 0) * totalAmount;
-          const coinA = o?.ammDetail?.coinAInfo?.simpleName;
-          const coinB = o?.ammDetail?.coinBInfo?.simpleName;
-          const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined;
-          const precisionB = tokenMap ? tokenMap[coinB]?.precision : undefined;
-
-          return {
-            ...o,
-            totalAmmValueDollar,
-            precisionA,
-            precisionB,
-          };
-        });
-        return !!formattedPoolRow.length ? formattedPoolRow[0] : [];
+          ...myAmmLPMap[marketKey],
+        };
+        //
+        // const formattedPoolRow = [rawData].map((o: any) => {
+        //   const market = `LP-${o?.ammDetail?.coinAInfo.simpleName}-${o?.ammDetail?.coinBInfo.simpleName}`;
+        //   const totalAmount = o.totalLpAmount;
+        //   const totalAmmValueDollar = (tokenPrices[market] || 0) * totalAmount;
+        //   const coinA = o?.ammDetail?.coinAInfo?.simpleName;
+        //   const coinB = o?.ammDetail?.coinBInfo?.simpleName;
+        //   const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined;
+        //   const precisionB = tokenMap ? tokenMap[coinB]?.precision : undefined;
+        //
+        //   return {
+        //     ...o,
+        //     totalAmmValueDollar,
+        //     precisionA,
+        //     precisionB,
+        //   };
+        // });
+        return rowData;
       }
-      return [];
+      return undefined;
     },
     [_walletMap, ammMap, tokenPrices, userRewardsMap, tokenMap]
   );

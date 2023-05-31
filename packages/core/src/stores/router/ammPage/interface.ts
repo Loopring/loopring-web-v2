@@ -6,17 +6,17 @@ import {
   IBData,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
-import { AmmDetailStore } from "../../Amm";
+// import { AmmDetailStore } from "../../Amm";
 
-export type PageAmmCommon = {
-  ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined;
-  ammInfo: AmmDetailStore<any> | undefined;
-};
+// export type PageAmmCommon = {
+//   // ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined;
+//   ammInfo: AmmDetailStore<any> | undefined;
+// };
 
 type PageAmmBase = {
   btnStatus: TradeBtnStatus;
   btnI18nKey: string | undefined;
-  ammCalcData: AmmInData<string> | undefined;
+  ammCalcData: AmmInData<any> | undefined;
 };
 
 export type PageAmmJoin = {
@@ -40,7 +40,7 @@ export type PageAmmExit = {
 export type PageAmmPoolStatus = {
   ammJoin: PageAmmJoin;
   ammExit: PageAmmExit;
-  common: PageAmmCommon;
+  // common: PageAmmCommon;
   __SUBMIT_LOCK_TIMER__: 1000;
   __TOAST_AUTO_CLOSE_TIMER__: 3000;
 };

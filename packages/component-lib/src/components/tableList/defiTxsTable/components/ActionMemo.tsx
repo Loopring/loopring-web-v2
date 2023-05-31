@@ -32,18 +32,16 @@ const ActionPopContent = React.memo(
 
     const { isMobile } = useSettings();
     const tradeList = [
-      ...[
-        <MenuItem key={"token-Receive"} onClick={() => onDetailClick(item)}>
-          <ListItemText>
-            {t("labelDefiStakingDetail", { ns: "tables" })}
-          </ListItemText>
-        </MenuItem>,
-        <MenuItem key={"token-Send"} onClick={() => redeemItemClick(item)}>
-          <ListItemText>
-            {t("labelDefiStakingRedeem", { ns: "tables" })}
-          </ListItemText>
-        </MenuItem>,
-      ],
+      <MenuItem key={"token-Receive"} onClick={() => onDetailClick(item)}>
+        <ListItemText>
+          {t("labelDefiStakingDetail", { ns: "tables" })}
+        </ListItemText>
+      </MenuItem>,
+      <MenuItem key={"token-Send"} onClick={() => redeemItemClick(item)}>
+        <ListItemText>
+          {t("labelDefiStakingRedeem", { ns: "tables" })}
+        </ListItemText>
+      </MenuItem>,
     ];
 
     return (

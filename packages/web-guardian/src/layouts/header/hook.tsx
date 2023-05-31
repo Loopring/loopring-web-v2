@@ -31,7 +31,7 @@ export const useHeader = () => {
   const accountTotal = useAccount();
   const { account, setShouldShow, status: accountStatus } = accountTotal;
   const { chainId, updateSystem } = useSystem();
-  const { isTaikoTest } = useSettings();
+  const { isTaikoTest, isShowTestToggle, setIsShowTestToggle } = useSettings();
 
   const { setShowAccount } = useOpenModals();
   const accountState = React.useMemo(() => {
@@ -80,7 +80,11 @@ export const useHeader = () => {
       },
     ],
   });
-
+  const onkeypress = (e: KeyboardEvent) => {
+    if (e.altKey && e.shiftKey && e.code == "KeyX") {
+      console.log(e.altKey && e.shiftKey && e.code && e.timeStamp);
+    }
+  };
   const onWalletBtnConnect = React.useCallback(async () => {
     myLog(`onWalletBtnConnect click: ${account.readyState}`);
     accountStaticCallBack(_btnClickMap, []);
@@ -97,8 +101,6 @@ export const useHeader = () => {
       onTestOpen: (isTestNet: boolean) => {
         const chainId = store.getState().system.chainId;
         updateSystem({ chainId });
-        // debugger;
-        // setTestNet(isTestNet);
       },
       isShow: (chainId as any) === ChainIdExtends.TAIKO_A2,
     };
@@ -141,5 +143,6 @@ export const useHeader = () => {
     headerMenuLandingData,
     account,
     notifyMap,
+    onkeypress,
   };
 };

@@ -83,11 +83,13 @@ export const SlippagePanel = ({
   slippage,
   wait = globalSetup.wait,
   handleChange,
+  max = 100,
   ...rest
 }: { t: TFunction } & {
   slippageList: Array<number | string>;
   slippage: number | string;
   wait?: number;
+  max?: number;
   handleChange: (newValue: any, customValue: any) => void;
 }) => {
   let { slippage: _slippage } = useSettings();
@@ -111,11 +113,7 @@ export const SlippagePanel = ({
         setValue(newValue);
         handleChange(
           newValue,
-          customSlippage !== 0.1 &&
-            customSlippage !== 0.5 &&
-            customSlippage !== 1
-            ? customSlippage
-            : undefined
+          !slippageList.includes(customSlippage) ? customSlippage : undefined
         );
       }
     } else if (
@@ -124,18 +122,18 @@ export const SlippagePanel = ({
     ) {
       var _value = event.target?.value ?? "";
       _value = _value.replace(suffix, "");
-      if (Number(_value) <= 100) {
+      if (Number(_value) <= max) {
         setValue(_value);
         setCustomSlippage(_value);
-        if (_value >= 5) {
+        if (_value > max) {
           setShowAlert(true);
         } else {
           setShowAlert(false);
         }
       } else {
         setShowAlert(true);
-        setValue(100);
-        setCustomSlippage(100);
+        setValue(max);
+        setCustomSlippage(max);
       }
     } else {
     }
@@ -146,11 +144,7 @@ export const SlippagePanel = ({
       if (customSlippage !== "N" && value !== "N") {
         handleChange(
           value,
-          customSlippage !== 0.1 &&
-            customSlippage !== 0.5 &&
-            customSlippage !== 1
-            ? customSlippage
-            : undefined
+          !slippageList.includes(customSlippage) ? customSlippage : undefined
         );
       }
     } catch (e) {

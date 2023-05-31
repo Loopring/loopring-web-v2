@@ -1,6 +1,7 @@
 import {
   RawDataNFTRedPacketClaimItem,
   RawDataRedPacketClaimItem,
+  ToastType,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
@@ -23,6 +24,7 @@ import {
   SDK_ERROR_MAP_TO_UI,
   TokenType,
 } from "@loopring-web/common-resources";
+import { useHistory } from "react-router";
 
 export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   setToastOpen: (props: any) => void
@@ -58,7 +60,7 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
         if (setToastOpen) {
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               "error : " + errorItem
                 ? t(errorItem.messageKey)
@@ -109,13 +111,24 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
       claimType: CLAIM_TYPE.redPacket,
     });
   };
+  const [showNFTsPanel, setShowNFTsPanel] = React.useState(false);
+  const history = useHistory();
+  const onViewMoreNFTsClick = () => {
+    history.push("/redPacket/records/NFTsUnClaimed");
+  };
+  const onCloseNFts = () => {
+    setShowNFTsPanel(false);
+  };
 
   return {
+    onViewMoreNFTsClick,
     onItemClick,
     redPacketClaimList,
     showLoading,
     redPacketClaimTotal,
     getClaimRedPacket,
+    showNFTsPanel,
+    onCloseNFts,
   };
 };
 
@@ -161,7 +174,7 @@ export const useClaimNFTRedPacket = <R extends RawDataNFTRedPacketClaimItem>({
           if (setToastOpen) {
             setToastOpen({
               open: true,
-              type: "error",
+              type: ToastType.error,
               content:
                 "error : " + errorItem
                   ? t(errorItem.messageKey)

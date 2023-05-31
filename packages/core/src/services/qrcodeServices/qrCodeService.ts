@@ -50,7 +50,7 @@ export class Html5QrcodeScannerProvides {
           qrbox: { width: 260, height: 260 },
           formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
           supportedScanTypes: [
-            Html5QrcodeScanType.SCAN_TYPE_CAMERA,
+            // Html5QrcodeScanType.SCAN_TYPE_CAMERA,
             Html5QrcodeScanType.SCAN_TYPE_FILE,
           ],
         },

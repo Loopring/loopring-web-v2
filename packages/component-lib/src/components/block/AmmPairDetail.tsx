@@ -1,35 +1,29 @@
-import { Avatar, Box, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React from "react";
 
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
   myLog,
-  SoursURL,
+  TokenType,
 } from "@loopring-web/common-resources";
-import { CoinSource, useSettings } from "../../stores";
-import { AvatarCoin } from "../basic-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
+import { CoinIcons } from "../tableList";
+import { useSettings } from "../../stores";
 
 export const AmmPairDetail = ({
   coinA,
   coinB,
   balanceA,
   balanceB,
-  precisionA,
-  precisionB,
 }: {
   coinA: string;
   coinB: string;
-  balanceA: string;
-  balanceB: string;
-  precisionA: number;
-  precisionB: number;
+  balanceA: string | undefined;
+  balanceB: string | undefined;
 }) => {
   const { coinJson } = useSettings();
-  const coinAIcon: CoinSource = coinJson[coinA] ?? {};
-  const coinBIcon: CoinSource = coinJson[coinB] ?? {};
   return (
     <Box padding={1.5} paddingLeft={1}>
       <Typography
@@ -40,6 +34,7 @@ export const AmmPairDetail = ({
         alignItems={"center"}
         style={{ textTransform: "capitalize" }}
         color={"textPrimary"}
+        paddingBottom={1}
       >
         <Box
           component={"span"}
@@ -50,36 +45,11 @@ export const AmmPairDetail = ({
           alignItems={"center"}
           justifyContent={"flex-start"}
         >
-          {coinAIcon ? (
-            <AvatarCoin
-              imgx={coinAIcon.x}
-              imgy={coinAIcon.y}
-              imgheight={coinAIcon.h}
-              imgwidth={coinAIcon.w}
-              size={20}
-              variant="circular"
-              style={{ marginTop: 2 }}
-              alt={coinA as string}
-              src={
-                "data:image/svg+xml;utf8," +
-                '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-              }
-            />
-          ) : (
-            <Avatar
-              variant="circular"
-              alt={coinA as string}
-              style={{
-                height: "var(--list-menu-coin-size))",
-                width: "var(--list-menu-coin-size)",
-              }}
-              src={SoursURL + "images/icon-default.png"}
-            />
-          )}
+          <CoinIcons type={TokenType.single} tokenIcon={[coinJson[coinA]]} />
           <Typography
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             marginLeft={1 / 2}
             height={20}
             lineHeight={"20px"}
@@ -91,12 +61,12 @@ export const AmmPairDetail = ({
         <Typography
           component={"span"}
           color={"var(--color-text-primary)"}
-          variant={"body2"}
+          variant={"body1"}
           height={20}
           marginLeft={10}
           lineHeight={"20px"}
         >
-          {getValuePrecisionThousand(balanceA, precisionA, precisionA)}
+          {balanceA ? balanceA : EmptyValueTag}
         </Typography>
       </Typography>
       <Typography
@@ -117,34 +87,9 @@ export const AmmPairDetail = ({
           alignItems={"center"}
           justifyContent={"flex-start"}
         >
-          {coinBIcon ? (
-            <AvatarCoin
-              style={{ marginTop: 2 }}
-              imgx={coinBIcon.x}
-              imgy={coinBIcon.y}
-              imgheight={coinBIcon.h}
-              imgwidth={coinBIcon.w}
-              size={20}
-              variant="circular"
-              alt={coinB}
-              src={
-                "data:image/svg+xml;utf8," +
-                '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-              }
-            />
-          ) : (
-            <Avatar
-              variant="circular"
-              alt={coinB}
-              style={{
-                height: "var(--list-menu-coin-size)",
-                width: "var(--list-menu-coin-size)",
-              }}
-              src={SoursURL + "images/icon-default.png"}
-            />
-          )}
+          <CoinIcons type={TokenType.single} tokenIcon={[coinJson[coinB]]} />
           <Typography
-            variant={"body2"}
+            variant={"body1"}
             color={"var(--color-text-primary)"}
             component={"span"}
             marginRight={5}
@@ -158,14 +103,14 @@ export const AmmPairDetail = ({
         </Box>
 
         <Typography
-          variant={"body2"}
+          variant={"body1"}
           color={"var(--color-text-primary)"}
           component={"span"}
           height={20}
           marginLeft={10}
           lineHeight={"20px"}
         >
-          {getValuePrecisionThousand(balanceB, precisionB, precisionB)}
+          {balanceB ? balanceB : EmptyValueTag}
         </Typography>
       </Typography>
     </Box>
@@ -197,7 +142,7 @@ export const AmmAPRDetail = withTranslation("tables")(
           <Typography
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             marginLeft={1 / 2}
             height={20}
             lineHeight={"20px"}
@@ -208,7 +153,7 @@ export const AmmAPRDetail = withTranslation("tables")(
           <Typography
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             height={20}
             marginLeft={10}
             lineHeight={"20px"}
@@ -230,7 +175,7 @@ export const AmmAPRDetail = withTranslation("tables")(
           <Typography
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             marginLeft={1 / 2}
             height={20}
             lineHeight={"20px"}
@@ -240,7 +185,7 @@ export const AmmAPRDetail = withTranslation("tables")(
           <Typography
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             height={20}
             marginLeft={10}
             lineHeight={"20px"}
@@ -262,7 +207,7 @@ export const AmmAPRDetail = withTranslation("tables")(
           <Typography
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             marginLeft={1 / 2}
             height={20}
             lineHeight={"20px"}
@@ -273,7 +218,7 @@ export const AmmAPRDetail = withTranslation("tables")(
           <Typography
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             height={20}
             marginLeft={10}
             lineHeight={"20px"}
@@ -335,7 +280,7 @@ export const AmmRewardsDetail = withTranslation("tables")(
           <Typography
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             marginLeft={1 / 2}
             height={20}
             lineHeight={"20px"}
@@ -346,7 +291,7 @@ export const AmmRewardsDetail = withTranslation("tables")(
           <TypographyStyle
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             height={20}
             marginLeft={10}
             lineHeight={"20px"}
@@ -387,7 +332,7 @@ export const AmmRewardsDetail = withTranslation("tables")(
           <Typography
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             marginLeft={1 / 2}
             height={20}
             lineHeight={"20px"}
@@ -397,7 +342,7 @@ export const AmmRewardsDetail = withTranslation("tables")(
           <TypographyStyle
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             height={20}
             marginLeft={10}
             lineHeight={"20px"}
@@ -441,7 +386,7 @@ export const AmmRewardsDetail = withTranslation("tables")(
           <Typography
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             marginLeft={1 / 2}
             height={20}
             lineHeight={"20px"}
@@ -452,7 +397,7 @@ export const AmmRewardsDetail = withTranslation("tables")(
           <TypographyStyle
             component={"span"}
             color={"var(--color-text-primary)"}
-            variant={"body2"}
+            variant={"body1"}
             height={20}
             marginLeft={10}
             lineHeight={"20px"}

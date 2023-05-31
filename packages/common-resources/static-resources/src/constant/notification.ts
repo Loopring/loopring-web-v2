@@ -98,6 +98,11 @@ export type NOTIFICATION = {
     // prevMonth: string;
   };
   campaignTagConfig?: CAMPAIGNTAGCONFIG;
+  redPacket: {
+    timeRangeMaxInSecondsToken: number;
+    timeRangeMaxInSecondsNFT: number;
+    showNFT: boolean;
+  };
 };
 
 export type Notify = Omit<NOTIFICATION, "prev">;

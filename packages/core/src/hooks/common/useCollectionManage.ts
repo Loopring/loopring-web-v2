@@ -16,6 +16,7 @@ import {
 import {
   CollectionManageProps,
   CollectionMethod,
+  ToastType,
 } from "@loopring-web/component-lib";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
@@ -175,13 +176,13 @@ export const useCollectionManage = <
         ) {
           toastObj.setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content: t("labelNFTMoveFailed"),
           });
         } else {
           toastObj.setToastOpen({
             open: true,
-            type: "success",
+            type: ToastType.success,
             content: t("labelNFTMoveSuccess"),
           });
         }

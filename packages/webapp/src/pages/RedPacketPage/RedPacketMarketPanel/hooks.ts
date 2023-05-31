@@ -9,6 +9,7 @@ import {
 } from "@loopring-web/common-resources";
 import _ from "lodash";
 import { useRouteMatch } from "react-router-dom";
+import { ToastType } from "@loopring-web/component-lib";
 
 export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
   setToastOpen,
@@ -49,47 +50,64 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
       const statuses = [
         sdk.LuckyTokenWithdrawStatus.PROCESSING,
         sdk.LuckyTokenWithdrawStatus.PROCESSED,
-        sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED,
-        sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED,
       ];
       if (LoopringAPI.luckTokenAPI && accountId && apiKey) {
         const isNft = match?.params?.item?.toUpperCase() === "NFT";
-        const responses = await Promise.all([
-          LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
-            {
-              senderId: 0,
-              hash: "",
-              partitions: "0,1",
-              modes: "0,1",
-              scopes: sdk.LuckyTokenViewType.PUBLIC,
-              statuses: statuses.join(","),
-              offset: 0,
-              limit: 50,
-              official: true,
-              isNft,
-            } as any,
-            apiKey
-          ),
-          ...(showOfficial
-            ? []
-            : [
-                LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
+        let responses: any[];
+        if (showOfficial) {
+          responses = await LoopringAPI.luckTokenAPI
+            ?.getLuckTokenLuckyTokens(
+              {
+                senderId: 0,
+                hash: "",
+                partitions: "0,1",
+                modes: "0,1",
+                scopes: sdk.LuckyTokenViewType.PUBLIC,
+                statuses: statuses.join(","),
+                offset: 0,
+                limit: 50,
+                official: true,
+                isNft,
+              } as any,
+              apiKey
+            )
+            .then(async (resOfficial) => {
+              const officialLength = resOfficial.list.length;
+              const resNonOfficial =
+                await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
                   {
                     senderId: 0,
                     hash: "",
                     partitions: "0,1",
                     modes: "0,1",
                     scopes: sdk.LuckyTokenViewType.PUBLIC,
-                    statuses: `${sdk.LuckyTokenWithdrawStatus.PROCESSING},${sdk.LuckyTokenWithdrawStatus.PROCESSED},${sdk.LuckyTokenWithdrawStatus.WITHDRAW_FAILED},${sdk.LuckyTokenWithdrawStatus.PREPARE_FAILED}`,
+                    statuses: statuses.join(","),
                     offset,
-                    limit: pagination?.pageSize,
-                    official: showOfficial,
+                    limit: pagination?.pageSize - officialLength,
                     isNft,
                   } as any,
                   apiKey
-                ),
-              ]),
-        ]);
+                );
+              return [resOfficial, resNonOfficial];
+            });
+        } else {
+          const nonOfficialRes =
+            await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
+              {
+                senderId: 0,
+                hash: "",
+                partitions: "0,1",
+                modes: "0,1",
+                scopes: sdk.LuckyTokenViewType.PUBLIC,
+                statuses: statuses.join(","),
+                offset,
+                limit: pagination?.pageSize,
+                isNft,
+              } as any,
+              apiKey
+            );
+          responses = [{}, nonOfficialRes];
+        }
 
         if (
           (responses[0] as sdk.RESULT_INFO).code ||
@@ -102,7 +120,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
           if (setToastOpen) {
             setToastOpen({
               open: true,
-              type: "error",
+              type: ToastType.error,
               content:
                 "error : " + errorItem
                   ? t(errorItem.messageKey)
@@ -111,10 +129,10 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
           }
         } else {
           setLuckTokenList({
-            officialList: responses[0]?.list as R[],
+            officialList: (responses[0]?.list ?? []) as R[],
             publicList:
-              responses?.length === 2 ? (responses[1].list as R[]) : [],
-            publicTotal: responses[1].totalNum,
+              responses?.length === 2 ? (responses[1]?.list as R[]) : [],
+            publicTotal: responses[1]?.totalNum!,
           });
           setShowLoading(false);
           setPagination((state) => {
@@ -132,7 +150,7 @@ export const useMarketRedPacket = <R extends sdk.LuckyTokenItemForReceive>({
   const updateData = _.debounce(({ currPage, showOfficial }) => {
     getMarketRedPacket({
       offset: (currPage - 1) * pagination?.pageSize,
-      showOfficial,
+      showOfficial: currPage === 1,
     });
     setPagination((state) => {
       return {

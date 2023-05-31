@@ -30,7 +30,7 @@ export function* getPostsSaga() {
     const { data } = yield call(getAmmActivityMapApi);
     yield put(getAmmActivityMapStatus({ ...data }));
   } catch (err) {
-    yield put(getAmmActivityMapStatus(err));
+    yield put(getAmmActivityMapStatus({ error: err }));
   }
 }
 
