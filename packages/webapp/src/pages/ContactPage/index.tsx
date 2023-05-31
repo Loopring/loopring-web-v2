@@ -11,6 +11,7 @@ import {
   InputSearch,
   Toast,
   TablePagination,
+  ToastType,
 } from "@loopring-web/component-lib";
 import {
   CopyIcon,
@@ -264,7 +265,7 @@ export const ContactPage = () => {
     >
       <Toast
         alertText={totastText}
-        severity={toastInfo.isSuccess ? "success" : "error"}
+        severity={toastInfo.isSuccess ? ToastType.success : ToastType.error}
         open={toastInfo.open}
         autoHideDuration={TOAST_TIME}
         onClose={() => onCloseToast()}
