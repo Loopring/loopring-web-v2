@@ -142,7 +142,7 @@ const initLng = "en_US";
 console.log("en_US");
 const settingPersist = "persist:settings";
 (function init() {
-  let settings = JSON.parse(localStorage.getItem(settingPersist) ?? {});
+  let settings = JSON.parse(localStorage.getItem(settingPersist) ?? "{}");
   let themeMode = "dark";
   if (settings.themeMode && JSON.parse(settings.themeMode)) {
     themeMode = JSON.parse(settings.themeMode);
