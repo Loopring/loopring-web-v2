@@ -415,6 +415,11 @@ export const useStopLimit = <
                 : undefined,
           },
         });
+        myLog(
+          "stopLimit",
+          calcTradeParams?.baseVolShow as number,
+          calcTradeParams?.quoteVolShow as number
+        );
         setStopLimitTradeData((state) => {
           const tradePrice = tradeData.price.tradeValue;
           let balance =
@@ -451,11 +456,17 @@ export const useStopLimit = <
             } as IBData<any>,
             base: {
               ...state.base,
-              tradeValue: calcTradeParams?.baseVolShow as number,
+              tradeValue:
+                calcTradeParams?.baseVolShow == Infinity
+                  ? undefined
+                  : (calcTradeParams?.baseVolShow as number),
             },
             quote: {
               ...state.quote,
-              tradeValue: calcTradeParams?.quoteVolShow as number,
+              tradeValue:
+                calcTradeParams?.quoteVolShow == Infinity
+                  ? undefined
+                  : (calcTradeParams?.quoteVolShow as number),
             },
           };
         });
