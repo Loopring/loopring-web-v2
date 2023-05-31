@@ -25,7 +25,6 @@ import {
   TradeBtnStatus,
   TradeBaseType,
   TradeProType,
-  TradeTypes,
 } from "@loopring-web/common-resources";
 import {
   StopLimitTradeData,
@@ -49,14 +48,13 @@ export const useStopLimit = <
   const { pageTradePro, updatePageTradePro, __SUBMIT_LOCK_TIMER__ } =
     usePageTradePro();
   const { marketMap, tokenMap } = useTokenMap();
-  const { setShowAccount } = useOpenModals();
   const { tokenPrices } = useTokenPrices();
   const { forexMap, allowTrade } = useSystem();
   const { account } = useAccount();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { tickerMap } = useTicker();
   const {
-    toggle: { order },
+    toggle: { StopLimit },
   } = useToggle();
   const { currency, isMobile } = useSettings();
 
@@ -366,7 +364,10 @@ export const useStopLimit = <
             ? tradeData.quote.tradeValue
             : undefined;
 
-        if (formType === TradeBaseType.price) {
+        if (
+          formType === TradeBaseType.price ||
+          formType === TradeBaseType.stopPrice
+        ) {
           amountBase =
             tradeData.base.tradeValue !== undefined
               ? tradeData.base.tradeValue
@@ -519,8 +520,8 @@ export const useStopLimit = <
     if (!allowTrade?.order?.enable) {
       setShowSupport({ isShow: true });
       setIsLimitLoading(false);
-    } else if (!order.enable) {
-      setShowTradeIsFrozen({ isShow: true, type: "Limit" });
+    } else if (!StopLimit.enable) {
+      setShowTradeIsFrozen({ isShow: true, type: "StopLimit" });
       setIsLimitLoading(false);
     } else {
       switch (priceLevel) {
@@ -528,7 +529,7 @@ export const useStopLimit = <
           setAlertOpen(true);
           break;
         default:
-          limitSubmit(undefined as any, true);
+          setConfirmed(true);
           break;
       }
     }
@@ -536,7 +537,7 @@ export const useStopLimit = <
     account.readyState,
     allowTrade.order.enable,
     limitSubmit,
-    order.enable,
+    StopLimit.enable,
     setShowSupport,
     setShowTradeIsFrozen,
   ]);
@@ -661,18 +662,15 @@ export const useStopLimit = <
       baseSymbol,
       quoteSymbol,
       tradeType: pageTradePro.tradeType,
-      limitPrice: stopLimitTradeData?.price,
-      stopPrice: pageTradePro.request?.stopPrice,
+      limitPrice: stopLimitTradeData?.price?.tradeValue,
+      stopPrice: stopLimitTradeData?.stopPrice.tradeValue,
       baseValue: stopLimitTradeData?.base?.tradeValue,
       quoteValue: stopLimitTradeData?.quote?.tradeValue,
-      onSubmit: (_e) => {
-        limitSubmit();
+      onSubmit: (e: any) => {
+        limitSubmit(e as any, true);
       },
     },
-    limitSubmit: () => {
-      setConfirmed(true);
-      // setShowAccount({isShow:true,step:})
-    },
+    limitSubmit,
     limitBtnClick,
     handlePriceError,
     tradeLimitBtnStyle: {
