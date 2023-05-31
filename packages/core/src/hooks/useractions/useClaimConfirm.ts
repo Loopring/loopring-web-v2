@@ -41,7 +41,10 @@ import Web3 from "web3";
 import { getTimestampDaysLater } from "../../utils";
 import { DAYS } from "../../defs";
 
-export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }, I>() => {
+export const useClaimConfirm = <
+  T extends IBData<I> & { tradeValueView: string },
+  I
+>() => {
   const { exchangeInfo, chainId } = useSystem();
   const { account } = useAccount();
   const {
@@ -531,4 +534,4 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
       // true,
     } as any as ClaimProps<any, any>,
   };
-};;
+};

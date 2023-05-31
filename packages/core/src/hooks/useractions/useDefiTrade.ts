@@ -42,7 +42,11 @@ import {
 import { useTranslation } from "react-i18next";
 import { useDefiMap, useTradeDefi } from "../../stores";
 
-export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
+export const useDefiTrade = <
+  T extends IBData<I>,
+  I,
+  ACD extends DeFiCalcData<T>
+>({
   isJoin = true,
   market,
   setToastOpen,

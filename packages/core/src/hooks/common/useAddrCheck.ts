@@ -60,10 +60,12 @@ export const useAddressCheck = () => {
             web3
           );
           nodeTimer.current = setTimeout(() => {
-            _address.current = "";
-            setAddrStatus(AddressError.TimeOut);
-            setRealAddr("");
-            setIsAddressCheckLoading(false);
+            if (_address.current == address) {
+              _address.current = "";
+              setAddrStatus(AddressError.TimeOut);
+              setRealAddr("");
+              setIsAddressCheckLoading(false);
+            }
           }, 6000);
 
           // for debounce & promise clean   (next user input sync function will cover by async)
@@ -136,11 +138,11 @@ export const useAddressCheck = () => {
                 }
               }
             }
-            clearTimeout(nodeTimer.current);
-            nodeTimer.current = -1;
-            myLog("address async", address);
-            setIsAddressCheckLoading(false);
           }
+          clearTimeout(nodeTimer.current);
+          nodeTimer.current = -1;
+          myLog("address async", address);
+          setIsAddressCheckLoading(false);
         } else {
           throw Error("wrong address format");
         }
@@ -188,12 +190,13 @@ export const useAddressCheck = () => {
     myLog("current address", _address.current, address);
     if (_address.current !== address) {
       if (isAddressCheckLoading == true) {
-        debounceCheck.cancel();
         initAddresss();
+        debounceCheck.cancel();
       }
+      _address.current = address;
       debounceCheck(address);
     }
-    _address.current = address;
+
     return () => {
       debounceCheck.cancel();
     };
@@ -219,4 +222,4 @@ export const useAddressCheck = () => {
     isActiveAccountFee,
     loopringSmartWalletVersion,
   };
-};;
+};

@@ -659,9 +659,9 @@ export function makeLimitReq({
 export function usePlaceOrder() {
   const { account } = useAccount();
 
-  const {tokenMap, marketArray} = useTokenMap();
-  const {tickerMap} = useTicker();
-  const {ammMap} = useAmmMap();
+  const { tokenMap, marketArray } = useTokenMap();
+  const { tickerMap } = useTicker();
+  const { ammMap } = useAmmMap();
 
   const { exchangeInfo } = useSystem();
 
@@ -784,8 +784,8 @@ export function usePlaceOrder() {
 
   const makeStopLimitReqInHook = React.useCallback(
     <T extends ReqParams & { stopLimitPrice?: string | number }>(params: T) => {
-      const {tokenAmtMap, feeBips} = getTokenAmtMap(params);
-      const {tickerMap} = store.getState().tickerMap;
+      const { tokenAmtMap, feeBips } = getTokenAmtMap(params);
+      const { tickerMap } = store.getState().tickerMap;
       myLog("makeLimitReqInHook tokenAmtMap:", tokenAmtMap, feeBips);
       let sellUserOrderInfo = undefined,
         buyUserOrderInfo = undefined,
@@ -795,7 +795,7 @@ export function usePlaceOrder() {
         stopSide = undefined;
 
       if (exchangeInfo && params?.depth?.symbol && params.quote && tickerMap) {
-        const ticker = tickerMap[ params.depth.symbol ];
+        const ticker = tickerMap[params.depth.symbol];
 
         // const { close } = tickerMap[params.market];
         let midStopPrice = ticker?.close; // params.depth.mid_price ?? 0;
