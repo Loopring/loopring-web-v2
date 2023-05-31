@@ -899,7 +899,7 @@ export const ContactTransactionsPage = withTranslation("common")(
             color={"inherit"}
             onClick={history.goBack}
           >
-            Contacts
+            {rest.t("labelContacts")}
           </Button>
         </Box>
         <StylePaper ref={container} flex={1}>
