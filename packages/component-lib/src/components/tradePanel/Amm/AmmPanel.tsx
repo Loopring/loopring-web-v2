@@ -236,7 +236,6 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
                   ammDepositBtnI18nKey,
                   ammCalcData: ammCalcDataDeposit,
                   onAmmAddClick,
-                  handleError,
                   onAddChangeEvent: _onChangeAddEvent,
                   ammData: ammDepositData,
                   tokenAProps: { ...tokenDepositAProps },
@@ -313,4 +312,4 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
   C = IBData<I>
 >(
   props: AmmProps<T, TW, I, ACD, C> & React.RefAttributes<any>
-) => JSX.Element;;
+) => JSX.Element;

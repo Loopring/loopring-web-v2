@@ -53,6 +53,10 @@ export const useAmmJoin = ({
     ammJoin: { request, ammCalcData, ammData },
     updatePageAmmJoin,
   } = usePageAmmPool();
+  const [[maxCoinA, maxCoinB], setMaxLp] = React.useState<[any, any]>([
+    Infinity,
+    Infinity,
+  ]);
 
   const { t } = useTranslation(["common", "error"]);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -106,6 +110,30 @@ export const useAmmJoin = ({
               tradeBtnStatus: TradeBtnStatus.DISABLED,
               label: "labelEnterAmount",
             };
+          } else if (
+            sdk.toBig(ammData.coinA.tradeValue).gt(ammData.coinA.balance)
+          ) {
+            return {
+              tradeBtnStatus: TradeBtnStatus.DISABLED,
+              label: `labelAMMNoEnough|${ammData.coinA.belong}`,
+            };
+          } else if (
+            sdk.toBig(ammData.coinB.tradeValue).gt(ammData.coinB.balance)
+          ) {
+            return {
+              tradeBtnStatus: TradeBtnStatus.DISABLED,
+              label: `labelAMMNoEnough|${ammData.coinB.belong}`,
+            };
+          } else if (
+            !Number.isFinite(maxCoinA) &&
+            !Number.isFinite(maxCoinB) &&
+            (sdk.toBig(ammData.coinA.tradeValue).gt(maxCoinA) ||
+              sdk.toBig(ammData.coinB.tradeValue).gt(maxCoinB))
+          ) {
+            return {
+              tradeBtnStatus: TradeBtnStatus.DISABLED,
+              label: `labelAMMMax| ${maxCoinB} ${ammData.coinB.belong}`,
+            };
           } else if (!validAmt1 || !validAmt2) {
             const tokenA = tokenMap[ammInfo.coinA ?? ""];
             const tokenB = tokenMap[ammInfo.coinB ?? ""];
@@ -146,7 +174,16 @@ export const useAmmJoin = ({
       };
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [account.readyState, ammMap, ammInfo, isLoading, baseMinAmt, quoteMinAmt]);
+  }, [
+    account.readyState,
+    ammMap,
+    ammInfo,
+    isLoading,
+    baseMinAmt,
+    quoteMinAmt,
+    maxCoinA,
+    maxCoinB,
+  ]);
 
   const onAmmClick = React.useCallback(
     async function (props) {
@@ -386,6 +423,34 @@ export const useAmmJoin = ({
                   .div("1e" + tokenCoinA.decimals)
                   .toFixed(marketMap[ammInfo.market].precisionForPrice) as any)
               : undefined;
+        }
+      }
+
+      if (ammCalcData?.fee) {
+        const { request: maxResult } = sdk.makeJoinAmmPoolRequest(
+          sdk.toBig(data.coinB.balance).minus(ammCalcData?.fee).toString(),
+          false,
+          slippageReal,
+          account.accAddress,
+          ammCalcData?.fees,
+          ammPoolSnapshot,
+          tokenMap as any,
+          idIndex as any,
+          0,
+          0,
+          undefined
+        );
+        if (ammInfo.tokens?.lp && sdk.toBig(ammInfo.tokens?.lp ?? 0).gt(0)) {
+          setMaxLp([
+            sdk
+              .toBig(maxResult.joinTokens.pooled[0].volume)
+              .div("1e" + tokenCoinA.decimals)
+              .toFixed(marketMap[ammInfo.market].precisionForPrice),
+            sdk
+              .toBig(maxResult.joinTokens.pooled[1].volume)
+              .div("1e" + tokenCoinB.decimals)
+              .toFixed(marketMap[ammInfo.market].precisionForPrice),
+          ]);
         }
       }
 

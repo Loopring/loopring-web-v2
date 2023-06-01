@@ -38,7 +38,6 @@ export const AmmDepositWrap = <
   tokenAProps,
   tokenBProps,
   onAddChangeEvent,
-  handleError,
   ammData,
   propsAExtends = {},
   propsBExtends = {},
@@ -93,6 +92,16 @@ export const AmmDepositWrap = <
       ammCalcData === undefined ||
       ammCalcData.coinInfoMap === undefined
     );
+  };
+  const handleError = () => {
+    if (
+      ammDepositBtnStatus === TradeBtnStatus.DISABLED &&
+      (/labelAMMNoEnough/.test(ammDepositBtnI18nKey) ||
+        /labelAMMMax/.test(ammDepositBtnI18nKey))
+    ) {
+      return { error: true };
+    }
+    return { error: false };
   };
 
   const handleCountChange = React.useCallback(

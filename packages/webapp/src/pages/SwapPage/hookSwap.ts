@@ -1327,13 +1327,13 @@ export const useSwap = <
             .toBig(tokenPrices[_tradeData.sell.belong])
             .div(tokenPrices[_tradeData.buy.belong]);
           const marketRatePrice =
-            tradeData.type === "sell"
+            market === `${_tradeData.sell.belong}-${_tradeData.buy.belong}`
               ? sdk
                   .toBig(marketPrice)
-                  .minus(_tradeCalcData.StoB?.replaceAll(sdk.SEP, ""))
+                  .minus(_tradeCalcData.StoB?.replaceAll(sdk.SEP, "") ?? 0)
                   .div(marketPrice)
               : sdk
-                  .toBig(_tradeCalcData.StoB?.replaceAll(sdk.SEP, ""))
+                  .toBig(_tradeCalcData.StoB?.replaceAll(sdk.SEP, "") ?? 0)
                   .minus(marketPrice)
                   .div(marketPrice);
           const isNotMatchMarketPrice = marketRatePrice.gt(0.05);
