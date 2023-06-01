@@ -159,7 +159,7 @@ export const ChartAndInfoPanel = ({
                 quoteSymbol={ammInfo.coinB}
                 showXAxis
               />
-            ) : pairHistory == undefined || !pairHistory?.length == 0 ? (
+            ) : pairHistory == undefined || pairHistory?.length == 0 ? (
               <Box
                 flex={1}
                 display={"flex"}
