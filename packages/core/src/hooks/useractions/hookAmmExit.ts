@@ -304,12 +304,12 @@ export const useAmmExit = ({
         risky: false,
       };
 
-      if (data.coinLP.tradeValue !== undefined) {
+      if (data.coinLP.tradeValue !== undefined && ammExit.ammCalcData) {
         const { volA_show, volB_show, request } = sdk.makeExitAmmPoolRequest2(
           rawVal.toString(),
           slippageReal,
           account.accAddress,
-          fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
+          ammExit.ammCalcData?.fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
           ammPoolSnapshot,
           tokenMap as any,
           idIndex as IdMap,
