@@ -14,7 +14,6 @@ import {
   walletLayer2Service,
 } from "../../../index";
 import styled from "@emotion/styled";
-import { useLocation } from "react-router-dom";
 import { useAmmJoin } from "../../../hooks/useractions/hookAmmJoin";
 import { useAmmExit } from "../../../hooks/useractions/hookAmmExit";
 import { SagaStatus } from "@loopring-web/common-resources";
