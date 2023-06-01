@@ -265,17 +265,26 @@ export const useMarket = <C extends { [key: string]: any }>({
       let isNotMatchMarketPrice, marketPrice, marketRatePrice;
       if (tokenPrices && stob) {
         marketPrice = sdk
-          .toBig(tokenPrices[_tradeData[sell].belong])
-          .div(tokenPrices[_tradeData[buy].belong]);
-        marketRatePrice = marketPrice.div(stob?.replaceAll(sdk.SEP, "") ?? 1);
-        isNotMatchMarketPrice = marketRatePrice.gt(1.05);
+          .toBig(tokenPrices[_tradeData.base.belong])
+          .div(tokenPrices[_tradeData.quote.belong]);
+        marketRatePrice =
+          _tradeData.type === "sell"
+            ? sdk
+                .toBig(marketPrice)
+                .minus(stob?.replaceAll(sdk.SEP, ""))
+                .div(marketPrice)
+            : sdk
+                .toBig(stob?.replaceAll(sdk.SEP, ""))
+                .minus(marketPrice)
+                .div(marketPrice);
+        isNotMatchMarketPrice = marketRatePrice.gt(0.05);
         marketPrice = getValuePrecisionThousand(
           marketPrice.toString(),
-          tokenMap[_tradeData[buy].belong].precision,
-          tokenMap[_tradeData[buy].belong].precision,
-          tokenMap[_tradeData[buy].belong].precision
+          tokenMap[_tradeData.quote.belong].precision,
+          tokenMap[_tradeData.quote.belong].precision,
+          tokenMap[_tradeData.quote.belong].precision
         );
-        marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2);
+        marketRatePrice = marketRatePrice.toFixed(2);
       }
 
       updatePageTradePro({
