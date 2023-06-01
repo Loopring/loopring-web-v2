@@ -464,7 +464,9 @@ export const useLimit = <C extends { [key: string]: any }>({
           marketPrice = sdk
             .toBig(tokenPrices[tradeData.base.belong])
             .div(tokenPrices[tradeData.quote.belong]);
-          marketRatePrice = marketPrice.div(tradeData.price.tradeValue);
+          marketRatePrice = sdk
+            .toBig(tradeData.price.tradeValue)
+            .div(marketPrice);
           isNotMatchMarketPrice =
             tradeData.type === "sell"
               ? marketRatePrice.gt(1.05)
