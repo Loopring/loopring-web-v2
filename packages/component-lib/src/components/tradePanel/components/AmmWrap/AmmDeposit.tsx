@@ -96,6 +96,7 @@ export const AmmDepositWrap = <
   const handleError = () => {
     if (
       ammDepositBtnStatus === TradeBtnStatus.DISABLED &&
+      ammDepositBtnI18nKey &&
       (/labelAMMNoEnough/.test(ammDepositBtnI18nKey) ||
         /labelAMMMax/.test(ammDepositBtnI18nKey))
     ) {

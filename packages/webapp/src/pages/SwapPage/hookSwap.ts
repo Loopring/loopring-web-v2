@@ -1326,16 +1326,11 @@ export const useSwap = <
           const marketPrice = sdk
             .toBig(tokenPrices[_tradeData.sell.belong])
             .div(tokenPrices[_tradeData.buy.belong]);
-          const marketRatePrice =
-            market === `${_tradeData.sell.belong}-${_tradeData.buy.belong}`
-              ? sdk
-                  .toBig(marketPrice)
-                  .minus(_tradeCalcData.StoB?.replaceAll(sdk.SEP, "") ?? 0)
-                  .div(marketPrice)
-              : sdk
-                  .toBig(_tradeCalcData.StoB?.replaceAll(sdk.SEP, "") ?? 0)
-                  .minus(marketPrice)
-                  .div(marketPrice);
+          const marketRatePrice = sdk
+            .toBig(marketPrice)
+            .minus(_tradeCalcData.StoB?.replaceAll(sdk.SEP, "") ?? 0)
+            .div(marketPrice);
+
           const isNotMatchMarketPrice = marketRatePrice.gt(0.05);
           _tradeCalcData.isNotMatchMarketPrice = isNotMatchMarketPrice;
           _tradeCalcData.marketPrice = getValuePrecisionThousand(
@@ -1344,7 +1339,7 @@ export const useSwap = <
             tokenMap[_tradeData.buy.belong].precision,
             tokenMap[_tradeData.buy.belong].precision
           );
-          _tradeCalcData.marketRatePrice = marketRatePrice.toFixed(2);
+          _tradeCalcData.marketRatePrice = marketRatePrice.times(2).toFixed(2);
           myLog(
             "stob",
             _tradeCalcData.StoB,

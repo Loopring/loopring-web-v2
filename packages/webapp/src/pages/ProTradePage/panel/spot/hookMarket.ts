@@ -233,7 +233,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         _tradeData.type === TradeProType.sell
           ? ["base", "quote"]
           : ["quote", "base"];
-      let { stob } = reCalcStoB({
+      let { stob, btos } = reCalcStoB({
         market,
         tradeData: {
           sell: _tradeData[sell],
@@ -268,15 +268,16 @@ export const useMarket = <C extends { [key: string]: any }>({
           .toBig(tokenPrices[_tradeData.base.belong])
           .div(tokenPrices[_tradeData.quote.belong]);
         marketRatePrice =
-          _tradeData.type === "sell"
+          _tradeData.type === "buy"
             ? sdk
-                .toBig(marketPrice)
-                .minus(stob?.replaceAll(sdk.SEP, ""))
+                .toBig(btos?.replaceAll(sdk.SEP, "") ?? 0)
+                .minus(marketPrice)
                 .div(marketPrice)
             : sdk
-                .toBig(stob?.replaceAll(sdk.SEP, ""))
-                .minus(marketPrice)
+                .toBig(marketPrice)
+                .minus(stob?.replaceAll(sdk.SEP, "") ?? 0)
                 .div(marketPrice);
+
         isNotMatchMarketPrice = marketRatePrice.gt(0.05);
         marketPrice = getValuePrecisionThousand(
           marketPrice.toString(),
@@ -284,7 +285,7 @@ export const useMarket = <C extends { [key: string]: any }>({
           tokenMap[_tradeData.quote.belong].precision,
           tokenMap[_tradeData.quote.belong].precision
         );
-        marketRatePrice = marketRatePrice.toFixed(2);
+        marketRatePrice = marketRatePrice.times(2).toFixed(2);
       }
 
       updatePageTradePro({
@@ -306,6 +307,7 @@ export const useMarket = <C extends { [key: string]: any }>({
           marketPrice,
           marketRatePrice,
           StoB: stob,
+          BtoS: btos,
           isChecked:
             tradeData.isChecked !== undefined ? tradeData.isChecked : undefined,
           lastStepAt,
