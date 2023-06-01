@@ -2190,8 +2190,7 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
     quoteValue,
     stopSide,
     onSubmit,
-  }: // ...props
-  WithTranslation & {
+  }: WithTranslation & {
     open: boolean;
     handleClose: (event: any) => void;
   } & Partial<{
